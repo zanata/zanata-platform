@@ -23,19 +23,16 @@ package org.zanata.webtrans.client.presenter;
 import java.util.ArrayList;
 
 import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.events.RunDocValidationEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.service.ValidationService;
+import org.zanata.webtrans.client.view.ValidationOptionsDisplay;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationInfo;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -47,26 +44,13 @@ import com.google.inject.Inject;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOptionsPresenter.Display> implements WorkspaceContextUpdateEventHandler
+public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOptionsDisplay> implements ValidationOptionsDisplay.Listener, WorkspaceContextUpdateEventHandler
 {
-   public interface Display extends WidgetDisplay
-   {
-      HasValueChangeHandlers<Boolean> addValidationSelector(String label, String tooltip, boolean enabled, boolean locked);
-
-      void changeValidationSelectorValue(String label, boolean enabled);
-
-      void clearValidationSelector();
-      
-      HasClickHandlers getRunValidationButton();
-
-      void setRunValidationVisible(boolean visible);
-   }
-
    private final ValidationService validationService;
    private MainView currentView;
 
    @Inject
-   public ValidationOptionsPresenter(Display display, EventBus eventBus, final ValidationService validationService)
+   public ValidationOptionsPresenter(ValidationOptionsDisplay display, EventBus eventBus, final ValidationService validationService)
    {
       super(display, eventBus);
       this.validationService = validationService;
@@ -76,17 +60,9 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
    protected void onBind()
    {
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this));
-      
-      display.getRunValidationButton().addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            eventBus.fireEvent(new RunDocValidationEvent(currentView));
-         }
-      });
-
       initDisplay();
+
+      display.setListener(this);
    }
 
    public void initDisplay()
@@ -155,6 +131,12 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
       {
          display.setRunValidationVisible(false);
       }
+   }
+
+   @Override
+   public void onRunValidation()
+   {
+      eventBus.fireEvent(new RunDocValidationEvent(currentView));
    }
 }
 

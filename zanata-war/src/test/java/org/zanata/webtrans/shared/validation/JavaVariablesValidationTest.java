@@ -25,15 +25,14 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 
-import java.util.List;
+import java.io.IOException;
+import java.util.Arrays;
 
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.zanata.webtrans.client.resources.TestMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.server.locale.Gwti18nReader;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.action.JavaVariablesValidation;
 
@@ -45,24 +44,15 @@ import org.zanata.webtrans.shared.validation.action.JavaVariablesValidation;
 @Test(groups = { "unit-tests" })
 public class JavaVariablesValidationTest
 {
-   // TODO use TestMessages
-
-   private static final String MOCK_VARIABLES_ADDED_MESSAGE = "test variables added message";
-   private static final String MOCK_VARIABLES_MISSING_MESSAGE = "test variables missing message";
-
    private JavaVariablesValidation javaVariablesValidation;
 
    private ValidationMessages messages;
-   @Captor
-   private ArgumentCaptor<List<String>> capturedVarsAdded;
-   @Captor
-   private ArgumentCaptor<List<String>> capturedVarsMissing;
 
    @BeforeMethod
-   public void init()
+   public void init() throws IOException
    {
       MockitoAnnotations.initMocks(this);
-      messages = TestMessages.getInstance(ValidationMessages.class);
+      messages = Gwti18nReader.create(ValidationMessages.class);
 
       javaVariablesValidation = new JavaVariablesValidation(ValidationId.JAVA_VARIABLES, messages);
       javaVariablesValidation.getValidationInfo().setEnabled(true);
@@ -93,11 +83,8 @@ public class JavaVariablesValidationTest
       javaVariablesValidation.validate(source, target);
 
       assertThat(javaVariablesValidation.hasError(), is(true));
-      assertThat(javaVariablesValidation.getError(), hasItem(MOCK_VARIABLES_MISSING_MESSAGE));
+      assertThat(javaVariablesValidation.getError(), hasItem(messages.varsMissing(Arrays.asList("{0}"))));
       assertThat(javaVariablesValidation.getError().size(), is(1));
-
-      assertThat(capturedVarsMissing.getValue(), hasItem("{0}"));
-      assertThat(capturedVarsMissing.getValue().size(), is(1));
    }
 
    @Test
@@ -108,11 +95,8 @@ public class JavaVariablesValidationTest
       javaVariablesValidation.validate(source, target);
 
       assertThat(javaVariablesValidation.hasError(), is(true));
-      assertThat(javaVariablesValidation.getError(), hasItem(MOCK_VARIABLES_MISSING_MESSAGE));
+      assertThat(javaVariablesValidation.getError(), hasItem(messages.varsMissing(Arrays.asList("{2}", "{1}", "{0}"))));
       assertThat(javaVariablesValidation.getError().size(), is(1));
-
-      assertThat(capturedVarsMissing.getValue(), hasItems("{0}", "{1}", "{2}"));
-      assertThat(capturedVarsMissing.getValue().size(), is(3));
    }
 
    @Test
@@ -123,11 +107,8 @@ public class JavaVariablesValidationTest
       javaVariablesValidation.validate(source, target);
 
       assertThat(javaVariablesValidation.hasError(), is(true));
-      assertThat(javaVariablesValidation.getError(), hasItem(MOCK_VARIABLES_ADDED_MESSAGE));
+      assertThat(javaVariablesValidation.getError(), hasItem(messages.varsAdded(Arrays.asList("{0}"))));
       assertThat(javaVariablesValidation.getError().size(), is(1));
-
-      assertThat(capturedVarsAdded.getValue(), hasItem("{0}"));
-      assertThat(capturedVarsAdded.getValue().size(), is(1));
    }
 
    @Test
@@ -138,11 +119,8 @@ public class JavaVariablesValidationTest
       javaVariablesValidation.validate(source, target);
 
       assertThat(javaVariablesValidation.hasError(), is(true));
-      assertThat(javaVariablesValidation.getError(), hasItem(MOCK_VARIABLES_ADDED_MESSAGE));
+      assertThat(javaVariablesValidation.getError(), hasItem(messages.varsAdded(Arrays.asList("{2}", "{1}", "{0}"))));
       assertThat(javaVariablesValidation.getError().size(), is(1));
-
-      assertThat(capturedVarsAdded.getValue(), hasItems("{0}", "{1}", "{2}"));
-      assertThat(capturedVarsAdded.getValue().size(), is(3));
    }
 
    @Test
@@ -153,15 +131,11 @@ public class JavaVariablesValidationTest
       javaVariablesValidation.validate(source, target);
 
       assertThat(javaVariablesValidation.hasError(), is(true));
-      assertThat(javaVariablesValidation.getError(), hasItems(MOCK_VARIABLES_ADDED_MESSAGE, MOCK_VARIABLES_MISSING_MESSAGE));
+      assertThat(javaVariablesValidation.getError(), hasItems(messages.varsAdded(Arrays.asList("{2}")), messages.varsMissing(Arrays.asList("{0}"))));
       assertThat(javaVariablesValidation.getError().size(), is(2));
-
-      assertThat(capturedVarsAdded.getValue(), hasItem("{2}"));
-      assertThat(capturedVarsAdded.getValue().size(), is(1));
-      assertThat(capturedVarsMissing.getValue(), hasItem("{0}"));
-      assertThat(capturedVarsMissing.getValue().size(), is(1));
    }
 
+   @Test
    public void disturbanceInTheForce()
    {
       String source = "At {1,time} on {1,date}, there was {2} on planet {0,number,integer}.";
@@ -169,13 +143,11 @@ public class JavaVariablesValidationTest
       javaVariablesValidation.validate(source, target);
 
       assertThat(javaVariablesValidation.hasError(), is(true));
-      assertThat(javaVariablesValidation.getError(), hasItem(MOCK_VARIABLES_MISSING_MESSAGE));
+      assertThat(javaVariablesValidation.getError(), hasItem(messages.varsMissing(Arrays.asList("{2}", "{1}", "{0}"))));
       assertThat(javaVariablesValidation.getError().size(), is(1));
-
-      assertThat(capturedVarsMissing.getValue(), hasItems("{1}", "{2}", "{0}"));
-      assertThat(capturedVarsMissing.getValue().size(), is(3));
    }
 
+   @Test
    public void diskContainsFiles()
    {
       String source = "The disk \"{1}\" contains {0} file(s).";
@@ -183,13 +155,11 @@ public class JavaVariablesValidationTest
       javaVariablesValidation.validate(source, target);
 
       assertThat(javaVariablesValidation.hasError(), is(true));
-      assertThat(javaVariablesValidation.getError(), hasItem(MOCK_VARIABLES_MISSING_MESSAGE));
+      assertThat(javaVariablesValidation.getError(), hasItem(messages.varsMissing(Arrays.asList("{1}", "{0}"))));
       assertThat(javaVariablesValidation.getError().size(), is(1));
-
-      assertThat(capturedVarsMissing.getValue(), hasItems("{1}", "{0}"));
-      assertThat(capturedVarsMissing.getValue().size(), is(2));
    }
 
+   @Test
    public void doesNotDetectEscapedVariables()
    {
       String source = "This string does not contain \\{0\\} style variables";
@@ -200,6 +170,7 @@ public class JavaVariablesValidationTest
       assertThat(javaVariablesValidation.getError().size(), is(0));
    }
 
+   @Test
    public void doesNotDetectQuotedVariables()
    {
       String source = "This string does not contain '{0}' style variables";
@@ -210,6 +181,7 @@ public class JavaVariablesValidationTest
       assertThat(javaVariablesValidation.getError().size(), is(0));
    }
 
+   @Test
    public void doesNotDetectVariablesInQuotedText()
    {
       String source = "This 'string does not contain {0} style' variables";
@@ -220,6 +192,7 @@ public class JavaVariablesValidationTest
       assertThat(javaVariablesValidation.getError().size(), is(0));
    }
 
+   @Test
    public void ignoresEscapedQuotes()
    {
       String source = "This string does not contain \\'{0}\\' style variables";
@@ -227,13 +200,11 @@ public class JavaVariablesValidationTest
       javaVariablesValidation.validate(source, target);
 
       assertThat(javaVariablesValidation.hasError(), is(true));
-      assertThat(javaVariablesValidation.getError(), hasItem(MOCK_VARIABLES_MISSING_MESSAGE));
+      assertThat(javaVariablesValidation.getError(), hasItem(messages.varsMissing(Arrays.asList("{0}"))));
       assertThat(javaVariablesValidation.getError().size(), is(1));
-
-      assertThat(capturedVarsMissing.getValue(), hasItem("{0}"));
-      assertThat(capturedVarsMissing.getValue().size(), is(1));
    }
 
+   @Test
    public void advancedQuoting()
    {
       String source = "'''{'0}'''''{0}'''";
@@ -244,6 +215,7 @@ public class JavaVariablesValidationTest
       assertThat(javaVariablesValidation.getError().size(), is(0));
    }
 
+   @Test
    public void translatedChoicesStillMatch()
    {
       String source = "There {0,choice,0#are no things|1#is one thing|1<are many things}.";
@@ -254,6 +226,7 @@ public class JavaVariablesValidationTest
       assertThat(javaVariablesValidation.getError().size(), is(0));
    }
 
+   @Test
    public void choiceFormatAndRecursion()
    {
       String source = "There {0,choice,0#are no files|1#is one file|1<are {0,number,integer} files}.";
@@ -261,11 +234,8 @@ public class JavaVariablesValidationTest
       javaVariablesValidation.validate(source, target);
 
       assertThat(javaVariablesValidation.hasError(), is(true));
-      assertThat(javaVariablesValidation.getError(), hasItem(MOCK_VARIABLES_MISSING_MESSAGE));
+      assertThat(javaVariablesValidation.getError(), hasItem(messages.varsMissing(Arrays.asList("{0}"))));
       assertThat(javaVariablesValidation.getError().size(), is(1));
-
-      assertThat(capturedVarsMissing.getValue(), hasItem("{0}"));
-      assertThat(capturedVarsMissing.getValue().size(), is(1));
    }
 
    //TODO tests for format type

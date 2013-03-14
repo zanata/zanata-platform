@@ -20,6 +20,7 @@
  */
 package org.zanata.webtrans.server.rpc;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -55,13 +56,13 @@ public class GetValidationRulesHandler extends AbstractActionHandler<GetValidati
    @In
    private ValidationService validationServiceImpl;
 
-
    @Override
    public GetValidationRulesResult execute(GetValidationRulesAction action, ExecutionContext context) throws ActionException
    {
-      Collection<ValidationAction> result = validationServiceImpl.getValidationAction(action.getWorkspaceId().getProjectIterationId().getProjectSlug(), action.getWorkspaceId().getProjectIterationId().getIterationSlug());
+      Collection<ValidationAction> result;
+      result = validationServiceImpl.getValidationAction(action.getWorkspaceId().getProjectIterationId().getProjectSlug(), action.getWorkspaceId().getProjectIterationId().getIterationSlug());
       List<ValidationInfo> validationInfoList = new ArrayList<ValidationInfo>();
-      
+
       for (ValidationAction valAction : result)
       {
          validationInfoList.add(valAction.getValidationInfo());

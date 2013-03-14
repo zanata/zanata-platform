@@ -5,7 +5,9 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -23,10 +25,10 @@ import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
-import org.zanata.webtrans.client.resources.TestMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.HasUpdateValidationWarning;
+import org.zanata.webtrans.server.locale.Gwti18nReader;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
@@ -58,11 +60,11 @@ public class ValidationServiceTest
    private UserConfigHolder configHolder;
 
    @BeforeMethod
-   public void beforeMethod()
+   public void beforeMethod() throws IOException
    {
       MockitoAnnotations.initMocks(this);
 
-      validationMessages = TestMessages.getInstance(ValidationMessages.class);
+      validationMessages = Gwti18nReader.create(ValidationMessages.class);
 
       service = new ValidationService(eventBus, messages, validationMessages, configHolder);
       ValidationFactory validationFactory = new ValidationFactory(validationMessages);
@@ -87,7 +89,7 @@ public class ValidationServiceTest
    {
       RunValidationEvent event = new RunValidationEvent("source", "target %s", false);
       event.addWidget(validationMessagePanel);
-      ArrayList<String> errors = Lists.newArrayList(validationMessages.varsAdded(null), validationMessages.varsAdded(null));
+      ArrayList<String> errors = Lists.newArrayList(validationMessages.varsAdded(Arrays.asList("%s")), validationMessages.varsAdded(Arrays.asList("%s")));
 
       service.onValidate(event);
 

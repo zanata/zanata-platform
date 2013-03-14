@@ -1,5 +1,6 @@
 package org.zanata.webtrans.server.rpc;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +32,7 @@ public class RunDocValidationHandler extends AbstractActionHandler<RunDocValidat
 
    @In
    private LocaleDAO localeDAO;
-   
+
    @In
    private DocumentDAO documentDAO;
 
@@ -40,10 +41,12 @@ public class RunDocValidationHandler extends AbstractActionHandler<RunDocValidat
    {
       WorkspaceId workspaceId = action.getWorkspaceId();
       HLocale locale = localeDAO.findByLocaleId(workspaceId.getLocaleId());
-      
+
       List<HDocument> hDocs = documentDAO.getDocumentsByIds(action.getDocIds());
-      
-      Map<DocumentId, Boolean> result = validationServiceImpl.runValidations(hDocs, action.getValidationIds(), locale.getId());
+
+      Map<DocumentId, Boolean> result;
+
+      result = validationServiceImpl.runValidations(hDocs, action.getValidationIds(), locale.getId());
       return new RunDocValidationResult(result, workspaceId.getLocaleId());
    }
 

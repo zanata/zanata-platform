@@ -3,10 +3,6 @@ package org.zanata.webtrans.client.view;
 import java.util.Date;
 import java.util.List;
 
-import com.google.gwt.event.dom.client.HasChangeHandlers;
-import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.user.client.ui.HasText;
-
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 /**

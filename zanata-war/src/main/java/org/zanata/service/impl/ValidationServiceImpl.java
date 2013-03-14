@@ -22,6 +22,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.exception.ValidationException;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
@@ -83,8 +84,9 @@ public class ValidationServiceImpl implements ValidationService
          }
          catch (IOException e)
          {
-            e.printStackTrace();
+            throw new ValidationException("Unable to load validation messages");
          }
+
       }
       return validationFactory;
    }
@@ -166,7 +168,7 @@ public class ValidationServiceImpl implements ValidationService
    @Override
    public Map<DocumentId, List<TransUnitValidationResult>> runValidationsFullReport(List<HDocument> hDocs, List<ValidationId> validationIds, Long localeId)
    {
-      log.debug("Start full docs validation - {0}", hDocs.size());
+      log.info("Start full docs validation - {0}", hDocs.size());
       Stopwatch stopwatch = new Stopwatch().start();
       Map<DocumentId, List<TransUnitValidationResult>> docValidationResult = new HashMap<DocumentId, List<TransUnitValidationResult>>();
       List<ValidationAction> validationActions = getValidationFactory().getValidationActions(validationIds);
@@ -205,14 +207,14 @@ public class ValidationServiceImpl implements ValidationService
          }
          targetErrorList.clear();
       }
-      log.debug("Finished full docs validation in " + stopwatch);
+      log.info("Finished full docs validation in " + stopwatch);
       return docValidationResult;
    }
 
    @Override
    public Map<DocumentId, Boolean> runValidations(List<HDocument> hDocs, List<ValidationId> validationIds, Long localeId)
    {
-      log.debug("Start {0} docs validation", hDocs.size());
+      log.info("Start {0} docs validation", hDocs.size());
       Stopwatch stopwatch = new Stopwatch().start();
       Map<DocumentId, Boolean> validationResult = new HashMap<DocumentId, Boolean>();
       List<ValidationAction> validationActions = getValidationFactory().getValidationActions(validationIds);
@@ -223,7 +225,7 @@ public class ValidationServiceImpl implements ValidationService
          validationResult.put(new DocumentId(hDoc.getId(), hDoc.getDocId()), hasValidationError);
       }
 
-      log.debug("Finished docs validation in " + stopwatch);
+      log.info("Finished docs validation in " + stopwatch);
       return validationResult;
    }
 
@@ -231,7 +233,11 @@ public class ValidationServiceImpl implements ValidationService
    {
       for (HTextFlow textFlow : hDoc.getTextFlows())
       {
-         return validationTextFlow(textFlow, validationActions, localeId);
+         if (validationTextFlow(textFlow, validationActions, localeId))
+         {
+            // return true if error found, else continue
+            return true;
+         }
       }
       return false;
    }
@@ -239,7 +245,7 @@ public class ValidationServiceImpl implements ValidationService
    @Override
    public List<HTextFlow> filterHasErrorTexFlow(List<HTextFlow> textFlows, List<ValidationId> validationIds, Long localeId)
    {
-      log.debug("Start filter {0} textFlows", textFlows.size());
+      log.info("Start filter {0} textFlows", textFlows.size());
       Stopwatch stopwatch = new Stopwatch().start();
 
       List<ValidationAction> validationActions = getValidationFactory().getValidationActions(validationIds);
@@ -252,7 +258,7 @@ public class ValidationServiceImpl implements ValidationService
             result.add(textFlow);
          }
       }
-      log.debug("Finished filter textFlows in " + stopwatch);
+      log.info("Finished filter textFlows in " + stopwatch);
       return result;
    }
 
@@ -263,10 +269,10 @@ public class ValidationServiceImpl implements ValidationService
       {
          for (ValidationAction validationAction : validationActions)
          {
-            validationAction.clearErrorMessage();
             validationAction.validate(textFlow.getContents().get(0), target.getContents().get(0));
             if (validationAction.hasError())
             {
+               validationAction.clearErrorMessage();
                return true;
             }
          }

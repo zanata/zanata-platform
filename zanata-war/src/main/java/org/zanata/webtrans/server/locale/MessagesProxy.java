@@ -6,8 +6,9 @@ import java.lang.reflect.Method;
 import java.security.InvalidParameterException;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.google.gwt.i18n.client.LocalizableResource;
 import com.google.gwt.i18n.client.LocalizableResource.Key;
@@ -41,6 +42,25 @@ public class MessagesProxy extends GenericProxy
       return result;
    }
 
+   private int getPluralCount(Object arg, int index)
+   {
+      int n = 0;
+      if (arg == null)
+      {
+         return n;
+      }
+
+      if (isA(arg.getClass(), Number.class))
+      {
+         n = ((Number) arg).intValue();
+      }
+      else if (isA(arg.getClass(), Collection.class))
+      {
+         n = ((Collection) arg).size();
+      }
+      return n;
+   }
+
    private String buildMessage(String propertyName, Method method, Object[] args) throws Throwable
    {
       MessageDescriptor desc = getDescriptor(method);
@@ -50,33 +70,15 @@ public class MessagesProxy extends GenericProxy
       for (int i = 0; i < desc.args.length; i++)
       {
          MessageArgument arg = desc.args[i];
-         String pattern = null;
+
+         String pattern = "\\{" + i + "(.*?)\\}";
+         
          if (arg.pluralCount)
          {
-            int n = 0;
-            if (isA(args[i].getClass(), Number.class))
-            {
-               n = ((Number) args[i]).intValue();
-               pattern = "\\{" + i + ",number\\}";
-            }
-            else if (isA(args[i].getClass(), List.class))
-            {
-               n = ((List) args[i]).size();
-               pattern = "\\{" + i + ",list,string\\}";
-            }
-            else if (isA(args[i].getClass(), Collection.class))
-            {
-               n = ((Collection) args[i]).size();
-               pattern = "\\{" + i + ",collection,string\\}";
-            }
-
+            int n = getPluralCount(args[i], i);
             pluralKey += NumberUtils.getWords(n - arg.pluralOffset) + " ";
+         }
 
-         }
-         else
-         {
-            pattern = "\\{" + i + "\\}";
-         }
          paramIndexpattern.put(i, pattern);
 
          /**
@@ -106,7 +108,10 @@ public class MessagesProxy extends GenericProxy
 
             if (replacedPattern != null)
             {
-               template = template.replaceAll(replacedPattern, value == null ? "" : value);
+               Pattern pattern = Pattern.compile(replacedPattern);
+               Matcher matcher = pattern.matcher(template);
+               value = Matcher.quoteReplacement(value);
+               template = matcher.replaceAll(value == null ? "" : value);
             }
          }
       }

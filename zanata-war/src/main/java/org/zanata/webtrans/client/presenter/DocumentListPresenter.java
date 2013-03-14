@@ -522,6 +522,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    {
       if (event.getView() == MainView.Documents)
       {
+         display.showLoading(true);
          ArrayList<Long> docIds = new ArrayList<Long>();
          for (DocumentNode node : display.getDocumentListTable().getVisibleItems())
          {
@@ -539,6 +540,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
                public void onFailure(Throwable caught)
                {
                   eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Unable to run validation"));
+                  display.showLoading(false);
                }
 
                @Override
@@ -558,6 +560,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
                      }
                   }
                   dataProvider.refresh();
+                  display.showLoading(false);
                }
             });
          }

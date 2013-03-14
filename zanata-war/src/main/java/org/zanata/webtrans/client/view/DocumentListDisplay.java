@@ -110,4 +110,6 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
    void setDownloadZipButtonTitle(String title);
 
    void setEnableDownloadZip(boolean enabled);
+
+   void showLoading(boolean showLoading);
 }

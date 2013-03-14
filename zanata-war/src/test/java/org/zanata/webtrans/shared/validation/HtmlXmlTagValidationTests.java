@@ -21,21 +21,17 @@
 package org.zanata.webtrans.shared.validation;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
 
-import java.util.List;
+import java.io.IOException;
+import java.util.Arrays;
 
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.zanata.webtrans.client.resources.TestMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.server.locale.Gwti18nReader;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.action.HtmlXmlTagValidation;
 
@@ -47,31 +43,16 @@ import org.zanata.webtrans.shared.validation.action.HtmlXmlTagValidation;
 @Test(groups = { "unit-tests" })
 public class HtmlXmlTagValidationTests
 {
-   // TODO use TestMessages
-
-   // mock message strings
-   private static final String MOCK_TAGS_OUT_OF_ORDER_MESSAGE = "mock tags out of order message";
-   private static final String MOCK_TAGS_MISSING_MESSAGE = "mock tags missing message";
-   private static final String MOCK_TAGS_ADDED_MESSAGE = "mock tags added message";
-
    private HtmlXmlTagValidation htmlXmlTagValidation;
 
    private ValidationMessages messages;
 
-   // captured tag lists sent to messages
-   @Captor
-   private ArgumentCaptor<List<String>> capturedTagsAdded;
-   @Captor
-   private ArgumentCaptor<List<String>> capturedTagsMissing;
-   @Captor
-   private ArgumentCaptor<List<String>> capturedTagsOutOfOrder;
-
    @BeforeMethod
-   public void init()
+   public void init() throws IOException
    {
       MockitoAnnotations.initMocks(this);
 
-      messages = TestMessages.getInstance(ValidationMessages.class);
+      messages = Gwti18nReader.create(ValidationMessages.class);
 
       htmlXmlTagValidation = new HtmlXmlTagValidation(ValidationId.HTML_XML, messages);
       htmlXmlTagValidation.getValidationInfo().setEnabled(true);
@@ -113,11 +94,8 @@ public class HtmlXmlTagValidationTests
       htmlXmlTagValidation.validate(source, target);
 
       assertThat(htmlXmlTagValidation.hasError(), is(true));
-      assertThat(htmlXmlTagValidation.getError(), hasItem(MOCK_TAGS_ADDED_MESSAGE));
+      assertThat(htmlXmlTagValidation.getError(), hasItem(messages.tagsAdded(Arrays.asList("<foo>"))));
       assertThat(htmlXmlTagValidation.getError().size(), is(1));
-
-      assertThat(capturedTagsAdded.getValue(), hasItem("<foo>"));
-      assertThat(capturedTagsAdded.getValue().size(), is(1));
    }
 
    @Test
@@ -128,11 +106,8 @@ public class HtmlXmlTagValidationTests
       htmlXmlTagValidation.validate(source, target);
 
       assertThat(htmlXmlTagValidation.hasError(), is(true));
-      assertThat(htmlXmlTagValidation.getError(), hasItem(MOCK_TAGS_ADDED_MESSAGE));
+      assertThat(htmlXmlTagValidation.getError(), hasItem(messages.tagsAdded(Arrays.asList("<foo>", "<bar>", "<moo>"))));
       assertThat(htmlXmlTagValidation.getError().size(), is(1));
-
-      assertThat(capturedTagsAdded.getValue(), hasItems("<foo>", "<bar>", "<moo>"));
-      assertThat(capturedTagsAdded.getValue().size(), is(3));
    }
 
    @Test
@@ -143,11 +118,8 @@ public class HtmlXmlTagValidationTests
       htmlXmlTagValidation.validate(source, target);
 
       assertThat(htmlXmlTagValidation.hasError(), is(true));
-      assertThat(htmlXmlTagValidation.getError(), hasItem(MOCK_TAGS_MISSING_MESSAGE));
+      assertThat(htmlXmlTagValidation.getError(), hasItem(messages.tagsMissing(Arrays.asList("<foo>"))));
       assertThat(htmlXmlTagValidation.getError().size(), is(1));
-
-      assertThat(capturedTagsMissing.getValue(), hasItem("<foo>"));
-      assertThat(capturedTagsMissing.getValue().size(), is(1));
    }
 
    @Test
@@ -158,11 +130,8 @@ public class HtmlXmlTagValidationTests
       htmlXmlTagValidation.validate(source, target);
 
       assertThat(htmlXmlTagValidation.hasError(), is(true));
-      assertThat(htmlXmlTagValidation.getError(), hasItem(MOCK_TAGS_MISSING_MESSAGE));
+      assertThat(htmlXmlTagValidation.getError(), hasItem(messages.tagsMissing(Arrays.asList("<html>", "<p>", "</html>"))));
       assertThat(htmlXmlTagValidation.getError().size(), is(1));
-
-      assertThat(capturedTagsMissing.getValue(), hasItems("<html>", "<p>", "</html>"));
-      assertThat(capturedTagsMissing.getValue().size(), is(3));
    }
 
    @Test
@@ -173,14 +142,9 @@ public class HtmlXmlTagValidationTests
       htmlXmlTagValidation.validate(source, target);
 
       assertThat(htmlXmlTagValidation.hasError(), is(true));
-      assertThat(htmlXmlTagValidation.getError(), hasItem(MOCK_TAGS_MISSING_MESSAGE));
-      assertThat(htmlXmlTagValidation.getError(), hasItem(MOCK_TAGS_ADDED_MESSAGE));
+      assertThat(htmlXmlTagValidation.getError(), hasItem(messages.tagsMissing(Arrays.asList("<one>"))));
+      assertThat(htmlXmlTagValidation.getError(), hasItem(messages.tagsAdded(Arrays.asList("<six>"))));
       assertThat(htmlXmlTagValidation.getError().size(), is(2));
-
-      assertThat(capturedTagsMissing.getValue(), hasItem("<one>"));
-      assertThat(capturedTagsMissing.getValue().size(), is(1));
-      assertThat(capturedTagsAdded.getValue(), hasItem("<six>"));
-      assertThat(capturedTagsAdded.getValue().size(), is(1));
    }
 
    @Test
@@ -191,11 +155,8 @@ public class HtmlXmlTagValidationTests
       htmlXmlTagValidation.validate(source, target);
 
       assertThat(htmlXmlTagValidation.hasError(), is(true));
-      assertThat(htmlXmlTagValidation.getError(), hasItem(MOCK_TAGS_OUT_OF_ORDER_MESSAGE));
+      assertThat(htmlXmlTagValidation.getError(), hasItem(messages.tagsWrongOrder(Arrays.asList("<six>"))));
       assertThat(htmlXmlTagValidation.getError().size(), is(1));
-
-      assertThat(capturedTagsOutOfOrder.getValue(), hasItem("<six>"));
-      assertThat("when one tag has moved, only that tag should be reported out of order", capturedTagsOutOfOrder.getValue().size(), is(1));
    }
 
    @Test
@@ -206,11 +167,8 @@ public class HtmlXmlTagValidationTests
       htmlXmlTagValidation.validate(source, target);
 
       assertThat(htmlXmlTagValidation.hasError(), is(true));
-      assertThat(htmlXmlTagValidation.getError(), hasItem(MOCK_TAGS_OUT_OF_ORDER_MESSAGE));
+      assertThat(htmlXmlTagValidation.getError(), hasItem(messages.tagsWrongOrder(Arrays.asList("<one>"))));
       assertThat(htmlXmlTagValidation.getError().size(), is(1));
-
-      assertThat(capturedTagsOutOfOrder.getValue(), hasItem("<one>"));
-      assertThat("when one tag has moved, only that tag should be reported out of order", capturedTagsOutOfOrder.getValue().size(), is(1));
    }
 
    @Test
@@ -221,11 +179,8 @@ public class HtmlXmlTagValidationTests
       htmlXmlTagValidation.validate(source, target);
 
       assertThat(htmlXmlTagValidation.hasError(), is(true));
-      assertThat(htmlXmlTagValidation.getError(), hasItem(MOCK_TAGS_OUT_OF_ORDER_MESSAGE));
+      assertThat(htmlXmlTagValidation.getError(), hasItem(messages.tagsWrongOrder(Arrays.asList("<one>"))));
       assertThat(htmlXmlTagValidation.getError().size(), is(1));
-
-      assertThat(capturedTagsOutOfOrder.getValue(), hasItem("<one>"));
-      assertThat("when one tag has moved, only that tag should be reported out of order", capturedTagsOutOfOrder.getValue().size(), is(1));
    }
 
    @Test
@@ -236,12 +191,8 @@ public class HtmlXmlTagValidationTests
       htmlXmlTagValidation.validate(source, target);
 
       assertThat(htmlXmlTagValidation.hasError(), is(true));
-      assertThat(htmlXmlTagValidation.getError(), hasItem(MOCK_TAGS_OUT_OF_ORDER_MESSAGE));
+      assertThat(htmlXmlTagValidation.getError(), hasItem(messages.tagsWrongOrder(Arrays.asList("<two>", "<three>", "</four>", "</five>", "<six>"))));
       assertThat(htmlXmlTagValidation.getError().size(), is(1));
-
-      // <one> is the first in-order tag, so is not reported
-      assertThat(capturedTagsOutOfOrder.getValue(), hasItems("<six>", "</five>", "</four>", "<three>", "<two>"));
-      assertThat(capturedTagsOutOfOrder.getValue().size(), is(5));
    }
 
    @Test
@@ -252,11 +203,8 @@ public class HtmlXmlTagValidationTests
       htmlXmlTagValidation.validate(source, target);
 
       assertThat(htmlXmlTagValidation.hasError(), is(true));
-      assertThat(htmlXmlTagValidation.getError(), hasItem(MOCK_TAGS_OUT_OF_ORDER_MESSAGE));
+      assertThat(htmlXmlTagValidation.getError(), hasItem(messages.tagsWrongOrder(Arrays.asList("</four>", "</five>", "<six>"))));
       assertThat(htmlXmlTagValidation.getError().size(), is(1));
-
-      assertThat(capturedTagsOutOfOrder.getValue(), hasItems("</four>", "</five>", "<six>"));
-      assertThat(capturedTagsOutOfOrder.getValue().size(), is(3));
    }
 
    @Test
@@ -267,16 +215,10 @@ public class HtmlXmlTagValidationTests
       htmlXmlTagValidation.validate(source, target);
 
       assertThat(htmlXmlTagValidation.hasError(), is(true));
-      assertThat(htmlXmlTagValidation.getError(), hasItem(MOCK_TAGS_OUT_OF_ORDER_MESSAGE));
+      assertThat(htmlXmlTagValidation.getError(), hasItem(messages.tagsWrongOrder(Arrays.asList("</four>", "</five>", "<six>"))));
       assertThat(htmlXmlTagValidation.getError().size(), is(1));
-
-      // <one><two><three> in order
-      // should not use </four></five> as there are less tags
-      assertThat("should report the least number of tags to move to restore order", capturedTagsOutOfOrder.getValue(), hasItems("</four>", "</five>", "<six>"));
-      assertThat(capturedTagsOutOfOrder.getValue().size(), is(3));
    }
 
-   @SuppressWarnings("unchecked")
    @Test
    public void swapSomeTagsError()
    {
@@ -285,12 +227,8 @@ public class HtmlXmlTagValidationTests
       htmlXmlTagValidation.validate(source, target);
 
       assertThat(htmlXmlTagValidation.hasError(), is(true));
-      assertThat(htmlXmlTagValidation.getError(), hasItem(MOCK_TAGS_OUT_OF_ORDER_MESSAGE));
+      assertThat(htmlXmlTagValidation.getError(), hasItem(messages.tagsWrongOrder(Arrays.asList("<three>", "</three>"))));
       assertThat(htmlXmlTagValidation.getError().size(), is(1));
-
-      assertThat(capturedTagsOutOfOrder.getValue(), hasItems("<three>", "</three>"));
-      assertThat(capturedTagsOutOfOrder.getValue(), not(anyOf(hasItem("<one>"), hasItem("<two>"), hasItem("</two>"), hasItem("<four>"), hasItem("</four>"), hasItem("</one>"))));
-      assertThat(capturedTagsOutOfOrder.getValue().size(), is(2));
    }
 }
 

@@ -1,13 +1,13 @@
 package org.zanata.webtrans.client.view;
 
-import org.zanata.webtrans.client.presenter.ValidationOptionsPresenter;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
@@ -16,9 +16,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class ValidationOptionsView extends Composite implements ValidationOptionsPresenter.Display
+public class ValidationOptionsView extends Composite implements ValidationOptionsDisplay
 {
-
    private static ValidationOptionsViewUiBinder uiBinder = GWT.create(ValidationOptionsViewUiBinder.class);
 
    interface ValidationOptionsViewUiBinder extends UiBinder<Widget, ValidationOptionsView>
@@ -33,6 +32,8 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    
    @UiField
    PushButton runValidation;
+
+   private Listener listener;
 
 
    @Inject
@@ -80,14 +81,21 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    }
 
    @Override
-   public HasClickHandlers getRunValidationButton()
-   {
-      return runValidation;
-   }
-
-   @Override
    public void setRunValidationVisible(boolean visible)
    {
       runValidation.setVisible(visible);
+   }
+
+   @UiHandler("runValidation")
+   public void onRunValidationClicked(ClickEvent event)
+   {
+      listener.onRunValidation();
+   }
+
+   @Override
+   public void setListener(Listener listener)
+   {
+      this.listener = listener;
+
    }
 }

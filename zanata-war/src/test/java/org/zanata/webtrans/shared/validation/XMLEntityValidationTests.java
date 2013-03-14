@@ -21,13 +21,16 @@
 package org.zanata.webtrans.shared.validation;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+
+import java.io.IOException;
 
 import org.hamcrest.Matchers;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.zanata.webtrans.client.resources.TestMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.server.locale.Gwti18nReader;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.action.XmlEntityValidation;
 
@@ -44,11 +47,11 @@ public class XMLEntityValidationTests
    private ValidationMessages messages;
 
    @BeforeMethod
-   public void beforeMethod()
+   public void beforeMethod() throws IOException
    {
       MockitoAnnotations.initMocks(this);
 
-      messages = TestMessages.getInstance(ValidationMessages.class);
+      messages = Gwti18nReader.create(ValidationMessages.class);
 
       xmlEntityValidation = new XmlEntityValidation(ValidationId.XML_ENTITY, messages);
       xmlEntityValidation.getValidationInfo().setEnabled(true);
@@ -91,6 +94,7 @@ public class XMLEntityValidationTests
 
       assertThat(xmlEntityValidation.hasError(), Matchers.equalTo(true));
       assertThat(xmlEntityValidation.getError().size(), Matchers.equalTo(2));
+      assertThat(xmlEntityValidation.getError(), contains(messages.invalidXMLEntity("&mash"), messages.invalidXMLEntity("&test")));
    }
    
    @Test
@@ -102,6 +106,7 @@ public class XMLEntityValidationTests
 
       assertThat(xmlEntityValidation.hasError(), Matchers.equalTo(true));
       assertThat(xmlEntityValidation.getError().size(), Matchers.equalTo(2));
+      assertThat(xmlEntityValidation.getError(), contains(messages.invalidXMLEntity("&#1234"), messages.invalidXMLEntity("&#BC;")));
    }
 
    @Test
@@ -113,6 +118,7 @@ public class XMLEntityValidationTests
 
       assertThat(xmlEntityValidation.hasError(), Matchers.equalTo(true));
       assertThat(xmlEntityValidation.getError().size(), Matchers.equalTo(2));
+      assertThat(xmlEntityValidation.getError(), contains(messages.invalidXMLEntity("&#x1234"), messages.invalidXMLEntity("&#x09Z")));
    }
 
 }

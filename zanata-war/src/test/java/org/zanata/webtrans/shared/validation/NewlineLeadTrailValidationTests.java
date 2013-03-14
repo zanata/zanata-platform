@@ -25,10 +25,12 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 
+import java.io.IOException;
+
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.zanata.webtrans.client.resources.TestMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.server.locale.Gwti18nReader;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.action.NewlineLeadTrailValidation;
 
@@ -40,16 +42,15 @@ import org.zanata.webtrans.shared.validation.action.NewlineLeadTrailValidation;
 @Test(groups = { "unit-tests" })
 public class NewlineLeadTrailValidationTests
 {
-   // TODO use TestMessages
-
    private NewlineLeadTrailValidation newlineLeadTrailValidation;
 
    private ValidationMessages messages;
 
    @BeforeMethod
-   public void init()
+   public void init() throws IOException
    {
-      messages = TestMessages.getInstance(ValidationMessages.class);
+      messages = Gwti18nReader.create(ValidationMessages.class);
+
       newlineLeadTrailValidation = new NewlineLeadTrailValidation(ValidationId.NEW_LINE, messages);
       newlineLeadTrailValidation.getValidationInfo().setEnabled(true);
    }

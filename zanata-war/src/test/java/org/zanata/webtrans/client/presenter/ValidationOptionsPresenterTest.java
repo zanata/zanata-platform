@@ -4,6 +4,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+
+import java.io.IOException;
+
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.mockito.ArgumentCaptor;
@@ -13,9 +16,10 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.zanata.webtrans.client.resources.TestMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.client.service.ValidationService;
+import org.zanata.webtrans.client.view.ValidationOptionsDisplay;
+import org.zanata.webtrans.server.locale.Gwti18nReader;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
 import org.zanata.webtrans.shared.validation.action.PrintfVariablesValidation;
@@ -33,7 +37,7 @@ public class ValidationOptionsPresenterTest
 {
    private ValidationOptionsPresenter presenter;
    @Mock
-   private ValidationOptionsPresenter.Display display;
+   private ValidationOptionsDisplay display;
    @Mock
    private EventBus eventBus;
    @Mock
@@ -50,11 +54,11 @@ public class ValidationOptionsPresenterTest
    private ValidationFactory validationFactory;
 
    @BeforeMethod
-   public void beforeMethod()
+   public void beforeMethod() throws IOException
    {
       MockitoAnnotations.initMocks(this);
 
-      validationMessage = TestMessages.getInstance(ValidationMessages.class);
+      validationMessage = Gwti18nReader.create(ValidationMessages.class);
       
       validationFactory = new ValidationFactory(validationMessage);
 

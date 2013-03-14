@@ -21,53 +21,39 @@
 package org.zanata.webtrans.shared.validation;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
 
-import java.util.List;
+import java.io.IOException;
+import java.util.Arrays;
 
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.zanata.webtrans.client.resources.TestMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.server.locale.Gwti18nReader;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.action.PrintfVariablesValidation;
 
 /**
- *
+ * 
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- *
+ * 
  **/
 @Test(groups = { "unit-tests" })
 public class PrintfVariablesValidationTest
 {
-   // TODO use TestMessages
-
-   private static final String MOCK_VARIABLES_ADDED_MESSAGE = "test variables added message";
-   private static final String MOCK_VARIABLES_MISSING_MESSAGE = "test variables missing message";
-
    private PrintfVariablesValidation printfVariablesValidation;
 
    private ValidationMessages messages;
 
-   @Captor
-   private ArgumentCaptor<List<String>> capturedVarsAdded;
-   @Captor
-   private ArgumentCaptor<List<String>> capturedVarsMissing;
-
    @BeforeMethod
-   public void init()
+   public void init() throws IOException
    {
       MockitoAnnotations.initMocks(this);
-      
-      messages = TestMessages.getInstance(ValidationMessages.class);
 
+      messages = Gwti18nReader.create(ValidationMessages.class);
 
       printfVariablesValidation = new PrintfVariablesValidation(ValidationId.PRINTF_VARIABLES, messages);
       printfVariablesValidation.getValidationInfo().setEnabled(true);
@@ -98,11 +84,8 @@ public class PrintfVariablesValidationTest
       printfVariablesValidation.validate(source, target);
 
       assertThat(printfVariablesValidation.hasError(), is(true));
-      assertThat(printfVariablesValidation.getError(), contains(MOCK_VARIABLES_MISSING_MESSAGE));
+      assertThat(printfVariablesValidation.getError(), contains(messages.varsMissing(Arrays.asList("%1v"))));
       assertThat(printfVariablesValidation.getError().size(), is(1));
-
-      assertThat(capturedVarsMissing.getValue(), contains("%1v"));
-      assertThat(capturedVarsMissing.getValue().size(), is(1));
    }
 
    @Test
@@ -113,11 +96,8 @@ public class PrintfVariablesValidationTest
       printfVariablesValidation.validate(source, target);
 
       assertThat(printfVariablesValidation.hasError(), is(true));
-      assertThat(printfVariablesValidation.getError(), contains(MOCK_VARIABLES_MISSING_MESSAGE));
+      assertThat(printfVariablesValidation.getError(), contains(messages.varsMissing(Arrays.asList("%a", "%b", "%c"))));
       assertThat(printfVariablesValidation.getError().size(), is(1));
-
-      assertThat(capturedVarsMissing.getValue(), contains("%a", "%b", "%c"));
-      assertThat(capturedVarsMissing.getValue().size(), is(3));
    }
 
    @Test
@@ -125,14 +105,12 @@ public class PrintfVariablesValidationTest
    {
       String source = "Testing string with no variables";
       String target = "Testing string with variable %2$#x";
+
       printfVariablesValidation.validate(source, target);
 
       assertThat(printfVariablesValidation.hasError(), is(true));
-      assertThat(printfVariablesValidation.getError(), contains(MOCK_VARIABLES_ADDED_MESSAGE));
+      assertThat(printfVariablesValidation.getError(), contains(messages.varsAdded(Arrays.asList("%2$#x"))));
       assertThat(printfVariablesValidation.getError().size(), is(1));
-
-      assertThat(capturedVarsAdded.getValue(), contains("%2$#x"));
-      assertThat(capturedVarsAdded.getValue().size(), is(1));
    }
 
    @Test
@@ -143,11 +121,8 @@ public class PrintfVariablesValidationTest
       printfVariablesValidation.validate(source, target);
 
       assertThat(printfVariablesValidation.hasError(), is(true));
-      assertThat(printfVariablesValidation.getError(), contains(MOCK_VARIABLES_ADDED_MESSAGE));
+      assertThat(printfVariablesValidation.getError(), contains(messages.varsAdded(Arrays.asList("%1$-0lls", "%2$-0hs", "%3$-0ls"))));
       assertThat(printfVariablesValidation.getError().size(), is(1));
-
-      assertThat(capturedVarsAdded.getValue(), contains("%1$-0lls", "%2$-0hs", "%3$-0ls"));
-      assertThat(capturedVarsAdded.getValue().size(), is(3));
    }
 
    @Test
@@ -158,16 +133,11 @@ public class PrintfVariablesValidationTest
       printfVariablesValidation.validate(source, target);
 
       assertThat(printfVariablesValidation.hasError(), is(true));
-      assertThat(printfVariablesValidation.getError(), containsInAnyOrder(MOCK_VARIABLES_ADDED_MESSAGE, MOCK_VARIABLES_MISSING_MESSAGE));
+      assertThat(printfVariablesValidation.getError(), containsInAnyOrder(messages.varsAdded(Arrays.asList("%z")), messages.varsMissing(Arrays.asList("%x"))));
       assertThat(printfVariablesValidation.getError().size(), is(2));
 
-      assertThat(capturedVarsAdded.getValue(), contains("%z"));
-      assertThat(capturedVarsAdded.getValue().size(), is(1));
-      assertThat(capturedVarsMissing.getValue(), contains("%x"));
-      assertThat(capturedVarsMissing.getValue().size(), is(1));
    }
 
-   @SuppressWarnings("unchecked")
    @Test
    public void substringVariablesDontMatch()
    {
@@ -176,14 +146,10 @@ public class PrintfVariablesValidationTest
       printfVariablesValidation.validate(source, target);
 
       assertThat(printfVariablesValidation.hasError(), is(true));
-      assertThat(printfVariablesValidation.getError(), contains(MOCK_VARIABLES_ADDED_MESSAGE));
+      assertThat(printfVariablesValidation.getError(), contains(messages.varsAdded(Arrays.asList("%l"))));
       assertThat(printfVariablesValidation.getError().size(), is(1));
-
-      assertThat(capturedVarsAdded.getValue(), allOf(contains("%l"), not(contains("%ll"))));
-      assertThat(capturedVarsAdded.getValue().size(), is(1));
    }
 
-   @SuppressWarnings("unchecked")
    @Test
    public void superstringVariablesDontMatch()
    {
@@ -192,13 +158,10 @@ public class PrintfVariablesValidationTest
       printfVariablesValidation.validate(source, target);
 
       assertThat(printfVariablesValidation.hasError(), is(true));
-      assertThat(printfVariablesValidation.getError(), contains(MOCK_VARIABLES_MISSING_MESSAGE));
+      assertThat(printfVariablesValidation.getError(), contains(messages.varsMissing(Arrays.asList("%l"))));
       assertThat(printfVariablesValidation.getError().size(), is(1));
-
-      assertThat(capturedVarsMissing.getValue(), allOf(contains("%l"), not(contains("%ll"))));
    }
 
-   @SuppressWarnings("unchecked")
    @Test
    public void superstringVariablesDontMatch2()
    {
@@ -207,11 +170,8 @@ public class PrintfVariablesValidationTest
       printfVariablesValidation.validate(source, target);
 
       assertThat(printfVariablesValidation.hasError(), is(true));
-      assertThat(printfVariablesValidation.getError(), contains(MOCK_VARIABLES_MISSING_MESSAGE, MOCK_VARIABLES_ADDED_MESSAGE));
+      assertThat(printfVariablesValidation.getError(), contains(messages.varsMissing(Arrays.asList("%z")), messages.varsAdded(Arrays.asList("%zz"))));
       assertThat(printfVariablesValidation.getError().size(), is(2));
-
-      assertThat(capturedVarsMissing.getValue(), allOf(contains("%z"), not(contains("%zz"))));
-      assertThat(capturedVarsAdded.getValue(), allOf(contains("%zz"), not(contains("%z"))));
    }
 
    @Test
@@ -223,12 +183,7 @@ public class PrintfVariablesValidationTest
       printfVariablesValidation.validate(source, target);
 
       assertThat(printfVariablesValidation.hasError(), is(true));
-      assertThat(printfVariablesValidation.getError(), contains(MOCK_VARIABLES_MISSING_MESSAGE));
+      assertThat(printfVariablesValidation.getError(), contains(messages.varsMissing(Arrays.asList("%s", "%d", "%-25s", "%r"))));
       assertThat(printfVariablesValidation.getError().size(), is(1));
-
-      assertThat(capturedVarsMissing.getValue(), contains("%s", "%d", "%-25s", "%r"));
    }
 }
-
-
- 

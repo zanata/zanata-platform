@@ -29,6 +29,7 @@ import org.zanata.webtrans.client.ui.DownloadFilesConfirmationBox;
 import org.zanata.webtrans.client.ui.FileUploadDialog;
 import org.zanata.webtrans.client.ui.HasStatsFilter;
 import org.zanata.webtrans.client.ui.InlineLink;
+import org.zanata.webtrans.client.ui.LoadingPanel;
 import org.zanata.webtrans.client.ui.SearchField;
 import org.zanata.webtrans.client.ui.table.DocumentListPager;
 import org.zanata.webtrans.shared.model.DocumentInfo;
@@ -91,6 +92,8 @@ public class DocumentListView extends Composite implements DocumentListDisplay
 
    private ListDataProvider<DocumentNode> dataProvider;
    
+   private final LoadingPanel loadingPanel;
+   
    private Timer timer = new Timer()
    {
       public void run()
@@ -100,11 +103,12 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    };
 
    @Inject
-   public DocumentListView(Resources resources, WebTransMessages messages, UserWorkspaceContext userworkspaceContext)
+   public DocumentListView(Resources resources, WebTransMessages messages, UserWorkspaceContext userworkspaceContext, LoadingPanel loadingPanel)
    {
       this.resources = resources;
       this.messages = messages;
       this.userworkspaceContext = userworkspaceContext;
+      this.loadingPanel = loadingPanel;
 
       dataProvider = new ListDataProvider<DocumentNode>();
       confirmationBox = new DownloadFilesConfirmationBox(false, resources);
@@ -382,5 +386,18 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    public void setDownloadZipButtonTitle(String title)
    {
       downloadAllFiles.setTitle(title);
+   }
+
+   @Override
+   public void showLoading(boolean showLoading)
+   {
+      if (showLoading)
+      {
+         loadingPanel.center();
+      }
+      else
+      {
+         loadingPanel.hide();
+      }
    }
 }

@@ -3,6 +3,7 @@
  */
 package org.zanata.service;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ public interface ValidationService
     * 
     * @param projectSlug
     * @return
+    * @throws IOException
     */
    Collection<ValidationAction> getValidationAction(String projectSlug);
    
@@ -48,6 +50,7 @@ public interface ValidationService
     * 
     * @param HProjectIteration
     * @return
+    * @throws IOException
     */
    Collection<ValidationAction> getValidationObject(HProjectIteration version);
 
@@ -70,6 +73,7 @@ public interface ValidationService
     * @param hDocs
     * @param validations
     * @param localeId
+    * @throws IOException
     */
    Map<DocumentId, List<TransUnitValidationResult>> runValidationsFullReport(List<HDocument> hDocs, List<ValidationId> validationIds, Long localeId);
 
@@ -78,6 +82,7 @@ public interface ValidationService
     * 
     * @param textFlows
     * @param id
+    * @throws IOException
     */
    List<HTextFlow> filterHasErrorTexFlow(List<HTextFlow> textFlows, List<ValidationId> validationIds, Long localeId);
 }
