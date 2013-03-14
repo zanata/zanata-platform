@@ -5,7 +5,7 @@
 	
 	<ui:style field="style" type="org.zanata.webtrans.client.ui.TransUnitDetailsPanel.Styles">
         .container {
-            width: 100%;
+            width: 95%;
             table-layout: fixed;
             margin-left: 6px;
             padding-right: 32px;
