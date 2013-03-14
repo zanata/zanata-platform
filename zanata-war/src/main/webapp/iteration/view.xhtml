@@ -146,7 +146,7 @@
                     </div>
                 </s:link>
                 <s:link styleClass="config_link"
-                        rendered="#{not configurationAction.poProject}"
+                        rendered="#{not viewAllStatusAction.poProject}"
                         title="#{messages['jsf.GenerateProjectConfigForOfflineTranslation']}"
                         action="#{configurationAction.getOfflinePoConfigData()}"
                         onclick="hideConfigDownloadPanel(); return true;">

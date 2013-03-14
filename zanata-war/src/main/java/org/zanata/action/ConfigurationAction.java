@@ -33,8 +33,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.web.RequestParameter;
 import org.jboss.seam.log.Log;
-import org.zanata.common.ProjectType;
-import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.service.ConfigurationService;
 
 @Name("configurationAction")
@@ -46,9 +44,6 @@ public class ConfigurationAction implements Serializable
    private String iterationSlug;
    @RequestParameter
    private String projectSlug;
-
-   @In
-   private ProjectIterationDAO projectIterationDAO;
 
    @Logger
    private Log log;
@@ -86,11 +81,5 @@ public class ConfigurationAction implements Serializable
       {
          log.error("Failure : " + e.toString() + "\n");
       }
-   }
-
-   public boolean isPoProject()
-   {
-      ProjectType type = projectIterationDAO.getBySlug(projectSlug, iterationSlug).getProjectType();
-      return type == ProjectType.Gettext || type == ProjectType.Podir;
    }
 }

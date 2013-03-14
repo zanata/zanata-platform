@@ -520,4 +520,10 @@ public class ViewAllStatusAction implements Serializable
    {
       this.statsOption = statsOption;
    }
+
+   public boolean isPoProject()
+   {
+      ProjectType type = getProjectIteration().getProjectType();
+      return type == ProjectType.Gettext || type == ProjectType.Podir;
+   }
 }
