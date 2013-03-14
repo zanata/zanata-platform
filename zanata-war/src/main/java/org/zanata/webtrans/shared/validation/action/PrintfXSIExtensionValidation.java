@@ -23,7 +23,7 @@ public class PrintfXSIExtensionValidation extends PrintfVariablesValidation
 
    public PrintfXSIExtensionValidation(ValidationId id, ValidationMessages messages)
    {
-      super(id, messages, false);
+      super(id, messages.printfXSIExtensionValidationDesc(), messages, false);
    }
 
    @Override

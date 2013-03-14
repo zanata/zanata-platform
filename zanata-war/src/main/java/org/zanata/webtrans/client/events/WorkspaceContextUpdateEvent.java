@@ -1,8 +1,9 @@
 package org.zanata.webtrans.client.events;
 
-import java.util.List;
+import java.util.Map;
 
 import org.zanata.common.ProjectType;
+import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceContextUpdateData;
 
@@ -12,7 +13,7 @@ public class WorkspaceContextUpdateEvent extends GwtEvent<WorkspaceContextUpdate
 {
    private final boolean isProjectActive;
    private final ProjectType projectType;
-   private final List<ValidationInfo> validationInfoList;
+   private final Map<ValidationId, ValidationInfo> validationInfoList;
 
    public WorkspaceContextUpdateEvent(HasWorkspaceContextUpdateData data)
    {
@@ -62,7 +63,7 @@ public class WorkspaceContextUpdateEvent extends GwtEvent<WorkspaceContextUpdate
       return projectType;
    }
 
-   public List<ValidationInfo> getValidationInfoList()
+   public Map<ValidationId, ValidationInfo> getValidationInfoList()
    {
       return validationInfoList;
    }

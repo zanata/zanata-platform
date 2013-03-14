@@ -1,8 +1,9 @@
 package org.zanata.webtrans.shared.rpc;
 
-import java.util.List;
+import java.util.Map;
 
 import org.zanata.common.ProjectType;
+import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
 
 
@@ -13,14 +14,14 @@ public class WorkspaceContextUpdate implements SessionEventData, HasWorkspaceCon
 
    private boolean isProjectActive;
    private ProjectType projectType;
-   private List<ValidationInfo> validationInfoList;
+   private Map<ValidationId, ValidationInfo> validationInfoList;
 
    @SuppressWarnings("unused")
    private WorkspaceContextUpdate()
    {
    }
 
-   public WorkspaceContextUpdate(boolean isProjectActive, ProjectType projectType, List<ValidationInfo> validationInfoList)
+   public WorkspaceContextUpdate(boolean isProjectActive, ProjectType projectType, Map<ValidationId, ValidationInfo> validationInfoList)
    {
       this.isProjectActive = isProjectActive;
       this.projectType = projectType;
@@ -40,7 +41,7 @@ public class WorkspaceContextUpdate implements SessionEventData, HasWorkspaceCon
    }
 
    @Override
-   public List<ValidationInfo> getValidationInfoList()
+   public Map<ValidationId, ValidationInfo> getValidationInfoList()
    {
       return validationInfoList;
    }

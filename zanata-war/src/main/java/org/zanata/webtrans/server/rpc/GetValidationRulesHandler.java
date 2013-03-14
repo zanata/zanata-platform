@@ -20,10 +20,8 @@
  */
 package org.zanata.webtrans.server.rpc;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashMap;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
@@ -36,6 +34,7 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.ValidationService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.ValidationAction;
+import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.rpc.GetValidationRulesAction;
 import org.zanata.webtrans.shared.rpc.GetValidationRulesResult;
@@ -59,15 +58,15 @@ public class GetValidationRulesHandler extends AbstractActionHandler<GetValidati
    @Override
    public GetValidationRulesResult execute(GetValidationRulesAction action, ExecutionContext context) throws ActionException
    {
-      Collection<ValidationAction> result;
-      result = validationServiceImpl.getValidationAction(action.getWorkspaceId().getProjectIterationId().getProjectSlug(), action.getWorkspaceId().getProjectIterationId().getIterationSlug());
-      List<ValidationInfo> validationInfoList = new ArrayList<ValidationInfo>();
+      Collection<ValidationAction> validationActionList = validationServiceImpl.getValidationAction(action.getWorkspaceId().getProjectIterationId().getProjectSlug(), action.getWorkspaceId().getProjectIterationId().getIterationSlug());
+      HashMap<ValidationId, ValidationInfo> result = new HashMap<ValidationId, ValidationInfo>();
 
-      for (ValidationAction valAction : result)
+      for (ValidationAction validationAction : validationActionList)
       {
-         validationInfoList.add(valAction.getValidationInfo());
+         result.put(validationAction.getId(), validationAction.getValidationInfo());
       }
-      return new GetValidationRulesResult(validationInfoList);
+
+      return new GetValidationRulesResult(result);
    }
 
    @Override

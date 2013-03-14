@@ -29,7 +29,6 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.service.ValidationService;
-import org.zanata.util.ZanataMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.server.locale.Gwti18nReader;
 import org.zanata.webtrans.server.rpc.TransUnitTransformer;
@@ -38,7 +37,6 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitValidationResult;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
-import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
 
 import com.google.common.base.Stopwatch;
@@ -57,9 +55,6 @@ public class ValidationServiceImpl implements ValidationService
    private Log log;
 
    @In
-   private ZanataMessages zanataMessages;
-
-   @In
    private ProjectDAO projectDAO;
 
    @In
@@ -69,8 +64,6 @@ public class ValidationServiceImpl implements ValidationService
    private ProjectIterationDAO projectIterationDAO;
 
    private ValidationFactory validationFactory;
-
-   private static final String DESC_KEY = ".desc";
 
    private ValidationFactory getValidationFactory()
    {
@@ -105,12 +98,9 @@ public class ValidationServiceImpl implements ValidationService
 
       for (ValidationAction valAction : validationList)
       {
-         ValidationInfo actionInfo = valAction.getValidationInfo();
-
-         actionInfo.setDescription(zanataMessages.getMessage(actionInfo.getId().getMessagePrefix() + DESC_KEY));
-         if (enabledValidations.contains(actionInfo.getId().name()))
+         if (enabledValidations.contains(valAction.getId().name()))
          {
-            actionInfo.setEnabled(true);
+            valAction.getValidationInfo().setEnabled(true);
          }
       }
 
@@ -153,13 +143,10 @@ public class ValidationServiceImpl implements ValidationService
 
       for (ValidationAction valAction : validationList)
       {
-         ValidationInfo actionInfo = valAction.getValidationInfo();
-
-         actionInfo.setDescription(zanataMessages.getMessage(actionInfo.getId().getMessagePrefix() + DESC_KEY));
-         if (enabledValidations.contains(actionInfo.getId().name()))
+         if (enabledValidations.contains(valAction.getId().name()))
          {
-            actionInfo.setEnabled(true);
-            actionInfo.setLocked(true);
+            valAction.getValidationInfo().setEnabled(true);
+            valAction.getValidationInfo().setLocked(true);
          }
       }
       return validationList;
@@ -269,10 +256,10 @@ public class ValidationServiceImpl implements ValidationService
       {
          for (ValidationAction validationAction : validationActions)
          {
+            validationAction.clearErrorMessage();
             validationAction.validate(textFlow.getContents().get(0), target.getContents().get(0));
             if (validationAction.hasError())
             {
-               validationAction.clearErrorMessage();
                return true;
             }
          }

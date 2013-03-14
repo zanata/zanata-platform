@@ -171,13 +171,13 @@ public class ValidationService implements RunValidationEventHandler, TransUnitSe
     * 
     * @param validationInfoList
     */
-   public void setValidationRules(List<ValidationInfo> validationInfoList)
+   public void setValidationRules(Map<ValidationId, ValidationInfo> validationInfoMap)
    {
       Map<ValidationId, ValidationAction> validationMap = validationFactory.getAllValidationActions();
       
-      for (ValidationInfo valInfo : validationInfoList)
+      for (Map.Entry<ValidationId, ValidationInfo> entry : validationInfoMap.entrySet())
       {
-         validationMap.get(valInfo.getId()).setValidationInfo(valInfo);
+         validationMap.get(entry.getKey()).setValidationInfo(entry.getValue());
       }
       
       this.validationMap = validationMap;
@@ -191,7 +191,7 @@ public class ValidationService implements RunValidationEventHandler, TransUnitSe
       {
          if (valAction.getValidationInfo().isEnabled())
          {
-            enabledValidations.add(valAction.getValidationInfo().getId());
+            enabledValidations.add(valAction.getId());
          }
       }
       configHolder.setEnabledValidationIds(enabledValidations);

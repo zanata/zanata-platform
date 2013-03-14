@@ -73,7 +73,7 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
       {
          ValidationInfo validationInfo = validationAction.getValidationInfo();
 
-         HasValueChangeHandlers<Boolean> changeHandler = display.addValidationSelector(validationInfo.getId().getDisplayName(), validationInfo.getDescription(), validationInfo.isEnabled(), validationInfo.isLocked());
+         HasValueChangeHandlers<Boolean> changeHandler = display.addValidationSelector(validationAction.getId().getDisplayName(), validationAction.getDescription(), validationInfo.isEnabled(), validationInfo.isLocked());
          changeHandler.addValueChangeHandler(new ValidationOptionValueChangeHandler(validationAction));
       }
    }
@@ -100,13 +100,13 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
       @Override
       public void onValueChange(ValueChangeEvent<Boolean> event)
       {
-         validationService.updateStatus(validationAction.getValidationInfo().getId(), event.getValue());
+         validationService.updateStatus(validationAction.getId(), event.getValue());
          if (event.getValue())
          {
             for (ValidationAction excluded : validationAction.getExclusiveValidations())
             {
-               validationService.updateStatus(excluded.getValidationInfo().getId(), false);
-               display.changeValidationSelectorValue(excluded.getValidationInfo().getId().getDisplayName(), false);
+               validationService.updateStatus(excluded.getId(), false);
+               display.changeValidationSelectorValue(excluded.getId().getDisplayName(), false);
             }
          }
       }

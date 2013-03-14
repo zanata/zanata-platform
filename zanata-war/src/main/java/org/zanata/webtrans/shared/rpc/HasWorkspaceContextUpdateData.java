@@ -1,8 +1,9 @@
 package org.zanata.webtrans.shared.rpc;
 
-import java.util.List;
+import java.util.Map;
 
 import org.zanata.common.ProjectType;
+import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
 
 public interface HasWorkspaceContextUpdateData
@@ -11,5 +12,5 @@ public interface HasWorkspaceContextUpdateData
 
    ProjectType getProjectType();
 
-   List<ValidationInfo> getValidationInfoList();
+   Map<ValidationId, ValidationInfo> getValidationInfoList();
 }

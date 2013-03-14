@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationAction;
+import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.validation.action.JavaVariablesValidation;
 import org.zanata.webtrans.shared.validation.action.NewlineLeadTrailValidation;
@@ -50,6 +51,9 @@ import com.google.common.collect.Lists;
  **/
 public abstract class AbstractValidationAction implements ValidationAction
 {
+   private ValidationId id;
+   private String description;
+
    private ValidationInfo validationInfo;
 
    private ArrayList<String> errorList = new ArrayList<String>();
@@ -57,8 +61,10 @@ public abstract class AbstractValidationAction implements ValidationAction
 
    private ValidationMessages validationMessages;
 
-   public AbstractValidationAction(ValidationInfo validationInfo, ValidationMessages validationMessages)
+   public AbstractValidationAction(ValidationId id, String description, ValidationInfo validationInfo, ValidationMessages validationMessages)
    {
+      this.id = id;
+      this.description = description;
       this.validationInfo = validationInfo;
       this.validationMessages = validationMessages;
    }
@@ -127,6 +133,17 @@ public abstract class AbstractValidationAction implements ValidationAction
       return validationInfo;
    }
 
+   @Override
+   public ValidationId getId()
+   {
+      return id;
+   }
+
+   @Override
+   public String getDescription()
+   {
+      return description;
+   }
 }
 
 

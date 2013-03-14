@@ -34,8 +34,10 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.GravatarService;
 import org.zanata.service.LocaleService;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
+import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
+import org.zanata.webtrans.server.locale.Gwti18nReader;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.Person;
@@ -117,7 +119,8 @@ public class ActivateWorkspaceHandlerTest
       doReturn(person).when(handler).retrievePerson();
       doReturn(HTTP_SESSION_ID).when(handler).getHttpSessionId();
        
-      validationFactory = new ValidationFactory(null);
+      ValidationMessages message = Gwti18nReader.create(ValidationMessages.class);
+      validationFactory = new ValidationFactory(message);
    }
 
    @Test

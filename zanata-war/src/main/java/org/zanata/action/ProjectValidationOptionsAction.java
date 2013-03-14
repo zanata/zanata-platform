@@ -71,9 +71,9 @@ public class ProjectValidationOptionsAction implements Serializable
    {
       for (ValidationAction exclusiveValAction : valAction.getExclusiveValidations())
       {
-         if(selectedValidations.containsKey(exclusiveValAction.getValidationInfo().getId().name()))
+         if (selectedValidations.containsKey(exclusiveValAction.getId().name()))
          {
-            selectedValidations.put(exclusiveValAction.getValidationInfo().getId().name(), false);
+            selectedValidations.put(exclusiveValAction.getId().name(), false);
          }
       }
    }

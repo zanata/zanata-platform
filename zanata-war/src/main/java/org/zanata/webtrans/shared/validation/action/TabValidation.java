@@ -31,7 +31,7 @@ public class TabValidation extends AbstractValidationAction
 {
    public TabValidation(ValidationId id, ValidationMessages messages)
    {
-      super(new ValidationInfo(id, null, true), messages);
+      super(id, messages.tabValidatorDesc(), new ValidationInfo(true), messages);
    }
 
    @Override

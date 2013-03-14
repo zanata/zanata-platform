@@ -37,7 +37,7 @@ public class NewlineLeadTrailValidation extends AbstractValidationAction
 {
    public NewlineLeadTrailValidation(ValidationId id, ValidationMessages messages)
    {
-      super(new ValidationInfo(id, null, true), messages);
+      super(id, messages.newLineValidatorDesc(), new ValidationInfo(true), messages);
    }
 
    private final static String leadNewlineRegex = "^\n";

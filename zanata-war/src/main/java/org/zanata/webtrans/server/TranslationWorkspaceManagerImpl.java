@@ -1,8 +1,7 @@
 package org.zanata.webtrans.server;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -40,6 +39,7 @@ import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.ValidationAction;
+import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
@@ -165,11 +165,11 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
    @Observer(ProjectIterationHome.PROJECT_ITERATION_UPDATE)
    public void projectIterationUpdate(HProjectIteration projectIteration)
    {
-      List<ValidationInfo> validationInfoList = new ArrayList<ValidationInfo>();
+      HashMap<ValidationId, ValidationInfo> validationInfoList = new HashMap<ValidationId, ValidationInfo>();
 
-      for (ValidationAction valAction : validationServiceImpl.getValidationObject(projectIteration))
+      for (ValidationAction validationAction : validationServiceImpl.getValidationObject(projectIteration))
       {
-         validationInfoList.add(valAction.getValidationInfo());
+         validationInfoList.put(validationAction.getId(), validationAction.getValidationInfo());
       }
 
       String projectSlug = projectIteration.getProject().getSlug();
