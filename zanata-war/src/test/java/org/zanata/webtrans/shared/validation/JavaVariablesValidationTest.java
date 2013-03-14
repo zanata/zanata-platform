@@ -61,7 +61,7 @@ public class JavaVariablesValidationTest
    @Test
    public void idIsSet()
    {
-      assertThat(javaVariablesValidation.getValidationInfo().getId(), is(ValidationId.JAVA_VARIABLES));
+      assertThat(javaVariablesValidation.getId(), is(ValidationId.JAVA_VARIABLES));
    }
 
    @Test

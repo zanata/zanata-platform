@@ -62,7 +62,7 @@ public class PrintfVariablesValidationTest
    @Test
    public void idIsSet()
    {
-      assertThat(printfVariablesValidation.getValidationInfo().getId(), is(ValidationId.PRINTF_VARIABLES));
+      assertThat(printfVariablesValidation.getId(), is(ValidationId.PRINTF_VARIABLES));
    }
 
    @Test

@@ -53,7 +53,7 @@ public class TabValidationTest
    @Test
    public void idIsSet()
    {
-      assertThat(validation.getValidationInfo().getId(), is(ValidationId.TAB));
+      assertThat(validation.getId(), is(ValidationId.TAB));
    }
 
    @Test

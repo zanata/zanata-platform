@@ -71,13 +71,13 @@ public class ValidationOptionsPresenterTest
       // Given:
       when(validationService.getValidationMap()).thenReturn(validationFactory.getAllValidationActions());
 
-      when(display.addValidationSelector(ValidationId.HTML_XML.getDisplayName(), null, true, false)).thenReturn(changeHandler);
-      when(display.addValidationSelector(ValidationId.NEW_LINE.getDisplayName(), null, true, false)).thenReturn(changeHandler);
-      when(display.addValidationSelector(ValidationId.TAB.getDisplayName(), null, true, false)).thenReturn(changeHandler);
-      when(display.addValidationSelector(ValidationId.JAVA_VARIABLES.getDisplayName(), null, true, false)).thenReturn(changeHandler);
-      when(display.addValidationSelector(ValidationId.XML_ENTITY.getDisplayName(), null, true, false)).thenReturn(changeHandler);
-      when(display.addValidationSelector(ValidationId.PRINTF_VARIABLES.getDisplayName(), null, true, false)).thenReturn(changeHandler);
-      when(display.addValidationSelector(ValidationId.PRINTF_XSI_EXTENSION.getDisplayName(), null, false, false)).thenReturn(changeHandler);
+      when(display.addValidationSelector(ValidationId.HTML_XML.getDisplayName(), validationMessage.xmlHtmlValidatorDesc(), true, false)).thenReturn(changeHandler);
+      when(display.addValidationSelector(ValidationId.NEW_LINE.getDisplayName(), validationMessage.newLineValidatorDesc(), true, false)).thenReturn(changeHandler);
+      when(display.addValidationSelector(ValidationId.TAB.getDisplayName(), validationMessage.tabValidatorDesc(), true, false)).thenReturn(changeHandler);
+      when(display.addValidationSelector(ValidationId.JAVA_VARIABLES.getDisplayName(), validationMessage.javaVariablesValidatorDesc(), true, false)).thenReturn(changeHandler);
+      when(display.addValidationSelector(ValidationId.XML_ENTITY.getDisplayName(), validationMessage.xmlEntityValidatorDesc(), true, false)).thenReturn(changeHandler);
+      when(display.addValidationSelector(ValidationId.PRINTF_VARIABLES.getDisplayName(), validationMessage.printfVariablesValidatorDesc(), true, false)).thenReturn(changeHandler);
+      when(display.addValidationSelector(ValidationId.PRINTF_XSI_EXTENSION.getDisplayName(), validationMessage.printfXSIExtensionValidationDesc(), false, false)).thenReturn(changeHandler);
 
       // When:
       presenter.onBind();

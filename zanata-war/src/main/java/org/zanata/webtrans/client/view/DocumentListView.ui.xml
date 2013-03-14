@@ -44,7 +44,7 @@
 		
 		.downloadAllFilesButton
 		{
-			width:130px;
+			width:135px;
 			display:inline-block;
 			margin-left:3px;
 		}

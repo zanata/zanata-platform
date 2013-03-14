@@ -61,7 +61,7 @@ public class HtmlXmlTagValidationTests
    @Test
    public void idIsSet()
    {
-      assertThat(htmlXmlTagValidation.getValidationInfo().getId(), is(ValidationId.HTML_XML));
+      assertThat(htmlXmlTagValidation.getId(), is(ValidationId.HTML_XML));
    }
 
    @Test

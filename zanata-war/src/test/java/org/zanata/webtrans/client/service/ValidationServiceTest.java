@@ -8,6 +8,8 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -69,12 +71,13 @@ public class ValidationServiceTest
       service = new ValidationService(eventBus, messages, validationMessages, configHolder);
       ValidationFactory validationFactory = new ValidationFactory(validationMessages);
 
-      Map<ValidationId, ValidationAction> validationMap = validationFactory.getAllValidationActions();
-      ArrayList<ValidationInfo> validationInfoList = new ArrayList<ValidationInfo>();
-      for (ValidationAction action : validationMap.values())
+      Collection<ValidationAction> validationList = validationFactory.getAllValidationActions().values();
+      Map<ValidationId, ValidationInfo> validationInfoList = new HashMap<ValidationId, ValidationInfo>();
+      
+      for (ValidationAction action : validationList)
       {
          action.getValidationInfo().setEnabled(true);
-         validationInfoList.add(action.getValidationInfo());
+         validationInfoList.put(action.getId(), action.getValidationInfo());
       }
       service.setValidationRules(validationInfoList);
 

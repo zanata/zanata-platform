@@ -60,7 +60,7 @@ public class XMLEntityValidationTests
    @Test
    public void idIsSet()
    {
-      assertThat(xmlEntityValidation.getValidationInfo().getId(), Matchers.equalTo(ValidationId.XML_ENTITY));
+      assertThat(xmlEntityValidation.getId(), Matchers.equalTo(ValidationId.XML_ENTITY));
    }
 
    @Test

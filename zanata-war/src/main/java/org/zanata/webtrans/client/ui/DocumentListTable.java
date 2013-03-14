@@ -96,6 +96,19 @@ public class DocumentListTable extends CellTable<DocumentNode>
       pathColumn = new TooltipColumn<DocumentNode, String>(new TextCell())
       {
          @Override
+         public String getCellStyleNames(Context context, DocumentNode object)
+         {
+            if (object.getDocInfo().hasValidationError())
+            {
+               return super.getCellStyleNames(context, object) + " hasError";
+            }
+            else
+            {
+               return super.getCellStyleNames(context, object);
+            }
+         }
+         
+         @Override
          public String getValue(DocumentNode object)
          {
             return object.getDocInfo().getPath();

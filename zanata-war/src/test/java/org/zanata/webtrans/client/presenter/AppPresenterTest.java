@@ -13,6 +13,7 @@ import static org.mockito.Mockito.when;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.PresenterRevealedEvent;
@@ -46,6 +47,7 @@ import org.zanata.webtrans.client.view.AppDisplay;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceContextUpdateData;
@@ -509,9 +511,8 @@ public class AppPresenterTest
          }
 
          @Override
-         public List<ValidationInfo> getValidationInfoList()
+         public Map<ValidationId, ValidationInfo> getValidationInfoList()
          {
-            // TODO Auto-generated method stub
             return null;
          }
       };

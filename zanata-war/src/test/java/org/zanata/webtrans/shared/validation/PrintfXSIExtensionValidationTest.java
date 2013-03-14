@@ -40,7 +40,7 @@ public class PrintfXSIExtensionValidationTest
    @Test
    public void idAndDescriptionAreSet()
    {
-      assertThat(printfVariablesValidation.getValidationInfo().getId(), is(ValidationId.PRINTF_XSI_EXTENSION));
+      assertThat(printfVariablesValidation.getId(), is(ValidationId.PRINTF_XSI_EXTENSION));
    }
 
    @Test

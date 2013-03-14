@@ -58,7 +58,7 @@ public class NewlineLeadTrailValidationTests
    @Test
    public void idIsSet()
    {
-      assertThat(newlineLeadTrailValidation.getValidationInfo().getId(), is(ValidationId.NEW_LINE));
+      assertThat(newlineLeadTrailValidation.getId(), is(ValidationId.NEW_LINE));
    }
 
    @Test

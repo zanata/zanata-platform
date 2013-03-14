@@ -9,7 +9,8 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -144,11 +145,11 @@ public class ActivateWorkspaceHandlerTest
       when(translationWorkspace.getWorkspaceContext()).thenReturn(workspaceContext);
       when(workspaceContext.getWorkspaceId()).thenReturn(workspaceId);
 
-      Map<ValidationId, ValidationAction> validationMap = validationFactory.getAllValidationActions();
-      ArrayList<ValidationInfo> validationInfoList = new ArrayList<ValidationInfo>();
-      for (ValidationAction valAction : validationMap.values())
+      Collection<ValidationAction> validationList = validationFactory.getAllValidationActions().values();
+      Map<ValidationId, ValidationInfo> validationInfoList = new HashMap<ValidationId, ValidationInfo>();
+      for (ValidationAction valAction : validationList)
       {
-         validationInfoList.add(valAction.getValidationInfo());
+         validationInfoList.put(valAction.getId(), valAction.getValidationInfo());
       }
       
       GetValidationRulesResult validationResult = new GetValidationRulesResult(validationInfoList);
