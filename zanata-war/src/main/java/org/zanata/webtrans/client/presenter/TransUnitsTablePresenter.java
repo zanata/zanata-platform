@@ -337,7 +337,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    {
       TransUnitId selectedId = event.getSelectedId();
       int rowIndex = navigationService.findRowIndexById(selectedId);
-      if (rowIndex != NavigationService.UNSELECTED)
+      if (rowIndex != NavigationService.UNDEFINED)
       {
          onRowSelected(rowIndex, event.isSuppressSavePending());
       }

@@ -52,11 +52,13 @@ public class ConfigurationAction implements Serializable
 
    public void getData()
    {
-      boolean useOfflinePo = false;
-      getData(useOfflinePo);
+      getData(false);
    }
 
-   // FIXME need another public method to get offlinepo config file
+   public void getOfflinePoConfigData()
+   {
+      getData(true);
+   }
 
    private void getData(boolean useOfflinePo)
    {
@@ -80,5 +82,4 @@ public class ConfigurationAction implements Serializable
          log.error("Failure : " + e.toString() + "\n");
       }
    }
-
 }

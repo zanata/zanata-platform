@@ -84,6 +84,10 @@ public class ModalNavigationStateHolder
    protected int getTargetPage(TransUnitId targetId)
    {
       int targetIndex = idIndexList.indexOf(targetId);
+      if (targetIndex == NavigationService.UNDEFINED)
+      {
+         return NavigationService.UNDEFINED;
+      }
       return targetIndex / configHolder.getState().getEditorPageSize();
    }
 

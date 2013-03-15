@@ -842,6 +842,13 @@ a.downloadLink
     border-radius:5px;
 }
 
+.transUnitCol .bookmark
+{
+    float: left;
+    margin-left: 6px;
+    cursor: pointer;
+}
+
 /* custom webkit scroll bar */
 /* Let's get this party started */
 ::-webkit-scrollbar {

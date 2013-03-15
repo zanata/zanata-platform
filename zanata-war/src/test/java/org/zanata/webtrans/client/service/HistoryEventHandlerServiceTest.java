@@ -1,10 +1,7 @@
 package org.zanata.webtrans.client.service;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
@@ -17,13 +14,17 @@ import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.model.TestFixture;
+import org.zanata.webtrans.client.events.BookmarkedTextFlowEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.FindMessageEvent;
+import org.zanata.webtrans.client.events.InitEditorEvent;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
+import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.TransUnitId;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.shared.GwtEvent;
@@ -47,12 +48,16 @@ public class HistoryEventHandlerServiceTest
    private ArgumentCaptor<GwtEvent> eventCaptor;
    @Mock
    private ValueChangeEvent<String> historyChangeEvent;
+   @Mock
+   private ModalNavigationStateHolder stateHolder;
+   private GetTransUnitActionContextHolder contextHolder;
 
    @BeforeMethod
    public void setUp() throws Exception
    {
       MockitoAnnotations.initMocks(this);
-      service = new HistoryEventHandlerService(eventBus, documentListPresenter, appPresenter, searchResultsPresenter);
+      contextHolder = new GetTransUnitActionContextHolder(new UserConfigHolder());
+      service = new HistoryEventHandlerService(eventBus, documentListPresenter, appPresenter, searchResultsPresenter, contextHolder, stateHolder);
    }
 
    @Test
@@ -81,9 +86,7 @@ public class HistoryEventHandlerServiceTest
    @Test
    public void onProcessForAppPresenterWillDoNothingIfHistoryNotChanged()
    {
-      HistoryToken token = new HistoryToken();
-
-      service.processForAppPresenter(token);
+      service.processForAppPresenter(null);
 
       verifyZeroInteractions(appPresenter);
    }
@@ -93,10 +96,10 @@ public class HistoryEventHandlerServiceTest
    {
       HistoryToken token = new HistoryToken();
       token.setDocumentPath("doc/a.po");
-      DocumentId documentId = new DocumentId(new Long(1), "");
+      DocumentId documentId = new DocumentId(1, "");
       when(documentListPresenter.getDocumentId("doc/a.po")).thenReturn(documentId);
 
-      service.processForAppPresenter(token);
+      service.processForAppPresenter(documentId);
 
       verify(appPresenter).selectDocument(documentId);
       verify(eventBus).fireEvent(eventCaptor.capture());
@@ -171,9 +174,9 @@ public class HistoryEventHandlerServiceTest
    }
 
    @Test
-   public void processHistoryToken()
+   public void processHistoryTokenWithInitializedContext()
    {
-      // Given: history token contains everything
+      // Given: history token contains everything and editor context is loaded
       HistoryToken token = new HistoryToken();
       token.setDocFilterText("doc filter test");
       token.setSearchText("search text");
@@ -181,9 +184,10 @@ public class HistoryEventHandlerServiceTest
       token.setDocumentPath("doc/path");
       token.setProjectSearchReplacement("replacement");
       when(historyChangeEvent.getValue()).thenReturn(token.toTokenString());
-      DocumentId documentId = new DocumentId(new Long(1), "");
+      DocumentId documentId = new DocumentId(1, "");
       when(documentListPresenter.getDocumentId("doc/path")).thenReturn(documentId);
-      when(appPresenter.getSelectedDocIdOrNull()).thenReturn(new DocumentId(new Long(99), ""));
+      when(appPresenter.getSelectedDocIdOrNull()).thenReturn(new DocumentId(99, ""));
+      contextHolder.updateContext(new GetTransUnitActionContext(documentId));
 
       // When:
       service.onValueChange(historyChangeEvent);
@@ -191,16 +195,114 @@ public class HistoryEventHandlerServiceTest
       // Then:
       InOrder inOrder = Mockito.inOrder(documentListPresenter, appPresenter, eventBus, searchResultsPresenter);
       inOrder.verify(documentListPresenter).updateFilterAndRun(token.getDocFilterText(), token.getDocFilterExact(), token.isDocFilterCaseSensitive());
+      inOrder.verify(searchResultsPresenter).updateViewAndRun(token.getProjectSearchText(), token.getProjectSearchCaseSensitive(), token.isProjectSearchInSource(), token.isProjectSearchInTarget());
+      inOrder.verify(searchResultsPresenter).updateReplacementText(token.getProjectSearchReplacement());
       inOrder.verify(documentListPresenter).getDocumentId(token.getDocumentPath());
       inOrder.verify(appPresenter).getSelectedDocIdOrNull();
       inOrder.verify(appPresenter).selectDocument(documentId);
       inOrder.verify(eventBus).fireEvent(Mockito.isA(DocumentSelectionEvent.class));
       inOrder.verify(eventBus).fireEvent(Mockito.isA(FindMessageEvent.class));
-      inOrder.verify(searchResultsPresenter).updateViewAndRun(token.getProjectSearchText(), token.getProjectSearchCaseSensitive(), token.isProjectSearchInSource(), token.isProjectSearchInTarget());
-      inOrder.verify(searchResultsPresenter).updateReplacementText(token.getProjectSearchReplacement());
       inOrder.verify(appPresenter).showView(token.getView());
 
       verifyNoMoreInteractions(documentListPresenter, appPresenter, eventBus, searchResultsPresenter);
+   }
+
+   @Test
+   public void processHistoryTokenForUninitializedContext()
+   {
+      // Given: history token contains everything but editor context is not initialized
+      HistoryToken token = new HistoryToken();
+      token.setDocFilterText("doc filter test");
+      token.setSearchText("search text");
+      token.setProjectSearchText("project search text");
+      token.setDocumentPath("doc/path");
+      token.setProjectSearchReplacement("replacement");
+      token.setTextFlowId("1");
+      when(historyChangeEvent.getValue()).thenReturn(token.toTokenString());
+      DocumentId documentId = new DocumentId(1, "");
+      when(documentListPresenter.getDocumentId("doc/path")).thenReturn(documentId);
+      when(appPresenter.getSelectedDocIdOrNull()).thenReturn(new DocumentId(99, ""));
+      contextHolder.updateContext(null);
+
+      // When:
+      service.onValueChange(historyChangeEvent);
+
+      // Then:
+      InOrder inOrder = Mockito.inOrder(documentListPresenter, appPresenter, eventBus, searchResultsPresenter);
+      inOrder.verify(documentListPresenter).updateFilterAndRun(token.getDocFilterText(), token.getDocFilterExact(), token.isDocFilterCaseSensitive());
+      inOrder.verify(searchResultsPresenter).updateViewAndRun(token.getProjectSearchText(), token.getProjectSearchCaseSensitive(), token.isProjectSearchInSource(), token.isProjectSearchInTarget());
+      inOrder.verify(searchResultsPresenter).updateReplacementText(token.getProjectSearchReplacement());
+
+      inOrder.verify(documentListPresenter).getDocumentId(token.getDocumentPath());
+      inOrder.verify(eventBus).fireEvent(Mockito.isA(InitEditorEvent.class));
+      inOrder.verify(appPresenter).getSelectedDocIdOrNull();
+      inOrder.verify(appPresenter).selectDocument(documentId);
+      inOrder.verify(eventBus).fireEvent(Mockito.isA(DocumentSelectionEvent.class));
+      inOrder.verify(eventBus).fireEvent(Mockito.isA(FindMessageEvent.class));
+      inOrder.verify(appPresenter).showView(token.getView());
+
+      verifyNoMoreInteractions(documentListPresenter, appPresenter, eventBus, searchResultsPresenter);
+   }
+
+   @Test
+   public void processBookmarkedTextFlowWhenEditorIsNotInitialized()
+   {
+      // Given: editor is not initialized yet
+      HistoryToken token = new HistoryToken();
+      token.setTextFlowId("1");
+
+      // When:
+      service.processForBookmarkedTextFlow(token);
+
+      // Then:
+      verifyZeroInteractions(eventBus);
+   }
+
+   @Test
+   public void processBookmarkedTextFlowWhenThereIsNoTextFlowInHistoryUrl()
+   {
+      // Given: no text flow
+      HistoryToken token = new HistoryToken();
+
+      // When:
+      service.processForBookmarkedTextFlow(token);
+
+      // Then:
+      verifyZeroInteractions(eventBus);
+
+   }
+
+   @Test
+   public void processBookmarkedTextFlowWithInvalidTextFlowId()
+   {
+      // Given: text flow not in current document
+      HistoryToken token = new HistoryToken();
+      token.setTextFlowId("111");
+      when(stateHolder.getPageCount()).thenReturn(10);
+      when(stateHolder.getTargetPage(new TransUnitId(111))).thenReturn(NavigationService.UNDEFINED);
+
+      // When:
+      service.processForBookmarkedTextFlow(token);
+
+      // Then:
+      verifyZeroInteractions(eventBus);
+   }
+
+   @Test
+   public void processBookmarkedTextFlow()
+   {
+      // Given: everything works
+      contextHolder.updateContext(new GetTransUnitActionContext(new DocumentId(9, "")));
+      HistoryToken token = new HistoryToken();
+      token.setTextFlowId("111");
+      when(stateHolder.getPageCount()).thenReturn(10);
+      when(stateHolder.getTargetPage(new TransUnitId(111))).thenReturn(2);
+
+      // When:
+      service.processForBookmarkedTextFlow(token);
+
+      // Then:
+      verify(eventBus).fireEvent(Mockito.isA(BookmarkedTextFlowEvent.class));
    }
 
 }
