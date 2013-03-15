@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.customware.gwt.presenter.client.EventBus;
 
@@ -43,6 +44,7 @@ import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.UserOptionsService;
+import org.zanata.webtrans.client.service.ValidationService;
 import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.client.view.DocumentListDisplay;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -51,6 +53,7 @@ import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
@@ -532,9 +535,8 @@ public class DocumentListPresenterTest
          }
 
          @Override
-         public List<ValidationInfo> getValidationInfoList()
+         public Map<ValidationId, ValidationInfo> getValidationInfoList()
          {
-            // TODO Auto-generated method stub
             return null;
          }
       };

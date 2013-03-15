@@ -36,7 +36,7 @@ public class FilterConstraintToQueryTest
    private Query query;
    @Mock
    private HLocale hLocale;
-   private DocumentId documentId = new DocumentId(1, "");
+   private DocumentId documentId = new DocumentId(new Long(1), "");
 
    @BeforeMethod
    public void beforeMethod()

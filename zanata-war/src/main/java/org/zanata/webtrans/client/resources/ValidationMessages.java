@@ -16,6 +16,9 @@ import com.google.gwt.i18n.client.Messages;
 public interface ValidationMessages extends Messages
 {
    // Newline validator
+   @DefaultMessage("Check for consistent leading and trailing newline (\\n)")
+   String newLineValidatorDesc();
+   
    @DefaultMessage("Leading newline (\\n) is missing")
    String leadingNewlineMissing();
 
@@ -30,6 +33,9 @@ public interface ValidationMessages extends Messages
 
 
    // Tab validator
+   @DefaultMessage("Check whether source and target have the same number of tabs")
+   String tabValidatorDesc();
+
    @DefaultMessage("Target has fewer tabs (\\t) than source (source: {0}, target: {1})")
    String targetHasFewerTabs(int sourceTabs, int targetTabs);
 
@@ -44,6 +50,9 @@ public interface ValidationMessages extends Messages
 
 
    // Printf variables validator
+   @DefaultMessage("Check that printf style (%x) variables are consistent")
+   String printfVariablesValidatorDesc();
+
    @DefaultMessage("Variable {0} position is out of range")
    String varPositionOutOfRange(String var);
 
@@ -55,6 +64,9 @@ public interface ValidationMessages extends Messages
 
 
    // Java variables validator
+   @DefaultMessage("Check that java style ('{x}') variables are consistent")
+   String javaVariablesValidatorDesc();
+         
    @Description("Lists variables that appear a different number of times between source and target strings")
    @DefaultMessage("Inconsistent count for variables: {0,list,string}")
    @AlternateMessage({ "one", "Inconsistent count for variable: {0,list,string}" })
@@ -70,6 +82,9 @@ public interface ValidationMessages extends Messages
 
 
    // Shared variables validator messages
+   @DefaultMessage("Check that positional printf style (%n$x) variables are consistent")
+   String printfXSIExtensionValidationDesc();
+   
    @Description("Lists the variables that are in the original string but have not been included in the target")
    @DefaultMessage("Missing variables: {0,list,string}")
    @AlternateMessage({ "one", "Missing variable: {0,list,string}" })
@@ -92,6 +107,9 @@ public interface ValidationMessages extends Messages
 
 
    // XHM/HTML tag validator
+   @DefaultMessage("Check that XML/HTML tags are consistent")
+   String xmlHtmlValidatorDesc();
+         
    @Description("Lists the xml or html tags that are in the target but are not in the original string")
    @DefaultMessage("Unexpected tags: {0,list,string}")
    @AlternateMessage({ "one", "Unexpected tag: {0,list,string}" })
@@ -108,6 +126,9 @@ public interface ValidationMessages extends Messages
 
 
    //XML Entity validator
+   @DefaultMessage("Check that XML entity are complete")
+   String xmlEntityValidatorDesc();
+
    @DefaultMessage("Invalid XML entity [ {0} ]")
    String invalidXMLEntity(String entity);
 }

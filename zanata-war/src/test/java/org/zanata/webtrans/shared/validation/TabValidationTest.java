@@ -24,13 +24,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.zanata.webtrans.client.resources.TestMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.server.locale.Gwti18nReader;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.action.TabValidation;
 
@@ -42,9 +43,9 @@ public class TabValidationTest
    private static final List<String> noErrors = Collections.<String>emptyList();
 
    @BeforeMethod
-   public void init()
+   public void init() throws IOException
    {
-      messages = TestMessages.getInstance(ValidationMessages.class);
+      messages = Gwti18nReader.create(ValidationMessages.class);
       validation = new TabValidation(ValidationId.TAB, messages);
       validation.getValidationInfo().setEnabled(true);
    }
@@ -52,7 +53,7 @@ public class TabValidationTest
    @Test
    public void idIsSet()
    {
-      assertThat(validation.getValidationInfo().getId(), is(ValidationId.TAB));
+      assertThat(validation.getId(), is(ValidationId.TAB));
    }
 
    @Test

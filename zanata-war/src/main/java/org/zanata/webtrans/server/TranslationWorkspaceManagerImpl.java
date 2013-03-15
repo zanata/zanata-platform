@@ -1,8 +1,7 @@
 package org.zanata.webtrans.server;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -26,9 +25,9 @@ import org.zanata.common.ProjectType;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
-import org.zanata.model.HProject;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
+import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.GravatarService;
@@ -39,8 +38,9 @@ import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
+import org.zanata.webtrans.shared.model.ValidationAction;
+import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
-import org.zanata.webtrans.shared.model.ValidationObject;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.ExitWorkspace;
@@ -165,11 +165,11 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
    @Observer(ProjectIterationHome.PROJECT_ITERATION_UPDATE)
    public void projectIterationUpdate(HProjectIteration projectIteration)
    {
-      List<ValidationInfo> validationInfoList = new ArrayList<ValidationInfo>();
+      HashMap<ValidationId, ValidationInfo> validationInfoList = new HashMap<ValidationId, ValidationInfo>();
 
-      for (ValidationObject valObj : validationServiceImpl.getValidationObject(projectIteration))
+      for (ValidationAction validationAction : validationServiceImpl.getValidationObject(projectIteration))
       {
-         validationInfoList.add(valObj.getValidationInfo());
+         validationInfoList.put(validationAction.getId(), validationAction.getValidationInfo());
       }
 
       String projectSlug = projectIteration.getProject().getSlug();

@@ -96,7 +96,7 @@ public class HistoryEventHandlerServiceTest
    {
       HistoryToken token = new HistoryToken();
       token.setDocumentPath("doc/a.po");
-      DocumentId documentId = new DocumentId(1, "");
+      DocumentId documentId = new DocumentId(new Long(1), "");
       when(documentListPresenter.getDocumentId("doc/a.po")).thenReturn(documentId);
 
       service.processForAppPresenter(documentId);
@@ -184,9 +184,9 @@ public class HistoryEventHandlerServiceTest
       token.setDocumentPath("doc/path");
       token.setProjectSearchReplacement("replacement");
       when(historyChangeEvent.getValue()).thenReturn(token.toTokenString());
-      DocumentId documentId = new DocumentId(1, "");
+      DocumentId documentId = new DocumentId(new Long(1), "");
       when(documentListPresenter.getDocumentId("doc/path")).thenReturn(documentId);
-      when(appPresenter.getSelectedDocIdOrNull()).thenReturn(new DocumentId(99, ""));
+      when(appPresenter.getSelectedDocIdOrNull()).thenReturn(new DocumentId(new Long(99), ""));
       contextHolder.updateContext(new GetTransUnitActionContext(documentId));
 
       // When:
@@ -219,9 +219,9 @@ public class HistoryEventHandlerServiceTest
       token.setProjectSearchReplacement("replacement");
       token.setTextFlowId("1");
       when(historyChangeEvent.getValue()).thenReturn(token.toTokenString());
-      DocumentId documentId = new DocumentId(1, "");
+      DocumentId documentId = new DocumentId(new Long(1), "");
       when(documentListPresenter.getDocumentId("doc/path")).thenReturn(documentId);
-      when(appPresenter.getSelectedDocIdOrNull()).thenReturn(new DocumentId(99, ""));
+      when(appPresenter.getSelectedDocIdOrNull()).thenReturn(new DocumentId(new Long(99), ""));
       contextHolder.updateContext(null);
 
       // When:
@@ -292,7 +292,7 @@ public class HistoryEventHandlerServiceTest
    public void processBookmarkedTextFlow()
    {
       // Given: everything works
-      contextHolder.updateContext(new GetTransUnitActionContext(new DocumentId(9, "")));
+      contextHolder.updateContext(new GetTransUnitActionContext(new DocumentId(new Long(9), "")));
       HistoryToken token = new HistoryToken();
       token.setTextFlowId("111");
       when(stateHolder.getPageCount()).thenReturn(10);

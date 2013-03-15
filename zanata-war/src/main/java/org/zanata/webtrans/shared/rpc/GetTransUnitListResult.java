@@ -1,11 +1,10 @@
 package org.zanata.webtrans.shared.rpc;
 
 import java.util.List;
-import java.util.Map;
 
-import org.zanata.common.ContentState;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
+
 import com.google.common.base.Objects;
 
 
@@ -19,19 +18,21 @@ public class GetTransUnitListResult implements DispatchResult
    private int targetOffset;
    private int targetPage;
    private GetTransUnitsNavigationResult navigationIndex;
+   private boolean filterByHasError = false;
 
    @SuppressWarnings("unused")
    private GetTransUnitListResult()
    {
    }
 
-   public GetTransUnitListResult(DocumentId documentId, List<TransUnit> units, int gotoRow, int targetOffset, int targetPage)
+   public GetTransUnitListResult(DocumentId documentId, List<TransUnit> units, int gotoRow, int targetOffset, int targetPage, boolean filterByHasError)
    {
       this.documentId = documentId;
       this.units = units;
       this.gotoRow = gotoRow;
       this.targetOffset = targetOffset;
       this.targetPage = targetPage;
+      this.filterByHasError = filterByHasError;
    }
 
    public List<TransUnit> getUnits()
@@ -69,6 +70,11 @@ public class GetTransUnitListResult implements DispatchResult
       this.navigationIndex = navigationIndex;
    }
 
+   public boolean isFilterByHasError()
+   {
+      return filterByHasError;
+   }
+
    @Override
    public String toString()
    {
@@ -81,4 +87,6 @@ public class GetTransUnitListResult implements DispatchResult
             add("navigationIndex", navigationIndex).
             toString();
    }
+
+  
 }

@@ -4,7 +4,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class DocumentId implements Identifier<Long>, IsSerializable
 {
-   private long id;
+   private Long id;
 
    private String docId;
 
@@ -14,7 +14,7 @@ public class DocumentId implements Identifier<Long>, IsSerializable
    {
    }
 
-   public DocumentId(long id, String docId)
+   public DocumentId(Long id, String docId)
    {
       this.id = id;
       this.docId = docId;
@@ -29,7 +29,7 @@ public class DocumentId implements Identifier<Long>, IsSerializable
    @Override
    public int hashCode()
    {
-      return (int) id;
+      return id.intValue();
    }
 
    @Override
@@ -38,7 +38,7 @@ public class DocumentId implements Identifier<Long>, IsSerializable
       return id;
    }
 
-   public long getId()
+   public Long getId()
    {
       return id;
    }
@@ -59,6 +59,6 @@ public class DocumentId implements Identifier<Long>, IsSerializable
       {
          return false;
       }
-      return obj instanceof DocumentId && ((DocumentId) obj).id == id;
+      return obj instanceof DocumentId && ((DocumentId) obj).id.equals(id);
    }
 }

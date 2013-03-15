@@ -10,31 +10,24 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public enum ValidationId implements IsSerializable
 {
    // @formatter:off
-   HTML_XML("HTML/XML tags", "jsf.validation.htmlXmlValidator"),
-   NEW_LINE("Leading/trailing newline (\\n)", "jsf.validation.newlineValidator"),
-   TAB("Tab characters (\\t)", "jsf.validation.tabValidator"),
-   JAVA_VARIABLES("Java variables", "jsf.validation.javaVariablesValidator"),
-   XML_ENTITY("XML entity reference", "jsf.validation.xmlEntityValidator"),
-   PRINTF_VARIABLES("Printf variables", "jsf.validation.printfVariablesValidator"),
-   PRINTF_XSI_EXTENSION("Positional printf (XSI extension)", "jsf.validation.printfXSIExtensionValidation");
+   HTML_XML("HTML/XML tags"),
+   NEW_LINE("Leading/trailing newline (\\n)"),
+   TAB("Tab characters (\\t)"),
+   JAVA_VARIABLES("Java variables"),
+   XML_ENTITY("XML entity reference"),
+   PRINTF_VARIABLES("Printf variables"),
+   PRINTF_XSI_EXTENSION("Positional printf (XSI extension)");
   
    // @formatter:on
    private String displayName;
-   private String message_prefix;
 
-   ValidationId(String displayName, String message_prefix)
+   ValidationId(String displayName)
    {
       this.displayName = displayName;
-      this.message_prefix = message_prefix;
    }
 
    public String getDisplayName()
    {
       return displayName;
-   }
-   
-   public String getMessagePrefix()
-   {
-      return message_prefix;
    }
 }

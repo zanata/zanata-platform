@@ -21,11 +21,10 @@
 package org.zanata.webtrans.shared.validation.action;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
-import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.validation.AbstractValidationAction;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 
@@ -38,7 +37,7 @@ public class NewlineLeadTrailValidation extends AbstractValidationAction
 {
    public NewlineLeadTrailValidation(ValidationId id, ValidationMessages messages)
    {
-      super(new ValidationInfo(id, null, true), messages);
+      super(id, messages.newLineValidatorDesc(), new ValidationInfo(true), messages);
    }
 
    private final static String leadNewlineRegex = "^\n";
@@ -103,7 +102,6 @@ public class NewlineLeadTrailValidation extends AbstractValidationAction
    {
       if (leadRegExp.test(base))
       {
-         Log.debug("Found leading newline");
          return leadRegExp.test(test);
       }
       // no newline so can't fail
@@ -118,7 +116,6 @@ public class NewlineLeadTrailValidation extends AbstractValidationAction
    {
       if (endRegExp.test(base))
       {
-         Log.debug("Found trailing newline");
          return endRegExp.test(test);
       }
       // no newline so can't fail

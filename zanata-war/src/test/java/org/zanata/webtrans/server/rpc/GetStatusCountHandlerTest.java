@@ -47,7 +47,7 @@ public class GetStatusCountHandlerTest
    @Test
    public void testExecute() throws Exception
    {
-      DocumentId documentId = new DocumentId(1, "");
+      DocumentId documentId = new DocumentId(new Long(1), "");
       WorkspaceId workspaceId = TestFixture.workspaceId();
       GetStatusCount action = new GetStatusCount(documentId);
       action.setWorkspaceId(workspaceId);

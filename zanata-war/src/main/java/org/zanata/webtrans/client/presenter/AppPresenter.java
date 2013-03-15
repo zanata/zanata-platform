@@ -244,7 +244,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
          currentDisplayStats = projectStats;
          translationPresenter.concealDisplay();
          searchResultsPresenter.concealDisplay();
-         sideMenuPresenter.showValidationOptions(false);
+         sideMenuPresenter.showValidationOptions(true);
          sideMenuPresenter.setOptionMenu(MainView.Documents);
          break;
       }

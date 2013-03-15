@@ -190,7 +190,7 @@ public class GlossaryPresenterTest
    @Test
    public void fireSearchEvent()
    {
-      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1, ""), "test", "test/path", LocaleId.EN_US, new TranslationStats(), "Translator", new Date(), new HashMap<String, String>(), "last translator", new Date());
+      DocumentInfo docInfo = new DocumentInfo(new DocumentId(new Long(1), ""), "test", "test/path", LocaleId.EN_US, new TranslationStats(), "Translator", new Date(), new HashMap<String, String>(), "last translator", new Date());
       userWorkspaceContext.setSelectedDoc(docInfo);
 
       when(messages.searchGlossary()).thenReturn("Search glossary");
@@ -213,7 +213,7 @@ public class GlossaryPresenterTest
    public void fireSearchEventInSequentialWillBlockSecondRequestUntilFirstReturn()
    {
       // Given:
-      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1, ""), "test", "test/path", LocaleId.EN_US, new TranslationStats(), "Translator", new Date(), new HashMap<String, String>(), "last translator", new Date());
+      DocumentInfo docInfo = new DocumentInfo(new DocumentId(new Long(1), ""), "test", "test/path", LocaleId.EN_US, new TranslationStats(), "Translator", new Date(), new HashMap<String, String>(), "last translator", new Date());
       userWorkspaceContext.setSelectedDoc(docInfo);
       when(messages.searchGlossary()).thenReturn("Search glossary");
       when(display.getGlossaryTextBox()).thenReturn(mockGlossaryTextBox);
@@ -237,7 +237,7 @@ public class GlossaryPresenterTest
    @Test
    public void fireSearchEventOnSuccessCallbackWithGlossaryResults()
    {
-      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1, ""), "test", "test/path", LocaleId.EN_US, new TranslationStats(), "Translator", new Date(), new HashMap<String, String>(), "last translator", new Date());
+      DocumentInfo docInfo = new DocumentInfo(new DocumentId(new Long(1), ""), "test", "test/path", LocaleId.EN_US, new TranslationStats(), "Translator", new Date(), new HashMap<String, String>(), "last translator", new Date());
       userWorkspaceContext.setSelectedDoc(docInfo);
 
       when(messages.searchGlossary()).thenReturn("Search glossary");
@@ -265,7 +265,7 @@ public class GlossaryPresenterTest
    @Test
    public void fireSearchEventOnSuccessCallbackButNoGlossaryFound()
    {
-      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1, ""), "test", "test/path", LocaleId.EN_US, new TranslationStats(), "Translator", new Date(), new HashMap<String, String>(), "last translator", new Date());
+      DocumentInfo docInfo = new DocumentInfo(new DocumentId(new Long(1), ""), "test", "test/path", LocaleId.EN_US, new TranslationStats(), "Translator", new Date(), new HashMap<String, String>(), "last translator", new Date());
       userWorkspaceContext.setSelectedDoc(docInfo);
 
       when(messages.searchGlossary()).thenReturn("Search glossary");
@@ -291,7 +291,7 @@ public class GlossaryPresenterTest
    @Test
    public void fireSearchEventOnFailureCallback()
    {
-      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1, ""), "test", "test/path", LocaleId.EN_US, new TranslationStats(), "Translator", new Date(), new HashMap<String, String>(), "last translator", new Date());
+      DocumentInfo docInfo = new DocumentInfo(new DocumentId(new Long(1), ""), "test", "test/path", LocaleId.EN_US, new TranslationStats(), "Translator", new Date(), new HashMap<String, String>(), "last translator", new Date());
       userWorkspaceContext.setSelectedDoc(docInfo);
 
       when(messages.searchGlossary()).thenReturn("Search glossary");
@@ -315,7 +315,7 @@ public class GlossaryPresenterTest
    @Test
    public void createGlossaryRequestForTransUnit()
    {
-      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1, ""), "test", "test/path", LocaleId.EN_US, new TranslationStats(), "Translator", new Date(), new HashMap<String, String>(), "last translator", new Date());
+      DocumentInfo docInfo = new DocumentInfo(new DocumentId(new Long(1), ""), "test", "test/path", LocaleId.EN_US, new TranslationStats(), "Translator", new Date(), new HashMap<String, String>(), "last translator", new Date());
       userWorkspaceContext.setSelectedDoc(docInfo);
       when(messages.searchGlossary()).thenReturn("Search glossary");
       when(display.getGlossaryTextBox()).thenReturn(mockGlossaryTextBox);

@@ -1,13 +1,11 @@
 package org.zanata.webtrans.client.presenter;
 
-import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.io.IOException;
 
 import net.customware.gwt.presenter.client.EventBus;
 
@@ -20,7 +18,8 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.client.service.ValidationService;
-import org.zanata.webtrans.shared.model.ValidationAction;
+import org.zanata.webtrans.client.view.ValidationOptionsDisplay;
+import org.zanata.webtrans.server.locale.Gwti18nReader;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
 import org.zanata.webtrans.shared.validation.action.PrintfVariablesValidation;
@@ -38,12 +37,12 @@ public class ValidationOptionsPresenterTest
 {
    private ValidationOptionsPresenter presenter;
    @Mock
-   private ValidationOptionsPresenter.Display display;
+   private ValidationOptionsDisplay display;
    @Mock
    private EventBus eventBus;
    @Mock
    private ValidationService validationService;
-   @Mock
+
    private ValidationMessages validationMessage;
    @Mock
    private HasValueChangeHandlers<Boolean> changeHandler;
@@ -52,10 +51,17 @@ public class ValidationOptionsPresenterTest
    @Mock
    private ValueChangeEvent<Boolean> valueChangeEvent;
 
+   private ValidationFactory validationFactory;
+
    @BeforeMethod
-   public void beforeMethod()
+   public void beforeMethod() throws IOException
    {
       MockitoAnnotations.initMocks(this);
+
+      validationMessage = Gwti18nReader.create(ValidationMessages.class);
+      
+      validationFactory = new ValidationFactory(validationMessage);
+
       presenter = new ValidationOptionsPresenter(display, eventBus, validationService);
    }
 
@@ -63,15 +69,15 @@ public class ValidationOptionsPresenterTest
    public void onBind()
    {
       // Given:
-      when(validationService.getValidationMap()).thenReturn(ValidationFactory.getAllValidationActions(validationMessage));
+      when(validationService.getValidationMap()).thenReturn(validationFactory.getAllValidationActions());
 
-      when(display.addValidationSelector(ValidationId.HTML_XML.getDisplayName(), null, true, false)).thenReturn(changeHandler);
-      when(display.addValidationSelector(ValidationId.NEW_LINE.getDisplayName(), null, true, false)).thenReturn(changeHandler);
-      when(display.addValidationSelector(ValidationId.TAB.getDisplayName(), null, true, false)).thenReturn(changeHandler);
-      when(display.addValidationSelector(ValidationId.JAVA_VARIABLES.getDisplayName(), null, true, false)).thenReturn(changeHandler);
-      when(display.addValidationSelector(ValidationId.XML_ENTITY.getDisplayName(), null, true, false)).thenReturn(changeHandler);
-      when(display.addValidationSelector(ValidationId.PRINTF_VARIABLES.getDisplayName(), null, true, false)).thenReturn(changeHandler);
-      when(display.addValidationSelector(ValidationId.PRINTF_XSI_EXTENSION.getDisplayName(), null, false, false)).thenReturn(changeHandler);
+      when(display.addValidationSelector(ValidationId.HTML_XML.getDisplayName(), validationMessage.xmlHtmlValidatorDesc(), true, false)).thenReturn(changeHandler);
+      when(display.addValidationSelector(ValidationId.NEW_LINE.getDisplayName(), validationMessage.newLineValidatorDesc(), true, false)).thenReturn(changeHandler);
+      when(display.addValidationSelector(ValidationId.TAB.getDisplayName(), validationMessage.tabValidatorDesc(), true, false)).thenReturn(changeHandler);
+      when(display.addValidationSelector(ValidationId.JAVA_VARIABLES.getDisplayName(), validationMessage.javaVariablesValidatorDesc(), true, false)).thenReturn(changeHandler);
+      when(display.addValidationSelector(ValidationId.XML_ENTITY.getDisplayName(), validationMessage.xmlEntityValidatorDesc(), true, false)).thenReturn(changeHandler);
+      when(display.addValidationSelector(ValidationId.PRINTF_VARIABLES.getDisplayName(), validationMessage.printfVariablesValidatorDesc(), true, false)).thenReturn(changeHandler);
+      when(display.addValidationSelector(ValidationId.PRINTF_XSI_EXTENSION.getDisplayName(), validationMessage.printfXSIExtensionValidationDesc(), false, false)).thenReturn(changeHandler);
 
       // When:
       presenter.onBind();

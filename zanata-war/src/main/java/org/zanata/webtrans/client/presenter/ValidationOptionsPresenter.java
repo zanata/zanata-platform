@@ -23,15 +23,15 @@ package org.zanata.webtrans.client.presenter;
 import java.util.ArrayList;
 
 import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.webtrans.client.events.RunDocValidationEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.service.ValidationService;
+import org.zanata.webtrans.client.view.ValidationOptionsDisplay;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationInfo;
-import org.zanata.webtrans.shared.model.ValidationObject;
 
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -44,21 +44,13 @@ import com.google.inject.Inject;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOptionsPresenter.Display> implements WorkspaceContextUpdateEventHandler
+public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOptionsDisplay> implements ValidationOptionsDisplay.Listener, WorkspaceContextUpdateEventHandler
 {
-   public interface Display extends WidgetDisplay
-   {
-      HasValueChangeHandlers<Boolean> addValidationSelector(String label, String tooltip, boolean enabled, boolean locked);
-
-      void changeValidationSelectorValue(String label, boolean enabled);
-
-      void clearValidationSelector();
-   }
-
    private final ValidationService validationService;
+   private MainView currentView;
 
    @Inject
-   public ValidationOptionsPresenter(Display display, EventBus eventBus, final ValidationService validationService)
+   public ValidationOptionsPresenter(ValidationOptionsDisplay display, EventBus eventBus, final ValidationService validationService)
    {
       super(display, eventBus);
       this.validationService = validationService;
@@ -68,8 +60,9 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
    protected void onBind()
    {
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this));
-
       initDisplay();
+
+      display.setListener(this);
    }
 
    public void initDisplay()
@@ -80,7 +73,7 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
       {
          ValidationInfo validationInfo = validationAction.getValidationInfo();
 
-         HasValueChangeHandlers<Boolean> changeHandler = display.addValidationSelector(validationInfo.getId().getDisplayName(), validationInfo.getDescription(), validationInfo.isEnabled(), validationInfo.isLocked());
+         HasValueChangeHandlers<Boolean> changeHandler = display.addValidationSelector(validationAction.getId().getDisplayName(), validationAction.getDescription(), validationInfo.isEnabled(), validationInfo.isLocked());
          changeHandler.addValueChangeHandler(new ValidationOptionValueChangeHandler(validationAction));
       }
    }
@@ -107,13 +100,13 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
       @Override
       public void onValueChange(ValueChangeEvent<Boolean> event)
       {
-         validationService.updateStatus(validationAction.getValidationInfo().getId(), event.getValue());
+         validationService.updateStatus(validationAction.getId(), event.getValue());
          if (event.getValue())
          {
-            for (ValidationObject excluded : validationAction.getExclusiveValidations())
+            for (ValidationAction excluded : validationAction.getExclusiveValidations())
             {
-               validationService.updateStatus(excluded.getValidationInfo().getId(), false);
-               display.changeValidationSelectorValue(excluded.getValidationInfo().getId().getDisplayName(), false);
+               validationService.updateStatus(excluded.getId(), false);
+               display.changeValidationSelectorValue(excluded.getId().getDisplayName(), false);
             }
          }
       }
@@ -125,6 +118,25 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
       validationService.setValidationRules(event.getValidationInfoList());
 
       initDisplay();
+   }
+
+   public void setCurrentView(MainView view)
+   {
+      currentView = view;
+      if (view == MainView.Documents)
+      {
+         display.setRunValidationVisible(true);
+      }
+      else
+      {
+         display.setRunValidationVisible(false);
+      }
+   }
+
+   @Override
+   public void onRunValidation()
+   {
+      eventBus.fireEvent(new RunDocValidationEvent(currentView));
    }
 }
 

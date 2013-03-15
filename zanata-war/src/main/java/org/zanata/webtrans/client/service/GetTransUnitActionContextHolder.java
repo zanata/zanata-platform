@@ -35,6 +35,7 @@ public class GetTransUnitActionContextHolder
             .changeFilterNeedReview(configHolder.getState().isFilterByNeedReview())
             .changeFilterTranslated(configHolder.getState().isFilterByTranslated())
             .changeFilterUntranslated(configHolder.getState().isFilterByUntranslated())
+            .changeFilterHasError(configHolder.getState().isFilterByHasError())
             .changeTargetTransUnitId(targetTransUnitId);
       // @formatter:on
 

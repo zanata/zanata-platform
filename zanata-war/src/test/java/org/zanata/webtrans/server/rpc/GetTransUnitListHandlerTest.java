@@ -26,7 +26,10 @@ import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TextFlowSearchService;
+import org.zanata.service.ValidationService;
 import org.zanata.service.impl.TextFlowSearchServiceImpl;
+import org.zanata.service.impl.ValidationServiceImpl;
+import org.zanata.util.ZanataMessages;
 import org.zanata.webtrans.client.service.GetTransUnitActionContext;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -46,7 +49,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
    private ZanataIdentity identity;
    @Mock
    private LocaleService localeService;
-   private final DocumentId documentId = new DocumentId(1, "");
+   private final DocumentId documentId = new DocumentId(new Long(1), "");
    private final LocaleId localeId = new LocaleId("ja");
    private HLocale jaHLocale;
 
@@ -71,12 +74,18 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
             .use("entityManager", new FullTextEntityManagerImpl(getEm()))
             .use("session", new FullTextSessionImpl(getSession()))
             .autowire(TextFlowSearchServiceImpl.class);
+      
+      ValidationService validationServiceImpl = SeamAutowire.instance()
+            .use("zanataMessages", new ZanataMessages())
+            .autowire(ValidationServiceImpl.class);
+      
       handler = SeamAutowire.instance()
             .use("identity", identity)
             .use("localeServiceImpl", localeService)
             .use("textFlowDAO", new TextFlowDAO(getSession()))
             .use("transUnitTransformer", transUnitTransformer)
             .use("textFlowSearchServiceImpl", textFlowSearchServiceImpl)
+            .use("validationServiceImpl", validationServiceImpl)
             .autowire(GetTransUnitListHandler.class);
       // @formatter:on
 
@@ -108,7 +117,6 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
       assertThat(TestFixture.asIds(result.getUnits()), Matchers.contains(1, 2, 3, 4, 5));
    }
 
-
    @Test
    public void testExecuteWithStatusFilterOnly() throws Exception
    {
@@ -121,6 +129,20 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
       assertThat(result.getDocumentId(), Matchers.equalTo(documentId));
       assertThat(result.getGotoRow(), Matchers.equalTo(0));
       assertThat(TestFixture.asIds(result.getUnits()), Matchers.contains(3, 5, 6, 7, 8));
+   }
+
+   @Test
+   public void testExecuteWithHasErrorFilterOnly() throws Exception
+   {
+      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(documentId).changeFilterHasError(true));
+      prepareActionAndMockLocaleService(action);
+
+      GetTransUnitListResult result = handler.execute(action, null);
+
+      log.info("result: {}", result);
+      assertThat(result.getDocumentId(), Matchers.equalTo(documentId));
+      assertThat(result.getGotoRow(), Matchers.equalTo(0));
+      assertThat(TestFixture.asIds(result.getUnits()), Matchers.contains(1, 2, 3, 4, 5));
    }
 
 
@@ -147,6 +169,22 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
       // Given: we want to search for file (mixed case) in fuzzy and untranslated text flows
       GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(documentId)
             .changeFindMessage("FiLe").changeFilterUntranslated(true).changeFilterNeedReview(true));
+      prepareActionAndMockLocaleService(action);
+
+      // When:
+      GetTransUnitListResult result = handler.execute(action, null);
+
+      // Then:
+      log.info("result: {}", result);
+      assertThat(result.getDocumentId(), Matchers.equalTo(documentId));
+      assertThat(result.getGotoRow(), Matchers.equalTo(0));
+      assertThat(TestFixture.asIds(result.getUnits()), Matchers.contains(3, 5, 6, 8));
+   }
+
+   @Test
+   public void testExecuteWithSearchAndStatusFilter2() throws Exception
+   {
+      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(documentId).changeFindMessage("FiLe").changeFilterUntranslated(true).changeFilterNeedReview(true).changeFilterHasError(true));
       prepareActionAndMockLocaleService(action);
 
       // When:

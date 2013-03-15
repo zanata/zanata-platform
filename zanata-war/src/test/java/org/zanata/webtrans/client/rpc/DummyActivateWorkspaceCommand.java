@@ -1,12 +1,14 @@
 package org.zanata.webtrans.client.rpc;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.zanata.common.LocaleId;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
+import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.server.locale.Gwti18nReader;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -44,18 +46,29 @@ public class DummyActivateWorkspaceCommand implements Command
       Log.info("ENTER DummyActivateWorkspaceCommand.execute()");
       WorkspaceContext context = new WorkspaceContext(action.getWorkspaceId(), "Dummy Workspace", "Mock Sweedish");
       UserWorkspaceContext userWorkspaceContext = new UserWorkspaceContext(context, true, true, true);
-      userWorkspaceContext.setSelectedDoc(new DocumentInfo(new DocumentId(1, "Dummy path/Dummy doc"), "Dummy doc", "Dummy path", LocaleId.EN_US, null, "Translator", new Date(), new HashMap<String, String>(), "last translator", new Date()));
+      userWorkspaceContext.setSelectedDoc(new DocumentInfo(new DocumentId(new Long(1), "Dummy path/Dummy doc"), "Dummy doc", "Dummy path", LocaleId.EN_US, null, "Translator", new Date(), new HashMap<String, String>(), "last translator", new Date()));
 
       Identity identity = new Identity(new EditorClientId("123456", 1), new Person(new PersonId("bob"), "Bob The Builder", "http://www.gravatar.com/avatar/bob@zanata.org?d=mm&s=16"));
 
-      Map<ValidationId, ValidationAction> validationMap = ValidationFactory.getAllValidationActions(null);
-      ArrayList<ValidationInfo> validationInfoList = new ArrayList<ValidationInfo>();
-      for (ValidationAction action : validationMap.values())
+      ValidationMessages message;
+      try
       {
-         validationInfoList.add(action.getValidationInfo());
-      }
+         message = Gwti18nReader.create(ValidationMessages.class);
+         ValidationFactory validationFactory = new ValidationFactory(message);
+         Map<ValidationId, ValidationAction> validationMap = validationFactory.getAllValidationActions();
+         Map<ValidationId, ValidationInfo> validationInfoList = new HashMap<ValidationId, ValidationInfo>();
 
-      callback.onSuccess(new ActivateWorkspaceResult(userWorkspaceContext, identity, new UserConfigHolder().getState(), validationInfoList));
-      Log.info("EXIT DummyActivateWorkspaceCommand.execute()");
+         for (ValidationAction action : validationMap.values())
+         {
+            validationInfoList.put(action.getId(), action.getValidationInfo());
+         }
+
+         callback.onSuccess(new ActivateWorkspaceResult(userWorkspaceContext, identity, new UserConfigHolder().getState(), validationInfoList));
+         Log.info("EXIT DummyActivateWorkspaceCommand.execute()");
+      }
+      catch (IOException e)
+      {
+         e.printStackTrace();
+      }
    }
 }

@@ -41,6 +41,7 @@ import org.zanata.webtrans.client.events.PageChangeEvent;
 import org.zanata.webtrans.client.events.PageCountChangeEvent;
 import org.zanata.webtrans.client.events.EditorPageSizeChangeEvent;
 import org.zanata.webtrans.client.events.EditorPageSizeChangeEventHandler;
+import org.zanata.webtrans.client.events.RequestPageValidationEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
@@ -49,6 +50,7 @@ import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.auth.EditorClientId;
+import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
@@ -57,6 +59,7 @@ import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -79,6 +82,9 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
    private final TableEditorMessages messages;
    private final SinglePageDataModelImpl pageModel;
    private NavigationService.PageDataChangeListener pageDataChangeListener;
+
+   //tracking variables
+   private GetTransUnitActionContext context;
 
    @Inject
    public NavigationService(EventBus eventBus, CachingDispatchAsync dispatcher, UserConfigHolder configHolder, TableEditorMessages messages, SinglePageDataModelImpl pageModel, ModalNavigationStateHolder navigationStateHolder, GetTransUnitActionContextHolder getTransUnitActionContextHolder)
@@ -145,6 +151,12 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
             }
             eventBus.fireEvent(new PageChangeEvent(result.getTargetPage()));
             highlightSearch();
+            if(result.isFilterByHasError())
+            {
+               //result is filtered by has error flag, run validation on all TransUnit and display error message
+               eventBus.fireEvent(new RequestPageValidationEvent());
+               
+            }
             eventBus.fireEvent(LoadingEvent.FINISH_EVENT);
          }
       });

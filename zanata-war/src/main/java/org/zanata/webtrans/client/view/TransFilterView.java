@@ -49,7 +49,7 @@ public class TransFilterView extends Composite implements TransFilterDisplay
    Styles style;
 
    @UiField
-   CheckBox translatedChk, needReviewChk, untranslatedChk;
+   CheckBox translatedChk, needReviewChk, untranslatedChk, hasErrorChk;
 
    private String hintMessage;
 
@@ -169,6 +169,12 @@ public class TransFilterView extends Composite implements TransFilterDisplay
    public HasValue<Boolean> getUntranslatedChk()
    {
       return untranslatedChk;
+   }
+
+   @Override
+   public HasValue<Boolean> getHasErrorChk()
+   {
+      return hasErrorChk;
    }
 
    @Override

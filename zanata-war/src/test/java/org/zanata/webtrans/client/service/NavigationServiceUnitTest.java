@@ -90,7 +90,7 @@ public class NavigationServiceUnitTest
 
       pageModel.setData(data.subList(0, configHolder.getState().getEditorPageSize()));
       navigationStateHolder.init(idStateMap, idIndexList);
-      initContext = new GetTransUnitActionContext(new DocumentId(1, "")).changeCount(configHolder.getState().getEditorPageSize());
+      initContext = new GetTransUnitActionContext(new DocumentId(new Long(1), "")).changeCount(configHolder.getState().getEditorPageSize());
    }
 
    private void initData()
@@ -276,7 +276,7 @@ public class NavigationServiceUnitTest
    @Test
    public void testOnDocumentSelected() throws Exception
    {
-      DocumentId documentId = new DocumentId(2, "");
+      DocumentId documentId = new DocumentId(new Long(2), "");
       service.onDocumentSelected(new DocumentSelectionEvent(documentId));
 
       verify(dispatcher).execute(actionCaptor.capture(), resultCaptor.capture());

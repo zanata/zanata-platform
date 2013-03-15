@@ -49,10 +49,11 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay> im
       @Override
       public void onValueChange(ValueChangeEvent<Boolean> event)
       {
-         eventBus.fireEvent(new FilterViewEvent(display.getTranslatedChk().getValue(), display.getNeedReviewChk().getValue(), display.getUntranslatedChk().getValue(), false));
+         eventBus.fireEvent(new FilterViewEvent(display.getTranslatedChk().getValue(), display.getNeedReviewChk().getValue(), display.getUntranslatedChk().getValue(), display.getHasErrorChk().getValue(), false, userOptionsService.getConfigHolder().getState().getEnabledValidationIds()));
          userOptionsService.getConfigHolder().setFilterByUntranslated(display.getUntranslatedChk().getValue());
          userOptionsService.getConfigHolder().setFilterByNeedReview(display.getNeedReviewChk().getValue());
          userOptionsService.getConfigHolder().setFilterByTranslated(display.getTranslatedChk().getValue());
+         userOptionsService.getConfigHolder().setFilterByHasError(display.getHasErrorChk().getValue());
       }
    };
 
@@ -75,6 +76,7 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay> im
       registerHandler(display.getTranslatedChk().addValueChangeHandler(filterChangeHandler));
       registerHandler(display.getNeedReviewChk().addValueChangeHandler(filterChangeHandler));
       registerHandler(display.getUntranslatedChk().addValueChangeHandler(filterChangeHandler));
+      registerHandler(display.getHasErrorChk().addValueChangeHandler(filterChangeHandler));
 
       display.setOptionsState(userOptionsService.getConfigHolder().getState());
    }
@@ -117,6 +119,7 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay> im
          display.getTranslatedChk().setValue(userOptionsService.getConfigHolder().getState().isFilterByTranslated(), true);
          display.getNeedReviewChk().setValue(userOptionsService.getConfigHolder().getState().isFilterByNeedReview(), true);
          display.getUntranslatedChk().setValue(userOptionsService.getConfigHolder().getState().isFilterByUntranslated(), true);
+         display.getHasErrorChk().setValue(userOptionsService.getConfigHolder().getState().isFilterByHasError(), true);
       }
 
    }
@@ -129,6 +132,7 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay> im
          display.getTranslatedChk().setValue(event.isFilterTranslated(), false);
          display.getNeedReviewChk().setValue(event.isFilterNeedReview(), false);
          display.getUntranslatedChk().setValue(event.isFilterUntranslated(), false);
+         display.getHasErrorChk().setValue(event.isFilterHasError(), false);
       }
    }
 }

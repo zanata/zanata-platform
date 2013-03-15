@@ -35,6 +35,7 @@ import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.events.RunValidationEventHandler;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
+import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.client.ui.HasUpdateValidationWarning;
@@ -57,15 +58,18 @@ public class ValidationService implements RunValidationEventHandler, TransUnitSe
 {
    private final EventBus eventBus;
    private final TableEditorMessages messages;
-   private final ValidationMessages validationMessages;
    private Map<ValidationId, ValidationAction> validationMap;
+   private final ValidationFactory validationFactory;
+   private final UserConfigHolder configHolder;
 
    @Inject
-   public ValidationService(final EventBus eventBus, final TableEditorMessages messages, final ValidationMessages validationMessages)
+   public ValidationService(final EventBus eventBus, final TableEditorMessages messages, final ValidationMessages validationMessages, final UserConfigHolder configHolder)
    {
       this.eventBus = eventBus;
       this.messages = messages;
-      this.validationMessages = validationMessages;
+      this.configHolder = configHolder;
+      
+      validationFactory = new ValidationFactory(validationMessages);
 
       eventBus.addHandler(RunValidationEvent.getType(), this);
       eventBus.addHandler(TransUnitSelectionEvent.getType(), this);
@@ -123,6 +127,8 @@ public class ValidationService implements RunValidationEventHandler, TransUnitSe
       ValidationAction action = validationMap.get(key);
       action.getValidationInfo().setEnabled(isEnabled);
 
+      updateConfigHolder();
+
       // request re-run validation with new options
       eventBus.fireEvent(RequestValidationEvent.EVENT);
    }
@@ -160,20 +166,34 @@ public class ValidationService implements RunValidationEventHandler, TransUnitSe
    }
 
    /**
-    * Merge ValidationInfo from RPC result ValidationObject to all validation
+    * Merge ValidationInfo from RPC result ValidationAction to all validation
     * actions from ValidationFactory
     * 
     * @param validationInfoList
     */
-   public void setValidationRules(List<ValidationInfo> validationInfoList)
+   public void setValidationRules(Map<ValidationId, ValidationInfo> validationInfoMap)
    {
-      Map<ValidationId, ValidationAction> validationMap = ValidationFactory.getAllValidationActions(validationMessages);
+      Map<ValidationId, ValidationAction> validationMap = validationFactory.getAllValidationActions();
       
-      for (ValidationInfo valInfo : validationInfoList)
+      for (Map.Entry<ValidationId, ValidationInfo> entry : validationInfoMap.entrySet())
       {
-         validationMap.get(valInfo.getId()).setValidationInfo(valInfo);
+         validationMap.get(entry.getKey()).setValidationInfo(entry.getValue());
       }
       
       this.validationMap = validationMap;
+      updateConfigHolder();
+   }
+
+   private void updateConfigHolder()
+   {
+      ArrayList<ValidationId> enabledValidations = new ArrayList<ValidationId>();
+      for (ValidationAction valAction : getValidationMap().values())
+      {
+         if (valAction.getValidationInfo().isEnabled())
+         {
+            enabledValidations.add(valAction.getId());
+         }
+      }
+      configHolder.setEnabledValidationIds(enabledValidations);
    }
 }

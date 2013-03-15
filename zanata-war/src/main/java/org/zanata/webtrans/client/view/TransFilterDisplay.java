@@ -30,4 +30,6 @@ public interface TransFilterDisplay extends WidgetDisplay, SearchFieldListener
    HasValue<Boolean> getUntranslatedChk();
 
    void setOptionsState(ConfigurationState state);
+
+   HasValue<Boolean> getHasErrorChk();
 }

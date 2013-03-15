@@ -297,6 +297,6 @@ public class TransUnitSaveServiceTest
 
    private static UpdateTransUnitResult result(boolean success, TransUnit transUnit, ContentState previousState)
    {
-      return new UpdateTransUnitResult(new TransUnitUpdateInfo(success, true, new DocumentId(1, ""), transUnit, 9, VER_NUM, previousState));
+      return new UpdateTransUnitResult(new TransUnitUpdateInfo(success, true, new DocumentId(new Long(1), ""), transUnit, 9, VER_NUM, previousState));
    }
 }

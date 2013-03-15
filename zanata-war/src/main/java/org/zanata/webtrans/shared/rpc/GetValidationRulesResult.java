@@ -1,7 +1,8 @@
 package org.zanata.webtrans.shared.rpc;
 
-import java.util.List;
+import java.util.Map;
 
+import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
 
 
@@ -11,19 +12,19 @@ public class GetValidationRulesResult implements DispatchResult
 
    private static final long serialVersionUID = 1L;
 
-   private List<ValidationInfo> validations;
+   private Map<ValidationId, ValidationInfo> validations;
 
    @SuppressWarnings("unused")
    private GetValidationRulesResult()
    {
    }
 
-   public GetValidationRulesResult(List<ValidationInfo> validations)
+   public GetValidationRulesResult(Map<ValidationId, ValidationInfo> validations)
    {
       this.validations = validations;
    }
 
-   public List<ValidationInfo> getValidations()
+   public Map<ValidationId, ValidationInfo> getValidations()
    {
       return validations;
    }

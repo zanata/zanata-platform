@@ -46,29 +46,29 @@ public class TransUnitTransformer
 
    public TransUnit transform(HTextFlow hTextFlow, HLocale hLocale)
    {
+      HTextFlowTarget target = hTextFlow.getTargets().get(hLocale.getId());
+
+      return transform(hTextFlow, target, hLocale);
+   }
+
+   public TransUnit transform(HTextFlow hTextFlow, HTextFlowTarget target)
+   {
+      return transform(hTextFlow, target, target.getLocale());
+   }
+
+   private TransUnit transform(HTextFlow hTextFlow, HTextFlowTarget target, HLocale hLocale)
+   {
       String msgContext = null;
       if (hTextFlow.getPotEntryData() != null)
       {
          msgContext = hTextFlow.getPotEntryData().getContext();
       }
-      HTextFlowTarget target = hTextFlow.getTargets().get(hLocale.getId());
 
       int nPlurals = resourceUtils.getNumPlurals(hTextFlow.getDocument(), hLocale);
       ArrayList<String> sourceContents = GwtRpcUtil.getSourceContents(hTextFlow);
       ArrayList<String> targetContents = GwtRpcUtil.getTargetContentsWithPadding(hTextFlow, target, nPlurals);
 
-      TransUnit.Builder builder = TransUnit.Builder.newTransUnitBuilder()
-            .setId(hTextFlow.getId())
-            .setResId(hTextFlow.getResId())
-            .setLocaleId(hLocale.getLocaleId())
-            .setPlural(hTextFlow.isPlural())
-            .setSources(sourceContents)
-            .setSourceComment(commentToString(hTextFlow.getComment()))
-            .setTargets(targetContents)
-            .setTargetContent(target == null ? null : commentToString(target.getComment()))
-            .setMsgContext(msgContext)
-            .setRowIndex(hTextFlow.getPos())
-            .setVerNum(target == null ? NULL_TARGET_VERSION_NUM : target.getVersionNum());
+      TransUnit.Builder builder = TransUnit.Builder.newTransUnitBuilder().setId(hTextFlow.getId()).setResId(hTextFlow.getResId()).setLocaleId(hLocale.getLocaleId()).setPlural(hTextFlow.isPlural()).setSources(sourceContents).setSourceComment(commentToString(hTextFlow.getComment())).setTargets(targetContents).setTargetContent(target == null ? null : commentToString(target.getComment())).setMsgContext(msgContext).setRowIndex(hTextFlow.getPos()).setVerNum(target == null ? NULL_TARGET_VERSION_NUM : target.getVersionNum());
 
       if (target != null)
       {

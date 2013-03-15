@@ -161,7 +161,7 @@ public class Application implements EntryPoint
       Window.enableScrolling(true);
       // eager load document list
       final EventBus eventBus = injector.getEventBus();
-      injector.getDispatcher().execute(new GetDocumentList(getWorkspaceId().getProjectIterationId(), injector.getLocation().getQueryDocuments()), new AsyncCallback<GetDocumentListResult>()
+      injector.getDispatcher().execute(new GetDocumentList(injector.getLocation().getQueryDocuments()), new AsyncCallback<GetDocumentListResult>()
       {
          @Override
          public void onFailure(Throwable caught)

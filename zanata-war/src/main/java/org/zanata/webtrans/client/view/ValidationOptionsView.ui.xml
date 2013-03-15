@@ -15,18 +15,29 @@
 			border-radius:5px;
 			color:#FFFFFF;
 		}
+		
+		.runValidationButton
+		{
+			color:#000000;
+			border-radius: 3px;
+			width:85px;
+			margin-top:10px;
+		}
         
 	</ui:style>
     
     
     <g:LayoutPanel>
     	<g:layer top="5px" bottom="0" left="5px" right="5px">
-    		 <g:ScrollPanel styleName="{style.mainPanel}">
-		        <g:VerticalPanel width="100%">
-		            <g:Label ui:field="validationOptionsHeader" styleName="gwt-sideMenu-header"/>
-		            <g:VerticalPanel ui:field="contentPanel" width="100%"/>
-		        </g:VerticalPanel>
-		    </g:ScrollPanel>
+    		<g:HTMLPanel>
+	    		 <g:ScrollPanel styleName="{style.mainPanel}">
+			        <g:VerticalPanel width="100%">
+			            <g:Label ui:field="validationOptionsHeader" styleName="gwt-sideMenu-header"/>
+			            <g:VerticalPanel ui:field="contentPanel" width="100%"/>
+			        </g:VerticalPanel>
+			    </g:ScrollPanel>
+			    <g:PushButton ui:field="runValidation" addStyleNames="{style.runValidationButton}"/>
+		    </g:HTMLPanel>
     	</g:layer>
     </g:LayoutPanel>
 		

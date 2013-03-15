@@ -37,7 +37,7 @@ import org.zanata.service.LocaleService;
 import org.zanata.service.ValidationService;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.auth.EditorClientId;
-import org.zanata.webtrans.shared.model.ValidationObject;
+import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.ExitWorkspace;
@@ -180,7 +180,7 @@ public class TranslationWorkspaceManagerImplTest
       hLocale.setActive(true);
       when(localeServiceImpl.getByLocaleId(workspaceId.getLocaleId())).thenReturn(hLocale);
 
-      when(validationServiceImpl.getValidationObject(projectIteration)).thenReturn(new ArrayList<ValidationObject>());
+      when(validationServiceImpl.getValidationObject(projectIteration)).thenReturn(new ArrayList<ValidationAction>());
 
       TranslationWorkspaceManagerImpl spy = spy(manager);
       doReturn(mockWorkspace).when(spy).createWorkspace(workspaceId);
