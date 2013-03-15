@@ -256,7 +256,7 @@
         <rich:modalPanel id="versionSearchPanel" width="530" height="440" rendered="#{identity.loggedIn and s:hasPermission(viewAllStatusAction.projectIteration, 'update')}">
             <f:subview id="versionSearch">
                 <a4j:form>
-                    <h1>Find Group</h1>
+                    <h1>#{messages['jsf.group.FindGroup']}</h1>
                     <p>
                         <h:inputText value="#{viewAllStatusAction.searchTerm}"
                                      onkeydown="return submitSearchOnEnter(event)"/>
