@@ -72,7 +72,7 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
                lastTranslatedDate = result.getLastChanged();
                if (result.getLastModifiedBy() != null)
                {
-                  lastTranslatedBy = result.getLastModifiedBy().getName();
+                  lastTranslatedBy = result.getLastModifiedBy().getAccount().getUsername();
                }
             }
 
