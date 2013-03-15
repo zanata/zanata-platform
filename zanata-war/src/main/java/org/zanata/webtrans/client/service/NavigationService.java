@@ -41,6 +41,7 @@ import org.zanata.webtrans.client.events.PageChangeEvent;
 import org.zanata.webtrans.client.events.PageCountChangeEvent;
 import org.zanata.webtrans.client.events.EditorPageSizeChangeEvent;
 import org.zanata.webtrans.client.events.EditorPageSizeChangeEventHandler;
+import org.zanata.webtrans.client.events.RequestPageValidationEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
@@ -150,6 +151,12 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
             }
             eventBus.fireEvent(new PageChangeEvent(result.getTargetPage()));
             highlightSearch();
+            if(result.isFilterByHasError())
+            {
+               //result is filtered by has error flag, run validation on all TransUnit and display error message
+               eventBus.fireEvent(new RequestPageValidationEvent());
+               
+            }
             eventBus.fireEvent(LoadingEvent.FINISH_EVENT);
          }
       });
