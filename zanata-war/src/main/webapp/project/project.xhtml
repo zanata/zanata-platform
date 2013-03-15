@@ -41,9 +41,9 @@
             		<h:outputText styleClass="icon-block obsoleteIcon" title="#{messages['jsf.ObsoleteVersions']}" rendered="#{projectHome.getEffectiveVersionStatus(_version) == 'OBSOLETE'}"/>
                 	<span class="version_title">#{_version.slug}</span>
                 </s:link>
-               	<span class="version_info">Documents: #{_version.documents.size}</span>
+                <span class="version_info">#{messages['jsf.DocumentCount']} #{_version.documents.size}</span>
             </rich:column>
-            
+
             <rich:column styleClass="centered" rendered="#{identity.loggedIn}">
             	<f:facet name="header">#{messages['jsf.TranslateLinks']}</f:facet>
             	<rich:dataGrid value="#{versionDetailsAction.getSupportedLocaleList(_version.slug)}" var="language"  columns="3" styleClass="version_details_panel" >
@@ -58,7 +58,7 @@
 							<span>#{language.localeId.id}</span>
 							<span class="icon-eye icon"/>
 						</h:outputLink>
-		
+
 						<h:outputLink
 							rendered="#{applicationConfiguration.debug and not projectHome.isUserAllowedToTranslate(_version.slug, language)}"
 							value="#{request.contextPath}/webtrans/Application.seam" styleClass="table_link" title="#{messages['jsf.OpenGWTDevMode']}">
@@ -70,7 +70,7 @@
 							<span>#{language.localeId.id}</span>
 							<span class="icon-eye icon" />
 		    			</h:outputLink>
-		
+
 						<h:outputLink
 							rendered="#{not applicationConfiguration.debug and projectHome.isUserAllowedToTranslate(_version.slug, language)}"
 							value="#{request.contextPath}/webtrans/Application.seam" styleClass="table_link" title="#{messages['jsf.Translate']}">
@@ -81,7 +81,7 @@
 							<span>#{language.localeId.id}</span>
 							<span class="icon-edit icon"/>
 		    			</h:outputLink>
-		    					
+
 						<h:outputLink
 							rendered="#{applicationConfiguration.debug and projectHome.isUserAllowedToTranslate(_version.slug, language)}"
 							value="#{request.contextPath}/webtrans/Application.seam" styleClass="table_link" title="#{messages['jsf.TranslateGWTDevMode']}">
@@ -96,21 +96,21 @@
 	    			</s:div>
 		 		</rich:dataGrid>
             </rich:column>
-            
+
             <rich:column styleClass="centered"> 
             	<f:facet name="header">#{messages['jsf.ManageVersion']}</f:facet>
-            	
+
             	<h:commandButton value="#{messages['jsf.Edit']}"
 							action="#{versionDetailsAction.editVersion(_version.slug)}" rendered="#{s:hasPermission(_version, 'update')}" title="#{messages['jsf.EditVersion']}">
 				</h:commandButton>
-				
+
 				<h:commandButton value="#{messages['jsf.SourceDocs']}"
 							action="#{versionDetailsAction.sourceDocs(_version.slug)}" title="#{messages['jsf.SourceDocuments']}">
 				</h:commandButton>
-						
+
             </rich:column>
         </rich:dataTable>
-        
+
         </a4j:form>
    	</div>
     </s:decorate>
