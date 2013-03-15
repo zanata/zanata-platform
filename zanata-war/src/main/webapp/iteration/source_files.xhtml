@@ -41,10 +41,10 @@
             <rich:datascroller id="data_table_scroller" align="center" for="data_table"
                                rendered="#{projectIterationFilesAction.iterationDocuments.size() > 20}">
                 <f:facet name="next">
-                    <h:outputText value="next" style="font-size: 0.8em"/>
+                    <h:outputText value="#{messages['jsf.pager.NextPage']}" style="font-size: 0.8em"/>
                 </f:facet>
                 <f:facet name="previous">
-                    <h:outputText value="prev" style="font-size: 0.8em"/>
+                    <h:outputText value="#{messages['jsf.pager.PreviousPage']}" style="font-size: 0.8em"/>
                 </f:facet>
             </rich:datascroller>
             <rich:spacer height="20"/>
