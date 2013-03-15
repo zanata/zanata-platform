@@ -115,8 +115,8 @@ public class TranslationStateCacheImplTest
       when(lastModifiedLoader.load(key)).thenReturn(targetId);
       when(textFlowTargetDAO.findById(targetId, false)).thenReturn(target);
       
-      HTextFlowTarget result1 = tsCache.getLastModifiedTextFlowTarget(documentId, testLocaleId);
-      HTextFlowTarget result2 = tsCache.getLastModifiedTextFlowTarget(documentId, testLocaleId);
+      HTextFlowTarget result1 = tsCache.getDocLastModifiedTextFlowTarget(documentId, testLocaleId);
+      HTextFlowTarget result2 = tsCache.getDocLastModifiedTextFlowTarget(documentId, testLocaleId);
 
       // Then:
       verify(lastModifiedLoader).load(key); // only load the value once

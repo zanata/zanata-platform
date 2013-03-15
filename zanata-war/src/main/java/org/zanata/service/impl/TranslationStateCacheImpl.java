@@ -62,7 +62,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache
    private static final String BASE = TranslationStateCacheImpl.class.getName();
    private static final String CACHE_NAME = BASE+".filterCache";
    private static final String TRANSLATED_TEXT_FLOW_CACHE_NAME = BASE+".translatedTextFlowCache";
-   private static final String LAST_MODIFIED_TFT_CACHE_NAME = BASE + ".lastModifiedCache";
+   private static final String DOC_LAST_MODIFIED_TFT_CACHE_NAME = BASE + ".docLastModifiedCache";
 
    @In
    private TextFlowDAO textFlowDAO;
@@ -76,27 +76,27 @@ public class TranslationStateCacheImpl implements TranslationStateCache
    private CacheManager cacheManager;
    private CacheWrapper<LocaleId, TranslatedTextFlowFilter> filterCache;
    private CacheWrapper<LocaleId, OpenBitSet> translatedTextFlowCache;
-   private CacheWrapper<TranslatedDocumentKey, Long> lastModifiedCache;
+   private CacheWrapper<TranslatedDocumentKey, Long> docLastModifiedCache;
    private CacheLoader<LocaleId, TranslatedTextFlowFilter> filterLoader;
    private CacheLoader<LocaleId, OpenBitSet> bitsetLoader;
-   private CacheLoader<TranslatedDocumentKey, Long> lastModifiedLoader;
+   private CacheLoader<TranslatedDocumentKey, Long> docLastModifiedLoader;
 
    public TranslationStateCacheImpl()
    {
       // constructor for Seam
       this.filterLoader = new FilterLoader();
       this.bitsetLoader = new BitsetLoader();
-      this.lastModifiedLoader = new HTextFlowTargetIdLoader();
+      this.docLastModifiedLoader = new HTextFlowTargetIdLoader();
    }
 
    public TranslationStateCacheImpl(
          CacheLoader<LocaleId, TranslatedTextFlowFilter> filterLoader,
- CacheLoader<LocaleId, OpenBitSet> bitsetLoader, CacheLoader<TranslatedDocumentKey, Long> lastModifiedLoader, TextFlowTargetDAO textFlowTargetDAO)
+ CacheLoader<LocaleId, OpenBitSet> bitsetLoader, CacheLoader<TranslatedDocumentKey, Long> docLastModifiedLoader, TextFlowTargetDAO textFlowTargetDAO)
    {
       // constructor for testing
       this.filterLoader = filterLoader;
       this.bitsetLoader = bitsetLoader;
-      this.lastModifiedLoader = lastModifiedLoader;
+      this.docLastModifiedLoader = docLastModifiedLoader;
       this.textFlowTargetDAO = textFlowTargetDAO;
    }
    
@@ -106,7 +106,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache
       cacheManager = CacheManager.create();
       filterCache = EhcacheWrapper.create(CACHE_NAME, cacheManager, filterLoader);
       translatedTextFlowCache = EhcacheWrapper.create(TRANSLATED_TEXT_FLOW_CACHE_NAME, cacheManager, bitsetLoader);
-      lastModifiedCache = EhcacheWrapper.create(LAST_MODIFIED_TFT_CACHE_NAME, cacheManager, lastModifiedLoader);
+      docLastModifiedCache = EhcacheWrapper.create(DOC_LAST_MODIFIED_TFT_CACHE_NAME, cacheManager, docLastModifiedLoader);
    }
 
    @Destroy
@@ -126,7 +126,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache
    {
       updateTranslatedTextFlowCache(textFlowId, localeId, newState);
       updateFilterCache(textFlowId, localeId, newState);
-      updateLastModifiedCache(textFlowId, localeId, newState);
+      updateDocLastModifiedCache(textFlowId, localeId, newState);
    }
 
    @Override
@@ -136,9 +136,9 @@ public class TranslationStateCacheImpl implements TranslationStateCache
    }
 
    @Override
-   public HTextFlowTarget getLastModifiedTextFlowTarget(Long documentId, LocaleId localeId)
+   public HTextFlowTarget getDocLastModifiedTextFlowTarget(Long documentId, LocaleId localeId)
    {
-      Long targetId = lastModifiedCache.getWithLoader(new TranslatedDocumentKey(documentId, localeId));
+      Long targetId = docLastModifiedCache.getWithLoader(new TranslatedDocumentKey(documentId, localeId));
       if (targetId == null)
       {
          return null;
@@ -155,13 +155,13 @@ public class TranslationStateCacheImpl implements TranslationStateCache
       }
    }
 
-   private void updateLastModifiedCache(Long textFlowId, LocaleId localeId, ContentState newState)
+   private void updateDocLastModifiedCache(Long textFlowId, LocaleId localeId, ContentState newState)
    {
       HTextFlow tf = textFlowDAO.findById(textFlowId, false);
       Long documentId = tf.getDocument().getId();
 
       HTextFlowTarget target = textFlowTargetDAO.getTextFlowTarget(tf, localeId);
-      lastModifiedCache.put(new TranslatedDocumentKey(documentId, localeId), target.getId());
+      docLastModifiedCache.put(new TranslatedDocumentKey(documentId, localeId), target.getId());
    }
 
    private void updateTranslatedTextFlowCache(Long textFlowId, LocaleId localeId, ContentState newState)

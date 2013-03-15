@@ -186,7 +186,7 @@ public class ProjectIterationFilesAction implements Serializable
       }
    }
 
-   public TranslationStatistics getTransUnitForDocument(HDocument doc)
+   public TranslationStatistics getStatsForDocument(HDocument doc)
    {
       if (!statisticMap.containsKey(doc.getDocId()))
       {

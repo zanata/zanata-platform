@@ -62,7 +62,7 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
          {
             DocumentId docId = new DocumentId(hDoc.getId(), hDoc.getDocId());
             TranslationStats stats = documentDAO.getStatistics(hDoc.getId(), localeId);
-            HTextFlowTarget result = translationStateCacheImpl.getLastModifiedTextFlowTarget(hDoc.getId(), localeId);
+            HTextFlowTarget result = translationStateCacheImpl.getDocLastModifiedTextFlowTarget(hDoc.getId(), localeId);
             
             Date lastTranslatedDate = null;
             String lastTranslatedBy = "";

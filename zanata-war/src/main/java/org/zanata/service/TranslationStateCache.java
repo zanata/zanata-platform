@@ -70,5 +70,5 @@ public interface TranslationStateCache
     * @param localeId
     * @return
     */
-   HTextFlowTarget getLastModifiedTextFlowTarget(Long documentId, LocaleId localeId);
+   HTextFlowTarget getDocLastModifiedTextFlowTarget(Long documentId, LocaleId localeId);
 }
