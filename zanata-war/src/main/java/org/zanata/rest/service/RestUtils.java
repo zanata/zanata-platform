@@ -3,10 +3,8 @@ package org.zanata.rest.service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Set;
-
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
@@ -26,16 +24,7 @@ public class RestUtils
    private static final Logger log = LoggerFactory.getLogger(RestUtils.class);
 
    @In
-   ValidatorFactory validatorFactory;
-
-   public RestUtils()
-   {
-   }
-
-   public RestUtils(ValidatorFactory validatorFactory)
-   {
-      this.validatorFactory = validatorFactory;
-   }
+   Validator validator;
 
    /**
     * Validate Hibernate Validator based constraints.
@@ -49,7 +38,6 @@ public class RestUtils
    @SuppressWarnings("unchecked")
    public <T> void validateEntity(T entity)
    {
-      Validator validator = validatorFactory.getValidator();
       validator.getConstraintsForClass(entity.getClass());
       Set<ConstraintViolation<T>> violations = validator.validate(entity);
       if (!violations.isEmpty())
