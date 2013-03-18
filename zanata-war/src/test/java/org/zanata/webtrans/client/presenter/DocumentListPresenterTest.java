@@ -125,8 +125,7 @@ public class DocumentListPresenterTest
       when(mockWorkspaceContext.getWorkspaceId()).thenReturn(workspaceId);
 
       when(mockMessages.projectTypeNotSet()).thenReturn("Project not set");
-      when(mockMessages.projectTypeNotAllowed()).thenReturn("Project type not allow");
-      when(mockMessages.downloadAllTranslatedFiles()).thenReturn("Download all translation file");
+      when(mockMessages.downloadAllAsZipDescription()).thenReturn("Download all translation file");
    }
 
    @Test
@@ -454,7 +453,7 @@ public class DocumentListPresenterTest
 
       documentListPresenter.bind();
       documentListPresenter.setDocuments(buildSampleDocumentArray());
-      
+
       verify(mockDataProvider).refresh();
 
       // third document from buildSampleDocumentArray()
@@ -471,7 +470,7 @@ public class DocumentListPresenterTest
    {
       when(mockDisplay.getDataProvider()).thenReturn(mockDataProvider);
       when(mockDataProvider.getList()).thenReturn(dataProviderList);
-      
+
       documentListPresenter.bind();
       documentListPresenter.setDocuments(buildSampleDocumentArray());
 
@@ -513,7 +512,7 @@ public class DocumentListPresenterTest
    {
       WorkspaceContextUpdateEvent event = new WorkspaceContextUpdateEvent(workplaceContextData(true, ProjectType.Gettext));
       documentListPresenter.onWorkspaceContextUpdated(event);
-      
+
       verify(mockDisplay).setEnableDownloadZip(documentListPresenter.isZipFileDownloadAllowed(event.getProjectType()));
       verify(mockDisplay).setDownloadZipButtonTitle(isA(String.class));
    }

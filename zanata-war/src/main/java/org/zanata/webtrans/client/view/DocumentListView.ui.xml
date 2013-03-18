@@ -14,19 +14,19 @@
         .mainPanel {
             background-color: #ffffff;
         }
-        
+
         .optionStyle
         {
 			font-size:13px;
 			color:#595959;
 		}
-		
+
 		.statsOption
 		{
 			display:inline-block;
 			text-align:left;
 		}
-		
+
 		.topBar
 		{
 			border-bottom:1px solid lightGrey;
@@ -36,20 +36,21 @@
 			padding-left:10px;
 			padding-right:10px;
 		}
-		
+
 		.listContainer
 		{
 			padding:10px;
 		}
-		
+
 		.downloadAllFilesButton
 		{
-			width:135px;
+			width:200px;
 			display:inline-block;
+			text-align: center;
 			margin-left:3px;
 		}
-		
     </ui:style>
+
     <g:LayoutPanel>
         <g:layer top="0px" bottom="0px">
             <g:LayoutPanel styleName="{style.mainPanel}">
@@ -86,5 +87,4 @@
         </g:layer>
     </g:LayoutPanel>
 
-    
 </ui:UiBinder> 

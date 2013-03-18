@@ -30,16 +30,20 @@ public class DownloadAllFilesAction implements DispatchAction<DownloadAllFilesRe
    private static final long serialVersionUID = 1L;
 
    private String projectSlug, versionSlug, localeId;
+
+   private boolean offlinePo;
+
    @SuppressWarnings("unused")
    private DownloadAllFilesAction()
    {
    }
 
-   public DownloadAllFilesAction(String projectSlug, String versionSlug, String localeId)
+   public DownloadAllFilesAction(String projectSlug, String versionSlug, String localeId, boolean offlinePo)
    {
       this.projectSlug = projectSlug;
       this.versionSlug = versionSlug;
       this.localeId = localeId;
+      this.offlinePo = offlinePo;
    }
 
    public String getProjectSlug()
@@ -55,6 +59,11 @@ public class DownloadAllFilesAction implements DispatchAction<DownloadAllFilesRe
    public String getLocaleId()
    {
       return localeId;
+   }
+
+   public boolean isOfflinePo()
+   {
+      return offlinePo;
    }
 
 }
