@@ -23,7 +23,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class DownloadFilesConfirmationBox extends DialogBox
 {
-   
+
    private final HorizontalPanel infoPanel;
    private final HorizontalPanel progressPanel;
    private final Label progressMessage;
@@ -34,7 +34,7 @@ public class DownloadFilesConfirmationBox extends DialogBox
    private final PushButton okButton;
 
    private final String defaultMessage = "Your download will be prepared and may take a few minutes to complete. Is this ok?";
-   
+
    public DownloadFilesConfirmationBox(boolean autoHide, final Resources resources)
    {
       super(autoHide);
@@ -43,11 +43,11 @@ public class DownloadFilesConfirmationBox extends DialogBox
       setStyleName("gwt-DialogBox-NoFixedSize");
 
       VerticalPanel panel = new VerticalPanel();
-      
+
       Label infoMessage = new Label(defaultMessage);
       InlineLabel infoImg = new InlineLabel();
       infoImg.setStyleName("icon-help-circle");
-      
+
       infoPanel = new HorizontalPanel();
       infoPanel.setStyleName("info");
       infoPanel.add(infoImg);
@@ -56,35 +56,35 @@ public class DownloadFilesConfirmationBox extends DialogBox
 
       cancelButton = new PushButton("Cancel");
       cancelButton.addStyleName("button");
-      
+
       okButton = new PushButton("OK");
       okButton.addStyleName("button");
-      
+
       HorizontalPanel buttonPanel = new HorizontalPanel();
       buttonPanel.setStyleName("buttonPanel");
       buttonPanel.add(cancelButton);
       buttonPanel.add(okButton);
-      
+
       progressImage = new Image(resources.progressLoading());
       progressMessage = new Label();
-      
+
       progressPanel = new HorizontalPanel();
       progressPanel.setSpacing(5);
       progressPanel.setStyleName("progress");
       progressPanel.setVisible(false);
       showDownloadLink(false);
-      
-      
+
+
       panel.add(infoPanel);
       panel.add(progressPanel);
       panel.add(buttonPanel);
-      
+
       panel.setCellHorizontalAlignment(infoPanel, HasHorizontalAlignment.ALIGN_CENTER);
       panel.setCellHorizontalAlignment(progressPanel, HasHorizontalAlignment.ALIGN_CENTER);
       panel.setCellHorizontalAlignment(buttonPanel, HasHorizontalAlignment.ALIGN_RIGHT);
 
       add(panel);
-      
+
       downloadLink = new Anchor("Click here to download");
       downloadLink.setTarget("_blank");
    }
@@ -99,10 +99,10 @@ public class DownloadFilesConfirmationBox extends DialogBox
             listener.cancelDownloadAllFiles();
          }
       });
-      
+
       okButton.addClickHandler(new ClickHandler()
       {
-         
+
          @Override
          public void onClick(ClickEvent event)
          {
@@ -122,17 +122,17 @@ public class DownloadFilesConfirmationBox extends DialogBox
       {
          progressPanel.add(progressImage);
          progressPanel.add(progressMessage);
-         
+
          progressPanel.setCellVerticalAlignment(progressImage, HasVerticalAlignment.ALIGN_MIDDLE);
          progressPanel.setCellVerticalAlignment(progressMessage, HasVerticalAlignment.ALIGN_MIDDLE);
       }
    }
-   
+
    public void setProgressMessage(String text)
    {
-	   progressMessage.setText(text);
+      progressMessage.setText(text);
    }
-   
+
    public void setInProgress(boolean inProgress)
    {
       progressPanel.setVisible(inProgress);
@@ -140,8 +140,8 @@ public class DownloadFilesConfirmationBox extends DialogBox
 
    public void hide()
    {
-	  setInProgress(false);
-	  showDownloadLink(false);
+      setInProgress(false);
+      showDownloadLink(false);
      super.hide();
    }
 
