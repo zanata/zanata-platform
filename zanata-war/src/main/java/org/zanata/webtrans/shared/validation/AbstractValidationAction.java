@@ -74,6 +74,7 @@ public abstract class AbstractValidationAction implements ValidationAction
    {
       if (!Strings.isNullOrEmpty(target) && !Strings.isNullOrEmpty(source))
       {
+         clearErrorMessage();
          doValidate(source, target);
       }
    }

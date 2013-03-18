@@ -107,7 +107,6 @@ public class ValidationService implements RunValidationEventHandler, TransUnitSe
       {
          if (validationAction.getValidationInfo().isEnabled())
          {
-            validationAction.clearErrorMessage();
             validationAction.validate(source, target);
             errors.addAll(validationAction.getError());
          }

@@ -3,7 +3,6 @@
  */
 package org.zanata.service.impl;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -22,15 +21,13 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.exception.ValidationException;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.service.ValidationFactoryProvider;
 import org.zanata.service.ValidationService;
-import org.zanata.webtrans.client.resources.ValidationMessages;
-import org.zanata.webtrans.server.locale.Gwti18nReader;
 import org.zanata.webtrans.server.rpc.TransUnitTransformer;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -69,17 +66,7 @@ public class ValidationServiceImpl implements ValidationService
    {
       if (validationFactory == null)
       {
-         ValidationMessages valMessages;
-         try
-         {
-            valMessages = Gwti18nReader.create(ValidationMessages.class);
-            validationFactory = new ValidationFactory(valMessages);
-         }
-         catch (IOException e)
-         {
-            throw new ValidationException("Unable to load validation messages");
-         }
-
+         validationFactory = ValidationFactoryProvider.getFactoryInstance();
       }
       return validationFactory;
    }
@@ -170,7 +157,6 @@ public class ValidationServiceImpl implements ValidationService
             {
                for (ValidationAction validationAction : validationActions)
                {
-                  validationAction.clearErrorMessage();
                   validationAction.validate(textFlow.getContents().get(0), target.getContents().get(0));
                   if (validationAction.hasError())
                   {
@@ -208,7 +194,7 @@ public class ValidationServiceImpl implements ValidationService
 
       for (HDocument hDoc : hDocs)
       {
-         boolean hasValidationError = validationDocuments(hDoc, validationActions, localeId);
+         boolean hasValidationError = documentHasError(hDoc, validationActions, localeId);
          validationResult.put(new DocumentId(hDoc.getId(), hDoc.getDocId()), hasValidationError);
       }
 
@@ -216,11 +202,11 @@ public class ValidationServiceImpl implements ValidationService
       return validationResult;
    }
 
-   private boolean validationDocuments(HDocument hDoc, List<ValidationAction> validationActions, Long localeId)
+   private boolean documentHasError(HDocument hDoc, List<ValidationAction> validationActions, Long localeId)
    {
       for (HTextFlow textFlow : hDoc.getTextFlows())
       {
-         if (validationTextFlow(textFlow, validationActions, localeId))
+         if (textFlowTargetHasError(textFlow, validationActions, localeId))
          {
             // return true if error found, else continue
             return true;
@@ -240,7 +226,7 @@ public class ValidationServiceImpl implements ValidationService
       
       for (HTextFlow textFlow : textFlows)
       {
-         if(validationTextFlow(textFlow, validationActions, localeId))
+         if(textFlowTargetHasError(textFlow, validationActions, localeId))
          {
             result.add(textFlow);
          }
@@ -249,14 +235,13 @@ public class ValidationServiceImpl implements ValidationService
       return result;
    }
 
-   private boolean validationTextFlow(HTextFlow textFlow, List<ValidationAction> validationActions, Long localeId)
+   private boolean textFlowTargetHasError(HTextFlow textFlow, List<ValidationAction> validationActions, Long localeId)
    {
       HTextFlowTarget target = textFlow.getTargets().get(localeId);
       if (target != null)
       {
          for (ValidationAction validationAction : validationActions)
          {
-            validationAction.clearErrorMessage();
             validationAction.validate(textFlow.getContents().get(0), target.getContents().get(0));
             if (validationAction.hasError())
             {
