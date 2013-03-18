@@ -1,9 +1,14 @@
 package org.zanata.webtrans.client.history;
 
-import org.zanata.webtrans.client.presenter.MainView;
+import java.util.List;
 
-import com.allen_sauer.gwt.log.client.Log;
+import org.zanata.webtrans.client.presenter.MainView;
+import com.beust.jcommander.internal.Lists;
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
+import com.google.common.collect.Iterables;
 
 /**
  * Encapsulates a string token of key-value pairs for GWT history operations.
@@ -13,36 +18,23 @@ import com.google.common.base.Strings;
  */
 public class HistoryToken
 {
-   private static final String DELIMITER_K_V = ":";
    private static final String PAIR_SEPARATOR = ";";
+   private static final Splitter SPLITTER = Splitter.on(PAIR_SEPARATOR).omitEmptyStrings().trimResults();
+   private static final Joiner JOINER = Joiner.on(PAIR_SEPARATOR).skipNulls();
 
-   public static final String KEY_DOCUMENT = "doc";
-
-   public static final String KEY_VIEW = "view";
-   public static final String VALUE_SEARCH_RESULTS_VIEW = "search";
-   public static final String VALUE_EDITOR_VIEW = "doc";
-
-   public static final String KEY_SEARCH_DOC_TEXT = "search";
-   public static final String KEY_SEARCH_PROJECT_TEXT = "projectsearch";
-   public static final String KEY_SEARCH_PROJECT_REPLACEMENT = "projectsearchreplace";
-
-   public static final String KEY_SEARCH_PROJECT_CASE = "projectsearchcase";
-   public static final String VALUE_SEARCH_PROJECT_CASE_SENSITIVE = "sensitive";
-
-   public static final String KEY_SEARCH_PROJECT_FIELDS = "projectsearchin";
-   public static final String VALUE_SEARCH_PROJECT_FIELD_SOURCE = "source";
-   public static final String VALUE_SEARCH_PROJECT_FIELD_TARGET = "target";
-   public static final String VALUE_SEARCH_PROJECT_FIELD_BOTH = "both";
-
-   public static final String KEY_DOC_FILTER_TEXT = "filter";
-
-   public static final String KEY_DOC_FILTER_OPTION = "filtertype";
-   public static final String VALUE_DOC_FILTER_EXACT = "exact";
-
-   public static final String KEY_DOC_FILTER_CASE = "filtercase";
-   public static final String VALUE_DOC_FILTER_CASE_SENSITIVE = "sensitive";
-
-   public static final String KEY_TEXT_FLOW_ID = "textflow";
+   // defaults
+   protected static final MainView DEFAULT_VIEW = MainView.Documents;
+   protected static final String DEFAULT_DOCUMENT_PATH = "";
+   protected static final String DEFAULT_DOC_FILTER_TEXT = "";
+   protected static final boolean DEFAULT_DOC_FILTER_EXACT = false;
+   protected static final boolean DEFAULT_DOC_FILTER_CASE_SENSITIVE = false;
+   protected static final String DEFAULT_SEARCH_TEXT = "";
+   protected static final String DEFAULT_PROJECT_SEARCH_TEXT = "";
+   protected static final String DEFAULT_PROJECT_SEARCH_REPLACE = "";
+   protected static final boolean DEFAULT_PROJECT_SEARCH_CASE_SENSITIVE = false;
+   protected static final boolean DEFAULT_PROJECT_SEARCH_IN_SOURCE = false;
+   protected static final boolean DEFAULT_PROJECT_SEARCH_IN_TARGET = true;
+   private static final Long DEFAULT_TEXT_FLOW_ID = null;
 
    private MainView view;
    private String fullDocPath;
@@ -56,20 +48,6 @@ public class HistoryToken
    private boolean projectSearchInSource;
    private boolean projectSearchInTarget;
    private Long textFlowId;
-
-   // defaults
-   private static final MainView DEFAULT_VIEW = MainView.Documents;
-   private static final String DEFAULT_DOCUMENT_PATH = "";
-   private static final String DEFAULT_DOC_FILTER_TEXT = "";
-   private static final boolean DEFAULT_DOC_FILTER_EXACT = false;
-   private static final boolean DEFAULT_DOC_FILTER_CASE_SENSITIVE = false;
-   private static final String DEFAULT_SEARCH_TEXT = "";
-   private static final String DEFAULT_PROJECT_SEARCH_TEXT = "";
-   private static final String DEFAULT_PROJECT_SEARCH_REPLACE = "";
-   private static final boolean DEFAULT_PROJECT_SEARCH_CASE_SENSITIVE = false;
-   private static final boolean DEFAULT_PROJECT_SEARCH_IN_SOURCE = false;
-   private static final boolean DEFAULT_PROJECT_SEARCH_IN_TARGET = true;
-   private static final Long DEFAULT_TEXT_FLOW_ID = null;
 
    public HistoryToken()
    {
@@ -97,7 +75,7 @@ public class HistoryToken
    {
       HistoryToken historyToken = new HistoryToken();
 
-      if (token == null || token.length() == 0)
+      if (Strings.isNullOrEmpty(token))
       {
          return historyToken;
       }
@@ -105,108 +83,18 @@ public class HistoryToken
       // decode characters that may still be url-encoded
       token = token.replace("%3A", ":").replace("%3B", ";").replace("%2F", "/");
 
-      for (String pairString : token.split(PAIR_SEPARATOR))
+      Iterable<Token> tokens = Iterables.transform(SPLITTER.split(token), TokenParserFunction.FUNCTION);
+
+      for (Token entry : tokens)
       {
-         String[] pair = pairString.split(DELIMITER_K_V);
-         String key;
-         String value;
-         try
+         if (entry != Token.NULL_TOKEN)
          {
-            key = pair[0];
-            value = pair[1];
+            DocumentListTokens.INSTANCE.populateHistoryToken(historyToken, entry);
+            MainViewTokens.INSTANCE.populateHistoryToken(historyToken, entry);
+            ProjectSearchTokens.INSTANCE.populateHistoryToken(historyToken, entry);
+            EditorTokens.INSTANCE.populateHistoryToken(historyToken, entry);
          }
-         catch (ArrayIndexOutOfBoundsException e)
-         {
-            continue;
-         }
-         value = decode(value);
-
-         if (key.equals(HistoryToken.KEY_DOCUMENT))
-         {
-            historyToken.setDocumentPath(value);
-         }
-         else if (key.equals(HistoryToken.KEY_VIEW))
-         {
-            if (value.equals(VALUE_EDITOR_VIEW))
-            {
-               historyToken.setView(MainView.Editor);
-            }
-            else if (value.equals(VALUE_SEARCH_RESULTS_VIEW))
-            {
-               historyToken.setView(MainView.Search);
-            }
-            // else default (document list) will be used
-         }
-         else if (key.equals(KEY_DOC_FILTER_OPTION))
-         {
-            if (value.equals(VALUE_DOC_FILTER_EXACT))
-            {
-               historyToken.setDocFilterExact(true);
-            }
-            // else default used
-         }
-         else if (key.equals(KEY_DOC_FILTER_TEXT))
-         {
-            historyToken.setDocFilterText(value);
-         }
-         else if (key.equals(KEY_DOC_FILTER_CASE))
-         {
-            if (value.equals(VALUE_DOC_FILTER_CASE_SENSITIVE))
-            {
-               historyToken.setDocFilterCaseSensitive(true);
-            }
-            //else default used
-         }
-         else if (key.equals(KEY_SEARCH_DOC_TEXT))
-         {
-            historyToken.setSearchText(value);
-         }
-         else if (key.equals(KEY_SEARCH_PROJECT_TEXT))
-         {
-            historyToken.setProjectSearchText(value);
-         }
-         else if (key.equals(KEY_SEARCH_PROJECT_REPLACEMENT))
-         {
-            historyToken.setProjectSearchReplacement(value);
-         }
-         else if (key.equals(KEY_SEARCH_PROJECT_CASE))
-         {
-            if (value.equals(VALUE_SEARCH_PROJECT_CASE_SENSITIVE))
-            {
-               historyToken.setProjectSearchCaseSensitive(true);
-            }
-            //else default used
-         }
-         else if (key.equals(KEY_SEARCH_PROJECT_FIELDS))
-         {
-            if (value.equals(VALUE_SEARCH_PROJECT_FIELD_SOURCE))
-            {
-               historyToken.setProjectSearchInSource(true);
-               historyToken.setProjectSearchInTarget(false);
-            }
-            else if (value.equals(VALUE_SEARCH_PROJECT_FIELD_TARGET))
-            {
-               historyToken.setProjectSearchInSource(false);
-               historyToken.setProjectSearchInTarget(true);
-            }
-            else if (value.equals(VALUE_SEARCH_PROJECT_FIELD_BOTH))
-            {
-               historyToken.setProjectSearchInSource(true);
-               historyToken.setProjectSearchInTarget(true);
-            }
-            //else default used
-         }
-         else if (key.equals(KEY_TEXT_FLOW_ID))
-         {
-            historyToken.setTextFlowId(value);
-         }
-         else
-         {
-            Log.info("unrecognised history key: " + key);
-         }
-
       }
-
       return historyToken;
    }
 
@@ -228,10 +116,7 @@ public class HistoryToken
 
    public void setSearchText(String value)
    {
-      if (value == null || value.length() == 0)
-         this.searchText = DEFAULT_SEARCH_TEXT;
-      else
-         this.searchText = value;
+      this.searchText = Strings.isNullOrEmpty(value) ? DEFAULT_SEARCH_TEXT : value;
    }
 
    public String getProjectSearchText()
@@ -241,10 +126,7 @@ public class HistoryToken
 
    public void setProjectSearchText(String value)
    {
-      if (value == null || value.length() == 0)
-         this.projectSearchText = DEFAULT_PROJECT_SEARCH_TEXT;
-      else
-         this.projectSearchText = value;
+      this.projectSearchText = Strings.isNullOrEmpty(value) ? DEFAULT_PROJECT_SEARCH_TEXT : value;
    }
 
    public String getProjectSearchReplacement()
@@ -254,14 +136,7 @@ public class HistoryToken
 
    public void setProjectSearchReplacement(String value)
    {
-      if (value == null || value.length() == 0)
-      {
-         projectSearchReplace = DEFAULT_PROJECT_SEARCH_REPLACE;
-      }
-      else
-      {
-         projectSearchReplace = value;
-      }
+      projectSearchReplace = Strings.isNullOrEmpty(value) ? DEFAULT_PROJECT_SEARCH_REPLACE : value;
    }
 
    public boolean getProjectSearchCaseSensitive()
@@ -281,10 +156,7 @@ public class HistoryToken
 
    public void setDocumentPath(String fullDocPath)
    {
-      if (fullDocPath == null)
-         this.fullDocPath = DEFAULT_DOCUMENT_PATH;
-      else
-         this.fullDocPath = fullDocPath;
+      this.fullDocPath = Strings.isNullOrEmpty(fullDocPath) ? DEFAULT_DOCUMENT_PATH : fullDocPath;
    }
 
    public MainView getView()
@@ -294,10 +166,7 @@ public class HistoryToken
 
    public void setView(MainView view)
    {
-      if (view == null)
-         this.view = DEFAULT_VIEW;
-      else
-         this.view = view;
+      this.view = view == null ? DEFAULT_VIEW : view;
    }
 
    public boolean getDocFilterExact()
@@ -317,10 +186,7 @@ public class HistoryToken
 
    public void setDocFilterText(String value)
    {
-      if (value == null || value.length() == 0)
-         this.docFilterText = DEFAULT_DOC_FILTER_TEXT;
-      else
-         this.docFilterText = value;
+      this.docFilterText = Strings.isNullOrEmpty(value) ? DEFAULT_DOC_FILTER_TEXT : value;
    }
 
    public void setDocFilterCaseSensitive(boolean caseSensitive)
@@ -340,166 +206,14 @@ public class HistoryToken
     */
    public String toTokenString()
    {
-      String token = "";
+      List<Token> tokens = Lists.newArrayList();
 
-      if (view != DEFAULT_VIEW)
-      {
-         if (view == MainView.Search)
-         {
-            token = addTokenToTokenString(token, KEY_VIEW, VALUE_SEARCH_RESULTS_VIEW);
-         }
-         else
-         {
-            // must be editor
-            token = addTokenToTokenString(token, KEY_VIEW, VALUE_EDITOR_VIEW);
-         }
-      }
+      MainViewTokens.INSTANCE.toTokenString(this, tokens);
+      DocumentListTokens.INSTANCE.toTokenString(this, tokens);
+      ProjectSearchTokens.INSTANCE.toTokenString(this, tokens);
+      EditorTokens.INSTANCE.toTokenString(this, tokens);
 
-      if (!fullDocPath.equals(DEFAULT_DOCUMENT_PATH))
-      {
-         token = addTokenToTokenString(token, KEY_DOCUMENT, fullDocPath);
-      }
-
-      if (docFilterExact != DEFAULT_DOC_FILTER_EXACT)
-      {
-         // exact is the only non-default filter value
-         token = addTokenToTokenString(token, KEY_DOC_FILTER_OPTION, VALUE_DOC_FILTER_EXACT);
-      }
-
-      if (!docFilterText.equals(DEFAULT_DOC_FILTER_TEXT))
-      {
-         token = addTokenToTokenString(token, KEY_DOC_FILTER_TEXT, docFilterText);
-      }
-
-      if (docFilterCaseSensitive != DEFAULT_DOC_FILTER_CASE_SENSITIVE)
-      {
-         token = addTokenToTokenString(token, KEY_DOC_FILTER_CASE, VALUE_DOC_FILTER_CASE_SENSITIVE);
-      }
-
-      if (!projectSearchText.equals(DEFAULT_PROJECT_SEARCH_TEXT))
-      {
-         token = addTokenToTokenString(token, KEY_SEARCH_PROJECT_TEXT, projectSearchText);
-      }
-
-      if(!projectSearchReplace.equals(DEFAULT_PROJECT_SEARCH_REPLACE))
-      {
-         token = addTokenToTokenString(token, KEY_SEARCH_PROJECT_REPLACEMENT, projectSearchReplace);
-      }
-
-      if (projectSearchCaseSensitive != DEFAULT_PROJECT_SEARCH_CASE_SENSITIVE)
-      {
-         // sensitive is the only non-default filter value
-         token = addTokenToTokenString(token, KEY_SEARCH_PROJECT_CASE, VALUE_SEARCH_PROJECT_CASE_SENSITIVE);
-      }
-
-      if (!searchText.equals(DEFAULT_SEARCH_TEXT))
-      {
-         token = addTokenToTokenString(token, KEY_SEARCH_DOC_TEXT, searchText);
-      }
-
-      if (projectSearchInSource != DEFAULT_PROJECT_SEARCH_IN_SOURCE || projectSearchInTarget != DEFAULT_PROJECT_SEARCH_IN_TARGET)
-      {
-         if (projectSearchInSource && projectSearchInTarget)
-         {
-            token = addTokenToTokenString(token, KEY_SEARCH_PROJECT_FIELDS, VALUE_SEARCH_PROJECT_FIELD_BOTH);
-         }
-         else if (projectSearchInSource && !projectSearchInTarget)
-         {
-            token = addTokenToTokenString(token, KEY_SEARCH_PROJECT_FIELDS, VALUE_SEARCH_PROJECT_FIELD_SOURCE);
-         }
-         else if (!projectSearchInSource && projectSearchInTarget)
-         {
-            token = addTokenToTokenString(token, KEY_SEARCH_PROJECT_FIELDS, VALUE_SEARCH_PROJECT_FIELD_TARGET);
-         }
-         // ignore if neither
-      }
-
-      if (textFlowId != null)
-      {
-         token = addTokenToTokenString(token, KEY_TEXT_FLOW_ID, textFlowId.toString());
-      }
-
-      return token;
-   }
-
-   private static String addTokenToTokenString(String tokenString, String key, String value)
-   {
-      String separator = (tokenString.isEmpty() ? "" : PAIR_SEPARATOR);
-      return tokenString + separator + key + DELIMITER_K_V + encode(value);
-   }
-
-   /**
-    * 
-    * @see #decode(String)
-    * @param toEncode
-    * @return the given string with all token delimiters encoded
-    */
-   private static String encode(String toEncode)
-   {
-      StringBuilder sb = new StringBuilder();
-      for (int i=0; i< toEncode.length(); i++)
-      {
-         char nextChar = toEncode.charAt(i);
-         switch (nextChar)
-         {
-         case ':':
-            sb.append("!c");
-            break;
-         case ';':
-            sb.append("!s");
-            break;
-         case '!':
-            sb.append('!');
-         default:
-            sb.append(nextChar);
-         }
-      }
-//      Log.debug("Encoded: \"" + toEncode + "\" to \"" + sb + "\"");
-      return sb.toString();
-   }
-
-   /**
-    * @see #encode(String)
-    * @param toDecode
-    * @return the given string with any encoded token delimiters decoded
-    */
-   private static String decode(String toDecode)
-   {
-      StringBuilder sb = new StringBuilder();
-      boolean escaped = false;
-      for (int i=0; i< toDecode.length(); i++)
-      {
-         char nextChar = toDecode.charAt(i);
-         if (escaped)
-         {
-            escaped = false;
-            switch (nextChar)
-            {
-            case '!':
-               sb.append('!');
-               break;
-            case 'c':
-               sb.append(':');
-               break;
-            case 's':
-               sb.append(';');
-               break;
-            default:
-               Log.warn("Unrecognised escaped character, appending: " + nextChar);
-               sb.append(nextChar);
-            }
-         }
-         else if (nextChar == '!')
-         {
-            escaped = true;
-         }
-         else
-         {
-            sb.append(nextChar);
-         }
-      }
-      Log.debug("Decoded: \"" + toDecode + "\" to \"" + sb + "\"");
-      return sb.toString();
+      return JOINER.join(tokens);
    }
 
    public boolean isProjectSearchInSource()
@@ -528,5 +242,16 @@ public class HistoryToken
    public Long getTextFlowId()
    {
       return textFlowId;
+   }
+
+   private static enum TokenParserFunction implements Function<String, Token>
+   {
+      FUNCTION;
+      
+      @Override
+      public Token apply(String input)
+      {
+         return Token.fromString(input);
+      }
    }
 }
