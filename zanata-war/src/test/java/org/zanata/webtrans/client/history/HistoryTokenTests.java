@@ -410,6 +410,7 @@ public class HistoryTokenTests
       token.setFilterFuzzy(true);
       token.setFilterTranslated(true);
       token.setFilterUntranslated(true);
+      token.setFilterHasError(true);
 
       String tokenString = token.toTokenString();
 

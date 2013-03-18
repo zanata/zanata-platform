@@ -2,6 +2,7 @@ package org.zanata.webtrans.client.service;
 
 import org.zanata.webtrans.client.events.BookmarkedTextFlowEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
+import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FindMessageEvent;
 import org.zanata.webtrans.client.events.InitEditorEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
@@ -9,7 +10,6 @@ import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
-import org.zanata.webtrans.client.presenter.TransFilterPresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -82,7 +82,7 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String>
       processForAppPresenter(documentId);
       processForTransFilter(newHistoryToken);
       processForBookmarkedTextFlow(newHistoryToken);
-      processEditorOptions(newHistoryToken);
+      processMessageFilterOptions(newHistoryToken);
 
       currentHistoryState = newHistoryToken;
       appPresenter.showView(newHistoryToken.getView());
@@ -147,7 +147,7 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String>
       }
    }
 
-   protected void processEditorOptions(HistoryToken token)
+   protected void processMessageFilterOptions(HistoryToken token)
    {
       if (!equal(token.isFilterUntranslated(), currentHistoryState.isFilterUntranslated())
             || !equal(token.isFilterFuzzy(), currentHistoryState.isFilterFuzzy())
@@ -156,6 +156,7 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String>
          Log.info("[gwt-history] message filter option has changed");
 
          eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+         eventBus.fireEvent(new FilterViewEvent(token.isFilterTranslated(), token.isFilterFuzzy(), token.isFilterUntranslated(), token.isFilterHasError(), false, configHolder.getState().getEnabledValidationIds()));
       }
    }
 

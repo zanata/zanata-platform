@@ -51,6 +51,7 @@ public class HistoryToken
    private boolean filterUntranslated;
    private boolean filterFuzzy;
    private boolean filterTranslated;
+   private boolean filterHasError;
 
    public HistoryToken()
    {
@@ -275,6 +276,16 @@ public class HistoryToken
    public boolean isFilterFuzzy()
    {
       return filterFuzzy;
+   }
+
+   public void setFilterHasError(boolean filterHasError)
+   {
+      this.filterHasError = filterHasError;
+   }
+
+   public boolean isFilterHasError()
+   {
+      return filterHasError;
    }
 
    private static enum TokenParserFunction implements Function<String, Token>
