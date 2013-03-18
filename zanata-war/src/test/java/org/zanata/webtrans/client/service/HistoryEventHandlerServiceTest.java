@@ -51,13 +51,15 @@ public class HistoryEventHandlerServiceTest
    @Mock
    private ModalNavigationStateHolder stateHolder;
    private GetTransUnitActionContextHolder contextHolder;
+   private UserConfigHolder configHolder;
 
    @BeforeMethod
    public void setUp() throws Exception
    {
       MockitoAnnotations.initMocks(this);
       contextHolder = new GetTransUnitActionContextHolder(new UserConfigHolder());
-      service = new HistoryEventHandlerService(eventBus, documentListPresenter, appPresenter, searchResultsPresenter, contextHolder, stateHolder);
+      configHolder = new UserConfigHolder();
+      service = new HistoryEventHandlerService(eventBus, documentListPresenter, appPresenter, searchResultsPresenter, contextHolder, stateHolder, configHolder);
    }
 
    @Test

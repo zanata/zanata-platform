@@ -3,12 +3,12 @@ package org.zanata.webtrans.client.history;
 import java.util.List;
 
 import org.zanata.webtrans.client.presenter.MainView;
-import com.beust.jcommander.internal.Lists;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
 /**
  * Encapsulates a string token of key-value pairs for GWT history operations.
@@ -48,6 +48,9 @@ public class HistoryToken
    private boolean projectSearchInSource;
    private boolean projectSearchInTarget;
    private Long textFlowId;
+   private boolean filterUntranslated;
+   private boolean filterFuzzy;
+   private boolean filterTranslated;
 
    public HistoryToken()
    {
@@ -242,6 +245,36 @@ public class HistoryToken
    public Long getTextFlowId()
    {
       return textFlowId;
+   }
+
+   public void setFilterUntranslated(boolean filterUntranslated)
+   {
+      this.filterUntranslated = filterUntranslated;
+   }
+
+   public void setFilterFuzzy(boolean filterFuzzy)
+   {
+      this.filterFuzzy = filterFuzzy;
+   }
+
+   public void setFilterTranslated(boolean filterTranslated)
+   {
+      this.filterTranslated = filterTranslated;
+   }
+
+   public boolean isFilterUntranslated()
+   {
+      return filterUntranslated;
+   }
+
+   public boolean isFilterTranslated()
+   {
+      return filterTranslated;
+   }
+
+   public boolean isFilterFuzzy()
+   {
+      return filterFuzzy;
    }
 
    private static enum TokenParserFunction implements Function<String, Token>
