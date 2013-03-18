@@ -68,5 +68,16 @@
 		memoryStoreEvictionPolicy="LRU"
 		statistics="true"
 	/>
+	
+	<cache
+		name="org.zanata.service.impl.TranslationStateCacheImpl.targetValidationCache"
+		maxElementsInMemory="400"
+		eternal="false"
+		timeToIdleSeconds="86400"
+		timeToLiveSeconds="0"
+		overflowToDisk="false"
+		memoryStoreEvictionPolicy="LRU"
+		statistics="true"
+	/>
 
 </ehcache>

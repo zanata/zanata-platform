@@ -62,5 +62,11 @@ public class EhcacheWrapper<K, V> implements CacheWrapper<K, V>
        cacheWrapper.getCache().registerCacheLoader(new EhcacheLoader<K, V>(loader));
        return cacheWrapper;
     }
+
+   @Override
+   public boolean remove(K key)
+   {
+      return getCache().remove(key);
+   }
     
 }

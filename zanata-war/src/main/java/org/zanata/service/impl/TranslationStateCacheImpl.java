@@ -21,6 +21,7 @@
 package org.zanata.service.impl;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 import lombok.AllArgsConstructor;
@@ -156,9 +157,15 @@ public class TranslationStateCacheImpl implements TranslationStateCache
       return textFlowTargetDAO.findById(targetId, false);
    }
 
+   @Override
    public Boolean textFlowTargetHasError(Long targetId, ValidationId validationId)
    {
       Map<ValidationId, Boolean> cacheEntry = targetValidationCache.getWithLoader(targetId);
+      if(!cacheEntry.containsKey(validationId))
+      {
+         Boolean result = loadTargetValidation(targetId, validationId);
+         cacheEntry.put(validationId, result);
+      }
       return cacheEntry.get(validationId);
    }
 
@@ -237,18 +244,22 @@ public class TranslationStateCacheImpl implements TranslationStateCache
       @Override
       public Map<ValidationId, Boolean> load(Long key) throws Exception
       {
-         // ValidationAction action =
-         // ValidationFactoryProvider.getFactoryInstance().getValidationAction(key.getValidationId());
-
-         HTextFlowTarget tft = textFlowTargetDAO.findById(key, false);
-
-         if (tft != null)
-         {
-            action.validate(tft.getTextFlow().getContents().get(0), tft.getContents().get(0));
-            return action.hasError();
-         }
-         return null;
+         Map<ValidationId, Boolean> result = new HashMap<ValidationId, Boolean>();
+         return result;
       }
+   }
+   
+   private Boolean loadTargetValidation(Long targetId, ValidationId validationId)
+   {
+       HTextFlowTarget tft = textFlowTargetDAO.findById(targetId, false);
+   
+       if (tft != null)
+       {
+          ValidationAction action = ValidationFactoryProvider.getFactoryInstance().getValidationAction(validationId);
+          action.validate(tft.getTextFlow().getContents().get(0), tft.getContents().get(0));
+          return action.hasError();
+       }
+       return null;
    }
 
    @AllArgsConstructor
