@@ -1,16 +1,10 @@
 package org.zanata.rest.service;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
-
-import javax.validation.Validation;
-import javax.validation.ValidatorFactory;
 import javax.ws.rs.core.MediaType;
 
 import org.jboss.resteasy.core.Headers;
@@ -22,15 +16,16 @@ import org.zanata.rest.dto.VersionInfo;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TranslationsResource;
-
 import com.allen_sauer.gwt.log.client.Log;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 
 @Test(groups = { "unit-tests" })
 public class RestUtilsTest
 {
-   static ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-   RestUtils restUtils = new RestUtils(factory);
+   RestUtils restUtils = new RestUtils();
 
    private ResourceTestObjectFactory resourceTestFactory = new ResourceTestObjectFactory();
    private TranslationsResourceTestObjectFactory transTestFactory = new TranslationsResourceTestObjectFactory();

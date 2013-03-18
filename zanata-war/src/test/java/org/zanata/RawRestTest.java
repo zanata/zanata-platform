@@ -174,7 +174,7 @@ public abstract class RawRestTest extends ZanataDbunitJpaTest
    @Before
    public void signalBeforeTest()
    {
-      RemoteTestSignaler signaler = ProxyFactory.create(RemoteTestSignaler.class, getDeployedUrl("/"));
+      RemoteTestSignaler signaler = ProxyFactory.create(RemoteTestSignaler.class, getDeployedUrl());
       try
       {
          signaler.signalBeforeTest(this.getClass().getName());
@@ -188,7 +188,7 @@ public abstract class RawRestTest extends ZanataDbunitJpaTest
    @After
    public void signalAfterTest()
    {
-      RemoteTestSignaler signaler = ProxyFactory.create(RemoteTestSignaler.class, getDeployedUrl("/"));
+      RemoteTestSignaler signaler = ProxyFactory.create(RemoteTestSignaler.class, getDeployedUrl());
       try
       {
          signaler.signalAfterTest(this.getClass().getName());
@@ -214,7 +214,7 @@ public abstract class RawRestTest extends ZanataDbunitJpaTest
    }
 
    /**
-    * Gets the deployed url based on a relative resource url.
+    * Gets the artifact's deployed url based on a relative resource url.
     *
     * @param resourceUrl The application relative resource url.
     * @return The full absolute url of the deployed resource.
@@ -227,6 +227,17 @@ public abstract class RawRestTest extends ZanataDbunitJpaTest
          fullUrl.append("/");
       }
       return fullUrl.append(resourceUrl).toString();
+   }
+
+   /**
+    * Gets the artifact's deployed root url.
+    *
+    * @return The full absolute root url of the deployed artifact.
+    * @see RawRestTest#getDeployedUrl(String)
+    */
+   public final String getDeployedUrl()
+   {
+      return getDeployedUrl("/");
    }
 
    /**
