@@ -38,6 +38,9 @@ public class HistoryTokenTests
       assertEquals("default project-wide search replacement text should be an empty string", "", token.getProjectSearchReplacement());
       assertFalse("default project-wide search case sensitive flag should be false", token.getProjectSearchCaseSensitive());
       assertThat(token.getTextFlowId(), Matchers.nullValue());
+      assertThat(token.isFilterTranslated(), Matchers.equalTo(false));
+      assertThat(token.isFilterUntranslated(), Matchers.equalTo(false));
+      assertThat(token.isFilterFuzzy(), Matchers.equalTo(false));
    }
 
    @Test
@@ -54,6 +57,9 @@ public class HistoryTokenTests
       assertEquals("default project-wide search replacement text should be an empty string", "", token.getProjectSearchReplacement());
       assertFalse("default project-wide search case sensitive flag should be false", token.getProjectSearchCaseSensitive());
       assertThat(token.getTextFlowId(), Matchers.nullValue());
+      assertThat(token.isFilterTranslated(), Matchers.equalTo(false));
+      assertThat(token.isFilterUntranslated(), Matchers.equalTo(false));
+      assertThat(token.isFilterFuzzy(), Matchers.equalTo(false));
    }
 
    @Test
@@ -70,6 +76,9 @@ public class HistoryTokenTests
       assertEquals("default project-wide search replacement text should be an empty string", "", token.getProjectSearchReplacement());
       assertFalse("default project-wide search case sensitive flag should be false", token.getProjectSearchCaseSensitive());
       assertThat(token.getTextFlowId(), Matchers.nullValue());
+      assertThat(token.isFilterTranslated(), Matchers.equalTo(false));
+      assertThat(token.isFilterUntranslated(), Matchers.equalTo(false));
+      assertThat(token.isFilterFuzzy(), Matchers.equalTo(false));
    }
 
    @Test
@@ -85,6 +94,7 @@ public class HistoryTokenTests
       assertTrue("document filter exact match flag should be set from token string", token.getDocFilterExact());
    }
 
+   @Test
    public void fromTokenStringSetsSearchValues()
    {
       String tokenString = "search:searchtext;projectsearch:projectsearchtext;projectsearchreplace:replacementtext;projectsearchcase:sensitive";
@@ -110,6 +120,7 @@ public class HistoryTokenTests
       assertTrue("document filter exact match flag should be set from any position in token string", token.getDocFilterExact());
    }
 
+   @Test
    public void fromTokenStringParameterOrderIrrelevant2()
    {
       String differentOrderTokenString = "projectsearch:projectsearchtext;search:searchtext;projectsearchcase:sensitive;projectsearchreplace:replacementtext";
@@ -216,6 +227,7 @@ public class HistoryTokenTests
       assertFalse(token.getDocFilterExact());
    }
 
+   @Test
    public void getSetSearchText()
    {
       token = new HistoryToken();
@@ -229,6 +241,7 @@ public class HistoryTokenTests
       assertEquals("search text can be set to empty string", "", token.getSearchText());
    }
 
+   @Test
    public void getSetProjectSearchText()
    {
       token = new HistoryToken();
@@ -243,6 +256,7 @@ public class HistoryTokenTests
       assertEquals("project search text can be set to empty string", "", token.getProjectSearchText());
    }
 
+   @Test
    public void getSetProjectSearchReplacement()
    {
       token = new HistoryToken();
@@ -258,6 +272,7 @@ public class HistoryTokenTests
       assertEquals("project search replacement text can be set to empty string", "", token.getProjectSearchReplacement());
    }
 
+   @Test
    public void getSetProjectSearchCaseSensitive()
    {
       token = new HistoryToken();
@@ -267,6 +282,7 @@ public class HistoryTokenTests
       assertFalse(token.getProjectSearchCaseSensitive());
    }
 
+   @Test
    public void encodesColon()
    {
       token = new HistoryToken();
@@ -275,6 +291,7 @@ public class HistoryTokenTests
             "projectsearch:test!ctest", token.toTokenString());
    }
 
+   @Test
    public void encodesSemicolon()
    {
       token = new HistoryToken();
@@ -283,6 +300,7 @@ public class HistoryTokenTests
             "projectsearch:test!stest", token.toTokenString());
    }
 
+   @Test
    public void toTokenStringHasNoDefaults()
    {
       token = new HistoryToken();
@@ -345,6 +363,7 @@ public class HistoryTokenTests
       assertTrue("project-wide search case sensitivity should survive a round-trip to and from token string", token.getProjectSearchCaseSensitive());
    }
 
+   @Test
    public void tokenStringRoundTripWithEncodedCharacters()
    {
       token = new HistoryToken();
@@ -370,4 +389,32 @@ public class HistoryTokenTests
       assertEquals("encodable characters in project-wide search replacement text should survive a round-trip to and from token string",
             "re!place;ment:text", token.getProjectSearchReplacement());
    }
+
+   @Test
+   public void tokenStringHasFilterOption()
+   {
+      token = new HistoryToken();
+      token.setFilterFuzzy(true);
+      token.setFilterTranslated(true);
+
+      String tokenString = token.toTokenString();
+
+      assertThat(tokenString, Matchers.containsString("fuzzy:show"));
+      assertThat(tokenString, Matchers.containsString("translated:show"));
+   }
+
+   @Test
+   public void tokenStringHasAllFilterOption()
+   {
+      token = new HistoryToken();
+      token.setFilterFuzzy(true);
+      token.setFilterTranslated(true);
+      token.setFilterUntranslated(true);
+      token.setFilterHasError(true);
+
+      String tokenString = token.toTokenString();
+
+      assertThat(tokenString, Matchers.equalTo(""));
+   }
+
 }

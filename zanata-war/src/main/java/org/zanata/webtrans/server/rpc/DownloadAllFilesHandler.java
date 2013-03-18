@@ -79,6 +79,7 @@ public class DownloadAllFilesHandler extends AbstractActionHandler<DownloadAllFi
          processHandle.setIterationSlug(action.getVersionSlug());
          processHandle.setLocaleId(action.getLocaleId());
          processHandle.setInitiatingUserName(Identity.instance().getCredentials().getUsername());
+         processHandle.setOfflinePo(action.isOfflinePo());
 
          // Fire the zip file building process and wait until it is ready to
          // return

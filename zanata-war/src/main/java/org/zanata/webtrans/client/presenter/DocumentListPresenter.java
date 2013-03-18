@@ -131,38 +131,50 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       registerHandler(eventBus.addHandler(UserConfigChangeEvent.TYPE, this));
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this));
       registerHandler(eventBus.addHandler(RunDocValidationEvent.getType(), this));
-      
+
       display.updatePageSize(userOptionsService.getConfigHolder().getState().getDocumentListPageSize());
       display.setLayout(userOptionsService.getConfigHolder().getState().getDisplayTheme().name());
 
-      ProjectType projectType = userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getProjectType();
-      setupDownloadZipButton(projectType);
+      setupDownloadZipButton(getProjectType());
+   }
+
+   private ProjectType getProjectType()
+   {
+      return userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getProjectType();
    }
 
    public void setupDownloadZipButton(ProjectType projectType)
    {
-      if (!isZipFileDownloadAllowed(projectType))
+      if (isZipFileDownloadAllowed(projectType))
       {
-         display.setEnableDownloadZip(false);
-         if (projectType == null)
+         display.setEnableDownloadZip(true);
+         if (isPoProject(projectType))
          {
-            display.setDownloadZipButtonTitle(messages.projectTypeNotSet());
+            display.setDownloadZipButtonText(messages.downloadAllAsZip());
+            display.setDownloadZipButtonTitle(messages.downloadAllAsZipDescription());
          }
          else
          {
-            display.setDownloadZipButtonTitle(messages.projectTypeNotAllowed());
+            display.setDownloadZipButtonText(messages.downloadAllAsOfflinePoZip());
+            display.setDownloadZipButtonTitle(messages.downloadAllAsOfflinePoZipDescription());
          }
       }
       else
       {
-         display.setEnableDownloadZip(true);
-         display.setDownloadZipButtonTitle(messages.downloadAllTranslatedFiles());
+         display.setEnableDownloadZip(false);
+         display.setDownloadZipButtonText(messages.downloadAllAsZip());
+         display.setDownloadZipButtonTitle(messages.projectTypeNotSet());
       }
    }
 
-   public boolean isZipFileDownloadAllowed(ProjectType projectType)
+   private boolean isPoProject(ProjectType projectType)
    {
       return projectType == ProjectType.Gettext || projectType == ProjectType.Podir;
+   }
+
+   protected boolean isZipFileDownloadAllowed(ProjectType projectType)
+   {
+      return projectType != null;
    }
 
    @Override
@@ -403,7 +415,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    public void downloadAllFiles()
    {
       WorkspaceId workspaceId = userWorkspaceContext.getWorkspaceContext().getWorkspaceId();
-      dispatcher.execute(new DownloadAllFilesAction(workspaceId.getProjectIterationId().getProjectSlug(), workspaceId.getProjectIterationId().getIterationSlug(), workspaceId.getLocaleId().getId()), new AsyncCallback<DownloadAllFilesResult>()
+      dispatcher.execute(new DownloadAllFilesAction(workspaceId.getProjectIterationId().getProjectSlug(), workspaceId.getProjectIterationId().getIterationSlug(), workspaceId.getLocaleId().getId(), !isPoProject(getProjectType())), new AsyncCallback<DownloadAllFilesResult>()
       {
          @Override
          public void onFailure(Throwable caught)
@@ -553,7 +565,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
                   {
                      Boolean hasError = entry.getValue();
                      DocumentInfo hasErrorDoc = getDocumentInfo(entry.getKey());
-                     
+
                      if (hasError != null && hasErrorDoc != null)
                      {
                         hasErrorDoc.setHasValidationError(hasError.booleanValue());

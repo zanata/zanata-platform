@@ -55,7 +55,7 @@ public class GetTransUnitActionContextHolder
 
    public GetTransUnitActionContext changeTargetTransUnitId(TransUnitId transUnitId)
    {
-      context.changeTargetTransUnitId(transUnitId);
+      context = context.changeTargetTransUnitId(transUnitId);
       return context;
    }
 

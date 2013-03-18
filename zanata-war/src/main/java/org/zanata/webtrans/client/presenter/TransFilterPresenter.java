@@ -34,8 +34,6 @@ import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.view.TransFilterDisplay;
 
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.inject.Inject;
 
 public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay> implements TransFilterDisplay.Listener, FindMessageHandler, UserConfigChangeHandler, FilterViewEventHandler
@@ -43,19 +41,6 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay> im
    private final History history;
 
    private final UserOptionsService userOptionsService;
-
-   private final ValueChangeHandler<Boolean> filterChangeHandler = new ValueChangeHandler<Boolean>()
-   {
-      @Override
-      public void onValueChange(ValueChangeEvent<Boolean> event)
-      {
-         eventBus.fireEvent(new FilterViewEvent(display.getTranslatedChk().getValue(), display.getNeedReviewChk().getValue(), display.getUntranslatedChk().getValue(), display.getHasErrorChk().getValue(), false, userOptionsService.getConfigHolder().getState().getEnabledValidationIds()));
-         userOptionsService.getConfigHolder().setFilterByUntranslated(display.getUntranslatedChk().getValue());
-         userOptionsService.getConfigHolder().setFilterByNeedReview(display.getNeedReviewChk().getValue());
-         userOptionsService.getConfigHolder().setFilterByTranslated(display.getTranslatedChk().getValue());
-         userOptionsService.getConfigHolder().setFilterByHasError(display.getHasErrorChk().getValue());
-      }
-   };
 
    @Inject
    public TransFilterPresenter(final TransFilterDisplay display, final EventBus eventBus, final History history, UserOptionsService userOptionsService)
@@ -73,11 +58,6 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay> im
       registerHandler(eventBus.addHandler(FilterViewEvent.getType(), this));
       registerHandler(eventBus.addHandler(UserConfigChangeEvent.TYPE, this));
 
-      registerHandler(display.getTranslatedChk().addValueChangeHandler(filterChangeHandler));
-      registerHandler(display.getNeedReviewChk().addValueChangeHandler(filterChangeHandler));
-      registerHandler(display.getUntranslatedChk().addValueChangeHandler(filterChangeHandler));
-      registerHandler(display.getHasErrorChk().addValueChangeHandler(filterChangeHandler));
-
       display.setOptionsState(userOptionsService.getConfigHolder().getState());
    }
 
@@ -92,6 +72,24 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay> im
       HistoryToken newToken = history.getHistoryToken();
       newToken.setSearchText(searchTerm);
       history.newItem(newToken);
+   }
+
+   @Override
+   public void messageFilterOptionChanged(Boolean translatedChkValue, Boolean needReviewChkValue, Boolean untranslatedChkValue, Boolean hasErrorChkValue)
+   {
+      UserConfigHolder configHolder = userOptionsService.getConfigHolder();
+      configHolder.setFilterByTranslated(translatedChkValue);
+      configHolder.setFilterByNeedReview(needReviewChkValue);
+      configHolder.setFilterByUntranslated(untranslatedChkValue);
+      configHolder.setFilterByHasError(hasErrorChkValue);
+
+      // push history
+      HistoryToken token = history.getHistoryToken();
+      token.setFilterTranslated(translatedChkValue);
+      token.setFilterFuzzy(needReviewChkValue);
+      token.setFilterUntranslated(untranslatedChkValue);
+      token.setFilterHasError(hasErrorChkValue);
+      history.newItem(token);
    }
 
    @Override
@@ -116,10 +114,11 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay> im
    {
       if (event.getView() == MainView.Editor)
       {
-         display.getTranslatedChk().setValue(userOptionsService.getConfigHolder().getState().isFilterByTranslated(), true);
-         display.getNeedReviewChk().setValue(userOptionsService.getConfigHolder().getState().isFilterByNeedReview(), true);
-         display.getUntranslatedChk().setValue(userOptionsService.getConfigHolder().getState().isFilterByUntranslated(), true);
-         display.getHasErrorChk().setValue(userOptionsService.getConfigHolder().getState().isFilterByHasError(), true);
+         UserConfigHolder.ConfigurationState configurationState = userOptionsService.getConfigHolder().getState();
+         display.setTranslatedFilter(configurationState.isFilterByTranslated());
+         display.setNeedReviewFilter(configurationState.isFilterByNeedReview());
+         display.setUntranslatedFilter(configurationState.isFilterByUntranslated());
+         display.setHasErrorFilter(configurationState.isFilterByHasError());
       }
 
    }
@@ -129,10 +128,10 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay> im
    {
       if (event.isCancelFilter())
       {
-         display.getTranslatedChk().setValue(event.isFilterTranslated(), false);
-         display.getNeedReviewChk().setValue(event.isFilterNeedReview(), false);
-         display.getUntranslatedChk().setValue(event.isFilterUntranslated(), false);
-         display.getHasErrorChk().setValue(event.isFilterHasError(), false);
+         display.setTranslatedFilter(event.isFilterTranslated());
+         display.setNeedReviewFilter(event.isFilterNeedReview());
+         display.setUntranslatedFilter(event.isFilterUntranslated());
+         display.setHasErrorFilter(event.isFilterHasError());
       }
    }
 }

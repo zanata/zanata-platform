@@ -77,7 +77,7 @@ public class DocumentListView extends Composite implements DocumentListDisplay
 
    @UiField
    PushButton downloadAllFiles;
-   
+
    @UiField(provided = true)
    DocumentListPager pager;
 
@@ -91,9 +91,9 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    private final UserWorkspaceContext userworkspaceContext;
 
    private ListDataProvider<DocumentNode> dataProvider;
-   
+
    private final LoadingPanel loadingPanel;
-   
+
    private Timer timer = new Timer()
    {
       public void run()
@@ -118,8 +118,6 @@ public class DocumentListView extends Composite implements DocumentListDisplay
       searchField.setTextBoxTitle(messages.docListFilterDescription());
 
       initWidget(uiBinder.createAndBindUi(this));
-
-      downloadAllFiles.setText("Download all files (zip)");
 
       caseSensitiveCheckBox.setTitle(messages.docListFilterCaseSensitiveDescription());
       exactSearchCheckBox.setTitle(messages.docListFilterExactMatchDescription());
@@ -193,7 +191,7 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    {
       confirmationBox.center();
    }
-   
+
    @Override
    public void setStatsFilter(String option)
    {
@@ -357,18 +355,18 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    {
       fileUploadDialog.submitForm();
    }
-   
+
    @Override
    public void startGetDownloadStatus(int periodMillis)
    {
       timer.scheduleRepeating(periodMillis);
    }
-   
+
    public void getDownloadStatus()
    {
       listener.updateDownloadFileProgress();
    }
-   
+
    @Override
    public void stopGetDownloadStatus()
    {
@@ -380,6 +378,12 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    {
       downloadAllFiles.setEnabled(enabled);
 
+   }
+
+   @Override
+   public void setDownloadZipButtonText(String text)
+   {
+      downloadAllFiles.setText(text);
    }
 
    @Override

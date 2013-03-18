@@ -2,12 +2,15 @@ package org.zanata.webtrans.client.service;
 
 import org.zanata.webtrans.client.events.BookmarkedTextFlowEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
+import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FindMessageEvent;
 import org.zanata.webtrans.client.events.InitEditorEvent;
+import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
+import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import com.allen_sauer.gwt.log.client.Log;
@@ -32,6 +35,7 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String>
    private final SearchResultsPresenter searchResultsPresenter;
    private final GetTransUnitActionContextHolder getTransUnitActionContextHolder;
    private final ModalNavigationStateHolder modalStateHolder;
+   private final UserConfigHolder configHolder;
    // initial state
    private HistoryToken currentHistoryState = new HistoryToken();
 
@@ -40,7 +44,7 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String>
    public HistoryEventHandlerService(EventBus eventBus, DocumentListPresenter documentListPresenter,
                                      AppPresenter appPresenter, SearchResultsPresenter searchResultsPresenter,
                                      GetTransUnitActionContextHolder getTransUnitActionContextHolder,
-                                     ModalNavigationStateHolder modalStateHolder)
+                                     ModalNavigationStateHolder modalStateHolder, UserConfigHolder configHolder)
    // @formatter:on
    {
       this.eventBus = eventBus;
@@ -49,6 +53,7 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String>
       this.searchResultsPresenter = searchResultsPresenter;
       this.getTransUnitActionContextHolder = getTransUnitActionContextHolder;
       this.modalStateHolder = modalStateHolder;
+      this.configHolder = configHolder;
    }
 
    @Override
@@ -59,6 +64,10 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String>
 
       processForDocumentListPresenter(newHistoryToken);
       processForProjectWideSearch(newHistoryToken);
+
+      configHolder.setFilterByUntranslated(newHistoryToken.isFilterUntranslated());
+      configHolder.setFilterByNeedReview(newHistoryToken.isFilterFuzzy());
+      configHolder.setFilterByTranslated(newHistoryToken.isFilterTranslated());
 
       DocumentId documentId = documentListPresenter.getDocumentId(newHistoryToken.getDocumentPath());
       if (!getTransUnitActionContextHolder.isContextInitialized() && documentId != null)
@@ -73,6 +82,7 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String>
       processForAppPresenter(documentId);
       processForTransFilter(newHistoryToken);
       processForBookmarkedTextFlow(newHistoryToken);
+      processMessageFilterOptions(newHistoryToken);
 
       currentHistoryState = newHistoryToken;
       appPresenter.showView(newHistoryToken.getView());
@@ -134,6 +144,19 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String>
       {
          Log.info("[gwt-history] project wide search replacement text has changed");
          searchResultsPresenter.updateReplacementText(token.getProjectSearchReplacement());
+      }
+   }
+
+   protected void processMessageFilterOptions(HistoryToken token)
+   {
+      if (!equal(token.isFilterUntranslated(), currentHistoryState.isFilterUntranslated())
+            || !equal(token.isFilterFuzzy(), currentHistoryState.isFilterFuzzy())
+            || !equal(token.isFilterTranslated(), currentHistoryState.isFilterTranslated()))
+      {
+         Log.info("[gwt-history] message filter option has changed");
+
+         eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+         eventBus.fireEvent(new FilterViewEvent(token.isFilterTranslated(), token.isFilterFuzzy(), token.isFilterUntranslated(), token.isFilterHasError(), false, configHolder.getState().getEnabledValidationIds()));
       }
    }
 

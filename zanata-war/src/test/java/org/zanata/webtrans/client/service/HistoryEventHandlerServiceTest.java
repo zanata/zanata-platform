@@ -16,8 +16,10 @@ import org.testng.annotations.Test;
 import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.events.BookmarkedTextFlowEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
+import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FindMessageEvent;
 import org.zanata.webtrans.client.events.InitEditorEvent;
+import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
@@ -51,13 +53,15 @@ public class HistoryEventHandlerServiceTest
    @Mock
    private ModalNavigationStateHolder stateHolder;
    private GetTransUnitActionContextHolder contextHolder;
+   private UserConfigHolder configHolder;
 
    @BeforeMethod
    public void setUp() throws Exception
    {
       MockitoAnnotations.initMocks(this);
       contextHolder = new GetTransUnitActionContextHolder(new UserConfigHolder());
-      service = new HistoryEventHandlerService(eventBus, documentListPresenter, appPresenter, searchResultsPresenter, contextHolder, stateHolder);
+      configHolder = new UserConfigHolder();
+      service = new HistoryEventHandlerService(eventBus, documentListPresenter, appPresenter, searchResultsPresenter, contextHolder, stateHolder, configHolder);
    }
 
    @Test
@@ -303,6 +307,18 @@ public class HistoryEventHandlerServiceTest
 
       // Then:
       verify(eventBus).fireEvent(Mockito.isA(BookmarkedTextFlowEvent.class));
+   }
+
+   @Test
+   public void processMessageFilterOptions()
+   {
+      HistoryToken token = new HistoryToken();
+      token.setFilterUntranslated(true);
+
+      service.processMessageFilterOptions(token);
+
+      verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+      verify(eventBus).fireEvent(Mockito.isA(FilterViewEvent.class));
    }
 
 }

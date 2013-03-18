@@ -18,18 +18,21 @@ public interface TransFilterDisplay extends WidgetDisplay, SearchFieldListener
 
    void setSearchTerm(String searchTerm);
 
+   void setTranslatedFilter(boolean filterByTranslated);
+
+   void setNeedReviewFilter(boolean filterByNeedReview);
+
+   void setUntranslatedFilter(boolean filterByUntranslated);
+
+   void setHasErrorFilter(boolean filterByHasError);
+
    interface Listener 
    {
       void searchTerm(String searchTerm);
+
+      void messageFilterOptionChanged(Boolean translatedChkValue, Boolean needReviewChkValue, Boolean untranslatedChkValue, Boolean hasErrorChkValue);
    }
-
-   HasValue<Boolean> getTranslatedChk();
-
-   HasValue<Boolean> getNeedReviewChk();
-
-   HasValue<Boolean> getUntranslatedChk();
 
    void setOptionsState(ConfigurationState state);
 
-   HasValue<Boolean> getHasErrorChk();
 }

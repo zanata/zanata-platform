@@ -290,10 +290,10 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Editor navigation")
    String navigationScope();
-   
+
    @DefaultMessage("Translation memory")
    String tmScope();
-   
+
    @DefaultMessage("Glossary")
    String glossaryScope();
 
@@ -499,13 +499,20 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Only display Translation Unit Details when there is meta data otherwise hide it")
    String showTransUnitDetailsTooltip();
-   
+
+   @DefaultMessage("Download all files (zip)")
+   String downloadAllAsZip();
+
+   @DefaultMessage("Download all translated files.")
+   String downloadAllAsZipDescription();
+
+   @DefaultMessage("Download all files (offline po zip)")
+   String downloadAllAsOfflinePoZip();
+
+   @DefaultMessage("Download all translated files in po format for offline translation.")
+   String downloadAllAsOfflinePoZipDescription();
+
    @DefaultMessage("The project type for this iteration has not been set. Contact the project maintainer.")
    String projectTypeNotSet();
-   
-   @DefaultMessage("The project type must be set to 'Gettext' or 'Podir'. Contact the project maintainer.")
-   String projectTypeNotAllowed();
-   
-   @DefaultMessage("Download all translated files.")
-   String downloadAllTranslatedFiles();
+
 }
