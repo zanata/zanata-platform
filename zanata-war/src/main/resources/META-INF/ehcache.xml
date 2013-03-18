@@ -71,7 +71,7 @@
 	
 	<cache
 		name="org.zanata.service.impl.TranslationStateCacheImpl.targetValidationCache"
-		maxElementsInMemory="400"
+		maxElementsInMemory="10000"
 		eternal="false"
 		timeToIdleSeconds="86400"
 		timeToLiveSeconds="0"

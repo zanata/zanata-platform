@@ -41,6 +41,7 @@ public class HistoryTokenTests
       assertThat(token.isFilterTranslated(), Matchers.equalTo(false));
       assertThat(token.isFilterUntranslated(), Matchers.equalTo(false));
       assertThat(token.isFilterFuzzy(), Matchers.equalTo(false));
+      assertThat(token.isFilterHasError(), Matchers.equalTo(false));
    }
 
    @Test
@@ -60,6 +61,7 @@ public class HistoryTokenTests
       assertThat(token.isFilterTranslated(), Matchers.equalTo(false));
       assertThat(token.isFilterUntranslated(), Matchers.equalTo(false));
       assertThat(token.isFilterFuzzy(), Matchers.equalTo(false));
+      assertThat(token.isFilterHasError(), Matchers.equalTo(false));
    }
 
    @Test
@@ -79,6 +81,7 @@ public class HistoryTokenTests
       assertThat(token.isFilterTranslated(), Matchers.equalTo(false));
       assertThat(token.isFilterUntranslated(), Matchers.equalTo(false));
       assertThat(token.isFilterFuzzy(), Matchers.equalTo(false));
+      assertThat(token.isFilterHasError(), Matchers.equalTo(false));
    }
 
    @Test

@@ -68,6 +68,7 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String>
       configHolder.setFilterByUntranslated(newHistoryToken.isFilterUntranslated());
       configHolder.setFilterByNeedReview(newHistoryToken.isFilterFuzzy());
       configHolder.setFilterByTranslated(newHistoryToken.isFilterTranslated());
+      configHolder.setFilterByHasError(newHistoryToken.isFilterHasError());
 
       DocumentId documentId = documentListPresenter.getDocumentId(newHistoryToken.getDocumentPath());
       if (!getTransUnitActionContextHolder.isContextInitialized() && documentId != null)
@@ -151,7 +152,8 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String>
    {
       if (!equal(token.isFilterUntranslated(), currentHistoryState.isFilterUntranslated())
             || !equal(token.isFilterFuzzy(), currentHistoryState.isFilterFuzzy())
-            || !equal(token.isFilterTranslated(), currentHistoryState.isFilterTranslated()))
+            || !equal(token.isFilterTranslated(), currentHistoryState.isFilterTranslated())
+            || !equal(token.isFilterHasError(), currentHistoryState.isFilterHasError()))
       {
          Log.info("[gwt-history] message filter option has changed");
 

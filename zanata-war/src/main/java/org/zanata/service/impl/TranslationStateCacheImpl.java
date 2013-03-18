@@ -100,12 +100,13 @@ public class TranslationStateCacheImpl implements TranslationStateCache
 
    public TranslationStateCacheImpl(
          CacheLoader<LocaleId, TranslatedTextFlowFilter> filterLoader,
- CacheLoader<LocaleId, OpenBitSet> bitsetLoader, CacheLoader<TranslatedDocumentKey, Long> docLastModifiedLoader, TextFlowTargetDAO textFlowTargetDAO)
+ CacheLoader<LocaleId, OpenBitSet> bitsetLoader, CacheLoader<TranslatedDocumentKey, Long> docLastModifiedLoader, CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader, TextFlowTargetDAO textFlowTargetDAO)
    {
       // constructor for testing
       this.filterLoader = filterLoader;
       this.bitsetLoader = bitsetLoader;
       this.docLastModifiedLoader = docLastModifiedLoader;
+      this.targetValidationLoader = targetValidationLoader;
       this.textFlowTargetDAO = textFlowTargetDAO;
    }
    
@@ -244,8 +245,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache
       @Override
       public Map<ValidationId, Boolean> load(Long key) throws Exception
       {
-         Map<ValidationId, Boolean> result = new HashMap<ValidationId, Boolean>();
-         return result;
+         return new HashMap<ValidationId, Boolean>();
       }
    }
    
