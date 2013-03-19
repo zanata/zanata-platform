@@ -156,33 +156,36 @@ public class ValidationServiceImpl implements ValidationService
       List<TransUnitValidationResult> result = new ArrayList<TransUnitValidationResult>();
       List<ValidationAction> validationActions = getValidationFactory().getValidationActions(validationIds);
 
-      for (HTextFlow textFlow : hDoc.getTextFlows())
+      if (hDoc != null)
       {
-         HTextFlowTarget target = textFlowTargetDAO.getTextFlowTarget(textFlow, localeId);
-         if (target != null)
+         for (HTextFlow textFlow : hDoc.getTextFlows())
          {
-            TransUnitValidationResult validationResult = null;
-
-            for (ValidationAction validationAction : validationActions)
+            HTextFlowTarget target = textFlowTargetDAO.getTextFlowTarget(textFlow, localeId);
+            if (target != null)
             {
-               validationAction.validate(textFlow.getContents().get(0), target.getContents().get(0));
+               TransUnitValidationResult validationResult = null;
 
-               if (validationAction.hasError())
+               for (ValidationAction validationAction : validationActions)
                {
-                  if(validationResult == null)
+                  validationAction.validate(textFlow.getContents().get(0), target.getContents().get(0));
+
+                  if (validationAction.hasError())
                   {
-                     validationResult = new TransUnitValidationResult(new TransUnitId(textFlow.getId()), validationAction.getError());
-                  }
-                  else
-                  {
-                     validationResult.getErrorMessages().addAll(validationAction.getError());
+                     if (validationResult == null)
+                     {
+                        validationResult = new TransUnitValidationResult(new TransUnitId(textFlow.getId()), validationAction.getError());
+                     }
+                     else
+                     {
+                        validationResult.getErrorMessages().addAll(validationAction.getError());
+                     }
                   }
                }
-            }
 
-            if (validationResult != null)
-            {
-               result.add(validationResult);
+               if (validationResult != null)
+               {
+                  result.add(validationResult);
+               }
             }
          }
       }
