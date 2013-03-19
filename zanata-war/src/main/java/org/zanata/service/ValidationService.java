@@ -82,7 +82,8 @@ public interface ValidationService
     * 
     * @param textFlows
     * @param id
+    * @param maxSize
     * @throws IOException
     */
-   List<HTextFlow> filterHasErrorTexFlow(List<HTextFlow> textFlows, List<ValidationId> validationIds, Long localeId);
+   List<HTextFlow> filterHasErrorTexFlow(List<HTextFlow> textFlows, List<ValidationId> validationIds, Long localeId, int startIndex, int maxSize);
 }

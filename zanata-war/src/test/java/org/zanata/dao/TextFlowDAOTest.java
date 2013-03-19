@@ -55,7 +55,7 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest
       }
 
       //3 text flows with single en-US fuzzy target
-      List<HTextFlow> doc2TextFlows = dao.getTextFlows(new DocumentId(2L, ""), 0, 9999);
+      List<HTextFlow> doc2TextFlows = dao.getTextFlowsByDocumentId(new DocumentId(2L, ""), 0, 9999);
       for (HTextFlow doc2tf : doc2TextFlows)
       {
          log.debug("text flow id {} - targets {}", doc2tf.getId(), doc2tf.getTargets());

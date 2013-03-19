@@ -267,13 +267,22 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
    }
 
    @SuppressWarnings("unchecked")
-   public List<HTextFlow> getTextFlows(DocumentId documentId, int startIndex, int maxSize)
+   public List<HTextFlow> getTextFlowsByDocumentId(DocumentId documentId, int startIndex, int maxSize)
    {
       Query q = getSession().createQuery("from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id order by tf.pos");
       q.setParameter("id", documentId.getId());
       q.setFirstResult(startIndex);
       q.setMaxResults(maxSize);
-      q.setCacheable(true).setComment("TextFlowDAO.getTextFlows");
+      q.setCacheable(true).setComment("TextFlowDAO.getTextFlowsByDocumentId");
+      return q.list();
+   }
+
+   @SuppressWarnings("unchecked")
+   public List<HTextFlow> getAllTextFlowsByDocumentId(DocumentId documentId)
+   {
+      Query q = getSession().createQuery("from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id order by tf.pos");
+      q.setParameter("id", documentId.getId());
+      q.setCacheable(true).setComment("TextFlowDAO.getAllTextFlowsByDocumentId");
       return q.list();
    }
 
@@ -300,6 +309,22 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       constraintToQuery.setQueryParameters(textFlowQuery, hLocale);
       textFlowQuery.setFirstResult(firstResult).setMaxResults(maxResult);
       textFlowQuery.setCacheable(true).setComment("TextFlowDAO.getTextFlowByDocumentIdWithConstraint");
+
+      @SuppressWarnings("unchecked")
+      List<HTextFlow> result = textFlowQuery.list();
+      log.debug("{} textFlow for locale {} filter by {}", new Object[] { result.size(), hLocale.getLocaleId(), constraints });
+      return result;
+   }
+
+   public List<HTextFlow> getAllTextFlowByDocumentIdWithConstraint(DocumentId documentId, HLocale hLocale, FilterConstraints constraints)
+   {
+      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.filterInSingleDocument(constraints, documentId);
+      String queryString = constraintToQuery.toHQL();
+      log.debug("\n query {}\n", queryString);
+
+      Query textFlowQuery = getSession().createQuery(queryString);
+      constraintToQuery.setQueryParameters(textFlowQuery, hLocale);
+      textFlowQuery.setCacheable(true).setComment("TextFlowDAO.getAllTextFlowByDocumentIdWithConstraint");
 
       @SuppressWarnings("unchecked")
       List<HTextFlow> result = textFlowQuery.list();

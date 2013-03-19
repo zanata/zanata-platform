@@ -220,7 +220,7 @@ public class ValidationServiceImpl implements ValidationService
    }
 
    @Override
-   public List<HTextFlow> filterHasErrorTexFlow(List<HTextFlow> textFlows, List<ValidationId> validationIds, Long localeId)
+   public List<HTextFlow> filterHasErrorTexFlow(List<HTextFlow> textFlows, List<ValidationId> validationIds, Long localeId, int startIndex, int maxSize)
    {
       log.info("Start filter {0} textFlows", textFlows.size());
       Stopwatch stopwatch = new Stopwatch().start();
@@ -236,7 +236,23 @@ public class ValidationServiceImpl implements ValidationService
          }
       }
       log.info("Finished filter textFlows in " + stopwatch);
-      return result;
+
+      if (result.size() <= maxSize)
+      {
+         return result;
+      }
+
+      int toIndex = startIndex + maxSize;
+      validateIndexes(startIndex, toIndex, result.size(), maxSize);
+      
+      return result.subList(startIndex, toIndex);
+   }
+   
+   private void validateIndexes(int startIndex, int toIndex, int actualResultSize, int expectedResultSize)
+   {
+      toIndex = toIndex > actualResultSize ? actualResultSize : toIndex;
+      startIndex = startIndex > toIndex ? toIndex - expectedResultSize : startIndex;
+      startIndex = startIndex < 0 ? 0 : startIndex;
    }
 
    private boolean textFlowTargetHasError(HTextFlow textFlow, List<ValidationAction> validationActions, Long localeId)

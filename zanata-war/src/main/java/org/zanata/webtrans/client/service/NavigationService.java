@@ -151,9 +151,10 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
             }
             eventBus.fireEvent(new PageChangeEvent(result.getTargetPage()));
             highlightSearch();
-            if(result.isFilterByHasError())
+            if (result.isFilterByHasError())
             {
-               //result is filtered by has error flag, run validation on all TransUnit and display error message
+               // result is filtered by has error flag, run validation on all
+               // TransUnit and display error message
                eventBus.fireEvent(new RequestPageValidationEvent());
                
             }
