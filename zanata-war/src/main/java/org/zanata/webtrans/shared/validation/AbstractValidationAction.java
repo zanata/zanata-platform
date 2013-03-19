@@ -72,9 +72,9 @@ public abstract class AbstractValidationAction implements ValidationAction
    @Override
    public void validate(String source, String target)
    {
+      clearErrorMessage();
       if (!Strings.isNullOrEmpty(target) && !Strings.isNullOrEmpty(source))
       {
-         clearErrorMessage();
          doValidate(source, target);
       }
    }
