@@ -264,16 +264,16 @@ public class SearchResultsView extends Composite implements SearchResultsPresent
    }
 
    @Override
-   public ListDataProvider<TransUnitReplaceInfo> addDocument(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, ClickHandler infoClickHandler, MultiSelectionModel<TransUnitReplaceInfo> selectionModel, ValueChangeHandler<Boolean> selectAllHandler)
+   public ListDataProvider<TransUnitReplaceInfo> addDocument(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, ClickHandler infoClickHandler, MultiSelectionModel<TransUnitReplaceInfo> selectionModel, ValueChangeHandler<Boolean> selectAllHandler, Delegate<TransUnitReplaceInfo> goToEditorDelegate)
    {
-      SearchResultsDocumentTable table = new SearchResultsDocumentTable(selectionModel, selectAllHandler, messages);
+      SearchResultsDocumentTable table = new SearchResultsDocumentTable(selectionModel, selectAllHandler, messages, goToEditorDelegate);
       return addDocument(docName, viewDocClickHandler, searchDocClickHandler, infoClickHandler, table);
    }
 
    @Override
-   public ListDataProvider<TransUnitReplaceInfo> addDocument(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, ClickHandler infoClickHandler, MultiSelectionModel<TransUnitReplaceInfo> selectionModel, ValueChangeHandler<Boolean> selectAllHandler, Delegate<TransUnitReplaceInfo> previewDelegate, Delegate<TransUnitReplaceInfo> replaceDelegate, Delegate<TransUnitReplaceInfo> undoDelegate)
+   public ListDataProvider<TransUnitReplaceInfo> addDocument(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, ClickHandler infoClickHandler, MultiSelectionModel<TransUnitReplaceInfo> selectionModel, ValueChangeHandler<Boolean> selectAllHandler, Delegate<TransUnitReplaceInfo> previewDelegate, Delegate<TransUnitReplaceInfo> replaceDelegate, Delegate<TransUnitReplaceInfo> undoDelegate, Delegate<TransUnitReplaceInfo> goToEditorDelegate)
    {
-      SearchResultsDocumentTable table = new SearchResultsDocumentTable(previewDelegate, replaceDelegate, undoDelegate, selectionModel, selectAllHandler, messages, resources);
+      SearchResultsDocumentTable table = new SearchResultsDocumentTable(previewDelegate, replaceDelegate, undoDelegate, goToEditorDelegate, selectionModel, selectAllHandler, messages, resources);
       return addDocument(docName, viewDocClickHandler, searchDocClickHandler, infoClickHandler, table);
    }
 

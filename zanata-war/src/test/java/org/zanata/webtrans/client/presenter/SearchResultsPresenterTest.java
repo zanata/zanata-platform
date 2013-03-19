@@ -54,12 +54,14 @@ import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter.Display;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.service.GetTransUnitActionContextHolder;
 import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitLists;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitListsResult;
 
+import com.google.gwt.cell.client.ActionCell;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -187,6 +189,8 @@ public class SearchResultsPresenterTest
    ArgumentCaptor<MultiSelectionModel<TransUnitReplaceInfo>> capturedSelectionModels;
    @Captor
    ArgumentCaptor<ValueChangeHandler<Boolean>> capturedSelectDocChangeHandlers;
+   @Captor
+   ArgumentCaptor<ActionCell.Delegate<TransUnitReplaceInfo>> capturedGoToEditorDelegate;
 
    // first test document
    @Mock
@@ -202,13 +206,14 @@ public class SearchResultsPresenterTest
    private ClickEvent clickEvent;
    @Mock 
    private HandlerRegistration handlerRegistration;
+   private GetTransUnitActionContextHolder contextHolder = new GetTransUnitActionContextHolder(new UserConfigHolder());
 
    @BeforeMethod
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
 
-      searchResultsPresenter = new SearchResultsPresenter(mockDisplay, mockEventBus, mockDispatcher, mockHistory, mockMessages, mockUserWorkspaceContext, mockKeyShortcutPresenter, mockUndoLinkProvider, mockWindowLocation);
+      searchResultsPresenter = new SearchResultsPresenter(mockDisplay, mockEventBus, mockDispatcher, mockHistory, mockMessages, mockUserWorkspaceContext, mockKeyShortcutPresenter, mockUndoLinkProvider, mockWindowLocation, contextHolder);
 
       when(mockMessages.selectAllTextFlowsKeyShortcut()).thenReturn(TEST_MESSAGE_SELECT_ALL_TEXT_FLOWS_KEY_SHORTCUT);
       when(mockMessages.focusSearchPhraseKeyShortcut()).thenReturn(TEST_MESSAGE_FOCUS_SEARCH_PHRASE_KEY_SHORTCUT);
@@ -429,7 +434,7 @@ public class SearchResultsPresenterTest
       when(mockSelectionModelDoc1.addSelectionChangeHandler(capturedSelectionChangeHandlerDoc1.capture())).thenReturn(handlerRegistration);
       when(mockSelectionModelDoc1.addSelectionChangeHandler(capturedSelectionChangeDeselectHandlerDoc1.capture())).thenReturn(handlerRegistration);
       
-      when(mockDisplay.addDocument(eq(TEST_DOC_PATH_1), capturedViewDocClickHandlers.capture(), capturedSearchDocClickHandlers.capture(), capturedInfoClickHandlers.capture(), capturedSelectionModels.capture(), capturedSelectDocChangeHandlers.capture())).thenReturn(mockDataProviderDoc1);
+      when(mockDisplay.addDocument(eq(TEST_DOC_PATH_1), capturedViewDocClickHandlers.capture(), capturedSearchDocClickHandlers.capture(), capturedInfoClickHandlers.capture(), capturedSelectionModels.capture(), capturedSelectDocChangeHandlers.capture(), capturedGoToEditorDelegate.capture())).thenReturn(mockDataProviderDoc1);
 
       when(mockDisplay.getSelectAllCheckbox()).thenReturn(mockSelectAllHeader);
    }
