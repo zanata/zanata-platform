@@ -28,6 +28,7 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 import org.zanata.webtrans.client.events.RunDocValidationEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
+import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.service.ValidationService;
 import org.zanata.webtrans.client.view.ValidationOptionsDisplay;
 import org.zanata.webtrans.shared.model.ValidationAction;
@@ -47,13 +48,15 @@ import com.google.inject.Inject;
 public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOptionsDisplay> implements ValidationOptionsDisplay.Listener, WorkspaceContextUpdateEventHandler
 {
    private final ValidationService validationService;
+   private final WebTransMessages messages;
    private MainView currentView;
 
    @Inject
-   public ValidationOptionsPresenter(ValidationOptionsDisplay display, EventBus eventBus, final ValidationService validationService)
+   public ValidationOptionsPresenter(ValidationOptionsDisplay display, EventBus eventBus, final ValidationService validationService, final WebTransMessages messages)
    {
       super(display, eventBus);
       this.validationService = validationService;
+      this.messages = messages;
    }
 
    @Override
@@ -126,10 +129,12 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
       if (view == MainView.Documents)
       {
          display.setRunValidationVisible(true);
+         display.setRunValidationTitle(messages.documentValidationTitle());
       }
       else
       {
          display.setRunValidationVisible(false);
+         display.setRunValidationTitle(messages.editorValidationTitle());
       }
    }
 

@@ -43,7 +43,14 @@ public class ValidationFactory
 
    public ValidationFactory(ValidationMessages validationMessages)
    {
-      init(validationMessages);
+      if (validationMessages != null)
+      {
+         initValidationMap(validationMessages);
+      }
+      else
+      {
+         initValidationMap();
+      }
    }
 
    /**
@@ -74,11 +81,6 @@ public class ValidationFactory
       return actions;
    }
 
-   private void init(ValidationMessages validationMessages)
-   {
-      initValidationMap(validationMessages);
-   }
-
    private void initValidationMap(ValidationMessages validationMessages)
    {
       VALIDATION_MAP.clear();
@@ -92,6 +94,27 @@ public class ValidationFactory
 
       PrintfVariablesValidation printfVariablesValidation = new PrintfVariablesValidation(ValidationId.PRINTF_VARIABLES, validationMessages);
       PrintfXSIExtensionValidation positionalPrintfValidation = new PrintfXSIExtensionValidation(ValidationId.PRINTF_XSI_EXTENSION, validationMessages);
+
+      printfVariablesValidation.mutuallyExclusive(positionalPrintfValidation);
+      positionalPrintfValidation.mutuallyExclusive(printfVariablesValidation);
+
+      VALIDATION_MAP.put(ValidationId.PRINTF_VARIABLES, printfVariablesValidation);
+      VALIDATION_MAP.put(ValidationId.PRINTF_XSI_EXTENSION, positionalPrintfValidation);
+   }
+
+   private void initValidationMap()
+   {
+      VALIDATION_MAP.clear();
+
+      VALIDATION_MAP.put(ValidationId.HTML_XML, new HtmlXmlTagValidation(ValidationId.HTML_XML));
+      VALIDATION_MAP.put(ValidationId.NEW_LINE, new NewlineLeadTrailValidation(ValidationId.NEW_LINE));
+      VALIDATION_MAP.put(ValidationId.TAB, new TabValidation(ValidationId.TAB));
+
+      VALIDATION_MAP.put(ValidationId.JAVA_VARIABLES, new JavaVariablesValidation(ValidationId.JAVA_VARIABLES));
+      VALIDATION_MAP.put(ValidationId.XML_ENTITY, new XmlEntityValidation(ValidationId.XML_ENTITY));
+
+      PrintfVariablesValidation printfVariablesValidation = new PrintfVariablesValidation(ValidationId.PRINTF_VARIABLES);
+      PrintfXSIExtensionValidation positionalPrintfValidation = new PrintfXSIExtensionValidation(ValidationId.PRINTF_XSI_EXTENSION);
 
       printfVariablesValidation.mutuallyExclusive(positionalPrintfValidation);
       positionalPrintfValidation.mutuallyExclusive(printfVariablesValidation);

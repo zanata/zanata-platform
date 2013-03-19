@@ -55,6 +55,11 @@ public class XmlEntityValidation extends AbstractValidationAction
       super(id, messages.xmlEntityValidatorDesc(), new ValidationInfo(true), messages);
    }
 
+   public XmlEntityValidation(ValidationId id)
+   {
+      super(id, null, new ValidationInfo(true), null);
+   }
+
    @Override
    public void doValidate(String source, String target)
    {

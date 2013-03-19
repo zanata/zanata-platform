@@ -26,6 +26,11 @@ public class PrintfXSIExtensionValidation extends PrintfVariablesValidation
       super(id, messages.printfXSIExtensionValidationDesc(), messages, false);
    }
 
+   public PrintfXSIExtensionValidation(ValidationId id)
+   {
+      super(id);
+   }
+
    @Override
    public void doValidate(String source, String target)
    {

@@ -41,7 +41,7 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    {
       initWidget(uiBinder.createAndBindUi(this));
       validationOptionsHeader.setText(messages.validationOptions());
-      runValidation.setText("Run validation");
+      runValidation.setText(messages.runValidation());
    }
 
    @Override
@@ -84,6 +84,12 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    public void setRunValidationVisible(boolean visible)
    {
       runValidation.setVisible(visible);
+   }
+
+   @Override
+   public void setRunValidationTitle(String title)
+   {
+      runValidation.setTitle(title);
    }
 
    @UiHandler("runValidation")

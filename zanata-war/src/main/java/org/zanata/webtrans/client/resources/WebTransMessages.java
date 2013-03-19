@@ -404,6 +404,9 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Validation options")
    String validationOptions();
 
+   @DefaultMessage("Run validation")
+   String runValidation();
+
    @DefaultMessage("Navigation key/button")
    String navOption();
 
@@ -500,13 +503,13 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Only display Translation Unit Details when there is meta data otherwise hide it")
    String showTransUnitDetailsTooltip();
 
-   @DefaultMessage("Download all files (zip)")
+   @DefaultMessage("Download files (zip)")
    String downloadAllAsZip();
 
    @DefaultMessage("Download all translated files.")
    String downloadAllAsZipDescription();
 
-   @DefaultMessage("Download all files (offline po zip)")
+   @DefaultMessage("Download files (offline po zip)")
    String downloadAllAsOfflinePoZip();
 
    @DefaultMessage("Download all translated files in po format for offline translation.")
@@ -514,5 +517,11 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("The project type for this iteration has not been set. Contact the project maintainer.")
    String projectTypeNotSet();
+
+   @DefaultMessage("Run validation on documents")
+   String documentValidationTitle();
+
+   @DefaultMessage("Run validation on translation unit")
+   String editorValidationTitle();
 
 }

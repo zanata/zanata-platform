@@ -50,6 +50,11 @@ public class PrintfVariablesValidation extends AbstractValidationAction
       super(id, messages.printfVariablesValidatorDesc(), new ValidationInfo(true), messages);
    }
    
+   public PrintfVariablesValidation(ValidationId id)
+   {
+      super(id, null, new ValidationInfo(true), null);
+   }
+
    public PrintfVariablesValidation(ValidationId id, String description, ValidationMessages messages, boolean enabled)
    {
       super(id, description, new ValidationInfo(enabled), messages);

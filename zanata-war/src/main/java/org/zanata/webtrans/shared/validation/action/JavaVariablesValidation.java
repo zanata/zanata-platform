@@ -46,6 +46,11 @@ public class JavaVariablesValidation extends AbstractValidationAction
       super(id, messages.javaVariablesValidatorDesc(), new ValidationInfo(true), messages);
    }
 
+   public JavaVariablesValidation(ValidationId id)
+   {
+      super(id, null, new ValidationInfo(true), null);
+   }
+
    @Override
    public void doValidate(String source, String target)
    {

@@ -1,14 +1,11 @@
 package org.zanata.webtrans.client.rpc;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.zanata.common.LocaleId;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
-import org.zanata.webtrans.client.resources.ValidationMessages;
-import org.zanata.webtrans.server.locale.Gwti18nReader;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -50,25 +47,16 @@ public class DummyActivateWorkspaceCommand implements Command
 
       Identity identity = new Identity(new EditorClientId("123456", 1), new Person(new PersonId("bob"), "Bob The Builder", "http://www.gravatar.com/avatar/bob@zanata.org?d=mm&s=16"));
 
-      ValidationMessages message;
-      try
-      {
-         message = Gwti18nReader.create(ValidationMessages.class);
-         ValidationFactory validationFactory = new ValidationFactory(message);
-         Map<ValidationId, ValidationAction> validationMap = validationFactory.getAllValidationActions();
-         Map<ValidationId, ValidationInfo> validationInfoList = new HashMap<ValidationId, ValidationInfo>();
+      ValidationFactory validationFactory = new ValidationFactory(null);
+      Map<ValidationId, ValidationAction> validationMap = validationFactory.getAllValidationActions();
+      Map<ValidationId, ValidationInfo> validationInfoList = new HashMap<ValidationId, ValidationInfo>();
 
-         for (ValidationAction action : validationMap.values())
-         {
-            validationInfoList.put(action.getId(), action.getValidationInfo());
-         }
-
-         callback.onSuccess(new ActivateWorkspaceResult(userWorkspaceContext, identity, new UserConfigHolder().getState(), validationInfoList));
-         Log.info("EXIT DummyActivateWorkspaceCommand.execute()");
-      }
-      catch (IOException e)
+      for (ValidationAction action : validationMap.values())
       {
-         e.printStackTrace();
+         validationInfoList.put(action.getId(), action.getValidationInfo());
       }
+
+      callback.onSuccess(new ActivateWorkspaceResult(userWorkspaceContext, identity, new UserConfigHolder().getState(), validationInfoList));
+      Log.info("EXIT DummyActivateWorkspaceCommand.execute()");
    }
 }

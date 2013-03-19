@@ -17,6 +17,7 @@ import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.service.ValidationService;
 import org.zanata.webtrans.client.view.ValidationOptionsDisplay;
 import org.zanata.webtrans.server.locale.Gwti18nReader;
@@ -50,6 +51,8 @@ public class ValidationOptionsPresenterTest
    private ArgumentCaptor<ValueChangeHandler<Boolean>> valueChangeHandlerCaptor;
    @Mock
    private ValueChangeEvent<Boolean> valueChangeEvent;
+   @Mock
+   private WebTransMessages messages;
 
    private ValidationFactory validationFactory;
 
@@ -62,7 +65,7 @@ public class ValidationOptionsPresenterTest
       
       validationFactory = new ValidationFactory(validationMessage);
 
-      presenter = new ValidationOptionsPresenter(display, eventBus, validationService);
+      presenter = new ValidationOptionsPresenter(display, eventBus, validationService, messages);
    }
 
    @Test
