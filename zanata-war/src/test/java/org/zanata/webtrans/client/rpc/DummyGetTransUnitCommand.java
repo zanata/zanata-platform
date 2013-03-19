@@ -41,7 +41,7 @@ final class DummyGetTransUnitCommand implements Command
       int totalCount = count * 5;
 
       ArrayList<TransUnit> data = generateTransUnitSampleData(action.getWorkspaceId().getLocaleId(), count, offset);
-      GetTransUnitListResult result = new GetTransUnitListResult(documentId, data, 1, offset, offset / count, false);
+      GetTransUnitListResult result = new GetTransUnitListResult(documentId, data, 1, offset, offset / count);
 
       ArrayList<TransUnitId> idIndexList = new ArrayList<TransUnitId>();
       HashMap<TransUnitId, ContentState> transIdStateMap = new HashMap<TransUnitId, ContentState>();

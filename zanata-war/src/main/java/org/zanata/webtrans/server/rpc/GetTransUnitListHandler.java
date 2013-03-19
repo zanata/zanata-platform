@@ -100,7 +100,7 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
 
       List<HTextFlow> textFlows = getTextFlows(action, hLocale, targetOffset);
       
-      GetTransUnitListResult result = transformToTransUnits(action, hLocale, textFlows, targetOffset, targetPage, action.isFilterHasError());
+      GetTransUnitListResult result = transformToTransUnits(action, hLocale, textFlows, targetOffset, targetPage);
       result.setNavigationIndex(navigationResult);
       return result;
    }
@@ -169,7 +169,7 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       }
    }
 
-   private GetTransUnitListResult transformToTransUnits(GetTransUnitList action, HLocale hLocale, List<HTextFlow> textFlows, int targetOffset, int targetPage, boolean isFilterByHasError)
+   private GetTransUnitListResult transformToTransUnits(GetTransUnitList action, HLocale hLocale, List<HTextFlow> textFlows, int targetOffset, int targetPage)
    {
       List<TransUnit> units = Lists.transform(textFlows, new HTextFlowToTransUnitFunction(hLocale, transUnitTransformer));
 
@@ -183,7 +183,7 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
          }
       }
       // stupid GWT RPC can't handle com.google.common.collect.Lists$TransformingRandomAccessList
-      return new GetTransUnitListResult(action.getDocumentId(), Lists.newArrayList(units), gotoRow, targetOffset, targetPage, isFilterByHasError);
+      return new GetTransUnitListResult(action.getDocumentId(), Lists.newArrayList(units), gotoRow, targetOffset, targetPage);
    }
 
    @Override

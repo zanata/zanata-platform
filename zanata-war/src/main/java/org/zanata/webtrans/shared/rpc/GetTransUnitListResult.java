@@ -18,21 +18,19 @@ public class GetTransUnitListResult implements DispatchResult
    private int targetOffset;
    private int targetPage;
    private GetTransUnitsNavigationResult navigationIndex;
-   private boolean filterByHasError = false;
 
    @SuppressWarnings("unused")
    private GetTransUnitListResult()
    {
    }
 
-   public GetTransUnitListResult(DocumentId documentId, List<TransUnit> units, int gotoRow, int targetOffset, int targetPage, boolean filterByHasError)
+   public GetTransUnitListResult(DocumentId documentId, List<TransUnit> units, int gotoRow, int targetOffset, int targetPage)
    {
       this.documentId = documentId;
       this.units = units;
       this.gotoRow = gotoRow;
       this.targetOffset = targetOffset;
       this.targetPage = targetPage;
-      this.filterByHasError = filterByHasError;
    }
 
    public List<TransUnit> getUnits()
@@ -68,11 +66,6 @@ public class GetTransUnitListResult implements DispatchResult
    public void setNavigationIndex(GetTransUnitsNavigationResult navigationIndex)
    {
       this.navigationIndex = navigationIndex;
-   }
-
-   public boolean isFilterByHasError()
-   {
-      return filterByHasError;
    }
 
    @Override
