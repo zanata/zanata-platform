@@ -12,6 +12,7 @@ import org.zanata.webtrans.shared.model.TransUnitValidationResult;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.common.LocaleId;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
@@ -64,18 +65,18 @@ public interface ValidationService
     * @param validations
     * @param localeId
     */
-   Map<DocumentId, Boolean> runValidations(List<HDocument> hDocs, List<ValidationId> validationIds, Long localeId);
+   Map<DocumentId, Boolean> runValidations(List<HDocument> hDocs, List<ValidationId> validationIds, LocaleId localeId);
 
    /**
     * Run validation check on HTextFlow and HTextFlowTarget with specific locale
-    * from list of HDocuments against validations rules and return full report
+    * from HDocuments against validations rules and return full report
     * 
     * @param hDocs
     * @param validations
     * @param localeId
     * @throws IOException
     */
-   Map<DocumentId, List<TransUnitValidationResult>> runValidationsFullReport(List<HDocument> hDocs, List<ValidationId> validationIds, Long localeId);
+   List<TransUnitValidationResult> runValidationsFullReport(HDocument hDoc, List<ValidationId> validationIds, LocaleId localeId);
 
    /**
     * Filter list of text flow with those only contains validation error
@@ -85,5 +86,5 @@ public interface ValidationService
     * @param maxSize
     * @throws IOException
     */
-   List<HTextFlow> filterHasErrorTexFlow(List<HTextFlow> textFlows, List<ValidationId> validationIds, Long localeId, int startIndex, int maxSize);
+   List<HTextFlow> filterHasErrorTexFlow(List<HTextFlow> textFlows, List<ValidationId> validationIds, LocaleId localeId, int startIndex, int maxSize);
 }
