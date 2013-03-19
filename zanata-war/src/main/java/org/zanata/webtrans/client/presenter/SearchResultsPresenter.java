@@ -48,6 +48,7 @@ import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.service.GetTransUnitActionContextHolder;
 import org.zanata.webtrans.client.ui.SearchResultsDocumentTable;
 import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.shared.model.TransUnit;
@@ -150,12 +151,12 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
        * @param searchDocClickHandler handler for 'search in editor' link
        * @param selectionModel
        * @param selectAllHandler
+       * @param goToEditorDelegate
        * @return the created table
        * 
-       * @see SearchResultsDocumentTable#SearchResultsDocumentTable(SelectionModel,
-       *      ValueChangeHandler, WebTransMessages)
+       * @see SearchResultsDocumentTable#(com.google.gwt.view.client.SelectionModel
        */
-      ListDataProvider<TransUnitReplaceInfo> addDocument(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, ClickHandler infoClickHandler, MultiSelectionModel<TransUnitReplaceInfo> selectionModel, ValueChangeHandler<Boolean> selectAllHandler);
+      ListDataProvider<TransUnitReplaceInfo> addDocument(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, ClickHandler infoClickHandler, MultiSelectionModel<TransUnitReplaceInfo> selectionModel, ValueChangeHandler<Boolean> selectAllHandler, Delegate<TransUnitReplaceInfo> goToEditorDelegate);
 
       /**
        * Add a document header and table to the display, with action buttons per
@@ -163,15 +164,18 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
        * 
        * @return the created table
        * 
-       * @see #addDocument(String, com.google.gwt.event.dom.client.ClickHandler,
+       * @see Display#addDocument(String,
+       *      com.google.gwt.event.dom.client.ClickHandler,
+       *      com.google.gwt.event.dom.client.ClickHandler,
        *      com.google.gwt.event.dom.client.ClickHandler,
        *      com.google.gwt.view.client.MultiSelectionModel,
-       *      com.google.gwt.event.logical.shared.ValueChangeHandler)
-       * @see SearchResultsDocumentTable#SearchResultsDocumentTable(Delegate,
-       *      Delegate, Delegate, SelectionModel, ValueChangeHandler,
-       *      WebTransMessages, org.zanata.webtrans.client.resources.Resources)
+       *      com.google.gwt.event.logical.shared.ValueChangeHandler,
+       *      com.google.gwt.cell.client.ActionCell.Delegate)
+       * @see SearchResultsDocumentTable#(Delegate, Delegate, Delegate,
+       *      SelectionModel, ValueChangeHandler, WebTransMessages,
+       *      org.zanata.webtrans.client.resources.Resources)
        */
-      ListDataProvider<TransUnitReplaceInfo> addDocument(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, ClickHandler infoClickHandler, MultiSelectionModel<TransUnitReplaceInfo> selectionModel, ValueChangeHandler<Boolean> selectAllHandler, Delegate<TransUnitReplaceInfo> previewDelegate, Delegate<TransUnitReplaceInfo> replaceDelegate, Delegate<TransUnitReplaceInfo> undoDelegate);
+      ListDataProvider<TransUnitReplaceInfo> addDocument(String docName, ClickHandler viewDocClickHandler, ClickHandler searchDocClickHandler, ClickHandler infoClickHandler, MultiSelectionModel<TransUnitReplaceInfo> selectionModel, ValueChangeHandler<Boolean> selectAllHandler, Delegate<TransUnitReplaceInfo> previewDelegate, Delegate<TransUnitReplaceInfo> replaceDelegate, Delegate<TransUnitReplaceInfo> undoDelegate, Delegate<TransUnitReplaceInfo> goToEditorDelegate);
 
       /**
        * Required to avoid instantiating a component that calls client-only code
@@ -192,6 +196,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    private final CachingDispatchAsync dispatcher;
    private final KeyShortcutPresenter keyShortcutPresenter;
    private final Location windowLocation;
+   private final GetTransUnitActionContextHolder contextHolder;
    private final History history;
    private final Provider<UndoLink> undoLinkProvider;
    private final UserWorkspaceContext userWorkspaceContext;
@@ -200,6 +205,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    private Delegate<TransUnitReplaceInfo> previewButtonDelegate;
    private Delegate<TransUnitReplaceInfo> replaceButtonDelegate;
    private Delegate<TransUnitReplaceInfo> undoButtonDelegate;
+   private Delegate<TransUnitReplaceInfo> goToEditorDelegate;
+
    private Handler selectionChangeHandler;
 
    private Map<Long, HasValue<Boolean>> selectAllDocList;
@@ -224,7 +231,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    private boolean showRowActionButtons = false;
 
    @Inject
-   public SearchResultsPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, History history, final WebTransMessages webTransMessages, final UserWorkspaceContext userWorkspaceContext, final KeyShortcutPresenter keyShortcutPresenter, final Provider<UndoLink> undoLinkProvider, Location windowLocation)
+   public SearchResultsPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, History history, final WebTransMessages webTransMessages, final UserWorkspaceContext userWorkspaceContext, final KeyShortcutPresenter keyShortcutPresenter, final Provider<UndoLink> undoLinkProvider, Location windowLocation, GetTransUnitActionContextHolder contextHolder)
    {
       super(display, eventBus);
       messages = webTransMessages;
@@ -234,6 +241,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       this.keyShortcutPresenter = keyShortcutPresenter;
       this.undoLinkProvider = undoLinkProvider;
       this.windowLocation = windowLocation;
+      this.contextHolder = contextHolder;
    }
 
    @Override
@@ -580,6 +588,32 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          }
 
       };
+   }
+
+   private Delegate<TransUnitReplaceInfo> ensureGoToEditorDelegate()
+   {
+      if (goToEditorDelegate == null)
+      {
+         goToEditorDelegate = new Delegate<TransUnitReplaceInfo>()
+         {
+            @Override
+            public void execute(TransUnitReplaceInfo info)
+            {
+               // in the case of editor still in filter mode or search result,
+               // requested text flow may not appear in result. We want to make
+               // sure it reloads everything for this document.
+               contextHolder.updateContext(null); // this will ensure HistoryEventHandlerService fire InitEditorEvent
+
+               HistoryToken token = history.getHistoryToken();
+               token.setView(MainView.Editor);
+               token.setDocumentPath(docPaths.get(info.getDocId()));
+               token.clearEditorFilterAndSearch();
+               token.setTextFlowId(info.getTransUnit().getId().toString());
+               history.newItem(token);
+            }
+         };
+      }
+      return goToEditorDelegate;
    }
 
    /**
@@ -1080,11 +1114,11 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
       if (showRowActionButtons)
       {
-         dataProvider = display.addDocument(docPathName, showDocHandler, searchDocHandler, infoClickHandler, selectionModel, selectDocHandler, ensurePreviewButtonDelegate(), ensureReplaceButtonDelegate(), ensureUndoButtonDelegate());
+         dataProvider = display.addDocument(docPathName, showDocHandler, searchDocHandler, infoClickHandler, selectionModel, selectDocHandler, ensurePreviewButtonDelegate(), ensureReplaceButtonDelegate(), ensureUndoButtonDelegate(), ensureGoToEditorDelegate());
       }
       else
       {
-         dataProvider = display.addDocument(docPathName, showDocHandler, searchDocHandler, infoClickHandler, selectionModel, selectDocHandler);
+         dataProvider = display.addDocument(docPathName, showDocHandler, searchDocHandler, infoClickHandler, selectionModel, selectDocHandler, ensureGoToEditorDelegate());
       }
 
       selectAllDocList.put(docId, display.getSelectAllCheckbox());

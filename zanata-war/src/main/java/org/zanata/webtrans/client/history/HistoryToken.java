@@ -288,6 +288,15 @@ public class HistoryToken
       return filterHasError;
    }
 
+   public void clearEditorFilterAndSearch()
+   {
+      filterFuzzy = false;
+      filterHasError = false;
+      filterTranslated = false;
+      filterUntranslated = false;
+      searchText = DEFAULT_SEARCH_TEXT;
+   }
+
    private static enum TokenParserFunction implements Function<String, Token>
    {
       FUNCTION;
