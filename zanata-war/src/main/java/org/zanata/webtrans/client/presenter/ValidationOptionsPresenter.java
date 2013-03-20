@@ -26,21 +26,28 @@ import java.util.Set;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.RunDocValidationEvent;
 import org.zanata.webtrans.client.events.RunDocValidationResultEvent;
 import org.zanata.webtrans.client.events.RunDocValidationResultHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.ValidationService;
 import org.zanata.webtrans.client.view.ValidationOptionsDisplay;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationInfo;
+import org.zanata.webtrans.shared.rpc.DownloadAllFilesResult;
+import org.zanata.webtrans.shared.rpc.RunDocValidationReportAction;
+import org.zanata.webtrans.shared.rpc.RunDocValidationReportResult;
 
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 /**
@@ -53,15 +60,19 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
 {
    private final ValidationService validationService;
    private final WebTransMessages messages;
+   private final CachingDispatchAsync dispatcher;
+   private final UserConfigHolder configHolder;
    private MainView currentView;
    private Set<DocumentId> errorDocs;
 
    @Inject
-   public ValidationOptionsPresenter(ValidationOptionsDisplay display, EventBus eventBus, final ValidationService validationService, final WebTransMessages messages)
+   public ValidationOptionsPresenter(ValidationOptionsDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, final ValidationService validationService, final WebTransMessages messages, final UserConfigHolder configHolder)
    {
       super(display, eventBus);
       this.validationService = validationService;
       this.messages = messages;
+      this.dispatcher = dispatcher;
+      this.configHolder = configHolder;
    }
 
    @Override
@@ -139,7 +150,7 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
       {
          display.setRunValidationVisible(true);
          display.setRunValidationTitle(messages.documentValidationTitle());
-         if(hasErrorReport())
+         if (hasErrorReport())
          {
             display.showReportLink(true);
          }
@@ -173,14 +184,27 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
    public void onRequestValidationReport()
    {
       // display.showReportPopup(errorDocs);
-      // run RPC call, by each docs
+      for (final DocumentId documentId : errorDocs)
+      {
+         dispatcher.execute(new RunDocValidationReportAction(configHolder.getState().getEnabledValidationIds(), documentId.getId()), new AsyncCallback<RunDocValidationReportResult>()
+         {
+            @Override
+            public void onFailure(Throwable caught)
+            {
+               eventBus.fireEvent(new NotificationEvent(Severity.Error, "Error generating report for document " + documentId));
+            }
+
+            @Override
+            public void onSuccess(RunDocValidationReportResult result)
+            {
+               // display.updateReport(documentId, result.getResult());
+            }
+         });
+      }
    }
-   
+
    private boolean hasErrorReport()
    {
       return errorDocs != null && !errorDocs.isEmpty();
    }
 }
-
-
- 
