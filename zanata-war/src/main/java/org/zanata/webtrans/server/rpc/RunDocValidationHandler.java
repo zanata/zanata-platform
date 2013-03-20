@@ -1,6 +1,5 @@
 package org.zanata.webtrans.server.rpc;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 

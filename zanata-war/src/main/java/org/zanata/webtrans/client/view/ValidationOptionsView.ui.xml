@@ -22,6 +22,12 @@
 			border-radius: 3px;
 			width:85px;
 			margin-top:10px;
+			display:inline-block;
+		}
+		
+		.lastValidationRunLabel
+		{
+			color:#ffa500;
 		}
         
 	</ui:style>
@@ -37,6 +43,7 @@
 			        </g:VerticalPanel>
 			    </g:ScrollPanel>
 			    <g:PushButton ui:field="runValidation" addStyleNames="{style.runValidationButton}"/>
+			    <g:InlineLabel ui:field="lastValidationRun" styleName="{style.lastValidationRunLabel}"/>
 		    </g:HTMLPanel>
     	</g:layer>
     </g:LayoutPanel>

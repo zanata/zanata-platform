@@ -21,6 +21,8 @@
 
 package org.zanata.webtrans.client.view;
 
+import java.util.Date;
+
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
@@ -43,4 +45,6 @@ public interface ValidationOptionsDisplay extends WidgetDisplay
    }
 
    void setRunValidationTitle(String title);
+
+   void updateValidationResult(Date startTime, Date endTime);
 }
