@@ -524,4 +524,10 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Run validation on translation unit")
    String editorValidationTitle();
 
+   @DefaultMessage("Last run: {0}")
+   String lastValidationRun(String completeTime);
+
+   @DefaultMessage("Start time: {0}")
+   String lastValidationRunTooltip(String startTime);
+
 }

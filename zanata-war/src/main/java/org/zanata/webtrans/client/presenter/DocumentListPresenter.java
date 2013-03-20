@@ -21,6 +21,7 @@
 package org.zanata.webtrans.client.presenter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,7 @@ import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.RunDocValidationEvent;
 import org.zanata.webtrans.client.events.RunDocValidationEventHandler;
+import org.zanata.webtrans.client.events.RunDocValidationResultEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
@@ -535,6 +537,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       if (event.getView() == MainView.Documents)
       {
          display.showLoading(true);
+         final Date startTime = new Date();
          ArrayList<Long> docIds = new ArrayList<Long>();
          for (DocumentNode node : display.getDocumentListTable().getVisibleItems())
          {
@@ -545,7 +548,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
          if (!valIds.isEmpty() && !docIds.isEmpty())
          {
-            Log.debug("Run validation");
+            Log.debug("Run doc validation");
             dispatcher.execute(new RunDocValidationAction(valIds, docIds), new AsyncCallback<RunDocValidationResult>()
             {
                @Override
@@ -553,6 +556,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
                {
                   eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Unable to run validation"));
                   display.showLoading(false);
+                  eventBus.fireEvent(new RunDocValidationResultEvent(startTime, new Date()));
                }
 
                @Override
@@ -573,6 +577,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
                   }
                   dataProvider.refresh();
                   display.showLoading(false);
+                  eventBus.fireEvent(new RunDocValidationResultEvent(startTime, new Date()));
                }
             });
          }

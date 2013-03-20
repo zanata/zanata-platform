@@ -26,6 +26,8 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.events.RunDocValidationEvent;
+import org.zanata.webtrans.client.events.RunDocValidationResultEvent;
+import org.zanata.webtrans.client.events.RunDocValidationResultHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.resources.WebTransMessages;
@@ -45,7 +47,7 @@ import com.google.inject.Inject;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOptionsDisplay> implements ValidationOptionsDisplay.Listener, WorkspaceContextUpdateEventHandler
+public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOptionsDisplay> implements ValidationOptionsDisplay.Listener, WorkspaceContextUpdateEventHandler, RunDocValidationResultHandler
 {
    private final ValidationService validationService;
    private final WebTransMessages messages;
@@ -63,7 +65,10 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
    protected void onBind()
    {
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this));
+      registerHandler(eventBus.addHandler(RunDocValidationResultEvent.getType(), this));
       initDisplay();
+
+      display.updateValidationResult(null, null);
 
       display.setListener(this);
    }
@@ -142,6 +147,12 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
    public void onRunValidation()
    {
       eventBus.fireEvent(new RunDocValidationEvent(currentView));
+   }
+
+   @Override
+   public void onCompleteRunDocValidation(RunDocValidationResultEvent event)
+   {
+      display.updateValidationResult(event.getStartTime(), event.getEndTime());
    }
 }
 

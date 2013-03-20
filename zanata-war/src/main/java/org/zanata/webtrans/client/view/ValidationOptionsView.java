@@ -1,6 +1,9 @@
 package org.zanata.webtrans.client.view;
 
+import java.util.Date;
+
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.util.DateUtil;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -10,6 +13,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -33,13 +37,20 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    @UiField
    PushButton runValidation;
 
+   @UiField
+   InlineLabel lastValidationRun;
+
    private Listener listener;
+
+   private final WebTransMessages messages;
 
 
    @Inject
    public ValidationOptionsView(WebTransMessages messages)
    {
       initWidget(uiBinder.createAndBindUi(this));
+      this.messages = messages;
+
       validationOptionsHeader.setText(messages.validationOptions());
       runValidation.setText(messages.runValidation());
    }
@@ -84,6 +95,7 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    public void setRunValidationVisible(boolean visible)
    {
       runValidation.setVisible(visible);
+      lastValidationRun.setVisible(visible);
    }
 
    @Override
@@ -96,6 +108,7 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    public void onRunValidationClicked(ClickEvent event)
    {
       listener.onRunValidation();
+
    }
 
    @Override
@@ -103,5 +116,20 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    {
       this.listener = listener;
 
+   }
+
+   @Override
+   public void updateValidationResult(Date startTime, Date endTime)
+   {
+      if (startTime != null && endTime != null)
+      {
+         lastValidationRun.setText(messages.lastValidationRun(DateUtil.formatLongDateTime(endTime)));
+         lastValidationRun.setTitle(messages.lastValidationRunTooltip(DateUtil.formatLongDateTime(startTime)));
+      }
+      else
+      {
+         lastValidationRun.setText(messages.lastValidationRun("none"));
+         lastValidationRun.setText("");
+      }
    }
 }
