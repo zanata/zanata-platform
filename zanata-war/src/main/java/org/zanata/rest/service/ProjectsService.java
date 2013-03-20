@@ -100,7 +100,16 @@ public class ProjectsService implements ProjectsResource
          // Ignore Obsolete projects
          if( !Objects.equal(hProject.getStatus(), OBSOLETE))
          {
-            Project project = new Project(hProject.getSlug(), hProject.getName(), hProject.getDefaultProjectType().toString());
+            String projectType;
+            if (hProject.getDefaultProjectType() == null)
+            {
+               projectType = "";
+            }
+            else
+            {
+               projectType = hProject.getDefaultProjectType().toString();
+            }
+            Project project = new Project(hProject.getSlug(), hProject.getName(), projectType);
             project.setStatus( hProject.getStatus() );
             project.getLinks(true).add(new Link(URI.create("p/" + hProject.getSlug()), "self", MediaTypes.createFormatSpecificType(MediaTypes.APPLICATION_ZANATA_PROJECT, accept)));
             projectRefs.add(project);
