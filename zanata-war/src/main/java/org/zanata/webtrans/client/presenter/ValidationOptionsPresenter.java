@@ -21,6 +21,7 @@
 package org.zanata.webtrans.client.presenter;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
@@ -33,6 +34,7 @@ import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.service.ValidationService;
 import org.zanata.webtrans.client.view.ValidationOptionsDisplay;
+import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationInfo;
 
@@ -52,6 +54,7 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
    private final ValidationService validationService;
    private final WebTransMessages messages;
    private MainView currentView;
+   private Set<DocumentId> errorDocs;
 
    @Inject
    public ValidationOptionsPresenter(ValidationOptionsDisplay display, EventBus eventBus, final ValidationService validationService, final WebTransMessages messages)
@@ -69,6 +72,7 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
       initDisplay();
 
       display.updateValidationResult(null, null);
+      display.showReportLink(false);
 
       display.setListener(this);
    }
@@ -135,11 +139,16 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
       {
          display.setRunValidationVisible(true);
          display.setRunValidationTitle(messages.documentValidationTitle());
+         if(hasErrorReport())
+         {
+            display.showReportLink(true);
+         }
       }
       else
       {
          display.setRunValidationVisible(false);
          display.setRunValidationTitle(messages.editorValidationTitle());
+         display.showReportLink(false);
       }
    }
 
@@ -153,6 +162,23 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
    public void onCompleteRunDocValidation(RunDocValidationResultEvent event)
    {
       display.updateValidationResult(event.getStartTime(), event.getEndTime());
+      errorDocs = event.getErrorDocs();
+      if (currentView == MainView.Documents)
+      {
+         display.showReportLink(true);
+      }
+   }
+
+   @Override
+   public void onRequestValidationReport()
+   {
+      // display.showReportPopup(errorDocs);
+      // run RPC call, by each docs
+   }
+   
+   private boolean hasErrorReport()
+   {
+      return errorDocs != null && !errorDocs.isEmpty();
    }
 }
 

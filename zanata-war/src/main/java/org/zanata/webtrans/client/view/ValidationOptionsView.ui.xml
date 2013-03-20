@@ -25,9 +25,11 @@
 			display:inline-block;
 		}
 		
-		.lastValidationRunLabel
+		.reportLink
 		{
 			color:#ffa500;
+			text-decoration:underline;
+			cursor:pointer;
 		}
         
 	</ui:style>
@@ -43,7 +45,7 @@
 			        </g:VerticalPanel>
 			    </g:ScrollPanel>
 			    <g:PushButton ui:field="runValidation" addStyleNames="{style.runValidationButton}"/>
-			    <g:InlineLabel ui:field="lastValidationRun" styleName="{style.lastValidationRunLabel}"/>
+			    <g:InlineLabel ui:field="reportLink" styleName="{style.reportLink}"/>
 		    </g:HTMLPanel>
     	</g:layer>
     </g:LayoutPanel>

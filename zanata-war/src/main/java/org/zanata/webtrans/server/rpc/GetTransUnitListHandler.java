@@ -121,7 +121,7 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
          else
          {
             textFlows = textFlowDAO.getAllTextFlowsByDocumentId(action.getDocumentId());
-            textFlows = validationServiceImpl.filterHasErrorTexFlow(textFlows, action.getValidationIds(), hLocale.getId(), offset, action.getCount());
+            textFlows = validationServiceImpl.filterHasErrorTexFlow(textFlows, action.getValidationIds(), hLocale.getLocaleId(), offset, action.getCount());
          }
       }
       // has status and phrase filter
@@ -141,7 +141,7 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
          else
          {
             textFlows = textFlowDAO.getAllTextFlowByDocumentIdWithConstraint(action.getDocumentId(), hLocale, constraints);
-            textFlows = validationServiceImpl.filterHasErrorTexFlow(textFlows, action.getValidationIds(), hLocale.getId(), offset, action.getCount());
+            textFlows = validationServiceImpl.filterHasErrorTexFlow(textFlows, action.getValidationIds(), hLocale.getLocaleId(), offset, action.getCount());
          }
       }
       return textFlows;

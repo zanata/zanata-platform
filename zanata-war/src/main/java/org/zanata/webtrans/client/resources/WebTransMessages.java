@@ -527,7 +527,10 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Last run: {0}")
    String lastValidationRun(String completeTime);
 
-   @DefaultMessage("Start time: {0}")
-   String lastValidationRunTooltip(String startTime);
+   @DefaultMessage("Validation run - Start time: {0}, End time: {1}")
+   String lastValidationRunTooltip(String startTime, String endTime);
+
+   @DefaultMessage("View report")
+   String validationReportLink();
 
 }

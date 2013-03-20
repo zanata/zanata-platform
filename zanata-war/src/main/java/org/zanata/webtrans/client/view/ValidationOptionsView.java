@@ -38,7 +38,7 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    PushButton runValidation;
 
    @UiField
-   InlineLabel lastValidationRun;
+   InlineLabel reportLink;
 
    private Listener listener;
 
@@ -53,6 +53,8 @@ public class ValidationOptionsView extends Composite implements ValidationOption
 
       validationOptionsHeader.setText(messages.validationOptions());
       runValidation.setText(messages.runValidation());
+      
+      reportLink.setText(messages.validationReportLink());
    }
 
    @Override
@@ -95,7 +97,6 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    public void setRunValidationVisible(boolean visible)
    {
       runValidation.setVisible(visible);
-      lastValidationRun.setVisible(visible);
    }
 
    @Override
@@ -108,6 +109,13 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    public void onRunValidationClicked(ClickEvent event)
    {
       listener.onRunValidation();
+
+   }
+   
+   @UiHandler("reportLink")
+   public void onReportLinkClicked(ClickEvent event)
+   {
+      listener.onRequestValidationReport();
 
    }
 
@@ -123,13 +131,19 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    {
       if (startTime != null && endTime != null)
       {
-         lastValidationRun.setText(messages.lastValidationRun(DateUtil.formatLongDateTime(endTime)));
-         lastValidationRun.setTitle(messages.lastValidationRunTooltip(DateUtil.formatLongDateTime(startTime)));
+         reportLink.setTitle(messages.lastValidationRunTooltip(DateUtil.formatLongDateTime(startTime), DateUtil.formatLongDateTime(endTime)));
+         reportLink.setVisible(true);
       }
       else
       {
-         lastValidationRun.setText(messages.lastValidationRun("none"));
-         lastValidationRun.setText("");
+         reportLink.setTitle("");
       }
+   }
+
+   @Override
+   public void showReportLink(boolean visible)
+   {
+      reportLink.setVisible(visible);
+      
    }
 }

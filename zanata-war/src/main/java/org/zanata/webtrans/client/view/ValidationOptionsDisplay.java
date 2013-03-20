@@ -42,9 +42,13 @@ public interface ValidationOptionsDisplay extends WidgetDisplay
    interface Listener
    {
       void onRunValidation();
+
+      void onRequestValidationReport();
    }
 
    void setRunValidationTitle(String title);
 
    void updateValidationResult(Date startTime, Date endTime);
+
+   void showReportLink(boolean visible);
 }

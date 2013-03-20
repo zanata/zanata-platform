@@ -556,7 +556,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
                {
                   eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Unable to run validation"));
                   display.showLoading(false);
-                  eventBus.fireEvent(new RunDocValidationResultEvent(startTime, new Date()));
+                  eventBus.fireEvent(new RunDocValidationResultEvent(startTime, new Date(), null));
                }
 
                @Override
@@ -577,7 +577,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
                   }
                   dataProvider.refresh();
                   display.showLoading(false);
-                  eventBus.fireEvent(new RunDocValidationResultEvent(startTime, new Date()));
+                  eventBus.fireEvent(new RunDocValidationResultEvent(startTime, new Date(), resultMap.keySet()));
                }
             });
          }

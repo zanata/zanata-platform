@@ -1,6 +1,9 @@
 package org.zanata.webtrans.client.events;
 
 import java.util.Date;
+import java.util.Set;
+
+import org.zanata.webtrans.shared.model.DocumentId;
 
 import com.google.gwt.event.shared.GwtEvent;
 
@@ -8,11 +11,13 @@ public class RunDocValidationResultEvent extends GwtEvent<RunDocValidationResult
 {
    private Date startTime;
    private Date endTime;
+   private Set<DocumentId> errorDocs;
 
-   public RunDocValidationResultEvent(Date startTime, Date endTime)
+   public RunDocValidationResultEvent(Date startTime, Date endTime, Set<DocumentId> errorDocs)
    {
       this.startTime = startTime;
       this.endTime = endTime;
+      this.errorDocs = errorDocs;
    }
 
    /**
@@ -54,5 +59,10 @@ public class RunDocValidationResultEvent extends GwtEvent<RunDocValidationResult
    public Date getEndTime()
    {
       return endTime;
+   }
+
+   public Set<DocumentId> getErrorDocs()
+   {
+      return errorDocs;
    }
 }
