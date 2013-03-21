@@ -68,7 +68,7 @@ public class ValidationServiceTest
 
       validationMessages = Gwti18nReader.create(ValidationMessages.class);
 
-      service = new ValidationService(eventBus, messages, validationMessages, configHolder);
+      service = new ValidationService(dispatcher, eventBus, messages, validationMessages, configHolder);
       ValidationFactory validationFactory = new ValidationFactory(validationMessages);
 
       Collection<ValidationAction> validationList = validationFactory.getAllValidationActions().values();

@@ -26,28 +26,24 @@ import java.util.Set;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.zanata.webtrans.client.events.NotificationEvent;
-import org.zanata.webtrans.client.events.NotificationEvent.Severity;
+import org.zanata.webtrans.client.events.DocValidationReportResultEvent;
+import org.zanata.webtrans.client.events.DocValidationReportResultHandler;
+import org.zanata.webtrans.client.events.DocValidationResultEvent;
+import org.zanata.webtrans.client.events.DocValidationResultHandler;
 import org.zanata.webtrans.client.events.RunDocValidationEvent;
-import org.zanata.webtrans.client.events.RunDocValidationResultEvent;
-import org.zanata.webtrans.client.events.RunDocValidationResultHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.ValidationService;
 import org.zanata.webtrans.client.view.ValidationOptionsDisplay;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationInfo;
-import org.zanata.webtrans.shared.rpc.DownloadAllFilesResult;
-import org.zanata.webtrans.shared.rpc.RunDocValidationReportAction;
-import org.zanata.webtrans.shared.rpc.RunDocValidationReportResult;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 /**
@@ -56,30 +52,27 @@ import com.google.inject.Inject;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOptionsDisplay> implements ValidationOptionsDisplay.Listener, WorkspaceContextUpdateEventHandler, RunDocValidationResultHandler
+public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOptionsDisplay> implements ValidationOptionsDisplay.Listener, WorkspaceContextUpdateEventHandler, DocValidationResultHandler, DocValidationReportResultHandler
 {
    private final ValidationService validationService;
    private final WebTransMessages messages;
-   private final CachingDispatchAsync dispatcher;
-   private final UserConfigHolder configHolder;
    private MainView currentView;
    private Set<DocumentId> errorDocs;
 
    @Inject
-   public ValidationOptionsPresenter(ValidationOptionsDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, final ValidationService validationService, final WebTransMessages messages, final UserConfigHolder configHolder)
+   public ValidationOptionsPresenter(ValidationOptionsDisplay display, EventBus eventBus, final ValidationService validationService, final WebTransMessages messages)
    {
       super(display, eventBus);
       this.validationService = validationService;
       this.messages = messages;
-      this.dispatcher = dispatcher;
-      this.configHolder = configHolder;
    }
 
    @Override
    protected void onBind()
    {
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this));
-      registerHandler(eventBus.addHandler(RunDocValidationResultEvent.getType(), this));
+      registerHandler(eventBus.addHandler(DocValidationResultEvent.getType(), this));
+      registerHandler(eventBus.addHandler(DocValidationReportResultEvent.getType(), this));
       initDisplay();
 
       display.updateValidationResult(null, null);
@@ -170,7 +163,7 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
    }
 
    @Override
-   public void onCompleteRunDocValidation(RunDocValidationResultEvent event)
+   public void onCompleteRunDocValidation(DocValidationResultEvent event)
    {
       display.updateValidationResult(event.getStartTime(), event.getEndTime());
       errorDocs = event.getErrorDocs();
@@ -183,28 +176,17 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
    @Override
    public void onRequestValidationReport()
    {
-      // display.showReportPopup(errorDocs);
-      for (final DocumentId documentId : errorDocs)
-      {
-         dispatcher.execute(new RunDocValidationReportAction(configHolder.getState().getEnabledValidationIds(), documentId.getId()), new AsyncCallback<RunDocValidationReportResult>()
-         {
-            @Override
-            public void onFailure(Throwable caught)
-            {
-               eventBus.fireEvent(new NotificationEvent(Severity.Error, "Error generating report for document " + documentId));
-            }
-
-            @Override
-            public void onSuccess(RunDocValidationReportResult result)
-            {
-               // display.updateReport(documentId, result.getResult());
-            }
-         });
-      }
+      validationService.executeValidationReportQueue(errorDocs);
    }
 
    private boolean hasErrorReport()
    {
       return errorDocs != null && !errorDocs.isEmpty();
+   }
+
+   @Override
+   public void onCompleteRunDocReportValidation(DocValidationReportResultEvent event)
+   {
+      display.updateDocValidationReport(event.getDocumentId(), event.getLocaleId(), event.getResult(), event.getStartTime(), event.getEndTime());
    }
 }

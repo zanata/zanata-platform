@@ -7,13 +7,13 @@ import org.zanata.webtrans.shared.model.DocumentId;
 
 import com.google.gwt.event.shared.GwtEvent;
 
-public class RunDocValidationResultEvent extends GwtEvent<RunDocValidationResultHandler>
+public class DocValidationResultEvent extends GwtEvent<DocValidationResultHandler>
 {
    private Date startTime;
    private Date endTime;
    private Set<DocumentId> errorDocs;
 
-   public RunDocValidationResultEvent(Date startTime, Date endTime, Set<DocumentId> errorDocs)
+   public DocValidationResultEvent(Date startTime, Date endTime, Set<DocumentId> errorDocs)
    {
       this.startTime = startTime;
       this.endTime = endTime;
@@ -23,30 +23,30 @@ public class RunDocValidationResultEvent extends GwtEvent<RunDocValidationResult
    /**
     * Handler type.
     */
-   private static Type<RunDocValidationResultHandler> TYPE;
+   private static Type<DocValidationResultHandler> TYPE;
 
    /**
     * Gets the type associated with this event.
     * 
     * @return returns the handler type
     */
-   public static Type<RunDocValidationResultHandler> getType()
+   public static Type<DocValidationResultHandler> getType()
    {
       if (TYPE == null)
       {
-         TYPE = new Type<RunDocValidationResultHandler>();
+         TYPE = new Type<DocValidationResultHandler>();
       }
       return TYPE;
    }
 
    @Override
-   public com.google.gwt.event.shared.GwtEvent.Type<RunDocValidationResultHandler> getAssociatedType()
+   public com.google.gwt.event.shared.GwtEvent.Type<DocValidationResultHandler> getAssociatedType()
    {
       return getType();
    }
 
    @Override
-   protected void dispatch(RunDocValidationResultHandler handler)
+   protected void dispatch(DocValidationResultHandler handler)
    {
       handler.onCompleteRunDocValidation(this);
    }

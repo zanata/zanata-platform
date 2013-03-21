@@ -1,9 +1,13 @@
 package org.zanata.webtrans.client.view;
 
 import java.util.Date;
+import java.util.List;
 
+import org.zanata.common.LocaleId;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.util.DateUtil;
+import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.TransUnitValidationResult;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -145,5 +149,12 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    {
       reportLink.setVisible(visible);
       
+   }
+
+   @Override
+   public void updateDocValidationReport(DocumentId documentId, LocaleId localeId, List<TransUnitValidationResult> result, Date startTime, Date endTime)
+   {
+      // TODO Auto-generated method stub
+
    }
 }

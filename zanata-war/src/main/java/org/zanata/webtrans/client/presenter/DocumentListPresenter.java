@@ -42,7 +42,7 @@ import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.RunDocValidationEvent;
 import org.zanata.webtrans.client.events.RunDocValidationEventHandler;
-import org.zanata.webtrans.client.events.RunDocValidationResultEvent;
+import org.zanata.webtrans.client.events.DocValidationResultEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
@@ -556,7 +556,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
                {
                   eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Unable to run validation"));
                   display.showLoading(false);
-                  eventBus.fireEvent(new RunDocValidationResultEvent(startTime, new Date(), null));
+                  eventBus.fireEvent(new DocValidationResultEvent(startTime, new Date(), null));
                }
 
                @Override
@@ -577,7 +577,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
                   }
                   dataProvider.refresh();
                   display.showLoading(false);
-                  eventBus.fireEvent(new RunDocValidationResultEvent(startTime, new Date(), resultMap.keySet()));
+                  eventBus.fireEvent(new DocValidationResultEvent(startTime, new Date(), resultMap.keySet()));
                }
             });
          }
