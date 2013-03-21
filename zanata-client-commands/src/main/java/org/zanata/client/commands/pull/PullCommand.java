@@ -146,9 +146,17 @@ public class PullCommand extends PushPullCommand<PullOptions>
       logOptions();
 
       LocaleList locales = getOpts().getLocaleMapList();
-      if (locales == null)
+      if (locales == null && (getOpts().getPullType() != PushPullType.Source))
          throw new ConfigException("no locales specified");
       PullStrategy strat = createStrategy(getOpts().getProjectType());
+
+      if (strat.isTransOnly() && getOpts().getPullType() == PushPullType.Source)
+      {
+         log.error("You are trying to pull source only, but source is not available for this project type.\n");
+         log.info("Nothing to do. Aborting.\n");
+         return;
+      }
+
       List<String> unsortedDocNamesForModule = getQualifiedDocNamesForCurrentModuleFromServer();
       SortedSet<String> docNamesForModule = new TreeSet<String>(unsortedDocNamesForModule);
 
@@ -181,6 +189,12 @@ public class PullCommand extends PushPullCommand<PullOptions>
       PushPullType pullType = getOpts().getPullType();
       boolean pullSrc = pullType == PushPullType.Both || pullType == PushPullType.Source;
       boolean pullTarget = pullType == PushPullType.Both || pullType == PushPullType.Trans;
+
+      if (pullSrc && strat.isTransOnly())
+      {
+         log.warn("Source is not available for this project type. Source will not be pulled.\n");
+         pullSrc = false;
+      }
 
       if (pullSrc)
       {

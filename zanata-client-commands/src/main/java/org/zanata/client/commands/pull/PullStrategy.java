@@ -22,6 +22,15 @@ public interface PullStrategy
    StringSet getExtensions();
 
    /**
+    * Indicates if this strategy must work without access to source files. No
+    * attempt should be made to read, write or push source documents for a
+    * trans-only strategy.
+    * 
+    * @return true if this strategy only allows interactions with translation files.
+    */
+   public boolean isTransOnly();
+
+   /**
     * Does this strategy need the source document (Resource) when writing translations?
     * @return
     */

@@ -14,4 +14,9 @@ public abstract class AbstractPullStrategy implements PullStrategy
       return opts;
    }
 
+   @Override
+   public boolean isTransOnly()
+   {
+      return false;
+   }
 }

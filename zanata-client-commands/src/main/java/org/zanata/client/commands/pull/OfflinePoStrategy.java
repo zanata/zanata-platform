@@ -43,4 +43,9 @@ public class OfflinePoStrategy extends GettextDirStrategy
       return poWriter;
    }
 
+   @Override
+   public boolean isTransOnly()
+   {
+      return true;
+   }
 }
