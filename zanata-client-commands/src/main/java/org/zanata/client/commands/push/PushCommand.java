@@ -71,7 +71,8 @@ public class PushCommand extends PushPullCommand<PushOptions>
       strategies.put(PROJECT_TYPE_PUBLICAN, new GettextDirStrategy());
       strategies.put(PROJECT_TYPE_XLIFF, new XliffStrategy());
       strategies.put(PROJECT_TYPE_XML, new XmlStrategy());
-      strategies.put(PROJECT_TYPE_OFFLINE_PO, new OfflinePoStrategy());
+      strategies.put(PROJECT_TYPE_OFFLINE_PO, new OfflinePoStrategy(
+            getRequestFactory().getSourceDocResource(getOpts().getProj(), getOpts().getProjectVersion()), uri));
    }
 
    public PushCommand(PushOptions opts)
@@ -266,9 +267,10 @@ public class PushCommand extends PushPullCommand<PushOptions>
 
    private void pushCurrentModule() throws IOException, RuntimeException
    {
+      AbstractPushStrategy strat = getStrategy(getOpts().getProjectType());
       File sourceDir = getOpts().getSrcDir();
 
-      if (!sourceDir.exists())
+      if (!sourceDir.exists() && !strat.isTransOnly())
       {
          if (getOpts().getEnableModules())
          {
@@ -281,7 +283,6 @@ public class PushCommand extends PushPullCommand<PushOptions>
          }
       }
 
-      AbstractPushStrategy strat = getStrategy(getOpts().getProjectType());
       final StringSet extensions = strat.getExtensions();
 
       // to save memory, we don't load all the docs into a HashMap
@@ -326,7 +327,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
       }
 
       List<String> obsoleteDocs = Collections.emptyList();
-      if (pushSource())
+      if (pushSource() && !strat.isTransOnly())
       {
          obsoleteDocs = getObsoleteDocsInModuleFromServer(localDocNames);
       }
@@ -348,41 +349,80 @@ public class PushCommand extends PushPullCommand<PushOptions>
          log.info("Obsolete docs: {}", obsoleteDocs);
       }
 
+      if (pushTrans() && getOpts().getLocaleMapList() == null)
+      {
+         throw new ConfigException("pushType set to '" + getOpts().getPushType() + "', but zanata.xml contains no <locales>");
+      }
+
       if (pushTrans())
       {
-         if (getOpts().getLocaleMapList() == null)
-            throw new ConfigException("pushType set to '" + getOpts().getPushType() + "', but zanata.xml contains no <locales>");
          log.warn("pushType set to '" + getOpts().getPushType() + "': existing translations on server may be overwritten/deleted");
+      }
 
-         if (getOpts().getPushType() == PushPullType.Both)
+      if (strat.isTransOnly())
+      {
+         switch (getOpts().getPushType())
          {
-            confirmWithUser("This will overwrite existing documents AND TRANSLATIONS on the server, and delete obsolete documents.\n");
-         }
-         else if (getOpts().getPushType() == PushPullType.Trans)
-         {
-            confirmWithUser("This will overwrite existing TRANSLATIONS on the server.\n");
+            case Source:
+            {
+               log.error("You are trying to push source only, but source is not available for this project type.\n");
+               log.info("Nothing to do. Aborting\n");
+               return;
+            }
+            case Both:
+            {
+               log.warn("Source is not available for this project type. Source will not be pushed.\n");
+               // continue
+            }
+            case Trans:
+            {
+               confirmWithUser("This will overwrite existing TRANSLATIONS on the server.\n");
+            }
          }
       }
       else
       {
-         confirmWithUser("This will overwrite existing source documents on the server, and delete obsolete documents.\n");
+         if (pushTrans())
+         {
+            if (getOpts().getPushType() == PushPullType.Both)
+            {
+               confirmWithUser("This will overwrite existing documents AND TRANSLATIONS on the server, and delete obsolete documents.\n");
+            }
+            else if (getOpts().getPushType() == PushPullType.Trans)
+            {
+               confirmWithUser("This will overwrite existing TRANSLATIONS on the server.\n");
+            }
+         }
+         else
+         {
+            confirmWithUser("This will overwrite existing source documents on the server, and delete obsolete documents.\n");
+         }
       }
 
 
-      for (String localDocName : docsToPush)
+      for (final String localDocName : docsToPush)
       {
          try
          {
-            final Resource srcDoc = strat.loadSrcDoc(sourceDir, localDocName);
-            String qualifiedDocName = qualifiedDocName(localDocName);
+            final String qualifiedDocName = qualifiedDocName(localDocName);
             final String docUri = RestUtil.convertToDocumentURIId(qualifiedDocName);
-            srcDoc.setName(qualifiedDocName);
-            debug(srcDoc);
-
-            if (pushSource())
+            final Resource srcDoc;
+            if (strat.isTransOnly())
             {
-               pushSrcDocToServer(docUri, srcDoc, extensions);
+               srcDoc = null;
             }
+            else
+            {
+               srcDoc = strat.loadSrcDoc(sourceDir, localDocName);
+               srcDoc.setName(qualifiedDocName);
+               debug(srcDoc);
+
+               if (pushSource())
+               {
+                  pushSrcDocToServer(docUri, srcDoc, extensions);
+               }
+            }
+
             if (pushTrans())
             {
                strat.visitTranslationResources(localDocName, srcDoc, new TranslationResourcesVisitor()
@@ -392,7 +432,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
                   {
                      debug(targetDoc);
 
-                     pushTargetDocToServer(docUri, locale, srcDoc, targetDoc, extensions);
+                     pushTargetDocToServer(docUri, locale, qualifiedDocName, targetDoc, extensions);
                   }
                });
             }
@@ -587,11 +627,11 @@ public class PushCommand extends PushPullCommand<PushOptions>
       return targetDocList;
    }
 
-   private void pushTargetDocToServer(final String docUri, LocaleMapping locale, final Resource srcDoc, TranslationsResource targetDoc, final StringSet extensions)
+   private void pushTargetDocToServer(final String docUri, LocaleMapping locale, final String localDocName, TranslationsResource targetDoc, final StringSet extensions)
    {
       if (!getOpts().isDryRun())
       {
-         log.info("Pushing target doc [name={} size={} client-locale={}] to server [locale={}]", new Object[] { srcDoc.getName(), targetDoc.getTextFlowTargets().size(), locale.getLocalLocale(), locale.getLocale() });
+         log.info("Pushing target doc [name={} size={} client-locale={}] to server [locale={}]", new Object[] { localDocName, targetDoc.getTextFlowTargets().size(), locale.getLocalLocale(), locale.getLocale() });
 
          ConsoleUtils.startProgressFeedback();
 
@@ -647,7 +687,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
       }
       else
       {
-         log.info("pushing target doc [name={} size={} client-locale={}] to server [locale={}] (skipped due to dry run)", srcDoc.getName(), targetDoc.getTextFlowTargets().size(), locale.getLocalLocale(), locale.getLocale());
+         log.info("pushing target doc [name={} size={} client-locale={}] to server [locale={}] (skipped due to dry run)", localDocName, targetDoc.getTextFlowTargets().size(), locale.getLocalLocale(), locale.getLocale());
       }
    }
 

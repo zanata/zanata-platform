@@ -55,6 +55,18 @@ public abstract class AbstractPushStrategy extends AbstractCommonPushStrategy<Pu
    }
 
    /**
+    * Indicates if this strategy must work without access to source files. No
+    * attempt should be made to read, write or push source documents for a
+    * trans-only strategy.
+    * 
+    * @return true if this strategy only allows interactions with translation files.
+    */
+   public boolean isTransOnly()
+   {
+      return false;
+   }
+
+   /**
     * Scan srcDir to return a list of all source files.
     * 
     * @param srcDir base directory in which to find source files
