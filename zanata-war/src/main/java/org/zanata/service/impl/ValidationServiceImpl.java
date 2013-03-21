@@ -22,6 +22,7 @@ import org.jboss.seam.log.Log;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProject;
@@ -68,6 +69,10 @@ public class ValidationServiceImpl implements ValidationService
 
    @In
    private TextFlowTargetDAO textFlowTargetDAO;
+   
+   @In
+   private TextFlowDAO textFlowDAO;
+   
 
    private ValidationFactory validationFactory;
 
@@ -148,17 +153,23 @@ public class ValidationServiceImpl implements ValidationService
       return validationList;
    }
 
+   private List<Integer> test = new ArrayList<Integer>();
    @Override
-   public List<TransUnitValidationResult> runValidationsFullReport(HDocument hDoc, List<ValidationId> validationIds, LocaleId localeId)
+   public List<TransUnitValidationResult> runValidationsFullReport(DocumentId documentId, List<ValidationId> validationIds, LocaleId localeId)
    {
-      log.info("Start full doc validation - {0}", hDoc.getDocId());
+      test.add(1);
+      log.info("=======================" + test.size());
+      
+      List<HTextFlow> textFlows = textFlowDAO.getAllTextFlowsByDocumentId(documentId);
+      
+      log.info("Start full doc validation - {0}", documentId);
       Stopwatch stopwatch = new Stopwatch().start();
       List<TransUnitValidationResult> result = new ArrayList<TransUnitValidationResult>();
       List<ValidationAction> validationActions = getValidationFactory().getValidationActions(validationIds);
 
-      if (hDoc != null)
+      if (textFlows != null && !textFlows.isEmpty())
       {
-         for (HTextFlow textFlow : hDoc.getTextFlows())
+         for (HTextFlow textFlow : textFlows)
          {
             HTextFlowTarget target = textFlowTargetDAO.getTextFlowTarget(textFlow, localeId);
             if (target != null)

@@ -211,7 +211,7 @@ public class ValidationService implements RunValidationEventHandler, TransUnitSe
       for (final DocumentId documentId : errorDocs)
       {
          final Date startTime = new Date();
-         dispatcher.execute(new RunDocValidationReportAction(configHolder.getState().getEnabledValidationIds(), documentId.getId()), new AsyncCallback<RunDocValidationReportResult>()
+         dispatcher.execute(new RunDocValidationReportAction(configHolder.getState().getEnabledValidationIds(), documentId), new AsyncCallback<RunDocValidationReportResult>()
          {
             @Override
             public void onFailure(Throwable caught)

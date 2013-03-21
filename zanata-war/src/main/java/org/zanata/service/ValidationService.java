@@ -76,7 +76,7 @@ public interface ValidationService
     * @param localeId
     * @throws IOException
     */
-   List<TransUnitValidationResult> runValidationsFullReport(HDocument hDoc, List<ValidationId> validationIds, LocaleId localeId);
+   List<TransUnitValidationResult> runValidationsFullReport(DocumentId documentId, List<ValidationId> validationIds, LocaleId localeId);
 
    /**
     * Filter list of text flow with those only contains validation error
