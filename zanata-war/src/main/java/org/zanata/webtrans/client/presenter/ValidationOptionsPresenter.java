@@ -40,7 +40,6 @@ import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationInfo;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -75,7 +74,7 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
       registerHandler(eventBus.addHandler(DocValidationReportResultEvent.getType(), this));
       initDisplay();
 
-      display.updateValidationResult(null, null);
+      display.updateValidationResult(null);
       display.showReportLink(false);
 
       display.setListener(this);
@@ -155,6 +154,11 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
          display.showReportLink(false);
       }
    }
+   
+   private boolean hasErrorReport()
+   {
+      return errorDocs != null && !errorDocs.isEmpty();
+   }
 
    @Override
    public void onRunValidation()
@@ -165,7 +169,7 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
    @Override
    public void onCompleteRunDocValidation(DocValidationResultEvent event)
    {
-      display.updateValidationResult(event.getStartTime(), event.getEndTime());
+      display.updateValidationResult(event.getEndTime());
       errorDocs = event.getErrorDocs();
       if (currentView == MainView.Documents)
       {
@@ -176,17 +180,13 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
    @Override
    public void onRequestValidationReport()
    {
-      validationService.executeValidationReportQueue(errorDocs);
+      display.initValidationReport(errorDocs);
+      validationService.executeValidationReport(errorDocs);
    }
-
-   private boolean hasErrorReport()
-   {
-      return errorDocs != null && !errorDocs.isEmpty();
-   }
-
+  
    @Override
    public void onCompleteRunDocReportValidation(DocValidationReportResultEvent event)
    {
-      display.updateDocValidationReport(event.getDocumentId(), event.getLocaleId(), event.getResult(), event.getStartTime(), event.getEndTime());
+      display.updateDocValidationReport(event.getDocumentId(), event.getLocaleId(), event.getResult(), event.getEndTime());
    }
 }

@@ -11,15 +11,13 @@ import com.google.gwt.event.shared.GwtEvent;
 
 public class DocValidationReportResultEvent extends GwtEvent<DocValidationReportResultHandler>
 {
-   private Date startTime;
    private Date endTime;
    private List<TransUnitValidationResult> result;
    private LocaleId localeId;
    private DocumentId documentId;
 
-   public DocValidationReportResultEvent(DocumentId documentId, Date startTime, Date endTime, List<TransUnitValidationResult> result, LocaleId localeId)
+   public DocValidationReportResultEvent(DocumentId documentId, Date endTime, List<TransUnitValidationResult> result, LocaleId localeId)
    {
-      this.startTime = startTime;
       this.endTime = endTime;
       this.result = result;
       this.localeId = localeId;
@@ -55,11 +53,6 @@ public class DocValidationReportResultEvent extends GwtEvent<DocValidationReport
    protected void dispatch(DocValidationReportResultHandler handler)
    {
       handler.onCompleteRunDocReportValidation(this);
-   }
-
-   public Date getStartTime()
-   {
-      return startTime;
    }
 
    public Date getEndTime()

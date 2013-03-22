@@ -537,7 +537,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       if (event.getView() == MainView.Documents)
       {
          display.showLoading(true);
-         final Date startTime = new Date();
          ArrayList<Long> docIds = new ArrayList<Long>();
          for (DocumentNode node : display.getDocumentListTable().getVisibleItems())
          {
@@ -556,7 +555,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
                {
                   eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Unable to run validation"));
                   display.showLoading(false);
-                  eventBus.fireEvent(new DocValidationResultEvent(startTime, new Date(), null));
+                  eventBus.fireEvent(new DocValidationResultEvent(new Date(), null));
                }
 
                @Override
@@ -577,7 +576,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
                   }
                   dataProvider.refresh();
                   display.showLoading(false);
-                  eventBus.fireEvent(new DocValidationResultEvent(startTime, new Date(), resultMap.keySet()));
+                  eventBus.fireEvent(new DocValidationResultEvent(new Date(), resultMap.keySet()));
                }
             });
          }

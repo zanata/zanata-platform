@@ -2,9 +2,11 @@ package org.zanata.webtrans.client.view;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.zanata.common.LocaleId;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.ui.DocValidationReportDisplay;
 import org.zanata.webtrans.client.util.DateUtil;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnitValidationResult;
@@ -47,13 +49,16 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    private Listener listener;
 
    private final WebTransMessages messages;
+   
+   private final DocValidationReportDisplay docValidationReport;
 
 
    @Inject
-   public ValidationOptionsView(WebTransMessages messages)
+   public ValidationOptionsView(WebTransMessages messages, DocValidationReportDisplay docValidationReport)
    {
       initWidget(uiBinder.createAndBindUi(this));
       this.messages = messages;
+      this.docValidationReport = docValidationReport;
 
       validationOptionsHeader.setText(messages.validationOptions());
       runValidation.setText(messages.runValidation());
@@ -131,11 +136,11 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    }
 
    @Override
-   public void updateValidationResult(Date startTime, Date endTime)
+   public void updateValidationResult(Date endTime)
    {
-      if (startTime != null && endTime != null)
+      if (endTime != null)
       {
-         reportLink.setTitle(messages.lastValidationRunTooltip(DateUtil.formatLongDateTime(startTime), DateUtil.formatLongDateTime(endTime)));
+         reportLink.setTitle(messages.lastValidationRunTooltip(DateUtil.formatLongDateTime(endTime)));
          reportLink.setVisible(true);
       }
       else
@@ -152,9 +157,15 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    }
 
    @Override
-   public void updateDocValidationReport(DocumentId documentId, LocaleId localeId, List<TransUnitValidationResult> result, Date startTime, Date endTime)
+   public void updateDocValidationReport(DocumentId documentId, LocaleId localeId, List<TransUnitValidationResult> result, Date endTime)
    {
-      // TODO Auto-generated method stub
+      docValidationReport.updateRow(documentId, localeId, result, endTime);
+   }
 
+   @Override
+   public void initValidationReport(Set<DocumentId> errorDocs)
+   {
+      docValidationReport.init(errorDocs);
+      docValidationReport.center();
    }
 }

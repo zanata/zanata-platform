@@ -527,8 +527,8 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Last run: {0}")
    String lastValidationRun(String completeTime);
 
-   @DefaultMessage("Validation run - Start time: {0}, End time: {1}")
-   String lastValidationRunTooltip(String startTime, String endTime);
+   @DefaultMessage("Validation run on - {0}")
+   String lastValidationRunTooltip(String endTime);
 
    @DefaultMessage("View report")
    String validationReportLink();

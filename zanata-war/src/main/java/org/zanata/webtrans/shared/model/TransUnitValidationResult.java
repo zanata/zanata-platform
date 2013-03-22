@@ -6,7 +6,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class TransUnitValidationResult implements IsSerializable
 {
-   private TransUnitId transUnitId;
+   private TransUnit transUnit;
    private List<String> errorMessages;
 
    // for GWT
@@ -15,15 +15,15 @@ public class TransUnitValidationResult implements IsSerializable
    {
    }
    
-   public TransUnitValidationResult(TransUnitId transUnitId, List<String> errorMessages)
+   public TransUnitValidationResult(TransUnit transUnit, List<String> errorMessages)
    {
-      this.transUnitId = transUnitId;
+      this.transUnit = transUnit;
       this.errorMessages = errorMessages;
    }
 
-   public TransUnitId getTransUnitId()
+   public TransUnit getTransUnit()
    {
-      return transUnitId;
+      return transUnit;
    }
 
    public List<String> getErrorMessages()

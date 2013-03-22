@@ -34,7 +34,7 @@ import org.zanata.service.ValidationFactoryProvider;
 import org.zanata.service.ValidationService;
 import org.zanata.webtrans.server.rpc.TransUnitTransformer;
 import org.zanata.webtrans.shared.model.DocumentId;
-import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitValidationResult;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
@@ -153,13 +153,9 @@ public class ValidationServiceImpl implements ValidationService
       return validationList;
    }
 
-   private List<Integer> test = new ArrayList<Integer>();
    @Override
    public List<TransUnitValidationResult> runValidationsFullReport(DocumentId documentId, List<ValidationId> validationIds, LocaleId localeId)
    {
-      test.add(1);
-      log.info("=======================" + test.size());
-      
       List<HTextFlow> textFlows = textFlowDAO.getAllTextFlowsByDocumentId(documentId);
       
       log.info("Start full doc validation - {0}", documentId);
@@ -184,7 +180,8 @@ public class ValidationServiceImpl implements ValidationService
                   {
                      if (validationResult == null)
                      {
-                        validationResult = new TransUnitValidationResult(new TransUnitId(textFlow.getId()), validationAction.getError());
+                        TransUnit tu = transUnitTransformer.transform(textFlow, target);
+                        validationResult = new TransUnitValidationResult(tu, validationAction.getError());
                      }
                      else
                      {

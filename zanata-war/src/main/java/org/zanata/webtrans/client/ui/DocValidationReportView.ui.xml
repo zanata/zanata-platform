@@ -1,0 +1,15 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder' xmlns:g='urn:import:com.google.gwt.user.client.ui'
+             xmlns:z='urn:import:org.zanata.webtrans.client.ui'>
+    <ui:with field="messages" type="org.zanata.webtrans.client.resources.WebTransMessages"/>
+
+    <ui:style field="style" type="org.zanata.webtrans.client.ui.DocValidationReportView.Styles" >
+    	
+    </ui:style>
+
+    <g:HTMLPanel width="500px" height="500px">
+       <g:ScrollPanel width="500px" height="500px">
+       		<g:FlexTable ui:field="docsTable"/>
+       </g:ScrollPanel>
+       <g:Label ui:field="reportGenerated"/>
+    </g:HTMLPanel>
+</ui:UiBinder>

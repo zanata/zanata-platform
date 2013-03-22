@@ -23,6 +23,7 @@ package org.zanata.webtrans.client.view;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.zanata.common.LocaleId;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -53,9 +54,11 @@ public interface ValidationOptionsDisplay extends WidgetDisplay
 
    void setRunValidationTitle(String title);
 
-   void updateValidationResult(Date startTime, Date endTime);
+   void updateValidationResult(Date endTime);
 
    void showReportLink(boolean visible);
 
-   void updateDocValidationReport(DocumentId documentId, LocaleId localeId, List<TransUnitValidationResult> result, Date startTime, Date endTime);
+   void updateDocValidationReport(DocumentId documentId, LocaleId localeId, List<TransUnitValidationResult> result, Date endTime);
+
+   void initValidationReport(Set<DocumentId> errorDocs);
 }

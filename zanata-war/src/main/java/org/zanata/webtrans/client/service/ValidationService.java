@@ -206,11 +206,10 @@ public class ValidationService implements RunValidationEventHandler, TransUnitSe
       configHolder.setEnabledValidationIds(enabledValidations);
    }
 
-   public void executeValidationReportQueue(Set<DocumentId> errorDocs)
+   public void executeValidationReport(Set<DocumentId> errorDocs)
    {
       for (final DocumentId documentId : errorDocs)
       {
-         final Date startTime = new Date();
          dispatcher.execute(new RunDocValidationReportAction(configHolder.getState().getEnabledValidationIds(), documentId), new AsyncCallback<RunDocValidationReportResult>()
          {
             @Override
@@ -222,7 +221,7 @@ public class ValidationService implements RunValidationEventHandler, TransUnitSe
             @Override
             public void onSuccess(RunDocValidationReportResult result)
             {
-               eventBus.fireEvent(new DocValidationReportResultEvent(documentId, startTime, new Date(), result.getResult(), result.getLocaleId()));
+               eventBus.fireEvent(new DocValidationReportResultEvent(documentId, new Date(), result.getResult(), result.getLocaleId()));
             }
          });
       }
