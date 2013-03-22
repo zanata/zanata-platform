@@ -118,8 +118,9 @@ public class IterationZipFileBuildProcess extends RunnableProcess<IterationZipFi
       // Add the config file at the root of the project directory
       String configFilename = projectDirectory + this.configurationServiceImpl.getConfigurationFileName();
       zipOutput.putNextEntry(new ZipEntry(configFilename));
-      zipOutput.write( 
-            this.configurationServiceImpl.getConfigurationFileContents(projectSlug, iterationSlug, zipHandle.isOfflinePo(), zipHandle.getServerPath()).getBytes());
+      zipOutput.write(configurationServiceImpl.getConfigurationFileContents(
+            projectSlug, iterationSlug, hLocale, zipHandle.isOfflinePo(), zipHandle.getServerPath())
+            .getBytes());
       zipOutput.closeEntry();
       zipHandle.incrementProgress(1);
 

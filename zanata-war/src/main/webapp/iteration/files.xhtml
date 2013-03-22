@@ -302,8 +302,7 @@
         <rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
             <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
             <a4j:form>
-            	
-            	
+
             	<h:outputLink
 					rendered="#{not applicationConfiguration.debug and not projectIterationFilesAction.isUserAllowedToTranslate() }"
 					value="#{request.contextPath}/webtrans/Application.seam" styleClass="action_link">
@@ -334,7 +333,7 @@
 					<f:param name="locale" value="#{locale.language}" />
 					<span class="icon-edit"/>#{messages['jsf.Translate']}
     			</h:outputLink>
-    					
+
 				<h:outputLink
 					rendered="#{applicationConfiguration.debug and projectIterationFilesAction.isUserAllowedToTranslate()}"
 					value="#{request.contextPath}/webtrans/Application.seam" styleClass="action_link">
@@ -346,8 +345,25 @@
 					<span class="icon-edit"/>#{messages['jsf.TranslateGWTDevMode']}
     			</h:outputLink>
 
+                <s:link styleClass="action_link"
+                        rendered="#{projectIterationFilesAction.poProject}"
+                        value="#{messages['jsf.ConfigFileDefault']}"
+                        title="#{messages['jsf.GenerateProjectConfig']}"
+                        action="#{configurationAction.getData(projectIterationFilesAction.locale)}">
+                    <f:param name="projectSlug" value="#{projectIterationFilesAction.projectSlug}" />
+                    <f:param name="iterationSlug" value="#{projectIterationFilesAction.iterationSlug}" />
+                </s:link>
+
+                <s:link styleClass="action_link"
+                        rendered="#{!projectIterationFilesAction.poProject}"
+                        value="#{messages['jsf.ConfigFileForOfflineTranslation']}"
+                        title="#{messages['jsf.GenerateProjectConfigForOfflineTranslation']}"
+                        action="#{configurationAction.getOfflinePoConfigData(projectIterationFilesAction.locale)}">
+                    <f:param name="projectSlug" value="#{projectIterationFilesAction.projectSlug}" />
+                    <f:param name="iterationSlug" value="#{projectIterationFilesAction.iterationSlug}" />
+                </s:link>
+
                 <ui:param name="downloadAllAllowed" value="#{projectIterationFilesAction.zipFileDownloadAllowed}" />
-                <!-- show this when downloads are prohibited, or it is gettext -->
                 <a4j:commandLink styleClass="action_link #{downloadAllAllowed ? '' : 'disabled'}"
                                  rendered="#{projectIterationFilesAction.poProject or not downloadAllAllowed}"
                                  value="#{messages['jsf.iteration.files.DownloadAllFiles']}"
@@ -356,7 +372,6 @@
                                  reRender="downloadProgressBar"
                                  disabled="#{not downloadAllAllowed}"
                                  title="#{projectIterationFilesAction.zipFileDownloadTitle}"/>
-                <!-- separate download link for 'offline po' bundled package -->
                 <a4j:commandLink styleClass="action_link #{downloadAllAllowed ? '' : 'disabled'}"
                                  rendered="#{downloadAllAllowed and !projectIterationFilesAction.poProject}"
                                  value="#{messages['jsf.iteration.files.DownloadAllFilesOfflinePo']}"

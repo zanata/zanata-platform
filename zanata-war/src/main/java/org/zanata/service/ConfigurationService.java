@@ -20,6 +20,8 @@
  */
 package org.zanata.service;
 
+import org.zanata.model.HLocale;
+
 public interface ConfigurationService
 {
    /**
@@ -45,7 +47,35 @@ public interface ConfigurationService
     *         iteration.
     */
    String getConfigurationFileContents(String projectSlug, String iterationSlug, boolean useOfflinePo, String serverPath);
-   
+
+   /**
+    * Returns the contents of the configuration for a given project with a
+    * single locale.
+    * 
+    * @param projectSlug
+    * @param iterationSlug
+    * @param locale
+    * @param useOfflinePo
+    * @return The configuration file contents for the given project and
+    *         iteration.
+    */
+   String getConfigurationFileContents(String projectSlug, String iterationSlug, HLocale locale, boolean useOfflinePo);
+
+   /**
+    * Returns the contents of the configuration for a given project with a
+    * single locale. Use this method when the server path of the zanata server
+    * needs to be customized.
+    * 
+    * @param projectSlug
+    * @param iterationSlug
+    * @param locale
+    * @param useOfflinePo true to use 'offlinepo' instead of the configured project type
+    * @param serverPath
+    * @return The configuration file contents for the given project and
+    *         iteration.
+    */
+   String getConfigurationFileContents(String projectSlug, String iterationSlug, HLocale locale, boolean useOfflinePo, String serverPath);
+
    /**
     * Returns the default configuration file Name.
     */
