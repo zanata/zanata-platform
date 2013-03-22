@@ -27,6 +27,7 @@ import static org.hamcrest.Matchers.is;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
@@ -70,10 +71,9 @@ public class PrintfVariablesValidationTest
    {
       String source = "Testing string with variable %1v and %2v";
       String target = "%2v and %1v included, order not relevant";
-      printfVariablesValidation.validate(source, target);
+      List<String> errorList = printfVariablesValidation.validate(source, target);
 
-      assertThat(printfVariablesValidation.hasError(), is(false));
-      assertThat(printfVariablesValidation.getError().size(), is(0));
+      assertThat(errorList.size(), is(0));
    }
 
    @Test
@@ -81,11 +81,11 @@ public class PrintfVariablesValidationTest
    {
       String source = "Testing string with variable %1v";
       String target = "Testing string with no variables";
-      printfVariablesValidation.validate(source, target);
+      List<String> errorList = printfVariablesValidation.validate(source, target);
 
-      assertThat(printfVariablesValidation.hasError(), is(true));
-      assertThat(printfVariablesValidation.getError(), contains(messages.varsMissing(Arrays.asList("%1v"))));
-      assertThat(printfVariablesValidation.getError().size(), is(1));
+      
+      assertThat(errorList, contains(messages.varsMissing(Arrays.asList("%1v"))));
+      assertThat(errorList.size(), is(1));
    }
 
    @Test
@@ -93,11 +93,11 @@ public class PrintfVariablesValidationTest
    {
       String source = "%a variables in all parts %b of the string %c";
       String target = "Testing string with no variables";
-      printfVariablesValidation.validate(source, target);
+      List<String> errorList = printfVariablesValidation.validate(source, target);
 
-      assertThat(printfVariablesValidation.hasError(), is(true));
-      assertThat(printfVariablesValidation.getError(), contains(messages.varsMissing(Arrays.asList("%a", "%b", "%c"))));
-      assertThat(printfVariablesValidation.getError().size(), is(1));
+      
+      assertThat(errorList, contains(messages.varsMissing(Arrays.asList("%a", "%b", "%c"))));
+      assertThat(errorList.size(), is(1));
    }
 
    @Test
@@ -106,11 +106,11 @@ public class PrintfVariablesValidationTest
       String source = "Testing string with no variables";
       String target = "Testing string with variable %2$#x";
 
-      printfVariablesValidation.validate(source, target);
+      List<String> errorList = printfVariablesValidation.validate(source, target);
 
-      assertThat(printfVariablesValidation.hasError(), is(true));
-      assertThat(printfVariablesValidation.getError(), contains(messages.varsAdded(Arrays.asList("%2$#x"))));
-      assertThat(printfVariablesValidation.getError().size(), is(1));
+      
+      assertThat(errorList, contains(messages.varsAdded(Arrays.asList("%2$#x"))));
+      assertThat(errorList.size(), is(1));
    }
 
    @Test
@@ -118,11 +118,11 @@ public class PrintfVariablesValidationTest
    {
       String source = "Testing string with no variables";
       String target = "%1$-0lls variables in all parts %2$-0hs of the string %3$-0ls";
-      printfVariablesValidation.validate(source, target);
+      List<String> errorList = printfVariablesValidation.validate(source, target);
 
-      assertThat(printfVariablesValidation.hasError(), is(true));
-      assertThat(printfVariablesValidation.getError(), contains(messages.varsAdded(Arrays.asList("%1$-0lls", "%2$-0hs", "%3$-0ls"))));
-      assertThat(printfVariablesValidation.getError().size(), is(1));
+      
+      assertThat(errorList, contains(messages.varsAdded(Arrays.asList("%1$-0lls", "%2$-0hs", "%3$-0ls"))));
+      assertThat(errorList.size(), is(1));
    }
 
    @Test
@@ -130,11 +130,11 @@ public class PrintfVariablesValidationTest
    {
       String source = "String with %x and %y only, not z";
       String target = "String with %y and %z, not x";
-      printfVariablesValidation.validate(source, target);
+      List<String> errorList = printfVariablesValidation.validate(source, target);
 
-      assertThat(printfVariablesValidation.hasError(), is(true));
-      assertThat(printfVariablesValidation.getError(), containsInAnyOrder(messages.varsAdded(Arrays.asList("%z")), messages.varsMissing(Arrays.asList("%x"))));
-      assertThat(printfVariablesValidation.getError().size(), is(2));
+      
+      assertThat(errorList, containsInAnyOrder(messages.varsAdded(Arrays.asList("%z")), messages.varsMissing(Arrays.asList("%x"))));
+      assertThat(errorList.size(), is(2));
 
    }
 
@@ -143,11 +143,11 @@ public class PrintfVariablesValidationTest
    {
       String source = "%ll";
       String target = "%l %ll";
-      printfVariablesValidation.validate(source, target);
+      List<String> errorList = printfVariablesValidation.validate(source, target);
 
-      assertThat(printfVariablesValidation.hasError(), is(true));
-      assertThat(printfVariablesValidation.getError(), contains(messages.varsAdded(Arrays.asList("%l"))));
-      assertThat(printfVariablesValidation.getError().size(), is(1));
+      
+      assertThat(errorList, contains(messages.varsAdded(Arrays.asList("%l"))));
+      assertThat(errorList.size(), is(1));
    }
 
    @Test
@@ -155,11 +155,11 @@ public class PrintfVariablesValidationTest
    {
       String source = "%l %ll";
       String target = "%ll";
-      printfVariablesValidation.validate(source, target);
+      List<String> errorList = printfVariablesValidation.validate(source, target);
 
-      assertThat(printfVariablesValidation.hasError(), is(true));
-      assertThat(printfVariablesValidation.getError(), contains(messages.varsMissing(Arrays.asList("%l"))));
-      assertThat(printfVariablesValidation.getError().size(), is(1));
+      
+      assertThat(errorList, contains(messages.varsMissing(Arrays.asList("%l"))));
+      assertThat(errorList.size(), is(1));
    }
 
    @Test
@@ -167,11 +167,11 @@ public class PrintfVariablesValidationTest
    {
       String source = "%z";
       String target = "%zz";
-      printfVariablesValidation.validate(source, target);
+      List<String> errorList = printfVariablesValidation.validate(source, target);
 
-      assertThat(printfVariablesValidation.hasError(), is(true));
-      assertThat(printfVariablesValidation.getError(), contains(messages.varsMissing(Arrays.asList("%z")), messages.varsAdded(Arrays.asList("%zz"))));
-      assertThat(printfVariablesValidation.getError().size(), is(2));
+      
+      assertThat(errorList, contains(messages.varsMissing(Arrays.asList("%z")), messages.varsAdded(Arrays.asList("%zz"))));
+      assertThat(errorList.size(), is(2));
    }
 
    @Test
@@ -180,10 +180,10 @@ public class PrintfVariablesValidationTest
       // examples from strings in translate.zanata.org
       String source = "%s %d %-25s %r";
       String target = "no variables";
-      printfVariablesValidation.validate(source, target);
+      List<String> errorList = printfVariablesValidation.validate(source, target);
 
-      assertThat(printfVariablesValidation.hasError(), is(true));
-      assertThat(printfVariablesValidation.getError(), contains(messages.varsMissing(Arrays.asList("%s", "%d", "%-25s", "%r"))));
-      assertThat(printfVariablesValidation.getError().size(), is(1));
+      
+      assertThat(errorList, contains(messages.varsMissing(Arrays.asList("%s", "%d", "%-25s", "%r"))));
+      assertThat(errorList.size(), is(1));
    }
 }

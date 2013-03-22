@@ -61,10 +61,9 @@ public class TabValidationTest
    {
       String source = "Source without tab";
       String target = "Target without tab";
-      validation.validate(source, target);
+      List<String> errorList = validation.validate(source, target);
 
-      assertThat(validation.getError(), is(noErrors));
-      assertThat(validation.hasError(), is(false));
+      assertThat(errorList, is(noErrors));
    }
 
    @Test
@@ -72,10 +71,9 @@ public class TabValidationTest
    {
       String source = "Source with\ttab";
       String target = "Target with\ttab";
-      validation.validate(source, target);
+      List<String> errorList = validation.validate(source, target);
 
-      assertThat(validation.getError(), is(noErrors));
-      assertThat(validation.hasError(), is(false));
+      assertThat(errorList, is(noErrors));
    }
 
    @Test
@@ -83,11 +81,11 @@ public class TabValidationTest
    {
       String source = "Source with\ttab";
       String target = "Target without tab";
-      validation.validate(source, target);
+      List<String> errorList = validation.validate(source, target);
 
-      assertThat(validation.getError(), hasItem(messages.targetHasFewerTabs(1, 0)));
-      assertThat(validation.getError().size(), is(1));
-      assertThat(validation.hasError(), is(true));
+      assertThat(errorList, hasItem(messages.targetHasFewerTabs(1, 0)));
+      assertThat(errorList.size(), is(1));
+      
    }
 
    @Test
@@ -95,11 +93,11 @@ public class TabValidationTest
    {
       String source = "Source without tab";
       String target = "Target with\textra tab";
-      validation.validate(source, target);
+      List<String> errorList = validation.validate(source, target);
 
-      assertThat(validation.getError(), hasItem(messages.targetHasMoreTabs(0, 1)));
-      assertThat(validation.getError().size(), is(1));
-      assertThat(validation.hasError(), is(true));
+      assertThat(errorList, hasItem(messages.targetHasMoreTabs(0, 1)));
+      assertThat(errorList.size(), is(1));
+      
    }
 
    @Test
@@ -107,11 +105,11 @@ public class TabValidationTest
    {
       String source = "Source with two\t\t tabs";
       String target = "Target with one\ttab";
-      validation.validate(source, target);
+      List<String> errorList = validation.validate(source, target);
 
-      assertThat(validation.getError(), hasItem(messages.targetHasFewerTabs(2, 1)));
-      assertThat(validation.getError().size(), is(1));
-      assertThat(validation.hasError(), is(true));
+      assertThat(errorList, hasItem(messages.targetHasFewerTabs(2, 1)));
+      assertThat(errorList.size(), is(1));
+      
    }
 
    @Test
@@ -119,11 +117,11 @@ public class TabValidationTest
    {
       String source = "Source with one\ttab";
       String target = "Target with two\t\t tabs";
-      validation.validate(source, target);
+      List<String> errorList = validation.validate(source, target);
 
-      assertThat(validation.getError(), hasItem(messages.targetHasMoreTabs(1, 2)));
-      assertThat(validation.getError().size(), is(1));
-      assertThat(validation.hasError(), is(true));
+      assertThat(errorList, hasItem(messages.targetHasMoreTabs(1, 2)));
+      assertThat(errorList.size(), is(1));
+      
    }
 
 }

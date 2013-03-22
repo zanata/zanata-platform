@@ -26,6 +26,7 @@ import static org.hamcrest.Matchers.is;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
@@ -69,10 +70,9 @@ public class HtmlXmlTagValidationTests
    {
       String source = "<html><title>HTML TAG Test</title><table><tr><td>column 1 row 1</td><td>column 2 row 1</td></tr></table></html>";
       String target = "<html><title>HTML TAG Test</title><table><tr><td>column 1 row 1</td><td>column 2 row 1</td></tr></table></html>";
-      htmlXmlTagValidation.validate(source, target);
+      List<String> errorList = htmlXmlTagValidation.validate(source, target);
 
-      assertThat(htmlXmlTagValidation.hasError(), is(false));
-      assertThat(htmlXmlTagValidation.getError().size(), is(0));
+      assertThat(errorList.size(), is(0));
    }
 
    @Test
@@ -80,10 +80,9 @@ public class HtmlXmlTagValidationTests
    {
       String source = "<group><users><user>name</user></users></group>";
       String target = "<group><users><user>nombre</user></users></group>";
-      htmlXmlTagValidation.validate(source, target);
+      List<String> errorList = htmlXmlTagValidation.validate(source, target);
 
-      assertThat(htmlXmlTagValidation.hasError(), is(false));
-      assertThat(htmlXmlTagValidation.getError().size(), is(0));
+      assertThat(errorList.size(), is(0));
    }
 
    @Test
@@ -91,11 +90,10 @@ public class HtmlXmlTagValidationTests
    {
       String source = "<group><users><user>1</user></users></group>";
       String target = "<group><users><user>1</user></users><foo></group>";
-      htmlXmlTagValidation.validate(source, target);
+      List<String> errorList = htmlXmlTagValidation.validate(source, target);
 
-      assertThat(htmlXmlTagValidation.hasError(), is(true));
-      assertThat(htmlXmlTagValidation.getError(), hasItem(messages.tagsAdded(Arrays.asList("<foo>"))));
-      assertThat(htmlXmlTagValidation.getError().size(), is(1));
+      assertThat(errorList, hasItem(messages.tagsAdded(Arrays.asList("<foo>"))));
+      assertThat(errorList.size(), is(1));
    }
 
    @Test
@@ -103,11 +101,10 @@ public class HtmlXmlTagValidationTests
    {
       String source = "<group><users><user>1</user></users></group>";
       String target = "<foo><group><users><bar><user>1</user></users></group><moo>";
-      htmlXmlTagValidation.validate(source, target);
+      List<String> errorList = htmlXmlTagValidation.validate(source, target);
 
-      assertThat(htmlXmlTagValidation.hasError(), is(true));
-      assertThat(htmlXmlTagValidation.getError(), hasItem(messages.tagsAdded(Arrays.asList("<foo>", "<bar>", "<moo>"))));
-      assertThat(htmlXmlTagValidation.getError().size(), is(1));
+      assertThat(errorList, hasItem(messages.tagsAdded(Arrays.asList("<foo>", "<bar>", "<moo>"))));
+      assertThat(errorList.size(), is(1));
    }
 
    @Test
@@ -115,11 +112,10 @@ public class HtmlXmlTagValidationTests
    {
       String source = "<html><title>HTML TAG Test</title><foo><table><tr><td>column 1 row 1</td><td>column 2 row 1</td></tr></table></html>";
       String target = "<html><title>HTML TAG Test</title><table><tr><td>column 1 row 1</td><td>column 2 row 1</td></tr></table></html>";
-      htmlXmlTagValidation.validate(source, target);
+      List<String> errorList =  htmlXmlTagValidation.validate(source, target);
 
-      assertThat(htmlXmlTagValidation.hasError(), is(true));
-      assertThat(htmlXmlTagValidation.getError(), hasItem(messages.tagsMissing(Arrays.asList("<foo>"))));
-      assertThat(htmlXmlTagValidation.getError().size(), is(1));
+      assertThat(errorList, hasItem(messages.tagsMissing(Arrays.asList("<foo>"))));
+      assertThat(errorList.size(), is(1));
    }
 
    @Test
@@ -127,11 +123,10 @@ public class HtmlXmlTagValidationTests
    {
       String source = "<html><title>HTML TAG Test</title><p><table><tr><td>column 1 row 1</td></tr></table></html>";
       String target = "<title>HTML TAG Test</title><table><tr><td>column 1 row 1</td></tr></table>";
-      htmlXmlTagValidation.validate(source, target);
+      List<String> errorList =  htmlXmlTagValidation.validate(source, target);
 
-      assertThat(htmlXmlTagValidation.hasError(), is(true));
-      assertThat(htmlXmlTagValidation.getError(), hasItem(messages.tagsMissing(Arrays.asList("<html>", "<p>", "</html>"))));
-      assertThat(htmlXmlTagValidation.getError().size(), is(1));
+      assertThat(errorList, hasItem(messages.tagsMissing(Arrays.asList("<html>", "<p>", "</html>"))));
+      assertThat(errorList.size(), is(1));
    }
 
    @Test
@@ -139,12 +134,11 @@ public class HtmlXmlTagValidationTests
    {
       String source = "<one><two><three></four></five>";
       String target = "<two></five></four><three><six>";
-      htmlXmlTagValidation.validate(source, target);
+      List<String> errorList = htmlXmlTagValidation.validate(source, target);
 
-      assertThat(htmlXmlTagValidation.hasError(), is(true));
-      assertThat(htmlXmlTagValidation.getError(), hasItem(messages.tagsMissing(Arrays.asList("<one>"))));
-      assertThat(htmlXmlTagValidation.getError(), hasItem(messages.tagsAdded(Arrays.asList("<six>"))));
-      assertThat(htmlXmlTagValidation.getError().size(), is(2));
+      assertThat(errorList, hasItem(messages.tagsMissing(Arrays.asList("<one>"))));
+      assertThat(errorList, hasItem(messages.tagsAdded(Arrays.asList("<six>"))));
+      assertThat(errorList.size(), is(2));
    }
 
    @Test
@@ -152,11 +146,10 @@ public class HtmlXmlTagValidationTests
    {
       String source = "<one><two><three></four></five><six>";
       String target = "<six><one><two><three></four></five>";
-      htmlXmlTagValidation.validate(source, target);
+      List<String> errorList = htmlXmlTagValidation.validate(source, target);
 
-      assertThat(htmlXmlTagValidation.hasError(), is(true));
-      assertThat(htmlXmlTagValidation.getError(), hasItem(messages.tagsWrongOrder(Arrays.asList("<six>"))));
-      assertThat(htmlXmlTagValidation.getError().size(), is(1));
+      assertThat(errorList, hasItem(messages.tagsWrongOrder(Arrays.asList("<six>"))));
+      assertThat(errorList.size(), is(1));
    }
 
    @Test
@@ -164,11 +157,10 @@ public class HtmlXmlTagValidationTests
    {
       String source = "<one><two><three></four></five><six>";
       String target = "<two><three></four></five><six><one>";
-      htmlXmlTagValidation.validate(source, target);
+      List<String> errorList = htmlXmlTagValidation.validate(source, target);
 
-      assertThat(htmlXmlTagValidation.hasError(), is(true));
-      assertThat(htmlXmlTagValidation.getError(), hasItem(messages.tagsWrongOrder(Arrays.asList("<one>"))));
-      assertThat(htmlXmlTagValidation.getError().size(), is(1));
+      assertThat(errorList, hasItem(messages.tagsWrongOrder(Arrays.asList("<one>"))));
+      assertThat(errorList.size(), is(1));
    }
 
    @Test
@@ -176,11 +168,10 @@ public class HtmlXmlTagValidationTests
    {
       String source = "<one><two><three></four></five><six>";
       String target = "<two><three><one></four></five><six>";
-      htmlXmlTagValidation.validate(source, target);
+      List<String> errorList = htmlXmlTagValidation.validate(source, target);
 
-      assertThat(htmlXmlTagValidation.hasError(), is(true));
-      assertThat(htmlXmlTagValidation.getError(), hasItem(messages.tagsWrongOrder(Arrays.asList("<one>"))));
-      assertThat(htmlXmlTagValidation.getError().size(), is(1));
+      assertThat(errorList, hasItem(messages.tagsWrongOrder(Arrays.asList("<one>"))));
+      assertThat(errorList.size(), is(1));
    }
 
    @Test
@@ -188,11 +179,10 @@ public class HtmlXmlTagValidationTests
    {
       String source = "<one><two><three></four></five><six>";
       String target = "<six></five></four><three><two><one>";
-      htmlXmlTagValidation.validate(source, target);
+      List<String> errorList = htmlXmlTagValidation.validate(source, target);
 
-      assertThat(htmlXmlTagValidation.hasError(), is(true));
-      assertThat(htmlXmlTagValidation.getError(), hasItem(messages.tagsWrongOrder(Arrays.asList("<two>", "<three>", "</four>", "</five>", "<six>"))));
-      assertThat(htmlXmlTagValidation.getError().size(), is(1));
+      assertThat(errorList, hasItem(messages.tagsWrongOrder(Arrays.asList("<two>", "<three>", "</four>", "</five>", "<six>"))));
+      assertThat(errorList.size(), is(1));
    }
 
    @Test
@@ -200,11 +190,10 @@ public class HtmlXmlTagValidationTests
    {
       String source = "<one><two><three></four></five><six>";
       String target = "</four></five><six><one><two><three>";
-      htmlXmlTagValidation.validate(source, target);
+      List<String> errorList = htmlXmlTagValidation.validate(source, target);
 
-      assertThat(htmlXmlTagValidation.hasError(), is(true));
-      assertThat(htmlXmlTagValidation.getError(), hasItem(messages.tagsWrongOrder(Arrays.asList("</four>", "</five>", "<six>"))));
-      assertThat(htmlXmlTagValidation.getError().size(), is(1));
+      assertThat(errorList, hasItem(messages.tagsWrongOrder(Arrays.asList("</four>", "</five>", "<six>"))));
+      assertThat(errorList.size(), is(1));
    }
 
    @Test
@@ -212,11 +201,10 @@ public class HtmlXmlTagValidationTests
    {
       String source = "<one><two><three></four></five><six>";
       String target = "<six></four></five><one><two><three>";
-      htmlXmlTagValidation.validate(source, target);
+      List<String> errorList = htmlXmlTagValidation.validate(source, target);
 
-      assertThat(htmlXmlTagValidation.hasError(), is(true));
-      assertThat(htmlXmlTagValidation.getError(), hasItem(messages.tagsWrongOrder(Arrays.asList("</four>", "</five>", "<six>"))));
-      assertThat(htmlXmlTagValidation.getError().size(), is(1));
+      assertThat(errorList, hasItem(messages.tagsWrongOrder(Arrays.asList("</four>", "</five>", "<six>"))));
+      assertThat(errorList.size(), is(1));
    }
 
    @Test
@@ -224,11 +212,10 @@ public class HtmlXmlTagValidationTests
    {
       String source = "<one><two><three></three></two><four></four></one>";
       String target = "<one><two></two><four></three><three></four></one>";
-      htmlXmlTagValidation.validate(source, target);
+      List<String> errorList = htmlXmlTagValidation.validate(source, target);
 
-      assertThat(htmlXmlTagValidation.hasError(), is(true));
-      assertThat(htmlXmlTagValidation.getError(), hasItem(messages.tagsWrongOrder(Arrays.asList("<three>", "</three>"))));
-      assertThat(htmlXmlTagValidation.getError().size(), is(1));
+      assertThat(errorList, hasItem(messages.tagsWrongOrder(Arrays.asList("<three>", "</three>"))));
+      assertThat(errorList.size(), is(1));
    }
 }
 

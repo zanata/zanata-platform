@@ -2,7 +2,6 @@ package org.zanata.webtrans.client.ui;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
@@ -19,7 +18,7 @@ public interface DocValidationReportDisplay extends WidgetDisplay
 
    void hide();
 
-   void init(Set<DocumentId> errorDocs);
+   void init(List<DocumentId> errorDocs);
 
    void updateRow(DocumentId documentId, LocaleId localeId, List<TransUnitValidationResult> result, Date endTime);
 

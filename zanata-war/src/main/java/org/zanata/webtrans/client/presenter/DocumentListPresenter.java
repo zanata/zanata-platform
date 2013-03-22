@@ -563,20 +563,25 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
                {
                   Log.debug("Success docs validation - " + result.getResult().size());
                   Map<DocumentId, Boolean> resultMap = result.getResult();
+                  ArrayList<DocumentId> hasErrorDocs = new ArrayList<DocumentId>();
 
                   for(Map.Entry<DocumentId, Boolean> entry: resultMap.entrySet())
                   {
                      Boolean hasError = entry.getValue();
-                     DocumentInfo hasErrorDoc = getDocumentInfo(entry.getKey());
+                     DocumentInfo docInfo = getDocumentInfo(entry.getKey());
 
-                     if (hasError != null && hasErrorDoc != null)
+                     if (hasError != null && docInfo != null)
                      {
-                        hasErrorDoc.setHasValidationError(hasError.booleanValue());
+                        docInfo.setHasValidationError(hasError.booleanValue());
+                        if(hasError.booleanValue())
+                        {
+                           hasErrorDocs.add(docInfo.getId());
+                        }
                      }
                   }
                   dataProvider.refresh();
                   display.showLoading(false);
-                  eventBus.fireEvent(new DocValidationResultEvent(new Date(), resultMap.keySet()));
+                  eventBus.fireEvent(new DocValidationResultEvent(new Date(), hasErrorDocs));
                }
             });
          }

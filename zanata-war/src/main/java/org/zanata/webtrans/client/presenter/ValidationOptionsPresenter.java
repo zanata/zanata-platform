@@ -21,7 +21,7 @@
 package org.zanata.webtrans.client.presenter;
 
 import java.util.ArrayList;
-import java.util.Set;
+import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
@@ -56,7 +56,7 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
    private final ValidationService validationService;
    private final WebTransMessages messages;
    private MainView currentView;
-   private Set<DocumentId> errorDocs;
+   private List<DocumentId> errorDocs;
 
    @Inject
    public ValidationOptionsPresenter(ValidationOptionsDisplay display, EventBus eventBus, final ValidationService validationService, final WebTransMessages messages)

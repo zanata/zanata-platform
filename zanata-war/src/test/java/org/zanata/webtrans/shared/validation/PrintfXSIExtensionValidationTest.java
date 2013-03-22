@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.is;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
@@ -47,34 +48,33 @@ public class PrintfXSIExtensionValidationTest
    public void validPositionalVariables() {
       String source = "%s: Read error at byte %s, while reading %lu byte";
       String target = "%1$s：Read error while reading %3$lu bytes，at %2$s";
-      printfVariablesValidation.validate(source, target);
+      List<String> errorList = printfVariablesValidation.validate(source, target);
 
-      assertThat(printfVariablesValidation.hasError(), is(false));
-      assertThat(printfVariablesValidation.getError().size(), is(0));
+      assertThat(errorList.size(), is(0));
    }
 
    @Test
    public void mixPositionalVariablesWithNotPositional() {
       String source = "%s: Read error at byte %s, while reading %lu byte";
       String target = "%1$s：Read error while reading %lu bytes，at %2$s";
-      printfVariablesValidation.validate(source, target);
+      List<String> errorList = printfVariablesValidation.validate(source, target);
 
-      assertThat(printfVariablesValidation.hasError(), is(true));
-      assertThat(printfVariablesValidation.getError().size(), is(3));
+      
+      assertThat(errorList.size(), is(3));
 
-      assertThat(printfVariablesValidation.getError(), containsInAnyOrder(messages.varsMissing(Arrays.asList("%3$lu")), messages.varsAdded(Arrays.asList("%lu")), messages.mixVarFormats()));
+      assertThat(errorList, containsInAnyOrder(messages.varsMissing(Arrays.asList("%3$lu")), messages.varsAdded(Arrays.asList("%lu")), messages.mixVarFormats()));
    }
 
    @Test
    public void positionalVariableOutOfRange() {
       String source = "%s: Read error at byte %s, while reading %lu byte";
       String target = "%3$s：Read error while reading %99$lu bytes，at %2$s";
-      printfVariablesValidation.validate(source, target);
+      List<String> errorList = printfVariablesValidation.validate(source, target);
 
-      assertThat(printfVariablesValidation.hasError(), is(true));
-      assertThat(printfVariablesValidation.getError().size(), is(3));
+      
+      assertThat(errorList.size(), is(3));
 
-      assertThat(printfVariablesValidation.getError(), containsInAnyOrder(messages.varPositionOutOfRange("%99$lu"), messages.varsMissing(Arrays.asList("%1$s", "%3$lu")), messages.varsAdded(Arrays.asList("%3$s", "%99$lu"))));
+      assertThat(errorList, containsInAnyOrder(messages.varPositionOutOfRange("%99$lu"), messages.varsMissing(Arrays.asList("%1$s", "%3$lu")), messages.varsAdded(Arrays.asList("%3$s", "%99$lu"))));
    }
 
    @Test
@@ -82,23 +82,23 @@ public class PrintfXSIExtensionValidationTest
       String source = "%s: Read error at byte %s, while reading %lu byte";
       String target = "%3$s：Read error while reading %3$lu bytes, at %2$s";
 
-      printfVariablesValidation.validate(source, target);
+      List<String> errorList = printfVariablesValidation.validate(source, target);
 
-      assertThat(printfVariablesValidation.hasError(), is(true));
-      assertThat(printfVariablesValidation.getError().size(), is(3));
-      assertThat(printfVariablesValidation.getError(), containsInAnyOrder(messages.varsMissing(Arrays.asList("%1$s")), messages.varsAdded(Arrays.asList("%3$s")), messages.varPositionDuplicated(Arrays.asList("%3$s", "%3$lu"))));
+      
+      assertThat(errorList.size(), is(3));
+      assertThat(errorList, containsInAnyOrder(messages.varsMissing(Arrays.asList("%1$s")), messages.varsAdded(Arrays.asList("%3$s")), messages.varPositionDuplicated(Arrays.asList("%3$s", "%3$lu"))));
    }
 
    @Test
    public void invalidPositionalVariablesBringItAll() {
       String source = "%s of %d and %lu";
       String target = "%2$d %2$s %9$lu %z";
-      printfVariablesValidation.validate(source, target);
+      List<String> errorList = printfVariablesValidation.validate(source, target);
       
-      assertThat(printfVariablesValidation.getError(), hasItem(messages.varPositionOutOfRange("%9$lu")));
-      assertThat(printfVariablesValidation.getError(), hasItem(messages.mixVarFormats()));
-      assertThat(printfVariablesValidation.getError(), hasItem(messages.varPositionDuplicated(Arrays.asList("%2$d", "%2$s"))));
-      assertThat(printfVariablesValidation.getError(), hasItem(messages.varsMissing(Arrays.asList("%1$s", "%3$lu"))));
-      assertThat(printfVariablesValidation.getError(), hasItem(messages.varsAdded(Arrays.asList("%2$s", "%9$lu", "%z"))));
+      assertThat(errorList, hasItem(messages.varPositionOutOfRange("%9$lu")));
+      assertThat(errorList, hasItem(messages.mixVarFormats()));
+      assertThat(errorList, hasItem(messages.varPositionDuplicated(Arrays.asList("%2$d", "%2$s"))));
+      assertThat(errorList, hasItem(messages.varsMissing(Arrays.asList("%1$s", "%3$lu"))));
+      assertThat(errorList, hasItem(messages.varsAdded(Arrays.asList("%2$s", "%9$lu", "%z"))));
    }
 }

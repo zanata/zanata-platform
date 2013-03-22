@@ -22,6 +22,7 @@ package org.zanata.service.impl;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import lombok.AllArgsConstructor;
@@ -256,8 +257,8 @@ public class TranslationStateCacheImpl implements TranslationStateCache
        if (tft != null)
        {
           ValidationAction action = ValidationFactoryProvider.getFactoryInstance().getValidationAction(validationId);
-          action.validate(tft.getTextFlow().getContents().get(0), tft.getContents().get(0));
-          return action.hasError();
+          List<String> errorList = action.validate(tft.getTextFlow().getContents().get(0), tft.getContents().get(0));
+          return !errorList.isEmpty();
        }
        return null;
    }

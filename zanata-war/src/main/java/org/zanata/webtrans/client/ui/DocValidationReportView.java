@@ -3,7 +3,6 @@ package org.zanata.webtrans.client.ui;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import org.zanata.common.LocaleId;
 import org.zanata.webtrans.client.resources.Resources;
@@ -53,7 +52,7 @@ public class DocValidationReportView extends DialogBox implements DocValidationR
       super(true, true);
       setGlassEnabled(true);
       setStyleName("gwt-DialogBox-NoFixedSize");
-      setText("Document validation report");
+      setText("Validation summary");
 
       this.resources = resources;
 
@@ -64,7 +63,7 @@ public class DocValidationReportView extends DialogBox implements DocValidationR
    }
 
    @Override
-   public void init(Set<DocumentId> errorDocs)
+   public void init(List<DocumentId> errorDocs)
    {
       docsTable.clear();
       rowsMap.clear();
@@ -73,7 +72,9 @@ public class DocValidationReportView extends DialogBox implements DocValidationR
       for (DocumentId documentId : errorDocs)
       {
          rowsMap.put(documentId, i);
-         docsTable.setWidget(i, 0, new DocValidationReportTable(resources));
+         DocValidationReportTable widget = new DocValidationReportTable(resources);
+         widget.setDocName(documentId.getDocId());
+         docsTable.setWidget(i, 0, widget);
          i++;
       }
    }

@@ -23,13 +23,12 @@ package org.zanata.webtrans.client.view;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
+
+import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 import org.zanata.common.LocaleId;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnitValidationResult;
-
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 
@@ -60,5 +59,5 @@ public interface ValidationOptionsDisplay extends WidgetDisplay
 
    void updateDocValidationReport(DocumentId documentId, LocaleId localeId, List<TransUnitValidationResult> result, Date endTime);
 
-   void initValidationReport(Set<DocumentId> errorDocs);
+   void initValidationReport(List<DocumentId> errorDocs);
 }

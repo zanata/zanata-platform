@@ -174,18 +174,18 @@ public class ValidationServiceImpl implements ValidationService
 
                for (ValidationAction validationAction : validationActions)
                {
-                  validationAction.validate(textFlow.getContents().get(0), target.getContents().get(0));
+                  List<String> errorList = validationAction.validate(textFlow.getContents().get(0), target.getContents().get(0));
 
-                  if (validationAction.hasError())
+                  if (!errorList.isEmpty())
                   {
                      if (validationResult == null)
                      {
                         TransUnit tu = transUnitTransformer.transform(textFlow, target);
-                        validationResult = new TransUnitValidationResult(tu, validationAction.getError());
+                        validationResult = new TransUnitValidationResult(tu, errorList);
                      }
                      else
                      {
-                        validationResult.getErrorMessages().addAll(validationAction.getError());
+                        validationResult.getErrorMessages().addAll(errorList);
                      }
                   }
                }

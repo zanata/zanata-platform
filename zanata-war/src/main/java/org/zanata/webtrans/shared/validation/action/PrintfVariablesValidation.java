@@ -61,31 +61,31 @@ public class PrintfVariablesValidation extends AbstractValidationAction
    }
 
    @Override
-   public void doValidate(String source, String target)
+   public void doValidate(ArrayList<String> errorList, String source, String target)
    {
       ArrayList<String> sourceVars = findVars(source);
       ArrayList<String> targetVars = findVars(target);
 
-      findMissingVariables(sourceVars, targetVars);
-      findAddedVariables(sourceVars, targetVars);
+      findMissingVariables(errorList, sourceVars, targetVars);
+      findAddedVariables(errorList, sourceVars, targetVars);
    }
 
-   protected void findMissingVariables(ArrayList<String> sourceVars, ArrayList<String> targetVars)
+   protected void findMissingVariables(ArrayList<String> errorList, ArrayList<String> sourceVars, ArrayList<String> targetVars)
    {
       List<String> missing = listMissing(sourceVars, targetVars);
       if (!missing.isEmpty())
       {
-         addError(getMessages().varsMissing(missing));
+         errorList.add(getMessages().varsMissing(missing));
       }
    }
 
-   protected void findAddedVariables(ArrayList<String> sourceVars, ArrayList<String> targetVars)
+   protected void findAddedVariables(ArrayList<String> errorList, ArrayList<String> sourceVars, ArrayList<String> targetVars)
    {
       // missing from source = added
       List<String> added = listMissing(targetVars, sourceVars);
       if (!added.isEmpty())
       {
-         addError(getMessages().varsAdded(added));
+         errorList.add(getMessages().varsAdded(added));
       }
    }
 

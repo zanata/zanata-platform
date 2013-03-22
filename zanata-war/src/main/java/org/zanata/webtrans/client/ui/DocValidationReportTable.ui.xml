@@ -8,7 +8,7 @@
     </ui:style>
 	
 	<g:HTMLPanel width="100%">
-		<g:Label  ui:field="docName"/>
+		<g:Label  ui:field="docNameLabel"/>
 		<g:FlowPanel ui:field="content"/>
 	</g:HTMLPanel>
 	

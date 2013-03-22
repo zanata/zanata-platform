@@ -26,7 +26,7 @@ public class DocValidationReportTable extends Composite
    private static DocValidationReportTableUiBinder uiBinder = GWT.create(DocValidationReportTableUiBinder.class);
    
    @UiField
-   Label docName;
+   Label docNameLabel;
 
    @UiField
    FlowPanel content;
@@ -35,21 +35,21 @@ public class DocValidationReportTable extends Composite
    private final Image loading;
    private final ListDataProvider<TransUnitValidationResult> dataProvider;
 
-   private TextColumn<TransUnitValidationResult> sourceColumn = new TextColumn<TransUnitValidationResult>()
+   private TextColumn<TransUnitValidationResult> stringsColumn = new TextColumn<TransUnitValidationResult>()
    {
       @Override
       public String getValue(TransUnitValidationResult result)
       {
-         return result.getTransUnit().getSources().toString();
+         return result.getTransUnit().getId().toString();
       }
    };
 
-   private TextColumn<TransUnitValidationResult> targetColumn = new TextColumn<TransUnitValidationResult>()
+   private TextColumn<TransUnitValidationResult> errorStringColumn = new TextColumn<TransUnitValidationResult>()
    {
       @Override
       public String getValue(TransUnitValidationResult result)
       {
-         return result.getTransUnit().getTargets().toString();
+         return result.getErrorMessages().toString();
       }
    };
 
@@ -61,8 +61,8 @@ public class DocValidationReportTable extends Composite
       transUnitTable = new CellTable<TransUnitValidationResult>();
       dataProvider = new ListDataProvider<TransUnitValidationResult>();
 
-      transUnitTable.addColumn(sourceColumn, "Source");
-      transUnitTable.addColumn(targetColumn, "Target");
+      transUnitTable.addColumn(stringsColumn, "id");
+      transUnitTable.addColumn(errorStringColumn, "Validation message");
       
       transUnitTable.setEmptyTableWidget(new Label("No content"));
 
@@ -80,6 +80,11 @@ public class DocValidationReportTable extends Composite
          dataProvider.getList().add(result);
       }
       setLoading(false);
+   }
+   
+   public void setDocName(String docName)
+   {
+      docNameLabel.setText(docName);
    }
 
    private void setLoading(boolean isLoading)

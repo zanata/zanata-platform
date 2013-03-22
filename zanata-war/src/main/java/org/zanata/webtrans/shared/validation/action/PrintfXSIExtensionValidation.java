@@ -32,7 +32,7 @@ public class PrintfXSIExtensionValidation extends PrintfVariablesValidation
    }
 
    @Override
-   public void doValidate(String source, String target)
+   public void doValidate(ArrayList<String> errorList, String source, String target)
    {
       ArrayList<String> sourceVars = findVars(source);
       ArrayList<String> targetVars = findVars(target);
@@ -41,12 +41,12 @@ public class PrintfXSIExtensionValidation extends PrintfVariablesValidation
       if (PrintfXSIExtensionValidation.hasPosition(targetVars))
       {
          sourceVars = PrintfXSIExtensionValidation.appendPosition(sourceVars);
-         checkPosition(targetVars, sourceVars.size());
+         checkPosition(errorList, targetVars, sourceVars.size());
       }
 
 
-      findMissingVariables(sourceVars, targetVars);
-      findAddedVariables(sourceVars, targetVars);
+      findMissingVariables(errorList, sourceVars, targetVars);
+      findAddedVariables(errorList, sourceVars, targetVars);
    }
 
    private static boolean hasPosition(ArrayList<String> variables)
@@ -74,7 +74,7 @@ public class PrintfXSIExtensionValidation extends PrintfVariablesValidation
       return result;
    }
 
-   private void checkPosition(ArrayList<String> variables, int size)
+   private void checkPosition(ArrayList<String> errorList, ArrayList<String> variables, int size)
    {
       Multimap<Integer, String> posToVars = ArrayListMultimap.create();
 
@@ -91,12 +91,12 @@ public class PrintfXSIExtensionValidation extends PrintfVariablesValidation
             }
             else
             {
-               addError(getMessages().varPositionOutOfRange(testVar));
+               errorList.add(getMessages().varPositionOutOfRange(testVar));
             }
          }
          else
          {
-            addError(getMessages().mixVarFormats());
+            errorList.add(getMessages().mixVarFormats());
          }
       }
       if (posToVars.keySet().size() != variables.size())
@@ -106,7 +106,7 @@ public class PrintfXSIExtensionValidation extends PrintfVariablesValidation
          {
             if (entry.getValue().size() > 1)
             {
-               addError(getMessages().varPositionDuplicated(entry.getValue()));
+               errorList.add(getMessages().varPositionDuplicated(entry.getValue()));
             }
          }
       }

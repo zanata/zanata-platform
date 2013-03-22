@@ -32,13 +32,7 @@ import org.zanata.webtrans.shared.validation.AbstractValidationAction;
  **/
 public interface ValidationAction
 {
-   List<String> getError();
-
-   void clearErrorMessage();
-
-   boolean hasError();
-
-   void validate(String source, String target);
+   List<String> validate(String source, String target);
 
    List<ValidationAction> getExclusiveValidations();
 

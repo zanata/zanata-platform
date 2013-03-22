@@ -50,9 +50,9 @@ public class HtmlXmlTagValidation extends AbstractValidationAction
    private final static String tagRegex = "<[^>]+>";
 
    private final static RegExp regExp = RegExp.compile(tagRegex, "g");
-
+   
    @Override
-   public void doValidate(String source, String target)
+   public void doValidate(ArrayList<String> errorList, String source, String target)
    {
       ArrayList<String> sourceTags = getTagList(source);
       ArrayList<String> targetTags = getTagList(target);
@@ -60,7 +60,7 @@ public class HtmlXmlTagValidation extends AbstractValidationAction
       ArrayList<String> error = listMissing(source, target);
       if (!error.isEmpty())
       {
-         addError(getMessages().tagsMissing(error));
+         errorList.add(getMessages().tagsMissing(error));
       }
 
       boolean noError = error.isEmpty();
@@ -68,18 +68,18 @@ public class HtmlXmlTagValidation extends AbstractValidationAction
       error = listMissing(target, source);
       if (!error.isEmpty())
       {
-         addError(getMessages().tagsAdded(error));
+         errorList.add(getMessages().tagsAdded(error));
       }
 
       noError &= error.isEmpty();
 
       if (noError)
       {
-         orderValidation(sourceTags, targetTags);
+         orderValidation(sourceTags, targetTags, errorList);
       }
    }
 
-   private void orderValidation(ArrayList<String> srcTags, ArrayList<String> trgTags)
+   private void orderValidation(ArrayList<String> srcTags, ArrayList<String> trgTags, ArrayList<String> errorList)
    {
       ArrayList<String> longestRun = null;
       ArrayList<String> currentRun;
@@ -136,7 +136,7 @@ public class HtmlXmlTagValidation extends AbstractValidationAction
             }
          }
 
-         addError(getMessages().tagsWrongOrder(outOfOrder));
+         errorList.add(getMessages().tagsWrongOrder(outOfOrder));
       }
    }
 

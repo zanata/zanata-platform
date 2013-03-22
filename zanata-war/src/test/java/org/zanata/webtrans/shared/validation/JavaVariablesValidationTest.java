@@ -27,6 +27,7 @@ import static org.hamcrest.Matchers.is;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
@@ -69,10 +70,9 @@ public class JavaVariablesValidationTest
    {
       String source = "Testing string with variable {0} and {1}";
       String target = "{1} and {0} included, order not relevant";
-      javaVariablesValidation.validate(source, target);
+      List<String> errorList = javaVariablesValidation.validate(source, target);
 
-      assertThat(javaVariablesValidation.hasError(), is(false));
-      assertThat(javaVariablesValidation.getError().size(), is(0));
+      assertThat(errorList.size(), is(0));
    }
 
    @Test
@@ -80,11 +80,10 @@ public class JavaVariablesValidationTest
    {
       String source = "Testing string with variable {0}";
       String target = "Testing string with no variables";
-      javaVariablesValidation.validate(source, target);
+      List<String> errorList = javaVariablesValidation.validate(source, target);
 
-      assertThat(javaVariablesValidation.hasError(), is(true));
-      assertThat(javaVariablesValidation.getError(), hasItem(messages.varsMissing(Arrays.asList("{0}"))));
-      assertThat(javaVariablesValidation.getError().size(), is(1));
+      assertThat(errorList, hasItem(messages.varsMissing(Arrays.asList("{0}"))));
+      assertThat(errorList.size(), is(1));
    }
 
    @Test
@@ -92,11 +91,10 @@ public class JavaVariablesValidationTest
    {
       String source = "{0} variables in all parts {1} of the string {2}";
       String target = "Testing string with no variables";
-      javaVariablesValidation.validate(source, target);
+      List<String> errorList = javaVariablesValidation.validate(source, target);
 
-      assertThat(javaVariablesValidation.hasError(), is(true));
-      assertThat(javaVariablesValidation.getError(), hasItem(messages.varsMissing(Arrays.asList("{2}", "{1}", "{0}"))));
-      assertThat(javaVariablesValidation.getError().size(), is(1));
+      assertThat(errorList, hasItem(messages.varsMissing(Arrays.asList("{2}", "{1}", "{0}"))));
+      assertThat(errorList.size(), is(1));
    }
 
    @Test
@@ -104,11 +102,10 @@ public class JavaVariablesValidationTest
    {
       String source = "Testing string with no variables";
       String target = "Testing string with variable {0}";
-      javaVariablesValidation.validate(source, target);
+      List<String> errorList = javaVariablesValidation.validate(source, target);
 
-      assertThat(javaVariablesValidation.hasError(), is(true));
-      assertThat(javaVariablesValidation.getError(), hasItem(messages.varsAdded(Arrays.asList("{0}"))));
-      assertThat(javaVariablesValidation.getError().size(), is(1));
+      assertThat(errorList, hasItem(messages.varsAdded(Arrays.asList("{0}"))));
+      assertThat(errorList.size(), is(1));
    }
 
    @Test
@@ -116,11 +113,10 @@ public class JavaVariablesValidationTest
    {
       String source = "Testing string with no variables";
       String target = "{0} variables in all parts {1} of the string {2}";
-      javaVariablesValidation.validate(source, target);
+      List<String> errorList = javaVariablesValidation.validate(source, target);
 
-      assertThat(javaVariablesValidation.hasError(), is(true));
-      assertThat(javaVariablesValidation.getError(), hasItem(messages.varsAdded(Arrays.asList("{2}", "{1}", "{0}"))));
-      assertThat(javaVariablesValidation.getError().size(), is(1));
+      assertThat(errorList, hasItem(messages.varsAdded(Arrays.asList("{2}", "{1}", "{0}"))));
+      assertThat(errorList.size(), is(1));
    }
 
    @Test
@@ -128,11 +124,10 @@ public class JavaVariablesValidationTest
    {
       String source = "String with {0} and {1} only, not 2";
       String target = "String with {1} and {2}, not 0";
-      javaVariablesValidation.validate(source, target);
+      List<String> errorList = javaVariablesValidation.validate(source, target);
 
-      assertThat(javaVariablesValidation.hasError(), is(true));
-      assertThat(javaVariablesValidation.getError(), hasItems(messages.varsAdded(Arrays.asList("{2}")), messages.varsMissing(Arrays.asList("{0}"))));
-      assertThat(javaVariablesValidation.getError().size(), is(2));
+      assertThat(errorList, hasItems(messages.varsAdded(Arrays.asList("{2}")), messages.varsMissing(Arrays.asList("{0}"))));
+      assertThat(errorList.size(), is(2));
    }
 
    @Test
@@ -140,11 +135,10 @@ public class JavaVariablesValidationTest
    {
       String source = "At {1,time} on {1,date}, there was {2} on planet {0,number,integer}.";
       String target = "At time on date, there was a disturbance in the force on planet Earth";
-      javaVariablesValidation.validate(source, target);
+      List<String> errorList = javaVariablesValidation.validate(source, target);
 
-      assertThat(javaVariablesValidation.hasError(), is(true));
-      assertThat(javaVariablesValidation.getError(), hasItem(messages.varsMissing(Arrays.asList("{2}", "{1}", "{0}"))));
-      assertThat(javaVariablesValidation.getError().size(), is(1));
+      assertThat(errorList, hasItem(messages.varsMissing(Arrays.asList("{2}", "{1}", "{0}"))));
+      assertThat(errorList.size(), is(1));
    }
 
    @Test
@@ -152,11 +146,10 @@ public class JavaVariablesValidationTest
    {
       String source = "The disk \"{1}\" contains {0} file(s).";
       String target = "The disk contains some files";
-      javaVariablesValidation.validate(source, target);
+      List<String> errorList = javaVariablesValidation.validate(source, target);
 
-      assertThat(javaVariablesValidation.hasError(), is(true));
-      assertThat(javaVariablesValidation.getError(), hasItem(messages.varsMissing(Arrays.asList("{1}", "{0}"))));
-      assertThat(javaVariablesValidation.getError().size(), is(1));
+      assertThat(errorList, hasItem(messages.varsMissing(Arrays.asList("{1}", "{0}"))));
+      assertThat(errorList.size(), is(1));
    }
 
    @Test
@@ -164,10 +157,9 @@ public class JavaVariablesValidationTest
    {
       String source = "This string does not contain \\{0\\} style variables";
       String target = "This string does not contain java style variables";
-      javaVariablesValidation.validate(source, target);
+      List<String> errorList = javaVariablesValidation.validate(source, target);
 
-      assertThat(javaVariablesValidation.hasError(), is(false));
-      assertThat(javaVariablesValidation.getError().size(), is(0));
+      assertThat(errorList.size(), is(0));
    }
 
    @Test
@@ -175,10 +167,9 @@ public class JavaVariablesValidationTest
    {
       String source = "This string does not contain '{0}' style variables";
       String target = "This string does not contain java style variables";
-      javaVariablesValidation.validate(source, target);
+      List<String> errorList = javaVariablesValidation.validate(source, target);
 
-      assertThat(javaVariablesValidation.hasError(), is(false));
-      assertThat(javaVariablesValidation.getError().size(), is(0));
+      assertThat(errorList.size(), is(0));
    }
 
    @Test
@@ -186,10 +177,9 @@ public class JavaVariablesValidationTest
    {
       String source = "This 'string does not contain {0} style' variables";
       String target = "This string does not contain java style variables";
-      javaVariablesValidation.validate(source, target);
+      List<String> errorList = javaVariablesValidation.validate(source, target);
 
-      assertThat(javaVariablesValidation.hasError(), is(false));
-      assertThat(javaVariablesValidation.getError().size(), is(0));
+      assertThat(errorList.size(), is(0));
    }
 
    @Test
@@ -197,11 +187,10 @@ public class JavaVariablesValidationTest
    {
       String source = "This string does not contain \\'{0}\\' style variables";
       String target = "This string does not contain java style variables";
-      javaVariablesValidation.validate(source, target);
+      List<String> errorList = javaVariablesValidation.validate(source, target);
 
-      assertThat(javaVariablesValidation.hasError(), is(true));
-      assertThat(javaVariablesValidation.getError(), hasItem(messages.varsMissing(Arrays.asList("{0}"))));
-      assertThat(javaVariablesValidation.getError().size(), is(1));
+      assertThat(errorList, hasItem(messages.varsMissing(Arrays.asList("{0}"))));
+      assertThat(errorList.size(), is(1));
    }
 
    @Test
@@ -209,10 +198,9 @@ public class JavaVariablesValidationTest
    {
       String source = "'''{'0}'''''{0}'''";
       String target = "From examples on MessageFormat page, should not contain any variables";
-      javaVariablesValidation.validate(source, target);
+      List<String> errorList = javaVariablesValidation.validate(source, target);
 
-      assertThat(javaVariablesValidation.hasError(), is(false));
-      assertThat(javaVariablesValidation.getError().size(), is(0));
+      assertThat(errorList.size(), is(0));
    }
 
    @Test
@@ -220,10 +208,9 @@ public class JavaVariablesValidationTest
    {
       String source = "There {0,choice,0#are no things|1#is one thing|1<are many things}.";
       String target = "Es gibt {0,choice,0#keine Dinge|1#eine Sache|1<viele Dinge}.";
-      javaVariablesValidation.validate(source, target);
+      List<String> errorList = javaVariablesValidation.validate(source, target);
 
-      assertThat(javaVariablesValidation.hasError(), is(false));
-      assertThat(javaVariablesValidation.getError().size(), is(0));
+      assertThat(errorList.size(), is(0));
    }
 
    @Test
@@ -231,11 +218,10 @@ public class JavaVariablesValidationTest
    {
       String source = "There {0,choice,0#are no files|1#is one file|1<are {0,number,integer} files}.";
       String target = "There are 0 files";
-      javaVariablesValidation.validate(source, target);
+      List<String> errorList = javaVariablesValidation.validate(source, target);
 
-      assertThat(javaVariablesValidation.hasError(), is(true));
-      assertThat(javaVariablesValidation.getError(), hasItem(messages.varsMissing(Arrays.asList("{0}"))));
-      assertThat(javaVariablesValidation.getError().size(), is(1));
+      assertThat(errorList, hasItem(messages.varsMissing(Arrays.asList("{0}"))));
+      assertThat(errorList.size(), is(1));
    }
 
    //TODO tests for format type

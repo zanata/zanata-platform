@@ -163,7 +163,7 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    }
 
    @Override
-   public void initValidationReport(Set<DocumentId> errorDocs)
+   public void initValidationReport(List<DocumentId> errorDocs)
    {
       docValidationReport.init(errorDocs);
       docValidationReport.center();

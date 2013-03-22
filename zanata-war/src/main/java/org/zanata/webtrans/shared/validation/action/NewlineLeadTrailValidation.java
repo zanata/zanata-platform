@@ -20,6 +20,9 @@
  */
 package org.zanata.webtrans.shared.validation.action;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
@@ -54,38 +57,38 @@ public class NewlineLeadTrailValidation extends AbstractValidationAction
    private final static RegExp newlineRegExp = RegExp.compile(newlineRegex, "g");
 
    @Override
-   public void doValidate(String source, String target)
+   public void doValidate(ArrayList<String> errorList, String source, String target)
    {
       if (notShareLeading(source, target))
       {
-         addError(getMessages().leadingNewlineMissing());
+         errorList.add(getMessages().leadingNewlineMissing());
       }
 
       if (notShareLeading(target, source))
       {
-         addError(getMessages().leadingNewlineAdded());
+         errorList.add(getMessages().leadingNewlineAdded());
       }
 
       if (notShareTrailing(source, target))
       {
-         addError(getMessages().trailingNewlineMissing());
+         errorList.add(getMessages().trailingNewlineMissing());
       }
 
       if (notShareTrailing(target, source))
       {
-         addError(getMessages().trailingNewlineAdded());
+         errorList.add(getMessages().trailingNewlineAdded());
       }
 
       int sourceLines = 1 + countNewlines(source);
       int targetLines = 1 + countNewlines(target);
       if (sourceLines < targetLines)
       {
-         addError(getMessages().linesAdded(sourceLines, targetLines));
+         errorList.add(getMessages().linesAdded(sourceLines, targetLines));
       }
 
       if (targetLines < sourceLines)
       {
-         addError(getMessages().linesRemoved(sourceLines, targetLines));
+         errorList.add(getMessages().linesRemoved(sourceLines, targetLines));
       }
    }
 
