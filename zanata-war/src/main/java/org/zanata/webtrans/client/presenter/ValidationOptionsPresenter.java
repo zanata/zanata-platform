@@ -26,8 +26,6 @@ import java.util.List;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.zanata.webtrans.client.events.DocValidationReportResultEvent;
-import org.zanata.webtrans.client.events.DocValidationReportResultHandler;
 import org.zanata.webtrans.client.events.DocValidationResultEvent;
 import org.zanata.webtrans.client.events.DocValidationResultHandler;
 import org.zanata.webtrans.client.events.RunDocValidationEvent;
@@ -51,12 +49,11 @@ import com.google.inject.Inject;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOptionsDisplay> implements ValidationOptionsDisplay.Listener, WorkspaceContextUpdateEventHandler, DocValidationResultHandler, DocValidationReportResultHandler
+public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOptionsDisplay> implements ValidationOptionsDisplay.Listener, WorkspaceContextUpdateEventHandler, DocValidationResultHandler
 {
    private final ValidationService validationService;
    private final WebTransMessages messages;
    private MainView currentView;
-   private List<DocumentId> errorDocs;
 
    @Inject
    public ValidationOptionsPresenter(ValidationOptionsDisplay display, EventBus eventBus, final ValidationService validationService, final WebTransMessages messages)
@@ -71,11 +68,9 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
    {
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this));
       registerHandler(eventBus.addHandler(DocValidationResultEvent.getType(), this));
-      registerHandler(eventBus.addHandler(DocValidationReportResultEvent.getType(), this));
       initDisplay();
 
       display.updateValidationResult(null);
-      display.showReportLink(false);
 
       display.setListener(this);
    }
@@ -142,22 +137,12 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
       {
          display.setRunValidationVisible(true);
          display.setRunValidationTitle(messages.documentValidationTitle());
-         if (hasErrorReport())
-         {
-            display.showReportLink(true);
-         }
       }
       else
       {
          display.setRunValidationVisible(false);
          display.setRunValidationTitle(messages.editorValidationTitle());
-         display.showReportLink(false);
       }
-   }
-   
-   private boolean hasErrorReport()
-   {
-      return errorDocs != null && !errorDocs.isEmpty();
    }
 
    @Override
@@ -170,23 +155,5 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
    public void onCompleteRunDocValidation(DocValidationResultEvent event)
    {
       display.updateValidationResult(event.getEndTime());
-      errorDocs = event.getErrorDocs();
-      if (currentView == MainView.Documents)
-      {
-         display.showReportLink(true);
-      }
-   }
-
-   @Override
-   public void onRequestValidationReport()
-   {
-      display.initValidationReport(errorDocs);
-      validationService.executeValidationReport(errorDocs);
-   }
-  
-   @Override
-   public void onCompleteRunDocReportValidation(DocValidationReportResultEvent event)
-   {
-      display.updateDocValidationReport(event.getDocumentId(), event.getLocaleId(), event.getResult(), event.getEndTime());
    }
 }

@@ -1,15 +1,9 @@
 package org.zanata.webtrans.client.view;
 
 import java.util.Date;
-import java.util.List;
-import java.util.Set;
 
-import org.zanata.common.LocaleId;
 import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.client.ui.DocValidationReportDisplay;
 import org.zanata.webtrans.client.util.DateUtil;
-import org.zanata.webtrans.shared.model.DocumentId;
-import org.zanata.webtrans.shared.model.TransUnitValidationResult;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -44,26 +38,21 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    PushButton runValidation;
 
    @UiField
-   InlineLabel reportLink;
+   InlineLabel lastValidationRun;
 
    private Listener listener;
 
    private final WebTransMessages messages;
    
-   private final DocValidationReportDisplay docValidationReport;
-
 
    @Inject
-   public ValidationOptionsView(WebTransMessages messages, DocValidationReportDisplay docValidationReport)
+   public ValidationOptionsView(WebTransMessages messages)
    {
       initWidget(uiBinder.createAndBindUi(this));
       this.messages = messages;
-      this.docValidationReport = docValidationReport;
 
       validationOptionsHeader.setText(messages.validationOptions());
       runValidation.setText(messages.runValidation());
-      
-      reportLink.setText(messages.validationReportLink());
    }
 
    @Override
@@ -121,13 +110,6 @@ public class ValidationOptionsView extends Composite implements ValidationOption
 
    }
    
-   @UiHandler("reportLink")
-   public void onReportLinkClicked(ClickEvent event)
-   {
-      listener.onRequestValidationReport();
-
-   }
-
    @Override
    public void setListener(Listener listener)
    {
@@ -140,32 +122,12 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    {
       if (endTime != null)
       {
-         reportLink.setTitle(messages.lastValidationRunTooltip(DateUtil.formatLongDateTime(endTime)));
-         reportLink.setVisible(true);
+         lastValidationRun.setText(messages.lastValidationRun(DateUtil.formatLongDateTime(endTime)));
       }
       else
       {
-         reportLink.setTitle("");
+         lastValidationRun.setText(messages.lastValidationRun("none"));
       }
    }
 
-   @Override
-   public void showReportLink(boolean visible)
-   {
-      reportLink.setVisible(visible);
-      
-   }
-
-   @Override
-   public void updateDocValidationReport(DocumentId documentId, LocaleId localeId, List<TransUnitValidationResult> result, Date endTime)
-   {
-      docValidationReport.updateRow(documentId, localeId, result, endTime);
-   }
-
-   @Override
-   public void initValidationReport(List<DocumentId> errorDocs)
-   {
-      docValidationReport.init(errorDocs);
-      docValidationReport.center();
-   }
 }

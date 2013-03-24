@@ -34,8 +34,6 @@ import org.zanata.service.ValidationFactoryProvider;
 import org.zanata.service.ValidationService;
 import org.zanata.webtrans.server.rpc.TransUnitTransformer;
 import org.zanata.webtrans.shared.model.DocumentId;
-import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.model.TransUnitValidationResult;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
@@ -151,54 +149,6 @@ public class ValidationServiceImpl implements ValidationService
          }
       }
       return validationList;
-   }
-
-   @Override
-   public List<TransUnitValidationResult> runValidationsFullReport(DocumentId documentId, List<ValidationId> validationIds, LocaleId localeId)
-   {
-      List<HTextFlow> textFlows = textFlowDAO.getAllTextFlowsByDocumentId(documentId);
-      
-      log.info("Start full doc validation - {0}", documentId);
-      Stopwatch stopwatch = new Stopwatch().start();
-      List<TransUnitValidationResult> result = new ArrayList<TransUnitValidationResult>();
-      List<ValidationAction> validationActions = getValidationFactory().getValidationActions(validationIds);
-
-      if (textFlows != null && !textFlows.isEmpty())
-      {
-         for (HTextFlow textFlow : textFlows)
-         {
-            HTextFlowTarget target = textFlowTargetDAO.getTextFlowTarget(textFlow, localeId);
-            if (target != null)
-            {
-               TransUnitValidationResult validationResult = null;
-
-               for (ValidationAction validationAction : validationActions)
-               {
-                  List<String> errorList = validationAction.validate(textFlow.getContents().get(0), target.getContents().get(0));
-
-                  if (!errorList.isEmpty())
-                  {
-                     if (validationResult == null)
-                     {
-                        TransUnit tu = transUnitTransformer.transform(textFlow, target);
-                        validationResult = new TransUnitValidationResult(tu, errorList);
-                     }
-                     else
-                     {
-                        validationResult.getErrorMessages().addAll(errorList);
-                     }
-                  }
-               }
-
-               if (validationResult != null)
-               {
-                  result.add(validationResult);
-               }
-            }
-         }
-      }
-      log.info("Finished full doc validation in " + stopwatch);
-      return result;
    }
 
    @Override

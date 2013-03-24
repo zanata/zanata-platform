@@ -21,13 +21,11 @@
 package org.zanata.webtrans.client.service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.zanata.webtrans.client.events.DocValidationReportResultEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
@@ -36,17 +34,12 @@ import org.zanata.webtrans.client.events.RunValidationEventHandler;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
-import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.HasUpdateValidationWarning;
-import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
-import org.zanata.webtrans.shared.rpc.RunDocValidationReportAction;
-import org.zanata.webtrans.shared.rpc.RunDocValidationReportResult;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -64,15 +57,13 @@ public class ValidationService implements RunValidationEventHandler
    private Map<ValidationId, ValidationAction> validationMap;
    private final ValidationFactory validationFactory;
    private final UserConfigHolder configHolder;
-   private final CachingDispatchAsync dispatcher;
 
    @Inject
-   public ValidationService(final CachingDispatchAsync dispatcher, final EventBus eventBus, final TableEditorMessages messages, final ValidationMessages validationMessages, final UserConfigHolder configHolder)
+   public ValidationService(final EventBus eventBus, final TableEditorMessages messages, final ValidationMessages validationMessages, final UserConfigHolder configHolder)
    {
       this.eventBus = eventBus;
       this.messages = messages;
       this.configHolder = configHolder;
-      this.dispatcher = dispatcher;
       
       validationFactory = new ValidationFactory(validationMessages);
 
@@ -173,26 +164,5 @@ public class ValidationService implements RunValidationEventHandler
          }
       }
       configHolder.setEnabledValidationIds(enabledValidations);
-   }
-
-   public void executeValidationReport(List<DocumentId> errorDocs)
-   {
-      for (final DocumentId documentId : errorDocs)
-      {
-         dispatcher.execute(new RunDocValidationReportAction(configHolder.getState().getEnabledValidationIds(), documentId), new AsyncCallback<RunDocValidationReportResult>()
-         {
-            @Override
-            public void onFailure(Throwable caught)
-            {
-               eventBus.fireEvent(new NotificationEvent(Severity.Error, "Error generating report for document " + documentId));
-            }
-
-            @Override
-            public void onSuccess(RunDocValidationReportResult result)
-            {
-               eventBus.fireEvent(new DocValidationReportResultEvent(documentId, new Date(), result.getResult(), result.getLocaleId()));
-            }
-         });
-      }
    }
 }

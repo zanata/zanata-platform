@@ -24,7 +24,6 @@ import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
-import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.HasUpdateValidationWarning;
 import org.zanata.webtrans.server.locale.Gwti18nReader;
 import org.zanata.webtrans.shared.model.ValidationAction;
@@ -52,9 +51,6 @@ public class ValidationServiceTest
    private HasUpdateValidationWarning validationMessagePanel;
    
    @Mock
-   private CachingDispatchAsync dispatcher;
-   
-   @Mock
    private UserConfigHolder configHolder;
 
    @BeforeMethod
@@ -64,7 +60,7 @@ public class ValidationServiceTest
 
       validationMessages = Gwti18nReader.create(ValidationMessages.class);
 
-      service = new ValidationService(dispatcher, eventBus, messages, validationMessages, configHolder);
+      service = new ValidationService(eventBus, messages, validationMessages, configHolder);
       ValidationFactory validationFactory = new ValidationFactory(validationMessages);
 
       Collection<ValidationAction> validationList = validationFactory.getAllValidationActions().values();
