@@ -16,16 +16,16 @@ public class TransUnitCountGraph extends TransUnitCountBar
    }
 
 
-   public TransUnitCountGraph(WebTransMessages messages)
+   public TransUnitCountGraph(WebTransMessages messages, boolean animate)
    {
-      super(messages, false);
+      super(messages, animate);
       labelFormat = LabelFormat.PERCENT_COMPLETE;
       initWidget(uiBinder.createAndBindUi(this));
    }
 
    public void onMouseOver(Element target)
    {
-      tooltipPanel.showRelativeTo(target);
+      tooltipPanel.showRelativeTo(this);
    }
 
    public void onMouseOut()

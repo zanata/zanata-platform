@@ -282,6 +282,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       }
       Log.info("Time to create DocumentNodes: " + String.valueOf(System.currentTimeMillis() - start) + "ms");
       dataProvider.refresh();
+
+      display.buildDocumentTable(sortedList);
    }
 
    /**

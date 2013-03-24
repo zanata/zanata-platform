@@ -54,7 +54,7 @@ public class StatisticColumn extends Column<DocumentNode, TransUnitCountGraph> i
       TransUnitCountGraph graph;
       if (!statsWidgets.containsKey(id))
       {
-         graph = new TransUnitCountGraph(messages);
+         graph = new TransUnitCountGraph(messages, false);
          graph.setStats(docNode.getDocInfo().getStats(), true);
          statsWidgets.put(id, graph);
       }

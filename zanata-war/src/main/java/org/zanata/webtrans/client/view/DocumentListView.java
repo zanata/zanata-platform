@@ -20,10 +20,13 @@
  */
 package org.zanata.webtrans.client.view;
 
+import java.util.ArrayList;
+
 import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.DocumentListTable;
+import org.zanata.webtrans.client.ui.DocumentListTable2;
 import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.client.ui.DownloadFilesConfirmationBox;
 import org.zanata.webtrans.client.ui.FileUploadDialog;
@@ -82,6 +85,8 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    DocumentListPager pager;
 
    private DocumentListTable documentListTable;
+
+   private DocumentListTable2 documentListTable2;
 
    private final DownloadFilesConfirmationBox confirmationBox;
    private final FileUploadDialog fileUploadDialog;
@@ -232,6 +237,9 @@ public class DocumentListView extends Composite implements DocumentListDisplay
 
       documentListContainer.clear();
       documentListContainer.add(documentListTable);
+
+      documentListTable2 = new DocumentListTable2(userworkspaceContext, listener, messages);
+      documentListContainer.add(documentListTable2);
    }
 
    @Override
@@ -403,5 +411,11 @@ public class DocumentListView extends Composite implements DocumentListDisplay
       {
          loadingPanel.hide();
       }
+   }
+
+   @Override
+   public void buildDocumentTable(ArrayList<DocumentInfo> sortedList)
+   {
+      documentListTable2.buildTable(sortedList);
    }
 }

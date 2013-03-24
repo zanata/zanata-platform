@@ -334,6 +334,11 @@ td.ApprovedStateDecoration div div div
 	font-size: 16px;
 }
 
+.DocumentListTable tr:hover
+{
+	color:#eee;
+}
+
 
 .DocumentListTable th {
 	padding: 15px 8px 15px 8px;
@@ -432,11 +437,7 @@ td.ApprovedStateDecoration div div div
 	text-align:center;
 }
 
-
-.DocumentListTable td.downloadCol { 
-}
-
-.DocumentListTable td.uploadCol { 
+.DocumentListTable td.actionCol { 
 	text-align:center;
 }
 

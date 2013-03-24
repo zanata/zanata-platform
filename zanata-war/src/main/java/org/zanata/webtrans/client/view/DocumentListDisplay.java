@@ -20,6 +20,8 @@
  */
 package org.zanata.webtrans.client.view;
 
+import java.util.ArrayList;
+
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 import org.zanata.webtrans.client.ui.DocumentNode;
@@ -114,4 +116,6 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
    void setEnableDownloadZip(boolean enabled);
 
    void showLoading(boolean showLoading);
+
+   void buildDocumentTable(ArrayList<DocumentInfo> sortedList);
 }
