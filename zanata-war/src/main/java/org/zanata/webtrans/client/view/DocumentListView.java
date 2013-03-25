@@ -111,7 +111,7 @@ public class DocumentListView extends Composite implements DocumentListDisplay
       this.loadingPanel = loadingPanel;
 
       dataProvider = new ListDataProvider<DocumentNode>();
-      confirmationBox = new DownloadFilesConfirmationBox(false, resources);
+      confirmationBox = new DownloadFilesConfirmationBox(false, messages, resources);
       fileUploadDialog = new FileUploadDialog(resources);
       pager = new DocumentListPager(TextLocation.CENTER, false, true);
       searchField = new SearchField(this);
