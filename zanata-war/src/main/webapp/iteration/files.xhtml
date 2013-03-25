@@ -347,8 +347,8 @@
 
                 <s:link styleClass="action_link"
                         rendered="#{projectIterationFilesAction.poProject}"
-                        value="#{messages['jsf.ConfigFileDefault']}"
-                        title="#{messages['jsf.GenerateProjectConfig']}"
+                        value="#{messages['jsf.ConfigFileForOfflineTranslation']}"
+                        title="#{messages['jsf.GenerateProjectConfigSingleLocale']}"
                         action="#{configurationAction.getData(projectIterationFilesAction.locale)}">
                     <f:param name="projectSlug" value="#{projectIterationFilesAction.projectSlug}" />
                     <f:param name="iterationSlug" value="#{projectIterationFilesAction.iterationSlug}" />
