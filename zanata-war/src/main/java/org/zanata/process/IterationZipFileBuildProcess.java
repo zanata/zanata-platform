@@ -33,7 +33,6 @@ import org.zanata.adapter.po.PoWriter2;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
-import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
@@ -62,8 +61,6 @@ public class IterationZipFileBuildProcess extends RunnableProcess<IterationZipFi
 
    private TextFlowTargetDAO textFlowTargetDAO;
 
-   private ProjectIterationDAO projectIterationDAO;
-
    private FileSystemService fileSystemServiceImpl;
 
    private ConfigurationService configurationServiceImpl;
@@ -75,7 +72,6 @@ public class IterationZipFileBuildProcess extends RunnableProcess<IterationZipFi
       localeDAO = (LocaleDAO)Component.getInstance(LocaleDAO.class);
       resourceUtils = (ResourceUtils)Component.getInstance(ResourceUtils.class);
       textFlowTargetDAO = (TextFlowTargetDAO)Component.getInstance(TextFlowTargetDAO.class);
-      projectIterationDAO = (ProjectIterationDAO) Component.getInstance(ProjectIterationDAO.class);
       fileSystemServiceImpl = (FileSystemService) Component.getInstance(FileSystemServiceImpl.class);
       configurationServiceImpl = (ConfigurationService)Component.getInstance(ConfigurationServiceImpl.class);
 
