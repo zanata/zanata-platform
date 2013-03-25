@@ -28,6 +28,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.security.Identity;
+import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HProjectIteration;
 import org.zanata.process.IterationZipFileBuildProcess;
@@ -49,6 +50,9 @@ import org.zanata.webtrans.shared.rpc.DownloadAllFilesResult;
 @ActionHandlerFor(DownloadAllFilesAction.class)
 public class DownloadAllFilesHandler extends AbstractActionHandler<DownloadAllFilesAction, DownloadAllFilesResult>
 {
+   @In
+   private ApplicationConfiguration applicationConfiguration;
+
    @In
    private ZanataIdentity identity;
 
@@ -80,6 +84,7 @@ public class DownloadAllFilesHandler extends AbstractActionHandler<DownloadAllFi
          processHandle.setLocaleId(action.getLocaleId());
          processHandle.setInitiatingUserName(Identity.instance().getCredentials().getUsername());
          processHandle.setOfflinePo(action.isOfflinePo());
+         processHandle.setServerPath(applicationConfiguration.getServerPath());
 
          // Fire the zip file building process and wait until it is ready to
          // return
