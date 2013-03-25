@@ -25,6 +25,8 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HRawDocument;
 import org.zanata.model.StatusCount;
+import org.zanata.webtrans.shared.filter.SearchFilter;
+import org.zanata.webtrans.shared.filter.SortBy;
 
 @Name("documentDAO")
 @AutoCreate
@@ -96,6 +98,22 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       return totalCount.intValue();
    }
 
+   public int getTotalActiveDocument(final String projectSlug, final String iterationSlug)
+   {
+      Query q = getSession().createQuery("select count(*) from HDocument d " +
+            "where d.projectIteration.slug = :iterationSlug " +
+            "and d.projectIteration.project.slug = :projectSlug " +
+            "and d.obsolete = false");
+      
+      
+      q.setCacheable(true);
+      q.setComment("DocumentDAO.getTotalActiveDocument");
+      Long totalCount = (Long) q.uniqueResult();
+      if (totalCount == null)
+         return 0;
+      return totalCount.intValue();
+   }
+
    public int getTotalObsoleteDocument()
    {
       Query q = getSession().createQuery("select count(*) from HDocument doc where doc.obsolete = true");
@@ -113,41 +131,30 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
    public Long getTotalCountForDocument(HDocument document)
    {
       Session session = getSession();
-      Long totalCount = (Long) session.createQuery(
-            "select count(tf) from HTextFlow tf " +
-            "where tf.document = :doc and tf.obsolete = false")
-      .setParameter("doc", document)
-      .setComment("DocumentDAO.getTotalCountForDocument")
-      .setCacheable(true).uniqueResult();
-      
+      Long totalCount = (Long) session.createQuery("select count(tf) from HTextFlow tf " + "where tf.document = :doc and tf.obsolete = false").setParameter("doc", document).setComment("DocumentDAO.getTotalCountForDocument").setCacheable(true).uniqueResult();
+
       if (totalCount == null)
       {
          totalCount = 0L;
       }
 
       return totalCount;
-      
+
    }
 
    public Long getTotalWordCountForDocument(HDocument document)
    {
       Session session = getSession();
 
-      Long totalWordCount = (Long) session.createQuery(
-            "select sum(tf.wordCount) from HTextFlow tf " +
-            "where tf.document = :doc and tf.obsolete = false")
-      .setParameter("doc", document)
-      .setCacheable(true)
-      .setComment("DocumentDAO.getTotalWordCountForDocument")
-      .uniqueResult();
-      
+      Long totalWordCount = (Long) session.createQuery("select sum(tf.wordCount) from HTextFlow tf " + "where tf.document = :doc and tf.obsolete = false").setParameter("doc", document).setCacheable(true).setComment("DocumentDAO.getTotalWordCountForDocument").uniqueResult();
+
       if (totalWordCount == null)
       {
          totalWordCount = 0L;
       }
 
       return totalWordCount;
-      
+
    }
 
    public Long getLastTranslatedTargetId(Long documentId, LocaleId localeId)
@@ -167,7 +174,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
 
       return (Long) q.uniqueResult();
    }
-   
+
    /**
     * @see ProjectIterationDAO#getStatisticsForContainer(Long, LocaleId)
     * @param docId
@@ -231,14 +238,14 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
 
    /**
     * Returns document statistics for multiple locales.
-    *
+    * 
     * @see DocumentDAO#getStatistics(long, org.zanata.common.LocaleId)
     * @param docId
     * @param localeIds If empty or null, data for all locales will be returned.
-    * @return Map of document statistics indexed by locale. Some locales may not have entries if there is
-    * no data stored for them.
+    * @return Map of document statistics indexed by locale. Some locales may not
+    *         have entries if there is no data stored for them.
     */
-   public Map<LocaleId, TranslationStats> getStatistics(long docId, LocaleId ... localeIds)
+   public Map<LocaleId, TranslationStats> getStatistics(long docId, LocaleId... localeIds)
    {
       // @formatter:off
       Session session = getSession();
@@ -365,6 +372,47 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       q.setCacheable(true);
       List<HDocument> docs = q.list();
       return docs;
+   }
+   
+   public List<HDocument> getByFilterConstraints(final String projectSlug, final String iterationSlug, List<String> docIdList, SortBy sortBy, SearchFilter searchFilter, int offset, int count)
+   {
+      return null;
+   }
+   
+   public List<HDocument> getByProjectIterationSortBy(String projectSlug, String iterationSlug, SortBy sortBy, int offset, int count)
+   {
+      Session session = getSession();
+      StringBuilder sb = new StringBuilder();
+      sb.append("from HDocument d ");
+      sb.append("where d.projectIteration.slug = :iterationSlug ");
+      sb.append("and d.projectIteration.project.slug = :projectSlug ");
+      sb.append("and d.obsolete = false ");
+      if(sortBy != null)
+      {
+         sb.append("order by :sortByField ");
+         sb.append(sortBy.isAsc() ? "ASC" : "DESC");
+      }
+      else
+      {
+         sb.append("order by d.name");
+      }
+      
+      Query q = session.createQuery(sb.toString());
+      
+      q.setParameter("iterationSlug", iterationSlug);
+      q.setParameter("projectSlug", projectSlug);
+      
+      if(sortBy != null)
+      {
+         q.setParameter("sortByField", "d." + sortBy.getFieldName());
+      }
+      
+      q.setFirstResult(offset);
+      q.setMaxResults(count);
+      q.setCacheable(true).setComment("DocumentDAO.getByProjectIterationSortBy");
+      q.setCacheable(true);
+       
+      return q.list();
    }
    
    public List<HDocument> getAllByProjectIteration(final String projectSlug, final String iterationSlug)

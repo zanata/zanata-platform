@@ -258,12 +258,12 @@ public class DocumentListTable extends CellTable<DocumentNode>
       addColumn(lastTranslatedColumn, messages.columnHeaderLastTranslated());
 
       downloadColumn.setCellStyleNames("downloadCol");
-      addColumn(downloadColumn, messages.columnHeaderDownload());
+      addColumn(downloadColumn, messages.columnHeaderAction());
 
       uploadColumn.setCellStyleNames("uploadCol");
       if (userWorkspaceContext.hasWriteAccess())
       {
-         addColumn(uploadColumn, messages.columnHeaderUpload());
+         addColumn(uploadColumn, messages.columnHeaderAction());
       }
 
       addSorting(dataProvider);

@@ -44,7 +44,6 @@ import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.UserOptionsService;
-import org.zanata.webtrans.client.service.ValidationService;
 import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.client.view.DocumentListDisplay;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -138,7 +137,7 @@ public class DocumentListPresenterTest
       documentListPresenter.onBind();
 
       verify(mockDisplay).renderTable(isA(NoSelectionModel.class));
-      verify(mockDisplay).setStatsFilter("Words");
+      verify(mockDisplay).setStatsFilter("Words", null);
       verify(mockDisplay).updatePageSize(UserConfigHolder.DEFAULT_DOC_LIST_PAGE_SIZE);
       verify(mockDisplay).setListener(documentListPresenter);
       verify(mockEventBus).addHandler(DocumentSelectionEvent.getType(), documentListPresenter);

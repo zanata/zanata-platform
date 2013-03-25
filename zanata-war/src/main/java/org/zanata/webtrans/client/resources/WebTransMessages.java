@@ -95,11 +95,8 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Last Translated")
    String columnHeaderLastTranslated();
 
-   @DefaultMessage("Download")
-   String columnHeaderDownload();
-
-   @DefaultMessage("Upload")
-   String columnHeaderUpload();
+   @DefaultMessage("Download/Upload")
+   String columnHeaderAction();
 
    @DefaultMessage("No document selected")
    String noDocumentSelected();

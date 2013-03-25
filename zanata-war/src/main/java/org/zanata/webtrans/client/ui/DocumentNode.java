@@ -20,8 +20,6 @@
  */
 package org.zanata.webtrans.client.ui;
 
-import net.customware.gwt.presenter.client.EventBus;
-
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 
@@ -29,13 +27,15 @@ public class DocumentNode
 {
    private DocumentInfo docInfo;
    private boolean isVisible = true;
+   private int row;
 
    final WebTransMessages messages;
 
-   public DocumentNode(WebTransMessages messages, DocumentInfo doc, EventBus eventBus)
+   public DocumentNode(WebTransMessages messages, DocumentInfo doc, int row)
    {
       this.messages = messages;
       this.docInfo = doc;
+      this.row = row;
    }
 
    public DocumentInfo getDocInfo()
@@ -51,5 +51,10 @@ public class DocumentNode
    public void setVisible(boolean isVisible)
    {
       this.isVisible = isVisible;
+   }
+
+   public int getRow()
+   {
+      return row;
    }
 }

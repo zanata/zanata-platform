@@ -13,10 +13,12 @@ import org.zanata.webtrans.client.gin.WebTransGinjector;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
+import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.rpc.NoOpAsyncCallback;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.auth.AuthenticationError;
 import org.zanata.webtrans.shared.auth.Identity;
+import org.zanata.webtrans.shared.filter.SortBy;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
@@ -156,17 +158,21 @@ public class Application implements EntryPoint
    {
       final AppPresenter appPresenter = injector.getAppPresenter();
       final DocumentListPresenter documentListPresenter = injector.getDocumentListPresenter();
+      final UserConfigHolder userConfig = injector.getUserConfig();
       RootPanel.get("contentDiv").add(appPresenter.getDisplay().asWidget());
       appPresenter.bind();
       Window.enableScrolling(true);
       // eager load document list
       final EventBus eventBus = injector.getEventBus();
-      injector.getDispatcher().execute(new GetDocumentList(injector.getLocation().getQueryDocuments()), new AsyncCallback<GetDocumentListResult>()
+
+      GetDocumentList action = new GetDocumentList(injector.getLocation().getQueryDocuments(), 0, userConfig.getState().getDocumentListPageSize(), SortBy.SORT_BY_PATH_ASC, null);
+
+      injector.getDispatcher().execute(action, new AsyncCallback<GetDocumentListResult>()
       {
          @Override
          public void onFailure(Throwable caught)
          {
-            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Failed to load documents"));
+            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "1Failed to load documents"));
          }
 
          @Override

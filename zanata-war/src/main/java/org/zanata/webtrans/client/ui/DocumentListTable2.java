@@ -18,17 +18,23 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+
 package org.zanata.webtrans.client.ui;
 
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.util.DateUtil;
 import org.zanata.webtrans.client.view.DocumentListDisplay;
+import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
+import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.google.common.base.Strings;
@@ -42,10 +48,14 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
-import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
 
-public class DocumentListTable2 extends FlexTable
+/**
+ * 
+ * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
+ * 
+ */
+public class DocumentListTable2 extends FlexTable implements HasStatsFilter
 {
    private static int PATH_COLUMN = 0;
    private static int DOC_COLUMN = 1;
@@ -56,7 +66,7 @@ public class DocumentListTable2 extends FlexTable
    private static int LAST_UPLOAD_COLUMN = 6;
    private static int LAST_TRANSLATED_COLUMN = 7;
    private static int ACTION_COLUMN = 8;
-   
+
    private final UserWorkspaceContext userWorkspaceContext;
    private final DocumentListDisplay.Listener listener;
    private final WebTransMessages messages;
@@ -65,42 +75,104 @@ public class DocumentListTable2 extends FlexTable
    {
       super();
       setStylePrimaryName("DocumentListTable");
+      setCellPadding(0);
+      setCellSpacing(0);
 
       this.userWorkspaceContext = userWorkspaceContext;
       this.listener = listener;
       this.messages = messages;
    }
 
-   public void buildTable(List<DocumentInfo> documentInfoList)
+   public HashMap<DocumentId, DocumentNode> buildTable(List<DocumentInfo> documentInfoList)
    {
+      buildHeader();
+      HashMap<DocumentId, DocumentNode> rowMap = buildContent(documentInfoList);
+      return rowMap;
+   }
+
+   public void clearContent()
+   {
+      while (this.getRowCount() > 1)
+      {
+         this.removeRow(this.getRowCount() - 1);
+      }
+   }
+
+   private void buildHeader()
+   {
+      InlineLabel pathHeader = new InlineLabel(messages.columnHeaderPath());
+      InlineLabel docHeader = new InlineLabel(messages.columnHeaderDocument());
+      InlineLabel statsHeader = new InlineLabel(messages.columnHeaderStatistic());
+      InlineLabel translatedHeader = new InlineLabel(messages.columnHeaderTranslated());
+      InlineLabel untranslatedHeader = new InlineLabel(messages.columnHeaderUntranslated());
+      InlineLabel remainingHeader = new InlineLabel(messages.columnHeaderRemaining());
+      InlineLabel lastUploadHeader = new InlineLabel(messages.columnHeaderLastUpload());
+      InlineLabel lastTranslatedHeader = new InlineLabel(messages.columnHeaderLastTranslated());
+      InlineLabel actionHeader = new InlineLabel(messages.columnHeaderAction());
+
+      this.setWidget(0, PATH_COLUMN, pathHeader);
+      this.setWidget(0, DOC_COLUMN, docHeader);
+      this.setWidget(0, STATS_COLUMN, statsHeader);
+      this.setWidget(0, TRANSLATED_COLUMN, translatedHeader);
+      this.setWidget(0, UNTRANSLATED_COLUMN, untranslatedHeader);
+      this.setWidget(0, REMAINING_COLUMN, remainingHeader);
+      this.setWidget(0, LAST_UPLOAD_COLUMN, lastUploadHeader);
+      this.setWidget(0, LAST_TRANSLATED_COLUMN, lastTranslatedHeader);
+      this.setWidget(0, ACTION_COLUMN, actionHeader);
+
+      this.getCellFormatter().setStyleName(0, PATH_COLUMN, "docListHeader");
+      this.getCellFormatter().setStyleName(0, DOC_COLUMN, "docListHeader");
+      this.getCellFormatter().setStyleName(0, STATS_COLUMN, "docListHeader");
+      this.getCellFormatter().setStyleName(0, TRANSLATED_COLUMN, "docListHeader");
+      this.getCellFormatter().setStyleName(0, UNTRANSLATED_COLUMN, "docListHeader");
+      this.getCellFormatter().setStyleName(0, REMAINING_COLUMN, "docListHeader");
+      this.getCellFormatter().setStyleName(0, LAST_UPLOAD_COLUMN, "docListHeader");
+      this.getCellFormatter().setStyleName(0, LAST_TRANSLATED_COLUMN, "docListHeader");
+      this.getCellFormatter().setStyleName(0, ACTION_COLUMN, "docListHeader");
+   }
+
+   private HashMap<DocumentId, DocumentNode> buildContent(List<DocumentInfo> documentInfoList)
+   {
+      clearContent();
+      HashMap<DocumentId, DocumentNode> rowMap = new HashMap<DocumentId, DocumentNode>();
       for (int i = 0; i < documentInfoList.size(); i++)
       {
-         DocumentInfo info = documentInfoList.get(i);
+         DocumentNode node = new DocumentNode(messages, documentInfoList.get(i), i + 1);
 
-         this.setWidget(i + 1, PATH_COLUMN, new InlineLabel(info.getPath()));
-         this.setWidget(i + 1, DOC_COLUMN, getDocWidget(info));
+         this.setWidget(i + 1, PATH_COLUMN, getPathWidget(node.getDocInfo()));
+         this.setWidget(i + 1, DOC_COLUMN, getDocWidget(node.getDocInfo()));
 
-         this.setWidget(i + 1, STATS_COLUMN, getStatsWidget(info));
-         this.setWidget(i + 1, TRANSLATED_COLUMN, new InlineLabel(messages.statusBarLabelHours(info.getStats().getWordCount().getApproved())));
-         this.setWidget(i + 1, UNTRANSLATED_COLUMN, new InlineLabel(messages.statusBarLabelHours(info.getStats().getWordCount().getUntranslated())));
-         this.setWidget(i + 1, REMAINING_COLUMN, new InlineLabel(messages.statusBarLabelHours(info.getStats().getRemainingHours())));
+         this.setWidget(i + 1, STATS_COLUMN, getStatsWidget(node.getDocInfo()));
+         this.setWidget(i + 1, TRANSLATED_COLUMN, new InlineLabel(String.valueOf(node.getDocInfo().getStats().getWordCount().getApproved())));
+         this.setWidget(i + 1, UNTRANSLATED_COLUMN, new InlineLabel(String.valueOf(node.getDocInfo().getStats().getWordCount().getUntranslated())));
+         this.setWidget(i + 1, REMAINING_COLUMN, new InlineLabel(messages.statusBarLabelHours(node.getDocInfo().getStats().getRemainingHours())));
 
-         this.setWidget(i + 1, LAST_UPLOAD_COLUMN, new InlineLabel(getAuditInfo(info.getLastModifiedBy(), info.getLastChanged())));
-         this.setWidget(i + 1, LAST_TRANSLATED_COLUMN, new InlineLabel(getAuditInfo(info.getLastTranslatedBy(), info.getLastTranslatedDate())));
+         this.setWidget(i + 1, LAST_UPLOAD_COLUMN, new InlineLabel(getAuditInfo(node.getDocInfo().getLastModifiedBy(), node.getDocInfo().getLastChanged())));
+         this.setWidget(i + 1, LAST_TRANSLATED_COLUMN, new InlineLabel(getAuditInfo(node.getDocInfo().getLastTranslatedBy(), node.getDocInfo().getLastTranslatedDate())));
 
-         this.setWidget(i + 1, ACTION_COLUMN, getActionWidget(info));
+         this.setWidget(i + 1, ACTION_COLUMN, getActionWidget(node.getDocInfo()));
+
+         rowMap.put(node.getDocInfo().getId(), node);
+
+         this.getCellFormatter().setStyleName(i + 1, PATH_COLUMN, "pathCol");
+         this.getCellFormatter().setStyleName(i + 1, DOC_COLUMN, "documentCol");
+         this.getCellFormatter().setStyleName(i + 1, STATS_COLUMN, "statisticCol");
+         this.getCellFormatter().setStyleName(i + 1, TRANSLATED_COLUMN, "translatedCol");
+         this.getCellFormatter().setStyleName(i + 1, UNTRANSLATED_COLUMN, "untranslatedCol");
+         this.getCellFormatter().setStyleName(i + 1, REMAINING_COLUMN, "remainingCol");
+         this.getCellFormatter().setStyleName(i + 1, LAST_UPLOAD_COLUMN, "auditCol");
+         this.getCellFormatter().setStyleName(i + 1, LAST_TRANSLATED_COLUMN, "auditCol");
+         this.getCellFormatter().setStyleName(i + 1, ACTION_COLUMN, "actionCol");
       }
-      
-      this.getColumnFormatter().addStyleName(PATH_COLUMN, "pathCol");
-      this.getColumnFormatter().addStyleName(DOC_COLUMN, "docCol");
-      this.getColumnFormatter().addStyleName(STATS_COLUMN, "statisticCol");
-      this.getColumnFormatter().addStyleName(TRANSLATED_COLUMN, "translatedCol");
-      this.getColumnFormatter().addStyleName(UNTRANSLATED_COLUMN, "untranslatedCol");
-      this.getColumnFormatter().addStyleName(REMAINING_COLUMN, "remainingCol");
-      this.getColumnFormatter().addStyleName(LAST_UPLOAD_COLUMN, "auditCol");
-      this.getColumnFormatter().addStyleName(LAST_TRANSLATED_COLUMN, "auditCol");
-      this.getColumnFormatter().addStyleName(ACTION_COLUMN, "actionCol");
 
+      return rowMap;
+   }
+
+   private Widget getPathWidget(final DocumentInfo docInfo)
+   {
+      InlineLabel pathLabel = new InlineLabel(docInfo.getPath());
+
+      return pathLabel;
    }
 
    private Widget getDocWidget(final DocumentInfo docInfo)
@@ -134,7 +206,7 @@ public class DocumentListTable2 extends FlexTable
          @Override
          public void onMouseOver(MouseOverEvent event)
          {
-            graph.onMouseOver(getElement().getFirstChildElement());
+            graph.onMouseOver();
          }
       });
       return graph;
@@ -151,8 +223,9 @@ public class DocumentListTable2 extends FlexTable
          anchor.setTarget("_blank");
          panel.add(anchor);
       }
-      PushButton uploadButton = new PushButton("Upload");
-      uploadButton.addClickHandler(new ClickHandler()
+      InlineLabel upload = new InlineLabel();
+      upload.setStyleName("icon-upload uploadButton");
+      upload.addClickHandler(new ClickHandler()
       {
          @Override
          public void onClick(ClickEvent event)
@@ -160,11 +233,10 @@ public class DocumentListTable2 extends FlexTable
             listener.showUploadDialog(docInfo);
          }
       });
-      panel.add(uploadButton);
+      panel.add(upload);
 
       return panel;
    }
-
 
    private String getAuditInfo(String by, Date date)
    {
@@ -180,5 +252,71 @@ public class DocumentListTable2 extends FlexTable
          sb.append(by);
       }
       return sb.toString();
+   }
+
+   public void updateRowHasError(int row, boolean hasError)
+   {
+      if (row > 0)
+      {
+         if (hasError)
+         {
+            this.getCellFormatter().setStyleName(row, PATH_COLUMN, "pathCol hasError");
+            this.getCellFormatter().setStyleName(row, DOC_COLUMN, "documentCol hasError");
+         }
+         else
+         {
+            this.getCellFormatter().setStyleName(row, PATH_COLUMN, "pathCol");
+            this.getCellFormatter().setStyleName(row, DOC_COLUMN, "documentCol");
+         }
+      }
+
+   }
+
+   public void updateLastTranslatedInfo(int row, TransUnit transUnit)
+   {
+      if (row > 0)
+      {
+         InlineLabel label = (InlineLabel) this.getWidget(row, LAST_TRANSLATED_COLUMN);
+         label.setText(getAuditInfo(transUnit.getLastModifiedBy(), transUnit.getLastModifiedTime()));
+      }
+   }
+
+   public void updateStats(int row, TranslationStats stats)
+   {
+      if (row > 0)
+      {
+         TransUnitCountGraph graph = (TransUnitCountGraph) this.getWidget(row, STATS_COLUMN);
+         graph.setStats(stats, true);
+      }
+      
+   }
+
+   public void setStatsFilter(String option, Collection<DocumentNode> nodes)
+   {
+      for (DocumentNode node : nodes)
+      {
+         TransUnitCountGraph graph = (TransUnitCountGraph) this.getWidget(node.getRow(), STATS_COLUMN);
+         InlineLabel translated = (InlineLabel) this.getWidget(node.getRow(), TRANSLATED_COLUMN);
+         InlineLabel untranslated = (InlineLabel) this.getWidget(node.getRow(), UNTRANSLATED_COLUMN);
+
+         if(option.equals(STATS_OPTION_MESSAGE))
+         {
+            graph.setStatOption(false);
+            translated.setText(String.valueOf(node.getDocInfo().getStats().getUnitCount().getApproved()));
+            untranslated.setText(String.valueOf(node.getDocInfo().getStats().getUnitCount().getUntranslated()));
+         }
+         else
+         {
+            graph.setStatOption(true);
+            translated.setText(String.valueOf(node.getDocInfo().getStats().getWordCount().getApproved()));
+            untranslated.setText(String.valueOf(node.getDocInfo().getStats().getWordCount().getUntranslated()));
+         }
+      }
+   }
+
+   @Override
+   public void setStatsFilter(String option)
+   {
+
    }
 }

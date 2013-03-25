@@ -34,6 +34,7 @@ import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.Application;
+import org.zanata.webtrans.client.events.DocValidationResultEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
@@ -42,7 +43,6 @@ import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.RunDocValidationEvent;
 import org.zanata.webtrans.client.events.RunDocValidationEventHandler;
-import org.zanata.webtrans.client.events.DocValidationResultEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
@@ -238,7 +238,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    @Override
    public void setStatsFilter(String option)
    {
-      display.setStatsFilter(option);
+      display.setStatsFilter(option, nodes.values());
    }
 
    public void updateFilterAndRun(String docFilterText, boolean docFilterExact, boolean docFilterCaseSensitive)
@@ -267,12 +267,13 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    {
       dataProvider.getList().clear();
       nodes = new HashMap<DocumentId, DocumentNode>(sortedList.size());
+
       idsByPath = new HashMap<String, DocumentId>(sortedList.size());
       long start = System.currentTimeMillis();
       for (DocumentInfo doc : sortedList)
       {
          idsByPath.put(doc.getPath() + doc.getName(), doc.getId());
-         DocumentNode node = new DocumentNode(messages, doc, eventBus);
+         DocumentNode node = new DocumentNode(messages, doc, 0);
          node.setVisible(filter.accept(doc));
          if (node.isVisible())
          {
@@ -283,7 +284,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       Log.info("Time to create DocumentNodes: " + String.valueOf(System.currentTimeMillis() - start) + "ms");
       dataProvider.refresh();
 
-      display.buildDocumentTable(sortedList);
+      nodes = display.buildDocumentTable(sortedList);
    }
 
    /**
@@ -374,7 +375,15 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       // update stats for containing document
       DocumentInfo updatedDoc = getDocumentInfo(updateInfo.getDocumentId());
       adjustStats(updatedDoc.getStats(), updateInfo);
+
+      DocumentNode node = nodes.get(updatedDoc.getId());
+      if (node != null)
+      {
+         display.updateStats(node.getRow(), updatedDoc.getStats());
+      }
+
       updateLastTranslatedInfo(updatedDoc, event.getUpdateInfo().getTransUnit());
+
       eventBus.fireEvent(new DocumentStatsUpdatedEvent(updatedDoc.getId(), updatedDoc.getStats()));
 
       // refresh document list table
@@ -389,6 +398,12 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    {
       doc.setLastTranslatedBy(updatedTransUnit.getLastModifiedBy());
       doc.setLastTranslatedDate(updatedTransUnit.getLastModifiedTime());
+
+      DocumentNode node = nodes.get(doc.getId());
+      if (node != null)
+      {
+         display.updateLastTranslatedInfo(node.getRow(), updatedTransUnit);
+      }
    }
 
    /**
@@ -570,14 +585,17 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
                   for(Map.Entry<DocumentId, Boolean> entry: resultMap.entrySet())
                   {
                      Boolean hasError = entry.getValue();
-                     DocumentInfo docInfo = getDocumentInfo(entry.getKey());
+                     DocumentNode node = nodes.get(entry.getKey());
 
-                     if (hasError != null && docInfo != null)
+                     if (hasError != null && node != null)
                      {
-                        docInfo.setHasValidationError(hasError.booleanValue());
+                        display.updateRowHasError(node.getRow(), hasError.booleanValue());
+
+                        node.getDocInfo().setHasValidationError(hasError.booleanValue());
+
                         if(hasError.booleanValue())
                         {
-                           hasErrorDocs.add(docInfo.getId());
+                           hasErrorDocs.add(node.getDocInfo().getId());
                         }
                      }
                   }

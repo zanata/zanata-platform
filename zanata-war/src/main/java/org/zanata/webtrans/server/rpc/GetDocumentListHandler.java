@@ -1,9 +1,9 @@
 package org.zanata.webtrans.server.rpc;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -39,7 +39,7 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
 
    @In
    private DocumentDAO documentDAO;
-   
+
    @In
    private TranslationStateCache translationStateCacheImpl;
 
@@ -53,54 +53,73 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
 
       LocaleId localeId = action.getWorkspaceId().getLocaleId();
       ProjectIterationId iterationId = action.getWorkspaceId().getProjectIterationId();
+
       ArrayList<DocumentInfo> docs = new ArrayList<DocumentInfo>();
-      
-      Collection<HDocument> hDocs = documentDAO.getAllByProjectIteration(iterationId.getProjectSlug(), iterationId.getIterationSlug());
+
+      List<HDocument> hDocs = getDocumentList(action);
+      int totalDocumentsCount = documentDAO.getTotalActiveDocument(iterationId.getProjectSlug(), iterationId.getIterationSlug());
+
       for (HDocument hDoc : hDocs)
       {
-         if (action.getFilters() == null || action.getFilters().isEmpty() || action.getFilters().contains(hDoc.getPath() + hDoc.getName()))
+         DocumentId docId = new DocumentId(hDoc.getId(), hDoc.getDocId());
+         TranslationStats stats = documentDAO.getStatistics(hDoc.getId(), localeId);
+         HTextFlowTarget result = translationStateCacheImpl.getDocLastModifiedTextFlowTarget(hDoc.getId(), localeId);
+
+         Date lastTranslatedDate = null;
+         String lastTranslatedBy = "";
+
+         if (result != null)
          {
-            DocumentId docId = new DocumentId(hDoc.getId(), hDoc.getDocId());
-            TranslationStats stats = documentDAO.getStatistics(hDoc.getId(), localeId);
-            HTextFlowTarget result = translationStateCacheImpl.getDocLastModifiedTextFlowTarget(hDoc.getId(), localeId);
-            
-            Date lastTranslatedDate = null;
-            String lastTranslatedBy = "";
-
-            if(result != null)
+            lastTranslatedDate = result.getLastChanged();
+            if (result.getLastModifiedBy() != null)
             {
-               lastTranslatedDate = result.getLastChanged();
-               if (result.getLastModifiedBy() != null)
-               {
-                  lastTranslatedBy = result.getLastModifiedBy().getAccount().getUsername();
-               }
+               lastTranslatedBy = result.getLastModifiedBy().getAccount().getUsername();
             }
-
-            HPerson person = hDoc.getLastModifiedBy();
-            String lastModifiedBy = "";
-            if (person != null)
-            {
-               lastModifiedBy = person.getAccount().getUsername();
-            }
-
-            Map<String, String> downloadExtensions = new HashMap<String, String>();
-            downloadExtensions.put(".po", "po?docId=" + hDoc.getDocId());
-            if (translationFileServiceImpl.hasPersistedDocument(iterationId.getProjectSlug(), iterationId.getIterationSlug(), hDoc.getPath(), hDoc.getName()))
-            {
-               String extension = "." + translationFileServiceImpl.getFileExtension(iterationId.getProjectSlug(), iterationId.getIterationSlug(), hDoc.getPath(), hDoc.getName());
-               downloadExtensions.put(extension, "baked?docId=" + hDoc.getDocId());
-            }
-
-            DocumentInfo doc = new DocumentInfo(docId, hDoc.getName(), hDoc.getPath(), hDoc.getLocale().getLocaleId(), stats, lastModifiedBy, hDoc.getLastChanged(), downloadExtensions, lastTranslatedBy, lastTranslatedDate);
-            docs.add(doc);
          }
+
+         HPerson person = hDoc.getLastModifiedBy();
+         String lastModifiedBy = "";
+         if (person != null)
+         {
+            lastModifiedBy = person.getAccount().getUsername();
+         }
+
+         Map<String, String> downloadExtensions = new HashMap<String, String>();
+         downloadExtensions.put(".po", "po?docId=" + hDoc.getDocId());
+         if (translationFileServiceImpl.hasPersistedDocument(iterationId.getProjectSlug(), iterationId.getIterationSlug(), hDoc.getPath(), hDoc.getName()))
+         {
+            String extension = "." + translationFileServiceImpl.getFileExtension(iterationId.getProjectSlug(), iterationId.getIterationSlug(), hDoc.getPath(), hDoc.getName());
+            downloadExtensions.put(extension, "baked?docId=" + hDoc.getDocId());
+         }
+
+         DocumentInfo doc = new DocumentInfo(docId, hDoc.getName(), hDoc.getPath(), hDoc.getLocale().getLocaleId(), stats, lastModifiedBy, hDoc.getLastChanged(), downloadExtensions, lastTranslatedBy, lastTranslatedDate);
+         docs.add(doc);
       }
-      return new GetDocumentListResult(iterationId, docs);
+      return new GetDocumentListResult(iterationId, docs, totalDocumentsCount);
    }
 
    @Override
    public void rollback(GetDocumentList action, GetDocumentListResult result, ExecutionContext context) throws ActionException
    {
+   }
+
+   private List<HDocument> getDocumentList(GetDocumentList action)
+   {
+      ProjectIterationId iterationId = action.getWorkspaceId().getProjectIterationId();
+
+      if (hasConstraints(action))
+      {
+         return documentDAO.getByFilterConstraints(iterationId.getProjectSlug(), iterationId.getIterationSlug(), action.getDocIdFilters(), action.getSortBy(), action.getSearchFilter(), action.getOffset(), action.getCount());
+      }
+      else
+      {
+         return documentDAO.getByProjectIterationSortBy(iterationId.getProjectSlug(), iterationId.getIterationSlug(), action.getSortBy(), action.getOffset(), action.getCount());
+      }
+   }
+
+   private boolean hasConstraints(GetDocumentList action)
+   {
+      return (action.getDocIdFilters() != null && !action.getDocIdFilters().isEmpty()) || action.getSearchFilter() != null;
    }
 
 }

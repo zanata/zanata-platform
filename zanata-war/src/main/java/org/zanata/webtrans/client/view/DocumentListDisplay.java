@@ -21,13 +21,18 @@
 package org.zanata.webtrans.client.view;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
+import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.client.ui.InlineLink;
 import org.zanata.webtrans.client.ui.SearchFieldListener;
+import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
+import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
@@ -52,7 +57,7 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
 
    String getSelectedStatsOption();
 
-   void setStatsFilter(String option);
+   void setStatsFilter(String option, Collection<DocumentNode> nodes);
 
    void setListener(Listener documentListPresenter);
 
@@ -117,5 +122,11 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
 
    void showLoading(boolean showLoading);
 
-   void buildDocumentTable(ArrayList<DocumentInfo> sortedList);
+   HashMap<DocumentId, DocumentNode> buildDocumentTable(ArrayList<DocumentInfo> sortedList);
+
+   void updateRowHasError(int row, boolean hasError);
+
+   void updateLastTranslatedInfo(int row, TransUnit transUnit);
+
+   void updateStats(int row, TranslationStats stats);
 }

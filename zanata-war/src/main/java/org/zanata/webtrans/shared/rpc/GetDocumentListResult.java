@@ -14,15 +14,18 @@ public class GetDocumentListResult implements DispatchResult
    private ProjectIterationId projectIterationId;
    private ArrayList<DocumentInfo> documents;
 
+   private int totalDocumentsCount;
+
    @SuppressWarnings("unused")
    private GetDocumentListResult()
    {
    }
 
-   public GetDocumentListResult(ProjectIterationId projectIterationId, ArrayList<DocumentInfo> documents)
+   public GetDocumentListResult(ProjectIterationId projectIterationId, ArrayList<DocumentInfo> documents, int totalDocumentsCount)
    {
       this.projectIterationId = projectIterationId;
       this.documents = documents;
+      this.totalDocumentsCount = totalDocumentsCount;
    }
 
    public ArrayList<DocumentInfo> getDocuments()
@@ -35,4 +38,8 @@ public class GetDocumentListResult implements DispatchResult
       return projectIterationId;
    }
 
+   public int getTotalDocumentsCount()
+   {
+      return totalDocumentsCount;
+   }
 }

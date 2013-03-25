@@ -21,7 +21,10 @@
 package org.zanata.webtrans.client.view;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 
+import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
@@ -35,7 +38,9 @@ import org.zanata.webtrans.client.ui.InlineLink;
 import org.zanata.webtrans.client.ui.LoadingPanel;
 import org.zanata.webtrans.client.ui.SearchField;
 import org.zanata.webtrans.client.ui.table.DocumentListPager;
+import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
+import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 
@@ -198,7 +203,7 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    }
 
    @Override
-   public void setStatsFilter(String option)
+   public void setStatsFilter(String option, Collection<DocumentNode> nodes)
    {
       if (option.equals(HasStatsFilter.STATS_OPTION_MESSAGE))
       {
@@ -209,6 +214,7 @@ public class DocumentListView extends Composite implements DocumentListDisplay
          statsByWord.setValue(true);
       }
       documentListTable.setStatsFilter(option);
+      documentListTable2.setStatsFilter(option, nodes);
    }
 
    interface DocumentListViewUiBinder extends UiBinder<LayoutPanel, DocumentListView>
@@ -414,8 +420,27 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    }
 
    @Override
-   public void buildDocumentTable(ArrayList<DocumentInfo> sortedList)
+   public HashMap<DocumentId, DocumentNode> buildDocumentTable(ArrayList<DocumentInfo> sortedList)
    {
-      documentListTable2.buildTable(sortedList);
+      return documentListTable2.buildTable(sortedList);
+   }
+
+   @Override
+   public void updateRowHasError(int row, boolean hasError)
+   {
+      documentListTable2.updateRowHasError(row, hasError);
+   }
+
+   @Override
+   public void updateLastTranslatedInfo(int row, TransUnit transUnit)
+   {
+      documentListTable2.updateLastTranslatedInfo(row, transUnit);
+
+   }
+
+   @Override
+   public void updateStats(int row, TranslationStats stats)
+   {
+      documentListTable2.updateStats(row, stats);
    }
 }

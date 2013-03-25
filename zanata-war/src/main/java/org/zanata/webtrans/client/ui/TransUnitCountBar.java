@@ -90,16 +90,16 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
          @Override
          public void onClick(ClickEvent event)
          {
-            toogleStatOption();
+            setStatOption(!statsByWords);
          }
       });
 
       sinkEvents(Event.ONMOUSEOVER | Event.ONMOUSEOUT | Event.ONCLICK);
    }
 
-   private void toogleStatOption()
+   public void setStatOption(boolean statsByWords)
    {
-      statsByWords = !statsByWords;
+      this.statsByWords = statsByWords;
       refresh();
    }
 
@@ -246,7 +246,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
    public int getOffsetWidth()
    {
       int offsetWidth = super.getOffsetWidth();
-      return offsetWidth == 0 ? 115 : offsetWidth;
+      return offsetWidth == 0 || offsetWidth > 115 ? 115 : offsetWidth;
    }
 
    @Override

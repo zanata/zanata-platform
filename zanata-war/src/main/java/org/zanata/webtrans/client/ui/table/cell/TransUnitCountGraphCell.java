@@ -44,7 +44,7 @@ public class TransUnitCountGraphCell extends StaticWidgetCell<TransUnitCountGrap
    {
       if (event.getType().equalsIgnoreCase(BrowserEvents.MOUSEOVER))
       {
-         value.onMouseOver(parent.getFirstChildElement());
+         value.onMouseOver();
       }
       else if (event.getType().equalsIgnoreCase(BrowserEvents.MOUSEOUT))
       {
