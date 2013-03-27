@@ -42,7 +42,10 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -187,8 +190,16 @@ public class DocumentListTable extends FlexTable implements HasStatsFilter
 
          this.setWidget(i + 1, ACTION_COLUMN, getActionWidget(node.getDocInfo()));
 
-         this.getCellFormatter().setStyleName(i + 1, PATH_COLUMN, "pathCol");
-         this.getCellFormatter().setStyleName(i + 1, DOC_COLUMN, "documentCol");
+         if(node.getDocInfo().hasValidationError())
+         {
+            this.getCellFormatter().setStyleName(i + 1, PATH_COLUMN, "pathCol hasError");
+            this.getCellFormatter().setStyleName(i + 1, DOC_COLUMN, "documentCol hasError");
+         }
+         else
+         {
+            this.getCellFormatter().setStyleName(i + 1, PATH_COLUMN, "pathCol");
+            this.getCellFormatter().setStyleName(i + 1, DOC_COLUMN, "documentCol");
+         }
          this.getCellFormatter().setStyleName(i + 1, STATS_COLUMN, "statisticCol");
          this.getCellFormatter().setStyleName(i + 1, TRANSLATED_COLUMN, "translatedCol");
          this.getCellFormatter().setStyleName(i + 1, UNTRANSLATED_COLUMN, "untranslatedCol");
@@ -211,6 +222,8 @@ public class DocumentListTable extends FlexTable implements HasStatsFilter
 
    private Widget getDocWidget(final DocumentInfo docInfo)
    {
+      FlowPanel panel = new FlowPanel();
+      
       InlineLabel docLabel = new InlineLabel(docInfo.getName());
       docLabel.setTitle(docInfo.getName());
       docLabel.addClickHandler(new ClickHandler()
@@ -221,7 +234,13 @@ public class DocumentListTable extends FlexTable implements HasStatsFilter
             listener.fireDocumentSelection(docInfo);
          }
       });
-      return docLabel;
+      panel.add(docLabel);
+      
+      Image loading = new Image(resources.spinner());
+      loading.setVisible(false);
+      panel.add(loading);
+      
+      return panel;
    }
 
    private Widget getStatsWidget(DocumentInfo docInfo)
@@ -298,7 +317,7 @@ public class DocumentListTable extends FlexTable implements HasStatsFilter
    {
       if (row > 0)
       {
-         InlineLabel label = (InlineLabel) this.getWidget(row, LAST_TRANSLATED_COLUMN);
+         HasText label = (HasText) this.getWidget(row, LAST_TRANSLATED_COLUMN);
          label.setText(getAuditInfo(transUnit.getLastModifiedBy(), transUnit.getLastModifiedTime()));
       }
    }
@@ -318,8 +337,8 @@ public class DocumentListTable extends FlexTable implements HasStatsFilter
       for(int i = 0; i < this.getRowCount() - 1; i++)
       {
          TransUnitCountBar graph = (TransUnitCountBar) this.getWidget(i + 1, STATS_COLUMN);
-         InlineLabel translated = (InlineLabel) this.getWidget(i + 1, TRANSLATED_COLUMN);
-         InlineLabel untranslated = (InlineLabel) this.getWidget(i + 1, UNTRANSLATED_COLUMN);
+         HasText translated = (HasText) this.getWidget(i + 1, TRANSLATED_COLUMN);
+         HasText untranslated = (HasText) this.getWidget(i + 1, UNTRANSLATED_COLUMN);
 
          if (option.equals(STATS_OPTION_MESSAGE))
          {
@@ -333,6 +352,15 @@ public class DocumentListTable extends FlexTable implements HasStatsFilter
             translated.setText(String.valueOf(documentNode.getDocInfo().getStats().getWordCount().getApproved()));
             untranslated.setText(String.valueOf(documentNode.getDocInfo().getStats().getWordCount().getUntranslated()));
          }
+      }
+   }
+
+   public void showRowLoading(int row, boolean showLoading)
+   {
+      if (row > 0)
+      {
+         FlowPanel panel = (FlowPanel) this.getWidget(row, DOC_COLUMN);
+         panel.getWidget(1).setVisible(showLoading);
       }
    }
 }

@@ -42,8 +42,6 @@ import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
-import org.zanata.webtrans.client.events.PageChangeEvent;
-import org.zanata.webtrans.client.events.PageChangeEventHandler;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.RunDocValidationEvent;
 import org.zanata.webtrans.client.events.RunDocValidationEventHandler;
@@ -83,7 +81,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.inject.Inject;
 
-public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> implements PageChangeEventHandler, HasStatsFilter, DocumentListDisplay.Listener, DocumentSelectionHandler, UserConfigChangeHandler, TransUnitUpdatedEventHandler, WorkspaceContextUpdateEventHandler, RunDocValidationEventHandler
+public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> implements HasStatsFilter, DocumentListDisplay.Listener, DocumentSelectionHandler, UserConfigChangeHandler, TransUnitUpdatedEventHandler, WorkspaceContextUpdateEventHandler, RunDocValidationEventHandler
 {
    private final UserWorkspaceContext userWorkspaceContext;
    private DocumentInfo currentDocument;
@@ -572,12 +570,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    }
 
    @Override
-   public void onPageChange(PageChangeEvent event)
-   {
-      display.getPageNavigation().setValue(event.getPageNumber());
-   }
-
-   @Override
    public void onRunDocValidation(RunDocValidationEvent event)
    {
       if (event.getView() == MainView.Documents)
@@ -587,6 +579,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
          for (DocumentId documentId:  pageRows.keySet())
          {
             docIds.add(documentId.getId());
+            display.showRowLoading(pageRows.get(documentId),true);
          }
 
          List<ValidationId> valIds = userOptionsService.getConfigHolder().getState().getEnabledValidationIds();
@@ -597,41 +590,39 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
             dispatcher.execute(new RunDocValidationAction(valIds, docIds), new AsyncCallback<RunDocValidationResult>()
             {
                @Override
-               public void onFailure(Throwable caught)
-               {
-                  eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Unable to run validation"));
-                  display.showLoading(false);
-                  eventBus.fireEvent(new DocValidationResultEvent(new Date(), null));
-               }
-
-               @Override
                public void onSuccess(RunDocValidationResult result)
                {
                   Log.debug("Success docs validation - " + result.getResult().size());
                   Map<DocumentId, Boolean> resultMap = result.getResult();
-                  ArrayList<DocumentId> hasErrorDocs = new ArrayList<DocumentId>();
 
                   for (Map.Entry<DocumentId, Boolean> entry : resultMap.entrySet())
                   {
+                     Integer row = pageRows.get(entry.getKey());
                      Boolean hasError = entry.getValue();
                      DocumentNode node = nodes.get(entry.getKey());
-                     Integer row = pageRows.get(entry.getKey());
 
-                     if (hasError != null && node != null)
+                     if(row != null)
                      {
-
-                        display.updateRowHasError(row.intValue(), hasError.booleanValue());
-
-                        node.getDocInfo().setHasValidationError(hasError.booleanValue());
-
-                        if (hasError.booleanValue())
+                        display.showRowLoading(pageRows.get(entry.getKey()),false);
+                        
+                        if (hasError != null && node != null)
                         {
-                           hasErrorDocs.add(node.getDocInfo().getId());
+                           display.updateRowHasError(row.intValue(), hasError.booleanValue());
+   
+                           node.getDocInfo().setHasValidationError(hasError.booleanValue());
                         }
                      }
                   }
                   display.showLoading(false);
-                  eventBus.fireEvent(new DocValidationResultEvent(new Date(), hasErrorDocs));
+                  eventBus.fireEvent(new DocValidationResultEvent(new Date()));
+               }
+               
+               @Override
+               public void onFailure(Throwable caught)
+               {
+                  eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Unable to run validation"));
+                  display.showLoading(false);
+                  eventBus.fireEvent(new DocValidationResultEvent(new Date()));
                }
             });
          }

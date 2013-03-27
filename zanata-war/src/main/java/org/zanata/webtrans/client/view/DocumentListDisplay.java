@@ -133,4 +133,6 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
    HasPager getPageNavigation();
 
    void setStatsFilters(String option);
+
+   void showRowLoading(int row, boolean showLoading);
 }

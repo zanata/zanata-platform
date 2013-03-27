@@ -409,4 +409,10 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    {
       return pager;
    }
+
+   @Override
+   public void showRowLoading(int row, boolean showLoading)
+   {
+      documentListTable.showRowLoading(row, showLoading);
+   }
 }

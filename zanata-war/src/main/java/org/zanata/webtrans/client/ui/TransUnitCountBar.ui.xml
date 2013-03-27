@@ -29,6 +29,7 @@
 		
 		.label {
 			font-weight: bold;
+			font-size:13px;
 			text-align: left;
 			z-index: 0;
 		}

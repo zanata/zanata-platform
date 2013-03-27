@@ -45,7 +45,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
    @UiField
    Label label;
 
-   private LabelFormat labelFormat;
+   private final LabelFormat labelFormat;
 
    private final TranslationStats stats = new TranslationStats();
 
