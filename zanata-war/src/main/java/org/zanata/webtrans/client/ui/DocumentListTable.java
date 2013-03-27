@@ -29,6 +29,7 @@ import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.ui.HasTranslationStats.LabelFormat;
 import org.zanata.webtrans.client.util.DateUtil;
 import org.zanata.webtrans.client.view.DocumentListDisplay;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -39,10 +40,6 @@ import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import com.google.common.base.Strings;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -229,24 +226,9 @@ public class DocumentListTable extends FlexTable implements HasStatsFilter
 
    private Widget getStatsWidget(DocumentInfo docInfo)
    {
-      final TransUnitCountGraph graph = new TransUnitCountGraph(messages, true);
+      final TransUnitCountBar graph = new TransUnitCountBar(messages, LabelFormat.PERCENT_COMPLETE);
       graph.setStats(docInfo.getStats(), true);
-      graph.addMouseOutHandler(new MouseOutHandler()
-      {
-         @Override
-         public void onMouseOut(MouseOutEvent event)
-         {
-            graph.onMouseOut();
-         }
-      });
-      graph.addMouseOverHandler(new MouseOverHandler()
-      {
-         @Override
-         public void onMouseOver(MouseOverEvent event)
-         {
-            graph.onMouseOver();
-         }
-      });
+     
       return graph;
    }
 
@@ -325,10 +307,9 @@ public class DocumentListTable extends FlexTable implements HasStatsFilter
    {
       if (row > 0)
       {
-         TransUnitCountGraph graph = (TransUnitCountGraph) this.getWidget(row, STATS_COLUMN);
+         TransUnitCountBar graph = (TransUnitCountBar) this.getWidget(row, STATS_COLUMN);
          graph.setStats(stats, true);
       }
-      
    }
 
    @Override
@@ -336,7 +317,7 @@ public class DocumentListTable extends FlexTable implements HasStatsFilter
    {
       for(int i = 0; i < this.getRowCount() - 1; i++)
       {
-         TransUnitCountGraph graph = (TransUnitCountGraph) this.getWidget(i + 1, STATS_COLUMN);
+         TransUnitCountBar graph = (TransUnitCountBar) this.getWidget(i + 1, STATS_COLUMN);
          InlineLabel translated = (InlineLabel) this.getWidget(i + 1, TRANSLATED_COLUMN);
          InlineLabel untranslated = (InlineLabel) this.getWidget(i + 1, UNTRANSLATED_COLUMN);
 

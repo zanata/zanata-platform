@@ -2,6 +2,12 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<ui:style>
+		.unitStatus {
+            float: left;
+            width: 100px;
+            height: 1.2em;
+        }
+        
 		.approved {
 			background: #099b09;
 			z-index: 0;
@@ -23,12 +29,12 @@
 		
 		.label {
 			font-weight: bold;
-			text-align: center;
+			text-align: left;
 			z-index: 0;
-			
 		}
+		
 	</ui:style>
-	<g:LayoutPanel ui:field='layoutPanel' width="100px">
+	<g:LayoutPanel ui:field='layoutPanel' styleName="{style.unitStatus}">
 		<g:layer left='0' width='0'>
 			<g:FlowPanel ui:field='approvedPanel' styleName="{style.approved}"/>
 		</g:layer>
@@ -41,7 +47,7 @@
 		<g:layer left='0' width='100%'>
 			<g:FlowPanel ui:field='undefinedPanel' styleName="{style.undefined}"/>
 		</g:layer>
-		<g:layer left='102px' width="150px">
+		<g:layer left='102px' width="120px">
 			<g:Label ui:field='label' styleName='{style.label}'/>
 		</g:layer>
 	</g:LayoutPanel>

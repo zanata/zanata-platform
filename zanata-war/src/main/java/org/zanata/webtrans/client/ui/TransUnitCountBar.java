@@ -36,9 +36,6 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
    interface TransUnitCountBarUiBinder extends UiBinder<Widget, TransUnitCountBar>
    {
    }
-
-   LabelFormat labelFormat = LabelFormat.PERCENT_COMPLETE_HRS;
-
    @UiField
    LayoutPanel layoutPanel;
 
@@ -48,21 +45,23 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
    @UiField
    Label label;
 
+   private LabelFormat labelFormat;
+
    private final TranslationStats stats = new TranslationStats();
 
    private final WebTransMessages messages;
 
    private int totalWidth = 100;
 
-   private boolean animate = false;
-
    private boolean statsByWords = true;
 
 
    @Inject
-   public TransUnitCountBar(WebTransMessages messages)
+   public TransUnitCountBar(WebTransMessages messages, LabelFormat labelFormat)
    {
       this.messages = messages;
+      this.labelFormat = labelFormat;
+      
       tooltipPanel = new TooltipPopupPanel(messages);
       initWidget(uiBinder.createAndBindUi(this));
 
@@ -101,13 +100,6 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
    {
       this.statsByWords = statsByWords;
       refresh();
-   }
-
-   public TransUnitCountBar(WebTransMessages messages, boolean animate)
-   {
-      this.animate = animate;
-      this.messages = messages;
-      tooltipPanel = new TooltipPopupPanel(messages);
    }
 
    private void setupLayoutPanel(double undefinedLeft, double undefinedWidth, double approvedLeft, double approvedWidth, double needReviewLeft, double needReviewWidth, double untranslatedLeft, double untranslatedWidth)
@@ -154,8 +146,10 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
          setLabelText();
       }
 
-      int duration = animate ? 1000 : 0;
-      refreshDisplay(duration);
+      int duration = 1000;
+      
+      tooltipPanel.refreshData(this);
+      layoutPanel.animate(duration);
    }
 
    private void setLabelText()
@@ -183,15 +177,6 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
    public int getApprovedPercent()
    {
       return stats.getApprovedPercent(statsByWords);
-   }
-
-   private void refreshDisplay(int duration)
-   {
-      tooltipPanel.refreshData(this);
-      if (duration == 0)
-         layoutPanel.forceLayout();
-      else
-         layoutPanel.animate(duration);
    }
 
    public int getWordsTotal()
@@ -246,7 +231,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
    public int getOffsetWidth()
    {
       int offsetWidth = super.getOffsetWidth();
-      return offsetWidth == 0 || offsetWidth > 115 ? 115 : offsetWidth;
+      return offsetWidth == 0 || offsetWidth > 100 ? 100 : offsetWidth;
    }
 
    @Override
