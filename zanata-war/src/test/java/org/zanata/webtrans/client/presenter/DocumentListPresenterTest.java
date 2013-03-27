@@ -137,7 +137,7 @@ public class DocumentListPresenterTest
       documentListPresenter.onBind();
 
       verify(mockDisplay).renderTable(isA(NoSelectionModel.class));
-      verify(mockDisplay).setStatsFilter("Words", null);
+      verify(mockDisplay).setStatsFilter("Words");
       verify(mockDisplay).updatePageSize(UserConfigHolder.DEFAULT_DOC_LIST_PAGE_SIZE);
       verify(mockDisplay).setListener(documentListPresenter);
       verify(mockEventBus).addHandler(DocumentSelectionEvent.getType(), documentListPresenter);

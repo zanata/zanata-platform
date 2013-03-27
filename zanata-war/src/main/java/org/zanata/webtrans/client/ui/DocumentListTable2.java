@@ -1,27 +1,25 @@
 /*
- * Copyright 2012, Red Hat, Inc. and individual contributors
- * as indicated by the @author tags. See the copyright.txt file in the
- * distribution for a full listing of individual contributors.
- *
- * This is free software; you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of
- * the License, or (at your option) any later version.
- *
- * This software is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this software; if not, write to the Free
- * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
+ * @author tags. See the copyright.txt file in the distribution for a full
+ * listing of individual contributors.
+ * 
+ * This is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This software is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this software; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
+ * site: http://www.fsf.org.
  */
-
 package org.zanata.webtrans.client.ui;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -81,13 +79,8 @@ public class DocumentListTable2 extends FlexTable implements HasStatsFilter
       this.userWorkspaceContext = userWorkspaceContext;
       this.listener = listener;
       this.messages = messages;
-   }
 
-   public HashMap<DocumentId, DocumentNode> buildTable(List<DocumentInfo> documentInfoList)
-   {
       buildHeader();
-      HashMap<DocumentId, DocumentNode> rowMap = buildContent(documentInfoList);
-      return rowMap;
    }
 
    public void clearContent()
@@ -98,16 +91,50 @@ public class DocumentListTable2 extends FlexTable implements HasStatsFilter
       }
    }
 
+   private class HeaderClickHandler implements ClickHandler
+   {
+      private String header;
+      private boolean asc = true;
+
+      public HeaderClickHandler(String header)
+      {
+         this.header = header;
+      }
+
+      @Override
+      public void onClick(ClickEvent event)
+      {
+         asc = !asc;
+         listener.sortList(header, asc);
+      }
+   }
+
    private void buildHeader()
    {
       InlineLabel pathHeader = new InlineLabel(messages.columnHeaderPath());
+      pathHeader.addClickHandler(new HeaderClickHandler(DocumentListDisplay.PATH_HEADER));
+
       InlineLabel docHeader = new InlineLabel(messages.columnHeaderDocument());
+      docHeader.addClickHandler(new HeaderClickHandler(DocumentListDisplay.DOC_HEADER));
+
       InlineLabel statsHeader = new InlineLabel(messages.columnHeaderStatistic());
+      statsHeader.addClickHandler(new HeaderClickHandler(DocumentListDisplay.STATS_HEADER));
+
       InlineLabel translatedHeader = new InlineLabel(messages.columnHeaderTranslated());
+      translatedHeader.addClickHandler(new HeaderClickHandler(DocumentListDisplay.TRANSLATED_HEADER));
+
       InlineLabel untranslatedHeader = new InlineLabel(messages.columnHeaderUntranslated());
+      untranslatedHeader.addClickHandler(new HeaderClickHandler(DocumentListDisplay.UNTRANSLATED_HEADER));
+
       InlineLabel remainingHeader = new InlineLabel(messages.columnHeaderRemaining());
+      remainingHeader.addClickHandler(new HeaderClickHandler(DocumentListDisplay.REMAINING_HEADER));
+
       InlineLabel lastUploadHeader = new InlineLabel(messages.columnHeaderLastUpload());
+      lastUploadHeader.addClickHandler(new HeaderClickHandler(DocumentListDisplay.LAST_UPLOAD_HEADER));
+
       InlineLabel lastTranslatedHeader = new InlineLabel(messages.columnHeaderLastTranslated());
+      lastTranslatedHeader.addClickHandler(new HeaderClickHandler(DocumentListDisplay.LAST_TRANSLATED_HEADER));
+
       InlineLabel actionHeader = new InlineLabel(messages.columnHeaderAction());
 
       this.setWidget(0, PATH_COLUMN, pathHeader);
@@ -120,24 +147,27 @@ public class DocumentListTable2 extends FlexTable implements HasStatsFilter
       this.setWidget(0, LAST_TRANSLATED_COLUMN, lastTranslatedHeader);
       this.setWidget(0, ACTION_COLUMN, actionHeader);
 
-      this.getCellFormatter().setStyleName(0, PATH_COLUMN, "docListHeader");
-      this.getCellFormatter().setStyleName(0, DOC_COLUMN, "docListHeader");
-      this.getCellFormatter().setStyleName(0, STATS_COLUMN, "docListHeader");
-      this.getCellFormatter().setStyleName(0, TRANSLATED_COLUMN, "docListHeader");
-      this.getCellFormatter().setStyleName(0, UNTRANSLATED_COLUMN, "docListHeader");
-      this.getCellFormatter().setStyleName(0, REMAINING_COLUMN, "docListHeader");
-      this.getCellFormatter().setStyleName(0, LAST_UPLOAD_COLUMN, "docListHeader");
-      this.getCellFormatter().setStyleName(0, LAST_TRANSLATED_COLUMN, "docListHeader");
+      this.getCellFormatter().setStyleName(0, PATH_COLUMN, "docListHeader sortable");
+      this.getCellFormatter().setStyleName(0, DOC_COLUMN, "docListHeader sortable");
+      this.getCellFormatter().setStyleName(0, STATS_COLUMN, "docListHeader sortable");
+      this.getCellFormatter().setStyleName(0, TRANSLATED_COLUMN, "docListHeader sortable");
+      this.getCellFormatter().setStyleName(0, UNTRANSLATED_COLUMN, "docListHeader sortable");
+      this.getCellFormatter().setStyleName(0, REMAINING_COLUMN, "docListHeader sortable");
+      this.getCellFormatter().setStyleName(0, LAST_UPLOAD_COLUMN, "docListHeader sortable");
+      this.getCellFormatter().setStyleName(0, LAST_TRANSLATED_COLUMN, "docListHeader sortable");
       this.getCellFormatter().setStyleName(0, ACTION_COLUMN, "docListHeader");
    }
 
-   private HashMap<DocumentId, DocumentNode> buildContent(List<DocumentInfo> documentInfoList)
+   public HashMap<DocumentId, Integer> buildContent(List<DocumentNode> nodes)
    {
       clearContent();
-      HashMap<DocumentId, DocumentNode> rowMap = new HashMap<DocumentId, DocumentNode>();
-      for (int i = 0; i < documentInfoList.size(); i++)
+
+      HashMap<DocumentId, Integer> pageRows = new HashMap<DocumentId, Integer>();
+
+      for (int i = 0; i < nodes.size(); i++)
       {
-         DocumentNode node = new DocumentNode(messages, documentInfoList.get(i), i + 1);
+         DocumentNode node = nodes.get(i);
+         pageRows.put(node.getDocInfo().getId(), i + 1);
 
          this.setWidget(i + 1, PATH_COLUMN, getPathWidget(node.getDocInfo()));
          this.setWidget(i + 1, DOC_COLUMN, getDocWidget(node.getDocInfo()));
@@ -152,8 +182,6 @@ public class DocumentListTable2 extends FlexTable implements HasStatsFilter
 
          this.setWidget(i + 1, ACTION_COLUMN, getActionWidget(node.getDocInfo()));
 
-         rowMap.put(node.getDocInfo().getId(), node);
-
          this.getCellFormatter().setStyleName(i + 1, PATH_COLUMN, "pathCol");
          this.getCellFormatter().setStyleName(i + 1, DOC_COLUMN, "documentCol");
          this.getCellFormatter().setStyleName(i + 1, STATS_COLUMN, "statisticCol");
@@ -165,7 +193,7 @@ public class DocumentListTable2 extends FlexTable implements HasStatsFilter
          this.getCellFormatter().setStyleName(i + 1, ACTION_COLUMN, "actionCol");
       }
 
-      return rowMap;
+      return pageRows;
    }
 
    private Widget getPathWidget(final DocumentInfo docInfo)
@@ -291,25 +319,25 @@ public class DocumentListTable2 extends FlexTable implements HasStatsFilter
       
    }
 
-   public void setStatsFilter(String option, Collection<DocumentNode> nodes)
+   public void setStatsFilter(String option, DocumentNode documentNode)
    {
-      for (DocumentNode node : nodes)
+      for(int i = 0; i < this.getRowCount(); i++)
       {
-         TransUnitCountGraph graph = (TransUnitCountGraph) this.getWidget(node.getRow(), STATS_COLUMN);
-         InlineLabel translated = (InlineLabel) this.getWidget(node.getRow(), TRANSLATED_COLUMN);
-         InlineLabel untranslated = (InlineLabel) this.getWidget(node.getRow(), UNTRANSLATED_COLUMN);
+         TransUnitCountGraph graph = (TransUnitCountGraph) this.getWidget(i + 1, STATS_COLUMN);
+         InlineLabel translated = (InlineLabel) this.getWidget(i + 1, TRANSLATED_COLUMN);
+         InlineLabel untranslated = (InlineLabel) this.getWidget(i + 1, UNTRANSLATED_COLUMN);
 
-         if(option.equals(STATS_OPTION_MESSAGE))
+         if (option.equals(STATS_OPTION_MESSAGE))
          {
             graph.setStatOption(false);
-            translated.setText(String.valueOf(node.getDocInfo().getStats().getUnitCount().getApproved()));
-            untranslated.setText(String.valueOf(node.getDocInfo().getStats().getUnitCount().getUntranslated()));
+            translated.setText(String.valueOf(documentNode.getDocInfo().getStats().getUnitCount().getApproved()));
+            untranslated.setText(String.valueOf(documentNode.getDocInfo().getStats().getUnitCount().getUntranslated()));
          }
          else
          {
             graph.setStatOption(true);
-            translated.setText(String.valueOf(node.getDocInfo().getStats().getWordCount().getApproved()));
-            untranslated.setText(String.valueOf(node.getDocInfo().getStats().getWordCount().getUntranslated()));
+            translated.setText(String.valueOf(documentNode.getDocInfo().getStats().getWordCount().getApproved()));
+            untranslated.setText(String.valueOf(documentNode.getDocInfo().getStats().getWordCount().getUntranslated()));
          }
       }
    }
@@ -317,6 +345,6 @@ public class DocumentListTable2 extends FlexTable implements HasStatsFilter
    @Override
    public void setStatsFilter(String option)
    {
-
+      // TODO Auto-generated method stub
    }
 }

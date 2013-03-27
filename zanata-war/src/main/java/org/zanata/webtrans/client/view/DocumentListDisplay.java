@@ -20,14 +20,14 @@
  */
 package org.zanata.webtrans.client.view;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.ui.DocumentNode;
+import org.zanata.webtrans.client.ui.HasPager;
 import org.zanata.webtrans.client.ui.InlineLink;
 import org.zanata.webtrans.client.ui.SearchFieldListener;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -47,6 +47,15 @@ import com.google.gwt.view.client.NoSelectionModel;
  */
 public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
 {
+   public static String PATH_HEADER = "path";
+   public static String DOC_HEADER = "doc";
+   public static String STATS_HEADER = "stats";
+   public static String TRANSLATED_HEADER = "translated";
+   public static String UNTRANSLATED_HEADER = "untranslated";
+   public static String REMAINING_HEADER = "remaining";
+   public static String LAST_UPLOAD_HEADER = "lastUpload";
+   public static String LAST_TRANSLATED_HEADER = "lastTranslated";
+
    void updatePageSize(int pageSize);
 
    HasData<DocumentNode> getDocumentListTable();
@@ -57,7 +66,7 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
 
    String getSelectedStatsOption();
 
-   void setStatsFilter(String option, Collection<DocumentNode> nodes);
+   void setStatsFilter(String option);
 
    void setListener(Listener documentListPresenter);
 
@@ -88,6 +97,8 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
       void onUploadFile();
 
       void updateDownloadFileProgress();
+
+      void sortList(String header, boolean asc);
    }
 
    void setLayout(String layout);
@@ -122,11 +133,15 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
 
    void showLoading(boolean showLoading);
 
-   HashMap<DocumentId, DocumentNode> buildDocumentTable(ArrayList<DocumentInfo> sortedList);
+   HashMap<DocumentId, Integer> buildContent(List<DocumentNode> nodes);
 
    void updateRowHasError(int row, boolean hasError);
 
    void updateLastTranslatedInfo(int row, TransUnit transUnit);
 
    void updateStats(int row, TranslationStats stats);
+
+   void setStatsFilters2(String option, DocumentNode documentNode);
+
+   HasPager getPageNavigation();
 }

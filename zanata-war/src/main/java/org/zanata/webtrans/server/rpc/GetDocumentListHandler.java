@@ -57,7 +57,6 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
       ArrayList<DocumentInfo> docs = new ArrayList<DocumentInfo>();
 
       List<HDocument> hDocs = getDocumentList(action);
-      int totalDocumentsCount = documentDAO.getTotalActiveDocument(iterationId.getProjectSlug(), iterationId.getIterationSlug());
 
       for (HDocument hDoc : hDocs)
       {
@@ -95,7 +94,7 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
          DocumentInfo doc = new DocumentInfo(docId, hDoc.getName(), hDoc.getPath(), hDoc.getLocale().getLocaleId(), stats, lastModifiedBy, hDoc.getLastChanged(), downloadExtensions, lastTranslatedBy, lastTranslatedDate);
          docs.add(doc);
       }
-      return new GetDocumentListResult(iterationId, docs, totalDocumentsCount);
+      return new GetDocumentListResult(iterationId, docs);
    }
 
    @Override
@@ -107,19 +106,19 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
    {
       ProjectIterationId iterationId = action.getWorkspaceId().getProjectIterationId();
 
-      if (hasConstraints(action))
+      if (hasDocIdFilters(action))
       {
-         return documentDAO.getByFilterConstraints(iterationId.getProjectSlug(), iterationId.getIterationSlug(), action.getDocIdFilters(), action.getSortBy(), action.getSearchFilter(), action.getOffset(), action.getCount());
+         return documentDAO.getByProjectIterationAndDocIdList(iterationId.getProjectSlug(), iterationId.getIterationSlug(), action.getDocIdFilters());
       }
       else
       {
-         return documentDAO.getByProjectIterationSortBy(iterationId.getProjectSlug(), iterationId.getIterationSlug(), action.getSortBy(), action.getOffset(), action.getCount());
+         return documentDAO.getAllByProjectIteration(iterationId.getProjectSlug(), iterationId.getIterationSlug());
       }
    }
 
-   private boolean hasConstraints(GetDocumentList action)
+   private boolean hasDocIdFilters(GetDocumentList action)
    {
-      return (action.getDocIdFilters() != null && !action.getDocIdFilters().isEmpty()) || action.getSearchFilter() != null;
+      return (action.getDocIdFilters() != null && !action.getDocIdFilters().isEmpty());
    }
 
 }

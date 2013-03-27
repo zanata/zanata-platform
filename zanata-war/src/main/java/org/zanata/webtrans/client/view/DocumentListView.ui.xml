@@ -79,6 +79,7 @@
                 		<g:HTMLPanel width="100%">
 	                		<g:FlowPanel ui:field="documentListContainer"/>
 	                		<fui:table.DocumentListPager ui:field="pager"/> 
+							<fui:Pager ui:field="pager2"/>
 	                    </g:HTMLPanel>
                     </g:ScrollPanel> 
                 </g:layer>

@@ -20,9 +20,8 @@
  */
 package org.zanata.webtrans.client.view;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.Application;
@@ -33,9 +32,11 @@ import org.zanata.webtrans.client.ui.DocumentListTable2;
 import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.client.ui.DownloadFilesConfirmationBox;
 import org.zanata.webtrans.client.ui.FileUploadDialog;
+import org.zanata.webtrans.client.ui.HasPager;
 import org.zanata.webtrans.client.ui.HasStatsFilter;
 import org.zanata.webtrans.client.ui.InlineLink;
 import org.zanata.webtrans.client.ui.LoadingPanel;
+import org.zanata.webtrans.client.ui.Pager;
 import org.zanata.webtrans.client.ui.SearchField;
 import org.zanata.webtrans.client.ui.table.DocumentListPager;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -89,6 +90,9 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    @UiField(provided = true)
    DocumentListPager pager;
 
+   @UiField(provided = true)
+   Pager pager2;
+
    private DocumentListTable documentListTable;
 
    private DocumentListTable2 documentListTable2;
@@ -124,6 +128,7 @@ public class DocumentListView extends Composite implements DocumentListDisplay
       confirmationBox = new DownloadFilesConfirmationBox(false, resources);
       fileUploadDialog = new FileUploadDialog(resources);
       pager = new DocumentListPager(TextLocation.CENTER, false, true);
+      pager2 = new Pager(messages, resources);
       searchField = new SearchField(this);
       searchField.setTextBoxTitle(messages.docListFilterDescription());
 
@@ -203,7 +208,7 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    }
 
    @Override
-   public void setStatsFilter(String option, Collection<DocumentNode> nodes)
+   public void setStatsFilter(String option)
    {
       if (option.equals(HasStatsFilter.STATS_OPTION_MESSAGE))
       {
@@ -214,7 +219,6 @@ public class DocumentListView extends Composite implements DocumentListDisplay
          statsByWord.setValue(true);
       }
       documentListTable.setStatsFilter(option);
-      documentListTable2.setStatsFilter(option, nodes);
    }
 
    interface DocumentListViewUiBinder extends UiBinder<LayoutPanel, DocumentListView>
@@ -420,9 +424,9 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    }
 
    @Override
-   public HashMap<DocumentId, DocumentNode> buildDocumentTable(ArrayList<DocumentInfo> sortedList)
+   public HashMap<DocumentId, Integer> buildContent(List<DocumentNode> nodes)
    {
-      return documentListTable2.buildTable(sortedList);
+      return documentListTable2.buildContent(nodes);
    }
 
    @Override
@@ -442,5 +446,25 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    public void updateStats(int row, TranslationStats stats)
    {
       documentListTable2.updateStats(row, stats);
+   }
+
+   @Override
+   public void setStatsFilters2(String option, DocumentNode documentNode)
+   {
+      if (option.equals(HasStatsFilter.STATS_OPTION_MESSAGE))
+      {
+         statsByMsg.setValue(true);
+      }
+      else
+      {
+         statsByWord.setValue(true);
+      }
+      documentListTable2.setStatsFilter(option, documentNode);
+   }
+
+   @Override
+   public HasPager getPageNavigation()
+   {
+      return pager2;
    }
 }

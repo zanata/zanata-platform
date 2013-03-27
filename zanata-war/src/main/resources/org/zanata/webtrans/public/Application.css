@@ -339,6 +339,12 @@ td.ApprovedStateDecoration div div div
 	background:#eee;
 }
 
+.DocumentListTable td.sortable
+{
+	text-decoration:underline;
+	cursor:pointer;
+}
+
 
 .DocumentListTable th, .DocumentListTable td.docListHeader {
 	font-size: 13px;
@@ -351,7 +357,7 @@ td.ApprovedStateDecoration div div div
 	text-align:center;
 }
 
-.DocumentListTable th:hover, .DocumentListTable td.docListHeader:hover {
+.DocumentListTable th:hover {
 	color:#FFFFFF;
 }
 

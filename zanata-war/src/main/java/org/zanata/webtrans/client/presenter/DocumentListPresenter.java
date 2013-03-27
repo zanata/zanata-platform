@@ -21,6 +21,8 @@
 package org.zanata.webtrans.client.presenter;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -40,6 +42,8 @@ import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
+import org.zanata.webtrans.client.events.PageChangeEvent;
+import org.zanata.webtrans.client.events.PageChangeEventHandler;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.RunDocValidationEvent;
 import org.zanata.webtrans.client.events.RunDocValidationEventHandler;
@@ -73,13 +77,16 @@ import org.zanata.webtrans.shared.rpc.RunDocValidationResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.NoSelectionModel;
 import com.google.inject.Inject;
 
-public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> implements HasStatsFilter, DocumentListDisplay.Listener, DocumentSelectionHandler, UserConfigChangeHandler, TransUnitUpdatedEventHandler, WorkspaceContextUpdateEventHandler, RunDocValidationEventHandler
+public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> implements PageChangeEventHandler, HasStatsFilter, DocumentListDisplay.Listener, DocumentSelectionHandler, UserConfigChangeHandler, TransUnitUpdatedEventHandler, WorkspaceContextUpdateEventHandler, RunDocValidationEventHandler
 {
    private final UserWorkspaceContext userWorkspaceContext;
    private DocumentInfo currentDocument;
@@ -90,6 +97,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
    private ListDataProvider<DocumentNode> dataProvider;
    private HashMap<DocumentId, DocumentNode> nodes;
+   private HashMap<DocumentId, Integer> pageRows;
 
    private final CachingDispatchAsync dispatcher;
 
@@ -116,6 +124,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       this.userOptionsService = userOptionsService;
 
       nodes = new HashMap<DocumentId, DocumentNode>();
+      pageRows = new HashMap<DocumentId, Integer>();
    }
 
    @Override
@@ -133,6 +142,15 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       registerHandler(eventBus.addHandler(UserConfigChangeEvent.TYPE, this));
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this));
       registerHandler(eventBus.addHandler(RunDocValidationEvent.getType(), this));
+
+      registerHandler(display.getPageNavigation().addValueChangeHandler(new ValueChangeHandler<Integer>()
+      {
+         @Override
+         public void onValueChange(ValueChangeEvent<Integer> event)
+         {
+            gotoPage(event.getValue());
+         }
+      }));
 
       display.updatePageSize(userOptionsService.getConfigHolder().getState().getDocumentListPageSize());
       display.setLayout(userOptionsService.getConfigHolder().getState().getDisplayTheme().name());
@@ -238,7 +256,12 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    @Override
    public void setStatsFilter(String option)
    {
-      display.setStatsFilter(option, nodes.values());
+      display.setStatsFilter(option);
+
+      for (DocumentId docId : pageRows.keySet())
+      {
+         display.setStatsFilters2(option, nodes.get(docId));
+      }
    }
 
    public void updateFilterAndRun(String docFilterText, boolean docFilterExact, boolean docFilterCaseSensitive)
@@ -273,7 +296,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       for (DocumentInfo doc : sortedList)
       {
          idsByPath.put(doc.getPath() + doc.getName(), doc.getId());
-         DocumentNode node = new DocumentNode(messages, doc, 0);
+         DocumentNode node = new DocumentNode(doc);
          node.setVisible(filter.accept(doc));
          if (node.isVisible())
          {
@@ -281,10 +304,34 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
          }
          nodes.put(doc.getId(), node);
       }
+
+      updatePageCount();
+
       Log.info("Time to create DocumentNodes: " + String.valueOf(System.currentTimeMillis() - start) + "ms");
       dataProvider.refresh();
+   }
 
-      nodes = display.buildDocumentTable(sortedList);
+   private void updatePageCount()
+   {
+      int pageCount = (int) Math.ceil(nodes.size() * 1.0 / userOptionsService.getConfigHolder().getState().getDocumentListPageSize());
+      display.getPageNavigation().setPageCount(pageCount);
+      display.getPageNavigation().setValue(1, true);
+   }
+
+   private void gotoPage(Integer page)
+   {
+      ArrayList<DocumentNode> list = Lists.newArrayList(nodes.values());
+      gotoPage(page.intValue(), list);
+   }
+
+   private void gotoPage(int page, List<DocumentNode> list)
+   {
+      int pageSize = userOptionsService.getConfigHolder().getState().getDocumentListPageSize();
+
+      int fromIndex = (page - 1) * pageSize;
+      int toIndex = (fromIndex + pageSize) > list.size() ? list.size() : fromIndex + pageSize;
+
+      pageRows = display.buildContent(list.subList(fromIndex, toIndex));
    }
 
    /**
@@ -375,14 +422,14 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       // update stats for containing document
       DocumentInfo updatedDoc = getDocumentInfo(updateInfo.getDocumentId());
       adjustStats(updatedDoc.getStats(), updateInfo);
-
-      DocumentNode node = nodes.get(updatedDoc.getId());
-      if (node != null)
-      {
-         display.updateStats(node.getRow(), updatedDoc.getStats());
-      }
-
       updateLastTranslatedInfo(updatedDoc, event.getUpdateInfo().getTransUnit());
+
+      Integer row = pageRows.get(updatedDoc.getId());
+      if (row != null)
+      {
+         display.updateStats(row.intValue(), updatedDoc.getStats());
+         display.updateLastTranslatedInfo(row.intValue(), event.getUpdateInfo().getTransUnit());
+      }
 
       eventBus.fireEvent(new DocumentStatsUpdatedEvent(updatedDoc.getId(), updatedDoc.getStats()));
 
@@ -398,12 +445,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    {
       doc.setLastTranslatedBy(updatedTransUnit.getLastModifiedBy());
       doc.setLastTranslatedDate(updatedTransUnit.getLastModifiedTime());
-
-      DocumentNode node = nodes.get(doc.getId());
-      if (node != null)
-      {
-         display.updateLastTranslatedInfo(node.getRow(), updatedTransUnit);
-      }
    }
 
    /**
@@ -427,6 +468,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       if (event.getView() == MainView.Documents)
       {
          display.updatePageSize(userOptionsService.getConfigHolder().getState().getDocumentListPageSize());
+         updatePageCount();
       }
    }
 
@@ -549,6 +591,12 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    }
 
    @Override
+   public void onPageChange(PageChangeEvent event)
+   {
+      display.getPageNavigation().setValue(event.getPageNumber());
+   }
+
+   @Override
    public void onRunDocValidation(RunDocValidationEvent event)
    {
       if (event.getView() == MainView.Documents)
@@ -582,18 +630,20 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
                   Map<DocumentId, Boolean> resultMap = result.getResult();
                   ArrayList<DocumentId> hasErrorDocs = new ArrayList<DocumentId>();
 
-                  for(Map.Entry<DocumentId, Boolean> entry: resultMap.entrySet())
+                  for (Map.Entry<DocumentId, Boolean> entry : resultMap.entrySet())
                   {
                      Boolean hasError = entry.getValue();
                      DocumentNode node = nodes.get(entry.getKey());
+                     Integer row = pageRows.get(entry.getKey());
 
                      if (hasError != null && node != null)
                      {
-                        display.updateRowHasError(node.getRow(), hasError.booleanValue());
+
+                        display.updateRowHasError(row.intValue(), hasError.booleanValue());
 
                         node.getDocInfo().setHasValidationError(hasError.booleanValue());
 
-                        if(hasError.booleanValue())
+                        if (hasError.booleanValue())
                         {
                            hasErrorDocs.add(node.getDocInfo().getId());
                         }
@@ -605,6 +655,161 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
                }
             });
          }
+      }
+   }
+
+   @Override
+   public void sortList(String header, boolean asc)
+   {
+      ArrayList<DocumentNode> list = Lists.newArrayList(nodes.values());
+      HeaderComparator comparator = new HeaderComparator(header);
+      Collections.sort(list, comparator);
+      if (!asc)
+      {
+         Collections.reverse(list);
+      }
+      gotoPage(1, list);
+   }
+
+   private class HeaderComparator implements Comparator<DocumentNode>
+   {
+      private String header;
+
+      public HeaderComparator(String header)
+      {
+         this.header = header;
+      }
+
+      @Override
+      public int compare(DocumentNode o1, DocumentNode o2)
+      {
+         if (header.equals(DocumentListDisplay.PATH_HEADER))
+         {
+            return comparePath(o1, o2);
+         }
+         else if (header.equals(DocumentListDisplay.DOC_HEADER))
+         {
+            return compareDoc(o1, o2);
+         }
+         else if (header.equals(DocumentListDisplay.STATS_HEADER))
+         {
+            return compareStats(o1, o2);
+         }
+         else if (header.equals(DocumentListDisplay.TRANSLATED_HEADER))
+         {
+            return compareTranslated(o1, o2);
+         }
+         else if (header.equals(DocumentListDisplay.UNTRANSLATED_HEADER))
+         {
+            return compareUntranslated(o1, o2);
+         }
+         else if (header.equals(DocumentListDisplay.REMAINING_HEADER))
+         {
+            return compareRemaining(o1, o2);
+         }
+         else if (header.equals(DocumentListDisplay.LAST_UPLOAD_HEADER))
+         {
+            return compareLastUpload(o1, o2);
+         }
+         else if (header.equals(DocumentListDisplay.LAST_TRANSLATED_HEADER))
+         {
+            return compareLastTranslated(o1, o2);
+         }
+         return 0;
+      }
+
+      private int comparePath(DocumentNode o1, DocumentNode o2)
+      {
+         if (o1.getDocInfo().getPath() == null || o2.getDocInfo().getPath() == null)
+         {
+            return (o1.getDocInfo().getPath() == null) ? -1 : 1;
+         }
+         else
+         {
+            return o1.getDocInfo().getPath().compareTo(o2.getDocInfo().getPath());
+         }
+      }
+
+      private int compareDoc(DocumentNode o1, DocumentNode o2)
+      {
+         return o1.getDocInfo().getName().compareTo(o2.getDocInfo().getName());
+      }
+
+      private int compareStats(DocumentNode o1, DocumentNode o2)
+      {
+         boolean statsByWords = true;
+         if (display.getSelectedStatsOption().equals(STATS_OPTION_MESSAGE))
+         {
+            statsByWords = false;
+         }
+         return o1.getDocInfo().getStats().getApprovedPercent(statsByWords) - o2.getDocInfo().getStats().getApprovedPercent(statsByWords);
+      }
+
+      private int compareTranslated(DocumentNode o1, DocumentNode o2)
+      {
+         if (display.getSelectedStatsOption().equals(STATS_OPTION_MESSAGE))
+         {
+            return o1.getDocInfo().getStats().getUnitCount().getApproved() - o2.getDocInfo().getStats().getUnitCount().getApproved();
+         }
+         else
+         {
+            return o1.getDocInfo().getStats().getWordCount().getApproved() - o2.getDocInfo().getStats().getWordCount().getApproved();
+         }
+      }
+
+      private int compareUntranslated(DocumentNode o1, DocumentNode o2)
+      {
+         if (display.getSelectedStatsOption().equals(STATS_OPTION_MESSAGE))
+         {
+            return o1.getDocInfo().getStats().getUnitCount().getUntranslated() - o2.getDocInfo().getStats().getUnitCount().getUntranslated();
+         }
+         else
+         {
+            return o1.getDocInfo().getStats().getWordCount().getUntranslated() - o2.getDocInfo().getStats().getWordCount().getUntranslated();
+         }
+      }
+
+      private int compareRemaining(DocumentNode o1, DocumentNode o2)
+      {
+         if (o1.getDocInfo().getStats().getRemainingHours() == o2.getDocInfo().getStats().getRemainingHours())
+         {
+            return 0;
+         }
+         return o1.getDocInfo().getStats().getRemainingHours() > o2.getDocInfo().getStats().getRemainingHours() ? 1 : -1;
+      }
+
+      private int compareLastUpload(DocumentNode o1, DocumentNode o2)
+      {
+         if (o1.getDocInfo().getLastChanged() == o2.getDocInfo().getLastChanged())
+         {
+            return 0;
+         }
+         if (o1.getDocInfo().getLastChanged() == null)
+         {
+            return -1;
+         }
+         if (o2.getDocInfo().getLastChanged() == null)
+         {
+            return 1;
+         }
+         return o1.getDocInfo().getLastChanged().after(o2.getDocInfo().getLastChanged()) ? 1 : -1;
+      }
+
+      private int compareLastTranslated(DocumentNode o1, DocumentNode o2)
+      {
+         if (o1.getDocInfo().getLastChanged() == o2.getDocInfo().getLastChanged())
+         {
+            return 0;
+         }
+         if (o1.getDocInfo().getLastChanged() == null)
+         {
+            return -1;
+         }
+         if (o2.getDocInfo().getLastChanged() == null)
+         {
+            return 1;
+         }
+         return o1.getDocInfo().getLastChanged().after(o2.getDocInfo().getLastChanged()) ? 1 : -1;
       }
    }
 }
