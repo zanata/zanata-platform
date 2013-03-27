@@ -14,9 +14,11 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
+import org.zanata.common.ProjectType;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
+import org.zanata.model.HProjectIteration;
 import org.zanata.model.TestFixture;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
@@ -67,7 +69,7 @@ public class GetDocumentListHandlerTest
       action.setWorkspaceId(workspaceId);
       HDocument hDocument = hDocument(1);
       List<HDocument> documentList = Arrays.asList(hDocument);
-      
+
       when(documentDAO.getAllByProjectIteration("project", "master")).thenReturn(documentList);
 
       GetDocumentListResult result = handler.execute(action, null);
@@ -97,7 +99,11 @@ public class GetDocumentListHandlerTest
 
    private HDocument hDocument(long id)
    {
+      HProjectIteration iteration = new HProjectIteration();
+      iteration.setProjectType(ProjectType.Podir);
+
       HDocument hDocument = new HDocument("/dot/a.po", ContentType.PO, new HLocale(LocaleId.EN_US));
+      hDocument.setProjectIteration(iteration);
       TestFixture.setId(id, hDocument);
       return hDocument;
    }

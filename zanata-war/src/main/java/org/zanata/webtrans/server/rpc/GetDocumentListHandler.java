@@ -1,9 +1,9 @@
 package org.zanata.webtrans.server.rpc;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -39,7 +39,7 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
 
    @In
    private DocumentDAO documentDAO;
-
+   
    @In
    private TranslationStateCache translationStateCacheImpl;
 
@@ -84,15 +84,26 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
          }
 
          Map<String, String> downloadExtensions = new HashMap<String, String>();
-         downloadExtensions.put(".po", "po?docId=" + hDoc.getDocId());
-         if (translationFileServiceImpl.hasPersistedDocument(iterationId.getProjectSlug(), iterationId.getIterationSlug(), hDoc.getPath(), hDoc.getName()))
-         {
-            String extension = "." + translationFileServiceImpl.getFileExtension(iterationId.getProjectSlug(), iterationId.getIterationSlug(), hDoc.getPath(), hDoc.getName());
-            downloadExtensions.put(extension, "baked?docId=" + hDoc.getDocId());
-         }
 
-         DocumentInfo doc = new DocumentInfo(docId, hDoc.getName(), hDoc.getPath(), hDoc.getLocale().getLocaleId(), stats, lastModifiedBy, hDoc.getLastChanged(), downloadExtensions, lastTranslatedBy, lastTranslatedDate);
-         docs.add(doc);
+            ProjectType type = hDoc.getProjectIteration().getProjectType();
+            if (type == ProjectType.Gettext || type == ProjectType.Podir)
+            {
+               downloadExtensions.put(".po", "po?docId=" + hDoc.getDocId());
+            }
+            else
+            {
+               downloadExtensions.put("offline .po", "offlinepo?docId=" + hDoc.getDocId());
+            }
+
+            if (translationFileServiceImpl.hasPersistedDocument(iterationId.getProjectSlug(), iterationId.getIterationSlug(), hDoc.getPath(), hDoc.getName()))
+            {
+               String extension = "." + translationFileServiceImpl.getFileExtension(iterationId.getProjectSlug(), iterationId.getIterationSlug(), hDoc.getPath(), hDoc.getName());
+               downloadExtensions.put(extension, "baked?docId=" + hDoc.getDocId());
+            }
+
+            DocumentInfo doc = new DocumentInfo(docId, hDoc.getName(), hDoc.getPath(), hDoc.getLocale().getLocaleId(), stats, lastModifiedBy, hDoc.getLastChanged(), downloadExtensions, lastTranslatedBy, lastTranslatedDate);
+            docs.add(doc);
+         }
       }
       return new GetDocumentListResult(iterationId, docs);
    }
@@ -100,25 +111,6 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
    @Override
    public void rollback(GetDocumentList action, GetDocumentListResult result, ExecutionContext context) throws ActionException
    {
-   }
-
-   private List<HDocument> getDocumentList(GetDocumentList action)
-   {
-      ProjectIterationId iterationId = action.getWorkspaceId().getProjectIterationId();
-
-      if (hasDocIdFilters(action))
-      {
-         return documentDAO.getByProjectIterationAndDocIdList(iterationId.getProjectSlug(), iterationId.getIterationSlug(), action.getDocIdFilters());
-      }
-      else
-      {
-         return documentDAO.getAllByProjectIteration(iterationId.getProjectSlug(), iterationId.getIterationSlug());
-      }
-   }
-
-   private boolean hasDocIdFilters(GetDocumentList action)
-   {
-      return (action.getDocIdFilters() != null && !action.getDocIdFilters().isEmpty());
    }
 
 }

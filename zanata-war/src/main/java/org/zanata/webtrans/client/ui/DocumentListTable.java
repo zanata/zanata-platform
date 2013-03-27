@@ -190,10 +190,10 @@ public class DocumentListTable extends CellTable<DocumentNode>
       downloadColumn = new StaticWidgetColumn<DocumentNode, HorizontalPanel>()
       {
          @Override
-         public HorizontalPanel getValue(DocumentNode object)
+         public HorizontalPanel getValue(DocumentNode node)
          {
             HorizontalPanel downloadPanel = new HorizontalPanel();
-            for (Map.Entry<String, String> entry : object.getDocInfo().getDownloadExtensions().entrySet())
+            for (Map.Entry<String, String> entry : node.getDocInfo().getDownloadExtensions().entrySet())
             {
                Anchor anchor = new Anchor(entry.getKey());
                anchor.setStyleName("downloadFileLink");

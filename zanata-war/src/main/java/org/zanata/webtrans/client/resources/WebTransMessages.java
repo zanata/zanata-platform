@@ -95,8 +95,11 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Last Translated")
    String columnHeaderLastTranslated();
 
-   @DefaultMessage("Action")
-   String columnHeaderAction();
+   @DefaultMessage("Download")
+   String columnHeaderDownload();
+
+   @DefaultMessage("Upload")
+   String columnHeaderUpload();
 
    @DefaultMessage("No document selected")
    String noDocumentSelected();
@@ -529,4 +532,5 @@ public interface WebTransMessages extends Messages
    
    @DefaultMessage("Download document with extension {0}")
    String downloadFileTitle(String key);
+
 }

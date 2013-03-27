@@ -1,6 +1,7 @@
 package org.zanata.webtrans.client.ui;
 
 import org.zanata.webtrans.client.resources.Resources;
+import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.view.DocumentListDisplay;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -24,27 +25,29 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class DownloadFilesConfirmationBox extends DialogBox
 {
 
+   private final WebTransMessages messages;
    private final HorizontalPanel infoPanel;
    private final HorizontalPanel progressPanel;
    private final Label progressMessage;
    private final Anchor downloadLink;
    private final Image progressImage;
 
+   private final HorizontalPanel buttonPanel;
    private final PushButton cancelButton;
    private final PushButton okButton;
 
-   private final String defaultMessage = "Your download will be prepared and may take a few minutes to complete. Is this ok?";
 
-   public DownloadFilesConfirmationBox(boolean autoHide, final Resources resources)
+   public DownloadFilesConfirmationBox(boolean autoHide, WebTransMessages messages, final Resources resources)
    {
       super(autoHide);
-      setText("Download All Files");
+      this.messages = messages;
+      setText(messages.downloadAllFiles());
       setGlassEnabled(true);
       setStyleName("gwt-DialogBox-NoFixedSize");
 
       VerticalPanel panel = new VerticalPanel();
 
-      Label infoMessage = new Label(defaultMessage);
+      Label infoMessage = new Label(messages.prepareDownloadConfirmation());
       InlineLabel infoImg = new InlineLabel();
       infoImg.setStyleName("icon-help-circle");
 
@@ -54,13 +57,13 @@ public class DownloadFilesConfirmationBox extends DialogBox
       infoPanel.add(infoMessage);
       infoPanel.setCellVerticalAlignment(infoMessage, HasVerticalAlignment.ALIGN_MIDDLE);
 
-      cancelButton = new PushButton("Cancel");
+      cancelButton = new PushButton(messages.cancel());
       cancelButton.addStyleName("button");
 
-      okButton = new PushButton("OK");
+      okButton = new PushButton(messages.ok());
       okButton.addStyleName("button");
 
-      HorizontalPanel buttonPanel = new HorizontalPanel();
+      buttonPanel = new HorizontalPanel();
       buttonPanel.setStyleName("buttonPanel");
       buttonPanel.add(cancelButton);
       buttonPanel.add(okButton);
@@ -106,6 +109,7 @@ public class DownloadFilesConfirmationBox extends DialogBox
          @Override
          public void onClick(ClickEvent event)
          {
+            okButton.setVisible(false);
             listener.downloadAllFiles();
          }
       });
@@ -117,6 +121,7 @@ public class DownloadFilesConfirmationBox extends DialogBox
       if(show)
       {
          progressPanel.add(downloadLink);
+         cancelButton.setText(messages.close());
       }
       else
       {
@@ -138,11 +143,19 @@ public class DownloadFilesConfirmationBox extends DialogBox
       progressPanel.setVisible(inProgress);
    }
 
+   @Override
+   public void show()
+   {
+      okButton.setVisible(true);
+      cancelButton.setText(messages.cancel());
+      super.show();
+   }
+
    public void hide()
    {
       setInProgress(false);
       showDownloadLink(false);
-     super.hide();
+      super.hide();
    }
 
    public void setDownloadLink(String url)

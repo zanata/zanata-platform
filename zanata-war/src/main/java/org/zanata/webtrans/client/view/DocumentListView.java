@@ -20,26 +20,19 @@
  */
 package org.zanata.webtrans.client.view;
 
-import java.util.HashMap;
-import java.util.List;
-
-import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.client.ui.DocumentListTable2;
+import org.zanata.webtrans.client.ui.DocumentListTable;
 import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.client.ui.DownloadFilesConfirmationBox;
 import org.zanata.webtrans.client.ui.FileUploadDialog;
-import org.zanata.webtrans.client.ui.HasPager;
 import org.zanata.webtrans.client.ui.HasStatsFilter;
 import org.zanata.webtrans.client.ui.InlineLink;
 import org.zanata.webtrans.client.ui.LoadingPanel;
-import org.zanata.webtrans.client.ui.Pager;
 import org.zanata.webtrans.client.ui.SearchField;
-import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.client.ui.table.DocumentListPager;
 import org.zanata.webtrans.shared.model.DocumentInfo;
-import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 
@@ -49,6 +42,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.cellview.client.SimplePager.TextLocation;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.CheckBox;
@@ -58,6 +52,9 @@ import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.HasData;
+import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.NoSelectionModel;
 import com.google.inject.Inject;
 
 public class DocumentListView extends Composite implements DocumentListDisplay
@@ -93,7 +90,6 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    private final DownloadFilesConfirmationBox confirmationBox;
    private final FileUploadDialog fileUploadDialog;
 
-
    private final LoadingPanel loadingPanel;
 
    private Timer timer = new Timer()
@@ -109,7 +105,7 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    {
       this.loadingPanel = loadingPanel;
 
-      confirmationBox = new DownloadFilesConfirmationBox(false, resources);
+      confirmationBox = new DownloadFilesConfirmationBox(false, messages, resources);
       fileUploadDialog = new FileUploadDialog(resources);
       pager = new Pager(messages, resources);
       searchField = new SearchField(this);
@@ -201,8 +197,7 @@ public class DocumentListView extends Composite implements DocumentListDisplay
       this.listener = documentListPresenter;
       confirmationBox.registerHandler(listener);
       fileUploadDialog.registerHandler(listener, Application.getUploadFileUrl());
-      documentListTable.setListener(listener);
-      
+   	  documentListTable.setListener(listener);
    }
 
    @Override

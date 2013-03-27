@@ -20,6 +20,7 @@
  */
 package org.zanata.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -62,7 +63,19 @@ public class ConfigurationServiceImpl implements ConfigurationService
    }
 
    @Override
+   public String getConfigurationFileContents(String projectSlug, String iterationSlug, HLocale locale, boolean useOfflinePo)
+   {
+      return getConfigurationFileContents(projectSlug, iterationSlug, locale, useOfflinePo, applicationConfiguration.getServerPath());
+   }
+
+   @Override
    public String getConfigurationFileContents(String projectSlug, String iterationSlug, boolean useOfflinePo, String serverPath)
+   {
+      return getConfigurationFileContents(projectSlug, iterationSlug, null, useOfflinePo, serverPath);
+   }
+
+   @Override
+   public String getConfigurationFileContents(String projectSlug, String iterationSlug, HLocale locale, boolean useOfflinePo, String serverPath)
    {
       HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
       ProjectType projectType = projectIteration.getProjectType();
@@ -100,9 +113,18 @@ public class ConfigurationServiceImpl implements ConfigurationService
       }
       var.append("\n");
 
-      List<HLocale> locales = localeServiceImpl.getSupportedLangugeByProjectIteration(projectSlug, iterationSlug);
+      List<HLocale> locales;
+      if (locale == null)
+      {
+         locales = localeServiceImpl.getSupportedLangugeByProjectIteration(projectSlug, iterationSlug);
+      }
+      else
+      {
+         locales = new ArrayList<HLocale>();
+         locales.add(locale);
+      }
       HLocale source = localeServiceImpl.getSourceLocale(projectSlug, iterationSlug);
-      
+
       if(locales!=null)
       {
          boolean first=true;
@@ -123,12 +145,12 @@ public class ConfigurationServiceImpl implements ConfigurationService
             var.append("  </locales>\n\n");
          }
       }
-      
+
       var.append("</config>\n");
-      
+
       return var.toString();
    }
-   
+
    @Override
    public String getConfigurationFileName()
    {
