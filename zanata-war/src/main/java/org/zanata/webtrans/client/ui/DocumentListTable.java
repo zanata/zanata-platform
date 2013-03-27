@@ -288,10 +288,10 @@ public class DocumentListTable extends CellTable<DocumentNode>
 
    public void setStatsFilter(String option)
    {
-      statisticColumn.setStatsFilter(option);
-      translatedColumn.setStatsFilter(option);
-      untranslatedColumn.setStatsFilter(option);
-      remainingColumn.setStatsFilter(option);
+      statisticColumn.setStatsFilter(option, null);
+      translatedColumn.setStatsFilter(option, null);
+      untranslatedColumn.setStatsFilter(option, null);
+      remainingColumn.setStatsFilter(option, null);
    }
 
    private void addSorting(final ListDataProvider<DocumentNode> dataProvider)

@@ -54,7 +54,7 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
       LocaleId localeId = action.getWorkspaceId().getLocaleId();
       ProjectIterationId iterationId = action.getWorkspaceId().getProjectIterationId();
 
-      ArrayList<DocumentInfo> docs = new ArrayList<DocumentInfo>();
+      List<DocumentInfo> docs = new ArrayList<DocumentInfo>();
 
       List<HDocument> hDocs = getDocumentList(action);
 

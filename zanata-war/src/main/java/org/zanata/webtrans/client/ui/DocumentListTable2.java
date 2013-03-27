@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.Application;
+import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.util.DateUtil;
 import org.zanata.webtrans.client.view.DocumentListDisplay;
@@ -66,10 +67,11 @@ public class DocumentListTable2 extends FlexTable implements HasStatsFilter
    private static int ACTION_COLUMN = 8;
 
    private final UserWorkspaceContext userWorkspaceContext;
-   private final DocumentListDisplay.Listener listener;
+   private DocumentListDisplay.Listener listener;
    private final WebTransMessages messages;
+   private final Resources resources;
 
-   public DocumentListTable2(final UserWorkspaceContext userWorkspaceContext, final DocumentListDisplay.Listener listener, final WebTransMessages messages)
+   public DocumentListTable2(final UserWorkspaceContext userWorkspaceContext, final WebTransMessages messages, final Resources resources)
    {
       super();
       setStylePrimaryName("DocumentListTable");
@@ -77,10 +79,16 @@ public class DocumentListTable2 extends FlexTable implements HasStatsFilter
       setCellSpacing(0);
 
       this.userWorkspaceContext = userWorkspaceContext;
-      this.listener = listener;
+      
       this.messages = messages;
+      this.resources = resources;
 
       buildHeader();
+   }
+   
+   public void setListener(final DocumentListDisplay.Listener listener)
+   {
+      this.listener = listener;
    }
 
    public void clearContent()
@@ -199,6 +207,7 @@ public class DocumentListTable2 extends FlexTable implements HasStatsFilter
    private Widget getPathWidget(final DocumentInfo docInfo)
    {
       InlineLabel pathLabel = new InlineLabel(docInfo.getPath());
+      pathLabel.setTitle(docInfo.getPath());
 
       return pathLabel;
    }
@@ -206,6 +215,7 @@ public class DocumentListTable2 extends FlexTable implements HasStatsFilter
    private Widget getDocWidget(final DocumentInfo docInfo)
    {
       InlineLabel docLabel = new InlineLabel(docInfo.getName());
+      docLabel.setTitle(docInfo.getName());
       docLabel.addClickHandler(new ClickHandler()
       {
          @Override
@@ -246,12 +256,14 @@ public class DocumentListTable2 extends FlexTable implements HasStatsFilter
       for (Map.Entry<String, String> entry : docInfo.getDownloadExtensions().entrySet())
       {
          Anchor anchor = new Anchor(entry.getKey());
+         anchor.setTitle(messages.downloadFileTitle(entry.getKey()));
          anchor.setStyleName("downloadFileLink");
          anchor.setHref(Application.getFileDownloadURL(userWorkspaceContext.getWorkspaceContext().getWorkspaceId(), entry.getValue()));
          anchor.setTarget("_blank");
          panel.add(anchor);
       }
       InlineLabel upload = new InlineLabel();
+      upload.setTitle(messages.uploadButtonTitle());
       upload.setStyleName("icon-upload uploadButton");
       upload.addClickHandler(new ClickHandler()
       {
@@ -319,9 +331,10 @@ public class DocumentListTable2 extends FlexTable implements HasStatsFilter
       
    }
 
+   @Override
    public void setStatsFilter(String option, DocumentNode documentNode)
    {
-      for(int i = 0; i < this.getRowCount(); i++)
+      for(int i = 0; i < this.getRowCount() - 1; i++)
       {
          TransUnitCountGraph graph = (TransUnitCountGraph) this.getWidget(i + 1, STATS_COLUMN);
          InlineLabel translated = (InlineLabel) this.getWidget(i + 1, TRANSLATED_COLUMN);
@@ -340,11 +353,5 @@ public class DocumentListTable2 extends FlexTable implements HasStatsFilter
             untranslated.setText(String.valueOf(documentNode.getDocInfo().getStats().getWordCount().getUntranslated()));
          }
       }
-   }
-
-   @Override
-   public void setStatsFilter(String option)
-   {
-      // TODO Auto-generated method stub
    }
 }

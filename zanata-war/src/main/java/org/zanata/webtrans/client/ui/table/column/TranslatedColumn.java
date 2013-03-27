@@ -47,7 +47,7 @@ public class TranslatedColumn extends TextColumn<DocumentNode> implements HasSta
    }
 
    @Override
-   public void setStatsFilter(String option)
+   public void setStatsFilter(String option, DocumentNode node)
    {
       statsOption = option;
    }

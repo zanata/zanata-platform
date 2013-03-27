@@ -73,7 +73,7 @@ public class StatisticColumn extends Column<DocumentNode, TransUnitCountGraph> i
    }
 
    @Override
-   public void setStatsFilter(String option)
+   public void setStatsFilter(String option, DocumentNode node)
    {
       statsOption = option;
    }

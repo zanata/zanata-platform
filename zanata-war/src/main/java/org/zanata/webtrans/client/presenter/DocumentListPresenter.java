@@ -77,13 +77,10 @@ import org.zanata.webtrans.shared.rpc.RunDocValidationResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
-import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.NoSelectionModel;
 import com.google.inject.Inject;
 
 public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> implements PageChangeEventHandler, HasStatsFilter, DocumentListDisplay.Listener, DocumentSelectionHandler, UserConfigChangeHandler, TransUnitUpdatedEventHandler, WorkspaceContextUpdateEventHandler, RunDocValidationEventHandler
@@ -95,9 +92,9 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    private final History history;
    private final UserOptionsService userOptionsService;
 
-   private ListDataProvider<DocumentNode> dataProvider;
    private HashMap<DocumentId, DocumentNode> nodes;
    private HashMap<DocumentId, Integer> pageRows;
+   private ArrayList<DocumentNode> sortedNodes;
 
    private final CachingDispatchAsync dispatcher;
 
@@ -111,8 +108,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
    private TranslationStats projectStats;
 
-   private final NoSelectionModel<DocumentNode> selectionModel = new NoSelectionModel<DocumentNode>();
-
    @Inject
    public DocumentListPresenter(DocumentListDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, UserWorkspaceContext userworkspaceContext, final WebTransMessages messages, History history, UserOptionsService userOptionsService)
    {
@@ -124,24 +119,23 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       this.userOptionsService = userOptionsService;
 
       nodes = new HashMap<DocumentId, DocumentNode>();
+      sortedNodes = new ArrayList<DocumentNode>();
       pageRows = new HashMap<DocumentId, Integer>();
    }
 
    @Override
    protected void onBind()
    {
-      dataProvider = display.getDataProvider();
       display.setListener(this);
 
-      display.renderTable(selectionModel);
-
-      setStatsFilter(STATS_OPTION_WORDS);
+      display.setStatsFilters(STATS_OPTION_WORDS);
 
       registerHandler(eventBus.addHandler(DocumentSelectionEvent.getType(), this));
       registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), this));
       registerHandler(eventBus.addHandler(UserConfigChangeEvent.TYPE, this));
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this));
       registerHandler(eventBus.addHandler(RunDocValidationEvent.getType(), this));
+      
 
       registerHandler(display.getPageNavigation().addValueChangeHandler(new ValueChangeHandler<Integer>()
       {
@@ -152,7 +146,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
          }
       }));
 
-      display.updatePageSize(userOptionsService.getConfigHolder().getState().getDocumentListPageSize());
       display.setLayout(userOptionsService.getConfigHolder().getState().getDisplayTheme().name());
 
       setupDownloadZipButton(getProjectType());
@@ -249,18 +242,18 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    @Override
    public void statsOptionChange(String option)
    {
-      setStatsFilter(option);
-      dataProvider.refresh();
+      for (DocumentId docId : pageRows.keySet())
+      {
+         setStatsFilter(option, nodes.get(docId));
+      }
    }
 
    @Override
-   public void setStatsFilter(String option)
+   public void setStatsFilter(String option, DocumentNode documentNode)
    {
-      display.setStatsFilter(option);
-
-      for (DocumentId docId : pageRows.keySet())
+      if(documentNode != null)
       {
-         display.setStatsFilters2(option, nodes.get(docId));
+         display.setStatsFilters(option, documentNode);
       }
    }
 
@@ -286,11 +279,11 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       // Auto-generated method stub
    }
 
-   public void setDocuments(ArrayList<DocumentInfo> sortedList)
+   public void setDocuments(List<DocumentInfo> sortedList)
    {
-      dataProvider.getList().clear();
       nodes = new HashMap<DocumentId, DocumentNode>(sortedList.size());
-
+      sortedNodes.clear();
+      
       idsByPath = new HashMap<String, DocumentId>(sortedList.size());
       long start = System.currentTimeMillis();
       for (DocumentInfo doc : sortedList)
@@ -298,40 +291,32 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
          idsByPath.put(doc.getPath() + doc.getName(), doc.getId());
          DocumentNode node = new DocumentNode(doc);
          node.setVisible(filter.accept(doc));
-         if (node.isVisible())
-         {
-            dataProvider.getList().add(node);
-         }
          nodes.put(doc.getId(), node);
       }
+      sortedNodes.addAll(nodes.values());
 
-      updatePageCount();
+      updatePageCountAndGotoFirstPage();
 
       Log.info("Time to create DocumentNodes: " + String.valueOf(System.currentTimeMillis() - start) + "ms");
-      dataProvider.refresh();
    }
 
-   private void updatePageCount()
+   private void updatePageCountAndGotoFirstPage()
    {
-      int pageCount = (int) Math.ceil(nodes.size() * 1.0 / userOptionsService.getConfigHolder().getState().getDocumentListPageSize());
+      int pageCount = (int) Math.ceil(sortedNodes.size() * 1.0 / userOptionsService.getConfigHolder().getState().getDocumentListPageSize());
       display.getPageNavigation().setPageCount(pageCount);
-      display.getPageNavigation().setValue(1, true);
+      gotoPage(1);
    }
 
-   private void gotoPage(Integer page)
-   {
-      ArrayList<DocumentNode> list = Lists.newArrayList(nodes.values());
-      gotoPage(page.intValue(), list);
-   }
-
-   private void gotoPage(int page, List<DocumentNode> list)
+   private void gotoPage(int page)
    {
       int pageSize = userOptionsService.getConfigHolder().getState().getDocumentListPageSize();
 
       int fromIndex = (page - 1) * pageSize;
-      int toIndex = (fromIndex + pageSize) > list.size() ? list.size() : fromIndex + pageSize;
+      int toIndex = (fromIndex + pageSize) > sortedNodes.size() ? sortedNodes.size() : fromIndex + pageSize;
 
-      pageRows = display.buildContent(list.subList(fromIndex, toIndex));
+      pageRows = display.buildContent(sortedNodes.subList(fromIndex, toIndex));
+      
+      display.getPageNavigation().setValue(page, false);
    }
 
    /**
@@ -340,16 +325,16 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
     */
    private void runFilter()
    {
-      dataProvider.getList().clear();
+      sortedNodes.clear();
       for (DocumentNode docNode : nodes.values())
       {
          docNode.setVisible(filter.accept(docNode.getDocInfo()));
          if (docNode.isVisible())
          {
-            dataProvider.getList().add(docNode);
+            sortedNodes.add(docNode);
          }
       }
-      dataProvider.refresh();
+      updatePageCountAndGotoFirstPage();
    }
 
    /**
@@ -433,9 +418,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
       eventBus.fireEvent(new DocumentStatsUpdatedEvent(updatedDoc.getId(), updatedDoc.getStats()));
 
-      // refresh document list table
-      dataProvider.refresh();
-
       // update project stats, forward to AppPresenter
       adjustStats(projectStats, updateInfo);
       eventBus.fireEvent(new ProjectStatsUpdatedEvent(projectStats));
@@ -467,8 +449,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       display.setLayout(userOptionsService.getConfigHolder().getState().getDisplayTheme().name());
       if (event.getView() == MainView.Documents)
       {
-         display.updatePageSize(userOptionsService.getConfigHolder().getState().getDocumentListPageSize());
-         updatePageCount();
+         updatePageCountAndGotoFirstPage();
       }
    }
 
@@ -603,9 +584,9 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       {
          display.showLoading(true);
          ArrayList<Long> docIds = new ArrayList<Long>();
-         for (DocumentNode node : display.getDocumentListTable().getVisibleItems())
+         for (DocumentId documentId:  pageRows.keySet())
          {
-            docIds.add(node.getDocInfo().getId().getId());
+            docIds.add(documentId.getId());
          }
 
          List<ValidationId> valIds = userOptionsService.getConfigHolder().getState().getEnabledValidationIds();
@@ -649,7 +630,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
                         }
                      }
                   }
-                  dataProvider.refresh();
                   display.showLoading(false);
                   eventBus.fireEvent(new DocValidationResultEvent(new Date(), hasErrorDocs));
                }
@@ -661,14 +641,13 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    @Override
    public void sortList(String header, boolean asc)
    {
-      ArrayList<DocumentNode> list = Lists.newArrayList(nodes.values());
       HeaderComparator comparator = new HeaderComparator(header);
-      Collections.sort(list, comparator);
+      Collections.sort(sortedNodes, comparator);
       if (!asc)
       {
-         Collections.reverse(list);
+         Collections.reverse(sortedNodes);
       }
-      gotoPage(1, list);
+      gotoPage(1);
    }
 
    private class HeaderComparator implements Comparator<DocumentNode>

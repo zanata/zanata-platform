@@ -36,9 +36,6 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
-import com.google.gwt.view.client.HasData;
-import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.NoSelectionModel;
 
 /**
  *
@@ -56,17 +53,7 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
    public static String LAST_UPLOAD_HEADER = "lastUpload";
    public static String LAST_TRANSLATED_HEADER = "lastTranslated";
 
-   void updatePageSize(int pageSize);
-
-   HasData<DocumentNode> getDocumentListTable();
-
-   ListDataProvider<DocumentNode> getDataProvider();
-
-   void renderTable(NoSelectionModel<DocumentNode> selectionModel);
-
    String getSelectedStatsOption();
-
-   void setStatsFilter(String option);
 
    void setListener(Listener documentListPresenter);
 
@@ -141,7 +128,9 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
 
    void updateStats(int row, TranslationStats stats);
 
-   void setStatsFilters2(String option, DocumentNode documentNode);
+   void setStatsFilters(String option, DocumentNode documentNode);
 
    HasPager getPageNavigation();
+
+   void setStatsFilters(String option);
 }

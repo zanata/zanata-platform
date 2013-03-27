@@ -1,6 +1,7 @@
 package org.zanata.webtrans.client;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
 
@@ -176,7 +177,7 @@ public class Application implements EntryPoint
          public void onSuccess(GetDocumentListResult result)
          {
             long start = System.currentTimeMillis();
-            final ArrayList<DocumentInfo> documents = result.getDocuments();
+            final List<DocumentInfo> documents = result.getDocuments();
             Log.info("Received doc list for " + result.getProjectIterationId() + ": " + documents.size() + " elements, loading time: " + String.valueOf(System.currentTimeMillis() - start) + "ms");
             documentListPresenter.setDocuments(documents);
 
