@@ -8,9 +8,8 @@
     xmlns:s="http://jboss.com/products/seam/taglib"
     template="../WEB-INF/layout/template.xhtml">
 
-   
     <ui:define name="page_title">#{messages['jsf.Groups']}</ui:define>
-    
+
     <ui:define name="right_content">
     	<rich:panel rendered="#{identity.loggedIn}">
             <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
@@ -20,38 +19,36 @@
                     value="#{messages['jsf.CreateNewGroup']}" />
     	</rich:panel>
     </ui:define>
-   
+
     <ui:define name="center_content">
-	  
+
 	  <s:fragment rendered="#{empty versionGroupAction.allVersionGroups}">
 	   	<h:outputText value="#{messages['jsf.NoGroupExists']}" />
       </s:fragment>
-    
+
       <s:fragment rendered="#{!empty versionGroupAction.allVersionGroups}">
         <f:facet name="header">#{messages['jsf.Groups']}</f:facet>
 
           <a4j:form>
               <s:token allowMultiplePosts="true" />
-              
+
               <rich:spacer height="15" />
-              
+
               <s:div styleClass="float-right">
-		            <h:selectBooleanCheckbox title="Show active group" value="#{versionGroupAction.showActiveGroups}">
+		            <h:selectBooleanCheckbox title="#{messages['jsf.groups.ShowActiveGroups']}" value="#{versionGroupAction.showActiveGroups}">
 		                <a4j:support event="onchange" reRender="threads" />
 		            </h:selectBooleanCheckbox>
 		            <h:outputText value="#{messages['jsf.Active']}"/>
-		            
+
 		            <rich:spacer width="5" />
 		            <s:fragment rendered="#{s:hasPermission('HIterationGroup','view-obsolete')}">
-			            <h:selectBooleanCheckbox title="Show obsolete groups" value="#{versionGroupAction.showObsoleteGroups}">
+			            <h:selectBooleanCheckbox title="#{messages['jsf.groups.ShowObsoleteGroups']}" value="#{versionGroupAction.showObsoleteGroups}">
 			                <a4j:support event="onchange" reRender="threads" />
 			            </h:selectBooleanCheckbox>
 		                <h:outputText value="#{messages['jsf.Obsolete']}"/>
 		            </s:fragment>
 	          </s:div>
-        
-        
-        
+
               <rich:dataTable id="threads" value="#{versionGroupAction.allVersionGroups}"
                               var="group">
                   <rich:column filterMethod="#{versionGroupAction.filterGroupByName}">
@@ -74,7 +71,7 @@
                              view="/version-group/version_group.xhtml" rendered="#{group.status == 'OBSOLETE'}"> 
                             <f:param name="versionGroupSlug" value="#{group.slug}"/>
                       </s:link>
-                      
+
                   </rich:column>
                   <rich:column>
                       <f:facet name="header">#{messages['jsf.Description']}</f:facet>
@@ -86,15 +83,15 @@
                           <f:convertDateTime type="date" dateStyle="default"/>
                       </h:outputText>
                   </rich:column>
-                  
+
                    <rich:column styleClass="centered" width="60px" sortBy="#{group.status}" filterMethod="#{versionGroupAction.filterGroupByStatus}">
                         <f:facet name="header">#{messages['jsf.Status']}</f:facet>
                         <h:outputText value="#{messages[group.status.messageKey]}"/>
                     </rich:column>
-                    
+
               </rich:dataTable>
           </a4j:form>
       </s:fragment>
     </ui:define>
-    
+
   </ui:composition>
