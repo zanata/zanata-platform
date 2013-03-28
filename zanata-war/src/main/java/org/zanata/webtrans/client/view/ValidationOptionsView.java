@@ -107,14 +107,19 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    public void onRunValidationClicked(ClickEvent event)
    {
       listener.onRunValidation();
-
+      enabledRunValidation(false);
    }
    
    @Override
    public void setListener(Listener listener)
    {
       this.listener = listener;
-
+   }
+   
+   @Override
+   public void enabledRunValidation(boolean enabled)
+   {
+      runValidation.setEnabled(enabled);
    }
 
    @Override

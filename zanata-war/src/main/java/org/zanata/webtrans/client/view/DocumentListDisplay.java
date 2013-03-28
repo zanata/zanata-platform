@@ -87,6 +87,8 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
       void updateDownloadFileProgress();
 
       void sortList(String header, boolean asc);
+
+      void pagerValueChanged(Integer value);
    }
 
    void setLayout(String layout);

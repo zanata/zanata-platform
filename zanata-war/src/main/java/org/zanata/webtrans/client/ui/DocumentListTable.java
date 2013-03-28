@@ -241,18 +241,6 @@ public class DocumentListTable extends FlexTable implements HasStatsFilter
       public DocWidget(final DocumentInfo docInfo)
       {
          super();
-         docLabel = new InlineLabel(docInfo.getName());
-         docLabel.setTitle(docInfo.getName());
-         docLabel.addClickHandler(new ClickHandler()
-         {
-            @Override
-            public void onClick(ClickEvent event)
-            {
-               listener.fireDocumentSelection(docInfo);
-            }
-         });
-         this.add(docLabel);
-
          loading = new Image(resources.spinner());
          loading.setVisible(false);
          this.add(loading);
@@ -271,6 +259,18 @@ public class DocumentListTable extends FlexTable implements HasStatsFilter
          unknown.setStyleName("icon-help-circle-2");
          unknown.setVisible(false);
          this.add(unknown);
+         
+         docLabel = new InlineLabel(docInfo.getName());
+         docLabel.setTitle(docInfo.getName());
+         docLabel.addClickHandler(new ClickHandler()
+         {
+            @Override
+            public void onClick(ClickEvent event)
+            {
+               listener.fireDocumentSelection(docInfo);
+            }
+         });
+         this.add(docLabel);
       }
 
       @Override

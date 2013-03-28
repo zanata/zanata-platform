@@ -153,5 +153,6 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
    public void onCompleteRunDocValidation(DocValidationResultEvent event)
    {
       display.updateValidationResult(event.getEndTime());
+      display.enabledRunValidation(true);
    }
 }

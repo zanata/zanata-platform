@@ -146,7 +146,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
          setLabelText();
       }
 
-      int duration = 1000;
+      int duration = 600;
       
       tooltipPanel.refreshData(this);
       layoutPanel.animate(duration);

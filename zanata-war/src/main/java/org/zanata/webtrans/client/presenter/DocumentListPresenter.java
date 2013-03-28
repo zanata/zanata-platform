@@ -26,7 +26,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
@@ -76,8 +75,6 @@ import org.zanata.webtrans.shared.rpc.RunDocValidationResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.inject.Inject;
@@ -134,15 +131,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       registerHandler(eventBus.addHandler(UserConfigChangeEvent.TYPE, this));
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this));
       registerHandler(eventBus.addHandler(RunDocValidationEvent.getType(), this));
-
-      registerHandler(display.getPageNavigation().addValueChangeHandler(new ValueChangeHandler<Integer>()
-      {
-         @Override
-         public void onValueChange(ValueChangeEvent<Integer> event)
-         {
-            gotoPage(event.getValue());
-         }
-      }));
 
       display.setLayout(userOptionsService.getConfigHolder().getState().getDisplayTheme().name());
 
@@ -573,7 +561,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       setupDownloadZipButton(event.getProjectType());
    }
 
-   private void fireDocValidation(List<ValidationId> validationIds, final DocumentId docId)
+   private void fireDocValidation(List<ValidationId> validationIds, final DocumentId docId, final boolean fireResultEvent)
    {
       Log.debug("Run doc validation");
       dispatcher.execute(new RunDocValidationAction(validationIds, docId), new AsyncCallback<RunDocValidationResult>()
@@ -598,7 +586,10 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
                   node.getDocInfo().setHasError(hasError);
                }
             }
-            eventBus.fireEvent(new DocValidationResultEvent(new Date()));
+            if (fireResultEvent)
+            {
+               eventBus.fireEvent(new DocValidationResultEvent(new Date()));
+            }
          }
 
          @Override
@@ -611,7 +602,10 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
             }
 
             eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Unable to run validation"));
-            eventBus.fireEvent(new DocValidationResultEvent(new Date()));
+            if (fireResultEvent)
+            {
+               eventBus.fireEvent(new DocValidationResultEvent(new Date()));
+            }
          }
       });
    }
@@ -625,10 +619,20 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
          if (!valIds.isEmpty() && !pageRows.keySet().isEmpty())
          {
-            for (DocumentId documentId : pageRows.keySet())
+            int i = 0;
+            for (DocumentId documentId: pageRows.keySet())
             {
                display.showRowLoading(pageRows.get(documentId));
-               fireDocValidation(valIds, documentId);
+               
+               if(i == pageRows.keySet().size() -1)
+               {
+                  fireDocValidation(valIds, documentId, true);
+               }
+               else
+               {
+                  fireDocValidation(valIds, documentId, false);
+               }
+               i++;
             }
          }
       }
@@ -786,5 +790,16 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
          }
          return o1.getDocInfo().getLastChanged().after(o2.getDocInfo().getLastChanged()) ? 1 : -1;
       }
+   }
+
+   @Override
+   public void pagerValueChanged(Integer value)
+   {
+      gotoPage(value);
+   }
+
+   public ArrayList<DocumentNode> getSortedNodes()
+   {
+      return sortedNodes;
    }
 }

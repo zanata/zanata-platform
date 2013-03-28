@@ -180,6 +180,12 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    {
       confirmationBox.center();
    }
+   
+   @UiHandler("pager")
+   public void onPagerValueChanged(ValueChangeEvent<Integer> event)
+   {
+      listener.pagerValueChanged(event.getValue());
+   }
 
    @Override
    public void setLayout(String layout)
