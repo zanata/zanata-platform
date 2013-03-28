@@ -136,7 +136,7 @@
 
     <s:div>
         <a4j:region>
-            <h:selectBooleanCheckbox title="Restrict Project Access" value="#{projectRoleRestrictionAction.restrictByRoles}" >
+            <h:selectBooleanCheckbox title="#{messages['jsf.RestrictRoleAccessTooltip']}" value="#{projectRoleRestrictionAction.restrictByRoles}" >
                 <a4j:support event="onchange" reRender="roleList" />
             </h:selectBooleanCheckbox>
         </a4j:region>

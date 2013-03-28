@@ -79,6 +79,7 @@
 								<f:param name="localeId" value="#{stats.locale}" />
 								<span class="icon-docs icon"/>
 							</s:link>
+                            <ui:remove>
 							<!--  <h:outputLink value="#{request.contextPath}/webtrans/Application.seam" styleClass="table_link">
 								<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
 								<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
@@ -86,6 +87,7 @@
 								<f:param name="locale" value="#{locale.language}" />
 								<span class="icon-docs icon"/>
 							</h:outputLink> -->
+                            </ui:remove>
 						</rich:column>
 						<rich:column
 							styleClass="#{stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
@@ -110,7 +112,7 @@
 							<f:facet name="header">#{messages['jsf.LastTranslated']}</f:facet>
 							<h:outputText value=" #{stats.stats.lastTranslated}"/>
 						</rich:column>
-	
+
 					</rich:dataTable>
 				</a4j:region>
 			</a4j:form>
@@ -242,7 +244,9 @@
                                         <h:outputText value="#{messages['jsf.Actions']}"/>
                                     </f:facet>
 
-                                    <s:link view="/iteration/request_join_group/#{group.slug}/#{viewAllStatusAction.projectSlug}/#{viewAllStatusAction.projectIteration.slug}" rendered="#{!viewAllStatusAction.isGroupInVersion(group.slug)}" title="Select group" value="Select" propagation="none" styleClass="button"/>
+                                    <s:link view="/iteration/request_join_group/#{group.slug}/#{viewAllStatusAction.projectSlug}/#{viewAllStatusAction.projectIteration.slug}"
+                                            rendered="#{!viewAllStatusAction.isGroupInVersion(group.slug)}"
+                                            title="#{messages['jsf.SelectGroup']}" value="#{messages['jsf.Select']}" propagation="none" styleClass="button"/>
 
                                     <h:outputText value="#{messages['jsf.AlreadyInGroup']}"
                                                   rendered="#{viewAllStatusAction.isGroupInVersion(group.slug)}" />

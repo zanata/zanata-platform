@@ -7,7 +7,7 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:rich="http://richfaces.org/rich" template="./WEB-INF/layout/template.xhtml">
 
-   <ui:define name="page_title">Search Results for '#{projectSearch.searchQuery}'</ui:define>
+   <ui:define name="page_title">#{messages['jsf.SearchResultsForProjectSearch']}</ui:define>
 	<ui:define name="center_content">
 		<h1>#{messages['jsf.FoundResultsizeProjectsMatchingQuerySearchquery']}</h1>
 
@@ -21,19 +21,19 @@
                     </s:link>
                 </rich:column>
                 <rich:column>
-                        <f:facet name="header">Description</f:facet>
+                        <f:facet name="header">#{messages['jsf.Description']}</f:facet>
                         <h:outputText value="#{project.description}" />
                 </rich:column>
                 <rich:column>
-                        <f:facet name="header">Creation Date</f:facet>
+                        <f:facet name="header">#{messages['jsf.CreationDate']}</f:facet>
                         <h:outputText value="#{project.creationDate}">
                            <f:convertDateTime type="date" dateStyle="default"/>
                         </h:outputText>                     
                 </rich:column>
         </rich:dataTable>
-        
+
 		<s:fragment rendered="#{projectSearch.resultSize gt projectSearch.pageSize}"> 
-			<p>#{messages['OnlyShowingFirstPagesizeResults']}</p>
+			<p>#{messages['jsf.OnlyShowingFirstPagesizeResults']}</p>
 		</s:fragment>
 
 	</ui:define>

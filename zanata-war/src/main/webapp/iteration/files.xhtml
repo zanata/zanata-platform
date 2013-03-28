@@ -34,7 +34,7 @@
         </script>
     </ui:define>
 
-    <ui:define name="page_title">#{projectIterationFilesAction.projectSlug}:#{projectIterationFilesAction.iterationSlug} - Files</ui:define>
+    <ui:define name="page_title">#{projectIterationFilesAction.projectSlug}:#{projectIterationFilesAction.iterationSlug} - #{messages['jsf.Documents']} (#{projectIterationFilesAction.localeId})</ui:define>
     <ui:define name="center_content">
         <a4j:form onkeydown="if(event.keyCode==13) { return false;}">
             <s:token allowMultiplePosts="true"/>
@@ -95,7 +95,7 @@
                     </f:facet>
                     <h:outputText value="#{doc.name}"/>
                 </rich:column>
-				
+
 				 <rich:column
 					rendered="#{identity.loggedIn and not applicationConfiguration.debug and not projectIterationFilesAction.isUserAllowedToTranslate()}" 
 					styleClass="centered actionCol">
@@ -115,7 +115,7 @@
 	                    </s:fragment>
                     </div>
 				</rich:column>
-				
+
 				<rich:column 
 					rendered="#{identity.loggedIn and applicationConfiguration.debug and not projectIterationFilesAction.isUserAllowedToTranslate()}" 
 					styleClass="centered actionCol">
@@ -125,7 +125,7 @@
 	                            title="#{messages['jsf.OpenGWTDevMode']}" styleClass="table_link" 
 	                            value="#{request.contextPath}/webtrans/Application.seam?project=#{projectIterationFilesAction.projectSlug}&amp;iteration=#{projectIterationFilesAction.iterationSlug}&amp;localeId=#{projectIterationFilesAction.localeId}&amp;locale=#{locale.language}#view:doc;doc:#{doc.docId}">
 	                       		<f:param name="gwt.codesvr" value="127.0.0.1:9997" />
-	                       		
+
 	                            <span class="icon-eye icon" title="#{messages['jsf.OpenGWTDevMode']}"/>
 	                    </h:outputLink>
                     </div>
@@ -137,7 +137,7 @@
 	                    </s:fragment>
                     </div>
 				</rich:column>
-				
+
 				<rich:column 
 					rendered="#{identity.loggedIn and not applicationConfiguration.debug and projectIterationFilesAction.isUserAllowedToTranslate()}" 
 					styleClass="centered actionCol">
@@ -157,7 +157,7 @@
 	                    </s:fragment>
                     </div>
 				</rich:column>
-				
+
 				<rich:column 
 					rendered="#{identity.loggedIn and applicationConfiguration.debug and projectIterationFilesAction.isUserAllowedToTranslate()}" 
 					styleClass="centered actionCol">
@@ -167,7 +167,7 @@
 	                            title="#{messages['jsf.TranslateGWTDevMode']}" styleClass="table_link" 
 	                            value="#{request.contextPath}/webtrans/Application.seam?project=#{projectIterationFilesAction.projectSlug}&amp;iteration=#{projectIterationFilesAction.iterationSlug}&amp;localeId=#{projectIterationFilesAction.localeId}&amp;locale=#{locale.language}#view:doc;doc:#{doc.docId}">
 	                       		<f:param name="gwt.codesvr" value="127.0.0.1:9997" />
-	                       		
+
 	                            <span class="icon-edit icon" title="#{messages['jsf.TranslateGWTDevMode']}"/>
 	                    </h:outputLink>
                     </div>
@@ -179,7 +179,7 @@
 	                    </s:fragment>
                     </div>
 				</rich:column>
-                
+
                  <rich:column>
                     <f:facet name="header">
                         #{messages['jsf.iteration.files.Download']}
@@ -221,7 +221,7 @@
                         <ui:param name="status" value="#{tstatus}"/>
                     </ui:include>
                 </rich:column>
-                
+
                 <rich:column>
 					<f:facet name="header">#{messages['jsf.LastTranslated']}</f:facet>
 					<h:outputText value="#{tstatus.lastTranslated}"/>
@@ -242,7 +242,7 @@
                 <rich:progressBar id="downloadProgressBar"
                                   value="#{projectIterationZipFileAction.zipFilePrepHandle.currentProgress}"
                                   interval="500"
-                                  label="#{projectIterationZipFileAction.zipFilePrepHandle.currentProgress} of #{projectIterationZipFileAction.zipFilePrepHandle.maxProgress}"
+                                  label="#{messages['jsf.generatezip.ProgressLabel']}"
                                   minValue="-1"
                                   maxValue="#{projectIterationZipFileAction.zipFilePrepHandle.maxProgress - 1}"
                                   enabled="#{projectIterationZipFileAction.zipFilePrepHandle.inProgress}"
