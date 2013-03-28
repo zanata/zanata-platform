@@ -26,6 +26,7 @@ import java.util.List;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 import org.zanata.common.TranslationStats;
+import org.zanata.webtrans.client.ui.DocumentListTable.DocValidationStatus;
 import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.client.ui.HasPager;
 import org.zanata.webtrans.client.ui.InlineLink;
@@ -122,8 +123,6 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
 
    HashMap<DocumentId, Integer> buildContent(List<DocumentNode> nodes);
 
-   void updateRowHasError(int row, boolean hasError);
-
    void updateLastTranslatedInfo(int row, TransUnit transUnit);
 
    void updateStats(int row, TranslationStats stats);
@@ -134,5 +133,7 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
 
    void setStatsFilters(String option);
 
-   void showRowLoading(int row, boolean showLoading);
+   void showRowLoading(int row);
+
+   void updateRowHasError(int row, DocValidationStatus status);
 }

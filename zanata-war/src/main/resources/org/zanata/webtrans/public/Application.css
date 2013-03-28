@@ -401,7 +401,7 @@ td.ApprovedStateDecoration div div div
 	cursor:pointer;
 }
 
-.DocumentListTable td.hasError {
+.DocumentListTable .hasError {
 	color:red;
 	font-weight:bold;
 }

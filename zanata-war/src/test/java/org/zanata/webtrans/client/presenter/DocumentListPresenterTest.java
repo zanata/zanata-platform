@@ -61,7 +61,6 @@ import org.zanata.webtrans.shared.rpc.ThemesOption;
 
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.NoSelectionModel;
 
 @Test(groups = { "unit-tests" })
 public class DocumentListPresenterTest
@@ -70,8 +69,6 @@ public class DocumentListPresenterTest
    private DocumentListPresenter documentListPresenter;
 
    // mocks for interacting classes
-   @Mock
-   private ListDataProvider mockDataProvider;
    @Mock
    private DocumentListDisplay mockDisplay;
    @Mock
@@ -467,13 +464,8 @@ public class DocumentListPresenterTest
    @Test
    public void getDocumentInfo()
    {
-//      when(mockDisplay.getDataProvider()).thenReturn(mockDataProvider);
-      when(mockDataProvider.getList()).thenReturn(dataProviderList);
-
       documentListPresenter.bind();
       documentListPresenter.setDocuments(buildSampleDocumentArray());
-
-      verify(mockDataProvider).refresh();
 
       DocumentInfo docInfo = documentListPresenter.getDocumentInfo(new DocumentId(1111L, ""));
       assertThat(docInfo, is(equalTo(new DocumentInfo(new DocumentId(1111L, ""), "doc111", "first/path/", LocaleId.EN_US, new TranslationStats(), "Translator", new Date(), new HashMap<String, String>(), "last translator", new Date()))));

@@ -25,7 +25,6 @@ import org.apache.lucene.util.OpenBitSet;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.webtrans.shared.model.ValidationId;
 
 /**
  * Defines a Cache Service for translation states.
@@ -72,12 +71,4 @@ public interface TranslationStateCache
     * @return
     */
    HTextFlowTarget getDocLastModifiedTextFlowTarget(Long documentId, LocaleId localeId);
-
-   /**
-    * Return boolean of textFlowTarget has validation error against validation rules {@link org.zanata.webtrans.share.model.ValidationAction}
-    * @param textFlowTargetId
-    * @param validationId
-    * @return
-    */
-   Boolean textFlowTargetHasError(Long textFlowTargetId, ValidationId validationId);
 }

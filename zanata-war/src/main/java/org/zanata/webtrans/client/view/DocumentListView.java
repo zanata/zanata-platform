@@ -28,6 +28,7 @@ import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.DocumentListTable;
+import org.zanata.webtrans.client.ui.DocumentListTable.DocValidationStatus;
 import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.client.ui.DownloadFilesConfirmationBox;
 import org.zanata.webtrans.client.ui.FileUploadDialog;
@@ -366,9 +367,9 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    }
 
    @Override
-   public void updateRowHasError(int row, boolean hasError)
+   public void updateRowHasError(int row, DocValidationStatus status)
    {
-      documentListTable.updateRowHasError(row, hasError);
+      documentListTable.updateRowHasError(row, status);
    }
 
    @Override
@@ -411,8 +412,8 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    }
 
    @Override
-   public void showRowLoading(int row, boolean showLoading)
+   public void showRowLoading(int row)
    {
-      documentListTable.showRowLoading(row, showLoading);
+      documentListTable.showRowLoading(row);
    }
 }

@@ -56,6 +56,11 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class DocumentListTable extends FlexTable implements HasStatsFilter
 {
+   public static enum DocValidationStatus
+   {
+      HasError, NoError, Unknown
+   }
+
    private static int PATH_COLUMN = 0;
    private static int DOC_COLUMN = 1;
    private static int STATS_COLUMN = 2;
@@ -79,13 +84,13 @@ public class DocumentListTable extends FlexTable implements HasStatsFilter
       setCellSpacing(0);
 
       this.userWorkspaceContext = userWorkspaceContext;
-      
+
       this.messages = messages;
       this.resources = resources;
 
       buildHeader();
    }
-   
+
    public void setListener(final DocumentListDisplay.Listener listener)
    {
       this.listener = listener;
@@ -178,7 +183,7 @@ public class DocumentListTable extends FlexTable implements HasStatsFilter
          pageRows.put(node.getDocInfo().getId(), i + 1);
 
          this.setWidget(i + 1, PATH_COLUMN, getPathWidget(node.getDocInfo()));
-         this.setWidget(i + 1, DOC_COLUMN, getDocWidget(node.getDocInfo()));
+         this.setWidget(i + 1, DOC_COLUMN, new DocWidget(node.getDocInfo()));
 
          this.setWidget(i + 1, STATS_COLUMN, getStatsWidget(node.getDocInfo()));
          this.setWidget(i + 1, TRANSLATED_COLUMN, new InlineLabel(String.valueOf(node.getDocInfo().getStats().getWordCount().getApproved())));
@@ -190,16 +195,9 @@ public class DocumentListTable extends FlexTable implements HasStatsFilter
 
          this.setWidget(i + 1, ACTION_COLUMN, getActionWidget(node.getDocInfo()));
 
-         if(node.getDocInfo().hasValidationError())
-         {
-            this.getCellFormatter().setStyleName(i + 1, PATH_COLUMN, "pathCol hasError");
-            this.getCellFormatter().setStyleName(i + 1, DOC_COLUMN, "documentCol hasError");
-         }
-         else
-         {
-            this.getCellFormatter().setStyleName(i + 1, PATH_COLUMN, "pathCol");
-            this.getCellFormatter().setStyleName(i + 1, DOC_COLUMN, "documentCol");
-         }
+        
+         this.getCellFormatter().setStyleName(i + 1, PATH_COLUMN, "pathCol");
+         this.getCellFormatter().setStyleName(i + 1, DOC_COLUMN, "documentCol");
          this.getCellFormatter().setStyleName(i + 1, STATS_COLUMN, "statisticCol");
          this.getCellFormatter().setStyleName(i + 1, TRANSLATED_COLUMN, "translatedCol");
          this.getCellFormatter().setStyleName(i + 1, UNTRANSLATED_COLUMN, "untranslatedCol");
@@ -207,6 +205,11 @@ public class DocumentListTable extends FlexTable implements HasStatsFilter
          this.getCellFormatter().setStyleName(i + 1, LAST_UPLOAD_COLUMN, "auditCol");
          this.getCellFormatter().setStyleName(i + 1, LAST_TRANSLATED_COLUMN, "auditCol");
          this.getCellFormatter().setStyleName(i + 1, ACTION_COLUMN, "actionCol");
+         
+         if (node.getDocInfo().getHasError())
+         {
+            updateRowHasError(i + 1, DocValidationStatus.HasError);
+         }
       }
 
       return pageRows;
@@ -220,34 +223,100 @@ public class DocumentListTable extends FlexTable implements HasStatsFilter
       return pathLabel;
    }
 
-   private Widget getDocWidget(final DocumentInfo docInfo)
+   private interface HasValidationResult
    {
-      FlowPanel panel = new FlowPanel();
-      
-      InlineLabel docLabel = new InlineLabel(docInfo.getName());
-      docLabel.setTitle(docInfo.getName());
-      docLabel.addClickHandler(new ClickHandler()
+      void showLoading();
+
+      void setValidationResult(DocValidationStatus status);
+   }
+
+   private class DocWidget extends FlowPanel implements HasValidationResult
+   {
+      private final InlineLabel docLabel;
+      private final Image loading;
+      private final InlineLabel noError;
+      private final InlineLabel hasError;
+      private final InlineLabel unknown;
+
+      public DocWidget(final DocumentInfo docInfo)
       {
-         @Override
-         public void onClick(ClickEvent event)
+         super();
+         docLabel = new InlineLabel(docInfo.getName());
+         docLabel.setTitle(docInfo.getName());
+         docLabel.addClickHandler(new ClickHandler()
          {
-            listener.fireDocumentSelection(docInfo);
+            @Override
+            public void onClick(ClickEvent event)
+            {
+               listener.fireDocumentSelection(docInfo);
+            }
+         });
+         this.add(docLabel);
+
+         loading = new Image(resources.spinner());
+         loading.setVisible(false);
+         this.add(loading);
+
+         noError = new InlineLabel();
+         noError.setStyleName("icon-ok-circle-2");
+         noError.setVisible(false);
+         this.add(noError);
+
+         hasError = new InlineLabel();
+         hasError.setStyleName("icon-cancel-circle-2 hasError");
+         hasError.setVisible(false);
+         this.add(hasError);
+
+         unknown = new InlineLabel();
+         unknown.setStyleName("icon-help-circle-2");
+         unknown.setVisible(false);
+         this.add(unknown);
+      }
+
+      @Override
+      public void showLoading()
+      {
+         loading.setVisible(true);
+
+         noError.setVisible(false);
+         hasError.setVisible(false);
+         unknown.setVisible(false);
+      }
+
+      @Override
+      public void setValidationResult(DocValidationStatus status)
+      {
+         loading.setVisible(false);
+         noError.setVisible(false);
+         hasError.setVisible(false);
+         unknown.setVisible(false);
+
+         if (status == DocValidationStatus.HasError)
+         {
+            hasError.setVisible(true);
+            docLabel.setTitle(messages.hasValidationErrors(docLabel.getText()));
+            docLabel.addStyleName("hasError");
          }
-      });
-      panel.add(docLabel);
-      
-      Image loading = new Image(resources.spinner());
-      loading.setVisible(false);
-      panel.add(loading);
-      
-      return panel;
+         else if (status == DocValidationStatus.NoError)
+         {
+            noError.setVisible(true);
+            docLabel.setTitle(docLabel.getText());
+            docLabel.removeStyleName("hasError");
+         }
+         else if (status == DocValidationStatus.Unknown)
+         {
+            unknown.setVisible(false);
+            docLabel.setTitle(docLabel.getText());
+            docLabel.removeStyleName("hasError");
+         }
+      }
    }
 
    private Widget getStatsWidget(DocumentInfo docInfo)
    {
       final TransUnitCountBar graph = new TransUnitCountBar(messages, LabelFormat.PERCENT_COMPLETE);
       graph.setStats(docInfo.getStats(), true);
-     
+
       return graph;
    }
 
@@ -295,46 +364,37 @@ public class DocumentListTable extends FlexTable implements HasStatsFilter
       return sb.toString();
    }
 
-   public void updateRowHasError(int row, boolean hasError)
+   public void updateRowHasError(int row, DocValidationStatus status)
    {
-      if (row > 0)
-      {
-         if (hasError)
-         {
-            this.getCellFormatter().setStyleName(row, PATH_COLUMN, "pathCol hasError");
-            this.getCellFormatter().setStyleName(row, DOC_COLUMN, "documentCol hasError");
-         }
-         else
-         {
-            this.getCellFormatter().setStyleName(row, PATH_COLUMN, "pathCol");
-            this.getCellFormatter().setStyleName(row, DOC_COLUMN, "documentCol");
-         }
-      }
+      HasValidationResult panel = (HasValidationResult) this.getWidget(row, DOC_COLUMN);
+      panel.setValidationResult(status);
 
+      if (status == DocValidationStatus.HasError)
+      {
+         this.getWidget(row, PATH_COLUMN).addStyleName("hasError");
+      }
+      else
+      {
+         this.getWidget(row, PATH_COLUMN).removeStyleName("hasError");
+      }
    }
 
    public void updateLastTranslatedInfo(int row, TransUnit transUnit)
    {
-      if (row > 0)
-      {
-         HasText label = (HasText) this.getWidget(row, LAST_TRANSLATED_COLUMN);
-         label.setText(getAuditInfo(transUnit.getLastModifiedBy(), transUnit.getLastModifiedTime()));
-      }
+      HasText label = (HasText) this.getWidget(row, LAST_TRANSLATED_COLUMN);
+      label.setText(getAuditInfo(transUnit.getLastModifiedBy(), transUnit.getLastModifiedTime()));
    }
 
    public void updateStats(int row, TranslationStats stats)
    {
-      if (row > 0)
-      {
-         TransUnitCountBar graph = (TransUnitCountBar) this.getWidget(row, STATS_COLUMN);
-         graph.setStats(stats, true);
-      }
+      TransUnitCountBar graph = (TransUnitCountBar) this.getWidget(row, STATS_COLUMN);
+      graph.setStats(stats, true);
    }
 
    @Override
    public void setStatsFilter(String option, DocumentNode documentNode)
    {
-      for(int i = 0; i < this.getRowCount() - 1; i++)
+      for (int i = 0; i < this.getRowCount() - 1; i++)
       {
          TransUnitCountBar graph = (TransUnitCountBar) this.getWidget(i + 1, STATS_COLUMN);
          HasText translated = (HasText) this.getWidget(i + 1, TRANSLATED_COLUMN);
@@ -355,12 +415,9 @@ public class DocumentListTable extends FlexTable implements HasStatsFilter
       }
    }
 
-   public void showRowLoading(int row, boolean showLoading)
+   public void showRowLoading(int row)
    {
-      if (row > 0)
-      {
-         FlowPanel panel = (FlowPanel) this.getWidget(row, DOC_COLUMN);
-         panel.getWidget(1).setVisible(showLoading);
-      }
+      HasValidationResult panel = (HasValidationResult) this.getWidget(row, DOC_COLUMN);
+      panel.showLoading();
    }
 }
