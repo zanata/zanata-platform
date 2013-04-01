@@ -2,6 +2,7 @@ package org.zanata.webtrans.shared.rpc;
 
 import java.util.List;
 
+import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ValidationId;
 
 /**
@@ -15,17 +16,17 @@ public class RunDocValidationAction extends AbstractWorkspaceAction<RunDocValida
    private static final long serialVersionUID = 1L;
 
    private List<ValidationId> validationIds;
-   private List<Long> docIds; 
+   private DocumentId docId; 
 
    @SuppressWarnings("unused")
    private RunDocValidationAction()
    {
    }
 
-   public RunDocValidationAction(List<ValidationId> validationIds, List<Long> docIds)
+   public RunDocValidationAction(List<ValidationId> validationIds, DocumentId docId)
    {
       this.validationIds = validationIds;
-      this.docIds = docIds;
+      this.docId = docId;
    }
 
    public List<ValidationId> getValidationIds()
@@ -33,8 +34,8 @@ public class RunDocValidationAction extends AbstractWorkspaceAction<RunDocValida
       return validationIds;
    }
 
-   public List<Long> getDocIds()
+   public DocumentId getDocId()
    {
-      return docIds;
+      return docId;
    }
 }

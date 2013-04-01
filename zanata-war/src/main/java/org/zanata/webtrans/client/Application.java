@@ -1,6 +1,6 @@
 package org.zanata.webtrans.client;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
 
@@ -161,19 +161,24 @@ public class Application implements EntryPoint
       Window.enableScrolling(true);
       // eager load document list
       final EventBus eventBus = injector.getEventBus();
-      injector.getDispatcher().execute(new GetDocumentList(injector.getLocation().getQueryDocuments()), new AsyncCallback<GetDocumentListResult>()
+
+      GetDocumentList action = new GetDocumentList(injector.getLocation().getQueryDocuments());
+
+      documentListPresenter.showLoading(true);
+      injector.getDispatcher().execute(action, new AsyncCallback<GetDocumentListResult>()
       {
          @Override
          public void onFailure(Throwable caught)
          {
             eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Failed to load documents"));
+            documentListPresenter.showLoading(false);
          }
 
          @Override
          public void onSuccess(GetDocumentListResult result)
          {
             long start = System.currentTimeMillis();
-            final ArrayList<DocumentInfo> documents = result.getDocuments();
+            final List<DocumentInfo> documents = result.getDocuments();
             Log.info("Received doc list for " + result.getProjectIterationId() + ": " + documents.size() + " elements, loading time: " + String.valueOf(System.currentTimeMillis() - start) + "ms");
             documentListPresenter.setDocuments(documents);
 
@@ -196,6 +201,8 @@ public class Application implements EntryPoint
 
             exceptionHandler.setAppPresenter(appPresenter);
             exceptionHandler.setTargetContentsPresenter(injector.getTargetContentsPresenter());
+
+            documentListPresenter.showLoading(false);
          }
       });
    }

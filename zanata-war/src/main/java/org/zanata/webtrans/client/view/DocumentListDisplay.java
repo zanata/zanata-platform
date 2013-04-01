@@ -20,18 +20,23 @@
  */
 package org.zanata.webtrans.client.view;
 
+import java.util.HashMap;
+import java.util.List;
+
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
+import org.zanata.common.TranslationStats;
+import org.zanata.webtrans.client.ui.DocumentListTable.DocValidationStatus;
 import org.zanata.webtrans.client.ui.DocumentNode;
+import org.zanata.webtrans.client.ui.HasPager;
 import org.zanata.webtrans.client.ui.InlineLink;
 import org.zanata.webtrans.client.ui.SearchFieldListener;
+import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
+import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
-import com.google.gwt.view.client.HasData;
-import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.NoSelectionModel;
 
 /**
  *
@@ -40,17 +45,16 @@ import com.google.gwt.view.client.NoSelectionModel;
  */
 public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
 {
-   void updatePageSize(int pageSize);
-
-   HasData<DocumentNode> getDocumentListTable();
-
-   ListDataProvider<DocumentNode> getDataProvider();
-
-   void renderTable(NoSelectionModel<DocumentNode> selectionModel);
+   public static String PATH_HEADER = "path";
+   public static String DOC_HEADER = "doc";
+   public static String STATS_HEADER = "stats";
+   public static String TRANSLATED_HEADER = "translated";
+   public static String UNTRANSLATED_HEADER = "untranslated";
+   public static String REMAINING_HEADER = "remaining";
+   public static String LAST_UPLOAD_HEADER = "lastUpload";
+   public static String LAST_TRANSLATED_HEADER = "lastTranslated";
 
    String getSelectedStatsOption();
-
-   void setStatsFilter(String option);
 
    void setListener(Listener documentListPresenter);
 
@@ -81,6 +85,10 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
       void onUploadFile();
 
       void updateDownloadFileProgress();
+
+      void sortList(String header, boolean asc);
+
+      void pagerValueChanged(Integer value);
    }
 
    void setLayout(String layout);
@@ -114,4 +122,20 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
    void setEnableDownloadZip(boolean enabled);
 
    void showLoading(boolean showLoading);
+
+   HashMap<DocumentId, Integer> buildContent(List<DocumentNode> nodes);
+
+   void updateLastTranslatedInfo(int row, TransUnit transUnit);
+
+   void updateStats(int row, TranslationStats stats);
+
+   void setStatsFilters(String option, DocumentNode documentNode);
+
+   HasPager getPageNavigation();
+
+   void setStatsFilters(String option);
+
+   void showRowLoading(int row);
+
+   void updateRowHasError(int row, DocValidationStatus status);
 }

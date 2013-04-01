@@ -56,7 +56,7 @@ public class LocaleDAO extends AbstractDAOImpl<HLocale, Long>
       cr.setComment("LocaleDAO.findByLocaleId");
       return (HLocale) cr.uniqueResult();
    }
-
+   
    @SuppressWarnings("unchecked")
    public List<HLocale> findBySimilarLocaleId(LocaleId localeId)
    {

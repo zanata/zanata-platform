@@ -135,8 +135,10 @@ public class HtmlXmlTagValidation extends AbstractValidationAction
                outOfOrder.add(aSrc);
             }
          }
-
-         errorList.add(getMessages().tagsWrongOrder(outOfOrder));
+         if (!outOfOrder.isEmpty())
+         {
+            errorList.add(getMessages().tagsWrongOrder(outOfOrder));
+         }
       }
    }
 

@@ -47,4 +47,6 @@ public interface ValidationOptionsDisplay extends WidgetDisplay
    void setRunValidationTitle(String title);
 
    void updateValidationResult(Date endTime);
+
+   void enabledRunValidation(boolean enabled);
 }

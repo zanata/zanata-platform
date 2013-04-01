@@ -44,8 +44,8 @@ import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.UserOptionsService;
-import org.zanata.webtrans.client.service.ValidationService;
 import org.zanata.webtrans.client.ui.DocumentNode;
+import org.zanata.webtrans.client.ui.HasPager;
 import org.zanata.webtrans.client.view.DocumentListDisplay;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
@@ -62,7 +62,6 @@ import org.zanata.webtrans.shared.rpc.ThemesOption;
 
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.NoSelectionModel;
 
 @Test(groups = { "unit-tests" })
 public class DocumentListPresenterTest
@@ -71,8 +70,6 @@ public class DocumentListPresenterTest
    private DocumentListPresenter documentListPresenter;
 
    // mocks for interacting classes
-   @Mock
-   private ListDataProvider mockDataProvider;
    @Mock
    private DocumentListDisplay mockDisplay;
    @Mock
@@ -89,11 +86,10 @@ public class DocumentListPresenterTest
    private UserOptionsService mockUserOptionsService;
    @Mock
    private CachingDispatchAsync mockDispatcher;
+   @Mock
+   private HasPager mockPager;
 
    private UserConfigHolder configHolder;
-
-   // this list is updated to update display table
-   private List<DocumentNode> dataProviderList;
 
    // captured events and handlers used in several tests
    @Captor
@@ -116,7 +112,6 @@ public class DocumentListPresenterTest
       MockitoAnnotations.initMocks(this);
       configHolder = new UserConfigHolder();
       when(mockUserOptionsService.getConfigHolder()).thenReturn(configHolder);
-      dataProviderList = new ArrayList<DocumentNode>();
       documentListPresenter = new DocumentListPresenter(mockDisplay, mockEventBus, mockDispatcher, mockUserWorkspaceContext, mockMessages, mockHistory, mockUserOptionsService);
    
       workspaceId = new WorkspaceId(new ProjectIterationId("projectSlug", "iterationSlug", ProjectType.Podir), LocaleId.EN_US);
@@ -126,20 +121,21 @@ public class DocumentListPresenterTest
 
       when(mockMessages.projectTypeNotSet()).thenReturn("Project not set");
       when(mockMessages.downloadAllAsZipDescription()).thenReturn("Download all translation file");
+      
+      when(mockDisplay.getPageNavigation()).thenReturn(mockPager);
    }
 
    @Test
    public void onBind()
    {
-      when(mockDisplay.getDataProvider()).thenReturn(mockDataProvider);
       when(mockMessages.byWords()).thenReturn(TEST_BY_WORDS_MESSAGE);
       when(mockMessages.byMessage()).thenReturn(TEST_BY_MESSAGE_MESSAGE);
 
       documentListPresenter.onBind();
 
-      verify(mockDisplay).renderTable(isA(NoSelectionModel.class));
-      verify(mockDisplay).setStatsFilter("Words");
-      verify(mockDisplay).updatePageSize(UserConfigHolder.DEFAULT_DOC_LIST_PAGE_SIZE);
+//      verify(mockDisplay).renderTable(isA(NoSelectionModel.class));
+//      verify(mockDisplay).setStatsFilter("Words");
+//      verify(mockDisplay).updatePageSize(UserConfigHolder.DEFAULT_DOC_LIST_PAGE_SIZE);
       verify(mockDisplay).setListener(documentListPresenter);
       verify(mockEventBus).addHandler(DocumentSelectionEvent.getType(), documentListPresenter);
       verify(mockEventBus).addHandler(TransUnitUpdatedEvent.getType(), documentListPresenter);
@@ -153,22 +149,16 @@ public class DocumentListPresenterTest
    @Test
    public void loadDocsIntoDataProvider()
    {
-      when(mockDisplay.getDataProvider()).thenReturn(mockDataProvider);
-      when(mockDataProvider.getList()).thenReturn(dataProviderList);
-
       documentListPresenter.bind();
       documentListPresenter.setDocuments(buildSampleDocumentArray());
 
-      verify(mockDataProvider).refresh();
-
       // right amount of docs
-      assertThat("the data provider should have the same sized document list returned from the server", dataProviderList.size(), is(3));
+      assertThat("the data provider should have the same sized document list returned from the server", documentListPresenter.getSortedNodes().size(), is(3));
 
-      // used in setupAndBind method above
       ArrayList<DocumentInfo> expectedDocs = buildSampleDocumentArray();
 
       ArrayList<DocumentInfo> actualDocInfos = new ArrayList<DocumentInfo>();
-      for (DocumentNode node : dataProviderList)
+      for (DocumentNode node : documentListPresenter.getSortedNodes())
       {
          assertThat("the data provider should have only documents that were returned from the server", node.getDocInfo(), isIn(expectedDocs));
          actualDocInfos.add(node.getDocInfo());
@@ -190,8 +180,6 @@ public class DocumentListPresenterTest
       TransUnitUpdateInfo updateInfo = new TransUnitUpdateInfo(true, true, new DocumentId(2222L, ""), newTransUnit, 3, 0, ContentState.NeedReview);
       TransUnitUpdatedEvent mockEvent = mock(TransUnitUpdatedEvent.class);
 
-      when(mockDisplay.getDataProvider()).thenReturn(mockDataProvider);
-      when(mockDataProvider.getList()).thenReturn(dataProviderList);
       when(mockEvent.getUpdateInfo()).thenReturn(updateInfo);
 
       ArrayList<DocumentInfo> documentInfos = buildSampleDocumentArray();
@@ -206,7 +194,6 @@ public class DocumentListPresenterTest
       documentListPresenter.setProjectStats(stats);
       documentListPresenter.onTransUnitUpdated(mockEvent);
 
-      verify(mockDataProvider, times(2)).refresh();
       verify(mockEventBus, times(2)).fireEvent(capturedEventBusEvent.capture());
 
       DocumentStatsUpdatedEvent docStatsEvent = null;
@@ -251,8 +238,6 @@ public class DocumentListPresenterTest
       TransUnitUpdateInfo updateInfo = new TransUnitUpdateInfo(true, true, new DocumentId(2222L, ""), newTransUnit, 3, 0, ContentState.NeedReview);
       TransUnitUpdatedEvent mockEvent = mock(TransUnitUpdatedEvent.class);
 
-      when(mockDisplay.getDataProvider()).thenReturn(mockDataProvider);
-      when(mockDataProvider.getList()).thenReturn(dataProviderList);
       when(mockEvent.getUpdateInfo()).thenReturn(updateInfo);
 
       ArrayList<DocumentInfo> documentInfos = buildSampleDocumentArray();
@@ -267,7 +252,6 @@ public class DocumentListPresenterTest
       documentListPresenter.setProjectStats(stats);
       documentListPresenter.onTransUnitUpdated(mockEvent);
 
-      verify(mockDataProvider, times(2)).refresh();
       verify(mockEventBus, times(2)).fireEvent(capturedEventBusEvent.capture());
 
       ProjectStatsUpdatedEvent projectStatsEvent = null;
@@ -372,9 +356,6 @@ public class DocumentListPresenterTest
    @Test
    public void exactSearchMatchesExactOnly()
    {
-      when(mockDisplay.getDataProvider()).thenReturn(mockDataProvider);
-      when(mockDataProvider.getList()).thenReturn(dataProviderList);
-
       // should match 1 of the 3 sample documents
       String filterText = "match/exact/filter";
 
@@ -382,7 +363,6 @@ public class DocumentListPresenterTest
       documentListPresenter.setDocuments(buildSampleDocumentArray());
       documentListPresenter.updateFilterAndRun(filterText, true, false);
 
-      verify(mockDataProvider, times(2)).refresh();
       verify(mockDisplay).updateFilter(false, true, filterText);
 
       // simulate firing history change event
@@ -394,13 +374,13 @@ public class DocumentListPresenterTest
       expectedDocs.remove(2); // third doc does not match the filter
       expectedDocs.remove(0); // first doc does not match the filter
       ArrayList<DocumentInfo> actualDocInfos = new ArrayList<DocumentInfo>();
-      for (DocumentNode node : dataProviderList)
+      for (DocumentNode node : documentListPresenter.getSortedNodes())
       {
          assertThat("the data provider should have only documents that exactly match the current filter", node.getDocInfo(), isIn(expectedDocs));
          actualDocInfos.add(node.getDocInfo());
       }
       assertThat("the data provider should have all documents that exactly match the filter", actualDocInfos, hasItems(expectedDocs.get(0)));
-      assertThat("the data provider list should contain exactly the number of documents matching the filter", dataProviderList.size(), is(1));
+      assertThat("the data provider list should contain exactly the number of documents matching the filter", documentListPresenter.getSortedNodes().size(), is(1));
    }
 
    // TODO test case sensitivity option
@@ -408,9 +388,6 @@ public class DocumentListPresenterTest
    @Test
    public void commaSeparatedFilter()
    {
-      when(mockDisplay.getDataProvider()).thenReturn(mockDataProvider);
-      when(mockDataProvider.getList()).thenReturn(dataProviderList);
-
       // should match first and last of the 3 sample documents
       // multiple matching strings for third to check that there is no
       // duplication, also variable whitespace
@@ -424,20 +401,19 @@ public class DocumentListPresenterTest
       HistoryToken historyTokenWithFilter = new HistoryToken();
       historyTokenWithFilter.setDocFilterText(filterText);
 
-      verify(mockDataProvider, times(2)).refresh();
       verify(mockDisplay).updateFilter(false, false, filterText);
 
       ArrayList<DocumentInfo> expectedDocs = buildSampleDocumentArray();
       expectedDocs.remove(1); // second doc does not match any of the filter
                               // strings
       ArrayList<DocumentInfo> actualDocInfos = new ArrayList<DocumentInfo>();
-      for (DocumentNode node : dataProviderList)
+      for (DocumentNode node : documentListPresenter.getSortedNodes())
       {
          assertThat("the data provider should have only documents that match the current filter", node.getDocInfo(), isIn(expectedDocs));
          actualDocInfos.add(node.getDocInfo());
       }
       assertThat("the data provider should have all documents that match the filter", actualDocInfos, hasItems(expectedDocs.get(0), expectedDocs.get(1)));
-      assertThat("the data provider list should contain exactly the number of documents matching the filter", dataProviderList.size(), is(2));
+      assertThat("the data provider list should contain exactly the number of documents matching the filter", documentListPresenter.getSortedNodes().size(), is(2));
    }
 
    // TODO test case sensitive check updated from history
@@ -448,13 +424,8 @@ public class DocumentListPresenterTest
    @Test
    public void getDocumentId()
    {
-      when(mockDisplay.getDataProvider()).thenReturn(mockDataProvider);
-      when(mockDataProvider.getList()).thenReturn(dataProviderList);
-
       documentListPresenter.bind();
       documentListPresenter.setDocuments(buildSampleDocumentArray());
-
-      verify(mockDataProvider).refresh();
 
       // third document from buildSampleDocumentArray()
       DocumentId docId = documentListPresenter.getDocumentId("does/not/match/exact/filter");
@@ -468,13 +439,8 @@ public class DocumentListPresenterTest
    @Test
    public void getDocumentInfo()
    {
-      when(mockDisplay.getDataProvider()).thenReturn(mockDataProvider);
-      when(mockDataProvider.getList()).thenReturn(dataProviderList);
-
       documentListPresenter.bind();
       documentListPresenter.setDocuments(buildSampleDocumentArray());
-
-      verify(mockDataProvider).refresh();
 
       DocumentInfo docInfo = documentListPresenter.getDocumentInfo(new DocumentId(1111L, ""));
       assertThat(docInfo, is(equalTo(new DocumentInfo(new DocumentId(1111L, ""), "doc111", "first/path/", LocaleId.EN_US, new TranslationStats(), "Translator", new Date(), new HashMap<String, String>(), "last translator", new Date()))));
@@ -491,7 +457,7 @@ public class DocumentListPresenterTest
 
       documentListPresenter.onUserConfigChanged(mockEvent);
 
-      verify(mockDisplay).updatePageSize(UserConfigHolder.DEFAULT_DOC_LIST_PAGE_SIZE);
+//      verify(mockDisplay).updatePageSize(UserConfigHolder.DEFAULT_DOC_LIST_PAGE_SIZE);
    }
 
    @Test

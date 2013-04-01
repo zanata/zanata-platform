@@ -20,8 +20,6 @@
  */
 package org.zanata.webtrans.shared.rpc;
 
-import java.util.Map;
-
 import org.zanata.common.LocaleId;
 import org.zanata.webtrans.shared.model.DocumentId;
 
@@ -34,23 +32,30 @@ public class RunDocValidationResult implements DispatchResult
 {
    private static final long serialVersionUID = 1L;
 
-   private Map<DocumentId, Boolean> result;
+   private DocumentId documentId;
    private LocaleId localeId;
+   private boolean hasError;
 
    @SuppressWarnings("unused")
    private RunDocValidationResult()
    {
    }
 
-   public RunDocValidationResult(Map<DocumentId, Boolean> result, LocaleId localeId)
+   public RunDocValidationResult(DocumentId documentId, boolean hasError, LocaleId localeId)
    {
-      this.result = result;
+      this.documentId = documentId;
       this.localeId = localeId;
+      this.hasError = hasError;
    }
    
-   public Map<DocumentId, Boolean> getResult()
+   public DocumentId getDocumentId()
    {
-      return result;
+      return documentId;
+   }
+
+   public boolean getHasError()
+   {
+      return hasError;
    }
 
    public LocaleId getLocaleId()

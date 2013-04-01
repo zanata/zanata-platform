@@ -5,10 +5,8 @@ package org.zanata.service.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -29,11 +27,9 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.service.TranslationStateCache;
 import org.zanata.service.ValidationFactoryProvider;
 import org.zanata.service.ValidationService;
 import org.zanata.webtrans.server.rpc.TransUnitTransformer;
-import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
@@ -61,9 +57,6 @@ public class ValidationServiceImpl implements ValidationService
 
    @In
    private ProjectIterationDAO projectIterationDAO;
-
-   @In
-   private TranslationStateCache translationStateCacheImpl;
 
    @In
    private TextFlowTargetDAO textFlowTargetDAO;
@@ -152,23 +145,18 @@ public class ValidationServiceImpl implements ValidationService
    }
 
    @Override
-   public Map<DocumentId, Boolean> runValidations(List<HDocument> hDocs, List<ValidationId> validationIds, LocaleId localeId)
+   public boolean runValidations(HDocument hDoc, List<ValidationId> validationIds, LocaleId localeId)
    {
-      log.info("Start {0} docs validation", hDocs.size());
+      log.debug("Start doc validation {0}", hDoc.getId());
       Stopwatch stopwatch = new Stopwatch().start();
-      Map<DocumentId, Boolean> validationResult = new HashMap<DocumentId, Boolean>();
       List<ValidationAction> validationActions = getValidationFactory().getValidationActions(validationIds);
 
-      for (HDocument hDoc : hDocs)
-      {
-         boolean hasValidationError = documentHasError(hDoc, validationActions, localeId);
-         validationResult.put(new DocumentId(hDoc.getId(), hDoc.getDocId()), hasValidationError);
-      }
-
-      log.info("Finished docs validation in " + stopwatch);
-      return validationResult;
+      boolean hasError = documentHasError(hDoc, validationActions, localeId);
+      
+      log.debug("Finished doc validation in " + stopwatch);
+      return hasError;
    }
-
+   
    private boolean documentHasError(HDocument hDoc, List<ValidationAction> validationActions, LocaleId localeId)
    {
       for (HTextFlow textFlow : hDoc.getTextFlows())
@@ -185,7 +173,7 @@ public class ValidationServiceImpl implements ValidationService
    @Override
    public List<HTextFlow> filterHasErrorTexFlow(List<HTextFlow> textFlows, List<ValidationId> validationIds, LocaleId localeId, int startIndex, int maxSize)
    {
-      log.info("Start filter {0} textFlows", textFlows.size());
+      log.debug("Start filter {0} textFlows", textFlows.size());
       Stopwatch stopwatch = new Stopwatch().start();
 
       List<ValidationAction> validationActions = getValidationFactory().getValidationActions(validationIds);
@@ -198,7 +186,7 @@ public class ValidationServiceImpl implements ValidationService
             result.add(textFlow);
          }
       }
-      log.info("Finished filter textFlows in " + stopwatch);
+      log.debug("Finished filter textFlows in " + stopwatch);
 
       if (result.size() <= maxSize)
       {
@@ -221,19 +209,14 @@ public class ValidationServiceImpl implements ValidationService
    private boolean textFlowTargetHasError(HTextFlow textFlow, List<ValidationAction> validationActions, LocaleId localeId)
    {
       HTextFlowTarget target = textFlowTargetDAO.getTextFlowTarget(textFlow, localeId);
-
+      List<String> errorList = new ArrayList<String>();
       if (target != null)
       {
          for (ValidationAction validationAction : validationActions)
          {
-            Boolean value = translationStateCacheImpl.textFlowTargetHasError(target.getId(), validationAction.getId());
-
-            if (value != null)
-            {
-               return value.booleanValue();
-            }
+            errorList.addAll(validationAction.validate(textFlow.getContents().get(0), target.getContents().get(0)));
          }
       }
-      return false;
+      return !errorList.isEmpty();
    }
 }

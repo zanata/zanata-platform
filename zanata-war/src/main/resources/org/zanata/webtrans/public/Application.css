@@ -334,10 +334,21 @@ td.ApprovedStateDecoration div div div
 	font-size: 16px;
 }
 
+.DocumentListTable tr:hover
+{
+	background:#eee;
+}
 
-.DocumentListTable th {
-	padding: 15px 8px 15px 8px;
+.DocumentListTable td.sortable
+{
+	text-decoration:underline;
+	cursor:pointer;
+}
+
+
+.DocumentListTable th, .DocumentListTable td.docListHeader {
 	font-size: 13px;
+	font-weight:bold;
 	color: #ffffff;
 	font-family: Arial, Verdana, sans-serif;
 	background-color:#461446;
@@ -350,12 +361,12 @@ td.ApprovedStateDecoration div div div
 	color:#FFFFFF;
 }
 
-.DocumentListTable th:first-child {
+.DocumentListTable th:first-child, .DocumentListTable td.docListHeader:first-child {
 	border-top-left-radius: 5px;
 	border-left:none;
 }
 
-.DocumentListTable th:last-child {
+.DocumentListTable th:last-child, .DocumentListTable td.docListHeader:last-child {
 	border-top-right-radius: 5px;
 }
 
@@ -377,9 +388,6 @@ td.ApprovedStateDecoration div div div
 
 .DocumentListTable td.pathCol {
 	max-width:150px;
-}
-
-.DocumentListTable td.pathCol div{
 	text-overflow:ellipsis;
 	overflow:hidden;
 }
@@ -388,18 +396,16 @@ td.ApprovedStateDecoration div div div
 	max-width:100px;
 	width: 25%;
 	text-decoration:underline;
+	text-overflow:ellipsis;
+	overflow:hidden;
 	cursor:pointer;
 }
 
-.DocumentListTable td.hasError {
+.DocumentListTable .hasError {
 	color:red;
 	font-weight:bold;
 }
 
-.DocumentListTable td.documentCol div{
-	text-overflow:ellipsis;
-	overflow:hidden;
-}
 
 .DocumentListTable td.statisticCol {
 	font-size:14px;
@@ -432,12 +438,18 @@ td.ApprovedStateDecoration div div div
 	text-align:center;
 }
 
-
-.DocumentListTable td.downloadCol { 
+.DocumentListTable td.actionCol { 
+	text-align:center;
 }
 
-.DocumentListTable td.uploadCol { 
-	text-align:center;
+.DocumentListTable td.actionCol .uploadButton { 
+	font-size:20px;
+	cursor:pointer
+	
+}
+
+.DocumentListTable td.actionCol .uploadButton:hover { 
+	color:#0085CC;
 }
 
 .pointer {

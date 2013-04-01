@@ -28,6 +28,7 @@ import org.zanata.webtrans.client.presenter.TranslationPresenter;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.Breadcrumb;
 import org.zanata.webtrans.client.ui.TransUnitCountBar;
+import org.zanata.webtrans.client.ui.HasTranslationStats.LabelFormat;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.google.gwt.core.client.GWT;
@@ -99,7 +100,7 @@ public class AppView extends Composite implements AppDisplay
    {
       // this must be initialized before uiBinder.createAndBindUi(), or an
       // exception will be thrown at runtime
-      translationStatsBar = new TransUnitCountBar(messages);
+      translationStatsBar = new TransUnitCountBar(messages, LabelFormat.PERCENT_COMPLETE_HRS);
       translationStatsBar.setVisible(false); // hide until there is a value to
       
       projectLink = new Breadcrumb(true, false, Application.getProjectHomeURL(userWorkspaceContext.getWorkspaceContext().getWorkspaceId()));

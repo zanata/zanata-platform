@@ -6,13 +6,11 @@ package org.zanata.service;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.zanata.common.LocaleId;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
-import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 
@@ -56,15 +54,15 @@ public interface ValidationService
 
    /**
     * Run validation check on HTextFlow and HTextFlowTarget with specific locale
-    * from list of HDocuments against validations rules
+    * from HDocument against validations rules
     * 
-    * Returns if documents has validation errors
+    * Returns count of transUnit that has error
     * 
     * @param hDocs
     * @param validations
     * @param localeId
     */
-   Map<DocumentId, Boolean> runValidations(List<HDocument> hDocs, List<ValidationId> validationIds, LocaleId localeId);
+   boolean runValidations(HDocument hDoc, List<ValidationId> validationIds, LocaleId localeId);
 
    /**
     * Filter list of text flow with those only contains validation error
