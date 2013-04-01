@@ -147,13 +147,13 @@ public class ValidationServiceImpl implements ValidationService
    @Override
    public boolean runValidations(HDocument hDoc, List<ValidationId> validationIds, LocaleId localeId)
    {
-      log.info("Start doc validation {0}", hDoc.getId());
+      log.debug("Start doc validation {0}", hDoc.getId());
       Stopwatch stopwatch = new Stopwatch().start();
       List<ValidationAction> validationActions = getValidationFactory().getValidationActions(validationIds);
 
       boolean hasError = documentHasError(hDoc, validationActions, localeId);
       
-      log.info("Finished doc validation in " + stopwatch);
+      log.debug("Finished doc validation in " + stopwatch);
       return hasError;
    }
    
@@ -173,7 +173,7 @@ public class ValidationServiceImpl implements ValidationService
    @Override
    public List<HTextFlow> filterHasErrorTexFlow(List<HTextFlow> textFlows, List<ValidationId> validationIds, LocaleId localeId, int startIndex, int maxSize)
    {
-      log.info("Start filter {0} textFlows", textFlows.size());
+      log.debug("Start filter {0} textFlows", textFlows.size());
       Stopwatch stopwatch = new Stopwatch().start();
 
       List<ValidationAction> validationActions = getValidationFactory().getValidationActions(validationIds);
@@ -186,7 +186,7 @@ public class ValidationServiceImpl implements ValidationService
             result.add(textFlow);
          }
       }
-      log.info("Finished filter textFlows in " + stopwatch);
+      log.debug("Finished filter textFlows in " + stopwatch);
 
       if (result.size() <= maxSize)
       {

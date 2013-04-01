@@ -802,4 +802,9 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    {
       return sortedNodes;
    }
+
+   public void showLoading(boolean showLoading)
+   {
+      display.showLoading(showLoading);
+   }
 }

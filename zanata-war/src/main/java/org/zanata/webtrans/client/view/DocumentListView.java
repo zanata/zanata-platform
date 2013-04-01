@@ -207,7 +207,7 @@ public class DocumentListView extends Composite implements DocumentListDisplay
       this.listener = documentListPresenter;
       confirmationBox.registerHandler(listener);
       fileUploadDialog.registerHandler(listener, Application.getUploadFileUrl());
-   	  documentListTable.setListener(listener);
+      documentListTable.setListener(listener);
    }
 
    @Override

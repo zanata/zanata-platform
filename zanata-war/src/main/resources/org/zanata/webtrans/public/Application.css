@@ -410,7 +410,6 @@ td.ApprovedStateDecoration div div div
 .DocumentListTable td.statisticCol {
 	font-size:14px;
 	text-align:center;
-	min-width:145px;
 }
 
 .DocumentListTable td.translatedCol {

@@ -1,6 +1,5 @@
 package org.zanata.webtrans.client;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
@@ -165,12 +164,14 @@ public class Application implements EntryPoint
 
       GetDocumentList action = new GetDocumentList(injector.getLocation().getQueryDocuments());
 
+      documentListPresenter.showLoading(true);
       injector.getDispatcher().execute(action, new AsyncCallback<GetDocumentListResult>()
       {
          @Override
          public void onFailure(Throwable caught)
          {
-            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "1Failed to load documents"));
+            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Failed to load documents"));
+            documentListPresenter.showLoading(false);
          }
 
          @Override
@@ -200,6 +201,8 @@ public class Application implements EntryPoint
 
             exceptionHandler.setAppPresenter(appPresenter);
             exceptionHandler.setTargetContentsPresenter(injector.getTargetContentsPresenter());
+
+            documentListPresenter.showLoading(false);
          }
       });
    }
