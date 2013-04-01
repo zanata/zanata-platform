@@ -11,6 +11,12 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Save")
    String save();
 
+   @DefaultMessage("OK")
+   String ok();
+
+   @DefaultMessage("Cancel")
+   String cancel();
+
    @DefaultMessage("(No Content)")
    String noContent();
 
@@ -503,6 +509,12 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Only display Translation Unit Details when there is meta data otherwise hide it")
    String showTransUnitDetailsTooltip();
 
+   @DefaultMessage("Download All Files")
+   String downloadAllFiles();
+
+   @DefaultMessage("Your download will be prepared and may take a few minutes to complete. Is this ok?")
+   String prepareDownloadConfirmation();
+
    @DefaultMessage("Download files (zip)")
    String downloadAllAsZip();
 
@@ -526,4 +538,5 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Last run: {0}")
    String lastValidationRun(String completeTime);
+
 }

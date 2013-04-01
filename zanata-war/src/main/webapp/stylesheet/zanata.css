@@ -1141,42 +1141,6 @@ a.table_link span.nativeName, span.nativeName
 }
 /* -----------------------  End project iteration CSS  -------------------------*/
 
-/* ------------------------ Project Iteration Config File CSS ------------------*/
-a.config_link {
-    display: block;
-    font-size: 1.5em;
-    font-weight: bold;
-    color: #7092C3;
-    text-decoration: none;
-    text-align: center;
-    outline:none;
-    margin: 8px;
-    width: 100px;
-    border:1px solid #7092C3;
-    border-radius: 5px;
-}
-
-.config_link_div {
-    padding:5px;
-    margin-bottom:3px;
-    margin-left:3px;
-    width: 100px;
-    height: 80px;
-    display: table-cell;
-    vertical-align: middle;
-}
-
-a.config_link:hover {
-    color: #990000;
-    border:1px solid #990000;
-}
-
-.config_link_div:hover {
-    background-color: #F3F2F2;
-}
-
-/* ------------------------  End Project Iteration Config File CSS  ------------------*/
-
 /* -----------------------  Project Iteration Files CSS  -----------------------------*/
 
 .translate_restriction_title {

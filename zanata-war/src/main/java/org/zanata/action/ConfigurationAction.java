@@ -33,6 +33,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.web.RequestParameter;
 import org.jboss.seam.log.Log;
+import org.zanata.model.HLocale;
 import org.zanata.service.ConfigurationService;
 
 @Name("configurationAction")
@@ -52,15 +53,26 @@ public class ConfigurationAction implements Serializable
 
    public void getData()
    {
-      getData(false);
+      getData(false, null);
+   }
+
+   public void getData(HLocale locale)
+   {
+      getData(false, locale);
    }
 
    public void getOfflinePoConfigData()
    {
-      getData(true);
+      getOfflinePoConfigData(null);
    }
 
-   private void getData(boolean useOfflinePo)
+   public void getOfflinePoConfigData(HLocale locale)
+   {
+      getData(true, locale);
+   }
+
+
+   private void getData(boolean useOfflinePo, HLocale locale)
    {
       HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
       response.setContentType("application/xml");
@@ -71,8 +83,16 @@ public class ConfigurationAction implements Serializable
       {
          ServletOutputStream os = response.getOutputStream();
 
-         os.write(
-            configurationServiceImpl.getConfigurationFileContents(this.projectSlug, this.iterationSlug, useOfflinePo).getBytes());
+         if (locale == null)
+         {
+            os.write(configurationServiceImpl.getConfigurationFileContents(projectSlug,
+                  iterationSlug, useOfflinePo).getBytes());
+         }
+         else
+         {
+            os.write(configurationServiceImpl.getConfigurationFileContents(projectSlug,
+                  iterationSlug, locale, useOfflinePo).getBytes());
+         }
          os.flush();
          os.close();
          FacesContext.getCurrentInstance().responseComplete();

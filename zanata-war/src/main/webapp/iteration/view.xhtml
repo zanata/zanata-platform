@@ -21,18 +21,6 @@
                     return false;
                 }
             }
-
-            function openConfigDownloadPanel()
-            {
-                #{rich:component('configDownloadPanel')}.show();
-                return false;
-            }
-
-            function hideConfigDownloadPanel()
-            {
-                #{rich:component('configDownloadPanel')}.hide();
-                return false;
-            }
         </script>
     </ui:define>
 
@@ -126,43 +114,6 @@
 					</rich:dataTable>
 				</a4j:region>
 			</a4j:form>
-
-        <rich:modalPanel id="configDownloadPanel"
-                         moveable="#{false}"
-                         resizeable="#{false}"
-                         autosized="#{true}">
-            <f:facet name="header">
-                <h:outputText value="#{messages['jsf.ConfigFile']}"/>
-            </f:facet>
-            <h:panelGrid columns="2" border="0">
-                <s:link styleClass="config_link"
-                        title="#{messages['jsf.GenerateProjectConfig']}"
-                        action="#{configurationAction.getData()}"
-                        onclick="hideConfigDownloadPanel(); return true;">
-                    <f:param name="projectSlug" value="#{viewAllStatusAction.projectSlug}" />
-                    <f:param name="iterationSlug" value="#{viewAllStatusAction.iterationSlug}" />
-                    <div class="config_link_div">
-                        #{messages['jsf.ConfigFileDefault']}
-                    </div>
-                </s:link>
-                <s:link styleClass="config_link"
-                        rendered="#{not viewAllStatusAction.poProject}"
-                        title="#{messages['jsf.GenerateProjectConfigForOfflineTranslation']}"
-                        action="#{configurationAction.getOfflinePoConfigData()}"
-                        onclick="hideConfigDownloadPanel(); return true;">
-                    <f:param name="projectSlug" value="#{viewAllStatusAction.projectSlug}" />
-                    <f:param name="iterationSlug" value="#{viewAllStatusAction.iterationSlug}" />
-                    <div class="config_link_div">
-                        #{messages['jsf.ConfigFileForOfflineTranslation']}
-                    </div>
-                </s:link>
-            </h:panelGrid>
-
-            <div align="right">
-                <h:commandButton value="#{messages['jsf.Close']}"
-                                 onclick="return hideConfigDownloadPanel();"/>
-            </div>
-        </rich:modalPanel>
 	</ui:define>
 
 	<ui:define name="right_content">
@@ -184,7 +135,7 @@
 			<s:link styleClass="action_link" 
 				value="#{messages['jsf.ConfigFile']}"
 				title="#{messages['jsf.GenerateProjectConfig']}"
-				onclick="return openConfigDownloadPanel()">
+                action="#{configurationAction.getData()}">
 				<f:param name="projectSlug" value="#{viewAllStatusAction.projectSlug}" />
 				<f:param name="iterationSlug" value="#{viewAllStatusAction.iterationSlug}" />
 			</s:link>

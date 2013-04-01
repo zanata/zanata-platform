@@ -14,6 +14,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.LocaleId;
+import org.zanata.common.ProjectType;
 import org.zanata.common.TranslationStats;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.model.HDocument;
@@ -39,7 +40,7 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
 
    @In
    private DocumentDAO documentDAO;
-   
+
    @In
    private TranslationStateCache translationStateCacheImpl;
 
@@ -54,7 +55,7 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
       LocaleId localeId = action.getWorkspaceId().getLocaleId();
       ProjectIterationId iterationId = action.getWorkspaceId().getProjectIterationId();
       ArrayList<DocumentInfo> docs = new ArrayList<DocumentInfo>();
-      
+
       Collection<HDocument> hDocs = documentDAO.getAllByProjectIteration(iterationId.getProjectSlug(), iterationId.getIterationSlug());
       for (HDocument hDoc : hDocs)
       {
@@ -63,7 +64,7 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
             DocumentId docId = new DocumentId(hDoc.getId(), hDoc.getDocId());
             TranslationStats stats = documentDAO.getStatistics(hDoc.getId(), localeId);
             HTextFlowTarget result = translationStateCacheImpl.getDocLastModifiedTextFlowTarget(hDoc.getId(), localeId);
-            
+
             Date lastTranslatedDate = null;
             String lastTranslatedBy = "";
 
@@ -84,7 +85,17 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
             }
 
             Map<String, String> downloadExtensions = new HashMap<String, String>();
-            downloadExtensions.put(".po", "po?docId=" + hDoc.getDocId());
+
+            ProjectType type = hDoc.getProjectIteration().getProjectType();
+            if (type == ProjectType.Gettext || type == ProjectType.Podir)
+            {
+               downloadExtensions.put(".po", "po?docId=" + hDoc.getDocId());
+            }
+            else
+            {
+               downloadExtensions.put("offline .po", "offlinepo?docId=" + hDoc.getDocId());
+            }
+
             if (translationFileServiceImpl.hasPersistedDocument(iterationId.getProjectSlug(), iterationId.getIterationSlug(), hDoc.getPath(), hDoc.getName()))
             {
                String extension = "." + translationFileServiceImpl.getFileExtension(iterationId.getProjectSlug(), iterationId.getIterationSlug(), hDoc.getPath(), hDoc.getName());
