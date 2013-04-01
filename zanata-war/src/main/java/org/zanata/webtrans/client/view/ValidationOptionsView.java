@@ -95,6 +95,7 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    public void setRunValidationVisible(boolean visible)
    {
       runValidation.setVisible(visible);
+      lastValidationRun.setVisible(visible);
    }
 
    @Override
