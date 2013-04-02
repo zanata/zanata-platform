@@ -57,7 +57,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
    private boolean statsByWords = true;
 
    @Inject
-   public TransUnitCountBar(WebTransMessages messages, LabelFormat labelFormat)
+   public TransUnitCountBar(WebTransMessages messages, LabelFormat labelFormat, boolean enableClickToggle)
    {
       this.messages = messages;
       this.labelFormat = labelFormat;
@@ -85,14 +85,17 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
          }
       });
 
-      this.addClickHandler(new ClickHandler()
+      if (enableClickToggle)
       {
-         @Override
-         public void onClick(ClickEvent event)
+         this.addClickHandler(new ClickHandler()
          {
-            setStatOption(!statsByWords);
-         }
-      });
+            @Override
+            public void onClick(ClickEvent event)
+            {
+               setStatOption(!statsByWords);
+            }
+         });
+      }
 
       sinkEvents(Event.ONMOUSEOVER | Event.ONMOUSEOUT | Event.ONCLICK);
    }

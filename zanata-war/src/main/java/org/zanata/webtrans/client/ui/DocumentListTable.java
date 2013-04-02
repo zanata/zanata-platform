@@ -171,7 +171,7 @@ public class DocumentListTable extends FlexTable
       this.getCellFormatter().setStyleName(0, ACTION_COLUMN, "docListHeader");
    }
 
-   public HashMap<DocumentId, Integer> buildContent(List<DocumentNode> nodes)
+   public HashMap<DocumentId, Integer> buildContent(List<DocumentNode> nodes, boolean statsByWords)
    {
       clearContent();
 
@@ -185,9 +185,9 @@ public class DocumentListTable extends FlexTable
          this.setWidget(i + 1, PATH_COLUMN, getPathWidget(node.getDocInfo()));
          this.setWidget(i + 1, DOC_COLUMN, new DocWidget(node.getDocInfo()));
 
-         this.setWidget(i + 1, STATS_COLUMN, getStatsWidget(node.getDocInfo()));
-         this.setWidget(i + 1, TRANSLATED_COLUMN, getTranslatedWidget(node.getDocInfo()));
-         this.setWidget(i + 1, UNTRANSLATED_COLUMN, getUntranslatedWidget(node.getDocInfo()));
+         this.setWidget(i + 1, STATS_COLUMN, getStatsWidget(node.getDocInfo(), statsByWords));
+         this.setWidget(i + 1, TRANSLATED_COLUMN, getTranslatedWidget(node.getDocInfo(), statsByWords));
+         this.setWidget(i + 1, UNTRANSLATED_COLUMN, getUntranslatedWidget(node.getDocInfo(), statsByWords));
          this.setWidget(i + 1, REMAINING_COLUMN, getRemainingWidget(node.getDocInfo()));
 
          this.setWidget(i + 1, LAST_UPLOAD_COLUMN, new InlineLabel(getAuditInfo(node.getDocInfo().getLastModifiedBy(), node.getDocInfo().getLastChanged())));
@@ -312,10 +312,10 @@ public class DocumentListTable extends FlexTable
       }
    }
 
-   private Widget getStatsWidget(DocumentInfo docInfo)
+   private Widget getStatsWidget(DocumentInfo docInfo, boolean statsByWords)
    {
       FlowPanel panel = new FlowPanel();
-      final TransUnitCountBar graph = new TransUnitCountBar(messages, LabelFormat.PERCENT_COMPLETE);
+      final TransUnitCountBar graph = new TransUnitCountBar(messages, LabelFormat.PERCENT_COMPLETE, false);
       Image loading = new Image(resources.spinner());
       panel.add(graph);
       panel.add(loading);
@@ -329,28 +329,42 @@ public class DocumentListTable extends FlexTable
       {
          loading.setVisible(false);
          graph.setVisible(true);
-         graph.setStats(docInfo.getStats(), true);
+         graph.setStats(docInfo.getStats(), statsByWords);
       }
 
       return panel;
    }
 
-   private Widget getTranslatedWidget(DocumentInfo docInfo)
+   private Widget getTranslatedWidget(DocumentInfo docInfo, boolean statsByWords)
    {
       String text = "0";
       if (docInfo.getStats() != null)
       {
-         text = String.valueOf(docInfo.getStats().getWordCount().getApproved());
+         if (statsByWords)
+         {
+            text = String.valueOf(docInfo.getStats().getWordCount().getApproved());
+         }
+         else
+         {
+            text = String.valueOf(docInfo.getStats().getUnitCount().getApproved());
+         }
       }
       return new InlineLabel(text);
    }
 
-   private Widget getUntranslatedWidget(DocumentInfo docInfo)
+   private Widget getUntranslatedWidget(DocumentInfo docInfo, boolean statsByWords)
    {
       String text = "0";
       if (docInfo.getStats() != null)
       {
-         text = String.valueOf(docInfo.getStats().getWordCount().getNotApproved());
+         if (statsByWords)
+         {
+            text = String.valueOf(docInfo.getStats().getWordCount().getNotApproved());
+         }
+         else
+         {
+            text = String.valueOf(docInfo.getStats().getUnitCount().getNotApproved());
+         }
       }
       return new InlineLabel(text);
    }
@@ -430,7 +444,7 @@ public class DocumentListTable extends FlexTable
       label.setText(getAuditInfo(transUnit.getLastModifiedBy(), transUnit.getLastModifiedTime()));
    }
 
-   public void updateStats(int row, TranslationStats stats, String option)
+   public void updateStats(int row, TranslationStats stats, boolean statsByWords)
    {
       if (stats != null)
       {
@@ -446,26 +460,40 @@ public class DocumentListTable extends FlexTable
          HasText translated = (HasText) this.getWidget(row, TRANSLATED_COLUMN);
          HasText untranslated = (HasText) this.getWidget(row, UNTRANSLATED_COLUMN);
 
-         if (option.equals(DocumentListDisplay.STATS_OPTION_MESSAGE))
+         graph.setStatOption(statsByWords);
+
+         if (statsByWords)
          {
-            graph.setStatOption(false);
-            translated.setText(String.valueOf(stats.getUnitCount().getApproved()));
-            untranslated.setText(String.valueOf(stats.getUnitCount().getUntranslated()));
+            translated.setText(String.valueOf(stats.getWordCount().getApproved()));
+            untranslated.setText(String.valueOf(stats.getWordCount().getUntranslated()));
          }
          else
          {
-            graph.setStatOption(true);
-            translated.setText(String.valueOf(stats.getWordCount().getApproved()));
-            untranslated.setText(String.valueOf(stats.getWordCount().getUntranslated()));
+            translated.setText(String.valueOf(stats.getUnitCount().getApproved()));
+            untranslated.setText(String.valueOf(stats.getUnitCount().getUntranslated()));
          }
       }
    }
 
-   public void setStatsFilter(String option, DocumentNode documentNode)
+   public void setStatsFilter(boolean statsByWords, Integer row)
    {
-      for (int i = 0; i < this.getRowCount() - 1; i++)
+      FlowPanel panel = (FlowPanel) this.getWidget(row, STATS_COLUMN);
+
+      TransUnitCountBar graph = (TransUnitCountBar) panel.getWidget(0);
+      graph.setStatOption(statsByWords);
+
+      HasText translated = (HasText) this.getWidget(row, TRANSLATED_COLUMN);
+      HasText untranslated = (HasText) this.getWidget(row, UNTRANSLATED_COLUMN);
+
+      if (statsByWords)
       {
-         updateStats(i + 1, documentNode.getDocInfo().getStats(), option);
+         translated.setText(String.valueOf(graph.getWordsApproved()));
+         untranslated.setText(String.valueOf(graph.getWordsUntranslated()));
+      }
+      else
+      {
+         translated.setText(String.valueOf(graph.getUnitApproved()));
+         untranslated.setText(String.valueOf(graph.getUnitUntranslated()));
       }
    }
 

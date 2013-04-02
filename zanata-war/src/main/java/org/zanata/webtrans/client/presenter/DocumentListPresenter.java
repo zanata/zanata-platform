@@ -234,10 +234,9 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    @Override
    public void statsOptionChange()
    {
-      for (DocumentId docId : pageRows.keySet())
+      for (Integer row : pageRows.values())
       {
-         DocumentNode node = nodes.get(docId);
-         display.setStatsFilters(node);
+         display.setStatsFilters(row);
       }
    }
 

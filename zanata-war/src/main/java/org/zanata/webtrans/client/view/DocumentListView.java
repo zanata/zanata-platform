@@ -368,7 +368,7 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    @Override
    public HashMap<DocumentId, Integer> buildContent(List<DocumentNode> nodes)
    {
-      return documentListTable.buildContent(nodes);
+      return documentListTable.buildContent(nodes, statsByWord.getValue().booleanValue());
    }
 
    @Override
@@ -387,15 +387,13 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    @Override
    public void updateStats(int row, TranslationStats stats)
    {
-      String statsfilter = statsByMsg.getValue().booleanValue() ? STATS_OPTION_MESSAGE : STATS_OPTION_WORDS;
-      documentListTable.updateStats(row, stats, statsfilter);
+      documentListTable.updateStats(row, stats, statsByWord.getValue().booleanValue());
    }
 
    @Override
-   public void setStatsFilters(DocumentNode documentNode)
+   public void setStatsFilters(Integer row)
    {
-      String statsfilter = statsByMsg.getValue().booleanValue() ? STATS_OPTION_MESSAGE : STATS_OPTION_WORDS;
-      documentListTable.setStatsFilter(statsfilter, documentNode);
+      documentListTable.setStatsFilter(statsByWord.getValue().booleanValue(), row);
    }
    
    @Override

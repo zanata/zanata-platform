@@ -132,7 +132,7 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
 
    void updateStats(int row, TranslationStats stats);
 
-   void setStatsFilters(DocumentNode documentNode);
+   void setStatsFilters(Integer row);
 
    HasPager getPageNavigation();
 
