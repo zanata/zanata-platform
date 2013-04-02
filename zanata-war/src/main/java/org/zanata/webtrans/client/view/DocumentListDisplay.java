@@ -54,6 +54,9 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
    public static String LAST_UPLOAD_HEADER = "lastUpload";
    public static String LAST_TRANSLATED_HEADER = "lastTranslated";
 
+   public static final String STATS_OPTION_WORDS = "Words";
+   public static final String STATS_OPTION_MESSAGE = "Message";
+
    String getSelectedStatsOption();
 
    void setListener(Listener documentListPresenter);
@@ -62,7 +65,7 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
 
    interface Listener
    {
-      void statsOptionChange(String option);
+      void statsOptionChange();
 
       void fireCaseSensitiveToken(boolean value);
 
@@ -129,7 +132,7 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
 
    void updateStats(int row, TranslationStats stats);
 
-   void setStatsFilters(String option, DocumentNode documentNode);
+   void setStatsFilters(DocumentNode documentNode);
 
    HasPager getPageNavigation();
 

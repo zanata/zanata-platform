@@ -193,7 +193,7 @@ public class AppPresenterTest
       HistoryToken editorToken = new HistoryToken();
       when(history.getHistoryToken()).thenReturn(editorToken);
       DocumentInfo selectedDocument = mock(DocumentInfo.class);
-      presenter.setStatesForTest(null ,null, MainView.Documents, selectedDocument);
+      presenter.setStatesForTest(null, null, MainView.Documents, selectedDocument);
       editorKey.getHandler().onKeyShortcut(null);
       assertThat(editorToken.getView(), Matchers.is(MainView.Editor));
       verify(history).newItem(editorToken.toTokenString());

@@ -26,6 +26,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
@@ -57,7 +58,6 @@ import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.ui.DocumentListTable.DocValidationStatus;
 import org.zanata.webtrans.client.ui.DocumentNode;
-import org.zanata.webtrans.client.ui.HasStatsFilter;
 import org.zanata.webtrans.client.view.DocumentListDisplay;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
@@ -68,6 +68,8 @@ import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.DownloadAllFilesAction;
 import org.zanata.webtrans.shared.rpc.DownloadAllFilesResult;
+import org.zanata.webtrans.shared.rpc.GetDocumentStats;
+import org.zanata.webtrans.shared.rpc.GetDocumentStatsResult;
 import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgress;
 import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgressResult;
 import org.zanata.webtrans.shared.rpc.RunDocValidationAction;
@@ -79,7 +81,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.inject.Inject;
 
-public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> implements HasStatsFilter, DocumentListDisplay.Listener, DocumentSelectionHandler, UserConfigChangeHandler, TransUnitUpdatedEventHandler, WorkspaceContextUpdateEventHandler, RunDocValidationEventHandler
+public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> implements DocumentListDisplay.Listener, DocumentSelectionHandler, UserConfigChangeHandler, TransUnitUpdatedEventHandler, WorkspaceContextUpdateEventHandler, RunDocValidationEventHandler
 {
    private final UserWorkspaceContext userWorkspaceContext;
    private DocumentInfo currentDocument;
@@ -124,7 +126,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    {
       display.setListener(this);
 
-      display.setStatsFilters(STATS_OPTION_WORDS);
+      display.setStatsFilters(DocumentListDisplay.STATS_OPTION_WORDS);
 
       registerHandler(eventBus.addHandler(DocumentSelectionEvent.getType(), this));
       registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), this));
@@ -230,20 +232,12 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    }
 
    @Override
-   public void statsOptionChange(String option)
+   public void statsOptionChange()
    {
       for (DocumentId docId : pageRows.keySet())
       {
-         setStatsFilter(option, nodes.get(docId));
-      }
-   }
-
-   @Override
-   public void setStatsFilter(String option, DocumentNode documentNode)
-   {
-      if (documentNode != null)
-      {
-         display.setStatsFilters(option, documentNode);
+         DocumentNode node = nodes.get(docId);
+         display.setStatsFilters(node);
       }
    }
 
@@ -275,7 +269,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       sortedNodes.clear();
 
       idsByPath = new HashMap<String, DocumentId>(sortedList.size());
-      long start = System.currentTimeMillis();
       for (DocumentInfo doc : sortedList)
       {
          idsByPath.put(doc.getPath() + doc.getName(), doc.getId());
@@ -286,8 +279,62 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       sortedNodes.addAll(nodes.values());
 
       updatePageCountAndGotoFirstPage();
+   }
 
-      Log.info("Time to create DocumentNodes: " + String.valueOf(System.currentTimeMillis() - start) + "ms");
+   public void queryStats()
+   {
+      int BATCH_SIZE = 1000;
+
+      for (int i = 0; i < nodes.size();)
+      {
+         int fromIndex = i;
+         int toIndex = i + BATCH_SIZE > sortedNodes.size() ? sortedNodes.size() : i + BATCH_SIZE;
+         List<DocumentNode> subList = sortedNodes.subList(fromIndex, toIndex);
+
+         dispatcher.execute(new GetDocumentStats(convertFromNodetoId(subList)), new AsyncCallback<GetDocumentStatsResult>()
+         {
+            @Override
+            public void onFailure(Throwable caught)
+            {
+               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Unable get stats for documents"));
+            }
+
+            @Override
+            public void onSuccess(GetDocumentStatsResult result)
+            {
+               for (Entry<DocumentId, TranslationStats> entry : result.getStatsMap().entrySet())
+               {
+                  DocumentInfo docInfo = getDocumentInfo(entry.getKey());
+                  docInfo.setStats(entry.getValue());
+
+                  Integer row = pageRows.get(entry.getKey());
+                  if (row != null)
+                  {
+                     display.updateStats(row.intValue(), docInfo.getStats());
+                  }
+
+                  eventBus.fireEvent(new DocumentStatsUpdatedEvent(entry.getKey(), docInfo.getStats()));
+
+                  // update project stats, forward to AppPresenter
+                  projectStats.add(docInfo.getStats());
+
+                  eventBus.fireEvent(new ProjectStatsUpdatedEvent(projectStats));
+               }
+            }
+         });
+         i = toIndex;
+      }
+   }
+
+   private List<DocumentId> convertFromNodetoId(List<DocumentNode> nodes)
+   {
+      ArrayList<DocumentId> documentIds = new ArrayList<DocumentId>();
+
+      for (DocumentNode node : nodes)
+      {
+         documentIds.add(node.getDocInfo().getId());
+      }
+      return documentIds;
    }
 
    private void updatePageCountAndGotoFirstPage()
@@ -396,17 +443,20 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       TransUnitUpdateInfo updateInfo = event.getUpdateInfo();
       // update stats for containing document
       DocumentInfo updatedDoc = getDocumentInfo(updateInfo.getDocumentId());
-      adjustStats(updatedDoc.getStats(), updateInfo);
-      updateLastTranslatedInfo(updatedDoc, event.getUpdateInfo().getTransUnit());
-
-      Integer row = pageRows.get(updatedDoc.getId());
-      if (row != null)
+      if (updatedDoc.getStats() != null)
       {
-         display.updateStats(row.intValue(), updatedDoc.getStats());
-         display.updateLastTranslatedInfo(row.intValue(), event.getUpdateInfo().getTransUnit());
-      }
+         adjustStats(updatedDoc.getStats(), updateInfo);
+         updateLastTranslatedInfo(updatedDoc, event.getUpdateInfo().getTransUnit());
 
-      eventBus.fireEvent(new DocumentStatsUpdatedEvent(updatedDoc.getId(), updatedDoc.getStats()));
+         Integer row = pageRows.get(updatedDoc.getId());
+         if (row != null)
+         {
+            display.updateStats(row.intValue(), updatedDoc.getStats());
+            display.updateLastTranslatedInfo(row.intValue(), event.getUpdateInfo().getTransUnit());
+         }
+
+         eventBus.fireEvent(new DocumentStatsUpdatedEvent(updatedDoc.getId(), updatedDoc.getStats()));
+      }
 
       // update project stats, forward to AppPresenter
       adjustStats(projectStats, updateInfo);
@@ -620,11 +670,11 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
          if (!valIds.isEmpty() && !pageRows.keySet().isEmpty())
          {
             int i = 0;
-            for (DocumentId documentId: pageRows.keySet())
+            for (DocumentId documentId : pageRows.keySet())
             {
                display.showRowLoading(pageRows.get(documentId));
-               
-               if(i == pageRows.keySet().size() -1)
+
+               if (i == pageRows.keySet().size() - 1)
                {
                   fireDocValidation(valIds, documentId, true);
                }
@@ -716,8 +766,13 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
       private int compareStats(DocumentNode o1, DocumentNode o2)
       {
+         if (o1.getDocInfo().getStats() == null || o2.getDocInfo().getStats() == null)
+         {
+            return (o1.getDocInfo().getStats() == null) ? -1 : 1;
+         }
+
          boolean statsByWords = true;
-         if (display.getSelectedStatsOption().equals(STATS_OPTION_MESSAGE))
+         if (display.getSelectedStatsOption().equals(DocumentListDisplay.STATS_OPTION_MESSAGE))
          {
             statsByWords = false;
          }
@@ -726,7 +781,12 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
       private int compareTranslated(DocumentNode o1, DocumentNode o2)
       {
-         if (display.getSelectedStatsOption().equals(STATS_OPTION_MESSAGE))
+         if (o1.getDocInfo().getStats() == null || o2.getDocInfo().getStats() == null)
+         {
+            return (o1.getDocInfo().getStats() == null) ? -1 : 1;
+         }
+
+         if (display.getSelectedStatsOption().equals(DocumentListDisplay.STATS_OPTION_MESSAGE))
          {
             return o1.getDocInfo().getStats().getUnitCount().getApproved() - o2.getDocInfo().getStats().getUnitCount().getApproved();
          }
@@ -738,7 +798,12 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
       private int compareUntranslated(DocumentNode o1, DocumentNode o2)
       {
-         if (display.getSelectedStatsOption().equals(STATS_OPTION_MESSAGE))
+         if (o1.getDocInfo().getStats() == null || o2.getDocInfo().getStats() == null)
+         {
+            return (o1.getDocInfo().getStats() == null) ? -1 : 1;
+         }
+
+         if (display.getSelectedStatsOption().equals(DocumentListDisplay.STATS_OPTION_MESSAGE))
          {
             return o1.getDocInfo().getStats().getUnitCount().getUntranslated() - o2.getDocInfo().getStats().getUnitCount().getUntranslated();
          }
@@ -750,6 +815,11 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
       private int compareRemaining(DocumentNode o1, DocumentNode o2)
       {
+         if (o1.getDocInfo().getStats() == null || o2.getDocInfo().getStats() == null)
+         {
+            return (o1.getDocInfo().getStats() == null) ? -1 : 1;
+         }
+
          if (o1.getDocInfo().getStats().getRemainingHours() == o2.getDocInfo().getStats().getRemainingHours())
          {
             return 0;

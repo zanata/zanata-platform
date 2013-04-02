@@ -62,7 +62,6 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
       for (HDocument hDoc : hDocs)
       {
          DocumentId docId = new DocumentId(hDoc.getId(), hDoc.getDocId());
-         TranslationStats stats = documentDAO.getStatistics(hDoc.getId(), localeId);
          HTextFlowTarget result = translationStateCacheImpl.getDocLastModifiedTextFlowTarget(hDoc.getId(), localeId);
 
          Date lastTranslatedDate = null;
@@ -102,7 +101,7 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
             downloadExtensions.put(extension, "baked?docId=" + hDoc.getDocId());
          }
 
-         DocumentInfo doc = new DocumentInfo(docId, hDoc.getName(), hDoc.getPath(), hDoc.getLocale().getLocaleId(), stats, lastModifiedBy, hDoc.getLastChanged(), downloadExtensions, lastTranslatedBy, lastTranslatedDate);
+         DocumentInfo doc = new DocumentInfo(docId, hDoc.getName(), hDoc.getPath(), hDoc.getLocale().getLocaleId(), null, lastModifiedBy, hDoc.getLastChanged(), downloadExtensions, lastTranslatedBy, lastTranslatedDate);
          docs.add(doc);
       }
       return new GetDocumentListResult(iterationId, docs);

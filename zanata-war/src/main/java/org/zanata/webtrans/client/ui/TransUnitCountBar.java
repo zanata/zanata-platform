@@ -36,6 +36,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
    interface TransUnitCountBarUiBinder extends UiBinder<Widget, TransUnitCountBar>
    {
    }
+
    @UiField
    LayoutPanel layoutPanel;
 
@@ -55,14 +56,14 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
 
    private boolean statsByWords = true;
 
-
    @Inject
    public TransUnitCountBar(WebTransMessages messages, LabelFormat labelFormat)
    {
       this.messages = messages;
       this.labelFormat = labelFormat;
-      
+
       tooltipPanel = new TooltipPopupPanel(messages);
+
       initWidget(uiBinder.createAndBindUi(this));
 
       this.addMouseOutHandler(new MouseOutHandler()
@@ -83,7 +84,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
             tooltipPanel.showRelativeTo(layoutPanel);
          }
       });
-      
+
       this.addClickHandler(new ClickHandler()
       {
          @Override
@@ -147,7 +148,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
       }
 
       int duration = 600;
-      
+
       tooltipPanel.refreshData(this);
       layoutPanel.animate(duration);
    }
@@ -224,6 +225,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
    {
       this.stats.set(stats);
       this.statsByWords = statsByWords;
+
       refresh();
    }
 
@@ -251,5 +253,4 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
    {
       return addDomHandler(handler, ClickEvent.getType());
    }
-
 }

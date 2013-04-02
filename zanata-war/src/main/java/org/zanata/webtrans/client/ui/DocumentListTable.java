@@ -54,7 +54,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  */
-public class DocumentListTable extends FlexTable implements HasStatsFilter
+public class DocumentListTable extends FlexTable
 {
    public static enum DocValidationStatus
    {
@@ -186,9 +186,9 @@ public class DocumentListTable extends FlexTable implements HasStatsFilter
          this.setWidget(i + 1, DOC_COLUMN, new DocWidget(node.getDocInfo()));
 
          this.setWidget(i + 1, STATS_COLUMN, getStatsWidget(node.getDocInfo()));
-         this.setWidget(i + 1, TRANSLATED_COLUMN, new InlineLabel(String.valueOf(node.getDocInfo().getStats().getWordCount().getApproved())));
-         this.setWidget(i + 1, UNTRANSLATED_COLUMN, new InlineLabel(String.valueOf(node.getDocInfo().getStats().getWordCount().getUntranslated())));
-         this.setWidget(i + 1, REMAINING_COLUMN, new InlineLabel(messages.statusBarLabelHours(node.getDocInfo().getStats().getRemainingHours())));
+         this.setWidget(i + 1, TRANSLATED_COLUMN, getTranslatedWidget(node.getDocInfo()));
+         this.setWidget(i + 1, UNTRANSLATED_COLUMN, getUntranslatedWidget(node.getDocInfo()));
+         this.setWidget(i + 1, REMAINING_COLUMN, getRemainingWidget(node.getDocInfo()));
 
          this.setWidget(i + 1, LAST_UPLOAD_COLUMN, new InlineLabel(getAuditInfo(node.getDocInfo().getLastModifiedBy(), node.getDocInfo().getLastChanged())));
          this.setWidget(i + 1, LAST_TRANSLATED_COLUMN, new InlineLabel(getAuditInfo(node.getDocInfo().getLastTranslatedBy(), node.getDocInfo().getLastTranslatedDate())));
@@ -314,10 +314,55 @@ public class DocumentListTable extends FlexTable implements HasStatsFilter
 
    private Widget getStatsWidget(DocumentInfo docInfo)
    {
+      FlowPanel panel = new FlowPanel();
       final TransUnitCountBar graph = new TransUnitCountBar(messages, LabelFormat.PERCENT_COMPLETE);
-      graph.setStats(docInfo.getStats(), true);
+      Image loading = new Image(resources.spinner());
+      panel.add(graph);
+      panel.add(loading);
 
-      return graph;
+      if (docInfo.getStats() == null)
+      {
+         loading.setVisible(true);
+         graph.setVisible(false);
+      }
+      else
+      {
+         loading.setVisible(false);
+         graph.setVisible(true);
+         graph.setStats(docInfo.getStats(), true);
+      }
+
+      return panel;
+   }
+
+   private Widget getTranslatedWidget(DocumentInfo docInfo)
+   {
+      String text = "0";
+      if (docInfo.getStats() != null)
+      {
+         text = String.valueOf(docInfo.getStats().getWordCount().getApproved());
+      }
+      return new InlineLabel(text);
+   }
+
+   private Widget getUntranslatedWidget(DocumentInfo docInfo)
+   {
+      String text = "0";
+      if (docInfo.getStats() != null)
+      {
+         text = String.valueOf(docInfo.getStats().getWordCount().getNotApproved());
+      }
+      return new InlineLabel(text);
+   }
+
+   private Widget getRemainingWidget(DocumentInfo docInfo)
+   {
+      String text = "0";
+      if (docInfo.getStats() != null)
+      {
+         text = messages.statusBarLabelHours(docInfo.getStats().getRemainingHours());
+      }
+      return new InlineLabel(text);
    }
 
    private Widget getActionWidget(final DocumentInfo docInfo)
@@ -385,33 +430,42 @@ public class DocumentListTable extends FlexTable implements HasStatsFilter
       label.setText(getAuditInfo(transUnit.getLastModifiedBy(), transUnit.getLastModifiedTime()));
    }
 
-   public void updateStats(int row, TranslationStats stats)
+   public void updateStats(int row, TranslationStats stats, String option)
    {
-      TransUnitCountBar graph = (TransUnitCountBar) this.getWidget(row, STATS_COLUMN);
-      graph.setStats(stats, true);
-   }
-
-   @Override
-   public void setStatsFilter(String option, DocumentNode documentNode)
-   {
-      for (int i = 0; i < this.getRowCount() - 1; i++)
+      if (stats != null)
       {
-         TransUnitCountBar graph = (TransUnitCountBar) this.getWidget(i + 1, STATS_COLUMN);
-         HasText translated = (HasText) this.getWidget(i + 1, TRANSLATED_COLUMN);
-         HasText untranslated = (HasText) this.getWidget(i + 1, UNTRANSLATED_COLUMN);
+         FlowPanel panel = (FlowPanel) this.getWidget(row, STATS_COLUMN);
 
-         if (option.equals(STATS_OPTION_MESSAGE))
+         TransUnitCountBar graph = (TransUnitCountBar) panel.getWidget(0);
+         graph.setStats(stats, true);
+         graph.setVisible(true);
+
+         Image loading = (Image) panel.getWidget(1);
+         loading.setVisible(false);
+
+         HasText translated = (HasText) this.getWidget(row, TRANSLATED_COLUMN);
+         HasText untranslated = (HasText) this.getWidget(row, UNTRANSLATED_COLUMN);
+
+         if (option.equals(DocumentListDisplay.STATS_OPTION_MESSAGE))
          {
             graph.setStatOption(false);
-            translated.setText(String.valueOf(documentNode.getDocInfo().getStats().getUnitCount().getApproved()));
-            untranslated.setText(String.valueOf(documentNode.getDocInfo().getStats().getUnitCount().getUntranslated()));
+            translated.setText(String.valueOf(stats.getUnitCount().getApproved()));
+            untranslated.setText(String.valueOf(stats.getUnitCount().getUntranslated()));
          }
          else
          {
             graph.setStatOption(true);
-            translated.setText(String.valueOf(documentNode.getDocInfo().getStats().getWordCount().getApproved()));
-            untranslated.setText(String.valueOf(documentNode.getDocInfo().getStats().getWordCount().getUntranslated()));
+            translated.setText(String.valueOf(stats.getWordCount().getApproved()));
+            untranslated.setText(String.valueOf(stats.getWordCount().getUntranslated()));
          }
+      }
+   }
+
+   public void setStatsFilter(String option, DocumentNode documentNode)
+   {
+      for (int i = 0; i < this.getRowCount() - 1; i++)
+      {
+         updateStats(i + 1, documentNode.getDocInfo().getStats(), option);
       }
    }
 

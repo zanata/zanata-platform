@@ -64,6 +64,11 @@ public class DocumentInfo implements HasIdentifier<DocumentId>, IsSerializable
       return stats;
    }
 
+   public void setStats(TranslationStats stats)
+   {
+      this.stats = stats;
+   }
+
    public LocaleId getSourceLocale()
    {
       return sourceLocale;

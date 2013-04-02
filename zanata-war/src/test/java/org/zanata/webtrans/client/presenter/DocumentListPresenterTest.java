@@ -16,7 +16,6 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import net.customware.gwt.presenter.client.EventBus;
@@ -61,7 +60,6 @@ import org.zanata.webtrans.shared.rpc.HasWorkspaceContextUpdateData;
 import org.zanata.webtrans.shared.rpc.ThemesOption;
 
 import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.view.client.ListDataProvider;
 
 @Test(groups = { "unit-tests" })
 public class DocumentListPresenterTest

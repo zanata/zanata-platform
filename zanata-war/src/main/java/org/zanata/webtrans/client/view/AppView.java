@@ -27,8 +27,8 @@ import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
 import org.zanata.webtrans.client.presenter.TranslationPresenter;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.Breadcrumb;
-import org.zanata.webtrans.client.ui.TransUnitCountBar;
 import org.zanata.webtrans.client.ui.HasTranslationStats.LabelFormat;
+import org.zanata.webtrans.client.ui.TransUnitCountBar;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.google.gwt.core.client.GWT;

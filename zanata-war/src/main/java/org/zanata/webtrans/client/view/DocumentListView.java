@@ -33,7 +33,6 @@ import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.client.ui.DownloadFilesConfirmationBox;
 import org.zanata.webtrans.client.ui.FileUploadDialog;
 import org.zanata.webtrans.client.ui.HasPager;
-import org.zanata.webtrans.client.ui.HasStatsFilter;
 import org.zanata.webtrans.client.ui.InlineLink;
 import org.zanata.webtrans.client.ui.LoadingPanel;
 import org.zanata.webtrans.client.ui.Pager;
@@ -137,11 +136,11 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    {
       if (statsByMsg.getValue())
       {
-         return HasStatsFilter.STATS_OPTION_MESSAGE;
+         return STATS_OPTION_MESSAGE;
       }
       else
       {
-         return HasStatsFilter.STATS_OPTION_WORDS;
+         return STATS_OPTION_WORDS;
       }
    }
 
@@ -162,7 +161,7 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    {
       if (event.getValue())
       {
-         listener.statsOptionChange(HasStatsFilter.STATS_OPTION_MESSAGE);
+         listener.statsOptionChange();
       }
    }
 
@@ -171,7 +170,7 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    {
       if (event.getValue())
       {
-         listener.statsOptionChange(HasStatsFilter.STATS_OPTION_WORDS);
+         listener.statsOptionChange();
       }
    }
 
@@ -388,21 +387,22 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    @Override
    public void updateStats(int row, TranslationStats stats)
    {
-      documentListTable.updateStats(row, stats);
+      String statsfilter = statsByMsg.getValue().booleanValue() ? STATS_OPTION_MESSAGE : STATS_OPTION_WORDS;
+      documentListTable.updateStats(row, stats, statsfilter);
    }
 
    @Override
-   public void setStatsFilters(String option, DocumentNode documentNode)
+   public void setStatsFilters(DocumentNode documentNode)
    {
-      documentListTable.setStatsFilter(option, documentNode);
+      String statsfilter = statsByMsg.getValue().booleanValue() ? STATS_OPTION_MESSAGE : STATS_OPTION_WORDS;
+      documentListTable.setStatsFilter(statsfilter, documentNode);
    }
    
    @Override
    public void setStatsFilters(String option)
    {
-      if (option.equals(HasStatsFilter.STATS_OPTION_MESSAGE))
+      if (option.equals(STATS_OPTION_MESSAGE))
       {
-         
          statsByMsg.setValue(true);
       }
       else
