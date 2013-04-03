@@ -2,24 +2,24 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:rich="http://richfaces.org/rich"       
+    xmlns:rich="http://richfaces.org/rich"
     xmlns:a4j="http://richfaces.org/a4j"
 	xmlns:s="http://jboss.com/products/seam/taglib"
     template="../WEB-INF/layout/template.xhtml">
-  
-    <ui:define name="page_title">Edit Profile</ui:define>
+
+    <ui:define name="page_title">#{messages['jsf.EditProfile']}</ui:define>
     <ui:define name="center_content">
             <div>
 	    	<h:outputText value="#{messages['jsf.FirstExternalLoginMessage']}" rendered="#{authenticationManager.newUser}"/>
 		<br/>
             </div>
-	
+
       <h1>#{messages['jsf.EditProfile']}</h1>
         <h:form>
           <s:token allowMultiplePosts="true" />
           <rich:panel>
             <f:facet name="header">#{messages['jsf.AccountDetails']}</f:facet>
-              
+
             <s:decorate id="nameField" template="../WEB-INF/layout/edit.xhtml">
               <ui:define name="label">#{messages['jsf.Name']}</ui:define>
               <h:inputText id="name" value="#{profileAction.name}" required="true" >
@@ -39,7 +39,7 @@
               <h:inputText id="username" value="#{profileAction.username}" required="true" >
                   <a4j:support event="onblur" reRender="usernameField" ajaxSingle="true"/>
               </h:inputText>
-              
+
               <s:span styleClass="icon-info-circle-2 input_help" id="usernameHelp">
             	 <rich:toolTip>
                       #{messages['jsf.UsernameToolTip']}
@@ -51,15 +51,15 @@
               <h:inputText id="email" value="#{profileAction.email}" required="true" >
                   <a4j:support event="onblur" reRender="emailField" />
               </h:inputText>
-              
+
                <s:span styleClass="icon-info-circle-2 input_help" id="emailHelp">
             	<rich:toolTip>
                   #{messages['jsf.EmailToolTip']}
                 </rich:toolTip>
            	  </s:span>
-           	  
+
             </s:decorate>
-                      
+
             <div style="clear:both"></div>
 
             <div class="actionButtons">
@@ -70,5 +70,5 @@
         </h:form>
 
     </ui:define>
-    
+
   </ui:composition>

@@ -8,15 +8,15 @@
     xmlns:rich="http://richfaces.org/rich"
     xmlns:a4j="http://richfaces.org/a4j"
     template="../WEB-INF/layout/template.xhtml">
-   
-    <ui:define name="page_title">#{messages['jsf.Groups']}:#{versionGroupMaintainerManageAction.group.name}:#{messages['jsf.AddGroupMaintainer']}</ui:define>
+
+    <ui:define name="page_title">#{messages['jsf.Groups']}:#{versionGroupMaintainerManageAction.group.name}:#{messages['jsf.ManageMaintainers']}</ui:define>
     <ui:define name="right_content">
 		<rich:panel rendered="#{s:hasPermission(versionGroupMaintainerManageAction.group, 'update')}">
             <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
             <a href="#" class="action_link" onclick="#{rich:component('maintainerAddPanel')}.show()">#{messages['jsf.AddGroupMaintainer']}</a>
     	</rich:panel>
     </ui:define>
-   
+
     <ui:define name="center_content">
 
       <script type="text/javascript">
@@ -24,24 +24,24 @@
         {
           return confirm("#{messages['jsf.AreYouSureYouWishToRemoveThisPersonAsGroupMaintainer']}");
         }
-        
+
         function showAddMaintainer()
         {
         	#{rich:component('maintainerAddPanel')}.show();
         	#{rich:element('input')}.focus();
         }
       </script>
-                      
+
       <s:fragment rendered="#{s:hasPermission(versionGroupMaintainerManageAction.group, 'update')}">
 		<h:messages />
-		
+
         <h:form>
             <s:token allowMultiplePosts="true" />
 	        <rich:dataTable 
 	            id="threads"
 	            value="#{allList}" 
 	            var="maintainer">
-	
+
 	          <rich:column width="auto">
 	            <f:facet name="header">#{messages['jsf.Username']}</f:facet>
 	            #{maintainer.account.username}
@@ -55,12 +55,12 @@
 	            #{maintainer.email}
 	          </rich:column>
 	          <rich:column width="auto" styleClass="centered">
-	            <f:facet name="header">#{messages['jsf.Actions']}</f:facet>          
+	            <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
 	            <h:commandButton value="#{messages['jsf.Remove']}" action="#{versionGroupMaintainerManageAction.deleteMaintainer(versionGroupMaintainerManageAction.selectedPerson)}"
 	                      onclick="return confirmDelete()"/>
 	          </rich:column>
 	  	    </rich:dataTable>
-        </h:form>              
+        </h:form>
       </s:fragment>
 
         <rich:modalPanel id="maintainerAddPanel" width="505" autosized="true" moveable="false">
@@ -83,5 +83,5 @@
 
         </rich:modalPanel>
     </ui:define>
-    
+
   </ui:composition>

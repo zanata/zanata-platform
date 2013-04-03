@@ -8,7 +8,7 @@
     xmlns:rich="http://richfaces.org/rich"
     template="../WEB-INF/layout/template.xhtml">
 
-    <ui:define name="page_title">#{messages['jsf.Languages']</ui:define>
+    <ui:define name="page_title">#{messages['jsf.Languages']}</ui:define>
     <ui:define name="right_content">
       <rich:panel rendered="#{identity.loggedIn and s:hasRole('admin')}">
         <f:facet name="header">#{messages['jsf.Actions']}</f:facet>

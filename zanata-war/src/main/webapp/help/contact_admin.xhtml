@@ -10,15 +10,15 @@
    template="/WEB-INF/layout/template.xhtml">
 
    <ui:param name="showGlobalMessages" value="true"/>
-   
-   <ui:define name="page_title">Contact Admin</ui:define>
+
+   <ui:define name="page_title">#{messages['jsf.ContactAdmin']}</ui:define>
    <ui:define name="center_content">
       <h:form>
          <s:token allowMultiplePosts="true" />
          <h1>#{messages['jsf.ContactAdmin']}</h1>
-         
+
          <rich:panel>
-            
+
             <s:decorate id="nameField" template="../WEB-INF/layout/display.xhtml">
                <ui:define name="label">#{messages['jsf.email.From']}</ui:define>
                <h:outputText id="senderName" value="#{sendEmail.fromName}"
