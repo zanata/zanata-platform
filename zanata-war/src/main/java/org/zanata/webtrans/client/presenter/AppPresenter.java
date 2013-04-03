@@ -407,7 +407,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
     * @param currentView current view
     * @param selectedDocument
     */
-   protected void setStatesForTest(TranslationStats selectedDocumentStats, TranslationStats projectStats, MainView currentView, DocumentInfo selectedDocument)
+   protected void setStatesForTest(TranslationStats projectStats, TranslationStats selectedDocumentStats, MainView currentView, DocumentInfo selectedDocument)
    {
       if (!GWT.isClient())
       {
