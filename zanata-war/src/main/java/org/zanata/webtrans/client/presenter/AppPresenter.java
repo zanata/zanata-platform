@@ -272,7 +272,10 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
          {
             display.enableTab(MainView.Editor, true);
             selectedDocument = docInfo;
-            selectedDocumentStats.set(selectedDocument.getStats());
+            if (selectedDocument.getStats() != null)
+            {
+               selectedDocumentStats.set(selectedDocument.getStats());
+            }
             if (currentView == MainView.Editor)
             {
                display.setDocumentLabel(selectedDocument.getPath(), selectedDocument.getName());
