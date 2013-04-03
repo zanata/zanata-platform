@@ -83,9 +83,8 @@ public class EmailServiceImpl implements EmailService
 
       log.info("Sent activation account email: toName '{0}', toEmailAddress '{1}'", toName, toEmailAddr);
       return "#{messages['jsf.Account.ActivationMessage']}";
-      		
    }
-   
+
    @Override
    public String sendToLanguageCoordinators(String emailTemplate, List<HPerson> coordinators, String fromName, String fromLoginName, String replyEmail, String subject, String message, String language)
    {
@@ -206,7 +205,7 @@ public class EmailServiceImpl implements EmailService
    {
       return receivedReason;
    }
-   
+
    public String getActivationKey()
    {
       return activationKey;
