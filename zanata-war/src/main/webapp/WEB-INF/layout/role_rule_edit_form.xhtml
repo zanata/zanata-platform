@@ -17,7 +17,7 @@
                 <s:selectItems value="#{roleAssignmentRuleAction.availablePolicyNames}" var="policy" label="#{policy}"
                         noSelectionLabel=""/>
             </h:selectOneMenu>
-            
+
             <s:span styleClass="icon-info-circle-2 input_help" id="policyNameHelp">
             	 <rich:toolTip>
                     <em>#{messages['jsf.rolerules.PolicyName.tooltip']}</em>
@@ -32,7 +32,7 @@
             	 <rich:toolTip>
                     <em>#{messages['jsf.rolerules.IdentityPattern.tooltip']}</em>
                 </rich:toolTip>
-           	</s:span>           
+           	</s:span>
         </s:decorate>
         <s:decorate id="roleField" template="/WEB-INF/layout/edit.xhtml">
             <ui:define name="label">#{messages['jsf.rolerules.RoleToAssign']}</ui:define>
