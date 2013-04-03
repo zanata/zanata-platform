@@ -21,7 +21,6 @@
 package org.zanata.webtrans.shared.validation.action;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationId;
@@ -54,7 +53,6 @@ public class NewlineLeadTrailValidation extends AbstractValidationAction
 
    private final static RegExp leadRegExp = RegExp.compile(leadNewlineRegex);
    private final static RegExp endRegExp = RegExp.compile(endNewlineRegex);
-   private final static RegExp newlineRegExp = RegExp.compile(newlineRegex, "g");
 
    @Override
    public void doValidate(ArrayList<String> errorList, String source, String target)
@@ -132,6 +130,8 @@ public class NewlineLeadTrailValidation extends AbstractValidationAction
 
    private int countNewlines(String string)
    {
+      RegExp newlineRegExp = RegExp.compile(newlineRegex, "g");
+
       int count = 0;
       MatchResult matchResult = newlineRegExp.exec(string);
       while (matchResult != null)

@@ -81,7 +81,7 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       identity.checkLoggedIn();
       HLocale hLocale = validateAndGetLocale(action);
 
-      log.debug("action: {}", action);
+      log.info("action: {}", action);
       int targetOffset = action.getOffset();
       int targetPage = action.getOffset() / action.getCount();
       GetTransUnitsNavigationResult navigationResult = null;

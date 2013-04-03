@@ -15,7 +15,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
-import org.zanata.common.TranslationStats;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HPerson;

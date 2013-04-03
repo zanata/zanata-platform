@@ -187,10 +187,18 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       currentDocument = doc;
       token.setDocumentPath(doc.getPath() + doc.getName());
       token.setView(MainView.Editor);
-      if (doc.getHasError())
+      if (doc.hasError() != null)
       {
-         token.setFilterHasError(true);
+         if (doc.hasError())
+         {
+            token.setFilterHasError(true);
+         }
+         else
+         {
+            token.setFilterHasError(false);
+         }
       }
+
       // don't carry searches over to the next document
       token.setSearchText("");
       history.newItem(token);
@@ -274,8 +282,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
          DocumentNode node = new DocumentNode(doc);
          node.setVisible(filter.accept(doc));
          nodes.put(doc.getId(), node);
+         sortedNodes.add(node);
       }
-      sortedNodes.addAll(nodes.values());
 
       updatePageCountAndGotoFirstPage();
    }
@@ -612,19 +620,17 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
    private void fireDocValidation(List<ValidationId> validationIds, final DocumentId docId, final boolean fireResultEvent)
    {
-      Log.debug("Run doc validation");
       dispatcher.execute(new RunDocValidationAction(validationIds, docId), new AsyncCallback<RunDocValidationResult>()
       {
          @Override
          public void onSuccess(RunDocValidationResult result)
          {
-            Log.debug("Success doc validation - " + result.getDocumentId());
+            Log.debug("Success doc validation - " + result.getDocumentId().getDocId() + " " + result.hasError());
 
             Integer row = pageRows.get(result.getDocumentId());
             DocumentNode node = nodes.get(result.getDocumentId());
 
-            boolean hasError = result.getHasError();
-            DocValidationStatus status = result.getHasError() ? DocValidationStatus.HasError : DocValidationStatus.NoError;
+            DocValidationStatus status = result.hasError() ? DocValidationStatus.HasError : DocValidationStatus.NoError;
 
             if (row != null)
             {
@@ -632,7 +638,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
                if (node != null)
                {
-                  node.getDocInfo().setHasError(hasError);
+                  node.getDocInfo().setHasError(result.hasError());
                }
             }
             if (fireResultEvent)

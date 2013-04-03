@@ -527,7 +527,7 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("The project type for this iteration has not been set. Contact the project maintainer.")
    String projectTypeNotSet();
 
-   @DefaultMessage("Run validation on documents")
+   @DefaultMessage("Run validation on documents of this page")
    String documentValidationTitle();
 
    @DefaultMessage("Run validation on translation unit")

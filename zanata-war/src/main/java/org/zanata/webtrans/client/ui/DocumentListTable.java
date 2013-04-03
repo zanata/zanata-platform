@@ -206,9 +206,17 @@ public class DocumentListTable extends FlexTable
          this.getCellFormatter().setStyleName(i + 1, LAST_TRANSLATED_COLUMN, "auditCol");
          this.getCellFormatter().setStyleName(i + 1, ACTION_COLUMN, "actionCol");
          
-         if (node.getDocInfo().getHasError())
+         if (node.getDocInfo().hasError() == null)
+         {
+            updateRowHasError(i + 1, DocValidationStatus.Unknown);
+         }
+         else if (node.getDocInfo().hasError())
          {
             updateRowHasError(i + 1, DocValidationStatus.HasError);
+         }
+         else if (!node.getDocInfo().hasError())
+         {
+            updateRowHasError(i + 1, DocValidationStatus.NoError);
          }
       }
 
@@ -236,7 +244,6 @@ public class DocumentListTable extends FlexTable
       private final Image loading;
       private final InlineLabel noError;
       private final InlineLabel hasError;
-      private final InlineLabel unknown;
 
       public DocWidget(final DocumentInfo docInfo)
       {
@@ -255,11 +262,6 @@ public class DocumentListTable extends FlexTable
          hasError.setVisible(false);
          this.add(hasError);
 
-         unknown = new InlineLabel();
-         unknown.setStyleName("icon-help-circle-2");
-         unknown.setVisible(false);
-         this.add(unknown);
-         
          docLabel = new InlineLabel(docInfo.getName());
          docLabel.setTitle(docInfo.getName());
          docLabel.addClickHandler(new ClickHandler()
@@ -280,7 +282,6 @@ public class DocumentListTable extends FlexTable
 
          noError.setVisible(false);
          hasError.setVisible(false);
-         unknown.setVisible(false);
       }
 
       @Override
@@ -289,7 +290,6 @@ public class DocumentListTable extends FlexTable
          loading.setVisible(false);
          noError.setVisible(false);
          hasError.setVisible(false);
-         unknown.setVisible(false);
 
          if (status == DocValidationStatus.HasError)
          {
@@ -305,7 +305,6 @@ public class DocumentListTable extends FlexTable
          }
          else if (status == DocValidationStatus.Unknown)
          {
-            unknown.setVisible(false);
             docLabel.setTitle(docLabel.getText());
             docLabel.removeStyleName("hasError");
          }
@@ -427,15 +426,6 @@ public class DocumentListTable extends FlexTable
    {
       HasValidationResult panel = (HasValidationResult) this.getWidget(row, DOC_COLUMN);
       panel.setValidationResult(status);
-
-      if (status == DocValidationStatus.HasError)
-      {
-         this.getWidget(row, PATH_COLUMN).addStyleName("hasError");
-      }
-      else
-      {
-         this.getWidget(row, PATH_COLUMN).removeStyleName("hasError");
-      }
    }
 
    public void updateLastTranslatedInfo(int row, TransUnit transUnit)

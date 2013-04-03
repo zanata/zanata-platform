@@ -22,7 +22,7 @@ public class DocumentInfo implements HasIdentifier<DocumentId>, IsSerializable
    private Date lastTranslatedDate;
    private String lastTranslatedBy;
    
-   private boolean hasError;
+   private Boolean hasError = null;
 
    // for GWT
    @SuppressWarnings("unused")
@@ -109,12 +109,12 @@ public class DocumentInfo implements HasIdentifier<DocumentId>, IsSerializable
       this.lastTranslatedBy = lastTranslatedBy;
    }
 
-   public void setHasError(boolean hasError)
+   public void setHasError(Boolean hasError)
    {
       this.hasError = hasError;
    }
 
-   public boolean getHasError()
+   public Boolean hasError()
    {
       return hasError;
    }

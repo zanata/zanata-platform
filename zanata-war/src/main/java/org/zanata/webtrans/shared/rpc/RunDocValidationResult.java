@@ -53,7 +53,7 @@ public class RunDocValidationResult implements DispatchResult
       return documentId;
    }
 
-   public boolean getHasError()
+   public boolean hasError()
    {
       return hasError;
    }

@@ -161,7 +161,8 @@ public class ValidationServiceImpl implements ValidationService
    {
       for (HTextFlow textFlow : hDoc.getTextFlows())
       {
-         if (textFlowTargetHasError(textFlow, validationActions, localeId))
+         boolean hasError = textFlowTargetHasError(textFlow, validationActions, localeId);
+         if (hasError)
          {
             // return true if error found, else continue
             return true;
@@ -181,7 +182,8 @@ public class ValidationServiceImpl implements ValidationService
 
       for (HTextFlow textFlow : textFlows)
       {
-         if (textFlowTargetHasError(textFlow, validationActions, localeId))
+         boolean hasError = textFlowTargetHasError(textFlow, validationActions, localeId);
+         if (hasError)
          {
             result.add(textFlow);
          }
@@ -209,14 +211,17 @@ public class ValidationServiceImpl implements ValidationService
    private boolean textFlowTargetHasError(HTextFlow textFlow, List<ValidationAction> validationActions, LocaleId localeId)
    {
       HTextFlowTarget target = textFlowTargetDAO.getTextFlowTarget(textFlow, localeId);
-      List<String> errorList = new ArrayList<String>();
       if (target != null)
       {
          for (ValidationAction validationAction : validationActions)
          {
-            errorList.addAll(validationAction.validate(textFlow.getContents().get(0), target.getContents().get(0)));
+            List<String> errorList = validationAction.validate(textFlow.getContents().get(0), target.getContents().get(0));
+            if (!errorList.isEmpty())
+            {
+               return true;
+            }
          }
       }
-      return !errorList.isEmpty();
+      return false;
    }
 }

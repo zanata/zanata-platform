@@ -49,21 +49,14 @@ public class HtmlXmlTagValidation extends AbstractValidationAction
 
    private final static String tagRegex = "<[^>]+>";
 
-   private final static RegExp regExp = RegExp.compile(tagRegex, "g");
-   
    @Override
    public void doValidate(ArrayList<String> errorList, String source, String target)
    {
-      ArrayList<String> sourceTags = getTagList(source);
-      ArrayList<String> targetTags = getTagList(target);
-
       ArrayList<String> error = listMissing(source, target);
       if (!error.isEmpty())
       {
          errorList.add(getMessages().tagsMissing(error));
       }
-
-      boolean noError = error.isEmpty();
 
       error = listMissing(target, source);
       if (!error.isEmpty())
@@ -71,10 +64,11 @@ public class HtmlXmlTagValidation extends AbstractValidationAction
          errorList.add(getMessages().tagsAdded(error));
       }
 
-      noError &= error.isEmpty();
-
-      if (noError)
+      if (errorList.isEmpty())
       {
+         ArrayList<String> sourceTags = getTagList(source);
+         ArrayList<String> targetTags = getTagList(target);
+
          orderValidation(sourceTags, targetTags, errorList);
       }
    }
@@ -156,6 +150,8 @@ public class HtmlXmlTagValidation extends AbstractValidationAction
 
    private ArrayList<String> getTagList(String src)
    {
+      final RegExp regExp = RegExp.compile(tagRegex, "g");
+
       ArrayList<String> list = new ArrayList<String>();
       MatchResult result = regExp.exec(src);
       while (result != null)
@@ -169,6 +165,8 @@ public class HtmlXmlTagValidation extends AbstractValidationAction
 
    private ArrayList<String> listMissing(String compareFrom, String compareTo)
    {
+      final RegExp regExp = RegExp.compile(tagRegex, "g");
+
       String tmp = compareTo;
       ArrayList<String> unmatched = new ArrayList<String>();
       MatchResult result = regExp.exec(compareFrom);
