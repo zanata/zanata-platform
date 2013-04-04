@@ -296,7 +296,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
    private void queryStats()
    {
-      int BATCH_SIZE = 100;
+      int BATCH_SIZE = 1000;
 
       for (int i = 0; i < nodes.size();)
       {
