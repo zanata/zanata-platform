@@ -1,7 +1,6 @@
 package org.zanata.webtrans.client.service;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -17,18 +16,14 @@ import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.RunValidationEvent;
-import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
-import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.HasUpdateValidationWarning;
 import org.zanata.webtrans.server.locale.Gwti18nReader;
 import org.zanata.webtrans.shared.model.ValidationAction;
@@ -56,9 +51,6 @@ public class ValidationServiceTest
    private HasUpdateValidationWarning validationMessagePanel;
    
    @Mock
-   private CachingDispatchAsync dispatcher;
-   
-   @Mock
    private UserConfigHolder configHolder;
 
    @BeforeMethod
@@ -83,8 +75,6 @@ public class ValidationServiceTest
 
       when(messages.notifyValidationError()).thenReturn("validation error");
       verify(eventBus).addHandler(RunValidationEvent.getType(), service);
-      verify(eventBus).addHandler(TransUnitSelectionEvent.getType(), service);
-      verify(eventBus).addHandler(DocumentSelectionEvent.getType(), service);
    }
 
    @Test
@@ -97,41 +87,6 @@ public class ValidationServiceTest
       service.onValidate(event);
 
       verify(validationMessagePanel).updateValidationWarning(errors);
-   }
-
-   @Test
-   public void onTransUnitSelectionWillClearMessages()
-   {
-      ValidationService validationServiceSpy = Mockito.spy(service);
-      doNothing().when(validationServiceSpy).clearAllMessage();
-
-      validationServiceSpy.onTransUnitSelected(null);
-
-      verify(validationServiceSpy).clearAllMessage();
-   }
-
-   @Test
-   public void onDocumentSelectionWillClearMessages()
-   {
-      ValidationService validationServiceSpy = Mockito.spy(service);
-      doNothing().when(validationServiceSpy).clearAllMessage();
-
-      validationServiceSpy.onDocumentSelected(null);
-
-      verify(validationServiceSpy).clearAllMessage();
-   }
-
-   @Test
-   public void canClearAllErrorMessages()
-   {
-      service.clearAllMessage();
-
-      List<ValidationAction> validationList = new ArrayList<ValidationAction>(service.getValidationMap().values());
-
-      for (ValidationAction action : validationList)
-      {
-         assertThat(action.getError().size(), Matchers.equalTo(0));
-      }
    }
 
    @Test

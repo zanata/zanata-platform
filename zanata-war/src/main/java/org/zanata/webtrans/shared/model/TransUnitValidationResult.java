@@ -1,13 +1,14 @@
 package org.zanata.webtrans.shared.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class TransUnitValidationResult implements IsSerializable
 {
-   private TransUnitId transUnitId;
-   private List<String> errorMessages;
+   private TransUnit transUnit;
+   private List<String> errorMessages = new ArrayList<String>();
 
    // for GWT
    @SuppressWarnings("unused")
@@ -15,15 +16,15 @@ public class TransUnitValidationResult implements IsSerializable
    {
    }
    
-   public TransUnitValidationResult(TransUnitId transUnitId, List<String> errorMessages)
+   public TransUnitValidationResult(TransUnit transUnit, List<String> errorMessages)
    {
-      this.transUnitId = transUnitId;
+      this.transUnit = transUnit;
       this.errorMessages = errorMessages;
    }
 
-   public TransUnitId getTransUnitId()
+   public TransUnit getTransUnit()
    {
-      return transUnitId;
+      return transUnit;
    }
 
    public List<String> getErrorMessages()

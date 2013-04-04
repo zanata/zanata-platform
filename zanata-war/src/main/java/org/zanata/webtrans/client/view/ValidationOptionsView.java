@@ -43,7 +43,7 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    private Listener listener;
 
    private final WebTransMessages messages;
-
+   
 
    @Inject
    public ValidationOptionsView(WebTransMessages messages)
@@ -108,28 +108,32 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    public void onRunValidationClicked(ClickEvent event)
    {
       listener.onRunValidation();
-
+      enabledRunValidation(false);
    }
-
+   
    @Override
    public void setListener(Listener listener)
    {
       this.listener = listener;
-
+   }
+   
+   @Override
+   public void enabledRunValidation(boolean enabled)
+   {
+      runValidation.setEnabled(enabled);
    }
 
    @Override
-   public void updateValidationResult(Date startTime, Date endTime)
+   public void updateValidationResult(Date endTime)
    {
-      if (startTime != null && endTime != null)
+      if (endTime != null)
       {
          lastValidationRun.setText(messages.lastValidationRun(DateUtil.formatLongDateTime(endTime)));
-         lastValidationRun.setTitle(messages.lastValidationRunTooltip(DateUtil.formatLongDateTime(startTime)));
       }
       else
       {
          lastValidationRun.setText(messages.lastValidationRun("none"));
-         lastValidationRun.setText("");
       }
    }
+
 }

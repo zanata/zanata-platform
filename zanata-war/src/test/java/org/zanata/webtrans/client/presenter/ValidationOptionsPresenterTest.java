@@ -16,7 +16,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.zanata.webtrans.client.events.RunDocValidationResultEvent;
+import org.zanata.webtrans.client.events.DocValidationResultEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.client.resources.WebTransMessages;
@@ -89,7 +89,7 @@ public class ValidationOptionsPresenterTest
 
       // Then:
       verify(eventBus).addHandler(WorkspaceContextUpdateEvent.getType(), presenter);
-      verify(eventBus).addHandler(RunDocValidationResultEvent.getType(), presenter);
+      verify(eventBus).addHandler(DocValidationResultEvent.getType(), presenter);
       verify(display, times(7)).addValidationSelector(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean());
       verify(changeHandler, times(7)).addValueChangeHandler(valueChangeHandlerCaptor.capture());
    }

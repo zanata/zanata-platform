@@ -1,8 +1,5 @@
 package org.zanata.webtrans.server.rpc;
 
-import java.util.List;
-import java.util.Map;
-
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
@@ -13,11 +10,8 @@ import org.jboss.seam.annotations.Scope;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.model.HDocument;
-import org.zanata.model.HLocale;
 import org.zanata.service.ValidationService;
 import org.zanata.webtrans.server.ActionHandlerFor;
-import org.zanata.webtrans.shared.model.DocumentId;
-import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.RunDocValidationAction;
 import org.zanata.webtrans.shared.rpc.RunDocValidationResult;
 
@@ -30,23 +24,18 @@ public class RunDocValidationHandler extends AbstractActionHandler<RunDocValidat
    private ValidationService validationServiceImpl;
 
    @In
-   private LocaleDAO localeDAO;
-
-   @In
    private DocumentDAO documentDAO;
+   
+   @In
+   private LocaleDAO localeDAO;
 
    @Override
    public RunDocValidationResult execute(RunDocValidationAction action, ExecutionContext context) throws ActionException
    {
-      WorkspaceId workspaceId = action.getWorkspaceId();
-      HLocale locale = localeDAO.findByLocaleId(workspaceId.getLocaleId());
-
-      List<HDocument> hDocs = documentDAO.getDocumentsByIds(action.getDocIds());
-
-      Map<DocumentId, Boolean> result;
-
-      result = validationServiceImpl.runValidations(hDocs, action.getValidationIds(), locale.getId());
-      return new RunDocValidationResult(result, workspaceId.getLocaleId());
+      HDocument hDoc = documentDAO.findById(action.getDocId().getId(), false);
+      
+      boolean hasError = validationServiceImpl.runValidations(hDoc, action.getValidationIds(), action.getWorkspaceId().getLocaleId());
+      return new RunDocValidationResult(action.getDocId(), hasError, action.getWorkspaceId().getLocaleId());
    }
 
    @Override

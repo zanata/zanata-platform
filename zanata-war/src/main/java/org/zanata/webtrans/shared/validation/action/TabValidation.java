@@ -20,6 +20,8 @@
  */
 package org.zanata.webtrans.shared.validation.action;
 
+import java.util.ArrayList;
+
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
@@ -40,18 +42,18 @@ public class TabValidation extends AbstractValidationAction
    }
 
    @Override
-   public void doValidate(String source, String target)
+   public void doValidate(ArrayList<String> errorList, String source, String target)
    {
       CharMatcher tabs = CharMatcher.is('\t');
       int sourceTabs = tabs.countIn(source);
       int targetTabs = tabs.countIn(target);
       if (sourceTabs > targetTabs)
       {
-         addError(getMessages().targetHasFewerTabs(sourceTabs, targetTabs));
+         errorList.add(getMessages().targetHasFewerTabs(sourceTabs, targetTabs));
       }
       else if (targetTabs > sourceTabs)
       {
-         addError(getMessages().targetHasMoreTabs(sourceTabs, targetTabs));
+         errorList.add(getMessages().targetHasMoreTabs(sourceTabs, targetTabs));
       }
    }
 

@@ -26,15 +26,11 @@ import java.util.Map;
 
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.zanata.webtrans.client.events.DocumentSelectionEvent;
-import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.events.RunValidationEventHandler;
-import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
-import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
@@ -54,7 +50,7 @@ import com.google.inject.Singleton;
  **/
 
 @Singleton
-public class ValidationService implements RunValidationEventHandler, TransUnitSelectionHandler, DocumentSelectionHandler
+public class ValidationService implements RunValidationEventHandler
 {
    private final EventBus eventBus;
    private final TableEditorMessages messages;
@@ -72,26 +68,12 @@ public class ValidationService implements RunValidationEventHandler, TransUnitSe
       validationFactory = new ValidationFactory(validationMessages);
 
       eventBus.addHandler(RunValidationEvent.getType(), this);
-      eventBus.addHandler(TransUnitSelectionEvent.getType(), this);
-      eventBus.addHandler(DocumentSelectionEvent.getType(), this);
    }
 
    @Override
    public void onValidate(RunValidationEvent event)
    {
       execute(event.getSourceContent(), event.getTarget(), event.isFireNotification(), event.getWidgetList());
-   }
-
-   @Override
-   public void onTransUnitSelected(TransUnitSelectionEvent event)
-   {
-      clearAllMessage();
-   }
-
-   @Override
-   public void onDocumentSelected(DocumentSelectionEvent event)
-   {
-      clearAllMessage();
    }
 
    /**
@@ -107,8 +89,7 @@ public class ValidationService implements RunValidationEventHandler, TransUnitSe
       {
          if (validationAction.getValidationInfo().isEnabled())
          {
-            validationAction.validate(source, target);
-            errors.addAll(validationAction.getError());
+            errors.addAll(validationAction.validate(source, target));
          }
       }
       fireValidationWarningsEvent(errors, fireNotification, widgetList);
@@ -135,17 +116,6 @@ public class ValidationService implements RunValidationEventHandler, TransUnitSe
    public Map<ValidationId, ValidationAction> getValidationMap()
    {
       return validationMap;
-   }
-
-   /**
-    * Clear all validation plugin's error messages
-    */
-   public void clearAllMessage()
-   {
-      for (ValidationAction validationAction : validationMap.values())
-      {
-         validationAction.clearErrorMessage();
-      }
    }
 
    public void fireValidationWarningsEvent(List<String> errors, boolean fireNotification, ArrayList<HasUpdateValidationWarning> widgetList)

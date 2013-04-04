@@ -26,6 +26,7 @@ import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -66,10 +67,9 @@ public class NewlineLeadTrailValidationTests
    {
       String source = "String without newlines";
       String target = "Different newline-devoid string";
-      newlineLeadTrailValidation.validate(source, target);
+      List<String> errorList = newlineLeadTrailValidation.validate(source, target);
 
-      assertThat(newlineLeadTrailValidation.hasError(), is(false));
-      assertThat(newlineLeadTrailValidation.getError().size(), is(0));
+      assertThat(errorList.size(), is(0));
    }
 
    @Test
@@ -77,10 +77,9 @@ public class NewlineLeadTrailValidationTests
    {
       String source = "\nString with both newlines\n";
       String target = "\nDifferent newline-infested string\n";
-      newlineLeadTrailValidation.validate(source, target);
+      List<String> errorList = newlineLeadTrailValidation.validate(source, target);
 
-      assertThat(newlineLeadTrailValidation.hasError(), is(false));
-      assertThat(newlineLeadTrailValidation.getError().size(), is(0));
+      assertThat(errorList.size(), is(0));
    }
 
    @Test
@@ -88,11 +87,11 @@ public class NewlineLeadTrailValidationTests
    {
       String source = "String without an internal newline.";
       String target = "Different string \n containing a newline";
-      newlineLeadTrailValidation.validate(source, target);
+      List<String> errorList = newlineLeadTrailValidation.validate(source, target);
 
-      assertThat(newlineLeadTrailValidation.hasError(), is(true));
-      assertThat(newlineLeadTrailValidation.getError(), hasItem(messages.linesAdded(1, 2)));
-      assertThat(newlineLeadTrailValidation.getError().size(), is(1));
+      
+      assertThat(errorList, hasItem(messages.linesAdded(1, 2)));
+      assertThat(errorList.size(), is(1));
    }
 
    @Test
@@ -100,11 +99,11 @@ public class NewlineLeadTrailValidationTests
    {
       String source = "String with an \n internal newline.";
       String target = "Different string lacking the newline";
-      newlineLeadTrailValidation.validate(source, target);
+      List<String> errorList = newlineLeadTrailValidation.validate(source, target);
 
-      assertThat(newlineLeadTrailValidation.hasError(), is(true));
-      assertThat(newlineLeadTrailValidation.getError(), hasItem(messages.linesRemoved(2, 1)));
-      assertThat(newlineLeadTrailValidation.getError().size(), is(1));
+      
+      assertThat(errorList, hasItem(messages.linesRemoved(2, 1)));
+      assertThat(errorList.size(), is(1));
    }
 
    @Test
@@ -112,11 +111,11 @@ public class NewlineLeadTrailValidationTests
    {
       String source = "\nTesting string with leading new line";
       String target = "Different string with the newline removed";
-      newlineLeadTrailValidation.validate(source, target);
+      List<String> errorList = newlineLeadTrailValidation.validate(source, target);
 
-      assertThat(newlineLeadTrailValidation.hasError(), is(true));
-      assertThat(newlineLeadTrailValidation.getError(), hasItems(messages.leadingNewlineMissing(), messages.linesRemoved(2, 1)));
-      assertThat(newlineLeadTrailValidation.getError().size(), is(2));
+      
+      assertThat(errorList, hasItems(messages.leadingNewlineMissing(), messages.linesRemoved(2, 1)));
+      assertThat(errorList.size(), is(2));
    }
 
    @Test
@@ -124,11 +123,11 @@ public class NewlineLeadTrailValidationTests
    {
       String source = "Testing string without a leading new line";
       String target = "\nDifferent string with a leading newline added";
-      newlineLeadTrailValidation.validate(source, target);
+      List<String> errorList = newlineLeadTrailValidation.validate(source, target);
 
-      assertThat(newlineLeadTrailValidation.hasError(), is(true));
-      assertThat(newlineLeadTrailValidation.getError(), hasItems(messages.leadingNewlineAdded(), messages.linesAdded(1, 2)));
-      assertThat(newlineLeadTrailValidation.getError().size(), is(2));
+      
+      assertThat(errorList, hasItems(messages.leadingNewlineAdded(), messages.linesAdded(1, 2)));
+      assertThat(errorList.size(), is(2));
    }
 
    @Test
@@ -136,11 +135,11 @@ public class NewlineLeadTrailValidationTests
    {
       String source = "Testing string with trailing new line\n";
       String target = "Different string with the newline removed";
-      newlineLeadTrailValidation.validate(source, target);
+      List<String> errorList = newlineLeadTrailValidation.validate(source, target);
 
-      assertThat(newlineLeadTrailValidation.hasError(), is(true));
-      assertThat(newlineLeadTrailValidation.getError(), hasItems(messages.trailingNewlineMissing(), messages.linesRemoved(2, 1)));
-      assertThat(newlineLeadTrailValidation.getError().size(), is(2));
+      
+      assertThat(errorList, hasItems(messages.trailingNewlineMissing(), messages.linesRemoved(2, 1)));
+      assertThat(errorList.size(), is(2));
    }
 
    @Test
@@ -148,11 +147,11 @@ public class NewlineLeadTrailValidationTests
    {
       String source = "Testing string without a trailing new line";
       String target = "Different string with a trailing newline added\n";
-      newlineLeadTrailValidation.validate(source, target);
+      List<String> errorList = newlineLeadTrailValidation.validate(source, target);
 
-      assertThat(newlineLeadTrailValidation.hasError(), is(true));
-      assertThat(newlineLeadTrailValidation.getError(), hasItems(messages.trailingNewlineAdded(), messages.linesAdded(1, 2)));
-      assertThat(newlineLeadTrailValidation.getError().size(), is(2));
+      
+      assertThat(errorList, hasItems(messages.trailingNewlineAdded(), messages.linesAdded(1, 2)));
+      assertThat(errorList.size(), is(2));
    }
 
    @Test
@@ -160,11 +159,11 @@ public class NewlineLeadTrailValidationTests
    {
       String source = "Testing string with no newlines";
       String target = "\nDifferent string with both added\n";
-      newlineLeadTrailValidation.validate(source, target);
+      List<String> errorList = newlineLeadTrailValidation.validate(source, target);
 
-      assertThat(newlineLeadTrailValidation.hasError(), is(true));
-      assertThat(newlineLeadTrailValidation.getError(), hasItems(messages.leadingNewlineAdded(), messages.trailingNewlineAdded(), messages.linesAdded(1, 3)));
-      assertThat(newlineLeadTrailValidation.getError().size(), is(3));
+      
+      assertThat(errorList, hasItems(messages.leadingNewlineAdded(), messages.trailingNewlineAdded(), messages.linesAdded(1, 3)));
+      assertThat(errorList.size(), is(3));
    }
 
    @Test
@@ -172,11 +171,11 @@ public class NewlineLeadTrailValidationTests
    {
       String source = "\nString with both newlines\n";
       String target = "Other string with no newlines";
-      newlineLeadTrailValidation.validate(source, target);
+      List<String> errorList = newlineLeadTrailValidation.validate(source, target);
 
-      assertThat(newlineLeadTrailValidation.hasError(), is(true));
-      assertThat(newlineLeadTrailValidation.getError(), hasItems(messages.leadingNewlineMissing(), messages.trailingNewlineMissing(), messages.linesRemoved(3, 1)));
-      assertThat(newlineLeadTrailValidation.getError().size(), is(3));
+      
+      assertThat(errorList, hasItems(messages.leadingNewlineMissing(), messages.trailingNewlineMissing(), messages.linesRemoved(3, 1)));
+      assertThat(errorList.size(), is(3));
    }
 
    @Test
@@ -184,11 +183,11 @@ public class NewlineLeadTrailValidationTests
    {
       String source = "\nString with only leading newline";
       String target = "Other string with newline trailing\n";
-      newlineLeadTrailValidation.validate(source, target);
+      List<String> errorList = newlineLeadTrailValidation.validate(source, target);
 
-      assertThat(newlineLeadTrailValidation.hasError(), is(true));
-      assertThat(newlineLeadTrailValidation.getError(), hasItems(messages.leadingNewlineMissing(), messages.trailingNewlineAdded()));
-      assertThat(newlineLeadTrailValidation.getError().size(), is(2));
+      
+      assertThat(errorList, hasItems(messages.leadingNewlineMissing(), messages.trailingNewlineAdded()));
+      assertThat(errorList.size(), is(2));
    }
 
    @Test
@@ -196,11 +195,10 @@ public class NewlineLeadTrailValidationTests
    {
       String source = "String with trailing newline\n";
       String target = "\nOther string with newline leading";
-      newlineLeadTrailValidation.validate(source, target);
-
-      assertThat(newlineLeadTrailValidation.hasError(), is(true));
-      assertThat(newlineLeadTrailValidation.getError(), hasItems(messages.leadingNewlineAdded(), messages.trailingNewlineMissing()));
-      assertThat(newlineLeadTrailValidation.getError().size(), is(2));
+      List<String> errorList = newlineLeadTrailValidation.validate(source, target);
+      
+      assertThat(errorList, hasItems(messages.leadingNewlineAdded(), messages.trailingNewlineMissing()));
+      assertThat(errorList.size(), is(2));
    }
 }
 

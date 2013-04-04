@@ -10,7 +10,7 @@ public interface WebTransMessages extends Messages
 {
    @DefaultMessage("Save")
    String save();
-
+   
    @DefaultMessage("OK")
    String ok();
 
@@ -100,12 +100,9 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Last Translated")
    String columnHeaderLastTranslated();
-
-   @DefaultMessage("Download")
-   String columnHeaderDownload();
-
-   @DefaultMessage("Upload")
-   String columnHeaderUpload();
+   
+   @DefaultMessage("Actions")
+   String columnHeaderAction();
 
    @DefaultMessage("No document selected")
    String noDocumentSelected();
@@ -514,7 +511,7 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Your download will be prepared and may take a few minutes to complete. Is this ok?")
    String prepareDownloadConfirmation();
-
+   
    @DefaultMessage("Download files (zip)")
    String downloadAllAsZip();
 
@@ -530,17 +527,22 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("The project type for this iteration has not been set. Contact the project maintainer.")
    String projectTypeNotSet();
 
-   @DefaultMessage("Run validation on documents")
+   @DefaultMessage("Run validation on documents of this page")
    String documentValidationTitle();
 
    @DefaultMessage("Run validation on translation unit")
    String editorValidationTitle();
+   
+   @DefaultMessage("Has validation errors - {0}")
+   String hasValidationErrors(String docName);
 
    @DefaultMessage("Last run: {0}")
    String lastValidationRun(String completeTime);
 
-   @DefaultMessage("Start time: {0}")
-   String lastValidationRunTooltip(String startTime);
-
+   @DefaultMessage("Upload document to merge/override translation")
+   String uploadButtonTitle();
+   
+   @DefaultMessage("Download document with extension {0}")
+   String downloadFileTitle(String key);
 
 }

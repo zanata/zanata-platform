@@ -78,7 +78,7 @@
                 	<g:ScrollPanel styleName="{style.listContainer}">
                 		<g:HTMLPanel width="100%">
 	                		<g:FlowPanel ui:field="documentListContainer"/>
-	                		<fui:table.DocumentListPager ui:field="pager"/> 
+							<fui:Pager ui:field="pager"/>
 	                    </g:HTMLPanel>
                     </g:ScrollPanel> 
                 </g:layer>

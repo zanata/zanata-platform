@@ -1,6 +1,6 @@
 package org.zanata.webtrans.client;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
 
@@ -30,6 +30,7 @@ import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
 import org.zanata.webtrans.shared.rpc.NoOpResult;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.base.Stopwatch;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.URL;
@@ -161,20 +162,26 @@ public class Application implements EntryPoint
       Window.enableScrolling(true);
       // eager load document list
       final EventBus eventBus = injector.getEventBus();
-      injector.getDispatcher().execute(new GetDocumentList(injector.getLocation().getQueryDocuments()), new AsyncCallback<GetDocumentListResult>()
+
+      GetDocumentList action = new GetDocumentList(injector.getLocation().getQueryDocuments());
+
+      documentListPresenter.showLoading(true);
+      final Stopwatch stopwatch = new Stopwatch().start();
+      injector.getDispatcher().execute(action, new AsyncCallback<GetDocumentListResult>()
       {
          @Override
          public void onFailure(Throwable caught)
          {
             eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Failed to load documents"));
+            documentListPresenter.showLoading(false);
+            stopwatch.stop();
          }
 
          @Override
          public void onSuccess(GetDocumentListResult result)
          {
-            long start = System.currentTimeMillis();
-            final ArrayList<DocumentInfo> documents = result.getDocuments();
-            Log.info("Received doc list for " + result.getProjectIterationId() + ": " + documents.size() + " elements, loading time: " + String.valueOf(System.currentTimeMillis() - start) + "ms");
+            final List<DocumentInfo> documents = result.getDocuments();
+            Log.info("Received doc list for " + result.getProjectIterationId() + ": " + documents.size() + " elements, loading time: " + stopwatch.elapsedMillis() + "ms");
             documentListPresenter.setDocuments(documents);
 
             History history = injector.getHistory();
@@ -182,20 +189,19 @@ public class Application implements EntryPoint
             Log.info("=========== now firing current history state =========== ");
             history.fireCurrentHistoryState();
 
-            start = System.currentTimeMillis();
             TranslationStats projectStats = new TranslationStats(); // = 0
-            for (DocumentInfo doc : documents)
-            {
-               projectStats.add(doc.getStats());
-            }
 
             documentListPresenter.setProjectStats(projectStats);
-            // re-use these stats for the project stats
-            Log.info("Time to calculate project stats: " + String.valueOf(System.currentTimeMillis() - start) + "ms");
+
             eventBus.fireEvent(new ProjectStatsUpdatedEvent(projectStats));
 
             exceptionHandler.setAppPresenter(appPresenter);
             exceptionHandler.setTargetContentsPresenter(injector.getTargetContentsPresenter());
+
+            documentListPresenter.queryInfo();
+            documentListPresenter.showLoading(false);
+
+            stopwatch.stop();
          }
       });
    }

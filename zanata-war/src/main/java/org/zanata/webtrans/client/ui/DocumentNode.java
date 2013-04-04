@@ -20,9 +20,6 @@
  */
 package org.zanata.webtrans.client.ui;
 
-import net.customware.gwt.presenter.client.EventBus;
-
-import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 
 public class DocumentNode
@@ -30,11 +27,8 @@ public class DocumentNode
    private DocumentInfo docInfo;
    private boolean isVisible = true;
 
-   final WebTransMessages messages;
-
-   public DocumentNode(WebTransMessages messages, DocumentInfo doc, EventBus eventBus)
+   public DocumentNode(DocumentInfo doc)
    {
-      this.messages = messages;
       this.docInfo = doc;
    }
 

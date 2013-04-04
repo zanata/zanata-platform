@@ -37,8 +37,6 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
    {
    }
 
-   LabelFormat labelFormat = LabelFormat.PERCENT_COMPLETE_HRS;
-
    @UiField
    LayoutPanel layoutPanel;
 
@@ -48,22 +46,24 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
    @UiField
    Label label;
 
+   private final LabelFormat labelFormat;
+
    private final TranslationStats stats = new TranslationStats();
 
    private final WebTransMessages messages;
 
    private int totalWidth = 100;
 
-   private boolean animate = false;
-
    private boolean statsByWords = true;
 
-
    @Inject
-   public TransUnitCountBar(WebTransMessages messages)
+   public TransUnitCountBar(WebTransMessages messages, LabelFormat labelFormat, boolean enableClickToggle)
    {
       this.messages = messages;
+      this.labelFormat = labelFormat;
+
       tooltipPanel = new TooltipPopupPanel(messages);
+
       initWidget(uiBinder.createAndBindUi(this));
 
       this.addMouseOutHandler(new MouseOutHandler()
@@ -84,30 +84,26 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
             tooltipPanel.showRelativeTo(layoutPanel);
          }
       });
-      
-      this.addClickHandler(new ClickHandler()
+
+      if (enableClickToggle)
       {
-         @Override
-         public void onClick(ClickEvent event)
+         this.addClickHandler(new ClickHandler()
          {
-            toogleStatOption();
-         }
-      });
+            @Override
+            public void onClick(ClickEvent event)
+            {
+               setStatOption(!statsByWords);
+            }
+         });
+      }
 
       sinkEvents(Event.ONMOUSEOVER | Event.ONMOUSEOUT | Event.ONCLICK);
    }
 
-   private void toogleStatOption()
+   public void setStatOption(boolean statsByWords)
    {
-      statsByWords = !statsByWords;
+      this.statsByWords = statsByWords;
       refresh();
-   }
-
-   public TransUnitCountBar(WebTransMessages messages, boolean animate)
-   {
-      this.animate = animate;
-      this.messages = messages;
-      tooltipPanel = new TooltipPopupPanel(messages);
    }
 
    private void setupLayoutPanel(double undefinedLeft, double undefinedWidth, double approvedLeft, double approvedWidth, double needReviewLeft, double needReviewWidth, double untranslatedLeft, double untranslatedWidth)
@@ -154,8 +150,10 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
          setLabelText();
       }
 
-      int duration = animate ? 1000 : 0;
-      refreshDisplay(duration);
+      int duration = 600;
+
+      tooltipPanel.refreshData(this);
+      layoutPanel.animate(duration);
    }
 
    private void setLabelText()
@@ -183,15 +181,6 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
    public int getApprovedPercent()
    {
       return stats.getApprovedPercent(statsByWords);
-   }
-
-   private void refreshDisplay(int duration)
-   {
-      tooltipPanel.refreshData(this);
-      if (duration == 0)
-         layoutPanel.forceLayout();
-      else
-         layoutPanel.animate(duration);
    }
 
    public int getWordsTotal()
@@ -239,6 +228,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
    {
       this.stats.set(stats);
       this.statsByWords = statsByWords;
+
       refresh();
    }
 
@@ -246,7 +236,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
    public int getOffsetWidth()
    {
       int offsetWidth = super.getOffsetWidth();
-      return offsetWidth == 0 ? 115 : offsetWidth;
+      return offsetWidth == 0 || offsetWidth > 100 ? 100 : offsetWidth;
    }
 
    @Override
@@ -266,5 +256,4 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
    {
       return addDomHandler(handler, ClickEvent.getType());
    }
-
 }

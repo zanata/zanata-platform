@@ -56,7 +56,6 @@ public abstract class AbstractValidationAction implements ValidationAction
 
    private ValidationInfo validationInfo;
 
-   private ArrayList<String> errorList = new ArrayList<String>();
    private ArrayList<ValidationAction> exclusiveValidations = new ArrayList<ValidationAction>();
 
    private ValidationMessages validationMessages;
@@ -70,16 +69,17 @@ public abstract class AbstractValidationAction implements ValidationAction
    }
 
    @Override
-   public void validate(String source, String target)
+   public List<String> validate(String source, String target)
    {
-      clearErrorMessage();
+      ArrayList<String> errorList = new ArrayList<String>();
       if (!Strings.isNullOrEmpty(target) && !Strings.isNullOrEmpty(source))
       {
-         doValidate(source, target);
+         doValidate(errorList, source, target);
       }
+      return errorList;
    }
 
-   protected abstract void doValidate(String source, String target);
+   protected abstract void doValidate(ArrayList<String> errorList, String source, String target);
 
 
    @Override
@@ -92,29 +92,6 @@ public abstract class AbstractValidationAction implements ValidationAction
    public void mutuallyExclusive(ValidationAction... exclusiveValidations)
    {
       this.exclusiveValidations = Lists.newArrayList(exclusiveValidations);
-   }
-
-   @Override
-   public boolean hasError()
-   {
-      return !errorList.isEmpty();
-   }
-
-   @Override
-   public List<String> getError()
-   {
-      return errorList;
-   }
-
-   @Override
-   public void clearErrorMessage()
-   {
-      errorList.clear();
-   }
-
-   protected void addError(String error)
-   {
-      errorList.add(error);
    }
    
    protected ValidationMessages getMessages()

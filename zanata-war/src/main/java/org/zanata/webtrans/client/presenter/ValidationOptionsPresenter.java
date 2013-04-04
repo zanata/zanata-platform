@@ -25,9 +25,9 @@ import java.util.ArrayList;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.webtrans.client.events.DocValidationResultEvent;
+import org.zanata.webtrans.client.events.DocValidationResultHandler;
 import org.zanata.webtrans.client.events.RunDocValidationEvent;
-import org.zanata.webtrans.client.events.RunDocValidationResultEvent;
-import org.zanata.webtrans.client.events.RunDocValidationResultHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.resources.WebTransMessages;
@@ -47,7 +47,7 @@ import com.google.inject.Inject;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOptionsDisplay> implements ValidationOptionsDisplay.Listener, WorkspaceContextUpdateEventHandler, RunDocValidationResultHandler
+public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOptionsDisplay> implements ValidationOptionsDisplay.Listener, WorkspaceContextUpdateEventHandler, DocValidationResultHandler
 {
    private final ValidationService validationService;
    private final WebTransMessages messages;
@@ -65,10 +65,10 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
    protected void onBind()
    {
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this));
-      registerHandler(eventBus.addHandler(RunDocValidationResultEvent.getType(), this));
+      registerHandler(eventBus.addHandler(DocValidationResultEvent.getType(), this));
       initDisplay();
 
-      display.updateValidationResult(null, null);
+      display.updateValidationResult(null);
 
       display.setListener(this);
    }
@@ -150,11 +150,9 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
    }
 
    @Override
-   public void onCompleteRunDocValidation(RunDocValidationResultEvent event)
+   public void onCompleteRunDocValidation(DocValidationResultEvent event)
    {
-      display.updateValidationResult(event.getStartTime(), event.getEndTime());
+      display.updateValidationResult(event.getEndTime());
+      display.enabledRunValidation(true);
    }
 }
-
-
- 

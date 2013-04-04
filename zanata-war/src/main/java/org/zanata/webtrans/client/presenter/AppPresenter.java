@@ -272,7 +272,10 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
          {
             display.enableTab(MainView.Editor, true);
             selectedDocument = docInfo;
-            selectedDocumentStats.set(selectedDocument.getStats());
+            if (selectedDocument.getStats() != null)
+            {
+               selectedDocumentStats.set(selectedDocument.getStats());
+            }
             if (currentView == MainView.Editor)
             {
                display.setDocumentLabel(selectedDocument.getPath(), selectedDocument.getName());
@@ -412,8 +415,8 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
       if (!GWT.isClient())
       {
          this.selectedDocument = selectedDocument;
-         this.currentView = currentView;
          this.projectStats = projectStats;
+         this.currentView = currentView;
          this.selectedDocumentStats = selectedDocumentStats;
       }
    }
