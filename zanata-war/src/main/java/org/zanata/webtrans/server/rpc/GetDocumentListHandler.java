@@ -1,7 +1,6 @@
 package org.zanata.webtrans.server.rpc;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,12 +12,11 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.DocumentDAO;
+import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HPerson;
-import org.zanata.model.HTextFlowTarget;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.TranslationFileService;
 import org.zanata.service.TranslationStateCache;
@@ -46,13 +44,15 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
 
    @In
    private TranslationFileService translationFileServiceImpl;
+   
+   @In
+   private TextFlowTargetDAO textFlowTargetDAO;
 
    @Override
    public GetDocumentListResult execute(GetDocumentList action, ExecutionContext context) throws ActionException
    {
       identity.checkLoggedIn();
 
-      LocaleId localeId = action.getWorkspaceId().getLocaleId();
       ProjectIterationId iterationId = action.getWorkspaceId().getProjectIterationId();
 
       List<DocumentInfo> docs = new ArrayList<DocumentInfo>();
@@ -61,21 +61,6 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
 
       for (HDocument hDoc : hDocs)
       {
-         DocumentId docId = new DocumentId(hDoc.getId(), hDoc.getDocId());
-         HTextFlowTarget result = translationStateCacheImpl.getDocLastModifiedTextFlowTarget(hDoc.getId(), localeId);
-
-         Date lastTranslatedDate = null;
-         String lastTranslatedBy = "";
-
-         if (result != null)
-         {
-            lastTranslatedDate = result.getLastChanged();
-            if (result.getLastModifiedBy() != null)
-            {
-               lastTranslatedBy = result.getLastModifiedBy().getAccount().getUsername();
-            }
-         }
-
          HPerson person = hDoc.getLastModifiedBy();
          String lastModifiedBy = "";
          if (person != null)
@@ -101,7 +86,7 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
             downloadExtensions.put(extension, "baked?docId=" + hDoc.getDocId());
          }
 
-         DocumentInfo doc = new DocumentInfo(docId, hDoc.getName(), hDoc.getPath(), hDoc.getLocale().getLocaleId(), null, new AuditInfo(hDoc.getLastChanged(), lastModifiedBy), downloadExtensions, new AuditInfo(lastTranslatedDate, lastTranslatedBy));
+         DocumentInfo doc = new DocumentInfo(new DocumentId(hDoc.getId(), hDoc.getDocId()), hDoc.getName(), hDoc.getPath(), hDoc.getLocale().getLocaleId(), null, new AuditInfo(hDoc.getLastChanged(), lastModifiedBy), downloadExtensions, null);
          docs.add(doc);
       }
       return new GetDocumentListResult(iterationId, docs);

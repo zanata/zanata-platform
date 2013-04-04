@@ -136,14 +136,9 @@ public class TranslationStateCacheImpl implements TranslationStateCache
    }
 
    @Override
-   public HTextFlowTarget getDocLastModifiedTextFlowTarget(Long documentId, LocaleId localeId)
+   public Long getDocLastModifiedTextFlowTarget(Long documentId, LocaleId localeId)
    {
-      Long targetId = docLastModifiedCache.getWithLoader(new TranslatedDocumentKey(documentId, localeId));
-      if (targetId == null)
-      {
-         return null;
-      }
-      return textFlowTargetDAO.findById(targetId, false);
+      return docLastModifiedCache.getWithLoader(new TranslatedDocumentKey(documentId, localeId));
    }
 
    private void updateFilterCache(Long textFlowId, LocaleId localeId, ContentState newState)

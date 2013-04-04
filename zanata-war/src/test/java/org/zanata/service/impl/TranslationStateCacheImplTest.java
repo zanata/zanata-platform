@@ -21,14 +21,11 @@
 package org.zanata.service.impl;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.util.OpenBitSet;
@@ -41,7 +38,6 @@ import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.service.impl.TranslationStateCacheImpl.TranslatedDocumentKey;
-import org.zanata.webtrans.shared.model.ValidationId;
 
 import com.google.common.cache.CacheLoader;
 
@@ -120,12 +116,12 @@ public class TranslationStateCacheImplTest
       when(lastModifiedLoader.load(key)).thenReturn(targetId);
       when(textFlowTargetDAO.findById(targetId, false)).thenReturn(target);
       
-      HTextFlowTarget result1 = tsCache.getDocLastModifiedTextFlowTarget(documentId, testLocaleId);
-      HTextFlowTarget result2 = tsCache.getDocLastModifiedTextFlowTarget(documentId, testLocaleId);
+      Long result1 = tsCache.getDocLastModifiedTextFlowTarget(documentId, testLocaleId);
+      Long result2 = tsCache.getDocLastModifiedTextFlowTarget(documentId, testLocaleId);
 
       // Then:
       verify(lastModifiedLoader).load(key); // only load the value once
-      assertThat(result1, is(sameInstance(target)));
-      assertThat(result2, is(sameInstance(target)));
+      assertThat(result1, equalTo(target.getId()));
+      assertThat(result2, equalTo(target.getId()));
    }
 }

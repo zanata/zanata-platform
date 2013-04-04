@@ -296,7 +296,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
    private void queryStats()
    {
-      int BATCH_SIZE = 1000;
+      int BATCH_SIZE = 10;
 
       for (int i = 0; i < nodes.size();)
       {
@@ -319,11 +319,13 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
                {
                   DocumentInfo docInfo = getDocumentInfo(entry.getKey());
                   docInfo.setStats(entry.getValue());
+                  docInfo.setLastTranslated(result.getLastTranslatedMap().get(entry.getKey()));
 
                   Integer row = pageRows.get(entry.getKey());
                   if (row != null)
                   {
                      display.updateStats(row.intValue(), docInfo.getStats());
+                     display.updateLastTranslated(row.intValue(), docInfo.getLastTranslated());
                   }
 
                   eventBus.fireEvent(new DocumentStatsUpdatedEvent(entry.getKey(), docInfo.getStats()));

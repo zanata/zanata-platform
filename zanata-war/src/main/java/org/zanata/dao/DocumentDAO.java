@@ -31,7 +31,6 @@ import org.zanata.model.StatusCount;
 @Scope(ScopeType.STATELESS)
 public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
 {
-
    public DocumentDAO()
    {
       super(HDocument.class);
@@ -141,20 +140,22 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
 
    public Long getLastTranslatedTargetId(Long documentId, LocaleId localeId)
    {
+      Session session = getSession();
+      
       StringBuilder query = new StringBuilder();
+     
       query.append("select tft.id from HTextFlowTarget tft ");
       query.append("where tft.textFlow.document.id = :docId ");
       query.append("and tft.locale.localeId = :localeId ");
       query.append("order by tft.lastChanged DESC");
-
-      Query q = getSession().createQuery(query.toString());
-      q.setParameter("docId", documentId);
-      q.setParameter("localeId", localeId);
-      q.setCacheable(true);
-      q.setMaxResults(1);
-      q.setComment("DocumentDAO.getLastTranslated");
-
-      return (Long) q.uniqueResult();
+      
+      return (Long) session.createQuery(query.toString())
+      .setParameter("docId", documentId)
+      .setParameter("localeId", localeId)
+      .setCacheable(true)
+      .setMaxResults(1)
+      .setComment("DocumentDAO.getLastTranslated")
+      .uniqueResult();
    }
 
    /**
