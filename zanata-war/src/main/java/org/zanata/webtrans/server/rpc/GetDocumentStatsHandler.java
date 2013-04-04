@@ -7,18 +7,16 @@ import java.util.Map;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.TranslationStats;
-import org.zanata.dao.PersonDAO;
+import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.service.TranslationStateCache;
 import org.zanata.service.impl.StatisticsServiceImpl;
-import org.zanata.service.impl.TranslationStateCacheImpl;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.AuditInfo;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -32,37 +30,52 @@ public class GetDocumentStatsHandler extends AbstractActionHandler<GetDocumentSt
 {
    @In
    private StatisticsServiceImpl statisticsServiceImpl;
-   
+
    @In
    private TranslationStateCache translationStateCacheImpl;
-   
+
    @In
    private TextFlowTargetDAO textFlowTargetDAO;
+   
+   @In
+   private DocumentDAO documentDAO;
+   
+   // TODO: fix problem with multiple RPC call from single client, disable cache at the moment
+   private boolean USE_CACHE = false;
 
    @Override
    public GetDocumentStatsResult execute(GetDocumentStats action, ExecutionContext context) throws ActionException
    {
       Map<DocumentId, TranslationStats> statsMap = new HashMap<DocumentId, TranslationStats>();
       Map<DocumentId, AuditInfo> lastTranslatedMap = new HashMap<DocumentId, AuditInfo>();
-      
+
       for (DocumentId documentId : action.getDocIds())
       {
          TranslationStats stats = statisticsServiceImpl.getDocStatistics(documentId.getId(), action.getWorkspaceId().getLocaleId());
          statsMap.put(documentId, stats);
+
+         Long id = null;
          
-         Long id = translationStateCacheImpl.getDocLastModifiedTextFlowTarget(documentId.getId(), action.getWorkspaceId().getLocaleId());
+         if (USE_CACHE)
+         {
+            id = translationStateCacheImpl.getDocLastModifiedTextFlowTarget(documentId.getId(), action.getWorkspaceId().getLocaleId());
+         }
+         else
+         {
+            id = documentDAO.getLastTranslatedTargetId(documentId.getId(), action.getWorkspaceId().getLocaleId());
+         }
          
          Date lastTranslatedDate = null;
          String lastTranslatedBy = "";
-         
+
          if (id != null)
          {
             HTextFlowTarget target = textFlowTargetDAO.findById(id, false);
-           
+
             if (target != null)
             {
                lastTranslatedDate = target.getLastChanged();
-               
+
                if (target.getLastModifiedBy() != null)
                {
                   lastTranslatedBy = target.getLastModifiedBy().getAccount().getUsername();
@@ -71,7 +84,7 @@ public class GetDocumentStatsHandler extends AbstractActionHandler<GetDocumentSt
          }
          lastTranslatedMap.put(documentId, new AuditInfo(lastTranslatedDate, lastTranslatedBy));
       }
-      return new GetDocumentStatsResult(statsMap,lastTranslatedMap);
+      return new GetDocumentStatsResult(statsMap, lastTranslatedMap);
    }
 
    @Override

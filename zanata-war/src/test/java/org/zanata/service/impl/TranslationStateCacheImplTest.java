@@ -21,11 +21,14 @@
 package org.zanata.service.impl;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.util.OpenBitSet;
@@ -38,6 +41,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.service.impl.TranslationStateCacheImpl.TranslatedDocumentKey;
+import org.zanata.webtrans.shared.model.ValidationId;
 
 import com.google.common.cache.CacheLoader;
 
@@ -54,12 +58,14 @@ public class TranslationStateCacheImplTest
    private CacheLoader<TranslatedDocumentKey, Long> lastModifiedLoader;
    @Mock
    private TextFlowTargetDAO textFlowTargetDAO;
+   @Mock
+   private CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader;
 
    @BeforeMethod
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-      tsCache = new TranslationStateCacheImpl(filterLoader, bitsetLoader, lastModifiedLoader, textFlowTargetDAO);
+      tsCache = new TranslationStateCacheImpl(filterLoader, bitsetLoader, lastModifiedLoader, targetValidationLoader, textFlowTargetDAO);
       tsCache.create();
    }
 
@@ -123,5 +129,42 @@ public class TranslationStateCacheImplTest
       verify(lastModifiedLoader).load(key); // only load the value once
       assertThat(result1, equalTo(target.getId()));
       assertThat(result2, equalTo(target.getId()));
+   }
+
+public void testTextFlowTargetHasError() throws Exception
+   {
+      // Given:
+      Long targetId = new Long("1000");
+      ValidationId validationId = ValidationId.HTML_XML;
+      Map<ValidationId, Boolean> map = new HashMap<ValidationId, Boolean>();
+
+      // When:
+      when(targetValidationLoader.load(targetId)).thenReturn(map);
+
+      // Run:
+      Boolean result = tsCache.textFlowTargetHasError(targetId, validationId);
+
+      // Then:
+      verify(targetValidationLoader).load(targetId); // only load the value once
+      assertThat(result, equalTo(null));
+   }
+
+   public void testTextFlowTargetHasError2() throws Exception
+   {
+      // Given:
+      Long targetId = new Long("1000");
+      ValidationId validationId = ValidationId.HTML_XML;
+      Map<ValidationId, Boolean> map = new HashMap<ValidationId, Boolean>();
+      map.put(validationId, true);
+
+      // When:
+      when(targetValidationLoader.load(targetId)).thenReturn(map);
+
+      // Run:
+      Boolean result = tsCache.textFlowTargetHasError(targetId, validationId);
+
+      // Then:
+      verify(targetValidationLoader).load(targetId); // only load the value once
+      assertThat(result, equalTo(true));
    }
 }

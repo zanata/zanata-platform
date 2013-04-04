@@ -235,7 +235,12 @@ public class StatisticsServiceImpl implements StatisticsResource
             count = stats.getUnitCount();
          }
          Long id = translationStateCacheImpl.getDocLastModifiedTextFlowTarget(document.getId(), locale);
-         HTextFlowTarget target = textFlowTargetDAO.findById(id, false);
+         HTextFlowTarget target = null;
+         
+         if (id != null)
+         {
+            target = textFlowTargetDAO.findById(id, false);
+         }
 
          TranslationStatistics transUnitStats = getMessageStats(count, locale, target);
          transUnitStats.setRemainingHours(getRemainingHours(count.get(ContentState.NeedReview), count.get(ContentState.New)));

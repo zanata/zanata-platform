@@ -27,6 +27,7 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.service.TranslationStateCache;
 import org.zanata.service.ValidationFactoryProvider;
 import org.zanata.service.ValidationService;
 import org.zanata.webtrans.server.rpc.TransUnitTransformer;
@@ -60,10 +61,12 @@ public class ValidationServiceImpl implements ValidationService
 
    @In
    private TextFlowTargetDAO textFlowTargetDAO;
-   
+
    @In
    private TextFlowDAO textFlowDAO;
-   
+
+   @In
+   private TranslationStateCache translationStateCacheImpl;
 
    private ValidationFactory validationFactory;
 
@@ -152,11 +155,11 @@ public class ValidationServiceImpl implements ValidationService
       List<ValidationAction> validationActions = getValidationFactory().getValidationActions(validationIds);
 
       boolean hasError = documentHasError(hDoc, validationActions, localeId);
-      
+
       log.debug("Finished doc validation in " + stopwatch);
       return hasError;
    }
-   
+
    private boolean documentHasError(HDocument hDoc, List<ValidationAction> validationActions, LocaleId localeId)
    {
       for (HTextFlow textFlow : hDoc.getTextFlows())
@@ -208,6 +211,9 @@ public class ValidationServiceImpl implements ValidationService
       startIndex = startIndex < 0 ? 0 : startIndex;
    }
 
+   // TODO: fix problem with multiple RPC call from single client, disable cache at the moment
+   private boolean USE_CACHE = false; 
+
    private boolean textFlowTargetHasError(HTextFlow textFlow, List<ValidationAction> validationActions, LocaleId localeId)
    {
       HTextFlowTarget target = textFlowTargetDAO.getTextFlowTarget(textFlow, localeId);
@@ -215,10 +221,21 @@ public class ValidationServiceImpl implements ValidationService
       {
          for (ValidationAction validationAction : validationActions)
          {
-            List<String> errorList = validationAction.validate(textFlow.getContents().get(0), target.getContents().get(0));
-            if (!errorList.isEmpty())
+            if (USE_CACHE)
             {
-               return true;
+               Boolean value = translationStateCacheImpl.textFlowTargetHasError(target.getId(), validationAction.getId());
+               if (value != null && value.booleanValue())
+               {
+                  return value.booleanValue();
+               }
+            }
+            else
+            {
+               List<String> errorList = validationAction.validate(textFlow.getContents().get(0), target.getContents().get(0));
+               if (!errorList.isEmpty())
+               {
+                  return true;
+               }
             }
          }
       }

@@ -59,8 +59,19 @@
 	/>
 	
 	<cache
-		name="org.zanata.service.impl.TranslationStateCacheImpl.docLastModifiedCache"
+		name="org.zanata.service.impl.TranslationStateCacheImpl.docLastTranslatedCache"
 		maxElementsInMemory="400"
+		eternal="false"
+		timeToIdleSeconds="86400"
+		timeToLiveSeconds="0"
+		overflowToDisk="false"
+		memoryStoreEvictionPolicy="LRU"
+		statistics="true"
+	/>
+	
+	<cache
+		name="org.zanata.service.impl.TranslationStateCacheImpl.targetValidationCache"
+		maxElementsInMemory="10000"
 		eternal="false"
 		timeToIdleSeconds="86400"
 		timeToLiveSeconds="0"
