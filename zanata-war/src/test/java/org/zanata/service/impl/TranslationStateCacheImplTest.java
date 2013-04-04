@@ -45,7 +45,6 @@ import org.zanata.webtrans.shared.model.ValidationId;
 
 import com.google.common.cache.CacheLoader;
 
-
 @Test(groups = { "business-tests" })
 public class TranslationStateCacheImplTest
 {
@@ -58,12 +57,14 @@ public class TranslationStateCacheImplTest
    private CacheLoader<TranslatedDocumentKey, Long> lastModifiedLoader;
    @Mock
    private TextFlowTargetDAO textFlowTargetDAO;
+   @Mock
+   private CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader;
 
    @BeforeMethod
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-      tsCache = new TranslationStateCacheImpl(filterLoader, bitsetLoader, lastModifiedLoader, textFlowTargetDAO);
+      tsCache = new TranslationStateCacheImpl(filterLoader, bitsetLoader, lastModifiedLoader, targetValidationLoader, textFlowTargetDAO);
       tsCache.create();
    }
 
@@ -119,7 +120,7 @@ public class TranslationStateCacheImplTest
       // When:
       when(lastModifiedLoader.load(key)).thenReturn(targetId);
       when(textFlowTargetDAO.findById(targetId, false)).thenReturn(target);
-      
+
       HTextFlowTarget result1 = tsCache.getDocLastModifiedTextFlowTarget(documentId, testLocaleId);
       HTextFlowTarget result2 = tsCache.getDocLastModifiedTextFlowTarget(documentId, testLocaleId);
 
@@ -127,5 +128,42 @@ public class TranslationStateCacheImplTest
       verify(lastModifiedLoader).load(key); // only load the value once
       assertThat(result1, is(sameInstance(target)));
       assertThat(result2, is(sameInstance(target)));
+   }
+
+   public void testTextFlowTargetHasError() throws Exception
+   {
+      // Given:
+      Long targetId = new Long("1000");
+      ValidationId validationId = ValidationId.HTML_XML;
+      Map<ValidationId, Boolean> map = new HashMap<ValidationId, Boolean>();
+
+      // When:
+      when(targetValidationLoader.load(targetId)).thenReturn(map);
+
+      // Run:
+      Boolean result = tsCache.textFlowTargetHasError(targetId, validationId);
+
+      // Then:
+      verify(targetValidationLoader).load(targetId); // only load the value once
+      assertThat(result, equalTo(null));
+   }
+
+   public void testTextFlowTargetHasError2() throws Exception
+   {
+      // Given:
+      Long targetId = new Long("1000");
+      ValidationId validationId = ValidationId.HTML_XML;
+      Map<ValidationId, Boolean> map = new HashMap<ValidationId, Boolean>();
+      map.put(validationId, true);
+
+      // When:
+      when(targetValidationLoader.load(targetId)).thenReturn(map);
+
+      // Run:
+      Boolean result = tsCache.textFlowTargetHasError(targetId, validationId);
+
+      // Then:
+      verify(targetValidationLoader).load(targetId); // only load the value once
+      assertThat(result, equalTo(true));
    }
 }
