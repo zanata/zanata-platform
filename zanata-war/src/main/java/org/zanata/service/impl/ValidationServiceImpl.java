@@ -224,7 +224,7 @@ public class ValidationServiceImpl implements ValidationService
             if (USE_CACHE)
             {
                Boolean value = translationStateCacheImpl.textFlowTargetHasError(target.getId(), validationAction.getId());
-               if (value != null)
+               if (value != null && value.booleanValue())
                {
                   return value.booleanValue();
                }
