@@ -1,6 +1,5 @@
 package org.zanata.webtrans.shared.model;
 
-import java.util.Date;
 import java.util.Map;
 
 import org.zanata.common.LocaleId;
@@ -15,12 +14,10 @@ public class DocumentInfo implements HasIdentifier<DocumentId>, IsSerializable
    private String path;
    private LocaleId sourceLocale;
    private TranslationStats stats;
-   private String lastModifiedBy;
-   private Date lastChanged;
+   private AuditInfo lastModified;
+   private AuditInfo lastTranslated;
    private Map<String, String> downloadExtensions;
    
-   private Date lastTranslatedDate;
-   private String lastTranslatedBy;
    
    private Boolean hasError = null;
 
@@ -30,18 +27,16 @@ public class DocumentInfo implements HasIdentifier<DocumentId>, IsSerializable
    {
    }
 
-   public DocumentInfo(DocumentId id, String name, String path, LocaleId sourceLocale, TranslationStats stats, String lastModifiedBy, Date lastChanged, Map<String, String> downloadExtensions, String lastTranslatedBy, Date lastTranslatedDate)
+   public DocumentInfo(DocumentId id, String name, String path, LocaleId sourceLocale, TranslationStats stats, AuditInfo lastModified, Map<String, String> downloadExtensions, AuditInfo lastTranslated)
    {
       this.id = id;
       this.name = name;
       this.path = path;
       this.stats = stats;
       this.sourceLocale = sourceLocale;
-      this.lastChanged = lastChanged;
-      this.lastModifiedBy = lastModifiedBy;
+      this.lastModified = lastModified;
       this.downloadExtensions = downloadExtensions;
-      this.lastTranslatedDate = lastTranslatedDate;
-      this.lastTranslatedBy = lastTranslatedBy;
+      this.lastTranslated = lastTranslated;
    }
 
    public DocumentId getId()
@@ -74,14 +69,9 @@ public class DocumentInfo implements HasIdentifier<DocumentId>, IsSerializable
       return sourceLocale;
    }
 
-   public String getLastModifiedBy()
+   public AuditInfo getLastModified()
    {
-      return lastModifiedBy;
-   }
-
-   public Date getLastChanged()
-   {
-      return lastChanged;
+      return lastModified;
    }
 
    public Map<String, String> getDownloadExtensions()
@@ -89,24 +79,14 @@ public class DocumentInfo implements HasIdentifier<DocumentId>, IsSerializable
       return downloadExtensions;
    }
 
-   public Date getLastTranslatedDate()
+   public AuditInfo getLastTranslated()
    {
-      return lastTranslatedDate;
+      return lastTranslated;
    }
 
-   public String getLastTranslatedBy()
+   public void setLastTranslated(AuditInfo lastTranslated)
    {
-      return lastTranslatedBy;
-   }
-
-   public void setLastTranslatedDate(Date lastTranslatedDate)
-   {
-      this.lastTranslatedDate = lastTranslatedDate;
-   }
-
-   public void setLastTranslatedBy(String lastTranslatedBy)
-   {
-      this.lastTranslatedBy = lastTranslatedBy;
+      this.lastTranslated = lastTranslated;
    }
 
    public void setHasError(Boolean hasError)

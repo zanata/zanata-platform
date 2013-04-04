@@ -20,7 +20,6 @@
  */
 package org.zanata.webtrans.client.ui;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,9 +31,9 @@ import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.HasTranslationStats.LabelFormat;
 import org.zanata.webtrans.client.util.DateUtil;
 import org.zanata.webtrans.client.view.DocumentListDisplay;
+import org.zanata.webtrans.shared.model.AuditInfo;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
-import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.google.common.base.Strings;
@@ -190,8 +189,8 @@ public class DocumentListTable extends FlexTable
          this.setWidget(i + 1, UNTRANSLATED_COLUMN, getUntranslatedWidget(node.getDocInfo(), statsByWords));
          this.setWidget(i + 1, REMAINING_COLUMN, getRemainingWidget(node.getDocInfo()));
 
-         this.setWidget(i + 1, LAST_UPLOAD_COLUMN, new InlineLabel(getAuditInfo(node.getDocInfo().getLastModifiedBy(), node.getDocInfo().getLastChanged())));
-         this.setWidget(i + 1, LAST_TRANSLATED_COLUMN, new InlineLabel(getAuditInfo(node.getDocInfo().getLastTranslatedBy(), node.getDocInfo().getLastTranslatedDate())));
+         this.setWidget(i + 1, LAST_UPLOAD_COLUMN, new InlineLabel(getAuditInfo(node.getDocInfo().getLastModified())));
+         this.setWidget(i + 1, LAST_TRANSLATED_COLUMN, new InlineLabel(getAuditInfo(node.getDocInfo().getLastTranslated())));
 
          this.setWidget(i + 1, ACTION_COLUMN, getActionWidget(node.getDocInfo()));
 
@@ -406,18 +405,21 @@ public class DocumentListTable extends FlexTable
       return panel;
    }
 
-   private String getAuditInfo(String by, Date date)
+   private String getAuditInfo(AuditInfo lastTranslatedInfo)
    {
       StringBuilder sb = new StringBuilder();
 
-      if (date != null)
+      if (lastTranslatedInfo != null)
       {
-         sb.append(DateUtil.formatShortDate(date));
-      }
-      if (!Strings.isNullOrEmpty(by))
-      {
-         sb.append(" by ");
-         sb.append(by);
+         if (lastTranslatedInfo.getDate() != null)
+         {
+            sb.append(DateUtil.formatShortDate(lastTranslatedInfo.getDate()));
+         }
+         if (!Strings.isNullOrEmpty(lastTranslatedInfo.getUsername()))
+         {
+            sb.append(" by ");
+            sb.append(lastTranslatedInfo.getUsername());
+         }
       }
       return sb.toString();
    }
@@ -428,10 +430,10 @@ public class DocumentListTable extends FlexTable
       panel.setValidationResult(status);
    }
 
-   public void updateLastTranslatedInfo(int row, TransUnit transUnit)
+   public void updateLastTranslatedInfo(int row, AuditInfo lastTranslated)
    {
       HasText label = (HasText) this.getWidget(row, LAST_TRANSLATED_COLUMN);
-      label.setText(getAuditInfo(transUnit.getLastModifiedBy(), transUnit.getLastModifiedTime()));
+      label.setText(getAuditInfo(lastTranslated));
    }
 
    public void updateStats(int row, TranslationStats stats, boolean statsByWords)

@@ -37,9 +37,9 @@ import org.zanata.webtrans.client.ui.InlineLink;
 import org.zanata.webtrans.client.ui.LoadingPanel;
 import org.zanata.webtrans.client.ui.Pager;
 import org.zanata.webtrans.client.ui.SearchField;
+import org.zanata.webtrans.shared.model.AuditInfo;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
-import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 
@@ -378,9 +378,9 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    }
 
    @Override
-   public void updateLastTranslatedInfo(int row, TransUnit transUnit)
+   public void updateLastTranslated(int row, AuditInfo lastTranslated)
    {
-      documentListTable.updateLastTranslatedInfo(row, transUnit);
+      documentListTable.updateLastTranslatedInfo(row, lastTranslated);
 
    }
 

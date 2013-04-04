@@ -59,6 +59,7 @@ import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.ui.DocumentListTable.DocValidationStatus;
 import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.client.view.DocumentListDisplay;
+import org.zanata.webtrans.shared.model.AuditInfo;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnit;
@@ -288,9 +289,14 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       updatePageCountAndGotoFirstPage();
    }
 
-   public void queryStats()
+   public void queryInfo()
    {
-      int BATCH_SIZE = 1000;
+      queryStats();
+   }
+
+   private void queryStats()
+   {
+      int BATCH_SIZE = 100;
 
       for (int i = 0; i < nodes.size();)
       {
@@ -459,7 +465,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
          if (row != null)
          {
             display.updateStats(row.intValue(), updatedDoc.getStats());
-            display.updateLastTranslatedInfo(row.intValue(), event.getUpdateInfo().getTransUnit());
+            AuditInfo lastTranslated = new AuditInfo(event.getUpdateInfo().getTransUnit().getLastModifiedTime(), event.getUpdateInfo().getTransUnit().getLastModifiedBy());
+            display.updateLastTranslated(row.intValue(), lastTranslated);
          }
 
          eventBus.fireEvent(new DocumentStatsUpdatedEvent(updatedDoc.getId(), updatedDoc.getStats()));
@@ -472,8 +479,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
    private void updateLastTranslatedInfo(DocumentInfo doc, TransUnit updatedTransUnit)
    {
-      doc.setLastTranslatedBy(updatedTransUnit.getLastModifiedBy());
-      doc.setLastTranslatedDate(updatedTransUnit.getLastModifiedTime());
+      doc.setLastTranslated(new AuditInfo(updatedTransUnit.getLastModifiedTime(), updatedTransUnit.getLastModifiedBy()));
    }
 
    /**
@@ -834,36 +840,36 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
       private int compareLastUpload(DocumentNode o1, DocumentNode o2)
       {
-         if (o1.getDocInfo().getLastChanged() == o2.getDocInfo().getLastChanged())
+         if (o1.getDocInfo().getLastModified().getDate() == o2.getDocInfo().getLastModified().getDate())
          {
             return 0;
          }
-         if (o1.getDocInfo().getLastChanged() == null)
+         if (o1.getDocInfo().getLastModified().getDate() == null)
          {
             return -1;
          }
-         if (o2.getDocInfo().getLastChanged() == null)
+         if (o2.getDocInfo().getLastModified().getDate() == null)
          {
             return 1;
          }
-         return o1.getDocInfo().getLastChanged().after(o2.getDocInfo().getLastChanged()) ? 1 : -1;
+         return o1.getDocInfo().getLastModified().getDate().after(o2.getDocInfo().getLastModified().getDate()) ? 1 : -1;
       }
 
       private int compareLastTranslated(DocumentNode o1, DocumentNode o2)
       {
-         if (o1.getDocInfo().getLastChanged() == o2.getDocInfo().getLastChanged())
+         if (o1.getDocInfo().getLastTranslated().getDate() == o2.getDocInfo().getLastTranslated().getDate())
          {
             return 0;
          }
-         if (o1.getDocInfo().getLastChanged() == null)
+         if (o1.getDocInfo().getLastTranslated().getDate() == null)
          {
             return -1;
          }
-         if (o2.getDocInfo().getLastChanged() == null)
+         if (o2.getDocInfo().getLastTranslated().getDate() == null)
          {
             return 1;
          }
-         return o1.getDocInfo().getLastChanged().after(o2.getDocInfo().getLastChanged()) ? 1 : -1;
+         return o1.getDocInfo().getLastTranslated().getDate().after(o2.getDocInfo().getLastTranslated().getDate()) ? 1 : -1;
       }
    }
 

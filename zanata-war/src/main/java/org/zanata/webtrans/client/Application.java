@@ -198,7 +198,7 @@ public class Application implements EntryPoint
             exceptionHandler.setAppPresenter(appPresenter);
             exceptionHandler.setTargetContentsPresenter(injector.getTargetContentsPresenter());
 
-            documentListPresenter.queryStats();
+            documentListPresenter.queryInfo();
             documentListPresenter.showLoading(false);
 
             stopwatch.stop();

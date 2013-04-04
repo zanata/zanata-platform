@@ -23,6 +23,7 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.TranslationFileService;
 import org.zanata.service.TranslationStateCache;
 import org.zanata.webtrans.server.ActionHandlerFor;
+import org.zanata.webtrans.shared.model.AuditInfo;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
@@ -100,7 +101,7 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
             downloadExtensions.put(extension, "baked?docId=" + hDoc.getDocId());
          }
 
-         DocumentInfo doc = new DocumentInfo(docId, hDoc.getName(), hDoc.getPath(), hDoc.getLocale().getLocaleId(), null, lastModifiedBy, hDoc.getLastChanged(), downloadExtensions, lastTranslatedBy, lastTranslatedDate);
+         DocumentInfo doc = new DocumentInfo(docId, hDoc.getName(), hDoc.getPath(), hDoc.getLocale().getLocaleId(), null, new AuditInfo(hDoc.getLastChanged(), lastModifiedBy), downloadExtensions, new AuditInfo(lastTranslatedDate, lastTranslatedBy));
          docs.add(doc);
       }
       return new GetDocumentListResult(iterationId, docs);

@@ -31,9 +31,9 @@ import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.client.ui.HasPager;
 import org.zanata.webtrans.client.ui.InlineLink;
 import org.zanata.webtrans.client.ui.SearchFieldListener;
+import org.zanata.webtrans.shared.model.AuditInfo;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
-import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
@@ -128,8 +128,6 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
 
    HashMap<DocumentId, Integer> buildContent(List<DocumentNode> nodes);
 
-   void updateLastTranslatedInfo(int row, TransUnit transUnit);
-
    void updateStats(int row, TranslationStats stats);
 
    void setStatsFilters(Integer row);
@@ -141,4 +139,6 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
    void showRowLoading(int row);
 
    void updateRowHasError(int row, DocValidationStatus status);
+
+   void updateLastTranslated(int intValue, AuditInfo lastTranslated);
 }
