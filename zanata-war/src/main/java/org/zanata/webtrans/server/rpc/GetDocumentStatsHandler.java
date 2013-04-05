@@ -40,8 +40,8 @@ public class GetDocumentStatsHandler extends AbstractActionHandler<GetDocumentSt
    @In
    private DocumentDAO documentDAO;
    
-   // TODO: fix problem with multiple RPC call from single client, disable cache at the moment
-   private boolean USE_CACHE = false;
+   // TODO: fix problem with multiple RPC call from single client, client do single RPC call one at a time to solve this problem.
+   private boolean USE_CACHE = true;
 
    @Override
    public GetDocumentStatsResult execute(GetDocumentStats action, ExecutionContext context) throws ActionException
