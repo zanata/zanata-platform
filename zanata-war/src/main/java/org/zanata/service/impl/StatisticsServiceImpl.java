@@ -234,7 +234,7 @@ public class StatisticsServiceImpl implements StatisticsResource
          {
             count = stats.getUnitCount();
          }
-         Long id = translationStateCacheImpl.getDocLastModifiedTextFlowTarget(document.getId(), locale);
+         Long id = translationStateCacheImpl.getDocLastTranslatedTextFlowTarget(document.getId(), locale);
          HTextFlowTarget target = null;
          
          if (id != null)

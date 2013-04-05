@@ -122,13 +122,13 @@ public class TranslationStateCacheImplTest
       when(lastModifiedLoader.load(key)).thenReturn(targetId);
       when(textFlowTargetDAO.findById(targetId, false)).thenReturn(target);
       
-      Long result1 = tsCache.getDocLastModifiedTextFlowTarget(documentId, testLocaleId);
-      Long result2 = tsCache.getDocLastModifiedTextFlowTarget(documentId, testLocaleId);
+      Long result1 = tsCache.getDocLastTranslatedTextFlowTarget(documentId, testLocaleId);
+      Long result2 = tsCache.getDocLastTranslatedTextFlowTarget(documentId, testLocaleId);
 
       // Then:
       verify(lastModifiedLoader).load(key); // only load the value once
-      assertThat(result1, equalTo(target.getId()));
-      assertThat(result2, equalTo(target.getId()));
+      assertThat(result1, equalTo(targetId));
+      assertThat(result2, equalTo(targetId));
    }
 
 public void testTextFlowTargetHasError() throws Exception

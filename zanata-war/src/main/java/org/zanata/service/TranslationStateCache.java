@@ -70,7 +70,7 @@ public interface TranslationStateCache
     * @param localeId
     * @return
     */
-   Long getDocLastModifiedTextFlowTarget(Long documentId, LocaleId localeId);
+   Long getDocLastTranslatedTextFlowTarget(Long documentId, LocaleId localeId);
 	
 	/**
     * Return boolean of textFlowTarget has validation error against validation

@@ -58,7 +58,7 @@ public class GetDocumentStatsHandler extends AbstractActionHandler<GetDocumentSt
          
          if (USE_CACHE)
          {
-            id = translationStateCacheImpl.getDocLastModifiedTextFlowTarget(documentId.getId(), action.getWorkspaceId().getLocaleId());
+            id = translationStateCacheImpl.getDocLastTranslatedTextFlowTarget(documentId.getId(), action.getWorkspaceId().getLocaleId());
          }
          else
          {

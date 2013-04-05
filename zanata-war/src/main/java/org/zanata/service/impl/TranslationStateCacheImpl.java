@@ -148,7 +148,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache
    }
 
    @Override
-   public Long getDocLastModifiedTextFlowTarget(Long documentId, LocaleId localeId)
+   public Long getDocLastTranslatedTextFlowTarget(Long documentId, LocaleId localeId)
    {
       return docLastTranslatedCache.getWithLoader(new TranslatedDocumentKey(documentId, localeId));
    }
