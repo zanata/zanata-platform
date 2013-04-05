@@ -28,8 +28,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -42,6 +40,7 @@ import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStats;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
@@ -68,7 +67,6 @@ import org.zanata.util.DateUtil;
 @Name("statisticsServiceImpl")
 @Scope(ScopeType.STATELESS)
 @AutoCreate
-@Slf4j
 public class StatisticsServiceImpl implements StatisticsResource
 {
    @In
@@ -85,6 +83,9 @@ public class StatisticsServiceImpl implements StatisticsResource
 
    @In
    private TranslationStateCache translationStateCacheImpl;
+
+   @In
+   private TextFlowTargetDAO textFlowTargetDAO;
 
    @Override
    public ContainerTranslationStatistics getStatistics(String projectSlug, String iterationSlug, boolean includeDetails, boolean includeWordStats, String[] locales)
@@ -120,7 +121,7 @@ public class StatisticsServiceImpl implements StatisticsResource
 
       Map<String, TransUnitCount> transUnitIterationStats = projectIterationDAO.getAllStatisticsForContainer(iteration.getId());
       Map<String, TransUnitWords> wordIterationStats = null;
-      if( includeWordStats )
+      if (includeWordStats)
       {
          wordIterationStats = projectIterationDAO.getAllWordStatsStatistics(iteration.getId());
       }
@@ -133,9 +134,9 @@ public class StatisticsServiceImpl implements StatisticsResource
       for (LocaleId locId : localeIds)
       {
          // trans unit level stats
-         TransUnitCount count = transUnitIterationStats.get( locId.getId() );
+         TransUnitCount count = transUnitIterationStats.get(locId.getId());
          // Stats might not return anything if nothing is translated
-         if( count == null )
+         if (count == null)
          {
             count = new TransUnitCount(0, 0, (int) iterationTotalMssgs);
          }
@@ -147,14 +148,14 @@ public class StatisticsServiceImpl implements StatisticsResource
          iterationStats.addStats(transUnitStats);
 
          // word level stats
-         if( includeWordStats )
+         if (includeWordStats)
          {
             TransUnitWords wordCount = wordIterationStats.get(locId.getId());
-            if( wordCount == null )
+            if (wordCount == null)
             {
                wordCount = new TransUnitWords(0, 0, (int) iterationTotalWords);
             }
-            
+
             TranslationStatistics wordsStats = getWordsStats(wordCount, locId, target);
             wordsStats.setRemainingHours(getRemainingHours(wordCount.get(ContentState.NeedReview), wordCount.get(ContentState.New)));
             iterationStats.addStats(wordsStats);
@@ -162,13 +163,11 @@ public class StatisticsServiceImpl implements StatisticsResource
       }
 
       // TODO Do in a single query
-      if( includeDetails )
+      if (includeDetails)
       {
-         for( String docId : iteration.getDocuments().keySet() )
+         for (String docId : iteration.getDocuments().keySet())
          {
-            iterationStats.addDetailedStats(
-                  this.getStatistics(projectSlug, iterationSlug, docId, includeWordStats, locales)
-            );
+            iterationStats.addDetailedStats(this.getStatistics(projectSlug, iterationSlug, docId, includeWordStats, locales));
          }
       }
 
@@ -235,13 +234,20 @@ public class StatisticsServiceImpl implements StatisticsResource
          {
             count = stats.getUnitCount();
          }
-         HTextFlowTarget target = translationStateCacheImpl.getDocLastModifiedTextFlowTarget(document.getId(), locale);
+         Long id = translationStateCacheImpl.getDocLastTranslatedTextFlowTarget(document.getId(), locale);
+         HTextFlowTarget target = null;
+         
+         if (id != null)
+         {
+            target = textFlowTargetDAO.findById(id, false);
+         }
+
          TranslationStatistics transUnitStats = getMessageStats(count, locale, target);
          transUnitStats.setRemainingHours(getRemainingHours(count.get(ContentState.NeedReview), count.get(ContentState.New)));
          docStats.addStats(transUnitStats);
 
          // word level stats
-         if( includeWordStats )
+         if (includeWordStats)
          {
             TransUnitWords wordCount;
             if (stats == null)
@@ -312,5 +318,10 @@ public class StatisticsServiceImpl implements StatisticsResource
       double fuzzyHours = fuzzy / 500.0;
       double remainHours = untransHours + fuzzyHours;
       return remainHours;
+   }
+
+   public TranslationStats getDocStatistics(Long documentId, LocaleId localeId)
+   {
+      return documentDAO.getStatistics(documentId, localeId);
    }
 }

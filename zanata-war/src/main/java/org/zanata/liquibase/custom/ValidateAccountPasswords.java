@@ -48,7 +48,7 @@ import liquibase.resource.ResourceAccessor;
 public class ValidateAccountPasswords implements CustomTaskChange
 {
    private int emptyPasswordsFound = 0;
-
+   
    @Override
    public void execute(Database database) throws CustomChangeException
    {

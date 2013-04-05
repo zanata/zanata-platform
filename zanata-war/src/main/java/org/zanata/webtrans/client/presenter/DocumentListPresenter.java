@@ -289,54 +289,65 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       updatePageCountAndGotoFirstPage();
    }
 
-   public void queryInfo()
-   {
-      queryStats();
-   }
-
-   private void queryStats()
+   public void queryStats()
    {
       int BATCH_SIZE = 1000;
 
+      ArrayList<GetDocumentStats> queueList = new ArrayList<GetDocumentStats>();
       for (int i = 0; i < nodes.size();)
       {
          int fromIndex = i;
          int toIndex = i + BATCH_SIZE > sortedNodes.size() ? sortedNodes.size() : i + BATCH_SIZE;
          List<DocumentNode> subList = sortedNodes.subList(fromIndex, toIndex);
-
-         dispatcher.execute(new GetDocumentStats(convertFromNodetoId(subList)), new AsyncCallback<GetDocumentStatsResult>()
-         {
-            @Override
-            public void onFailure(Throwable caught)
-            {
-               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Unable get stats for documents"));
-            }
-
-            @Override
-            public void onSuccess(GetDocumentStatsResult result)
-            {
-               for (Entry<DocumentId, TranslationStats> entry : result.getStatsMap().entrySet())
-               {
-                  DocumentInfo docInfo = getDocumentInfo(entry.getKey());
-                  docInfo.setStats(entry.getValue());
-
-                  Integer row = pageRows.get(entry.getKey());
-                  if (row != null)
-                  {
-                     display.updateStats(row.intValue(), docInfo.getStats());
-                  }
-
-                  eventBus.fireEvent(new DocumentStatsUpdatedEvent(entry.getKey(), docInfo.getStats()));
-
-                  // update project stats, forward to AppPresenter
-                  projectStats.add(docInfo.getStats());
-
-                  eventBus.fireEvent(new ProjectStatsUpdatedEvent(projectStats));
-               }
-            }
-         });
+         queueList.add(new GetDocumentStats(convertFromNodetoId(subList)));
          i = toIndex;
       }
+      executeGetDocStatsQueue(queueList);
+   }
+   
+   private void executeGetDocStatsQueue(final ArrayList<GetDocumentStats> getDocumentStatsQueue)
+   {
+      final GetDocumentStats action = getDocumentStatsQueue.get(0);
+      getDocumentStatsQueue.remove(0);
+      
+      dispatcher.execute(action, new AsyncCallback<GetDocumentStatsResult>()
+      {
+         @Override
+         public void onSuccess(GetDocumentStatsResult result)
+         {
+            for (Entry<DocumentId, TranslationStats> entry : result.getStatsMap().entrySet())
+            {
+               DocumentInfo docInfo = getDocumentInfo(entry.getKey());
+               docInfo.setStats(entry.getValue());
+               docInfo.setLastTranslated(result.getLastTranslatedMap().get(entry.getKey()));
+
+               Integer row = pageRows.get(entry.getKey());
+               if (row != null)
+               {
+                  display.updateStats(row.intValue(), docInfo.getStats());
+                  display.updateLastTranslated(row.intValue(), docInfo.getLastTranslated());
+               }
+
+               eventBus.fireEvent(new DocumentStatsUpdatedEvent(entry.getKey(), docInfo.getStats()));
+
+               // update project stats, forward to AppPresenter
+               projectStats.add(docInfo.getStats());
+
+               eventBus.fireEvent(new ProjectStatsUpdatedEvent(projectStats));
+            }
+            
+            if (!getDocumentStatsQueue.isEmpty())
+            {
+               executeGetDocStatsQueue(getDocumentStatsQueue);
+            }
+         }
+
+         @Override
+         public void onFailure(Throwable caught)
+         {
+            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Unable get stats for documents"));
+         }
+      });
    }
 
    private List<DocumentId> convertFromNodetoId(List<DocumentNode> nodes)
@@ -624,9 +635,31 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       setupDownloadZipButton(event.getProjectType());
    }
 
-   private void fireDocValidation(List<ValidationId> validationIds, final DocumentId docId, final boolean fireResultEvent)
+   @Override
+   public void onRunDocValidation(RunDocValidationEvent event)
    {
-      dispatcher.execute(new RunDocValidationAction(validationIds, docId), new AsyncCallback<RunDocValidationResult>()
+      if (event.getView() == MainView.Documents)
+      {
+         List<ValidationId> valIds = userOptionsService.getConfigHolder().getState().getEnabledValidationIds();
+         if (!valIds.isEmpty() && !pageRows.keySet().isEmpty())
+         {
+            final ArrayList<RunDocValidationAction> docValidationQueue = new ArrayList<RunDocValidationAction>();
+            for (DocumentId documentId : pageRows.keySet())
+            {
+               display.showRowLoading(pageRows.get(documentId));
+               docValidationQueue.add(new RunDocValidationAction(valIds, documentId));
+            }
+            executeDocValidationQueue(docValidationQueue);
+         }
+      }
+   }
+
+   private void executeDocValidationQueue(final ArrayList<RunDocValidationAction> docValidationQueue)
+   {
+      final RunDocValidationAction action = docValidationQueue.get(0);
+      docValidationQueue.remove(0);
+      
+      dispatcher.execute(action, new AsyncCallback<RunDocValidationResult>()
       {
          @Override
          public void onSuccess(RunDocValidationResult result)
@@ -647,56 +680,32 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
                   node.getDocInfo().setHasError(result.hasError());
                }
             }
-            if (fireResultEvent)
+            if (docValidationQueue.isEmpty())
             {
                eventBus.fireEvent(new DocValidationResultEvent(new Date()));
+            }
+            else
+            {
+               executeDocValidationQueue(docValidationQueue);
             }
          }
 
          @Override
          public void onFailure(Throwable caught)
          {
-            Integer row = pageRows.get(docId);
+            Integer row = pageRows.get(action.getDocId());
             if (row != null)
             {
                display.updateRowHasError(row.intValue(), DocValidationStatus.Unknown);
             }
 
             eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Unable to run validation"));
-            if (fireResultEvent)
+            if (docValidationQueue.isEmpty())
             {
                eventBus.fireEvent(new DocValidationResultEvent(new Date()));
             }
          }
       });
-   }
-
-   @Override
-   public void onRunDocValidation(RunDocValidationEvent event)
-   {
-      if (event.getView() == MainView.Documents)
-      {
-         List<ValidationId> valIds = userOptionsService.getConfigHolder().getState().getEnabledValidationIds();
-
-         if (!valIds.isEmpty() && !pageRows.keySet().isEmpty())
-         {
-            int i = 0;
-            for (DocumentId documentId : pageRows.keySet())
-            {
-               display.showRowLoading(pageRows.get(documentId));
-
-               if (i == pageRows.keySet().size() - 1)
-               {
-                  fireDocValidation(valIds, documentId, true);
-               }
-               else
-               {
-                  fireDocValidation(valIds, documentId, false);
-               }
-               i++;
-            }
-         }
-      }
    }
 
    @Override

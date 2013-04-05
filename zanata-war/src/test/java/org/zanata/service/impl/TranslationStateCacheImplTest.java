@@ -45,6 +45,7 @@ import org.zanata.webtrans.shared.model.ValidationId;
 
 import com.google.common.cache.CacheLoader;
 
+
 @Test(groups = { "business-tests" })
 public class TranslationStateCacheImplTest
 {
@@ -120,17 +121,17 @@ public class TranslationStateCacheImplTest
       // When:
       when(lastModifiedLoader.load(key)).thenReturn(targetId);
       when(textFlowTargetDAO.findById(targetId, false)).thenReturn(target);
-
-      HTextFlowTarget result1 = tsCache.getDocLastModifiedTextFlowTarget(documentId, testLocaleId);
-      HTextFlowTarget result2 = tsCache.getDocLastModifiedTextFlowTarget(documentId, testLocaleId);
+      
+      Long result1 = tsCache.getDocLastTranslatedTextFlowTarget(documentId, testLocaleId);
+      Long result2 = tsCache.getDocLastTranslatedTextFlowTarget(documentId, testLocaleId);
 
       // Then:
       verify(lastModifiedLoader).load(key); // only load the value once
-      assertThat(result1, is(sameInstance(target)));
-      assertThat(result2, is(sameInstance(target)));
+      assertThat(result1, equalTo(targetId));
+      assertThat(result2, equalTo(targetId));
    }
 
-   public void testTextFlowTargetHasError() throws Exception
+public void testTextFlowTargetHasError() throws Exception
    {
       // Given:
       Long targetId = new Long("1000");

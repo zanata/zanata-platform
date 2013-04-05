@@ -211,8 +211,8 @@ public class ValidationServiceImpl implements ValidationService
       startIndex = startIndex < 0 ? 0 : startIndex;
    }
 
-   // TODO: fix problem with multiple RPC call from single client, disable cache at the moment
-   private boolean USE_CACHE = false; 
+   // TODO: fix problem with multiple RPC call from single client, client do single RPC call one at a time to solve this problem.
+   private boolean USE_CACHE = true; 
 
    private boolean textFlowTargetHasError(HTextFlow textFlow, List<ValidationAction> validationActions, LocaleId localeId)
    {

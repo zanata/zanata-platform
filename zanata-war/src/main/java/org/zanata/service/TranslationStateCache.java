@@ -24,7 +24,6 @@ import org.apache.lucene.search.Filter;
 import org.apache.lucene.util.OpenBitSet;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
-import org.zanata.model.HTextFlowTarget;
 import org.zanata.webtrans.shared.model.ValidationId;
 
 /**
@@ -66,16 +65,14 @@ public interface TranslationStateCache
    void textFlowStateUpdated(Long textFlowId, LocaleId localeId, ContentState newState);
 
    /**
-    * Returns last modified HTextFlowTarget for the given locale id of the
-    * documentId
-    * 
+    * Returns last modified HTextFlowTarget for the given locale id of the documentId 
     * @param documentId
     * @param localeId
     * @return
     */
-   HTextFlowTarget getDocLastModifiedTextFlowTarget(Long documentId, LocaleId localeId);
-
-   /**
+   Long getDocLastTranslatedTextFlowTarget(Long documentId, LocaleId localeId);
+	
+	/**
     * Return boolean of textFlowTarget has validation error against validation
     * rules {@link org.zanata.webtrans.share.model.ValidationAction}
     * 
