@@ -55,6 +55,8 @@ import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.rpc.HasQueueDispatch;
+import org.zanata.webtrans.client.rpc.QueueDispatcher;
 import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.ui.DocumentListTable.DocValidationStatus;
 import org.zanata.webtrans.client.ui.DocumentNode;
@@ -97,6 +99,9 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
    private final CachingDispatchAsync dispatcher;
 
+   private final HasQueueDispatch<GetDocumentStats, GetDocumentStatsResult> docStatQueueDispatcher;
+   private final HasQueueDispatch<RunDocValidationAction, RunDocValidationResult> docValidationQueueDispatcher;
+
    /**
     * For quick lookup of document id by full path (including document name).
     * Primarily for use with history token.
@@ -116,6 +121,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       this.messages = messages;
       this.history = history;
       this.userOptionsService = userOptionsService;
+      docStatQueueDispatcher = new QueueDispatcher<GetDocumentStats, GetDocumentStatsResult>(dispatcher);
+      docValidationQueueDispatcher = new QueueDispatcher<RunDocValidationAction, RunDocValidationResult>(dispatcher);
 
       nodes = new HashMap<DocumentId, DocumentNode>();
       sortedNodes = new ArrayList<DocumentNode>();
@@ -302,53 +309,44 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
          queueList.add(new GetDocumentStats(convertFromNodetoId(subList)));
          i = toIndex;
       }
-      executeGetDocStatsQueue(queueList);
+      docStatQueueDispatcher.setQueueAndExecute(queueList, getDocumentStatCallBack);
    }
    
-   private void executeGetDocStatsQueue(final ArrayList<GetDocumentStats> getDocumentStatsQueue)
+   private final AsyncCallback<GetDocumentStatsResult> getDocumentStatCallBack = new AsyncCallback<GetDocumentStatsResult>()
    {
-      final GetDocumentStats action = getDocumentStatsQueue.get(0);
-      getDocumentStatsQueue.remove(0);
-      
-      dispatcher.execute(action, new AsyncCallback<GetDocumentStatsResult>()
+      @Override
+      public void onFailure(Throwable caught)
       {
-         @Override
-         public void onSuccess(GetDocumentStatsResult result)
+         eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Unable get stats for documents"));
+      }
+
+      @Override
+      public void onSuccess(GetDocumentStatsResult result)
+      {
+         for (Entry<DocumentId, TranslationStats> entry : result.getStatsMap().entrySet())
          {
-            for (Entry<DocumentId, TranslationStats> entry : result.getStatsMap().entrySet())
+            DocumentInfo docInfo = getDocumentInfo(entry.getKey());
+            docInfo.setStats(entry.getValue());
+            docInfo.setLastTranslated(result.getLastTranslatedMap().get(entry.getKey()));
+
+            Integer row = pageRows.get(entry.getKey());
+            if (row != null)
             {
-               DocumentInfo docInfo = getDocumentInfo(entry.getKey());
-               docInfo.setStats(entry.getValue());
-               docInfo.setLastTranslated(result.getLastTranslatedMap().get(entry.getKey()));
-
-               Integer row = pageRows.get(entry.getKey());
-               if (row != null)
-               {
-                  display.updateStats(row.intValue(), docInfo.getStats());
-                  display.updateLastTranslated(row.intValue(), docInfo.getLastTranslated());
-               }
-
-               eventBus.fireEvent(new DocumentStatsUpdatedEvent(entry.getKey(), docInfo.getStats()));
-
-               // update project stats, forward to AppPresenter
-               projectStats.add(docInfo.getStats());
-
-               eventBus.fireEvent(new ProjectStatsUpdatedEvent(projectStats));
+               display.updateStats(row.intValue(), docInfo.getStats());
+               display.updateLastTranslated(row.intValue(), docInfo.getLastTranslated());
             }
-            
-            if (!getDocumentStatsQueue.isEmpty())
-            {
-               executeGetDocStatsQueue(getDocumentStatsQueue);
-            }
+
+            eventBus.fireEvent(new DocumentStatsUpdatedEvent(entry.getKey(), docInfo.getStats()));
+
+            // update project stats, forward to AppPresenter
+            projectStats.add(docInfo.getStats());
+
+            eventBus.fireEvent(new ProjectStatsUpdatedEvent(projectStats));
          }
 
-         @Override
-         public void onFailure(Throwable caught)
-         {
-            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Unable get stats for documents"));
-         }
-      });
-   }
+         docStatQueueDispatcher.executeQueue();
+      }
+   };
 
    private List<DocumentId> convertFromNodetoId(List<DocumentNode> nodes)
    {
@@ -649,64 +647,53 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
                display.showRowLoading(pageRows.get(documentId));
                docValidationQueue.add(new RunDocValidationAction(valIds, documentId));
             }
-            executeDocValidationQueue(docValidationQueue);
+
+            docValidationQueueDispatcher.setQueueAndExecute(docValidationQueue, runDocValidationCallback);
          }
       }
    }
 
-   private void executeDocValidationQueue(final ArrayList<RunDocValidationAction> docValidationQueue)
+   private AsyncCallback<RunDocValidationResult> runDocValidationCallback = new AsyncCallback<RunDocValidationResult>()
    {
-      final RunDocValidationAction action = docValidationQueue.get(0);
-      docValidationQueue.remove(0);
-      
-      dispatcher.execute(action, new AsyncCallback<RunDocValidationResult>()
+      @Override
+      public void onSuccess(RunDocValidationResult result)
       {
-         @Override
-         public void onSuccess(RunDocValidationResult result)
+         Log.debug("Success doc validation - " + result.getDocumentId().getDocId() + " " + result.hasError());
+
+         Integer row = pageRows.get(result.getDocumentId());
+         DocumentNode node = nodes.get(result.getDocumentId());
+
+         DocValidationStatus status = result.hasError() ? DocValidationStatus.HasError : DocValidationStatus.NoError;
+
+         if (row != null)
          {
-            Log.debug("Success doc validation - " + result.getDocumentId().getDocId() + " " + result.hasError());
+            display.updateRowHasError(row.intValue(), status);
 
-            Integer row = pageRows.get(result.getDocumentId());
-            DocumentNode node = nodes.get(result.getDocumentId());
-
-            DocValidationStatus status = result.hasError() ? DocValidationStatus.HasError : DocValidationStatus.NoError;
-
-            if (row != null)
+            if (node != null)
             {
-               display.updateRowHasError(row.intValue(), status);
-
-               if (node != null)
-               {
-                  node.getDocInfo().setHasError(result.hasError());
-               }
-            }
-            if (docValidationQueue.isEmpty())
-            {
-               eventBus.fireEvent(new DocValidationResultEvent(new Date()));
-            }
-            else
-            {
-               executeDocValidationQueue(docValidationQueue);
+               node.getDocInfo().setHasError(result.hasError());
             }
          }
-
-         @Override
-         public void onFailure(Throwable caught)
+         if (docValidationQueueDispatcher.isQueueEmpty())
          {
-            Integer row = pageRows.get(action.getDocId());
-            if (row != null)
-            {
-               display.updateRowHasError(row.intValue(), DocValidationStatus.Unknown);
-            }
-
-            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Unable to run validation"));
-            if (docValidationQueue.isEmpty())
-            {
-               eventBus.fireEvent(new DocValidationResultEvent(new Date()));
-            }
+            eventBus.fireEvent(new DocValidationResultEvent(new Date()));
          }
-      });
-   }
+         else
+         {
+            docValidationQueueDispatcher.executeQueue();
+         }
+      }
+
+      @Override
+      public void onFailure(Throwable caught)
+      {
+         eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Unable to run validation"));
+         if (docValidationQueueDispatcher.isQueueEmpty())
+         {
+            eventBus.fireEvent(new DocValidationResultEvent(new Date()));
+         }
+      }
+   };
 
    @Override
    public void sortList(String header, boolean asc)
