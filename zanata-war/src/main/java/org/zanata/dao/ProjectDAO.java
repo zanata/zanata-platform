@@ -61,12 +61,12 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
    }
 
    @SuppressWarnings("unchecked")
-   public List<HProject> getOffsetListByCreateDate(int offset, int count, boolean filterActive, boolean filterReadOnly, boolean filterObsolete)
+   public List<HProject> getOffsetListOrderByName(int offset, int count, boolean filterActive, boolean filterReadOnly, boolean filterObsolete)
    {
       String condition = constructFilterCondition(filterActive, filterReadOnly, filterObsolete);
-      Query q = getSession().createQuery("from HProject p " + condition + "order by p.creationDate desc");
+      Query q = getSession().createQuery("from HProject p " + condition + "order by UPPER(p.name)");
       q.setMaxResults(count).setFirstResult(offset);
-      q.setCacheable(true).setComment("ProjectDAO.getOffsetListByCreateDate");
+      q.setCacheable(true).setComment("ProjectDAO.getOffsetListOrderByName");
       return q.list();
    }
 
