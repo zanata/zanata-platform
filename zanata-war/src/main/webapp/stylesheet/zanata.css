@@ -1134,6 +1134,13 @@ a.version_link:hover {
 	color:#595959;
 }
 
+a.maintainer_email
+{
+	font-weight:bold;
+	color:#595959;
+	text-decoration:underline;
+}
+
 a.table_link span.nativeName, span.nativeName
 {
 	font-size:11px;	
