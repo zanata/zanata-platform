@@ -495,7 +495,7 @@ table.fullwidth {
 }
 
 td.wrapped {
-    word-break: break-word;
+    word-break: break-all;
     word-wrap: break-word;
 }
 
