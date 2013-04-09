@@ -40,6 +40,8 @@ import org.zanata.webtrans.client.events.RefreshPageEvent;
 import org.zanata.webtrans.client.events.RefreshPageEventHandler;
 import org.zanata.webtrans.client.events.RequestPageValidationEvent;
 import org.zanata.webtrans.client.events.RequestPageValidationHandler;
+import org.zanata.webtrans.client.events.RequestSelectTableRowEvent;
+import org.zanata.webtrans.client.events.RequestSelectTableRowEventHandler;
 import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEventHandler;
@@ -48,6 +50,8 @@ import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
+import org.zanata.webtrans.client.history.History;
+import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.client.service.TransUnitSaveService;
@@ -83,7 +87,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       TableRowSelectedEventHandler,
       LoadingEventHandler,
       RefreshPageEventHandler, UserConfigChangeHandler,
-      RequestPageValidationHandler
+      RequestPageValidationHandler, RequestSelectTableRowEventHandler
 // @formatter:on
 {
 
@@ -97,12 +101,14 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    private final TranslatorInteractionService translatorService;
 
    private final UserOptionsService userOptionsService;
+   private final History history;
 
    // state we need to keep track of
    private FilterViewEvent filterOptions = FilterViewEvent.DEFAULT;
    private FilterViewEvent previousFilterOptions = FilterViewEvent.DEFAULT; // In case of cancelling a filter
    private TransUnitId selectedId;
    private String findMessage;
+
 
    @Inject
    // @formatter:off
@@ -112,7 +118,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
                                    TranslatorInteractionService translatorService,
                                    TransUnitSaveService transUnitSaveService,
                                    TranslationHistoryPresenter translationHistoryPresenter,
-                                   WebTransMessages messages,UserOptionsService userOptionsService)
+                                   WebTransMessages messages,UserOptionsService userOptionsService, History history)
    // @formatter:on
    {
       super(display, eventBus);
@@ -129,6 +135,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       this.targetContentsPresenter = targetContentsPresenter;
       this.translatorService = translatorService;
       this.userOptionsService = userOptionsService;
+      this.history = history;
 
       // we register it here because we can't use eager singleton on it (it
       // references TargetContentsPresenter). And if it's not eagerly created,
@@ -147,6 +154,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       registerHandler(eventBus.addHandler(RefreshPageEvent.TYPE, this));
       registerHandler(eventBus.addHandler(UserConfigChangeEvent.TYPE, this));
       registerHandler(eventBus.addHandler(RequestPageValidationEvent.TYPE, this));
+      registerHandler(eventBus.addHandler(RequestSelectTableRowEvent.TYPE, this));
 
       display.setThemes(userOptionsService.getConfigHolder().getState().getDisplayTheme().name());
    }
@@ -340,6 +348,24 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       if (rowIndex != NavigationService.UNDEFINED)
       {
          onRowSelected(rowIndex, event.isSuppressSavePending());
+      }
+   }
+   
+   @Override
+   public void onRequestSelectTableRow(RequestSelectTableRowEvent event)
+   {
+      TransUnitId selectedId = event.getSelectedId();
+      int rowIndex = navigationService.findRowIndexById(selectedId);
+      if (rowIndex != NavigationService.UNDEFINED)
+      {
+         onRowSelected(rowIndex, event.isSuppressSavePending());
+      }
+      else
+      {
+         HistoryToken historyToken = history.getHistoryToken();
+         historyToken.setTextFlowId(event.getSelectedId().toString());
+         history.newItem(historyToken);
+         history.fireCurrentHistoryState();
       }
    }
 

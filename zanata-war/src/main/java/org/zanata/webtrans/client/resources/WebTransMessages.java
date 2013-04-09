@@ -431,8 +431,8 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Show warning when 'Save as Approved' triggered via keyboard shortcut")
    String showSaveApprovedWarningTooltip();
 
-   @DefaultMessage("Go to row if on current page")
-   String goToRowOnCurrentPage();
+   @DefaultMessage("Go to this entry")
+   String goToThisEntry();
 
    @DefaultMessage("Style")
    String style();

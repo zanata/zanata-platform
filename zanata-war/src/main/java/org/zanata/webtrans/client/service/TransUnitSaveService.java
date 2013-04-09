@@ -189,8 +189,7 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler, CheckSta
          Log.debug("save resulted TU: " + updatedTU.debugString());
          if (result.isSingleSuccess())
          {
-            // we do not include goToLink here is because we haven't had message bookmark working
-            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifyUpdateSaved(updatedTU.getRowIndex(), updatedTU.getId().toString())));
+            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifyUpdateSaved(updatedTU.getRowIndex(), updatedTU.getId().toString()), goToRowLink));
             int rowIndexOnPage = navigationService.findRowIndexById(updatedTU.getId());
             if (rowIndexOnPage != NavigationService.UNDEFINED)
             {

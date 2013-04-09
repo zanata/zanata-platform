@@ -32,10 +32,13 @@ import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.LoadingEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.RefreshPageEvent;
+import org.zanata.webtrans.client.events.RequestSelectTableRowEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
+import org.zanata.webtrans.client.history.History;
+import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.client.service.TransUnitSaveService;
@@ -79,12 +82,14 @@ public class TransUnitsTablePresenterTest
    private TranslationHistoryPresenter translationHistoryPresenter;
    @Mock
    private UserOptionsService userOptionsService;
+   @Mock
+   private History history;
 
    @BeforeMethod
    public void setUp() throws Exception
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new TransUnitsTablePresenter(display, eventBus, navigationService, sourceContentsPresenter, targetContentsPresenter, translatorService, saveService, translationHistoryPresenter, messages, userOptionsService);
+      presenter = new TransUnitsTablePresenter(display, eventBus, navigationService, sourceContentsPresenter, targetContentsPresenter, translatorService, saveService, translationHistoryPresenter, messages, userOptionsService, history);
 
       verify(display).setRowSelectionListener(presenter);
       verify(display).addFilterConfirmationHandler(presenter);
@@ -103,6 +108,7 @@ public class TransUnitsTablePresenterTest
       verify(eventBus).addHandler(TransUnitSelectionEvent.getType(), presenter);
       verify(eventBus).addHandler(TableRowSelectedEvent.TYPE, presenter);
       verify(eventBus).addHandler(LoadingEvent.TYPE, presenter);
+      verify(eventBus).addHandler(RequestSelectTableRowEvent.TYPE, presenter);
    }
 
    @Test
@@ -538,5 +544,44 @@ public class TransUnitsTablePresenterTest
       presenter.onUserConfigChanged(mockEvent);
 
       verify(display).setThemes(userOptionsService.getConfigHolder().getState().getDisplayTheme().name());
+   }
+
+   @Test
+   public void onRequestSelectTableRowSamePage()
+   {
+      // Given: selecting id is on row index 2, and current selected row index
+      // is also 2
+      TransUnitId selectingId = new TransUnitId(1);
+
+      when(navigationService.findRowIndexById(selectingId)).thenReturn(2);
+      when(navigationService.getCurrentRowIndexOnPage()).thenReturn(2);
+
+      // When:
+      presenter.onRequestSelectTableRow(new RequestSelectTableRowEvent(selectingId));
+
+      // Then:
+      verify(navigationService).getCurrentRowIndexOnPage();
+      verifyZeroInteractions(targetContentsPresenter);
+   }
+
+   @Test
+   public void onRequestSelectTableRowDifferentPage()
+   {
+      // Given: selecting id is on row index 2, and current selected row index
+      // is also 2
+      TransUnitId selectingId = new TransUnitId(1);
+      HistoryToken mockHistoryToken = mock(HistoryToken.class);
+
+      when(navigationService.findRowIndexById(selectingId)).thenReturn(-1);
+      when(history.getHistoryToken()).thenReturn(mockHistoryToken);
+
+      // When:
+      presenter.onRequestSelectTableRow(new RequestSelectTableRowEvent(selectingId));
+
+      // Then:
+      verify(mockHistoryToken).setTextFlowId(selectingId.toString());
+      verify(history).newItem(mockHistoryToken);
+      verify(history).fireCurrentHistoryState();
+      verifyZeroInteractions(targetContentsPresenter);
    }
 }
