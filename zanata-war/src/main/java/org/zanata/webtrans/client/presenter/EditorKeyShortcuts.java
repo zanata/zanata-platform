@@ -96,7 +96,7 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler
       KeyShortcut moveNextShortcut = KeyShortcut.Builder.builder()
             .addKey(new Keys(Keys.ALT_KEY, KeyCodes.KEY_DOWN)).addKey(new Keys(Keys.ALT_KEY, 'K'))
             .setContext(ShortcutContext.Edit).setDescription(messages.moveToNextRow())
-            .setPreventDefault(true).setStopPropagation(true)
+            .setPreventDefault(true).setStopPropagation(true).setPreventDefault(true)
             .setHandler(new KeyShortcutEventHandler()
             {
                @Override
@@ -223,7 +223,7 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler
       // @formatter:off
       KeyShortcut copySourceShortcut = KeyShortcut.Builder.builder()
             .addKey(new Keys(Keys.ALT_KEY, 'G'))
-            .setContext(ShortcutContext.Edit).setDescription(messages.copyFromSource())
+            .setContext(ShortcutContext.Edit).setDescription(messages.copyFromSource()).setStopPropagation(true)
             .setHandler(new KeyShortcutEventHandler()
             {
                @Override
