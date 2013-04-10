@@ -3,9 +3,8 @@ package org.zanata.webtrans.client.ui;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.events.RequestSelectTableRowEvent;
-import org.zanata.webtrans.client.history.History;
-import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -19,7 +18,6 @@ import com.google.inject.Inject;
  */
 public class GoToRowLinkLabel extends InlineLabel implements GoToRowLink
 {
-
    private final EventBus eventBus;
 
    @Inject
@@ -31,7 +29,7 @@ public class GoToRowLinkLabel extends InlineLabel implements GoToRowLink
    }
 
    @Override
-   public void prepare(String linkText, final TransUnitId transUnitId)
+   public void prepare(String linkText, final DocumentInfo docInfo, final TransUnitId transUnitId)
    {
       setText(linkText);
       addClickHandler(new ClickHandler()
@@ -39,7 +37,7 @@ public class GoToRowLinkLabel extends InlineLabel implements GoToRowLink
          @Override
          public void onClick(ClickEvent event)
          {
-            eventBus.fireEvent(new RequestSelectTableRowEvent(transUnitId));
+            eventBus.fireEvent(new RequestSelectTableRowEvent(docInfo, transUnitId));
          }
       });
    }

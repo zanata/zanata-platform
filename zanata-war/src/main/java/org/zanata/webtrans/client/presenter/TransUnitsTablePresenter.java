@@ -40,8 +40,6 @@ import org.zanata.webtrans.client.events.RefreshPageEvent;
 import org.zanata.webtrans.client.events.RefreshPageEventHandler;
 import org.zanata.webtrans.client.events.RequestPageValidationEvent;
 import org.zanata.webtrans.client.events.RequestPageValidationHandler;
-import org.zanata.webtrans.client.events.RequestSelectTableRowEvent;
-import org.zanata.webtrans.client.events.RequestSelectTableRowEventHandler;
 import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEventHandler;
@@ -50,8 +48,6 @@ import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
-import org.zanata.webtrans.client.history.History;
-import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.client.service.TransUnitSaveService;
@@ -87,7 +83,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       TableRowSelectedEventHandler,
       LoadingEventHandler,
       RefreshPageEventHandler, UserConfigChangeHandler,
-      RequestPageValidationHandler, RequestSelectTableRowEventHandler
+      RequestPageValidationHandler
 // @formatter:on
 {
 
@@ -101,11 +97,15 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    private final TranslatorInteractionService translatorService;
 
    private final UserOptionsService userOptionsService;
-   private final History history;
 
    // state we need to keep track of
    private FilterViewEvent filterOptions = FilterViewEvent.DEFAULT;
-   private FilterViewEvent previousFilterOptions = FilterViewEvent.DEFAULT; // In case of cancelling a filter
+   private FilterViewEvent previousFilterOptions = FilterViewEvent.DEFAULT; // In
+                                                                            // case
+                                                                            // of
+                                                                            // cancelling
+                                                                            // a
+                                                                            // filter
    private TransUnitId selectedId;
    private String findMessage;
 
@@ -118,7 +118,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
                                    TranslatorInteractionService translatorService,
                                    TransUnitSaveService transUnitSaveService,
                                    TranslationHistoryPresenter translationHistoryPresenter,
-                                   WebTransMessages messages,UserOptionsService userOptionsService, History history)
+                                   WebTransMessages messages,UserOptionsService userOptionsService)
    // @formatter:on
    {
       super(display, eventBus);
@@ -135,7 +135,6 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       this.targetContentsPresenter = targetContentsPresenter;
       this.translatorService = translatorService;
       this.userOptionsService = userOptionsService;
-      this.history = history;
 
       // we register it here because we can't use eager singleton on it (it
       // references TargetContentsPresenter). And if it's not eagerly created,
@@ -154,7 +153,6 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       registerHandler(eventBus.addHandler(RefreshPageEvent.TYPE, this));
       registerHandler(eventBus.addHandler(UserConfigChangeEvent.TYPE, this));
       registerHandler(eventBus.addHandler(RequestPageValidationEvent.TYPE, this));
-      registerHandler(eventBus.addHandler(RequestSelectTableRowEvent.TYPE, this));
 
       display.setThemes(userOptionsService.getConfigHolder().getState().getDisplayTheme().name());
    }
@@ -283,7 +281,8 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    {
       if (updateFromCurrentUsersEditorSave(editorClientId, updateType))
       {
-         // the TransUnitUpdatedEvent is from current user's save action. Ignored.
+         // the TransUnitUpdatedEvent is from current user's save action.
+         // Ignored.
          return;
       }
       if (Objects.equal(selectedId, updatedTransUnit.getId()) && !Objects.equal(editorClientId, translatorService.getCurrentEditorClientId()))
@@ -294,17 +293,17 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
          {
             translationHistoryPresenter.popupAndShowLoading(messages.concurrentEditTitle());
             TransHistoryItem latest = new TransHistoryItem(updatedTransUnit.getVerNum().toString(), updatedTransUnit.getTargets(), updatedTransUnit.getStatus(), updatedTransUnit.getLastModifiedBy(), updatedTransUnit.getLastModifiedTime());
-            translationHistoryPresenter.displayEntries(latest, Collections.<TransHistoryItem>emptyList());
+            translationHistoryPresenter.displayEntries(latest, Collections.<TransHistoryItem> emptyList());
          }
       }
       targetContentsPresenter.updateRow(updatedTransUnit);
    }
 
-   // update type is web editor save or web editor save fuzzy and coming from current user
+   // update type is web editor save or web editor save fuzzy and coming from
+   // current user
    private boolean updateFromCurrentUsersEditorSave(EditorClientId editorClientId, TransUnitUpdated.UpdateType updateType)
    {
-      return Objects.equal(editorClientId, translatorService.getCurrentEditorClientId()) &&
-            (updateType == TransUnitUpdated.UpdateType.WebEditorSave || updateType == TransUnitUpdated.UpdateType.WebEditorSaveFuzzy);
+      return Objects.equal(editorClientId, translatorService.getCurrentEditorClientId()) && (updateType == TransUnitUpdated.UpdateType.WebEditorSave || updateType == TransUnitUpdated.UpdateType.WebEditorSaveFuzzy);
    }
 
    @Override
@@ -348,24 +347,6 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       if (rowIndex != NavigationService.UNDEFINED)
       {
          onRowSelected(rowIndex, event.isSuppressSavePending());
-      }
-   }
-   
-   @Override
-   public void onRequestSelectTableRow(RequestSelectTableRowEvent event)
-   {
-      TransUnitId selectedId = event.getSelectedId();
-      int rowIndex = navigationService.findRowIndexById(selectedId);
-      if (rowIndex != NavigationService.UNDEFINED)
-      {
-         onRowSelected(rowIndex, event.isSuppressSavePending());
-      }
-      else
-      {
-         HistoryToken historyToken = history.getHistoryToken();
-         historyToken.setTextFlowId(event.getSelectedId().toString());
-         history.newItem(historyToken);
-         history.fireCurrentHistoryState();
       }
    }
 
@@ -420,7 +401,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    {
       List<SourceContentsDisplay> sourceDisplays = sourceContentsPresenter.getDisplays();
       List<TargetContentsDisplay> targetDisplays = targetContentsPresenter.getDisplays();
-      
+
       for (int i = 0; i < sourceContentsPresenter.getDisplays().size(); i++)
       {
          SourceContentsDisplay sourceDisplay = sourceDisplays.get(i);
@@ -428,10 +409,10 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
 
          String source = sourceDisplay.getSourcePanelList().get(0).getSource();
          String target = targetDisplay.getEditors().get(0).getText();
-         
+
          RunValidationEvent runValidationEvent = new RunValidationEvent(source, target, false);
          runValidationEvent.addWidget(targetDisplay);
-         
+
          eventBus.fireEvent(runValidationEvent);
       }
    }

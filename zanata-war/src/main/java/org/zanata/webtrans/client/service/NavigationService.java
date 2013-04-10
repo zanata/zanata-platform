@@ -42,10 +42,15 @@ import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.PageChangeEvent;
 import org.zanata.webtrans.client.events.PageCountChangeEvent;
 import org.zanata.webtrans.client.events.RequestPageValidationEvent;
+import org.zanata.webtrans.client.events.RequestSelectTableRowEvent;
+import org.zanata.webtrans.client.events.RequestSelectTableRowEventHandler;
 import org.zanata.webtrans.client.events.TableRowSelectedEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
+import org.zanata.webtrans.client.history.History;
+import org.zanata.webtrans.client.history.HistoryToken;
+import org.zanata.webtrans.client.presenter.MainView;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -68,7 +73,7 @@ import com.google.inject.Singleton;
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class NavigationService implements TransUnitUpdatedEventHandler, FindMessageHandler, DocumentSelectionHandler, NavTransUnitHandler, EditorPageSizeChangeEventHandler, BookmarkedTextFlowEventHandler, InitEditorEventHandler
+public class NavigationService implements TransUnitUpdatedEventHandler, FindMessageHandler, DocumentSelectionHandler, NavTransUnitHandler, EditorPageSizeChangeEventHandler, BookmarkedTextFlowEventHandler, InitEditorEventHandler, RequestSelectTableRowEventHandler
 {
    public static final int FIRST_PAGE = 0;
    public static final int UNDEFINED = -1;
@@ -81,11 +86,13 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
    private final SinglePageDataModelImpl pageModel;
    private NavigationService.PageDataChangeListener pageDataChangeListener;
 
+   private final History history;
+
    //tracking variables
    private GetTransUnitActionContext context;
 
    @Inject
-   public NavigationService(EventBus eventBus, CachingDispatchAsync dispatcher, UserConfigHolder configHolder, TableEditorMessages messages, SinglePageDataModelImpl pageModel, ModalNavigationStateHolder navigationStateHolder, GetTransUnitActionContextHolder getTransUnitActionContextHolder)
+   public NavigationService(EventBus eventBus, CachingDispatchAsync dispatcher, UserConfigHolder configHolder, TableEditorMessages messages, SinglePageDataModelImpl pageModel, ModalNavigationStateHolder navigationStateHolder, GetTransUnitActionContextHolder getTransUnitActionContextHolder, History history)
    {
       this.eventBus = eventBus;
       this.dispatcher = dispatcher;
@@ -94,6 +101,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
       this.pageModel = pageModel;
       this.navigationStateHolder = navigationStateHolder;
       this.contextHolder = getTransUnitActionContextHolder;
+      this.history = history;
       bindHandlers();
    }
 
@@ -106,6 +114,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
       eventBus.addHandler(EditorPageSizeChangeEvent.TYPE, this);
       eventBus.addHandler(BookmarkedTextFlowEvent.TYPE, this);
       eventBus.addHandler(InitEditorEvent.TYPE, this);
+      eventBus.addHandler(RequestSelectTableRowEvent.TYPE, this);
    }
 
    protected void requestTransUnitsAndUpdatePageIndex(GetTransUnitActionContext actionContext, final boolean needReloadIndex)
@@ -302,6 +311,21 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
       requestTransUnitsAndUpdatePageIndex(contextHolder.getContext(), true);
    }
 
+   @Override
+   public void onRequestSelectTableRow(RequestSelectTableRowEvent event)
+   {
+      contextHolder.updateContext(null); // this will ensure
+                                         // HistoryEventHandlerService fire
+                                         // InitEditorEvent
+      HistoryToken token = history.getHistoryToken();
+      token.setView(MainView.Editor);
+      token.setDocumentPath(event.getDocInfo().getPath() + event.getDocInfo().getName());
+      token.clearEditorFilterAndSearch();
+      token.setTextFlowId(event.getSelectedId().toString());
+      history.newItem(token);
+      history.fireCurrentHistoryState();
+   }
+
    public void execute(UpdateContextCommand command)
    {
       GetTransUnitActionContext context = contextHolder.getContext();
@@ -380,6 +404,5 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
       void refreshRow(TransUnit updatedTransUnit, EditorClientId editorClientId, TransUnitUpdated.UpdateType updateType);
 
       void highlightSearch(String findMessage);
-
    }
 }

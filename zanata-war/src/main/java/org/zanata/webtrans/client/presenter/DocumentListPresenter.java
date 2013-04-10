@@ -88,7 +88,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 {
    private final UserWorkspaceContext userWorkspaceContext;
    private DocumentInfo currentDocument;
-   private DocumentNode currentSelection;
    private final WebTransMessages messages;
    private final History history;
    private final UserOptionsService userOptionsService;
@@ -425,16 +424,15 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
    private void setSelection(final DocumentId documentId)
    {
-      if (currentSelection != null && currentSelection.getDocInfo().getId() == documentId)
+      if (currentDocument != null && currentDocument.getId() == documentId)
       {
          Log.info("same selection doc id:" + documentId);
          return;
       }
-      currentSelection = null;
+      currentDocument = null;
       DocumentNode node = nodes.get(documentId);
       if (node != null)
       {
-         currentSelection = node;
          userWorkspaceContext.setSelectedDoc(node.getDocInfo());
          // required in order to show the document selected in doclist when
          // loading from bookmarked history token
@@ -883,5 +881,10 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    public void showLoading(boolean showLoading)
    {
       display.showLoading(showLoading);
+   }
+
+   public DocumentInfo getCurrentDocument()
+   {
+      return currentDocument;
    }
 }

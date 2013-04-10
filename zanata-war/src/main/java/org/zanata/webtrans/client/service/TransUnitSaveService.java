@@ -21,6 +21,8 @@
 
 package org.zanata.webtrans.client.service;
 
+import net.customware.gwt.presenter.client.EventBus;
+
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.CheckStateHasChangedEvent;
 import org.zanata.webtrans.client.events.CheckStateHasChangedHandler;
@@ -28,26 +30,27 @@ import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEventHandler;
+import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.presenter.TargetContentsPresenter;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.GoToRowLink;
 import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
+import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-
-import net.customware.gwt.presenter.client.EventBus;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -60,18 +63,20 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler, CheckSta
    private final CachingDispatchAsync dispatcher;
    private final Provider<UndoLink> undoLinkProvider;
    private final TargetContentsPresenter targetContentsPresenter;
+   private final DocumentListPresenter documentListPresenter;
    private final NavigationService navigationService;
    private final Provider<GoToRowLink> goToRowLinkProvider;
    private final SaveEventQueue queue;
 
    @Inject
-   public TransUnitSaveService(EventBus eventBus, CachingDispatchAsync dispatcher, Provider<UndoLink> undoLinkProvider, TargetContentsPresenter targetContentsPresenter, TableEditorMessages messages, NavigationService navigationService, Provider<GoToRowLink> goToRowLinkProvider, SaveEventQueue queue)
+   public TransUnitSaveService(EventBus eventBus, CachingDispatchAsync dispatcher, Provider<UndoLink> undoLinkProvider, DocumentListPresenter documentListPresenter, TargetContentsPresenter targetContentsPresenter, TableEditorMessages messages, NavigationService navigationService, Provider<GoToRowLink> goToRowLinkProvider, SaveEventQueue queue)
    {
       this.messages = messages;
       this.eventBus = eventBus;
       this.dispatcher = dispatcher;
       this.undoLinkProvider = undoLinkProvider;
       this.targetContentsPresenter = targetContentsPresenter;
+      this.documentListPresenter = documentListPresenter;
       this.navigationService = navigationService;
       this.goToRowLinkProvider = goToRowLinkProvider;
       this.queue = queue;
@@ -112,7 +117,7 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler, CheckSta
 
       UpdateTransUnit updateTransUnit = new UpdateTransUnit(new TransUnitUpdateRequest(idToSave, forSaving.getTargets(), forSaving.getAdjustedStatus(), forSaving.getVerNum()), updateType);
       Log.info("about to save translation: " + updateTransUnit);
-      dispatcher.execute(updateTransUnit, new UpdateTransUnitCallback(forSaving, idToSave));
+      dispatcher.execute(updateTransUnit, new UpdateTransUnitCallback(forSaving, documentListPresenter.getCurrentDocument(), idToSave));
    }
 
    /**
@@ -167,12 +172,12 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler, CheckSta
       private final TransUnitId id;
       private final GoToRowLink goToRowLink;
 
-      public UpdateTransUnitCallback(TransUnitSaveEvent event, TransUnitId id)
+      public UpdateTransUnitCallback(TransUnitSaveEvent event, DocumentInfo docInfo, TransUnitId id)
       {
          this.event = event;
          this.id = id;
          goToRowLink = goToRowLinkProvider.get();
-         goToRowLink.prepare("", id);
+         goToRowLink.prepare("", docInfo, id);
       }
 
       @Override

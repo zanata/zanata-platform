@@ -1,6 +1,8 @@
 package org.zanata.webtrans.client.events;
 
+import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnitId;
+
 import com.google.gwt.event.shared.GwtEvent;
 
 public class RequestSelectTableRowEvent extends GwtEvent<RequestSelectTableRowEventHandler>
@@ -8,11 +10,13 @@ public class RequestSelectTableRowEvent extends GwtEvent<RequestSelectTableRowEv
    public static Type<RequestSelectTableRowEventHandler> TYPE = new Type<RequestSelectTableRowEventHandler>();
 
    private TransUnitId selectedId;
+   private DocumentInfo docInfo;
    private boolean suppressSavePending = false;
 
-   public RequestSelectTableRowEvent(TransUnitId transUnitId)
+   public RequestSelectTableRowEvent(DocumentInfo docInfo, TransUnitId transUnitId)
    {
       this.selectedId = transUnitId;
+      this.docInfo = docInfo;
    }
 
    public Type<RequestSelectTableRowEventHandler> getAssociatedType()
@@ -28,6 +32,11 @@ public class RequestSelectTableRowEvent extends GwtEvent<RequestSelectTableRowEv
    public TransUnitId getSelectedId()
    {
       return selectedId;
+   }
+
+   public DocumentInfo getDocInfo()
+   {
+      return docInfo;
    }
 
    public RequestSelectTableRowEvent setSuppressSavePending(boolean suppressSavePending)
