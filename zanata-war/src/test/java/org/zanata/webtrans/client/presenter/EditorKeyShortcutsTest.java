@@ -198,7 +198,7 @@ public class EditorKeyShortcutsTest
       List<KeyShortcut> keys = keyShortcutCaptor.getAllValues();
       assertKeys(keys.get(0), "save fuzzy", true, true, new Keys(Keys.CTRL_KEY, 'S'));
       assertKeys(keys.get(1), "save approved", true, true, new Keys(Keys.CTRL_KEY, KeyCodes.KEY_ENTER));
-      assertKeys(keys.get(2), "copy from source", false, false, new Keys(Keys.ALT_KEY, 'G'));
+      assertKeys(keys.get(2), "copy from source", true, true, new Keys(Keys.ALT_KEY, 'G'));
    }
 
    @Test
@@ -218,7 +218,7 @@ public class EditorKeyShortcutsTest
       assertKeys(keys.get(0), "save fuzzy", true, true, new Keys(Keys.CTRL_KEY, 'S'));
       assertKeys(keys.get(1), "save approved", true, true, new Keys(Keys.CTRL_KEY, KeyCodes.KEY_ENTER));
       assertKeys(keys.get(2), "save approved", true, true, new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER));
-      assertKeys(keys.get(3), "copy from source", false, false, new Keys(Keys.ALT_KEY, 'G'));
+      assertKeys(keys.get(3), "copy from source", true, true, new Keys(Keys.ALT_KEY, 'G'));
    }
 
    @Test
