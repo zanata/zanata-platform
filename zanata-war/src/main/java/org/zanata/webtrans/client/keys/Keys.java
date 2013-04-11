@@ -22,6 +22,7 @@ package org.zanata.webtrans.client.keys;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -51,11 +52,12 @@ public class Keys implements Comparable<Keys>
    public static final int KEY_NUM_2 = 98;
    public static final int KEY_NUM_3 = 99;
    public static final int KEY_NUM_4 = 100;
-
-
+   
+   public static final int ALIAS_KEY = ALT_KEY | 'X';
+         
    private final int modifiers;
    private final int keyCode;
-
+   
    public Keys(int modifiers, int keyCode)
    {
       this.modifiers = modifiers;
