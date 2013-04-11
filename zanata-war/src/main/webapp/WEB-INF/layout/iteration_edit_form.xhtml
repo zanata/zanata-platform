@@ -65,9 +65,9 @@
 	<rich:spacer height="20px" />
 	<a4j:region renderRegionOnly="true">
       	<h:panelGrid columns="3" id ="languagePanel" rendered="#{projectIterationLocaleAction.setting}">
-	    <h:outputText value="#{messages['jsf.AvailableLocales']}"/>
+	    <h:outputText value="#{messages['jsf.DisabledLocales']}"/>
 	    <h:outputText value=""/>
-	    <h:outputText value="#{messages['jsf.SelectedLocales']}"/>
+	    <h:outputText value="#{messages['jsf.EnabledLocales']}"/>
             <h:selectManyListbox id ="languagelist2" value="#{projectIterationLocaleAction.availableList}" styleClass="language_list">
                 <f:selectItems value="#{iterationAvailableItems}"/>
 		<a4j:support event="ondblclick" reRender="languagePanel" action="#{projectIterationLocaleAction.toCustomizedLocales}"/>
