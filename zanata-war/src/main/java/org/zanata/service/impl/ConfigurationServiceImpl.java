@@ -88,6 +88,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
       var.append("  <project-version>").append(iterationSlug).append("</project-version>\n");
       if (useOfflinePo)
       {
+         // FIXME this comment could be localized
          var.append("  <!-- NB project-type set to 'offlinepo' to allow offline po translation\n")
             .append("       from non-po documents, project-type on server is '")
             .append(String.valueOf(projectType).toLowerCase()).append("' -->\n")
@@ -97,6 +98,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
       {
          if( projectType == ProjectType.Gettext )
          {
+            // FIXME this comment could be localized
             var.append("  <!-- NB project-type set to 'podir' to allow uploads, but original was 'gettext' -->\n");
             var.append("  <project-type>").append(ProjectType.Podir.toString().toLowerCase()).append("</project-type>\n");
          }

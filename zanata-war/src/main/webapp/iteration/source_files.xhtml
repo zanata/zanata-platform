@@ -34,7 +34,7 @@
         </script>
     </ui:define>
 
-    <ui:define name="page_title">#{projectIterationFilesAction.projectSlug}:#{projectIterationFilesAction.iterationSlug} - Files</ui:define>
+    <ui:define name="page_title">#{projectIterationFilesAction.projectSlug}:#{projectIterationFilesAction.iterationSlug} - #{messages['jsf.SourceDocuments']}</ui:define>
     <ui:define name="center_content">
         <h:form>
             <s:token allowMultiplePosts="true"/>
@@ -126,6 +126,9 @@
             </rich:dataTable>
         </h:form>
 
+        <ui:remove>
+          <!-- This panel does not appear ever to be shown. Remove in separate commit. -->
+        </ui:remove>
         <rich:modalPanel id="downloadProgressPanel"
                          moveable="#{false}"
                          resizeable="#{false}"
@@ -202,7 +205,7 @@
                                    label="#{locale.retrieveNativeName()}"
                                    itemValue="#{locale.localeId.toString()}"
                                    escape="true"/>
-                    <h:outputLabel value="Source Language"/>
+                    <h:outputLabel value="#{messages['jsf.SourceLanguage']}"/>
                 </h:selectOneMenu>
                 <div align="right">
                     <h:commandButton value="#{messages['jsf.Upload']}"
@@ -237,7 +240,7 @@
                                    label="#{locale.retrieveNativeName()}"
                                    itemValue="#{locale.localeId.toString()}"
                                    escape="true"/>
-                    <h:outputLabel value="Source Language"/>
+                    <h:outputLabel value="#{messages['jsf.SourceLanguage']}"/>
                 </h:selectOneMenu>
                 <div align="right">
                     <h:commandButton value="#{messages['jsf.Upload']}"

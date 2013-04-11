@@ -9,7 +9,7 @@
     xmlns:a4j="http://richfaces.org/a4j"
     template="../WEB-INF/layout/template.xhtml">
 
-  <ui:define name="page_title">Projects</ui:define>
+  <ui:define name="page_title">#{messages['jsf.Projects']}</ui:define>
 
   <ui:define name="right_content">
     <rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
@@ -29,7 +29,7 @@
     </s:fragment>
     <s:fragment rendered="#{!projectAction.getEmpty()}">
       <a4j:form id="form">
-      
+
 	<rich:datascroller align="center" for="projectList" maxPages="10"
 		    page="#{projectAction.scrollerPage}" id="scroller" reRender="sc2"
             fastControls="hide">
@@ -66,36 +66,36 @@
         </f:facet>
     </rich:datascroller>
 	<rich:spacer height="15" />
-        
+
         <s:div styleClass="float-right">
 	        <a4j:region>
-	            <h:selectBooleanCheckbox title="Filter active projects" value="#{projectAction.showActive}">
+	            <h:selectBooleanCheckbox title="#{messages['jsf.FilterActiveProjects']}" value="#{projectAction.showActive}">
 	                <a4j:support event="onchange" reRender="main_content" />
 	            </h:selectBooleanCheckbox>
 	            <h:outputText value="#{messages['jsf.Active']}"/>
-	            
+
 	            <rich:spacer width="5" />
-	            <h:selectBooleanCheckbox title="Filter read-only projects" value="#{projectAction.showReadOnly}">
+	            <h:selectBooleanCheckbox title="#{messages['jsf.FilterReadOnlyProjects']}" value="#{projectAction.showReadOnly}">
 	                <a4j:support event="onchange" reRender="main_content" />
 	            </h:selectBooleanCheckbox>
 	            <h:outputText value="#{messages['jsf.ReadOnly']}"/>
-	            
+
 	            <rich:spacer width="5" />
 	            <s:fragment rendered="#{s:hasPermission('HProject','view-obsolete')}">
-		            <h:selectBooleanCheckbox title="Filter obsolete projects" value="#{projectAction.showObsolete}">
+		            <h:selectBooleanCheckbox title="#{messages['jsf.FilterObsoleteProjects']}" value="#{projectAction.showObsolete}">
 		                <a4j:support event="onchange" reRender="main_content" />
 		            </h:selectBooleanCheckbox>
 	                <h:outputText value="#{messages['jsf.Obsolete']}"/>
 	            </s:fragment>
 	        </a4j:region>
         </s:div>
-        
+
         <rich:dataTable id="projectList" 
             rows="#{projectAction.pageSize}"
             value="#{projectAction.projectPagedListDataModel}" var="project">
                 <rich:column width="270px" sortBy="#{project.name}">
                      <f:facet name="header">#{messages['jsf.ProjectName']}</f:facet>
-                           
+
                         <s:link id="project" styleClass="table_link" value="#{project.name}"  propagation="none"
                              view="/project/project.xhtml" rendered="#{project.status == 'ACTIVE'}"> 
                             <f:param name="slug" value="#{project.slug}"/>
@@ -119,13 +119,13 @@
                            <f:convertDateTime type="date" dateStyle="default"/>
                         </h:outputText>                     
                     </rich:column>
-                    
+
                     <rich:column styleClass="centered" width="60px" sortBy="#{project.status}">
                         <f:facet name="header">#{messages['jsf.Status']}</f:facet>
                         <h:outputText value="#{messages[project.status.messageKey]}"/>
                     </rich:column>
         </rich:dataTable>
-        
+
         <rich:spacer height="15" />
 	    <rich:datascroller align="center" for="projectList" maxPages="10"
 		    page="#{projectAction.scrollerPage}" id="sc2" reRender="scroller"

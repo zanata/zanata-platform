@@ -400,6 +400,9 @@ public class ViewAllStatusAction implements Serializable
       return formatTimePeriod(handle.getEstimatedTimeRemaining());
    }
 
+   // FIXME this is not localizable
+   // Define 4 UI strings: completed by you, canceled by you, completed by [username], canceled by [username]
+   // OR define UI strings for each of completed/canceled, and another for 'you'
    public String getCopyTransStatusMessage()
    {
       if (!isCopyTransRunning())

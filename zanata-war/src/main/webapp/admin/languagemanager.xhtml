@@ -9,7 +9,7 @@
 	xmlns:a4j="http://richfaces.org/a4j"
 	template="../WEB-INF/layout/template.xhtml">
 
-   <ui:define name="page_title">Manage Languages</ui:define>
+   <ui:define name="page_title">#{messages['jsf.ManageLanguage']}</ui:define>
 	<ui:define name="right_content">
 	  <rich:panel>
       	<f:facet name="header">#{messages['jsf.Actions']}</f:facet>
@@ -68,7 +68,7 @@
 	        		</rich:column>
                     <rich:column width="50"
                                  styleClass="centered #{!language.active ? 'disabled_lang_row' : ''}">
-                        <f:facet name="header">Enabled By Default</f:facet>
+                        <f:facet name="header">#{messages['jsf.EnabledByDefault']}</f:facet>
                         <h:selectBooleanCheckbox value="#{language.enabledByDefault}">
                             <a4j:support event="onclick"
                                          ajaxSingle="true"
