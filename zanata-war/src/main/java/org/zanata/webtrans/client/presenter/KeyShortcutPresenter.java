@@ -112,7 +112,6 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
 
    private void setAliasKeyListening(boolean isAliasKeyListening)
    {
-      Log.info("===========setAliasKeyListening:" + isAliasKeyListening);
       this.isAliasKeyListening = isAliasKeyListening;
       if (!isAliasKeyListening)
       {
@@ -133,24 +132,27 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
          {
             NativeEvent evt = nativeEvent.getNativeEvent();
 
-            // TODO enable keypress events if any shortcuts require them
-            if ((event.getTypeInt(nativeEvent) & (event.keyDownEvent() | event.keyUpEvent())) != 0)
+            //Handle alias listener
+            if ((event.getTypeInt(nativeEvent) & event.keyDownEvent()) != 0)
             {
                Keys pressedKeys = event.createKeys(evt);
                boolean isAliasKeyPressed = Keys.ALIAS_KEY == (pressedKeys.getModifiers() | pressedKeys.getKeyCode());
-
                if (isAliasKeyListening && (isAliasKeyPressed || pressedKeys.getKeyCode() == KeyCodes.KEY_ESCAPE))
                {
                   setAliasKeyListening(false);
-               }
-               else if (isAliasKeyListening)
-               {
-                  proccessAliasKeyEvent(evt.getKeyCode());
                }
                else if (!isAliasKeyListening && isAliasKeyPressed)
                {
                   setAliasKeyListening(true);
                   aliasKeyTimer.schedule(5000); // 5 seconds
+               }
+            }
+            // TODO enable keypress events if any shortcuts require them
+            else if ((event.getTypeInt(nativeEvent) & (event.keyDownEvent() | event.keyUpEvent())) != 0)
+            {
+               if (isAliasKeyListening)
+               {
+                  proccessAliasKeyEvent(evt.getKeyCode());
                }
                else
                {
@@ -273,7 +275,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
 
    private void proccessAliasKeyEvent(int keycode)
    {
-
+      Log.info("===== proccessAliasKeyEvent ");
    }
 
    /**
