@@ -7,7 +7,7 @@
    xmlns:rich="http://richfaces.org/rich"
    template="/WEB-INF/facelets/email/template_email.xhtml">
 
-  <ui:param name="toName" value="#{messages['jsf.email.activation.register.Name']}" />
+  <ui:param name="toName" value="#{emailServiceImpl.toName}" />
   <ui:param name="toEmailAddr" value="#{emailServiceImpl.toEmailAddr}" />
   <ui:param name="subject" value="#{messages['jsf.email.activation.Subject']}" />
 
