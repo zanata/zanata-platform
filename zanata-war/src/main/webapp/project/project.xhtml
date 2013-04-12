@@ -141,12 +141,12 @@
   <rich:panel>
     <f:facet name="header">#{messages['jsf.ProjectMaintainers']}</f:facet>
     <h:outputText rendered="#{empty projectHome.instance.maintainers}">#{messages['jsf.NoMaintainersDefined']}</h:outputText>
-    
+
     <rich:dataList value="#{projectHome.instance.maintainers.toArray()}" var="maintainer">
-      <h:outputText value="#{maintainer.name}" styleClass="maintainer" rendered="#{!s:hasPermission(projectHome.instance, 'update')}"/>
-      
-      <s:fragment rendered="#{s:hasPermission(projectHome.instance, 'update')}">
-	      <a href="mailto:#{maintainer.email}" class="maintainer_email" title="#{maintainer.email}" target="_blank">#{maintainer.name}</a>
+      <h:outputText value="#{maintainer.name}" styleClass="maintainer" rendered="#{!s:hasRole('admin')}"/>
+
+      <s:fragment rendered="#{s:hasRole('admin')}">
+          <a href="mailto:#{maintainer.email}" class="maintainer_email" title="#{maintainer.email}" target="_blank">#{maintainer.name}</a>
       </s:fragment>
     </rich:dataList>
   </rich:panel>
