@@ -132,31 +132,28 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
          {
             NativeEvent evt = nativeEvent.getNativeEvent();
 
-            //Handle alias listener
-            if ((event.getTypeInt(nativeEvent) & event.keyDownEvent()) != 0)
-            {
-               Keys pressedKeys = event.createKeys(evt);
-               boolean isAliasKeyPressed = Keys.ALIAS_KEY == (pressedKeys.getModifiers() | pressedKeys.getKeyCode());
-               if (isAliasKeyListening && (isAliasKeyPressed || pressedKeys.getKeyCode() == KeyCodes.KEY_ESCAPE))
-               {
-                  setAliasKeyListening(false);
-               }
-               else if (!isAliasKeyListening && isAliasKeyPressed)
-               {
-                  setAliasKeyListening(true);
-                  aliasKeyTimer.schedule(5000); // 5 seconds
-               }
-            }
-            // TODO enable keypress events if any shortcuts require them
-            else if ((event.getTypeInt(nativeEvent) & (event.keyDownEvent() | event.keyUpEvent())) != 0)
+            if ((event.getTypeInt(nativeEvent) & (event.keyDownEvent() | event.keyUpEvent())) != 0)
             {
                if (isAliasKeyListening)
                {
-                  proccessAliasKeyEvent(evt.getKeyCode());
+                  processAliasKeyEvent(evt);
                }
                else
                {
-                  processKeyEvent(evt);
+                  Keys pressedKeys = event.createKeys(evt);
+
+                  boolean isAliasKeyTriggered = Keys.ALIAS_KEY == (pressedKeys.getModifiers() | pressedKeys.getKeyCode());
+
+                  if (isAliasKeyTriggered)
+                  {
+                     Log.debug("Alias key listening....");
+                     setAliasKeyListening(true);
+                     aliasKeyTimer.schedule(5000); // 5 seconds
+                  }
+                  else
+                  {
+                     processKeyEvent(evt, pressedKeys);
+                  }
                }
             }
          }
@@ -273,11 +270,6 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
       return new SurplusKeyListenerHandlerRegistration(listener);
    }
 
-   private void proccessAliasKeyEvent(int keycode)
-   {
-      Log.info("===== proccessAliasKeyEvent ");
-   }
-
    /**
     * Check for active shortcuts for the entered key combination, trigger events
     * in handlers, then if no shortcuts have been triggered, fire any registered
@@ -285,9 +277,8 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
     * 
     * @param evt native event
     */
-   private void processKeyEvent(NativeEvent evt)
+   private void processKeyEvent(NativeEvent evt, Keys pressedKeys)
    {
-      Keys pressedKeys = event.createKeys(evt);
       Set<KeyShortcut> shortcuts = ensureShortcutMap().get(pressedKeys);
       boolean shortcutFound = false;
       // TODO replace modifiers + keycode in event with Keys
@@ -341,7 +332,30 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
             }
          }
       }
+   }
+   
+   
+   private void processAliasKeyEvent(NativeEvent evt)
+   {
+      Keys pressedKeys = event.createKeys(evt);
 
+      // Check if alias key has triggered, KeyUP event + ALT+X
+      boolean isAliasKeyTriggered = Keys.ALIAS_KEY == (pressedKeys.getModifiers() | pressedKeys.getKeyCode());
+
+      if (isAliasKeyTriggered || (pressedKeys.getKeyCode() == KeyCodes.KEY_ESCAPE))
+      {
+         // cancel alias key listening with ESC and ALT+X
+         Log.debug("Cancel alias key listening....");
+         setAliasKeyListening(false);
+      }
+      else
+      {
+         Log.debug("===== proccessAliasKeyEvent");
+
+         pressedKeys.setAlias(Keys.ALIAS_KEY);
+         Log.debug("===== pressedKeys:" + pressedKeys);
+         processKeyEvent(evt, pressedKeys);
+      }
    }
 
    private String getContextName(ShortcutContext context)
