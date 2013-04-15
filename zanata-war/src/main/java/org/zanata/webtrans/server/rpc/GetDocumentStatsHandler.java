@@ -36,12 +36,9 @@ public class GetDocumentStatsHandler extends AbstractActionHandler<GetDocumentSt
 
    @In
    private TextFlowTargetDAO textFlowTargetDAO;
-   
+
    @In
    private DocumentDAO documentDAO;
-   
-   // TODO: fix problem with multiple RPC call from single client, client do single RPC call one at a time to solve this problem.
-   private boolean USE_CACHE = true;
 
    @Override
    public GetDocumentStatsResult execute(GetDocumentStats action, ExecutionContext context) throws ActionException
@@ -54,17 +51,8 @@ public class GetDocumentStatsHandler extends AbstractActionHandler<GetDocumentSt
          TranslationStats stats = statisticsServiceImpl.getDocStatistics(documentId.getId(), action.getWorkspaceId().getLocaleId());
          statsMap.put(documentId, stats);
 
-         Long id = null;
-         
-         if (USE_CACHE)
-         {
-            id = translationStateCacheImpl.getDocLastTranslatedTextFlowTarget(documentId.getId(), action.getWorkspaceId().getLocaleId());
-         }
-         else
-         {
-            id = documentDAO.getLastTranslatedTargetId(documentId.getId(), action.getWorkspaceId().getLocaleId());
-         }
-         
+         Long id = translationStateCacheImpl.getDocLastTranslatedTextFlowTarget(documentId.getId(), action.getWorkspaceId().getLocaleId());
+
          Date lastTranslatedDate = null;
          String lastTranslatedBy = "";
 

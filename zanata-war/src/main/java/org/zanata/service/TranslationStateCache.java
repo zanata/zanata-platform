@@ -65,7 +65,9 @@ public interface TranslationStateCache
    void textFlowStateUpdated(Long textFlowId, LocaleId localeId, ContentState newState);
 
    /**
-    * Returns last modified HTextFlowTarget for the given locale id of the documentId 
+    * Returns id of last modified HTextFlowTarget for the given locale id of the
+    * documentId
+    * 
     * @param documentId
     * @param localeId
     * @return

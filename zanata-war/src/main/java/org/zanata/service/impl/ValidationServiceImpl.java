@@ -152,19 +152,18 @@ public class ValidationServiceImpl implements ValidationService
    {
       log.debug("Start doc validation {0}", hDoc.getId());
       Stopwatch stopwatch = new Stopwatch().start();
-      List<ValidationAction> validationActions = getValidationFactory().getValidationActions(validationIds);
 
-      boolean hasError = documentHasError(hDoc, validationActions, localeId);
+      boolean hasError = documentHasError(hDoc, validationIds, localeId);
 
       log.debug("Finished doc validation in " + stopwatch);
       return hasError;
    }
 
-   private boolean documentHasError(HDocument hDoc, List<ValidationAction> validationActions, LocaleId localeId)
+   private boolean documentHasError(HDocument hDoc, List<ValidationId> validationIds, LocaleId localeId)
    {
       for (HTextFlow textFlow : hDoc.getTextFlows())
       {
-         boolean hasError = textFlowTargetHasError(textFlow, validationActions, localeId);
+         boolean hasError = textFlowTargetHasError(textFlow, validationIds, localeId);
          if (hasError)
          {
             // return true if error found, else continue
@@ -180,12 +179,11 @@ public class ValidationServiceImpl implements ValidationService
       log.debug("Start filter {0} textFlows", textFlows.size());
       Stopwatch stopwatch = new Stopwatch().start();
 
-      List<ValidationAction> validationActions = getValidationFactory().getValidationActions(validationIds);
       List<HTextFlow> result = new ArrayList<HTextFlow>();
 
       for (HTextFlow textFlow : textFlows)
       {
-         boolean hasError = textFlowTargetHasError(textFlow, validationActions, localeId);
+         boolean hasError = textFlowTargetHasError(textFlow, validationIds, localeId);
          if (hasError)
          {
             result.add(textFlow);
@@ -211,31 +209,17 @@ public class ValidationServiceImpl implements ValidationService
       startIndex = startIndex < 0 ? 0 : startIndex;
    }
 
-   // TODO: fix problem with multiple RPC call from single client, client do single RPC call one at a time to solve this problem.
-   private boolean USE_CACHE = true; 
-
-   private boolean textFlowTargetHasError(HTextFlow textFlow, List<ValidationAction> validationActions, LocaleId localeId)
+   private boolean textFlowTargetHasError(HTextFlow textFlow, List<ValidationId> validationIds, LocaleId localeId)
    {
       HTextFlowTarget target = textFlowTargetDAO.getTextFlowTarget(textFlow, localeId);
       if (target != null)
       {
-         for (ValidationAction validationAction : validationActions)
+         for (ValidationId validationId : validationIds)
          {
-            if (USE_CACHE)
+            Boolean value = translationStateCacheImpl.textFlowTargetHasError(target.getId(), validationId);
+            if (value != null && value.booleanValue())
             {
-               Boolean value = translationStateCacheImpl.textFlowTargetHasError(target.getId(), validationAction.getId());
-               if (value != null && value.booleanValue())
-               {
-                  return value.booleanValue();
-               }
-            }
-            else
-            {
-               List<String> errorList = validationAction.validate(textFlow.getContents().get(0), target.getContents().get(0));
-               if (!errorList.isEmpty())
-               {
-                  return true;
-               }
+               return value.booleanValue();
             }
          }
       }
