@@ -396,6 +396,10 @@ public class TranslationFileServiceImpl implements TranslationFileService
    {
       HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
       ProjectType projectType = projectIteration.getProjectType();
+      if (projectType == null)
+      {
+         projectType = projectIteration.getProject().getDefaultProjectType();
+      }
       if (projectType == ProjectType.Gettext || projectType == ProjectType.Podir)
       {
          return true;

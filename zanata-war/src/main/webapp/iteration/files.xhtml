@@ -191,12 +191,15 @@
                         <h:outputText value="#{messages['jsf.iteration.files.dotpo']}"/>
                     </s:link>
                     <s:link styleClass="table_link"
-                            rendered="#{!projectIterationFilesAction.isPoDocument(doc.docId)}"
+                            rendered="#{projectIterationFilesAction.knownProjectType and !projectIterationFilesAction.isPoDocument(doc.docId)}"
                             view="/rest/file/translation/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/#{projectIterationFilesAction.localeId}/offlinepo">
                         <f:param name="docId" value="#{doc.docId}"/>
                         <h:outputText value="#{messages['jsf.iteration.files.dotofflinepo']}"
                                       title="#{messages['jsf.iteration.files.dotofflinepo.description']} #{messages['jsf.iteration.files.dotofflinepo.purpose']}"/>
                     </s:link>
+                    <h:outputText value="#{messages['jsf.iteration.files.dotpo']}"
+                                  title="#{messages['jsf.ConfigFileDisabledProjectNotSet']}"
+                                  rendered="#{!projectIterationFilesAction.knownProjectType}" />
                     <h:outputText value="&#160;&#160;&#160;" />
                     <s:link rendered="#{projectIterationFilesAction.hasOriginal(doc.path, doc.name)}" styleClass="table_link" view="/rest/file/translation/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/#{projectIterationFilesAction.localeId}/baked">
                         <f:param name="docId" value="#{doc.docId}"/>
@@ -345,6 +348,8 @@
 					<span class="icon-edit"/>#{messages['jsf.TranslateGWTDevMode']}
     			</h:outputLink>
 
+
+
                 <s:link styleClass="action_link"
                         rendered="#{projectIterationFilesAction.poProject}"
                         value="#{messages['jsf.ConfigFileForOfflineTranslation']}"
@@ -355,12 +360,19 @@
                 </s:link>
 
                 <s:link styleClass="action_link"
-                        rendered="#{!projectIterationFilesAction.poProject}"
+                        rendered="#{projectIterationFilesAction.knownProjectType and !projectIterationFilesAction.poProject}"
                         value="#{messages['jsf.ConfigFileForOfflineTranslation']}"
                         title="#{messages['jsf.GenerateProjectConfigForOfflineTranslation']}"
                         action="#{configurationAction.getOfflinePoConfigData(projectIterationFilesAction.locale)}">
                     <f:param name="projectSlug" value="#{projectIterationFilesAction.projectSlug}" />
                     <f:param name="iterationSlug" value="#{projectIterationFilesAction.iterationSlug}" />
+                </s:link>
+
+                <s:link styleClass="action_link disabled"
+                        rendered="#{!projectIterationFilesAction.knownProjectType}"
+                        value="#{messages['jsf.ConfigFileForOfflineTranslation']}"
+                        title="#{messages['jsf.ConfigFileDisabledProjectNotSet']} #{messages['jsf.GenerateProjectConfigSingleLocale']}"
+                        disabled="true">
                 </s:link>
 
                 <ui:param name="downloadAllAllowed" value="#{projectIterationFilesAction.zipFileDownloadAllowed}" />

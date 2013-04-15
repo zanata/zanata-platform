@@ -17,6 +17,7 @@ import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HPerson;
+import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.TranslationFileService;
 import org.zanata.service.TranslationStateCache;
@@ -70,8 +71,18 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
 
          Map<String, String> downloadExtensions = new HashMap<String, String>();
 
-         ProjectType type = hDoc.getProjectIteration().getProjectType();
-         if (type == ProjectType.Gettext || type == ProjectType.Podir)
+         HProjectIteration projectIteration = hDoc.getProjectIteration();
+         ProjectType type = projectIteration.getProjectType();
+         if (type == null)
+         {
+            type = projectIteration.getProject().getDefaultProjectType();
+         }
+
+         if (type == null)
+         {
+            // no .po download link
+         }
+         else if (type == ProjectType.Gettext || type == ProjectType.Podir)
          {
             downloadExtensions.put(".po", "po?docId=" + hDoc.getDocId());
          }
