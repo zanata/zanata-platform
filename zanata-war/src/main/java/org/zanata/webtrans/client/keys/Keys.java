@@ -82,6 +82,16 @@ public class Keys implements Comparable<Keys>
       return keyCode;
    }
 
+   public int getAlias()
+   {
+      return alias;
+   }
+
+   public void setAlias(int alias)
+   {
+      this.alias = alias;
+   }
+
    @Override
    public int hashCode()
    {
@@ -134,10 +144,5 @@ public class Keys implements Comparable<Keys>
    public static Set<Keys> setOf(Keys... keys)
    {
       return new HashSet<Keys>(Arrays.asList(keys));
-   }
-
-   public void setAlias(int alias)
-   {
-      this.alias = alias;
    }
 }

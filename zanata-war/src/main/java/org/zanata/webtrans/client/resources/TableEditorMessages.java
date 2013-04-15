@@ -80,7 +80,7 @@ public interface TableEditorMessages extends Messages
    @DefaultMessage("#{0}; {1}")
    String transUnitDetailsHeadingWithInfo(int rowIndex, String info);
 
-   @DefaultMessage("Copy message from source language (Alt+G)")
+   @DefaultMessage("Copy message from source language.")
    String copyFromSource();
 
    @DefaultMessage("Saving...")

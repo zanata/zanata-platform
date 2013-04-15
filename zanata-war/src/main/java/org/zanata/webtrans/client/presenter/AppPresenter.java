@@ -26,6 +26,8 @@ import net.customware.gwt.presenter.client.PresenterRevealedHandler;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.common.TranslationStats;
+import org.zanata.webtrans.client.events.AliasKeyChangedEvent;
+import org.zanata.webtrans.client.events.AliasKeyChangedEventHandler;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEventHandler;
 import org.zanata.webtrans.client.events.KeyShortcutEvent;
@@ -63,6 +65,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
       DocumentStatsUpdatedEventHandler,
       ProjectStatsUpdatedEventHandler,
       PresenterRevealedHandler,
+      AliasKeyChangedEventHandler,
       AppDisplay.Listener
 // @formatter:on
 {
@@ -119,6 +122,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
       registerHandler(eventBus.addHandler(DocumentStatsUpdatedEvent.getType(), this));
       registerHandler(eventBus.addHandler(ProjectStatsUpdatedEvent.getType(), this));
       registerHandler(eventBus.addHandler(PresenterRevealedEvent.getType(), this));
+      registerHandler(eventBus.addHandler(AliasKeyChangedEvent.getType(), this));
      
       if (selectedDocument == null)
       {
@@ -419,5 +423,12 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
          this.currentView = currentView;
          this.selectedDocumentStats = selectedDocumentStats;
       }
+   }
+
+   @Override
+   public void onAliasKeyChanged(AliasKeyChangedEvent event)
+   {
+      display.setKeyboardShorcutColor(event.isAliasKeyListening());
+
    }
 }

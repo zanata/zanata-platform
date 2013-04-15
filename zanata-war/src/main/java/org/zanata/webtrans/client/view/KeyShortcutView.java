@@ -67,10 +67,10 @@ public class KeyShortcutView extends PopupPanel implements KeyShortcutPresenter.
 
    @UiField
    FlowPanel shortcutContainer;
-   
+
    @UiField
    Label heading;
-   
+
    @UiField
    Styles style;
 
@@ -81,7 +81,7 @@ public class KeyShortcutView extends PopupPanel implements KeyShortcutPresenter.
    {
       setWidget(uiBinder.createAndBindUi(this));
       heading.setText(webTransMessages.availableKeyShortcutsTitle());
-      
+
       setStyleName("keyShortcutPanel");
       setAutoHideEnabled(true);
       setAutoHideOnHistoryEventsEnabled(true);
@@ -161,6 +161,7 @@ public class KeyShortcutView extends PopupPanel implements KeyShortcutPresenter.
       boolean first = true;
       for (Keys keys : shortcut.getAllKeys())
       {
+         int alias = keys.getAlias();
          int modifiers = keys.getModifiers();
          int keyCode = keys.getKeyCode();
 
@@ -169,6 +170,14 @@ public class KeyShortcutView extends PopupPanel implements KeyShortcutPresenter.
             sb.append('\n');
          }
          first = false;
+
+         if (alias != Keys.NO_ALIAS)
+         {
+            sb.append(keyDisplayMap.get(Keys.ALT_KEY));
+            sb.append("+");
+            sb.append("X");
+            sb.append(",");
+         }
 
          if ((modifiers & Keys.CTRL_KEY) != 0)
          {
