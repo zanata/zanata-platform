@@ -527,6 +527,10 @@ public class ViewAllStatusAction implements Serializable
    public boolean isPoProject()
    {
       ProjectType type = getProjectIteration().getProjectType();
+      if (type == null)
+      {
+         type = getProjectIteration().getProject().getDefaultProjectType();
+      }
       return type == ProjectType.Gettext || type == ProjectType.Podir;
    }
 }

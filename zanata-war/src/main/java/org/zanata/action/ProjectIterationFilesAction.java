@@ -494,9 +494,20 @@ public class ProjectIterationFilesAction implements Serializable
       this.localeId = localeId;
    }
 
-   public boolean isPoProject()
+   public boolean isKnownProjectType()
    {
       ProjectType type = projectIterationDAO.getBySlug(projectSlug, iterationSlug).getProjectType();
+      return type != null;
+   }
+
+   public boolean isPoProject()
+   {
+      HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+      ProjectType type = projectIteration.getProjectType();
+      if (type == null)
+      {
+         type = projectIteration.getProject().getDefaultProjectType();
+      }
       return type == ProjectType.Gettext || type == ProjectType.Podir;
    }
 
