@@ -21,7 +21,6 @@ import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProject;
@@ -63,9 +62,6 @@ public class ValidationServiceImpl implements ValidationService
 
    @In
    private TextFlowTargetDAO textFlowTargetDAO;
-
-   @In
-   private TextFlowDAO textFlowDAO;
 
    @In
    private DocumentDAO documentDAO;
@@ -180,16 +176,35 @@ public class ValidationServiceImpl implements ValidationService
       return enabledValidationIds;
    }
 
+   /**
+    * USE_COMBINE_CACHE method combine last translated info, document has
+    * validation error into single cache list. However this might cause some
+    * overhead/slowness if request has no intention of getting the validation
+    * result. Using USE_COMBINE_CACHE will trigger validation runs against
+    * document/locale whenever a transUnit is updated.
+    */
+   private boolean USE_COMBINE_CACHE = true;
+
    @Override
    public boolean runDocValidations(Long hDocId, List<ValidationId> validationIds, LocaleId localeId)
    {
       log.debug("Start runDocValidations {0}", hDocId);
       Stopwatch stopwatch = new Stopwatch().start();
 
-      DocumentStatus docStats = translationStateCacheImpl.getDocStats(hDocId, localeId);
+      boolean result;
+      if (USE_COMBINE_CACHE)
+      {
+         DocumentStatus docStats = translationStateCacheImpl.getDocStats(hDocId, localeId);
+         result = docStats.hasError();
+      }
+      else
+      {
+         HDocument hDoc = documentDAO.findById(hDocId, false);
+         result = documentHasError(hDoc, validationIds, localeId);
+      }
 
       log.debug("Finished runDocValidations in " + stopwatch);
-      return docStats.hasError();
+      return result;
    }
 
    @Override
