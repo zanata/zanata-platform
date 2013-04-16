@@ -58,11 +58,13 @@ public interface ValidationService
     * 
     * Returns count of transUnit that has error
     * 
+    * @param validationIds
+    * 
     * @param hDocs
     * @param validations
     * @param localeId
     */
-   boolean runDocValidations(Long hDocId, LocaleId localeId);
+   boolean runDocValidations(Long hDocId, List<ValidationId> validationIds, LocaleId localeId);
 
    /**
     * Filter list of text flow with those only contains validation error

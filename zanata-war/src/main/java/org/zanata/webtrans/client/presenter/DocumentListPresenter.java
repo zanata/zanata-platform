@@ -21,7 +21,6 @@
 package org.zanata.webtrans.client.presenter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -309,7 +308,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       }
       docStatQueueDispatcher.setQueueAndExecute(queueList, getDocumentStatCallBack);
    }
-   
+
    private final AsyncCallback<GetDocumentStatsResult> getDocumentStatCallBack = new AsyncCallback<GetDocumentStatsResult>()
    {
       @Override
@@ -645,40 +644,43 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
                docList.add(documentId);
             }
 
-            dispatcher.execute(new RunDocValidationAction(valIds, docList), new AsyncCallback<RunDocValidationResult>()
+            for (int i = 0; i < 5; i++)
             {
-               @Override
-               public void onSuccess(RunDocValidationResult result)
+               dispatcher.execute(new RunDocValidationAction(valIds, docList), new AsyncCallback<RunDocValidationResult>()
                {
-                  Log.debug("Success doc validation - " + result.getResultMap().size());
-                  
-                  for (Entry<DocumentId, Boolean> entry : result.getResultMap().entrySet())
+                  @Override
+                  public void onSuccess(RunDocValidationResult result)
                   {
-                     Integer row = pageRows.get(entry.getKey());
-                     DocumentNode node = nodes.get(entry.getKey());
+                     Log.debug("Success doc validation - " + result.getResultMap().size());
 
-                     DocValidationStatus status = entry.getValue() ? DocValidationStatus.HasError : DocValidationStatus.NoError;
-
-                     if (row != null)
+                     for (Entry<DocumentId, Boolean> entry : result.getResultMap().entrySet())
                      {
-                        display.updateRowHasError(row.intValue(), status);
+                        Integer row = pageRows.get(entry.getKey());
+                        DocumentNode node = nodes.get(entry.getKey());
 
-                        if (node != null)
+                        DocValidationStatus status = entry.getValue() ? DocValidationStatus.HasError : DocValidationStatus.NoError;
+
+                        if (row != null)
                         {
-                           node.getDocInfo().setHasError(entry.getValue());
+                           display.updateRowHasError(row.intValue(), status);
+
+                           if (node != null)
+                           {
+                              node.getDocInfo().setHasError(entry.getValue());
+                           }
                         }
                      }
+                     eventBus.fireEvent(new DocValidationResultEvent(new Date()));
                   }
-                  eventBus.fireEvent(new DocValidationResultEvent(new Date()));
-               }
 
-               @Override
-               public void onFailure(Throwable caught)
-               {
-                  eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Unable to run validation"));
-                  eventBus.fireEvent(new DocValidationResultEvent(new Date()));
-               }
-            });
+                  @Override
+                  public void onFailure(Throwable caught)
+                  {
+                     eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Unable to run validation"));
+                     eventBus.fireEvent(new DocValidationResultEvent(new Date()));
+                  }
+               });
+            }
          }
       }
    }

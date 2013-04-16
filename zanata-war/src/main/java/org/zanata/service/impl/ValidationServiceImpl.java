@@ -181,7 +181,7 @@ public class ValidationServiceImpl implements ValidationService
    }
 
    @Override
-   public boolean runDocValidations(Long hDocId, LocaleId localeId)
+   public boolean runDocValidations(Long hDocId, List<ValidationId> validationIds, LocaleId localeId)
    {
       log.debug("Start runDocValidations {0}", hDocId);
       Stopwatch stopwatch = new Stopwatch().start();

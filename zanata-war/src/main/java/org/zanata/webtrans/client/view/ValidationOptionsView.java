@@ -33,7 +33,7 @@ public class ValidationOptionsView extends Composite implements ValidationOption
 
    @UiField
    VerticalPanel contentPanel;
-   
+
    @UiField
    PushButton runValidation;
 
@@ -43,7 +43,6 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    private Listener listener;
 
    private final WebTransMessages messages;
-   
 
    @Inject
    public ValidationOptionsView(WebTransMessages messages)
@@ -98,7 +97,32 @@ public class ValidationOptionsView extends Composite implements ValidationOption
       runValidation.setVisible(visible);
       lastValidationRun.setVisible(visible);
 
-      contentPanel.setVisible(!visible);
+      displayAllValidationActions(!visible);
+   }
+
+   /**
+    * Display all validation rules or just the enabled rules defined in project
+    * version
+    * 
+    * @param displayAll
+    */
+   private void displayAllValidationActions(boolean displayAll)
+   {
+      for (Widget checkbox : contentPanel)
+      {
+         if (checkbox instanceof CheckBox)
+         {
+            CheckBox chk = (CheckBox) checkbox;
+            if (displayAll)
+            {
+               chk.setVisible(true);
+            }
+            else if (chk.isEnabled())
+            {
+               chk.setVisible(false);
+            }
+         }
+      }
    }
 
    @UiHandler("runValidation")
@@ -106,13 +130,13 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    {
       listener.onRunValidation();
    }
-   
+
    @Override
    public void setListener(Listener listener)
    {
       this.listener = listener;
    }
-   
+
    @Override
    public void enabledRunValidation(boolean enabled)
    {

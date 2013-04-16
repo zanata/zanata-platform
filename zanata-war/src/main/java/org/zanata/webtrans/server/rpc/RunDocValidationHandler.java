@@ -35,7 +35,7 @@ public class RunDocValidationHandler extends AbstractActionHandler<RunDocValidat
 
       for (DocumentId documentId : action.getDocIds())
       {
-         boolean hasError = validationServiceImpl.runDocValidations(documentId.getId(), action.getWorkspaceId().getLocaleId());
+         boolean hasError = validationServiceImpl.runDocValidations(documentId.getId(), action.getValidationIds(), action.getWorkspaceId().getLocaleId());
          result.put(documentId, hasError);
       }
 
