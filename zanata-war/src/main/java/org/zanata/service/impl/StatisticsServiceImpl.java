@@ -21,6 +21,7 @@
 package org.zanata.service.impl;
 
 import java.net.URI;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +29,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -53,6 +55,7 @@ import org.zanata.rest.service.StatisticsResource;
 import org.zanata.rest.service.ZPathService;
 import org.zanata.service.TranslationStateCache;
 import org.zanata.util.DateUtil;
+import org.zanata.webtrans.shared.model.DocumentStatus;
 
 /**
  * Default implementation for the
@@ -143,7 +146,19 @@ public class StatisticsServiceImpl implements StatisticsResource
 
          HTextFlowTarget target = localeServiceImpl.getLastTranslated(projectSlug, iterationSlug, locId);
 
-         TranslationStatistics transUnitStats = getMessageStats(count, locId, target);
+         String lastModifiedBy = "";
+         Date lastModifiedDate = null;
+
+         if (target != null)
+         {
+            lastModifiedDate = target.getLastChanged();
+            if (target.getLastModifiedBy() != null)
+            {
+               lastModifiedBy = target.getLastModifiedBy().getAccount().getUsername();
+            }
+         }
+
+         TranslationStatistics transUnitStats = getMessageStats(count, locId, lastModifiedDate, lastModifiedBy);
          transUnitStats.setRemainingHours(getRemainingHours(count.get(ContentState.NeedReview), count.get(ContentState.New)));
          iterationStats.addStats(transUnitStats);
 
@@ -156,7 +171,7 @@ public class StatisticsServiceImpl implements StatisticsResource
                wordCount = new TransUnitWords(0, 0, (int) iterationTotalWords);
             }
 
-            TranslationStatistics wordsStats = getWordsStats(wordCount, locId, target);
+            TranslationStatistics wordsStats = getWordsStats(wordCount, locId, lastModifiedDate, lastModifiedBy);
             wordsStats.setRemainingHours(getRemainingHours(wordCount.get(ContentState.NeedReview), wordCount.get(ContentState.New)));
             iterationStats.addStats(wordsStats);
          }
@@ -234,15 +249,9 @@ public class StatisticsServiceImpl implements StatisticsResource
          {
             count = stats.getUnitCount();
          }
-         Long id = translationStateCacheImpl.getDocLastTranslatedTextFlowTarget(document.getId(), locale);
-         HTextFlowTarget target = null;
-         
-         if (id != null)
-         {
-            target = textFlowTargetDAO.findById(id, false);
-         }
+         DocumentStatus docStat = translationStateCacheImpl.getDocStats(document.getId(), locale);
 
-         TranslationStatistics transUnitStats = getMessageStats(count, locale, target);
+         TranslationStatistics transUnitStats = getMessageStats(count, locale, docStat.getLastTranslatedDate(), docStat.getLastTranslatedBy());
          transUnitStats.setRemainingHours(getRemainingHours(count.get(ContentState.NeedReview), count.get(ContentState.New)));
          docStats.addStats(transUnitStats);
 
@@ -258,7 +267,7 @@ public class StatisticsServiceImpl implements StatisticsResource
             {
                wordCount = stats.getWordCount();
             }
-            TranslationStatistics wordsStats = getWordsStats(wordCount, locale, target);
+            TranslationStatistics wordsStats = getWordsStats(wordCount, locale, docStat.getLastTranslatedDate(), docStat.getLastTranslatedBy());
             wordsStats.setRemainingHours(getRemainingHours(wordCount.get(ContentState.NeedReview), wordCount.get(ContentState.New)));
             docStats.addStats(wordsStats);
          }
@@ -267,7 +276,7 @@ public class StatisticsServiceImpl implements StatisticsResource
       return docStats;
    }
 
-   private TranslationStatistics getWordsStats(TransUnitWords wordCount, LocaleId locale, HTextFlowTarget lastTranslatedTarget)
+   private TranslationStatistics getWordsStats(TransUnitWords wordCount, LocaleId locale, Date lastChanged, String lastModifiedBy)
    {
       TranslationStatistics stats = new TranslationStatistics();
       stats.setLocale(locale.getId());
@@ -276,11 +285,11 @@ public class StatisticsServiceImpl implements StatisticsResource
       stats.setUntranslated(wordCount.get(ContentState.New));
       stats.setNeedReview(wordCount.get(ContentState.NeedReview));
       stats.setTotal(wordCount.getTotal());
-      stats.setLastTranslated(getLastTranslated(lastTranslatedTarget));
+      stats.setLastTranslated(getLastTranslated(lastChanged, lastModifiedBy));
       return stats;
    }
 
-   private TranslationStatistics getMessageStats(TransUnitCount unitCount, LocaleId locale, HTextFlowTarget lastTranslatedTarget)
+   private TranslationStatistics getMessageStats(TransUnitCount unitCount, LocaleId locale, Date lastChanged, String lastModifiedBy)
    {
       TranslationStatistics stats = new TranslationStatistics();
       stats.setLocale(locale.getId());
@@ -290,25 +299,24 @@ public class StatisticsServiceImpl implements StatisticsResource
       stats.setNeedReview(unitCount.get(ContentState.NeedReview));
       stats.setTotal(unitCount.getTotal());
 
-      stats.setLastTranslated(getLastTranslated(lastTranslatedTarget));
+      stats.setLastTranslated(getLastTranslated(lastChanged, lastModifiedBy));
       return stats;
    }
 
-   private String getLastTranslated(HTextFlowTarget lastTranslatedTarget)
+   private String getLastTranslated(Date lastChanged, String lastModifiedBy)
    {
       StringBuilder result = new StringBuilder();
 
-      if (lastTranslatedTarget != null)
+      if (lastChanged != null)
       {
-         result.append(DateUtil.formatShortDate(lastTranslatedTarget.getLastChanged()));
+         result.append(DateUtil.formatShortDate(lastChanged));
 
-         if (lastTranslatedTarget.getLastModifiedBy() != null)
+         if (!StringUtils.isEmpty(lastModifiedBy))
          {
             result.append(" by ");
-            result.append(lastTranslatedTarget.getLastModifiedBy().getAccount().getUsername());
+            result.append(lastModifiedBy);
          }
       }
-
       return result.toString();
    }
 

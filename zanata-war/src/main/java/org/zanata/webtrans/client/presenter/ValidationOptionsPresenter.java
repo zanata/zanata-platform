@@ -134,18 +134,17 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
       if (view == MainView.Documents)
       {
          display.setRunValidationVisible(true);
-         display.setRunValidationTitle(messages.documentValidationTitle());
       }
       else
       {
          display.setRunValidationVisible(false);
-         display.setRunValidationTitle(messages.editorValidationTitle());
       }
    }
 
    @Override
    public void onRunValidation()
    {
+      display.enabledRunValidation(false);
       eventBus.fireEvent(new RunDocValidationEvent(currentView));
    }
 

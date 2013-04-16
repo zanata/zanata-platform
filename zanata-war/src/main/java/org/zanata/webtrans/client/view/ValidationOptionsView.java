@@ -53,6 +53,7 @@ public class ValidationOptionsView extends Composite implements ValidationOption
 
       validationOptionsHeader.setText(messages.validationOptions());
       runValidation.setText(messages.runValidation());
+      runValidation.setTitle(messages.documentValidationTitle());
    }
 
    @Override
@@ -96,19 +97,14 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    {
       runValidation.setVisible(visible);
       lastValidationRun.setVisible(visible);
-   }
 
-   @Override
-   public void setRunValidationTitle(String title)
-   {
-      runValidation.setTitle(title);
+      contentPanel.setVisible(!visible);
    }
 
    @UiHandler("runValidation")
    public void onRunValidationClicked(ClickEvent event)
    {
       listener.onRunValidation();
-      enabledRunValidation(false);
    }
    
    @Override

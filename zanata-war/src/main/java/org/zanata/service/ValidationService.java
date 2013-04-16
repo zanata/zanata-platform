@@ -62,7 +62,7 @@ public interface ValidationService
     * @param validations
     * @param localeId
     */
-   boolean runValidations(HDocument hDoc, List<ValidationId> validationIds, LocaleId localeId);
+   boolean runDocValidations(Long hDocId, LocaleId localeId);
 
    /**
     * Filter list of text flow with those only contains validation error
@@ -73,4 +73,17 @@ public interface ValidationService
     * @throws IOException
     */
    List<HTextFlow> filterHasErrorTexFlow(List<HTextFlow> textFlows, List<ValidationId> validationIds, LocaleId localeId, int startIndex, int maxSize);
+
+
+   /**
+    * Run validation check on HTextFlow and HTextFlowTarget with specific locale
+    * from HDocument against validations rules defined in version
+    * 
+    * Returns count of transUnit that has error
+    * 
+    * @param hDocs
+    * @param validations
+    * @param localeId
+    */
+   boolean runDocValidationsWithServerRules(HDocument hDoc, LocaleId localeId);
 }

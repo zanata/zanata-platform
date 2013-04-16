@@ -27,6 +27,7 @@ import static org.hamcrest.Matchers.sameInstance;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,6 +42,8 @@ import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.service.impl.TranslationStateCacheImpl.TranslatedDocumentKey;
+import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.DocumentStatus;
 import org.zanata.webtrans.shared.model.ValidationId;
 
 import com.google.common.cache.CacheLoader;
@@ -55,7 +58,7 @@ public class TranslationStateCacheImplTest
    @Mock
    private CacheLoader<LocaleId, OpenBitSet> bitsetLoader;
    @Mock
-   private CacheLoader<TranslatedDocumentKey, Long> lastModifiedLoader;
+   private CacheLoader<TranslatedDocumentKey, DocumentStatus> docStatsLoader;
    @Mock
    private TextFlowTargetDAO textFlowTargetDAO;
    @Mock
@@ -65,7 +68,7 @@ public class TranslationStateCacheImplTest
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-      tsCache = new TranslationStateCacheImpl(filterLoader, bitsetLoader, lastModifiedLoader, targetValidationLoader, textFlowTargetDAO);
+      tsCache = new TranslationStateCacheImpl(filterLoader, bitsetLoader, docStatsLoader, targetValidationLoader, textFlowTargetDAO);
       tsCache.create();
    }
 
@@ -115,20 +118,18 @@ public class TranslationStateCacheImplTest
       Long documentId = new Long("100");
       LocaleId testLocaleId = LocaleId.DE;
       TranslatedDocumentKey key = new TranslatedDocumentKey(documentId, testLocaleId);
-      Long targetId = new Long(0);
-      HTextFlowTarget target = new HTextFlowTarget();
+      DocumentStatus docStats = new DocumentStatus(new DocumentId(documentId, ""), false, new Date(), "");
 
       // When:
-      when(lastModifiedLoader.load(key)).thenReturn(targetId);
-      when(textFlowTargetDAO.findById(targetId, false)).thenReturn(target);
+      when(docStatsLoader.load(key)).thenReturn(docStats);
       
-      Long result1 = tsCache.getDocLastTranslatedTextFlowTarget(documentId, testLocaleId);
-      Long result2 = tsCache.getDocLastTranslatedTextFlowTarget(documentId, testLocaleId);
+      DocumentStatus result1 = tsCache.getDocStats(documentId, testLocaleId);
+      DocumentStatus result2 = tsCache.getDocStats(documentId, testLocaleId);
 
       // Then:
-      verify(lastModifiedLoader).load(key); // only load the value once
-      assertThat(result1, equalTo(targetId));
-      assertThat(result2, equalTo(targetId));
+      verify(docStatsLoader).load(key); // only load the value once
+      assertThat(result1, equalTo(docStats));
+      assertThat(result2, equalTo(docStats));
    }
 
 public void testTextFlowTargetHasError() throws Exception

@@ -20,6 +20,7 @@ import org.zanata.service.impl.StatisticsServiceImpl;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.AuditInfo;
 import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.DocumentStatus;
 import org.zanata.webtrans.shared.rpc.GetDocumentStats;
 import org.zanata.webtrans.shared.rpc.GetDocumentStatsResult;
 
@@ -51,26 +52,9 @@ public class GetDocumentStatsHandler extends AbstractActionHandler<GetDocumentSt
          TranslationStats stats = statisticsServiceImpl.getDocStatistics(documentId.getId(), action.getWorkspaceId().getLocaleId());
          statsMap.put(documentId, stats);
 
-         Long id = translationStateCacheImpl.getDocLastTranslatedTextFlowTarget(documentId.getId(), action.getWorkspaceId().getLocaleId());
+         DocumentStatus docStat = translationStateCacheImpl.getDocStats(documentId.getId(), action.getWorkspaceId().getLocaleId());
 
-         Date lastTranslatedDate = null;
-         String lastTranslatedBy = "";
-
-         if (id != null)
-         {
-            HTextFlowTarget target = textFlowTargetDAO.findById(id, false);
-
-            if (target != null)
-            {
-               lastTranslatedDate = target.getLastChanged();
-
-               if (target.getLastModifiedBy() != null)
-               {
-                  lastTranslatedBy = target.getLastModifiedBy().getAccount().getUsername();
-               }
-            }
-         }
-         lastTranslatedMap.put(documentId, new AuditInfo(lastTranslatedDate, lastTranslatedBy));
+         lastTranslatedMap.put(documentId, new AuditInfo(docStat.getLastTranslatedDate(), docStat.getLastTranslatedBy()));
       }
       return new GetDocumentStatsResult(statsMap, lastTranslatedMap);
    }

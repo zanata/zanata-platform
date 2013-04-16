@@ -18,6 +18,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.zanata.common.LocaleId;
+import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
@@ -31,6 +32,7 @@ import org.zanata.service.TranslationStateCache;
 import org.zanata.service.ValidationFactoryProvider;
 import org.zanata.service.ValidationService;
 import org.zanata.webtrans.server.rpc.TransUnitTransformer;
+import org.zanata.webtrans.shared.model.DocumentStatus;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
@@ -64,6 +66,9 @@ public class ValidationServiceImpl implements ValidationService
 
    @In
    private TextFlowDAO textFlowDAO;
+
+   @In
+   private DocumentDAO documentDAO;
 
    @In
    private TranslationStateCache translationStateCacheImpl;
@@ -147,15 +152,57 @@ public class ValidationServiceImpl implements ValidationService
       return validationList;
    }
 
-   @Override
-   public boolean runValidations(HDocument hDoc, List<ValidationId> validationIds, LocaleId localeId)
+   private List<ValidationId> getEnabledValidationIds(HProjectIteration version)
    {
-      log.debug("Start doc validation {0}", hDoc.getId());
+      Collection<ValidationAction> validationList = getValidationFactory().getAllValidationActions().values();
+      Set<String> enabledValidations = new HashSet<String>();
+      List<ValidationId> enabledValidationIds = new ArrayList<ValidationId>();
+
+      if (version != null)
+      {
+         enabledValidations = version.getCustomizedValidations();
+
+         // Inherits validations from project if version has no defined
+         // validations
+         if (enabledValidations.isEmpty())
+         {
+            enabledValidations = version.getProject().getCustomizedValidations();
+         }
+      }
+
+      for (ValidationAction valAction : validationList)
+      {
+         if (enabledValidations.contains(valAction.getId().name()))
+         {
+            enabledValidationIds.add(valAction.getId());
+         }
+      }
+      return enabledValidationIds;
+   }
+
+   @Override
+   public boolean runDocValidations(Long hDocId, LocaleId localeId)
+   {
+      log.debug("Start runDocValidations {0}", hDocId);
       Stopwatch stopwatch = new Stopwatch().start();
+
+      DocumentStatus docStats = translationStateCacheImpl.getDocStats(hDocId, localeId);
+
+      log.debug("Finished runDocValidations in " + stopwatch);
+      return docStats.hasError();
+   }
+
+   @Override
+   public boolean runDocValidationsWithServerRules(HDocument hDoc, LocaleId localeId)
+   {
+      log.debug("Start runDocValidationsWithServerRules {0}", hDoc.getId());
+      Stopwatch stopwatch = new Stopwatch().start();
+
+      List<ValidationId> validationIds = getEnabledValidationIds(hDoc.getProjectIteration());
 
       boolean hasError = documentHasError(hDoc, validationIds, localeId);
 
-      log.debug("Finished doc validation in " + stopwatch);
+      log.debug("Finished runDocValidationsWithServerRules in " + stopwatch);
       return hasError;
    }
 
@@ -163,7 +210,7 @@ public class ValidationServiceImpl implements ValidationService
    {
       for (HTextFlow textFlow : hDoc.getTextFlows())
       {
-         boolean hasError = textFlowTargetHasError(textFlow, validationIds, localeId);
+         boolean hasError = textFlowTargetHasError(textFlow.getId(), validationIds, localeId);
          if (hasError)
          {
             // return true if error found, else continue
@@ -183,7 +230,7 @@ public class ValidationServiceImpl implements ValidationService
 
       for (HTextFlow textFlow : textFlows)
       {
-         boolean hasError = textFlowTargetHasError(textFlow, validationIds, localeId);
+         boolean hasError = textFlowTargetHasError(textFlow.getId(), validationIds, localeId);
          if (hasError)
          {
             result.add(textFlow);
@@ -209,9 +256,9 @@ public class ValidationServiceImpl implements ValidationService
       startIndex = startIndex < 0 ? 0 : startIndex;
    }
 
-   private boolean textFlowTargetHasError(HTextFlow textFlow, List<ValidationId> validationIds, LocaleId localeId)
+   private boolean textFlowTargetHasError(Long textFlowId, List<ValidationId> validationIds, LocaleId localeId)
    {
-      HTextFlowTarget target = textFlowTargetDAO.getTextFlowTarget(textFlow, localeId);
+      HTextFlowTarget target = textFlowTargetDAO.getTextFlowTarget(textFlowId, localeId);
       if (target != null)
       {
          for (ValidationId validationId : validationIds)

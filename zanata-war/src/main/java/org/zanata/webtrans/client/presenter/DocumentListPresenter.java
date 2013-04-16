@@ -21,6 +21,7 @@
 package org.zanata.webtrans.client.presenter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -99,7 +100,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    private final CachingDispatchAsync dispatcher;
 
    private final HasQueueDispatch<GetDocumentStats, GetDocumentStatsResult> docStatQueueDispatcher;
-   private final HasQueueDispatch<RunDocValidationAction, RunDocValidationResult> docValidationQueueDispatcher;
 
    /**
     * For quick lookup of document id by full path (including document name).
@@ -121,7 +121,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       this.history = history;
       this.userOptionsService = userOptionsService;
       docStatQueueDispatcher = new QueueDispatcher<GetDocumentStats, GetDocumentStatsResult>(dispatcher);
-      docValidationQueueDispatcher = new QueueDispatcher<RunDocValidationAction, RunDocValidationResult>(dispatcher);
 
       nodes = new HashMap<DocumentId, DocumentNode>();
       sortedNodes = new ArrayList<DocumentNode>();
@@ -639,59 +638,50 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
          List<ValidationId> valIds = userOptionsService.getConfigHolder().getState().getEnabledValidationIds();
          if (!valIds.isEmpty() && !pageRows.keySet().isEmpty())
          {
-            final ArrayList<RunDocValidationAction> docValidationQueue = new ArrayList<RunDocValidationAction>();
+            ArrayList<DocumentId> docList = new ArrayList<DocumentId>();
             for (DocumentId documentId : pageRows.keySet())
             {
                display.showRowLoading(pageRows.get(documentId));
-               docValidationQueue.add(new RunDocValidationAction(valIds, documentId));
+               docList.add(documentId);
             }
 
-            docValidationQueueDispatcher.setQueueAndExecute(docValidationQueue, runDocValidationCallback);
+            dispatcher.execute(new RunDocValidationAction(valIds, docList), new AsyncCallback<RunDocValidationResult>()
+            {
+               @Override
+               public void onSuccess(RunDocValidationResult result)
+               {
+                  Log.debug("Success doc validation - " + result.getResultMap().size());
+                  
+                  for (Entry<DocumentId, Boolean> entry : result.getResultMap().entrySet())
+                  {
+                     Integer row = pageRows.get(entry.getKey());
+                     DocumentNode node = nodes.get(entry.getKey());
+
+                     DocValidationStatus status = entry.getValue() ? DocValidationStatus.HasError : DocValidationStatus.NoError;
+
+                     if (row != null)
+                     {
+                        display.updateRowHasError(row.intValue(), status);
+
+                        if (node != null)
+                        {
+                           node.getDocInfo().setHasError(entry.getValue());
+                        }
+                     }
+                  }
+                  eventBus.fireEvent(new DocValidationResultEvent(new Date()));
+               }
+
+               @Override
+               public void onFailure(Throwable caught)
+               {
+                  eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Unable to run validation"));
+                  eventBus.fireEvent(new DocValidationResultEvent(new Date()));
+               }
+            });
          }
       }
    }
-
-   private AsyncCallback<RunDocValidationResult> runDocValidationCallback = new AsyncCallback<RunDocValidationResult>()
-   {
-      @Override
-      public void onSuccess(RunDocValidationResult result)
-      {
-         Log.debug("Success doc validation - " + result.getDocumentId().getDocId() + " " + result.hasError());
-
-         Integer row = pageRows.get(result.getDocumentId());
-         DocumentNode node = nodes.get(result.getDocumentId());
-
-         DocValidationStatus status = result.hasError() ? DocValidationStatus.HasError : DocValidationStatus.NoError;
-
-         if (row != null)
-         {
-            display.updateRowHasError(row.intValue(), status);
-
-            if (node != null)
-            {
-               node.getDocInfo().setHasError(result.hasError());
-            }
-         }
-         if (docValidationQueueDispatcher.isQueueEmpty())
-         {
-            eventBus.fireEvent(new DocValidationResultEvent(new Date()));
-         }
-         else
-         {
-            docValidationQueueDispatcher.executeQueue();
-         }
-      }
-
-      @Override
-      public void onFailure(Throwable caught)
-      {
-         eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Unable to run validation"));
-         if (docValidationQueueDispatcher.isQueueEmpty())
-         {
-            eventBus.fireEvent(new DocValidationResultEvent(new Date()));
-         }
-      }
-   };
 
    @Override
    public void sortList(String header, boolean asc)
