@@ -644,43 +644,40 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
                docList.add(documentId);
             }
 
-            for (int i = 0; i < 5; i++)
+            dispatcher.execute(new RunDocValidationAction(valIds, docList), new AsyncCallback<RunDocValidationResult>()
             {
-               dispatcher.execute(new RunDocValidationAction(valIds, docList), new AsyncCallback<RunDocValidationResult>()
+               @Override
+               public void onSuccess(RunDocValidationResult result)
                {
-                  @Override
-                  public void onSuccess(RunDocValidationResult result)
+                  Log.debug("Success doc validation - " + result.getResultMap().size());
+
+                  for (Entry<DocumentId, Boolean> entry : result.getResultMap().entrySet())
                   {
-                     Log.debug("Success doc validation - " + result.getResultMap().size());
+                     Integer row = pageRows.get(entry.getKey());
+                     DocumentNode node = nodes.get(entry.getKey());
 
-                     for (Entry<DocumentId, Boolean> entry : result.getResultMap().entrySet())
+                     DocValidationStatus status = entry.getValue() ? DocValidationStatus.HasError : DocValidationStatus.NoError;
+
+                     if (row != null)
                      {
-                        Integer row = pageRows.get(entry.getKey());
-                        DocumentNode node = nodes.get(entry.getKey());
+                        display.updateRowHasError(row.intValue(), status);
 
-                        DocValidationStatus status = entry.getValue() ? DocValidationStatus.HasError : DocValidationStatus.NoError;
-
-                        if (row != null)
+                        if (node != null)
                         {
-                           display.updateRowHasError(row.intValue(), status);
-
-                           if (node != null)
-                           {
-                              node.getDocInfo().setHasError(entry.getValue());
-                           }
+                           node.getDocInfo().setHasError(entry.getValue());
                         }
                      }
-                     eventBus.fireEvent(new DocValidationResultEvent(new Date()));
                   }
+                  eventBus.fireEvent(new DocValidationResultEvent(new Date()));
+               }
 
-                  @Override
-                  public void onFailure(Throwable caught)
-                  {
-                     eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Unable to run validation"));
-                     eventBus.fireEvent(new DocValidationResultEvent(new Date()));
-                  }
-               });
-            }
+               @Override
+               public void onFailure(Throwable caught)
+               {
+                  eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Unable to run validation"));
+                  eventBus.fireEvent(new DocValidationResultEvent(new Date()));
+               }
+            });
          }
       }
    }
