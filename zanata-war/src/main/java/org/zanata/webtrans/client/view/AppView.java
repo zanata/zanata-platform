@@ -31,6 +31,7 @@ import org.zanata.webtrans.client.ui.HasTranslationStats.LabelFormat;
 import org.zanata.webtrans.client.ui.TransUnitCountBar;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -59,6 +60,8 @@ public class AppView extends Composite implements AppDisplay
       String disableTab();
 
       String selectedTab();
+
+      String highlightedTab();
    }
 
    private static AppViewUiBinder uiBinder = GWT.create(AppViewUiBinder.class);
@@ -295,6 +298,19 @@ public class AppView extends Composite implements AppDisplay
       else
       {
          tab.addStyleName(style.disableTab());
+      }
+   }
+
+   @Override
+   public void setKeyboardShorcutColor(boolean aliasKeyListening)
+   {
+      if (aliasKeyListening)
+      {
+         keyShortcuts.addStyleName(style.highlightedTab());
+      }
+      else
+      {
+         keyShortcuts.removeStyleName(style.highlightedTab());
       }
    }
 

@@ -40,4 +40,6 @@ public interface AppDisplay extends WidgetDisplay
    }
 
    void enableTab(MainView view, boolean enable);
+
+   void setKeyboardShorcutColor(boolean aliasKeyListening);
 }

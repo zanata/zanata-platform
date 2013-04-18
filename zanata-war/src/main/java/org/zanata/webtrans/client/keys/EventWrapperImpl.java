@@ -54,8 +54,10 @@ public class EventWrapperImpl implements EventWrapper
    @Override
    public Keys createKeys(NativeEvent evt)
    {
+
       int modifiers = (evt.getAltKey() ? Keys.ALT_KEY : 0) | (evt.getShiftKey() ? Keys.SHIFT_KEY : 0)
                     | (evt.getCtrlKey() ? Keys.CTRL_KEY : 0) | (evt.getMetaKey() ? Keys.META_KEY : 0);
+
       return new Keys(modifiers, evt.getKeyCode());
    }
 

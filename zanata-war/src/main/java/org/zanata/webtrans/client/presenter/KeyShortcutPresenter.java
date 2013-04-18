@@ -30,6 +30,7 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.webtrans.client.events.AliasKeyChangedEvent;
 import org.zanata.webtrans.client.events.KeyShortcutEvent;
 import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.keys.EventWrapper;
@@ -112,10 +113,20 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
 
    private void setAliasKeyListening(boolean isAliasKeyListening)
    {
-      this.isAliasKeyListening = isAliasKeyListening;
-      if (!isAliasKeyListening)
+      if (this.isAliasKeyListening != isAliasKeyListening)
       {
-         aliasKeyTimer.cancel();
+         this.isAliasKeyListening = isAliasKeyListening;
+         eventBus.fireEvent(new AliasKeyChangedEvent(isAliasKeyListening));
+         if (!isAliasKeyListening)
+         {
+            Log.debug("canceling alias key... ");
+
+            aliasKeyTimer.cancel();
+         }
+         else
+         {
+            Log.debug("listening alias key... ");
+         }
       }
    }
 
@@ -146,7 +157,6 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
 
                   if (isAliasKeyTriggered)
                   {
-                     Log.debug("Alias key listening....");
                      setAliasKeyListening(true);
                      aliasKeyTimer.schedule(5000); // 5 seconds
                   }
@@ -292,6 +302,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
             if (contextActive && matchingEventType)
             {
                shortcutFound = true;
+               setAliasKeyListening(false);
                if (shortcut.isStopPropagation())
                {
                   evt.stopPropagation();
@@ -333,27 +344,22 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
          }
       }
    }
-   
-   
+
    private void processAliasKeyEvent(NativeEvent evt)
    {
       Keys pressedKeys = event.createKeys(evt);
 
-      // Check if alias key has triggered, KeyUP event + ALT+X
+      // Check if alias key has triggered, ALT+X
       boolean isAliasKeyTriggered = Keys.ALIAS_KEY == (pressedKeys.getModifiers() | pressedKeys.getKeyCode());
 
       if (isAliasKeyTriggered || (pressedKeys.getKeyCode() == KeyCodes.KEY_ESCAPE))
       {
          // cancel alias key listening with ESC and ALT+X
-         Log.debug("Cancel alias key listening....");
          setAliasKeyListening(false);
       }
       else
       {
-         Log.debug("===== proccessAliasKeyEvent");
-
          pressedKeys.setAlias(Keys.ALIAS_KEY);
-         Log.debug("===== pressedKeys:" + pressedKeys);
          processKeyEvent(evt, pressedKeys);
       }
    }
