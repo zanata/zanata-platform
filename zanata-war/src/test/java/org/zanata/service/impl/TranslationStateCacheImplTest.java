@@ -41,6 +41,7 @@ import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.service.ValidationService;
 import org.zanata.service.impl.TranslationStateCacheImpl.TranslatedDocumentKey;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentStatus;
@@ -63,12 +64,14 @@ public class TranslationStateCacheImplTest
    private TextFlowTargetDAO textFlowTargetDAO;
    @Mock
    private CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader;
+   @Mock
+   private ValidationService validationServiceImpl;
 
    @BeforeMethod
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-      tsCache = new TranslationStateCacheImpl(filterLoader, bitsetLoader, docStatsLoader, targetValidationLoader, textFlowTargetDAO);
+      tsCache = new TranslationStateCacheImpl(filterLoader, bitsetLoader, docStatsLoader, targetValidationLoader, textFlowTargetDAO, validationServiceImpl);
       tsCache.create();
    }
 
@@ -132,7 +135,7 @@ public class TranslationStateCacheImplTest
       assertThat(result2, equalTo(docStats));
    }
 
-public void testTextFlowTargetHasError() throws Exception
+   public void testTextFlowTargetHasError() throws Exception
    {
       // Given:
       Long targetId = new Long("1000");

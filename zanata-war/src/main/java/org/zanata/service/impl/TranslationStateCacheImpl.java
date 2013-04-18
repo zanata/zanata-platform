@@ -108,7 +108,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache
       this.targetValidationLoader = new HTextFlowTargetValidationLoader();
    }
 
-   public TranslationStateCacheImpl(CacheLoader<LocaleId, TranslatedTextFlowFilter> filterLoader, CacheLoader<LocaleId, OpenBitSet> bitsetLoader, CacheLoader<TranslatedDocumentKey, DocumentStatus> docStatsLoader, CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader, TextFlowTargetDAO textFlowTargetDAO)
+   public TranslationStateCacheImpl(CacheLoader<LocaleId, TranslatedTextFlowFilter> filterLoader, CacheLoader<LocaleId, OpenBitSet> bitsetLoader, CacheLoader<TranslatedDocumentKey, DocumentStatus> docStatsLoader, CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader, TextFlowTargetDAO textFlowTargetDAO, ValidationService validationServiceImpl)
    {
       // constructor for testing
       this.filterLoader = filterLoader;
@@ -116,6 +116,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache
       this.docStatsLoader = docStatsLoader;
       this.targetValidationLoader = targetValidationLoader;
       this.textFlowTargetDAO = textFlowTargetDAO;
+      this.validationServiceImpl = validationServiceImpl;
    }
 
    @Create
