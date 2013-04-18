@@ -183,7 +183,7 @@ public class ValidationServiceImpl implements ValidationService
     * result. Using USE_COMBINE_CACHE will trigger validation runs against
     * document/locale whenever a transUnit is updated.
     */
-   private boolean USE_COMBINE_CACHE = true;
+   private boolean USE_COMBINE_CACHE = false;
 
    @Override
    public boolean runDocValidations(Long hDocId, List<ValidationId> validationIds, LocaleId localeId)
