@@ -281,18 +281,24 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
       return hTextFlowTarget;
    }
    
-   public HTextFlowTarget getTextFlowTarget(HTextFlow hTextFlow, LocaleId localeId)
+   public HTextFlowTarget getTextFlowTarget(Long hTextFlowId, LocaleId localeId)
    {
       HTextFlowTarget hTextFlowTarget =
             (HTextFlowTarget)getSession().createQuery(
-                     "select tft from HTextFlowTarget tft where tft.textFlow = :textFlow and tft.locale.localeId = :localeId")
-                  .setParameter("textFlow", hTextFlow)
+                     "select tft from HTextFlowTarget tft where tft.textFlow.id = :hTextFlowId and tft.locale.localeId = :localeId")
+                  .setParameter("hTextFlowId", hTextFlowId)
                   .setParameter("localeId", localeId)
                   .setComment("TextFlowTargetDAO.getTextFlowTarget")
                   .uniqueResult();
       return hTextFlowTarget;
    }
    
+   public HTextFlowTarget getTextFlowTarget(HTextFlow hTextFlow, LocaleId localeId)
+   {
+      HTextFlowTarget hTextFlowTarget = (HTextFlowTarget) getSession().createQuery("select tft from HTextFlowTarget tft where tft.textFlow = :textFlow and tft.locale.localeId = :localeId").setParameter("textFlow", hTextFlow).setParameter("localeId", localeId).setComment("TextFlowTargetDAO.getTextFlowTarget").uniqueResult();
+      return hTextFlowTarget;
+   }
+
    public Long getTextFlowTargetId(HTextFlow hTextFlow, LocaleId localeId)
    {
       Query q = getSession().createQuery("select tft.id from HTextFlowTarget tft where tft.textFlow = :textFlow and tft.locale.localeId = :localeId");

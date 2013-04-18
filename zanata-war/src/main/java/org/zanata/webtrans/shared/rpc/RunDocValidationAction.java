@@ -16,17 +16,17 @@ public class RunDocValidationAction extends AbstractWorkspaceAction<RunDocValida
    private static final long serialVersionUID = 1L;
 
    private List<ValidationId> validationIds;
-   private DocumentId docId; 
+   private List<DocumentId> documentIds;
 
    @SuppressWarnings("unused")
    private RunDocValidationAction()
    {
    }
 
-   public RunDocValidationAction(List<ValidationId> validationIds, DocumentId docId)
+   public RunDocValidationAction(List<ValidationId> validationIds, List<DocumentId> documentIds)
    {
       this.validationIds = validationIds;
-      this.docId = docId;
+      this.documentIds = documentIds;
    }
 
    public List<ValidationId> getValidationIds()
@@ -34,8 +34,8 @@ public class RunDocValidationAction extends AbstractWorkspaceAction<RunDocValida
       return validationIds;
    }
 
-   public DocumentId getDocId()
+   public List<DocumentId> getDocIds()
    {
-      return docId;
+      return documentIds;
    }
 }

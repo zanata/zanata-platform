@@ -52,6 +52,17 @@
 		</resources>
 
 		<plugins>
+          <plugin>
+            <groupId>org.zanata</groupId>
+            <artifactId>zanata-maven-plugin</artifactId>
+            <version>2.2.0</version>
+            <configuration>
+              <srcDir>src</srcDir>
+              <transDir>src</transDir>
+              <!-- only one translation file has been prepared so far -->
+              <includes>main/resources/messages.properties</includes>
+            </configuration>
+          </plugin>
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>

@@ -3,12 +3,12 @@
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:rich="http://richfaces.org/rich"       
+    xmlns:rich="http://richfaces.org/rich"
     xmlns:s="http://jboss.com/products/seam/taglib">
 
   <ui:composition template="../WEB-INF/layout/template.xhtml">
-  
-    <ui:define name="page_title">#{roleAction.role} - Role Details</ui:define>
+
+    <ui:define name="page_title">#{roleAction.role} - #{messages['jsf.RoleDetails']}</ui:define>
     <ui:define name="center_content">
       <h:form>
         <s:token allowMultiplePosts="true" />
@@ -19,25 +19,25 @@
             <ui:define name="label">#{messages['jsf.Role']}</ui:define>
             <h:inputText id="role" value="#{roleAction.role}" readonly="#{identityManager.userExists(roleAction.role)}"/>
           </s:decorate>
-              
+
           <s:decorate id="groupsField" template="../WEB-INF/layout/edit.xhtml">
             <ui:define name="label">#{messages['jsf.MemberOf']}</ui:define>
               <h:selectManyCheckbox id="groups" value="#{roleAction.groups}" layout="pageDirection">
                 <s:selectItems value="#{identityManager.listRoles()}" var="role" label="#{role}"/>
               </h:selectManyCheckbox>
           </s:decorate>
-              
+
           <div style="clear:both"/>
 
           <div class="actionButtons">
             <h:commandButton value="#{messages['jsf.Save']}" action="#{roleAction.save}"/>
             <s:button view="/admin/rolemanager.xhtml" value="#{messages['jsf.Cancel']}" propagation="end"/>
           </div>
-    
+
         </rich:panel>
       </h:form>
-	    
+
     </ui:define>
-    
+
   </ui:composition>
 </html>

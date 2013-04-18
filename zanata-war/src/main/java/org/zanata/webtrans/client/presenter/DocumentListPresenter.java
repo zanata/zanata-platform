@@ -99,7 +99,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    private final CachingDispatchAsync dispatcher;
 
    private final HasQueueDispatch<GetDocumentStats, GetDocumentStatsResult> docStatQueueDispatcher;
-   private final HasQueueDispatch<RunDocValidationAction, RunDocValidationResult> docValidationQueueDispatcher;
 
    /**
     * For quick lookup of document id by full path (including document name).
@@ -121,7 +120,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       this.history = history;
       this.userOptionsService = userOptionsService;
       docStatQueueDispatcher = new QueueDispatcher<GetDocumentStats, GetDocumentStatsResult>(dispatcher);
-      docValidationQueueDispatcher = new QueueDispatcher<RunDocValidationAction, RunDocValidationResult>(dispatcher);
 
       nodes = new HashMap<DocumentId, DocumentNode>();
       sortedNodes = new ArrayList<DocumentNode>();
@@ -310,7 +308,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       }
       docStatQueueDispatcher.setQueueAndExecute(queueList, getDocumentStatCallBack);
    }
-   
+
    private final AsyncCallback<GetDocumentStatsResult> getDocumentStatCallBack = new AsyncCallback<GetDocumentStatsResult>()
    {
       @Override
@@ -639,59 +637,50 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
          List<ValidationId> valIds = userOptionsService.getConfigHolder().getState().getEnabledValidationIds();
          if (!valIds.isEmpty() && !pageRows.keySet().isEmpty())
          {
-            final ArrayList<RunDocValidationAction> docValidationQueue = new ArrayList<RunDocValidationAction>();
+            ArrayList<DocumentId> docList = new ArrayList<DocumentId>();
             for (DocumentId documentId : pageRows.keySet())
             {
                display.showRowLoading(pageRows.get(documentId));
-               docValidationQueue.add(new RunDocValidationAction(valIds, documentId));
+               docList.add(documentId);
             }
 
-            docValidationQueueDispatcher.setQueueAndExecute(docValidationQueue, runDocValidationCallback);
+            dispatcher.execute(new RunDocValidationAction(valIds, docList), new AsyncCallback<RunDocValidationResult>()
+            {
+               @Override
+               public void onSuccess(RunDocValidationResult result)
+               {
+                  Log.debug("Success doc validation - " + result.getResultMap().size());
+
+                  for (Entry<DocumentId, Boolean> entry : result.getResultMap().entrySet())
+                  {
+                     Integer row = pageRows.get(entry.getKey());
+                     DocumentNode node = nodes.get(entry.getKey());
+
+                     DocValidationStatus status = entry.getValue() ? DocValidationStatus.HasError : DocValidationStatus.NoError;
+
+                     if (row != null)
+                     {
+                        display.updateRowHasError(row.intValue(), status);
+
+                        if (node != null)
+                        {
+                           node.getDocInfo().setHasError(entry.getValue());
+                        }
+                     }
+                  }
+                  eventBus.fireEvent(new DocValidationResultEvent(new Date()));
+               }
+
+               @Override
+               public void onFailure(Throwable caught)
+               {
+                  eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Unable to run validation"));
+                  eventBus.fireEvent(new DocValidationResultEvent(new Date()));
+               }
+            });
          }
       }
    }
-
-   private AsyncCallback<RunDocValidationResult> runDocValidationCallback = new AsyncCallback<RunDocValidationResult>()
-   {
-      @Override
-      public void onSuccess(RunDocValidationResult result)
-      {
-         Log.debug("Success doc validation - " + result.getDocumentId().getDocId() + " " + result.hasError());
-
-         Integer row = pageRows.get(result.getDocumentId());
-         DocumentNode node = nodes.get(result.getDocumentId());
-
-         DocValidationStatus status = result.hasError() ? DocValidationStatus.HasError : DocValidationStatus.NoError;
-
-         if (row != null)
-         {
-            display.updateRowHasError(row.intValue(), status);
-
-            if (node != null)
-            {
-               node.getDocInfo().setHasError(result.hasError());
-            }
-         }
-         if (docValidationQueueDispatcher.isQueueEmpty())
-         {
-            eventBus.fireEvent(new DocValidationResultEvent(new Date()));
-         }
-         else
-         {
-            docValidationQueueDispatcher.executeQueue();
-         }
-      }
-
-      @Override
-      public void onFailure(Throwable caught)
-      {
-         eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Unable to run validation"));
-         if (docValidationQueueDispatcher.isQueueEmpty())
-         {
-            eventBus.fireEvent(new DocValidationResultEvent(new Date()));
-         }
-      }
-   };
 
    @Override
    public void sortList(String header, boolean asc)
@@ -834,35 +823,21 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
       private int compareLastUpload(DocumentNode o1, DocumentNode o2)
       {
-         if (o1.getDocInfo().getLastModified().getDate() == o2.getDocInfo().getLastModified().getDate())
+         if (o1.getDocInfo().getLastModified().getDate() == null || o2.getDocInfo().getLastModified().getDate() == null)
          {
-            return 0;
+            return (o1.getDocInfo().getLastModified().getDate() == null) ? -1 : 1;
          }
-         if (o1.getDocInfo().getLastModified().getDate() == null)
-         {
-            return -1;
-         }
-         if (o2.getDocInfo().getLastModified().getDate() == null)
-         {
-            return 1;
-         }
+
          return o1.getDocInfo().getLastModified().getDate().after(o2.getDocInfo().getLastModified().getDate()) ? 1 : -1;
       }
 
       private int compareLastTranslated(DocumentNode o1, DocumentNode o2)
       {
-         if (o1.getDocInfo().getLastTranslated().getDate() == o2.getDocInfo().getLastTranslated().getDate())
+         if (o1.getDocInfo().getLastTranslated().getDate() == null || o2.getDocInfo().getLastTranslated().getDate() == null)
          {
-            return 0;
+            return (o1.getDocInfo().getLastTranslated().getDate() == null) ? -1 : 1;
          }
-         if (o1.getDocInfo().getLastTranslated().getDate() == null)
-         {
-            return -1;
-         }
-         if (o2.getDocInfo().getLastTranslated().getDate() == null)
-         {
-            return 1;
-         }
+
          return o1.getDocInfo().getLastTranslated().getDate().after(o2.getDocInfo().getLastTranslated().getDate()) ? 1 : -1;
       }
    }

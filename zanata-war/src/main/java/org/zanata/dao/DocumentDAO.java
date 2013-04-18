@@ -24,6 +24,7 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HRawDocument;
+import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.StatusCount;
 
 @Name("documentDAO")
@@ -138,18 +139,18 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
 
    }
 
-   public Long getLastTranslatedTargetId(Long documentId, LocaleId localeId)
+   public HTextFlowTarget getLastTranslatedTarget(Long documentId, LocaleId localeId)
    {
       Session session = getSession();
       
       StringBuilder query = new StringBuilder();
      
-      query.append("select tft.id from HTextFlowTarget tft ");
+      query.append("from HTextFlowTarget tft ");
       query.append("where tft.textFlow.document.id = :docId ");
       query.append("and tft.locale.localeId = :localeId ");
       query.append("order by tft.lastChanged DESC");
       
-      return (Long) session.createQuery(query.toString())
+      return (HTextFlowTarget) session.createQuery(query.toString())
       .setParameter("docId", documentId)
       .setParameter("localeId", localeId)
       .setCacheable(true)

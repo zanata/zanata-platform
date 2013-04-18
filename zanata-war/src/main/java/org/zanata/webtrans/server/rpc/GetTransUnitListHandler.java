@@ -90,6 +90,14 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
          GetTransUnitsNavigation getTransUnitsNavigation = new GetTransUnitsNavigation(action.getDocumentId().getId(), action.getPhrase(), action.isFilterUntranslated(), action.isFilterNeedReview(), action.isFilterTranslated());
          log.debug("get trans unit navigation action: {}", getTransUnitsNavigation);
          navigationResult = getTransUnitsNavigationService.getNavigationIndexes(getTransUnitsNavigation, hLocale);
+
+         int totalPageNumber = navigationResult.getIdIndexList().size() / action.getCount();
+         if (targetPage > totalPageNumber)
+         {
+            targetPage = totalPageNumber;
+            targetOffset = action.getCount() * targetPage;
+         }
+            
          if (action.getTargetTransUnitId() != null)
          {
             int targetIndexInDoc = navigationResult.getIdIndexList().indexOf(action.getTargetTransUnitId());

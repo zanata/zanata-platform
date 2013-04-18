@@ -67,10 +67,6 @@
 	</div>
 	<div style="clear: both; display: block;" />
 	<div class="copyright_block">
-		<a href="http://zanata.org/" target="_blank">#{messages['jsf.Zanata']}</a>
-		#{messages['jsf.RunningVersionInfo']} &#169;
-		#{messages['jsf.CopyrightYearInfo']} <a href="http://www.redhat.com/"
-			target="_blank">#{messages['jsf.ManufacturerInfo']}</a>
-		#{messages['jsf.AndOthers']}
+        <h:outputText value="#{messages['jsf.RunningVersionInfo']} #{messages['jsf.CopyrightNotice']}" escape="false" />
 	</div>
 </div>

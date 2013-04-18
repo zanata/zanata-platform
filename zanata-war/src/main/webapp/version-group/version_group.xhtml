@@ -8,13 +8,13 @@
     xmlns:rich="http://richfaces.org/rich"
     xmlns:a4j="http://richfaces.org/a4j"
     template="../WEB-INF/layout/template.xhtml">
-    
+
 <ui:define name="page_title">#{messages['jsf.Groups']}:#{versionGroupHome.instance.name}</ui:define>
 
 <ui:define name="head">
 		<!-- Load jQuery -->
         <rich:jQuery query="jquery"/>
-        
+
     <script type="text/javascript">
         function submitSearchOnEnter(e)
         {
@@ -30,7 +30,7 @@
 <ui:define name="center_content">
     <a4j:form>
     	<s:formattedText value="#{versionGroupHome.instance.description}" rendered="#{!empty versionGroupHome.instance.description}"/>
-    	 
+
         <rich:dataTable id="iterationsDataTable" value="#{versionGroupHome.instanceProjectIterations}"
                         var="_iteration">
             <rich:column sortBy="#{_iteration.project.slug}">
@@ -52,7 +52,7 @@
             </rich:column>
         </rich:dataTable>
     </a4j:form>
-    
+
 </ui:define>
 
 <ui:define name="right_content">
@@ -89,12 +89,12 @@
  	  	});
  	</script>
   </s:fragment>
- 
- 
+
+
     <rich:modalPanel id="versionAddPanel" width="530" height="450" rendered="#{identity.loggedIn and s:hasPermission(versionGroupHome.instance, 'update')}">
         <f:subview id="projectVersionSearch">
             <a4j:form id="searchForm">
-                <h1>Find Project Version</h1>
+                <h1>#{messages['jsf.groups.FindProjectVersion']}</h1>
                 <p>
                     <h:inputText id="searchField" value="#{versionGroupAction.searchTerm}"
                                  onkeydown="return submitSearchOnEnter(event)"/>
@@ -102,7 +102,7 @@
                                        value="#{messages['jsf.Search']}"
                                        action="#{versionGroupAction.searchProjectAndVersion}"
                                        reRender="searchResults" />
-                                       
+
                     <a4j:commandButton id="closeBtn" value="#{messages['jsf.Close']}"
                                      onclick="#{rich:component('versionAddPanel')}.hide(); return false;" />
 
@@ -125,13 +125,13 @@
                             <rich:column styleClass="centered">
                                 <f:facet name="header">
                                     <h:panelGroup>
-                                        <h:selectBooleanCheckbox title="Select all" value="#{versionGroupAction.selectAll}">
+                                        <h:selectBooleanCheckbox title="#{messages['jsf.ManageSearch.SelectAll']}" value="#{versionGroupAction.selectAll}">
                                             <a4j:support event="onchange" reRender="searchResults" action="#{versionGroupAction.selectAll()}"/>
                                         </h:selectBooleanCheckbox>
                                     </h:panelGroup>
                                 </f:facet>
 
-                                <h:selectBooleanCheckbox title="Select" value="#{selectableVersion.selected}" rendered="#{!versionGroupAction.isVersionInGroup(selectableVersion.projectIteration.id)}"/>
+                                <h:selectBooleanCheckbox title="#{messages['jsf.Select']}" value="#{selectableVersion.selected}" rendered="#{!versionGroupAction.isVersionInGroup(selectableVersion.projectIteration.id)}"/>
                                 <h:outputText value="#{messages['jsf.AlreadyInGroup']}"
                                               rendered="#{versionGroupAction.isVersionInGroup(selectableVersion.projectIteration.id)}" />
 
@@ -149,5 +149,5 @@
     </rich:modalPanel>
 
 </ui:define>    
-    
+
 </ui:composition>

@@ -21,6 +21,7 @@
 package org.zanata.service.impl;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,10 +47,14 @@ import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
+import org.zanata.model.HDocument;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.service.TranslationStateCache;
 import org.zanata.service.ValidationFactoryProvider;
+import org.zanata.service.ValidationService;
+import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.DocumentStatus;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 
@@ -69,7 +74,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache
    private static final String BASE = TranslationStateCacheImpl.class.getName();
    private static final String CACHE_NAME = BASE + ".filterCache";
    private static final String TRANSLATED_TEXT_FLOW_CACHE_NAME = BASE + ".translatedTextFlowCache";
-   private static final String DOC_LAST_TRANSLATED_TFT_CACHE_NAME = BASE + ".docLastTranslatedCache";
+   private static final String DOC_STATS_CACHE_NAME = BASE + ".docStatsCache";
    private static final String TFT_VALIDATION_CACHE_NAME = BASE + ".targetValidationCache";
 
    @In
@@ -81,14 +86,17 @@ public class TranslationStateCacheImpl implements TranslationStateCache
    @In
    private TextFlowTargetDAO textFlowTargetDAO;
 
+   @In
+   private ValidationService validationServiceImpl;
+
    private CacheManager cacheManager;
    private CacheWrapper<LocaleId, TranslatedTextFlowFilter> filterCache;
    private CacheWrapper<LocaleId, OpenBitSet> translatedTextFlowCache;
-   private CacheWrapper<TranslatedDocumentKey, Long> docLastTranslatedCache;
+   private CacheWrapper<TranslatedDocumentKey, DocumentStatus> docStatsCache;
    private CacheWrapper<Long, Map<ValidationId, Boolean>> targetValidationCache;
    private CacheLoader<LocaleId, TranslatedTextFlowFilter> filterLoader;
    private CacheLoader<LocaleId, OpenBitSet> bitsetLoader;
-   private CacheLoader<TranslatedDocumentKey, Long> docLastTranslatedLoader;
+   private CacheLoader<TranslatedDocumentKey, DocumentStatus> docStatsLoader;
    private CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader;
 
    public TranslationStateCacheImpl()
@@ -96,18 +104,19 @@ public class TranslationStateCacheImpl implements TranslationStateCache
       // constructor for Seam
       this.filterLoader = new FilterLoader();
       this.bitsetLoader = new BitsetLoader();
-      this.docLastTranslatedLoader = new HTextFlowTargetIdLoader();
+      this.docStatsLoader = new HTextFlowTargetIdLoader();
       this.targetValidationLoader = new HTextFlowTargetValidationLoader();
    }
 
-   public TranslationStateCacheImpl(CacheLoader<LocaleId, TranslatedTextFlowFilter> filterLoader, CacheLoader<LocaleId, OpenBitSet> bitsetLoader, CacheLoader<TranslatedDocumentKey, Long> docLastModifiedLoader, CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader, TextFlowTargetDAO textFlowTargetDAO)
+   public TranslationStateCacheImpl(CacheLoader<LocaleId, TranslatedTextFlowFilter> filterLoader, CacheLoader<LocaleId, OpenBitSet> bitsetLoader, CacheLoader<TranslatedDocumentKey, DocumentStatus> docStatsLoader, CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader, TextFlowTargetDAO textFlowTargetDAO, ValidationService validationServiceImpl)
    {
       // constructor for testing
       this.filterLoader = filterLoader;
       this.bitsetLoader = bitsetLoader;
-      this.docLastTranslatedLoader = docLastModifiedLoader;
+      this.docStatsLoader = docStatsLoader;
       this.targetValidationLoader = targetValidationLoader;
       this.textFlowTargetDAO = textFlowTargetDAO;
+      this.validationServiceImpl = validationServiceImpl;
    }
 
    @Create
@@ -116,7 +125,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache
       cacheManager = CacheManager.create();
       filterCache = EhcacheWrapper.create(CACHE_NAME, cacheManager, filterLoader);
       translatedTextFlowCache = EhcacheWrapper.create(TRANSLATED_TEXT_FLOW_CACHE_NAME, cacheManager, bitsetLoader);
-      docLastTranslatedCache = EhcacheWrapper.create(DOC_LAST_TRANSLATED_TFT_CACHE_NAME, cacheManager, docLastTranslatedLoader);
+      docStatsCache = EhcacheWrapper.create(DOC_STATS_CACHE_NAME, cacheManager, docStatsLoader);
       targetValidationCache = EhcacheWrapper.create(TFT_VALIDATION_CACHE_NAME, cacheManager, targetValidationLoader);
    }
 
@@ -148,9 +157,9 @@ public class TranslationStateCacheImpl implements TranslationStateCache
    }
 
    @Override
-   public Long getDocLastTranslatedTextFlowTarget(Long documentId, LocaleId localeId)
+   public DocumentStatus getDocStats(Long documentId, LocaleId localeId)
    {
-      return docLastTranslatedCache.getWithLoader(new TranslatedDocumentKey(documentId, localeId));
+      return docStatsCache.getWithLoader(new TranslatedDocumentKey(documentId, localeId));
    }
 
    @Override
@@ -177,10 +186,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache
    private void updateDocLastTranslatedCache(Long textFlowId, LocaleId localeId, ContentState newState)
    {
       HTextFlow tf = textFlowDAO.findById(textFlowId, false);
-      Long documentId = tf.getDocument().getId();
-
-      HTextFlowTarget target = textFlowTargetDAO.getTextFlowTarget(tf, localeId);
-      docLastTranslatedCache.put(new TranslatedDocumentKey(documentId, localeId), target.getId());
+      docStatsCache.remove(new TranslatedDocumentKey(tf.getDocument().getId(), localeId));
    }
 
    private void updateTranslatedTextFlowCache(Long textFlowId, LocaleId localeId, ContentState newState)
@@ -226,12 +232,29 @@ public class TranslationStateCacheImpl implements TranslationStateCache
       }
    }
 
-   private final class HTextFlowTargetIdLoader extends CacheLoader<TranslatedDocumentKey, Long>
+   private final class HTextFlowTargetIdLoader extends CacheLoader<TranslatedDocumentKey, DocumentStatus>
    {
       @Override
-      public Long load(TranslatedDocumentKey key) throws Exception
+      public DocumentStatus load(TranslatedDocumentKey key) throws Exception
       {
-         return documentDAO.getLastTranslatedTargetId(key.getDocumentId(), key.getLocaleId());
+         HTextFlowTarget target = documentDAO.getLastTranslatedTarget(key.getDocumentId(), key.getLocaleId());
+         HDocument document = documentDAO.findById(key.getDocumentId(), false);
+
+         boolean hasError = validationServiceImpl.runDocValidationsWithServerRules(document, key.getLocaleId());
+
+         Date lastTranslatedDate = null;
+         String lastTranslatedBy = "";
+
+         if (target != null)
+         {
+            lastTranslatedDate = target.getLastChanged();
+
+            if (target.getLastModifiedBy() != null)
+            {
+               lastTranslatedBy = target.getLastModifiedBy().getAccount().getUsername();
+            }
+         }
+         return new DocumentStatus(new DocumentId(document.getId(), document.getDocId()), hasError, lastTranslatedDate, lastTranslatedBy);
       }
    }
 
@@ -244,9 +267,9 @@ public class TranslationStateCacheImpl implements TranslationStateCache
       }
    }
 
-   private Boolean loadTargetValidation(Long targetId, ValidationId validationId)
+   private Boolean loadTargetValidation(Long textFlowTargetId, ValidationId validationId)
    {
-      HTextFlowTarget tft = textFlowTargetDAO.findById(targetId, false);
+      HTextFlowTarget tft = textFlowTargetDAO.findById(textFlowTargetId, false);
 
       if (tft != null)
       {

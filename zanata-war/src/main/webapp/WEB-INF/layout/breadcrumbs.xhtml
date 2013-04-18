@@ -5,10 +5,10 @@
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:s="http://jboss.com/products/seam/taglib"
     xmlns:rich="http://richfaces.org/rich">
-  
+
      <h:form>
      	<s:link view="/home.xhtml" propagation="none" rendered="#{not empty breadcrumbs.locations}" styleClass="breadcrumbs_home">
-     		<span class="icon-home-1" title="#{messages['jsf.ZanataMainDescription']}"/>
+     		<span class="icon-home-1" title="#{messages['jsf.Zanata']}"/>
 		</s:link>
 						
 	     <ui:repeat value="#{breadcrumbs.locations}" var="breadcrumb" styleClass="breadcrumbs">

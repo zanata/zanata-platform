@@ -145,7 +145,8 @@ public interface TranslationFileService
    String extractExtension(String fileNameOrExtension);
 
    /**
-    * @return true if the specified document is of type po
+    * @return true if the specified document is of type po, false if it is any other
+    *              type, including null.
     */
    boolean isPoDocument(String projectSlug, String iterationSlug, String docId);
 

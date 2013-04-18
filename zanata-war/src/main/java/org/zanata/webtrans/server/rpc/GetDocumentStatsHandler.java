@@ -20,6 +20,7 @@ import org.zanata.service.impl.StatisticsServiceImpl;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.AuditInfo;
 import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.DocumentStatus;
 import org.zanata.webtrans.shared.rpc.GetDocumentStats;
 import org.zanata.webtrans.shared.rpc.GetDocumentStatsResult;
 
@@ -36,12 +37,9 @@ public class GetDocumentStatsHandler extends AbstractActionHandler<GetDocumentSt
 
    @In
    private TextFlowTargetDAO textFlowTargetDAO;
-   
+
    @In
    private DocumentDAO documentDAO;
-   
-   // TODO: fix problem with multiple RPC call from single client, client do single RPC call one at a time to solve this problem.
-   private boolean USE_CACHE = true;
 
    @Override
    public GetDocumentStatsResult execute(GetDocumentStats action, ExecutionContext context) throws ActionException
@@ -54,35 +52,9 @@ public class GetDocumentStatsHandler extends AbstractActionHandler<GetDocumentSt
          TranslationStats stats = statisticsServiceImpl.getDocStatistics(documentId.getId(), action.getWorkspaceId().getLocaleId());
          statsMap.put(documentId, stats);
 
-         Long id = null;
-         
-         if (USE_CACHE)
-         {
-            id = translationStateCacheImpl.getDocLastTranslatedTextFlowTarget(documentId.getId(), action.getWorkspaceId().getLocaleId());
-         }
-         else
-         {
-            id = documentDAO.getLastTranslatedTargetId(documentId.getId(), action.getWorkspaceId().getLocaleId());
-         }
-         
-         Date lastTranslatedDate = null;
-         String lastTranslatedBy = "";
+         DocumentStatus docStat = translationStateCacheImpl.getDocStats(documentId.getId(), action.getWorkspaceId().getLocaleId());
 
-         if (id != null)
-         {
-            HTextFlowTarget target = textFlowTargetDAO.findById(id, false);
-
-            if (target != null)
-            {
-               lastTranslatedDate = target.getLastChanged();
-
-               if (target.getLastModifiedBy() != null)
-               {
-                  lastTranslatedBy = target.getLastModifiedBy().getAccount().getUsername();
-               }
-            }
-         }
-         lastTranslatedMap.put(documentId, new AuditInfo(lastTranslatedDate, lastTranslatedBy));
+         lastTranslatedMap.put(documentId, new AuditInfo(docStat.getLastTranslatedDate(), docStat.getLastTranslatedBy()));
       }
       return new GetDocumentStatsResult(statsMap, lastTranslatedMap);
    }
