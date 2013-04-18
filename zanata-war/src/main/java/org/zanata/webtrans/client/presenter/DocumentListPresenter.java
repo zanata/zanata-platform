@@ -823,35 +823,21 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
       private int compareLastUpload(DocumentNode o1, DocumentNode o2)
       {
-         if (o1.getDocInfo().getLastModified().getDate() == o2.getDocInfo().getLastModified().getDate())
+         if (o1.getDocInfo().getLastModified().getDate() == null || o2.getDocInfo().getLastModified().getDate() == null)
          {
-            return 0;
+            return (o1.getDocInfo().getLastModified().getDate() == null) ? -1 : 1;
          }
-         if (o1.getDocInfo().getLastModified().getDate() == null)
-         {
-            return -1;
-         }
-         if (o2.getDocInfo().getLastModified().getDate() == null)
-         {
-            return 1;
-         }
+
          return o1.getDocInfo().getLastModified().getDate().after(o2.getDocInfo().getLastModified().getDate()) ? 1 : -1;
       }
 
       private int compareLastTranslated(DocumentNode o1, DocumentNode o2)
       {
-         if (o1.getDocInfo().getLastTranslated().getDate() == o2.getDocInfo().getLastTranslated().getDate())
+         if (o1.getDocInfo().getLastTranslated().getDate() == null || o2.getDocInfo().getLastTranslated().getDate() == null)
          {
-            return 0;
+            return (o1.getDocInfo().getLastTranslated().getDate() == null) ? -1 : 1;
          }
-         if (o1.getDocInfo().getLastTranslated().getDate() == null)
-         {
-            return -1;
-         }
-         if (o2.getDocInfo().getLastTranslated().getDate() == null)
-         {
-            return 1;
-         }
+
          return o1.getDocInfo().getLastTranslated().getDate().after(o2.getDocInfo().getLastTranslated().getDate()) ? 1 : -1;
       }
    }
