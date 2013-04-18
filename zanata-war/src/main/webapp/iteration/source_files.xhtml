@@ -36,7 +36,7 @@
 
     <ui:define name="page_title">#{projectIterationFilesAction.projectSlug}:#{projectIterationFilesAction.iterationSlug} - #{messages['jsf.SourceDocuments']}</ui:define>
     <ui:define name="center_content">
-        <h:form>
+        <a4j:form onkeydown="if(event.keyCode==13) { return false;}">
             <s:token allowMultiplePosts="true"/>
             <rich:datascroller id="data_table_scroller" align="center" for="data_table"
                                rendered="#{projectIterationFilesAction.iterationDocuments.size() > 20}">
@@ -124,7 +124,7 @@
                 <!-- TODO show stats for document across locales -->
 
             </rich:dataTable>
-        </h:form>
+        </a4j:form>
 
         <ui:remove>
           <!-- This panel does not appear ever to be shown. Remove in separate commit. -->
