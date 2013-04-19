@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Set;
 
 import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.events.AliasKeyChangedEvent;
@@ -40,6 +39,7 @@ import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.keys.SurplusKeyListener;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.view.KeyShortcutDisplay;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.collect.Iterables;
@@ -48,7 +48,6 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.inject.Inject;
 
@@ -64,22 +63,8 @@ import com.google.inject.Inject;
  * @author David Mason, <a
  *         href="mailto:damason@redhat.com">damason@redhat.com</a> *
  */
-public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.Display>
+public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay> implements KeyShortcutDisplay.Listener
 {
-
-   public interface Display extends WidgetDisplay
-   {
-      ListDataProvider<KeyShortcut> addContext(String contextName);
-
-      void showPanel();
-
-      public void clearPanel();
-
-      boolean isShowing();
-
-      void hide(boolean autoClosed);
-   }
-
    /**
     * Key uses {@link Keys#hashCode()}
     */
@@ -96,22 +81,15 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
    private boolean isAliasKeyListening = false;
 
    @Inject
-   public KeyShortcutPresenter(Display display, EventBus eventBus, final WebTransMessages webTransMessages, final EventWrapper event)
+   public KeyShortcutPresenter(KeyShortcutDisplay display, EventBus eventBus, final WebTransMessages webTransMessages, final EventWrapper event)
    {
       super(display, eventBus);
       this.messages = webTransMessages;
       this.event = event;
    }
-
-   private Timer aliasKeyTimer = new Timer()
-   {
-      public void run()
-      {
-         setAliasKeyListening(false);
-      }
-   };
-
-   private void setAliasKeyListening(boolean isAliasKeyListening)
+  
+   @Override
+   public void setAliasKeyListening(boolean isAliasKeyListening)
    {
       if (this.isAliasKeyListening != isAliasKeyListening)
       {
@@ -120,8 +98,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
          if (!isAliasKeyListening)
          {
             Log.debug("canceling alias key... ");
-
-            aliasKeyTimer.cancel();
+            display.cancelMetaKeyTimer();
          }
          else
          {
@@ -133,6 +110,8 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
    @Override
    protected void onBind()
    {
+      display.setListener(this);
+
       ensureActiveContexts().add(ShortcutContext.Application);
 
       event.addNativePreviewHandler(new NativePreviewHandler()
@@ -152,13 +131,12 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
                else
                {
                   Keys pressedKeys = event.createKeys(evt);
-
-                  boolean isAliasKeyTriggered = Keys.ALIAS_KEY == (pressedKeys.getModifiers() | pressedKeys.getKeyCode());
+                  boolean isAliasKeyTriggered = Keys.ALIAS_KEY == (pressedKeys.getModifiers() + pressedKeys.getKeyCode());
 
                   if (isAliasKeyTriggered)
                   {
                      setAliasKeyListening(true);
-                     aliasKeyTimer.schedule(5000); // 5 seconds
+                     display.startAliasKeyListen(5000);
                   }
                   else
                   {
@@ -201,6 +179,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
             showShortcuts();
          }
       }).build();
+      
       register(availableKeysShortcut);
    }
 

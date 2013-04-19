@@ -20,9 +20,17 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import net.customware.gwt.presenter.client.EventBus;
 
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -33,21 +41,15 @@ import org.testng.annotations.Test;
 import org.zanata.webtrans.client.keys.EventWrapper;
 import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.Keys;
-import org.zanata.webtrans.client.presenter.KeyShortcutPresenter.Display;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.view.KeyShortcutDisplay;
+
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.view.client.ListDataProvider;
-
-import net.customware.gwt.presenter.client.EventBus;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 
 /**
@@ -72,7 +74,7 @@ public class KeyShortcutPresenterTest
 
 
    @Mock
-   private Display mockDisplay;
+   private KeyShortcutDisplay mockDisplay;
    @Mock 
    private EventWrapper mockEventWrapper;
    @Mock 
@@ -104,6 +106,8 @@ public class KeyShortcutPresenterTest
    public void testExpectedActionsOnBind()
    {
       keyShortcutPresenter.bind();
+      
+      verify(mockDisplay).setListener(keyShortcutPresenter);
 
       verify(mockEventWrapper).addNativePreviewHandler(capturedNativePreviewHandler.capture());
    }

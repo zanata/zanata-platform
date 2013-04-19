@@ -23,9 +23,8 @@ package org.zanata.webtrans.client.view;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.KeyShortcut;
-import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
+import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 
 import com.google.common.base.Strings;
@@ -40,6 +39,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.inject.Inject;
 
-public class KeyShortcutView extends PopupPanel implements KeyShortcutPresenter.Display
+public class KeyShortcutView extends PopupPanel implements KeyShortcutDisplay
 {
 
    private static KeyShortcutViewUiBinder uiBinder = GWT.create(KeyShortcutViewUiBinder.class);
@@ -73,9 +73,19 @@ public class KeyShortcutView extends PopupPanel implements KeyShortcutPresenter.
 
    @UiField
    Styles style;
+   
+   private Listener listener;
 
    private final Map<Integer, String> keyDisplayMap;
 
+   private Timer aliasKeyTimer = new Timer()
+   {
+      public void run()
+      {
+         listener.setAliasKeyListening(false);
+      }
+   };
+   
    @Inject
    public KeyShortcutView(final WebTransMessages webTransMessages)
    {
@@ -236,5 +246,23 @@ public class KeyShortcutView extends PopupPanel implements KeyShortcutPresenter.
    public Widget asWidget()
    {
       return this;
+   }
+
+   @Override
+   public void setListener(Listener listener)
+   {
+      this.listener = listener;
+   }
+
+   @Override
+   public void cancelMetaKeyTimer()
+   {
+      aliasKeyTimer.cancel();
+   }
+
+   @Override
+   public void startAliasKeyListen(int delayMillis)
+   {
+      aliasKeyTimer.schedule(delayMillis); // 5 seconds
    }
 }

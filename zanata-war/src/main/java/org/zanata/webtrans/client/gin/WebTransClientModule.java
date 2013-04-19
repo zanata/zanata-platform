@@ -79,6 +79,7 @@ import org.zanata.webtrans.client.view.GlossaryDetailsDisplay;
 import org.zanata.webtrans.client.view.GlossaryDetailsView;
 import org.zanata.webtrans.client.view.GlossaryDisplay;
 import org.zanata.webtrans.client.view.GlossaryView;
+import org.zanata.webtrans.client.view.KeyShortcutDisplay;
 import org.zanata.webtrans.client.view.KeyShortcutView;
 import org.zanata.webtrans.client.view.NotificationDisplay;
 import org.zanata.webtrans.client.view.NotificationView;
@@ -138,7 +139,7 @@ public class WebTransClientModule extends AbstractPresenterModule
       bind(ValidationService.class).in(Singleton.class);
 
       bindPresenter(AppPresenter.class, AppDisplay.class, AppView.class);
-      bindPresenter(KeyShortcutPresenter.class, KeyShortcutPresenter.Display.class, KeyShortcutView.class);
+      bindPresenter(KeyShortcutPresenter.class, KeyShortcutDisplay.class, KeyShortcutView.class);
       bindPresenter(DocumentListPresenter.class, DocumentListDisplay.class, DocumentListView.class);
       bindPresenter(SearchResultsPresenter.class, SearchResultsPresenter.Display.class, SearchResultsView.class);
       bindPresenter(TranslationPresenter.class, TranslationPresenter.Display.class, TranslationView.class);
