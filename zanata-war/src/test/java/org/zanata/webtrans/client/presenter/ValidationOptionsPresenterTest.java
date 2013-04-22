@@ -108,8 +108,8 @@ public class ValidationOptionsPresenterTest
       handler.onValueChange(valueChangeEvent);
 
       // Then:
-      verify(validationService).updateStatus(ValidationId.PRINTF_VARIABLES, true, true);
-      verify(validationService).updateStatus(ValidationId.PRINTF_XSI_EXTENSION, false, true);
+      verify(validationService).updateStatus(ValidationId.PRINTF_VARIABLES, true, false);
+      verify(validationService).updateStatus(ValidationId.PRINTF_XSI_EXTENSION, false, false);
       verify(display).changeValidationSelectorValue(ValidationId.PRINTF_XSI_EXTENSION.getDisplayName(), false);
    }
 
@@ -126,7 +126,7 @@ public class ValidationOptionsPresenterTest
       handler.onValueChange(valueChangeEvent);
 
       // Then:
-      verify(validationService).updateStatus(ValidationId.PRINTF_VARIABLES, true, true);
+      verify(validationService).updateStatus(ValidationId.PRINTF_VARIABLES, true, false);
       verifyNoMoreInteractions(validationService);
    }
 }
