@@ -64,9 +64,16 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
     * Determines how TextFlow ids are assigned for Okapi TextUnits
     */
    public enum IdSource {
+      /** use ID of TextUnit as is (only unique if no sub-documents) */
       textUnitId,
+      /** use 'name' attribute of TextUnit, if any.  Not guaranteed to
+       * be unique. */
       textUnitName,
+      /** use a hash of string content (similar to resId for gettext
+       * projects).  Not guaranteed to be unique. */
       contentHash,
+      /** concatenate name of sub-document and ID of TextUnit.  Should
+       * be unique (assuming sub-document names are). */
       subDocNameAndTextUnitId
    };
 
