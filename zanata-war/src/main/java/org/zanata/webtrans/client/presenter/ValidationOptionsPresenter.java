@@ -108,12 +108,14 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
       @Override
       public void onValueChange(ValueChangeEvent<Boolean> event)
       {
-         validationService.updateStatus(validationAction.getId(), event.getValue());
+         boolean fireEvent = currentView == MainView.Editor;
+
+         validationService.updateStatus(validationAction.getId(), event.getValue(), fireEvent);
          if (event.getValue())
          {
             for (ValidationAction excluded : validationAction.getExclusiveValidations())
             {
-               validationService.updateStatus(excluded.getId(), false);
+               validationService.updateStatus(excluded.getId(), false, fireEvent);
                display.changeValidationSelectorValue(excluded.getId().getDisplayName(), false);
             }
          }

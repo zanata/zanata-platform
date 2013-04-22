@@ -102,15 +102,18 @@ public class ValidationService implements RunValidationEventHandler
     * @param key
     * @param isEnabled
     */
-   public void updateStatus(ValidationId key, boolean isEnabled)
+   public void updateStatus(ValidationId key, boolean isEnabled, boolean fireRequestValidationEvent)
    {
       ValidationAction action = validationMap.get(key);
       action.getValidationInfo().setEnabled(isEnabled);
 
       updateConfigHolder();
 
-      // request re-run validation with new options
-      eventBus.fireEvent(RequestValidationEvent.EVENT);
+      if (fireRequestValidationEvent)
+      {
+         // request re-run validation with new options
+         eventBus.fireEvent(RequestValidationEvent.EVENT);
+      }
    }
 
    public Map<ValidationId, ValidationAction> getValidationMap()

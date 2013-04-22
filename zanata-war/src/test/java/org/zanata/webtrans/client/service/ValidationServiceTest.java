@@ -92,7 +92,7 @@ public class ValidationServiceTest
    @Test
    public void canUpdateValidatorStatus()
    {
-      service.updateStatus(VAL_KEY, false);
+      service.updateStatus(VAL_KEY, false, true);
 
       ValidationAction validationAction = service.getValidationMap().get(VAL_KEY);
 
