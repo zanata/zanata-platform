@@ -96,33 +96,6 @@ public class ValidationOptionsView extends Composite implements ValidationOption
    {
       runValidation.setVisible(visible);
       lastValidationRun.setVisible(visible);
-
-      displayAllValidationActions(!visible);
-   }
-
-   /**
-    * Display all validation rules or just the enabled rules defined in project
-    * version
-    * 
-    * @param displayAll
-    */
-   private void displayAllValidationActions(boolean displayAll)
-   {
-      for (Widget checkbox : contentPanel)
-      {
-         if (checkbox instanceof CheckBox)
-         {
-            CheckBox chk = (CheckBox) checkbox;
-            if (displayAll)
-            {
-               chk.setVisible(true);
-            }
-            else if (chk.isEnabled())
-            {
-               chk.setVisible(false);
-            }
-         }
-      }
    }
 
    @UiHandler("runValidation")

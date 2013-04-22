@@ -236,11 +236,11 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    @Override
    public void fireCaseSensitiveToken(boolean value)
    {
-      HistoryToken token = history.getHistoryToken();
+      HistoryToken token = HistoryToken.fromTokenString(history.getToken());
       if (value != token.isDocFilterCaseSensitive())
       {
          token.setDocFilterCaseSensitive(value);
-         history.newItem(token);
+         history.newItem(token.toTokenString());
       }
    }
 
@@ -289,7 +289,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
          nodes.put(doc.getId(), node);
          sortedNodes.add(node);
       }
-
       updatePageCountAndGotoFirstPage();
    }
 
@@ -298,7 +297,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       int BATCH_SIZE = 1000;
 
       ArrayList<GetDocumentStats> queueList = new ArrayList<GetDocumentStats>();
-      for (int i = 0; i < nodes.size();)
+      for (int i = 0; i < sortedNodes.size();)
       {
          int fromIndex = i;
          int toIndex = i + BATCH_SIZE > sortedNodes.size() ? sortedNodes.size() : i + BATCH_SIZE;
@@ -366,12 +365,9 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    private void gotoPage(int page)
    {
       int pageSize = userOptionsService.getConfigHolder().getState().getDocumentListPageSize();
-
       int fromIndex = (page - 1) * pageSize;
       int toIndex = (fromIndex + pageSize) > sortedNodes.size() ? sortedNodes.size() : fromIndex + pageSize;
-
       pageRows = display.buildContent(sortedNodes.subList(fromIndex, toIndex));
-
       display.getPageNavigation().setValue(page, false);
    }
 

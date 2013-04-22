@@ -53,7 +53,7 @@ enum  DocumentListTokens implements TokensConverter
          tokens.add(new Token(KEY_DOC_FILTER_TEXT, historyToken.getDocFilterText()));
       }
 
-      if (historyToken.getProjectSearchCaseSensitive() != HistoryToken.DEFAULT_DOC_FILTER_CASE_SENSITIVE)
+      if (historyToken.isDocFilterCaseSensitive() != HistoryToken.DEFAULT_DOC_FILTER_CASE_SENSITIVE)
       {
          tokens.add(new Token(KEY_DOC_FILTER_CASE, VALUE_DOC_FILTER_CASE_SENSITIVE));
       }
