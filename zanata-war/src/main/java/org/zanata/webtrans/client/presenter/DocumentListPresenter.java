@@ -206,7 +206,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
       // don't carry searches over to the next document
       token.setSearchText("");
-      history.newItem(token.toTokenString());
+      history.newItem(token);
 
       userWorkspaceContext.setSelectedDoc(doc);
    }
