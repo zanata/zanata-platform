@@ -289,7 +289,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
          nodes.put(doc.getId(), node);
          sortedNodes.add(node);
       }
-
       updatePageCountAndGotoFirstPage();
    }
 
@@ -298,7 +297,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       int BATCH_SIZE = 1000;
 
       ArrayList<GetDocumentStats> queueList = new ArrayList<GetDocumentStats>();
-      for (int i = 0; i < nodes.size();)
+      for (int i = 0; i < sortedNodes.size();)
       {
          int fromIndex = i;
          int toIndex = i + BATCH_SIZE > sortedNodes.size() ? sortedNodes.size() : i + BATCH_SIZE;
