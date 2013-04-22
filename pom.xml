@@ -379,6 +379,18 @@
 
    <build>
       <plugins>
+          <plugin>
+            <groupId>org.zanata</groupId>
+            <artifactId>zanata-maven-plugin</artifactId>
+            <version>2.2.0</version>
+            <configuration>
+              <srcDir>.</srcDir>
+              <transDir>.</transDir>
+              <!-- only one translation file has been prepared so far -->
+              <includes>zanata-war/src/main/resources/messages.properties</includes>
+            </configuration>
+          </plugin>
+
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-enforcer-plugin</artifactId>
