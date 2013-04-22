@@ -160,7 +160,7 @@ public class NotificationView extends Composite implements NotificationDisplay
          @Override
          public void onClick(ClickEvent event)
          {
-            detailBox.setMessageDetails(severity, summary, time, msg, displayAsHtml, inlineLink);
+            detailBox.setMessageDetails(severity, summary, time, msg, displayAsHtml);
             detailBox.center();
          }
       });
