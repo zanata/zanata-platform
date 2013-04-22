@@ -206,7 +206,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
       // don't carry searches over to the next document
       token.setSearchText("");
-      history.newItem(token);
+      history.newItem(token.toTokenString());
 
       userWorkspaceContext.setSelectedDoc(doc);
    }
@@ -236,11 +236,11 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    @Override
    public void fireCaseSensitiveToken(boolean value)
    {
-      HistoryToken token = history.getHistoryToken();
+      HistoryToken token = HistoryToken.fromTokenString(history.getToken());
       if (value != token.isDocFilterCaseSensitive())
       {
          token.setDocFilterCaseSensitive(value);
-         history.newItem(token);
+         history.newItem(token.toTokenString());
       }
    }
 
@@ -366,12 +366,9 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    private void gotoPage(int page)
    {
       int pageSize = userOptionsService.getConfigHolder().getState().getDocumentListPageSize();
-
       int fromIndex = (page - 1) * pageSize;
       int toIndex = (fromIndex + pageSize) > sortedNodes.size() ? sortedNodes.size() : fromIndex + pageSize;
-
       pageRows = display.buildContent(sortedNodes.subList(fromIndex, toIndex));
-
       display.getPageNavigation().setValue(page, false);
    }
 
