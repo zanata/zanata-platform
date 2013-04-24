@@ -28,6 +28,7 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.ValidationId;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Strings;
 
 /**
  * This class is immutable and all the mutator methods will return a new instance of it.
@@ -236,5 +237,11 @@ public class GetTransUnitActionContext
             || !documentId.equals(newContext.documentId)
             || !Objects.equal(findMessage, newContext.findMessage);
       // @formatter:on
+   }
+
+   public boolean acceptAll()
+   {
+      boolean messageFilterAcceptAll = filterHasError == filterNeedReview && filterNeedReview == filterTranslated && filterTranslated == filterUntranslated;
+      return messageFilterAcceptAll && Strings.isNullOrEmpty(findMessage);
    }
 }

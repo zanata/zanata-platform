@@ -602,12 +602,15 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                // in the case of editor still in filter mode or search result,
                // requested text flow may not appear in result. We want to make
                // sure it reloads everything for this document.
-               contextHolder.updateContext(null); // this will ensure HistoryEventHandlerService fire InitEditorEvent
 
                HistoryToken token = history.getHistoryToken();
+               if (!contextHolder.getContext().acceptAll())
+               {
+                  contextHolder.updateContext(null); // this will ensure HistoryEventHandlerService fire InitEditorEvent
+                  token.clearEditorFilterAndSearch();
+               }
                token.setView(MainView.Editor);
                token.setDocumentPath(docPaths.get(info.getDocId()));
-               token.clearEditorFilterAndSearch();
                token.setTextFlowId(info.getTransUnit().getId().toString());
                history.newItem(token);
             }

@@ -88,9 +88,6 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
 
    private final History history;
 
-   //tracking variables
-   private GetTransUnitActionContext context;
-
    @Inject
    public NavigationService(EventBus eventBus, CachingDispatchAsync dispatcher, UserConfigHolder configHolder, TableEditorMessages messages, SinglePageDataModelImpl pageModel, ModalNavigationStateHolder navigationStateHolder, GetTransUnitActionContextHolder getTransUnitActionContextHolder, History history)
    {
