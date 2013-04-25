@@ -36,7 +36,7 @@ import org.zanata.rest.MediaTypes;
 import org.zanata.rest.ResourceRequest;
 import org.zanata.rest.dto.VersionInfo;
 
-public class VersionRestTest extends RawRestTest
+public class VersionRawRestITCase extends RawRestTest
 {
 
    @Override

@@ -413,7 +413,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<redirectTestOutputToFile>false</redirectTestOutputToFile>
+					<!--<redirectTestOutputToFile>false</redirectTestOutputToFile>
 					<printSummary>true</printSummary>
 					<forkMode>always</forkMode>
 					<suiteXmlFiles>
@@ -431,10 +431,13 @@
 						-XX:HeapDumpPath=${project.build.directory} -Dsun.lang.ClassLoader.allowArraySyntax=true</argLine>
 					<classpathDependencyExcludes>
 						<classpathDependencyExclude>
-							<!-- collides with XMLLoginConfigImpl in jboss-embedded-all -->
+							&lt;!&ndash; collides with XMLLoginConfigImpl in jboss-embedded-all &ndash;&gt;
 							org.picketbox:picketbox
 						</classpathDependencyExclude>
-					</classpathDependencyExcludes>
+					</classpathDependencyExcludes>-->
+                    <includes>
+                        <include>**/*ITCase.java</include>
+                    </includes>
 				</configuration>
 			</plugin>
 
@@ -1084,19 +1087,6 @@
 
 	</profiles>
 
-    <dependencyManagement>
-        <dependencies>
-            <!-- Arquillian Bom -->
-            <dependency>
-                <groupId>org.jboss.arquillian</groupId>
-                <artifactId>arquillian-bom</artifactId>
-                <version>1.0.3.Final</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
 	<dependencies>
 
         <!-- Zanata-specific dependencies -->
@@ -1683,31 +1673,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Arquillian Dependencies -->
-        <!-- Override the Maven resolver to the latest version -->
-        <!-- TODO Use the arquillian Shrinkwrap bom -->
-        <dependency>
-            <groupId>org.jboss.shrinkwrap.resolver</groupId>
-            <artifactId>shrinkwrap-resolver-api</artifactId>
-            <version>2.0.0-alpha-5</version>
-            <!-- TODO Overwritten from arquillian BOM 1.0.3.Final to use the MavenImporter -->
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.shrinkwrap.resolver</groupId>
-            <artifactId>shrinkwrap-resolver-api-maven</artifactId>
-            <version>2.0.0-alpha-5</version>
-            <!-- TODO Overwritten from arquillian BOM 1.0.3.Final to use the MavenImporter -->
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.shrinkwrap.resolver</groupId>
-            <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
-            <version>2.0.0-alpha-5</version>
-            <!-- TODO Overwritten from arquillian BOM 1.0.3.Final to use the MavenImporter -->
-            <scope>test</scope>
-        </dependency>
-
         <dependency>
             <groupId>org.jboss.arquillian.testng</groupId>
             <artifactId>arquillian-testng-container</artifactId>
@@ -1731,6 +1696,13 @@
             <groupId>org.jboss.arquillian.extension</groupId>
             <artifactId>arquillian-seam2</artifactId>
             <version>1.0.0.Alpha2</version>
+            <exclusions>
+                <!-- This obsolete package duplicates some of the classes found in the newer descriptors-spi package -->
+                <exclusion>
+                    <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+                    <artifactId>shrinkwrap-descriptors-api</artifactId>
+                </exclusion>
+            </exclusions>
             <scope>test</scope>
         </dependency>
 

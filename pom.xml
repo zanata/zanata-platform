@@ -335,6 +335,28 @@
 			<scope>compile</scope>
 		</dependency>
 
+          <!-- Arquillian Dependencies -->
+          <!-- Override the Maven resolver to the latest version -->
+          <!-- TODO Use the arquillian Shrinkwrap bom -->
+          <dependency>
+              <groupId>org.jboss.shrinkwrap.resolver</groupId>
+              <artifactId>shrinkwrap-resolver-api</artifactId>
+              <version>2.0.0-alpha-6</version>
+              <!-- TODO Overwritten from arquillian BOM 1.0.3.Final to use the MavenImporter -->
+          </dependency>
+          <dependency>
+              <groupId>org.jboss.shrinkwrap.resolver</groupId>
+              <artifactId>shrinkwrap-resolver-api-maven</artifactId>
+              <version>2.0.0-alpha-6</version>
+              <!-- TODO Overwritten from arquillian BOM 1.0.3.Final to use the MavenImporter -->
+          </dependency>
+          <dependency>
+              <groupId>org.jboss.shrinkwrap.resolver</groupId>
+              <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+              <version>2.0.0-alpha-6</version>
+              <!-- TODO Overwritten from arquillian BOM 1.0.3.Final to use the MavenImporter -->
+          </dependency>
+
           <!-- Arquillian -->
           <dependency>
               <groupId>org.jboss.arquillian</groupId>

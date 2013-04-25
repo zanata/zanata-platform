@@ -45,7 +45,7 @@ import static org.zanata.util.RawRestTestUtils.jaxbMarhsal;
 import static org.zanata.util.RawRestTestUtils.jaxbUnmarshal;
 import static org.zanata.util.RawRestTestUtils.jsonUnmarshal;
 
-public class GlossaryRestTest extends RawRestTest
+public class GlossaryRawRestITCase extends RawRestTest
 {
 
    @Override

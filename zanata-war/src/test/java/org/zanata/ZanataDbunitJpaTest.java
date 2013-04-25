@@ -21,11 +21,11 @@ import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
 import org.hibernate.internal.SessionImpl;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Optional;
-import org.testng.annotations.Parameters;
+//import org.testng.annotations.AfterMethod;
+//import org.testng.annotations.BeforeClass;
+//import org.testng.annotations.BeforeMethod;
+//import org.testng.annotations.Optional;
+//import org.testng.annotations.Parameters;
 
 public abstract class ZanataDbunitJpaTest extends ZanataJpaTest
 {
@@ -37,9 +37,9 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest
 
    private boolean prepared = false;
 
-   @BeforeClass
-   @Parameters("binaryDir")
-   public void setBinaryDir(@Optional String binaryDir)
+   //@BeforeClass
+   //@Parameters("binaryDir")
+   public void setBinaryDir(/*@Optional*/ String binaryDir)
    {
       if (binaryDir == null)
          return;
@@ -51,9 +51,9 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest
       return binaryDir;
    }
 
-   @BeforeClass
-   @Parameters("replaceNull")
-   public void setReplaceNull(@Optional Boolean replaceNull)
+   //@BeforeClass
+   //@Parameters("replaceNull")
+   public void setReplaceNull(/*@Optional*/ Boolean replaceNull)
    {
       if (replaceNull == null)
          return;
@@ -65,7 +65,7 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest
       return replaceNull;
    }
 
-   @BeforeMethod
+   //@BeforeMethod
    public void prepareDataBeforeTest()
    {
       // This is not pretty but we unfortunately can not have dependencies
@@ -92,7 +92,7 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest
       clearCache();
    }
 
-   @AfterMethod
+   //@AfterMethod
    public void cleanDataAfterTest()
    {
       executeOperations(afterTestOperations);

@@ -3,6 +3,8 @@
 <!-- https://access.redhat.com/knowledge/docs/en-US/JBoss_Enterprise_Application_Platform/6/html/Development_Guide/Included_Modules1.html -->
 <jboss-deployment-structure>
     <deployment>
+        <exclusions>
+        </exclusions>
         <dependencies>
             <module name="javax.annotation.api" />
             <module name="javax.el.api" />

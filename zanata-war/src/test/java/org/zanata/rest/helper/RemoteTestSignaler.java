@@ -25,6 +25,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 
 /**
+ * Rest interface to signal lifecycle events for a remotely executed test.
+ *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Path("/test/remote/signal")

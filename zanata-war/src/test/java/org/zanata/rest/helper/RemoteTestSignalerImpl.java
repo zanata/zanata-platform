@@ -35,7 +35,10 @@ import org.zanata.arquillian.RemoteAfter;
 import org.zanata.arquillian.RemoteBefore;
 
 /**
+ * Default implementation for the Remote Signaler interface.
+ *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @see RemoteTestSignaler
  */
 @Path("/test/remote/signal")
 @Name("remoteTestSignalerImpl")
