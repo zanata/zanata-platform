@@ -5,8 +5,8 @@
 	<name>Zanata Rest client</name>
 	<parent>
 		<groupId>org.zanata</groupId>
-      <artifactId>client</artifactId>
-		<version>2.2.1-SNAPSHOT</version>
+		<artifactId>client</artifactId>
+		<version>2.3.0-SNAPSHOT</version>
 
 	</parent>
 	<packaging>jar</packaging>
