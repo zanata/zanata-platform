@@ -5,6 +5,43 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
 
 
+    <!--
+	Make sure Liquibase is the first listener, so that it can update the database schema before
+	anyone uses the database.
+	 -->
+
+    <context-param>
+        <param-name>liquibase.changelog</param-name>
+        <param-value>db/db.changelog.xml</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>liquibase.datasource</param-name>
+        <param-value>java:jboss/datasources/zanataTestDatasource</param-value>
+    </context-param>
+    <!--
+    <context-param>
+        <param-name>liquibase.host.excludes</param-name>
+        <param-value>production1.example.com, production2.example.com</param-value>
+    </context-param>
+     -->
+
+    <context-param>
+        <param-name>liquibase.onerror.fail</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+    <!--
+    <context-param>
+        <param-name>liquibase.contexts</param-name>
+        <param-value>production</param-value>
+    </context-param>
+     -->
+
+    <listener>
+        <listener-class>liquibase.integration.servlet.LiquibaseServletListener</listener-class>
+    </listener>
+
     <listener>
         <listener-class>org.jboss.seam.servlet.SeamListener</listener-class>
     </listener>

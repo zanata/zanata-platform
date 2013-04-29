@@ -20,24 +20,29 @@
  */
 package org.zanata.rest.service.raw;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response.Status;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.jboss.seam.mock.EnhancedMockHttpServletRequest;
-import org.jboss.seam.mock.EnhancedMockHttpServletResponse;
-import org.jboss.seam.mock.ResourceRequestEnvironment.Method;
-import org.jboss.seam.mock.ResourceRequestEnvironment.ResourceRequest;
-import org.testng.annotations.Test;
-import org.zanata.ZanataRawRestTest;
+import org.jboss.arquillian.container.test.api.RunAsClient;
+import org.jboss.resteasy.client.ClientRequest;
+import org.jboss.resteasy.client.ClientResponse;
+import org.junit.Test;
+import org.zanata.RawRestTest;
 import org.zanata.rest.MediaTypes;
+import org.zanata.rest.ResourceRequest;
 import org.zanata.rest.dto.Account;
 
-@Test(groups = {"seam-tests"})
-public class AccountRestTest extends ZanataRawRestTest
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.zanata.util.RawRestTestUtils.assertJaxbUnmarshal;
+import static org.zanata.util.RawRestTestUtils.assertJsonUnmarshal;
+import static org.zanata.util.RawRestTestUtils.jaxbMarhsal;
+import static org.zanata.util.RawRestTestUtils.jaxbUnmarshal;
+import static org.zanata.util.RawRestTestUtils.jsonMarshal;
+import static org.zanata.util.RawRestTestUtils.jsonUnmarshal;
+
+public class AccountRawRestITCase extends RawRestTest
 {
 
    @Override
@@ -47,18 +52,19 @@ public class AccountRestTest extends ZanataRawRestTest
    }
    
    @Test
+   @RunAsClient
    public void xmlGetUnavailable() throws Exception
    {
-      new ResourceRequest(sharedEnvironment, Method.GET, "/restv1/accounts/u/NOT_AVAILABLE")
+      new ResourceRequest(getDeployedUrl("/NOT_AVAILABLE"), "GET")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.addHeader(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML);
+            request.header(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML);
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(Status.NOT_FOUND.getStatusCode()));
          }
@@ -66,18 +72,19 @@ public class AccountRestTest extends ZanataRawRestTest
    }
    
    @Test
+   @RunAsClient
    public void xmlGet() throws Exception
    {
-      new ResourceRequest(sharedEnvironment, Method.GET, "/restv1/accounts/u/admin")
+      new ResourceRequest(getDeployedUrl("accounts/u/admin"), "GET")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.addHeader(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML);
+            request.header(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML);
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(200));
             assertJaxbUnmarshal(response, Account.class);
@@ -93,18 +100,19 @@ public class AccountRestTest extends ZanataRawRestTest
    }
    
    @Test
+   @RunAsClient
    public void jsonGet() throws Exception
    {
-      new ResourceRequest(sharedEnvironment, Method.GET, "/restv1/accounts/u/admin")
+      new ResourceRequest(getDeployedUrl("/accounts/u/admin"), "GET")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.addHeader(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON);
+            request.header(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON);
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(200));
             assertJsonUnmarshal(response, Account.class);
@@ -120,22 +128,22 @@ public class AccountRestTest extends ZanataRawRestTest
    }
    
    @Test
+   @RunAsClient
    public void xmlPut() throws Exception
    {
       final Account account = new Account("test@testing.com", "Test Account", "testuser", "Eyox7xbNQ09MkIfRyH+rjg==");
       account.setEnabled(false);
       
-      new ResourceRequest(sharedEnvironment, Method.PUT, "/restv1/accounts/u/testuser")
+      new ResourceRequest(getDeployedUrl("/accounts/u/testuser"), "PUT", getAuthorizedEnvironment())
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.setContentType(MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML);
-            request.setContent( jaxbMarhsal(account).getBytes() );
+            request.body(MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML, jaxbMarhsal(account).getBytes());
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(Status.CREATED.getStatusCode()));
          }
@@ -143,22 +151,22 @@ public class AccountRestTest extends ZanataRawRestTest
    }
    
    @Test
+   @RunAsClient
    public void jsonPut() throws Exception
    {
       final Account account = new Account("test@testing.com", "Test Account", "testuser", "Eyox7xbNQ09MkIfRyH+rjg==");
       account.setEnabled(false);
       
-      new ResourceRequest(sharedEnvironment, Method.PUT, "/restv1/accounts/u/testuser")
+      new ResourceRequest(getDeployedUrl("/accounts/u/testuser"), "PUT", getAuthorizedEnvironment())
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.setContentType(MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON);
-            request.setContent(jsonMarshal(account).getBytes());
+            request.body(MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON, jsonMarshal(account).getBytes());
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(Status.CREATED.getStatusCode()));
          }
@@ -166,22 +174,22 @@ public class AccountRestTest extends ZanataRawRestTest
    }
    
    @Test
+   @RunAsClient
    public void unauthorizedPut() throws Exception
    {
       final Account account = new Account("test@testing.com", "Test Account", "testuser", "Eyox7xbNQ09MkIfRyH+rjg==");
       account.setEnabled(false);
       
-      new ResourceRequest(unauthorizedEnvironment, Method.PUT, "/restv1/accounts/u/testuser")
+      new ResourceRequest(getDeployedUrl("/accounts/u/testuser"), "PUT")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.setContentType(MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON);
-            request.setContent(jsonMarshal(account).getBytes());
+            request.body(MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON, jsonMarshal(account).getBytes());
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(Status.UNAUTHORIZED.getStatusCode()));
          }

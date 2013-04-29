@@ -92,7 +92,7 @@ public class RawRestTestUtils
    {
       assertHeaderPresent(response, headerName);
 
-      if( !response.getHeaders().get(headerName).equals(headerValue) )
+      if( !response.getHeaders().getFirst(headerName).equals(headerValue) )
       {
          throw new AssertionError("Expected header '" + headerName + "' to be '" + headerValue + "'; but instead got " +
                "'" + response.getHeaders().get(headerName) + "'");

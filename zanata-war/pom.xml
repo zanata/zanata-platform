@@ -1695,7 +1695,7 @@
         <dependency>
             <groupId>org.jboss.arquillian.extension</groupId>
             <artifactId>arquillian-seam2</artifactId>
-            <version>1.0.0.Alpha2</version>
+            <version>1.0.0.Final-SNAPSHOT</version>
             <exclusions>
                 <!-- This obsolete package duplicates some of the classes found in the newer descriptors-spi package -->
                 <exclusion>

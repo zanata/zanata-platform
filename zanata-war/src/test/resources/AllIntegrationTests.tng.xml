@@ -33,11 +33,11 @@
  -->
      	<test name="Raw Rest Tests">
      		<classes>
-     			<class name="org.zanata.rest.service.raw.AccountRestTest"/>
+     			<class name="org.zanata.rest.service.raw.AccountRawRestITCase"/>
      			<class name="org.zanata.rest.service.raw.GlossaryRawRestITCase"/>
      			<class name="org.zanata.rest.service.raw.ProjectIterationRestTest"/>
      			<class name="org.zanata.rest.service.raw.ProjectRestTest"/>
-     			<class name="org.zanata.rest.service.raw.FileRestTest"/>
+     			<class name="org.zanata.rest.service.raw.FileRawRestITCase"/>
      			<class name="org.zanata.rest.service.raw.VersionRawRestITCase"/>
                 <class name="org.zanata.rest.service.raw.StatisticsRestTest"/>
      		</classes>

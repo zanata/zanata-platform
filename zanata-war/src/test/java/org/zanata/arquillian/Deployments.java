@@ -18,23 +18,12 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata;
+package org.zanata.arquillian;
 
 import java.io.File;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.sql.DataSource;
 
 import org.apache.commons.io.FileUtils;
-import org.dbunit.database.DatabaseConnection;
-import org.dbunit.database.IDatabaseConnection;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.resteasy.client.ProxyFactory;
-import org.jboss.seam.util.Naming;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.Filter;
@@ -44,45 +33,18 @@ import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.runner.RunWith;
-import org.zanata.arquillian.RemoteAfter;
-import org.zanata.arquillian.RemoteBefore;
-import org.zanata.rest.ResourceRequestEnvironment;
-import org.zanata.rest.helper.RemoteTestSignaler;
 
 /**
- * Provides basic test utilities to test raw REST APIs and compatibility.
+ * Contains Suite-wide deployments to avoid having to deploy the same package for
+ * every test class.
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@RunWith(Arquillian.class)
-public abstract class RawRestTest extends ZanataDbunitJpaTest
+public class Deployments
 {
    public static final String DEPLOYMENT_NAME = "zanata-tests";
 
-   // Authorized environment with valid credentials
-   private static final ResourceRequestEnvironment ENV_AUTHORIZED =
-         new ResourceRequestEnvironment()
-         {
-            @Override
-            public Map<String, Object> getDefaultHeaders()
-            {
-               return new HashMap<String, Object>()
-               {
-                  {
-                     put("X-Auth-User", "admin");
-                     put("X-Auth-Token", "b6d7044e9ee3b2447c28fb7c50d86d98");
-                  }
-               };
-            }
-         };
-
-   @ArquillianResource
-   protected URL deploymentUrl;
-
-   /*@Deployment(name = "zanata.war")
+   @Deployment(name = "zanata.war")
    public static Archive<?> createDeployment()
    {
 
@@ -115,6 +77,7 @@ public abstract class RawRestTest extends ZanataDbunitJpaTest
       // Resources (descriptors, etc)
       archive.addAsResource(EmptyAsset.INSTANCE, "seam.properties");
       archive.addAsWebInfResource(new File("src/test/resources/arquillian/jboss-deployment-structure.xml"));
+      archive.addAsResource(new File("src/main/resources/pluralforms.properties"));
       archive.addAsResource(new FileAsset(new File("src/main/resources/META-INF/orm.xml")), "META-INF/orm.xml");
       archive.addAsResource(new FileAsset(new File("src/test/jboss-embedded-bootstrap/META-INF/persistence.xml")), "META-INF/persistence.xml");
       archive.addAsResource(new FileAsset(new File("src/main/webapp-jboss/WEB-INF/classes/META-INF/components.xml")), "META-INF/components.xml");
@@ -124,6 +87,9 @@ public abstract class RawRestTest extends ZanataDbunitJpaTest
             "classes/zanata.properties");
       archive.addAsWebInfResource("arquillian/test-web.xml", "web.xml");
 
+      // Liquibase changelogs
+      addAllAsResources(archive, new File("src/main/resources/db"));
+
       addRemoteHelpers(archive);
 
       // Export (to actually see what is being deployed)
@@ -132,119 +98,37 @@ public abstract class RawRestTest extends ZanataDbunitJpaTest
 
 
       return archive;
-   }*/
+   }
 
    private static void addRemoteHelpers(WebArchive archive)
    {
       archive.addPackages(true, "org.zanata.rest.helper");
       archive.addPackages(true, "org.zanata.arquillian");
       archive.addAsLibraries(Maven.resolver().loadPomFromFile("pom.xml").resolve("org.dbunit:dbunit:2.4.9").withoutTransitivity().asFile());
-      addAsResources(archive, new File("src/test/resources/org/zanata/test/model"));
+      addAllAsResources(archive, new File("src/test/resources/org/zanata/test/model"), "org/zanata/test/model");
    }
 
-   private static void addAsResources( WebArchive archive, File directory )
+   private static void addAllAsResources( WebArchive archive, File directory, String targetDir )
    {
       for( Object fileObj : FileUtils.listFiles(directory, null, true) )
       {
          File file = (File)fileObj;
          if( !file.isDirectory() )
          {
-            archive.addAsResource(file, "org/zanata/test/model/" + file.getName());
+            archive.addAsResource(file, targetDir + File.separator + directory.toURI().relativize( file.toURI() ).getPath());
          }
       }
    }
 
-   @RemoteBefore
-   @Override
-   public void prepareDataBeforeTest()
+   private static void addAllAsResources( WebArchive archive, File directory )
    {
-      super.prepareDataBeforeTest();
-   }
-
-   @RemoteAfter
-   @Override
-   public void cleanDataAfterTest()
-   {
-      super.cleanDataAfterTest();
-   }
-
-   @Before
-   public void signalBeforeTest()
-   {
-      RemoteTestSignaler signaler = ProxyFactory.create(RemoteTestSignaler.class, getDeployedUrl());
-      try
+      for( Object fileObj : FileUtils.listFiles(directory, null, true) )
       {
-         signaler.signalBeforeTest(this.getClass().getName());
-      }
-      catch (Exception e)
-      {
-         e.printStackTrace();
+         File file = (File)fileObj;
+         if( !file.isDirectory() )
+         {
+            archive.addAsResource(file, directory.getParentFile().toURI().relativize( file.toURI() ).getPath());
+         }
       }
    }
-
-   @After
-   public void signalAfterTest()
-   {
-      RemoteTestSignaler signaler = ProxyFactory.create(RemoteTestSignaler.class, getDeployedUrl());
-      try
-      {
-         signaler.signalAfterTest(this.getClass().getName());
-      }
-      catch (Exception e)
-      {
-         e.printStackTrace();
-      }
-   }
-
-   @Override
-   protected IDatabaseConnection getConnection()
-   {
-      try
-      {
-         DataSource dataSource = (DataSource)Naming.getInitialContext().lookup("java:jboss/datasources/zanataTestDatasource");
-         return new DatabaseConnection(dataSource.getConnection());
-      }
-      catch (Exception e)
-      {
-         throw new RuntimeException(e);
-      }
-   }
-
-   /**
-    * Gets the artifact's deployed url based on a relative resource url.
-    *
-    * @param resourceUrl The application relative resource url.
-    * @return The full absolute url of the deployed resource.
-    */
-   public final String getDeployedUrl( String resourceUrl )
-   {
-      StringBuilder fullUrl = new StringBuilder(deploymentUrl.toString() + "/" + DEPLOYMENT_NAME + "/seam/resource/restv1");
-      if( !resourceUrl.startsWith("/") )
-      {
-         fullUrl.append("/");
-      }
-      return fullUrl.append(resourceUrl).toString();
-   }
-
-   /**
-    * Gets the artifact's deployed root url.
-    *
-    * @return The full absolute root url of the deployed artifact.
-    * @see RawRestTest#getDeployedUrl(String)
-    */
-   public final String getDeployedUrl()
-   {
-      return getDeployedUrl("/");
-   }
-
-   /**
-    * Gets a valid Authorized REST environment.
-    *
-    * @return A Resource Request execution environment with valid test credentials.
-    */
-   public static final ResourceRequestEnvironment getAuthorizedEnvironment()
-   {
-      return ENV_AUTHORIZED;
-   }
-
 }

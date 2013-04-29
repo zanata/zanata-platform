@@ -101,9 +101,9 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest
 
    private void clearCache()
    {
-      Session session = getSession();
+      /*Session session = getSession();
       session.getSessionFactory().getCache().evictEntityRegions();
-      session.getSessionFactory().getCache().evictCollectionRegions();
+      session.getSessionFactory().getCache().evictCollectionRegions();*/
    }
    
    protected void executeOperations(List<DataSetOperation> list)

@@ -20,28 +20,28 @@
  */
 package org.zanata.rest.service.raw;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.containsString;
-
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
-
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.fedorahosted.tennera.jgettext.Message;
 import org.fedorahosted.tennera.jgettext.catalog.parse.MessageStreamParser;
-import org.jboss.seam.mock.EnhancedMockHttpServletRequest;
-import org.jboss.seam.mock.EnhancedMockHttpServletResponse;
-import org.jboss.seam.mock.ResourceRequestEnvironment.Method;
-import org.jboss.seam.mock.ResourceRequestEnvironment.ResourceRequest;
-import org.testng.annotations.Test;
-import org.zanata.ZanataRawRestTest;
+import org.jboss.arquillian.container.test.api.RunAsClient;
+import org.jboss.resteasy.client.ClientRequest;
+import org.jboss.resteasy.client.ClientResponse;
+import org.junit.Test;
+import org.zanata.RawRestTest;
+import org.zanata.rest.ResourceRequest;
 
-@Test(groups = {"seam-tests"})
-public class FileRestTest extends ZanataRawRestTest
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.is;
+import static org.zanata.util.RawRestTestUtils.assertHeaderValue;
+
+public class FileRawRestITCase extends RawRestTest
 {
 
    @Override
@@ -53,51 +53,51 @@ public class FileRestTest extends ZanataRawRestTest
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/TextFlowTestData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
    }
    
-   @Test 
+   @Test
+   @RunAsClient
    public void getPo() throws Exception
    {
-      new ResourceRequest(unauthorizedEnvironment, Method.GET, "/restv1/file/translation/sample-project/1.0/en-US/po")
+      new ResourceRequest(getDeployedUrl("/file/translation/sample-project/1.0/en-US/po"), "GET")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.setQueryString(""); // Need to add this when using query params or else the test fails
-            request.addQueryParameter("docId", "my/path/document.txt");
+            request.queryParameter("docId", "my/path/document.txt");
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(200)); // Ok
             assertHeaderValue(response, "Content-Disposition", "attachment; filename=\"document.txt.po\"");
-            assertThat(response.getContentType(), is(MediaType.TEXT_PLAIN));
-            assertPoFileCorrect( response.getContentAsString() );
-            assertPoFileContainsTranslations( response.getContentAsString(), 
+            assertHeaderValue(response, HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN);
+            assertPoFileCorrect((String)response.getEntity(String.class));
+            assertPoFileContainsTranslations( (String)response.getEntity(String.class),
                   "hello world", "" );
          }
       }.run();
    }
    
-   @Test 
+   @Test
+   @RunAsClient
    public void getPo2() throws Exception
    {
-      new ResourceRequest(unauthorizedEnvironment, Method.GET, "/restv1/file/translation/sample-project/1.0/en-US/po")
+      new ResourceRequest(getDeployedUrl("/file/translation/sample-project/1.0/en-US/po"), "GET")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.setQueryString(""); // Need to add this when using query params or else the test fails
-            request.addQueryParameter("docId", "my/path/document-2.txt");
+            request.queryParameter("docId", "my/path/document-2.txt");
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(200)); // Ok
             assertHeaderValue(response, "Content-Disposition", "attachment; filename=\"document-2.txt.po\"");
-            assertThat(response.getContentType(), is(MediaType.TEXT_PLAIN));
-            assertPoFileCorrect( response.getContentAsString() );
-            assertPoFileContainsTranslations( response.getContentAsString(), 
+            assertHeaderValue(response, HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN);
+            assertPoFileCorrect( (String)response.getEntity(String.class) );
+            assertPoFileContainsTranslations( (String)response.getEntity(String.class),
                   "mssgId1", "mssgTrans1",
                   "mssgId2", "mssgTrans2",
                   "mssgId3", "mssgTrans3" );
