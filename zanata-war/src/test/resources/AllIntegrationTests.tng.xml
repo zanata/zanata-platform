@@ -35,7 +35,7 @@
      		<classes>
      			<class name="org.zanata.rest.service.raw.AccountRawRestITCase"/>
      			<class name="org.zanata.rest.service.raw.GlossaryRawRestITCase"/>
-     			<class name="org.zanata.rest.service.raw.ProjectIterationRestTest"/>
+     			<class name="org.zanata.rest.service.raw.ProjectIterationRawRestITCase"/>
      			<class name="org.zanata.rest.service.raw.ProjectRawRestITCase"/>
      			<class name="org.zanata.rest.service.raw.FileRawRestITCase"/>
      			<class name="org.zanata.rest.service.raw.VersionRawRestITCase"/>

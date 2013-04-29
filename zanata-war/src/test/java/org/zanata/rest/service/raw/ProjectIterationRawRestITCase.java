@@ -20,45 +20,53 @@
  */
 package org.zanata.rest.service.raw;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.jboss.seam.mock.EnhancedMockHttpServletRequest;
-import org.jboss.seam.mock.EnhancedMockHttpServletResponse;
-import org.jboss.seam.mock.ResourceRequestEnvironment.Method;
-import org.jboss.seam.mock.ResourceRequestEnvironment.ResourceRequest;
-import org.testng.annotations.Test;
-import org.zanata.ZanataRawRestTest;
+import org.jboss.arquillian.container.test.api.RunAsClient;
+import org.jboss.resteasy.client.ClientRequest;
+import org.jboss.resteasy.client.ClientResponse;
+import org.junit.Test;
+import org.zanata.RawRestTest;
 import org.zanata.common.EntityStatus;
 import org.zanata.rest.MediaTypes;
+import org.zanata.rest.ResourceRequest;
 import org.zanata.rest.dto.ProjectIteration;
 
-@Test(groups = {"seam-tests"})
-public class ProjectIterationRestTest extends ZanataRawRestTest
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.zanata.util.RawRestTestUtils.assertHeaderPresent;
+import static org.zanata.util.RawRestTestUtils.assertJaxbUnmarshal;
+import static org.zanata.util.RawRestTestUtils.assertJsonUnmarshal;
+import static org.zanata.util.RawRestTestUtils.jaxbMarhsal;
+import static org.zanata.util.RawRestTestUtils.jaxbUnmarshal;
+import static org.zanata.util.RawRestTestUtils.jsonMarshal;
+import static org.zanata.util.RawRestTestUtils.jsonUnmarshal;
+
+public class ProjectIterationRawRestITCase extends RawRestTest
 {
 
    @Override
    protected void prepareDBUnitOperations()
    {
+      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/AccountData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
    }
    
    @Test
+   @RunAsClient
    public void head() throws Exception
    {
-      new ResourceRequest(unauthorizedEnvironment, Method.HEAD, "/restv1/projects/p/sample-project/iterations/i/1.0")
+      new ResourceRequest(getDeployedUrl("/projects/p/sample-project/iterations/i/1.0"), "GET")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(200)); // Ok
             assertHeaderPresent(response, HttpHeaders.ETAG);
@@ -66,19 +74,20 @@ public class ProjectIterationRestTest extends ZanataRawRestTest
       }.run();
    }
    
-   @Test 
+   @Test
+   @RunAsClient
    public void getXml() throws Exception
    {
-      new ResourceRequest(unauthorizedEnvironment, Method.GET, "/restv1/projects/p/sample-project/iterations/i/1.0")
+      new ResourceRequest(getDeployedUrl("/projects/p/sample-project/iterations/i/1.0"), "GET")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.addHeader(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML);
+            request.header(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML);
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(200)); // Ok
             assertJaxbUnmarshal(response, ProjectIteration.class);
@@ -90,19 +99,20 @@ public class ProjectIterationRestTest extends ZanataRawRestTest
       }.run();
    }
    
-   @Test 
+   @Test
+   @RunAsClient
    public void getJson() throws Exception
    {
-      new ResourceRequest(unauthorizedEnvironment, Method.GET, "/restv1/projects/p/sample-project/iterations/i/1.0")
+      new ResourceRequest(getDeployedUrl("/projects/p/sample-project/iterations/i/1.0"), "GET")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.addHeader(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON);
+            request.header(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON);
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(200)); // Ok
             assertJsonUnmarshal(response, ProjectIteration.class);
@@ -115,18 +125,19 @@ public class ProjectIterationRestTest extends ZanataRawRestTest
    }
    
    @Test
+   @RunAsClient
    public void getCurrentIterationOnObsoleteProject() throws Exception
    {
-      new ResourceRequest(unauthorizedEnvironment, Method.GET, "/restv1/projects/p/obsolete-project/iterations/i/obsolete-current")
+      new ResourceRequest(getDeployedUrl("/projects/p/obsolete-project/iterations/i/obsolete-current"), "GET")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.addHeader(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML);
+            request.header(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML);
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(Response.Status.NOT_FOUND.getStatusCode())); // Iteration not found because project is obsolete
          }
@@ -134,18 +145,19 @@ public class ProjectIterationRestTest extends ZanataRawRestTest
    }
    
    @Test
+   @RunAsClient
    public void getCurrentIterationOnRetiredProject() throws Exception
    {
-      new ResourceRequest(unauthorizedEnvironment, Method.GET, "/restv1/projects/p/retired-project/iterations/i/retired-current")
+      new ResourceRequest(getDeployedUrl("/projects/p/retired-project/iterations/i/retired-current"), "GET")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.addHeader(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML);
+            request.header(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML);
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(Response.Status.OK.getStatusCode())); // 200 (Retired projects are readable)
          }
@@ -153,18 +165,19 @@ public class ProjectIterationRestTest extends ZanataRawRestTest
    }
    
    @Test
+   @RunAsClient
    public void getObsoleteIterationOnCurrentProject() throws Exception
    {
-      new ResourceRequest(unauthorizedEnvironment, Method.GET, "/restv1/projects/p/current-project/iterations/i/current-obsolete")
+      new ResourceRequest(getDeployedUrl("/projects/p/current-project/iterations/i/current-obsolete"), "GET")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.addHeader(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML);
+            request.header(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML);
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(Response.Status.NOT_FOUND.getStatusCode())); // 404
          }
@@ -172,22 +185,22 @@ public class ProjectIterationRestTest extends ZanataRawRestTest
    }
    
    @Test
+   @RunAsClient
    public void putXml() throws Exception
    {
       final ProjectIteration iteration = new ProjectIteration("test-iteration");
       iteration.setStatus(EntityStatus.ACTIVE);
       
-      new ResourceRequest(sharedEnvironment, Method.PUT, "/restv1/projects/p/sample-project/iterations/i/test-iteration")
+      new ResourceRequest(getDeployedUrl("/projects/p/sample-project/iterations/i/test-iteration"), "PUT", getAuthorizedEnvironment())
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.setContentType(MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML);
-            request.setContent( jaxbMarhsal(iteration).getBytes() );
+            request.body(MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML, jaxbMarhsal(iteration).getBytes());
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(201)); // Created
          }
@@ -195,22 +208,22 @@ public class ProjectIterationRestTest extends ZanataRawRestTest
    }
    
    @Test
+   @RunAsClient
    public void putJson() throws Exception
    {
       final ProjectIteration iteration = new ProjectIteration("test-iteration");
       iteration.setStatus(EntityStatus.ACTIVE);
       
-      new ResourceRequest(sharedEnvironment, Method.PUT, "/restv1/projects/p/sample-project/iterations/i/test-iteration-json")
+      new ResourceRequest(getDeployedUrl("/projects/p/sample-project/iterations/i/test-iteration-json"), "PUT", getAuthorizedEnvironment())
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.setContentType(MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON);
-            request.setContent( jsonMarshal(iteration).getBytes() );
+            request.body(MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON, jsonMarshal(iteration).getBytes());
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(201)); // Created
          }
