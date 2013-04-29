@@ -125,7 +125,7 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
       TextColumn<TransUnitReplaceInfo> rowIndexColumn = buildRowIndexColumn();
       Column<TransUnitReplaceInfo, List<String>> sourceColumn = buildSourceColumn();
       Column<TransUnitReplaceInfo, TransUnitReplaceInfo> targetColumn = buildTargetColumn();
-      final SafeHtml goToIcon = new SafeHtmlBuilder().appendHtmlConstant("<span class='icon-edit' />").toSafeHtml();
+      final SafeHtml goToIcon = new SafeHtmlBuilder().appendHtmlConstant("<span class='icon-edit pointer' />").toSafeHtml();
       ActionColumn goToEditorColumn = new ActionColumn(new ActionCell<TransUnitReplaceInfo>(goToIcon, goToEditorDelegate)
       {
          @Override
