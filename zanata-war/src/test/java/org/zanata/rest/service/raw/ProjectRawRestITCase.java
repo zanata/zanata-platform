@@ -20,48 +20,56 @@
  */
 package org.zanata.rest.service.raw;
 
+import javax.ws.rs.core.HttpHeaders;
+
+import org.dbunit.operation.DatabaseOperation;
+import org.jboss.arquillian.container.test.api.RunAsClient;
+import org.jboss.resteasy.client.ClientRequest;
+import org.jboss.resteasy.client.ClientResponse;
+import org.junit.Test;
+import org.zanata.RawRestTest;
+import org.zanata.common.EntityStatus;
+import org.zanata.common.ProjectType;
+import org.zanata.rest.MediaTypes;
+import org.zanata.rest.ResourceRequest;
+import org.zanata.rest.dto.Project;
+import org.zanata.rest.dto.ProjectIteration;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.zanata.util.RawRestTestUtils.assertHeaderPresent;
+import static org.zanata.util.RawRestTestUtils.assertJaxbUnmarshal;
+import static org.zanata.util.RawRestTestUtils.assertJsonUnmarshal;
+import static org.zanata.util.RawRestTestUtils.jaxbMarhsal;
+import static org.zanata.util.RawRestTestUtils.jaxbUnmarshal;
+import static org.zanata.util.RawRestTestUtils.jsonMarshal;
+import static org.zanata.util.RawRestTestUtils.jsonUnmarshal;
 
-import javax.ws.rs.core.HttpHeaders;
-
-import org.dbunit.operation.DatabaseOperation;
-import org.jboss.seam.mock.EnhancedMockHttpServletRequest;
-import org.jboss.seam.mock.EnhancedMockHttpServletResponse;
-import org.jboss.seam.mock.ResourceRequestEnvironment.Method;
-import org.jboss.seam.mock.ResourceRequestEnvironment.ResourceRequest;
-import org.testng.annotations.Test;
-import org.zanata.ZanataRawRestTest;
-import org.zanata.common.EntityStatus;
-import org.zanata.common.ProjectType;
-import org.zanata.rest.MediaTypes;
-import org.zanata.rest.dto.Project;
-import org.zanata.rest.dto.ProjectIteration;
-
-@Test(groups = {"seam-tests"})
-public class ProjectRestTest extends ZanataRawRestTest
+public class ProjectRawRestITCase extends RawRestTest
 {
 
    @Override
    protected void prepareDBUnitOperations()
    {
+      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/AccountData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
    }
 
    @Test
+   @RunAsClient
    public void head() throws Exception
    {
-      new ResourceRequest(unauthorizedEnvironment, Method.HEAD, "/restv1/projects/p/sample-project")
+      new ResourceRequest(getDeployedUrl("/projects/p/sample-project"), "GET")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(200)); // Ok
             assertHeaderPresent(response, HttpHeaders.ETAG);
@@ -69,19 +77,20 @@ public class ProjectRestTest extends ZanataRawRestTest
       }.run();
    }
    
-   @Test 
+   @Test
+   @RunAsClient
    public void getXml() throws Exception
    {
-      new ResourceRequest(unauthorizedEnvironment, Method.GET, "/restv1/projects/p/sample-project")
+      new ResourceRequest(getDeployedUrl("/projects/p/sample-project"), "GET")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.addHeader(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_PROJECT_XML);
+            request.header(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_PROJECT_XML);
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(200)); // Ok
             assertJaxbUnmarshal(response, Project.class);
@@ -107,19 +116,20 @@ public class ProjectRestTest extends ZanataRawRestTest
       }.run();
    }
    
-   @Test 
+   @Test
+   @RunAsClient
    public void getJson() throws Exception
    {
-      new ResourceRequest(unauthorizedEnvironment, Method.GET, "/restv1/projects/p/sample-project")
+      new ResourceRequest(getDeployedUrl("/projects/p/sample-project"), "GET")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.addHeader(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_PROJECT_JSON);
+            request.header(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_PROJECT_JSON);
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(200)); // Ok
             assertJsonUnmarshal(response, Project.class);
@@ -146,6 +156,7 @@ public class ProjectRestTest extends ZanataRawRestTest
    }
    
    @Test
+   @RunAsClient
    public void putXml() throws Exception
    {
       final Project project = new Project("test-project", "Test Project", ProjectType.Gettext.toString(), "This is a Test project");
@@ -153,17 +164,16 @@ public class ProjectRestTest extends ZanataRawRestTest
       project.getIterations(true).add( new ProjectIteration("test-1.0") );
       project.getIterations(true).add( new ProjectIteration("test-2.0") );
       
-      new ResourceRequest(sharedEnvironment, Method.PUT, "/restv1/projects/p/test-project")
+      new ResourceRequest(getDeployedUrl("/projects/p/test-project"), "PUT", getAuthorizedEnvironment())
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.setContentType(MediaTypes.APPLICATION_ZANATA_PROJECT_XML);
-            request.setContent( jaxbMarhsal(project).getBytes() );
+            request.body(MediaTypes.APPLICATION_ZANATA_PROJECT_XML, jaxbMarhsal(project).getBytes());
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(201)); // Created
          }
@@ -171,6 +181,7 @@ public class ProjectRestTest extends ZanataRawRestTest
    }
    
    @Test
+   @RunAsClient
    public void putJson() throws Exception
    {
       final Project project = new Project("test-project", "Test Project", ProjectType.Gettext.toString(), "This is a Test project");
@@ -178,63 +189,64 @@ public class ProjectRestTest extends ZanataRawRestTest
       project.getIterations(true).add( new ProjectIteration("test-1.0") );
       project.getIterations(true).add( new ProjectIteration("test-2.0") );
       
-      new ResourceRequest(sharedEnvironment, Method.PUT, "/restv1/projects/p/test-project-json")
+      new ResourceRequest(getDeployedUrl("/projects/p/test-project-json"), "PUT", getAuthorizedEnvironment())
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.setContentType(MediaTypes.APPLICATION_ZANATA_PROJECT_JSON);
-            request.setContent( jsonMarshal(project).getBytes() );
+            request.body(MediaTypes.APPLICATION_ZANATA_PROJECT_JSON, jsonMarshal(project).getBytes());
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(201)); // Created
          }
       }.run();
    }
    
-   @Test 
+   @Test
+   @RunAsClient
    public void getAllXml() throws Exception
    {
-      new ResourceRequest(unauthorizedEnvironment, Method.GET, "/restv1/projects")
+      new ResourceRequest(getDeployedUrl("/projects"), "GET")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.addHeader(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_PROJECTS_XML);
+            request.header(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_PROJECTS_XML);
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(200)); // Ok
-            assertThat(response.getContentAsString(), containsString("sample-project"));
-            assertThat(response.getContentAsString(), containsString("retired-project"));
-            assertThat(response.getContentAsString(), not(containsString("obsolete-project")));
+            assertThat((String)response.getEntity(String.class), containsString("sample-project"));
+            assertThat((String)response.getEntity(String.class), containsString("retired-project"));
+            assertThat((String)response.getEntity(String.class), not(containsString("obsolete-project")));
          }
       }.run();
    }
    
-   @Test 
+   @Test
+   @RunAsClient
    public void getAllJson() throws Exception
    {
-      new ResourceRequest(unauthorizedEnvironment, Method.GET, "/restv1/projects")
+      new ResourceRequest(getDeployedUrl("/projects"), "GET")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.addHeader(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_PROJECTS_JSON);
+            request.header(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_PROJECTS_JSON);
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(200)); // Ok
-            assertThat(response.getContentAsString(), containsString("sample-project"));
-            assertThat(response.getContentAsString(), containsString("retired-project"));
-            assertThat(response.getContentAsString(), not(containsString("obsolete-project")));
+            assertThat((String)response.getEntity(String.class), containsString("sample-project"));
+            assertThat((String)response.getEntity(String.class), containsString("retired-project"));
+            assertThat((String)response.getEntity(String.class), not(containsString("obsolete-project")));
          }
       }.run();
    }
