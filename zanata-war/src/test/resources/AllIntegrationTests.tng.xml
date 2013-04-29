@@ -39,7 +39,7 @@
      			<class name="org.zanata.rest.service.raw.ProjectRawRestITCase"/>
      			<class name="org.zanata.rest.service.raw.FileRawRestITCase"/>
      			<class name="org.zanata.rest.service.raw.VersionRawRestITCase"/>
-                <class name="org.zanata.rest.service.raw.StatisticsRestTest"/>
+                <class name="org.zanata.rest.service.raw.StatisticsRawRestITCase"/>
      		</classes>
      	</test>
      	<test name="Backwards Compatibility Tests">

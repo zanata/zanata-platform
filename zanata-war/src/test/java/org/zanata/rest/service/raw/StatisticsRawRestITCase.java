@@ -20,32 +20,35 @@
  */
 package org.zanata.rest.service.raw;
 
+import java.util.Arrays;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+
+import org.dbunit.operation.DatabaseOperation;
+import org.jboss.arquillian.container.test.api.RunAsClient;
+import org.jboss.resteasy.client.ClientRequest;
+import org.jboss.resteasy.client.ClientResponse;
+import org.junit.Test;
+import org.zanata.RawRestTest;
+import org.zanata.rest.ResourceRequest;
+import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
+import org.zanata.rest.dto.stats.TranslationStatistics;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-
-import java.util.Arrays;
-
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-
-import org.dbunit.operation.DatabaseOperation;
-import org.jboss.seam.mock.EnhancedMockHttpServletRequest;
-import org.jboss.seam.mock.EnhancedMockHttpServletResponse;
-import org.jboss.seam.mock.ResourceRequestEnvironment;
-import org.testng.annotations.Test;
-import org.zanata.ZanataRawRestTest;
-import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
-import org.zanata.rest.dto.stats.TranslationStatistics;
+import static org.zanata.util.RawRestTestUtils.assertJaxbUnmarshal;
+import static org.zanata.util.RawRestTestUtils.assertJsonUnmarshal;
+import static org.zanata.util.RawRestTestUtils.jaxbUnmarshal;
+import static org.zanata.util.RawRestTestUtils.jsonUnmarshal;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Test(groups = {"seam-tests"})
-public class StatisticsRestTest extends ZanataRawRestTest
+public class StatisticsRawRestITCase extends RawRestTest
 {
    @Override
    protected void prepareDBUnitOperations()
@@ -58,19 +61,19 @@ public class StatisticsRestTest extends ZanataRawRestTest
    }
 
    @Test
+   @RunAsClient
    public void getIterationStatisticsXml() throws Exception
    {
-      new ResourceRequestEnvironment.ResourceRequest(unauthorizedEnvironment, ResourceRequestEnvironment.Method.GET,
-            "/restv1/stats/proj/sample-project/iter/1.0")
+      new ResourceRequest(getDeployedUrl("/stats/proj/sample-project/iter/1.0"), "GET")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.addHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_XML);
+            request.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_XML);
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(200)); // Ok
             assertJaxbUnmarshal(response, ContainerTranslationStatistics.class);
@@ -94,20 +97,21 @@ public class StatisticsRestTest extends ZanataRawRestTest
    }
 
    @Test
+   @RunAsClient
    public void getIterationStatisticsXmlWithDetails() throws Exception
    {
-      new ResourceRequestEnvironment.ResourceRequest(unauthorizedEnvironment, ResourceRequestEnvironment.Method.GET,
-            "/restv1/stats/proj/sample-project/iter/1.0")
+      new ResourceRequest(getDeployedUrl("/stats/proj/sample-project/iter/1.0"), "GET")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.addHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_XML);
-            request.setQueryString("word=true&detail=true&locale=en-US&locale=as&locale=es");
+            request.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_XML);
+            request.queryParameter("word", "true").queryParameter("detail", "true").queryParameter("locale", "en-US")
+                   .queryParameter("locale", "es");
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(200)); // Ok
             assertJaxbUnmarshal(response, ContainerTranslationStatistics.class);
@@ -138,19 +142,19 @@ public class StatisticsRestTest extends ZanataRawRestTest
    }
 
    @Test
+   @RunAsClient
    public void getDocumentStatisticsXml() throws Exception
    {
-      new ResourceRequestEnvironment.ResourceRequest(unauthorizedEnvironment, ResourceRequestEnvironment.Method.GET,
-            "/restv1/stats/proj/sample-project/iter/1.0/doc/my/path/document.txt")
+      new ResourceRequest(getDeployedUrl("/stats/proj/sample-project/iter/1.0/doc/my/path/document.txt"), "GET")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.addHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_XML);
+            request.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_XML);
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(200)); // Ok
             assertJaxbUnmarshal(response, ContainerTranslationStatistics.class);
@@ -174,20 +178,21 @@ public class StatisticsRestTest extends ZanataRawRestTest
    }
 
    @Test
+   @RunAsClient
    public void getDocumentStatisticsXmlWithDetails() throws Exception
    {
-      new ResourceRequestEnvironment.ResourceRequest(unauthorizedEnvironment, ResourceRequestEnvironment.Method.GET,
-            "/restv1/stats/proj/sample-project/iter/1.0/doc/my/path/document.txt")
+      new ResourceRequest(getDeployedUrl("/stats/proj/sample-project/iter/1.0/doc/my/path/document.txt"), "GET")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.addHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_XML);
-            request.setQueryString("word=true&detail=true&locale=en-US&locale=as&locale=es");
+            request.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_XML);
+            request.queryParameter("word", "true").queryParameter("detail", "true").queryParameter("locale", "en-US")
+                   .queryParameter("locale", "es");
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(200)); // Ok
             assertJaxbUnmarshal(response, ContainerTranslationStatistics.class);
@@ -218,19 +223,19 @@ public class StatisticsRestTest extends ZanataRawRestTest
    }
 
    @Test
+   @RunAsClient
    public void getIterationStatisticsJson() throws Exception
    {
-      new ResourceRequestEnvironment.ResourceRequest(unauthorizedEnvironment, ResourceRequestEnvironment.Method.GET,
-            "/restv1/stats/proj/sample-project/iter/1.0")
+      new ResourceRequest(getDeployedUrl("/stats/proj/sample-project/iter/1.0"), "GET")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.addHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+            request.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(200)); // Ok
             assertJsonUnmarshal(response, ContainerTranslationStatistics.class);
@@ -254,20 +259,21 @@ public class StatisticsRestTest extends ZanataRawRestTest
    }
 
    @Test
+   @RunAsClient
    public void getIterationStatisticsJsonWithDetails() throws Exception
    {
-      new ResourceRequestEnvironment.ResourceRequest(unauthorizedEnvironment, ResourceRequestEnvironment.Method.GET,
-            "/restv1/stats/proj/sample-project/iter/1.0")
+      new ResourceRequest(getDeployedUrl("/stats/proj/sample-project/iter/1.0"), "GET")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.addHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
-            request.setQueryString("word=true&detail=true&locale=en-US&locale=as&locale=es");
+            request.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+            request.queryParameter("word", "true").queryParameter("detail", "true").queryParameter("locale", "en-US")
+                   .queryParameter("locale", "es");
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(200)); // Ok
             assertJsonUnmarshal(response, ContainerTranslationStatistics.class);
@@ -298,19 +304,19 @@ public class StatisticsRestTest extends ZanataRawRestTest
    }
 
    @Test
+   @RunAsClient
    public void getDocumentStatisticsJson() throws Exception
    {
-      new ResourceRequestEnvironment.ResourceRequest(unauthorizedEnvironment, ResourceRequestEnvironment.Method.GET,
-            "/restv1/stats/proj/sample-project/iter/1.0/doc/my/path/document.txt")
+      new ResourceRequest(getDeployedUrl("/stats/proj/sample-project/iter/1.0/doc/my/path/document.txt"), "GET")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.addHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+            request.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(200)); // Ok
             assertJsonUnmarshal(response, ContainerTranslationStatistics.class);
@@ -334,20 +340,21 @@ public class StatisticsRestTest extends ZanataRawRestTest
    }
 
    @Test
+   @RunAsClient
    public void getDocumentStatisticsJsonWithDetails() throws Exception
    {
-      new ResourceRequestEnvironment.ResourceRequest(unauthorizedEnvironment, ResourceRequestEnvironment.Method.GET,
-            "/restv1/stats/proj/sample-project/iter/1.0/doc/my/path/document.txt")
+      new ResourceRequest(getDeployedUrl("/stats/proj/sample-project/iter/1.0/doc/my/path/document.txt"), "GET")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.addHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
-            request.setQueryString("word=true&detail=true&locale=en-US&locale=as&locale=es");
+            request.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+            request.queryParameter("word", "true").queryParameter("detail", "true").queryParameter("locale", "en-US")
+                   .queryParameter("locale", "as").queryParameter("locale", "es");
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(200)); // Ok
             assertJsonUnmarshal(response, ContainerTranslationStatistics.class);
