@@ -20,28 +20,28 @@
  */
 package org.zanata.rest.compat.v1_3;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.PUT;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response.Status;
 
 import org.dbunit.operation.DatabaseOperation;
+import org.jboss.arquillian.container.test.api.RunAsClient;
+import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
-import org.jboss.seam.mock.EnhancedMockHttpServletRequest;
-import org.jboss.seam.mock.EnhancedMockHttpServletResponse;
-import org.jboss.seam.mock.ResourceRequestEnvironment.Method;
-import org.jboss.seam.mock.ResourceRequestEnvironment.ResourceRequest;
-import org.testng.annotations.Test;
-import org.zanata.ZanataCompatibilityTest;
+import org.junit.Test;
+import org.zanata.CompatibilityTest;
+import org.zanata.rest.ResourceRequest;
 import org.zanata.v1_3.rest.MediaTypes;
 import org.zanata.v1_3.rest.client.IAccountResource;
 import org.zanata.v1_3.rest.dto.Account;
 
-@Test(groups = {"compatibility-tests", "seam-tests"} )
-public class AccountRawCompatibilityTest extends ZanataCompatibilityTest
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.zanata.util.RawRestTestUtils.assertJsonUnmarshal;
+import static org.zanata.util.RawRestTestUtils.jsonUnmarshal;
+
+public class AccountRawCompatibilityITCase extends CompatibilityTest
 {
 
    @Override
@@ -51,19 +51,20 @@ public class AccountRawCompatibilityTest extends ZanataCompatibilityTest
    }
    
    @Test
+   @RunAsClient
    public void getAccountJson() throws Exception
    {
       // No client method for Json Get, so testing raw compatibility
-      new ResourceRequest(unauthorizedEnvironment, Method.GET, "/restv1/accounts/u/demo")
+      new ResourceRequest(getRestEndpointUrl("/accounts/u/demo"), "GET")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.addHeader(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON);
+            request.header(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON);
          }
 
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(200)); // Ok
             assertJsonUnmarshal(response, Account.class);
@@ -82,6 +83,7 @@ public class AccountRawCompatibilityTest extends ZanataCompatibilityTest
    }
    
    @Test
+   @RunAsClient
    public void putAccountJson() throws Exception
    {
       // New Account
@@ -90,6 +92,7 @@ public class AccountRawCompatibilityTest extends ZanataCompatibilityTest
       UnimplementedIAccountResource accountClient = super.createProxy(UnimplementedIAccountResource.class, "/accounts/u/sampleaccount");
       IAccountResource originalAccountClient = super.createProxy(IAccountResource.class, "/accounts/u/sampleaccount");
       ClientResponse putResponse = accountClient.putJson( a );
+      putResponse.releaseConnection();
       
       // Assert initial put
       assertThat(putResponse.getStatus(), is(Status.CREATED.getStatusCode()));
@@ -97,6 +100,7 @@ public class AccountRawCompatibilityTest extends ZanataCompatibilityTest
       // Modified Account
       a.setName("New Account Name");
       putResponse = accountClient.putJson( a );
+      putResponse.releaseConnection();
       
       // Assert modification
       assertThat(putResponse.getStatus(), is(Status.OK.getStatusCode()));

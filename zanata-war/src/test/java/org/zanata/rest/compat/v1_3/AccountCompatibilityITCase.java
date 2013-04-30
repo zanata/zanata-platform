@@ -20,20 +20,21 @@
  */
 package org.zanata.rest.compat.v1_3;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.http.util.EntityUtils;
 import org.dbunit.operation.DatabaseOperation;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.ClientResponse;
-import org.testng.annotations.Test;
-import org.zanata.ZanataCompatibilityTest;
+import org.junit.Test;
+import org.zanata.CompatibilityTest;
 import org.zanata.v1_3.rest.client.IAccountResource;
 import org.zanata.v1_3.rest.dto.Account;
 
-@Test(groups = {"compatibility-tests", "seam-tests"} )
-public class AccountCompatibilityTest extends ZanataCompatibilityTest
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
+public class AccountCompatibilityITCase extends CompatibilityTest
 {
 
    @Override
@@ -43,6 +44,7 @@ public class AccountCompatibilityTest extends ZanataCompatibilityTest
    }   
 
    @Test
+   @RunAsClient
    public void getAccountXml() throws Exception
    {
       IAccountResource accountClient = super.createProxy(IAccountResource.class, "/accounts/u/demo");
@@ -60,6 +62,7 @@ public class AccountCompatibilityTest extends ZanataCompatibilityTest
    }
    
    @Test
+   @RunAsClient
    public void putAccountXml() throws Exception
    {
       // New Account
@@ -70,13 +73,15 @@ public class AccountCompatibilityTest extends ZanataCompatibilityTest
       
       // Assert initial put
       assertThat(putResponse.getStatus(), is(Status.CREATED.getStatusCode()));
-      
+      putResponse.releaseConnection();
+
       // Modified Account
       a.setName("New Account Name");
       putResponse = accountClient.put( a );
       
       // Assert modification
       assertThat(putResponse.getStatus(), is(Status.OK.getStatusCode()));
+      putResponse.releaseConnection();
       
       // Retrieve again
       Account a2 = accountClient.get().getEntity();

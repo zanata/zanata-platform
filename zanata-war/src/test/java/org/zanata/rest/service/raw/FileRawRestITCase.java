@@ -57,7 +57,7 @@ public class FileRawRestITCase extends RawRestTest
    @RunAsClient
    public void getPo() throws Exception
    {
-      new ResourceRequest(getDeployedUrl("/file/translation/sample-project/1.0/en-US/po"), "GET")
+      new ResourceRequest(getRestEndpointUrl("/file/translation/sample-project/1.0/en-US/po"), "GET")
       {
          @Override
          protected void prepareRequest(ClientRequest request)
@@ -82,7 +82,7 @@ public class FileRawRestITCase extends RawRestTest
    @RunAsClient
    public void getPo2() throws Exception
    {
-      new ResourceRequest(getDeployedUrl("/file/translation/sample-project/1.0/en-US/po"), "GET")
+      new ResourceRequest(getRestEndpointUrl("/file/translation/sample-project/1.0/en-US/po"), "GET")
       {
          @Override
          protected void prepareRequest(ClientRequest request)

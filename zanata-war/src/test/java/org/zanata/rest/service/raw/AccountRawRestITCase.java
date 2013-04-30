@@ -55,7 +55,7 @@ public class AccountRawRestITCase extends RawRestTest
    @RunAsClient
    public void xmlGetUnavailable() throws Exception
    {
-      new ResourceRequest(getDeployedUrl("/NOT_AVAILABLE"), "GET")
+      new ResourceRequest(getRestEndpointUrl("/NOT_AVAILABLE"), "GET")
       {
          @Override
          protected void prepareRequest(ClientRequest request)
@@ -75,7 +75,7 @@ public class AccountRawRestITCase extends RawRestTest
    @RunAsClient
    public void xmlGet() throws Exception
    {
-      new ResourceRequest(getDeployedUrl("accounts/u/admin"), "GET")
+      new ResourceRequest(getRestEndpointUrl("accounts/u/admin"), "GET")
       {
          @Override
          protected void prepareRequest(ClientRequest request)
@@ -103,7 +103,7 @@ public class AccountRawRestITCase extends RawRestTest
    @RunAsClient
    public void jsonGet() throws Exception
    {
-      new ResourceRequest(getDeployedUrl("/accounts/u/admin"), "GET")
+      new ResourceRequest(getRestEndpointUrl("/accounts/u/admin"), "GET")
       {
          @Override
          protected void prepareRequest(ClientRequest request)
@@ -134,7 +134,7 @@ public class AccountRawRestITCase extends RawRestTest
       final Account account = new Account("test@testing.com", "Test Account", "testuser", "Eyox7xbNQ09MkIfRyH+rjg==");
       account.setEnabled(false);
       
-      new ResourceRequest(getDeployedUrl("/accounts/u/testuser"), "PUT", getAuthorizedEnvironment())
+      new ResourceRequest(getRestEndpointUrl("/accounts/u/testuser"), "PUT", getAuthorizedEnvironment())
       {
          @Override
          protected void prepareRequest(ClientRequest request)
@@ -157,7 +157,7 @@ public class AccountRawRestITCase extends RawRestTest
       final Account account = new Account("test@testing.com", "Test Account", "testuser", "Eyox7xbNQ09MkIfRyH+rjg==");
       account.setEnabled(false);
       
-      new ResourceRequest(getDeployedUrl("/accounts/u/testuser"), "PUT", getAuthorizedEnvironment())
+      new ResourceRequest(getRestEndpointUrl("/accounts/u/testuser"), "PUT", getAuthorizedEnvironment())
       {
          @Override
          protected void prepareRequest(ClientRequest request)
@@ -180,7 +180,7 @@ public class AccountRawRestITCase extends RawRestTest
       final Account account = new Account("test@testing.com", "Test Account", "testuser", "Eyox7xbNQ09MkIfRyH+rjg==");
       account.setEnabled(false);
       
-      new ResourceRequest(getDeployedUrl("/accounts/u/testuser"), "PUT")
+      new ResourceRequest(getRestEndpointUrl("/accounts/u/testuser"), "PUT")
       {
          @Override
          protected void prepareRequest(ClientRequest request)

@@ -61,7 +61,7 @@ public class ProjectRawRestITCase extends RawRestTest
    @RunAsClient
    public void head() throws Exception
    {
-      new ResourceRequest(getDeployedUrl("/projects/p/sample-project"), "GET")
+      new ResourceRequest(getRestEndpointUrl("/projects/p/sample-project"), "GET")
       {
          @Override
          protected void prepareRequest(ClientRequest request)
@@ -81,7 +81,7 @@ public class ProjectRawRestITCase extends RawRestTest
    @RunAsClient
    public void getXml() throws Exception
    {
-      new ResourceRequest(getDeployedUrl("/projects/p/sample-project"), "GET")
+      new ResourceRequest(getRestEndpointUrl("/projects/p/sample-project"), "GET")
       {
          @Override
          protected void prepareRequest(ClientRequest request)
@@ -120,7 +120,7 @@ public class ProjectRawRestITCase extends RawRestTest
    @RunAsClient
    public void getJson() throws Exception
    {
-      new ResourceRequest(getDeployedUrl("/projects/p/sample-project"), "GET")
+      new ResourceRequest(getRestEndpointUrl("/projects/p/sample-project"), "GET")
       {
          @Override
          protected void prepareRequest(ClientRequest request)
@@ -164,7 +164,7 @@ public class ProjectRawRestITCase extends RawRestTest
       project.getIterations(true).add( new ProjectIteration("test-1.0") );
       project.getIterations(true).add( new ProjectIteration("test-2.0") );
       
-      new ResourceRequest(getDeployedUrl("/projects/p/test-project"), "PUT", getAuthorizedEnvironment())
+      new ResourceRequest(getRestEndpointUrl("/projects/p/test-project"), "PUT", getAuthorizedEnvironment())
       {
          @Override
          protected void prepareRequest(ClientRequest request)
@@ -189,7 +189,7 @@ public class ProjectRawRestITCase extends RawRestTest
       project.getIterations(true).add( new ProjectIteration("test-1.0") );
       project.getIterations(true).add( new ProjectIteration("test-2.0") );
       
-      new ResourceRequest(getDeployedUrl("/projects/p/test-project-json"), "PUT", getAuthorizedEnvironment())
+      new ResourceRequest(getRestEndpointUrl("/projects/p/test-project-json"), "PUT", getAuthorizedEnvironment())
       {
          @Override
          protected void prepareRequest(ClientRequest request)
@@ -209,7 +209,7 @@ public class ProjectRawRestITCase extends RawRestTest
    @RunAsClient
    public void getAllXml() throws Exception
    {
-      new ResourceRequest(getDeployedUrl("/projects"), "GET")
+      new ResourceRequest(getRestEndpointUrl("/projects"), "GET")
       {
          @Override
          protected void prepareRequest(ClientRequest request)
@@ -232,7 +232,7 @@ public class ProjectRawRestITCase extends RawRestTest
    @RunAsClient
    public void getAllJson() throws Exception
    {
-      new ResourceRequest(getDeployedUrl("/projects"), "GET")
+      new ResourceRequest(getRestEndpointUrl("/projects"), "GET")
       {
          @Override
          protected void prepareRequest(ClientRequest request)

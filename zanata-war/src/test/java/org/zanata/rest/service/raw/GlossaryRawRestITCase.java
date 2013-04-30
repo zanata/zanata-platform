@@ -60,7 +60,7 @@ public class GlossaryRawRestITCase extends RawRestTest
    @RunAsClient
    public void xmlGet() throws Exception
    {
-      new ResourceRequest(getDeployedUrl("/glossary"), "GET")
+      new ResourceRequest(getRestEndpointUrl("/glossary"), "GET")
       {
          @Override
          protected void prepareRequest(ClientRequest request)
@@ -114,7 +114,7 @@ public class GlossaryRawRestITCase extends RawRestTest
    @RunAsClient
    public void jsonGet() throws Exception
    {
-      new ResourceRequest(getDeployedUrl("/glossary"), "GET")
+      new ResourceRequest(getRestEndpointUrl("/glossary"), "GET")
       {
          @Override
          protected void prepareRequest(ClientRequest request)
@@ -168,7 +168,7 @@ public class GlossaryRawRestITCase extends RawRestTest
    @RunAsClient
    public void unauthorizedDelete() throws Exception
    {
-      new ResourceRequest(getDeployedUrl("/glossary"), "DELETE")
+      new ResourceRequest(getRestEndpointUrl("/glossary"), "DELETE")
       {
          @Override
          protected void prepareRequest(ClientRequest request)
@@ -189,7 +189,7 @@ public class GlossaryRawRestITCase extends RawRestTest
    {
       final Glossary glossary = this.getSampleGlossary();
       
-      new ResourceRequest(getDeployedUrl("/glossary"), "PUT", getAuthorizedEnvironment())
+      new ResourceRequest(getRestEndpointUrl("/glossary"), "PUT", getAuthorizedEnvironment())
       {
          @Override
          protected void prepareRequest(ClientRequest request)
@@ -231,7 +231,7 @@ public class GlossaryRawRestITCase extends RawRestTest
    @RunAsClient
    public void delete() throws Exception
    {
-      new ResourceRequest(getDeployedUrl("/glossary"), "DELETE", getAuthorizedEnvironment())
+      new ResourceRequest(getRestEndpointUrl("/glossary"), "DELETE", getAuthorizedEnvironment())
       {
          @Override
          protected void prepareRequest(ClientRequest request)

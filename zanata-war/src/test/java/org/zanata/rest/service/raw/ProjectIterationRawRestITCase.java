@@ -58,7 +58,7 @@ public class ProjectIterationRawRestITCase extends RawRestTest
    @RunAsClient
    public void head() throws Exception
    {
-      new ResourceRequest(getDeployedUrl("/projects/p/sample-project/iterations/i/1.0"), "GET")
+      new ResourceRequest(getRestEndpointUrl("/projects/p/sample-project/iterations/i/1.0"), "GET")
       {
          @Override
          protected void prepareRequest(ClientRequest request)
@@ -78,7 +78,7 @@ public class ProjectIterationRawRestITCase extends RawRestTest
    @RunAsClient
    public void getXml() throws Exception
    {
-      new ResourceRequest(getDeployedUrl("/projects/p/sample-project/iterations/i/1.0"), "GET")
+      new ResourceRequest(getRestEndpointUrl("/projects/p/sample-project/iterations/i/1.0"), "GET")
       {
          @Override
          protected void prepareRequest(ClientRequest request)
@@ -103,7 +103,7 @@ public class ProjectIterationRawRestITCase extends RawRestTest
    @RunAsClient
    public void getJson() throws Exception
    {
-      new ResourceRequest(getDeployedUrl("/projects/p/sample-project/iterations/i/1.0"), "GET")
+      new ResourceRequest(getRestEndpointUrl("/projects/p/sample-project/iterations/i/1.0"), "GET")
       {
          @Override
          protected void prepareRequest(ClientRequest request)
@@ -128,7 +128,7 @@ public class ProjectIterationRawRestITCase extends RawRestTest
    @RunAsClient
    public void getCurrentIterationOnObsoleteProject() throws Exception
    {
-      new ResourceRequest(getDeployedUrl("/projects/p/obsolete-project/iterations/i/obsolete-current"), "GET")
+      new ResourceRequest(getRestEndpointUrl("/projects/p/obsolete-project/iterations/i/obsolete-current"), "GET")
       {
          @Override
          protected void prepareRequest(ClientRequest request)
@@ -148,7 +148,7 @@ public class ProjectIterationRawRestITCase extends RawRestTest
    @RunAsClient
    public void getCurrentIterationOnRetiredProject() throws Exception
    {
-      new ResourceRequest(getDeployedUrl("/projects/p/retired-project/iterations/i/retired-current"), "GET")
+      new ResourceRequest(getRestEndpointUrl("/projects/p/retired-project/iterations/i/retired-current"), "GET")
       {
          @Override
          protected void prepareRequest(ClientRequest request)
@@ -168,7 +168,7 @@ public class ProjectIterationRawRestITCase extends RawRestTest
    @RunAsClient
    public void getObsoleteIterationOnCurrentProject() throws Exception
    {
-      new ResourceRequest(getDeployedUrl("/projects/p/current-project/iterations/i/current-obsolete"), "GET")
+      new ResourceRequest(getRestEndpointUrl("/projects/p/current-project/iterations/i/current-obsolete"), "GET")
       {
          @Override
          protected void prepareRequest(ClientRequest request)
@@ -191,7 +191,7 @@ public class ProjectIterationRawRestITCase extends RawRestTest
       final ProjectIteration iteration = new ProjectIteration("test-iteration");
       iteration.setStatus(EntityStatus.ACTIVE);
       
-      new ResourceRequest(getDeployedUrl("/projects/p/sample-project/iterations/i/test-iteration"), "PUT", getAuthorizedEnvironment())
+      new ResourceRequest(getRestEndpointUrl("/projects/p/sample-project/iterations/i/test-iteration"), "PUT", getAuthorizedEnvironment())
       {
          @Override
          protected void prepareRequest(ClientRequest request)
@@ -214,7 +214,7 @@ public class ProjectIterationRawRestITCase extends RawRestTest
       final ProjectIteration iteration = new ProjectIteration("test-iteration");
       iteration.setStatus(EntityStatus.ACTIVE);
       
-      new ResourceRequest(getDeployedUrl("/projects/p/sample-project/iterations/i/test-iteration-json"), "PUT", getAuthorizedEnvironment())
+      new ResourceRequest(getRestEndpointUrl("/projects/p/sample-project/iterations/i/test-iteration-json"), "PUT", getAuthorizedEnvironment())
       {
          @Override
          protected void prepareRequest(ClientRequest request)

@@ -64,7 +64,7 @@ public class StatisticsRawRestITCase extends RawRestTest
    @RunAsClient
    public void getIterationStatisticsXml() throws Exception
    {
-      new ResourceRequest(getDeployedUrl("/stats/proj/sample-project/iter/1.0"), "GET")
+      new ResourceRequest(getRestEndpointUrl("/stats/proj/sample-project/iter/1.0"), "GET")
       {
          @Override
          protected void prepareRequest(ClientRequest request)
@@ -100,7 +100,7 @@ public class StatisticsRawRestITCase extends RawRestTest
    @RunAsClient
    public void getIterationStatisticsXmlWithDetails() throws Exception
    {
-      new ResourceRequest(getDeployedUrl("/stats/proj/sample-project/iter/1.0"), "GET")
+      new ResourceRequest(getRestEndpointUrl("/stats/proj/sample-project/iter/1.0"), "GET")
       {
          @Override
          protected void prepareRequest(ClientRequest request)
@@ -145,7 +145,7 @@ public class StatisticsRawRestITCase extends RawRestTest
    @RunAsClient
    public void getDocumentStatisticsXml() throws Exception
    {
-      new ResourceRequest(getDeployedUrl("/stats/proj/sample-project/iter/1.0/doc/my/path/document.txt"), "GET")
+      new ResourceRequest(getRestEndpointUrl("/stats/proj/sample-project/iter/1.0/doc/my/path/document.txt"), "GET")
       {
          @Override
          protected void prepareRequest(ClientRequest request)
@@ -181,7 +181,7 @@ public class StatisticsRawRestITCase extends RawRestTest
    @RunAsClient
    public void getDocumentStatisticsXmlWithDetails() throws Exception
    {
-      new ResourceRequest(getDeployedUrl("/stats/proj/sample-project/iter/1.0/doc/my/path/document.txt"), "GET")
+      new ResourceRequest(getRestEndpointUrl("/stats/proj/sample-project/iter/1.0/doc/my/path/document.txt"), "GET")
       {
          @Override
          protected void prepareRequest(ClientRequest request)
@@ -226,7 +226,7 @@ public class StatisticsRawRestITCase extends RawRestTest
    @RunAsClient
    public void getIterationStatisticsJson() throws Exception
    {
-      new ResourceRequest(getDeployedUrl("/stats/proj/sample-project/iter/1.0"), "GET")
+      new ResourceRequest(getRestEndpointUrl("/stats/proj/sample-project/iter/1.0"), "GET")
       {
          @Override
          protected void prepareRequest(ClientRequest request)
@@ -262,7 +262,7 @@ public class StatisticsRawRestITCase extends RawRestTest
    @RunAsClient
    public void getIterationStatisticsJsonWithDetails() throws Exception
    {
-      new ResourceRequest(getDeployedUrl("/stats/proj/sample-project/iter/1.0"), "GET")
+      new ResourceRequest(getRestEndpointUrl("/stats/proj/sample-project/iter/1.0"), "GET")
       {
          @Override
          protected void prepareRequest(ClientRequest request)
@@ -307,7 +307,7 @@ public class StatisticsRawRestITCase extends RawRestTest
    @RunAsClient
    public void getDocumentStatisticsJson() throws Exception
    {
-      new ResourceRequest(getDeployedUrl("/stats/proj/sample-project/iter/1.0/doc/my/path/document.txt"), "GET")
+      new ResourceRequest(getRestEndpointUrl("/stats/proj/sample-project/iter/1.0/doc/my/path/document.txt"), "GET")
       {
          @Override
          protected void prepareRequest(ClientRequest request)
@@ -343,7 +343,7 @@ public class StatisticsRawRestITCase extends RawRestTest
    @RunAsClient
    public void getDocumentStatisticsJsonWithDetails() throws Exception
    {
-      new ResourceRequest(getDeployedUrl("/stats/proj/sample-project/iter/1.0/doc/my/path/document.txt"), "GET")
+      new ResourceRequest(getRestEndpointUrl("/stats/proj/sample-project/iter/1.0/doc/my/path/document.txt"), "GET")
       {
          @Override
          protected void prepareRequest(ClientRequest request)

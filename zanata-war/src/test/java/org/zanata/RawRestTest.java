@@ -30,18 +30,10 @@ import javax.sql.DataSource;
 import org.apache.commons.io.FileUtils;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
-import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.client.ProxyFactory;
 import org.jboss.seam.util.Naming;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePath;
-import org.jboss.shrinkwrap.api.Filter;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.After;
@@ -61,6 +53,8 @@ import org.zanata.rest.helper.RemoteTestSignaler;
 public abstract class RawRestTest extends ZanataDbunitJpaTest
 {
    public static final String DEPLOYMENT_NAME = "zanata-tests";
+   protected static final String ADMIN = "admin";
+   protected static final String ADMIN_KEY = "b6d7044e9ee3b2447c28fb7c50d86d98";
 
    // Authorized environment with valid credentials
    private static final ResourceRequestEnvironment ENV_AUTHORIZED =
@@ -72,8 +66,8 @@ public abstract class RawRestTest extends ZanataDbunitJpaTest
                return new HashMap<String, Object>()
                {
                   {
-                     put("X-Auth-User", "admin");
-                     put("X-Auth-Token", "b6d7044e9ee3b2447c28fb7c50d86d98");
+                     put("X-Auth-User", ADMIN);
+                     put("X-Auth-Token", ADMIN_KEY);
                   }
                };
             }
@@ -171,7 +165,7 @@ public abstract class RawRestTest extends ZanataDbunitJpaTest
    @Before
    public void signalBeforeTest()
    {
-      RemoteTestSignaler signaler = ProxyFactory.create(RemoteTestSignaler.class, getDeployedUrl());
+      RemoteTestSignaler signaler = ProxyFactory.create(RemoteTestSignaler.class, getRestEndpointUrl());
       try
       {
          signaler.signalBeforeTest(this.getClass().getName());
@@ -185,7 +179,7 @@ public abstract class RawRestTest extends ZanataDbunitJpaTest
    @After
    public void signalAfterTest()
    {
-      RemoteTestSignaler signaler = ProxyFactory.create(RemoteTestSignaler.class, getDeployedUrl());
+      RemoteTestSignaler signaler = ProxyFactory.create(RemoteTestSignaler.class, getRestEndpointUrl());
       try
       {
          signaler.signalAfterTest(this.getClass().getName());
@@ -211,14 +205,22 @@ public abstract class RawRestTest extends ZanataDbunitJpaTest
    }
 
    /**
-    * Gets the artifact's deployed url based on a relative resource url.
+    * @return The artifact's base deployment Url.
+    */
+   public String getDeploymentUrl()
+   {
+      return deploymentUrl.toString() + "/" + DEPLOYMENT_NAME;
+   }
+
+   /**
+    * Gets the full Url for a Rest endpoint.
     *
-    * @param resourceUrl The application relative resource url.
+    * @param resourceUrl The relative resource url.
     * @return The full absolute url of the deployed resource.
     */
-   public final String getDeployedUrl( String resourceUrl )
+   public final String getRestEndpointUrl(String resourceUrl)
    {
-      StringBuilder fullUrl = new StringBuilder(deploymentUrl.toString() + "/" + DEPLOYMENT_NAME + "/seam/resource/restv1");
+      StringBuilder fullUrl = new StringBuilder(getDeploymentUrl() + "/seam/resource/restv1");
       if( !resourceUrl.startsWith("/") )
       {
          fullUrl.append("/");
@@ -227,14 +229,14 @@ public abstract class RawRestTest extends ZanataDbunitJpaTest
    }
 
    /**
-    * Gets the artifact's deployed root url.
+    * Gets the artifact's deployed url for REST endpoints.
     *
     * @return The full absolute root url of the deployed artifact.
-    * @see RawRestTest#getDeployedUrl(String)
+    * @see RawRestTest#getRestEndpointUrl(String)
     */
-   public final String getDeployedUrl()
+   public final String getRestEndpointUrl()
    {
-      return getDeployedUrl("/");
+      return getRestEndpointUrl("/");
    }
 
    /**

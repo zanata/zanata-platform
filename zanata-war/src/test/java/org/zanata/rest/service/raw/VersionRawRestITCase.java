@@ -48,7 +48,7 @@ public class VersionRawRestITCase extends RawRestTest
    @RunAsClient
    public void getJson() throws Exception
    {
-      new ResourceRequest(getDeployedUrl("/version"), "GET")
+      new ResourceRequest(getRestEndpointUrl("/version"), "GET")
       {
          @Override
          protected void prepareRequest(ClientRequest request)
@@ -69,7 +69,7 @@ public class VersionRawRestITCase extends RawRestTest
    @RunAsClient
    public void getXml() throws Exception
    {
-      new ResourceRequest(getDeployedUrl("/version"), "GET")
+      new ResourceRequest(getRestEndpointUrl("/version"), "GET")
       {
          @Override
          protected void prepareRequest(ClientRequest request)
