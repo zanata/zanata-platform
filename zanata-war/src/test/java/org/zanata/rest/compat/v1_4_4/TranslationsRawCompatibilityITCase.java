@@ -20,23 +20,17 @@
  */
 package org.zanata.rest.compat.v1_4_4;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.is;
-
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
 import org.dbunit.operation.DatabaseOperation;
+import org.jboss.arquillian.container.test.api.RunAsClient;
+import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
-import org.jboss.seam.mock.EnhancedMockHttpServletRequest;
-import org.jboss.seam.mock.EnhancedMockHttpServletResponse;
-import org.jboss.seam.mock.ResourceRequestEnvironment.Method;
-import org.jboss.seam.mock.ResourceRequestEnvironment.ResourceRequest;
-import org.testng.annotations.Test;
-import org.zanata.ZanataCompatibilityTest;
+import org.junit.Test;
+import org.zanata.RestTest;
+import org.zanata.rest.ResourceRequest;
 import org.zanata.v1_4_4.common.ContentState;
 import org.zanata.v1_4_4.common.ContentType;
 import org.zanata.v1_4_4.common.LocaleId;
@@ -51,8 +45,15 @@ import org.zanata.v1_4_4.rest.dto.resource.TextFlow;
 import org.zanata.v1_4_4.rest.dto.resource.TextFlowTarget;
 import org.zanata.v1_4_4.rest.dto.resource.TranslationsResource;
 
-@Test(groups = {"compatibility-tests", "seam-tests"} )
-public class TranslationsRawCompatibilityTest extends ZanataCompatibilityTest
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.is;
+import static org.zanata.util.RawRestTestUtils.assertJsonUnmarshal;
+import static org.zanata.util.RawRestTestUtils.jsonMarshal;
+import static org.zanata.util.RawRestTestUtils.jsonUnmarshal;
+
+public class TranslationsRawCompatibilityITCase extends RestTest
 {
 
    @Override
@@ -68,18 +69,19 @@ public class TranslationsRawCompatibilityTest extends ZanataCompatibilityTest
    }
    
    @Test
+   @RunAsClient
    public void getJsonResource() throws Exception
    {      
-      new ResourceRequest(sharedEnvironment, Method.GET, "/restv1/projects/p/sample-project/iterations/i/1.0/r/my,path,document-2.txt")
+      new ResourceRequest(getRestEndpointUrl("/projects/p/sample-project/iterations/i/1.0/r/my,path,document-2.txt"), "GET")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.addHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+            request.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
          }
          
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertJsonUnmarshal(response, Resource.class);
             
@@ -111,6 +113,7 @@ public class TranslationsRawCompatibilityTest extends ZanataCompatibilityTest
    }
    
    @Test
+   @RunAsClient
    public void postJsonResource() throws Exception
    {
       // Create a new Resource
@@ -125,26 +128,25 @@ public class TranslationsRawCompatibilityTest extends ZanataCompatibilityTest
       tf1.getExtensions(true).add( new SimpleComment("This is one comment") );
       res.getTextFlows().add(tf1);
       
-      new ResourceRequest(sharedEnvironment, Method.POST, "/restv1/projects/p/sample-project/iterations/i/1.0/r")
+      new ResourceRequest(getRestEndpointUrl("/projects/p/sample-project/iterations/i/1.0/r"), "POST", getAuthorizedEnvironment())
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.setContentType( MediaType.APPLICATION_JSON );
-            // Note: The setQueryParameter method doesnt allow multiple values. This is why manually setting the query string is required.
-            request.setQueryString("ext=" + PoHeader.ID + "&ext=" + SimpleComment.ID);  
-            request.setContent( jsonMarshal(res).getBytes() );
+            request.queryParameter("ext", PoHeader.ID).queryParameter("ext", SimpleComment.ID);
+            request.body(MediaType.APPLICATION_JSON, jsonMarshal(res));
          }
          
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat( response.getStatus(), is(Status.CREATED.getStatusCode()) ); // 201
          }         
       }.run();
       
       // Verify that it was created successfully
-      ITranslationResources translationsClient = super.createProxy(ITranslationResources.class, "/projects/p/sample-project/iterations/i/1.0/r");
+      ITranslationResources translationsClient = super.createProxy( createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
+            ITranslationResources.class, "/projects/p/sample-project/iterations/i/1.0/r");
       ClientResponse<Resource> resourceResponse = translationsClient.getResource(res.getName(), new StringSet(PoHeader.ID + ";" + SimpleComment.ID));
       
       assertThat(resourceResponse.getStatus(), is(Status.OK.getStatusCode())); // 200
@@ -176,6 +178,7 @@ public class TranslationsRawCompatibilityTest extends ZanataCompatibilityTest
    }
    
    @Test
+   @RunAsClient
    public void putJsonResource() throws Exception
    {
       // Create a new Resource
@@ -190,25 +193,24 @@ public class TranslationsRawCompatibilityTest extends ZanataCompatibilityTest
       tf1.getExtensions(true).add( new SimpleComment("This is one comment") );
       res.getTextFlows().add(tf1);
       
-      new ResourceRequest(sharedEnvironment, Method.PUT, "/restv1/projects/p/sample-project/iterations/i/1.0/r/" + res.getName())
+      new ResourceRequest(getRestEndpointUrl("/projects/p/sample-project/iterations/i/1.0/r/" + res.getName()), "PUT", getAuthorizedEnvironment())
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.setContentType( MediaType.APPLICATION_JSON );
-            // Note: The setQueryParameter method doesnt allow multiple values. This is why manually setting the query string is required.
-            request.setQueryString("ext=" + SimpleComment.ID + "&ext=" + PoHeader.ID);  
-            request.setContent( jsonMarshal(res).getBytes() );
+            request.queryParameter("ext", SimpleComment.ID).queryParameter("ext", PoHeader.ID);
+            request.body(MediaType.APPLICATION_JSON, jsonMarshal(res));
          }
          
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat( response.getStatus(), is(Status.CREATED.getStatusCode()) ); // 201
          }         
       }.run();
       
-      ITranslationResources translationsClient = super.createProxy(ITranslationResources.class, "/projects/p/sample-project/iterations/i/1.0/r/");      
+      ITranslationResources translationsClient = super.createProxy( createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
+            ITranslationResources.class, "/projects/p/sample-project/iterations/i/1.0/r/");
       // Verify that it was created successfully
       ClientResponse<Resource> resourceResponse = translationsClient.getResource(res.getName(), new StringSet(PoHeader.ID + ";" + SimpleComment.ID));
       Resource createdResource = resourceResponse.getEntity();
@@ -238,20 +240,20 @@ public class TranslationsRawCompatibilityTest extends ZanataCompatibilityTest
    }
    
    @Test
+   @RunAsClient
    public void getJsonResourceMeta() throws Exception
    {
-      new ResourceRequest(unauthorizedEnvironment, Method.GET, "/restv1/projects/p/sample-project/iterations/i/1.0/r/my,path,document-2.txt")
+      new ResourceRequest(getRestEndpointUrl("/projects/p/sample-project/iterations/i/1.0/r/my,path,document-2.txt"), "GET")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.addHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
-            // Note: The setQueryParameter method doesnt allow multiple values. This is why manually setting the query string is required.
-            request.setQueryString("ext=" + SimpleComment.ID);
+            request.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+            request.queryParameter("ext", SimpleComment.ID);
          }
          
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat( response.getStatus(), is(Status.OK.getStatusCode()) ); // 200
             assertJsonUnmarshal(response, ResourceMeta.class);
@@ -266,9 +268,11 @@ public class TranslationsRawCompatibilityTest extends ZanataCompatibilityTest
    }
    
    @Test
+   @RunAsClient
    public void putJsonResourceMeta() throws Exception
    {
-      ITranslationResources translationsClient = super.createProxy(ITranslationResources.class, "/projects/p/sample-project/iterations/i/1.0/r/");
+      ITranslationResources translationsClient = super.createProxy( createClientProxyFactory(ADMIN, ADMIN_KEY),
+            ITranslationResources.class, "/projects/p/sample-project/iterations/i/1.0/r/");
       final ResourceMeta resMeta = new ResourceMeta();
       resMeta.setName("my/path/document-2.txt");
       resMeta.setType(ResourceType.FILE);
@@ -276,19 +280,17 @@ public class TranslationsRawCompatibilityTest extends ZanataCompatibilityTest
       resMeta.setLang(LocaleId.EN_US);
       resMeta.setRevision(1);
       
-      new ResourceRequest(unauthorizedEnvironment, Method.PUT, "/restv1/projects/p/sample-project/iterations/i/1.0/r/my,path,document-2.txt")
+      new ResourceRequest(getRestEndpointUrl("/projects/p/sample-project/iterations/i/1.0/r/my,path,document-2.txt"), "PUT", getAuthorizedEnvironment())
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.setContentType(MediaType.APPLICATION_JSON);
-            // Note: The setQueryParameter method doesnt allow multiple values. This is why manually setting the query string is required.
-            request.setQueryString("ext=" + SimpleComment.ID);
-            request.setContent( jsonMarshal(resMeta).getBytes() );
+            request.queryParameter("ext", SimpleComment.ID);
+            request.body(MediaType.APPLICATION_JSON, jsonMarshal(resMeta));
          }
          
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat( response.getStatus(), is(Status.OK.getStatusCode()) ); // 200
          }         
@@ -307,20 +309,20 @@ public class TranslationsRawCompatibilityTest extends ZanataCompatibilityTest
    }
    
    @Test
+   @RunAsClient
    public void getJsonTranslations() throws Exception
    {
-      new ResourceRequest(unauthorizedEnvironment, Method.GET, "/restv1/projects/p/sample-project/iterations/i/1.0/r/my,path,document-2.txt/translations/" + LocaleId.EN_US)
+      new ResourceRequest(getRestEndpointUrl("/projects/p/sample-project/iterations/i/1.0/r/my,path,document-2.txt/translations/" + LocaleId.EN_US), "GET")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.addHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
-            // Note: The setQueryParameter method doesnt allow multiple values. This is why manually setting the query string is required.
-            request.setQueryString("ext=" + SimpleComment.ID);
+            request.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+            request.queryParameter("ext", SimpleComment.ID);
          }
          
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat( response.getStatus(), is(Status.OK.getStatusCode()) ); // 200
             assertJsonUnmarshal(response, TranslationsResource.class);
@@ -359,10 +361,12 @@ public class TranslationsRawCompatibilityTest extends ZanataCompatibilityTest
    }
    
    @Test
+   @RunAsClient
    public void putJsonTranslations() throws Exception
    {
       // Get the original translations
-      ITranslationResources translationsClient = super.createProxy(ITranslationResources.class, "/projects/p/sample-project/iterations/i/1.0/r/");
+      ITranslationResources translationsClient = super.createProxy( createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
+            ITranslationResources.class, "/projects/p/sample-project/iterations/i/1.0/r/");
       ClientResponse<TranslationsResource> response = translationsClient.getTranslations("my,path,document-2.txt", LocaleId.EN_US, new StringSet(SimpleComment.ID));
       final TranslationsResource transRes = response.getEntity();
       
@@ -383,19 +387,18 @@ public class TranslationsRawCompatibilityTest extends ZanataCompatibilityTest
       transRes.getTextFlowTargets().get(2).getExtensions(true).add( new SimpleComment("Translated Comment 3") );
       
       // Put the translations
-      new ResourceRequest(unauthorizedEnvironment, Method.PUT, "/restv1/projects/p/sample-project/iterations/i/1.0/r/my,path,document-2.txt/translations/" + LocaleId.EN_US)
+      new ResourceRequest(getRestEndpointUrl("/projects/p/sample-project/iterations/i/1.0/r/my,path,document-2.txt/translations/" + LocaleId.EN_US),
+            "PUT", getAuthorizedEnvironment())
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            request.setContentType(MediaType.APPLICATION_JSON);
-            // Note: The setQueryParameter method doesnt allow multiple values. This is why manually setting the query string is required.
-            request.setQueryString("ext=" + SimpleComment.ID);
-            request.setContent( jsonMarshal(transRes).getBytes() );
+            request.queryParameter("ext", SimpleComment.ID);
+            request.body(MediaType.APPLICATION_JSON, jsonMarshal(transRes));
          }
          
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat( response.getStatus(), is(Status.OK.getStatusCode()) ); // 200
          }         

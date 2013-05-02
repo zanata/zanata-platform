@@ -23,13 +23,13 @@ package org.zanata.rest.compat.v1_4_4;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 
-import org.testng.annotations.Test;
-import org.zanata.ZanataCompatibilityTest;
+import org.jboss.arquillian.container.test.api.RunAsClient;
+import org.junit.Test;
+import org.zanata.RestTest;
 import org.zanata.v1_4_4.rest.client.IVersion;
 import org.zanata.v1_4_4.rest.dto.VersionInfo;
 
-@Test(groups = {"compatibility-tests", "seam-tests"} )
-public class VersionCompatibilityTest extends ZanataCompatibilityTest
+public class VersionCompatibilityITCase extends RestTest
 {
 
    @Override
@@ -38,9 +38,11 @@ public class VersionCompatibilityTest extends ZanataCompatibilityTest
    }
 
    @Test
+   @RunAsClient
    public void getVersionXml()
    {
-      IVersion versionClient = super.createProxy(IVersion.class, "/version");
+      IVersion versionClient = super.createProxy(createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
+            IVersion.class, "/version");
       VersionInfo versionInfo = versionClient.get();
       
       assertThat( versionInfo.getVersionNo(), notNullValue() );

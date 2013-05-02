@@ -20,20 +20,20 @@
  */
 package org.zanata.rest.compat.v1_4_4;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
 import javax.ws.rs.core.Response.Status;
 
 import org.dbunit.operation.DatabaseOperation;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.ClientResponse;
-import org.testng.annotations.Test;
-import org.zanata.ZanataCompatibilityTest;
+import org.junit.Test;
+import org.zanata.RestTest;
 import org.zanata.v1_4_4.rest.client.IAccountResource;
 import org.zanata.v1_4_4.rest.dto.Account;
 
-@Test(groups = {"compatibility-tests", "seam-tests"} )
-public class AccountCompatibilityTest extends ZanataCompatibilityTest
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
+public class AccountCompatibilityITCase extends RestTest
 {
 
    @Override
@@ -43,9 +43,11 @@ public class AccountCompatibilityTest extends ZanataCompatibilityTest
    }   
 
    @Test
+   @RunAsClient
    public void getAccountXml() throws Exception
    {
-      IAccountResource accountClient = super.createProxy(IAccountResource.class, "/accounts/u/demo");
+      IAccountResource accountClient = super.createProxy(createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
+            IAccountResource.class, "/accounts/u/demo");
       ClientResponse<Account> accountResponse = accountClient.get();
       Account account = accountResponse.getEntity();
       
@@ -60,20 +62,24 @@ public class AccountCompatibilityTest extends ZanataCompatibilityTest
    }
    
    @Test
+   @RunAsClient
    public void putAccountXml() throws Exception
    {
       // New Account
       Account a = new Account("aacount2@localhost.com", "Sample Account", "sampleaccount", "/9Se/pfHeUH8FJ4asBD6jQ==");
       
-      IAccountResource accountClient = super.createProxy(IAccountResource.class, "/accounts/u/sampleaccount");
+      IAccountResource accountClient = super.createProxy( createClientProxyFactory(ADMIN, ADMIN_KEY),
+            IAccountResource.class, "/accounts/u/sampleaccount");
       ClientResponse putResponse = accountClient.put( a );
       
       // Assert initial put
       assertThat(putResponse.getStatus(), is(Status.CREATED.getStatusCode()));
+      putResponse.releaseConnection();
       
       // Modified Account
       a.setName("New Account Name");
       putResponse = accountClient.put( a );
+      putResponse.releaseConnection();
       
       // Assert modification
       assertThat(putResponse.getStatus(), is(Status.OK.getStatusCode()));
