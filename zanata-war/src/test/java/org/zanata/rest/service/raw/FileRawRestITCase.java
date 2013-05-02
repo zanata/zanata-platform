@@ -33,7 +33,7 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 import org.junit.Test;
-import org.zanata.RawRestTest;
+import org.zanata.RestTest;
 import org.zanata.rest.ResourceRequest;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -41,7 +41,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.zanata.util.RawRestTestUtils.assertHeaderValue;
 
-public class FileRawRestITCase extends RawRestTest
+public class FileRawRestITCase extends RestTest
 {
 
    @Override

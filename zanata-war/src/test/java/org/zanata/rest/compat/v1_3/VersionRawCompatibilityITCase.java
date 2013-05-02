@@ -20,16 +20,17 @@
  */
 package org.zanata.rest.compat.v1_3;
 
-import org.jboss.seam.mock.EnhancedMockHttpServletRequest;
-import org.jboss.seam.mock.EnhancedMockHttpServletResponse;
-import org.jboss.seam.mock.ResourceRequestEnvironment.Method;
-import org.jboss.seam.mock.ResourceRequestEnvironment.ResourceRequest;
-import org.testng.annotations.Test;
-import org.zanata.ZanataCompatibilityTest;
+import org.jboss.arquillian.container.test.api.RunAsClient;
+import org.jboss.resteasy.client.ClientRequest;
+import org.jboss.resteasy.client.ClientResponse;
+import org.junit.Test;
+import org.zanata.RestTest;
+import org.zanata.rest.ResourceRequest;
 import org.zanata.v1_3.rest.dto.VersionInfo;
 
-@Test(groups = {"compatibility-tests", "seam-tests"} )
-public class VersionRawCompatibilityTest extends ZanataCompatibilityTest
+import static org.zanata.util.RawRestTestUtils.assertJsonUnmarshal;
+
+public class VersionRawCompatibilityITCase extends RestTest
 {
 
    @Override
@@ -38,19 +39,18 @@ public class VersionRawCompatibilityTest extends ZanataCompatibilityTest
    }
 
    @Test
+   @RunAsClient
    public void getVersionXml() throws Exception
    {
-      new ResourceRequest(unauthorizedEnvironment, Method.GET, "/restv1/version")
+      new ResourceRequest(getRestEndpointUrl("/version"), "GET")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
+         protected void prepareRequest(ClientRequest request)
          {
-            // TODO Auto-generated method stub
-            super.prepareRequest(request);
          }
          
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertJsonUnmarshal(response, VersionInfo.class);
          }

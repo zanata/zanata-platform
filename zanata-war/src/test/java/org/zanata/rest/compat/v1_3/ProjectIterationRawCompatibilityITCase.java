@@ -20,26 +20,27 @@
  */
 package org.zanata.rest.compat.v1_3;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response.Status;
 
 import org.dbunit.operation.DatabaseOperation;
+import org.jboss.arquillian.container.test.api.RunAsClient;
+import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
-import org.jboss.seam.mock.EnhancedMockHttpServletRequest;
-import org.jboss.seam.mock.EnhancedMockHttpServletResponse;
-import org.jboss.seam.mock.ResourceRequestEnvironment.ResourceRequest;
-import org.jboss.seam.mock.ResourceRequestEnvironment.Method;
-import org.testng.annotations.Test;
-import org.zanata.ZanataCompatibilityTest;
+import org.junit.Test;
+import org.zanata.RestTest;
+import org.zanata.rest.ResourceRequest;
 import org.zanata.v1_3.rest.MediaTypes;
 import org.zanata.v1_3.rest.client.IProjectIterationResource;
 import org.zanata.v1_3.rest.dto.ProjectIteration;
 
-@Test(groups = {"compatibility-tests", "seam-tests"} )
-public class ProjectIterationRawCompatibilityTest extends ZanataCompatibilityTest
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.zanata.util.RawRestTestUtils.assertJsonUnmarshal;
+import static org.zanata.util.RawRestTestUtils.jsonMarshal;
+import static org.zanata.util.RawRestTestUtils.jsonUnmarshal;
+
+public class ProjectIterationRawCompatibilityITCase extends RestTest
 {
 
    @Override
@@ -49,18 +50,19 @@ public class ProjectIterationRawCompatibilityTest extends ZanataCompatibilityTes
    }
    
    @Test
+   @RunAsClient
    public void getJsonProjectIteration() throws Exception
    {
-      new ResourceRequest(unauthorizedEnvironment, Method.GET, "/restv1/projects/p/sample-project/iterations/i/1.0")
+      new ResourceRequest(getRestEndpointUrl("/projects/p/sample-project/iterations/i/1.0"), "GET")
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request) 
+         protected void prepareRequest(ClientRequest request) 
          {
-            request.addHeader(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON);
+            request.header(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON);
          };
          
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
             assertJsonUnmarshal(response, ProjectIteration.class);
@@ -73,21 +75,22 @@ public class ProjectIterationRawCompatibilityTest extends ZanataCompatibilityTes
    }
 
    @Test
+   @RunAsClient
    public void putJsonProjectIteration() throws Exception
    {
       final ProjectIteration newIteration = new ProjectIteration("new-iteration");
       
-      new ResourceRequest(unauthorizedEnvironment, Method.PUT, "/restv1/projects/p/sample-project/iterations/i/" + newIteration.getId())
+      new ResourceRequest(getRestEndpointUrl("/projects/p/sample-project/iterations/i/" + newIteration.getId()), "PUT",
+            getAuthorizedEnvironment())
       {
          @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request) 
+         protected void prepareRequest(ClientRequest request) 
          {
-            request.setContentType(MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON);
-            request.setContent( jsonMarshal(newIteration).getBytes() );
+            request.body(MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON, jsonMarshal(newIteration).getBytes());
          };
          
          @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
+         protected void onResponse(ClientResponse response)
          {
             assertThat(response.getStatus(), is(Status.CREATED.getStatusCode())); // 201
          }
@@ -95,10 +98,10 @@ public class ProjectIterationRawCompatibilityTest extends ZanataCompatibilityTes
       }.run();
       
       
-      // Retreive it again
-      IProjectIterationResource iterationClient = super.createProxy(IProjectIterationResource.class, "/projects/p/sample-project/iterations/i/" + newIteration.getId());
-      ClientResponse<ProjectIteration> response = iterationClient.get();
-      
+      // Retrieve it again
+      IProjectIterationResource iterationClient = super.createProxy(createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
+            IProjectIterationResource.class, "/projects/p/sample-project/iterations/i/" + newIteration.getId());
+
       ClientResponse<ProjectIteration> getResponse = iterationClient.get();
       
       assertThat(getResponse.getStatus(), is(Status.OK.getStatusCode())); // 200

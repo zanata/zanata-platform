@@ -17,9 +17,8 @@ import org.dbunit.dataset.ReplacementDataSet;
 import org.dbunit.dataset.datatype.DataType;
 import org.dbunit.dataset.datatype.DataTypeException;
 import org.dbunit.dataset.datatype.DefaultDataTypeFactory;
-import org.dbunit.dataset.xml.FlatXmlDataSet;
+import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.dbunit.operation.DatabaseOperation;
-import org.hibernate.Session;
 import org.hibernate.internal.SessionImpl;
 //import org.testng.annotations.AfterMethod;
 //import org.testng.annotations.BeforeClass;
@@ -192,6 +191,9 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest
          InputStream input = Thread.currentThread().getContextClassLoader().getResourceAsStream(dataSetLocation);
          try
          {
+            FlatXmlDataSetBuilder dataSetBuilder = new FlatXmlDataSetBuilder();
+            dataSetBuilder.setColumnSensing(true);
+
             InputStream dtdInput = null;
             if (dtdLocation != null)
             {
@@ -199,11 +201,12 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest
             }
             if (dtdInput == null)
             {
-               this.dataSet = new ReplacementDataSet(new FlatXmlDataSet(input));
+               this.dataSet = new ReplacementDataSet( dataSetBuilder.build(input) );
             }
             else
             {
-               this.dataSet = new ReplacementDataSet(new FlatXmlDataSet(input, dtdInput));
+               dataSetBuilder.setMetaDataSetFromDtd( dtdInput );
+               this.dataSet = new ReplacementDataSet( dataSetBuilder.build(input) );
             }
          }
          catch (Exception ex)

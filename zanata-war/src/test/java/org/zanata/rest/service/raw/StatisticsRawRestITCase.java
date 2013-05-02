@@ -29,7 +29,7 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 import org.junit.Test;
-import org.zanata.RawRestTest;
+import org.zanata.RestTest;
 import org.zanata.rest.ResourceRequest;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
@@ -48,7 +48,7 @@ import static org.zanata.util.RawRestTestUtils.jsonUnmarshal;
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class StatisticsRawRestITCase extends RawRestTest
+public class StatisticsRawRestITCase extends RestTest
 {
    @Override
    protected void prepareDBUnitOperations()

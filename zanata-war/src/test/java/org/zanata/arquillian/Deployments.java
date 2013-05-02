@@ -82,6 +82,7 @@ public class Deployments
       archive.addAsResource(new FileAsset(new File("src/test/jboss-embedded-bootstrap/META-INF/persistence.xml")), "META-INF/persistence.xml");
       archive.addAsResource(new FileAsset(new File("src/main/webapp-jboss/WEB-INF/classes/META-INF/components.xml")), "META-INF/components.xml");
       archive.addAsResource(new FileAsset(new File("src/test/resources/arquillian/components.properties")), "components.properties");
+      archive.addAsResource(new FileAsset(new File("src/test/resources/import.sql")), "import.sql");
       archive.addAsResource("security.drl");
       archive.addAsWebInfResource(new File("src/test/resources/arquillian/zanata.properties"),
             "classes/zanata.properties");

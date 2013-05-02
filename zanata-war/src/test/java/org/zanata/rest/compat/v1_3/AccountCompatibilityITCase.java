@@ -22,19 +22,18 @@ package org.zanata.rest.compat.v1_3;
 
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.http.util.EntityUtils;
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.ClientResponse;
 import org.junit.Test;
-import org.zanata.CompatibilityTest;
+import org.zanata.RestTest;
 import org.zanata.v1_3.rest.client.IAccountResource;
 import org.zanata.v1_3.rest.dto.Account;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class AccountCompatibilityITCase extends CompatibilityTest
+public class AccountCompatibilityITCase extends RestTest
 {
 
    @Override
@@ -47,7 +46,7 @@ public class AccountCompatibilityITCase extends CompatibilityTest
    @RunAsClient
    public void getAccountXml() throws Exception
    {
-      IAccountResource accountClient = super.createProxy(IAccountResource.class, "/accounts/u/demo");
+      IAccountResource accountClient = super.createProxy(createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY), IAccountResource.class, "/accounts/u/demo");
       ClientResponse<Account> accountResponse = accountClient.get();
       Account account = accountResponse.getEntity();
       
@@ -68,7 +67,8 @@ public class AccountCompatibilityITCase extends CompatibilityTest
       // New Account
       Account a = new Account("aacount2@localhost.com", "Sample Account", "sampleaccount", "/9Se/pfHeUH8FJ4asBD6jQ==");
       
-      IAccountResource accountClient = super.createProxy(IAccountResource.class, "/accounts/u/sampleaccount");
+      IAccountResource accountClient = super.createProxy(createClientProxyFactory(ADMIN, ADMIN_KEY),
+            IAccountResource.class, "/accounts/u/sampleaccount");
       ClientResponse putResponse = accountClient.put( a );
       
       // Assert initial put

@@ -31,12 +31,12 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 import org.junit.Test;
-import org.zanata.RawRestTest;
+import org.zanata.RestTest;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.ResourceRequest;
 import org.zanata.rest.dto.VersionInfo;
 
-public class VersionRawRestITCase extends RawRestTest
+public class VersionRawRestITCase extends RestTest
 {
 
    @Override

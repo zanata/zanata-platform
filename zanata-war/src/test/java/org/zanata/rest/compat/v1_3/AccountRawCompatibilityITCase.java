@@ -30,8 +30,9 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 import org.junit.Test;
-import org.zanata.CompatibilityTest;
+import org.zanata.RestTest;
 import org.zanata.rest.ResourceRequest;
+import org.zanata.rest.client.ZanataProxyFactory;
 import org.zanata.v1_3.rest.MediaTypes;
 import org.zanata.v1_3.rest.client.IAccountResource;
 import org.zanata.v1_3.rest.dto.Account;
@@ -41,7 +42,7 @@ import static org.hamcrest.Matchers.is;
 import static org.zanata.util.RawRestTestUtils.assertJsonUnmarshal;
 import static org.zanata.util.RawRestTestUtils.jsonUnmarshal;
 
-public class AccountRawCompatibilityITCase extends CompatibilityTest
+public class AccountRawCompatibilityITCase extends RestTest
 {
 
    @Override
@@ -88,9 +89,10 @@ public class AccountRawCompatibilityITCase extends CompatibilityTest
    {
       // New Account
       Account a = new Account("aacount2@localhost.com", "Sample Account", "sampleaccount", "/9Se/pfHeUH8FJ4asBD6jQ==");
-      
-      UnimplementedIAccountResource accountClient = super.createProxy(UnimplementedIAccountResource.class, "/accounts/u/sampleaccount");
-      IAccountResource originalAccountClient = super.createProxy(IAccountResource.class, "/accounts/u/sampleaccount");
+
+      ZanataProxyFactory proxyFactory = createClientProxyFactory(ADMIN, ADMIN_KEY);
+      UnimplementedIAccountResource accountClient = super.createProxy(proxyFactory, UnimplementedIAccountResource.class, "/accounts/u/sampleaccount");
+      IAccountResource originalAccountClient = super.createProxy(proxyFactory, IAccountResource.class, "/accounts/u/sampleaccount");
       ClientResponse putResponse = accountClient.putJson( a );
       putResponse.releaseConnection();
       

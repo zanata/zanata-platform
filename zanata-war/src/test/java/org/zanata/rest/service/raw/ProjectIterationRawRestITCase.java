@@ -28,7 +28,7 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 import org.junit.Test;
-import org.zanata.RawRestTest;
+import org.zanata.RestTest;
 import org.zanata.common.EntityStatus;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.ResourceRequest;
@@ -44,7 +44,7 @@ import static org.zanata.util.RawRestTestUtils.jaxbUnmarshal;
 import static org.zanata.util.RawRestTestUtils.jsonMarshal;
 import static org.zanata.util.RawRestTestUtils.jsonUnmarshal;
 
-public class ProjectIterationRawRestITCase extends RawRestTest
+public class ProjectIterationRawRestITCase extends RestTest
 {
 
    @Override

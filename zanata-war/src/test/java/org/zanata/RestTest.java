@@ -21,6 +21,8 @@
 package org.zanata;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,8 +30,10 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 import org.apache.commons.io.FileUtils;
+import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
+import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.client.ProxyFactory;
@@ -42,6 +46,9 @@ import org.junit.runner.RunWith;
 import org.zanata.arquillian.RemoteAfter;
 import org.zanata.arquillian.RemoteBefore;
 import org.zanata.rest.ResourceRequestEnvironment;
+import org.zanata.rest.client.TestProxyFactory;
+import org.zanata.rest.client.ZanataProxyFactory;
+import org.zanata.rest.dto.VersionInfo;
 import org.zanata.rest.helper.RemoteTestSignaler;
 
 /**
@@ -50,11 +57,15 @@ import org.zanata.rest.helper.RemoteTestSignaler;
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @RunWith(Arquillian.class)
-public abstract class RawRestTest extends ZanataDbunitJpaTest
+public abstract class RestTest extends ZanataDbunitJpaTest
 {
    public static final String DEPLOYMENT_NAME = "zanata-tests";
+   // Admin credentials
    protected static final String ADMIN = "admin";
    protected static final String ADMIN_KEY = "b6d7044e9ee3b2447c28fb7c50d86d98";
+   // Translator credentials
+   protected static final String TRANSLATOR = "demo";
+   protected static final String TRANSLATOR_KEY = "23456789012345678901234567890123";
 
    // Authorized environment with valid credentials
    private static final ResourceRequestEnvironment ENV_AUTHORIZED =
@@ -128,7 +139,7 @@ public abstract class RawRestTest extends ZanataDbunitJpaTest
       return archive;
    }*/
 
-   private static void addRemoteHelpers(WebArchive archive)
+   /*private static void addRemoteHelpers(WebArchive archive)
    {
       archive.addPackages(true, "org.zanata.rest.helper");
       archive.addPackages(true, "org.zanata.arquillian");
@@ -146,7 +157,7 @@ public abstract class RawRestTest extends ZanataDbunitJpaTest
             archive.addAsResource(file, "org/zanata/test/model/" + file.getName());
          }
       }
-   }
+   }*/
 
    @RemoteBefore
    @Override
@@ -196,7 +207,10 @@ public abstract class RawRestTest extends ZanataDbunitJpaTest
       try
       {
          DataSource dataSource = (DataSource)Naming.getInitialContext().lookup("java:jboss/datasources/zanataTestDatasource");
-         return new DatabaseConnection(dataSource.getConnection());
+         DatabaseConnection dbConn = new DatabaseConnection(dataSource.getConnection());
+         // NB: Specific to H2
+         dbConn.getConfig().setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new H2DataTypeFactory());
+         return dbConn;
       }
       catch (Exception e)
       {
@@ -232,7 +246,7 @@ public abstract class RawRestTest extends ZanataDbunitJpaTest
     * Gets the artifact's deployed url for REST endpoints.
     *
     * @return The full absolute root url of the deployed artifact.
-    * @see RawRestTest#getRestEndpointUrl(String)
+    * @see RestTest#getRestEndpointUrl(String)
     */
    public final String getRestEndpointUrl()
    {
@@ -247,6 +261,42 @@ public abstract class RawRestTest extends ZanataDbunitJpaTest
    public static final ResourceRequestEnvironment getAuthorizedEnvironment()
    {
       return ENV_AUTHORIZED;
+   }
+
+   /**
+    * Creates and returns a new instance of a proxy factory for the given credentials.
+    * This method aids with the testing of Rest API classes.
+    *
+    * @param username The username that the proxy factory will authenticate with.
+    * @param apiKey The apiKey for the user name.
+    * @return A new instance of a proxy factory to create Rest API resources.
+    */
+   public final ZanataProxyFactory createClientProxyFactory( String username, String apiKey )
+   {
+      try
+      {
+         return new TestProxyFactory(new URI(getRestEndpointUrl()),
+                                     username,
+                                     apiKey,
+                                     null,
+                                     new VersionInfo("Test", "Test"));
+      }
+      catch (URISyntaxException e)
+      {
+         throw new RuntimeException(e);
+      }
+   }
+
+   protected <T> T createProxy( ZanataProxyFactory clientFactory, Class<T> clientClass, String baseUri )
+   {
+      try
+      {
+         return clientFactory.createProxy(clientClass, new URI( getRestEndpointUrl(baseUri) ));
+      }
+      catch (URISyntaxException e)
+      {
+         throw new RuntimeException(e);
+      }
    }
 
 }
