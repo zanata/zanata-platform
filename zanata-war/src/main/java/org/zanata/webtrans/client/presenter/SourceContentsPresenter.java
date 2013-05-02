@@ -83,7 +83,7 @@ public class SourceContentsPresenter implements ClickHandler, UserConfigChangeHa
       currentTransUnitId = id;
       Log.debug("source content selected id:" + id);
 
-      SourceContentsDisplay sourceContentsView = Iterables.find(displayList, new FindByTransUnitIdPredicate(id));
+      SourceContentsDisplay sourceContentsView = findView(id);
       List<HasSelectableSource> sourcePanelList = sourceContentsView.getSourcePanelList();
       Optional<HasSelectableSource> selectedSourceOptional = tryFindSelectedSourcePanel(sourcePanelList);
       if (selectedSourceOptional.isPresent())
@@ -189,8 +189,30 @@ public class SourceContentsPresenter implements ClickHandler, UserConfigChangeHa
    @Override
    public void onTransUnitUpdated(TransUnitUpdatedEvent event)
    {
-      SourceContentsDisplay sourceContentsView = Iterables.find(displayList, new FindByTransUnitIdPredicate(event.getUpdateInfo().getTransUnit().getId()));
+      SourceContentsDisplay sourceContentsView = findView(event.getUpdateInfo().getTransUnit().getId());
       sourceContentsView.updateTransUnitDetails(event.getUpdateInfo().getTransUnit());
       sourceContentsView.refresh();
+   }
+
+   private SourceContentsDisplay findView(TransUnitId id)
+   {
+      SourceContentsDisplay sourceContentsView = Iterables.find(displayList, new FindByTransUnitIdPredicate(id));
+      return sourceContentsView;
+   }
+
+   public String getSourceContent(TransUnitId id)
+   {
+      SourceContentsDisplay view = findView(id);
+      List<HasSelectableSource> sourcePanelList = view.getSourcePanelList();
+      Optional<HasSelectableSource> selectedSourceOptional = tryFindSelectedSourcePanel(sourcePanelList);
+      if (selectedSourceOptional.isPresent())
+      {
+         return selectedSourceOptional.get().getSource();
+      }
+      else
+      {
+         // by default return the first one
+         return sourcePanelList.get(0).getSource();
+      }
    }
 }
