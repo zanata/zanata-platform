@@ -10,6 +10,7 @@
          <supported-locale>bg</supported-locale>
          <supported-locale>de</supported-locale>
          <supported-locale>en</supported-locale>
+         <supported-locale>ja</supported-locale>
          <supported-locale>fr</supported-locale>
          <supported-locale>it</supported-locale>
          <supported-locale>tr</supported-locale>
