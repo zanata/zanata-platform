@@ -57,6 +57,8 @@ import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.gwt.event.shared.GwtEvent;
@@ -154,11 +156,9 @@ public class TargetContentsPresenterTest
       selectedTU = currentPageRows.get(0);
       presenter.setStatesForTesting(selectedTU.getId(), 0, display);
       when(display.getId()).thenReturn(selectedTU.getId());
-      when(editor.getIndex()).thenReturn(0);
       when(editor.getId()).thenReturn(selectedTU.getId());
-      when(sourceContentPresenter.getCurrentTransUnitIdOrNull()).thenReturn(selectedTU.getId());
-      when(sourceContentPresenter.getSelectedSource()).thenReturn("source");
       when(editor.getText()).thenReturn("target");
+      when(sourceContentPresenter.getSourceContent(selectedTU.getId())).thenReturn(Optional.of("source"));
 
       presenter.validate(editor);
 
@@ -242,8 +242,10 @@ public class TargetContentsPresenterTest
       selectedTU = currentPageRows.get(0);
       presenter.setStatesForTesting(selectedTU.getId(), 0, display);
       when(display.getId()).thenReturn(selectedTU.getId());
+      when(editor.getId()).thenReturn(selectedTU.getId());
       when(display.getEditors()).thenReturn(Lists.newArrayList(editor));
       when(sourceContentPresenter.getCurrentTransUnitIdOrNull()).thenReturn(selectedTU.getId());
+      when(sourceContentPresenter.getSourceContent(selectedTU.getId())).thenReturn(Optional.of("source"));
       when(editor.getText()).thenReturn("target");
 
       presenter.onRequestValidation(RequestValidationEvent.EVENT);
@@ -278,12 +280,12 @@ public class TargetContentsPresenterTest
    {
       // Given:
       selectedTU = currentPageRows.get(0);
-      when(editor.getIndex()).thenReturn(0);
+      when(editor.getId()).thenReturn(selectedTU.getId());
       when(display.getId()).thenReturn(selectedTU.getId());
       when(display.getEditors()).thenReturn(Lists.newArrayList(editor));
       when(tableEditorMessages.notifyCopied()).thenReturn("copied");
-      when(sourceContentPresenter.getSelectedSource()).thenReturn("source content");
-      when(sourceContentPresenter.getCurrentTransUnitIdOrNull()).thenReturn(selectedTU.getId());
+      when(sourceContentPresenter.getSourceContent(selectedTU.getId())).thenReturn(Optional.of("source content"));
+
       presenter.setStatesForTesting(selectedTU.getId(), 0, display);
 
       // When:
@@ -788,10 +790,12 @@ public class TargetContentsPresenterTest
       userWorkspaceContext.setProjectActive(false);
       selectedTU = currentPageRows.get(0);
       ArrayList<ToggleEditor> currentEditors = Lists.newArrayList(editor);
+      when(editor.getId()).thenReturn(selectedTU.getId());
       ArrayList<ToggleEditor> previousEditors = Lists.newArrayList(editor2);
       presenter.setStatesForTesting(null, 0, display);
       when(display.getId()).thenReturn(selectedTU.getId());
       when(display.getEditors()).thenReturn(previousEditors, currentEditors);
+      when(sourceContentPresenter.getSourceContent(selectedTU.getId())).thenReturn(Optional.of("source"));
 
       // When:
       presenter.setSelected(selectedTU.getId());

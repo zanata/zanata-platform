@@ -238,17 +238,20 @@ public class TargetContentsPresenter implements
    public void validate(ToggleEditor editor)
    {
       TransUnitId transUnitId = editor.getId();
-      String sourceContent = sourceContentsPresenter.getSourceContent(transUnitId);
-      RunValidationEvent event = new RunValidationEvent(sourceContent, editor.getText(), false);
-      // widget that displays red outline
-      event.addWidget(editor);
-      // widget that displays warnings
-      Optional<TargetContentsDisplay> targetDisplay = findDisplayById(transUnitId);
-      if (targetDisplay.isPresent())
+      Optional<String> sourceContent = sourceContentsPresenter.getSourceContent(transUnitId);
+      if (sourceContent.isPresent())
       {
-         event.addWidget(targetDisplay.get());
+         RunValidationEvent event = new RunValidationEvent(sourceContent.get(), editor.getText(), false);
+         // widget that displays red outline
+         event.addWidget(editor);
+         // widget that displays warnings
+         Optional<TargetContentsDisplay> targetDisplay = findDisplayById(transUnitId);
+         if (targetDisplay.isPresent())
+         {
+            event.addWidget(targetDisplay.get());
+         }
+         eventBus.fireEvent(event);
       }
-      eventBus.fireEvent(event);
    }
 
    /**
