@@ -23,6 +23,7 @@ package org.zanata.rest.compat.v1_3;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+import static org.zanata.provider.DBUnitProvider.DataSetOperation;
 
 import javax.ws.rs.core.Response.Status;
 
@@ -31,6 +32,7 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.ClientResponse;
 import org.junit.Test;
 import org.zanata.RestTest;
+import org.zanata.provider.DBUnitProvider;
 import org.zanata.v1_3.rest.client.IProjectResource;
 import org.zanata.v1_3.rest.dto.Project;
 import org.zanata.v1_3.rest.dto.ProjectType;
@@ -47,8 +49,8 @@ public class ProjectCompatibilityITCase extends RestTest
    @Override
    protected void prepareDBUnitOperations()
    {
-      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/AccountData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
-      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+      addBeforeTestOperation(new DataSetOperation("org/zanata/test/model/AccountData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+      addBeforeTestOperation(new DataSetOperation("org/zanata/test/model/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
    }   
 
    @Test

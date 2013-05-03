@@ -30,6 +30,7 @@ import org.junit.Test;
 import org.zanata.RestTest;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.ProjectType;
+import org.zanata.provider.DBUnitProvider;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.ResourceRequest;
 import org.zanata.rest.dto.Project;
@@ -39,6 +40,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.zanata.provider.DBUnitProvider.DataSetOperation;
 import static org.zanata.util.RawRestTestUtils.assertHeaderPresent;
 import static org.zanata.util.RawRestTestUtils.assertJaxbUnmarshal;
 import static org.zanata.util.RawRestTestUtils.assertJsonUnmarshal;
@@ -53,8 +55,8 @@ public class ProjectRawRestITCase extends RestTest
    @Override
    protected void prepareDBUnitOperations()
    {
-      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/AccountData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
-      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+      addBeforeTestOperation(new DataSetOperation("org/zanata/test/model/AccountData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+      addBeforeTestOperation(new DataSetOperation("org/zanata/test/model/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
    }
 
    @Test

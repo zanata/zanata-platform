@@ -30,6 +30,7 @@ import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 import org.junit.Test;
 import org.zanata.RestTest;
+import org.zanata.provider.DBUnitProvider;
 import org.zanata.rest.ResourceRequest;
 import org.zanata.v1_4_4.common.ContentState;
 import org.zanata.v1_4_4.common.ContentType;
@@ -49,6 +50,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
+import static org.zanata.provider.DBUnitProvider.DataSetOperation;
 import static org.zanata.util.RawRestTestUtils.assertJsonUnmarshal;
 import static org.zanata.util.RawRestTestUtils.jsonMarshal;
 import static org.zanata.util.RawRestTestUtils.jsonUnmarshal;
@@ -59,13 +61,13 @@ public class TranslationsRawCompatibilityITCase extends RestTest
    @Override
    protected void prepareDBUnitOperations()
    {
-      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/AccountData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
-      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
-      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/LocalesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
-      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/DocumentsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
-      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/TextFlowTestData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+      addBeforeTestOperation(new DataSetOperation("org/zanata/test/model/AccountData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+      addBeforeTestOperation(new DataSetOperation("org/zanata/test/model/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+      addBeforeTestOperation(new DataSetOperation("org/zanata/test/model/LocalesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+      addBeforeTestOperation(new DataSetOperation("org/zanata/test/model/DocumentsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+      addBeforeTestOperation(new DataSetOperation("org/zanata/test/model/TextFlowTestData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
       
-      afterTestOperations.add(new DataSetOperation("org/zanata/test/model/HistoryTestData.dbunit.xml", DatabaseOperation.DELETE_ALL));
+      addAfterTestOperation(new DataSetOperation("org/zanata/test/model/HistoryTestData.dbunit.xml", DatabaseOperation.DELETE_ALL));
    }
    
    @Test

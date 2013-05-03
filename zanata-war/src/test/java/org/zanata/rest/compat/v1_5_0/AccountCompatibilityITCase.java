@@ -27,11 +27,13 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.ClientResponse;
 import org.junit.Test;
 import org.zanata.RestTest;
+import org.zanata.provider.DBUnitProvider;
 import org.zanata.v1_5_0.rest.client.IAccountResource;
 import org.zanata.v1_5_0.rest.dto.Account;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.zanata.provider.DBUnitProvider.DataSetOperation;
 
 public class AccountCompatibilityITCase extends RestTest
 {
@@ -39,7 +41,7 @@ public class AccountCompatibilityITCase extends RestTest
    @Override
    protected void prepareDBUnitOperations()
    {
-      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/AccountData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+      addBeforeTestOperation(new DataSetOperation("org/zanata/test/model/AccountData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
    }   
 
    @Test
