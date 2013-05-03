@@ -20,15 +20,16 @@
  */
 package org.zanata.rest.compat.v1_5_0;
 
+import javax.ws.rs.core.Response.Status;
+
 import org.dbunit.operation.DatabaseOperation;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.ClientResponse;
-import org.testng.annotations.Test;
-import org.zanata.ZanataCompatibilityTest;
+import org.junit.Test;
+import org.zanata.RestTest;
 import org.zanata.v1_5_0.rest.client.IProjectResource;
 import org.zanata.v1_5_0.rest.dto.Project;
 import org.zanata.v1_5_0.rest.dto.ProjectType;
-
-import javax.ws.rs.core.Response.Status;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -40,8 +41,7 @@ import static org.hamcrest.Matchers.nullValue;
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  *
  */
-@Test(groups = {"compatibility-tests", "seam-tests"} )
-public class ProjectCompatibilityTest extends ZanataCompatibilityTest
+public class ProjectCompatibilityITCase extends RestTest
 {
    
    @Override
@@ -51,9 +51,11 @@ public class ProjectCompatibilityTest extends ZanataCompatibilityTest
    }   
 
    @Test
+   @RunAsClient
    public void getProjectXml() throws Exception
    {
-      IProjectResource projectClient = super.createProxy(IProjectResource.class, "/projects/p/sample-project");
+      IProjectResource projectClient = super.createProxy(createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
+            IProjectResource.class, "/projects/p/sample-project");
       ClientResponse<Project> projectResponse = projectClient.get();
       Project project = projectResponse.getEntity();
       
@@ -66,16 +68,19 @@ public class ProjectCompatibilityTest extends ZanataCompatibilityTest
    }
    
    @Test
+   @RunAsClient
    public void putProjectXml() throws Exception
    {
       // New Project
       Project p = new Project("new-project", "New Project", ProjectType.IterationProject, "This is a New Sample Project");
       
-      IProjectResource projectClient = super.createProxy(IProjectResource.class, "/projects/p/new-project");
+      IProjectResource projectClient = super.createProxy( createClientProxyFactory(ADMIN, ADMIN_KEY),
+            IProjectResource.class, "/projects/p/new-project");
       ClientResponse putResponse = projectClient.put( p );
       
       // Assert initial put
       assertThat(putResponse.getStatus(), is(Status.CREATED.getStatusCode()));
+      putResponse.releaseConnection();
       
       // Modified Project
       p.setDescription("This is an updated project");
@@ -83,6 +88,7 @@ public class ProjectCompatibilityTest extends ZanataCompatibilityTest
       
       // Assert modification
       assertThat(putResponse.getStatus(), is(Status.OK.getStatusCode()));
+      putResponse.releaseConnection();
       
       // Retrieve again
       Project p2 = projectClient.get().getEntity();

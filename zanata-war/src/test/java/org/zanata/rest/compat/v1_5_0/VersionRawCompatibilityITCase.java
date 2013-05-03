@@ -20,16 +20,17 @@
  */
 package org.zanata.rest.compat.v1_5_0;
 
-import org.testng.annotations.Test;
-import org.zanata.ZanataCompatibilityTest;
-import org.zanata.v1_5_0.rest.client.IVersion;
+import org.jboss.arquillian.container.test.api.RunAsClient;
+import org.jboss.resteasy.client.ClientRequest;
+import org.jboss.resteasy.client.ClientResponse;
+import org.junit.Test;
+import org.zanata.RestTest;
+import org.zanata.rest.ResourceRequest;
 import org.zanata.v1_5_0.rest.dto.VersionInfo;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.zanata.util.RawRestTestUtils.assertJsonUnmarshal;
 
-@Test(groups = {"compatibility-tests", "seam-tests"} )
-public class VersionCompatibilityTest extends ZanataCompatibilityTest
+public class VersionRawCompatibilityITCase extends RestTest
 {
 
    @Override
@@ -38,12 +39,21 @@ public class VersionCompatibilityTest extends ZanataCompatibilityTest
    }
 
    @Test
-   public void getVersionXml()
+   @RunAsClient
+   public void getVersionXml() throws Exception
    {
-      IVersion versionClient = super.createProxy(IVersion.class, "/version");
-      VersionInfo versionInfo = versionClient.get();
-      
-      assertThat( versionInfo.getVersionNo(), notNullValue() );
-      assertThat( versionInfo.getBuildTimeStamp(), notNullValue() );
+      new ResourceRequest(getRestEndpointUrl("/version"), "GET")
+      {
+         @Override
+         protected void prepareRequest(ClientRequest request)
+         {
+         }
+         
+         @Override
+         protected void onResponse(ClientResponse response)
+         {
+            assertJsonUnmarshal(response, VersionInfo.class);
+         }
+      }.run();
    }
 }

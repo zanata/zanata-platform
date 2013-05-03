@@ -20,16 +20,16 @@
  */
 package org.zanata.rest.compat.v1_5_0;
 
-import org.jboss.seam.mock.EnhancedMockHttpServletRequest;
-import org.jboss.seam.mock.EnhancedMockHttpServletResponse;
-import org.jboss.seam.mock.ResourceRequestEnvironment.Method;
-import org.jboss.seam.mock.ResourceRequestEnvironment.ResourceRequest;
-import org.testng.annotations.Test;
-import org.zanata.ZanataCompatibilityTest;
+import org.jboss.arquillian.container.test.api.RunAsClient;
+import org.junit.Test;
+import org.zanata.RestTest;
+import org.zanata.v1_5_0.rest.client.IVersion;
 import org.zanata.v1_5_0.rest.dto.VersionInfo;
 
-@Test(groups = {"compatibility-tests", "seam-tests"} )
-public class VersionRawCompatibilityTest extends ZanataCompatibilityTest
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
+
+public class VersionCompatibilityITCase extends RestTest
 {
 
    @Override
@@ -38,22 +38,14 @@ public class VersionRawCompatibilityTest extends ZanataCompatibilityTest
    }
 
    @Test
-   public void getVersionXml() throws Exception
+   @RunAsClient
+   public void getVersionXml()
    {
-      new ResourceRequest(unauthorizedEnvironment, Method.GET, "/restv1/version")
-      {
-         @Override
-         protected void prepareRequest(EnhancedMockHttpServletRequest request)
-         {
-            // TODO Auto-generated method stub
-            super.prepareRequest(request);
-         }
-         
-         @Override
-         protected void onResponse(EnhancedMockHttpServletResponse response)
-         {
-            assertJsonUnmarshal(response, VersionInfo.class);
-         }
-      }.run();
+      IVersion versionClient = super.createProxy(createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
+            IVersion.class, "/version");
+      VersionInfo versionInfo = versionClient.get();
+      
+      assertThat( versionInfo.getVersionNo(), notNullValue() );
+      assertThat( versionInfo.getBuildTimeStamp(), notNullValue() );
    }
 }

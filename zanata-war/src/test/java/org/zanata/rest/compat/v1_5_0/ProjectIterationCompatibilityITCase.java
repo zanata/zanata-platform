@@ -20,20 +20,20 @@
  */
 package org.zanata.rest.compat.v1_5_0;
 
+import javax.ws.rs.core.Response.Status;
+
 import org.dbunit.operation.DatabaseOperation;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.ClientResponse;
-import org.testng.annotations.Test;
-import org.zanata.ZanataCompatibilityTest;
+import org.junit.Test;
+import org.zanata.RestTest;
 import org.zanata.v1_5_0.rest.client.IProjectIterationResource;
 import org.zanata.v1_5_0.rest.dto.ProjectIteration;
-
-import javax.ws.rs.core.Response.Status;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-@Test(groups = {"compatibility-tests", "seam-tests"} )
-public class ProjectIterationCompatibilityTest extends ZanataCompatibilityTest
+public class ProjectIterationCompatibilityITCase extends RestTest
 {
 
    @Override
@@ -43,9 +43,11 @@ public class ProjectIterationCompatibilityTest extends ZanataCompatibilityTest
    }
    
    @Test
+   @RunAsClient
    public void getXmlProjectIteration() throws Exception
    {
-      IProjectIterationResource iterationClient = super.createProxy(IProjectIterationResource.class, "/projects/p/sample-project/iterations/i/1.0");
+      IProjectIterationResource iterationClient = super.createProxy( createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
+            IProjectIterationResource.class, "/projects/p/sample-project/iterations/i/1.0");
       ClientResponse<ProjectIteration> response = iterationClient.get();
       
       assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
@@ -55,14 +57,17 @@ public class ProjectIterationCompatibilityTest extends ZanataCompatibilityTest
    }
    
    @Test
+   @RunAsClient
    public void putXmlProjectIteration() throws Exception
    {
       ProjectIteration newIteration = new ProjectIteration("new-iteration");
       
-      IProjectIterationResource iterationClient = super.createProxy(IProjectIterationResource.class, "/projects/p/sample-project/iterations/i/" + newIteration.getId());
+      IProjectIterationResource iterationClient = super.createProxy( createClientProxyFactory(ADMIN, ADMIN_KEY),
+            IProjectIterationResource.class, "/projects/p/sample-project/iterations/i/" + newIteration.getId());
       ClientResponse response = iterationClient.put(newIteration);
       
       assertThat(response.getStatus(), is(Status.CREATED.getStatusCode())); // 201
+      response.releaseConnection();
       
       // Retreive it again
       ClientResponse<ProjectIteration> getResponse = iterationClient.get();

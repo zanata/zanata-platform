@@ -21,11 +21,13 @@
 package org.zanata.rest.compat.v1_5_0;
 
 import java.util.List;
+import javax.ws.rs.core.Response.Status;
 
 import org.dbunit.operation.DatabaseOperation;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.ClientResponse;
-import org.testng.annotations.Test;
-import org.zanata.ZanataCompatibilityTest;
+import org.junit.Test;
+import org.zanata.RestTest;
 import org.zanata.v1_5_0.common.ContentState;
 import org.zanata.v1_5_0.common.ContentType;
 import org.zanata.v1_5_0.common.LocaleId;
@@ -40,19 +42,17 @@ import org.zanata.v1_5_0.rest.dto.resource.TextFlow;
 import org.zanata.v1_5_0.rest.dto.resource.TextFlowTarget;
 import org.zanata.v1_5_0.rest.dto.resource.TranslationsResource;
 
-import javax.ws.rs.core.Response.Status;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
 
-@Test(groups = {"compatibility-tests", "seam-tests"} )
-public class TranslationsCompatibilityTest extends ZanataCompatibilityTest
+public class TranslationsCompatibilityITCase extends RestTest
 {
 
    @Override
    protected void prepareDBUnitOperations()
    {
+      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/ClearAllTables.dbunit.xml", DatabaseOperation.DELETE_ALL));
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/AccountData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/LocalesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
@@ -63,6 +63,7 @@ public class TranslationsCompatibilityTest extends ZanataCompatibilityTest
    }
    
    @Test
+   @RunAsClient
    public void postResource() throws Exception
    {
       // Create a new Resource
@@ -78,10 +79,12 @@ public class TranslationsCompatibilityTest extends ZanataCompatibilityTest
       res.getTextFlows().add(tf1);
       
       
-      ITranslationResources translationsClient = super.createProxy(ITranslationResources.class, "/projects/p/sample-project/iterations/i/1.0/r/");
+      ITranslationResources translationsClient = super.createProxy( createClientProxyFactory(ADMIN, ADMIN_KEY),
+            ITranslationResources.class, "/projects/p/sample-project/iterations/i/1.0/r/");
       ClientResponse<String> response = translationsClient.post(res, new StringSet(PoHeader.ID + ";" + SimpleComment.ID));
       
       assertThat( response.getStatus(), is(Status.CREATED.getStatusCode()) ); // 201
+      response.releaseConnection();
       
       // Verify that it was created successfully
       ClientResponse<Resource> resourceResponse = translationsClient.getResource(res.getName(), new StringSet(PoHeader.ID + ";" + SimpleComment.ID));
@@ -112,6 +115,7 @@ public class TranslationsCompatibilityTest extends ZanataCompatibilityTest
    }
    
    @Test
+   @RunAsClient
    public void doublePostResource() throws Exception
    {
       // Create a new Resource
@@ -122,18 +126,22 @@ public class TranslationsCompatibilityTest extends ZanataCompatibilityTest
       res.setRevision(1);
       
       // Post once
-      ITranslationResources translationsClient = super.createProxy(ITranslationResources.class, "/projects/p/sample-project/iterations/i/1.0/r/");
+      ITranslationResources translationsClient = super.createProxy( createClientProxyFactory(ADMIN, ADMIN_KEY),
+            ITranslationResources.class, "/projects/p/sample-project/iterations/i/1.0/r/");
       ClientResponse<String> response = translationsClient.post(res, new StringSet(PoHeader.ID + ";" + SimpleComment.ID));
       
       assertThat( response.getStatus(), is(Status.CREATED.getStatusCode()) ); // 201
+      response.releaseConnection();
       
       // Post Twice (should conflict)
       response = translationsClient.post(res, new StringSet(PoHeader.ID + ";" + SimpleComment.ID));
       
       assertThat(response.getStatus(), is(Status.CONFLICT.getStatusCode())); // 409
+      response.releaseConnection();
    }
    
    @Test
+   @RunAsClient
    public void putResource() throws Exception
    {
       // Create a new Resource
@@ -149,10 +157,12 @@ public class TranslationsCompatibilityTest extends ZanataCompatibilityTest
       res.getTextFlows().add(tf1);
       
       
-      ITranslationResources translationsClient = super.createProxy(ITranslationResources.class, "/projects/p/sample-project/iterations/i/1.0/r/");
+      ITranslationResources translationsClient = super.createProxy( createClientProxyFactory(ADMIN, ADMIN_KEY),
+            ITranslationResources.class, "/projects/p/sample-project/iterations/i/1.0/r/");
       ClientResponse<String> response = translationsClient.putResource(res.getName(), res, new StringSet(PoHeader.ID + ";" + SimpleComment.ID));
       
       assertThat( response.getStatus(), is(Status.CREATED.getStatusCode()) ); // 201
+      response.releaseConnection();
       
       // Verify that it was created successfully
       ClientResponse<Resource> resourceResponse = translationsClient.getResource(res.getName(), new StringSet(PoHeader.ID + ";" + SimpleComment.ID));
@@ -183,9 +193,11 @@ public class TranslationsCompatibilityTest extends ZanataCompatibilityTest
    }
    
    @Test
+   @RunAsClient
    public void getXmlResource() throws Exception
    {
-      ITranslationResources translationsClient = super.createProxy(ITranslationResources.class, "/projects/p/sample-project/iterations/i/1.0/r/");
+      ITranslationResources translationsClient = super.createProxy( createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
+            ITranslationResources.class, "/projects/p/sample-project/iterations/i/1.0/r/");
       ClientResponse<Resource> response = translationsClient.getResource("my,path,document-2.txt", new StringSet(SimpleComment.ID));
       Resource resource = response.getEntity();
       
@@ -214,6 +226,7 @@ public class TranslationsCompatibilityTest extends ZanataCompatibilityTest
    }
    
    @Test
+   @RunAsClient
    public void deleteResource() throws Exception
    {
       // Create a new Resource
@@ -223,25 +236,31 @@ public class TranslationsCompatibilityTest extends ZanataCompatibilityTest
       res.setLang(LocaleId.EN_US);
       res.setRevision(1);      
       
-      ITranslationResources translationsClient = super.createProxy(ITranslationResources.class, "/projects/p/sample-project/iterations/i/1.0/r/");
+      ITranslationResources translationsClient = super.createProxy( createClientProxyFactory(ADMIN, ADMIN_KEY),
+            ITranslationResources.class, "/projects/p/sample-project/iterations/i/1.0/r/");
       ClientResponse<String> response = translationsClient.putResource(res.getName(), res, new StringSet(PoHeader.ID + ";" + SimpleComment.ID));
       
       assertThat( response.getStatus(), is(Status.CREATED.getStatusCode()) ); // 201
+      response.releaseConnection();
       
       // Delete the resource
       ClientResponse<String> deleteResponse = translationsClient.deleteResource(res.getName());
       
       assertThat(deleteResponse.getStatus(), is(Status.OK.getStatusCode())); // 200
+      deleteResponse.releaseConnection();
       
       // try to fetch it again
       ClientResponse<Resource> getResponse = translationsClient.getResource(res.getName(), null);
       assertThat( getResponse.getStatus(), is(Status.NOT_FOUND.getStatusCode()) ); // 404
+      getResponse.releaseConnection();
    }
    
    @Test
+   @RunAsClient
    public void getResourceMeta() throws Exception
    {
-      ITranslationResources translationsClient = super.createProxy(ITranslationResources.class, "/projects/p/sample-project/iterations/i/1.0/r/");
+      ITranslationResources translationsClient = super.createProxy( createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
+            ITranslationResources.class, "/projects/p/sample-project/iterations/i/1.0/r/");
       ClientResponse<ResourceMeta> response = translationsClient.getResourceMeta("my,path,document-2.txt", new StringSet(SimpleComment.ID));
       ResourceMeta resMeta = response.getEntity();
       
@@ -253,9 +272,11 @@ public class TranslationsCompatibilityTest extends ZanataCompatibilityTest
    }
    
    @Test
+   @RunAsClient
    public void putResourceMeta() throws Exception
    {
-      ITranslationResources translationsClient = super.createProxy(ITranslationResources.class, "/projects/p/sample-project/iterations/i/1.0/r/");
+      ITranslationResources translationsClient = super.createProxy( createClientProxyFactory(ADMIN, ADMIN_KEY),
+            ITranslationResources.class, "/projects/p/sample-project/iterations/i/1.0/r/");
       ResourceMeta resMeta = new ResourceMeta();
       resMeta.setName("my/path/document-2.txt");
       resMeta.setType(ResourceType.FILE);
@@ -266,6 +287,7 @@ public class TranslationsCompatibilityTest extends ZanataCompatibilityTest
       
       ClientResponse<String> putResponse = translationsClient.putResourceMeta("my,path,document-2.txt", resMeta, null);
       assertThat(putResponse.getStatus(), is(Status.OK.getStatusCode())); // 200
+      putResponse.releaseConnection();
       
       // Fetch again
       ClientResponse<ResourceMeta> getResponse = translationsClient.getResourceMeta("my,path,document-2.txt", null);
@@ -280,9 +302,11 @@ public class TranslationsCompatibilityTest extends ZanataCompatibilityTest
    }
    
    @Test
+   @RunAsClient
    public void getTranslations() throws Exception
    {
-      ITranslationResources translationsClient = super.createProxy(ITranslationResources.class, "/projects/p/sample-project/iterations/i/1.0/r/");
+      ITranslationResources translationsClient = super.createProxy( createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
+            ITranslationResources.class, "/projects/p/sample-project/iterations/i/1.0/r/");
       ClientResponse<TranslationsResource> response = translationsClient.getTranslations("my,path,document-2.txt", LocaleId.EN_US, new StringSet(SimpleComment.ID));
       TranslationsResource transRes = response.getEntity();
       
@@ -318,9 +342,11 @@ public class TranslationsCompatibilityTest extends ZanataCompatibilityTest
    }
    
    @Test
+   @RunAsClient
    public void putTranslations() throws Exception
    {
-      ITranslationResources translationsClient = super.createProxy(ITranslationResources.class, "/projects/p/sample-project/iterations/i/1.0/r/");
+      ITranslationResources translationsClient = super.createProxy( createClientProxyFactory(ADMIN, ADMIN_KEY),
+            ITranslationResources.class, "/projects/p/sample-project/iterations/i/1.0/r/");
       ClientResponse<TranslationsResource> response = translationsClient.getTranslations("my,path,document-2.txt", LocaleId.EN_US, new StringSet(SimpleComment.ID));
       TranslationsResource transRes = response.getEntity();
       
@@ -344,6 +370,7 @@ public class TranslationsCompatibilityTest extends ZanataCompatibilityTest
       ClientResponse<String> putResponse = translationsClient.putTranslations("my,path,document-2.txt", LocaleId.EN_US, transRes, new StringSet(SimpleComment.ID));
       
       assertThat(putResponse.getStatus(), is(Status.OK.getStatusCode())); // 200
+      putResponse.releaseConnection();
       
       // Retrieve the translations once more to make sure they were changed accordingly
       response = translationsClient.getTranslations("my,path,document-2.txt", LocaleId.EN_US, new StringSet(SimpleComment.ID));
@@ -381,12 +408,15 @@ public class TranslationsCompatibilityTest extends ZanataCompatibilityTest
    }
 
    @Test
+   @RunAsClient
    public void deleteTranslations() throws Exception
    {
-      ITranslationResources translationsClient = super.createProxy(ITranslationResources.class, "/projects/p/sample-project/iterations/i/1.0/r/");
+      ITranslationResources translationsClient = super.createProxy( createClientProxyFactory(ADMIN, ADMIN_KEY),
+            ITranslationResources.class, "/projects/p/sample-project/iterations/i/1.0/r/");
       ClientResponse<String> response = translationsClient.deleteTranslations("my,path,document-3.txt", LocaleId.EN_US);
       
       assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
+      response.releaseConnection();
       
       // try to fetch them again
       ClientResponse<TranslationsResource> getResponse = translationsClient.getTranslations(
