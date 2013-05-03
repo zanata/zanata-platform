@@ -132,7 +132,7 @@ public class TranslatedTextFlowFilter extends Filter
                boolean indexReaderClosed = reader.getRefCount() <= 0;
                if (indexReaderClosed)
                {
-                  log.warn("IndexReader for locale {} is closed; removing cached DocIdSet", locale);
+                  log.info("IndexReader for locale {} is closed; removing cached DocIdSet", locale);
                   map.remove(reader);
                }
                OpenBitSet docIdSet = map.get(reader);
@@ -159,7 +159,7 @@ public class TranslatedTextFlowFilter extends Filter
                      }
                   }
                }
-         }
+            }
          }
          catch (AlreadyClosedException e)
          {

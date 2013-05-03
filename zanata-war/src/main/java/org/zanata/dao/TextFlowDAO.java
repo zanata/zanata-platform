@@ -84,14 +84,19 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       q.setCacheable(false).setComment("TextFlowDAO.findIdsWithTranslations");
 
       ScrollableResults results = q.scroll(ScrollMode.FORWARD_ONLY);
-      OpenBitSet resultBitSet = new OpenBitSet();
-      while( results.next() )
+      try
       {
-         resultBitSet.set( results.getLong(0) ); // results[0] => TextFlow id
+         OpenBitSet resultBitSet = new OpenBitSet();
+         while( results.next() )
+         {
+            resultBitSet.set( results.getLong(0) ); // results[0] => TextFlow id
+         }
+         return resultBitSet;
       }
-      results.close();
-
-      return resultBitSet;
+      finally
+      {
+         results.close();
+      }
    }
 
    public HTextFlow getById(HDocument document, String id)
