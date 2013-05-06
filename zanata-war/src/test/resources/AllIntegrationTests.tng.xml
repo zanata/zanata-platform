@@ -27,58 +27,8 @@
      	<test name="Seam Tests">
      		<classes>
             <class name="org.zanata.server.rpc.ActivateWorkspaceActionSeamTest"/>
-            <class name="org.zanata.dao.LocaleMemberDAOTest"/>
+            <class name="org.zanata.dao.LocaleMemberDAOITCasese"/>
      		</classes>
      	</test>
  -->
-     	<test name="Raw Rest Tests">
-     		<classes>
-     			<class name="org.zanata.rest.service.raw.AccountRawRestITCase"/>
-     			<class name="org.zanata.rest.service.raw.GlossaryRawRestITCase"/>
-     			<class name="org.zanata.rest.service.raw.ProjectIterationRawRestITCase"/>
-     			<class name="org.zanata.rest.service.raw.ProjectRawRestITCase"/>
-     			<class name="org.zanata.rest.service.raw.FileRawRestITCase"/>
-     			<class name="org.zanata.rest.service.raw.VersionRawRestITCase"/>
-                <class name="org.zanata.rest.service.raw.StatisticsRawRestITCase"/>
-     		</classes>
-     	</test>
-     	<test name="Backwards Compatibility Tests">
-     		<classes>
-     			<!-- Zanata 1.3 Compatibility Tests -->
-     			<class name="org.zanata.rest.compat.v1_3.ProjectCompatibilityITCase"/>
-     			<class name="org.zanata.rest.compat.v1_3.ProjectRawCompatibilityITCase"/>
-     			<class name="org.zanata.rest.compat.v1_3.AccountCompatibilityITCase"/>
-     			<class name="org.zanata.rest.compat.v1_3.AccountRawCompatibilityITCase"/>
-     			<class name="org.zanata.rest.compat.v1_3.VersionCompatibilityITCase"/>
-     			<class name="org.zanata.rest.compat.v1_3.VersionRawCompatibilityITCase"/>
-     			<class name="org.zanata.rest.compat.v1_3.TranslationsCompatibilityITCase"/>
-     			<class name="org.zanata.rest.compat.v1_3.TranslationsRawCompatibilityITCase"/>
-     			<class name="org.zanata.rest.compat.v1_3.ProjectIterationCompatibilityITCase"/>
-     			<class name="org.zanata.rest.compat.v1_3.ProjectIterationRawCompatibilityITCase"/>
-     		
-     			<!-- Zanata 1.4.4 Compatibility Tests -->
-     			<class name="org.zanata.rest.compat.v1_4_4.ProjectCompatibilityITCase"/>
-     			<class name="org.zanata.rest.compat.v1_4_4.ProjectRawCompatibilityITCase"/>
-     			<class name="org.zanata.rest.compat.v1_4_4.AccountCompatibilityITCase"/>
-     			<class name="org.zanata.rest.compat.v1_4_4.AccountRawCompatibilityITCase"/>
-     			<class name="org.zanata.rest.compat.v1_4_4.VersionCompatibilityITCase"/>
-     			<class name="org.zanata.rest.compat.v1_4_4.VersionRawCompatibilityITCase"/>
-     			<class name="org.zanata.rest.compat.v1_4_4.TranslationsCompatibilityITCase"/>
-     			<class name="org.zanata.rest.compat.v1_4_4.TranslationsRawCompatibilityITCase"/>
-     			<class name="org.zanata.rest.compat.v1_4_4.ProjectIterationCompatibilityITCase"/>
-     			<class name="org.zanata.rest.compat.v1_4_4.ProjectIterationRawCompatibilityITCase"/>
-
-                <!-- Zanata 1.5.0 Compatibility Tests -->
-                <class name="org.zanata.rest.compat.v1_5_0.ProjectCompatibilityTest"/>
-                <class name="org.zanata.rest.compat.v1_5_0.ProjectRawCompatibilityTest"/>
-                <class name="org.zanata.rest.compat.v1_5_0.AccountCompatibilityTest"/>
-                <class name="org.zanata.rest.compat.v1_5_0.AccountRawCompatibilityTest"/>
-                <class name="org.zanata.rest.compat.v1_5_0.VersionCompatibilityTest"/>
-                <class name="org.zanata.rest.compat.v1_5_0.VersionRawCompatibilityTest"/>
-                <class name="org.zanata.rest.compat.v1_5_0.TranslationsCompatibilityTest"/>
-                <class name="org.zanata.rest.compat.v1_5_0.TranslationsRawCompatibilityTest"/>
-                <class name="org.zanata.rest.compat.v1_5_0.ProjectIterationCompatibilityTest"/>
-                <class name="org.zanata.rest.compat.v1_5_0.ProjectIterationRawCompatibilityTest"/>
-     		</classes>
-     	</test>
 </suite>

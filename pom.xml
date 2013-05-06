@@ -357,6 +357,12 @@
               <!-- TODO Overwritten from arquillian BOM 1.0.3.Final to use the MavenImporter -->
           </dependency>
 
+          <dependency>
+              <groupId>org.jboss.arquillian.protocol</groupId>
+              <artifactId>arquillian-protocol-servlet</artifactId>
+              <version>1.0.3.Final</version>
+          </dependency>
+
           <!-- Arquillian -->
           <dependency>
               <groupId>org.jboss.arquillian</groupId>

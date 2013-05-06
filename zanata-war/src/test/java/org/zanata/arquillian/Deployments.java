@@ -61,6 +61,9 @@ public class Deployments
       // This doesn't work either...
       //archive.addAsLibraries(Maven.resolver().loadPomFromFile("pom.xml").resolve("de.novanic.gwteventservice:eventservice").withoutTransitivity().asFile());
 
+      // We Don't need java melody
+      archive.delete("/WEB-INF/lib/javamelody-core-1.41.0.jar");
+
       // Local packages
       archive.addPackages(true, new Filter<ArchivePath>()
       {
@@ -87,9 +90,6 @@ public class Deployments
       archive.addAsWebInfResource(new File("src/test/resources/arquillian/zanata.properties"),
             "classes/zanata.properties");
       archive.addAsWebInfResource("arquillian/test-web.xml", "web.xml");
-
-      // Liquibase changelogs
-      addAllAsResources(archive, new File("src/main/resources/db"));
 
       addRemoteHelpers(archive);
 
