@@ -3,10 +3,10 @@
  * This is due to some problems while connecting via JMX to check for the health of
  * the deployment and EAP 6.0.1.
  * See lines: 137 and 316 and for the respective alterations.
- * 137: The root node does not contain the specified attribute. Fetching the attribute from a new request may solve it.
+ * 141: The root node does not contain the specified attribute. Fetching the attribute from a new request may solve it.
  *      Hardcoding it for our tests.
- * 316: Specifying the recursive parameter on an "undefined" node (which is the case when reading the root node) makes
- *      the server return an undefined response.
+ * 320: Specifying the recursive parameter on some nodes ("undefined,"which is the case when reading the root node; and
+ *      a deployment node) makes the server return an undefined response or an error.
  */
 /*
  * JBoss, Home of Professional Open Source
@@ -65,6 +65,7 @@ import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.as.controller.operations.common.Util;
 import org.jboss.dmr.ModelNode;
 
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADDRESS;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.DEPLOYMENT;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.FAILURE_DESCRIPTION;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
@@ -159,7 +160,7 @@ public class ManagementClient
       HTTPContext context = new HTTPContext(webURI.getHost(), webURI.getPort());
       metaData.addContext(context);
       try {
-         ModelNode deploymentNode = readResource(createDeploymentAddress(deploymentName));
+         ModelNode deploymentNode = readResource(createDeploymentAddress(deploymentName), false);
 
          if (isWebArchive(deploymentName)) {
             extractWebArchiveContexts(context, deploymentNode);
@@ -203,7 +204,7 @@ public class ManagementClient
    }
 
    private void readRootNode() throws Exception {
-      rootNode = readResource(new ModelNode());
+      rootNode = readResource(new ModelNode(), false);
    }
 
    private static ModelNode defined(final ModelNode node, final String message) {
@@ -275,7 +276,7 @@ public class ManagementClient
    }
 
    private void extractWebArchiveContexts(HTTPContext context, String deploymentName, ModelNode deploymentNode) {
-      if (deploymentNode.hasDefined(SUBSYSTEM)) {
+      /*if (deploymentNode.hasDefined(SUBSYSTEM)) {
          ModelNode subsystem = deploymentNode.get(SUBSYSTEM);
          if (subsystem.hasDefined(WEB)) {
             ModelNode webSubSystem = subsystem.get(WEB);
@@ -288,13 +289,36 @@ public class ManagementClient
                      }
                   }
                }
-                    /*
+                    *//*
                      * This is a WebApp, it has some form of webcontext whether it has a
                      * Servlet or not. AS7 does not expose jsp / default servlet in mgm api
-                     */
+                     *//*
                context.add(new Servlet("default", toContextName(contextName)));
             }
          }
+      }*/
+      try
+      {
+         ModelNode address = new ModelNode();
+         address.add(DEPLOYMENT).add(DEPLOYMENT, deploymentNode.get(NAME)).add(SUBSYSTEM, WEB);
+         ModelNode webSubSystem = readResource(address, true);
+
+         if( webSubSystem.hasDefined("context-root") )
+         {
+            final String contextName = webSubSystem.get("context-root").asString();
+            if (webSubSystem.hasDefined(SERVLET)) {
+               for (final ModelNode servletNode : webSubSystem.get(SERVLET).asList()) {
+                  for (final String servletName : servletNode.keys()) {
+                     context.add(new Servlet(servletName, toContextName(contextName)));
+                  }
+               }
+            }
+            context.add(new Servlet("default", toContextName(contextName)));
+         }
+      }
+      catch (Exception e)
+      {
+         throw new RuntimeException(e);
       }
    }
 
@@ -314,16 +338,28 @@ public class ManagementClient
    // Common Management API Operations ---------------------------------------------------||
    //-------------------------------------------------------------------------------------||
 
-   private ModelNode readResource(ModelNode address) throws Exception {
+   /**
+    * Additional method that allows the recursive parameter to be defined
+    */
+   private ModelNode readResource(ModelNode address, boolean recursive) throws Exception {
       final ModelNode operation = new ModelNode();
       operation.get(OP).set(READ_RESOURCE_OPERATION);
-      if( !address.asString().equals("undefined") ) {
-         operation.get(RECURSIVE).set("true");
+      if( recursive ) {
+         operation.get(RECURSIVE).set(recursive);
       }
       operation.get(OP_ADDR).set(address);
 
       return executeForResult(operation);
    }
+
+   /*private ModelNode readResource(ModelNode address) throws Exception {
+      final ModelNode operation = new ModelNode();
+      operation.get(OP).set(READ_RESOURCE_OPERATION);
+      operation.get(RECURSIVE).set("true");
+      operation.get(OP_ADDR).set(address);
+
+      return executeForResult(operation);
+   }*/
 
    private ModelNode executeForResult(final ModelNode operation) throws Exception {
       final ModelNode result = client.execute(operation);

@@ -61,7 +61,6 @@ import org.zanata.rest.helper.RemoteTestSignaler;
 @RunWith(Arquillian.class)
 public abstract class RestTest
 {
-   public static final String DEPLOYMENT_NAME = "zanata-tests";
    // Admin credentials
    protected static final String ADMIN = "admin";
    protected static final String ADMIN_KEY = "b6d7044e9ee3b2447c28fb7c50d86d98";
@@ -184,7 +183,7 @@ public abstract class RestTest
     */
    public String getDeploymentUrl()
    {
-      return deploymentUrl.toString() + "/" + DEPLOYMENT_NAME;
+      return deploymentUrl.toString();
    }
 
    /**
@@ -195,7 +194,7 @@ public abstract class RestTest
     */
    public final String getRestEndpointUrl(String resourceUrl)
    {
-      StringBuilder fullUrl = new StringBuilder(getDeploymentUrl() + "/seam/resource/restv1");
+      StringBuilder fullUrl = new StringBuilder(getDeploymentUrl() + "seam/resource/restv1");
       if( !resourceUrl.startsWith("/") )
       {
          fullUrl.append("/");
