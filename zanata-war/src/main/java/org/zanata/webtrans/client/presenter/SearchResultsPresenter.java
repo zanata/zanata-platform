@@ -604,11 +604,8 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                // sure it reloads everything for this document.
 
                HistoryToken token = history.getHistoryToken();
-               if (!contextHolder.getContext().acceptAll())
-               {
-                  contextHolder.updateContext(null); // this will ensure HistoryEventHandlerService fire InitEditorEvent
-                  token.clearEditorFilterAndSearch();
-               }
+               contextHolder.updateContext(null); // this will ensure HistoryEventHandlerService fire InitEditorEvent
+               token.clearEditorFilterAndSearch();
                token.setView(MainView.Editor);
                token.setDocumentPath(docPaths.get(info.getDocId()));
                token.setTextFlowId(info.getTransUnit().getId().toString());
