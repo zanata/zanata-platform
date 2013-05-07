@@ -1347,7 +1347,6 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-testing</artifactId>
-            <version>${hibernate.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -1390,7 +1389,6 @@
 		<dependency>
 			<groupId>org.dbunit</groupId>
 			<artifactId>dbunit</artifactId>
-            <version>2.4.9</version>
             <scope>test</scope>
 		</dependency>
 
@@ -1780,12 +1778,22 @@
 			<version>3.1.8</version>
 		</dependency>
 
-		<dependency>
+        <dependency>
+            <groupId>de.novanic.gwteventservice</groupId>
+            <artifactId>eventservice</artifactId>
+        </dependency>
+
+        <dependency>
 			<groupId>de.novanic.gwteventservice</groupId>
 			<artifactId>gwteventservice</artifactId>
 		</dependency>
 
-		<!-- end of GWT related dependencies -->
+        <dependency>
+            <groupId>de.novanic.gwteventservice</groupId>
+            <artifactId>eventservice-rpc</artifactId>
+        </dependency>
+
+        <!-- end of GWT related dependencies -->
 
 		<dependency>
 			<groupId>org.liquibase</groupId>
@@ -1894,16 +1902,8 @@
           <version>1.12</version>
         </dependency>
         <dependency>
-          <groupId>de.novanic.gwteventservice</groupId>
-          <artifactId>eventservice-rpc</artifactId>
-        </dependency>
-        <dependency>
           <groupId>commons-io</groupId>
           <artifactId>commons-io</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>de.novanic.gwteventservice</groupId>
-          <artifactId>eventservice</artifactId>
         </dependency>
         <dependency>
           <groupId>javax.inject</groupId>

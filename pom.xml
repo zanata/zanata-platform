@@ -148,6 +148,12 @@
 				<version>${icu4j.version}</version>
 			</dependency>
 
+            <dependency>
+                <groupId>org.dbunit</groupId>
+                <artifactId>dbunit</artifactId>
+                <version>2.4.9</version>
+            </dependency>
+
 			<dependency>
 				<groupId>de.novanic.gwteventservice</groupId>
 				<artifactId>gwteventservice</artifactId>
@@ -229,6 +235,12 @@
             <artifactId>hibernate-validator</artifactId>
             <version>${hibernate.validator.version}</version>
          </dependency>
+
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-testing</artifactId>
+                <version>${hibernate.version}</version>
+            </dependency>
 
 			<dependency>
 				<groupId>org.jboss.el</groupId>
@@ -341,19 +353,19 @@
           <dependency>
               <groupId>org.jboss.shrinkwrap.resolver</groupId>
               <artifactId>shrinkwrap-resolver-api</artifactId>
-              <version>2.0.0-alpha-6</version>
+              <version>2.0.0-beta-3</version>
               <!-- TODO Overwritten from arquillian BOM 1.0.3.Final to use the MavenImporter -->
           </dependency>
           <dependency>
               <groupId>org.jboss.shrinkwrap.resolver</groupId>
               <artifactId>shrinkwrap-resolver-api-maven</artifactId>
-              <version>2.0.0-alpha-6</version>
+              <version>2.0.0-beta-3</version>
               <!-- TODO Overwritten from arquillian BOM 1.0.3.Final to use the MavenImporter -->
           </dependency>
           <dependency>
               <groupId>org.jboss.shrinkwrap.resolver</groupId>
               <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
-              <version>2.0.0-alpha-6</version>
+              <version>2.0.0-beta-3</version>
               <!-- TODO Overwritten from arquillian BOM 1.0.3.Final to use the MavenImporter -->
           </dependency>
 

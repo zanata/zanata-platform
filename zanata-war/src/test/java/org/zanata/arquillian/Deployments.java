@@ -33,6 +33,7 @@ import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.RejectDependenciesStrategy;
 
 /**
  * Contains Suite-wide deployments to avoid having to deploy the same package for
@@ -51,18 +52,15 @@ public class Deployments
       WebArchive archive =  ShrinkWrap.create(WebArchive.class, DEPLOYMENT_NAME + ".war");
       archive.addAsLibraries(Maven.resolver()
             .loadPomFromFile("pom.xml")
-            .importRuntimeDependencies()
+            .importRuntimeDependencies(
+                  // Reject some not needed dependencies
+                  new RejectDependenciesStrategy("net.bull.javamelody:javamelody-core")
+            )
             .asFile());
-      // Test dependencies
-      archive.addAsLibraries(Maven.resolver().loadPomFromFile("pom.xml").resolve("org.hibernate:hibernate-testing:4.1.6.Final").withoutTransitivity().asFile());
-      // Missing dependencies
-      // This one resolves to the gwteventservice file inside the maven resolver. Could be a bug with the alpha version
-      archive.addAsLibraries(new File("/home/camunoz/.m2/repository/de/novanic/gwteventservice/eventservice/1.2.1/eventservice-1.2.1.jar"));
-      // This doesn't work either...
-      //archive.addAsLibraries(Maven.resolver().loadPomFromFile("pom.xml").resolve("de.novanic.gwteventservice:eventservice").withoutTransitivity().asFile());
 
-      // We Don't need java melody
-      archive.delete("/WEB-INF/lib/javamelody-core-1.41.0.jar");
+      // Test dependencies
+      archive.addAsLibraries(Maven.resolver().loadPomFromFile("pom.xml").resolve("org.hibernate:hibernate-testing").withoutTransitivity().asFile());
+      archive.addAsLibraries(Maven.resolver().loadPomFromFile("pom.xml").resolve("org.dbunit:dbunit").withoutTransitivity().asFile());
 
       // Local packages
       archive.addPackages(true, new Filter<ArchivePath>()
@@ -72,8 +70,8 @@ public class Deployments
          {
             // Avoid the model package (for some reason it's being included as a class file)
             return !object.get().startsWith("/org/zanata/model/") &&
-                  // and the ui package (not needed)
-                  !object.get().startsWith("/org/zanata/ui");
+                   // and the ui package (not needed)
+                   !object.get().startsWith("/org/zanata/ui");
          }
       }, "org.zanata");
 
@@ -89,14 +87,13 @@ public class Deployments
       archive.addAsResource("security.drl");
       archive.addAsWebInfResource(new File("src/test/resources/arquillian/zanata.properties"),
             "classes/zanata.properties");
-      archive.addAsWebInfResource("arquillian/test-web.xml", "web.xml");
+      archive.setWebXML("arquillian/test-web.xml");
+      //archive.addAsWebInfResource("arquillian/test-web.xml", "web.xml");
 
       addRemoteHelpers(archive);
 
       // Export (to actually see what is being deployed)
       archive.as(ZipExporter.class).exportTo(new File("/home/camunoz/temp/archive.war"), true);
-      //archive.as(ZipExporter.class).exportTo(new File("/opt/jboss-eap-6.0-standalone/standalone/deployments/archive.war"), true);
-
 
       return archive;
    }
@@ -105,7 +102,6 @@ public class Deployments
    {
       archive.addPackages(true, "org.zanata.rest.helper");
       archive.addPackages(true, "org.zanata.arquillian");
-      archive.addAsLibraries(Maven.resolver().loadPomFromFile("pom.xml").resolve("org.dbunit:dbunit:2.4.9").withoutTransitivity().asFile());
       addAllAsResources(archive, new File("src/test/resources/org/zanata/test/model"), "org/zanata/test/model");
    }
 
