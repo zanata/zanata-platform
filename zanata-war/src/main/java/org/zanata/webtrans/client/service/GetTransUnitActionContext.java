@@ -188,6 +188,17 @@ public class GetTransUnitActionContext
       return result;
    }
 
+   public GetTransUnitActionContext setAcceptAll()
+   {
+      GetTransUnitActionContext result = new GetTransUnitActionContext(this);
+      result.filterTranslated = false;
+      result.filterNeedReview = false;
+      result.filterHasError = false;
+      result.filterUntranslated = false;
+      result.findMessage = null;
+      return result;
+   }
+
    @Override
    public String toString()
    {
