@@ -37,7 +37,7 @@ public class TextContentsDisplay
       return new TextContentsDisplay(contents, highlightString);
    }
 
-   public static TextContentsDisplay asSyntaxHighlight(List<String> contents)
+   public static TextContentsDisplay asSyntaxHighlight(Iterable<String> contents)
    {
       return new TextContentsDisplay(contents, EMPTY_SEARCH_TERM);
    }
