@@ -1,31 +1,23 @@
 package org.zanata;
 
-import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.persister.collection.AbstractCollectionPersister;
-import org.hibernate.persister.entity.EntityPersister;
-import org.jboss.seam.contexts.TestLifecycle;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
-import org.jboss.seam.mock.MockHttpSession;
-import org.jboss.seam.servlet.ServletSessionMap;
-import org.junit.Before;
-import org.junit.BeforeClass;
-//import org.testng.annotations.AfterMethod;
-//import org.testng.annotations.AfterSuite;
-//import org.testng.annotations.BeforeMethod;
-//import org.testng.annotations.BeforeSuite;
-//import org.testng.annotations.Listeners;
-//import org.testng.annotations.Test;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.Listeners;
+import org.testng.annotations.Test;
 import org.zanata.testng.TestMethodListener;
 
-//@Listeners(TestMethodListener.class)
-//@Test(groups = { "jpa-tests" })
+@Listeners(TestMethodListener.class)
+@Test(groups = { "jpa-tests" })
 public abstract class ZanataJpaTest
 {
 
@@ -37,7 +29,7 @@ public abstract class ZanataJpaTest
 
    Log log = Logging.getLog(ZanataJpaTest.class);
 
-   //@BeforeMethod
+   @BeforeMethod
    public void setupEM()
    {
       log.debug("Setting up EM");
@@ -45,7 +37,7 @@ public abstract class ZanataJpaTest
       em.getTransaction().begin();
    }
 
-   //@AfterMethod
+   @AfterMethod
    public void shutdownEM()
    {
       log.debug("Shutting down EM");
@@ -64,14 +56,14 @@ public abstract class ZanataJpaTest
       return (Session) em.getDelegate();
    }
 
-   //@BeforeSuite
+   @BeforeSuite
    public void initializeEMF()
    {
       log.debug("Initializing EMF");
       emf = Persistence.createEntityManagerFactory(PERSIST_NAME);
    }
 
-   //@AfterSuite
+   @AfterSuite
    public void shutDownEMF()
    {
       log.debug("Shutting down EMF");
@@ -109,7 +101,7 @@ public abstract class ZanataJpaTest
     */
    protected void clearHibernateSecondLevelCache()
    {
-      /*SessionFactory sessionFactory = ((Session)em.getDelegate()).getSessionFactory();
+      SessionFactory sessionFactory = ((Session)em.getDelegate()).getSessionFactory();
       try
       {
          sessionFactory.getCache().evictEntityRegions();
@@ -118,7 +110,7 @@ public abstract class ZanataJpaTest
       catch (Exception e)
       {
          System.out.println(" *** Cache Exception "+ e.getMessage());
-      }*/
+      }
    }
 
 }

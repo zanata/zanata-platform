@@ -93,7 +93,7 @@ public class Deployments
       addRemoteHelpers(archive);
 
       // Export (to actually see what is being deployed)
-      archive.as(ZipExporter.class).exportTo(new File("/home/camunoz/temp/archive.war"), true);
+      //archive.as(ZipExporter.class).exportTo(new File("/home/camunoz/temp/archive.war"), true);
 
       return archive;
    }

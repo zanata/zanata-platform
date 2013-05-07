@@ -5,20 +5,13 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.testng.Assert.assertFalse;
 
-import java.net.URI;
-
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
-import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
-import org.jboss.resteasy.spi.ResteasyProviderFactory;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.zanata.ZanataDBUnitSeamTest;
 import org.zanata.ZanataRestTest;
 import org.zanata.common.EntityStatus;
-import org.zanata.rest.client.ApiKeyHeaderDecorator;
 import org.zanata.rest.client.IProjectsResource;
 import org.zanata.rest.dto.Project;
 import org.zanata.seam.SeamAutowire;

@@ -8,12 +8,9 @@ import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.spi.interception.ClientExecutionContext;
 import org.jboss.resteasy.spi.interception.ClientExecutionInterceptor;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-import org.zanata.ZanataDBUnitSeamTest;
 import org.zanata.ZanataRestTest;
 import org.zanata.rest.client.ISourceDocResource;
 import org.zanata.rest.client.ITranslatedDocResource;
-import org.zanata.rest.client.TestProxyFactory;
 
 public abstract class ResourceTranslationServiceRestTest extends ZanataRestTest
 {

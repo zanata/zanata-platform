@@ -235,11 +235,12 @@ public abstract class RestTest
    {
       try
       {
-         return new TestProxyFactory(new URI(getRestEndpointUrl()),
-                                     username,
-                                     apiKey,
-                                     null,
-                                     new VersionInfo("Test", "Test"));
+         return new ZanataProxyFactory(new URI(getRestEndpointUrl()),
+                                       username,
+                                       apiKey,
+                                       null,
+                                       new VersionInfo("Test", "Test"),
+                                       false);
       }
       catch (URISyntaxException e)
       {

@@ -17,7 +17,7 @@
             <property name="javaHome">/usr/lib/jvm/jre-1.6.0-openjdk.x86_64</property>
             <property name="javaVmArguments">-Xms1536m -Xmx1536m -XX:MaxPermSize=256m -Dorg.jboss.as.logging.per-deployment=false <!---Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8787--></property>
             <!-- From JBOSS_HOME/standalone/configuration -->
-            <property name="serverConfig">../../../../../../../../../../../home/camunoz/projects/zanata-root/server/zanata-war/src/test/resources/arquillian/standalone.xml</property>
+            <property name="serverConfig">zanata-standalone.xml</property>
             <!--<property name="allowConnectingToRunningServer">true</property>-->
         </configuration>
     </container>

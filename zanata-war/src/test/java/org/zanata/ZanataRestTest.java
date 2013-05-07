@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.validation.Validation;
+import javax.validation.ValidatorFactory;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
@@ -115,7 +116,9 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest
     */
    protected void prepareProviders()
    {
-      seamAutowire.use("validatorFactory", Validation.buildDefaultValidatorFactory());
+      ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+      seamAutowire.use("validatorFactory", validatorFactory)
+                  .use("validator", validatorFactory.getValidator());
       providerInstances.add(seamAutowire.autowire(HibernateValidationInterceptor.class));
       providers.add(TraceDebugInterceptor.class);
    }

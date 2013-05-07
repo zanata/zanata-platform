@@ -26,7 +26,7 @@
 <!-- FIXME get these tests working again
      	<test name="Seam Tests">
      		<classes>
-            <class name="org.zanata.server.rpc.ActivateWorkspaceActionSeamTest"/>
+            <class name="org.zanata.server.rpc.ActivateWorkspaceActionITCase>
             <class name="org.zanata.dao.LocaleMemberDAOITCasese"/>
      		</classes>
      	</test>

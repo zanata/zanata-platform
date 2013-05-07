@@ -179,6 +179,18 @@
                             <goal>run</goal>
                         </goals>
                     </execution>
+                    <execution>
+                        <id>prepare-arquillian-container</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <copy file="${project.basedir}/src/test/resources/arquillian/standalone.xml" tofile="${jboss.home}/standalone/configuration/zanata-standalone.xml"/>
+                            </target>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
 			<plugin>
@@ -395,50 +407,25 @@
 				</configuration>
 			</plugin>
 
-			<!-- Configure Failsafe to run in integration-test phase -->
+			<!-- Configure Failsafe to run in integration-test/verify phase -->
 			<plugin>
 				<artifactId>maven-failsafe-plugin</artifactId>
 				<executions>
+                    <!-- Container (Arquillian tests) -->
 					<execution>
-						<id>integration-test</id>
+						<id>container-tests</id>
 						<goals>
 							<goal>integration-test</goal>
+                            <goal>verify</goal>
 						</goals>
-					</execution>
-					<execution>
-						<id>verify</id>
-						<goals>
-							<goal>verify</goal>
-						</goals>
+                        <configuration>
+                            <includes>
+                                <include>**/*ITCase.java</include>
+                            </includes>
+                            <testNGArtifactName>none:none</testNGArtifactName>
+                        </configuration>
 					</execution>
 				</executions>
-				<configuration>
-					<!--<redirectTestOutputToFile>false</redirectTestOutputToFile>
-					<printSummary>true</printSummary>
-					<forkMode>always</forkMode>
-					<suiteXmlFiles>
-						<suiteXmlFile>src/test/resources/AllIntegrationTests.tng.xml</suiteXmlFile>
-					</suiteXmlFiles>
-					<additionalClasspathElements>
-						<additionalClasspathElement>${project.basedir}/src/test/jboss-embedded-bootstrap</additionalClasspathElement>
-						<additionalClasspathElement>${project.build.directory}/zanata-seamtests/WEB-INF/classes</additionalClasspathElement>
-						<additionalClasspathElement>${project.build.directory}/zanata-seamtests</additionalClasspathElement>
-					</additionalClasspathElements>
-					<childDelegation>true</childDelegation>
-					<useSystemClassLoader>true</useSystemClassLoader>
-					<argLine xml:space="preserve">-Xmx1024m -XX:MaxPermSize=512m -XX:+UseConcMarkSweepGC
-						-XX:+CMSClassUnloadingEnabled -XX:+HeapDumpOnOutOfMemoryError
-						-XX:HeapDumpPath=${project.build.directory} -Dsun.lang.ClassLoader.allowArraySyntax=true</argLine>
-					<classpathDependencyExcludes>
-						<classpathDependencyExclude>
-							&lt;!&ndash; collides with XMLLoginConfigImpl in jboss-embedded-all &ndash;&gt;
-							org.picketbox:picketbox
-						</classpathDependencyExclude>
-					</classpathDependencyExcludes>-->
-                    <includes>
-                        <include>**/*ITCase.java</include>
-                    </includes>
-				</configuration>
 			</plugin>
 
 			<plugin>
@@ -594,20 +581,6 @@
                         <version>${groovyVersion}</version>
                     </dependency>
                 </dependencies>
-            </plugin>
-
-            <plugin>
-                <groupId>org.jboss.as.plugins</groupId>
-                <artifactId>jboss-as-maven-plugin</artifactId>
-                <version>7.3.Final</version>
-                <configuration>
-                    <force>true</force>
-                    <groupId>${project.groupId}</groupId>
-                    <artifactId>${project.artifactId}</artifactId>
-                    <version>${project.version}</version>
-                    <filename>${war.name}-${project.version}.war</filename>
-                    <name>zanata.war</name>
-                </configuration>
             </plugin>
 
 		</plugins>
