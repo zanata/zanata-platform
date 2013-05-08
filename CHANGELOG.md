@@ -3,6 +3,8 @@
 ## zanata-2.3.1
  * Bug fixes:
   * Prevent incorrect validation warnings with concurrent edits
+  * Search result back to editor causes multiple code mirror focus
+  * Support message bookmark
 
 
 ## TODO fill in releases between 2.0.3 and 2.3.1
