@@ -86,6 +86,21 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
       }
    }
 
+   /**
+    * Returns the Base url to be used for rest Requests.
+    */
+   protected URL getBaseUrl()
+   {
+      try
+      {
+         return new URL(fixBase(crf.getBase()).toString() + RESOURCE_PREFIX);
+      }
+      catch (MalformedURLException e)
+      {
+         throw new RuntimeException(e);
+      }
+   }
+
    public <T> T createProxy(Class<T> clazz, URI baseUri)
    {
       log.debug("{} proxy uri: {}", clazz.getSimpleName(), baseUri);
@@ -106,12 +121,7 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
    {
       try
       {
-         URL url = new URL(crf.getBase().toURL(), RESOURCE_PREFIX );
-         return createProxy(clazz, url.toURI());
-      }
-      catch(MalformedURLException e)
-      {
-         throw new RuntimeException(e);
+         return createProxy(clazz, new URI(getBaseUrl().toString()));
       }
       catch (URISyntaxException e)
       {
@@ -150,7 +160,7 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
    {
       try
       {
-         URL url = new URL(crf.getBase().toURL(), RESOURCE_PREFIX + "/glossary");
+         URL url = new URL(getBaseUrl(), "glossary");
          return url.toURI();
       }
       catch (MalformedURLException e)
@@ -172,7 +182,7 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
    {
       try
       {
-         URL url = new URL(crf.getBase().toURL(), RESOURCE_PREFIX + "/accounts/u/" + username);
+         URL url = new URL(getBaseUrl(), "accounts/u/" + username);
          return url.toURI();
       }
       catch (MalformedURLException e)
@@ -195,7 +205,7 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
    {
       try
       {
-         URL url = new URL(crf.getBase().toURL(), RESOURCE_PREFIX + "/projects/p/" + proj);
+         URL url = new URL(getBaseUrl(), "projects/p/" + proj);
          return url.toURI();
       }
       catch (MalformedURLException e)
@@ -217,7 +227,7 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
    {
       try
       {
-         URL url = new URL(crf.getBase().toURL(), RESOURCE_PREFIX + "/projects/p/" + proj + "/iterations/i/" + iter);
+         URL url = new URL(getBaseUrl(), "projects/p/" + proj + "/iterations/i/" + iter);
          return url.toURI();
       }
       catch (MalformedURLException e)
@@ -254,10 +264,10 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
 
    private URI getFileURI()
    {
-      String spec = RESOURCE_PREFIX + "/file/";
+      String spec = "file/";
       try
       {
-         return new URL(crf.getBase().toURL(), spec).toURI();
+         return new URL(getBaseUrl(), spec).toURI();
       }
       catch (MalformedURLException e)
       {
@@ -291,10 +301,10 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
    @Override
    public URI getResourceURI(String projectSlug, String versionSlug)
    {
-      String spec = RESOURCE_PREFIX + "/projects/p/" + projectSlug + "/iterations/i/" + versionSlug + "/r";
+      String spec = "projects/p/" + projectSlug + "/iterations/i/" + versionSlug + "/r";
       try
       {
-         return new URL(crf.getBase().toURL(), spec).toURI();
+         return new URL(getBaseUrl(), spec).toURI();
       }
       catch (MalformedURLException e)
       {
@@ -323,7 +333,7 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
       URL url;
       try
       {
-         url = new URL(crf.getBase().toURL(), RESOURCE_PREFIX + "/version");
+         url = new URL(getBaseUrl(), "version");
          return createProxy(IVersionResource.class, url.toURI());
       }
       catch (MalformedURLException e)
