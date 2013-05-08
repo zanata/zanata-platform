@@ -80,6 +80,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
    private final History history;
    private final Window window;
    private final Window.Location windowLocation;
+   private final ReviewPresenter reviewPresenter;
    private final UserWorkspaceContext userWorkspaceContext;
    private final WebTransMessages messages;
 
@@ -91,9 +92,10 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
    private MainView currentView = null;
 
    @Inject
-   public AppPresenter(AppDisplay display, EventBus eventBus, final SideMenuPresenter sideMenuPresenter, final KeyShortcutPresenter keyShortcutPresenter, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final SearchResultsPresenter searchResultsPresenter, final UserWorkspaceContext userWorkspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)
+   public AppPresenter(AppDisplay display, EventBus eventBus, final SideMenuPresenter sideMenuPresenter, final KeyShortcutPresenter keyShortcutPresenter, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final SearchResultsPresenter searchResultsPresenter, ReviewPresenter reviewPresenter, final UserWorkspaceContext userWorkspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)
    {
       super(display, eventBus);
+      this.reviewPresenter = reviewPresenter;
       this.userWorkspaceContext = userWorkspaceContext;
       this.keyShortcutPresenter = keyShortcutPresenter;
       this.history = history;
@@ -115,6 +117,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
       documentListPresenter.bind();
       translationPresenter.bind();
       searchResultsPresenter.bind();
+      reviewPresenter.bind();//TODO double loading same document with translationPresenter
       sideMenuPresenter.bind();
 
       registerHandler(eventBus.addHandler(ShowSideMenuEvent.getType(), this));
@@ -241,6 +244,15 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
          searchResultsPresenter.revealDisplay();
          sideMenuPresenter.showValidationOptions(false);
          sideMenuPresenter.setOptionMenu(MainView.Search);
+         break;
+      case Review:
+         display.setDocumentLabel(selectedDocument.getPath(), selectedDocument.getName());
+         currentDisplayStats = selectedDocumentStats;
+         translationPresenter.concealDisplay();
+         searchResultsPresenter.concealDisplay();
+         sideMenuPresenter.showValidationOptions(false);
+         sideMenuPresenter.setOptionMenu(MainView.Editor);
+
          break;
       case Documents:
       default:
@@ -372,6 +384,20 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
          if (!token.getView().equals(MainView.Editor))
          {
             token.setView(MainView.Editor);
+            history.newItem(token.toTokenString());
+         }
+      }
+   }
+
+   @Override
+   public void onReviewCLicked()
+   {
+      if (selectedDocument != null)
+      {
+         HistoryToken token = HistoryToken.fromTokenString(history.getToken());
+         if (!token.getView().equals(MainView.Review))
+         {
+            token.setView(MainView.Review);
             history.newItem(token.toTokenString());
          }
       }

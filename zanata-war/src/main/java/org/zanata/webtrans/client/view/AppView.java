@@ -94,12 +94,12 @@ public class AppView extends Composite implements AppDisplay
    Styles style;
    
    @UiField
-   Label editorTab, searchAndReplaceTab, documentListTab;
+   Label editorTab, searchAndReplaceTab, documentListTab, reviewTab;
 
    private Listener listener;
 
    @Inject
-   public AppView(WebTransMessages messages, DocumentListDisplay documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, SideMenuDisplay sideMenuView, final UserWorkspaceContext userWorkspaceContext)
+   public AppView(WebTransMessages messages, DocumentListDisplay documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, ReviewDisplay reviewView, SideMenuDisplay sideMenuView, final UserWorkspaceContext userWorkspaceContext)
    {
       // this must be initialized before uiBinder.createAndBindUi(), or an
       // exception will be thrown at runtime
@@ -123,11 +123,13 @@ public class AppView extends Composite implements AppDisplay
       searchAndReplaceTab.setTitle(messages.projectWideSearchAndReplace());
       documentListTab.setTitle(messages.documentListTitle());
       editorTab.setTitle(messages.editor());
+      reviewTab.setTitle("Review"); //TODO localise
       
       
       content.add(documentListView.asWidget());
       content.add(translationView.asWidget());
       content.add(searchResultsView.asWidget());
+      content.add(reviewView.asWidget());
       
       Window.enableScrolling(false);
    }
@@ -143,6 +145,7 @@ public class AppView extends Composite implements AppDisplay
    private final static int DOCUMENT_VIEW = 0;
    private final static int EDITOR_VIEW = 1;
    private final static int SEARCH_AND_REPLACE_VIEW = 2;
+   private final static int REVIEW_VIEW = 3;
    
    @Override
    public void showInMainView(MainView view)
@@ -164,6 +167,10 @@ public class AppView extends Composite implements AppDisplay
          selectedDocumentSpan.setVisible(true);
          setSelectedTab(editorTab);
          break;
+      case Review:
+         content.selectTab(REVIEW_VIEW);
+         selectedDocumentSpan.setVisible(true);
+         setSelectedTab(reviewTab);
       }
    }
    
@@ -172,6 +179,7 @@ public class AppView extends Composite implements AppDisplay
       editorTab.removeStyleName(style.selectedTab());
       searchAndReplaceTab.removeStyleName(style.selectedTab());
       documentListTab.removeStyleName(style.selectedTab());
+      reviewTab.removeStyleName(style.selectedTab());
       
       tab.addStyleName(style.selectedTab());
    }
@@ -287,6 +295,12 @@ public class AppView extends Composite implements AppDisplay
    public void onSearchAndReplaceTabTabClick(ClickEvent event)
    {
       listener.onSearchAndReplaceClicked();
+   }
+
+   @UiHandler("reviewTab")
+   public void onReviewTablClick(ClickEvent event)
+   {
+      listener.onReviewCLicked();
    }
 
    private void enableTab(Widget tab, boolean enable)
