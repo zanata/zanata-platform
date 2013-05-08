@@ -24,6 +24,7 @@ import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionModel;
@@ -49,10 +50,11 @@ public class ReviewView extends Composite implements ReviewDisplay
 
    private final CellTable<TransUnit> table;
    private Listener listener;
+   private final VerticalPanel root;
 
    public ReviewView()
    {
-      VerticalPanel root = ourUiBinder.createAndBindUi(this);
+      root = ourUiBinder.createAndBindUi(this);
 
       table = createTable();
       SimplePager pager = new SimplePager();
@@ -60,6 +62,12 @@ public class ReviewView extends Composite implements ReviewDisplay
 
       root.add(table);
       root.add(pager);
+   }
+
+   @Override
+   public Widget asWidget()
+   {
+      return root;
    }
 
    @Override

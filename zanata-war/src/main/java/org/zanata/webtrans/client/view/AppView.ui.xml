@@ -104,6 +104,7 @@
 		                    	<g:InlineLabel styleName="icon-list {style.topMenuButton}" ui:field="documentListTab"/>
 								<g:InlineLabel styleName="icon-edit {style.topMenuButton}" ui:field="editorTab"/>
 								<g:InlineLabel styleName="icon-search {style.topMenuButton}" ui:field="searchAndReplaceTab"/>
+                                <g:InlineLabel styleName="icon-ok-circle {style.topMenuButton" ui:field="reviewTab"/>
 		                    	<g:InlineLabel ui:field="keyShortcuts" styleName="icon-keyboard {style.topMenuButton}"/>
 							</g:HTMLPanel>
 	                    </g:cell>
