@@ -1,5 +1,12 @@
 # Zanata change log summary
 
+## zanata-2.3.1
+ * Bug fixes:
+  * Prevent incorrect validation warnings with concurrent edits
+
+
+## TODO fill in releases between 2.0.3 and 2.3.1
+
 ## zanata-2.0.3
  * Bug fixes: https://bugzilla.redhat.com/buglist.cgi?j_top=OR&f1=cf_fixed_in&o1=substring&classification=Community&o2=substring&query_format=advanced&f2=cf_fixed_in&bug_status=VERIFIED&bug_status=RELEASE_PENDING&bug_status=POST&bug_status=CLOSED&v1=2.0.3&product=Zanata
  * Allow admin to add extra locales by typing in the BCP-47 locale code.
