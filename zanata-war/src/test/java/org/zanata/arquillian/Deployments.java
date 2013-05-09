@@ -28,6 +28,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.Filter;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
@@ -77,23 +78,21 @@ public class Deployments
 
       // Resources (descriptors, etc)
       archive.addAsResource(EmptyAsset.INSTANCE, "seam.properties");
-      archive.addAsWebInfResource(new File("src/test/resources/arquillian/jboss-deployment-structure.xml"));
-      archive.addAsResource(new File("src/main/resources/pluralforms.properties"));
-      archive.addAsResource(new FileAsset(new File("src/main/resources/META-INF/orm.xml")), "META-INF/orm.xml");
-      archive.addAsResource(new FileAsset(new File("src/test/jboss-embedded-bootstrap/META-INF/persistence.xml")), "META-INF/persistence.xml");
+      archive.addAsResource("pluralforms.properties");
+      archive.addAsResource(new ClassLoaderAsset("META-INF/orm.xml"), "META-INF/orm.xml");
       archive.addAsResource(new FileAsset(new File("src/main/webapp-jboss/WEB-INF/classes/META-INF/components.xml")), "META-INF/components.xml");
-      archive.addAsResource(new FileAsset(new File("src/test/resources/arquillian/components.properties")), "components.properties");
-      archive.addAsResource(new FileAsset(new File("src/test/resources/import.sql")), "import.sql");
+      archive.addAsResource(new ClassLoaderAsset("arquillian/persistence.xml"), "META-INF/persistence.xml");
+      archive.addAsResource(new ClassLoaderAsset("arquillian/components.properties"), "components.properties");
+      archive.addAsResource("import.sql");
       archive.addAsResource("security.drl");
-      archive.addAsWebInfResource(new File("src/test/resources/arquillian/zanata.properties"),
-            "classes/zanata.properties");
+      archive.addAsWebInfResource("arquillian/jboss-deployment-structure.xml");
+      archive.addAsWebInfResource(new ClassLoaderAsset("arquillian/zanata.properties"), "classes/zanata.properties");
       archive.setWebXML("arquillian/test-web.xml");
-      //archive.addAsWebInfResource("arquillian/test-web.xml", "web.xml");
 
       addRemoteHelpers(archive);
 
       // Export (to actually see what is being deployed)
-      //archive.as(ZipExporter.class).exportTo(new File("/home/camunoz/temp/archive.war"), true);
+      archive.as(ZipExporter.class).exportTo(new File("/home/camunoz/temp/archive.war"), true);
 
       return archive;
    }
@@ -102,30 +101,6 @@ public class Deployments
    {
       archive.addPackages(true, "org.zanata.rest.helper");
       archive.addPackages(true, "org.zanata.arquillian");
-      addAllAsResources(archive, new File("src/test/resources/org/zanata/test/model"), "org/zanata/test/model");
-   }
-
-   private static void addAllAsResources( WebArchive archive, File directory, String targetDir )
-   {
-      for( Object fileObj : FileUtils.listFiles(directory, null, true) )
-      {
-         File file = (File)fileObj;
-         if( !file.isDirectory() )
-         {
-            archive.addAsResource(file, targetDir + File.separator + directory.toURI().relativize( file.toURI() ).getPath());
-         }
-      }
-   }
-
-   private static void addAllAsResources( WebArchive archive, File directory )
-   {
-      for( Object fileObj : FileUtils.listFiles(directory, null, true) )
-      {
-         File file = (File)fileObj;
-         if( !file.isDirectory() )
-         {
-            archive.addAsResource(file, directory.getParentFile().toURI().relativize( file.toURI() ).getPath());
-         }
-      }
+      archive.addAsResource("org/zanata/test/model/");
    }
 }
