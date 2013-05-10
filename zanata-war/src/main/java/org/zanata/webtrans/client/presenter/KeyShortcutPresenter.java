@@ -131,7 +131,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay> im
                else
                {
                   Keys pressedKeys = event.createKeys(evt);
-                  boolean isAliasKeyTriggered = Keys.ALIAS_KEY == (pressedKeys.getModifiers() + pressedKeys.getKeyCode());
+                  boolean isAliasKeyTriggered = Keys.ALIAS_KEY == (pressedKeys.getModifiers() | pressedKeys.getKeyCode());
 
                   if (isAliasKeyTriggered)
                   {
