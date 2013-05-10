@@ -9,7 +9,7 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.IsWidget;
 
-public interface SourceContentsDisplay extends IsWidget, HasTransUnitId
+public interface SourceContentsDisplay extends HasTransUnitId, NeedsRefresh
 {
    void setValue(TransUnit value);
 
@@ -20,8 +20,6 @@ public interface SourceContentsDisplay extends IsWidget, HasTransUnitId
    void highlightSearch(String search);
 
    void setSourceSelectionHandler(ClickHandler clickHandler);
-
-   void refresh();
 
    void toggleTransUnitDetails(boolean showTransUnitDetails);
 

@@ -86,7 +86,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    private TransUnit cachedValue;
 
    @Inject
-   public TargetContentsView(Provider<ValidationMessagePanelView> validationMessagePanelViewProvider, TableEditorMessages messages)
+   public TargetContentsView(Provider<ValidationMessagePanelView> validationMessagePanelViewProvider)
    {
       validationPanel = validationMessagePanelViewProvider.get();
       rootPanel = binder.createAndBindUi(this);

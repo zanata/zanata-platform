@@ -36,7 +36,7 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
-public interface TargetContentsDisplay extends WidgetDisplay, IsWidget, HasTransUnitId, HasUpdateValidationWarning
+public interface TargetContentsDisplay extends WidgetDisplay, HasTransUnitId, HasUpdateValidationWarning, NeedsRefresh
 {
    void showButtons(boolean displayButtons);
 
@@ -61,8 +61,6 @@ public interface TargetContentsDisplay extends WidgetDisplay, IsWidget, HasTrans
    void setListener(Listener listener);
 
    void revertEditorContents();
-
-   void refresh();
 
    void setState(EditingState editingState);
 
