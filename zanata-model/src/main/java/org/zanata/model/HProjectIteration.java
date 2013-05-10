@@ -99,6 +99,7 @@ public class HProjectIteration extends SlugEntityBase
    private Set<String> customizedValidations;
 
    private ProjectType projectType;
+   private boolean requireTranslationReview = false;
 
    public boolean getOverrideLocales()
    {
@@ -108,6 +109,11 @@ public class HProjectIteration extends SlugEntityBase
    public boolean getOverrideValidations()
    {
       return overrideValidations;
+   }
+
+   public boolean isRequireTranslationReview()
+   {
+      return requireTranslationReview;
    }
 
    @ManyToOne
