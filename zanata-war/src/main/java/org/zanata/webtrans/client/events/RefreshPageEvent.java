@@ -13,6 +13,10 @@ public class RefreshPageEvent extends GwtEvent<RefreshPageEventHandler>
     * When firing this event, we are switching from code mirror to plain textarea.
     */
    public static final RefreshPageEvent REDRAW_PAGE_EVENT = new RefreshPageEvent();
+   /**
+    * When firing this event, we are switching from edit mode to review mode
+    */
+   public static final RefreshPageEvent REVIEW_MODE_EVENT = new RefreshPageEvent();
 
    private RefreshPageEvent()
    {

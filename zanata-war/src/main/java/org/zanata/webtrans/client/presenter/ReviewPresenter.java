@@ -1,15 +1,21 @@
 package org.zanata.webtrans.client.presenter;
 
-import org.zanata.webtrans.client.rpc.AbstractAsyncCallback;
-import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
-import org.zanata.webtrans.client.service.GetTransUnitActionContext;
-import org.zanata.webtrans.client.service.GetTransUnitActionContextHolder;
-import org.zanata.webtrans.client.view.ReviewDisplay;
-import org.zanata.webtrans.shared.rpc.GetTransUnitList;
-import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
+import java.util.List;
 
-import com.google.gwt.view.client.SelectionChangeEvent;
+import org.zanata.webtrans.client.events.RunValidationEvent;
+import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.service.GetTransUnitActionContextHolder;
+import org.zanata.webtrans.client.view.ReviewContentsDisplay;
+import org.zanata.webtrans.client.view.ReviewDisplay;
+import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.util.Finds;
+
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
+import com.google.gwt.user.client.ui.HasText;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
@@ -17,54 +23,89 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class ReviewPresenter extends WidgetPresenter<ReviewDisplay> implements ReviewDisplay.Listener, SelectionChangeEvent.Handler
+public class ReviewPresenter extends WidgetPresenter<ReviewDisplay> implements ReviewDisplay.Listener, ReviewContentsDisplay.Listener
 {
 
-   private final ReviewDisplay display;
    private final EventBus eventBus;
-   private final ReviewTableSelectionModel selectionModel;
-   private final ReviewTableDataProvider dataProvider;
-   private final CachingDispatchAsync dispatcher;
-   private final GetTransUnitActionContextHolder contextHolder;
+   private final Provider<ReviewContentsDisplay> reviewContentsDisplayProvider;
+   private final SourceContentsPresenter sourceContentsPresenter;
+   private TransUnitId selectedId;
+   private List<ReviewContentsDisplay> contentsDisplayList;
 
    @Inject
-   public ReviewPresenter(ReviewDisplay display, EventBus eventBus, ReviewTableSelectionModel selectionModel, ReviewTableDataProvider dataProvider, CachingDispatchAsync dispatcher, GetTransUnitActionContextHolder contextHolder)
+   public ReviewPresenter(ReviewDisplay display, EventBus eventBus, Provider<ReviewContentsDisplay> reviewContentsDisplayProvider, CachingDispatchAsync dispatcher, GetTransUnitActionContextHolder contextHolder, SourceContentsPresenter sourceContentsPresenter)
    {
       super(display, eventBus);
-      this.display = display;
       this.eventBus = eventBus;
-      this.selectionModel = selectionModel;
-      this.dataProvider = dataProvider;
-      this.dispatcher = dispatcher;
-      this.contextHolder = contextHolder;
+      this.reviewContentsDisplayProvider = reviewContentsDisplayProvider;
+      this.sourceContentsPresenter = sourceContentsPresenter;
 
-      init();
+      display.setListener(this);
    }
 
-   private void init()
+   public void showData(List<TransUnit> transUnits)
    {
-      display.setListener(this);
-      selectionModel.addSelectionChangeHandler(this);
-      display.setSelectionModel(selectionModel);
-      display.setDataProvider(dataProvider);
+      selectedId = null; // clear cache
+      ImmutableList.Builder<ReviewContentsDisplay> builder = ImmutableList.builder();
+      for (TransUnit transUnit : transUnits)
+      {
+         ReviewContentsDisplay display = reviewContentsDisplayProvider.get();
+         display.setValueAndCreateNewEditors(transUnit);
+         builder.add(display);
+      }
+      contentsDisplayList = builder.build();
+   }
+
+   public List<ReviewContentsDisplay> getDisplays()
+   {
+      return contentsDisplayList;
+   }
+
+   public void setSelected(TransUnitId selectedId)
+   {
+      this.selectedId = selectedId;
+      ReviewContentsDisplay reviewContentsDisplay = Finds.findDisplayById(contentsDisplayList, selectedId).get();
+
+      for (HasText editor : reviewContentsDisplay.getEditors())
+      {
+         validate(editor, reviewContentsDisplay);
+      }
+//      display.showButtons(isDisplayButtons());
+   }
+
+   public void validate(HasText editor, ReviewContentsDisplay reviewContentsDisplay)
+   {
+      TransUnitId transUnitId = sourceContentsPresenter.getCurrentTransUnitIdOrNull();
+      Optional<String> sourceContent = sourceContentsPresenter.getSourceContent(transUnitId);
+      if (sourceContent.isPresent())
+      {
+         RunValidationEvent event = new RunValidationEvent(sourceContent.get(), editor.getText(), false);
+         // widget that displays warnings
+         event.addWidget(reviewContentsDisplay);
+         eventBus.fireEvent(event);
+      }
+   }
+
+   @Override
+   public void acceptTranslation(TransUnitId id)
+   {
+      //TODO implement
+      throw new UnsupportedOperationException("Implement me!");
+      //
+   }
+
+   @Override
+   public void rejectTranslation(TransUnitId id)
+   {
+      //TODO implement
+      throw new UnsupportedOperationException("Implement me!");
+      //
    }
 
    @Override
    protected void onBind()
    {
-      GetTransUnitActionContext context = contextHolder.getContext();
-      GetTransUnitList getTransUnitList = GetTransUnitList.newAction(context.changeOffset(0).changeTargetTransUnitId(null).setAcceptAll());
 
-      dataProvider.setLoading(true);
-      dispatcher.execute(getTransUnitList, new AbstractAsyncCallback<GetTransUnitListResult>()
-      {
-         @Override
-         public void onSuccess(GetTransUnitListResult result)
-         {
-            dataProvider.setList(result.getUnits());
-         }
-      });
-      dataProvider.setLoading(false);
    }
 
    @Override
@@ -79,13 +120,5 @@ public class ReviewPresenter extends WidgetPresenter<ReviewDisplay> implements R
    protected void onRevealDisplay()
    {
 
-   }
-
-   @Override
-   public void onSelectionChange(SelectionChangeEvent event)
-   {
-      //TODO implement
-      throw new UnsupportedOperationException("Implement me!");
-      //
    }
 }

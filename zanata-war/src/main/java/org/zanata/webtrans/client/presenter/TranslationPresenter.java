@@ -29,6 +29,7 @@ import org.zanata.webtrans.client.events.DisplaySouthPanelEventHandler;
 import org.zanata.webtrans.client.events.KeyShortcutEvent;
 import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
+import org.zanata.webtrans.client.events.ReviewModeChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.keys.KeyShortcut;
@@ -298,6 +299,18 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       if (!configHolder.getState().isShowTMPanel() && transMemoryPresenter.isBound())
       {
          transMemoryPresenter.unbind();
+      }
+   }
+
+   public void changeMode(MainView viewToShow)
+   {
+      if (viewToShow == MainView.Editor)
+      {
+         eventBus.fireEvent(ReviewModeChangeEvent.CHANGE_TO_EDIT_MODE);
+      }
+      else if (viewToShow == MainView.Review)
+      {
+         eventBus.fireEvent(ReviewModeChangeEvent.CHANGE_TO_REVIEW_MODE);
       }
    }
 

@@ -1,0 +1,18 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+    <ui:with field="messages" type="org.zanata.webtrans.client.resources.WebTransMessages"/>
+
+    <ui:style>
+        .topMenuButton
+        {
+            cursor: pointer;
+            font-size:20px;
+            color:#4E4E4E;
+        }
+    </ui:style>
+
+    <g:FlowPanel>
+        <g:InlineLabel ui:field="acceptAllIcon" text="Review All" styleName="{style.topMenuButton}" />
+        <g:InlineLabel ui:field="rejectAllIcon" text="Reject All" styleName="{style.topMenuButton}" />
+    </g:FlowPanel>
+</ui:UiBinder>

@@ -31,7 +31,7 @@
       <okapi.version>0.18</okapi.version>
       <seam.version>2.2.2.Final</seam.version>
 
-      <zanata.api.version>2.3.0</zanata.api.version>
+      <zanata.api.version>2.3.1-SNAPSHOT</zanata.api.version>
       <zanata.client.version>2.3.0</zanata.client.version>
       <zanata.common.version>2.3.0</zanata.common.version>
 

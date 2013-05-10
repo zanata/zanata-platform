@@ -20,6 +20,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTMLTable;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -129,7 +130,7 @@ public class TransUnitsTableView extends Composite implements TransUnitsTableDis
    }
 
    @Override
-   public void buildTable(List<SourceContentsDisplay> sourceDisplays, List<TargetContentsDisplay> targetDisplays)
+   public void buildTable(List<? extends NeedsRefresh> sourceDisplays, List<? extends NeedsRefresh> targetDisplays)
    {
       showEmptyContentIfNoData(sourceDisplays.size());
 
@@ -139,8 +140,8 @@ public class TransUnitsTableView extends Composite implements TransUnitsTableDis
 
       for (int i = 0; i < sourceDisplays.size(); i++)
       {
-         SourceContentsDisplay sourceDisplay = sourceDisplays.get(i);
-         TargetContentsDisplay targetDisplay = targetDisplays.get(i);
+         NeedsRefresh sourceDisplay = sourceDisplays.get(i);
+         NeedsRefresh targetDisplay = targetDisplays.get(i);
 
          transUnitTable.setWidget(i, 0, sourceDisplay);
          transUnitTable.setWidget(i, 1, targetDisplay);
