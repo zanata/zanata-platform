@@ -43,6 +43,11 @@
             color:#4E4E4E;
 		}
 		
+		.highlightedTab
+		{
+			color:#FF4500;
+		}
+		
 		.topMenuButton:hover
 		{
             color:#0085CC;

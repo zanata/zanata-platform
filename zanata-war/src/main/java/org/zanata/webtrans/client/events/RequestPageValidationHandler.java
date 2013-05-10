@@ -1,5 +1,5 @@
 /*
- * Copyright 2012, Red Hat, Inc. and individual contributors
+ * Copyright 2010, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -18,41 +18,11 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.webtrans.client.ui.table.cell;
+package org.zanata.webtrans.client.events;
 
-import java.util.Set;
+import com.google.gwt.event.shared.EventHandler;
 
-import com.google.gwt.cell.client.AbstractCell;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.ui.UIObject;
-
-/**
- * 
- * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- * 
- * @param <W> the column type
- **/
-public class StaticWidgetCell<W extends UIObject> extends AbstractCell<W>
+public interface RequestPageValidationHandler extends EventHandler
 {
-
-   public StaticWidgetCell()
-   {
-      super();
-   }
-
-   public StaticWidgetCell(Set<String> consumedEvents)
-   {
-      super(consumedEvents);
-   }
-
-   public StaticWidgetCell(String... consumedEvents)
-   {
-      super(consumedEvents);
-   }
-
-   @Override
-   public void render(Context context, W value, SafeHtmlBuilder sb)
-   {
-      sb.appendHtmlConstant(value.getElement().getString());
-   }
+   void onRequestPageValidation(RequestPageValidationEvent event);
 }

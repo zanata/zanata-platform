@@ -20,6 +20,7 @@
  */
 package org.zanata.rest.service;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -55,20 +56,25 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 
+import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.ExecuteStreamHandler;
+import org.apache.commons.exec.ExecuteWatchdog;
+import org.apache.commons.exec.PumpStreamHandler;
 import org.hibernate.Criteria;
 import org.hibernate.LobHelper;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.log.Log;
 import org.jboss.seam.util.Hex;
 import org.zanata.adapter.FileFormatAdapter;
 import org.zanata.adapter.po.PoWriter2;
 import org.zanata.common.ContentState;
+import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
@@ -76,27 +82,29 @@ import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.exception.HashMismatchException;
+import org.zanata.exception.VirusDetectedException;
 import org.zanata.exception.ZanataServiceException;
-import org.zanata.common.DocumentType;
 import org.zanata.model.HDocument;
 import org.zanata.model.HDocumentUpload;
 import org.zanata.model.HDocumentUploadPart;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HRawDocument;
+import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.ChunkUploadResponse;
 import org.zanata.rest.dto.extensions.ExtensionType;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
-import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.DocumentService;
 import org.zanata.service.FileSystemService;
+import org.zanata.service.FileSystemService.DownloadDescriptorProperties;
 import org.zanata.service.TranslationFileService;
 import org.zanata.service.TranslationService;
-import org.zanata.service.FileSystemService.DownloadDescriptorProperties;
+
+import com.google.common.base.Stopwatch;
 
 import com.google.common.io.ByteStreams;
 
@@ -104,10 +112,11 @@ import com.google.common.io.ByteStreams;
 @Path(FileResource.FILE_RESOURCE)
 @Produces( { MediaType.APPLICATION_OCTET_STREAM })
 @Consumes( { MediaType.APPLICATION_OCTET_STREAM })
+@Slf4j
 public class FileService implements FileResource
 {
-   @Logger
-   private Log log;
+   private static final String FILE_TYPE_OFFLINE_PO = "offlinepo";
+   private static final String FILE_TYPE_OFFLINE_PO_TEMPLATE = "offlinepot";
 
    @In
    private ZanataIdentity identity;
@@ -189,6 +198,7 @@ public class FileService implements FileResource
       }
 
       boolean isNewDocument = documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId) == null;
+      boolean useOfflinePo = !isNewDocument && !translationFileServiceImpl.isPoDocument(projectSlug, iterationSlug, docId);
 
       boolean isSinglePart = uploadForm.getFirst() && uploadForm.getLast();
 
@@ -196,7 +206,7 @@ public class FileService implements FileResource
 
       if (isSinglePart && isPotFile)
       {
-         parsePotFile(uploadForm.getFileStream(), docId, fileType, projectSlug, iterationSlug);
+         parsePotFile(uploadForm.getFileStream(), docId, fileType, projectSlug, iterationSlug, useOfflinePo);
          return sourceUploadSuccessResponse(isNewDocument, uploadChunks);
       }
 
@@ -302,7 +312,7 @@ public class FileService implements FileResource
       {
          try
          {
-            parsePotFile(new FileInputStream(tempFile), docId, fileType, projectSlug, iterationSlug);
+            parsePotFile(new FileInputStream(tempFile), docId, fileType, projectSlug, iterationSlug, useOfflinePo);
          }
          catch (FileNotFoundException e)
          {
@@ -315,6 +325,15 @@ public class FileService implements FileResource
       }
 
       // is adapter file
+      try
+      {
+         virusScan(tempFile);
+      }
+      catch (VirusDetectedException e)
+      {
+         log.warn("File failed virus scan: {}", e.getMessage());
+         return Response.status(Status.BAD_REQUEST).entity("uploaded file did not pass virus scan").build();
+      }
 
       HDocument document;
       try {
@@ -357,6 +376,55 @@ public class FileService implements FileResource
 
       translationFileServiceImpl.removeTempFile(tempFile);
       return sourceUploadSuccessResponse(isNewDocument, uploadChunks);
+   }
+
+   /**
+    * Scans the specified file by calling out to ClamAV.
+    * <p>
+    * The current implementation looks for clamdscan on the system path, but
+    * merely logs an error if it can't be found (or if clamd is not running),
+    * rather than rejecting the file.
+    * @param file
+    * @throws VirusDetectedException if a virus is detected
+    */
+   // FIXME put this in its own class
+   public static void virusScan(File file) throws VirusDetectedException
+   {
+      // TODO make command name and path configurable
+      String scanproc = "clamdscan"; // clamscan works too, but takes ~15 seconds
+      CommandLine cmdLine = new CommandLine(scanproc);
+      cmdLine.addArgument("--no-summary");
+      cmdLine.addArgument(file.getPath());
+      DefaultExecutor executor = new DefaultExecutor();
+      ExecuteWatchdog watchdog = new ExecuteWatchdog(60000);
+      executor.setWatchdog(watchdog);
+      ByteArrayOutputStream output = new ByteArrayOutputStream();
+      ExecuteStreamHandler psh = new PumpStreamHandler(output);
+      executor.setStreamHandler(psh);
+      executor.setExitValues(new int[] {0, 1, 2});
+      try
+      {
+         int exitValue = executor.execute(cmdLine);
+         switch(exitValue)
+         {
+         case 0:
+            log.debug(scanproc+" clean result: {}", output);
+            return;
+         case 1:
+            throw new VirusDetectedException(scanproc+" detected virus: " + output);
+         case 2:
+         default:
+            log.error(scanproc+" returned error, unable to scan for viruses. output: " + output);
+            // TODO enforce virus scanning by throwing exception here
+//            throw new ZanataServiceException(scanproc+" return code: "+exitValue+", output: " + output);
+         }
+      }
+      catch (IOException e)
+      {
+         log.error("error launching "+scanproc+", unable to scan for viruses", e);
+         // TODO enforce virus scanning by throwing exception here
+//         throw new ZanataServiceException(e);
+      }
    }
 
    private File combineToTempFile(HDocumentUpload upload) throws SQLException
@@ -539,10 +607,10 @@ public class FileService implements FileResource
             && identity != null && identity.hasPermission("import-template", projectIteration);
    }
 
-   private void parsePotFile(InputStream documentStream, String docId, String fileType, String projectSlug, String iterationSlug)
+   private void parsePotFile(InputStream documentStream, String docId, String fileType, String projectSlug, String iterationSlug, boolean asOfflinePo)
    {
       Resource doc;
-      doc = translationFileServiceImpl.parseUpdatedDocumentFile(documentStream, docId, fileType);
+      doc = translationFileServiceImpl.parseUpdatedDocumentFile(documentStream, docId, fileType, asOfflinePo);
       doc.setLang( new LocaleId("en-US") );
       // TODO Copy Trans values
       documentServiceImpl.saveDocument(projectSlug, iterationSlug, doc, new StringSet(ExtensionType.GetText.toString()), false);
@@ -701,8 +769,11 @@ public class FileService implements FileResource
       }
 
       // TODO useful error messages for failed parsing
-      TranslationsResource transRes = translationFileServiceImpl.parseTranslationFile(fileContents,
-            uploadForm.getFileType(), localeId);
+      TranslationsResource transRes =
+            translationFileServiceImpl.parseTranslationFile(fileContents,
+                                                            uploadForm.getFileType(),
+                                                            localeId,
+                                                            translationFileServiceImpl.isPoDocument(projectSlug, iterationSlug, docId));
 
       MergeType mergeType;
       if ("import".equals(merge))
@@ -780,6 +851,7 @@ public class FileService implements FileResource
                                        @PathParam("fileType") String fileType,
                                        @QueryParam("docId") String docId)
    {
+      // TODO scan (again) for virus
       HDocument document = documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId);
       if( document == null )
       {
@@ -809,10 +881,12 @@ public class FileService implements FileResource
                .header("Content-Disposition", "attachment; filename=\"" + document.getName() + "\"")
                .entity(output).build();
       }
-      else if ("pot".equals(fileType))
+      else if ("pot".equals(fileType) || FILE_TYPE_OFFLINE_PO_TEMPLATE.equals(fileType))
       {
+         // Note: could give 404 or unsupported media type for "pot" in non-po projects,
+         //       and suggest using offlinepo
          Resource res = resourceUtils.buildResource(document);
-         StreamingOutput output = new POTStreamingOutput(res);
+         StreamingOutput output = new POTStreamingOutput(res, FILE_TYPE_OFFLINE_PO_TEMPLATE.equals(fileType));
          return Response.ok()
                .header("Content-Disposition", "attachment; filename=\"" + document.getName() + ".pot\"")
                .type(MediaType.TEXT_PLAIN)
@@ -857,6 +931,7 @@ public class FileService implements FileResource
                                             @PathParam("fileType") String fileType,
                                             @QueryParam("docId") String docId )
    {
+      // TODO scan (again) for virus
       final Response response;
       HDocument document = this.documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId);
 
@@ -864,8 +939,10 @@ public class FileService implements FileResource
       {
          response = Response.status(Status.NOT_FOUND).build();
       }
-      else if ("po".equals(fileType))
+      else if ("po".equals(fileType) || FILE_TYPE_OFFLINE_PO.equals(fileType))
       {
+         // Note: could return 404 or Unsupported media type for "po" in non-po projects,
+         //       and suggest to use offlinepo
          final Set<String> extensions = new HashSet<String>();
          extensions.add("gettext");
          extensions.add("comment");
@@ -875,7 +952,7 @@ public class FileService implements FileResource
                (TranslationsResource) this.translatedDocResourceService.getTranslations(docId, new LocaleId(locale), extensions, true, null).getEntity();
          Resource res = this.resourceUtils.buildResource(document);
 
-         StreamingOutput output = new POStreamingOutput(res, transRes);
+         StreamingOutput output = new POStreamingOutput(res, transRes, FILE_TYPE_OFFLINE_PO.equals(fileType));
          response = Response.ok()
                .header("Content-Disposition", "attachment; filename=\"" + document.getName() + ".po\"")
                .type(MediaType.TEXT_PLAIN)
@@ -946,6 +1023,7 @@ public class FileService implements FileResource
    // /file/download/{downloadId}
    public Response download( @PathParam("downloadId") String downloadId )
    {
+      // TODO scan (again) for virus
       try
       {
          // Check that the download exists by looking at the download descriptor
@@ -989,17 +1067,23 @@ public class FileService implements FileResource
    {
       private Resource resource;
       private TranslationsResource transRes;
+      private boolean offlinePo;
 
-      public POStreamingOutput( Resource resource, TranslationsResource transRes )
+      /**
+       * @param offlinePo true if text flow id should be inserted into msgctxt
+       *                  to allow reverse mapping.
+       */
+      public POStreamingOutput( Resource resource, TranslationsResource transRes, boolean offlinePo)
       {
          this.resource = resource;
          this.transRes = transRes;
+         this.offlinePo = offlinePo;
       }
 
       @Override
       public void write(OutputStream output) throws IOException, WebApplicationException
-      {         
-         PoWriter2 writer = new PoWriter2();
+      {
+         PoWriter2 writer = new PoWriter2(false, offlinePo);
          writer.writePo(output, "UTF-8", this.resource, this.transRes);
       }
    }
@@ -1007,16 +1091,22 @@ public class FileService implements FileResource
    private class POTStreamingOutput implements StreamingOutput
    {
       private Resource resource;
+      private boolean offlinePot;
 
-      public POTStreamingOutput(Resource resource)
+      /**
+       * @param offlinePot true if text flow id should be inserted into msgctxt
+       *                   to allow reverse mapping
+       */
+      public POTStreamingOutput(Resource resource, boolean offlinePot)
       {
          this.resource = resource;
+         this.offlinePot = offlinePot;
       }
 
       @Override
       public void write(OutputStream output) throws IOException, WebApplicationException
       {
-         PoWriter2 writer = new PoWriter2();
+         PoWriter2 writer = new PoWriter2(false, offlinePot);
          writer.writePot(output, "UTF-8", resource);
       }
    }
@@ -1090,5 +1180,26 @@ public class FileService implements FileResource
             input.close();
          }
       }
+   }
+
+   // TODO move to FileServiceTest, and make a real unit test
+   // idea: store an *encrypted EICAR* in the source, then decrypt it for use in the test
+   // NB: don't add EICAR to git!
+   public static void main(String[] args)
+   {
+      Stopwatch stop = new Stopwatch().start();
+      virusScan(new File("/tmp/testdoc.odt"));
+      System.out.println(stop);
+      stop.reset();
+      stop.start();
+      try
+      {
+         virusScan(new File("/tmp/EICAR.com"));
+      }
+      catch (VirusDetectedException e)
+      {
+         System.out.println(e.getMessage());
+      }
+      System.out.println(stop);
    }
 }

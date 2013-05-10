@@ -27,22 +27,22 @@ import java.util.Map;
 import java.util.Set;
 
 import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.webtrans.client.events.AliasKeyChangedEvent;
 import org.zanata.webtrans.client.events.KeyShortcutEvent;
 import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.keys.EventWrapper;
-import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.KeyShortcut;
-import org.zanata.webtrans.client.keys.SurplusKeyListener;
 import org.zanata.webtrans.client.keys.KeyShortcut.KeyEvent;
+import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
+import org.zanata.webtrans.client.keys.SurplusKeyListener;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.view.KeyShortcutDisplay;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Sets;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -63,22 +63,8 @@ import com.google.inject.Inject;
  * @author David Mason, <a
  *         href="mailto:damason@redhat.com">damason@redhat.com</a> *
  */
-public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.Display>
+public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay> implements KeyShortcutDisplay.Listener
 {
-
-   public interface Display extends WidgetDisplay
-   {
-      ListDataProvider<KeyShortcut> addContext(String contextName);
-
-      void showPanel();
-
-      public void clearPanel();
-
-      boolean isShowing();
-
-      void hide(boolean autoClosed);
-   }
-
    /**
     * Key uses {@link Keys#hashCode()}
     */
@@ -92,17 +78,40 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
 
    private EventWrapper event;
 
+   private boolean isAliasKeyListening = false;
+
    @Inject
-   public KeyShortcutPresenter(Display display, EventBus eventBus, final WebTransMessages webTransMessages, final EventWrapper event)
+   public KeyShortcutPresenter(KeyShortcutDisplay display, EventBus eventBus, final WebTransMessages webTransMessages, final EventWrapper event)
    {
       super(display, eventBus);
       this.messages = webTransMessages;
       this.event = event;
    }
+  
+   @Override
+   public void setAliasKeyListening(boolean isAliasKeyListening)
+   {
+      if (this.isAliasKeyListening != isAliasKeyListening)
+      {
+         this.isAliasKeyListening = isAliasKeyListening;
+         eventBus.fireEvent(new AliasKeyChangedEvent(isAliasKeyListening));
+         if (!isAliasKeyListening)
+         {
+            Log.debug("canceling alias key... ");
+            display.cancelMetaKeyTimer();
+         }
+         else
+         {
+            Log.debug("listening alias key... ");
+         }
+      }
+   }
 
    @Override
    protected void onBind()
    {
+      display.setListener(this);
+
       ensureActiveContexts().add(ShortcutContext.Application);
 
       event.addNativePreviewHandler(new NativePreviewHandler()
@@ -113,10 +122,27 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
          {
             NativeEvent evt = nativeEvent.getNativeEvent();
 
-            // TODO enable keypress events if any shortcuts require them
             if ((event.getTypeInt(nativeEvent) & (event.keyDownEvent() | event.keyUpEvent())) != 0)
             {
-               processKeyEvent(evt);
+               if (isAliasKeyListening)
+               {
+                  processAliasKeyEvent(evt);
+               }
+               else
+               {
+                  Keys pressedKeys = event.createKeys(evt);
+                  boolean isAliasKeyTriggered = Keys.ALIAS_KEY == (pressedKeys.getModifiers() + pressedKeys.getKeyCode());
+
+                  if (isAliasKeyTriggered)
+                  {
+                     setAliasKeyListening(true);
+                     display.startAliasKeyListen(5000);
+                  }
+                  else
+                  {
+                     processKeyEvent(evt, pressedKeys);
+                  }
+               }
             }
          }
       });
@@ -145,15 +171,15 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
 
       // could try to use ?, although this is not as simple as passing character
       // '?'
-      KeyShortcut availableKeysShortcut = KeyShortcut.Builder.builder().addKey(new Keys(Keys.ALT_KEY, 'Y')).setContext(ShortcutContext.Application)
-            .setDescription(messages.showAvailableKeyShortcuts()).setHandler(new KeyShortcutEventHandler()
-            {
-               @Override
-               public void onKeyShortcut(KeyShortcutEvent event)
-               {
-                  showShortcuts();
-               }
-            }).build();
+      KeyShortcut availableKeysShortcut = KeyShortcut.Builder.builder().addKey(new Keys(Keys.ALT_KEY, 'Y')).setContext(ShortcutContext.Application).setDescription(messages.showAvailableKeyShortcuts()).setHandler(new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            showShortcuts();
+         }
+      }).build();
+      
       register(availableKeysShortcut);
    }
 
@@ -189,11 +215,13 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
    }
 
    /**
-    * Register a {@link KeyShortcut} to respond to a specific key combination for a context.
+    * Register a {@link KeyShortcut} to respond to a specific key combination
+    * for a context.
     * 
     * @param shortcut to register
     * 
-    * @return a {@link HandlerRegistration} that can be used to un-register the shortcut
+    * @return a {@link HandlerRegistration} that can be used to un-register the
+    *         shortcut
     */
    public HandlerRegistration register(KeyShortcut shortcut)
    {
@@ -212,10 +240,12 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
    }
 
    /**
-    * Register a {@link SurplusKeyListener} to catch all non-shortcut key events for a context.
+    * Register a {@link SurplusKeyListener} to catch all non-shortcut key events
+    * for a context.
     * 
     * @param listener surplus key listener
-    * @return a {@link HandlerRegistration} that can be used to un-register the listener
+    * @return a {@link HandlerRegistration} that can be used to un-register the
+    *         listener
     */
    public HandlerRegistration register(SurplusKeyListener listener)
    {
@@ -230,16 +260,14 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
    }
 
    /**
-    * Check for active shortcuts for the entered key combination,
-    * trigger events in handlers, then if no shortcuts have been
-    * triggered, fire any registered {@link SurplusKeyListener}
-    * events.
+    * Check for active shortcuts for the entered key combination, trigger events
+    * in handlers, then if no shortcuts have been triggered, fire any registered
+    * {@link SurplusKeyListener} events.
     * 
     * @param evt native event
     */
-   private void processKeyEvent(NativeEvent evt)
+   private void processKeyEvent(NativeEvent evt, Keys pressedKeys)
    {
-      Keys pressedKeys = event.createKeys(evt);
       Set<KeyShortcut> shortcuts = ensureShortcutMap().get(pressedKeys);
       boolean shortcutFound = false;
       // TODO replace modifiers + keycode in event with Keys
@@ -253,6 +281,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
             if (contextActive && matchingEventType)
             {
                shortcutFound = true;
+               setAliasKeyListening(false);
                if (shortcut.isStopPropagation())
                {
                   evt.stopPropagation();
@@ -266,7 +295,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
          }
       }
 
-      if(!shortcutFound)
+      if (!shortcutFound)
       {
          for (ShortcutContext context : ensureActiveContexts())
          {
@@ -277,7 +306,8 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
                {
                   if (listener.getKeyEvent().nativeEventType.equals(evt.getType()))
                   {
-                     // could add interface with these methods to reduce duplication
+                     // could add interface with these methods to reduce
+                     // duplication
                      if (listener.isStopPropagation())
                      {
                         evt.stopPropagation();
@@ -292,7 +322,25 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
             }
          }
       }
+   }
 
+   private void processAliasKeyEvent(NativeEvent evt)
+   {
+      Keys pressedKeys = event.createKeys(evt);
+
+      // Check if alias key has triggered, ALT+X
+      boolean isAliasKeyTriggered = Keys.ALIAS_KEY == (pressedKeys.getModifiers() | pressedKeys.getKeyCode());
+
+      if (isAliasKeyTriggered || (pressedKeys.getKeyCode() == KeyCodes.KEY_ESCAPE))
+      {
+         // cancel alias key listening with ESC and ALT+X
+         setAliasKeyListening(false);
+      }
+      else
+      {
+         pressedKeys.setAlias(Keys.ALIAS_KEY);
+         processKeyEvent(evt, pressedKeys);
+      }
    }
 
    private String getContextName(ShortcutContext context)
@@ -300,27 +348,27 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
       String contextName = "";
       switch (context)
       {
-         case Application:
-            contextName = messages.applicationScope();
-            break;
-         case ProjectWideSearch:
-            contextName = messages.projectWideSearchAndReplace();
-            break;
-         case Edit:
-            contextName = messages.editScope();
-            break;
-         case Navigation:
-            contextName = messages.navigationScope();
-            break;
-         case TM:
-            contextName = messages.tmScope();
-            break;
-         case Glossary:
-            contextName = messages.glossaryScope();
-            break;
-         case Chat:
-            contextName = messages.chatScope();
-            break;
+      case Application:
+         contextName = messages.applicationScope();
+         break;
+      case ProjectWideSearch:
+         contextName = messages.projectWideSearchAndReplace();
+         break;
+      case Edit:
+         contextName = messages.editScope();
+         break;
+      case Navigation:
+         contextName = messages.navigationScope();
+         break;
+      case TM:
+         contextName = messages.tmScope();
+         break;
+      case Glossary:
+         contextName = messages.glossaryScope();
+         break;
+      case Chat:
+         contextName = messages.chatScope();
+         break;
       }
       return contextName;
    }
@@ -363,8 +411,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutPresenter.D
          {
             for (KeyShortcut shortcut : shortcutSet)
             {
-               if (shortcut.getContext() == context && shortcut.isDisplayInView()
-                   && !dataProvider.getList().contains(shortcut))
+               if (shortcut.getContext() == context && shortcut.isDisplayInView() && !dataProvider.getList().contains(shortcut))
                {
                   dataProvider.getList().add(shortcut);
                }

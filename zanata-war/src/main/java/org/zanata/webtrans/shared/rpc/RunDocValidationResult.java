@@ -1,5 +1,5 @@
 /*
- * Copyright 2012, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  * 
@@ -18,37 +18,43 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.webtrans.client.ui.table.column;
+package org.zanata.webtrans.shared.rpc;
 
-import org.zanata.webtrans.client.ui.DocumentNode;
-import org.zanata.webtrans.client.ui.HasStatsFilter;
+import java.util.Map;
 
-import com.google.gwt.user.cellview.client.TextColumn;
+import org.zanata.common.LocaleId;
+import org.zanata.webtrans.shared.model.DocumentId;
 
 /**
+ * 
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- *
+ * 
  */
-public class TranslatedColumn extends TextColumn<DocumentNode> implements HasStatsFilter
+public class RunDocValidationResult implements DispatchResult
 {
-   private String statsOption = STATS_OPTION_WORDS;
+   private static final long serialVersionUID = 1L;
 
-   @Override
-   public String getValue(DocumentNode object)
+   private Map<DocumentId, Boolean> resultMap;
+   private LocaleId localeId;
+
+   @SuppressWarnings("unused")
+   private RunDocValidationResult()
    {
-      if (statsOption.equals(STATS_OPTION_MESSAGE))
-      {
-         return String.valueOf(object.getDocInfo().getStats().getUnitCount().getApproved());
-      }
-      else
-      {
-         return String.valueOf(object.getDocInfo().getStats().getWordCount().getApproved());
-      }
    }
 
-   @Override
-   public void setStatsFilter(String option)
+   public RunDocValidationResult(Map<DocumentId, Boolean> resultMap, LocaleId localeId)
    {
-      statsOption = option;
+      this.resultMap = resultMap;
+      this.localeId = localeId;
+   }
+
+   public LocaleId getLocaleId()
+   {
+      return localeId;
+   }
+
+   public Map<DocumentId, Boolean> getResultMap()
+   {
+      return resultMap;
    }
 }

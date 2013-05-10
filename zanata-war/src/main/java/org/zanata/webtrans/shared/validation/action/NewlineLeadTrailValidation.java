@@ -20,12 +20,13 @@
  */
 package org.zanata.webtrans.shared.validation.action;
 
+import java.util.ArrayList;
+
 import org.zanata.webtrans.client.resources.ValidationMessages;
-import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.validation.AbstractValidationAction;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 
@@ -38,7 +39,12 @@ public class NewlineLeadTrailValidation extends AbstractValidationAction
 {
    public NewlineLeadTrailValidation(ValidationId id, ValidationMessages messages)
    {
-      super(new ValidationInfo(id, null, false), messages);
+      super(id, messages.newLineValidatorDesc(), new ValidationInfo(true), messages);
+   }
+
+   public NewlineLeadTrailValidation(ValidationId id)
+   {
+      super(id, null, new ValidationInfo(true), null);
    }
 
    private final static String leadNewlineRegex = "^\n";
@@ -47,41 +53,40 @@ public class NewlineLeadTrailValidation extends AbstractValidationAction
 
    private final static RegExp leadRegExp = RegExp.compile(leadNewlineRegex);
    private final static RegExp endRegExp = RegExp.compile(endNewlineRegex);
-   private final static RegExp newlineRegExp = RegExp.compile(newlineRegex, "g");
 
    @Override
-   public void doValidate(String source, String target)
+   public void doValidate(ArrayList<String> errorList, String source, String target)
    {
       if (notShareLeading(source, target))
       {
-         addError(getMessages().leadingNewlineMissing());
+         errorList.add(getMessages().leadingNewlineMissing());
       }
 
       if (notShareLeading(target, source))
       {
-         addError(getMessages().leadingNewlineAdded());
+         errorList.add(getMessages().leadingNewlineAdded());
       }
 
       if (notShareTrailing(source, target))
       {
-         addError(getMessages().trailingNewlineMissing());
+         errorList.add(getMessages().trailingNewlineMissing());
       }
 
       if (notShareTrailing(target, source))
       {
-         addError(getMessages().trailingNewlineAdded());
+         errorList.add(getMessages().trailingNewlineAdded());
       }
 
       int sourceLines = 1 + countNewlines(source);
       int targetLines = 1 + countNewlines(target);
       if (sourceLines < targetLines)
       {
-         addError(getMessages().linesAdded(sourceLines, targetLines));
+         errorList.add(getMessages().linesAdded(sourceLines, targetLines));
       }
 
       if (targetLines < sourceLines)
       {
-         addError(getMessages().linesRemoved(sourceLines, targetLines));
+         errorList.add(getMessages().linesRemoved(sourceLines, targetLines));
       }
    }
 
@@ -103,7 +108,6 @@ public class NewlineLeadTrailValidation extends AbstractValidationAction
    {
       if (leadRegExp.test(base))
       {
-         Log.debug("Found leading newline");
          return leadRegExp.test(test);
       }
       // no newline so can't fail
@@ -118,7 +122,6 @@ public class NewlineLeadTrailValidation extends AbstractValidationAction
    {
       if (endRegExp.test(base))
       {
-         Log.debug("Found trailing newline");
          return endRegExp.test(test);
       }
       // no newline so can't fail
@@ -127,6 +130,8 @@ public class NewlineLeadTrailValidation extends AbstractValidationAction
 
    private int countNewlines(String string)
    {
+      RegExp newlineRegExp = RegExp.compile(newlineRegex, "g");
+
       int count = 0;
       MatchResult matchResult = newlineRegExp.exec(string);
       while (matchResult != null)

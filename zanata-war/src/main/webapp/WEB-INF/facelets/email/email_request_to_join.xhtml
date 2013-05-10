@@ -6,13 +6,13 @@
    xmlns:a4j="http://richfaces.org/a4j"
    xmlns:rich="http://richfaces.org/rich"
    template="/WEB-INF/facelets/email/template_email.xhtml">
-   
+
   <ui:param name="toName" value="#{emailServiceImpl.toName}" />
   <ui:param name="toEmailAddr" value="#{emailServiceImpl.toEmailAddr}" />
   <ui:param name="replyToName" value="#{sendEmail.fromName}" />
   <ui:param name="replyToEmail" value="#{sendEmail.replyEmail}" />
   <ui:param name="subject" value="#{messages['jsf.email.joinrequest.Subject']}" />
-  
+
   <ui:define name="body">
         <p>#{messages['jsf.email.coordinator.DearCoordinator']}</p>
         <p>#{messages['jsf.email.joinrequest.UserRequestingToJoin']}</p>
@@ -30,5 +30,5 @@
           </a>
         </p>
   </ui:define>
-  
+
 </ui:composition>

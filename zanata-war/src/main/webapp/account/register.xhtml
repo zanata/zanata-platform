@@ -10,7 +10,7 @@
     xmlns:richext="http://java.sun.com/jsf/composite/richext"
     template="../WEB-INF/layout/template.xhtml">
 
-  <ui:define name="page_title">Register</ui:define>
+  <ui:define name="page_title">#{messages['jsf.Register']}</ui:define>
   <ui:define name="center_content">
     <h:form id="registerForm" rendered="#{applicationConfiguration.internalAuth}">
       <s:token allowMultiplePosts="true" />
@@ -76,17 +76,20 @@
             <ui:define name="label"><h:graphicImage value="/seam/resource/captcha"/></ui:define>
             <h:inputText id="verifyCaptcha" value="#{captcha.response}" required="true"/>
         </s:decorate>
-        
-        <s:decorate id="agreedToTerms" template="../WEB-INF/layout/edit.xhtml" enclose="true">
+
+        <ui:remove>
+          <!-- FIXME string concatenation not good for l10n -->
+        </ui:remove>
+        <s:decorate id="agreedToTerms" template="../WEB-INF/layout/edit.xhtml">
           <h:selectBooleanCheckbox id="agreedToTerms" value="#{register.agreedToTermsOfUse}"/>
           <label for="agreedToTerms">
             #{messages['jsf.IAgreeToThe']}
             <h:outputLink value="#" id="termsOfUseLink" onclick="#{rich:component('termsOfUse')}.show()">
-              <h:outputText value="#{messages['jsf.TermsOfUse']}"/>
+              <h:outputText value=" #{messages['jsf.TermsOfUse']}"/>
             </h:outputLink>
           </label>
         </s:decorate>
-        
+
         <div style="clear:both"/>
         <s:div rendered="#{applicationConfiguration.openIdAuth}">
           <h:outputText value="#{messages['jsf.register.LoginUsingOpenId']}" escape="false"/>
@@ -96,7 +99,7 @@
         </div>
       </rich:panel>
     </h:form>
-    
+
     <rich:popupPanel id="termsOfUse" width="640" height="480" rendered="#{not identity.loggedIn and applicationConfiguration.internalAuth}" >
       <f:facet name="header">
         <h:panelGroup>
@@ -122,9 +125,7 @@
     <rich:panel rendered="#{not applicationConfiguration.internalAuth}">
           <h:outputText value="#{messages['jsf.PleaseContactAdministrationToGetRegistrationLink']}"/>
     </rich:panel>
-   
+
   </ui:define>
-  
-  
-  
+
 </ui:composition>

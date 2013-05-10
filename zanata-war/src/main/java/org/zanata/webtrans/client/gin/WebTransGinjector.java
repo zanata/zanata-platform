@@ -37,6 +37,7 @@ public interface WebTransGinjector extends Ginjector
 
    DocumentListPresenter getDocumentListPresenter();
 
+
    History getHistory();
 
    HistoryEventHandlerService getHistoryEventHandlerService();

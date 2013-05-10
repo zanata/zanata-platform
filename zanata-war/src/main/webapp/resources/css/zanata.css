@@ -495,7 +495,7 @@ table.fullwidth {
 }
 
 td.wrapped {
-    word-break: break-word;
+    word-break: break-all;
     word-wrap: break-word;
 }
 
@@ -913,6 +913,13 @@ a.version_link:hover {
 {
 	font-weight:bold;
 	color:#595959;
+}
+
+a.maintainer_email
+{
+	font-weight:bold;
+	color:#595959;
+	text-decoration:underline;
 }
 
 a.table_link span.nativeName, span.nativeName

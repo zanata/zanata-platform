@@ -5,6 +5,9 @@ import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.Map;
+
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
@@ -27,6 +30,8 @@ import org.zanata.webtrans.client.view.EditorOptionsDisplay;
 import org.zanata.webtrans.shared.model.DiffMode;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceContextUpdateData;
@@ -125,6 +130,12 @@ public class EditorOptionsPresenterTest
          public ProjectType getProjectType()
          {
             return projectType;
+         }
+
+         @Override
+         public Map<ValidationId, ValidationInfo> getValidationInfoList()
+         {
+            return null;
          }
       };
    }

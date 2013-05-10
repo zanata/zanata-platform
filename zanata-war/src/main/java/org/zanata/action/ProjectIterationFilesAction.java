@@ -67,6 +67,7 @@ import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.exception.VirusDetectedException;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
@@ -82,6 +83,7 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
+import org.zanata.rest.service.FileService;
 import org.zanata.rest.service.StatisticsResource;
 import org.zanata.security.SecurityFunctions;
 import org.zanata.security.ZanataIdentity;
@@ -182,7 +184,7 @@ public class ProjectIterationFilesAction implements Serializable
       }
    }
 
-   public TranslationStatistics getTransUnitForDocument(HDocument doc)
+   public TranslationStatistics getStatsForDocument(HDocument doc)
    {
       if (!statisticMap.containsKey(doc.getDocId()))
       {
@@ -210,7 +212,11 @@ public class ProjectIterationFilesAction implements Serializable
       try
       {
          // process the file
-         TranslationsResource transRes = translationFileServiceImpl.parseTranslationFile(translationFileUpload.getFileContents(), translationFileUpload.getFileName(), localeId);
+         TranslationsResource transRes =
+               translationFileServiceImpl.parseTranslationFile(translationFileUpload.getFileContents(),
+                                                               translationFileUpload.getFileName(),
+                                                               localeId,
+                                                               isPoDocument(translationFileUpload.docId));
 
          // translate it
          Set<String> extensions;
@@ -274,19 +280,33 @@ public class ProjectIterationFilesAction implements Serializable
       FacesMessages.instance().add(Severity.INFO, "Document file {0} uploaded.", documentFileUpload.getFileName());
    }
 
+   /**
+    * <p>
+    * Upload a pot file. File may be new or overwriting an existing file.
+    * </p>
+    * 
+    * <p>
+    * If there is an existing file that is not a pot file, the pot file
+    * will be parsed using msgctxt as Zanata id, otherwise id will be
+    * generated from a hash of msgctxt and msgid.
+    * </p>
+    */
    private void uploadPotFile()
    {
+      String docId = documentFileUpload.getDocId();
+      if (docId == null)
+      {
+         docId = translationFileServiceImpl.generateDocId(documentFileUpload.getDocumentPath(),
+                                                          documentFileUpload.getFileName());
+      }
+      HDocument existingDoc = documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId);
+      boolean docExists = existingDoc != null;
+      boolean useOfflinePo = docExists && !isPoDocument(docId);
+
       try
       {
-         Resource doc;
-         if (documentFileUpload.getDocId() == null)
-         {
-            doc = translationFileServiceImpl.parseDocumentFile(documentFileUpload.getFileContents(), documentFileUpload.getDocumentPath(), documentFileUpload.getFileName());
-         }
-         else
-         {
-            doc = translationFileServiceImpl.parseUpdatedDocumentFile(documentFileUpload.getFileContents(), documentFileUpload.getDocId(), documentFileUpload.getFileName());
-         }
+         Resource doc = translationFileServiceImpl.parseUpdatedDocumentFile(
+               documentFileUpload.getFileContents(), docId, documentFileUpload.getFileName(), useOfflinePo);
 
          doc.setLang(new LocaleId(documentFileUpload.getSourceLang()));
 
@@ -385,11 +405,20 @@ public class ProjectIterationFilesAction implements Serializable
          try
          {
             tempFileStream = new FileInputStream(tempFile);
-            LobHelper lobHelper = documentDAO.getLobHelper();
-            Blob fileContents = lobHelper.createBlob(tempFileStream, (int) tempFile.length());
-            rawDocument.setContent(fileContents);
-            documentDAO.addRawDocument(document, rawDocument);
-            documentDAO.flush();
+            try
+            {
+               FileService.virusScan(tempFile);
+               Blob fileContents = documentDAO.getLobHelper().createBlob(tempFileStream, (int) tempFile.length());
+               rawDocument.setContent(fileContents);
+               documentDAO.addRawDocument(document, rawDocument);
+               documentDAO.flush();
+            }
+            catch (VirusDetectedException e)
+            {
+               log.warn("File failed virus scan: {}", e.getMessage());
+               FacesMessages.instance().add(Severity.ERROR, "uploaded file did not pass virus scan");
+            }
+
          }
          catch (FileNotFoundException e)
          {
@@ -461,6 +490,28 @@ public class ProjectIterationFilesAction implements Serializable
    public void setLocaleId(String localeId)
    {
       this.localeId = localeId;
+   }
+
+   public boolean isKnownProjectType()
+   {
+      ProjectType type = projectIterationDAO.getBySlug(projectSlug, iterationSlug).getProjectType();
+      return type != null;
+   }
+
+   public boolean isPoProject()
+   {
+      HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+      ProjectType type = projectIteration.getProjectType();
+      if (type == null)
+      {
+         type = projectIteration.getProject().getDefaultProjectType();
+      }
+      return type == ProjectType.Gettext || type == ProjectType.Podir;
+   }
+
+   public boolean isPoDocument(String docId)
+   {
+      return translationFileServiceImpl.isPoDocument(projectSlug, iterationSlug, docId);
    }
 
    // line not found
@@ -535,8 +586,7 @@ public class ProjectIterationFilesAction implements Serializable
 
    public boolean isZipFileDownloadAllowed()
    {
-      return getProjectIteration().getProjectType() == ProjectType.Gettext ||
-             getProjectIteration().getProjectType() == ProjectType.Podir;
+      return getProjectIteration().getProjectType() != null;
    }
 
    public String getZipFileDownloadTitle()

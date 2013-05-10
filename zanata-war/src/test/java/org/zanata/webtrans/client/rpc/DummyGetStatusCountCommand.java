@@ -27,7 +27,7 @@ public class DummyGetStatusCountCommand implements Command
    public void execute()
    {
       Log.info("ENTER DummyGetStatusCountCommand.execute()");
-      int docID = (int) action.getDocumentId().getId();
+      int docID = action.getDocumentId().getId().intValue();
       TransUnitCount count = new TransUnitCount();
       count.set(ContentState.Approved, 34 * docID);
       count.set(ContentState.NeedReview, 23 * docID);

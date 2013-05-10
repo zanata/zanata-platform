@@ -38,6 +38,9 @@ import org.zanata.webtrans.client.events.LoadingEventHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.RefreshPageEvent;
 import org.zanata.webtrans.client.events.RefreshPageEventHandler;
+import org.zanata.webtrans.client.events.RequestPageValidationEvent;
+import org.zanata.webtrans.client.events.RequestPageValidationHandler;
+import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEventHandler;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
@@ -79,7 +82,8 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       TransUnitsTableDisplay.Listener,
       TableRowSelectedEventHandler,
       LoadingEventHandler,
-      RefreshPageEventHandler, UserConfigChangeHandler
+      RefreshPageEventHandler, UserConfigChangeHandler,
+      RequestPageValidationHandler
 // @formatter:on
 {
 
@@ -96,9 +100,15 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
 
    // state we need to keep track of
    private FilterViewEvent filterOptions = FilterViewEvent.DEFAULT;
-   private FilterViewEvent previousFilterOptions = FilterViewEvent.DEFAULT; // In case of cancelling a filter
+   private FilterViewEvent previousFilterOptions = FilterViewEvent.DEFAULT; // In
+                                                                            // case
+                                                                            // of
+                                                                            // cancelling
+                                                                            // a
+                                                                            // filter
    private TransUnitId selectedId;
    private String findMessage;
+
 
    @Inject
    // @formatter:off
@@ -142,6 +152,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       registerHandler(eventBus.addHandler(LoadingEvent.TYPE, this));
       registerHandler(eventBus.addHandler(RefreshPageEvent.TYPE, this));
       registerHandler(eventBus.addHandler(UserConfigChangeEvent.TYPE, this));
+      registerHandler(eventBus.addHandler(RequestPageValidationEvent.TYPE, this));
 
       display.setThemes(userOptionsService.getConfigHolder().getState().getDisplayTheme().name());
    }
@@ -231,7 +242,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    @Override
    public void cancelFilter()
    {
-      eventBus.fireEvent(new FilterViewEvent(previousFilterOptions.isFilterTranslated(), previousFilterOptions.isFilterNeedReview(), previousFilterOptions.isFilterUntranslated(), true));
+      eventBus.fireEvent(new FilterViewEvent(previousFilterOptions.isFilterTranslated(), previousFilterOptions.isFilterNeedReview(), previousFilterOptions.isFilterUntranslated(), previousFilterOptions.isFilterHasError(), true, previousFilterOptions.getEnabledValidationIds()));
       display.hideFilterConfirmation();
    }
 
@@ -270,7 +281,8 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    {
       if (updateFromCurrentUsersEditorSave(editorClientId, updateType))
       {
-         // the TransUnitUpdatedEvent is from current user's save action. Ignored.
+         // the TransUnitUpdatedEvent is from current user's save action.
+         // Ignored.
          return;
       }
       if (Objects.equal(selectedId, updatedTransUnit.getId()) && !Objects.equal(editorClientId, translatorService.getCurrentEditorClientId()))
@@ -281,17 +293,17 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
          {
             translationHistoryPresenter.popupAndShowLoading(messages.concurrentEditTitle());
             TransHistoryItem latest = new TransHistoryItem(updatedTransUnit.getVerNum().toString(), updatedTransUnit.getTargets(), updatedTransUnit.getStatus(), updatedTransUnit.getLastModifiedBy(), updatedTransUnit.getLastModifiedTime());
-            translationHistoryPresenter.displayEntries(latest, Collections.<TransHistoryItem>emptyList());
+            translationHistoryPresenter.displayEntries(latest, Collections.<TransHistoryItem> emptyList());
          }
       }
       targetContentsPresenter.updateRow(updatedTransUnit);
    }
 
-   // update type is web editor save or web editor save fuzzy and coming from current user
+   // update type is web editor save or web editor save fuzzy and coming from
+   // current user
    private boolean updateFromCurrentUsersEditorSave(EditorClientId editorClientId, TransUnitUpdated.UpdateType updateType)
    {
-      return Objects.equal(editorClientId, translatorService.getCurrentEditorClientId()) &&
-            (updateType == TransUnitUpdated.UpdateType.WebEditorSave || updateType == TransUnitUpdated.UpdateType.WebEditorSaveFuzzy);
+      return Objects.equal(editorClientId, translatorService.getCurrentEditorClientId()) && (updateType == TransUnitUpdated.UpdateType.WebEditorSave || updateType == TransUnitUpdated.UpdateType.WebEditorSaveFuzzy);
    }
 
    @Override
@@ -332,7 +344,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    {
       TransUnitId selectedId = event.getSelectedId();
       int rowIndex = navigationService.findRowIndexById(selectedId);
-      if (rowIndex != NavigationService.UNSELECTED)
+      if (rowIndex != NavigationService.UNDEFINED)
       {
          onRowSelected(rowIndex, event.isSuppressSavePending());
       }
@@ -382,5 +394,26 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    public void onUserConfigChanged(UserConfigChangeEvent event)
    {
       display.setThemes(userOptionsService.getConfigHolder().getState().getDisplayTheme().name());
+   }
+
+   @Override
+   public void onRequestPageValidation(RequestPageValidationEvent event)
+   {
+      List<SourceContentsDisplay> sourceDisplays = sourceContentsPresenter.getDisplays();
+      List<TargetContentsDisplay> targetDisplays = targetContentsPresenter.getDisplays();
+
+      for (int i = 0; i < sourceContentsPresenter.getDisplays().size(); i++)
+      {
+         SourceContentsDisplay sourceDisplay = sourceDisplays.get(i);
+         TargetContentsDisplay targetDisplay = targetDisplays.get(i);
+
+         String source = sourceDisplay.getSourcePanelList().get(0).getSource();
+         String target = targetDisplay.getEditors().get(0).getText();
+
+         RunValidationEvent runValidationEvent = new RunValidationEvent(source, target, false);
+         runValidationEvent.addWidget(targetDisplay);
+
+         eventBus.fireEvent(runValidationEvent);
+      }
    }
 }

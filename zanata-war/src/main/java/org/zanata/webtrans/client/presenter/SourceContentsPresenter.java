@@ -75,25 +75,29 @@ public class SourceContentsPresenter implements ClickHandler, UserConfigChangeHa
    }
 
    /**
-    * Select first source in the list when row is selected or reselect previous selected one
-    *
+    * Select first source in the list when row is selected or reselect previous
+    * selected one
+    * 
     */
    public void setSelectedSource(TransUnitId id)
    {
       currentTransUnitId = id;
       Log.debug("source content selected id:" + id);
 
-      SourceContentsDisplay sourceContentsView = Iterables.find(displayList, new FindByTransUnitIdPredicate(id));
-      List<HasSelectableSource> sourcePanelList = sourceContentsView.getSourcePanelList();
-      Optional<HasSelectableSource> selectedSourceOptional = tryFindSelectedSourcePanel(sourcePanelList);
-      if (selectedSourceOptional.isPresent())
+      Optional<SourceContentsDisplay> sourceContentsView = findView(id);
+      if (sourceContentsView.isPresent())
       {
-         selectedSourceOptional.get().clickSelf();
-      }
-      else
-      {
-         // by default select the first one
-         sourcePanelList.get(0).clickSelf();
+         List<HasSelectableSource> sourcePanelList = sourceContentsView.get().getSourcePanelList();
+         Optional<HasSelectableSource> selectedSource = tryFindSelectedSourcePanel(sourcePanelList);
+         if (selectedSource.isPresent())
+         {
+            selectedSource.get().clickSelf();
+         }
+         else
+         {
+            // by default select the first one
+            sourcePanelList.get(0).clickSelf();
+         }
       }
    }
 
@@ -159,7 +163,7 @@ public class SourceContentsPresenter implements ClickHandler, UserConfigChangeHa
          selectedSource.setSelected(true);
 
          Log.debug("Selected source: " + selectedSource.getSource());
-         //TODO this is firing every time we click.
+         // TODO this is firing every time we click.
          eventBus.fireEvent(RequestValidationEvent.EVENT);
       }
    }
@@ -182,15 +186,58 @@ public class SourceContentsPresenter implements ClickHandler, UserConfigChangeHa
    {
       for (SourceContentsDisplay sourceContentsDisplay : displayList)
       {
-          sourceContentsDisplay.toggleTransUnitDetails(configHolder.getState().isShowOptionalTransUnitDetails());
+         sourceContentsDisplay.toggleTransUnitDetails(configHolder.getState().isShowOptionalTransUnitDetails());
       }
    }
 
    @Override
    public void onTransUnitUpdated(TransUnitUpdatedEvent event)
    {
-      SourceContentsDisplay sourceContentsView = Iterables.find(displayList, new FindByTransUnitIdPredicate(event.getUpdateInfo().getTransUnit().getId()));
-      sourceContentsView.setValue(event.getUpdateInfo().getTransUnit());
-      sourceContentsView.refresh();
+      Optional<SourceContentsDisplay> sourceContentsView = findView(event.getUpdateInfo().getTransUnit().getId());
+      if (sourceContentsView.isPresent())
+      {
+         sourceContentsView.get().updateTransUnitDetails(event.getUpdateInfo().getTransUnit());
+         sourceContentsView.get().refresh();
+      }
+   }
+
+   /**
+    * Find a source display for the given trans unit if it is present on the page.
+    */
+   private Optional<SourceContentsDisplay> findView(TransUnitId id)
+   {
+      return Iterables.tryFind(displayList, new FindByTransUnitIdPredicate(id));
+   }
+
+   /**
+    * Get the source string for a trans unit on the current page. This will be
+    * the currently selected plural form if any is selected.
+    * 
+    * @param id for the trans unit to check
+    * @return currently selected plural, or the first plural if none is
+    *         selected. The value will be absent if the trans unit is not on the
+    *         current page.
+    */
+   public Optional<String> getSourceContent(TransUnitId id)
+   {
+      Optional<SourceContentsDisplay> view = findView(id);
+      if (view.isPresent())
+      {
+         List<HasSelectableSource> sourcePanelList = view.get().getSourcePanelList();
+         Optional<HasSelectableSource> selectedSourceOptional = tryFindSelectedSourcePanel(sourcePanelList);
+         if (selectedSourceOptional.isPresent())
+         {
+            return Optional.of(selectedSourceOptional.get().getSource());
+         }
+         else
+         {
+            // by default return the first one
+            return Optional.of(sourcePanelList.get(0).getSource());
+         }
+      }
+      else
+      {
+         return Optional.absent();
+      }
    }
 }

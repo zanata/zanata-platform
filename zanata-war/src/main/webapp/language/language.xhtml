@@ -9,7 +9,7 @@
     xmlns:a4j="http://richfaces.org/a4j"
     template="../WEB-INF/layout/template.xhtml">
 
-    <ui:define name="page_title">#{languageTeamAction.locale.retrieveDisplayName()} Team</ui:define>
+    <ui:define name="page_title">#{messages['jsf.LanguageTeamTitle']}</ui:define>
 
     <ui:define name="head">
         <script type="text/javascript">
@@ -98,7 +98,7 @@
       <rich:popupPanel id="userAddPanel" width="530" height="420">
         <f:subview id="personSearch">
           <h:form id="form">
-            <h1>Find Users To Add</h1>
+            <h1>#{messages['jsf.FindUsersToAdd']}</h1>
             <p>
               <h:inputText value="#{languageTeamAction.searchTerm}" id="searchField"
                            onkeydown="return submitSearchOnEnter(event);"/>
@@ -112,7 +112,7 @@
             </p>
           </h:form>
           <a4j:region id="region">
-            <a4j:status id="searchStatus" startText="Searching..." stopText="" />
+            <a4j:status id="searchStatus" startText="#{messages['jsf.Searching']}" stopText="" />
             <a4j:outputPanel id="searchResults" layout="block" style="overflow:auto;height:320px">
               <h:outputText id="noResultsMessage" rendered="#{empty languageTeamAction.searchResults}" value="No results to display." />
               <h:form id="searchResult" rendered="#{not empty languageTeamAction.searchResults}">

@@ -23,7 +23,7 @@
 
                     <rich:column styleClass="centered">
                         <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-                        <h:selectBooleanCheckbox title="Select" value="#{selectableVersion.selected}" rendered="#{!versionGroupJoinAction.isVersionInGroup(selectableVersion.projectIteration.id)}"/>
+                        <h:selectBooleanCheckbox title="#{messages['jsf.Select']}" value="#{selectableVersion.selected}" rendered="#{!versionGroupJoinAction.isVersionInGroup(selectableVersion.projectIteration.id)}"/>
 
                         <h:outputText value="#{messages['jsf.AlreadyInGroup']}"
                                       rendered="#{versionGroupJoinAction.isVersionInGroup(selectableVersion.projectIteration.id)}" />
@@ -52,7 +52,7 @@
 
                 <s:decorate id="messageField" template="edit.xhtml">
                     <ui:define name="label">#{messages['jsf.AdditionalInfo']}</ui:define>
-                    
+
                     <s:span styleClass="icon-info-circle-2 input_help" id="slugHelp">
 		            	<rich:tooltip>
                             #{messages['jsf.email.joingrouprequest.AdditionalInfoMessage']}

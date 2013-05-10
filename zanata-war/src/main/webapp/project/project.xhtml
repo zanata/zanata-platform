@@ -43,7 +43,7 @@
             		<h:outputText styleClass="icon-block obsoleteIcon" title="#{messages['jsf.ObsoleteVersions']}" rendered="#{projectHome.getEffectiveVersionStatus(_version) == 'OBSOLETE'}"/>
                 	<span class="version_title">#{_version.slug}</span>
                 </s:link>
-               	<span class="version_info">Documents: #{_version.documents.size}</span>
+                <span class="version_info">#{messages['jsf.DocumentCount']} #{_version.documents.size}</span>
             </rich:column>
 
             <rich:column styleClass="centered" rendered="#{identity.loggedIn}">
@@ -105,21 +105,21 @@
                     </rich:dataGrid>
                 </c:if>
             </rich:column>
-            
+
             <rich:column styleClass="centered"> 
             	<f:facet name="header">#{messages['jsf.ManageVersion']}</f:facet>
-            	
+
             	<h:commandButton value="#{messages['jsf.Edit']}"
 							action="#{versionDetailsAction.editVersion(_version.slug)}" rendered="#{s:hasPermission(_version, 'update')}" title="#{messages['jsf.EditVersion']}">
 				</h:commandButton>
-				
+
 				<h:commandButton value="#{messages['jsf.SourceDocs']}"
 							action="#{versionDetailsAction.sourceDocs(_version.slug)}" title="#{messages['jsf.SourceDocuments']}">
 				</h:commandButton>
-						
+
             </rich:column>
         </rich:dataTable>
-        
+
         </h:form>
    	</div>
     </s:decorate>
@@ -141,7 +141,7 @@
     <s:link styleClass="action_link" rendered="#{s:hasPermission(projectHome.instance, 'update')}" view="/project/assign_maintainer.xhtml" value="#{messages['jsf.ManageMaintainers']}" propagation="none">
     	<f:param name="projectSlug" value="#{projectHome.slug}"/>
     </s:link>
-    <s:link styleClass="action_link" rendered="#{s:hasPermission(projectHome.instance, 'update')}" view="/project/copy_trans_options.xhtml" value="#{messages['jsf.project.CopyTransOpts.linkTitle']}" title="#{messages['jsf.project.CopyTransOpts.tooltip']}" propagation="none">
+    <s:link styleClass="action_link" rendered="#{s:hasPermission(projectHome.instance, 'update')}" view="/project/copy_trans_options.xhtml" value="#{messages['jsf.project.CopyTransOpts.title']}" title="#{messages['jsf.project.CopyTransOpts.tooltip']}" propagation="none">
         <f:param name="projectSlug" value="#{projectHome.slug}"/>
     </s:link>
 
@@ -151,7 +151,11 @@
     <f:facet name="header">#{messages['jsf.ProjectMaintainers']}</f:facet>
     <h:outputText rendered="#{empty projectHome.instance.maintainers}">#{messages['jsf.NoMaintainersDefined']}</h:outputText>
     <rich:list value="#{projectHome.instance.maintainers.toArray()}" var="maintainer">
-      <h:outputText value="#{maintainer.name}" styleClass="maintainer"/>
+      <h:outputText value="#{maintainer.name}" styleClass="maintainer" rendered="#{!s:hasRole('admin')}"/>
+
+      <s:fragment rendered="#{s:hasRole('admin')}">
+          <a href="mailto:#{maintainer.email}" class="maintainer_email" title="#{maintainer.email}" target="_blank">#{maintainer.name}</a>
+      </s:fragment>
     </rich:list>
   </rich:panel>
 

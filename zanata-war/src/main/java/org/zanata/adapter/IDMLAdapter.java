@@ -18,38 +18,25 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.webtrans.client.ui.table.cell;
+package org.zanata.adapter;
 
-import org.zanata.webtrans.client.ui.TransUnitCountGraph;
-
-import com.google.gwt.cell.client.ValueUpdater;
-import com.google.gwt.dom.client.BrowserEvents;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NativeEvent;
+import net.sf.okapi.filters.idml.IDMLFilter;
 
 /**
- * 
- * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- * 
- **/
-public class TransUnitCountGraphCell extends StaticWidgetCell<TransUnitCountGraph>
+ * Adapter to handle Adobe InDesign IDML.
+ *
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ */
+public class IDMLAdapter extends GenericOkapiFilterAdapter
 {
-   public TransUnitCountGraphCell()
+   public IDMLAdapter()
    {
-      super(BrowserEvents.MOUSEOVER, BrowserEvents.MOUSEOUT);
+      // FIXME use contentHash, but find a way to avoid duplicate TF IDs
+      super(prepareFilter(), IdSource.subDocNameAndTextUnitId, true);
    }
 
-   @Override
-   public void onBrowserEvent(Context context, Element parent, TransUnitCountGraph value, NativeEvent event, ValueUpdater<TransUnitCountGraph> valueUpdater)
+   private static IDMLFilter prepareFilter()
    {
-      if (event.getType().equalsIgnoreCase(BrowserEvents.MOUSEOVER))
-      {
-         value.onMouseOver(parent.getFirstChildElement());
-      }
-      else if (event.getType().equalsIgnoreCase(BrowserEvents.MOUSEOUT))
-      {
-         value.onMouseOut();
-      }
+      return new IDMLFilter();
    }
-
 }

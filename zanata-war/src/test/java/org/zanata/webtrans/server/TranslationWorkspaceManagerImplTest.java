@@ -34,8 +34,10 @@ import org.zanata.model.TestFixture;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.service.GravatarService;
 import org.zanata.service.LocaleService;
+import org.zanata.service.ValidationService;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.auth.EditorClientId;
+import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.ExitWorkspace;
@@ -60,6 +62,8 @@ public class TranslationWorkspaceManagerImplTest
    @Mock
    private LocaleService localeServiceImpl;
    @Mock
+   private ValidationService validationServiceImpl;
+   @Mock
    private TranslationWorkspace mockWorkspace;
    @Captor
    private ArgumentCaptor<ExitWorkspace> eventCaptor;
@@ -74,6 +78,7 @@ public class TranslationWorkspaceManagerImplTest
             .use("gravatarServiceImpl", gravatarServiceImpl)
             .use("projectIterationDAO", projectIterationDAO)
             .use("localeServiceImpl", localeServiceImpl)
+            .use("validationServiceImpl", validationServiceImpl)
             .ignoreNonResolvable()
             .autowire(TranslationWorkspaceManagerImpl.class);
       // @formatter:on
@@ -174,6 +179,8 @@ public class TranslationWorkspaceManagerImplTest
       HLocale hLocale = new HLocale(LocaleId.DE);
       hLocale.setActive(true);
       when(localeServiceImpl.getByLocaleId(workspaceId.getLocaleId())).thenReturn(hLocale);
+
+      when(validationServiceImpl.getValidationObject(projectIteration)).thenReturn(new ArrayList<ValidationAction>());
 
       TranslationWorkspaceManagerImpl spy = spy(manager);
       doReturn(mockWorkspace).when(spy).createWorkspace(workspaceId);

@@ -52,7 +52,7 @@ public class LocaleDAO extends AbstractDAOImpl<HLocale, Long>
    {
       return (HLocale) getSession().byNaturalId(HLocale.class).using("localeId", locale).load();
    }
-
+   
    @SuppressWarnings("unchecked")
    public List<HLocale> findBySimilarLocaleId(LocaleId localeId)
    {
@@ -71,5 +71,4 @@ public class LocaleDAO extends AbstractDAOImpl<HLocale, Long>
    {
       return findByCriteria(Restrictions.eq("active", true), Restrictions.eq("enabledByDefault", true));
    }
-
 }

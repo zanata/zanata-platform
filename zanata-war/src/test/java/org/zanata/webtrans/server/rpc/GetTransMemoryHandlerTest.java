@@ -27,8 +27,10 @@ import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationMemoryQueryService;
+import org.zanata.service.ValidationService;
 import org.zanata.service.impl.TranslationMemoryQueryServiceImpl;
 import org.zanata.service.impl.TranslationStateCacheImpl;
+import org.zanata.service.impl.ValidationServiceImpl;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemory;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
@@ -54,6 +56,9 @@ public class GetTransMemoryHandlerTest extends ZanataDbunitJpaTest
    private LocaleId sourceLocaleId = LocaleId.EN_US;
    private TranslationMemoryQueryService translationMemoryQueryService;
 
+   @Mock
+   private ValidationService validationServiceImpl;
+
    @Override
    protected void prepareDBUnitOperations()
    {
@@ -68,6 +73,7 @@ public class GetTransMemoryHandlerTest extends ZanataDbunitJpaTest
       autoWireInstance
             .use("identity", identity)
             .use("localeServiceImpl", localeService)
+            .use("validationServiceImpl", validationServiceImpl)
             .use("entityManager", new FullTextEntityManagerImpl(getEm()))
             .use("session", getSession())
             .useImpl(TranslationStateCacheImpl.class);

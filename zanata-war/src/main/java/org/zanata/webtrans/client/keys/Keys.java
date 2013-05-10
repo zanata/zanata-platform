@@ -28,13 +28,15 @@ import java.util.Set;
  * Represents a combination of modifier keys and a single key code for use with
  * {@link KeyShortcut}.
  * 
- * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
+ * @author David Mason, <a
+ *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  * 
  */
 public class Keys implements Comparable<Keys>
 {
 
    public static final int NO_MODIFIER = 0x0;
+   public static final int NO_ALIAS = 0x0;
    public static final int ALT_KEY = 0x1;
    public static final int SHIFT_KEY = 0x2;
    public static final int CTRL_KEY = 0x4;
@@ -52,14 +54,22 @@ public class Keys implements Comparable<Keys>
    public static final int KEY_NUM_3 = 99;
    public static final int KEY_NUM_4 = 100;
 
+   public static final int ALIAS_KEY = ALT_KEY | 'X';
 
+   private int alias;
    private final int modifiers;
    private final int keyCode;
 
    public Keys(int modifiers, int keyCode)
    {
+      this(NO_ALIAS, modifiers, keyCode);
+   }
+   
+   public Keys(int alias, int modifiers, int keyCode)
+   {
       this.modifiers = modifiers;
       this.keyCode = keyCode;
+      this.alias = alias;
    }
 
    public int getModifiers()
@@ -72,15 +82,26 @@ public class Keys implements Comparable<Keys>
       return keyCode;
    }
 
+   public int getAlias()
+   {
+      return alias;
+   }
+
+   public void setAlias(int alias)
+   {
+      this.alias = alias;
+   }
+
    @Override
    public int hashCode()
    {
       // could pre-calculate hash as these are both final.
-      return keyCode * 8 + modifiers;
+      return keyCode * 8 + modifiers + alias;
    }
 
    /**
-    * Two {@link KeyShortcut} objects are equal if they have the same key combination and context.
+    * Two {@link KeyShortcut} objects are equal if they have the same key
+    * combination and context.
     */
    @Override
    public boolean equals(Object obj)
@@ -90,7 +111,7 @@ public class Keys implements Comparable<Keys>
       if (!(obj instanceof Keys))
          return false;
       Keys other = (Keys) obj;
-      boolean equal = keyCode == other.keyCode && modifiers == other.modifiers;
+      boolean equal = keyCode == other.keyCode && modifiers == other.modifiers && alias == other.alias;
       return equal;
    }
 
@@ -100,15 +121,15 @@ public class Keys implements Comparable<Keys>
       Integer compareFrom;
       Integer compareTo;
 
-      if (this.modifiers == o.modifiers)
+      if (this.alias == o.alias && this.modifiers == o.modifiers)
       {
-         compareFrom = this.modifiers + this.keyCode;
-         compareTo = o.modifiers + o.keyCode;
+         compareFrom = this.alias + this.modifiers + this.keyCode;
+         compareTo = o.alias + o.modifiers + o.keyCode;
       }
       else
       {
-         compareFrom = this.modifiers;
-         compareTo = o.modifiers;
+         compareFrom = this.alias + this.modifiers;
+         compareTo = o.alias + o.modifiers;
       }
 
       return compareFrom.compareTo(compareTo);
@@ -117,12 +138,11 @@ public class Keys implements Comparable<Keys>
    @Override
    public String toString()
    {
-      return "mod: " + modifiers + " key: " + keyCode + " hash: " + hashCode();
+      return "alias: " + alias + " mod: " + modifiers + " key: " + keyCode + " hash: " + hashCode();
    }
 
    public static Set<Keys> setOf(Keys... keys)
    {
       return new HashSet<Keys>(Arrays.asList(keys));
    }
-
 }

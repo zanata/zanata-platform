@@ -27,6 +27,7 @@ import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
 import org.zanata.webtrans.client.presenter.TranslationPresenter;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.Breadcrumb;
+import org.zanata.webtrans.client.ui.HasTranslationStats.LabelFormat;
 import org.zanata.webtrans.client.ui.TransUnitCountBar;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
@@ -39,7 +40,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
@@ -60,6 +60,8 @@ public class AppView extends Composite implements AppDisplay
       String disableTab();
 
       String selectedTab();
+
+      String highlightedTab();
    }
 
    private static AppViewUiBinder uiBinder = GWT.create(AppViewUiBinder.class);
@@ -101,7 +103,7 @@ public class AppView extends Composite implements AppDisplay
    {
       // this must be initialized before uiBinder.createAndBindUi(), or an
       // exception will be thrown at runtime
-      translationStatsBar = new TransUnitCountBar(messages);
+      translationStatsBar = new TransUnitCountBar(messages, LabelFormat.PERCENT_COMPLETE_HRS, true);
       translationStatsBar.setVisible(false); // hide until there is a value to
       
       projectLink = new Breadcrumb(true, false, Application.getProjectHomeURL(userWorkspaceContext.getWorkspaceContext().getWorkspaceId()));
@@ -296,6 +298,19 @@ public class AppView extends Composite implements AppDisplay
       else
       {
          tab.addStyleName(style.disableTab());
+      }
+   }
+
+   @Override
+   public void setKeyboardShorcutColor(boolean aliasKeyListening)
+   {
+      if (aliasKeyListening)
+      {
+         keyShortcuts.addStyleName(style.highlightedTab());
+      }
+      else
+      {
+         keyShortcuts.removeStyleName(style.highlightedTab());
       }
    }
 

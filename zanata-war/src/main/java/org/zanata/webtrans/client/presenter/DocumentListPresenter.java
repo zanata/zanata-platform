@@ -21,7 +21,12 @@
 package org.zanata.webtrans.client.presenter;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map.Entry;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
@@ -31,12 +36,15 @@ import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.Application;
+import org.zanata.webtrans.client.events.DocValidationResultEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
+import org.zanata.webtrans.client.events.RunDocValidationEvent;
+import org.zanata.webtrans.client.events.RunDocValidationEventHandler;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
@@ -47,42 +55,50 @@ import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.rpc.HasQueueDispatch;
+import org.zanata.webtrans.client.rpc.QueueDispatcher;
 import org.zanata.webtrans.client.service.UserOptionsService;
+import org.zanata.webtrans.client.ui.DocumentListTable.DocValidationStatus;
 import org.zanata.webtrans.client.ui.DocumentNode;
-import org.zanata.webtrans.client.ui.HasStatsFilter;
 import org.zanata.webtrans.client.view.DocumentListDisplay;
+import org.zanata.webtrans.shared.model.AuditInfo;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.DownloadAllFilesAction;
 import org.zanata.webtrans.shared.rpc.DownloadAllFilesResult;
+import org.zanata.webtrans.shared.rpc.GetDocumentStats;
+import org.zanata.webtrans.shared.rpc.GetDocumentStatsResult;
 import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgress;
 import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgressResult;
+import org.zanata.webtrans.shared.rpc.RunDocValidationAction;
+import org.zanata.webtrans.shared.rpc.RunDocValidationResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
-import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.NoSelectionModel;
 import com.google.inject.Inject;
 
-public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> implements HasStatsFilter, DocumentListDisplay.Listener, DocumentSelectionHandler, UserConfigChangeHandler, TransUnitUpdatedEventHandler, WorkspaceContextUpdateEventHandler
+public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> implements DocumentListDisplay.Listener, DocumentSelectionHandler, UserConfigChangeHandler, TransUnitUpdatedEventHandler, WorkspaceContextUpdateEventHandler, RunDocValidationEventHandler
 {
    private final UserWorkspaceContext userWorkspaceContext;
    private DocumentInfo currentDocument;
-   private DocumentNode currentSelection;
    private final WebTransMessages messages;
    private final History history;
    private final UserOptionsService userOptionsService;
 
-   private ListDataProvider<DocumentNode> dataProvider;
    private HashMap<DocumentId, DocumentNode> nodes;
-   
+   private HashMap<DocumentId, Integer> pageRows;
+   private ArrayList<DocumentNode> sortedNodes;
+
    private final CachingDispatchAsync dispatcher;
+
+   private final HasQueueDispatch<GetDocumentStats, GetDocumentStatsResult> docStatQueueDispatcher;
 
    /**
     * For quick lookup of document id by full path (including document name).
@@ -94,8 +110,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
    private TranslationStats projectStats;
 
-   private final NoSelectionModel<DocumentNode> selectionModel = new NoSelectionModel<DocumentNode>();
-
    @Inject
    public DocumentListPresenter(DocumentListDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, UserWorkspaceContext userworkspaceContext, final WebTransMessages messages, History history, UserOptionsService userOptionsService)
    {
@@ -105,57 +119,68 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       this.messages = messages;
       this.history = history;
       this.userOptionsService = userOptionsService;
+      docStatQueueDispatcher = new QueueDispatcher<GetDocumentStats, GetDocumentStatsResult>(dispatcher);
 
       nodes = new HashMap<DocumentId, DocumentNode>();
+      sortedNodes = new ArrayList<DocumentNode>();
+      pageRows = new HashMap<DocumentId, Integer>();
    }
-
 
    @Override
    protected void onBind()
    {
-      dataProvider = display.getDataProvider();
       display.setListener(this);
 
-      display.renderTable(selectionModel);
-
-      setStatsFilter(STATS_OPTION_WORDS);
+      display.setStatsFilters(DocumentListDisplay.STATS_OPTION_WORDS);
 
       registerHandler(eventBus.addHandler(DocumentSelectionEvent.getType(), this));
       registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), this));
       registerHandler(eventBus.addHandler(UserConfigChangeEvent.TYPE, this));
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this));
+      registerHandler(eventBus.addHandler(RunDocValidationEvent.getType(), this));
 
-      display.updatePageSize(userOptionsService.getConfigHolder().getState().getDocumentListPageSize());
       display.setLayout(userOptionsService.getConfigHolder().getState().getDisplayTheme().name());
 
-      ProjectType projectType = userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getProjectType();
-      setupDownloadZipButton(projectType);
+      setupDownloadZipButton(getProjectType());
    }
-   
+
+   private ProjectType getProjectType()
+   {
+      return userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getProjectType();
+   }
+
    public void setupDownloadZipButton(ProjectType projectType)
    {
-      if (!isZipFileDownloadAllowed(projectType))
+      if (isZipFileDownloadAllowed(projectType))
       {
-         display.setEnableDownloadZip(false);
-         if (projectType == null)
+         display.setEnableDownloadZip(true);
+         if (isPoProject(projectType))
          {
-            display.setDownloadZipButtonTitle(messages.projectTypeNotSet());
+            display.setDownloadZipButtonText(messages.downloadAllAsZip());
+            display.setDownloadZipButtonTitle(messages.downloadAllAsZipDescription());
          }
          else
          {
-            display.setDownloadZipButtonTitle(messages.projectTypeNotAllowed());
+            display.setDownloadZipButtonText(messages.downloadAllAsOfflinePoZip());
+            display.setDownloadZipButtonTitle(messages.downloadAllAsOfflinePoZipDescription());
          }
       }
       else
       {
-         display.setEnableDownloadZip(true);
-         display.setDownloadZipButtonTitle(messages.downloadAllTranslatedFiles());
+         display.setEnableDownloadZip(false);
+         display.setDownloadZipButtonText(messages.downloadAllAsZip());
+         display.setDownloadZipButtonTitle(messages.projectTypeNotSet());
       }
    }
 
-   public boolean isZipFileDownloadAllowed(ProjectType projectType)
+   private boolean isPoProject(ProjectType projectType)
    {
       return projectType == ProjectType.Gettext || projectType == ProjectType.Podir;
+   }
+
+   protected boolean isZipFileDownloadAllowed(ProjectType projectType)
+   {
+      return projectType != null;
    }
 
    @Override
@@ -167,6 +192,18 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       currentDocument = doc;
       token.setDocumentPath(doc.getPath() + doc.getName());
       token.setView(MainView.Editor);
+      if (doc.hasError() != null)
+      {
+         if (doc.hasError())
+         {
+            token.setFilterHasError(true);
+         }
+         else
+         {
+            token.setFilterHasError(false);
+         }
+      }
+
       // don't carry searches over to the next document
       token.setSearchText("");
       history.newItem(token);
@@ -199,25 +236,21 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    @Override
    public void fireCaseSensitiveToken(boolean value)
    {
-      HistoryToken token = history.getHistoryToken();
+      HistoryToken token = HistoryToken.fromTokenString(history.getToken());
       if (value != token.isDocFilterCaseSensitive())
       {
          token.setDocFilterCaseSensitive(value);
-         history.newItem(token);
+         history.newItem(token.toTokenString());
       }
    }
 
    @Override
-   public void statsOptionChange(String option)
+   public void statsOptionChange()
    {
-      setStatsFilter(option);
-      dataProvider.refresh();
-   }
-
-   @Override
-   public void setStatsFilter(String option)
-   {
-      display.setStatsFilter(option);
+      for (Integer row : pageRows.values())
+      {
+         display.setStatsFilters(row);
+      }
    }
 
    public void updateFilterAndRun(String docFilterText, boolean docFilterExact, boolean docFilterCaseSensitive)
@@ -242,25 +275,100 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       // Auto-generated method stub
    }
 
-   public void setDocuments(ArrayList<DocumentInfo> sortedList)
+   public void setDocuments(List<DocumentInfo> sortedList)
    {
-      dataProvider.getList().clear();
       nodes = new HashMap<DocumentId, DocumentNode>(sortedList.size());
+      sortedNodes.clear();
+
       idsByPath = new HashMap<String, DocumentId>(sortedList.size());
-      long start = System.currentTimeMillis();
       for (DocumentInfo doc : sortedList)
       {
          idsByPath.put(doc.getPath() + doc.getName(), doc.getId());
-         DocumentNode node = new DocumentNode(messages, doc, eventBus);
+         DocumentNode node = new DocumentNode(doc);
          node.setVisible(filter.accept(doc));
-         if (node.isVisible())
-         {
-            dataProvider.getList().add(node);
-         }
          nodes.put(doc.getId(), node);
+         sortedNodes.add(node);
       }
-      Log.info("Time to create DocumentNodes: " + String.valueOf(System.currentTimeMillis() - start) + "ms");
-      dataProvider.refresh();
+      updatePageCountAndGotoFirstPage();
+   }
+
+   public void queryStats()
+   {
+      int BATCH_SIZE = 1000;
+
+      ArrayList<GetDocumentStats> queueList = new ArrayList<GetDocumentStats>();
+      for (int i = 0; i < sortedNodes.size();)
+      {
+         int fromIndex = i;
+         int toIndex = i + BATCH_SIZE > sortedNodes.size() ? sortedNodes.size() : i + BATCH_SIZE;
+         List<DocumentNode> subList = sortedNodes.subList(fromIndex, toIndex);
+         queueList.add(new GetDocumentStats(convertFromNodetoId(subList)));
+         i = toIndex;
+      }
+      docStatQueueDispatcher.setQueueAndExecute(queueList, getDocumentStatCallBack);
+   }
+
+   private final AsyncCallback<GetDocumentStatsResult> getDocumentStatCallBack = new AsyncCallback<GetDocumentStatsResult>()
+   {
+      @Override
+      public void onFailure(Throwable caught)
+      {
+         eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Unable get stats for documents"));
+      }
+
+      @Override
+      public void onSuccess(GetDocumentStatsResult result)
+      {
+         for (Entry<DocumentId, TranslationStats> entry : result.getStatsMap().entrySet())
+         {
+            DocumentInfo docInfo = getDocumentInfo(entry.getKey());
+            docInfo.setStats(entry.getValue());
+            docInfo.setLastTranslated(result.getLastTranslatedMap().get(entry.getKey()));
+
+            Integer row = pageRows.get(entry.getKey());
+            if (row != null)
+            {
+               display.updateStats(row.intValue(), docInfo.getStats());
+               display.updateLastTranslated(row.intValue(), docInfo.getLastTranslated());
+            }
+
+            eventBus.fireEvent(new DocumentStatsUpdatedEvent(entry.getKey(), docInfo.getStats()));
+
+            // update project stats, forward to AppPresenter
+            projectStats.add(docInfo.getStats());
+
+            eventBus.fireEvent(new ProjectStatsUpdatedEvent(projectStats));
+         }
+
+         docStatQueueDispatcher.executeQueue();
+      }
+   };
+
+   private List<DocumentId> convertFromNodetoId(List<DocumentNode> nodes)
+   {
+      ArrayList<DocumentId> documentIds = new ArrayList<DocumentId>();
+
+      for (DocumentNode node : nodes)
+      {
+         documentIds.add(node.getDocInfo().getId());
+      }
+      return documentIds;
+   }
+
+   private void updatePageCountAndGotoFirstPage()
+   {
+      int pageCount = (int) Math.ceil(sortedNodes.size() * 1.0 / userOptionsService.getConfigHolder().getState().getDocumentListPageSize());
+      display.getPageNavigation().setPageCount(pageCount);
+      gotoPage(1);
+   }
+
+   private void gotoPage(int page)
+   {
+      int pageSize = userOptionsService.getConfigHolder().getState().getDocumentListPageSize();
+      int fromIndex = (page - 1) * pageSize;
+      int toIndex = (fromIndex + pageSize) > sortedNodes.size() ? sortedNodes.size() : fromIndex + pageSize;
+      pageRows = display.buildContent(sortedNodes.subList(fromIndex, toIndex));
+      display.getPageNavigation().setValue(page, false);
    }
 
    /**
@@ -269,16 +377,16 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
     */
    private void runFilter()
    {
-      dataProvider.getList().clear();
+      sortedNodes.clear();
       for (DocumentNode docNode : nodes.values())
       {
          docNode.setVisible(filter.accept(docNode.getDocInfo()));
          if (docNode.isVisible())
          {
-            dataProvider.getList().add(docNode);
+            sortedNodes.add(docNode);
          }
       }
-      dataProvider.refresh();
+      updatePageCountAndGotoFirstPage();
    }
 
    /**
@@ -310,16 +418,15 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
    private void setSelection(final DocumentId documentId)
    {
-      if (currentSelection != null && currentSelection.getDocInfo().getId() == documentId)
+      if (currentDocument != null && currentDocument.getId() == documentId)
       {
          Log.info("same selection doc id:" + documentId);
          return;
       }
-      currentSelection = null;
+      currentDocument = null;
       DocumentNode node = nodes.get(documentId);
       if (node != null)
       {
-         currentSelection = node;
          userWorkspaceContext.setSelectedDoc(node.getDocInfo());
          // required in order to show the document selected in doclist when
          // loading from bookmarked history token
@@ -350,12 +457,21 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       TransUnitUpdateInfo updateInfo = event.getUpdateInfo();
       // update stats for containing document
       DocumentInfo updatedDoc = getDocumentInfo(updateInfo.getDocumentId());
-      adjustStats(updatedDoc.getStats(), updateInfo);
-      updateLastTranslatedInfo(updatedDoc, event.getUpdateInfo().getTransUnit());
-      eventBus.fireEvent(new DocumentStatsUpdatedEvent(updatedDoc.getId(), updatedDoc.getStats()));
+      if (updatedDoc.getStats() != null)
+      {
+         adjustStats(updatedDoc.getStats(), updateInfo);
+         updateLastTranslatedInfo(updatedDoc, event.getUpdateInfo().getTransUnit());
 
-      // refresh document list table
-      dataProvider.refresh();
+         Integer row = pageRows.get(updatedDoc.getId());
+         if (row != null)
+         {
+            display.updateStats(row.intValue(), updatedDoc.getStats());
+            AuditInfo lastTranslated = new AuditInfo(event.getUpdateInfo().getTransUnit().getLastModifiedTime(), event.getUpdateInfo().getTransUnit().getLastModifiedBy());
+            display.updateLastTranslated(row.intValue(), lastTranslated);
+         }
+
+         eventBus.fireEvent(new DocumentStatsUpdatedEvent(updatedDoc.getId(), updatedDoc.getStats()));
+      }
 
       // update project stats, forward to AppPresenter
       adjustStats(projectStats, updateInfo);
@@ -364,8 +480,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
    private void updateLastTranslatedInfo(DocumentInfo doc, TransUnit updatedTransUnit)
    {
-      doc.setLastTranslatedBy(updatedTransUnit.getLastModifiedBy());
-      doc.setLastTranslatedDate(updatedTransUnit.getLastModifiedTime());
+      doc.setLastTranslated(new AuditInfo(updatedTransUnit.getLastModifiedTime(), updatedTransUnit.getLastModifiedBy()));
    }
 
    /**
@@ -388,7 +503,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       display.setLayout(userOptionsService.getConfigHolder().getState().getDisplayTheme().name());
       if (event.getView() == MainView.Documents)
       {
-         display.updatePageSize(userOptionsService.getConfigHolder().getState().getDocumentListPageSize());
+         updatePageCountAndGotoFirstPage();
       }
    }
 
@@ -396,7 +511,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    public void downloadAllFiles()
    {
       WorkspaceId workspaceId = userWorkspaceContext.getWorkspaceContext().getWorkspaceId();
-      dispatcher.execute(new DownloadAllFilesAction(workspaceId.getProjectIterationId().getProjectSlug(), workspaceId.getProjectIterationId().getIterationSlug(), workspaceId.getLocaleId().getId()), new AsyncCallback<DownloadAllFilesResult>()
+      dispatcher.execute(new DownloadAllFilesAction(workspaceId.getProjectIterationId().getProjectSlug(), workspaceId.getProjectIterationId().getIterationSlug(), workspaceId.getLocaleId().getId(), !isPoProject(getProjectType())), new AsyncCallback<DownloadAllFilesResult>()
       {
          @Override
          public void onFailure(Throwable caught)
@@ -454,7 +569,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
                display.stopGetDownloadStatus();
                final String url = Application.getAllFilesDownloadURL(result.getDownloadId());
                display.setAndShowFilesDownloadLink(url);
-               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, "File ready to download",  display.getDownloadAllFilesInlineLink(url)));
+               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, "File ready to download", display.getDownloadAllFilesInlineLink(url)));
             }
          }
       });
@@ -476,9 +591,9 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    public void onFileUploadComplete(SubmitCompleteEvent event)
    {
       display.closeFileUpload();
-      if(event.getResults().contains("200"))
+      if (event.getResults().contains("200"))
       {
-         if(event.getResults().contains("Warning"))
+         if (event.getResults().contains("Warning"))
          {
             eventBus.fireEvent(new NotificationEvent(Severity.Warning, "File uploaded.", event.getResults(), true, null));
          }
@@ -510,4 +625,237 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       setupDownloadZipButton(event.getProjectType());
    }
 
+   @Override
+   public void onRunDocValidation(RunDocValidationEvent event)
+   {
+      if (event.getView() == MainView.Documents)
+      {
+         List<ValidationId> valIds = userOptionsService.getConfigHolder().getState().getEnabledValidationIds();
+         if (!valIds.isEmpty() && !pageRows.keySet().isEmpty())
+         {
+            ArrayList<DocumentId> docList = new ArrayList<DocumentId>();
+            for (DocumentId documentId : pageRows.keySet())
+            {
+               display.showRowLoading(pageRows.get(documentId));
+               docList.add(documentId);
+            }
+
+            dispatcher.execute(new RunDocValidationAction(valIds, docList), new AsyncCallback<RunDocValidationResult>()
+            {
+               @Override
+               public void onSuccess(RunDocValidationResult result)
+               {
+                  Log.debug("Success doc validation - " + result.getResultMap().size());
+
+                  for (Entry<DocumentId, Boolean> entry : result.getResultMap().entrySet())
+                  {
+                     Integer row = pageRows.get(entry.getKey());
+                     DocumentNode node = nodes.get(entry.getKey());
+
+                     DocValidationStatus status = entry.getValue() ? DocValidationStatus.HasError : DocValidationStatus.NoError;
+
+                     if (row != null)
+                     {
+                        display.updateRowHasError(row.intValue(), status);
+
+                        if (node != null)
+                        {
+                           node.getDocInfo().setHasError(entry.getValue());
+                        }
+                     }
+                  }
+                  eventBus.fireEvent(new DocValidationResultEvent(new Date()));
+               }
+
+               @Override
+               public void onFailure(Throwable caught)
+               {
+                  eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Unable to run validation"));
+                  eventBus.fireEvent(new DocValidationResultEvent(new Date()));
+               }
+            });
+         }
+      }
+   }
+
+   @Override
+   public void sortList(String header, boolean asc)
+   {
+      HeaderComparator comparator = new HeaderComparator(header);
+      Collections.sort(sortedNodes, comparator);
+      if (!asc)
+      {
+         Collections.reverse(sortedNodes);
+      }
+      gotoPage(1);
+   }
+
+   private class HeaderComparator implements Comparator<DocumentNode>
+   {
+      private String header;
+
+      public HeaderComparator(String header)
+      {
+         this.header = header;
+      }
+
+      @Override
+      public int compare(DocumentNode o1, DocumentNode o2)
+      {
+         if (header.equals(DocumentListDisplay.PATH_HEADER))
+         {
+            return comparePath(o1, o2);
+         }
+         else if (header.equals(DocumentListDisplay.DOC_HEADER))
+         {
+            return compareDoc(o1, o2);
+         }
+         else if (header.equals(DocumentListDisplay.STATS_HEADER))
+         {
+            return compareStats(o1, o2);
+         }
+         else if (header.equals(DocumentListDisplay.TRANSLATED_HEADER))
+         {
+            return compareTranslated(o1, o2);
+         }
+         else if (header.equals(DocumentListDisplay.UNTRANSLATED_HEADER))
+         {
+            return compareUntranslated(o1, o2);
+         }
+         else if (header.equals(DocumentListDisplay.REMAINING_HEADER))
+         {
+            return compareRemaining(o1, o2);
+         }
+         else if (header.equals(DocumentListDisplay.LAST_UPLOAD_HEADER))
+         {
+            return compareLastUpload(o1, o2);
+         }
+         else if (header.equals(DocumentListDisplay.LAST_TRANSLATED_HEADER))
+         {
+            return compareLastTranslated(o1, o2);
+         }
+         return 0;
+      }
+
+      private int comparePath(DocumentNode o1, DocumentNode o2)
+      {
+         if (o1.getDocInfo().getPath() == null || o2.getDocInfo().getPath() == null)
+         {
+            return (o1.getDocInfo().getPath() == null) ? -1 : 1;
+         }
+         else
+         {
+            return o1.getDocInfo().getPath().compareTo(o2.getDocInfo().getPath());
+         }
+      }
+
+      private int compareDoc(DocumentNode o1, DocumentNode o2)
+      {
+         return o1.getDocInfo().getName().compareTo(o2.getDocInfo().getName());
+      }
+
+      private int compareStats(DocumentNode o1, DocumentNode o2)
+      {
+         if (o1.getDocInfo().getStats() == null || o2.getDocInfo().getStats() == null)
+         {
+            return (o1.getDocInfo().getStats() == null) ? -1 : 1;
+         }
+
+         boolean statsByWords = true;
+         if (display.getSelectedStatsOption().equals(DocumentListDisplay.STATS_OPTION_MESSAGE))
+         {
+            statsByWords = false;
+         }
+         return o1.getDocInfo().getStats().getApprovedPercent(statsByWords) - o2.getDocInfo().getStats().getApprovedPercent(statsByWords);
+      }
+
+      private int compareTranslated(DocumentNode o1, DocumentNode o2)
+      {
+         if (o1.getDocInfo().getStats() == null || o2.getDocInfo().getStats() == null)
+         {
+            return (o1.getDocInfo().getStats() == null) ? -1 : 1;
+         }
+
+         if (display.getSelectedStatsOption().equals(DocumentListDisplay.STATS_OPTION_MESSAGE))
+         {
+            return o1.getDocInfo().getStats().getUnitCount().getApproved() - o2.getDocInfo().getStats().getUnitCount().getApproved();
+         }
+         else
+         {
+            return o1.getDocInfo().getStats().getWordCount().getApproved() - o2.getDocInfo().getStats().getWordCount().getApproved();
+         }
+      }
+
+      private int compareUntranslated(DocumentNode o1, DocumentNode o2)
+      {
+         if (o1.getDocInfo().getStats() == null || o2.getDocInfo().getStats() == null)
+         {
+            return (o1.getDocInfo().getStats() == null) ? -1 : 1;
+         }
+
+         if (display.getSelectedStatsOption().equals(DocumentListDisplay.STATS_OPTION_MESSAGE))
+         {
+            return o1.getDocInfo().getStats().getUnitCount().getUntranslated() - o2.getDocInfo().getStats().getUnitCount().getUntranslated();
+         }
+         else
+         {
+            return o1.getDocInfo().getStats().getWordCount().getUntranslated() - o2.getDocInfo().getStats().getWordCount().getUntranslated();
+         }
+      }
+
+      private int compareRemaining(DocumentNode o1, DocumentNode o2)
+      {
+         if (o1.getDocInfo().getStats() == null || o2.getDocInfo().getStats() == null)
+         {
+            return (o1.getDocInfo().getStats() == null) ? -1 : 1;
+         }
+
+         if (o1.getDocInfo().getStats().getRemainingHours() == o2.getDocInfo().getStats().getRemainingHours())
+         {
+            return 0;
+         }
+         return o1.getDocInfo().getStats().getRemainingHours() > o2.getDocInfo().getStats().getRemainingHours() ? 1 : -1;
+      }
+
+      private int compareLastUpload(DocumentNode o1, DocumentNode o2)
+      {
+         if (o1.getDocInfo().getLastModified().getDate() == null || o2.getDocInfo().getLastModified().getDate() == null)
+         {
+            return (o1.getDocInfo().getLastModified().getDate() == null) ? -1 : 1;
+         }
+
+         return o1.getDocInfo().getLastModified().getDate().after(o2.getDocInfo().getLastModified().getDate()) ? 1 : -1;
+      }
+
+      private int compareLastTranslated(DocumentNode o1, DocumentNode o2)
+      {
+         if (o1.getDocInfo().getLastTranslated().getDate() == null || o2.getDocInfo().getLastTranslated().getDate() == null)
+         {
+            return (o1.getDocInfo().getLastTranslated().getDate() == null) ? -1 : 1;
+         }
+
+         return o1.getDocInfo().getLastTranslated().getDate().after(o2.getDocInfo().getLastTranslated().getDate()) ? 1 : -1;
+      }
+   }
+
+   @Override
+   public void pagerValueChanged(Integer value)
+   {
+      gotoPage(value);
+   }
+
+   public ArrayList<DocumentNode> getSortedNodes()
+   {
+      return sortedNodes;
+   }
+
+   public void showLoading(boolean showLoading)
+   {
+      display.showLoading(showLoading);
+   }
+
+   public DocumentInfo getCurrentDocument()
+   {
+      return currentDocument;
+   }
 }

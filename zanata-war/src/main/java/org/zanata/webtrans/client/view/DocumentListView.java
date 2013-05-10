@@ -20,17 +20,25 @@
  */
 package org.zanata.webtrans.client.view;
 
+import java.util.HashMap;
+import java.util.List;
+
+import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.DocumentListTable;
+import org.zanata.webtrans.client.ui.DocumentListTable.DocValidationStatus;
 import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.client.ui.DownloadFilesConfirmationBox;
 import org.zanata.webtrans.client.ui.FileUploadDialog;
-import org.zanata.webtrans.client.ui.HasStatsFilter;
+import org.zanata.webtrans.client.ui.HasPager;
 import org.zanata.webtrans.client.ui.InlineLink;
+import org.zanata.webtrans.client.ui.LoadingPanel;
+import org.zanata.webtrans.client.ui.Pager;
 import org.zanata.webtrans.client.ui.SearchField;
-import org.zanata.webtrans.client.ui.table.DocumentListPager;
+import org.zanata.webtrans.shared.model.AuditInfo;
+import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
@@ -41,7 +49,6 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.cellview.client.SimplePager.TextLocation;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.CheckBox;
@@ -51,13 +58,14 @@ import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.HasData;
-import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.NoSelectionModel;
 import com.google.inject.Inject;
 
 public class DocumentListView extends Composite implements DocumentListDisplay
 {
+   interface DocumentListViewUiBinder extends UiBinder<LayoutPanel, DocumentListView>
+   {
+   }
+   
    private static DocumentListViewUiBinder uiBinder = GWT.create(DocumentListViewUiBinder.class);
 
    private DocumentListDisplay.Listener listener;
@@ -78,19 +86,15 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    PushButton downloadAllFiles;
 
    @UiField(provided = true)
-   DocumentListPager pager;
+   Pager pager;
 
    private DocumentListTable documentListTable;
 
    private final DownloadFilesConfirmationBox confirmationBox;
    private final FileUploadDialog fileUploadDialog;
 
-   private final Resources resources;
-   private final WebTransMessages messages;
-   private final UserWorkspaceContext userworkspaceContext;
+   private final LoadingPanel loadingPanel;
 
-   private ListDataProvider<DocumentNode> dataProvider;
-   
    private Timer timer = new Timer()
    {
       public void run()
@@ -100,27 +104,25 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    };
 
    @Inject
-   public DocumentListView(Resources resources, WebTransMessages messages, UserWorkspaceContext userworkspaceContext)
+   public DocumentListView(Resources resources, WebTransMessages messages, UserWorkspaceContext userworkspaceContext, LoadingPanel loadingPanel)
    {
-      this.resources = resources;
-      this.messages = messages;
-      this.userworkspaceContext = userworkspaceContext;
+      this.loadingPanel = loadingPanel;
 
-      dataProvider = new ListDataProvider<DocumentNode>();
-      confirmationBox = new DownloadFilesConfirmationBox(false, resources);
+      confirmationBox = new DownloadFilesConfirmationBox(false, messages, resources);
       fileUploadDialog = new FileUploadDialog(resources);
-      pager = new DocumentListPager(TextLocation.CENTER, false, true);
+      pager = new Pager(messages, resources);
       searchField = new SearchField(this);
       searchField.setTextBoxTitle(messages.docListFilterDescription());
 
       initWidget(uiBinder.createAndBindUi(this));
 
-      downloadAllFiles.setText("Download all files (zip)");
-
       caseSensitiveCheckBox.setTitle(messages.docListFilterCaseSensitiveDescription());
       exactSearchCheckBox.setTitle(messages.docListFilterExactMatchDescription());
       statsByMsg.setText(messages.byMessage());
       statsByWord.setText(messages.byWords());
+      
+      documentListTable = new DocumentListTable(userworkspaceContext, messages,resources);
+      documentListContainer.add(documentListTable);
    }
 
    @Override
@@ -134,24 +136,12 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    {
       if (statsByMsg.getValue())
       {
-         return HasStatsFilter.STATS_OPTION_MESSAGE;
+         return STATS_OPTION_MESSAGE;
       }
       else
       {
-         return HasStatsFilter.STATS_OPTION_WORDS;
+         return STATS_OPTION_WORDS;
       }
-   }
-
-   @Override
-   public HasData<DocumentNode> getDocumentListTable()
-   {
-      return documentListTable;
-   }
-
-   @Override
-   public ListDataProvider<DocumentNode> getDataProvider()
-   {
-      return dataProvider;
    }
 
    @UiHandler("exactSearchCheckBox")
@@ -171,7 +161,7 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    {
       if (event.getValue())
       {
-         listener.statsOptionChange(HasStatsFilter.STATS_OPTION_MESSAGE);
+         listener.statsOptionChange();
       }
    }
 
@@ -180,7 +170,7 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    {
       if (event.getValue())
       {
-         listener.statsOptionChange(HasStatsFilter.STATS_OPTION_WORDS);
+         listener.statsOptionChange();
       }
    }
 
@@ -189,23 +179,11 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    {
       confirmationBox.center();
    }
-
-   @Override
-   public void setStatsFilter(String option)
+   
+   @UiHandler("pager")
+   public void onPagerValueChanged(ValueChangeEvent<Integer> event)
    {
-      if (option.equals(HasStatsFilter.STATS_OPTION_MESSAGE))
-      {
-         statsByMsg.setValue(true);
-      }
-      else
-      {
-         statsByWord.setValue(true);
-      }
-      documentListTable.setStatsFilter(option);
-   }
-
-   interface DocumentListViewUiBinder extends UiBinder<LayoutPanel, DocumentListView>
-   {
+      listener.pagerValueChanged(event.getValue());
    }
 
    @Override
@@ -223,28 +201,12 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    }
 
    @Override
-   public void renderTable(NoSelectionModel<DocumentNode> selectionModel)
-   {
-      documentListTable = new DocumentListTable(resources, messages, dataProvider, listener, selectionModel, userworkspaceContext);
-      dataProvider.addDataDisplay(documentListTable);
-
-      documentListContainer.clear();
-      documentListContainer.add(documentListTable);
-   }
-
-   @Override
    public void setListener(Listener documentListPresenter)
    {
       this.listener = documentListPresenter;
       confirmationBox.registerHandler(listener);
       fileUploadDialog.registerHandler(listener, Application.getUploadFileUrl());
-   }
-
-   @Override
-   public void updatePageSize(int pageSize)
-   {
-      documentListTable.setPageSize(pageSize);
-      pager.setDisplay(documentListTable);
+      documentListTable.setListener(listener);
    }
 
    @Override
@@ -353,18 +315,18 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    {
       fileUploadDialog.submitForm();
    }
-   
+
    @Override
    public void startGetDownloadStatus(int periodMillis)
    {
       timer.scheduleRepeating(periodMillis);
    }
-   
+
    public void getDownloadStatus()
    {
       listener.updateDownloadFileProgress();
    }
-   
+
    @Override
    public void stopGetDownloadStatus()
    {
@@ -379,8 +341,83 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    }
 
    @Override
+   public void setDownloadZipButtonText(String text)
+   {
+      downloadAllFiles.setText(text);
+   }
+
+   @Override
    public void setDownloadZipButtonTitle(String title)
    {
       downloadAllFiles.setTitle(title);
+   }
+
+   @Override
+   public void showLoading(boolean showLoading)
+   {
+      if (showLoading)
+      {
+         loadingPanel.center();
+      }
+      else
+      {
+         loadingPanel.hide();
+      }
+   }
+
+   @Override
+   public HashMap<DocumentId, Integer> buildContent(List<DocumentNode> nodes)
+   {
+      return documentListTable.buildContent(nodes, statsByWord.getValue().booleanValue());
+   }
+
+   @Override
+   public void updateRowHasError(int row, DocValidationStatus status)
+   {
+      documentListTable.updateRowHasError(row, status);
+   }
+
+   @Override
+   public void updateLastTranslated(int row, AuditInfo lastTranslated)
+   {
+      documentListTable.updateLastTranslatedInfo(row, lastTranslated);
+
+   }
+
+   @Override
+   public void updateStats(int row, TranslationStats stats)
+   {
+      documentListTable.updateStats(row, stats, statsByWord.getValue().booleanValue());
+   }
+
+   @Override
+   public void setStatsFilters(Integer row)
+   {
+      documentListTable.setStatsFilter(statsByWord.getValue().booleanValue(), row);
+   }
+   
+   @Override
+   public void setStatsFilters(String option)
+   {
+      if (option.equals(STATS_OPTION_MESSAGE))
+      {
+         statsByMsg.setValue(true);
+      }
+      else
+      {
+         statsByWord.setValue(true);
+      }
+   }
+
+   @Override
+   public HasPager getPageNavigation()
+   {
+      return pager;
+   }
+
+   @Override
+   public void showRowLoading(int row)
+   {
+      documentListTable.showRowLoading(row);
    }
 }

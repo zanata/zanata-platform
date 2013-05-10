@@ -31,12 +31,12 @@ public class FilterConstraintToQueryTest
    public static final String TARGET_CONTENT_CASE_INSENSITIVE = "(lower(content0) like :searchString or lower(content1) like :searchString or lower(content2) like :searchString or lower(content3) like :searchString or lower(content4) like :searchString or lower(content5) like :searchString)";
    public static final String SOURCE_CONTENT_CASE_SENSITIVE = "((tf.content0) like :searchString or (tf.content1) like :searchString or (tf.content2) like :searchString or (tf.content3) like :searchString or (tf.content4) like :searchString or (tf.content5) like :searchString)";
    public static final String TARGET_CONTENT_CASE_SENSITIVE = "((content0) like :searchString or (content1) like :searchString or (content2) like :searchString or (content3) like :searchString or (content4) like :searchString or (content5) like :searchString)";
-   public static final String QUERY_BEFORE_WHERE = "SELECT distinct tf FROM HTextFlow tf LEFT JOIN tf.targets tfts WITH index(tfts)=:locale ";
+   public static final String QUERY_BEFORE_WHERE = "SELECT distinct tf FROM HTextFlow tf LEFT JOIN tf.targets tfts WITH tfts.index=:locale ";
    @Mock
    private Query query;
    @Mock
    private HLocale hLocale;
-   private DocumentId documentId = new DocumentId(1, "");
+   private DocumentId documentId = new DocumentId(new Long(1), "");
 
    @BeforeMethod
    public void beforeMethod()
@@ -181,7 +181,7 @@ public class FilterConstraintToQueryTest
 
       // @formatter:off
       assertThat(result, Matchers.equalToIgnoringCase(
-            "SELECT distinct tf FROM HTextFlow tf LEFT JOIN tf.targets tfts WITH index(tfts)=:locale WHERE " +
+            "SELECT distinct tf FROM HTextFlow tf LEFT JOIN tf.targets tfts WITH tfts.index=:locale WHERE " +
                   "(tf.obsolete=0 AND tf.document.id=:docId AND " +
                      "(" +
                         SOURCE_CONTENT_CASE_INSENSITIVE + " OR  EXISTS " +

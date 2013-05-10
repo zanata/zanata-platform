@@ -7,21 +7,17 @@ import static org.mockito.Mockito.when;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FindMessageEvent;
+import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.view.TransFilterDisplay;
-
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.ui.HasValue;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -38,14 +34,6 @@ public class TransFilterPresenterTest
    private History history;
    @Mock
    private UserOptionsService userOptionsService;
-   @Mock
-   private HasValue<Boolean> needReviewChk;
-   @Mock
-   private HasValue<Boolean> translatedChk;
-   @Mock
-   private HasValue<Boolean> untranslatedChk;
-   @Captor
-   private ArgumentCaptor<ValueChangeHandler<Boolean>> filterChangeHandlerCaptor;
 
    private UserConfigHolder configHolder = new UserConfigHolder();
 
@@ -55,9 +43,6 @@ public class TransFilterPresenterTest
       MockitoAnnotations.initMocks(this);
 
       when(userOptionsService.getConfigHolder()).thenReturn(configHolder);
-      when(display.getNeedReviewChk()).thenReturn(needReviewChk);
-      when(display.getTranslatedChk()).thenReturn(translatedChk);
-      when(display.getUntranslatedChk()).thenReturn(untranslatedChk);
 
       presenter = new TransFilterPresenter(display, eventBus, history, userOptionsService);
 
@@ -71,13 +56,6 @@ public class TransFilterPresenterTest
 
       verify(eventBus).addHandler(FindMessageEvent.getType(), presenter);
       verify(eventBus).addHandler(FilterViewEvent.getType(), presenter);
-      verify(display).getNeedReviewChk();
-      verify(display).getTranslatedChk();
-      verify(display).getUntranslatedChk();
-
-      verify(needReviewChk).addValueChangeHandler(filterChangeHandlerCaptor.capture());
-      verify(translatedChk).addValueChangeHandler(filterChangeHandlerCaptor.capture());
-      verify(untranslatedChk).addValueChangeHandler(filterChangeHandlerCaptor.capture());
    }
 
    @Test
@@ -123,48 +101,58 @@ public class TransFilterPresenterTest
    @Test
    public void willSetOptionsBackOnFilterViewCancelEvent()
    {
-      FilterViewEvent event = new FilterViewEvent(true, true, true, true);
+      FilterViewEvent event = new FilterViewEvent(true, true, true, false, true, null);
 
       presenter.onFilterView(event);
 
-      verify(untranslatedChk).setValue(event.isFilterUntranslated(), false);
-      verify(translatedChk).setValue(event.isFilterTranslated(), false);
-      verify(needReviewChk).setValue(event.isFilterNeedReview(), false);
+      verify(display).setTranslatedFilter(event.isFilterUntranslated());
+      verify(display).setNeedReviewFilter(event.isFilterTranslated());
+      verify(display).setUntranslatedFilter(event.isFilterNeedReview());
    }
 
    @Test
    public void willDoNothingIfItsNotCancelEvent()
    {
-      FilterViewEvent cancelEvent = new FilterViewEvent(true, true, true, false);
+      FilterViewEvent cancelEvent = new FilterViewEvent(true, true, true, false, false, null);
 
       presenter.onFilterView(cancelEvent);
 
-      verifyZeroInteractions(untranslatedChk, translatedChk, needReviewChk);
+      verifyZeroInteractions(display);
    }
 
    @Test
-   public void filterChangeHandlerWillFireEvent()
+   public void onUserConfigChange()
    {
-      // Given: checkbox value as following
-      when(needReviewChk.getValue()).thenReturn(true);
-      when(translatedChk.getValue()).thenReturn(false);
-      when(untranslatedChk.getValue()).thenReturn(true);
-      presenter.onBind();
-      verify(needReviewChk).addValueChangeHandler(filterChangeHandlerCaptor.capture());
-      ValueChangeHandler<Boolean> handler = filterChangeHandlerCaptor.getValue();
-      ArgumentCaptor<FilterViewEvent> eventCaptor = ArgumentCaptor.forClass(FilterViewEvent.class);
+      configHolder.setFilterByTranslated(true);
+      configHolder.setFilterByNeedReview(false);
+      configHolder.setFilterByUntranslated(true);
+      configHolder.setFilterByHasError(true);
 
-      // When: value change event happens
-      handler.onValueChange(null);
+      presenter.onUserConfigChanged(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
 
-      // Then:
-      verify(eventBus).fireEvent(eventCaptor.capture());
-      FilterViewEvent event = eventCaptor.getValue();
-      assertThat(event.isCancelFilter(), Matchers.equalTo(false));
-      assertThat(event.isFilterNeedReview(), Matchers.equalTo(true));
-      assertThat(event.isFilterTranslated(), Matchers.equalTo(false));
-      assertThat(event.isFilterUntranslated(), Matchers.equalTo(true));
+      verify(display).setTranslatedFilter(true);
+      verify(display).setNeedReviewFilter(false);
+      verify(display).setUntranslatedFilter(true);
+      verify(display).setHasErrorFilter(true);
    }
 
+   @Test
+   public void onMessageFilterOptionChanged()
+   {
+      HistoryToken historyToken = new HistoryToken();
+      when(history.getHistoryToken()).thenReturn(historyToken);
 
+      presenter.messageFilterOptionChanged(true, false, true, true);
+
+      UserConfigHolder configHolder = userOptionsService.getConfigHolder();
+      assertThat(configHolder.getState().isFilterByTranslated(), Matchers.equalTo(true));
+      assertThat(configHolder.getState().isFilterByNeedReview(), Matchers.equalTo(false));
+      assertThat(configHolder.getState().isFilterByUntranslated(), Matchers.equalTo(true));
+      assertThat(configHolder.getState().isFilterByHasError(), Matchers.equalTo(true));
+      assertThat(historyToken.isFilterTranslated(), Matchers.equalTo(true));
+      assertThat(historyToken.isFilterFuzzy(), Matchers.equalTo(false));
+      assertThat(historyToken.isFilterUntranslated(), Matchers.equalTo(true));
+      assertThat(historyToken.isFilterHasError(), Matchers.equalTo(true));
+      verify(history).newItem(historyToken);
+   }
 }

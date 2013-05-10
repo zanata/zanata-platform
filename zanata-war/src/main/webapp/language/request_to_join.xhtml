@@ -10,13 +10,13 @@
    template="/WEB-INF/layout/template.xhtml">
 
    <ui:param name="showGlobalMessages" value="true"/>
-   
+
    <ui:define name="page_title">#{messages['jsf.RequestToJoinLanguageTeamTitle']}</ui:define>
    <ui:define name="center_content">
       <h:form>
          <s:token allowMultiplePosts="true" />
          <rich:panel>
-            
+
             <s:decorate id="nameField" template="../WEB-INF/layout/display.xhtml">
                <ui:define name="label">#{messages['jsf.email.From']}</ui:define>
                <h:outputText id="senderName" value="#{sendEmail.fromName}"
@@ -27,22 +27,22 @@
                <ui:define name="label">#{messages['jsf.email.ReplyAddress']}<br/>#{messages['jsf.email.ReplyAddress.description']}</ui:define>
                <h:outputText id="email" value="#{sendEmail.replyEmail}" required="true" />
             </s:decorate>
-            
+
             <s:decorate id="subjectField" template="../WEB-INF/layout/display.xhtml">
                <ui:define name="label">#{messages['jsf.email.Subject']}</ui:define>
                <h:outputText id="subject" value="#{messages['jsf.email.joinrequest.Subject']}"
                             required="true" />
             </s:decorate>
-            
+
             <s:decorate id="messageField" template="../WEB-INF/layout/edit.xhtml">
                <ui:define name="label">#{messages['jsf.AdditionalInfo']}</ui:define>
-               
+
                <s:span styleClass="icon-info-circle-2 input_help" id="slugHelp">
             	 <rich:tooltip>
 	               #{messages['jsf.email.joinrequest.AdditionalInfoMessage']}
 	             </rich:tooltip>
            	  </s:span>
-              
+
 	           <br/><br/>
                <rich:editor id="message" width="400" height="300"
                             style="width:400px;" required="false"

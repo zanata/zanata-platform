@@ -15,7 +15,7 @@
           <s:token allowMultiplePosts="true" />
           <rich:panel>
             <f:facet name="header">#{messages['jsf.ServerConfiguration']}</f:facet>
-              
+
             <s:decorate id="urlField" template="../WEB-INF/layout/edit.xhtml">
               <ui:define name="label">#{messages['jsf.ServerUrl']}</ui:define>
               <h:inputText id="url" value="#{serverConfigurationBean.serverUrl}">
@@ -28,13 +28,13 @@
                 </rich:tooltip>
            	  </s:span>
             </s:decorate>
-                
+
             <s:decorate id="registerField" template="../WEB-INF/layout/edit.xhtml">
               <ui:define name="label">#{messages['jsf.RegisterUrl']}</ui:define>
               <h:inputText id="url" value="#{serverConfigurationBean.registerUrl}">
                 <a4j:ajax event="blur" render="registerField" />
               </h:inputText>
-              
+
               <s:span styleClass="icon-info-circle-2 input_help" id="registerUrlHelp">
             	 <rich:tooltip>
                   #{messages['jsf.RegisterUrlToolTip']}<br/>
@@ -42,13 +42,13 @@
                 </rich:tooltip>
            	  </s:span>
             </s:decorate>
-                
+
             <s:decorate id="emailDomainField" template="../WEB-INF/layout/edit.xhtml">
               <ui:define name="label">#{messages['jsf.EmailDomainName']}</ui:define>
               <h:inputText id="url" value="#{serverConfigurationBean.emailDomain}">
                 <a4j:ajax event="blur" render="emailDomainField" />
               </h:inputText>
-              
+
                <s:span styleClass="icon-info-circle-2 input_help" id="emailDomainHelp">
             	 <rich:tooltip>
                   #{messages['jsf.EmailDomainNameToolTip']}
@@ -63,7 +63,7 @@
               <h:inputText id="adminEml" value="#{serverConfigurationBean.adminEmail}">
                 <a4j:ajax event="blur" render="adminEmailField" />
               </h:inputText>
-              
+
                <s:span styleClass="icon-info-circle-2 input_help" id="adminEmllHelp">
             	 <rich:tooltip>
                   #{messages['jsf.config.AdminEmail.tooltip']}<br/>
@@ -79,7 +79,7 @@
               <h:inputText id="fromEml" value="#{serverConfigurationBean.fromEmailAddr}">
                 <a4j:ajax event="blur" render="fromEmailField" />
               </h:inputText>
-              
+
               <s:span styleClass="icon-info-circle-2 input_help" id="fromEmlHelp">
             	 <rich:tooltip>
                   #{messages['jsf.config.FromEmailAddr.tooltip']}<br/>
@@ -91,7 +91,7 @@
             <s:decorate id="enableLogEmailField" template="../WEB-INF/layout/edit.xhtml">
               <ui:define name="label">#{messages['jsf.config.EnableLogEmails']}</ui:define>
               <h:selectBooleanCheckbox value="#{serverConfigurationBean.enableLogEmail}"/>
-              
+
               <s:span styleClass="icon-info-circle-2 input_help" id="enableLogEmailHelp">
             	 <rich:tooltip>
                   #{messages['jsf.config.EnableLogEmails.tooltip']}<br/>
@@ -104,7 +104,7 @@
               <h:inputText id="logDestEml" value="#{serverConfigurationBean.logDestinationEmails}">
                 <a4j:ajax event="blur" render="logDestEmailField" />
               </h:inputText>
-              
+
               <s:span styleClass="icon-info-circle-2 input_help" id="logDestEmailHelp">
             	 <rich:tooltip>
                   #{messages['jsf.config.LogDestEmail.tooltip']}<br/>
@@ -120,7 +120,7 @@
                 <f:selectItem itemLabel="#{messages['jsf.Warning']}" itemValue="WARN"/>
                 <f:selectItem itemLabel="#{messages['jsf.Error']}" itemValue="ERROR"/>
               </h:selectOneMenu>
-              
+
               <s:span styleClass="icon-info-circle-2 input_help" id="logEmailLevelHelp">
             	 <rich:tooltip>
                   <h:outputLabel escape="true">
@@ -129,26 +129,26 @@
                 </rich:tooltip>
            	  </s:span>
             </s:decorate>
-            
+
              <s:decorate id="piwikUrlField" template="../WEB-INF/layout/edit.xhtml">
               <ui:define name="label">#{messages['jsf.config.PiwikUrl']}</ui:define>
               <h:inputText id="piwikUrlEml" value="#{serverConfigurationBean.piwikUrl}">
                 <a4j:ajax event="blur" render="piwikUrlField" />
               </h:inputText>
-              
+
               <s:span styleClass="icon-info-circle-2 input_help" id="piwikUrlHelp">
             	 <rich:tooltip>
                   #{messages['jsf.config.Piwiktooltip']}
                 </rich:tooltip>
            	  </s:span>
             </s:decorate>
-            
+
             <s:decorate id="piwikIdSiteField" template="../WEB-INF/layout/edit.xhtml">
               <ui:define name="label">#{messages['jsf.config.PiwikIdSite']}</ui:define>
               <h:inputText id="piwikIdSiteEml" value="#{serverConfigurationBean.piwikIdSite}">
                 <a4j:ajax event="blur" render="piwikIdSiteField" />
               </h:inputText>
-              
+
                <s:span styleClass="icon-info-circle-2 input_help" id="piwikIdSiteHelp">
             	 <rich:tooltip>
                   #{messages['jsf.config.PiwikIdSitetooltip']}
@@ -162,7 +162,7 @@
               <h:commandButton value="#{messages['jsf.Save']}" action="#{serverConfigurationBean.update}"/>
               <s:button view="/admin/home.xhtml" value="#{messages['jsf.Cancel']}" propagation="none"/>
             </div>
-    
+
           </rich:panel>
         </h:form>
     </ui:define>

@@ -8,30 +8,38 @@
 	<ui:param name="translated" value="#{status.translated}" />
 	<ui:param name="fuzzy" value="#{status.needReview}" />
 	<ui:param name="untranslated" value="#{status.untranslated}" />
-    
+
 	<ui:param name="total" value="#{status.total}" />
 
     <ui:param name="wTranslated" value="#{total == 0 ? 0 : 110 * translated / total}" />
     <ui:param name="wUntranslated" value="#{total == 0 ? 0 : 110 * untranslated / total}" />
     <ui:param name="wFuzzy" value="#{total == 0 ? 0 : 110 * fuzzy / total}" />
-	   
+
 	 <s:fragment rendered="#{status.total > 0}">
-	 <div title="Total: #{status.total}, Translated: #{status.translated}, Need Review: #{status.needReview}" class="translationStatusDiv">
+     <ui:remove>
+       <!-- FIXME this string should be localized as a whole, but stats values are not inserted
+                  properly when it is used as-is in a message string. Similar for the hours suffix below
+
+                  This can probably be done like this http://blog.lunatech.com/2009/05/12/localised-attribute-values-jsf-and-seam
+                  using either params or their other method
+                   -->
+     </ui:remove>
+	 <div title="#{messages['jsf.stats.Total']} #{status.total}, #{messages['jsf.stats.Translated']} #{status.translated}, #{messages['jsf.stats.NeedReview']} #{status.needReview}" class="translationStatusDiv">
         <div class="translationStatusBar statusBar_approved" style="width:#{wTranslated}px;"></div>
         <div class="translationStatusBar statusBar_needReview" style="width:#{wFuzzy}px;"></div>
         <div class="translationStatusBar statusBar_untranslated" style="width:#{wUntranslated}px;"></div>
-        
+
         <span class="statusBar_percentage">
 	        <h:outputText value="#{status.percentTranslated/100}" rendered="#{status.total > 0}">
 	            <f:convertNumber type="percent" />
 	        </h:outputText> 
 	        (<h:outputText value="#{status.remainingHours}">
 	        	<f:convertNumber maxFractionDigits="1"/>
-	        </h:outputText>hrs)
+	        </h:outputText>#{messages['jsf.stats.ShortHoursSuffix']})
         </span>
     </div>
     </s:fragment>
-    
+
     <s:fragment rendered="#{status.total eq 0}">
         <div class="statusBar_noContent">
             <h:outputText value="#{messages['jsf.NoContent']}"/> 

@@ -20,9 +20,11 @@
  */
 package org.zanata.webtrans.shared.validation.action;
 
+import java.util.ArrayList;
+
 import org.zanata.webtrans.client.resources.ValidationMessages;
-import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.validation.AbstractValidationAction;
 
 import com.google.common.base.Splitter;
@@ -52,16 +54,21 @@ public class XmlEntityValidation extends AbstractValidationAction
 
    public XmlEntityValidation(ValidationId id, ValidationMessages messages)
    {
-      super(new ValidationInfo(id, null, false), messages);
+      super(id, messages.xmlEntityValidatorDesc(), new ValidationInfo(true), messages);
+   }
+
+   public XmlEntityValidation(ValidationId id)
+   {
+      super(id, null, new ValidationInfo(true), null);
    }
 
    @Override
-   public void doValidate(String source, String target)
+   public void doValidate(ArrayList<String> errorList, String source, String target)
    {
-      validateIncompleteEntity(target);
+      validateIncompleteEntity(errorList, target);
    }
 
-   private void validateIncompleteEntity(String target)
+   private void validateIncompleteEntity(ArrayList<String> errorList, String target)
    {
       Iterable<String> words = Splitter.on(" ").trimResults().omitEmptyStrings().split(target);
 
@@ -77,7 +84,7 @@ public class XmlEntityValidation extends AbstractValidationAction
             {
                //remove any string that occurs in front
                word = word.substring(word.indexOf(ENTITY_START_CHAR)); 
-               addError(getMessages().invalidXMLEntity(word));
+               errorList.add(getMessages().invalidXMLEntity(word));
             }
          }
       }

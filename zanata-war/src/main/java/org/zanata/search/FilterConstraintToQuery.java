@@ -92,7 +92,7 @@ public class FilterConstraintToQuery
 
       // @formatter:off
       QueryBuilder query = QueryBuilder.select("distinct tf")
-            .from("HTextFlow tf").leftJoin("tf.targets tfts").with(eq("index(tfts)", LOCALE_PLACEHOLDER).toString())
+            .from("HTextFlow tf").leftJoin("tf.targets tfts").with(eq("tfts.index", LOCALE_PLACEHOLDER).toString())
             .where(and(obsoleteCondition, docIdCondition, searchCondition, stateCondition))
             .orderBy("tf.pos");
       // @formatter:on

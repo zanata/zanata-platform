@@ -6,8 +6,8 @@
    xmlns:a4j="http://richfaces.org/a4j"
    xmlns:rich="http://richfaces.org/rich"
    template="/WEB-INF/facelets/email/template_email.xhtml">
-   
-  <ui:param name="toName" value="#{messages['jsf.email.accountchange.Name']}" />
+
+  <ui:param name="toName" value="#{profileAction.name}" />
   <ui:param name="toEmailAddr" value="#{profileAction.email}" />
   <ui:param name="subject" value="#{messages['jsf.email.accountchange.Subject']}" />
 
@@ -19,8 +19,8 @@
       	#{messages['jsf.email.accountchange.ConfirmationLink']} 
       </a>
     </p>
-    
-    <p> 
+
+    <p>
     	#{messages['jsf.email.alternate.copyPasteMessage']}
     </p>
     <p>
@@ -31,7 +31,7 @@
       	#{applicationConfiguration.serverPath}/account/validate_email/#{profileAction.activationKey} 
       </a>
     </p>
-    
+
   </ui:define>
-  
+
 </ui:composition>

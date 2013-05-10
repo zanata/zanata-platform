@@ -20,7 +20,6 @@
  */
 package org.zanata.adapter;
 
-//import net.sf.okapi.common.IParameters;
 import net.sf.okapi.filters.openoffice.OpenOfficeFilter;
 
 /**
@@ -37,24 +36,6 @@ public class OpenOfficeAdapter extends GenericOkapiFilterAdapter
 
    private static OpenOfficeFilter prepareFilter()
    {
-      // FIXME this is an attempt to prevent escaping of translation XML, e.g. the XML for a picture
-      // copied exactly from source is escaped and shows up as XML in the translated document instead
-      // of as a picture.
-      // Unfortunately there is no "escapeLT" param, which means it will always escape the opening
-      // of XML tags and can therefore never work properly with a normal string unless I can override
-      // the escaping mechanism.
-
-      // It may be necessary to detect pure-xml text flows and remove them before saving the document
-
-      OpenOfficeFilter filter = new OpenOfficeFilter();
-//      IParameters params = filter.getParameters();
-//      params.setBoolean("escapeGT", false);
-//      params.setBoolean("escapeNbsp", false);
-//      params.setBoolean("escapeLineBreak", false);
-//      params.setBoolean("quoteModeDefined", true);
-//      // quote mode 0 uses literal " and /, others seem to use different quoting mechanisms
-//      params.setInteger("quoteMode", 0);
-//      filter.setParameters(params);
-      return filter;
+      return new OpenOfficeFilter();
    }
 }

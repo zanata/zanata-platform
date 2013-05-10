@@ -21,9 +21,14 @@
 
 package org.zanata.webtrans.client.service;
 
+import java.util.List;
+
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.model.ValidationId;
+
 import com.google.common.base.Objects;
+import com.google.common.base.Strings;
 
 /**
  * This class is immutable and all the mutator methods will return a new instance of it.
@@ -40,7 +45,9 @@ public class GetTransUnitActionContext
    private boolean filterTranslated;
    private boolean filterNeedReview;
    private boolean filterUntranslated;
+   private boolean filterHasError;
    private TransUnitId targetTransUnitId;
+   private List<ValidationId> validationIds;
 
    public GetTransUnitActionContext(DocumentId documentId)
    {
@@ -56,7 +63,9 @@ public class GetTransUnitActionContext
       filterTranslated = other.isFilterTranslated();
       filterNeedReview = other.isFilterNeedReview();
       filterUntranslated = other.isFilterUntranslated();
+      filterHasError = other.isFilterHasError();
       targetTransUnitId = other.getTargetTransUnitId();
+      validationIds = other.getValidationIds();
    }
 
    public DocumentId getDocumentId()
@@ -119,6 +128,18 @@ public class GetTransUnitActionContext
       return result;
    }
 
+   public boolean isFilterHasError()
+   {
+      return filterHasError;
+   }
+
+   public GetTransUnitActionContext changeFilterHasError(boolean filterHasError)
+   {
+      GetTransUnitActionContext result = new GetTransUnitActionContext(this);
+      result.filterHasError = filterHasError;
+      return result;
+   }
+
    public TransUnitId getTargetTransUnitId()
    {
       return targetTransUnitId;
@@ -155,6 +176,18 @@ public class GetTransUnitActionContext
       return result;
    }
 
+   public List<ValidationId> getValidationIds()
+   {
+      return validationIds;
+   }
+
+   public GetTransUnitActionContext changeValidationIds(List<ValidationId> validationIds)
+   {
+      GetTransUnitActionContext result = new GetTransUnitActionContext(this);
+      result.validationIds = validationIds;
+      return result;
+   }
+
    @Override
    public String toString()
    {
@@ -167,6 +200,7 @@ public class GetTransUnitActionContext
             add("filterTranslated", filterTranslated).
             add("filterNeedReview", filterNeedReview).
             add("filterUntranslated", filterUntranslated).
+            add("filterHasError", filterHasError).
             add("targetTransUnitId", targetTransUnitId).
             toString();
       // @formatter:on
@@ -198,9 +232,16 @@ public class GetTransUnitActionContext
       return filterNeedReview != newContext.filterNeedReview
             || filterTranslated != newContext.filterTranslated
             || filterUntranslated != newContext.filterUntranslated
+            || filterHasError != newContext.filterHasError
             || offset != newContext.offset
             || !documentId.equals(newContext.documentId)
             || !Objects.equal(findMessage, newContext.findMessage);
       // @formatter:on
+   }
+
+   public boolean acceptAll()
+   {
+      boolean messageFilterAcceptAll = filterHasError == filterNeedReview && filterNeedReview == filterTranslated && filterTranslated == filterUntranslated;
+      return messageFilterAcceptAll && Strings.isNullOrEmpty(findMessage);
    }
 }

@@ -14,11 +14,11 @@
         	function openDeletePanel() {
                 #{rich:component('deletePanel')}.show();
         	}
-        	
+
         	function hideDeletePanel() {
         		#{rich:component('deletePanel')}.hide();
         	}
-        	
+
             function openUploadPanel() {
                 #{rich:component('uploadPanel')}.show();
             }
@@ -26,7 +26,7 @@
             function hideUploadPanel() {
                 #{rich:component('uploadPanel')}.hide();
             }
-            
+
             function getFileExtension(fileName) {
             	var extensionIndex = fileName.lastIndexOf('.') + 1;
             	var fileExtension = "";
@@ -36,35 +36,35 @@
              	}
              	return fileExtension;
             }
-            
+
             function updateForm(fileName) {
             	var fileExtension = getFileExtension(fileName).toUpperCase();
              	if(fileExtension == "CSV")
              	{
-             		document.getElementById('targetLangDiv').style.display = "none";   
-					document.getElementById('sourceLangDiv').style.display = "none";       	
-             		document.getElementById('commentColsDiv').style.display = "";   
-             		document.getElementById('treatCommentSameDiv').style.display = "";   
+             		document.getElementById('targetLangDiv').style.display = "none";
+					document.getElementById('sourceLangDiv').style.display = "none";
+             		document.getElementById('commentColsDiv').style.display = "";
+             		document.getElementById('treatCommentSameDiv').style.display = "";
              		document.getElementById('#{rich:clientId('uploadButton')}').removeAttribute("disabled")
-             	} 
+             	}
              	else if(fileExtension == "PO")
              	{
-             		document.getElementById('targetLangDiv').style.display = "";     
-					document.getElementById('sourceLangDiv').style.display = "";           	
-             		document.getElementById('commentColsDiv').style.display = "none";  
-             		document.getElementById('treatCommentSameDiv').style.display = "";   
+             		document.getElementById('targetLangDiv').style.display = "";
+					document.getElementById('sourceLangDiv').style.display = "";
+             		document.getElementById('commentColsDiv').style.display = "none";
+             		document.getElementById('treatCommentSameDiv').style.display = "";
              		document.getElementById('#{rich:clientId('uploadButton')}').removeAttribute("disabled");
              	}
              	else
              	{
-             		document.getElementById('targetLangDiv').style.display = "none";     
-					document.getElementById('sourceLangDiv').style.display = "none";          	
-             		document.getElementById('commentColsDiv').style.display = "none";  
-             		document.getElementById('treatCommentSameDiv').style.display = "none"; 
+             		document.getElementById('targetLangDiv').style.display = "none";
+					document.getElementById('sourceLangDiv').style.display = "none";
+             		document.getElementById('commentColsDiv').style.display = "none";
+             		document.getElementById('treatCommentSameDiv').style.display = "none";
              		document.getElementById('#{rich:clientId('uploadButton')}').setAttribute("disabled", true);
              	}
             }
-            
+
             function showLoading(show)
             {
             	if(show == true)
@@ -76,7 +76,7 @@
             		document.getElementById("#{rich:clientId('fileUploading')}").style.display='none';
             	}
             }
-            
+
             function showDeleting(show)
             {
             	if(show == true)
@@ -88,7 +88,7 @@
             		document.getElementById("#{rich:clientId('deleting')}").style.display='none';
             	}
             }
-            
+
         </script>
 	</ui:define>
 
@@ -129,7 +129,7 @@
 				<div>
 					<h:outputLabel value="#{messages['jsf.Glossary.supportedFileFormat']}" class="glossarySupportedFileLabel" />
 				</div>
-				
+
 				<s:fileUpload id="fileUpload" accept="*"
 					data="#{glossaryAction.glossaryFileUpload.fileContents}"
 					fileName="#{glossaryAction.glossaryFileUpload.fileName}"
@@ -138,7 +138,7 @@
 
 				<div title="#{messages['jsf.Glossary.SourceLocale.Title']}"
 					class="glosaryFileUploadDialog" id="sourceLangDiv" style="display:none">
-					<h:outputLabel value="Source Language" />
+					<h:outputLabel value="#{messages['jsf.SourceLanguage']}" />
 					<h:selectOneMenu
 						value="#{glossaryAction.glossaryFileUpload.sourceLang}">
 						<s:selectItems value="#{glossaryAction.availableLocales}"
@@ -150,7 +150,7 @@
 				</div>
 				<div title="#{messages['jsf.Glossary.TargetLocale.Title']}"
 					class="glosaryFileUploadDialog" id="targetLangDiv" style="display:none">
-					<h:outputLabel value="Target Language" />
+					<h:outputLabel value="#{messages['jsf.TargetLanguage']}" />
 					<h:selectOneMenu
 						value="#{glossaryAction.glossaryFileUpload.transLang}">
 						<s:selectItems value="#{glossaryAction.availableLocales}"
@@ -163,7 +163,7 @@
 
 				<div class="glosaryFileUploadDialog" id="treatCommentSameDiv" style="display:none">
 					<h:outputText
-						value="#{messages['jsf.Glossary.TreatSourceCommentsAsTarget']}?"
+						value="#{messages['jsf.Glossary.TreatSourceCommentsAsTarget']}"
 						title="#{messages['jsf.Glossary.TreatSourceCommentsAsTarget.Title']}" />
 					<h:selectBooleanCheckbox
 						value="#{glossaryAction.glossaryFileUpload.treatSourceCommentsAsTarget}"
@@ -190,7 +190,7 @@
 				</div>
 			</h:form>
 		</rich:popupPanel>
-		
+
 		<rich:popupPanel id="deletePanel" moveable="#{true}"
 			resizeable="#{false}" autosized="#{true}">
 			<f:facet name="header">
@@ -201,7 +201,7 @@
 				<span class="icon-attention warn"><h:outputText value="#{messages['jsf.ThisActionCannotBeUndone']}" /></span>
 				
 			</div>
-			
+
 			<h:form id="deleteForm">
 				<div class="glosaryDeleteDialog">
 					<h:outputLabel value="#{messages['jsf.SelectLocaleToDelete']}:" />
@@ -234,11 +234,11 @@
 			<f:facet name="header">#{messages['jsf.Actions']}</f:facet>
 			<s:fragment rendered="#{s:hasPermission('', 'glossary-insert')}">
 				<a href="#" onclick="openUploadPanel(); return false;"
-					class="action_link"> #{messages['jsf.Upload']} </a>
+					class="action_link">#{messages['jsf.Upload']}</a>
 			</s:fragment>
 			<s:fragment rendered="#{s:hasPermission('', 'glossary-delete')}">
 				<a href="#" onclick="openDeletePanel(); return false;"
-					class="action_link"> #{messages['jsf.Delete']} </a>
+					class="action_link">#{messages['jsf.Delete']}</a>
 			</s:fragment>
 		</rich:panel>
 	</ui:define>

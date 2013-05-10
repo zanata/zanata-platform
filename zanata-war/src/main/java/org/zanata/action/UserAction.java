@@ -148,7 +148,7 @@ public class UserAction extends org.jboss.seam.security.management.action.UserAc
          }
          else
          {
-            FacesMessages.instance().addToControl("username", "Username '" + getUsername() + "' is not available");
+            FacesMessages.instance().addToControl("username", messages.get("jsf.UsernameNotAvailable"));
             setUsername(originalUsername); // reset the username field
             return "failure";
          }

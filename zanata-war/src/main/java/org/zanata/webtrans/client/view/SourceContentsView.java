@@ -23,6 +23,8 @@ package org.zanata.webtrans.client.view;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.zanata.webtrans.client.history.History;
+import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.ui.HasSelectableSource;
 import org.zanata.webtrans.client.ui.SourcePanel;
@@ -30,11 +32,14 @@ import org.zanata.webtrans.client.ui.TransUnitDetailsPanel;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Preconditions;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -50,11 +55,13 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
 
    private TransUnitId transUnitId;
    private final UserConfigHolder configHolder;
+   private final History history;
 
    @Inject
-   public SourceContentsView(Provider<TransUnitDetailsPanel> transUnitDetailsPanelProvider, UserConfigHolder configHolder)
+   public SourceContentsView(Provider<TransUnitDetailsPanel> transUnitDetailsPanelProvider, UserConfigHolder configHolder, History history)
    {
       this.configHolder = configHolder;
+      this.history = history;
       sourcePanelList = new ArrayList<HasSelectableSource>();
       FlowPanel root = new FlowPanel();
       root.setSize("100%", "100%");
@@ -67,10 +74,31 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
 
       container.add(sourcePanelContainer);
       root.add(container);
+
+      InlineLabel bookmarkIcon = createBookmarkIcon();
+      root.add(bookmarkIcon);
+
       transUnitDetailsPanel = transUnitDetailsPanelProvider.get();
       root.add(transUnitDetailsPanel);
 
       initWidget(root);
+   }
+
+   private InlineLabel createBookmarkIcon()
+   {
+      InlineLabel bookmarkIcon = new InlineLabel();
+      bookmarkIcon.setStyleName("bookmark icon-bookmark-1");
+      bookmarkIcon.addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            HistoryToken historyToken = history.getHistoryToken();
+            historyToken.setTextFlowId(transUnitId.toString());
+            history.newItem(historyToken);
+         }
+      });
+      return bookmarkIcon;
    }
 
    @Override
@@ -145,6 +173,12 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
       {
          transUnitDetailsPanel.setVisible(true);
       }
+   }
+
+   @Override
+   public void updateTransUnitDetails(TransUnit transUnit)
+   {
+      transUnitDetailsPanel.setDetails(transUnit);
    }
 
    @Override

@@ -18,47 +18,40 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.webtrans.client.ui.table;
+package org.zanata.webtrans.client.view;
 
-import com.google.gwt.user.cellview.client.SimplePager;
-import com.google.gwt.view.client.Range;
+import net.customware.gwt.presenter.client.widget.WidgetDisplay;
+
+import org.zanata.webtrans.client.keys.KeyShortcut;
+
+import com.google.gwt.view.client.ListDataProvider;
 
 /**
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  */
-public class DocumentListPager extends SimplePager
+public interface KeyShortcutDisplay extends WidgetDisplay
 {
+   ListDataProvider<KeyShortcut> addContext(String contextName);
 
-   public DocumentListPager(TextLocation location, boolean showFastForwardButton, boolean showLastPageButton)
+   void showPanel();
+
+   public void clearPanel();
+
+   boolean isShowing();
+
+   void hide(boolean autoClosed);
+   
+   interface Listener
    {
-      super(location, showFastForwardButton, showLastPageButton);
-      this.setRangeLimited(true);
+      void setAliasKeyListening(boolean isAliasKeyListening);
    }
 
-   /**
-    * Overriding setPageStart@AbstractPager. Only shows remaining rows in the
-    * last page when isRangeLimited = true
-    * 
-    */
-   @Override
-   public void setPageStart(int index)
-   {
-      if (this.getDisplay() != null)
-      {
-         Range range = getDisplay().getVisibleRange();
-         int pageSize = range.getLength();
-         if (!isRangeLimited() && getDisplay().isRowCountExact())
-         {
-            index = Math.min(index, getDisplay().getRowCount() - pageSize);
-         }
-         index = Math.max(0, index);
-         if (index != range.getStart())
-         {
-            getDisplay().setVisibleRange(index, pageSize);
-         }
-      }
-   }
+   void setListener(Listener listener);
+
+   void cancelMetaKeyTimer();
+
+   void startAliasKeyListen(int delayMillis);
 
 }

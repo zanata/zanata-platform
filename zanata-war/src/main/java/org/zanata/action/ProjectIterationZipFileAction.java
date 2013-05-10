@@ -21,9 +21,9 @@ import org.zanata.service.ProcessManagerService;
 @Scope(ScopeType.CONVERSATION)
 public class ProjectIterationZipFileAction implements Serializable
 {
-   
+
    private static final long serialVersionUID = 1L;
-   
+
    @In
    private ProjectIterationDAO projectIterationDAO;
 
@@ -32,42 +32,43 @@ public class ProjectIterationZipFileAction implements Serializable
 
    @In
    private ApplicationConfiguration applicationConfiguration;
-   
+
    private String projectSlug;
-   
+
    private String iterationSlug;
-   
+
    private String localeId;
-   
+
    private ProcessHandle zipFilePrepHandle;
 
    @Begin(join = true)
    @Restrict("#{s:hasPermission(projectIterationZipFileAction.projectIteration, 'download-all')}")
-   public void prepareIterationZipFile()
+   public void prepareIterationZipFile(boolean offlinePo)
    {
       if( this.zipFilePrepHandle != null && this.zipFilePrepHandle.isInProgress() )
       {
          // Cancel any other processes
          this.zipFilePrepHandle.stop();
       }
-      
+
       // Build a background process Handle
       IterationZipFileBuildProcessHandle processHandle =
             new IterationZipFileBuildProcessHandle();
-      this.zipFilePrepHandle = processHandle;      
+      this.zipFilePrepHandle = processHandle;
       processHandle.setProjectSlug( this.projectSlug );
       processHandle.setIterationSlug( this.iterationSlug );
       processHandle.setLocaleId( this.localeId );
+      processHandle.setOfflinePo(offlinePo);
       processHandle.setInitiatingUserName( Identity.instance().getCredentials().getUsername() );
       processHandle.setServerPath(applicationConfiguration.getServerPath()); // This needs to be done here as the server
                                                                              // path may not be available when running
                                                                              // asynchronously
-      
+
       // Fire the zip file building process and wait until it is ready to return
       this.processManagerServiceImpl.startProcess( new IterationZipFileBuildProcess(), processHandle );
       processHandle.waitUntilReady();
    }
-   
+
    @End
    public void cancelFileDownload()
    {
@@ -76,7 +77,7 @@ public class ProjectIterationZipFileAction implements Serializable
          this.zipFilePrepHandle.stop();
       }
    }
-   
+
    public Object getProjectIteration()
    {
       return this.projectIterationDAO.getBySlug(this.projectSlug, this.iterationSlug);

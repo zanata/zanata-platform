@@ -38,19 +38,12 @@ public class NotificationEvent extends GwtEvent<NotificationEventHandler>
 
    public NotificationEvent(Severity severity, String message)
    {
-      this.severity = severity;
-      this.message = message;
-      this.summary = message;
-      displayAsHtml = false;
+      this(severity, message, null);
    }
 
    public NotificationEvent(Severity severity, String message, InlineLink inlineLink)
    {
-      this.severity = severity;
-      this.message = message;
-      this.inlineLink = inlineLink;
-      this.summary = message;
-      displayAsHtml = false;
+      this(severity, message, message, false, inlineLink);
    }
    
    public NotificationEvent(Severity severity, String summary, String message, boolean displayAsHtml, InlineLink inlineLink)

@@ -26,6 +26,8 @@ import net.customware.gwt.presenter.client.PresenterRevealedHandler;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.common.TranslationStats;
+import org.zanata.webtrans.client.events.AliasKeyChangedEvent;
+import org.zanata.webtrans.client.events.AliasKeyChangedEventHandler;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEventHandler;
 import org.zanata.webtrans.client.events.KeyShortcutEvent;
@@ -63,6 +65,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
       DocumentStatsUpdatedEventHandler,
       ProjectStatsUpdatedEventHandler,
       PresenterRevealedHandler,
+      AliasKeyChangedEventHandler,
       AppDisplay.Listener
 // @formatter:on
 {
@@ -119,6 +122,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
       registerHandler(eventBus.addHandler(DocumentStatsUpdatedEvent.getType(), this));
       registerHandler(eventBus.addHandler(ProjectStatsUpdatedEvent.getType(), this));
       registerHandler(eventBus.addHandler(PresenterRevealedEvent.getType(), this));
+      registerHandler(eventBus.addHandler(AliasKeyChangedEvent.getType(), this));
      
       if (selectedDocument == null)
       {
@@ -244,7 +248,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
          currentDisplayStats = projectStats;
          translationPresenter.concealDisplay();
          searchResultsPresenter.concealDisplay();
-         sideMenuPresenter.showValidationOptions(false);
+         sideMenuPresenter.showValidationOptions(true);
          sideMenuPresenter.setOptionMenu(MainView.Documents);
          break;
       }
@@ -272,7 +276,10 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
          {
             display.enableTab(MainView.Editor, true);
             selectedDocument = docInfo;
-            selectedDocumentStats.set(selectedDocument.getStats());
+            if (selectedDocument.getStats() != null)
+            {
+               selectedDocumentStats.set(selectedDocument.getStats());
+            }
             if (currentView == MainView.Editor)
             {
                display.setDocumentLabel(selectedDocument.getPath(), selectedDocument.getName());
@@ -412,9 +419,16 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
       if (!GWT.isClient())
       {
          this.selectedDocument = selectedDocument;
-         this.currentView = currentView;
          this.projectStats = projectStats;
+         this.currentView = currentView;
          this.selectedDocumentStats = selectedDocumentStats;
       }
+   }
+
+   @Override
+   public void onAliasKeyChanged(AliasKeyChangedEvent event)
+   {
+      display.setKeyboardShorcutColor(event.isAliasKeyListening());
+
    }
 }

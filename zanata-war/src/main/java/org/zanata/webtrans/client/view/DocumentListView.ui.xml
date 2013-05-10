@@ -14,19 +14,19 @@
         .mainPanel {
             background-color: #ffffff;
         }
-        
+
         .optionStyle
         {
 			font-size:13px;
 			color:#595959;
 		}
-		
+
 		.statsOption
 		{
 			display:inline-block;
 			text-align:left;
 		}
-		
+
 		.topBar
 		{
 			border-bottom:1px solid lightGrey;
@@ -36,20 +36,20 @@
 			padding-left:10px;
 			padding-right:10px;
 		}
-		
+
 		.listContainer
 		{
 			padding:10px;
 		}
-		
+
 		.downloadAllFilesButton
 		{
-			width:130px;
 			display:inline-block;
-			margin-left:6px;
+			text-align: center;
+			margin-left:3px;
 		}
-		
     </ui:style>
+
     <g:LayoutPanel>
         <g:layer top="0px" bottom="0px">
             <g:LayoutPanel styleName="{style.mainPanel}">
@@ -78,7 +78,7 @@
                 	<g:ScrollPanel styleName="{style.listContainer}">
                 		<g:HTMLPanel width="100%">
 	                		<g:FlowPanel ui:field="documentListContainer"/>
-	                		<fui:table.DocumentListPager ui:field="pager"/> 
+							<fui:Pager ui:field="pager"/>
 	                    </g:HTMLPanel>
                     </g:ScrollPanel> 
                 </g:layer>
@@ -86,5 +86,4 @@
         </g:layer>
     </g:LayoutPanel>
 
-    
 </ui:UiBinder> 

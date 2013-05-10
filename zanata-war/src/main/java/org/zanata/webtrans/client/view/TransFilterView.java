@@ -27,12 +27,13 @@ import org.zanata.webtrans.client.ui.SearchField;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -49,7 +50,7 @@ public class TransFilterView extends Composite implements TransFilterDisplay
    Styles style;
 
    @UiField
-   CheckBox translatedChk, needReviewChk, untranslatedChk;
+   CheckBox translatedChk, needReviewChk, untranslatedChk, hasErrorChk;
 
    private String hintMessage;
 
@@ -110,6 +111,30 @@ public class TransFilterView extends Composite implements TransFilterDisplay
    }
 
    @Override
+   public void setTranslatedFilter(boolean filterByTranslated)
+   {
+      translatedChk.setValue(filterByTranslated);
+   }
+
+   @Override
+   public void setNeedReviewFilter(boolean filterByNeedReview)
+   {
+      needReviewChk.setValue(filterByNeedReview);
+   }
+
+   @Override
+   public void setUntranslatedFilter(boolean filterByUntranslated)
+   {
+      untranslatedChk.setValue(filterByUntranslated);
+   }
+
+   @Override
+   public void setHasErrorFilter(boolean filterByHasError)
+   {
+      hasErrorChk.setValue(filterByHasError);
+   }
+
+   @Override
    public void onSearchFieldValueChange(String value)
    {
       listener.searchTerm(value);
@@ -153,22 +178,10 @@ public class TransFilterView extends Composite implements TransFilterDisplay
       }
    }
 
-   @Override
-   public HasValue<Boolean> getTranslatedChk()
+   @UiHandler({"translatedChk", "needReviewChk", "untranslatedChk", "hasErrorChk"})
+   public void onTranslatedChkChanged(ValueChangeEvent<Boolean> event)
    {
-      return translatedChk;
-   }
-
-   @Override
-   public HasValue<Boolean> getNeedReviewChk()
-   {
-      return needReviewChk;
-   }
-
-   @Override
-   public HasValue<Boolean> getUntranslatedChk()
-   {
-      return untranslatedChk;
+      listener.messageFilterOptionChanged(translatedChk.getValue(), needReviewChk.getValue(), untranslatedChk.getValue(), hasErrorChk.getValue());
    }
 
    @Override

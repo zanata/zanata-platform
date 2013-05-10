@@ -96,7 +96,7 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler
       KeyShortcut moveNextShortcut = KeyShortcut.Builder.builder()
             .addKey(new Keys(Keys.ALT_KEY, KeyCodes.KEY_DOWN)).addKey(new Keys(Keys.ALT_KEY, 'K'))
             .setContext(ShortcutContext.Edit).setDescription(messages.moveToNextRow())
-            .setPreventDefault(true).setStopPropagation(true)
+            .setPreventDefault(true).setStopPropagation(true).setPreventDefault(true)
             .setHandler(new KeyShortcutEventHandler()
             {
                @Override
@@ -201,29 +201,12 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler
          enterSavesApprovedHandlerRegistration = keyShortcutPresenter.register(enterSavesApprovedShortcut);
       }
 
-      // Remove esc key
-//      // @formatter:off
-//      KeyShortcut escClosesEditorShortcut = KeyShortcut.Builder.builder()
-//            .addKey(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ESCAPE))
-//            .setContext(ShortcutContext.Edit).setDescription(messages.cancelChanges())
-//            .setHandler(new KeyShortcutEventHandler()
-//            {
-//               @Override
-//               public void onKeyShortcut(KeyShortcutEvent event)
-//               {
-//                  if (!keyShortcutPresenter.getDisplay().isShowing())
-//                  {
-//                     targetContentsPresenter.onCancel(targetContentsPresenter.getCurrentTransUnitIdOrNull());
-//                  }
-//               }
-//            }).build();
-//      // @formatter:on
-      // keyShortcutPresenter.register(escClosesEditorShortcut);
-
       // @formatter:off
       KeyShortcut copySourceShortcut = KeyShortcut.Builder.builder()
-            .addKey(new Keys(Keys.ALT_KEY, 'G'))
+            .addKey(new Keys(Keys.ALT_KEY, 'G')).addKey(new Keys(Keys.ALIAS_KEY, Keys.NO_MODIFIER, 'G'))
             .setContext(ShortcutContext.Edit).setDescription(messages.copyFromSource())
+            .setStopPropagation(true)
+            .setPreventDefault(true)
             .setHandler(new KeyShortcutEventHandler()
             {
                @Override

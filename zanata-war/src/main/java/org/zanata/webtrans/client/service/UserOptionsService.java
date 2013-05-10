@@ -21,6 +21,7 @@
 
 package org.zanata.webtrans.client.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,6 +31,7 @@ import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.UserOptions;
+import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.rpc.NavOption;
 import org.zanata.webtrans.shared.rpc.SaveOptionsAction;
 import org.zanata.webtrans.shared.rpc.SaveOptionsResult;
@@ -146,6 +148,8 @@ public class UserOptionsService
       configHolder.setFilterByTranslated(UserConfigHolder.DEFAULT_FILTER);
       configHolder.setFilterByNeedReview(UserConfigHolder.DEFAULT_FILTER);
       configHolder.setFilterByUntranslated(UserConfigHolder.DEFAULT_FILTER);
+      configHolder.setFilterByHasError(UserConfigHolder.DEFAULT_FILTER);
+      configHolder.setEnabledValidationIds(new ArrayList<ValidationId>());
       configHolder.setNavOption(NavOption.FUZZY_UNTRANSLATED);
       configHolder.setEditorPageSize(UserConfigHolder.DEFAULT_EDITOR_PAGE_SIZE);
       configHolder.setShowSaveApprovedWarning(UserConfigHolder.DEFAULT_SHOW_SAVE_APPROVED_WARNING);

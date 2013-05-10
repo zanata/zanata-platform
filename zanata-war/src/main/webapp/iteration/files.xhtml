@@ -39,7 +39,7 @@
         </script>
     </ui:define>
 
-    <ui:define name="page_title">#{projectIterationFilesAction.projectSlug}:#{projectIterationFilesAction.iterationSlug} - Files</ui:define>
+    <ui:define name="page_title">#{projectIterationFilesAction.projectSlug}:#{projectIterationFilesAction.iterationSlug} - #{messages['jsf.Documents']} (#{projectIterationFilesAction.localeId})</ui:define>
     <ui:define name="center_content">
         <h:form onkeydown="if(event.keyCode==13) { return false;}">
             <s:token allowMultiplePosts="true"/>
@@ -101,7 +101,7 @@
                     </f:facet>
                     <h:outputText value="#{doc.name}"/>
                 </rich:column>
-				
+
 				 <rich:column
 					rendered="#{identity.loggedIn and not applicationConfiguration.debug and not projectIterationFilesAction.isUserAllowedToTranslate()}" 
 					styleClass="centered actionCol">
@@ -121,7 +121,7 @@
 	                    </s:fragment>
                     </div>
 				</rich:column>
-				
+
 				<rich:column 
 					rendered="#{identity.loggedIn and applicationConfiguration.debug and not projectIterationFilesAction.isUserAllowedToTranslate()}" 
 					styleClass="centered actionCol">
@@ -131,7 +131,7 @@
 	                            title="#{messages['jsf.OpenGWTDevMode']}" styleClass="table_link" 
 	                            value="#{request.contextPath}/webtrans/Application.seam?project=#{projectIterationFilesAction.projectSlug}&amp;iteration=#{projectIterationFilesAction.iterationSlug}&amp;localeId=#{projectIterationFilesAction.localeId}&amp;locale=#{locale.language}#view:doc;doc:#{doc.docId}">
 	                       		<f:param name="gwt.codesvr" value="127.0.0.1:9997" />
-	                       		
+
 	                            <span class="icon-eye icon" title="#{messages['jsf.OpenGWTDevMode']}"/>
 	                    </h:outputLink>
                     </div>
@@ -143,7 +143,7 @@
 	                    </s:fragment>
                     </div>
 				</rich:column>
-				
+
 				<rich:column 
 					rendered="#{identity.loggedIn and not applicationConfiguration.debug and projectIterationFilesAction.isUserAllowedToTranslate()}" 
 					styleClass="centered actionCol">
@@ -163,7 +163,7 @@
 	                    </s:fragment>
                     </div>
 				</rich:column>
-				
+
 				<rich:column 
 					rendered="#{identity.loggedIn and applicationConfiguration.debug and projectIterationFilesAction.isUserAllowedToTranslate()}" 
 					styleClass="centered actionCol">
@@ -173,7 +173,7 @@
 	                            title="#{messages['jsf.TranslateGWTDevMode']}" styleClass="table_link" 
 	                            value="#{request.contextPath}/webtrans/Application.seam?project=#{projectIterationFilesAction.projectSlug}&amp;iteration=#{projectIterationFilesAction.iterationSlug}&amp;localeId=#{projectIterationFilesAction.localeId}&amp;locale=#{locale.language}#view:doc;doc:#{doc.docId}">
 	                       		<f:param name="gwt.codesvr" value="127.0.0.1:9997" />
-	                       		
+
 	                            <span class="icon-edit icon" title="#{messages['jsf.TranslateGWTDevMode']}"/>
 	                    </h:outputLink>
                     </div>
@@ -185,15 +185,27 @@
 	                    </s:fragment>
                     </div>
 				</rich:column>
-                
+
                  <rich:column>
                     <f:facet name="header">
                         #{messages['jsf.iteration.files.Download']}
                     </f:facet>
-                    <s:link styleClass="table_link" view="/rest/file/translation/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/#{projectIterationFilesAction.localeId}/po">
+                    <s:link styleClass="table_link"
+                            rendered="#{projectIterationFilesAction.isPoDocument(doc.docId)}"
+                            view="/rest/file/translation/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/#{projectIterationFilesAction.localeId}/po">
                         <f:param name="docId" value="#{doc.docId}"/>
                         <h:outputText value="#{messages['jsf.iteration.files.dotpo']}"/>
                     </s:link>
+                    <s:link styleClass="table_link"
+                            rendered="#{projectIterationFilesAction.knownProjectType and !projectIterationFilesAction.isPoDocument(doc.docId)}"
+                            view="/rest/file/translation/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/#{projectIterationFilesAction.localeId}/offlinepo">
+                        <f:param name="docId" value="#{doc.docId}"/>
+                        <h:outputText value="#{messages['jsf.iteration.files.dotofflinepo']}"
+                                      title="#{messages['jsf.iteration.files.dotofflinepo.description']} #{messages['jsf.iteration.files.dotofflinepo.purpose']}"/>
+                    </s:link>
+                    <h:outputText value="#{messages['jsf.iteration.files.dotpo']}"
+                                  title="#{messages['jsf.ConfigFileDisabledProjectNotSet']}"
+                                  rendered="#{!projectIterationFilesAction.knownProjectType}" />
                     <h:outputText value="&#160;&#160;&#160;" />
                     <s:link rendered="#{projectIterationFilesAction.hasOriginal(doc.path, doc.name)}" styleClass="table_link" view="/rest/file/translation/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/#{projectIterationFilesAction.localeId}/baked">
                         <f:param name="docId" value="#{doc.docId}"/>
@@ -213,11 +225,17 @@
                         </h:panelGroup>
                    </f:facet>
                     <ui:param name="tstatus"
-                              value="#{projectIterationFilesAction.getTransUnitForDocument(doc)}"/>
+                              value="#{projectIterationFilesAction.getStatsForDocument(doc)}"/>
                     <ui:include src="../WEB-INF/layout/statsbar.xhtml">
                         <ui:param name="status" value="#{tstatus}"/>
                     </ui:include>
                 </rich:column>
+
+                <rich:column>
+					<f:facet name="header">#{messages['jsf.LastTranslated']}</f:facet>
+					<h:outputText value="#{tstatus.lastTranslated}"/>
+				</rich:column>
+	
             </rich:dataTable>
         </h:form>
 
@@ -233,7 +251,7 @@
                 <rich:progressBar id="downloadProgressBar"
                                   value="#{projectIterationZipFileAction.zipFilePrepHandle.currentProgress}"
                                   interval="500"
-                                  label="#{projectIterationZipFileAction.zipFilePrepHandle.currentProgress} of #{projectIterationZipFileAction.zipFilePrepHandle.maxProgress}"
+                                  label="#{messages['jsf.generatezip.ProgressLabel']}"
                                   minValue="-1"
                                   maxValue="#{projectIterationZipFileAction.zipFilePrepHandle.maxProgress - 1}"
                                   enabled="#{projectIterationZipFileAction.zipFilePrepHandle.inProgress}"
@@ -267,6 +285,8 @@
                 <h:outputText id="uploadPanelHeader"/>
             </f:facet>
             <h:form id="uploadForm" enctype="multipart/form-data">
+                <!-- Could add warning for non-po documents,
+                     to note that po files must be offline-po format -->
                 <s:fileUpload accept="*"
                               data="#{projectIterationFilesAction.translationFileUpload.fileContents}"
                               fileName="#{projectIterationFilesAction.translationFileUpload.fileName}"/>
@@ -291,8 +311,7 @@
         <rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
             <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
             <h:form>
-            	
-            	
+
             	<h:outputLink
 					rendered="#{not applicationConfiguration.debug and not projectIterationFilesAction.isUserAllowedToTranslate() }"
 					value="#{request.contextPath}/webtrans/Application.seam" styleClass="action_link">
@@ -323,7 +342,7 @@
 					<f:param name="locale" value="#{locale.language}" />
 					<span class="icon-edit"/>#{messages['jsf.Translate']}
     			</h:outputLink>
-    					
+
 				<h:outputLink
 					rendered="#{applicationConfiguration.debug and projectIterationFilesAction.isUserAllowedToTranslate()}"
 					value="#{request.contextPath}/webtrans/Application.seam" styleClass="action_link">
@@ -335,15 +354,51 @@
 					<span class="icon-edit"/>#{messages['jsf.TranslateGWTDevMode']}
     			</h:outputLink>
 
+
+
+                <s:link styleClass="action_link"
+                        rendered="#{projectIterationFilesAction.poProject}"
+                        value="#{messages['jsf.ConfigFileForOfflineTranslation']}"
+                        title="#{messages['jsf.GenerateProjectConfigSingleLocale']}"
+                        action="#{configurationAction.getData(projectIterationFilesAction.locale)}">
+                    <f:param name="projectSlug" value="#{projectIterationFilesAction.projectSlug}" />
+                    <f:param name="iterationSlug" value="#{projectIterationFilesAction.iterationSlug}" />
+                </s:link>
+
+                <s:link styleClass="action_link"
+                        rendered="#{projectIterationFilesAction.knownProjectType and !projectIterationFilesAction.poProject}"
+                        value="#{messages['jsf.ConfigFileForOfflineTranslation']}"
+                        title="#{messages['jsf.GenerateProjectConfigForOfflineTranslation']}"
+                        action="#{configurationAction.getOfflinePoConfigData(projectIterationFilesAction.locale)}">
+                    <f:param name="projectSlug" value="#{projectIterationFilesAction.projectSlug}" />
+                    <f:param name="iterationSlug" value="#{projectIterationFilesAction.iterationSlug}" />
+                </s:link>
+
+                <s:link styleClass="action_link disabled"
+                        rendered="#{!projectIterationFilesAction.knownProjectType}"
+                        value="#{messages['jsf.ConfigFileForOfflineTranslation']}"
+                        title="#{messages['jsf.ConfigFileDisabledProjectNotSet']} #{messages['jsf.GenerateProjectConfigSingleLocale']}"
+                        disabled="true">
+                </s:link>
+
                 <ui:param name="downloadAllAllowed" value="#{projectIterationFilesAction.zipFileDownloadAllowed}" />
                 <a4j:commandLink styleClass="action_link #{downloadAllAllowed ? '' : 'disabled'}"
+                                 rendered="#{projectIterationFilesAction.poProject or not downloadAllAllowed}"
                                  value="#{messages['jsf.iteration.files.DownloadAllFiles']}"
-                                 action="#{projectIterationZipFileAction.prepareIterationZipFile}"
+                                 action="#{projectIterationZipFileAction.prepareIterationZipFile(false)}"
                                  onclick="if(!downloadAllFilesClick()){ return false; }"
                                  render="downloadProgressBar"
                                  disabled="#{not downloadAllAllowed}"
                                  title="#{projectIterationFilesAction.zipFileDownloadTitle}"/>
-            </h:form>
+                <a4j:commandLink styleClass="action_link #{downloadAllAllowed ? '' : 'disabled'}"
+                                 rendered="#{downloadAllAllowed and !projectIterationFilesAction.poProject}"
+                                 value="#{messages['jsf.iteration.files.DownloadAllFilesOfflinePo']}"
+                                 action="#{projectIterationZipFileAction.prepareIterationZipFile(true)}"
+                                 onclick="if(!downloadAllFilesClick()){ return false; }"
+                                 render="downloadProgressBar"
+                                 disabled="#{not downloadAllAllowed}"
+                                 title="#{messages['jsf.iteration.files.DownloadAllFilesOfflinePo.title']}"/>
+           </a4j:form>
         </rich:panel>
 
         <rich:panel rendered="#{identity.loggedIn and not projectIterationFilesAction.isUserAllowedToTranslate()}">

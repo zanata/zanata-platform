@@ -32,15 +32,12 @@ import org.zanata.webtrans.client.util.DateUtil;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -160,7 +157,7 @@ public class NotificationView extends Composite implements NotificationDisplay
          @Override
          public void onClick(ClickEvent event)
          {
-            detailBox.setMessageDetails(severity, summary, time, msg, displayAsHtml, inlineLink);
+            detailBox.setMessageDetails(severity, summary, time, msg, displayAsHtml);
             detailBox.center();
          }
       });

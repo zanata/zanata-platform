@@ -43,9 +43,9 @@
 			<h:form>
 				<a4j:region id="langTableRegion">
 					<s:token allowMultiplePosts="true" />
-					
+
 					<h:outputText escape="false" value="#{messages['jsf.iteration.ShowAllLocales.title']}" rendered="#{identity.loggedIn}"/>
-					<a4j:commandButton title="Refresh table" action="#{viewAllStatusAction.refreshStatistic}" reRender="data_table" value="Refresh" styleClass="float-right">
+					<a4j:commandButton title="#{messages['jsf.RefreshTable']}" action="#{viewAllStatusAction.refreshStatistic}" reRender="data_table" value="#{messages['jsf.Refresh']}" styleClass="float-right">
 					</a4j:commandButton>
 					<br/><br/>
 					<rich:dataTable id="data_table" width="100%"
@@ -81,6 +81,7 @@
 								<f:param name="localeId" value="#{stats.locale}" />
 								<span class="icon-docs icon"/>
 							</s:link>
+                            <ui:remove>
 							<!--  <h:outputLink value="#{request.contextPath}/webtrans/Application.seam" styleClass="table_link">
 								<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
 								<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
@@ -88,6 +89,7 @@
 								<f:param name="locale" value="#{locale.language}" />
 								<span class="icon-docs icon"/>
 							</h:outputLink> -->
+                            </ui:remove>
 						</rich:column>
 						<rich:column
 							styleClass="#{stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
@@ -108,7 +110,11 @@
 								<ui:param name="status" value="#{tstatus}" />
 							</ui:include>
 						</rich:column>
-	
+						<rich:column sortBy="#{stats.stats.lastTranslated}" styleClass="#{stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
+							<f:facet name="header">#{messages['jsf.LastTranslated']}</f:facet>
+							<h:outputText value=" #{stats.stats.lastTranslated}"/>
+						</rich:column>
+
 					</rich:dataTable>
 				</a4j:region>
 			</h:form>
@@ -133,7 +139,7 @@
 			<s:link styleClass="action_link" 
 				value="#{messages['jsf.ConfigFile']}"
 				title="#{messages['jsf.GenerateProjectConfig']}"
-				action="#{configurationAction.getData()}">
+                action="#{configurationAction.getData()}">
 				<f:param name="projectSlug" value="#{viewAllStatusAction.projectSlug}" />
 				<f:param name="iterationSlug" value="#{viewAllStatusAction.iterationSlug}" />
 			</s:link>
@@ -152,7 +158,7 @@
                 <a href="#" class="action_link" onclick="#{rich:component('versionSearchPanel')}.show()">#{messages['jsf.RequestToJoinVersionGroup']}</a>
             </s:fragment>
 		</rich:panel>
-		
+
 		<rich:panel rendered="#{not viewAllStatusAction.projectIteration.groups.isEmpty()}">
 			<f:facet name="header">#{messages['jsf.JoinedGroups']}</f:facet>
 			<ui:repeat value="#{viewAllStatusAction.projectIteration.groups.toArray()}" var="group" styleClass="breadcrumbs">
@@ -161,13 +167,13 @@
                </s:link>
 			</ui:repeat>	
 		</rich:panel>
-		
+
         <h:form>
             <ui:param name="pHandle" value="#{viewAllStatusAction.copyTransProcessHandle}"/>
             <ui:param name="copyTransRunning" value="#{viewAllStatusAction.copyTransRunning}"/>
-            
+
             <a4j:outputPanel id="copyTransIndicator" layout="block" rendered="#{identity.loggedIn}">
-                
+
                 <a4j:outputPanel rendered="#{copyTransRunning}">
                     #{messages['jsf.iteration.CopyTrans.inProgress']}
                 </a4j:outputPanel>
@@ -209,7 +215,7 @@
         <rich:popupPanel id="versionSearchPanel" width="530" height="440" rendered="#{identity.loggedIn and s:hasPermission(viewAllStatusAction.projectIteration, 'update')}">
             <f:subview id="versionSearch">
                 <h:form>
-                    <h1>Find Group</h1>
+                    <h1>#{messages['jsf.group.FindGroup']}</h1>
                     <p>
                         <h:inputText value="#{viewAllStatusAction.searchTerm}"
                                      onkeydown="return submitSearchOnEnter(event)"/>
@@ -244,7 +250,9 @@
                                         <h:outputText value="#{messages['jsf.Actions']}"/>
                                     </f:facet>
 
-                                    <s:link view="/iteration/request_join_group/#{group.slug}/#{viewAllStatusAction.projectSlug}/#{viewAllStatusAction.projectIteration.slug}" rendered="#{!viewAllStatusAction.isGroupInVersion(group.slug)}" title="Select group" value="Select" propagation="none" styleClass="button"/>
+                                    <s:link view="/iteration/request_join_group/#{group.slug}/#{viewAllStatusAction.projectSlug}/#{viewAllStatusAction.projectIteration.slug}"
+                                            rendered="#{!viewAllStatusAction.isGroupInVersion(group.slug)}"
+                                            title="#{messages['jsf.SelectGroup']}" value="#{messages['jsf.Select']}" propagation="none" styleClass="button"/>
 
                                     <h:outputText value="#{messages['jsf.AlreadyInGroup']}"
                                                   rendered="#{viewAllStatusAction.isGroupInVersion(group.slug)}" />

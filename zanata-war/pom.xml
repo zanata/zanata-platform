@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.zanata</groupId>
 		<artifactId>server</artifactId>
-		<version>2.2.2-SNAPSHOT</version>
+		<version>3.0.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>zanata-war</artifactId>
 	<packaging>war</packaging>
@@ -1341,12 +1341,15 @@
             <groupId>net.sf.okapi.filters</groupId>
             <artifactId>okapi-filter-dtd</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>net.sf.okapi.filters</groupId>
+            <artifactId>okapi-filter-idml</artifactId>
+            <version>${okapi.version}</version>
+        </dependency>
         <dependency>
             <groupId>net.sf.okapi.filters</groupId>
             <artifactId>okapi-filter-openoffice</artifactId>
         </dependency>
-
         <dependency>
             <groupId>net.sf.okapi.filters</groupId>
             <artifactId>okapi-filter-plaintext</artifactId>
@@ -1783,6 +1786,12 @@
          <artifactId>liquibase-slf4j</artifactId>
          <version>1.0.0</version>
       </dependency>
+
+		<dependency>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-exec</artifactId>
+		    <version>1.1</version>
+		</dependency>
 
 		<!-- openid4java -->
 	    <dependency>

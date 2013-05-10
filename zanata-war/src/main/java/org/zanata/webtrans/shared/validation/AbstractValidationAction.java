@@ -25,8 +25,14 @@ import java.util.List;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationAction;
+import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
-import org.zanata.webtrans.shared.model.ValidationObject;
+import org.zanata.webtrans.shared.validation.action.JavaVariablesValidation;
+import org.zanata.webtrans.shared.validation.action.NewlineLeadTrailValidation;
+import org.zanata.webtrans.shared.validation.action.PrintfVariablesValidation;
+import org.zanata.webtrans.shared.validation.action.PrintfXSIExtensionValidation;
+import org.zanata.webtrans.shared.validation.action.TabValidation;
+import org.zanata.webtrans.shared.validation.action.XmlEntityValidation;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -45,69 +51,52 @@ import com.google.common.collect.Lists;
  **/
 public abstract class AbstractValidationAction implements ValidationAction
 {
+   private ValidationId id;
+   private String description;
+
    private ValidationInfo validationInfo;
 
-   private ArrayList<String> errorList = new ArrayList<String>();
-   private ArrayList<ValidationObject> exclusiveValidations = new ArrayList<ValidationObject>();
+   private ArrayList<ValidationAction> exclusiveValidations = new ArrayList<ValidationAction>();
 
-   private ValidationMessages messages;
+   private ValidationMessages validationMessages;
 
-   public AbstractValidationAction(ValidationInfo validationInfo, ValidationMessages messages)
+   public AbstractValidationAction(ValidationId id, String description, ValidationInfo validationInfo, ValidationMessages validationMessages)
    {
+      this.id = id;
+      this.description = description;
       this.validationInfo = validationInfo;
-      this.messages = messages;
+      this.validationMessages = validationMessages;
    }
 
    @Override
-   public void validate(String source, String target)
+   public List<String> validate(String source, String target)
    {
+      ArrayList<String> errorList = new ArrayList<String>();
       if (!Strings.isNullOrEmpty(target) && !Strings.isNullOrEmpty(source))
       {
-         doValidate(source, target);
+         doValidate(errorList, source, target);
       }
+      return errorList;
    }
 
-   protected abstract void doValidate(String source, String target);
+   protected abstract void doValidate(ArrayList<String> errorList, String source, String target);
 
 
    @Override
-   public List<ValidationObject> getExclusiveValidations()
+   public List<ValidationAction> getExclusiveValidations()
    {
       return exclusiveValidations;
    }
    
    @Override
-   public void mutuallyExclusive(ValidationObject... exclusiveValidations)
+   public void mutuallyExclusive(ValidationAction... exclusiveValidations)
    {
       this.exclusiveValidations = Lists.newArrayList(exclusiveValidations);
-   }
-
-   @Override
-   public boolean hasError()
-   {
-      return !errorList.isEmpty();
-   }
-
-   @Override
-   public List<String> getError()
-   {
-      return errorList;
-   }
-
-   @Override
-   public void clearErrorMessage()
-   {
-      errorList.clear();
-   }
-
-   protected void addError(String error)
-   {
-      errorList.add(error);
    }
    
    protected ValidationMessages getMessages()
    {
-      return messages;
+      return validationMessages;
    }
    
    @Override
@@ -122,6 +111,17 @@ public abstract class AbstractValidationAction implements ValidationAction
       return validationInfo;
    }
 
+   @Override
+   public ValidationId getId()
+   {
+      return id;
+   }
+
+   @Override
+   public String getDescription()
+   {
+      return description;
+   }
 }
 
 

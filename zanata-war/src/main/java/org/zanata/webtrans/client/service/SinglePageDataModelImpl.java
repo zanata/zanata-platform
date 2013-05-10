@@ -15,12 +15,12 @@ import com.google.inject.Singleton;
 public class SinglePageDataModelImpl
 {
    private List<TransUnit> data = Lists.newArrayList();
-   private int currentRow = NavigationService.UNSELECTED;
+   private int currentRow = NavigationService.UNDEFINED;
 
    protected void setData(List<TransUnit> data)
    {
       this.data = Lists.newArrayList(data);
-      currentRow = NavigationService.UNSELECTED;
+      currentRow = NavigationService.UNDEFINED;
    }
 
    protected List<TransUnit> getData()
@@ -89,6 +89,6 @@ public class SinglePageDataModelImpl
             return rowNum;
          }
       }
-      return NavigationService.UNSELECTED;
+      return NavigationService.UNDEFINED;
    }
 }

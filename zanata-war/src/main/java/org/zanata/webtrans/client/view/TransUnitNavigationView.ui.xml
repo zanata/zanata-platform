@@ -4,7 +4,6 @@
 	<ui:style type="org.zanata.webtrans.client.view.TransUnitNavigationView.Styles">
             
         .navButton {
-	       padding:0 3px;
 	       cursor:pointer;
 	       font-size:18px;
 	       color:#4E4E4E;

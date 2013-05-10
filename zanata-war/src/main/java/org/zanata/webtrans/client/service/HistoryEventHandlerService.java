@@ -1,21 +1,26 @@
 package org.zanata.webtrans.client.service;
 
-import static com.google.common.base.Objects.equal;
-import net.customware.gwt.presenter.client.EventBus;
-
+import org.zanata.webtrans.client.events.BookmarkedTextFlowEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
+import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FindMessageEvent;
+import org.zanata.webtrans.client.events.InitEditorEvent;
+import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
+import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.shared.model.DocumentId;
-
+import org.zanata.webtrans.shared.model.TransUnitId;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+
+import net.customware.gwt.presenter.client.EventBus;
+import static com.google.common.base.Objects.*;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -28,16 +33,27 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String>
    private final DocumentListPresenter documentListPresenter;
    private final AppPresenter appPresenter;
    private final SearchResultsPresenter searchResultsPresenter;
+   private final GetTransUnitActionContextHolder getTransUnitActionContextHolder;
+   private final ModalNavigationStateHolder modalStateHolder;
+   private final UserConfigHolder configHolder;
    // initial state
    private HistoryToken currentHistoryState = new HistoryToken();
 
    @Inject
-   public HistoryEventHandlerService(EventBus eventBus, DocumentListPresenter documentListPresenter, AppPresenter appPresenter, SearchResultsPresenter searchResultsPresenter)
+   // @formatter:off
+   public HistoryEventHandlerService(EventBus eventBus, DocumentListPresenter documentListPresenter,
+                                     AppPresenter appPresenter, SearchResultsPresenter searchResultsPresenter,
+                                     GetTransUnitActionContextHolder getTransUnitActionContextHolder,
+                                     ModalNavigationStateHolder modalStateHolder, UserConfigHolder configHolder)
+   // @formatter:on
    {
       this.eventBus = eventBus;
       this.documentListPresenter = documentListPresenter;
       this.appPresenter = appPresenter;
       this.searchResultsPresenter = searchResultsPresenter;
+      this.getTransUnitActionContextHolder = getTransUnitActionContextHolder;
+      this.modalStateHolder = modalStateHolder;
+      this.configHolder = configHolder;
    }
 
    @Override
@@ -47,10 +63,27 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String>
       Log.info("[gwt-history] Responding to history token: " + event.getValue());
 
       processForDocumentListPresenter(newHistoryToken);
-      //AppPresenter process need to happen before transFilter. We want DocumentSelectionEvent to happen before FindMessageEvent.
-      processForAppPresenter(newHistoryToken);
-      processForTransFilter(newHistoryToken);
       processForProjectWideSearch(newHistoryToken);
+
+      configHolder.setFilterByUntranslated(newHistoryToken.isFilterUntranslated());
+      configHolder.setFilterByNeedReview(newHistoryToken.isFilterFuzzy());
+      configHolder.setFilterByTranslated(newHistoryToken.isFilterTranslated());
+      configHolder.setFilterByHasError(newHistoryToken.isFilterHasError());
+
+      DocumentId documentId = documentListPresenter.getDocumentId(newHistoryToken.getDocumentPath());
+      if (!getTransUnitActionContextHolder.isContextInitialized() && documentId != null)
+      {
+         // if editor is not yet initialized, we want to load document with search and target trans unit all at once
+         Long textFlowId = newHistoryToken.getTextFlowId();
+         TransUnitId transUnitId = textFlowId == null ? null : new TransUnitId(textFlowId);
+         getTransUnitActionContextHolder.initContext(documentId, newHistoryToken.getSearchText(), transUnitId);
+         eventBus.fireEvent(new InitEditorEvent());
+      }
+
+      processForAppPresenter(documentId);
+      processForTransFilter(newHistoryToken);
+      processForBookmarkedTextFlow(newHistoryToken);
+      processMessageFilterOptions(newHistoryToken);
 
       currentHistoryState = newHistoryToken;
       appPresenter.showView(newHistoryToken.getView());
@@ -69,9 +102,8 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String>
       }
    }
 
-   protected void processForAppPresenter(HistoryToken token)
+   protected void processForAppPresenter(DocumentId docId)
    {
-      DocumentId docId = documentListPresenter.getDocumentId(token.getDocumentPath());
       if (docId != null && !equal(appPresenter.getSelectedDocIdOrNull(), docId))
       {
          appPresenter.selectDocument(docId);
@@ -80,7 +112,7 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String>
 
       if (docId != null)
       {
-         eventBus.fireEvent(new DocumentSelectionEvent(docId, token.getSearchText()));
+         eventBus.fireEvent(new DocumentSelectionEvent(docId));
       }
    }
 
@@ -116,5 +148,38 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String>
       }
    }
 
+   protected void processMessageFilterOptions(HistoryToken token)
+   {
+      if (!equal(token.isFilterUntranslated(), currentHistoryState.isFilterUntranslated())
+            || !equal(token.isFilterFuzzy(), currentHistoryState.isFilterFuzzy())
+            || !equal(token.isFilterTranslated(), currentHistoryState.isFilterTranslated())
+            || !equal(token.isFilterHasError(), currentHistoryState.isFilterHasError()))
+      {
+         Log.info("[gwt-history] message filter option has changed");
 
+         eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+         eventBus.fireEvent(new FilterViewEvent(token.isFilterTranslated(), token.isFilterFuzzy(), token.isFilterUntranslated(), token.isFilterHasError(), false, configHolder.getState().getEnabledValidationIds()));
+      }
+   }
+
+   protected void processForBookmarkedTextFlow(HistoryToken token)
+   {
+      if (equal(token.getTextFlowId(), currentHistoryState.getTextFlowId()) || token.getTextFlowId() == null || modalStateHolder.getPageCount() == 0)
+      {
+         // target text flow id hasn't changed,
+         // or no text flow id in history,
+         // or modal navigation state holder is not yet initialized (which means InitEditorEvent will be handling this.
+         // See onValueChange(ValueChangeEvent<String>))
+         return;
+      }
+
+      TransUnitId transUnitId = new TransUnitId(token.getTextFlowId());
+      int targetPage = modalStateHolder.getTargetPage(transUnitId);
+      if (targetPage != NavigationService.UNDEFINED)
+      {
+         Log.info("[gwt-history] bookmarked text flow. Target page: " + targetPage + ", target TU id: " + transUnitId);
+         int offset = targetPage * getTransUnitActionContextHolder.getContext().getCount();
+         eventBus.fireEvent(new BookmarkedTextFlowEvent(offset, transUnitId));
+      }
+   }
 }

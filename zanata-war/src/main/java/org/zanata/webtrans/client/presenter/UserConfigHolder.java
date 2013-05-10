@@ -20,8 +20,12 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.shared.model.DiffMode;
+import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.rpc.NavOption;
 import org.zanata.webtrans.shared.rpc.ThemesOption;
 
@@ -88,6 +92,7 @@ public class UserConfigHolder
       state.filterByNeedReview = DEFAULT_FILTER;
       state.filterByTranslated = DEFAULT_FILTER;
       state.filterByUntranslated = DEFAULT_FILTER;
+      state.filterByHasError = DEFAULT_FILTER;
 
       state.spellCheckEnabled = DEFAULT_SPELL_CHECK;
 
@@ -95,6 +100,7 @@ public class UserConfigHolder
       state.showGlossaryPanel = DEFAULT_SHOW_PANEL;
       state.showOptionalTransUnitDetails = DEFAULT_SHOW_PANEL;
       state.displayTheme = ThemesOption.THEMES_DEFAULT;
+      state.enabledValidationIds = new ArrayList<ValidationId>();
    }
 
    public void setEnterSavesApproved(boolean enterSavesApproved)
@@ -188,6 +194,12 @@ public class UserConfigHolder
       state.filterByTranslated = filterByTranslated;
    }
 
+   public void setFilterByHasError(boolean filterByHasError)
+   {
+      state = new ConfigurationState(state);
+      state.filterByHasError = filterByHasError;
+   }
+
    public void setShowSaveApprovedWarning(boolean showSaveApprovedWarning)
    {
       state = new ConfigurationState(state);
@@ -230,6 +242,12 @@ public class UserConfigHolder
       state.showOptionalTransUnitDetails = show;
    }
 
+   public void setEnabledValidationIds(List<ValidationId> enabledValidationIds)
+   {
+      state = new ConfigurationState(state);
+      state.enabledValidationIds = enabledValidationIds;
+   }
+
    public boolean isAcceptAllStatus()
    {
       return state.isFilterByNeedReview() == state.isFilterByTranslated() && state.isFilterByNeedReview() == state.isFilterByUntranslated();
@@ -251,6 +269,7 @@ public class UserConfigHolder
       private boolean filterByUntranslated;
       private boolean filterByNeedReview;
       private boolean filterByTranslated;
+      private boolean filterByHasError;
 
       private boolean showSaveApprovedWarning;
       private boolean spellCheckEnabled;
@@ -260,6 +279,8 @@ public class UserConfigHolder
       private boolean showTMPanel;
       private boolean showGlossaryPanel;
       private boolean showOptionalTransUnitDetails;
+
+      private List<ValidationId> enabledValidationIds;
 
       // Needed for GWT serialization
       private ConfigurationState()
@@ -278,6 +299,7 @@ public class UserConfigHolder
          this.filterByUntranslated = old.isFilterByUntranslated();
          this.filterByNeedReview = old.isFilterByNeedReview();
          this.filterByTranslated = old.isFilterByTranslated();
+         this.filterByHasError = old.isFilterByHasError();
          this.showSaveApprovedWarning = old.isShowSaveApprovedWarning();
          this.spellCheckEnabled = old.isSpellCheckEnabled();
          this.transMemoryDisplayMode = old.getTransMemoryDisplayMode();
@@ -285,6 +307,7 @@ public class UserConfigHolder
          this.showTMPanel = old.isShowTMPanel();
          this.showGlossaryPanel = old.isShowGlossaryPanel();
          this.showOptionalTransUnitDetails = old.isShowOptionalTransUnitDetails();
+         this.enabledValidationIds = old.getEnabledValidationIds();
       }
 
       public boolean isEnterSavesApproved()
@@ -337,6 +360,11 @@ public class UserConfigHolder
          return filterByTranslated;
       }
 
+      public boolean isFilterByHasError()
+      {
+         return filterByHasError;
+      }
+
       public boolean isShowSaveApprovedWarning()
       {
          return showSaveApprovedWarning;
@@ -371,5 +399,12 @@ public class UserConfigHolder
       {
          return showOptionalTransUnitDetails;
       }
+
+      public List<ValidationId> getEnabledValidationIds()
+      {
+         return enabledValidationIds;
+      }
    }
+
+
 }

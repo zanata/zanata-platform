@@ -22,11 +22,12 @@ package org.zanata.webtrans.shared.validation.action;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
-import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.validation.AbstractValidationAction;
 
 /**
@@ -43,11 +44,16 @@ public class JavaVariablesValidation extends AbstractValidationAction
 {
    public JavaVariablesValidation(ValidationId id, ValidationMessages messages)
    {
-      super(new ValidationInfo(id, null, false), messages);
+      super(id, messages.javaVariablesValidatorDesc(), new ValidationInfo(true), messages);
+   }
+
+   public JavaVariablesValidation(ValidationId id)
+   {
+      super(id, null, new ValidationInfo(true), null);
    }
 
    @Override
-   public void doValidate(String source, String target)
+   public void doValidate(ArrayList<String> errorList, String source, String target)
    {
       StringInfo sourceInfo = analyseString(source);
       StringInfo targetInfo = analyseString(target);
@@ -104,34 +110,34 @@ public class JavaVariablesValidation extends AbstractValidationAction
 
       if (!missing.isEmpty())
       {
-         addError(getMessages().varsMissing(missing));
+         errorList.add(getMessages().varsMissing(missing));
       }
 
       if (looksLikeMessageFormatString && sourceInfo.singleApostrophes != targetInfo.singleApostrophes)
       {
          // different number of apos.
-         addError(getMessages().differentApostropheCount());
+         errorList.add(getMessages().differentApostropheCount());
       }
       if (looksLikeMessageFormatString && sourceInfo.quotedChars == 0 && targetInfo.quotedChars > 0)
       {
          // quoted chars in target but not source
-         addError(getMessages().quotedCharsAdded());
+         errorList.add(getMessages().quotedCharsAdded());
       }
       if (!missingQuoted.isEmpty())
       {
-         addError(getMessages().varsMissingQuoted(missingQuoted));
+         errorList.add(getMessages().varsMissingQuoted(missingQuoted));
       }
       if (!added.isEmpty())
       {
-         addError(getMessages().varsAdded(added));
+         errorList.add(getMessages().varsAdded(added));
       }
       if (!addedQuoted.isEmpty())
       {
-         addError(getMessages().varsAddedQuoted(addedQuoted));
+         errorList.add(getMessages().varsAddedQuoted(addedQuoted));
       }
       if (!different.isEmpty())
       {
-         addError(getMessages().differentVarCount(different));
+         errorList.add(getMessages().differentVarCount(different));
       }
 
 

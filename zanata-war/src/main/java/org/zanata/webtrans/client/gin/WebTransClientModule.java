@@ -79,6 +79,7 @@ import org.zanata.webtrans.client.view.GlossaryDetailsDisplay;
 import org.zanata.webtrans.client.view.GlossaryDetailsView;
 import org.zanata.webtrans.client.view.GlossaryDisplay;
 import org.zanata.webtrans.client.view.GlossaryView;
+import org.zanata.webtrans.client.view.KeyShortcutDisplay;
 import org.zanata.webtrans.client.view.KeyShortcutView;
 import org.zanata.webtrans.client.view.NotificationDisplay;
 import org.zanata.webtrans.client.view.NotificationView;
@@ -104,6 +105,7 @@ import org.zanata.webtrans.client.view.TranslationEditorDisplay;
 import org.zanata.webtrans.client.view.TranslationEditorView;
 import org.zanata.webtrans.client.view.TranslationMemoryDisplay;
 import org.zanata.webtrans.client.view.TranslationView;
+import org.zanata.webtrans.client.view.ValidationOptionsDisplay;
 import org.zanata.webtrans.client.view.ValidationOptionsView;
 import org.zanata.webtrans.client.view.WorkspaceUsersDisplay;
 import org.zanata.webtrans.client.view.WorkspaceUsersView;
@@ -137,7 +139,7 @@ public class WebTransClientModule extends AbstractPresenterModule
       bind(ValidationService.class).in(Singleton.class);
 
       bindPresenter(AppPresenter.class, AppDisplay.class, AppView.class);
-      bindPresenter(KeyShortcutPresenter.class, KeyShortcutPresenter.Display.class, KeyShortcutView.class);
+      bindPresenter(KeyShortcutPresenter.class, KeyShortcutDisplay.class, KeyShortcutView.class);
       bindPresenter(DocumentListPresenter.class, DocumentListDisplay.class, DocumentListView.class);
       bindPresenter(SearchResultsPresenter.class, SearchResultsPresenter.Display.class, SearchResultsView.class);
       bindPresenter(TranslationPresenter.class, TranslationPresenter.Display.class, TranslationView.class);
@@ -152,7 +154,7 @@ public class WebTransClientModule extends AbstractPresenterModule
       bindPresenter(DocumentListOptionsPresenter.class, DocumentListOptionsDisplay.class, DocumentListOptionsView.class);
       bindPresenter(OptionsPresenter.class, OptionsDisplay.class, OptionsView.class);
       bindPresenter(TranslationEditorPresenter.class, TranslationEditorDisplay.class, TranslationEditorView.class);
-      bindPresenter(ValidationOptionsPresenter.class, ValidationOptionsPresenter.Display.class, ValidationOptionsView.class);
+      bindPresenter(ValidationOptionsPresenter.class, ValidationOptionsDisplay.class, ValidationOptionsView.class);
       bindPresenter(NotificationPresenter.class, NotificationDisplay.class, NotificationView.class);
       bindPresenter(TransUnitsTablePresenter.class, TransUnitsTableDisplay.class, TransUnitsTableView.class);
       bindPresenter(SideMenuPresenter.class, SideMenuDisplay.class, SideMenuView.class);

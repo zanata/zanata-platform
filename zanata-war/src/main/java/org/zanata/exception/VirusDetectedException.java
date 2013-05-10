@@ -1,5 +1,5 @@
 /*
- * Copyright 2012, Red Hat, Inc. and individual contributors
+ * Copyright 2013, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -18,24 +18,25 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.webtrans.client.ui.table.column;
 
-import org.zanata.webtrans.client.ui.table.cell.StaticWidgetCell;
-
-import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.client.ui.UIObject;
+package org.zanata.exception;
 
 /**
- * 
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
- * @param <T> the row type
- * @param <W> the column (widget) type
  */
-public abstract class StaticWidgetColumn<T, W extends UIObject> extends Column<T, W>
+public class VirusDetectedException extends ZanataException
 {
-   public StaticWidgetColumn()
+   private static final long serialVersionUID = 1L;
+
+   public VirusDetectedException(String message, Throwable e)
    {
-      super(new StaticWidgetCell<W>());
+      super(message, e);
    }
+
+   public VirusDetectedException(String message)
+   {
+      super(message);
+   }
+
 }

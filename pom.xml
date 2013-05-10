@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>server</artifactId>
-  <version>2.2.2-SNAPSHOT</version>
+  <version>3.0.0-SNAPSHOT</version>
   <name>Zanata server modules</name>
   <packaging>pom</packaging>
   <parent>
@@ -32,9 +32,10 @@
       <gwteventservice.version>1.2.1</gwteventservice.version>
       <okapi.version>0.18</okapi.version>
 
-      <zanata.api.version>2.2.0</zanata.api.version>
+      <zanata.api.version>2.3.0</zanata.api.version>
       <zanata.client.version>2.3.1-SNAPSHOT</zanata.client.version>
-      <zanata.common.version>2.2.0</zanata.common.version>
+      <zanata.common.version>2.3.0</zanata.common.version>
+
 
       <richfaces.version>4.3.0.Final</richfaces.version>
 
@@ -471,6 +472,18 @@
 
    <build>
       <plugins>
+          <plugin>
+            <groupId>org.zanata</groupId>
+            <artifactId>zanata-maven-plugin</artifactId>
+            <version>2.2.0</version>
+            <configuration>
+              <srcDir>.</srcDir>
+              <transDir>.</transDir>
+              <!-- only one translation file has been prepared so far -->
+              <includes>zanata-war/src/main/resources/messages.properties</includes>
+            </configuration>
+          </plugin>
+
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-enforcer-plugin</artifactId>

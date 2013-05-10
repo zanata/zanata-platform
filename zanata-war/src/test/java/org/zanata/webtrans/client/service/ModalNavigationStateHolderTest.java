@@ -202,6 +202,7 @@ public class ModalNavigationStateHolderTest
       assertThat(navigationStateHolder.getTargetPage(new TransUnitId(7)), Matchers.equalTo(2));
       assertThat(navigationStateHolder.getTargetPage(new TransUnitId(9)), Matchers.equalTo(3));
       assertThat(navigationStateHolder.getTargetPage(new TransUnitId(10)), Matchers.equalTo(3));
+      assertThat(navigationStateHolder.getTargetPage(new TransUnitId(999)), Matchers.equalTo(NavigationService.UNDEFINED));
    }
 
    @Test

@@ -20,19 +20,22 @@
  */
 package org.zanata.webtrans.server.rpc;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashMap;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.ValidationService;
 import org.zanata.webtrans.server.ActionHandlerFor;
+import org.zanata.webtrans.shared.model.ValidationAction;
+import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
-import org.zanata.webtrans.shared.model.ValidationObject;
 import org.zanata.webtrans.shared.rpc.GetValidationRulesAction;
 import org.zanata.webtrans.shared.rpc.GetValidationRulesResult;
 
@@ -43,6 +46,7 @@ import org.zanata.webtrans.shared.rpc.GetValidationRulesResult;
  */
 @Name("webtrans.gwt.GetValidationRulesHandler")
 @ActionHandlerFor(GetValidationRulesAction.class)
+@Scope(ScopeType.STATELESS)
 public class GetValidationRulesHandler extends AbstractActionHandler<GetValidationRulesAction, GetValidationRulesResult>
 {
    @In
@@ -51,18 +55,18 @@ public class GetValidationRulesHandler extends AbstractActionHandler<GetValidati
    @In
    private ValidationService validationServiceImpl;
 
-
    @Override
    public GetValidationRulesResult execute(GetValidationRulesAction action, ExecutionContext context) throws ActionException
    {
-      List<ValidationObject> result = validationServiceImpl.getValidationObject(action.getWorkspaceId().getProjectIterationId().getProjectSlug(), action.getWorkspaceId().getProjectIterationId().getIterationSlug());
-      List<ValidationInfo> validationInfoList = new ArrayList<ValidationInfo>();
-      
-      for(ValidationObject valObj: result)
+      Collection<ValidationAction> validationActionList = validationServiceImpl.getValidationAction(action.getWorkspaceId().getProjectIterationId().getProjectSlug(), action.getWorkspaceId().getProjectIterationId().getIterationSlug());
+      HashMap<ValidationId, ValidationInfo> result = new HashMap<ValidationId, ValidationInfo>();
+
+      for (ValidationAction validationAction : validationActionList)
       {
-         validationInfoList.add(valObj.getValidationInfo());
+         result.put(validationAction.getId(), validationAction.getValidationInfo());
       }
-      return new GetValidationRulesResult(validationInfoList);
+
+      return new GetValidationRulesResult(result);
    }
 
    @Override

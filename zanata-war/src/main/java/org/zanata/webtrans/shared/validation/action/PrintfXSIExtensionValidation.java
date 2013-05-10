@@ -7,7 +7,6 @@ import java.util.Map;
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationId;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
@@ -24,28 +23,30 @@ public class PrintfXSIExtensionValidation extends PrintfVariablesValidation
 
    public PrintfXSIExtensionValidation(ValidationId id, ValidationMessages messages)
    {
-      super(id, messages);
+      super(id, messages.printfXSIExtensionValidationDesc(), messages, false);
+   }
+
+   public PrintfXSIExtensionValidation(ValidationId id)
+   {
+      super(id);
    }
 
    @Override
-   public void doValidate(String source, String target)
+   public void doValidate(ArrayList<String> errorList, String source, String target)
    {
       ArrayList<String> sourceVars = findVars(source);
       ArrayList<String> targetVars = findVars(target);
 
-      Log.debug("source vars: " + sourceVars);
-      Log.debug("target vars: " + targetVars);
 
       if (PrintfXSIExtensionValidation.hasPosition(targetVars))
       {
          sourceVars = PrintfXSIExtensionValidation.appendPosition(sourceVars);
-         checkPosition(targetVars, sourceVars.size());
-         Log.debug("source vars after treatment: " + sourceVars);
+         checkPosition(errorList, targetVars, sourceVars.size());
       }
 
 
-      findMissingVariables(sourceVars, targetVars);
-      findAddedVariables(sourceVars, targetVars);
+      findMissingVariables(errorList, sourceVars, targetVars);
+      findAddedVariables(errorList, sourceVars, targetVars);
    }
 
    private static boolean hasPosition(ArrayList<String> variables)
@@ -73,7 +74,7 @@ public class PrintfXSIExtensionValidation extends PrintfVariablesValidation
       return result;
    }
 
-   private void checkPosition(ArrayList<String> variables, int size)
+   private void checkPosition(ArrayList<String> errorList, ArrayList<String> variables, int size)
    {
       Multimap<Integer, String> posToVars = ArrayListMultimap.create();
 
@@ -90,12 +91,12 @@ public class PrintfXSIExtensionValidation extends PrintfVariablesValidation
             }
             else
             {
-               addError(getMessages().varPositionOutOfRange(testVar));
+               errorList.add(getMessages().varPositionOutOfRange(testVar));
             }
          }
          else
          {
-            addError(getMessages().mixVarFormats());
+            errorList.add(getMessages().mixVarFormats());
          }
       }
       if (posToVars.keySet().size() != variables.size())
@@ -105,7 +106,7 @@ public class PrintfXSIExtensionValidation extends PrintfVariablesValidation
          {
             if (entry.getValue().size() > 1)
             {
-               addError(getMessages().varPositionDuplicated(entry.getValue()));
+               errorList.add(getMessages().varPositionDuplicated(entry.getValue()));
             }
          }
       }
@@ -119,7 +120,6 @@ public class PrintfXSIExtensionValidation extends PrintfVariablesValidation
       }
       catch (Exception e)
       {
-         Log.info("cannot extract position index from " + positionAndDollar);
          return -1;
       }
    }

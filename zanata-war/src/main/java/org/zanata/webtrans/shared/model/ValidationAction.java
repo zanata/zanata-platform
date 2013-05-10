@@ -22,15 +22,27 @@ package org.zanata.webtrans.shared.model;
 
 import java.util.List;
 
+import org.zanata.webtrans.shared.validation.AbstractValidationAction;
+
 /**
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  * @see AbstractValidationAction
  **/
-public interface ValidationAction extends ValidationObject
+public interface ValidationAction
 {
-   List<String> getError();
+   List<String> validate(String source, String target);
 
-   void clearErrorMessage();
+   List<ValidationAction> getExclusiveValidations();
+
+   void mutuallyExclusive(ValidationAction[] exclusiveValidations);
+
+   ValidationInfo getValidationInfo();
+
+   void setValidationInfo(ValidationInfo actionInfo);
+
+   ValidationId getId();
+
+   String getDescription();
 }

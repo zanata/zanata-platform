@@ -26,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
+import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -37,6 +38,7 @@ import org.zanata.model.HTextFlow;
 import org.zanata.search.FilterConstraints;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
+import org.zanata.service.ValidationService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
@@ -46,7 +48,6 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 import org.zanata.webtrans.shared.util.FindByTransUnitIdPredicate;
 
 import com.google.common.base.Function;
-import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
@@ -68,6 +69,9 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
    @In
    private ZanataIdentity identity;
 
+   @In
+   private ValidationService validationServiceImpl;
+
    @In(value = "webtrans.gwt.GetTransUnitsNavigationHandler", create = true)
    private GetTransUnitsNavigationService getTransUnitsNavigationService;
 
@@ -77,7 +81,7 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       identity.checkLoggedIn();
       HLocale hLocale = validateAndGetLocale(action);
 
-      log.debug("action: {}", action);
+      log.info("action: {}", action);
       int targetOffset = action.getOffset();
       int targetPage = action.getOffset() / action.getCount();
       GetTransUnitsNavigationResult navigationResult = null;
@@ -86,6 +90,14 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
          GetTransUnitsNavigation getTransUnitsNavigation = new GetTransUnitsNavigation(action.getDocumentId().getId(), action.getPhrase(), action.isFilterUntranslated(), action.isFilterNeedReview(), action.isFilterTranslated());
          log.debug("get trans unit navigation action: {}", getTransUnitsNavigation);
          navigationResult = getTransUnitsNavigationService.getNavigationIndexes(getTransUnitsNavigation, hLocale);
+
+         int totalPageNumber = navigationResult.getIdIndexList().size() / action.getCount();
+         if (targetPage > totalPageNumber)
+         {
+            targetPage = totalPageNumber;
+            targetOffset = action.getCount() * targetPage;
+         }
+            
          if (action.getTargetTransUnitId() != null)
          {
             int targetIndexInDoc = navigationResult.getIdIndexList().indexOf(action.getTargetTransUnitId());
@@ -95,6 +107,7 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       }
 
       List<HTextFlow> textFlows = getTextFlows(action, hLocale, targetOffset);
+      
       GetTransUnitListResult result = transformToTransUnits(action, hLocale, textFlows, targetOffset, targetPage);
       result.setNavigationIndex(navigationResult);
       return result;
@@ -103,11 +116,23 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
    private List<HTextFlow> getTextFlows(GetTransUnitList action, HLocale hLocale, int offset)
    {
       List<HTextFlow> textFlows;
-      if (action.isAcceptAllStatus() && !hasSearchPhrase(action.getPhrase()))
+      // no status and phrase filter
+      if (!hasStatusAndPhaseFilter(action))
       {
+         // no validation filter
          log.debug("Fetch TransUnits:*");
-         textFlows = textFlowDAO.getTextFlows(action.getDocumentId(), offset, action.getCount());
+         if (!hasValidationFilter(action))
+         {
+            textFlows = textFlowDAO.getTextFlowsByDocumentId(action.getDocumentId(), offset, action.getCount());
+         }
+         // has validation filter
+         else
+         {
+            textFlows = textFlowDAO.getAllTextFlowsByDocumentId(action.getDocumentId());
+            textFlows = validationServiceImpl.filterHasErrorTexFlow(textFlows, action.getValidationIds(), hLocale.getLocaleId(), offset, action.getCount());
+         }
       }
+      // has status and phrase filter
       else
       {
          // @formatter:off
@@ -116,9 +141,28 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
                .filterByStatus(action.isFilterUntranslated(), action.isFilterNeedReview(), action.isFilterTranslated());
          // @formatter:on
          log.debug("Fetch TransUnits filtered by status and/or search: {}", constraints);
-         textFlows = textFlowDAO.getTextFlowByDocumentIdWithConstraint(action.getDocumentId(), hLocale, constraints, offset, action.getCount());
+         if (!hasValidationFilter(action))
+         {
+            textFlows = textFlowDAO.getTextFlowByDocumentIdWithConstraint(action.getDocumentId(), hLocale, constraints, offset, action.getCount());
+         }
+         // has validation filter
+         else
+         {
+            textFlows = textFlowDAO.getAllTextFlowByDocumentIdWithConstraint(action.getDocumentId(), hLocale, constraints);
+            textFlows = validationServiceImpl.filterHasErrorTexFlow(textFlows, action.getValidationIds(), hLocale.getLocaleId(), offset, action.getCount());
+         }
       }
       return textFlows;
+   }
+
+   private boolean hasStatusAndPhaseFilter(GetTransUnitList action)
+   {
+      return !action.isAcceptAllStatus() || StringUtils.isNotBlank(action.getPhrase());
+   }
+
+   private boolean hasValidationFilter(GetTransUnitList action)
+   {
+      return action.isFilterHasError() && action.getValidationIds() != null && !action.getValidationIds().isEmpty();
    }
 
    private HLocale validateAndGetLocale(GetTransUnitList action) throws ActionException
@@ -131,11 +175,6 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       {
          throw new ActionException(e);
       }
-   }
-
-   private boolean hasSearchPhrase(String phrase)
-   {
-      return !Strings.isNullOrEmpty(phrase) && phrase.trim().length() != 0;
    }
 
    private GetTransUnitListResult transformToTransUnits(GetTransUnitList action, HLocale hLocale, List<HTextFlow> textFlows, int targetOffset, int targetPage)

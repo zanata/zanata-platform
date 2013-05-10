@@ -10,6 +10,12 @@ public interface WebTransMessages extends Messages
 {
    @DefaultMessage("Save")
    String save();
+   
+   @DefaultMessage("OK")
+   String ok();
+
+   @DefaultMessage("Cancel")
+   String cancel();
 
    @DefaultMessage("(No Content)")
    String noContent();
@@ -94,12 +100,9 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Last Translated")
    String columnHeaderLastTranslated();
-
-   @DefaultMessage("Download")
-   String columnHeaderDownload();
-
-   @DefaultMessage("Upload")
-   String columnHeaderUpload();
+   
+   @DefaultMessage("Actions")
+   String columnHeaderAction();
 
    @DefaultMessage("No document selected")
    String noDocumentSelected();
@@ -290,10 +293,10 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Editor navigation")
    String navigationScope();
-   
+
    @DefaultMessage("Translation memory")
    String tmScope();
-   
+
    @DefaultMessage("Glossary")
    String glossaryScope();
 
@@ -404,6 +407,9 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Validation options")
    String validationOptions();
 
+   @DefaultMessage("Run validation")
+   String runValidation();
+
    @DefaultMessage("Navigation key/button")
    String navOption();
 
@@ -425,8 +431,8 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Show warning when 'Save as Approved' triggered via keyboard shortcut")
    String showSaveApprovedWarningTooltip();
 
-   @DefaultMessage("Go to row if on current page")
-   String goToRowOnCurrentPage();
+   @DefaultMessage("Go to this entry")
+   String goToThisEntry();
 
    @DefaultMessage("Style")
    String style();
@@ -499,13 +505,41 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Only display Translation Unit Details when there is meta data otherwise hide it")
    String showTransUnitDetailsTooltip();
+
+   @DefaultMessage("Download All Files")
+   String downloadAllFiles();
+
+   @DefaultMessage("Your download will be prepared and may take a few minutes to complete. Is this ok?")
+   String prepareDownloadConfirmation();
    
+   @DefaultMessage("Download files (zip)")
+   String downloadAllAsZip();
+
+   @DefaultMessage("Download all translated files.")
+   String downloadAllAsZipDescription();
+
+   @DefaultMessage("Download files (offline po zip)")
+   String downloadAllAsOfflinePoZip();
+
+   @DefaultMessage("Download all translated files in po format for offline translation.")
+   String downloadAllAsOfflinePoZipDescription();
+
    @DefaultMessage("The project type for this iteration has not been set. Contact the project maintainer.")
    String projectTypeNotSet();
+
+   @DefaultMessage("Run validation on documents in this page")
+   String documentValidationTitle();
+
+   @DefaultMessage("Has validation errors - {0}")
+   String hasValidationErrors(String docName);
+
+   @DefaultMessage("Last run: {0}")
+   String lastValidationRun(String completeTime);
+
+   @DefaultMessage("Upload document to merge/override translation")
+   String uploadButtonTitle();
    
-   @DefaultMessage("The project type must be set to 'Gettext' or 'Podir'. Contact the project maintainer.")
-   String projectTypeNotAllowed();
-   
-   @DefaultMessage("Download all translated files.")
-   String downloadAllTranslatedFiles();
+   @DefaultMessage("Download document with extension {0}")
+   String downloadFileTitle(String key);
+
 }

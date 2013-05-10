@@ -29,29 +29,36 @@ import org.jboss.seam.log.Log;
 import org.xml.sax.InputSource;
 import org.zanata.adapter.DTDAdapter;
 import org.zanata.adapter.FileFormatAdapter;
+import org.zanata.adapter.IDMLAdapter;
 import org.zanata.adapter.OpenOfficeAdapter;
 import org.zanata.adapter.PlainTextAdapter;
 import org.zanata.adapter.po.PoReader2;
 import org.zanata.common.DocumentType;
 import org.zanata.common.LocaleId;
+import org.zanata.common.ProjectType;
 import org.zanata.dao.DocumentDAO;
+import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.exception.FileFormatAdapterException;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HDocument;
+import org.zanata.model.HProjectIteration;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.service.TranslationFileService;
+
+import com.google.common.collect.MapMaker;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import static org.jboss.seam.ScopeType.STATELESS;
+import static org.zanata.common.DocumentType.*;
 
 /**
  * Default implementation of the TranslationFileService interface.
@@ -63,15 +70,41 @@ import static org.jboss.seam.ScopeType.STATELESS;
 @AutoCreate
 public class TranslationFileServiceImpl implements TranslationFileService
 {
-   private static String[] ODF_EXTENSIONS = {"odt", "fodt", "odp", "fodp", "ods", "fods", "odg", "fodg", "odb", "odf"};
+   private static Map<DocumentType, Class<? extends FileFormatAdapter>> DOCTYPEMAP = new MapMaker().makeMap();
+   private static DocumentType[] ODF_TYPES =
+      {
+      OPEN_DOCUMENT_TEXT,
+      OPEN_DOCUMENT_TEXT_FLAT,
+      OPEN_DOCUMENT_PRESENTATION,
+      OPEN_DOCUMENT_PRESENTATION_FLAT,
+      OPEN_DOCUMENT_SPREADSHEET,
+      OPEN_DOCUMENT_SPREADSHEET_FLAT,
+      OPEN_DOCUMENT_GRAPHICS,
+      OPEN_DOCUMENT_GRAPHICS_FLAT,
+      OPEN_DOCUMENT_DATABASE,
+      OPEN_DOCUMENT_FORMULA
+      };
+
+   static
+   {
+      for (DocumentType type : ODF_TYPES)
+      {
+         DOCTYPEMAP.put(type, OpenOfficeAdapter.class);
+      }
+      DOCTYPEMAP.put(PLAIN_TEXT, PlainTextAdapter.class);
+      DOCTYPEMAP.put(XML_DOCUMENT_TYPE_DEFINITION, DTDAdapter.class);
+      DOCTYPEMAP.put(IDML, IDMLAdapter.class);
+   }
 
    private static Set<String> SUPPORTED_EXTENSIONS = buildSupportedExtensionSet();
 
    private static Set<String> buildSupportedExtensionSet()
    {
-      Set<String> supported = new HashSet<String>(Arrays.asList(ODF_EXTENSIONS));
-      supported.add("txt");
-      supported.add("dtd");
+      Set<String> supported = new HashSet<String>();
+      for (DocumentType type : DOCTYPEMAP.keySet())
+      {
+         supported.add(type.getExtension());
+      }
       return supported;
    }
 
@@ -81,14 +114,17 @@ public class TranslationFileServiceImpl implements TranslationFileService
    @In
    private DocumentDAO documentDAO;
 
+   @In
+   private ProjectIterationDAO projectIterationDAO;
+
    @Override
-   public TranslationsResource parseTranslationFile(InputStream fileContents, String fileName, String localeId) throws ZanataServiceException
+   public TranslationsResource parseTranslationFile(InputStream fileContents, String fileName, String localeId, boolean originalIsPo) throws ZanataServiceException
    {
       if( fileName.endsWith(".po") )
       {
          try
          {
-            return parsePoFile(fileContents);
+            return parsePoFile(fileContents, !originalIsPo);
          }
          catch (Exception e)
          {
@@ -117,25 +153,24 @@ public class TranslationFileServiceImpl implements TranslationFileService
    }
 
    @Override
-   public Resource parseDocumentFile(InputStream fileContents, String path, String fileName)
+   public String generateDocId(String path, String fileName)
    {
       String docName = fileName;
       if (docName.endsWith(".pot"))
       {
          docName = docName.substring(0, docName.lastIndexOf('.'));
       }
-
-      return parseUpdatedDocumentFile(fileContents, convertToValidPath(path) + docName, fileName);
+      return convertToValidPath(path) + docName;
    }
 
    @Override
-   public Resource parseUpdatedDocumentFile(InputStream fileContents, String docId, String fileName)
+   public Resource parseUpdatedDocumentFile(InputStream fileContents, String docId, String fileName, boolean offlinePo)
    {
       if (fileName.endsWith(".pot"))
       {
          try
          {
-            return parsePotFile(fileContents, docId);
+            return parsePotFile(fileContents, docId, offlinePo);
          }
          catch (Exception e)
          {
@@ -198,15 +233,15 @@ public class TranslationFileServiceImpl implements TranslationFileService
       return path;
    }
 
-   private TranslationsResource parsePoFile( InputStream fileContents )
+   private TranslationsResource parsePoFile( InputStream fileContents, boolean offlinePo )
    {
-      PoReader2 poReader = new PoReader2();
+      PoReader2 poReader = new PoReader2(offlinePo);
       return poReader.extractTarget(new InputSource(fileContents) );
    }
 
-   private Resource parsePotFile(InputStream fileContents, String docId)
+   private Resource parsePotFile(InputStream fileContents, String docId, boolean offlinePo)
    {
-      PoReader2 poReader = new PoReader2();
+      PoReader2 poReader = new PoReader2(offlinePo);
       // assume english as source locale
       Resource res = poReader.extractTemplate(new InputSource(fileContents), new LocaleId("en"), docId);
       return res;
@@ -220,11 +255,35 @@ public class TranslationFileServiceImpl implements TranslationFileService
    }
 
    @Override
-   public boolean hasAdapterFor(String fileNameOrExtension)
+   public boolean hasAdapterFor(DocumentType type)
    {
-      return SUPPORTED_EXTENSIONS.contains(extractExtension(fileNameOrExtension));
+      return DOCTYPEMAP.containsKey(type);
    }
 
+   /**
+    * @deprecated use {@link #hasAdapterFor(DocumentType)}s
+    */
+   @Deprecated
+   @Override
+   public boolean hasAdapterFor(String fileNameOrExtension)
+   {
+      String extension = extractExtension(fileNameOrExtension);
+      if (extension == null)
+      {
+         return false;
+      }
+      DocumentType documentType = DocumentType.typeFor(extension);
+      if (documentType == null)
+      {
+         return false;
+      }
+      return hasAdapterFor(documentType);
+   }
+
+   /**
+    * @deprecated use {@link #getAdapterFor(DocumentType)}
+    */
+   @Deprecated
    @Override
    public FileFormatAdapter getAdapterFor(String fileNameOrExtension)
    {
@@ -235,57 +294,29 @@ public class TranslationFileServiceImpl implements TranslationFileService
       {
          return null;
       }
-      else
+      DocumentType documentType = DocumentType.typeFor(extension);
+      if (documentType == null)
       {
-         if (extension.equals("txt"))
-         {
-            return new PlainTextAdapter();
-         }
-         else if (extension.equals("dtd"))
-         {
-            return new DTDAdapter();
-         }
-         else if (Arrays.asList(ODF_EXTENSIONS).contains(extension))
-         {
-            return new OpenOfficeAdapter();
-         }
-         else
-         {
-            return null;
-         }
+         return null;
       }
+      return getAdapterFor(documentType);
    }
 
    @Override
    public FileFormatAdapter getAdapterFor(DocumentType type)
    {
-      switch (type)
+      Class<? extends FileFormatAdapter> clazz = DOCTYPEMAP.get(type);
+      if (clazz == null)
       {
-      case PLAIN_TEXT:
-      {
-         return new PlainTextAdapter();
+         throw new RuntimeException("No adapter for document type: " + type);
       }
-      case XML_DOCUMENT_TYPE_DEFINITION:
+      try
       {
-         return new DTDAdapter();
+         return clazz.newInstance();
       }
-      case OPEN_DOCUMENT_DATABASE:
-      case OPEN_DOCUMENT_FORMULA:
-      case OPEN_DOCUMENT_GRAPHICS:
-      case OPEN_DOCUMENT_GRAPHICS_FLAT:
-      case OPEN_DOCUMENT_PRESENTATION:
-      case OPEN_DOCUMENT_PRESENTATION_FLAT:
-      case OPEN_DOCUMENT_SPREADSHEET:
-      case OPEN_DOCUMENT_SPREADSHEET_FLAT:
-      case OPEN_DOCUMENT_TEXT:
-      case OPEN_DOCUMENT_TEXT_FLAT:
+      catch (Exception e)
       {
-         return new OpenOfficeAdapter();
-      }
-      default:
-      {
-         throw new RuntimeException("no adapter for document type " + type);
-      }
+         throw new RuntimeException("Unable to construct adapter for document type: "+type, e);
       }
    }
 
@@ -358,6 +389,36 @@ public class TranslationFileServiceImpl implements TranslationFileService
    {
       HDocument doc = documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docPath+docName);
       return doc.getRawDocument().getType().getExtension();
+   }
+
+   @Override
+   public boolean isPoDocument(String projectSlug, String iterationSlug, String docId)
+   {
+      HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+      ProjectType projectType = projectIteration.getProjectType();
+      if (projectType == null)
+      {
+         projectType = projectIteration.getProject().getDefaultProjectType();
+      }
+      if (projectType == ProjectType.Gettext || projectType == ProjectType.Podir)
+      {
+         return true;
+      }
+
+      if (projectType == ProjectType.File)
+      {
+         HDocument doc = documentDAO.getByDocIdAndIteration(projectIteration, docId);
+         if (doc.getRawDocument() == null)
+         {
+            // po is the only format in File projects for which no raw document is stored
+            return true;
+         }
+
+         // additional check in case we do start storing raw documents for po
+         DocumentType docType = doc.getRawDocument().getType();
+         return docType == GETTEXT_PORTABLE_OBJECT || docType == GETTEXT_PORTABLE_OBJECT_TEMPLATE;
+      }
+      return false;
    }
 
 }

@@ -21,6 +21,8 @@
 package org.zanata.action;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -35,7 +37,7 @@ import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.zanata.service.ValidationService;
-import org.zanata.webtrans.shared.model.ValidationObject;
+import org.zanata.webtrans.shared.model.ValidationAction;
 
 @Name("projectValidationOptionsAction")
 @Scope(ScopeType.PAGE)
@@ -59,19 +61,19 @@ public class ProjectValidationOptionsAction implements Serializable
 
    private String projectSlug;
 
-   public List<ValidationObject> getValidationList()
+   public List<ValidationAction> getValidationList()
    {
-      List<ValidationObject> result = validationServiceImpl.getValidationObject(projectSlug);
-      return result;
+      Collection<ValidationAction> result = validationServiceImpl.getValidationAction(projectSlug);
+      return new ArrayList<ValidationAction>(result);
    }
 
-   public void checkExclusive(ValidationObject valObj)
+   public void checkExclusive(ValidationAction valAction)
    {
-      for(ValidationObject exclusiveValObj: valObj.getExclusiveValidations())
+      for (ValidationAction exclusiveValAction : valAction.getExclusiveValidations())
       {
-         if(selectedValidations.containsKey(exclusiveValObj.getValidationInfo().getId().name()))
+         if (selectedValidations.containsKey(exclusiveValAction.getId().name()))
          {
-            selectedValidations.put(exclusiveValObj.getValidationInfo().getId().name(), false);
+            selectedValidations.put(exclusiveValAction.getId().name(), false);
          }
       }
    }

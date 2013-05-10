@@ -7,10 +7,12 @@
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
     template="/WEB-INF/layout/template.xhtml">
-    
-<ui:define name="page_title">Help</ui:define>
+
+<ui:define name="page_title">#{messages['jsf.Help']}</ui:define>
 <ui:define name="center_content">
-    <!-- should this be project-help-content? -->
+    <ui:remove>
+      <!-- should this be project-help-content? -->
+    </ui:remove>
     <s:formattedText id="project-home-content" value="#{applicationConfiguration.helpContent}"></s:formattedText>
 </ui:define>
 

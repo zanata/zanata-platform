@@ -1,6 +1,5 @@
 package org.zanata.dao;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -34,7 +33,6 @@ import org.zanata.model.StatusCount;
 @Scope(ScopeType.STATELESS)
 public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
 {
-
    public DocumentDAO()
    {
       super(HDocument.class);
@@ -113,61 +111,52 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
    public Long getTotalCountForDocument(HDocument document)
    {
       Session session = getSession();
-      Long totalCount = (Long) session.createQuery(
-            "select count(tf) from HTextFlow tf " +
-            "where tf.document = :doc and tf.obsolete = false")
-      .setParameter("doc", document)
-      .setComment("DocumentDAO.getTotalCountForDocument")
-      .setCacheable(true).uniqueResult();
-      
+      Long totalCount = (Long) session.createQuery("select count(tf) from HTextFlow tf " + "where tf.document = :doc and tf.obsolete = false").setParameter("doc", document).setComment("DocumentDAO.getTotalCountForDocument").setCacheable(true).uniqueResult();
+
       if (totalCount == null)
       {
          totalCount = 0L;
       }
 
       return totalCount;
-      
+
    }
 
    public Long getTotalWordCountForDocument(HDocument document)
    {
       Session session = getSession();
 
-      Long totalWordCount = (Long) session.createQuery(
-            "select sum(tf.wordCount) from HTextFlow tf " +
-            "where tf.document = :doc and tf.obsolete = false")
-      .setParameter("doc", document)
-      .setCacheable(true)
-      .setComment("DocumentDAO.getTotalWordCountForDocument")
-      .uniqueResult();
-      
+      Long totalWordCount = (Long) session.createQuery("select sum(tf.wordCount) from HTextFlow tf " + "where tf.document = :doc and tf.obsolete = false").setParameter("doc", document).setCacheable(true).setComment("DocumentDAO.getTotalWordCountForDocument").uniqueResult();
+
       if (totalWordCount == null)
       {
          totalWordCount = 0L;
       }
 
       return totalWordCount;
-      
+
    }
 
-   public HTextFlowTarget getLastTranslated(Long docId, LocaleId localeId)
+   public HTextFlowTarget getLastTranslatedTarget(Long documentId, LocaleId localeId)
    {
-      String query = "from HTextFlowTarget tft " +
-            "where tft.textFlow.document.id = :docId and tft.locale.localeId = :localeId and " +
-            "tft.lastChanged = (select max(t.lastChanged) from HTextFlowTarget t " +
- "where t.textFlow.document.id = :docId and t.locale.localeId = :localeId )";
+      Session session = getSession();
       
-      Query q = getSession().createQuery( query );
-      q.setParameter("docId", docId);
-      q.setParameter("localeId", localeId);
-      q.setCacheable(true);
-      q.setMaxResults(1);
-      q.setComment("DocumentDAO.getLastTranslated");
+      StringBuilder query = new StringBuilder();
+     
+      query.append("from HTextFlowTarget tft ");
+      query.append("where tft.textFlow.document.id = :docId ");
+      query.append("and tft.locale.localeId = :localeId ");
+      query.append("order by tft.lastChanged DESC");
       
-      return  (HTextFlowTarget) q.uniqueResult();
+      return (HTextFlowTarget) session.createQuery(query.toString())
+      .setParameter("docId", documentId)
+      .setParameter("localeId", localeId)
+      .setCacheable(true)
+      .setMaxResults(1)
+      .setComment("DocumentDAO.getLastTranslated")
+      .uniqueResult();
    }
-   
-   
+
    /**
     * @see ProjectIterationDAO#getStatisticsForContainer(Long, LocaleId)
     * @param docId
@@ -231,14 +220,14 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
 
    /**
     * Returns document statistics for multiple locales.
-    *
+    * 
     * @see DocumentDAO#getStatistics(long, org.zanata.common.LocaleId)
     * @param docId
     * @param localeIds If empty or null, data for all locales will be returned.
-    * @return Map of document statistics indexed by locale. Some locales may not have entries if there is
-    * no data stored for them.
+    * @return Map of document statistics indexed by locale. Some locales may not
+    *         have entries if there is no data stored for them.
     */
-   public Map<LocaleId, TranslationStats> getStatistics(long docId, LocaleId ... localeIds)
+   public Map<LocaleId, TranslationStats> getStatistics(long docId, LocaleId... localeIds)
    {
       // @formatter:off
       Session session = getSession();
@@ -495,6 +484,21 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       doc.setRawDocument(rawDoc);
       makePersistent(doc);
       return rawDoc;
+   }
+
+   public List<HDocument> getDocumentsByIds(List<Long> docIds)
+   {
+      StringBuilder query = new StringBuilder();
+      query.append("from HDocument doc where doc.id in (:docIds)");
+      
+      Query q = getSession().createQuery(query.toString());
+      q.setParameterList("docIds", docIds);
+      q.setCacheable(true);
+      q.setComment("DocumentDAO.getDocumentsByIds");
+      
+      List<HDocument> docs = q.list();
+      
+      return docs;
    }
 
    public LobHelper getLobHelper()

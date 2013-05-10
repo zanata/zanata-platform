@@ -7,8 +7,8 @@
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
     template="./WEB-INF/layout/template.xhtml">
-    
-    <ui:define name="page_title">Home</ui:define>
+
+    <ui:define name="page_title">#{messages['jsf.Home']}</ui:define>
     <ui:define name="center_content">
        <s:formattedText id="project-home-content" value="#{applicationConfiguration.homeContent}"></s:formattedText>
 

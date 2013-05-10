@@ -16,6 +16,7 @@ import org.zanata.search.FilterConstraints;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TextFlowSearchService;
+import org.zanata.service.ValidationService;
 import org.zanata.webtrans.server.rpc.GetTransUnitListHandler;
 import org.zanata.webtrans.shared.model.DocumentId;
 
@@ -44,6 +45,8 @@ public class MockHandlerFactory
    private ZanataIdentity identity;
    @Mock
    private TextFlowSearchService textFlowSearchServiceImpl;
+   @Mock
+   private ValidationService validationServiceImpl;
 
    public MockHandlerFactory()
    {
@@ -59,11 +62,12 @@ public class MockHandlerFactory
             .use("textFlowSearchServiceImpl", textFlowSearchServiceImpl)
             .use("localeServiceImpl", localeServiceImpl)
             .use("resourceUtils", resourceUtils)
+            .use("validationServiceImpl", validationServiceImpl)
             .autowire(GetTransUnitListHandler.class);
       // @formatter:on
 
       int maxSize = Math.min(startIndex + count, hTextFlows.size());
-      when(textFlowDAO.getTextFlows(documentId, startIndex, count)).thenReturn(hTextFlows.subList(startIndex, maxSize));
+      when(textFlowDAO.getTextFlowsByDocumentId(documentId, startIndex, count)).thenReturn(hTextFlows.subList(startIndex, maxSize));
       when(localeServiceImpl.validateLocaleByProjectIteration(any(LocaleId.class), anyString(), anyString())).thenReturn(hLocale);
       when(resourceUtils.getNumPlurals(any(HDocument.class), any(HLocale.class))).thenReturn(1);
 

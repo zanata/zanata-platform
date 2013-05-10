@@ -1,11 +1,11 @@
 package org.zanata.webtrans.shared.rpc;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.shared.model.TransUnitId;
+
 import com.google.common.base.Objects;
 import com.google.gwt.user.client.rpc.IsSerializable;
 

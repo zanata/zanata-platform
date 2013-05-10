@@ -10,7 +10,7 @@
     xmlns:richext="http://java.sun.com/jsf/composite/richext"
     template="../WEB-INF/layout/template.xhtml">
 
-  <ui:define name="page_title">Projects</ui:define>
+  <ui:define name="page_title">#{messages['jsf.Projects']}</ui:define>
 
   <ui:define name="right_content">
     <rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
@@ -69,30 +69,30 @@
         </rich:dataScroller>
     </div>
 	<richext:spacer height="15" />
-        
+
         <s:div styleClass="float-right">
 	        <a4j:region>
-	            <h:selectBooleanCheckbox title="Filter active projects" value="#{projectAction.showActive}">
+	            <h:selectBooleanCheckbox title="#{messages['jsf.FilterActiveProjects']}" value="#{projectAction.showActive}">
 	                <a4j:ajax event="change" render="projectList" />
 	            </h:selectBooleanCheckbox>
 	            <h:outputText value="#{messages['jsf.Active']}"/>
-	            
+
 	            <richext:spacer width="5" />
-	            <h:selectBooleanCheckbox title="Filter read-only projects" value="#{projectAction.showReadOnly}">
+	            <h:selectBooleanCheckbox title="#{messages['jsf.FilterReadOnlyProjects']}" value="#{projectAction.showReadOnly}">
 	                <a4j:ajax event="change" render="projectList" />
 	            </h:selectBooleanCheckbox>
 	            <h:outputText value="#{messages['jsf.ReadOnly']}"/>
-	            
+
 	            <richext:spacer width="5" />
 	            <s:fragment rendered="#{s:hasPermission('HProject','view-obsolete')}">
-		            <h:selectBooleanCheckbox title="Filter obsolete projects" value="#{projectAction.showObsolete}">
+		            <h:selectBooleanCheckbox title="#{messages['jsf.FilterObsoleteProjects']}" value="#{projectAction.showObsolete}">
 		                <a4j:ajax event="change" render="projectList" />
 		            </h:selectBooleanCheckbox>
 	                <h:outputText value="#{messages['jsf.Obsolete']}"/>
 	            </s:fragment>
 	        </a4j:region>
         </s:div>
-        
+
         <rich:dataTable id="projectList"
             rows="#{projectAction.pageSize}"
             value="#{projectAction.projectPagedListDataModel}" var="project">
@@ -130,7 +130,7 @@
                     <h:outputText value="#{messages[project.status.messageKey]}"/>
                 </rich:column>
         </rich:dataTable>
-        
+
         <richext:spacer height="15" />
         <div style="text-align: center">
             <rich:dataScroller align="center" for="projectList" maxPages="10"

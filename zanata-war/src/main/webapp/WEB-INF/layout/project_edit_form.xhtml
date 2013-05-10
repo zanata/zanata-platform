@@ -60,7 +60,7 @@
                          value="#{projectHome.instance.sourceViewURL}" style="width:400px;"/>
             <s:span styleClass="icon-info-circle-2 input_help" id="humanSourceUrlHelp">
                 <rich:tooltip>
-                   <em><code>#{messages['jsf.SourceUrlHumanReadableExample']}</code></em>
+                   <em><code>#{messages['jsf.viewSourceFiles.Example']}</code></em>
                 </rich:tooltip>
             </s:span>
         </s:decorate>
@@ -71,7 +71,7 @@
                          value="#{projectHome.instance.sourceCheckoutURL}" style="width:400px;"/>
             <s:span styleClass="icon-info-circle-2 input_help" id="machineSourceUrlHelp">
                 <rich:tooltip>
-                   <em><code>#{messages['jsf.SourceUrlMachineReadableExample']}</code></em>
+                   <em><code>#{messages['jsf.SourceCheckoutUrl.Example']}</code></em>
                 </rich:tooltip>
             </s:span>
         </s:decorate>
@@ -116,9 +116,9 @@
 	<richext:spacer height="20" />
 	<a4j:region renderRegionOnly="true">
       	<h:panelGrid columns="3" id ="languagePanel" rendered="#{localeListAction.setting}">
-	    <h:outputText value="#{messages['jsf.AvailableLocales']}"/>
+	    <h:outputText value="#{messages['jsf.DisabledLocales']}"/>
 	    <h:outputText value=""/>
-	    <h:outputText value="#{messages['jsf.SelectedLocales']}"/>
+	    <h:outputText value="#{messages['jsf.EnabledLocales']}"/>
             <h:selectManyListbox id ="languagelist2" value="#{localeListAction.availableList}" styleClass="language_list">
                 <f:selectItems value="#{availableItems}"/>
                 <a4j:ajax event="dblclick" render="languagePanel" listener="#{localeListAction.toCustomizedLocales}"/>
@@ -137,7 +137,7 @@
 
     <s:div>
         <a4j:region>
-            <h:selectBooleanCheckbox
+            <h:selectBooleanCheckbox title="#{messages['jsf.RestrictRoleAccessTooltip']}" value="#{projectRoleRestrictionAction.restrictByRoles}" >
                     title="Restrict Project Access"
                     value="#{projectRoleRestrictionAction.restrictByRoles}" >
                 <a4j:ajax event="change" render="roleList" />
@@ -170,13 +170,13 @@
 
 	<s:div id="validationOptionsList">
 	<rich:spacer height="20px" />
-		 <rich:dataGrid value="#{projectValidationOptionsAction.validationList}" var="validationObj" columns="1"
+		 <rich:dataGrid value="#{projectValidationOptionsAction.validationList}" var="validationAction" columns="1"
                   rendered="#{projectValidationOptionsAction.overrideValidations}">
-       		<h:selectBooleanCheckbox value="#{projectValidationOptionsAction.selectedValidations[validationObj.validationInfo.id.name()]}">
-       			<a4j:support event="onchange" action="#{projectValidationOptionsAction.checkExclusive(validationObj)}" reRender="validationOptionsList"/>
+       		<h:selectBooleanCheckbox value="#{projectValidationOptionsAction.selectedValidations[validationAction.id.name()]}">
+       			<a4j:support event="onchange" action="#{projectValidationOptionsAction.checkExclusive(validationAction)}" reRender="validationOptionsList"/>
        		</h:selectBooleanCheckbox>
-       		<h:outputLabel value="#{validationObj.validationInfo.id.displayName}"/>
-       		<h:outputLabel value="#{validationObj.validationInfo.description}" style="float:right;margin-right:20px;"/>
+       		<h:outputLabel value="#{validationAction.id.displayName}"/>
+       		<h:outputLabel value="#{validationAction.description}" style="float:right;margin-right:20px;"/>
           </rich:dataGrid>
 	</s:div>
 

@@ -66,7 +66,7 @@
         <rich:panel rendered="#{copyTransAction.copyTransRunning}">
             <h:outputText value="#{messages['jsf.iteration.CopyTrans.AlreadyStarted']}" escape="false"/>
             <br/>
-            <s:link view="/iteration/view.xhtml" value="Please click here to view progress.">
+            <s:link view="/iteration/view.xhtml" value="#{messages['jsf.CopyTrans.ClickHereToViewProgress']}">
                 <f:param name="projectSlug" value="#{copyTransAction.projectSlug}"/>
                 <f:param name="iterationSlug" value="#{copyTransAction.iterationSlug}"/>
             </s:link>

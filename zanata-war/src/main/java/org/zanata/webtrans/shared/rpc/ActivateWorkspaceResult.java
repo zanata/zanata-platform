@@ -1,10 +1,11 @@
 package org.zanata.webtrans.shared.rpc;
 
-import java.util.List;
+import java.util.Map;
 
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
 
 
@@ -16,7 +17,7 @@ public class ActivateWorkspaceResult implements DispatchResult
    private UserWorkspaceContext userWorkspaceContext;
    private Identity identity;
    private UserConfigHolder.ConfigurationState storedUserConfiguration;
-   private List<ValidationInfo> validations;
+   private Map<ValidationId, ValidationInfo> validations;
 
    @SuppressWarnings("unused")
    private ActivateWorkspaceResult()
@@ -25,7 +26,7 @@ public class ActivateWorkspaceResult implements DispatchResult
 
    public ActivateWorkspaceResult(UserWorkspaceContext userWorkspaceContext,
                                   Identity identity,
- UserConfigHolder.ConfigurationState storedUserConfiguration, List<ValidationInfo> validations)
+ UserConfigHolder.ConfigurationState storedUserConfiguration, Map<ValidationId, ValidationInfo> validations)
    {
       this.userWorkspaceContext = userWorkspaceContext;
       this.identity = identity;
@@ -48,7 +49,7 @@ public class ActivateWorkspaceResult implements DispatchResult
       return storedUserConfiguration;
    }
 
-   public List<ValidationInfo> getValidations()
+   public Map<ValidationId, ValidationInfo> getValidations()
    {
       return validations;
    }

@@ -26,6 +26,7 @@ import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
+import org.zanata.webtrans.client.view.KeyShortcutDisplay;
 import org.zanata.webtrans.shared.rpc.NavOption;
 
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -49,7 +50,7 @@ public class EditorKeyShortcutsTest
    @Captor
    private ArgumentCaptor<KeyShortcut> keyShortcutCaptor;
    @Mock
-   private KeyShortcutPresenter.Display keyShortcutDisplay;
+   private KeyShortcutDisplay keyShortcutDisplay;
 
    @BeforeMethod
    public void setUp() throws Exception
@@ -198,7 +199,7 @@ public class EditorKeyShortcutsTest
       List<KeyShortcut> keys = keyShortcutCaptor.getAllValues();
       assertKeys(keys.get(0), "save fuzzy", true, true, new Keys(Keys.CTRL_KEY, 'S'));
       assertKeys(keys.get(1), "save approved", true, true, new Keys(Keys.CTRL_KEY, KeyCodes.KEY_ENTER));
-      assertKeys(keys.get(2), "copy from source", false, false, new Keys(Keys.ALT_KEY, 'G'));
+      assertKeys(keys.get(2), "copy from source", true, true, new Keys(Keys.ALT_KEY, 'G'), new Keys(Keys.ALIAS_KEY, Keys.NO_MODIFIER, 'G'));
    }
 
    @Test
@@ -218,7 +219,7 @@ public class EditorKeyShortcutsTest
       assertKeys(keys.get(0), "save fuzzy", true, true, new Keys(Keys.CTRL_KEY, 'S'));
       assertKeys(keys.get(1), "save approved", true, true, new Keys(Keys.CTRL_KEY, KeyCodes.KEY_ENTER));
       assertKeys(keys.get(2), "save approved", true, true, new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER));
-      assertKeys(keys.get(3), "copy from source", false, false, new Keys(Keys.ALT_KEY, 'G'));
+      assertKeys(keys.get(3), "copy from source", true, true, new Keys(Keys.ALT_KEY, 'G'), new Keys(Keys.ALIAS_KEY, Keys.NO_MODIFIER, 'G'));
    }
 
    @Test

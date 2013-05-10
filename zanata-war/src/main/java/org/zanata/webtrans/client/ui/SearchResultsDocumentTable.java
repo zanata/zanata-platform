@@ -33,6 +33,7 @@ import com.google.common.collect.Iterables;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.ActionCell;
 import com.google.gwt.cell.client.ActionCell.Delegate;
+import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.ValueUpdater;
@@ -82,13 +83,6 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
    private static String highlightString = null;
    private static boolean requirePreview = true;
 
-   private CheckColumn checkboxColumn;
-   private TextColumn<TransUnitReplaceInfo> rowIndexColumn;
-   private Column<TransUnitReplaceInfo, List<String>> sourceColumn;
-   private Column<TransUnitReplaceInfo, TransUnitReplaceInfo> targetColumn;
-   private ActionColumn previewButtonColumn;
-   private ActionColumn replaceButtonColumn;
-   
    private CheckboxHeader checkboxColumnHeader;
 
 
@@ -106,15 +100,16 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
     * Create a standard result document table with no action buttons.
     * 
     * Clicks on any cells will toggle selection.
-    * 
+    *
     * @param selectionModel
     * @param selectAllHandler handler for events for the selection column header
     *           checkbox
     * @param messages
+    * @param goToEditorDelegate
     */
    public SearchResultsDocumentTable(final SelectionModel<TransUnitReplaceInfo> selectionModel,
-         ValueChangeHandler<Boolean> selectAllHandler,
-         final WebTransMessages messages)
+                                     ValueChangeHandler<Boolean> selectAllHandler,
+                                     final WebTransMessages messages, Delegate<TransUnitReplaceInfo> goToEditorDelegate)
    {
       super(15, getCellTableResources());
 
@@ -124,22 +119,34 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
       setSelectionModel(selectionModel, getSelectionManager());
       addStyleName("projectWideSearchResultsDocumentBody");
 
-      checkboxColumn = new CheckColumn(selectionModel);
+      CheckColumn checkboxColumn = new CheckColumn(selectionModel);
       checkboxColumnHeader = new CheckboxHeader();
       checkboxColumnHeader.addValueChangeHandler(selectAllHandler);
-      rowIndexColumn = buildRowIndexColumn();
-      sourceColumn = buildSourceColumn();
-      targetColumn = buildTargetColumn();
+      TextColumn<TransUnitReplaceInfo> rowIndexColumn = buildRowIndexColumn();
+      Column<TransUnitReplaceInfo, List<String>> sourceColumn = buildSourceColumn();
+      Column<TransUnitReplaceInfo, TransUnitReplaceInfo> targetColumn = buildTargetColumn();
+      final SafeHtml goToIcon = new SafeHtmlBuilder().appendHtmlConstant("<span class='icon-edit pointer' />").toSafeHtml();
+      ActionColumn goToEditorColumn = new ActionColumn(new ActionCell<TransUnitReplaceInfo>(goToIcon, goToEditorDelegate)
+      {
+         @Override
+         public void render(Context context, TransUnitReplaceInfo value, SafeHtmlBuilder sb)
+         {
+
+            sb.append(goToIcon);
+         }
+      });
 
       addColumn(checkboxColumn, checkboxColumnHeader);
       addColumn(rowIndexColumn, messages.rowIndex());
       addColumn(sourceColumn, messages.source());
       addColumn(targetColumn, messages.target());
+      addColumn(goToEditorColumn);
 
       setColumnWidth(checkboxColumn, 50.0, Unit.PX);
       setColumnWidth(rowIndexColumn, 70.0, Unit.PX);
       setColumnWidth(sourceColumn, 50.0, Unit.PCT);
       setColumnWidth(targetColumn, 50.0, Unit.PCT);
+      setColumnWidth(goToEditorColumn, 50.0, Unit.PX);
 
       sourceColumn.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
       targetColumn.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
@@ -166,26 +173,26 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
     * @param messages
     * @param resources
     * 
-    * @see #SearchResultsDocumentTable(SelectionModel, ValueChangeHandler,
-    *      WebTransMessages)
+    * @see #SearchResultsDocumentTable(com.google.gwt.view.client.SelectionModel
     */
    public SearchResultsDocumentTable(Delegate<TransUnitReplaceInfo> previewDelegate,
          Delegate<TransUnitReplaceInfo> replaceDelegate,
          Delegate<TransUnitReplaceInfo> undoDelegate,
+         Delegate<TransUnitReplaceInfo> goToEditorDelegate,
          final SelectionModel<TransUnitReplaceInfo> selectionModel,
          ValueChangeHandler<Boolean> selectAllHandler,
          final WebTransMessages messages,
          org.zanata.webtrans.client.resources.Resources resources)
    {
-      this(selectionModel, selectAllHandler, messages);
+      this(selectionModel, selectAllHandler, messages, goToEditorDelegate);
 
       if (spinner == null)
       {
          spinner = new ImageResourceRenderer().render(resources.spinner());
       }
 
-      previewButtonColumn = new ActionColumn(new PreviewActionCell(previewDelegate));
-      replaceButtonColumn = new ActionColumn(new ReplaceActionCell(replaceDelegate, undoDelegate));
+      ActionColumn previewButtonColumn = new ActionColumn(new PreviewActionCell(previewDelegate));
+      ActionColumn replaceButtonColumn = new ActionColumn(new ReplaceActionCell(replaceDelegate, undoDelegate));
 
       // preview header refers to both these columns
       addColumn(previewButtonColumn, messages.actions());
@@ -454,7 +461,7 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
             break;
          }
          // else ignore (is processing)
-      };
+      }
    }
 
    private class PreviewActionCell extends ActionCell<TransUnitReplaceInfo>
@@ -497,7 +504,7 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
       protected void onEnterKeyDown(Context context, Element parent, TransUnitReplaceInfo value, NativeEvent event, ValueUpdater<TransUnitReplaceInfo> valueUpdater) {
          // delegate is responsible for taking appropriate action
          previewDelegate.execute(value);
-      };
+      }
    }
 
    private static SafeHtml buildButtonHtml(String message, String buttonLabel)

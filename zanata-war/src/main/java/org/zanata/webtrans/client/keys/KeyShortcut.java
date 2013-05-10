@@ -24,8 +24,8 @@ import java.util.Set;
 
 import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
+
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 
 /**

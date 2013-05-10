@@ -54,6 +54,7 @@ import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.events.LoadingEvent;
 import org.zanata.webtrans.client.events.PageCountChangeEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEvent;
+import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.presenter.TargetContentsPresenter;
 import org.zanata.webtrans.client.presenter.TransUnitsTablePresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
@@ -106,6 +107,8 @@ public class NavigationServiceIntegrationTest
    private TransUnitsTablePresenter transUnitsTablePresenter;
    @Mock
    private TargetContentsPresenter targetContentsPresenter;
+   @Mock
+   private History history;
    @Captor
    private ArgumentCaptor<GwtEvent> eventCaptor;
    private GetTransUnitListResult getTransUnitListResult;
@@ -120,7 +123,10 @@ public class NavigationServiceIntegrationTest
       pageModel = new SinglePageDataModelImpl();
       configHolder = new UserConfigHolder();
       navigationStateHolder = new ModalNavigationStateHolder(configHolder);
-      service = new NavigationService(eventBus, dispatcher, configHolder, messages, pageModel, navigationStateHolder);
+      GetTransUnitActionContextHolder contextHolder = new GetTransUnitActionContextHolder(configHolder);
+      contextHolder.initContext(DOCUMENT_ID, null, null);
+
+      service = new NavigationService(eventBus, dispatcher, configHolder, messages, pageModel, navigationStateHolder, contextHolder, history);
       service.addPageDataChangeListener(transUnitsTablePresenter);
 
       context = new GetTransUnitActionContext(DOCUMENT_ID);

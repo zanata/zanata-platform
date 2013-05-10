@@ -1,15 +1,9 @@
 package org.zanata.webtrans.client.service;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.withSettings;
+import static org.mockito.Mockito.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -23,19 +17,27 @@ import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
+import org.zanata.common.LocaleId;
 import org.zanata.model.TestFixture;
+import org.zanata.webtrans.client.events.BookmarkedTextFlowEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.EditorPageSizeChangeEvent;
 import org.zanata.webtrans.client.events.FindMessageEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
+import org.zanata.webtrans.client.events.RequestSelectTableRowEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
+import org.zanata.webtrans.client.history.History;
+import org.zanata.webtrans.client.history.HistoryToken;
+import org.zanata.webtrans.client.presenter.MainView;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.AbstractAsyncCallback;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.auth.EditorClientId;
+import org.zanata.webtrans.shared.model.AuditInfo;
 import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
@@ -71,6 +73,9 @@ public class NavigationServiceUnitTest
    private ArgumentCaptor<AbstractAsyncCallback<GetTransUnitListResult>> resultCaptor;
    @Mock
    private NavigationService.PageDataChangeListener pageDataChangeListener;
+   @Mock
+   private History history;
+   private GetTransUnitActionContextHolder contextHolder;
 
 
    @BeforeMethod
@@ -82,7 +87,9 @@ public class NavigationServiceUnitTest
       configHolder.setEditorPageSize(EDITOR_PAGE_SIZE);
       SinglePageDataModelImpl pageModel = new SinglePageDataModelImpl();
       ModalNavigationStateHolder navigationStateHolder = new ModalNavigationStateHolder(configHolder);
-      service = new NavigationService(eventBus, dispatcher, configHolder, mock(TableEditorMessages.class), pageModel, navigationStateHolder);
+      contextHolder = new GetTransUnitActionContextHolder(configHolder);
+      contextHolder.initContext(new DocumentId(1L, "a.pot"), null, null);
+      service = new NavigationService(eventBus, dispatcher, configHolder, mock(TableEditorMessages.class), pageModel, navigationStateHolder, contextHolder, history);
       service.addPageDataChangeListener(pageDataChangeListener);
 
       verify(eventBus).addHandler(DocumentSelectionEvent.getType(), service);
@@ -93,7 +100,7 @@ public class NavigationServiceUnitTest
 
       pageModel.setData(data.subList(0, configHolder.getState().getEditorPageSize()));
       navigationStateHolder.init(idStateMap, idIndexList);
-      initContext = new GetTransUnitActionContext(new DocumentId(1, "")).changeCount(configHolder.getState().getEditorPageSize());
+      initContext = new GetTransUnitActionContext(new DocumentId(new Long(1), "")).changeCount(configHolder.getState().getEditorPageSize());
    }
 
    private void initData()
@@ -279,7 +286,7 @@ public class NavigationServiceUnitTest
    @Test
    public void testOnDocumentSelected() throws Exception
    {
-      DocumentId documentId = new DocumentId(2, "");
+      DocumentId documentId = new DocumentId(new Long(2), "");
       service.onDocumentSelected(new DocumentSelectionEvent(documentId));
 
       verify(dispatcher).execute(actionCaptor.capture(), resultCaptor.capture());
@@ -316,7 +323,7 @@ public class NavigationServiceUnitTest
       assertThat(service.findRowIndexById(new TransUnitId(2)), Matchers.equalTo(1));
 
       // not in current page
-      assertThat(service.findRowIndexById(new TransUnitId(99)), Matchers.equalTo(NavigationService.UNSELECTED));
+      assertThat(service.findRowIndexById(new TransUnitId(99)), Matchers.equalTo(NavigationService.UNDEFINED));
    }
 
    @Test
@@ -344,5 +351,55 @@ public class NavigationServiceUnitTest
 
       // not in current page
       assertThat(service.getByIdOrNull(new TransUnitId(99)), Matchers.nullValue());
+   }
+
+   @Test
+   public void onBookmarkedTextFlowOnSamePage()
+   {
+      contextHolder.changeOffset(1);
+      TransUnitId targetId = new TransUnitId(1);
+
+      service.onBookmarkableTextFlow(new BookmarkedTextFlowEvent(1, targetId));
+
+      verify(eventBus).fireEvent(eventCaptor.capture());
+      TableRowSelectedEvent event = TestFixture.extractFromEvents(eventCaptor.getAllValues(), TableRowSelectedEvent.class);
+      assertThat(event.getSelectedId(), Matchers.equalTo(targetId));
+      verifyZeroInteractions(dispatcher);
+   }
+
+   @Test
+   public void onBookmarkedTextFlowOnDifferentPage()
+   {
+      // current offset is 1
+      contextHolder.changeOffset(1);
+      TransUnitId targetId = new TransUnitId(1);
+      // target offset is 2
+      BookmarkedTextFlowEvent bookmarkedTextFlowEvent = new BookmarkedTextFlowEvent(2, targetId);
+      NavigationService serviceSpy = spy(service);
+      doNothing().when(serviceSpy).execute(bookmarkedTextFlowEvent);
+
+      serviceSpy.onBookmarkableTextFlow(bookmarkedTextFlowEvent);
+
+      verify(serviceSpy).execute(bookmarkedTextFlowEvent);
+   }
+
+   @Test
+   public void onRequestSelectTableRowSamePage()
+   {
+      TransUnitId selectingId = new TransUnitId(1);
+      
+      DocumentInfo docInfo = new DocumentInfo(new DocumentId(new Long(0), ""), "name0", "", LocaleId.EN_US, null, new AuditInfo(new Date(), "Translator"), null, new AuditInfo(new Date(), "last translator"));
+      
+      HistoryToken mockHistoryToken = mock(HistoryToken.class);
+      when(history.getHistoryToken()).thenReturn(mockHistoryToken);
+
+      // When:
+      service.onRequestSelectTableRow(new RequestSelectTableRowEvent(docInfo, selectingId));
+
+      // Then:
+      verify(mockHistoryToken).setView(MainView.Editor);
+      verify(mockHistoryToken).setDocumentPath(docInfo.getPath() + docInfo.getName());
+      verify(mockHistoryToken).clearEditorFilterAndSearch();
+      verify(mockHistoryToken).setTextFlowId(selectingId.toString());
    }
 }

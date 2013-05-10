@@ -39,9 +39,9 @@
         </script>
     </ui:define>
 
-    <ui:define name="page_title">#{projectIterationFilesAction.projectSlug}:#{projectIterationFilesAction.iterationSlug} - Files</ui:define>
+    <ui:define name="page_title">#{projectIterationFilesAction.projectSlug}:#{projectIterationFilesAction.iterationSlug} - #{messages['jsf.SourceDocuments']}</ui:define>
     <ui:define name="center_content">
-        <h:form>
+        <a4j:form onkeydown="if(event.keyCode==13) { return false;}">
             <s:token allowMultiplePosts="true"/>
             <richext:spacer height="10"/>
             <s:div style="text-align:center">
@@ -49,10 +49,10 @@
                                    fastControls="hide"
                                    rendered="#{projectIterationFilesAction.iterationDocuments.size() > 20}">
                     <f:facet name="first">
-                        <h:outputText value="" styleClass="icon-to-start"/>
+                        <h:outputText value="#{messages['jsf.pager.NextPage']}" style="font-size: 0.8em"/>
                     </f:facet>
                     <f:facet name="previous">
-                        <h:outputText value="" styleClass="icon-left-open"/>
+                        <h:outputText value="#{messages['jsf.pager.PreviousPage']}" style="font-size: 0.8em"/>
                     </f:facet>
                     <f:facet name="next">
                         <h:outputText value="" styleClass="icon-right-open-1"/>
@@ -117,9 +117,18 @@
                     <f:facet name="header">
                         #{messages['jsf.iteration.files.Download']}
                     </f:facet>
-                    <s:link styleClass="table_link" view="/rest/file/source/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/pot">
+                    <s:link styleClass="table_link"
+                            rendered="#{projectIterationFilesAction.isPoDocument(doc.docId)}"
+                            view="/rest/file/source/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/pot">
                         <f:param name="docId" value="#{doc.docId}"/>
                         <h:outputText value="#{messages['jsf.iteration.files.dotpot']}"/>
+                    </s:link>
+                    <s:link styleClass="table_link"
+                            rendered="#{!projectIterationFilesAction.isPoDocument(doc.docId)}"
+                            view="/rest/file/source/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/offlinepot">
+                        <f:param name="docId" value="#{doc.docId}"/>
+                        <h:outputText value="#{messages['jsf.iteration.files.dotofflinepot']}"
+                                      title="#{messages['jsf.iteration.files.dotofflinepot.description']} #{messages['jsf.iteration.files.dotofflinepot.purpose']}"/>
                     </s:link>
                     <h:outputText value="&#160;&#160;&#160;" />
                     <s:link rendered="#{projectIterationFilesAction.hasOriginal(doc.path, doc.name)}" styleClass="table_link" view="/rest/file/source/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/raw">
@@ -149,9 +158,12 @@
                 <!-- TODO show stats for document across locales -->
 
             </rich:dataTable>
-        </h:form>
+        </a4j:form>
 
-        <rich:popupPanel id="downloadProgressPanel"
+        <ui:remove>
+          <!-- This panel does not appear ever to be shown. Remove in separate commit. -->
+        </ui:remove>
+        <rich:modalPanel id="downloadProgressPanel"
                          moveable="#{false}"
                          resizeable="#{false}"
                          autosized="#{true}">
@@ -227,7 +239,7 @@
                                    label="#{locale.retrieveNativeName()}"
                                    itemValue="#{locale.localeId.toString()}"
                                    escape="true"/>
-                    <h:outputLabel value="Source Language"/>
+                    <h:outputLabel value="#{messages['jsf.SourceLanguage']}"/>
                 </h:selectOneMenu>
                 <div align="right">
                     <h:commandButton value="#{messages['jsf.Upload']}"
@@ -263,7 +275,7 @@
                                    label="#{locale.retrieveNativeName()}"
                                    itemValue="#{locale.localeId.toString()}"
                                    escape="true"/>
-                    <h:outputLabel value="Source Language"/>
+                    <h:outputLabel value="#{messages['jsf.SourceLanguage']}"/>
                 </h:selectOneMenu>
                 <div align="right">
                     <h:commandButton value="#{messages['jsf.Upload']}"

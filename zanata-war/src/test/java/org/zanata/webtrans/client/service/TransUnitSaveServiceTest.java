@@ -22,6 +22,7 @@ import org.zanata.common.ContentState;
 import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
+import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.presenter.TargetContentsPresenter;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -58,6 +59,8 @@ public class TransUnitSaveServiceTest
    @Mock
    private TargetContentsPresenter targetContentsPresenter;
    @Mock
+   private DocumentListPresenter documentListPresenter;
+   @Mock
    private TableEditorMessages messages;
    @Mock
    private NavigationService navigationService;
@@ -80,7 +83,7 @@ public class TransUnitSaveServiceTest
    {
       MockitoAnnotations.initMocks(this);
       queue = new SaveEventQueue();
-      service = new TransUnitSaveService(eventBus, dispatcher, undoProvider, targetContentsPresenter, messages, navigationService, goToRowProvider, queue);
+      service = new TransUnitSaveService(eventBus, dispatcher, undoProvider, documentListPresenter, targetContentsPresenter, messages, navigationService, goToRowProvider, queue);
       when(goToRowProvider.get()).thenReturn(goToLink);
    }
 
@@ -258,7 +261,7 @@ public class TransUnitSaveServiceTest
       callback.onSuccess(result);
 
       // Then:
-      verify(goToLink).prepare("", TRANS_UNIT_ID);
+      verify(goToLink).prepare("", null, TRANS_UNIT_ID);
       ArgumentCaptor<NotificationEvent> notificationEventCaptor = ArgumentCaptor.forClass(NotificationEvent.class);
       verify(targetContentsPresenter).setEditingState(TRANS_UNIT_ID, TargetContentsDisplay.EditingState.UNSAVED);
       verify(eventBus).fireEvent(notificationEventCaptor.capture());
@@ -297,6 +300,6 @@ public class TransUnitSaveServiceTest
 
    private static UpdateTransUnitResult result(boolean success, TransUnit transUnit, ContentState previousState)
    {
-      return new UpdateTransUnitResult(new TransUnitUpdateInfo(success, true, new DocumentId(1, ""), transUnit, 9, VER_NUM, previousState));
+      return new UpdateTransUnitResult(new TransUnitUpdateInfo(success, true, new DocumentId(new Long(1), ""), transUnit, 9, VER_NUM, previousState));
    }
 }

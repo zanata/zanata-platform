@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
-import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.validation.AbstractValidationAction;
 
 import com.google.common.collect.Lists;
@@ -47,35 +47,45 @@ public class PrintfVariablesValidation extends AbstractValidationAction
 
    public PrintfVariablesValidation(ValidationId id, ValidationMessages messages)
    {
-      super(new ValidationInfo(id, null, false), messages);
+      super(id, messages.printfVariablesValidatorDesc(), new ValidationInfo(true), messages);
+   }
+   
+   public PrintfVariablesValidation(ValidationId id)
+   {
+      super(id, null, new ValidationInfo(true), null);
+   }
+
+   public PrintfVariablesValidation(ValidationId id, String description, ValidationMessages messages, boolean enabled)
+   {
+      super(id, description, new ValidationInfo(enabled), messages);
    }
 
    @Override
-   public void doValidate(String source, String target)
+   public void doValidate(ArrayList<String> errorList, String source, String target)
    {
       ArrayList<String> sourceVars = findVars(source);
       ArrayList<String> targetVars = findVars(target);
 
-      findMissingVariables(sourceVars, targetVars);
-      findAddedVariables(sourceVars, targetVars);
+      findMissingVariables(errorList, sourceVars, targetVars);
+      findAddedVariables(errorList, sourceVars, targetVars);
    }
 
-   protected void findMissingVariables(ArrayList<String> sourceVars, ArrayList<String> targetVars)
+   protected void findMissingVariables(ArrayList<String> errorList, ArrayList<String> sourceVars, ArrayList<String> targetVars)
    {
       List<String> missing = listMissing(sourceVars, targetVars);
       if (!missing.isEmpty())
       {
-         addError(getMessages().varsMissing(missing));
+         errorList.add(getMessages().varsMissing(missing));
       }
    }
 
-   protected void findAddedVariables(ArrayList<String> sourceVars, ArrayList<String> targetVars)
+   protected void findAddedVariables(ArrayList<String> errorList, ArrayList<String> sourceVars, ArrayList<String> targetVars)
    {
       // missing from source = added
       List<String> added = listMissing(targetVars, sourceVars);
       if (!added.isEmpty())
       {
-         addError(getMessages().varsAdded(added));
+         errorList.add(getMessages().varsAdded(added));
       }
    }
 

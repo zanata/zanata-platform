@@ -280,4 +280,52 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
                   .uniqueResult();
       return hTextFlowTarget;
    }
+   
+   public HTextFlowTarget getTextFlowTarget(Long hTextFlowId, LocaleId localeId)
+   {
+      HTextFlowTarget hTextFlowTarget =
+            (HTextFlowTarget)getSession().createQuery(
+                     "select tft from HTextFlowTarget tft where tft.textFlow.id = :hTextFlowId and tft.locale.localeId = :localeId")
+                  .setParameter("hTextFlowId", hTextFlowId)
+                  .setParameter("localeId", localeId)
+                  .setComment("TextFlowTargetDAO.getTextFlowTarget")
+                  .uniqueResult();
+      return hTextFlowTarget;
+   }
+   
+   public HTextFlowTarget getTextFlowTarget(HTextFlow hTextFlow, LocaleId localeId)
+   {
+      HTextFlowTarget hTextFlowTarget = (HTextFlowTarget) getSession().createQuery("select tft from HTextFlowTarget tft where tft.textFlow = :textFlow and tft.locale.localeId = :localeId").setParameter("textFlow", hTextFlow).setParameter("localeId", localeId).setComment("TextFlowTargetDAO.getTextFlowTarget").uniqueResult();
+      return hTextFlowTarget;
+   }
+
+   public Long getTextFlowTargetId(HTextFlow hTextFlow, LocaleId localeId)
+   {
+      Query q = getSession().createQuery("select tft.id from HTextFlowTarget tft where tft.textFlow = :textFlow and tft.locale.localeId = :localeId");
+      q.setParameter("textFlow", hTextFlow);
+      q.setParameter("localeId", localeId);
+      q.setComment("TextFlowTargetDAO.getTextFlowTargetId");
+      Long id = (Long) q.uniqueResult();
+      return id;
+   }
+
+   public HTextFlowTarget getLastTranslated(String projectSlug, String iterationSlug, LocaleId localeId)
+   {
+      StringBuilder query = new StringBuilder();
+      query.append("from HTextFlowTarget tft ");
+      query.append("where tft.textFlow.document.projectIteration.slug = :iterationSlug ");
+      query.append("and tft.textFlow.document.projectIteration.project.slug = :projectSlug ");
+      query.append("and tft.locale.localeId = :localeId ");
+      query.append("order by tft.lastChanged DESC");
+
+      Query q = getSession().createQuery(query.toString());
+      q.setParameter("iterationSlug", iterationSlug);
+      q.setParameter("projectSlug", projectSlug);
+      q.setParameter("localeId", localeId);
+      q.setCacheable(true);
+      q.setMaxResults(1);
+      q.setComment("TextFlowTargetDAO.getLastTranslated");
+
+      return (HTextFlowTarget) q.uniqueResult();
+   }
 }

@@ -77,7 +77,7 @@ public class NotificationDetailsBox extends DialogBox
       });
    }
 
-   public void setMessageDetails(Severity severity, String title, String time, String message, boolean isSafeHtml, InlineLink inlineLink)
+   public void setMessageDetails(Severity severity, String title, String time, String message, boolean isSafeHtml)
    {
       timeLabel.setText(time);
       severityLabel.setStyleName("icon-info-circle-2");
@@ -111,9 +111,5 @@ public class NotificationDetailsBox extends DialogBox
       
       buttonPanel.clear();
       buttonPanel.add(closeButton);
-      if(inlineLink != null)
-      {
-         buttonPanel.add(inlineLink);
-      }
    }
 }

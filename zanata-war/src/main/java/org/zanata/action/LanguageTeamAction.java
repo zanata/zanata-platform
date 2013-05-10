@@ -135,6 +135,7 @@ public class LanguageTeamAction implements Serializable
          languageTeamServiceImpl.joinLanguageTeam(this.language, authenticatedAccount.getPerson().getId());
          Events.instance().raiseEvent("personJoinedTribe");
          log.info("{0} joined tribe {1}", authenticatedAccount.getUsername(), this.language);
+         // FIXME use localizable string
          FacesMessages.instance().add("You are now a member of the {0} language team", getLocale().retrieveNativeName());
       }
       catch (Exception e)

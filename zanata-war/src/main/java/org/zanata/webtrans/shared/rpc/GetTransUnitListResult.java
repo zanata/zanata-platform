@@ -1,11 +1,10 @@
 package org.zanata.webtrans.shared.rpc;
 
 import java.util.List;
-import java.util.Map;
 
-import org.zanata.common.ContentState;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
+
 import com.google.common.base.Objects;
 
 
@@ -81,4 +80,6 @@ public class GetTransUnitListResult implements DispatchResult
             add("navigationIndex", navigationIndex).
             toString();
    }
+
+  
 }
