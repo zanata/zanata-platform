@@ -70,7 +70,7 @@ public class ReviewView2 extends Composite implements ReviewDisplay
       return root;
    }
 
-   @Override
+//   @Override
    public void setSelectionModel(SelectionModel<TransUnit> multiSelectionModel)
    {
       table.setSelectionModel(multiSelectionModel, DefaultSelectionEventManager.<TransUnit>createCheckboxManager());
@@ -79,7 +79,7 @@ public class ReviewView2 extends Composite implements ReviewDisplay
       table.setColumnWidth(checkboxColumn, 10, Style.Unit.PX);
    }
 
-   @Override
+//   @Override
    public void setDataProvider(ListDataProvider<TransUnit> dataProvider)
    {
       dataProvider.addDataDisplay(table);

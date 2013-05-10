@@ -41,6 +41,7 @@ import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.client.service.TransUnitSaveService;
 import org.zanata.webtrans.client.service.TranslatorInteractionService;
 import org.zanata.webtrans.client.service.UserOptionsService;
+import org.zanata.webtrans.client.ui.GoToRowLink;
 import org.zanata.webtrans.client.view.SourceContentsDisplay;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.client.view.TransUnitsTableDisplay;
@@ -51,6 +52,7 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 
 import com.google.common.collect.Lists;
+import com.google.inject.Provider;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -79,13 +81,17 @@ public class TransUnitsTablePresenterTest
    private TranslationHistoryPresenter translationHistoryPresenter;
    @Mock
    private UserOptionsService userOptionsService;
+   @Mock
+   private ReviewPresenter reviewPresenter;
+   @Mock
+   private Provider<GoToRowLink> goToRowProvider;
 
 
    @BeforeMethod
    public void setUp() throws Exception
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new TransUnitsTablePresenter(display, eventBus, navigationService, sourceContentsPresenter, targetContentsPresenter, translatorService, saveService, translationHistoryPresenter, messages, userOptionsService);
+      presenter = new TransUnitsTablePresenter(display, eventBus, navigationService, sourceContentsPresenter, targetContentsPresenter, translatorService, saveService, translationHistoryPresenter, goToRowProvider, messages, userOptionsService);
 
       verify(display).setRowSelectionListener(presenter);
       verify(display).addFilterConfirmationHandler(presenter);

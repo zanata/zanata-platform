@@ -129,8 +129,7 @@ public class AppView extends Composite implements AppDisplay
       content.add(documentListView.asWidget());
       content.add(translationView.asWidget());
       content.add(searchResultsView.asWidget());
-      content.add(reviewView.asWidget());
-      
+
       Window.enableScrolling(false);
    }
 
@@ -168,7 +167,7 @@ public class AppView extends Composite implements AppDisplay
          setSelectedTab(editorTab);
          break;
       case Review:
-         content.selectTab(REVIEW_VIEW);
+         content.selectTab(EDITOR_VIEW);
          selectedDocumentSpan.setVisible(true);
          setSelectedTab(reviewTab);
       }

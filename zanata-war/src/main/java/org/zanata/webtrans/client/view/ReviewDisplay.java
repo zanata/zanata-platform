@@ -10,9 +10,9 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 @ImplementedBy(ReviewView.class)
 public interface ReviewDisplay extends WidgetDisplay
 {
-   void setSelectionModel(SelectionModel<TransUnit> multiSelectionModel);
+//   void setSelectionModel(SelectionModel<TransUnit> multiSelectionModel);
 
-   void setDataProvider(ListDataProvider<TransUnit> dataProvider);
+//   void setDataProvider(ListDataProvider<TransUnit> dataProvider);
 
    void setListener(Listener listener);
 

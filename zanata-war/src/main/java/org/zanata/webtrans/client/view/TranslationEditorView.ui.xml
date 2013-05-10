@@ -1,27 +1,16 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	xmlns:f="urn:import:org.zanata.webtrans.client"
 	xmlns:fui="urn:import:org.zanata.webtrans.client.ui">
 	
 	<ui:with field="resources" type="org.zanata.webtrans.client.resources.Resources" />
 	<ui:style>
-		
+
 		.editor {
 			background-color: #ffffff;
 			border-bottom: 1px solid #E5E5E5;
 		}
-		
-		.unitStatus {
-			float: right;
-			width: 100px;
-			height: 1.2em;
-		}
-		
-		.rightText{
-			text-align: right;
-		}
-		
+
 		.topBar
 		{
 			border-bottom:1px solid lightGrey;
@@ -31,14 +20,14 @@
 			padding-left:10px;
 			padding-right:10px;
 		}
-		
+
 		.iconButton
 		{
 			font-size:20px;
 			cursor:pointer;
 			color:#4E4E4E;
 		}
-		
+
 		.iconButton:hover
 		{
 			color:#0085CC;
@@ -54,6 +43,9 @@
 						<g:cell horizontalAlignment="ALIGN_RIGHT" width="115px">
 							<g:HTMLPanel ui:field="transUnitNavigationContainer"/>
 						</g:cell>
+                        <g:cell horizontalAlignment="ALIGN_RIGHT">
+                            <g:HTMLPanel ui:field="reviewActionContainer"/>
+                        </g:cell>
 						<g:cell horizontalAlignment="ALIGN_RIGHT" width="35px">
 							<g:InlineLabel ui:field="refreshCurrentPage" styleName="icon-arrows-cw {style.iconButton}"/>
 						</g:cell>

@@ -29,14 +29,15 @@ import org.zanata.webtrans.client.events.PageChangeEventHandler;
 import org.zanata.webtrans.client.events.PageCountChangeEvent;
 import org.zanata.webtrans.client.events.PageCountChangeEventHandler;
 import org.zanata.webtrans.client.events.RefreshPageEvent;
-import org.zanata.webtrans.client.keys.ShortcutContext;
+import org.zanata.webtrans.client.events.ReviewModeChangeEvent;
+import org.zanata.webtrans.client.events.ReviewModeChangeEventHandler;
 import org.zanata.webtrans.client.view.TranslationEditorDisplay;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.inject.Inject;
 
-public class TranslationEditorPresenter extends WidgetPresenter<TranslationEditorDisplay> implements PageChangeEventHandler, PageCountChangeEventHandler, TranslationEditorDisplay.Listener
+public class TranslationEditorPresenter extends WidgetPresenter<TranslationEditorDisplay> implements PageChangeEventHandler, PageCountChangeEventHandler, TranslationEditorDisplay.Listener, ReviewModeChangeEventHandler
 {
 
  
@@ -44,15 +45,18 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    private final TransFilterPresenter transFilterPresenter;
    private final TransUnitsTablePresenter transUnitsTablePresenter;
    private final EditorKeyShortcuts editorKeyShortcuts;
+   private final ReviewPresenter reviewPresenter;
 
    @Inject
-   public TranslationEditorPresenter(TranslationEditorDisplay display, EventBus eventBus, TransUnitNavigationPresenter transUnitNavigationPresenter, TransFilterPresenter transFilterPresenter, TransUnitsTablePresenter transUnitsTablePresenter, EditorKeyShortcuts editorKeyShortcuts)
+   public TranslationEditorPresenter(TranslationEditorDisplay display, EventBus eventBus, TransUnitNavigationPresenter transUnitNavigationPresenter, TransFilterPresenter transFilterPresenter, TransUnitsTablePresenter transUnitsTablePresenter, EditorKeyShortcuts editorKeyShortcuts, ReviewPresenter reviewPresenter)
    {
       super(display, eventBus);
       this.transUnitNavigationPresenter = transUnitNavigationPresenter;
       this.transFilterPresenter = transFilterPresenter;
       this.transUnitsTablePresenter = transUnitsTablePresenter;
       this.editorKeyShortcuts = editorKeyShortcuts;
+      this.reviewPresenter = reviewPresenter;
+      transUnitsTablePresenter.setReviewPresenter(reviewPresenter);
 
       display.setListener(this);
    }
@@ -69,6 +73,9 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
       transUnitNavigationPresenter.bind();
       display.setTransUnitNavigation(transUnitNavigationPresenter.getDisplay().asWidget());
 
+      reviewPresenter.bind();
+      display.setReviewActionView(reviewPresenter.getDisplay().asWidget());
+
 
       registerHandler(display.getPageNavigation().addValueChangeHandler(new ValueChangeHandler<Integer>()
       {
@@ -80,6 +87,7 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
       }));
       registerHandler(eventBus.addHandler(PageChangeEvent.TYPE, this));
       registerHandler(eventBus.addHandler(PageCountChangeEvent.TYPE, this));
+      registerHandler(eventBus.addHandler(ReviewModeChangeEvent.TYPE, this));
    }
 
    @Override
@@ -141,4 +149,9 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
       display.getResizeButton().setVisible(isReadOnly);
    }
 
+   @Override
+   public void onReviewModeChange(ReviewModeChangeEvent event)
+   {
+      display.setReviewMode(event == ReviewModeChangeEvent.CHANGE_TO_REVIEW_MODE);
+   }
 }

@@ -86,8 +86,6 @@ public class AppPresenterTest
    private TranslationStats selectedDocumentStats;
    @Captor
    private ArgumentCaptor<KeyShortcut> keyShortcutCaptor;
-   @Mock
-   private ReviewPresenter reviewPresenter;
 
    @BeforeMethod
    public void beforeMethod()
@@ -96,7 +94,7 @@ public class AppPresenterTest
       projectStats = new TranslationStats(new TransUnitCount(7, 8, 9), new TransUnitWords(10, 11, 12));
 
       MockitoAnnotations.initMocks(this);
-      presenter = new AppPresenter(display, eventBus, sideMenuPresenter, keyShortcutPresenter, translationPresenter, documentListPresenter, searchResultPresenter, reviewPresenter, userWorkspace, messages, history, window, location);
+      presenter = new AppPresenter(display, eventBus, sideMenuPresenter, keyShortcutPresenter, translationPresenter, documentListPresenter, searchResultPresenter, userWorkspace, messages, history, window, location);
 
       verify(display).setListener(presenter);
    }

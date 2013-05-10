@@ -21,8 +21,6 @@
 
 package org.zanata.webtrans.client.presenter;
 
-import static org.zanata.webtrans.client.events.NotificationEvent.Severity.Error;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -40,6 +38,8 @@ import org.zanata.webtrans.client.events.RefreshPageEvent;
 import org.zanata.webtrans.client.events.RefreshPageEventHandler;
 import org.zanata.webtrans.client.events.RequestPageValidationEvent;
 import org.zanata.webtrans.client.events.RequestPageValidationHandler;
+import org.zanata.webtrans.client.events.ReviewModeChangeEvent;
+import org.zanata.webtrans.client.events.ReviewModeChangeEventHandler;
 import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEventHandler;
@@ -54,6 +54,9 @@ import org.zanata.webtrans.client.service.TransUnitSaveService;
 import org.zanata.webtrans.client.service.TranslatorInteractionService;
 import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
+import org.zanata.webtrans.client.ui.GoToRowLink;
+import org.zanata.webtrans.client.ui.InlineLink;
+import org.zanata.webtrans.client.view.ReviewContentsDisplay;
 import org.zanata.webtrans.client.view.SourceContentsDisplay;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.client.view.TransUnitsTableDisplay;
@@ -67,7 +70,11 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
+
+import static org.zanata.webtrans.client.events.NotificationEvent.Severity.*;
 
 /**
  * @author Patrick Huang <a
@@ -83,12 +90,15 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       TableRowSelectedEventHandler,
       LoadingEventHandler,
       RefreshPageEventHandler, UserConfigChangeHandler,
-      RequestPageValidationHandler
+      RequestPageValidationHandler,
+      ReviewModeChangeEventHandler
 // @formatter:on
 {
 
    private final TransUnitsTableDisplay display;
+   private ReviewPresenter reviewPresenter;
    private final TranslationHistoryPresenter translationHistoryPresenter;
+   private final Provider<GoToRowLink> goToRowLinkProvider;
    private final WebTransMessages messages;
    private final EventBus eventBus;
    private final NavigationService navigationService;
@@ -100,12 +110,9 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
 
    // state we need to keep track of
    private FilterViewEvent filterOptions = FilterViewEvent.DEFAULT;
-   private FilterViewEvent previousFilterOptions = FilterViewEvent.DEFAULT; // In
-                                                                            // case
-                                                                            // of
-                                                                            // cancelling
-                                                                            // a
-                                                                            // filter
+   private boolean isInReviewMode = false;
+   // In case of cancelling a filter
+   private FilterViewEvent previousFilterOptions = FilterViewEvent.DEFAULT;
    private TransUnitId selectedId;
    private String findMessage;
 
@@ -118,12 +125,14 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
                                    TranslatorInteractionService translatorService,
                                    TransUnitSaveService transUnitSaveService,
                                    TranslationHistoryPresenter translationHistoryPresenter,
+                                   Provider<GoToRowLink> goToRowLinkProvider,
                                    WebTransMessages messages,UserOptionsService userOptionsService)
    // @formatter:on
    {
       super(display, eventBus);
       this.display = display;
       this.translationHistoryPresenter = translationHistoryPresenter;
+      this.goToRowLinkProvider = goToRowLinkProvider;
       this.messages = messages;
       this.display.setRowSelectionListener(this);
 
@@ -153,6 +162,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       registerHandler(eventBus.addHandler(RefreshPageEvent.TYPE, this));
       registerHandler(eventBus.addHandler(UserConfigChangeEvent.TYPE, this));
       registerHandler(eventBus.addHandler(RequestPageValidationEvent.TYPE, this));
+      registerHandler(eventBus.addHandler(ReviewModeChangeEvent.TYPE, this));
 
       display.setThemes(userOptionsService.getConfigHolder().getState().getDisplayTheme().name());
    }
@@ -174,6 +184,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       selectedId = selection.getId();
       Log.debug("selected id: " + selectedId);
       sourceContentsPresenter.setSelectedSource(selectedId);
+      reviewPresenter.setSelected(selectedId);
       targetContentsPresenter.setSelected(selectedId);
       display.ensureVisible(targetContentsPresenter.getCurrentDisplay());
       translatorService.transUnitSelected(selection);
@@ -250,8 +261,16 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    public void showDataForCurrentPage(List<TransUnit> transUnits)
    {
       sourceContentsPresenter.showData(transUnits);
+      reviewPresenter.showData(transUnits);
       targetContentsPresenter.showData(transUnits);
-      display.buildTable(sourceContentsPresenter.getDisplays(), targetContentsPresenter.getDisplays());
+      if (isInReviewMode)
+      {
+         display.buildTable(sourceContentsPresenter.getDisplays(), reviewPresenter.getDisplays());
+      }
+      else
+      {
+         display.buildTable(sourceContentsPresenter.getDisplays(), targetContentsPresenter.getDisplays());
+      }
    }
 
    @Override
@@ -263,22 +282,52 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       }
       else if (event == RefreshPageEvent.REDRAW_PAGE_EVENT)
       {
-         targetContentsPresenter.savePendingChangesIfApplicable();
-         List<TransUnit> currentPageValues = navigationService.getCurrentPageValues();
-         sourceContentsPresenter.showData(currentPageValues);
-         targetContentsPresenter.showData(currentPageValues);
-         if (targetContentsPresenter.getCurrentTransUnitIdOrNull() != null)
-         {
-            sourceContentsPresenter.setSelectedSource(targetContentsPresenter.getCurrentTransUnitIdOrNull());
-            targetContentsPresenter.setSelected(targetContentsPresenter.getCurrentTransUnitIdOrNull());
-         }
+         buildTableForEditor();
+      }
+   }
+
+   private void buildTableForEditor()
+   {
+      targetContentsPresenter.savePendingChangesIfApplicable();
+      List<TransUnit> currentPageValues = navigationService.getCurrentPageValues();
+      sourceContentsPresenter.showData(currentPageValues);
+      targetContentsPresenter.showData(currentPageValues);
+      reviewPresenter.showData(currentPageValues);
+      TransUnitId currentSelected = sourceContentsPresenter.getCurrentTransUnitIdOrNull();
+      if (currentSelected != null)
+      {
+         sourceContentsPresenter.setSelectedSource(currentSelected);
+         targetContentsPresenter.setSelected(currentSelected);
+         reviewPresenter.setSelected(currentSelected);
+      }
+      if (isInReviewMode)
+      {
+         display.buildTable(sourceContentsPresenter.getDisplays(), reviewPresenter.getDisplays());
+      }
+      else
+      {
          display.buildTable(sourceContentsPresenter.getDisplays(), targetContentsPresenter.getDisplays());
       }
    }
 
    @Override
+   public void onReviewModeChange(ReviewModeChangeEvent event)
+   {
+      isInReviewMode = (event == ReviewModeChangeEvent.CHANGE_TO_REVIEW_MODE);
+      buildTableForEditor();
+   }
+
+   @Override
    public void refreshRow(TransUnit updatedTransUnit, EditorClientId editorClientId, TransUnitUpdated.UpdateType updateType)
    {
+      // TODO rhbz953734 - need to also refresh in review presenter
+      if (isInReviewMode)
+      {
+         GoToRowLink goToRowLink = goToRowLinkProvider.get();
+
+//         goToRowLink.prepare("Translation has changed", );
+//         eventBus.fireEvent(new NotificationEvent(Warning, "Translation has changed", ));
+      }
       if (updateFromCurrentUsersEditorSave(editorClientId, updateType))
       {
          // the TransUnitUpdatedEvent is from current user's save action.
@@ -319,12 +368,15 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    {
       List<TargetContentsDisplay> targetContentsDisplays = targetContentsPresenter.getDisplays();
       List<SourceContentsDisplay> sourceContentsDisplays = sourceContentsPresenter.getDisplays();
+      List<ReviewContentsDisplay> reviewContentsDisplays = reviewPresenter.getDisplays();
       for (int i = 0; i < targetContentsDisplays.size(); i++)
       {
          TargetContentsDisplay targetDisplay = targetContentsDisplays.get(i);
          SourceContentsDisplay sourceDisplay = sourceContentsDisplays.get(i);
+         ReviewContentsDisplay reviewDisplay = reviewContentsDisplays.get(i);
          targetDisplay.refresh();
          sourceDisplay.refresh();
+         reviewDisplay.refresh();
          if (!Strings.isNullOrEmpty(findMessage))
          {
             targetDisplay.highlightSearch(findMessage);
@@ -401,19 +453,33 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    {
       List<SourceContentsDisplay> sourceDisplays = sourceContentsPresenter.getDisplays();
       List<TargetContentsDisplay> targetDisplays = targetContentsPresenter.getDisplays();
+      List<ReviewContentsDisplay> reviewContentsDisplays = reviewPresenter.getDisplays();
 
       for (int i = 0; i < sourceContentsPresenter.getDisplays().size(); i++)
       {
          SourceContentsDisplay sourceDisplay = sourceDisplays.get(i);
          TargetContentsDisplay targetDisplay = targetDisplays.get(i);
+         ReviewContentsDisplay reviewDisplay = reviewContentsDisplays.get(i);
 
          String source = sourceDisplay.getSourcePanelList().get(0).getSource();
          String target = targetDisplay.getEditors().get(0).getText();
 
          RunValidationEvent runValidationEvent = new RunValidationEvent(source, target, false);
-         runValidationEvent.addWidget(targetDisplay);
+         if (isInReviewMode)
+         {
+            runValidationEvent.addWidget(reviewDisplay);
+         }
+         else
+         {
+            runValidationEvent.addWidget(targetDisplay);
+         }
 
          eventBus.fireEvent(runValidationEvent);
       }
+   }
+
+   public void setReviewPresenter(ReviewPresenter reviewPresenter)
+   {
+      this.reviewPresenter = reviewPresenter;
    }
 }

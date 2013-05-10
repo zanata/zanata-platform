@@ -51,12 +51,14 @@ public class TranslationEditorPresenterTest
    private HasPager pageNavigation;
    @Mock
    private EditorKeyShortcuts editorKeyShortcuts;
+   @Mock
+   private ReviewPresenter reviewPresenter;
 
    @BeforeMethod
    public void setUp() throws Exception
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new TranslationEditorPresenter(display, eventBus, transUnitNavigationPresenter, transFilterPresenter, transUnitsTablePresenter, editorKeyShortcuts);
+      presenter = new TranslationEditorPresenter(display, eventBus, transUnitNavigationPresenter, transFilterPresenter, transUnitsTablePresenter, editorKeyShortcuts, reviewPresenter);
 
       when(display.getPageNavigation()).thenReturn(pageNavigation);
    }
