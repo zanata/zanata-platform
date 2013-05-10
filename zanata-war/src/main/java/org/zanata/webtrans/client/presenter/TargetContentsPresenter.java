@@ -60,13 +60,12 @@ import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
-import org.zanata.webtrans.shared.util.FindByTransUnitIdPredicate;
+import org.zanata.webtrans.shared.util.Finds;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import com.google.gwt.core.client.GWT;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -179,7 +178,7 @@ public class TargetContentsPresenter implements
          editorTranslators.clearTranslatorList(display.getEditors()); // clear previous selection's translator list
       }
 
-      display = findDisplayById(currentTransUnitId).get();
+      display = Finds.findDisplayById(displayList, currentTransUnitId).get();
       Log.info("selecting id:" + currentTransUnitId + " version: " + display.getVerNum());
 
       normaliseCurrentEditorIndex();
@@ -202,11 +201,6 @@ public class TargetContentsPresenter implements
          editorTranslators.updateTranslator(display.getEditors(), currentTransUnitId);
          revealDisplay();
       }
-   }
-
-   private Optional<TargetContentsDisplay> findDisplayById(TransUnitId currentTransUnitId)
-   {
-      return Iterables.tryFind(displayList, new FindByTransUnitIdPredicate(currentTransUnitId));
    }
 
    private void normaliseCurrentEditorIndex()
@@ -245,7 +239,7 @@ public class TargetContentsPresenter implements
          // widget that displays red outline
          event.addWidget(editor);
          // widget that displays warnings
-         Optional<TargetContentsDisplay> targetDisplay = findDisplayById(transUnitId);
+         Optional<TargetContentsDisplay> targetDisplay = Finds.findDisplayById(displayList, transUnitId);
          if (targetDisplay.isPresent())
          {
             event.addWidget(targetDisplay.get());
@@ -531,7 +525,7 @@ public class TargetContentsPresenter implements
     */
    public void updateRow(TransUnit updatedTransUnit)
    {
-      Optional<TargetContentsDisplay> contentsDisplayOptional = findDisplayById(updatedTransUnit.getId());
+      Optional<TargetContentsDisplay> contentsDisplayOptional = Finds.findDisplayById(displayList, updatedTransUnit.getId());
       if (contentsDisplayOptional.isPresent())
       {
          TargetContentsDisplay contentsDisplay = contentsDisplayOptional.get();
@@ -552,7 +546,7 @@ public class TargetContentsPresenter implements
     */
    public void confirmSaved(TransUnit updatedTU)
    {
-      Optional<TargetContentsDisplay> contentsDisplayOptional = findDisplayById(updatedTU.getId());
+      Optional<TargetContentsDisplay> contentsDisplayOptional = Finds.findDisplayById(displayList, updatedTU.getId());
       if (contentsDisplayOptional.isPresent())
       {
          TargetContentsDisplay contentsDisplay = contentsDisplayOptional.get();
@@ -624,7 +618,7 @@ public class TargetContentsPresenter implements
    @Override
    public void setEditingState(TransUnitId transUnitId, TargetContentsDisplay.EditingState editingState)
    {
-      Optional<TargetContentsDisplay> displayOptional = findDisplayById(transUnitId);
+      Optional<TargetContentsDisplay> displayOptional = Finds.findDisplayById(displayList, transUnitId);
       if (!displayOptional.isPresent())
       {
          return;
