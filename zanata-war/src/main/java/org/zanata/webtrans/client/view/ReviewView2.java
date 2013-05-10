@@ -29,7 +29,7 @@ import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionModel;
 
-public class ReviewView extends Composite implements ReviewDisplay
+public class ReviewView2 extends Composite implements ReviewDisplay
 {
    private static final int PAGE_SIZE = 50;
    private static final CellTableResources CELL_TABLE_RESOURCES = GWT.create(CellTableResources.class);
@@ -52,7 +52,7 @@ public class ReviewView extends Composite implements ReviewDisplay
    private Listener listener;
    private final VerticalPanel root;
 
-   public ReviewView()
+   public ReviewView2()
    {
       root = ourUiBinder.createAndBindUi(this);
 
@@ -171,7 +171,7 @@ public class ReviewView extends Composite implements ReviewDisplay
       };
    }
 
-   interface ReviewViewUiBinder extends UiBinder<VerticalPanel, ReviewView>
+   interface ReviewViewUiBinder extends UiBinder<VerticalPanel, ReviewView2>
    {
    }
 }
