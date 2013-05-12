@@ -58,13 +58,14 @@ import com.google.inject.Inject;
  * Handlers are registered directly with this presenter to avoid excessive
  * traffic on the main event bus and to make handling of events simpler.
  * 
- * Only key-down events are processed.
- * 
  * @author David Mason, <a
  *         href="mailto:damason@redhat.com">damason@redhat.com</a> *
  */
-public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay> implements KeyShortcutDisplay.Listener
+public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay>
 {
+
+   private final AttentionKeyShortcutPresenter attentionKeysPresenter;
+
    /**
     * Key uses {@link Keys#hashCode()}
     */
@@ -76,42 +77,24 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay> im
 
    private WebTransMessages messages;
 
-   private EventWrapper event;
-
-   private boolean isAliasKeyListening = false;
+   private final EventWrapper event;
 
    @Inject
-   public KeyShortcutPresenter(KeyShortcutDisplay display, EventBus eventBus, final WebTransMessages webTransMessages, final EventWrapper event)
+   public KeyShortcutPresenter(KeyShortcutDisplay display,
+                               final AttentionKeyShortcutPresenter attentionKeysPresenter,
+                               EventBus eventBus,
+                               final WebTransMessages webTransMessages,
+                               final EventWrapper event)
    {
       super(display, eventBus);
+      this.attentionKeysPresenter = attentionKeysPresenter;
       this.messages = webTransMessages;
       this.event = event;
-   }
-  
-   @Override
-   public void setAliasKeyListening(boolean isAliasKeyListening)
-   {
-      if (this.isAliasKeyListening != isAliasKeyListening)
-      {
-         this.isAliasKeyListening = isAliasKeyListening;
-         eventBus.fireEvent(new AliasKeyChangedEvent(isAliasKeyListening));
-         if (!isAliasKeyListening)
-         {
-            Log.debug("canceling alias key... ");
-            display.cancelMetaKeyTimer();
-         }
-         else
-         {
-            Log.debug("listening alias key... ");
-         }
-      }
    }
 
    @Override
    protected void onBind()
    {
-      display.setListener(this);
-
       ensureActiveContexts().add(ShortcutContext.Application);
 
       event.addNativePreviewHandler(new NativePreviewHandler()
@@ -124,24 +107,15 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay> im
 
             if ((event.getTypeInt(nativeEvent) & (event.keyDownEvent() | event.keyUpEvent())) != 0)
             {
-               if (isAliasKeyListening)
+               // TODO make sure this mode gets set in response to the attention key event
+               // by registering it as a shortcut. Could do it in either presenter really.
+               if (attentionKeysPresenter.isAttentionMode())
                {
-                  processAliasKeyEvent(evt);
+                  attentionKeysPresenter.processKeyEvent(evt);
                }
                else
                {
-                  Keys pressedKeys = event.createKeys(evt);
-                  boolean isAliasKeyTriggered = Keys.ALIAS_KEY == (pressedKeys.getModifiers() | pressedKeys.getKeyCode());
-
-                  if (isAliasKeyTriggered)
-                  {
-                     setAliasKeyListening(true);
-                     display.startAliasKeyListen(5000);
-                  }
-                  else
-                  {
-                     processKeyEvent(evt, pressedKeys);
-                  }
+                  processKeyEvent(evt);
                }
             }
          }
@@ -266,11 +240,11 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay> im
     * 
     * @param evt native event
     */
-   private void processKeyEvent(NativeEvent evt, Keys pressedKeys)
+   private void processKeyEvent(NativeEvent evt)
    {
+      Keys pressedKeys = event.createKeys(evt);
       Set<KeyShortcut> shortcuts = ensureShortcutMap().get(pressedKeys);
       boolean shortcutFound = false;
-      // TODO replace modifiers + keycode in event with Keys
       KeyShortcutEvent shortcutEvent = new KeyShortcutEvent(pressedKeys);
       if (shortcuts != null && !shortcuts.isEmpty())
       {
@@ -281,7 +255,6 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay> im
             if (contextActive && matchingEventType)
             {
                shortcutFound = true;
-               setAliasKeyListening(false);
                if (shortcut.isStopPropagation())
                {
                   evt.stopPropagation();
@@ -321,25 +294,6 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay> im
                }
             }
          }
-      }
-   }
-
-   private void processAliasKeyEvent(NativeEvent evt)
-   {
-      Keys pressedKeys = event.createKeys(evt);
-
-      // Check if alias key has triggered, ALT+X
-      boolean isAliasKeyTriggered = Keys.ALIAS_KEY == (pressedKeys.getModifiers() | pressedKeys.getKeyCode());
-
-      if (isAliasKeyTriggered || (pressedKeys.getKeyCode() == KeyCodes.KEY_ESCAPE))
-      {
-         // cancel alias key listening with ESC and ALT+X
-         setAliasKeyListening(false);
-      }
-      else
-      {
-         pressedKeys.setAlias(Keys.ALIAS_KEY);
-         processKeyEvent(evt, pressedKeys);
       }
    }
 

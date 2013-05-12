@@ -39,7 +39,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -73,19 +72,11 @@ public class KeyShortcutView extends PopupPanel implements KeyShortcutDisplay
 
    @UiField
    Styles style;
-   
-   private Listener listener;
 
    private final Map<Integer, String> keyDisplayMap;
 
-   private Timer aliasKeyTimer = new Timer()
-   {
-      public void run()
-      {
-         listener.setAliasKeyListening(false);
-      }
-   };
-   
+
+
    @Inject
    public KeyShortcutView(final WebTransMessages webTransMessages)
    {
@@ -248,21 +239,28 @@ public class KeyShortcutView extends PopupPanel implements KeyShortcutDisplay
       return this;
    }
 
-   @Override
-   public void setListener(Listener listener)
-   {
-      this.listener = listener;
-   }
 
-   @Override
-   public void cancelMetaKeyTimer()
-   {
-      aliasKeyTimer.cancel();
-   }
+   // FIXME just keeping this stuff for quick reference making timer for AttentionShortcutPresenter
 
-   @Override
-   public void startAliasKeyListen(int delayMillis)
-   {
-      aliasKeyTimer.schedule(delayMillis); // 5 seconds
-   }
+//import com.google.gwt.user.client.Timer;
+
+// private Timer aliasKeyTimer = new Timer()
+// {
+//    public void run()
+//    {
+//       listener.setAliasKeyListening(false);
+//    }
+// };
+
+//   @Override
+//   public void cancelMetaKeyTimer()
+//   {
+//      aliasKeyTimer.cancel();
+//   }
+//
+//   @Override
+//   public void startAliasKeyListen(int delayMillis)
+//   {
+//      aliasKeyTimer.schedule(delayMillis); // 5 seconds
+//   }
 }

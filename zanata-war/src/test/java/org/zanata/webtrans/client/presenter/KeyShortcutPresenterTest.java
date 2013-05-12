@@ -75,11 +75,13 @@ public class KeyShortcutPresenterTest
 
    @Mock
    private KeyShortcutDisplay mockDisplay;
-   @Mock 
+   @Mock
+   private AttentionKeyShortcutPresenter mockAttentionKeyShortcutPresenter;
+   @Mock
    private EventWrapper mockEventWrapper;
-   @Mock 
+   @Mock
    private EventBus mockEventBus;
-   @Mock 
+   @Mock
    private WebTransMessages mockMessages;
 
    @Captor
@@ -92,7 +94,9 @@ public class KeyShortcutPresenterTest
    {
       MockitoAnnotations.initMocks(this);
 
-      keyShortcutPresenter = new KeyShortcutPresenter(mockDisplay, mockEventBus, mockMessages, mockEventWrapper);
+      keyShortcutPresenter = new KeyShortcutPresenter(mockDisplay,
+            mockAttentionKeyShortcutPresenter,
+            mockEventBus, mockMessages, mockEventWrapper);
 
       when(mockMessages.closeShortcutView()).thenReturn(TEST_MESSAGE_CLOSE_SHORTCUT_VIEW);
       when(mockMessages.showAvailableKeyShortcuts()).thenReturn(TEST_MESSAGE_SHOW_AVAILABLE_KEY_SHORTCUTS);
@@ -106,8 +110,6 @@ public class KeyShortcutPresenterTest
    public void testExpectedActionsOnBind()
    {
       keyShortcutPresenter.bind();
-      
-      verify(mockDisplay).setListener(keyShortcutPresenter);
 
       verify(mockEventWrapper).addNativePreviewHandler(capturedNativePreviewHandler.capture());
    }
