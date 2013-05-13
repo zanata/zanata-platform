@@ -367,7 +367,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          {
             userWorkspaceContext.setProjectActive(event.isProjectActive());
             userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().setProjectType(event.getProjectType());
-            
+
             display.setReplaceAllButtonVisible(!userWorkspaceContext.hasReadOnlyAccess());
 
             for (TransUnitReplaceInfo info : allReplaceInfos.values())
@@ -389,52 +389,72 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
          }
       }));
 
-      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.SHIFT_ALT_KEYS, 'A'), ShortcutContext.ProjectWideSearch, messages.selectAllTextFlowsKeyShortcut(), new KeyShortcutEventHandler()
+      // @formatter:off
+      keyShortcutPresenter.register(KeyShortcut.Builder.builder()
+            .addKey(new Keys(Keys.SHIFT_ALT_KEYS, 'A'))
+            .setContext(ShortcutContext.ProjectWideSearch)
+            .setDescription(messages.selectAllTextFlowsKeyShortcut())
+            .setHandler(new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
             display.getSelectAllChk().setValue(!display.getSelectAllChk().getValue(), true);
          }
-      }));
+      }).build());
 
-      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'P'), ShortcutContext.ProjectWideSearch, messages.focusSearchPhraseKeyShortcut(), new KeyShortcutEventHandler()
+      keyShortcutPresenter.register(KeyShortcut.Builder.builder()
+            .addKey(new Keys(Keys.ALT_KEY, 'P'))
+            .setContext(ShortcutContext.ProjectWideSearch)
+            .setDescription(messages.focusSearchPhraseKeyShortcut())
+            .setHandler(new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
             display.focusFilterTextBox();
          }
-      }));
+      }).build());
 
-      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'C'), ShortcutContext.ProjectWideSearch, messages.focusReplacementPhraseKeyShortcut(), new KeyShortcutEventHandler()
+      keyShortcutPresenter.register(KeyShortcut.Builder.builder()
+            .addKey(new Keys(Keys.ALT_KEY, 'C'))
+            .setContext(ShortcutContext.ProjectWideSearch)
+            .setDescription(messages.focusReplacementPhraseKeyShortcut())
+            .setHandler(new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
             display.focusReplacementTextBox();
          }
-      }));
+      }).build());
 
-      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'R'), ShortcutContext.ProjectWideSearch, messages.replaceSelectedKeyShortcut(), new KeyShortcutEventHandler()
+      keyShortcutPresenter.register(KeyShortcut.Builder.builder()
+            .addKey(new Keys(Keys.ALT_KEY, 'R'))
+            .setContext(ShortcutContext.ProjectWideSearch)
+            .setDescription(messages.replaceSelectedKeyShortcut())
+            .setHandler(new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
             replaceSelected();
          }
-      }));
+      }).build());
 
-      // TODO Alt+R for replace, Alt+C to focus replace field
-
-      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'W'), ShortcutContext.ProjectWideSearch, messages.toggleRowActionButtons(), new KeyShortcutEventHandler()
+      keyShortcutPresenter.register(KeyShortcut.Builder.builder()
+            .addKey(new Keys(Keys.ALT_KEY, 'W'))
+            .setContext(ShortcutContext.ProjectWideSearch)
+            .setDescription(messages.toggleRowActionButtons())
+            .setHandler(new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
             showRowActionButtons = !showRowActionButtons;
          }
-      }));
+      }).build());
+      // @formatter:on
 
       // TODO register key shortcuts:
       // Alt+Z undo last operation
