@@ -62,6 +62,15 @@ public class Keys implements Comparable<Keys>
       this.keyCode = keyCode;
    }
 
+   /**
+    * Shortcut for {@code Keys(Keys.NO_MODIFIER, keyCode)}
+    * @param keyCode
+    */
+   public Keys(int keyCode)
+   {
+      this(NO_MODIFIER, keyCode);
+   }
+
    public int getModifiers()
    {
       return modifiers;
