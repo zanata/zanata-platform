@@ -53,6 +53,7 @@ public class KeyShortcut implements Comparable<KeyShortcut>
    public static final String DO_NOT_DISPLAY_DESCRIPTION = "";
 
    private final Set<Keys> keys;
+   private final Set<Keys> attentionKeys;
 
 
    private final ShortcutContext context;
@@ -71,6 +72,7 @@ public class KeyShortcut implements Comparable<KeyShortcut>
    public KeyShortcut(Builder builder)
    {
       this.keys = builder.keys;
+      this.attentionKeys = builder.attentionKeys;
       this.context = builder.context;
       this.description = builder.description;
       this.handler = builder.handler;
@@ -82,6 +84,11 @@ public class KeyShortcut implements Comparable<KeyShortcut>
    public Set<Keys> getAllKeys()
    {
       return keys;
+   }
+
+   public Set<Keys> getAllAttentionKeys()
+   {
+      return attentionKeys;
    }
 
    public ShortcutContext getContext()
@@ -128,11 +135,16 @@ public class KeyShortcut implements Comparable<KeyShortcut>
          hash *= 2048;
          hash += singleKey.hashCode();
       }
+      for (Keys singleKey : attentionKeys)
+      {
+         hash *= 2048;
+         hash += singleKey.hashCode();
+      }
       return hash;
    }
 
    /**
-    * Two {@link KeyShortcut} objects are equal if they have the same key combination and context.
+    * Two {@link KeyShortcut} objects are equal if they have the same key combinations and context.
     */
    @Override
    public boolean equals(Object obj)
@@ -146,20 +158,40 @@ public class KeyShortcut implements Comparable<KeyShortcut>
          return false;
       }
       KeyShortcut other = (KeyShortcut) obj;
-      return keys.equals(other.keys) && context == other.context;
+      return keys.equals(other.keys) && attentionKeys.equals(other.attentionKeys)
+            && context == other.context;
    }
 
    /**
     * Used for sorting shortcuts in summary in UI
+    * 
+    * The decision to sort regular keys before attention keys is arbitrary
     */
    @Override
    public int compareTo(KeyShortcut o)
    {
+      // assertion: keys and attentionKeys cannot both be empty
       if (context.ordinal() != o.context.ordinal())
       {
          return context.ordinal() - o.context.ordinal();
       }
-      return keys.iterator().next().compareTo(o.keys.iterator().next());
+
+      if (keys.isEmpty())
+      {
+         if (o.keys.isEmpty())
+         {
+            return attentionKeys.iterator().next().compareTo(o.attentionKeys.iterator().next());
+         }
+         return 1;
+      }
+      else
+      {
+         if (o.keys.isEmpty())
+         {
+            return -1;
+         }
+         return keys.iterator().next().compareTo(o.keys.iterator().next());
+      }
    }
 
    public void setDescription(String description)
@@ -170,6 +202,7 @@ public class KeyShortcut implements Comparable<KeyShortcut>
    public static class Builder
    {
       private Set<Keys> keys = Sets.newHashSet();
+      private Set<Keys> attentionKeys = Sets.newHashSet();
       private ShortcutContext context;
       private String description;
       private KeyShortcutEventHandler handler;
@@ -180,6 +213,7 @@ public class KeyShortcut implements Comparable<KeyShortcut>
       private Builder(KeyShortcut shortcut)
       {
          this.keys = shortcut.getAllKeys();
+         this.attentionKeys = shortcut.getAllAttentionKeys();
          this.context = shortcut.getContext();
          this.description = shortcut.getDescription();
          this.handler = shortcut.getHandler();
@@ -200,6 +234,11 @@ public class KeyShortcut implements Comparable<KeyShortcut>
       public KeyShortcut build()
       {
          Preconditions.checkNotNull(keys);
+         Preconditions.checkNotNull(attentionKeys);
+         if (keys.isEmpty() && attentionKeys.isEmpty())
+         {
+            throw new IllegalStateException("At least one key combination must be specified, none registered");
+         }
          Preconditions.checkNotNull(context);
          Preconditions.checkNotNull(handler);
          Preconditions.checkNotNull(keyEvent);
@@ -209,6 +248,12 @@ public class KeyShortcut implements Comparable<KeyShortcut>
       public Builder addKey(Keys key)
       {
          keys.add(key);
+         return this;
+      }
+
+      public Builder addAttentionKey(Keys key)
+      {
+         attentionKeys.add(key);
          return this;
       }
 
@@ -234,7 +279,8 @@ public class KeyShortcut implements Comparable<KeyShortcut>
       }
 
       /**
-       * @param handler activated for a registered {@link KeyShortcut} when context is active and a user inputs the correct key combination
+       * @param handler activated for a registered {@link KeyShortcut} when context is active and a
+       * user inputs the correct key combination
        * @return builder itself
        */
       public Builder setHandler(KeyShortcutEventHandler handler)
