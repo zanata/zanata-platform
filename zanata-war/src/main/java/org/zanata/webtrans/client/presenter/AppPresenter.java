@@ -150,7 +150,12 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
    
    private void registerKeyShortcuts()
    {
-      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'L'), ShortcutContext.Application, messages.showDocumentListKeyShortcut(), new KeyShortcutEventHandler()
+      // @formatter:off
+      keyShortcutPresenter.register(KeyShortcut.Builder.builder()
+            .addKey(new Keys(Keys.ALT_KEY, 'L'))
+            .setContext(ShortcutContext.Application)
+            .setDescription(messages.showDocumentListKeyShortcut())
+            .setHandler(new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
@@ -159,9 +164,13 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
             token.setView(MainView.Documents);
             history.newItem(token.toTokenString());
          }
-      }));
+      }).build());
 
-      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'O'), ShortcutContext.Application, messages.showEditorKeyShortcut(), new KeyShortcutEventHandler()
+      keyShortcutPresenter.register(KeyShortcut.Builder.builder()
+            .addKey(new Keys(Keys.ALT_KEY, 'O'))
+            .setContext(ShortcutContext.Application)
+            .setDescription(messages.showEditorKeyShortcut())
+            .setHandler(new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
@@ -177,9 +186,13 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
                history.newItem(token.toTokenString());
             }
          }
-      }));
+      }).build());
 
-      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'P'), ShortcutContext.Application, messages.showProjectWideSearch(), new KeyShortcutEventHandler()
+      keyShortcutPresenter.register(KeyShortcut.Builder.builder()
+            .addKey(new Keys(Keys.ALT_KEY, 'P'))
+            .setContext(ShortcutContext.Application)
+            .setDescription(messages.showProjectWideSearch())
+            .setHandler(new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
@@ -188,7 +201,8 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
             token.setView(MainView.Search);
             history.newItem(token.toTokenString());
          }
-      }));
+      }).build());
+      // @formatter:on
    }
 
    @Override
