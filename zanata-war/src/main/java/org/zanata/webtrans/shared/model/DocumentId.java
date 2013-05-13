@@ -2,6 +2,7 @@ package org.zanata.webtrans.shared.model;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+//@Immutable
 public class DocumentId implements Identifier<Long>, IsSerializable
 {
    private Long id;
