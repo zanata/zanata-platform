@@ -79,18 +79,6 @@ public class KeyShortcut implements Comparable<KeyShortcut>
       this.preventDefault = builder.preventDefault;
    }
 
-   // TODO migrate all code to use Builder
-   public KeyShortcut(Keys shortcutKeys, ShortcutContext context, String description, KeyShortcutEventHandler handler)
-   {
-      this.keys = Keys.setOf(shortcutKeys);
-      this.context = context;
-      this.description = description;
-      this.handler = handler;
-      this.keyEvent = KeyEvent.KEY_DOWN;
-      this.stopPropagation = false;
-      this.preventDefault = false;
-   }
-
    public Set<Keys> getAllKeys()
    {
       return keys;
