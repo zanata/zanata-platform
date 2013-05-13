@@ -76,8 +76,6 @@ public class KeyShortcutPresenterTest
    @Mock
    private KeyShortcutDisplay mockDisplay;
    @Mock
-   private AttentionKeyShortcutPresenter mockAttentionKeyShortcutPresenter;
-   @Mock
    private EventWrapper mockEventWrapper;
    @Mock
    private EventBus mockEventBus;
@@ -95,7 +93,6 @@ public class KeyShortcutPresenterTest
       MockitoAnnotations.initMocks(this);
 
       keyShortcutPresenter = new KeyShortcutPresenter(mockDisplay,
-            mockAttentionKeyShortcutPresenter,
             mockEventBus, mockMessages, mockEventWrapper);
 
       when(mockMessages.closeShortcutView()).thenReturn(TEST_MESSAGE_CLOSE_SHORTCUT_VIEW);
@@ -129,23 +126,32 @@ public class KeyShortcutPresenterTest
       keyShortcutPresenter.showShortcuts();
 
       //Shortcut list should contain Alt+Y and Esc shortcuts
-      assertThat("KeyShortcutPresenter should register 2 global shortcuts", shortcutList.size(), is(2));
+      assertThat("KeyShortcutPresenter should register 2 global shortcuts", shortcutList.size(), is(3));
 
       // esc should be first as it has no modifiers
       Set<Keys> firstShortcutKeys = shortcutList.get(0).getAllKeys();
-      String firstShortcut = "first shortcut should be Esc with no modifiers and no aliases";
+      String firstShortcut = "first shortcut should be Esc with no modifiers";
       assertThat(firstShortcut, firstShortcutKeys.size(), is(1));
       Keys firstShortcutFirstKeys = firstShortcutKeys.iterator().next();
       assertThat(firstShortcut, firstShortcutFirstKeys.getModifiers(), is(0));
       assertThat(firstShortcut, firstShortcutFirstKeys.getKeyCode(), is(KeyCodes.KEY_ESCAPE));
 
-      // Alt+Y should be the other
+      // Alt+X should be next
       Set<Keys> secondShortcutKeys = shortcutList.get(1).getAllKeys();
-      String secondShortcut = "second shortcut should be Alt+Y with no aliases";
+      String secondShortcut = "second shortcut should be Alt+X";
       assertThat(secondShortcut, secondShortcutKeys.size(), is(1));
       Keys secondShortcutFirstKeys = secondShortcutKeys.iterator().next();
       assertThat(secondShortcut, secondShortcutFirstKeys.getModifiers(), is(Keys.ALT_KEY));
-      assertThat(secondShortcut, secondShortcutFirstKeys.getKeyCode(), is((int) 'Y'));
+      assertThat(secondShortcut, secondShortcutFirstKeys.getKeyCode(), is((int) 'X'));
+
+      // Alt+Y should be last
+      Set<Keys> thirdShortcutKeys = shortcutList.get(2).getAllKeys();
+      String thirdShortcut = "third shortcut should be Alt+Y";
+      assertThat(thirdShortcut, thirdShortcutKeys.size(), is(1));
+      Keys thirdShortcutFirstKeys = thirdShortcutKeys.iterator().next();
+      assertThat(thirdShortcut, thirdShortcutFirstKeys.getModifiers(), is(Keys.ALT_KEY));
+      System.out.println(thirdShortcutFirstKeys.getKeyCode() + " int Y:" + ((int) 'Y') + " int X:" + ((int) 'X'));
+      assertThat(thirdShortcut, thirdShortcutFirstKeys.getKeyCode(), is((int) 'Y'));
    }
 
    @Test(enabled = false, description = "pending attention key rewrite")

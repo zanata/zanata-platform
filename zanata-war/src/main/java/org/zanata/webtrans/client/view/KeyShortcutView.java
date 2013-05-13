@@ -162,7 +162,6 @@ public class KeyShortcutView extends PopupPanel implements KeyShortcutDisplay
       boolean first = true;
       for (Keys keys : shortcut.getAllKeys())
       {
-         int alias = keys.getAlias();
          int modifiers = keys.getModifiers();
          int keyCode = keys.getKeyCode();
 
@@ -171,14 +170,6 @@ public class KeyShortcutView extends PopupPanel implements KeyShortcutDisplay
             sb.append('\n');
          }
          first = false;
-
-         if (alias != Keys.NO_ALIAS)
-         {
-            sb.append(keyDisplayMap.get(Keys.ALT_KEY));
-            sb.append("+");
-            sb.append("X");
-            sb.append(",");
-         }
 
          if ((modifiers & Keys.CTRL_KEY) != 0)
          {

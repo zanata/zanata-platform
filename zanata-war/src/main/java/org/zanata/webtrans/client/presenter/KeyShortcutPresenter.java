@@ -29,12 +29,12 @@ import java.util.Set;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.zanata.webtrans.client.events.AliasKeyChangedEvent;
 import org.zanata.webtrans.client.events.KeyShortcutEvent;
 import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.keys.EventWrapper;
 import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.KeyShortcut.KeyEvent;
+import org.zanata.webtrans.client.keys.KeyShortcutManager;
 import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.keys.SurplusKeyListener;
@@ -64,12 +64,9 @@ import com.google.inject.Inject;
 public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay>
 {
 
-   private final AttentionKeyShortcutPresenter attentionKeysPresenter;
-
-   /**
-    * Key uses {@link Keys#hashCode()}
-    */
-   private Map<Keys, Set<KeyShortcut>> shortcutMap;
+   private final KeyShortcutManager shortcutManager;
+   private final KeyShortcutManager attentionKeyManager;
+   private boolean isAttentionMode;
 
    private Map<ShortcutContext, Set<SurplusKeyListener>> surplusKeyMap;
 
@@ -79,17 +76,88 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay>
 
    private final EventWrapper event;
 
+   // TODO unregister when user changes attention shortcut
+   private HandlerRegistration attentionShortcutHandle;
+
    @Inject
    public KeyShortcutPresenter(KeyShortcutDisplay display,
-                               final AttentionKeyShortcutPresenter attentionKeysPresenter,
                                EventBus eventBus,
                                final WebTransMessages webTransMessages,
                                final EventWrapper event)
    {
       super(display, eventBus);
-      this.attentionKeysPresenter = attentionKeysPresenter;
       this.messages = webTransMessages;
       this.event = event;
+
+      this.shortcutManager = new KeyShortcutManager(event)
+      {
+         @Override
+         public Set<Keys> getKeys(KeyShortcut shortcut)
+         {
+            return shortcut.getAllKeys();
+         }
+
+         @Override
+         protected boolean handleIfMatchingShortcut(NativeEvent evt, KeyShortcut shortcut, KeyShortcutEvent shortcutEvent)
+         {
+            boolean contextActive = ensureActiveContexts().contains(shortcut.getContext());
+            if (contextActive)
+            {
+               triggerShortcutEvent(evt, shortcut, shortcutEvent);
+               return true;
+            }
+            return false;
+         }
+
+         @Override
+         protected void handleNonMatchedShortcut(NativeEvent evt, KeyShortcutEvent shortcutEvent)
+         {
+            fireActiveSurplusKeyListeners(evt, shortcutEvent);
+         }
+      };
+
+      isAttentionMode = false;
+
+      this.attentionKeyManager = new KeyShortcutManager(event)
+      {
+         @Override
+         public Set<Keys> getKeys(KeyShortcut shortcut)
+         {
+            return shortcut.getAllAttentionKeys();
+         }
+
+         @Override
+         protected boolean handleIfMatchingShortcut(NativeEvent evt, KeyShortcut shortcut, KeyShortcutEvent shortcutEvent)
+         {
+            boolean contextActive = ensureActiveContexts().contains(shortcut.getContext());
+            if (contextActive)
+            {
+               triggerShortcutEvent(evt, shortcut, shortcutEvent);
+               setAttentionMode(false);
+               return true;
+            }
+            return false;
+         }
+
+         @Override
+         protected void handleNonMatchedShortcut(NativeEvent evt, KeyShortcutEvent shortcutEvent)
+         {
+            if (KeyEvent.KEY_DOWN.nativeEventType.equals(event.getType(evt)))
+            {
+               // attention mode should always eat the first key press,
+               evt.stopPropagation();
+               evt.preventDefault();
+
+               Log.warn("Unrecognized attention key input");
+               setAttentionMode(false);
+            }
+            else
+            {
+               // FIXME remove this logging
+               Log.info("Ignored non-key-down event in attention mode: " + event.getType(evt));
+            }
+         }
+      };
    }
 
    @Override
@@ -107,22 +175,20 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay>
 
             if ((event.getTypeInt(nativeEvent) & (event.keyDownEvent() | event.keyUpEvent())) != 0)
             {
-               // TODO make sure this mode gets set in response to the attention key event
-               // by registering it as a shortcut. Could do it in either presenter really.
-               if (attentionKeysPresenter.isAttentionMode())
+               if (isAttentionMode)
                {
-                  attentionKeysPresenter.processKeyEvent(evt);
+                  attentionKeyManager.processKeyEvent(evt);
                }
                else
                {
-                  processKeyEvent(evt);
+                  shortcutManager.processKeyEvent(evt);
                }
             }
          }
       });
 
       // @formatter:off
-      KeyShortcut escKeyShortcut = KeyShortcut.Builder.builder()
+      KeyShortcut hideShortcutSummaryShortcut = KeyShortcut.Builder.builder()
             .addKey(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ESCAPE))
             .setContext(ShortcutContext.Application)
             .setDescription(messages.closeShortcutView())
@@ -140,12 +206,15 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay>
                   }
                }
             }).build();
-      // @formatter:on
-      register(escKeyShortcut);
+      register(hideShortcutSummaryShortcut);
 
       // could try to use ?, although this is not as simple as passing character
       // '?'
-      KeyShortcut availableKeysShortcut = KeyShortcut.Builder.builder().addKey(new Keys(Keys.ALT_KEY, 'Y')).setContext(ShortcutContext.Application).setDescription(messages.showAvailableKeyShortcuts()).setHandler(new KeyShortcutEventHandler()
+      KeyShortcut showShortcutSummaryShortcut = KeyShortcut.Builder.builder()
+            .addKey(new Keys(Keys.ALT_KEY, 'Y'))
+            .setContext(ShortcutContext.Application)
+            .setDescription(messages.showAvailableKeyShortcuts())
+            .setHandler(new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
@@ -153,8 +222,40 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay>
             showShortcuts();
          }
       }).build();
-      
-      register(availableKeysShortcut);
+      register(showShortcutSummaryShortcut);
+
+      // TODO use configured value (just use a different Keys object)
+      KeyShortcut attentionKeyShortcut = KeyShortcut.Builder.builder()
+            .setDescription("Activate attention mode.")
+            .addKey(new Keys(Keys.ALT_KEY, 'X'))
+            .setContext(ShortcutContext.Application)
+            .setKeyEvent(KeyEvent.KEY_DOWN)
+            .setHandler(new KeyShortcutEventHandler()
+      {
+         @Override
+         public void onKeyShortcut(KeyShortcutEvent event)
+         {
+            setAttentionMode(true);
+         }
+      }).build();
+      attentionShortcutHandle = register(attentionKeyShortcut);
+
+      KeyShortcut cancelAttentionShortcut = KeyShortcut.Builder.builder()
+            .setDescription("Deactivate attention mode.")
+            .addAttentionKey(new Keys(KeyCodes.KEY_ESCAPE))
+            .setContext(ShortcutContext.Application)
+            .setKeyEvent(KeyEvent.KEY_DOWN)
+            .setHandler(new KeyShortcutEventHandler()
+         {
+            @Override
+            public void onKeyShortcut(KeyShortcutEvent event)
+            {
+               setAttentionMode(false);
+            }
+         }).build();
+      register(cancelAttentionShortcut);
+
+      // @formatter:on
    }
 
    @Override
@@ -165,6 +266,20 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay>
    @Override
    protected void onRevealDisplay()
    {
+   }
+
+   private void setAttentionMode(boolean active)
+   {
+      isAttentionMode = active;
+
+      // TODO (if active) reset attention mode timer
+      // TODO show/hide attention mode state (probably fire an event for this)
+            // event could have the necessary shortcut map or whatever for the
+            // display.
+
+      // TODO (on hide) presenter should be hidden at this point, with appropriate message
+      // Note: only do this if it was active when called with false, so that
+      //       only 1 event is responded to.
    }
 
    public void setContextActive(ShortcutContext context, boolean active)
@@ -200,16 +315,8 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay>
    public HandlerRegistration register(KeyShortcut shortcut)
    {
       Log.debug("Registering key shortcut. Key codes follow:" + Iterables.toString(shortcut.getAllKeys()));
-      for (Keys keys : shortcut.getAllKeys())
-      {
-         Set<KeyShortcut> shortcuts = ensureShortcutMap().get(keys);
-         if (shortcuts == null)
-         {
-            shortcuts = new HashSet<KeyShortcut>();
-            ensureShortcutMap().put(keys, shortcuts);
-         }
-         shortcuts.add(shortcut);
-      }
+      shortcutManager.add(shortcut);
+      attentionKeyManager.add(shortcut);
       return new KeyShortcutHandlerRegistration(shortcut);
    }
 
@@ -233,64 +340,28 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay>
       return new SurplusKeyListenerHandlerRegistration(listener);
    }
 
-   /**
-    * Check for active shortcuts for the entered key combination, trigger events
-    * in handlers, then if no shortcuts have been triggered, fire any registered
-    * {@link SurplusKeyListener} events.
-    * 
-    * @param evt native event
-    */
-   private void processKeyEvent(NativeEvent evt)
+   private void fireActiveSurplusKeyListeners(NativeEvent evt, KeyShortcutEvent shortcutEvent)
    {
-      Keys pressedKeys = event.createKeys(evt);
-      Set<KeyShortcut> shortcuts = ensureShortcutMap().get(pressedKeys);
-      boolean shortcutFound = false;
-      KeyShortcutEvent shortcutEvent = new KeyShortcutEvent(pressedKeys);
-      if (shortcuts != null && !shortcuts.isEmpty())
+      for (ShortcutContext context : ensureActiveContexts())
       {
-         for (KeyShortcut shortcut : shortcuts)
+         Set<SurplusKeyListener> listeners = ensureSurplusKeyListenerMap().get(context);
+         if (listeners != null && !listeners.isEmpty())
          {
-            boolean contextActive = ensureActiveContexts().contains(shortcut.getContext());
-            boolean matchingEventType = shortcut.getKeyEvent().nativeEventType.equals(event.getType(evt));
-            if (contextActive && matchingEventType)
+            for (SurplusKeyListener listener : listeners)
             {
-               shortcutFound = true;
-               if (shortcut.isStopPropagation())
+               if (listener.getKeyEvent().nativeEventType.equals(evt.getType()))
                {
-                  evt.stopPropagation();
-               }
-               if (shortcut.isPreventDefault())
-               {
-                  evt.preventDefault();
-               }
-               shortcut.getHandler().onKeyShortcut(shortcutEvent);
-            }
-         }
-      }
-
-      if (!shortcutFound)
-      {
-         for (ShortcutContext context : ensureActiveContexts())
-         {
-            Set<SurplusKeyListener> listeners = ensureSurplusKeyListenerMap().get(context);
-            if (listeners != null && !listeners.isEmpty())
-            {
-               for (SurplusKeyListener listener : listeners)
-               {
-                  if (listener.getKeyEvent().nativeEventType.equals(evt.getType()))
+                  // could add interface with these methods to reduce
+                  // duplication
+                  if (listener.isStopPropagation())
                   {
-                     // could add interface with these methods to reduce
-                     // duplication
-                     if (listener.isStopPropagation())
-                     {
-                        evt.stopPropagation();
-                     }
-                     if (listener.isPreventDefault())
-                     {
-                        evt.preventDefault();
-                     }
-                     listener.getHandler().onKeyShortcut(shortcutEvent);
+                     evt.stopPropagation();
                   }
+                  if (listener.isPreventDefault())
+                  {
+                     evt.preventDefault();
+                  }
+                  listener.getHandler().onKeyShortcut(shortcutEvent);
                }
             }
          }
@@ -336,15 +407,6 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay>
       return activeContexts;
    }
 
-   private Map<Keys, Set<KeyShortcut>> ensureShortcutMap()
-   {
-      if (shortcutMap == null)
-      {
-         shortcutMap = new HashMap<Keys, Set<KeyShortcut>>();
-      }
-      return shortcutMap;
-   }
-
    private Map<ShortcutContext, Set<SurplusKeyListener>> ensureSurplusKeyListenerMap()
    {
       if (surplusKeyMap == null)
@@ -354,6 +416,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay>
       return surplusKeyMap;
    }
 
+   // TODO update to show attention key + selector for attention key + attention keys for shortcuts
    public void showShortcuts()
    {
       display.clearPanel();
@@ -361,7 +424,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay>
       {
          ListDataProvider<KeyShortcut> dataProvider = display.addContext(getContextName(context));
 
-         for (Set<KeyShortcut> shortcutSet : ensureShortcutMap().values())
+         for (Set<KeyShortcut> shortcutSet : shortcutManager.ensureShortcutMap().values())
          {
             for (KeyShortcut shortcut : shortcutSet)
             {
@@ -389,14 +452,8 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay>
       @Override
       public void removeHandler()
       {
-         for (Keys keys : shortcut.getAllKeys())
-         {
-            Set<KeyShortcut> shortcuts = ensureShortcutMap().get(keys);
-            if (shortcuts != null)
-            {
-               shortcuts.remove(shortcut);
-            }
-         }
+         shortcutManager.remove(shortcut);
+         attentionKeyManager.remove(shortcut);
       }
 
    }
