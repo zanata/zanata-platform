@@ -630,6 +630,14 @@ td.ApprovedStateDecoration div div div
     min-height: 2em;
 }
 
+.reviewTable .CodeMirror-cursor {
+    display: none;
+}
+
+.reviewTable .CodeMirror-lines {
+    cursor: default;
+}
+
 .keyShortcutPanel
 {
 	border:none;

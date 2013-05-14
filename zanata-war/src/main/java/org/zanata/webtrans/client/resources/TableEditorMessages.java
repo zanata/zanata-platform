@@ -106,4 +106,10 @@ public interface TableEditorMessages extends Messages
 
    @DefaultMessage("ALT+Down or ALT+K:  Move to next row")
    String saveAsApprovedDialogInfo3();
+
+   @DefaultMessage("Accept translation")
+   String reviewAccept();
+
+   @DefaultMessage("Reject translation")
+   String reviewReject();
 }
