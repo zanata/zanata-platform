@@ -39,6 +39,9 @@ import org.zanata.webtrans.client.keys.KeyShortcutManager;
 import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.keys.SurplusKeyListener;
+import org.zanata.webtrans.client.keys.TimedAction;
+import org.zanata.webtrans.client.keys.Timer;
+import org.zanata.webtrans.client.keys.TimerFactory;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.view.KeyShortcutDisplay;
 
@@ -64,10 +67,12 @@ import com.google.inject.Inject;
  */
 public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay>
 {
+   private static final int ATTENTION_MODE_DURATION = 5000;
 
    private final KeyShortcutManager shortcutManager;
    private final KeyShortcutManager attentionKeyManager;
    private boolean isAttentionMode;
+   private Timer attentionTimer;
 
    private Map<ShortcutContext, Set<SurplusKeyListener>> surplusKeyMap;
 
@@ -76,6 +81,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay>
    private WebTransMessages messages;
 
    private final EventWrapper event;
+   private final TimerFactory timers;
 
    // TODO unregister when user changes attention shortcut
    private HandlerRegistration attentionShortcutHandle;
@@ -84,11 +90,13 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay>
    public KeyShortcutPresenter(KeyShortcutDisplay display,
                                EventBus eventBus,
                                final WebTransMessages webTransMessages,
-                               final EventWrapper event)
+                               final EventWrapper event,
+                               final TimerFactory timer)
    {
       super(display, eventBus);
       this.messages = webTransMessages;
       this.event = event;
+      this.timers = timer;
 
       this.shortcutManager = new KeyShortcutManager(event)
       {
@@ -151,11 +159,6 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay>
 
                Log.warn("Unrecognized attention key input");
                setAttentionMode(false);
-            }
-            else
-            {
-               // FIXME remove this logging
-               Log.info("Ignored non-key-down event in attention mode: " + event.getType(evt));
             }
          }
       };
@@ -257,6 +260,15 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay>
       register(cancelAttentionShortcut);
 
       // @formatter:on
+
+      Log.info("creating attention timer");
+      attentionTimer = timers.create(new TimedAction() {
+         @Override
+         public void run()
+         {
+            setAttentionMode(false);
+         }
+      });
    }
 
    @Override
@@ -271,19 +283,25 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay>
 
    private void setAttentionMode(boolean active)
    {
+      if (active)
+      {
+         // clobbers existing countdown
+         attentionTimer.schedule(ATTENTION_MODE_DURATION);
+      }
+      else
+      {
+         attentionTimer.cancel();
+      }
+
       if (isAttentionMode != active)
       {
          isAttentionMode = active;
          eventBus.fireEvent(new AttentionModeActivationEvent(active));
          // TODO expose method for attention key presenter to get what it needs
          //      to respond properly to this event
+
+         // TODO if inactivating, attention key presenter shoud hide
       }
-
-      // TODO (if active) reset attention mode timer
-
-      // TODO (on hide) presenter should be hidden at this point, with appropriate message
-      // Note: only do this if it was active when called with false, so that
-      //       only 1 event is responded to.
    }
 
    public void setContextActive(ShortcutContext context, boolean active)

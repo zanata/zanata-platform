@@ -35,14 +35,13 @@ import net.customware.gwt.presenter.client.EventBus;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.internal.verification.Times;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.keys.EventWrapper;
 import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.Keys;
+import org.zanata.webtrans.client.keys.TimerFactory;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.view.KeyShortcutDisplay;
 
@@ -82,6 +81,8 @@ public class KeyShortcutPresenterTest
    @Mock
    private EventBus mockEventBus;
    @Mock
+   private TimerFactory mockTimerFactory;
+   @Mock
    private WebTransMessages mockMessages;
 
    @Captor
@@ -95,7 +96,7 @@ public class KeyShortcutPresenterTest
       MockitoAnnotations.initMocks(this);
 
       keyShortcutPresenter = new KeyShortcutPresenter(mockDisplay,
-            mockEventBus, mockMessages, mockEventWrapper);
+            mockEventBus, mockMessages, mockEventWrapper, mockTimerFactory);
 
       when(mockMessages.closeShortcutView()).thenReturn(TEST_MESSAGE_CLOSE_SHORTCUT_VIEW);
       when(mockMessages.showAvailableKeyShortcuts()).thenReturn(TEST_MESSAGE_SHOW_AVAILABLE_KEY_SHORTCUTS);

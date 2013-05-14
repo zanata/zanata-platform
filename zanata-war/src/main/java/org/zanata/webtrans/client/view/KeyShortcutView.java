@@ -230,28 +230,4 @@ public class KeyShortcutView extends PopupPanel implements KeyShortcutDisplay
       return this;
    }
 
-
-   // FIXME just keeping this stuff for quick reference making timer for AttentionShortcutPresenter
-
-//import com.google.gwt.user.client.Timer;
-
-// private Timer aliasKeyTimer = new Timer()
-// {
-//    public void run()
-//    {
-//       listener.setAliasKeyListening(false);
-//    }
-// };
-
-//   @Override
-//   public void cancelMetaKeyTimer()
-//   {
-//      aliasKeyTimer.cancel();
-//   }
-//
-//   @Override
-//   public void startAliasKeyListen(int delayMillis)
-//   {
-//      aliasKeyTimer.schedule(delayMillis); // 5 seconds
-//   }
 }
