@@ -26,8 +26,8 @@ import net.customware.gwt.presenter.client.PresenterRevealedHandler;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.common.TranslationStats;
-import org.zanata.webtrans.client.events.AliasKeyChangedEvent;
-import org.zanata.webtrans.client.events.AliasKeyChangedEventHandler;
+import org.zanata.webtrans.client.events.AttentionModeActivationEvent;
+import org.zanata.webtrans.client.events.AttentionModeActivationEventHandler;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEventHandler;
 import org.zanata.webtrans.client.events.KeyShortcutEvent;
@@ -65,7 +65,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
       DocumentStatsUpdatedEventHandler,
       ProjectStatsUpdatedEventHandler,
       PresenterRevealedHandler,
-      AliasKeyChangedEventHandler,
+      AttentionModeActivationEventHandler,
       AppDisplay.Listener
 // @formatter:on
 {
@@ -122,8 +122,8 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
       registerHandler(eventBus.addHandler(DocumentStatsUpdatedEvent.getType(), this));
       registerHandler(eventBus.addHandler(ProjectStatsUpdatedEvent.getType(), this));
       registerHandler(eventBus.addHandler(PresenterRevealedEvent.getType(), this));
-      registerHandler(eventBus.addHandler(AliasKeyChangedEvent.getType(), this));
-     
+      registerHandler(eventBus.addHandler(AttentionModeActivationEvent.getType(), this));
+
       if (selectedDocument == null)
       {
          display.enableTab(MainView.Editor, false);
@@ -440,9 +440,8 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
    }
 
    @Override
-   public void onAliasKeyChanged(AliasKeyChangedEvent event)
+   public void onAttentionModeActivationChanged(AttentionModeActivationEvent event)
    {
-      display.setKeyboardShorcutColor(event.isAliasKeyListening());
-
+      display.setKeyboardShorcutColor(event.isActive());
    }
 }

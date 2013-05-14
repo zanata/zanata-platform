@@ -29,6 +29,7 @@ import java.util.Set;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.webtrans.client.events.AttentionModeActivationEvent;
 import org.zanata.webtrans.client.events.KeyShortcutEvent;
 import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.keys.EventWrapper;
@@ -270,12 +271,15 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay>
 
    private void setAttentionMode(boolean active)
    {
-      isAttentionMode = active;
+      if (isAttentionMode != active)
+      {
+         isAttentionMode = active;
+         eventBus.fireEvent(new AttentionModeActivationEvent(active));
+         // TODO expose method for attention key presenter to get what it needs
+         //      to respond properly to this event
+      }
 
       // TODO (if active) reset attention mode timer
-      // TODO show/hide attention mode state (probably fire an event for this)
-            // event could have the necessary shortcut map or whatever for the
-            // display.
 
       // TODO (on hide) presenter should be hidden at this point, with appropriate message
       // Note: only do this if it was active when called with false, so that
