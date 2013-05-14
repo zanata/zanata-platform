@@ -325,7 +325,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       {
          GoToRowLink goToRowLink = goToRowLinkProvider.get();
 
-//         goToRowLink.prepare("Translation has changed", );
+//         goToRowLink.prepare("");
 //         eventBus.fireEvent(new NotificationEvent(Warning, "Translation has changed", ));
       }
       if (updateFromCurrentUsersEditorSave(editorClientId, updateType))

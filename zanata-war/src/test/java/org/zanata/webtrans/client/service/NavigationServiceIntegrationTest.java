@@ -62,6 +62,7 @@ import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.server.rpc.GetTransUnitListHandler;
 import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
@@ -88,7 +89,7 @@ public class NavigationServiceIntegrationTest
          TestFixture.makeHTextFlow(5, LOCALE, ContentState.New)
    ).build();
    // @formatter:on
-   private static final DocumentId DOCUMENT_ID = new DocumentId(1L, "");
+   private static final DocumentInfo DOCUMENT = TestFixture.documentInfo(1, "");
 
    private NavigationService service;
    @Mock
@@ -124,12 +125,12 @@ public class NavigationServiceIntegrationTest
       configHolder = new UserConfigHolder();
       navigationStateHolder = new ModalNavigationStateHolder(configHolder);
       GetTransUnitActionContextHolder contextHolder = new GetTransUnitActionContextHolder(configHolder);
-      contextHolder.initContext(DOCUMENT_ID, null, null);
+      contextHolder.initContext(DOCUMENT, null, null);
 
       service = new NavigationService(eventBus, dispatcher, configHolder, messages, pageModel, navigationStateHolder, contextHolder, history);
       service.addPageDataChangeListener(transUnitsTablePresenter);
 
-      context = new GetTransUnitActionContext(DOCUMENT_ID);
+      context = new GetTransUnitActionContext(DOCUMENT);
 
       doAnswer(new Answer<Void>()
       {
@@ -139,7 +140,7 @@ public class NavigationServiceIntegrationTest
             Object[] arguments = invocation.getArguments();
             GetTransUnitList action = (GetTransUnitList) arguments[0];
             action.setWorkspaceId(WORKSPACE_ID);
-            GetTransUnitListHandler handler = new MockHandlerFactory().createGetTransUnitListHandlerWithBehavior(DOCUMENT_ID, TEXT_FLOWS, LOCALE, action.getOffset(), action.getCount());
+            GetTransUnitListHandler handler = new MockHandlerFactory().createGetTransUnitListHandlerWithBehavior(DOCUMENT.getId(), TEXT_FLOWS, LOCALE, action.getOffset(), action.getCount());
             getTransUnitListResult = handler.execute(action, null);
             return null;
          }
@@ -157,7 +158,7 @@ public class NavigationServiceIntegrationTest
    {
       service.requestTransUnitsAndUpdatePageIndex(context.changeCount(6), true);
 
-      assertThat(getTransUnitListResult.getDocumentId(), equalTo(DOCUMENT_ID));
+      assertThat(getTransUnitListResult.getDocumentId(), equalTo(DOCUMENT.getId()));
       assertThat(TestFixture.asIds(getTransUnitListResult.getUnits()), contains(0, 1, 2, 3, 4, 5));
 
       GetTransUnitsNavigationResult navigationResult = getTransUnitListResult.getNavigationIndex();

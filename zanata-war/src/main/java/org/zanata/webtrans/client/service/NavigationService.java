@@ -249,7 +249,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
    @Override
    public void onTransUnitUpdated(TransUnitUpdatedEvent event)
    {
-      if (Objects.equal(event.getUpdateInfo().getDocumentId(), contextHolder.getContext().getDocumentId()))
+      if (Objects.equal(event.getUpdateInfo().getDocumentId(), contextHolder.getContext().getDocument().getId()))
       {
          TransUnit updatedTU = event.getUpdateInfo().getTransUnit();
          boolean updated = updateDataModel(updatedTU);

@@ -22,12 +22,16 @@
 package org.zanata.model;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
+import org.zanata.webtrans.shared.model.AuditInfo;
+import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
@@ -180,5 +184,25 @@ public class TestFixture
             return input.getId();
          }
       });
+   }
+
+   public static DocumentInfo documentInfo()
+   {
+      return documentInfo(0, "", "name0");
+   }
+
+   public static DocumentInfo documentInfo(long id, String docId)
+   {
+      return documentInfo(id, "", docId);
+   }
+
+   public static DocumentInfo documentInfo(long id, String path, String name)
+   {
+      return new DocumentInfo(new DocumentId(id, path + name), name, path, LocaleId.EN_US, null, new AuditInfo(new Date(), "Translator"), null, new AuditInfo(new Date(), "last translator"));
+   }
+
+   public static DocumentInfo documentInfo(long id)
+   {
+      return documentInfo(id, "");
    }
 }
