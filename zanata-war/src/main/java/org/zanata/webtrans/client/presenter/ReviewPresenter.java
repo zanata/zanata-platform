@@ -5,6 +5,7 @@ import java.util.List;
 import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.GetTransUnitActionContextHolder;
+import org.zanata.webtrans.client.ui.ReviewContentWrapper;
 import org.zanata.webtrans.client.view.ReviewContentsDisplay;
 import org.zanata.webtrans.client.view.ReviewDisplay;
 import org.zanata.webtrans.shared.model.TransUnit;
@@ -19,6 +20,7 @@ import com.google.inject.Provider;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
+import static com.google.common.base.Objects.*;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -33,7 +35,7 @@ public class ReviewPresenter extends WidgetPresenter<ReviewDisplay> implements R
    private List<ReviewContentsDisplay> contentsDisplayList;
 
    @Inject
-   public ReviewPresenter(ReviewDisplay display, EventBus eventBus, Provider<ReviewContentsDisplay> reviewContentsDisplayProvider, CachingDispatchAsync dispatcher, GetTransUnitActionContextHolder contextHolder, SourceContentsPresenter sourceContentsPresenter)
+   public ReviewPresenter(ReviewDisplay display, EventBus eventBus, Provider<ReviewContentsDisplay> reviewContentsDisplayProvider, CachingDispatchAsync dispatcher, SourceContentsPresenter sourceContentsPresenter)
    {
       super(display, eventBus);
       this.eventBus = eventBus;
@@ -66,23 +68,37 @@ public class ReviewPresenter extends WidgetPresenter<ReviewDisplay> implements R
       this.selectedId = selectedId;
       ReviewContentsDisplay reviewContentsDisplay = Finds.findDisplayById(contentsDisplayList, selectedId).get();
 
-      for (HasText editor : reviewContentsDisplay.getEditors())
+      for (ReviewContentWrapper editor : reviewContentsDisplay.getEditors())
       {
          validate(editor, reviewContentsDisplay);
       }
 //      display.showButtons(isDisplayButtons());
    }
 
-   public void validate(HasText editor, ReviewContentsDisplay reviewContentsDisplay)
+   public void validate(ReviewContentWrapper editor, ReviewContentsDisplay reviewContentsDisplay)
    {
       TransUnitId transUnitId = sourceContentsPresenter.getCurrentTransUnitIdOrNull();
       Optional<String> sourceContent = sourceContentsPresenter.getSourceContent(transUnitId);
       if (sourceContent.isPresent())
       {
          RunValidationEvent event = new RunValidationEvent(sourceContent.get(), editor.getText(), false);
+         // widget that displays red outline
+         event.addWidget(editor);
          // widget that displays warnings
          event.addWidget(reviewContentsDisplay);
          eventBus.fireEvent(event);
+      }
+   }
+
+
+   public void updateRow(TransUnit updatedTransUnit)
+   {
+      Optional<ReviewContentsDisplay> contentsDisplayOptional = Finds.findDisplayById(contentsDisplayList, updatedTransUnit.getId());
+      if (contentsDisplayOptional.isPresent())
+      {
+         ReviewContentsDisplay contentsDisplay = contentsDisplayOptional.get();
+         contentsDisplay.setValueAndCreateNewEditors(updatedTransUnit);
+         contentsDisplay.refresh();
       }
    }
 

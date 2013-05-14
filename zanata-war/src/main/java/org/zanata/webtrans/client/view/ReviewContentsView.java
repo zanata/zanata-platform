@@ -25,6 +25,8 @@ import java.util.List;
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.ui.CodeMirrorReadOnlyWidget;
 import org.zanata.webtrans.client.ui.HasUpdateValidationWarning;
+import org.zanata.webtrans.client.ui.ReviewContentWidget;
+import org.zanata.webtrans.client.ui.ReviewContentWrapper;
 import org.zanata.webtrans.client.ui.ValidationMessagePanelView;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -59,7 +61,7 @@ public class ReviewContentsView extends Composite implements ReviewContentsDispl
    InlineLabel acceptIcon;
    @UiField
    InlineLabel rejectIcon;
-   private List<CodeMirrorReadOnlyWidget> editors = Lists.newArrayList();
+   private List<ReviewContentWrapper> editors = Lists.newArrayList();
    private TransUnitId id;
    private Listener listener;
 
@@ -83,15 +85,11 @@ public class ReviewContentsView extends Composite implements ReviewContentsDispl
       int rowIndex = 0;
       for (String target : cachedTargets)
       {
-         HTMLPanel panel = new HTMLPanel("");
-         panel.setSize("95%", "100%");
-         panel.setStyleName("TableEditorCell-Target");
-         CodeMirrorReadOnlyWidget editor = new CodeMirrorReadOnlyWidget();
-         editor.setText(target);
-         panel.add(editor);
+         ReviewContentWidget contentWidget = new ReviewContentWidget();
+         contentWidget.setText(target);
 
-         editorGrid.setWidget(rowIndex, 0, panel);
-         editors.add(editor);
+         editorGrid.setWidget(rowIndex, 0, contentWidget);
+         editors.add(contentWidget);
          rowIndex++;
       }
       editorGrid.setStyleName(resolveStyleName(transUnit.getStatus()));
@@ -138,7 +136,7 @@ public class ReviewContentsView extends Composite implements ReviewContentsDispl
    }
 
    @Override
-   public List<? extends HasText> getEditors()
+   public List<ReviewContentWrapper> getEditors()
    {
       return editors;
    }

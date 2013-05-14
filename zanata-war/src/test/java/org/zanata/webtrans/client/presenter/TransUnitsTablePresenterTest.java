@@ -37,6 +37,7 @@ import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.service.GetTransUnitActionContextHolder;
 import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.client.service.TransUnitSaveService;
 import org.zanata.webtrans.client.service.TranslatorInteractionService;
@@ -83,13 +84,15 @@ public class TransUnitsTablePresenterTest
    private ReviewPresenter reviewPresenter;
    @Mock
    private Provider<GoToRowLink> goToRowProvider;
+   private GetTransUnitActionContextHolder contextHolder;
 
 
    @BeforeMethod
    public void setUp() throws Exception
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new TransUnitsTablePresenter(display, eventBus, navigationService, sourceContentsPresenter, targetContentsPresenter, translatorService, translationHistoryPresenter, goToRowProvider, messages, userOptionsService);
+      contextHolder = new GetTransUnitActionContextHolder(new UserConfigHolder());
+      presenter = new TransUnitsTablePresenter(display, eventBus, navigationService, sourceContentsPresenter, targetContentsPresenter, translatorService, translationHistoryPresenter, goToRowProvider, contextHolder, messages, userOptionsService);
 
       verify(display).setRowSelectionListener(presenter);
       verify(display).addFilterConfirmationHandler(presenter);

@@ -29,23 +29,9 @@
             color: #0085CC;
         }
 
-        .unsaved {
-            background-color: #56c0e6;
-        }
-
-        .saving {
-            position: absolute;
-            top: 8px;
-            left: 30px;
-            font-size: smaller;
-            color: #ffffff;
-            z-index: 1;
-            background-color: #ff4500;
-        }
-
     </ui:style>
 
-    <g:HorizontalPanel width="100%" addStyleNames="{style.targetContentsCell}" spacing="3">
+    <g:HorizontalPanel width="100%" addStyleNames="{style.targetContentsCell} reviewTable" spacing="3">
         <g:cell verticalAlignment="ALIGN_TOP">
         	<g:FlowPanel styleName="{style.editorGridWrapper}">
                 <g:Grid ui:field="editorGrid" />
@@ -54,8 +40,8 @@
         </g:cell>
         <g:cell verticalAlignment="ALIGN_TOP" horizontalAlignment="ALIGN_JUSTIFY" width="22px">
             <g:HTMLPanel ui:field="buttons" styleName="fadeElement buttons">
-                <g:InlineLabel ui:field="acceptIcon" title="{messages.editSaveShortcut}" styleName="icon-install {style.button}"/>
-                <g:InlineLabel ui:field="rejectIcon" title="{messages.editSaveAsFuzzyShortcut}" styleName="icon-flag-1 {style.button}" />
+                <g:InlineLabel ui:field="acceptIcon" title="{messages.reviewAccept}" styleName="icon-ok-circle2 {style.button}"/>
+                <g:InlineLabel ui:field="rejectIcon" title="{messages.reviewReject}" styleName="icon-cancel-circle2 {style.button}" />
             </g:HTMLPanel>
         </g:cell>
     </g:HorizontalPanel>

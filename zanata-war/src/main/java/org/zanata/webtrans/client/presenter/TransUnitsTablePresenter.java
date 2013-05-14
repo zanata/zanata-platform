@@ -49,6 +49,7 @@ import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.service.GetTransUnitActionContextHolder;
 import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.client.service.TransUnitSaveService;
 import org.zanata.webtrans.client.service.TranslatorInteractionService;
@@ -99,6 +100,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    private ReviewPresenter reviewPresenter;
    private final TranslationHistoryPresenter translationHistoryPresenter;
    private final Provider<GoToRowLink> goToRowLinkProvider;
+   private final GetTransUnitActionContextHolder contextHolder;
    private final WebTransMessages messages;
    private final EventBus eventBus;
    private final NavigationService navigationService;
@@ -125,6 +127,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
                                    TranslatorInteractionService translatorService,
                                    TranslationHistoryPresenter translationHistoryPresenter,
                                    Provider<GoToRowLink> goToRowLinkProvider,
+                                   GetTransUnitActionContextHolder contextHolder,
                                    WebTransMessages messages, UserOptionsService userOptionsService)
    // @formatter:on
    {
@@ -132,6 +135,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       this.display = display;
       this.translationHistoryPresenter = translationHistoryPresenter;
       this.goToRowLinkProvider = goToRowLinkProvider;
+      this.contextHolder = contextHolder;
       this.messages = messages;
       this.display.setRowSelectionListener(this);
 
@@ -313,13 +317,13 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    @Override
    public void refreshRow(TransUnit updatedTransUnit, EditorClientId editorClientId, TransUnitUpdated.UpdateType updateType)
    {
-      // TODO rhbz953734 - need to also refresh in review presenter
       if (isInReviewMode)
       {
          GoToRowLink goToRowLink = goToRowLinkProvider.get();
 
-//         goToRowLink.prepare("");
-//         eventBus.fireEvent(new NotificationEvent(Warning, "Translation has changed", ));
+         goToRowLink.prepare("", contextHolder.getContext().getDocument(), updatedTransUnit.getId());
+         eventBus.fireEvent(new NotificationEvent(Warning, "Translation has changed", goToRowLink));
+         reviewPresenter.updateRow(updatedTransUnit);
       }
       if (updateFromCurrentUsersEditorSave(editorClientId, updateType))
       {
@@ -327,7 +331,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
          // Ignored.
          return;
       }
-      if (Objects.equal(selectedId, updatedTransUnit.getId()) && !Objects.equal(editorClientId, translatorService.getCurrentEditorClientId()))
+      if (Objects.equal(selectedId, updatedTransUnit.getId()) && !Objects.equal(editorClientId, translatorService.getCurrentEditorClientId()) && !isInReviewMode)
       {
          // updatedTU is our active row but done by another user
          eventBus.fireEvent(new NotificationEvent(Error, messages.concurrentEdit()));

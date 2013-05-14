@@ -3,6 +3,7 @@ package org.zanata.webtrans.client.view;
 import java.util.List;
 
 import org.zanata.webtrans.client.ui.HasUpdateValidationWarning;
+import org.zanata.webtrans.client.ui.ReviewContentWrapper;
 import org.zanata.webtrans.shared.model.HasTransUnitId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -18,7 +19,7 @@ public interface ReviewContentsDisplay extends WidgetDisplay, NeedsRefresh, HasT
 
    void setListener(Listener listener);
 
-   List<? extends HasText> getEditors();
+   List<ReviewContentWrapper> getEditors();
 
    interface Listener
    {
