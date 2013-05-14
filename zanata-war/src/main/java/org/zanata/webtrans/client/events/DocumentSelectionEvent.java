@@ -3,6 +3,7 @@ package org.zanata.webtrans.client.events;
 import org.zanata.webtrans.client.service.GetTransUnitActionContext;
 import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.DocumentInfo;
 import com.google.common.base.Preconditions;
 import com.google.gwt.event.shared.GwtEvent;
 
@@ -13,7 +14,7 @@ public class DocumentSelectionEvent extends GwtEvent<DocumentSelectionHandler> i
     * Handler type.
     */
    private static Type<DocumentSelectionHandler> TYPE;
-   private final DocumentId document;
+   private final DocumentInfo document;
 
    /**
     * Gets the type associated with this event.
@@ -25,14 +26,14 @@ public class DocumentSelectionEvent extends GwtEvent<DocumentSelectionHandler> i
       return TYPE != null ? TYPE : (TYPE = new Type<DocumentSelectionHandler>());
    }
 
-   public DocumentSelectionEvent(DocumentId documentId)
+   public DocumentSelectionEvent(DocumentInfo documentInfo)
    {
-      this.document = documentId;
+      this.document = documentInfo;
    }
 
    public DocumentId getDocumentId()
    {
-      return document;
+      return document.getId();
    }
 
    @Override

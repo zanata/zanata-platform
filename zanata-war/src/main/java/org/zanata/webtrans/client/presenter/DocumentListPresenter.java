@@ -79,6 +79,7 @@ import org.zanata.webtrans.shared.rpc.RunDocValidationAction;
 import org.zanata.webtrans.shared.rpc.RunDocValidationResult;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
@@ -444,7 +445,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    {
       // match bookmarked selection, but prevent selection feedback loop
       // from history
-      if (event.getDocumentId() != (currentDocument == null ? null : currentDocument.getId()))
+      DocumentId current = currentDocument == null ? null : currentDocument.getId();
+      if (!Objects.equal(event.getDocumentId(), current))
       {
          setSelection(event.getDocumentId());
       }

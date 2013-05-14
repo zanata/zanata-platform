@@ -2,6 +2,7 @@ package org.zanata.webtrans.client.service;
 
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -26,10 +27,10 @@ public class GetTransUnitActionContextHolder
       return context != null;
    }
 
-   protected GetTransUnitActionContext initContext(DocumentId documentId, String findMessage, TransUnitId targetTransUnitId)
+   protected GetTransUnitActionContext initContext(DocumentInfo document, String findMessage, TransUnitId targetTransUnitId)
    {
       // @formatter:off
-      context = new GetTransUnitActionContext(documentId)
+      context = new GetTransUnitActionContext(document)
             .changeCount(configHolder.getState().getEditorPageSize())
             .changeFindMessage(findMessage)
             .changeFilterNeedReview(configHolder.getState().isFilterByNeedReview())

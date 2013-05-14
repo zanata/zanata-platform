@@ -9,7 +9,9 @@
     <changeSet id="1" author="pahuang@redhat.com">
         <comment>Add need review column to project iteration</comment>
         <addColumn tableName="HProjectIteration">
-            <column name="requireTranslationReview" type="boolean" defaultValueBoolean="false"/>
+            <column name="requireTranslationReview" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="true" />
+            </column>
         </addColumn>
     </changeSet>
     
