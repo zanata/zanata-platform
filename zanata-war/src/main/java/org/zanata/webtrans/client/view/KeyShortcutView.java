@@ -73,21 +73,9 @@ public class KeyShortcutView extends PopupPanel implements KeyShortcutDisplay
    @UiField
    Styles style;
 
-   private final Map<Integer, String> keyDisplayMap;
-
-
-
-   @Inject
-   public KeyShortcutView(final WebTransMessages webTransMessages)
+   private static final Map<Integer, String> keyDisplayMap;
+   static
    {
-      setWidget(uiBinder.createAndBindUi(this));
-      heading.setText(webTransMessages.availableKeyShortcutsTitle());
-
-      setStyleName("keyShortcutPanel");
-      setAutoHideEnabled(true);
-      setAutoHideOnHistoryEventsEnabled(true);
-      setGlassEnabled(true);
-
       keyDisplayMap = new HashMap<Integer, String>();
 
       keyDisplayMap.put(Keys.ALT_KEY, "Alt");
@@ -106,6 +94,18 @@ public class KeyShortcutView extends PopupPanel implements KeyShortcutDisplay
       keyDisplayMap.put(KeyCodes.KEY_PAGEDOWN, "PageDown");
       keyDisplayMap.put(KeyCodes.KEY_PAGEUP, "PageUp");
       keyDisplayMap.put(KeyCodes.KEY_ESCAPE, "Esc");
+   }
+
+   @Inject
+   public KeyShortcutView(final WebTransMessages webTransMessages)
+   {
+      setWidget(uiBinder.createAndBindUi(this));
+      heading.setText(webTransMessages.availableKeyShortcutsTitle());
+
+      setStyleName("keyShortcutPanel");
+      setAutoHideEnabled(true);
+      setAutoHideOnHistoryEventsEnabled(true);
+      setGlassEnabled(true);
    }
 
    @Override
@@ -155,52 +155,75 @@ public class KeyShortcutView extends PopupPanel implements KeyShortcutDisplay
       return dataProvider;
    }
 
-   private String keysDisplayString(KeyShortcut shortcut)
+   private static String keysDisplayString(KeyShortcut shortcut)
    {
       StringBuilder sb = new StringBuilder();
-
       boolean first = true;
+
       for (Keys keys : shortcut.getAllKeys())
       {
-         int modifiers = keys.getModifiers();
-         int keyCode = keys.getKeyCode();
-
          if (!first)
          {
             sb.append('\n');
          }
          first = false;
-
-         if ((modifiers & Keys.CTRL_KEY) != 0)
-         {
-            sb.append(keyDisplayMap.get(Keys.CTRL_KEY));
-            sb.append('+');
-         }
-         if ((modifiers & Keys.SHIFT_KEY) != 0)
-         {
-            sb.append(keyDisplayMap.get(Keys.SHIFT_KEY));
-            sb.append('+');
-         }
-         if ((modifiers & Keys.META_KEY) != 0)
-         {
-            sb.append(keyDisplayMap.get(Keys.META_KEY));
-            sb.append('+');
-         }
-         if ((modifiers & Keys.ALT_KEY) != 0)
-         {
-            sb.append(keyDisplayMap.get(Keys.ALT_KEY));
-            sb.append('+');
-         }
-         if (!Strings.isNullOrEmpty(keyDisplayMap.get(keyCode)))
-         {
-            sb.append(keyDisplayMap.get(keyCode));
-         }
-         else
-         {
-            sb.append((char) keyCode);
-         }
+         writeKeyInfo(sb, keys);
       }
+      for (Keys keys : shortcut.getAllAttentionKeys())
+      {
+         if (!first)
+         {
+            sb.append('\n');
+         }
+         first = false;
+         // TODO write attention key
+         writeAttentionKeyPrefix(sb);
+         writeKeyInfo(sb, keys);
+      }
+
       return sb.toString();
+   }
+
+   private static void writeAttentionKeyPrefix(StringBuilder sb)
+   {
+      // TODO respond to user setting for attention key
+      sb.append(keyDisplayMap.get(Keys.ALT_KEY));
+      sb.append("+X,");
+   }
+
+   private static void writeKeyInfo(StringBuilder sb, Keys keys)
+   {
+      int modifiers = keys.getModifiers();
+      int keyCode = keys.getKeyCode();
+
+      if ((modifiers & Keys.CTRL_KEY) != 0)
+      {
+         sb.append(keyDisplayMap.get(Keys.CTRL_KEY));
+         sb.append('+');
+      }
+      if ((modifiers & Keys.SHIFT_KEY) != 0)
+      {
+         sb.append(keyDisplayMap.get(Keys.SHIFT_KEY));
+         sb.append('+');
+      }
+      if ((modifiers & Keys.META_KEY) != 0)
+      {
+         sb.append(keyDisplayMap.get(Keys.META_KEY));
+         sb.append('+');
+      }
+      if ((modifiers & Keys.ALT_KEY) != 0)
+      {
+         sb.append(keyDisplayMap.get(Keys.ALT_KEY));
+         sb.append('+');
+      }
+      if (!Strings.isNullOrEmpty(keyDisplayMap.get(keyCode)))
+      {
+         sb.append(keyDisplayMap.get(keyCode));
+      }
+      else
+      {
+         sb.append((char) keyCode);
+      }
    }
 
    @Override
