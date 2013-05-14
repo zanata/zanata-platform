@@ -25,6 +25,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.times;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +39,12 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.webtrans.client.events.AttentionModeActivationEvent;
 import org.zanata.webtrans.client.keys.EventWrapper;
 import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.Keys;
+import org.zanata.webtrans.client.keys.TimedAction;
+import org.zanata.webtrans.client.keys.Timer;
 import org.zanata.webtrans.client.keys.TimerFactory;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.view.KeyShortcutDisplay;
@@ -67,6 +71,7 @@ public class KeyShortcutPresenterTest
    static final int KEY_DOWN_TYPE = 0x80;
    static final int KEY_UP_TYPE = 0x200;
 
+   static final int KEY_CODE_X = 'X';
    static final int KEY_CODE_Y = 'Y';
    static final String TEST_MESSAGE_APPLICATION_SCOPE = "Application";
 
@@ -117,12 +122,7 @@ public class KeyShortcutPresenterTest
    @Test
    public void displaysRegisteredShortcutsInOrder()
    {
-      @SuppressWarnings("unchecked")
-      ListDataProvider<KeyShortcut> mockDataProvider = mock(ListDataProvider.class);
-      List<KeyShortcut> shortcutList = new ArrayList<KeyShortcut>();
-      when(mockDataProvider.getList()).thenReturn(shortcutList);
-      mockDisplay.clearPanel();
-      when(mockDisplay.addContext(TEST_MESSAGE_APPLICATION_SCOPE)).thenReturn(mockDataProvider);
+      List<KeyShortcut> shortcutList = mockShortcutDisplayListInteractions();
       mockDisplay.showPanel();
 
       keyShortcutPresenter.bind();
@@ -159,25 +159,55 @@ public class KeyShortcutPresenterTest
    @Test
    public void testRespondsToAltY()
    {
+      NativePreviewEvent altYPressed = buildNativeKeyDownEvent(new Keys(Keys.ALT_KEY, KEY_CODE_Y));
+      mockShortcutDisplayListInteractions();
+      keyShortcutPresenter.bind();
+      capturedNativePreviewHandler.getValue().onPreviewNativeEvent(altYPressed);
+      verify(mockDisplay).showPanel();
+   }
+
+   @Test
+   public void testAttentionModeTimesOut()
+   {
+      NativePreviewEvent altXPressed = buildNativeKeyDownEvent(new Keys(Keys.ALT_KEY, KEY_CODE_X));
+      mockShortcutDisplayListInteractions();
+      ArgumentCaptor<AttentionModeActivationEvent> eventBusCapture = ArgumentCaptor.forClass(AttentionModeActivationEvent.class);
+
+      Timer mockTimer = mock(Timer.class);
+      // capture timer
+      ArgumentCaptor<TimedAction> capturedTimedAction = ArgumentCaptor.forClass(TimedAction.class);
+      when(mockTimerFactory.create(capturedTimedAction.capture())).thenReturn(mockTimer);
+
+      keyShortcutPresenter.bind();
+      capturedNativePreviewHandler.getValue().onPreviewNativeEvent(altXPressed);
+      verify(mockTimer).schedule(5000);
+      capturedTimedAction.getValue().run();
+      verify(mockEventBus, times(2)).fireEvent(eventBusCapture.capture());
+      assertThat(eventBusCapture.getAllValues().get(0).isActive(), is(true));
+      assertThat(eventBusCapture.getAllValues().get(1).isActive(), is(false));
+      assertThat(eventBusCapture.getAllValues().size(), is(2));
+   }
+
+   private NativePreviewEvent buildNativeKeyDownEvent(Keys keys)
+   {
       NativePreviewEvent mockNativePreviewEvent = mock(NativePreviewEvent.class);
       NativeEvent mockNativeEvent = mock(NativeEvent.class);
-
       when(mockEventWrapper.getTypeInt(mockNativePreviewEvent)).thenReturn(KEY_DOWN_TYPE);
       when(mockNativePreviewEvent.getNativeEvent()).thenReturn(mockNativeEvent);
-      when(mockEventWrapper.createKeys(mockNativeEvent)).thenReturn(new Keys(Keys.ALT_KEY, KEY_CODE_Y));
+      when(mockEventWrapper.createKeys(mockNativeEvent)).thenReturn(keys);
       when(mockEventWrapper.getType(mockNativeEvent)).thenReturn(KeyShortcut.KeyEvent.KEY_DOWN.nativeEventType);
+      return mockNativePreviewEvent;
+   }
 
+   private List<KeyShortcut> mockShortcutDisplayListInteractions()
+   {
       @SuppressWarnings("unchecked")
       ListDataProvider<KeyShortcut> mockDataProvider = mock(ListDataProvider.class);
       List<KeyShortcut> shortcutList = new ArrayList<KeyShortcut>();
       when(mockDataProvider.getList()).thenReturn(shortcutList);
       mockDisplay.clearPanel();
       when(mockDisplay.addContext(TEST_MESSAGE_APPLICATION_SCOPE)).thenReturn(mockDataProvider);
-
-      keyShortcutPresenter.bind();
-      capturedNativePreviewHandler.getValue().onPreviewNativeEvent(mockNativePreviewEvent);
-
-      verify(mockDisplay).showPanel();
+      return shortcutList;
    }
 
 }
