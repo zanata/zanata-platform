@@ -200,6 +200,7 @@ public class Application implements EntryPoint
 
             documentListPresenter.queryStats();
             documentListPresenter.showLoading(false);
+            injector.getTransUnitSaveService().init();
 
             stopwatch.stop();
          }

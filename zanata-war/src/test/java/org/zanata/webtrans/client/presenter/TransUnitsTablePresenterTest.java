@@ -74,8 +74,6 @@ public class TransUnitsTablePresenterTest
    @Mock
    private TranslatorInteractionService translatorService;
    @Mock
-   private TransUnitSaveService saveService;
-   @Mock
    private WebTransMessages messages;
    @Mock
    private TranslationHistoryPresenter translationHistoryPresenter;
@@ -91,13 +89,11 @@ public class TransUnitsTablePresenterTest
    public void setUp() throws Exception
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new TransUnitsTablePresenter(display, eventBus, navigationService, sourceContentsPresenter, targetContentsPresenter, translatorService, saveService, translationHistoryPresenter, goToRowProvider, messages, userOptionsService);
+      presenter = new TransUnitsTablePresenter(display, eventBus, navigationService, sourceContentsPresenter, targetContentsPresenter, translatorService, translationHistoryPresenter, goToRowProvider, messages, userOptionsService);
 
       verify(display).setRowSelectionListener(presenter);
       verify(display).addFilterConfirmationHandler(presenter);
       verify(navigationService).addPageDataChangeListener(presenter);
-      verify(eventBus).addHandler(TransUnitSaveEvent.TYPE, saveService);
-      verify(eventBus).addHandler(CheckStateHasChangedEvent.TYPE, saveService);
    }
 
    @Test
