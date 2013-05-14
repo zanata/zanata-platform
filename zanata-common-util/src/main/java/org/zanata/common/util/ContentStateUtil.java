@@ -49,7 +49,8 @@ public class ContentStateUtil
     */
    public static ContentState determineState(ContentState requestedState, List<String> contents, String resId, @Nonnull List<String> warnings)
    {
-      // NB make sure this stays consistent with InlineTargetCellEditor.determineStatus and PoReader2.getContentState
+      // NB make sure this stays consistent with PoReader2.getContentState
+      // TODO rhbz953734 - PoReader2.getContentState
       switch (requestedState)
       {
       case NeedReview:
@@ -73,6 +74,11 @@ public class ContentStateUtil
             return ContentState.New;
          }
          break;
+      case Reviewed:
+         if (!allNonEmpty(contents))
+         {
+            throw new IllegalStateException("Invalid ContentState (some empty contents)");
+         }
       default:
          throw new RuntimeException("unknown ContentState " + requestedState);
       }
