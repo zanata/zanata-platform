@@ -123,10 +123,9 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
                                    SourceContentsPresenter sourceContentsPresenter,
                                    TargetContentsPresenter targetContentsPresenter,
                                    TranslatorInteractionService translatorService,
-                                   TransUnitSaveService transUnitSaveService,
                                    TranslationHistoryPresenter translationHistoryPresenter,
                                    Provider<GoToRowLink> goToRowLinkProvider,
-                                   WebTransMessages messages,UserOptionsService userOptionsService)
+                                   WebTransMessages messages, UserOptionsService userOptionsService)
    // @formatter:on
    {
       super(display, eventBus);
@@ -144,12 +143,6 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       this.targetContentsPresenter = targetContentsPresenter;
       this.translatorService = translatorService;
       this.userOptionsService = userOptionsService;
-
-      // we register it here because we can't use eager singleton on it (it
-      // references TargetContentsPresenter). And if it's not eagerly created,
-      // it won't get created at all!!
-      eventBus.addHandler(TransUnitSaveEvent.TYPE, transUnitSaveService);
-      eventBus.addHandler(CheckStateHasChangedEvent.TYPE, transUnitSaveService);
    }
 
    @Override

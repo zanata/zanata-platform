@@ -82,6 +82,12 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler, CheckSta
       this.queue = queue;
    }
 
+   public void init()
+   {
+      eventBus.addHandler(TransUnitSaveEvent.TYPE, this);
+      eventBus.addHandler(CheckStateHasChangedEvent.TYPE, this);
+   }
+
    @Override
    public void onTransUnitSave(TransUnitSaveEvent event)
    {
