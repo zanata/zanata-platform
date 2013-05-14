@@ -35,7 +35,9 @@ import net.customware.gwt.presenter.client.EventBus;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.internal.verification.Times;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.keys.EventWrapper;
@@ -150,11 +152,10 @@ public class KeyShortcutPresenterTest
       assertThat(thirdShortcut, thirdShortcutKeys.size(), is(1));
       Keys thirdShortcutFirstKeys = thirdShortcutKeys.iterator().next();
       assertThat(thirdShortcut, thirdShortcutFirstKeys.getModifiers(), is(Keys.ALT_KEY));
-      System.out.println(thirdShortcutFirstKeys.getKeyCode() + " int Y:" + ((int) 'Y') + " int X:" + ((int) 'X'));
       assertThat(thirdShortcut, thirdShortcutFirstKeys.getKeyCode(), is((int) 'Y'));
    }
 
-   @Test(enabled = false, description = "pending attention key rewrite")
+   @Test
    public void testRespondsToAltY()
    {
       NativePreviewEvent mockNativePreviewEvent = mock(NativePreviewEvent.class);
@@ -171,29 +172,11 @@ public class KeyShortcutPresenterTest
       when(mockDataProvider.getList()).thenReturn(shortcutList);
       mockDisplay.clearPanel();
       when(mockDisplay.addContext(TEST_MESSAGE_APPLICATION_SCOPE)).thenReturn(mockDataProvider);
-      mockDisplay.showPanel();
 
       keyShortcutPresenter.bind();
       capturedNativePreviewHandler.getValue().onPreviewNativeEvent(mockNativePreviewEvent);
 
-      //Shortcut list should contain Alt+Y and Esc shortcuts
-      assertThat("KeyShortcutPresenter should register 2 global shortcuts", shortcutList.size(), is(2));
-
-      // esc should be first as it has no modifiers
-      Set<Keys> firstShortcutKeys = shortcutList.get(0).getAllKeys();
-      String firstShortcut = "first shortcut should be Esc with no modifiers and no aliases";
-      assertThat(firstShortcut, firstShortcutKeys.size(), is(1));
-      Keys firstShortcutFirstKeys = firstShortcutKeys.iterator().next();
-      assertThat(firstShortcut, firstShortcutFirstKeys.getModifiers(), is(0));
-      assertThat(firstShortcut, firstShortcutFirstKeys.getKeyCode(), is(KeyCodes.KEY_ESCAPE));
-
-      // Alt+Y should be the other
-      Set<Keys> secondShortcutKeys = shortcutList.get(1).getAllKeys();
-      String secondShortcut = "second shortcut should be Alt+Y with no aliases";
-      assertThat(secondShortcut, secondShortcutKeys.size(), is(1));
-      Keys secondShortcutFirstKeys = secondShortcutKeys.iterator().next();
-      assertThat(secondShortcut, secondShortcutFirstKeys.getModifiers(), is(Keys.ALT_KEY));
-      assertThat(secondShortcut, secondShortcutFirstKeys.getKeyCode(), is((int) 'Y'));
+      verify(mockDisplay).showPanel();
    }
 
 }
