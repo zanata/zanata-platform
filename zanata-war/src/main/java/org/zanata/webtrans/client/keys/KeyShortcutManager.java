@@ -18,7 +18,6 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.zanata.webtrans.client.keys;
 
 import java.util.HashMap;
@@ -29,11 +28,25 @@ import java.util.Set;
 import org.zanata.webtrans.client.events.KeyShortcutEvent;
 
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
  * Responsible for maintaining a map of key shortcuts, including invocation and
  * registration handling.
+ * 
+ * To use this class:
+ * <ol>
+ *   <li>implement {@link #getKeys} to determine which type of shortcuts
+ *       the implementation responds to.</li>
+ *   <li>Implement {@link #handleIfMatchingShortcut} to define the
+ *       behaviour when a shortcut given to {@link #processKeyEvent}
+ *       matches an added shortcut, as well as any additional conditions
+ *       that need to be checked before firing. Use
+ *       {@link #triggerShortcutEvent} to actually trigger the shortcut,
+ *       or return false to indicate that the shortcut was not
+ *       triggered.</li>
+ *   <li>Optionally, override {@link #handleNonMatchedShortcut} to
+ *       respond to events that have not triggered a shortcut.</li>
+ * </ol>
  * 
  * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
  *
@@ -62,15 +75,6 @@ public abstract class KeyShortcutManager
       return shortcutMap;
    }
 
-   /**
-    * Register a {@link KeyShortcut} to respond to a specific key combination
-    * for a context.
-    * 
-    * @param shortcut to register
-    * 
-    * @return a {@link HandlerRegistration} that can be used to un-register the
-    *         shortcut
-    */
    public void add(KeyShortcut shortcut)
    {
       for (Keys keys : getKeys(shortcut))
