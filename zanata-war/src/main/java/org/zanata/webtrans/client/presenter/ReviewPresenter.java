@@ -2,14 +2,25 @@ package org.zanata.webtrans.client.presenter;
 
 import java.util.List;
 
+import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.RunValidationEvent;
+import org.zanata.webtrans.client.events.TransUnitSaveEvent;
+import org.zanata.webtrans.client.rpc.AbstractAsyncCallback;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.rpc.NoOpAsyncCallback;
 import org.zanata.webtrans.client.service.GetTransUnitActionContextHolder;
+import org.zanata.webtrans.client.service.NavigationService;
+import org.zanata.webtrans.client.service.TransUnitSaveService;
 import org.zanata.webtrans.client.ui.ReviewContentWrapper;
 import org.zanata.webtrans.client.view.ReviewContentsDisplay;
 import org.zanata.webtrans.client.view.ReviewDisplay;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
+import org.zanata.webtrans.shared.rpc.ReviewResult;
+import org.zanata.webtrans.shared.rpc.ReviewTranslationAction;
+import org.zanata.webtrans.shared.rpc.ReviewTranslationResult;
+import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.util.Finds;
 
 import com.google.common.base.Optional;
@@ -31,16 +42,18 @@ public class ReviewPresenter extends WidgetPresenter<ReviewDisplay> implements R
    private final EventBus eventBus;
    private final Provider<ReviewContentsDisplay> reviewContentsDisplayProvider;
    private final SourceContentsPresenter sourceContentsPresenter;
+   private final NavigationService navigationService;
    private TransUnitId selectedId;
    private List<ReviewContentsDisplay> contentsDisplayList;
 
    @Inject
-   public ReviewPresenter(ReviewDisplay display, EventBus eventBus, Provider<ReviewContentsDisplay> reviewContentsDisplayProvider, CachingDispatchAsync dispatcher, SourceContentsPresenter sourceContentsPresenter)
+   public ReviewPresenter(ReviewDisplay display, EventBus eventBus, Provider<ReviewContentsDisplay> reviewContentsDisplayProvider, CachingDispatchAsync dispatcher, SourceContentsPresenter sourceContentsPresenter, NavigationService navigationService)
    {
       super(display, eventBus);
       this.eventBus = eventBus;
       this.reviewContentsDisplayProvider = reviewContentsDisplayProvider;
       this.sourceContentsPresenter = sourceContentsPresenter;
+      this.navigationService = navigationService;
 
       display.setListener(this);
    }
@@ -52,6 +65,7 @@ public class ReviewPresenter extends WidgetPresenter<ReviewDisplay> implements R
       for (TransUnit transUnit : transUnits)
       {
          ReviewContentsDisplay display = reviewContentsDisplayProvider.get();
+         display.setListener(this);
          display.setValueAndCreateNewEditors(transUnit);
          builder.add(display);
       }
@@ -105,9 +119,12 @@ public class ReviewPresenter extends WidgetPresenter<ReviewDisplay> implements R
    @Override
    public void acceptTranslation(TransUnitId id)
    {
-      //TODO implement
-      throw new UnsupportedOperationException("Implement me!");
-      //
+      TransUnit transUnit = navigationService.getByIdOrNull(id);
+      if (transUnit != null)
+      {
+         TransUnitSaveEvent saveEvent = new TransUnitSaveEvent(transUnit.getTargets(), ContentState.Accepted, id, transUnit.getVerNum(), transUnit.getTargets());
+         eventBus.fireEvent(saveEvent);
+      }
    }
 
    @Override

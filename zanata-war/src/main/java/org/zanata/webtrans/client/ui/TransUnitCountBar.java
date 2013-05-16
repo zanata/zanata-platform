@@ -32,6 +32,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
    private static TransUnitCountBarUiBinder uiBinder = GWT.create(TransUnitCountBarUiBinder.class);
 
    protected final TooltipPopupPanel tooltipPanel;
+   private static final int TOTAL_WIDTH = 100;
 
    interface TransUnitCountBarUiBinder extends UiBinder<Widget, TransUnitCountBar>
    {
@@ -41,7 +42,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
    LayoutPanel layoutPanel;
 
    @UiField
-   FlowPanel approvedPanel, needReviewPanel, untranslatedPanel, undefinedPanel;
+   FlowPanel approvedPanel, needReviewPanel, untranslatedPanel, undefinedPanel, acceptedPanel, rejectedPanel;
 
    @UiField
    Label label;
@@ -52,8 +53,6 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
 
    private final WebTransMessages messages;
 
-   private int totalWidth = 100;
-
    private boolean statsByWords = true;
 
    @Inject
@@ -62,7 +61,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
       this.messages = messages;
       this.labelFormat = labelFormat;
 
-      tooltipPanel = new TooltipPopupPanel(messages);
+      tooltipPanel = new TooltipPopupPanel();
 
       initWidget(uiBinder.createAndBindUi(this));
 
@@ -106,10 +105,12 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
       refresh();
    }
 
-   private void setupLayoutPanel(double undefinedLeft, double undefinedWidth, double approvedLeft, double approvedWidth, double needReviewLeft, double needReviewWidth, double untranslatedLeft, double untranslatedWidth)
+   private void setupLayoutPanel(double undefinedLeft, double undefinedWidth, double acceptedLeft, double acceptedWidth, double rejectedLeft, double rejectedWidth, double approvedLeft, double approvedWidth, double needReviewLeft, double needReviewWidth, double untranslatedLeft, double untranslatedWidth)
    {
       layoutPanel.forceLayout();
       layoutPanel.setWidgetLeftWidth(undefinedPanel, undefinedLeft, Unit.PX, undefinedWidth, Unit.PX);
+      layoutPanel.setWidgetLeftWidth(acceptedPanel, acceptedLeft, Unit.PX, acceptedWidth, Unit.PX);
+      layoutPanel.setWidgetLeftWidth(rejectedPanel, rejectedLeft, Unit.PX, rejectedWidth, Unit.PX);
       layoutPanel.setWidgetLeftWidth(approvedPanel, approvedLeft, Unit.PX, approvedWidth, Unit.PX);
       layoutPanel.setWidgetLeftWidth(needReviewPanel, needReviewLeft, Unit.PX, needReviewWidth, Unit.PX);
       layoutPanel.setWidgetLeftWidth(untranslatedPanel, untranslatedLeft, Unit.PX, untranslatedWidth, Unit.PX);
@@ -117,12 +118,14 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
 
    public void refresh()
    {
-      int approved, needReview, untranslated, total;
+      int approved, needReview, untranslated, accepted, rejected, total;
       if (statsByWords)
       {
          approved = getWordsApproved();
          needReview = getWordsNeedReview();
          untranslated = getWordsUntranslated();
+         accepted = getWordsAccepted();
+         rejected = getWordsRejected();
          total = getWordsTotal();
       }
       else
@@ -130,6 +133,8 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
          approved = getUnitApproved();
          needReview = getUnitNeedReview();
          untranslated = getUnitUntranslated();
+         accepted = getUnitAccepted();
+         rejected = getUnitRejected();
          total = getUnitTotal();
       }
       int width = getOffsetWidth();
@@ -137,16 +142,21 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
       {
          undefinedPanel.clear();
          undefinedPanel.add(new Label(messages.noContent()));
-         setupLayoutPanel(0.0, width, 0.0, 0, 0.0, 0, 0.0, 0);
+         setupLayoutPanel(0.0, width, 0, 0, 0, 0, 0.0, 0, 0.0, 0, 0.0, 0);
          label.setText("");
       }
       else
       {
-         int completePx = approved * 100 / total * width / totalWidth;
-         int inProgressPx = needReview * 100 / total * width / totalWidth;
-         int unfinishedPx = untranslated * 100 / total * width / totalWidth;
+         int acceptedPx = accepted * 100 / total * width / TOTAL_WIDTH;
+         int rejectedPx = rejected * 100 / total * width / TOTAL_WIDTH;
+         int completePx = approved * 100 / total * width / TOTAL_WIDTH;
+         int inProgressPx = needReview * 100 / total * width / TOTAL_WIDTH;
+         int unfinishedPx = untranslated * 100 / total * width / TOTAL_WIDTH;
 
-         setupLayoutPanel(0.0, 0, 0.0, completePx, completePx, inProgressPx, completePx + inProgressPx, unfinishedPx);
+         int approvedLeft = acceptedPx + rejectedPx;
+         int needReviewLeft = approvedLeft + completePx;
+         int untranslatedLeft = needReviewLeft + inProgressPx;
+         setupLayoutPanel(0.0, 0, 0.0, acceptedPx, acceptedPx, acceptedPx, approvedLeft, completePx, needReviewLeft, inProgressPx, untranslatedLeft, unfinishedPx);
          setLabelText();
       }
 
@@ -158,6 +168,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
 
    private void setLabelText()
    {
+      // TODO rhbz953734 - remaining hours
       switch (labelFormat)
       {
       case PERCENT_COMPLETE_HRS:
@@ -176,11 +187,6 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
       default:
          label.setText("error: " + labelFormat.name());
       }
-   }
-
-   public int getApprovedPercent()
-   {
-      return stats.getApprovedPercent(statsByWords);
    }
 
    public int getWordsTotal()
@@ -203,6 +209,16 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
       return stats.getWordCount().get(ContentState.New);
    }
 
+   public int getWordsAccepted()
+   {
+      return stats.getWordCount().get(ContentState.Accepted);
+   }
+
+   public int getWordsRejected()
+   {
+      return stats.getWordCount().get(ContentState.Rejected);
+   }
+
    public int getUnitTotal()
    {
       return getUnitApproved() + getUnitNeedReview() + getUnitUntranslated();
@@ -221,6 +237,16 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
    public int getUnitUntranslated()
    {
       return stats.getUnitCount().get(ContentState.New);
+   }
+
+   public int getUnitAccepted()
+   {
+      return stats.getUnitCount().get(ContentState.Accepted);
+   }
+
+   public int getUnitRejected()
+   {
+      return stats.getUnitCount().get(ContentState.Rejected);
    }
 
    @Override

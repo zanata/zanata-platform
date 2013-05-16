@@ -122,6 +122,16 @@ table.FuzzyStateDecoration div.TableEditorCell-Target {
     border-right: 3px solid #ffc000;
 }
 
+table.AcceptedStateDecoration div.TableEditorCell-Target {
+    border-left: 3px solid #0000CD;
+    border-right: 3px solid #0000CD;
+}
+
+table.RejectedStateDecoration div.TableEditorCell-Target {
+    border-left: 3px solid #ff0000;
+    border-right: 3px solid #ff0000;
+}
+
 tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent {
 	padding-left: 5px;
 	padding-right: 5px;

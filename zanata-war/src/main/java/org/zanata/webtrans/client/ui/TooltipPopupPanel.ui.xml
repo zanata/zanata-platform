@@ -7,91 +7,117 @@
 
 	<ui:style field="style"
 		type="org.zanata.webtrans.client.ui.TooltipPopupPanel.Styles">
-			.transUnitCountTooltip {
-				background-color: #FBFBFB;
-				text-align: center;
-				border-radius: 10px;
-				border: 2px solid #818181;
-				padding: 2px;
-				z-index: 100;
-			}
-			
-			.table {
-				text-align: center;
-				font-size: 12px
-			}
-			
-			.table td
-			{
-				width:75px;
-				border-radius: 2px;
-			}
-			
-			.topHeader {
-				border: none;
-				color: #4F4F4F;
-				white-space: nowrap;
-				padding: 2px;
-			}
-			
-			.approved-header {
-				border: none;
-				color: #002D00;
-				white-space: nowrap;
-				padding: 2px;
-			}
-			
-			.needReview-header {
-				border: none;
-				color: #7D3E00;
-				white-space: nowrap;
-				padding: 2px;
-			}
-			
-			.untranslated-header {
-				border: none;
-				color: #6D6D6D;
-				white-space: nowrap;
-				padding: 2px;
-			}
-			
-			td.sideHeader {
-				border:none;
-				color: #4F4F4F;
-				white-space:nowrap;
-				width:40px;
-			}
-			
-			.total {
-				border: 1px solid #6D6D6D;
-				color:#4F4F4F;
-			}
-			
-			
-			.approved {
-				background:#099B09;
-				border: 1px solid #006900;
-				color:#002D00;
-			}
+        .transUnitCountTooltip {
+            background-color: #FBFBFB;
+            text-align: center;
+            border-radius: 10px;
+            border: 2px solid #818181;
+            padding: 2px;
+            z-index: 100;
+        }
 
-			.needReview {
-				background:#FFC000;
-				border: 1px solid #CD8E00;
-				color:#7D3E00;
-			}
+        .table {
+            text-align: center;
+            font-size: 12px
+        }
 
-			.untranslated {
-				background:#E5E5E5;
-				border: 1px solid #B3B3B3;
-				color:#6D6D6D;
-			}
-			
-		</ui:style>
+        .table td {
+            width: 75px;
+            border-radius: 2px;
+        }
+
+        .topHeader {
+            border: none;
+            color: #4F4F4F;
+            white-space: nowrap;
+            padding: 2px;
+        }
+
+        .accepted-header {
+            border: none;
+            color: #00008b;
+            white-space: nowrap;
+            padding: 2px;
+        }
+
+        .rejected-header {
+            border: none;
+            color: darkred;
+            white-space: nowrap;
+            padding: 2px;
+        }
+
+        .approved-header {
+            border: none;
+            color: #002D00;
+            white-space: nowrap;
+            padding: 2px;
+        }
+
+        .needReview-header {
+            border: none;
+            color: #7D3E00;
+            white-space: nowrap;
+            padding: 2px;
+        }
+
+        .untranslated-header {
+            border: none;
+            color: #6D6D6D;
+            white-space: nowrap;
+            padding: 2px;
+        }
+
+        td.sideHeader {
+            border: none;
+            color: #4F4F4F;
+            white-space: nowrap;
+            width: 40px;
+        }
+
+        .total {
+            border: 1px solid #6D6D6D;
+            color: #4F4F4F;
+        }
+
+        .accepted {
+            background: lightblue;
+            border: 1px solid #0000ff;
+            color: #0000CD;
+        }
+
+        .rejected {
+            background: lightcoral;
+            border: 1px solid #a90000;
+            color: #ff0000;
+        }
+
+        .approved {
+            background: #099B09;
+            border: 1px solid #006900;
+            color: #002D00;
+        }
+
+        .needReview {
+            background: #FFC000;
+            border: 1px solid #CD8E00;
+            color: #7D3E00;
+        }
+
+        .untranslated {
+            background: #E5E5E5;
+            border: 1px solid #B3B3B3;
+            color: #6D6D6D;
+        }
+
+    </ui:style>
 
 	<g:HTMLPanel>
 		<g:Grid styleName="{style.table}" cellPadding="2">
 			<g:row>
 				<g:cell styleName="{style.sideHeader}"/>
+				<g:cell styleName="{style.accepted-header}">Accepted</g:cell>
+				<g:cell styleName="{style.rejected-header}">Rejected</g:cell>
 				<g:cell styleName="{style.approved-header}">Translated</g:cell>
 				<g:cell styleName="{style.needReview-header}">Need Review</g:cell>
 				<g:cell styleName="{style.untranslated-header}">Untranslated</g:cell>
@@ -101,6 +127,8 @@
 
 			<g:row>
 				<g:cell styleName="{style.sideHeader}">Words</g:cell>
+				<g:customCell styleName="{style.accepted}"><g:InlineLabel ui:field="wordAccepted"/></g:customCell>
+				<g:customCell styleName="{style.rejected}"><g:InlineLabel ui:field="wordRejected"/></g:customCell>
 				<g:customCell styleName="{style.approved}"><g:InlineLabel ui:field="wordApproved"/></g:customCell>
 				<g:customCell styleName="{style.needReview}" ><g:InlineLabel ui:field="wordNeedReview"/></g:customCell>
 				<g:customCell styleName="{style.untranslated}"><g:InlineLabel ui:field="wordUntranslated" /></g:customCell>
@@ -109,6 +137,8 @@
 
 			<g:row>
 				<g:cell styleName="{style.sideHeader}">Msg</g:cell>
+				<g:customCell styleName="{style.accepted}" ><g:InlineLabel ui:field="msgAccepted"/></g:customCell>
+				<g:customCell styleName="{style.rejected}" ><g:InlineLabel ui:field="msgRejected"/></g:customCell>
 				<g:customCell styleName="{style.approved}" ><g:InlineLabel ui:field="msgApproved"/></g:customCell>
 				<g:customCell styleName="{style.needReview}" ><g:InlineLabel ui:field="msgNeedReview"/></g:customCell>
 				<g:customCell styleName="{style.untranslated}" ><g:InlineLabel ui:field="msgUntranslated"/></g:customCell>

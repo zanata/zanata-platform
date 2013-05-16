@@ -93,6 +93,7 @@ public class TransUnitsTablePresenterTest
       MockitoAnnotations.initMocks(this);
       contextHolder = new GetTransUnitActionContextHolder(new UserConfigHolder());
       presenter = new TransUnitsTablePresenter(display, eventBus, navigationService, sourceContentsPresenter, targetContentsPresenter, translatorService, translationHistoryPresenter, goToRowProvider, contextHolder, messages, userOptionsService);
+      presenter.setReviewPresenter(reviewPresenter);
 
       verify(display).setRowSelectionListener(presenter);
       verify(display).addFilterConfirmationHandler(presenter);

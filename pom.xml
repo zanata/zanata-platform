@@ -33,7 +33,7 @@
 
       <zanata.api.version>2.3.1-SNAPSHOT</zanata.api.version>
       <zanata.client.version>2.3.0</zanata.client.version>
-      <zanata.common.version>2.3.0</zanata.common.version>
+      <zanata.common.version>2.3.1-SNAPSHOT</zanata.common.version>
 
 
 	  <richfaces.version>3.3.3.Final</richfaces.version>

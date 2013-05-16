@@ -56,13 +56,13 @@ public class TooltipPopupPanel extends PopupPanel
    Styles style;
 
    @UiField
-   InlineLabel wordApproved, wordNeedReview, wordUntranslated, wordTotal;
+   InlineLabel wordAccepted, wordRejected, wordApproved, wordNeedReview, wordUntranslated, wordTotal;
 
    @UiField
-   InlineLabel msgApproved, msgNeedReview, msgUntranslated, msgTotal;
+   InlineLabel msgAccepted, msgRejected, msgApproved, msgNeedReview, msgUntranslated, msgTotal;
 
    @Inject
-   public TooltipPopupPanel(final WebTransMessages messages)
+   public TooltipPopupPanel()
    {
       super(true);
       HTMLPanel container = uiBinder.createAndBindUi(this);
@@ -73,11 +73,15 @@ public class TooltipPopupPanel extends PopupPanel
 
    public void refreshData(TransUnitCountBar stats)
    {
+      wordAccepted.setText(String.valueOf(stats.getWordsAccepted()));
+      wordRejected.setText(String.valueOf(stats.getWordsRejected()));
       wordApproved.setText(String.valueOf(stats.getWordsApproved()));
       wordNeedReview.setText(String.valueOf(stats.getWordsNeedReview()));
       wordUntranslated.setText(String.valueOf(stats.getWordsUntranslated()));
       wordTotal.setText(String.valueOf(stats.getWordsTotal()));
 
+      msgAccepted.setText(String.valueOf(stats.getUnitAccepted()));
+      msgRejected.setText(String.valueOf(stats.getUnitRejected()));
       msgApproved.setText(String.valueOf(stats.getUnitApproved()));
       msgNeedReview.setText(String.valueOf(stats.getUnitNeedReview()));
       msgUntranslated.setText(String.valueOf(stats.getUnitUntranslated()));
