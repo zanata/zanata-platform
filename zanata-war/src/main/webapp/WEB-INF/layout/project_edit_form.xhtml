@@ -45,12 +45,12 @@
                 <f:selectItems value="#{projectHome.projectTypeList}"/>
             </h:selectOneMenu>
             <s:span styleClass="icon-info-circle-2 input_help" id="defaultProjectTypeHelp">
-                <rich:toolTip>
+                <rich:tooltip>
                    #{messages['jsf.projectType.Description']}<br/>
                    #{messages['jsf.projectType.DefaultBehaviour']}<br/>
                    <br/>
                    <em>#{messages['jsf.projectType.MoreInfo']}</em><br/>
-                </rich:toolTip>
+                </rich:tooltip>
             </s:span>
         </s:decorate>
 
@@ -113,7 +113,6 @@
 
 
 	<s:div id="languagelist">
-	<richext:spacer height="20" />
 	<a4j:region renderRegionOnly="true">
       	<h:panelGrid columns="3" id ="languagePanel" rendered="#{localeListAction.setting}">
 	    <h:outputText value="#{messages['jsf.DisabledLocales']}"/>
@@ -148,7 +147,6 @@
     </s:div>
 
     <s:div id="roleList">
-        <richext:spacer height="20" />
         <a4j:region renderRegionOnly="true">
             <rich:dataGrid value="#{projectRoleRestrictionAction.availableRoles}" var="role" columns="4"
                            rendered="#{projectRoleRestrictionAction.restrictByRoles}">
@@ -161,7 +159,7 @@
     <s:div>
 		<a4j:region>
 			<h:selectBooleanCheckbox id="validationOptions" value="#{projectValidationOptionsAction.overrideValidations}" >
-				<a4j:support event="onchange" reRender="validationOptionsList" />
+				<a4j:ajax event="change" reRender="validationOptionsList" />
 			</h:selectBooleanCheckbox>
 		</a4j:region>
 		<h:outputText value="#{messages['jsf.customizedValidationMessage']}"/>
@@ -169,11 +167,10 @@
 
 
 	<s:div id="validationOptionsList">
-	<rich:spacer height="20px" />
 		 <rich:dataGrid value="#{projectValidationOptionsAction.validationList}" var="validationAction" columns="1"
                   rendered="#{projectValidationOptionsAction.overrideValidations}">
        		<h:selectBooleanCheckbox value="#{projectValidationOptionsAction.selectedValidations[validationAction.id.name()]}">
-       			<a4j:support event="onchange" action="#{projectValidationOptionsAction.checkExclusive(validationAction)}" reRender="validationOptionsList"/>
+       			<a4j:ajax event="change" action="#{projectValidationOptionsAction.checkExclusive(validationAction)}" reRender="validationOptionsList"/>
        		</h:selectBooleanCheckbox>
        		<h:outputLabel value="#{validationAction.id.displayName}"/>
        		<h:outputLabel value="#{validationAction.description}" style="float:right;margin-right:20px;"/>
