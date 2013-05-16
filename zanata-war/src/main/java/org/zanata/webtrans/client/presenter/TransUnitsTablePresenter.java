@@ -317,21 +317,22 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    @Override
    public void refreshRow(TransUnit updatedTransUnit, EditorClientId editorClientId, TransUnitUpdated.UpdateType updateType)
    {
-      if (isInReviewMode)
-      {
-         GoToRowLink goToRowLink = goToRowLinkProvider.get();
 
-         goToRowLink.prepare("", contextHolder.getContext().getDocument(), updatedTransUnit.getId());
-         eventBus.fireEvent(new NotificationEvent(Warning, "Translation has changed", goToRowLink));
-         reviewPresenter.updateRow(updatedTransUnit);
-      }
       if (updateFromCurrentUsersEditorSave(editorClientId, updateType))
       {
          // the TransUnitUpdatedEvent is from current user's save action.
          // Ignored.
          return;
       }
-      if (Objects.equal(selectedId, updatedTransUnit.getId()) && !Objects.equal(editorClientId, translatorService.getCurrentEditorClientId()) && !isInReviewMode)
+      if (isInReviewMode)
+      {
+         // FIXME rhbz953734 - need to ignore change from user itself
+         GoToRowLink goToRowLink = goToRowLinkProvider.get();
+
+         goToRowLink.prepare("", contextHolder.getContext().getDocument(), updatedTransUnit.getId());
+         eventBus.fireEvent(new NotificationEvent(Warning, "Translation has changed", goToRowLink));
+      }
+      else if (Objects.equal(selectedId, updatedTransUnit.getId()) && !Objects.equal(editorClientId, translatorService.getCurrentEditorClientId()))
       {
          // updatedTU is our active row but done by another user
          eventBus.fireEvent(new NotificationEvent(Error, messages.concurrentEdit()));
@@ -342,6 +343,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
             translationHistoryPresenter.displayEntries(latest, Collections.<TransHistoryItem> emptyList());
          }
       }
+      reviewPresenter.updateRow(updatedTransUnit);
       targetContentsPresenter.updateRow(updatedTransUnit);
    }
 

@@ -2,16 +2,12 @@ package org.zanata.webtrans.client.ui;
 
 import java.util.List;
 
-import org.zanata.webtrans.client.view.NeedsRefresh;
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.HasText;
-import com.google.gwt.user.client.ui.Widget;
 
 public class ReviewContentWidget extends Composite implements ReviewContentWrapper
 {
@@ -38,7 +34,6 @@ public class ReviewContentWidget extends Composite implements ReviewContentWrapp
       }
       else
       {
-         Log.info("add error to root");
          root.addStyleName(style.hasValidationError());
       }
    }

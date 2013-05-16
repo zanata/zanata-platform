@@ -7,7 +7,7 @@
 
     <ui:with field="messages" type="org.zanata.webtrans.client.resources.TableEditorMessages" />
 
-    <ui:style field="style" type="org.zanata.webtrans.client.view.TargetContentsView.Styles">
+    <ui:style>
         .targetContentsCell {
             table-layout: fixed;
             padding: 3px;
@@ -40,8 +40,8 @@
         </g:cell>
         <g:cell verticalAlignment="ALIGN_TOP" horizontalAlignment="ALIGN_JUSTIFY" width="22px">
             <g:HTMLPanel ui:field="buttons" styleName="fadeElement buttons">
-                <g:InlineLabel ui:field="acceptIcon" title="{messages.reviewAccept}" styleName="icon-ok-circle2 {style.button}"/>
-                <g:InlineLabel ui:field="rejectIcon" title="{messages.reviewReject}" styleName="icon-cancel-circle2 {style.button}" />
+                <g:InlineLabel ui:field="acceptIcon" title="{messages.reviewAccept}" styleName="icon-thumbs-up {style.button}"/>
+                <g:InlineLabel ui:field="rejectIcon" title="{messages.reviewReject}" styleName="icon-thumbs-down {style.button}" />
             </g:HTMLPanel>
         </g:cell>
     </g:HorizontalPanel>

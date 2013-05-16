@@ -104,8 +104,8 @@ public class ReviewContentsView extends Composite implements ReviewContentsDispl
          case Approved:
             state = " Approved";
             break;
-         case Reviewed:
-            state = " Reviewed";
+         case Accepted:
+            state = " Accepted";
             break;
          case Rejected:
             state = " Rejected";

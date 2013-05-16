@@ -59,6 +59,8 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Parameter;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zanata.common.ContentState;
 import org.zanata.common.HasContents;
 import org.zanata.hibernate.search.ContentStateBridge;
@@ -356,6 +358,10 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
       // insert history if this has changed from its initial state
       if (this.initialState != null && this.initialState.hasChanged(this))
       {
+         if (initialState.getState() == ContentState.Accepted && getState() != ContentState.Rejected)
+         {
+            throw new IllegalStateException("Attempted to modify a review accepted translation");
+         }
          this.getHistory().put(this.oldVersionNum, this.initialState);
       }
    }

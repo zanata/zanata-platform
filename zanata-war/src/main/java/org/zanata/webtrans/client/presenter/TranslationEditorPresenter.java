@@ -56,6 +56,7 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
       this.transUnitsTablePresenter = transUnitsTablePresenter;
       this.editorKeyShortcuts = editorKeyShortcuts;
       this.reviewPresenter = reviewPresenter;
+      // TODO rhbz953734 - change this so only transUnitTablePresenter gets injected ReviewPresenter
       transUnitsTablePresenter.setReviewPresenter(reviewPresenter);
 
       display.setListener(this);

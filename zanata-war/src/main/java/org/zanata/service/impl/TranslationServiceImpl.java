@@ -53,6 +53,7 @@ import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.dao.TextFlowTargetHistoryDAO;
 import org.zanata.events.TextFlowTargetStateEvent;
 import org.zanata.exception.ConcurrentTranslationException;
+import org.zanata.exception.ModifyReviewAcceptedTranslationException;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.lock.Lock;
 import org.zanata.model.HAccount;
@@ -310,6 +311,10 @@ public class TranslationServiceImpl implements TranslationService
       for (String warning : warnings)
       {
          log.warn(warning);
+      }
+      if (previousState == ContentState.Accepted && target.getState() != ContentState.Rejected)
+      {
+         throw new ModifyReviewAcceptedTranslationException(target.getLastModifiedBy().getName());
       }
       if (target.getState() != previousState)
       {

@@ -22,6 +22,16 @@
 			background: #c6c6c6;
 			z-index: 0;
 		}
+
+        .accepted {
+            background: #0000CD;
+            z-index: 0;
+        }
+
+        .rejected {
+            background: #ff0000;
+            z-index: 0;
+        }
 		
 		.undefined {
 			z-index: 0;
@@ -36,6 +46,12 @@
 		
 	</ui:style>
 	<g:LayoutPanel ui:field='layoutPanel' styleName="{style.unitStatus}">
+        <g:layer left='0' width='0'>
+            <g:FlowPanel ui:field='acceptedPanel' styleName="{style.accepted}"/>
+        </g:layer>
+        <g:layer left='0' width='0'>
+            <g:FlowPanel ui:field='rejectedPanel' styleName="{style.rejected}"/>
+        </g:layer>
 		<g:layer left='0' width='0'>
 			<g:FlowPanel ui:field='approvedPanel' styleName="{style.approved}"/>
 		</g:layer>

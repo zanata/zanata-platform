@@ -90,8 +90,8 @@ public class AppPresenterTest
    @BeforeMethod
    public void beforeMethod()
    {
-      selectedDocumentStats = new TranslationStats(new TransUnitCount(1, 2, 3), new TransUnitWords(4, 5, 6));
-      projectStats = new TranslationStats(new TransUnitCount(7, 8, 9), new TransUnitWords(10, 11, 12));
+      selectedDocumentStats = new TranslationStats(new TransUnitCount(1, 2, 3, 0, 0), new TransUnitWords(4, 5, 6, 0, 0));
+      projectStats = new TranslationStats(new TransUnitCount(7, 8, 9, 0, 0), new TransUnitWords(10, 11, 12, 0, 0));
 
       MockitoAnnotations.initMocks(this);
       presenter = new AppPresenter(display, eventBus, sideMenuPresenter, keyShortcutPresenter, translationPresenter, documentListPresenter, searchResultPresenter, userWorkspace, messages, history, window, location);
@@ -316,7 +316,7 @@ public class AppPresenterTest
       presenter.setStatesForTest(projectStats, selectedDocumentStats, null, null);
       DocumentId docId = new DocumentId(1L, "");
       // newly selected document has new stats
-      TranslationStats newSelectedStats = new TranslationStats(new TransUnitCount(1, 2, 3), new TransUnitWords(4, 5, 6));
+      TranslationStats newSelectedStats = new TranslationStats(new TransUnitCount(1, 2, 3, 0, 0), new TransUnitWords(4, 5, 6, 0, 0));
       DocumentInfo documentInfo = new DocumentInfo(docId, "a.po", "pot/", new LocaleId("en-US"), newSelectedStats, new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator"));
       when(documentListPresenter.getDocumentInfo(docId)).thenReturn(documentInfo);
       // current view is editor
@@ -340,7 +340,7 @@ public class AppPresenterTest
       presenter.setStatesForTest(projectStats, selectedDocumentStats, MainView.Documents, null);
       DocumentId docId = new DocumentId(1L, "");
       // newly selected document has new stats
-      TranslationStats newSelectedStats = new TranslationStats(new TransUnitCount(1, 2, 3), new TransUnitWords(4, 5, 6));
+      TranslationStats newSelectedStats = new TranslationStats(new TransUnitCount(1, 2, 3, 0, 0), new TransUnitWords(4, 5, 6, 0, 0));
       DocumentInfo documentInfo = new DocumentInfo(docId, "a.po", "pot/", new LocaleId("en-US"), newSelectedStats, new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator"));
       when(documentListPresenter.getDocumentInfo(docId)).thenReturn(documentInfo);
 
@@ -393,7 +393,7 @@ public class AppPresenterTest
       verify(display, atLeastOnce()).setStats(selectedDocumentStats, true);
 
       // When:
-      TranslationStats newStats = new TranslationStats(new TransUnitCount(9, 9, 9), new TransUnitWords(8, 8, 8));
+      TranslationStats newStats = new TranslationStats(new TransUnitCount(9, 9, 9, 0, 0), new TransUnitWords(8, 8, 8, 0, 0));
       presenter.onDocumentStatsUpdated(new DocumentStatsUpdatedEvent(docId, newStats));
 
       // Then:

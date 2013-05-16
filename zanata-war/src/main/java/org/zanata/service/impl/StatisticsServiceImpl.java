@@ -122,6 +122,7 @@ public class StatisticsServiceImpl implements StatisticsResource
          throw new NoSuchEntityException(projectSlug + "/" + iterationSlug);
       }
 
+      // FIXME rhbz953734 this needs to fix
       Map<String, TransUnitCount> transUnitIterationStats = projectIterationDAO.getAllStatisticsForContainer(iteration.getId());
       Map<String, TransUnitWords> wordIterationStats = null;
       if (includeWordStats)
@@ -141,7 +142,7 @@ public class StatisticsServiceImpl implements StatisticsResource
          // Stats might not return anything if nothing is translated
          if (count == null)
          {
-            count = new TransUnitCount(0, 0, (int) iterationTotalMssgs);
+            count = new TransUnitCount(0, 0, (int) iterationTotalMssgs, 0, 0);
          }
 
          HTextFlowTarget target = localeServiceImpl.getLastTranslated(projectSlug, iterationSlug, locId);
@@ -168,7 +169,7 @@ public class StatisticsServiceImpl implements StatisticsResource
             TransUnitWords wordCount = wordIterationStats.get(locId.getId());
             if (wordCount == null)
             {
-               wordCount = new TransUnitWords(0, 0, (int) iterationTotalWords);
+               wordCount = new TransUnitWords(0, 0, (int) iterationTotalWords, 0, 0);
             }
 
             TranslationStatistics wordsStats = getWordsStats(wordCount, locId, lastModifiedDate, lastModifiedBy);
@@ -243,7 +244,7 @@ public class StatisticsServiceImpl implements StatisticsResource
          TransUnitCount count;
          if (stats == null)
          {
-            count = new TransUnitCount(0, 0, (int) docTotalMssgs);
+            count = new TransUnitCount(0, 0, (int) docTotalMssgs, 0, 0);
          }
          else
          {
@@ -261,7 +262,7 @@ public class StatisticsServiceImpl implements StatisticsResource
             TransUnitWords wordCount;
             if (stats == null)
             {
-               wordCount = new TransUnitWords(0, 0, (int) docTotalWords);
+               wordCount = new TransUnitWords(0, 0, (int) docTotalWords, 0, 0);
             }
             else
             {
