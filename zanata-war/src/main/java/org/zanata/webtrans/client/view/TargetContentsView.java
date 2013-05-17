@@ -26,6 +26,7 @@ import java.util.List;
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.ui.Editor;
+import org.zanata.webtrans.client.ui.EditorButtonsWidget;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.client.ui.ValidationMessagePanelView;
@@ -58,26 +59,18 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
 
    @UiField
    Grid editorGrid;
-   @UiField
-   HTMLPanel buttons;
 
    @UiField(provided = true)
    ValidationMessagePanelView validationPanel;
-   @UiField
-   InlineLabel saveIcon;
-   @UiField
-   InlineLabel fuzzyIcon;
-   @UiField
-   InlineLabel cancelIcon;
-   @UiField
-   InlineLabel historyIcon;
+
    @UiField
    Styles style;
-   @UiField
-   SimplePanel undoContainer;
+
    @UiField
    Label savingIndicator;
-   
+   @UiField
+   EditorButtonsWidget buttons;
+
    private HorizontalPanel rootPanel;
    private ArrayList<ToggleEditor> editors;
    private Listener listener;
@@ -118,28 +111,15 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    @Override
    public void addUndo(final UndoLink undoLink)
    {
-      undoLink.setLinkStyle("icon-undo " + style.button());
-      undoLink.setUndoCallback(new UndoLink.UndoCallback()
-      {
-         @Override
-         public void preUndo()
-         {
-            undoLink.setLinkStyle("icon-progress " + style.button());
-         }
 
-         @Override
-         public void postUndoSuccess()
-         {
-            undoContainer.remove(undoLink);
-         }
-      });
-      undoContainer.setWidget(undoLink);
+      buttons.addUndo(undoLink);
    }
 
    @Override
    public void setValueAndCreateNewEditors(TransUnit transUnit)
    {
       cachedValue = transUnit;
+      buttons.setId(cachedValue.getId());
 
       editors.clear();
       List<String> cachedTargets = cachedValue.getTargets();
@@ -228,34 +208,6 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
       }
    }
 
-   @UiHandler("saveIcon")
-   public void onSaveAsApproved(ClickEvent event)
-   {
-      listener.saveAsApprovedAndMoveNext(cachedValue.getId());
-      event.stopPropagation();
-   }
-
-   @UiHandler("fuzzyIcon")
-   public void onSaveAsFuzzy(ClickEvent event)
-   {
-      listener.saveAsFuzzy(cachedValue.getId());
-      event.stopPropagation();
-   }
-
-   @UiHandler("cancelIcon")
-   public void onCancel(ClickEvent event)
-   {
-      listener.onCancel(cachedValue.getId());
-      event.stopPropagation();
-   }
-
-   @UiHandler("historyIcon")
-   public void onHistoryClick(ClickEvent event)
-   {
-      listener.showHistory(cachedValue.getId());
-      event.stopPropagation();
-   }
-
    @Override
    public void highlightSearch(String findMessage)
    {
@@ -298,6 +250,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    public void setListener(Listener listener)
    {
       this.listener = listener;
+      buttons.setListener(listener);
    }
 
    @Override
@@ -357,8 +310,6 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
 
    interface Styles extends CssResource
    {
-
-      String button();
 
       String targetContentsCell();
 

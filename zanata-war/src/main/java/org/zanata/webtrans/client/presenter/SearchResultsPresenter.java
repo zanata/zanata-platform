@@ -447,8 +447,10 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
 
    private void showDocInEditor(String doc, boolean runSearch)
    {
+      contextHolder.updateContext(null); //this will ensure editor reload (prevent multiple cursors in code mirror)
       HistoryToken token = HistoryToken.fromTokenString(history.getToken());
       token.setDocumentPath(doc);
+      token.clearEditorFilterAndSearch();
       token.setView(MainView.Editor);
       if (runSearch)
       {

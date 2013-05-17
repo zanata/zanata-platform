@@ -1,0 +1,24 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+    <ui:with field="messages" type="org.zanata.webtrans.client.resources.TableEditorMessages" />
+
+    <ui:style field="style" type="org.zanata.webtrans.client.ui.EditorButtonsWidget.Style">
+        .button {
+            cursor: pointer;
+            padding: 1px;
+        }
+
+        .button:hover {
+            color: #0085CC;
+        }
+
+    </ui:style>
+
+    <g:HTMLPanel ui:field="buttons" styleName="fadeElement buttons">
+        <g:InlineLabel ui:field="saveIcon" title="{messages.editSaveShortcut}" styleName="icon-install {style.button}"/>
+        <g:InlineLabel ui:field="fuzzyIcon" title="{messages.editSaveAsFuzzyShortcut}" styleName="icon-flag-1 {style.button}" />
+        <g:InlineLabel ui:field="cancelIcon" title="{messages.editCancelShortcut}" styleName="icon-cancel-circle {style.button}" />
+        <g:InlineLabel ui:field="historyIcon" title="{messages.history}" styleName="icon-back-in-time {style.button}" />
+        <g:SimplePanel ui:field="undoContainer" />
+    </g:HTMLPanel>
+</ui:UiBinder>
