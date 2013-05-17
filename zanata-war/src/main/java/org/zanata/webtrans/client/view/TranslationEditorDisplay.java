@@ -29,10 +29,6 @@ public interface TranslationEditorDisplay extends WidgetDisplay
 
    boolean getAndToggleResizeButton();
 
-   void setReviewMode(boolean isReviewMode);
-
-   void setReviewActionView(IsWidget widget);
-
    interface Listener
    {
       void refreshCurrentPage();

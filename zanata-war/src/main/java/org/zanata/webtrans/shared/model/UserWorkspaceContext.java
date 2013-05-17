@@ -7,6 +7,7 @@ public class UserWorkspaceContext implements IsSerializable
    private boolean isProjectActive;
    private boolean hasWriteAccess;
    private boolean hasGlossaryUpdateAccess;
+   private boolean hasReviewAccess;
    private DocumentInfo selectedDoc;
 
    private WorkspaceContext workspaceContext;
@@ -17,12 +18,13 @@ public class UserWorkspaceContext implements IsSerializable
    {
    }
 
-   public UserWorkspaceContext(WorkspaceContext workspaceContext, boolean isProjectActive, boolean hasWriteAccess, boolean hasGlossaryUpdateAccess)
+   public UserWorkspaceContext(WorkspaceContext workspaceContext, boolean isProjectActive, boolean hasWriteAccess, boolean hasGlossaryUpdateAccess, boolean hasReviewAccess)
    {
       this.workspaceContext = workspaceContext;
       this.isProjectActive = isProjectActive;
       this.hasWriteAccess = hasWriteAccess;
       this.hasGlossaryUpdateAccess = hasGlossaryUpdateAccess;
+      this.hasReviewAccess = hasReviewAccess;
    }
 
    public boolean hasGlossaryUpdateAccess()
@@ -58,6 +60,11 @@ public class UserWorkspaceContext implements IsSerializable
    public boolean hasReadOnlyAccess()
    {
       return (!isProjectActive() || !hasWriteAccess());
+   }
+
+   public boolean isHasReviewAccess()
+   {
+      return hasReviewAccess;
    }
 
    public void setSelectedDoc(DocumentInfo selectedDoc)

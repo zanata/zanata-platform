@@ -216,7 +216,6 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
       switch (viewToShow)
       {
       // TODO use revealDisplay/concealDisplay for editor and document views
-      case Review:
       case Editor:
          if (selectedDocument != null)
          {
@@ -228,7 +227,6 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
          }
          currentDisplayStats = selectedDocumentStats;
          translationPresenter.revealDisplay();
-         translationPresenter.changeMode(viewToShow);
          searchResultsPresenter.concealDisplay();
          sideMenuPresenter.showValidationOptions(true);
          sideMenuPresenter.setOptionMenu(MainView.Editor);

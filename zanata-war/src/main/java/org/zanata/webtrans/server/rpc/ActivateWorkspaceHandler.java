@@ -120,6 +120,7 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
       boolean isProjectActive = isProjectIterationActive(project.getStatus(), projectIteration.getStatus());
       boolean hasWriteAccess = hasPermission(project, locale);
       boolean hasGlossaryUpdateAccess = hasGlossaryUpdatePermission();
+      boolean hasReviewAccess = hasReviewerPermission();
 
       LoadOptionsResult loadOptsRes = loadOptionsHandler.execute(new LoadOptionsAction(null), context);
 
@@ -127,7 +128,7 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
 
       Identity identity = new Identity(editorClientId, person);
       workspace.getWorkspaceContext().getWorkspaceId().getProjectIterationId().setProjectType(projectIteration.getProjectType());
-      UserWorkspaceContext userWorkspaceContext = new UserWorkspaceContext(workspace.getWorkspaceContext(), isProjectActive, hasWriteAccess, hasGlossaryUpdateAccess);
+      UserWorkspaceContext userWorkspaceContext = new UserWorkspaceContext(workspace.getWorkspaceContext(), isProjectActive, hasWriteAccess, hasGlossaryUpdateAccess, hasReviewAccess);
       return new ActivateWorkspaceResult(userWorkspaceContext, identity, loadOptsRes.getConfiguration(), validationResult.getValidations());
    }
 
@@ -140,10 +141,16 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
    {
       return identity.hasPermission(SecurityService.TranslationAction.MODIFY.action(), project, locale);
    }
-   
+
    private boolean hasGlossaryUpdatePermission()
    {
       return identity.hasPermission("glossary-update", "");
+   }
+
+   private boolean hasReviewerPermission()
+   {
+      //FIXME rhbz953734 - may need to review this
+      return identity.hasRole("reviewer");
    }
 
    private boolean isProjectIterationActive(EntityStatus projectStatus, EntityStatus iterStatus)

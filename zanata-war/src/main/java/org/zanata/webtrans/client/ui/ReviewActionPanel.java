@@ -1,22 +1,18 @@
-package org.zanata.webtrans.client.view;
+package org.zanata.webtrans.client.ui;
 
-import org.zanata.webtrans.shared.model.TransUnit;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.SelectionModel;
 import com.google.inject.Inject;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class ReviewView extends Composite implements ReviewDisplay
+public class ReviewActionPanel extends Composite
 {
    private static ReviewViewUiBinder ourUiBinder = GWT.create(ReviewViewUiBinder.class);
    private final FlowPanel root;
@@ -25,19 +21,12 @@ public class ReviewView extends Composite implements ReviewDisplay
    InlineLabel acceptAllIcon;
    @UiField
    InlineLabel rejectAllIcon;
-   private Listener listener;
 
    @Inject
-   public ReviewView()
+   public ReviewActionPanel()
    {
       root = ourUiBinder.createAndBindUi(this);
 
-   }
-
-   @Override
-   public void setListener(Listener listener)
-   {
-      this.listener = listener;
    }
 
    @Override
@@ -46,7 +35,7 @@ public class ReviewView extends Composite implements ReviewDisplay
       return root;
    }
 
-   interface ReviewViewUiBinder extends UiBinder<FlowPanel, ReviewView>
+   interface ReviewViewUiBinder extends UiBinder<FlowPanel, ReviewActionPanel>
    {
    }
 }

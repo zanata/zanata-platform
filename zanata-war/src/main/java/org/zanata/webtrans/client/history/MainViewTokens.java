@@ -15,7 +15,6 @@ public enum MainViewTokens implements TokensConverter
    static final String KEY_VIEW = "view";
    static final String VALUE_SEARCH_RESULTS_VIEW = "search";
    static final String VALUE_EDITOR_VIEW = "doc";
-   static final String VALUE_REVIEW_VIEW = "review";
 
    @Override
    public void populateHistoryToken(HistoryToken historyToken, Token token)
@@ -32,10 +31,6 @@ public enum MainViewTokens implements TokensConverter
          {
             historyToken.setView(MainView.Search);
          }
-         else if (value.equals(VALUE_REVIEW_VIEW))
-         {
-            historyToken.setView(MainView.Review);
-         }
          // else default (document list) will be used
       }
    }
@@ -51,10 +46,6 @@ public enum MainViewTokens implements TokensConverter
       else if (historyToken.getView() == MainView.Editor)
       {
          tokens.add(new Token(KEY_VIEW, VALUE_EDITOR_VIEW));
-      }
-      else if (historyToken.getView() == MainView.Review)
-      {
-         tokens.add(new Token(KEY_VIEW, VALUE_REVIEW_VIEW));
       }
    }
 }

@@ -37,7 +37,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.inject.Inject;
 
-public class TranslationEditorPresenter extends WidgetPresenter<TranslationEditorDisplay> implements PageChangeEventHandler, PageCountChangeEventHandler, TranslationEditorDisplay.Listener, ReviewModeChangeEventHandler
+public class TranslationEditorPresenter extends WidgetPresenter<TranslationEditorDisplay> implements PageChangeEventHandler, PageCountChangeEventHandler, TranslationEditorDisplay.Listener
 {
 
  
@@ -45,19 +45,15 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    private final TransFilterPresenter transFilterPresenter;
    private final TransUnitsTablePresenter transUnitsTablePresenter;
    private final EditorKeyShortcuts editorKeyShortcuts;
-   private final ReviewPresenter reviewPresenter;
 
    @Inject
-   public TranslationEditorPresenter(TranslationEditorDisplay display, EventBus eventBus, TransUnitNavigationPresenter transUnitNavigationPresenter, TransFilterPresenter transFilterPresenter, TransUnitsTablePresenter transUnitsTablePresenter, EditorKeyShortcuts editorKeyShortcuts, ReviewPresenter reviewPresenter)
+   public TranslationEditorPresenter(TranslationEditorDisplay display, EventBus eventBus, TransUnitNavigationPresenter transUnitNavigationPresenter, TransFilterPresenter transFilterPresenter, TransUnitsTablePresenter transUnitsTablePresenter, EditorKeyShortcuts editorKeyShortcuts)
    {
       super(display, eventBus);
       this.transUnitNavigationPresenter = transUnitNavigationPresenter;
       this.transFilterPresenter = transFilterPresenter;
       this.transUnitsTablePresenter = transUnitsTablePresenter;
       this.editorKeyShortcuts = editorKeyShortcuts;
-      this.reviewPresenter = reviewPresenter;
-      // TODO rhbz953734 - change this so only transUnitTablePresenter gets injected ReviewPresenter
-      transUnitsTablePresenter.setReviewPresenter(reviewPresenter);
 
       display.setListener(this);
    }
@@ -74,10 +70,6 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
       transUnitNavigationPresenter.bind();
       display.setTransUnitNavigation(transUnitNavigationPresenter.getDisplay().asWidget());
 
-      reviewPresenter.bind();
-      display.setReviewActionView(reviewPresenter.getDisplay().asWidget());
-
-
       registerHandler(display.getPageNavigation().addValueChangeHandler(new ValueChangeHandler<Integer>()
       {
          @Override
@@ -88,7 +80,6 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
       }));
       registerHandler(eventBus.addHandler(PageChangeEvent.TYPE, this));
       registerHandler(eventBus.addHandler(PageCountChangeEvent.TYPE, this));
-      registerHandler(eventBus.addHandler(ReviewModeChangeEvent.TYPE, this));
    }
 
    @Override
@@ -148,11 +139,5 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    public void setReadOnly(boolean isReadOnly)
    {
       display.getResizeButton().setVisible(isReadOnly);
-   }
-
-   @Override
-   public void onReviewModeChange(ReviewModeChangeEvent event)
-   {
-      display.setReviewMode(event == ReviewModeChangeEvent.CHANGE_TO_REVIEW_MODE);
    }
 }
