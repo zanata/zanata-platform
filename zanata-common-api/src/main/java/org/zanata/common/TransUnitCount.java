@@ -9,6 +9,11 @@ public final class TransUnitCount extends AbstractTranslationCount
    {
    }
 
+   public TransUnitCount(int approved, int needReview, int untranslated, int rejected, int accepted)
+   {
+      super(approved, needReview, untranslated, rejected, accepted);
+   }
+
    public TransUnitCount(int approved, int needReview, int untranslated)
    {
       super(approved, needReview, untranslated);
