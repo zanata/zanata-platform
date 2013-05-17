@@ -74,11 +74,12 @@ public class ContentStateUtil
             return ContentState.New;
          }
          break;
-      case Reviewed:
+      case Accepted:
          if (!allNonEmpty(contents))
          {
             throw new IllegalStateException("Invalid ContentState (some empty contents)");
          }
+         return ContentState.Accepted;
       default:
          throw new RuntimeException("unknown ContentState " + requestedState);
       }
