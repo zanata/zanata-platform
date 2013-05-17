@@ -41,7 +41,7 @@
 
     <ui:define name="page_title">#{projectIterationFilesAction.projectSlug}:#{projectIterationFilesAction.iterationSlug} - #{messages['jsf.SourceDocuments']}</ui:define>
     <ui:define name="center_content">
-        <a4j:form onkeydown="if(event.keyCode==13) { return false;}">
+        <h:form onkeydown="if(event.keyCode==13) { return false;}">
             <s:token allowMultiplePosts="true"/>
             <richext:spacer height="10"/>
             <s:div style="text-align:center">
@@ -158,12 +158,12 @@
                 <!-- TODO show stats for document across locales -->
 
             </rich:dataTable>
-        </a4j:form>
+        </h:form>
 
         <ui:remove>
           <!-- This panel does not appear ever to be shown. Remove in separate commit. -->
         </ui:remove>
-        <rich:modalPanel id="downloadProgressPanel"
+        <rich:popupPanel id="downloadProgressPanel"
                          moveable="#{false}"
                          resizeable="#{false}"
                          autosized="#{true}">
@@ -199,7 +199,7 @@
                     </a4j:commandButton>
                 </div>
             </h:form>
-        </rich:popupPanel>
+         </rich:popupPanel>
 
 
     </ui:define>
