@@ -26,6 +26,7 @@ import java.util.Map;
 
 import javax.ws.rs.core.EntityTag;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -72,7 +73,7 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
 
    public HProjectIteration getBySlug(HProject project, String iterationSlug)
    {
-      if( project == null )
+      if( project == null || StringUtils.isEmpty(iterationSlug))
       {
          return null;
       }

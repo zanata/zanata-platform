@@ -27,12 +27,12 @@
                 <f:selectItems value="#{projectIterationHome.projectTypeList}"/>
             </h:selectOneMenu>
             <s:span styleClass="icon-info-circle-2 input_help" id="projectTypeHelp">
-                <rich:toolTip>
+                <rich:tooltip>
                    #{messages['jsf.projectType.Description']}<br/>
                    #{messages['jsf.projectType.NotSpecifiedBehaviour']}<br/>
                    <br/>
                    <em>#{messages['jsf.projectType.MoreInfo']}</em><br/>
-                </rich:toolTip>
+                </rich:tooltip>
             </s:span>
         </s:decorate>
 
@@ -86,7 +86,7 @@
 	<s:div>
 		<a4j:region>
 			<h:selectBooleanCheckbox id="validationOptions" value="#{versionValidationOptionsAction.versionOverrideValidations}" >
-				<a4j:support event="onchange" reRender="validationOptionsList" />
+				<a4j:ajax event="change" render="validationOptionsList" />
 			</h:selectBooleanCheckbox>
 		</a4j:region>
 		<h:outputText value="#{messages['jsf.customizedValidationMessage']}"/>
@@ -94,11 +94,10 @@
 
 
 	<s:div id="validationOptionsList">
-	<rich:spacer height="20px" />
 		 <rich:dataGrid value="#{versionValidationOptionsAction.validationList}" var="validationAction" columns="1"
                          rendered="#{versionValidationOptionsAction.versionOverrideValidations}">
               <h:selectBooleanCheckbox value="#{versionValidationOptionsAction.selectedValidations[validationAction.id.name()]}">
-              	<a4j:support event="onchange" action="#{versionValidationOptionsAction.checkExclusive(validationAction)}" reRender="validationOptionsList"/>
+              	<a4j:ajax event="change" listener="#{versionValidationOptionsAction.checkExclusive(validationAction)}" render="validationOptionsList"/>
               </h:selectBooleanCheckbox>
               <h:outputLabel value="#{validationAction.id.displayName}"/>
               <h:outputLabel value="#{validationAction.description}" style="float:right;margin-right:20px;"/>
