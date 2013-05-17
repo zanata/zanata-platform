@@ -94,7 +94,7 @@ public class AppView extends Composite implements AppDisplay
    Styles style;
    
    @UiField
-   Label editorTab, searchAndReplaceTab, documentListTab, reviewTab;
+   Label editorTab, searchAndReplaceTab, documentListTab;
 
    private Listener listener;
 
@@ -123,8 +123,7 @@ public class AppView extends Composite implements AppDisplay
       searchAndReplaceTab.setTitle(messages.projectWideSearchAndReplace());
       documentListTab.setTitle(messages.documentListTitle());
       editorTab.setTitle(messages.editor());
-      reviewTab.setTitle("Review"); //TODO localise
-      
+
       
       content.add(documentListView.asWidget());
       content.add(translationView.asWidget());
@@ -165,11 +164,6 @@ public class AppView extends Composite implements AppDisplay
          content.selectTab(EDITOR_VIEW);
          selectedDocumentSpan.setVisible(true);
          setSelectedTab(editorTab);
-         break;
-      case Review:
-         content.selectTab(EDITOR_VIEW);
-         selectedDocumentSpan.setVisible(true);
-         setSelectedTab(reviewTab);
       }
    }
    
@@ -178,8 +172,7 @@ public class AppView extends Composite implements AppDisplay
       editorTab.removeStyleName(style.selectedTab());
       searchAndReplaceTab.removeStyleName(style.selectedTab());
       documentListTab.removeStyleName(style.selectedTab());
-      reviewTab.removeStyleName(style.selectedTab());
-      
+
       tab.addStyleName(style.selectedTab());
    }
 
@@ -294,12 +287,6 @@ public class AppView extends Composite implements AppDisplay
    public void onSearchAndReplaceTabTabClick(ClickEvent event)
    {
       listener.onSearchAndReplaceClicked();
-   }
-
-   @UiHandler("reviewTab")
-   public void onReviewTablClick(ClickEvent event)
-   {
-      listener.onReviewCLicked();
    }
 
    private void enableTab(Widget tab, boolean enable)

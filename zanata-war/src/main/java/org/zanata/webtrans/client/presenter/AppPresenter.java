@@ -378,22 +378,6 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
    }
 
    @Override
-   public void onReviewCLicked()
-   {
-      if (selectedDocument != null)
-      {
-         HistoryToken token = HistoryToken.fromTokenString(history.getToken());
-         if (!token.getView().equals(MainView.Review))
-         {
-            token.setView(MainView.Review);
-            token.clearEditorFilterAndSearch();
-            token.setTextFlowId(null);
-            history.newItem(token.toTokenString());
-         }
-      }
-   }
-
-   @Override
    public void onDocumentListClicked()
    {
       HistoryToken token = HistoryToken.fromTokenString(history.getToken());

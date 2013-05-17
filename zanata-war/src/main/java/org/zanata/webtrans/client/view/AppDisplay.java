@@ -37,8 +37,6 @@ public interface AppDisplay extends WidgetDisplay
       void onKeyShortcutsClicked();
 
       void onEditorClicked();
-
-      void onReviewCLicked();
    }
 
    void enableTab(MainView view, boolean enable);
