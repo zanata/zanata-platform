@@ -22,7 +22,6 @@
 package org.zanata.model;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import org.zanata.common.ContentState;
@@ -102,12 +101,12 @@ public class TestFixture
    public static UserWorkspaceContext userWorkspaceContext(boolean projectActive, boolean hasWriteAccess, String projectSlug, String iterationSlug, ProjectType projectType)
    {
       ProjectIterationId projectIterationId = new ProjectIterationId(projectSlug, iterationSlug, projectType);
-      return new UserWorkspaceContext(new WorkspaceContext(new WorkspaceId(projectIterationId, LocaleId.EN_US), "workspaceName", LocaleId.EN_US.getId()), projectActive, hasWriteAccess, true);
+      return new UserWorkspaceContext(new WorkspaceContext(new WorkspaceId(projectIterationId, LocaleId.EN_US), "workspaceName", LocaleId.EN_US.getId()), projectActive, hasWriteAccess, true, true);
    }
 
    public static UserWorkspaceContext userWorkspaceContext(boolean projectActive, boolean hasWriteAccess)
    {
-      return new UserWorkspaceContext(new WorkspaceContext(workspaceId(), "workspaceName", LocaleId.EN_US.getId()), projectActive, hasWriteAccess, true);
+      return new UserWorkspaceContext(new WorkspaceContext(workspaceId(), "workspaceName", LocaleId.EN_US.getId()), projectActive, hasWriteAccess, true, true);
    }
 
    public static WorkspaceId workspaceId()

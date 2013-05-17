@@ -302,18 +302,6 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       }
    }
 
-   public void changeMode(MainView viewToShow)
-   {
-      if (viewToShow == MainView.Editor)
-      {
-         eventBus.fireEvent(ReviewModeChangeEvent.CHANGE_TO_EDIT_MODE);
-      }
-      else if (viewToShow == MainView.Review)
-      {
-         eventBus.fireEvent(ReviewModeChangeEvent.CHANGE_TO_REVIEW_MODE);
-      }
-   }
-
    public void concealDisplay()
    {
       targetContentsPresenter.concealDisplay();

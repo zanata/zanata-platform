@@ -24,6 +24,7 @@ import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.HasPager;
 import org.zanata.webtrans.client.ui.Pager;
+import org.zanata.webtrans.client.ui.ReviewActionPanel;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -67,8 +68,6 @@ public class TranslationEditorView extends Composite implements TranslationEdito
    
    @UiField
    InlineLabel refreshCurrentPage, resize;
-   @UiField
-   HTMLPanel reviewActionContainer;
 
    private Listener listener;
 
@@ -127,21 +126,6 @@ public class TranslationEditorView extends Composite implements TranslationEdito
          resize.setTitle(messages.hideSouthPanel());
          return true;
       }
-   }
-
-   @Override
-   public void setReviewMode(boolean isReviewMode)
-   {
-      reviewActionContainer.setVisible(isReviewMode);
-      filterPanelContainer.setVisible(!isReviewMode);
-      transUnitNavigationContainer.setVisible(!isReviewMode);
-   }
-
-   @Override
-   public void setReviewActionView(IsWidget widget)
-   {
-      reviewActionContainer.clear();
-      reviewActionContainer.add(widget);
    }
 
    @Override
