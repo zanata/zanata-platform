@@ -64,6 +64,8 @@ public class AppPresenterTest
    @Mock
    private SideMenuPresenter sideMenuPresenter;
    @Mock
+   private AttentionKeyShortcutPresenter attentionKeyShortcutPresenter;
+   @Mock
    private KeyShortcutPresenter keyShortcutPresenter;
    @Mock
    private TranslationPresenter translationPresenter;
@@ -94,7 +96,19 @@ public class AppPresenterTest
       projectStats = new TranslationStats(new TransUnitCount(7, 8, 9), new TransUnitWords(10, 11, 12));
 
       MockitoAnnotations.initMocks(this);
-      presenter = new AppPresenter(display, eventBus, sideMenuPresenter, keyShortcutPresenter, translationPresenter, documentListPresenter, searchResultPresenter, userWorkspace, messages, history, window, location);
+      presenter = new AppPresenter(display,
+                                   eventBus,
+                                   sideMenuPresenter,
+                                   attentionKeyShortcutPresenter,
+                                   keyShortcutPresenter,
+                                   translationPresenter,
+                                   documentListPresenter,
+                                   searchResultPresenter,
+                                   userWorkspace,
+                                   messages,
+                                   history,
+                                   window,
+                                   location);
 
       verify(display).setListener(presenter);
    }

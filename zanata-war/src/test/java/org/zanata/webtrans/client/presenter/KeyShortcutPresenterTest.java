@@ -25,6 +25,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.times;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +39,13 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.webtrans.client.events.AttentionModeActivationEvent;
 import org.zanata.webtrans.client.keys.EventWrapper;
 import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.Keys;
+import org.zanata.webtrans.client.keys.TimedAction;
+import org.zanata.webtrans.client.keys.Timer;
+import org.zanata.webtrans.client.keys.TimerFactory;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.view.KeyShortcutDisplay;
 
@@ -66,6 +71,7 @@ public class KeyShortcutPresenterTest
    static final int KEY_DOWN_TYPE = 0x80;
    static final int KEY_UP_TYPE = 0x200;
 
+   static final int KEY_CODE_X = 'X';
    static final int KEY_CODE_Y = 'Y';
    static final String TEST_MESSAGE_APPLICATION_SCOPE = "Application";
 
@@ -75,11 +81,13 @@ public class KeyShortcutPresenterTest
 
    @Mock
    private KeyShortcutDisplay mockDisplay;
-   @Mock 
+   @Mock
    private EventWrapper mockEventWrapper;
-   @Mock 
+   @Mock
    private EventBus mockEventBus;
-   @Mock 
+   @Mock
+   private TimerFactory mockTimerFactory;
+   @Mock
    private WebTransMessages mockMessages;
 
    @Captor
@@ -92,7 +100,8 @@ public class KeyShortcutPresenterTest
    {
       MockitoAnnotations.initMocks(this);
 
-      keyShortcutPresenter = new KeyShortcutPresenter(mockDisplay, mockEventBus, mockMessages, mockEventWrapper);
+      keyShortcutPresenter = new KeyShortcutPresenter(mockDisplay,
+            mockEventBus, mockMessages, mockEventWrapper, mockTimerFactory);
 
       when(mockMessages.closeShortcutView()).thenReturn(TEST_MESSAGE_CLOSE_SHORTCUT_VIEW);
       when(mockMessages.showAvailableKeyShortcuts()).thenReturn(TEST_MESSAGE_SHOW_AVAILABLE_KEY_SHORTCUTS);
@@ -106,8 +115,6 @@ public class KeyShortcutPresenterTest
    public void testExpectedActionsOnBind()
    {
       keyShortcutPresenter.bind();
-      
-      verify(mockDisplay).setListener(keyShortcutPresenter);
 
       verify(mockEventWrapper).addNativePreviewHandler(capturedNativePreviewHandler.capture());
    }
@@ -115,77 +122,92 @@ public class KeyShortcutPresenterTest
    @Test
    public void displaysRegisteredShortcutsInOrder()
    {
-      @SuppressWarnings("unchecked")
-      ListDataProvider<KeyShortcut> mockDataProvider = mock(ListDataProvider.class);
-      List<KeyShortcut> shortcutList = new ArrayList<KeyShortcut>();
-      when(mockDataProvider.getList()).thenReturn(shortcutList);
-      mockDisplay.clearPanel();
-      when(mockDisplay.addContext(TEST_MESSAGE_APPLICATION_SCOPE)).thenReturn(mockDataProvider);
+      List<KeyShortcut> shortcutList = mockShortcutDisplayListInteractions();
       mockDisplay.showPanel();
 
       keyShortcutPresenter.bind();
       keyShortcutPresenter.showShortcuts();
 
       //Shortcut list should contain Alt+Y and Esc shortcuts
-      assertThat("KeyShortcutPresenter should register 2 global shortcuts", shortcutList.size(), is(2));
+      assertThat("KeyShortcutPresenter should register 2 global shortcuts", shortcutList.size(), is(3));
 
       // esc should be first as it has no modifiers
       Set<Keys> firstShortcutKeys = shortcutList.get(0).getAllKeys();
-      String firstShortcut = "first shortcut should be Esc with no modifiers and no aliases";
+      String firstShortcut = "first shortcut should be Esc with no modifiers";
       assertThat(firstShortcut, firstShortcutKeys.size(), is(1));
       Keys firstShortcutFirstKeys = firstShortcutKeys.iterator().next();
       assertThat(firstShortcut, firstShortcutFirstKeys.getModifiers(), is(0));
       assertThat(firstShortcut, firstShortcutFirstKeys.getKeyCode(), is(KeyCodes.KEY_ESCAPE));
 
-      // Alt+Y should be the other
+      // Alt+X should be next
       Set<Keys> secondShortcutKeys = shortcutList.get(1).getAllKeys();
-      String secondShortcut = "second shortcut should be Alt+Y with no aliases";
+      String secondShortcut = "second shortcut should be Alt+X";
       assertThat(secondShortcut, secondShortcutKeys.size(), is(1));
       Keys secondShortcutFirstKeys = secondShortcutKeys.iterator().next();
       assertThat(secondShortcut, secondShortcutFirstKeys.getModifiers(), is(Keys.ALT_KEY));
-      assertThat(secondShortcut, secondShortcutFirstKeys.getKeyCode(), is((int) 'Y'));
+      assertThat(secondShortcut, secondShortcutFirstKeys.getKeyCode(), is((int) 'X'));
+
+      // Alt+Y should be last
+      Set<Keys> thirdShortcutKeys = shortcutList.get(2).getAllKeys();
+      String thirdShortcut = "third shortcut should be Alt+Y";
+      assertThat(thirdShortcut, thirdShortcutKeys.size(), is(1));
+      Keys thirdShortcutFirstKeys = thirdShortcutKeys.iterator().next();
+      assertThat(thirdShortcut, thirdShortcutFirstKeys.getModifiers(), is(Keys.ALT_KEY));
+      assertThat(thirdShortcut, thirdShortcutFirstKeys.getKeyCode(), is((int) 'Y'));
    }
 
-   @Test(enabled = false, description = "pending attention key rewrite")
+   @Test
    public void testRespondsToAltY()
+   {
+      NativePreviewEvent altYPressed = buildNativeKeyDownEvent(new Keys(Keys.ALT_KEY, KEY_CODE_Y));
+      mockShortcutDisplayListInteractions();
+      keyShortcutPresenter.bind();
+      capturedNativePreviewHandler.getValue().onPreviewNativeEvent(altYPressed);
+      verify(mockDisplay).showPanel();
+   }
+
+   @Test
+   public void testAttentionModeTimesOut()
+   {
+      NativePreviewEvent altXPressed = buildNativeKeyDownEvent(new Keys(Keys.ALT_KEY, KEY_CODE_X));
+      mockShortcutDisplayListInteractions();
+      ArgumentCaptor<AttentionModeActivationEvent> eventBusCapture = ArgumentCaptor.forClass(AttentionModeActivationEvent.class);
+
+      Timer mockTimer = mock(Timer.class);
+      // capture timer
+      ArgumentCaptor<TimedAction> capturedTimedAction = ArgumentCaptor.forClass(TimedAction.class);
+      when(mockTimerFactory.create(capturedTimedAction.capture())).thenReturn(mockTimer);
+
+      keyShortcutPresenter.bind();
+      capturedNativePreviewHandler.getValue().onPreviewNativeEvent(altXPressed);
+      verify(mockTimer).schedule(5000);
+      capturedTimedAction.getValue().run();
+      verify(mockEventBus, times(2)).fireEvent(eventBusCapture.capture());
+      assertThat(eventBusCapture.getAllValues().get(0).isActive(), is(true));
+      assertThat(eventBusCapture.getAllValues().get(1).isActive(), is(false));
+      assertThat(eventBusCapture.getAllValues().size(), is(2));
+   }
+
+   private NativePreviewEvent buildNativeKeyDownEvent(Keys keys)
    {
       NativePreviewEvent mockNativePreviewEvent = mock(NativePreviewEvent.class);
       NativeEvent mockNativeEvent = mock(NativeEvent.class);
-
       when(mockEventWrapper.getTypeInt(mockNativePreviewEvent)).thenReturn(KEY_DOWN_TYPE);
       when(mockNativePreviewEvent.getNativeEvent()).thenReturn(mockNativeEvent);
-      when(mockEventWrapper.createKeys(mockNativeEvent)).thenReturn(new Keys(Keys.ALT_KEY, KEY_CODE_Y));
+      when(mockEventWrapper.createKeys(mockNativeEvent)).thenReturn(keys);
       when(mockEventWrapper.getType(mockNativeEvent)).thenReturn(KeyShortcut.KeyEvent.KEY_DOWN.nativeEventType);
+      return mockNativePreviewEvent;
+   }
 
+   private List<KeyShortcut> mockShortcutDisplayListInteractions()
+   {
       @SuppressWarnings("unchecked")
       ListDataProvider<KeyShortcut> mockDataProvider = mock(ListDataProvider.class);
       List<KeyShortcut> shortcutList = new ArrayList<KeyShortcut>();
       when(mockDataProvider.getList()).thenReturn(shortcutList);
       mockDisplay.clearPanel();
       when(mockDisplay.addContext(TEST_MESSAGE_APPLICATION_SCOPE)).thenReturn(mockDataProvider);
-      mockDisplay.showPanel();
-
-      keyShortcutPresenter.bind();
-      capturedNativePreviewHandler.getValue().onPreviewNativeEvent(mockNativePreviewEvent);
-
-      //Shortcut list should contain Alt+Y and Esc shortcuts
-      assertThat("KeyShortcutPresenter should register 2 global shortcuts", shortcutList.size(), is(2));
-
-      // esc should be first as it has no modifiers
-      Set<Keys> firstShortcutKeys = shortcutList.get(0).getAllKeys();
-      String firstShortcut = "first shortcut should be Esc with no modifiers and no aliases";
-      assertThat(firstShortcut, firstShortcutKeys.size(), is(1));
-      Keys firstShortcutFirstKeys = firstShortcutKeys.iterator().next();
-      assertThat(firstShortcut, firstShortcutFirstKeys.getModifiers(), is(0));
-      assertThat(firstShortcut, firstShortcutFirstKeys.getKeyCode(), is(KeyCodes.KEY_ESCAPE));
-
-      // Alt+Y should be the other
-      Set<Keys> secondShortcutKeys = shortcutList.get(1).getAllKeys();
-      String secondShortcut = "second shortcut should be Alt+Y with no aliases";
-      assertThat(secondShortcut, secondShortcutKeys.size(), is(1));
-      Keys secondShortcutFirstKeys = secondShortcutKeys.iterator().next();
-      assertThat(secondShortcut, secondShortcutFirstKeys.getModifiers(), is(Keys.ALT_KEY));
-      assertThat(secondShortcut, secondShortcutFirstKeys.getKeyCode(), is((int) 'Y'));
+      return shortcutList;
    }
 
 }
