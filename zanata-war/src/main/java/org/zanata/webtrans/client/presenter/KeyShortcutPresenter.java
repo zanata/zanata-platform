@@ -20,9 +20,11 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -296,12 +298,20 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay>
       if (isAttentionMode != active)
       {
          isAttentionMode = active;
-         eventBus.fireEvent(new AttentionModeActivationEvent(active));
-         // TODO expose method for attention key presenter to get what it needs
-         //      to respond properly to this event
-
-         // TODO if inactivating, attention key presenter shoud hide
+         AttentionModeActivationEvent attentionEvent = new AttentionModeActivationEvent(active);
+//         attentionEvent.setShortcuts(listAttentionShortcuts());
+         eventBus.fireEvent(attentionEvent);
       }
+   }
+
+   private List<KeyShortcut> listAttentionShortcuts()
+   {
+      ArrayList<KeyShortcut> shortcuts = new ArrayList<KeyShortcut>();
+      for (Keys key : attentionKeyManager.ensureShortcutMap().keySet())
+      {
+         shortcuts.addAll(attentionKeyManager.ensureShortcutMap().get(key));
+      }
+      return shortcuts;
    }
 
    public void setContextActive(ShortcutContext context, boolean active)

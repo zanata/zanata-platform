@@ -31,4 +31,8 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 public interface AttentionKeyShortcutDisplay extends WidgetDisplay
 {
 
+   void showOrHide(boolean show);
+
+   void clearShortcuts();
+
 }

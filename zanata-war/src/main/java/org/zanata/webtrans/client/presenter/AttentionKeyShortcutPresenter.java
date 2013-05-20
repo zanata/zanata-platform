@@ -20,9 +20,12 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.webtrans.client.events.AttentionModeActivationEvent;
+import org.zanata.webtrans.client.events.AttentionModeActivationEventHandler;
 import org.zanata.webtrans.client.view.AttentionKeyShortcutDisplay;
 
 import com.google.inject.Inject;
@@ -37,7 +40,6 @@ import com.google.inject.Inject;
 public class AttentionKeyShortcutPresenter extends WidgetPresenter<AttentionKeyShortcutDisplay>
 {
 
-
    @Inject
    public AttentionKeyShortcutPresenter(AttentionKeyShortcutDisplay display, EventBus eventBus)
    {
@@ -47,6 +49,15 @@ public class AttentionKeyShortcutPresenter extends WidgetPresenter<AttentionKeyS
    @Override
    protected void onBind()
    {
+      registerHandler(eventBus.addHandler(AttentionModeActivationEvent.getType(),
+                                          new AttentionModeActivationEventHandler()
+      {
+         @Override
+         public void onAttentionModeActivationChanged(AttentionModeActivationEvent event)
+         {
+            respondToAttentionModeEvent(event);
+         }
+      }));
    }
 
    @Override
@@ -61,6 +72,20 @@ public class AttentionKeyShortcutPresenter extends WidgetPresenter<AttentionKeyS
    {
       // TODO Auto-generated method stub
 
+   }
+
+   private void respondToAttentionModeEvent(AttentionModeActivationEvent event)
+   {
+//      if (event.isActive())
+//      {
+//         display.clearShortcuts();
+//         for (KeyShortcut sc : event.getShortcuts())
+//         {
+//            Keys firstKeys = sc.getAllAttentionKeys().iterator().next();
+//            addShortcutToView(firstKeys, sc.getDescription());
+//         }
+//      }
+      display.showOrHide(event.isActive());
    }
 
 }

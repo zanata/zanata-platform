@@ -1,5 +1,9 @@
 package org.zanata.webtrans.client.events;
 
+import java.util.List;
+
+import org.zanata.webtrans.client.keys.KeyShortcut;
+
 import com.google.gwt.event.shared.GwtEvent;
 
 public class AttentionModeActivationEvent extends GwtEvent<AttentionModeActivationEventHandler>
@@ -20,6 +24,7 @@ public class AttentionModeActivationEvent extends GwtEvent<AttentionModeActivati
    }
 
    private final boolean active;
+   private List<KeyShortcut> shortcuts;
 
    public AttentionModeActivationEvent(boolean isActive)
    {
@@ -29,6 +34,11 @@ public class AttentionModeActivationEvent extends GwtEvent<AttentionModeActivati
    public boolean isActive()
    {
       return active;
+   }
+
+   public List<KeyShortcut> getShortcuts()
+   {
+      return shortcuts;
    }
 
    @Override
@@ -41,6 +51,11 @@ public class AttentionModeActivationEvent extends GwtEvent<AttentionModeActivati
    public Type<AttentionModeActivationEventHandler> getAssociatedType()
    {
       return getType();
+   }
+
+   public void setShortcuts(List<KeyShortcut> shortcuts)
+   {
+      this.shortcuts = shortcuts;
    }
 
 }

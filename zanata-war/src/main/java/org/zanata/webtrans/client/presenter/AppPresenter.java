@@ -73,6 +73,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
    private static final String WORKSPACE_TITLE_QUERY_PARAMETER_KEY = "title";
 
    private final KeyShortcutPresenter keyShortcutPresenter;
+   private final AttentionKeyShortcutPresenter attentionKeyShortcutPresenter;
    private final DocumentListPresenter documentListPresenter;
    private final TranslationPresenter translationPresenter;
    private final SearchResultsPresenter searchResultsPresenter;
@@ -91,10 +92,23 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
    private MainView currentView = null;
 
    @Inject
-   public AppPresenter(AppDisplay display, EventBus eventBus, final SideMenuPresenter sideMenuPresenter, final KeyShortcutPresenter keyShortcutPresenter, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final SearchResultsPresenter searchResultsPresenter, final UserWorkspaceContext userWorkspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)
+   public AppPresenter(AppDisplay display,
+                       EventBus eventBus,
+                       final SideMenuPresenter sideMenuPresenter,
+                       final AttentionKeyShortcutPresenter attentionKeyShortcutPresenter,
+                       final KeyShortcutPresenter keyShortcutPresenter,
+                       final TranslationPresenter translationPresenter,
+                       final DocumentListPresenter documentListPresenter,
+                       final SearchResultsPresenter searchResultsPresenter,
+                       final UserWorkspaceContext userWorkspaceContext,
+                       final WebTransMessages messages,
+                       final History history,
+                       final Window window,
+                       final Window.Location windowLocation)
    {
       super(display, eventBus);
       this.userWorkspaceContext = userWorkspaceContext;
+      this.attentionKeyShortcutPresenter = attentionKeyShortcutPresenter;
       this.keyShortcutPresenter = keyShortcutPresenter;
       this.history = history;
       this.messages = messages;
@@ -112,6 +126,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
    protected void onBind()
    {
       keyShortcutPresenter.bind();
+      attentionKeyShortcutPresenter.bind();
       documentListPresenter.bind();
       translationPresenter.bind();
       searchResultsPresenter.bind();

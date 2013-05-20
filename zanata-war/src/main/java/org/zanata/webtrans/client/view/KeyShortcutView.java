@@ -73,6 +73,7 @@ public class KeyShortcutView extends PopupPanel implements KeyShortcutDisplay
    @UiField
    Styles style;
 
+   // TODO these could be extracted for l10n
    private static final Map<Integer, String> keyDisplayMap;
    static
    {
