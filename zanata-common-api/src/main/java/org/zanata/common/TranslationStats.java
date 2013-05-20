@@ -65,8 +65,8 @@ public class TranslationStats implements Serializable
    {
       double untransHours = wordCount.getUntranslated() / 250.0;
       double fuzzyHours = wordCount.getNeedReview() / 500.0;
-      double rejectedHours = wordCount.getRejected() / 500.0;
-      return untransHours + fuzzyHours + rejectedHours;
+      double savedHours = wordCount.getSaved() / 500.0;
+      return untransHours + fuzzyHours + savedHours;
    }
 
    public int getApprovedPercent(boolean byWords)
