@@ -80,16 +80,10 @@
             color: #4F4F4F;
         }
 
-        .accepted {
+        .saved {
             background: lightblue;
             border: 1px solid #0000ff;
             color: #0000CD;
-        }
-
-        .rejected {
-            background: lightcoral;
-            border: 1px solid #a90000;
-            color: #ff0000;
         }
 
         .approved {
@@ -113,13 +107,12 @@
     </ui:style>
 
 	<g:HTMLPanel>
-		<g:Grid styleName="{style.table}" cellPadding="2">
+		<g:Grid styleName="{style.table}" cellPadding="2" ui:field="grid">
 			<g:row>
 				<g:cell styleName="{style.sideHeader}"/>
-				<g:cell styleName="{style.accepted-header}">Accepted</g:cell>
-				<g:cell styleName="{style.rejected-header}">Rejected</g:cell>
-				<g:cell styleName="{style.approved-header}">Translated</g:cell>
-				<g:cell styleName="{style.needReview-header}">Need Review</g:cell>
+				<g:cell styleName="{style.approved-header}">Approved</g:cell>
+                <g:cell styleName="{style.accepted-header}">Saved</g:cell>
+                <g:cell styleName="{style.needReview-header}">Fuzzy</g:cell>
 				<g:cell styleName="{style.untranslated-header}">Untranslated</g:cell>
 				<g:cell styleName="{style.topHeader}">Total</g:cell>
 
@@ -127,20 +120,18 @@
 
 			<g:row>
 				<g:cell styleName="{style.sideHeader}">Words</g:cell>
-				<g:customCell styleName="{style.accepted}"><g:InlineLabel ui:field="wordAccepted"/></g:customCell>
-				<g:customCell styleName="{style.rejected}"><g:InlineLabel ui:field="wordRejected"/></g:customCell>
 				<g:customCell styleName="{style.approved}"><g:InlineLabel ui:field="wordApproved"/></g:customCell>
-				<g:customCell styleName="{style.needReview}" ><g:InlineLabel ui:field="wordNeedReview"/></g:customCell>
+                <g:customCell styleName="{style.saved}"><g:InlineLabel ui:field="wordSaved"/></g:customCell>
+                <g:customCell styleName="{style.needReview}" ><g:InlineLabel ui:field="wordNeedReview"/></g:customCell>
 				<g:customCell styleName="{style.untranslated}"><g:InlineLabel ui:field="wordUntranslated" /></g:customCell>
 				<g:customCell styleName="{style.total}"><g:InlineLabel ui:field="wordTotal"/></g:customCell>
 			</g:row>
 
 			<g:row>
 				<g:cell styleName="{style.sideHeader}">Msg</g:cell>
-				<g:customCell styleName="{style.accepted}" ><g:InlineLabel ui:field="msgAccepted"/></g:customCell>
-				<g:customCell styleName="{style.rejected}" ><g:InlineLabel ui:field="msgRejected"/></g:customCell>
 				<g:customCell styleName="{style.approved}" ><g:InlineLabel ui:field="msgApproved"/></g:customCell>
-				<g:customCell styleName="{style.needReview}" ><g:InlineLabel ui:field="msgNeedReview"/></g:customCell>
+                <g:customCell styleName="{style.saved}" ><g:InlineLabel ui:field="msgSaved"/></g:customCell>
+                <g:customCell styleName="{style.needReview}" ><g:InlineLabel ui:field="msgNeedReview"/></g:customCell>
 				<g:customCell styleName="{style.untranslated}" ><g:InlineLabel ui:field="msgUntranslated"/></g:customCell>
 				<g:customCell styleName="{style.total}"><g:InlineLabel ui:field="msgTotal"/></g:customCell>
 			</g:row>

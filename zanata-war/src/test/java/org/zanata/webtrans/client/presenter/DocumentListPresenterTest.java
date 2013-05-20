@@ -510,8 +510,8 @@ public class DocumentListPresenterTest
    {
       ArrayList<DocumentInfo> docList = new ArrayList<DocumentInfo>();
 
-      TransUnitCount unitCount = new TransUnitCount(1, 2, 3, 0, 0);
-      TransUnitWords wordCount = new TransUnitWords(4, 5, 6, 0, 0);
+      TransUnitCount unitCount = new TransUnitCount(1, 2, 3);
+      TransUnitWords wordCount = new TransUnitWords(4, 5, 6);
 
       DocumentInfo docInfo = new DocumentInfo(new DocumentId(1111L, ""), "matches", "no/filter", LocaleId.EN_US, new TranslationStats(unitCount, wordCount), new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator"));
       docList.add(docInfo);

@@ -670,7 +670,7 @@ public class TargetContentsPresenter implements
    public void acceptTranslation(TransUnitId id)
    {
       ensureRowSelection(id);
-      saveCurrent(ContentState.Accepted);
+      saveCurrent(ContentState.Approved);
       eventBus.fireEvent(NavTransUnitEvent.NEXT_ENTRY_EVENT);
    }
 
@@ -678,7 +678,7 @@ public class TargetContentsPresenter implements
    public void rejectTranslation(TransUnitId id)
    {
       ensureRowSelection(id);
-      saveCurrent(ContentState.Rejected);
+      saveCurrent(ContentState.Saved);
    }
 
    /**

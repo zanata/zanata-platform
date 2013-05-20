@@ -20,8 +20,6 @@
  */
 package org.zanata.webtrans.client.ui;
 
-import org.zanata.webtrans.client.resources.WebTransMessages;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.i18n.client.LocaleInfo;
@@ -29,6 +27,7 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -56,10 +55,12 @@ public class TooltipPopupPanel extends PopupPanel
    Styles style;
 
    @UiField
-   InlineLabel wordAccepted, wordRejected, wordApproved, wordNeedReview, wordUntranslated, wordTotal;
+   InlineLabel wordSaved, wordApproved, wordNeedReview, wordUntranslated, wordTotal;
 
    @UiField
-   InlineLabel msgAccepted, msgRejected, msgApproved, msgNeedReview, msgUntranslated, msgTotal;
+   InlineLabel msgSaved, msgApproved, msgNeedReview, msgUntranslated, msgTotal;
+   @UiField
+   Grid grid;
 
    @Inject
    public TooltipPopupPanel(boolean projectRequireReview)
@@ -73,15 +74,13 @@ public class TooltipPopupPanel extends PopupPanel
 
    public void refreshData(TransUnitCountBar stats)
    {
-      wordAccepted.setText(String.valueOf(stats.getWordsAccepted()));
-      wordRejected.setText(String.valueOf(stats.getWordsRejected()));
+      wordSaved.setText(String.valueOf(stats.getWordsSaved()));
       wordApproved.setText(String.valueOf(stats.getWordsApproved()));
       wordNeedReview.setText(String.valueOf(stats.getWordsNeedReview()));
       wordUntranslated.setText(String.valueOf(stats.getWordsUntranslated()));
       wordTotal.setText(String.valueOf(stats.getWordsTotal()));
 
-      msgAccepted.setText(String.valueOf(stats.getUnitAccepted()));
-      msgRejected.setText(String.valueOf(stats.getUnitRejected()));
+      msgSaved.setText(String.valueOf(stats.getUnitSaved()));
       msgApproved.setText(String.valueOf(stats.getUnitApproved()));
       msgNeedReview.setText(String.valueOf(stats.getUnitNeedReview()));
       msgUntranslated.setText(String.valueOf(stats.getUnitUntranslated()));

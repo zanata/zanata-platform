@@ -157,11 +157,8 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
          case New:
             state = " New";
             break;
-         case Accepted:
-            state = " Accepted";
-            break;
-         case Rejected:
-            state = " Rejected";
+         case Saved:
+            state = " Saved";
             break;
       }
       styles += state + "StateDecoration";
