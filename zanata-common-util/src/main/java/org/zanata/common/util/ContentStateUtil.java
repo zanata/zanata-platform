@@ -77,9 +77,15 @@ public class ContentStateUtil
       case Accepted:
          if (!allNonEmpty(contents))
          {
-            throw new IllegalStateException("Invalid ContentState (some empty contents)");
+            throw new IllegalStateException("Invalid ContentState. Trying to accept incomplete translation.");
          }
          return ContentState.Accepted;
+      case Rejected:
+         if (!allNonEmpty(contents))
+         {
+            throw new IllegalStateException("Invalid ContentState. Trying to reject incomplete translation.");
+         }
+         return ContentState.Rejected;
       default:
          throw new RuntimeException("unknown ContentState " + requestedState);
       }
