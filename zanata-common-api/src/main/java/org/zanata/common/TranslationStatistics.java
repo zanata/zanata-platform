@@ -18,7 +18,7 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.rest.dto.stats;
+package org.zanata.common;
 
 import java.io.Serializable;
 
@@ -32,15 +32,15 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 
 /**
- * Translation statistics. Contains actual numbers and other information about the state of
- * translation.
- *
- * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * Translation statistics. Contains actual numbers and other information about
+ * the state of translation.
+ * 
+ * @author Carlos Munoz <a
+ *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@XmlType(name = "translationStatistics",
- propOrder = { "total", "untranslated", "needReview", "translated", "unit", "locale", "lastTranslated" })
+@XmlType(name = "translationStatistics", propOrder = { "total", "untranslated", "needReview", "translated", "unit", "locale", "lastTranslated" })
 @XmlRootElement(name = "translationStats")
-@JsonIgnoreProperties(value = {"percentTranslated", "percentNeedReview", "percentUntranslated"}, ignoreUnknown = true)
+@JsonIgnoreProperties(value = { "percentTranslated", "percentNeedReview", "percentUntranslated" }, ignoreUnknown = true)
 @JsonPropertyOrder({ "total", "untranslated", "needReview", "translated", "unit", "locale", "lastTranslated" })
 @JsonWriteNullProperties(false)
 public class TranslationStatistics implements Serializable
@@ -57,11 +57,41 @@ public class TranslationStatistics implements Serializable
    private long translated;
    private long needReview;
    private long untranslated;
+   private long rejected;
+   private long accepted;
    private long total;
    private StatUnit unit;
    private String locale;
    private double remainingHours;
    private String lastTranslated;
+
+   public TranslationStatistics()
+   {
+   }
+
+   public TranslationStatistics(TransUnitCount unitCount, String locale)
+   {
+      this.unit = StatUnit.MESSAGE;
+      this.locale = locale;
+      translated = unitCount.getApproved();
+      needReview = unitCount.getNeedReview();
+      untranslated = unitCount.getUntranslated();
+      rejected = unitCount.getRejected();
+      accepted = unitCount.getAccepted();
+      total = unitCount.getTotal();
+   }
+
+   public TranslationStatistics(TransUnitWords wordCount, String locale)
+   {
+      this.unit = StatUnit.WORD;
+      this.locale = locale;
+      translated = wordCount.getApproved();
+      needReview = wordCount.getNeedReview();
+      untranslated = wordCount.getUntranslated();
+      rejected = wordCount.getRejected();
+      accepted = wordCount.getAccepted();
+      total = wordCount.getTotal();
+   }
 
    /**
     * Number of translated elements.
@@ -158,6 +188,28 @@ public class TranslationStatistics implements Serializable
       this.lastTranslated = lastTranslated;
    }
 
+   @XmlAttribute
+   public long getRejected()
+   {
+      return rejected;
+   }
+
+   public void setRejected(long rejected)
+   {
+      this.rejected = rejected;
+   }
+
+   @XmlAttribute
+   public long getAccepted()
+   {
+      return accepted;
+   }
+
+   public void setAccepted(long accepted)
+   {
+      this.accepted = accepted;
+   }
+
    @XmlTransient
    public int getPercentTranslated()
    {
@@ -202,7 +254,7 @@ public class TranslationStatistics implements Serializable
          return (int) Math.ceil(per);
       }
    }
-   
+
    public void setRemainingHours(double remainingHours)
    {
       this.remainingHours = remainingHours;
@@ -212,5 +264,67 @@ public class TranslationStatistics implements Serializable
    public double getRemainingHours()
    {
       return remainingHours;
+   }
+
+   public void add(TranslationStatistics other)
+   {
+      this.translated += other.translated;
+      this.needReview += other.needReview;
+      this.untranslated += other.untranslated;
+      this.rejected += other.rejected;
+      this.accepted += other.accepted;
+   }
+
+   public void increment(ContentState state, long count)
+   {
+      set(state, get(state) + count);
+   }
+
+   public void decrement(ContentState state, long count)
+   {
+      set(state, get(state) - count);
+   }
+
+   public long get(ContentState state)
+   {
+      switch (state)
+      {
+      case Approved:
+         return translated;
+      case NeedReview:
+         return needReview;
+      case New:
+         return untranslated;
+      case Rejected:
+         return rejected;
+      case Accepted:
+         return accepted;
+      default:
+         throw new RuntimeException("not implemented for state " + state.name());
+      }
+   }
+
+   public void set(ContentState state, long value)
+   {
+      switch (state)
+      {
+      case Approved:
+         translated = value;
+         break;
+      case NeedReview:
+         needReview = value;
+         break;
+      case New:
+         untranslated = value;
+         break;
+      case Rejected:
+         rejected = value;
+         break;
+      case Accepted:
+         accepted = value;
+         break;
+      default:
+         throw new RuntimeException("not implemented for state " + state.name());
+      }
    }
 }

@@ -20,18 +20,20 @@
  */
 package org.zanata.rest.dto.stats;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.annotate.JsonWriteNullProperties;
+import org.zanata.common.CommonContainerTranslationStatistics;
 import org.zanata.rest.dto.Link;
 import org.zanata.rest.dto.Links;
 
@@ -44,14 +46,17 @@ import org.zanata.rest.dto.Links;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder( { "id", "refs", "stats", "detailedStats" })
 @JsonWriteNullProperties(false)
-public class ContainerTranslationStatistics
+public class ContainerTranslationStatistics extends CommonContainerTranslationStatistics implements Serializable
 {
 
+   private static final long serialVersionUID = 1L;
    private String id;
    private Links refs;
-   private List<TranslationStatistics> stats;
    private List<ContainerTranslationStatistics> detailedStats;
 
+   public ContainerTranslationStatistics()
+   {
+   }
 
    /**
     * Identifier for the container (i.e. Project, Project Iteration, Document, etc).
@@ -80,41 +85,6 @@ public class ContainerTranslationStatistics
    public void setRefs(Links refs)
    {
       this.refs = refs;
-   }
-
-   /**
-    * Actual translation statistics.
-    */
-   @XmlElementWrapper(name = "stats")
-   @XmlElement(name = "stat")
-   public List<TranslationStatistics> getStats()
-   {
-      return stats;
-   }
-
-   public void setStats(List<TranslationStatistics> stats)
-   {
-      this.stats = stats;
-   }
-
-   /**
-    * Finds a specific translation for a locale and detail level.
-    *
-    * @return The specified translation statistics element, or null if one cannot be found.
-    */
-   public TranslationStatistics getStats(String localeId, TranslationStatistics.StatUnit unit)
-   {
-      if( this.stats != null )
-      {
-         for( TranslationStatistics stat : this.stats )
-         {
-            if( stat.getLocale().equals(localeId) && stat.getUnit() == unit )
-            {
-               return stat;
-            }
-         }
-      }
-      return null;
    }
 
    /**
@@ -148,14 +118,5 @@ public class ContainerTranslationStatistics
          this.detailedStats = new ArrayList<ContainerTranslationStatistics>();
       }
       this.detailedStats.add(newDetailedStats);
-   }
-
-   public void addStats( TranslationStatistics newStats )
-   {
-      if( this.stats == null )
-      {
-         this.stats = new ArrayList<TranslationStatistics>();
-      }
-      this.stats.add( newStats );
    }
 }
