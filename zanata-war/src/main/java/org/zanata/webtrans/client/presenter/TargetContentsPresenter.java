@@ -658,6 +658,27 @@ public class TargetContentsPresenter implements
       return userOptionsService.getConfigHolder().getState();
    }
 
+   @Override
+   public boolean canReviewTranslation()
+   {
+      return userWorkspaceContext.isHasReviewAccess();
+   }
+
+   @Override
+   public void acceptTranslation(TransUnitId id)
+   {
+      ensureRowSelection(id);
+      saveCurrent(ContentState.Accepted);
+      eventBus.fireEvent(NavTransUnitEvent.NEXT_ENTRY_EVENT);
+   }
+
+   @Override
+   public void rejectTranslation(TransUnitId id)
+   {
+      ensureRowSelection(id);
+      saveCurrent(ContentState.Rejected);
+   }
+
    /**
     * For testing only
     * @param currentTransUnitId current trans unit id

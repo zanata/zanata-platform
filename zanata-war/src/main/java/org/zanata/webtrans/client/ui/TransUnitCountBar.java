@@ -156,7 +156,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
          int approvedLeft = acceptedPx + rejectedPx;
          int needReviewLeft = approvedLeft + completePx;
          int untranslatedLeft = needReviewLeft + inProgressPx;
-         setupLayoutPanel(0.0, 0, 0.0, acceptedPx, acceptedPx, acceptedPx, approvedLeft, completePx, needReviewLeft, inProgressPx, untranslatedLeft, unfinishedPx);
+         setupLayoutPanel(0.0, 0, 0.0, acceptedPx, acceptedPx, rejected, approvedLeft, completePx, needReviewLeft, inProgressPx, untranslatedLeft, unfinishedPx);
          setLabelText();
       }
 
@@ -191,7 +191,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
 
    public int getWordsTotal()
    {
-      return getWordsApproved() + getWordsNeedReview() + getWordsUntranslated();
+      return getWordsApproved() + getWordsNeedReview() + getWordsUntranslated() + getWordsAccepted() + getWordsRejected();
    }
 
    public int getWordsApproved()
@@ -221,7 +221,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
 
    public int getUnitTotal()
    {
-      return getUnitApproved() + getUnitNeedReview() + getUnitUntranslated();
+      return getUnitApproved() + getUnitNeedReview() + getUnitUntranslated() + getUnitAccepted() + getUnitRejected();
    }
 
    public int getUnitApproved()

@@ -32,6 +32,7 @@ import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.client.ui.ValidationMessagePanelView;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
@@ -155,6 +156,12 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
             break;
          case New:
             state = " New";
+            break;
+         case Accepted:
+            state = " Accepted";
+            break;
+         case Rejected:
+            state = " Rejected";
             break;
       }
       styles += state + "StateDecoration";
