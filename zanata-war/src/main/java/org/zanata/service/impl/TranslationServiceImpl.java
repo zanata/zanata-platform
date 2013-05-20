@@ -31,12 +31,10 @@ import javax.annotation.Nonnull;
 import javax.persistence.EntityManager;
 
 import org.hibernate.HibernateException;
-import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.TransactionPropagationType;
 import org.jboss.seam.annotations.Transactional;
@@ -53,6 +51,7 @@ import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.dao.TextFlowTargetHistoryDAO;
+import org.zanata.events.TextFlowTargetStateEvent;
 import org.zanata.exception.ConcurrentTranslationException;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.lock.Lock;
@@ -71,7 +70,6 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.service.LocaleService;
 import org.zanata.service.LockManagerService;
-import org.zanata.service.TranslationStateCache;
 import org.zanata.service.TranslationService;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
@@ -87,8 +85,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TranslationServiceImpl implements TranslationService
 {
-
-   public final String TEXT_FLOW_TRANSLATED_EVENT = "org.zanata.event.HTextFlowTranslated";
 
    @In
    private EntityManager entityManager;
@@ -230,27 +226,24 @@ public class TranslationServiceImpl implements TranslationService
    {
       if( Events.exists() )
       {
-         Events.instance().raiseTransactionSuccessEvent(TEXT_FLOW_TRANSLATED_EVENT, hTextFlowTarget);
+         HTextFlow textFlow = hTextFlowTarget.getTextFlow();
+         HDocument document = textFlow.getDocument();
+         // TODO remove hasError from DocumentStatus, so that we can pass everything else directly to cache
+//         DocumentStatus docStatus = new DocumentStatus(
+//               new DocumentId(document.getId(), document.getDocId()), hasError,
+//               hTextFlowTarget.getLastChanged(), hTextFlowTarget.getLastModifiedBy().getAccount().getUsername());
+
+         Events.instance().raiseTransactionSuccessEvent(
+               TextFlowTargetStateEvent.EVENT_NAME,
+               new TextFlowTargetStateEvent(
+                     document.getId(),
+                     textFlow.getId(),
+                     hTextFlowTarget.getLocale().getLocaleId(),
+                     hTextFlowTarget.getId(),
+                     hTextFlowTarget.getState()
+//                     docStatus
+                     ));
       }
-   }
-
-   /**
-    * This method contains all logic to be run immediately after a Text Flow Target has
-    * been successfully translated.
-    *
-    * @param hTextFlowTarget The text flow target that has just been modified (translated).
-    */
-   @Observer(TEXT_FLOW_TRANSLATED_EVENT)
-   public void postTranslate( HTextFlowTarget hTextFlowTarget )
-   {
-      HTextFlow textFlow = hTextFlowTarget.getTextFlow();
-
-      // Update the Translation state cache
-      TranslationStateCache translationStateCacheImpl =
-            (TranslationStateCache) Component.getInstance("translationStateCacheImpl");
-      translationStateCacheImpl.textFlowStateUpdated(textFlow.getId(),
-            hTextFlowTarget.getLocale().getLocaleId(),
-            hTextFlowTarget.getState());
    }
 
    private boolean translate(@Nonnull

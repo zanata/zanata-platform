@@ -39,6 +39,7 @@ import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.cache.CacheWrapper;
 import org.zanata.cache.EhcacheWrapper;
@@ -47,8 +48,8 @@ import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
+import org.zanata.events.TextFlowTargetStateEvent;
 import org.zanata.model.HDocument;
-import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.service.TranslationStateCache;
 import org.zanata.service.ValidationFactoryProvider;
@@ -141,13 +142,22 @@ public class TranslationStateCacheImpl implements TranslationStateCache
       return translatedTextFlowCache.getWithLoader(localeId);
    }
 
+   /**
+    * This method contains all logic to be run immediately after a Text Flow Target has
+    * been successfully translated.
+    * <p>
+    * Note: it is not safe to access the database, since this event is triggered after the transaction has completed.
+    */
+   @Observer(TextFlowTargetStateEvent.EVENT_NAME)
    @Override
-   public void textFlowStateUpdated(Long textFlowId, LocaleId localeId, ContentState newState)
+   public void textFlowStateUpdated(TextFlowTargetStateEvent event)
    {
-      updateTranslatedTextFlowCache(textFlowId, localeId, newState);
-      updateFilterCache(textFlowId, localeId, newState);
-      updateDocLastTranslatedCache(textFlowId, localeId, newState);
-      updateTargetValidationCache(textFlowId, localeId, newState);
+      updateTranslatedTextFlowCache(event.getTextFlowId(), event.getLocaleId(), event.getNewState());
+      updateFilterCache(event.getTextFlowId(), event.getLocaleId(), event.getNewState());
+
+      // TODO update this cache rather than invalidating
+      invalidateDocLastTranslatedCache(event.getDocumentId(), event.getLocaleId());
+      invalidateTargetValidationCache(event.getTextFlowTargetId());
    }
 
    @Override
@@ -183,10 +193,9 @@ public class TranslationStateCacheImpl implements TranslationStateCache
       }
    }
 
-   private void updateDocLastTranslatedCache(Long textFlowId, LocaleId localeId, ContentState newState)
+   private void invalidateDocLastTranslatedCache(Long documentId, LocaleId localeId)
    {
-      HTextFlow tf = textFlowDAO.findById(textFlowId, false);
-      docStatsCache.remove(new TranslatedDocumentKey(tf.getDocument().getId(), localeId));
+      docStatsCache.remove(new TranslatedDocumentKey(documentId, localeId));
    }
 
    private void updateTranslatedTextFlowCache(Long textFlowId, LocaleId localeId, ContentState newState)
@@ -206,12 +215,9 @@ public class TranslationStateCacheImpl implements TranslationStateCache
       }
    }
 
-   private void updateTargetValidationCache(Long textFlowId, LocaleId localeId, ContentState newState)
+   private void invalidateTargetValidationCache(Long textFlowTargetId)
    {
-      HTextFlow tf = textFlowDAO.findById(textFlowId, false);
-      HTextFlowTarget target = textFlowTargetDAO.getTextFlowTarget(tf, localeId);
-
-      targetValidationCache.remove(target.getId());
+      targetValidationCache.remove(textFlowTargetId);
    }
 
    private final class BitsetLoader extends CacheLoader<LocaleId, OpenBitSet>
