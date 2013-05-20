@@ -56,12 +56,12 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
    private boolean statsByWords = true;
 
    @Inject
-   public TransUnitCountBar(WebTransMessages messages, LabelFormat labelFormat, boolean enableClickToggle)
+   public TransUnitCountBar(WebTransMessages messages, LabelFormat labelFormat, boolean enableClickToggle, boolean projectRequireReview)
    {
       this.messages = messages;
       this.labelFormat = labelFormat;
 
-      tooltipPanel = new TooltipPopupPanel();
+      tooltipPanel = new TooltipPopupPanel(projectRequireReview);
 
       initWidget(uiBinder.createAndBindUi(this));
 

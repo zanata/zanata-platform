@@ -62,7 +62,7 @@ public class TooltipPopupPanel extends PopupPanel
    InlineLabel msgAccepted, msgRejected, msgApproved, msgNeedReview, msgUntranslated, msgTotal;
 
    @Inject
-   public TooltipPopupPanel()
+   public TooltipPopupPanel(boolean projectRequireReview)
    {
       super(true);
       HTMLPanel container = uiBinder.createAndBindUi(this);
