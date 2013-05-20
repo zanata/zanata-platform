@@ -70,22 +70,18 @@ public class ContentStateUtil
       case Approved:
          if (!allNonEmpty(contents))
          {
+            // TODO rhbz953734 this should throw exception if it's require review project
             warnings.add("Invalid ContentState (some empty contents); changed from Approved to New: TextFlowTarget "+resId+" with contents: " + contents);
             return ContentState.New;
          }
          break;
-      case Accepted:
+      case Saved:
          if (!allNonEmpty(contents))
          {
-            throw new IllegalStateException("Invalid ContentState. Trying to accept incomplete translation.");
+            warnings.add("Invalid ContentState (some empty contents); changed from Saved to New: TextFlowTarget "+resId+" with contents: " + contents);
+            return ContentState.New;
          }
-         return ContentState.Accepted;
-      case Rejected:
-         if (!allNonEmpty(contents))
-         {
-            throw new IllegalStateException("Invalid ContentState. Trying to reject incomplete translation.");
-         }
-         return ContentState.Rejected;
+         return ContentState.Saved;
       default:
          throw new RuntimeException("unknown ContentState " + requestedState);
       }
