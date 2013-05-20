@@ -52,6 +52,7 @@ import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
+import org.zanata.webtrans.shared.model.WorkspaceRestrictions;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceResult;
 import org.zanata.webtrans.shared.rpc.EnterWorkspace;
@@ -120,7 +121,11 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
       boolean isProjectActive = isProjectIterationActive(project.getStatus(), projectIteration.getStatus());
       boolean hasWriteAccess = hasPermission(project, locale);
       boolean hasGlossaryUpdateAccess = hasGlossaryUpdatePermission();
+      boolean requireReview = projectIteration.isRequireTranslationReview();
       boolean hasReviewAccess = hasReviewerPermission();
+
+      WorkspaceRestrictions workspaceRestrictions = new WorkspaceRestrictions(isProjectActive, hasWriteAccess, hasGlossaryUpdateAccess, hasReviewAccess, requireReview);
+      log.debug("workspace restrictions: {}", workspaceRestrictions);
 
       LoadOptionsResult loadOptsRes = loadOptionsHandler.execute(new LoadOptionsAction(null), context);
 
@@ -128,7 +133,7 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
 
       Identity identity = new Identity(editorClientId, person);
       workspace.getWorkspaceContext().getWorkspaceId().getProjectIterationId().setProjectType(projectIteration.getProjectType());
-      UserWorkspaceContext userWorkspaceContext = new UserWorkspaceContext(workspace.getWorkspaceContext(), isProjectActive, hasWriteAccess, hasGlossaryUpdateAccess, hasReviewAccess);
+      UserWorkspaceContext userWorkspaceContext = new UserWorkspaceContext(workspace.getWorkspaceContext(), workspaceRestrictions);
       return new ActivateWorkspaceResult(userWorkspaceContext, identity, loadOptsRes.getConfiguration(), validationResult.getValidations());
    }
 
@@ -168,5 +173,6 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
    public void rollback(ActivateWorkspaceAction action, ActivateWorkspaceResult result, ExecutionContext context) throws ActionException
    {
    }
+
 
 }

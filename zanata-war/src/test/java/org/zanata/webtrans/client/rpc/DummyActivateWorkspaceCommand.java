@@ -18,6 +18,7 @@ import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
+import org.zanata.webtrans.shared.model.WorkspaceRestrictions;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceResult;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
@@ -43,7 +44,8 @@ public class DummyActivateWorkspaceCommand implements Command
    {
       Log.info("ENTER DummyActivateWorkspaceCommand.execute()");
       WorkspaceContext context = new WorkspaceContext(action.getWorkspaceId(), "Dummy Workspace", "Mock Sweedish");
-      UserWorkspaceContext userWorkspaceContext = new UserWorkspaceContext(context, true, true, true, true);
+      WorkspaceRestrictions workspaceRestrictions = new WorkspaceRestrictions(true, true, true, true, true);
+      UserWorkspaceContext userWorkspaceContext = new UserWorkspaceContext(context, workspaceRestrictions);
       userWorkspaceContext.setSelectedDoc(new DocumentInfo(new DocumentId(new Long(1), "Dummy path/Dummy doc"), "Dummy doc", "Dummy path", LocaleId.EN_US, null, new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator")));
 
       Identity identity = new Identity(new EditorClientId("123456", 1), new Person(new PersonId("bob"), "Bob The Builder", "http://www.gravatar.com/avatar/bob@zanata.org?d=mm&s=16"));

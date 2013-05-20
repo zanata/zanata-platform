@@ -60,6 +60,7 @@ import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.model.WorkspaceRestrictions;
 import org.zanata.webtrans.shared.util.Finds;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -661,7 +662,8 @@ public class TargetContentsPresenter implements
    @Override
    public boolean canReviewTranslation()
    {
-      return userWorkspaceContext.isHasReviewAccess();
+      WorkspaceRestrictions restrictions = userWorkspaceContext.getWorkspaceRestrictions();
+      return restrictions.isHasReviewAccess() && restrictions.isProjectRequireReview();
    }
 
    @Override

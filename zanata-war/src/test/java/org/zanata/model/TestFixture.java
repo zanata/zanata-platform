@@ -39,6 +39,7 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
+import org.zanata.webtrans.shared.model.WorkspaceRestrictions;
 import org.zanata.webtrans.shared.rpc.AbstractWorkspaceAction;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -101,12 +102,14 @@ public class TestFixture
    public static UserWorkspaceContext userWorkspaceContext(boolean projectActive, boolean hasWriteAccess, String projectSlug, String iterationSlug, ProjectType projectType)
    {
       ProjectIterationId projectIterationId = new ProjectIterationId(projectSlug, iterationSlug, projectType);
-      return new UserWorkspaceContext(new WorkspaceContext(new WorkspaceId(projectIterationId, LocaleId.EN_US), "workspaceName", LocaleId.EN_US.getId()), projectActive, hasWriteAccess, true, true);
+      WorkspaceRestrictions workspaceRestrictions = new WorkspaceRestrictions(projectActive, hasWriteAccess, true, true, true);
+      return new UserWorkspaceContext(new WorkspaceContext(new WorkspaceId(projectIterationId, LocaleId.EN_US), "workspaceName", LocaleId.EN_US.getId()), workspaceRestrictions);
    }
 
    public static UserWorkspaceContext userWorkspaceContext(boolean projectActive, boolean hasWriteAccess)
    {
-      return new UserWorkspaceContext(new WorkspaceContext(workspaceId(), "workspaceName", LocaleId.EN_US.getId()), projectActive, hasWriteAccess, true, true);
+      WorkspaceRestrictions workspaceRestrictions = new WorkspaceRestrictions(projectActive, hasWriteAccess, true, true, true);
+      return new UserWorkspaceContext(new WorkspaceContext(workspaceId(), "workspaceName", LocaleId.EN_US.getId()), workspaceRestrictions);
    }
 
    public static WorkspaceId workspaceId()
