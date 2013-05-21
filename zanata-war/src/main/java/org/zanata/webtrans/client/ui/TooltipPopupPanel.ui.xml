@@ -112,7 +112,7 @@
 				<g:cell styleName="{style.sideHeader}"/>
 				<g:cell styleName="{style.approved-header}">Approved</g:cell>
                 <g:cell styleName="{style.translated-header}">Translated</g:cell>
-                <g:cell styleName="{style.draft-header}">Fuzzy</g:cell>
+                <g:cell styleName="{style.draft-header}">Draft</g:cell>
 				<g:cell styleName="{style.untranslated-header}">Untranslated</g:cell>
 				<g:cell styleName="{style.topHeader}">Total</g:cell>
 
