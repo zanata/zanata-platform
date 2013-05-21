@@ -290,24 +290,27 @@ public class TranslationServiceImpl implements TranslationService
          log.warn(warning);
       }
       boolean requireTranslationReview = projectIteration.isRequireTranslationReview();
+      boolean reviewResultState = target.getState() == ContentState.Approved || target.getState() == ContentState.Rejected;
       if (requireTranslationReview)
       {
-         if (identity.hasRole("reviewer") && target.getState() == ContentState.Approved)
+         if (reviewResultState && identity.hasRole("reviewer"))
          {
-            // reviewer save it as Approved
+            // reviewer saved it
             target.setReviewer(authenticatedAccount.getPerson());
          }
-         else if (!identity.hasRole("reviewer") && target.getState() == ContentState.Approved)
+         else if (reviewResultState && !identity.hasRole("reviewer"))
          {
-            // reviewer
-            log.warn("non reviewer can not save translation to Approved. Change content state to Saved");
-            target.setState(ContentState.Translated);
+            throw new RuntimeException("non reviewer can not save translation to Approved. Change content state to Translated");
          }
-         else
+      }
+      else
+      {
+         if (target.getState() == ContentState.Translated)
          {
-
+            target.setState(ContentState.Approved);
+            target.setReviewer(authenticatedAccount.getPerson());
          }
-         target.setRejected(false);
+         target.setTranslator(authenticatedAccount.getPerson());
       }
       if (target.getState() != previousState)
       {

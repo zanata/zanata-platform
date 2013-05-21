@@ -204,7 +204,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache
       OpenBitSet bitSet = translatedTextFlowCache.get(localeId);
       if (bitSet != null)
       {
-         boolean translated = newState == ContentState.Approved;
+         boolean translated = ContentState.isTranslated(newState);
          if (translated)
          {
             bitSet.set(textFlowId);

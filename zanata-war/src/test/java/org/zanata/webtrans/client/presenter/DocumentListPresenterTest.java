@@ -220,14 +220,14 @@ public class DocumentListPresenterTest
       // default TUs: 1/2/3
       // approving 1 fuzzy, expect 2/1/3
       assertThat("document Approved TU count should increase by 1 when a TU is updated from NeedsReview to Approved", docStatsEvent.getNewStats().getStats(LocaleId.ES.toString(), StatUnit.MESSAGE).getTranslated(), is(new Long(2)));
-      assertThat("document NeedsReview TU count should decrease by 1 when a TU is updated from NeedsReview to Approved", docStatsEvent.getNewStats().getStats(LocaleId.ES.toString(), StatUnit.MESSAGE).getFuzzy(), is(new Long(1)));
+      assertThat("document NeedsReview TU count should decrease by 1 when a TU is updated from NeedsReview to Approved", docStatsEvent.getNewStats().getStats(LocaleId.ES.toString(), StatUnit.MESSAGE).getDraft(), is(new Long(1)));
       assertThat("document Untranslated TU count should remain the same when a TU is updated from NeedsReview to Approved", docStatsEvent.getNewStats().getStats(LocaleId.ES.toString(), StatUnit.MESSAGE).getUntranslated(), is(new Long(3)));
 
       // default words: 4/5/6
       // approving 3 fuzzy so expect 7/2/6
       assertThat("document Approved words should increase when TU changes to Approved", docStatsEvent.getNewStats().getStats(LocaleId.ES.toString(), StatUnit.WORD).getTranslated(), is(new Long(7)));
-      assertThat("document NeedsReview words should decrease when a TU changes from NeedsReview", docStatsEvent.getNewStats().getStats(LocaleId.ES.toString(), StatUnit.WORD).getFuzzy(), is(new Long(2)));
-      assertThat("document Untranslated words should not change when TU changes between NeedsReview and Approved", docStatsEvent.getNewStats().getStats(LocaleId.ES.toString(), StatUnit.WORD).getFuzzy(), is(new Long(2)));
+      assertThat("document NeedsReview words should decrease when a TU changes from NeedsReview", docStatsEvent.getNewStats().getStats(LocaleId.ES.toString(), StatUnit.WORD).getDraft(), is(new Long(2)));
+      assertThat("document Untranslated words should not change when TU changes between NeedsReview and Approved", docStatsEvent.getNewStats().getStats(LocaleId.ES.toString(), StatUnit.WORD).getDraft(), is(new Long(2)));
    }
 
    @Test
@@ -279,13 +279,13 @@ public class DocumentListPresenterTest
       // default TUs: 3/6/9 (approved/fuzzy/untranslated)
       // approving 1 fuzzy, expect 4/5/9
       assertThat("project Approved TU count should increase by 1 when a TU changes to Approved status", projectStatsEvent.getProjectStats().getStats(LocaleId.ES.toString(), StatUnit.MESSAGE).getTranslated(), is(new Long(4)));
-      assertThat("project NeedsReview TU count should decrease by 1 when a TU changes from Approved status", projectStatsEvent.getProjectStats().getStats(LocaleId.ES.toString(), StatUnit.MESSAGE).getFuzzy(), is(new Long(5)));
+      assertThat("project NeedsReview TU count should decrease by 1 when a TU changes from Approved status", projectStatsEvent.getProjectStats().getStats(LocaleId.ES.toString(), StatUnit.MESSAGE).getDraft(), is(new Long(5)));
       assertThat("project Untranslates TU count should not change when TU changes between NeedsReview and Approved", projectStatsEvent.getProjectStats().getStats(LocaleId.ES.toString(), StatUnit.MESSAGE).getUntranslated(), is(new Long(9)));
 
       // default words: 12/15/18
       // approving 3 fuzzy, expect 15/12/18
       assertThat("project Approved words should increase when TU changes to Approved", projectStatsEvent.getProjectStats().getStats(LocaleId.ES.toString(), StatUnit.WORD).getTranslated(), is(new Long(15)));
-      assertThat("project NeedsReview words should decrease when a TU changes from NeedsReview", projectStatsEvent.getProjectStats().getStats(LocaleId.ES.toString(), StatUnit.WORD).getFuzzy(), is(new Long(12)));
+      assertThat("project NeedsReview words should decrease when a TU changes from NeedsReview", projectStatsEvent.getProjectStats().getStats(LocaleId.ES.toString(), StatUnit.WORD).getDraft(), is(new Long(12)));
       assertThat("project Untranslated words should not change when TU changes between NeedsReview and Approved", projectStatsEvent.getProjectStats().getStats(LocaleId.ES.toString(), StatUnit.WORD).getUntranslated(), is(new Long(18)));
    }
 

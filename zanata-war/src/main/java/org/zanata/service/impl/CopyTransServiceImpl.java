@@ -245,6 +245,7 @@ public class CopyTransServiceImpl implements CopyTransService
                hTarget.setLastChanged(matchingTarget.getLastChanged());
                hTarget.setLastModifiedBy(matchingTarget.getLastModifiedBy());
                hTarget.setTranslator(matchingTarget.getTranslator());
+               // TODO rhbz953734 - will need a new copyTran option for review state
                if (copyState == ContentState.Approved)
                {
                   hTarget.setReviewer(matchingTarget.getReviewer());

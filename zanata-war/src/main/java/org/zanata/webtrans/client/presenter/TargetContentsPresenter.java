@@ -267,7 +267,7 @@ public class TargetContentsPresenter implements
       else
       {
          currentEditorIndex = 0;
-         saveCurrent(ContentState.Approved);
+         saveCurrent(ContentState.Translated);
          eventBus.fireEvent(NavTransUnitEvent.NEXT_ENTRY_EVENT);
       }
    }
@@ -678,7 +678,7 @@ public class TargetContentsPresenter implements
    public void rejectTranslation(TransUnitId id)
    {
       ensureRowSelection(id);
-      saveCurrent(ContentState.Saved);
+      saveCurrent(ContentState.Rejected);
    }
 
    /**

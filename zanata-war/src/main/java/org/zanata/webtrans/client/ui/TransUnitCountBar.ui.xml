@@ -13,7 +13,7 @@
             z-index: 0;
         }
 
-        .needReview {
+        .draft {
             background: #ffc000;
             z-index: 0;
         }
@@ -23,7 +23,7 @@
             z-index: 0;
         }
 
-        .saved {
+        .translated {
             background: #0000CD;
             z-index: 0;
         }
@@ -45,10 +45,10 @@
 			<g:FlowPanel ui:field='approvedPanel' styleName="{style.approved}"/>
 		</g:layer>
         <g:layer left='0' width='0'>
-            <g:FlowPanel ui:field='savedPanel' styleName="{style.saved}"/>
+            <g:FlowPanel ui:field='translatedPanel' styleName="{style.translated}"/>
         </g:layer>
         <g:layer left='0' width='0'>
-			<g:FlowPanel ui:field='needReviewPanel' styleName="{style.needReview}"/>
+			<g:FlowPanel ui:field='draftPanel' styleName="{style.draft}"/>
 		</g:layer>
 		<g:layer left='0' width='0'>
 			<g:FlowPanel ui:field='untranslatedPanel' styleName="{style.untranslated}"/>

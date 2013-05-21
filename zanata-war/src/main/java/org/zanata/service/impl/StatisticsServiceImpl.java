@@ -325,10 +325,10 @@ public class StatisticsServiceImpl implements StatisticsResource
       CommonContainerTranslationStatistics result = documentDAO.getStatistics(documentId, localeId);
       
       TranslationStatistics wordStatistics = result.getStats(localeId.getId(), StatUnit.WORD);
-      wordStatistics.setRemainingHours(getRemainingHours(wordStatistics.getFuzzy(), wordStatistics.getUntranslated()));
+      wordStatistics.setRemainingHours(getRemainingHours(wordStatistics.getDraft(), wordStatistics.getUntranslated()));
       
       TranslationStatistics msgStatistics = result.getStats(localeId.getId(), StatUnit.MESSAGE);
-      msgStatistics.setRemainingHours(getRemainingHours(msgStatistics.getFuzzy(), msgStatistics.getUntranslated()));
+      msgStatistics.setRemainingHours(getRemainingHours(msgStatistics.getDraft(), msgStatistics.getUntranslated()));
       
       return result;
    }

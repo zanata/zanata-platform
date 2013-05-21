@@ -109,7 +109,6 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
 
    private HPerson translator;
    private HPerson reviewer;
-   private boolean rejected;
 
    private HSimpleComment comment;
 
@@ -183,11 +182,6 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    public HPerson getReviewer()
    {
       return reviewer;
-   }
-
-   public boolean isRejected()
-   {
-      return rejected;
    }
 
    public boolean hasReviewer()
@@ -425,7 +419,6 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
       setLastModifiedBy(null);
       setTranslator(null);
       setReviewer(null);
-      setRejected(false);
    }
 
    protected boolean logPersistence()

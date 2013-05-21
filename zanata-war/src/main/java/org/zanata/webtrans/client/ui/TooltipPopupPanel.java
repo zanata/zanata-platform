@@ -74,15 +74,15 @@ public class TooltipPopupPanel extends PopupPanel
 
    public void refreshData(TransUnitCountBar stats)
    {
-      wordSaved.setText(String.valueOf(stats.getWordsSaved()));
+      wordSaved.setText(String.valueOf(stats.getWordsTranslated()));
       wordApproved.setText(String.valueOf(stats.getWordsApproved()));
-      wordNeedReview.setText(String.valueOf(stats.getWordsNeedReview()));
+      wordNeedReview.setText(String.valueOf(stats.getWordsDraft()));
       wordUntranslated.setText(String.valueOf(stats.getWordsUntranslated()));
       wordTotal.setText(String.valueOf(stats.getWordsTotal()));
 
-      msgSaved.setText(String.valueOf(stats.getUnitSaved()));
+      msgSaved.setText(String.valueOf(stats.getUnitTranslated()));
       msgApproved.setText(String.valueOf(stats.getUnitApproved()));
-      msgNeedReview.setText(String.valueOf(stats.getUnitNeedReview()));
+      msgNeedReview.setText(String.valueOf(stats.getUnitDraft()));
       msgUntranslated.setText(String.valueOf(stats.getUnitUntranslated()));
       msgTotal.setText(String.valueOf(stats.getUnitTotal()));
    }

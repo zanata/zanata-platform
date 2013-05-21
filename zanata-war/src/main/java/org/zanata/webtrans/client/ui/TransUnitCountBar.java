@@ -45,7 +45,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
    LayoutPanel layoutPanel;
 
    @UiField
-   FlowPanel approvedPanel, needReviewPanel, untranslatedPanel, undefinedPanel, savedPanel;
+   FlowPanel approvedPanel, draftPanel, untranslatedPanel, undefinedPanel, translatedPanel;
 
    @UiField
    Label label;
@@ -116,8 +116,8 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
       layoutPanel.forceLayout();
       layoutPanel.setWidgetLeftWidth(undefinedPanel, undefinedLeft, Unit.PX, undefinedWidth, Unit.PX);
       layoutPanel.setWidgetLeftWidth(approvedPanel, approvedLeft, Unit.PX, approvedWidth, Unit.PX);
-      layoutPanel.setWidgetLeftWidth(savedPanel, savedLeft, Unit.PX, savedWidth, Unit.PX);
-      layoutPanel.setWidgetLeftWidth(needReviewPanel, needReviewLeft, Unit.PX, needReviewWidth, Unit.PX);
+      layoutPanel.setWidgetLeftWidth(translatedPanel, savedLeft, Unit.PX, savedWidth, Unit.PX);
+      layoutPanel.setWidgetLeftWidth(draftPanel, needReviewLeft, Unit.PX, needReviewWidth, Unit.PX);
       layoutPanel.setWidgetLeftWidth(untranslatedPanel, untranslatedLeft, Unit.PX, untranslatedWidth, Unit.PX);
    }
 
@@ -127,17 +127,17 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
       if (statsByWords)
       {
          approved = getWordsApproved();
-         needReview = getWordsNeedReview();
+         needReview = getWordsDraft();
          untranslated = getWordsUntranslated();
-         saved = getWordsSaved();
+         saved = getWordsTranslated();
          total = getWordsTotal();
       }
       else
       {
          approved = getUnitApproved();
-         needReview = getUnitNeedReview();
+         needReview = getUnitDraft();
          untranslated = getUnitUntranslated();
-         saved = getUnitSaved();
+         saved = getUnitTranslated();
          total = getUnitTotal();
       }
       int width = getOffsetWidth();
@@ -211,7 +211,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
 
    public int getWordsTotal()
    {
-      return getWordsApproved() + getWordsNeedReview() + getWordsUntranslated() + getWordsSaved();
+      return getWordsApproved() + getWordsDraft() + getWordsUntranslated() + getWordsTranslated();
    }
 
    public int getWordsApproved()
@@ -224,12 +224,12 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
       return 0;
    }
 
-   public int getWordsNeedReview()
+   public int getWordsDraft()
    {
       TranslationStatistics stats = getWordStats();
       if (stats != null)
       {
-         return (int) stats.getFuzzy();
+         return (int) stats.getDraft();
       }
       return 0;
    }
@@ -244,7 +244,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
       return 0;
    }
 
-   public int getWordsSaved()
+   public int getWordsTranslated()
    {
       TranslationStatistics stats = getWordStats();
       if (stats != null)
@@ -256,7 +256,8 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
 
    public int getUnitTotal()
    {
-      return getUnitApproved() + getUnitNeedReview() + getUnitUntranslated() + getUnitSaved();
+      TranslationStatistics messageStats = getMessageStats();
+      return (int) messageStats.getTotal();
    }
 
    public int getUnitApproved()
@@ -269,12 +270,12 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
       return 0;
    }
 
-   public int getUnitNeedReview()
+   public int getUnitDraft()
    {
       TranslationStatistics stats = getMessageStats();
       if (stats != null)
       {
-         return (int) stats.getFuzzy();
+         return (int) stats.getDraft();
       }
       return 0;
    }
@@ -288,18 +289,8 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
       }
       return 0;
    }
-  
-   public int getUnitRejected()
-   {
-      TranslationStatistics stats = getMessageStats();
-      if (stats != null)
-      {
-         return (int) stats.getRejected();
-      }
-      return 0;
-    }
 
-   public int getUnitSaved()
+   public int getUnitTranslated()
    {
 	  TranslationStatistics stats = getMessageStats();
       if (stats != null)
