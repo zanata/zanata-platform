@@ -102,6 +102,11 @@ public class TranslationStatistics implements Serializable
       return untranslated;
    }
 
+   public void setUntranslated(long untranslated)
+   {
+      this.untranslated = untranslated;
+   }
+
    /**
     * Number of elements that need review (i.e. Fuzzy or Rejected).
     */
@@ -142,6 +147,11 @@ public class TranslationStatistics implements Serializable
    public long getTotal()
    {
       return total;
+   }
+
+   public void setTotal(long total)
+   {
+      this.total = total;
    }
 
    /**
