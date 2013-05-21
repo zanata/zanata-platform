@@ -10,23 +10,25 @@ public abstract class AbstractTranslationCount implements Serializable
    private int approved;
    private int needReview;
    private int untranslated;
-   private int saved;
+   private int translated;
+   private int rejected;
 
    public AbstractTranslationCount()
    {
    }
 
-   protected AbstractTranslationCount(int approved, int needReview, int untranslated, int saved)
+   protected AbstractTranslationCount(int approved, int needReview, int untranslated, int translated, int rejected)
    {
       this.approved = approved;
       this.needReview = needReview;
       this.untranslated = untranslated;
-      this.saved = saved;
+      this.translated = translated;
+      this.rejected = rejected;
    }
 
    protected AbstractTranslationCount(int approved, int needReview, int untranslated)
    {
-      this(approved, needReview, untranslated, 0);
+      this(approved, needReview, untranslated, 0, 0);
    }
 
    public void increment(ContentState state, int count)
@@ -52,8 +54,11 @@ public abstract class AbstractTranslationCount implements Serializable
       case New:
          untranslated = value;
          break;
-      case Saved:
-         saved = value;
+      case Translated:
+         translated = value;
+         break;
+      case Rejected:
+         rejected = value;
          break;
       default:
          throw new RuntimeException("not implemented for state " + state.name());
@@ -70,8 +75,10 @@ public abstract class AbstractTranslationCount implements Serializable
          return needReview;
       case New:
          return untranslated;
-      case Saved:
-         return saved;
+      case Translated:
+         return translated;
+      case Rejected:
+         return rejected;
       default:
          throw new RuntimeException("not implemented for state " + state.name());
       }
@@ -82,7 +89,8 @@ public abstract class AbstractTranslationCount implements Serializable
       this.approved += other.approved;
       this.needReview += other.needReview;
       this.untranslated += other.untranslated;
-      this.saved += other.saved;
+      this.translated += other.translated;
+      this.rejected += other.rejected;
    }
 
    protected void set(AbstractTranslationCount other)
@@ -90,12 +98,13 @@ public abstract class AbstractTranslationCount implements Serializable
       this.approved = other.approved;
       this.needReview = other.needReview;
       this.untranslated = other.untranslated;
-      this.saved = other.saved;
+      this.translated = other.translated;
+      this.rejected = other.rejected;
    }
 
    public int getTotal()
    {
-      return approved + needReview + untranslated + saved;
+      return approved + needReview + untranslated + translated + rejected;
    }
 
    public int getApproved()
@@ -113,14 +122,19 @@ public abstract class AbstractTranslationCount implements Serializable
       return untranslated;
    }
 
-   public int getSaved()
+   public int getTranslated()
    {
-      return saved;
+      return translated;
    }
 
    public int getNotApproved()
    {
-      return untranslated + needReview;
+      return untranslated + needReview + rejected + translated;
+   }
+
+   public int getRejected()
+   {
+      return rejected;
    }
 
    @Override
@@ -133,9 +147,8 @@ public abstract class AbstractTranslationCount implements Serializable
       if (obj instanceof AbstractTranslationCount)
       {
          AbstractTranslationCount o = (AbstractTranslationCount) obj;
-         return (approved == o.approved && needReview == o.needReview && untranslated == o.untranslated && saved == o.saved);
+         return (approved == o.approved && needReview == o.needReview && untranslated == o.untranslated && translated == o.translated && rejected == o.rejected);
       }
       return false;
    }
-
 }

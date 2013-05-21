@@ -9,9 +9,9 @@ public class TransUnitWords extends AbstractTranslationCount
    {
    }
 
-   public TransUnitWords(int approved, int needReview, int untranslated, int saved)
+   public TransUnitWords(int approved, int needReview, int untranslated, int translated, int rejected)
    {
-      super(approved, needReview, untranslated, saved);
+      super(approved, needReview, untranslated, translated, rejected);
    }
 
    public TransUnitWords(int approved, int needReview, int untranslated)

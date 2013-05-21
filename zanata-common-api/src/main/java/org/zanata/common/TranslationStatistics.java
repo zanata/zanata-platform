@@ -38,29 +38,21 @@ import org.codehaus.jackson.annotate.JsonWriteNullProperties;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@XmlType(name = "translationStatistics", propOrder = { "total", "untranslated", "needReview", "translated", "unit", "locale", "lastTranslated" })
+@XmlType(name = "translationStatistics", propOrder = { "total", "untranslated", "draft", "translated", "approved", "unit", "locale", "lastTranslated" })
 @XmlRootElement(name = "translationStats")
 @JsonIgnoreProperties(value = { "percentTranslated", "percentNeedReview", "percentUntranslated" }, ignoreUnknown = true)
-@JsonPropertyOrder({ "total", "untranslated", "needReview", "translated", "unit", "locale", "lastTranslated" })
+@JsonPropertyOrder({ "total", "untranslated", "draft", "translated", "approved", "unit", "locale", "lastTranslated" })
 @JsonWriteNullProperties(false)
 public class TranslationStatistics implements Serializable
 {
 
-   public enum StatUnit
-   {
-      /** Statistics are measured in words. */
-      WORD,
-      /** Statistics are measured in messages (i.e. entries, text flows) */
-      MESSAGE;
-   }
-
-   private long untranslated;
-   private long fuzzy;
+   private long total;
+   private long rejected;
    private long translated;
    private long approved;
-   private long rejected;
-   
-   private long total;
+   private long fuzzy;
+   private long untranslated;
+
    private StatUnit unit;
    private String locale;
    private double remainingHours;
@@ -76,10 +68,10 @@ public class TranslationStatistics implements Serializable
       this.locale = locale;
       untranslated = unitCount.getUntranslated();
       fuzzy = unitCount.getNeedReview();
-//      translated = unitCount.getApproved();
       approved = unitCount.getApproved();
-//      rejected = unitCount.getRejected();
-      
+      translated = unitCount.getTranslated();
+      rejected = unitCount.getRejected();
+
       total = unitCount.getTotal();
    }
 
@@ -87,14 +79,17 @@ public class TranslationStatistics implements Serializable
    {
       this.unit = StatUnit.WORD;
       this.locale = locale;
-      
+
       untranslated = wordCount.getUntranslated();
       fuzzy = wordCount.getNeedReview();
-//      translated = wordCount.getApproved();
+      translated = wordCount.getTranslated();
       approved = wordCount.getApproved();
-//      rejected = wordCount.getRejected();
+      rejected = wordCount.getRejected();
       
-      
+      double untransHours = wordCount.getUntranslated() / 250.0;
+      double fuzzyHours = wordCount.getNeedReview() / 500.0;
+      double translatedHours = wordCount.getTranslated() / 500.0;
+      remainingHours = untransHours + fuzzyHours + translatedHours;
       total = wordCount.getTotal();
    }
 
@@ -107,23 +102,13 @@ public class TranslationStatistics implements Serializable
       return untranslated;
    }
 
-   public void setUntranslated(long untranslated)
-   {
-      this.untranslated = untranslated;
-   }
-   
    /**
-    * Number of elements that need review (i.e. Fuzzy).
+    * Number of elements that need review (i.e. Fuzzy or Rejected).
     */
    @XmlAttribute
-   public long getFuzzy()
+   public long getDraft()
    {
-      return fuzzy;
-   }
-
-   public void setFuzzy(long fuzzy)
-   {
-      this.fuzzy = fuzzy;
+      return fuzzy + rejected;
    }
    
    /**
@@ -133,11 +118,6 @@ public class TranslationStatistics implements Serializable
    public long getTranslated()
    {
       return translated;
-   }
-
-   public void setTranslated(long translated)
-   {
-      this.translated = translated;
    }
   
    /**
@@ -149,20 +129,10 @@ public class TranslationStatistics implements Serializable
       return approved;
    }
 
-   public void setApproved(long approved)
-   {
-      this.approved = approved;
-   }
-   
    @XmlAttribute
    public long getRejected()
    {
       return rejected;
-   }
-
-   public void setRejected(long rejected)
-   {
-      this.rejected = rejected;
    }
 
    /**
@@ -172,11 +142,6 @@ public class TranslationStatistics implements Serializable
    public long getTotal()
    {
       return total;
-   }
-
-   public void setTotal(long total)
-   {
-      this.total = total;
    }
 
    /**
@@ -234,7 +199,7 @@ public class TranslationStatistics implements Serializable
    }
 
    @XmlTransient
-   public int getPercentNeedReview()
+   public int getPercentDraft()
    {
       long total = getTotal();
       if (total <= 0)
@@ -243,7 +208,7 @@ public class TranslationStatistics implements Serializable
       }
       else
       {
-         double per = 100 * getFuzzy() / total;
+         double per = 100 * getDraft() / total;
          return (int) Math.ceil(per);
       }
    }
@@ -277,10 +242,10 @@ public class TranslationStatistics implements Serializable
    public void add(TranslationStatistics other)
    {
       this.translated += other.translated;
-//      this.needReview += other.needReview;
+      this.fuzzy += other.fuzzy;
       this.untranslated += other.untranslated;
       this.rejected += other.rejected;
-//      this.accepted += other.accepted;
+      this.approved += other.approved;
    }
 
    public void increment(ContentState state, long count)
@@ -303,10 +268,10 @@ public class TranslationStatistics implements Serializable
          return fuzzy;
       case New:
          return untranslated;
-//      case Rejected:
-//         return rejected;
-//      case Accepted:
-//         return accepted;
+      case Rejected:
+         return rejected;
+      case Translated:
+         return translated;
       default:
          throw new RuntimeException("not implemented for state " + state.name());
       }
@@ -325,14 +290,23 @@ public class TranslationStatistics implements Serializable
       case New:
          untranslated = value;
          break;
-//      case Rejected:
-//         rejected = value;
-//         break;
-//      case Accepted:
-//         accepted = value;
-//         break;
+      case Rejected:
+         rejected = value;
+         break;
+      case Translated:
+         translated = value;
+         break;
       default:
          throw new RuntimeException("not implemented for state " + state.name());
       }
+   }
+
+   public enum StatUnit
+   {
+      /** Statistics are measured in words. */
+      WORD,
+      /** Statistics are measured in messages (i.e. entries, text flows) */
+      MESSAGE;
+
    }
 }
