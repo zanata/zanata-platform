@@ -256,8 +256,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
 
    public int getUnitTotal()
    {
-      TranslationStatistics messageStats = getMessageStats();
-      return (int) messageStats.getTotal();
+      return getUnitApproved() + getUnitDraft() + getUnitTranslated() + getUnitUntranslated();
    }
 
    public int getUnitApproved()
