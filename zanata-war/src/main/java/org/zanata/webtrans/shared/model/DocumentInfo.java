@@ -2,8 +2,8 @@ package org.zanata.webtrans.shared.model;
 
 import java.util.Map;
 
+import org.zanata.common.CommonContainerTranslationStatistics;
 import org.zanata.common.LocaleId;
-import org.zanata.common.TranslationStats;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -13,7 +13,7 @@ public class DocumentInfo implements HasIdentifier<DocumentId>, IsSerializable
    private String name;
    private String path;
    private LocaleId sourceLocale;
-   private TranslationStats stats;
+   private CommonContainerTranslationStatistics stats;
    private AuditInfo lastModified;
    private AuditInfo lastTranslated;
    private Map<String, String> downloadExtensions;
@@ -27,7 +27,7 @@ public class DocumentInfo implements HasIdentifier<DocumentId>, IsSerializable
    {
    }
 
-   public DocumentInfo(DocumentId id, String name, String path, LocaleId sourceLocale, TranslationStats stats, AuditInfo lastModified, Map<String, String> downloadExtensions, AuditInfo lastTranslated)
+   public DocumentInfo(DocumentId id, String name, String path, LocaleId sourceLocale, CommonContainerTranslationStatistics stats, AuditInfo lastModified, Map<String, String> downloadExtensions, AuditInfo lastTranslated)
    {
       this.id = id;
       this.name = name;
@@ -54,12 +54,12 @@ public class DocumentInfo implements HasIdentifier<DocumentId>, IsSerializable
       return path;
    }
 
-   public TranslationStats getStats()
+   public CommonContainerTranslationStatistics getStats()
    {
       return stats;
    }
 
-   public void setStats(TranslationStats stats)
+   public void setStats(CommonContainerTranslationStatistics stats)
    {
       this.stats = stats;
    }

@@ -10,6 +10,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.common.TranslationStats;
+import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.webtrans.shared.model.AuditInfo;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
@@ -30,7 +31,7 @@ public class PathDocumentFilterTest
 
    private static DocumentInfo docInfo(String name, String path)
    {
-      return new DocumentInfo(new DocumentId(1L, ""), name, path, LocaleId.EN_US, new TranslationStats(), new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator"));
+      return new DocumentInfo(new DocumentId(1L, ""), name, path, LocaleId.EN_US, new ContainerTranslationStatistics(), new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator"));
    }
 
    @Test

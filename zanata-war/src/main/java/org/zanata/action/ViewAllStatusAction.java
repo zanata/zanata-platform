@@ -20,7 +20,7 @@
  */
 package org.zanata.action;
 
-import static org.zanata.rest.dto.stats.TranslationStatistics.StatUnit.WORD;
+import static org.zanata.common.TranslationStatistics.StatUnit.WORD;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -45,6 +45,8 @@ import org.zanata.annotation.CachedMethodResult;
 import org.zanata.annotation.CachedMethods;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
+import org.zanata.common.TranslationStatistics;
+import org.zanata.common.TranslationStatistics.StatUnit;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
@@ -55,8 +57,6 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.process.CopyTransProcessHandle;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
-import org.zanata.rest.dto.stats.TranslationStatistics;
-import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 import org.zanata.rest.service.StatisticsResource;
 import org.zanata.seam.scope.FlashScopeBean;
 import org.zanata.security.ZanataIdentity;

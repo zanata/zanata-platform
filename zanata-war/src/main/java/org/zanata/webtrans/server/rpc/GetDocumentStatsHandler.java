@@ -1,6 +1,5 @@
 package org.zanata.webtrans.server.rpc;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,10 +10,9 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.zanata.common.TranslationStats;
+import org.zanata.common.CommonContainerTranslationStatistics;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.TextFlowTargetDAO;
-import org.zanata.model.HTextFlowTarget;
 import org.zanata.service.TranslationStateCache;
 import org.zanata.service.impl.StatisticsServiceImpl;
 import org.zanata.webtrans.server.ActionHandlerFor;
@@ -44,12 +42,12 @@ public class GetDocumentStatsHandler extends AbstractActionHandler<GetDocumentSt
    @Override
    public GetDocumentStatsResult execute(GetDocumentStats action, ExecutionContext context) throws ActionException
    {
-      Map<DocumentId, TranslationStats> statsMap = new HashMap<DocumentId, TranslationStats>();
+      Map<DocumentId, CommonContainerTranslationStatistics> statsMap = new HashMap<DocumentId, CommonContainerTranslationStatistics>();
       Map<DocumentId, AuditInfo> lastTranslatedMap = new HashMap<DocumentId, AuditInfo>();
 
       for (DocumentId documentId : action.getDocIds())
       {
-         TranslationStats stats = statisticsServiceImpl.getDocStatistics(documentId.getId(), action.getWorkspaceId().getLocaleId());
+         CommonContainerTranslationStatistics stats = statisticsServiceImpl.getDocStatistics(documentId.getId(), action.getWorkspaceId().getLocaleId());
          statsMap.put(documentId, stats);
 
          DocumentStatus docStat = translationStateCacheImpl.getDocStats(documentId.getId(), action.getWorkspaceId().getLocaleId());

@@ -1,8 +1,11 @@
 package org.zanata.webtrans.client.ui;
 
-import org.zanata.common.ContentState;
-import org.zanata.common.TranslationStats;
+import org.zanata.common.CommonContainerTranslationStatistics;
+import org.zanata.common.LocaleId;
+import org.zanata.common.TranslationStatistics;
+import org.zanata.common.TranslationStatistics.StatUnit;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
@@ -49,17 +52,20 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
 
    private final LabelFormat labelFormat;
 
-   private final TranslationStats stats = new TranslationStats();
+   private CommonContainerTranslationStatistics stats = new CommonContainerTranslationStatistics();
 
    private final WebTransMessages messages;
+
+   private final LocaleId localeId;
 
    private boolean statsByWords = true;
 
    @Inject
-   public TransUnitCountBar(WebTransMessages messages, LabelFormat labelFormat, boolean enableClickToggle)
+   public TransUnitCountBar(UserWorkspaceContext userworkspaceContext, WebTransMessages messages, LabelFormat labelFormat, boolean enableClickToggle)
    {
       this.messages = messages;
       this.labelFormat = labelFormat;
+      localeId = userworkspaceContext.getWorkspaceContext().getWorkspaceId().getLocaleId();
 
       tooltipPanel = new TooltipPopupPanel();
 
@@ -172,21 +178,40 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
       switch (labelFormat)
       {
       case PERCENT_COMPLETE_HRS:
+         TranslationStatistics wordStats = stats.getStats(localeId.getId(), StatUnit.WORD);
          if (statsByWords)
          {
-            label.setText(messages.statusBarPercentageHrs(stats.getApprovedPercent(statsByWords), stats.getRemainingHours(), "Words"));
+            label.setText(messages.statusBarPercentageHrs(wordStats.getPercentTranslated(), wordStats.getRemainingHours(), "Words"));
          }
          else
          {
-            label.setText(messages.statusBarPercentageHrs(stats.getApprovedPercent(statsByWords), stats.getRemainingHours(), "Msg"));
+            TranslationStatistics msgStats = stats.getStats(localeId.getId(), StatUnit.MESSAGE);
+            label.setText(messages.statusBarPercentageHrs(msgStats.getPercentTranslated(), wordStats.getRemainingHours(), "Msg"));
          }
          break;
       case PERCENT_COMPLETE:
-         label.setText(messages.statusBarLabelPercentage(stats.getApprovedPercent(statsByWords)));
+         if (statsByWords)
+         {
+            label.setText(messages.statusBarLabelPercentage(stats.getStats(localeId.getId(), StatUnit.WORD).getPercentTranslated()));
+         }
+         else
+         {
+            label.setText(messages.statusBarLabelPercentage(stats.getStats(localeId.getId(), StatUnit.MESSAGE).getPercentTranslated()));
+         }
          break;
       default:
          label.setText("error: " + labelFormat.name());
       }
+   }
+
+   private TranslationStatistics getWordStats()
+   {
+      return stats.getStats(localeId.getId(), StatUnit.WORD);
+   }
+
+   private TranslationStatistics getMessageStats()
+   {
+      return stats.getStats(localeId.getId(), StatUnit.MESSAGE);
    }
 
    public int getWordsTotal()
@@ -196,27 +221,52 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
 
    public int getWordsApproved()
    {
-      return stats.getWordCount().get(ContentState.Approved);
+      TranslationStatistics stats = getWordStats();
+      if (stats != null)
+      {
+         return (int) stats.getTranslated();
+      }
+      return 0;
    }
 
    public int getWordsNeedReview()
    {
-      return stats.getWordCount().get(ContentState.NeedReview);
+      TranslationStatistics stats = getWordStats();
+      if (stats != null)
+      {
+         return (int) stats.getNeedReview();
+      }
+      return 0;
    }
 
    public int getWordsUntranslated()
    {
-      return stats.getWordCount().get(ContentState.New);
+      TranslationStatistics stats = getWordStats();
+      if (stats != null)
+      {
+         return (int) stats.getUntranslated();
+      }
+      return 0;
    }
 
    public int getWordsAccepted()
    {
-      return stats.getWordCount().get(ContentState.Accepted);
+      TranslationStatistics stats = getWordStats();
+      if (stats != null)
+      {
+         return (int) stats.getAccepted();
+      }
+      return 0;
    }
 
    public int getWordsRejected()
    {
-      return stats.getWordCount().get(ContentState.Rejected);
+      TranslationStatistics stats = getWordStats();
+      if (stats != null)
+      {
+         return (int) stats.getRejected();
+      }
+      return 0;
    }
 
    public int getUnitTotal()
@@ -226,33 +276,58 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
 
    public int getUnitApproved()
    {
-      return stats.getUnitCount().get(ContentState.Approved);
+      TranslationStatistics stats = getMessageStats();
+      if (stats != null)
+      {
+         return (int) stats.getTranslated();
+      }
+      return 0;
    }
 
    public int getUnitNeedReview()
    {
-      return stats.getUnitCount().get(ContentState.NeedReview);
+      TranslationStatistics stats = getMessageStats();
+      if (stats != null)
+      {
+         return (int) stats.getNeedReview();
+      }
+      return 0;
    }
 
    public int getUnitUntranslated()
    {
-      return stats.getUnitCount().get(ContentState.New);
+      TranslationStatistics stats = getMessageStats();
+      if (stats != null)
+      {
+         return (int) stats.getUntranslated();
+      }
+      return 0;
    }
 
    public int getUnitAccepted()
    {
-      return stats.getUnitCount().get(ContentState.Accepted);
+      TranslationStatistics stats = getMessageStats();
+      if (stats != null)
+      {
+         return (int) stats.getAccepted();
+      }
+      return 0;
    }
 
    public int getUnitRejected()
    {
-      return stats.getUnitCount().get(ContentState.Rejected);
+      TranslationStatistics stats = getMessageStats();
+      if (stats != null)
+      {
+         return (int) stats.getRejected();
+      }
+      return 0;
    }
 
    @Override
-   public void setStats(TranslationStats stats, boolean statsByWords)
+   public void setStats(CommonContainerTranslationStatistics stats, boolean statsByWords)
    {
-      this.stats.set(stats);
+      this.stats = stats;
       this.statsByWords = statsByWords;
 
       refresh();

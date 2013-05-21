@@ -25,7 +25,7 @@ import net.customware.gwt.presenter.client.PresenterRevealedEvent;
 import net.customware.gwt.presenter.client.PresenterRevealedHandler;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.zanata.common.TranslationStats;
+import org.zanata.common.CommonContainerTranslationStatistics;
 import org.zanata.webtrans.client.events.AliasKeyChangedEvent;
 import org.zanata.webtrans.client.events.AliasKeyChangedEventHandler;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
@@ -85,9 +85,9 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
 
    // states
    private DocumentInfo selectedDocument;
-   private TranslationStats selectedDocumentStats = new TranslationStats();
-   private TranslationStats projectStats = new TranslationStats();
-   private TranslationStats currentDisplayStats = new TranslationStats();
+   private CommonContainerTranslationStatistics selectedDocumentStats = new CommonContainerTranslationStatistics();
+   private CommonContainerTranslationStatistics projectStats = new CommonContainerTranslationStatistics();
+   private CommonContainerTranslationStatistics currentDisplayStats = new CommonContainerTranslationStatistics();
    private MainView currentView = null;
 
    @Inject
@@ -414,7 +414,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
     * @param currentView current view
     * @param selectedDocument
     */
-   protected void setStatesForTest(TranslationStats projectStats, TranslationStats selectedDocumentStats, MainView currentView, DocumentInfo selectedDocument)
+   protected void setStatesForTest(CommonContainerTranslationStatistics projectStats, CommonContainerTranslationStatistics selectedDocumentStats, MainView currentView, DocumentInfo selectedDocument)
    {
       if (!GWT.isClient())
       {

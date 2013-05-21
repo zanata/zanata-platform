@@ -4,8 +4,8 @@ import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
 
+import org.zanata.common.CommonContainerTranslationStatistics;
 import org.zanata.common.LocaleId;
-import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.EventProcessor.StartCallback;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
@@ -189,7 +189,7 @@ public class Application implements EntryPoint
             Log.info("=========== now firing current history state =========== ");
             history.fireCurrentHistoryState();
 
-            TranslationStats projectStats = new TranslationStats(); // = 0
+            CommonContainerTranslationStatistics projectStats = new CommonContainerTranslationStatistics(); // = 0
 
             documentListPresenter.setProjectStats(projectStats);
 

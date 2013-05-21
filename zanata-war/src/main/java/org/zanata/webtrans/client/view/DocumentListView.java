@@ -23,6 +23,7 @@ package org.zanata.webtrans.client.view;
 import java.util.HashMap;
 import java.util.List;
 
+import org.zanata.common.CommonContainerTranslationStatistics;
 import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.resources.Resources;
@@ -385,7 +386,7 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    }
 
    @Override
-   public void updateStats(int row, TranslationStats stats)
+   public void updateStats(int row, CommonContainerTranslationStatistics stats)
    {
       documentListTable.updateStats(row, stats, statsByWord.getValue().booleanValue());
    }

@@ -20,7 +20,7 @@
  */
 package org.zanata.action;
 
-import static org.zanata.rest.dto.stats.TranslationStatistics.StatUnit.WORD;
+import static org.zanata.common.TranslationStatistics.StatUnit.WORD;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -63,6 +63,8 @@ import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
 import org.zanata.common.ProjectType;
+import org.zanata.common.TranslationStatistics;
+import org.zanata.common.TranslationStatistics.StatUnit;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.PersonDAO;
@@ -81,8 +83,6 @@ import org.zanata.rest.dto.extensions.ExtensionType;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
-import org.zanata.rest.dto.stats.TranslationStatistics;
-import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 import org.zanata.rest.service.FileService;
 import org.zanata.rest.service.StatisticsResource;
 import org.zanata.security.SecurityFunctions;

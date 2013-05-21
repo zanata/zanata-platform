@@ -24,7 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.zanata.common.TranslationStats;
+import org.zanata.common.CommonContainerTranslationStatistics;
+import org.zanata.common.TranslationStatistics.StatUnit;
 import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
@@ -313,7 +314,7 @@ public class DocumentListTable extends FlexTable
    private Widget getStatsWidget(DocumentInfo docInfo, boolean statsByWords)
    {
       FlowPanel panel = new FlowPanel();
-      final TransUnitCountBar graph = new TransUnitCountBar(messages, LabelFormat.PERCENT_COMPLETE, false);
+      final TransUnitCountBar graph = new TransUnitCountBar(userWorkspaceContext, messages, LabelFormat.PERCENT_COMPLETE, false);
       Image loading = new Image(resources.spinner());
       panel.add(graph);
       panel.add(loading);
@@ -338,13 +339,14 @@ public class DocumentListTable extends FlexTable
       String text = "0";
       if (docInfo.getStats() != null)
       {
+         String locale = userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getLocaleId().getId();
          if (statsByWords)
          {
-            text = String.valueOf(docInfo.getStats().getWordCount().getApproved());
+            text = String.valueOf(docInfo.getStats().getStats(locale, StatUnit.WORD).getTranslated());
          }
          else
          {
-            text = String.valueOf(docInfo.getStats().getUnitCount().getApproved());
+            text = String.valueOf(docInfo.getStats().getStats(locale, StatUnit.MESSAGE).getTranslated());
          }
       }
       return new InlineLabel(text);
@@ -355,13 +357,14 @@ public class DocumentListTable extends FlexTable
       String text = "0";
       if (docInfo.getStats() != null)
       {
+         String locale = userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getLocaleId().getId();
          if (statsByWords)
          {
-            text = String.valueOf(docInfo.getStats().getWordCount().getNotApproved());
+            text = String.valueOf(docInfo.getStats().getStats(locale, StatUnit.WORD).getUntranslated());
          }
          else
          {
-            text = String.valueOf(docInfo.getStats().getUnitCount().getNotApproved());
+            text = String.valueOf(docInfo.getStats().getStats(locale, StatUnit.MESSAGE).getUntranslated());
          }
       }
       return new InlineLabel(text);
@@ -372,7 +375,7 @@ public class DocumentListTable extends FlexTable
       String text = "0";
       if (docInfo.getStats() != null)
       {
-         text = messages.statusBarLabelHours(docInfo.getStats().getRemainingHours());
+         text = messages.statusBarLabelHours(docInfo.getStats().getStats(userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getLocaleId().getId(), StatUnit.WORD).getRemainingHours());
       }
       return new InlineLabel(text);
    }
@@ -436,7 +439,7 @@ public class DocumentListTable extends FlexTable
       label.setText(getAuditInfo(lastTranslated));
    }
 
-   public void updateStats(int row, TranslationStats stats, boolean statsByWords)
+   public void updateStats(int row, CommonContainerTranslationStatistics stats, boolean statsByWords)
    {
       if (stats != null)
       {
@@ -454,15 +457,16 @@ public class DocumentListTable extends FlexTable
 
          graph.setStatOption(statsByWords);
 
+         String locale = userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getLocaleId().toString();
          if (statsByWords)
          {
-            translated.setText(String.valueOf(stats.getWordCount().getApproved()));
-            untranslated.setText(String.valueOf(stats.getWordCount().getUntranslated()));
+            translated.setText(String.valueOf(stats.getStats(locale, StatUnit.WORD).getTranslated()));
+            untranslated.setText(String.valueOf(stats.getStats(locale, StatUnit.WORD).getUntranslated()));
          }
          else
          {
-            translated.setText(String.valueOf(stats.getUnitCount().getApproved()));
-            untranslated.setText(String.valueOf(stats.getUnitCount().getUntranslated()));
+            translated.setText(String.valueOf(stats.getStats(locale, StatUnit.MESSAGE).getTranslated()));
+            untranslated.setText(String.valueOf(stats.getStats(locale, StatUnit.MESSAGE).getUntranslated()));
          }
       }
    }

@@ -1,6 +1,6 @@
 package org.zanata.webtrans.client.ui;
 
-import org.zanata.common.TranslationStats;
+import org.zanata.common.CommonContainerTranslationStatistics;
 
 public interface HasTranslationStats
 {
@@ -9,5 +9,5 @@ public interface HasTranslationStats
       PERCENT_COMPLETE, PERCENT_COMPLETE_HRS;
    }
 
-   void setStats(TranslationStats stats, boolean statsByWords);
+   void setStats(CommonContainerTranslationStatistics stats, boolean statsByWords);
 }

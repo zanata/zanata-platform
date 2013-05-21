@@ -32,6 +32,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.common.TranslationStats;
 import org.zanata.model.TestFixture;
+import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.events.TransMemoryShortcutCopyEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
@@ -185,7 +186,7 @@ public class TransMemoryPresenterTest
    public void createTMRequestForTransUnit()
    {
       WorkspaceId workspaceId = new WorkspaceId(new ProjectIterationId("projectSlug", "iterationSlug", ProjectType.Podir), LocaleId.EN_US);
-      DocumentInfo docInfo = new DocumentInfo(new DocumentId(new Long(1), ""), "test", "test/path", LocaleId.EN_US, new TranslationStats(), new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator"));
+      DocumentInfo docInfo = new DocumentInfo(new DocumentId(new Long(1), ""), "test", "test/path", LocaleId.EN_US, new ContainerTranslationStatistics(), new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator"));
 
       when(display.getTmTextBox()).thenReturn(tMTextBox);
       when(tMTextBox.getText()).thenReturn("query");
@@ -210,7 +211,7 @@ public class TransMemoryPresenterTest
       LocaleId localeId = new LocaleId("zh");
       ProjectIterationId projectIterationId = new ProjectIterationId("project", "master", ProjectType.Podir);
       when(userWorkspaceContext.getWorkspaceContext()).thenReturn(new WorkspaceContext(new WorkspaceId(projectIterationId, localeId), "workspaceName", localeId.getId()));
-      when(userWorkspaceContext.getSelectedDoc()).thenReturn(new DocumentInfo(new DocumentId(new Long(1), ""), "doc.txt", "/pot", new LocaleId("en-US"), new TranslationStats(), new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator")));
+      when(userWorkspaceContext.getSelectedDoc()).thenReturn(new DocumentInfo(new DocumentId(new Long(1), ""), "doc.txt", "/pot", new LocaleId("en-US"), new ContainerTranslationStatistics(), new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator")));
 
       // When:
       presenter.createTMRequestForTransUnit(TestFixture.makeTransUnit(1));
@@ -255,7 +256,7 @@ public class TransMemoryPresenterTest
       ProjectIterationId projectIterationId = new ProjectIterationId("project", "master", ProjectType.Podir);
       when(userWorkspaceContext.getWorkspaceContext()).thenReturn(new WorkspaceContext(new WorkspaceId(projectIterationId, targetLocale), "workspaceName", targetLocale.getId()));
       LocaleId sourceLocale = new LocaleId("en-US");
-      when(userWorkspaceContext.getSelectedDoc()).thenReturn(new DocumentInfo(new DocumentId(new Long(1), ""), "doc.txt", "/pot", sourceLocale, new TranslationStats(), new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator")));
+      when(userWorkspaceContext.getSelectedDoc()).thenReturn(new DocumentInfo(new DocumentId(new Long(1), ""), "doc.txt", "/pot", sourceLocale, new ContainerTranslationStatistics(), new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator")));
       when(display.getTmTextBox()).thenReturn(tMTextBox);
       when(tMTextBox.getText()).thenReturn("search query");
       when(display.getSearchType()).thenReturn(searchType);
@@ -283,7 +284,7 @@ public class TransMemoryPresenterTest
       LocaleId localeId = new LocaleId("zh");
       ProjectIterationId projectIterationId = new ProjectIterationId("project", "master", ProjectType.Podir);
       when(userWorkspaceContext.getWorkspaceContext()).thenReturn(new WorkspaceContext(new WorkspaceId(projectIterationId, localeId), "workspaceName", localeId.getId()));
-      when(userWorkspaceContext.getSelectedDoc()).thenReturn(new DocumentInfo(new DocumentId(new Long(1), ""), "doc.txt", "/pot", new LocaleId("en-US"), new TranslationStats(), new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator")));
+      when(userWorkspaceContext.getSelectedDoc()).thenReturn(new DocumentInfo(new DocumentId(new Long(1), ""), "doc.txt", "/pot", new LocaleId("en-US"), new ContainerTranslationStatistics(), new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator")));
       when(display.getTmTextBox()).thenReturn(tMTextBox);
       when(display.getSearchType()).thenReturn(searchType);
 
@@ -308,7 +309,7 @@ public class TransMemoryPresenterTest
       LocaleId localeId = new LocaleId("zh");
       ProjectIterationId projectIterationId = new ProjectIterationId("project", "master", ProjectType.Podir);
       when(userWorkspaceContext.getWorkspaceContext()).thenReturn(new WorkspaceContext(new WorkspaceId(projectIterationId, localeId), "workspaceName", localeId.getId()));
-      when(userWorkspaceContext.getSelectedDoc()).thenReturn(new DocumentInfo(new DocumentId(new Long(1), ""), "doc.txt", "/pot", new LocaleId("en-US"), new TranslationStats(), new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator")));
+      when(userWorkspaceContext.getSelectedDoc()).thenReturn(new DocumentInfo(new DocumentId(new Long(1), ""), "doc.txt", "/pot", new LocaleId("en-US"), new ContainerTranslationStatistics(), new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator")));
       when(display.getTmTextBox()).thenReturn(tMTextBox);
       when(tMTextBox.getText()).thenReturn("search query");
       when(display.getSearchType()).thenReturn(searchType);
@@ -337,7 +338,7 @@ public class TransMemoryPresenterTest
       LocaleId localeId = new LocaleId("zh");
       ProjectIterationId projectIterationId = new ProjectIterationId("project", "master", ProjectType.Podir);
       when(userWorkspaceContext.getWorkspaceContext()).thenReturn(new WorkspaceContext(new WorkspaceId(projectIterationId, localeId), "workspaceName", localeId.getId()));
-      when(userWorkspaceContext.getSelectedDoc()).thenReturn(new DocumentInfo(new DocumentId(new Long(1), ""), "doc.txt", "/pot", new LocaleId("en-US"), new TranslationStats(), new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator")));
+      when(userWorkspaceContext.getSelectedDoc()).thenReturn(new DocumentInfo(new DocumentId(new Long(1), ""), "doc.txt", "/pot", new LocaleId("en-US"), new ContainerTranslationStatistics(), new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator")));
       when(display.getTmTextBox()).thenReturn(tMTextBox);
       when(display.getSearchType()).thenReturn(searchType);
       when(searchType.getValue()).thenReturn(SearchType.FUZZY);

@@ -36,8 +36,8 @@ import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
+import org.zanata.common.TranslationStatistics;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
-import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.service.ValidationService;
 

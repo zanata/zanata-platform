@@ -15,10 +15,12 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.common.CommonContainerTranslationStatistics;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
+import org.zanata.common.TranslationStatistics;
 import org.zanata.common.TranslationStats;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
@@ -26,6 +28,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HRawDocument;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.StatusCount;
+import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 
 @Name("documentDAO")
 @AutoCreate
@@ -165,7 +168,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
     * @param localeId
     * @return
     */
-   public TranslationStats getStatistics(long docId, LocaleId localeId)
+   public CommonContainerTranslationStatistics getStatistics(long docId, LocaleId localeId)
    {
       // @formatter:off
       Session session = getSession();
@@ -185,13 +188,13 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
             .setCacheable(true).list();
       Long totalCount = getTotalCountForDocument( getById(docId) );
 
-      TransUnitCount stat = new TransUnitCount();
+      TransUnitCount unitCount = new TransUnitCount();
       for (StatusCount count : stats)
       {
-         stat.set(count.status, count.count.intValue());
+         unitCount.set(count.status, count.count.intValue());
       }
-      int newCount = totalCount.intValue() - stat.get(ContentState.Approved) - stat.get(ContentState.NeedReview);
-      stat.set(ContentState.New, newCount);
+      int newCount = totalCount.intValue() - unitCount.get(ContentState.Approved) - unitCount.get(ContentState.NeedReview);
+      unitCount.set(ContentState.New, newCount);
 
       // calculate word counts
       @SuppressWarnings("unchecked")
@@ -214,9 +217,13 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       }
       long newWordCount = totalWordCount.longValue() - wordCount.get(ContentState.Approved) - wordCount.get(ContentState.NeedReview);
       wordCount.set(ContentState.New, (int) newWordCount);
+      
 
-      TranslationStats transStats = new TranslationStats(stat, wordCount);
-      return transStats;
+      CommonContainerTranslationStatistics result = new CommonContainerTranslationStatistics();
+      result.addStats(new TranslationStatistics(unitCount, localeId.toString()));
+      result.addStats(new TranslationStatistics(wordCount, localeId.toString()));
+      
+      return result;
       // @formatter:on
    }
 
