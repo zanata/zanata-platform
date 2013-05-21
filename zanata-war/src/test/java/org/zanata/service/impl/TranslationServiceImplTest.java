@@ -39,6 +39,8 @@ import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.Lists;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.zanata.service.TranslationService.TranslationResult;
@@ -83,12 +85,12 @@ public class TranslationServiceImplTest extends ZanataDbunitJpaTest
       newContents.add("translated 2");
       TransUnitUpdateRequest translateReq = new TransUnitUpdateRequest(transUnitId, newContents, ContentState.Approved, 1);
 
-      TranslationResult result = transService.translate(new LocaleId("de"), translateReq);
+      List<TranslationResult> result = transService.translate(new LocaleId("de"), Lists.newArrayList(translateReq));
 
-      assertThat(result.isTranslationSuccessful(), is(true));
-      assertThat(result.getBaseVersionNum(), is(1));
-      assertThat(result.getBaseContentState(), is(ContentState.Approved));
-      assertThat(result.getTranslatedTextFlowTarget().getVersionNum(), is(2)); // moved up a version
+      assertThat(result.get(0).isTranslationSuccessful(), is(true));
+      assertThat(result.get(0).getBaseVersionNum(), is(1));
+      assertThat(result.get(0).getBaseContentState(), is(ContentState.Approved));
+      assertThat(result.get(0).getTranslatedTextFlowTarget().getVersionNum(), is(2)); // moved up a version
    }
 
    @Test
@@ -141,6 +143,7 @@ public class TranslationServiceImplTest extends ZanataDbunitJpaTest
       TransUnitUpdateRequest translateReq = new TransUnitUpdateRequest(transUnitId, newContents, ContentState.Approved, 1);
 
       // Should not pass as the base version (1) does not match
-      TranslationResult result = transService.translate(new LocaleId("de"), translateReq);
+      List<TransUnitUpdateRequest> translationRequests = Lists.newArrayList(translateReq);
+      transService.translate(new LocaleId("de"), translationRequests);
    }
 }

@@ -23,6 +23,7 @@ package org.zanata.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -165,6 +166,11 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
       return lastModifiedBy;
    }
 
+   public void setLastModifiedBy(HPerson date)
+   {
+      lastModifiedBy = date;
+   }
+
    @ManyToOne(cascade = { CascadeType.MERGE })
    @JoinColumn(name = "translated_by_id", nullable = true)
    public HPerson getTranslator()
@@ -177,6 +183,16 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    public HPerson getReviewer()
    {
       return reviewer;
+   }
+
+   public boolean isRejected()
+   {
+      return rejected;
+   }
+
+   public boolean hasReviewer()
+   {
+      return reviewer != null;
    }
 
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
@@ -407,6 +423,9 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
       setState(ContentState.New);
       setComment(null);
       setLastModifiedBy(null);
+      setTranslator(null);
+      setReviewer(null);
+      setRejected(false);
    }
 
    protected boolean logPersistence()

@@ -244,6 +244,11 @@ public class CopyTransServiceImpl implements CopyTransService
                hTarget.setTextFlowRevision(originalTf.getRevision());
                hTarget.setLastChanged(matchingTarget.getLastChanged());
                hTarget.setLastModifiedBy(matchingTarget.getLastModifiedBy());
+               hTarget.setTranslator(matchingTarget.getTranslator());
+               if (copyState == ContentState.Approved)
+               {
+                  hTarget.setReviewer(matchingTarget.getReviewer());
+               }
                hTarget.setContents(matchingTarget.getContents());
                hTarget.setState(copyState);
                HSimpleComment hcomment = hTarget.getComment();
