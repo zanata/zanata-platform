@@ -45,7 +45,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
    LayoutPanel layoutPanel;
 
    @UiField
-   FlowPanel approvedPanel, needReviewPanel, untranslatedPanel, undefinedPanel, acceptedPanel, rejectedPanel;
+   FlowPanel approvedPanel, needReviewPanel, untranslatedPanel, undefinedPanel, savedPanel;
 
    @UiField
    Label label;
@@ -61,13 +61,13 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
    private boolean statsByWords = true;
 
    @Inject
-   public TransUnitCountBar(UserWorkspaceContext userworkspaceContext, WebTransMessages messages, LabelFormat labelFormat, boolean enableClickToggle)
+   public TransUnitCountBar(UserWorkspaceContext userworkspaceContext, WebTransMessages messages, LabelFormat labelFormat, boolean enableClickToggle, boolean projectRequireReview)
    {
       this.messages = messages;
       this.labelFormat = labelFormat;
       localeId = userworkspaceContext.getWorkspaceContext().getWorkspaceId().getLocaleId();
 
-      tooltipPanel = new TooltipPopupPanel();
+      tooltipPanel = new TooltipPopupPanel(projectRequireReview);
 
       initWidget(uiBinder.createAndBindUi(this));
 
@@ -111,27 +111,25 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
       refresh();
    }
 
-   private void setupLayoutPanel(double undefinedLeft, double undefinedWidth, double acceptedLeft, double acceptedWidth, double rejectedLeft, double rejectedWidth, double approvedLeft, double approvedWidth, double needReviewLeft, double needReviewWidth, double untranslatedLeft, double untranslatedWidth)
+   private void setupLayoutPanel(double undefinedLeft, double undefinedWidth, double approvedLeft, double approvedWidth, double savedLeft, double savedWidth, double needReviewLeft, double needReviewWidth, double untranslatedLeft, double untranslatedWidth)
    {
       layoutPanel.forceLayout();
       layoutPanel.setWidgetLeftWidth(undefinedPanel, undefinedLeft, Unit.PX, undefinedWidth, Unit.PX);
-      layoutPanel.setWidgetLeftWidth(acceptedPanel, acceptedLeft, Unit.PX, acceptedWidth, Unit.PX);
-      layoutPanel.setWidgetLeftWidth(rejectedPanel, rejectedLeft, Unit.PX, rejectedWidth, Unit.PX);
       layoutPanel.setWidgetLeftWidth(approvedPanel, approvedLeft, Unit.PX, approvedWidth, Unit.PX);
+      layoutPanel.setWidgetLeftWidth(savedPanel, savedLeft, Unit.PX, savedWidth, Unit.PX);
       layoutPanel.setWidgetLeftWidth(needReviewPanel, needReviewLeft, Unit.PX, needReviewWidth, Unit.PX);
       layoutPanel.setWidgetLeftWidth(untranslatedPanel, untranslatedLeft, Unit.PX, untranslatedWidth, Unit.PX);
    }
 
    public void refresh()
    {
-      int approved, needReview, untranslated, accepted, rejected, total;
+      int approved, needReview, untranslated, saved, total;
       if (statsByWords)
       {
          approved = getWordsApproved();
          needReview = getWordsNeedReview();
          untranslated = getWordsUntranslated();
-         accepted = getWordsAccepted();
-         rejected = getWordsRejected();
+         saved = getWordsSaved();
          total = getWordsTotal();
       }
       else
@@ -139,8 +137,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
          approved = getUnitApproved();
          needReview = getUnitNeedReview();
          untranslated = getUnitUntranslated();
-         accepted = getUnitAccepted();
-         rejected = getUnitRejected();
+         saved = getUnitSaved();
          total = getUnitTotal();
       }
       int width = getOffsetWidth();
@@ -148,21 +145,19 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
       {
          undefinedPanel.clear();
          undefinedPanel.add(new Label(messages.noContent()));
-         setupLayoutPanel(0.0, width, 0, 0, 0, 0, 0.0, 0, 0.0, 0, 0.0, 0);
+         setupLayoutPanel(0.0, width, 0, 0, 0.0, 0, 0.0, 0, 0.0, 0);
          label.setText("");
       }
       else
       {
-         int acceptedPx = accepted * 100 / total * width / TOTAL_WIDTH;
-         int rejectedPx = rejected * 100 / total * width / TOTAL_WIDTH;
          int completePx = approved * 100 / total * width / TOTAL_WIDTH;
+         int savedPx = saved * 100 / total * width / TOTAL_WIDTH;
          int inProgressPx = needReview * 100 / total * width / TOTAL_WIDTH;
          int unfinishedPx = untranslated * 100 / total * width / TOTAL_WIDTH;
 
-         int approvedLeft = acceptedPx + rejectedPx;
-         int needReviewLeft = approvedLeft + completePx;
+         int needReviewLeft = savedPx + completePx;
          int untranslatedLeft = needReviewLeft + inProgressPx;
-         setupLayoutPanel(0.0, 0, 0.0, acceptedPx, acceptedPx, acceptedPx, approvedLeft, completePx, needReviewLeft, inProgressPx, untranslatedLeft, unfinishedPx);
+         setupLayoutPanel(0.0, 0, 0.0, completePx, completePx, savedPx, needReviewLeft, inProgressPx, untranslatedLeft, unfinishedPx);
          setLabelText();
       }
 
@@ -216,7 +211,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
 
    public int getWordsTotal()
    {
-      return getWordsApproved() + getWordsNeedReview() + getWordsUntranslated();
+      return getWordsApproved() + getWordsNeedReview() + getWordsUntranslated() + getWordsSaved();
    }
 
    public int getWordsApproved()
@@ -224,7 +219,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
       TranslationStatistics stats = getWordStats();
       if (stats != null)
       {
-         return (int) stats.getTranslated();
+         return (int) stats.getApproved();
       }
       return 0;
    }
@@ -234,7 +229,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
       TranslationStatistics stats = getWordStats();
       if (stats != null)
       {
-         return (int) stats.getNeedReview();
+         return (int) stats.getFuzzy();
       }
       return 0;
    }
@@ -249,29 +244,19 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
       return 0;
    }
 
-   public int getWordsAccepted()
+   public int getWordsSaved()
    {
       TranslationStatistics stats = getWordStats();
       if (stats != null)
       {
-         return (int) stats.getAccepted();
-      }
-      return 0;
-   }
-
-   public int getWordsRejected()
-   {
-      TranslationStatistics stats = getWordStats();
-      if (stats != null)
-      {
-         return (int) stats.getRejected();
+         return (int) stats.getTranslated();
       }
       return 0;
    }
 
    public int getUnitTotal()
    {
-      return getUnitApproved() + getUnitNeedReview() + getUnitUntranslated();
+      return getUnitApproved() + getUnitNeedReview() + getUnitUntranslated() + getUnitSaved();
    }
 
    public int getUnitApproved()
@@ -279,7 +264,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
       TranslationStatistics stats = getMessageStats();
       if (stats != null)
       {
-         return (int) stats.getTranslated();
+         return (int) stats.getApproved();
       }
       return 0;
    }
@@ -289,7 +274,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
       TranslationStatistics stats = getMessageStats();
       if (stats != null)
       {
-         return (int) stats.getNeedReview();
+         return (int) stats.getFuzzy();
       }
       return 0;
    }
@@ -303,17 +288,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
       }
       return 0;
    }
-
-   public int getUnitAccepted()
-   {
-      TranslationStatistics stats = getMessageStats();
-      if (stats != null)
-      {
-         return (int) stats.getAccepted();
-      }
-      return 0;
-   }
-
+  
    public int getUnitRejected()
    {
       TranslationStatistics stats = getMessageStats();
@@ -322,12 +297,22 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
          return (int) stats.getRejected();
       }
       return 0;
+    }
+
+   public int getUnitSaved()
+   {
+	  TranslationStatistics stats = getMessageStats();
+      if (stats != null)
+      {
+         return (int) stats.getTranslated();
+      }
+      return 0;
    }
 
    @Override
    public void setStats(CommonContainerTranslationStatistics stats, boolean statsByWords)
    {
-      this.stats = stats;
+      this.stats.set(stats);
       this.statsByWords = statsByWords;
 
       refresh();

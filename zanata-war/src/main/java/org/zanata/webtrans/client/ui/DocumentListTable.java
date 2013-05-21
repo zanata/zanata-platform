@@ -314,7 +314,7 @@ public class DocumentListTable extends FlexTable
    private Widget getStatsWidget(DocumentInfo docInfo, boolean statsByWords)
    {
       FlowPanel panel = new FlowPanel();
-      final TransUnitCountBar graph = new TransUnitCountBar(userWorkspaceContext, messages, LabelFormat.PERCENT_COMPLETE, false);
+      final TransUnitCountBar graph = new TransUnitCountBar(userWorkspaceContext, messages, LabelFormat.PERCENT_COMPLETE, false, userWorkspaceContext.getWorkspaceRestrictions().isProjectRequireReview());
       Image loading = new Image(resources.spinner());
       panel.add(graph);
       panel.add(loading);

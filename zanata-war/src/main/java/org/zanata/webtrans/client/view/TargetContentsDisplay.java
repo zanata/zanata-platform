@@ -95,6 +95,12 @@ public interface TargetContentsDisplay extends WidgetDisplay, HasTransUnitId, Ha
       void saveUserDecision(Boolean value);
 
       UserConfigHolder.ConfigurationState getConfigState();
+
+      boolean canReviewTranslation();
+
+      void acceptTranslation(TransUnitId id);
+
+      void rejectTranslation(TransUnitId id);
    }
 
    enum EditingState

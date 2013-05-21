@@ -33,9 +33,11 @@ import static org.mockito.Mockito.when;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
+import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -75,7 +77,7 @@ public class GlossaryDetailsPresenterTest
    private CachingDispatchAsync mockDispatcher;
    @Mock
    private UiMessages messages;
-   @Mock
+   @Mock(answer = Answers.RETURNS_DEEP_STUBS)
    private UserWorkspaceContext mockUserWorkspaceContext;
    @Mock
    private HasText targetText;
@@ -118,7 +120,7 @@ public class GlossaryDetailsPresenterTest
    {
       boolean hasAccess = true;
 
-      when(mockUserWorkspaceContext.hasGlossaryUpdateAccess()).thenReturn(hasAccess);
+      when(mockUserWorkspaceContext.getWorkspaceRestrictions().isHasGlossaryUpdateAccess()).thenReturn(hasAccess);
 
       glossaryDetailsPresenter.bind();
       
@@ -134,7 +136,7 @@ public class GlossaryDetailsPresenterTest
       List<String> targetComments = Lists.newArrayList("new comment");
 
       GlossaryDetails glossaryDetails = mock(GlossaryDetails.class);
-      when(mockUserWorkspaceContext.hasGlossaryUpdateAccess()).thenReturn(true);
+      when(mockUserWorkspaceContext.getWorkspaceRestrictions().isHasGlossaryUpdateAccess()).thenReturn(true);
       when(display.getTargetText()).thenReturn(this.targetText);
       when(this.targetText.getText()).thenReturn(newTargetText);
       when(glossaryDetails.getTarget()).thenReturn(targetText);
@@ -156,7 +158,7 @@ public class GlossaryDetailsPresenterTest
    {
       GlossaryDetails glossaryDetails = mock(GlossaryDetails.class);
       Date lastModifiedDate = new Date();
-      when(mockUserWorkspaceContext.hasGlossaryUpdateAccess()).thenReturn(true);
+      when(mockUserWorkspaceContext.getWorkspaceRestrictions().isHasGlossaryUpdateAccess()).thenReturn(true);
       when(display.getTargetText()).thenReturn(targetText);
       when(targetText.getText()).thenReturn("new target Text");
       when(glossaryDetails.getTarget()).thenReturn("target Text");
@@ -183,7 +185,7 @@ public class GlossaryDetailsPresenterTest
    public void onSaveClickAndCallbackFailure()
    {
       GlossaryDetails glossaryDetails = mock(GlossaryDetails.class);
-      when(mockUserWorkspaceContext.hasGlossaryUpdateAccess()).thenReturn(true);
+      when(mockUserWorkspaceContext.getWorkspaceRestrictions().isHasGlossaryUpdateAccess()).thenReturn(true);
       when(display.getTargetText()).thenReturn(targetText);
       when(targetText.getText()).thenReturn("new target Text");
       when(glossaryDetails.getTarget()).thenReturn("target Text");
@@ -204,7 +206,7 @@ public class GlossaryDetailsPresenterTest
    public void onSaveClickNoWriteAccess()
    {
       GlossaryDetails glossaryDetails = mock(GlossaryDetails.class);
-      when(mockUserWorkspaceContext.hasGlossaryUpdateAccess()).thenReturn(false);
+      when(mockUserWorkspaceContext.getWorkspaceRestrictions().isHasGlossaryUpdateAccess()).thenReturn(false);
       when(display.getTargetText()).thenReturn(targetText);
       when(targetText.getText()).thenReturn("new target Text");
       when(glossaryDetails.getTarget()).thenReturn("target Text");
@@ -221,7 +223,7 @@ public class GlossaryDetailsPresenterTest
       boolean hasAccess = true;
       GlossaryDetails glossaryDetails = mock(GlossaryDetails.class);
 
-      when(mockUserWorkspaceContext.hasGlossaryUpdateAccess()).thenReturn(hasAccess);
+      when(mockUserWorkspaceContext.getWorkspaceRestrictions().isHasGlossaryUpdateAccess()).thenReturn(hasAccess);
 
       glossaryDetailsPresenter.bind();
       glossaryDetailsPresenter.setStatesForTest(glossaryDetails);
@@ -237,7 +239,7 @@ public class GlossaryDetailsPresenterTest
       int index = 0;
 
       boolean hasAccess = true;
-      when(mockUserWorkspaceContext.hasGlossaryUpdateAccess()).thenReturn(hasAccess);
+      when(mockUserWorkspaceContext.getWorkspaceRestrictions().isHasGlossaryUpdateAccess()).thenReturn(hasAccess);
       when(display.getNewCommentText()).thenReturn(mockNewCommentText);
       when(mockNewCommentText.getText()).thenReturn(comment);
       
@@ -251,7 +253,7 @@ public class GlossaryDetailsPresenterTest
    public void show()
    {
       GlossaryResultItem item = new GlossaryResultItem("", "", 0, 0);
-      when(mockUserWorkspaceContext.hasGlossaryUpdateAccess()).thenReturn(true);
+      when(mockUserWorkspaceContext.getWorkspaceRestrictions().isHasGlossaryUpdateAccess()).thenReturn(true);
 
       glossaryDetailsPresenter.show(item);
 

@@ -144,7 +144,7 @@ public class StatisticsServiceImpl implements StatisticsResource
          // Stats might not return anything if nothing is translated
          if (count == null)
          {
-            count = new TransUnitCount(0, 0, (int) iterationTotalMssgs, 0, 0);
+            count = new TransUnitCount(0, 0, (int) iterationTotalMssgs);
          }
 
          HTextFlowTarget target = localeServiceImpl.getLastTranslated(projectSlug, iterationSlug, locId);
@@ -171,7 +171,7 @@ public class StatisticsServiceImpl implements StatisticsResource
             TransUnitWords wordCount = wordIterationStats.get(locId.getId());
             if (wordCount == null)
             {
-               wordCount = new TransUnitWords(0, 0, (int) iterationTotalWords, 0, 0);
+               wordCount = new TransUnitWords(0, 0, (int) iterationTotalWords);
             }
 
             TranslationStatistics wordsStats = getWordsStats(wordCount, locId, lastModifiedDate, lastModifiedBy);
@@ -246,7 +246,7 @@ public class StatisticsServiceImpl implements StatisticsResource
          TransUnitCount count;
          if (stats == null)
          {
-            count = new TransUnitCount(0, 0, (int) docTotalMssgs, 0, 0);
+            count = new TransUnitCount(0, 0, (int) docTotalMssgs);
          }
          else
          {
@@ -264,7 +264,7 @@ public class StatisticsServiceImpl implements StatisticsResource
             TransUnitWords wordCount;
             if (stats == null)
             {
-               wordCount = new TransUnitWords(0, 0, (int) docTotalWords, 0, 0);
+               wordCount = new TransUnitWords(0, 0, (int) docTotalWords);
             }
             else
             {
@@ -325,10 +325,10 @@ public class StatisticsServiceImpl implements StatisticsResource
       CommonContainerTranslationStatistics result = documentDAO.getStatistics(documentId, localeId);
       
       TranslationStatistics wordStatistics = result.getStats(localeId.getId(), StatUnit.WORD);
-      wordStatistics.setRemainingHours(getRemainingHours(wordStatistics.getNeedReview(), wordStatistics.getUntranslated()));
+      wordStatistics.setRemainingHours(getRemainingHours(wordStatistics.getFuzzy(), wordStatistics.getUntranslated()));
       
       TranslationStatistics msgStatistics = result.getStats(localeId.getId(), StatUnit.MESSAGE);
-      msgStatistics.setRemainingHours(getRemainingHours(msgStatistics.getNeedReview(), msgStatistics.getUntranslated()));
+      msgStatistics.setRemainingHours(getRemainingHours(msgStatistics.getFuzzy(), msgStatistics.getUntranslated()));
       
       return result;
    }

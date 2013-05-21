@@ -98,7 +98,7 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest
          assertThat(transStat.getUnit(), not(TranslationStatistics.StatUnit.WORD));
 
          // make sure counts are sane
-         assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
+         assertThat(transStat.getFuzzy() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
       }
    }
 
@@ -132,7 +132,7 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest
          }
 
          // make sure counts are sane
-         assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
+         assertThat(transStat.getFuzzy() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
       }
 
       // make sure word and message level counts are the same and > 0
@@ -162,7 +162,7 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest
       {
          assertThat(Arrays.asList(locales), hasItem( transStat.getLocale() ));
          // make sure counts are sane
-         assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
+         assertThat(transStat.getFuzzy() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
       }
    }
 
@@ -190,7 +190,7 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest
          assertThat(transStat.getUnit(), not(TranslationStatistics.StatUnit.WORD));
 
          // make sure counts are sane
-         assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
+         assertThat(transStat.getFuzzy() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
       }
    }
 
@@ -217,7 +217,7 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest
       {
          assertThat(Arrays.asList(locales), hasItem( transStat.getLocale() ));
          // make sure counts are sane
-         assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
+         assertThat(transStat.getFuzzy() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
       }
    }
 

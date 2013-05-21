@@ -50,13 +50,13 @@ public class GlossaryDetailsPresenter extends WidgetPresenter<GlossaryDetailsDis
    protected void onBind()
    {
       display.setListener(this);
-      display.setHasUpdateAccess(userWorkspaceContext.hasGlossaryUpdateAccess());
+      display.setHasUpdateAccess(userWorkspaceContext.getWorkspaceRestrictions().isHasGlossaryUpdateAccess());
    }
 
    @Override
    public void onSaveClick()
    {
-      if (selectedDetailEntry != null && userWorkspaceContext.hasGlossaryUpdateAccess())
+      if (selectedDetailEntry != null && userWorkspaceContext.getWorkspaceRestrictions().isHasGlossaryUpdateAccess())
       {
          // check if there's any changes on the target term or the target
          // comments and save
@@ -99,7 +99,7 @@ public class GlossaryDetailsPresenter extends WidgetPresenter<GlossaryDetailsDis
    @Override
    public void addNewComment(int index)
    {
-      if (!Strings.isNullOrEmpty(display.getNewCommentText().getText()) && userWorkspaceContext.hasGlossaryUpdateAccess())
+      if (!Strings.isNullOrEmpty(display.getNewCommentText().getText()) && userWorkspaceContext.getWorkspaceRestrictions().isHasGlossaryUpdateAccess())
       {
          display.addRowIntoTargetComment(index, display.getNewCommentText().getText());
          display.getNewCommentText().setText("");

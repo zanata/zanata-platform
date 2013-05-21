@@ -33,7 +33,7 @@
 			color:#0085CC;
 		}
 	</ui:style>
-	
+
 			<g:LayoutPanel>
 				<g:layer top="0" height="32px">
 					<g:HorizontalPanel styleName="{style.topBar}" verticalAlignment="ALIGN_MIDDLE">

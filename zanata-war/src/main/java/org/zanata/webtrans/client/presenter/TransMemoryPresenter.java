@@ -72,14 +72,20 @@ public class TransMemoryPresenter extends WidgetPresenter<TranslationMemoryDispl
    {
       display.getSearchType().setValue(SearchType.FUZZY);
 
-      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER), ShortcutContext.TM, messages.searchTM(), new KeyShortcutEventHandler()
+      // @formatter:off
+      keyShortcutPresenter.register(KeyShortcut.Builder.builder()
+            .addKey(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER))
+            .setContext(ShortcutContext.TM)
+            .setDescription(messages.searchTM())
+            .setHandler(new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
             fireSearchEvent();
          }
-      }));
+      }).build());
+      // @formatter:on
 
       registerHandler(eventBus.addHandler(TransUnitSelectionEvent.getType(), this));
       registerHandler(eventBus.addHandler(TransMemoryShortcutCopyEvent.getType(), this));

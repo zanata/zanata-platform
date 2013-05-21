@@ -39,7 +39,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -73,30 +72,11 @@ public class KeyShortcutView extends PopupPanel implements KeyShortcutDisplay
 
    @UiField
    Styles style;
-   
-   private Listener listener;
 
-   private final Map<Integer, String> keyDisplayMap;
-
-   private Timer aliasKeyTimer = new Timer()
+   // TODO these could be extracted for l10n
+   private static final Map<Integer, String> keyDisplayMap;
+   static
    {
-      public void run()
-      {
-         listener.setAliasKeyListening(false);
-      }
-   };
-   
-   @Inject
-   public KeyShortcutView(final WebTransMessages webTransMessages)
-   {
-      setWidget(uiBinder.createAndBindUi(this));
-      heading.setText(webTransMessages.availableKeyShortcutsTitle());
-
-      setStyleName("keyShortcutPanel");
-      setAutoHideEnabled(true);
-      setAutoHideOnHistoryEventsEnabled(true);
-      setGlassEnabled(true);
-
       keyDisplayMap = new HashMap<Integer, String>();
 
       keyDisplayMap.put(Keys.ALT_KEY, "Alt");
@@ -115,6 +95,18 @@ public class KeyShortcutView extends PopupPanel implements KeyShortcutDisplay
       keyDisplayMap.put(KeyCodes.KEY_PAGEDOWN, "PageDown");
       keyDisplayMap.put(KeyCodes.KEY_PAGEUP, "PageUp");
       keyDisplayMap.put(KeyCodes.KEY_ESCAPE, "Esc");
+   }
+
+   @Inject
+   public KeyShortcutView(final WebTransMessages webTransMessages)
+   {
+      setWidget(uiBinder.createAndBindUi(this));
+      heading.setText(webTransMessages.availableKeyShortcutsTitle());
+
+      setStyleName("keyShortcutPanel");
+      setAutoHideEnabled(true);
+      setAutoHideOnHistoryEventsEnabled(true);
+      setGlassEnabled(true);
    }
 
    @Override
@@ -164,61 +156,75 @@ public class KeyShortcutView extends PopupPanel implements KeyShortcutDisplay
       return dataProvider;
    }
 
-   private String keysDisplayString(KeyShortcut shortcut)
+   private static String keysDisplayString(KeyShortcut shortcut)
    {
       StringBuilder sb = new StringBuilder();
-
       boolean first = true;
+
       for (Keys keys : shortcut.getAllKeys())
       {
-         int alias = keys.getAlias();
-         int modifiers = keys.getModifiers();
-         int keyCode = keys.getKeyCode();
-
          if (!first)
          {
             sb.append('\n');
          }
          first = false;
-
-         if (alias != Keys.NO_ALIAS)
-         {
-            sb.append(keyDisplayMap.get(Keys.ALT_KEY));
-            sb.append("+");
-            sb.append("X");
-            sb.append(",");
-         }
-
-         if ((modifiers & Keys.CTRL_KEY) != 0)
-         {
-            sb.append(keyDisplayMap.get(Keys.CTRL_KEY));
-            sb.append('+');
-         }
-         if ((modifiers & Keys.SHIFT_KEY) != 0)
-         {
-            sb.append(keyDisplayMap.get(Keys.SHIFT_KEY));
-            sb.append('+');
-         }
-         if ((modifiers & Keys.META_KEY) != 0)
-         {
-            sb.append(keyDisplayMap.get(Keys.META_KEY));
-            sb.append('+');
-         }
-         if ((modifiers & Keys.ALT_KEY) != 0)
-         {
-            sb.append(keyDisplayMap.get(Keys.ALT_KEY));
-            sb.append('+');
-         }
-         if (!Strings.isNullOrEmpty(keyDisplayMap.get(keyCode)))
-         {
-            sb.append(keyDisplayMap.get(keyCode));
-         }
-         else
-         {
-            sb.append((char) keyCode);
-         }
+         writeKeyInfo(sb, keys);
       }
+      for (Keys keys : shortcut.getAllAttentionKeys())
+      {
+         if (!first)
+         {
+            sb.append('\n');
+         }
+         first = false;
+         // TODO write attention key
+         writeAttentionKeyPrefix(sb);
+         writeKeyInfo(sb, keys);
+      }
+
       return sb.toString();
+   }
+
+   private static void writeAttentionKeyPrefix(StringBuilder sb)
+   {
+      // TODO respond to user setting for attention key
+      sb.append(keyDisplayMap.get(Keys.ALT_KEY));
+      sb.append("+X,");
+   }
+
+   private static void writeKeyInfo(StringBuilder sb, Keys keys)
+   {
+      int modifiers = keys.getModifiers();
+      int keyCode = keys.getKeyCode();
+
+      if ((modifiers & Keys.CTRL_KEY) != 0)
+      {
+         sb.append(keyDisplayMap.get(Keys.CTRL_KEY));
+         sb.append('+');
+      }
+      if ((modifiers & Keys.SHIFT_KEY) != 0)
+      {
+         sb.append(keyDisplayMap.get(Keys.SHIFT_KEY));
+         sb.append('+');
+      }
+      if ((modifiers & Keys.META_KEY) != 0)
+      {
+         sb.append(keyDisplayMap.get(Keys.META_KEY));
+         sb.append('+');
+      }
+      if ((modifiers & Keys.ALT_KEY) != 0)
+      {
+         sb.append(keyDisplayMap.get(Keys.ALT_KEY));
+         sb.append('+');
+      }
+      if (!Strings.isNullOrEmpty(keyDisplayMap.get(keyCode)))
+      {
+         sb.append(keyDisplayMap.get(keyCode));
+      }
+      else
+      {
+         sb.append((char) keyCode);
+      }
    }
 
    @Override
@@ -248,21 +254,4 @@ public class KeyShortcutView extends PopupPanel implements KeyShortcutDisplay
       return this;
    }
 
-   @Override
-   public void setListener(Listener listener)
-   {
-      this.listener = listener;
-   }
-
-   @Override
-   public void cancelMetaKeyTimer()
-   {
-      aliasKeyTimer.cancel();
-   }
-
-   @Override
-   public void startAliasKeyListen(int delayMillis)
-   {
-      aliasKeyTimer.schedule(delayMillis); // 5 seconds
-   }
 }

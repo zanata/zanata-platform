@@ -200,6 +200,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache
 
    private void updateTranslatedTextFlowCache(Long textFlowId, LocaleId localeId, ContentState newState)
    {
+      // TODO rhbz953734 - need to cater new review state
       OpenBitSet bitSet = translatedTextFlowCache.get(localeId);
       if (bitSet != null)
       {

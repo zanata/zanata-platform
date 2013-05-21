@@ -60,6 +60,7 @@ import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.model.WorkspaceRestrictions;
 import org.zanata.webtrans.shared.util.Finds;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -656,6 +657,28 @@ public class TargetContentsPresenter implements
    public UserConfigHolder.ConfigurationState getConfigState()
    {
       return userOptionsService.getConfigHolder().getState();
+   }
+
+   @Override
+   public boolean canReviewTranslation()
+   {
+      WorkspaceRestrictions restrictions = userWorkspaceContext.getWorkspaceRestrictions();
+      return restrictions.isHasReviewAccess() && restrictions.isProjectRequireReview();
+   }
+
+   @Override
+   public void acceptTranslation(TransUnitId id)
+   {
+      ensureRowSelection(id);
+      saveCurrent(ContentState.Approved);
+      eventBus.fireEvent(NavTransUnitEvent.NEXT_ENTRY_EVENT);
+   }
+
+   @Override
+   public void rejectTranslation(TransUnitId id)
+   {
+      ensureRowSelection(id);
+      saveCurrent(ContentState.Saved);
    }
 
    /**

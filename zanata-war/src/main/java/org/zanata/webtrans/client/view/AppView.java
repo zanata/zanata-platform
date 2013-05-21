@@ -98,11 +98,11 @@ public class AppView extends Composite implements AppDisplay
    private Listener listener;
 
    @Inject
-   public AppView(WebTransMessages messages, UserWorkspaceContext userworkspaceContext, DocumentListDisplay documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, ReviewDisplay reviewView, SideMenuDisplay sideMenuView, final UserWorkspaceContext userWorkspaceContext)
+public AppView(WebTransMessages messages, DocumentListDisplay documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, SideMenuDisplay sideMenuView, final UserWorkspaceContext userWorkspaceContext)
    {
       // this must be initialized before uiBinder.createAndBindUi(), or an
       // exception will be thrown at runtime
-      translationStatsBar = new TransUnitCountBar(userworkspaceContext, messages, LabelFormat.PERCENT_COMPLETE_HRS, true);
+      translationStatsBar = new TransUnitCountBar(userWorkspaceContext, messages, LabelFormat.PERCENT_COMPLETE_HRS, true, userWorkspaceContext.getWorkspaceRestrictions().isProjectRequireReview());
       translationStatsBar.setVisible(false); // hide until there is a value to
       
       projectLink = new Breadcrumb(true, false, Application.getProjectHomeURL(userWorkspaceContext.getWorkspaceContext().getWorkspaceId()));

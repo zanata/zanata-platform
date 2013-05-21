@@ -26,8 +26,9 @@ import net.customware.gwt.presenter.client.PresenterRevealedHandler;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.common.CommonContainerTranslationStatistics;
-import org.zanata.webtrans.client.events.AliasKeyChangedEvent;
-import org.zanata.webtrans.client.events.AliasKeyChangedEventHandler;
+import org.zanata.webtrans.client.events.AttentionModeActivationEvent;
+import org.zanata.webtrans.client.events.AttentionModeActivationEventHandler;
+
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEventHandler;
 import org.zanata.webtrans.client.events.KeyShortcutEvent;
@@ -65,7 +66,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
       DocumentStatsUpdatedEventHandler,
       ProjectStatsUpdatedEventHandler,
       PresenterRevealedHandler,
-      AliasKeyChangedEventHandler,
+      AttentionModeActivationEventHandler,
       AppDisplay.Listener
 // @formatter:on
 {
@@ -73,6 +74,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
    private static final String WORKSPACE_TITLE_QUERY_PARAMETER_KEY = "title";
 
    private final KeyShortcutPresenter keyShortcutPresenter;
+   private final AttentionKeyShortcutPresenter attentionKeyShortcutPresenter;
    private final DocumentListPresenter documentListPresenter;
    private final TranslationPresenter translationPresenter;
    private final SearchResultsPresenter searchResultsPresenter;
@@ -91,10 +93,23 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
    private MainView currentView = null;
 
    @Inject
-   public AppPresenter(AppDisplay display, EventBus eventBus, final SideMenuPresenter sideMenuPresenter, final KeyShortcutPresenter keyShortcutPresenter, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final SearchResultsPresenter searchResultsPresenter, final UserWorkspaceContext userWorkspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)
+   public AppPresenter(AppDisplay display,
+                       EventBus eventBus,
+                       final SideMenuPresenter sideMenuPresenter,
+                       final AttentionKeyShortcutPresenter attentionKeyShortcutPresenter,
+                       final KeyShortcutPresenter keyShortcutPresenter,
+                       final TranslationPresenter translationPresenter,
+                       final DocumentListPresenter documentListPresenter,
+                       final SearchResultsPresenter searchResultsPresenter,
+                       final UserWorkspaceContext userWorkspaceContext,
+                       final WebTransMessages messages,
+                       final History history,
+                       final Window window,
+                       final Window.Location windowLocation)
    {
       super(display, eventBus);
       this.userWorkspaceContext = userWorkspaceContext;
+      this.attentionKeyShortcutPresenter = attentionKeyShortcutPresenter;
       this.keyShortcutPresenter = keyShortcutPresenter;
       this.history = history;
       this.messages = messages;
@@ -112,6 +127,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
    protected void onBind()
    {
       keyShortcutPresenter.bind();
+      attentionKeyShortcutPresenter.bind();
       documentListPresenter.bind();
       translationPresenter.bind();
       searchResultsPresenter.bind();
@@ -122,8 +138,8 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
       registerHandler(eventBus.addHandler(DocumentStatsUpdatedEvent.getType(), this));
       registerHandler(eventBus.addHandler(ProjectStatsUpdatedEvent.getType(), this));
       registerHandler(eventBus.addHandler(PresenterRevealedEvent.getType(), this));
-      registerHandler(eventBus.addHandler(AliasKeyChangedEvent.getType(), this));
-     
+      registerHandler(eventBus.addHandler(AttentionModeActivationEvent.getType(), this));
+
       if (selectedDocument == null)
       {
          display.enableTab(MainView.Editor, false);
@@ -150,7 +166,12 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
    
    private void registerKeyShortcuts()
    {
-      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'L'), ShortcutContext.Application, messages.showDocumentListKeyShortcut(), new KeyShortcutEventHandler()
+      // @formatter:off
+      keyShortcutPresenter.register(KeyShortcut.Builder.builder()
+            .addKey(new Keys(Keys.ALT_KEY, 'L'))
+            .setContext(ShortcutContext.Application)
+            .setDescription(messages.showDocumentListKeyShortcut())
+            .setHandler(new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
@@ -159,9 +180,13 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
             token.setView(MainView.Documents);
             history.newItem(token.toTokenString());
          }
-      }));
+      }).build());
 
-      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'O'), ShortcutContext.Application, messages.showEditorKeyShortcut(), new KeyShortcutEventHandler()
+      keyShortcutPresenter.register(KeyShortcut.Builder.builder()
+            .addKey(new Keys(Keys.ALT_KEY, 'O'))
+            .setContext(ShortcutContext.Application)
+            .setDescription(messages.showEditorKeyShortcut())
+            .setHandler(new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
@@ -177,9 +202,13 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
                history.newItem(token.toTokenString());
             }
          }
-      }));
+      }).build());
 
-      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.ALT_KEY, 'P'), ShortcutContext.Application, messages.showProjectWideSearch(), new KeyShortcutEventHandler()
+      keyShortcutPresenter.register(KeyShortcut.Builder.builder()
+            .addKey(new Keys(Keys.ALT_KEY, 'P'))
+            .setContext(ShortcutContext.Application)
+            .setDescription(messages.showProjectWideSearch())
+            .setHandler(new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
@@ -188,7 +217,8 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
             token.setView(MainView.Search);
             history.newItem(token.toTokenString());
          }
-      }));
+      }).build());
+      // @formatter:on
    }
 
    @Override
@@ -426,9 +456,8 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
    }
 
    @Override
-   public void onAliasKeyChanged(AliasKeyChangedEvent event)
+   public void onAttentionModeActivationChanged(AttentionModeActivationEvent event)
    {
-      display.setKeyboardShorcutColor(event.isAliasKeyListening());
-
+      display.setKeyboardShorcutColor(event.isActive());
    }
 }

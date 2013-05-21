@@ -312,10 +312,6 @@ public class TranslationServiceImpl implements TranslationService
       {
          log.warn(warning);
       }
-      if (previousState == ContentState.Accepted && target.getState() != ContentState.Rejected)
-      {
-         throw new ModifyReviewAcceptedTranslationException(target.getLastModifiedBy().getName());
-      }
       if (target.getState() != previousState)
       {
          changed = true;

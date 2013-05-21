@@ -86,7 +86,7 @@ public class StatisticsRestTest extends ZanataRawRestTest
             {
                assertThat(transStat.getUnit(), is(TranslationStatistics.StatUnit.MESSAGE));
                // make sure counts are sane
-               assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
+               assertThat(transStat.getFuzzy() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
             }
          }
 
@@ -121,7 +121,7 @@ public class StatisticsRestTest extends ZanataRawRestTest
             for( TranslationStatistics transStat : stats.getStats() )
             {
                // make sure counts are sane
-               assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
+               assertThat(transStat.getFuzzy() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
             }
 
             // Results returned only for specified locales
@@ -130,7 +130,7 @@ public class StatisticsRestTest extends ZanataRawRestTest
             {
                assertThat(Arrays.asList(expectedLocales), hasItem( transStat.getLocale() ));
                // make sure counts are sane
-               assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
+               assertThat(transStat.getFuzzy() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
             }
          }
 
@@ -166,7 +166,7 @@ public class StatisticsRestTest extends ZanataRawRestTest
             {
                assertThat(transStat.getUnit(), is(TranslationStatistics.StatUnit.MESSAGE));
                // make sure counts are sane
-               assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
+               assertThat(transStat.getFuzzy() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
             }
          }
 
@@ -201,7 +201,7 @@ public class StatisticsRestTest extends ZanataRawRestTest
             for( TranslationStatistics transStat : stats.getStats() )
             {
                // make sure counts are sane
-               assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
+               assertThat(transStat.getFuzzy() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
             }
 
             // Results returned only for specified locales
@@ -210,7 +210,7 @@ public class StatisticsRestTest extends ZanataRawRestTest
             {
                assertThat(Arrays.asList(expectedLocales), hasItem( transStat.getLocale() ));
                // make sure counts are sane
-               assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
+               assertThat(transStat.getFuzzy() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
             }
          }
 
@@ -246,7 +246,7 @@ public class StatisticsRestTest extends ZanataRawRestTest
             {
                assertThat(transStat.getUnit(), is(TranslationStatistics.StatUnit.MESSAGE));
                // make sure counts are sane
-               assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
+               assertThat(transStat.getFuzzy() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
             }
          }
 
@@ -281,7 +281,7 @@ public class StatisticsRestTest extends ZanataRawRestTest
             for( TranslationStatistics transStat : stats.getStats() )
             {
                // make sure counts are sane
-               assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
+               assertThat(transStat.getFuzzy() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
             }
 
             // Results returned only for specified locales
@@ -290,7 +290,7 @@ public class StatisticsRestTest extends ZanataRawRestTest
             {
                assertThat(Arrays.asList(expectedLocales), hasItem( transStat.getLocale() ));
                // make sure counts are sane
-               assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
+               assertThat(transStat.getFuzzy() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
             }
          }
 
@@ -326,7 +326,7 @@ public class StatisticsRestTest extends ZanataRawRestTest
             {
                assertThat(transStat.getUnit(), is(TranslationStatistics.StatUnit.MESSAGE));
                // make sure counts are sane
-               assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
+               assertThat(transStat.getFuzzy() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
             }
          }
 
@@ -361,7 +361,7 @@ public class StatisticsRestTest extends ZanataRawRestTest
             for( TranslationStatistics transStat : stats.getStats() )
             {
                // make sure counts are sane
-               assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
+               assertThat(transStat.getFuzzy() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
             }
 
             // Results returned only for specified locales
@@ -370,7 +370,7 @@ public class StatisticsRestTest extends ZanataRawRestTest
             {
                assertThat(Arrays.asList(expectedLocales), hasItem( transStat.getLocale() ));
                // make sure counts are sane
-               assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
+               assertThat(transStat.getFuzzy() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
             }
          }
 

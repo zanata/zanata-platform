@@ -106,6 +106,10 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    private Integer textFlowRevision;
    private HPerson lastModifiedBy;
 
+   private HPerson translator;
+   private HPerson reviewer;
+   private boolean rejected;
+
    private HSimpleComment comment;
 
    private Map<Integer, HTextFlowTargetHistory> history;
@@ -159,6 +163,20 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    public HPerson getLastModifiedBy()
    {
       return lastModifiedBy;
+   }
+
+   @ManyToOne(cascade = { CascadeType.MERGE })
+   @JoinColumn(name = "translated_by_id", nullable = true)
+   public HPerson getTranslator()
+   {
+      return translator;
+   }
+
+   @ManyToOne(cascade = { CascadeType.MERGE })
+   @JoinColumn(name = "reviewed_by_id", nullable = true)
+   public HPerson getReviewer()
+   {
+      return reviewer;
    }
 
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
@@ -358,10 +376,6 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
       // insert history if this has changed from its initial state
       if (this.initialState != null && this.initialState.hasChanged(this))
       {
-         if (initialState.getState() == ContentState.Accepted && getState() != ContentState.Rejected)
-         {
-            throw new IllegalStateException("Attempted to modify a review accepted translation");
-         }
          this.getHistory().put(this.oldVersionNum, this.initialState);
       }
    }

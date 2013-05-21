@@ -192,14 +192,15 @@ public class EditorKeyShortcutsTest
       when(messages.saveAsFuzzy()).thenReturn("save fuzzy");
       when(messages.saveAsApproved()).thenReturn("save approved");
       when(messages.copyFromSource()).thenReturn("copy from source");
-      
+
       keyShortcuts.registerEditorActionKeys(targetContentsPresenter);
 
       verify(keyShortcutPresenter, times(3)).register(keyShortcutCaptor.capture());
       List<KeyShortcut> keys = keyShortcutCaptor.getAllValues();
       assertKeys(keys.get(0), "save fuzzy", true, true, new Keys(Keys.CTRL_KEY, 'S'));
       assertKeys(keys.get(1), "save approved", true, true, new Keys(Keys.CTRL_KEY, KeyCodes.KEY_ENTER));
-      assertKeys(keys.get(2), "copy from source", true, true, new Keys(Keys.ALT_KEY, 'G'), new Keys(Keys.ALIAS_KEY, Keys.NO_MODIFIER, 'G'));
+      assertKeys(keys.get(2), "copy from source", true, true, new Keys(Keys.ALT_KEY, 'G'));
+      assertAttentionKeys(keys.get(2), new Keys('G'));
    }
 
    @Test
@@ -209,7 +210,7 @@ public class EditorKeyShortcutsTest
       when(messages.saveAsFuzzy()).thenReturn("save fuzzy");
       when(messages.saveAsApproved()).thenReturn("save approved");
       when(messages.copyFromSource()).thenReturn("copy from source");
-      
+
       configHolder.setEnterSavesApproved(true);
 
       keyShortcuts.registerEditorActionKeys(targetContentsPresenter);
@@ -219,7 +220,8 @@ public class EditorKeyShortcutsTest
       assertKeys(keys.get(0), "save fuzzy", true, true, new Keys(Keys.CTRL_KEY, 'S'));
       assertKeys(keys.get(1), "save approved", true, true, new Keys(Keys.CTRL_KEY, KeyCodes.KEY_ENTER));
       assertKeys(keys.get(2), "save approved", true, true, new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER));
-      assertKeys(keys.get(3), "copy from source", true, true, new Keys(Keys.ALT_KEY, 'G'), new Keys(Keys.ALIAS_KEY, Keys.NO_MODIFIER, 'G'));
+      assertKeys(keys.get(3), "copy from source", true, true, new Keys(Keys.ALT_KEY, 'G'));
+      assertAttentionKeys(keys.get(3), new Keys('G'));
    }
 
    @Test
@@ -320,6 +322,11 @@ public class EditorKeyShortcutsTest
       assertThat(shortcut.getKeyEvent(), Matchers.equalTo(KeyShortcut.KeyEvent.KEY_DOWN));
       assertThat(shortcut.isStopPropagation(), Matchers.equalTo(isStopPropagation));
       assertThat(shortcut.isPreventDefault(), Matchers.equalTo(isPreventDefault));
+   }
+
+   private static void assertAttentionKeys(KeyShortcut shortcut, Keys... keys)
+   {
+      assertThat(shortcut.getAllAttentionKeys(), Matchers.containsInAnyOrder(keys));
    }
 
    @Test
