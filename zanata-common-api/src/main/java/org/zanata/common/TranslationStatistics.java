@@ -54,11 +54,12 @@ public class TranslationStatistics implements Serializable
       MESSAGE;
    }
 
-   private long translated;
-   private long needReview;
    private long untranslated;
+   private long fuzzy;
+   private long translated;
+   private long approved;
    private long rejected;
-   private long accepted;
+   
    private long total;
    private StatUnit unit;
    private String locale;
@@ -73,11 +74,12 @@ public class TranslationStatistics implements Serializable
    {
       this.unit = StatUnit.MESSAGE;
       this.locale = locale;
-      translated = unitCount.getApproved();
-      needReview = unitCount.getNeedReview();
       untranslated = unitCount.getUntranslated();
-      rejected = unitCount.getRejected();
-      accepted = unitCount.getAccepted();
+      fuzzy = unitCount.getNeedReview();
+//      translated = unitCount.getApproved();
+      approved = unitCount.getApproved();
+//      rejected = unitCount.getRejected();
+      
       total = unitCount.getTotal();
    }
 
@@ -85,40 +87,15 @@ public class TranslationStatistics implements Serializable
    {
       this.unit = StatUnit.WORD;
       this.locale = locale;
-      translated = wordCount.getApproved();
-      needReview = wordCount.getNeedReview();
+      
       untranslated = wordCount.getUntranslated();
-      rejected = wordCount.getRejected();
-      accepted = wordCount.getAccepted();
+      fuzzy = wordCount.getNeedReview();
+//      translated = wordCount.getApproved();
+      approved = wordCount.getApproved();
+//      rejected = wordCount.getRejected();
+      
+      
       total = wordCount.getTotal();
-   }
-
-   /**
-    * Number of translated elements.
-    */
-   @XmlAttribute
-   public long getTranslated()
-   {
-      return translated;
-   }
-
-   public void setTranslated(long translated)
-   {
-      this.translated = translated;
-   }
-
-   /**
-    * Number of elements that need review (i.e. Fuzzy).
-    */
-   @XmlAttribute
-   public long getNeedReview()
-   {
-      return needReview;
-   }
-
-   public void setNeedReview(long needReview)
-   {
-      this.needReview = needReview;
    }
 
    /**
@@ -133,6 +110,59 @@ public class TranslationStatistics implements Serializable
    public void setUntranslated(long untranslated)
    {
       this.untranslated = untranslated;
+   }
+   
+   /**
+    * Number of elements that need review (i.e. Fuzzy).
+    */
+   @XmlAttribute
+   public long getFuzzy()
+   {
+      return fuzzy;
+   }
+
+   public void setFuzzy(long fuzzy)
+   {
+      this.fuzzy = fuzzy;
+   }
+   
+   /**
+    * Number of translated elements.
+    */
+   @XmlAttribute
+   public long getTranslated()
+   {
+      return translated;
+   }
+
+   public void setTranslated(long translated)
+   {
+      this.translated = translated;
+   }
+  
+   /**
+   * Number of approved elements.
+   */
+   @XmlAttribute
+   public long getApproved()
+   {
+      return approved;
+   }
+
+   public void setApproved(long approved)
+   {
+      this.approved = approved;
+   }
+   
+   @XmlAttribute
+   public long getRejected()
+   {
+      return rejected;
+   }
+
+   public void setRejected(long rejected)
+   {
+      this.rejected = rejected;
    }
 
    /**
@@ -188,28 +218,6 @@ public class TranslationStatistics implements Serializable
       this.lastTranslated = lastTranslated;
    }
 
-   @XmlAttribute
-   public long getRejected()
-   {
-      return rejected;
-   }
-
-   public void setRejected(long rejected)
-   {
-      this.rejected = rejected;
-   }
-
-   @XmlAttribute
-   public long getAccepted()
-   {
-      return accepted;
-   }
-
-   public void setAccepted(long accepted)
-   {
-      this.accepted = accepted;
-   }
-
    @XmlTransient
    public int getPercentTranslated()
    {
@@ -235,7 +243,7 @@ public class TranslationStatistics implements Serializable
       }
       else
       {
-         double per = 100 * getNeedReview() / total;
+         double per = 100 * getFuzzy() / total;
          return (int) Math.ceil(per);
       }
    }
@@ -269,10 +277,10 @@ public class TranslationStatistics implements Serializable
    public void add(TranslationStatistics other)
    {
       this.translated += other.translated;
-      this.needReview += other.needReview;
+//      this.needReview += other.needReview;
       this.untranslated += other.untranslated;
       this.rejected += other.rejected;
-      this.accepted += other.accepted;
+//      this.accepted += other.accepted;
    }
 
    public void increment(ContentState state, long count)
@@ -292,13 +300,13 @@ public class TranslationStatistics implements Serializable
       case Approved:
          return translated;
       case NeedReview:
-         return needReview;
+         return fuzzy;
       case New:
          return untranslated;
-      case Rejected:
-         return rejected;
-      case Accepted:
-         return accepted;
+//      case Rejected:
+//         return rejected;
+//      case Accepted:
+//         return accepted;
       default:
          throw new RuntimeException("not implemented for state " + state.name());
       }
@@ -312,17 +320,17 @@ public class TranslationStatistics implements Serializable
          translated = value;
          break;
       case NeedReview:
-         needReview = value;
+         fuzzy = value;
          break;
       case New:
          untranslated = value;
          break;
-      case Rejected:
-         rejected = value;
-         break;
-      case Accepted:
-         accepted = value;
-         break;
+//      case Rejected:
+//         rejected = value;
+//         break;
+//      case Accepted:
+//         accepted = value;
+//         break;
       default:
          throw new RuntimeException("not implemented for state " + state.name());
       }
