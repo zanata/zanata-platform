@@ -46,19 +46,14 @@ public class TooltipPopupPanel extends PopupPanel
 
    private static TooltipPopupPanelUiBinder uiBinder = GWT.create(TooltipPopupPanelUiBinder.class);
 
-   interface Styles extends CssResource
-   {
-      String transUnitCountTooltip();
-   }
-
    @UiField
    Styles style;
 
    @UiField
-   InlineLabel wordSaved, wordApproved, wordNeedReview, wordUntranslated, wordTotal;
+   InlineLabel wordTranslated, wordApproved, wordDraft, wordUntranslated, wordTotal;
 
    @UiField
-   InlineLabel msgSaved, msgApproved, msgNeedReview, msgUntranslated, msgTotal;
+   InlineLabel msgTranslated, msgApproved, msgDraft, msgUntranslated, msgTotal;
    @UiField
    Grid grid;
 
@@ -67,6 +62,31 @@ public class TooltipPopupPanel extends PopupPanel
    {
       super(true);
       HTMLPanel container = uiBinder.createAndBindUi(this);
+
+//      if (projectRequireReview)
+//      {
+//         // Header row
+//         grid.setText(0, 0, "Approved");
+//         grid.getCellFormatter().addStyleName(0, 0, style.approvedHeader());
+//         grid.setText(0, 1, "Translated");
+//         grid.getCellFormatter().addStyleName(0, 1, style.translatedHeader());
+//         grid.setText(0, 2, "Draft");
+//         grid.getCellFormatter().addStyleName(0, 2, style.draftHeader());
+//         grid.setText(0, 3, "Untranslated");
+//         grid.getCellFormatter().addStyleName(0, 3, style.untranslatedHeader());
+//         // Data rows
+////         grid.setWidget();
+//      }
+//      else
+//      {
+//         // Header row
+//         grid.setText(0, 0, "Approved");
+//         grid.getCellFormatter().addStyleName(0, 0, style.approvedHeader());
+//         grid.setText(0, 1, "Draft");
+//         grid.getCellFormatter().addStyleName(0, 1, style.draftHeader());
+//         grid.setText(0, 2, "Untranslated");
+//         grid.getCellFormatter().addStyleName(0, 2, style.untranslatedHeader());
+//      }
       setStyleName(style.transUnitCountTooltip());
       setWidget(container);
    }
@@ -74,15 +94,15 @@ public class TooltipPopupPanel extends PopupPanel
 
    public void refreshData(TransUnitCountBar stats)
    {
-      wordSaved.setText(String.valueOf(stats.getWordsTranslated()));
+      wordTranslated.setText(String.valueOf(stats.getWordsTranslated()));
       wordApproved.setText(String.valueOf(stats.getWordsApproved()));
-      wordNeedReview.setText(String.valueOf(stats.getWordsDraft()));
+      wordDraft.setText(String.valueOf(stats.getWordsDraft()));
       wordUntranslated.setText(String.valueOf(stats.getWordsUntranslated()));
       wordTotal.setText(String.valueOf(stats.getWordsTotal()));
 
-      msgSaved.setText(String.valueOf(stats.getUnitTranslated()));
+      msgTranslated.setText(String.valueOf(stats.getUnitTranslated()));
       msgApproved.setText(String.valueOf(stats.getUnitApproved()));
-      msgNeedReview.setText(String.valueOf(stats.getUnitDraft()));
+      msgDraft.setText(String.valueOf(stats.getUnitDraft()));
       msgUntranslated.setText(String.valueOf(stats.getUnitUntranslated()));
       msgTotal.setText(String.valueOf(stats.getUnitTotal()));
    }
@@ -233,4 +253,39 @@ public class TooltipPopupPanel extends PopupPanel
       setPopupPosition(left, top);
    }
 
+   interface Styles extends CssResource
+   {
+      String transUnitCountTooltip();
+
+      String total();
+
+      String table();
+
+      String translated();
+
+      @ClassName("approved-header")
+      String approvedHeader();
+
+      String approved();
+
+      String topHeader();
+
+      String draft();
+
+      @ClassName("draft-header")
+      String draftHeader();
+
+      String sideHeader();
+
+      String untranslated();
+
+      @ClassName("rejected-header")
+      String rejectedHeader();
+
+      @ClassName("untranslated-header")
+      String untranslatedHeader();
+
+      @ClassName("translated-header")
+      String translatedHeader();
+   }
 }
