@@ -75,13 +75,20 @@ public class ContentStateUtil
             return ContentState.New;
          }
          break;
-      case Saved:
+      case Translated:
          if (!allNonEmpty(contents))
          {
-            warnings.add("Invalid ContentState (some empty contents); changed from Saved to New: TextFlowTarget "+resId+" with contents: " + contents);
+            warnings.add("Invalid ContentState (some empty contents); changed from Translated to New: TextFlowTarget "+resId+" with contents: " + contents);
             return ContentState.New;
          }
-         return ContentState.Saved;
+         break;
+      case Rejected:
+         if (!allNonEmpty(contents))
+         {
+            warnings.add("Invalid ContentState (some empty contents); changed from Rejected to New: TextFlowTarget "+resId+" with contents: " + contents);
+            return ContentState.New;
+         }
+         break;
       default:
          throw new RuntimeException("unknown ContentState " + requestedState);
       }
