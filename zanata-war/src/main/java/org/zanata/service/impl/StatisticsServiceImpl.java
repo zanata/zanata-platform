@@ -41,7 +41,6 @@ import org.zanata.common.LocaleId;
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStatistics;
-import org.zanata.common.TranslationStats;
 import org.zanata.common.TranslationStatistics.StatUnit;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
@@ -224,7 +223,7 @@ public class StatisticsServiceImpl implements StatisticsResource
          throw new NoSuchEntityException(projectSlug + "/" + iterationSlug + "/" + docId);
       }
 
-      Map<LocaleId, TranslationStats> statsMap = documentDAO.getStatistics(document.getId(), localeIds);
+      Map<LocaleId, CommonContainerTranslationStatistics> statsMap = documentDAO.getStatistics(document.getId(), localeIds);
 
       ContainerTranslationStatistics docStats = new ContainerTranslationStatistics();
       docStats.setId(docId);
@@ -240,38 +239,38 @@ public class StatisticsServiceImpl implements StatisticsResource
 
       for (LocaleId locale : localeIds)
       {
-         TranslationStats stats = statsMap.get(locale);
-
+         CommonContainerTranslationStatistics stats = statsMap.get(locale);
+         
          // trans unit level stats
-         TransUnitCount count;
+         TranslationStatistics transUnitStats;
          if (stats == null)
          {
-            count = new TransUnitCount(0, 0, (int) docTotalMssgs);
+            transUnitStats = new TranslationStatistics(new TransUnitCount(0, 0, (int) docTotalMssgs), locale.getId());
          }
          else
          {
-            count = stats.getUnitCount();
+            transUnitStats = stats.getStats(locale.getId(), StatUnit.MESSAGE);
          }
          DocumentStatus docStat = translationStateCacheImpl.getDocStats(document.getId(), locale);
 
-         TranslationStatistics transUnitStats = getMessageStats(count, locale, docStat.getLastTranslatedDate(), docStat.getLastTranslatedBy());
-         transUnitStats.setRemainingHours(getRemainingHours(count.get(ContentState.NeedReview), count.get(ContentState.New)));
+         transUnitStats.setLastTranslated(getLastTranslated(docStat.getLastTranslatedDate(), docStat.getLastTranslatedBy()));
+         transUnitStats.setRemainingHours(getRemainingHours(transUnitStats.getDraft(), transUnitStats.getUntranslated()));
          docStats.addStats(transUnitStats);
 
          // word level stats
          if (includeWordStats)
          {
-            TransUnitWords wordCount;
+            TranslationStatistics wordsStats;
             if (stats == null)
             {
-               wordCount = new TransUnitWords(0, 0, (int) docTotalWords);
+               wordsStats = new TranslationStatistics(new TransUnitWords(0, 0, (int) docTotalWords), locale.getId());
             }
             else
             {
-               wordCount = stats.getWordCount();
+               wordsStats = stats.getStats(locale.getId(), StatUnit.WORD);
             }
-            TranslationStatistics wordsStats = getWordsStats(wordCount, locale, docStat.getLastTranslatedDate(), docStat.getLastTranslatedBy());
-            wordsStats.setRemainingHours(getRemainingHours(wordCount.get(ContentState.NeedReview), wordCount.get(ContentState.New)));
+            wordsStats.setLastTranslated(getLastTranslated(docStat.getLastTranslatedDate(), docStat.getLastTranslatedBy()));
+            wordsStats.setRemainingHours(getRemainingHours(wordsStats.getDraft(), wordsStats.getUntranslated()));
             docStats.addStats(wordsStats);
          }
       }

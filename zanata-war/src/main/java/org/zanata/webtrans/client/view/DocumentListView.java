@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.zanata.common.CommonContainerTranslationStatistics;
-import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;

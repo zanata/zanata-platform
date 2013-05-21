@@ -26,7 +26,6 @@ import java.util.List;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 import org.zanata.common.CommonContainerTranslationStatistics;
-import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.ui.DocumentListTable.DocValidationStatus;
 import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.client.ui.HasPager;
