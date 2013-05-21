@@ -5,15 +5,15 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:s="http://jboss.com/products/seam/taglib">
 
-	<ui:param name="translated" value="#{status.translated}" />
-	<ui:param name="fuzzy" value="#{status.needReview}" />
+	<ui:param name="approved" value="#{status.approved}" />
+	<ui:param name="draft" value="#{status.draft}" />
 	<ui:param name="untranslated" value="#{status.untranslated}" />
 
 	<ui:param name="total" value="#{status.total}" />
 
-    <ui:param name="wTranslated" value="#{total == 0 ? 0 : 110 * translated / total}" />
+    <ui:param name="wApproved" value="#{total == 0 ? 0 : 110 * approved / total}" />
     <ui:param name="wUntranslated" value="#{total == 0 ? 0 : 110 * untranslated / total}" />
-    <ui:param name="wFuzzy" value="#{total == 0 ? 0 : 110 * fuzzy / total}" />
+    <ui:param name="wFuzzy" value="#{total == 0 ? 0 : 110 * draft / total}" />
 
 	 <s:fragment rendered="#{status.total > 0}">
      <ui:remove>
@@ -24,8 +24,8 @@
                   using either params or their other method
                    -->
      </ui:remove>
-	 <div title="#{messages['jsf.stats.Total']} #{status.total}, #{messages['jsf.stats.Translated']} #{status.translated}, #{messages['jsf.stats.NeedReview']} #{status.needReview}" class="translationStatusDiv">
-        <div class="translationStatusBar statusBar_approved" style="width:#{wTranslated}px;"></div>
+	 <div title="#{messages['jsf.stats.Total']} #{status.total}, #{messages['jsf.stats.Translated']} #{status.approved}, #{messages['jsf.stats.NeedReview']} #{status.draft}" class="translationStatusDiv">
+        <div class="translationStatusBar statusBar_approved" style="width:#{wApproved}px;"></div>
         <div class="translationStatusBar statusBar_needReview" style="width:#{wFuzzy}px;"></div>
         <div class="translationStatusBar statusBar_untranslated" style="width:#{wUntranslated}px;"></div>
 
