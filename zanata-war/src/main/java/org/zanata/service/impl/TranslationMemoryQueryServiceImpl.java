@@ -181,6 +181,7 @@ public class TranslationMemoryQueryServiceImpl implements TranslationMemoryQuery
       if (useTargetIndex)
       {
          TermQuery localeQuery = new TermQuery(new Term(IndexFieldLabels.LOCALE_ID_FIELD, targetLocale.getId()));
+         // FIXME rhbz953734 - we may also want to include Translated state
          TermQuery stateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.Approved.toString()));
 
          BooleanQuery targetQuery = new BooleanQuery();

@@ -536,6 +536,7 @@ public class TranslationServiceImpl implements TranslationService
                                        targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
                                        targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
                                     }
+                                    // TODO rhbz953734 - This is coming from client push?? Assuming they are all approved all the time?
                                     else if (incomingTarget.getState() == ContentState.Approved)
                                     {
                                        List<String> incomingContents = incomingTarget.getContents();

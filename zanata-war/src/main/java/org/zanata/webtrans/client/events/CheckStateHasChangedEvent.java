@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import org.zanata.common.ContentState;
+import org.zanata.common.util.ContentStateUtil;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
 import com.google.common.base.Predicate;
@@ -95,11 +96,13 @@ public class CheckStateHasChangedEvent extends GwtEvent<CheckStateHasChangedHand
          }
       }));
 
+//      return ContentStateUtil.determineState(requestedState, newContents);
       // TODO use ContentStateUtil.determineState.
       // ContentState stateToSet =
       // ContentStateUtil.determineState(requestedState, newContents);
 
       // NB until then, make sure this stays consistent
+      // FIXME rhbz953734 - this is not consistent right now and it's duplicating from TransUnitSaveEvent
       ContentState stateToSet = requestedState;
       if (requestedState == ContentState.New && emptyCount == 0)
       {

@@ -971,6 +971,7 @@ public class FileService implements FileResource
          boolean useFuzzy = FILETYPE_TRANSLATED_APPROVED_AND_FUZZY.equals(fileType);
          for (TextFlowTarget target : transRes.getTextFlowTargets())
          {
+            // FIXME rhbz953734 - should it include translated state?
             if (target.getState() == ContentState.Approved || (useFuzzy && target.getState() == ContentState.NeedReview))
             {
                translations.put(target.getResId(), target);

@@ -140,6 +140,7 @@ public class TransUnitSaveEvent extends GwtEvent<TransUnitSaveEventHandler>
       // ContentState stateToSet = ContentStateUtil.determineState(requestedState, newContents);
 
       // NB until then, make sure this stays consistent
+      // FIXME rhbz953734 - this is not consistent right now
       ContentState stateToSet = requestedState;
       if (requestedState == ContentState.New && emptyCount == 0)
       {

@@ -282,7 +282,7 @@ public class TargetContentsPresenter implements
       TransUnitId transUnitId = getCurrentTransUnitIdOrNull();
       if (userOptionsService.getConfigHolder().getState().isShowSaveApprovedWarning())
       {
-         eventBus.fireEvent(new CheckStateHasChangedEvent(transUnitId, getNewTargets(), ContentState.Approved));
+         eventBus.fireEvent(new CheckStateHasChangedEvent(transUnitId, getNewTargets(), ContentState.Translated));
       }
       else
       {

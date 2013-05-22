@@ -256,6 +256,7 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
          public String getCellStyleNames(Cell.Context context, TransHistoryItem historyItem)
          {
             String styleNames = Strings.nullToEmpty(super.getCellStyleNames(context, historyItem));
+            // TODO rhbz953734 - new states
             if (historyItem.getStatus() == ContentState.Approved)
             {
                styleNames += " ApprovedStateDecoration";

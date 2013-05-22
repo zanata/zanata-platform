@@ -186,7 +186,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       {
          unitCount.set(count.status, count.count.intValue());
       }
-      int newCount = totalCount.intValue() - unitCount.get(ContentState.Approved) - unitCount.get(ContentState.NeedReview);
+      int newCount = totalCount.intValue() - unitCount.get(ContentState.Approved) - unitCount.get(ContentState.NeedReview) - unitCount.get(ContentState.Translated) - unitCount.get(ContentState.Rejected);
       unitCount.set(ContentState.New, newCount);
 
       // calculate word counts
@@ -208,7 +208,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       {
          wordCount.set(count.status, count.count.intValue());
       }
-      long newWordCount = totalWordCount.longValue() - wordCount.get(ContentState.Approved) - wordCount.get(ContentState.NeedReview);
+      long newWordCount = totalWordCount.longValue() - wordCount.get(ContentState.Approved) - wordCount.get(ContentState.NeedReview) - wordCount.get(ContentState.Translated) - wordCount.get(ContentState.Rejected);
       wordCount.set(ContentState.New, (int) newWordCount);
       
 
@@ -301,12 +301,12 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       Long totalWordCount = (Long)totalCounts.get("wordCount");
       for( TransUnitCount stat : transUnitCountMap.values() )
       {
-         int newCount = totalCount.intValue() - stat.get(ContentState.Approved) - stat.get(ContentState.NeedReview);
+         int newCount = totalCount.intValue() - stat.get(ContentState.Approved) - stat.get(ContentState.NeedReview) - stat.get(ContentState.Translated) - stat.get(ContentState.Rejected);
          stat.set(ContentState.New, newCount);
       }
       for( TransUnitWords stat : transUnitWordsMap.values() )
       {
-         int newCount = totalWordCount.intValue() - stat.get(ContentState.Approved) - stat.get(ContentState.NeedReview);
+         int newCount = totalWordCount.intValue() - stat.get(ContentState.Approved) - stat.get(ContentState.NeedReview) - stat.get(ContentState.Translated) - stat.get(ContentState.Rejected);
          stat.set(ContentState.New, newCount);
       }
 

@@ -279,6 +279,7 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
          @Override
          public String getCellStyleNames(Context context, TransUnitReplaceInfo info)
          {
+            // TODO rhbz953734 - new states
             String styleNames = Strings.nullToEmpty(super.getCellStyleNames(context, info));
             if (info.getTransUnit().getStatus() == ContentState.Approved)
             {

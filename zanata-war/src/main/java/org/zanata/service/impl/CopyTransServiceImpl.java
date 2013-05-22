@@ -429,7 +429,7 @@ public class CopyTransServiceImpl implements CopyTransService
    {
       if( currentlyStored != null )
       {
-         if( currentlyStored.getState() == NeedReview && matchState == Approved )
+         if( ContentState.isDraft(currentlyStored.getState()) && matchState == Approved )
          {
             return true; // If it's fuzzy, replace only with approved ones
          }
