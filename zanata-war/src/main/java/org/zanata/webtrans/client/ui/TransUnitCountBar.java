@@ -123,21 +123,21 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
 
    public void refresh()
    {
-      int approved, needReview, untranslated, saved, total;
+      int approved, draft, untranslated, translated, total;
       if (statsByWords)
       {
          approved = getWordsApproved();
-         needReview = getWordsDraft();
+         draft = getWordsDraft();
          untranslated = getWordsUntranslated();
-         saved = getWordsTranslated();
+         translated = getWordsTranslated();
          total = getWordsTotal();
       }
       else
       {
          approved = getUnitApproved();
-         needReview = getUnitDraft();
+         draft = getUnitDraft();
          untranslated = getUnitUntranslated();
-         saved = getUnitTranslated();
+         translated = getUnitTranslated();
          total = getUnitTotal();
       }
       int width = getOffsetWidth();
@@ -151,8 +151,8 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
       else
       {
          int completePx = approved * 100 / total * width / TOTAL_WIDTH;
-         int savedPx = saved * 100 / total * width / TOTAL_WIDTH;
-         int inProgressPx = needReview * 100 / total * width / TOTAL_WIDTH;
+         int savedPx = translated * 100 / total * width / TOTAL_WIDTH;
+         int inProgressPx = draft * 100 / total * width / TOTAL_WIDTH;
          int unfinishedPx = untranslated * 100 / total * width / TOTAL_WIDTH;
 
          int needReviewLeft = savedPx + completePx;

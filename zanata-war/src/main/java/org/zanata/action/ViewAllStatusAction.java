@@ -241,9 +241,9 @@ public class ViewAllStatusAction implements Serializable
          TranslationStatistics stats = iterationStats.getStats(var.getLocaleId().getId(), statsOption);
          if (stats == null)
          {
-            stats = new TranslationStatistics();
+            stats = new TranslationStatistics(statsOption);
             stats.setUntranslated(total);
-            stats.setTotal(total);
+//            stats.setTotal(total);
          }
 
          if (statsMap.containsKey(var.getLocaleId()))
@@ -278,9 +278,9 @@ public class ViewAllStatusAction implements Serializable
          TranslationStatistics stats = iterationStats.getStats(var.getLocaleId().getId(), statsOption);
          if (stats == null)
          {
-            stats = new TranslationStatistics();
+            stats = new TranslationStatistics(statsOption);
             stats.setUntranslated(total);
-            stats.setTotal(total);
+//            stats.setTotal(total);
 
             HTextFlowTarget lastTranslatedTarget = localeServiceImpl.getLastTranslated(projectSlug, iterationSlug, var.getLocaleId());
 
