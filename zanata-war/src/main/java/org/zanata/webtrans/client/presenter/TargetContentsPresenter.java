@@ -151,7 +151,7 @@ public class TargetContentsPresenter implements
    {
       if (currentEditorContentHasChanged())
       {
-         saveCurrent(ContentState.Approved);
+         saveCurrent(ContentState.Translated);
       }
    }
 
