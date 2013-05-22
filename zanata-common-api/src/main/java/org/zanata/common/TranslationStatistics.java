@@ -46,51 +46,50 @@ import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 public class TranslationStatistics implements Serializable
 {
 
-   private long total;
-   private long rejected;
-   private long translated;
-   private long approved;
-   private long fuzzy;
-   private long untranslated;
-
    private StatUnit unit;
+   private AbstractTranslationCount translationCount;
    private String locale;
    private double remainingHours;
    private String lastTranslated;
 
+   /**
+    * This is for marshalling purpose only.
+    */
    public TranslationStatistics()
    {
+      this(StatUnit.MESSAGE);
+   }
+
+   public TranslationStatistics(StatUnit statUnit)
+   {
+      unit = statUnit;
+      if (unit == StatUnit.MESSAGE)
+      {
+         translationCount = new TransUnitWords(0, 0, 0);
+      }
+      else
+      {
+         translationCount = new TransUnitCount(0, 0, 0);
+      }
    }
 
    public TranslationStatistics(TransUnitCount unitCount, String locale)
    {
+      translationCount = unitCount;
       this.unit = StatUnit.MESSAGE;
       this.locale = locale;
-      untranslated = unitCount.getUntranslated();
-      fuzzy = unitCount.getNeedReview();
-      approved = unitCount.getApproved();
-      translated = unitCount.getTranslated();
-      rejected = unitCount.getRejected();
-
-      total = unitCount.getTotal();
    }
 
    public TranslationStatistics(TransUnitWords wordCount, String locale)
    {
+      translationCount = wordCount;
       this.unit = StatUnit.WORD;
       this.locale = locale;
 
-      untranslated = wordCount.getUntranslated();
-      fuzzy = wordCount.getNeedReview();
-      translated = wordCount.getTranslated();
-      approved = wordCount.getApproved();
-      rejected = wordCount.getRejected();
-      
       double untransHours = wordCount.getUntranslated() / 250.0;
       double fuzzyHours = wordCount.getNeedReview() / 500.0;
       double translatedHours = wordCount.getTranslated() / 500.0;
       remainingHours = untransHours + fuzzyHours + translatedHours;
-      total = wordCount.getTotal();
    }
 
    /**
@@ -99,12 +98,12 @@ public class TranslationStatistics implements Serializable
    @XmlAttribute
    public long getUntranslated()
    {
-      return untranslated;
+      return translationCount.getUntranslated();
    }
 
    public void setUntranslated(long untranslated)
    {
-      this.untranslated = untranslated;
+      translationCount.set(ContentState.New, (int) untranslated);
    }
 
    /**
@@ -113,7 +112,7 @@ public class TranslationStatistics implements Serializable
    @XmlAttribute
    public long getDraft()
    {
-      return fuzzy + rejected;
+      return translationCount.getNeedReview() + translationCount.getRejected();
    }
    
    /**
@@ -122,7 +121,7 @@ public class TranslationStatistics implements Serializable
    @XmlAttribute
    public long getTranslated()
    {
-      return translated;
+      return translationCount.getTranslated();
    }
   
    /**
@@ -131,13 +130,13 @@ public class TranslationStatistics implements Serializable
    @XmlAttribute
    public long getApproved()
    {
-      return approved;
+      return translationCount.getApproved();
    }
 
    @XmlAttribute
    public long getRejected()
    {
-      return rejected;
+      return translationCount.getRejected();
    }
 
    /**
@@ -146,12 +145,7 @@ public class TranslationStatistics implements Serializable
    @XmlAttribute
    public long getTotal()
    {
-      return total;
-   }
-
-   public void setTotal(long total)
-   {
-      this.total = total;
+      return translationCount.getTotal();
    }
 
    /**
@@ -203,7 +197,7 @@ public class TranslationStatistics implements Serializable
       }
       else
       {
-         double per = 100 * getTranslated() / total;
+         double per = 100 * getApproved() / total;
          return (int) Math.ceil(per);
       }
    }
@@ -251,64 +245,17 @@ public class TranslationStatistics implements Serializable
 
    public void add(TranslationStatistics other)
    {
-      this.translated += other.translated;
-      this.fuzzy += other.fuzzy;
-      this.untranslated += other.untranslated;
-      this.rejected += other.rejected;
-      this.approved += other.approved;
+      translationCount.add(other.translationCount);
    }
 
    public void increment(ContentState state, long count)
    {
-      set(state, get(state) + count);
+      translationCount.increment(state, (int) count);
    }
 
    public void decrement(ContentState state, long count)
    {
-      set(state, get(state) - count);
-   }
-
-   public long get(ContentState state)
-   {
-      switch (state)
-      {
-      case Approved:
-         return translated;
-      case NeedReview:
-         return fuzzy;
-      case New:
-         return untranslated;
-      case Rejected:
-         return rejected;
-      case Translated:
-         return translated;
-      default:
-         throw new RuntimeException("not implemented for state " + state.name());
-      }
-   }
-
-   public void set(ContentState state, long value)
-   {
-      switch (state)
-      {
-      case Approved:
-         translated = value;
-         break;
-      case NeedReview:
-         fuzzy = value;
-         break;
-      case New:
-         untranslated = value;
-         break;
-      case Rejected:
-         rejected = value;
-         break;
-      case Translated:
-         translated = value;
-         break;
-      default:
-         throw new RuntimeException("not implemented for state " + state.name());
-      }
+      translationCount.decrement(state, (int) count);
    }
 
    public enum StatUnit
