@@ -22,6 +22,7 @@ package org.zanata.common;
 
 import java.io.Serializable;
 
+@Deprecated // use org.zanata.common.TranslationStatistics
 public class TranslationStats implements Serializable
 {
    private static final long serialVersionUID = 1L;
