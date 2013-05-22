@@ -33,12 +33,6 @@ public class GetDocumentStatsHandler extends AbstractActionHandler<GetDocumentSt
    @In
    private TranslationStateCache translationStateCacheImpl;
 
-   @In
-   private TextFlowTargetDAO textFlowTargetDAO;
-
-   @In
-   private DocumentDAO documentDAO;
-
    @Override
    public GetDocumentStatsResult execute(GetDocumentStats action, ExecutionContext context) throws ActionException
    {
