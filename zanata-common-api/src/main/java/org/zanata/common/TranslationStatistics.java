@@ -38,10 +38,10 @@ import org.codehaus.jackson.annotate.JsonWriteNullProperties;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@XmlType(name = "translationStatistics", propOrder = { "total", "untranslated", "draft", "translated", "approved", "rejected", "unit", "locale", "lastTranslated" })
+@XmlType(name = "translationStatistics", propOrder = { "total", "untranslated", "needReview", "translated", "approved", "rejected", "readyForReview", "fuzzy", "unit", "locale", "lastTranslated" })
 @XmlRootElement(name = "translationStats")
 @JsonIgnoreProperties(value = { "percentTranslated", "percentNeedReview", "percentUntranslated" }, ignoreUnknown = true)
-@JsonPropertyOrder({ "total", "untranslated", "draft", "translated", "approved", "rejected", "unit", "locale", "lastTranslated" })
+@JsonPropertyOrder({ "total", "untranslated", "needReview", "translated", "approved", "rejected", "readyForReview", "fuzzy", "unit", "locale", "lastTranslated" })
 @JsonWriteNullProperties(false)
 public class TranslationStatistics implements Serializable
 {
@@ -109,23 +109,52 @@ public class TranslationStatistics implements Serializable
    /**
     * Number of elements that need review (i.e. Fuzzy or Rejected).
     */
-   @XmlAttribute
    public long getDraft()
    {
       return translationCount.getNeedReview() + translationCount.getRejected();
    }
-   
+
    /**
-    * Number of translated elements.
+    * This is for REST backward compatibility.
+    * @return Number of elements that need review (i.e. Fuzzy or Rejected)
     */
    @XmlAttribute
-   public long getTranslated()
+   protected long getNeedReview()
+   {
+      return getDraft();
+   }
+
+   /**
+    * This will only return fuzzy translation.
+    * @return
+    */
+   @XmlAttribute
+   public long getFuzzy()
+   {
+      return translationCount.getNeedReview();
+   }
+   
+   /**
+    * This is for REST backward compatibility.
+    * @return Number of translated and approved elements.
+    */
+   @XmlAttribute
+   protected long getTranslated()
+   {
+      return translationCount.getTranslated() + translationCount.getApproved();
+   }
+
+   /**
+    * @return number of translated but not yet approved elements.
+    */
+   @XmlAttribute
+   public long getReadyForReview()
    {
       return translationCount.getTranslated();
    }
   
    /**
-   * Number of approved elements.
+   * @return Number of approved elements.
    */
    @XmlAttribute
    public long getApproved()

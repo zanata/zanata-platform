@@ -52,7 +52,7 @@ public class TranslationStatisticsTest
       assertThat((int) stats.getApproved(), equalTo(unitCount.getApproved()));
       assertThat((int) stats.getRejected(), equalTo(unitCount.getRejected()));
       assertThat((int) stats.getTotal(), equalTo(unitCount.getTotal()));
-      assertThat((int) stats.getTranslated(), equalTo(unitCount.getTranslated()));
+      assertThat((int) stats.getTranslated(), equalTo(unitCount.getTranslated() + unitCount.getApproved()));
       assertThat((int) stats.getUntranslated(), equalTo(unitCount.getUntranslated()));
       assertThat((int) stats.getDraft(), equalTo(unitCount.getNeedReview() + unitCount.getRejected()));
    }
@@ -69,7 +69,7 @@ public class TranslationStatisticsTest
       assertThat((int) stats.getApproved(), equalTo(wordCount.getApproved()));
       assertThat((int) stats.getRejected(), equalTo(wordCount.getRejected()));
       assertThat((int) stats.getTotal(), equalTo(wordCount.getTotal()));
-      assertThat((int) stats.getTranslated(), equalTo(wordCount.getTranslated()));
+      assertThat((int) stats.getTranslated(), equalTo(wordCount.getTranslated() + wordCount.getApproved()));
       assertThat((int) stats.getUntranslated(), equalTo(wordCount.getUntranslated()));
       assertThat((int) stats.getDraft(), equalTo(wordCount.getNeedReview() + wordCount.getRejected()));
    }
@@ -97,7 +97,7 @@ public class TranslationStatisticsTest
       assertThat((int) stats.getApproved(), equalTo(unitCount.getApproved()));
       assertThat((int) stats.getRejected(), equalTo(unitCount.getRejected()));
       assertThat((int) stats.getTotal(), equalTo(unitCount.getTotal()));
-      assertThat((int) stats.getTranslated(), equalTo(unitCount.getTranslated()));
+      assertThat((int) stats.getTranslated(), equalTo(unitCount.getApproved() + unitCount.getTranslated()));
       assertThat((int) stats.getUntranslated(), equalTo(unitCount.getUntranslated()));
       assertThat((int) stats.getDraft(), equalTo(unitCount.getNeedReview() + unitCount.getRejected()));
    }
