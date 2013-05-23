@@ -23,6 +23,10 @@ package org.zanata.model;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
 import org.zanata.common.ContentState;
 
 
@@ -41,4 +45,7 @@ public interface ITextFlowTargetHistory
 
    Integer getVersionNum();
 
+   HPerson getTranslator();
+
+   HPerson getReviewer();
 }

@@ -963,7 +963,7 @@ public class FileService implements FileResource
             return Response.status(Status.NOT_FOUND).build();
          }
          final Set<String> extensions = Collections.<String>emptySet();
-         TranslationsResource transRes = 
+         TranslationsResource transRes =
                (TranslationsResource) this.translatedDocResourceService.getTranslations(docId, new LocaleId(locale), extensions, true, null).getEntity();
          // Filter to only provide translated targets. "Preview" downloads include fuzzy.
          // New list is used as transRes list appears not to be a modifiable implementation.
@@ -971,6 +971,7 @@ public class FileService implements FileResource
          boolean useFuzzy = FILETYPE_TRANSLATED_APPROVED_AND_FUZZY.equals(fileType);
          for (TextFlowTarget target : transRes.getTextFlowTargets())
          {
+            // FIXME rhbz953734 - translatedDocResourceService will map review content state to old state.
             if (target.getState() == ContentState.Approved || (useFuzzy && target.getState() == ContentState.NeedReview))
             {
                translations.put(target.getResId(), target);

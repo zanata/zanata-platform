@@ -20,7 +20,6 @@
  */
 package org.zanata.service.impl;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -52,8 +51,6 @@ import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.dao.TextFlowTargetHistoryDAO;
 import org.zanata.events.TextFlowTargetStateEvent;
-import org.zanata.exception.ConcurrentTranslationException;
-import org.zanata.exception.ModifyReviewAcceptedTranslationException;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.lock.Lock;
 import org.zanata.model.HAccount;
@@ -69,6 +66,7 @@ import org.zanata.process.MessagesProcessHandle;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.ResourceUtils;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.LockManagerService;
 import org.zanata.service.TranslationService;
@@ -121,32 +119,8 @@ public class TranslationServiceImpl implements TranslationService
    MessagesProcessHandle asynchronousProcessHandle;
    @In(value = JpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION, required = false)
    private HAccount authenticatedAccount;
-
-   // TODO delete this?
-   @Override
-   public TranslationResult translate(LocaleId localeId, TransUnitUpdateRequest translateRequest) throws ConcurrentTranslationException
-   {
-      HTextFlow hTextFlow = entityManager.find(HTextFlow.class, translateRequest.getTransUnitId().getValue());
-      HLocale hLocale = validateLocale(localeId, hTextFlow);
-      HTextFlowTarget hTextFlowTarget = textFlowTargetDAO.getOrCreateTarget(hTextFlow, hLocale);
-
-      if (translateRequest.getBaseTranslationVersion() != hTextFlowTarget.getVersionNum())
-      {
-         log.warn("translation failed for textflow {}: base versionNum {} does not match current versionNum {}", new Object[] { hTextFlow.getId(), translateRequest.getBaseTranslationVersion(), hTextFlowTarget.getVersionNum() });
-         throw new ConcurrentTranslationException(MessageFormat.format("base translation version num {0} does not match current version num {1}, aborting", translateRequest.getBaseTranslationVersion(), hTextFlowTarget.getVersionNum()));
-      }
-
-      TranslationResultImpl result = new TranslationResultImpl();
-      result.baseVersion = hTextFlowTarget.getVersionNum();
-      result.baseContentState = hTextFlowTarget.getState();
-
-      int nPlurals = getNumPlurals(hLocale, hTextFlow);
-      translate(hTextFlowTarget, translateRequest.getNewContents(), translateRequest.getNewContentState(), nPlurals);
-
-      result.translatedTextFlowTarget = hTextFlowTarget;
-      result.isSuccess = true;
-      return result;
-   }
+   @In
+   private ZanataIdentity identity;
 
    @Override
    public List<TranslationResult> translate(LocaleId localeId, List<TransUnitUpdateRequest> translationRequests)
@@ -162,7 +136,8 @@ public class TranslationServiceImpl implements TranslationService
       // single locale check - assumes update requests are all from the same
       // project-iteration
       HTextFlow sampleHTextFlow = entityManager.find(HTextFlow.class, translationRequests.get(0).getTransUnitId().getValue());
-      HLocale hLocale = validateLocale(localeId, sampleHTextFlow);
+      HProjectIteration projectIteration = sampleHTextFlow.getDocument().getProjectIteration();
+      HLocale hLocale = validateLocale(localeId, projectIteration);
       for (TransUnitUpdateRequest request : translationRequests)
       {
          HTextFlow hTextFlow = entityManager.find(HTextFlow.class, request.getTransUnitId().getValue());
@@ -181,7 +156,7 @@ public class TranslationServiceImpl implements TranslationService
             try
             {
                int nPlurals = getNumPlurals(hLocale, hTextFlow);
-               result.targetChanged = translate(hTextFlowTarget, request.getNewContents(), request.getNewContentState(), nPlurals);
+               result.targetChanged = translate(hTextFlowTarget, request.getNewContents(), request.getNewContentState(), nPlurals, projectIteration);
                result.isSuccess = true;
             }
             catch (HibernateException e)
@@ -208,14 +183,13 @@ public class TranslationServiceImpl implements TranslationService
     * translations for this locale are permitted.
     * 
     * @param localeId
-    * @param sampleHTextFlow used to determine the project-iteration
+    * @param projectIteration
     * @return the valid hLocale
     * @throws ZanataServiceException if the locale is not enabled for the
     *            project-iteration or server
     */
-   private HLocale validateLocale(LocaleId localeId, HTextFlow sampleHTextFlow) throws ZanataServiceException
+   private HLocale validateLocale(LocaleId localeId, HProjectIteration projectIteration) throws ZanataServiceException
    {
-      HProjectIteration projectIteration = sampleHTextFlow.getDocument().getProjectIteration();
       String projectSlug = projectIteration.getProject().getSlug();
       return localeServiceImpl.validateLocaleByProjectIteration(localeId, projectSlug, projectIteration.getSlug());
    }
@@ -248,18 +222,21 @@ public class TranslationServiceImpl implements TranslationService
    }
 
    private boolean translate(@Nonnull
-   HTextFlowTarget hTextFlowTarget, @Nonnull
-   List<String> contentsToSave, ContentState requestedState, int nPlurals)
+                             HTextFlowTarget hTextFlowTarget, @Nonnull
+                             List<String> contentsToSave, ContentState requestedState, int nPlurals, HProjectIteration projectIteration)
    {
       boolean targetChanged = false;
       targetChanged |= setContentIfChanged(hTextFlowTarget, contentsToSave);
-      targetChanged |= setContentStateIfChanged(requestedState, hTextFlowTarget, nPlurals);
+      targetChanged |= setContentStateIfChanged(requestedState, hTextFlowTarget, nPlurals, projectIteration);
 
       if (targetChanged || hTextFlowTarget.getVersionNum() == 0)
       {
          HTextFlow textFlow = hTextFlowTarget.getTextFlow();
          hTextFlowTarget.setVersionNum(hTextFlowTarget.getVersionNum() + 1);
          hTextFlowTarget.setTextFlowRevision(textFlow.getRevision());
+         // TODO rhbz953734 - needs to update last translated or reviewed
+
+
          hTextFlowTarget.setLastModifiedBy(authenticatedAccount.getPerson());
          log.debug("last modified by :{}", authenticatedAccount.getPerson().getName());
 
@@ -300,8 +277,8 @@ public class TranslationServiceImpl implements TranslationService
     *      java.util.List)
     */
    private boolean setContentStateIfChanged(@Nonnull
-   ContentState requestedState, @Nonnull
-   HTextFlowTarget target, int nPlurals)
+                                            ContentState requestedState, @Nonnull
+                                            HTextFlowTarget target, int nPlurals, HProjectIteration projectIteration)
    {
       boolean changed = false;
       ContentState previousState = target.getState();
@@ -312,9 +289,28 @@ public class TranslationServiceImpl implements TranslationService
       {
          log.warn(warning);
       }
-      if (previousState == ContentState.Accepted && target.getState() != ContentState.Rejected)
+      boolean requireTranslationReview = projectIteration.isRequireTranslationReview();
+      boolean reviewResultState = target.getState() == ContentState.Approved || target.getState() == ContentState.Rejected;
+      if (requireTranslationReview)
       {
-         throw new ModifyReviewAcceptedTranslationException(target.getLastModifiedBy().getName());
+         if (reviewResultState && identity.hasRole("reviewer"))
+         {
+            // reviewer saved it
+            target.setReviewer(authenticatedAccount.getPerson());
+         }
+         else if (reviewResultState && !identity.hasRole("reviewer"))
+         {
+            throw new RuntimeException("non reviewer can not save translation to Approved. Change content state to Translated");
+         }
+      }
+      else
+      {
+         if (target.getState() == ContentState.Translated)
+         {
+            target.setState(ContentState.Approved);
+            target.setReviewer(authenticatedAccount.getPerson());
+         }
+         target.setTranslator(authenticatedAccount.getPerson());
       }
       if (target.getState() != previousState)
       {
@@ -422,6 +418,9 @@ public class TranslationServiceImpl implements TranslationService
                                           final TranslationsResource translations, final Set<String> extensions, final MergeType mergeType)
    {
       HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+
+      final boolean requireTranslationReview = hProjectIteration.isRequireTranslationReview();
+
       if (hProjectIteration == null)
       {
          throw new ZanataServiceException("Version '" + iterationSlug + "' for project '" + projectSlug + "' ");
@@ -526,6 +525,10 @@ public class TranslationServiceImpl implements TranslationService
                            //textFlowTargetDAO.makePersistent(hTarget);
                            textFlow.getTargets().put(hLocale.getId(), hTarget);
                            targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
+                           if (requireTranslationReview && incomingTarget.getState() == ContentState.Approved)
+                           {
+                              hTarget.setState(ContentState.Translated);
+                           }
                            targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
                         }
                         else
@@ -538,6 +541,10 @@ public class TranslationServiceImpl implements TranslationService
                                     if (hTarget.getState() == ContentState.New)
                                     {
                                        targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
+                                       if (requireTranslationReview && incomingTarget.getState() == ContentState.Approved)
+                                       {
+                                          hTarget.setState(ContentState.Translated);
+                                       }
                                        targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
                                     }
                                     else if (incomingTarget.getState() == ContentState.Approved)
@@ -547,11 +554,16 @@ public class TranslationServiceImpl implements TranslationService
                                        if (!oldContent)
                                        {
                                           targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
+                                          if (requireTranslationReview)
+                                          {
+                                             hTarget.setState(ContentState.Translated);
+                                          }
                                           targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
                                        }
                                     }
                                     else
                                     {
+                                       // TODO rhbz953734 - incoming Fuzzy and hTarget Rejected, and content has changed, do we override server?
                                        // incomingTarget state = NeedReview
                                        // hTarget state != New
 
@@ -564,6 +576,10 @@ public class TranslationServiceImpl implements TranslationService
                               case IMPORT:
                                  removedTargets.remove(hTarget);
                                  targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
+                                 if (requireTranslationReview)
+                                 {
+                                    hTarget.setState(ContentState.Translated);
+                                 }
                                  targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
                                  break;
 
@@ -590,10 +606,12 @@ public class TranslationServiceImpl implements TranslationService
                                  hPerson.setName(incomingTarget.getTranslator().getName());
                                  personDAO.makePersistent(hPerson);
                               }
+                              hTarget.setTranslator(hPerson);
                               hTarget.setLastModifiedBy(hPerson);
                            }
                            else
                            {
+                              hTarget.setTranslator(null);
                               hTarget.setLastModifiedBy(null);
                            }
                            textFlowTargetDAO.makePersistent(hTarget);
@@ -716,7 +734,7 @@ public class TranslationServiceImpl implements TranslationService
       {
 
          HTextFlow sampleHTextFlow = entityManager.find(HTextFlow.class, translationsToRevert.get(0).getTransUnit().getId().getValue());
-         HLocale hLocale = validateLocale(localeId, sampleHTextFlow);
+         HLocale hLocale = validateLocale(localeId, sampleHTextFlow.getDocument().getProjectIteration());
          for (TransUnitUpdateInfo info : translationsToRevert)
          {
             if (!info.isSuccess() || !info.isTargetChanged())

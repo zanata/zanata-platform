@@ -42,17 +42,6 @@ public interface TranslationService
 
 
    /**
-    * Updates a single translation for a single text flow.
-    * 
-    * @param localeId
-    * @param translationRequest
-    * @return information about the translation change
-    * @throws ConcurrentTranslationException if there has been another
-    *            translation based on the same translation version
-    */
-   TranslationResult translate(LocaleId localeId, TransUnitUpdateRequest translationRequest) throws ConcurrentTranslationException;
-
-   /**
     * Updates multiple text flows within a project-iteration.
     * 
     * @param localeId

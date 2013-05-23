@@ -29,8 +29,6 @@ import org.zanata.webtrans.client.events.PageChangeEventHandler;
 import org.zanata.webtrans.client.events.PageCountChangeEvent;
 import org.zanata.webtrans.client.events.PageCountChangeEventHandler;
 import org.zanata.webtrans.client.events.RefreshPageEvent;
-import org.zanata.webtrans.client.events.ReviewModeChangeEvent;
-import org.zanata.webtrans.client.events.ReviewModeChangeEventHandler;
 import org.zanata.webtrans.client.view.TranslationEditorDisplay;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;

@@ -325,7 +325,7 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
          for (HTextFlowTarget htft : matchedTargets)
          {
             // manually check for case sensitive matches
-            if( !constraints.isCaseSensitive() || (constraints.isCaseSensitive() && contentIsValid(htft.getContents(), constraints)) )
+            if(!constraints.isCaseSensitive() || (contentIsValid(htft.getContents(), constraints)))
             {
                if (!htft.getTextFlow().getDocument().isObsolete())
                {
@@ -381,7 +381,7 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
             if (!resultList.contains(htf))
             {
                // manually check for case sensitive matches
-               if( !constraints.isCaseSensitive() || (constraints.isCaseSensitive() && contentIsValid(htf.getContents(), constraints)) )
+               if(!constraints.isCaseSensitive() || (contentIsValid(htf.getContents(), constraints)))
                {
                   if (!htf.getDocument().isObsolete())
                   {
@@ -403,21 +403,6 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
       documentPaths.add( document.getDocId() );
 
       return this.findTextFlows(workspace, documentPaths, constraints);
-   }
-
-   private static boolean isContentStateValid(HTextFlowTarget hTextFlowTarget, FilterConstraints constraints)
-   {
-      if (hTextFlowTarget == null)
-      {
-         return constraints.isIncludeNew();
-      }
-      else
-      {
-         ContentState state = hTextFlowTarget.getState();
-         return (constraints.isIncludeApproved() && state == ContentState.Approved) ||
-               (constraints.isIncludeFuzzy() && state == ContentState.NeedReview) ||
-               (constraints.isIncludeNew() && state == ContentState.New);
-      }
    }
 
    private static boolean contentIsValid(Collection<String> contents, FilterConstraints constraints)

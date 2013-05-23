@@ -23,6 +23,7 @@ package org.zanata.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -106,6 +107,9 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    private Integer textFlowRevision;
    private HPerson lastModifiedBy;
 
+   private HPerson translator;
+   private HPerson reviewer;
+
    private HSimpleComment comment;
 
    private Map<Integer, HTextFlowTargetHistory> history;
@@ -159,6 +163,32 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    public HPerson getLastModifiedBy()
    {
       return lastModifiedBy;
+   }
+
+   public void setLastModifiedBy(HPerson date)
+   {
+      lastModifiedBy = date;
+   }
+
+   @Override
+   @ManyToOne(cascade = { CascadeType.MERGE })
+   @JoinColumn(name = "translated_by_id", nullable = true)
+   public HPerson getTranslator()
+   {
+      return translator;
+   }
+
+   @Override
+   @ManyToOne(cascade = { CascadeType.MERGE })
+   @JoinColumn(name = "reviewed_by_id", nullable = true)
+   public HPerson getReviewer()
+   {
+      return reviewer;
+   }
+
+   public boolean hasReviewer()
+   {
+      return reviewer != null;
    }
 
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
@@ -358,10 +388,6 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
       // insert history if this has changed from its initial state
       if (this.initialState != null && this.initialState.hasChanged(this))
       {
-         if (initialState.getState() == ContentState.Accepted && getState() != ContentState.Rejected)
-         {
-            throw new IllegalStateException("Attempted to modify a review accepted translation");
-         }
          this.getHistory().put(this.oldVersionNum, this.initialState);
       }
    }
@@ -393,6 +419,8 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
       setState(ContentState.New);
       setComment(null);
       setLastModifiedBy(null);
+      setTranslator(null);
+      setReviewer(null);
    }
 
    protected boolean logPersistence()

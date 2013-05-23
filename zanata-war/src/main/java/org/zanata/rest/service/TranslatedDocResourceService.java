@@ -206,14 +206,14 @@ public class TranslatedDocResourceService implements TranslatedDocResource
       HProjectIteration hProjectIteration = retrieveAndCheckIteration(false);
       HLocale hLocale = validateTargetLocale(locale, projectSlug, iterationSlug);
 
-      resourceUtils.validateExtensions(extensions);
+      ResourceUtils.validateExtensions(extensions);
 
       // Check Etag header
       EntityTag generatedEtag = eTagUtils.generateETagForTranslatedDocument(hProjectIteration, id, hLocale);
-      List<String> requestedEtag = headers.getRequestHeader(HttpHeaders.IF_NONE_MATCH);
-      if( requestedEtag != null )
+      List<String> requestedEtagHeaders = headers.getRequestHeader(HttpHeaders.IF_NONE_MATCH);
+      if( requestedEtagHeaders != null || !requestedEtagHeaders.isEmpty() )
       {
-         if( generatedEtag.getValue().equals( requestedEtag ) )
+         if( requestedEtagHeaders.get(0).equals(generatedEtag.getValue()) )
          {
             return Response.notModified(generatedEtag).build();
          }
@@ -235,7 +235,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource
       // TODO avoid queries for better cacheability
       List<HTextFlowTarget> hTargets = textFlowTargetDAO.findTranslations(document, hLocale);
       boolean foundData = resourceUtils.transferToTranslationsResource(
-            translationResource, document, hLocale, extensions, hTargets);
+            translationResource, document, hLocale, extensions, hTargets, null);
 
       if (!foundData && !skeletons)
       {

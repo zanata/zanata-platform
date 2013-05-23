@@ -42,16 +42,5 @@ public interface KeyShortcutDisplay extends WidgetDisplay
    boolean isShowing();
 
    void hide(boolean autoClosed);
-   
-   interface Listener
-   {
-      void setAliasKeyListening(boolean isAliasKeyListening);
-   }
-
-   void setListener(Listener listener);
-
-   void cancelMetaKeyTimer();
-
-   void startAliasKeyListen(int delayMillis);
 
 }

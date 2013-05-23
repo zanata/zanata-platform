@@ -1,8 +1,9 @@
 package org.zanata.webtrans.client.events;
 
 
-import org.zanata.common.TranslationStats;
+import org.zanata.common.CommonContainerTranslationStatistics;
 import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 
 import com.google.gwt.event.shared.GwtEvent;
 
@@ -15,7 +16,8 @@ public class DocumentStatsUpdatedEvent extends GwtEvent<DocumentStatsUpdatedEven
    private static Type<DocumentStatsUpdatedEventHandler> TYPE;
 
    private DocumentId docId;
-   private TranslationStats newStats;
+   private CommonContainerTranslationStatistics newStats;
+   private TransUnitUpdateInfo transUnitUpdateInfo;
 
    /**
     * Gets the type associated with this event.
@@ -27,10 +29,11 @@ public class DocumentStatsUpdatedEvent extends GwtEvent<DocumentStatsUpdatedEven
       return TYPE != null ? TYPE : (TYPE = new Type<DocumentStatsUpdatedEventHandler>());
    }
 
-   public DocumentStatsUpdatedEvent(DocumentId docId, TranslationStats newStats)
+   public DocumentStatsUpdatedEvent(DocumentId docId, TransUnitUpdateInfo transUnitUpdateInfo, CommonContainerTranslationStatistics newStats)
    {
       this.docId = docId;
       this.newStats = newStats;
+      this.transUnitUpdateInfo = transUnitUpdateInfo;
    }
 
    public DocumentId getDocId()
@@ -38,7 +41,7 @@ public class DocumentStatsUpdatedEvent extends GwtEvent<DocumentStatsUpdatedEven
       return docId;
    }
 
-   public TranslationStats getNewStats()
+   public CommonContainerTranslationStatistics getNewStats()
    {
       return newStats;
    }
@@ -55,4 +58,8 @@ public class DocumentStatsUpdatedEvent extends GwtEvent<DocumentStatsUpdatedEven
       return getType();
    }
 
+   public TransUnitUpdateInfo getTransUnitUpdateInfo()
+   {
+      return transUnitUpdateInfo;
+   }
 }

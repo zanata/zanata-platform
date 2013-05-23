@@ -35,11 +35,13 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.common.CommonContainerTranslationStatistics;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
-import org.zanata.common.TranslationStats;
+import org.zanata.common.TranslationStatistics;
+import org.zanata.common.TranslationStatistics.StatUnit;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowTargetDAO;
@@ -50,7 +52,6 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.dto.Link;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
-import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.service.StatisticsResource;
 import org.zanata.rest.service.ZPathService;
 import org.zanata.service.TranslationStateCache;
@@ -122,7 +123,6 @@ public class StatisticsServiceImpl implements StatisticsResource
          throw new NoSuchEntityException(projectSlug + "/" + iterationSlug);
       }
 
-      // FIXME rhbz953734 this needs to fix
       Map<String, TransUnitCount> transUnitIterationStats = projectIterationDAO.getAllStatisticsForContainer(iteration.getId());
       Map<String, TransUnitWords> wordIterationStats = null;
       if (includeWordStats)
@@ -142,7 +142,7 @@ public class StatisticsServiceImpl implements StatisticsResource
          // Stats might not return anything if nothing is translated
          if (count == null)
          {
-            count = new TransUnitCount(0, 0, (int) iterationTotalMssgs, 0, 0);
+            count = new TransUnitCount(0, 0, (int) iterationTotalMssgs);
          }
 
          HTextFlowTarget target = localeServiceImpl.getLastTranslated(projectSlug, iterationSlug, locId);
@@ -169,7 +169,7 @@ public class StatisticsServiceImpl implements StatisticsResource
             TransUnitWords wordCount = wordIterationStats.get(locId.getId());
             if (wordCount == null)
             {
-               wordCount = new TransUnitWords(0, 0, (int) iterationTotalWords, 0, 0);
+               wordCount = new TransUnitWords(0, 0, (int) iterationTotalWords);
             }
 
             TranslationStatistics wordsStats = getWordsStats(wordCount, locId, lastModifiedDate, lastModifiedBy);
@@ -222,7 +222,7 @@ public class StatisticsServiceImpl implements StatisticsResource
          throw new NoSuchEntityException(projectSlug + "/" + iterationSlug + "/" + docId);
       }
 
-      Map<LocaleId, TranslationStats> statsMap = documentDAO.getStatistics(document.getId(), localeIds);
+      Map<LocaleId, CommonContainerTranslationStatistics> statsMap = documentDAO.getStatistics(document.getId(), localeIds);
 
       ContainerTranslationStatistics docStats = new ContainerTranslationStatistics();
       docStats.setId(docId);
@@ -238,38 +238,38 @@ public class StatisticsServiceImpl implements StatisticsResource
 
       for (LocaleId locale : localeIds)
       {
-         TranslationStats stats = statsMap.get(locale);
-
+         CommonContainerTranslationStatistics stats = statsMap.get(locale);
+         
          // trans unit level stats
-         TransUnitCount count;
+         TranslationStatistics transUnitStats;
          if (stats == null)
          {
-            count = new TransUnitCount(0, 0, (int) docTotalMssgs, 0, 0);
+            transUnitStats = new TranslationStatistics(new TransUnitCount(0, 0, (int) docTotalMssgs), locale.getId());
          }
          else
          {
-            count = stats.getUnitCount();
+            transUnitStats = stats.getStats(locale.getId(), StatUnit.MESSAGE);
          }
          DocumentStatus docStat = translationStateCacheImpl.getDocStats(document.getId(), locale);
 
-         TranslationStatistics transUnitStats = getMessageStats(count, locale, docStat.getLastTranslatedDate(), docStat.getLastTranslatedBy());
-         transUnitStats.setRemainingHours(getRemainingHours(count.get(ContentState.NeedReview), count.get(ContentState.New)));
+         transUnitStats.setLastTranslated(getLastTranslated(docStat.getLastTranslatedDate(), docStat.getLastTranslatedBy()));
+         transUnitStats.setRemainingHours(getRemainingHours(transUnitStats.getDraft(), transUnitStats.getUntranslated()));
          docStats.addStats(transUnitStats);
 
          // word level stats
          if (includeWordStats)
          {
-            TransUnitWords wordCount;
+            TranslationStatistics wordsStats;
             if (stats == null)
             {
-               wordCount = new TransUnitWords(0, 0, (int) docTotalWords, 0, 0);
+               wordsStats = new TranslationStatistics(new TransUnitWords(0, 0, (int) docTotalWords), locale.getId());
             }
             else
             {
-               wordCount = stats.getWordCount();
+               wordsStats = stats.getStats(locale.getId(), StatUnit.WORD);
             }
-            TranslationStatistics wordsStats = getWordsStats(wordCount, locale, docStat.getLastTranslatedDate(), docStat.getLastTranslatedBy());
-            wordsStats.setRemainingHours(getRemainingHours(wordCount.get(ContentState.NeedReview), wordCount.get(ContentState.New)));
+            wordsStats.setLastTranslated(getLastTranslated(docStat.getLastTranslatedDate(), docStat.getLastTranslatedBy()));
+            wordsStats.setRemainingHours(getRemainingHours(wordsStats.getDraft(), wordsStats.getUntranslated()));
             docStats.addStats(wordsStats);
          }
       }
@@ -279,28 +279,17 @@ public class StatisticsServiceImpl implements StatisticsResource
 
    private TranslationStatistics getWordsStats(TransUnitWords wordCount, LocaleId locale, Date lastChanged, String lastModifiedBy)
    {
-      TranslationStatistics stats = new TranslationStatistics();
-      stats.setLocale(locale.getId());
-      stats.setUnit(TranslationStatistics.StatUnit.WORD);
-      stats.setTranslated(wordCount.get(ContentState.Approved));
-      stats.setUntranslated(wordCount.get(ContentState.New));
-      stats.setNeedReview(wordCount.get(ContentState.NeedReview));
-      stats.setTotal(wordCount.getTotal());
+      TranslationStatistics stats = new TranslationStatistics(wordCount, locale.getId());
       stats.setLastTranslated(getLastTranslated(lastChanged, lastModifiedBy));
+      
       return stats;
    }
 
    private TranslationStatistics getMessageStats(TransUnitCount unitCount, LocaleId locale, Date lastChanged, String lastModifiedBy)
    {
-      TranslationStatistics stats = new TranslationStatistics();
-      stats.setLocale(locale.getId());
-      stats.setUnit(TranslationStatistics.StatUnit.MESSAGE);
-      stats.setTranslated(unitCount.get(ContentState.Approved));
-      stats.setUntranslated(unitCount.get(ContentState.New));
-      stats.setNeedReview(unitCount.get(ContentState.NeedReview));
-      stats.setTotal(unitCount.getTotal());
-
+      TranslationStatistics stats = new TranslationStatistics(unitCount, locale.getId());
       stats.setLastTranslated(getLastTranslated(lastChanged, lastModifiedBy));
+      
       return stats;
    }
 
@@ -329,8 +318,16 @@ public class StatisticsServiceImpl implements StatisticsResource
       return remainHours;
    }
 
-   public TranslationStats getDocStatistics(Long documentId, LocaleId localeId)
+   public CommonContainerTranslationStatistics getDocStatistics(Long documentId, LocaleId localeId)
    {
-      return documentDAO.getStatistics(documentId, localeId);
+      CommonContainerTranslationStatistics result = documentDAO.getStatistics(documentId, localeId);
+      
+      TranslationStatistics wordStatistics = result.getStats(localeId.getId(), StatUnit.WORD);
+      wordStatistics.setRemainingHours(getRemainingHours(wordStatistics.getDraft(), wordStatistics.getUntranslated()));
+      
+      TranslationStatistics msgStatistics = result.getStats(localeId.getId(), StatUnit.MESSAGE);
+      msgStatistics.setRemainingHours(getRemainingHours(msgStatistics.getDraft(), msgStatistics.getUntranslated()));
+      
+      return result;
    }
 }

@@ -1,8 +1,0 @@
-<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-             xmlns:g='urn:import:com.google.gwt.user.client.ui'>
-    <ui:with field="messages" type="org.zanata.webtrans.client.resources.WebTransMessages"/>
-
-    <g:VerticalPanel>
-
-    </g:VerticalPanel>
-</ui:UiBinder>

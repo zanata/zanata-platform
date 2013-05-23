@@ -12,7 +12,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
 
 public class EditorButtonsWidget extends Composite
 {
@@ -32,6 +31,10 @@ public class EditorButtonsWidget extends Composite
    SimplePanel undoContainer;
    @UiField
    Style style;
+   @UiField
+   InlineLabel acceptIcon;
+   @UiField
+   InlineLabel rejectIcon;
 
    private TargetContentsDisplay.Listener listener;
    private TransUnitId id;
@@ -39,6 +42,13 @@ public class EditorButtonsWidget extends Composite
    public EditorButtonsWidget()
    {
       initWidget(ourUiBinder.createAndBindUi(this));
+      displayReviewButtons(listener != null && listener.canReviewTranslation());
+   }
+
+   private void displayReviewButtons(boolean canReview)
+   {
+      acceptIcon.setVisible(canReview);
+      rejectIcon.setVisible(canReview);
    }
 
    public void addUndo(final UndoLink undoLink)
@@ -89,9 +99,24 @@ public class EditorButtonsWidget extends Composite
       event.stopPropagation();
    }
 
+   @UiHandler("acceptIcon")
+   public void onAccept(ClickEvent event)
+   {
+      listener.acceptTranslation(id);
+      event.stopPropagation();
+   }
+
+   @UiHandler("rejectIcon")
+   public void onReject(ClickEvent event)
+   {
+      listener.rejectTranslation(id);
+      event.stopPropagation();
+   }
+
    public void setListener(TargetContentsDisplay.Listener listener)
    {
       this.listener = listener;
+      displayReviewButtons(listener.canReviewTranslation());
    }
 
    public void setId(TransUnitId id)

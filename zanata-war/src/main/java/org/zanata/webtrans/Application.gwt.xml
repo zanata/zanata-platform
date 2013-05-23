@@ -23,6 +23,8 @@
 
       <inherits name="org.zanata.Common"/>
 
+      <inherits name="org.zanata.CommonUtil"/>
+
       <inherits name='com.google.gwt.user.theme.standard.StandardResources' />
 
       <inherits name="de.novanic.eventservice.GWTEventService"/>

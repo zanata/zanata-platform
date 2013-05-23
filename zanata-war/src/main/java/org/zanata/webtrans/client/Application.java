@@ -5,10 +5,8 @@ import java.util.List;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.common.LocaleId;
-import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.EventProcessor.StartCallback;
 import org.zanata.webtrans.client.events.NotificationEvent;
-import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.gin.WebTransGinjector;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.presenter.AppPresenter;
@@ -188,12 +186,6 @@ public class Application implements EntryPoint
             history.addValueChangeHandler(injector.getHistoryEventHandlerService());
             Log.info("=========== now firing current history state =========== ");
             history.fireCurrentHistoryState();
-
-            TranslationStats projectStats = new TranslationStats(); // = 0
-
-            documentListPresenter.setProjectStats(projectStats);
-
-            eventBus.fireEvent(new ProjectStatsUpdatedEvent(projectStats));
 
             exceptionHandler.setAppPresenter(appPresenter);
             exceptionHandler.setTargetContentsPresenter(injector.getTargetContentsPresenter());

@@ -45,6 +45,7 @@ import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.StringUtil;
 
+import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.ws.rs.WebApplicationException;
@@ -72,6 +73,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.google.common.base.Strings;
 
 @Name("resourceUtils")
 @Scope(ScopeType.STATELESS)
@@ -171,6 +174,7 @@ public class ResourceUtils
                for (HTextFlowTarget targ : textFlow.getTargets().values())
                {
                   // if (targ.getState() != ContentState.New)
+                  // TODO rhbz953734 - what happens if it's Translated state
                   if (targ.getState() == ContentState.Approved)
                   {
                      targ.setState(ContentState.NeedReview);
@@ -279,6 +283,7 @@ public class ResourceUtils
    /**
     * Transfers from DTO TextFlowTarget into HTextFlowTarget
     * 
+    * TODO rhbz953734 - once we have api version information we should properly handle different content state.
     * @param from
     * @param to
     * @return
@@ -1375,14 +1380,17 @@ public class ResourceUtils
 
    /**
     * 
+    *
     * @param from
     * @param to
+    * @param apiVersion
     * @todo merge with {@link #transferToTextFlowTargetExtensions}
     */
-   public void transferToTextFlowTarget(HTextFlowTarget from, TextFlowTarget to)
+   public void transferToTextFlowTarget(HTextFlowTarget from, TextFlowTarget to, @Nullable String apiVersion)
    {
       to.setContents(from.getContents());
-      to.setState(from.getState());
+      // TODO rhbz953734 - at the moment we will transfer review state into old state for compatibility
+      to.setState(mapContentState(apiVersion, from.getState()));
       to.setRevision(from.getVersionNum());
       to.setTextFlowRevision(from.getTextFlowRevision());
       HPerson translator = from.getLastModifiedBy();
@@ -1390,6 +1398,24 @@ public class ResourceUtils
       {
          to.setTranslator(new Person(translator.getEmail(), translator.getName()));
       }
+   }
+
+   private static ContentState mapContentState(String apiVersion, ContentState state)
+   {
+      if (Strings.isNullOrEmpty(apiVersion))
+      {
+         switch (state)
+         {
+            case Translated:
+               return ContentState.Approved;
+            case Rejected:
+               return ContentState.NeedReview;
+            default:
+               return state;
+         }
+      }
+      // TODO for other apiVersion, we will need to handle differently
+      return state;
    }
 
    public Resource buildResource(HDocument document)
@@ -1415,16 +1441,17 @@ public class ResourceUtils
    }
 
    /**
-    * 
+    *
     * @param transRes
     * @param document
     * @param locale
     * @param enabledExtensions
     * @param hTargets
+    * @param apiVersion TODO this will take api version in the future
     * @return true only if some data was found (text flow targets, or some
     *         metadata extensions)
     */
-   public boolean transferToTranslationsResource(TranslationsResource transRes, HDocument document, HLocale locale, Set<String> enabledExtensions, List<HTextFlowTarget> hTargets)
+   public boolean transferToTranslationsResource(TranslationsResource transRes, HDocument document, HLocale locale, Set<String> enabledExtensions, List<HTextFlowTarget> hTargets, @Nullable String apiVersion)
    {
       boolean found = this.transferToTranslationsResourceExtensions(document, transRes.getExtensions(true), enabledExtensions, locale, hTargets);
 
@@ -1433,7 +1460,7 @@ public class ResourceUtils
          found = true;
          TextFlowTarget target = new TextFlowTarget();
          target.setResId(hTarget.getTextFlow().getResId());
-         this.transferToTextFlowTarget(hTarget, target);
+         this.transferToTextFlowTarget(hTarget, target, apiVersion);
          this.transferToTextFlowTargetExtensions(hTarget, target.getExtensions(true), enabledExtensions);
          transRes.getTextFlowTargets().add(target);
       }

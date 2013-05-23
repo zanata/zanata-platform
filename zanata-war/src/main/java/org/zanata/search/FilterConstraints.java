@@ -49,6 +49,7 @@ public class FilterConstraints
    private boolean includeFuzzy;
    private boolean includeApproved;
 
+   //TODO rhbz953734 - need to consider other content state??
    private FilterConstraints(String searchString, boolean caseSensitive, boolean searchInSource, boolean searchInTarget, boolean includeNew, boolean includeFuzzy, boolean includeApproved)
    {
       this.searchString = searchString;

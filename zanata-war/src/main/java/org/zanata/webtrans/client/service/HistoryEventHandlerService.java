@@ -106,7 +106,7 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String>
 
    protected void processForAppPresenter(DocumentId docId)
    {
-      if (docId != null && !equal(appPresenter.getSelectedDocIdOrNull(), docId.getId()))
+      if (docId != null && !equal(appPresenter.getSelectedDocIdOrNull(), docId))
       {
          appPresenter.selectDocument(docId);
       }

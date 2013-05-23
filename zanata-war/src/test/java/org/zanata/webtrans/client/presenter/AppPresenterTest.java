@@ -1,6 +1,8 @@
 package org.zanata.webtrans.client.presenter;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.eq;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
@@ -10,6 +12,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -25,15 +28,17 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.common.CommonContainerTranslationStatistics;
+import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
-import org.zanata.common.TranslationStats;
+import org.zanata.common.TranslationStatistics;
+import org.zanata.common.TranslationStatistics.StatUnit;
 import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
-import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.ShowSideMenuEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.history.History;
@@ -47,6 +52,8 @@ import org.zanata.webtrans.client.view.AppDisplay;
 import org.zanata.webtrans.shared.model.AuditInfo;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
+import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
@@ -63,6 +70,8 @@ public class AppPresenterTest
    private EventBus eventBus;
    @Mock
    private SideMenuPresenter sideMenuPresenter;
+   @Mock
+   private AttentionKeyShortcutPresenter attentionKeyShortcutPresenter;
    @Mock
    private KeyShortcutPresenter keyShortcutPresenter;
    @Mock
@@ -81,20 +90,25 @@ public class AppPresenterTest
    @Mock
    private Window.Location location;
    @Captor
-   private ArgumentCaptor<TranslationStats> statsCaptor;
-   private TranslationStats projectStats;
-   private TranslationStats selectedDocumentStats;
+   private ArgumentCaptor<CommonContainerTranslationStatistics> statsCaptor;
+   private CommonContainerTranslationStatistics projectStats;
+   private CommonContainerTranslationStatistics selectedDocumentStats;
    @Captor
    private ArgumentCaptor<KeyShortcut> keyShortcutCaptor;
 
    @BeforeMethod
    public void beforeMethod()
    {
-      selectedDocumentStats = new TranslationStats(new TransUnitCount(1, 2, 3, 0, 0), new TransUnitWords(4, 5, 6, 0, 0));
-      projectStats = new TranslationStats(new TransUnitCount(7, 8, 9, 0, 0), new TransUnitWords(10, 11, 12, 0, 0));
+      selectedDocumentStats = new CommonContainerTranslationStatistics();
+      selectedDocumentStats.addStats(new TranslationStatistics(new TransUnitCount(1, 2, 3), LocaleId.EN_US.getId()));
+      selectedDocumentStats.addStats(new TranslationStatistics(new TransUnitWords(4, 5, 6), LocaleId.EN_US.getId()));
+
+      projectStats = new CommonContainerTranslationStatistics();
+      projectStats.addStats(new TranslationStatistics(new TransUnitCount(7, 8, 9), LocaleId.EN_US.getId()));
+      projectStats.addStats(new TranslationStatistics(new TransUnitWords(10, 11, 12), LocaleId.EN_US.getId()));
 
       MockitoAnnotations.initMocks(this);
-      presenter = new AppPresenter(display, eventBus, sideMenuPresenter, keyShortcutPresenter, translationPresenter, documentListPresenter, searchResultPresenter, userWorkspace, messages, history, window, location);
+      presenter = new AppPresenter(display, eventBus, sideMenuPresenter, attentionKeyShortcutPresenter, keyShortcutPresenter, translationPresenter, documentListPresenter, searchResultPresenter, userWorkspace, messages, history, window, location);
 
       verify(display).setListener(presenter);
    }
@@ -104,7 +118,7 @@ public class AppPresenterTest
    {
       when(location.getParameter("title")).thenReturn("blah");
       when(messages.windowTitle2(userWorkspace.getWorkspaceContext().getWorkspaceName(), userWorkspace.getWorkspaceContext().getLocaleName(), "blah")).thenReturn("new title");
-      
+
       presenter.onBind();
 
       verify(keyShortcutPresenter).bind();
@@ -116,17 +130,15 @@ public class AppPresenterTest
       verify(eventBus).addHandler(ShowSideMenuEvent.getType(), presenter);
       verify(eventBus).addHandler(WorkspaceContextUpdateEvent.getType(), presenter);
       verify(eventBus).addHandler(DocumentStatsUpdatedEvent.getType(), presenter);
-      verify(eventBus).addHandler(ProjectStatsUpdatedEvent.getType(), presenter);
       verify(eventBus).addHandler(PresenterRevealedEvent.getType(), presenter);
 
       WorkspaceId workspaceId = userWorkspace.getWorkspaceContext().getWorkspaceId();
       String localeId = workspaceId.getLocaleId().getId();
-      
+
       verify(display).setProjectLinkLabel(workspaceId.getProjectIterationId().getProjectSlug());
       verify(display).setVersionLinkLabel(workspaceId.getProjectIterationId().getIterationSlug());
       verify(display).setFilesLinkLabel("Documents (" + localeId + ")");
-      
-      
+
       verify(display).setReadOnlyVisible(userWorkspace.hasReadOnlyAccess());
       verify(window).setTitle("new title");
       verify(keyShortcutPresenter, times(3)).register(keyShortcutCaptor.capture());
@@ -316,7 +328,10 @@ public class AppPresenterTest
       presenter.setStatesForTest(projectStats, selectedDocumentStats, null, null);
       DocumentId docId = new DocumentId(1L, "");
       // newly selected document has new stats
-      TranslationStats newSelectedStats = new TranslationStats(new TransUnitCount(1, 2, 3, 0, 0), new TransUnitWords(4, 5, 6, 0, 0));
+
+      CommonContainerTranslationStatistics newSelectedStats = new CommonContainerTranslationStatistics();
+      newSelectedStats.addStats(new TranslationStatistics(new TransUnitCount(1, 2, 3), LocaleId.EN_US.toString()));
+      newSelectedStats.addStats(new TranslationStatistics(new TransUnitWords(4, 5, 6), LocaleId.EN_US.toString()));
       DocumentInfo documentInfo = new DocumentInfo(docId, "a.po", "pot/", new LocaleId("en-US"), newSelectedStats, new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator"));
       when(documentListPresenter.getDocumentInfo(docId)).thenReturn(documentInfo);
       // current view is editor
@@ -329,7 +344,8 @@ public class AppPresenterTest
 
       // Then:
       display.setDocumentLabel("pot/", "a.po");
-      verify(display, atLeastOnce()).setStats(newSelectedStats, true);
+      verify(display, atLeastOnce()).setStats(selectedDocumentStats, true);
+      assertThat(selectedDocumentStats.getStats(), Matchers.equalTo(newSelectedStats.getStats()));
       assertThat(presenter.getSelectedDocIdOrNull(), Matchers.is(docId));
    }
 
@@ -340,7 +356,11 @@ public class AppPresenterTest
       presenter.setStatesForTest(projectStats, selectedDocumentStats, MainView.Documents, null);
       DocumentId docId = new DocumentId(1L, "");
       // newly selected document has new stats
-      TranslationStats newSelectedStats = new TranslationStats(new TransUnitCount(1, 2, 3, 0, 0), new TransUnitWords(4, 5, 6, 0, 0));
+
+      CommonContainerTranslationStatistics newSelectedStats = new CommonContainerTranslationStatistics();
+      newSelectedStats.addStats(new TranslationStatistics(new TransUnitCount(1, 2, 3), LocaleId.EN_US.toString()));
+      newSelectedStats.addStats(new TranslationStatistics(new TransUnitWords(4, 5, 6), LocaleId.EN_US.toString()));
+
       DocumentInfo documentInfo = new DocumentInfo(docId, "a.po", "pot/", new LocaleId("en-US"), newSelectedStats, new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator"));
       when(documentListPresenter.getDocumentInfo(docId)).thenReturn(documentInfo);
 
@@ -349,7 +369,7 @@ public class AppPresenterTest
 
       // Then:
       verify(display).enableTab(MainView.Editor, true);
-      
+
       verifyNoMoreInteractions(display);
       assertThat(presenter.getSelectedDocIdOrNull(), Matchers.is(docId));
       assertThat(presenter.getSelectedDocumentInfoOrNull(), Matchers.is(documentInfo));
@@ -360,7 +380,7 @@ public class AppPresenterTest
    {
       assertThat(presenter.getSelectedDocumentInfoOrNull(), Matchers.is(Matchers.nullValue()));
 
-      presenter.onDocumentStatsUpdated(new DocumentStatsUpdatedEvent(new DocumentId(1L, ""), new TranslationStats()));
+      presenter.onDocumentStatsUpdated(new DocumentStatsUpdatedEvent(new DocumentId(1L, ""), null, new CommonContainerTranslationStatistics()));
 
       verifyZeroInteractions(display);
    }
@@ -373,9 +393,8 @@ public class AppPresenterTest
       presenter.selectDocument(new DocumentId(2L, ""));
 
       // When:
-      presenter.onDocumentStatsUpdated(new DocumentStatsUpdatedEvent(new DocumentId(1L, ""), new TranslationStats()));
+      presenter.onDocumentStatsUpdated(new DocumentStatsUpdatedEvent(new DocumentId(1L, ""), null, new CommonContainerTranslationStatistics()));
 
-      
       // Then:
       verifyZeroInteractions(display);
    }
@@ -393,26 +412,45 @@ public class AppPresenterTest
       verify(display, atLeastOnce()).setStats(selectedDocumentStats, true);
 
       // When:
-      TranslationStats newStats = new TranslationStats(new TransUnitCount(9, 9, 9, 0, 0), new TransUnitWords(8, 8, 8, 0, 0));
-      presenter.onDocumentStatsUpdated(new DocumentStatsUpdatedEvent(docId, newStats));
+      CommonContainerTranslationStatistics newStats = new CommonContainerTranslationStatistics();
+      newStats.addStats(new TranslationStatistics(new TransUnitCount(9, 9, 9), LocaleId.EN_US.toString()));
+      newStats.addStats(new TranslationStatistics(new TransUnitWords(8, 8, 8), LocaleId.EN_US.toString()));
+
+      presenter.onDocumentStatsUpdated(new DocumentStatsUpdatedEvent(docId, null, newStats));
 
       // Then:
-      assertThat(selectedDocumentStats.getUnitCount(), Matchers.equalTo(newStats.getUnitCount()));
-      assertThat(selectedDocumentStats.getWordCount(), Matchers.equalTo(newStats.getWordCount()));
-      verify(display, atLeastOnce()).setStats(newStats, true);
+      assertThat(selectedDocumentStats.getStats(), Matchers.equalTo(newStats.getStats()));
+      verify(display, atLeastOnce()).setStats(selectedDocumentStats, true);
    }
 
    @Test
-   public void onProjectStatsUpdate()
+   public void generatesProjectStatsOnTuUpdate()
    {
-      presenter.setStatesForTest(projectStats, selectedDocumentStats, MainView.Documents, null);
+      // Given: current view is Editor and selected doc id 1
+      presenter.setStatesForTest(projectStats, selectedDocumentStats, null, null);
 
-      TranslationStats newProjectStats = new TranslationStats();
-      presenter.onProjectStatsRetrieved(new ProjectStatsUpdatedEvent(newProjectStats));
+      // When:
+      CommonContainerTranslationStatistics newStats = new CommonContainerTranslationStatistics();
+      
+      ArrayList<String> sources = new ArrayList<String>();
+      sources.add("this is the source");
+      boolean plural = false;
 
-      assertThat(projectStats.getUnitCount(), Matchers.equalTo(newProjectStats.getUnitCount()));
-      assertThat(projectStats.getWordCount(), Matchers.equalTo(newProjectStats.getWordCount()));
-      verify(display).setStats(eq(newProjectStats), eq(true));
+      ArrayList<String> targets = new ArrayList<String>();
+      targets.add("this is the target");
+
+      TransUnit newTransUnit = TransUnit.Builder.newTransUnitBuilder().setId(12345L).setResId("resId").setLocaleId("en-US").setPlural(plural).setSources(sources).setSourceComment("this is the source comment").setTargets(targets).setStatus(ContentState.Approved).setLastModifiedBy("lastModifiedBy").setLastModifiedTime(new Date()).setMsgContext("msgContext").setRowIndex(1).setVerNum(1).build();
+      TransUnitUpdateInfo updateInfo = new TransUnitUpdateInfo(true, true, new DocumentId(2222L, ""), newTransUnit, 3, 0, ContentState.NeedReview);
+
+      presenter.onDocumentStatsUpdated(new DocumentStatsUpdatedEvent(new DocumentId(1L, ""), updateInfo, newStats));
+
+      assertThat("project Approved TU count should increase by 1 when a TU changes to Approved status", projectStats.getStats(LocaleId.EN_US.getId(), StatUnit.MESSAGE).getApproved(), is(new Long(8)));
+      assertThat("project NeedsReview TU count should decrease by 1 when a TU changes from Approved status", projectStats.getStats(LocaleId.EN_US.getId(), StatUnit.MESSAGE).getDraft(), is(new Long(7)));
+      assertThat("project Untranslates TU count should not change when TU changes between NeedsReview and Approved", projectStats.getStats(LocaleId.EN_US.getId(), StatUnit.MESSAGE).getUntranslated(), is(new Long(9)));
+
+      assertThat("project Approved words should increase when TU changes to Approved", projectStats.getStats(LocaleId.EN_US.getId(), StatUnit.WORD).getApproved(), is(new Long(13)));
+      assertThat("project NeedsReview words should decrease when a TU changes from NeedsReview", projectStats.getStats(LocaleId.EN_US.getId(), StatUnit.WORD).getDraft(), is(new Long(8)));
+      assertThat("project Untranslated words should not change when TU changes between NeedsReview and Approved", projectStats.getStats(LocaleId.EN_US.getId(), StatUnit.WORD).getUntranslated(), is(new Long(12)));
    }
 
    @Test

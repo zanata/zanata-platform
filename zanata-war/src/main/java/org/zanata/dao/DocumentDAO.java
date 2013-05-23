@@ -15,11 +15,13 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.common.CommonContainerTranslationStatistics;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
-import org.zanata.common.TranslationStats;
+import org.zanata.common.TranslationStatistics;
+import org.zanata.common.TranslationStatistics.StatUnit;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
@@ -142,21 +144,15 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
    public HTextFlowTarget getLastTranslatedTarget(Long documentId, LocaleId localeId)
    {
       Session session = getSession();
-      
+
       StringBuilder query = new StringBuilder();
-     
+
       query.append("from HTextFlowTarget tft ");
       query.append("where tft.textFlow.document.id = :docId ");
       query.append("and tft.locale.localeId = :localeId ");
       query.append("order by tft.lastChanged DESC");
-      
-      return (HTextFlowTarget) session.createQuery(query.toString())
-      .setParameter("docId", documentId)
-      .setParameter("localeId", localeId)
-      .setCacheable(true)
-      .setMaxResults(1)
-      .setComment("DocumentDAO.getLastTranslated")
-      .uniqueResult();
+
+      return (HTextFlowTarget) session.createQuery(query.toString()).setParameter("docId", documentId).setParameter("localeId", localeId).setCacheable(true).setMaxResults(1).setComment("DocumentDAO.getLastTranslated").uniqueResult();
    }
 
    /**
@@ -165,7 +161,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
     * @param localeId
     * @return
     */
-   public TranslationStats getStatistics(long docId, LocaleId localeId)
+   public CommonContainerTranslationStatistics getStatistics(long docId, LocaleId localeId)
    {
       // @formatter:off
       Session session = getSession();
@@ -185,13 +181,13 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
             .setCacheable(true).list();
       Long totalCount = getTotalCountForDocument( getById(docId) );
 
-      TransUnitCount stat = new TransUnitCount();
+      TransUnitCount unitCount = new TransUnitCount();
       for (StatusCount count : stats)
       {
-         stat.set(count.status, count.count.intValue());
+         unitCount.set(count.status, count.count.intValue());
       }
-      int newCount = totalCount.intValue() - stat.get(ContentState.Approved) - stat.get(ContentState.NeedReview);
-      stat.set(ContentState.New, newCount);
+      int newCount = totalCount.intValue() - unitCount.get(ContentState.Approved) - unitCount.get(ContentState.NeedReview) - unitCount.get(ContentState.Translated) - unitCount.get(ContentState.Rejected);
+      unitCount.set(ContentState.New, newCount);
 
       // calculate word counts
       @SuppressWarnings("unchecked")
@@ -212,11 +208,15 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       {
          wordCount.set(count.status, count.count.intValue());
       }
-      long newWordCount = totalWordCount.longValue() - wordCount.get(ContentState.Approved) - wordCount.get(ContentState.NeedReview);
+      long newWordCount = totalWordCount.longValue() - wordCount.get(ContentState.Approved) - wordCount.get(ContentState.NeedReview) - wordCount.get(ContentState.Translated) - wordCount.get(ContentState.Rejected);
       wordCount.set(ContentState.New, (int) newWordCount);
+      
 
-      TranslationStats transStats = new TranslationStats(stat, wordCount);
-      return transStats;
+      CommonContainerTranslationStatistics result = new CommonContainerTranslationStatistics();
+      result.addStats(new TranslationStatistics(unitCount, localeId.toString()));
+      result.addStats(new TranslationStatistics(wordCount, localeId.toString()));
+      
+      return result;
       // @formatter:on
    }
 
@@ -229,11 +229,11 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
     * @return Map of document statistics indexed by locale. Some locales may not
     *         have entries if there is no data stored for them.
     */
-   public Map<LocaleId, TranslationStats> getStatistics(long docId, LocaleId... localeIds)
+   public Map<LocaleId, CommonContainerTranslationStatistics> getStatistics(long docId, LocaleId... localeIds)
    {
       // @formatter:off
       Session session = getSession();
-      Map<LocaleId, TranslationStats> returnStats = new HashMap<LocaleId, TranslationStats>();
+      Map<LocaleId, CommonContainerTranslationStatistics> returnStats = new HashMap<LocaleId, CommonContainerTranslationStatistics>();
       Map<String, TransUnitCount> transUnitCountMap = new HashMap<String, TransUnitCount>();
       Map<String, TransUnitWords> transUnitWordsMap = new HashMap<String, TransUnitWords>();
 
@@ -301,22 +301,23 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       Long totalWordCount = (Long)totalCounts.get("wordCount");
       for( TransUnitCount stat : transUnitCountMap.values() )
       {
-         int newCount = totalCount.intValue() - stat.get(ContentState.Approved) - stat.get(ContentState.NeedReview);
+         int newCount = totalCount.intValue() - stat.get(ContentState.Approved) - stat.get(ContentState.NeedReview) - stat.get(ContentState.Translated) - stat.get(ContentState.Rejected);
          stat.set(ContentState.New, newCount);
       }
       for( TransUnitWords stat : transUnitWordsMap.values() )
       {
-         int newCount = totalWordCount.intValue() - stat.get(ContentState.Approved) - stat.get(ContentState.NeedReview);
+         int newCount = totalWordCount.intValue() - stat.get(ContentState.Approved) - stat.get(ContentState.NeedReview) - stat.get(ContentState.Translated) - stat.get(ContentState.Rejected);
          stat.set(ContentState.New, newCount);
       }
 
       // Merge into a single Stats object
       for( String locale : transUnitCountMap.keySet() )
       {
-         TranslationStats newStats = new TranslationStats(
-               transUnitCountMap.get(locale), transUnitWordsMap.get(locale) );
+         CommonContainerTranslationStatistics newStats = new CommonContainerTranslationStatistics();
+         newStats.addStats(new TranslationStatistics( transUnitCountMap.get(locale), locale));
+         newStats.addStats(new TranslationStatistics( transUnitWordsMap.get(locale), locale));
 
-         if( newStats.getUnitCount() != null && newStats.getWordCount() != null )
+         if( newStats.getStats(locale, StatUnit.MESSAGE) != null && newStats.getStats(locale, StatUnit.WORD) != null )
          {
             returnStats.put(new LocaleId(locale), newStats);
          }

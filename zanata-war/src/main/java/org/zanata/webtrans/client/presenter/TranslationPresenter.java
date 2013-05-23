@@ -29,7 +29,6 @@ import org.zanata.webtrans.client.events.DisplaySouthPanelEventHandler;
 import org.zanata.webtrans.client.events.KeyShortcutEvent;
 import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
-import org.zanata.webtrans.client.events.ReviewModeChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.keys.KeyShortcut;
@@ -151,7 +150,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
                @Override
                public void onKeyShortcut(KeyShortcutEvent event)
                {
-                  if (!isOtherInputFieldFocused() && userWorkspaceContext.hasWriteAccess())
+                  if (!isOtherInputFieldFocused() && userWorkspaceContext.getWorkspaceRestrictions().isHasWriteAccess())
                   {
                      targetContentsPresenter.setFocus();
                      targetContentsPresenter.revealDisplay();

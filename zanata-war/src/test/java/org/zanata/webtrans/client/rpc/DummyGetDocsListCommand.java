@@ -11,7 +11,8 @@ import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
-import org.zanata.common.TranslationStats;
+import org.zanata.common.TranslationStatistics;
+import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.webtrans.shared.model.AuditInfo;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
@@ -62,24 +63,30 @@ final class DummyGetDocsListCommand implements Command
       for (int n = 0; n < 100; n++)
       {
          // two digit numbers, to make sorting happier
-         names.add(new DocumentInfo(new DocumentId(new Long(n), ""), "multi" + n, "",
- LocaleId.EN_US, newStats(n), new AuditInfo(new Date(), "Translator"), extensions, new AuditInfo(new Date(), "last translator")));
+         names.add(new DocumentInfo(new DocumentId(new Long(n), ""), "multi" + n, "", LocaleId.EN_US, newStats(n), new AuditInfo(new Date(), "Translator"), extensions, new AuditInfo(new Date(), "last translator")));
       }
       return names;
    }
 
-   private TranslationStats newStats(int docID)
+   private ContainerTranslationStatistics newStats(int docID)
    {
       TransUnitCount count = new TransUnitCount();
       count.set(ContentState.Approved, 34 * docID);
       count.set(ContentState.NeedReview, 23 * docID);
       count.set(ContentState.New, 43 * docID);
+
       TransUnitWords words = new TransUnitWords();
       words.set(ContentState.Approved, 70 * docID);
       words.set(ContentState.NeedReview, 40 * docID);
       words.set(ContentState.New, 90 * docID);
-      TranslationStats stats = new TranslationStats(count, words);
-      return stats;
+
+      TranslationStatistics msgStats = new TranslationStatistics(count, LocaleId.EN_US.toString());
+      TranslationStatistics wordStats = new TranslationStatistics(words, LocaleId.EN_US.toString());
+
+      ContainerTranslationStatistics result = new ContainerTranslationStatistics();
+      result.addStats(msgStats);
+      result.addStats(wordStats);
+      return result;
    }
 
 }

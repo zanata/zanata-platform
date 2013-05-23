@@ -20,7 +20,7 @@
  */
 package org.zanata.webtrans.client.view;
 
-import org.zanata.common.TranslationStats;
+import org.zanata.common.CommonContainerTranslationStatistics;
 import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.presenter.MainView;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
@@ -31,7 +31,6 @@ import org.zanata.webtrans.client.ui.HasTranslationStats.LabelFormat;
 import org.zanata.webtrans.client.ui.TransUnitCountBar;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -94,16 +93,16 @@ public class AppView extends Composite implements AppDisplay
    Styles style;
    
    @UiField
-   Label editorTab, searchAndReplaceTab, documentListTab, reviewTab;
+   Label editorTab, searchAndReplaceTab, documentListTab;
 
    private Listener listener;
 
    @Inject
-   public AppView(WebTransMessages messages, DocumentListDisplay documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, ReviewDisplay reviewView, SideMenuDisplay sideMenuView, final UserWorkspaceContext userWorkspaceContext)
+public AppView(WebTransMessages messages, DocumentListDisplay documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, SideMenuDisplay sideMenuView, final UserWorkspaceContext userWorkspaceContext)
    {
       // this must be initialized before uiBinder.createAndBindUi(), or an
       // exception will be thrown at runtime
-      translationStatsBar = new TransUnitCountBar(messages, LabelFormat.PERCENT_COMPLETE_HRS, true);
+      translationStatsBar = new TransUnitCountBar(userWorkspaceContext, messages, LabelFormat.PERCENT_COMPLETE_HRS, true, userWorkspaceContext.getWorkspaceRestrictions().isProjectRequireReview());
       translationStatsBar.setVisible(false); // hide until there is a value to
       
       projectLink = new Breadcrumb(true, false, Application.getProjectHomeURL(userWorkspaceContext.getWorkspaceContext().getWorkspaceId()));
@@ -123,8 +122,7 @@ public class AppView extends Composite implements AppDisplay
       searchAndReplaceTab.setTitle(messages.projectWideSearchAndReplace());
       documentListTab.setTitle(messages.documentListTitle());
       editorTab.setTitle(messages.editor());
-      reviewTab.setTitle("Review"); //TODO localise
-      
+
       
       content.add(documentListView.asWidget());
       content.add(translationView.asWidget());
@@ -165,11 +163,6 @@ public class AppView extends Composite implements AppDisplay
          content.selectTab(EDITOR_VIEW);
          selectedDocumentSpan.setVisible(true);
          setSelectedTab(editorTab);
-         break;
-      case Review:
-         content.selectTab(EDITOR_VIEW);
-         selectedDocumentSpan.setVisible(true);
-         setSelectedTab(reviewTab);
       }
    }
    
@@ -178,8 +171,7 @@ public class AppView extends Composite implements AppDisplay
       editorTab.removeStyleName(style.selectedTab());
       searchAndReplaceTab.removeStyleName(style.selectedTab());
       documentListTab.removeStyleName(style.selectedTab());
-      reviewTab.removeStyleName(style.selectedTab());
-      
+
       tab.addStyleName(style.selectedTab());
    }
 
@@ -214,7 +206,7 @@ public class AppView extends Composite implements AppDisplay
    }
 
    @Override
-   public void setStats(TranslationStats transStats, boolean statsByWords)
+   public void setStats(CommonContainerTranslationStatistics transStats, boolean statsByWords)
    {
       translationStatsBar.setStats(transStats, statsByWords);
       translationStatsBar.setVisible(true);
@@ -294,12 +286,6 @@ public class AppView extends Composite implements AppDisplay
    public void onSearchAndReplaceTabTabClick(ClickEvent event)
    {
       listener.onSearchAndReplaceClicked();
-   }
-
-   @UiHandler("reviewTab")
-   public void onReviewTablClick(ClickEvent event)
-   {
-      listener.onReviewCLicked();
    }
 
    private void enableTab(Widget tab, boolean enable)

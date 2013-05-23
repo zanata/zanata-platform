@@ -2,61 +2,53 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<ui:style>
-		.unitStatus {
+        .unitStatus {
             float: left;
             width: 100px;
             height: 1.2em;
         }
-        
-		.approved {
-			background: #099b09;
-			z-index: 0;
-		}
-		
-		.needReview {
-			background: #ffc000;
-			z-index: 0;
-		}
-		
-		.untranslated {
-			background: #c6c6c6;
-			z-index: 0;
-		}
 
-        .accepted {
+        .approved {
+            background: #099b09;
+            z-index: 0;
+        }
+
+        .draft {
+            background: #ffc000;
+            z-index: 0;
+        }
+
+        .untranslated {
+            background: #c6c6c6;
+            z-index: 0;
+        }
+
+        .translated {
             background: #0000CD;
             z-index: 0;
         }
 
-        .rejected {
-            background: #ff0000;
+        .undefined {
             z-index: 0;
         }
-		
-		.undefined {
-			z-index: 0;
-		}
-		
-		.label {
-			font-weight: bold;
-			font-size:13px;
-			text-align: left;
-			z-index: 0;
-		}
-		
-	</ui:style>
+
+        .label {
+            font-weight: bold;
+            font-size: 13px;
+            text-align: left;
+            z-index: 0;
+        }
+
+    </ui:style>
 	<g:LayoutPanel ui:field='layoutPanel' styleName="{style.unitStatus}">
-        <g:layer left='0' width='0'>
-            <g:FlowPanel ui:field='acceptedPanel' styleName="{style.accepted}"/>
-        </g:layer>
-        <g:layer left='0' width='0'>
-            <g:FlowPanel ui:field='rejectedPanel' styleName="{style.rejected}"/>
-        </g:layer>
 		<g:layer left='0' width='0'>
 			<g:FlowPanel ui:field='approvedPanel' styleName="{style.approved}"/>
 		</g:layer>
-		<g:layer left='0' width='0'>
-			<g:FlowPanel ui:field='needReviewPanel' styleName="{style.needReview}"/>
+        <g:layer left='0' width='0'>
+            <g:FlowPanel ui:field='translatedPanel' styleName="{style.translated}"/>
+        </g:layer>
+        <g:layer left='0' width='0'>
+			<g:FlowPanel ui:field='draftPanel' styleName="{style.draft}"/>
 		</g:layer>
 		<g:layer left='0' width='0'>
 			<g:FlowPanel ui:field='untranslatedPanel' styleName="{style.untranslated}"/>

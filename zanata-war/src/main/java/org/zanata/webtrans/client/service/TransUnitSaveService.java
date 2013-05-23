@@ -140,7 +140,7 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler, CheckSta
       }
 
       boolean targetChanged = !Objects.equal(transUnit.getTargets(), event.getTargets());
-      boolean targetUnchangedButCanSaveAsApproved = (event.getAdjustedState() == ContentState.Approved) && !Objects.equal(transUnit.getStatus(), event.getAdjustedState());
+      boolean targetUnchangedButCanSaveAsApproved = (event.getAdjustedState() == ContentState.Translated) && !Objects.equal(transUnit.getStatus(), event.getAdjustedState());
 
       if (targetChanged)
       {
@@ -169,7 +169,7 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler, CheckSta
 
    private TransUnitUpdated.UpdateType workoutUpdateType(ContentState status)
    {
-      return status == ContentState.Approved ? TransUnitUpdated.UpdateType.WebEditorSave : TransUnitUpdated.UpdateType.WebEditorSaveFuzzy;
+      return status == ContentState.NeedReview ? TransUnitUpdated.UpdateType.WebEditorSaveFuzzy : TransUnitUpdated.UpdateType.WebEditorSave;
    }
 
    private class UpdateTransUnitCallback implements AsyncCallback<UpdateTransUnitResult>

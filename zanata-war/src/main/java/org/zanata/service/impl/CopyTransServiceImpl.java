@@ -244,6 +244,12 @@ public class CopyTransServiceImpl implements CopyTransService
                hTarget.setTextFlowRevision(originalTf.getRevision());
                hTarget.setLastChanged(matchingTarget.getLastChanged());
                hTarget.setLastModifiedBy(matchingTarget.getLastModifiedBy());
+               hTarget.setTranslator(matchingTarget.getTranslator());
+               // TODO rhbz953734 - will need a new copyTran option for review state
+               if (copyState == ContentState.Approved)
+               {
+                  hTarget.setReviewer(matchingTarget.getReviewer());
+               }
                hTarget.setContents(matchingTarget.getContents());
                hTarget.setState(copyState);
                HSimpleComment hcomment = hTarget.getComment();
@@ -423,7 +429,7 @@ public class CopyTransServiceImpl implements CopyTransService
    {
       if( currentlyStored != null )
       {
-         if( currentlyStored.getState() == NeedReview && matchState == Approved )
+         if( ContentState.isDraft(currentlyStored.getState()) && matchState == Approved )
          {
             return true; // If it's fuzzy, replace only with approved ones
          }
