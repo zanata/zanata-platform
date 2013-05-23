@@ -36,7 +36,6 @@ import org.zanata.common.TranslationStatistics.StatUnit;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
-import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
@@ -185,22 +184,12 @@ public class DocumentListPresenterTest
       when(mockEvent.getUpdateInfo()).thenReturn(updateInfo);
 
       ArrayList<DocumentInfo> documentInfos = buildSampleDocumentArray();
-      ContainerTranslationStatistics stats = new ContainerTranslationStatistics();
-      stats.addStats(new TranslationStatistics(new TransUnitCount(), LocaleId.ES.toString()));
-      stats.addStats(new TranslationStatistics(new TransUnitWords(), LocaleId.ES.toString()));
-
-      for (DocumentInfo documentInfo : documentInfos)
-      {
-         stats.getStats(LocaleId.ES.toString(), StatUnit.MESSAGE).add(documentInfo.getStats().getStats(LocaleId.ES.toString(), StatUnit.MESSAGE));
-         stats.getStats(LocaleId.ES.toString(), StatUnit.WORD).add(documentInfo.getStats().getStats(LocaleId.ES.toString(), StatUnit.WORD));
-      }
 
       documentListPresenter.bind();
       documentListPresenter.setDocuments(documentInfos);
-      documentListPresenter.setProjectStats(stats);
       documentListPresenter.onTransUnitUpdated(mockEvent);
 
-      verify(mockEventBus, times(2)).fireEvent(capturedEventBusEvent.capture());
+      verify(mockEventBus, times(1)).fireEvent(capturedEventBusEvent.capture());
 
       DocumentStatsUpdatedEvent docStatsEvent = null;
       for (GwtEvent event : capturedEventBusEvent.getAllValues())
@@ -228,65 +217,6 @@ public class DocumentListPresenterTest
       assertThat("document Approved words should increase when TU changes to Approved", docStatsEvent.getNewStats().getStats(LocaleId.ES.toString(), StatUnit.WORD).getApproved(), is(new Long(7)));
       assertThat("document NeedsReview words should decrease when a TU changes from NeedsReview", docStatsEvent.getNewStats().getStats(LocaleId.ES.toString(), StatUnit.WORD).getDraft(), is(new Long(2)));
       assertThat("document Untranslated words should not change when TU changes between NeedsReview and Approved", docStatsEvent.getNewStats().getStats(LocaleId.ES.toString(), StatUnit.WORD).getDraft(), is(new Long(2)));
-   }
-
-   @Test
-   public void generatesProjectStatsOnTuUpdate()
-   {
-      ArrayList<String> sources = new ArrayList<String>();
-      sources.add("this is the source");
-      boolean plural = false;
-
-      ArrayList<String> targets = new ArrayList<String>();
-      targets.add("this is the target");
-
-      TransUnit newTransUnit = TransUnit.Builder.newTransUnitBuilder().setId(12345L).setResId("resId").setLocaleId("es").setPlural(plural).setSources(sources).setSourceComment("this is the source comment").setTargets(targets).setStatus(ContentState.Approved).setLastModifiedBy("lastModifiedBy").setLastModifiedTime(new Date()).setMsgContext("msgContext").setRowIndex(1).setVerNum(1).build();
-      TransUnitUpdateInfo updateInfo = new TransUnitUpdateInfo(true, true, new DocumentId(2222L, ""), newTransUnit, 3, 0, ContentState.NeedReview);
-      TransUnitUpdatedEvent mockEvent = mock(TransUnitUpdatedEvent.class);
-
-      when(mockEvent.getUpdateInfo()).thenReturn(updateInfo);
-
-      ArrayList<DocumentInfo> documentInfos = buildSampleDocumentArray();
-      ContainerTranslationStatistics stats = new ContainerTranslationStatistics();
-      stats.addStats(new TranslationStatistics(new TransUnitCount(), LocaleId.ES.toString()));
-      stats.addStats(new TranslationStatistics(new TransUnitWords(), LocaleId.ES.toString()));
-
-      for (DocumentInfo documentInfo : documentInfos)
-      {
-         stats.getStats(LocaleId.ES.toString(), StatUnit.MESSAGE).add(documentInfo.getStats().getStats(LocaleId.ES.toString(), StatUnit.MESSAGE));
-         stats.getStats(LocaleId.ES.toString(), StatUnit.WORD).add(documentInfo.getStats().getStats(LocaleId.ES.toString(), StatUnit.WORD));
-      }
-
-      documentListPresenter.bind();
-      documentListPresenter.setDocuments(documentInfos);
-      documentListPresenter.setProjectStats(stats);
-      documentListPresenter.onTransUnitUpdated(mockEvent);
-
-      verify(mockEventBus, times(2)).fireEvent(capturedEventBusEvent.capture());
-
-      ProjectStatsUpdatedEvent projectStatsEvent = null;
-
-      for (GwtEvent event : capturedEventBusEvent.getAllValues())
-      {
-         if (event.getAssociatedType().equals(ProjectStatsUpdatedEvent.getType()))
-         {
-            projectStatsEvent = (ProjectStatsUpdatedEvent) event;
-         }
-      }
-
-      assertThat("a project stats event should be fired when a TU update event occurs, not found", projectStatsEvent, notNullValue());
-
-      // default TUs: 3/6/9 (approved/fuzzy/untranslated)
-      // approving 1 fuzzy, expect 4/5/9
-      assertThat("project Approved TU count should increase by 1 when a TU changes to Approved status", projectStatsEvent.getProjectStats().getStats(LocaleId.ES.toString(), StatUnit.MESSAGE).getApproved(), is(new Long(4)));
-      assertThat("project NeedsReview TU count should decrease by 1 when a TU changes from Approved status", projectStatsEvent.getProjectStats().getStats(LocaleId.ES.toString(), StatUnit.MESSAGE).getDraft(), is(new Long(5)));
-      assertThat("project Untranslates TU count should not change when TU changes between NeedsReview and Approved", projectStatsEvent.getProjectStats().getStats(LocaleId.ES.toString(), StatUnit.MESSAGE).getUntranslated(), is(new Long(9)));
-
-      // default words: 12/15/18
-      // approving 3 fuzzy, expect 15/12/18
-      assertThat("project Approved words should increase when TU changes to Approved", projectStatsEvent.getProjectStats().getStats(LocaleId.ES.toString(), StatUnit.WORD).getApproved(), is(new Long(15)));
-      assertThat("project NeedsReview words should decrease when a TU changes from NeedsReview", projectStatsEvent.getProjectStats().getStats(LocaleId.ES.toString(), StatUnit.WORD).getDraft(), is(new Long(12)));
-      assertThat("project Untranslated words should not change when TU changes between NeedsReview and Approved", projectStatsEvent.getProjectStats().getStats(LocaleId.ES.toString(), StatUnit.WORD).getUntranslated(), is(new Long(18)));
    }
 
    @Test

@@ -26,6 +26,9 @@ import net.customware.gwt.presenter.client.PresenterRevealedHandler;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.common.CommonContainerTranslationStatistics;
+import org.zanata.common.LocaleId;
+import org.zanata.common.TranslationStatistics;
+import org.zanata.common.TranslationStatistics.StatUnit;
 import org.zanata.webtrans.client.events.AttentionModeActivationEvent;
 import org.zanata.webtrans.client.events.AttentionModeActivationEventHandler;
 
@@ -35,8 +38,6 @@ import org.zanata.webtrans.client.events.KeyShortcutEvent;
 import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
-import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
-import org.zanata.webtrans.client.events.ProjectStatsUpdatedEventHandler;
 import org.zanata.webtrans.client.events.RefreshPageEvent;
 import org.zanata.webtrans.client.events.ShowSideMenuEvent;
 import org.zanata.webtrans.client.events.ShowSideMenuEventHandler;
@@ -52,6 +53,7 @@ import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.view.AppDisplay;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
+import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -64,7 +66,6 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
       ShowSideMenuEventHandler,
       WorkspaceContextUpdateEventHandler,
       DocumentStatsUpdatedEventHandler,
-      ProjectStatsUpdatedEventHandler,
       PresenterRevealedHandler,
       AttentionModeActivationEventHandler,
       AppDisplay.Listener
@@ -84,6 +85,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
    private final Window.Location windowLocation;
    private final UserWorkspaceContext userWorkspaceContext;
    private final WebTransMessages messages;
+   private final LocaleId localeId;
 
    // states
    private DocumentInfo selectedDocument;
@@ -93,19 +95,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
    private MainView currentView = null;
 
    @Inject
-   public AppPresenter(AppDisplay display,
-                       EventBus eventBus,
-                       final SideMenuPresenter sideMenuPresenter,
-                       final AttentionKeyShortcutPresenter attentionKeyShortcutPresenter,
-                       final KeyShortcutPresenter keyShortcutPresenter,
-                       final TranslationPresenter translationPresenter,
-                       final DocumentListPresenter documentListPresenter,
-                       final SearchResultsPresenter searchResultsPresenter,
-                       final UserWorkspaceContext userWorkspaceContext,
-                       final WebTransMessages messages,
-                       final History history,
-                       final Window window,
-                       final Window.Location windowLocation)
+   public AppPresenter(AppDisplay display, EventBus eventBus, final SideMenuPresenter sideMenuPresenter, final AttentionKeyShortcutPresenter attentionKeyShortcutPresenter, final KeyShortcutPresenter keyShortcutPresenter, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final SearchResultsPresenter searchResultsPresenter, final UserWorkspaceContext userWorkspaceContext, final WebTransMessages messages, final History history, final Window window, final Window.Location windowLocation)
    {
       super(display, eventBus);
       this.userWorkspaceContext = userWorkspaceContext;
@@ -119,6 +109,8 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
       this.sideMenuPresenter = sideMenuPresenter;
       this.window = window;
       this.windowLocation = windowLocation;
+
+      localeId = userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getLocaleId();
 
       display.setListener(this);
    }
@@ -136,7 +128,6 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
       registerHandler(eventBus.addHandler(ShowSideMenuEvent.getType(), this));
       registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this));
       registerHandler(eventBus.addHandler(DocumentStatsUpdatedEvent.getType(), this));
-      registerHandler(eventBus.addHandler(ProjectStatsUpdatedEvent.getType(), this));
       registerHandler(eventBus.addHandler(PresenterRevealedEvent.getType(), this));
       registerHandler(eventBus.addHandler(AttentionModeActivationEvent.getType(), this));
 
@@ -150,7 +141,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
       display.setProjectLinkLabel(userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getProjectSlug());
       display.setVersionLinkLabel(userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().getIterationSlug());
       display.setFilesLinkLabel("Documents (" + userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getLocaleId().getId() + ")");
-      
+
       String workspaceTitle = windowLocation.getParameter(WORKSPACE_TITLE_QUERY_PARAMETER_KEY);
       if (!Strings.isNullOrEmpty(workspaceTitle))
       {
@@ -163,7 +154,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
 
       display.setReadOnlyVisible(userWorkspaceContext.hasReadOnlyAccess());
    }
-   
+
    private void registerKeyShortcuts()
    {
       // @formatter:off
@@ -359,26 +350,60 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
       display.setReadOnlyVisible(userWorkspaceContext.hasReadOnlyAccess());
    }
 
-   @Override
-   public void onDocumentStatsUpdated(DocumentStatsUpdatedEvent event)
+   private void updateProjectStats(TransUnitUpdateInfo transUnitUpdateInfo, CommonContainerTranslationStatistics newDocumentStatistics)
    {
-      if (selectedDocument != null && event.getDocId().equals(selectedDocument.getId()))
+      if (transUnitUpdateInfo != null) // this is TU update, so just adjust the projectstats according to TransUnitUpdateInfo
       {
-         selectedDocumentStats.set(event.getNewStats());
-         if (currentView.equals(MainView.Editor))
+         TranslationStatistics msgStatistic = projectStats.getStats(localeId.getId(), StatUnit.MESSAGE);
+         TranslationStatistics wordStatistic = projectStats.getStats(localeId.getId(), StatUnit.WORD);
+
+         msgStatistic.decrement(transUnitUpdateInfo.getPreviousState(), 1);
+         msgStatistic.increment(transUnitUpdateInfo.getTransUnit().getStatus(), 1);
+
+         wordStatistic.decrement(transUnitUpdateInfo.getPreviousState(), transUnitUpdateInfo.getSourceWordCount());
+         wordStatistic.increment(transUnitUpdateInfo.getTransUnit().getStatus(), transUnitUpdateInfo.getSourceWordCount());
+      }
+      else
+      {
+         TranslationStatistics msgStats = newDocumentStatistics.getStats(localeId.getId(), StatUnit.MESSAGE);
+         TranslationStatistics currentMsgStats = projectStats.getStats(localeId.getId(), StatUnit.MESSAGE);
+
+         if (currentMsgStats == null)
          {
-            refreshStatsDisplay();
+            Log.info("adding to projectStats");
+            projectStats.addStats(msgStats);
+         }
+         else
+         {
+            currentMsgStats.add(msgStats);
+         }
+
+         TranslationStatistics wordStats = newDocumentStatistics.getStats(localeId.getId(), StatUnit.WORD);
+         TranslationStatistics currentWordStats = projectStats.getStats(localeId.getId(), StatUnit.WORD);
+
+         if (currentWordStats == null)
+         {
+            projectStats.addStats(wordStats);
+         }
+         else
+         {
+            currentWordStats.add(wordStats);
          }
       }
    }
 
    @Override
-   public void onProjectStatsRetrieved(ProjectStatsUpdatedEvent event)
+   public void onDocumentStatsUpdated(DocumentStatsUpdatedEvent event)
    {
-      projectStats.set(event.getProjectStats());
-      if (currentView.equals(MainView.Documents))
+      updateProjectStats(event.getTransUnitUpdateInfo(), event.getNewStats());
+      if (selectedDocument != null && event.getDocId().equals(selectedDocument.getId()))
       {
-         refreshStatsDisplay();
+         selectedDocumentStats.set(event.getNewStats());
+
+         if (currentView.equals(MainView.Editor))
+         {
+            refreshStatsDisplay();
+         }
       }
    }
 
@@ -438,7 +463,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
 
    /**
     * Facilitate unit testing. Will be no-op if in client(GWT compiled) mode.
-    *
+    * 
     * @param projectStats project stats
     * @param selectedDocumentStats selected document stats
     * @param currentView current view
