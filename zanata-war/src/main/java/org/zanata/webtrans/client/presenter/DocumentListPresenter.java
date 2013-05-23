@@ -43,7 +43,6 @@ import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
-import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.RunDocValidationEvent;
 import org.zanata.webtrans.client.events.RunDocValidationEventHandler;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
@@ -111,7 +110,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
    private final PathDocumentFilter filter = new PathDocumentFilter();
 
-   private CommonContainerTranslationStatistics projectStats;
+//   private CommonContainerTranslationStatistics projectStats;
 
    @Inject
    public DocumentListPresenter(DocumentListDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, UserWorkspaceContext userworkspaceContext, final WebTransMessages messages, History history, UserOptionsService userOptionsService)
@@ -327,6 +326,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
          for (Entry<DocumentId, CommonContainerTranslationStatistics> entry : result.getStatsMap().entrySet())
          {
             DocumentInfo docInfo = getDocumentInfo(entry.getKey());
+            
             docInfo.setStats(entry.getValue());
             docInfo.setLastTranslated(result.getLastTranslatedMap().get(entry.getKey()));
 
@@ -336,40 +336,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
                display.updateStats(row.intValue(), docInfo.getStats());
                display.updateLastTranslated(row.intValue(), docInfo.getLastTranslated());
             }
-
-            eventBus.fireEvent(new DocumentStatsUpdatedEvent(entry.getKey(), docInfo.getStats()));
-
-            // update project stats, forward to AppPresenter
-            TranslationStatistics msgStats = docInfo.getStats().getStats(localeId.getId(), StatUnit.MESSAGE);
-            TranslationStatistics currentMsgStats = projectStats.getStats(localeId.getId(), StatUnit.MESSAGE);
-            
-            if(currentMsgStats == null)
-            {
-               Log.info("adding to projectStats");
-               logStatistics(docInfo.getId() + " doc ", msgStats);
-               projectStats.addStats(msgStats);
-            }
-            else
-            {
-//               logStatistics(docInfo.getId() + " current msg stats before add", currentMsgStats);
-               currentMsgStats.add(msgStats);
-//               logStatistics(docInfo.getId() + " from docInfo ", msgStats);
-//               logStatistics(docInfo.getId() + " current msg stats after add", currentMsgStats);
-            }
-            
-            TranslationStatistics wordStats =  docInfo.getStats().getStats(localeId.getId(), StatUnit.WORD);
-            TranslationStatistics currentWordStats = projectStats.getStats(localeId.getId(), StatUnit.WORD);
-            
-            if(currentWordStats == null)
-            {
-               projectStats.addStats(wordStats);
-            }
-            else
-            {
-               currentWordStats.add(wordStats);
-            }
-            
-            eventBus.fireEvent(new ProjectStatsUpdatedEvent(projectStats));
+            eventBus.fireEvent(new DocumentStatsUpdatedEvent(entry.getKey(), null, docInfo.getStats()));
          }
 
          docStatQueueDispatcher.executeQueue();
@@ -466,11 +433,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       }
    }
 
-   public void setProjectStats(CommonContainerTranslationStatistics projectStats)
-   {
-      this.projectStats = projectStats;
-   }
-
    @Override
    public void onDocumentSelected(DocumentSelectionEvent event)
    {
@@ -491,9 +453,12 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       Log.info("********** updated Info:" + updateInfo);
       // update stats for containing document
       DocumentInfo updatedDoc = getDocumentInfo(updateInfo.getDocumentId());
-      if (updatedDoc.getStats() != null)
+      CommonContainerTranslationStatistics currentStats = updatedDoc.getStats();
+      if (currentStats != null)
       {
-         adjustStats(updatedDoc.getStats(), updateInfo);
+         adjustStats(currentStats, updateInfo);
+         updatedDoc.setStats(currentStats);
+         
          updateLastTranslatedInfo(updatedDoc, event.getUpdateInfo().getTransUnit());
 
          Integer row = pageRows.get(updatedDoc.getId());
@@ -504,15 +469,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
             display.updateLastTranslated(row.intValue(), lastTranslated);
          }
 
-         eventBus.fireEvent(new DocumentStatsUpdatedEvent(updatedDoc.getId(), updatedDoc.getStats()));
+         eventBus.fireEvent(new DocumentStatsUpdatedEvent(updatedDoc.getId(), updateInfo, updatedDoc.getStats()));
       }
-
-      // update project stats, forward to AppPresenter
-//      logStatistics("before adjust project stats", projectStats.getStats(localeId.getId(), StatUnit.MESSAGE));
-      // FIXME rhbz953734 - with this line statistics will be double adjusted. What's the use of projectStats? do we still need it?
-//      adjustStats(projectStats, updateInfo);
-//      logStatistics("after adjust project stats", projectStats.getStats(localeId.getId(), StatUnit.MESSAGE));
-//      eventBus.fireEvent(new ProjectStatsUpdatedEvent(projectStats));
    }
 
    private static void logStatistics(String msg, TranslationStatistics statistics)
@@ -540,22 +498,11 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    {
       TranslationStatistics msgStatistic = stats.getStats(localeId.getId(), StatUnit.MESSAGE);
       TranslationStatistics wordStatistic = stats.getStats(localeId.getId(), StatUnit.WORD);
-
-//      Log.info("***** msgStats before update:");
-//      Log.info("***** approved:" + msgStatistic.getApproved());
-//      Log.info("***** draft:" + msgStatistic.getDraft());
-//      Log.info("***** untranslated:" + msgStatistic.getUntranslated());
-//      Log.info("***** previous state:" + updateInfo.getPreviousState());
-//      Log.info("***** new state:" + updateInfo.getTransUnit().getStatus());
+      
       logStatistics("before adjust", msgStatistic);
       msgStatistic.decrement(updateInfo.getPreviousState(), 1);
       msgStatistic.increment(updateInfo.getTransUnit().getStatus(), 1);
       logStatistics("after adjust", msgStatistic);
-
-//      Log.info("***** msgStats after update:");
-//      Log.info("***** approved:" + msgStatistic.getApproved());
-//      Log.info("***** draft:" + msgStatistic.getDraft());
-//      Log.info("***** untranslated:" + msgStatistic.getUntranslated());
 
       wordStatistic.decrement(updateInfo.getPreviousState(), updateInfo.getSourceWordCount());
       wordStatistic.increment(updateInfo.getTransUnit().getStatus(), updateInfo.getSourceWordCount());
