@@ -32,8 +32,8 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
-import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 import org.zanata.common.CommonContainerTranslationStatistics;
+import org.zanata.common.TranslationStatistics;
 import org.zanata.rest.dto.Link;
 import org.zanata.rest.dto.Links;
 
@@ -45,10 +45,8 @@ import org.zanata.rest.dto.Links;
 @XmlRootElement(name = "containerStats")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder( { "id", "refs", "stats", "detailedStats" })
-@JsonWriteNullProperties(false)
 public class ContainerTranslationStatistics extends CommonContainerTranslationStatistics implements Serializable
 {
-
    private static final long serialVersionUID = 1L;
    private String id;
    private Links refs;
@@ -85,6 +83,17 @@ public class ContainerTranslationStatistics extends CommonContainerTranslationSt
    public void setRefs(Links refs)
    {
       this.refs = refs;
+   }
+   
+   /**
+    * Actual translation statistics.
+    */
+   @XmlElementWrapper(name = "stats")
+   @XmlElement(name = "stat")
+   @Override
+   public List<TranslationStatistics> getStats()
+   {
+      return super.getStats();
    }
 
    /**

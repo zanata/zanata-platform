@@ -24,12 +24,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-
 public class CommonContainerTranslationStatistics implements Serializable
 {
-
    private static final long serialVersionUID = 1L;
    private List<TranslationStatistics> stats;
 
@@ -37,11 +33,6 @@ public class CommonContainerTranslationStatistics implements Serializable
    {
    }
 
-   /**
-    * Actual translation statistics.
-    */
-   @XmlElementWrapper(name = "stats")
-   @XmlElement(name = "stat")
    public List<TranslationStatistics> getStats()
    {
       return stats;

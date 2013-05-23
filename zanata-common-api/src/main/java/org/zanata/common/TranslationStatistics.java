@@ -38,14 +38,14 @@ import org.codehaus.jackson.annotate.JsonWriteNullProperties;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@XmlType(name = "translationStatistics", propOrder = { "total", "untranslated", "draft", "translated", "approved", "unit", "locale", "lastTranslated" })
+@XmlType(name = "translationStatistics", propOrder = { "total", "untranslated", "draft", "translated", "approved", "rejected", "unit", "locale", "lastTranslated" })
 @XmlRootElement(name = "translationStats")
 @JsonIgnoreProperties(value = { "percentTranslated", "percentNeedReview", "percentUntranslated" }, ignoreUnknown = true)
-@JsonPropertyOrder({ "total", "untranslated", "draft", "translated", "approved", "unit", "locale", "lastTranslated" })
+@JsonPropertyOrder({ "total", "untranslated", "draft", "translated", "approved", "rejected", "unit", "locale", "lastTranslated" })
 @JsonWriteNullProperties(false)
 public class TranslationStatistics implements Serializable
 {
-
+   private static final long serialVersionUID = 1L;
    private StatUnit unit;
    private AbstractTranslationCount translationCount;
    private String locale;
