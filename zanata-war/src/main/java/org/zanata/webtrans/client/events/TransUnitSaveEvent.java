@@ -26,6 +26,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import org.zanata.common.ContentState;
+import org.zanata.common.util.ContentStateUtil;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import com.google.common.base.Objects;
 import com.google.common.base.Predicate;
@@ -127,34 +128,8 @@ public class TransUnitSaveEvent extends GwtEvent<TransUnitSaveEventHandler>
       {
          return ContentState.New;
       }
-      int emptyCount = Iterables.size(Iterables.filter(newContents, new Predicate<String>()
-      {
-         @Override
-         public boolean apply(@Nullable String input)
-         {
-            return Strings.isNullOrEmpty(input);
-         }
-      }));
 
-      // TODO use ContentStateUtil.determineState.
-      // ContentState stateToSet = ContentStateUtil.determineState(requestedState, newContents);
-
-      // NB until then, make sure this stays consistent
-      // FIXME rhbz953734 - this is not consistent right now
-      ContentState stateToSet = requestedState;
-      if (requestedState == ContentState.New && emptyCount == 0)
-      {
-         stateToSet = ContentState.NeedReview;
-      }
-      else if (requestedState == ContentState.Approved && emptyCount != 0)
-      {
-         stateToSet = ContentState.New;
-      }
-      else if (requestedState == ContentState.NeedReview && emptyCount == newContents.size())
-      {
-         stateToSet = ContentState.New;
-      }
-      return stateToSet;
+      return ContentStateUtil.determineState(requestedState, newContents);
    }
 
    @Override

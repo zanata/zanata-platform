@@ -86,36 +86,6 @@ public class CheckStateHasChangedEvent extends GwtEvent<CheckStateHasChangedHand
       {
          return ContentState.New;
       }
-      int emptyCount = Iterables.size(Iterables.filter(newContents, new Predicate<String>()
-      {
-         @Override
-         public boolean apply(@Nullable
-         String input)
-         {
-            return Strings.isNullOrEmpty(input);
-         }
-      }));
-
-//      return ContentStateUtil.determineState(requestedState, newContents);
-      // TODO use ContentStateUtil.determineState.
-      // ContentState stateToSet =
-      // ContentStateUtil.determineState(requestedState, newContents);
-
-      // NB until then, make sure this stays consistent
-      // FIXME rhbz953734 - this is not consistent right now and it's duplicating from TransUnitSaveEvent
-      ContentState stateToSet = requestedState;
-      if (requestedState == ContentState.New && emptyCount == 0)
-      {
-         stateToSet = ContentState.NeedReview;
-      }
-      else if (requestedState == ContentState.Approved && emptyCount != 0)
-      {
-         stateToSet = ContentState.New;
-      }
-      else if (requestedState == ContentState.NeedReview && emptyCount == newContents.size())
-      {
-         stateToSet = ContentState.New;
-      }
-      return stateToSet;
+      return ContentStateUtil.determineState(requestedState, newContents);
    }
 }

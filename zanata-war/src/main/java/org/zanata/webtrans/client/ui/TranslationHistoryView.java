@@ -8,6 +8,7 @@ import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.presenter.TransHistoryVersionComparator;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.util.ContentStateToStyleUtil;
 import org.zanata.webtrans.client.util.DateUtil;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 
@@ -256,16 +257,7 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
          public String getCellStyleNames(Cell.Context context, TransHistoryItem historyItem)
          {
             String styleNames = Strings.nullToEmpty(super.getCellStyleNames(context, historyItem));
-            // TODO rhbz953734 - new states
-            if (historyItem.getStatus() == ContentState.Approved)
-            {
-               styleNames += " ApprovedStateDecoration";
-            }
-            else if (historyItem.getStatus() == ContentState.NeedReview)
-            {
-               styleNames += " FuzzyStateDecoration";
-            }
-            return styleNames;
+            return ContentStateToStyleUtil.stateToStyle(historyItem.getStatus(), styleNames);
          }
       };
    }

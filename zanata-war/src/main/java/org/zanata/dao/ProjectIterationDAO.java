@@ -271,7 +271,8 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
       for( TransUnitCount stat : retVal.values() )
       {
          Long totalCount = getTotalCountForIteration(iterationId);
-         stat.set(ContentState.New, totalCount.intValue() - (stat.getApproved() + stat.getNeedReview()));
+         // TODO rhbz953734 - refactor (many places look like this)
+         stat.set(ContentState.New, totalCount.intValue() - (stat.get(ContentState.Approved) + stat.get(ContentState.NeedReview) + stat.get(ContentState.Translated) + stat.get(ContentState.Rejected)));
       }
 
       return retVal;

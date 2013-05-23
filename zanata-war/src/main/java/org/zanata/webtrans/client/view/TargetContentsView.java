@@ -30,6 +30,7 @@ import org.zanata.webtrans.client.ui.EditorButtonsWidget;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.client.ui.ValidationMessagePanelView;
+import org.zanata.webtrans.client.util.ContentStateToStyleUtil;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
@@ -144,28 +145,29 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
 
    private static String resolveStyleName(ContentState status)
    {
-      String styles = "TableEditorRow ";
-      String state = "";
-      switch (status)
-      {
-         case Approved:
-            state = " Approved";
-            break;
-         case NeedReview:
-            state = " Fuzzy";
-            break;
-         case New:
-            state = " New";
-            break;
-         case Translated:
-            state = " Translated";
-            break;
-         case Rejected:
-            state = " Rejected";
-            break;
-      }
-      styles += state + "StateDecoration";
-      return styles;
+      // TODO consolidate and simplify all the state styling. See also SearchResultsDocumentTable, TranslationHistoryView
+      return ContentStateToStyleUtil.stateToStyle(status, "TableEditorRow ");
+//      String state = "";
+//      switch (status)
+//      {
+//         case Approved:
+//            state = " Approved";
+//            break;
+//         case NeedReview:
+//            state = " Fuzzy";
+//            break;
+//         case New:
+//            state = " New";
+//            break;
+//         case Translated:
+//            state = " Translated";
+//            break;
+//         case Rejected:
+//            state = " Rejected";
+//            break;
+//      }
+//      styles += state + "StateDecoration";
+//      return styles;
    }
 
    @Override

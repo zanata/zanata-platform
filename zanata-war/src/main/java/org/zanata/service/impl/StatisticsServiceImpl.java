@@ -123,7 +123,6 @@ public class StatisticsServiceImpl implements StatisticsResource
          throw new NoSuchEntityException(projectSlug + "/" + iterationSlug);
       }
 
-      // FIXME rhbz953734 this needs to fix
       Map<String, TransUnitCount> transUnitIterationStats = projectIterationDAO.getAllStatisticsForContainer(iteration.getId());
       Map<String, TransUnitWords> wordIterationStats = null;
       if (includeWordStats)
