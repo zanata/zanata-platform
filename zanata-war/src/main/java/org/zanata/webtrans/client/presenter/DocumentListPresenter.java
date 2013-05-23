@@ -851,13 +851,13 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
          {
             TranslationStatistics msgStats1 = o1.getDocInfo().getStats().getStats(localeId.getId(), StatUnit.MESSAGE);
             TranslationStatistics msgStats2 = o2.getDocInfo().getStats().getStats(localeId.getId(), StatUnit.MESSAGE);
-            return (int) (msgStats1.getTranslated() - msgStats2.getTranslated());
+            return (int) (msgStats1.getApproved() - msgStats2.getApproved());
          }
          else
          {
             TranslationStatistics msgStats1 = o1.getDocInfo().getStats().getStats(localeId.getId(), StatUnit.WORD);
             TranslationStatistics msgStats2 = o2.getDocInfo().getStats().getStats(localeId.getId(), StatUnit.WORD);
-            return (int) (msgStats1.getTranslated() - msgStats2.getTranslated());
+            return (int) (msgStats1.getApproved() - msgStats2.getApproved());
          }
       }
 

@@ -342,11 +342,11 @@ public class DocumentListTable extends FlexTable
          String locale = userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getLocaleId().getId();
          if (statsByWords)
          {
-            text = String.valueOf(docInfo.getStats().getStats(locale, StatUnit.WORD).getTranslated());
+            text = String.valueOf(docInfo.getStats().getStats(locale, StatUnit.WORD).getApproved());
          }
          else
          {
-            text = String.valueOf(docInfo.getStats().getStats(locale, StatUnit.MESSAGE).getTranslated());
+            text = String.valueOf(docInfo.getStats().getStats(locale, StatUnit.MESSAGE).getApproved());
          }
       }
       return new InlineLabel(text);
@@ -460,12 +460,12 @@ public class DocumentListTable extends FlexTable
          String locale = userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getLocaleId().toString();
          if (statsByWords)
          {
-            translated.setText(String.valueOf(stats.getStats(locale, StatUnit.WORD).getTranslated()));
+            translated.setText(String.valueOf(stats.getStats(locale, StatUnit.WORD).getApproved()));
             untranslated.setText(String.valueOf(stats.getStats(locale, StatUnit.WORD).getUntranslated()));
          }
          else
          {
-            translated.setText(String.valueOf(stats.getStats(locale, StatUnit.MESSAGE).getTranslated()));
+            translated.setText(String.valueOf(stats.getStats(locale, StatUnit.MESSAGE).getApproved()));
             untranslated.setText(String.valueOf(stats.getStats(locale, StatUnit.MESSAGE).getUntranslated()));
          }
       }
