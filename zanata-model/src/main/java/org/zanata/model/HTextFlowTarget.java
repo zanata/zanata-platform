@@ -170,6 +170,7 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
       lastModifiedBy = date;
    }
 
+   @Override
    @ManyToOne(cascade = { CascadeType.MERGE })
    @JoinColumn(name = "translated_by_id", nullable = true)
    public HPerson getTranslator()
@@ -177,6 +178,7 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
       return translator;
    }
 
+   @Override
    @ManyToOne(cascade = { CascadeType.MERGE })
    @JoinColumn(name = "reviewed_by_id", nullable = true)
    public HPerson getReviewer()

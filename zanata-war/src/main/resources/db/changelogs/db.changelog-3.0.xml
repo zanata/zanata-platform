@@ -29,5 +29,20 @@
             update HTextFlowTarget set translated_by_id = last_modified_by_id where translated_by_id is null;
         </sql>
     </changeSet>
+
+    <changeSet id="3" author="pahuang@redhat.com">
+        <comment>Add review related columns to HTextFlowTargetHistory</comment>
+        <addColumn tableName="HTextFlowTargetHistory">
+            <column name="translated_by_id" type="bigint" >
+                <constraints nullable="true" />
+            </column>
+            <column name="reviewed_by_id" type="bigint" >
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+        <sql>
+            update HTextFlowTargetHistory set translated_by_id = last_modified_by_id where translated_by_id is null;
+        </sql>
+    </changeSet>
     
 </databaseChangeLog>
