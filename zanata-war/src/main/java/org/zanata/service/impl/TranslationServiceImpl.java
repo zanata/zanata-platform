@@ -418,6 +418,9 @@ public class TranslationServiceImpl implements TranslationService
                                           final TranslationsResource translations, final Set<String> extensions, final MergeType mergeType)
    {
       HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+
+      final boolean requireTranslationReview = hProjectIteration.isRequireTranslationReview();
+
       if (hProjectIteration == null)
       {
          throw new ZanataServiceException("Version '" + iterationSlug + "' for project '" + projectSlug + "' ");
@@ -522,6 +525,10 @@ public class TranslationServiceImpl implements TranslationService
                            //textFlowTargetDAO.makePersistent(hTarget);
                            textFlow.getTargets().put(hLocale.getId(), hTarget);
                            targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
+                           if (requireTranslationReview && incomingTarget.getState() == ContentState.Approved)
+                           {
+                              hTarget.setState(ContentState.Translated);
+                           }
                            targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
                         }
                         else
@@ -534,9 +541,12 @@ public class TranslationServiceImpl implements TranslationService
                                     if (hTarget.getState() == ContentState.New)
                                     {
                                        targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
+                                       if (requireTranslationReview && incomingTarget.getState() == ContentState.Approved)
+                                       {
+                                          hTarget.setState(ContentState.Translated);
+                                       }
                                        targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
                                     }
-                                    // TODO rhbz953734 - This is coming from client push?? Assuming they are all approved all the time?
                                     else if (incomingTarget.getState() == ContentState.Approved)
                                     {
                                        List<String> incomingContents = incomingTarget.getContents();
@@ -544,11 +554,16 @@ public class TranslationServiceImpl implements TranslationService
                                        if (!oldContent)
                                        {
                                           targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
+                                          if (requireTranslationReview)
+                                          {
+                                             hTarget.setState(ContentState.Translated);
+                                          }
                                           targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
                                        }
                                     }
                                     else
                                     {
+                                       // TODO rhbz953734 - incoming Fuzzy and hTarget Rejected, and content has changed, do we override server?
                                        // incomingTarget state = NeedReview
                                        // hTarget state != New
 
@@ -561,6 +576,10 @@ public class TranslationServiceImpl implements TranslationService
                               case IMPORT:
                                  removedTargets.remove(hTarget);
                                  targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
+                                 if (requireTranslationReview)
+                                 {
+                                    hTarget.setState(ContentState.Translated);
+                                 }
                                  targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
                                  break;
 
@@ -587,12 +606,12 @@ public class TranslationServiceImpl implements TranslationService
                                  hPerson.setName(incomingTarget.getTranslator().getName());
                                  personDAO.makePersistent(hPerson);
                               }
-                              // TODO rhbz953734 - needs to update last translated or reviewed
+                              hTarget.setTranslator(hPerson);
                               hTarget.setLastModifiedBy(hPerson);
                            }
                            else
                            {
-                              // TODO rhbz953734 - needs to update last translated or reviewed
+                              hTarget.setTranslator(null);
                               hTarget.setLastModifiedBy(null);
                            }
                            textFlowTargetDAO.makePersistent(hTarget);

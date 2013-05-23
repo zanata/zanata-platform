@@ -135,7 +135,7 @@ public class IterationZipFileBuildProcess extends RunnableProcess<IterationZipFi
          TranslationsResource translationResource = new TranslationsResource();
          List<HTextFlowTarget> hTargets = textFlowTargetDAO.findTranslations(document, hLocale);
          resourceUtils.transferToTranslationsResource(
-               translationResource, document, hLocale, extensions, hTargets);
+               translationResource, document, hLocale, extensions, hTargets, null);
 
          Resource res = this.resourceUtils.buildResource( document );
 
