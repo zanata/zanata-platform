@@ -370,10 +370,12 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
 
          if (currentMsgStats == null)
          {
-            Log.info("adding to projectStats");
-            projectStats.addStats(msgStats);
+            if(msgStats != null)
+            {
+               projectStats.addStats(msgStats);
+            }
          }
-         else
+         else if(msgStats != null)
          {
             currentMsgStats.add(msgStats);
          }
@@ -383,9 +385,12 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
 
          if (currentWordStats == null)
          {
-            projectStats.addStats(wordStats);
+            if(msgStats != null)
+            {
+               projectStats.addStats(wordStats);
+            }
          }
-         else
+         else if(wordStats != null)
          {
             currentWordStats.add(wordStats);
          }
