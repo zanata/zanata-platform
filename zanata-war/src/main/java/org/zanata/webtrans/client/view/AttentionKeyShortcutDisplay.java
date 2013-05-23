@@ -1,5 +1,5 @@
 /*
- * Copyright 2012, Red Hat, Inc. and individual contributors
+ * Copyright 2013, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -22,25 +22,17 @@ package org.zanata.webtrans.client.view;
 
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
-import org.zanata.webtrans.client.keys.KeyShortcut;
-
-import com.google.gwt.view.client.ListDataProvider;
-
 /**
- *
- * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
+ * Displays information about shortcut keys in Attention mode.
+ * 
+ * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
  *
  */
-public interface KeyShortcutDisplay extends WidgetDisplay
+public interface AttentionKeyShortcutDisplay extends WidgetDisplay
 {
-   ListDataProvider<KeyShortcut> addContext(String contextName);
 
-   void showPanel();
+   void showOrHide(boolean show);
 
-   public void clearPanel();
-
-   boolean isShowing();
-
-   void hide(boolean autoClosed);
+   void clearShortcuts();
 
 }

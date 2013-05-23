@@ -1,0 +1,29 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+  xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+  <ui:style type="org.zanata.webtrans.client.view.AttentionKeyShortcutView.Styles">
+    .attentionKeyShortcutPanel {
+      top: 58px;
+      opacity: 0.95;
+      border: 2px solid #eea;
+      background-color: #ffc;
+      padding: 4px;
+    }
+
+    .shortcutHint {
+      float: left;
+      clear: none;
+      margin-left: 30px;
+      margin-right: 30px;
+      font-size: 1.2em;
+    }
+  </ui:style>
+
+  <g:HorizontalPanel styleName="{style.attentionKeyShortcutPanel}">
+    <g:cell>
+      <g:FlowPanel ui:field="shortcutContainer"/>
+    </g:cell>
+  </g:HorizontalPanel>
+
+</ui:UiBinder>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012, Red Hat, Inc. and individual contributors
+ * Copyright 2013, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -18,29 +18,26 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.webtrans.client.view;
 
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
+package org.zanata.events;
 
-import org.zanata.webtrans.client.keys.KeyShortcut;
+import lombok.Data;
 
-import com.google.gwt.view.client.ListDataProvider;
+import org.zanata.common.ContentState;
+import org.zanata.common.LocaleId;
 
 /**
- *
- * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public interface KeyShortcutDisplay extends WidgetDisplay
+@Data
+public final class TextFlowTargetStateEvent
 {
-   ListDataProvider<KeyShortcut> addContext(String contextName);
+   public static final String EVENT_NAME = "org.zanata.event.HTextFlowTranslated";
 
-   void showPanel();
-
-   public void clearPanel();
-
-   boolean isShowing();
-
-   void hide(boolean autoClosed);
-
+   private final Long documentId;
+   private final Long textFlowId;
+   private final LocaleId localeId;
+   private final Long textFlowTargetId;
+   private final ContentState newState;
 }

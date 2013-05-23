@@ -56,6 +56,8 @@ public class HRawDocument extends ModelEntityBase implements Serializable
    private DocumentType type;
    private String uploadedBy;
 
+   private String adapterParameters;
+
 
    @OneToOne(mappedBy = "rawDocument")
    public HDocument getDocument()

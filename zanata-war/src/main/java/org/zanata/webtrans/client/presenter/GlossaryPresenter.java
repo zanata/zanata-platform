@@ -80,14 +80,18 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryDisplay> implemen
    protected void onBind()
    {
       glossaryDetailsPresenter.onBind();
-      keyShortcutPresenter.register(new KeyShortcut(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER), ShortcutContext.Glossary, messages.searchGlossary(), new KeyShortcutEventHandler()
+      keyShortcutPresenter.register(KeyShortcut.Builder.builder()
+            .addKey(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER))
+            .setContext(ShortcutContext.Glossary)
+            .setDescription(messages.searchGlossary())
+            .setHandler(new KeyShortcutEventHandler()
       {
          @Override
          public void onKeyShortcut(KeyShortcutEvent event)
          {
             fireSearchEvent();
          }
-      }));
+      }).build());
 
       registerHandler(eventBus.addHandler(TransUnitSelectionEvent.getType(), this));
 

@@ -203,7 +203,8 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler
 
       // @formatter:off
       KeyShortcut copySourceShortcut = KeyShortcut.Builder.builder()
-            .addKey(new Keys(Keys.ALT_KEY, 'G')).addKey(new Keys(Keys.ALIAS_KEY, Keys.NO_MODIFIER, 'G'))
+            .addKey(new Keys(Keys.ALT_KEY, 'G'))
+            .addAttentionKey(new Keys('G'))
             .setContext(ShortcutContext.Edit).setDescription(messages.copyFromSource())
             .setStopPropagation(true)
             .setPreventDefault(true)

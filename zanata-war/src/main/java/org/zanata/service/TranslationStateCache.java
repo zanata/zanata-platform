@@ -22,8 +22,8 @@ package org.zanata.service;
 
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.util.OpenBitSet;
-import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
+import org.zanata.events.TextFlowTargetStateEvent;
 import org.zanata.webtrans.shared.model.DocumentStatus;
 import org.zanata.webtrans.shared.model.ValidationId;
 
@@ -63,7 +63,7 @@ public interface TranslationStateCache
     * @param localeId The locale for which state has changed.
     * @param newState The new state after the change.
     */
-   void textFlowStateUpdated(Long textFlowId, LocaleId localeId, ContentState newState);
+   void textFlowStateUpdated(TextFlowTargetStateEvent event);
 
    /**
     * Returns DocumentStatus of last modified HTextFlowTarget for the given
