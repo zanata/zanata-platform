@@ -134,7 +134,7 @@ public class TransMemoryMergeHandlerTest
 
    private static TransMemoryResultItem tmResult(Long sourceId, int percent)
    {
-      TransMemoryResultItem resultItem = new TransMemoryResultItem(tmSource, tmTarget, 1D, percent);
+      TransMemoryResultItem resultItem = new TransMemoryResultItem(tmSource, tmTarget, ContentState.Approved, 1D, percent);
       resultItem.addSourceId(sourceId);
       return resultItem;
    }

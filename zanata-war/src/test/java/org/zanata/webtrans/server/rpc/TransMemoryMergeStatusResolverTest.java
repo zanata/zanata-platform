@@ -79,7 +79,7 @@ public class TransMemoryMergeStatusResolverTest
 
    private static TransMemoryResultItem tmResultWithSimilarity(double percent)
    {
-      return new TransMemoryResultItem(null, null, 0, percent);
+      return new TransMemoryResultItem(null, null, null, 0, percent);
    }
 
    private static TransMemoryDetails tmDetail(String projectName, String docId, String resId, String msgContext)

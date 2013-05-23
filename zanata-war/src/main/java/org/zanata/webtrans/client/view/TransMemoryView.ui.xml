@@ -26,6 +26,16 @@
             padding-left: 10px;
             min-height: 30px;
         }
+        
+        .translated {
+            border-left: 2px solid #0000CD;
+            border-right: 2px solid #0000CD;
+        }
+        
+        .approved {
+	        border-left: 2px solid #099b09;
+            border-right: 2px solid #099b09;
+        }
 
     </ui:style>
 

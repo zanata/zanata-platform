@@ -172,7 +172,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
       {
          float score = (Float) match[0];
          double percent = calculateSimilarityPercentage(transMemoryQuery, textFlowTarget.getTextFlow().getContents());
-         item = new TransMemoryResultItem(textFlowContents, targetContents, score, percent);
+         item = new TransMemoryResultItem(textFlowContents, targetContents, textFlowTarget.getState(), score, percent);
          matchesMap.put(key, item);
       }
       item.incMatchCount();

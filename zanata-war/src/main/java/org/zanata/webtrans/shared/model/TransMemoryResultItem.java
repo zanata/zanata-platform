@@ -24,6 +24,10 @@ package org.zanata.webtrans.shared.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.text.AbstractDocument.Content;
+
+import org.zanata.common.ContentState;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -35,6 +39,7 @@ public class TransMemoryResultItem extends SearchResultItem implements IsSeriali
    private ArrayList<String> sourceContents;
    private ArrayList<String> targetContents;
    private int matchCount = 0;
+   private ContentState contentState;
 
    // for GWT
    @SuppressWarnings("unused")
@@ -48,11 +53,12 @@ public class TransMemoryResultItem extends SearchResultItem implements IsSeriali
     * @param relevanceScore
     * @param similarityPercent
     */
-   public TransMemoryResultItem(ArrayList<String> sourceContents, ArrayList<String> targetContents, double relevanceScore, double similarityPercent)
+   public TransMemoryResultItem(ArrayList<String> sourceContents, ArrayList<String> targetContents, ContentState contentState, double relevanceScore, double similarityPercent)
    {
       super(relevanceScore, similarityPercent);
       this.sourceContents = sourceContents;
       this.targetContents = targetContents;
+      this.contentState = contentState;
    }
 
    // FIXME remove this
@@ -85,6 +91,11 @@ public class TransMemoryResultItem extends SearchResultItem implements IsSeriali
    public List<String> getTargetContents()
    {
       return targetContents;
+   }
+
+   public ContentState getContentState()
+   {
+      return contentState;
    }
 
    public int getMatchCount()
