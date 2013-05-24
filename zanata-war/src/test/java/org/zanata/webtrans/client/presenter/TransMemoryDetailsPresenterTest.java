@@ -12,6 +12,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.rpc.AbstractAsyncCallback;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -71,7 +72,7 @@ public class TransMemoryDetailsPresenterTest
 
       Date lastModifiedDate = new Date();
       // testing on callback success
-      TransMemoryDetails details = new TransMemoryDetails("source comment", "target comment", "project", "iteration", "docId", "resId", "msgContext", "admin", lastModifiedDate);
+      TransMemoryDetails details = new TransMemoryDetails("source comment", "target comment", "project", "iteration", "docId", "resId", "msgContext", ContentState.Approved, "admin", lastModifiedDate);
       callback.onSuccess(new TransMemoryDetailsList(Lists.newArrayList(details)));
 
       InOrder inOrder = Mockito.inOrder(display);
@@ -103,8 +104,8 @@ public class TransMemoryDetailsPresenterTest
    {
       Date lastModifiedDate = new Date();
       // Given: two details
-      TransMemoryDetails details1 = new TransMemoryDetails("source comment1", "target comment1", "project", "1", "docId1", "resId", "msgContext", "admin", lastModifiedDate);
-      TransMemoryDetails details2 = new TransMemoryDetails("source comment2", "target comment2", "project", "2", "docId2", "resId", "msgContext", null, lastModifiedDate);
+      TransMemoryDetails details1 = new TransMemoryDetails("source comment1", "target comment1", "project", "1", "docId1", "resId", "msgContext", ContentState.Approved, "admin", lastModifiedDate);
+      TransMemoryDetails details2 = new TransMemoryDetails("source comment2", "target comment2", "project", "2", "docId2", "resId", "msgContext", ContentState.Approved, null, lastModifiedDate);
       presenter.setStatForTesting(new TransMemoryDetailsList(Lists.newArrayList(details1, details2)));
 
       // When: selecting second one

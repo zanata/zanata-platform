@@ -2,6 +2,8 @@ package org.zanata.webtrans.shared.model;
 
 import java.util.Date;
 
+import org.zanata.common.ContentState;
+
 import com.google.common.base.Objects;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -15,6 +17,7 @@ public class TransMemoryDetails implements IsSerializable
    private String docId;
    private String resId;
    private String msgContext;
+   private ContentState state;
    private String lastModifiedBy;
    private Date lastModifiedDate;
 
@@ -23,7 +26,7 @@ public class TransMemoryDetails implements IsSerializable
    {
    }
 
-   public TransMemoryDetails(String sourceComment, String targetComment, String projectName, String iterationName, String docId, String resId, String msgContext, String lastModifiedBy, Date lastModifiedDate)
+   public TransMemoryDetails(String sourceComment, String targetComment, String projectName, String iterationName, String docId, String resId, String msgContext, ContentState state, String lastModifiedBy, Date lastModifiedDate)
    {
       this.sourceComment = sourceComment;
       this.targetComment = targetComment;
@@ -32,6 +35,7 @@ public class TransMemoryDetails implements IsSerializable
       this.docId = docId;
       this.resId = resId;
       this.msgContext = msgContext;
+      this.state = state;
       this.lastModifiedBy = lastModifiedBy;
       this.lastModifiedDate = lastModifiedDate;
    }
@@ -72,6 +76,11 @@ public class TransMemoryDetails implements IsSerializable
       return msgContext;
    }
 
+   public ContentState getState()
+   {
+      return state;
+   }
+
    public String getLastModifiedBy()
    {
       return lastModifiedBy;
@@ -94,6 +103,7 @@ public class TransMemoryDetails implements IsSerializable
             add("docId", docId).
             add("resId", resId).
             add("msgContext", msgContext).
+            add("state", state).
             add("lastModifiedBy", lastModifiedBy).
             add("lastModifiedDate", lastModifiedDate).
             toString();

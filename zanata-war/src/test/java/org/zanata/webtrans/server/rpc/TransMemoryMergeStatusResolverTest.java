@@ -84,7 +84,7 @@ public class TransMemoryMergeStatusResolverTest
 
    private static TransMemoryDetails tmDetail(String projectName, String docId, String resId, String msgContext)
    {
-      return new TransMemoryDetails(null, null, projectName, null, docId, resId, msgContext, null, null);
+      return new TransMemoryDetails(null, null, projectName, null, docId, resId, msgContext, null, null, null);
    }
 
    private static TransMemoryMerge mergeTMAction(MergeOption differentProjectOption, MergeOption differentDocumentOption, MergeOption differentResIdOption)

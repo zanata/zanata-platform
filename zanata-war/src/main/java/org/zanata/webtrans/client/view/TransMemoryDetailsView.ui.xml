@@ -26,7 +26,6 @@
         }
 
         .headerCol {
-            vertical-align: top;
             text-align: right;
             width: 120px;
             padding-top: 8px;
@@ -86,6 +85,14 @@
                             </g:customCell>
                             <g:customCell>
                                 <g:Label ui:field='targetComment' styleName="{style.comment}"/>
+                            </g:customCell>
+                        </g:row>
+                        <g:row>
+                            <g:customCell styleName="{style.headerCol}">
+                                <g:Label styleName="headerLabel" text="Content State:"/>
+                            </g:customCell>
+                        	<g:customCell>
+                                <g:Label ui:field='targetState'/>
                             </g:customCell>
                         </g:row>
                     </g:Grid>
