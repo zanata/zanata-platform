@@ -3,6 +3,7 @@ package org.zanata.webtrans.client.view;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.DiffColorLegendPanel;
@@ -10,6 +11,7 @@ import org.zanata.webtrans.shared.model.DiffMode;
 import org.zanata.webtrans.client.ui.EnumListBox;
 import org.zanata.webtrans.client.ui.SearchTypeRenderer;
 import org.zanata.webtrans.client.ui.TextContentsDisplay;
+import org.zanata.webtrans.client.util.ContentStateToStyleUtil;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
@@ -64,6 +66,10 @@ public class TransMemoryView extends Composite implements TranslationMemoryDispl
       String searchBox();
 
       String topBar();
+      
+      String translated();
+      
+      String approved();
    }
 
    @UiField
@@ -285,8 +291,17 @@ public class TransMemoryView extends Composite implements TranslationMemoryDispl
    private SimplePanel createTargetPanel(TransMemoryResultItem object)
    {
       SimplePanel panel = new SimplePanel();
-      panel.setSize("100%", "100%");
       // display multiple target strings
+      
+      if(object.getContentState() == ContentState.Approved)
+      {
+         panel.addStyleName(style.approved());
+      }
+      else if(object.getContentState() == ContentState.Translated)
+      {
+         panel.addStyleName(style.translated());
+      }
+      
       SafeHtml safeHtml = TextContentsDisplay.asSyntaxHighlight(object.getTargetContents()).toSafeHtml();
       panel.setWidget(new InlineHTML(safeHtml));
       return panel;

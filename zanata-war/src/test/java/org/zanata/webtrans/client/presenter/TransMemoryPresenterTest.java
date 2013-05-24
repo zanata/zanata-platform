@@ -28,6 +28,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.model.TestFixture;
@@ -160,7 +161,7 @@ public class TransMemoryPresenterTest
    @Test
    public void showTMDetails()
    {
-      TransMemoryResultItem object = new TransMemoryResultItem(new ArrayList<String>(), new ArrayList<String>(), 0, 0);
+      TransMemoryResultItem object = new TransMemoryResultItem(new ArrayList<String>(), new ArrayList<String>(), ContentState.Approved, 0, 0);
       when(display.getSearchType()).thenReturn(searchType);
 
       presenter.showTMDetails(object);
@@ -171,7 +172,7 @@ public class TransMemoryPresenterTest
    @Test
    public void fireCopyEvent()
    {
-      TransMemoryResultItem object = new TransMemoryResultItem(new ArrayList<String>(), new ArrayList<String>(), 0, 0);
+      TransMemoryResultItem object = new TransMemoryResultItem(new ArrayList<String>(), new ArrayList<String>(), ContentState.Approved, 0, 0);
       ArgumentCaptor<CopyDataToEditorEvent> eventCaptor = ArgumentCaptor.forClass(CopyDataToEditorEvent.class);
       
       when(display.getSearchType()).thenReturn(searchType);

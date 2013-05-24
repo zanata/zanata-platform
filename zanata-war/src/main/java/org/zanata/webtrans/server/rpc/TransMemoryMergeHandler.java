@@ -63,7 +63,7 @@ import static org.zanata.service.SecurityService.TranslationAction.*;
 @Slf4j
 public class TransMemoryMergeHandler extends AbstractActionHandler<TransMemoryMerge, UpdateTransUnitResult>
 {
-   private static final TransMemoryResultItem NULL_OBJECT = new TransMemoryResultItem(null, null, 0, 0);
+   private static final TransMemoryResultItem NULL_OBJECT = new TransMemoryResultItem(null, null, null, 0, 0);
 
    @In(value = "webtrans.gwt.GetTransMemoryHandler", create = true)
    private GetTransMemoryHandler getTransMemoryHandler;

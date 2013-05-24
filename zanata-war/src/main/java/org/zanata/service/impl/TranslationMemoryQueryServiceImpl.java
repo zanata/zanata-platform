@@ -181,13 +181,18 @@ public class TranslationMemoryQueryServiceImpl implements TranslationMemoryQuery
       if (useTargetIndex)
       {
          TermQuery localeQuery = new TermQuery(new Term(IndexFieldLabels.LOCALE_ID_FIELD, targetLocale.getId()));
-         // FIXME rhbz953734 - we may also want to include Translated state
-         TermQuery stateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.Approved.toString()));
-
+         
+         TermQuery newStateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.New.toString()));
+         TermQuery needReviewStateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.NeedReview.toString()));
+         TermQuery rejectedReviewStateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.Rejected.toString()));
+         
          BooleanQuery targetQuery = new BooleanQuery();
          targetQuery.add(contentQuery, Occur.MUST);
          targetQuery.add(localeQuery, Occur.MUST);
-         targetQuery.add(stateQuery, Occur.MUST);
+         
+         targetQuery.add(newStateQuery, Occur.MUST_NOT);
+         targetQuery.add(needReviewStateQuery, Occur.MUST_NOT);
+         targetQuery.add(rejectedReviewStateQuery, Occur.MUST_NOT);
 
          return targetQuery;
       }
