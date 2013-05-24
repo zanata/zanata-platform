@@ -211,7 +211,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource
       // Check Etag header
       EntityTag generatedEtag = eTagUtils.generateETagForTranslatedDocument(hProjectIteration, id, hLocale);
       List<String> requestedEtagHeaders = headers.getRequestHeader(HttpHeaders.IF_NONE_MATCH);
-      if( requestedEtagHeaders != null || !requestedEtagHeaders.isEmpty() )
+      if( requestedEtagHeaders != null && !requestedEtagHeaders.isEmpty() )
       {
          if( requestedEtagHeaders.get(0).equals(generatedEtag.getValue()) )
          {
