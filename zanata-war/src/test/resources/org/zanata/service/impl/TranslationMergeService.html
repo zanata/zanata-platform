@@ -1,0 +1,94 @@
+<html xmlns:c="http://www.concordion.org/2007/concordion" xmlns:ext="urn:concordion-extensions:2010">
+<head>
+    <title>Translation Merge Test</title>
+</head>
+<body>
+
+<p>As a user</p>
+<p c:execute="given(#mergeType, #requireTranslationReview)">Given:
+project require translation review is <span c:set="#requireTranslationReview">true</span> and merge type set to <span c:set="#mergeType">AUTO</span>
+</p>
+<p>When: I push translation from client to server (for simplicity, no plural is used here)</p>
+
+<p>Then:</p>
+<table>
+    <tr>
+        <th>Client content</th>
+        <th>Client state</th>
+        <th>Server content</th>
+        <th>Server state</th>
+        <th>Client content found in history</th>
+        <th>result content</th>
+        <th>result state</th>
+        <th>Server changed</th>
+    </tr>
+    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
+        <td c:set="#clientContent"></td>
+        <td c:set="#clientState">New</td>
+        <td c:set="#serverContent"></td>
+        <td c:set="#serverState">New</td>
+        <td c:set="#contentInHistory">false</td>
+        <td c:assertEquals="#result.endContent"></td>
+        <td c:assertEquals="#result.endState">New</td>
+        <td c:assertEquals="#result.changed">false</td>
+    </tr>
+    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
+        <td c:set="#clientContent"></td>
+        <td c:set="#clientState">New</td>
+        <td c:set="#serverContent">abc</td>
+        <td c:set="#serverState">NeedReview</td>
+        <td c:set="#contentInHistory">false</td>
+        <td c:assertEquals="#result.endContent">abc</td>
+        <td c:assertEquals="#result.endState">NeedReview</td>
+        <td c:assertEquals="#result.changed">false</td>
+    </tr>
+    <tr>
+        <td>TODO more cases to come</td>
+    </tr>
+</table>
+
+<hr></hr>
+
+<p c:execute="given(#mergeType, #requireTranslationReview)">Given:
+    project require translation review is <span c:set="#requireTranslationReview">false</span> and merge type set to <span c:set="#mergeType">AUTO</span>
+</p>
+<p>When: I push translation from client to server (for simplicity, no plural is used here)</p>
+
+<p>Then:</p>
+<table>
+    <tr>
+        <th>Client content</th>
+        <th>Client state</th>
+        <th>Server content</th>
+        <th>Server state</th>
+        <th>Client content found in history</th>
+        <th>result content</th>
+        <th>result state</th>
+        <th>Server changed</th>
+    </tr>
+    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
+        <td c:set="#clientContent"></td>
+        <td c:set="#clientState">New</td>
+        <td c:set="#serverContent"></td>
+        <td c:set="#serverState">New</td>
+        <td c:set="#contentInHistory">false</td>
+        <td c:assertEquals="#result.endContent"></td>
+        <td c:assertEquals="#result.endState">New</td>
+        <td c:assertEquals="#result.changed">false</td>
+    </tr>
+    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
+        <td c:set="#clientContent"></td>
+        <td c:set="#clientState">New</td>
+        <td c:set="#serverContent">abc</td>
+        <td c:set="#serverState">NeedReview</td>
+        <td c:set="#contentInHistory">false</td>
+        <td c:assertEquals="#result.endContent">abc</td>
+        <td c:assertEquals="#result.endState">NeedReview</td>
+        <td c:assertEquals="#result.changed">false</td>
+    </tr>
+    <tr>
+        <td>TODO more cases to come</td>
+    </tr>
+</table>
+</body>
+</html>
