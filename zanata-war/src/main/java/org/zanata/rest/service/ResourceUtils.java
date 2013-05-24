@@ -174,7 +174,7 @@ public class ResourceUtils
                for (HTextFlowTarget targ : textFlow.getTargets().values())
                {
                   // if (targ.getState() != ContentState.New)
-                  if (ContentState.isTranslated(targ.getState()))
+                  if (targ.getState().isTranslated())
                   {
                      targ.setState(ContentState.NeedReview);
                      targ.setVersionNum(targ.getVersionNum() + 1);

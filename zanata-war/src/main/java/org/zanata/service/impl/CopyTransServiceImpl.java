@@ -20,9 +20,7 @@
  */
 package org.zanata.service.impl;
 
-import static org.zanata.common.ContentState.Approved;
-import static org.zanata.common.ContentState.NeedReview;
-import static org.zanata.common.ContentState.New;
+import static org.zanata.common.ContentState.*;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.REJECT;
 
@@ -294,7 +292,7 @@ public class CopyTransServiceImpl implements CopyTransService
    private ContentState determineContentState(boolean contextMatches, boolean projectMatches, boolean docIdMatches,
                                               HCopyTransOptions options)
    {
-      ContentState state = Approved;
+      ContentState state = Translated; // TODO rhbz953734 - review this
       state = getExpectedContentState(contextMatches, options.getContextMismatchAction(), state);
       state = getExpectedContentState(projectMatches, options.getProjectMismatchAction(), state);
       state = getExpectedContentState(docIdMatches, options.getDocIdMismatchAction(), state);
@@ -429,7 +427,7 @@ public class CopyTransServiceImpl implements CopyTransService
    {
       if( currentlyStored != null )
       {
-         if( ContentState.isDraft(currentlyStored.getState()) && matchState == Approved )
+         if( currentlyStored.getState().isRejectedOrFuzzy() && matchState.isTranslated())
          {
             return true; // If it's fuzzy, replace only with approved ones
          }

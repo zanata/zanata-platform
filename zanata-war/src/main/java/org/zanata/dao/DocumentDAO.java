@@ -15,6 +15,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.common.AbstractTranslationCount;
 import org.zanata.common.CommonContainerTranslationStatistics;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
@@ -28,6 +29,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HRawDocument;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.StatusCount;
+import org.zanata.util.StatisticsUtil;
 
 @Name("documentDAO")
 @AutoCreate
@@ -186,8 +188,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       {
          unitCount.set(count.status, count.count.intValue());
       }
-      int newCount = totalCount.intValue() - unitCount.get(ContentState.Approved) - unitCount.get(ContentState.NeedReview) - unitCount.get(ContentState.Translated) - unitCount.get(ContentState.Rejected);
-      unitCount.set(ContentState.New, newCount);
+      unitCount.set(ContentState.New, StatisticsUtil.calculateUntranslated(totalCount, unitCount));
 
       // calculate word counts
       @SuppressWarnings("unchecked")
@@ -208,7 +209,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       {
          wordCount.set(count.status, count.count.intValue());
       }
-      long newWordCount = totalWordCount.longValue() - wordCount.get(ContentState.Approved) - wordCount.get(ContentState.NeedReview) - wordCount.get(ContentState.Translated) - wordCount.get(ContentState.Rejected);
+      long newWordCount = StatisticsUtil.calculateUntranslated(totalWordCount, wordCount);
       wordCount.set(ContentState.New, (int) newWordCount);
       
 
@@ -301,13 +302,11 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       Long totalWordCount = (Long)totalCounts.get("wordCount");
       for( TransUnitCount stat : transUnitCountMap.values() )
       {
-         int newCount = totalCount.intValue() - stat.get(ContentState.Approved) - stat.get(ContentState.NeedReview) - stat.get(ContentState.Translated) - stat.get(ContentState.Rejected);
-         stat.set(ContentState.New, newCount);
+         stat.set(ContentState.New, StatisticsUtil.calculateUntranslated(totalCount, stat));
       }
       for( TransUnitWords stat : transUnitWordsMap.values() )
       {
-         int newCount = totalWordCount.intValue() - stat.get(ContentState.Approved) - stat.get(ContentState.NeedReview) - stat.get(ContentState.Translated) - stat.get(ContentState.Rejected);
-         stat.set(ContentState.New, newCount);
+         stat.set(ContentState.New, StatisticsUtil.calculateUntranslated(totalWordCount, stat));
       }
 
       // Merge into a single Stats object

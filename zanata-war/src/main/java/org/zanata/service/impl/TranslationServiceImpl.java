@@ -290,7 +290,7 @@ public class TranslationServiceImpl implements TranslationService
          log.warn(warning);
       }
       boolean requireTranslationReview = projectIteration.isRequireTranslationReview();
-      boolean reviewResultState = target.getState() == ContentState.Approved || target.getState() == ContentState.Rejected;
+      boolean reviewResultState = target.getState() == ContentState.Translated || target.getState() == ContentState.Rejected;
       if (requireTranslationReview)
       {
          if (reviewResultState && identity.hasRole("reviewer"))
@@ -305,9 +305,9 @@ public class TranslationServiceImpl implements TranslationService
       }
       else
       {
-         if (target.getState() == ContentState.Translated)
+         if (target.getState() == ContentState.Approved)
          {
-            target.setState(ContentState.Approved);
+            target.setState(ContentState.Translated);
             target.setReviewer(authenticatedAccount.getPerson());
          }
          target.setTranslator(authenticatedAccount.getPerson());
@@ -547,7 +547,7 @@ public class TranslationServiceImpl implements TranslationService
                                        }
                                        targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
                                     }
-                                    else if (ContentState.isTranslated(incomingTarget.getState()))
+                                    else if (incomingTarget.getState().isTranslated())
                                     {
                                        List<String> incomingContents = incomingTarget.getContents();
                                        boolean contentInHistory = incomingContents.equals(hTarget.getContents()) || textFlowTargetHistoryDAO.findContentInHistory(hTarget, incomingContents);
@@ -557,16 +557,16 @@ public class TranslationServiceImpl implements TranslationService
                                           targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
                                           if (requireTranslationReview)
                                           {
-                                             hTarget.setState(ContentState.Translated);
+                                             hTarget.setState(ContentState.Approved);
                                           }
                                           else
                                           {
-                                             hTarget.setState(ContentState.Approved);
+                                             hTarget.setState(ContentState.Translated);
                                           }
                                           targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
                                        }
                                     }
-                                    else if (ContentState.isDraft(incomingTarget.getState()))
+                                    else if (incomingTarget.getState().isRejectedOrFuzzy())
                                     {
                                        // incomingTarget state = NeedReview hTarget state != New
                                        // we don't overwrite the server's NeedReview or Approved value (business rule)

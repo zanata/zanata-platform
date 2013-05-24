@@ -45,6 +45,7 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.StatusCount;
 import org.zanata.util.HashUtil;
+import org.zanata.util.StatisticsUtil;
 
 @Name("projectIterationDAO")
 @AutoCreate
@@ -271,8 +272,7 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
       for( TransUnitCount stat : retVal.values() )
       {
          Long totalCount = getTotalCountForIteration(iterationId);
-         // TODO rhbz953734 - refactor (many places look like this)
-         stat.set(ContentState.New, totalCount.intValue() - (stat.get(ContentState.Approved) + stat.get(ContentState.NeedReview) + stat.get(ContentState.Translated) + stat.get(ContentState.Rejected)));
+         stat.set(ContentState.New, StatisticsUtil.calculateUntranslated(totalCount, stat));
       }
 
       return retVal;

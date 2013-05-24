@@ -236,7 +236,7 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
 
       q.setParameter("document", document)
        .setParameter("locale", locale)
-       .setParameter("approvedState", ContentState.Approved);
+       .setParameter("approvedState", ContentState.Approved); // FIXME rhbz953734 - copy tran should reuse Approved and Translated string
       q.setCacheable(false); // don't try to cache scrollable results
       q.setComment("TextFlowTargetDAO.findMatchingTranslations");
       return q.scroll();
