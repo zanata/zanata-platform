@@ -14,28 +14,28 @@ public enum ContentState
 {
    // translation life cycle order:
    // New -> NeedReview || Rejected -> Translated -> Approved (Translated in non-review project will automatically go to Approved)
-   New, NeedReview, Approved, Translated, Rejected;
+   New, NeedReview, Translated, Approved, Rejected;
 
    public static final Collection<ContentState> DRAFT_STATES = Collections.unmodifiableCollection(new HashSet<ContentState>(Arrays.asList(NeedReview, Rejected)));
-   public static final Collection<ContentState> TRANSLATED_STATES = Collections.unmodifiableCollection(new HashSet<ContentState>(Arrays.asList(Translated, Approved)));
+   public static final Collection<ContentState> TRANSLATED_STATES = Collections.unmodifiableCollection(new HashSet<ContentState>(Arrays.asList(Approved, Translated)));
 
-   public static boolean isTranslated(ContentState state)
+   public boolean isTranslated()
    {
-      return TRANSLATED_STATES.contains(state);
+      return TRANSLATED_STATES.contains(this);
    }
 
-   public static boolean isDraft(ContentState state)
+   public boolean isRejectedOrFuzzy()
    {
-      return DRAFT_STATES.contains(state);
+      return DRAFT_STATES.contains(this);
    }
 
-   public static boolean isUntranslated(ContentState state)
+   public boolean isUntranslated()
    {
-      return state == New;
+      return this == New;
    }
 
-   public static boolean isApproved(ContentState state)
+   public boolean isApproved()
    {
-      return state == Approved;
+      return this == Approved;
    }
 }

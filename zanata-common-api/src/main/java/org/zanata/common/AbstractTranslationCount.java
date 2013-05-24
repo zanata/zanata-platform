@@ -45,8 +45,8 @@ public abstract class AbstractTranslationCount implements Serializable
    {
       switch (state)
       {
-      case Approved:
-         approved = value;
+      case Translated:
+         translated = value;
          break;
       case NeedReview:
          needReview = value;
@@ -54,8 +54,8 @@ public abstract class AbstractTranslationCount implements Serializable
       case New:
          untranslated = value;
          break;
-      case Translated:
-         translated = value;
+      case Approved:
+         approved = value;
          break;
       case Rejected:
          rejected = value;
@@ -69,14 +69,14 @@ public abstract class AbstractTranslationCount implements Serializable
    {
       switch (state)
       {
-      case Approved:
-         return approved;
+      case Translated:
+         return translated;
       case NeedReview:
          return needReview;
       case New:
          return untranslated;
-      case Translated:
-         return translated;
+      case Approved:
+         return approved;
       case Rejected:
          return rejected;
       default:

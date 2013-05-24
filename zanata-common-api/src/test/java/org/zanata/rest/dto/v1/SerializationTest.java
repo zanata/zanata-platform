@@ -245,7 +245,7 @@ public class SerializationTest
       TranslationsResource entity = new TranslationsResource();
       TextFlowTarget target = new TextFlowTarget("rest1");
       target.setContents("hello world");
-      target.setState(ContentState.Approved);
+      target.setState(ContentState.Translated);
       target.setTranslator(new Person("root@localhost", "Admin user"));
       // for the convenience of test
       entity.getTextFlowTargets().add(target);
