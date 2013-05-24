@@ -89,6 +89,7 @@ import lombok.extern.slf4j.Slf4j;
       query = "SELECT tft.textFlow.id FROM HTextFlowTarget tft " +
             "WHERE tft.locale.localeId=:locale " +
             "AND tft.state=org.zanata.common.ContentState.Approved " +
+            "OR tft.state=org.zanata.common.ContentState.Translated " + 
             "AND tft.textFlow.document.projectIteration.status<>org.zanata.common.EntityStatus.OBSOLETE " +
             "AND tft.textFlow.document.projectIteration.project.status<>org.zanata.common.EntityStatus.OBSOLETE"
 ))
