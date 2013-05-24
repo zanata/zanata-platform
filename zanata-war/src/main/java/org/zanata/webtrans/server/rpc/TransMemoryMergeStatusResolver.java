@@ -86,8 +86,7 @@ public class TransMemoryMergeStatusResolver
          }
          return ContentState.NeedReview;
       }
-      // TODO rhbz953734 - we will need to decide. Gut feeling this will change to Translated (gets auto promoted to Approved in non-reviewable project)
-      return ContentState.Approved;
+      return ContentState.Translated;
    }
 
    private void compareTextFlowResId(TransMemoryMerge action, HTextFlow tfToBeFilled, TransMemoryDetails tmDetail)
