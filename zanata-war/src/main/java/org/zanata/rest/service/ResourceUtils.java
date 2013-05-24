@@ -174,8 +174,7 @@ public class ResourceUtils
                for (HTextFlowTarget targ : textFlow.getTargets().values())
                {
                   // if (targ.getState() != ContentState.New)
-                  // TODO rhbz953734 - what happens if it's Translated state
-                  if (targ.getState() == ContentState.Approved)
+                  if (ContentState.isTranslated(targ.getState()))
                   {
                      targ.setState(ContentState.NeedReview);
                      targ.setVersionNum(targ.getVersionNum() + 1);
