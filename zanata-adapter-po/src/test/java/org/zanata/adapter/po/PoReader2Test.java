@@ -123,7 +123,7 @@ public class PoReader2Test
       Message m = new Message();
       m.setMsgstr("s");
       ContentState actual1 = PoReader2.getContentState(m);
-      assertThat(actual1, is(ContentState.Approved));
+      assertThat(actual1, is(ContentState.Translated));
    }
 
    public void testContentStateApprovedPlural1()
@@ -132,7 +132,7 @@ public class PoReader2Test
       m.setMsgidPlural("plural");
       m.addMsgstrPlural("s0", 0);
       ContentState actual1 = PoReader2.getContentState(m);
-      assertThat(actual1, is(ContentState.Approved));
+      assertThat(actual1, is(ContentState.Translated));
    }
 
    public void testContentStateApprovedPlural2()
@@ -142,7 +142,7 @@ public class PoReader2Test
       m.addMsgstrPlural("s0", 0);
       m.addMsgstrPlural("s1", 1);
       ContentState actual1 = PoReader2.getContentState(m);
-      assertThat(actual1, is(ContentState.Approved));
+      assertThat(actual1, is(ContentState.Translated));
    }
 
    public void testContentStateNewSingle1()

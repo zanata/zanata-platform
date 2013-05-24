@@ -48,7 +48,7 @@ public class PropReader
 
    public PropReader()
    {
-      this(ISO_8859_1, LocaleId.EN_US, ContentState.Approved);
+      this(ISO_8859_1, LocaleId.EN_US, ContentState.Translated);
    }
 
    // pre: template already extracted

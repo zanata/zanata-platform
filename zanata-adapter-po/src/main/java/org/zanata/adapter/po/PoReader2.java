@@ -329,7 +329,7 @@ public class PoReader2
    // NB: we don't check that the number of msgstr_plurals matches nplurals on the client, only on the server
    static ContentState getContentState(Message message)
    {
-      ContentState requestedState = message.isFuzzy() ? ContentState.NeedReview : ContentState.Approved;
+      ContentState requestedState = message.isFuzzy() ? ContentState.NeedReview : ContentState.Translated;
       List<String> contents = getContents(message);
       return ContentStateUtil.determineState(requestedState, contents);
    }
