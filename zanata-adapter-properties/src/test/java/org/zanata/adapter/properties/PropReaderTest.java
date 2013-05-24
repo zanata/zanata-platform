@@ -40,7 +40,7 @@ public class PropReaderTest
    @BeforeMethod
    public void resetReader()
    {
-      propReader = new PropReader(ISO_8859_1, new LocaleId(locale), ContentState.Approved);
+      propReader = new PropReader(ISO_8859_1, new LocaleId(locale), ContentState.Translated);
    }
 
    @Test

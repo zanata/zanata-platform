@@ -29,7 +29,6 @@ import static org.testng.Assert.*;
 import static org.zanata.common.ContentState.*;
 import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
-import org.zanata.common.util.ContentStateUtil;
 
 @Test(groups = { "unit-tests" })
 public class ContentStateUtilTest

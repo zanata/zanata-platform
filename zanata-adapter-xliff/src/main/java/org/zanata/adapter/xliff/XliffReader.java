@@ -161,7 +161,7 @@ public class XliffReader extends XliffCommon
                   boolean targetEmpty = contents.isEmpty() || StringUtils.isEmpty(contents.get(0));
                   if (!targetEmpty)
                   {
-                     tfTarget.setState(ContentState.Approved);
+                     tfTarget.setState(ContentState.Translated);
                      transDoc.getTextFlowTargets().add(tfTarget);
                   }
                }

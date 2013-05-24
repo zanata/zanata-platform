@@ -15,7 +15,6 @@ import java.util.Map;
 import org.fedorahosted.openprops.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.common.ContentState;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
@@ -144,7 +143,7 @@ public class PropWriter
 
    private static void textFlowTargetToProperty(String resId, TextFlowTarget target, Properties targetProp, boolean createSkeletons)
    {
-      if (target == null || target.getState() != ContentState.Approved || target.getContents() == null || target.getContents().size() == 0)
+      if (target == null || !target.getState().isTranslated() || target.getContents() == null || target.getContents().size() == 0)
       {
          // don't save fuzzy or empty values
          if (createSkeletons)
