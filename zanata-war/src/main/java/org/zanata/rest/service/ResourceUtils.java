@@ -282,7 +282,6 @@ public class ResourceUtils
    /**
     * Transfers from DTO TextFlowTarget into HTextFlowTarget
     * 
-    * TODO rhbz953734 - once we have api version information we should properly handle different content state.
     * @param from
     * @param to
     * @return

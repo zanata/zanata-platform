@@ -547,34 +547,40 @@ public class TranslationServiceImpl implements TranslationService
                                        }
                                        targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
                                     }
-                                    else if (incomingTarget.getState() == ContentState.Approved)
+                                    else if (ContentState.isTranslated(incomingTarget.getState()))
                                     {
                                        List<String> incomingContents = incomingTarget.getContents();
-                                       boolean oldContent = textFlowTargetHistoryDAO.findContentInHistory(hTarget, incomingContents);
-                                       if (!oldContent)
+                                       boolean contentInHistory = incomingContents.equals(hTarget.getContents()) || textFlowTargetHistoryDAO.findContentInHistory(hTarget, incomingContents);
+                                       if (!contentInHistory)
                                        {
+                                          // content has changed
                                           targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
                                           if (requireTranslationReview)
                                           {
                                              hTarget.setState(ContentState.Translated);
                                           }
+                                          else
+                                          {
+                                             hTarget.setState(ContentState.Approved);
+                                          }
                                           targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
                                        }
                                     }
+                                    else if (ContentState.isDraft(incomingTarget.getState()))
+                                    {
+                                       // incomingTarget state = NeedReview hTarget state != New
+                                       // we don't overwrite the server's NeedReview or Approved value (business rule)
+                                       log.debug("skip fuzzy or rejected translation from client");
+                                    }
                                     else
                                     {
-                                       // TODO rhbz953734 - incoming Fuzzy and hTarget Rejected, and content has changed, do we override server?
-                                       // incomingTarget state = NeedReview
-                                       // hTarget state != New
-
-                                       // we don't overwrite the server's NeedReview or
-                                       // Approved value (business rule)
+                                       throw new RuntimeException("unexpected content state" + incomingTarget.getState());
                                     }
                                  }
                                  break;
 
                               case IMPORT:
-                                 // TODO rhbz953734 - do not support IMPORT type if client is old
+                                 // TODO rhbz953734 - need new rules for IMPORT
                                  removedTargets.remove(hTarget);
                                  targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
                                  if (requireTranslationReview)
