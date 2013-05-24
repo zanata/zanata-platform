@@ -574,6 +574,7 @@ public class TranslationServiceImpl implements TranslationService
                                  break;
 
                               case IMPORT:
+                                 // TODO rhbz953734 - do not support IMPORT type if client is old
                                  removedTargets.remove(hTarget);
                                  targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
                                  if (requireTranslationReview)
