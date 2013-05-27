@@ -120,13 +120,6 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
    }
 
    @Override
-   @Deprecated
-   public Resource parseDocumentFile(URI documentContent, LocaleId sourceLocale) throws FileFormatAdapterException, IllegalArgumentException
-   {
-      return parseDocumentFile(documentContent, sourceLocale, Optional.<String>absent());
-   }
-
-   @Override
    public Resource parseDocumentFile(URI documentContent, LocaleId sourceLocale,
          Optional<String> params) throws FileFormatAdapterException, IllegalArgumentException
    {
@@ -192,13 +185,6 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
    }
 
    @Override
-   @Deprecated
-   public TranslationsResource parseTranslationFile(URI fileUri, String localeId) throws FileFormatAdapterException, IllegalArgumentException
-   {
-      return parseTranslationFile(fileUri, localeId, Optional.<String>absent());
-   }
-
-   @Override
    public TranslationsResource parseTranslationFile(URI fileUri, String localeId,
          Optional<String> params) throws FileFormatAdapterException, IllegalArgumentException
    {
@@ -249,13 +235,6 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
          filter.close();
       }
       return transRes;
-   }
-
-   @Override
-   @Deprecated
-   public void writeTranslatedFile(OutputStream output, URI originalFile, Map<String, TextFlowTarget> translations, String locale)
-   {
-      writeTranslatedFile(output, originalFile, translations, locale, Optional.<String>absent());
    }
 
    @Override
