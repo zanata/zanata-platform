@@ -50,6 +50,8 @@ import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.HashUtil;
 
+import com.google.common.base.Optional;
+
 /**
  * An adapter that uses a provided {@link IFilter} implementation to parse documents.
  * 
@@ -118,7 +120,15 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
    }
 
    @Override
+   @Deprecated
    public Resource parseDocumentFile(URI documentContent, LocaleId sourceLocale) throws FileFormatAdapterException, IllegalArgumentException
+   {
+      return parseDocumentFile(documentContent, sourceLocale, Optional.<String>absent());
+   }
+
+   @Override
+   public Resource parseDocumentFile(URI documentContent, LocaleId sourceLocale,
+         Optional<String> params) throws FileFormatAdapterException, IllegalArgumentException
    {
       // null documentContent is handled by RawDocument constructor
       if (sourceLocale == null)
@@ -133,7 +143,7 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
       List<TextFlow> resources = document.getTextFlows();
 
       RawDocument rawDoc = new RawDocument(documentContent, "UTF-8", net.sf.okapi.common.LocaleId.fromString("en"));
-
+      updateParams(params);
       try
       {
          filter.open(rawDoc);
@@ -182,7 +192,15 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
    }
 
    @Override
+   @Deprecated
    public TranslationsResource parseTranslationFile(URI fileUri, String localeId) throws FileFormatAdapterException, IllegalArgumentException
+   {
+      return parseTranslationFile(fileUri, localeId, Optional.<String>absent());
+   }
+
+   @Override
+   public TranslationsResource parseTranslationFile(URI fileUri, String localeId,
+         Optional<String> params) throws FileFormatAdapterException, IllegalArgumentException
    {
       if (localeId == null || localeId.isEmpty())
       {
@@ -190,14 +208,14 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
       }
 
       RawDocument rawDoc = new RawDocument(fileUri, "UTF-8", net.sf.okapi.common.LocaleId.fromString("en"));
-      return parseTranslationFile(rawDoc);
+      return parseTranslationFile(rawDoc, params);
    }
 
-   private TranslationsResource parseTranslationFile(RawDocument rawDoc)
+   private TranslationsResource parseTranslationFile(RawDocument rawDoc, Optional<String> params)
    {
       TranslationsResource transRes = new TranslationsResource();
       List<TextFlowTarget> translations = transRes.getTextFlowTargets();
-
+      updateParams(params);
       try
       {
          filter.open(rawDoc);
@@ -235,7 +253,16 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
    }
 
    @Override
+   @Deprecated
    public void writeTranslatedFile(OutputStream output, URI originalFile, Map<String, TextFlowTarget> translations, String locale)
+   {
+      writeTranslatedFile(output, originalFile, translations, locale, Optional.<String>absent());
+   }
+
+   @Override
+   public void writeTranslatedFile(OutputStream output, URI originalFile,
+         Map<String, TextFlowTarget> translations, String locale, Optional<String> params)
+               throws FileFormatAdapterException, IllegalArgumentException
    {
       net.sf.okapi.common.LocaleId localeId = net.sf.okapi.common.LocaleId.fromString(locale);
       IFilterWriter writer = filter.createFilterWriter();
@@ -243,16 +270,18 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
 
       if (requireFileOutput)
       {
-         writeTranslatedFileWithFileOutput(output, originalFile, translations, localeId, writer);
+         writeTranslatedFileWithFileOutput(output, originalFile, translations, localeId, writer, params);
       }
       else
       {
          writer.setOutput(output);
-         generateTranslatedFile(originalFile, translations, localeId, writer);
+         generateTranslatedFile(originalFile, translations, localeId, writer, params);
       }
    }
 
-   private void writeTranslatedFileWithFileOutput(OutputStream output, URI originalFile, Map<String, TextFlowTarget> translations, net.sf.okapi.common.LocaleId localeId, IFilterWriter writer)
+   private void writeTranslatedFileWithFileOutput(OutputStream output, URI originalFile,
+         Map<String, TextFlowTarget> translations, net.sf.okapi.common.LocaleId localeId,
+         IFilterWriter writer, Optional<String> params)
    {
       File tempFile = null;
 
@@ -260,7 +289,7 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
       {
          tempFile = File.createTempFile("filename", "extension");
          writer.setOutput(tempFile.getCanonicalPath());
-         generateTranslatedFile(originalFile, translations, localeId, writer);
+         generateTranslatedFile(originalFile, translations, localeId, writer, params);
 
          byte[] buffer = new byte[4096]; // To hold file contents
          int bytesRead;
@@ -294,10 +323,11 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
 
    }
 
-   private void generateTranslatedFile(URI originalFile, Map<String, TextFlowTarget> translations, net.sf.okapi.common.LocaleId localeId, IFilterWriter writer)
+   private void generateTranslatedFile(URI originalFile, Map<String, TextFlowTarget> translations,
+         net.sf.okapi.common.LocaleId localeId, IFilterWriter writer, Optional<String> params)
    {
       RawDocument rawDoc = new RawDocument(originalFile, "UTF-8", net.sf.okapi.common.LocaleId.fromString("en"));
-
+      updateParams(params);
       try
       {
          filter.open(rawDoc);
@@ -354,4 +384,15 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
          return tu.getId();
       }
    }
+
+   private void updateParams(Optional<String> params)
+   {
+      filter.getParameters().reset();
+      if (params.isPresent())
+      {
+         filter.getParameters().fromString(params.get());
+      }
+      log.info("filter parameters: " + filter.getParameters());
+   }
+
 }
