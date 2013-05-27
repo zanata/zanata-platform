@@ -44,6 +44,7 @@ import org.zanata.service.ConfigurationService;
 import org.zanata.service.FileSystemService;
 import org.zanata.service.impl.ConfigurationServiceImpl;
 import org.zanata.service.impl.FileSystemServiceImpl;
+import com.google.common.base.Optional;
 
 /**
  * Background RunnableProcess implementation that builds a zip file with all translation file
@@ -135,7 +136,7 @@ public class IterationZipFileBuildProcess extends RunnableProcess<IterationZipFi
          TranslationsResource translationResource = new TranslationsResource();
          List<HTextFlowTarget> hTargets = textFlowTargetDAO.findTranslations(document, hLocale);
          resourceUtils.transferToTranslationsResource(
-               translationResource, document, hLocale, extensions, hTargets, null);
+               translationResource, document, hLocale, extensions, hTargets, Optional.<String>absent());
 
          Resource res = this.resourceUtils.buildResource( document );
 

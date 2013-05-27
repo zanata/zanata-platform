@@ -74,6 +74,7 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 
 @Name("resourceUtils")
@@ -1379,12 +1380,13 @@ public class ResourceUtils
    /**
     * 
     *
+    *
     * @param from
     * @param to
     * @param apiVersion
     * @todo merge with {@link #transferToTextFlowTargetExtensions}
     */
-   public void transferToTextFlowTarget(HTextFlowTarget from, TextFlowTarget to, @Nullable String apiVersion)
+   public void transferToTextFlowTarget(HTextFlowTarget from, TextFlowTarget to, Optional<String> apiVersion)
    {
       to.setContents(from.getContents());
       // TODO rhbz953734 - at the moment we will map review state into old state for compatibility
@@ -1398,9 +1400,9 @@ public class ResourceUtils
       }
    }
 
-   private static ContentState mapContentState(String apiVersion, ContentState state)
+   private static ContentState mapContentState(Optional<String> apiVersion, ContentState state)
    {
-      if (Strings.isNullOrEmpty(apiVersion))
+      if (!apiVersion.isPresent())
       {
          switch (state)
          {
@@ -1440,6 +1442,7 @@ public class ResourceUtils
 
    /**
     *
+    *
     * @param transRes
     * @param document
     * @param locale
@@ -1449,7 +1452,7 @@ public class ResourceUtils
     * @return true only if some data was found (text flow targets, or some
     *         metadata extensions)
     */
-   public boolean transferToTranslationsResource(TranslationsResource transRes, HDocument document, HLocale locale, Set<String> enabledExtensions, List<HTextFlowTarget> hTargets, @Nullable String apiVersion)
+   public boolean transferToTranslationsResource(TranslationsResource transRes, HDocument document, HLocale locale, Set<String> enabledExtensions, List<HTextFlowTarget> hTargets, Optional<String> apiVersion)
    {
       boolean found = this.transferToTranslationsResourceExtensions(document, transRes.getExtensions(true), enabledExtensions, locale, hTargets);
 
