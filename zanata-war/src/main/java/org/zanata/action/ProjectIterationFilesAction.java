@@ -307,7 +307,7 @@ public class ProjectIterationFilesAction implements Serializable
 
       try
       {
-         Resource doc = translationFileServiceImpl.parseUpdatedDocumentFile(
+         Resource doc = translationFileServiceImpl.parseUpdatedPotFile(
                documentFileUpload.getFileContents(), docId, documentFileUpload.getFileName(), useOfflinePo);
 
          doc.setLang(new LocaleId(documentFileUpload.getSourceLang()));
@@ -370,11 +370,11 @@ public class ProjectIterationFilesAction implements Serializable
          Resource doc;
          if (docId == null)
          {
-            doc = translationFileServiceImpl.parseDocumentFile(tempFile.toURI(), documentPath, fileName);
+            doc = translationFileServiceImpl.parseAdapterDocumentFile(tempFile.toURI(), documentPath, fileName);
          }
          else
          {
-            doc = translationFileServiceImpl.parseUpdatedDocumentFile(tempFile.toURI(), docId, fileName);
+            doc = translationFileServiceImpl.parseUpdatedAdapterDocumentFile(tempFile.toURI(), docId, fileName);
          }
          doc.setLang(new LocaleId(documentFileUpload.getSourceLang()));
          Set<String> extensions = Collections.<String> emptySet();

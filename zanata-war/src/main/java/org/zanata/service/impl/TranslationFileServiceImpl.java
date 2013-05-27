@@ -164,7 +164,7 @@ public class TranslationFileServiceImpl implements TranslationFileService
    }
 
    @Override
-   public Resource parseUpdatedDocumentFile(InputStream fileContents, String docId, String fileName, boolean offlinePo)
+   public Resource parseUpdatedPotFile(InputStream fileContents, String docId, String fileName, boolean offlinePo)
    {
       if (fileName.endsWith(".pot"))
       {
@@ -184,13 +184,13 @@ public class TranslationFileServiceImpl implements TranslationFileService
    }
 
    @Override
-   public Resource parseDocumentFile(URI documentFile, String path, String fileName) throws ZanataServiceException
+   public Resource parseAdapterDocumentFile(URI documentFile, String path, String fileName) throws ZanataServiceException
    {
-      return parseUpdatedDocumentFile(documentFile, convertToValidPath(path) + fileName, fileName);
+      return parseUpdatedAdapterDocumentFile(documentFile, convertToValidPath(path) + fileName, fileName);
    }
 
    @Override
-   public Resource parseUpdatedDocumentFile(URI documentFile, String docId, String fileName) throws ZanataServiceException
+   public Resource parseUpdatedAdapterDocumentFile(URI documentFile, String docId, String fileName) throws ZanataServiceException
    {
       if (hasAdapterFor(fileName))
       {

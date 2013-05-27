@@ -61,7 +61,7 @@ public interface TranslationFileService
     * @param offlinePo true to use msgctxt as the id for each text flow
     * @return a usable representation of the document
     */
-   Resource parseUpdatedDocumentFile(InputStream fileContents, String docId, String uploadFileName, boolean offlinePo);
+   Resource parseUpdatedPotFile(InputStream fileContents, String docId, String uploadFileName, boolean offlinePo);
 
    /**
     * Extracts the translatable strings from a document file to a usable form.
@@ -73,7 +73,7 @@ public interface TranslationFileService
     * @throws ZanataServiceException if there is no adapter available for the
     *            document format, or there is an error during parsing
     */
-   Resource parseDocumentFile(URI documentFile, String path, String fileName) throws ZanataServiceException;
+   Resource parseAdapterDocumentFile(URI documentFile, String path, String fileName) throws ZanataServiceException;
 
    /**
     * Extract the translatable strings from a new version of an existing document file to a usable form.
@@ -84,7 +84,7 @@ public interface TranslationFileService
     * @return a usable representation of the document
     * @throws ZanataServiceException
     */
-   Resource parseUpdatedDocumentFile(URI documentFile, String docId, String uploadFileName) throws ZanataServiceException;
+   Resource parseUpdatedAdapterDocumentFile(URI documentFile, String docId, String uploadFileName) throws ZanataServiceException;
 
    /**
     * Check whether a handler for the given document type is available.

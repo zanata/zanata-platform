@@ -335,7 +335,7 @@ public class FileService implements FileResource
 
       HDocument document;
       try {
-         Resource doc = translationFileServiceImpl.parseUpdatedDocumentFile(tempFile.toURI(), docId, fileType);
+         Resource doc = translationFileServiceImpl.parseUpdatedAdapterDocumentFile(tempFile.toURI(), docId, fileType);
          doc.setLang( new LocaleId("en-US") );
          // TODO Copy Trans values
          document = documentServiceImpl.saveDocument(projectSlug, iterationSlug, doc, Collections.<String>emptySet(), false);
@@ -608,7 +608,7 @@ public class FileService implements FileResource
    private void parsePotFile(InputStream documentStream, String docId, String fileType, String projectSlug, String iterationSlug, boolean asOfflinePo)
    {
       Resource doc;
-      doc = translationFileServiceImpl.parseUpdatedDocumentFile(documentStream, docId, fileType, asOfflinePo);
+      doc = translationFileServiceImpl.parseUpdatedPotFile(documentStream, docId, fileType, asOfflinePo);
       doc.setLang( new LocaleId("en-US") );
       // TODO Copy Trans values
       documentServiceImpl.saveDocument(projectSlug, iterationSlug, doc, new StringSet(ExtensionType.GetText.toString()), false);
