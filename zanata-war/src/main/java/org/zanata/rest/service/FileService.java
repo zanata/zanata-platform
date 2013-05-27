@@ -104,7 +104,9 @@ import org.zanata.service.FileSystemService.DownloadDescriptorProperties;
 import org.zanata.service.TranslationFileService;
 import org.zanata.service.TranslationService;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Stopwatch;
+import com.google.common.base.Strings;
 
 @Name("fileService")
 @Path(FileResource.FILE_RESOURCE)
@@ -992,7 +994,9 @@ public class FileService implements FileResource
                   .build();
          }
          FileFormatAdapter adapter = translationFileServiceImpl.getAdapterFor(hDocument.getRawDocument().getType());
-         StreamingOutput output = new FormatAdapterStreamingOutput(uri, translations, locale, adapter);
+         String rawParamString = hDocument.getRawDocument().getAdapterParameters();
+         Optional<String> params = Optional.<String>fromNullable(Strings.emptyToNull(rawParamString));
+         StreamingOutput output = new FormatAdapterStreamingOutput(uri, translations, locale, adapter, params);
          response = Response.ok()
                .header("Content-Disposition", "attachment; filename=\"" + document.getName() + "\"")
                .entity(output).build();
@@ -1001,7 +1005,6 @@ public class FileService implements FileResource
       {
          response = Response.status(Status.UNSUPPORTED_MEDIA_TYPE).build();
       }
-
       return response;
    }
 
@@ -1138,19 +1141,22 @@ public class FileService implements FileResource
       private String locale;
       private URI original;
       private FileFormatAdapter adapter;
+      private Optional<String> params;
 
-      public FormatAdapterStreamingOutput(URI originalDoc, Map<String, TextFlowTarget> translations, String locale, FileFormatAdapter adapter)
+      public FormatAdapterStreamingOutput(URI originalDoc, Map<String, TextFlowTarget> translations,
+            String locale, FileFormatAdapter adapter, Optional<String> params)
       {
          this.translations = translations;
          this.locale = locale;
          this.original = originalDoc;
          this.adapter = adapter;
+         this.params = params;
       }
 
       @Override
       public void write(OutputStream output) throws IOException, WebApplicationException
       {
-         adapter.writeTranslatedFile(output, original, translations, locale);
+         adapter.writeTranslatedFile(output, original, translations, locale, params);
       }
    }
 
@@ -1160,7 +1166,7 @@ public class FileService implements FileResource
    private class FileStreamingOutput implements StreamingOutput
    {
       private File file;
-      
+
       public FileStreamingOutput( File file )
       {
          this.file = file;
