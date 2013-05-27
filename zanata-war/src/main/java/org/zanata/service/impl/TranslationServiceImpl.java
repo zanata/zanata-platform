@@ -550,9 +550,9 @@ public class TranslationServiceImpl implements TranslationService
                                        if (!contentInHistory)
                                        {
                                           // content has changed
-                                          hTarget.setState(ContentState.Translated);
                                           targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
                                           targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
+                                          hTarget.setState(ContentState.Translated);
                                        }
                                     }
                                     else if (incomingTarget.getState().isRejectedOrFuzzy())
