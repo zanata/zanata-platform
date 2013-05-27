@@ -98,10 +98,10 @@ public class TransMemoryMergeHandler extends AbstractActionHandler<TransMemoryMe
          HTextFlowTarget hTextFlowTarget = hTextFlow.getTargets().get(hLocale.getId());
          HLocale sourceLocale = hTextFlow.getDocument().getLocale();
 
-         // TODO rhbz953734 - need to review this
-         if (hTextFlowTarget != null && hTextFlowTarget.getState() == ContentState.Approved)
+         // TODO rhbz953734 - TM merge won't override Translated to Approved yet. May or may not want this feature.
+         if (hTextFlowTarget != null && hTextFlowTarget.getState().isTranslated())
          {
-            log.warn("Text flow id {} is approved. Ignored.", hTextFlow.getId());
+            log.warn("Text flow id {} is translated. Ignored.", hTextFlow.getId());
             continue;
          }
          ArrayList<TransMemoryResultItem> tmResults = getTransMemoryHandler.searchTransMemory(hLocale, new TransMemoryQuery(hTextFlow.getContents(), SearchType.FUZZY_PLURAL), sourceLocale.getLocaleId());

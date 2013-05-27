@@ -118,13 +118,13 @@ public class TransMemoryMergePresenterTest
    }
 
    @Test
-   public void willIgnoreApprovedTextFlow() {
+   public void willIgnoreTranslatedTextFlow() {
       // Given:
       // current table page has a list of trans units but all of them are approved
       // @formatter:off
       List<TransUnit> currentPageRows = ImmutableList.<TransUnit>builder()
             .add(makeTransUnit(2, ContentState.Approved))
-            .add(makeTransUnit(3, ContentState.Approved))
+            .add(makeTransUnit(3, ContentState.Translated))
             .add(makeTransUnit(6, ContentState.Approved))
             .build();
       // @formatter:on
