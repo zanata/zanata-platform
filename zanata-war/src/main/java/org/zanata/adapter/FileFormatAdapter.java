@@ -46,19 +46,11 @@ public interface FileFormatAdapter
     * 
     * @param documentUri
     * @param sourceLocale
+    * @param params adapter-specific parameter string. See documentation for
+    *           individual adapters.
     * @return representation of the strings in the document
     * @throws IllegalArgumentException if documentUri or sourceLocale is null
     * @throws FileFormatAdapterException if the document cannot be parsed
-    * @deprecated use {@link #parseDocumentFile(URI, LocaleId, Optional)}
-    */
-   // TODO may want to use a string locale id so it can be used both for Zanata and Okapi locale classes
-   @Deprecated
-   Resource parseDocumentFile(URI documentUri, LocaleId sourceLocale) throws FileFormatAdapterException, IllegalArgumentException;
-
-   /**
-    * @param params adapter-specific parameter string. See documentation for
-    *           individual adapters.
-    * @see #parseDocumentFile(URI, LocaleId)
     */
    Resource parseDocumentFile(URI documentUri, LocaleId sourceLocale, Optional<String> params)
          throws FileFormatAdapterException, IllegalArgumentException;
@@ -67,18 +59,11 @@ public interface FileFormatAdapter
     * Extract translation strings from the given translation document.
     * 
     * @param translatedDocumentContent translated document to parse
+    * @param params adapter-specific parameter string. See documentation for
+    *           individual adapters.
     * @return representation of the translations in the document
     * @throws FileFormatAdapterException if the document cannot be parsed
     * @throws IllegalArgumentException if translatedDocumentContent or localeId is null
-    * @deprecated use {@link #parseTranslationFile(URI, String, Optional)}
-    */
-   @Deprecated
-   TranslationsResource parseTranslationFile(URI fileUri, String localeId) throws FileFormatAdapterException, IllegalArgumentException;
-
-   /**
-    * @param params adapter-specific parameter string. See documentation for
-    *           individual adapters.
-    * @see #parseTranslationFile(URI, String)
     */
    TranslationsResource parseTranslationFile(URI fileUri, String localeId, Optional<String> params)
          throws FileFormatAdapterException, IllegalArgumentException;
@@ -90,18 +75,10 @@ public interface FileFormatAdapter
     * @param original source document
     * @param translations to use in generating translated file
     * @param locale to use for translated document
-    * @throws FileFormatAdapterException if there is any problem parsing the original file or writing the translated file
-    * @throws IllegalArgumentException if any parameters are null
-    * @deprecated use
-    *             {@link #writeTranslatedFile(OutputStream, URI, Map, String, Optional)}
-    */
-   @Deprecated
-   void writeTranslatedFile(OutputStream output, URI originalFile, Map<String, TextFlowTarget> translations, String locale) throws FileFormatAdapterException, IllegalArgumentException;
-
-   /**
     * @param params adapter-specific parameter string. See documentation for
     *           individual adapters.
-    * @see #writeTranslatedFile(OutputStream, URI, Map, String)
+    * @throws FileFormatAdapterException if there is any problem parsing the original file or writing the translated file
+    * @throws IllegalArgumentException if any parameters are null
     */
    void writeTranslatedFile(OutputStream output, URI originalFile,
          Map<String, TextFlowTarget> translations, String locale, Optional<String> params)
