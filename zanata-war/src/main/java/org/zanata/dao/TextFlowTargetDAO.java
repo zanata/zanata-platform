@@ -211,7 +211,7 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
             "textFlow.document = :document " +
             "and textFlow.contentHash = match.textFlow.contentHash " +
             "and match.locale = :locale " +
-            "and match.state = :approvedState " +
+            "and match.state in (:approvedState, :translatedState) " +
             // Do not fetch results for already approved text flow targets
             "and (match.locale not in indices(textFlow.targets) " +
                "or :approvedState != (select t.state from HTextFlowTarget t where t.textFlow = textFlow and t.locale = :locale) ) " +
@@ -236,7 +236,8 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
 
       q.setParameter("document", document)
        .setParameter("locale", locale)
-       .setParameter("approvedState", ContentState.Approved); // FIXME rhbz953734 - copy tran should reuse Approved and Translated string
+       .setParameter("approvedState", ContentState.Approved)
+       .setParameter("translatedState", ContentState.Translated);
       q.setCacheable(false); // don't try to cache scrollable results
       q.setComment("TextFlowTargetDAO.findMatchingTranslations");
       return q.scroll();
