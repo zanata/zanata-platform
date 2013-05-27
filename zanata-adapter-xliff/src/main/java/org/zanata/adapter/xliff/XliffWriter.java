@@ -82,7 +82,7 @@ public class XliffWriter extends XliffCommon
          writer.writeStartElement(ELE_TRANS_UNIT);
          writer.writeAttribute(ATTRI_ID, textFlow.getId());
          writeTransUnitSource(writer, textFlow);
-         if (target != null && target.getState().isTranslated()Content)
+         if (target != null && target.getState().isTranslated())
          {
             writeTransUnitTarget(writer, target);
          }
