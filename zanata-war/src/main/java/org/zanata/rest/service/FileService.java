@@ -973,7 +973,7 @@ public class FileService implements FileResource
          boolean useFuzzy = FILETYPE_TRANSLATED_APPROVED_AND_FUZZY.equals(fileType);
          for (TextFlowTarget target : transRes.getTextFlowTargets())
          {
-            // FIXME rhbz953734 - translatedDocResourceService will map review content state to old state.
+            // TODO rhbz953734 - translatedDocResourceService will map review content state to old state. For now this is acceptable. Once we have new REST options, we should review this
             if (target.getState() == ContentState.Approved || (useFuzzy && target.getState() == ContentState.NeedReview))
             {
                translations.put(target.getResId(), target);

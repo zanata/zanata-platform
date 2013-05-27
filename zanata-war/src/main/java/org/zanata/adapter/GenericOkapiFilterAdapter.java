@@ -220,8 +220,7 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
                {
                   TextFlowTarget tft = new TextFlowTarget(getIdFor(tu, subDocName));
                   tft.setContents(GenericContent.fromFragmentToLetterCoded(tu.getSource().getFirstContent(), true));
-                  // FIXME rhbz953734 - what should this be?
-                  tft.setState(ContentState.Translated);
+                  tft.setState(ContentState.NeedReview);
                   translations.add(tft);
                }
             }
