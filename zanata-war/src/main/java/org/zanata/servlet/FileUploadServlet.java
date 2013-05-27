@@ -49,9 +49,14 @@ import org.zanata.service.TranslationFileService;
 import org.zanata.service.TranslationService;
 import org.zanata.service.impl.TranslationFileServiceImpl;
 import org.zanata.service.impl.TranslationServiceImpl;
+import org.zanata.webtrans.client.ui.FileUploadDialog;
 
 /**
- *
+ * Used for translation file upload from GWT editor.
+ * For endpoint, see servlet binding for this class in web.xml
+ * 
+ * @see {@link FileUploadDialog}
+ * 
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  */
