@@ -26,6 +26,8 @@ import org.zanata.exception.ZanataServiceException;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
+import com.google.common.base.Optional;
+
 import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
@@ -48,8 +50,18 @@ public interface TranslationFileService
     * @return a representation of the translations
     * @throws ZanataServiceException if there is no adapter available for the
     *            document format, or there is an error during parsing
+    * @deprecated use {@link #parseTranslationFile(InputStream, String, String, Optional, boolean)}
     */
+   @Deprecated
    TranslationsResource parseTranslationFile(InputStream fileContents, String fileName, String localeId, boolean originalIsPo) throws ZanataServiceException;
+
+   /**
+    * @param params adapter-specific parameter string. See documentation for
+    *           individual adapters.
+    * @see #parseTranslationFile(InputStream, String, String, boolean)
+    */
+   TranslationsResource parseTranslationFile(InputStream fileContents, String fileName,
+         String localeId, Optional<String> params, boolean originalIsPo) throws ZanataServiceException;
 
    /**
     * Extract the translatable strings from a new document file or from a new version of an existing
@@ -72,8 +84,18 @@ public interface TranslationFileService
     * @return a usable representation of the document
     * @throws ZanataServiceException if there is no adapter available for the
     *            document format, or there is an error during parsing
+    * @deprecated use {@link #parseAdapterDocumentFile(URI, String, String, Optional)}
     */
+   @Deprecated
    Resource parseAdapterDocumentFile(URI documentFile, String path, String fileName) throws ZanataServiceException;
+
+   /**
+    * @param params adapter-specific parameter string. See documentation for
+    *           individual adapters.
+    * @see #parseAdapterDocumentFile(URI, String, String)
+    */
+   Resource parseAdapterDocumentFile(URI documentFile, String path, String fileName,
+         Optional<String> filterParams) throws ZanataServiceException;
 
    /**
     * Extract the translatable strings from a new version of an existing document file to a usable form.
@@ -83,8 +105,18 @@ public interface TranslationFileService
     * @param uploadFileName name of the new file being parsed, used only to identify format
     * @return a usable representation of the document
     * @throws ZanataServiceException
+    * @deprecated use {@link #parseUpdatedAdapterDocumentFile(URI, String, String, Optional)}
     */
+   @Deprecated
    Resource parseUpdatedAdapterDocumentFile(URI documentFile, String docId, String uploadFileName) throws ZanataServiceException;
+
+   /**
+    * @param params adapter-specific parameter string. See documentation for
+    *           individual adapters.
+    * @see #parseUpdatedAdapterDocumentFile(URI, String, String)
+    */
+   Resource parseUpdatedAdapterDocumentFile(URI documentFile, String docId, String uploadFileName,
+         Optional<String> filterParams) throws ZanataServiceException;
 
    /**
     * Check whether a handler for the given document type is available.

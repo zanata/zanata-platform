@@ -124,6 +124,7 @@ public class TranslationFileServiceImpl implements TranslationFileService
       return parseTranslationFile(fileContents, fileName, localeId, Optional.<String>absent(), originalIsPo);
    }
 
+   @Override
    public TranslationsResource parseTranslationFile(InputStream fileContents, String fileName,
          String localeId, Optional<String> params, boolean originalIsPo) throws ZanataServiceException
    {
@@ -196,6 +197,7 @@ public class TranslationFileServiceImpl implements TranslationFileService
       return parseAdapterDocumentFile(documentFile, path, fileName, Optional.<String>absent());
    }
 
+   @Override
    public Resource parseAdapterDocumentFile(URI documentFile, String documentPath, String fileName, Optional<String> params) throws ZanataServiceException
    {
       return parseUpdatedAdapterDocumentFile(documentFile, convertToValidPath(documentPath) + fileName, fileName, params);
@@ -207,6 +209,7 @@ public class TranslationFileServiceImpl implements TranslationFileService
       return parseUpdatedAdapterDocumentFile(documentFile, docId, fileName, Optional.<String>absent());
    }
 
+   @Override
    public Resource parseUpdatedAdapterDocumentFile(URI documentFile, String docId, String fileName, Optional<String> params) throws ZanataServiceException
    {
       if (hasAdapterFor(fileName))
