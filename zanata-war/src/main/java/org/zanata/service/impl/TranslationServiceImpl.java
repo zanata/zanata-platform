@@ -234,9 +234,6 @@ public class TranslationServiceImpl implements TranslationService
          HTextFlow textFlow = hTextFlowTarget.getTextFlow();
          hTextFlowTarget.setVersionNum(hTextFlowTarget.getVersionNum() + 1);
          hTextFlowTarget.setTextFlowRevision(textFlow.getRevision());
-         // TODO rhbz953734 - needs to update last translated or reviewed
-
-
          hTextFlowTarget.setLastModifiedBy(authenticatedAccount.getPerson());
          log.debug("last modified by :{}", authenticatedAccount.getPerson().getName());
 
@@ -300,7 +297,7 @@ public class TranslationServiceImpl implements TranslationService
          }
          else if (reviewResultState && !identity.hasRole("reviewer"))
          {
-            throw new RuntimeException("non reviewer can not save translation to Approved. Change content state to Translated");
+            throw new RuntimeException("non reviewer can not save translation to Approved.");
          }
       }
       else
@@ -308,7 +305,6 @@ public class TranslationServiceImpl implements TranslationService
          if (target.getState() == ContentState.Approved)
          {
             target.setState(ContentState.Translated);
-            target.setReviewer(authenticatedAccount.getPerson());
          }
          target.setTranslator(authenticatedAccount.getPerson());
       }
@@ -554,23 +550,27 @@ public class TranslationServiceImpl implements TranslationService
                                        if (!contentInHistory)
                                        {
                                           // content has changed
+                                          hTarget.setState(ContentState.Translated);
                                           targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
-                                          if (requireTranslationReview)
-                                          {
-                                             hTarget.setState(ContentState.Approved);
-                                          }
-                                          else
-                                          {
-                                             hTarget.setState(ContentState.Translated);
-                                          }
                                           targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
                                        }
                                     }
                                     else if (incomingTarget.getState().isRejectedOrFuzzy())
                                     {
-                                       // incomingTarget state = NeedReview hTarget state != New
-                                       // we don't overwrite the server's NeedReview or Approved value (business rule)
-                                       log.debug("skip fuzzy or rejected translation from client");
+                                       if (incomingTarget.getState() == ContentState.NeedReview && hTarget.getState() == ContentState.NeedReview)
+                                       {
+                                          List<String> incomingContents = incomingTarget.getContents();
+                                          boolean contentInHistory = incomingContents.equals(hTarget.getContents()) || textFlowTargetHistoryDAO.findContentInHistory(hTarget, incomingContents);
+                                          if (!contentInHistory)
+                                          {
+                                             targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
+                                             targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
+                                          }
+                                       }
+                                       else
+                                       {
+                                          log.debug("skip fuzzy or rejected translation from client");
+                                       }
                                     }
                                     else
                                     {
