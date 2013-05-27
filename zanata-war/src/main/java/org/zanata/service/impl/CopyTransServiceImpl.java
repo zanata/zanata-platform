@@ -234,7 +234,7 @@ public class CopyTransServiceImpl implements CopyTransService
                   originalTf.getResId().equals(matchingTarget.getTextFlow().getResId()),
                   originalTf.getDocument().getProjectIteration().getProject().getId().equals(matchingTargetProjectIteration.getProject().getId()),
                   originalTf.getDocument().getDocId().equals( matchingTarget.getTextFlow().getDocument().getDocId() ),
-                  options, matchingTargetProjectIteration.isRequireTranslationReview());
+                  options, matchingTargetProjectIteration.isRequireTranslationReview(), matchingTarget.getState());
             
             if( shouldOverwrite(hTarget, copyState) )
             {
@@ -291,9 +291,9 @@ public class CopyTransServiceImpl implements CopyTransService
    }
 
    private ContentState determineContentState(boolean contextMatches, boolean projectMatches, boolean docIdMatches,
-                                              HCopyTransOptions options, boolean requireTranslationReview)
+                                              HCopyTransOptions options, boolean requireTranslationReview, ContentState matchingTargetState)
    {
-      if (requireTranslationReview && contextMatches && projectMatches && docIdMatches)
+      if (requireTranslationReview && matchingTargetState.isApproved() && projectMatches && contextMatches && docIdMatches)
       {
          return Approved;
       }
