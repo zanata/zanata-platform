@@ -128,7 +128,7 @@ public class FileUploadServlet extends HttpServlet
                         params.get("uploadFileElement").getInputStream(),
                         params.get("fileName").getString(),
                         params.get("targetLocale").getString(),
-                        translationFileServiceImpl.isPoDocument(projectSlug, versionSlug, docId));
+                        projectSlug, versionSlug, docId);
 
             // translate it
             Set<String> extensions;

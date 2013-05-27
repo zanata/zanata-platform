@@ -42,6 +42,7 @@ import org.zanata.exception.FileFormatAdapterException;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
+import org.zanata.model.HRawDocument;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.service.TranslationFileService;
@@ -119,17 +120,13 @@ public class TranslationFileServiceImpl implements TranslationFileService
    private ProjectIterationDAO projectIterationDAO;
 
    @Override
-   public TranslationsResource parseTranslationFile(InputStream fileContents, String fileName, String localeId, boolean originalIsPo) throws ZanataServiceException
-   {
-      return parseTranslationFile(fileContents, fileName, localeId, Optional.<String>absent(), originalIsPo);
-   }
-
-   @Override
    public TranslationsResource parseTranslationFile(InputStream fileContents, String fileName,
-         String localeId, Optional<String> params, boolean originalIsPo) throws ZanataServiceException
+         String localeId, String projectSlug, String iterationSlug, String docId)
+               throws ZanataServiceException
    {
       if( fileName.endsWith(".po") )
       {
+         boolean originalIsPo = isPoDocument(projectSlug, iterationSlug, docId);
          try
          {
             return parsePoFile(fileContents, !originalIsPo);
@@ -142,6 +139,7 @@ public class TranslationFileServiceImpl implements TranslationFileService
       else if (hasAdapterFor(fileName))
       {
          File tempFile = persistToTempFile(fileContents);
+         Optional<String> params = getAdapterParams(projectSlug, iterationSlug, docId);
          TranslationsResource transRes;
          try
          {
@@ -402,6 +400,18 @@ public class TranslationFileServiceImpl implements TranslationFileService
    {
       HDocument doc = documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docPath+docName);
       return doc.getRawDocument() != null;
+   }
+
+   private Optional<String> getAdapterParams(String projectSlug, String iterationSlug, String docId)
+   {
+
+      HDocument doc = documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId);
+      HRawDocument rawDoc = doc.getRawDocument();
+      if (rawDoc == null)
+      {
+         return Optional.<String>absent();
+      }
+      return Optional.fromNullable(rawDoc.getAdapterParameters());
    }
 
    @Override

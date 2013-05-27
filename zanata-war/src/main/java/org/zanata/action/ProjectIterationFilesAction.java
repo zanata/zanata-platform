@@ -218,7 +218,9 @@ public class ProjectIterationFilesAction implements Serializable
                translationFileServiceImpl.parseTranslationFile(translationFileUpload.getFileContents(),
                                                                translationFileUpload.getFileName(),
                                                                localeId,
-                                                               isPoDocument(translationFileUpload.docId));
+                                                               projectSlug,
+                                                               iterationSlug,
+                                                               translationFileUpload.docId);
 
          // translate it
          Set<String> extensions;

@@ -773,7 +773,9 @@ public class FileService implements FileResource
             translationFileServiceImpl.parseTranslationFile(fileContents,
                                                             uploadForm.getFileType(),
                                                             localeId,
-                                                            translationFileServiceImpl.isPoDocument(projectSlug, iterationSlug, docId));
+                                                            projectSlug,
+                                                            iterationSlug,
+                                                            docId);
 
       MergeType mergeType;
       if ("import".equals(merge))

@@ -46,22 +46,13 @@ public interface TranslationFileService
     * 
     * @param fileContents the document to parse
     * @param fileName the name including extension for the file (used to determine how to parse file)
-    * @param originalIsPo true if the document was originally uploaded in po format
     * @return a representation of the translations
     * @throws ZanataServiceException if there is no adapter available for the
     *            document format, or there is an error during parsing
-    * @deprecated use {@link #parseTranslationFile(InputStream, String, String, Optional, boolean)}
-    */
-   @Deprecated
-   TranslationsResource parseTranslationFile(InputStream fileContents, String fileName, String localeId, boolean originalIsPo) throws ZanataServiceException;
-
-   /**
-    * @param params adapter-specific parameter string. See documentation for
-    *           individual adapters.
-    * @see #parseTranslationFile(InputStream, String, String, boolean)
     */
    TranslationsResource parseTranslationFile(InputStream fileContents, String fileName,
-         String localeId, Optional<String> params, boolean originalIsPo) throws ZanataServiceException;
+         String localeId, String projectSlug, String iterationSlug, String docId)
+               throws ZanataServiceException;
 
    /**
     * Extract the translatable strings from a new document file or from a new version of an existing
