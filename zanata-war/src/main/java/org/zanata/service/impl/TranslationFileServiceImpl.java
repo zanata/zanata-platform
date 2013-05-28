@@ -189,21 +189,9 @@ public class TranslationFileServiceImpl implements TranslationFileService
    }
 
    @Override
-   public Resource parseAdapterDocumentFile(URI documentFile, String path, String fileName) throws ZanataServiceException
-   {
-      return parseAdapterDocumentFile(documentFile, path, fileName, Optional.<String>absent());
-   }
-
-   @Override
    public Resource parseAdapterDocumentFile(URI documentFile, String documentPath, String fileName, Optional<String> params) throws ZanataServiceException
    {
       return parseUpdatedAdapterDocumentFile(documentFile, convertToValidPath(documentPath) + fileName, fileName, params);
-   }
-
-   @Override
-   public Resource parseUpdatedAdapterDocumentFile(URI documentFile, String docId, String fileName) throws ZanataServiceException
-   {
-      return parseUpdatedAdapterDocumentFile(documentFile, docId, fileName, Optional.<String>absent());
    }
 
    @Override

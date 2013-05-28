@@ -72,21 +72,14 @@ public interface TranslationFileService
     * @param documentFile location of the document to parse
     * @param path to use within the Zanata project-iteration
     * @param fileName to use within the Zanata project-iteration
+    * @param params adapter-specific parameter string. See documentation for
+    *           individual adapters.
     * @return a usable representation of the document
     * @throws ZanataServiceException if there is no adapter available for the
     *            document format, or there is an error during parsing
-    * @deprecated use {@link #parseAdapterDocumentFile(URI, String, String, Optional)}
-    */
-   @Deprecated
-   Resource parseAdapterDocumentFile(URI documentFile, String path, String fileName) throws ZanataServiceException;
-
-   /**
-    * @param params adapter-specific parameter string. See documentation for
-    *           individual adapters.
-    * @see #parseAdapterDocumentFile(URI, String, String)
     */
    Resource parseAdapterDocumentFile(URI documentFile, String path, String fileName,
-         Optional<String> filterParams) throws ZanataServiceException;
+         Optional<String> params) throws ZanataServiceException;
 
    /**
     * Extract the translatable strings from a new version of an existing document file to a usable form.
@@ -94,20 +87,13 @@ public interface TranslationFileService
     * @param documentFile location of the document to parse
     * @param docId the id of an existing document
     * @param uploadFileName name of the new file being parsed, used only to identify format
-    * @return a usable representation of the document
-    * @throws ZanataServiceException
-    * @deprecated use {@link #parseUpdatedAdapterDocumentFile(URI, String, String, Optional)}
-    */
-   @Deprecated
-   Resource parseUpdatedAdapterDocumentFile(URI documentFile, String docId, String uploadFileName) throws ZanataServiceException;
-
-   /**
     * @param params adapter-specific parameter string. See documentation for
     *           individual adapters.
-    * @see #parseUpdatedAdapterDocumentFile(URI, String, String)
+    * @return a usable representation of the document
+    * @throws ZanataServiceException
     */
    Resource parseUpdatedAdapterDocumentFile(URI documentFile, String docId, String uploadFileName,
-         Optional<String> filterParams) throws ZanataServiceException;
+         Optional<String> params) throws ZanataServiceException;
 
    /**
     * Check whether a handler for the given document type is available.
