@@ -45,7 +45,7 @@ public class FileUploadDialog extends DialogBox
       setStyleName("gwt-DialogBox-NoFixedSize");
 
       VerticalPanel panel = new VerticalPanel();
-      
+
       loadingIcon = new Image(resources.spinner());
       loadingIcon.setVisible(false);
 

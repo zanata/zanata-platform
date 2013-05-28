@@ -65,7 +65,7 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    interface DocumentListViewUiBinder extends UiBinder<LayoutPanel, DocumentListView>
    {
    }
-   
+
    private static DocumentListViewUiBinder uiBinder = GWT.create(DocumentListViewUiBinder.class);
 
    private DocumentListDisplay.Listener listener;
@@ -120,7 +120,7 @@ public class DocumentListView extends Composite implements DocumentListDisplay
       exactSearchCheckBox.setTitle(messages.docListFilterExactMatchDescription());
       statsByMsg.setText(messages.byMessage());
       statsByWord.setText(messages.byWords());
-      
+
       documentListTable = new DocumentListTable(userworkspaceContext, messages,resources);
       documentListContainer.add(documentListTable);
    }

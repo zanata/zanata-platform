@@ -94,7 +94,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource
    public static final String SERVICE_PATH = ProjectIterationService.SERVICE_PATH + "/r";
 
    public static final String EVENT_COPY_TRANS = "org.zanata.rest.service.copyTrans";
-   
+
    /** Project Identifier. */
    @PathParam("projectSlug")
    private String projectSlug;
