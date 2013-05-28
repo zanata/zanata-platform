@@ -27,6 +27,8 @@ import org.zanata.model.HRawDocument;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.StatusCount;
 
+import com.google.common.base.Optional;
+
 @Name("documentDAO")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
@@ -357,7 +359,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       List<HDocument> docs = q.list();
       return docs;
    }
-   
+
    public List<HDocument> getAllByProjectIteration(final String projectSlug, final String iterationSlug)
    {
       Session session = getSession();
@@ -488,18 +490,29 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       return rawDoc;
    }
 
+   public Optional<String> getAdapterParams(String projectSlug, String iterationSlug, String docId)
+   {
+      HDocument doc = getByProjectIterationAndDocId(projectSlug, iterationSlug, docId);
+      HRawDocument rawDoc = doc.getRawDocument();
+      if (rawDoc == null)
+      {
+         return Optional.<String>absent();
+      }
+      return Optional.fromNullable(rawDoc.getAdapterParameters());
+   }
+
    public List<HDocument> getDocumentsByIds(List<Long> docIds)
    {
       StringBuilder query = new StringBuilder();
       query.append("from HDocument doc where doc.id in (:docIds)");
-      
+
       Query q = getSession().createQuery(query.toString());
       q.setParameterList("docIds", docIds);
       q.setCacheable(true);
       q.setComment("DocumentDAO.getDocumentsByIds");
-      
+
       List<HDocument> docs = q.list();
-      
+
       return docs;
    }
 }

@@ -291,8 +291,15 @@ public class FileService implements FileResource
          return Response.status(Status.BAD_REQUEST).entity("uploaded file did not pass virus scan").build();
       }
       HDocument document;
+      // FIXME get params from upload form when API updated
+      Optional<String> params;
+//    params = Optional.fromNullable(Strings.emptyToNull(uploadForm.getAdapterParams()));
+//    if (!params.isPresent())
+      {
+         params = documentDAO.getAdapterParams(projectSlug, iterationSlug, docId);
+      }
       try {
-         Resource doc = translationFileServiceImpl.parseUpdatedAdapterDocumentFile(tempFile.toURI(), docId, uploadForm.getFileType());
+         Resource doc = translationFileServiceImpl.parseUpdatedAdapterDocumentFile(tempFile.toURI(), docId, uploadForm.getFileType(), params);
          doc.setLang( new LocaleId("en-US") );
          // TODO Copy Trans values
          document = documentServiceImpl.saveDocument(projectSlug, iterationSlug, doc, Collections.<String>emptySet(), false);
@@ -325,6 +332,10 @@ public class FileService implements FileResource
       }
       Blob fileContents = Hibernate.createBlob(tempFileStream, (int)tempFile.length());
       rawDocument.setContent(fileContents);
+      if (params.isPresent())
+      {
+         rawDocument.setAdapterParameters(params.get());
+      }
       documentDAO.addRawDocument(document, rawDocument);
       documentDAO.flush();
 
@@ -1135,7 +1146,6 @@ public class FileService implements FileResource
          return Response.serverError().status( Status.INTERNAL_SERVER_ERROR ).build();
       }
    }
-
 
    /*
     * Private class that implements PO file streaming of a document.
