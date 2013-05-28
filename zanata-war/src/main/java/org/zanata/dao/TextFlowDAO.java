@@ -186,11 +186,13 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       final String column = alias + ".state";
       if (acceptApproved)
       {
-         conditions.add(column + "=2");
+         conditions.add(column + "=2"); // Translated
+         conditions.add(column + "=3"); // Approved
       }
       if (acceptFuzzy)
       {
-         conditions.add(column + "=1");
+         conditions.add(column + "=1"); // Fuzzy
+         conditions.add(column + "=4"); // Rejected
       }
       if (acceptUntranslated)
       {

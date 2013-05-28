@@ -30,7 +30,7 @@ public interface TransFilterDisplay extends WidgetDisplay, SearchFieldListener
    {
       void searchTerm(String searchTerm);
 
-      void messageFilterOptionChanged(Boolean translatedChkValue, Boolean needReviewChkValue, Boolean untranslatedChkValue, Boolean hasErrorChkValue);
+      void messageFilterOptionChanged(Boolean translatedChkValue, Boolean draftChkValue, Boolean untranslatedChkValue, Boolean hasErrorChkValue);
    }
 
    void setOptionsState(ConfigurationState state);

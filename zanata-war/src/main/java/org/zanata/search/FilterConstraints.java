@@ -168,17 +168,6 @@ public class FilterConstraints
    }
 
    /**
-    * Allow return of matching text flows with New targets
-    * 
-    * @return this object for chaining
-    */
-   public FilterConstraints includeNew()
-   {
-      includeNew = true;
-      return this;
-   }
-
-   /**
     * Do not return any text flows with New targets
     * 
     * @return this object for chaining
@@ -190,17 +179,6 @@ public class FilterConstraints
    }
 
    /**
-    * Allow return of matching text flows with Fuzzy targets
-    * 
-    * @return this object for chaining
-    */
-   public FilterConstraints includeFuzzy()
-   {
-      includeFuzzy = true;
-      return this;
-   }
-
-   /**
     * Do not return any text flows with Fuzzy targets
     * 
     * @return this object for chaining
@@ -208,17 +186,6 @@ public class FilterConstraints
    public FilterConstraints excludeFuzzy()
    {
       includeFuzzy = false;
-      return this;
-   }
-
-   /**
-    * Allow return of matching text flows with Approved targets
-    * 
-    * @return this object for chaining
-    */
-   public FilterConstraints includeApproved()
-   {
-      includeApproved = true;
       return this;
    }
 
@@ -291,10 +258,12 @@ public class FilterConstraints
       if (includeApproved)
       {
          result.add(ContentState.Approved);
+         result.add(ContentState.Translated);
       }
       if (includeFuzzy)
       {
          result.add(ContentState.NeedReview);
+         result.add(ContentState.Rejected);
       }
       if (includeNew)
       {

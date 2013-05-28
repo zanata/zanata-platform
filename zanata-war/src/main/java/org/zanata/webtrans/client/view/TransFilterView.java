@@ -50,7 +50,7 @@ public class TransFilterView extends Composite implements TransFilterDisplay
    Styles style;
 
    @UiField
-   CheckBox translatedChk, needReviewChk, untranslatedChk, hasErrorChk;
+   CheckBox translatedChk, draftChk, untranslatedChk, hasErrorChk;
 
    private String hintMessage;
 
@@ -119,7 +119,7 @@ public class TransFilterView extends Composite implements TransFilterDisplay
    @Override
    public void setNeedReviewFilter(boolean filterByNeedReview)
    {
-      needReviewChk.setValue(filterByNeedReview);
+      draftChk.setValue(filterByNeedReview);
    }
 
    @Override
@@ -178,17 +178,17 @@ public class TransFilterView extends Composite implements TransFilterDisplay
       }
    }
 
-   @UiHandler({"translatedChk", "needReviewChk", "untranslatedChk", "hasErrorChk"})
+   @UiHandler({"translatedChk", "draftChk", "untranslatedChk", "hasErrorChk"})
    public void onTranslatedChkChanged(ValueChangeEvent<Boolean> event)
    {
-      listener.messageFilterOptionChanged(translatedChk.getValue(), needReviewChk.getValue(), untranslatedChk.getValue(), hasErrorChk.getValue());
+      listener.messageFilterOptionChanged(translatedChk.getValue(), draftChk.getValue(), untranslatedChk.getValue(), hasErrorChk.getValue());
    }
 
    @Override
    public void setOptionsState(ConfigurationState state)
    {
       translatedChk.setValue(state.isFilterByTranslated());
-      needReviewChk.setValue(state.isFilterByNeedReview());
+      draftChk.setValue(state.isFilterByNeedReview());
       untranslatedChk.setValue(state.isFilterByUntranslated());
 
    }
