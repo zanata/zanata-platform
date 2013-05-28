@@ -265,12 +265,7 @@ public class TranslationFileServiceImpl implements TranslationFileService
       return DOCTYPEMAP.containsKey(type);
    }
 
-   /**
-    * @deprecated use {@link #hasAdapterFor(DocumentType)}s
-    */
-   @Deprecated
-   @Override
-   public boolean hasAdapterFor(String fileNameOrExtension)
+   private boolean hasAdapterFor(String fileNameOrExtension)
    {
       String extension = extractExtension(fileNameOrExtension);
       if (extension == null)
@@ -305,6 +300,12 @@ public class TranslationFileServiceImpl implements TranslationFileService
          return null;
       }
       return getAdapterFor(documentType);
+   }
+
+   @Override
+   public DocumentType getDocumentType(String fileNameOrExtension)
+   {
+      return DocumentType.typeFor(extractExtension(fileNameOrExtension));
    }
 
    @Override

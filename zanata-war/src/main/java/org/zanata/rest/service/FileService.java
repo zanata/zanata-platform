@@ -235,7 +235,7 @@ public class FileService implements FileResource
 
    private Optional<Response> checkValidUploadType(DocumentFileUploadForm uploadForm)
    {
-      if (!uploadForm.getFileType().equals(".pot") && !translationFileServiceImpl.hasAdapterFor(uploadForm.getFileType()))
+      if (!uploadForm.getFileType().equals(".pot") && !translationFileServiceImpl.hasAdapterFor(DocumentType.typeFor(uploadForm.getFileType())))
       {
          return Optional.of(
                Response.status(Status.BAD_REQUEST)
@@ -769,7 +769,7 @@ public class FileService implements FileResource
 
       String fileType = uploadForm.getFileType();
       boolean isPoFile = fileType.equals(".po");
-      if (!isPoFile && !translationFileServiceImpl.hasAdapterFor(fileType))
+      if (!isPoFile && !translationFileServiceImpl.hasAdapterFor(DocumentType.typeFor(fileType)))
       {
          return Response.status(Status.BAD_REQUEST)
                .entity(new ChunkUploadResponse("The type \"" + fileType + "\" specified in form parameter 'type' is not valid for a translation file on this server."))

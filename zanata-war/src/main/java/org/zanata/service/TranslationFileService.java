@@ -103,16 +103,6 @@ public interface TranslationFileService
     */
    boolean hasAdapterFor(DocumentType type);
 
-   /**
-    * Check whether a handler for the given file type is available.
-    *
-    * @param fileNameOrExtension full filename with extension, or just extension
-    * @return
-    * @deprecated use {@link #hasAdapterFor(DocumentType)}s
-    */
-   @Deprecated
-   boolean hasAdapterFor(String fileNameOrExtension);
-
    Set<String> getSupportedExtensions();
 
    /**
@@ -122,6 +112,8 @@ public interface TranslationFileService
    FileFormatAdapter getAdapterFor(String fileNameOrExtension);
 
    FileFormatAdapter getAdapterFor(DocumentType type);
+
+   DocumentType getDocumentType(String fileNameOrExtension);
 
    /**
     * Persist an input stream to a temporary file.
