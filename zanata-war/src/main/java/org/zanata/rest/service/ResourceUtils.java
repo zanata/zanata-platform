@@ -1387,7 +1387,7 @@ public class ResourceUtils
    public void transferToTextFlowTarget(HTextFlowTarget from, TextFlowTarget to, @Nullable String apiVersion)
    {
       to.setContents(from.getContents());
-      // TODO rhbz953734 - at the moment we will transfer review state into old state for compatibility
+      // TODO rhbz953734 - at the moment we will map review state into old state for compatibility
       to.setState(mapContentState(apiVersion, from.getState()));
       to.setRevision(from.getVersionNum());
       to.setTextFlowRevision(from.getTextFlowRevision());

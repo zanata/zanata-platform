@@ -229,11 +229,12 @@ public class CopyTransServiceImpl implements CopyTransService
 
             HTextFlow originalTf = (HTextFlow) results.get(0);
             HTextFlowTarget hTarget = textFlowTargetDAO.getOrCreateTarget(originalTf, locale);
+            HProjectIteration matchingTargetProjectIteration = matchingTarget.getTextFlow().getDocument().getProjectIteration();
             ContentState copyState = determineContentState(
                   originalTf.getResId().equals(matchingTarget.getTextFlow().getResId()),
-                  originalTf.getDocument().getProjectIteration().getProject().getId().equals( matchingTarget.getTextFlow().getDocument().getProjectIteration().getProject().getId() ),
+                  originalTf.getDocument().getProjectIteration().getProject().getId().equals(matchingTargetProjectIteration.getProject().getId()),
                   originalTf.getDocument().getDocId().equals( matchingTarget.getTextFlow().getDocument().getDocId() ),
-                  options);
+                  options, matchingTargetProjectIteration.isRequireTranslationReview(), matchingTarget.getState());
             
             if( shouldOverwrite(hTarget, copyState) )
             {
@@ -290,9 +291,13 @@ public class CopyTransServiceImpl implements CopyTransService
    }
 
    private ContentState determineContentState(boolean contextMatches, boolean projectMatches, boolean docIdMatches,
-                                              HCopyTransOptions options)
+                                              HCopyTransOptions options, boolean requireTranslationReview, ContentState matchingTargetState)
    {
-      ContentState state = Translated; // TODO rhbz953734 - review this
+      if (requireTranslationReview && matchingTargetState.isApproved() && projectMatches && contextMatches && docIdMatches)
+      {
+         return Approved;
+      }
+      ContentState state = Translated;
       state = getExpectedContentState(contextMatches, options.getContextMismatchAction(), state);
       state = getExpectedContentState(projectMatches, options.getProjectMismatchAction(), state);
       state = getExpectedContentState(docIdMatches, options.getDocIdMismatchAction(), state);

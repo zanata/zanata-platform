@@ -84,7 +84,7 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
    @Override
    public void proceedToMergeTM(int percentage, MergeOption differentProjectOption, MergeOption differentDocumentOption, MergeOption differentResIdOption)
    {
-      Collection<TransUnit> items = getNotApprovedItems();
+      Collection<TransUnit> items = getNotTranslatedItems();
 
       if (items.isEmpty())
       {
@@ -129,7 +129,7 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
       });
    }
 
-   private Collection<TransUnit> getNotApprovedItems()
+   private Collection<TransUnit> getNotTranslatedItems()
    {
       // TODO rhbz953734 - need to review this
       List<TransUnit> currentItems = navigationService.getCurrentPageValues();
@@ -138,7 +138,7 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
          @Override
          public boolean apply(TransUnit input)
          {
-            return input.getStatus() != ContentState.Approved;
+            return !input.getStatus().isTranslated();
          }
       });
    }

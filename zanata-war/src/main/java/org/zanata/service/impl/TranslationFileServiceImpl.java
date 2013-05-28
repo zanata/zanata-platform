@@ -46,6 +46,7 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.service.TranslationFileService;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.MapMaker;
 
 import java.io.File;
@@ -120,6 +121,13 @@ public class TranslationFileServiceImpl implements TranslationFileService
    @Override
    public TranslationsResource parseTranslationFile(InputStream fileContents, String fileName, String localeId, boolean originalIsPo) throws ZanataServiceException
    {
+      return parseTranslationFile(fileContents, fileName, localeId, Optional.<String>absent(), originalIsPo);
+   }
+
+   @Override
+   public TranslationsResource parseTranslationFile(InputStream fileContents, String fileName,
+         String localeId, Optional<String> params, boolean originalIsPo) throws ZanataServiceException
+   {
       if( fileName.endsWith(".po") )
       {
          try
@@ -137,7 +145,7 @@ public class TranslationFileServiceImpl implements TranslationFileService
          TranslationsResource transRes;
          try
          {
-            transRes = getAdapterFor(fileName).parseTranslationFile(tempFile.toURI(), localeId);
+            transRes = getAdapterFor(fileName).parseTranslationFile(tempFile.toURI(), localeId, params);
          }
          catch (FileFormatAdapterException e)
          {
@@ -164,7 +172,7 @@ public class TranslationFileServiceImpl implements TranslationFileService
    }
 
    @Override
-   public Resource parseUpdatedDocumentFile(InputStream fileContents, String docId, String fileName, boolean offlinePo)
+   public Resource parseUpdatedPotFile(InputStream fileContents, String docId, String fileName, boolean offlinePo)
    {
       if (fileName.endsWith(".pot"))
       {
@@ -184,13 +192,25 @@ public class TranslationFileServiceImpl implements TranslationFileService
    }
 
    @Override
-   public Resource parseDocumentFile(URI documentFile, String path, String fileName) throws ZanataServiceException
+   public Resource parseAdapterDocumentFile(URI documentFile, String path, String fileName) throws ZanataServiceException
    {
-      return parseUpdatedDocumentFile(documentFile, convertToValidPath(path) + fileName, fileName);
+      return parseAdapterDocumentFile(documentFile, path, fileName, Optional.<String>absent());
    }
 
    @Override
-   public Resource parseUpdatedDocumentFile(URI documentFile, String docId, String fileName) throws ZanataServiceException
+   public Resource parseAdapterDocumentFile(URI documentFile, String documentPath, String fileName, Optional<String> params) throws ZanataServiceException
+   {
+      return parseUpdatedAdapterDocumentFile(documentFile, convertToValidPath(documentPath) + fileName, fileName, params);
+   }
+
+   @Override
+   public Resource parseUpdatedAdapterDocumentFile(URI documentFile, String docId, String fileName) throws ZanataServiceException
+   {
+      return parseUpdatedAdapterDocumentFile(documentFile, docId, fileName, Optional.<String>absent());
+   }
+
+   @Override
+   public Resource parseUpdatedAdapterDocumentFile(URI documentFile, String docId, String fileName, Optional<String> params) throws ZanataServiceException
    {
       if (hasAdapterFor(fileName))
       {
@@ -198,7 +218,7 @@ public class TranslationFileServiceImpl implements TranslationFileService
          Resource doc;
          try
          {
-            doc = adapter.parseDocumentFile(documentFile, new LocaleId("en"));
+            doc = adapter.parseDocumentFile(documentFile, new LocaleId("en"), params);
          }
          catch (FileFormatAdapterException e)
          {

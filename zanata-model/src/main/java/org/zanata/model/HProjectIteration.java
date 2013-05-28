@@ -111,9 +111,19 @@ public class HProjectIteration extends SlugEntityBase
       return overrideValidations;
    }
 
+   @Column(nullable = true)
    public boolean isRequireTranslationReview()
    {
       return requireTranslationReview;
+   }
+
+   // this setter method takes a Boolean just so dbunit can set it to Null. To an exception being thrown.
+   protected void setRequireTranslationReview(Boolean requireTranslationReview)
+   {
+      if (requireTranslationReview != null)
+      {
+         this.requireTranslationReview = requireTranslationReview;
+      }
    }
 
    @ManyToOne
