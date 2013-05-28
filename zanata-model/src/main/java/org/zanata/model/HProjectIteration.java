@@ -118,7 +118,7 @@ public class HProjectIteration extends SlugEntityBase
    }
 
    // this setter method takes a Boolean just so dbunit can set it to Null. To an exception being thrown.
-   protected void setRequireTranslationReview(Boolean requireTranslationReview)
+   public void setRequireTranslationReview(Boolean requireTranslationReview)
    {
       if (requireTranslationReview != null)
       {

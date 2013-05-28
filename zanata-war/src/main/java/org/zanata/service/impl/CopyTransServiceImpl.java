@@ -219,7 +219,8 @@ public class CopyTransServiceImpl implements CopyTransService
       int copyCount = 0;
       try
       {
-         results = textFlowTargetDAO.findMatchingTranslations(document, locale, checkContext, checkDocument, checkProject);
+         boolean requireTranslationReview = document.getProjectIteration().isRequireTranslationReview();
+         results = textFlowTargetDAO.findMatchingTranslations(document, locale, checkContext, checkDocument, checkProject, requireTranslationReview);
          copyCount = 0;
 
          while( results.next() )
@@ -234,7 +235,7 @@ public class CopyTransServiceImpl implements CopyTransService
                   originalTf.getResId().equals(matchingTarget.getTextFlow().getResId()),
                   originalTf.getDocument().getProjectIteration().getProject().getId().equals(matchingTargetProjectIteration.getProject().getId()),
                   originalTf.getDocument().getDocId().equals( matchingTarget.getTextFlow().getDocument().getDocId() ),
-                  options, matchingTargetProjectIteration.isRequireTranslationReview(), matchingTarget.getState());
+                  options, requireTranslationReview, matchingTarget.getState());
             
             if( shouldOverwrite(hTarget, copyState) )
             {
@@ -435,6 +436,10 @@ public class CopyTransServiceImpl implements CopyTransService
          if( currentlyStored.getState().isRejectedOrFuzzy() && matchState.isTranslated())
          {
             return true; // If it's fuzzy, replace only with approved ones
+         }
+         else if (currentlyStored.getState() == ContentState.Translated && matchState.isApproved())
+         {
+            return true; // If it's Translated and found an Approved one
          }
          else if( currentlyStored.getState() == New )
          {
