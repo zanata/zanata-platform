@@ -252,7 +252,10 @@ public class StatisticsServiceImpl implements StatisticsResource
          }
          DocumentStatus docStat = translationStateCacheImpl.getDocStats(document.getId(), locale);
 
+         transUnitStats.setLastTranslatedBy(docStat.getLastTranslatedBy());
+         transUnitStats.setLastTranslatedDate(docStat.getLastTranslatedDate());
          transUnitStats.setLastTranslated(getLastTranslated(docStat.getLastTranslatedDate(), docStat.getLastTranslatedBy()));
+         
          transUnitStats.setRemainingHours(getRemainingHours(transUnitStats.getDraft(), transUnitStats.getUntranslated()));
          docStats.addStats(transUnitStats);
 
@@ -268,7 +271,10 @@ public class StatisticsServiceImpl implements StatisticsResource
             {
                wordsStats = stats.getStats(locale.getId(), StatUnit.WORD);
             }
-            wordsStats.setLastTranslated(getLastTranslated(docStat.getLastTranslatedDate(), docStat.getLastTranslatedBy()));
+            
+            wordsStats.setLastTranslatedBy(docStat.getLastTranslatedBy());
+            wordsStats.setLastTranslatedDate(docStat.getLastTranslatedDate());
+            
             wordsStats.setRemainingHours(getRemainingHours(wordsStats.getDraft(), wordsStats.getUntranslated()));
             docStats.addStats(wordsStats);
          }
@@ -280,6 +286,8 @@ public class StatisticsServiceImpl implements StatisticsResource
    private TranslationStatistics getWordsStats(TransUnitWords wordCount, LocaleId locale, Date lastChanged, String lastModifiedBy)
    {
       TranslationStatistics stats = new TranslationStatistics(wordCount, locale.getId());
+      stats.setLastTranslatedBy(lastModifiedBy);
+      stats.setLastTranslatedDate(lastChanged);
       stats.setLastTranslated(getLastTranslated(lastChanged, lastModifiedBy));
       
       return stats;
@@ -288,11 +296,13 @@ public class StatisticsServiceImpl implements StatisticsResource
    private TranslationStatistics getMessageStats(TransUnitCount unitCount, LocaleId locale, Date lastChanged, String lastModifiedBy)
    {
       TranslationStatistics stats = new TranslationStatistics(unitCount, locale.getId());
+      stats.setLastTranslatedBy(lastModifiedBy);
+      stats.setLastTranslatedDate(lastChanged);
       stats.setLastTranslated(getLastTranslated(lastChanged, lastModifiedBy));
       
       return stats;
    }
-
+   
    private String getLastTranslated(Date lastChanged, String lastModifiedBy)
    {
       StringBuilder result = new StringBuilder();
@@ -309,7 +319,7 @@ public class StatisticsServiceImpl implements StatisticsResource
       }
       return result.toString();
    }
-
+   
    private double getRemainingHours(double fuzzy, double untrans)
    {
       double untransHours = untrans / 250.0;

@@ -25,10 +25,12 @@ import static org.zanata.common.TranslationStatistics.StatUnit.WORD;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -284,18 +286,12 @@ public class ViewAllStatusAction implements Serializable
 
             HTextFlowTarget lastTranslatedTarget = localeServiceImpl.getLastTranslated(projectSlug, iterationSlug, var.getLocaleId());
 
-            StringBuilder lastTranslated = new StringBuilder();
             if (lastTranslatedTarget != null)
             {
-               lastTranslated.append(DateUtil.formatShortDate(lastTranslatedTarget.getLastChanged()));
-               if (lastTranslatedTarget.getLastModifiedBy() != null)
-               {
-                  lastTranslated.append(" by ");
-                  lastTranslated.append(lastTranslatedTarget.getLastModifiedBy().getAccount().getUsername());
-                  
-               }
+               stats.setLastTranslatedBy(lastTranslatedTarget.getLastModifiedBy().getAccount().getUsername());
+               stats.setLastTranslatedDate(lastTranslatedTarget.getLastChanged());
+               stats.setLastTranslated(getLastTranslated(lastTranslatedTarget.getLastChanged(), lastTranslatedTarget.getLastModifiedBy().getAccount().getUsername()));
             }
-            stats.setLastTranslated(lastTranslated.toString());
          }
 
 
@@ -315,6 +311,23 @@ public class ViewAllStatusAction implements Serializable
       List<Status> result = new ArrayList<Status>(statsMap.values());
       Collections.sort(result);
       return result;
+   }
+   
+   private String getLastTranslated(Date lastChanged, String lastModifiedBy)
+   {
+      StringBuilder result = new StringBuilder();
+
+      if (lastChanged != null)
+      {
+         result.append(DateUtil.formatShortDate(lastChanged));
+
+         if (!StringUtils.isEmpty(lastModifiedBy))
+         {
+            result.append(" by ");
+            result.append(lastModifiedBy);
+         }
+      }
+      return result.toString();
    }
 
    public HProjectIteration getProjectIteration()
