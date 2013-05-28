@@ -21,6 +21,7 @@
 package org.zanata.common;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -29,7 +30,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
-import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 
 /**
  * Translation statistics. Contains actual numbers and other information about
@@ -42,7 +42,6 @@ import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 @XmlRootElement(name = "translationStats")
 @JsonIgnoreProperties(value = { "percentTranslated", "percentNeedReview", "percentUntranslated" }, ignoreUnknown = true)
 @JsonPropertyOrder({ "total", "untranslated", "needReview", "translated", "approved", "rejected", "readyForReview", "fuzzy", "unit", "locale", "lastTranslated" })
-@JsonWriteNullProperties(false)
 public class TranslationStatistics implements Serializable
 {
    private static final long serialVersionUID = 1L;
@@ -51,6 +50,9 @@ public class TranslationStatistics implements Serializable
    private String locale;
    private double remainingHours;
    private String lastTranslated;
+   
+   private Date lastTranslatedDate;
+   private String lastTranslatedBy;
 
    /**
     * This is for marshalling purpose only.
@@ -210,10 +212,33 @@ public class TranslationStatistics implements Serializable
    {
       return lastTranslated;
    }
-
+   
+   
    public void setLastTranslated(String lastTranslated)
    {
       this.lastTranslated = lastTranslated;
+   }
+
+   @XmlTransient
+   public Date getLastTranslatedDate()
+   {
+      return lastTranslatedDate;
+   }
+
+   public void setLastTranslatedDate(Date lastTranslatedDate)
+   {
+      this.lastTranslatedDate = lastTranslatedDate;
+   }
+
+   @XmlTransient
+   public String getLastTranslatedBy()
+   {
+      return lastTranslatedBy;
+   }
+
+   public void setLastTranslatedBy(String lastTranslatedBy)
+   {
+      this.lastTranslatedBy = lastTranslatedBy;
    }
 
    @XmlTransient
