@@ -251,7 +251,7 @@ public class TranslationStatistics implements Serializable
       }
       else
       {
-         double per = 100 * getApproved() / total;
+         double per = 100 * getTranslated() / total;
          return (int) Math.ceil(per);
       }
    }
