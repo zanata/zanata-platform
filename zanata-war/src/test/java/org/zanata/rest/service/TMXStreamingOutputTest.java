@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Map;
 
 import javax.ws.rs.core.StreamingOutput;
 
@@ -32,6 +33,7 @@ import org.zanata.model.SimpleTargetContents;
 import org.zanata.model.TargetContents;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 
 public class TMXStreamingOutputTest 
 {
@@ -40,48 +42,6 @@ public class TMXStreamingOutputTest
       // Tell XMLUnit about the offical xml: namespace (as used in xml:lang)
       NamespaceContext ctx = new SimpleNamespaceContext(ImmutableMap.of("xml", "http://www.w3.org/XML/1998/namespace"));
       XMLUnit.setXpathNamespaceContext(ctx);
-   }
-
-   private ArrayList<NamedDocument> createTestDocs()
-   {
-      LocaleId fr = LocaleId.FR;
-      LocaleId de = LocaleId.DE;
-      NamedDocument doc0 = new SimpleNamedDocument(
-            "doc0",
-            new SimpleSourceContents(
-                  "resId0",
-                  ImmutableMap.<LocaleId, TargetContents>of(
-                        fr, new SimpleTargetContents(fr, Approved, "targetFR0", "targetFR1"),
-                        de, new SimpleTargetContents(de, Approved, "targetDE0", "targetDE1")
-                        ),
-                        "source0", "source1"
-                  ),
-            new SimpleSourceContents(
-                  "resId1",
-                  ImmutableMap.<LocaleId, TargetContents>of(
-                        fr,
-                        new SimpleTargetContents(fr, Approved, "TARGETfr0", "TARGETfr1")),
-                        "SOURCE0", "SOURCE1"
-                  )
-            );
-      NamedDocument doc1 = new SimpleNamedDocument(
-            "doc1",
-            new SimpleSourceContents(
-                  "resId0",
-                  ImmutableMap.<LocaleId, TargetContents>of(
-                        fr,
-                        new SimpleTargetContents(fr, Approved, "targetFR0", "targetFR1")),
-                        "source0", "source1"
-                  ),
-                  new SimpleSourceContents(
-                        "resId1",
-                        ImmutableMap.<LocaleId, TargetContents>of(
-                              de,
-                              new SimpleTargetContents(de, Approved, "TARGETde0", "TARGETde1")),
-                              "SOURCE0", "SOURCE1"
-                        )
-            );
-      return newArrayList(doc0, doc1);
    }
 
    @Test
@@ -128,6 +88,50 @@ public class TMXStreamingOutputTest
       assertTUAbsent("doc1", "resId0", doc);
 
       assertLangAbsent("fr", doc);
+   }
+
+   private ArrayList<NamedDocument> createTestDocs()
+   {
+      LocaleId fr = LocaleId.FR;
+      LocaleId de = LocaleId.DE;
+      NamedDocument doc0 = new SimpleNamedDocument(
+            "doc0",
+            new SimpleSourceContents(
+                  "resId0",
+                  toMap(new SimpleTargetContents(fr, Approved, "targetFR0", "targetFR1"),
+                        new SimpleTargetContents(de, Approved, "targetDE0", "targetDE1")),
+                        "source0", "source1"
+                  ),
+            new SimpleSourceContents(
+                  "resId1",
+                  toMap(new SimpleTargetContents(fr, Approved, "TARGETfr0", "TARGETfr1")),
+                        "SOURCE0", "SOURCE1"
+                  )
+            );
+      NamedDocument doc1 = new SimpleNamedDocument(
+            "doc1",
+            new SimpleSourceContents(
+                  "resId0",
+                  toMap(new SimpleTargetContents(fr, Approved, "targetFR0", "targetFR1")),
+                        "source0", "source1"
+                  ),
+                  new SimpleSourceContents(
+                        "resId1",
+                        toMap(new SimpleTargetContents(de, Approved, "TARGETde0", "TARGETde1")),
+                              "SOURCE0", "SOURCE1"
+                        )
+            );
+      return newArrayList(doc0, doc1);
+   }
+
+   private Map<LocaleId, TargetContents> toMap(SimpleTargetContents... targetContents)
+   {
+      Map<LocaleId, TargetContents> map = Maps.newHashMap();
+      for (SimpleTargetContents target : targetContents)
+      {
+         map.put(target.getLocaleId(), target);
+      }
+      return map;
    }
 
    private void assertContainsFrenchTUs(Document doc) throws XpathException, SAXException, IOException

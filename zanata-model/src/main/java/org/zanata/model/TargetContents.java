@@ -21,6 +21,8 @@
 
 package org.zanata.model;
 
+import javax.annotation.Nonnull;
+
 import org.zanata.common.ContentState;
 import org.zanata.common.HasContents;
 import org.zanata.common.LocaleId;
@@ -31,6 +33,6 @@ import org.zanata.common.LocaleId;
  */
 public interface TargetContents extends HasContents
 {
-   public LocaleId getLocaleId();
-   public ContentState getState();
+   public @Nonnull LocaleId getLocaleId();
+   public @Nonnull ContentState getState();
 }

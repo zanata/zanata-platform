@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -57,23 +58,24 @@ import lombok.ToString;
 public class HLocale extends ModelEntityBase implements Serializable
 {
    private static final long serialVersionUID = 1L;
-   private LocaleId localeId;
+   private @Nonnull LocaleId localeId;
    private boolean active;
    private boolean enabledByDefault;
    private Set<HProject> supportedProjects;
    private Set<HProjectIteration> supportedIterations;
    private Set<HLocaleMember> members;
 
-   public HLocale(LocaleId localeId)
+   public HLocale(@Nonnull LocaleId localeId)
    {
       this.localeId = localeId;
    }
 
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
+   @SuppressWarnings("null")
    @NaturalId
    @NotNull
    @Type(type = "localeId")
-   public LocaleId getLocaleId()
+   public @Nonnull LocaleId getLocaleId()
    {
       return localeId;
    }

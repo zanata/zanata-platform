@@ -22,17 +22,82 @@
 package org.zanata.rest.service;
 
 import net.sf.okapi.common.filterwriter.TMXWriter;
+import net.sf.okapi.common.resource.ITextUnit;
+import net.sf.okapi.common.resource.TextFragment;
+import net.sf.okapi.common.resource.TextUnit;
 
-import org.zanata.model.NamedDocument;
+import org.zanata.common.ContentState;
+import org.zanata.common.LocaleId;
 import org.zanata.model.SourceContents;
+import org.zanata.model.TargetContents;
+import org.zanata.util.OkapiUtil;
 
 /**
+ * Writes one or more translations for a single TextFlow as a TMX translation unit.
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public interface ExportTUStrategy
+public class ExportTUStrategy
 {
+   private final LocaleId localeId;
 
-   public void exportTranslationUnit(TMXWriter tmxWriter, NamedDocument doc, SourceContents tf);
+   /**
+    * Exports one or all locales.  If localeId is null, export all locales.
+    * @param localeId
+    */
+   public ExportTUStrategy(LocaleId localeId)
+   {
+      this.localeId = localeId;
+   }
+
+   /**
+    * Writes the specified SourceContents (TextFlow) and one or all of its translations to the TMXWriter.
+    * @param tmxWriter
+    * @param tuidPrefix String to be prepended to all resIds when generating tuids
+    * @param tf the SourceContents (TextFlow) whose contents and translations are to be exported
+    */
+   public void exportTranslationUnit(TMXWriter tmxWriter, String tuidPrefix, SourceContents tf)
+   {
+      String resId = tf.getResId();
+      String tuid = tuidPrefix + resId;
+      // Perhaps we could encode plurals using TMX attributes?
+      String srcContent = tf.getContents().get(0);
+
+      ITextUnit textUnit = new TextUnit(resId, srcContent);
+      textUnit.setName(tuid);
+      if (localeId != null)
+      {
+         TargetContents tfTarget = tf.getTargetContents(localeId);
+         addTargetToTextUnit(textUnit, tfTarget);
+      }
+      else
+      {
+         Iterable<TargetContents> allTargetContents = tf.getAllTargetContents();
+         for (TargetContents tfTarget : allTargetContents)
+         {
+            addTargetToTextUnit(textUnit, tfTarget);
+         }
+      }
+      // If there aren't any translations for this TU, we shouldn't include it.
+      // From the TMX spec: "Logically, a complete translation-memory
+      // database will contain at least two <tuv> elements in each translation
+      // unit."
+      if (!textUnit.getTargetLocales().isEmpty())
+      {
+         tmxWriter.writeTUFull(textUnit);
+      }
+   }
+
+   private void addTargetToTextUnit(ITextUnit textUnit, TargetContents tfTarget)
+   {
+      // TODO handle ContentState.Reviewed
+      if (tfTarget != null && tfTarget.getState() == ContentState.Approved)
+      {
+         String trgContent = tfTarget.getContents().get(0);
+         net.sf.okapi.common.LocaleId locId = OkapiUtil.toOkapiLocale(tfTarget.getLocaleId());
+         TextFragment target = new TextFragment(trgContent);
+         textUnit.setTargetContent(locId, target);
+      }
+   }
 
 }

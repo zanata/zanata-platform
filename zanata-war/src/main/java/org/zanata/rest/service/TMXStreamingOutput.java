@@ -40,6 +40,8 @@ import org.zanata.util.OkapiUtil;
 import org.zanata.util.VersionUtility;
 
 /**
+ * Exports a collection of NamedDocument (ie a project iteration) to an
+ * OutputStream in TMX format.
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
@@ -51,7 +53,7 @@ public class TMXStreamingOutput implements StreamingOutput
    private final Iterable<NamedDocument> documents;
    private final LocaleId sourceLocale;
    private final LocaleId targetLocale;
-   private ExportTUStrategy exportTUStrategy;
+   private final ExportTUStrategy exportTUStrategy;
 
    public TMXStreamingOutput(Iterable<NamedDocument> documents,
          LocaleId sourceLocale, LocaleId targetLocale)
@@ -59,24 +61,18 @@ public class TMXStreamingOutput implements StreamingOutput
       this.documents = documents;
       this.sourceLocale = sourceLocale;
       this.targetLocale = targetLocale;
-      if (targetLocale == null)
-      {
-         this.exportTUStrategy = new ExportAllLocalesStrategy();
-      }
-      else
-      {
-         this.exportTUStrategy = new ExportSingleLocaleStrategy(targetLocale);
-      }
+      this.exportTUStrategy = new ExportTUStrategy(targetLocale);
    }
 
    net.sf.okapi.common.LocaleId toOkapiLocaleOrEmpty(LocaleId locale)
    {
-      net.sf.okapi.common.LocaleId okapiLocale = OkapiUtil.toOkapiLocale(locale);
-      if (okapiLocale == null)
+      if (locale == null)
       {
+         // TMXWriter demands a non-null target locale, but if you write
+         // your TUs with writeTUFull(), it is never actually used.
          return net.sf.okapi.common.LocaleId.EMPTY;
       }
-      return okapiLocale;
+      return OkapiUtil.toOkapiLocale(locale);
    }
 
    @Override
@@ -106,10 +102,11 @@ public class TMXStreamingOutput implements StreamingOutput
 
    private void exportDocument(TMXWriter tmxWriter, NamedDocument doc)
    {
+      String tuidPrefix = doc.getName() + ":";
       // TODO option to export obsolete TFs to TMX?
       for (SourceContents tf : doc)
       {
-         exportTUStrategy.exportTranslationUnit(tmxWriter, doc, tf);
+         exportTUStrategy.exportTranslationUnit(tmxWriter, tuidPrefix, tf);
       }
    }
 

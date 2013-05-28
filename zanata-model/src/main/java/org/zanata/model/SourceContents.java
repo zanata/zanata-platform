@@ -31,6 +31,16 @@ import org.zanata.common.LocaleId;
 public interface SourceContents extends HasContents
 {
    public String getResId();
+   /**
+    * Gets the TargetContents for a single locale.
+    * Note that default implementation in HTextFlow requires a lot of database I/O
+    * @param localeId
+    * @return
+    */
    public TargetContents getTargetContents(LocaleId localeId);
+   /**
+    * Gets the TargetContents for all available locales.
+    * @return
+    */
    public Iterable<TargetContents> getAllTargetContents();
 }

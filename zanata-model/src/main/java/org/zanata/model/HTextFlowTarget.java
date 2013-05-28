@@ -27,6 +27,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Nonnull;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -90,7 +92,7 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    private static final long serialVersionUID = 302308010797605435L;
 
    private HTextFlow textFlow;
-   private HLocale locale;
+   private @Nonnull HLocale locale;
 
    private String content0;
    private String content1;
@@ -118,7 +120,7 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    @Setter(AccessLevel.PRIVATE)
    private HTextFlowTargetHistory initialState;
 
-   public HTextFlowTarget(HTextFlow textFlow, HLocale locale)
+   public HTextFlowTarget(HTextFlow textFlow, @Nonnull HLocale locale)
    {
       this.locale = locale;
       this.textFlow = textFlow;
@@ -131,13 +133,13 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    @JoinColumn(name = "locale", nullable = false)
    @Field(index = Index.UN_TOKENIZED)
    @FieldBridge(impl = LocaleIdBridge.class)
-   public HLocale getLocale()
+   public @Nonnull HLocale getLocale()
    {
       return locale;
    }
 
    @Override
-   public LocaleId getLocaleId()
+   public @Nonnull LocaleId getLocaleId()
    {
       return locale.getLocaleId();
    }
@@ -146,7 +148,7 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    @Field(index = Index.UN_TOKENIZED)
    @FieldBridge(impl = ContentStateBridge.class)
    @Override
-   public ContentState getState()
+   public @Nonnull ContentState getState()
    {
       return state;
    }

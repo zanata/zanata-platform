@@ -408,6 +408,7 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
    @Override
    public TargetContents getTargetContents(LocaleId localeId)
    {
+      // TODO performance: need efficient way to look up a target by LocaleId
       Collection<HTextFlowTarget> targets = getTargets().values();
       for (HTextFlowTarget tft : targets)
       {
@@ -422,11 +423,6 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
    {
       return ImmutableList.<TargetContents>copyOf(getTargets().values());
    }
-//   @Override
-//   public Map<Long, ITextFlowTarget> getITargets()
-//   {
-//      return new HashMap<Long, ITextFlowTarget>(getTargets());
-//   }
 
    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = true)
    public HPotEntryData getPotEntryData()

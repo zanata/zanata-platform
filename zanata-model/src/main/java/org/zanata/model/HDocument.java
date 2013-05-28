@@ -63,6 +63,8 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
+import com.google.common.collect.ImmutableList;
+
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
@@ -255,14 +257,12 @@ public class HDocument extends ModelEntityBase implements NamedDocument, IDocume
          textFlows = new ArrayList<HTextFlow>();
       }
       return textFlows;
-      // return ImmutableList.copyOf(textFlows);
    }
 
    @Override
    public Iterator<SourceContents> iterator()
    {
-      return new ArrayList<SourceContents>(getTextFlows()).iterator();
-//      return ImmutableList.copyOf(getTextFlows());
+      return ImmutableList.<SourceContents>copyOf(getTextFlows()).iterator();
    }
 
    public boolean isObsolete()
