@@ -37,6 +37,10 @@ public class OkapiUtil
 
    public static LocaleId toOkapiLocale(org.zanata.common.LocaleId zanataLocale)
    {
+      if (zanataLocale == null)
+      {
+         return null;
+      }
       return LocaleId.fromBCP47(zanataLocale.getId());
    }
 

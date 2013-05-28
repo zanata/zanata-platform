@@ -65,6 +65,7 @@ import org.zanata.util.HashUtil;
 import org.zanata.util.OkapiUtil;
 import org.zanata.util.StringUtil;
 import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableList;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -96,7 +97,7 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor
 @ToString(of = {"resId", "revision", "comment", "obsolete"})
 @Slf4j
-public class HTextFlow extends HTextContainer implements Serializable, ITextFlowHistory, HasSimpleComment, HasContents
+public class HTextFlow extends HTextContainer implements Serializable, ITextFlowHistory, HasSimpleComment, HasContents, SourceContents
 {
    public static final String QUERY_TRANSLATED_TEXTFLOWIDS = "HTextFlow.QUERY_TRANSLATED_TEXTFLOWIDS";
    private static final long serialVersionUID = 3023080107971905435L;
@@ -183,6 +184,7 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
    @NaturalId
    @Length(max = 255)
    @NotEmpty
+   @Override
    public String getResId()
    {
       return resId;
@@ -401,6 +403,23 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
       }
       return targets;
    }
+
+   @Override
+   public TargetContents getTargetContents(Long localeId)
+   {
+      return getTargets().get(localeId);
+   }
+
+   @Override
+   public Iterable<TargetContents> getAllTargetContents()
+   {
+      return ImmutableList.<TargetContents>copyOf(getTargets().values());
+   }
+//   @Override
+//   public Map<Long, ITextFlowTarget> getITargets()
+//   {
+//      return new HashMap<Long, ITextFlowTarget>(getTargets());
+//   }
 
    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = true)
    public HPotEntryData getPotEntryData()

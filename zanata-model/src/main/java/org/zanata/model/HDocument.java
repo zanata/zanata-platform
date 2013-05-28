@@ -23,6 +23,7 @@ package org.zanata.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -79,9 +80,8 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString(of = {"name", "path", "docId", "locale", "revision"})
-public class HDocument extends ModelEntityBase implements IDocumentHistory, Serializable
+public class HDocument extends ModelEntityBase implements NamedDocument, IDocumentHistory, Serializable, Iterable<SourceContents>
 {
-
    private static final long serialVersionUID = 5129552589912687504L;
    private String docId;
    private String name;
@@ -165,6 +165,7 @@ public class HDocument extends ModelEntityBase implements IDocumentHistory, Seri
 
    @ManyToOne
    @JoinColumn(name = "locale", nullable = false)
+   @Override
    public HLocale getLocale()
    {
       return this.locale;
@@ -255,6 +256,13 @@ public class HDocument extends ModelEntityBase implements IDocumentHistory, Seri
       }
       return textFlows;
       // return ImmutableList.copyOf(textFlows);
+   }
+
+   @Override
+   public Iterator<SourceContents> iterator()
+   {
+      return new ArrayList<SourceContents>(getTextFlows()).iterator();
+//      return ImmutableList.copyOf(getTextFlows());
    }
 
    public boolean isObsolete()

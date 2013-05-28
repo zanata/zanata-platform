@@ -32,7 +32,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
@@ -43,14 +42,10 @@ import javax.persistence.PostUpdate;
 import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.AccessType;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CollectionOfElements;
-import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.AnalyzerDiscriminator;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
@@ -64,6 +59,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.common.ContentState;
 import org.zanata.common.HasContents;
+import org.zanata.common.LocaleId;
 import org.zanata.hibernate.search.ContentStateBridge;
 import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.hibernate.search.LocaleIdBridge;
@@ -88,7 +84,7 @@ import lombok.Setter;
 @Indexed
 @Setter
 @NoArgsConstructor
-public class HTextFlowTarget extends ModelEntityBase implements HasContents, HasSimpleComment, ITextFlowTargetHistory, Serializable
+public class HTextFlowTarget extends ModelEntityBase implements HasContents, HasSimpleComment, ITextFlowTargetHistory, Serializable, TargetContents
 {
 
    private static final long serialVersionUID = 302308010797605435L;
@@ -138,6 +134,12 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    public HLocale getLocale()
    {
       return locale;
+   }
+
+   @Override
+   public LocaleId getLocaleId()
+   {
+      return locale.getLocaleId();
    }
 
    @NotNull

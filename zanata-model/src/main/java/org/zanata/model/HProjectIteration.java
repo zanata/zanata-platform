@@ -26,6 +26,7 @@ import static org.jboss.seam.security.EntityAction.UPDATE;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -66,6 +67,8 @@ import org.zanata.hibernate.search.GroupSearchBridge;
 import org.zanata.model.type.EntityStatusType;
 import org.zanata.rest.dto.ProjectIteration;
 
+import com.google.common.collect.ImmutableList;
+
 /**
  * 
  * @see ProjectIteration
@@ -80,7 +83,7 @@ import org.zanata.rest.dto.ProjectIteration;
 @Setter
 @NoArgsConstructor
 @ToString(callSuper = true, of = {"project"})
-public class HProjectIteration extends SlugEntityBase
+public class HProjectIteration extends SlugEntityBase implements Iterable<NamedDocument>
 {
 
    private static final long serialVersionUID = 182037127575991478L;
@@ -209,5 +212,11 @@ public class HProjectIteration extends SlugEntityBase
          customizedValidations = new HashSet<String>();
       }
       return customizedValidations;
+   }
+
+   @Override
+   public Iterator<NamedDocument> iterator()
+   {
+      return ImmutableList.<NamedDocument>copyOf(getDocuments().values()).iterator();
    }
 }

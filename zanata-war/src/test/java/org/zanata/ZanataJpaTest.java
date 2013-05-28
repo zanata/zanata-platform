@@ -66,7 +66,12 @@ public abstract class ZanataJpaTest
    public void initializeEMF()
    {
       log.debug("Initializing EMF");
-      emf = Persistence.createEntityManagerFactory(PERSIST_NAME);
+      emf = Persistence.createEntityManagerFactory(PERSIST_NAME, createPropertiesMap());
+   }
+
+   protected Map<?, ?> createPropertiesMap()
+   {
+      return null;
    }
 
    @AfterSuite

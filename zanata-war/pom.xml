@@ -1295,6 +1295,11 @@
             <artifactId>okapi-filter-plaintext</artifactId>
             <version>${okapi.version}</version>
         </dependency>
+        <dependency>
+            <groupId>net.sf.okapi.filters</groupId>
+            <artifactId>okapi-filter-tmx</artifactId>
+            <version>${okapi.version}</version>
+        </dependency>
 
 		<!-- Other -->
 
@@ -1822,6 +1827,13 @@
 			<version>4.2.2.GA</version>
 			<scope>provided</scope>
 		</dependency>
+
+	   <dependency>
+	       <groupId>xmlunit</groupId>
+	       <artifactId>xmlunit</artifactId>
+	       <version>1.4</version>
+	   </dependency>
+
 	</dependencies>
 
 </project>
