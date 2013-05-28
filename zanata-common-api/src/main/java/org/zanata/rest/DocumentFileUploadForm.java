@@ -75,6 +75,10 @@ public class DocumentFileUploadForm implements Serializable
    @PartType("text/plain")
    private Long size;
 
+   @FormParam("adapterParams")
+   @PartType("text/plain")
+   private String adapterParams;
+
    public InputStream getFileStream()
    {
       return fileStream;
@@ -143,5 +147,15 @@ public class DocumentFileUploadForm implements Serializable
    public void setSize(Long size)
    {
       this.size = size;
+   }
+
+   public String getAdapterParams()
+   {
+      return adapterParams;
+   }
+
+   public void setAdapterParams(String adapterParams)
+   {
+      this.adapterParams = adapterParams;
    }
 }
