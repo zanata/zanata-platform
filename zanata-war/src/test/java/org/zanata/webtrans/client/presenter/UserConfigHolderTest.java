@@ -81,10 +81,10 @@ public class UserConfigHolderTest
    public void canGetPredicateBasedOnNavOption()
    {
       configHolder.setNavOption(NavOption.FUZZY_UNTRANSLATED);
-      assertThat(configHolder.getContentStatePredicate(), Matchers.is(UserConfigHolder.FUZZY_OR_NEW_PREDICATE));
+      assertThat(configHolder.getContentStatePredicate(), Matchers.is(UserConfigHolder.INCOMPLETE_PREDICATE));
 
       configHolder.setNavOption(NavOption.FUZZY);
-      assertThat(configHolder.getContentStatePredicate(), Matchers.is(UserConfigHolder.FUZZY_PREDICATE));
+      assertThat(configHolder.getContentStatePredicate(), Matchers.is(UserConfigHolder.DRAFT_PREDICATE));
 
       configHolder.setNavOption(NavOption.UNTRANSLATED);
       assertThat(configHolder.getContentStatePredicate(), Matchers.is(UserConfigHolder.NEW_PREDICATE));

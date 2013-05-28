@@ -25,11 +25,11 @@ public class NavOptionRenderer extends EnumRenderer<NavOption>
       switch (option)
       {
          case FUZZY:
-            return messages.nextFuzzy();
+            return messages.nextDraft();
          case UNTRANSLATED:
             return messages.nextUntranslated();
          case FUZZY_UNTRANSLATED:
-            return messages.nextFuzzyOrUntranslated();
+            return messages.nextIncomplete();
          default:
             return getEmptyValue();
       }

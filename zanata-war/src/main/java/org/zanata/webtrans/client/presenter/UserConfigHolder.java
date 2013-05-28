@@ -37,20 +37,20 @@ import com.google.inject.Singleton;
 @Singleton
 public class UserConfigHolder
 {
-   public static final Predicate<ContentState> FUZZY_OR_NEW_PREDICATE = new Predicate<ContentState>()
+   public static final Predicate<ContentState> INCOMPLETE_PREDICATE = new Predicate<ContentState>()
    {
       @Override
       public boolean apply(ContentState contentState)
       {
-         return contentState == ContentState.New || contentState == ContentState.NeedReview;
+         return contentState == ContentState.New || contentState.isRejectedOrFuzzy();
       }
    };
-   public static final Predicate<ContentState> FUZZY_PREDICATE = new Predicate<ContentState>()
+   public static final Predicate<ContentState> DRAFT_PREDICATE = new Predicate<ContentState>()
    {
       @Override
       public boolean apply(ContentState contentState)
       {
-         return contentState == ContentState.NeedReview;
+         return contentState.isRejectedOrFuzzy();
       }
    };
    public static final Predicate<ContentState> NEW_PREDICATE = new Predicate<ContentState>()
@@ -125,11 +125,11 @@ public class UserConfigHolder
    {
       if (state.getNavOption() == NavOption.FUZZY_UNTRANSLATED)
       {
-         return FUZZY_OR_NEW_PREDICATE;
+         return INCOMPLETE_PREDICATE;
       }
       else if (state.getNavOption() == NavOption.FUZZY)
       {
-         return FUZZY_PREDICATE;
+         return DRAFT_PREDICATE;
       }
       else
       {

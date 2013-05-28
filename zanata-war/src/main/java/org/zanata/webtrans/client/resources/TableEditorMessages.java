@@ -41,11 +41,11 @@ public interface TableEditorMessages extends Messages
    @DefaultMessage("Move to previous row")
    String moveToPreviousRow();
    
-   @DefaultMessage("Move to next Fuzzy")
-   String nextFuzzy();
+   @DefaultMessage("Move to next Fuzzy or Rejected")
+   String nextDraft();
 
-   @DefaultMessage("Move to prev Fuzzy")
-   String prevFuzzy();
+   @DefaultMessage("Move to prev Fuzzy or Rejected")
+   String prevDraft();
 
    @DefaultMessage("Move to next Untranslated")
    String nextUntranslated();
@@ -53,13 +53,13 @@ public interface TableEditorMessages extends Messages
    @DefaultMessage("Move to prev Untranslated")
    String prevUntranslated();
 
-   @DefaultMessage("Move to next Fuzzy/Untranslated")
-   String nextFuzzyOrUntranslated();
+   @DefaultMessage("Move to next Fuzzy/Rejected/Untranslated")
+   String nextIncomplete();
 
-   @DefaultMessage("Move to prev Fuzzy/Untranslated")
-   String prevFuzzyOrUntranslated();
+   @DefaultMessage("Move to prev Fuzzy/Rejected/Untranslated")
+   String prevIncomplete();
 
-   @DefaultMessage("Save as Approved (Ctrl+Enter)")
+   @DefaultMessage("Save as Translated (Ctrl+Enter)")
    String editSaveShortcut();
 
    @DefaultMessage("Save as Fuzzy (Ctrl+S)")
@@ -68,7 +68,7 @@ public interface TableEditorMessages extends Messages
    @DefaultMessage("Save as Fuzzy")
    String saveAsFuzzy();
 
-   @DefaultMessage("Save as Approved")
+   @DefaultMessage("Save as Translated")
    String saveAsApproved();
 
    @DefaultMessage("Cancel")

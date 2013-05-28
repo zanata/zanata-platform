@@ -140,9 +140,9 @@ public class ModalNavigationStateHolder
    private boolean matchFilterCondition(ContentState contentState)
    {
      // @formatter:off
-      return configHolder.getState().isFilterByNeedReview() && contentState == ContentState.NeedReview
+      return configHolder.getState().isFilterByNeedReview() && contentState.isRejectedOrFuzzy()
             || configHolder.getState().isFilterByUntranslated() && contentState == ContentState.New
-            || configHolder.getState().isFilterByTranslated() && contentState == ContentState.Approved;
+            || configHolder.getState().isFilterByTranslated() && contentState.isTranslated();
      // @formatter:on
    }
 
