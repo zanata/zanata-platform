@@ -6,15 +6,17 @@
 	xmlns:s="http://jboss.com/products/seam/taglib">
 
 	<ui:param name="approved" value="#{status.approved}" />
+	<ui:param name="translated" value="#{status.readyForReview}" />
 	<ui:param name="draft" value="#{status.draft}" />
 	<ui:param name="untranslated" value="#{status.untranslated}" />
 
 	<ui:param name="total" value="#{status.total}" />
-
+	
     <ui:param name="wApproved" value="#{total == 0 ? 0 : 110 * approved / total}" />
+    <ui:param name="wTranslated" value="#{total == 0 ? 0 : 110 * translated / total}" />
+    <ui:param name="wDraft" value="#{total == 0 ? 0 : 110 * draft / total}" />
     <ui:param name="wUntranslated" value="#{total == 0 ? 0 : 110 * untranslated / total}" />
-    <ui:param name="wFuzzy" value="#{total == 0 ? 0 : 110 * draft / total}" />
-
+    
 	 <s:fragment rendered="#{status.total > 0}">
      <ui:remove>
        <!-- FIXME this string should be localized as a whole, but stats values are not inserted
@@ -24,9 +26,10 @@
                   using either params or their other method
                    -->
      </ui:remove>
-	 <div title="#{messages['jsf.stats.Total']} #{status.total}, #{messages['jsf.stats.Translated']} #{status.approved}, #{messages['jsf.stats.NeedReview']} #{status.draft}" class="translationStatusDiv">
+	 <div title="#{messages['jsf.stats.Total']} #{status.total}, #{messages['jsf.stats.Approved']} #{approved}, #{messages['jsf.stats.Translated']} #{translated}, #{messages['jsf.stats.Draft']} #{draft}, #{messages['jsf.stats.Untranslated']} #{untranslated}" class="translationStatusDiv">
         <div class="translationStatusBar statusBar_approved" style="width:#{wApproved}px;"></div>
-        <div class="translationStatusBar statusBar_needReview" style="width:#{wFuzzy}px;"></div>
+        <div class="translationStatusBar statusBar_translated" style="width:#{wTranslated}px;"></div>
+        <div class="translationStatusBar statusBar_draft" style="width:#{wDraft}px;"></div>
         <div class="translationStatusBar statusBar_untranslated" style="width:#{wUntranslated}px;"></div>
 
         <span class="statusBar_percentage">

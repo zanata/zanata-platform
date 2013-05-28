@@ -113,8 +113,8 @@ tr.FuzzyStateDecoration td.TableEditorCell-Target div.TableEditorCell-Target {
 }
 
 table.ApprovedStateDecoration div.TableEditorCell-Target {
-    border-left: 3px solid #099b09;
-    border-right: 3px solid #099b09;
+    border-left: 3px solid #0000CD;
+    border-right: 3px solid #0000CD;
 }
 
 table.FuzzyStateDecoration div.TableEditorCell-Target {
@@ -123,8 +123,8 @@ table.FuzzyStateDecoration div.TableEditorCell-Target {
 }
 
 table.TranslatedStateDecoration div.TableEditorCell-Target {
-    border-left: 3px solid #0000CD;
-    border-right: 3px solid #0000CD;
+    border-left: 3px solid #099b09;
+    border-right: 3px solid #099b09;
 }
 
 table.RejectedStateDecoration div.TableEditorCell-Target {

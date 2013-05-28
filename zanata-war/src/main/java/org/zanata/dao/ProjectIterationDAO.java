@@ -224,7 +224,7 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
       Long totalCount = getTotalWordCountForIteration(iterationId);
       for (TransUnitWords count : result.values())
       {
-         count.set(ContentState.New, totalCount.intValue() - (count.getApproved() + count.getNeedReview()));
+         count.set(ContentState.New, StatisticsUtil.calculateUntranslated(totalCount, count));
       }
       return result;
    }

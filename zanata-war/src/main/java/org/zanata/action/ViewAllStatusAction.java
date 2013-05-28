@@ -282,7 +282,6 @@ public class ViewAllStatusAction implements Serializable
          {
             stats = new TranslationStatistics(statsOption);
             stats.setUntranslated(total);
-//            stats.setTotal(total);
 
             HTextFlowTarget lastTranslatedTarget = localeServiceImpl.getLastTranslated(projectSlug, iterationSlug, var.getLocaleId());
 

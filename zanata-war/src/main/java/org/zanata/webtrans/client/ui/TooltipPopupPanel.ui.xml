@@ -35,7 +35,7 @@
 
         .translated-header {
             border: none;
-            color: #00008b;
+            color: #002D00;
             white-space: nowrap;
             padding: 2px;
         }
@@ -49,7 +49,7 @@
 
         .approved-header {
             border: none;
-            color: #002D00;
+            color: #00008b;
             white-space: nowrap;
             padding: 2px;
         }
@@ -81,15 +81,15 @@
         }
 
         .translated {
-            background: lightblue;
-            border: 1px solid #0000ff;
-            color: #0000CD;
-        }
-
-        .approved {
             background: #099B09;
             border: 1px solid #006900;
             color: #002D00;
+        }
+
+        .approved {
+            background: lightblue;
+            border: 1px solid #0000ff;
+            color: #0000CD;
         }
 
         .draft {

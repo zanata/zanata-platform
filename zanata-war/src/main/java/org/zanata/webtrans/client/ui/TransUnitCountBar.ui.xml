@@ -9,7 +9,7 @@
         }
 
         .approved {
-            background: #099b09;
+             background: #0000CD;
             z-index: 0;
         }
 
@@ -24,7 +24,7 @@
         }
 
         .translated {
-            background: #0000CD;
+	        background: #099b09;
             z-index: 0;
         }
 

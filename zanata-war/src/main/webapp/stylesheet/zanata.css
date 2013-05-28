@@ -1003,10 +1003,14 @@ input[type="text"].loginForm_input, input[type="password"].loginForm_input {
 }
 
 .statusBar_approved {
+	background-color: #0000CD;
+}
+
+.statusBar_translated {
 	background-color: #099b09;
 }
 
-.statusBar_needReview {
+.statusBar_draft {
 	background-color: #ffc000;
 }
 
