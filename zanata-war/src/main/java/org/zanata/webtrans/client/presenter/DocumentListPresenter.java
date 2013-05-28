@@ -43,6 +43,7 @@ import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
+import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.RunDocValidationEvent;
 import org.zanata.webtrans.client.events.RunDocValidationEventHandler;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
@@ -81,6 +82,7 @@ import org.zanata.webtrans.shared.rpc.RunDocValidationResult;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.inject.Inject;
@@ -109,8 +111,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    private HashMap<String, DocumentId> idsByPath;
 
    private final PathDocumentFilter filter = new PathDocumentFilter();
-
-//   private CommonContainerTranslationStatistics projectStats;
 
    @Inject
    public DocumentListPresenter(DocumentListDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, UserWorkspaceContext userworkspaceContext, final WebTransMessages messages, History history, UserOptionsService userOptionsService)
@@ -311,6 +311,18 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       }
       docStatQueueDispatcher.setQueueAndExecute(queueList, getDocumentStatCallBack);
    }
+   
+   /**
+    * Facilitate unit testing. Will be no-op if in client(GWT compiled) mode.
+    */
+   protected void setStatesForTest(ArrayList<DocumentNode> sortedNodes, HashMap<DocumentId, DocumentNode> nodes)
+   {
+      if (!GWT.isClient())
+      {
+         this.sortedNodes = sortedNodes;
+         this.nodes = nodes;
+      }
+   }
 
    private final AsyncCallback<GetDocumentStatsResult> getDocumentStatCallBack = new AsyncCallback<GetDocumentStatsResult>()
    {
@@ -336,7 +348,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
                display.updateStats(row.intValue(), docInfo.getStats());
                display.updateLastTranslated(row.intValue(), docInfo.getLastTranslated());
             }
-            eventBus.fireEvent(new DocumentStatsUpdatedEvent(entry.getKey(), null, docInfo.getStats()));
+            eventBus.fireEvent(new DocumentStatsUpdatedEvent(entry.getKey(), docInfo.getStats()));
+            eventBus.fireEvent(new ProjectStatsUpdatedEvent(docInfo.getStats()));
          }
 
          docStatQueueDispatcher.executeQueue();
@@ -468,8 +481,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
             AuditInfo lastTranslated = new AuditInfo(event.getUpdateInfo().getTransUnit().getLastModifiedTime(), event.getUpdateInfo().getTransUnit().getLastModifiedBy());
             display.updateLastTranslated(row.intValue(), lastTranslated);
          }
-
-         eventBus.fireEvent(new DocumentStatsUpdatedEvent(updatedDoc.getId(), updateInfo, updatedDoc.getStats()));
+         eventBus.fireEvent(new DocumentStatsUpdatedEvent(updatedDoc.getId(), currentStats));
       }
    }
 

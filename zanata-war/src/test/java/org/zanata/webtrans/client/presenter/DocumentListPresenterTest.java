@@ -20,12 +20,14 @@ import java.util.Map;
 
 import net.customware.gwt.presenter.client.EventBus;
 
+import org.hamcrest.Matchers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.common.CommonContainerTranslationStatistics;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
@@ -36,6 +38,7 @@ import org.zanata.common.TranslationStatistics.StatUnit;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
+import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
@@ -58,10 +61,14 @@ import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
+import org.zanata.webtrans.shared.rpc.GetDocumentStats;
+import org.zanata.webtrans.shared.rpc.GetDocumentStatsResult;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceContextUpdateData;
+import org.zanata.webtrans.shared.rpc.LoadOptionsAction;
 import org.zanata.webtrans.shared.rpc.ThemesOption;
 
 import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 @Test(groups = { "unit-tests" })
 public class DocumentListPresenterTest
@@ -421,6 +428,40 @@ public class DocumentListPresenterTest
 
       verify(mockDisplay).setEnableDownloadZip(documentListPresenter.isZipFileDownloadAllowed(event.getProjectType()));
       verify(mockDisplay).setDownloadZipButtonTitle(isA(String.class));
+   }
+   
+   @Test
+   public void queryStats()
+   {
+      ArrayList<DocumentInfo> documentInfoList = buildSampleDocumentArray();
+      ArrayList<DocumentNode> sortedNodes = new ArrayList<DocumentNode>();
+      HashMap<DocumentId, DocumentNode> nodes = new HashMap<DocumentId, DocumentNode>();
+      HashMap<DocumentId, CommonContainerTranslationStatistics> statMap = new HashMap<DocumentId, CommonContainerTranslationStatistics>();
+      HashMap<DocumentId, AuditInfo> lastTranslatedMap = new HashMap<DocumentId, AuditInfo>();
+      
+      for(DocumentInfo docInfo: documentInfoList)
+      {
+         DocumentNode node = new DocumentNode(docInfo);
+         nodes.put(docInfo.getId(), node);
+         sortedNodes.add(node);
+         statMap.put(docInfo.getId(), new CommonContainerTranslationStatistics());
+      }
+      documentListPresenter.setStatesForTest(sortedNodes, nodes);
+      
+      GetDocumentStatsResult result = new GetDocumentStatsResult(statMap, lastTranslatedMap);
+      
+      documentListPresenter.queryStats();
+      
+      ArgumentCaptor<GetDocumentStats> actionCaptor = ArgumentCaptor.forClass(GetDocumentStats.class);
+      ArgumentCaptor<AsyncCallback> callbackCaptor = ArgumentCaptor.forClass(AsyncCallback.class);
+      
+      verify(mockDispatcher).execute(actionCaptor.capture(), callbackCaptor.capture());
+      
+      AsyncCallback callback = callbackCaptor.getValue();
+      callback.onSuccess(result);
+      
+      verify(mockEventBus, times(3)).fireEvent(isA(DocumentStatsUpdatedEvent.class));
+      verify(mockEventBus, times(3)).fireEvent(isA(ProjectStatsUpdatedEvent.class));
    }
 
    private static HasWorkspaceContextUpdateData workplaceContextData(final boolean projectActive, final ProjectType projectType)
