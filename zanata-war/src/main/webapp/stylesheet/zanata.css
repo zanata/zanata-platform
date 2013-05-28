@@ -1186,7 +1186,7 @@ select.headerInput
     text-align: center;
 }
 
-.copy_trans_options_table td.approved_action, .approved_action {
+.copy_trans_options_table td.translated_action, .translated_action {
     background-color: #099b09;
     text-align: center;
 }
