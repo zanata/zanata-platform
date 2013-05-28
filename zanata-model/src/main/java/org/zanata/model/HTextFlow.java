@@ -22,6 +22,7 @@ package org.zanata.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -405,9 +406,15 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
    }
 
    @Override
-   public TargetContents getTargetContents(Long localeId)
+   public TargetContents getTargetContents(LocaleId localeId)
    {
-      return getTargets().get(localeId);
+      Collection<HTextFlowTarget> targets = getTargets().values();
+      for (HTextFlowTarget tft : targets)
+      {
+         if (tft.getLocaleId().equals(localeId))
+            return tft;
+      }
+      return null;
    }
 
    @Override

@@ -22,6 +22,7 @@
 package org.zanata.model;
 
 import org.zanata.common.HasContents;
+import org.zanata.common.LocaleId;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
@@ -30,7 +31,6 @@ import org.zanata.common.HasContents;
 public interface SourceContents extends HasContents
 {
    public String getResId();
-   // TODO use locale code String instead of HLocale Long ID
-   public TargetContents getTargetContents(Long localeId);
+   public TargetContents getTargetContents(LocaleId localeId);
    public Iterable<TargetContents> getAllTargetContents();
 }

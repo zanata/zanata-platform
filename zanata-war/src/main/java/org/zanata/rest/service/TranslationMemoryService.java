@@ -178,7 +178,7 @@ public class TranslationMemoryService implements TranslationMemoryResource
          @PathParam("locale") LocaleId locale)
    {
       log.debug("start to get TM");
-      // FIXME security checks
+      // TODO security checks
       HProjectIteration hProjectIteration = retrieveAndCheckIteration(false);
       HLocale hLocale = null;
       if (locale != null)
@@ -186,7 +186,7 @@ public class TranslationMemoryService implements TranslationMemoryResource
          hLocale = validateTargetLocale(locale, projectSlug, iterationSlug);
       }
 
-      // TODO option to fetch TM for obsolete docs?
+      // TODO option to export obsolete docs to TMX?
       Collection<HDocument> documents = hProjectIteration.getDocuments().values();
       Iterator<HDocument> docIter = documents.iterator();
       HLocale sourceLocale;
@@ -200,7 +200,7 @@ public class TranslationMemoryService implements TranslationMemoryResource
          throw new WebApplicationException(404); // no docs
       }
 
-      StreamingOutput output = new TMXStreamingOutput(hProjectIteration, sourceLocale.getLocaleId(), hLocale.getLocaleId(), hLocale.getId());
+      StreamingOutput output = new TMXStreamingOutput(hProjectIteration, sourceLocale.getLocaleId(), hLocale.getLocaleId());
       String filename = makeFilename(projectSlug, iterationSlug, locale.getId());
       return Response.ok()
             .header("Content-Disposition", "attachment; filename=\"" + filename + "\"")

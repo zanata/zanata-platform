@@ -54,18 +54,18 @@ public class TMXStreamingOutput implements StreamingOutput
    private ExportTUStrategy exportTUStrategy;
 
    public TMXStreamingOutput(Iterable<NamedDocument> documents,
-         LocaleId sourceLocale, LocaleId targetLocale, Long targetLocaleId)
+         LocaleId sourceLocale, LocaleId targetLocale)
    {
       this.documents = documents;
       this.sourceLocale = sourceLocale;
       this.targetLocale = targetLocale;
-      if (targetLocaleId == null)
+      if (targetLocale == null)
       {
          this.exportTUStrategy = new ExportAllLocalesStrategy();
       }
       else
       {
-         this.exportTUStrategy = new ExportSingleLocaleStrategy(targetLocaleId);
+         this.exportTUStrategy = new ExportSingleLocaleStrategy(targetLocale);
       }
    }
 
@@ -96,7 +96,6 @@ public class TMXStreamingOutput implements StreamingOutput
             creationTool, creationToolVersion,
             segType, null, dataType);
 
-      // TODO option to export obsolete docs to TMX?
       for (NamedDocument doc : documents)
       {
          exportDocument(tmxWriter, doc);

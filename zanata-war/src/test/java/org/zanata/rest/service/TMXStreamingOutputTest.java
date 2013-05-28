@@ -46,22 +46,20 @@ public class TMXStreamingOutputTest
    {
       LocaleId fr = LocaleId.FR;
       LocaleId de = LocaleId.DE;
-      Long localeFR = 1L;
-      Long localeDE = 2L;
       NamedDocument doc0 = new SimpleNamedDocument(
             "doc0",
             new SimpleSourceContents(
                   "resId0",
-                  ImmutableMap.<Long, TargetContents>of(
-                        localeFR, new SimpleTargetContents(fr, Approved, "targetFR0", "targetFR1"),
-                        localeDE, new SimpleTargetContents(de, Approved, "targetDE0", "targetDE1")
+                  ImmutableMap.<LocaleId, TargetContents>of(
+                        fr, new SimpleTargetContents(fr, Approved, "targetFR0", "targetFR1"),
+                        de, new SimpleTargetContents(de, Approved, "targetDE0", "targetDE1")
                         ),
                         "source0", "source1"
                   ),
             new SimpleSourceContents(
                   "resId1",
-                  ImmutableMap.<Long, TargetContents>of(
-                        localeFR,
+                  ImmutableMap.<LocaleId, TargetContents>of(
+                        fr,
                         new SimpleTargetContents(fr, Approved, "TARGETfr0", "TARGETfr1")),
                         "SOURCE0", "SOURCE1"
                   )
@@ -70,15 +68,15 @@ public class TMXStreamingOutputTest
             "doc1",
             new SimpleSourceContents(
                   "resId0",
-                  ImmutableMap.<Long, TargetContents>of(
-                        localeFR,
+                  ImmutableMap.<LocaleId, TargetContents>of(
+                        fr,
                         new SimpleTargetContents(fr, Approved, "targetFR0", "targetFR1")),
                         "source0", "source1"
                   ),
                   new SimpleSourceContents(
                         "resId1",
-                        ImmutableMap.<Long, TargetContents>of(
-                              localeDE,
+                        ImmutableMap.<LocaleId, TargetContents>of(
+                              de,
                               new SimpleTargetContents(de, Approved, "TARGETde0", "TARGETde1")),
                               "SOURCE0", "SOURCE1"
                         )
@@ -90,12 +88,9 @@ public class TMXStreamingOutputTest
    public void exportAllLocales() throws Exception
    {
       ArrayList<NamedDocument> docList = createTestDocs();
-
       LocaleId sourceLocale = LocaleId.EN;
       LocaleId targetLocale = null;
-      Long targetLocaleId = null;
-
-      StreamingOutput output = new TMXStreamingOutput(docList, sourceLocale, targetLocale, targetLocaleId);
+      StreamingOutput output = new TMXStreamingOutput(docList, sourceLocale, targetLocale);
 
       Document doc = writeToXml(output);
 
@@ -107,18 +102,14 @@ public class TMXStreamingOutputTest
    public void exportFrench() throws Exception
    {
       ArrayList<NamedDocument> docList = createTestDocs();
-
       LocaleId sourceLocale = LocaleId.EN;
       LocaleId targetLocale = LocaleId.FR;
-      Long targetLocaleId = Long.valueOf(1);
-
-      StreamingOutput output = new TMXStreamingOutput(docList, sourceLocale, targetLocale, targetLocaleId);
+      StreamingOutput output = new TMXStreamingOutput(docList, sourceLocale, targetLocale);
 
       Document doc = writeToXml(output);
 
       assertContainsFrenchTUs(doc);
       assertTUAbsent("doc1", "resId1", doc);
-
       assertLangAbsent("de", doc);
    }
 
@@ -126,12 +117,9 @@ public class TMXStreamingOutputTest
    public void exportGerman() throws Exception
    {
       ArrayList<NamedDocument> docList = createTestDocs();
-
       LocaleId sourceLocale = LocaleId.EN;
       LocaleId targetLocale = LocaleId.DE;
-      Long targetLocaleId = Long.valueOf(2);
-
-      StreamingOutput output = new TMXStreamingOutput(docList, sourceLocale, targetLocale, targetLocaleId);
+      StreamingOutput output = new TMXStreamingOutput(docList, sourceLocale, targetLocale);
 
       Document doc = writeToXml(output);
 
@@ -181,7 +169,7 @@ public class TMXStreamingOutputTest
    {
       assertXpathEvaluatesTo(segmentText, "//tu[@tuid='"+docId+":"+resId+"']/tuv[@xml:lang='"+lang+"']/seg/text()", doc);
    }
-   
+
    private static void assertTUAbsent(String docId, String resId, Document doc) throws XpathException, SAXException, IOException
    {
       assertXpathNotExists("//tu[@tuid='"+docId+":"+resId+"']", doc);

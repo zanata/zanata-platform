@@ -25,6 +25,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.zanata.common.LocaleId;
+
 import com.google.common.collect.ImmutableList;
 
 import lombok.Data;
@@ -38,10 +40,10 @@ public class SimpleSourceContents implements SourceContents
 {
    private final String resId;
    private List<String> contents;
-   private final Map<Long, TargetContents> targets;
+   private final Map<LocaleId, TargetContents> targets;
 
    public SimpleSourceContents(String resId,
-         Map<Long, TargetContents> targets,
+         Map<LocaleId, TargetContents> targets,
          List<String> contents)
    {
       this.resId = resId;
@@ -51,13 +53,13 @@ public class SimpleSourceContents implements SourceContents
 
    public SimpleSourceContents(String resId,
          String content0,
-         Map<Long, TargetContents> targets)
+         Map<LocaleId, TargetContents> targets)
    {
       this(resId, targets, ImmutableList.of(content0));
    }
 
    public SimpleSourceContents(String resId,
-         Map<Long, TargetContents> targets,
+         Map<LocaleId, TargetContents> targets,
          String... contents)
    {
       this(resId, targets, ImmutableList.copyOf(contents));
@@ -77,7 +79,7 @@ public class SimpleSourceContents implements SourceContents
    }
 
    @Override
-   public TargetContents getTargetContents(Long localeId)
+   public TargetContents getTargetContents(LocaleId localeId)
    {
       return targets.get(localeId);
    }

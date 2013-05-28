@@ -28,6 +28,7 @@ import net.sf.okapi.common.filterwriter.TMXWriter;
 import net.sf.okapi.common.resource.TextFragment;
 
 import org.zanata.common.ContentState;
+import org.zanata.common.LocaleId;
 import org.zanata.model.NamedDocument;
 import org.zanata.model.SourceContents;
 import org.zanata.model.TargetContents;
@@ -39,9 +40,9 @@ import org.zanata.model.TargetContents;
 public class ExportSingleLocaleStrategy implements ExportTUStrategy
 {
 
-   private Long targetLocaleId;
+   private LocaleId targetLocaleId;
 
-   public ExportSingleLocaleStrategy(Long targetLocaleId)
+   public ExportSingleLocaleStrategy(LocaleId targetLocaleId)
    {
       this.targetLocaleId = targetLocaleId;
    }
