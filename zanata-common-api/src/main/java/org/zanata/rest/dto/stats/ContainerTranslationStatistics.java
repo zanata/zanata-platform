@@ -126,4 +126,15 @@ public class ContainerTranslationStatistics extends CommonContainerTranslationSt
       }
       this.detailedStats.add(newDetailedStats);
    }
+
+   @Override
+   public String toString()
+   {
+      final StringBuilder sb = new StringBuilder("ContainerTranslationStatistics{");
+      sb.append("id='").append(id).append('\'');
+      sb.append(", refs=").append(refs);
+      sb.append(", detailedStats=").append(detailedStats);
+      sb.append('}');
+      return sb.toString();
+   }
 }

@@ -58,6 +58,13 @@ public class TranslationStatistics implements Serializable
    private Date lastTranslatedDate;
    private String lastTranslatedBy;
 
+   private long total;
+   private long untranslated;
+   private long needReview;
+   private long approved;
+   private long rejected;
+   private long fuzzy;
+
    /**
     * This is for marshalling purpose only.
     */
@@ -314,6 +321,21 @@ public class TranslationStatistics implements Serializable
    public void decrement(ContentState state, long count)
    {
       translationCount.decrement(state, (int) count);
+   }
+
+   @Override
+   public String toString()
+   {
+      final StringBuilder sb = new StringBuilder("TranslationStatistics{");
+      sb.append("unit=").append(unit);
+      sb.append(", translationCount=").append(translationCount);
+      sb.append(", locale='").append(locale).append('\'');
+      sb.append(", remainingHours=").append(remainingHours);
+      sb.append(", lastTranslated='").append(lastTranslated).append('\'');
+      sb.append(", lastTranslatedDate=").append(lastTranslatedDate);
+      sb.append(", lastTranslatedBy='").append(lastTranslatedBy).append('\'');
+      sb.append('}');
+      return sb.toString();
    }
 
    public enum StatUnit

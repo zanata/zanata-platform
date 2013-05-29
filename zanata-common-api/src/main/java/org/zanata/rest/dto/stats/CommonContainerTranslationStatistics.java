@@ -78,4 +78,13 @@ public class CommonContainerTranslationStatistics implements Serializable
    {
       this.stats = otherContainerStatistics.getStats();
    }
+
+   @Override
+   public String toString()
+   {
+      final StringBuilder sb = new StringBuilder("CommonContainerTranslationStatistics{");
+      sb.append("stats=").append(stats);
+      sb.append('}');
+      return sb.toString();
+   }
 }
