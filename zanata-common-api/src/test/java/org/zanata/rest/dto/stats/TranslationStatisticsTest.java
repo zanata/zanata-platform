@@ -18,10 +18,14 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.common;
+package org.zanata.rest.dto.stats;
 
 import org.testng.annotations.Test;
-import org.zanata.common.TranslationStatistics.StatUnit;
+import org.zanata.common.LocaleId;
+import org.zanata.common.TransUnitCount;
+import org.zanata.common.TransUnitWords;
+import org.zanata.rest.dto.stats.TranslationStatistics;
+import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;

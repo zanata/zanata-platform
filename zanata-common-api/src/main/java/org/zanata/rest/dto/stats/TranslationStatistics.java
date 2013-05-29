@@ -18,7 +18,7 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.common;
+package org.zanata.rest.dto.stats;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -30,6 +30,10 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
+import org.zanata.common.AbstractTranslationCount;
+import org.zanata.common.ContentState;
+import org.zanata.common.TransUnitCount;
+import org.zanata.common.TransUnitWords;
 
 /**
  * Translation statistics. Contains actual numbers and other information about

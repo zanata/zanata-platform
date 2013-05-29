@@ -18,11 +18,12 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.common;
+package org.zanata.rest.dto.stats;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class CommonContainerTranslationStatistics implements Serializable
 {

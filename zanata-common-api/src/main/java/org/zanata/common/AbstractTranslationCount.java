@@ -84,7 +84,7 @@ public abstract class AbstractTranslationCount implements Serializable
       }
    }
 
-   protected void add(AbstractTranslationCount other)
+   public void add(AbstractTranslationCount other)
    {
       this.approved += other.approved;
       this.needReview += other.needReview;
