@@ -280,12 +280,7 @@ public class TranslationFileServiceImpl implements TranslationFileService
       return hasAdapterFor(documentType);
    }
 
-   /**
-    * @deprecated use {@link #getAdapterFor(DocumentType)}
-    */
-   @Deprecated
-   @Override
-   public FileFormatAdapter getAdapterFor(String fileNameOrExtension)
+   private FileFormatAdapter getAdapterFor(String fileNameOrExtension)
    {
       // FIXME throw exception when not found
 

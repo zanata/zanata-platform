@@ -105,12 +105,6 @@ public interface TranslationFileService
 
    Set<String> getSupportedExtensions();
 
-   /**
-    * @deprecated use {@link #getAdapterFor(DocumentType)}
-    */
-   @Deprecated
-   FileFormatAdapter getAdapterFor(String fileNameOrExtension);
-
    FileFormatAdapter getAdapterFor(DocumentType type);
 
    DocumentType getDocumentType(String fileNameOrExtension);
