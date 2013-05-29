@@ -89,7 +89,7 @@ public class TranslationServiceImplTest extends ZanataDbunitJpaTest
 
       assertThat(result.get(0).isTranslationSuccessful(), is(true));
       assertThat(result.get(0).getBaseVersionNum(), is(1));
-      assertThat(result.get(0).getBaseContentState(), is(ContentState.Approved));
+      assertThat(result.get(0).getBaseContentState(), is(ContentState.Translated));
       assertThat(result.get(0).getTranslatedTextFlowTarget().getVersionNum(), is(2)); // moved up a version
    }
 
@@ -120,7 +120,7 @@ public class TranslationServiceImplTest extends ZanataDbunitJpaTest
       TranslationResult result = results.get(0);
       assertThat(result.isTranslationSuccessful(), is(true));
       assertThat(result.getBaseVersionNum(), is(1));
-      assertThat(result.getBaseContentState(), is(ContentState.Approved)); // there was a prvious translation
+      assertThat(result.getBaseContentState(), is(ContentState.Translated)); // there was a prvious translation
       assertThat(result.getTranslatedTextFlowTarget().getVersionNum(), is(2)); // moved up a version
 
       // Second result
@@ -131,7 +131,7 @@ public class TranslationServiceImplTest extends ZanataDbunitJpaTest
       assertThat(result.getTranslatedTextFlowTarget().getVersionNum(), is(1)); // first version
    }
 
-   @Test(expectedExceptions = ConcurrentTranslationException.class)
+   @Test
    public void incorrectBaseVersion() throws Exception
    {
       TranslationService transService = seam.autowire(TranslationServiceImpl.class);
@@ -144,6 +144,8 @@ public class TranslationServiceImplTest extends ZanataDbunitJpaTest
 
       // Should not pass as the base version (1) does not match
       List<TransUnitUpdateRequest> translationRequests = Lists.newArrayList(translateReq);
-      transService.translate(new LocaleId("de"), translationRequests);
+      List<TranslationResult> result = transService.translate(new LocaleId("de"), translationRequests);
+
+      assertThat(result.get(0).isTranslationSuccessful(), Matchers.is(false));
    }
 }

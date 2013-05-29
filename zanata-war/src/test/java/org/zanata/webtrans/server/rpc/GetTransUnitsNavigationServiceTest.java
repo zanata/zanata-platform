@@ -62,10 +62,10 @@ public class GetTransUnitsNavigationServiceTest extends ZanataDbunitJpaTest
       GetTransUnitsNavigationServiceTest.log.info("********** duration :{} second", (System.nanoTime() - startTime) / 1000000000.0);
 
       assertThat(result.getTransIdStateList().size(), Matchers.equalTo(10));
-      assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(1L), ContentState.Approved));
-      assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(2L), ContentState.Approved));
+      assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(1L), ContentState.Translated));
+      assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(2L), ContentState.Translated));
       assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(3L), ContentState.NeedReview));
-      assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(4L), ContentState.Approved));
+      assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(4L), ContentState.Translated));
       assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(5L), ContentState.NeedReview));
       assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(6L), ContentState.NeedReview));
       assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(7L), ContentState.New));
@@ -120,10 +120,10 @@ public class GetTransUnitsNavigationServiceTest extends ZanataDbunitJpaTest
       GetTransUnitsNavigationResult result = service.getNavigationIndexes(action, jaLocale);
 
       assertThat(result.getTransIdStateList().size(), Matchers.equalTo(7));
-      assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(1L), ContentState.Approved));
-      assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(2L), ContentState.Approved));
+      assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(1L), ContentState.Translated));
+      assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(2L), ContentState.Translated));
       assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(3L), ContentState.NeedReview));
-      assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(4L), ContentState.Approved));
+      assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(4L), ContentState.Translated));
       assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(5L), ContentState.NeedReview));
       assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(6L), ContentState.NeedReview));
       assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(8L), ContentState.New));

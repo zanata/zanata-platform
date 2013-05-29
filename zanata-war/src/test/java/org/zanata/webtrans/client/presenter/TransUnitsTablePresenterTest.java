@@ -171,7 +171,7 @@ public class TransUnitsTablePresenterTest
 
       presenter.saveChangesAndFilter();
 
-      verify(targetContentsPresenter).saveCurrent(ContentState.Approved);
+      verify(targetContentsPresenter).saveCurrent(ContentState.Translated);
       verify(display).hideFilterConfirmation();
       verify(navigationService).execute(Mockito.isA(FilterViewEvent.class));
    }
@@ -498,7 +498,7 @@ public class TransUnitsTablePresenterTest
       List<TransUnit> transUnits = Lists.newArrayList(TestFixture.makeTransUnit(1));
       when(navigationService.getCurrentPageValues()).thenReturn(transUnits);
       TransUnitId selectedId = transUnits.get(0).getId();
-      when(targetContentsPresenter.getCurrentTransUnitIdOrNull()).thenReturn(selectedId);
+      when(sourceContentsPresenter.getCurrentTransUnitIdOrNull()).thenReturn(selectedId);
 
       presenter.onRefreshPage(RefreshPageEvent.REDRAW_PAGE_EVENT);
 
@@ -514,13 +514,12 @@ public class TransUnitsTablePresenterTest
    {
       List<TransUnit> transUnits = Lists.newArrayList(TestFixture.makeTransUnit(1));
       when(navigationService.getCurrentPageValues()).thenReturn(transUnits);
-      when(targetContentsPresenter.getCurrentTransUnitIdOrNull()).thenReturn(null);
+      when(sourceContentsPresenter.getCurrentTransUnitIdOrNull()).thenReturn(null);
 
       presenter.onRefreshPage(RefreshPageEvent.REDRAW_PAGE_EVENT);
 
       verify(targetContentsPresenter).savePendingChangesIfApplicable();
       verify(targetContentsPresenter).showData(transUnits);
-      verify(targetContentsPresenter).getCurrentTransUnitIdOrNull();
       verify(display).buildTable(sourceContentsPresenter.getDisplays(), targetContentsPresenter.getDisplays());
       verify(targetContentsPresenter, never()).setSelected(any(TransUnitId.class));
    }

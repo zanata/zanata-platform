@@ -104,6 +104,7 @@ public class HistoryEventHandlerServiceTest
       token.setDocumentPath("doc/a.po");
       DocumentInfo document = TestFixture.documentInfo(99, "doc/a.po");
       when(documentListPresenter.getDocumentId("doc/a.po")).thenReturn(document.getId());
+      when(documentListPresenter.getDocumentInfo(document.getId())).thenReturn(document);
 
       service.processForAppPresenter(document.getId());
 
@@ -190,8 +191,10 @@ public class HistoryEventHandlerServiceTest
       token.setDocumentPath("doc/path");
       token.setProjectSearchReplacement("replacement");
       when(historyChangeEvent.getValue()).thenReturn(token.toTokenString());
-      DocumentId documentId = new DocumentId(new Long(1), "");
+      DocumentInfo documentInfo = TestFixture.documentInfo(1, "doc/path");
+      DocumentId documentId = documentInfo.getId();
       when(documentListPresenter.getDocumentId("doc/path")).thenReturn(documentId);
+      when(documentListPresenter.getDocumentInfo(documentId)).thenReturn(documentInfo);
       when(appPresenter.getSelectedDocIdOrNull()).thenReturn(new DocumentId(new Long(99), ""));
       contextHolder.updateContext(new GetTransUnitActionContext(documentInfo(99, "")));
 
@@ -206,6 +209,7 @@ public class HistoryEventHandlerServiceTest
       inOrder.verify(documentListPresenter).getDocumentId(token.getDocumentPath());
       inOrder.verify(appPresenter).getSelectedDocIdOrNull();
       inOrder.verify(appPresenter).selectDocument(documentId);
+      inOrder.verify(documentListPresenter).getDocumentInfo(documentId);
       inOrder.verify(eventBus).fireEvent(Mockito.isA(DocumentSelectionEvent.class));
       inOrder.verify(eventBus).fireEvent(Mockito.isA(FindMessageEvent.class));
       inOrder.verify(appPresenter).showView(token.getView());
@@ -225,8 +229,10 @@ public class HistoryEventHandlerServiceTest
       token.setProjectSearchReplacement("replacement");
       token.setTextFlowId("1");
       when(historyChangeEvent.getValue()).thenReturn(token.toTokenString());
-      DocumentId documentId = new DocumentId(new Long(1), "");
+      DocumentInfo documentInfo = TestFixture.documentInfo(1, "doc/path");
+      DocumentId documentId = documentInfo.getId();
       when(documentListPresenter.getDocumentId("doc/path")).thenReturn(documentId);
+      when(documentListPresenter.getDocumentInfo(documentId)).thenReturn(documentInfo);
       when(appPresenter.getSelectedDocIdOrNull()).thenReturn(new DocumentId(new Long(99), ""));
       contextHolder.updateContext(null);
 
@@ -240,9 +246,11 @@ public class HistoryEventHandlerServiceTest
       inOrder.verify(searchResultsPresenter).updateReplacementText(token.getProjectSearchReplacement());
 
       inOrder.verify(documentListPresenter).getDocumentId(token.getDocumentPath());
+      inOrder.verify(documentListPresenter).getDocumentInfo(documentId);
       inOrder.verify(eventBus).fireEvent(Mockito.isA(InitEditorEvent.class));
       inOrder.verify(appPresenter).getSelectedDocIdOrNull();
       inOrder.verify(appPresenter).selectDocument(documentId);
+      inOrder.verify(documentListPresenter).getDocumentInfo(documentId);
       inOrder.verify(eventBus).fireEvent(Mockito.isA(DocumentSelectionEvent.class));
       inOrder.verify(eventBus).fireEvent(Mockito.isA(FindMessageEvent.class));
       inOrder.verify(appPresenter).showView(token.getView());

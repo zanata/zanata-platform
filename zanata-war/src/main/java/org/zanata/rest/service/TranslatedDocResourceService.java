@@ -75,6 +75,7 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationService;
+import com.google.common.base.Optional;
 
 @Name("translatedDocResourceService")
 @Path(TranslatedDocResourceService.SERVICE_PATH)
@@ -235,7 +236,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource
       // TODO avoid queries for better cacheability
       List<HTextFlowTarget> hTargets = textFlowTargetDAO.findTranslations(document, hLocale);
       boolean foundData = resourceUtils.transferToTranslationsResource(
-            translationResource, document, hLocale, extensions, hTargets, null);
+            translationResource, document, hLocale, extensions, hTargets, Optional.<String>absent());
 
       if (!foundData && !skeletons)
       {
