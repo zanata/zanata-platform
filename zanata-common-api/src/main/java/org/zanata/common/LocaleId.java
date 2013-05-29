@@ -2,6 +2,8 @@ package org.zanata.common;
 
 import java.io.Serializable;
 
+import javax.annotation.Nonnull;
+
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonValue;
 
@@ -11,7 +13,7 @@ public class LocaleId implements Serializable
 
    private static final long serialVersionUID = 1L;
 
-   private String id;
+   private @Nonnull String id;
    // TODO split up to language code, country code, qualifier etc..
 
    public static final LocaleId EN = new LocaleId("en");
@@ -21,17 +23,15 @@ public class LocaleId implements Serializable
    public static final LocaleId ES = new LocaleId("es");
 
    // JaxB needs a no-arg constructor :(
-   @SuppressWarnings("unused")
+   // TODO can we make this private?
    public LocaleId()
    {
-      id = null;
+      id = "";
    }
 
    @JsonCreator
-   public LocaleId(String localeId)
+   public LocaleId(@Nonnull String localeId)
    {
-      if (localeId == null)
-         throw new IllegalArgumentException("localeId");
       if (localeId.indexOf('_') != -1)
          throw new IllegalArgumentException("expected lang[-country[-modifier]], got " + localeId);
       this.id = localeId.intern();
@@ -53,9 +53,10 @@ public class LocaleId implements Serializable
       return id.hashCode();
    }
 
+   @SuppressWarnings("null")
    @Override
    @JsonValue
-   public String toString()
+   public @Nonnull String toString()
    {
       return id;
    }
@@ -65,12 +66,18 @@ public class LocaleId implements Serializable
       return new LocaleId(localeName.replace('_', '-'));
    }
 
-   public String toJavaName()
+   @SuppressWarnings("null")
+   public @Nonnull String toJavaName()
    {
       return id.replace('-', '_');
    }
 
-   public String getId()
+   /**
+    * BCP-47 language tag
+    * @return
+    */
+   @SuppressWarnings("null")
+   public @Nonnull String getId()
    {
       return id;
    }
