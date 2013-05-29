@@ -58,13 +58,6 @@ public class TranslationStatistics implements Serializable
    private Date lastTranslatedDate;
    private String lastTranslatedBy;
 
-   private long total;
-   private long untranslated;
-   private long needReview;
-   private long approved;
-   private long rejected;
-   private long fuzzy;
-
    /**
     * This is for marshalling purpose only.
     */
