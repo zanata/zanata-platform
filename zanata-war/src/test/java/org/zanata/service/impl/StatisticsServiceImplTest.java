@@ -73,6 +73,7 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest
             .use("validationServiceImpl", validationServiceImpl)
             .useImpl(TranslationStateCacheImpl.class)
             .ignoreNonResolvable();
+       clearHibernateSecondLevelCache();
     }
 
    @Test
@@ -140,7 +141,7 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest
       assertThat(wordLevel, is(mssgLevel));
    }
 
-   @Test
+   @Test //(enabled = false, description = "this will fail if run together")
    public void getDetailedIterationStatisticsForSpecificLocales()
    {
       String[] locales = new String[]{"en-US", "es", "as"};
@@ -166,7 +167,7 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest
       }
    }
 
-   @Test
+   @Test //(enabled = false, description = "this will fail if run together")
    public void getSimpleDocumentStatisticsForAllLocales()
    {
       StatisticsServiceImpl statisticsService = seam.autowire(StatisticsServiceImpl.class);

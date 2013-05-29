@@ -88,9 +88,6 @@ public class StatisticsServiceImpl implements StatisticsResource
    @In
    private TranslationStateCache translationStateCacheImpl;
 
-   @In
-   private TextFlowTargetDAO textFlowTargetDAO;
-
    @Override
    public ContainerTranslationStatistics getStatistics(String projectSlug, String iterationSlug, boolean includeDetails, boolean includeWordStats, String[] locales)
    {
