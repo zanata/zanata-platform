@@ -681,7 +681,7 @@ public class ProjectIterationFilesAction implements Serializable
 
    private Optional<String> getOptionalParams()
    {
-      return Optional.of(Strings.emptyToNull(documentFileUpload.getAdapterParams()));
+      return Optional.fromNullable(Strings.emptyToNull(documentFileUpload.getAdapterParams()));
    }
 
    /**
