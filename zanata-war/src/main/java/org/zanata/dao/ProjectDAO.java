@@ -2,6 +2,7 @@ package org.zanata.dao;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
@@ -43,7 +44,11 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
 
    public HProject getBySlug(String slug)
    {
-      return (HProject) getSession().byNaturalId(HProject.class).using("slug", slug).load();
+      if(!StringUtils.isEmpty(slug))
+      {
+         return (HProject) getSession().byNaturalId(HProject.class).using("slug", slug).load();
+      }
+      return null;
    }
 
    @SuppressWarnings("unchecked")
