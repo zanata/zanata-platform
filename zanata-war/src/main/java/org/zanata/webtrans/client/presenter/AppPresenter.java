@@ -25,10 +25,10 @@ import net.customware.gwt.presenter.client.PresenterRevealedEvent;
 import net.customware.gwt.presenter.client.PresenterRevealedHandler;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.zanata.common.CommonContainerTranslationStatistics;
 import org.zanata.common.LocaleId;
-import org.zanata.common.TranslationStatistics;
-import org.zanata.common.TranslationStatistics.StatUnit;
+import org.zanata.rest.dto.stats.CommonContainerTranslationStatistics;
+import org.zanata.rest.dto.stats.TranslationStatistics;
+import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 import org.zanata.webtrans.client.events.AttentionModeActivationEvent;
 import org.zanata.webtrans.client.events.AttentionModeActivationEventHandler;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;

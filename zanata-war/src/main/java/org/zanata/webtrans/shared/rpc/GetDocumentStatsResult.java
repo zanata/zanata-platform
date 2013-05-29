@@ -2,7 +2,7 @@ package org.zanata.webtrans.shared.rpc;
 
 import java.util.Map;
 
-import org.zanata.common.CommonContainerTranslationStatistics;
+import org.zanata.rest.dto.stats.CommonContainerTranslationStatistics;
 import org.zanata.webtrans.shared.model.AuditInfo;
 import org.zanata.webtrans.shared.model.DocumentId;
 

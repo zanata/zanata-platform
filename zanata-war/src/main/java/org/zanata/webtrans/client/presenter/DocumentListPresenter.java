@@ -31,11 +31,11 @@ import java.util.Map.Entry;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.zanata.common.CommonContainerTranslationStatistics;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
-import org.zanata.common.TranslationStatistics;
-import org.zanata.common.TranslationStatistics.StatUnit;
+import org.zanata.rest.dto.stats.CommonContainerTranslationStatistics;
+import org.zanata.rest.dto.stats.TranslationStatistics;
+import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.events.DocValidationResultEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;

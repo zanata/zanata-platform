@@ -20,7 +20,7 @@
  */
 package org.zanata.webtrans.client.view;
 
-import org.zanata.common.CommonContainerTranslationStatistics;
+import org.zanata.rest.dto.stats.CommonContainerTranslationStatistics;
 import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.presenter.MainView;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;

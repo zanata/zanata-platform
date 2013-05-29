@@ -2,8 +2,8 @@ package org.zanata.webtrans.shared.model;
 
 import java.util.Map;
 
-import org.zanata.common.CommonContainerTranslationStatistics;
 import org.zanata.common.LocaleId;
+import org.zanata.rest.dto.stats.CommonContainerTranslationStatistics;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 

@@ -2,7 +2,7 @@ package org.zanata.webtrans.client.view;
 
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
-import org.zanata.common.CommonContainerTranslationStatistics;
+import org.zanata.rest.dto.stats.CommonContainerTranslationStatistics;
 import org.zanata.webtrans.client.presenter.MainView;
 
 /**

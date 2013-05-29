@@ -1,7 +1,7 @@
 package org.zanata.webtrans.client.events;
 
 
-import org.zanata.common.CommonContainerTranslationStatistics;
+import org.zanata.rest.dto.stats.CommonContainerTranslationStatistics;
 import org.zanata.webtrans.shared.model.DocumentId;
 
 import com.google.gwt.event.shared.GwtEvent;

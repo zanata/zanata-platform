@@ -1,6 +1,6 @@
 package org.zanata.webtrans.client.ui;
 
-import org.zanata.common.CommonContainerTranslationStatistics;
+import org.zanata.rest.dto.stats.CommonContainerTranslationStatistics;
 
 public interface HasTranslationStats
 {

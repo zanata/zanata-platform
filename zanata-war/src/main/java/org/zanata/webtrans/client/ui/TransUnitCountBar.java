@@ -1,9 +1,9 @@
 package org.zanata.webtrans.client.ui;
 
-import org.zanata.common.CommonContainerTranslationStatistics;
 import org.zanata.common.LocaleId;
-import org.zanata.common.TranslationStatistics;
-import org.zanata.common.TranslationStatistics.StatUnit;
+import org.zanata.rest.dto.stats.CommonContainerTranslationStatistics;
+import org.zanata.rest.dto.stats.TranslationStatistics;
+import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
