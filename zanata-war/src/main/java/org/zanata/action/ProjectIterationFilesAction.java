@@ -266,13 +266,17 @@ public class ProjectIterationFilesAction implements Serializable
       {
          uploadPotFile();
       }
-      else if (translationFileServiceImpl.hasAdapterFor(documentFileUpload.getFileName()))
-      {
-         uploadAdapterFile();
-      }
       else
       {
-         FacesMessages.instance().add(Severity.ERROR, "Unrecognized file extension for {0}.", documentFileUpload.getFileName());
+         DocumentType type = translationFileServiceImpl.getDocumentType(documentFileUpload.getFileName());
+         if (translationFileServiceImpl.hasAdapterFor(type))
+         {
+            uploadAdapterFile();
+         }
+         else
+         {
+            FacesMessages.instance().add(Severity.ERROR, "Unrecognized file extension for {0}.", documentFileUpload.getFileName());
+         }
       }
 
       // NB This needs to be done as for some reason seam is losing the
@@ -677,7 +681,7 @@ public class ProjectIterationFilesAction implements Serializable
 
    private Optional<String> getOptionalParams()
    {
-      return Optional.of(Strings.emptyToNull(documentFileUpload.getAdapterParams()));
+      return Optional.fromNullable(Strings.emptyToNull(documentFileUpload.getAdapterParams()));
    }
 
    /**

@@ -265,12 +265,7 @@ public class TranslationFileServiceImpl implements TranslationFileService
       return DOCTYPEMAP.containsKey(type);
    }
 
-   /**
-    * @deprecated use {@link #hasAdapterFor(DocumentType)}s
-    */
-   @Deprecated
-   @Override
-   public boolean hasAdapterFor(String fileNameOrExtension)
+   private boolean hasAdapterFor(String fileNameOrExtension)
    {
       String extension = extractExtension(fileNameOrExtension);
       if (extension == null)
@@ -285,12 +280,7 @@ public class TranslationFileServiceImpl implements TranslationFileService
       return hasAdapterFor(documentType);
    }
 
-   /**
-    * @deprecated use {@link #getAdapterFor(DocumentType)}
-    */
-   @Deprecated
-   @Override
-   public FileFormatAdapter getAdapterFor(String fileNameOrExtension)
+   private FileFormatAdapter getAdapterFor(String fileNameOrExtension)
    {
       // FIXME throw exception when not found
 
@@ -305,6 +295,12 @@ public class TranslationFileServiceImpl implements TranslationFileService
          return null;
       }
       return getAdapterFor(documentType);
+   }
+
+   @Override
+   public DocumentType getDocumentType(String fileNameOrExtension)
+   {
+      return DocumentType.typeFor(extractExtension(fileNameOrExtension));
    }
 
    @Override
