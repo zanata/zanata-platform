@@ -36,7 +36,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.HttpHeaders;
@@ -61,7 +60,6 @@ import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowTargetDAO;
-import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
@@ -152,22 +150,6 @@ public class TranslatedDocResourceService implements TranslatedDocResource
    @In
    private LocaleService localeServiceImpl;
 
-
-   private HLocale validateTargetLocale(LocaleId locale, String projectSlug, String iterationSlug)
-   {
-      HLocale hLocale;
-      try
-      {
-         hLocale = localeServiceImpl.validateLocaleByProjectIteration(locale, projectSlug, iterationSlug);
-         return hLocale;
-      }
-      catch (ZanataServiceException e)
-      {
-         log.warn("Exception validating target locale {0} in proj {1} iter {2}", e, locale, projectSlug, iterationSlug);
-         throw new WebApplicationException(Response.status(Status.FORBIDDEN).entity(e.getMessage()).build());
-      }
-   }
-
    /**
     * Retrieves a set of translations for a given locale.
     * 
@@ -204,7 +186,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource
       log.debug("start to get translation");
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       HProjectIteration hProjectIteration = projectIterationService.retrieveAndCheckIteration(false);
-      HLocale hLocale = validateTargetLocale(locale, projectSlug, iterationSlug);
+      HLocale hLocale = projectIterationService.validateTargetLocale(locale, projectSlug, iterationSlug);
 
       ResourceUtils.validateExtensions(extensions);
 

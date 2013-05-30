@@ -23,6 +23,7 @@ package org.zanata.rest.service;
 import static org.zanata.common.EntityStatus.OBSOLETE;
 import static org.zanata.common.EntityStatus.READONLY;
 
+import javax.annotation.Nonnull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -32,6 +33,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.HttpHeaders;
@@ -42,6 +44,8 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.jboss.resteasy.util.HttpHeaderNames;
@@ -50,9 +54,12 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.security.Identity;
 import org.zanata.common.EntityStatus;
+import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.exception.ZanataServiceException;
+import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.validator.SlugValidator;
@@ -60,12 +67,14 @@ import org.zanata.rest.MediaTypes;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.ReadOnlyEntityException;
 import org.zanata.rest.dto.ProjectIteration;
+import org.zanata.service.LocaleService;
 
 import com.google.common.base.Objects;
 
 @Name("projectIterationService")
 @Path(ProjectIterationService.SERVICE_PATH)
 @Transactional
+@Slf4j
 public class ProjectIterationService implements ProjectIterationResource
 {
 
@@ -97,6 +106,9 @@ public class ProjectIterationService implements ProjectIterationResource
 
    @Context
    private Request request;
+
+   @In
+   private LocaleService localeServiceImpl;
 
    @In
    ProjectDAO projectDAO;
@@ -375,4 +387,26 @@ public class ProjectIterationService implements ProjectIterationResource
          to.setProjectType(from.getProjectType().toString());
       }
    }
+
+   /**
+    * Returns the requested locale, but only if the locale is allowed for the server/project/version.
+    * @param locale
+    * @param projectSlug
+    * @param iterationSlug
+    * @return
+    * @throws WebApplicationException if locale is not allowed
+    */
+   public @Nonnull HLocale validateTargetLocale(LocaleId locale, String projectSlug, String iterationSlug)
+   {
+      try
+      {
+         return localeServiceImpl.validateLocaleByProjectIteration(locale, projectSlug, iterationSlug);
+      }
+      catch (ZanataServiceException e)
+      {
+         log.warn("Exception validating target locale {0} in proj {1} iter {2}", e, locale, projectSlug, iterationSlug);
+         throw new WebApplicationException(Response.status(Status.FORBIDDEN).entity(e.getMessage()).build());
+      }
+   }
+
 }

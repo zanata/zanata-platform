@@ -23,14 +23,12 @@ package org.zanata.rest.service;
 import java.util.Collection;
 import java.util.Iterator;
 
-import javax.annotation.Nonnull;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 
 import org.jboss.seam.annotations.In;
@@ -44,7 +42,6 @@ import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowTargetDAO;
-import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
@@ -131,22 +128,6 @@ public class TranslationMemoryService implements TranslationMemoryResource
       return null;
    }
 
-   // TODO duplicated code from TranslatedDocResourceService
-   private @Nonnull HLocale validateTargetLocale(LocaleId locale, String projectSlug, String iterationSlug)
-   {
-      HLocale hLocale;
-      try
-      {
-         hLocale = localeServiceImpl.validateLocaleByProjectIteration(locale, projectSlug, iterationSlug);
-         return hLocale;
-      }
-      catch (ZanataServiceException e)
-      {
-         log.warn("Exception validating target locale {0} in proj {1} iter {2}", e, locale, projectSlug, iterationSlug);
-         throw new WebApplicationException(Response.status(Status.FORBIDDEN).entity(e.getMessage()).build());
-      }
-   }
-
    @Override
    @GET
    public Response getProjectTranslationMemory(@PathParam("projectSlug") String projectSlug, @QueryParam("locale") LocaleId locale)
@@ -165,7 +146,7 @@ public class TranslationMemoryService implements TranslationMemoryResource
       HProjectIteration hProjectIteration = projectIterationService.retrieveAndCheckIteration(false);
       if (locale != null)
       {
-         validateTargetLocale(locale, projectSlug, iterationSlug);
+         projectIterationService.validateTargetLocale(locale, projectSlug, iterationSlug);
       }
 
       // TODO option to export obsolete docs to TMX?
