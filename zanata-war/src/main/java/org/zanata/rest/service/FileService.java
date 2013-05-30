@@ -344,7 +344,7 @@ public class FileService implements FileResource
    {
       HDocumentUpload upload;
       try {
-         upload = saveFirstUploadPart(projectSlug, iterationSlug, docId, uploadForm, uploadForm.getFileType(), null);
+         upload = saveFirstUploadPart(projectSlug, iterationSlug, docId, uploadForm, null);
       }
       catch (IOException e)
       {
@@ -542,13 +542,13 @@ public class FileService implements FileResource
       return upload;
    }
 
-   private HDocumentUpload saveFirstUploadPart(String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm, String fileType, HLocale locale) throws IOException
+   private HDocumentUpload saveFirstUploadPart(String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm, HLocale locale) throws IOException
    {
       HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
       HDocumentUpload newUpload = new HDocumentUpload();
       newUpload.setProjectIteration(projectIteration);
       newUpload.setDocId(docId);
-      newUpload.setType(DocumentType.typeFor(fileType));
+      newUpload.setType(DocumentType.typeFor(uploadForm.getFileType()));
       // locale intentionally left null for source
       newUpload.setLocale(locale);
       newUpload.setContentHash(uploadForm.getHash());
@@ -772,7 +772,7 @@ public class FileService implements FileResource
          HDocumentUpload upload;
          try
          {
-            upload = saveFirstUploadPart(projectSlug, iterationSlug, docId, uploadForm, fileType, locale);
+            upload = saveFirstUploadPart(projectSlug, iterationSlug, docId, uploadForm, locale);
          }
          catch (IOException e)
          {
