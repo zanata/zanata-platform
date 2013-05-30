@@ -23,7 +23,6 @@ package org.zanata.rest.dto.stats;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -43,12 +42,14 @@ import org.zanata.rest.dto.Links;
 @XmlRootElement(name = "containerStats")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder( { "id", "refs", "stats", "detailedStats" })
-public class ContainerTranslationStatistics extends CommonContainerTranslationStatistics implements Serializable
+public class ContainerTranslationStatistics implements Serializable
 {
    private static final long serialVersionUID = 1L;
    private String id;
    private Links refs;
    private List<ContainerTranslationStatistics> detailedStats;
+   private List<TranslationStatistics> stats;
+
 
    public ContainerTranslationStatistics()
    {
@@ -88,10 +89,9 @@ public class ContainerTranslationStatistics extends CommonContainerTranslationSt
     */
    @XmlElementWrapper(name = "stats")
    @XmlElement(name = "stat")
-   @Override
    public List<TranslationStatistics> getStats()
    {
-      return super.getStats();
+      return stats;
    }
 
    /**
@@ -102,6 +102,11 @@ public class ContainerTranslationStatistics extends CommonContainerTranslationSt
    public List<ContainerTranslationStatistics> getDetailedStats()
    {
       return detailedStats;
+   }
+
+   public void setStats(List<TranslationStatistics> stats)
+   {
+      this.stats = stats;
    }
 
    public void setDetailedStats(List<ContainerTranslationStatistics> detailedStats)
@@ -127,6 +132,36 @@ public class ContainerTranslationStatistics extends CommonContainerTranslationSt
       this.detailedStats.add(newDetailedStats);
    }
 
+   /**
+    * Finds a specific translation for a locale and detail level.
+    *
+    * @return The specified translation statistics element, or null if one
+    *         cannot be found.
+    */
+   public TranslationStatistics getStats(String localeId, TranslationStatistics.StatUnit unit)
+   {
+      if (this.stats != null)
+      {
+         for (TranslationStatistics stat : this.stats)
+         {
+            if (stat.getLocale().equals(localeId) && stat.getUnit() == unit)
+            {
+               return stat;
+            }
+         }
+      }
+      return null;
+   }
+
+   public void addStats(TranslationStatistics newStats)
+   {
+      if (this.stats == null)
+      {
+         this.stats = new ArrayList<TranslationStatistics>();
+      }
+      this.stats.add(newStats);
+   }
+
    @Override
    public String toString()
    {
@@ -136,5 +171,12 @@ public class ContainerTranslationStatistics extends CommonContainerTranslationSt
       sb.append(", detailedStats=").append(detailedStats);
       sb.append('}');
       return sb.toString();
+   }
+
+   public void copyFrom(ContainerTranslationStatistics other)
+   {
+      this.stats = other.stats;
+      this.detailedStats = other.detailedStats;
+      this.refs = other.refs;
    }
 }

@@ -71,7 +71,12 @@ public class Link
    @Override
    public String toString()
    {
-      return DTOUtil.toXML(this);
+      final StringBuilder sb = new StringBuilder("Link{");
+      sb.append("href=").append(href);
+      sb.append(", rel='").append(rel).append('\'');
+      sb.append(", type='").append(type).append('\'');
+      sb.append('}');
+      return sb.toString();
    }
 
    @Override

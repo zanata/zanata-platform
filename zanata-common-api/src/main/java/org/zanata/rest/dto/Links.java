@@ -47,23 +47,6 @@ public class Links extends ArrayList<Link>
    }
 
    /**
-    * Retrieve the first found link of with the given href or null of it doesn't
-    * exist
-    * 
-    * @param href attribute of link to search for
-    * @return first found Link or null
-    */
-   public Link findLinkByRef(URI href)
-   {
-      for (Link link : this)
-      {
-         if (href.equals(link.getHref()))
-            return link;
-      }
-      return null;
-   }
-
-   /**
     * Retrieve all links of with the given type
     * 
     * @param type attribute of link to search for
@@ -95,29 +78,6 @@ public class Links extends ArrayList<Link>
             foundLinks.add(link);
       }
       return foundLinks;
-   }
-
-   /**
-    * Retrieve all links of with the given href
-    * 
-    * @param href attribute of link to search for
-    * @return List of found Links
-    */
-   public List<Link> findLinksByRef(URI href)
-   {
-      List<Link> foundLinks = new ArrayList<Link>();
-      for (Link link : this)
-      {
-         if (href.equals(link.getHref()))
-            foundLinks.add(link);
-      }
-      return foundLinks;
-   }
-
-   @Override
-   public String toString()
-   {
-      return DTOUtil.toXML(this);
    }
 
 }
