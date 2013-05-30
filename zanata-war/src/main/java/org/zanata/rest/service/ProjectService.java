@@ -371,7 +371,7 @@ public class ProjectService implements ProjectResource
       catch (ZanataServiceException e)
       {
          log.warn("Exception validating target locale {0} in proj {1}", e, locale, projectSlug);
-         throw new WebApplicationException(Response.status(Status.FORBIDDEN).entity(e.getMessage()).build());
+         throw e;
       }
    }
 
