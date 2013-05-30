@@ -6,6 +6,7 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.lang.UnsupportedOperationException;
+import java.net.URISyntaxException;
 
 /**
  * Simplified version of JRE's class for use in GWT.
@@ -19,7 +20,7 @@ public class URI implements Serializable, Comparable<URI>
    {
    }
 
-   public URI(String uriString)
+   public URI(String uriString) throws URISyntaxException
    {
       this.uriString = uriString;
    }
