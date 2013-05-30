@@ -26,7 +26,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HRawDocument;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.StatusCount;
-import org.zanata.rest.dto.stats.CommonContainerTranslationStatistics;
+import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 import org.zanata.util.StatisticsUtil;
@@ -165,7 +165,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
     * @param localeId
     * @return
     */
-   public CommonContainerTranslationStatistics getStatistics(long docId, LocaleId localeId)
+   public ContainerTranslationStatistics getStatistics(long docId, LocaleId localeId)
    {
       // @formatter:off
       Session session = getSession();
@@ -213,9 +213,9 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       }
       long newWordCount = StatisticsUtil.calculateUntranslated(totalWordCount, wordCount);
       wordCount.set(ContentState.New, (int) newWordCount);
-      
 
-      CommonContainerTranslationStatistics result = new CommonContainerTranslationStatistics();
+
+      ContainerTranslationStatistics result = new ContainerTranslationStatistics();
       result.addStats(new TranslationStatistics(unitCount, localeId.toString()));
       result.addStats(new TranslationStatistics(wordCount, localeId.toString()));
       
@@ -232,11 +232,11 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
     * @return Map of document statistics indexed by locale. Some locales may not
     *         have entries if there is no data stored for them.
     */
-   public Map<LocaleId, CommonContainerTranslationStatistics> getStatistics(long docId, LocaleId... localeIds)
+   public Map<LocaleId, ContainerTranslationStatistics> getStatistics(long docId, LocaleId... localeIds)
    {
       // @formatter:off
       Session session = getSession();
-      Map<LocaleId, CommonContainerTranslationStatistics> returnStats = new HashMap<LocaleId, CommonContainerTranslationStatistics>();
+      Map<LocaleId, ContainerTranslationStatistics> returnStats = new HashMap<LocaleId, ContainerTranslationStatistics>();
       Map<String, TransUnitCount> transUnitCountMap = new HashMap<String, TransUnitCount>();
       Map<String, TransUnitWords> transUnitWordsMap = new HashMap<String, TransUnitWords>();
 
@@ -314,7 +314,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       // Merge into a single Stats object
       for( String locale : transUnitCountMap.keySet() )
       {
-         CommonContainerTranslationStatistics newStats = new CommonContainerTranslationStatistics();
+         ContainerTranslationStatistics newStats = new ContainerTranslationStatistics();
          newStats.addStats(new TranslationStatistics( transUnitCountMap.get(locale), locale));
          newStats.addStats(new TranslationStatistics( transUnitWordsMap.get(locale), locale));
 

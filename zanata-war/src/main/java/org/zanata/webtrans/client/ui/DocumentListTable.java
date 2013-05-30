@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.zanata.rest.dto.stats.CommonContainerTranslationStatistics;
+import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.resources.Resources;
@@ -439,7 +439,7 @@ public class DocumentListTable extends FlexTable
       label.setText(getAuditInfo(lastTranslated));
    }
 
-   public void updateStats(int row, CommonContainerTranslationStatistics stats, boolean statsByWords)
+   public void updateStats(int row, ContainerTranslationStatistics stats, boolean statsByWords)
    {
       if (stats != null)
       {

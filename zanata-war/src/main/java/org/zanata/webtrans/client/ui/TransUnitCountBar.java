@@ -1,7 +1,7 @@
 package org.zanata.webtrans.client.ui;
 
 import org.zanata.common.LocaleId;
-import org.zanata.rest.dto.stats.CommonContainerTranslationStatistics;
+import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 import org.zanata.webtrans.client.resources.WebTransMessages;
@@ -52,7 +52,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
 
    private final LabelFormat labelFormat;
 
-   private CommonContainerTranslationStatistics stats = new CommonContainerTranslationStatistics();
+   private ContainerTranslationStatistics stats = new ContainerTranslationStatistics();
 
    private final WebTransMessages messages;
 
@@ -300,9 +300,9 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
    }
 
    @Override
-   public void setStats(CommonContainerTranslationStatistics stats, boolean statsByWords)
+   public void setStats(ContainerTranslationStatistics stats, boolean statsByWords)
    {
-      this.stats.set(stats);
+      this.stats.copyFrom(stats);
       this.statsByWords = statsByWords;
 
       refresh();

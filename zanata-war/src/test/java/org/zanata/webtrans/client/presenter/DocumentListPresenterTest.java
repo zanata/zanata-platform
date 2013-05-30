@@ -1,26 +1,10 @@
 package org.zanata.webtrans.client.presenter;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isIn;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.customware.gwt.presenter.client.EventBus;
-
-import org.hamcrest.Matchers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -32,7 +16,6 @@ import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
-import org.zanata.rest.dto.stats.CommonContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
@@ -64,11 +47,15 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetDocumentStats;
 import org.zanata.webtrans.shared.rpc.GetDocumentStatsResult;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceContextUpdateData;
-import org.zanata.webtrans.shared.rpc.LoadOptionsAction;
 import org.zanata.webtrans.shared.rpc.ThemesOption;
-
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
+import net.customware.gwt.presenter.client.EventBus;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.*;
 
 @Test(groups = { "unit-tests" })
 public class DocumentListPresenterTest
@@ -436,7 +423,7 @@ public class DocumentListPresenterTest
       ArrayList<DocumentInfo> documentInfoList = buildSampleDocumentArray();
       ArrayList<DocumentNode> sortedNodes = new ArrayList<DocumentNode>();
       HashMap<DocumentId, DocumentNode> nodes = new HashMap<DocumentId, DocumentNode>();
-      HashMap<DocumentId, CommonContainerTranslationStatistics> statMap = new HashMap<DocumentId, CommonContainerTranslationStatistics>();
+      HashMap<DocumentId, ContainerTranslationStatistics> statMap = new HashMap<DocumentId, ContainerTranslationStatistics>();
       HashMap<DocumentId, AuditInfo> lastTranslatedMap = new HashMap<DocumentId, AuditInfo>();
       
       for(DocumentInfo docInfo: documentInfoList)
@@ -444,7 +431,7 @@ public class DocumentListPresenterTest
          DocumentNode node = new DocumentNode(docInfo);
          nodes.put(docInfo.getId(), node);
          sortedNodes.add(node);
-         statMap.put(docInfo.getId(), new CommonContainerTranslationStatistics());
+         statMap.put(docInfo.getId(), new ContainerTranslationStatistics());
       }
       documentListPresenter.setStatesForTest(sortedNodes, nodes);
       

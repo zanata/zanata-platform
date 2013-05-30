@@ -20,13 +20,8 @@
  */
 package org.zanata.webtrans.client.presenter;
 
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.PresenterRevealedEvent;
-import net.customware.gwt.presenter.client.PresenterRevealedHandler;
-import net.customware.gwt.presenter.client.widget.WidgetPresenter;
-
 import org.zanata.common.LocaleId;
-import org.zanata.rest.dto.stats.CommonContainerTranslationStatistics;
+import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 import org.zanata.webtrans.client.events.AttentionModeActivationEvent;
@@ -55,11 +50,15 @@ import org.zanata.webtrans.client.view.AppDisplay;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
-
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.inject.Inject;
+
+import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.PresenterRevealedEvent;
+import net.customware.gwt.presenter.client.PresenterRevealedHandler;
+import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 // @formatter:off
 public class AppPresenter extends WidgetPresenter<AppDisplay> implements
@@ -90,9 +89,9 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
 
    // states
    private DocumentInfo selectedDocument;
-   private CommonContainerTranslationStatistics selectedDocumentStats = new CommonContainerTranslationStatistics();
-   private CommonContainerTranslationStatistics projectStats = new CommonContainerTranslationStatistics();
-   private CommonContainerTranslationStatistics currentDisplayStats = new CommonContainerTranslationStatistics();
+   private ContainerTranslationStatistics selectedDocumentStats = new ContainerTranslationStatistics();
+   private ContainerTranslationStatistics projectStats = new ContainerTranslationStatistics();
+   private ContainerTranslationStatistics currentDisplayStats = new ContainerTranslationStatistics();
    private MainView currentView = null;
 
    @Inject
@@ -301,7 +300,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
             selectedDocument = docInfo;
             if (selectedDocument.getStats() != null)
             {
-               selectedDocumentStats.set(selectedDocument.getStats());
+               selectedDocumentStats.copyFrom(selectedDocument.getStats());
             }
             if (currentView == MainView.Editor)
             {
@@ -357,7 +356,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
    {
       if (selectedDocument != null && event.getDocId().equals(selectedDocument.getId()))
       {
-         selectedDocumentStats.set(event.getNewStats());
+         selectedDocumentStats.copyFrom(event.getNewStats());
          if(currentView.equals(MainView.Editor))
          {
             refreshStatsDisplay();
@@ -427,7 +426,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
     * @param currentView current view
     * @param selectedDocument
     */
-   protected void setStatesForTest(CommonContainerTranslationStatistics projectStats, CommonContainerTranslationStatistics selectedDocumentStats, MainView currentView, DocumentInfo selectedDocument)
+   protected void setStatesForTest(ContainerTranslationStatistics projectStats, ContainerTranslationStatistics selectedDocumentStats, MainView currentView, DocumentInfo selectedDocument)
    {
       if (!GWT.isClient())
       {

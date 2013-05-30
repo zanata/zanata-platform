@@ -322,6 +322,7 @@ public class ProjectService implements ProjectResource
       {
          ProjectIteration iteration = new ProjectIteration();
          ProjectIterationService.transfer(pIt, iteration);
+
          iteration.getLinks(true).add(new Link(URI.create("iterations/i/" + pIt.getSlug()), "self", MediaTypes.createFormatSpecificType(MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION, mediaType)));
          project.getIterations(true).add(iteration);
       }

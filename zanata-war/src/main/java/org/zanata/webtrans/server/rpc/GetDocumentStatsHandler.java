@@ -3,16 +3,11 @@ package org.zanata.webtrans.server.rpc;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.customware.gwt.dispatch.server.ExecutionContext;
-import net.customware.gwt.dispatch.shared.ActionException;
-
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.zanata.dao.DocumentDAO;
-import org.zanata.dao.TextFlowTargetDAO;
-import org.zanata.rest.dto.stats.CommonContainerTranslationStatistics;
+import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.service.TranslationStateCache;
 import org.zanata.service.impl.StatisticsServiceImpl;
 import org.zanata.webtrans.server.ActionHandlerFor;
@@ -21,6 +16,9 @@ import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentStatus;
 import org.zanata.webtrans.shared.rpc.GetDocumentStats;
 import org.zanata.webtrans.shared.rpc.GetDocumentStatsResult;
+
+import net.customware.gwt.dispatch.server.ExecutionContext;
+import net.customware.gwt.dispatch.shared.ActionException;
 
 @Name("webtrans.gwt.GetDocumentStatsHandler")
 @Scope(ScopeType.STATELESS)
@@ -36,12 +34,12 @@ public class GetDocumentStatsHandler extends AbstractActionHandler<GetDocumentSt
    @Override
    public GetDocumentStatsResult execute(GetDocumentStats action, ExecutionContext context) throws ActionException
    {
-      Map<DocumentId, CommonContainerTranslationStatistics> statsMap = new HashMap<DocumentId, CommonContainerTranslationStatistics>();
+      Map<DocumentId, ContainerTranslationStatistics> statsMap = new HashMap<DocumentId, ContainerTranslationStatistics>();
       Map<DocumentId, AuditInfo> lastTranslatedMap = new HashMap<DocumentId, AuditInfo>();
 
       for (DocumentId documentId : action.getDocIds())
       {
-         CommonContainerTranslationStatistics stats = statisticsServiceImpl.getDocStatistics(documentId.getId(), action.getWorkspaceId().getLocaleId());
+         ContainerTranslationStatistics stats = statisticsServiceImpl.getDocStatistics(documentId.getId(), action.getWorkspaceId().getLocaleId());
          statsMap.put(documentId, stats);
 
          DocumentStatus docStat = translationStateCacheImpl.getDocStats(documentId.getId(), action.getWorkspaceId().getLocaleId());

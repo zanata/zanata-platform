@@ -24,7 +24,6 @@ import java.net.URI;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -41,14 +40,12 @@ import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.dto.Link;
-import org.zanata.rest.dto.stats.CommonContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
@@ -219,7 +216,7 @@ public class StatisticsServiceImpl implements StatisticsResource
          throw new NoSuchEntityException(projectSlug + "/" + iterationSlug + "/" + docId);
       }
 
-      Map<LocaleId, CommonContainerTranslationStatistics> statsMap = documentDAO.getStatistics(document.getId(), localeIds);
+      Map<LocaleId, ContainerTranslationStatistics> statsMap = documentDAO.getStatistics(document.getId(), localeIds);
 
       ContainerTranslationStatistics docStats = new ContainerTranslationStatistics();
       docStats.setId(docId);
@@ -235,7 +232,7 @@ public class StatisticsServiceImpl implements StatisticsResource
 
       for (LocaleId locale : localeIds)
       {
-         CommonContainerTranslationStatistics stats = statsMap.get(locale);
+         ContainerTranslationStatistics stats = statsMap.get(locale);
          
          // trans unit level stats
          TranslationStatistics transUnitStats;
@@ -325,9 +322,9 @@ public class StatisticsServiceImpl implements StatisticsResource
       return remainHours;
    }
 
-   public CommonContainerTranslationStatistics getDocStatistics(Long documentId, LocaleId localeId)
+   public ContainerTranslationStatistics getDocStatistics(Long documentId, LocaleId localeId)
    {
-      CommonContainerTranslationStatistics result = documentDAO.getStatistics(documentId, localeId);
+      ContainerTranslationStatistics result = documentDAO.getStatistics(documentId, localeId);
       
       TranslationStatistics wordStatistics = result.getStats(localeId.getId(), StatUnit.WORD);
       wordStatistics.setRemainingHours(getRemainingHours(wordStatistics.getDraft(), wordStatistics.getUntranslated()));

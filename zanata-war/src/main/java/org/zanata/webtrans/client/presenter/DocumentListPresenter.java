@@ -28,12 +28,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetPresenter;
-
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
-import org.zanata.rest.dto.stats.CommonContainerTranslationStatistics;
+import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 import org.zanata.webtrans.client.Application;
@@ -78,7 +75,6 @@ import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgress;
 import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgressResult;
 import org.zanata.webtrans.shared.rpc.RunDocValidationAction;
 import org.zanata.webtrans.shared.rpc.RunDocValidationResult;
-
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
@@ -86,6 +82,9 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.inject.Inject;
+
+import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> implements DocumentListDisplay.Listener, DocumentSelectionHandler, UserConfigChangeHandler, TransUnitUpdatedEventHandler, WorkspaceContextUpdateEventHandler, RunDocValidationEventHandler
 {
@@ -335,7 +334,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       @Override
       public void onSuccess(GetDocumentStatsResult result)
       {
-         for (Entry<DocumentId, CommonContainerTranslationStatistics> entry : result.getStatsMap().entrySet())
+         for (Entry<DocumentId, ContainerTranslationStatistics> entry : result.getStatsMap().entrySet())
          {
             DocumentInfo docInfo = getDocumentInfo(entry.getKey());
             
@@ -466,7 +465,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       Log.info("********** updated Info:" + updateInfo);
       // update stats for containing document
       DocumentInfo updatedDoc = getDocumentInfo(updateInfo.getDocumentId());
-      CommonContainerTranslationStatistics currentStats = updatedDoc.getStats();
+      ContainerTranslationStatistics currentStats = updatedDoc.getStats();
       if (currentStats != null)
       {
          adjustStats(currentStats, updateInfo);
@@ -506,7 +505,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
     * @param stats the stats object to update
     * @param updateInfo info describing the change in translations
     */
-   private void adjustStats(CommonContainerTranslationStatistics stats, TransUnitUpdateInfo updateInfo)
+   private void adjustStats(ContainerTranslationStatistics stats, TransUnitUpdateInfo updateInfo)
    {
       TranslationStatistics msgStatistic = stats.getStats(localeId.getId(), StatUnit.MESSAGE);
       TranslationStatistics wordStatistic = stats.getStats(localeId.getId(), StatUnit.WORD);

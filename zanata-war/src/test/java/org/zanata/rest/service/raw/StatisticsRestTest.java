@@ -92,7 +92,7 @@ public class StatisticsRestTest extends ZanataRawRestTest
       }.run();
    }
 
-   @Test(enabled = false, description = "unmarshal does not work")
+   @Test
    public void getIterationStatisticsXmlWithDetails() throws Exception
    {
       new ResourceRequestEnvironment.ResourceRequest(unauthorizedEnvironment, ResourceRequestEnvironment.Method.GET,
@@ -172,7 +172,7 @@ public class StatisticsRestTest extends ZanataRawRestTest
       }.run();
    }
 
-   @Test(enabled = false, description = "unmarshal does not work")
+   @Test
    public void getDocumentStatisticsXmlWithDetails() throws Exception
    {
       new ResourceRequestEnvironment.ResourceRequest(unauthorizedEnvironment, ResourceRequestEnvironment.Method.GET,
@@ -191,7 +191,6 @@ public class StatisticsRestTest extends ZanataRawRestTest
             assertThat(response.getStatus(), is(200)); // Ok
             assertJaxbUnmarshal(response, ContainerTranslationStatistics.class);
 
-            // FIXME this unmarshal does not work
             ContainerTranslationStatistics stats = jaxbUnmarshal(response, ContainerTranslationStatistics.class);
             assertThat(stats.getId(), is("my/path/document.txt"));
             assertThat(stats.getRefs().size(), greaterThan(0));

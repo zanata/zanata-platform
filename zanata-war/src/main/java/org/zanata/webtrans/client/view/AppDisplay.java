@@ -2,7 +2,7 @@ package org.zanata.webtrans.client.view;
 
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
-import org.zanata.rest.dto.stats.CommonContainerTranslationStatistics;
+import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.webtrans.client.presenter.MainView;
 
 /**
@@ -14,7 +14,7 @@ public interface AppDisplay extends WidgetDisplay
 
    void setDocumentLabel(String docPath, String docName);
 
-   void setStats(CommonContainerTranslationStatistics transStats, boolean statsByWords);
+   void setStats(ContainerTranslationStatistics transStats, boolean statsByWords);
 
    void setReadOnlyVisible(boolean visible);
 

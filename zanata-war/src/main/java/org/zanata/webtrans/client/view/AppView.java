@@ -20,7 +20,7 @@
  */
 package org.zanata.webtrans.client.view;
 
-import org.zanata.rest.dto.stats.CommonContainerTranslationStatistics;
+import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.presenter.MainView;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
@@ -206,7 +206,7 @@ public AppView(WebTransMessages messages, DocumentListDisplay documentListView, 
    }
 
    @Override
-   public void setStats(CommonContainerTranslationStatistics transStats, boolean statsByWords)
+   public void setStats(ContainerTranslationStatistics transStats, boolean statsByWords)
    {
       translationStatsBar.setStats(transStats, statsByWords);
       translationStatsBar.setVisible(true);
