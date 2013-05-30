@@ -164,14 +164,14 @@ public class TranslationMemoryService implements TranslationMemoryResource
       }
 
       StreamingOutput output = new TMXStreamingOutput(hProjectIteration, sourceLocale.getLocaleId(), locale);
-      String filename = makeFilename(projectSlug, iterationSlug, locale);
+      String filename = makeTMXFilename(projectSlug, iterationSlug, locale);
       return Response.ok()
             .header("Content-Disposition", "attachment; filename=\"" + filename + "\"")
             .type(PREFERRED_MEDIA_TYPE)
             .entity(output).build();
    }
 
-   private static String makeFilename(String projectSlug, String iterationSlug, LocaleId locale)
+   private static String makeTMXFilename(String projectSlug, String iterationSlug, LocaleId locale)
    {
       String p = projectSlug != null ? projectSlug : "allProjects";
       String i = iterationSlug != null ? iterationSlug : "allVersions";
