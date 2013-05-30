@@ -23,17 +23,16 @@ import lombok.extern.slf4j.Slf4j;
 class TranslationMergeAuto implements TranslationMergeService
 {
    private TextFlowTargetHistoryDAO textFlowTargetHistoryDAO;
-   private TargetTransformer targetTransformer;
 
    public TranslationMergeAuto(TextFlowTargetHistoryDAO textFlowTargetHistoryDAO)
    {
       this.textFlowTargetHistoryDAO = textFlowTargetHistoryDAO;
-      targetTransformer = new TargetTransformer();
    }
 
    @Override
    public boolean merge(TextFlowTarget incomingTarget, HTextFlowTarget hTarget, Set<String> extensions)
    {
+      TargetTransformer targetTransformer = new TargetTransformer(extensions);
       if (incomingTarget.getState().isUntranslated())
       {
          return false;
@@ -41,21 +40,21 @@ class TranslationMergeAuto implements TranslationMergeService
 
       if (hTarget.getState() == ContentState.New)
       {
-         return serverIsUntranslated(incomingTarget, hTarget, extensions);
+         return serverIsUntranslated(incomingTarget, hTarget, targetTransformer);
       }
       else if (incomingTarget.getState().isTranslated())
       {
-         return clientIsTranslated(incomingTarget, hTarget, extensions);
+         return clientIsTranslated(incomingTarget, hTarget, targetTransformer);
       }
       else if (incomingTarget.getState().isRejectedOrFuzzy())
       {
-         return clientIsFuzzyOrRejected(incomingTarget, hTarget, extensions);
+         return clientIsFuzzyOrRejected(incomingTarget, hTarget, targetTransformer);
       }
 
       throw new RuntimeException("unexpected content state" + incomingTarget.getState());
    }
 
-   private boolean clientIsFuzzyOrRejected(TextFlowTarget incomingTarget, HTextFlowTarget hTarget, Set<String> extensions)
+   private boolean clientIsFuzzyOrRejected(TextFlowTarget incomingTarget, HTextFlowTarget hTarget, TargetTransformer targetTransformer)
    {
       boolean targetChanged = false;
       if (incomingTarget.getState() == ContentState.NeedReview && hTarget.getState() == ContentState.NeedReview)
@@ -65,13 +64,12 @@ class TranslationMergeAuto implements TranslationMergeService
          if (!contentInHistory)
          {
             targetChanged |= targetTransformer.transform(incomingTarget, hTarget);
-            targetChanged |= transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
          }
       }
       return targetChanged;
    }
 
-   private boolean clientIsTranslated(TextFlowTarget incomingTarget, HTextFlowTarget hTarget, Set<String> extensions)
+   private boolean clientIsTranslated(TextFlowTarget incomingTarget, HTextFlowTarget hTarget, TargetTransformer targetTransformer)
    {
       boolean targetChanged = false;
       List<String> incomingContents = incomingTarget.getContents();
@@ -80,13 +78,12 @@ class TranslationMergeAuto implements TranslationMergeService
       {
          // content has changed
          targetChanged |= targetTransformer.transform(incomingTarget, hTarget);
-         targetChanged |= transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
          hTarget.setState(ContentState.Translated);
       }
       return targetChanged;
    }
 
-   private boolean serverIsUntranslated(TextFlowTarget incomingTarget, HTextFlowTarget hTarget, Set<String> extensions)
+   private boolean serverIsUntranslated(TextFlowTarget incomingTarget, HTextFlowTarget hTarget, TargetTransformer targetTransformer)
    {
       boolean targetChanged = false;
       targetChanged |= targetTransformer.transform(incomingTarget, hTarget);
@@ -94,23 +91,8 @@ class TranslationMergeAuto implements TranslationMergeService
       {
          hTarget.setState(ContentState.Translated);
       }
-      targetChanged |= transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
       return targetChanged;
    }
 
-   private boolean transferFromTextFlowTargetExtensions(ExtensionSet<TextFlowTargetExtension> extensions, HTextFlowTarget hTarget, Set<String> enabledExtensions)
-   {
-      boolean changed = false;
-      if (enabledExtensions.contains(SimpleComment.ID))
-      {
-         SimpleComment comment = extensions.findByType(SimpleComment.class);
-         if (comment != null)
-         {
-            changed |= new TargetCommentTransformer().transform(comment, hTarget);
-         }
-      }
 
-      return changed;
-
-   }
 }

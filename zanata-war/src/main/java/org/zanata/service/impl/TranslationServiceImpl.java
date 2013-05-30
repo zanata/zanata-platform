@@ -540,14 +540,8 @@ public class TranslationServiceImpl implements TranslationService
                                  break;
 
                               case IMPORT:
-                                 // TODO rhbz953734 - need new rules for IMPORT
                                  removedTargets.remove(hTarget);
-                                 targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
-                                 if (requireTranslationReview)
-                                 {
-                                    hTarget.setState(ContentState.Translated);
-                                 }
-                                 targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
+                                 targetChanged = mergeService.merge(incomingTarget, hTarget, extensions);
                                  break;
 
                               default:

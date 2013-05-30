@@ -36,10 +36,11 @@ class TranslationMergeServiceTest {
     def given(String mergeType)
     {
         def factory = new TranslationMergeServiceFactory(textFlowTargetHistoryDAO: historyDao)
+        factory.createMergeAuto();
         mergeService = factory.getMergeService(MergeType.valueOf(mergeType))
     }
 
-    Result merge(String contentFromClient, String stateFromClient, String contentOnServer, String stateOnServer, String contentInHistory)
+    Result merge(String contentFromClient, String stateFromClient, String contentOnServer, String stateOnServer, String contentInHistory = "false")
     {
         BDDMockito.given(historyDao.findContentInHistory(any(HTextFlowTarget), anyListOf(String))).willReturn(Boolean.valueOf(contentInHistory));
 
