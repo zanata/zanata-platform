@@ -36,25 +36,23 @@ import org.zanata.common.LocaleId;
  * This resource allows clients to [push and] pull translation memories.
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Path("tm")
 @Produces( { MediaType.APPLICATION_XML /*, "application/x-tmx"*/ })
 @Consumes( { MediaType.APPLICATION_XML /*, "application/x-tmx"*/ })
 public interface TranslationMemoryResource
 {
    public static final String PREFERRED_MEDIA_TYPE = MediaType.APPLICATION_XML;
 
-//   @GET
-//   @Path("all")
-//   public Response getAllTranslationMemory(@QueryParam("locale") LocaleId locale);
-//
-//   @GET
-//   @Path("projects/{projectSlug}")
-//   public Response getProjectTranslationMemory(@PathParam("projectSlug") String projectSlug,
-//                                            @QueryParam("locale") LocaleId locale);
+   @GET
+   @Path("all")
+   public Response getAllTranslationMemory(@QueryParam("locale") LocaleId locale);
 
    @GET
+   @Path("projects/{projectSlug}")
+   public Response getProjectTranslationMemory(@PathParam("projectSlug") String projectSlug,
+                                            @QueryParam("locale") LocaleId locale);
+   @GET
    @Path("projects/{projectSlug}/iterations/{iterationSlug}")
-   public Response getProjectTranslationMemory(
+   public Response getProjectIterationTranslationMemory(
          @PathParam("projectSlug") String projectSlug,
          @PathParam("iterationSlug") String iterationSlug,
          @QueryParam("locale") LocaleId locale);
