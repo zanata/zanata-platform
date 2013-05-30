@@ -26,7 +26,6 @@ class TranslationMergeServiceTest {
 
     @Mock
     TextFlowTargetHistoryDAO historyDao
-    def factory = new TranslationMergeServiceFactory(historyDao)
 
     @Before
     void setUp() {
@@ -34,19 +33,20 @@ class TranslationMergeServiceTest {
         mergeService = null;
     }
 
-    def given(String mergeType, boolean requireTranslationReview)
+    def given(String mergeType)
     {
-        mergeService = factory.getMergeService(MergeType.valueOf(mergeType), requireTranslationReview)
+        def factory = new TranslationMergeServiceFactory(textFlowTargetHistoryDAO: historyDao)
+        mergeService = factory.getMergeService(MergeType.valueOf(mergeType))
     }
 
-    Result merge(String contentFromClient, String stateFromClient, String contentOnServer, String stateOnServer, boolean contentInHistory)
+    Result merge(String contentFromClient, String stateFromClient, String contentOnServer, String stateOnServer, String contentInHistory)
     {
-        BDDMockito.given(historyDao.findContentInHistory(any(HTextFlowTarget), anyListOf(String))).willReturn(contentInHistory);
+        BDDMockito.given(historyDao.findContentInHistory(any(HTextFlowTarget), anyListOf(String))).willReturn(Boolean.valueOf(contentInHistory));
 
         def client = new TextFlowTarget(contents: [contentFromClient], state: ContentState.valueOf(stateFromClient))
         def server = new HTextFlowTarget(contents: [contentOnServer], state: ContentState.valueOf(stateOnServer))
 
-        def changed = mergeService.merge(client, server)
+        def changed = mergeService.merge(client, server, Collections.emptySet())
 
         new Result(changed: changed, endContent: server.getContents()[0], endState: server.getState())
     }

@@ -71,6 +71,7 @@ import org.zanata.rest.service.ResourceUtils;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.LockManagerService;
+import org.zanata.service.TranslationMergeService;
 import org.zanata.service.TranslationService;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
@@ -104,9 +105,6 @@ public class TranslationServiceImpl implements TranslationService
    private TextFlowTargetDAO textFlowTargetDAO;
 
    @In
-   private TextFlowTargetHistoryDAO textFlowTargetHistoryDAO;
-
-   @In
    private ResourceUtils resourceUtils;
 
    @In
@@ -121,6 +119,9 @@ public class TranslationServiceImpl implements TranslationService
    private HAccount authenticatedAccount;
    @In
    private ZanataIdentity identity;
+
+   @In
+   private TranslationMergeServiceFactory translationMergeServiceFactory;
 
    @Override
    public List<TranslationResult> translate(LocaleId localeId, List<TransUnitUpdateRequest> translationRequests)
@@ -510,6 +511,7 @@ public class TranslationServiceImpl implements TranslationService
                         int nPlurals = getNumPlurals(hLocale, textFlow);
                         HTextFlowTarget hTarget = textFlowTargetDAO.getTextFlowTarget(textFlow, hLocale);
                         boolean targetChanged = false;
+                        // TODO pahuang should also move hTarget is null case into merge service
                         if (hTarget == null)
                         {
                            targetChanged = true;
@@ -529,54 +531,12 @@ public class TranslationServiceImpl implements TranslationService
                         }
                         else
                         {
+                           TranslationMergeService mergeService = translationMergeServiceFactory.getMergeService(mergeType);
+
                            switch (mergeType)
                            {
                               case AUTO:
-                                 if (incomingTarget.getState() != ContentState.New)
-                                 {
-                                    if (hTarget.getState() == ContentState.New)
-                                    {
-                                       targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
-                                       if (requireTranslationReview && incomingTarget.getState() == ContentState.Approved)
-                                       {
-                                          hTarget.setState(ContentState.Translated);
-                                       }
-                                       targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
-                                    }
-                                    else if (incomingTarget.getState().isTranslated())
-                                    {
-                                       List<String> incomingContents = incomingTarget.getContents();
-                                       boolean contentInHistory = incomingContents.equals(hTarget.getContents()) || textFlowTargetHistoryDAO.findContentInHistory(hTarget, incomingContents);
-                                       if (!contentInHistory)
-                                       {
-                                          // content has changed
-                                          targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
-                                          targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
-                                          hTarget.setState(ContentState.Translated);
-                                       }
-                                    }
-                                    else if (incomingTarget.getState().isRejectedOrFuzzy())
-                                    {
-                                       if (incomingTarget.getState() == ContentState.NeedReview && hTarget.getState() == ContentState.NeedReview)
-                                       {
-                                          List<String> incomingContents = incomingTarget.getContents();
-                                          boolean contentInHistory = incomingContents.equals(hTarget.getContents()) || textFlowTargetHistoryDAO.findContentInHistory(hTarget, incomingContents);
-                                          if (!contentInHistory)
-                                          {
-                                             targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
-                                             targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
-                                          }
-                                       }
-                                       else
-                                       {
-                                          log.debug("skip fuzzy or rejected translation from client");
-                                       }
-                                    }
-                                    else
-                                    {
-                                       throw new RuntimeException("unexpected content state" + incomingTarget.getState());
-                                    }
-                                 }
+                                 targetChanged = mergeService.merge(incomingTarget, hTarget, extensions);
                                  break;
 
                               case IMPORT:
