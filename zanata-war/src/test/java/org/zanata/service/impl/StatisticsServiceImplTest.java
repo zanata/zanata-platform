@@ -33,6 +33,7 @@ import java.util.Arrays;
 import org.dbunit.operation.DatabaseOperation;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
@@ -40,6 +41,8 @@ import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.service.ValidationService;
+
+import net.sf.ehcache.CacheManager;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -51,6 +54,7 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest
    
    @Mock
    private ValidationService validationServiceImpl;
+   private CacheManager cacheManager;
 
    @Override
    protected void prepareDBUnitOperations()
@@ -65,15 +69,24 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest
     @BeforeMethod
     public void initializeSeam()
     {
-    MockitoAnnotations.initMocks(this);
-   
-    seam.reset()
-             .use("entityManager", getEm())
+      MockitoAnnotations.initMocks(this);
+      // @formatter:off
+      seam.reset()
+            .use("entityManager", getEm())
             .use("session", getSession())
             .use("validationServiceImpl", validationServiceImpl)
             .useImpl(TranslationStateCacheImpl.class)
             .ignoreNonResolvable();
+      // @formatter:on
+      cacheManager = CacheManager.create();
+      cacheManager.removalAll();
     }
+
+   @AfterMethod
+   public void after()
+   {
+      cacheManager.shutdown();
+   }
 
    @Test
    public void getSimpleIterationStatisticsForAllLocales()
@@ -140,8 +153,7 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest
       assertThat(wordLevel, is(mssgLevel));
    }
 
-   // TODO fix tests
-   @Test(enabled = false, description = "this will fail if run all tests together")
+   @Test
    public void getDetailedIterationStatisticsForSpecificLocales()
    {
       String[] locales = new String[]{"en-US", "es", "as"};
@@ -167,7 +179,7 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest
       }
    }
 
-   @Test(enabled = false, description = "this will fail if run all tests together")
+   @Test
    public void getSimpleDocumentStatisticsForAllLocales()
    {
       StatisticsServiceImpl statisticsService = seam.autowire(StatisticsServiceImpl.class);
