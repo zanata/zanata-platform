@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.ws.rs.core.EntityTag;
 
 import org.hibernate.Criteria;
@@ -65,7 +67,7 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
       super(HProjectIteration.class, session);
    }
 
-   public HProjectIteration getBySlug(String projectSlug, String iterationSlug)
+   public @Nullable HProjectIteration getBySlug(@Nonnull String projectSlug, @Nonnull String iterationSlug)
    {
       Criteria crit = getSession().createCriteria(HProject.class);
       crit.add(Restrictions.naturalId().set("slug", projectSlug));
@@ -75,7 +77,7 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
       return getBySlug(project, iterationSlug);
    }
 
-   public HProjectIteration getBySlug(HProject project, String iterationSlug)
+   public @Nullable HProjectIteration getBySlug(@Nonnull HProject project, @Nonnull String iterationSlug)
    {
       Criteria crit = getSession().createCriteria(HProjectIteration.class);
       crit.add(Restrictions.naturalId().set("project", project).set("slug", iterationSlug));

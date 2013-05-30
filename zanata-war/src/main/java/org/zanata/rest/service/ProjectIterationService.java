@@ -111,6 +111,9 @@ public class ProjectIterationService implements ProjectIterationResource
    private LocaleService localeServiceImpl;
 
    @In
+   private ProjectService projectService;
+
+   @In
    ProjectDAO projectDAO;
 
    @In
@@ -357,21 +360,21 @@ public class ProjectIterationService implements ProjectIterationResource
       }
    }
 
-   HProjectIteration retrieveAndCheckIteration(boolean requiresWriteAccess)
+   /**
+    * 
+    * @param requiresWriteAccess
+    * @return
+    * @see ProjectService#retrieveAndCheckProject
+    */
+   @Nonnull HProjectIteration retrieveAndCheckIteration(@Nonnull String projectSlug, @Nonnull String iterationSlug, boolean requiresWriteAccess)
    {
-      HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-      if (hProjectIteration == null)
+      HProject hProject = projectService.retrieveAndCheckProject(projectSlug, requiresWriteAccess);
+      HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(hProject, iterationSlug);
+      if (hProjectIteration == null || hProjectIteration.getStatus().equals(EntityStatus.OBSOLETE))
       {
          throw new NoSuchEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' not found.");
       }
-      HProject hProject = hProjectIteration.getProject();
-      if (hProjectIteration.getStatus().equals(EntityStatus.OBSOLETE) || hProject.getStatus().equals(EntityStatus.OBSOLETE))
-      {
-         throw new NoSuchEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' not found.");
-      }
-      if (requiresWriteAccess &&
-          (hProjectIteration.getStatus().equals(EntityStatus.READONLY) ||
-           hProject.getStatus().equals(EntityStatus.READONLY)))
+      if (requiresWriteAccess && hProjectIteration.getStatus().equals(EntityStatus.READONLY))
       {
          throw new ReadOnlyEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' is read-only.");
       }
@@ -396,7 +399,7 @@ public class ProjectIterationService implements ProjectIterationResource
     * @return
     * @throws WebApplicationException if locale is not allowed
     */
-   public @Nonnull HLocale validateTargetLocale(LocaleId locale, String projectSlug, String iterationSlug)
+   public @Nonnull HLocale validateTargetLocale(@Nonnull LocaleId locale, @Nonnull String projectSlug, @Nonnull String iterationSlug)
    {
       try
       {

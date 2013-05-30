@@ -23,6 +23,7 @@ package org.zanata.rest.service;
 import java.util.Collection;
 import java.util.Iterator;
 
+import javax.annotation.Nonnull;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -60,28 +61,6 @@ public class TranslationMemoryService implements TranslationMemoryResource
 //   private static final String ACTION_IMPORT_TM = "import-tm";
 //   private static final String ACTION_EXPORT_TM = "export-tm";
 
-   /** Project Identifier. */
-   @PathParam("projectSlug")
-   private String projectSlug;
-
-   /** Project Iteration identifier. */
-   @PathParam("iterationSlug")
-   private String iterationSlug;
-
-//   /** (This parameter is optional and is currently not used) */
-//   @HeaderParam("Content-Type")
-//   @Context
-//   private MediaType requestContentType;
-//
-//   @Context
-//   private HttpHeaders headers;
-//
-//   @Context
-//   private Request request;
-//
-//   @Context
-//   private UriInfo uri;
-
    @In
    private ZanataIdentity identity;
 
@@ -110,6 +89,9 @@ public class TranslationMemoryService implements TranslationMemoryResource
    private CopyTransService copyTransServiceImpl;
 
    @In
+   private ProjectService projectService;
+
+   @In
    private ProjectIterationService projectIterationService;
 
    @In
@@ -124,26 +106,50 @@ public class TranslationMemoryService implements TranslationMemoryResource
    @GET
    public Response getAllTranslationMemory(@QueryParam("locale") LocaleId locale)
    {
+      log.debug("exporting TM for all projects, locale {0}", locale);
+      // TODO security checks, etag
       // TODO Auto-generated method stub
-      return null;
+      if (locale != null)
+      {
+         localeServiceImpl.validateSourceLocale(locale);
+      }
+      String filename = makeTMXFilename(null, null, locale);
+      Object output = null;
+      return Response.ok()
+            .header("Content-Disposition", "attachment; filename=\"" + filename + "\"")
+            .type(PREFERRED_MEDIA_TYPE)
+            .entity(output).build();
    }
 
    @Override
    @GET
-   public Response getProjectTranslationMemory(@PathParam("projectSlug") String projectSlug, @QueryParam("locale") LocaleId locale)
+   public Response getProjectTranslationMemory(@PathParam("projectSlug") @Nonnull String projectSlug, @QueryParam("locale") LocaleId locale)
    {
+      log.debug("exporting TM for project {0}, locale {1}", projectSlug, locale);
+      // TODO security checks, etag
       // TODO Auto-generated method stub
-      return null;
+      projectService.retrieveAndCheckProject(projectSlug, false);
+      if (locale != null)
+      {
+         projectService.validateTargetLocale(locale, projectSlug);
+      }
+
+      String filename = makeTMXFilename(projectSlug, null, locale);
+      Object output = null;
+      return Response.ok()
+            .header("Content-Disposition", "attachment; filename=\"" + filename + "\"")
+            .type(PREFERRED_MEDIA_TYPE)
+            .entity(output).build();
    }
 
    @Override
    @GET
    public Response getProjectIterationTranslationMemory(
-         String projectSlug, String iterationSlug, LocaleId locale)
+         @Nonnull String projectSlug, @Nonnull String iterationSlug, LocaleId locale)
    {
-      log.debug("start to get TM");
-      // TODO security checks
-      HProjectIteration hProjectIteration = projectIterationService.retrieveAndCheckIteration(false);
+      log.debug("exporting TM for project {0}, iteration {1}, locale {2}", projectSlug, iterationSlug, locale);
+      // TODO security checks, etag
+      HProjectIteration hProjectIteration = projectIterationService.retrieveAndCheckIteration(projectSlug, iterationSlug, false);
       if (locale != null)
       {
          projectIterationService.validateTargetLocale(locale, projectSlug, iterationSlug);

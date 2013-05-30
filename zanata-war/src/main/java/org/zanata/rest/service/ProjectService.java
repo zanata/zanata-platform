@@ -5,6 +5,7 @@ import static org.zanata.common.EntityStatus.READONLY;
 
 import java.net.URI;
 
+import javax.annotation.Nonnull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -14,6 +15,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.HttpHeaders;
@@ -33,18 +35,24 @@ import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.Identity;
+import org.zanata.common.EntityStatus;
+import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.ProjectDAO;
+import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HAccount;
+import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.validator.SlugValidator;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.NoSuchEntityException;
+import org.zanata.rest.ReadOnlyEntityException;
 import org.zanata.rest.dto.Link;
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.dto.ProjectIteration;
+import org.zanata.service.LocaleService;
 
 import com.google.common.base.Objects;
 
@@ -80,6 +88,9 @@ public class ProjectService implements ProjectResource
    private Request request;
 
    Log log = Logging.getLog(ProjectService.class);
+
+   @In
+   private LocaleService localeServiceImpl;
 
    @In
    ProjectDAO projectDAO;
@@ -265,7 +276,22 @@ public class ProjectService implements ProjectResource
 
    }
 
-   public static void transfer(Project from, HProject to)
+   @Nonnull HProject retrieveAndCheckProject(@Nonnull String projectSlug, boolean requiresWriteAccess)
+   {
+      HProject hProject = projectDAO.getBySlug(projectSlug);
+      if (hProject == null || hProject.getStatus().equals(EntityStatus.OBSOLETE))
+      {
+         throw new NoSuchEntityException("Project '" + projectSlug + "' not found.");
+      }
+      if (requiresWriteAccess &&
+          hProject.getStatus().equals(EntityStatus.READONLY))
+      {
+         throw new ReadOnlyEntityException("Project '" + projectSlug + "' is read-only.");
+      }
+      return hProject;
+   }
+
+   private static void transfer(Project from, HProject to)
    {
       to.setName(from.getName());
       to.setDescription(from.getDescription());
@@ -300,7 +326,7 @@ public class ProjectService implements ProjectResource
       }
    }
 
-   public static void transfer(HProject from, Project to)
+   private static void transfer(HProject from, Project to)
    {
       to.setId(from.getSlug());
       to.setName(from.getName());
@@ -314,7 +340,7 @@ public class ProjectService implements ProjectResource
       to.setSourceCheckoutURL(from.getSourceCheckoutURL());
    }
 
-   public static Project toResource(HProject hProject, MediaType mediaType)
+   private static Project toResource(HProject hProject, MediaType mediaType)
    {
       Project project = new Project();
       transfer(hProject, project);
@@ -327,6 +353,26 @@ public class ProjectService implements ProjectResource
          project.getIterations(true).add(iteration);
       }
       return project;
+   }
+
+   /**
+    * Returns the requested locale, but only if the locale is allowed for the server/project.
+    * @param locale
+    * @param projectSlug
+    * @return
+    * @throws WebApplicationException if locale is not allowed
+    */
+   public @Nonnull HLocale validateTargetLocale(@Nonnull LocaleId locale, @Nonnull String projectSlug)
+   {
+      try
+      {
+         return localeServiceImpl.validateLocaleByProject(locale, projectSlug);
+      }
+      catch (ZanataServiceException e)
+      {
+         log.warn("Exception validating target locale {0} in proj {1}", e, locale, projectSlug);
+         throw new WebApplicationException(Response.status(Status.FORBIDDEN).entity(e.getMessage()).build());
+      }
    }
 
 }
