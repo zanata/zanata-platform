@@ -27,6 +27,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import javax.annotation.Nonnull;
+
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -196,7 +198,7 @@ public class LocaleServiceImpl implements LocaleService
    }
 
    @Override
-   public HLocale validateLocaleByProjectIteration(LocaleId locale, String project, String iterationSlug) throws ZanataServiceException
+   public @Nonnull HLocale validateLocaleByProjectIteration(LocaleId locale, String project, String iterationSlug) throws ZanataServiceException
    {
       List<HLocale> allList = getSupportedLangugeByProjectIteration(project, iterationSlug);
       HLocale hLocale = localeDAO.findByLocaleId(locale);

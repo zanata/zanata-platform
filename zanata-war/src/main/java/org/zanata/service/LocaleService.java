@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 import org.zanata.common.LocaleId;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
@@ -50,7 +52,7 @@ public interface LocaleService
 
    HLocale getByLocaleId(String localeId);
 
-   HLocale validateLocaleByProjectIteration(LocaleId locale, String project, String iterationSlug) throws ZanataServiceException;
+   @Nonnull HLocale validateLocaleByProjectIteration(LocaleId locale, String project, String iterationSlug) throws ZanataServiceException;
 
    HLocale validateSourceLocale(LocaleId locale) throws ZanataServiceException;
 

@@ -55,7 +55,6 @@ import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.zanata.ApplicationConfiguration;
-import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
 import org.zanata.dao.DocumentDAO;
@@ -65,11 +64,8 @@ import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
-import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.rest.NoSuchEntityException;
-import org.zanata.rest.ReadOnlyEntityException;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyTransService;
@@ -89,8 +85,8 @@ public class TranslatedDocResourceService implements TranslatedDocResource
 {
 
    // security actions
-   private static final String ACTION_IMPORT_TEMPLATE = "import-template";
-   private static final String ACTION_IMPORT_TRANSLATION = "import-translation";
+//   private static final String ACTION_IMPORT_TEMPLATE = "import-template";
+//   private static final String ACTION_IMPORT_TRANSLATION = "import-translation";
 
    public static final String SERVICE_PATH = ProjectIterationService.SERVICE_PATH + "/r";
 
@@ -144,6 +140,9 @@ public class TranslatedDocResourceService implements TranslatedDocResource
    
    @In
    private CopyTransService copyTransServiceImpl;
+
+   @In
+   private ProjectIterationService projectIterationService;
 
    @In
    private TranslationService translationServiceImpl;
@@ -204,7 +203,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource
    {
       log.debug("start to get translation");
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
-      HProjectIteration hProjectIteration = retrieveAndCheckIteration(false);
+      HProjectIteration hProjectIteration = projectIterationService.retrieveAndCheckIteration(false);
       HLocale hLocale = validateTargetLocale(locale, projectSlug, iterationSlug);
 
       ResourceUtils.validateExtensions(extensions);
@@ -269,7 +268,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource
    public Response deleteTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale)
    {
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
-      HProjectIteration hProjectIteration = retrieveAndCheckIteration(true);
+      HProjectIteration hProjectIteration = projectIterationService.retrieveAndCheckIteration(true);
 
       // TODO find correct etag
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, new HashSet<String>());
@@ -372,36 +371,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource
       return Response.ok(sb.toString()).tag(etag).build();
    }
 
-   private HProjectIteration retrieveAndCheckIteration(boolean writeOperation)
-   {
-      HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-      HProject hProject = hProjectIteration == null ? null : hProjectIteration.getProject();
-
-      if (hProjectIteration == null)
-      {
-         throw new NoSuchEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' not found.");
-      }
-      else if (hProjectIteration.getStatus().equals(EntityStatus.OBSOLETE) || hProject.getStatus().equals(EntityStatus.OBSOLETE))
-      {
-         throw new NoSuchEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' not found.");
-      }
-      else if (writeOperation)
-      {
-         if (hProjectIteration.getStatus().equals(EntityStatus.READONLY) || hProject.getStatus().equals(EntityStatus.READONLY))
-         {
-            throw new ReadOnlyEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' is read-only.");
-         }
-         else
-         {
-            return hProjectIteration;
-         }
-      }
-      else
-      {
-         return hProjectIteration;
-      }
-   }
-
+   // TODO investigate how this became dead code, then delete
    public void copyClosestEquivalentTranslation(HDocument document)
    {
       if (applicationConfiguration.getEnableCopyTrans())
@@ -409,10 +379,10 @@ public class TranslatedDocResourceService implements TranslatedDocResource
          copyTransServiceImpl.copyTransForDocument(document);
       }
    }
-   
-   public HProjectIteration getSecuredIteration()
+
+   private HProjectIteration getSecuredIteration()
    {
-      return retrieveAndCheckIteration(false);
+      return projectIterationService.retrieveAndCheckIteration(false);
    }
 
 }

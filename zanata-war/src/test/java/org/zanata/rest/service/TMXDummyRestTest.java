@@ -94,7 +94,7 @@ public class TMXDummyRestTest extends ZanataRestTest
    @Test
    void testGetTmx()
    {
-      tmService.getProjectTranslationMemory("iok", "6.4", new LocaleId("as"));
+      tmService.getProjectIterationTranslationMemory("iok", "6.4", new LocaleId("as"));
    }
 
 }

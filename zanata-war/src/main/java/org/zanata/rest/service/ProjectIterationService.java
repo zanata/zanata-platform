@@ -49,6 +49,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.security.Identity;
+import org.zanata.common.EntityStatus;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
@@ -56,6 +57,8 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.validator.SlugValidator;
 import org.zanata.rest.MediaTypes;
+import org.zanata.rest.NoSuchEntityException;
+import org.zanata.rest.ReadOnlyEntityException;
 import org.zanata.rest.dto.ProjectIteration;
 
 import com.google.common.base.Objects;
@@ -340,6 +343,27 @@ public class ProjectIterationService implements ProjectIterationResource
          to.setOverrideValidations(hProject.getOverrideValidations());
          to.getCustomizedValidations().addAll(hProject.getCustomizedValidations());
       }
+   }
+
+   HProjectIteration retrieveAndCheckIteration(boolean requiresWriteAccess)
+   {
+      HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+      if (hProjectIteration == null)
+      {
+         throw new NoSuchEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' not found.");
+      }
+      HProject hProject = hProjectIteration.getProject();
+      if (hProjectIteration.getStatus().equals(EntityStatus.OBSOLETE) || hProject.getStatus().equals(EntityStatus.OBSOLETE))
+      {
+         throw new NoSuchEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' not found.");
+      }
+      if (requiresWriteAccess &&
+          (hProjectIteration.getStatus().equals(EntityStatus.READONLY) ||
+           hProject.getStatus().equals(EntityStatus.READONLY)))
+      {
+         throw new ReadOnlyEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' is read-only.");
+      }
+      return hProjectIteration;
    }
 
    public static void transfer(HProjectIteration from, ProjectIteration to)

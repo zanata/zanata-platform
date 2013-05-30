@@ -26,6 +26,8 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
 
@@ -51,12 +53,12 @@ public class TMXStreamingOutput implements StreamingOutput
    private static final String creationToolVersion =
          VersionUtility.getVersionInfo(TMXStreamingOutput.class).getVersionNo();
    private final Iterable<NamedDocument> documents;
-   private final LocaleId sourceLocale;
-   private final LocaleId targetLocale;
+   private final @Nonnull LocaleId sourceLocale;
+   private final @Nullable LocaleId targetLocale;
    private final ExportTUStrategy exportTUStrategy;
 
    public TMXStreamingOutput(Iterable<NamedDocument> documents,
-         LocaleId sourceLocale, LocaleId targetLocale)
+         @Nonnull LocaleId sourceLocale, @Nullable LocaleId targetLocale)
    {
       this.documents = documents;
       this.sourceLocale = sourceLocale;
@@ -64,7 +66,7 @@ public class TMXStreamingOutput implements StreamingOutput
       this.exportTUStrategy = new ExportTUStrategy(targetLocale);
    }
 
-   net.sf.okapi.common.LocaleId toOkapiLocaleOrEmpty(LocaleId locale)
+   net.sf.okapi.common.LocaleId toOkapiLocaleOrEmpty(@Nullable LocaleId locale)
    {
       if (locale == null)
       {

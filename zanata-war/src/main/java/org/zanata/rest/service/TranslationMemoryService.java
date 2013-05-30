@@ -23,9 +23,11 @@ package org.zanata.rest.service;
 import java.util.Collection;
 import java.util.Iterator;
 
+import javax.annotation.Nonnull;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -37,7 +39,6 @@ import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.zanata.ApplicationConfiguration;
-import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectDAO;
@@ -46,16 +47,14 @@ import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
-import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
-import org.zanata.rest.NoSuchEntityException;
-import org.zanata.rest.ReadOnlyEntityException;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationService;
 
 @Name("translationMemoryService")
+@Path("tm")
 @Transactional
 public class TranslationMemoryService implements TranslationMemoryResource
 {
@@ -114,6 +113,9 @@ public class TranslationMemoryService implements TranslationMemoryResource
    private CopyTransService copyTransServiceImpl;
 
    @In
+   private ProjectIterationService projectIterationService;
+
+   @In
    private TranslationService translationServiceImpl;
 
    private final Log log = Logging.getLog(TranslationMemoryService.class);
@@ -121,39 +123,16 @@ public class TranslationMemoryService implements TranslationMemoryResource
    @In
    private LocaleService localeServiceImpl;
 
-   // TODO duplicated code from TranslatedDocResourceService
-   private HProjectIteration retrieveAndCheckIteration(boolean writeOperation)
+   @Override
+   @GET
+   public Response getAllTranslationMemory(@QueryParam("locale") LocaleId locale)
    {
-      HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-      HProject hProject = hProjectIteration == null ? null : hProjectIteration.getProject();
-
-      if (hProjectIteration == null)
-      {
-         throw new NoSuchEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' not found.");
-      }
-      else if (hProjectIteration.getStatus().equals(EntityStatus.OBSOLETE) || hProject.getStatus().equals(EntityStatus.OBSOLETE))
-      {
-         throw new NoSuchEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' not found.");
-      }
-      else if (writeOperation)
-      {
-         if (hProjectIteration.getStatus().equals(EntityStatus.READONLY) || hProject.getStatus().equals(EntityStatus.READONLY))
-         {
-            throw new ReadOnlyEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' is read-only.");
-         }
-         else
-         {
-            return hProjectIteration;
-         }
-      }
-      else
-      {
-         return hProjectIteration;
-      }
+      // TODO Auto-generated method stub
+      return null;
    }
 
    // TODO duplicated code from TranslatedDocResourceService
-   private HLocale validateTargetLocale(LocaleId locale, String projectSlug, String iterationSlug)
+   private @Nonnull HLocale validateTargetLocale(LocaleId locale, String projectSlug, String iterationSlug)
    {
       HLocale hLocale;
       try
@@ -168,22 +147,25 @@ public class TranslationMemoryService implements TranslationMemoryResource
       }
    }
 
+   @Override
+   @GET
+   public Response getProjectTranslationMemory(@PathParam("projectSlug") String projectSlug, @QueryParam("locale") LocaleId locale)
+   {
+      // TODO Auto-generated method stub
+      return null;
+   }
 
    @Override
    @GET
-   @Path("projects/{projectSlug}/iterations/{iterationSlug}")
-   public Response getProjectTranslationMemory(
-         @PathParam("projectSlug") String projectSlug,
-         @PathParam("iterationSlug") String iterationSlug,
-         @PathParam("locale") LocaleId locale)
+   public Response getProjectIterationTranslationMemory(
+         String projectSlug, String iterationSlug, LocaleId locale)
    {
       log.debug("start to get TM");
       // TODO security checks
-      HProjectIteration hProjectIteration = retrieveAndCheckIteration(false);
-      HLocale hLocale = null;
+      HProjectIteration hProjectIteration = projectIterationService.retrieveAndCheckIteration(false);
       if (locale != null)
       {
-         hLocale = validateTargetLocale(locale, projectSlug, iterationSlug);
+         validateTargetLocale(locale, projectSlug, iterationSlug);
       }
 
       // TODO option to export obsolete docs to TMX?
@@ -200,29 +182,20 @@ public class TranslationMemoryService implements TranslationMemoryResource
          throw new WebApplicationException(404); // no docs
       }
 
-      StreamingOutput output = new TMXStreamingOutput(hProjectIteration, sourceLocale.getLocaleId(), hLocale.getLocaleId());
-      String filename = makeFilename(projectSlug, iterationSlug, locale.getId());
+      StreamingOutput output = new TMXStreamingOutput(hProjectIteration, sourceLocale.getLocaleId(), locale);
+      String filename = makeFilename(projectSlug, iterationSlug, locale);
       return Response.ok()
             .header("Content-Disposition", "attachment; filename=\"" + filename + "\"")
             .type(PREFERRED_MEDIA_TYPE)
             .entity(output).build();
    }
 
-   private static String makeFilename(String projectSlug, String iterationSlug, String locale)
+   private static String makeFilename(String projectSlug, String iterationSlug, LocaleId locale)
    {
-      if (projectSlug == null)
-      {
-         projectSlug = "allProjects";
-      }
-      if (iterationSlug == null)
-      {
-         iterationSlug = "allVersions";
-      }
-      if (locale == null)
-      {
-         locale = "allLocales";
-      }
-      return "zanata-"+projectSlug+"-"+iterationSlug+"-"+locale+".tmx";
+      String p = projectSlug != null ? projectSlug : "allProjects";
+      String i = iterationSlug != null ? iterationSlug : "allVersions";
+      String l = locale != null ? locale.getId() : "allLocales";
+      return "zanata-"+p+"-"+i+"-"+l+".tmx";
    }
 
 }
