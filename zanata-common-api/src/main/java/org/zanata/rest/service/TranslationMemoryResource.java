@@ -21,6 +21,7 @@
 
 package org.zanata.rest.service;
 
+import javax.annotation.Nonnull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -48,12 +49,12 @@ public interface TranslationMemoryResource
 
    @GET
    @Path("projects/{projectSlug}")
-   public Response getProjectTranslationMemory(@PathParam("projectSlug") String projectSlug,
+   public Response getProjectTranslationMemory(@PathParam("projectSlug") @Nonnull String projectSlug,
                                             @QueryParam("locale") LocaleId locale);
    @GET
    @Path("projects/{projectSlug}/iterations/{iterationSlug}")
    public Response getProjectIterationTranslationMemory(
-         @PathParam("projectSlug") String projectSlug,
-         @PathParam("iterationSlug") String iterationSlug,
+         @PathParam("projectSlug") @Nonnull String projectSlug,
+         @PathParam("iterationSlug") @Nonnull String iterationSlug,
          @QueryParam("locale") LocaleId locale);
 }
