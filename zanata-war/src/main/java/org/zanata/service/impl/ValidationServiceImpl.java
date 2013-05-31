@@ -108,7 +108,7 @@ public class ValidationServiceImpl implements ValidationService
    {
       Collection<ValidationAction> validationList = null;
 
-      if (!StringUtils.isEmpty(projectSlug) && !StringUtils.isEmpty(versionSlug))
+      if (!StringUtils.isEmpty(projectSlug))
       {
          HProjectIteration version = projectIterationDAO.getBySlug(projectSlug, versionSlug);
 
