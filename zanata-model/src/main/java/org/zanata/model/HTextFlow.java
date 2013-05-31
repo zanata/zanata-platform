@@ -418,6 +418,7 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
       return null;
    }
 
+   @Transient
    @Override
    public Iterable<TargetContents> getAllTargetContents()
    {
