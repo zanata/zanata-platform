@@ -36,7 +36,7 @@ import net.sf.okapi.common.XMLWriter;
 import net.sf.okapi.common.filterwriter.TMXWriter;
 
 import org.zanata.common.LocaleId;
-import org.zanata.model.NamedDocument;
+import org.zanata.model.DocumentWithId;
 import org.zanata.model.SourceContents;
 import org.zanata.util.OkapiUtil;
 import org.zanata.util.VersionUtility;
@@ -52,12 +52,12 @@ public class TMXStreamingOutput implements StreamingOutput
    private static final String creationTool = "Zanata " + TMXStreamingOutput.class.getSimpleName();
    private static final String creationToolVersion =
          VersionUtility.getVersionInfo(TMXStreamingOutput.class).getVersionNo();
-   private final Iterable<NamedDocument> documents;
+   private final Iterable<DocumentWithId> documents;
    private final @Nonnull LocaleId sourceLocale;
    private final @Nullable LocaleId targetLocale;
    private final ExportTUStrategy exportTUStrategy;
 
-   public TMXStreamingOutput(Iterable<NamedDocument> documents,
+   public TMXStreamingOutput(Iterable<DocumentWithId> documents,
          @Nonnull LocaleId sourceLocale, @Nullable LocaleId targetLocale)
    {
       this.documents = documents;
@@ -94,7 +94,7 @@ public class TMXStreamingOutput implements StreamingOutput
             creationTool, creationToolVersion,
             segType, null, dataType);
 
-      for (NamedDocument doc : documents)
+      for (DocumentWithId doc : documents)
       {
          exportDocument(tmxWriter, doc);
       }
@@ -102,9 +102,9 @@ public class TMXStreamingOutput implements StreamingOutput
       tmxWriter.close();
    }
 
-   private void exportDocument(TMXWriter tmxWriter, NamedDocument doc)
+   private void exportDocument(TMXWriter tmxWriter, DocumentWithId doc)
    {
-      String tuidPrefix = doc.getName() + ":";
+      String tuidPrefix = doc.getQualifiedDocId() + ":";
       // TODO option to export obsolete TFs to TMX?
       for (SourceContents tf : doc)
       {

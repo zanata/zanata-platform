@@ -25,7 +25,7 @@ package org.zanata.model;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public interface NamedDocument extends Iterable<SourceContents>
+public interface DocumentWithId extends Iterable<SourceContents>
 {
-   String getName();
+   String getQualifiedDocId();
 }

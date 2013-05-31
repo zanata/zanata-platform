@@ -86,6 +86,7 @@ public class TranslationMemoryService implements TranslationMemoryResource
       HProject hProject = restSlugValidator.retrieveAndCheckProject(projectSlug, false);
       if (locale != null)
       {
+         // ignore result:
          restSlugValidator.validateTargetLocale(locale, projectSlug);
       }
 
@@ -107,6 +108,7 @@ public class TranslationMemoryService implements TranslationMemoryResource
       HProjectIteration hProjectIteration = restSlugValidator.retrieveAndCheckIteration(projectSlug, iterationSlug, false);
       if (locale != null)
       {
+         // ignore result:
          restSlugValidator.validateTargetLocale(locale, projectSlug, iterationSlug);
       }
 

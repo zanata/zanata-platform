@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import org.zanata.common.LocaleId;
-import org.zanata.model.NamedDocument;
+import org.zanata.model.DocumentWithId;
 import org.zanata.model.SimpleNamedDocument;
 import org.zanata.model.SimpleSourceContents;
 import org.zanata.model.SimpleTargetContents;
@@ -47,7 +47,7 @@ public class TMXStreamingOutputTest
    @Test
    public void exportAllLocales() throws Exception
    {
-      ArrayList<NamedDocument> docList = createTestDocs();
+      ArrayList<DocumentWithId> docList = createTestDocs();
       LocaleId sourceLocale = LocaleId.EN;
       LocaleId targetLocale = null;
       StreamingOutput output = new TMXStreamingOutput(docList, sourceLocale, targetLocale);
@@ -61,7 +61,7 @@ public class TMXStreamingOutputTest
    @Test
    public void exportFrench() throws Exception
    {
-      ArrayList<NamedDocument> docList = createTestDocs();
+      ArrayList<DocumentWithId> docList = createTestDocs();
       LocaleId sourceLocale = LocaleId.EN;
       LocaleId targetLocale = LocaleId.FR;
       StreamingOutput output = new TMXStreamingOutput(docList, sourceLocale, targetLocale);
@@ -76,7 +76,7 @@ public class TMXStreamingOutputTest
    @Test
    public void exportGerman() throws Exception
    {
-      ArrayList<NamedDocument> docList = createTestDocs();
+      ArrayList<DocumentWithId> docList = createTestDocs();
       LocaleId sourceLocale = LocaleId.EN;
       LocaleId targetLocale = LocaleId.DE;
       StreamingOutput output = new TMXStreamingOutput(docList, sourceLocale, targetLocale);
@@ -90,11 +90,11 @@ public class TMXStreamingOutputTest
       assertLangAbsent("fr", doc);
    }
 
-   private ArrayList<NamedDocument> createTestDocs()
+   private ArrayList<DocumentWithId> createTestDocs()
    {
       LocaleId fr = LocaleId.FR;
       LocaleId de = LocaleId.DE;
-      NamedDocument doc0 = new SimpleNamedDocument(
+      DocumentWithId doc0 = new SimpleNamedDocument(
             "doc0",
             new SimpleSourceContents(
                   "resId0",
@@ -108,7 +108,7 @@ public class TMXStreamingOutputTest
                         "SOURCE0", "SOURCE1"
                   )
             );
-      NamedDocument doc1 = new SimpleNamedDocument(
+      DocumentWithId doc1 = new SimpleNamedDocument(
             "doc1",
             new SimpleSourceContents(
                   "resId0",

@@ -83,7 +83,7 @@ import com.google.common.collect.ImmutableList;
 @Setter
 @NoArgsConstructor
 @ToString(callSuper = true, of = {"project"})
-public class HProjectIteration extends SlugEntityBase implements Iterable<NamedDocument>
+public class HProjectIteration extends SlugEntityBase implements Iterable<DocumentWithId>
 {
 
    private static final long serialVersionUID = 182037127575991478L;
@@ -215,8 +215,8 @@ public class HProjectIteration extends SlugEntityBase implements Iterable<NamedD
    }
 
    @Override
-   public Iterator<NamedDocument> iterator()
+   public Iterator<DocumentWithId> iterator()
    {
-      return ImmutableList.<NamedDocument>copyOf(getDocuments().values()).iterator();
+      return ImmutableList.<DocumentWithId>copyOf(getDocuments().values()).iterator();
    }
 }

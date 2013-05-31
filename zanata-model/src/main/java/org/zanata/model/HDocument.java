@@ -82,7 +82,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString(of = {"name", "path", "docId", "locale", "revision"})
-public class HDocument extends ModelEntityBase implements NamedDocument, IDocumentHistory, Serializable, Iterable<SourceContents>
+public class HDocument extends ModelEntityBase implements DocumentWithId, IDocumentHistory, Serializable, Iterable<SourceContents>
 {
    private static final long serialVersionUID = 5129552589912687504L;
    private String docId;
@@ -157,6 +157,14 @@ public class HDocument extends ModelEntityBase implements NamedDocument, IDocume
    public String getName()
    {
       return name;
+   }
+
+   @Override
+   public String getQualifiedDocId()
+   {
+      HProjectIteration iter = getProjectIteration();
+      HProject proj = iter.getProject();
+      return proj.getSlug()+":"+iter.getSlug()+":"+getDocId();
    }
 
    @NotNull

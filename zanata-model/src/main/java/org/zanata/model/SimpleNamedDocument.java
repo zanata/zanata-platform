@@ -24,6 +24,8 @@ package org.zanata.model;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import com.google.common.collect.ImmutableList;
 
 import lombok.Data;
@@ -33,20 +35,20 @@ import lombok.Data;
  *
  */
 @Data
-public class SimpleNamedDocument implements NamedDocument
+public class SimpleNamedDocument implements DocumentWithId
 {
-   private final String name;
+   private final String qualifiedDocId;
    private final List<SourceContents> sourceContentsList;
 
-   public SimpleNamedDocument(String name, List<SourceContents> sourceContentsList)
+   public SimpleNamedDocument(String qualifiedDocId, List<SourceContents> sourceContentsList)
    {
-      this.name = name;
+      this.qualifiedDocId = qualifiedDocId;
       this.sourceContentsList = sourceContentsList;
    }
 
-   public SimpleNamedDocument(String name, SourceContents... sourceContentsList)
+   public SimpleNamedDocument(String qualifiedDocId, @Nonnull SourceContents... sourceContentsList)
    {
-      this.name = name;
+      this.qualifiedDocId = qualifiedDocId;
       this.sourceContentsList = ImmutableList.copyOf(sourceContentsList);
    }
 
