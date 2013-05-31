@@ -79,11 +79,11 @@
           #{messages['jsf.Actions']}
         </f:facet>
         <h:form id="Language_team_member_toggle_form" ajaxSubmit="true" reRender="actionPanel,memberPanel">
-          <a4j:commandLink id="Join" styleClass="action_link" action="#{languageTeamAction.joinTribe}" rendered="#{not languageTeamAction.isUserInTeam() and s:hasRole('admin')}">
+          <a4j:commandLink id="Join" styleClass="action_link" action="#{languageTeamAction.joinTribe}" rendered="#{not languageTeamAction.isUserInTeam() and s:hasRole('admin')}" render="memberPanel">
             #{messages['jsf.JoinLanguageTeam']}
             <s:conversationId name="id" value="#{languageTeamAction.language}"/>
           </a4j:commandLink>
-          <a4j:commandLink id="Leave" styleClass="action_link" action="#{languageTeamAction.leaveTribe}" rendered="#{languageTeamAction.isUserInTeam()}">
+          <a4j:commandLink id="Leave" styleClass="action_link" action="#{languageTeamAction.leaveTribe}" rendered="#{languageTeamAction.isUserInTeam()}" render="memberPanel">
             #{messages['jsf.LeaveLanguageTeam']}
             <s:conversationId name="id" value="#{languageTeamAction.language}"/>
           </a4j:commandLink>
