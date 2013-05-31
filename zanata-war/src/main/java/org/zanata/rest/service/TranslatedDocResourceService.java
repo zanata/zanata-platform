@@ -254,6 +254,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource
    {
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       HProjectIteration hProjectIteration = restSlugValidator.retrieveAndCheckIteration(projectSlug, iterationSlug, true);
+      HLocale hLocale = restSlugValidator.validateTargetLocale(locale, projectSlug, iterationSlug);
 
       // TODO find correct etag
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, new HashSet<String>());
@@ -277,7 +278,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource
       }
 
       // we also need to delete the extensions here
-      document.getPoTargetHeaders().remove(locale);
+      document.getPoTargetHeaders().remove(hLocale);
       textFlowTargetDAO.flush();
 
       return Response.ok().build();

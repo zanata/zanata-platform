@@ -99,7 +99,6 @@ public class TMXStreamingOutput implements StreamingOutput
          exportDocument(tmxWriter, doc);
       }
       tmxWriter.writeEndDocument();
-      tmxWriter.close();
    }
 
    private void exportDocument(TMXWriter tmxWriter, DocumentWithId doc)

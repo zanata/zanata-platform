@@ -167,9 +167,9 @@ public class ViewAllStatusAction implements Serializable
       public int compareTo(Status o)
       {
          int per = getStats().getTotal() == 0 ? 0 :
-               (int) Math.ceil(100 * getStats().getApproved() / getStats().getTotal());
+               (int) Math.ceil(100.0 * getStats().getApproved() / getStats().getTotal());
          int comparePer = o.getStats().getTotal() == 0 ? 0 :
-               (int) Math.ceil(100 * o.getStats().getApproved() / o.getStats().getTotal());
+               (int) Math.ceil(100.0 * o.getStats().getApproved() / o.getStats().getTotal());
          
          return Double.compare(comparePer, per);
       }

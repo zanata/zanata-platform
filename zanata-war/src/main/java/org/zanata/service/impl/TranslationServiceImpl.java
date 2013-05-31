@@ -415,12 +415,12 @@ public class TranslationServiceImpl implements TranslationService
    {
       HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
 
-      final boolean requireTranslationReview = hProjectIteration.isRequireTranslationReview();
-
       if (hProjectIteration == null)
       {
          throw new ZanataServiceException("Version '" + iterationSlug + "' for project '" + projectSlug + "' ");
       }
+
+      final boolean requireTranslationReview = hProjectIteration.isRequireTranslationReview();
 
       ResourceUtils.validateExtensions(extensions);
 
