@@ -244,6 +244,12 @@ public class FileService implements FileResource
 
    private Response processSinglePartDocumentAndRespond(String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm)
    {
+      File tempFile = persistTempFileFromUpload(uploadForm);
+      return processSourceUploadFromTempFileAndRespond(tempFile, projectSlug, iterationSlug, docId, uploadForm, 1);
+   }
+
+   private File persistTempFileFromUpload(DocumentFileUploadForm uploadForm)
+   {
       File tempFile;
       try
       {
@@ -253,27 +259,18 @@ public class FileService implements FileResource
          String md5hash = new String(Hex.encodeHex(md.digest()));
          if (!md5hash.equals(uploadForm.getHash()))
          {
-            return Response.status(Status.CONFLICT)
-                  .entity(new ChunkUploadResponse("MD5 hash \"" + uploadForm.getHash()
-                        + "\" sent with request does not match server-generated hash \""
-                        + md5hash + "\". Aborted upload operation."))
-                  .build();
+            throw new ChunkUploadException(Status.CONFLICT,
+                  "MD5 hash \"" + uploadForm.getHash() +
+                  "\" sent with request does not match server-generated hash \"" + md5hash +
+                  "\". Aborted upload operation.");
          }
-      }
-      catch (ZanataServiceException e) {
-         return Response.status(Status.INTERNAL_SERVER_ERROR)
-               .entity(e)
-               .build();
       }
       catch (NoSuchAlgorithmException e)
       {
-         log.error("MD5 hash algorithm not available", e);
-         return Response.status(Status.INTERNAL_SERVER_ERROR)
-               .entity(e)
-               .build();
+         throw new ChunkUploadException(Status.INTERNAL_SERVER_ERROR,
+               "MD5 hash algorithm not available", e);
       }
-
-      return processSourceUploadFromTempFileAndRespond(tempFile, projectSlug, iterationSlug, docId, uploadForm, 1);
+      return tempFile;
    }
 
    private Response processAdapterFileAndRespond(File tempFile, String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm, int uploadChunks)
