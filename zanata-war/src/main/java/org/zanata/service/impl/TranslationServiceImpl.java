@@ -22,7 +22,6 @@ package org.zanata.service.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -51,7 +50,6 @@ import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
-import org.zanata.dao.TextFlowTargetHistoryDAO;
 import org.zanata.events.TextFlowTargetStateEvent;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.lock.Lock;
@@ -489,10 +487,8 @@ public class TranslationServiceImpl implements TranslationService
                {
                   boolean changed = false;
 
-                  for (int i = 0; i < batch.size(); i++)
+                  for (TextFlowTarget incomingTarget : batch)
                   {
-                     TextFlowTarget incomingTarget = batch.get(i);
-
                      String resId = incomingTarget.getResId();
                      HTextFlow textFlow = textFlowDAO.getById(document, resId);
                      if (textFlow == null)
@@ -510,44 +506,19 @@ public class TranslationServiceImpl implements TranslationService
                      {
                         int nPlurals = getNumPlurals(hLocale, textFlow);
                         HTextFlowTarget hTarget = textFlowTargetDAO.getTextFlowTarget(textFlow, hLocale);
+
                         TranslationMergeServiceFactory.MergeContext mergeContext = new TranslationMergeServiceFactory.MergeContext(mergeType, textFlow, hLocale, hTarget, nPlurals);
-                        boolean targetChanged = false;
-                        // TODO pahuang should also move hTarget is null case into merge service
+                        TranslationMergeService mergeService = translationMergeServiceFactory.getMergeService(mergeContext);
+
+                        if (mergeType == MergeType.IMPORT)
+                        {
+                           removedTargets.remove(hTarget);
+                        }
+                        boolean targetChanged = mergeService.merge(incomingTarget, hTarget, extensions);
                         if (hTarget == null)
                         {
-                           targetChanged = true;
-                           log.debug("locale: {}", locale);
-                           hTarget = new HTextFlowTarget(textFlow, hLocale);
-                           List<String> contents = Collections.nCopies(nPlurals, "");
-                           hTarget.setContents(contents);
-                           hTarget.setVersionNum(0); // incremented when content is set
-                           //textFlowTargetDAO.makePersistent(hTarget);
-                           textFlow.getTargets().put(hLocale.getId(), hTarget);
-                           targetChanged |= resourceUtils.transferFromTextFlowTarget(incomingTarget, hTarget);
-                           if (requireTranslationReview && incomingTarget.getState() == ContentState.Approved)
-                           {
-                              hTarget.setState(ContentState.Translated);
-                           }
-                           targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(incomingTarget.getExtensions(true), hTarget, extensions);
-                        }
-                        else
-                        {
-                           TranslationMergeService mergeService = translationMergeServiceFactory.getMergeService(mergeContext);
-
-                           switch (mergeType)
-                           {
-                              case AUTO:
-                                 targetChanged = mergeService.merge(incomingTarget, hTarget, extensions);
-                                 break;
-
-                              case IMPORT:
-                                 removedTargets.remove(hTarget);
-                                 targetChanged = mergeService.merge(incomingTarget, hTarget, extensions);
-                                 break;
-
-                              default:
-                                 throw new ZanataServiceException("unhandled merge type " + mergeType);
-                           }
+                           // in case hTarget was null, we need to retrieve it after merge
+                           hTarget = textFlow.getTargets().get(hLocale.getId());
                         }
                         targetChanged |= adjustContentsAndState(hTarget, nPlurals, warnings);
 

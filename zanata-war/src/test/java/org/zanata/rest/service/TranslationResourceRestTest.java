@@ -60,6 +60,7 @@ import org.zanata.service.impl.CopyTransServiceImpl;
 import org.zanata.service.impl.DocumentServiceImpl;
 import org.zanata.service.impl.LocaleServiceImpl;
 import org.zanata.service.impl.SecurityServiceImpl;
+import org.zanata.service.impl.TranslationMergeServiceFactory;
 import org.zanata.service.impl.TranslationServiceImpl;
 import org.zanata.util.HashUtil;
 import org.zanata.webtrans.server.TranslationWorkspace;
@@ -115,8 +116,6 @@ public class TranslationResourceRestTest extends ZanataRestTest
    private ZanataIdentity mockIdentity;
    @Mock
    private TranslationWorkspaceManager transWorspaceManager;
-
-   TranslationService translationService;
 
    ISourceDocResource sourceDocResource;
    ITranslatedDocResource transResource;
