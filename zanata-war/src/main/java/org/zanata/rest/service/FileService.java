@@ -544,6 +544,13 @@ public class FileService implements FileResource
 
    private HDocumentUpload saveFirstUploadPart(String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm, HLocale locale) throws IOException
    {
+      HDocumentUpload newUpload = createMultipartUpload(projectSlug, iterationSlug, docId, uploadForm, locale);
+      saveUploadPart(uploadForm, newUpload);
+      return newUpload;
+   }
+
+   private HDocumentUpload createMultipartUpload(String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm, HLocale locale)
+   {
       HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
       HDocumentUpload newUpload = new HDocumentUpload();
       newUpload.setProjectIteration(projectIteration);
@@ -552,7 +559,6 @@ public class FileService implements FileResource
       // locale intentionally left null for source
       newUpload.setLocale(locale);
       newUpload.setContentHash(uploadForm.getHash());
-      saveUploadPart(uploadForm, newUpload);
       return newUpload;
    }
 
