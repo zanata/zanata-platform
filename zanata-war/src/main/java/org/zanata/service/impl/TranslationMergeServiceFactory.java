@@ -29,13 +29,8 @@ public class TranslationMergeServiceFactory
 {
    @In
    private TextFlowTargetHistoryDAO textFlowTargetHistoryDAO;
-   private TranslationMergeAuto translationMergeAuto;
 
-   @Create
-   public void createMergeAuto()
-   {
-      translationMergeAuto = new TranslationMergeAuto(textFlowTargetHistoryDAO);
-   }
+   private TranslationMergeAuto translationMergeAuto;
 
    public TranslationMergeService getMergeService(MergeContext mergeContext)
    {
@@ -45,13 +40,22 @@ public class TranslationMergeServiceFactory
       }
       if (mergeContext.mergeType == MergeType.AUTO)
       {
-         return translationMergeAuto;
+         return ensureMergeAuto();
       }
       else if (mergeContext.mergeType == MergeType.IMPORT)
       {
          return TranslationMergeImport.INSTANCE;
       }
       throw new UnsupportedOperationException("merge unsupported: " + mergeContext);
+   }
+
+   private TranslationMergeService ensureMergeAuto()
+   {
+      if (translationMergeAuto == null)
+      {
+         translationMergeAuto = new TranslationMergeAuto(textFlowTargetHistoryDAO);
+      }
+      return translationMergeAuto;
    }
 
    @Getter

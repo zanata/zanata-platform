@@ -6,25 +6,18 @@ import java.util.Set;
 import org.zanata.common.ContentState;
 import org.zanata.dao.TextFlowTargetHistoryDAO;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.rest.dto.extensions.comment.SimpleComment;
-import org.zanata.rest.dto.extensions.gettext.TextFlowTargetExtension;
-import org.zanata.rest.dto.resource.ExtensionSet;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.service.TranslationMergeService;
-import org.zanata.transformer.TargetCommentTransformer;
 import org.zanata.transformer.TargetTransformer;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 class TranslationMergeAuto implements TranslationMergeService
 {
-   private TextFlowTargetHistoryDAO textFlowTargetHistoryDAO;
+   private final TextFlowTargetHistoryDAO textFlowTargetHistoryDAO;
 
-   public TranslationMergeAuto(TextFlowTargetHistoryDAO textFlowTargetHistoryDAO)
+   TranslationMergeAuto(TextFlowTargetHistoryDAO textFlowTargetHistoryDAO)
    {
       this.textFlowTargetHistoryDAO = textFlowTargetHistoryDAO;
    }

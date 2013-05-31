@@ -5,6 +5,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.zanata.common.MergeType;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.seam.SeamAutowire;
 import org.zanata.service.TranslationMergeService;
 
 import static org.hamcrest.MatcherAssert.*;
@@ -20,8 +21,7 @@ public class TranslationMergeServiceFactoryTest
    @BeforeClass
    public void beforeClass()
    {
-      factory = new TranslationMergeServiceFactory();
-      factory.createMergeAuto();
+      factory = SeamAutowire.instance().ignoreNonResolvable().autowire(TranslationMergeServiceFactory.class);
    }
 
    @Test
