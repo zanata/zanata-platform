@@ -159,6 +159,7 @@ public class HDocument extends ModelEntityBase implements DocumentWithId, IDocum
       return name;
    }
 
+   @Transient
    @Override
    public String getQualifiedDocId()
    {

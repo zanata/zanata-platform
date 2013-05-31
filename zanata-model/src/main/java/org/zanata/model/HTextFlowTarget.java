@@ -138,6 +138,7 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
       return locale;
    }
 
+   @Transient
    @Override
    public @Nonnull LocaleId getLocaleId()
    {
