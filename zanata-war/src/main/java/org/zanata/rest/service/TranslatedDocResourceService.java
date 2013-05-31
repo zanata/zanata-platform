@@ -362,7 +362,8 @@ public class TranslatedDocResourceService implements TranslatedDocResource
       }
    }
 
-   private HProjectIteration getSecuredIteration()
+   // public for Seam's benefit (and the @Restrict in deleteTranslations)
+   public HProjectIteration getSecuredIteration()
    {
       return restSlugValidator.retrieveAndCheckIteration(projectSlug, iterationSlug, false);
    }
