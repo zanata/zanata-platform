@@ -275,6 +275,12 @@ public class FileService implements FileResource
 
    private Response processAdapterFileAndRespond(File tempFile, String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm, int uploadChunks)
    {
+      processAdapterFile(tempFile, projectSlug, iterationSlug, docId, uploadForm);
+      return sourceUploadSuccessResponse(isNewDocument(projectSlug, iterationSlug, docId), uploadChunks);
+   }
+
+   private void processAdapterFile(File tempFile, String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm)
+   {
       try
       {
          virusScan(tempFile);
@@ -282,7 +288,7 @@ public class FileService implements FileResource
       catch (VirusDetectedException e)
       {
          log.warn("File failed virus scan: {}", e.getMessage());
-         return Response.status(Status.BAD_REQUEST).entity("uploaded file did not pass virus scan").build();
+         throw new ChunkUploadException(Status.BAD_REQUEST, "uploaded file did not pass virus scan");
       }
       HDocument document;
       // FIXME get params from upload form when API updated
@@ -300,11 +306,11 @@ public class FileService implements FileResource
       }
       catch (SecurityException e)
       {
-         return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
+         throw new ChunkUploadException(Status.INTERNAL_SERVER_ERROR, e.getMessage(), e);
       }
       catch (ZanataServiceException e)
       {
-         return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
+         throw new ChunkUploadException(Status.INTERNAL_SERVER_ERROR, e.getMessage(), e);
       }
 
       HRawDocument rawDocument = new HRawDocument();
@@ -320,9 +326,9 @@ public class FileService implements FileResource
       catch (FileNotFoundException e)
       {
          log.error("Failed to open stream from temp source file", e);
-         return Response.status(Status.INTERNAL_SERVER_ERROR)
-               .entity("Error saving uploaded document on server, download in original format may fail.\n")
-               .build();
+         throw new ChunkUploadException(Status.INTERNAL_SERVER_ERROR,
+               "Error saving uploaded document on server, download in original format may fail.\n",
+               e);
       }
       Blob fileContents = Hibernate.createBlob(tempFileStream, (int)tempFile.length());
       rawDocument.setContent(fileContents);
@@ -334,7 +340,6 @@ public class FileService implements FileResource
       documentDAO.flush();
 
       translationFileServiceImpl.removeTempFile(tempFile);
-      return sourceUploadSuccessResponse(isNewDocument(projectSlug, iterationSlug, docId), uploadChunks);
    }
 
    private Response saveFirstUploadPartAndRespond(String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm)
