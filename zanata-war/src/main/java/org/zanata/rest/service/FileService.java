@@ -378,6 +378,13 @@ public class FileService implements FileResource
                .build();
       }
 
+      File tempFile = combineToTempFileAndDeleteUploadRecord(upload);
+
+      return processSourceUploadFromTempFileAndRespond(tempFile, projectSlug, iterationSlug, docId, uploadForm, upload.getParts().size());
+   }
+
+   private File combineToTempFileAndDeleteUploadRecord(HDocumentUpload upload)
+   {
       File tempFile;
       try
       {
@@ -385,24 +392,22 @@ public class FileService implements FileResource
       }
       catch (HashMismatchException e)
       {
-         return Response.status(Status.CONFLICT)
-               .entity(new ChunkUploadResponse("MD5 hash \"" + e.getExpectedHash()
-                     + "\" sent with initial request does not match server-generated hash of combined parts \""
-                     + e.getGeneratedHash() + "\". Upload aborted. Retry upload from first part."))
-                     .build();
+         throw new ChunkUploadException(Status.CONFLICT,
+               "MD5 hash \"" + e.getExpectedHash() + "\" sent with initial request does not match" +
+               " server-generated hash of combined parts \"" + e.getGeneratedHash() +
+               "\". Upload aborted. Retry upload from first part.");
       }
       catch (SQLException e)
       {
-         log.error("Error while retreiving document upload part contents", e);
-         throw new RuntimeException(e);
+         throw new ChunkUploadException(Status.INTERNAL_SERVER_ERROR,
+               "Error while retreiving document upload part contents", e);
       }
       finally
       {
          // no more need for upload
          session.delete(upload);
       }
-
-      return processSourceUploadFromTempFileAndRespond(tempFile, projectSlug, iterationSlug, docId, uploadForm, upload.getParts().size());
+      return tempFile;
    }
 
    private Response processSourceUploadFromTempFileAndRespond(File tempFile, String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm, int uploadChunks)
