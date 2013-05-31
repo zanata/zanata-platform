@@ -419,8 +419,6 @@ public class TranslationServiceImpl implements TranslationService
          throw new ZanataServiceException("Version '" + iterationSlug + "' for project '" + projectSlug + "' ");
       }
 
-      final boolean requireTranslationReview = hProjectIteration.isRequireTranslationReview();
-
       ResourceUtils.validateExtensions(extensions);
 
       log.debug("pass evaluate");
