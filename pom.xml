@@ -47,6 +47,9 @@
 	  <hibernate.annotations.version>3.4.0.GA</hibernate.annotations.version>
 	  <hibernate.entitymanager.version>3.4.0.GA</hibernate.entitymanager.version>
       <war_bundles_jsf_impl>false</war_bundles_jsf_impl>
+
+        <!-- controls concordion output location-->
+        <concordion.output.dir>${project.build.directory}/concordion</concordion.output.dir>
     </properties>
 
    <dependencyManagement>
@@ -291,6 +294,31 @@
                <version>1.1.1</version>
                <scope>compile</scope>
             </dependency>
+
+          <dependency>
+              <groupId>org.concordion</groupId>
+              <artifactId>concordion</artifactId>
+              <version>1.4.2</version>
+              <exclusions>
+                  <exclusion>
+                      <artifactId>
+                          junit-dep
+                      </artifactId>
+                      <groupId>junit</groupId>
+                  </exclusion>
+                  <exclusion>
+                      <artifactId>xml-apis</artifactId>
+                      <groupId>xml-apis</groupId>
+                  </exclusion>
+              </exclusions>
+              <scope>test</scope>
+          </dependency>
+          <dependency>
+              <groupId>org.concordion</groupId>
+              <artifactId>concordion-extensions</artifactId>
+              <version>1.1.0</version>
+              <scope>test</scope>
+          </dependency>
 
       </dependencies>
    </dependencyManagement>    
