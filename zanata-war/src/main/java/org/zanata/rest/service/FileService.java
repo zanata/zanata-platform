@@ -677,6 +677,11 @@ public class FileService implements FileResource
             && identity != null && identity.hasPermission("import-template", projectIteration);
    }
 
+   private void parsePotFile(InputStream potStream, String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm)
+   {
+      parsePotFile(potStream, docId, uploadForm.getFileType(), projectSlug, iterationSlug, useOfflinePo(projectSlug, iterationSlug, docId));
+   }
+
    private void parsePotFile(InputStream documentStream, String docId, String fileType, String projectSlug, String iterationSlug, boolean asOfflinePo)
    {
       Resource doc;
