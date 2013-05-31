@@ -671,7 +671,6 @@ public class TargetContentsPresenter implements
    {
       ensureRowSelection(id);
       saveCurrent(ContentState.Approved);
-      eventBus.fireEvent(NavTransUnitEvent.NEXT_ENTRY_EVENT);
    }
 
    @Override
