@@ -289,11 +289,25 @@ td.FuzzyStateDecoration div div div
 	padding: 5px;
 }
 
-td.ApprovedStateDecoration div div div
+td.TranslatedStateDecoration div div div
 {
 	border-left: 3px solid #099b09;
 	border-right: 3px solid #099b09;
 	padding: 5px;
+}
+
+td.ApprovedStateDecoration div div div
+{
+    border-left: 3px solid #0000CD;
+    border-right: 3px solid #0000CD;
+    padding: 5px;
+}
+
+td.RejectedStateDecoration div div div
+{
+    border-left: 3px solid #FF4500;
+    border-right: 3px solid #FF4500;
+    padding: 5px;
 }
 
 .Severity-Error {
