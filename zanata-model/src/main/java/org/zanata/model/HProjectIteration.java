@@ -102,7 +102,7 @@ public class HProjectIteration extends SlugEntityBase implements Iterable<Docume
    private Set<String> customizedValidations;
 
    private ProjectType projectType;
-   private boolean requireTranslationReview = false;
+   private Boolean requireTranslationReview = false;
 
    public boolean getOverrideLocales()
    {
@@ -115,18 +115,13 @@ public class HProjectIteration extends SlugEntityBase implements Iterable<Docume
    }
 
    @Column(nullable = true)
-   public boolean isRequireTranslationReview()
+   public Boolean getRequireTranslationReview()
    {
-      return requireTranslationReview;
-   }
-
-   // this setter method takes a Boolean just so dbunit can set it to Null. To an exception being thrown.
-   public void setRequireTranslationReview(Boolean requireTranslationReview)
-   {
-      if (requireTranslationReview != null)
+      if (requireTranslationReview == null)
       {
-         this.requireTranslationReview = requireTranslationReview;
+         return Boolean.FALSE;
       }
+      return requireTranslationReview;
    }
 
    @ManyToOne

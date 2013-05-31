@@ -285,7 +285,7 @@ public class TranslationServiceImpl implements TranslationService
       {
          log.warn(warning);
       }
-      boolean requireTranslationReview = projectIteration.isRequireTranslationReview();
+      boolean requireTranslationReview = projectIteration.getRequireTranslationReview();
       boolean reviewResultState = target.getState() == ContentState.Translated || target.getState() == ContentState.Rejected;
       if (requireTranslationReview)
       {

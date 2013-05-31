@@ -217,7 +217,7 @@ public class CopyTransServiceImpl implements CopyTransService
       int copyCount = 0;
       try
       {
-         boolean requireTranslationReview = document.getProjectIteration().isRequireTranslationReview();
+         boolean requireTranslationReview = document.getProjectIteration().getRequireTranslationReview();
          results = textFlowTargetDAO.findMatchingTranslations(document, locale, checkContext, checkDocument, checkProject, requireTranslationReview);
          copyCount = 0;
 

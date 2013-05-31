@@ -121,7 +121,7 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
       boolean isProjectActive = isProjectIterationActive(project.getStatus(), projectIteration.getStatus());
       boolean hasWriteAccess = hasPermission(project, locale);
       boolean hasGlossaryUpdateAccess = hasGlossaryUpdatePermission();
-      boolean requireReview = projectIteration.isRequireTranslationReview();
+      boolean requireReview = projectIteration.getRequireTranslationReview();
       boolean hasReviewAccess = hasReviewerPermission();
 
       WorkspaceRestrictions workspaceRestrictions = new WorkspaceRestrictions(isProjectActive, hasWriteAccess, hasGlossaryUpdateAccess, hasReviewAccess, requireReview);
