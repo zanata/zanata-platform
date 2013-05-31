@@ -1,13 +1,13 @@
-<html xmlns:c="http://www.concordion.org/2007/concordion" xmlns:ext="urn:concordion-extensions:2010">
+<html xmlns:c="http://www.concordion.org/2007/concordion">
 <head>
-    <title>Translation Merge Test</title>
+    <title>Translation Merge Test (serve has NOT null translation)</title>
 </head>
 <body>
 
 <p>As a translator</p>
 <p c:execute="given(#mergeType)">Given: merge type set to <span c:set="#mergeType">AUTO</span>
 </p>
-<p>When: I push translation from client to server (for simplicity, no plural is used here)</p>
+<p>When: I push translation from client to server and server previously has translation entered,(for simplicity, no plural is used here)</p>
 
 <p>Then:</p>
 <table>
@@ -221,7 +221,7 @@
 <p>As a project maintainer</p>
 <p c:execute="given(#mergeType)">Given: merge type set to <span c:set="#mergeType">IMPORT</span>
 </p>
-<p>When: I push translation from client to server (for simplicity, no plural is used here)</p>
+<p>When: I push translation from client to server and server previously has translation entered (for simplicity, no plural is used here)</p>
 
 <p>Then:</p>
 <table>

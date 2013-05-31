@@ -510,6 +510,7 @@ public class TranslationServiceImpl implements TranslationService
                      {
                         int nPlurals = getNumPlurals(hLocale, textFlow);
                         HTextFlowTarget hTarget = textFlowTargetDAO.getTextFlowTarget(textFlow, hLocale);
+                        TranslationMergeServiceFactory.MergeContext mergeContext = new TranslationMergeServiceFactory.MergeContext(mergeType, textFlow, hLocale, hTarget, nPlurals);
                         boolean targetChanged = false;
                         // TODO pahuang should also move hTarget is null case into merge service
                         if (hTarget == null)
@@ -531,7 +532,7 @@ public class TranslationServiceImpl implements TranslationService
                         }
                         else
                         {
-                           TranslationMergeService mergeService = translationMergeServiceFactory.getMergeService(mergeType);
+                           TranslationMergeService mergeService = translationMergeServiceFactory.getMergeService(mergeContext);
 
                            switch (mergeType)
                            {

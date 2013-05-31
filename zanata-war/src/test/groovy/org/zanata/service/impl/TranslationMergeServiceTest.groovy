@@ -9,8 +9,11 @@ import org.mockito.BDDMockito
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import org.zanata.common.ContentState
+import org.zanata.common.LocaleId
 import org.zanata.common.MergeType
 import org.zanata.dao.TextFlowTargetHistoryDAO
+import org.zanata.model.HLocale
+import org.zanata.model.HTextFlow
 import org.zanata.model.HTextFlowTarget
 import org.zanata.rest.dto.resource.TextFlowTarget
 import org.zanata.service.TranslationMergeService
@@ -37,7 +40,12 @@ class TranslationMergeServiceTest {
     {
         def factory = new TranslationMergeServiceFactory(textFlowTargetHistoryDAO: historyDao)
         factory.createMergeAuto();
-        mergeService = factory.getMergeService(MergeType.valueOf(mergeType))
+        mergeService = factory.getMergeService(serverTargetNotNullMergeContext(mergeType))
+    }
+
+    static TranslationMergeServiceFactory.MergeContext serverTargetNotNullMergeContext(String mergeType)
+    {
+        new TranslationMergeServiceFactory.MergeContext(MergeType.valueOf(mergeType), new HTextFlow(), new HLocale(), new HTextFlowTarget(), 1)
     }
 
     Result merge(String contentFromClient, String stateFromClient, String contentOnServer, String stateOnServer, String contentInHistory = "false")
