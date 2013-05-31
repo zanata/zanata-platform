@@ -15,10 +15,8 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.EntityTag;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
@@ -35,24 +33,18 @@ import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.Identity;
-import org.zanata.common.EntityStatus;
-import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.ProjectDAO;
-import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HAccount;
-import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.validator.SlugValidator;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.NoSuchEntityException;
-import org.zanata.rest.ReadOnlyEntityException;
 import org.zanata.rest.dto.Link;
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.dto.ProjectIteration;
-import org.zanata.service.LocaleService;
 
 import com.google.common.base.Objects;
 
@@ -76,21 +68,10 @@ public class ProjectService implements ProjectResource
 
    @Context
    private UriInfo uri;
-
-   @HeaderParam("Content-Type")
-   @Context
-   private MediaType requestContentType;
-
-   @Context
-   private HttpHeaders headers;
-
    @Context
    private Request request;
 
    Log log = Logging.getLog(ProjectService.class);
-
-   @In
-   private LocaleService localeServiceImpl;
 
    @In
    ProjectDAO projectDAO;
@@ -103,6 +84,13 @@ public class ProjectService implements ProjectResource
 
    @In
    ETagUtils eTagUtils;
+
+   @SuppressWarnings("null")
+   @Nonnull
+   public String getProjectSlug()
+   {
+      return projectSlug;
+   }
 
    /**
     * Returns header information for a project.
@@ -148,7 +136,7 @@ public class ProjectService implements ProjectResource
    {
       try
       {
-         EntityTag etag = eTagUtils.generateTagForProject(projectSlug);
+         EntityTag etag = eTagUtils.generateTagForProject(getProjectSlug());
 
          ResponseBuilder response = request.evaluatePreconditions(etag);
          if (response != null)
@@ -156,7 +144,7 @@ public class ProjectService implements ProjectResource
             return response.build();
          }
 
-         HProject hProject = projectDAO.getBySlug(projectSlug);
+         HProject hProject = projectDAO.getBySlug(getProjectSlug());
          Project project = toResource(hProject, accept);
          return Response.ok(project).tag(etag).build();
       }
@@ -191,7 +179,7 @@ public class ProjectService implements ProjectResource
       ResponseBuilder response;
       EntityTag etag;
 
-      HProject hProject = projectDAO.getBySlug(projectSlug);
+      HProject hProject = projectDAO.getBySlug(getProjectSlug());
 
       if (hProject == null)
       { // must be a create operation
@@ -276,21 +264,6 @@ public class ProjectService implements ProjectResource
 
    }
 
-   @Nonnull HProject retrieveAndCheckProject(@Nonnull String projectSlug, boolean requiresWriteAccess)
-   {
-      HProject hProject = projectDAO.getBySlug(projectSlug);
-      if (hProject == null || hProject.getStatus().equals(EntityStatus.OBSOLETE))
-      {
-         throw new NoSuchEntityException("Project '" + projectSlug + "' not found.");
-      }
-      if (requiresWriteAccess &&
-          hProject.getStatus().equals(EntityStatus.READONLY))
-      {
-         throw new ReadOnlyEntityException("Project '" + projectSlug + "' is read-only.");
-      }
-      return hProject;
-   }
-
    private static void transfer(Project from, HProject to)
    {
       to.setName(from.getName());
@@ -353,26 +326,6 @@ public class ProjectService implements ProjectResource
          project.getIterations(true).add(iteration);
       }
       return project;
-   }
-
-   /**
-    * Returns the requested locale, but only if the locale is allowed for the server/project.
-    * @param locale
-    * @param projectSlug
-    * @return
-    * @throws WebApplicationException if locale is not allowed
-    */
-   public @Nonnull HLocale validateTargetLocale(@Nonnull LocaleId locale, @Nonnull String projectSlug)
-   {
-      try
-      {
-         return localeServiceImpl.validateLocaleByProject(locale, projectSlug);
-      }
-      catch (ZanataServiceException e)
-      {
-         log.warn("Exception validating target locale {0} in proj {1}", e, locale, projectSlug);
-         throw e;
-      }
    }
 
 }

@@ -33,7 +33,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.HttpHeaders;
@@ -44,8 +43,6 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.jboss.resteasy.util.HttpHeaderNames;
@@ -53,28 +50,20 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.security.Identity;
-import org.zanata.common.EntityStatus;
-import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.exception.ZanataServiceException;
-import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.validator.SlugValidator;
 import org.zanata.rest.MediaTypes;
-import org.zanata.rest.NoSuchEntityException;
-import org.zanata.rest.ReadOnlyEntityException;
 import org.zanata.rest.dto.ProjectIteration;
-import org.zanata.service.LocaleService;
 
 import com.google.common.base.Objects;
 
 @Name("projectIterationService")
 @Path(ProjectIterationService.SERVICE_PATH)
 @Transactional
-@Slf4j
 public class ProjectIterationService implements ProjectIterationResource
 {
 
@@ -108,12 +97,6 @@ public class ProjectIterationService implements ProjectIterationResource
    private Request request;
 
    @In
-   private LocaleService localeServiceImpl;
-
-   @In
-   private ProjectService projectService;
-
-   @In
    ProjectDAO projectDAO;
 
    @In
@@ -125,6 +108,19 @@ public class ProjectIterationService implements ProjectIterationResource
    @In
    Identity identity;
 
+   @SuppressWarnings("null")
+   @Nonnull
+   public String getProjectSlug()
+   {
+      return projectSlug;
+   }
+
+   @SuppressWarnings("null")
+   @Nonnull
+   public String getIterationSlug()
+   {
+      return iterationSlug;
+   }
 
    /**
     * Returns header information for a project iteration.
@@ -173,7 +169,7 @@ public class ProjectIterationService implements ProjectIterationResource
          return response.build();
       }
 
-      HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+      HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(getProjectSlug(), getIterationSlug());
 
       ProjectIteration it = new ProjectIteration();
       transfer(hProjectIteration, it);
@@ -210,7 +206,7 @@ public class ProjectIterationService implements ProjectIterationResource
          return projTypeError;
       }
 
-      HProject hProject = projectDAO.getBySlug(projectSlug);
+      HProject hProject = projectDAO.getBySlug(getProjectSlug());
 
       if (hProject == null)
       {
@@ -227,7 +223,7 @@ public class ProjectIterationService implements ProjectIterationResource
          return Response.status(Status.FORBIDDEN).entity("Project '" + projectSlug + "' is read-only.").build();
       }
 
-      HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+      HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(getProjectSlug(), getIterationSlug());
 
       if (hProjectIteration == null)
       { // must be a create operation
@@ -360,27 +356,6 @@ public class ProjectIterationService implements ProjectIterationResource
       }
    }
 
-   /**
-    * 
-    * @param requiresWriteAccess
-    * @return
-    * @see ProjectService#retrieveAndCheckProject
-    */
-   @Nonnull HProjectIteration retrieveAndCheckIteration(@Nonnull String projectSlug, @Nonnull String iterationSlug, boolean requiresWriteAccess)
-   {
-      HProject hProject = projectService.retrieveAndCheckProject(projectSlug, requiresWriteAccess);
-      HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(hProject, iterationSlug);
-      if (hProjectIteration == null || hProjectIteration.getStatus().equals(EntityStatus.OBSOLETE))
-      {
-         throw new NoSuchEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' not found.");
-      }
-      if (requiresWriteAccess && hProjectIteration.getStatus().equals(EntityStatus.READONLY))
-      {
-         throw new ReadOnlyEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' is read-only.");
-      }
-      return hProjectIteration;
-   }
-
    public static void transfer(HProjectIteration from, ProjectIteration to)
    {
       to.setId(from.getSlug());
@@ -388,27 +363,6 @@ public class ProjectIterationService implements ProjectIterationResource
       if (from.getProjectType() != null)
       {
          to.setProjectType(from.getProjectType().toString());
-      }
-   }
-
-   /**
-    * Returns the requested locale, but only if the locale is allowed for the server/project/version.
-    * @param locale
-    * @param projectSlug
-    * @param iterationSlug
-    * @return
-    * @throws WebApplicationException if locale is not allowed
-    */
-   public @Nonnull HLocale validateTargetLocale(@Nonnull LocaleId locale, @Nonnull String projectSlug, @Nonnull String iterationSlug)
-   {
-      try
-      {
-         return localeServiceImpl.validateLocaleByProjectIteration(locale, projectSlug, iterationSlug);
-      }
-      catch (ZanataServiceException e)
-      {
-         log.warn("Exception validating target locale {0} in proj {1} iter {2}", e, locale, projectSlug, iterationSlug);
-         throw e;
       }
    }
 

@@ -143,6 +143,9 @@ public class TranslatedDocResourceService implements TranslatedDocResource
    private ProjectIterationService projectIterationService;
 
    @In
+   private RestSlugValidator restSlugValidator;
+
+   @In
    private TranslationService translationServiceImpl;
 
    private final Log log = Logging.getLog(TranslatedDocResourceService.class);
@@ -185,8 +188,8 @@ public class TranslatedDocResourceService implements TranslatedDocResource
    {
       log.debug("start to get translation");
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
-      HProjectIteration hProjectIteration = projectIterationService.retrieveAndCheckIteration(projectSlug, iterationSlug, false);
-      HLocale hLocale = projectIterationService.validateTargetLocale(locale, projectSlug, iterationSlug);
+      HProjectIteration hProjectIteration = restSlugValidator.retrieveAndCheckIteration(projectSlug, iterationSlug, false);
+      HLocale hLocale = restSlugValidator.validateTargetLocale(locale, projectSlug, iterationSlug);
 
       ResourceUtils.validateExtensions(extensions);
 
@@ -250,7 +253,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource
    public Response deleteTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale)
    {
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
-      HProjectIteration hProjectIteration = projectIterationService.retrieveAndCheckIteration(projectSlug, iterationSlug, true);
+      HProjectIteration hProjectIteration = restSlugValidator.retrieveAndCheckIteration(projectSlug, iterationSlug, true);
 
       // TODO find correct etag
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, new HashSet<String>());
@@ -364,7 +367,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource
 
    private HProjectIteration getSecuredIteration()
    {
-      return projectIterationService.retrieveAndCheckIteration(projectSlug, iterationSlug, false);
+      return restSlugValidator.retrieveAndCheckIteration(projectSlug, iterationSlug, false);
    }
 
 }

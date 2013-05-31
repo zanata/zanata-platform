@@ -32,85 +32,40 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.log.Log;
-import org.jboss.seam.log.Logging;
-import org.zanata.ApplicationConfiguration;
 import org.zanata.common.LocaleId;
-import org.zanata.dao.DocumentDAO;
-import org.zanata.dao.ProjectDAO;
-import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
+import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
-import org.zanata.security.ZanataIdentity;
-import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
-import org.zanata.service.TranslationService;
 
 @Name("translationMemoryService")
 @Path("tm")
 @Transactional
+@Slf4j
 public class TranslationMemoryService implements TranslationMemoryResource
 {
 
-   // security actions
-//   private static final String ACTION_IMPORT_TM = "import-tm";
-//   private static final String ACTION_EXPORT_TM = "export-tm";
-
-   @In
-   private ZanataIdentity identity;
-
-   @In
-   private ApplicationConfiguration applicationConfiguration;
-
-   @In
-   private ProjectIterationDAO projectIterationDAO;
-
-   @In
-   private ProjectDAO projectDAO;
-
-   @In
-   private DocumentDAO documentDAO;
-
-   @In
-   private TextFlowTargetDAO textFlowTargetDAO;
-
-   @In
-   private ResourceUtils resourceUtils;
-
-   @In
-   private ETagUtils eTagUtils;
-   
-   @In
-   private CopyTransService copyTransServiceImpl;
-
-   @In
-   private ProjectService projectService;
-
-   @In
-   private ProjectIterationService projectIterationService;
-
-   @In
-   private TranslationService translationServiceImpl;
-
-   private final Log log = Logging.getLog(TranslationMemoryService.class);
-
    @In
    private LocaleService localeServiceImpl;
+   @In
+   private RestSlugValidator restSlugValidator;
 
    @Override
    @GET
    public Response getAllTranslationMemory(@QueryParam("locale") LocaleId locale)
    {
-      log.debug("exporting TM for all projects, locale {0}", locale);
+      log.debug("exporting TM for all projects, locale {}", locale);
       // TODO security checks, etag
       // TODO Auto-generated method stub
       if (locale != null)
       {
+         // ignore result:
          localeServiceImpl.validateSourceLocale(locale);
       }
       String filename = makeTMXFilename(null, null, locale);
@@ -125,13 +80,13 @@ public class TranslationMemoryService implements TranslationMemoryResource
    @GET
    public Response getProjectTranslationMemory(@PathParam("projectSlug") @Nonnull String projectSlug, @QueryParam("locale") LocaleId locale)
    {
-      log.debug("exporting TM for project {0}, locale {1}", projectSlug, locale);
+      log.debug("exporting TM for project {}, locale {}", projectSlug, locale);
       // TODO security checks, etag
       // TODO Auto-generated method stub
-      projectService.retrieveAndCheckProject(projectSlug, false);
+      HProject hProject = restSlugValidator.retrieveAndCheckProject(projectSlug, false);
       if (locale != null)
       {
-         projectService.validateTargetLocale(locale, projectSlug);
+         restSlugValidator.validateTargetLocale(locale, projectSlug);
       }
 
       String filename = makeTMXFilename(projectSlug, null, locale);
@@ -147,12 +102,12 @@ public class TranslationMemoryService implements TranslationMemoryResource
    public Response getProjectIterationTranslationMemory(
          @Nonnull String projectSlug, @Nonnull String iterationSlug, LocaleId locale)
    {
-      log.debug("exporting TM for project {0}, iteration {1}, locale {2}", projectSlug, iterationSlug, locale);
+      log.debug("exporting TM for project {}, iteration {}, locale {}", projectSlug, iterationSlug, locale);
       // TODO security checks, etag
-      HProjectIteration hProjectIteration = projectIterationService.retrieveAndCheckIteration(projectSlug, iterationSlug, false);
+      HProjectIteration hProjectIteration = restSlugValidator.retrieveAndCheckIteration(projectSlug, iterationSlug, false);
       if (locale != null)
       {
-         projectIterationService.validateTargetLocale(locale, projectSlug, iterationSlug);
+         restSlugValidator.validateTargetLocale(locale, projectSlug, iterationSlug);
       }
 
       // TODO option to export obsolete docs to TMX?
