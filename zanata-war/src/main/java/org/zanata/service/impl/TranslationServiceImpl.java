@@ -26,12 +26,14 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import javax.annotation.Nonnull;
 import javax.persistence.EntityManager;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.HibernateException;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -73,12 +75,10 @@ import org.zanata.service.TranslationService;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
+
 import com.google.common.collect.Lists;
 
-import lombok.extern.slf4j.Slf4j;
-
 @Name("translationServiceImpl")
-@AutoCreate
 @Scope(ScopeType.STATELESS)
 @Transactional
 @Slf4j

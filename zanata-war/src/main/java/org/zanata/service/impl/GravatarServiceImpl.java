@@ -1,7 +1,6 @@
 package org.zanata.service.impl;
 
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -11,7 +10,6 @@ import org.zanata.service.GravatarService;
 import org.zanata.util.HashUtil;
 
 @Name("gravatarServiceImpl")
-@AutoCreate
 @Scope(ScopeType.STATELESS)
 public class GravatarServiceImpl implements GravatarService
 {

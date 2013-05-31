@@ -39,7 +39,6 @@ import org.apache.lucene.util.Version;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -55,7 +54,6 @@ import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 @Name("translationMemoryQueryService")
-@AutoCreate
 @Scope(ScopeType.STATELESS)
 @Slf4j
 public class TranslationMemoryQueryServiceImpl implements TranslationMemoryQueryService

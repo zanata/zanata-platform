@@ -24,13 +24,13 @@ import java.net.URI;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -67,7 +67,6 @@ import org.zanata.webtrans.shared.model.DocumentStatus;
 @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 @Name("statisticsServiceImpl")
 @Scope(ScopeType.STATELESS)
-@AutoCreate
 public class StatisticsServiceImpl implements StatisticsResource
 {
    @In

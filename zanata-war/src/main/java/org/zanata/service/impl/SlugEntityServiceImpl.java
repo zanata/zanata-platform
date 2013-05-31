@@ -23,7 +23,6 @@ package org.zanata.service.impl;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -37,7 +36,6 @@ import org.zanata.service.SlugEntityService;
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Name("slugEntityServiceImpl")
-@AutoCreate
 @Scope(ScopeType.STATELESS)
 public class SlugEntityServiceImpl implements SlugEntityService
 {

@@ -20,7 +20,6 @@
  */
 package org.zanata.service.impl;
 
-import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -68,7 +67,6 @@ import static org.zanata.common.DocumentType.*;
  */
 @Name("translationFileServiceImpl")
 @Scope(STATELESS)
-@AutoCreate
 public class TranslationFileServiceImpl implements TranslationFileService
 {
    private static Map<DocumentType, Class<? extends FileFormatAdapter>> DOCTYPEMAP = new MapMaker().makeMap();

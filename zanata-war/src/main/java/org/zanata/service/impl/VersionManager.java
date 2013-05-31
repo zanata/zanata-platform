@@ -2,14 +2,12 @@ package org.zanata.service.impl;
 
 
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 
 @Name("versionManager")
-@AutoCreate
 @Scope(ScopeType.APPLICATION)
 public class VersionManager
 {

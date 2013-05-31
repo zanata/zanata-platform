@@ -25,10 +25,8 @@ import java.util.regex.Pattern;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -48,7 +46,6 @@ import org.zanata.util.HashUtil;
  */
 @Name("userAccountServiceImpl")
 @Scope(ScopeType.STATELESS)
-@AutoCreate
 public class UserAccountServiceImpl implements UserAccountService
 {
    @Logger

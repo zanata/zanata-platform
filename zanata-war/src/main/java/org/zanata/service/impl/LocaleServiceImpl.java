@@ -28,10 +28,8 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import javax.annotation.Nonnull;
-import javax.ws.rs.core.Response.Status;
 
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -57,7 +55,6 @@ import com.ibm.icu.util.ULocale;
  * 
  */
 @Name("localeServiceImpl")
-@AutoCreate
 @Scope(ScopeType.STATELESS)
 public class LocaleServiceImpl implements LocaleService
 {

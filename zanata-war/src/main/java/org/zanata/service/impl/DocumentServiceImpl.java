@@ -20,8 +20,9 @@
  */
 package org.zanata.service.impl;
 
+import java.util.Set;
+
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -40,15 +41,12 @@ import org.zanata.service.CopyTransService;
 import org.zanata.service.DocumentService;
 import org.zanata.service.LocaleService;
 
-import java.util.Set;
-
 /**
  * Default implementation of the {@link DocumentService} business service interface.
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Name("documentServiceImpl")
-@AutoCreate
 @Scope(ScopeType.STATELESS)
 public class DocumentServiceImpl implements DocumentService
 {
