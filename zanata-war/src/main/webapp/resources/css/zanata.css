@@ -937,6 +937,7 @@ a.table_link span.nativeName, span.nativeName
 input.filter_input
 {
 	width:120px;
+	height:14px;
 }
 
 td.actionCol
@@ -1062,7 +1063,7 @@ div.glosaryDeleteWarn span.warn
 
 /* ------------------------ Admin Page CSS -------------------------------------*/
 a.admin_link {
-    font-size: 1.0em;
+    font-size: 13px;
     font-weight: bold;
     color: #7092C3;
     text-decoration: none;
