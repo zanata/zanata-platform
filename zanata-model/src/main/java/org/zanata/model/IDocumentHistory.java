@@ -22,6 +22,8 @@ package org.zanata.model;
 
 import java.util.Date;
 
+import javax.annotation.Nonnull;
+
 import org.zanata.common.ContentType;
 
 
@@ -36,7 +38,7 @@ public interface IDocumentHistory
 
    boolean isObsolete();
 
-   HLocale getLocale();
+   @Nonnull HLocale getLocale();
 
    ContentType getContentType();
 

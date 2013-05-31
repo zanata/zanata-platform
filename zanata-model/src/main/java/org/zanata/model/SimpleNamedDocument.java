@@ -26,6 +26,8 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import org.zanata.common.LocaleId;
+
 import com.google.common.collect.ImmutableList;
 
 import lombok.Data;
@@ -37,17 +39,20 @@ import lombok.Data;
 @Data
 public class SimpleNamedDocument implements DocumentWithId
 {
+   private final LocaleId sourceLocaleId;
    private final String qualifiedDocId;
    private final List<SourceContents> sourceContentsList;
 
-   public SimpleNamedDocument(String qualifiedDocId, List<SourceContents> sourceContentsList)
+   public SimpleNamedDocument(LocaleId sourceLocaleId, String qualifiedDocId, List<SourceContents> sourceContentsList)
    {
+      this.sourceLocaleId = sourceLocaleId;
       this.qualifiedDocId = qualifiedDocId;
       this.sourceContentsList = sourceContentsList;
    }
 
-   public SimpleNamedDocument(String qualifiedDocId, @Nonnull SourceContents... sourceContentsList)
+   public SimpleNamedDocument(LocaleId sourceLocaleId, String qualifiedDocId, @Nonnull SourceContents... sourceContentsList)
    {
+      this.sourceLocaleId = sourceLocaleId;
       this.qualifiedDocId = qualifiedDocId;
       this.sourceContentsList = ImmutableList.copyOf(sourceContentsList);
    }

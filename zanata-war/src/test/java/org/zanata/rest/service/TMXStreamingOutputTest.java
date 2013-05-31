@@ -43,14 +43,14 @@ public class TMXStreamingOutputTest
       NamespaceContext ctx = new SimpleNamespaceContext(ImmutableMap.of("xml", "http://www.w3.org/XML/1998/namespace"));
       XMLUnit.setXpathNamespaceContext(ctx);
    }
+   private LocaleId sourceLocale = LocaleId.EN;
 
    @Test
    public void exportAllLocales() throws Exception
    {
       ArrayList<DocumentWithId> docList = createTestDocs();
-      LocaleId sourceLocale = LocaleId.EN;
       LocaleId targetLocale = null;
-      StreamingOutput output = new TMXStreamingOutput(docList, sourceLocale, targetLocale);
+      StreamingOutput output = new TMXStreamingOutput(docList, targetLocale);
 
       Document doc = writeToXml(output);
 
@@ -62,9 +62,8 @@ public class TMXStreamingOutputTest
    public void exportFrench() throws Exception
    {
       ArrayList<DocumentWithId> docList = createTestDocs();
-      LocaleId sourceLocale = LocaleId.EN;
       LocaleId targetLocale = LocaleId.FR;
-      StreamingOutput output = new TMXStreamingOutput(docList, sourceLocale, targetLocale);
+      StreamingOutput output = new TMXStreamingOutput(docList, targetLocale);
 
       Document doc = writeToXml(output);
 
@@ -77,9 +76,8 @@ public class TMXStreamingOutputTest
    public void exportGerman() throws Exception
    {
       ArrayList<DocumentWithId> docList = createTestDocs();
-      LocaleId sourceLocale = LocaleId.EN;
       LocaleId targetLocale = LocaleId.DE;
-      StreamingOutput output = new TMXStreamingOutput(docList, sourceLocale, targetLocale);
+      StreamingOutput output = new TMXStreamingOutput(docList, targetLocale);
 
       Document doc = writeToXml(output);
 
@@ -95,6 +93,7 @@ public class TMXStreamingOutputTest
       LocaleId fr = LocaleId.FR;
       LocaleId de = LocaleId.DE;
       DocumentWithId doc0 = new SimpleNamedDocument(
+            sourceLocale,
             "doc0",
             new SimpleSourceContents(
                   "resId0",
@@ -109,6 +108,7 @@ public class TMXStreamingOutputTest
                   )
             );
       DocumentWithId doc1 = new SimpleNamedDocument(
+            sourceLocale,
             "doc1",
             new SimpleSourceContents(
                   "resId0",

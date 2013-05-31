@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -55,6 +56,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.ContentType;
+import org.zanata.common.LocaleId;
 import org.zanata.model.po.HPoHeader;
 import org.zanata.model.po.HPoTargetHeader;
 import org.zanata.model.type.ContentTypeType;
@@ -174,12 +176,19 @@ public class HDocument extends ModelEntityBase implements DocumentWithId, IDocum
       return path;
    }
 
+   @SuppressWarnings("null")
    @ManyToOne
    @JoinColumn(name = "locale", nullable = false)
    @Override
-   public HLocale getLocale()
+   public @Nonnull HLocale getLocale()
    {
       return this.locale;
+   }
+
+   @Override
+   public @Nonnull LocaleId getSourceLocaleId()
+   {
+      return locale.getLocaleId();
    }
 
    @ManyToOne(cascade = CascadeType.PERSIST)

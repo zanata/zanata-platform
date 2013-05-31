@@ -41,6 +41,8 @@ import org.zanata.model.SourceContents;
 import org.zanata.util.OkapiUtil;
 import org.zanata.util.VersionUtility;
 
+import com.google.common.collect.Iterables;
+
 /**
  * Exports a collection of NamedDocument (ie a project iteration) to an
  * OutputStream in TMX format.
@@ -52,16 +54,14 @@ public class TMXStreamingOutput implements StreamingOutput
    private static final String creationTool = "Zanata " + TMXStreamingOutput.class.getSimpleName();
    private static final String creationToolVersion =
          VersionUtility.getVersionInfo(TMXStreamingOutput.class).getVersionNo();
-   private final Iterable<DocumentWithId> documents;
-   private final @Nonnull LocaleId sourceLocale;
+   private final @Nonnull Iterable<DocumentWithId> documents;
    private final @Nullable LocaleId targetLocale;
    private final ExportTUStrategy exportTUStrategy;
 
-   public TMXStreamingOutput(Iterable<DocumentWithId> documents,
-         @Nonnull LocaleId sourceLocale, @Nullable LocaleId targetLocale)
+   public TMXStreamingOutput(@Nonnull Iterable<DocumentWithId> documents,
+         @Nullable LocaleId targetLocale)
    {
       this.documents = documents;
-      this.sourceLocale = sourceLocale;
       this.targetLocale = targetLocale;
       this.exportTUStrategy = new ExportTUStrategy(targetLocale);
    }
@@ -88,6 +88,13 @@ public class TMXStreamingOutput implements StreamingOutput
       TMXWriter tmxWriter = new TMXWriter(xmlWriter);
       String segType = "block"; // TODO other segmentation types
       String dataType = "unknown"; // TODO track data type metadata throughout the system
+
+      // NB this assumes that all documents use the same source locale (probably en-US)
+      // TODO fix TMXWriter to accept sourceLocale "*all*"
+      @SuppressWarnings("null")
+      DocumentWithId firstDoc = Iterables.getFirst(documents, null);
+      LocaleId sourceLocale = firstDoc != null ? firstDoc.getSourceLocaleId() : LocaleId.EN;
+
       tmxWriter.writeStartDocument(
             toOkapiLocaleOrEmpty(sourceLocale),
             toOkapiLocaleOrEmpty(targetLocale),

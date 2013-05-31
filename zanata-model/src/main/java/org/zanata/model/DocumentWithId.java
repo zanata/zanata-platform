@@ -21,11 +21,14 @@
 
 package org.zanata.model;
 
+import org.zanata.common.LocaleId;
+
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
 public interface DocumentWithId extends Iterable<SourceContents>
 {
+   LocaleId getSourceLocaleId();
    String getQualifiedDocId();
 }

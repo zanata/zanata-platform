@@ -83,12 +83,12 @@ public class TranslationMemoryService implements TranslationMemoryResource
       log.debug("exporting TM for project {}, locale {}", projectSlug, locale);
       // TODO security checks, etag
       // TODO Auto-generated method stub
-      HProject hProject = restSlugValidator.retrieveAndCheckProject(projectSlug, false);
       if (locale != null)
       {
          // ignore result:
          restSlugValidator.validateTargetLocale(locale, projectSlug);
       }
+      HProject hProject = restSlugValidator.retrieveAndCheckProject(projectSlug, false);
 
       String filename = makeTMXFilename(projectSlug, null, locale);
       Object output = null;
@@ -126,7 +126,7 @@ public class TranslationMemoryService implements TranslationMemoryResource
          throw new WebApplicationException(404); // no docs
       }
 
-      StreamingOutput output = new TMXStreamingOutput(hProjectIteration, sourceLocale.getLocaleId(), locale);
+      StreamingOutput output = new TMXStreamingOutput(hProjectIteration, locale);
       String filename = makeTMXFilename(projectSlug, iterationSlug, locale);
       return Response.ok()
             .header("Content-Disposition", "attachment; filename=\"" + filename + "\"")
