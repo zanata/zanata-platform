@@ -278,30 +278,6 @@ public class ResourceUtils
    }
 
    /**
-    * Transfers from DTO TextFlowTarget into HTextFlowTarget
-    * 
-    * @param from
-    * @param to
-    * @return
-    * @todo merge with {@link #transferFromTextFlowTargetExtensions}
-    */
-   public boolean transferFromTextFlowTarget(TextFlowTarget from, HTextFlowTarget to)
-   {
-      boolean changed = false;
-      if (!equals(from.getContents(), to.getContents()))
-      {
-         to.setContents(from.getContents());
-         changed = true;
-      }
-      if (!equals(from.getState(), to.getState()))
-      {
-         to.setState(from.getState());
-         changed = true;
-      }
-      return changed;
-   }
-
-   /**
     * Transfers the specified extensions from DTO AbstractResourceMeta into
     * HDocument
     * 
@@ -399,56 +375,6 @@ public class ResourceUtils
          changed |= transferFromPoTargetHeader(fromTargetHeader, toTargetHeader, mergeType);
       }
       return changed;
-   }
-
-   /**
-    * Transfers enabled extensions from DTO TextFlowTarget to HTextFlowTarget
-    * 
-    * @param extensions
-    * @param hTarget
-    * @param enabledExtensions
-    * @return
-    * @todo merge with {@link #transferFromTextFlowTarget}
-    */
-   public boolean transferFromTextFlowTargetExtensions(ExtensionSet<TextFlowTargetExtension> extensions, HTextFlowTarget hTarget, Set<String> enabledExtensions)
-   {
-      boolean changed = false;
-      if (enabledExtensions.contains(SimpleComment.ID))
-      {
-         SimpleComment comment = extensions.findByType(SimpleComment.class);
-         if (comment != null)
-         {
-            changed |= transferFromComment(comment, hTarget);
-         }
-      }
-
-      return changed;
-
-   }
-
-   /**
-    * Transfers from DTO SimpleComment to a Hibernate object's "comment"
-    * property
-    * 
-    * @param from
-    * @param to
-    * @return
-    */
-   private boolean transferFromComment(SimpleComment from, HasSimpleComment to)
-   {
-      HSimpleComment hComment = to.getComment();
-
-      if (hComment == null)
-      {
-         hComment = new HSimpleComment();
-      }
-      if (!equals(from.getValue(), hComment.getComment()))
-      {
-         hComment.setComment(from.getValue());
-         to.setComment(hComment);
-         return true;
-      }
-      return false;
    }
 
    private boolean transferFromTextFlowExtensions(ExtensionSet<TextFlowExtension> from, HTextFlow to, Set<String> enabledExtensions)
@@ -639,7 +565,9 @@ public class ResourceUtils
    static List<String> splitLines(String s, String tagToSkip)
    {
       if (s.isEmpty())
+      {
          return Collections.emptyList();
+      }
       try
       {
          List<String> lineList = new ArrayList<String>(s.length() / 40);
