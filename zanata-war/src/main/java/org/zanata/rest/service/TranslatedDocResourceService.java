@@ -138,10 +138,6 @@ public class TranslatedDocResourceService implements TranslatedDocResource
    
    @In
    private CopyTransService copyTransServiceImpl;
-
-   @In
-   private ProjectIterationService projectIterationService;
-
    @In
    private RestSlugValidator restSlugValidator;
 
