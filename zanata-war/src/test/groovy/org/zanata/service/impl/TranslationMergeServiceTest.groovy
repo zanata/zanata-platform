@@ -39,7 +39,6 @@ class TranslationMergeServiceTest {
     def given(String mergeType)
     {
         def factory = new TranslationMergeServiceFactory(textFlowTargetHistoryDAO: historyDao)
-        factory.createMergeAuto();
         mergeService = factory.getMergeService(serverTargetNotNullMergeContext(mergeType))
     }
 
