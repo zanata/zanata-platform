@@ -30,9 +30,9 @@
                 <p>#{messages['jsf.SizeMembers']}</p>
                 <rich:dataTable
                     id="threads"
-                    value="#{languageTeamAction.getLocaleMembers()}"
+                    value="#{languageTeamAction.locale.members.toArray()}"
                     var="member" 
-                    rendered="#{not empty languageTeamAction.localeMembers}"
+                    rendered="#{not empty languageTeamAction.locale.members}"
                     sortMode="single">
                   <rich:column id="usernameCol" width="auto" sortBy="#{member.person.account.username}" sortOrder="ascending">
                     <f:facet name="header">#{messages['jsf.Username']}</f:facet>

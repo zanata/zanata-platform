@@ -119,11 +119,6 @@ public class LanguageTeamAction implements Serializable
       }
       return locale;
    }
-   
-   public List<HLocaleMember> getLocaleMembers()
-   {
-      return languageTeamServiceImpl.getLanguageMembers(getLanguage());
-   }
 
    @Transactional
    @Restrict("#{s:hasRole('admin')}")

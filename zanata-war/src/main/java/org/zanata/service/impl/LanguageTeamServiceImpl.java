@@ -53,11 +53,6 @@ public class LanguageTeamServiceImpl implements LanguageTeamService
       return personDAO.getLanguageMembershipByUsername(userName);
    }
 
-   public List<HLocaleMember> getLanguageMembers(String locale)
-   {
-      return localeMemberDAO.findAllByLocale(new LocaleId(locale));
-   }
-   
    public boolean joinLanguageTeam(String locale, Long personId) throws ZanataServiceException
    {
       HLocale lang = localeDAO.findByLocaleId(new LocaleId(locale));
@@ -91,7 +86,7 @@ public class LanguageTeamServiceImpl implements LanguageTeamService
       if (membership != null)
       {
          localeMemberDAO.makeTransient(membership);
-         //lang.getMembers().remove(membership);
+         lang.getMembers().remove(membership);
          localeMemberDAO.flush();
          return true;
       }
