@@ -179,6 +179,64 @@ public class FileService implements FileResource
       try
       {
          checkSourceUploadPreconditions(projectSlug, iterationSlug, docId, uploadForm);
+
+         Optional<File> tempFile;
+         int totalChunks;
+
+         if (isSinglePart(uploadForm))
+         {
+            totalChunks = 1;
+            tempFile = Optional.<File>absent();
+         }
+         else
+         {
+            HDocumentUpload upload;
+            if (uploadForm.getFirst())
+            {
+               upload = createMultipartUpload(projectSlug, iterationSlug, docId, uploadForm, null);
+            }
+            else
+            {
+               upload = retrieveUploadObject(uploadForm);
+            }
+            saveUploadPart(uploadForm, upload);
+            totalChunks = upload.getParts().size();
+            if (!uploadForm.getLast())
+            {
+               return Response.status(Status.ACCEPTED)
+                     .entity(new ChunkUploadResponse(upload.getId(), totalChunks, true,
+                           "Chunk accepted, awaiting remaining chunks."))
+                     .build();
+            }
+            tempFile = Optional.of(combineToTempFileAndDeleteUploadRecord(upload));
+         }
+
+         if (uploadForm.getFileType().equals(".pot"))
+         {
+            InputStream potStream;
+            if (tempFile.isPresent())
+            {
+               potStream = new FileInputStream(tempFile.get());
+            }
+            else
+            {
+               potStream = uploadForm.getFileStream();
+            }
+            parsePotFile(potStream, projectSlug, iterationSlug, docId, uploadForm);
+         }
+         else
+         {
+            if (!tempFile.isPresent())
+            {
+               tempFile = Optional.of(persistTempFileFromUpload(uploadForm));
+            }
+            processAdapterFile(tempFile.get(), projectSlug, iterationSlug, docId, uploadForm);
+         }
+         if (tempFile.isPresent())
+         {
+            tempFile.get().delete();
+         }
+         return sourceUploadSuccessResponse(isNewDocument(projectSlug, iterationSlug, docId), totalChunks);
       }
       catch (AuthorizationException e)
       {
@@ -192,25 +250,11 @@ public class FileService implements FileResource
                .entity(new ChunkUploadResponse(e.getMessage()))
                .build();
       }
-
-
-      if (isSinglePart(uploadForm) && uploadForm.getFileType().equals(".pot"))
+      catch (IOException e)
       {
-         parsePotFile(uploadForm.getFileStream(), docId, uploadForm.getFileType(), projectSlug, iterationSlug, useOfflinePo(projectSlug, iterationSlug, docId));
-         return sourceUploadSuccessResponse(isNewDocument(projectSlug, iterationSlug, docId), 1);
-      }
-
-      if (isSinglePart(uploadForm))
-      {
-         return processSinglePartDocumentAndRespond(projectSlug, iterationSlug, docId, uploadForm);
-      }
-      else if (uploadForm.getFirst())
-      {
-         return saveFirstUploadPartAndRespond(projectSlug, iterationSlug, docId, uploadForm);
-      }
-      else
-      {
-         return uploadSourcePartAndRespond(projectSlug, iterationSlug, docId, uploadForm);
+         log.error("failed to create input stream from temp file", e);
+         return Response.status(Status.INTERNAL_SERVER_ERROR)
+               .entity(e).build();
       }
    }
 
@@ -569,7 +613,7 @@ public class FileService implements FileResource
       return newUpload;
    }
 
-   private void saveUploadPart(DocumentFileUploadForm uploadForm, HDocumentUpload upload) throws IOException
+   private void saveUploadPart(DocumentFileUploadForm uploadForm, HDocumentUpload upload)
    {
       Blob partContent;
       partContent = Hibernate.createBlob(uploadForm.getFileStream(), uploadForm.getSize().intValue());
