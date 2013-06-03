@@ -286,12 +286,6 @@ public class FileService implements FileResource
       }
    }
 
-   private Response processSinglePartDocumentAndRespond(String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm)
-   {
-      File tempFile = persistTempFileFromUpload(uploadForm);
-      return processSourceUploadFromTempFileAndRespond(tempFile, projectSlug, iterationSlug, docId, uploadForm, 1);
-   }
-
    private File persistTempFileFromUpload(DocumentFileUploadForm uploadForm)
    {
       File tempFile;
@@ -315,12 +309,6 @@ public class FileService implements FileResource
                "MD5 hash algorithm not available", e);
       }
       return tempFile;
-   }
-
-   private Response processAdapterFileAndRespond(File tempFile, String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm, int uploadChunks)
-   {
-      processAdapterFile(tempFile, projectSlug, iterationSlug, docId, uploadForm);
-      return sourceUploadSuccessResponse(isNewDocument(projectSlug, iterationSlug, docId), uploadChunks);
    }
 
    private void processAdapterFile(File tempFile, String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm)
@@ -386,49 +374,6 @@ public class FileService implements FileResource
       translationFileServiceImpl.removeTempFile(tempFile);
    }
 
-   private Response saveFirstUploadPartAndRespond(String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm)
-   {
-      HDocumentUpload upload;
-      try {
-         upload = saveFirstUploadPart(projectSlug, iterationSlug, docId, uploadForm, null);
-      }
-      catch (IOException e)
-      {
-         log.error("failed to create database storage object for part file", e);
-         return Response.status(Status.INTERNAL_SERVER_ERROR)
-               .entity(e).build();
-      }
-      return Response.status(Status.ACCEPTED)
-            .entity(new ChunkUploadResponse(upload.getId(), upload.getParts().size(), true, "First chunk accepted, awaiting remaining chunks."))
-            .build();
-   }
-
-   private Response uploadSourcePartAndRespond(String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm)
-   {
-      HDocumentUpload upload;
-      try
-      {
-         upload = saveSubsequentUploadPart(uploadForm);
-      }
-      catch (IOException e)
-      {
-         log.error("failed to create database storage object for part file", e);
-         return Response.status(Status.INTERNAL_SERVER_ERROR)
-               .entity(e).build();
-      }
-
-      if (!uploadForm.getLast())
-      {
-         return Response.status(Status.ACCEPTED)
-               .entity(new ChunkUploadResponse(upload.getId(), upload.getParts().size(), true, "Chunk accepted, awaiting remaining chunks."))
-               .build();
-      }
-
-      File tempFile = combineToTempFileAndDeleteUploadRecord(upload);
-
-      return processSourceUploadFromTempFileAndRespond(tempFile, projectSlug, iterationSlug, docId, uploadForm, upload.getParts().size());
-   }
-
    private File combineToTempFileAndDeleteUploadRecord(HDocumentUpload upload)
    {
       File tempFile;
@@ -454,33 +399,6 @@ public class FileService implements FileResource
          session.delete(upload);
       }
       return tempFile;
-   }
-
-   private Response processSourceUploadFromTempFileAndRespond(File tempFile, String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm, int uploadChunks)
-   {
-      if (uploadForm.getFileType().equals(".pot"))
-      {
-         return parsePotFileAndRespond(tempFile, projectSlug, iterationSlug, docId, uploadForm, uploadChunks);
-      }
-      else
-      {
-         return processAdapterFileAndRespond(tempFile, projectSlug, iterationSlug, docId, uploadForm, uploadChunks);
-      }
-   }
-   private Response parsePotFileAndRespond(File tempFile, String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm, int uploadChunks)
-   {
-      try
-      {
-         parsePotFile(new FileInputStream(tempFile), docId, uploadForm.getFileType(), projectSlug, iterationSlug, useOfflinePo(projectSlug, iterationSlug, docId));
-      }
-      catch (FileNotFoundException e)
-      {
-         return Response.status(Status.INTERNAL_SERVER_ERROR)
-               .entity(e)
-               .build();
-      }
-      translationFileServiceImpl.removeTempFile(tempFile);
-      return sourceUploadSuccessResponse(isNewDocument(projectSlug, iterationSlug, docId), uploadChunks);
    }
 
    private boolean isSinglePart(DocumentFileUploadForm uploadForm)
