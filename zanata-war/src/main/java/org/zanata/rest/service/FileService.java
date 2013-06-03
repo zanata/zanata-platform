@@ -244,6 +244,13 @@ public class FileService implements FileResource
          .entity(new ChunkUploadResponse(e.getMessage()))
          .build();
       }
+      catch (VirusDetectedException e)
+      {
+         log.warn("File failed virus scan: {}", e.getMessage());
+         return Response.status(Status.BAD_REQUEST)
+               .entity(new ChunkUploadResponse("uploaded file did not pass virus scan"))
+               .build();
+      }
       catch (ChunkUploadException e)
       {
          return Response.status(e.getStatusCode())
@@ -311,17 +318,11 @@ public class FileService implements FileResource
       return tempFile;
    }
 
-   private void processAdapterFile(File tempFile, String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm)
+   private void processAdapterFile(File tempFile, String projectSlug, String iterationSlug,
+         String docId, DocumentFileUploadForm uploadForm) throws VirusDetectedException
    {
-      try
-      {
-         virusScan(tempFile);
-      }
-      catch (VirusDetectedException e)
-      {
-         log.warn("File failed virus scan: {}", e.getMessage());
-         throw new ChunkUploadException(Status.BAD_REQUEST, "uploaded file did not pass virus scan");
-      }
+      virusScan(tempFile);
+
       HDocument document;
       // FIXME get params from upload form when API updated
       Optional<String> params;
