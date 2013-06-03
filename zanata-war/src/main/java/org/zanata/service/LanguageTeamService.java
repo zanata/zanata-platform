@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
+import org.zanata.model.HLocaleMember;
 
 
 public interface LanguageTeamService
@@ -15,4 +16,6 @@ public interface LanguageTeamService
    boolean joinLanguageTeam(String locale, Long personId) throws ZanataServiceException;
 
    boolean leaveLanguageTeam(String locale, Long personId);
+   
+   List<HLocaleMember> getLanguageMembers(String locale);
 }
