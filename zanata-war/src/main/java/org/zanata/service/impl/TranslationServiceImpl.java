@@ -31,6 +31,7 @@ import javax.persistence.EntityManager;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.http.Header;
 import org.hibernate.HibernateException;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -417,6 +418,11 @@ public class TranslationServiceImpl implements TranslationService
       if (hProjectIteration == null)
       {
          throw new ZanataServiceException("Version '" + iterationSlug + "' for project '" + projectSlug + "' ");
+      }
+
+      if (mergeType == MergeType.IMPORT)
+      {
+         identity.checkPermission("import-translation", hProjectIteration);
       }
 
       ResourceUtils.validateExtensions(extensions);

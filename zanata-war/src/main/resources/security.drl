@@ -214,8 +214,20 @@ then
   check.grant();
 end
 
-
-
+/* Project Maintainer can import translation (merge type is IMPORT) */
+rule ProjectMaintainerImportTranslation
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(action == "import-translation", granted == false)
+  authenticatedPerson: HPerson()
+  eval(authenticatedPerson != null)
+  $iteration: HProjectIteration(
+    eval( authenticatedPerson.isMaintainer( $iteration.getProject() ) )
+  )
+then
+  check.grant();
+end
 
 /*****************************************************************************************
 
