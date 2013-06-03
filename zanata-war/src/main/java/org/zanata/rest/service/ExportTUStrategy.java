@@ -56,7 +56,7 @@ public class ExportTUStrategy
     * @param tuidPrefix String to be prepended to all resIds when generating tuids
     * @param tf the SourceContents (TextFlow) whose contents and translations are to be exported
     */
-   public void exportTranslationUnit(TMXWriter tmxWriter, String tuidPrefix, SourceContents tf)
+   public void exportTranslationUnit(ZanataTMXWriter tmxWriter, String tuidPrefix, SourceContents tf, net.sf.okapi.common.LocaleId sourceLocaleId)
    {
       String resId = tf.getResId();
       String tuid = tuidPrefix + resId;
@@ -84,7 +84,7 @@ public class ExportTUStrategy
       // unit."
       if (!textUnit.getTargetLocales().isEmpty())
       {
-         tmxWriter.writeTUFull(textUnit);
+         tmxWriter.writeTUFull(textUnit, sourceLocaleId);
       }
    }
 

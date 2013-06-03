@@ -85,18 +85,14 @@ public class TMXStreamingOutput implements StreamingOutput
       @Cleanup
       XMLWriter xmlWriter = new XMLWriter(writer);
       @Cleanup
-      TMXWriter tmxWriter = new TMXWriter(xmlWriter);
+      ZanataTMXWriter tmxWriter = new ZanataTMXWriter(xmlWriter);
       String segType = "block"; // TODO other segmentation types
       String dataType = "unknown"; // TODO track data type metadata throughout the system
 
-      // NB this assumes that all documents use the same source locale (probably en-US)
-      // TODO fix TMXWriter to accept sourceLocale "*all*"
-      @SuppressWarnings("null")
-      DocumentWithId firstDoc = Iterables.getFirst(documents, null);
-      LocaleId sourceLocale = firstDoc != null ? firstDoc.getSourceLocaleId() : LocaleId.EN;
+      net.sf.okapi.common.LocaleId allLocale = new net.sf.okapi.common.LocaleId("*all*", false);
 
       tmxWriter.writeStartDocument(
-            toOkapiLocaleOrEmpty(sourceLocale),
+            allLocale,
             toOkapiLocaleOrEmpty(targetLocale),
             creationTool, creationToolVersion,
             segType, null, dataType);
@@ -108,13 +104,13 @@ public class TMXStreamingOutput implements StreamingOutput
       tmxWriter.writeEndDocument();
    }
 
-   private void exportDocument(TMXWriter tmxWriter, DocumentWithId doc)
+   private void exportDocument(ZanataTMXWriter tmxWriter, DocumentWithId doc)
    {
       String tuidPrefix = doc.getQualifiedDocId() + ":";
       // TODO option to export obsolete TFs to TMX?
       for (SourceContents tf : doc)
       {
-         exportTUStrategy.exportTranslationUnit(tmxWriter, tuidPrefix, tf);
+         exportTUStrategy.exportTranslationUnit(tmxWriter, tuidPrefix, tf, toOkapiLocaleOrEmpty(doc.getSourceLocaleId()));
       }
    }
 
