@@ -85,6 +85,7 @@ public class LanguageTeamServiceImpl implements LanguageTeamService
 
       if (membership != null)
       {
+//         localeMemberDAO.flush();
          localeMemberDAO.makeTransient(membership);
          lang.getMembers().remove(membership);
          localeMemberDAO.flush();
