@@ -55,6 +55,30 @@ public interface TranslationFileService
                throws ZanataServiceException;
 
    /**
+    * Extract the translated strings from a po file to usable form, using appropriate id mapping.
+    * 
+    * @param fileContents the po document to parse
+    * @return a representation of the translations
+    * @throws ZanataServiceException if there is an error during parsing
+    */
+   TranslationsResource parsePoFile(InputStream fileContents,
+         String projectSlug, String iterationSlug, String docId)
+               throws ZanataServiceException;
+
+   /**
+    * Extract the translated strings from an adapter document file to a usable form.
+    * 
+    * @param tempFile the document to parse
+    * @param fileName used to determine appropriate adapter
+    * @return a representation of the translations
+    * @throws ZanataServiceException if there is no adapter available for the
+    *            document format, or there is an error during parsing
+    */
+   TranslationsResource parseAdapterTranslationFile(File tempFile,
+         String projectSlug, String iterationSlug, String docId, String localeId, String fileName)
+               throws ZanataServiceException;
+
+   /**
     * Extract the translatable strings from a new document file or from a new version of an existing
     * document file to a usable form.
     * 
