@@ -42,7 +42,7 @@ import org.zanata.common.TransUnitWords;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@XmlType(name = "translationStatistics", propOrder = { "total", "untranslated", "needReview", "translated", "approved", "rejected", "readyForReview", "fuzzy", "unit", "locale", "lastTranslated" })
+@XmlType(name = "translationStatistics", propOrder = { "total", "untranslated", "needReview", "translated", "approved", "rejected", "finishTranslation", "fuzzy", "unit", "locale", "lastTranslated" })
 @XmlRootElement(name = "translationStats")
 @JsonIgnoreProperties(value = { "percentTranslated", "percentNeedReview", "percentUntranslated" }, ignoreUnknown = true)
 @JsonPropertyOrder({ "total", "untranslated", "needReview", "translated", "approved", "rejected", "readyForReview", "fuzzy", "unit", "locale", "lastTranslated" })
@@ -147,6 +147,11 @@ public class TranslationStatistics implements Serializable
    @XmlAttribute
    protected long getTranslated()
    {
+      return getTranslatedAndApproved();
+   }
+
+   public long getTranslatedAndApproved()
+   {
       return translationCount.getTranslated() + translationCount.getApproved();
    }
 
@@ -154,7 +159,7 @@ public class TranslationStatistics implements Serializable
     * @return number of translated but not yet approved elements.
     */
    @XmlAttribute
-   public long getReadyForReview()
+   public long getFinishTranslation()
    {
       return translationCount.getTranslated();
    }
@@ -172,6 +177,15 @@ public class TranslationStatistics implements Serializable
    public long getRejected()
    {
       return translationCount.getRejected();
+   }
+
+   /**
+    *
+    * @return untranslated, fuzzy and rejected count.
+    */
+   public long getIncomplete()
+   {
+      return translationCount.getUntranslated() + getDraft();
    }
 
    /**
