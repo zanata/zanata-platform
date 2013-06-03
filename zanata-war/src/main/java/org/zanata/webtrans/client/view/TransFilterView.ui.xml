@@ -38,16 +38,16 @@
 		</g:cell>
 		
 		<g:cell verticalAlignment="ALIGN_MIDDLE">
-			<g:CheckBox ui:field="translatedChk" styleName="{style.translated}"><ui:msg>Translated</ui:msg></g:CheckBox>	
+			<g:CheckBox ui:field="translatedChk" styleName="{style.translated}" title="Includes Translated and Approved messages"><ui:msg>Translated</ui:msg></g:CheckBox>
 		</g:cell>
 		<g:cell verticalAlignment="ALIGN_MIDDLE">		                
-		    <g:CheckBox ui:field="draftChk" styleName="{style.draft}"><ui:msg>Needs Work</ui:msg></g:CheckBox>
+		    <g:CheckBox ui:field="draftChk" styleName="{style.draft}" title="Includes Fuzzy and Rejected messages"><ui:msg>Needs Work</ui:msg></g:CheckBox>
 		</g:cell>
 		<g:cell verticalAlignment="ALIGN_MIDDLE">
 		    <g:CheckBox ui:field="untranslatedChk" styleName="{style.untranslated}"><ui:msg>Untranslated</ui:msg></g:CheckBox>
 	    </g:cell>
 	    <g:cell verticalAlignment="ALIGN_MIDDLE">
-		    <g:CheckBox ui:field="hasErrorChk" styleName="{style.hasError}"><ui:msg>Has error</ui:msg></g:CheckBox>
+		    <g:CheckBox ui:field="hasErrorChk" styleName="{style.hasError}"><ui:msg>Has warning</ui:msg></g:CheckBox>
 	    </g:cell>
 	</g:HorizontalPanel>
 </ui:UiBinder> 
