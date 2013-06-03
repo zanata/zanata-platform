@@ -86,11 +86,11 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Statistic")
    String columnHeaderStatistic();
 
-   @DefaultMessage("Translated")
-   String columnHeaderTranslated();
+   @DefaultMessage("Complete")
+   String columnHeaderComplete();
 
-   @DefaultMessage("Untranslated")
-   String columnHeaderUntranslated();
+   @DefaultMessage("Incomplete")
+   String columnHeaderIncomplete();
 
    @DefaultMessage("Remaining hours")
    String columnHeaderRemaining();

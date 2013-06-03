@@ -736,11 +736,11 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
          {
             return compareStats(o1, o2);
          }
-         else if (header.equals(DocumentListDisplay.TRANSLATED_HEADER))
+         else if (header.equals(DocumentListDisplay.COMPLETE_HEADER))
          {
             return compareTranslated(o1, o2);
          }
-         else if (header.equals(DocumentListDisplay.UNTRANSLATED_HEADER))
+         else if (header.equals(DocumentListDisplay.INCOMPLETE_HEADER))
          {
             return compareUntranslated(o1, o2);
          }

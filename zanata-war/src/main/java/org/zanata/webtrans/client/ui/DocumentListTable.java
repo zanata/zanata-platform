@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
+import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.resources.Resources;
@@ -64,8 +65,8 @@ public class DocumentListTable extends FlexTable
    private static int PATH_COLUMN = 0;
    private static int DOC_COLUMN = 1;
    private static int STATS_COLUMN = 2;
-   private static int TRANSLATED_COLUMN = 3;
-   private static int UNTRANSLATED_COLUMN = 4;
+   private static int COMPLETE_COLUMN = 3;
+   private static int INCOMPLETE_COLUMN = 4;
    private static int REMAINING_COLUMN = 5;
    private static int LAST_UPLOAD_COLUMN = 6;
    private static int LAST_TRANSLATED_COLUMN = 7;
@@ -133,11 +134,11 @@ public class DocumentListTable extends FlexTable
       InlineLabel statsHeader = new InlineLabel(messages.columnHeaderStatistic());
       statsHeader.addClickHandler(new HeaderClickHandler(DocumentListDisplay.STATS_HEADER));
 
-      InlineLabel translatedHeader = new InlineLabel(messages.columnHeaderTranslated());
-      translatedHeader.addClickHandler(new HeaderClickHandler(DocumentListDisplay.TRANSLATED_HEADER));
+      InlineLabel completeHeader = new InlineLabel(messages.columnHeaderComplete());
+      completeHeader.addClickHandler(new HeaderClickHandler(DocumentListDisplay.COMPLETE_HEADER));
 
-      InlineLabel untranslatedHeader = new InlineLabel(messages.columnHeaderUntranslated());
-      untranslatedHeader.addClickHandler(new HeaderClickHandler(DocumentListDisplay.UNTRANSLATED_HEADER));
+      InlineLabel incompletedHeader = new InlineLabel(messages.columnHeaderIncomplete());
+      incompletedHeader.addClickHandler(new HeaderClickHandler(DocumentListDisplay.INCOMPLETE_HEADER));
 
       InlineLabel remainingHeader = new InlineLabel(messages.columnHeaderRemaining());
       remainingHeader.addClickHandler(new HeaderClickHandler(DocumentListDisplay.REMAINING_HEADER));
@@ -153,8 +154,8 @@ public class DocumentListTable extends FlexTable
       this.setWidget(0, PATH_COLUMN, pathHeader);
       this.setWidget(0, DOC_COLUMN, docHeader);
       this.setWidget(0, STATS_COLUMN, statsHeader);
-      this.setWidget(0, TRANSLATED_COLUMN, translatedHeader);
-      this.setWidget(0, UNTRANSLATED_COLUMN, untranslatedHeader);
+      this.setWidget(0, COMPLETE_COLUMN, completeHeader);
+      this.setWidget(0, INCOMPLETE_COLUMN, incompletedHeader);
       this.setWidget(0, REMAINING_COLUMN, remainingHeader);
       this.setWidget(0, LAST_UPLOAD_COLUMN, lastUploadHeader);
       this.setWidget(0, LAST_TRANSLATED_COLUMN, lastTranslatedHeader);
@@ -163,8 +164,8 @@ public class DocumentListTable extends FlexTable
       this.getCellFormatter().setStyleName(0, PATH_COLUMN, "docListHeader sortable");
       this.getCellFormatter().setStyleName(0, DOC_COLUMN, "docListHeader sortable");
       this.getCellFormatter().setStyleName(0, STATS_COLUMN, "docListHeader sortable");
-      this.getCellFormatter().setStyleName(0, TRANSLATED_COLUMN, "docListHeader sortable");
-      this.getCellFormatter().setStyleName(0, UNTRANSLATED_COLUMN, "docListHeader sortable");
+      this.getCellFormatter().setStyleName(0, COMPLETE_COLUMN, "docListHeader sortable");
+      this.getCellFormatter().setStyleName(0, INCOMPLETE_COLUMN, "docListHeader sortable");
       this.getCellFormatter().setStyleName(0, REMAINING_COLUMN, "docListHeader sortable");
       this.getCellFormatter().setStyleName(0, LAST_UPLOAD_COLUMN, "docListHeader sortable");
       this.getCellFormatter().setStyleName(0, LAST_TRANSLATED_COLUMN, "docListHeader sortable");
@@ -186,8 +187,8 @@ public class DocumentListTable extends FlexTable
          this.setWidget(i + 1, DOC_COLUMN, new DocWidget(node.getDocInfo()));
 
          this.setWidget(i + 1, STATS_COLUMN, getStatsWidget(node.getDocInfo(), statsByWords));
-         this.setWidget(i + 1, TRANSLATED_COLUMN, getTranslatedWidget(node.getDocInfo(), statsByWords));
-         this.setWidget(i + 1, UNTRANSLATED_COLUMN, getUntranslatedWidget(node.getDocInfo(), statsByWords));
+         this.setWidget(i + 1, COMPLETE_COLUMN, getCompleteWidget(node.getDocInfo(), statsByWords));
+         this.setWidget(i + 1, INCOMPLETE_COLUMN, getIncompleteWidget(node.getDocInfo(), statsByWords));
          this.setWidget(i + 1, REMAINING_COLUMN, getRemainingWidget(node.getDocInfo()));
 
          this.setWidget(i + 1, LAST_UPLOAD_COLUMN, new InlineLabel(getAuditInfo(node.getDocInfo().getLastModified())));
@@ -199,8 +200,8 @@ public class DocumentListTable extends FlexTable
          this.getCellFormatter().setStyleName(i + 1, PATH_COLUMN, "pathCol");
          this.getCellFormatter().setStyleName(i + 1, DOC_COLUMN, "documentCol");
          this.getCellFormatter().setStyleName(i + 1, STATS_COLUMN, "statisticCol");
-         this.getCellFormatter().setStyleName(i + 1, TRANSLATED_COLUMN, "translatedCol");
-         this.getCellFormatter().setStyleName(i + 1, UNTRANSLATED_COLUMN, "untranslatedCol");
+         this.getCellFormatter().setStyleName(i + 1, COMPLETE_COLUMN, "translatedCol");
+         this.getCellFormatter().setStyleName(i + 1, INCOMPLETE_COLUMN, "untranslatedCol");
          this.getCellFormatter().setStyleName(i + 1, REMAINING_COLUMN, "remainingCol");
          this.getCellFormatter().setStyleName(i + 1, LAST_UPLOAD_COLUMN, "auditCol");
          this.getCellFormatter().setStyleName(i + 1, LAST_TRANSLATED_COLUMN, "auditCol");
@@ -334,38 +335,42 @@ public class DocumentListTable extends FlexTable
       return panel;
    }
 
-   private Widget getTranslatedWidget(DocumentInfo docInfo, boolean statsByWords)
+   private Widget getCompleteWidget(DocumentInfo docInfo, boolean statsByWords)
    {
       String text = "0";
       if (docInfo.getStats() != null)
       {
          String locale = userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getLocaleId().getId();
+         TranslationStatistics stats;
          if (statsByWords)
          {
-            text = String.valueOf(docInfo.getStats().getStats(locale, StatUnit.WORD).getApproved());
+            stats = docInfo.getStats().getStats(locale, StatUnit.WORD);
          }
          else
          {
-            text = String.valueOf(docInfo.getStats().getStats(locale, StatUnit.MESSAGE).getApproved());
+            stats = docInfo.getStats().getStats(locale, StatUnit.MESSAGE);
          }
+         text = String.valueOf(stats.getTranslatedAndApproved());
       }
       return new InlineLabel(text);
    }
 
-   private Widget getUntranslatedWidget(DocumentInfo docInfo, boolean statsByWords)
+   private Widget getIncompleteWidget(DocumentInfo docInfo, boolean statsByWords)
    {
       String text = "0";
       if (docInfo.getStats() != null)
       {
          String locale = userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getLocaleId().getId();
+         TranslationStatistics stats;
          if (statsByWords)
          {
-            text = String.valueOf(docInfo.getStats().getStats(locale, StatUnit.WORD).getUntranslated());
+            stats = docInfo.getStats().getStats(locale, StatUnit.WORD);
          }
          else
          {
-            text = String.valueOf(docInfo.getStats().getStats(locale, StatUnit.MESSAGE).getUntranslated());
+            stats = docInfo.getStats().getStats(locale, StatUnit.MESSAGE);
          }
+         text = String.valueOf(stats.getIncomplete());
       }
       return new InlineLabel(text);
    }
@@ -452,21 +457,21 @@ public class DocumentListTable extends FlexTable
          Image loading = (Image) panel.getWidget(1);
          loading.setVisible(false);
 
-         HasText translated = (HasText) this.getWidget(row, TRANSLATED_COLUMN);
-         HasText untranslated = (HasText) this.getWidget(row, UNTRANSLATED_COLUMN);
+         HasText translated = (HasText) this.getWidget(row, COMPLETE_COLUMN);
+         HasText untranslated = (HasText) this.getWidget(row, INCOMPLETE_COLUMN);
 
          graph.setStatOption(statsByWords);
 
          String locale = userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getLocaleId().toString();
          if (statsByWords)
          {
-            translated.setText(String.valueOf(stats.getStats(locale, StatUnit.WORD).getApproved()));
-            untranslated.setText(String.valueOf(stats.getStats(locale, StatUnit.WORD).getUntranslated()));
+            translated.setText(String.valueOf(stats.getStats(locale, StatUnit.WORD).getTranslatedAndApproved()));
+            untranslated.setText(String.valueOf(stats.getStats(locale, StatUnit.WORD).getIncomplete()));
          }
          else
          {
-            translated.setText(String.valueOf(stats.getStats(locale, StatUnit.MESSAGE).getApproved()));
-            untranslated.setText(String.valueOf(stats.getStats(locale, StatUnit.MESSAGE).getUntranslated()));
+            translated.setText(String.valueOf(stats.getStats(locale, StatUnit.MESSAGE).getTranslatedAndApproved()));
+            untranslated.setText(String.valueOf(stats.getStats(locale, StatUnit.MESSAGE).getIncomplete()));
          }
       }
    }
@@ -478,18 +483,18 @@ public class DocumentListTable extends FlexTable
       TransUnitCountBar graph = (TransUnitCountBar) panel.getWidget(0);
       graph.setStatOption(statsByWords);
 
-      HasText translated = (HasText) this.getWidget(row, TRANSLATED_COLUMN);
-      HasText untranslated = (HasText) this.getWidget(row, UNTRANSLATED_COLUMN);
+      HasText completed = (HasText) this.getWidget(row, COMPLETE_COLUMN);
+      HasText incomplete = (HasText) this.getWidget(row, INCOMPLETE_COLUMN);
 
       if (statsByWords)
       {
-         translated.setText(String.valueOf(graph.getWordsApproved()));
-         untranslated.setText(String.valueOf(graph.getWordsUntranslated()));
+         completed.setText(String.valueOf(graph.getWordsApproved() + graph.getWordsTranslated()));
+         incomplete.setText(String.valueOf(graph.getWordsUntranslated() + graph.getWordsDraft()));
       }
       else
       {
-         translated.setText(String.valueOf(graph.getUnitApproved()));
-         untranslated.setText(String.valueOf(graph.getUnitUntranslated()));
+         completed.setText(String.valueOf(graph.getUnitApproved() + graph.getUnitTranslated()));
+         incomplete.setText(String.valueOf(graph.getUnitUntranslated() + graph.getUnitDraft()));
       }
    }
 

@@ -48,8 +48,8 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
    public static String PATH_HEADER = "path";
    public static String DOC_HEADER = "doc";
    public static String STATS_HEADER = "stats";
-   public static String TRANSLATED_HEADER = "translated";
-   public static String UNTRANSLATED_HEADER = "untranslated";
+   public static String COMPLETE_HEADER = "complete";
+   public static String INCOMPLETE_HEADER = "incomplete";
    public static String REMAINING_HEADER = "remaining";
    public static String LAST_UPLOAD_HEADER = "lastUpload";
    public static String LAST_TRANSLATED_HEADER = "lastTranslated";
