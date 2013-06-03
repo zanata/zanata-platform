@@ -492,13 +492,6 @@ public class FileService implements FileResource
       return tempFile;
    }
 
-   private HDocumentUpload saveSubsequentUploadPart(DocumentFileUploadForm uploadForm) throws IOException
-   {
-      HDocumentUpload upload = retrieveUploadObject(uploadForm);
-      saveUploadPart(uploadForm, upload);
-      return upload;
-   }
-
    private HDocumentUpload retrieveUploadObject(DocumentFileUploadForm uploadForm)
    {
       // TODO put in DAO
@@ -506,13 +499,6 @@ public class FileService implements FileResource
       criteria.add(Restrictions.idEq(uploadForm.getUploadId()));
       HDocumentUpload upload = (HDocumentUpload) criteria.uniqueResult();
       return upload;
-   }
-
-   private HDocumentUpload saveFirstUploadPart(String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm, HLocale locale) throws IOException
-   {
-      HDocumentUpload newUpload = createMultipartUpload(projectSlug, iterationSlug, docId, uploadForm, locale);
-      saveUploadPart(uploadForm, newUpload);
-      return newUpload;
    }
 
    private HDocumentUpload createMultipartUpload(String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm, HLocale locale)
