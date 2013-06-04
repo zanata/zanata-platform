@@ -101,7 +101,7 @@
                             <h:outputText value="#{messages['jsf.Name']}"/>
                             <br/>
                             <h:inputText value="#{projectIterationFilesAction.documentNameFilter}"
-                                         id="name_filter_input">
+                                         id="name_filter_input" styleClass="filter_input">
                                 <a4j:ajax event="keyup" render="data_table,data_table_scroller"
                                              execute="@this"
                                              oncomplete="focusNameFilterInput()">
@@ -193,7 +193,7 @@
                     <a4j:commandButton id="closeProgressPanelButton"
                                        action="#{projectIterationZipFileAction.cancelFileDownload}"
                                        value="#{messages['jsf.Cancel']}"
-                                       reRender="downloadProgressBar">
+                                       render="downloadProgressBar">
                         <rich:componentControl for="downloadProgressPanel"
                                                attachTo="closeProgressPanelButton" operation="hide" event="onclick"/>
                     </a4j:commandButton>

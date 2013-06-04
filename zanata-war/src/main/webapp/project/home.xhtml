@@ -33,7 +33,7 @@
 
     <div style="text-align: center">
         <rich:dataScroller renderIfSinglePage="false" for="projectList" maxPages="10"
-                page="#{projectAction.scrollerPage}" id="scroller" reRender="sc2"
+                page="#{projectAction.scrollerPage}" id="scroller" render="sc2"
                 fastControls="hide">
             <f:facet name="first">
                 <h:outputText value="" styleClass="icon-to-start"/>
@@ -134,7 +134,7 @@
         <richext:spacer height="15" />
         <div style="text-align: center">
             <rich:dataScroller align="center" for="projectList" maxPages="10"
-                page="#{projectAction.scrollerPage}" id="sc2" reRender="scroller"
+                page="#{projectAction.scrollerPage}" id="sc2" render="scroller"
                 fastControls="hide"
                 renderIfSinglePage="false">
                 <f:facet name="first">

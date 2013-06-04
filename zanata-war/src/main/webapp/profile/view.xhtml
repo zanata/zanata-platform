@@ -46,7 +46,7 @@
           	  	<tr>
           	  		<td><h2>#{messages['jsf.ApiKey']}</h2></td>
           	  		<td style="padding-left:15px"><h:commandButton action="#{personHome.regenerateApiKey}"
-                  value="Generate API Key" reRender="api_key,no_api_key"
+                  value="Generate API Key" render="api_key,no_api_key"
                   onclick="if (!confirm('#{messages['jsf.apikey.ConfirmGenerate']}')) return false" /></td>
           	  	</tr>
           	  </table>

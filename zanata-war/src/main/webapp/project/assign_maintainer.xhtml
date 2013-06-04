@@ -76,7 +76,7 @@
                     <div class="actionButtons">
                         <a4j:commandButton
                                 value="#{messages['jsf.Add']}"
-                                action="#{projectMaintainerManageAction.addMaintainers(accountSearch.maintainer)}" reRender="results, threads" />
+                                action="#{projectMaintainerManageAction.addMaintainers(accountSearch.maintainer)}" render="results, threads" />
                         <h:commandButton value="#{messages['jsf.Close']}"
                                          onclick="#{rich:component('maintainerAddPanel')}.hide(); return false;" />
                     </div>

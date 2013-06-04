@@ -20,7 +20,7 @@
               <a4j:outputPanel rendered="#{reindexAction.canceled || !reindexAction.inProgress}">
                 <rich:dataTable id="classList" rows="#{reindexAction.classes.size}"
                                 value="#{reindexAction.classes.toArray()}" var="clazz"
-                                reRender="actions">
+                                render="actions">
                   <rich:column width="auto" styleClass="centered">
                     <f:facet name="header">#{messages['jsf.manageSearch.AllActions']}</f:facet>
                     <h:selectBooleanCheckbox value="#{clazz.selectAll}">
@@ -128,7 +128,7 @@
                       label="#{messages['jsf.manageSearch.ProgressMessage']}"
                       minValue="0"
                       maxValue="#{reindexAction.reindexCount}"
-                      reRender="timeEstimate"
+                      render="timeEstimate"
                       reRenderAfterComplete="progress,actions"
                       style="width: 550px;"
                       rendered="#{reindexAction.inProgress}"
@@ -151,7 +151,7 @@
                     value="#{messages['jsf.ManageSearch.Abort']}"
                     action="#{reindexAction.cancel}"
                     rendered="#{reindexAction.inProgress and !reindexAction.canceled}"
-                    reRender="actions,progress"/>
+                    render="actions,progress"/>
 
             </a4j:outputPanel>
 
