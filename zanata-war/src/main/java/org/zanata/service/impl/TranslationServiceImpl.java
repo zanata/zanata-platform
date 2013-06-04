@@ -287,17 +287,18 @@ public class TranslationServiceImpl implements TranslationService
          log.warn(warning);
       }
       boolean requireTranslationReview = projectIteration.getRequireTranslationReview();
-      boolean reviewResultState = target.getState() == ContentState.Translated || target.getState() == ContentState.Rejected;
+      boolean reviewResultState = target.getState() == ContentState.Approved || target.getState() == ContentState.Rejected;
       if (requireTranslationReview)
       {
-         if (reviewResultState && identity.hasRole("reviewer"))
+         if (reviewResultState)
          {
+            identity.checkPermission("translation-review", projectIteration.getProject(), target.getLocale());
             // reviewer saved it
             target.setReviewer(authenticatedAccount.getPerson());
          }
-         else if (reviewResultState && !identity.hasRole("reviewer"))
+         else
          {
-            throw new RuntimeException("non reviewer can not save translation to Approved.");
+            target.setTranslator(authenticatedAccount.getPerson());
          }
       }
       else
