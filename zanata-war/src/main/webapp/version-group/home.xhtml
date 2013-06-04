@@ -39,8 +39,6 @@
           <h:form>
               <s:token allowMultiplePosts="true" />
 
-              <richext:spacer height="15" />
-
               <s:div styleClass="float-right">
 		            <h:selectBooleanCheckbox title="#{messages['jsf.groups.ShowActiveGroups']}" value="#{versionGroupAction.showActiveGroups}">
 		                <a4j:ajax event="change" render="threads" />
@@ -60,11 +58,10 @@
                               var="group">
                   <rich:column filterMethod="#{versionGroupAction.filterGroupByName}">
                   	  <f:facet name="header">
-                  	  	#{messages['jsf.Name']}
                   	  	<h:panelGroup>
 							<h:outputText value="#{messages['jsf.Name']}" />
 							<br />
-							<h:inputText value="#{versionGroupAction.groupNameFilter}" id="name_filter_input">
+							<h:inputText value="#{versionGroupAction.groupNameFilter}" id="name_filter_input" styleClass="filter_input">
 								<a4j:ajax event="keyup" render="threads"
 									oncomplete="focusNameFilterInput()" >
                                     <a4j:attachQueue ignoreDupResponses="true" requestDelay="700" />
