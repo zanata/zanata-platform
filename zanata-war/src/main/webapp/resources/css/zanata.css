@@ -956,6 +956,11 @@ select.headerInput
 
 .copy_trans_options_table td {
     padding: 5px 5px 5px 5px;
+    font-size:11px
+}
+
+.copy_trans_options_table th {
+	font-size:14px;
 }
 
 .copy_trans_options_table td.reject_action, .reject_action {
