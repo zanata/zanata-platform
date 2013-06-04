@@ -43,7 +43,6 @@
     <ui:define name="center_content">
         <h:form onkeydown="if(event.keyCode==13) { return false;}">
             <s:token allowMultiplePosts="true"/>
-            <richext:spacer height="10"/>
             <s:div style="text-align:center">
                 <rich:dataScroller id="data_table_scroller" for="data_table"
                                    fastControls="hide"
@@ -81,7 +80,6 @@
                     </f:facet>
                 </rich:dataScroller>
             </s:div>
-            <richext:spacer height="15"/>
             <h:outputText value="#{messages['jsf.iteration.files.NoFiles']}"
                           rendered="#{projectIterationFilesAction.iterationDocuments.size() == 0}"/>
             <rich:dataTable id="data_table" width="100%" value="#{projectIterationFilesAction.iterationDocuments}"

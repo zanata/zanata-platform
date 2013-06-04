@@ -383,22 +383,30 @@
 
                 <ui:param name="downloadAllAllowed" value="#{projectIterationFilesAction.zipFileDownloadAllowed}" />
                 
-                <a4j:commandLink styleClass="action_link #{downloadAllAllowed ? '' : 'disabled'}"
-                                 rendered="#{projectIterationFilesAction.poProject or not downloadAllAllowed}"
+                <a4j:commandLink styleClass="action_link"
+                                 rendered="#{projectIterationFilesAction.poProject and downloadAllAllowed}"
                                  value="#{messages['jsf.iteration.files.DownloadAllFiles']}"
                                  action="#{projectIterationZipFileAction.prepareIterationZipFile(false)}"
                                  onclick="if(!downloadAllFilesClick()){ return false; }"
                                  render="downloadProgressBar"
-                                 disabled="#{not downloadAllAllowed}"
                                  title="#{projectIterationFilesAction.zipFileDownloadTitle}"/>
                                  
-                <a4j:commandLink styleClass="action_link #{downloadAllAllowed ? '' : 'disabled'}"
+                <a4j:commandLink styleClass="action_link disabled"
+                                 rendered="#{not projectIterationFilesAction.poProject or not downloadAllAllowed}"
+                                 value="#{messages['jsf.iteration.files.DownloadAllFiles']}"
+                                 title="#{projectIterationFilesAction.zipFileDownloadTitle}"/>
+                                 
+                <a4j:commandLink styleClass="action_link"
                                  rendered="#{downloadAllAllowed and !projectIterationFilesAction.poProject}"
                                  value="#{messages['jsf.iteration.files.DownloadAllFilesOfflinePo']}"
                                  action="#{projectIterationZipFileAction.prepareIterationZipFile(true)}"
                                  onclick="if(!downloadAllFilesClick()){ return false; }"
                                  render="downloadProgressBar"
-                                 disabled="#{not downloadAllAllowed}"
+                                 title="#{messages['jsf.iteration.files.DownloadAllFilesOfflinePo.title']}"/>
+                                 
+                <a4j:commandLink styleClass="action_link disabled"
+                                 rendered="#{not downloadAllAllowed or !projectIterationFilesAction.poProject}"
+                                 value="#{messages['jsf.iteration.files.DownloadAllFilesOfflinePo']}"
                                  title="#{messages['jsf.iteration.files.DownloadAllFilesOfflinePo.title']}"/>
            </h:form>
         </rich:panel>
