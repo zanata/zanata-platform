@@ -29,6 +29,7 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.LocaleId;
+import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
 import org.zanata.model.HLocaleMember.HLocaleMemberPk;
 
@@ -85,10 +86,14 @@ public class LocaleMemberDAO extends AbstractDAOImpl<HLocaleMember, HLocaleMembe
    @Override
    public void makeTransient(HLocaleMember entity)
    {
+      HLocale locale =entity.getSupportedLanguage();
       getSession().createQuery("delete HLocaleMember as m where m.id.supportedLanguage = :locale " +
             "and m.id.person = :person")
-            .setParameter("locale", entity.getSupportedLanguage())
+            .setParameter("locale", locale)
             .setParameter("person", entity.getPerson())
             .executeUpdate();
+      
+      //We need to evict the HLocale to refresh member list within
+      getSession().getSessionFactory().getCache().evictEntity(HLocale.class, locale.getId());
    }
 }

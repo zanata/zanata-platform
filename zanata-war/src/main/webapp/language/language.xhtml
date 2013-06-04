@@ -88,8 +88,14 @@
             #{messages['jsf.LeaveLanguageTeam']}
             <s:conversationId name="id" value="#{languageTeamAction.language}"/>
           </a4j:commandLink>
-          <s:link styleClass="action_link" value="#{messages['jsf.RequestToJoinLanguageTeam']}" view="/language/join/#{languageTeamAction.language}" rendered="#{identity.loggedIn and not languageTeamAction.isUserInTeam()}" />
-          <s:link styleClass="action_link" value="#{messages['jsf.contactLanguageTeamCoordinator']}" view="/language/contact/#{languageTeamAction.language}" propagation="none"  rendered="#{identity.loggedIn}" />
+          <s:link styleClass="action_link" value="#{messages['jsf.RequestToJoinLanguageTeam']}" view="/language/request_to_join.xhtml" rendered="#{identity.loggedIn and not languageTeamAction.isUserInTeam()}">
+          		<f:param name="emailType" value="request_to_join_language_team"/>
+          		<f:param name="id" value="#{languageTeamAction.language}"/>
+          </s:link>		
+          <s:link styleClass="action_link" value="#{messages['jsf.contactLanguageTeamCoordinator']}" view="/language/contact_coordinator.xhtml" propagation="none"  rendered="#{identity.loggedIn}" >
+          		<f:param name="emailType" value="contact_coordinator"/>
+          		<f:param name="id" value="#{languageTeamAction.language}"/>
+          </s:link>
           <s:fragment rendered="#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}">
             <a id="addTeamMemberLink" href="#" class="action_link" onclick="#{rich:component('userAddPanel')}.show();#{rich:element('searchField')}.focus();">#{messages['jsf.AddTeamMember']}</a>
           </s:fragment>

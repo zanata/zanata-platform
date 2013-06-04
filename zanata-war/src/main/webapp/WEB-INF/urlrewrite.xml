@@ -43,7 +43,7 @@
   </rule>
   
   <rule>
-    <from casesensitive="true">/language/contact/([^/]+).seam$</from>
+    <from casesensitive="true">/language/contact/(.+)$</from>
     <to last="true">/language/contact_coordinator.seam\?emailType=contact_coordinator&amp;id=$1</to>
   </rule>
 
@@ -307,6 +307,14 @@
     <to>$1/admin/$2$3</to>
   </outbound-rule>
 
+  <outbound-rule>
+    <from>^(/.+)?/language/contact_coordinator.seam\?emailType=contact_coordinator&amp;id=(.+)$</from>
+    <to>$1/language/contact/$2</to>
+  </outbound-rule>
+  <outbound-rule>
+    <from>^(/.+)?/language/request_to_join.seam\?emailType=request_to_join_language_team&amp;id=(.+)$</from>
+    <to>$1/language/join/$2</to>
+  </outbound-rule>
   <outbound-rule>
     <from>^(/.+)?/language/language.seam\?id=(.+)$</from>
     <to>$1/language/view/$2</to>
