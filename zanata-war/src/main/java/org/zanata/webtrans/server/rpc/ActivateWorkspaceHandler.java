@@ -122,7 +122,7 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
       boolean hasWriteAccess = hasPermission(project, locale);
       boolean hasGlossaryUpdateAccess = hasGlossaryUpdatePermission();
       boolean requireReview = projectIteration.getRequireTranslationReview();
-      boolean hasReviewAccess = hasReviewerPermission();
+      boolean hasReviewAccess = hasReviewerPermission(locale, project);
 
       WorkspaceRestrictions workspaceRestrictions = new WorkspaceRestrictions(isProjectActive, hasWriteAccess, hasGlossaryUpdateAccess, hasReviewAccess, requireReview);
       log.debug("workspace restrictions: {}", workspaceRestrictions);
@@ -152,10 +152,9 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
       return identity.hasPermission("glossary-update", "");
    }
 
-   private boolean hasReviewerPermission()
+   private boolean hasReviewerPermission(HLocale locale, HProject project)
    {
-      //FIXME rhbz953734 - may need to review this
-      return identity.hasRole("reviewer");
+      return identity.hasPermission("translation-review", project, locale);
    }
 
    private boolean isProjectIterationActive(EntityStatus projectStatus, EntityStatus iterStatus)
