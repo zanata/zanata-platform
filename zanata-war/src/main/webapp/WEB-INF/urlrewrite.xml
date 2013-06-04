@@ -380,7 +380,10 @@
     <from>^(/.+)?/iteration/edit.seam\?projectSlug=([^&amp;]+)&amp;slug=([^&amp;]+)$</from>
     <to>$1/iteration/edit/$2/$3</to>
   </outbound-rule>
-
+  <outbound-rule>
+    <from>^(/.+)?/iteration/request_to_join_group.seam\?emailType=request_to_join_group&amp;versionGroupSlug=([^&amp;]+)&amp;projectSlug=([^&amp;]+)&amp;iterationSlug=(.+)$</from>
+    <to>$1/iteration/request_join_group/$2/$3/$4</to>
+  </outbound-rule>
   <outbound-rule>
     <from>^(/.+)?/iteration/copy_trans.seam\?projectSlug=([^&amp;]+)&amp;iterationSlug=([^&amp;]+)(&amp;(.+))?$</from>
     <to>$1/iteration/copytrans/$2/$3?$5</to>

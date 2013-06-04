@@ -45,7 +45,7 @@
 					<s:token allowMultiplePosts="true" />
 
 					<h:outputText escape="false" value="#{messages['jsf.iteration.ShowAllLocales.title']}" rendered="#{identity.loggedIn}"/>
-					<a4j:commandButton title="#{messages['jsf.RefreshTable']}" action="#{viewAllStatusAction.refreshStatistic}" reRender="data_table" value="#{messages['jsf.Refresh']}" styleClass="float-right">
+					<a4j:commandButton title="#{messages['jsf.RefreshTable']}" action="#{viewAllStatusAction.refreshStatistic}" render="data_table" value="#{messages['jsf.Refresh']}" styleClass="float-right">
 					</a4j:commandButton>
 					<br/><br/>
 					<rich:dataTable id="data_table" width="100%"
@@ -213,56 +213,58 @@
         </h:form>
 
         <rich:popupPanel id="versionSearchPanel" width="530" height="440" rendered="#{identity.loggedIn and s:hasPermission(viewAllStatusAction.projectIteration, 'update')}">
-            <f:subview id="versionSearch">
-                <h:form>
-                    <h1>#{messages['jsf.group.FindGroup']}</h1>
-                    <p>
-                        <h:inputText value="#{viewAllStatusAction.searchTerm}"
-                                     onkeydown="return submitSearchOnEnter(event)"/>
-                        <a4j:commandButton id="searchBtn"
-                                           value="#{messages['jsf.Search']}"
-                                           action="#{viewAllStatusAction.searchGroup}"
-                                           reRender="searchResults" status="searchStatus" />
+	        <h:form>
+	            <h1>#{messages['jsf.group.FindGroup']}</h1>
+	            <p>
+	                <h:inputText value="#{viewAllStatusAction.searchTerm}"
+	                             onkeydown="return submitSearchOnEnter(event)"/>
+	                <a4j:commandButton id="searchBtn"
+	                                   value="#{messages['jsf.Search']}"
+	                                   action="#{viewAllStatusAction.searchGroup}"
+	                                   render="searchResults" status="searchStatus" />
+	
+	                <h:commandButton value="#{messages['jsf.Close']}"
+	                                   onclick="#{rich:component('versionSearchPanel')}.hide(); return false;" />
+	
+	            </p>
+	        </h:form>
+	        <a4j:status id="searchStatus" startText="Searching..." stopText="" />
+            <h:form id="searchResults">
+                <h:outputText id="noResultsMessage" rendered="#{empty viewAllStatusAction.searchResults}" value="#{messages['jsf.NoResultToDisplay']}" />
+                <a4j:outputPanel layout="block" style="overflow:auto;height:320px" rendered="#{not empty viewAllStatusAction.searchResults}">
+                    <rich:dataTable id="resultTable" value="#{viewAllStatusAction.searchResults}" var="group">
 
-                        <a4j:commandButton value="#{messages['jsf.Close']}"
-                                           onclick="#{rich:component('versionSearchPanel')}.hide(); return false;" />
+                        <rich:column sortBy="#{group.name}">
+                            <f:facet name="header">#{messages['jsf.GroupName']}</f:facet>
+                            #{group.name}
+                        </rich:column>
+                        <rich:column>
+                            <f:facet name="header">#{messages['jsf.Description']}</f:facet>
+                            #{group.description}
+                        </rich:column>
 
-                    </p>
-                </h:form>
-                <a4j:region>
-                    <a4j:status id="searchStatus" startText="Searching..." stopText="" />
-                    <h:form id="searchResults">
-                        <h:outputText id="noResultsMessage" rendered="#{empty viewAllStatusAction.searchResults}" value="#{messages['jsf.NoResultToDisplay']}" />
-                        <a4j:outputPanel layout="block" style="overflow:auto;height:320px" rendered="#{not empty viewAllStatusAction.searchResults}">
-                            <rich:dataTable id="resultTable" value="#{viewAllStatusAction.searchResults}" var="group">
+                        <rich:column styleClass="centered">
+                            <f:facet name="header">
+                                <h:outputText value="#{messages['jsf.Actions']}"/>
+                            </f:facet>
 
-                                <rich:column sortBy="#{group.name}">
-                                    <f:facet name="header">#{messages['jsf.GroupName']}</f:facet>
-                                    #{group.name}
-                                </rich:column>
-                                <rich:column>
-                                    <f:facet name="header">#{messages['jsf.Description']}</f:facet>
-                                    #{group.description}
-                                </rich:column>
+                            <s:link view="/iteration/request_to_join_group.xhtml"
+                                    rendered="#{!viewAllStatusAction.isGroupInVersion(group.slug)}"
+                                    title="#{messages['jsf.SelectGroup']}" value="#{messages['jsf.Select']}" propagation="none" styleClass="button">
+                            		<f:param name="emailType" value="request_to_join_group"/>
+                            		<f:param name="versionGroupSlug" value="#{group.slug}"/>
+                            		<f:param name="projectSlug" value="#{viewAllStatusAction.projectSlug}"/>
+                            		<f:param name="iterationSlug" value="#{viewAllStatusAction.projectIteration.slug}"/>
+                            		
+                            </s:link>
 
-                                <rich:column styleClass="centered">
-                                    <f:facet name="header">
-                                        <h:outputText value="#{messages['jsf.Actions']}"/>
-                                    </f:facet>
+                            <h:outputText value="#{messages['jsf.AlreadyInGroup']}"
+                                          rendered="#{viewAllStatusAction.isGroupInVersion(group.slug)}" />
 
-                                    <s:link view="/iteration/request_join_group/#{group.slug}/#{viewAllStatusAction.projectSlug}/#{viewAllStatusAction.projectIteration.slug}"
-                                            rendered="#{!viewAllStatusAction.isGroupInVersion(group.slug)}"
-                                            title="#{messages['jsf.SelectGroup']}" value="#{messages['jsf.Select']}" propagation="none" styleClass="button"/>
-
-                                    <h:outputText value="#{messages['jsf.AlreadyInGroup']}"
-                                                  rendered="#{viewAllStatusAction.isGroupInVersion(group.slug)}" />
-
-                                </rich:column>
-                            </rich:dataTable>
-                        </a4j:outputPanel>
-                    </h:form>
-                </a4j:region>
-            </f:subview>
+                        </rich:column>
+                    </rich:dataTable>
+                </a4j:outputPanel>
+            </h:form>
         </rich:popupPanel>
 	</ui:define>
 
