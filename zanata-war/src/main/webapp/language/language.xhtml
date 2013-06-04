@@ -64,10 +64,13 @@
                   <rich:column width="auto" styleClass="centered"
                       rendered="#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}">
                       <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-                      <a4j:commandButton value="#{messages['jsf.Remove']}"
+                      <ui:remove>
+                          <!-- TODO Using regular command button instead of ajax as the page context is lost when using the latter -->
+                      </ui:remove>
+                      <h:commandButton value="#{messages['jsf.Remove']}"
                           action="#{languageTeamAction.removeMembership(member)}"
-                          render="memberPanel, actionPanel, userAddPanel">
-                      </a4j:commandButton>
+                          render="memberPanel, actionPanel, userAddPanel" execute="@this">
+                      </h:commandButton>
                   </rich:column>
                 </rich:dataTable>
         </h:form>
