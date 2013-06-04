@@ -73,11 +73,11 @@ input,textarea {
 	font-size:14px;
 }
 
-input[type="text"], input[type="password"]
+input[type="text"]
 {
 	width:260px;
 	font-size:14px;
-	line-height:32px;
+	line-height:20px;
 }
 
 button,input[type="checkbox"],input[type="radio"],input[type="reset"],input[type="submit"],input[type="button"]
