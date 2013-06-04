@@ -185,6 +185,7 @@ public class HDocument extends ModelEntityBase implements DocumentWithId, IDocum
       return this.locale;
    }
 
+   @Transient
    @Override
    public @Nonnull LocaleId getSourceLocaleId()
    {
