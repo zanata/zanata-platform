@@ -528,6 +528,12 @@
         <param name="iteration" value="#{_version.slug}"/>
       </redirect>
     </navigation>
+     <navigation from-action="#{versionDetailsAction.editVersion(_version.slug)}">
+      <redirect view-id="/iteration/edit.xhtml">
+      	<param name="projectSlug" value="#{projectHome.instance.slug}"/>
+        <param name="slug" value="#{_version.slug}"/>
+      </redirect>
+    </navigation>
   </page>
 
   <page view-id="/project/create_project.xhtml">

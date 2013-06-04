@@ -103,7 +103,7 @@ public class VersionDetailsAction implements Serializable
    public String editVersion(String versionSlug)
    {
       // TODO Avoid this type of redirection
-      return "/iteration/edit/" + projectSlug + "/" + versionSlug;
+      return "";
    }
 
    public String sourceDocs(String versionSlug)
