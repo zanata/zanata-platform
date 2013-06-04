@@ -320,10 +320,9 @@ public class FileService implements FileResource
       virusScan(tempFile);
 
       HDocument document;
-      // FIXME get params from upload form when API updated
       Optional<String> params;
-//    params = Optional.fromNullable(Strings.emptyToNull(uploadForm.getAdapterParams()));
-//    if (!params.isPresent())
+      params = Optional.fromNullable(Strings.emptyToNull(uploadForm.getAdapterParams()));
+      if (!params.isPresent())
       {
          params = documentDAO.getAdapterParams(projectSlug, iterationSlug, docId);
       }
