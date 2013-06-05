@@ -30,17 +30,12 @@
           }
       </script>
 
-	  <s:fragment rendered="#{empty versionGroupAction.allVersionGroups}">
-	   	<h:outputText value="#{messages['jsf.NoGroupExists']}" />
-      </s:fragment>
-
-      <s:fragment rendered="#{!empty versionGroupAction.allVersionGroups}">
         <f:facet name="header">#{messages['jsf.Groups']}</f:facet>
 
           <h:form>
               <s:div styleClass="float-right">
               	<a4j:region>
-		            <h:selectBooleanCheckbox title="#{messages['jsf.groups.ShowActiveGroups']}" value="#{versionGroupAction.showActiveGroups}">
+                    <h:selectBooleanCheckbox title="#{messages['jsf.groups.ShowActiveGroups']}" value="#{versionGroupAction.showActiveGroups}">
 		                <a4j:ajax event="change" render="groupTable" />
 		            </h:selectBooleanCheckbox>
 		            <h:outputText value="#{messages['jsf.Active']}"/>
@@ -98,7 +93,6 @@
 
               </rich:dataTable>
           </h:form>
-      </s:fragment>
     </ui:define>
 
   </ui:composition>
