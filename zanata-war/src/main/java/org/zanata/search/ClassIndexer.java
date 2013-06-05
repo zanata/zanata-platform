@@ -45,7 +45,8 @@ public abstract class ClassIndexer <T>
 
    public int getEntityCount(FullTextSession session, Class<T> clazz)
    {
-      return (Integer) session.createCriteria(clazz).setProjection(Projections.rowCount()).list().get(0);
+      Long result = (Long) session.createCriteria(clazz).setProjection(Projections.rowCount()).list().get(0);
+      return result.intValue();
    }
 
    public void index(FullTextSession session, IndexerProcessHandle handle, Class<T> clazz)
