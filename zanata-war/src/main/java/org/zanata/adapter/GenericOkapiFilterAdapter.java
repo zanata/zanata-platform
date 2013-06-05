@@ -83,7 +83,6 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
 
    private final IFilter filter;
    private final IdSource idSource;
-   private final boolean elideDuplicates;
    private boolean requireFileOutput;
 
    /**
@@ -106,24 +105,8 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
     */
    public GenericOkapiFilterAdapter(IFilter filter, IdSource idSource, boolean requireFileOutput)
    {
-      this(filter, idSource, false, requireFileOutput);
-   }
-
-   /**
-    * Create an adapter that will use the specified {@link IdSource} as TextFlow id.
-    * 
-    * @param filter {@link IFilter} used to parse the document
-    * @param idSource determines how ids are assigned to TextFlows. The chosen
-    *                 source should only allow duplicates if elideDuplicates is
-    *                 true.
-    * @param elideDuplicates true if duplicate ids should be mapped to a single text flow
-    * @param requireFileOutput
-    */
-   public GenericOkapiFilterAdapter(IFilter filter, IdSource idSource, boolean elideDuplicates, boolean requireFileOutput)
-   {
       this.filter = filter;
       this.idSource = idSource;
-      this.elideDuplicates = elideDuplicates;
       this.requireFileOutput = requireFileOutput;
 
       log = LoggerFactory.getLogger(GenericOkapiFilterAdapter.class);
@@ -204,22 +187,13 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
    {
       if (addedResources.containsKey(id))
       {
-         if (elideDuplicates)
-         {
-            if (!hc.getContents().equals(addedResources.get(id).getContents()))
-            {
-               throw new FileFormatAdapterException(
-                     "Same id but different contents for text text flow, " +
-                     "not suitable for eliding.");
-            }
-            return false;
-         }
-         else
+         if (!hc.getContents().equals(addedResources.get(id).getContents()))
          {
             throw new FileFormatAdapterException(
-                  "Same id for multiple strings, but this adapter does not elide" +
-                  "duplicate ids.");
+                  "Same id but different contents for text text flow, " +
+                  "not suitable for eliding.");
          }
+         return false;
       }
       return true;
    }
