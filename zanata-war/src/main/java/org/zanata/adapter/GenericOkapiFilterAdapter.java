@@ -25,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +43,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
+import org.zanata.common.HasContents;
 import org.zanata.common.LocaleId;
 import org.zanata.exception.FileFormatAdapterException;
 import org.zanata.rest.dto.resource.Resource;
@@ -81,23 +83,15 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
 
    private final IFilter filter;
    private final IdSource idSource;
+   private final boolean elideDuplicates;
    private boolean requireFileOutput;
-
-   /**
-    * Create an adapter that will use filter-provided id as TextFlow id.
-    * 
-    * @param filter {@link IFilter} used to parse the document
-    */
-   public GenericOkapiFilterAdapter(IFilter filter)
-   {
-      this(filter, IdSource.textUnitId);
-   }
 
    /**
     * Create an adapter that will use the specified {@link IdSource} as TextFlow id.
     * 
     * @param filter {@link IFilter} used to parse the document
-    * @param idSource determines how ids are assigned to TextFlows
+    * @param idSource determines how ids are assigned to TextFlows. The chosen
+    *                 source should never produce duplicate ids.
     */
    public GenericOkapiFilterAdapter(IFilter filter, IdSource idSource)
    {
@@ -112,8 +106,24 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
     */
    public GenericOkapiFilterAdapter(IFilter filter, IdSource idSource, boolean requireFileOutput)
    {
+      this(filter, idSource, false, requireFileOutput);
+   }
+
+   /**
+    * Create an adapter that will use the specified {@link IdSource} as TextFlow id.
+    * 
+    * @param filter {@link IFilter} used to parse the document
+    * @param idSource determines how ids are assigned to TextFlows. The chosen
+    *                 source should only allow duplicates if elideDuplicates is
+    *                 true.
+    * @param elideDuplicates true if duplicate ids should be mapped to a single text flow
+    * @param requireFileOutput
+    */
+   public GenericOkapiFilterAdapter(IFilter filter, IdSource idSource, boolean elideDuplicates, boolean requireFileOutput)
+   {
       this.filter = filter;
       this.idSource = idSource;
+      this.elideDuplicates = elideDuplicates;
       this.requireFileOutput = requireFileOutput;
 
       log = LoggerFactory.getLogger(GenericOkapiFilterAdapter.class);
@@ -134,6 +144,7 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
       document.setContentType(ContentType.TextPlain);
 
       List<TextFlow> resources = document.getTextFlows();
+      Map<String, HasContents> addedResources = new HashMap<String, HasContents>();
 
       RawDocument rawDoc = new RawDocument(documentContent, "UTF-8", net.sf.okapi.common.LocaleId.fromString("en"));
       updateParams(params);
@@ -156,7 +167,11 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
                   TextFlow tf = new TextFlow(getIdFor(tu, subDocName), sourceLocale);
                   tf.setPlural(false);
                   tf.setContents(GenericContent.fromFragmentToLetterCoded(tu.getSource().getFirstContent(), true));
-                  resources.add(tf);
+                  if (shouldAdd(tf.getId(), tf, addedResources))
+                  {
+                     addedResources.put(tf.getId(), tf);
+                     resources.add(tf);
+                  }
                }
             }
          }
@@ -170,6 +185,43 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
          filter.close();
       }
       return document;
+   }
+
+   /**
+    * Check whether a TextFlow or TextFlowTarget should be added given the
+    * current rules and state.
+    * 
+    * @param id of the source string
+    * @param hc the TextFlow or TextFlowTarget to add
+    * @param addedResources record of the strings that have been added so far.
+    * @return true if a string with the same id does not exist in addedResources
+    * @throws FileFormatAdapterException if a duplicate is found when
+    *         elideDuplicates is false, or if duplicates do not have
+    *         identical contents.
+    */
+   private boolean shouldAdd(String id, HasContents hc, Map<String, HasContents> addedResources)
+         throws FileFormatAdapterException
+   {
+      if (addedResources.containsKey(id))
+      {
+         if (elideDuplicates)
+         {
+            if (!hc.getContents().equals(addedResources.get(id).getContents()))
+            {
+               throw new FileFormatAdapterException(
+                     "Same id but different contents for text text flow, " +
+                     "not suitable for eliding.");
+            }
+            return false;
+         }
+         else
+         {
+            throw new FileFormatAdapterException(
+                  "Same id for multiple strings, but this adapter does not elide" +
+                  "duplicate ids.");
+         }
+      }
+      return true;
    }
 
    private String stripPath(String name)
@@ -201,6 +253,8 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
    {
       TranslationsResource transRes = new TranslationsResource();
       List<TextFlowTarget> translations = transRes.getTextFlowTargets();
+
+      Map<String, HasContents> addedResources = new HashMap<String, HasContents>();
       updateParams(params);
       try
       {
@@ -221,7 +275,11 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
                   TextFlowTarget tft = new TextFlowTarget(getIdFor(tu, subDocName));
                   tft.setContents(GenericContent.fromFragmentToLetterCoded(tu.getSource().getFirstContent(), true));
                   tft.setState(ContentState.NeedReview);
-                  translations.add(tft);
+                  if (shouldAdd(tft.getResId(), tft, addedResources))
+                  {
+                     addedResources.put(tft.getResId(), tft);
+                     translations.add(tft);
+                  }
                }
             }
          }
