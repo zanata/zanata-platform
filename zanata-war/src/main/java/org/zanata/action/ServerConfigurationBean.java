@@ -183,6 +183,7 @@ public class ServerConfigurationBean implements Serializable
       return "/help/view.xhtml";
    }
 
+   @Url(canEndInSlash = true)
    public String getRegisterUrl()
    {
       return registerUrl;
@@ -234,6 +235,7 @@ public class ServerConfigurationBean implements Serializable
       this.logEmailLevel = logEmailLevel;
    }
 
+   @Url(canEndInSlash=true)
    public String getPiwikUrl()
    {
       return piwikUrl;

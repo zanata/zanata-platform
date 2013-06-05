@@ -16,7 +16,7 @@
           <rich:panel>
             <f:facet name="header">#{messages['jsf.ServerConfiguration']}</f:facet>
 
-            <s:decorate id="urlField" template="../WEB-INF/layout/edit.xhtml">
+            <s:decorate id="urlField" template="../WEB-INF/layout/edit.xhtml" enclose="true">
               <ui:define name="label">#{messages['jsf.ServerUrl']}</ui:define>
               <h:inputText id="url" value="#{serverConfigurationBean.serverUrl}">
                 <a4j:ajax event="blur" render="urlField" />
@@ -29,7 +29,7 @@
            	  </s:span>
             </s:decorate>
 
-            <s:decorate id="registerField" template="../WEB-INF/layout/edit.xhtml">
+            <s:decorate id="registerField" template="../WEB-INF/layout/edit.xhtml" enclose="true">
               <ui:define name="label">#{messages['jsf.RegisterUrl']}</ui:define>
               <h:inputText id="url" value="#{serverConfigurationBean.registerUrl}">
                 <a4j:ajax event="blur" render="registerField" />
@@ -45,9 +45,7 @@
 
             <s:decorate id="emailDomainField" template="../WEB-INF/layout/edit.xhtml">
               <ui:define name="label">#{messages['jsf.EmailDomainName']}</ui:define>
-              <h:inputText id="url" value="#{serverConfigurationBean.emailDomain}">
-                <a4j:ajax event="blur" render="emailDomainField" />
-              </h:inputText>
+              <h:inputText id="url" value="#{serverConfigurationBean.emailDomain}"/>
 
                <s:span styleClass="icon-info-circle-2 input_help" id="emailDomainHelp">
             	 <rich:tooltip>
@@ -58,7 +56,7 @@
            	  </s:span>
             </s:decorate>
 
-            <s:decorate id="adminEmailField" template="../WEB-INF/layout/edit.xhtml">
+            <s:decorate id="adminEmailField" template="../WEB-INF/layout/edit.xhtml" enclose="true">
               <ui:define name="label">#{messages['jsf.config.AdminEmail']}</ui:define>
               <h:inputText id="adminEml" value="#{serverConfigurationBean.adminEmail}">
                 <a4j:ajax event="blur" render="adminEmailField" />
@@ -74,7 +72,7 @@
            	  </s:span>
             </s:decorate>
 
-            <s:decorate id="fromEmailField" template="../WEB-INF/layout/edit.xhtml">
+            <s:decorate id="fromEmailField" template="../WEB-INF/layout/edit.xhtml" enclose="true">
               <ui:define name="label">#{messages['jsf.config.FromEmailAddr']}</ui:define>
               <h:inputText id="fromEml" value="#{serverConfigurationBean.fromEmailAddr}">
                 <a4j:ajax event="blur" render="fromEmailField" />
