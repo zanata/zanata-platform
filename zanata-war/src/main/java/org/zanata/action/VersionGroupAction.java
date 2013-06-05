@@ -187,20 +187,6 @@ public class VersionGroupAction implements Serializable
       }
    }
 
-   public boolean filterGroupByName(Object groupObject)
-   {
-      final HIterationGroup group = (HIterationGroup) groupObject;
-
-      if (this.groupNameFilter != null && this.groupNameFilter.length() > 0)
-      {
-         return group.getName().toLowerCase().contains(this.groupNameFilter.toLowerCase());
-      }
-      else
-      {
-         return true;
-      }
-   }
-
    public boolean filterGroupByStatus(Object groupObject)
    {
       final HIterationGroup group = (HIterationGroup) groupObject;

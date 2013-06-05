@@ -8,6 +8,7 @@
                 xmlns:rich="http://richfaces.org/rich"
                 xmlns:a4j="http://richfaces.org/a4j"
                 xmlns:richext="http://java.sun.com/jsf/composite/richext"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 template="../WEB-INF/layout/template.xhtml">
 
     <ui:define name="head">
@@ -84,7 +85,8 @@
                     <f:facet name="header">#{messages['jsf.iteration.files.Path']}</f:facet>
                     #{doc.path}
                 </rich:column>
-                <rich:column filterMethod="#{projectIterationFilesAction.filterDocumentByName}"
+                <rich:column filterValue="#{projectIterationFilesAction.documentNameFilter}" 
+                			 filterExpression="#{fn:containsIgnoreCase(doc.name, projectIterationFilesAction.documentNameFilter)}"
                              styleClass="wrapped">
                     <f:facet name="header">
                         <h:panelGroup>
@@ -270,8 +272,7 @@
                                        action="#{projectIterationZipFileAction.cancelFileDownload}"
                                        value="#{messages['jsf.Cancel']}"
                                        render="downloadProgressBar">
-                        <rich:componentControl for="downloadProgressPanel"
-                                               attachTo="closeProgressPanelButton" operation="hide" event="onclick"/>
+                        <rich:componentControl for="downloadProgressPanel" operation="hide" event="onclick"/>
                     </a4j:commandButton>
                 </div>
             </h:form>

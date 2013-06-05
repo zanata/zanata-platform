@@ -163,11 +163,6 @@ public class UserAction extends org.jboss.seam.security.management.action.UserAc
       return saveResult;
    }
 
-   public boolean filter(String user)
-   {
-      return user.toLowerCase().contains( this.usernameFilter == null ? "" : this.usernameFilter.toLowerCase() );
-   }
-
    /**
     * Validate that a user name is not already in the system, by another account
     */

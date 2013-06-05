@@ -5,6 +5,7 @@
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:rich="http://richfaces.org/rich" 
     xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:s="http://jboss.org/schema/seam/taglib">
 
   <ui:composition template="../WEB-INF/layout/template.xhtml">
@@ -38,7 +39,8 @@
 	            cellspacing="0"
 	            columnClasses="centered,centered,centered,centered"
 	            styleClass="fullwidth">
-	          <rich:column width="auto" filterExpression="#{userAction.filter(user)}">
+	          <rich:column width="auto" filterValue="#{userAction.usernameFilter}" 
+                			 filterExpression="#{fn:containsIgnoreCase(user, userAction.usernameFilter)}">
 	            <f:facet name="header">
                   <h:panelGroup>
                     <h:outputText value="#{messages['jsf.Username']}"/>
