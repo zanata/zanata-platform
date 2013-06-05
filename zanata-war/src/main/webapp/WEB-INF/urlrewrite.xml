@@ -513,6 +513,11 @@
   	<from>^(/.+)?/rest/file/translation/(.+).seam(.+)$</from>
   	<to>$1/rest/file/translation/$2$3</to>
   </outbound-rule>
+  
+  <outbound-rule>
+  	<from>^(/.+)?/rest/file/source/(.+).seam(.+)$</from>
+  	<to>$1/rest/file/source/$2$3</to>
+  </outbound-rule>
 
 </urlrewrite>
 
