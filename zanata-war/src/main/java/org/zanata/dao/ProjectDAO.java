@@ -207,7 +207,7 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
    public List<HProject> searchQuery(String searchQuery, int maxResult, int firstResult) throws ParseException
    {
       String[] projectFields = { "slug", "name", "description" };
-      QueryParser parser = new MultiFieldQueryParser(Version.LUCENE_29, projectFields, new StandardAnalyzer(Version.LUCENE_24));
+      QueryParser parser = new MultiFieldQueryParser(Version.LUCENE_35, projectFields, new StandardAnalyzer(Version.LUCENE_35));
       parser.setAllowLeadingWildcard(true);
       org.apache.lucene.search.Query luceneQuery = parser.parse(QueryParser.escape(searchQuery));
       FullTextQuery query=  entityManager.createFullTextQuery(luceneQuery, HProject.class);
