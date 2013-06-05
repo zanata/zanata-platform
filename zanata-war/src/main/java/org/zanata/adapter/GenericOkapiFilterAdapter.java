@@ -90,7 +90,8 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
     * 
     * @param filter {@link IFilter} used to parse the document
     * @param idSource determines how ids are assigned to TextFlows. The chosen
-    *                 source should never produce duplicate ids.
+    *                 source should only produce duplicate ids when source
+    *                 content is identical.
     */
    public GenericOkapiFilterAdapter(IFilter filter, IdSource idSource)
    {
@@ -101,7 +102,12 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
     * Create an adapter that will use the specified {@link IdSource} as TextFlow id.
     * 
     * @param filter {@link IFilter} used to parse the document
-    * @param idSource determines how ids are assigned to TextFlows
+    * @param idSource determines how ids are assigned to TextFlows The chosen
+    *                 source should only produce duplicate ids when source
+    *                 content is identical.
+    * @param requireFileOutput true if filter requires a file on disk rather than
+    *                          just a stream. Causes a temp file to be created
+    *                          when parsing.
     */
    public GenericOkapiFilterAdapter(IFilter filter, IdSource idSource, boolean requireFileOutput)
    {
