@@ -12,13 +12,16 @@
     <container qualifier="jbossas-managed" default="true">
         <configuration>
             <!-- We can use the JBOSS_HOME env variable instead of this -->
-            <property name="jbossHome">/opt/jboss-eap-6.1</property>
+            <property name="jbossHome">/opt/jboss-eap-6.1-standalone</property>
             <!-- We can use the JAVA_HOME env variable instead of this -->
             <property name="javaHome">/usr/lib/jvm/jre-1.6.0-openjdk.x86_64</property>
-            <property name="javaVmArguments">-Xms1536m -Xmx1536m -XX:MaxPermSize=256m -Dorg.jboss.as.logging.per-deployment=false -Djboss.socket.binding.port-offset=1000 <!---Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8787--></property>
+            <property name="javaVmArguments">-Xms1536m -Xmx1536m -XX:MaxPermSize=256m -Dorg.jboss.as.logging.per-deployment=false -Djboss.socket.binding.port-offset=100 <!---Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8787--></property>
             <!-- From JBOSS_HOME/standalone/configuration -->
             <property name="serverConfig">zanata-standalone.xml</property>
             <!--<property name="allowConnectingToRunningServer">true</property>-->
+            <!-- This needs to be here if -Djboss.socket.binding.port-offset is used in javaVmArguments.
+                 It must match the exact management port to be used-->
+            <property name="managementPort">10099</property>
         </configuration>
     </container>
     <extension qualifier="seam2">
