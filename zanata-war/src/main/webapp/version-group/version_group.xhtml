@@ -71,7 +71,10 @@
             <f:param name="versionGroupSlug" value="#{versionGroupHome.instance.slug}"/>
         </s:link>
     </s:fragment>
-     <s:link styleClass="action_link" view="/version-group/join/#{versionGroupHome.instance.slug}" value="#{messages['jsf.RequestToJoinVersionGroup']}" propagation="none" rendered="#{versionGroupAction.isUserProjectMaintainer()}"/>
+    <s:link styleClass="action_link" view="/version-group/request_to_join.xhtml" value="#{messages['jsf.RequestToJoinVersionGroup']}" propagation="none" rendered="#{versionGroupAction.isUserProjectMaintainer()}">
+        <f:param name="emailType" value="request_to_join_group"/>
+        <f:param name="versionGroupSlug" value="#{versionGroupHome.instance.slug}"/>
+    </s:link>
   </rich:panel>
 
   <rich:panel>

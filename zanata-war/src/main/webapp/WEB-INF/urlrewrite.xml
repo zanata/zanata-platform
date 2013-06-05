@@ -456,6 +456,10 @@
     <from>^(/.+)?/version-group/assign_maintainer.seam(.+)?$</from>
     <to>$1/version-group/maintainer/$2</to>
   </outbound-rule>
+  <outbound-rule>
+    <from>^(/.+)?/version-group/request_to_join.seam\?emailType=(.+)&amp;versionGroupSlug=(.+)</from>
+    <to>$1/version-group/join/$3</to>
+  </outbound-rule>
   
 <!--   <outbound-rule> -->
 <!--     <from>^(/.+)?/glossary/view.seam(.+)?$</from> -->
