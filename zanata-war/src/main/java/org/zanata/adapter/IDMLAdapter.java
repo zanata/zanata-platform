@@ -31,8 +31,7 @@ public class IDMLAdapter extends GenericOkapiFilterAdapter
 {
    public IDMLAdapter()
    {
-      // FIXME use contentHash, but find a way to avoid duplicate TF IDs
-      super(prepareFilter(), IdSource.subDocNameAndTextUnitId, true);
+      super(prepareFilter(), IdSource.contentHash, true);
    }
 
    private static IDMLFilter prepareFilter()
