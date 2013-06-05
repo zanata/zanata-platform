@@ -74,7 +74,7 @@
       <!-- Search engine -->
       <property name="hibernate.search.default.directory_provider"
                value="org.hibernate.search.store.impl.FSDirectoryProvider"/>
-      <property name="hibernate.search.lucene_version" value="LUCENE_36"/>
+      <property name="hibernate.search.lucene_version" value="LUCENE_35"/>
       <property name="hibernate.search.worker.batch_size" value="50"/>
       
       <!-- Run the Hibernate bytecode instrumentation at deployment time, for lazy loading of @ToOne and byte[] properties -->
