@@ -38,25 +38,24 @@
         <f:facet name="header">#{messages['jsf.Groups']}</f:facet>
 
           <h:form>
-              <s:token allowMultiplePosts="true" />
-
               <s:div styleClass="float-right">
+              	<a4j:region>
 		            <h:selectBooleanCheckbox title="#{messages['jsf.groups.ShowActiveGroups']}" value="#{versionGroupAction.showActiveGroups}">
-		                <a4j:ajax event="change" render="threads" />
+		                <a4j:ajax event="change" render="groupTable" />
 		            </h:selectBooleanCheckbox>
 		            <h:outputText value="#{messages['jsf.Active']}"/>
 
 		            <richext:spacer width="5" />
 		            <s:fragment rendered="#{s:hasPermission('HIterationGroup','view-obsolete')}">
 			            <h:selectBooleanCheckbox title="#{messages['jsf.groups.ShowObsoleteGroups']}" value="#{versionGroupAction.showObsoleteGroups}">
-			                <a4j:ajax event="change" render="threads" />
+			                <a4j:ajax event="change" render="groupTable" />
 			            </h:selectBooleanCheckbox>
 		                <h:outputText value="#{messages['jsf.Obsolete']}"/>
 		            </s:fragment>
+		      	</a4j:region>
 	          </s:div>
-
-              <rich:dataTable id="threads" value="#{versionGroupAction.allVersionGroups}"
-                              var="group">
+			  <br/>
+              <rich:dataTable id="groupTable" value="#{versionGroupAction.allVersionGroups}" var="group">
                   <rich:column filterValue="#{versionGroupAction.groupNameFilter}" 
                 			 filterExpression="#{fn:containsIgnoreCase(group.name, versionGroupAction.groupNameFilter)}">
                   	  <f:facet name="header">
@@ -64,7 +63,7 @@
 							<h:outputText value="#{messages['jsf.Name']}" />
 							<br />
 							<h:inputText value="#{versionGroupAction.groupNameFilter}" id="name_filter_input" styleClass="filter_input">
-								<a4j:ajax event="keyup" render="threads"
+								<a4j:ajax event="keyup" render="groupTable"
 									oncomplete="focusNameFilterInput()" >
                                     <a4j:attachQueue ignoreDupResponses="true" requestDelay="700" />
                                 </a4j:ajax>
