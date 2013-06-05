@@ -507,6 +507,12 @@
     <from>^(/.+)?/webtrans/Application.seam(.*)$</from>
     <to>$1/webtrans/translate$2</to>
   </outbound-rule>
+  
+  <!-- Removing .seam from rest url  -->
+  <outbound-rule>
+  	<from>^(/.+)?/rest/file/translation/(.+).seam(.+)$</from>
+  	<to>$1/rest/file/translation/$2$3</to>
+  </outbound-rule>
 
 </urlrewrite>
 

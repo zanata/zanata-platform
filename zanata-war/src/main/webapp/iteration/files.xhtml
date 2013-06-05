@@ -259,7 +259,7 @@
                                   enabled="#{projectIterationZipFileAction.zipFilePrepHandle.inProgress}"
                                   ignoreDupResponses="true"
                                   reRenderAfterComplete="downloadProgressBar">
-                    <f:facet name="complete">
+                    <f:facet name="finish">
                         <script type="text/javascript">
                             #{rich:component('downloadProgressPanel')}.hide();
                             window.location = "#{facesContext.externalContext.requestContextPath}/rest/file/download/#{projectIterationZipFileAction.zipFilePrepHandle.downloadId}";
