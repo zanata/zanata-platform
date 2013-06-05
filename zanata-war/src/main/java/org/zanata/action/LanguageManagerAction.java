@@ -165,10 +165,8 @@ public class LanguageManagerAction implements Serializable
       return localeStringList;
    }
 
-   public List<HLocale> suggestLocales( Object queryObj )
+   public List<HLocale> suggestLocales( final String query )
    {
-      final String query = (String)queryObj;
-
       if( allLocales == null )
       {
          allLocales = localeServiceImpl.getAllJavaLanguages();

@@ -22,16 +22,19 @@
             <s:decorate id="localeField"
                         template="edit.xhtml">
                 <ui:define name="label">#{messages['jsf.Language']}</ui:define>
-                <h:panelGrid columns="3" border="0" cellpadding="0" cellspacing="0">
-                    <h:inputText id="localeName" value="#{languageManagerAction.language}">
-                        <a4j:ajax event="keyup"
-                                     listener="#{languageManagerAction.updateLanguage()}"
-                                     render="output,localeNameMssgs" />
-                    </h:inputText>
-                    <h:graphicImage value="/images/combo_box_arrow.png"
-                                    onclick="#{rich:component('localeNameSuggestion')}.callSuggestion(true)"
-                                    alt=""/>
-                    <h:panelGroup id="localeNameMssgs" style="margin-left: 10px">
+                <h:form>
+                    <rich:autocomplete id="localeNameSuggestion" mode="client" var="result"
+                                       autocompleteMethod="#{languageManagerAction.suggestLocales}"
+                                       fetchValue="#{result.localeId}" width="300" layout="table" value="#{languageManagerAction.language}">
+                        <a4j:ajax event="change" listener="#{languageManagerAction.updateLanguage}" render="output,localeNameMssgs" />
+                        <h:column>
+                            <h:outputText value="#{result.localeId}"/>
+                        </h:column>
+                        <h:column>
+                            <h:outputText value="#{result.retrieveDisplayName()}"/>
+                        </h:column>
+                    </rich:autocomplete>
+                    <h:panelGroup id="localeNameMssgs" style="margin-left: 10px;float:right">
                         <h:outputText value="#{languageManagerAction.languageNameValidationMessage}"
                                       rendered="#{not languageManagerAction.language.contains('_')}"
                                       style="color:#ff0000"/>
@@ -43,24 +46,7 @@
                                       rendered="#{languageManagerAction.languageNameWarningMessage != null}"
                                       style="display:block; width:198px;color:#D77D00"/>
                     </h:panelGroup>
-
-                </h:panelGrid>
-                <rich:autocomplete id="localeNameSuggestion"
-                                   mode="ajax"
-                                   var="result"
-                                   autocompleteMethod="#{languageManagerAction.suggestLocales}"
-                                   fetchValue="#{result.localeId}"
-                                   width="300">
-                    <a4j:ajax event="change"
-                                 listener="#{languageManagerAction.updateLanguage()}"
-                                 render="output,localeNameMssgs" />
-                    <h:column>
-                        <h:outputText value="#{result.localeId}"/>
-                    </h:column>
-                    <h:column>
-                        <h:outputText value="#{result.retrieveDisplayName()}"/>
-                    </h:column>
-                </rich:autocomplete>
+                </h:form>
             </s:decorate>
             <s:decorate id="enabledByDefaultField" template="display.xhtml">
                 <ui:define name="label">#{messages['jsf.EnabledByDefault']}</ui:define>
