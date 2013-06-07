@@ -21,25 +21,37 @@
 package org.zanata.rest.service;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.jboss.seam.security.Identity;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.dto.ChunkUploadResponse;
+import org.zanata.rest.dto.resource.Resource;
 import org.zanata.seam.SeamAutowire;
+import org.zanata.security.ZanataCredentials;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.service.DocumentService;
+import org.zanata.service.TranslationFileService;
+
+import com.google.common.base.Optional;
 
 import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.eq;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -50,16 +62,19 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class FileServiceTest
 {
 
+   private static final String basicDocumentContent = "test";
+   private static final String hashOfBasicDocumentContent = "d41d8cd98f00b204e9800998ecf8427e";
+
    SeamAutowire seam = SeamAutowire.instance();
 
-   @Mock
-   private ZanataIdentity mockIdentity;
+   @Mock private ZanataIdentity identity;
 
-   @Mock
-   private ProjectIterationDAO projectIterationDAO;
+   @Mock private ProjectIterationDAO projectIterationDAO;
+   @Mock private TranslationFileService translationFileService;
+   @Mock private DocumentService documentService;
 
-   @Mock HProject project;
-   @Mock HProjectIteration projectIteration;
+   @Mock private HProject project;
+   @Mock private HProjectIteration projectIteration;
 
    private FileResource fileService;
 
@@ -70,8 +85,10 @@ public class FileServiceTest
 
       seam.reset();
       seam.ignoreNonResolvable()
-      .use("identity", mockIdentity)
+      .use("identity", identity)
       .use("projectIterationDAO", projectIterationDAO)
+      .use("translationFileServiceImpl", translationFileService)
+      .use("documentServiceImpl", documentService)
       .allowCycles();
 
       fileService = seam.autowire(FileService.class);
@@ -79,7 +96,7 @@ public class FileServiceTest
 
    public void respondUnauthorizedIfNotLoggedIn()
    {
-      when(mockIdentity.isLoggedIn()).thenReturn(false);
+      when(identity.isLoggedIn()).thenReturn(false);
       Response response = fileService.uploadSourceFile("project", "version", "doc", new DocumentFileUploadForm());
       assertThat(Status.fromStatusCode(response.getStatus()), is(Status.UNAUTHORIZED));
    }
@@ -185,9 +202,60 @@ public class FileServiceTest
             is("The project-version \"myproject:myversion\" is not active. Document upload is not allowed."));
    }
 
+   public void usefulMessageWhenSourceUploadNotAllowed()
+   {
+      mockLoggedIn();
+      mockProjectAndVersionStatus(EntityStatus.ACTIVE, EntityStatus.ACTIVE);
+      when(identity.hasPermission("import-template", projectIteration)).thenReturn(false);
+      DocumentFileUploadForm uploadForm = nonsenseUploadForm();
+      Response response = fileService.uploadSourceFile("myproject", "myversion", "mydoc", uploadForm);
+
+      assertThat(Status.fromStatusCode(response.getStatus()), is(Status.FORBIDDEN));
+      ChunkUploadResponse chunkResponse = (ChunkUploadResponse) response.getEntity();
+      assertThat(chunkResponse.getAcceptedChunks(), is(0));
+      assertThat(chunkResponse.isExpectingMore(), is(false));
+      assertThat(chunkResponse.getErrorMessage(),
+            is("You do not have permission to upload source documents to project-version \"myproject:myversion\"."));
+   }
+
+   public void usefulMessageWhenFileTypeInvalid()
+   {
+      mockLoggedIn();
+      mockProjectAndVersionStatus(EntityStatus.ACTIVE, EntityStatus.ACTIVE);
+
+      when(identity.hasPermission("import-template", projectIteration)).thenReturn(true);
+      when(translationFileService.hasAdapterFor(DocumentType.PLAIN_TEXT)).thenReturn(false);
+
+      Response response = fileService.uploadSourceFile("myproject", "myversion", "mydoc", nonsenseUploadForm());
+      assertThat(Status.fromStatusCode(response.getStatus()), is(Status.BAD_REQUEST));
+      ChunkUploadResponse chunkResponse = (ChunkUploadResponse) response.getEntity();
+      assertThat(chunkResponse.getAcceptedChunks(), is(0));
+      assertThat(chunkResponse.isExpectingMore(), is(false));
+      assertThat(chunkResponse.getErrorMessage(),
+            is("The type \"txt\" specified in form parameter 'type' is not valid for a source file on this server."));
+   }
+
+   public void usefulMessageWhenHashInvalid()
+   {
+      mockLoggedIn();
+      mockProjectAndVersionStatus(EntityStatus.ACTIVE, EntityStatus.ACTIVE);
+      when(identity.hasPermission("import-template", projectIteration)).thenReturn(true);
+      when(translationFileService.hasAdapterFor(DocumentType.PLAIN_TEXT)).thenReturn(true);
+      DocumentFileUploadForm uploadForm = nonsenseUploadForm();
+      uploadForm.setHash("incorrect hash");
+
+      Response response = fileService.uploadSourceFile("myproject", "myversion", "mydoc", uploadForm);
+      assertThat(Status.fromStatusCode(response.getStatus()), is(Status.CONFLICT));
+      ChunkUploadResponse chunkResponse = (ChunkUploadResponse) response.getEntity();
+      assertThat(chunkResponse.getAcceptedChunks(), is(0));
+      assertThat(chunkResponse.isExpectingMore(), is(false));
+      assertThat(chunkResponse.getErrorMessage(),
+            is("MD5 hash \"incorrect hash\" sent with request does not match server-generated hash. Aborted upload operation."));
+   }
+
    private void mockLoggedIn()
    {
-      when(mockIdentity.isLoggedIn()).thenReturn(true);
+      when(identity.isLoggedIn()).thenReturn(true);
    }
 
    private DocumentFileUploadForm nonsenseUploadForm()
@@ -196,10 +264,10 @@ public class FileServiceTest
       uploadForm.setFileType("txt");
       uploadForm.setFirst(true);
       uploadForm.setLast(true);
-      uploadForm.setHash("abc123");
-      uploadForm.setSize(12345L);
+      uploadForm.setSize(4L);
+      uploadForm.setFileStream(new ByteArrayInputStream(basicDocumentContent.getBytes()));
+      uploadForm.setHash(hashOfBasicDocumentContent);
       uploadForm.setAdapterParams("params");
-      uploadForm.setFileStream(new ByteArrayInputStream("test".getBytes()));
       return uploadForm;
    }
 
