@@ -43,7 +43,7 @@
            	  </s:span>
             </s:decorate>
 
-            <s:decorate id="emailDomainField" template="../WEB-INF/layout/edit.xhtml">
+            <s:decorate id="emailDomainField" template="../WEB-INF/layout/edit.xhtml" enclose="true">
               <ui:define name="label">#{messages['jsf.EmailDomainName']}</ui:define>
               <h:inputText id="url" value="#{serverConfigurationBean.emailDomain}"/>
 
@@ -86,7 +86,7 @@
            	  </s:span>
             </s:decorate>
 
-            <s:decorate id="enableLogEmailField" template="../WEB-INF/layout/edit.xhtml">
+            <s:decorate id="enableLogEmailField" template="../WEB-INF/layout/edit.xhtml" enclose="true">
               <ui:define name="label">#{messages['jsf.config.EnableLogEmails']}</ui:define>
               <h:selectBooleanCheckbox value="#{serverConfigurationBean.enableLogEmail}"/>
 
@@ -97,7 +97,7 @@
            	  </s:span>
             </s:decorate>
 
-            <s:decorate id="logDestEmailField" template="../WEB-INF/layout/edit.xhtml">
+            <s:decorate id="logDestEmailField" template="../WEB-INF/layout/edit.xhtml" enclose="true">
               <ui:define name="label">#{messages['jsf.config.LogDestEmail']}</ui:define>
               <h:inputText id="logDestEml" value="#{serverConfigurationBean.logDestinationEmails}">
                 <a4j:ajax event="blur" render="logDestEmailField" />
@@ -112,7 +112,7 @@
            	  </s:span>
             </s:decorate>
 
-            <s:decorate id="logEmailLevelField" template="../WEB-INF/layout/edit.xhtml">
+            <s:decorate id="logEmailLevelField" template="../WEB-INF/layout/edit.xhtml" enclose="true">
               <ui:define name="label">#{messages['jsf.config.LogEmailLevel']}</ui:define>
               <h:selectOneMenu id="logEmailLvl" value="#{serverConfigurationBean.logEmailLevel}" style="width:156px; margin:0 3px 0 2px;">
                 <f:selectItem itemLabel="#{messages['jsf.Warning']}" itemValue="WARN"/>
@@ -128,7 +128,7 @@
            	  </s:span>
             </s:decorate>
 
-             <s:decorate id="piwikUrlField" template="../WEB-INF/layout/edit.xhtml">
+             <s:decorate id="piwikUrlField" template="../WEB-INF/layout/edit.xhtml" enclose="true">
               <ui:define name="label">#{messages['jsf.config.PiwikUrl']}</ui:define>
               <h:inputText id="piwikUrlEml" value="#{serverConfigurationBean.piwikUrl}">
                 <a4j:ajax event="blur" render="piwikUrlField" />
@@ -141,7 +141,7 @@
            	  </s:span>
             </s:decorate>
 
-            <s:decorate id="piwikIdSiteField" template="../WEB-INF/layout/edit.xhtml">
+            <s:decorate id="piwikIdSiteField" template="../WEB-INF/layout/edit.xhtml" enclose="true">
               <ui:define name="label">#{messages['jsf.config.PiwikIdSite']}</ui:define>
               <h:inputText id="piwikIdSiteEml" value="#{serverConfigurationBean.piwikIdSite}">
                 <a4j:ajax event="blur" render="piwikIdSiteField" />
