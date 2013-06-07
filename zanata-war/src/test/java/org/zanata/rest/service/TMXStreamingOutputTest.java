@@ -191,7 +191,6 @@ public class TMXStreamingOutputTest
       output.write(writerOutputStream);
       writerOutputStream.close();
       String xml = sbWriter.toString();
-      System.out.println(xml);
       assertValidTMX(xml);
       Document doc = XMLUnit.buildControlDocument(xml);
       return doc;
