@@ -20,14 +20,22 @@
  */
 package org.zanata.rest.service;
 
+import java.io.ByteArrayInputStream;
+
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.jboss.seam.security.Identity;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.common.EntityStatus;
+import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.model.HProject;
+import org.zanata.model.HProjectIteration;
 import org.zanata.rest.DocumentFileUploadForm;
+import org.zanata.rest.dto.ChunkUploadResponse;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
 
@@ -47,6 +55,12 @@ public class FileServiceTest
    @Mock
    private ZanataIdentity mockIdentity;
 
+   @Mock
+   private ProjectIterationDAO projectIterationDAO;
+
+   @Mock HProject project;
+   @Mock HProjectIteration projectIteration;
+
    private FileResource fileService;
 
    @BeforeMethod
@@ -57,6 +71,7 @@ public class FileServiceTest
       seam.reset();
       seam.ignoreNonResolvable()
       .use("identity", mockIdentity)
+      .use("projectIterationDAO", projectIterationDAO)
       .allowCycles();
 
       fileService = seam.autowire(FileService.class);
@@ -67,6 +82,133 @@ public class FileServiceTest
       when(mockIdentity.isLoggedIn()).thenReturn(false);
       Response response = fileService.uploadSourceFile("project", "version", "doc", new DocumentFileUploadForm());
       assertThat(Status.fromStatusCode(response.getStatus()), is(Status.UNAUTHORIZED));
+   }
+
+   public void usefulMessageIfNoFileContent()
+   {
+      mockLoggedIn();
+
+      DocumentFileUploadForm uploadForm = nonsenseUploadForm();
+      uploadForm.setFileStream(null);
+
+      Response response = fileService.uploadSourceFile("project", "version", "doc", uploadForm);
+
+      assertThat(Status.fromStatusCode(response.getStatus()), is(Status.PRECONDITION_FAILED));
+      ChunkUploadResponse chunkResponse = (ChunkUploadResponse) response.getEntity();
+      assertThat(chunkResponse.getAcceptedChunks(), is(0));
+      assertThat(chunkResponse.isExpectingMore(), is(false));
+      assertThat(chunkResponse.getErrorMessage(),
+            is("Required form parameter 'file' containing file content was not found."));
+   }
+
+   public void usefulMessageIfNoFileType()
+   {
+      mockLoggedIn();
+
+      DocumentFileUploadForm uploadForm = nonsenseUploadForm();
+      uploadForm.setFileType(null);
+
+      Response response = fileService.uploadSourceFile("project", "version", "doc", uploadForm);
+
+      assertThat(Status.fromStatusCode(response.getStatus()), is(Status.PRECONDITION_FAILED));
+      ChunkUploadResponse chunkResponse = (ChunkUploadResponse) response.getEntity();
+      assertThat(chunkResponse.getAcceptedChunks(), is(0));
+      assertThat(chunkResponse.isExpectingMore(), is(false));
+      assertThat(chunkResponse.getErrorMessage(),
+            is("Required form parameter 'type' was not found."));
+   }
+
+   public void usefulMessageIfNoContentHash()
+   {
+      mockLoggedIn();
+
+      DocumentFileUploadForm uploadForm = nonsenseUploadForm();
+      uploadForm.setHash(null);
+
+      Response response = fileService.uploadSourceFile("project", "version", "doc", uploadForm);
+
+      assertThat(Status.fromStatusCode(response.getStatus()), is(Status.PRECONDITION_FAILED));
+      ChunkUploadResponse chunkResponse = (ChunkUploadResponse) response.getEntity();
+      assertThat(chunkResponse.getAcceptedChunks(), is(0));
+      assertThat(chunkResponse.isExpectingMore(), is(false));
+      assertThat(chunkResponse.getErrorMessage(),
+            is("Required form parameter 'hash' was not found."));
+   }
+
+   public void usefulMessageIfProjectIsReadOnly()
+   {
+      testUsefulMessageForInactiveProject(EntityStatus.READONLY);
+   }
+
+   public void usefulMessageIfProjectIsObsolete()
+   {
+      testUsefulMessageForInactiveProject(EntityStatus.OBSOLETE);
+   }
+
+   private void testUsefulMessageForInactiveProject(EntityStatus nonActiveStatus)
+   {
+      mockLoggedIn();
+      mockProjectAndVersionStatus(nonActiveStatus, EntityStatus.ACTIVE);
+
+      Response response = fileService.uploadSourceFile("myproject", "myversion", "mydoc", nonsenseUploadForm());
+
+      assertThat(Status.fromStatusCode(response.getStatus()), is(Status.FORBIDDEN));
+      ChunkUploadResponse chunkResponse = (ChunkUploadResponse) response.getEntity();
+      assertThat(chunkResponse.getAcceptedChunks(), is(0));
+      assertThat(chunkResponse.isExpectingMore(), is(false));
+      assertThat(chunkResponse.getErrorMessage(),
+            is("The project \"myproject\" is not active. Document upload is not allowed."));
+   }
+
+   public void usefulMessageIfVersionIsReadOnly()
+   {
+      testUsefulMessageForInactiveVersion(EntityStatus.READONLY);
+   }
+
+   public void usefulMessageIfVersionIsObsolete()
+   {
+      testUsefulMessageForInactiveVersion(EntityStatus.OBSOLETE);
+   }
+
+   private void testUsefulMessageForInactiveVersion(EntityStatus nonActiveStatus)
+   {
+      mockLoggedIn();
+      mockProjectAndVersionStatus(EntityStatus.ACTIVE, nonActiveStatus);
+
+      Response response = fileService.uploadSourceFile("myproject", "myversion", "mydoc", nonsenseUploadForm());
+
+      assertThat(Status.fromStatusCode(response.getStatus()), is(Status.FORBIDDEN));
+      ChunkUploadResponse chunkResponse = (ChunkUploadResponse) response.getEntity();
+      assertThat(chunkResponse.getAcceptedChunks(), is(0));
+      assertThat(chunkResponse.isExpectingMore(), is(false));
+      assertThat(chunkResponse.getErrorMessage(),
+            is("The project-version \"myproject:myversion\" is not active. Document upload is not allowed."));
+   }
+
+   private void mockLoggedIn()
+   {
+      when(mockIdentity.isLoggedIn()).thenReturn(true);
+   }
+
+   private DocumentFileUploadForm nonsenseUploadForm()
+   {
+      DocumentFileUploadForm uploadForm = new DocumentFileUploadForm();
+      uploadForm.setFileType("txt");
+      uploadForm.setFirst(true);
+      uploadForm.setLast(true);
+      uploadForm.setHash("abc123");
+      uploadForm.setSize(12345L);
+      uploadForm.setAdapterParams("params");
+      uploadForm.setFileStream(new ByteArrayInputStream("test".getBytes()));
+      return uploadForm;
+   }
+
+   private void mockProjectAndVersionStatus(EntityStatus projectStatus, EntityStatus versionStatus)
+   {
+      when(projectIterationDAO.getBySlug("myproject", "myversion")).thenReturn(projectIteration);
+      when(projectIteration.getProject()).thenReturn(project);
+      when(project.getStatus()).thenReturn(projectStatus);
+      when(projectIteration.getStatus()).thenReturn(versionStatus);
    }
 
 }
