@@ -302,8 +302,8 @@ public class FileService implements FileResource
          {
             throw new ChunkUploadException(Status.CONFLICT,
                   "MD5 hash \"" + uploadForm.getHash() +
-                  "\" sent with request does not match server-generated hash \"" + md5hash +
-                  "\". Aborted upload operation.");
+                  "\" sent with request does not match server-generated hash. " +
+                  "Aborted upload operation.");
          }
       }
       catch (NoSuchAlgorithmException e)
