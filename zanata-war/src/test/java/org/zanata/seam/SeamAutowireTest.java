@@ -24,12 +24,19 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.jboss.seam.Component;
 import org.testng.annotations.BeforeTest;
-import org.testng.annotations.ObjectFactory;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.dao.ProjectDAO;
+import org.zanata.seam.test.CyclicParentComponent;
+import org.zanata.seam.test.TestComponent;
+import org.zanata.seam.test.UnbuildableTestComponent;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.impl.CopyTransServiceImpl;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 
 /**
  * Tests for the {@link SeamAutowire} component.
@@ -75,7 +82,7 @@ public class SeamAutowireTest extends ZanataDbunitJpaTest
       SeamAutowire.instance().ignoreNonResolvable().autowire(CopyTransServiceImpl.class);
 
       CopyTransService copyTrans = SeamAutowire.instance().autowire(CopyTransService.class);
-      MatcherAssert.assertThat(copyTrans, Matchers.notNullValue());
+      assertThat(copyTrans, Matchers.notNullValue());
    }
 
    @Test
@@ -85,6 +92,45 @@ public class SeamAutowireTest extends ZanataDbunitJpaTest
 
       String val = (String)Component.getInstance("component");
 
-      MatcherAssert.assertThat(val, Matchers.is("This is the component!"));
+      assertThat(val, is("This is the component!"));
+   }
+
+   @Test(expectedExceptions = RuntimeException.class,
+         expectedExceptionsMessageRegExp = "Could not auto-wire component of type org.zanata.seam.test.UnbuildableTestComponent. No no-args constructor.")
+   public void nonResolvableNotAllowed()
+   {
+      SeamAutowire.instance().reset().autowire(TestComponent.class);
+   }
+
+   @Test
+   public void nonResolvableAllowed()
+   {
+      TestComponent test = SeamAutowire.instance().ignoreNonResolvable().autowire(TestComponent.class);
+
+      assertThat(test.getUnbuildableTestComponent(), nullValue());
+   }
+
+   @Test
+   public void postConstructInvoked()
+   {
+      TestComponent test = SeamAutowire.instance().ignoreNonResolvable().autowire(TestComponent.class);
+
+      assertThat(test.isPostConstructInvoked(), is(true));
+   }
+
+   @Test
+   public void cyclesAllowed()
+   {
+      CyclicParentComponent parent = SeamAutowire.instance().reset().allowCycles().autowire(CyclicParentComponent.class);
+
+      assertThat(parent.getCyclicChildComponent(), notNullValue());
+      assertThat(parent.getCyclicChildComponent().getCyclicParentComponent(), notNullValue());
+   }
+
+   @Test(expectedExceptions = RuntimeException.class,
+         expectedExceptionsMessageRegExp = "Recursive dependency: unable to inject cyclicChildComponent into component of type org.zanata.seam.test.CyclicParentComponent")
+   public void cyclesNotAllowed()
+   {
+      SeamAutowire.instance().reset().autowire(CyclicParentComponent.class);
    }
 }
