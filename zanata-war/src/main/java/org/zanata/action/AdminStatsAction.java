@@ -152,22 +152,22 @@ public class AdminStatsAction implements Serializable
 
    public int getTotalActiveTextFlowTargets()
    {
-      return textFlowTargetDAO.getTotalTextFlowTargets();
+      return textFlowTargetDAO.getTotalActiveTextFlowTargets();
    }
 
    public int getTotalObsoleteTextFlowTargets()
    {
-      return textFlowTargetDAO.getTotalTextFlowTargets();
+      return textFlowTargetDAO.getTotalObsoleteTextFlowTargets();
    }
 
    public int getTotalApprovedTextFlowTargets()
    {
-      return textFlowTargetDAO.getTotalApprovedTextFlowTargets();
+      return textFlowTargetDAO.getTotalTranslatedTextFlowTargets();
    }
 
-   public int getTotalNeedReviewTextFlowTargets()
+   public int getTotalRejectedOrFuzzyTextFlowTargets()
    {
-      return textFlowTargetDAO.getTotalNeedReviewTextFlowTargets();
+      return textFlowTargetDAO.getTotalRejectedOrFuzzyTextFlowTargets();
    }
 
    public int getTotalUntranslatedTextFlowTargets()

@@ -64,45 +64,45 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
       return totalCount.intValue();
    }
 
-   public int getTotalActiveTextFlowTargets()
+    public int getTotalActiveTextFlowTargets()
+    {
+        Query q = getSession().createQuery("select count(*) from HTextFlowTarget t where t.textFlow.obsolete=0");
+        q.setCacheable(true);
+        q.setComment("TextFlowTargetDAO.getTotalActiveTextFlowTargets");
+        Long totalCount = (Long) q.uniqueResult();
+        if (totalCount == null)
+            return 0;
+        return totalCount.intValue();
+    }
+
+    public int getTotalObsoleteTextFlowTargets()
+    {
+        Query q = getSession().createQuery("select count(*) from HTextFlowTarget t where t.textFlow.obsolete=1");
+        q.setCacheable(true);
+        q.setComment("TextFlowTargetDAO.getTotalObsoleteTextFlowTargets");
+        Long totalCount = (Long) q.uniqueResult();
+        if (totalCount == null)
+            return 0;
+        return totalCount.intValue();
+    }
+
+   public int getTotalTranslatedTextFlowTargets()
    {
-      Query q = getSession().createQuery("select count(*) from HTextFlowTarget t where t.textFlow.obsolete=0");
+      Query q = getSession().createQuery("select count(*) from HTextFlowTarget t where t.state = :state or t.state = :state2 and t.textFlow.obsolete=0");
       q.setCacheable(true);
-      q.setComment("TextFlowTargetDAO.getTotalActiveTextFlowTargets");
-      Long totalCount = (Long) q.uniqueResult();
+      q.setComment("TextFlowTargetDAO.getTotalTranslatedTextFlowTargets");
+      Long totalCount = (Long) q.setParameter("state", ContentState.Approved).setParameter("state2", ContentState.Approved).uniqueResult();
       if (totalCount == null)
          return 0;
       return totalCount.intValue();
    }
 
-   public int getTotalObsoleteTextFlowTargets()
+   public int getTotalRejectedOrFuzzyTextFlowTargets()
    {
-      Query q = getSession().createQuery("select count(*) from HTextFlowTarget t where t.textFlow.obsolete=1");
+      Query q = getSession().createQuery("select count(*) from HTextFlowTarget t where t.state = :state or t.state = :state2 and t.textFlow.obsolete=0");
       q.setCacheable(true);
-      q.setComment("TextFlowTargetDAO.getTotalObsoleteTextFlowTargets");
-      Long totalCount = (Long) q.uniqueResult();
-      if (totalCount == null)
-         return 0;
-      return totalCount.intValue();
-   }
-
-   public int getTotalApprovedTextFlowTargets()
-   {
-      Query q = getSession().createQuery("select count(*) from HTextFlowTarget t where t.state = :state and t.textFlow.obsolete=0");
-      q.setCacheable(true);
-      q.setComment("TextFlowTargetDAO.getTotalApprovedTextFlowTargets");
-      Long totalCount = (Long) q.setParameter("state", ContentState.Approved).uniqueResult();
-      if (totalCount == null)
-         return 0;
-      return totalCount.intValue();
-   }
-
-   public int getTotalNeedReviewTextFlowTargets()
-   {
-      Query q = getSession().createQuery("select count(*) from HTextFlowTarget t where t.state = :state and t.textFlow.obsolete=0");
-      q.setCacheable(true);
-      q.setComment("TextFlowTargetDAO.getTotalNeedReviewTextFlowTargets");
-      Long totalCount = (Long) q.setParameter("state", ContentState.NeedReview).uniqueResult();
+      q.setComment("TextFlowTargetDAO.getTotalRejectedOrFuzzyTextFlowTargets");
+      Long totalCount = (Long) q.setParameter("state", ContentState.NeedReview).setParameter("state2", ContentState.NeedReview).uniqueResult();
       if (totalCount == null)
          return 0;
       return totalCount.intValue();
@@ -114,28 +114,6 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
       q.setCacheable(true);
       q.setComment("TextFlowTargetDAO.getTotalNewTextFlowTargets");
       Long totalCount = (Long) q.setParameter("state", ContentState.New).uniqueResult();
-      if (totalCount == null)
-         return 0;
-      return totalCount.intValue();
-   }
-
-   public int getTotalApprovedWords()
-   {
-      Query q = getSession().createQuery("select sum(t.textFlow.wordCount) from HTextFlowTarget t where t.state = :state and t.textFlow.obsolete=0");
-      q.setCacheable(true);
-      q.setComment("TextFlowTargetDAO.getTotalApprovedWords");
-      Long totalCount = (Long) q.setParameter("state", ContentState.Approved).uniqueResult();
-      if (totalCount == null)
-         return 0;
-      return totalCount.intValue();
-   }
-
-   public int getTotalNeedReviewWords()
-   {
-      Query q = getSession().createQuery("select sum(t.textFlow.wordCount) from HTextFlowTarget t where t.state = :state and t.textFlow.obsolete=0");
-      q.setCacheable(true);
-      q.setComment("TextFlowTargetDAO.getTotalNeedReviewWords");
-      Long totalCount = (Long) q.setParameter("state", ContentState.NeedReview).uniqueResult();
       if (totalCount == null)
          return 0;
       return totalCount.intValue();

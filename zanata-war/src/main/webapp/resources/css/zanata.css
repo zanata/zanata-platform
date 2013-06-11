@@ -1102,6 +1102,42 @@ a.admin_link:hover {
     border:1px solid #990000;
     background-color: #F3F2F2;
 }
+
+.stats_container {
+    padding:8px;
+    border:1px dotted gray;
+    border-radius:3px;
+    margin: 5px;
+}
+
+.stats_label {
+    font-size: 14px;
+    font-weight: bold;
+    width:170px;
+    display:inline-block;
+    color:#0085CC;
+}
+
+.stats_value {
+    font-size: 16px;
+    font-weight: bold;
+    padding-left: 25px;
+    color:#C35817;
+}
+
+.stats_sub_container {
+    padding: 4px;
+}
+
+.stats_sub_container .stats_label{
+    font-size: 12px;
+    font-weight: normal;
+}
+
+.stats_sub_container .stats_value {
+    font-size: 14px;
+    font-weight: normal;
+}
 /* ------------------------ End Admin Page CSS --------------------------------------*/
 
 .content_box {

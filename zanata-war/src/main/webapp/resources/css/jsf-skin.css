@@ -214,38 +214,3 @@ div.rf-pp-cnt {
 }
 
 /* ====================== End Rich Dialogs =========================== */
-
-/* TODO Remove these as they no longer have any effect */
-/* Copy of Richfaces Simple toggle styles*/
-.rich-stglpanel-header {
-    background-image: none;
-    padding:10px 8px;
-    font-size:12px;
-    border-radius: 3px;
-    background-color: #461446;
-    color: white;
-    font-weight: bold;
-    font-family: Arial, Verdana, sans-serif;
-}
-
-.rich-stglpanel {
-    background-image: none;
-    padding: 2px 3px;
-    border-radius: 5px;
-    border:none;
-}
-
-.rich-stglpanel-body {
-    overflow: auto;
-    background:#EEE;
-}
-
-.rich-stglpanel-body .noBorderTable {
-    background:#FFFFFF;
-    box-shadow:none;
-}
-
-.rich-stglpanel-body .noBorderTable tr:hover {
-    background-color:inherit;
-}
-/* End of Richfaces Simple toggle styles */
