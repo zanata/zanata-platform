@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
@@ -31,7 +32,9 @@ import org.zanata.model.SimpleTargetContents;
 import org.zanata.model.SourceContents;
 import org.zanata.model.TargetContents;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -105,7 +108,9 @@ public class TMXStreamingOutputTest
                   ),
             new SimpleSourceContents(
                   "doc1:resId0",
-                  toMap(new SimpleTargetContents(fr, Approved, "targetFR0", "targetFR1")),
+                  toMap(new SimpleTargetContents(fr, Approved, "targetFR0", "targetFR1"),
+                        // NULL contents to be skipped:
+                        new SimpleTargetContents(de, Approved, "target\0DE0", "targetDE1")),
                   sourceLocale,
                   "source0", "source1"
                   ),
@@ -114,6 +119,13 @@ public class TMXStreamingOutputTest
                   toMap(new SimpleTargetContents(de, Approved, "TARGETde0", "TARGETde1")),
                   sourceLocale,
                   "SOURCE0", "SOURCE1"
+                  ),
+            new SimpleSourceContents(
+                  "doc1:resId2",
+                  toMap(new SimpleTargetContents(de, Approved, "TARGETde0", "TARGETde1")),
+                  sourceLocale,
+                  // NULL contents to be skipped:
+                  "SOURCE\00", "SOURCE1"
                   )).iterator();
    }
 

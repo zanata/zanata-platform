@@ -21,6 +21,7 @@
 
 package org.zanata.rest.service;
 
+import lombok.extern.slf4j.Slf4j;
 import net.sf.okapi.common.resource.ITextUnit;
 import net.sf.okapi.common.resource.TextFragment;
 import net.sf.okapi.common.resource.TextUnit;
@@ -35,6 +36,7 @@ import org.zanata.util.OkapiUtil;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
+@Slf4j
 public class ExportTUStrategy
 {
    private final LocaleId localeId;
@@ -59,6 +61,11 @@ public class ExportTUStrategy
       String tuid = tf.getQualifiedId();
       // Perhaps we could encode plurals using TMX attributes?
       String srcContent = tf.getContents().get(0);
+      if (srcContent.contains("\0"))
+      {
+         log.warn("illegal null character; discarding SourceContents with id="+tuid);
+         return;
+      }
 
       ITextUnit textUnit = new TextUnit(tuid, srcContent);
       textUnit.setName(tuid);
@@ -90,6 +97,11 @@ public class ExportTUStrategy
       if (tfTarget != null && tfTarget.getState().isTranslated())
       {
          String trgContent = tfTarget.getContents().get(0);
+         if (trgContent.contains("\0"))
+         {
+            log.warn("illegal null character; discarding TargetContents with sourceId="+textUnit.getId()+", locale="+tfTarget.getLocaleId());
+            return;
+         }
          net.sf.okapi.common.LocaleId locId = OkapiUtil.toOkapiLocale(tfTarget.getLocaleId());
          TextFragment target = new TextFragment(trgContent);
          textUnit.setTargetContent(locId, target);
