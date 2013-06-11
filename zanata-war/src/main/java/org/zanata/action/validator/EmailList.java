@@ -36,6 +36,6 @@ import javax.validation.Payload;
 public @interface EmailList
 {
    Class<?>[] groups() default {};
-   String message() default "{validator.emailList}";
+   String message() default "{javax.validation.constraints.EmailList.message}";
    Class<? extends Payload>[] payload() default {};
 }

@@ -34,7 +34,7 @@ import javax.validation.Payload;
 public @interface Url
 {
    Class<?>[] groups() default {};
-   String message() default "{validator.url}";
+   String message() default "{javax.validation.constraints.Url.message}";
    Class<? extends Payload>[] payload() default {};
    boolean canEndInSlash() default true;
 }

@@ -41,6 +41,6 @@ import javax.validation.Payload;
 public @interface Slug
 {
    Class<?>[] groups() default {};
-   String message() default "{validator.slug}";
+   String message() default "{javax.validation.constraints.Slug.message}";
    Class<? extends Payload>[] payload() default {};
 }
