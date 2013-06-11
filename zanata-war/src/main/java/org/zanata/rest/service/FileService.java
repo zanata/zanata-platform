@@ -302,8 +302,8 @@ public class FileService implements FileResource
          {
             throw new ChunkUploadException(Status.CONFLICT,
                   "MD5 hash \"" + uploadForm.getHash() +
-                  "\" sent with request does not match server-generated hash \"" + md5hash +
-                  "\". Aborted upload operation.");
+                  "\" sent with request does not match server-generated hash. " +
+                  "Aborted upload operation.");
          }
       }
       catch (NoSuchAlgorithmException e)
@@ -320,10 +320,9 @@ public class FileService implements FileResource
       virusScan(tempFile);
 
       HDocument document;
-      // FIXME get params from upload form when API updated
       Optional<String> params;
-//    params = Optional.fromNullable(Strings.emptyToNull(uploadForm.getAdapterParams()));
-//    if (!params.isPresent())
+      params = Optional.fromNullable(Strings.emptyToNull(uploadForm.getAdapterParams()));
+      if (!params.isPresent())
       {
          params = documentDAO.getAdapterParams(projectSlug, iterationSlug, docId);
       }
