@@ -27,25 +27,33 @@
         }
         function confirmEnabledChange(checkbox)
         {
+            var mssg = "#{messages['jsf.AreYouSureYouWishToDisableThisLanguage']}"
             if( checkbox.checked )
             {
-                return confirm("#{messages['jsf.AreYouSureYouWishToEnableThisLanguage']}");
+                mssg = "#{messages['jsf.AreYouSureYouWishToEnableThisLanguage']}"
             }
-            else
+
+            confirmed = confirm(mssg)
+            if( !confirmed )
             {
-                return confirm("#{messages['jsf.AreYouSureYouWishToDisableThisLanguage']}");
+                checkbox.checked = !checkbox.checked
             }
+            return confirmed
         }
         function confirmEnabledByDefaultChange(checkbox)
         {
+            var mssg = "#{messages['jsf.language.manager.DisableByDefaultConfirmation']}"
             if( checkbox.checked )
             {
-                return confirm("#{messages['jsf.language.manager.EnableByDefaultConfirmation']}");
+                mssg = "#{messages['jsf.language.manager.EnableByDefaultConfirmation']}"
             }
-            else
+
+            confirmed = confirm(mssg)
+            if( !confirmed )
             {
-                return confirm("#{messages['jsf.language.manager.DisableByDefaultConfirmation']}");
+                checkbox.checked = !checkbox.checked
             }
+            return confirmed
         }
       </script>
 			<h:form id="languageForm">
