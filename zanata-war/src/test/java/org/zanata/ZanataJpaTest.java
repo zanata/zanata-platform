@@ -9,11 +9,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.persister.collection.AbstractCollectionPersister;
 import org.hibernate.persister.entity.EntityPersister;
-import org.jboss.seam.contexts.TestLifecycle;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
-import org.jboss.seam.mock.MockHttpSession;
-import org.jboss.seam.servlet.ServletSessionMap;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeMethod;
@@ -55,6 +52,11 @@ public abstract class ZanataJpaTest
    protected EntityManager getEm()
    {
       return em;
+   }
+
+   protected EntityManagerFactory getEmf()
+   {
+      return emf;
    }
 
    protected Session getSession()

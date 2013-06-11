@@ -19,29 +19,30 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.zanata.model;
+package org.zanata.dao;
 
-import org.zanata.common.HasContents;
-import org.zanata.common.LocaleId;
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import org.hibernate.connection.DriverManagerConnectionProvider;
+import org.zanata.jdbc.ConnectionWrapper;
 
 /**
+ * This class wraps JDBC Connections/Statements/ResultSets to detect
+ * attempts to use mysql's streaming ResultSet feature.  It then watches
+ * for any usage which would exceed the limitations of mysql's streaming
+ * ResultSets, and throws an SQLException.  This enables us to catch
+ * these problems without having to test against mysql in our unit tests.
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public interface SourceContents extends HasContents
+public class WrappedConnectionProvider extends DriverManagerConnectionProvider
 {
-   public LocaleId getLocale();
-   public String getQualifiedId();
-   /**
-    * Gets the TargetContents for a single locale.
-    * Note that default implementation in HTextFlow requires a lot of database I/O
-    * @param localeId
-    * @return
-    */
-   public TargetContents getTargetContents(LocaleId localeId);
-   /**
-    * Gets the TargetContents for all available locales.
-    * @return
-    */
-   public Iterable<TargetContents> getAllTargetContents();
+   @Override
+   public Connection getConnection() throws SQLException
+   {
+      Connection connection = super.getConnection();
+      return ConnectionWrapper.wrap(connection);
+   }
+
 }

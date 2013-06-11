@@ -79,6 +79,11 @@
 								<f:param name="localeId" value="#{stats.locale}" />
 								<span class="icon-docs icon"/>
 							</s:link>
+			            <s:link id="exportTMXIterLink" styleClass="action_link"
+			                  value="#{messages['jsf.ExportTMXIter']}"
+			                  onclick="confirm('#{messages['jsf.ConfirmExportTMXIter']}')"
+			                  view="/rest/tm/projects/#{viewAllStatusAction.projectSlug}/iterations/#{viewAllStatusAction.iterationSlug}?locale=#{stats.locale}"
+			                  propagation="none"/>
                             <ui:remove>
 							<!--  <h:outputLink value="#{request.contextPath}/webtrans/Application.seam" styleClass="table_link">
 								<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
@@ -155,6 +160,12 @@
             <s:fragment rendered="#{s:hasPermission(viewAllStatusAction.projectIteration, 'update')}">
                 <a href="#" class="action_link" onclick="#{rich:component('versionSearchPanel')}.show()">#{messages['jsf.RequestToJoinVersionGroup']}</a>
             </s:fragment>
+			   <s:link id="exportTMXIterLink" styleClass="action_link"
+			         value="#{messages['jsf.ExportTMXIter']}"
+			         onclick="confirm('#{messages['jsf.ConfirmExportTMXIter']}')"
+			         view="/tm/projects/#{viewAllStatusAction.projectSlug}/iterations/#{viewAllStatusAction.iterationSlug}"
+			         propagation="none"/>
+
 		</rich:panel>
 
 		<rich:panel rendered="#{not viewAllStatusAction.projectIteration.groups.isEmpty()}">

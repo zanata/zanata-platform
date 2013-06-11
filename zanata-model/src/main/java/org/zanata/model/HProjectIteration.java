@@ -198,7 +198,7 @@ public class HProjectIteration extends SlugEntityBase implements Iterable<Docume
 
    @JoinTable(name = "HProjectIteration_Validation", joinColumns = @JoinColumn(name = "projectIterationId"))
    @Type(type = "text")
-   @CollectionOfElements(fetch = FetchType.EAGER)
+   @CollectionOfElements(fetch = FetchType.LAZY)
    @Column(name = "validation", nullable = false)
    public Set<String> getCustomizedValidations()
    {

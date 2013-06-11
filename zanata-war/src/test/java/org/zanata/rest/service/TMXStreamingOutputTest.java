@@ -1,6 +1,5 @@
 package org.zanata.rest.service;
 
-import static com.google.common.collect.Lists.*;
 import static org.custommonkey.xmlunit.XMLAssert.*;
 import static org.junit.Assert.assertTrue;
 import static org.zanata.common.ContentState.*;
@@ -8,9 +7,10 @@ import static org.zanata.common.ContentState.*;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
 import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.io.output.StringBuilderWriter;
@@ -26,13 +26,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import org.zanata.common.LocaleId;
-import org.zanata.model.DocumentWithId;
-import org.zanata.model.SimpleNamedDocument;
 import org.zanata.model.SimpleSourceContents;
 import org.zanata.model.SimpleTargetContents;
+import org.zanata.model.SourceContents;
 import org.zanata.model.TargetContents;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 public class TMXStreamingOutputTest 
@@ -48,11 +48,10 @@ public class TMXStreamingOutputTest
    @Test
    public void exportAllLocales() throws Exception
    {
-      ArrayList<DocumentWithId> docList = createTestDocs();
       LocaleId targetLocale = null;
-      StreamingOutput output = new TMXStreamingOutput(docList, targetLocale);
+      StreamingOutput output = new TMXStreamingOutput(createTestData(), targetLocale);
 
-      Document doc = writeToXml(output);
+      Document doc = writeToXmlWithValidation(output);
 
       assertContainsFrenchTUs(doc);
       assertContainsGermanTUs(doc);
@@ -61,11 +60,10 @@ public class TMXStreamingOutputTest
    @Test
    public void exportFrench() throws Exception
    {
-      ArrayList<DocumentWithId> docList = createTestDocs();
       LocaleId targetLocale = LocaleId.FR;
-      StreamingOutput output = new TMXStreamingOutput(docList, targetLocale);
+      StreamingOutput output = new TMXStreamingOutput(createTestData(), targetLocale);
 
-      Document doc = writeToXml(output);
+      Document doc = writeToXmlWithValidation(output);
 
       assertContainsFrenchTUs(doc);
       assertTUAbsent("doc1", "resId1", doc);
@@ -75,11 +73,10 @@ public class TMXStreamingOutputTest
    @Test
    public void exportGerman() throws Exception
    {
-      ArrayList<DocumentWithId> docList = createTestDocs();
       LocaleId targetLocale = LocaleId.DE;
-      StreamingOutput output = new TMXStreamingOutput(docList, targetLocale);
+      StreamingOutput output = new TMXStreamingOutput(createTestData(), targetLocale);
 
-      Document doc = writeToXml(output);
+      Document doc = writeToXmlWithValidation(output);
 
       assertContainsGermanTUs(doc);
       assertTUAbsent("doc0", "resId1", doc);
@@ -88,40 +85,36 @@ public class TMXStreamingOutputTest
       assertLangAbsent("fr", doc);
    }
 
-   private ArrayList<DocumentWithId> createTestDocs()
+   private @Nonnull Iterator<SourceContents> createTestData()
    {
       LocaleId fr = LocaleId.FR;
       LocaleId de = LocaleId.DE;
-      DocumentWithId doc0 = new SimpleNamedDocument(
-            sourceLocale,
-            "doc0",
+      return Lists.<SourceContents>newArrayList(
             new SimpleSourceContents(
-                  "resId0",
+                  "doc0:resId0",
                   toMap(new SimpleTargetContents(fr, Approved, "targetFR0", "targetFR1"),
                         new SimpleTargetContents(de, Approved, "targetDE0", "targetDE1")),
-                        "source0", "source1"
+                  sourceLocale,
+                  "source0", "source1"
                   ),
             new SimpleSourceContents(
-                  "resId1",
+                  "doc0:resId1",
                   toMap(new SimpleTargetContents(fr, Approved, "TARGETfr0", "TARGETfr1")),
-                        "SOURCE0", "SOURCE1"
-                  )
-            );
-      DocumentWithId doc1 = new SimpleNamedDocument(
-            sourceLocale,
-            "doc1",
-            new SimpleSourceContents(
-                  "resId0",
-                  toMap(new SimpleTargetContents(fr, Approved, "targetFR0", "targetFR1")),
-                        "source0", "source1"
+                  sourceLocale,
+                  "SOURCE0", "SOURCE1"
                   ),
-                  new SimpleSourceContents(
-                        "resId1",
-                        toMap(new SimpleTargetContents(de, Approved, "TARGETde0", "TARGETde1")),
-                              "SOURCE0", "SOURCE1"
-                        )
-            );
-      return newArrayList(doc0, doc1);
+            new SimpleSourceContents(
+                  "doc1:resId0",
+                  toMap(new SimpleTargetContents(fr, Approved, "targetFR0", "targetFR1")),
+                  sourceLocale,
+                  "source0", "source1"
+                  ),
+            new SimpleSourceContents(
+                  "doc1:resId1",
+                  toMap(new SimpleTargetContents(de, Approved, "TARGETde0", "TARGETde1")),
+                  sourceLocale,
+                  "SOURCE0", "SOURCE1"
+                  )).iterator();
    }
 
    private Map<LocaleId, TargetContents> toMap(SimpleTargetContents... targetContents)
@@ -184,7 +177,7 @@ public class TMXStreamingOutputTest
       assertXpathNotExists("//tuv[@xml:lang='"+lang+"']", doc);
    }
 
-   private Document writeToXml(StreamingOutput output) throws IOException, SAXException
+   private Document writeToXmlWithValidation(StreamingOutput output) throws IOException, SAXException
    {
       StringBuilderWriter sbWriter = new StringBuilderWriter();
       WriterOutputStream writerOutputStream = new WriterOutputStream(sbWriter);

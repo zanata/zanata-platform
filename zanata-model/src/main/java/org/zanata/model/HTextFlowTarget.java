@@ -162,7 +162,7 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
       return textFlowRevision;
    }
 
-   @ManyToOne(cascade = { CascadeType.MERGE })
+   @ManyToOne(cascade = { CascadeType.MERGE }, fetch = FetchType.LAZY)
    @JoinColumn(name = "last_modified_by_id", nullable = true)
    @Override
    public HPerson getLastModifiedBy()
@@ -176,7 +176,7 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    }
 
    @Override
-   @ManyToOne(cascade = { CascadeType.MERGE })
+   @ManyToOne(cascade = { CascadeType.MERGE }, fetch = FetchType.LAZY)
    @JoinColumn(name = "translated_by_id", nullable = true)
    public HPerson getTranslator()
    {
@@ -184,7 +184,7 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    }
 
    @Override
-   @ManyToOne(cascade = { CascadeType.MERGE })
+   @ManyToOne(cascade = { CascadeType.MERGE }, fetch = FetchType.LAZY)
    @JoinColumn(name = "reviewed_by_id", nullable = true)
    public HPerson getReviewer()
    {

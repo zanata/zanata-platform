@@ -67,6 +67,9 @@ public class HPerson extends ModelEntityBase implements Serializable
 
    private Set<HLocaleMember> languageTeamMemberships;
 
+   public HPerson()
+   {
+   }
 
    @NotEmpty
    @Length(min = 2, max = 80)

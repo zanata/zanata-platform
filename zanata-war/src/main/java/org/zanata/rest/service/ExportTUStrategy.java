@@ -21,12 +21,10 @@
 
 package org.zanata.rest.service;
 
-import net.sf.okapi.common.filterwriter.TMXWriter;
 import net.sf.okapi.common.resource.ITextUnit;
 import net.sf.okapi.common.resource.TextFragment;
 import net.sf.okapi.common.resource.TextUnit;
 
-import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.model.SourceContents;
 import org.zanata.model.TargetContents;
@@ -56,14 +54,13 @@ public class ExportTUStrategy
     * @param tuidPrefix String to be prepended to all resIds when generating tuids
     * @param tf the SourceContents (TextFlow) whose contents and translations are to be exported
     */
-   public void exportTranslationUnit(ZanataTMXWriter tmxWriter, String tuidPrefix, SourceContents tf, net.sf.okapi.common.LocaleId sourceLocaleId)
+   public void exportTranslationUnit(ZanataTMXWriter tmxWriter, SourceContents tf, net.sf.okapi.common.LocaleId sourceLocaleId)
    {
-      String resId = tf.getResId();
-      String tuid = tuidPrefix + resId;
+      String tuid = tf.getQualifiedId();
       // Perhaps we could encode plurals using TMX attributes?
       String srcContent = tf.getContents().get(0);
 
-      ITextUnit textUnit = new TextUnit(resId, srcContent);
+      ITextUnit textUnit = new TextUnit(tuid, srcContent);
       textUnit.setName(tuid);
       if (localeId != null)
       {
@@ -90,8 +87,7 @@ public class ExportTUStrategy
 
    private void addTargetToTextUnit(ITextUnit textUnit, TargetContents tfTarget)
    {
-      // TODO handle ContentState.Reviewed
-      if (tfTarget != null && tfTarget.getState() == ContentState.Approved)
+      if (tfTarget != null && tfTarget.getState().isTranslated())
       {
          String trgContent = tfTarget.getContents().get(0);
          net.sf.okapi.common.LocaleId locId = OkapiUtil.toOkapiLocale(tfTarget.getLocaleId());

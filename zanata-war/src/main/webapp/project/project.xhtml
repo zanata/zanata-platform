@@ -135,6 +135,11 @@
     <s:link styleClass="action_link" rendered="#{s:hasPermission(projectHome.instance, 'update')}" view="/project/copy_trans_options.xhtml" value="#{messages['jsf.project.CopyTransOpts.title']}" title="#{messages['jsf.project.CopyTransOpts.tooltip']}" propagation="none">
         <f:param name="projectSlug" value="#{projectHome.slug}"/>
     </s:link>
+    <s:link id="exportTMXProjectLink" styleClass="action_link"
+	      value="#{messages['jsf.ExportTMXProject']}"
+	      onclick="confirm('#{messages['jsf.ConfirmExportTMXProject']}')"
+	      view="/rest/tm/projects/#{projectHome.slug}"
+	      propagation="none"/>
 
   </rich:panel>
 

@@ -25,6 +25,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 import org.zanata.common.LocaleId;
 
 import com.google.common.collect.ImmutableList;
@@ -38,31 +40,36 @@ import lombok.Data;
 @Data
 public class SimpleSourceContents implements SourceContents
 {
-   private final String resId;
-   private List<String> contents;
+   private final String qualifiedId;
    private final Map<LocaleId, TargetContents> targets;
+   private final LocaleId locale;
+   private List<String> contents;
 
-   public SimpleSourceContents(String resId,
+   public SimpleSourceContents(String qualifiedId,
          Map<LocaleId, TargetContents> targets,
+         LocaleId locale,
          List<String> contents)
    {
-      this.resId = resId;
+      this.qualifiedId = qualifiedId;
       this.targets = targets;
+      this.locale = locale;
       this.contents = contents;
    }
 
-   public SimpleSourceContents(String resId,
-         String content0,
+   public SimpleSourceContents(String qualifiedId,
+         LocaleId locale,
+         @Nonnull String content0,
          Map<LocaleId, TargetContents> targets)
    {
-      this(resId, targets, ImmutableList.of(content0));
+      this(qualifiedId, targets, locale, ImmutableList.of(content0));
    }
 
-   public SimpleSourceContents(String resId,
+   public SimpleSourceContents(String qualifiedId,
          Map<LocaleId, TargetContents> targets,
-         String... contents)
+         LocaleId locale,
+         @Nonnull String... contents)
    {
-      this(resId, targets, ImmutableList.copyOf(contents));
+      this(qualifiedId, targets, locale, ImmutableList.copyOf(contents));
    }
 
    // Lombok won't generate this because of the other setContents method

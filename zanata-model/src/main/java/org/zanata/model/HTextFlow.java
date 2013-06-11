@@ -170,6 +170,13 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
       this.id = id;
    }
 
+   @Transient
+   @Override
+   public LocaleId getLocale()
+   {
+      return getDocument().getSourceLocaleId();
+   }
+
    // we can't use @NotNull because the position isn't set until the object has
    // been persisted
    @Column(insertable = false, updatable = false, nullable = false)
@@ -180,12 +187,21 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
       return pos;
    }
 
+   @Transient
+   @Override
+   public String getQualifiedId()
+   {
+      HDocument doc = getDocument();
+      HProjectIteration iter = doc.getProjectIteration();
+      HProject proj = iter.getProject();
+      return proj.getSlug()+":"+iter.getSlug()+":"+doc.getDocId()+":"+getResId();
+   }
+
    // TODO make this case sensitive
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
    @Length(max = 255)
    @NotEmpty
-   @Override
    public String getResId()
    {
       return resId;

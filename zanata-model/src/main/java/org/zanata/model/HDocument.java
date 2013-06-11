@@ -200,7 +200,7 @@ public class HDocument extends ModelEntityBase implements DocumentWithId, IDocum
       return projectIteration;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "last_modified_by_id", nullable = true)
    @Override
    public HPerson getLastModifiedBy()

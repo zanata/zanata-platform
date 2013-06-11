@@ -21,10 +21,12 @@
 
 package org.zanata.rest.service;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.util.Iterator;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -33,15 +35,11 @@ import javax.ws.rs.core.StreamingOutput;
 
 import lombok.Cleanup;
 import net.sf.okapi.common.XMLWriter;
-import net.sf.okapi.common.filterwriter.TMXWriter;
 
 import org.zanata.common.LocaleId;
-import org.zanata.model.DocumentWithId;
 import org.zanata.model.SourceContents;
 import org.zanata.util.OkapiUtil;
 import org.zanata.util.VersionUtility;
-
-import com.google.common.collect.Iterables;
 
 /**
  * Exports a collection of NamedDocument (ie a project iteration) to an
@@ -54,19 +52,20 @@ public class TMXStreamingOutput implements StreamingOutput
    private static final String creationTool = "Zanata " + TMXStreamingOutput.class.getSimpleName();
    private static final String creationToolVersion =
          VersionUtility.getVersionInfo(TMXStreamingOutput.class).getVersionNo();
-   private final @Nonnull Iterable<DocumentWithId> documents;
+   private final @Nonnull Iterator<? extends SourceContents> tuIter;
    private final @Nullable LocaleId targetLocale;
    private final ExportTUStrategy exportTUStrategy;
 
-   public TMXStreamingOutput(@Nonnull Iterable<DocumentWithId> documents,
+   public TMXStreamingOutput(@Nonnull Iterator<? extends SourceContents> tuIter,
          @Nullable LocaleId targetLocale)
    {
-      this.documents = documents;
+      this.tuIter = tuIter;
       this.targetLocale = targetLocale;
       this.exportTUStrategy = new ExportTUStrategy(targetLocale);
    }
 
-   net.sf.okapi.common.LocaleId toOkapiLocaleOrEmpty(@Nullable LocaleId locale)
+   @SuppressWarnings("null")
+   private @Nonnull net.sf.okapi.common.LocaleId toOkapiLocaleOrEmpty(@Nullable LocaleId locale)
    {
       if (locale == null)
       {
@@ -80,37 +79,38 @@ public class TMXStreamingOutput implements StreamingOutput
    @Override
    public void write(OutputStream output) throws IOException, WebApplicationException
    {
-      @Cleanup
-      Writer writer = new PrintWriter(output);
-      @Cleanup
-      XMLWriter xmlWriter = new XMLWriter(writer);
-      @Cleanup
-      ZanataTMXWriter tmxWriter = new ZanataTMXWriter(xmlWriter);
-      String segType = "block"; // TODO other segmentation types
-      String dataType = "unknown"; // TODO track data type metadata throughout the system
-
-      net.sf.okapi.common.LocaleId allLocale = new net.sf.okapi.common.LocaleId("*all*", false);
-
-      tmxWriter.writeStartDocument(
-            allLocale,
-            toOkapiLocaleOrEmpty(targetLocale),
-            creationTool, creationToolVersion,
-            segType, null, dataType);
-
-      for (DocumentWithId doc : documents)
+      try
       {
-         exportDocument(tmxWriter, doc);
+         @Cleanup
+         Writer writer = new PrintWriter(output);
+         @Cleanup
+         XMLWriter xmlWriter = new XMLWriter(writer);
+         @Cleanup
+         ZanataTMXWriter tmxWriter = new ZanataTMXWriter(xmlWriter);
+         String segType = "block"; // TODO other segmentation types
+         String dataType = "unknown"; // TODO track data type metadata throughout the system
+   
+         net.sf.okapi.common.LocaleId allLocale = new net.sf.okapi.common.LocaleId("*all*", false);
+   
+         tmxWriter.writeStartDocument(
+               allLocale,
+               toOkapiLocaleOrEmpty(targetLocale),
+               creationTool, creationToolVersion,
+               segType, null, dataType);
+   
+         while (tuIter.hasNext())
+         {
+            SourceContents tu = tuIter.next();
+            exportTUStrategy.exportTranslationUnit(tmxWriter, tu, toOkapiLocaleOrEmpty(tu.getLocale()));
+         }
+         tmxWriter.writeEndDocument();
       }
-      tmxWriter.writeEndDocument();
-   }
-
-   private void exportDocument(ZanataTMXWriter tmxWriter, DocumentWithId doc)
-   {
-      String tuidPrefix = doc.getQualifiedDocId() + ":";
-      // TODO option to export obsolete TFs to TMX?
-      for (SourceContents tf : doc)
+      finally
       {
-         exportTUStrategy.exportTranslationUnit(tmxWriter, tuidPrefix, tf, toOkapiLocaleOrEmpty(doc.getSourceLocaleId()));
+         if (tuIter instanceof Closeable)
+         {
+            ((Closeable) tuIter).close();
+         }
       }
    }
 
