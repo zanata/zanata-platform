@@ -273,6 +273,12 @@
     <action execute="#{breadcrumbs.clear}"/>
     <action execute="#{breadcrumbs.addLocation('/admin/home.xhtml', messages['jsf.Administration'])}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.ManageLanguage'])}"/>
+
+      <navigation from-action="#{languageSearchAction.manageMembers(language.localeId.id)}">
+          <redirect view-id="/language/language.xhtml">
+              <param name="id" value="#{language.localeId.id}" />
+          </redirect>
+      </navigation>
   </page>
 
   <page view-id="/admin/rolerules.xhtml">
