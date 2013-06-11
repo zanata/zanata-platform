@@ -52,10 +52,7 @@
                     <f:facet name="header">#{messages['jsf.Coordinator']}</f:facet>
                     <h:selectBooleanCheckbox value="#{member.coordinator}"
                         rendered="#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}">
-                        <a4j:ajax event="click"
-                            render="threads"
-                            execute="@this"
-                            action="#{languageTeamAction.saveTeamCoordinator(member)}"/>
+                        <a4j:ajax event="change" render="threads" execute="@this" listener="#{languageTeamAction.saveTeamCoordinator(member)}"/>
                     </h:selectBooleanCheckbox>
                     <h:outputText rendered="#{not s:hasPermission(languageTeamAction.locale, 'manage-language-team') and member.coordinator}">
                         <span class="icon-ok checkmark"/>

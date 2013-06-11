@@ -95,7 +95,7 @@
   </s:fragment>
 
 
-    <rich:popupPanel id="versionAddPanel" width="530" height="450" rendered="#{identity.loggedIn and s:hasPermission(versionGroupHome.instance, 'update')}">
+    <rich:popupPanel id="versionAddPanel" width="530" height="460" rendered="#{identity.loggedIn and s:hasPermission(versionGroupHome.instance, 'update')}">
         <f:subview id="projectVersionSearch">
             <h:form id="searchForm">
                 <h1>#{messages['jsf.groups.FindProjectVersion']}</h1>
@@ -130,7 +130,7 @@
                                 <f:facet name="header">
                                     <h:panelGroup>
                                         <h:selectBooleanCheckbox title="#{messages['jsf.ManageSearch.SelectAll']}" value="#{versionGroupAction.selectAll}">
-                                            <a4j:ajax event="change" render="searchResults" action="#{versionGroupAction.selectAll()}"/>
+                                            <a4j:ajax event="change" render="searchResults" listener="#{versionGroupAction.selectAll()}"/>
                                         </h:selectBooleanCheckbox>
                                     </h:panelGroup>
                                 </f:facet>
