@@ -21,6 +21,9 @@
 package org.zanata.action;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.jboss.seam.ScopeType;
@@ -37,6 +40,7 @@ import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
+import org.zanata.dao.LocaleMemberDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
@@ -56,6 +60,9 @@ public class LanguageTeamAction implements Serializable
    
    @In
    private LocaleDAO localeDAO;
+
+   @In
+   private LocaleMemberDAO localeMemberDAO;
    
    @In
    private PersonDAO personDAO;
@@ -118,6 +125,11 @@ public class LanguageTeamAction implements Serializable
          locale.getMembers();
       }
       return locale;
+   }
+
+   public List<HLocaleMember> getLocaleMembers()
+   {
+      return localeMemberDAO.findAllByLocale( new LocaleId(language) );
    }
 
    @Transactional

@@ -63,7 +63,7 @@ public class LanguageSearchAction implements Serializable
    
    public String manageMembers(HLocale zanataLocalePair)
    {
-      return "/language/view/" + zanataLocalePair.getLocaleId().getId();
+      return "/language/language.seam?id=" + zanataLocalePair.getLocaleId().getId();
    }
 
    public void selectedLocaleChanged()

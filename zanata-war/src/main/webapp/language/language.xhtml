@@ -30,7 +30,7 @@
                 <p>#{messages['jsf.SizeMembers']}</p>
                 <rich:dataTable
                     id="threads"
-                    value="#{languageTeamAction.locale.members.toArray()}"
+                    value="#{languageTeamAction.localeMembers}"
                     var="member" 
                     rendered="#{not empty languageTeamAction.locale.members}"
                     sortMode="single">
@@ -55,7 +55,7 @@
                         <a4j:ajax event="click"
                             render="threads"
                             execute="@this"
-                            action="#{languageTeamAction.saveTeamCoordinator(member)}"/>
+                            listener="#{languageTeamAction.saveTeamCoordinator(member)}"/>
                     </h:selectBooleanCheckbox>
                     <h:outputText rendered="#{not s:hasPermission(languageTeamAction.locale, 'manage-language-team') and member.coordinator}">
                         <span class="icon-ok checkmark"/>
