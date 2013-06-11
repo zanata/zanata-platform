@@ -61,9 +61,9 @@ public class LanguageSearchAction implements Serializable
       return selectedLanguage;
    }
    
-   public String manageMembers(HLocale zanataLocalePair)
+   public String manageMembers(String locale)
    {
-      return "/language/language.seam?id=" + zanataLocalePair.getLocaleId().getId();
+      return "";
    }
 
    public void selectedLocaleChanged()

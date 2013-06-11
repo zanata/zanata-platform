@@ -4,6 +4,7 @@
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:rich="http://richfaces.org/rich"
+    xmlns:a4j="http://richfaces.org/a4j"
     xmlns:s="http://jboss.org/schema/seam/taglib">
 
   <ui:composition template="../WEB-INF/layout/template.xhtml">
@@ -15,9 +16,11 @@
         <rich:panel>
           <f:facet name="header">#{messages['jsf.AccountDetails']}</f:facet>
 
-          <s:decorate id="usernameField" template="../WEB-INF/layout/edit.xhtml">
+          <s:decorate id="usernameField" template="../WEB-INF/layout/edit.xhtml" enclose="true">
             <ui:define name="label">#{messages['jsf.Username']}</ui:define>
-            <h:inputText id="username" value="#{userAction.username}" readonly="#{not s:hasRole('admin')}"/>
+            <h:inputText id="username" value="#{userAction.username}" readonly="#{not s:hasRole('admin')}" required="true">
+                <a4j:ajax event="blur" render="usernameField" />
+            </h:inputText>
           </s:decorate>
           <s:decorate id="emailField" template="../WEB-INF/layout/edit.xhtml">
             <ui:define name="label">#{messages['jsf.Email']}</ui:define>

@@ -27,10 +27,12 @@
            	</s:span>
        </s:decorate>
 
-        <s:decorate id="nameField" template="edit.xhtml">
+        <s:decorate id="nameField" template="edit.xhtml" enclose="true">
             <ui:define name="label">#{messages['jsf.Name']}</ui:define>
             <h:inputText id="name" required="true"
-                         value="#{projectHome.instance.name}"/>
+                         value="#{projectHome.instance.name}">
+                <a4j:ajax event="blur" render="nameField" execute="@this"/>
+            </h:inputText>
         </s:decorate>
 
         <s:decorate id="descriptionField" template="edit.xhtml">

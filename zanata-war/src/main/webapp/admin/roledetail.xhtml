@@ -4,6 +4,7 @@
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:rich="http://richfaces.org/rich"
+    xmlns:a4j="http://richfaces.org/a4j"
     xmlns:s="http://jboss.org/schema/seam/taglib">
 
   <ui:composition template="../WEB-INF/layout/template.xhtml">
@@ -15,9 +16,11 @@
         <rich:panel>
           <f:facet name="header">#{messages['jsf.RoleDetails']}</f:facet>
 
-          <s:decorate id="roleField" template="../WEB-INF/layout/edit.xhtml">
+          <s:decorate id="roleField" template="../WEB-INF/layout/edit.xhtml" enclose="true">
             <ui:define name="label">#{messages['jsf.Role']}</ui:define>
-            <h:inputText id="role" value="#{roleAction.role}" readonly="#{identityManager.userExists(roleAction.role)}"/>
+            <h:inputText id="role" value="#{roleAction.role}" readonly="#{identityManager.userExists(roleAction.role)}" required="true">
+                <a4j:ajax event="blur" render="roleField" />
+            </h:inputText>
           </s:decorate>
 
           <s:decorate id="groupsField" template="../WEB-INF/layout/edit.xhtml">
