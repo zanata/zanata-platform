@@ -29,6 +29,8 @@ import java.net.URI;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -80,6 +82,8 @@ public class FileServiceTest
 
    @Mock private HProject project;
    @Mock private HProjectIteration projectIteration;
+
+   @Captor private ArgumentCaptor<Optional<String>> paramCaptor;
 
    private FileResource fileService;
 
@@ -247,6 +251,22 @@ public class FileServiceTest
       assertThat(chunkResponse.getErrorMessage(), is(nullValue()));
    }
 
+   public void usesGivenParameters() throws IOException
+   {
+      MockConfig conf = defaultUpload().build();
+      mockRequiredServices(conf);
+      fileService.uploadSourceFile(conf.projectSlug, conf.versionSlug, conf.docId, conf.uploadForm);
+      assertThat(paramCaptor.getValue().get(), is(conf.params));
+   }
+
+   public void fallsBackOnStoredParameters() throws IOException
+   {
+      MockConfig conf = defaultUpload().params(null).build();
+      mockRequiredServices(conf);
+      fileService.uploadSourceFile(conf.projectSlug, conf.versionSlug, conf.docId, conf.uploadForm);
+      assertThat(paramCaptor.getValue().get(), is(conf.storedParams));
+   }
+
    private static void assertErrorResponse(Response response, Status errorStatus, String errorMessage)
    {
       assertThat(Status.fromStatusCode(response.getStatus()), is(errorStatus));
@@ -268,13 +288,15 @@ public class FileServiceTest
       when(identity.getCredentials()).thenReturn(creds);
       File someFile = File.createTempFile("tests", "something");
       when(translationFileService.persistToTempFile(Matchers.<InputStream>any())).thenReturn(someFile);
+      when(documentDAO.getAdapterParams(conf.projectSlug, conf.versionSlug, conf.docId))
+            .thenReturn(Optional.fromNullable(conf.storedParams));
       when(documentDAO.addRawDocument(Matchers.<HDocument>any(), Matchers.<HRawDocument>any()))
             .thenReturn(new HRawDocument());
       when(documentDAO.getByProjectIterationAndDocId(conf.projectSlug, conf.versionSlug,
             conf.docId)).thenReturn(conf.existingDocument);
       Resource document = new Resource();
       when(translationFileService.parseUpdatedAdapterDocumentFile(
-            Matchers.<URI>any(), eq(conf.docId), eq(conf.fileType), eq(Optional.of(conf.params))))
+            Matchers.<URI>any(), eq(conf.docId), eq(conf.fileType), paramCaptor.capture()))
             .thenReturn(document);
       when(documentService.saveDocument(eq(conf.projectSlug), eq(conf.versionSlug), Matchers.<Resource>any(),
             Matchers.anySet(), Matchers.anyBoolean()))
@@ -323,7 +345,7 @@ public class FileServiceTest
       // or just a string
       public final InputStream fileStream;
       public final String hash;
-      public final String params;
+      public final String params, storedParams;
 
       public final DocumentFileUploadForm uploadForm;
 
@@ -349,6 +371,7 @@ public class FileServiceTest
          fileStream = builder.fileStream;
          hash = builder.hash;
          params = builder.params;
+         storedParams = builder.storedParams;
 
          uploadForm = new DocumentFileUploadForm();
          uploadForm.setFileType(fileType);
@@ -374,7 +397,7 @@ public class FileServiceTest
          private long size;
          private InputStream fileStream;
          private String hash;
-         private String params;
+         private String params, storedParams;
          public HDocument existingDocument;
          private boolean hasImportTemplatePermission, plaintextAdapterAvailable;
 
@@ -438,6 +461,11 @@ public class FileServiceTest
             this.params = params;
             return this;
          }
+         public Builder storedParams(String storedParams)
+         {
+            this.storedParams = storedParams;
+            return this;
+         }
          public Builder existingDocument(HDocument document)
          {
             this.existingDocument = document;
@@ -469,6 +497,7 @@ public class FileServiceTest
             fileStream = new ByteArrayInputStream(basicDocumentContent.getBytes());
             hash = hashOfBasicDocumentContent;
             params = "params";
+            storedParams = "stored params";
 
             existingDocument = null;
 
