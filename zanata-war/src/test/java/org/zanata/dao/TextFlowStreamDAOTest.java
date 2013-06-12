@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
 
+import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
 
 import org.dbunit.operation.DatabaseOperation;
@@ -23,12 +24,10 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
-import org.zanata.jdbc.ConnectionWrapper;
+import org.zanata.jdbc.StreamingResultSetSQLException;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
-import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.TargetContents;
 
 @Test(groups = { "jpa-tests" })
 @Slf4j
@@ -61,6 +60,7 @@ public class TextFlowStreamDAOTest extends ZanataDbunitJpaTest
    @Test
    public void testWrapperWithNestedExecute()
    {
+      @Cleanup
       ScrollableResults scroll1 = streamQuery("from HTextFlow");
       try
       {
@@ -77,51 +77,50 @@ public class TextFlowStreamDAOTest extends ZanataDbunitJpaTest
       }
       catch (JDBCException e)
       {
-         Assert.assertEquals(e.getSQLException().getMessage(), ConnectionWrapper.CONCURRENT_RESULTSET);
-      }
-      finally
-      {
-         scroll1.close();
+         if (!(e.getSQLException() instanceof StreamingResultSetSQLException))
+         {
+            throw e;
+         }
       }
    }
 
    @Test
    public void testWrapperWithNestedStreaming()
    {
+      @Cleanup
       ScrollableResults scroll1 = streamQuery("from HTextFlow");
       try
       {
+         @Cleanup
          ScrollableResults scroll2 = streamQuery("from HTextFlowTarget");
-         scroll2.close();
          Assert.fail("Failed to detect concurrent ResultSet - is WrappedConnectionProvider enabled?");
       }
       catch (JDBCException e)
       {
-         Assert.assertEquals(e.getSQLException().getMessage(), ConnectionWrapper.CONCURRENT_RESULTSET);
-      }
-      finally
-      {
-         scroll1.close();
+         if (!(e.getSQLException() instanceof StreamingResultSetSQLException))
+         {
+            throw e;
+         }
       }
    }
 
    @Test
    public void testWrapperWithNestedResults()
    {
+      @Cleanup
       ScrollableResults scroll1 = streamQuery("from HTextFlow");
       try
       {
+         @Cleanup
          ScrollableResults scroll2 = scrollQuery("from HTextFlowTarget");
-         scroll2.close();
          Assert.fail("Failed to detect concurrent ResultSet - is WrappedConnectionProvider enabled?");
       }
       catch (JDBCException e)
       {
-         Assert.assertEquals(e.getSQLException().getMessage(), ConnectionWrapper.CONCURRENT_RESULTSET);
-      }
-      finally
-      {
-         scroll1.close();
+         if (!(e.getSQLException() instanceof StreamingResultSetSQLException))
+         {
+            throw e;
+         }
       }
    }
 

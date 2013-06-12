@@ -96,7 +96,7 @@ public class ConnectionWrapper implements InvocationHandler
    {
       if (streamingResultSetOpen)
       {
-         throw new SQLException(CONCURRENT_RESULTSET);
+         throw new StreamingResultSetSQLException(CONCURRENT_RESULTSET);
       }
    }
 
@@ -104,7 +104,7 @@ public class ConnectionWrapper implements InvocationHandler
    {
       if (streamingResultSetOpen)
       {
-         throw new SQLException(CONCURRENT_RESULTSET);
+         throw new StreamingResultSetSQLException(CONCURRENT_RESULTSET);
       }
       ++resultSetsOpen;
    }
@@ -113,7 +113,7 @@ public class ConnectionWrapper implements InvocationHandler
    {
       if (streamingResultSetOpen || resultSetsOpen != 0)
       {
-         throw new SQLException(CONCURRENT_RESULTSET);
+         throw new StreamingResultSetSQLException(CONCURRENT_RESULTSET);
       }
       streamingResultSetOpen = true;
    }
