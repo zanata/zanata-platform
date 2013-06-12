@@ -84,6 +84,7 @@ public class FileServiceTest
    @Mock private HProjectIteration projectIteration;
 
    @Captor private ArgumentCaptor<Optional<String>> paramCaptor;
+   @Captor private ArgumentCaptor<HRawDocument> persistedRawDocument;
 
    private FileResource fileService;
 
@@ -267,6 +268,14 @@ public class FileServiceTest
       assertThat(paramCaptor.getValue().get(), is(conf.storedParams));
    }
 
+   public void uploadParametersAreStored() throws IOException
+   {
+      MockConfig conf = defaultUpload().build();
+      mockRequiredServices(conf);
+      fileService.uploadSourceFile(conf.projectSlug, conf.versionSlug, conf.docId, conf.uploadForm);
+      assertThat(persistedRawDocument.getValue().getAdapterParameters(), is(conf.params));
+   }
+
    private static void assertErrorResponse(Response response, Status errorStatus, String errorMessage)
    {
       assertThat(Status.fromStatusCode(response.getStatus()), is(errorStatus));
@@ -290,7 +299,7 @@ public class FileServiceTest
       when(translationFileService.persistToTempFile(Matchers.<InputStream>any())).thenReturn(someFile);
       when(documentDAO.getAdapterParams(conf.projectSlug, conf.versionSlug, conf.docId))
             .thenReturn(Optional.fromNullable(conf.storedParams));
-      when(documentDAO.addRawDocument(Matchers.<HDocument>any(), Matchers.<HRawDocument>any()))
+      when(documentDAO.addRawDocument(Matchers.<HDocument>any(), persistedRawDocument.capture()))
             .thenReturn(new HRawDocument());
       when(documentDAO.getByProjectIterationAndDocId(conf.projectSlug, conf.versionSlug,
             conf.docId)).thenReturn(conf.existingDocument);
