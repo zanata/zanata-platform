@@ -276,6 +276,14 @@ public class FileServiceTest
       assertThat(persistedRawDocument.getValue().getAdapterParameters(), is(conf.params));
    }
 
+   public void storedParametersNotOverwrittenWithEmpty() throws IOException
+   {
+      MockConfig conf = defaultUpload().params("").build();
+      mockRequiredServices(conf);
+      fileService.uploadSourceFile(conf.projectSlug, conf.versionSlug, conf.docId, conf.uploadForm);
+      assertThat(persistedRawDocument.getValue().getAdapterParameters(), is(conf.storedParams));
+   }
+
    private static void assertErrorResponse(Response response, Status errorStatus, String errorMessage)
    {
       assertThat(Status.fromStatusCode(response.getStatus()), is(errorStatus));
