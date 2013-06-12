@@ -57,7 +57,7 @@ public class TextFlowStreamDAOTest extends ZanataDbunitJpaTest
       projectIterDao = new ProjectIterationDAO(session);
    }
 
-   @Test
+   @Test(enabled=false)
    public void testWrapperWithNestedExecute()
    {
       @Cleanup
@@ -84,7 +84,7 @@ public class TextFlowStreamDAOTest extends ZanataDbunitJpaTest
       }
    }
 
-   @Test
+   @Test(enabled=false)
    public void testWrapperWithNestedStreaming()
    {
       @Cleanup
@@ -104,7 +104,7 @@ public class TextFlowStreamDAOTest extends ZanataDbunitJpaTest
       }
    }
 
-   @Test
+   @Test(enabled=false)
    public void testWrapperWithNestedResults()
    {
       @Cleanup
