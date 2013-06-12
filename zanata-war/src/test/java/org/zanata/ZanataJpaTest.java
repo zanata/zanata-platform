@@ -1,23 +1,18 @@
 package org.zanata;
 
-import java.util.Map;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.persister.collection.AbstractCollectionPersister;
 import org.hibernate.persister.entity.EntityPersister;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Listeners;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 import org.zanata.testng.TestMethodListener;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import java.util.Map;
 
 @Listeners(TestMethodListener.class)
 @Test(groups = { "jpa-tests" })
@@ -46,7 +41,7 @@ public abstract class ZanataJpaTest
       log.debug("Shutting down EM");
       clearHibernateSecondLevelCache();
       em.getTransaction().rollback();
-      em = null;
+      em.close();
    }
 
    protected EntityManager getEm()
@@ -83,10 +78,10 @@ public abstract class ZanataJpaTest
       emf.close();
       emf = null;
    }
-   
+
    /**
-    * Commits the changes on the current session and starts a new one.
-    * This method is useful whenever multi-session tests are needed.
+    * Commits the changes on the current session and starts a new one. This
+    * method is useful whenever multi-session tests are needed.
     * 
     * @return The newly started session
     */
@@ -98,10 +93,10 @@ public abstract class ZanataJpaTest
    }
 
    /**
-    * This method is used to test multiple Entity Managers (or hibernate sessions)
-    * working together simultaneously. Use {@link org.zanata.ZanataJpaTest#getEm()}
-    * for all other tests.
-    *
+    * This method is used to test multiple Entity Managers (or hibernate
+    * sessions) working together simultaneously. Use
+    * {@link org.zanata.ZanataJpaTest#getEm()} for all other tests.
+    * 
     * @return A new instance of an entity manager.
     */
    protected EntityManager newEntityManagerInstance()
@@ -114,27 +109,27 @@ public abstract class ZanataJpaTest
     */
    protected void clearHibernateSecondLevelCache()
    {
-      SessionFactory sessionFactory = ((Session)em.getDelegate()).getSessionFactory();
+      SessionFactory sessionFactory = ((Session) em.getDelegate()).getSessionFactory();
 
       // Clear the Entity cache
       Map classMetadata = sessionFactory.getAllClassMetadata();
-      for( Object obj : classMetadata.values() )
+      for (Object obj : classMetadata.values())
       {
-         EntityPersister p = (EntityPersister)obj;
-         if( p.hasCache() )
+         EntityPersister p = (EntityPersister) obj;
+         if (p.hasCache())
          {
-            sessionFactory.evictEntity( p.getEntityName() );
+            sessionFactory.evictEntity(p.getEntityName());
          }
       }
 
       // Clear the Collection cache
       Map collMetadata = sessionFactory.getAllCollectionMetadata();
-      for( Object obj : collMetadata.values() )
+      for (Object obj : collMetadata.values())
       {
-         AbstractCollectionPersister p = (AbstractCollectionPersister)obj;
-         if( p.hasCache() )
+         AbstractCollectionPersister p = (AbstractCollectionPersister) obj;
+         if (p.hasCache())
          {
-            sessionFactory.evictCollection( p.getRole() );
+            sessionFactory.evictCollection(p.getRole());
          }
       }
    }
