@@ -28,6 +28,10 @@
         <extension module="org.jboss.as.weld"/>
     </extensions>
 
+    <system-properties>
+        <property name="hibernate.search.default.indexBase" value="./target/zanatasearchindex"/>
+        <!--javamelody.storage-directory=/var/lib/zanata/stats-->
+    </system-properties>
 
     <management>
         <security-realms>
