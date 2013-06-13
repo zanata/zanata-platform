@@ -91,7 +91,7 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
       Query q = getSession().createQuery("select count(*) from HTextFlowTarget t where t.state = :state or t.state = :state2 and t.textFlow.obsolete=0");
       q.setCacheable(true);
       q.setComment("TextFlowTargetDAO.getTotalTranslatedTextFlowTargets");
-      Long totalCount = (Long) q.setParameter("state", ContentState.Approved).setParameter("state2", ContentState.Approved).uniqueResult();
+      Long totalCount = (Long) q.setParameter("state", ContentState.Approved).setParameter("state2", ContentState.Translated).uniqueResult();
       if (totalCount == null)
          return 0;
       return totalCount.intValue();
@@ -102,7 +102,7 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
       Query q = getSession().createQuery("select count(*) from HTextFlowTarget t where t.state = :state or t.state = :state2 and t.textFlow.obsolete=0");
       q.setCacheable(true);
       q.setComment("TextFlowTargetDAO.getTotalRejectedOrFuzzyTextFlowTargets");
-      Long totalCount = (Long) q.setParameter("state", ContentState.NeedReview).setParameter("state2", ContentState.NeedReview).uniqueResult();
+      Long totalCount = (Long) q.setParameter("state", ContentState.NeedReview).setParameter("state2", ContentState.Rejected).uniqueResult();
       if (totalCount == null)
          return 0;
       return totalCount.intValue();
