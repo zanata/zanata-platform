@@ -25,7 +25,7 @@ import java.util.List;
 
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
-import org.zanata.common.TranslationStats;
+import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.webtrans.client.ui.DocumentListTable.DocValidationStatus;
 import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.client.ui.HasPager;
@@ -48,8 +48,8 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
    public static String PATH_HEADER = "path";
    public static String DOC_HEADER = "doc";
    public static String STATS_HEADER = "stats";
-   public static String TRANSLATED_HEADER = "translated";
-   public static String UNTRANSLATED_HEADER = "untranslated";
+   public static String COMPLETE_HEADER = "complete";
+   public static String INCOMPLETE_HEADER = "incomplete";
    public static String REMAINING_HEADER = "remaining";
    public static String LAST_UPLOAD_HEADER = "lastUpload";
    public static String LAST_TRANSLATED_HEADER = "lastTranslated";
@@ -128,7 +128,7 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
 
    HashMap<DocumentId, Integer> buildContent(List<DocumentNode> nodes);
 
-   void updateStats(int row, TranslationStats stats);
+   void updateStats(int row, ContainerTranslationStatistics stats);
 
    void setStatsFilters(Integer row);
 

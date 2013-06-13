@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.ws.rs.core.EntityTag;
 
 import org.apache.commons.lang.StringUtils;
@@ -46,6 +48,7 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.StatusCount;
 import org.zanata.util.HashUtil;
+import org.zanata.util.StatisticsUtil;
 
 @Name("projectIterationDAO")
 @AutoCreate
@@ -65,13 +68,13 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
       super(HProjectIteration.class, session);
    }
 
-   public HProjectIteration getBySlug(String projectSlug, String iterationSlug)
+   public @Nullable HProjectIteration getBySlug(@Nonnull String projectSlug, @Nonnull String iterationSlug)
    {
       HProject project = (HProject)getSession().byNaturalId(HProject.class).using("slug", projectSlug).load();
       return getBySlug(project, iterationSlug);
    }
 
-   public HProjectIteration getBySlug(HProject project, String iterationSlug)
+   public @Nullable HProjectIteration getBySlug(@Nonnull HProject project, @Nonnull String iterationSlug)
    {
       if( project == null || StringUtils.isEmpty(iterationSlug))
       {
@@ -221,7 +224,7 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
       Long totalCount = getTotalWordCountForIteration(iterationId);
       for (TransUnitWords count : result.values())
       {
-         count.set(ContentState.New, totalCount.intValue() - (count.getApproved() + count.getNeedReview()));
+         count.set(ContentState.New, StatisticsUtil.calculateUntranslated(totalCount, count));
       }
       return result;
    }
@@ -269,7 +272,7 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
       for( TransUnitCount stat : retVal.values() )
       {
          Long totalCount = getTotalCountForIteration(iterationId);
-         stat.set(ContentState.New, totalCount.intValue() - (stat.getApproved() + stat.getNeedReview()));
+         stat.set(ContentState.New, StatisticsUtil.calculateUntranslated(totalCount, stat));
       }
 
       return retVal;

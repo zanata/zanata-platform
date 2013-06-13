@@ -5,6 +5,7 @@ import static org.zanata.common.EntityStatus.READONLY;
 
 import java.net.URI;
 
+import javax.annotation.Nonnull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -16,7 +17,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.EntityTag;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
@@ -68,14 +68,6 @@ public class ProjectService implements ProjectResource
 
    @Context
    private UriInfo uri;
-
-   @HeaderParam("Content-Type")
-   @Context
-   private MediaType requestContentType;
-
-   @Context
-   private HttpHeaders headers;
-
    @Context
    private Request request;
 
@@ -92,6 +84,13 @@ public class ProjectService implements ProjectResource
 
    @In
    ETagUtils eTagUtils;
+
+   @SuppressWarnings("null")
+   @Nonnull
+   public String getProjectSlug()
+   {
+      return projectSlug;
+   }
 
    /**
     * Returns header information for a project.
@@ -137,7 +136,7 @@ public class ProjectService implements ProjectResource
    {
       try
       {
-         EntityTag etag = eTagUtils.generateTagForProject(projectSlug);
+         EntityTag etag = eTagUtils.generateTagForProject(getProjectSlug());
 
          ResponseBuilder response = request.evaluatePreconditions(etag);
          if (response != null)
@@ -145,7 +144,7 @@ public class ProjectService implements ProjectResource
             return response.build();
          }
 
-         HProject hProject = projectDAO.getBySlug(projectSlug);
+         HProject hProject = projectDAO.getBySlug(getProjectSlug());
          Project project = toResource(hProject, accept);
          return Response.ok(project).tag(etag).build();
       }
@@ -180,7 +179,7 @@ public class ProjectService implements ProjectResource
       ResponseBuilder response;
       EntityTag etag;
 
-      HProject hProject = projectDAO.getBySlug(projectSlug);
+      HProject hProject = projectDAO.getBySlug(getProjectSlug());
 
       if (hProject == null)
       { // must be a create operation
@@ -265,7 +264,7 @@ public class ProjectService implements ProjectResource
 
    }
 
-   public static void transfer(Project from, HProject to)
+   private static void transfer(Project from, HProject to)
    {
       to.setName(from.getName());
       to.setDescription(from.getDescription());
@@ -300,7 +299,7 @@ public class ProjectService implements ProjectResource
       }
    }
 
-   public static void transfer(HProject from, Project to)
+   private static void transfer(HProject from, Project to)
    {
       to.setId(from.getSlug());
       to.setName(from.getName());
@@ -314,7 +313,7 @@ public class ProjectService implements ProjectResource
       to.setSourceCheckoutURL(from.getSourceCheckoutURL());
    }
 
-   public static Project toResource(HProject hProject, MediaType mediaType)
+   private static Project toResource(HProject hProject, MediaType mediaType)
    {
       Project project = new Project();
       transfer(hProject, project);
@@ -322,6 +321,7 @@ public class ProjectService implements ProjectResource
       {
          ProjectIteration iteration = new ProjectIteration();
          ProjectIterationService.transfer(pIt, iteration);
+
          iteration.getLinks(true).add(new Link(URI.create("iterations/i/" + pIt.getSlug()), "self", MediaTypes.createFormatSpecificType(MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION, mediaType)));
          project.getIterations(true).add(iteration);
       }

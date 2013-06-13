@@ -27,20 +27,19 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 import org.zanata.model.TestFixture;
-import org.zanata.webtrans.client.events.CheckStateHasChangedEvent;
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.LoadingEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.RefreshPageEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEvent;
-import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.service.GetTransUnitActionContextHolder;
 import org.zanata.webtrans.client.service.NavigationService;
-import org.zanata.webtrans.client.service.TransUnitSaveService;
 import org.zanata.webtrans.client.service.TranslatorInteractionService;
 import org.zanata.webtrans.client.service.UserOptionsService;
+import org.zanata.webtrans.client.ui.GoToRowLink;
 import org.zanata.webtrans.client.view.SourceContentsDisplay;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.client.view.TransUnitsTableDisplay;
@@ -51,6 +50,7 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 
 import com.google.common.collect.Lists;
+import com.google.inject.Provider;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -72,8 +72,6 @@ public class TransUnitsTablePresenterTest
    @Mock
    private TranslatorInteractionService translatorService;
    @Mock
-   private TransUnitSaveService saveService;
-   @Mock
    private WebTransMessages messages;
    @Mock
    private TranslationHistoryPresenter translationHistoryPresenter;
@@ -85,13 +83,11 @@ public class TransUnitsTablePresenterTest
    public void setUp() throws Exception
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new TransUnitsTablePresenter(display, eventBus, navigationService, sourceContentsPresenter, targetContentsPresenter, translatorService, saveService, translationHistoryPresenter, messages, userOptionsService);
+      presenter = new TransUnitsTablePresenter(display, eventBus, navigationService, sourceContentsPresenter, targetContentsPresenter, translatorService, translationHistoryPresenter, messages, userOptionsService);
 
       verify(display).setRowSelectionListener(presenter);
       verify(display).addFilterConfirmationHandler(presenter);
       verify(navigationService).addPageDataChangeListener(presenter);
-      verify(eventBus).addHandler(TransUnitSaveEvent.TYPE, saveService);
-      verify(eventBus).addHandler(CheckStateHasChangedEvent.TYPE, saveService);
    }
 
    @Test
@@ -175,7 +171,7 @@ public class TransUnitsTablePresenterTest
 
       presenter.saveChangesAndFilter();
 
-      verify(targetContentsPresenter).saveCurrent(ContentState.Approved);
+      verify(targetContentsPresenter).saveCurrent(ContentState.Translated);
       verify(display).hideFilterConfirmation();
       verify(navigationService).execute(Mockito.isA(FilterViewEvent.class));
    }
@@ -502,7 +498,7 @@ public class TransUnitsTablePresenterTest
       List<TransUnit> transUnits = Lists.newArrayList(TestFixture.makeTransUnit(1));
       when(navigationService.getCurrentPageValues()).thenReturn(transUnits);
       TransUnitId selectedId = transUnits.get(0).getId();
-      when(targetContentsPresenter.getCurrentTransUnitIdOrNull()).thenReturn(selectedId);
+      when(sourceContentsPresenter.getCurrentTransUnitIdOrNull()).thenReturn(selectedId);
 
       presenter.onRefreshPage(RefreshPageEvent.REDRAW_PAGE_EVENT);
 
@@ -518,13 +514,12 @@ public class TransUnitsTablePresenterTest
    {
       List<TransUnit> transUnits = Lists.newArrayList(TestFixture.makeTransUnit(1));
       when(navigationService.getCurrentPageValues()).thenReturn(transUnits);
-      when(targetContentsPresenter.getCurrentTransUnitIdOrNull()).thenReturn(null);
+      when(sourceContentsPresenter.getCurrentTransUnitIdOrNull()).thenReturn(null);
 
       presenter.onRefreshPage(RefreshPageEvent.REDRAW_PAGE_EVENT);
 
       verify(targetContentsPresenter).savePendingChangesIfApplicable();
       verify(targetContentsPresenter).showData(transUnits);
-      verify(targetContentsPresenter).getCurrentTransUnitIdOrNull();
       verify(display).buildTable(sourceContentsPresenter.getDisplays(), targetContentsPresenter.getDisplays());
       verify(targetContentsPresenter, never()).setSelected(any(TransUnitId.class));
    }

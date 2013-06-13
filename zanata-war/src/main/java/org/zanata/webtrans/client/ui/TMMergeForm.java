@@ -134,7 +134,7 @@ public class TMMergeForm extends Composite implements EnumRadioButtonGroup.Selec
       else
       {
          differentContentStatus.setStyleName(style.downgrade_action());
-         differentContentStatus.setText(enumMessages.fuzzyStatus());
+         differentContentStatus.setText(enumMessages.downgradeToFuzzy());
          differentContentLabel.setText(enumMessages.downgradeToFuzzy());
       }
    }

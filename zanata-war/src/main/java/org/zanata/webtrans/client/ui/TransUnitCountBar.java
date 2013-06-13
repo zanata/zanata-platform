@@ -1,8 +1,11 @@
 package org.zanata.webtrans.client.ui;
 
-import org.zanata.common.ContentState;
-import org.zanata.common.TranslationStats;
+import org.zanata.common.LocaleId;
+import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
+import org.zanata.rest.dto.stats.TranslationStatistics;
+import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
@@ -32,6 +35,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
    private static TransUnitCountBarUiBinder uiBinder = GWT.create(TransUnitCountBarUiBinder.class);
 
    protected final TooltipPopupPanel tooltipPanel;
+   private static final int TOTAL_WIDTH = 100;
 
    interface TransUnitCountBarUiBinder extends UiBinder<Widget, TransUnitCountBar>
    {
@@ -41,28 +45,29 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
    LayoutPanel layoutPanel;
 
    @UiField
-   FlowPanel approvedPanel, needReviewPanel, untranslatedPanel, undefinedPanel;
+   FlowPanel approvedPanel, draftPanel, untranslatedPanel, undefinedPanel, translatedPanel;
 
    @UiField
    Label label;
 
    private final LabelFormat labelFormat;
 
-   private final TranslationStats stats = new TranslationStats();
+   private ContainerTranslationStatistics stats = new ContainerTranslationStatistics();
 
    private final WebTransMessages messages;
 
-   private int totalWidth = 100;
+   private final LocaleId localeId;
 
    private boolean statsByWords = true;
 
    @Inject
-   public TransUnitCountBar(WebTransMessages messages, LabelFormat labelFormat, boolean enableClickToggle)
+   public TransUnitCountBar(UserWorkspaceContext userworkspaceContext, WebTransMessages messages, LabelFormat labelFormat, boolean enableClickToggle, boolean projectRequireReview)
    {
       this.messages = messages;
       this.labelFormat = labelFormat;
+      localeId = userworkspaceContext.getWorkspaceContext().getWorkspaceId().getLocaleId();
 
-      tooltipPanel = new TooltipPopupPanel(messages);
+      tooltipPanel = new TooltipPopupPanel(projectRequireReview);
 
       initWidget(uiBinder.createAndBindUi(this));
 
@@ -106,30 +111,33 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
       refresh();
    }
 
-   private void setupLayoutPanel(double undefinedLeft, double undefinedWidth, double approvedLeft, double approvedWidth, double needReviewLeft, double needReviewWidth, double untranslatedLeft, double untranslatedWidth)
+   private void setupLayoutPanel(double undefinedLeft, double undefinedWidth, double approvedLeft, double approvedWidth, double savedLeft, double savedWidth, double needReviewLeft, double needReviewWidth, double untranslatedLeft, double untranslatedWidth)
    {
       layoutPanel.forceLayout();
       layoutPanel.setWidgetLeftWidth(undefinedPanel, undefinedLeft, Unit.PX, undefinedWidth, Unit.PX);
       layoutPanel.setWidgetLeftWidth(approvedPanel, approvedLeft, Unit.PX, approvedWidth, Unit.PX);
-      layoutPanel.setWidgetLeftWidth(needReviewPanel, needReviewLeft, Unit.PX, needReviewWidth, Unit.PX);
+      layoutPanel.setWidgetLeftWidth(translatedPanel, savedLeft, Unit.PX, savedWidth, Unit.PX);
+      layoutPanel.setWidgetLeftWidth(draftPanel, needReviewLeft, Unit.PX, needReviewWidth, Unit.PX);
       layoutPanel.setWidgetLeftWidth(untranslatedPanel, untranslatedLeft, Unit.PX, untranslatedWidth, Unit.PX);
    }
 
    public void refresh()
    {
-      int approved, needReview, untranslated, total;
+      int approved, draft, untranslated, translated, total;
       if (statsByWords)
       {
          approved = getWordsApproved();
-         needReview = getWordsNeedReview();
+         draft = getWordsDraft();
          untranslated = getWordsUntranslated();
+         translated = getWordsTranslated();
          total = getWordsTotal();
       }
       else
       {
          approved = getUnitApproved();
-         needReview = getUnitNeedReview();
+         draft = getUnitDraft();
          untranslated = getUnitUntranslated();
+         translated = getUnitTranslated();
          total = getUnitTotal();
       }
       int width = getOffsetWidth();
@@ -137,16 +145,19 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
       {
          undefinedPanel.clear();
          undefinedPanel.add(new Label(messages.noContent()));
-         setupLayoutPanel(0.0, width, 0.0, 0, 0.0, 0, 0.0, 0);
+         setupLayoutPanel(0.0, width, 0, 0, 0.0, 0, 0.0, 0, 0.0, 0);
          label.setText("");
       }
       else
       {
-         int completePx = approved * 100 / total * width / totalWidth;
-         int inProgressPx = needReview * 100 / total * width / totalWidth;
-         int unfinishedPx = untranslated * 100 / total * width / totalWidth;
+         int completePx = approved * 100 / total * width / TOTAL_WIDTH;
+         int savedPx = translated * 100 / total * width / TOTAL_WIDTH;
+         int inProgressPx = draft * 100 / total * width / TOTAL_WIDTH;
+         int unfinishedPx = untranslated * 100 / total * width / TOTAL_WIDTH;
 
-         setupLayoutPanel(0.0, 0, 0.0, completePx, completePx, inProgressPx, completePx + inProgressPx, unfinishedPx);
+         int needReviewLeft = savedPx + completePx;
+         int untranslatedLeft = needReviewLeft + inProgressPx;
+         setupLayoutPanel(0.0, 0, 0.0, completePx, completePx, savedPx, needReviewLeft, inProgressPx, untranslatedLeft, unfinishedPx);
          setLabelText();
       }
 
@@ -158,75 +169,140 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
 
    private void setLabelText()
    {
+      // TODO rhbz953734 - remaining hours
       switch (labelFormat)
       {
       case PERCENT_COMPLETE_HRS:
+         TranslationStatistics wordStats = stats.getStats(localeId.getId(), StatUnit.WORD);
          if (statsByWords)
          {
-            label.setText(messages.statusBarPercentageHrs(stats.getApprovedPercent(statsByWords), stats.getRemainingHours(), "Words"));
+            label.setText(messages.statusBarPercentageHrs(wordStats.getPercentTranslated(), wordStats.getRemainingHours(), "Words"));
          }
          else
          {
-            label.setText(messages.statusBarPercentageHrs(stats.getApprovedPercent(statsByWords), stats.getRemainingHours(), "Msg"));
+            TranslationStatistics msgStats = stats.getStats(localeId.getId(), StatUnit.MESSAGE);
+            label.setText(messages.statusBarPercentageHrs(msgStats.getPercentTranslated(), wordStats.getRemainingHours(), "Msg"));
          }
          break;
       case PERCENT_COMPLETE:
-         label.setText(messages.statusBarLabelPercentage(stats.getApprovedPercent(statsByWords)));
+         if (statsByWords)
+         {
+            label.setText(messages.statusBarLabelPercentage(stats.getStats(localeId.getId(), StatUnit.WORD).getPercentTranslated()));
+         }
+         else
+         {
+            label.setText(messages.statusBarLabelPercentage(stats.getStats(localeId.getId(), StatUnit.MESSAGE).getPercentTranslated()));
+         }
          break;
       default:
          label.setText("error: " + labelFormat.name());
       }
    }
 
-   public int getApprovedPercent()
+   private TranslationStatistics getWordStats()
    {
-      return stats.getApprovedPercent(statsByWords);
+      return stats.getStats(localeId.getId(), StatUnit.WORD);
+   }
+
+   private TranslationStatistics getMessageStats()
+   {
+      return stats.getStats(localeId.getId(), StatUnit.MESSAGE);
    }
 
    public int getWordsTotal()
    {
-      return getWordsApproved() + getWordsNeedReview() + getWordsUntranslated();
+      return getWordsApproved() + getWordsDraft() + getWordsUntranslated() + getWordsTranslated();
    }
 
    public int getWordsApproved()
    {
-      return stats.getWordCount().get(ContentState.Approved);
+      TranslationStatistics stats = getWordStats();
+      if (stats != null)
+      {
+         return (int) stats.getApproved();
+      }
+      return 0;
    }
 
-   public int getWordsNeedReview()
+   public int getWordsDraft()
    {
-      return stats.getWordCount().get(ContentState.NeedReview);
+      TranslationStatistics stats = getWordStats();
+      if (stats != null)
+      {
+         return (int) stats.getDraft();
+      }
+      return 0;
    }
 
    public int getWordsUntranslated()
    {
-      return stats.getWordCount().get(ContentState.New);
+      TranslationStatistics stats = getWordStats();
+      if (stats != null)
+      {
+         return (int) stats.getUntranslated();
+      }
+      return 0;
+   }
+
+   public int getWordsTranslated()
+   {
+      TranslationStatistics stats = getWordStats();
+      if (stats != null)
+      {
+         return (int) stats.getFinishTranslation();
+      }
+      return 0;
    }
 
    public int getUnitTotal()
    {
-      return getUnitApproved() + getUnitNeedReview() + getUnitUntranslated();
+      return getUnitApproved() + getUnitDraft() + getUnitTranslated() + getUnitUntranslated();
    }
 
    public int getUnitApproved()
    {
-      return stats.getUnitCount().get(ContentState.Approved);
+      TranslationStatistics stats = getMessageStats();
+      if (stats != null)
+      {
+         return (int) stats.getApproved();
+      }
+      return 0;
    }
 
-   public int getUnitNeedReview()
+   public int getUnitDraft()
    {
-      return stats.getUnitCount().get(ContentState.NeedReview);
+      TranslationStatistics stats = getMessageStats();
+      if (stats != null)
+      {
+         return (int) stats.getDraft();
+      }
+      return 0;
    }
 
    public int getUnitUntranslated()
    {
-      return stats.getUnitCount().get(ContentState.New);
+      TranslationStatistics stats = getMessageStats();
+      if (stats != null)
+      {
+         return (int) stats.getUntranslated();
+      }
+      return 0;
+   }
+
+   public int getUnitTranslated()
+   {
+	  TranslationStatistics stats = getMessageStats();
+      if (stats != null)
+      {
+         return (int) stats.getFinishTranslation();
+      }
+      return 0;
    }
 
    @Override
-   public void setStats(TranslationStats stats, boolean statsByWords)
+   public void setStats(ContainerTranslationStatistics stats, boolean statsByWords)
    {
-      this.stats.set(stats);
+      this.stats.copyFrom(stats);
       this.statsByWords = statsByWords;
 
       refresh();

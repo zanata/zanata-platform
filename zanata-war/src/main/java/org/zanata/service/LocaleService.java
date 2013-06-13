@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 import org.zanata.common.LocaleId;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
@@ -33,30 +35,29 @@ import org.zanata.model.HTextFlowTarget;
 public interface LocaleService
 {
    List<HLocale> getAllLocales();
-
-   void save(LocaleId localeId, boolean enabledByDefault);
-
-   void disable(LocaleId locale);
-
-   void enable(LocaleId locale);
-
+   void save(@Nonnull LocaleId localeId, boolean enabledByDefault);
+   void disable(@Nonnull LocaleId locale);
+   void enable(@Nonnull LocaleId locale);
    List<LocaleId> getAllJavaLanguages();
-
-   boolean localeExists(LocaleId locale);
-   
+   boolean localeExists(@Nonnull LocaleId locale);
+   boolean localeSupported(@Nonnull LocaleId locale);
    List<HLocale> getSupportedLocales();
-
-   HLocale getByLocaleId(LocaleId locale);
-
-   HLocale getByLocaleId(String localeId);
-
-   HLocale validateLocaleByProjectIteration(LocaleId locale, String project, String iterationSlug) throws ZanataServiceException;
-
+   HLocale getByLocaleId(@Nonnull LocaleId locale);
+   HLocale getByLocaleId(@Nonnull String localeId);
+   @Nonnull HLocale validateLocaleByProjectIteration(
+         @Nonnull LocaleId locale,
+         @Nonnull String project,
+         @Nonnull String iterationSlug) throws ZanataServiceException;
+   @Nonnull HLocale validateLocaleByProject(
+         @Nonnull LocaleId locale,
+         @Nonnull String project) throws ZanataServiceException;
+   // TODO I don't think this method is specifically about source languages
    HLocale validateSourceLocale(LocaleId locale) throws ZanataServiceException;
-
-   List<HLocale> getTranslation(String project, String iterationSlug, String username);
-
-   List<HLocale> getSupportedLangugeByProjectIteration(String project, String iterationSlug);
+   List<HLocale> getTranslation(@Nonnull String project, @Nonnull String iterationSlug, String username);
+   List<HLocale> getSupportedLangugeByProjectIteration(
+         @Nonnull String project,
+         @Nonnull String iterationSlug);
+   List<HLocale> getSupportedLanguageByProject(@Nonnull String project);
 
    Map<String, String> getGlobalLocaleItems();
 

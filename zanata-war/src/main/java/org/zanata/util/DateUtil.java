@@ -12,6 +12,7 @@ import java.util.Date;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  */
+// FIXME SimpleDateFormat is not thread safe; we should use JODA
 public class DateUtil
 {
    private final static String DATE_TIME_SHORT_PATTERN = "dd/MM/yy HH:mm";

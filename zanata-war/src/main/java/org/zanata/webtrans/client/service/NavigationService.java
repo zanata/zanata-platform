@@ -55,6 +55,7 @@ import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.auth.EditorClientId;
+import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
@@ -249,13 +250,16 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
    @Override
    public void onTransUnitUpdated(TransUnitUpdatedEvent event)
    {
-      if (Objects.equal(event.getUpdateInfo().getDocumentId(), contextHolder.getContext().getDocumentId()))
+      if(contextHolder.isContextInitialized())
       {
-         TransUnit updatedTU = event.getUpdateInfo().getTransUnit();
-         boolean updated = updateDataModel(updatedTU);
-         if (updated)
+         if (Objects.equal(event.getUpdateInfo().getDocumentId(), contextHolder.getContext().getDocument().getId()))
          {
-            pageDataChangeListener.refreshRow(updatedTU, event.getEditorClientId(), event.getUpdateType());
+            TransUnit updatedTU = event.getUpdateInfo().getTransUnit();
+            boolean updated = updateDataModel(updatedTU);
+            if (updated)
+            {
+               pageDataChangeListener.refreshRow(updatedTU, event.getEditorClientId(), event.getUpdateType());
+            }
          }
       }
    }

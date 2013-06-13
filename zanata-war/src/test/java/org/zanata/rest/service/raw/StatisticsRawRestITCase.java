@@ -20,6 +20,9 @@
  */
 package org.zanata.rest.service.raw;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+
 import java.util.Arrays;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -45,10 +48,12 @@ import static org.zanata.util.RawRestTestUtils.assertJaxbUnmarshal;
 import static org.zanata.util.RawRestTestUtils.assertJsonUnmarshal;
 import static org.zanata.util.RawRestTestUtils.jaxbUnmarshal;
 import static org.zanata.util.RawRestTestUtils.jsonUnmarshal;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@Slf4j
 public class StatisticsRawRestITCase extends RestTest
 {
    @Override
@@ -90,7 +95,7 @@ public class StatisticsRawRestITCase extends RestTest
             {
                assertThat(transStat.getUnit(), is(TranslationStatistics.StatUnit.MESSAGE));
                // make sure counts are sane
-               assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
+               assertThat(transStat.getDraft() + transStat.getApproved() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
             }
          }
 
@@ -126,7 +131,7 @@ public class StatisticsRawRestITCase extends RestTest
             for( TranslationStatistics transStat : stats.getStats() )
             {
                // make sure counts are sane
-               assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
+               assertThat(transStat.getDraft() + transStat.getApproved() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
             }
 
             // Results returned only for specified locales
@@ -135,7 +140,7 @@ public class StatisticsRawRestITCase extends RestTest
             {
                assertThat(Arrays.asList(expectedLocales), hasItem( transStat.getLocale() ));
                // make sure counts are sane
-               assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
+               assertThat(transStat.getDraft() + transStat.getApproved() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
             }
          }
 
@@ -171,7 +176,7 @@ public class StatisticsRawRestITCase extends RestTest
             {
                assertThat(transStat.getUnit(), is(TranslationStatistics.StatUnit.MESSAGE));
                // make sure counts are sane
-               assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
+               assertThat(transStat.getDraft() + transStat.getApproved() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
             }
          }
 
@@ -207,7 +212,7 @@ public class StatisticsRawRestITCase extends RestTest
             for( TranslationStatistics transStat : stats.getStats() )
             {
                // make sure counts are sane
-               assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
+               assertThat(transStat.getDraft() + transStat.getApproved() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
             }
 
             // Results returned only for specified locales
@@ -216,7 +221,7 @@ public class StatisticsRawRestITCase extends RestTest
             {
                assertThat(Arrays.asList(expectedLocales), hasItem( transStat.getLocale() ));
                // make sure counts are sane
-               assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
+               assertThat(transStat.getDraft() + transStat.getApproved() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
             }
          }
 
@@ -252,7 +257,7 @@ public class StatisticsRawRestITCase extends RestTest
             {
                assertThat(transStat.getUnit(), is(TranslationStatistics.StatUnit.MESSAGE));
                // make sure counts are sane
-               assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
+               assertThat(transStat.getDraft() + transStat.getApproved() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
             }
          }
 
@@ -288,7 +293,7 @@ public class StatisticsRawRestITCase extends RestTest
             for( TranslationStatistics transStat : stats.getStats() )
             {
                // make sure counts are sane
-               assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
+               assertThat(transStat.getDraft() + transStat.getApproved() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
             }
 
             // Results returned only for specified locales
@@ -297,7 +302,7 @@ public class StatisticsRawRestITCase extends RestTest
             {
                assertThat(Arrays.asList(expectedLocales), hasItem( transStat.getLocale() ));
                // make sure counts are sane
-               assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
+               assertThat(transStat.getDraft() + transStat.getApproved() + transStat.getUntranslated() + transStat.getFinishTranslation(), equalTo( transStat.getTotal() ));
             }
          }
 
@@ -333,7 +338,7 @@ public class StatisticsRawRestITCase extends RestTest
             {
                assertThat(transStat.getUnit(), is(TranslationStatistics.StatUnit.MESSAGE));
                // make sure counts are sane
-               assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
+               assertThat(transStat.getDraft() + transStat.getApproved() + transStat.getUntranslated() + transStat.getFinishTranslation(), equalTo( transStat.getTotal() ));
             }
          }
 
@@ -369,7 +374,7 @@ public class StatisticsRawRestITCase extends RestTest
             for( TranslationStatistics transStat : stats.getStats() )
             {
                // make sure counts are sane
-               assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
+               assertThat(transStat.getDraft() + transStat.getApproved() + transStat.getUntranslated() + transStat.getFinishTranslation(), equalTo( transStat.getTotal() ));
             }
 
             // Results returned only for specified locales
@@ -378,7 +383,7 @@ public class StatisticsRawRestITCase extends RestTest
             {
                assertThat(Arrays.asList(expectedLocales), hasItem( transStat.getLocale() ));
                // make sure counts are sane
-               assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
+               assertThat(transStat.getDraft() + transStat.getApproved() + transStat.getUntranslated() + transStat.getFinishTranslation(), equalTo( transStat.getTotal() ));
             }
          }
 

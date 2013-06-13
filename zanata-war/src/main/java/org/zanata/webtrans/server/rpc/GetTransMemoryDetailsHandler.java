@@ -85,7 +85,7 @@ public class GetTransMemoryDetailsHandler extends AbstractActionHandler<GetTrans
       {
          username = tft.getLastModifiedBy().getAccount().getUsername();
       }
-      return new TransMemoryDetails(HSimpleComment.toString(sourceComment), HSimpleComment.toString(targetComment), projectName, iterationName, docId, tf.getResId(), msgContext, username, tft.getLastChanged());
+      return new TransMemoryDetails(HSimpleComment.toString(sourceComment), HSimpleComment.toString(targetComment), projectName, iterationName, docId, tf.getResId(), msgContext, tft.getState(), username, tft.getLastChanged());
    }
 
    @Override

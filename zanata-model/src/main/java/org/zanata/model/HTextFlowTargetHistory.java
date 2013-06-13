@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -94,6 +95,10 @@ public class HTextFlowTargetHistory extends HTextContainer implements Serializab
 
    private Integer textFlowRevision;
 
+   private HPerson translator;
+
+   private HPerson reviewer;
+
    public HTextFlowTargetHistory()
    {
    }
@@ -106,6 +111,8 @@ public class HTextFlowTargetHistory extends HTextContainer implements Serializab
       this.textFlowRevision = target.getTextFlowRevision();
       this.textFlowTarget = target;
       this.versionNum = target.getVersionNum();
+      translator = target.getTranslator();
+      reviewer = target.getReviewer();
       this.setContents(target.getContents());
    }
 
@@ -170,7 +177,7 @@ public class HTextFlowTargetHistory extends HTextContainer implements Serializab
    public Date getLastChanged()
    {
       return lastChanged;
-   };
+   }
 
    public void setLastChanged(Date lastChanged)
    {
@@ -212,7 +219,33 @@ public class HTextFlowTargetHistory extends HTextContainer implements Serializab
    {
       this.textFlowRevision = textFlowRevision;
    }
-   
+
+   @Override
+   @ManyToOne(cascade = { CascadeType.MERGE }, fetch = FetchType.LAZY)
+   @JoinColumn(name = "translated_by_id", nullable = true)
+   public HPerson getTranslator()
+   {
+      return translator;
+   }
+
+   @Override
+   @ManyToOne(cascade = { CascadeType.MERGE }, fetch = FetchType.LAZY)
+   @JoinColumn(name = "reviewed_by_id", nullable = true)
+   public HPerson getReviewer()
+   {
+      return reviewer;
+   }
+
+   protected void setTranslator(HPerson translator)
+   {
+      this.translator = translator;
+   }
+
+   protected void setReviewer(HPerson reviewer)
+   {
+      this.reviewer = reviewer;
+   }
+
    /**
     * Determines whether a Text Flow Target has changed when compared to this
     * history object.
@@ -226,6 +259,8 @@ public class HTextFlowTargetHistory extends HTextContainer implements Serializab
       return    !Objects.equal(current.getContents(), this.contents)
              || !Objects.equal(current.getLastChanged(), this.lastChanged)
              || !Objects.equal(current.getLastModifiedBy(), this.lastModifiedBy)
+             || !Objects.equal(current.getTranslator(), this.translator)
+             || !Objects.equal(current.getReviewer(), this.reviewer)
              || !Objects.equal(current.getState(), this.state)
              || !Objects.equal(current.getTextFlowRevision(), this.textFlowRevision)
              || !Objects.equal(current.getLastChanged(), this.lastChanged)

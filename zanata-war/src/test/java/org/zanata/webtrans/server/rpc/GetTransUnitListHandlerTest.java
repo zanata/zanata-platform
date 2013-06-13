@@ -28,11 +28,13 @@ import org.zanata.service.LocaleService;
 import org.zanata.service.TextFlowSearchService;
 import org.zanata.service.ValidationService;
 import org.zanata.service.impl.TextFlowSearchServiceImpl;
+import org.zanata.service.impl.TranslationStateCacheImpl;
 import org.zanata.service.impl.ValidationServiceImpl;
 import org.zanata.util.ZanataMessages;
 import org.zanata.webtrans.client.service.GetTransUnitActionContext;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
@@ -49,7 +51,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
    private ZanataIdentity identity;
    @Mock
    private LocaleService localeService;
-   private final DocumentId documentId = new DocumentId(new Long(1), "");
+   private final DocumentInfo document = TestFixture.documentInfo(1L, "");
    private final LocaleId localeId = new LocaleId("ja");
    private HLocale jaHLocale;
 
@@ -66,27 +68,24 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
       ResourceUtils resourceUtils = new ResourceUtils();
       resourceUtils.create(); //postConstruct
       TransUnitTransformer transUnitTransformer = SeamAutowire.instance().use("resourceUtils", resourceUtils).autowire(TransUnitTransformer.class);
-      // @formatter:off
-      TextFlowSearchService textFlowSearchServiceImpl = SeamAutowire.instance()
+
+      SeamAutowire seam = SeamAutowire.instance()
             .use("localeServiceImpl", localeService)
             .use("documentDAO", new DocumentDAO(getSession()))
             .use("projectIterationDAO", new ProjectIterationDAO(getSession()))
             .use("entityManager", new FullTextEntityManagerImpl(getEm()))
             .use("session", new FullTextSessionImpl(getSession()))
-            .autowire(TextFlowSearchServiceImpl.class);
-      
-      ValidationService validationServiceImpl = SeamAutowire.instance()
-            .use("zanataMessages", new ZanataMessages())
-            .autowire(ValidationServiceImpl.class);
-      
-      handler = SeamAutowire.instance()
             .use("identity", identity)
             .use("localeServiceImpl", localeService)
             .use("textFlowDAO", new TextFlowDAO(getSession()))
             .use("transUnitTransformer", transUnitTransformer)
-            .use("textFlowSearchServiceImpl", textFlowSearchServiceImpl)
-            .use("validationServiceImpl", validationServiceImpl)
-            .autowire(GetTransUnitListHandler.class);
+            .useImpl(TranslationStateCacheImpl.class)
+            .useImpl(TextFlowSearchServiceImpl.class)
+            .useImpl(ValidationServiceImpl.class)
+            .allowCycles();
+
+      // @formatter:off
+      handler = seam.autowire(GetTransUnitListHandler.class);
       // @formatter:on
 
       jaHLocale = getEm().find(HLocale.class, 3L);
@@ -104,7 +103,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
    @Test
    public void testExecuteToGetAll() throws Exception
    {
-      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(documentId));
+      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(document));
       prepareActionAndMockLocaleService(action);
 
       long startTime = System.nanoTime();
@@ -112,7 +111,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
       log.info("********** duration :{} second", (System.nanoTime() - startTime) / 1000000000.0);
 
       log.info("result: {}", result);
-      assertThat(result.getDocumentId(), Matchers.equalTo(documentId));
+      assertThat(result.getDocumentId(), Matchers.equalTo(document.getId()));
       assertThat(result.getGotoRow(), Matchers.equalTo(0));
       assertThat(TestFixture.asIds(result.getUnits()), Matchers.contains(1, 2, 3, 4, 5));
    }
@@ -120,13 +119,13 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
    @Test
    public void testExecuteWithStatusFilterOnly() throws Exception
    {
-      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(documentId).changeFilterNeedReview(true).changeFilterUntranslated(true));
+      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(document).changeFilterNeedReview(true).changeFilterUntranslated(true));
       prepareActionAndMockLocaleService(action);
 
       GetTransUnitListResult result = handler.execute(action, null);
 
       log.info("result: {}", result);
-      assertThat(result.getDocumentId(), Matchers.equalTo(documentId));
+      assertThat(result.getDocumentId(), Matchers.equalTo(document.getId()));
       assertThat(result.getGotoRow(), Matchers.equalTo(0));
       assertThat(TestFixture.asIds(result.getUnits()), Matchers.contains(3, 5, 6, 7, 8));
    }
@@ -134,13 +133,13 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
    @Test
    public void testExecuteWithHasErrorFilterOnly() throws Exception
    {
-      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(documentId).changeFilterHasError(true));
+      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(document).changeFilterHasError(true));
       prepareActionAndMockLocaleService(action);
 
       GetTransUnitListResult result = handler.execute(action, null);
 
       log.info("result: {}", result);
-      assertThat(result.getDocumentId(), Matchers.equalTo(documentId));
+      assertThat(result.getDocumentId(), Matchers.equalTo(document.getId()));
       assertThat(result.getGotoRow(), Matchers.equalTo(0));
       assertThat(TestFixture.asIds(result.getUnits()), Matchers.contains(1, 2, 3, 4, 5));
    }
@@ -150,7 +149,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
    public void testExecuteWithSearchOnly() throws Exception
    {
       // Given: we want to search for file (mixed case) and we change page size to 10 and start from index 2
-      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(documentId).changeFindMessage("FiLe").changeCount(10).changeOffset(1));
+      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(document).changeFindMessage("FiLe").changeCount(10).changeOffset(1));
       prepareActionAndMockLocaleService(action);
 
       // When:
@@ -158,7 +157,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
 
       // Then:
       log.info("result: {}", result);
-      assertThat(result.getDocumentId(), Matchers.equalTo(documentId));
+      assertThat(result.getDocumentId(), Matchers.equalTo(document.getId()));
       assertThat(result.getGotoRow(), Matchers.equalTo(0));
       assertThat(TestFixture.asIds(result.getUnits()), Matchers.contains(2, 3, 4, 5, 6, 8));
    }
@@ -167,7 +166,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
    public void testExecuteWithSearchAndStatusFilter() throws Exception
    {
       // Given: we want to search for file (mixed case) in fuzzy and untranslated text flows
-      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(documentId)
+      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(document)
             .changeFindMessage("FiLe").changeFilterUntranslated(true).changeFilterNeedReview(true));
       prepareActionAndMockLocaleService(action);
 
@@ -176,7 +175,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
 
       // Then:
       log.info("result: {}", result);
-      assertThat(result.getDocumentId(), Matchers.equalTo(documentId));
+      assertThat(result.getDocumentId(), Matchers.equalTo(document.getId()));
       assertThat(result.getGotoRow(), Matchers.equalTo(0));
       assertThat(TestFixture.asIds(result.getUnits()), Matchers.contains(3, 5, 6, 8));
    }
@@ -184,7 +183,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
    @Test
    public void testExecuteWithSearchAndStatusFilter2() throws Exception
    {
-      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(documentId).changeFindMessage("FiLe").changeFilterUntranslated(true).changeFilterNeedReview(true).changeFilterHasError(true));
+      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(document).changeFindMessage("FiLe").changeFilterUntranslated(true).changeFilterNeedReview(true).changeFilterHasError(true));
       prepareActionAndMockLocaleService(action);
 
       // When:
@@ -192,7 +191,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
 
       // Then:
       log.info("result: {}", result);
-      assertThat(result.getDocumentId(), Matchers.equalTo(documentId));
+      assertThat(result.getDocumentId(), Matchers.equalTo(document.getId()));
       assertThat(result.getGotoRow(), Matchers.equalTo(0));
       assertThat(TestFixture.asIds(result.getUnits()), Matchers.contains(3, 5, 6, 8));
    }

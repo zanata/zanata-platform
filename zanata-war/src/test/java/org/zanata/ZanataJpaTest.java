@@ -14,7 +14,14 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+import org.hibernate.persister.collection.AbstractCollectionPersister;
+import org.hibernate.persister.entity.EntityPersister;
 import org.zanata.testng.TestMethodListener;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import java.util.Map;
 
 @Listeners(TestMethodListener.class)
 @Test(groups = { "jpa-tests" })
@@ -51,6 +58,11 @@ public abstract class ZanataJpaTest
       return em;
    }
 
+   protected EntityManagerFactory getEmf()
+   {
+      return emf;
+   }
+
    protected Session getSession()
    {
       return (Session) em.getDelegate();
@@ -60,7 +72,12 @@ public abstract class ZanataJpaTest
    public void initializeEMF()
    {
       log.debug("Initializing EMF");
-      emf = Persistence.createEntityManagerFactory(PERSIST_NAME);
+      emf = Persistence.createEntityManagerFactory(PERSIST_NAME, createPropertiesMap());
+   }
+
+   protected Map<?, ?> createPropertiesMap()
+   {
+      return null;
    }
 
    @AfterSuite
@@ -70,10 +87,10 @@ public abstract class ZanataJpaTest
       emf.close();
       emf = null;
    }
-   
+
    /**
-    * Commits the changes on the current session and starts a new one.
-    * This method is useful whenever multi-session tests are needed.
+    * Commits the changes on the current session and starts a new one. This
+    * method is useful whenever multi-session tests are needed.
     * 
     * @return The newly started session
     */
@@ -85,10 +102,10 @@ public abstract class ZanataJpaTest
    }
 
    /**
-    * This method is used to test multiple Entity Managers (or hibernate sessions)
-    * working together simultaneously. Use {@link org.zanata.ZanataJpaTest#getEm()}
-    * for all other tests.
-    *
+    * This method is used to test multiple Entity Managers (or hibernate
+    * sessions) working together simultaneously. Use
+    * {@link org.zanata.ZanataJpaTest#getEm()} for all other tests.
+    * 
     * @return A new instance of an entity manager.
     */
    protected EntityManager newEntityManagerInstance()

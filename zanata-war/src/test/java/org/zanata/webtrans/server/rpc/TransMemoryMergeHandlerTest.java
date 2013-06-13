@@ -134,14 +134,14 @@ public class TransMemoryMergeHandlerTest
 
    private static TransMemoryResultItem tmResult(Long sourceId, int percent)
    {
-      TransMemoryResultItem resultItem = new TransMemoryResultItem(tmSource, tmTarget, 1D, percent);
+      TransMemoryResultItem resultItem = new TransMemoryResultItem(tmSource, tmTarget, ContentState.Approved, 1D, percent);
       resultItem.addSourceId(sourceId);
       return resultItem;
    }
 
    private static TransMemoryDetails tmDetail()
    {
-      return new TransMemoryDetails("", "", "project a", "master", "pot/msg.pot", "resId", null, null, null);
+      return new TransMemoryDetails("", "", "project a", "master", "pot/msg.pot", "resId", null, null, null, null);
    }
 
 
@@ -287,7 +287,7 @@ public class TransMemoryMergeHandlerTest
             .thenReturn(newArrayList(mostSimilarTM, tmResult(12L, 90), tmResult(13L, 80)));
       when(textFlowDAO.findById(tmResultSource.getId(), false)).thenReturn(tmResultSource);
       // Given: tm detail of text flow id 11 which has different doc id
-      TransMemoryDetails tmDetails = new TransMemoryDetails("", "", "project a", "master", "different/doc/id", "resId", "", "", new Date());
+      TransMemoryDetails tmDetails = new TransMemoryDetails("", "", "project a", "master", "different/doc/id", "resId", "", ContentState.Approved, "", new Date());
       when(getTransMemoryDetailsHandler.getTransMemoryDetail(hLocale, tmResultSource)).thenReturn(tmDetails);
 
       // When: execute the action

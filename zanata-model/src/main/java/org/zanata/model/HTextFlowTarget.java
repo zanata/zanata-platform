@@ -23,10 +23,12 @@ package org.zanata.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -60,8 +62,11 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Parameter;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zanata.common.ContentState;
 import org.zanata.common.HasContents;
+import org.zanata.common.LocaleId;
 import org.zanata.hibernate.search.ContentStateBridge;
 import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.hibernate.search.LocaleIdBridge;
@@ -83,13 +88,13 @@ import com.google.common.base.Objects;
 @Indexed
 @Setter
 @NoArgsConstructor
-public class HTextFlowTarget extends ModelEntityBase implements HasContents, HasSimpleComment, ITextFlowTargetHistory, Serializable
+public class HTextFlowTarget extends ModelEntityBase implements HasContents, HasSimpleComment, ITextFlowTargetHistory, Serializable, TargetContents
 {
 
    private static final long serialVersionUID = 302308010797605435L;
 
    private HTextFlow textFlow;
-   private HLocale locale;
+   private @Nonnull HLocale locale;
 
    private String content0;
    private String content1;
@@ -101,6 +106,9 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    private ContentState state = ContentState.New;
    private Integer textFlowRevision;
    private HPerson lastModifiedBy;
+
+   private HPerson translator;
+   private HPerson reviewer;
 
    private HSimpleComment comment;
 
@@ -114,7 +122,7 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    @Setter(AccessLevel.PRIVATE)
    private HTextFlowTargetHistory initialState;
 
-   public HTextFlowTarget(HTextFlow textFlow, HLocale locale)
+   public HTextFlowTarget(HTextFlow textFlow, @Nonnull HLocale locale)
    {
       this.locale = locale;
       this.textFlow = textFlow;
@@ -127,16 +135,23 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    @JoinColumn(name = "locale", nullable = false)
    @Field(analyze = Analyze.NO)
    @FieldBridge(impl = LocaleIdBridge.class)
-   public HLocale getLocale()
+   public @Nonnull HLocale getLocale()
    {
       return locale;
+   }
+
+   @Transient
+   @Override
+   public @Nonnull LocaleId getLocaleId()
+   {
+      return locale.getLocaleId();
    }
 
    @NotNull
    @Field(analyze = Analyze.NO)
    @FieldBridge(impl = ContentStateBridge.class)
    @Override
-   public ContentState getState()
+   public @Nonnull ContentState getState()
    {
       return state;
    }
@@ -149,12 +164,38 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
       return textFlowRevision;
    }
 
-   @ManyToOne(cascade = { CascadeType.MERGE })
+   @ManyToOne(cascade = { CascadeType.MERGE }, fetch = FetchType.LAZY)
    @JoinColumn(name = "last_modified_by_id", nullable = true)
    @Override
    public HPerson getLastModifiedBy()
    {
       return lastModifiedBy;
+   }
+
+   public void setLastModifiedBy(HPerson date)
+   {
+      lastModifiedBy = date;
+   }
+
+   @Override
+   @ManyToOne(cascade = { CascadeType.MERGE }, fetch = FetchType.LAZY)
+   @JoinColumn(name = "translated_by_id", nullable = true)
+   public HPerson getTranslator()
+   {
+      return translator;
+   }
+
+   @Override
+   @ManyToOne(cascade = { CascadeType.MERGE }, fetch = FetchType.LAZY)
+   @JoinColumn(name = "reviewed_by_id", nullable = true)
+   public HPerson getReviewer()
+   {
+      return reviewer;
+   }
+
+   public boolean hasReviewer()
+   {
+      return reviewer != null;
    }
 
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
@@ -384,6 +425,8 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
       setState(ContentState.New);
       setComment(null);
       setLastModifiedBy(null);
+      setTranslator(null);
+      setReviewer(null);
    }
 
    protected boolean logPersistence()

@@ -37,7 +37,7 @@ import org.zanata.webtrans.client.ui.HasSelectableSource;
 import org.zanata.webtrans.client.view.SourceContentsDisplay;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
-import org.zanata.webtrans.shared.util.FindByTransUnitIdPredicate;
+import org.zanata.webtrans.shared.util.Finds;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
@@ -84,7 +84,7 @@ public class SourceContentsPresenter implements ClickHandler, UserConfigChangeHa
       currentTransUnitId = id;
       Log.debug("source content selected id:" + id);
 
-      Optional<SourceContentsDisplay> sourceContentsView = findView(id);
+      Optional<SourceContentsDisplay> sourceContentsView = Finds.findDisplayById(displayList, id);
       if (sourceContentsView.isPresent())
       {
          List<HasSelectableSource> sourcePanelList = sourceContentsView.get().getSourcePanelList();
@@ -193,20 +193,12 @@ public class SourceContentsPresenter implements ClickHandler, UserConfigChangeHa
    @Override
    public void onTransUnitUpdated(TransUnitUpdatedEvent event)
    {
-      Optional<SourceContentsDisplay> sourceContentsView = findView(event.getUpdateInfo().getTransUnit().getId());
+      Optional<SourceContentsDisplay> sourceContentsView = Finds.findDisplayById(displayList, event.getUpdateInfo().getTransUnit().getId());
       if (sourceContentsView.isPresent())
       {
          sourceContentsView.get().updateTransUnitDetails(event.getUpdateInfo().getTransUnit());
          sourceContentsView.get().refresh();
       }
-   }
-
-   /**
-    * Find a source display for the given trans unit if it is present on the page.
-    */
-   private Optional<SourceContentsDisplay> findView(TransUnitId id)
-   {
-      return Iterables.tryFind(displayList, new FindByTransUnitIdPredicate(id));
    }
 
    /**
@@ -220,7 +212,7 @@ public class SourceContentsPresenter implements ClickHandler, UserConfigChangeHa
     */
    public Optional<String> getSourceContent(TransUnitId id)
    {
-      Optional<SourceContentsDisplay> view = findView(id);
+      Optional<SourceContentsDisplay> view = Finds.findDisplayById(displayList, id);
       if (view.isPresent())
       {
          List<HasSelectableSource> sourcePanelList = view.get().getSourcePanelList();

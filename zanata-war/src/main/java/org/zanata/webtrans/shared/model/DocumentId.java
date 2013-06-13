@@ -1,10 +1,14 @@
 package org.zanata.webtrans.shared.model;
 
+import java.io.Serializable;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 //@Immutable
-public class DocumentId implements Identifier<Long>, IsSerializable
+public class DocumentId implements Identifier<Long>, IsSerializable, Serializable
 {
+   private static final long serialVersionUID = 1L;
+
    private Long id;
 
    private String docId;

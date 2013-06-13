@@ -24,6 +24,7 @@ package org.zanata.webtrans.client.service;
 import java.util.List;
 
 import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.ValidationId;
 
@@ -38,7 +39,7 @@ import com.google.common.base.Strings;
  */
 public class GetTransUnitActionContext
 {
-   private DocumentId documentId;
+   private DocumentInfo document;
    private String findMessage;
    private int offset = 0;
    private int count = 5; //this should be set to UserConfigHolder.getPageSize()
@@ -49,14 +50,14 @@ public class GetTransUnitActionContext
    private TransUnitId targetTransUnitId;
    private List<ValidationId> validationIds;
 
-   public GetTransUnitActionContext(DocumentId documentId)
+   public GetTransUnitActionContext(DocumentInfo document)
    {
-      this.documentId = documentId;
+      this.document = document;
    }
 
    private GetTransUnitActionContext(GetTransUnitActionContext other)
    {
-      documentId = other.getDocumentId();
+      document = other.getDocument();
       findMessage = other.getFindMessage();
       offset = other.getOffset();
       count = other.getCount();
@@ -68,15 +69,15 @@ public class GetTransUnitActionContext
       validationIds = other.getValidationIds();
    }
 
-   public DocumentId getDocumentId()
+   public DocumentInfo getDocument()
    {
-      return documentId;
+      return document;
    }
 
-   public GetTransUnitActionContext changeDocument(DocumentId document)
+   public GetTransUnitActionContext changeDocument(DocumentInfo document)
    {
       GetTransUnitActionContext result = new GetTransUnitActionContext(this);
-      result.documentId = document;
+      result.document = document;
       return result;
    }
 
@@ -188,12 +189,23 @@ public class GetTransUnitActionContext
       return result;
    }
 
+   public GetTransUnitActionContext setAcceptAll()
+   {
+      GetTransUnitActionContext result = new GetTransUnitActionContext(this);
+      result.filterTranslated = false;
+      result.filterNeedReview = false;
+      result.filterHasError = false;
+      result.filterUntranslated = false;
+      result.findMessage = null;
+      return result;
+   }
+
    @Override
    public String toString()
    {
       // @formatter:off
       return Objects.toStringHelper(this).
-            add("documentId", documentId).
+            add("document", document).
             add("findMessage", findMessage).
             add("offset", offset).
             add("count", count).
@@ -234,7 +246,7 @@ public class GetTransUnitActionContext
             || filterUntranslated != newContext.filterUntranslated
             || filterHasError != newContext.filterHasError
             || offset != newContext.offset
-            || !documentId.equals(newContext.documentId)
+            || !document.equals(newContext.document)
             || !Objects.equal(findMessage, newContext.findMessage);
       // @formatter:on
    }

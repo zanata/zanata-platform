@@ -2,6 +2,7 @@ package org.zanata.webtrans.client.service;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.*;
+import static org.zanata.model.TestFixture.*;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
@@ -26,6 +27,7 @@ import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -100,15 +102,16 @@ public class HistoryEventHandlerServiceTest
    {
       HistoryToken token = new HistoryToken();
       token.setDocumentPath("doc/a.po");
-      DocumentId documentId = new DocumentId(new Long(1), "");
-      when(documentListPresenter.getDocumentId("doc/a.po")).thenReturn(documentId);
+      DocumentInfo document = TestFixture.documentInfo(99, "doc/a.po");
+      when(documentListPresenter.getDocumentId("doc/a.po")).thenReturn(document.getId());
+      when(documentListPresenter.getDocumentInfo(document.getId())).thenReturn(document);
 
-      service.processForAppPresenter(documentId);
+      service.processForAppPresenter(document.getId());
 
-      verify(appPresenter).selectDocument(documentId);
+      verify(appPresenter).selectDocument(document.getId());
       verify(eventBus).fireEvent(eventCaptor.capture());
       DocumentSelectionEvent documentSelectionEvent = TestFixture.extractFromEvents(eventCaptor.getAllValues(), DocumentSelectionEvent.class);
-      assertThat(documentSelectionEvent.getDocumentId(), Matchers.equalTo(documentId));
+      assertThat(documentSelectionEvent.getDocumentId(), Matchers.equalTo(document.getId()));
 
    }
 
@@ -188,10 +191,12 @@ public class HistoryEventHandlerServiceTest
       token.setDocumentPath("doc/path");
       token.setProjectSearchReplacement("replacement");
       when(historyChangeEvent.getValue()).thenReturn(token.toTokenString());
-      DocumentId documentId = new DocumentId(new Long(1), "");
+      DocumentInfo documentInfo = TestFixture.documentInfo(1, "doc/path");
+      DocumentId documentId = documentInfo.getId();
       when(documentListPresenter.getDocumentId("doc/path")).thenReturn(documentId);
+      when(documentListPresenter.getDocumentInfo(documentId)).thenReturn(documentInfo);
       when(appPresenter.getSelectedDocIdOrNull()).thenReturn(new DocumentId(new Long(99), ""));
-      contextHolder.updateContext(new GetTransUnitActionContext(documentId));
+      contextHolder.updateContext(new GetTransUnitActionContext(documentInfo(99, "")));
 
       // When:
       service.onValueChange(historyChangeEvent);
@@ -204,6 +209,7 @@ public class HistoryEventHandlerServiceTest
       inOrder.verify(documentListPresenter).getDocumentId(token.getDocumentPath());
       inOrder.verify(appPresenter).getSelectedDocIdOrNull();
       inOrder.verify(appPresenter).selectDocument(documentId);
+      inOrder.verify(documentListPresenter).getDocumentInfo(documentId);
       inOrder.verify(eventBus).fireEvent(Mockito.isA(DocumentSelectionEvent.class));
       inOrder.verify(eventBus).fireEvent(Mockito.isA(FindMessageEvent.class));
       inOrder.verify(appPresenter).showView(token.getView());
@@ -223,8 +229,10 @@ public class HistoryEventHandlerServiceTest
       token.setProjectSearchReplacement("replacement");
       token.setTextFlowId("1");
       when(historyChangeEvent.getValue()).thenReturn(token.toTokenString());
-      DocumentId documentId = new DocumentId(new Long(1), "");
+      DocumentInfo documentInfo = TestFixture.documentInfo(1, "doc/path");
+      DocumentId documentId = documentInfo.getId();
       when(documentListPresenter.getDocumentId("doc/path")).thenReturn(documentId);
+      when(documentListPresenter.getDocumentInfo(documentId)).thenReturn(documentInfo);
       when(appPresenter.getSelectedDocIdOrNull()).thenReturn(new DocumentId(new Long(99), ""));
       contextHolder.updateContext(null);
 
@@ -238,9 +246,11 @@ public class HistoryEventHandlerServiceTest
       inOrder.verify(searchResultsPresenter).updateReplacementText(token.getProjectSearchReplacement());
 
       inOrder.verify(documentListPresenter).getDocumentId(token.getDocumentPath());
+      inOrder.verify(documentListPresenter).getDocumentInfo(documentId);
       inOrder.verify(eventBus).fireEvent(Mockito.isA(InitEditorEvent.class));
       inOrder.verify(appPresenter).getSelectedDocIdOrNull();
       inOrder.verify(appPresenter).selectDocument(documentId);
+      inOrder.verify(documentListPresenter).getDocumentInfo(documentId);
       inOrder.verify(eventBus).fireEvent(Mockito.isA(DocumentSelectionEvent.class));
       inOrder.verify(eventBus).fireEvent(Mockito.isA(FindMessageEvent.class));
       inOrder.verify(appPresenter).showView(token.getView());
@@ -296,7 +306,7 @@ public class HistoryEventHandlerServiceTest
    public void processBookmarkedTextFlow()
    {
       // Given: everything works
-      contextHolder.updateContext(new GetTransUnitActionContext(new DocumentId(new Long(9), "")));
+      contextHolder.updateContext(new GetTransUnitActionContext(TestFixture.documentInfo(99, "")));
       HistoryToken token = new HistoryToken();
       token.setTextFlowId("111");
       when(stateHolder.getPageCount()).thenReturn(10);

@@ -34,7 +34,6 @@ import net.sf.ehcache.CacheManager;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.util.OpenBitSet;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
@@ -69,7 +68,6 @@ import com.google.common.cache.CacheLoader;
  */
 @Name("translationStateCacheImpl")
 @Scope(ScopeType.APPLICATION)
-@AutoCreate
 public class TranslationStateCacheImpl implements TranslationStateCache
 {
    private static final String BASE = TranslationStateCacheImpl.class.getName();
@@ -203,7 +201,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache
       OpenBitSet bitSet = translatedTextFlowCache.get(localeId);
       if (bitSet != null)
       {
-         boolean translated = newState == ContentState.Approved;
+         boolean translated = newState.isTranslated();
          if (translated)
          {
             bitSet.set(textFlowId);

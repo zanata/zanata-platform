@@ -102,6 +102,7 @@ public class TransMemoryDetailsPresenter extends WidgetPresenter<TransMemoryDeta
          doc = item.getDocId();
          lastModifiedBy = item.getLastModifiedBy();
          lastModifiedDate = item.getLastModifiedDate();
+         display.setState(item.getState());
       }
 
       display.setSourceComment(sourceComment);

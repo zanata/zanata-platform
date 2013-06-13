@@ -39,7 +39,6 @@ import org.apache.lucene.util.Version;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -55,7 +54,6 @@ import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 @Name("translationMemoryQueryService")
-@AutoCreate
 @Scope(ScopeType.STATELESS)
 @Slf4j
 public class TranslationMemoryQueryServiceImpl implements TranslationMemoryQueryService
@@ -181,12 +179,18 @@ public class TranslationMemoryQueryServiceImpl implements TranslationMemoryQuery
       if (useTargetIndex)
       {
          TermQuery localeQuery = new TermQuery(new Term(IndexFieldLabels.LOCALE_ID_FIELD, targetLocale.getId()));
-         TermQuery stateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.Approved.toString()));
-
+         
+         TermQuery newStateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.New.toString()));
+         TermQuery needReviewStateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.NeedReview.toString()));
+         TermQuery rejectedReviewStateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.Rejected.toString()));
+         
          BooleanQuery targetQuery = new BooleanQuery();
          targetQuery.add(contentQuery, Occur.MUST);
          targetQuery.add(localeQuery, Occur.MUST);
-         targetQuery.add(stateQuery, Occur.MUST);
+         
+         targetQuery.add(newStateQuery, Occur.MUST_NOT);
+         targetQuery.add(needReviewStateQuery, Occur.MUST_NOT);
+         targetQuery.add(rejectedReviewStateQuery, Occur.MUST_NOT);
 
          return targetQuery;
       }

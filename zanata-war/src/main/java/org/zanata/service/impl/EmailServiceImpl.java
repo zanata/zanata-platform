@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -45,7 +44,6 @@ import org.zanata.service.EmailService;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Name("emailServiceImpl")
-@AutoCreate
 @Scope(ScopeType.STATELESS)
 public class EmailServiceImpl implements EmailService
 {

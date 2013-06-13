@@ -170,16 +170,18 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
    /**
     * Finds matching translations for a given document and locale.
     *
+    *
     * @param document The document for which to find equivalent translations.
     * @param locale The locale. Only translations for this locale are fetched.
     * @param checkContext Whether to check the text flow's context for matches.
     * @param checkDocument Whether to check the text flow's document for matches.
     * @param checkProject Whether to check the text flow's project for matches.
+    * @param requireTranslationReview whether document belongs to a reviewable project iteration
     * @return A scrollable result set (in case there is a large result set). Position 0 of the
     * result set is the matching translation (HTextFlowTarget), position 1 is the HTextFlow
     * in the document that it matches against.
     */
-   public ScrollableResults findMatchingTranslations(HDocument document, HLocale locale, boolean checkContext, boolean checkDocument, boolean checkProject)
+   public ScrollableResults findMatchingTranslations(HDocument document, HLocale locale, boolean checkContext, boolean checkDocument, boolean checkProject, boolean requireTranslationReview)
    {
       StringBuilder queryStr = new StringBuilder(
 "select textFlow, max(match.id) " +
@@ -189,10 +191,11 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
             "textFlow.document = :document " +
             "and textFlow.contentHash = match.textFlow.contentHash " +
             "and match.locale = :locale " +
-            "and match.state = :approvedState " +
+            // It's fine to reuse translation in Translated state even if it came from a reviewable project
+            "and match.state in (:approvedState, :translatedState) " +
             // Do not fetch results for already approved text flow targets
             "and (match.locale not in indices(textFlow.targets) " +
-               "or :approvedState != (select t.state from HTextFlowTarget t where t.textFlow = textFlow and t.locale = :locale) ) " +
+               "or :finalState != (select t.state from HTextFlowTarget t where t.textFlow = textFlow and t.locale = :locale) ) " +
             // Do not reuse its own translations
             "and match.textFlow != textFlow "
       );
@@ -214,7 +217,16 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
 
       q.setParameter("document", document)
        .setParameter("locale", locale)
-       .setParameter("approvedState", ContentState.Approved);
+       .setParameter("approvedState", ContentState.Approved)
+       .setParameter("translatedState", ContentState.Translated);
+      if (requireTranslationReview)
+      {
+         q.setParameter("finalState", ContentState.Approved);
+      }
+      else
+      {
+         q.setParameter("finalState", ContentState.Translated);
+      }
       q.setCacheable(false); // don't try to cache scrollable results
       q.setComment("TextFlowTargetDAO.findMatchingTranslations");
       return q.scroll();

@@ -12,6 +12,7 @@ import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -73,10 +74,11 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String>
       DocumentId documentId = documentListPresenter.getDocumentId(newHistoryToken.getDocumentPath());
       if (!getTransUnitActionContextHolder.isContextInitialized() && documentId != null)
       {
+         DocumentInfo documentInfo = documentListPresenter.getDocumentInfo(documentId);
          // if editor is not yet initialized, we want to load document with search and target trans unit all at once
          Long textFlowId = newHistoryToken.getTextFlowId();
          TransUnitId transUnitId = textFlowId == null ? null : new TransUnitId(textFlowId);
-         getTransUnitActionContextHolder.initContext(documentId, newHistoryToken.getSearchText(), transUnitId);
+         getTransUnitActionContextHolder.initContext(documentInfo, newHistoryToken.getSearchText(), transUnitId);
          eventBus.fireEvent(new InitEditorEvent());
       }
 
@@ -112,7 +114,7 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String>
 
       if (docId != null)
       {
-         eventBus.fireEvent(new DocumentSelectionEvent(docId));
+         eventBus.fireEvent(new DocumentSelectionEvent(documentListPresenter.getDocumentInfo(docId)));
       }
    }
 

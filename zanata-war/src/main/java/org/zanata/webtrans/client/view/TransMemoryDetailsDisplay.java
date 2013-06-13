@@ -3,6 +3,8 @@ package org.zanata.webtrans.client.view;
 import java.util.Date;
 import java.util.List;
 
+import org.zanata.common.ContentState;
+
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 /**
@@ -45,4 +47,6 @@ public interface TransMemoryDetailsDisplay extends WidgetDisplay
 
       void onDocumentListBoxChanged();
    }
+
+   void setState(ContentState state);
 }

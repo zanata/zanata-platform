@@ -70,6 +70,7 @@ import org.hibernate.criterion.Restrictions;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.security.AuthorizationException;
 import org.jboss.seam.util.Hex;
 import org.zanata.adapter.FileFormatAdapter;
 import org.zanata.adapter.po.PoWriter2;
@@ -81,6 +82,7 @@ import org.zanata.common.MergeType;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.exception.ChunkUploadException;
 import org.zanata.exception.HashMismatchException;
 import org.zanata.exception.VirusDetectedException;
 import org.zanata.exception.ZanataServiceException;
@@ -104,7 +106,9 @@ import org.zanata.service.FileSystemService.DownloadDescriptorProperties;
 import org.zanata.service.TranslationFileService;
 import org.zanata.service.TranslationService;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Stopwatch;
+import com.google.common.base.Strings;
 
 import com.google.common.io.ByteStreams;
 
@@ -151,6 +155,7 @@ public class FileService implements FileResource
    // FIXME remove when using DAO for HDocumentUpload
    @In
    private Session session;
+   private static final HLocale NULL_LOCALE = null;
 
    @Override
    @GET
@@ -174,187 +179,174 @@ public class FileService implements FileResource
                                      @QueryParam("docId") String docId,
                                      @MultipartForm DocumentFileUploadForm uploadForm )
    {
-      Response errorResponse = checkUploadPreconditions(projectSlug, iterationSlug, docId, uploadForm);
-      if (errorResponse != null)
-      {
-         return errorResponse;
-      }
-
-      if (!isDocumentUploadAllowed(projectSlug, iterationSlug))
-      {
-         return Response.status(Status.FORBIDDEN)
-               .entity(new ChunkUploadResponse("You do not have permission to upload source documents to project-version \""
-                      + projectSlug + ":" + iterationSlug + "\"."))
-               .build();
-      }
-
-      String fileType = uploadForm.getFileType();
-      boolean isPotFile = fileType.equals(".pot");
-      if (!isPotFile && !translationFileServiceImpl.hasAdapterFor(fileType))
-      {
-         return Response.status(Status.BAD_REQUEST)
-               .entity(new ChunkUploadResponse("The type \"" + fileType + "\" specified in form parameter 'type' is not valid for a source file on this server."))
-               .build();
-      }
-
-      boolean isNewDocument = documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId) == null;
-      boolean useOfflinePo = !isNewDocument && !translationFileServiceImpl.isPoDocument(projectSlug, iterationSlug, docId);
-
-      boolean isSinglePart = uploadForm.getFirst() && uploadForm.getLast();
-
-      int uploadChunks = 1;
-
-      if (isSinglePart && isPotFile)
-      {
-         parsePotFile(uploadForm.getFileStream(), docId, fileType, projectSlug, iterationSlug, useOfflinePo);
-         return sourceUploadSuccessResponse(isNewDocument, uploadChunks);
-      }
-
-      // persist bytes to file
-      File tempFile = null;
-      if (isSinglePart)
-      {
-         // single part, can go straight to temp file.
-         try
-         {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            InputStream fileContents = new DigestInputStream(uploadForm.getFileStream(), md);
-            tempFile = translationFileServiceImpl.persistToTempFile(fileContents);
-            String md5hash = new String(Hex.encodeHex(md.digest()));
-            if (!md5hash.equals(uploadForm.getHash()))
-            {
-               return Response.status(Status.CONFLICT)
-                     .entity(new ChunkUploadResponse("MD5 hash \"" + uploadForm.getHash()
-                           + "\" sent with request does not match server-generated hash \""
-                           + md5hash + "\". Aborted upload operation."))
-                     .build();
-            }
-         }
-         catch (ZanataServiceException e) {
-            return Response.status(Status.INTERNAL_SERVER_ERROR)
-                  .entity(e)
-                  .build();
-         }
-         catch (NoSuchAlgorithmException e)
-         {
-            log.error("MD5 hash algorithm not available", e);
-            return Response.status(Status.INTERNAL_SERVER_ERROR)
-                  .entity(e)
-                  .build();
-         }
-      }
-      else if (uploadForm.getFirst())
-      {
-         HDocumentUpload upload;
-         try {
-            upload = saveFirstUploadPart(projectSlug, iterationSlug, docId, uploadForm, fileType, null);
-         }
-         catch (IOException e)
-         {
-            log.error("failed to create database storage object for part file", e);
-            return Response.status(Status.INTERNAL_SERVER_ERROR)
-                  .entity(e).build();
-         }
-         return Response.status(Status.ACCEPTED)
-               .entity(new ChunkUploadResponse(upload.getId(), upload.getParts().size(), true, "First chunk accepted, awaiting remaining chunks."))
-               .build();
-      }
-      else
-      {
-         HDocumentUpload upload;
-         try
-         {
-            upload = saveSubsequentUploadPart(uploadForm);
-         }
-         catch (IOException e)
-         {
-            log.error("failed to create database storage object for part file", e);
-            return Response.status(Status.INTERNAL_SERVER_ERROR)
-                  .entity(e).build();
-         }
-
-         if (!uploadForm.getLast())
-         {
-            return Response.status(Status.ACCEPTED)
-                  .entity(new ChunkUploadResponse(upload.getId(), upload.getParts().size(), true, "Chunk accepted, awaiting remaining chunks."))
-                  .build();
-         }
-
-         uploadChunks = upload.getParts().size();
-
-         try
-         {
-            tempFile = combineToTempFile(upload);
-         }
-         catch (HashMismatchException e)
-         {
-            return Response.status(Status.CONFLICT)
-                  .entity(new ChunkUploadResponse("MD5 hash \"" + e.getExpectedHash()
-                        + "\" sent with initial request does not match server-generated hash of combined parts \""
-                        + e.getGeneratedHash() + "\". Upload aborted. Retry upload from first part."))
-                        .build();
-         }
-         catch (SQLException e)
-         {
-            log.error("Error while retreiving document upload part contents", e);
-            throw new RuntimeException(e);
-         }
-         finally
-         {
-            // no more need for upload
-            session.delete(upload);
-         }
-      }
-
-      // have entire file, proceed with parsing
-
-      if (isPotFile)
-      {
-         try
-         {
-            parsePotFile(new FileInputStream(tempFile), docId, fileType, projectSlug, iterationSlug, useOfflinePo);
-         }
-         catch (FileNotFoundException e)
-         {
-            return Response.status(Status.INTERNAL_SERVER_ERROR)
-                  .entity(e)
-                  .build();
-         }
-         translationFileServiceImpl.removeTempFile(tempFile);
-         return sourceUploadSuccessResponse(isNewDocument, uploadChunks);
-      }
-
-      // is adapter file
       try
       {
-         virusScan(tempFile);
+         checkSourceUploadPreconditions(projectSlug, iterationSlug, docId, uploadForm);
+
+         Optional<File> tempFile;
+         int totalChunks;
+
+         if (isSinglePart(uploadForm))
+         {
+            totalChunks = 1;
+            tempFile = Optional.<File>absent();
+         }
+         else
+         {
+            HDocumentUpload upload = saveUploadPart(projectSlug, iterationSlug, docId, NULL_LOCALE, uploadForm);
+            totalChunks = upload.getParts().size();
+            if (!uploadForm.getLast())
+            {
+               return Response.status(Status.ACCEPTED)
+                     .entity(new ChunkUploadResponse(upload.getId(), totalChunks, true,
+                           "Chunk accepted, awaiting remaining chunks."))
+                     .build();
+            }
+            tempFile = Optional.of(combineToTempFileAndDeleteUploadRecord(upload));
+         }
+
+         if (uploadForm.getFileType().equals(".pot"))
+         {
+            InputStream potStream = getInputStream(tempFile, uploadForm);
+            parsePotFile(potStream, projectSlug, iterationSlug, docId, uploadForm);
+         }
+         else
+         {
+            if (!tempFile.isPresent())
+            {
+               tempFile = Optional.of(persistTempFileFromUpload(uploadForm));
+            }
+            processAdapterFile(tempFile.get(), projectSlug, iterationSlug, docId, uploadForm);
+         }
+         if (tempFile.isPresent())
+         {
+            tempFile.get().delete();
+         }
+         return sourceUploadSuccessResponse(isNewDocument(projectSlug, iterationSlug, docId), totalChunks);
+      }
+      catch (AuthorizationException e)
+      {
+         return Response.status(Status.UNAUTHORIZED)
+         .entity(new ChunkUploadResponse(e.getMessage()))
+         .build();
       }
       catch (VirusDetectedException e)
       {
          log.warn("File failed virus scan: {}", e.getMessage());
-         return Response.status(Status.BAD_REQUEST).entity("uploaded file did not pass virus scan").build();
+         return Response.status(Status.BAD_REQUEST)
+               .entity(new ChunkUploadResponse("uploaded file did not pass virus scan"))
+               .build();
       }
+      catch (ChunkUploadException e)
+      {
+         return Response.status(e.getStatusCode())
+               .entity(new ChunkUploadResponse(e.getMessage()))
+               .build();
+      }
+      catch (FileNotFoundException e)
+      {
+         log.error("failed to create input stream from temp file", e);
+         return Response.status(Status.INTERNAL_SERVER_ERROR)
+               .entity(e).build();
+      }
+   }
+
+   private InputStream getInputStream(Optional<File> tempFile, DocumentFileUploadForm uploadForm) throws FileNotFoundException
+   {
+      if (tempFile.isPresent())
+      {
+         return new FileInputStream(tempFile.get());
+      }
+      else
+      {
+         return uploadForm.getFileStream();
+      }
+   }
+
+   private void checkSourceUploadPreconditions(String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm)
+   {
+      checkUploadPreconditions(projectSlug, iterationSlug, docId, uploadForm);
+      checkSourceUploadAllowed(projectSlug, iterationSlug);
+      checkValidSourceUploadType(uploadForm);
+   }
+
+   private void checkSourceUploadAllowed(String projectSlug, String iterationSlug)
+   {
+      if (!isDocumentUploadAllowed(projectSlug, iterationSlug))
+      {
+         throw new ChunkUploadException(Status.FORBIDDEN,
+               "You do not have permission to upload source documents to project-version \""
+               + projectSlug + ":" + iterationSlug + "\".");
+      }
+   }
+
+   private void checkValidSourceUploadType(DocumentFileUploadForm uploadForm)
+   {
+      if (!uploadForm.getFileType().equals(".pot")
+            && !translationFileServiceImpl.hasAdapterFor(DocumentType.typeFor(uploadForm.getFileType())))
+      {
+         throw new ChunkUploadException(Status.BAD_REQUEST,
+               "The type \"" + uploadForm.getFileType() + "\" specified in form parameter 'type' "
+               + "is not valid for a source file on this server.");
+      }
+   }
+
+   private File persistTempFileFromUpload(DocumentFileUploadForm uploadForm)
+   {
+      File tempFile;
+      try
+      {
+         MessageDigest md = MessageDigest.getInstance("MD5");
+         InputStream fileContents = new DigestInputStream(uploadForm.getFileStream(), md);
+         tempFile = translationFileServiceImpl.persistToTempFile(fileContents);
+         String md5hash = new String(Hex.encodeHex(md.digest()));
+         if (!md5hash.equals(uploadForm.getHash()))
+         {
+            throw new ChunkUploadException(Status.CONFLICT,
+                  "MD5 hash \"" + uploadForm.getHash() +
+                  "\" sent with request does not match server-generated hash. " +
+                  "Aborted upload operation.");
+         }
+      }
+      catch (NoSuchAlgorithmException e)
+      {
+         throw new ChunkUploadException(Status.INTERNAL_SERVER_ERROR,
+               "MD5 hash algorithm not available", e);
+      }
+      return tempFile;
+   }
+
+   private void processAdapterFile(File tempFile, String projectSlug, String iterationSlug,
+         String docId, DocumentFileUploadForm uploadForm) throws VirusDetectedException
+   {
+      virusScan(tempFile);
 
       HDocument document;
+      Optional<String> params;
+      params = Optional.fromNullable(Strings.emptyToNull(uploadForm.getAdapterParams()));
+      if (!params.isPresent())
+      {
+         params = documentDAO.getAdapterParams(projectSlug, iterationSlug, docId);
+      }
       try {
-         Resource doc = translationFileServiceImpl.parseUpdatedDocumentFile(tempFile.toURI(), docId, fileType);
+         Resource doc = translationFileServiceImpl.parseUpdatedAdapterDocumentFile(tempFile.toURI(), docId, uploadForm.getFileType(), params);
          doc.setLang( new LocaleId("en-US") );
          // TODO Copy Trans values
          document = documentServiceImpl.saveDocument(projectSlug, iterationSlug, doc, Collections.<String>emptySet(), false);
       }
       catch (SecurityException e)
       {
-         return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
+         throw new ChunkUploadException(Status.INTERNAL_SERVER_ERROR, e.getMessage(), e);
       }
       catch (ZanataServiceException e)
       {
-         return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
+         throw new ChunkUploadException(Status.INTERNAL_SERVER_ERROR, e.getMessage(), e);
       }
 
       HRawDocument rawDocument = new HRawDocument();
       rawDocument.setDocument(document);
       rawDocument.setContentHash(uploadForm.getHash());
-      rawDocument.setType(DocumentType.typeFor(fileType));
+      rawDocument.setType(DocumentType.typeFor(uploadForm.getFileType()));
       rawDocument.setUploadedBy(identity.getCredentials().getUsername());
       FileInputStream tempFileStream;
       try
@@ -364,18 +356,63 @@ public class FileService implements FileResource
       catch (FileNotFoundException e)
       {
          log.error("Failed to open stream from temp source file", e);
-         return Response.status(Status.INTERNAL_SERVER_ERROR)
-               .entity("Error saving uploaded document on server, download in original format may fail.\n")
-               .build();
+         throw new ChunkUploadException(Status.INTERNAL_SERVER_ERROR,
+               "Error saving uploaded document on server, download in original format may fail.\n",
+               e);
       }
       LobHelper lobHelper = documentDAO.getLobHelper();
       Blob fileContents = lobHelper.createBlob(tempFileStream, (int)tempFile.length());
       rawDocument.setContent(fileContents);
+      if (params.isPresent())
+      {
+         rawDocument.setAdapterParameters(params.get());
+      }
       documentDAO.addRawDocument(document, rawDocument);
       documentDAO.flush();
 
       translationFileServiceImpl.removeTempFile(tempFile);
-      return sourceUploadSuccessResponse(isNewDocument, uploadChunks);
+   }
+
+   private File combineToTempFileAndDeleteUploadRecord(HDocumentUpload upload)
+   {
+      File tempFile;
+      try
+      {
+         tempFile = combineToTempFile(upload);
+      }
+      catch (HashMismatchException e)
+      {
+         throw new ChunkUploadException(Status.CONFLICT,
+               "MD5 hash \"" + e.getExpectedHash() + "\" sent with initial request does not match" +
+               " server-generated hash of combined parts \"" + e.getGeneratedHash() +
+               "\". Upload aborted. Retry upload from first part.");
+      }
+      catch (SQLException e)
+      {
+         throw new ChunkUploadException(Status.INTERNAL_SERVER_ERROR,
+               "Error while retreiving document upload part contents", e);
+      }
+      finally
+      {
+         // no more need for upload
+         session.delete(upload);
+      }
+      return tempFile;
+   }
+
+   private boolean isSinglePart(DocumentFileUploadForm uploadForm)
+   {
+      return uploadForm.getFirst() && uploadForm.getLast();
+   }
+
+   private boolean useOfflinePo(String projectSlug, String iterationSlug, String docId)
+   {
+      return !isNewDocument(projectSlug, iterationSlug, docId) && !translationFileServiceImpl.isPoDocument(projectSlug, iterationSlug, docId);
+   }
+
+   private boolean isNewDocument(String projectSlug, String iterationSlug, String docId)
+   {
+      return documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId) == null;
    }
 
    /**
@@ -457,13 +494,6 @@ public class FileService implements FileResource
       return tempFile;
    }
 
-   private HDocumentUpload saveSubsequentUploadPart(DocumentFileUploadForm uploadForm) throws IOException
-   {
-      HDocumentUpload upload = retrieveUploadObject(uploadForm);
-      saveUploadPart(uploadForm, upload);
-      return upload;
-   }
-
    private HDocumentUpload retrieveUploadObject(DocumentFileUploadForm uploadForm)
    {
       // TODO put in DAO
@@ -473,21 +503,20 @@ public class FileService implements FileResource
       return upload;
    }
 
-   private HDocumentUpload saveFirstUploadPart(String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm, String fileType, HLocale locale) throws IOException
+   private HDocumentUpload createMultipartUpload(String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm, HLocale locale)
    {
       HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
       HDocumentUpload newUpload = new HDocumentUpload();
       newUpload.setProjectIteration(projectIteration);
       newUpload.setDocId(docId);
-      newUpload.setType(DocumentType.typeFor(fileType));
+      newUpload.setType(DocumentType.typeFor(uploadForm.getFileType()));
       // locale intentionally left null for source
       newUpload.setLocale(locale);
       newUpload.setContentHash(uploadForm.getHash());
-      saveUploadPart(uploadForm, newUpload);
       return newUpload;
    }
 
-   private void saveUploadPart(DocumentFileUploadForm uploadForm, HDocumentUpload upload) throws IOException
+   private void saveUploadPart(DocumentFileUploadForm uploadForm, HDocumentUpload upload)
    {
       Blob partContent = session.getLobHelper().createBlob(uploadForm.getFileStream(), uploadForm.getSize().intValue());
       HDocumentUploadPart newPart = new HDocumentUploadPart();
@@ -497,107 +526,94 @@ public class FileService implements FileResource
       session.flush();
    }
 
-   private Response checkUploadPreconditions(String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm)
+   private void checkUploadPreconditions(String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm)
    {
       if (!identity.isLoggedIn())
       {
-         return Response.status(Status.UNAUTHORIZED)
-               .entity(new ChunkUploadResponse("Valid combination of username and api-key for this" +
-                                               " server were not included in the request."))
-               .build();
+         throw new AuthorizationException("Valid combination of username and api-key for this" +
+               " server were not included in the request.");
       }
 
       if (docId == null || docId.isEmpty())
       {
-         return Response.status(Status.PRECONDITION_FAILED)
-               .entity(new ChunkUploadResponse("Required query string parameter 'docId' was not found."))
-               .build();
+         throw new ChunkUploadException(Status.PRECONDITION_FAILED,
+               "Required query string parameter 'docId' was not found.");
       }
 
       if (uploadForm.getFileStream() == null)
       {
-         return Response.status(Status.PRECONDITION_FAILED)
-               .entity(new ChunkUploadResponse("Required form parameter 'file' containing file content was not found."))
-               .build();
+         throw new ChunkUploadException(Status.PRECONDITION_FAILED,
+               "Required form parameter 'file' containing file content was not found.");
       }
 
       if (uploadForm.getFirst() == null || uploadForm.getLast() == null)
       {
-         return Response.status(Status.PRECONDITION_FAILED)
-               .entity(new ChunkUploadResponse("Form parameters 'first' and 'last' must both be provided."))
-               .build();
+         throw new ChunkUploadException(Status.PRECONDITION_FAILED,
+               "Form parameters 'first' and 'last' must both be provided.");
       }
 
       if (!uploadForm.getFirst())
       {
          if (uploadForm.getUploadId() == null)
          {
-            return Response.status(Status.PRECONDITION_FAILED)
-                  .entity(new ChunkUploadResponse("Form parameter 'uploadId' must be provided when this is not the first part."))
-                  .build();
+            throw new ChunkUploadException(Status.PRECONDITION_FAILED,
+                  "Form parameter 'uploadId' must be provided when this is not the first part.");
          }
 
          HDocumentUpload upload = retrieveUploadObject(uploadForm);
          if (upload == null)
          {
-            return Response.status(Status.PRECONDITION_FAILED)
-                  .entity(new ChunkUploadResponse("No incomplete uploads found for uploadId '" + uploadForm.getUploadId() + "'."))
-                  .build();
+            throw new ChunkUploadException(Status.PRECONDITION_FAILED,
+                  "No incomplete uploads found for uploadId '" + uploadForm.getUploadId() + "'.");
          }
          if (!upload.getDocId().equals(docId))
          {
-            return Response.status(Status.PRECONDITION_FAILED)
-                  .entity(new ChunkUploadResponse("Supplied uploadId '" + uploadForm.getUploadId() + "' in request is not valid for document '" + docId + "'."))
-                  .build();
+            throw new ChunkUploadException(Status.PRECONDITION_FAILED,
+                  "Supplied uploadId '" + uploadForm.getUploadId()
+                  + "' in request is not valid for document '" + docId + "'.");
          }
       }
 
       String fileType = uploadForm.getFileType();
       if (fileType == null || fileType.isEmpty())
       {
-         return Response.status(Status.PRECONDITION_FAILED)
-               .entity(new ChunkUploadResponse("Required form parameter 'type' was not found."))
-               .build();
+         throw new ChunkUploadException(Status.PRECONDITION_FAILED,
+               "Required form parameter 'type' was not found.");
       }
 
       if (DocumentType.typeFor(fileType) == null)
       {
-         return Response.status(Status.PRECONDITION_FAILED)
-               .entity(new ChunkUploadResponse("Value '" + fileType + "' is not a recognized document type."))
-               .build();
+         throw new ChunkUploadException(Status.PRECONDITION_FAILED,
+               "Value '" + fileType + "' is not a recognized document type.");
       }
 
       String contentHash = uploadForm.getHash();
       if (contentHash == null || contentHash.isEmpty())
       {
-         return Response.status(Status.PRECONDITION_FAILED)
-               .entity(new ChunkUploadResponse("Required form parameter 'hash' was not found."))
-               .build();
+         throw new ChunkUploadException(Status.PRECONDITION_FAILED,
+               "Required form parameter 'hash' was not found.");
       }
 
       HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
       if (projectIteration == null)
       {
-         return Response.status(Status.NOT_FOUND)
-               .entity(new ChunkUploadResponse("The specified project-version \"" + projectSlug + ":" + iterationSlug + "\" does not exist on this server."))
-               .build();
+         throw new ChunkUploadException(Status.NOT_FOUND,
+               "The specified project-version \"" + projectSlug + ":" + iterationSlug +
+               "\" does not exist on this server.");
       }
 
       if (projectIteration.getProject().getStatus() != EntityStatus.ACTIVE)
       {
-         return Response.status(Status.FORBIDDEN)
-               .entity(new ChunkUploadResponse("The project \"" + projectSlug + "\" is not active. Document upload is not allowed."))
-               .build();
+         throw new ChunkUploadException(Status.FORBIDDEN,
+               "The project \"" + projectSlug + "\" is not active. Document upload is not allowed.");
       }
 
       if (projectIteration.getStatus() != EntityStatus.ACTIVE)
       {
-         return Response.status(Status.FORBIDDEN)
-               .entity(new ChunkUploadResponse("The project-version \"" + projectSlug + ":" + iterationSlug + "\" is not active. Document upload is not allowed."))
-               .build();
+         throw new ChunkUploadException(Status.FORBIDDEN,
+               "The project-version \"" + projectSlug + ":" + iterationSlug +
+               "\" is not active. Document upload is not allowed.");
       }
-
-      return null;
    }
 
    private boolean isDocumentUploadAllowed(String projectSlug, String iterationSlug)
@@ -607,10 +623,15 @@ public class FileService implements FileResource
             && identity != null && identity.hasPermission("import-template", projectIteration);
    }
 
+   private void parsePotFile(InputStream potStream, String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm)
+   {
+      parsePotFile(potStream, docId, uploadForm.getFileType(), projectSlug, iterationSlug, useOfflinePo(projectSlug, iterationSlug, docId));
+   }
+
    private void parsePotFile(InputStream documentStream, String docId, String fileType, String projectSlug, String iterationSlug, boolean asOfflinePo)
    {
       Resource doc;
-      doc = translationFileServiceImpl.parseUpdatedDocumentFile(documentStream, docId, fileType, asOfflinePo);
+      doc = translationFileServiceImpl.parseUpdatedPotFile(documentStream, docId, fileType, asOfflinePo);
       doc.setLang( new LocaleId("en-US") );
       // TODO Copy Trans values
       documentServiceImpl.saveDocument(projectSlug, iterationSlug, doc, new StringSet(ExtensionType.GetText.toString()), false);
@@ -639,7 +660,7 @@ public class FileService implements FileResource
       return response;
    }
 
-
+   // TODO this shares a lot of logic with .uploadSourceFile(), try to unify.
    @Override
    @POST
    @Path(TRANSLATION_UPLOAD_TEMPLATE)
@@ -652,141 +673,117 @@ public class FileService implements FileResource
                                           @QueryParam("merge") String merge,
                                           @MultipartForm DocumentFileUploadForm uploadForm )
    {
-      Response errorResponse = checkUploadPreconditions(projectSlug, iterationSlug, docId, uploadForm);
-      if (errorResponse != null)
+      HLocale locale;
+      try
       {
-         return errorResponse;
-      }
+         checkTranslationUploadPreconditions(projectSlug, iterationSlug, docId, localeId, uploadForm);
+         locale = findHLocale(localeId);
+         checkTranslationUploadAllowed(projectSlug, iterationSlug, localeId, locale);
 
-      HLocale locale = localeDAO.findByLocaleId(new LocaleId(localeId));
-      if (localeId == null)
-      {
-         return Response.status(Status.NOT_FOUND)
-               .entity(new ChunkUploadResponse("The specified locale \"" + localeId + "\" does not exist on this server."))
-               .build();
-      }
+         Optional<File> tempFile;
+         int totalChunks;
 
-      if (!isTranslationUploadAllowed(projectSlug, iterationSlug, locale))
-      {
-         return Response.status(Status.FORBIDDEN)
-               .entity(new ChunkUploadResponse("You do not have permission to upload translations for locale \"" + localeId
-                     + "\" to project-version \"" + projectSlug + ":" + iterationSlug + "\"."))
-               .build();
-      }
-
-      if (documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId) == null)
-      {
-         return Response.status(Status.NOT_FOUND)
-               .entity(new ChunkUploadResponse("No document with id \"" + docId + "\" exists in project-version \"" + projectSlug + ":" + iterationSlug + "\"."))
-               .build();
-      }
-
-
-      String fileType = uploadForm.getFileType();
-      boolean isPoFile = fileType.equals(".po");
-      if (!isPoFile && !translationFileServiceImpl.hasAdapterFor(fileType))
-      {
-         return Response.status(Status.BAD_REQUEST)
-               .entity(new ChunkUploadResponse("The type \"" + fileType + "\" specified in form parameter 'type' is not valid for a translation file on this server."))
-               .build();
-      }
-
-      InputStream fileContents;
-      int acceptedChunks;
-      if (uploadForm.getFirst() && uploadForm.getLast())
-      {
-         // TODO wrap in hash digester and check hash
-         fileContents = uploadForm.getFileStream();
-         acceptedChunks = 1;
-      }
-      else if (uploadForm.getFirst())
-      {
-         HDocumentUpload upload;
-         try
+         if (isSinglePart(uploadForm))
          {
-            upload = saveFirstUploadPart(projectSlug, iterationSlug, docId, uploadForm, fileType, locale);
+            totalChunks = 1;
+            tempFile = Optional.<File>absent();
          }
-         catch (IOException e)
+         else
          {
-            log.error("failed to create database storage object for part file", e);
-            return Response.status(Status.INTERNAL_SERVER_ERROR)
-                  .entity(e).build();
+            HDocumentUpload upload = saveUploadPart(projectSlug, iterationSlug, docId, locale, uploadForm);
+            totalChunks = upload.getParts().size();
+            if (!uploadForm.getLast())
+            {
+               return Response.status(Status.ACCEPTED)
+                     .entity(new ChunkUploadResponse(upload.getId(), totalChunks, true,
+                           "Chunk accepted, awaiting remaining chunks."))
+                     .build();
+            }
+            tempFile = Optional.of(combineToTempFileAndDeleteUploadRecord(upload));
          }
-         return Response.status(Status.ACCEPTED)
-               .entity(new ChunkUploadResponse(upload.getId(), upload.getParts().size(), true, "First chunk accepted, awaiting remaining chunks."))
+
+         TranslationsResource transRes;
+         if (uploadForm.getFileType().equals(".po"))
+         {
+            InputStream poStream = getInputStream(tempFile, uploadForm);
+            transRes = translationFileServiceImpl.parsePoFile(poStream, projectSlug, iterationSlug, docId);
+         }
+         else
+         {
+            if (!tempFile.isPresent())
+            {
+               tempFile = Optional.of(persistTempFileFromUpload(uploadForm));
+            }
+            // FIXME this is misusing the 'filename' field. the method should probably take a
+            // type anyway
+            transRes = translationFileServiceImpl.parseAdapterTranslationFile(tempFile.get(),
+                  projectSlug, iterationSlug, docId, localeId, uploadForm.getFileType());
+         }
+         if (tempFile.isPresent())
+         {
+            tempFile.get().delete();
+         }
+
+         Set<String> extensions = newExtensions(uploadForm.getFileType().equals(".po"));
+         // TODO useful error message for failed saving?
+         List<String> warnings = translationServiceImpl.translateAllInDoc(projectSlug, iterationSlug,
+               docId, locale.getLocaleId(), transRes, extensions, mergeTypeFromString(merge));
+
+         return transUploadResponse(totalChunks, warnings);
+      }
+      catch (AuthorizationException e)
+      {
+         return Response.status(Status.UNAUTHORIZED)
+               .entity(new ChunkUploadResponse(e.getMessage()))
                .build();
+      }
+      catch (FileNotFoundException e)
+      {
+         log.error("failed to create input stream from temp file", e);
+         return Response.status(Status.INTERNAL_SERVER_ERROR)
+               .entity(e).build();
+      }
+      catch (ChunkUploadException e)
+      {
+         return Response.status(e.getStatusCode())
+               .entity(new ChunkUploadResponse(e.getMessage()))
+               .build();
+      }
+   }
+
+   private Response transUploadResponse(int totalChunks, List<String> warnings)
+   {
+      ChunkUploadResponse response = new ChunkUploadResponse();
+      response.setExpectingMore(false);
+      response.setAcceptedChunks(totalChunks);
+      if (warnings != null && !warnings.isEmpty())
+      {
+         response.setSuccessMessage(buildWarningString(warnings));
       }
       else
       {
-         HDocumentUpload upload;
-         try
-         {
-            upload = saveSubsequentUploadPart(uploadForm);
-            acceptedChunks = upload.getParts().size();
-         }
-         catch (IOException e)
-         {
-            log.error("failed to create database storage object for part file", e);
-            return Response.status(Status.INTERNAL_SERVER_ERROR)
-                  .entity(e).build();
-         }
-
-         if (!uploadForm.getLast())
-         {
-            return Response.status(Status.ACCEPTED)
-                  .entity(new ChunkUploadResponse(upload.getId(), upload.getParts().size(), true, "Chunk accepted, awaiting remaining chunks."))
-                  .build();
-         }
-
-         try
-         {
-            File tempFile = combineToTempFile(upload);
-            fileContents = new FileInputStream(tempFile);
-         }
-         catch (HashMismatchException e)
-         {
-            return Response.status(Status.CONFLICT)
-                  .entity("MD5 hash \"" + e.getExpectedHash()
-                        + "\" sent with initial request does not match server-generated hash of combined parts \""
-                        + e.getGeneratedHash() + "\". Upload aborted. Retry upload from first part.\n")
-                        .build();
-         }
-         catch (SQLException e)
-         {
-            log.error("Error while retreiving document upload part contents", e);
-            throw new RuntimeException(e);
-         }
-         catch (FileNotFoundException e)
-         {
-            log.error("Error while generating input stream for temp file", e);
-            throw new RuntimeException(e);
-         }
-         finally
-         {
-            // no more need for upload
-            session.delete(upload);
-         }
+         response.setSuccessMessage("Translations uploaded successfully");
       }
+      return Response.status(Status.OK).entity(response).build();
+   }
 
-      // TODO useful error messages for failed parsing
-      TranslationsResource transRes =
-            translationFileServiceImpl.parseTranslationFile(fileContents,
-                                                            uploadForm.getFileType(),
-                                                            localeId,
-                                                            translationFileServiceImpl.isPoDocument(projectSlug, iterationSlug, docId));
-
-      MergeType mergeType;
-      if ("import".equals(merge))
+   private String buildWarningString(List<String> warnings)
+   {
+      StringBuilder warningText = new StringBuilder("Upload succeeded but had the following warnings:");
+      for (String warning : warnings)
       {
-         mergeType = MergeType.IMPORT;
+         warningText.append("\n\t");
+         warningText.append(warning);
       }
-      else
-      {
-         mergeType = MergeType.AUTO;
-      }
+      warningText.append("\n");
+      String warningString = warningText.toString();
+      return warningString;
+   }
 
+   private Set<String> newExtensions(boolean gettextExtensions)
+   {
       Set<String> extensions;
-      if (isPoFile)
+      if (gettextExtensions)
       {
          extensions = new StringSet(ExtensionType.GetText.toString());
       }
@@ -794,31 +791,32 @@ public class FileService implements FileResource
       {
          extensions = Collections.<String>emptySet();
       }
+      return extensions;
+   }
 
-      // TODO useful error message for failed saving?
-      List<String> warnings = translationServiceImpl.translateAllInDoc(projectSlug, iterationSlug,
-            docId, locale.getLocaleId(), transRes, extensions, mergeType);
-
-      ChunkUploadResponse response = new ChunkUploadResponse();
-      response.setExpectingMore(false);
-      response.setAcceptedChunks(acceptedChunks);
-
-      if (warnings != null && !warnings.isEmpty())
+   private HDocumentUpload saveUploadPart(String projectSlug, String iterationSlug, String docId, HLocale locale, DocumentFileUploadForm uploadForm)
+   {
+      HDocumentUpload upload;
+      if (uploadForm.getFirst())
       {
-         StringBuilder entity = new StringBuilder("Upload succeeded but had the following warnings:");
-         for (String warning : warnings)
-         {
-            entity.append("\n\t");
-            entity.append(warning);
-         }
-         entity.append("\n");
-         response.setSuccessMessage(entity.toString());
+         upload = createMultipartUpload(projectSlug, iterationSlug, docId, uploadForm, locale);
       }
       else
       {
-         response.setSuccessMessage("Translations uploaded successfully");
+         upload = retrieveUploadObject(uploadForm);
       }
-      return Response.status(Status.OK).entity(response).build();
+      saveUploadPart(uploadForm, upload);
+      return upload;
+   }
+
+   private void checkTranslationUploadAllowed(String projectSlug, String iterationSlug, String localeId, HLocale locale)
+   {
+      if (!isTranslationUploadAllowed(projectSlug, iterationSlug, locale))
+      {
+         throw new ChunkUploadException(Status.FORBIDDEN,
+               "You do not have permission to upload translations for locale \"" + localeId +
+               "\" to project-version \"" + projectSlug + ":" + iterationSlug + "\".");
+      }
    }
 
    private boolean isTranslationUploadAllowed(String projectSlug, String iterationSlug, HLocale localeId)
@@ -828,6 +826,72 @@ public class FileService implements FileResource
       // They appear to be granted identically at the moment.
       return projectIteration.getStatus() == EntityStatus.ACTIVE && projectIteration.getProject().getStatus() == EntityStatus.ACTIVE
             && identity != null && identity.hasPermission("add-translation", projectIteration.getProject(), localeId);
+   }
+
+   private HLocale findHLocale(String localeString)
+   {
+      LocaleId localeId;
+      try
+      {
+         localeId = new LocaleId(localeString);
+      }
+      catch (IllegalArgumentException e)
+      {
+         throw new ChunkUploadException(Status.BAD_REQUEST,
+               "Invalid value for locale", e);
+      }
+
+      HLocale locale = localeDAO.findByLocaleId(localeId);
+      if (locale == null)
+      {
+         throw new ChunkUploadException(Status.NOT_FOUND,
+               "The specified locale \"" + localeString + "\" does not exist on this server.");
+      }
+      return locale;
+   }
+
+   private void checkTranslationUploadPreconditions(String projectSlug, String iterationSlug, String docId, String localeId, DocumentFileUploadForm uploadForm)
+   {
+      checkUploadPreconditions(projectSlug, iterationSlug, docId, uploadForm);
+
+      // TODO check translation upload allowed
+
+      checkDocumentExists(projectSlug, iterationSlug, docId, uploadForm);
+      checkValidTranslationUploadType(uploadForm);
+   }
+
+   private void checkValidTranslationUploadType(DocumentFileUploadForm uploadForm)
+   {
+      String fileType = uploadForm.getFileType();
+      if (!fileType.equals(".po")
+            && !translationFileServiceImpl.hasAdapterFor(DocumentType.typeFor(fileType)))
+      {
+         throw new ChunkUploadException(Status.BAD_REQUEST,
+               "The type \"" + fileType + "\" specified in form parameter 'type' " +
+               "is not valid for a translation file on this server.");
+      }
+   }
+
+   private void checkDocumentExists(String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm)
+   {
+      if (isNewDocument(projectSlug, iterationSlug, docId))
+      {
+         throw new ChunkUploadException(Status.NOT_FOUND, 
+               "No document with id \"" + docId + "\" exists in project-version \"" +
+               projectSlug + ":" + iterationSlug + "\".");
+      }
+   }
+
+   private MergeType mergeTypeFromString(String type)
+   {
+      if ("import".equals(type))
+      {
+         return MergeType.IMPORT;
+      }
+      else
+      {
+         return MergeType.AUTO;
+      }
    }
 
    /**
@@ -965,7 +1029,7 @@ public class FileService implements FileResource
             return Response.status(Status.NOT_FOUND).build();
          }
          final Set<String> extensions = Collections.<String>emptySet();
-         TranslationsResource transRes = 
+         TranslationsResource transRes =
                (TranslationsResource) this.translatedDocResourceService.getTranslations(docId, new LocaleId(locale), extensions, true, null).getEntity();
          // Filter to only provide translated targets. "Preview" downloads include fuzzy.
          // New list is used as transRes list appears not to be a modifiable implementation.
@@ -973,6 +1037,7 @@ public class FileService implements FileResource
          boolean useFuzzy = FILETYPE_TRANSLATED_APPROVED_AND_FUZZY.equals(fileType);
          for (TextFlowTarget target : transRes.getTextFlowTargets())
          {
+            // TODO rhbz953734 - translatedDocResourceService will map review content state to old state. For now this is acceptable. Once we have new REST options, we should review this
             if (target.getState() == ContentState.Approved || (useFuzzy && target.getState() == ContentState.NeedReview))
             {
                translations.put(target.getResId(), target);
@@ -993,7 +1058,9 @@ public class FileService implements FileResource
                   .build();
          }
          FileFormatAdapter adapter = translationFileServiceImpl.getAdapterFor(hDocument.getRawDocument().getType());
-         StreamingOutput output = new FormatAdapterStreamingOutput(uri, translations, locale, adapter);
+         String rawParamString = hDocument.getRawDocument().getAdapterParameters();
+         Optional<String> params = Optional.<String>fromNullable(Strings.emptyToNull(rawParamString));
+         StreamingOutput output = new FormatAdapterStreamingOutput(uri, translations, locale, adapter, params);
          response = Response.ok()
                .header("Content-Disposition", "attachment; filename=\"" + document.getName() + "\"")
                .entity(output).build();
@@ -1002,7 +1069,6 @@ public class FileService implements FileResource
       {
          response = Response.status(Status.UNSUPPORTED_MEDIA_TYPE).build();
       }
-
       return response;
    }
 
@@ -1058,7 +1124,6 @@ public class FileService implements FileResource
          return Response.serverError().status( Status.INTERNAL_SERVER_ERROR ).build();
       }
    }
-
 
    /*
     * Private class that implements PO file streaming of a document.
@@ -1139,19 +1204,22 @@ public class FileService implements FileResource
       private String locale;
       private URI original;
       private FileFormatAdapter adapter;
+      private Optional<String> params;
 
-      public FormatAdapterStreamingOutput(URI originalDoc, Map<String, TextFlowTarget> translations, String locale, FileFormatAdapter adapter)
+      public FormatAdapterStreamingOutput(URI originalDoc, Map<String, TextFlowTarget> translations,
+            String locale, FileFormatAdapter adapter, Optional<String> params)
       {
          this.translations = translations;
          this.locale = locale;
          this.original = originalDoc;
          this.adapter = adapter;
+         this.params = params;
       }
 
       @Override
       public void write(OutputStream output) throws IOException, WebApplicationException
       {
-         adapter.writeTranslatedFile(output, original, translations, locale);
+         adapter.writeTranslatedFile(output, original, translations, locale, params);
       }
    }
 
@@ -1161,7 +1229,7 @@ public class FileService implements FileResource
    private class FileStreamingOutput implements StreamingOutput
    {
       private File file;
-      
+
       public FileStreamingOutput( File file )
       {
          this.file = file;

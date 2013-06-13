@@ -23,6 +23,7 @@ package org.zanata.rest.service;
 import static org.zanata.common.EntityStatus.OBSOLETE;
 import static org.zanata.common.EntityStatus.READONLY;
 
+import javax.annotation.Nonnull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -107,6 +108,19 @@ public class ProjectIterationService implements ProjectIterationResource
    @In
    Identity identity;
 
+   @SuppressWarnings("null")
+   @Nonnull
+   public String getProjectSlug()
+   {
+      return projectSlug;
+   }
+
+   @SuppressWarnings("null")
+   @Nonnull
+   public String getIterationSlug()
+   {
+      return iterationSlug;
+   }
 
    /**
     * Returns header information for a project iteration.
@@ -155,7 +169,7 @@ public class ProjectIterationService implements ProjectIterationResource
          return response.build();
       }
 
-      HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+      HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(getProjectSlug(), getIterationSlug());
 
       ProjectIteration it = new ProjectIteration();
       transfer(hProjectIteration, it);
@@ -192,7 +206,7 @@ public class ProjectIterationService implements ProjectIterationResource
          return projTypeError;
       }
 
-      HProject hProject = projectDAO.getBySlug(projectSlug);
+      HProject hProject = projectDAO.getBySlug(getProjectSlug());
 
       if (hProject == null)
       {
@@ -209,7 +223,7 @@ public class ProjectIterationService implements ProjectIterationResource
          return Response.status(Status.FORBIDDEN).entity("Project '" + projectSlug + "' is read-only.").build();
       }
 
-      HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+      HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(getProjectSlug(), getIterationSlug());
 
       if (hProjectIteration == null)
       { // must be a create operation
@@ -351,4 +365,5 @@ public class ProjectIterationService implements ProjectIterationResource
          to.setProjectType(from.getProjectType().toString());
       }
    }
+
 }

@@ -209,7 +209,7 @@ public class HProject extends SlugEntityBase implements Serializable
 
    @JoinTable(name = "HProject_Validation", joinColumns = @JoinColumn(name = "projectId"))
    @Type(type = "text")
-   @ElementCollection(fetch = FetchType.EAGER)
+   @ElementCollection(fetch = FetchType.LAZY)
    @Column(name = "validation", nullable = false)
    public Set<String> getCustomizedValidations()
    {

@@ -22,10 +22,10 @@ package org.zanata.webtrans.client.ui;
 
 import java.util.List;
 
-import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.presenter.PreviewState;
 import org.zanata.webtrans.client.presenter.TransUnitReplaceInfo;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.util.ContentStateToStyleUtil;
 import org.zanata.webtrans.shared.util.StringNotEmptyPredicate;
 
 import com.google.common.base.Strings;
@@ -33,7 +33,6 @@ import com.google.common.collect.Iterables;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.ActionCell;
 import com.google.gwt.cell.client.ActionCell.Delegate;
-import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.ValueUpdater;
@@ -280,15 +279,7 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
          public String getCellStyleNames(Context context, TransUnitReplaceInfo info)
          {
             String styleNames = Strings.nullToEmpty(super.getCellStyleNames(context, info));
-            if (info.getTransUnit().getStatus() == ContentState.Approved)
-            {
-               styleNames += " ApprovedStateDecoration";
-            }
-            else if (info.getTransUnit().getStatus() == ContentState.NeedReview)
-            {
-               styleNames += " FuzzyStateDecoration";
-            }
-            return styleNames;
+            return ContentStateToStyleUtil.stateToStyle(info.getTransUnit().getStatus(), styleNames);
          }
       };
    }

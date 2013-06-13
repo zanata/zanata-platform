@@ -45,8 +45,6 @@
 
         <webdriver.log.file>${project.build.directory}/browser_console.log</webdriver.log.file>
 
-        <!-- controls concordion output location-->
-        <concordion.output.dir>${project.build.directory}/concordion</concordion.output.dir>
         <!-- on jenkins, this needs to be set to empty - so that cargo can shutdown. see http://stackoverflow.com/questions/1096642/tomcat-failed-to-shutdown -->
         <cargo.debug.jvm.args> -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787 -Xnoagent -Djava.compiler=NONE</cargo.debug.jvm.args>
         <!-- this property can be used to control what test needs to be run by failsafe -->
@@ -85,24 +83,10 @@
         <dependency>
             <groupId>org.concordion</groupId>
             <artifactId>concordion</artifactId>
-            <version>1.4.2</version>
-            <exclusions>
-            	<exclusion>
-            		<artifactId>
-            			junit-dep
-            		</artifactId>
-            		<groupId>junit</groupId>
-            	</exclusion>
-            	<exclusion>
-            					<artifactId>xml-apis</artifactId>
-            					<groupId>xml-apis</groupId>
-            	</exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.concordion</groupId>
             <artifactId>concordion-extensions</artifactId>
-            <version>1.1.0</version>
         </dependency>
 
         <dependency>

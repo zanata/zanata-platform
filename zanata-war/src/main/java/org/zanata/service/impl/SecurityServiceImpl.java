@@ -22,7 +22,6 @@
 package org.zanata.service.impl;
 
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -46,7 +45,6 @@ import org.zanata.webtrans.shared.rpc.AbstractWorkspaceAction;
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Name("securityServiceImpl")
-@AutoCreate
 @Scope(ScopeType.STATELESS)
 public class SecurityServiceImpl implements SecurityService
 {

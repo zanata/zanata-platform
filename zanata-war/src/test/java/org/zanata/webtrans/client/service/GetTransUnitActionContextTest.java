@@ -1,11 +1,14 @@
 package org.zanata.webtrans.client.service;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.zanata.model.TestFixture.*;
 
 import org.hamcrest.Matchers;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.model.TestFixture;
 import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
 /**
@@ -21,17 +24,17 @@ public class GetTransUnitActionContextTest
    @BeforeMethod
    public void setUp() throws Exception
    {
-      context = new GetTransUnitActionContext(new DocumentId(new Long(1), ""));
+      context = new GetTransUnitActionContext(documentInfo(1, ""));
    }
 
    @Test
    public void testChangeDocument() throws Exception
    {
-      DocumentId documentId = context.getDocumentId();
-      GetTransUnitActionContext newContext = context.changeDocument(new DocumentId(new Long(99), ""));
+      DocumentInfo document = context.getDocument();
+      GetTransUnitActionContext newContext = context.changeDocument(documentInfo(99, ""));
 
-      assertThat(context.getDocumentId(), Matchers.sameInstance(documentId));
-      assertThat(newContext.getDocumentId(), Matchers.equalTo(new DocumentId(new Long(99), "")));
+      assertThat(context.getDocument(), Matchers.sameInstance(document));
+      assertThat(newContext.getDocument(), Matchers.equalTo(documentInfo(99, "")));
    }
 
    @Test
@@ -77,7 +80,7 @@ public class GetTransUnitActionContextTest
       verifyNeedReloadTransUnits(context, context.changeFilterNeedReview(true), NEEDED);
       verifyNeedReloadTransUnits(context, context.changeFilterUntranslated(true), NEEDED);
       verifyNeedReloadTransUnits(context, context.changeFilterTranslated(true), NEEDED);
-      verifyNeedReloadTransUnits(context, context.changeDocument(new DocumentId(new Long(99), "")), NEEDED);
+      verifyNeedReloadTransUnits(context, context.changeDocument(documentInfo(99, "")), NEEDED);
       verifyNeedReloadTransUnits(context, context.changeFindMessage("find message"), NEEDED);
       verifyNeedReloadTransUnits(context, context.changeCount(2), NEEDED);
       verifyNeedReloadTransUnits(context, context.changeOffset(2), NEEDED);
@@ -96,7 +99,7 @@ public class GetTransUnitActionContextTest
       verifyNeedReloadNavigationIndex(context, context.changeFilterNeedReview(true), NEEDED);
       verifyNeedReloadNavigationIndex(context, context.changeFilterUntranslated(true), NEEDED);
       verifyNeedReloadNavigationIndex(context, context.changeFilterTranslated(true), NEEDED);
-      verifyNeedReloadNavigationIndex(context, context.changeDocument(new DocumentId(new Long(99), "")), NEEDED);
+      verifyNeedReloadNavigationIndex(context, context.changeDocument(documentInfo(99, "")), NEEDED);
       verifyNeedReloadNavigationIndex(context, context.changeFindMessage("find message"), NEEDED);
 
       verifyNeedReloadNavigationIndex(context, context.changeCount(2), NO_NEED);

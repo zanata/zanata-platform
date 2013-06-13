@@ -96,7 +96,7 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
          return new GetProjectTransUnitListsResult(action, docPaths, matchingTUs);
       }
 
-      FilterConstraints filterConstraints = FilterConstraints.filterBy(action.getSearchString()).includeNew().caseSensitive(action.isCaseSensitive());
+      FilterConstraints filterConstraints = FilterConstraints.filterBy(action.getSearchString()).caseSensitive(action.isCaseSensitive());
       if (!action.isSearchInSource())
       {
          filterConstraints.ignoreSource();

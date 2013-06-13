@@ -3,6 +3,9 @@ package org.zanata.dao;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
@@ -42,7 +45,7 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
       super(HProject.class, session);
    }
 
-   public HProject getBySlug(String slug)
+   public @Nullable HProject getBySlug(@Nonnull String slug)
    {
       if(!StringUtils.isEmpty(slug))
       {

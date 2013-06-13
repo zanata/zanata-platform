@@ -95,7 +95,7 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       tmGlossaryPanel.addEast(glossaryView.asWidget(), GLOSSARY_PANEL_WIDTH);
    }
 
-   private void setEditorView(Widget editorView)
+   protected void setEditorView(Widget editorView)
    {
       this.editorContainer.add(editorView);
    }

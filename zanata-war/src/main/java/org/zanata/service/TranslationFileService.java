@@ -26,6 +26,8 @@ import org.zanata.exception.ZanataServiceException;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
+import com.google.common.base.Optional;
+
 import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
@@ -44,12 +46,37 @@ public interface TranslationFileService
     * 
     * @param fileContents the document to parse
     * @param fileName the name including extension for the file (used to determine how to parse file)
-    * @param originalIsPo true if the document was originally uploaded in po format
     * @return a representation of the translations
     * @throws ZanataServiceException if there is no adapter available for the
     *            document format, or there is an error during parsing
     */
-   TranslationsResource parseTranslationFile(InputStream fileContents, String fileName, String localeId, boolean originalIsPo) throws ZanataServiceException;
+   TranslationsResource parseTranslationFile(InputStream fileContents, String fileName,
+         String localeId, String projectSlug, String iterationSlug, String docId)
+               throws ZanataServiceException;
+
+   /**
+    * Extract the translated strings from a po file to usable form, using appropriate id mapping.
+    * 
+    * @param fileContents the po document to parse
+    * @return a representation of the translations
+    * @throws ZanataServiceException if there is an error during parsing
+    */
+   TranslationsResource parsePoFile(InputStream fileContents,
+         String projectSlug, String iterationSlug, String docId)
+               throws ZanataServiceException;
+
+   /**
+    * Extract the translated strings from an adapter document file to a usable form.
+    * 
+    * @param tempFile the document to parse
+    * @param fileName used to determine appropriate adapter
+    * @return a representation of the translations
+    * @throws ZanataServiceException if there is no adapter available for the
+    *            document format, or there is an error during parsing
+    */
+   TranslationsResource parseAdapterTranslationFile(File tempFile,
+         String projectSlug, String iterationSlug, String docId, String localeId, String fileName)
+               throws ZanataServiceException;
 
    /**
     * Extract the translatable strings from a new document file or from a new version of an existing
@@ -61,7 +88,7 @@ public interface TranslationFileService
     * @param offlinePo true to use msgctxt as the id for each text flow
     * @return a usable representation of the document
     */
-   Resource parseUpdatedDocumentFile(InputStream fileContents, String docId, String uploadFileName, boolean offlinePo);
+   Resource parseUpdatedPotFile(InputStream fileContents, String docId, String uploadFileName, boolean offlinePo);
 
    /**
     * Extracts the translatable strings from a document file to a usable form.
@@ -69,11 +96,14 @@ public interface TranslationFileService
     * @param documentFile location of the document to parse
     * @param path to use within the Zanata project-iteration
     * @param fileName to use within the Zanata project-iteration
+    * @param params adapter-specific parameter string. See documentation for
+    *           individual adapters.
     * @return a usable representation of the document
     * @throws ZanataServiceException if there is no adapter available for the
     *            document format, or there is an error during parsing
     */
-   Resource parseDocumentFile(URI documentFile, String path, String fileName) throws ZanataServiceException;
+   Resource parseAdapterDocumentFile(URI documentFile, String path, String fileName,
+         Optional<String> params) throws ZanataServiceException;
 
    /**
     * Extract the translatable strings from a new version of an existing document file to a usable form.
@@ -81,10 +111,13 @@ public interface TranslationFileService
     * @param documentFile location of the document to parse
     * @param docId the id of an existing document
     * @param uploadFileName name of the new file being parsed, used only to identify format
+    * @param params adapter-specific parameter string. See documentation for
+    *           individual adapters.
     * @return a usable representation of the document
     * @throws ZanataServiceException
     */
-   Resource parseUpdatedDocumentFile(URI documentFile, String docId, String uploadFileName) throws ZanataServiceException;
+   Resource parseUpdatedAdapterDocumentFile(URI documentFile, String docId, String uploadFileName,
+         Optional<String> params) throws ZanataServiceException;
 
    /**
     * Check whether a handler for the given document type is available.
@@ -94,25 +127,11 @@ public interface TranslationFileService
     */
    boolean hasAdapterFor(DocumentType type);
 
-   /**
-    * Check whether a handler for the given file type is available.
-    *
-    * @param fileNameOrExtension full filename with extension, or just extension
-    * @return
-    * @deprecated use {@link #hasAdapterFor(DocumentType)}s
-    */
-   @Deprecated
-   boolean hasAdapterFor(String fileNameOrExtension);
-
    Set<String> getSupportedExtensions();
 
-   /**
-    * @deprecated use {@link #getAdapterFor(DocumentType)}
-    */
-   @Deprecated
-   FileFormatAdapter getAdapterFor(String fileNameOrExtension);
-
    FileFormatAdapter getAdapterFor(DocumentType type);
+
+   DocumentType getDocumentType(String fileNameOrExtension);
 
    /**
     * Persist an input stream to a temporary file.

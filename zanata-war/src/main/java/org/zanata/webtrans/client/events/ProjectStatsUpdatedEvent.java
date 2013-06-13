@@ -1,8 +1,7 @@
 package org.zanata.webtrans.client.events;
 
 
-import org.zanata.common.TranslationStats;
-
+import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import com.google.gwt.event.shared.GwtEvent;
 
 public class ProjectStatsUpdatedEvent extends GwtEvent<ProjectStatsUpdatedEventHandler>
@@ -12,7 +11,8 @@ public class ProjectStatsUpdatedEvent extends GwtEvent<ProjectStatsUpdatedEventH
     * Handler type.
     */
    private static Type<ProjectStatsUpdatedEventHandler> TYPE;
-   private TranslationStats projectStats;
+
+   private ContainerTranslationStatistics newStats;
 
    /**
     * Gets the type associated with this event.
@@ -24,20 +24,20 @@ public class ProjectStatsUpdatedEvent extends GwtEvent<ProjectStatsUpdatedEventH
       return TYPE != null ? TYPE : (TYPE = new Type<ProjectStatsUpdatedEventHandler>());
    }
 
-   public ProjectStatsUpdatedEvent(TranslationStats projectStats)
+   public ProjectStatsUpdatedEvent(ContainerTranslationStatistics newStats)
    {
-      this.projectStats = projectStats;
+      this.newStats = newStats;
    }
 
-   public TranslationStats getProjectStats()
+   public ContainerTranslationStatistics getNewStats()
    {
-      return projectStats;
+      return newStats;
    }
 
    @Override
    protected void dispatch(ProjectStatsUpdatedEventHandler handler)
    {
-      handler.onProjectStatsRetrieved(this);
+      handler.onProjectStatsUpdated(this);
    }
 
    @Override
@@ -45,5 +45,4 @@ public class ProjectStatsUpdatedEvent extends GwtEvent<ProjectStatsUpdatedEventH
    {
       return getType();
    }
-
 }

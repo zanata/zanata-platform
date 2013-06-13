@@ -98,7 +98,7 @@ public class TransMemoryMergePopupPanelView implements TransMemoryMergePopupPane
    @Override
    public Widget asWidget()
    {
-      return this.asWidget();
+      return dialogBox;
    }
 
    @Override

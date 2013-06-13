@@ -25,6 +25,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.MultiFieldQueryParser;
@@ -40,7 +42,6 @@ import org.hibernate.search.FullTextSession;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -66,13 +67,10 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
  */
 @Name("textFlowSearchServiceImpl")
-@AutoCreate
 @Scope(ScopeType.STATELESS)
 @Slf4j
 public class TextFlowSearchServiceImpl implements TextFlowSearchService
@@ -325,7 +323,7 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
          for (HTextFlowTarget htft : matchedTargets)
          {
             // manually check for case sensitive matches
-            if( !constraints.isCaseSensitive() || (constraints.isCaseSensitive() && contentIsValid(htft.getContents(), constraints)) )
+            if(!constraints.isCaseSensitive() || (contentIsValid(htft.getContents(), constraints)))
             {
                if (!htft.getTextFlow().getDocument().isObsolete())
                {
@@ -381,7 +379,7 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
             if (!resultList.contains(htf))
             {
                // manually check for case sensitive matches
-               if( !constraints.isCaseSensitive() || (constraints.isCaseSensitive() && contentIsValid(htf.getContents(), constraints)) )
+               if(!constraints.isCaseSensitive() || (contentIsValid(htf.getContents(), constraints)))
                {
                   if (!htf.getDocument().isObsolete())
                   {
@@ -403,21 +401,6 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
       documentPaths.add( document.getDocId() );
 
       return this.findTextFlows(workspace, documentPaths, constraints);
-   }
-
-   private static boolean isContentStateValid(HTextFlowTarget hTextFlowTarget, FilterConstraints constraints)
-   {
-      if (hTextFlowTarget == null)
-      {
-         return constraints.isIncludeNew();
-      }
-      else
-      {
-         ContentState state = hTextFlowTarget.getState();
-         return (constraints.isIncludeApproved() && state == ContentState.Approved) ||
-               (constraints.isIncludeFuzzy() && state == ContentState.NeedReview) ||
-               (constraints.isIncludeNew() && state == ContentState.New);
-      }
    }
 
    private static boolean contentIsValid(Collection<String> contents, FilterConstraints constraints)

@@ -79,12 +79,12 @@ public class TransMemoryMergeStatusResolverTest
 
    private static TransMemoryResultItem tmResultWithSimilarity(double percent)
    {
-      return new TransMemoryResultItem(null, null, 0, percent);
+      return new TransMemoryResultItem(null, null, null, 0, percent);
    }
 
    private static TransMemoryDetails tmDetail(String projectName, String docId, String resId, String msgContext)
    {
-      return new TransMemoryDetails(null, null, projectName, null, docId, resId, msgContext, null, null);
+      return new TransMemoryDetails(null, null, projectName, null, docId, resId, msgContext, null, null, null);
    }
 
    private static TransMemoryMerge mergeTMAction(MergeOption differentProjectOption, MergeOption differentDocumentOption, MergeOption differentResIdOption)
@@ -128,7 +128,7 @@ public class TransMemoryMergeStatusResolverTest
       TransMemoryDetails tmDetail = tmDetail(projectName, docId, "different res id", msgContext);
 
       action = mergeTMActionWhenResIdIsDifferent(MergeOption.IGNORE_CHECK);
-      assertThat(resolver.workOutStatus(action, textFlow, tmDetail, tmResultWithSimilarity(100), null), equalTo(ContentState.Approved));
+      assertThat(resolver.workOutStatus(action, textFlow, tmDetail, tmResultWithSimilarity(100), null), equalTo(ContentState.Translated));
    }
 
    @Test
@@ -150,7 +150,7 @@ public class TransMemoryMergeStatusResolverTest
       TransMemoryDetails tmDetail = tmDetail(projectName, docId, resId, "different msg context");
 
       action = mergeTMActionWhenResIdIsDifferent(MergeOption.IGNORE_CHECK);
-      assertThat(resolver.workOutStatus(action, textFlow, tmDetail, tmResultWithSimilarity(100), null), equalTo(ContentState.Approved));
+      assertThat(resolver.workOutStatus(action, textFlow, tmDetail, tmResultWithSimilarity(100), null), equalTo(ContentState.Translated));
    }
 
    @Test
@@ -171,7 +171,7 @@ public class TransMemoryMergeStatusResolverTest
    public void differentDocIdAndOptionIsIgnore() {
       TransMemoryDetails tmDetail = tmDetail(projectName, "different doc id", resId, msgContext);
       action = mergeTMActionWhenDocIdIsDifferent(MergeOption.IGNORE_CHECK);
-      assertThat(resolver.workOutStatus(action, textFlow, tmDetail, tmResultWithSimilarity(100), null), equalTo(ContentState.Approved));
+      assertThat(resolver.workOutStatus(action, textFlow, tmDetail, tmResultWithSimilarity(100), null), equalTo(ContentState.Translated));
    }
 
    @Test
@@ -192,7 +192,7 @@ public class TransMemoryMergeStatusResolverTest
    public void differentProjectNameAndOptionIsIgnore() {
       TransMemoryDetails tmDetail = tmDetail("different project name", docId, resId, msgContext);
       action = mergeTMActionWhenProjectNameIsDifferent(MergeOption.IGNORE_CHECK);
-      assertThat(resolver.workOutStatus(action, textFlow, tmDetail, tmResultWithSimilarity(100), null), equalTo(ContentState.Approved));
+      assertThat(resolver.workOutStatus(action, textFlow, tmDetail, tmResultWithSimilarity(100), null), equalTo(ContentState.Translated));
    }
 
    @Test

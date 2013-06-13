@@ -21,8 +21,6 @@
 
 package org.zanata.webtrans.client.presenter;
 
-import static org.zanata.webtrans.client.events.NotificationEvent.Severity.Error;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -30,7 +28,6 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.common.ContentState;
-import org.zanata.webtrans.client.events.CheckStateHasChangedEvent;
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FilterViewEventHandler;
 import org.zanata.webtrans.client.events.LoadingEvent;
@@ -43,14 +40,12 @@ import org.zanata.webtrans.client.events.RequestPageValidationHandler;
 import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEventHandler;
-import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.service.NavigationService;
-import org.zanata.webtrans.client.service.TransUnitSaveService;
 import org.zanata.webtrans.client.service.TranslatorInteractionService;
 import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
@@ -68,6 +63,8 @@ import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.inject.Inject;
+
+import static org.zanata.webtrans.client.events.NotificationEvent.Severity.*;
 
 /**
  * @author Patrick Huang <a
@@ -100,12 +97,8 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
 
    // state we need to keep track of
    private FilterViewEvent filterOptions = FilterViewEvent.DEFAULT;
-   private FilterViewEvent previousFilterOptions = FilterViewEvent.DEFAULT; // In
-                                                                            // case
-                                                                            // of
-                                                                            // cancelling
-                                                                            // a
-                                                                            // filter
+   // In case of cancelling a filter
+   private FilterViewEvent previousFilterOptions = FilterViewEvent.DEFAULT;
    private TransUnitId selectedId;
    private String findMessage;
 
@@ -116,9 +109,8 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
                                    SourceContentsPresenter sourceContentsPresenter,
                                    TargetContentsPresenter targetContentsPresenter,
                                    TranslatorInteractionService translatorService,
-                                   TransUnitSaveService transUnitSaveService,
                                    TranslationHistoryPresenter translationHistoryPresenter,
-                                   WebTransMessages messages,UserOptionsService userOptionsService)
+                                   WebTransMessages messages, UserOptionsService userOptionsService)
    // @formatter:on
    {
       super(display, eventBus);
@@ -135,12 +127,6 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       this.targetContentsPresenter = targetContentsPresenter;
       this.translatorService = translatorService;
       this.userOptionsService = userOptionsService;
-
-      // we register it here because we can't use eager singleton on it (it
-      // references TargetContentsPresenter). And if it's not eagerly created,
-      // it won't get created at all!!
-      eventBus.addHandler(TransUnitSaveEvent.TYPE, transUnitSaveService);
-      eventBus.addHandler(CheckStateHasChangedEvent.TYPE, transUnitSaveService);
    }
 
    @Override
@@ -213,7 +199,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    @Override
    public void saveChangesAndFilter()
    {
-      saveAndFilter(ContentState.Approved);
+      saveAndFilter(ContentState.Translated);
    }
 
    @Override
@@ -263,22 +249,29 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       }
       else if (event == RefreshPageEvent.REDRAW_PAGE_EVENT)
       {
-         targetContentsPresenter.savePendingChangesIfApplicable();
-         List<TransUnit> currentPageValues = navigationService.getCurrentPageValues();
-         sourceContentsPresenter.showData(currentPageValues);
-         targetContentsPresenter.showData(currentPageValues);
-         if (targetContentsPresenter.getCurrentTransUnitIdOrNull() != null)
-         {
-            sourceContentsPresenter.setSelectedSource(targetContentsPresenter.getCurrentTransUnitIdOrNull());
-            targetContentsPresenter.setSelected(targetContentsPresenter.getCurrentTransUnitIdOrNull());
-         }
-         display.buildTable(sourceContentsPresenter.getDisplays(), targetContentsPresenter.getDisplays());
+         buildTableForEditor();
       }
+   }
+
+   private void buildTableForEditor()
+   {
+      targetContentsPresenter.savePendingChangesIfApplicable();
+      List<TransUnit> currentPageValues = navigationService.getCurrentPageValues();
+      sourceContentsPresenter.showData(currentPageValues);
+      targetContentsPresenter.showData(currentPageValues);
+      TransUnitId currentSelected = sourceContentsPresenter.getCurrentTransUnitIdOrNull();
+      if (currentSelected != null)
+      {
+         sourceContentsPresenter.setSelectedSource(currentSelected);
+         targetContentsPresenter.setSelected(currentSelected);
+      }
+      display.buildTable(sourceContentsPresenter.getDisplays(), targetContentsPresenter.getDisplays());
    }
 
    @Override
    public void refreshRow(TransUnit updatedTransUnit, EditorClientId editorClientId, TransUnitUpdated.UpdateType updateType)
    {
+
       if (updateFromCurrentUsersEditorSave(editorClientId, updateType))
       {
          // the TransUnitUpdatedEvent is from current user's save action.
@@ -411,6 +404,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
          String target = targetDisplay.getEditors().get(0).getText();
 
          RunValidationEvent runValidationEvent = new RunValidationEvent(source, target, false);
+
          runValidationEvent.addWidget(targetDisplay);
 
          eventBus.fireEvent(runValidationEvent);

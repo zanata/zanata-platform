@@ -28,6 +28,9 @@ import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
+import org.zanata.webtrans.shared.model.AuditInfo;
+import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
@@ -36,6 +39,7 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
+import org.zanata.webtrans.shared.model.WorkspaceRestrictions;
 import org.zanata.webtrans.shared.rpc.AbstractWorkspaceAction;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -98,12 +102,14 @@ public class TestFixture
    public static UserWorkspaceContext userWorkspaceContext(boolean projectActive, boolean hasWriteAccess, String projectSlug, String iterationSlug, ProjectType projectType)
    {
       ProjectIterationId projectIterationId = new ProjectIterationId(projectSlug, iterationSlug, projectType);
-      return new UserWorkspaceContext(new WorkspaceContext(new WorkspaceId(projectIterationId, LocaleId.EN_US), "workspaceName", LocaleId.EN_US.getId()), projectActive, hasWriteAccess, true);
+      WorkspaceRestrictions workspaceRestrictions = new WorkspaceRestrictions(projectActive, hasWriteAccess, true, true, true);
+      return new UserWorkspaceContext(new WorkspaceContext(new WorkspaceId(projectIterationId, LocaleId.EN_US), "workspaceName", LocaleId.EN_US.getId()), workspaceRestrictions);
    }
 
    public static UserWorkspaceContext userWorkspaceContext(boolean projectActive, boolean hasWriteAccess)
    {
-      return new UserWorkspaceContext(new WorkspaceContext(workspaceId(), "workspaceName", LocaleId.EN_US.getId()), projectActive, hasWriteAccess, true);
+      WorkspaceRestrictions workspaceRestrictions = new WorkspaceRestrictions(projectActive, hasWriteAccess, true, true, true);
+      return new UserWorkspaceContext(new WorkspaceContext(workspaceId(), "workspaceName", LocaleId.EN_US.getId()), workspaceRestrictions);
    }
 
    public static WorkspaceId workspaceId()
@@ -180,5 +186,25 @@ public class TestFixture
             return input.getId();
          }
       });
+   }
+
+   public static DocumentInfo documentInfo()
+   {
+      return documentInfo(0, "", "name0");
+   }
+
+   public static DocumentInfo documentInfo(long id, String docId)
+   {
+      return documentInfo(id, "", docId);
+   }
+
+   public static DocumentInfo documentInfo(long id, String path, String name)
+   {
+      return new DocumentInfo(new DocumentId(id, path + name), name, path, LocaleId.EN_US, null, new AuditInfo(new Date(), "Translator"), null, new AuditInfo(new Date(), "last translator"));
+   }
+
+   public static DocumentInfo documentInfo(long id)
+   {
+      return documentInfo(id, "");
    }
 }

@@ -23,9 +23,11 @@ package org.zanata.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -58,6 +60,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.ContentType;
+import org.zanata.common.LocaleId;
 import org.zanata.model.po.HPoHeader;
 import org.zanata.model.po.HPoTargetHeader;
 import org.zanata.model.type.ContentTypeType;
@@ -66,6 +69,11 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
+import com.google.common.collect.ImmutableList;
+
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 /**
  * @see AbstractResourceMeta
  * @see Resource
@@ -79,9 +87,8 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 @Setter
 @NoArgsConstructor
 @ToString(of = {"name", "path", "docId", "locale", "revision"})
-public class HDocument extends ModelEntityBase implements IDocumentHistory, Serializable
+public class HDocument extends ModelEntityBase implements DocumentWithId, IDocumentHistory, Serializable, Iterable<SourceContents>
 {
-
    private static final long serialVersionUID = 5129552589912687504L;
    private String docId;
    private String name;
@@ -157,17 +164,35 @@ public class HDocument extends ModelEntityBase implements IDocumentHistory, Seri
       return name;
    }
 
+   @Transient
+   @Override
+   public String getQualifiedDocId()
+   {
+      HProjectIteration iter = getProjectIteration();
+      HProject proj = iter.getProject();
+      return proj.getSlug()+":"+iter.getSlug()+":"+getDocId();
+   }
+
    @NotNull
    public String getPath()
    {
       return path;
    }
 
+   @SuppressWarnings("null")
    @ManyToOne
    @JoinColumn(name = "locale", nullable = false)
-   public HLocale getLocale()
+   @Override
+   public @Nonnull HLocale getLocale()
    {
       return this.locale;
+   }
+
+   @Transient
+   @Override
+   public @Nonnull LocaleId getSourceLocaleId()
+   {
+      return locale.getLocaleId();
    }
 
    @ManyToOne(cascade = CascadeType.PERSIST)
@@ -178,7 +203,7 @@ public class HDocument extends ModelEntityBase implements IDocumentHistory, Seri
       return projectIteration;
    }
 
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "last_modified_by_id", nullable = true)
    @Override
    public HPerson getLastModifiedBy()
@@ -254,7 +279,12 @@ public class HDocument extends ModelEntityBase implements IDocumentHistory, Seri
          textFlows = new ArrayList<HTextFlow>();
       }
       return textFlows;
-      // return ImmutableList.copyOf(textFlows);
+   }
+
+   @Override
+   public Iterator<SourceContents> iterator()
+   {
+      return ImmutableList.<SourceContents>copyOf(getTextFlows()).iterator();
    }
 
    public boolean isObsolete()

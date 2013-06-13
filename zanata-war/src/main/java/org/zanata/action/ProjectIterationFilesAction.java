@@ -94,6 +94,8 @@ import org.zanata.util.StringUtil;
 import org.zanata.util.ZanataMessages;
 
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
+import com.google.common.base.Strings;
 
 @Name("projectIterationFilesAction")
 @Scope(ScopeType.PAGE)
@@ -204,7 +206,9 @@ public class ProjectIterationFilesAction implements Serializable
                translationFileServiceImpl.parseTranslationFile(translationFileUpload.getFileContents(),
                                                                translationFileUpload.getFileName(),
                                                                localeId,
-                                                               isPoDocument(translationFileUpload.docId));
+                                                               projectSlug,
+                                                               iterationSlug,
+                                                               translationFileUpload.docId);
 
          // translate it
          Set<String> extensions;
@@ -248,13 +252,17 @@ public class ProjectIterationFilesAction implements Serializable
       {
          uploadPotFile();
       }
-      else if (translationFileServiceImpl.hasAdapterFor(documentFileUpload.getFileName()))
-      {
-         uploadAdapterFile();
-      }
       else
       {
-         FacesMessages.instance().add(Severity.ERROR, "Unrecognized file extension for {0}.", documentFileUpload.getFileName());
+         DocumentType type = translationFileServiceImpl.getDocumentType(documentFileUpload.getFileName());
+         if (translationFileServiceImpl.hasAdapterFor(type))
+         {
+            uploadAdapterFile();
+         }
+         else
+         {
+            FacesMessages.instance().add(Severity.ERROR, "Unrecognized file extension for {0}.", documentFileUpload.getFileName());
+         }
       }
 
       // NB This needs to be done as for some reason seam is losing the
@@ -293,7 +301,7 @@ public class ProjectIterationFilesAction implements Serializable
 
       try
       {
-         Resource doc = translationFileServiceImpl.parseUpdatedDocumentFile(
+         Resource doc = translationFileServiceImpl.parseUpdatedPotFile(
                documentFileUpload.getFileContents(), docId, documentFileUpload.getFileName(), useOfflinePo);
 
          doc.setLang(new LocaleId(documentFileUpload.getSourceLang()));
@@ -356,11 +364,11 @@ public class ProjectIterationFilesAction implements Serializable
          Resource doc;
          if (docId == null)
          {
-            doc = translationFileServiceImpl.parseDocumentFile(tempFile.toURI(), documentPath, fileName);
+            doc = translationFileServiceImpl.parseAdapterDocumentFile(tempFile.toURI(), documentPath, fileName, getOptionalParams());
          }
          else
          {
-            doc = translationFileServiceImpl.parseUpdatedDocumentFile(tempFile.toURI(), docId, fileName);
+            doc = translationFileServiceImpl.parseUpdatedAdapterDocumentFile(tempFile.toURI(), docId, fileName, getOptionalParams());
          }
          doc.setLang(new LocaleId(documentFileUpload.getSourceLang()));
          Set<String> extensions = Collections.<String> emptySet();
@@ -388,6 +396,12 @@ public class ProjectIterationFilesAction implements Serializable
          rawDocument.setContentHash(new String(Hex.encodeHex(md5hash)));
          rawDocument.setType(DocumentType.typeFor(translationFileServiceImpl.extractExtension(fileName)));
          rawDocument.setUploadedBy(identity.getCredentials().getUsername());
+
+         Optional<String> params = getOptionalParams();
+         if (params.isPresent())
+         {
+            rawDocument.setAdapterParameters(params.get());
+         }
 
          FileInputStream tempFileStream = null;
          try
@@ -650,6 +664,11 @@ public class ProjectIterationFilesAction implements Serializable
       return displayMessages;
    }
 
+   private Optional<String> getOptionalParams()
+   {
+      return Optional.fromNullable(Strings.emptyToNull(documentFileUpload.getAdapterParams()));
+   }
+
    /**
     * Helper class to upload translation files.
     */
@@ -733,5 +752,10 @@ public class ProjectIterationFilesAction implements Serializable
       @Getter
       @Setter
       private String sourceLang = "en-US"; // en-US by default
+
+      @Getter
+      @Setter
+      private String adapterParams = "";
+
    }
 }

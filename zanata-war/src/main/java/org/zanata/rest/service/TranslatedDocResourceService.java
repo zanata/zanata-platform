@@ -36,7 +36,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.HttpHeaders;
@@ -55,26 +54,22 @@ import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.zanata.ApplicationConfiguration;
-import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowTargetDAO;
-import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
-import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.rest.NoSuchEntityException;
-import org.zanata.rest.ReadOnlyEntityException;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationService;
+import com.google.common.base.Optional;
 
 @Name("translatedDocResourceService")
 @Path(TranslatedDocResourceService.SERVICE_PATH)
@@ -88,13 +83,13 @@ public class TranslatedDocResourceService implements TranslatedDocResource
 {
 
    // security actions
-   private static final String ACTION_IMPORT_TEMPLATE = "import-template";
-   private static final String ACTION_IMPORT_TRANSLATION = "import-translation";
+//   private static final String ACTION_IMPORT_TEMPLATE = "import-template";
+//   private static final String ACTION_IMPORT_TRANSLATION = "import-translation";
 
    public static final String SERVICE_PATH = ProjectIterationService.SERVICE_PATH + "/r";
 
    public static final String EVENT_COPY_TRANS = "org.zanata.rest.service.copyTrans";
-   
+
    /** Project Identifier. */
    @PathParam("projectSlug")
    private String projectSlug;
@@ -143,6 +138,8 @@ public class TranslatedDocResourceService implements TranslatedDocResource
    
    @In
    private CopyTransService copyTransServiceImpl;
+   @In
+   private RestSlugValidator restSlugValidator;
 
    @In
    private TranslationService translationServiceImpl;
@@ -151,22 +148,6 @@ public class TranslatedDocResourceService implements TranslatedDocResource
 
    @In
    private LocaleService localeServiceImpl;
-
-
-   private HLocale validateTargetLocale(LocaleId locale, String projectSlug, String iterationSlug)
-   {
-      HLocale hLocale;
-      try
-      {
-         hLocale = localeServiceImpl.validateLocaleByProjectIteration(locale, projectSlug, iterationSlug);
-         return hLocale;
-      }
-      catch (ZanataServiceException e)
-      {
-         log.warn("Exception validating target locale {0} in proj {1} iter {2}", e, locale, projectSlug, iterationSlug);
-         throw new WebApplicationException(Response.status(Status.FORBIDDEN).entity(e.getMessage()).build());
-      }
-   }
 
    /**
     * Retrieves a set of translations for a given locale.
@@ -203,17 +184,17 @@ public class TranslatedDocResourceService implements TranslatedDocResource
    {
       log.debug("start to get translation");
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
-      HProjectIteration hProjectIteration = retrieveAndCheckIteration(false);
-      HLocale hLocale = validateTargetLocale(locale, projectSlug, iterationSlug);
+      HProjectIteration hProjectIteration = restSlugValidator.retrieveAndCheckIteration(projectSlug, iterationSlug, false);
+      HLocale hLocale = restSlugValidator.validateTargetLocale(locale, projectSlug, iterationSlug);
 
-      resourceUtils.validateExtensions(extensions);
+      ResourceUtils.validateExtensions(extensions);
 
       // Check Etag header
       EntityTag generatedEtag = eTagUtils.generateETagForTranslatedDocument(hProjectIteration, id, hLocale);
-      List<String> requestedEtag = headers.getRequestHeader(HttpHeaders.IF_NONE_MATCH);
-      if( requestedEtag != null )
+      List<String> requestedEtagHeaders = headers.getRequestHeader(HttpHeaders.IF_NONE_MATCH);
+      if( requestedEtagHeaders != null && !requestedEtagHeaders.isEmpty() )
       {
-         if( generatedEtag.getValue().equals( requestedEtag ) )
+         if( requestedEtagHeaders.get(0).equals(generatedEtag.getValue()) )
          {
             return Response.notModified(generatedEtag).build();
          }
@@ -235,7 +216,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource
       // TODO avoid queries for better cacheability
       List<HTextFlowTarget> hTargets = textFlowTargetDAO.findTranslations(document, hLocale);
       boolean foundData = resourceUtils.transferToTranslationsResource(
-            translationResource, document, hLocale, extensions, hTargets);
+            translationResource, document, hLocale, extensions, hTargets, Optional.<String>absent());
 
       if (!foundData && !skeletons)
       {
@@ -268,7 +249,8 @@ public class TranslatedDocResourceService implements TranslatedDocResource
    public Response deleteTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale)
    {
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
-      HProjectIteration hProjectIteration = retrieveAndCheckIteration(true);
+      HProjectIteration hProjectIteration = restSlugValidator.retrieveAndCheckIteration(projectSlug, iterationSlug, true);
+      HLocale hLocale = restSlugValidator.validateTargetLocale(locale, projectSlug, iterationSlug);
 
       // TODO find correct etag
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, new HashSet<String>());
@@ -292,7 +274,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource
       }
 
       // we also need to delete the extensions here
-      document.getPoTargetHeaders().remove(locale);
+      document.getPoTargetHeaders().remove(hLocale);
       textFlowTargetDAO.flush();
 
       return Response.ok().build();
@@ -371,36 +353,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource
       return Response.ok(sb.toString()).tag(etag).build();
    }
 
-   private HProjectIteration retrieveAndCheckIteration(boolean writeOperation)
-   {
-      HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-      HProject hProject = hProjectIteration == null ? null : hProjectIteration.getProject();
-
-      if (hProjectIteration == null)
-      {
-         throw new NoSuchEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' not found.");
-      }
-      else if (hProjectIteration.getStatus().equals(EntityStatus.OBSOLETE) || hProject.getStatus().equals(EntityStatus.OBSOLETE))
-      {
-         throw new NoSuchEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' not found.");
-      }
-      else if (writeOperation)
-      {
-         if (hProjectIteration.getStatus().equals(EntityStatus.READONLY) || hProject.getStatus().equals(EntityStatus.READONLY))
-         {
-            throw new ReadOnlyEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' is read-only.");
-         }
-         else
-         {
-            return hProjectIteration;
-         }
-      }
-      else
-      {
-         return hProjectIteration;
-      }
-   }
-
+   // TODO investigate how this became dead code, then delete
    public void copyClosestEquivalentTranslation(HDocument document)
    {
       if (applicationConfiguration.getEnableCopyTrans())
@@ -408,10 +361,11 @@ public class TranslatedDocResourceService implements TranslatedDocResource
          copyTransServiceImpl.copyTransForDocument(document);
       }
    }
-   
+
+   // public for Seam's benefit (and the @Restrict in deleteTranslations)
    public HProjectIteration getSecuredIteration()
    {
-      return retrieveAndCheckIteration(false);
+      return restSlugValidator.retrieveAndCheckIteration(projectSlug, iterationSlug, false);
    }
 
 }

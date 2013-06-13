@@ -36,6 +36,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasVisibility;
 import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -89,7 +90,7 @@ public class TranslationEditorView extends Composite implements TranslationEdito
    }
 
    @Override
-   public void setEditorView(Widget editor)
+   public void setEditorView(IsWidget editor)
    {
       this.editor.clear();
       this.editor.add(editor);
@@ -97,7 +98,7 @@ public class TranslationEditorView extends Composite implements TranslationEdito
    }
 
    @Override
-   public void setTransUnitNavigation(Widget navigationWidget)
+   public void setTransUnitNavigation(IsWidget navigationWidget)
    {
       transUnitNavigationContainer.clear();
       transUnitNavigationContainer.add(navigationWidget);
@@ -145,7 +146,7 @@ public class TranslationEditorView extends Composite implements TranslationEdito
    }
 
    @Override
-   public void setFilterView(Widget filterView)
+   public void setFilterView(IsWidget filterView)
    {
       filterPanelContainer.clear();
       filterPanelContainer.add(filterView);

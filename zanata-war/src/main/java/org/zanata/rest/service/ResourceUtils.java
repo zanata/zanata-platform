@@ -1,11 +1,39 @@
 package org.zanata.rest.service;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.tennera.jgettext.HeaderFields;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -45,37 +73,10 @@ import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.StringUtil;
 
-import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.google.common.base.Optional;
 
 @Name("resourceUtils")
 @Scope(ScopeType.STATELESS)
-@AutoCreate
 public class ResourceUtils
 {
    /**
@@ -171,7 +172,7 @@ public class ResourceUtils
                for (HTextFlowTarget targ : textFlow.getTargets().values())
                {
                   // if (targ.getState() != ContentState.New)
-                  if (targ.getState() == ContentState.Approved)
+                  if (targ.getState().isTranslated())
                   {
                      targ.setState(ContentState.NeedReview);
                      targ.setVersionNum(targ.getVersionNum() + 1);
@@ -277,30 +278,6 @@ public class ResourceUtils
    }
 
    /**
-    * Transfers from DTO TextFlowTarget into HTextFlowTarget
-    * 
-    * @param from
-    * @param to
-    * @return
-    * @todo merge with {@link #transferFromTextFlowTargetExtensions}
-    */
-   public boolean transferFromTextFlowTarget(TextFlowTarget from, HTextFlowTarget to)
-   {
-      boolean changed = false;
-      if (!equals(from.getContents(), to.getContents()))
-      {
-         to.setContents(from.getContents());
-         changed = true;
-      }
-      if (!equals(from.getState(), to.getState()))
-      {
-         to.setState(from.getState());
-         changed = true;
-      }
-      return changed;
-   }
-
-   /**
     * Transfers the specified extensions from DTO AbstractResourceMeta into
     * HDocument
     * 
@@ -398,56 +375,6 @@ public class ResourceUtils
          changed |= transferFromPoTargetHeader(fromTargetHeader, toTargetHeader, mergeType);
       }
       return changed;
-   }
-
-   /**
-    * Transfers enabled extensions from DTO TextFlowTarget to HTextFlowTarget
-    * 
-    * @param extensions
-    * @param hTarget
-    * @param enabledExtensions
-    * @return
-    * @todo merge with {@link #transferFromTextFlowTarget}
-    */
-   public boolean transferFromTextFlowTargetExtensions(ExtensionSet<TextFlowTargetExtension> extensions, HTextFlowTarget hTarget, Set<String> enabledExtensions)
-   {
-      boolean changed = false;
-      if (enabledExtensions.contains(SimpleComment.ID))
-      {
-         SimpleComment comment = extensions.findByType(SimpleComment.class);
-         if (comment != null)
-         {
-            changed |= transferFromComment(comment, hTarget);
-         }
-      }
-
-      return changed;
-
-   }
-
-   /**
-    * Transfers from DTO SimpleComment to a Hibernate object's "comment"
-    * property
-    * 
-    * @param from
-    * @param to
-    * @return
-    */
-   private boolean transferFromComment(SimpleComment from, HasSimpleComment to)
-   {
-      HSimpleComment hComment = to.getComment();
-
-      if (hComment == null)
-      {
-         hComment = new HSimpleComment();
-      }
-      if (!equals(from.getValue(), hComment.getComment()))
-      {
-         hComment.setComment(from.getValue());
-         to.setComment(hComment);
-         return true;
-      }
-      return false;
    }
 
    private boolean transferFromTextFlowExtensions(ExtensionSet<TextFlowExtension> from, HTextFlow to, Set<String> enabledExtensions)
@@ -638,7 +565,9 @@ public class ResourceUtils
    static List<String> splitLines(String s, String tagToSkip)
    {
       if (s.isEmpty())
+      {
          return Collections.emptyList();
+      }
       try
       {
          List<String> lineList = new ArrayList<String>(s.length() / 40);
@@ -1375,14 +1304,18 @@ public class ResourceUtils
 
    /**
     * 
+    *
+    *
     * @param from
     * @param to
+    * @param apiVersion
     * @todo merge with {@link #transferToTextFlowTargetExtensions}
     */
-   public void transferToTextFlowTarget(HTextFlowTarget from, TextFlowTarget to)
+   public void transferToTextFlowTarget(HTextFlowTarget from, TextFlowTarget to, Optional<String> apiVersion)
    {
       to.setContents(from.getContents());
-      to.setState(from.getState());
+      // TODO rhbz953734 - at the moment we will map review state into old state for compatibility
+      to.setState(mapContentState(apiVersion, from.getState()));
       to.setRevision(from.getVersionNum());
       to.setTextFlowRevision(from.getTextFlowRevision());
       HPerson translator = from.getLastModifiedBy();
@@ -1390,6 +1323,24 @@ public class ResourceUtils
       {
          to.setTranslator(new Person(translator.getEmail(), translator.getName()));
       }
+   }
+
+   private static ContentState mapContentState(Optional<String> apiVersion, ContentState state)
+   {
+      if (!apiVersion.isPresent())
+      {
+         switch (state)
+         {
+            case Translated:
+               return ContentState.Approved;
+            case Rejected:
+               return ContentState.NeedReview;
+            default:
+               return state;
+         }
+      }
+      // TODO for other apiVersion, we will need to handle differently
+      return state;
    }
 
    public Resource buildResource(HDocument document)
@@ -1415,16 +1366,18 @@ public class ResourceUtils
    }
 
    /**
-    * 
+    *
+    *
     * @param transRes
     * @param document
     * @param locale
     * @param enabledExtensions
     * @param hTargets
+    * @param apiVersion TODO this will take api version in the future
     * @return true only if some data was found (text flow targets, or some
     *         metadata extensions)
     */
-   public boolean transferToTranslationsResource(TranslationsResource transRes, HDocument document, HLocale locale, Set<String> enabledExtensions, List<HTextFlowTarget> hTargets)
+   public boolean transferToTranslationsResource(TranslationsResource transRes, HDocument document, HLocale locale, Set<String> enabledExtensions, List<HTextFlowTarget> hTargets, Optional<String> apiVersion)
    {
       boolean found = this.transferToTranslationsResourceExtensions(document, transRes.getExtensions(true), enabledExtensions, locale, hTargets);
 
@@ -1433,7 +1386,7 @@ public class ResourceUtils
          found = true;
          TextFlowTarget target = new TextFlowTarget();
          target.setResId(hTarget.getTextFlow().getResId());
-         this.transferToTextFlowTarget(hTarget, target);
+         this.transferToTextFlowTarget(hTarget, target, apiVersion);
          this.transferToTextFlowTargetExtensions(hTarget, target.getExtensions(true), enabledExtensions);
          transRes.getTextFlowTargets().add(target);
       }

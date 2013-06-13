@@ -33,6 +33,7 @@ import java.util.Arrays;
 import org.dbunit.operation.DatabaseOperation;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
@@ -40,6 +41,8 @@ import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.service.ValidationService;
+
+import net.sf.ehcache.CacheManager;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -51,6 +54,7 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest
    
    @Mock
    private ValidationService validationServiceImpl;
+   private CacheManager cacheManager;
 
    @Override
    protected void prepareDBUnitOperations()
@@ -65,15 +69,24 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest
     @BeforeMethod
     public void initializeSeam()
     {
-    MockitoAnnotations.initMocks(this);
-   
-    seam.reset()
-             .use("entityManager", getEm())
+      MockitoAnnotations.initMocks(this);
+      // @formatter:off
+      seam.reset()
+            .use("entityManager", getEm())
             .use("session", getSession())
             .use("validationServiceImpl", validationServiceImpl)
             .useImpl(TranslationStateCacheImpl.class)
             .ignoreNonResolvable();
+      // @formatter:on
+      cacheManager = CacheManager.create();
+      cacheManager.removalAll();
     }
+
+   @AfterMethod
+   public void after()
+   {
+      cacheManager.shutdown();
+   }
 
    @Test
    public void getSimpleIterationStatisticsForAllLocales()
@@ -98,7 +111,7 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest
          assertThat(transStat.getUnit(), not(TranslationStatistics.StatUnit.WORD));
 
          // make sure counts are sane
-         assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
+         assertThat(transStat.getDraft() + transStat.getApproved() + transStat.getFinishTranslation() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
       }
    }
 
@@ -132,7 +145,7 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest
          }
 
          // make sure counts are sane
-         assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
+         assertThat(transStat.getDraft() + transStat.getApproved() + transStat.getFinishTranslation() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
       }
 
       // make sure word and message level counts are the same and > 0
@@ -162,7 +175,7 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest
       {
          assertThat(Arrays.asList(locales), hasItem( transStat.getLocale() ));
          // make sure counts are sane
-         assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
+         assertThat(transStat.getDraft() + transStat.getApproved() + transStat.getFinishTranslation() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
       }
    }
 
@@ -190,7 +203,7 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest
          assertThat(transStat.getUnit(), not(TranslationStatistics.StatUnit.WORD));
 
          // make sure counts are sane
-         assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
+         assertThat(transStat.getDraft() + transStat.getApproved() + transStat.getFinishTranslation() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
       }
    }
 
@@ -217,7 +230,7 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest
       {
          assertThat(Arrays.asList(locales), hasItem( transStat.getLocale() ));
          // make sure counts are sane
-         assertThat(transStat.getNeedReview() + transStat.getTranslated() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
+         assertThat(transStat.getDraft() + transStat.getApproved() + transStat.getFinishTranslation() + transStat.getUntranslated(), equalTo( transStat.getTotal() ));
       }
    }
 

@@ -123,7 +123,7 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler
 
       nextStateShortcut = KeyShortcut.Builder.builder()
             .addKey(new Keys(Keys.ALT_KEY, KeyCodes.KEY_PAGEDOWN))
-            .setContext(ShortcutContext.Edit).setDescription(messages.nextFuzzyOrUntranslated())
+            .setContext(ShortcutContext.Edit).setDescription(messages.nextIncomplete())
             .setPreventDefault(true).setStopPropagation(true)
             .setHandler(new KeyShortcutEventHandler()
             {
@@ -138,7 +138,7 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler
 
       prevStateShortcut = KeyShortcut.Builder.builder()
             .addKey(new Keys(Keys.ALT_KEY, KeyCodes.KEY_PAGEUP))
-            .setContext(ShortcutContext.Edit).setDescription(messages.prevFuzzyOrUntranslated())
+            .setContext(ShortcutContext.Edit).setDescription(messages.prevIncomplete())
             .setPreventDefault(true).setStopPropagation(true)
             .setHandler(new KeyShortcutEventHandler()
             {
@@ -261,12 +261,12 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler
          switch (configuration.getNavOption())
          {
             case FUZZY_UNTRANSLATED:
-               nextStateShortcut.setDescription(messages.nextFuzzyOrUntranslated());
-               prevStateShortcut.setDescription(messages.nextFuzzyOrUntranslated());
+               nextStateShortcut.setDescription(messages.nextIncomplete());
+               prevStateShortcut.setDescription(messages.nextIncomplete());
                break;
             case FUZZY:
-               nextStateShortcut.setDescription(messages.nextFuzzy());
-               prevStateShortcut.setDescription(messages.prevFuzzy());
+               nextStateShortcut.setDescription(messages.nextDraft());
+               prevStateShortcut.setDescription(messages.prevDraft());
                break;
             case UNTRANSLATED:
                nextStateShortcut.setDescription(messages.nextUntranslated());

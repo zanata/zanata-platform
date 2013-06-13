@@ -86,7 +86,7 @@ public class TransMemoryMergeStatusResolver
          }
          return ContentState.NeedReview;
       }
-      return ContentState.Approved;
+      return ContentState.Translated;
    }
 
    private void compareTextFlowResId(TransMemoryMerge action, HTextFlow tfToBeFilled, TransMemoryDetails tmDetail)

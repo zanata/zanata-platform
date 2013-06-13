@@ -779,10 +779,14 @@ input[type="text"].loginForm_input, input[type="password"].loginForm_input {
 }
 
 .statusBar_approved {
+	background-color: #0000CD;
+}
+
+.statusBar_translated {
 	background-color: #099b09;
 }
 
-.statusBar_needReview {
+.statusBar_draft {
 	background-color: #ffc000;
 }
 
@@ -968,7 +972,7 @@ select.headerInput
     text-align: center;
 }
 
-.copy_trans_options_table td.approved_action, .approved_action {
+.copy_trans_options_table td.translated_action, .translated_action {
     background-color: #099b09;
     text-align: center;
 }

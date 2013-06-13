@@ -22,6 +22,9 @@ package org.zanata.dao;
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
@@ -48,7 +51,7 @@ public class LocaleDAO extends AbstractDAOImpl<HLocale, Long>
       super(HLocale.class, session);
    }
 
-   public HLocale findByLocaleId(LocaleId locale)
+   public @Nullable HLocale findByLocaleId(@Nonnull LocaleId locale)
    {
       return (HLocale) getSession().byNaturalId(HLocale.class).using("localeId", locale).load();
    }

@@ -29,7 +29,6 @@ import org.zanata.webtrans.client.events.PageChangeEventHandler;
 import org.zanata.webtrans.client.events.PageCountChangeEvent;
 import org.zanata.webtrans.client.events.PageCountChangeEventHandler;
 import org.zanata.webtrans.client.events.RefreshPageEvent;
-import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.view.TranslationEditorDisplay;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -68,7 +67,6 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
 
       transUnitNavigationPresenter.bind();
       display.setTransUnitNavigation(transUnitNavigationPresenter.getDisplay().asWidget());
-
 
       registerHandler(display.getPageNavigation().addValueChangeHandler(new ValueChangeHandler<Integer>()
       {
@@ -140,5 +138,4 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    {
       display.getResizeButton().setVisible(isReadOnly);
    }
-
 }

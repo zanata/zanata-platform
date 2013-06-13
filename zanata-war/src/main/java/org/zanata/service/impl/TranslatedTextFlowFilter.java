@@ -147,7 +147,7 @@ public class TranslatedTextFlowFilter extends Filter
                   TermDocs termDocs = reader.termDocs(term);
                   while( termDocs.next() ) // Should only be one
                   {
-                     if (newState == ContentState.Approved)
+                     if (newState.isTranslated())
                      {
                         log.debug("Marking TextFlow {} as translated in locale {}", textFlowId, locale);
                         docIdSet.set(termDocs.doc());

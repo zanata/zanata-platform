@@ -29,7 +29,6 @@ import java.util.Calendar;
 import java.util.Properties;
 
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.service.FileSystemService;
@@ -41,7 +40,6 @@ import org.zanata.service.FileSystemService;
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Name("fileSystemServiceImpl")
-@AutoCreate
 @Scope(ScopeType.STATELESS)
 public class FileSystemServiceImpl implements FileSystemService
 {

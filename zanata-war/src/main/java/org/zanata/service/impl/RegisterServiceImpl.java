@@ -27,7 +27,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -52,7 +51,6 @@ import org.zanata.service.RegisterService;
 import org.zanata.util.HashUtil;
 
 @Name("registerServiceImpl")
-@AutoCreate
 @Scope(ScopeType.STATELESS)
 public class RegisterServiceImpl implements RegisterService
 {

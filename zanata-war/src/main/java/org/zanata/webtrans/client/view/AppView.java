@@ -20,7 +20,7 @@
  */
 package org.zanata.webtrans.client.view;
 
-import org.zanata.common.TranslationStats;
+import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.presenter.MainView;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
@@ -31,7 +31,6 @@ import org.zanata.webtrans.client.ui.HasTranslationStats.LabelFormat;
 import org.zanata.webtrans.client.ui.TransUnitCountBar;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -99,11 +98,11 @@ public class AppView extends Composite implements AppDisplay
    private Listener listener;
 
    @Inject
-   public AppView(WebTransMessages messages, DocumentListDisplay documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, SideMenuDisplay sideMenuView, final UserWorkspaceContext userWorkspaceContext)
+public AppView(WebTransMessages messages, DocumentListDisplay documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, SideMenuDisplay sideMenuView, final UserWorkspaceContext userWorkspaceContext)
    {
       // this must be initialized before uiBinder.createAndBindUi(), or an
       // exception will be thrown at runtime
-      translationStatsBar = new TransUnitCountBar(messages, LabelFormat.PERCENT_COMPLETE_HRS, true);
+      translationStatsBar = new TransUnitCountBar(userWorkspaceContext, messages, LabelFormat.PERCENT_COMPLETE_HRS, true, userWorkspaceContext.getWorkspaceRestrictions().isProjectRequireReview());
       translationStatsBar.setVisible(false); // hide until there is a value to
       
       projectLink = new Breadcrumb(true, false, Application.getProjectHomeURL(userWorkspaceContext.getWorkspaceContext().getWorkspaceId()));
@@ -123,12 +122,12 @@ public class AppView extends Composite implements AppDisplay
       searchAndReplaceTab.setTitle(messages.projectWideSearchAndReplace());
       documentListTab.setTitle(messages.documentListTitle());
       editorTab.setTitle(messages.editor());
-      
+
       
       content.add(documentListView.asWidget());
       content.add(translationView.asWidget());
       content.add(searchResultsView.asWidget());
-      
+
       Window.enableScrolling(false);
    }
 
@@ -143,6 +142,7 @@ public class AppView extends Composite implements AppDisplay
    private final static int DOCUMENT_VIEW = 0;
    private final static int EDITOR_VIEW = 1;
    private final static int SEARCH_AND_REPLACE_VIEW = 2;
+   private final static int REVIEW_VIEW = 3;
    
    @Override
    public void showInMainView(MainView view)
@@ -163,7 +163,6 @@ public class AppView extends Composite implements AppDisplay
          content.selectTab(EDITOR_VIEW);
          selectedDocumentSpan.setVisible(true);
          setSelectedTab(editorTab);
-         break;
       }
    }
    
@@ -172,7 +171,7 @@ public class AppView extends Composite implements AppDisplay
       editorTab.removeStyleName(style.selectedTab());
       searchAndReplaceTab.removeStyleName(style.selectedTab());
       documentListTab.removeStyleName(style.selectedTab());
-      
+
       tab.addStyleName(style.selectedTab());
    }
 
@@ -207,7 +206,7 @@ public class AppView extends Composite implements AppDisplay
    }
 
    @Override
-   public void setStats(TranslationStats transStats, boolean statsByWords)
+   public void setStats(ContainerTranslationStatistics transStats, boolean statsByWords)
    {
       translationStatsBar.setStats(transStats, statsByWords);
       translationStatsBar.setVisible(true);

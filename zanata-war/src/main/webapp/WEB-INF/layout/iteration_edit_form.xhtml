@@ -36,6 +36,11 @@
             </s:span>
         </s:decorate>
 
+        <s:decorate id="requireReviewField" template="edit.xhtml">
+            <ui:define name="label">#{messages['jsf.iteration.requireTranslationReview']}</ui:define>
+            <h:selectBooleanCheckbox id="requireReviewChkbox" value="#{projectIterationHome.instance.requireTranslationReview}" />
+        </s:decorate>
+
         <s:decorate id="statusField" template="edit.xhtml">
             <ui:define name="label">#{messages['jsf.Status']}</ui:define>
             <h:selectOneMenu id="status" value="#{projectIterationHome.instance.status}">

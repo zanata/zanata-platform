@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -41,7 +40,6 @@ import org.zanata.service.VersionGroupService;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Name("versionGroupServiceImpl")
-@AutoCreate
 @Scope(ScopeType.STATELESS)
 public class VersionGroupServiceImpl implements VersionGroupService
 {

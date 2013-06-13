@@ -72,6 +72,9 @@ public class TranslationStateCacheImplTest
    {
       MockitoAnnotations.initMocks(this);
       tsCache = new TranslationStateCacheImpl(filterLoader, bitsetLoader, docStatsLoader, targetValidationLoader, textFlowTargetDAO, validationServiceImpl);
+
+      tsCache.create();
+      tsCache.destroy();
       tsCache.create();
    }
 

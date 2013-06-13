@@ -56,7 +56,7 @@ public class MockHandlerFactory
    public GetTransUnitListHandler createGetTransUnitListHandlerWithBehavior(DocumentId documentId, List<HTextFlow> hTextFlows, HLocale hLocale, int startIndex, int count)
    {
       // @formatter:off
-      GetTransUnitListHandler handler = SeamAutowire.instance()
+      GetTransUnitListHandler handler = SeamAutowire.instance().reset()
             .use("identity", identity)
             .use("textFlowDAO", textFlowDAO)
             .use("textFlowSearchServiceImpl", textFlowSearchServiceImpl)

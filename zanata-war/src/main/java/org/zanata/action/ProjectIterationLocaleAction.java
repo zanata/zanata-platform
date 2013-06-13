@@ -137,7 +137,7 @@ public class ProjectIterationLocaleAction implements Serializable
    public void setSetting(boolean var)
    {
       setting = var;
-      iterationOverrideLocales = new Boolean(setting);
+      iterationOverrideLocales = setting;
    }
 
    public boolean getSetting()
@@ -152,7 +152,7 @@ public class ProjectIterationLocaleAction implements Serializable
          {
             setting = projectIterationHome.getInstance().getOverrideLocales();
          }
-         iterationOverrideLocales = new Boolean(setting);
+         iterationOverrideLocales = setting;
       }
       return setting;
    }

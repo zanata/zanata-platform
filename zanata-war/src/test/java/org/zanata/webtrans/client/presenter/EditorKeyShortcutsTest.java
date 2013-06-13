@@ -118,8 +118,8 @@ public class EditorKeyShortcutsTest
    {
       when(messages.moveToNextRow()).thenReturn("next entry");
       when(messages.moveToPreviousRow()).thenReturn("previous entry");
-      when(messages.nextFuzzyOrUntranslated()).thenReturn("next fuzzy or untranslated");
-      when(messages.prevFuzzyOrUntranslated()).thenReturn("previous fuzzy or untranslated");
+      when(messages.nextIncomplete()).thenReturn("next fuzzy or untranslated");
+      when(messages.prevIncomplete()).thenReturn("previous fuzzy or untranslated");
 
       keyShortcuts.registerNavigationKeys(targetContentsPresenter);
 
@@ -296,8 +296,8 @@ public class EditorKeyShortcutsTest
    public void testOnUserConfigChangedNavOption() throws Exception
    {
       // Given: change user config esc to close edit
-      when(messages.nextFuzzy()).thenReturn("next fuzzy");
-      when(messages.prevFuzzy()).thenReturn("prev fuzzy");
+      when(messages.nextDraft()).thenReturn("next fuzzy");
+      when(messages.prevDraft()).thenReturn("prev fuzzy");
       keyShortcuts.registerNavigationKeys(targetContentsPresenter);
       configHolder.setNavOption(NavOption.FUZZY);
 

@@ -25,10 +25,12 @@ import static org.zanata.rest.dto.stats.TranslationStatistics.StatUnit.WORD;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -165,9 +167,9 @@ public class ViewAllStatusAction implements Serializable
       public int compareTo(Status o)
       {
          int per = getStats().getTotal() == 0 ? 0 :
-               (int) Math.ceil(100 * getStats().getTranslated() / getStats().getTotal());
+               (int) Math.ceil(100.0 * getStats().getApproved() / getStats().getTotal());
          int comparePer = o.getStats().getTotal() == 0 ? 0 :
-               (int) Math.ceil(100 * o.getStats().getTranslated() / o.getStats().getTotal());
+               (int) Math.ceil(100.0 * o.getStats().getApproved() / o.getStats().getTotal());
          
          return Double.compare(comparePer, per);
       }
@@ -241,9 +243,9 @@ public class ViewAllStatusAction implements Serializable
          TranslationStatistics stats = iterationStats.getStats(var.getLocaleId().getId(), statsOption);
          if (stats == null)
          {
-            stats = new TranslationStatistics();
+            stats = new TranslationStatistics(statsOption);
             stats.setUntranslated(total);
-            stats.setTotal(total);
+//            stats.setTotal(total);
          }
 
          if (statsMap.containsKey(var.getLocaleId()))
@@ -278,24 +280,17 @@ public class ViewAllStatusAction implements Serializable
          TranslationStatistics stats = iterationStats.getStats(var.getLocaleId().getId(), statsOption);
          if (stats == null)
          {
-            stats = new TranslationStatistics();
+            stats = new TranslationStatistics(statsOption);
             stats.setUntranslated(total);
-            stats.setTotal(total);
 
             HTextFlowTarget lastTranslatedTarget = localeServiceImpl.getLastTranslated(projectSlug, iterationSlug, var.getLocaleId());
 
-            StringBuilder lastTranslated = new StringBuilder();
             if (lastTranslatedTarget != null)
             {
-               lastTranslated.append(DateUtil.formatShortDate(lastTranslatedTarget.getLastChanged()));
-               if (lastTranslatedTarget.getLastModifiedBy() != null)
-               {
-                  lastTranslated.append(" by ");
-                  lastTranslated.append(lastTranslatedTarget.getLastModifiedBy().getAccount().getUsername());
-                  
-               }
+               stats.setLastTranslatedBy(lastTranslatedTarget.getLastModifiedBy().getAccount().getUsername());
+               stats.setLastTranslatedDate(lastTranslatedTarget.getLastChanged());
+               stats.setLastTranslated(getLastTranslated(lastTranslatedTarget.getLastChanged(), lastTranslatedTarget.getLastModifiedBy().getAccount().getUsername()));
             }
-            stats.setLastTranslated(lastTranslated.toString());
          }
 
 
@@ -315,6 +310,23 @@ public class ViewAllStatusAction implements Serializable
       List<Status> result = new ArrayList<Status>(statsMap.values());
       Collections.sort(result);
       return result;
+   }
+   
+   private String getLastTranslated(Date lastChanged, String lastModifiedBy)
+   {
+      StringBuilder result = new StringBuilder();
+
+      if (lastChanged != null)
+      {
+         result.append(DateUtil.formatShortDate(lastChanged));
+
+         if (!StringUtils.isEmpty(lastModifiedBy))
+         {
+            result.append(" by ");
+            result.append(lastModifiedBy);
+         }
+      }
+      return result.toString();
    }
 
    public HProjectIteration getProjectIteration()

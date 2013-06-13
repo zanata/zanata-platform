@@ -30,12 +30,11 @@
       <lucene.version>3.5.0</lucene.version>
       <seam.version>2.3.0.Final</seam.version>
       <gwteventservice.version>1.2.1</gwteventservice.version>
-      <okapi.version>0.18</okapi.version>
+      <okapi.version>0.21</okapi.version>
 
-      <zanata.api.version>2.3.0</zanata.api.version>
+      <zanata.api.version>2.3.1-SNAPSHOT</zanata.api.version>
       <zanata.client.version>2.3.1-SNAPSHOT</zanata.client.version>
-      <zanata.common.version>2.3.0</zanata.common.version>
-
+      <zanata.common.version>2.3.1-SNAPSHOT</zanata.common.version>
 
       <richfaces.version>4.3.2.Final</richfaces.version>
 
@@ -47,6 +46,9 @@
 	  <hibernate.entitymanager.version>${hibernate.version}</hibernate.entitymanager.version>
       <war_bundles_jsf_impl>false</war_bundles_jsf_impl>
       <hibernate.validator.version>4.3.1.Final</hibernate.validator.version>
+
+        <!-- controls concordion output location-->
+        <concordion.output.dir>${project.build.directory}/concordion</concordion.output.dir>
     </properties>
 
    <dependencyManagement>
@@ -383,6 +385,30 @@
               <version>1.0.3.Final</version>
               <scope>import</scope>
               <type>pom</type>
+          </dependency>
+          <dependency>
+              <groupId>org.concordion</groupId>
+              <artifactId>concordion</artifactId>
+              <version>1.4.2</version>
+              <exclusions>
+                  <exclusion>
+                      <artifactId>
+                          junit-dep
+                      </artifactId>
+                      <groupId>junit</groupId>
+                  </exclusion>
+                  <exclusion>
+                      <artifactId>xml-apis</artifactId>
+                      <groupId>xml-apis</groupId>
+                  </exclusion>
+              </exclusions>
+              <scope>test</scope>
+          </dependency>
+          <dependency>
+              <groupId>org.concordion</groupId>
+              <artifactId>concordion-extensions</artifactId>
+              <version>1.1.0</version>
+              <scope>test</scope>
           </dependency>
 
       </dependencies>

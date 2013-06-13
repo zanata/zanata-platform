@@ -20,9 +20,7 @@
  */
 package org.zanata.service.impl;
 
-import static org.zanata.common.ContentState.Approved;
-import static org.zanata.common.ContentState.NeedReview;
-import static org.zanata.common.ContentState.New;
+import static org.zanata.common.ContentState.*;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.REJECT;
 
@@ -33,7 +31,6 @@ import javax.persistence.EntityManager;
 import org.hibernate.HibernateException;
 import org.hibernate.ScrollableResults;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -61,7 +58,6 @@ import org.zanata.service.LocaleService;
 //TODO unit test suite for this class
 
 @Name("copyTransServiceImpl")
-@AutoCreate
 @Scope(ScopeType.STATELESS)
 public class CopyTransServiceImpl implements CopyTransService
 {
@@ -221,7 +217,8 @@ public class CopyTransServiceImpl implements CopyTransService
       int copyCount = 0;
       try
       {
-         results = textFlowTargetDAO.findMatchingTranslations(document, locale, checkContext, checkDocument, checkProject);
+         boolean requireTranslationReview = document.getProjectIteration().getRequireTranslationReview();
+         results = textFlowTargetDAO.findMatchingTranslations(document, locale, checkContext, checkDocument, checkProject, requireTranslationReview);
          copyCount = 0;
 
          while( results.next() )
@@ -231,11 +228,12 @@ public class CopyTransServiceImpl implements CopyTransService
 
             HTextFlow originalTf = (HTextFlow) results.get(0);
             HTextFlowTarget hTarget = textFlowTargetDAO.getOrCreateTarget(originalTf, locale);
+            HProjectIteration matchingTargetProjectIteration = matchingTarget.getTextFlow().getDocument().getProjectIteration();
             ContentState copyState = determineContentState(
                   originalTf.getResId().equals(matchingTarget.getTextFlow().getResId()),
-                  originalTf.getDocument().getProjectIteration().getProject().getId().equals( matchingTarget.getTextFlow().getDocument().getProjectIteration().getProject().getId() ),
+                  originalTf.getDocument().getProjectIteration().getProject().getId().equals(matchingTargetProjectIteration.getProject().getId()),
                   originalTf.getDocument().getDocId().equals( matchingTarget.getTextFlow().getDocument().getDocId() ),
-                  options);
+                  options, requireTranslationReview, matchingTarget.getState());
             
             if( shouldOverwrite(hTarget, copyState) )
             {
@@ -244,6 +242,12 @@ public class CopyTransServiceImpl implements CopyTransService
                hTarget.setTextFlowRevision(originalTf.getRevision());
                hTarget.setLastChanged(matchingTarget.getLastChanged());
                hTarget.setLastModifiedBy(matchingTarget.getLastModifiedBy());
+               hTarget.setTranslator(matchingTarget.getTranslator());
+               // TODO rhbz953734 - will need a new copyTran option for review state
+               if (copyState == ContentState.Approved)
+               {
+                  hTarget.setReviewer(matchingTarget.getReviewer());
+               }
                hTarget.setContents(matchingTarget.getContents());
                hTarget.setState(copyState);
                HSimpleComment hcomment = hTarget.getComment();
@@ -286,9 +290,13 @@ public class CopyTransServiceImpl implements CopyTransService
    }
 
    private ContentState determineContentState(boolean contextMatches, boolean projectMatches, boolean docIdMatches,
-                                              HCopyTransOptions options)
+                                              HCopyTransOptions options, boolean requireTranslationReview, ContentState matchingTargetState)
    {
-      ContentState state = Approved;
+      if (requireTranslationReview && matchingTargetState.isApproved() && projectMatches && contextMatches && docIdMatches)
+      {
+         return Approved;
+      }
+      ContentState state = Translated;
       state = getExpectedContentState(contextMatches, options.getContextMismatchAction(), state);
       state = getExpectedContentState(projectMatches, options.getProjectMismatchAction(), state);
       state = getExpectedContentState(docIdMatches, options.getDocIdMismatchAction(), state);
@@ -423,9 +431,13 @@ public class CopyTransServiceImpl implements CopyTransService
    {
       if( currentlyStored != null )
       {
-         if( currentlyStored.getState() == NeedReview && matchState == Approved )
+         if( currentlyStored.getState().isRejectedOrFuzzy() && matchState.isTranslated())
          {
             return true; // If it's fuzzy, replace only with approved ones
+         }
+         else if (currentlyStored.getState() == ContentState.Translated && matchState.isApproved())
+         {
+            return true; // If it's Translated and found an Approved one
          }
          else if( currentlyStored.getState() == New )
          {

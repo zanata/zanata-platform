@@ -38,7 +38,7 @@ public interface TransUnitsTableDisplay extends WidgetDisplay
 
    void hideFilterConfirmation();
 
-   void buildTable(List<SourceContentsDisplay> sourceDisplays, List<TargetContentsDisplay> targetDisplays);
+   void buildTable(List<? extends NeedsRefresh> sourceDisplays, List<? extends NeedsRefresh> targetDisplays);
 
    void setRowSelectionListener(Listener listener);
 

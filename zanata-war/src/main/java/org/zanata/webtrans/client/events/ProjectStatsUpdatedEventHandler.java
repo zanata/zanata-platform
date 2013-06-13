@@ -4,5 +4,5 @@ import com.google.gwt.event.shared.EventHandler;
 
 public interface ProjectStatsUpdatedEventHandler extends EventHandler
 {
-   void onProjectStatsRetrieved(ProjectStatsUpdatedEvent event);
+   void onProjectStatsUpdated(ProjectStatsUpdatedEvent event);
 }

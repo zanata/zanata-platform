@@ -22,6 +22,7 @@ package org.zanata.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,6 +77,9 @@ import org.zanata.util.OkapiUtil;
 import org.zanata.util.StringUtil;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableList;
+
+import com.google.common.base.Objects;
 
 /**
  * Represents a flow of source text that should be processed as a stand-alone
@@ -93,7 +97,7 @@ import com.google.common.base.Objects;
       name = HTextFlow.QUERY_TRANSLATED_TEXTFLOWIDS,
       query = "SELECT tft.textFlow.id FROM HTextFlowTarget tft " +
             "WHERE tft.locale.localeId=:locale " +
-            "AND tft.state=org.zanata.common.ContentState.Approved " +
+            "AND (tft.state=org.zanata.common.ContentState.Translated OR tft.state=org.zanata.common.ContentState.Approved) " +
             "AND tft.textFlow.document.projectIteration.status<>org.zanata.common.EntityStatus.OBSOLETE " +
             "AND tft.textFlow.document.projectIteration.project.status<>org.zanata.common.EntityStatus.OBSOLETE"
 ))
@@ -101,7 +105,7 @@ import com.google.common.base.Objects;
 @NoArgsConstructor
 @ToString(of = {"resId", "revision", "comment", "obsolete"})
 @Slf4j
-public class HTextFlow extends HTextContainer implements Serializable, ITextFlowHistory, HasSimpleComment, HasContents
+public class HTextFlow extends HTextContainer implements Serializable, ITextFlowHistory, HasSimpleComment, HasContents, SourceContents
 {
    public static final String QUERY_TRANSLATED_TEXTFLOWIDS = "HTextFlow.QUERY_TRANSLATED_TEXTFLOWIDS";
    private static final long serialVersionUID = 3023080107971905435L;
@@ -173,6 +177,13 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
       this.id = id;
    }
 
+   @Transient
+   @Override
+   public LocaleId getLocale()
+   {
+      return getDocument().getSourceLocaleId();
+   }
+
    // we can't use @NotNull because the position isn't set until the object has
    // been persisted
    @Column(insertable = false, updatable = false, nullable = false)
@@ -181,6 +192,16 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
    public Integer getPos()
    {
       return pos;
+   }
+
+   @Transient
+   @Override
+   public String getQualifiedId()
+   {
+      HDocument doc = getDocument();
+      HProjectIteration iter = doc.getProjectIteration();
+      HProject proj = iter.getProject();
+      return proj.getSlug()+":"+iter.getSlug()+":"+doc.getDocId()+":"+getResId();
    }
 
    // TODO make this case sensitive
@@ -403,6 +424,26 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
          targets = new HashMap<Long, HTextFlowTarget>();
       }
       return targets;
+   }
+
+   @Override
+   public TargetContents getTargetContents(LocaleId localeId)
+   {
+      // TODO performance: need efficient way to look up a target by LocaleId
+      Collection<HTextFlowTarget> targets = getTargets().values();
+      for (HTextFlowTarget tft : targets)
+      {
+         if (tft.getLocaleId().equals(localeId))
+            return tft;
+      }
+      return null;
+   }
+
+   @Transient
+   @Override
+   public Iterable<TargetContents> getAllTargetContents()
+   {
+      return ImmutableList.<TargetContents>copyOf(getTargets().values());
    }
 
    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = true)

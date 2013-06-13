@@ -20,7 +20,6 @@
  */
 package org.zanata.service.impl;
 
-import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -46,6 +45,7 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.service.TranslationFileService;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.MapMaker;
 
 import java.io.File;
@@ -67,7 +67,6 @@ import static org.zanata.common.DocumentType.*;
  */
 @Name("translationFileServiceImpl")
 @Scope(STATELESS)
-@AutoCreate
 public class TranslationFileServiceImpl implements TranslationFileService
 {
    private static Map<DocumentType, Class<? extends FileFormatAdapter>> DOCTYPEMAP = new MapMaker().makeMap();
@@ -118,31 +117,18 @@ public class TranslationFileServiceImpl implements TranslationFileService
    private ProjectIterationDAO projectIterationDAO;
 
    @Override
-   public TranslationsResource parseTranslationFile(InputStream fileContents, String fileName, String localeId, boolean originalIsPo) throws ZanataServiceException
+   public TranslationsResource parseTranslationFile(InputStream fileContents, String fileName,
+         String localeId, String projectSlug, String iterationSlug, String docId)
+               throws ZanataServiceException
    {
       if( fileName.endsWith(".po") )
       {
-         try
-         {
-            return parsePoFile(fileContents, !originalIsPo);
-         }
-         catch (Exception e)
-         {
-            throw new ZanataServiceException("Invalid PO file contents on file: " + fileName, e);
-         }
+         return parsePoFile(fileContents, projectSlug, iterationSlug, docId);
       }
       else if (hasAdapterFor(fileName))
       {
          File tempFile = persistToTempFile(fileContents);
-         TranslationsResource transRes;
-         try
-         {
-            transRes = getAdapterFor(fileName).parseTranslationFile(tempFile.toURI(), localeId);
-         }
-         catch (FileFormatAdapterException e)
-         {
-            throw new ZanataServiceException("Error parsing translation file: " + fileName, e);
-         }
+         TranslationsResource transRes = parseAdapterTranslationFile(tempFile, projectSlug, iterationSlug, docId, localeId, fileName);
          removeTempFile(tempFile);
          return transRes;
       }
@@ -150,6 +136,42 @@ public class TranslationFileServiceImpl implements TranslationFileService
       {
          throw new ZanataServiceException("Unsupported Translation file: " + fileName);
       }
+   }
+
+   @Override
+   public TranslationsResource parsePoFile(InputStream fileContents,
+         String projectSlug, String iterationSlug, String docId)
+   {
+      boolean originalIsPo = isPoDocument(projectSlug, iterationSlug, docId);
+      try
+      {
+         return parsePoFile(fileContents, !originalIsPo);
+      }
+      catch (Exception e)
+      {
+         throw new ZanataServiceException("Invalid PO file contents on file: " + docId, e);
+      }
+   }
+
+   @Override
+   public TranslationsResource parseAdapterTranslationFile(File tempFile,
+         String projectSlug, String iterationSlug, String docId, String localeId, String fileName)
+   {
+      Optional<String> params = documentDAO.getAdapterParams(projectSlug, iterationSlug, docId);
+      TranslationsResource transRes;
+      try
+      {
+         transRes = getAdapterFor(fileName).parseTranslationFile(tempFile.toURI(), localeId, params);
+      }
+      catch (FileFormatAdapterException e)
+      {
+         throw new ZanataServiceException("Error parsing translation file: " + fileName, e);
+      }
+      catch (RuntimeException e)
+      {
+         throw new ZanataServiceException(e);
+      }
+      return transRes;
    }
 
    @Override
@@ -164,7 +186,7 @@ public class TranslationFileServiceImpl implements TranslationFileService
    }
 
    @Override
-   public Resource parseUpdatedDocumentFile(InputStream fileContents, String docId, String fileName, boolean offlinePo)
+   public Resource parseUpdatedPotFile(InputStream fileContents, String docId, String fileName, boolean offlinePo)
    {
       if (fileName.endsWith(".pot"))
       {
@@ -184,13 +206,13 @@ public class TranslationFileServiceImpl implements TranslationFileService
    }
 
    @Override
-   public Resource parseDocumentFile(URI documentFile, String path, String fileName) throws ZanataServiceException
+   public Resource parseAdapterDocumentFile(URI documentFile, String documentPath, String fileName, Optional<String> params) throws ZanataServiceException
    {
-      return parseUpdatedDocumentFile(documentFile, convertToValidPath(path) + fileName, fileName);
+      return parseUpdatedAdapterDocumentFile(documentFile, convertToValidPath(documentPath) + fileName, fileName, params);
    }
 
    @Override
-   public Resource parseUpdatedDocumentFile(URI documentFile, String docId, String fileName) throws ZanataServiceException
+   public Resource parseUpdatedAdapterDocumentFile(URI documentFile, String docId, String fileName, Optional<String> params) throws ZanataServiceException
    {
       if (hasAdapterFor(fileName))
       {
@@ -198,7 +220,7 @@ public class TranslationFileServiceImpl implements TranslationFileService
          Resource doc;
          try
          {
-            doc = adapter.parseDocumentFile(documentFile, new LocaleId("en"));
+            doc = adapter.parseDocumentFile(documentFile, new LocaleId("en"), params);
          }
          catch (FileFormatAdapterException e)
          {
@@ -260,12 +282,7 @@ public class TranslationFileServiceImpl implements TranslationFileService
       return DOCTYPEMAP.containsKey(type);
    }
 
-   /**
-    * @deprecated use {@link #hasAdapterFor(DocumentType)}s
-    */
-   @Deprecated
-   @Override
-   public boolean hasAdapterFor(String fileNameOrExtension)
+   private boolean hasAdapterFor(String fileNameOrExtension)
    {
       String extension = extractExtension(fileNameOrExtension);
       if (extension == null)
@@ -280,26 +297,26 @@ public class TranslationFileServiceImpl implements TranslationFileService
       return hasAdapterFor(documentType);
    }
 
-   /**
-    * @deprecated use {@link #getAdapterFor(DocumentType)}
-    */
-   @Deprecated
-   @Override
-   public FileFormatAdapter getAdapterFor(String fileNameOrExtension)
+   private FileFormatAdapter getAdapterFor(String fileNameOrExtension)
    {
-      // FIXME throw exception when not found
-
       String extension = extractExtension(fileNameOrExtension);
       if (extension == null)
       {
-         return null;
+         throw new RuntimeException("Cannot find adapter for null filename or extension.");
       }
       DocumentType documentType = DocumentType.typeFor(extension);
       if (documentType == null)
       {
-         return null;
+         throw new RuntimeException("Cannot choose an adapter because the provided string '" +
+                                    fileNameOrExtension + "' does not match any known document type.");
       }
       return getAdapterFor(documentType);
+   }
+
+   @Override
+   public DocumentType getDocumentType(String fileNameOrExtension)
+   {
+      return DocumentType.typeFor(extractExtension(fileNameOrExtension));
    }
 
    @Override

@@ -355,7 +355,7 @@ public class TargetContentsPresenterTest
       TransUnitSaveEvent saveEvent = TestFixture.extractFromEvents(eventCaptor.getAllValues(), TransUnitSaveEvent.class);
       assertThat(saveEvent.getTransUnitId(), equalTo(selectedTU.getId()));
       assertThat(saveEvent.getTargets(), Matchers.equalTo(NEW_TARGETS));
-      assertThat(saveEvent.getStatus(), equalTo(ContentState.Approved));
+      assertThat(saveEvent.getStatus(), equalTo(ContentState.Translated));
 
       NavTransUnitEvent navEvent = TestFixture.extractFromEvents(eventCaptor.getAllValues(), NavTransUnitEvent.class);
       assertThat(navEvent.getRowType(), equalTo(NavTransUnitEvent.NavigationType.NextEntry));

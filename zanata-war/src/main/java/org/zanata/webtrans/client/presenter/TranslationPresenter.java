@@ -150,7 +150,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
                @Override
                public void onKeyShortcut(KeyShortcutEvent event)
                {
-                  if (!isOtherInputFieldFocused() && userWorkspaceContext.hasWriteAccess())
+                  if (!isOtherInputFieldFocused() && userWorkspaceContext.getWorkspaceRestrictions().isHasWriteAccess())
                   {
                      targetContentsPresenter.setFocus();
                      targetContentsPresenter.revealDisplay();

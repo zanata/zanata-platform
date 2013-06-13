@@ -1,24 +1,9 @@
 package org.zanata.webtrans.client.presenter;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isIn;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import net.customware.gwt.presenter.client.EventBus;
 
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -31,7 +16,9 @@ import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
-import org.zanata.common.TranslationStats;
+import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
+import org.zanata.rest.dto.stats.TranslationStatistics;
+import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
@@ -57,10 +44,18 @@ import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
+import org.zanata.webtrans.shared.rpc.GetDocumentStats;
+import org.zanata.webtrans.shared.rpc.GetDocumentStatsResult;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceContextUpdateData;
 import org.zanata.webtrans.shared.rpc.ThemesOption;
-
 import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+
+import net.customware.gwt.presenter.client.EventBus;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.*;
 
 @Test(groups = { "unit-tests" })
 public class DocumentListPresenterTest
@@ -111,17 +106,18 @@ public class DocumentListPresenterTest
       MockitoAnnotations.initMocks(this);
       configHolder = new UserConfigHolder();
       when(mockUserOptionsService.getConfigHolder()).thenReturn(configHolder);
-      documentListPresenter = new DocumentListPresenter(mockDisplay, mockEventBus, mockDispatcher, mockUserWorkspaceContext, mockMessages, mockHistory, mockUserOptionsService);
-   
-      workspaceId = new WorkspaceId(new ProjectIterationId("projectSlug", "iterationSlug", ProjectType.Podir), LocaleId.EN_US);
+
+      workspaceId = new WorkspaceId(new ProjectIterationId("projectSlug", "iterationSlug", ProjectType.Podir), LocaleId.ES);
 
       when(mockUserWorkspaceContext.getWorkspaceContext()).thenReturn(mockWorkspaceContext);
       when(mockWorkspaceContext.getWorkspaceId()).thenReturn(workspaceId);
 
       when(mockMessages.projectTypeNotSet()).thenReturn("Project not set");
       when(mockMessages.downloadAllAsZipDescription()).thenReturn("Download all translation file");
-      
+
       when(mockDisplay.getPageNavigation()).thenReturn(mockPager);
+      
+      documentListPresenter = new DocumentListPresenter(mockDisplay, mockEventBus, mockDispatcher, mockUserWorkspaceContext, mockMessages, mockHistory, mockUserOptionsService);
    }
 
    @Test
@@ -132,9 +128,9 @@ public class DocumentListPresenterTest
 
       documentListPresenter.onBind();
 
-//      verify(mockDisplay).renderTable(isA(NoSelectionModel.class));
-//      verify(mockDisplay).setStatsFilter("Words");
-//      verify(mockDisplay).updatePageSize(UserConfigHolder.DEFAULT_DOC_LIST_PAGE_SIZE);
+      // verify(mockDisplay).renderTable(isA(NoSelectionModel.class));
+      // verify(mockDisplay).setStatsFilter("Words");
+      // verify(mockDisplay).updatePageSize(UserConfigHolder.DEFAULT_DOC_LIST_PAGE_SIZE);
       verify(mockDisplay).setListener(documentListPresenter);
       verify(mockEventBus).addHandler(DocumentSelectionEvent.getType(), documentListPresenter);
       verify(mockEventBus).addHandler(TransUnitUpdatedEvent.getType(), documentListPresenter);
@@ -182,18 +178,12 @@ public class DocumentListPresenterTest
       when(mockEvent.getUpdateInfo()).thenReturn(updateInfo);
 
       ArrayList<DocumentInfo> documentInfos = buildSampleDocumentArray();
-      TranslationStats stats = new TranslationStats();
-      for (DocumentInfo documentInfo : documentInfos)
-      {
-         stats.add(documentInfo.getStats());
-      }
 
       documentListPresenter.bind();
       documentListPresenter.setDocuments(documentInfos);
-      documentListPresenter.setProjectStats(stats);
       documentListPresenter.onTransUnitUpdated(mockEvent);
 
-      verify(mockEventBus, times(2)).fireEvent(capturedEventBusEvent.capture());
+      verify(mockEventBus, times(1)).fireEvent(capturedEventBusEvent.capture());
 
       DocumentStatsUpdatedEvent docStatsEvent = null;
       for (GwtEvent event : capturedEventBusEvent.getAllValues())
@@ -212,70 +202,15 @@ public class DocumentListPresenterTest
       // check actual counts (approved/fuzzy/untranslated)
       // default TUs: 1/2/3
       // approving 1 fuzzy, expect 2/1/3
-      assertThat("document Approved TU count should increase by 1 when a TU is updated from NeedsReview to Approved", docStatsEvent.getNewStats().getUnitCount().getApproved(), is(2));
-      assertThat("document NeedsReview TU count should decrease by 1 when a TU is updated from NeedsReview to Approved", docStatsEvent.getNewStats().getUnitCount().getNeedReview(), is(1));
-      assertThat("document Untranslated TU count should remain the same when a TU is updated from NeedsReview to Approved", docStatsEvent.getNewStats().getUnitCount().getUntranslated(), is(3));
+      assertThat("document Approved TU count should increase by 1 when a TU is updated from NeedsReview to Approved", docStatsEvent.getNewStats().getStats(LocaleId.ES.toString(), StatUnit.MESSAGE).getApproved(), is(new Long(2)));
+      assertThat("document NeedsReview TU count should decrease by 1 when a TU is updated from NeedsReview to Approved", docStatsEvent.getNewStats().getStats(LocaleId.ES.toString(), StatUnit.MESSAGE).getDraft(), is(new Long(1)));
+      assertThat("document Untranslated TU count should remain the same when a TU is updated from NeedsReview to Approved", docStatsEvent.getNewStats().getStats(LocaleId.ES.toString(), StatUnit.MESSAGE).getUntranslated(), is(new Long(3)));
 
       // default words: 4/5/6
       // approving 3 fuzzy so expect 7/2/6
-      assertThat("document Approved words should increase when TU changes to Approved", docStatsEvent.getNewStats().getWordCount().getApproved(), is(7));
-      assertThat("document NeedsReview words should decrease when a TU changes from NeedsReview", docStatsEvent.getNewStats().getWordCount().getNeedReview(), is(2));
-      assertThat("document Untranslated words should not change when TU changes between NeedsReview and Approved", docStatsEvent.getNewStats().getWordCount().getNeedReview(), is(2));
-   }
-
-   @Test
-   public void generatesProjectStatsOnTuUpdate()
-   {
-      ArrayList<String> sources = new ArrayList<String>();
-      sources.add("this is the source");
-      boolean plural = false;
-
-      ArrayList<String> targets = new ArrayList<String>();
-      targets.add("this is the target");
-
-      TransUnit newTransUnit = TransUnit.Builder.newTransUnitBuilder().setId(12345L).setResId("resId").setLocaleId("es").setPlural(plural).setSources(sources).setSourceComment("this is the source comment").setTargets(targets).setStatus(ContentState.Approved).setLastModifiedBy("lastModifiedBy").setLastModifiedTime(new Date()).setMsgContext("msgContext").setRowIndex(1).setVerNum(1).build();
-      TransUnitUpdateInfo updateInfo = new TransUnitUpdateInfo(true, true, new DocumentId(2222L, ""), newTransUnit, 3, 0, ContentState.NeedReview);
-      TransUnitUpdatedEvent mockEvent = mock(TransUnitUpdatedEvent.class);
-
-      when(mockEvent.getUpdateInfo()).thenReturn(updateInfo);
-
-      ArrayList<DocumentInfo> documentInfos = buildSampleDocumentArray();
-      TranslationStats stats = new TranslationStats();
-      for (DocumentInfo documentInfo : documentInfos)
-      {
-         stats.add(documentInfo.getStats());
-      }
-
-      documentListPresenter.bind();
-      documentListPresenter.setDocuments(documentInfos);
-      documentListPresenter.setProjectStats(stats);
-      documentListPresenter.onTransUnitUpdated(mockEvent);
-
-      verify(mockEventBus, times(2)).fireEvent(capturedEventBusEvent.capture());
-
-      ProjectStatsUpdatedEvent projectStatsEvent = null;
-
-      for (GwtEvent event : capturedEventBusEvent.getAllValues())
-      {
-         if (event.getAssociatedType().equals(ProjectStatsUpdatedEvent.getType()))
-         {
-            projectStatsEvent = (ProjectStatsUpdatedEvent) event;
-         }
-      }
-
-      assertThat("a project stats event should be fired when a TU update event occurs, not found", projectStatsEvent, notNullValue());
-
-      // default TUs: 3/6/9 (approved/fuzzy/untranslated)
-      // approving 1 fuzzy, expect 4/5/9
-      assertThat("project Approved TU count should increase by 1 when a TU changes to Approved status", projectStatsEvent.getProjectStats().getUnitCount().getApproved(), is(4));
-      assertThat("project NeedsReview TU count should decrease by 1 when a TU changes from Approved status", projectStatsEvent.getProjectStats().getUnitCount().getNeedReview(), is(5));
-      assertThat("project Untranslates TU count should not change when TU changes between NeedsReview and Approved", projectStatsEvent.getProjectStats().getUnitCount().getUntranslated(), is(9));
-
-      // default words: 12/15/18
-      // approving 3 fuzzy, expect 15/12/18
-      assertThat("project Approved words should increase when TU changes to Approved", projectStatsEvent.getProjectStats().getWordCount().getApproved(), is(15));
-      assertThat("project NeedsReview words should decrease when a TU changes from NeedsReview", projectStatsEvent.getProjectStats().getWordCount().getNeedReview(), is(12));
-      assertThat("project Untranslated words should not change when TU changes between NeedsReview and Approved", projectStatsEvent.getProjectStats().getWordCount().getUntranslated(), is(18));
+      assertThat("document Approved words should increase when TU changes to Approved", docStatsEvent.getNewStats().getStats(LocaleId.ES.toString(), StatUnit.WORD).getApproved(), is(new Long(7)));
+      assertThat("document NeedsReview words should decrease when a TU changes from NeedsReview", docStatsEvent.getNewStats().getStats(LocaleId.ES.toString(), StatUnit.WORD).getDraft(), is(new Long(2)));
+      assertThat("document Untranslated words should not change when TU changes between NeedsReview and Approved", docStatsEvent.getNewStats().getStats(LocaleId.ES.toString(), StatUnit.WORD).getDraft(), is(new Long(2)));
    }
 
    @Test
@@ -341,7 +276,7 @@ public class DocumentListPresenterTest
       documentListPresenter.bind();
 
       // simulate document click on second document
-      DocumentInfo docInfo = new DocumentInfo(new DocumentId(2222L, ""), "doc122", "second/path/", LocaleId.EN_US, new TranslationStats(), new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator"));
+      DocumentInfo docInfo = new DocumentInfo(new DocumentId(2222L, ""), "doc122", "second/path/", LocaleId.EN_US, new ContainerTranslationStatistics(), new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator"));
       documentListPresenter.fireDocumentSelection(docInfo);
 
       verify(mockHistory).newItem(capturedHistoryToken.capture());
@@ -442,10 +377,10 @@ public class DocumentListPresenterTest
       documentListPresenter.setDocuments(buildSampleDocumentArray());
 
       DocumentInfo docInfo = documentListPresenter.getDocumentInfo(new DocumentId(1111L, ""));
-      assertThat(docInfo, is(equalTo(new DocumentInfo(new DocumentId(1111L, ""), "doc111", "first/path/", LocaleId.EN_US, new TranslationStats(), new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator")))));
+      assertThat(docInfo, is(equalTo(new DocumentInfo(new DocumentId(1111L, ""), "doc111", "first/path/", LocaleId.EN_US, new ContainerTranslationStatistics(), new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator")))));
 
       docInfo = documentListPresenter.getDocumentInfo(new DocumentId(3333L, ""));
-      assertThat(docInfo, is(equalTo(new DocumentInfo(new DocumentId(3333L, ""), "doc123", "third/path/", LocaleId.EN_US, new TranslationStats(), new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator")))));
+      assertThat(docInfo, is(equalTo(new DocumentInfo(new DocumentId(3333L, ""), "doc123", "third/path/", LocaleId.EN_US, new ContainerTranslationStatistics(), new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator")))));
    }
 
    @Test
@@ -456,7 +391,7 @@ public class DocumentListPresenterTest
 
       documentListPresenter.onUserConfigChanged(mockEvent);
 
-//      verify(mockDisplay).updatePageSize(UserConfigHolder.DEFAULT_DOC_LIST_PAGE_SIZE);
+      // verify(mockDisplay).updatePageSize(UserConfigHolder.DEFAULT_DOC_LIST_PAGE_SIZE);
    }
 
    @Test
@@ -480,6 +415,40 @@ public class DocumentListPresenterTest
 
       verify(mockDisplay).setEnableDownloadZip(documentListPresenter.isZipFileDownloadAllowed(event.getProjectType()));
       verify(mockDisplay).setDownloadZipButtonTitle(isA(String.class));
+   }
+   
+   @Test
+   public void queryStats()
+   {
+      ArrayList<DocumentInfo> documentInfoList = buildSampleDocumentArray();
+      ArrayList<DocumentNode> sortedNodes = new ArrayList<DocumentNode>();
+      HashMap<DocumentId, DocumentNode> nodes = new HashMap<DocumentId, DocumentNode>();
+      HashMap<DocumentId, ContainerTranslationStatistics> statMap = new HashMap<DocumentId, ContainerTranslationStatistics>();
+      HashMap<DocumentId, AuditInfo> lastTranslatedMap = new HashMap<DocumentId, AuditInfo>();
+      
+      for(DocumentInfo docInfo: documentInfoList)
+      {
+         DocumentNode node = new DocumentNode(docInfo);
+         nodes.put(docInfo.getId(), node);
+         sortedNodes.add(node);
+         statMap.put(docInfo.getId(), new ContainerTranslationStatistics());
+      }
+      documentListPresenter.setStatesForTest(sortedNodes, nodes);
+      
+      GetDocumentStatsResult result = new GetDocumentStatsResult(statMap, lastTranslatedMap);
+      
+      documentListPresenter.queryStats();
+      
+      ArgumentCaptor<GetDocumentStats> actionCaptor = ArgumentCaptor.forClass(GetDocumentStats.class);
+      ArgumentCaptor<AsyncCallback> callbackCaptor = ArgumentCaptor.forClass(AsyncCallback.class);
+      
+      verify(mockDispatcher).execute(actionCaptor.capture(), callbackCaptor.capture());
+      
+      AsyncCallback callback = callbackCaptor.getValue();
+      callback.onSuccess(result);
+      
+      verify(mockEventBus, times(3)).fireEvent(isA(DocumentStatsUpdatedEvent.class));
+      verify(mockEventBus, times(3)).fireEvent(isA(ProjectStatsUpdatedEvent.class));
    }
 
    private static HasWorkspaceContextUpdateData workplaceContextData(final boolean projectActive, final ProjectType projectType)
@@ -513,13 +482,17 @@ public class DocumentListPresenterTest
       TransUnitCount unitCount = new TransUnitCount(1, 2, 3);
       TransUnitWords wordCount = new TransUnitWords(4, 5, 6);
 
-      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1111L, ""), "matches", "no/filter", LocaleId.EN_US, new TranslationStats(unitCount, wordCount), new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator"));
+      ContainerTranslationStatistics stats = new ContainerTranslationStatistics();
+      stats.addStats(new TranslationStatistics(unitCount, LocaleId.ES.toString()));
+      stats.addStats(new TranslationStatistics(wordCount, LocaleId.ES.toString()));
+
+      DocumentInfo docInfo = new DocumentInfo(new DocumentId(1111L, ""), "matches", "no/filter", LocaleId.EN_US, stats, new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator"));
       docList.add(docInfo);
 
-      docInfo = new DocumentInfo(new DocumentId(2222L, ""), "filter", "match/exact/", LocaleId.EN_US, new TranslationStats(unitCount, wordCount), new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(),"last translator"));
+      docInfo = new DocumentInfo(new DocumentId(2222L, ""), "filter", "match/exact/", LocaleId.EN_US, stats, new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator"));
       docList.add(docInfo);
 
-      docInfo = new DocumentInfo(new DocumentId(3333L, ""), "filter", "does/not/match/exact/", LocaleId.EN_US, new TranslationStats(unitCount, wordCount), new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator"));
+      docInfo = new DocumentInfo(new DocumentId(3333L, ""), "filter", "does/not/match/exact/", LocaleId.EN_US, stats, new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator"));
       docList.add(docInfo);
 
       return docList;

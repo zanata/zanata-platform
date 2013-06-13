@@ -17,8 +17,8 @@
 			See also zanata-model/src/test/resources/META-INF/persistence.xml.
 		 -->
 		 
-<!-- 		<mapping-file>META-INF/orm.xml</mapping-file> -->
-		 
+		<!-- <mapping-file>META-INF/orm.xml</mapping-file> -->
+
 		<class>org.zanata.model.HAccountActivationKey</class>
 		<class>org.zanata.model.HAccount</class>
 		<class>org.zanata.model.HAccountResetPasswordKey</class>
@@ -60,6 +60,8 @@
 			<property name="hibernate.cache.region.factory_class" value="org.hibernate.testing.cache.CachingRegionFactory" />
 			<property name="hibernate.hbm2ddl.auto" value="create"/>
 
+			<!--<property name="hibernate.connection.provider_class" value="org.zanata.dao.WrappedConnectionProvider" />-->
+
 			<property name="hibernate.connection.driver_class" value="org.h2.Driver" />
 			<!-- Configure the in-memory database to be shared, and so that it
 				 doesn't disappear after it has been set up by Hibernate: -->
@@ -73,7 +75,7 @@
 			<property name="hibernate.search.default.directory_provider"
 				value="org.hibernate.search.store.impl.FSDirectoryProvider" />
 			<property name="hibernate.search.default.indexBase" value="zanatasearchindex" />
-			<property name="hibernate.search.lucene_version" value="LUCENE_36"/>
+			<property name="hibernate.search.lucene_version" value="LUCENE_35"/>
 			<property name="hibernate.search.worker.batch_size" value="50" />
 
 		</properties>

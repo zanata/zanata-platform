@@ -128,14 +128,14 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest
       assertThat(TextFlowDAO.buildContentStateCondition(false, false, false, "tft"), Matchers.equalTo("1"));
 
       // single status filter
-      assertThat(TextFlowDAO.buildContentStateCondition(true, false, false, "tft"), Matchers.equalTo("(tft.state=2)"));
-      assertThat(TextFlowDAO.buildContentStateCondition(false, true, false, "tft"), Matchers.equalTo("(tft.state=1)"));
+      assertThat(TextFlowDAO.buildContentStateCondition(true, false, false, "tft"), Matchers.equalTo("(tft.state=2 or tft.state=3)"));
+      assertThat(TextFlowDAO.buildContentStateCondition(false, true, false, "tft"), Matchers.equalTo("(tft.state=1 or tft.state=4)"));
       assertThat(TextFlowDAO.buildContentStateCondition(false, false, true, "tft"), Matchers.equalTo("(tft.state=0 or tft.state is null)"));
 
       // two status
-      assertThat(TextFlowDAO.buildContentStateCondition(true, false, true, "tft"), Matchers.equalTo("(tft.state=2 or tft.state=0 or tft.state is null)"));
-      assertThat(TextFlowDAO.buildContentStateCondition(true, true, false, "tft"), Matchers.equalTo("(tft.state=2 or tft.state=1)"));
-      assertThat(TextFlowDAO.buildContentStateCondition(false, true, true, "tft"), Matchers.equalTo("(tft.state=1 or tft.state=0 or tft.state is null)"));
+      assertThat(TextFlowDAO.buildContentStateCondition(true, false, true, "tft"), Matchers.equalTo("(tft.state=2 or tft.state=3 or tft.state=0 or tft.state is null)"));
+      assertThat(TextFlowDAO.buildContentStateCondition(true, true, false, "tft"), Matchers.equalTo("(tft.state=2 or tft.state=3 or tft.state=1 or tft.state=4)"));
+      assertThat(TextFlowDAO.buildContentStateCondition(false, true, true, "tft"), Matchers.equalTo("(tft.state=1 or tft.state=4 or tft.state=0 or tft.state is null)"));
    }
 
    @Test

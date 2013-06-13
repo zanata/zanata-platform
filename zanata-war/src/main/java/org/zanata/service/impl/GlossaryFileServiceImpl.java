@@ -28,7 +28,6 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -55,7 +54,6 @@ import org.zanata.service.LocaleService;
  */
 @Name("glossaryFileServiceImpl")
 @Scope(STATELESS)
-@AutoCreate
 public class GlossaryFileServiceImpl implements GlossaryFileService
 {
    @In

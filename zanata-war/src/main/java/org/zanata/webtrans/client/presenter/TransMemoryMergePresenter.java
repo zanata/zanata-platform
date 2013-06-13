@@ -27,15 +27,12 @@ import static org.zanata.webtrans.client.events.NotificationEvent.Severity.Info;
 import java.util.Collection;
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.resources.UiMessages;
-import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelDisplay;
@@ -87,7 +84,7 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
    @Override
    public void proceedToMergeTM(int percentage, MergeOption differentProjectOption, MergeOption differentDocumentOption, MergeOption differentResIdOption)
    {
-      Collection<TransUnit> items = getNotApprovedItems();
+      Collection<TransUnit> items = getNotTranslatedItems();
 
       if (items.isEmpty())
       {
@@ -132,15 +129,16 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
       });
    }
 
-   private Collection<TransUnit> getNotApprovedItems()
+   private Collection<TransUnit> getNotTranslatedItems()
    {
+      // TODO rhbz953734 - need to review this
       List<TransUnit> currentItems = navigationService.getCurrentPageValues();
       return Collections2.filter(currentItems, new Predicate<TransUnit>()
       {
          @Override
          public boolean apply(TransUnit input)
          {
-            return input.getStatus() != ContentState.Approved;
+            return !input.getStatus().isTranslated();
          }
       });
    }

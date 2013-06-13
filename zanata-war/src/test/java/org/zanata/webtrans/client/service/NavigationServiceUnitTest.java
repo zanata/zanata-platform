@@ -88,19 +88,18 @@ public class NavigationServiceUnitTest
       SinglePageDataModelImpl pageModel = new SinglePageDataModelImpl();
       ModalNavigationStateHolder navigationStateHolder = new ModalNavigationStateHolder(configHolder);
       contextHolder = new GetTransUnitActionContextHolder(configHolder);
-      contextHolder.initContext(new DocumentId(1L, "a.pot"), null, null);
+      contextHolder.initContext(TestFixture.documentInfo(1, "a.pot"), null, null);
       service = new NavigationService(eventBus, dispatcher, configHolder, mock(TableEditorMessages.class), pageModel, navigationStateHolder, contextHolder, history);
       service.addPageDataChangeListener(pageDataChangeListener);
 
       verify(eventBus).addHandler(DocumentSelectionEvent.getType(), service);
-      verify(eventBus).addHandler(TransUnitUpdatedEvent.getType(), service);
       verify(eventBus).addHandler(FindMessageEvent.getType(), service);
       verify(eventBus).addHandler(NavTransUnitEvent.getType(), service);
       verify(eventBus).addHandler(EditorPageSizeChangeEvent.TYPE, service);
 
       pageModel.setData(data.subList(0, configHolder.getState().getEditorPageSize()));
       navigationStateHolder.init(idStateMap, idIndexList);
-      initContext = new GetTransUnitActionContext(new DocumentId(new Long(1), "")).changeCount(configHolder.getState().getEditorPageSize());
+      initContext = new GetTransUnitActionContext(TestFixture.documentInfo(1, "")).changeCount(configHolder.getState().getEditorPageSize());
    }
 
    private void initData()
@@ -208,7 +207,7 @@ public class NavigationServiceUnitTest
       // Given: updated trans unit is from same document and it's on current page
       service.init(initContext);
       HasTransUnitUpdatedData updatedData = mock(HasTransUnitUpdatedData.class, withSettings().defaultAnswer(RETURNS_DEEP_STUBS));
-      when(updatedData.getUpdateInfo().getDocumentId()).thenReturn(initContext.getDocumentId());
+      when(updatedData.getUpdateInfo().getDocumentId()).thenReturn(initContext.getDocument().getId());
       TransUnit updatedTU = data.get(0);
       when(updatedData.getUpdateInfo().getTransUnit()).thenReturn(updatedTU);
       EditorClientId editorClientId = new EditorClientId("sessionId", 1);
@@ -229,7 +228,7 @@ public class NavigationServiceUnitTest
       // Given: updated trans unit is from same document but NOT on current page
       service.init(initContext);
       HasTransUnitUpdatedData updatedData = mock(HasTransUnitUpdatedData.class, withSettings().defaultAnswer(RETURNS_DEEP_STUBS));
-      when(updatedData.getUpdateInfo().getDocumentId()).thenReturn(initContext.getDocumentId());
+      when(updatedData.getUpdateInfo().getDocumentId()).thenReturn(initContext.getDocument().getId());
       // updated TU has something different so that we can assert it won't update current page data model
       TransUnit updatedTU = TransUnit.Builder.from(data.get(data.size() - 1)).setSourceComment("different").build();
       when(updatedData.getUpdateInfo().getTransUnit()).thenReturn(updatedTU);
@@ -249,7 +248,7 @@ public class NavigationServiceUnitTest
       // Given: updated trans unit is from another document
       service.init(initContext);
       HasTransUnitUpdatedData updatedData = mock(HasTransUnitUpdatedData.class, withSettings().defaultAnswer(RETURNS_DEEP_STUBS));
-      when(updatedData.getUpdateInfo().getDocumentId()).thenReturn(initContext.getDocumentId());
+      when(updatedData.getUpdateInfo().getDocumentId()).thenReturn(initContext.getDocument().getId());
 
       // When:
       service.onTransUnitUpdated(new TransUnitUpdatedEvent(updatedData));
@@ -286,8 +285,9 @@ public class NavigationServiceUnitTest
    @Test
    public void testOnDocumentSelected() throws Exception
    {
-      DocumentId documentId = new DocumentId(new Long(2), "");
-      service.onDocumentSelected(new DocumentSelectionEvent(documentId));
+      DocumentInfo documentInfo = TestFixture.documentInfo(2, "");
+      DocumentId documentId = documentInfo.getId();
+      service.onDocumentSelected(new DocumentSelectionEvent(documentInfo));
 
       verify(dispatcher).execute(actionCaptor.capture(), resultCaptor.capture());
       GetTransUnitList getTransUnitList = actionCaptor.getValue();
@@ -388,7 +388,7 @@ public class NavigationServiceUnitTest
    {
       TransUnitId selectingId = new TransUnitId(1);
       
-      DocumentInfo docInfo = new DocumentInfo(new DocumentId(new Long(0), ""), "name0", "", LocaleId.EN_US, null, new AuditInfo(new Date(), "Translator"), null, new AuditInfo(new Date(), "last translator"));
+      DocumentInfo docInfo = TestFixture.documentInfo();
       
       HistoryToken mockHistoryToken = mock(HistoryToken.class);
       when(history.getHistoryToken()).thenReturn(mockHistoryToken);

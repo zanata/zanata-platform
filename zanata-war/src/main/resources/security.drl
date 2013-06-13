@@ -213,8 +213,20 @@ then
   check.grant();
 end
 
-
-
+/* Project Maintainer can import translation (merge type is IMPORT) */
+rule ProjectMaintainerImportTranslation
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(action == "import-translation", granted == false)
+  authenticatedPerson: HPerson()
+  eval(authenticatedPerson != null)
+  $iteration: HProjectIteration(
+    eval( authenticatedPerson.isMaintainer( $iteration.getProject() ) )
+  )
+then
+  check.grant();
+end
 
 /*****************************************************************************************
 
@@ -444,6 +456,42 @@ when
   authenticatedPerson: HPerson()
   $iteration: HProjectIteration(
     eval( authenticatedPerson.isMaintainer( $iteration.getProject() ) )
+  )
+then
+  check.grant();
+end
+
+
+/*****************************************************************************************
+
+  Review translation rules
+
+******************************************************************************************/
+rule ReviewerReviewTranslation
+  no-loop
+  activation-group "permisstions"
+when
+  check: PermissionCheck(action == "translation-review", granted == false)
+  $project: HProject(
+    eval( isUserAllowedAccess($project) )
+  )
+  $locale: HLocale(
+    eval( isUserMemberOfLanguageTeam($locale) )
+  )
+  Role(name == "reviewer")
+then
+  check.grant();
+end
+
+rule ProjectMaintainerReviewTranslation
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(action == "translation-review", granted == false)
+  authenticatedPerson: HPerson()
+  eval(authenticatedPerson != null)
+  $project: HProject(
+    eval( authenticatedPerson.isMaintainer($project) )
   )
 then
   check.grant();

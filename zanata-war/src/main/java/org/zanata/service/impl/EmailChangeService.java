@@ -24,7 +24,6 @@ import java.util.Date;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -34,7 +33,6 @@ import org.zanata.model.HPersonEmailValidationKey;
 import org.zanata.util.HashUtil;
 
 @Name("emailChangeService")
-@AutoCreate
 @Scope(ScopeType.STATELESS)
 public class EmailChangeService
 {

@@ -23,7 +23,7 @@ package org.zanata.webtrans.client.view;
 import java.util.HashMap;
 import java.util.List;
 
-import org.zanata.common.TranslationStats;
+import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
@@ -65,7 +65,7 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    interface DocumentListViewUiBinder extends UiBinder<LayoutPanel, DocumentListView>
    {
    }
-   
+
    private static DocumentListViewUiBinder uiBinder = GWT.create(DocumentListViewUiBinder.class);
 
    private DocumentListDisplay.Listener listener;
@@ -120,7 +120,7 @@ public class DocumentListView extends Composite implements DocumentListDisplay
       exactSearchCheckBox.setTitle(messages.docListFilterExactMatchDescription());
       statsByMsg.setText(messages.byMessage());
       statsByWord.setText(messages.byWords());
-      
+
       documentListTable = new DocumentListTable(userworkspaceContext, messages,resources);
       documentListContainer.add(documentListTable);
    }
@@ -385,7 +385,7 @@ public class DocumentListView extends Composite implements DocumentListDisplay
    }
 
    @Override
-   public void updateStats(int row, TranslationStats stats)
+   public void updateStats(int row, ContainerTranslationStatistics stats)
    {
       documentListTable.updateStats(row, stats, statsByWord.getValue().booleanValue());
    }

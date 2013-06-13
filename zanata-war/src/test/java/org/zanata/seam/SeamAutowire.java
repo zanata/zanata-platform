@@ -190,8 +190,18 @@ public class SeamAutowire
       }
       catch (NoSuchMethodException e)
       {
-         throw new RuntimeException("" +
-               "Could not auto-wire component of type " + componentClass.getName() + ". No no-args constructor.", e);
+         // The component class might be an interface
+         if ( componentClass.isInterface() )
+         {
+            throw new RuntimeException("" +
+                  "Could not auto-wire component of type " + componentClass.getName() +
+                  ". Component is defined as an interface, but no implementations have been defined for it.", e);
+         }
+         else
+         {
+            throw new RuntimeException("" +
+                  "Could not auto-wire component of type " + componentClass.getName() + ". No no-args constructor.", e);
+         }
       }
       catch (InvocationTargetException e)
       {
@@ -245,35 +255,53 @@ public class SeamAutowire
             // autowire the component if not done yet
             if( !namedComponents.containsKey(compName) )
             {
+               Object newComponent = null;
                try
                {
-                  Object newComponent = create(compType);
-                  if (allowCycles)
-                  {
-                     namedComponents.put(compName, newComponent);
-                  }
-                  else
-                  {
-                     // to detect mutual injection
-                     namedComponents.put(compName, PLACEHOLDER);
-                  }
-                  autowire(newComponent);
-                  if (!allowCycles)
-                  {
-                     // replace placeholder with the injected object
-                     namedComponents.put(compName, newComponent);
-                  }
+                  newComponent = create(compType);
                }
                catch (RuntimeException e)
                {
                   if( ignoreNonResolvable )
                   {
-                     log.warn("Could not resolve component of type: " + compType + ". Cause: " + e.getMessage());
+                     log.warn("Could not build component of type: " + compType + ".", e);
                   }
                   else
                   {
                      throw e;
                   }
+               }
+
+               if (allowCycles)
+               {
+                  namedComponents.put(compName, newComponent);
+               }
+               else
+               {
+                  // to detect mutual injection
+                  namedComponents.put(compName, PLACEHOLDER);
+               }
+
+               try
+               {
+                  autowire(newComponent);
+               }
+               catch (RuntimeException e)
+               {
+                  if( ignoreNonResolvable )
+                  {
+                     log.warn("Could not autowire component of type: " + compType + ".", e);
+                  }
+                  else
+                  {
+                     throw e;
+                  }
+               }
+
+               if (!allowCycles)
+               {
+                  // replace placeholder with the injected object
+                  namedComponents.put(compName, newComponent);
                }
             }
 

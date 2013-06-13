@@ -113,13 +113,23 @@ tr.FuzzyStateDecoration td.TableEditorCell-Target div.TableEditorCell-Target {
 }
 
 table.ApprovedStateDecoration div.TableEditorCell-Target {
-    border-left: 3px solid #099b09;
-    border-right: 3px solid #099b09;
+    border-left: 3px solid #0000CD;
+    border-right: 3px solid #0000CD;
 }
 
 table.FuzzyStateDecoration div.TableEditorCell-Target {
     border-left: 3px solid #ffc000;
     border-right: 3px solid #ffc000;
+}
+
+table.TranslatedStateDecoration div.TableEditorCell-Target {
+    border-left: 3px solid #099b09;
+    border-right: 3px solid #099b09;
+}
+
+table.RejectedStateDecoration div.TableEditorCell-Target {
+    border-left: 3px solid #FF4500;
+    border-right: 3px solid #FF4500;
 }
 
 tr.ApprovedStateDecoration td.TableEditorCell-Target .TableEditorContent {
@@ -279,11 +289,25 @@ td.FuzzyStateDecoration div div div
 	padding: 5px;
 }
 
-td.ApprovedStateDecoration div div div
+td.TranslatedStateDecoration div div div
 {
 	border-left: 3px solid #099b09;
 	border-right: 3px solid #099b09;
 	padding: 5px;
+}
+
+td.ApprovedStateDecoration div div div
+{
+    border-left: 3px solid #0000CD;
+    border-right: 3px solid #0000CD;
+    padding: 5px;
+}
+
+td.RejectedStateDecoration div div div
+{
+    border-left: 3px solid #FF4500;
+    border-right: 3px solid #FF4500;
+    padding: 5px;
 }
 
 .Severity-Error {
@@ -628,6 +652,14 @@ td.ApprovedStateDecoration div div div
     margin: 0;
     padding: .4em;
     min-height: 2em;
+}
+
+.reviewTable .CodeMirror-cursor {
+    display: none;
+}
+
+.reviewTable .CodeMirror-lines {
+    cursor: default;
 }
 
 .keyShortcutPanel

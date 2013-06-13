@@ -2,8 +2,6 @@ package org.zanata.rest.service;
 
 import static org.zanata.common.EntityStatus.OBSOLETE;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -12,7 +10,6 @@ import javax.ws.rs.core.EntityTag;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -22,8 +19,6 @@ import org.zanata.dao.DocumentDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
-import org.zanata.model.HTextFlow;
-import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.po.HPoHeader;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.dto.extensions.gettext.PoHeader;
@@ -31,7 +26,6 @@ import org.zanata.util.HashUtil;
 
 @Name("eTagUtils")
 @Scope(ScopeType.STATELESS)
-@AutoCreate
 public class ETagUtils
 {
 

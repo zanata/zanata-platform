@@ -54,8 +54,7 @@ import lombok.ToString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.zanata.common.ContentState.Approved;
-import static org.zanata.common.ContentState.NeedReview;
+import static org.zanata.common.ContentState.*;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.IGNORE;
@@ -95,7 +94,7 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
    @Test(enabled = false)
    public void individualTest()
    {
-      this.testCopyTrans(new CopyTransExecution(IGNORE, IGNORE, DOWNGRADE_TO_FUZZY, true, false, true).expectTransState(Approved));
+      this.testCopyTrans(new CopyTransExecution(REJECT, IGNORE, DOWNGRADE_TO_FUZZY, true, true, true, true).expectTransState(Approved));
    }
 
    @DataProvider(name = "CopyTrans")
@@ -134,6 +133,13 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
       assertThat(copyTransService.getExpectedContentState(false, DOWNGRADE_TO_FUZZY, NeedReview), is(NeedReview));
       assertThat(copyTransService.getExpectedContentState(true, IGNORE, NeedReview), is(NeedReview));
       assertThat(copyTransService.getExpectedContentState(false, IGNORE, NeedReview), is(NeedReview));
+
+      assertThat(copyTransService.getExpectedContentState(true, REJECT, Translated), is(Translated));
+      assertThat(copyTransService.getExpectedContentState(false, REJECT, Translated), nullValue());
+      assertThat(copyTransService.getExpectedContentState(true, DOWNGRADE_TO_FUZZY, Translated), is(Translated));
+      assertThat(copyTransService.getExpectedContentState(false, DOWNGRADE_TO_FUZZY, Translated), is(NeedReview));
+      assertThat(copyTransService.getExpectedContentState(true, IGNORE, Translated), is(Translated));
+      assertThat(copyTransService.getExpectedContentState(false, IGNORE, Translated), is(Translated));
    }
 
    @Test(dataProvider = "CopyTrans", dependsOnMethods = "testExpectedState")
@@ -153,6 +159,9 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
       {
          projectIteration = iterationDAO.getBySlug("different-project", "different-version");
       }
+
+      // Set require translation review
+      projectIteration.setRequireTranslationReview(execution.requireTranslationReview);
 
       // Create the document
       HDocument doc = new HDocument();
@@ -241,7 +250,12 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
 
    private ContentState getExpectedContentState( CopyTransExecution execution )
    {
-      ContentState expectedContentState = Approved;
+      ContentState expectedContentState = Translated;
+      // our test data has content state Approved
+      if (execution.getRequireTranslationReview() && execution.getContextMatches() && execution.getDocumentMatches() && execution.getProjectMatches())
+      {
+         expectedContentState = Approved;
+      }
 
       expectedContentState = getExpectedContentState(execution.getContextMatches(), execution.getContextMismatchAction(), expectedContentState);
       expectedContentState = getExpectedContentState(execution.getProjectMatches(), execution.getProjectMismatchAction(), expectedContentState);
@@ -277,13 +291,14 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
                                                  Arrays.asList(ConditionRuleAction.values()),
                                                  Arrays.asList(true, false),
                                                  Arrays.asList(true, false),
+                                                 Arrays.asList(true, false),
                                                  Arrays.asList(true, false));
 
       for( Object[] params : paramsSet )
       {
          CopyTransExecution exec = new CopyTransExecution(
                (ConditionRuleAction)params[0], (ConditionRuleAction)params[1], (ConditionRuleAction)params[2],
-               (Boolean)params[3], (Boolean)params[4], (Boolean)params[5]);
+               (Boolean)params[3], (Boolean)params[4], (Boolean)params[5], (Boolean)params[6]);
 
          ContentState expectedContentState = this.getExpectedContentState(exec);
          if( expectedContentState == null )
@@ -350,13 +365,14 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
       private Boolean contextMatches;
       private Boolean projectMatches;
       private Boolean documentMatches;
+      private Boolean requireTranslationReview;
       private ContentState expectedTranslationState;
       private boolean expectUntranslated;
       private String[] expectedContents;
 
       private CopyTransExecution(ConditionRuleAction contextMismatchAction, ConditionRuleAction projectMismatchAction,
                                  ConditionRuleAction documentMismatchAction, Boolean contextMatches, Boolean projectMatches,
-                                 Boolean documentMatches)
+                                 Boolean documentMatches, Boolean requireTranslationReview)
       {
          this.contextMismatchAction = contextMismatchAction;
          this.projectMismatchAction = projectMismatchAction;
@@ -364,6 +380,7 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
          this.contextMatches = contextMatches;
          this.projectMatches = projectMatches;
          this.documentMatches = documentMatches;
+         this.requireTranslationReview = requireTranslationReview;
       }
 
       @Override

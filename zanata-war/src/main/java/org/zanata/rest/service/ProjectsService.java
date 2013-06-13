@@ -65,7 +65,7 @@ public class ProjectsService implements ProjectsResource
    private Session session;
 
    @Logger
-   Log log;
+   private Log log;
 
    /** Type of media requested. */
    @HeaderParam("Accept")

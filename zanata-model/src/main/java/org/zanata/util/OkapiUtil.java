@@ -20,6 +20,8 @@
  */
 package org.zanata.util;
 
+import javax.annotation.Nonnull;
+
 import net.sf.okapi.common.LocaleId;
 import net.sf.okapi.steps.tokenization.Tokenizer;
 import net.sf.okapi.steps.tokenization.tokens.Tokens;
@@ -35,7 +37,8 @@ public class OkapiUtil
    {
    }
 
-   public static LocaleId toOkapiLocale(org.zanata.common.LocaleId zanataLocale)
+   @SuppressWarnings("null")
+   public static @Nonnull LocaleId toOkapiLocale(@Nonnull org.zanata.common.LocaleId zanataLocale)
    {
       return LocaleId.fromBCP47(zanataLocale.getId());
    }

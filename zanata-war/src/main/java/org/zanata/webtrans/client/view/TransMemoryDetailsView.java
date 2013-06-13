@@ -3,6 +3,7 @@ package org.zanata.webtrans.client.view;
 import java.util.Date;
 import java.util.List;
 
+import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.TextContentsDisplay;
 import org.zanata.webtrans.client.util.DateUtil;
@@ -46,6 +47,9 @@ public class TransMemoryDetailsView implements TransMemoryDetailsDisplay
    
    @UiField
    Label lastModified;
+   
+   @UiField
+   Label targetState;
    
    @UiField
    Button dismissButton;
@@ -176,5 +180,11 @@ public class TransMemoryDetailsView implements TransMemoryDetailsDisplay
    public void clearDocs()
    {
       documentListBox.clear();
+   }
+
+   @Override
+   public void setState(ContentState state)
+   {
+      targetState.setText(state.toString());
    }
 }

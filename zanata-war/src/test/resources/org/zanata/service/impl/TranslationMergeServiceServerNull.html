@@ -1,0 +1,55 @@
+<html xmlns:c="http://www.concordion.org/2007/concordion">
+<head>
+    <title>Translation Merge Test (server has null translation)</title>
+</head>
+<body>
+
+<p>As a translator</p>
+<p c:execute="given(#locale)">Given: server has no translation (null) for locale <span c:set="#locale">DE</span></p>
+<p>When: I push translation from client</p>
+
+<p>Then:</p>
+<table>
+    <tr>
+        <th>Client content</th>
+        <th>Client state</th>
+        <th>result content</th>
+        <th>result state</th>
+        <th>server target version</th>
+        <th>Server changed</th>
+    </tr>
+    <tr c:execute="#result = merge(#clientContent, #clientState)">
+        <td c:set="#clientContent"></td>
+        <td c:set="#clientState">New</td>
+        <td c:assertEquals="#result.endContent"></td>
+        <td c:assertEquals="#result.endState">New</td>
+        <td c:assertEquals="#result.endVersion">0</td>
+        <td c:assertEquals="#result.changed">true</td>
+    </tr>
+    <tr c:execute="#result = merge(#clientContent, #clientState)">
+        <td c:set="#clientContent">client content</td>
+        <td c:set="#clientState">NeedReview</td>
+        <td c:assertEquals="#result.endContent">client content</td>
+        <td c:assertEquals="#result.endState">NeedReview</td>
+        <td c:assertEquals="#result.endVersion">0</td>
+        <td c:assertEquals="#result.changed">true</td>
+    </tr>
+    <tr c:execute="#result = merge(#clientContent, #clientState)">
+        <td c:set="#clientContent">client content</td>
+        <td c:set="#clientState">Translated</td>
+        <td c:assertEquals="#result.endContent">client content</td>
+        <td c:assertEquals="#result.endState">Translated</td>
+        <td c:assertEquals="#result.endVersion">0</td>
+        <td c:assertEquals="#result.changed">true</td>
+    </tr>
+    <tr c:execute="#result = merge(#clientContent, #clientState)">
+        <td c:set="#clientContent">client content</td>
+        <td c:set="#clientState">Approved</td>
+        <td c:assertEquals="#result.endContent">client content</td>
+        <td c:assertEquals="#result.endState">Translated</td>
+        <td c:assertEquals="#result.endVersion">0</td>
+        <td c:assertEquals="#result.changed">true</td>
+    </tr>
+</table>
+</body>
+</html>

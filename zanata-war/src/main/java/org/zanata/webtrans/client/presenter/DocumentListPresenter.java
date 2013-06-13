@@ -28,13 +28,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetPresenter;
-
+import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
-import org.zanata.common.TransUnitCount;
-import org.zanata.common.TransUnitWords;
-import org.zanata.common.TranslationStats;
+import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
+import org.zanata.rest.dto.stats.TranslationStatistics;
+import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.events.DocValidationResultEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
@@ -77,12 +75,16 @@ import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgress;
 import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgressResult;
 import org.zanata.webtrans.shared.rpc.RunDocValidationAction;
 import org.zanata.webtrans.shared.rpc.RunDocValidationResult;
-
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.base.Objects;
 import com.google.common.base.Strings;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.inject.Inject;
+
+import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> implements DocumentListDisplay.Listener, DocumentSelectionHandler, UserConfigChangeHandler, TransUnitUpdatedEventHandler, WorkspaceContextUpdateEventHandler, RunDocValidationEventHandler
 {
@@ -91,6 +93,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    private final WebTransMessages messages;
    private final History history;
    private final UserOptionsService userOptionsService;
+   private final LocaleId localeId;
 
    private HashMap<DocumentId, DocumentNode> nodes;
    private HashMap<DocumentId, Integer> pageRows;
@@ -108,8 +111,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
    private final PathDocumentFilter filter = new PathDocumentFilter();
 
-   private TranslationStats projectStats;
-
    @Inject
    public DocumentListPresenter(DocumentListDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, UserWorkspaceContext userworkspaceContext, final WebTransMessages messages, History history, UserOptionsService userOptionsService)
    {
@@ -124,6 +125,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       nodes = new HashMap<DocumentId, DocumentNode>();
       sortedNodes = new ArrayList<DocumentNode>();
       pageRows = new HashMap<DocumentId, Integer>();
+      
+      localeId = userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getLocaleId();
    }
 
    @Override
@@ -307,6 +310,18 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       }
       docStatQueueDispatcher.setQueueAndExecute(queueList, getDocumentStatCallBack);
    }
+   
+   /**
+    * Facilitate unit testing. Will be no-op if in client(GWT compiled) mode.
+    */
+   protected void setStatesForTest(ArrayList<DocumentNode> sortedNodes, HashMap<DocumentId, DocumentNode> nodes)
+   {
+      if (!GWT.isClient())
+      {
+         this.sortedNodes = sortedNodes;
+         this.nodes = nodes;
+      }
+   }
 
    private final AsyncCallback<GetDocumentStatsResult> getDocumentStatCallBack = new AsyncCallback<GetDocumentStatsResult>()
    {
@@ -319,9 +334,10 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       @Override
       public void onSuccess(GetDocumentStatsResult result)
       {
-         for (Entry<DocumentId, TranslationStats> entry : result.getStatsMap().entrySet())
+         for (Entry<DocumentId, ContainerTranslationStatistics> entry : result.getStatsMap().entrySet())
          {
             DocumentInfo docInfo = getDocumentInfo(entry.getKey());
+            
             docInfo.setStats(entry.getValue());
             docInfo.setLastTranslated(result.getLastTranslatedMap().get(entry.getKey()));
 
@@ -331,13 +347,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
                display.updateStats(row.intValue(), docInfo.getStats());
                display.updateLastTranslated(row.intValue(), docInfo.getLastTranslated());
             }
-
             eventBus.fireEvent(new DocumentStatsUpdatedEvent(entry.getKey(), docInfo.getStats()));
-
-            // update project stats, forward to AppPresenter
-            projectStats.add(docInfo.getStats());
-
-            eventBus.fireEvent(new ProjectStatsUpdatedEvent(projectStats));
+            eventBus.fireEvent(new ProjectStatsUpdatedEvent(docInfo.getStats()));
          }
 
          docStatQueueDispatcher.executeQueue();
@@ -434,17 +445,13 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       }
    }
 
-   public void setProjectStats(TranslationStats projectStats)
-   {
-      this.projectStats = projectStats;
-   }
-
    @Override
    public void onDocumentSelected(DocumentSelectionEvent event)
    {
       // match bookmarked selection, but prevent selection feedback loop
       // from history
-      if (event.getDocumentId() != (currentDocument == null ? null : currentDocument.getId()))
+      DocumentId current = currentDocument == null ? null : currentDocument.getId();
+      if (!Objects.equal(event.getDocumentId(), current))
       {
          setSelection(event.getDocumentId());
       }
@@ -455,11 +462,15 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    public void onTransUnitUpdated(TransUnitUpdatedEvent event)
    {
       TransUnitUpdateInfo updateInfo = event.getUpdateInfo();
+      Log.info("********** updated Info:" + updateInfo);
       // update stats for containing document
       DocumentInfo updatedDoc = getDocumentInfo(updateInfo.getDocumentId());
-      if (updatedDoc.getStats() != null)
+      ContainerTranslationStatistics currentStats = updatedDoc.getStats();
+      if (currentStats != null)
       {
-         adjustStats(updatedDoc.getStats(), updateInfo);
+         adjustStats(currentStats, updateInfo);
+         updatedDoc.setStats(currentStats);
+         
          updateLastTranslatedInfo(updatedDoc, event.getUpdateInfo().getTransUnit());
 
          Integer row = pageRows.get(updatedDoc.getId());
@@ -469,13 +480,20 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
             AuditInfo lastTranslated = new AuditInfo(event.getUpdateInfo().getTransUnit().getLastModifiedTime(), event.getUpdateInfo().getTransUnit().getLastModifiedBy());
             display.updateLastTranslated(row.intValue(), lastTranslated);
          }
-
-         eventBus.fireEvent(new DocumentStatsUpdatedEvent(updatedDoc.getId(), updatedDoc.getStats()));
+         eventBus.fireEvent(new DocumentStatsUpdatedEvent(updatedDoc.getId(), currentStats));
       }
+   }
 
-      // update project stats, forward to AppPresenter
-      adjustStats(projectStats, updateInfo);
-      eventBus.fireEvent(new ProjectStatsUpdatedEvent(projectStats));
+   private static void logStatistics(String msg, TranslationStatistics statistics)
+   {
+      String string = com.google.common.base.Objects.toStringHelper(statistics).
+            add("unit", statistics.getUnit()).
+            add("approved", statistics.getApproved()).
+            add("draft", statistics.getDraft()).
+            add("new", statistics.getUntranslated()).
+//            add("locale", statistics.getLocale()).
+            toString();
+      Log.info(msg + " statistics: " + string);
    }
 
    private void updateLastTranslatedInfo(DocumentInfo doc, TransUnit updatedTransUnit)
@@ -487,14 +505,18 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
     * @param stats the stats object to update
     * @param updateInfo info describing the change in translations
     */
-   private void adjustStats(TranslationStats stats, TransUnitUpdateInfo updateInfo)
+   private void adjustStats(ContainerTranslationStatistics stats, TransUnitUpdateInfo updateInfo)
    {
-      TransUnitCount unitCount = stats.getUnitCount();
-      TransUnitWords wordCount = stats.getWordCount();
-      unitCount.decrement(updateInfo.getPreviousState());
-      unitCount.increment(updateInfo.getTransUnit().getStatus());
-      wordCount.decrement(updateInfo.getPreviousState(), updateInfo.getSourceWordCount());
-      wordCount.increment(updateInfo.getTransUnit().getStatus(), updateInfo.getSourceWordCount());
+      TranslationStatistics msgStatistic = stats.getStats(localeId.getId(), StatUnit.MESSAGE);
+      TranslationStatistics wordStatistic = stats.getStats(localeId.getId(), StatUnit.WORD);
+      
+      logStatistics("before adjust", msgStatistic);
+      msgStatistic.decrement(updateInfo.getPreviousState(), 1);
+      msgStatistic.increment(updateInfo.getTransUnit().getStatus(), 1);
+      logStatistics("after adjust", msgStatistic);
+
+      wordStatistic.decrement(updateInfo.getPreviousState(), updateInfo.getSourceWordCount());
+      wordStatistic.increment(updateInfo.getTransUnit().getStatus(), updateInfo.getSourceWordCount());
    }
 
    @Override
@@ -714,11 +736,11 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
          {
             return compareStats(o1, o2);
          }
-         else if (header.equals(DocumentListDisplay.TRANSLATED_HEADER))
+         else if (header.equals(DocumentListDisplay.COMPLETE_HEADER))
          {
             return compareTranslated(o1, o2);
          }
-         else if (header.equals(DocumentListDisplay.UNTRANSLATED_HEADER))
+         else if (header.equals(DocumentListDisplay.INCOMPLETE_HEADER))
          {
             return compareUntranslated(o1, o2);
          }
@@ -761,12 +783,20 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
             return (o1.getDocInfo().getStats() == null) ? -1 : 1;
          }
 
-         boolean statsByWords = true;
          if (display.getSelectedStatsOption().equals(DocumentListDisplay.STATS_OPTION_MESSAGE))
          {
-            statsByWords = false;
+            TranslationStatistics msgStats1 = o1.getDocInfo().getStats().getStats(localeId.getId(), StatUnit.MESSAGE);
+            TranslationStatistics msgStats2 = o2.getDocInfo().getStats().getStats(localeId.getId(), StatUnit.MESSAGE);
+
+            return msgStats1.getPercentTranslated() - msgStats2.getPercentTranslated();
          }
-         return o1.getDocInfo().getStats().getApprovedPercent(statsByWords) - o2.getDocInfo().getStats().getApprovedPercent(statsByWords);
+         else
+         {
+            TranslationStatistics msgStats1 = o1.getDocInfo().getStats().getStats(localeId.getId(), StatUnit.WORD);
+            TranslationStatistics msgStats2 = o2.getDocInfo().getStats().getStats(localeId.getId(), StatUnit.WORD);
+
+            return msgStats1.getPercentTranslated() - msgStats2.getPercentTranslated();
+         }
       }
 
       private int compareTranslated(DocumentNode o1, DocumentNode o2)
@@ -775,14 +805,17 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
          {
             return (o1.getDocInfo().getStats() == null) ? -1 : 1;
          }
-
          if (display.getSelectedStatsOption().equals(DocumentListDisplay.STATS_OPTION_MESSAGE))
          {
-            return o1.getDocInfo().getStats().getUnitCount().getApproved() - o2.getDocInfo().getStats().getUnitCount().getApproved();
+            TranslationStatistics msgStats1 = o1.getDocInfo().getStats().getStats(localeId.getId(), StatUnit.MESSAGE);
+            TranslationStatistics msgStats2 = o2.getDocInfo().getStats().getStats(localeId.getId(), StatUnit.MESSAGE);
+            return (int) (msgStats1.getApproved() - msgStats2.getApproved());
          }
          else
          {
-            return o1.getDocInfo().getStats().getWordCount().getApproved() - o2.getDocInfo().getStats().getWordCount().getApproved();
+            TranslationStatistics msgStats1 = o1.getDocInfo().getStats().getStats(localeId.getId(), StatUnit.WORD);
+            TranslationStatistics msgStats2 = o2.getDocInfo().getStats().getStats(localeId.getId(), StatUnit.WORD);
+            return (int) (msgStats1.getApproved() - msgStats2.getApproved());
          }
       }
 
@@ -795,11 +828,15 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
 
          if (display.getSelectedStatsOption().equals(DocumentListDisplay.STATS_OPTION_MESSAGE))
          {
-            return o1.getDocInfo().getStats().getUnitCount().getUntranslated() - o2.getDocInfo().getStats().getUnitCount().getUntranslated();
+            TranslationStatistics msgStats1 = o1.getDocInfo().getStats().getStats(localeId.getId(), StatUnit.MESSAGE);
+            TranslationStatistics msgStats2 = o2.getDocInfo().getStats().getStats(localeId.getId(), StatUnit.MESSAGE);
+            return (int) (msgStats1.getUntranslated() - msgStats2.getUntranslated());
          }
          else
          {
-            return o1.getDocInfo().getStats().getWordCount().getUntranslated() - o2.getDocInfo().getStats().getWordCount().getUntranslated();
+            TranslationStatistics msgStats1 = o1.getDocInfo().getStats().getStats(localeId.getId(), StatUnit.WORD);
+            TranslationStatistics msgStats2 = o2.getDocInfo().getStats().getStats(localeId.getId(), StatUnit.WORD);
+            return (int) (msgStats1.getUntranslated() - msgStats2.getUntranslated());
          }
       }
 
@@ -810,11 +847,14 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
             return (o1.getDocInfo().getStats() == null) ? -1 : 1;
          }
 
-         if (o1.getDocInfo().getStats().getRemainingHours() == o2.getDocInfo().getStats().getRemainingHours())
+         TranslationStatistics msgStats1 = o1.getDocInfo().getStats().getStats(localeId.getId(), StatUnit.WORD);
+         TranslationStatistics msgStats2 = o2.getDocInfo().getStats().getStats(localeId.getId(), StatUnit.WORD);
+
+         if (msgStats1.getRemainingHours() == msgStats2.getRemainingHours())
          {
             return 0;
          }
-         return o1.getDocInfo().getStats().getRemainingHours() > o2.getDocInfo().getStats().getRemainingHours() ? 1 : -1;
+         return msgStats1.getRemainingHours() > msgStats2.getRemainingHours() ? 1 : -1;
       }
 
       private int compareLastUpload(DocumentNode o1, DocumentNode o2)

@@ -17,6 +17,7 @@ import org.zanata.model.TestFixture;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.webtrans.client.service.GetTransUnitActionContext;
 import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
@@ -29,7 +30,7 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 public class GetTransUnitsNavigationServiceTest extends ZanataDbunitJpaTest
 {
    private GetTransUnitsNavigationService service;
-   private final DocumentId documentId = new DocumentId(new Long(1), "");
+   private final DocumentInfo document = TestFixture.documentInfo(1);
    private HLocale jaLocale;
 
    @Override
@@ -54,17 +55,17 @@ public class GetTransUnitsNavigationServiceTest extends ZanataDbunitJpaTest
    @Test
    public void testExecuteWithNoFilterOptions() throws Exception
    {
-      GetTransUnitsNavigation action = GetTransUnitsNavigation.newAction(new GetTransUnitActionContext(documentId));
+      GetTransUnitsNavigation action = GetTransUnitsNavigation.newAction(new GetTransUnitActionContext(document));
 
       long startTime = System.nanoTime();
       GetTransUnitsNavigationResult result = service.getNavigationIndexes(action, jaLocale);
       GetTransUnitsNavigationServiceTest.log.info("********** duration :{} second", (System.nanoTime() - startTime) / 1000000000.0);
 
       assertThat(result.getTransIdStateList().size(), Matchers.equalTo(10));
-      assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(1L), ContentState.Approved));
-      assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(2L), ContentState.Approved));
+      assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(1L), ContentState.Translated));
+      assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(2L), ContentState.Translated));
       assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(3L), ContentState.NeedReview));
-      assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(4L), ContentState.Approved));
+      assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(4L), ContentState.Translated));
       assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(5L), ContentState.NeedReview));
       assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(6L), ContentState.NeedReview));
       assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(7L), ContentState.New));
@@ -79,7 +80,7 @@ public class GetTransUnitsNavigationServiceTest extends ZanataDbunitJpaTest
    public void testExecuteWithAllStatus() throws Exception
    {
       // filter with all status set to tru
-      GetTransUnitActionContext context = new GetTransUnitActionContext(documentId).changeFilterNeedReview(true).changeFilterUntranslated(true).changeFilterTranslated(true);
+      GetTransUnitActionContext context = new GetTransUnitActionContext(document).changeFilterNeedReview(true).changeFilterUntranslated(true).changeFilterTranslated(true);
       GetTransUnitsNavigation action = GetTransUnitsNavigation.newAction(context);
 
       GetTransUnitsNavigationResult result = service.getNavigationIndexes(action, jaLocale);
@@ -92,7 +93,7 @@ public class GetTransUnitsNavigationServiceTest extends ZanataDbunitJpaTest
    public void testExecuteWithStatus() throws Exception
    {
       // filter fuzzy and new status
-      GetTransUnitActionContext context = new GetTransUnitActionContext(documentId).changeFilterNeedReview(true).changeFilterUntranslated(true);
+      GetTransUnitActionContext context = new GetTransUnitActionContext(document).changeFilterNeedReview(true).changeFilterUntranslated(true);
       GetTransUnitsNavigation action = GetTransUnitsNavigation.newAction(context);
 
       GetTransUnitsNavigationResult result = service.getNavigationIndexes(action, jaLocale);
@@ -113,16 +114,16 @@ public class GetTransUnitsNavigationServiceTest extends ZanataDbunitJpaTest
    public void testExecuteWithSearch() throws Exception
    {
       // filter by search term in mixed cases
-      GetTransUnitActionContext context = new GetTransUnitActionContext(documentId).changeFindMessage("FiLe");
+      GetTransUnitActionContext context = new GetTransUnitActionContext(document).changeFindMessage("FiLe");
       GetTransUnitsNavigation action = GetTransUnitsNavigation.newAction(context);
 
       GetTransUnitsNavigationResult result = service.getNavigationIndexes(action, jaLocale);
 
       assertThat(result.getTransIdStateList().size(), Matchers.equalTo(7));
-      assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(1L), ContentState.Approved));
-      assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(2L), ContentState.Approved));
+      assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(1L), ContentState.Translated));
+      assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(2L), ContentState.Translated));
       assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(3L), ContentState.NeedReview));
-      assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(4L), ContentState.Approved));
+      assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(4L), ContentState.Translated));
       assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(5L), ContentState.NeedReview));
       assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(6L), ContentState.NeedReview));
       assertThat(result.getTransIdStateList(), Matchers.hasEntry(new TransUnitId(8L), ContentState.New));
@@ -134,7 +135,7 @@ public class GetTransUnitsNavigationServiceTest extends ZanataDbunitJpaTest
    public void testExecuteWithSearchAndStatusFilter() throws Exception
    {
       // filter by search term in mixed cases and accept fuzzy and new
-      GetTransUnitActionContext context = new GetTransUnitActionContext(documentId).changeFindMessage("FiLe").changeFilterNeedReview(true).changeFilterUntranslated(true);
+      GetTransUnitActionContext context = new GetTransUnitActionContext(document).changeFindMessage("FiLe").changeFilterNeedReview(true).changeFilterUntranslated(true);
       GetTransUnitsNavigation action = GetTransUnitsNavigation.newAction(context);
 
       GetTransUnitsNavigationResult result = service.getNavigationIndexes(action, jaLocale);

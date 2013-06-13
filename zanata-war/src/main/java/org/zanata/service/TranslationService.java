@@ -26,9 +26,7 @@ import java.util.Set;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
-import org.zanata.exception.ConcurrentTranslationException;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.process.MessagesProcessHandle;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
@@ -40,17 +38,6 @@ public interface TranslationService
     */
    final static int BATCH_SIZE = 100;
 
-
-   /**
-    * Updates a single translation for a single text flow.
-    * 
-    * @param localeId
-    * @param translationRequest
-    * @return information about the translation change
-    * @throws ConcurrentTranslationException if there has been another
-    *            translation based on the same translation version
-    */
-   TranslationResult translate(LocaleId localeId, TransUnitUpdateRequest translationRequest) throws ConcurrentTranslationException;
 
    /**
     * Updates multiple text flows within a project-iteration.

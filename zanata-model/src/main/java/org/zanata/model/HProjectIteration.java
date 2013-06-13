@@ -26,6 +26,7 @@ import static org.jboss.seam.security.EntityAction.UPDATE;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -66,6 +67,8 @@ import org.zanata.hibernate.search.GroupSearchBridge;
 import org.zanata.model.type.EntityStatusType;
 import org.zanata.rest.dto.ProjectIteration;
 
+import com.google.common.collect.ImmutableList;
+
 /**
  * 
  * @see ProjectIteration
@@ -80,7 +83,7 @@ import org.zanata.rest.dto.ProjectIteration;
 @Setter
 @NoArgsConstructor
 @ToString(callSuper = true, of = {"project"})
-public class HProjectIteration extends SlugEntityBase
+public class HProjectIteration extends SlugEntityBase implements Iterable<DocumentWithId>
 {
 
    private static final long serialVersionUID = 182037127575991478L;
@@ -99,6 +102,7 @@ public class HProjectIteration extends SlugEntityBase
    private Set<String> customizedValidations;
 
    private ProjectType projectType;
+   private Boolean requireTranslationReview = false;
 
    public boolean getOverrideLocales()
    {
@@ -108,6 +112,16 @@ public class HProjectIteration extends SlugEntityBase
    public boolean getOverrideValidations()
    {
       return overrideValidations;
+   }
+
+   @Column(nullable = true)
+   public Boolean getRequireTranslationReview()
+   {
+      if (requireTranslationReview == null)
+      {
+         return Boolean.FALSE;
+      }
+      return requireTranslationReview;
    }
 
    @ManyToOne
@@ -184,7 +198,7 @@ public class HProjectIteration extends SlugEntityBase
 
    @JoinTable(name = "HProjectIteration_Validation", joinColumns = @JoinColumn(name = "projectIterationId"))
    @Type(type = "text")
-   @ElementCollection(fetch = FetchType.EAGER)
+   @ElementCollection(fetch = FetchType.LAZY)
    @Column(name = "validation", nullable = false)
    public Set<String> getCustomizedValidations()
    {
@@ -193,5 +207,11 @@ public class HProjectIteration extends SlugEntityBase
          customizedValidations = new HashSet<String>();
       }
       return customizedValidations;
+   }
+
+   @Override
+   public Iterator<DocumentWithId> iterator()
+   {
+      return ImmutableList.<DocumentWithId>copyOf(getDocuments().values()).iterator();
    }
 }

@@ -75,18 +75,18 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay> im
    }
 
    @Override
-   public void messageFilterOptionChanged(Boolean translatedChkValue, Boolean needReviewChkValue, Boolean untranslatedChkValue, Boolean hasErrorChkValue)
+   public void messageFilterOptionChanged(Boolean translatedChkValue, Boolean draftChkValue, Boolean untranslatedChkValue, Boolean hasErrorChkValue)
    {
       UserConfigHolder configHolder = userOptionsService.getConfigHolder();
       configHolder.setFilterByTranslated(translatedChkValue);
-      configHolder.setFilterByNeedReview(needReviewChkValue);
+      configHolder.setFilterByNeedReview(draftChkValue);
       configHolder.setFilterByUntranslated(untranslatedChkValue);
       configHolder.setFilterByHasError(hasErrorChkValue);
 
       // push history
       HistoryToken token = history.getHistoryToken();
       token.setFilterTranslated(translatedChkValue);
-      token.setFilterFuzzy(needReviewChkValue);
+      token.setFilterFuzzy(draftChkValue);
       token.setFilterUntranslated(untranslatedChkValue);
       token.setFilterHasError(hasErrorChkValue);
       history.newItem(token);

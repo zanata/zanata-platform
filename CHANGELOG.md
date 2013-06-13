@@ -1,5 +1,11 @@
 # Zanata change log summary
 
+## zanata-3.0.0
+ * Allow adapter parameters to be set on source document upload
+ * Add attention key shortcut: Alt+X
+ * Add attention shortcut to copy from source: Alt+X,G
+ 
+
 ## zanata-2.3.1
  * Bug fixes:
   * Prevent incorrect validation warnings with concurrent edits
