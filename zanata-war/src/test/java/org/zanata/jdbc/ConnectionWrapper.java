@@ -28,15 +28,20 @@ import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Set;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import org.testng.internal.annotations.Sets;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@Slf4j
 public class ConnectionWrapper implements InvocationHandler
 {
    // For reference, this is what the mysql exception looks like:
@@ -47,8 +52,8 @@ public class ConnectionWrapper implements InvocationHandler
    // sets before attempting more queries.
    public static final String CONCURRENT_RESULTSET = "Streaming ResultSet is still open on this Connection";
    private final Connection connection;
-   private int resultSetsOpen;
-   private boolean streamingResultSetOpen;
+   private Set<Throwable> resultSetsOpened = Sets.newHashSet();
+   private Throwable streamingResultSetOpened;
 
    public static Connection wrap(Connection connection) 
    {
@@ -76,6 +81,17 @@ public class ConnectionWrapper implements InvocationHandler
       {
          return "ConnectionWrapper->"+connection.toString();
       }
+      if (method.getName().equals("close"))
+      {
+         if (streamingResultSetOpened != null)
+         {
+            log.error("Connection.close: streaming ResultSet still open", streamingResultSetOpened);
+         }
+         if (!resultSetsOpened.isEmpty())
+         {
+            log.error("Connection.close: ResultSet still open", resultSetsOpened.iterator().next());
+         }
+      }
       try
       {
          Object result = method.invoke(connection, args);
@@ -94,37 +110,41 @@ public class ConnectionWrapper implements InvocationHandler
 
    public void executed() throws SQLException
    {
-      if (streamingResultSetOpen)
+      if (streamingResultSetOpened != null)
       {
-         throw new StreamingResultSetSQLException(CONCURRENT_RESULTSET);
+         throw new StreamingResultSetSQLException(CONCURRENT_RESULTSET, streamingResultSetOpened);
       }
    }
 
-   public void resultSetOpened() throws SQLException
+   public void resultSetOpened(Throwable throwable) throws SQLException
    {
-      if (streamingResultSetOpen)
+      if (streamingResultSetOpened != null)
       {
-         throw new StreamingResultSetSQLException(CONCURRENT_RESULTSET);
+         throw new StreamingResultSetSQLException(CONCURRENT_RESULTSET, streamingResultSetOpened);
       }
-      ++resultSetsOpen;
+      resultSetsOpened.add(throwable);
    }
 
-   public void streamingResultSetOpened() throws SQLException
+   public void streamingResultSetOpened(Throwable throwable) throws SQLException
    {
-      if (streamingResultSetOpen || resultSetsOpen != 0)
+      if (streamingResultSetOpened != null)
       {
-         throw new StreamingResultSetSQLException(CONCURRENT_RESULTSET);
+         throw new StreamingResultSetSQLException(CONCURRENT_RESULTSET, streamingResultSetOpened);
       }
-      streamingResultSetOpen = true;
+      else if (!resultSetsOpened.isEmpty())
+      {
+         throw new StreamingResultSetSQLException(CONCURRENT_RESULTSET, resultSetsOpened.iterator().next());
+      }
+      streamingResultSetOpened = throwable;
    }
 
-   public void resultSetClosed()
+   public void resultSetClosed(Throwable throwable)
    {
-      --resultSetsOpen;
+      resultSetsOpened.remove(throwable);
    }
 
    public void streamingResultSetClosed()
    {
-      streamingResultSetOpen = false;
+      streamingResultSetOpened = null;
    }
 }

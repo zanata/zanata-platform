@@ -1,14 +1,15 @@
 package org.zanata.rest.service;
 
-import static org.custommonkey.xmlunit.XMLAssert.*;
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathNotExists;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.zanata.common.ContentState.*;
+import static org.zanata.common.ContentState.Approved;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
@@ -32,9 +33,7 @@ import org.zanata.model.SimpleTargetContents;
 import org.zanata.model.SourceContents;
 import org.zanata.model.TargetContents;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
