@@ -146,7 +146,7 @@
     </s:link>
     <s:link id="exportTMXProjectLink" styleClass="action_link"
 	      value="#{messages['jsf.ExportTMXProject']}"
-	      onclick="confirm('#{messages['jsf.ConfirmExportTMXProject']}')"
+	      onclick="return confirm('#{messages['jsf.ConfirmExportTMXProject']}')"
 	      view="/rest/tm/projects/#{projectHome.slug}"
 	      propagation="none"/>
 

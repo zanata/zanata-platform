@@ -23,7 +23,7 @@
       <s:link id="exportTMXAllLink" styleClass="action_link"
                   rendered="#{s:hasRole('admin')}"
                   value="#{messages['jsf.ExportTMXAll']}"
-                  onclick="confirm('#{messages['jsf.ConfirmExportTMXAll']}')"
+                  onclick="return confirm('#{messages['jsf.ConfirmExportTMXAll']}')"
                   view="/rest/tm/all"
                   propagation="none"/>
     </rich:panel>

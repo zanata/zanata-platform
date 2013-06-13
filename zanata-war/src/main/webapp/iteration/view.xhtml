@@ -83,17 +83,10 @@
 							</s:link>
 			            <s:link id="exportTMXIterLink" styleClass="action_link"
 			                  value="#{messages['jsf.ExportTMXIter']}"
-			                  onclick="confirm('#{messages['jsf.ConfirmExportTMXIter']}')"
+                              onclick="return confirm('#{messages['jsf.ConfirmExportTMXIter']}')"
 			                  view="/rest/tm/projects/#{viewAllStatusAction.projectSlug}/iterations/#{viewAllStatusAction.iterationSlug}?locale=#{stats.locale}"
 			                  propagation="none"/>
                             <ui:remove>
-							<!--  <h:outputLink value="#{request.contextPath}/webtrans/Application.seam" styleClass="table_link">
-								<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
-								<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
-								<f:param name="localeId" value="#{stats.locale}" />
-								<f:param name="locale" value="#{locale.language}" />
-								<span class="icon-docs icon"/>
-							</h:outputLink> -->
                             </ui:remove>
 						</rich:column>
 						<rich:column
@@ -164,7 +157,7 @@
             </s:fragment>
 			   <s:link id="exportTMXIterLink" styleClass="action_link"
 			         value="#{messages['jsf.ExportTMXIter']}"
-			         onclick="confirm('#{messages['jsf.ConfirmExportTMXIter']}')"
+			         onclick="return confirm('#{messages['jsf.ConfirmExportTMXIter']}')"
 			         view="/tm/projects/#{viewAllStatusAction.projectSlug}/iterations/#{viewAllStatusAction.iterationSlug}"
 			         propagation="none"/>
 
