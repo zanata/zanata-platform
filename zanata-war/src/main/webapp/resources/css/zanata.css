@@ -569,7 +569,7 @@ a.table_icon_link {
 	outline:none;
 }
 
-a.table_link:hover {
+a.table_link:hover, a.table_icon_link:hover {
 	color: #0085CC;
 }
 
