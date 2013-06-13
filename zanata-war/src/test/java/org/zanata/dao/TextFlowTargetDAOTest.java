@@ -20,6 +20,8 @@
  */
 package org.zanata.dao;
 
+import lombok.Cleanup;
+
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
@@ -94,6 +96,7 @@ public class TextFlowTargetDAOTest extends ZanataDbunitJpaTest
    {
       HDocument doc = (HDocument) getSession().get(HDocument.class, 1L);
       HLocale hLocale = (HLocale) getSession().get(HLocale.class, 1L);
-      this.textFlowTargetDAO.findMatchingTranslations(doc, hLocale, true, true, true, true);
+      @Cleanup
+      ScrollableResults scroll = this.textFlowTargetDAO.findMatchingTranslations(doc, hLocale, true, true, true, true);
    }
 }
