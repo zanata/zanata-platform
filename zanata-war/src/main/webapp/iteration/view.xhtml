@@ -75,17 +75,19 @@
 							rendered="#{identity.loggedIn}"
 							styleClass="#{stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''} centered">
 							<f:facet name="header">#{messages['jsf.Documents']}</f:facet>
-							<s:link view="/iteration/files.xhtml" propagation="none" styleClass="table_link">
+							<s:link view="/iteration/files.xhtml" propagation="none" styleClass="table_icon_link">
 								<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
 								<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
 								<f:param name="localeId" value="#{stats.locale}" />
 								<span class="icon-docs icon"/>
 							</s:link>
-			            <s:link id="exportTMXIterLink" styleClass="action_link"
-			                  value="#{messages['jsf.ExportTMXIter']}"
-                              onclick="return confirm('#{messages['jsf.ConfirmExportTMXIter']}')"
-			                  view="/rest/tm/projects/#{viewAllStatusAction.projectSlug}/iterations/#{viewAllStatusAction.iterationSlug}?locale=#{stats.locale}"
-			                  propagation="none"/>
+                            <s:link id="exportTMXIterLink" styleClass="table_icon_link"
+                                    title="#{messages['jsf.ExportTMXIter']}"
+                                    onclick="return confirm('#{messages['jsf.ConfirmExportTMXIter']}')"
+                                    view="/rest/tm/projects/#{viewAllStatusAction.projectSlug}/iterations/#{viewAllStatusAction.iterationSlug}?locale=#{stats.locale}"
+                                    propagation="none">
+                                <span class="icon-export-3 icon"/>
+                            </s:link>
                             <ui:remove>
                             </ui:remove>
 						</rich:column>

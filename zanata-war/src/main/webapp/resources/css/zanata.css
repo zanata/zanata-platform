@@ -561,6 +561,14 @@ a.table_link {
 	outline:none;
 }
 
+a.table_icon_link {
+	font-size: 20px;
+	color: #454545;
+	text-decoration: none;
+	text-align: right;
+	outline:none;
+}
+
 a.table_link:hover {
 	color: #0085CC;
 }
