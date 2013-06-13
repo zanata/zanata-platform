@@ -240,19 +240,20 @@
                                    escape="true"/>
                     <h:outputLabel value="#{messages['jsf.SourceLanguage']}"/>
                 </h:selectOneMenu>
-                <rich:simpleTogglePanel label="#{messages['jsf.iteration.files.CustomParams']}"
+                <br/>
+                <rich:collapsiblePanel header="#{messages['jsf.iteration.files.CustomParams']}"
                                        switchType="client"
-                                       opened="false">
+                                       expanded="false">
+                    <h:outputLabel for="adapterParams" value="#{messages['jsf.iteration.files.CustomParams.description']}" />
+                    <br/>
                     <h:inputTextarea id="adapterParams"
-                                     value="#{projectIterationFilesAction.documentFileUpload.adapterParams}">
-                      <h:outputLabel for="adapterParams" value="#{messages['jsf.iteration.files.CustomParams.description']}" />
-                    </h:inputTextarea>
+                                     value="#{projectIterationFilesAction.documentFileUpload.adapterParams}"/>
                     <br />
                     <a target="_blank"
                        href="https://github.com/zanata/zanata-server/wiki/Custom-document-parameters">
                       #{messages['jsf.iteration.files.CustomParams.linkText']}
                     </a>
-                </rich:simpleTogglePanel>
+                </rich:collapsiblePanel>
                 <div align="right">
                     <h:commandButton value="#{messages['jsf.Upload']}"
                                      action="#{projectIterationFilesAction.uploadDocumentFile}"/>
@@ -289,20 +290,20 @@
                                    escape="true"/>
                     <h:outputLabel value="#{messages['jsf.SourceLanguage']}"/>
                 </h:selectOneMenu>
-
-                <rich:simpleTogglePanel label="#{messages['jsf.iteration.files.CustomParams']}"
+                <br/>
+                <rich:collapsiblePanel header="#{messages['jsf.iteration.files.CustomParams']}"
                                        switchType="client"
-                                       opened="false">
+                                       expanded="false">
+                    <h:outputLabel for="adapterParams" value="#{messages['jsf.iteration.files.CustomParams.description']}" />
+                    <br/>
                     <h:inputTextarea id="adapterParams"
-                                     value="#{projectIterationFilesAction.documentFileUpload.adapterParams}">
-                      <h:outputLabel for="adapterParams" value="#{messages['jsf.iteration.files.CustomParams.description']}" />
-                    </h:inputTextarea>
+                                     value="#{projectIterationFilesAction.documentFileUpload.adapterParams}"/>
                     <br />
                     <a target="_blank"
                        href="https://github.com/zanata/zanata-server/wiki/Custom-document-parameters">
                       #{messages['jsf.iteration.files.CustomParams.linkText']}
                     </a>
-                </rich:simpleTogglePanel>
+                </rich:collapsiblePanel>
                 <div align="right">
                     <h:commandButton value="#{messages['jsf.Upload']}"
                                      action="#{projectIterationFilesAction.uploadDocumentFile}"/>

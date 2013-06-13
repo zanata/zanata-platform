@@ -214,3 +214,26 @@ div.rf-pp-cnt {
 }
 
 /* ====================== End Rich Dialogs =========================== */
+
+/* ====================== Collapsible panel =========================== */
+
+div.rf-cp-hdr {
+    background-image: none;
+    background-color: #461446;
+    border-top-left-radius: 5px;
+    order-top-right-radius: 5px;
+}
+
+div.rf-cp-lbl-colps, div.rf-cp-lbl-exp {
+    color: #FFFFFF;
+    font-size:11px;
+    font-weight: bold;
+}
+
+div.rf-cp {
+    padding:0;
+    border-radius: 5px;
+    margin-top:5px;
+}
+
+/* ====================== End Collapsible panel =========================== */
