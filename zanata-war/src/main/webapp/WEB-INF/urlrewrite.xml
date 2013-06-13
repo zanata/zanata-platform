@@ -523,5 +523,10 @@
   	<to>$1/rest/file/source/$2$3</to>
   </outbound-rule>
 
+  <outbound-rule>
+    <from>^(/.+)?/rest/tm/(.+).seam(.*)$</from>
+    <to>$1/rest/tm/$2$3</to>
+  </outbound-rule>
+
 </urlrewrite>
 
