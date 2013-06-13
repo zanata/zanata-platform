@@ -345,6 +345,16 @@
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
+                    <argLine>-Dconcordion.output.dir=${concordion.output.dir}</argLine>
+                    <junitArtifactName>none:none</junitArtifactName>
+                    <testNGArtifactName>org.testng:testng</testNGArtifactName>
+                    <forkMode>once</forkMode>
+                    <argLine xml:space="preserve">-Xmx1024m -XX:MaxPermSize=512m -XX:+UseConcMarkSweepGC
+						-XX:+CMSClassUnloadingEnabled -XX:+HeapDumpOnOutOfMemoryError
+						-XX:HeapDumpPath=${project.build.directory} -Dsun.lang.ClassLoader.allowArraySyntax=true</argLine>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>src/test/resources/AllNonContainerTests.tng.xml</suiteXmlFile>
+                    </suiteXmlFiles>
 <!-- TODO try parallel execution
                <parallel>methods</parallel>
                <threadCount>4</threadCount>
@@ -352,26 +362,6 @@
 				</configuration>
                 <!-- below trick is to let surefire run both junit and testng.
                 see http://stackoverflow.com/questions/1232853/how-to-execute-junit-and-testng-tests-in-same-project-using-maven-surefire-plugi-->
-                <executions>
-                    <execution>
-                        <id>testng-execution</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <junitArtifactName>none:none</junitArtifactName>
-                            <testNGArtifactName>org.testng:testng</testNGArtifactName>
-                            <forkMode>once</forkMode>
-                            <argLine xml:space="preserve">-Xmx1024m -XX:MaxPermSize=512m -XX:+UseConcMarkSweepGC
-						-XX:+CMSClassUnloadingEnabled -XX:+HeapDumpOnOutOfMemoryError
-						-XX:HeapDumpPath=${project.build.directory} -Dsun.lang.ClassLoader.allowArraySyntax=true</argLine>
-                            <suiteXmlFiles>
-                                <suiteXmlFile>src/test/resources/AllNonContainerTests.tng.xml</suiteXmlFile>
-                            </suiteXmlFiles>
-                        </configuration>
-                    </execution>
-                </executions>
 			</plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>

@@ -4,7 +4,7 @@ import junit.framework.Assert;
 
 import com.google.gwt.junit.client.GWTTestCase;
 
-public class GwtTestSample extends GWTTestCase
+public class   GwtTestSample extends GWTTestCase
 {
 
    @Override

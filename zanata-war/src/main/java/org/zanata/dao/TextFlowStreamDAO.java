@@ -39,6 +39,7 @@ import org.zanata.common.EntityStatus;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
+import org.zanata.util.CloseableIterator;
 
 /**
  * This class uses Hibernate's StatelessSession to iterate over large queries returning HTextFlow.
@@ -71,7 +72,7 @@ public class TextFlowStreamDAO
       this.entityManagerFactory = emf;
    }
 
-   class HTextFlowIterator implements Iterator<HTextFlow>, Closeable
+   class HTextFlowIterator implements CloseableIterator<HTextFlow>
    {
       private final @Nonnull Session session;
       private int rowNum;
@@ -149,7 +150,7 @@ public class TextFlowStreamDAO
     * Obsolete projects, iterations, documents and textflows are skipped.
     * @return
     */
-   public @Nonnull Iterator<HTextFlow> findTextFlows()
+   public @Nonnull CloseableIterator<HTextFlow> findTextFlows()
    {
       HTextFlowIterator iter = createIterator();
       try
@@ -184,7 +185,7 @@ public class TextFlowStreamDAO
     * Obsolete iterations, documents and textflows are skipped.
     * @return
     */
-   public @Nonnull Iterator<HTextFlow> findTextFlowsByProject(HProject hProject)
+   public @Nonnull CloseableIterator<HTextFlow> findTextFlowsByProject(HProject hProject)
    {
       HTextFlowIterator iter = createIterator();
       try
@@ -220,7 +221,7 @@ public class TextFlowStreamDAO
     * Obsolete documents and textflows are skipped.
     * @return
     */
-   public @Nonnull Iterator<HTextFlow> findTextFlowsByProjectIteration(HProjectIteration hProjectIteration)
+   public @Nonnull CloseableIterator<HTextFlow> findTextFlowsByProjectIteration(HProjectIteration hProjectIteration)
    {
       HTextFlowIterator iter = createIterator();
       try

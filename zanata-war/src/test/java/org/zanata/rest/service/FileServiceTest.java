@@ -29,6 +29,7 @@ import java.net.URI;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.hibernate.LobHelper;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Matchers;
@@ -79,6 +80,7 @@ public class FileServiceTest
    @Mock private TranslationFileService translationFileService;
    @Mock private DocumentService documentService;
    @Mock private DocumentDAO documentDAO;
+   @Mock private LobHelper lobHelper;
 
    @Mock private HProject project;
    @Mock private HProjectIteration projectIteration;
@@ -311,6 +313,7 @@ public class FileServiceTest
             .thenReturn(new HRawDocument());
       when(documentDAO.getByProjectIterationAndDocId(conf.projectSlug, conf.versionSlug,
             conf.docId)).thenReturn(conf.existingDocument);
+      when(documentDAO.getLobHelper()).thenReturn(lobHelper);
       Resource document = new Resource();
       when(translationFileService.parseUpdatedAdapterDocumentFile(
             Matchers.<URI>any(), eq(conf.docId), eq(conf.fileType), paramCaptor.capture()))

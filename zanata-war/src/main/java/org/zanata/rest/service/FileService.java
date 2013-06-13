@@ -43,6 +43,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.Vector;
 
+import javax.annotation.Nonnull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -316,7 +317,7 @@ public class FileService implements FileResource
       return tempFile;
    }
 
-   private void processAdapterFile(File tempFile, String projectSlug, String iterationSlug,
+   private void processAdapterFile(@Nonnull File tempFile, String projectSlug, String iterationSlug,
          String docId, DocumentFileUploadForm uploadForm) throws VirusDetectedException
    {
       virusScan(tempFile);

@@ -28,6 +28,7 @@ import org.zanata.jdbc.StreamingResultSetSQLException;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
+import org.zanata.util.CloseableIterator;
 
 @Test(groups = { "jpa-tests" })
 @Slf4j
@@ -58,7 +59,7 @@ public class TextFlowStreamDAOTest extends ZanataDbunitJpaTest
    }
 
    @Test
-   public void testWrapperWithNestedExecute()
+   public void testWrapperWithNestedExecute() throws Exception
    {
       @Cleanup
       ScrollableResults scroll1 = streamQuery("from HTextFlow");
@@ -85,7 +86,7 @@ public class TextFlowStreamDAOTest extends ZanataDbunitJpaTest
    }
 
    @Test
-   public void testWrapperWithNestedStreaming()
+   public void testWrapperWithNestedStreaming() throws Exception
    {
       @Cleanup
       ScrollableResults scroll1 = streamQuery("from HTextFlow");
@@ -105,7 +106,7 @@ public class TextFlowStreamDAOTest extends ZanataDbunitJpaTest
    }
 
    @Test
-   public void testWrapperWithNestedResults()
+   public void testWrapperWithNestedResults() throws Exception
    {
       @Cleanup
       ScrollableResults scroll1 = streamQuery("from HTextFlow");
@@ -139,10 +140,11 @@ public class TextFlowStreamDAOTest extends ZanataDbunitJpaTest
       return scroll;
    }
 
-   @Test(enabled=false)
-   public void findAllTextFlows()
+   @Test
+   public void findAllTextFlows() throws Exception
    {
-      Iterator<HTextFlow> iter = dao.findTextFlows();
+      @Cleanup
+      CloseableIterator<HTextFlow> iter = dao.findTextFlows();
       int n = 0;
       while (iter.hasNext())
       {
@@ -152,11 +154,12 @@ public class TextFlowStreamDAOTest extends ZanataDbunitJpaTest
       assertThat(n, equalTo(5));
    }
 
-   @Test(enabled=false)
-   public void findTextFlowsForProject()
+   @Test
+   public void findTextFlowsForProject() throws Exception
    {
       HProject proj = projectDao.getBySlug("sample-project");
-      Iterator<HTextFlow> iter = dao.findTextFlowsByProject(proj);
+      @Cleanup
+      CloseableIterator<HTextFlow> iter = dao.findTextFlowsByProject(proj);
       int n = 0;
       while (iter.hasNext())
       {
@@ -166,19 +169,21 @@ public class TextFlowStreamDAOTest extends ZanataDbunitJpaTest
       assertThat(n, equalTo(5));
    }
 
-   @Test(enabled=false)
-   public void findTextFlowsForEmptyProject()
+   @Test
+   public void findTextFlowsForEmptyProject() throws Exception
    {
       HProject proj = projectDao.getBySlug("retired-project");
-      Iterator<HTextFlow> iter = dao.findTextFlowsByProject(proj);
+      @Cleanup
+      CloseableIterator<HTextFlow> iter = dao.findTextFlowsByProject(proj);
       assertThat(iter.hasNext(), Matchers.not(true));
    }
    
-   @Test(enabled=false)
-   public void findTextFlowsForProjectIter()
+   @Test
+   public void findTextFlowsForProjectIter() throws Exception
    {
       HProjectIteration projIter = projectIterDao.getBySlug("sample-project", "1.0");
-      Iterator<HTextFlow> iter = dao.findTextFlowsByProjectIteration(projIter);
+      @Cleanup
+      CloseableIterator<HTextFlow> iter = dao.findTextFlowsByProjectIteration(projIter);
       int n = 0;
       while (iter.hasNext())
       {
@@ -188,11 +193,12 @@ public class TextFlowStreamDAOTest extends ZanataDbunitJpaTest
       assertThat(n, equalTo(5));
    }
 
-   @Test(enabled=false)
-   public void findTextFlowsForEmptyProjectIteration()
+   @Test
+   public void findTextFlowsForEmptyProjectIteration() throws Exception
    {
       HProjectIteration projIter = projectIterDao.getBySlug("retired-project", "retired-current");
-      Iterator<HTextFlow> iter = dao.findTextFlowsByProjectIteration(projIter);
+      @Cleanup
+      CloseableIterator<HTextFlow> iter = dao.findTextFlowsByProjectIteration(projIter);
       assertThat(iter.hasNext(), Matchers.not(true));
    }
    
