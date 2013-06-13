@@ -157,7 +157,6 @@
         <dependency>
             <groupId>net.sf.okapi.steps</groupId>
             <artifactId>okapi-step-wordcount</artifactId>
-            <version>${okapi.version}</version>
             <!-- see latest version at http://repository-okapi.forge.cloudbees.com/snapshot/net/sf/okapi/steps/okapi-step-wordcount/ -->
         </dependency>
 

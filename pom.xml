@@ -177,24 +177,85 @@
             <groupId>net.sf.okapi.filters</groupId>
             <artifactId>okapi-filter-dtd</artifactId>
             <version>${okapi.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.sf.okapi.logbind</groupId>
+                    <artifactId>build-log4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.okapi.filters</groupId>
+            <artifactId>okapi-filter-idml</artifactId>
+            <version>${okapi.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.sf.okapi.logbind</groupId>
+                    <artifactId>build-log4j</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>net.sf.okapi.filters</groupId>
             <artifactId>okapi-filter-openoffice</artifactId>
             <version>${okapi.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.sf.okapi.logbind</groupId>
+                    <artifactId>build-log4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.okapi.filters</groupId>
+            <artifactId>okapi-filter-tmx</artifactId>
+            <version>${okapi.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.sf.okapi.logbind</groupId>
+                    <artifactId>build-log4j</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>net.sf.okapi.filters</groupId>
             <artifactId>okapi-filter-plaintext</artifactId>
             <version>${okapi.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.sf.okapi.logbind</groupId>
+                    <artifactId>build-log4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.okapi.steps</groupId>
+            <artifactId>okapi-step-wordcount</artifactId>
+            <version>${okapi.version}</version>
+            <!-- see latest version at http://repository-okapi.forge.cloudbees.com/snapshot/net/sf/okapi/steps/okapi-step-wordcount/ -->
+            <exclusions>
+                <exclusion>
+                    <groupId>net.sf.okapi.logbind</groupId>
+                    <artifactId>build-log4j</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
           <groupId>net.sf.okapi</groupId>
           <artifactId>okapi-core</artifactId>
           <version>${okapi.version}</version>
+          <exclusions>
+              <exclusion>
+                  <groupId>net.sf.okapi.logbind</groupId>
+                  <artifactId>build-log4j</artifactId>
+              </exclusion>
+          </exclusions>
         </dependency>
 
 			<dependency>
