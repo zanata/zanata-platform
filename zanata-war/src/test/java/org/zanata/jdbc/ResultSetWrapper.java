@@ -29,6 +29,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -49,9 +50,12 @@ public class ResultSetWrapper implements InvocationHandler
       return (ResultSet) Proxy.newProxyInstance(cl, resultSet.getClass().getInterfaces(), h);
    }
 
+   @Getter
    private final ResultSet resultSet;
    private final Connection connection;
    private final boolean streaming;
+   @Getter
+   private final Throwable throwable = new Throwable("Unclosed ResultSet was created here");
 
    @Override
    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
@@ -72,7 +76,7 @@ public class ResultSetWrapper implements InvocationHandler
             }
             else
             {
-               connectionWrapper.resultSetClosed();
+               connectionWrapper.resultSetClosed(throwable);
             }
          }
          return result;

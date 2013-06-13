@@ -78,15 +78,17 @@ public class StatementWrapper implements InvocationHandler
          {
             ResultSet resultSet = (ResultSet) result;
             ConnectionWrapper connectionWrapper = (ConnectionWrapper) Proxy.getInvocationHandler(connection);
+            ResultSet rsProxy = ResultSetWrapper.wrap(resultSet, connection, makeStreamingResultSet);
+            ResultSetWrapper rsWrap = (ResultSetWrapper) Proxy.getInvocationHandler(rsProxy);
             if (makeStreamingResultSet)
             {
-               connectionWrapper.streamingResultSetOpened();
+               connectionWrapper.streamingResultSetOpened(rsWrap.getThrowable());
             }
             else
             {
-               connectionWrapper.resultSetOpened();
+               connectionWrapper.resultSetOpened(rsWrap.getThrowable());
             }
-            return ResultSetWrapper.wrap(resultSet, connection, makeStreamingResultSet);
+            return rsProxy;
          }
          else if (method.getName().startsWith("execute"))
          {
