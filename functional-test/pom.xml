@@ -17,16 +17,20 @@
         <!--Cargo Settings -->
         <cargo.wait>false</cargo.wait>
         <cargo.host>localhost</cargo.host>
-        <cargo.container>jboss51x</cargo.container>
+        <cargo.container>jboss71x</cargo.container>
         <cargo.servlet.port>9898</cargo.servlet.port>
-        <cargo.installation>http://aarnet.dl.sourceforge.net/project/jboss/JBoss/JBoss-5.1.0.GA/jboss-5.1.0.GA-jdk6.zip</cargo.installation>
-        <cargo.home>${java.io.tmpdir}/cargo/installs/jboss-ewp-5.1.2/jboss-ewp-5.1/jboss-as-web</cargo.home>
+        <!--<cargo.installation>http://aarnet.dl.sourceforge.net/project/jboss/JBoss/JBoss-5.1.0.GA/jboss-5.1.0.GA-jdk6.zip</cargo.installation>-->
+        <!--<cargo.installation>http://download.jboss.org/jbossas/7.1/jboss-as-7.1.1.Final/jboss-as-7.1.1.Final.zip</cargo.installation>-->
+        <cargo.installation>http://download.jboss.org/jbosseap/6/jboss-eap-6.1.0.Alpha/jboss-eap-6.1.0.Alpha.zip</cargo.installation>
+        <cargo.extract.dir>${project.build.directory}/cargo/installs</cargo.extract.dir>
+        <cargo.container.home>${project.build.directory}/jboss/container</cargo.container.home>
+        <cargo.install.relative.to.container.home>../../cargo/installs/jboss-eap-6.1.0.Alpha/jboss-eap-6.1</cargo.install.relative.to.container.home>
         <context.path>zanata</context.path>
 
         <!--data source-->
         <jdbc.groupId>com.h2database</jdbc.groupId>
         <jdbc.artifactId>h2</jdbc.artifactId>
-        <jdbc.version>1.3.170</jdbc.version>
+        <jdbc.version>1.3.161</jdbc.version>
 
         <ds.jndi.name>zanataDatasource</ds.jndi.name>
         <!--<ds.hibernate.dialect>org.hibernate.dialect.H2Dialect</ds.hibernate.dialect>-->
@@ -66,12 +70,12 @@
                     <artifactId>junit</artifactId>
                 </exclusion>
                 <exclusion>
-                				<artifactId>xml-apis</artifactId>
-                				<groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                    <groupId>xml-apis</groupId>
                 </exclusion>
                 <exclusion>
-                				<artifactId>xercesImpl</artifactId>
-                				<groupId>xerces</groupId>
+                    <artifactId>xercesImpl</artifactId>
+                    <groupId>xerces</groupId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -111,24 +115,45 @@
             <artifactId>hamcrest-library</artifactId>
         </dependency>
 
-        <!--cargo needs these-->
-        <!--<dependency>-->
-            <!--<groupId>${project.groupId}</groupId>-->
-            <!--<artifactId>zanata-war</artifactId>-->
-            <!--<version>${zanata.target.version}</version>-->
-            <!--<type>war</type>-->
-        <!--</dependency>-->
+        <!-- cargo needs these-->
+        <!-- we need to include a newer version of hibernate and replace the ones come with JBoss EAP6-alpha -->
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${hibernate.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.javassist</groupId>
+                    <artifactId>javassist</artifactId>
+                </exclusion>
+            </exclusions>
+            <scope>${hibernate.scope}</scope>
         </dependency>
         <dependency>
-            <groupId>${jdbc.groupId}</groupId>
-            <artifactId>${jdbc.artifactId}</artifactId>
-            <version>${jdbc.version}</version>
-            <scope>compile</scope>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>${hibernate.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.javassist</groupId>
+                    <artifactId>javassist</artifactId>
+                </exclusion>
+            </exclusions>
+            <scope>${hibernate.scope}</scope>
         </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-infinispan</artifactId>
+            <version>${hibernate.version}</version>
+            <scope>${hibernate.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-envers</artifactId>
+            <version>${hibernate.version}</version>
+            <scope>${hibernate.scope}</scope>
+        </dependency>
+
     </dependencies>
 
     <profiles>
@@ -184,73 +209,102 @@
                     <plugin>
                         <groupId>org.codehaus.cargo</groupId>
                         <artifactId>cargo-maven2-plugin</artifactId>
-                        <version>1.1.0</version>
+                        <version>1.3.1</version>
                         <configuration>
                             <wait>${cargo.wait}</wait>
+
                             <container>
                                 <containerId>${cargo.container}</containerId>
+                                <type>installed</type>
 
                                 <!--if install from url-->
                                 <zipUrlInstaller>
                                     <url>${cargo.installation}</url>
                                     <downloadDir>${user.home}/Downloads</downloadDir>
-                                    <extractDir>${project.build.directory}/cargo/installs</extractDir>
+                                    <extractDir>${cargo.extract.dir}</extractDir>
                                 </zipUrlInstaller>
 
-                                <!--<home>${jboss.home}</home>-->
-                                <timeout>300000</timeout>
-
-                                <dependencies>
-                                    <dependency>
-                                        <groupId>${jdbc.groupId}</groupId>
-                                        <artifactId>${jdbc.artifactId}</artifactId>
-                                    </dependency>
-                                    <dependency>
-                                        <groupId>javax.servlet</groupId>
-                                        <artifactId>servlet-api</artifactId>
-                                    </dependency>
-
-                                </dependencies>
                                 <output>${project.build.directory}/container.log</output>
                                 <append>false</append>
                                 <log>${project.build.directory}/cargo.log</log>
+
                                 <systemProperties>
                                     <ehcache.disk.store.dir>${project.build.directory}/ehcache</ehcache.disk.store.dir>
-                                    <jboss.server.log.threshold>INFO</jboss.server.log.threshold>
+                                    <jboss.server.log.threshold>WARN</jboss.server.log.threshold>
                                     <hibernate.search.default.indexBase>${project.build.directory}/zanataindex</hibernate.search.default.indexBase>
                                 </systemProperties>
                             </container>
+
+                            <deployables>
+                                <deployable>
+                                    <!--<groupId>${project.groupId}</groupId>-->
+                                    <!--<artifactId>zanata-war</artifactId>-->
+                                    <type>war</type>
+                                    <location>${zanata.target.war}</location>
+                                    <pingURL>http://${cargo.host}:${cargo.servlet.port}/${context.path}/</pingURL>
+                                    <pingTimeout>60000</pingTimeout>
+                                    <properties>
+                                        <context>${context.path}</context>
+                                    </properties>
+                                </deployable>
+
+                            </deployables>
+
                             <configuration>
-                                <!--<type>existing</type>-->
                                 <type>standalone</type>
-                                <home>${cargo.home}/server/default</home>
+                                <home>${cargo.container.home}</home>
+
                                 <configfiles>
                                     <configfile>
-                                        <file>${project.basedir}/src/test/resources/conf/zanata.properties</file>
-                                        <todir>conf</todir>
+                                        <file>${project.build.testOutputDirectory}/datasource/zanata-ds.xml</file>
+                                        <todir>deployments</todir>
+                                    </configfile>
+                                    <!-- see above zipUrlInstaller/extractDir-->
+                                    <!-- cargo will force todir and tofile to be relative to container home directory -->
+                                    <configfile>
+                                        <file>${project.basedir}/src/test/resources/as7module/zanata/module.xml</file>
+                                        <todir>${cargo.install.relative.to.container.home}/modules/org/zanata/settings/main</todir>
                                     </configfile>
                                     <configfile>
-                                        <file>${project.basedir}/src/test/resources/conf/login-config.xml</file>
-                                        <todir>conf</todir>
+                                        <file>${project.basedir}/src/test/resources/conf/zanata.properties</file>
+                                        <todir>${cargo.install.relative.to.container.home}/modules/org/zanata/settings/main</todir>
                                     </configfile>
-                                </configfiles>
-                                <deployables>
-                                    <deployable>
-                                        <type>file</type>
-                                        <location>${project.build.testOutputDirectory}/datasource/zanata-ds.xml</location>
-                                    </deployable>
-                                    <deployable>
-                                        <!--<groupId>${project.groupId}</groupId>-->
-                                        <!--<artifactId>zanata-war</artifactId>-->
-                                        <type>war</type>
-                                        <location>${zanata.target.war}</location>
-                                        <pingURL>http://${cargo.host}:${cargo.servlet.port}/${context.path}/</pingURL>
-                                        <properties>
-                                            <context>${context.path}</context>
-                                        </properties>
-                                    </deployable>
 
-                                </deployables>
+                                    <!-- enable javamelody -->
+                                    <configfile>
+                                        <file>${project.basedir}/src/test/resources/as7module/sun/module.xml</file>
+                                        <todir>${cargo.install.relative.to.container.home}/modules/system/layers/base/sun/jdk/main</todir>
+                                    </configfile>
+
+                                    <!-- security -->
+                                    <configfile>
+                                        <file>${project.basedir}/src/test/resources/conf/standalone.xml</file>
+                                        <todir>configuration</todir>
+                                    </configfile>
+
+                                </configfiles>
+
+                                <files>
+                                    <!-- this is a hack to upgrade eap6-alpa's hibernate version-->
+                                    <file>
+                                        <!-- copy in the new jar and override the old one (this is ugly but inside cargo not much option we have -->
+                                        <file>${settings.localRepository}/org/hibernate/hibernate-core/${hibernate.version}/hibernate-core-${hibernate.version}.jar</file>
+                                        <tofile>${cargo.install.relative.to.container.home}/modules/system/layers/base/org/hibernate/main/hibernate-core-4.2.0.CR1.jar</tofile>
+                                    </file>
+                                    <file>
+                                        <file>${settings.localRepository}/org/hibernate/hibernate-entitymanager/${hibernate.version}/hibernate-entitymanager-${hibernate.version}.jar</file>
+                                        <tofile>${cargo.install.relative.to.container.home}/modules/system/layers/base/org/hibernate/main/hibernate-entitymanager-4.2.0.CR1.jar</tofile>
+                                    </file>
+                                    <file>
+                                        <file>${settings.localRepository}/org/hibernate/hibernate-infinispan/${hibernate.version}/hibernate-infinispan-${hibernate.version}.jar</file>
+                                        <tofile>${cargo.install.relative.to.container.home}/modules/system/layers/base/org/hibernate/main/hibernate-infinispan-4.2.0.CR1.jar</tofile>
+                                    </file>
+                                    <file>
+                                        <file>${settings.localRepository}/org/hibernate/hibernate-envers/${hibernate.version}/hibernate-envers-${hibernate.version}.jar</file>
+                                        <tofile>${cargo.install.relative.to.container.home}/modules/system/layers/base/org/hibernate/envers/main/hibernate-envers-4.2.0.CR1.jar</tofile>
+                                    </file>
+                                </files>
+
                                 <properties>
                                     <cargo.jboss.configuration>default</cargo.jboss.configuration>
                                     <cargo.hostname>${cargo.host}</cargo.hostname>
