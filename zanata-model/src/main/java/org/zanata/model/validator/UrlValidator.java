@@ -42,7 +42,7 @@ public class UrlValidator implements ConstraintValidator<Url, String>, Serializa
    @Override
    public boolean isValid(String string, ConstraintValidatorContext context)
    {
-      if (string == null)
+      if (string == null || string.isEmpty())
       {
          return true;
       }
