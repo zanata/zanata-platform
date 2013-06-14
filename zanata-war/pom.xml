@@ -1077,6 +1077,7 @@
             <id>useH2</id>
             <properties>
                 <jboss-deployment-structure.location>src/test/resources/jboss</jboss-deployment-structure.location>
+                <war.name>zanata-h2</war.name>
             </properties>
         </profile>
 
