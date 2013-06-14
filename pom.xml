@@ -33,7 +33,7 @@
       <okapi.version>0.21</okapi.version>
 
       <zanata.api.version>2.3.1-SNAPSHOT</zanata.api.version>
-      <zanata.client.version>2.3.1-SNAPSHOT</zanata.client.version>
+      <zanata.client.version>2.3.0</zanata.client.version>
       <zanata.common.version>2.3.1-SNAPSHOT</zanata.common.version>
 
       <richfaces.version>4.3.2.Final</richfaces.version>
