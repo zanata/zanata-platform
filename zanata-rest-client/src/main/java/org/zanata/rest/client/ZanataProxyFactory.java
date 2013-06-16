@@ -34,7 +34,6 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
 
    private static final Logger log = LoggerFactory.getLogger(ZanataProxyFactory.class);
    private final ClientRequestFactory crf;
-   private static final String RESOURCE_PREFIX = "rest";
 
    public ZanataProxyFactory(String username, String apiKey, VersionInfo clientApiVersion)
    {
@@ -89,16 +88,21 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
    /**
     * Returns the Base url to be used for rest Requests.
     */
-   protected URL getBaseUrl()
+   private URL getBaseUrl()
    {
       try
       {
-         return new URL(fixBase(crf.getBase()).toString() + RESOURCE_PREFIX);
+         return new URL(fixBase(crf.getBase()).toString() + getUrlPrefix());
       }
       catch (MalformedURLException e)
       {
          throw new RuntimeException(e);
       }
+   }
+
+   protected String getUrlPrefix()
+   {
+      return "rest";
    }
 
    public <T> T createProxy(Class<T> clazz, URI baseUri)
