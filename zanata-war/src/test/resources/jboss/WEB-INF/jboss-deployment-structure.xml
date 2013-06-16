@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<!-- This file is used in functional test module. We need to add h2 module support into jboss -->
 <!-- https://access.redhat.com/knowledge/docs/en-US/JBoss_Enterprise_Application_Platform/6/html/Development_Guide/Included_Modules1.html -->
 <jboss-deployment-structure>
    <deployment>
@@ -24,6 +24,7 @@
           <module name="org.jboss.security.negotiation" />
           <module name="org.slf4j" />
           <module name="org.zanata.settings" />
+            <module name="com.h2database.h2" />
         </dependencies>
     </deployment>
 </jboss-deployment-structure>
