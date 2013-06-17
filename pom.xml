@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>server</artifactId>
-  <version>3.0.0-SNAPSHOT</version>
+  <version>3.0.0-alpha-2-SNAPSHOT</version>
   <name>Zanata server modules</name>
   <packaging>pom</packaging>
   <parent>
@@ -32,9 +32,9 @@
       <gwteventservice.version>1.2.1</gwteventservice.version>
       <okapi.version>0.21</okapi.version>
 
-      <zanata.api.version>2.3.1-SNAPSHOT</zanata.api.version>
-      <zanata.client.version>2.3.1-SNAPSHOT</zanata.client.version>
-      <zanata.common.version>2.3.1-SNAPSHOT</zanata.common.version>
+      <zanata.api.version>3.0.0</zanata.api.version>
+      <zanata.client.version>3.0.0</zanata.client.version>
+      <zanata.common.version>3.0.0</zanata.common.version>
 
       <richfaces.version>4.3.2.Final</richfaces.version>
 
