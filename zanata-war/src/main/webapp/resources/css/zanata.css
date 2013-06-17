@@ -143,6 +143,15 @@ button:hover,input[type="reset"]:hover,input[type="submit"]:hover,input[type="bu
 	filter: progid:DXImageTransform.Microsoft.
 }
 
+label.readOnlyLabel {
+    font-size:14px;
+    color:#545454;
+    border:1px solid #C5C5C5;
+    border-radius:3px;
+    padding:5px;
+    line-height:20px;
+}
+
 /* -------------------- End Generic Base CSS ------------------------------ */
 
 #container {

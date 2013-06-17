@@ -11,7 +11,7 @@
 
     <ui:define name="page_title">#{userAction.username} - #{messages['jsf.AccountDetails']}</ui:define>
     <ui:define name="center_content">
-      <h:form>
+      <h:form rendered="#{identityManager.userExists(userAction.username)}">
         <s:token allowMultiplePosts="true" />
         <rich:panel>
           <f:facet name="header">#{messages['jsf.AccountDetails']}</f:facet>
@@ -24,7 +24,7 @@
           </s:decorate>
           <s:decorate id="emailField" template="../WEB-INF/layout/edit.xhtml">
             <ui:define name="label">#{messages['jsf.Email']}</ui:define>
-            <h:inputText id="email" value="#{userAction.getEmail(userAction.username)}" readonly="#{identityManager.userExists(userAction.username)}"/>
+            <s:label value="#{userAction.email}" styleClass="readOnlyLabel"/>
           </s:decorate>
 	      <s:fragment rendered="#{applicationConfiguration.internalAuth}">
 	          <s:decorate id="passwordField" template="../WEB-INF/layout/edit.xhtml" >

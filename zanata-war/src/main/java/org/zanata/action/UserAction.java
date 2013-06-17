@@ -34,6 +34,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.faces.Renderer;
 import org.jboss.seam.international.StatusMessage;
+import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.management.IdentityManager;
 import org.zanata.dao.PersonDAO;
 import org.zanata.service.UserAccountService;
@@ -96,10 +97,14 @@ public class UserAction extends org.jboss.seam.security.management.action.UserAc
       }
    }
 
-   public String getEmail(String username)
+   public String getEmail()
    {
-      return personDAO.findEmail(username);
+      return personDAO.findEmail(getUsername());
    }
+   
+   //This is readonly field in UI.
+   public void setEmail(String email)
+   {}
 
    public String getName(String username)
    {
