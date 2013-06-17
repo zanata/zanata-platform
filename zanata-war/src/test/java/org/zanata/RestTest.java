@@ -240,7 +240,14 @@ public abstract class RestTest
                                        apiKey,
                                        null,
                                        new VersionInfo("Test", "Test"),
-                                       false);
+                                       false)
+         {
+            @Override
+            protected String getUrlPrefix()
+            {
+               return ""; // No prefix for tests
+            }
+         };
       }
       catch (URISyntaxException e)
       {
