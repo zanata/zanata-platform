@@ -102,7 +102,7 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
 
    protected String getUrlPrefix()
    {
-      return "rest";
+      return "rest/";
    }
 
    public <T> T createProxy(Class<T> clazz, URI baseUri)
