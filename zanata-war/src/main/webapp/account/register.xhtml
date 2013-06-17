@@ -74,7 +74,7 @@
 
         <s:decorate id="captcha" template="../WEB-INF/layout/edit.xhtml" enclose="true">
             <ui:define name="label"><h:graphicImage value="/seam/resource/captcha"/></ui:define>
-            <h:inputText id="verifyCaptcha" value="#{captcha.response}" required="true"/>
+            <h:inputText id="verifyCaptcha" value="#{captcha.captchaResponse}" required="true"/>
         </s:decorate>
 
         <ui:remove>
