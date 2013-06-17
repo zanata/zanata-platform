@@ -22,6 +22,7 @@ import org.jboss.arquillian.core.api.annotation.Observes;
 import org.jboss.arquillian.core.api.event.ManagerStarted;
 import org.jboss.arquillian.core.spi.EventContext;
 import org.jboss.arquillian.core.spi.LoadableExtension;
+import org.zanata.arquillian.Seam2ExtendedConfigurationProducer;
 import org.jboss.arquillian.test.spi.TestClass;
 import org.jboss.arquillian.test.spi.annotation.ClassScoped;
 import org.jboss.arquillian.test.spi.context.ClassContext;
@@ -38,7 +39,7 @@ public class ArquillianSuiteExtension implements LoadableExtension
 
    public void register(ExtensionBuilder builder)
    {
-      builder.observer(SuiteDeployer.class);
+      builder.observer(SuiteDeployer.class).observer(Seam2ExtendedConfigurationProducer.class);
    }
 
    public static class SuiteDeployer
