@@ -31,7 +31,7 @@ public class ManualRunHelper
 {
    private static final Pattern TAG_PATTERN = Pattern.compile("\\s*<.+>(.+)</.+>\\s*");
    private static String url;
-   private static String driver;
+   private static String driver = "org.h2.Driver";
    private static String username;
    private static String password = "";
    private static Connection connection;
@@ -82,6 +82,7 @@ public class ManualRunHelper
          {
             url = tagValue;
          }
+         // in as7 there is no longer a driver class tag
          if (line.contains("<driver-class>"))
          {
             driver = tagValue;
