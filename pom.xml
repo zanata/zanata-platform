@@ -33,7 +33,7 @@
       <okapi.version>0.21</okapi.version>
 
       <zanata.api.version>2.3.1-SNAPSHOT</zanata.api.version>
-      <zanata.client.version>2.3.0</zanata.client.version>
+      <zanata.client.version>2.3.1-SNAPSHOT</zanata.client.version>
       <zanata.common.version>2.3.1-SNAPSHOT</zanata.common.version>
 
       <richfaces.version>4.3.2.Final</richfaces.version>
@@ -41,7 +41,7 @@
 	  <!-- see http://community.jboss.org/wiki/HibernateCompatibilityMatrix?decorator=print -->
 	  <!-- see also the jboss7 profile below -->
 	  <hibernate.scope>provided</hibernate.scope>
-	  <hibernate.version>4.1.6.Final</hibernate.version>
+	  <hibernate.version>4.2.0.Final</hibernate.version>
 	  <hibernate.search.version>4.2.0.Final</hibernate.search.version>
 	  <hibernate.entitymanager.version>${hibernate.version}</hibernate.entitymanager.version>
       <war_bundles_jsf_impl>false</war_bundles_jsf_impl>

@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,9 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public abstract class ZanataDbunitJpaTest extends ZanataJpaTest
 {
 
@@ -108,32 +112,15 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest
    protected void executeOperations(List<DataSetOperation> list)
    {
       IDatabaseConnection con = null;
-      try
+      con = getConnection();
+      disableReferentialIntegrity(con);
+      for (DataSetOperation op : list)
       {
-         con = getConnection();
-         disableReferentialIntegrity(con);
-         for (DataSetOperation op : list)
-         {
-            prepareExecution(con, op);
-            op.execute(con);
-            afterExecution(con, op);
-         }
-         enableReferentialIntegrity(con);
+         prepareExecution(con, op);
+         op.execute(con);
+         afterExecution(con, op);
       }
-      finally
-      {
-         if (con != null)
-         {
-            try
-            {
-               con.close();
-            }
-            catch (Exception ex)
-            {
-               ex.printStackTrace(System.err);
-            }
-         }
-      }
+      enableReferentialIntegrity(con);
    }
 
    protected static class DataSetOperation
