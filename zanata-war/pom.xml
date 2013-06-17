@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.zanata</groupId>
 		<artifactId>server</artifactId>
-		<version>3.0.0-SNAPSHOT</version>
+		<version>3.0.0-alpha-1</version>
 	</parent>
 	<artifactId>zanata-war</artifactId>
 	<packaging>war</packaging>
@@ -188,7 +188,7 @@
                         </goals>
                         <configuration>
                             <target>
-                                <copy file="${project.basedir}/src/test/resources/arquillian/standalone.xml" tofile="${jboss.home}/standalone/configuration/zanata-standalone.xml"/>
+                                <copy file="${project.basedir}/src/test/resources/arquillian/standalone.xml" tofile="${jboss.home}/standalone/configuration/zanata-standalone.xml" />
                             </target>
                         </configuration>
                     </execution>
