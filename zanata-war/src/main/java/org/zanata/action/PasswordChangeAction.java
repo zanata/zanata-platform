@@ -62,11 +62,14 @@ public class PasswordChangeAction implements Serializable
    private String passwordNew;
    private String passwordConfirm;
 
+   
    public void setPasswordOld(String passwordOld)
    {
       this.passwordOld = passwordOld;
    }
-
+   
+   @NotEmpty
+   @Size(min = 6, max = 20)
    public String getPasswordOld()
    {
       return passwordOld;

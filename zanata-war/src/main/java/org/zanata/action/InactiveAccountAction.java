@@ -119,7 +119,6 @@ public class InactiveAccountAction implements Serializable
    }
 
 
-    @NotEmpty
     @Email
     @NotDuplicateEmail(message="This email address is already taken.")
     public String getEmail() {

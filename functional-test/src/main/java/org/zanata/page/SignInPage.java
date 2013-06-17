@@ -71,6 +71,7 @@ public class SignInPage extends AbstractPage
    private void doSignIn(String username, String password)
    {
       log.info("log in as username: {}", username);
+      usernameField.clear();
       usernameField.sendKeys(username);
       passwordField.sendKeys(password);
       log.info("after input, username is: {}, password is: {}", usernameField.getText(), passwordField.getText());
