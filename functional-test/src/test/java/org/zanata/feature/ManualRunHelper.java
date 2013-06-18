@@ -161,4 +161,11 @@ public class ManualRunHelper
       statement.executeUpdate("delete from HProjectIteration");
       statement.executeUpdate("delete from HProject");
    }
+
+   @Test
+   public void deleteLocalesAndMembers() throws SQLException
+   {
+      statement.executeUpdate("delete from HLocale_Member");
+      statement.executeUpdate("delete from HLocale where localeId <> 'en-US'");
+   }
 }

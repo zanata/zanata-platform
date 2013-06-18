@@ -28,6 +28,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.AbstractPage;
 import org.zanata.page.webtrans.DocumentsViewPage;
+import org.zanata.util.WebElementUtil;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -38,8 +39,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ProjectVersionPage extends AbstractPage
 {
-   @FindBy(className = "rich-table-row")
-   private List<WebElement> localeTableRows;
+   @FindBy(id = "iterationLanguageForm:data_table:tb")
+   private WebElement localeTableTBody;
 
    public ProjectVersionPage(final WebDriver driver)
    {
@@ -49,7 +50,8 @@ public class ProjectVersionPage extends AbstractPage
    @SuppressWarnings("unused")
    public List<String> getTranslatableLocales()
    {
-      List<String> rows = Lists.transform(localeTableRows, new Function<WebElement, String>()
+      List<WebElement> tableRows = getLocaleTableRows();
+      List<String> rows = Lists.transform(tableRows, new Function<WebElement, String>()
       {
          @Override
          public String apply(WebElement tr)
@@ -63,10 +65,16 @@ public class ProjectVersionPage extends AbstractPage
       return ImmutableList.copyOf(rows);
    }
 
+   private List<WebElement> getLocaleTableRows()
+   {
+      return localeTableTBody.findElements(By.tagName("tr"));
+   }
+
    @SuppressWarnings("unused")
    public List<String> getTranslatableLanguages()
    {
-      List<String> rows = Lists.transform(localeTableRows, new Function<WebElement, String>()
+      List<WebElement> tableRows = getLocaleTableRows();
+      List<String> rows = Lists.transform(tableRows, new Function<WebElement, String>()
       {
          @Override
          public String apply(WebElement tr)
@@ -88,11 +96,10 @@ public class ProjectVersionPage extends AbstractPage
 
    public DocumentsViewPage translate(String locale)
    {
-
+      List<WebElement> localeTableRows = getLocaleTableRows();
       for (WebElement tableRow : localeTableRows)
       {
          List<WebElement> links = tableRow.findElements(By.tagName("a"));
-         Preconditions.checkState(links.size() == 2, "each translatable locale row should have 2 links");
          WebElement localeCell = links.get(0);
          if (getLocaleLinkText(localeCell).equals(locale))
          {

@@ -77,7 +77,8 @@ public class ProjectPage extends AbstractPage
 
    public ProjectVersionPage goToVersion(final String versionId)
    {
-      List<WebElement> versionLinks = getDriver().findElements(By.className("version_link"));
+      WebElement versionTable = getDriver().findElement(By.id("main_content:iterationsForm:iterations"));
+      List<WebElement> versionLinks = versionTable.findElements(By.className("version_link"));
       log.info("found {} active versions", versionLinks.size());
 
       Preconditions.checkState(!versionLinks.isEmpty(), "no version links available");
@@ -90,7 +91,8 @@ public class ProjectPage extends AbstractPage
          }
       });
       Preconditions.checkState(found.isPresent(), versionId + " not found");
-      found.get().click();
+      String href = found.get().getAttribute("href");
+      getDriver().get(href);
       return new ProjectVersionPage(getDriver());
    }
 
