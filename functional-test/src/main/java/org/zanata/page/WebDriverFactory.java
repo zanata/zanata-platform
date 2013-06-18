@@ -27,6 +27,7 @@ import static org.zanata.util.Constants.webDriverType;
 import static org.zanata.util.Constants.zanataInstance;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
@@ -38,6 +39,8 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.service.DriverService;
 
 import com.google.common.base.Strings;
 
@@ -50,6 +53,7 @@ public enum WebDriverFactory
 
    private WebDriver driver;
    private Properties properties;
+   private DriverService driverService;
 
    public WebDriver getDriver()
    {
@@ -102,10 +106,23 @@ public enum WebDriverFactory
 
    private WebDriver configureChromeDriver()
    {
+      driverService = new ChromeDriverService.Builder()
+            .usingDriverExecutable(new File(properties.getProperty("webdriver.chrome.driver")))
+            .usingAnyFreePort()
+            .withLogFile(new File(properties.getProperty("webdriver.log")))
+            .build();
       DesiredCapabilities capabilities = DesiredCapabilities.chrome();
       capabilities.setCapability("chrome.binary", properties.getProperty("webdriver.chrome.bin"));
-      System.setProperty("webdriver.chrome.driver", properties.getProperty("webdriver.chrome.driver"));
-      return new ChromeDriver(capabilities);
+//      System.setProperty("webdriver.chrome.driver", properties.getProperty("webdriver.chrome.driver"));
+      try
+      {
+         driverService.start();
+      }
+      catch (IOException e)
+      {
+         throw new RuntimeException("fail to start chrome driver service");
+      }
+      return new RemoteWebDriver(driverService.getUrl(), capabilities);
    }
 
    private WebDriver configureFirefoxDriver()
@@ -162,6 +179,10 @@ public enum WebDriverFactory
             {
                // Ignoring driver tear down errors.
             }
+         }
+         if (driverService != null && driverService.isRunning())
+         {
+            driverService.stop();
          }
       }
    }
