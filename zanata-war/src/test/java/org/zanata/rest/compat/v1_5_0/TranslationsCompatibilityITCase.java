@@ -83,7 +83,7 @@ public class TranslationsCompatibilityITCase extends RestTest
       
       ITranslationResources translationsClient = super.createProxy( createClientProxyFactory(ADMIN, ADMIN_KEY),
             ITranslationResources.class, "/projects/p/sample-project/iterations/i/1.0/r/");
-      ClientResponse<String> response = translationsClient.post(res, new StringSet(PoHeader.ID + ";" + SimpleComment.ID));
+      ClientResponse<String> response = translationsClient.post(res, new StringSet(PoHeader.ID + ";" + SimpleComment.ID), true);
       
       assertThat( response.getStatus(), is(Status.CREATED.getStatusCode()) ); // 201
       response.releaseConnection();
@@ -130,13 +130,13 @@ public class TranslationsCompatibilityITCase extends RestTest
       // Post once
       ITranslationResources translationsClient = super.createProxy( createClientProxyFactory(ADMIN, ADMIN_KEY),
             ITranslationResources.class, "/projects/p/sample-project/iterations/i/1.0/r/");
-      ClientResponse<String> response = translationsClient.post(res, new StringSet(PoHeader.ID + ";" + SimpleComment.ID));
+      ClientResponse<String> response = translationsClient.post(res, new StringSet(PoHeader.ID + ";" + SimpleComment.ID), true);
       
       assertThat( response.getStatus(), is(Status.CREATED.getStatusCode()) ); // 201
       response.releaseConnection();
       
       // Post Twice (should conflict)
-      response = translationsClient.post(res, new StringSet(PoHeader.ID + ";" + SimpleComment.ID));
+      response = translationsClient.post(res, new StringSet(PoHeader.ID + ";" + SimpleComment.ID), true);
       
       assertThat(response.getStatus(), is(Status.CONFLICT.getStatusCode())); // 409
       response.releaseConnection();

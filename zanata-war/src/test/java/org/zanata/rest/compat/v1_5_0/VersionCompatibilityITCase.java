@@ -23,7 +23,7 @@ package org.zanata.rest.compat.v1_5_0;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.junit.Test;
 import org.zanata.RestTest;
-import org.zanata.v1_5_0.rest.client.IVersion;
+import org.zanata.v1_5_0.rest.client.IVersionResource;
 import org.zanata.v1_5_0.rest.dto.VersionInfo;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -41,9 +41,9 @@ public class VersionCompatibilityITCase extends RestTest
    @RunAsClient
    public void getVersionXml()
    {
-      IVersion versionClient = super.createProxy(createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
-            IVersion.class, "/version");
-      VersionInfo versionInfo = versionClient.get();
+      IVersionResource versionClient = super.createProxy(createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
+            IVersionResource.class, "/version");
+      VersionInfo versionInfo = versionClient.get().getEntity();
       
       assertThat( versionInfo.getVersionNo(), notNullValue() );
       assertThat( versionInfo.getBuildTimeStamp(), notNullValue() );
