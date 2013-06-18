@@ -29,7 +29,7 @@
 </ui:define>
 
 <ui:define name="center_content">
-    <h:form>
+    <h:form id="iterationGroupForm">
     	<s:formattedText value="#{versionGroupHome.instance.description}" rendered="#{!empty versionGroupHome.instance.description}"/>
 
         <rich:dataTable id="iterationsDataTable" value="#{versionGroupHome.instanceProjectIterations}"
