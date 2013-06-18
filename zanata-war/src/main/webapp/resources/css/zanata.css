@@ -519,7 +519,7 @@ a.action_link span
 	font-size:18px;
 }
 
-a.action_link {
+a.action_link, span.action_link {
 	display: block;
 	font-size: 14px;
 	font-weight: bold;
@@ -533,18 +533,18 @@ a.action_link {
 	outline:none;
 }
 
-a.action_link:hover, a.button:hover {
+a.action_link:hover, a.button:hover, span.action_link:hover {
 	background-color: #FFFFFF;
     box-shadow: 0 0 2px #5274A5 inset;
 }
 
-a.disabled {
+a.disabled, span.disabled {
     background-color: #d3d3d3;
     color: #808080;
     border: 1px solid #808080;
 }
 
-a.disabled:hover {
+a.disabled:hover, span.disabled:hover {
     background-color: #d3d3d3;
     color: #808080;
     border: 1px solid #808080;
