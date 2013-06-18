@@ -41,7 +41,6 @@ public class LoginTest
    {
       HomePage homePage = new LoginWorkFlow().signIn(username, password);
 
-      assertThat(homePage.getTitle(), Matchers.equalTo("Zanata:Home"));
       return homePage.hasLoggedIn();
    }
 

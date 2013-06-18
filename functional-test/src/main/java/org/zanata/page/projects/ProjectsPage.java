@@ -35,7 +35,7 @@ import com.google.common.base.Function;
 public class ProjectsPage extends AbstractPage
 {
    public static final int PROJECT_NAME_COLUMN = 0;
-   @FindBy(id = "main_content")
+   @FindBy(id = "main_body_content")
    private WebElement mainContentDiv;
 
    public ProjectsPage(final WebDriver driver)

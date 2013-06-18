@@ -77,9 +77,9 @@ public class HomePage extends AbstractPage
 
    public HomePage signOut()
    {
-      WebElement signOut = getDriver().findElement(BY_SIGN_OUT);
-      signOut.click();//first click will just expand the drop down
-      signOut.click();//second click will sign out. We may consider to go straight to /zanata/account/sign_out url
+      userColumn.click();
+      WebElement signOut = userColumn.findElement(BY_SIGN_OUT);
+      signOut.click();
       waitForTenSec().until(new Function<WebDriver, WebElement>()
       {
          @Override

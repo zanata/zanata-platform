@@ -30,6 +30,7 @@
         <!--data source-->
         <jdbc.groupId>com.h2database</jdbc.groupId>
         <jdbc.artifactId>h2</jdbc.artifactId>
+        <!-- This version must match the version used in JBoss. This is used in sql maven plugin. -->
         <jdbc.version>1.3.168</jdbc.version>
 
         <ds.jndi.name>zanataDatasource</ds.jndi.name>
@@ -48,6 +49,8 @@
         <zanata.sample.projects.basedir>${project.build.testOutputDirectory}/sample-projects</zanata.sample.projects.basedir>
 
         <webdriver.log.file>${project.build.directory}/browser_console.log</webdriver.log.file>
+        <!-- below path is specific to pahuang's machine. It needs be downloaded from http://code.google.com/p/chromedriver/downloads/list-->
+        <webdriver.chrome.driver>/NotBackedUp/tools/chromedriver</webdriver.chrome.driver>
 
         <!-- on jenkins, this needs to be set to empty - so that cargo can shutdown. see http://stackoverflow.com/questions/1096642/tomcat-failed-to-shutdown -->
         <cargo.debug.jvm.args> -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787 -Xnoagent -Djava.compiler=NONE</cargo.debug.jvm.args>

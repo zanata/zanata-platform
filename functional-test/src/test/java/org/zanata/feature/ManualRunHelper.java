@@ -82,7 +82,7 @@ public class ManualRunHelper
          {
             url = tagValue;
          }
-         // in as7 there is no longer a driver class tag
+         // in as7 there is no longer a driver class tag. Instead there is a driver tag points to a module.
          if (line.contains("<driver-class>"))
          {
             driver = tagValue;

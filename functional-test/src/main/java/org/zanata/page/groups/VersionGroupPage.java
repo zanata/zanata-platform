@@ -30,10 +30,10 @@ public class VersionGroupPage extends AbstractPage
    @FindBy(linkText = "Add Project Versions")
    private WebElement addProjectVersionsLink;
 
-   @FindBy(id = "versionAddPanelContentDiv")
+   @FindBy(id = "versionAddPanel_container")
    private WebElement addProjectVersionPanel;
 
-   @FindBy(xpath = "//table[contains(@id, 'iterationsDataTable')]")
+   @FindBy(id = "iterationGroupForm:iterationsDataTable")
    private WebElement groupDataTable;
 
    public VersionGroupPage(final WebDriver driver)
@@ -117,12 +117,14 @@ public class VersionGroupPage extends AbstractPage
    {
       WebElement closeButton = addProjectVersionPanel.findElement(By.id("projectVersionSearch:searchForm:closeBtn"));
       closeButton.click();
-      return this;
+      // need to refresh page
+      return new VersionGroupPage(getDriver());
    }
 
    @SuppressWarnings("unused")
    public List<List<String>> getProjectVersionsInGroup()
    {
+      groupDataTable = getDriver().findElement(By.id("iterationGroupForm:iterationsDataTable"));
       List<TableRow> tableRows = WebElementUtil.getTableRows(groupDataTable);
       return WebElementUtil.transformToTwoDimensionList(tableRows);
    }

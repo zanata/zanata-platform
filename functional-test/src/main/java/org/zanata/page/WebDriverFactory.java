@@ -32,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
@@ -102,7 +103,8 @@ public enum WebDriverFactory
    private WebDriver configureChromeDriver()
    {
       DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-      capabilities.setCapability("chrome.binary", "/opt/google/chrome/google-chrome");
+      capabilities.setCapability("chrome.binary", properties.getProperty("webdriver.chrome.bin"));
+      System.setProperty("webdriver.chrome.driver", properties.getProperty("webdriver.chrome.driver"));
       return new ChromeDriver(capabilities);
    }
 

@@ -65,7 +65,7 @@ public class WebElementUtil
    {
       Preconditions.checkArgument(table.getTagName().equalsIgnoreCase("table"), "By query must return a table");
 
-      List<WebElement> rows = table.findElements(By.xpath(".//tbody/tr"));
+      List<WebElement> rows = table.findElements(By.xpath(".//tbody[1]/tr"));
       return ImmutableList.copyOf(Lists.transform(rows, WebElementTableRowFunction.FUNCTION));
    }
 

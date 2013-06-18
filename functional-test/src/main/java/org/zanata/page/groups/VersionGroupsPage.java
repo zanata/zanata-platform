@@ -46,7 +46,7 @@ public class VersionGroupsPage extends AbstractPage
 
    public VersionGroupPage goToGroup(String groupName)
    {
-      WebElement groupLink = getDriver().findElement(By.linkText(groupName));
+      WebElement groupLink = mainContentDiv.findElement(By.linkText(groupName));
       groupLink.click();
       return new VersionGroupPage(getDriver());
    }

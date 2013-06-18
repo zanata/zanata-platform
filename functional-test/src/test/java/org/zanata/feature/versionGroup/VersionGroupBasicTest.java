@@ -62,11 +62,24 @@ public class VersionGroupBasicTest
       }
    }
 
-   public List<List<String>> searchProjectToAddToVersionGroup(String groupName, String searchTerm)
+   public VersionGroupsPage groups()
    {
-      versionGroupPage = projectWorkFlow.goToHome().goToGroups().goToGroup(groupName);
+      VersionGroupsPage versionGroupsPage = projectWorkFlow.goToHome().goToGroups();
+      log.info("title is {}", versionGroupsPage.getTitle());
+      return versionGroupsPage;
+   }
+
+   public void clickGroupName(VersionGroupsPage groupsPage, String groupName)
+   {
+      versionGroupPage = groupsPage.goToGroup(groupName);
+   }
+
+   public List<List<String>> searchProjectToAddToVersionGroup(String searchTerm)
+   {
       versionGroupPage = versionGroupPage.addProjectVersion();
-      return versionGroupPage.searchProject(searchTerm, 2);
+      List<List<String>> result = versionGroupPage.searchProject(searchTerm, 2);
+      log.info("search result: {}", result);
+      return result;
    }
 
    public VersionGroupPage addProjectToVersionGroup(int row)

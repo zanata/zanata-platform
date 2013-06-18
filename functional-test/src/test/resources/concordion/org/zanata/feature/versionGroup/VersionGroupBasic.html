@@ -38,7 +38,10 @@
     </table>
 
     <p>
-        When I click <span c:execute="#searchResult = searchProjectToAddToVersionGroup(#groupName, #searchTerm)">Add Project Versions link and search <span c:set="#searchTerm">group</span></span>,
+        When I click <span c:execute="#groupsPage = groups()">Groups</span>, then click on <span c:execute="clickGroupName(#groupsPage, #groupName)"><span c:set="#groupName">group one</span></span>,
+        <span ext:screenshot="" />
+
+        <span c:execute="#searchResult = searchProjectToAddToVersionGroup(#searchTerm)">Add Project Versions link and search <span c:set="#searchTerm">group</span></span>,
         I should get
     <table c:verifyRows="#row : #searchResult">
         <tr><th c:assertEquals="#row">row content (List.toString)</th></tr>
