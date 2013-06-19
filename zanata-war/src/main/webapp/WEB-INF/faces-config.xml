@@ -15,6 +15,7 @@
          <supported-locale>it</supported-locale>
          <supported-locale>tr</supported-locale>
          <supported-locale>zh-TW-Hant</supported-locale>
+         <supported-locale>uk</supported-locale>
          <supported-locale>qc</supported-locale>
       </locale-config>
 
