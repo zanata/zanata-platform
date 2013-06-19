@@ -55,10 +55,10 @@
             <g:LayoutPanel styleName="{style.mainPanel}">
                 <g:layer top='0' height='32px' left="0px" right="0px">
                 	<g:HorizontalPanel styleName="{style.topBar}" verticalAlignment="ALIGN_MIDDLE">
-                		<g:cell width="350px">
+                		<g:cell width="305px">
                 			<fui:SearchField ui:field="searchField"/>
                 		</g:cell>
-                		<g:cell width="210px">
+                		<g:cell>
                 			<g:HTMLPanel>
                 				<g:CheckBox ui:field="caseSensitiveCheckBox" styleName="{style.optionStyle}"><ui:msg>Case sensitive</ui:msg></g:CheckBox>
                 				<g:CheckBox ui:field="exactSearchCheckBox" styleName="{style.optionStyle}"><ui:msg>Exact match</ui:msg></g:CheckBox>
