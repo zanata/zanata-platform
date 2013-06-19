@@ -31,8 +31,18 @@ public class ResetDatabaseRule extends ExternalResource
       }
    }
 
+   @Override
+   protected void after()
+   {
+      // by default it will reset database after
+      if (!configSet.contains(Config.NoResetAfter))
+      {
+         DatabaseHelper.database().resetData();
+      }
+   }
+
    public static enum Config
    {
-      Empty, WithAdmin, WithTranslator
+      Empty, WithAdmin, WithTranslator, NoResetAfter
    }
 }
