@@ -81,13 +81,12 @@
 								<f:param name="localeId" value="#{stats.locale}" />
 								<span class="icon-docs icon"/>
 							</s:link>
-                            <s:link id="exportTMXIterLink" styleClass="table_icon_link"
+                            <h:outputLink id="exportTMXIterLink" styleClass="table_icon_link"
                                     title="#{messages['jsf.ExportTMXIter']}"
                                     onclick="return confirm('#{messages['jsf.ConfirmExportTMXIter']}')"
-                                    view="/rest/tm/projects/#{viewAllStatusAction.projectSlug}/iterations/#{viewAllStatusAction.iterationSlug}?locale=#{stats.locale}"
-                                    propagation="none">
+                                    value="#{request.contextPath}/rest/tm/projects/#{viewAllStatusAction.projectSlug}/iterations/#{viewAllStatusAction.iterationSlug}?locale=#{stats.locale}">
                                 <span class="icon-export-3 icon"/>
-                            </s:link>
+                            </h:outputLink>
                             <ui:remove>
                             </ui:remove>
 						</rich:column>
@@ -157,12 +156,12 @@
             <s:fragment rendered="#{s:hasPermission(viewAllStatusAction.projectIteration, 'update')}">
                 <a href="#" class="action_link" onclick="#{rich:component('versionSearchPanel')}.show()">#{messages['jsf.RequestToJoinVersionGroup']}</a>
             </s:fragment>
-			   <s:link id="exportTMXIterLink" styleClass="action_link"
-			         value="#{messages['jsf.ExportTMXIter']}"
-			         onclick="return confirm('#{messages['jsf.ConfirmExportTMXIter']}')"
-			         view="/rest/tm/projects/#{viewAllStatusAction.projectSlug}/iterations/#{viewAllStatusAction.iterationSlug}"
-			         propagation="none"/>
-
+		   <h:outputLink id="exportTMXIterLink" styleClass="action_link"
+		         onclick="return confirm('#{messages['jsf.ConfirmExportTMXIter']}')"
+		         value="#{request.contextPath}/rest/tm/projects/#{viewAllStatusAction.projectSlug}/iterations/#{viewAllStatusAction.iterationSlug}">
+		         <h:outputText value="#{messages['jsf.ExportTMXIter']}"/>
+		   </h:outputLink>
+			   
 		</rich:panel>
 
 		<rich:panel rendered="#{not viewAllStatusAction.projectIteration.groups.isEmpty()}">

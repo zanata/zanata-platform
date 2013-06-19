@@ -20,12 +20,12 @@
       				value="#{messages['jsf.CreateProject']}"
                     view="/project/create_project.xhtml"
                     propagation="none"/>
-      <s:link id="exportTMXAllLink" styleClass="action_link"
+      <h:outputLink id="exportTMXAllLink" styleClass="action_link"
                   rendered="#{s:hasRole('admin')}"
-                  value="#{messages['jsf.ExportTMXAll']}"
                   onclick="return confirm('#{messages['jsf.ConfirmExportTMXAll']}')"
-                  view="/rest/tm/all"
-                  propagation="none"/>
+                  value="#{request.contextPath}/rest/tm/all">
+                  <h:outputText value="#{messages['jsf.ExportTMXAll']}"/>
+      </h:outputLink>
     </rich:panel>
   </ui:define>
 
