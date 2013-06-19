@@ -20,10 +20,13 @@
  */
 package org.zanata.feature.startNewProject;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.zanata.util.ResetDatabaseRule;
 
 import lombok.extern.slf4j.Slf4j;
+import static org.zanata.util.ResetDatabaseRule.Config.*;
 
 @Slf4j
 @RunWith(Suite.class)
@@ -40,5 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 // @formatter:on
 public class CreateSampleProjectTestSuite
 {
+   @ClassRule
+   public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule(WithAdmin, WithTranslator);
 
 }

@@ -170,43 +170,6 @@
     </dependencies>
 
     <profiles>
-        <!--<profile>-->
-            <!--<id>usemysql</id>-->
-            <!--<activation>-->
-                <!--<activeByDefault>false</activeByDefault>-->
-            <!--</activation>-->
-            <!--<properties>-->
-                <!--<jdbc.groupId>mysql</jdbc.groupId>-->
-                <!--<jdbc.artifactId>mysql-connector-java</jdbc.artifactId>-->
-                <!--<jdbc.version>5.1.9</jdbc.version>-->
-                <!--<ds.driver.class>com.mysql.jdbc.Driver</ds.driver.class>-->
-                <!--<ds.connection.url>jdbc:mysql://localhost:3306/zanata_functional?characterEncoding=UTF-8</ds.connection.url>-->
-                <!--<ds.username>root</ds.username>-->
-                <!--<ds.password />-->
-            <!--</properties>-->
-            <!--<build>-->
-                <!--<plugins>-->
-                    <!--<plugin>-->
-                        <!--<groupId>org.codehaus.mojo</groupId>-->
-                        <!--<artifactId>exec-maven-plugin</artifactId>-->
-                        <!--<version>1.2.1</version>-->
-                        <!--<executions>-->
-                            <!--<execution>-->
-                                <!--<phase>pre-integration-test</phase>-->
-                                <!--<goals>-->
-                                    <!--<goal>exec</goal>-->
-                                <!--</goals>-->
-                            <!--</execution>-->
-                        <!--</executions>-->
-                        <!--<configuration>-->
-                            <!--<executable>mysql</executable>-->
-                            <!--<workingDirectory>${project.build.testOutputDirectory}</workingDirectory>-->
-                            <!--<commandlineArgs>-u root -e "source create_database.sql"</commandlineArgs>-->
-                        <!--</configuration>-->
-                    <!--</plugin>-->
-                <!--</plugins>-->
-            <!--</build>-->
-        <!--</profile>-->
         <profile>
             <id>run-functional-test</id>
             <activation>
@@ -344,48 +307,6 @@
                                 <goals>
                                     <goal>stop</goal>
                                 </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>sql-maven-plugin</artifactId>
-                        <version>1.5</version>
-
-                        <dependencies>
-                            <!-- specify the dependent JDBC driver here -->
-                            <dependency>
-                                <groupId>${jdbc.groupId}</groupId>
-                                <artifactId>${jdbc.artifactId}</artifactId>
-                                <version>${jdbc.version}</version>
-                            </dependency>
-                        </dependencies>
-
-                        <!-- common configuration shared by all executions -->
-                        <configuration>
-                            <driver>${ds.driver.class}</driver>
-                            <url>${ds.connection.url}</url>
-                            <username>${ds.username}</username>
-                            <password>${ds.password}</password>
-                        </configuration>
-
-                        <executions>
-                            <execution>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>execute</goal>
-                                </goals>
-                                <!-- specific configuration for this execution -->
-                                <configuration>
-                                    <!-- specify your SQL commands, can be all of the following configurations -->
-                                    <srcFiles>
-                                        <srcFile>${project.build.testOutputDirectory}/create_admin_user.sql</srcFile>
-                                        <srcFile>${project.build.testOutputDirectory}/create_translator_user.sql</srcFile>
-                                    </srcFiles>
-                                    <autocommit>true</autocommit>
-                                    <printResultSet>true</printResultSet>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
