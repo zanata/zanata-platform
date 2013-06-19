@@ -51,6 +51,7 @@
         <webdriver.log.file>${project.build.directory}/browser_console.log</webdriver.log.file>
         <!-- below path is specific to pahuang's machine. It needs be downloaded from http://code.google.com/p/chromedriver/downloads/list-->
         <webdriver.chrome.driver>/NotBackedUp/tools/chromedriver</webdriver.chrome.driver>
+        <webdriver.chrome.bin>/opt/google/chrome/google-chrome</webdriver.chrome.bin>
         <!-- this decides what web driver type we intended to use-->
         <webdriver.type>firefox</webdriver.type>
         <webdriver.log>${project.build.directory}/webdriver.log</webdriver.log>
