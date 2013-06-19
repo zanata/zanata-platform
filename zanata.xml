@@ -55,7 +55,7 @@
     <locale>tr</locale>
     <locale>uk</locale>
     <locale>zh-Hans-CN</locale>
-    <locale>zh-Hant-TW</locale>
+    <locale map-from="zh-TW-Hant">zh-Hant-TW</locale>
     <locale>af</locale>
     <locale>am</locale>
     <locale>az</locale>
