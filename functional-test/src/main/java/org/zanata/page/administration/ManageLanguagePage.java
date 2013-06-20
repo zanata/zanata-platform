@@ -44,6 +44,8 @@ public class ManageLanguagePage extends AbstractPage
    @FindBy(id = "languageForm:threads")
    private WebElement languageTable;
 
+   private By languageTableBy = By.id("languageForm:threads");
+
    public ManageLanguagePage(WebDriver driver)
    {
       super(driver);
@@ -75,7 +77,7 @@ public class ManageLanguagePage extends AbstractPage
          @Override
          public TableRow apply(WebDriver driver)
          {
-            List<TableRow> tableRows = WebElementUtil.getTableRows(languageTable);
+            List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(), languageTable);
             Optional<TableRow> matchedRow = Iterables.tryFind(tableRows, new Predicate<TableRow>()
             {
                @Override
@@ -111,7 +113,6 @@ public class ManageLanguagePage extends AbstractPage
 
    public List<String> getLanguageLocales()
    {
-      List<TableRow> languages = WebElementUtil.getTableRows(languageTable);
-      return WebElementUtil.getColumnContents(languages, LOCALE_COLUMN);
+      return WebElementUtil.getColumnContents(getDriver(), languageTableBy, LOCALE_COLUMN);
    }
 }

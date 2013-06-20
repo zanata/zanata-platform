@@ -3,8 +3,6 @@ package org.zanata.page.administration;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -47,9 +45,8 @@ public class ManageLanguageTeamMemberPage extends AbstractPage
          log.info("no members yet for this language");
          return Collections.emptyList();
       }
-      WebElement languageTable = getDriver().findElement(By.id("memberPanel:threads"));
-      List<TableRow> languageMembersTable = WebElementUtil.getTableRows(languageTable);
-      List<String> usernameColumn = WebElementUtil.getColumnContents(languageMembersTable, USERNAME_COLUMN);
+      By by = By.id("memberPanel:threads");
+      List<String> usernameColumn = WebElementUtil.getColumnContents(getDriver(), by, USERNAME_COLUMN);
       log.info("username column: {}", usernameColumn);
       return usernameColumn;
    }
@@ -113,7 +110,7 @@ public class ManageLanguageTeamMemberPage extends AbstractPage
          public WebElement apply(WebDriver driver)
          {
             WebElement table = driver.findElement(By.id("resultForm:personTable"));
-            List<TableRow> tableRows = WebElementUtil.getTableRows(table);
+            List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(), table);
             //we want to wait until search result comes back
             if (tableRows.isEmpty() || !tableRows.get(0).getCellContents().get(0).contains(personName))
             {
@@ -124,7 +121,7 @@ public class ManageLanguageTeamMemberPage extends AbstractPage
          }
       });
 
-      return WebElementUtil.getTableRows(searchResultTable);
+      return WebElementUtil.getTableRows(getDriver(), searchResultTable);
    }
 
    public ManageLanguageTeamMemberPage addToTeam(TableRow personRow)
@@ -140,14 +137,13 @@ public class ManageLanguageTeamMemberPage extends AbstractPage
          WebElement closeButton = getDriver().findElement(By.id("searchForm:closeBtn"));
          closeButton.click();
          // we need to wait for the page to refresh
-         waitForSeconds(getDriver(), 5).until(new Predicate<WebDriver>()
+         WebElementUtil.waitForSeconds(getDriver(), 5).until(new Predicate<WebDriver>()
          {
             @Override
             public boolean apply(WebDriver driver)
             {
-               WebElement languageTable = driver.findElement(By.id("memberPanel:threads"));
-               List<TableRow> languageMembersTable = WebElementUtil.getTableRows(languageTable);
-               List<String> usernameColumn = WebElementUtil.getColumnContents(languageMembersTable, USERNAME_COLUMN);
+               By byId = By.id("memberPanel:threads");
+               List<String> usernameColumn = WebElementUtil.getColumnContents(getDriver(), byId, USERNAME_COLUMN);
                log.info("username column: {}", usernameColumn);
                return usernameColumn.contains(personUsername);
             }

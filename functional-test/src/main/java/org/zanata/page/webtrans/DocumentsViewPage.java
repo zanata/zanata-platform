@@ -35,7 +35,7 @@ public class DocumentsViewPage extends AbstractPage
 
    private void cacheDocumentRows()
    {
-      List<TableRow> tableRows = WebElementUtil.getTableRows(documentListTable);
+      List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(), documentListTable);
       //GWT gives us some extra rows
       Iterable<TableRow> documentRows = Iterables.filter(tableRows, new Predicate<TableRow>()
       {

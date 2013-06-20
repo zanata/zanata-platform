@@ -72,8 +72,6 @@ public class ProjectsPage extends AbstractPage
          return Collections.emptyList();
       }
 
-      List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(), By.id("main_content:form:projectList"));
-
-      return WebElementUtil.getColumnContents(tableRows, PROJECT_NAME_COLUMN);
+      return WebElementUtil.getColumnContents(getDriver(), By.id("main_content:form:projectList"), PROJECT_NAME_COLUMN);
    }
 }
