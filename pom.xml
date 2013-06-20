@@ -13,9 +13,9 @@
   </parent>
 
 	<scm>
-		<connection>scm:git:git://github.com/zanata/zanata.git</connection>
-		<developerConnection>scm:git:git@github.com:zanata/zanata.git</developerConnection>
-		<url>https://github.com/zanata/zanata</url>
+		<connection>scm:git:git://github.com/zanata/zanata-server.git</connection>
+		<developerConnection>scm:git:git@github.com:zanata/zanata-server.git</developerConnection>
+		<url>https://github.com/zanata/zanata-server</url>
 	</scm>
     
     <properties>
