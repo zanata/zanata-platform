@@ -788,14 +788,14 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
             TranslationStatistics msgStats1 = o1.getDocInfo().getStats().getStats(localeId.getId(), StatUnit.MESSAGE);
             TranslationStatistics msgStats2 = o2.getDocInfo().getStats().getStats(localeId.getId(), StatUnit.MESSAGE);
 
-            return msgStats1.getPercentTranslated() - msgStats2.getPercentTranslated();
+            return (int)(msgStats1.getPercentTranslated() - msgStats2.getPercentTranslated());
          }
          else
          {
             TranslationStatistics msgStats1 = o1.getDocInfo().getStats().getStats(localeId.getId(), StatUnit.WORD);
             TranslationStatistics msgStats2 = o2.getDocInfo().getStats().getStats(localeId.getId(), StatUnit.WORD);
 
-            return msgStats1.getPercentTranslated() - msgStats2.getPercentTranslated();
+            return (int)(msgStats1.getPercentTranslated() - msgStats2.getPercentTranslated());
          }
       }
 
