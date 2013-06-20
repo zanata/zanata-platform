@@ -42,9 +42,9 @@ import org.zanata.common.TransUnitWords;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@XmlType(name = "translationStatistics", propOrder = { "total", "untranslated", "needReview", "translated", "approved", "rejected", "finishTranslation", "fuzzy", "unit", "locale", "lastTranslated" })
+@XmlType(name = "translationStatistics", propOrder = { "total", "untranslated", "needReview", "translated", "approved", "rejected", "translatedOnly", "fuzzy", "unit", "locale", "lastTranslated" })
 @XmlRootElement(name = "translationStats")
-@JsonIgnoreProperties(value = { "percentTranslated", "percentNeedReview", "percentUntranslated" }, ignoreUnknown = true)
+@JsonIgnoreProperties(value = { "percentTranslated", "percentNeedReview", "percentUntranslated", "incomplete", "draft" }, ignoreUnknown = true)
 @JsonPropertyOrder({ "total", "untranslated", "needReview", "translated", "approved", "rejected", "readyForReview", "fuzzy", "unit", "locale", "lastTranslated" })
 public class TranslationStatistics implements Serializable
 {
@@ -115,6 +115,7 @@ public class TranslationStatistics implements Serializable
    /**
     * Number of elements that need review (i.e. Fuzzy or Rejected).
     */
+   @XmlTransient
    public long getDraft()
    {
       return translationCount.getNeedReview() + translationCount.getRejected();
@@ -123,9 +124,11 @@ public class TranslationStatistics implements Serializable
    /**
     * This is for REST backward compatibility.
     * @return Number of elements that need review (i.e. Fuzzy or Rejected)
+    * @deprecated See {@link #getDraft()}
     */
    @XmlAttribute
-   protected long getNeedReview()
+   @Deprecated
+   public long getNeedReview()
    {
       return getDraft();
    }
@@ -139,17 +142,25 @@ public class TranslationStatistics implements Serializable
    {
       return translationCount.getNeedReview();
    }
+
+   public void setFuzzy(long fuzzy)
+   {
+      translationCount.set(ContentState.NeedReview, (int)fuzzy);
+   }
    
    /**
     * This is for REST backward compatibility.
     * @return Number of translated and approved elements.
+    * @deprecated See {@link #getTranslatedOnly()} and {@link #getTranslatedAndApproved()}
     */
    @XmlAttribute
-   protected long getTranslated()
+   @Deprecated
+   public long getTranslated()
    {
       return getTranslatedAndApproved();
    }
 
+   @XmlTransient
    public long getTranslatedAndApproved()
    {
       return translationCount.getTranslated() + translationCount.getApproved();
@@ -159,9 +170,14 @@ public class TranslationStatistics implements Serializable
     * @return number of translated but not yet approved elements.
     */
    @XmlAttribute
-   public long getFinishTranslation()
+   public long getTranslatedOnly()
    {
       return translationCount.getTranslated();
+   }
+
+   public void setTranslatedOnly( long translatedOnly )
+   {
+      translationCount.set(ContentState.Translated, (int) translatedOnly);
    }
   
    /**
@@ -173,16 +189,27 @@ public class TranslationStatistics implements Serializable
       return translationCount.getApproved();
    }
 
+   public void setApproved(long approved)
+   {
+      translationCount.set(ContentState.Approved, (int)approved);
+   }
+
    @XmlAttribute
    public long getRejected()
    {
       return translationCount.getRejected();
    }
 
+   public void setRejected(long rejected)
+   {
+      translationCount.set(ContentState.Rejected, (int) rejected);
+   }
+
    /**
     *
     * @return untranslated, fuzzy and rejected count.
     */
+   @XmlTransient
    public long getIncomplete()
    {
       return translationCount.getUntranslated() + getDraft();
@@ -269,7 +296,7 @@ public class TranslationStatistics implements Serializable
       }
       else
       {
-         double per = 100 * getTranslated() / total;
+         double per = 100 * getTranslatedAndApproved() / total;
          return (int) Math.ceil(per);
       }
    }
