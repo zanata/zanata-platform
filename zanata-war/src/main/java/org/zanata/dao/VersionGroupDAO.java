@@ -20,8 +20,10 @@
  */
 package org.zanata.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -87,6 +89,10 @@ public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long>
 
    public List<HIterationGroup> searchLikeSlugAndName(String searchTerm)
    {
+      if(StringUtils.isEmpty(searchTerm))
+      {
+         return new ArrayList<HIterationGroup>();
+      }
       Query query = getSession().createQuery("from HIterationGroup g where lower(g.slug) LIKE :searchTerm OR lower(g.name) LIKE :searchTerm AND g.status = :status");
       query.setParameter("searchTerm", "%" + searchTerm.toLowerCase() + "%");
       query.setParameter("status", EntityStatus.ACTIVE);

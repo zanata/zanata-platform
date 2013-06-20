@@ -97,10 +97,6 @@ public class VersionGroupServiceImpl implements VersionGroupService
    @Override
    public List<HIterationGroup> searchLikeSlugAndName(String searchTerm)
    {
-      if(StringUtils.isEmpty(searchTerm))
-      {
-         return new ArrayList<HIterationGroup>();
-      }
       return versionGroupDAO.searchLikeSlugAndName(searchTerm);
    }
 

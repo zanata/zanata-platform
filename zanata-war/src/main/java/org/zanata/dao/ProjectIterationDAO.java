@@ -20,6 +20,7 @@
  */
 package org.zanata.dao;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -363,6 +364,10 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
 
    public List<HProjectIteration> searchLikeSlugOrProjectSlug(String searchTerm)
    {
+      if(StringUtils.isEmpty(searchTerm))
+      {
+         return new ArrayList<HProjectIteration>();
+      }
       Query q = getSession().createQuery("from HProjectIteration t where lower(t.slug) LIKE :searchTerm OR lower(t.project.slug) LIKE :searchTerm OR lower(t.project.name) LIKE :searchTerm");
       q.setParameter("searchTerm", "%" + searchTerm.toLowerCase() + "%");
       q.setCacheable(false).setComment("ProjectIterationDAO.searchLikeSlugOrProjectSlug");
