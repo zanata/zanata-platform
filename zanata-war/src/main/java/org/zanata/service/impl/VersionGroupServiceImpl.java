@@ -23,6 +23,7 @@ package org.zanata.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -96,6 +97,10 @@ public class VersionGroupServiceImpl implements VersionGroupService
    @Override
    public List<HIterationGroup> searchLikeSlugAndName(String searchTerm)
    {
+      if(StringUtils.isEmpty(searchTerm))
+      {
+         return new ArrayList<HIterationGroup>();
+      }
       return versionGroupDAO.searchLikeSlugAndName(searchTerm);
    }
 
