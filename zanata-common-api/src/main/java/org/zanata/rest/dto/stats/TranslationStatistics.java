@@ -287,7 +287,7 @@ public class TranslationStatistics implements Serializable
    }
 
    @XmlTransient
-   public int getPercentTranslated()
+   public double getPercentTranslated()
    {
       long total = getTotal();
       if (total <= 0)
@@ -296,13 +296,12 @@ public class TranslationStatistics implements Serializable
       }
       else
       {
-         double per = 100 * getTranslatedAndApproved() / total;
-         return (int) Math.ceil(per);
+         return 100 * getTranslatedAndApproved() / total;
       }
    }
 
    @XmlTransient
-   public int getPercentDraft()
+   public double getPercentDraft()
    {
       long total = getTotal();
       if (total <= 0)
@@ -311,13 +310,12 @@ public class TranslationStatistics implements Serializable
       }
       else
       {
-         double per = 100 * getDraft() / total;
-         return (int) Math.ceil(per);
+         return 100 * getDraft() / total;
       }
    }
 
    @XmlTransient
-   public int getPercentUntranslated()
+   public double getPercentUntranslated()
    {
       long total = getTotal();
       if (total <= 0)
@@ -326,8 +324,7 @@ public class TranslationStatistics implements Serializable
       }
       else
       {
-         double per = 100 * getUntranslated() / total;
-         return (int) Math.ceil(per);
+         return 100 * getUntranslated() / total;
       }
    }
 

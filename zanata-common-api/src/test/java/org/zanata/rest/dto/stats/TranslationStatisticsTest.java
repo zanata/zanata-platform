@@ -112,7 +112,7 @@ public class TranslationStatisticsTest
       unitCount = new TransUnitCount(5, 5, 5);
       stats = new TranslationStatistics(unitCount, localeId.getId());
       
-      int percentTranslated = unitCount.getApproved() * 100 / unitCount.getTotal();
+      double percentTranslated = unitCount.getApproved() * 100 / unitCount.getTotal();
       
       assertThat(stats.getPercentTranslated(), equalTo(percentTranslated));
    }
@@ -123,7 +123,7 @@ public class TranslationStatisticsTest
       unitCount = new TransUnitCount(5, 5, 5);
       stats = new TranslationStatistics(unitCount, localeId.getId());
       
-      int percentDraft = (unitCount.getNeedReview() + unitCount.getRejected()) * 100 / unitCount.getTotal();
+      double percentDraft = (unitCount.getNeedReview() + unitCount.getRejected()) * 100 / unitCount.getTotal();
       
       assertThat(stats.getPercentDraft(), equalTo(percentDraft));
    }
@@ -134,7 +134,7 @@ public class TranslationStatisticsTest
       unitCount = new TransUnitCount(5, 5, 5);
       stats = new TranslationStatistics(unitCount, localeId.getId());
       
-      int percentUntranslated = unitCount.getUntranslated() * 100 / unitCount.getTotal();
+      double percentUntranslated = unitCount.getUntranslated() * 100 / unitCount.getTotal();
       
       assertThat(stats.getPercentUntranslated(), equalTo(percentUntranslated));
    }
