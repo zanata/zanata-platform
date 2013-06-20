@@ -18,7 +18,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.rest.compat.v1_4_4;
+package org.zanata.rest.compat;
 
 import java.io.IOException;
 import java.util.List;
@@ -37,12 +37,12 @@ import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 import org.junit.Test;
 import org.zanata.RestTest;
+import org.zanata.apicompat.common.ProjectType;
 import org.zanata.provider.DBUnitProvider;
 import org.zanata.rest.ResourceRequest;
-import org.zanata.v1_4_4.common.Namespaces;
-import org.zanata.v1_4_4.rest.MediaTypes;
-import org.zanata.v1_4_4.rest.dto.Project;
-import org.zanata.v1_4_4.rest.dto.ProjectType;
+import org.zanata.apicompat.common.Namespaces;
+import org.zanata.apicompat.rest.MediaTypes;
+import org.zanata.apicompat.rest.dto.Project;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -115,7 +115,6 @@ public class ProjectRawCompatibilityITCase extends RestTest
             assertThat(project.getName(), is("Sample Project"));
             assertThat(project.getDescription(), is("An example Project"));
             assertThat(project.getIterations().size(), is(2));
-            assertThat(project.getType(), is( ProjectType.IterationProject ));
          }
       }.run();
    }
@@ -154,7 +153,6 @@ public class ProjectRawCompatibilityITCase extends RestTest
             assertThat(sampleProject.getId(), is("sample-project"));
             assertThat(sampleProject.getName(), is("Sample Project"));
             assertThat(sampleProject.getLinks().size(), is(1));
-            assertThat(sampleProject.getType(), is( ProjectType.IterationProject ));
          }
       }.run();
    }
@@ -195,7 +193,6 @@ public class ProjectRawCompatibilityITCase extends RestTest
             assertThat(sampleProject.getId(), is("sample-project"));
             assertThat(sampleProject.getName(), is("Sample Project"));
             assertThat(sampleProject.getLinks().size(), is(1));
-            assertThat(sampleProject.getType(), is( ProjectType.IterationProject ));
          }
       }.run();
    }
@@ -211,7 +208,7 @@ public class ProjectRawCompatibilityITCase extends RestTest
          protected void prepareRequest(ClientRequest request)
          {
             // New Project
-            Project p = new Project("new-project", "New Project", ProjectType.IterationProject, "This is a New Sample Project");
+            Project p = new Project("new-project", "New Project", ProjectType.Podir.toString(), "This is a New Sample Project");
             
             request.body( MediaTypes.APPLICATION_ZANATA_PROJECT_JSON, jsonMarshal(p) );
          }

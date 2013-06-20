@@ -18,7 +18,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.rest.compat.v1_5_0;
+package org.zanata.rest.compat;
 
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.ClientRequest;
@@ -26,7 +26,7 @@ import org.jboss.resteasy.client.ClientResponse;
 import org.junit.Test;
 import org.zanata.RestTest;
 import org.zanata.rest.ResourceRequest;
-import org.zanata.v1_5_0.rest.dto.VersionInfo;
+import org.zanata.apicompat.rest.dto.VersionInfo;
 
 import static org.zanata.util.RawRestTestUtils.assertJsonUnmarshal;
 

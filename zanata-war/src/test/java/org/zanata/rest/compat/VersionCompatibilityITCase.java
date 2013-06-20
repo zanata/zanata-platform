@@ -18,19 +18,18 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.rest.compat.v1_4_4;
+package org.zanata.rest.compat;
 
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.resteasy.client.ClientRequest;
-import org.jboss.resteasy.client.ClientResponse;
 import org.junit.Test;
 import org.zanata.RestTest;
-import org.zanata.rest.ResourceRequest;
-import org.zanata.v1_4_4.rest.dto.VersionInfo;
+import org.zanata.apicompat.rest.client.IVersionResource;
+import org.zanata.apicompat.rest.dto.VersionInfo;
 
-import static org.zanata.util.RawRestTestUtils.assertJsonUnmarshal;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
 
-public class VersionRawCompatibilityITCase extends RestTest
+public class VersionCompatibilityITCase extends RestTest
 {
 
    @Override
@@ -40,20 +39,13 @@ public class VersionRawCompatibilityITCase extends RestTest
 
    @Test
    @RunAsClient
-   public void getVersionXml() throws Exception
+   public void getVersionXml()
    {
-      new ResourceRequest(getRestEndpointUrl("/version"), "GET")
-      {
-         @Override
-         protected void prepareRequest(ClientRequest request)
-         {
-         }
-         
-         @Override
-         protected void onResponse(ClientResponse response)
-         {
-            assertJsonUnmarshal(response, VersionInfo.class);
-         }
-      }.run();
+      IVersionResource versionClient = super.createProxy(createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
+            IVersionResource.class, "/version");
+      VersionInfo versionInfo = versionClient.get().getEntity();
+      
+      assertThat( versionInfo.getVersionNo(), notNullValue() );
+      assertThat( versionInfo.getBuildTimeStamp(), notNullValue() );
    }
 }

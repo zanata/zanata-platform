@@ -18,7 +18,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.rest.compat.v1_5_0;
+package org.zanata.rest.compat;
 
 import javax.ws.rs.core.Response.Status;
 
@@ -28,8 +28,8 @@ import org.jboss.resteasy.client.ClientResponse;
 import org.junit.Test;
 import org.zanata.RestTest;
 import org.zanata.provider.DBUnitProvider;
-import org.zanata.v1_5_0.rest.client.IAccountResource;
-import org.zanata.v1_5_0.rest.dto.Account;
+import org.zanata.apicompat.rest.client.IAccountResource;
+import org.zanata.apicompat.rest.dto.Account;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;

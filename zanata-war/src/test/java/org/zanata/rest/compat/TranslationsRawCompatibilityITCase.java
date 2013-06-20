@@ -18,7 +18,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.rest.compat.v1_5_0;
+package org.zanata.rest.compat;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -30,21 +30,22 @@ import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 import org.junit.Test;
 import org.zanata.RestTest;
+import org.zanata.apicompat.rest.client.ISourceDocResource;
+import org.zanata.apicompat.rest.client.ITranslatedDocResource;
 import org.zanata.provider.DBUnitProvider;
 import org.zanata.rest.ResourceRequest;
-import org.zanata.v1_5_0.common.ContentState;
-import org.zanata.v1_5_0.common.ContentType;
-import org.zanata.v1_5_0.common.LocaleId;
-import org.zanata.v1_5_0.common.ResourceType;
-import org.zanata.v1_5_0.rest.StringSet;
-import org.zanata.v1_5_0.rest.client.ITranslationResources;
-import org.zanata.v1_5_0.rest.dto.extensions.comment.SimpleComment;
-import org.zanata.v1_5_0.rest.dto.extensions.gettext.PoHeader;
-import org.zanata.v1_5_0.rest.dto.resource.Resource;
-import org.zanata.v1_5_0.rest.dto.resource.ResourceMeta;
-import org.zanata.v1_5_0.rest.dto.resource.TextFlow;
-import org.zanata.v1_5_0.rest.dto.resource.TextFlowTarget;
-import org.zanata.v1_5_0.rest.dto.resource.TranslationsResource;
+import org.zanata.apicompat.common.ContentState;
+import org.zanata.apicompat.common.ContentType;
+import org.zanata.apicompat.common.LocaleId;
+import org.zanata.apicompat.common.ResourceType;
+import org.zanata.apicompat.rest.StringSet;
+import org.zanata.apicompat.rest.dto.extensions.comment.SimpleComment;
+import org.zanata.apicompat.rest.dto.extensions.gettext.PoHeader;
+import org.zanata.apicompat.rest.dto.resource.Resource;
+import org.zanata.apicompat.rest.dto.resource.ResourceMeta;
+import org.zanata.apicompat.rest.dto.resource.TextFlow;
+import org.zanata.apicompat.rest.dto.resource.TextFlowTarget;
+import org.zanata.apicompat.rest.dto.resource.TranslationsResource;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
@@ -147,9 +148,9 @@ public class TranslationsRawCompatibilityITCase extends RestTest
       }.run();
       
       // Verify that it was created successfully
-      ITranslationResources translationsClient = super.createProxy( createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
-            ITranslationResources.class, "/projects/p/sample-project/iterations/i/1.0/r");
-      ClientResponse<Resource> resourceResponse = translationsClient.getResource(res.getName(), new StringSet(PoHeader.ID + ";" + SimpleComment.ID));
+      ISourceDocResource sourceDocClient = super.createProxy( createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
+            ISourceDocResource.class, "/projects/p/sample-project/iterations/i/1.0/r");
+      ClientResponse<Resource> resourceResponse = sourceDocClient.getResource(res.getName(), new StringSet(PoHeader.ID + ";" + SimpleComment.ID));
       
       assertThat(resourceResponse.getStatus(), is(Status.OK.getStatusCode())); // 200
       
@@ -169,7 +170,7 @@ public class TranslationsRawCompatibilityITCase extends RestTest
       assertThat(createdResource.getTextFlows().size(), is(1));
       
       TextFlow createdTf = createdResource.getTextFlows().get(0);
-      assertThat(createdTf.getContent(), is(tf1.getContent()));
+      assertThat(createdTf.getContents(), is(tf1.getContents()));
       assertThat(createdTf.getId(), is(tf1.getId()));
       assertThat(createdTf.getLang(), is(tf1.getLang()));
       assertThat(createdTf.getRevision(), is(1)); // Create, so revision 1
@@ -211,8 +212,8 @@ public class TranslationsRawCompatibilityITCase extends RestTest
          }         
       }.run();
       
-      ITranslationResources translationsClient = super.createProxy( createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
-            ITranslationResources.class, "/projects/p/sample-project/iterations/i/1.0/r/");
+      ISourceDocResource translationsClient = super.createProxy( createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
+            ISourceDocResource.class, "/projects/p/sample-project/iterations/i/1.0/r/");
       // Verify that it was created successfully
       ClientResponse<Resource> resourceResponse = translationsClient.getResource(res.getName(), new StringSet(PoHeader.ID + ";" + SimpleComment.ID));
       Resource createdResource = resourceResponse.getEntity();
@@ -231,7 +232,7 @@ public class TranslationsRawCompatibilityITCase extends RestTest
       assertThat(createdResource.getTextFlows().size(), is(1));
       
       TextFlow createdTf = createdResource.getTextFlows().get(0);
-      assertThat(createdTf.getContent(), is(tf1.getContent()));
+      assertThat(createdTf.getContents(), is(tf1.getContents()));
       assertThat(createdTf.getId(), is(tf1.getId()));
       assertThat(createdTf.getLang(), is(tf1.getLang()));
       assertThat(createdTf.getRevision(), is(1)); // Create, so revision 1
@@ -273,8 +274,8 @@ public class TranslationsRawCompatibilityITCase extends RestTest
    @RunAsClient
    public void putJsonResourceMeta() throws Exception
    {
-      ITranslationResources translationsClient = super.createProxy( createClientProxyFactory(ADMIN, ADMIN_KEY),
-            ITranslationResources.class, "/projects/p/sample-project/iterations/i/1.0/r/");
+      ISourceDocResource translationsClient = super.createProxy( createClientProxyFactory(ADMIN, ADMIN_KEY),
+            ISourceDocResource.class, "/projects/p/sample-project/iterations/i/1.0/r/");
       final ResourceMeta resMeta = new ResourceMeta();
       resMeta.setName("my/path/document-2.txt");
       resMeta.setType(ResourceType.FILE);
@@ -336,7 +337,7 @@ public class TranslationsRawCompatibilityITCase extends RestTest
             TextFlowTarget tft1 = transRes.getTextFlowTargets().get(0);
             assertThat(tft1.getResId(), is("tf2"));
             assertThat(tft1.getState(), is(ContentState.NeedReview));
-            assertThat(tft1.getContent(), is("mssgTrans1"));
+            assertThat(tft1.getContents().get(0), is("mssgTrans1"));
             assertThat(tft1.getExtensions(true).findByType(SimpleComment.class).getValue(), is("Text Flow Target Comment 1"));
             assertThat(tft1.getTranslator().getName(), is("Sample User"));
             assertThat(tft1.getTranslator().getEmail(), is("user1@localhost"));
@@ -345,7 +346,7 @@ public class TranslationsRawCompatibilityITCase extends RestTest
             TextFlowTarget tft2 = transRes.getTextFlowTargets().get(1);
             assertThat(tft2.getResId(), is("tf3"));
             assertThat(tft2.getState(), is(ContentState.NeedReview));
-            assertThat(tft2.getContent(), is("mssgTrans2"));
+            assertThat(tft2.getContents().get(0), is("mssgTrans2"));
             assertThat(tft2.getExtensions(true).findByType(SimpleComment.class).getValue(), is("Text Flow Target Comment 2"));
             assertThat(tft2.getTranslator().getName(), is("Sample User"));
             assertThat(tft2.getTranslator().getEmail(), is("user1@localhost"));
@@ -354,7 +355,7 @@ public class TranslationsRawCompatibilityITCase extends RestTest
             TextFlowTarget tft3 = transRes.getTextFlowTargets().get(2);
             assertThat(tft3.getResId(), is("tf4"));
             assertThat(tft3.getState(), is(ContentState.NeedReview));
-            assertThat(tft3.getContent(), is("mssgTrans3"));
+            assertThat(tft3.getContents().get(0), is("mssgTrans3"));
             assertThat(tft3.getExtensions(true).findByType(SimpleComment.class).getValue(), is("Text Flow Target Comment 3"));
             assertThat(tft3.getTranslator().getName(), is("Sample User"));
             assertThat(tft3.getTranslator().getEmail(), is("user1@localhost"));
@@ -367,8 +368,8 @@ public class TranslationsRawCompatibilityITCase extends RestTest
    public void putJsonTranslations() throws Exception
    {
       // Get the original translations
-      ITranslationResources translationsClient = super.createProxy( createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
-            ITranslationResources.class, "/projects/p/sample-project/iterations/i/1.0/r/");
+      ITranslatedDocResource translationsClient = super.createProxy( createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
+            ITranslatedDocResource.class, "/projects/p/sample-project/iterations/i/1.0/r/");
       ClientResponse<TranslationsResource> response = translationsClient.getTranslations("my,path,document-2.txt", LocaleId.EN_US, new StringSet(SimpleComment.ID));
       final TranslationsResource transRes = response.getEntity();
       
@@ -376,9 +377,9 @@ public class TranslationsRawCompatibilityITCase extends RestTest
       assertThat(transRes.getTextFlowTargets().size(), greaterThanOrEqualTo(3));
       
       // Alter the translations
-      transRes.getTextFlowTargets().get(0).setContent("Translated 1");
-      transRes.getTextFlowTargets().get(1).setContent("Translated 2");
-      transRes.getTextFlowTargets().get(2).setContent("Translated 3");
+      transRes.getTextFlowTargets().get(0).setContents("Translated 1");
+      transRes.getTextFlowTargets().get(1).setContents("Translated 2");
+      transRes.getTextFlowTargets().get(2).setContents("Translated 3");
       
       transRes.getTextFlowTargets().get(0).setState(ContentState.Approved);
       transRes.getTextFlowTargets().get(1).setState(ContentState.Approved);
@@ -417,7 +418,7 @@ public class TranslationsRawCompatibilityITCase extends RestTest
       TextFlowTarget tft1 = updatedTransRes.getTextFlowTargets().get(0);
       assertThat(tft1.getResId(), is("tf2"));
       assertThat(tft1.getState(), is(ContentState.Approved));
-      assertThat(tft1.getContent(), is("Translated 1"));
+      assertThat(tft1.getContents().get(0), is("Translated 1"));
       assertThat(tft1.getExtensions(true).findByType(SimpleComment.class).getValue(), is("Translated Comment 1"));
       assertThat(tft1.getTranslator().getName(), is("Sample User"));
       assertThat(tft1.getTranslator().getEmail(), is("user1@localhost"));
@@ -426,7 +427,7 @@ public class TranslationsRawCompatibilityITCase extends RestTest
       TextFlowTarget tft2 = updatedTransRes.getTextFlowTargets().get(1);
       assertThat(tft2.getResId(), is("tf3"));
       assertThat(tft2.getState(), is(ContentState.Approved));
-      assertThat(tft2.getContent(), is("Translated 2"));
+      assertThat(tft2.getContents().get(0), is("Translated 2"));
       assertThat(tft2.getExtensions(true).findByType(SimpleComment.class).getValue(), is("Translated Comment 2"));
       assertThat(tft2.getTranslator().getName(), is("Sample User"));
       assertThat(tft2.getTranslator().getEmail(), is("user1@localhost"));
@@ -435,7 +436,7 @@ public class TranslationsRawCompatibilityITCase extends RestTest
       TextFlowTarget tft3 = updatedTransRes.getTextFlowTargets().get(2);
       assertThat(tft3.getResId(), is("tf4"));
       assertThat(tft3.getState(), is(ContentState.Approved));
-      assertThat(tft3.getContent(), is("Translated 3"));
+      assertThat(tft3.getContents().get(0), is("Translated 3"));
       assertThat(tft3.getExtensions(true).findByType(SimpleComment.class).getValue(), is("Translated Comment 3"));
       assertThat(tft3.getTranslator().getName(), is("Sample User"));
       assertThat(tft3.getTranslator().getEmail(), is("user1@localhost"));

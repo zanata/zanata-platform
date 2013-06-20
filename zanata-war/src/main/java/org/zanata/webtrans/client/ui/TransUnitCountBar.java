@@ -249,7 +249,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
       TranslationStatistics stats = getWordStats();
       if (stats != null)
       {
-         return (int) stats.getFinishTranslation();
+         return (int) stats.getTranslatedOnly();
       }
       return 0;
    }
@@ -294,7 +294,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats,
 	  TranslationStatistics stats = getMessageStats();
       if (stats != null)
       {
-         return (int) stats.getFinishTranslation();
+         return (int) stats.getTranslatedOnly();
       }
       return 0;
    }

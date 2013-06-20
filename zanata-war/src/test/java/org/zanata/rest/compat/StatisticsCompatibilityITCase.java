@@ -18,16 +18,16 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.rest.compat.v2_3_0;
+package org.zanata.rest.compat;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.junit.Test;
 import org.zanata.RestTest;
 import org.zanata.provider.DBUnitProvider;
-import org.zanata.v2_3_0.rest.dto.stats.ContainerTranslationStatistics;
-import org.zanata.v2_3_0.rest.dto.stats.TranslationStatistics;
-import org.zanata.v2_3_0.rest.service.StatisticsResource;
+import org.zanata.apicompat.rest.dto.stats.ContainerTranslationStatistics;
+import org.zanata.apicompat.rest.dto.stats.TranslationStatistics;
+import org.zanata.apicompat.rest.service.StatisticsResource;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -71,7 +71,12 @@ public class StatisticsCompatibilityITCase extends RestTest
       for(TranslationStatistics langStats : stats.getStats())
       {
          assertThat(langStats.getTotal(),
-               equalTo(langStats.getNeedReview() + langStats.getUntranslated() + langStats.getTranslated()));
+               equalTo(langStats.getUntranslated() + langStats.getNeedReview() + langStats.getTranslated()));
+         assertThat(langStats.getTotal(),
+               equalTo(langStats.getUntranslated() + langStats.getDraft() + langStats.getTranslatedAndApproved()));
+         assertThat(langStats.getTotal(),
+               equalTo(langStats.getUntranslated() + langStats.getFuzzy() + langStats.getRejected() +
+                       langStats.getTranslatedOnly() + langStats.getApproved() ));
          //MatcherAssert.assertThat( 100,
          //   Matchers.equalTo( asStats.getPercentNeedReview() + asStats.getPercentUntranslated() + asStats.getPercentTranslated() ));
          wordStatCount += (langStats.getUnit() == TranslationStatistics.StatUnit.WORD ? 1 : 0);
@@ -97,7 +102,12 @@ public class StatisticsCompatibilityITCase extends RestTest
       for(TranslationStatistics langStats : stats.getStats())
       {
          assertThat(langStats.getTotal(),
-               equalTo(langStats.getNeedReview() + langStats.getUntranslated() + langStats.getTranslated()));
+               equalTo(langStats.getUntranslated() + langStats.getNeedReview() + langStats.getTranslated()));
+         assertThat(langStats.getTotal(),
+               equalTo(langStats.getUntranslated() + langStats.getDraft() + langStats.getTranslatedAndApproved()));
+         assertThat(langStats.getTotal(),
+               equalTo(langStats.getUntranslated() + langStats.getFuzzy() + langStats.getRejected() +
+                     langStats.getTranslatedOnly() + langStats.getApproved() ));
          //MatcherAssert.assertThat( 100,
          //   Matchers.equalTo( asStats.getPercentNeedReview() + asStats.getPercentUntranslated() + asStats.getPercentTranslated() ));
          wordStatCount += (langStats.getUnit() == TranslationStatistics.StatUnit.WORD ? 1 : 0);
@@ -121,7 +131,12 @@ public class StatisticsCompatibilityITCase extends RestTest
       for(TranslationStatistics langStats : stats.getStats())
       {
          assertThat(langStats.getTotal(),
-               equalTo(langStats.getNeedReview() + langStats.getUntranslated() + langStats.getTranslated()));
+               equalTo(langStats.getUntranslated() + langStats.getNeedReview() + langStats.getTranslated()));
+         assertThat(langStats.getTotal(),
+               equalTo(langStats.getUntranslated() + langStats.getDraft() + langStats.getTranslatedAndApproved()));
+         assertThat(langStats.getTotal(),
+               equalTo(langStats.getUntranslated() + langStats.getFuzzy() + langStats.getRejected() +
+                     langStats.getTranslatedOnly() + langStats.getApproved() ));
          //MatcherAssert.assertThat( 100,
          //   Matchers.equalTo( asStats.getPercentNeedReview() + asStats.getPercentUntranslated() + asStats.getPercentTranslated() ));
          assertThat("Shouldn't have returned word level stats", langStats.getUnit(), not(TranslationStatistics.StatUnit.WORD));
@@ -141,7 +156,12 @@ public class StatisticsCompatibilityITCase extends RestTest
       for(TranslationStatistics langStats : stats.getStats())
       {
          assertThat(langStats.getTotal(),
-               equalTo(langStats.getNeedReview() + langStats.getUntranslated() + langStats.getTranslated()));
+               equalTo(langStats.getUntranslated() + langStats.getNeedReview() + langStats.getTranslated()));
+         assertThat(langStats.getTotal(),
+               equalTo(langStats.getUntranslated() + langStats.getDraft() + langStats.getTranslatedAndApproved()));
+         assertThat(langStats.getTotal(),
+               equalTo(langStats.getUntranslated() + langStats.getFuzzy() + langStats.getRejected() +
+                     langStats.getTranslatedOnly() + langStats.getApproved() ));
          //MatcherAssert.assertThat( 100,
          //   Matchers.equalTo( asStats.getPercentNeedReview() + asStats.getPercentUntranslated() + asStats.getPercentTranslated() ));
       }

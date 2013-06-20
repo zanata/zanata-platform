@@ -1135,33 +1135,12 @@
       </dependency>
 
 		<!-- Compatibility Dependencies -->
-		
-		<dependency>
-			<groupId>org.zanata</groupId>
-			<artifactId>zanata-api-1.4.4</artifactId>
-			<version>1.3-SNAPSHOT</version>
-			<scope>test</scope>
-		</dependency>
-		
-		<dependency>
-            <groupId>org.zanata</groupId>
-            <artifactId>zanata-api-1.3</artifactId>
-            <version>1.3-SNAPSHOT</version>
-            <scope>test</scope>
-		</dependency>
 
         <dependency>
             <groupId>org.zanata</groupId>
-            <artifactId>zanata-api-1.5.0</artifactId>
-            <version>1.3-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.zanata</groupId>
-            <artifactId>zanata-api-2.3.0</artifactId>
-            <version>1.3-SNAPSHOT</version>
-            <scope>test</scope>
+            <artifactId>zanata-common-api</artifactId>
+            <version>${zanata.api.compat.version}</version>
+            <classifier>compat</classifier>
         </dependency>
 
       <!-- GWT Dependencies -->
