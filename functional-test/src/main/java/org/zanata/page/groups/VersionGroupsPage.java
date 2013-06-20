@@ -33,8 +33,8 @@ public class VersionGroupsPage extends AbstractPage
          return Collections.emptyList();
       }
 
-      List<TableRow> tableRows = WebElementUtil.getTableRows(mainContentDiv.findElement(By.xpath(".//table")));
-      return WebElementUtil.getColumnContents(tableRows, GROUP_NAME_COLUMN);
+      By by = By.id("iterationGroupForm:iterationsDataTable");
+      return WebElementUtil.getColumnContents(getDriver(), by, GROUP_NAME_COLUMN);
    }
 
    public CreateVersionGroupPage createNewGroup()

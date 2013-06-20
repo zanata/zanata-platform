@@ -20,15 +20,11 @@
  */
 package org.zanata.page;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -59,13 +55,8 @@ public class AbstractPage
    {
       PageFactory.initElements(new AjaxElementLocatorFactory(driver, 10), this);
       this.driver = driver;
-      ajaxWaitForTenSec = waitForSeconds(driver, 10);
+      ajaxWaitForTenSec = WebElementUtil.waitForTenSeconds(driver);
       navMenuItems = navBar.findElements(By.tagName("a"));
-   }
-
-   public static FluentWait<WebDriver> waitForSeconds(WebDriver webDriver, int durationInSec)
-   {
-      return new FluentWait<WebDriver>(webDriver).withTimeout(durationInSec, SECONDS).pollingEvery(1, SECONDS).ignoring(NoSuchElementException.class, StaleElementReferenceException.class);
    }
 
    public WebDriver getDriver()

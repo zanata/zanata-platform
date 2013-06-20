@@ -2,8 +2,6 @@ package org.zanata.page.groups;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -15,7 +13,6 @@ import org.zanata.util.WebElementUtil;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 
 import lombok.extern.slf4j.Slf4j;
@@ -68,13 +65,12 @@ public class VersionGroupPage extends AbstractPage
          @Override
          public List<List<String>> apply(WebDriver driver)
          {
-            WebElement table = addProjectVersionPanel.findElement(By.id("projectVersionSearch:searchResults:resultTable"));
-            List<TableRow> tableRows = WebElementUtil.getTableRows(table);
+            By tableBy = By.id("projectVersionSearch:searchResults:resultTable");
             // we want to wait until search result comes back. There is no way we can tell whether search result has come back and table refreshed.
             // To avoid the org.openqa.selenium.StaleElementReferenceException (http://seleniumhq.org/exceptions/stale_element_reference.html),
             // we have to set expected result num
 
-            List<List<String>> tableContents = WebElementUtil.transformToTwoDimensionList(tableRows);
+            List<List<String>> tableContents = WebElementUtil.getTwoDimensionList(getDriver(), tableBy);
             Iterable<List<String>> filter = Iterables.filter(tableContents, new Predicate<List<String>>()
             {
                @Override
@@ -97,7 +93,7 @@ public class VersionGroupPage extends AbstractPage
    {
       WebElement table = addProjectVersionPanel.findElement(By.id("projectVersionSearch:searchResults:resultTable"));
 
-      List<WebElement> cells = WebElementUtil.getTableRows(table).get(rowIndex).getCells();
+      List<WebElement> cells = WebElementUtil.getTableRows(getDriver(), table).get(rowIndex).getCells();
       WebElement actionCell = cells.get(cells.size() - 1);
       if (!actionCell.getText().contains("Already in Group"))
       {
@@ -124,30 +120,10 @@ public class VersionGroupPage extends AbstractPage
    @SuppressWarnings("unused")
    public List<List<String>> getProjectVersionsInGroup()
    {
-      groupDataTable = getDriver().findElement(By.id("iterationGroupForm:iterationsDataTable"));
-      List<TableRow> tableRows = WebElementUtil.getTableRows(groupDataTable);
-      return WebElementUtil.transformToTwoDimensionList(tableRows);
-   }
-
-   @SuppressWarnings("unused")
-   public List<List<String>> getNotEmptyProjectVersionsInGroup()
-   {
-      FluentWait<WebDriver> fluentWait = waitForTenSec();
-      fluentWait.ignoring(IllegalStateException.class);
-      List<TableRow> tableRows = fluentWait.until(new Function<WebDriver, List<TableRow>>()
-      {
-         @Override
-         public List<TableRow> apply(WebDriver driver)
-         {
-            final List<TableRow> tableRows = WebElementUtil.getTableRows(groupDataTable);
-
-            log.info("{} project versions for this group", tableRows.size());
-            Preconditions.checkState(tableRows.size() > 0, "table is empty");
-            return tableRows;
-         }
-      });
-
-      return WebElementUtil.transformToTwoDimensionList(tableRows);
+      By by = By.id("iterationGroupForm:iterationsDataTable");
+      groupDataTable = getDriver().findElement(by);
+      List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(), groupDataTable);
+      return WebElementUtil.getTwoDimensionList(getDriver(), by);
    }
 
 }
