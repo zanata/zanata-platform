@@ -18,8 +18,8 @@ public class VersionGroupsPage extends AbstractPage
 {
    public static final int GROUP_NAME_COLUMN = 0;
 
-   @FindBy(id = "main_body_content")
-   private WebElement mainContentDiv;
+   @FindBy(id = "groupForm:groupTable")
+   private WebElement groupTable;
 
    public VersionGroupsPage(WebDriver driver)
    {
@@ -28,12 +28,7 @@ public class VersionGroupsPage extends AbstractPage
 
    public List<String> getGroupNames()
    {
-      if (mainContentDiv.getText().contains("No group exists"))
-      {
-         return Collections.emptyList();
-      }
-
-      By by = By.id("iterationGroupForm:iterationsDataTable");
+      By by = By.id("groupForm:groupTable");
       return WebElementUtil.getColumnContents(getDriver(), by, GROUP_NAME_COLUMN);
    }
 
@@ -46,7 +41,7 @@ public class VersionGroupsPage extends AbstractPage
 
    public VersionGroupPage goToGroup(String groupName)
    {
-      WebElement groupLink = mainContentDiv.findElement(By.linkText(groupName));
+      WebElement groupLink = groupTable.findElement(By.linkText(groupName));
       groupLink.click();
       return new VersionGroupPage(getDriver());
    }
