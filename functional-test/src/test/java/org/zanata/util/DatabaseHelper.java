@@ -43,7 +43,16 @@ public class DatabaseHelper
             Class.forName(DatabaseHelper.driver);
             connection = DriverManager.getConnection(DatabaseHelper.url, DatabaseHelper.username, DatabaseHelper.password);
             statement = connection.createStatement();
+            log.info("sys props: {}", System.getProperties());
             statement.execute("SCRIPT NOPASSWORDS NOSETTINGS DROP TO '" + DB_BACKUP_PATH + "' CHARSET 'UTF-8' ");
+//            Runtime.getRuntime().addShutdownHook(new Thread()
+//            {
+//               @Override
+//               public void run()
+//               {
+//                  cleanUp();
+//               }
+//            });
          }
       });
    }
@@ -174,7 +183,9 @@ public class DatabaseHelper
       executeQuery("RUNSCRIPT FROM '" + DB_BACKUP_PATH + "' CHARSET 'UTF-8'");
    }
 
-   public void cleanUp()
+   // If we close connection here, in JBoss all the hibernate session won't be usable anymore.
+   // This is not good for having cargo running and execute test in IDE.
+   private void cleanUp()
    {
       wrapInTryCatch(new Command()
       {
