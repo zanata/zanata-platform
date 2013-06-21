@@ -20,7 +20,6 @@
  */
 package org.zanata.page.projects;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -31,13 +30,10 @@ import org.openqa.selenium.support.FindBy;
 import org.zanata.page.AbstractPage;
 import org.zanata.util.WebElementUtil;
 
-import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -59,8 +55,7 @@ public class ProjectPage extends AbstractPage
    @SuppressWarnings("unused")
    public String getProjectId()
    {
-      List<String> breadcrumbs = getBreadcrumbs();
-      return breadcrumbs.get(breadcrumbs.size() - 1);
+      return getLastBreadCrumbText();
    }
 
    @SuppressWarnings("unused")

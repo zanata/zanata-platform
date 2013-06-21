@@ -1,5 +1,7 @@
 package org.zanata.feature.startNewProject;
 
+import java.util.List;
+
 import org.concordion.api.extension.Extensions;
 import org.concordion.ext.ScreenshotExtension;
 import org.concordion.ext.TimestampFormatterExtension;
@@ -9,7 +11,6 @@ import org.junit.runner.RunWith;
 import org.zanata.concordion.CustomResourceExtension;
 import org.zanata.page.projects.ProjectPage;
 import org.zanata.page.projects.ProjectVersionPage;
-import org.zanata.page.projects.ProjectsPage;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
 
@@ -32,8 +33,9 @@ public class CreateVersionAndAddToProjectTest
    public ProjectPage createNewProjectVersion(String projectName, String versionSlug)
    {
       ProjectVersionPage projectVersionPage = new ProjectWorkFlow().createNewProjectVersion(projectName, versionSlug);
-      log.info("current breadcrumb", projectVersionPage.getBreadcrumbs());
+      List<String> breadcrumbLinks = projectVersionPage.getBreadcrumbLinks();
+      log.info("current breadcrumb: {}", breadcrumbLinks);
 
-      return projectVersionPage.clickBreadcrumb(projectName, ProjectPage.class);
+      return projectVersionPage.clickBreadcrumb(breadcrumbLinks.get(breadcrumbLinks.size() - 1), ProjectPage.class);
    }
 }

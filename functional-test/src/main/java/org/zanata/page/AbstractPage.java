@@ -74,10 +74,16 @@ public class AbstractPage
       return driver.getTitle();
    }
 
-   public List<String> getBreadcrumbs()
+   public List<String> getBreadcrumbLinks()
    {
       List<WebElement> breadcrumbs = driver.findElement(By.id("breadcrumbs_panel")).findElements(By.className("breadcrumbs_link"));
       return WebElementUtil.elementsToText(breadcrumbs);
+   }
+
+   public String getLastBreadCrumbText()
+   {
+      WebElement breadcrumb = driver.findElement(By.id("breadcrumbs_panel")).findElement(By.className("breadcrumbs_display"));
+      return breadcrumb.getText();
    }
 
    public <P> P clickBreadcrumb(final String link, Class<P> pageClass)
