@@ -116,8 +116,7 @@ public class VersionGroupPage extends AbstractPage
          {
             List<TableRow> tableRows = WebElementUtil.getTableRows(input, versionsInGroupTableBy);
             int size = tableRows.size();
-            log.info("versions in group table row: {}", size);
-            log.info("table rows");
+            log.info("table rows: {}", tableRows);
             return size == expectedRow;
          }
       });
