@@ -23,8 +23,6 @@ package org.zanata.util;
 import java.util.Collection;
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
@@ -62,16 +60,22 @@ public class WebElementUtil
       return ImmutableList.copyOf(Collections2.transform(webElements, new WebElementToInnerHTMLFunction(driver)));
    }
 
-   public static List<TableRow> getTableRows(WebDriver driver, By byQueryForTable)
+   public static List<TableRow> getTableRows(WebDriver driver, final By byQueryForTable)
    {
-      WebElement table = driver.findElement(byQueryForTable);
-      return getTableRows(driver, table);
+      return waitForTenSeconds(driver).until(new Function<WebDriver, List<TableRow>>()
+      {
+         @Override
+         public List<TableRow> apply(WebDriver webDriver)
+         {
+            final WebElement table = webDriver.findElement(byQueryForTable);
+            List<WebElement> rows = table.findElements(By.xpath(".//tbody[1]/tr"));
+            return ImmutableList.copyOf(Lists.transform(rows, WebElementTableRowFunction.FUNCTION));
+         }
+      });
    }
 
    public static List<TableRow> getTableRows(WebDriver driver, final WebElement table)
    {
-      Preconditions.checkArgument(table.getTagName().equalsIgnoreCase("table"), "By query must return a table");
-
       return waitForTenSeconds(driver).until(new Function<WebDriver, List<TableRow>>()
       {
          @Override
@@ -137,7 +141,9 @@ public class WebElementUtil
          @Override
          public List<List<String>> apply(WebDriver input)
          {
-            List<TableRow> tableRows = getTableRows(input, by);
+            final WebElement table = input.findElement(by);
+            List<WebElement> rows = table.findElements(By.xpath(".//tbody[1]/tr"));
+            List<TableRow> tableRows = Lists.transform(rows, WebElementTableRowFunction.FUNCTION);
             return transformToTwoDimensionList(tableRows);
          }
       });

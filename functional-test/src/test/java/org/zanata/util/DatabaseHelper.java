@@ -23,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DatabaseHelper
 {
-   private static final String DB_BACKUP_PATH = new File(System.getProperty("java.io.tmpdir"), "zanata_db_fresh.sql").getAbsolutePath();
    private static String url;
    private static String driver = "org.h2.Driver";
    private static String username;
@@ -31,6 +30,7 @@ public class DatabaseHelper
    private static Connection connection;
    private static Statement statement;
    private static DatabaseHelper DB;
+   private String backupPath;
 
    private DatabaseHelper()
    {
@@ -44,15 +44,12 @@ public class DatabaseHelper
             connection = DriverManager.getConnection(DatabaseHelper.url, DatabaseHelper.username, DatabaseHelper.password);
             statement = connection.createStatement();
             log.info("sys props: {}", System.getProperties());
-            statement.execute("SCRIPT NOPASSWORDS NOSETTINGS DROP TO '" + DB_BACKUP_PATH + "' CHARSET 'UTF-8' ");
-//            Runtime.getRuntime().addShutdownHook(new Thread()
-//            {
-//               @Override
-//               public void run()
-//               {
-//                  cleanUp();
-//               }
-//            });
+            backupPath = PropertiesHolder.getProperty("zanata.database.backup");
+            if (!new File(backupPath).exists())
+            {
+               // we only want to run this once
+               statement.execute("SCRIPT NOPASSWORDS NOSETTINGS DROP TO '" + backupPath + "' CHARSET 'UTF-8' ");
+            }
          }
       });
    }
@@ -180,7 +177,7 @@ public class DatabaseHelper
 
    public void resetData()
    {
-      executeQuery("RUNSCRIPT FROM '" + DB_BACKUP_PATH + "' CHARSET 'UTF-8'");
+      executeQuery("RUNSCRIPT FROM '" + backupPath + "' CHARSET 'UTF-8'");
    }
 
    // If we close connection here, in JBoss all the hibernate session won't be usable anymore.

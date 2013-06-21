@@ -36,6 +36,7 @@ import org.zanata.util.WebElementUtil;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 
@@ -128,6 +129,20 @@ public class AbstractPage
    {
       List<WebElement> errorSpans = getDriver().findElements(By.xpath("//span[@class='errors']"));
       return WebElementUtil.elementsToText(errorSpans);
+   }
+
+   protected <P extends AbstractPage> P refreshPageUntil(P currentPage, Predicate<WebDriver> predicate)
+   {
+      waitForTenSec().until(predicate);
+      PageFactory.initElements(driver, currentPage);
+      return currentPage;
+   }
+
+   protected <P extends AbstractPage, T> T refreshPageUntil(P currentPage, Function<WebDriver, T> function)
+   {
+      T done = waitForTenSec().until(function);
+      PageFactory.initElements(driver, currentPage);
+      return done;
    }
 
 }

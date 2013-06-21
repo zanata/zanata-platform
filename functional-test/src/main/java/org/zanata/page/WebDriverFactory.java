@@ -22,17 +22,14 @@ package org.zanata.page;
 
 import static org.zanata.util.Constants.chrome;
 import static org.zanata.util.Constants.firefox;
-import static org.zanata.util.Constants.loadProperties;
 import static org.zanata.util.Constants.webDriverType;
 import static org.zanata.util.Constants.zanataInstance;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -41,6 +38,7 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.service.DriverService;
+import org.zanata.util.PropertiesHolder;
 
 import com.google.common.base.Strings;
 
@@ -52,7 +50,6 @@ public enum WebDriverFactory
    INSTANCE;
 
    private WebDriver driver;
-   private Properties properties;
    private DriverService driverService;
 
    public WebDriver getDriver()
@@ -63,7 +60,6 @@ public enum WebDriverFactory
          {
             if (driver == null)
             {
-               properties = loadProperties();
                driver = createDriver();
                driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
                Runtime.getRuntime().addShutdownHook(new ShutdownHook());
@@ -75,16 +71,16 @@ public enum WebDriverFactory
 
    public String getHostUrl()
    {
-      if (properties == null || driver == null)
+      if (driver == null)
       {
          getDriver();
       }
-      return properties.getProperty(zanataInstance.value());
+      return PropertiesHolder.getProperty(zanataInstance.value());
    }
 
    private WebDriver createDriver()
    {
-      String driverType = properties.getProperty(webDriverType.value(), "htmlUnit");
+      String driverType = PropertiesHolder.getProperty(webDriverType.value(), "htmlUnit");
       if (driverType.equalsIgnoreCase(chrome.value()))
       {
          return configureChromeDriver();
@@ -107,12 +103,12 @@ public enum WebDriverFactory
    private WebDriver configureChromeDriver()
    {
       driverService = new ChromeDriverService.Builder()
-            .usingDriverExecutable(new File(properties.getProperty("webdriver.chrome.driver")))
+            .usingDriverExecutable(new File(PropertiesHolder.properties.getProperty("webdriver.chrome.driver")))
             .usingAnyFreePort()
-            .withLogFile(new File(properties.getProperty("webdriver.log")))
+            .withLogFile(new File(PropertiesHolder.properties.getProperty("webdriver.log")))
             .build();
       DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-      capabilities.setCapability("chrome.binary", properties.getProperty("webdriver.chrome.bin"));
+      capabilities.setCapability("chrome.binary", PropertiesHolder.properties.getProperty("webdriver.chrome.bin"));
 //      System.setProperty("webdriver.chrome.driver", properties.getProperty("webdriver.chrome.driver"));
       try
       {
@@ -127,7 +123,7 @@ public enum WebDriverFactory
 
    private WebDriver configureFirefoxDriver()
    {
-      final String pathToFirefox = Strings.emptyToNull(properties.getProperty("firefox.path"));
+      final String pathToFirefox = Strings.emptyToNull(PropertiesHolder.properties.getProperty("firefox.path"));
 
       FirefoxBinary firefoxBinary = null;
       if (pathToFirefox != null)

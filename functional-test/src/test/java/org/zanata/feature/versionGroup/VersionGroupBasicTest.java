@@ -77,14 +77,12 @@ public class VersionGroupBasicTest
    public List<List<String>> searchProjectToAddToVersionGroup(String searchTerm)
    {
       versionGroupPage = versionGroupPage.addProjectVersion();
-      List<List<String>> result = versionGroupPage.searchProject(searchTerm, 2);
-      log.info("search result: {}", result);
-      return result;
+      return versionGroupPage.searchProject(searchTerm, 2);
    }
 
    public VersionGroupPage addProjectToVersionGroup(int row)
    {
-      return versionGroupPage.addToGroup(row - 1).closeSearchResult();
+      return versionGroupPage.addToGroup(row - 1).closeSearchResult(1);
    }
 
 }

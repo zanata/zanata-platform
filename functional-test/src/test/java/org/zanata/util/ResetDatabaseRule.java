@@ -21,14 +21,8 @@ public class ResetDatabaseRule extends ExternalResource
    protected void before() throws Throwable
    {
       DatabaseHelper.database().resetData();
-      if (configSet.contains(Config.WithAdmin))
-      {
-         DatabaseHelper.database().addAdminUser();
-      }
-      if (configSet.contains(Config.WithTranslator))
-      {
-         DatabaseHelper.database().addTranslatorUser();
-      }
+      DatabaseHelper.database().addAdminUser();
+      DatabaseHelper.database().addTranslatorUser();
    }
 
    @Override
@@ -43,6 +37,6 @@ public class ResetDatabaseRule extends ExternalResource
 
    public static enum Config
    {
-      Empty, WithAdmin, WithTranslator, NoResetAfter
+      Empty, NoResetAfter
    }
 }

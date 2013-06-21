@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.zanata.util.PropertiesHolder;
 import org.zanata.util.Constants;
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
@@ -42,12 +43,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ClientPushWorkFlow
 {
-   private static Properties properties;
-
-   public ClientPushWorkFlow()
-   {
-      properties = Constants.loadProperties();
-   }
 
    public int mvnPush(String sampleProject, String... extraPushOptions)
    {
@@ -75,7 +70,7 @@ public class ClientPushWorkFlow
 
    public File getProjectRootPath(String sampleProject)
    {
-      String baseDir = properties.getProperty(Constants.sampleProjects.value());
+      String baseDir = PropertiesHolder.getProperty(Constants.sampleProjects.value());
       Preconditions.checkState(!(Strings.isNullOrEmpty(sampleProject) || Strings.isNullOrEmpty(baseDir)), "base dir and sample project can't be empty");
 
       File projectDir = new File(baseDir, sampleProject);

@@ -44,6 +44,6 @@ import static org.zanata.util.ResetDatabaseRule.Config.*;
 public class CreateSampleProjectTestSuite
 {
    @ClassRule
-   public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule(WithAdmin, WithTranslator);
+   public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
 
 }

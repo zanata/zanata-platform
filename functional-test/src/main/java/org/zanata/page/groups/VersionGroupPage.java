@@ -2,6 +2,8 @@ package org.zanata.page.groups;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -23,7 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class VersionGroupPage extends AbstractPage
 {
-   public static final int PROJECT_NAME_COLUMN = 0;
    @FindBy(linkText = "Add Project Versions")
    private WebElement addProjectVersionsLink;
 
@@ -32,6 +33,7 @@ public class VersionGroupPage extends AbstractPage
 
    @FindBy(id = "iterationGroupForm:iterationsDataTable")
    private WebElement groupDataTable;
+   private By versionsInGroupTableBy = By.id("iterationGroupForm:iterationsDataTable");
 
    public VersionGroupPage(final WebDriver driver)
    {
@@ -60,26 +62,20 @@ public class VersionGroupPage extends AbstractPage
       WebElement searchButton = addProjectVersionPanel.findElement(By.id("projectVersionSearch:searchForm:searchBtn"));
       searchButton.click();
 
-      return waitForTenSec().until(new Function<WebDriver, List<List<String>>>()
+      final By tableBy = By.id("projectVersionSearch:searchResults:resultTable");
+
+      return refreshPageUntil(this, new Function<WebDriver, List<List<String>>>()
       {
          @Override
          public List<List<String>> apply(WebDriver driver)
          {
-            By tableBy = By.id("projectVersionSearch:searchResults:resultTable");
             // we want to wait until search result comes back. There is no way we can tell whether search result has come back and table refreshed.
             // To avoid the org.openqa.selenium.StaleElementReferenceException (http://seleniumhq.org/exceptions/stale_element_reference.html),
             // we have to set expected result num
 
             List<List<String>> tableContents = WebElementUtil.getTwoDimensionList(getDriver(), tableBy);
-            Iterable<List<String>> filter = Iterables.filter(tableContents, new Predicate<List<String>>()
-            {
-               @Override
-               public boolean apply(List<String> input)
-               {
-                  return input.get(0).contains(projectName);
-               }
-            });
-            if (Iterables.size(filter) != expectedResultNum)
+
+            if (tableContents.size() != expectedResultNum)
             {
                log.debug("waiting for search result refresh...");
                return null;
@@ -109,21 +105,27 @@ public class VersionGroupPage extends AbstractPage
       return this;
    }
 
-   public VersionGroupPage closeSearchResult()
+   public VersionGroupPage closeSearchResult(final int expectedRow)
    {
       WebElement closeButton = addProjectVersionPanel.findElement(By.id("projectVersionSearch:searchForm:closeBtn"));
       closeButton.click();
-      // need to refresh page
-      return new VersionGroupPage(getDriver());
+      return refreshPageUntil(this, new Predicate<WebDriver>()
+      {
+         @Override
+         public boolean apply(@Nullable WebDriver input)
+         {
+            List<TableRow> tableRows = WebElementUtil.getTableRows(input, versionsInGroupTableBy);
+            int size = tableRows.size();
+            log.info("versions in group table row: {}", size);
+            log.info("table rows");
+            return size == expectedRow;
+         }
+      });
    }
 
    @SuppressWarnings("unused")
    public List<List<String>> getProjectVersionsInGroup()
    {
-      By by = By.id("iterationGroupForm:iterationsDataTable");
-      groupDataTable = getDriver().findElement(by);
-      List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(), groupDataTable);
-      return WebElementUtil.getTwoDimensionList(getDriver(), by);
+      return WebElementUtil.getTwoDimensionList(getDriver(), versionsInGroupTableBy);
    }
-
 }

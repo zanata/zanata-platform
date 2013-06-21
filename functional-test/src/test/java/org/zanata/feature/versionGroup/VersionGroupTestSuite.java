@@ -15,5 +15,5 @@ import static org.zanata.util.ResetDatabaseRule.Config.*;
 public class VersionGroupTestSuite
 {
    @ClassRule
-   public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule(WithAdmin);
+   public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
 }

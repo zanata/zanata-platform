@@ -20,18 +20,8 @@
  */
 package org.zanata.util;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.base.Objects;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 public enum Constants
 {
    // constants used by page and workflow objects
@@ -61,22 +51,6 @@ public enum Constants
    public String toString()
    {
       return Objects.toStringHelper(this).add("name", name()).add("value", value).toString();
-   }
-
-   public static Properties loadProperties()
-   {
-      InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(propFile.value);
-      Properties properties = new Properties();
-      try
-      {
-         properties.load(inputStream);
-         return properties;
-      }
-      catch (IOException e)
-      {
-         log.error("can't load {}", propFile);
-         throw new IllegalStateException("can't load setup.properties");
-      }
    }
 
    public String value()

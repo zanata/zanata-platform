@@ -15,5 +15,5 @@ import static org.zanata.util.ResetDatabaseRule.Config.*;
 public class SecurityTestSuite
 {
    @ClassRule
-   public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule(WithAdmin, WithTranslator);
+   public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
 }
