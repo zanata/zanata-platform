@@ -28,15 +28,19 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.AbstractPage;
-import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
 import com.google.common.base.Function;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class ProjectsPage extends AbstractPage
 {
    public static final int PROJECT_NAME_COLUMN = 0;
    @FindBy(id = "main_body_content")
    private WebElement mainContentDiv;
+
+   private By projectTableBy = By.id("main_content:form:projectList");
 
    public ProjectsPage(final WebDriver driver)
    {
@@ -57,12 +61,21 @@ public class ProjectsPage extends AbstractPage
       return new CreateProjectPage(getDriver());
    }
 
-   public ProjectPage goToProject(String projectName)
+   public ProjectPage goToProject(final String projectName)
    {
       //TODO this can't handle project on different page
-      WebElement link = getDriver().findElement(By.linkText(projectName));
-      link.click();
-      return new ProjectPage(getDriver());
+      return refreshPageUntil(this, new Function<WebDriver, ProjectPage>()
+      {
+         @Override
+         public ProjectPage apply(WebDriver input)
+         {
+            WebElement table = input.findElement(projectTableBy);
+            log.info("current projects: {}", WebElementUtil.getColumnContents(input, projectTableBy, PROJECT_NAME_COLUMN));
+            WebElement link = table.findElement(By.linkText(projectName));
+            link.click();
+            return new ProjectPage(input);
+         }
+      });
    }
 
    public List<String> getProjectNamesOnCurrentPage()
@@ -72,6 +85,6 @@ public class ProjectsPage extends AbstractPage
          return Collections.emptyList();
       }
 
-      return WebElementUtil.getColumnContents(getDriver(), By.id("main_content:form:projectList"), PROJECT_NAME_COLUMN);
+      return WebElementUtil.getColumnContents(getDriver(), projectTableBy, PROJECT_NAME_COLUMN);
    }
 }

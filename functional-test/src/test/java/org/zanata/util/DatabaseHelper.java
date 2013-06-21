@@ -43,7 +43,6 @@ public class DatabaseHelper
             Class.forName(DatabaseHelper.driver);
             connection = DriverManager.getConnection(DatabaseHelper.url, DatabaseHelper.username, DatabaseHelper.password);
             statement = connection.createStatement();
-            log.info("sys props: {}", System.getProperties());
             backupPath = PropertiesHolder.getProperty("zanata.database.backup");
             if (!new File(backupPath).exists())
             {
@@ -90,7 +89,7 @@ public class DatabaseHelper
             username = tagValue;
          }
       }
-      DatabaseHelper.log.info("driver: {}, url: {}, username: {}, password: {}", driver, url, username, password);
+      log.info("driver: {}, url: {}, username: {}, password: {}", driver, url, username, password);
    }
 
    private static List<String> readLines(String relativeFilePath) throws IOException
@@ -119,7 +118,7 @@ public class DatabaseHelper
       });
    }
 
-   public void executeQuery(final String sql)
+   private void executeQuery(final String sql)
    {
       wrapInTryCatch(new Command()
       {
