@@ -24,6 +24,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -35,10 +37,12 @@ import org.zanata.util.WebElementUtil;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -72,8 +76,28 @@ public class AbstractPage
 
    public List<String> getBreadcrumbs()
    {
-      List<WebElement> breadcrumbs = driver.findElement(By.id("breadcrumbs_panel")).findElements(By.className("breadcrumbs_display"));
+      List<WebElement> breadcrumbs = driver.findElement(By.id("breadcrumbs_panel")).findElements(By.className("breadcrumbs_link"));
       return WebElementUtil.elementsToText(breadcrumbs);
+   }
+
+   public <P> P clickBreadcrumb(final String link, Class<P> pageClass)
+   {
+      List<WebElement> breadcrumbs = driver.findElement(By.id("breadcrumbs_panel")).findElements(By.className("breadcrumbs_link"));
+      Predicate<WebElement> predicate = new Predicate<WebElement>()
+      {
+         @Override
+         public boolean apply(WebElement input)
+         {
+            return input.getText().equals(link);
+         }
+      };
+      Optional<WebElement> breadcrumbLink = Iterables.tryFind(breadcrumbs, predicate);
+      if (breadcrumbLink.isPresent())
+      {
+         breadcrumbLink.get().click();
+         return PageFactory.initElements(driver, pageClass);
+      }
+      throw new RuntimeException("can not find " + link + " in breadcrumb: " + WebElementUtil.elementsToText(breadcrumbs));
    }
 
    public List<String> getNavigationMenuItems()

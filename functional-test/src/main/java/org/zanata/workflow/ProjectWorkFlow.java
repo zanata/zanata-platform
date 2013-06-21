@@ -73,7 +73,7 @@ public class ProjectWorkFlow extends AbstractWebWorkFlow
    public ProjectPage goToProjectByName(String projectName)
    {
       ProjectsPage projects = goToHome().goToPage("Projects", ProjectsPage.class);
-      log.info("current projects: {}", projects.getProjectNamesOnCurrentPage());
+      log.info("go to project by name with current projects: {}, name: {}", projects.getProjectNamesOnCurrentPage(), projectName);
       return projects.goToProject(projectName);
    }
 }

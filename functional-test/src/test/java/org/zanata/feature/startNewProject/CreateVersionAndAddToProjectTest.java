@@ -32,7 +32,8 @@ public class CreateVersionAndAddToProjectTest
    public ProjectPage createNewProjectVersion(String projectName, String versionSlug)
    {
       ProjectVersionPage projectVersionPage = new ProjectWorkFlow().createNewProjectVersion(projectName, versionSlug);
-      ProjectsPage projectsPage = projectVersionPage.goToPage("Projects", ProjectsPage.class);
-      return projectsPage.goToProject(projectName);
+      log.info("current breadcrumb", projectVersionPage.getBreadcrumbs());
+
+      return projectVersionPage.clickBreadcrumb(projectName, ProjectPage.class);
    }
 }
