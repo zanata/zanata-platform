@@ -12,7 +12,7 @@
     <container qualifier="jbossas-managed" default="true">
         <configuration>
             <!-- We can use the JBOSS_HOME env variable instead of this -->
-            <property name="jbossHome">/opt/jboss-eap-6.1</property>
+            <property name="jbossHome">${arquillian.jboss.home}</property>
             <!-- We can use the JAVA_HOME env variable instead of this -->
             <property name="javaHome">/usr/lib/jvm/jre-1.6.0-openjdk.x86_64</property>
             <property name="javaVmArguments">-Xms1536m -Xmx1536m -XX:MaxPermSize=256m -Dorg.jboss.as.logging.per-deployment=false -Djboss.socket.binding.port-offset=100 <!---Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8787--></property>
