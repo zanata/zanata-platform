@@ -1,0 +1,139 @@
+# PO-Compendium fr
+# Copyright (C) 2003 Red Hat, Inc.
+# Bernd Groh <bgroh@redhat.com>, 2003
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: fr\n"
+"POT-Creation-Date: 2003-06-03 11:43+1000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: French <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# asimons from 172.16.5.126
+#: asimons from
+msgid "filesystem"
+#msgstr "système de fichiers"
+
+# asimons from 172.16.5.126
+#: asimons from
+msgid "device"
+msgstr "périphérique"
+
+# asimons from 172.16.5.126
+#: asimons from
+msgid "configuration file"
+msgstr "fichier de configuration"
+
+# #-#-#-#-#  fr.po (fr)  #-#-#-#-#
+# asimons from 172.16.5.126
+# ~ asimons@172.16.45.8
+# ~ msgid "hacker"
+# ~ msgstr "pirate"
+# asimons from 172.16.5.126
+msgid "breaker"
+msgstr ""
+"craqueur\n"
+"craqueur, digipirate (?), casseur"
+#: asimons from jpaubry@172.16.5.51
+msgid "cracker"
+msgstr "fichier de configuration"
+
+# asimons from 172.16.5.126
+# ~ asimons@172.16.5.126
+# ~ msgid "command"
+# ~ msgstr "commande"
+# asimons from 172.16.5.126
+# ~ asimons@172.16.5.126
+# ~ msgid "commands"
+# ~ msgstr "commandes"
+# asimons from 172.16.5.126
+# ~ asimons@172.16.5.126
+# ~ msgid "command line"
+# ~ msgstr "ligne de commande"
+#: asimons@172.16.5.126
+msgid "return packet"
+msgstr "paquet retour"
+
+#: asimons@172.16.5.126
+msgid "VLSM"
+msgstr "masque de sous-réseau à longueur variable"
+
+msgid ""
+"to states\n"
+"can remember in a state table, the connections "
+"course"
+msgstr ""
+"à états\n"
+"possibilité de garder en mémoire dans une table d'états, les connexions en "
+"cours"
+#: asimons@172.16.5.126 jpaubry@172.16.5.51
+msgid "stateful"
+msgstr "masque de sous-réseau à longueur variable"
+
+#: asimons@172.16.5.126
+msgid "well behaved"
+msgstr "à comportement acceptable"
+
+#: asimons@172.16.5.126
+msgid "link keys"
+msgstr "clés de liens"
+
+#: asimons@172.16.5.126
+msgid "side-holed paper"
+msgstr "papier listing"
+
+#: asimons@172.16.5.126
+msgid "system profile"
+msgstr "profil de système"
+
+# asimons@172.16.5.126
+#: asimons@172.16.44.75
+msgid "striping"
+msgstr "agrégat par bandes"
+
+#: asimons@172.16.5.126
+msgid "striped"
+msgstr "par bandes"
+
+#: asimons@172.16.5.126
+msgid "to stripe"
+msgstr "répartir par bandes"
+
+#: asimons@172.16.5.126
+msgid "stripe"
+msgstr "bande"
+
+#: asimons@172.16.5.126
+msgid "media card"
+msgstr "carte mémoire"
+
+#: asimons@172.16.5.126
+msgid "bastion host"
+msgstr "hôte bastion"
+
+# asimons@172.16.5.126
+# ~ jpaubry@172.16.44.115
+# ~ msgid "backwards compatibility"
+# ~ msgstr "compatibilité ascendante"
+#: jpaubry@172.16.5.51
+msgid "switch"
+msgstr "commutateur"
+
+# to double check
+#: jpaubry@172.16.5.51
+msgid "bonding"
+msgstr "liaison pas agrégat"
+
+#: jpaubry@172.16.5.51
+msgid "disk storage"
+msgstr "stockage disque"
+
+#: jpaubry@172.16.5.51
+msgid "shadow partition"
+msgstr "partition masquée"
+
