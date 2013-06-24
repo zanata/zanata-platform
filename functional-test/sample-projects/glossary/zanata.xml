@@ -1,0 +1,6 @@
+<config xmlns="http://zanata.org/namespace/config/">
+  <url>${zanata.instance.url}</url>
+  <locales>
+    <locale>en-US</locale>
+  </locales>
+</config>

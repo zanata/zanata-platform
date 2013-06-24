@@ -142,8 +142,9 @@ public class DatabaseHelper
             int adminUser = resultSet.getInt(1);
             if (adminUser == 1)
             {
-               DatabaseHelper.log.info("user [admin] already exists. ignored.");
-            } else
+               log.info("user [admin] already exists. ignored.");
+            }
+            else
             {
                runScript("create_admin_user.sql");
             }
@@ -164,12 +165,34 @@ public class DatabaseHelper
             int translator = resultSet.getInt(1);
             if (translator == 1)
             {
-               DatabaseHelper.log.info("user [translator] already exists. ignored.");
+               log.info("user [translator] already exists. ignored.");
             }
             else
             {
                runScript("create_translator_user.sql");
             }
+         }
+      });
+   }
+
+   public void addLanguage(final String localeId)
+   {
+      wrapInTryCatch(new Command()
+      {
+         @Override
+         public void execute() throws Exception
+         {
+            ResultSet resultSet = statement.executeQuery("select id from HLocale where localeId = '" + localeId + "'");
+            if (!resultSet.next())
+            {
+               statement.executeUpdate("INSERT INTO HLocale (CREATIONDATE,LASTCHANGED,VERSIONNUM,ACTIVE,LOCALEID,ENABLEDBYDEFAULT) VALUES (now(),now(),0,'true','" + localeId + "','true')");
+               resultSet = statement.executeQuery("select id from HLocale where localeId = '" + localeId + "'");
+               resultSet.next();
+            }
+            int hLocaleKey = resultSet.getInt("id");
+
+            statement.executeUpdate("INSERT INTO HLocale_Member (PERSONID,SUPPORTEDLANGUAGEID,ISCOORDINATOR) VALUES (1," + hLocaleKey + ",'false')"); // admin
+            statement.executeUpdate("INSERT INTO HLocale_Member (PERSONID,SUPPORTEDLANGUAGEID,ISCOORDINATOR) VALUES (2," + hLocaleKey + ",'false')"); // translator
          }
       });
    }

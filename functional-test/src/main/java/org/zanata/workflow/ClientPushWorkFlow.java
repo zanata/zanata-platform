@@ -26,7 +26,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import org.zanata.util.PropertiesHolder;
 import org.zanata.util.Constants;
@@ -44,6 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ClientPushWorkFlow
 {
 
+   // TODO remove this and use invokeClient instead
    public int mvnPush(String sampleProject, String... extraPushOptions)
    {
       File projectDir = getProjectRootPath(sampleProject);
@@ -80,7 +80,7 @@ public class ClientPushWorkFlow
 
    public static List<String> zanataMavenPushCommand(String... extraPushOptions)
    {
-      String userConfig = getUserConfigPath();
+      String userConfig = getAdminUserConfigPath();
       // @formatter:off
       ImmutableList.Builder<String> builder = ImmutableList.<String>builder()
             .add("mvn").add("--batch-mode")
@@ -91,10 +91,16 @@ public class ClientPushWorkFlow
       return builder.build();
    }
 
-   public static String getUserConfigPath()
+   public static String getAdminUserConfigPath()
    {
-      URL resource = Thread.currentThread().getContextClassLoader().getResource("zanata-autotest.ini");
-      Preconditions.checkNotNull(resource, "userConfig can not be found.");
+      return getUserConfigPath("admin");
+   }
+
+   public static String getUserConfigPath(String user)
+   {
+      String configName = "zanata-" + user + ".ini";
+      URL resource = Thread.currentThread().getContextClassLoader().getResource(configName);
+      Preconditions.checkNotNull(resource, configName + " can not be found.");
       return resource.getPath();
    }
 

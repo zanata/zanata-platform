@@ -53,7 +53,7 @@
         <webdriver.chrome.driver>/NotBackedUp/tools/chromedriver</webdriver.chrome.driver>
         <webdriver.chrome.bin>/opt/google/chrome/google-chrome</webdriver.chrome.bin>
         <!-- this decides what web driver type we intended to use-->
-        <webdriver.type>firefox</webdriver.type>
+        <webdriver.type>chrome</webdriver.type>
         <webdriver.log>${project.build.directory}/webdriver.log</webdriver.log>
 
         <!-- this is the path we store H2 backup script which will be used to reset database state -->
@@ -358,8 +358,11 @@
                     <include>**/*.sql</include>
                     <include>**/log4j.xml</include>
                     <include>**/zanata-ds.xml</include>
-                    <include>**/zanata-autotest.ini</include>
                 </includes>
+            </testResource>
+            <testResource>
+                <directory>src/test/resources/zanata-user-config</directory>
+                <filtering>true</filtering>
             </testResource>
             <testResource>
                 <directory>sample-projects</directory>

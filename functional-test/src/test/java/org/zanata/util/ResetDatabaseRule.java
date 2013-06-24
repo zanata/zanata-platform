@@ -27,9 +27,14 @@ public class ResetDatabaseRule extends ExternalResource
       {
          log.info("reset database before");
          DatabaseHelper.database().resetData();
+         // TODO this is hardcoded stuff
       }
       DatabaseHelper.database().addAdminUser();
       DatabaseHelper.database().addTranslatorUser();
+      if (configSet.contains(Config.WithLangFr))
+      {
+         DatabaseHelper.database().addLanguage("fr");
+      }
    }
 
    private boolean isResetEnabled()
@@ -50,6 +55,6 @@ public class ResetDatabaseRule extends ExternalResource
 
    public static enum Config
    {
-      Empty, NoResetAfter
+      Empty, NoResetAfter, WithLangFr;
    }
 }

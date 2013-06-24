@@ -1,4 +1,4 @@
-package org.zanata.feature.startNewProject;
+package org.zanata.feature.glossary;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +19,6 @@ import org.concordion.integration.junit4.ConcordionRunner;
 import org.junit.runner.RunWith;
 import org.zanata.concordion.CustomResourceExtension;
 import org.zanata.workflow.ClientPushWorkFlow;
-
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
@@ -30,20 +29,20 @@ import com.google.common.io.Files;
 import com.google.common.util.concurrent.SimpleTimeLimiter;
 
 import lombok.extern.slf4j.Slf4j;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
+ * @see <a href="https://tcms.engineering.redhat.com/run/66097/#caserun_2684615">TCMS case</a>
+ *
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 @RunWith(ConcordionRunner.class)
-@Extensions({ScreenshotExtension.class, TimestampFormatterExtension.class, CustomResourceExtension.class, LoggingTooltipExtension.class})
-public class PushPodirPluralProjectTest
+@Extensions({ScreenshotExtension.class, TimestampFormatterExtension.class, CustomResourceExtension.class})
+@Slf4j
+public class GlossaryPushTest
 {
-   private final static Logger tooltipLog = Logger.getLogger(PushPodirPluralProjectTest.class.getName());
-
+   // TODO copy & pasted from PushPodirPluralProjectTest
    @Extension
-   public ConcordionExtension extension = new LoggingTooltipExtension(PushPodirPluralProjectTest.class.getName(), Level.INFO, false);
+   public ConcordionExtension extension = new LoggingTooltipExtension(GlossaryPushTest.class.getName(), Level.INFO, false);
 
    private ClientPushWorkFlow clientPushWorkFlow = new ClientPushWorkFlow();
    private File projectRootPath;
@@ -53,21 +52,15 @@ public class PushPodirPluralProjectTest
       return ClientPushWorkFlow.getUserConfigPath("admin");
    }
 
-   public String getUserConfigContent(String path) throws IOException
-   {
-      List<String> lines = Files.readLines(new File(path), Charset.defaultCharset());
-      return Joiner.on("\n").join(lines);
-   }
-
    public String getProjectLocation(String project)
    {
       projectRootPath = clientPushWorkFlow.getProjectRootPath(project);
-      tooltipLog.info("project root path:" + projectRootPath.getAbsolutePath());
       return projectRootPath.getAbsolutePath();
    }
 
    public List<String> push(String command, String configPath) throws Exception
    {
+      log.info("command to execute: {}{}", command, configPath);
       final List<String> commands = Lists.newArrayList(Splitter.on(" ").split(command + configPath));
 
       SimpleTimeLimiter timeLimiter = new SimpleTimeLimiter();
@@ -80,7 +73,6 @@ public class PushPodirPluralProjectTest
             process.waitFor();
             List<String> output = ClientPushWorkFlow.getOutput(process);
             logOutputLines(output);
-            tooltipLog.info("process exit code: " + process.exitValue());
             return output;
          }
       };
