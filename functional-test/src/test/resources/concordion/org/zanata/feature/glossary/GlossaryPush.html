@@ -1,7 +1,9 @@
 <html xmlns:c="http://www.concordion.org/2007/concordion" xmlns:ext="urn:concordion-extensions:2010">
 <head>
+    <title>TCMS test case 147311</title>
 </head>
 <body>
+<p class="info">TCMS test case: <a href="https://tcms.engineering.redhat.com/case/147311/">147311</a></p>
 <p class="info">
     sample project <span c:set="#project">glossary</span>.
 </p>
@@ -21,5 +23,12 @@ then I should get result <span c:assertTrue="isPushSuccessful(#result)">successf
     <pre>
         <span c:echo="resultByLines(#result)"/>
     </pre>
+
+<p>
+    After push when I <span c:execute="translate()">launch editor to translate language fr</span>
+    and <span c:execute="searchGlossary(#term)">search glossary term <span c:set="#term">filesystem</span></span>,
+    <span ext:screenshot="" />
+    I should <span c:execute="#searchResult = getFirstResult()">get first result</span> as <span c:assertEquals="#searchResult">système de fichiers</span>.
+</p>
 </body>
 </html>

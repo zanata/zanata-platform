@@ -68,38 +68,14 @@ public class PushPodirPluralProjectTest
 
    public List<String> push(String command, String configPath) throws Exception
    {
-      final List<String> commands = Lists.newArrayList(Splitter.on(" ").split(command + configPath));
-
-      SimpleTimeLimiter timeLimiter = new SimpleTimeLimiter();
-      Callable<List<String>> work = new Callable<List<String>>()
-      {
-         @Override
-         public List<String> call() throws Exception
-         {
-            Process process = ClientPushWorkFlow.invokeClient(projectRootPath, commands);
-            process.waitFor();
-            List<String> output = ClientPushWorkFlow.getOutput(process);
-            logOutputLines(output);
-            tooltipLog.info("process exit code: " + process.exitValue());
-            return output;
-         }
-      };
-      return timeLimiter.callWithTimeout(work, 50, TimeUnit.SECONDS, true);
+      return clientPushWorkFlow.callWithTimeout(projectRootPath, command + configPath);
    }
 
 
 
    public boolean isPushSuccessful(List<String> output)
    {
-      Optional<String> successOutput = Iterables.tryFind(output, new Predicate<String>()
-      {
-         @Override
-         public boolean apply(String input)
-         {
-            return input.contains("BUILD SUCCESS");
-         }
-      });
-      return successOutput.isPresent();
+      return clientPushWorkFlow.isPushSuccessful(output);
    }
 
    public String resultByLines(List<String> output)
@@ -107,11 +83,4 @@ public class PushPodirPluralProjectTest
       return Joiner.on("\n").join(output);
    }
 
-   private void logOutputLines(List<String> output)
-   {
-      for (String line : output)
-      {
-         log.info(line);
-      }
-   }
 }

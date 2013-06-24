@@ -1,37 +1,27 @@
 package org.zanata.feature.glossary;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import org.concordion.api.extension.ConcordionExtension;
-import org.concordion.api.extension.Extension;
 import org.concordion.api.extension.Extensions;
-import org.concordion.ext.LoggingTooltipExtension;
 import org.concordion.ext.ScreenshotExtension;
 import org.concordion.ext.TimestampFormatterExtension;
 import org.concordion.integration.junit4.ConcordionRunner;
 import org.junit.runner.RunWith;
 import org.zanata.concordion.CustomResourceExtension;
+import org.zanata.page.projects.ProjectPage;
+import org.zanata.page.webtrans.DocumentsViewPage;
+import org.zanata.page.webtrans.EditorPage;
+import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.ClientPushWorkFlow;
+import org.zanata.workflow.LoginWorkFlow;
+
 import com.google.common.base.Joiner;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.base.Splitter;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.google.common.io.Files;
-import com.google.common.util.concurrent.SimpleTimeLimiter;
 
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * @see <a href="https://tcms.engineering.redhat.com/run/66097/#caserun_2684615">TCMS case</a>
+ * @see <a href="https://tcms.engineering.redhat.com/case/147311/">TCMS case</a>
  *
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
@@ -40,12 +30,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class GlossaryPushTest
 {
-   // TODO copy & pasted from PushPodirPluralProjectTest
-   @Extension
-   public ConcordionExtension extension = new LoggingTooltipExtension(GlossaryPushTest.class.getName(), Level.INFO, false);
-
    private ClientPushWorkFlow clientPushWorkFlow = new ClientPushWorkFlow();
    private File projectRootPath;
+   private EditorPage editorPage;
 
    public String getUserConfigPath()
    {
@@ -60,38 +47,12 @@ public class GlossaryPushTest
 
    public List<String> push(String command, String configPath) throws Exception
    {
-      log.info("command to execute: {}{}", command, configPath);
-      final List<String> commands = Lists.newArrayList(Splitter.on(" ").split(command + configPath));
-
-      SimpleTimeLimiter timeLimiter = new SimpleTimeLimiter();
-      Callable<List<String>> work = new Callable<List<String>>()
-      {
-         @Override
-         public List<String> call() throws Exception
-         {
-            Process process = ClientPushWorkFlow.invokeClient(projectRootPath, commands);
-            process.waitFor();
-            List<String> output = ClientPushWorkFlow.getOutput(process);
-            logOutputLines(output);
-            return output;
-         }
-      };
-      return timeLimiter.callWithTimeout(work, 50, TimeUnit.SECONDS, true);
+      return clientPushWorkFlow.callWithTimeout(projectRootPath, command + configPath);
    }
-
-
 
    public boolean isPushSuccessful(List<String> output)
    {
-      Optional<String> successOutput = Iterables.tryFind(output, new Predicate<String>()
-      {
-         @Override
-         public boolean apply(String input)
-         {
-            return input.contains("BUILD SUCCESS");
-         }
-      });
-      return successOutput.isPresent();
+      return clientPushWorkFlow.isPushSuccessful(output);
    }
 
    public String resultByLines(List<String> output)
@@ -99,11 +60,20 @@ public class GlossaryPushTest
       return Joiner.on("\n").join(output);
    }
 
-   private void logOutputLines(List<String> output)
+   public void translate()
    {
-      for (String line : output)
-      {
-         log.info(line);
-      }
+      new LoginWorkFlow().signIn("translator", "translator");
+      editorPage = new BasicWorkFlow().goToPage("webtrans/translate?project=about-fedora&iteration=master&localeId=fr&locale=en#view:doc;doc:About_Fedora", EditorPage.class);
+   }
+
+   public void searchGlossary(String term)
+   {
+      editorPage.searchGlossary(term);
+   }
+
+   public String getFirstResult()
+   {
+      // 2 row 2 column is glossary target
+      return editorPage.getGlossaryResultTable().get(1).get(1);
    }
 }

@@ -21,12 +21,17 @@
 package org.zanata;
 
 import org.hamcrest.Matchers;
+import org.junit.ClassRule;
 import org.junit.Test;
+import org.zanata.util.ResetDatabaseRule;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ExperimentTest
 {
+   @ClassRule
+   public static ResetDatabaseRule rule = new ResetDatabaseRule(ResetDatabaseRule.Config.NoResetAfter);
+
    @Test
    public void canFindText() {
       String linkText = "master\n   Documents: 0";

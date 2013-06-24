@@ -117,6 +117,13 @@ public class GlossaryView extends Composite implements GlossaryDisplay
       headerLabel.setText(messages.glossaryHeading());
       clearButton.setText(messages.clearButtonLabel());
       searchButton.setText(messages.searchButtonLabel());
+
+      // debug id
+      glossaryTextBox.ensureDebugId("glossaryTextBox");
+      searchType.ensureDebugId("glossarySearchType");
+      searchButton.ensureDebugId("glossarySearchButton");
+      clearButton.ensureDebugId("glossaryClearButton");
+      resultTable.ensureDebugId("glossaryResultTable");
    }
 
    @UiHandler("glossaryTextBox")

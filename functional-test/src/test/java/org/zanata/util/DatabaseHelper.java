@@ -94,8 +94,14 @@ public class DatabaseHelper
 
    private static List<String> readLines(String relativeFilePath) throws IOException
    {
+      File file = getFileFromClasspath(relativeFilePath);
+      return Files.readLines(file, Charset.defaultCharset());
+   }
+
+   private static File getFileFromClasspath(String relativeFilePath)
+   {
       URL dataSourceFile = Thread.currentThread().getContextClassLoader().getResource(relativeFilePath);
-      return Files.readLines(new File(dataSourceFile.getPath()), Charset.defaultCharset());
+      return new File(dataSourceFile.getPath());
    }
 
    public void runScript(final String scriptFileName)
@@ -175,26 +181,10 @@ public class DatabaseHelper
       });
    }
 
-   public void addLanguage(final String localeId)
+   public void resetDatabaseWithData()
    {
-      wrapInTryCatch(new Command()
-      {
-         @Override
-         public void execute() throws Exception
-         {
-            ResultSet resultSet = statement.executeQuery("select id from HLocale where localeId = '" + localeId + "'");
-            if (!resultSet.next())
-            {
-               statement.executeUpdate("INSERT INTO HLocale (CREATIONDATE,LASTCHANGED,VERSIONNUM,ACTIVE,LOCALEID,ENABLEDBYDEFAULT) VALUES (now(),now(),0,'true','" + localeId + "','true')");
-               resultSet = statement.executeQuery("select id from HLocale where localeId = '" + localeId + "'");
-               resultSet.next();
-            }
-            int hLocaleKey = resultSet.getInt("id");
-
-            statement.executeUpdate("INSERT INTO HLocale_Member (PERSONID,SUPPORTEDLANGUAGEID,ISCOORDINATOR) VALUES (1," + hLocaleKey + ",'false')"); // admin
-            statement.executeUpdate("INSERT INTO HLocale_Member (PERSONID,SUPPORTEDLANGUAGEID,ISCOORDINATOR) VALUES (2," + hLocaleKey + ",'false')"); // translator
-         }
-      });
+      String path = getFileFromClasspath("org/zanata/feature/zanata_with_data.sql").getAbsolutePath();
+      executeQuery("RUNSCRIPT FROM '" + path + "' CHARSET 'UTF-8'");
    }
 
    public void resetData()

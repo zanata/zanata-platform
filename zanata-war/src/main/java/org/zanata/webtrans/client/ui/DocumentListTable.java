@@ -264,6 +264,7 @@ public class DocumentListTable extends FlexTable
          this.add(hasError);
 
          docLabel = new InlineLabel(docInfo.getName());
+         docLabel.ensureDebugId("docLabel-" + docInfo.getId().getDocId());
          docLabel.setTitle(docInfo.getName());
          docLabel.addClickHandler(new ClickHandler()
          {

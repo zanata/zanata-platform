@@ -5,8 +5,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.zanata.util.ResetDatabaseRule;
 
-import junit.framework.TestSuite;
-
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
@@ -15,5 +13,5 @@ import junit.framework.TestSuite;
 public class GlossaryTestSuite
 {
    @ClassRule
-   public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule(ResetDatabaseRule.Config.NoResetAfter, ResetDatabaseRule.Config.WithLangFr);
+   public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule(ResetDatabaseRule.Config.NoResetAfter, ResetDatabaseRule.Config.WithData);
 }
