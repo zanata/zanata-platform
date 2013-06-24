@@ -9,13 +9,10 @@ import org.concordion.ext.TimestampFormatterExtension;
 import org.concordion.integration.junit4.ConcordionRunner;
 import org.junit.runner.RunWith;
 import org.zanata.concordion.CustomResourceExtension;
-import org.zanata.page.projects.ProjectPage;
-import org.zanata.page.webtrans.DocumentsViewPage;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.ClientPushWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
-
 import com.google.common.base.Joiner;
 
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +33,7 @@ public class GlossaryPushTest
 
    public String getUserConfigPath()
    {
-      return ClientPushWorkFlow.getUserConfigPath("admin");
+      return ClientPushWorkFlow.getUserConfigPath("glossarist");
    }
 
    public String getProjectLocation(String project)

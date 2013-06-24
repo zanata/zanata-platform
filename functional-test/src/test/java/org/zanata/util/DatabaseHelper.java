@@ -138,44 +138,37 @@ public class DatabaseHelper
 
    public void addAdminUser()
    {
-      wrapInTryCatch(new Command()
-      {
-         @Override
-         public void execute() throws Exception
-         {
-            ResultSet resultSet = statement.executeQuery("select count(*) from HAccount where username = 'admin'");
-            resultSet.next();
-            int adminUser = resultSet.getInt(1);
-            if (adminUser == 1)
-            {
-               log.info("user [admin] already exists. ignored.");
-            }
-            else
-            {
-               runScript("create_admin_user.sql");
-            }
-         }
-      });
+      addUserIfNotExist("admin");
    }
 
    public void addTranslatorUser()
    {
+      addUserIfNotExist("translator");
+   }
+
+   public void addGlossaristUser()
+   {
+      addUserIfNotExist("glossarist");
+   }
+
+   private void addUserIfNotExist(final String user)
+   {
       wrapInTryCatch(new Command()
       {
-
          @Override
          public void execute() throws Exception
          {
-            ResultSet resultSet = statement.executeQuery("select count(*) from HAccount where username = 'translator'");
+
+            ResultSet resultSet = statement.executeQuery("select count(*) from HAccount where username = '" + user + "'");
             resultSet.next();
-            int translator = resultSet.getInt(1);
-            if (translator == 1)
+            int adminUser = resultSet.getInt(1);
+            if (adminUser == 1)
             {
-               log.info("user [translator] already exists. ignored.");
+               log.info("user already exists. ignored.");
             }
             else
             {
-               runScript("create_translator_user.sql");
+               runScript("create_" + user + "_user.sql");
             }
          }
       });
