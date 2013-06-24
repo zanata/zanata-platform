@@ -7,10 +7,12 @@ import net.customware.gwt.presenter.client.EventBus;
 import org.zanata.common.LocaleId;
 import org.zanata.webtrans.client.EventProcessor.StartCallback;
 import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.gin.WebTransGinjector;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
+import org.zanata.webtrans.client.presenter.UserScriptCallbackHook;
 import org.zanata.webtrans.client.rpc.NoOpAsyncCallback;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.auth.AuthenticationError;
@@ -197,6 +199,15 @@ public class Application implements EntryPoint
             stopwatch.stop();
          }
       });
+
+      registerUserScriptCallbackHook();
+   }
+
+   private void registerUserScriptCallbackHook()
+   {
+      final EventBus eventBus = injector.getEventBus();
+      UserScriptCallbackHook hook = new UserScriptCallbackHook();
+      eventBus.addHandler(TransUnitUpdatedEvent.getType(), hook);
    }
 
    public static ProjectIterationId getProjectIterationId()
