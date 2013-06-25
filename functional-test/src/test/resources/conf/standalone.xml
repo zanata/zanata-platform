@@ -25,6 +25,10 @@
         <extension module="org.jboss.as.webservices"/>
         <extension module="org.jboss.as.weld"/>
     </extensions>
+    <system-properties>
+        <property name="javamelody.storage-directory" value="/tmp/zanata/stats"/>
+        <property name="hibernate.search.default.indexBase" value="/tmp/zanata/indexes"/>
+    </system-properties>
     <management>
         <security-realms>
             <security-realm name="ManagementRealm">

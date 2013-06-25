@@ -30,7 +30,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class ExperimentTest
 {
    @ClassRule
-   public static ResetDatabaseRule rule = new ResetDatabaseRule(ResetDatabaseRule.Config.NoResetAfter);
+   public static ResetDatabaseRule rule = new ResetDatabaseRule(ResetDatabaseRule.Config.NoResetAfter, ResetDatabaseRule.Config.WithData);
 
    @Test
    public void canFindText() {

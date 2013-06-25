@@ -1,8 +1,7 @@
 package org.zanata.page.webtrans;
 
+import java.util.Collections;
 import java.util.List;
-
-import javax.annotation.Nullable;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -21,6 +20,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class EditorPage extends AbstractPage
 {
+   private final By glossaryTableBy = By.id("gwt-debug-glossaryResultTable");
+   private final By glossaryNoResultBy = By.id("gwt-debug-glossaryNoResult");
+
    @FindBy(id = "gwt-debug-transUnitTable")
    private WebElement transUnitTable;
 
@@ -36,7 +38,7 @@ public class EditorPage extends AbstractPage
          @Override
          public boolean apply(WebDriver input)
          {
-            return getDriver().findElement(By.id("gwt-debug-glossaryResultTable")).isDisplayed();
+            return input.findElements(glossaryNoResultBy).size() == 1 || input.findElements(glossaryTableBy).size() == 1;
          }
       });
       WebElement searchBox = getDriver().findElement(By.id("gwt-debug-glossaryTextBox"));
@@ -59,7 +61,11 @@ public class EditorPage extends AbstractPage
          @Override
          public List<List<String>> apply(WebDriver input)
          {
-            List<List<String>> resultTable = WebElementUtil.getTwoDimensionList(input, By.id("gwt-debug-glossaryResultTable"));
+            if (input.findElements(glossaryNoResultBy).size() == 1)
+            {
+               return Collections.emptyList();
+            }
+            List<List<String>> resultTable = WebElementUtil.getTwoDimensionList(input, glossaryTableBy);
             log.info("glossary result: {}", resultTable);
             return resultTable;
          }

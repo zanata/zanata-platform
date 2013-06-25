@@ -124,6 +124,7 @@ public class GlossaryView extends Composite implements GlossaryDisplay
       searchButton.ensureDebugId("glossarySearchButton");
       clearButton.ensureDebugId("glossaryClearButton");
       resultTable.ensureDebugId("glossaryResultTable");
+      noResultFoundLabel.ensureDebugId("glossaryNoResult");
    }
 
    @UiHandler("glossaryTextBox")
