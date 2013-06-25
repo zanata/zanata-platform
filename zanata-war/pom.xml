@@ -150,10 +150,8 @@
                   </rules>
                 </configuration>
               </execution>
-              <!-- Make sure the JBoss test variable is present when running integration tests -->
               <execution>
                   <id>enforce-arquillian-jboss-location-present</id>
-                  <phase>pre-integration-test</phase>
                   <goals>
                       <goal>enforce</goal>
                   </goals>
@@ -161,10 +159,10 @@
                       <rules>
                           <requireProperty>
                               <property>arquillian.jboss.home</property>
-                              <message>You must set the arquillian.jboss.home property when running integration tests</message>
+                              <message>You will need to set the arquillian.jboss.home property to run integration tests</message>
                           </requireProperty>
                       </rules>
-                      <fail>true</fail>
+                      <fail>false</fail>
                   </configuration>
               </execution>
             </executions>
