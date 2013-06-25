@@ -40,10 +40,10 @@ public interface NavigationMessages extends Messages
    @DefaultMessage("Last Entry")
    String lastEntry();
 
-   @DefaultMessage("Next Fuzzy")
+   @DefaultMessage("Next Fuzzy or Rejected")
    String nextFuzzy();
 
-   @DefaultMessage("Prev Fuzzy")
+   @DefaultMessage("Prev Fuzzy or Rejected")
    String prevFuzzy();
 
    @DefaultMessage("Next Untranslated")
@@ -52,13 +52,13 @@ public interface NavigationMessages extends Messages
    @DefaultMessage("Prev Untranslated")
    String prevUntranslated();
 
-   @DefaultMessage("Next Fuzzy or Untranslated")
+   @DefaultMessage("Next Fuzzy/Rejected/Untranslated")
    String nextFuzzyOrUntranslated();
 
    @DefaultMessage("Alt+PageDown")
    String nextFuzzyOrUntranslatedShortcut();
 
-   @DefaultMessage("Prev Fuzzy or Untranslated")
+   @DefaultMessage("Prev Fuzzy/Rejected/Untranslated")
    String prevFuzzyOrUntranslated();
 
    @DefaultMessage("Alt+PageUp")
