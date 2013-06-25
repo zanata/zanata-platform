@@ -155,7 +155,17 @@ public class AbstractPage
       }
    }
 
-   protected List<String> getErrors()
+   protected void clickSaveAndExpectErrors(WebElement saveButton)
+   {
+      saveButton.click();
+      List<String> errors = getErrors();
+      if (errors.isEmpty())
+      {
+         throw new RuntimeException("Errors expected, none found.");
+      }
+   }
+
+   public List<String> getErrors()
    {
       List<WebElement> errorSpans = getDriver().findElements(By.xpath("//span[@class='errors']"));
       return WebElementUtil.elementsToText(errorSpans);
