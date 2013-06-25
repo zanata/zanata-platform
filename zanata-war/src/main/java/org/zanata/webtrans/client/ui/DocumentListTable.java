@@ -90,6 +90,8 @@ public class DocumentListTable extends FlexTable
       this.resources = resources;
 
       buildHeader();
+
+      ensureDebugId("documentListTable");
    }
 
    public void setListener(final DocumentListDisplay.Listener listener)

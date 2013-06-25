@@ -2,6 +2,7 @@ package org.zanata.page.webtrans;
 
 import java.util.List;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -17,34 +18,17 @@ import com.google.common.collect.Iterables;
  */
 public class DocumentsViewPage extends AbstractPage
 {
-   @FindBy(className = "DocumentListTable")
+   @FindBy(id = "gwt-debug-documentListTable")
    private WebElement documentListTable;
-
-   private List<TableRow> documentRows;
 
    public DocumentsViewPage(final WebDriver driver)
    {
       super(driver);
-      cacheDocumentRows();
    }
 
    public List<List<String>> getDocumentListTableContent()
    {
-      return WebElementUtil.transformToTwoDimensionList(documentRows);
+      return WebElementUtil.getTwoDimensionList(getDriver(), By.id("gwt-debug-documentListTable"));
    }
 
-   private void cacheDocumentRows()
-   {
-      List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(), documentListTable);
-      //GWT gives us some extra rows
-      Iterable<TableRow> documentRows = Iterables.filter(tableRows, new Predicate<TableRow>()
-      {
-         @Override
-         public boolean apply(TableRow input)
-         {
-            return input.getCellContents().size() > 5;
-         }
-      });
-      this.documentRows = ImmutableList.copyOf(documentRows);
-   }
 }
