@@ -26,47 +26,30 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import org.zanata.util.PropertiesHolder;
 import org.zanata.util.Constants;
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
+import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.io.CharStreams;
 import com.google.common.io.InputSupplier;
+import com.google.common.util.concurrent.SimpleTimeLimiter;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class ClientPushWorkFlow
 {
-
-   public int mvnPush(String sampleProject, String... extraPushOptions)
-   {
-      File projectDir = getProjectRootPath(sampleProject);
-      List<String> command = zanataMavenPushCommand(extraPushOptions);
-
-      Process process = null;
-      try
-      {
-         Joiner joiner = Joiner.on(" ");
-         log.info("execute command: \n{}\n", joiner.join(command));
-
-         process = invokeClient(projectDir, command);
-         process.waitFor();
-
-         return process.exitValue();
-
-      }
-      catch (Exception e)
-      {
-         log.error("exception", e);
-         return 1;
-      }
-   }
 
    public File getProjectRootPath(String sampleProject)
    {
@@ -78,27 +61,55 @@ public class ClientPushWorkFlow
       return projectDir;
    }
 
-   public static List<String> zanataMavenPushCommand(String... extraPushOptions)
+   public static String getUserConfigPath(String user)
    {
-      String userConfig = getUserConfigPath();
-      // @formatter:off
-      ImmutableList.Builder<String> builder = ImmutableList.<String>builder()
-            .add("mvn").add("--batch-mode")
-            .add("zanata:push")
-            .add("-Dzanata.userConfig=" + userConfig)
-            .add(extraPushOptions);
-      // @formatter:on
-      return builder.build();
-   }
-
-   public static String getUserConfigPath()
-   {
-      URL resource = Thread.currentThread().getContextClassLoader().getResource("zanata-autotest.ini");
-      Preconditions.checkNotNull(resource, "userConfig can not be found.");
+      String configName = "zanata-" + user + ".ini";
+      URL resource = Thread.currentThread().getContextClassLoader().getResource(configName);
+      Preconditions.checkNotNull(resource, configName + " can not be found.");
       return resource.getPath();
    }
 
-   public synchronized static Process invokeClient(File projectDir, List<String> command) throws IOException
+   public List<String> callWithTimeout(final File workingDirectory, String command)
+   {
+      final List<String> commands = Lists.newArrayList(Splitter.on(" ").split(command));
+
+      SimpleTimeLimiter timeLimiter = new SimpleTimeLimiter();
+      Callable<List<String>> work = new Callable<List<String>>()
+      {
+         @Override
+         public List<String> call() throws Exception
+         {
+            Process process = ClientPushWorkFlow.invokeClient(workingDirectory, commands);
+            process.waitFor();
+            List<String> output = ClientPushWorkFlow.getOutput(process);
+            logOutputLines(output);
+            return output;
+         }
+      };
+      try
+      {
+         return timeLimiter.callWithTimeout(work, 60, TimeUnit.SECONDS, true);
+      }
+      catch (Exception e)
+      {
+         throw new RuntimeException(e);
+      }
+   }
+
+   public boolean isPushSuccessful(List<String> output)
+   {
+      Optional<String> successOutput = Iterables.tryFind(output, new Predicate<String>()
+      {
+         @Override
+         public boolean apply(String input)
+         {
+            return input.contains("BUILD SUCCESS");
+         }
+      });
+      return successOutput.isPresent();
+   }
+
+   private synchronized static Process invokeClient(File projectDir, List<String> command) throws IOException
    {
       ProcessBuilder processBuilder = new ProcessBuilder(command).redirectErrorStream(true);
       Map<String, String> env = processBuilder.environment();
@@ -108,6 +119,14 @@ public class ClientPushWorkFlow
 //      log.debug("env: {}", env);
       processBuilder.directory(projectDir);
       return processBuilder.start();
+   }
+
+   private void logOutputLines(List<String> output)
+   {
+      for (String line : output)
+      {
+         log.info(line);
+      }
    }
 
    public static List<String> getOutput(Process process) throws IOException

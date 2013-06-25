@@ -97,9 +97,9 @@ public class UserAction extends org.jboss.seam.security.management.action.UserAc
       }
    }
 
-   public String getEmail()
+   public String getEmail(String username)
    {
-      return personDAO.findEmail(getUsername());
+      return personDAO.findEmail(username);
    }
    
    //This is readonly field in UI.

@@ -23,13 +23,24 @@ public class ResetDatabaseRule extends ExternalResource
    @Override
    protected void before() throws Throwable
    {
-      if (isResetEnabled())
+      if (!isResetEnabled())
+      {
+         return;
+      }
+
+      if (configSet.contains(Config.WithData))
+      {
+         DatabaseHelper.database().resetDatabaseWithData();
+      }
+      else
       {
          log.info("reset database before");
          DatabaseHelper.database().resetData();
+         DatabaseHelper.database().addAdminUser();
+         DatabaseHelper.database().addTranslatorUser();
+         DatabaseHelper.database().addGlossaristUser();
       }
-      DatabaseHelper.database().addAdminUser();
-      DatabaseHelper.database().addTranslatorUser();
+
    }
 
    private boolean isResetEnabled()
@@ -50,6 +61,6 @@ public class ResetDatabaseRule extends ExternalResource
 
    public static enum Config
    {
-      Empty, NoResetAfter
+      Empty, NoResetAfter, WithData;
    }
 }

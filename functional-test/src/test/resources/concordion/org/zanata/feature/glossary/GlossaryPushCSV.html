@@ -1,0 +1,41 @@
+<html xmlns:c="http://www.concordion.org/2007/concordion" xmlns:ext="urn:concordion-extensions:2010">
+<head>
+    <title>TCMS test case 170111</title>
+</head>
+<body>
+<p class="info">TCMS test case: <a href="https://tcms.engineering.redhat.com/case/170111/">170111</a></p>
+<p class="info">
+    sample project <span c:set="#project">glossary</span>.
+</p>
+<p>
+    As a user with glossarist role,
+    given that I have user config at <span c:echo="#configPath = getUserConfigPath()"></span>.
+</p>
+
+<p>
+    Under project root path <span c:echo="getProjectLocation(#project)"></span>,
+    when I execute
+<div c:execute="#result = push(#command, #configPath)">
+    <span c:set="#command">mvn --batch-mode zanata:glossary-push -Dzanata.glossaryFile=compendium.csv -Dglossary.lang=hi -Dzanata.userConfig=</span><span c:echo="#configPath"></span>
+</div>,
+then I should get result <span c:assertTrue="isPushSuccessful(#result)">successful</span>.
+</p>
+    <pre>
+        <span c:echo="resultByLines(#result)"/>
+    </pre>
+
+<hr/>
+
+<p>
+    Under project root path <span c:echo="getProjectLocation(#project)"></span>,
+    when I execute
+<div c:execute="#result = push(#command, #configPath)">
+    <span c:set="#command">mvn --batch-mode zanata:glossary-push -Dzanata.glossaryFile=compendium_invalid.csv -Dglossary.lang=hi -Dzanata.userConfig=</span><span c:echo="#configPath"></span>
+</div>,
+then I should get result <span c:assertTrue="isPushFailed(#result)">failed</span>.
+</p>
+    <pre>
+        <span c:echo="resultByLines(#result)"/>
+    </pre>
+</body>
+</html>

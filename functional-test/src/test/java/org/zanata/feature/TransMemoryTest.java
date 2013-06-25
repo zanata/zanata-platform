@@ -50,9 +50,9 @@ public class TransMemoryTest
       ProjectPage projectPage = projectWorkFlow.createNewProject("trans-memory", "trans memory test");
       projectWorkFlow.createNewProjectVersion("trans memory test", "master");
 
-      int exitCode = new ClientPushWorkFlow().mvnPush("trans-memory", "-Dzanata.merge=import", "-Dzanata.projectVersion=master", "-Dzanata.pushType=Both");
+//      int exitCode = new ClientPushWorkFlow().mvnPush("trans-memory", "-Dzanata.merge=import", "-Dzanata.projectVersion=master", "-Dzanata.pushType=Both");
 
-      assertThat(exitCode, Matchers.equalTo(0));
+//      assertThat(exitCode, Matchers.equalTo(0));
    }
 
    @Test(timeout = Constants.FIFTY_SEC)
@@ -67,13 +67,13 @@ public class TransMemoryTest
       projectWorkFlow.createNewProjectVersion("trans memory test v2", "master");
 
       // @formatter:off
-      int exitCode = new ClientPushWorkFlow().mvnPush("trans-memory",
-            "-Dzanata.projectConfig=differentProject/zanata.xml",
-            "-Dzanata.projectVersion=master",
-            "-Dzanata.copyTrans=false",
-            "-Dzanata.pushType=Source");
+//      int exitCode = new ClientPushWorkFlow().mvnPush("trans-memory",
+//            "-Dzanata.projectConfig=differentProject/zanata.xml",
+//            "-Dzanata.projectVersion=master",
+//            "-Dzanata.copyTrans=false",
+//            "-Dzanata.pushType=Source");
       // @formatter:on
 
-      assertThat(exitCode, Matchers.equalTo(0));
+//      assertThat(exitCode, Matchers.equalTo(0));
    }
 }

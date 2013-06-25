@@ -94,8 +94,14 @@ public class DatabaseHelper
 
    private static List<String> readLines(String relativeFilePath) throws IOException
    {
+      File file = getFileFromClasspath(relativeFilePath);
+      return Files.readLines(file, Charset.defaultCharset());
+   }
+
+   private static File getFileFromClasspath(String relativeFilePath)
+   {
       URL dataSourceFile = Thread.currentThread().getContextClassLoader().getResource(relativeFilePath);
-      return Files.readLines(new File(dataSourceFile.getPath()), Charset.defaultCharset());
+      return new File(dataSourceFile.getPath());
    }
 
    public void runScript(final String scriptFileName)
@@ -132,46 +138,46 @@ public class DatabaseHelper
 
    public void addAdminUser()
    {
+      addUserIfNotExist("admin");
+   }
+
+   public void addTranslatorUser()
+   {
+      addUserIfNotExist("translator");
+   }
+
+   public void addGlossaristUser()
+   {
+      addUserIfNotExist("glossarist");
+   }
+
+   private void addUserIfNotExist(final String user)
+   {
       wrapInTryCatch(new Command()
       {
          @Override
          public void execute() throws Exception
          {
-            ResultSet resultSet = statement.executeQuery("select count(*) from HAccount where username = 'admin'");
+
+            ResultSet resultSet = statement.executeQuery("select count(*) from HAccount where username = '" + user + "'");
             resultSet.next();
             int adminUser = resultSet.getInt(1);
             if (adminUser == 1)
             {
-               DatabaseHelper.log.info("user [admin] already exists. ignored.");
-            } else
+               log.info("user already exists. ignored.");
+            }
+            else
             {
-               runScript("create_admin_user.sql");
+               runScript("create_" + user + "_user.sql");
             }
          }
       });
    }
 
-   public void addTranslatorUser()
+   public void resetDatabaseWithData()
    {
-      wrapInTryCatch(new Command()
-      {
-
-         @Override
-         public void execute() throws Exception
-         {
-            ResultSet resultSet = statement.executeQuery("select count(*) from HAccount where username = 'translator'");
-            resultSet.next();
-            int translator = resultSet.getInt(1);
-            if (translator == 1)
-            {
-               DatabaseHelper.log.info("user [translator] already exists. ignored.");
-            }
-            else
-            {
-               runScript("create_translator_user.sql");
-            }
-         }
-      });
+      String path = getFileFromClasspath("org/zanata/feature/zanata_with_data.sql").getAbsolutePath();
+      executeQuery("RUNSCRIPT FROM '" + path + "' CHARSET 'UTF-8'");
    }
 
    public void resetData()

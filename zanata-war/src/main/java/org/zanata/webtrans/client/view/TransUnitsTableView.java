@@ -96,6 +96,8 @@ public class TransUnitsTableView extends Composite implements TransUnitsTableDis
             listener.refreshView();
          }
       });
+
+      transUnitTable.ensureDebugId("transUnitTable");
    }
 
    @Override

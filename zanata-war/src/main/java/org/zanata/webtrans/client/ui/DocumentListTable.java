@@ -90,6 +90,8 @@ public class DocumentListTable extends FlexTable
       this.resources = resources;
 
       buildHeader();
+
+      ensureDebugId("documentListTable");
    }
 
    public void setListener(final DocumentListDisplay.Listener listener)
@@ -264,6 +266,7 @@ public class DocumentListTable extends FlexTable
          this.add(hasError);
 
          docLabel = new InlineLabel(docInfo.getName());
+         docLabel.ensureDebugId("docLabel-" + docInfo.getId().getDocId());
          docLabel.setTitle(docInfo.getName());
          docLabel.addClickHandler(new ClickHandler()
          {

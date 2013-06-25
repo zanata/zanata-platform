@@ -54,22 +54,4 @@ public class AbstractWebWorkFlow
       return baseUrl + "/";
    }
 
-   public String toUrl(String relativeUrl)
-   {
-      return hostUrl + removeLeadingSlash(relativeUrl);
-   }
-
-   private static String removeLeadingSlash(String relativeUrl)
-   {
-      if (relativeUrl.startsWith("/"))
-      {
-         return relativeUrl.substring(1, relativeUrl.length());
-      }
-      return relativeUrl;
-   }
-
-   public <P extends AbstractPage> P getCurrentPage(Class<P> pageClass)
-   {
-      return PageFactory.initElements(driver, pageClass);
-   }
 }
