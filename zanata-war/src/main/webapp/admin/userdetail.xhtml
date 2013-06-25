@@ -24,7 +24,7 @@
           </s:decorate>
           <s:decorate id="emailField" template="../WEB-INF/layout/edit.xhtml">
             <ui:define name="label">#{messages['jsf.Email']}</ui:define>
-            <s:label value="#{userAction.email}" styleClass="readOnlyLabel"/>
+            <s:label value="#{userAction.getEmail(userAction.username)}" styleClass="readOnlyLabel"/>
           </s:decorate>
 	      <s:fragment rendered="#{applicationConfiguration.internalAuth}">
 	          <s:decorate id="passwordField" template="../WEB-INF/layout/edit.xhtml" >
