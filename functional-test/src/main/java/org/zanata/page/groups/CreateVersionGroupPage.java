@@ -1,14 +1,17 @@
 package org.zanata.page.groups;
 
+
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.Select;
 import org.zanata.page.AbstractPage;
-
+import lombok.extern.slf4j.Slf4j;
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
+@Slf4j
 public class CreateVersionGroupPage extends AbstractPage
 {
    @FindBy(id = "projectForm:slugField:slug")
@@ -25,6 +28,9 @@ public class CreateVersionGroupPage extends AbstractPage
 
    @FindBy(id = "projectForm:save")
    private WebElement saveButton;
+
+   @FindBy(className = "errors")
+   private WebElement groupSlugFieldError;
 
    public CreateVersionGroupPage(WebDriver driver)
    {
@@ -51,7 +57,7 @@ public class CreateVersionGroupPage extends AbstractPage
 
    public CreateVersionGroupPage selectStatus(String status)
    {
-      new Select(groupDescriptionField).selectByVisibleText(status);
+      new Select(groupStatusSelection).selectByVisibleText(status);
       return this;
    }
 
@@ -61,4 +67,17 @@ public class CreateVersionGroupPage extends AbstractPage
       return new VersionGroupsPage(getDriver());
    }
 
+   public CreateVersionGroupPage saveGroupFailure()
+   {
+      clickSaveAndExpectErrors(saveButton);
+      return this;
+   }
+
+   public CreateVersionGroupPage clearFields()
+   {
+      groupSlugField.clear();
+      groupNameField.clear();
+      groupDescriptionField.clear();
+      return new CreateVersionGroupPage(getDriver());
+   }
 }
