@@ -182,6 +182,7 @@ public class GlossaryPushCommand extends ConfigurableCommand<GlossaryPushOptions
          log.debug(glossary.toString());
          ClientResponse<String> response = glossaryResource.put(glossary);
          ClientUtility.checkResult(response, uri);
+         response.releaseConnection();
          totalDone = totalDone + glossary.getGlossaryEntries().size();
          log.info("Pushed " + totalDone + " of " + totalEntries + " entries");
       }
