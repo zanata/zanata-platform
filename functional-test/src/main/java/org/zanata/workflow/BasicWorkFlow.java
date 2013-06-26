@@ -14,7 +14,7 @@ public class BasicWorkFlow extends AbstractWebWorkFlow
       return PageFactory.initElements(driver, pageClass);
    }
 
-   public String toUrl(String relativeUrl)
+   private String toUrl(String relativeUrl)
    {
       return hostUrl + removeLeadingSlash(relativeUrl);
    }

@@ -12,6 +12,7 @@ import org.zanata.page.HomePage;
 import org.zanata.page.projects.ProjectPage;
 import org.zanata.page.projects.ProjectVersionPage;
 import org.zanata.page.webtrans.DocumentsViewPage;
+import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
 import lombok.extern.slf4j.Slf4j;
@@ -25,20 +26,20 @@ import lombok.extern.slf4j.Slf4j;
 public class DocumentListInWebTransTest
 {
 
-   private HomePage homePage;
    private ProjectVersionPage projectVersionPage;
 
    public boolean signInAs(String username, String password)
    {
-      homePage = new LoginWorkFlow().signIn(username, password);
+      HomePage homePage = new LoginWorkFlow().signIn(username, password);
 
       return homePage.hasLoggedIn();
    }
 
    public ProjectVersionPage goToProjectVersion(String projectName, String versionSlug)
    {
-      ProjectPage projectPage = homePage.goToProjects().goToProject(projectName);
-      projectVersionPage = projectPage.goToVersion(versionSlug);
+      projectVersionPage = new BasicWorkFlow().goToPage(String.format("iteration/view/plurals/%s", versionSlug), ProjectVersionPage.class);
+//      ProjectPage projectPage = homePage.goToProjects().goToProject(projectName);
+//      projectVersionPage = projectPage.goToVersion(versionSlug);
       return projectVersionPage;
    }
 
