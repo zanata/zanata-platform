@@ -38,7 +38,6 @@ public class ResetDatabaseRule extends ExternalResource
          DatabaseHelper.database().resetData();
          DatabaseHelper.database().addAdminUser();
          DatabaseHelper.database().addTranslatorUser();
-         DatabaseHelper.database().addGlossaristUser();
       }
 
    }

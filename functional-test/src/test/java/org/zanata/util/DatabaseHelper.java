@@ -146,11 +146,6 @@ public class DatabaseHelper
       addUserIfNotExist("translator");
    }
 
-   public void addGlossaristUser()
-   {
-      addUserIfNotExist("glossarist");
-   }
-
    private void addUserIfNotExist(final String user)
    {
       wrapInTryCatch(new Command()
