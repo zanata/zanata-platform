@@ -1,2 +1,2 @@
 language: java
-script: "mvn test -Dgwt.compiler.skip"
+script: "mvn test -Dgwt.compiler.skip -q"
