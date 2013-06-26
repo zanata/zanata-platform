@@ -42,7 +42,7 @@
 
 		            <richext:spacer width="5" />
 		            <s:fragment rendered="#{s:hasPermission('HIterationGroup','view-obsolete')}">
-			            <h:selectBooleanCheckbox title="#{messages['jsf.groups.ShowObsoleteGroups']}" value="#{versionGroupAction.showObsoleteGroups}">
+			            <h:selectBooleanCheckbox id="showObsolete" title="#{messages['jsf.groups.ShowObsoleteGroups']}" value="#{versionGroupAction.showObsoleteGroups}">
 			                <a4j:ajax event="change" render="groupTable" />
 			            </h:selectBooleanCheckbox>
 		                <h:outputText value="#{messages['jsf.Obsolete']}"/>

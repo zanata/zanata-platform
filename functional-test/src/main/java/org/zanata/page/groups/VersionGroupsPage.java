@@ -1,14 +1,18 @@
 package org.zanata.page.groups;
 
-import java.util.*;
+import java.util.List;
+
+import javax.annotation.Nullable;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.AbstractPage;
-import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
+
+import com.google.common.base.Predicate;
+
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -27,9 +31,6 @@ public class VersionGroupsPage extends AbstractPage
 
    @FindBy(className = "infomsg.icon-info-circle-2")
    private WebElement infomsg;
-
-   @FindBy(linkText = "Show obsolete groups")
-   private WebElement obsoleteCheckbox;
 
    public VersionGroupsPage(WebDriver driver)
    {
@@ -56,10 +57,23 @@ public class VersionGroupsPage extends AbstractPage
       return new VersionGroupPage(getDriver());
    }
 
-   public VersionGroupsPage toggleObsolete()
+   public VersionGroupsPage toggleObsolete(final boolean show)
    {
-      getDriver().findElement(By.xpath("//div/input[2]")).click();
-      return this;
+      WebElement showObsolete = getDriver().findElement(By.id("groupForm:showObsolete"));
+      if (show != showObsolete.isSelected())
+      {
+         showObsolete.click();
+      }
+      waitForTenSec().until(new Predicate<WebDriver>()
+      {
+         @Override
+         public boolean apply(WebDriver input)
+         {
+            WebElement table = input.findElement(By.id("groupForm:groupTable"));
+            return table.findElements(By.className("obsolete_link")).isEmpty() == !show;
+         }
+      });
+      return new VersionGroupsPage(getDriver());
    }
 
    public String getInfoMessage()

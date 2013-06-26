@@ -69,16 +69,19 @@ public class VersionGroupBasicTest
 
    public String getGroupsError(CreateVersionGroupPage createVersionGroupPage)
    {
-      try {
+      try
+      {
          return createVersionGroupPage.getErrors().get(0);
-      } catch (ArrayIndexOutOfBoundsException exc) {
+      }
+      catch (ArrayIndexOutOfBoundsException exc)
+      {
          return "";
       }
    }
 
    public VersionGroupsPage toggleObsolete(VersionGroupsPage versionGroupsPage)
    {
-      return versionGroupsPage.toggleObsolete();
+      return versionGroupsPage.toggleObsolete(true);
    }
 
    public VersionGroupsPage groups()
