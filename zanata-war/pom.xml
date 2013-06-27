@@ -380,6 +380,7 @@
                     <suiteXmlFiles>
                         <suiteXmlFile>src/test/resources/AllNonContainerTests.tng.xml</suiteXmlFile>
                     </suiteXmlFiles>
+                    <runOrder>alphabetical</runOrder>
 <!-- TODO try parallel execution
                <parallel>methods</parallel>
                <threadCount>4</threadCount>
@@ -453,6 +454,7 @@
                                 <include>**/*ITCase.java</include>
                             </includes>
                             <testNGArtifactName>none:none</testNGArtifactName>
+                            <runOrder>alphabetical</runOrder>
                         </configuration>
 					</execution>
 				</executions>
