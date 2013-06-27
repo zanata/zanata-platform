@@ -23,25 +23,38 @@ package org.zanata.validation;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-
 /**
- * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
+ * Clone of {@link org.jboss.seam.captcha.CaptchaResponseValidator} that
+ * correctly wraps the message template specifier.
  * 
- * Fix bug in org.jboss.seam.captcha.CaptchaResponseValidator to return message resource key {org.jboss.seam.captcha.error}
- *
+ * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-public class CaptchaResponseValidator implements ConstraintValidator<CaptchaResponse,String>
+public class CaptchaResponseValidator implements ConstraintValidator<CaptchaResponse, String>
 {
-   public void initialize(CaptchaResponse constraintAnnotation)   {   }
+   private static final String WRAPPED_MESSAGE_TEMPLATE_IDENTIFIER = "{org.jboss.seam.captcha.error}";
 
-   public boolean isValid(String value, ConstraintValidatorContext context)
+   public void initialize(CaptchaResponse constraintAnnotation)
    {
-      boolean result = ZanataCaptcha.instance().validateResponse(value);
-      if (!result)
+   }
+
+   public boolean isValid(String response, ConstraintValidatorContext context)
+   {
+      boolean isCorrectResponse = isCorrect(response);
+      if (!isCorrectResponse)
       {
-         context.disableDefaultConstraintViolation();
-         context.buildConstraintViolationWithTemplate("{org.jboss.seam.captcha.error}").addConstraintViolation();
+         addConstraintViolationIn(context);
       }
-      return result;
+      return isCorrectResponse;
+   }
+
+   private boolean isCorrect(String response)
+   {
+      return Captcha.instance().validateResponse(response);
+   }
+
+   private void addConstraintViolationIn(ConstraintValidatorContext context)
+   {
+      context.disableDefaultConstraintViolation();
+      context.buildConstraintViolationWithTemplate(WRAPPED_MESSAGE_TEMPLATE_IDENTIFIER).addConstraintViolation();
    }
 }
