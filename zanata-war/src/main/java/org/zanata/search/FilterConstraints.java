@@ -47,10 +47,12 @@ public class FilterConstraints
 
    private boolean includeNew;
    private boolean includeFuzzy;
+   private boolean includeTranslated;
    private boolean includeApproved;
+   private boolean includeRejected;
 
    //TODO rhbz953734 - need to consider other content state??
-   private FilterConstraints(String searchString, boolean caseSensitive, boolean searchInSource, boolean searchInTarget, boolean includeNew, boolean includeFuzzy, boolean includeApproved)
+   private FilterConstraints(String searchString, boolean caseSensitive, boolean searchInSource, boolean searchInTarget, boolean includeNew, boolean includeFuzzy, boolean includeTranslated, boolean includeApproved, boolean includeRejected)
    {
       this.searchString = searchString;
       this.isCaseSensitive = caseSensitive;
@@ -58,7 +60,9 @@ public class FilterConstraints
       this.searchInTarget = searchInTarget;
       this.includeNew = includeNew;
       this.includeFuzzy = includeFuzzy;
+      this.includeTranslated = includeTranslated;
       this.includeApproved = includeApproved;
+      this.includeRejected = includeRejected;
    }
 
    /**
@@ -72,17 +76,17 @@ public class FilterConstraints
     */
    public static FilterConstraints filterBy(String searchString)
    {
-      return new FilterConstraints(searchString, false, true, true, true, true, true);
+      return new FilterConstraints(searchString, false, true, true, true, true, true, true, true);
    }
 
    public static FilterConstraints keepAll()
    {
-      return new FilterConstraints("", false, true, true, true, true, true);
+      return new FilterConstraints("", false, true, true, true, true, true, true, true);
    }
    
    public static FilterConstraints keepNone()
    {
-      return new FilterConstraints("", false, false, false, false, false, false);
+      return new FilterConstraints("", false, false, false, false, false, false, false, false);
    }
 
 
@@ -190,13 +194,25 @@ public class FilterConstraints
    }
 
    /**
-    * Do not return any text flows with Approved targets
+    * Do not return any text flows with Translated targets
     * 
     * @return this object for chaining
     */
+   public FilterConstraints excludeTranslated()
+   {
+      includeTranslated = false;
+      return this;
+   }
+   
    public FilterConstraints excludeApproved()
    {
       includeApproved = false;
+      return this;
+   }
+   
+   public FilterConstraints excludeRejected()
+   {
+      includeRejected = false;
       return this;
    }
 
@@ -233,29 +249,39 @@ public class FilterConstraints
       return includeFuzzy;
    }
 
+   public boolean isIncludeTranslated()
+   {
+      return includeTranslated;
+   }
+   
    public boolean isIncludeApproved()
    {
       return includeApproved;
    }
-
-   public FilterConstraints filterByStatus(boolean newState, boolean fuzzyState, boolean approvedState)
+   
+   public boolean isIncludeRejected()
    {
-      if (approvedState == fuzzyState && approvedState == newState)
+      return includeRejected;
+   }
+
+   public FilterConstraints filterByStatus(boolean newState, boolean fuzzyState, boolean translatedState, boolean approvedState, boolean rejectedState)
+   {
+      if (translatedState == fuzzyState && translatedState == newState && translatedState == approvedState && translatedState == rejectedState)
       {
-         return new FilterConstraints(searchString, isCaseSensitive, isSearchInSource(), isSearchInTarget(), true, true, true);
+         return new FilterConstraints(searchString, isCaseSensitive, isSearchInSource(), isSearchInTarget(), true, true, true, true, true);
       }
-      return new FilterConstraints(searchString, isCaseSensitive, isSearchInSource(), isSearchInTarget(), newState, fuzzyState, approvedState);
+      return new FilterConstraints(searchString, isCaseSensitive, isSearchInSource(), isSearchInTarget(), newState, fuzzyState, translatedState, approvedState, rejectedState);
    }
 
    public boolean isIncludeAllState()
    {
-      return includeApproved && includeFuzzy && includeNew;
+      return includeTranslated && includeFuzzy && includeNew && includeApproved && includeRejected;
    }
 
    public List<ContentState> getContentStateAsList()
    {
       List<ContentState> result = Lists.newArrayList();
-      if (includeApproved)
+      if (includeTranslated)
       {
          result.add(ContentState.Approved);
          result.add(ContentState.Translated);
@@ -283,7 +309,9 @@ public class FilterConstraints
             add("searchInTarget", searchInTarget).
             add("includeNew", includeNew).
             add("includeFuzzy", includeFuzzy).
+            add("includeTranslated", includeTranslated).
             add("includeApproved", includeApproved).
+            add("includeRejected", includeRejected).
             toString();
       // @formatter:on
    }

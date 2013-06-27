@@ -184,6 +184,8 @@ public class UserOptionsServiceTest
       assertThat(configHolder.getState().isFilterByNeedReview(), Matchers.equalTo(UserConfigHolder.DEFAULT_FILTER));
       assertThat(configHolder.getState().isFilterByTranslated(), Matchers.equalTo(UserConfigHolder.DEFAULT_FILTER));
       assertThat(configHolder.getState().isFilterByUntranslated(), Matchers.equalTo(UserConfigHolder.DEFAULT_FILTER));
+      assertThat(configHolder.getState().isFilterByApproved(), Matchers.equalTo(UserConfigHolder.DEFAULT_FILTER));
+      assertThat(configHolder.getState().isFilterByRejected(), Matchers.equalTo(UserConfigHolder.DEFAULT_FILTER));
       assertThat(configHolder.getState().getNavOption(), Matchers.equalTo(NavOption.FUZZY_UNTRANSLATED));
       assertThat(configHolder.getState().getEditorPageSize(), Matchers.equalTo(UserConfigHolder.DEFAULT_EDITOR_PAGE_SIZE));
       assertThat(configHolder.getState().isShowSaveApprovedWarning(), Matchers.equalTo(UserConfigHolder.DEFAULT_SHOW_SAVE_APPROVED_WARNING));

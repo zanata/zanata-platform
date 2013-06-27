@@ -5,8 +5,6 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import org.zanata.webtrans.client.presenter.UserConfigHolder.ConfigurationState;
 import org.zanata.webtrans.client.ui.SearchFieldListener;
 
-import com.google.gwt.user.client.ui.HasValue;
-
 /**
 * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
 */
@@ -23,6 +21,10 @@ public interface TransFilterDisplay extends WidgetDisplay, SearchFieldListener
    void setNeedReviewFilter(boolean filterByNeedReview);
 
    void setUntranslatedFilter(boolean filterByUntranslated);
+   
+   void setApprovedFilter(boolean filterByApproved);
+
+   void setRejectedFilter(boolean filterByRejected);
 
    void setHasErrorFilter(boolean filterByHasError);
 
@@ -30,9 +32,8 @@ public interface TransFilterDisplay extends WidgetDisplay, SearchFieldListener
    {
       void searchTerm(String searchTerm);
 
-      void messageFilterOptionChanged(Boolean translatedChkValue, Boolean draftChkValue, Boolean untranslatedChkValue, Boolean hasErrorChkValue);
+      void messageFilterOptionChanged(Boolean translatedChkValue, Boolean fuzzyChkValue, Boolean untranslatedChkValue, Boolean approvedChkValue, Boolean rejectedChkValue, Boolean hasErrorChkValue);
    }
 
    void setOptionsState(ConfigurationState state);
-
 }

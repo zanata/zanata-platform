@@ -23,7 +23,6 @@ package org.zanata.webtrans.client.service;
 
 import java.util.List;
 
-import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.ValidationId;
@@ -46,6 +45,8 @@ public class GetTransUnitActionContext
    private boolean filterTranslated;
    private boolean filterNeedReview;
    private boolean filterUntranslated;
+   private boolean filterApproved;
+   private boolean filterRejected;
    private boolean filterHasError;
    private TransUnitId targetTransUnitId;
    private List<ValidationId> validationIds;
@@ -64,6 +65,8 @@ public class GetTransUnitActionContext
       filterTranslated = other.isFilterTranslated();
       filterNeedReview = other.isFilterNeedReview();
       filterUntranslated = other.isFilterUntranslated();
+      filterApproved = other.isFilterApproved();
+      filterRejected = other.isFilterRejected();
       filterHasError = other.isFilterHasError();
       targetTransUnitId = other.getTargetTransUnitId();
       validationIds = other.getValidationIds();
@@ -121,11 +124,35 @@ public class GetTransUnitActionContext
    {
       return filterUntranslated;
    }
+   
+   public boolean isFilterApproved()
+   {
+      return filterApproved;
+   }
+   
+   public boolean isFilterRejected()
+   {
+      return filterRejected;
+   }
 
    public GetTransUnitActionContext changeFilterUntranslated(boolean filterUntranslated)
    {
       GetTransUnitActionContext result = new GetTransUnitActionContext(this);
       result.filterUntranslated = filterUntranslated;
+      return result;
+   }
+   
+   public GetTransUnitActionContext changeFilterApproved(boolean filterApproved)
+   {
+      GetTransUnitActionContext result = new GetTransUnitActionContext(this);
+      result.filterApproved = filterApproved;
+      return result;
+   }
+   
+   public GetTransUnitActionContext changeFilterRejected(boolean filterRejected)
+   {
+      GetTransUnitActionContext result = new GetTransUnitActionContext(this);
+      result.filterRejected = filterRejected;
       return result;
    }
 
@@ -196,6 +223,8 @@ public class GetTransUnitActionContext
       result.filterNeedReview = false;
       result.filterHasError = false;
       result.filterUntranslated = false;
+      result.filterApproved = false;
+      result.filterRejected = false;
       result.findMessage = null;
       return result;
    }
@@ -212,6 +241,8 @@ public class GetTransUnitActionContext
             add("filterTranslated", filterTranslated).
             add("filterNeedReview", filterNeedReview).
             add("filterUntranslated", filterUntranslated).
+            add("filterApproved", filterApproved).
+            add("filterRejected", filterRejected).
             add("filterHasError", filterHasError).
             add("targetTransUnitId", targetTransUnitId).
             toString();
@@ -244,6 +275,8 @@ public class GetTransUnitActionContext
       return filterNeedReview != newContext.filterNeedReview
             || filterTranslated != newContext.filterTranslated
             || filterUntranslated != newContext.filterUntranslated
+            || filterApproved != newContext.filterApproved
+            || filterRejected != newContext.filterRejected
             || filterHasError != newContext.filterHasError
             || offset != newContext.offset
             || !document.equals(newContext.document)
@@ -253,7 +286,13 @@ public class GetTransUnitActionContext
 
    public boolean acceptAll()
    {
-      boolean messageFilterAcceptAll = filterHasError == filterNeedReview && filterNeedReview == filterTranslated && filterTranslated == filterUntranslated;
+      boolean messageFilterAcceptAll = filterHasError == filterNeedReview 
+            && filterNeedReview == filterTranslated 
+            && filterTranslated == filterUntranslated
+            && filterUntranslated == filterHasError
+            && filterHasError == filterApproved
+            && filterApproved == filterRejected;
+      
       return messageFilterAcceptAll && Strings.isNullOrEmpty(findMessage);
    }
 }

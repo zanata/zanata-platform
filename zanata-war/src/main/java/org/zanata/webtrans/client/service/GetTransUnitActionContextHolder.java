@@ -1,9 +1,9 @@
 package org.zanata.webtrans.client.service;
 
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
-import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnitId;
+
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -36,6 +36,8 @@ public class GetTransUnitActionContextHolder
             .changeFilterNeedReview(configHolder.getState().isFilterByNeedReview())
             .changeFilterTranslated(configHolder.getState().isFilterByTranslated())
             .changeFilterUntranslated(configHolder.getState().isFilterByUntranslated())
+            .changeFilterApproved(configHolder.getState().isFilterByApproved())
+            .changeFilterRejected(configHolder.getState().isFilterByRejected())
             .changeFilterHasError(configHolder.getState().isFilterByHasError())
             .changeValidationIds(configHolder.getState().getEnabledValidationIds())
             .changeTargetTransUnitId(targetTransUnitId);

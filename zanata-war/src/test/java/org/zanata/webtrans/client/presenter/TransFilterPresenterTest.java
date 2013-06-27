@@ -101,19 +101,21 @@ public class TransFilterPresenterTest
    @Test
    public void willSetOptionsBackOnFilterViewCancelEvent()
    {
-      FilterViewEvent event = new FilterViewEvent(true, true, true, false, true, null);
+      FilterViewEvent event = new FilterViewEvent(true, true, true, true, true, false, true, null);
 
       presenter.onFilterView(event);
 
       verify(display).setTranslatedFilter(event.isFilterUntranslated());
       verify(display).setNeedReviewFilter(event.isFilterTranslated());
       verify(display).setUntranslatedFilter(event.isFilterNeedReview());
+      verify(display).setApprovedFilter(event.isFilterApproved());
+      verify(display).setRejectedFilter(event.isFilterRejected());
    }
 
    @Test
    public void willDoNothingIfItsNotCancelEvent()
    {
-      FilterViewEvent cancelEvent = new FilterViewEvent(true, true, true, false, false, null);
+      FilterViewEvent cancelEvent = new FilterViewEvent(true, true, true, true, true, false, false, null);
 
       presenter.onFilterView(cancelEvent);
 
@@ -126,6 +128,8 @@ public class TransFilterPresenterTest
       configHolder.setFilterByTranslated(true);
       configHolder.setFilterByNeedReview(false);
       configHolder.setFilterByUntranslated(true);
+      configHolder.setFilterByApproved(true);
+      configHolder.setFilterByRejected(true);
       configHolder.setFilterByHasError(true);
 
       presenter.onUserConfigChanged(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
@@ -133,6 +137,8 @@ public class TransFilterPresenterTest
       verify(display).setTranslatedFilter(true);
       verify(display).setNeedReviewFilter(false);
       verify(display).setUntranslatedFilter(true);
+      verify(display).setApprovedFilter(true);
+      verify(display).setRejectedFilter(true);
       verify(display).setHasErrorFilter(true);
    }
 
@@ -142,16 +148,20 @@ public class TransFilterPresenterTest
       HistoryToken historyToken = new HistoryToken();
       when(history.getHistoryToken()).thenReturn(historyToken);
 
-      presenter.messageFilterOptionChanged(true, false, true, true);
+      presenter.messageFilterOptionChanged(true, false, true, true, false, false);
 
       UserConfigHolder configHolder = userOptionsService.getConfigHolder();
       assertThat(configHolder.getState().isFilterByTranslated(), Matchers.equalTo(true));
       assertThat(configHolder.getState().isFilterByNeedReview(), Matchers.equalTo(false));
       assertThat(configHolder.getState().isFilterByUntranslated(), Matchers.equalTo(true));
+      assertThat(configHolder.getState().isFilterByApproved(), Matchers.equalTo(false));
+      assertThat(configHolder.getState().isFilterByRejected(), Matchers.equalTo(false));
       assertThat(configHolder.getState().isFilterByHasError(), Matchers.equalTo(true));
       assertThat(historyToken.isFilterTranslated(), Matchers.equalTo(true));
       assertThat(historyToken.isFilterFuzzy(), Matchers.equalTo(false));
       assertThat(historyToken.isFilterUntranslated(), Matchers.equalTo(true));
+      assertThat(historyToken.isFilterApproved(), Matchers.equalTo(false));
+      assertThat(historyToken.isFilterRejected(), Matchers.equalTo(false));
       assertThat(historyToken.isFilterHasError(), Matchers.equalTo(true));
       verify(history).newItem(historyToken);
    }

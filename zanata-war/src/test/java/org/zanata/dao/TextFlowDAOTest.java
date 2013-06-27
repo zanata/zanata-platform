@@ -72,7 +72,7 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest
       HLocale deLocale = getEm().find(HLocale.class, 3L);
       log.info("locale: {}", deLocale);
 
-      FilterConstraints untranslated = FilterConstraints.keepAll().excludeFuzzy().excludeApproved();
+      FilterConstraints untranslated = FilterConstraints.keepAll().excludeFuzzy().excludeTranslated();
       List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraint(new DocumentId(1L, ""), deLocale, untranslated, 0, 10);
       assertThat(result.size(), is(0));
 
@@ -86,7 +86,7 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest
    public void canGetTextFlowWithNullTarget() {
       HLocale deLocale = getEm().find(HLocale.class, 3L);
 
-      FilterConstraints untranslated = FilterConstraints.keepAll().excludeFuzzy().excludeApproved();
+      FilterConstraints untranslated = FilterConstraints.keepAll().excludeFuzzy().excludeTranslated();
       List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraint(new DocumentId(4L, ""), deLocale, untranslated, 0, 10);
       assertThat(result, Matchers.hasSize(1));
    }
@@ -100,7 +100,7 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest
       DocumentId documentId1 = new DocumentId(1L, ""); // esLocale fuzzy,
                                                        // frLocale new, deLocale
                                                        // approved
-      List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraint(documentId1, esLocale, FilterConstraints.keepAll().excludeApproved().excludeNew(), 0, 10);
+      List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraint(documentId1, esLocale, FilterConstraints.keepAll().excludeTranslated().excludeNew(), 0, 10);
       assertThat(result, Matchers.hasSize(1));
 
       result = dao.getTextFlowByDocumentIdWithConstraint(documentId1, frLocale, FilterConstraints.keepAll().excludeFuzzy(), 0, 10);
@@ -113,7 +113,7 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest
       DocumentId documentId2 = new DocumentId(2L, ""); // all 3 text flows has
                                                        // en-US fuzzy target
 
-      result = dao.getTextFlowByDocumentIdWithConstraint(documentId2, enUSLocale, FilterConstraints.keepAll().excludeApproved().excludeFuzzy(), 0, 10);
+      result = dao.getTextFlowByDocumentIdWithConstraint(documentId2, enUSLocale, FilterConstraints.keepAll().excludeTranslated().excludeFuzzy(), 0, 10);
       assertThat(result, Matchers.<HTextFlow>empty());
 
       result = dao.getTextFlowByDocumentIdWithConstraint(documentId2, enUSLocale, FilterConstraints.keepAll().excludeNew(), 0, 10);
@@ -156,7 +156,7 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest
    {
       HLocale deLocale = getEm().find(HLocale.class, 3L);
 
-      List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraint(new DocumentId(new Long(4), ""), deLocale, FilterConstraints.filterBy("mssg").excludeApproved().excludeFuzzy(), 0, 10);
+      List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraint(new DocumentId(new Long(4), ""), deLocale, FilterConstraints.filterBy("mssg").excludeTranslated().excludeFuzzy(), 0, 10);
 
       assertThat(result, Matchers.hasSize(1));
    }

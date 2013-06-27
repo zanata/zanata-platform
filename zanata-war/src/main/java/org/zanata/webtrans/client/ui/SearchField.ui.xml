@@ -37,9 +37,14 @@
 		{
 			color:#0085CC;
 		}
+		
+		.container {
+			display:inline-block;
+		}
+		
 
     </ui:style>
-	<g:FlowPanel width="100%">
+	<g:FlowPanel styleName="{style.container}">
 		<g:TextBox ui:field="filterTextBox" addStyleNames='{style.filterTextBox}'/>
 		<g:InlineLabel ui:field="cancelBtn" styleName="{style.cancelBtn} icon-cancel-circle"/>
 		<g:InlineLabel styleName="icon-search {style.searchIcon}"/>

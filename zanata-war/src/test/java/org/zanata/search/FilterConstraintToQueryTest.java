@@ -119,7 +119,7 @@ public class FilterConstraintToQueryTest
    @Test
    public void testBuildStateConditionWithUntranslatedStateButNoSearch()
    {
-      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.filterInSingleDocument(FilterConstraints.keepAll().excludeApproved(), documentId);
+      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.filterInSingleDocument(FilterConstraints.keepAll().excludeTranslated(), documentId);
 
       String result = constraintToQuery.buildStateCondition();
 
@@ -136,7 +136,7 @@ public class FilterConstraintToQueryTest
    @Test
    public void testBuildStateConditionWithUntranslatedStateAndSearch()
    {
-      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.filterInSingleDocument(FilterConstraints.filterBy("blah").excludeApproved(), documentId);
+      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.filterInSingleDocument(FilterConstraints.filterBy("blah").excludeTranslated(), documentId);
 
       String result = constraintToQuery.buildStateCondition();
 
@@ -174,7 +174,7 @@ public class FilterConstraintToQueryTest
    @Test
    public void testToHQLWithSearchAndStateCondition()
    {
-      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.filterInSingleDocument(FilterConstraints.filterBy("FiLe").excludeApproved(), documentId);
+      FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.filterInSingleDocument(FilterConstraints.filterBy("FiLe").excludeTranslated(), documentId);
 
       String result = constraintToQuery.toHQL();
       log.info("hql: {}", result);
@@ -201,7 +201,7 @@ public class FilterConstraintToQueryTest
    @Test
    public void testSetParametersForQuery()
    {
-      FilterConstraints constraints = FilterConstraints.filterBy("file").excludeApproved();
+      FilterConstraints constraints = FilterConstraints.filterBy("file").excludeTranslated();
       FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.filterInSingleDocument(constraints, documentId);
 
       constraintToQuery.setQueryParameters(query, hLocale);
@@ -216,7 +216,7 @@ public class FilterConstraintToQueryTest
    @Test
    public void testSetParametersForQueryWithMultipleDocuments()
    {
-      FilterConstraints constraints = FilterConstraints.filterBy("file").excludeApproved();
+      FilterConstraints constraints = FilterConstraints.filterBy("file").excludeTranslated();
       List<Long> docIdList = Lists.newArrayList(1L, 2L);
       FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.filterInMultipleDocuments(constraints, docIdList);
 
@@ -232,7 +232,7 @@ public class FilterConstraintToQueryTest
    @Test
    public void testSetParametersForQueryWithNoSearch()
    {
-      FilterConstraints constraints = FilterConstraints.keepAll().excludeApproved();
+      FilterConstraints constraints = FilterConstraints.keepAll().excludeTranslated();
       FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.filterInSingleDocument(constraints, documentId);
 
       constraintToQuery.setQueryParameters(query, hLocale);

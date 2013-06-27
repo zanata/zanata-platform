@@ -130,7 +130,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
             .append(" WHERE tf.document_id = :docId AND tf.obsolete = 0");
       queryBuilder
             .append(" AND ")
-            .append(buildContentStateCondition(filterConstraints.isIncludeApproved(), filterConstraints.isIncludeFuzzy(), filterConstraints.isIncludeNew(), "tft"));
+            .append(buildContentStateCondition(filterConstraints.isIncludeTranslated(), filterConstraints.isIncludeFuzzy(), filterConstraints.isIncludeNew(), "tft"));
       boolean hasSearchString = !Strings.isNullOrEmpty(filterConstraints.getSearchString());
       if (hasSearchString)
       {

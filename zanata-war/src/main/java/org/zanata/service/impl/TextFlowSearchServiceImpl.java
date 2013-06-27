@@ -139,7 +139,7 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
          return Collections.emptyList();
       }
 
-      if (!constraints.isIncludeNew() && !constraints.isIncludeFuzzy() && !constraints.isIncludeApproved())
+      if (!constraints.isIncludeNew() && !constraints.isIncludeFuzzy() && !constraints.isIncludeTranslated())
       {
          // including nothing
          return Collections.emptyList();
@@ -298,7 +298,7 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
          }
          targetQuery.add(localeQuery, Occur.MUST);
 
-         if (!constraints.isIncludeApproved())
+         if (!constraints.isIncludeTranslated())
          {
             TermQuery approvedStateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.Approved.toString()));
             targetQuery.add(approvedStateQuery, Occur.MUST_NOT);

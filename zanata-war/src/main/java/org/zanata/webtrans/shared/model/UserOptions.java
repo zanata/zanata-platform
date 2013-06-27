@@ -24,6 +24,8 @@ public enum UserOptions implements IsSerializable
    TranslatedMessageFilter(editor()+ ".TranslatedMessageFilter"), 
    NeedReviewMessageFilter(editor()+ ".NeedReviewMessageFilter"), 
    UntranslatedMessageFilter(editor()+ ".UntranslatedMessageFilter"), 
+   ApprovedMessageFilter(editor()+ ".ApprovedMessageFilter"), 
+   RejectedMessageFilter(editor()+ ".RejectedMessageFilter"), 
    Navigation(editor()+ ".Navigation"),
    DocumentListPageSize(doc() + ".PageSize"),
    ShowSaveApprovedWarning(editor() + ".ShowSaveApprovedWarning");

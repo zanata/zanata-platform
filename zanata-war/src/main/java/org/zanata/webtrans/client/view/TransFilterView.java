@@ -50,7 +50,7 @@ public class TransFilterView extends Composite implements TransFilterDisplay
    Styles style;
 
    @UiField
-   CheckBox translatedChk, draftChk, untranslatedChk, hasErrorChk;
+   CheckBox translatedChk, fuzzyChk, untranslatedChk, approvedChk, rejectedChk, hasErrorChk;
 
    private String hintMessage;
 
@@ -119,13 +119,25 @@ public class TransFilterView extends Composite implements TransFilterDisplay
    @Override
    public void setNeedReviewFilter(boolean filterByNeedReview)
    {
-      draftChk.setValue(filterByNeedReview);
+      fuzzyChk.setValue(filterByNeedReview);
    }
 
    @Override
    public void setUntranslatedFilter(boolean filterByUntranslated)
    {
       untranslatedChk.setValue(filterByUntranslated);
+   }
+   
+   @Override
+   public void setApprovedFilter(boolean filterByApproved)
+   {
+      approvedChk.setValue(filterByApproved);
+   }
+   
+   @Override
+   public void setRejectedFilter(boolean filterByRejected)
+   {
+      rejectedChk.setValue(filterByRejected);
    }
 
    @Override
@@ -178,18 +190,20 @@ public class TransFilterView extends Composite implements TransFilterDisplay
       }
    }
 
-   @UiHandler({"translatedChk", "draftChk", "untranslatedChk", "hasErrorChk"})
+   @UiHandler({"translatedChk", "fuzzyChk", "untranslatedChk", "approvedChk", "rejectedChk", "hasErrorChk"})
    public void onTranslatedChkChanged(ValueChangeEvent<Boolean> event)
    {
-      listener.messageFilterOptionChanged(translatedChk.getValue(), draftChk.getValue(), untranslatedChk.getValue(), hasErrorChk.getValue());
+      listener.messageFilterOptionChanged(translatedChk.getValue(), fuzzyChk.getValue(), untranslatedChk.getValue(), approvedChk.getValue(), rejectedChk.getValue(), hasErrorChk.getValue());
    }
 
    @Override
    public void setOptionsState(ConfigurationState state)
    {
       translatedChk.setValue(state.isFilterByTranslated());
-      draftChk.setValue(state.isFilterByNeedReview());
+      fuzzyChk.setValue(state.isFilterByNeedReview());
       untranslatedChk.setValue(state.isFilterByUntranslated());
+      approvedChk.setValue(state.isFilterByApproved());
+      rejectedChk.setValue(state.isFilterByRejected());
 
    }
 }
