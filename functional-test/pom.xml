@@ -43,7 +43,7 @@
 
         <!--target zanata instance-->
         <zanata.target.version>${project.parent.version}</zanata.target.version>
-        <zanata.target.war>${basedir}/../zanata-war/target/zanata-h2-${zanata.target.version}.war</zanata.target.war>
+        <zanata.target.war>${basedir}/../zanata-war/target/zanata-${zanata.target.version}.war</zanata.target.war>
         <zanata.instance.url>http://${cargo.host}:${cargo.servlet.port}/${context.path}/</zanata.instance.url>
         <zanata.apikey>b6d7044e9ee3b2447c28fb7c50d86d98</zanata.apikey>
         <zanata.sample.projects.basedir>${project.build.testOutputDirectory}/sample-projects</zanata.sample.projects.basedir>
@@ -406,7 +406,7 @@
                                 <echo>-Dfunctional-test : to activate functional test run</echo>
                                 <echo>-Dcargo.wait : to ask cargo to start up then wait so that tests can be run manually</echo>
                                 <echo>-Dzanata.target.version=version of zanata to deploy. Default is: ${project.parent.version}</echo>
-                                <echo>-Dzanata.target.war=location of the war. Default is: ${basedir}/../zanata-war/target/zanata-h2-${zanata.target.version}.war. You may want to build zanata-war module with -PuseH2 first.</echo>
+                                <echo>-Dzanata.target.war=location of the war. Default is: ${basedir}/../zanata-war/target/zanata-${zanata.target.version}.war.</echo>
                                 <echo>-Dzanata.instance.url=http://${cargo.host}:8080/${context.path}</echo>
                                 <echo>-Dzanata.apikey=b6d7044e9ee3b2447c28fb7c50d86d98</echo>
                                 <!--<echo>-Dzanata.client.version=maven client version to use. Currently: ${zanata.client.version}</echo>-->
