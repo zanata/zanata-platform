@@ -29,11 +29,11 @@ import javax.validation.ConstraintValidatorContext;
  * 
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-public class CaptchaResponseValidator implements ConstraintValidator<CaptchaResponse, String>
+public class PatchedCaptchaResponseValidator implements ConstraintValidator<PatchedCaptchaResponse, String>
 {
    private static final String WRAPPED_MESSAGE_TEMPLATE_IDENTIFIER = "{org.jboss.seam.captcha.error}";
 
-   public void initialize(CaptchaResponse constraintAnnotation)
+   public void initialize(PatchedCaptchaResponse constraintAnnotation)
    {
    }
 
@@ -49,7 +49,7 @@ public class CaptchaResponseValidator implements ConstraintValidator<CaptchaResp
 
    private boolean isCorrect(String response)
    {
-      return Captcha.instance().validateResponse(response);
+      return PatchedCaptcha.instance().validateResponse(response);
    }
 
    private void addConstraintViolationIn(ConstraintValidatorContext context)

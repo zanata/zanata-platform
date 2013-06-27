@@ -25,20 +25,21 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 
 /**
- * Like {@link org.jboss.seam.captcha.Captcha} but uses the fixed
- * {@link org.zanata.validation.CaptchaResponse} to avoid a bug in the original.
+ * Like {@link org.jboss.seam.captcha.Captcha} but uses the patched
+ * {@link org.zanata.validation.PatchedCaptchaResponse} to avoid a bug in the
+ * original.
  * 
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
- * @see CaptchaResponse
+ * @see PatchedCaptchaResponse
  */
 @Name("org.jboss.seam.captcha.captcha")
 @Scope(ScopeType.SESSION)
-public class Captcha extends org.jboss.seam.captcha.Captcha
+public class PatchedCaptcha extends org.jboss.seam.captcha.Captcha
 {
    private static final long serialVersionUID = 1L;
 
-   @CaptchaResponse
+   @PatchedCaptchaResponse
    public String getCaptchaResponse()
    {
       return super.getResponse();

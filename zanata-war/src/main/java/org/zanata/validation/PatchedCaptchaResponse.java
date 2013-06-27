@@ -29,18 +29,18 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 
 /**
- * Like {@link org.jboss.seam.captcha.CaptchaResponse} but uses the fixed
- * {@link CaptchaResponseValidator} to avoid a bug in the original.
+ * Like {@link org.jboss.seam.captcha.CaptchaResponse} but uses the patched
+ * {@link PatchedCaptchaResponseValidator} to avoid a bug in the original.
  * 
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
- * @see CaptchaResponseValidator
+ * @see PatchedCaptchaResponseValidator
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Target(ElementType.METHOD)
-@Constraint(validatedBy = CaptchaResponseValidator.class)
-public @interface CaptchaResponse
+@Constraint(validatedBy = PatchedCaptchaResponseValidator.class)
+public @interface PatchedCaptchaResponse
 {
    String message() default "incorrect response";
 
