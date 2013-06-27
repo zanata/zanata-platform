@@ -11,7 +11,7 @@
 
     <ui:define name="page_title">#{userAction.username} - #{messages['jsf.AccountDetails']}</ui:define>
     <ui:define name="center_content">
-      <h:form rendered="#{identityManager.userExists(userAction.username)}">
+      <h:form id="userdetailForm" rendered="#{identityManager.userExists(userAction.username)}">
         <s:token allowMultiplePosts="true" />
         <rich:panel>
           <f:facet name="header">#{messages['jsf.AccountDetails']}</f:facet>
@@ -55,8 +55,8 @@
           <div style="clear:both"/>
 
           <div class="actionButtons">
-            <h:commandButton value="#{messages['jsf.Save']}" action="#{userAction.save}"/>
-            <s:button view="/admin/usermanager.xhtml" value="#{messages['jsf.Cancel']}" propagation="end"/>
+            <h:commandButton id="userdetailSave" value="#{messages['jsf.Save']}" action="#{userAction.save}"/>
+            <s:button id="userdetailCancel" view="/admin/usermanager.xhtml" value="#{messages['jsf.Cancel']}" propagation="end"/>
           </div>
 
         </rich:panel>

@@ -1,0 +1,38 @@
+<html xmlns:c="http://www.concordion.org/2007/concordion" xmlns:ext="urn:concordion-extensions:2010">
+<head>
+   <title>User Administration</title>
+</head>
+<body>
+   <h1>Management of User Details</h1>
+   <br/>
+   <h2>Changing a User's Login Details</h2>
+
+   <p>
+      As an Administrator, I want to change a User's username and/or password.
+   </p>
+   <p>
+      <p>To change a user's username or password, navigate to the User Management page by
+         <span c:execute="#manageuserspage = goToUserAdministration()">
+         <ol>
+            <li>Opening the More menu and selecting Administration</li>
+            <li>Selecting Manage Users</li>
+         </ol>
+         </span>
+      </p>
+      <span ext:screenshot="" />
+      <p>
+         and pressing <span c:execute="#manageuseraccount = editUserAccount(#manageuserspage, #user)">Edit on the
+         user to be changed, in this example the <span c:set="#user">admin</span></span> user.
+      </p>
+      <span ext:screenshot="" />
+      <p>
+         Change the Username, Password and Confirm Password fields to the desired values and press Save.<br />
+         In this example, we change admin to <span c:set="#newuser">administrator</span> and the password to
+         <span c:set="#newpassword">password</span>.
+         <span c:execute="#manageuserpage = changeUsernameAndPassword(#manageuseraccount, #newuser, #newpassword)">press the Save button</span>
+         and the new user <span c:assertTrue="userListContains(#manageuserpage, #newuser)">details will be displayed</span>.
+      </p>
+      <span ext:screenshot="" />
+   </p>
+</body>
+</html>
