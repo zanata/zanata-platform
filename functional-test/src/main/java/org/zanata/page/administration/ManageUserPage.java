@@ -34,12 +34,9 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class ManageUserPage extends AbstractPage
 {
    public static final int USERNAME_COLUMN = 0;

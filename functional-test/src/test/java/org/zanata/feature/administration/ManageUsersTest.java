@@ -39,7 +39,7 @@ import org.zanata.page.administration.ManageUserAccountPage;
 public class ManageUsersTest
 {
    @ClassRule
-   public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule(ResetDatabaseRule.Config.Empty);
+   public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
    private HomePage homePage;
 
    @Before

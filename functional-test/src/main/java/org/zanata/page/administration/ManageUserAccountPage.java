@@ -21,17 +21,18 @@
 package org.zanata.page.administration;
 
 import java.util.HashMap;
+import java.util.Map;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.AbstractPage;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
+
 public class ManageUserAccountPage extends AbstractPage
 {
 
@@ -53,7 +54,7 @@ public class ManageUserAccountPage extends AbstractPage
    @FindBy(id = "userdetailForm:userdetailCancel")
    private WebElement cancelButton;
 
-   HashMap<String, String> roleMap;
+   private Map<String, String> roleMap;
 
    public ManageUserAccountPage(WebDriver driver)
    {

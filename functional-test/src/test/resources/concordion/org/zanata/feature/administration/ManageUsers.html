@@ -30,7 +30,7 @@
          In this example, we change admin to <span c:set="#newuser">administrator</span> and the password to
          <span c:set="#newpassword">password</span>.
          <span c:execute="#manageuserpage = changeUsernameAndPassword(#manageuseraccount, #newuser, #newpassword)">press the Save button</span>
-         and the new user <span c:assertTrue="userListContains(#manageuserpage, #newuser)">details will be displayed</span>.
+         and <span c:assertTrue="userListContains(#manageuserpage, #newuser)">the new user details will be displayed</span>.
       </p>
       <span ext:screenshot="" />
    </p>
