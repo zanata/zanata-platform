@@ -20,9 +20,13 @@
  */
 package org.zanata.dao;
 
+import java.util.Date;
+import java.util.List;
+
 import lombok.Cleanup;
 
 import org.dbunit.operation.DatabaseOperation;
+import org.hamcrest.Matchers;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 import org.testng.annotations.BeforeMethod;
@@ -31,25 +35,30 @@ import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.ContentState;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
+import org.zanata.model.HPerson;
+import org.zanata.model.HTextFlowTargetReviewComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 
 @Test(groups = { "jpa-tests" })
 public class TextFlowTargetDAOTest extends ZanataDbunitJpaTest
 {
 
    private TextFlowTargetDAO textFlowTargetDAO;
-   
+
    
    @Override
    protected void prepareDBUnitOperations()
    {
-      //      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/ClearAllTables.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/ClearAllTables.dbunit.xml", DatabaseOperation.DELETE_ALL));
+      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/AccountData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/TextFlowTestData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/LocalesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));      
@@ -98,5 +107,57 @@ public class TextFlowTargetDAOTest extends ZanataDbunitJpaTest
       HLocale hLocale = (HLocale) getSession().get(HLocale.class, 1L);
       @Cleanup
       ScrollableResults scroll = this.textFlowTargetDAO.findMatchingTranslations(doc, hLocale, true, true, true, true);
+   }
+
+   @Test
+   public void testTargetUserComment()
+   {
+      PersonDAO personDAO = new PersonDAO(getSession());
+      HPerson person = personDAO.findById(1L, false);
+      HTextFlowTarget target = textFlowTargetDAO.findById(1L, false);
+
+      List<HTextFlowTargetReviewComment> userComments = target.getUserComments();
+
+      assertThat(userComments, Matchers.empty());
+
+      target.addUserComment("bad translation", person);
+      getEm().persist(target);
+
+      // @formatter:off
+      HTextFlowTargetReviewComment result = getEm()
+            .createQuery("from HTextFlowTargetReviewComment where comment = :comment", HTextFlowTargetReviewComment.class)
+            .setParameter("comment", "bad translation").getSingleResult();
+      // @formatter:on
+
+      assertThat(result.getContentsOfCommentedTarget(), Matchers.equalTo(target.getContents()));
+      assertThat(result.getCommenterName(), Matchers.equalTo(person.getName()));
+      assertThat(result.getCreationDate(), Matchers.lessThanOrEqualTo(new Date()));
+   }
+
+   @Test
+   public void testTargetUserCommentMadeOnPreviousTranslation()
+   {
+      PersonDAO personDAO = new PersonDAO(getSession());
+      HPerson person = personDAO.findById(1L, false);
+      HTextFlowTarget target = textFlowTargetDAO.findById(2L, false);
+
+      List<String> oldTranslation = target.getContents();
+      int oldVersion = target.getVersionNum();
+
+      target.addUserComment("comment blah", person);
+      getEm().persist(target);
+
+      // change target after making comment
+      target.setContent0("new translation");
+      getEm().persist(target);
+
+      // @formatter:off
+      HTextFlowTargetReviewComment result = getEm()
+            .createQuery("from HTextFlowTargetReviewComment where comment = :comment", HTextFlowTargetReviewComment.class)
+            .setParameter("comment", "comment blah").getSingleResult();
+      // @formatter:on
+
+      assertThat(result.getContentsOfCommentedTarget(), Matchers.equalTo(oldTranslation));
+      assertThat(result.getTargetVersion(), Matchers.equalTo(oldVersion));
    }
 }

@@ -23,7 +23,6 @@ package org.zanata.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,13 +56,10 @@ import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.AnalyzerDiscriminator;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Parameter;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zanata.common.ContentState;
 import org.zanata.common.HasContents;
 import org.zanata.common.LocaleId;
@@ -74,6 +70,7 @@ import org.zanata.hibernate.search.StringListBridge;
 import org.zanata.hibernate.search.TextContainerAnalyzerDiscriminator;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
 
 /**
  * Represents a flow of translated text that should be processed as a
@@ -113,6 +110,8 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    private HSimpleComment comment;
 
    private Map<Integer, HTextFlowTargetHistory> history;
+
+   private List<HTextFlowTargetReviewComment> userComments;
 
    // Only for internal use (persistence transient)
    @Setter(AccessLevel.PRIVATE)
@@ -386,6 +385,22 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
          this.history = new HashMap<Integer, HTextFlowTargetHistory>();
       }
       return history;
+   }
+
+   @OneToMany(cascade = { CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST }, mappedBy = "textFlowTarget")
+   public List<HTextFlowTargetReviewComment> getUserComments()
+   {
+      if (userComments == null)
+      {
+         userComments = Lists.newArrayList();
+      }
+      return userComments;
+   }
+
+   public HTextFlowTarget addUserComment(String comment, HPerson commenter)
+   {
+      getUserComments().add(new HTextFlowTargetReviewComment(this, comment, commenter));
+      return this;
    }
 
    @PreUpdate

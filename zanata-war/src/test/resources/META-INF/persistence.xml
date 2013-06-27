@@ -42,7 +42,8 @@
 		<class>org.zanata.model.HSimpleComment</class>
 		<class>org.zanata.model.HTextFlowHistory</class>
 		<class>org.zanata.model.HTextFlow</class>
-		<class>org.zanata.model.HTextFlowTargetHistory</class>
+        <class>org.zanata.model.HTextFlowTargetReviewComment</class>
+        <class>org.zanata.model.HTextFlowTargetHistory</class>
 		<class>org.zanata.model.HTextFlowTarget</class>
 		<class>org.zanata.model.HGlossaryEntry</class>
 		<class>org.zanata.model.HGlossaryTerm</class>
