@@ -68,7 +68,23 @@ public class TransUnitTransformer
       ArrayList<String> sourceContents = GwtRpcUtil.getSourceContents(hTextFlow);
       ArrayList<String> targetContents = GwtRpcUtil.getTargetContentsWithPadding(hTextFlow, target, nPlurals);
 
-      TransUnit.Builder builder = TransUnit.Builder.newTransUnitBuilder().setId(hTextFlow.getId()).setResId(hTextFlow.getResId()).setLocaleId(hLocale.getLocaleId()).setPlural(hTextFlow.isPlural()).setSources(sourceContents).setSourceComment(commentToString(hTextFlow.getComment())).setTargets(targetContents).setTargetContent(target == null ? null : commentToString(target.getComment())).setMsgContext(msgContext).setRowIndex(hTextFlow.getPos()).setVerNum(target == null ? NULL_TARGET_VERSION_NUM : target.getVersionNum());
+      // @formatter:off
+      TransUnit.Builder builder = TransUnit.Builder.newTransUnitBuilder()
+            .setId(hTextFlow.getId())
+            .setResId(hTextFlow.getResId())
+            .setLocaleId(hLocale.getLocaleId())
+            .setPlural(hTextFlow.isPlural())
+            .setSources(sourceContents)
+            .setSourceComment(commentToString(hTextFlow.getComment()))
+            .setTargets(targetContents)
+            .setTargetComment(target == null ? null : commentToString(target.getComment()))
+            .setMsgContext(msgContext)
+            .setRowIndex(hTextFlow.getPos())
+            .setVerNum(target == null ? NULL_TARGET_VERSION_NUM : target.getVersionNum())
+            // TODO pahuang we may consider to use a query to gather has comment information
+            .setHasUserComment(target != null && target.getReviewComments().size() > 0)
+            ;
+      // @formatter:on
 
       if (target != null)
       {
@@ -81,6 +97,8 @@ public class TransUnitTransformer
       }
       return builder.build();
    }
+
+
 
    private static String commentToString(HSimpleComment comment)
    {

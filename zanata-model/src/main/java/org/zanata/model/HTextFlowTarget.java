@@ -111,7 +111,7 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
 
    private Map<Integer, HTextFlowTargetHistory> history;
 
-   private List<HTextFlowTargetReviewComment> userComments;
+   private List<HTextFlowTargetReviewComment> reviewComments;
 
    // Only for internal use (persistence transient)
    @Setter(AccessLevel.PRIVATE)
@@ -388,18 +388,18 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    }
 
    @OneToMany(cascade = { CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST }, mappedBy = "textFlowTarget")
-   public List<HTextFlowTargetReviewComment> getUserComments()
+   public List<HTextFlowTargetReviewComment> getReviewComments()
    {
-      if (userComments == null)
+      if (reviewComments == null)
       {
-         userComments = Lists.newArrayList();
+         reviewComments = Lists.newArrayList();
       }
-      return userComments;
+      return reviewComments;
    }
 
    public HTextFlowTarget addUserComment(String comment, HPerson commenter)
    {
-      getUserComments().add(new HTextFlowTargetReviewComment(this, comment, commenter));
+      getReviewComments().add(new HTextFlowTargetReviewComment(this, comment, commenter));
       return this;
    }
 

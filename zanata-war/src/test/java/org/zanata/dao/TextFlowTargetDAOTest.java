@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 import lombok.Cleanup;
+import lombok.extern.slf4j.Slf4j;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
@@ -48,6 +49,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
 @Test(groups = { "jpa-tests" })
+@Slf4j
 public class TextFlowTargetDAOTest extends ZanataDbunitJpaTest
 {
 
@@ -116,7 +118,7 @@ public class TextFlowTargetDAOTest extends ZanataDbunitJpaTest
       HPerson person = personDAO.findById(1L, false);
       HTextFlowTarget target = textFlowTargetDAO.findById(1L, false);
 
-      List<HTextFlowTargetReviewComment> userComments = target.getUserComments();
+      List<HTextFlowTargetReviewComment> userComments = target.getReviewComments();
 
       assertThat(userComments, Matchers.empty());
 
