@@ -59,7 +59,7 @@ public class ManageUserAccountPage extends AbstractPage
    public ManageUserAccountPage(WebDriver driver)
    {
       super(driver);
-      roleMap = new HashMap();
+      roleMap = new HashMap<String, String>();
       roleMap.put("admin", "0");
       roleMap.put("glossarist", "1");
       roleMap.put("glossary-admin", "2");
