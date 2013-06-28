@@ -20,7 +20,6 @@
  */
 package org.zanata.rest.service;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -59,11 +58,6 @@ import javax.ws.rs.core.StreamingOutput;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.apache.commons.exec.CommandLine;
-import org.apache.commons.exec.DefaultExecutor;
-import org.apache.commons.exec.ExecuteStreamHandler;
-import org.apache.commons.exec.ExecuteWatchdog;
-import org.apache.commons.exec.PumpStreamHandler;
 import org.hibernate.Criteria;
 import org.hibernate.LobHelper;
 import org.hibernate.Session;
@@ -108,7 +102,6 @@ import org.zanata.service.TranslationFileService;
 import org.zanata.service.TranslationService;
 
 import com.google.common.base.Optional;
-import com.google.common.base.Stopwatch;
 import com.google.common.base.Strings;
 
 import com.google.common.io.ByteStreams;
@@ -152,6 +145,9 @@ public class FileService implements FileResource
 
    @In
    private ResourceUtils resourceUtils;
+
+   @In
+   private VirusScanner virusScanner;
 
    // FIXME remove when using DAO for HDocumentUpload
    @In
@@ -320,7 +316,8 @@ public class FileService implements FileResource
    private void processAdapterFile(@Nonnull File tempFile, String projectSlug, String iterationSlug,
          String docId, DocumentFileUploadForm uploadForm) throws VirusDetectedException
    {
-      virusScan(tempFile);
+      String name = projectSlug+":"+iterationSlug+":"+docId;
+      virusScanner.scan(tempFile, name);
 
       HDocument document;
       Optional<String> params;
@@ -414,55 +411,6 @@ public class FileService implements FileResource
    private boolean isNewDocument(String projectSlug, String iterationSlug, String docId)
    {
       return documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId) == null;
-   }
-
-   /**
-    * Scans the specified file by calling out to ClamAV.
-    * <p>
-    * The current implementation looks for clamdscan on the system path, but
-    * merely logs an error if it can't be found (or if clamd is not running),
-    * rather than rejecting the file.
-    * @param file
-    * @throws VirusDetectedException if a virus is detected
-    */
-   // FIXME put this in its own class
-   public static void virusScan(File file) throws VirusDetectedException
-   {
-      // TODO make command name and path configurable
-      String scanproc = "clamdscan"; // clamscan works too, but takes ~15 seconds
-      CommandLine cmdLine = new CommandLine(scanproc);
-      cmdLine.addArgument("--no-summary");
-      cmdLine.addArgument(file.getPath());
-      DefaultExecutor executor = new DefaultExecutor();
-      ExecuteWatchdog watchdog = new ExecuteWatchdog(60000);
-      executor.setWatchdog(watchdog);
-      ByteArrayOutputStream output = new ByteArrayOutputStream();
-      ExecuteStreamHandler psh = new PumpStreamHandler(output);
-      executor.setStreamHandler(psh);
-      executor.setExitValues(new int[] {0, 1, 2});
-      try
-      {
-         int exitValue = executor.execute(cmdLine);
-         switch(exitValue)
-         {
-         case 0:
-            log.debug(scanproc+" clean result: {}", output);
-            return;
-         case 1:
-            throw new VirusDetectedException(scanproc+" detected virus: " + output);
-         case 2:
-         default:
-            log.error(scanproc+" returned error, unable to scan for viruses. output: " + output);
-            // TODO enforce virus scanning by throwing exception here
-//            throw new ZanataServiceException(scanproc+" return code: "+exitValue+", output: " + output);
-         }
-      }
-      catch (IOException e)
-      {
-         log.error("error launching "+scanproc+", unable to scan for viruses", e);
-         // TODO enforce virus scanning by throwing exception here
-//         throw new ZanataServiceException(e);
-      }
    }
 
    private File combineToTempFile(HDocumentUpload upload) throws SQLException
@@ -1050,6 +998,8 @@ public class FileService implements FileResource
          try
          {
             File tempFile = translationFileServiceImpl.persistToTempFile(hDocument.getRawDocument().getContent().getBinaryStream());
+            String name = projectSlug+":"+iterationSlug+":"+docId;
+            virusScanner.scan(tempFile, name);
             uri = tempFile.toURI();
          }
          catch (SQLException e)
@@ -1237,7 +1187,7 @@ public class FileService implements FileResource
       }
 
       @Override
-      public void write(OutputStream output) throws IOException, WebApplicationException
+      public void write(@SuppressWarnings("null") @Nonnull OutputStream output) throws IOException, WebApplicationException
       {
          FileInputStream input = new FileInputStream(this.file);
          try
@@ -1251,24 +1201,4 @@ public class FileService implements FileResource
       }
    }
 
-   // TODO move to FileServiceTest, and make a real unit test
-   // idea: store an *encrypted EICAR* in the source, then decrypt it for use in the test
-   // NB: don't add EICAR to git!
-   public static void main(String[] args)
-   {
-      Stopwatch stop = new Stopwatch().start();
-      virusScan(new File("/tmp/testdoc.odt"));
-      System.out.println(stop);
-      stop.reset();
-      stop.start();
-      try
-      {
-         virusScan(new File("/tmp/EICAR.com"));
-      }
-      catch (VirusDetectedException e)
-      {
-         System.out.println(e.getMessage());
-      }
-      System.out.println(stop);
-   }
 }

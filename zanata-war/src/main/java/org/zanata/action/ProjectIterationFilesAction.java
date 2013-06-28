@@ -85,6 +85,7 @@ import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 import org.zanata.rest.service.FileService;
 import org.zanata.rest.service.StatisticsResource;
+import org.zanata.rest.service.VirusScanner;
 import org.zanata.security.SecurityFunctions;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.DocumentService;
@@ -143,6 +144,9 @@ public class ProjectIterationFilesAction implements Serializable
 
    @In
    private StatisticsResource statisticsServiceImpl;
+
+   @In
+   private VirusScanner virusScanner;
 
    @In
    private ZanataMessages zanataMessages;
@@ -409,7 +413,8 @@ public class ProjectIterationFilesAction implements Serializable
             tempFileStream = new FileInputStream(tempFile);
             try
             {
-               FileService.virusScan(tempFile);
+               String name = projectSlug+":"+iterationSlug+":"+docId;
+               virusScanner.scan(tempFile, name);
                Blob fileContents = documentDAO.getLobHelper().createBlob(tempFileStream, (int) tempFile.length());
                rawDocument.setContent(fileContents);
                documentDAO.addRawDocument(document, rawDocument);
