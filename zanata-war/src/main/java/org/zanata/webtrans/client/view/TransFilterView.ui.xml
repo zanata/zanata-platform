@@ -3,9 +3,6 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:fui="urn:import:org.zanata.webtrans.client.ui">
 
 	<ui:style type="org.zanata.webtrans.client.view.TransFilterView.Styles">
-		.filter {
-			display:inline-block;
-		}
 		.transFilterTextBoxEmpty {
 			color: grey;
 			font-style: italic;
@@ -34,17 +31,37 @@
         .hasError {
             border-left:3px solid #FF4500;
         }
+        
+        .incompleteFilterList {
+			display:none;
+		}
+				
+		.completeFilterList {
+			display:none;
+		}
+				
+		.incompleteChk:hover .incompleteFilterList {
+			display:inline-block;
+		}
+				
+		.completeChk:hover .completeFilterList {
+			display:inline-block;
+		}
 
 	</ui:style>
 	
 	<g:HTMLPanel>
 		<fui:SearchField ui:field="searchField"/>
-		<g:HTMLPanel styleName="{style.filter}">
-			<g:CheckBox ui:field="translatedChk" styleName="{style.translated}" title="Includes Translated and Approved messages"><ui:msg>Translated</ui:msg></g:CheckBox>
-		    <g:CheckBox ui:field="fuzzyChk" styleName="{style.fuzzy}" title="Includes Fuzzy and Rejected messages"><ui:msg>Fuzzy</ui:msg></g:CheckBox>
+		<g:CheckBox ui:field="incompleteChk" styleName="{style.incompleteChk}"><ui:msg>Incomplete</ui:msg></g:CheckBox>
+		<g:HTMLPanel styleName="{style.incompleteFilterList}">
 		    <g:CheckBox ui:field="untranslatedChk" styleName="{style.untranslated}"><ui:msg>Untranslated</ui:msg></g:CheckBox>
-			<g:CheckBox ui:field="approvedChk" styleName="{style.approved}"><ui:msg>Approved</ui:msg></g:CheckBox>
+		    <g:CheckBox ui:field="fuzzyChk" styleName="{style.fuzzy}" title="Includes Fuzzy and Rejected messages"><ui:msg>Fuzzy</ui:msg></g:CheckBox>
 			<g:CheckBox ui:field="rejectedChk" styleName="{style.rejected}"><ui:msg>Rejected</ui:msg></g:CheckBox>
+		</g:HTMLPanel>
+		<g:CheckBox ui:field="completeChk" styleName="{style.completeChk}"><ui:msg>Complete</ui:msg></g:CheckBox>
+		<g:HTMLPanel styleName="{style.completeFilterList}">
+			<g:CheckBox ui:field="translatedChk" styleName="{style.translated}" title="Includes Translated and Approved messages"><ui:msg>Translated</ui:msg></g:CheckBox>
+			<g:CheckBox ui:field="approvedChk" styleName="{style.approved}"><ui:msg>Approved</ui:msg></g:CheckBox>
 			<g:CheckBox ui:field="hasErrorChk" styleName="{style.hasError}"><ui:msg>Has warning</ui:msg></g:CheckBox>
 		</g:HTMLPanel>
 	</g:HTMLPanel>

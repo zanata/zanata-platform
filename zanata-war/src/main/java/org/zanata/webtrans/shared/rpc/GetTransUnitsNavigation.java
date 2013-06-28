@@ -71,9 +71,19 @@ public class GetTransUnitsNavigation
       return isNewState;
    }
 
-   public boolean isApprovedState()
+   public boolean isTranslatedState()
    {
       return isTranslatedState;
+   }
+   
+   public boolean isApprovedState()
+   {
+      return isApprovedState;
+   }
+   
+   public boolean isRejectedState()
+   {
+      return isRejectedState;
    }
 
    @Override

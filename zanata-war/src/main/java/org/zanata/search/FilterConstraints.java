@@ -283,17 +283,23 @@ public class FilterConstraints
       List<ContentState> result = Lists.newArrayList();
       if (includeTranslated)
       {
-         result.add(ContentState.Approved);
          result.add(ContentState.Translated);
       }
       if (includeFuzzy)
       {
          result.add(ContentState.NeedReview);
-         result.add(ContentState.Rejected);
       }
       if (includeNew)
       {
          result.add(ContentState.New);
+      }
+      if (includeApproved)
+      {
+         result.add(ContentState.Approved);
+      }
+      if (includeRejected)
+      {
+         result.add(ContentState.Rejected);
       }
       return result;
    }

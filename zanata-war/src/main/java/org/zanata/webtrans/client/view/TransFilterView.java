@@ -34,6 +34,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -51,7 +52,10 @@ public class TransFilterView extends Composite implements TransFilterDisplay
 
    @UiField
    CheckBox translatedChk, fuzzyChk, untranslatedChk, approvedChk, rejectedChk, hasErrorChk;
-
+   
+   @UiField
+   CheckBox incompleteChk, completeChk;
+   
    private String hintMessage;
 
    private boolean focused = false;

@@ -154,15 +154,15 @@ public class TransFilterPresenterTest
       assertThat(configHolder.getState().isFilterByTranslated(), Matchers.equalTo(true));
       assertThat(configHolder.getState().isFilterByNeedReview(), Matchers.equalTo(false));
       assertThat(configHolder.getState().isFilterByUntranslated(), Matchers.equalTo(true));
-      assertThat(configHolder.getState().isFilterByApproved(), Matchers.equalTo(false));
+      assertThat(configHolder.getState().isFilterByApproved(), Matchers.equalTo(true));
       assertThat(configHolder.getState().isFilterByRejected(), Matchers.equalTo(false));
-      assertThat(configHolder.getState().isFilterByHasError(), Matchers.equalTo(true));
+      assertThat(configHolder.getState().isFilterByHasError(), Matchers.equalTo(false));
       assertThat(historyToken.isFilterTranslated(), Matchers.equalTo(true));
       assertThat(historyToken.isFilterFuzzy(), Matchers.equalTo(false));
       assertThat(historyToken.isFilterUntranslated(), Matchers.equalTo(true));
-      assertThat(historyToken.isFilterApproved(), Matchers.equalTo(false));
+      assertThat(historyToken.isFilterApproved(), Matchers.equalTo(true));
       assertThat(historyToken.isFilterRejected(), Matchers.equalTo(false));
-      assertThat(historyToken.isFilterHasError(), Matchers.equalTo(true));
+      assertThat(historyToken.isFilterHasError(), Matchers.equalTo(false));
       verify(history).newItem(historyToken);
    }
 }
