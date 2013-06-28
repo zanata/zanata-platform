@@ -39,7 +39,6 @@
         <!-- Groovy and Gmaven properties -->
         <gmavenProviderSelection>2.0</gmavenProviderSelection>
         <groovyVersion>2.0.7</groovyVersion>
-        <jboss-deployment-structure.location>src/main/webapp-jboss</jboss-deployment-structure.location>
     </properties>
 
 	<build>
@@ -232,16 +231,8 @@
 						<resource>
 							<directory>src/main/webapp-jboss</directory>
 							<filtering>true</filtering>
-                            <excludes>
-                                <exclude>**/jboss-deployment-structure.xml</exclude>
-                            </excludes>
+
 						</resource>
-                        <resource>
-                            <directory>${jboss-deployment-structure.location}</directory>
-                            <includes>
-                                <include>**/jboss-deployment-structure.xml</include>
-                            </includes>
-                        </resource>
 						<resource>
                             <directory>src/main/resources</directory>
                             <includes>
@@ -380,6 +371,7 @@
                     <suiteXmlFiles>
                         <suiteXmlFile>src/test/resources/AllNonContainerTests.tng.xml</suiteXmlFile>
                     </suiteXmlFiles>
+                    <runOrder>alphabetical</runOrder>
 <!-- TODO try parallel execution
                <parallel>methods</parallel>
                <threadCount>4</threadCount>
@@ -453,6 +445,7 @@
                                 <include>**/*ITCase.java</include>
                             </includes>
                             <testNGArtifactName>none:none</testNGArtifactName>
+                            <runOrder>alphabetical</runOrder>
                         </configuration>
 					</execution>
 				</executions>
@@ -1087,15 +1080,6 @@
                 </plugins>
             </reporting>
         </profile>
-
-        <profile>
-            <id>useH2</id>
-            <properties>
-                <jboss-deployment-structure.location>src/test/resources/jboss</jboss-deployment-structure.location>
-                <war.name>zanata-h2</war.name>
-            </properties>
-        </profile>
-
 	</profiles>
 
 	<dependencies>
