@@ -86,7 +86,9 @@ public class VirusScanner
     * merely logs an error if it can't be found (or if clamd is not running),
     * rather than rejecting the file.
     * <p>
-    * Note that the caller is responsible for deleting the file.
+    * Note 1: the file will be made world readable, so that clamd can access it.
+    * <p>
+    * Note 2: the caller is responsible for deleting the file.
     * @param file
     * @param name
     * @throws VirusDetectedException if a virus is detected
@@ -99,6 +101,7 @@ public class VirusScanner
          log.debug("file not scanned: {}", name);
          return;
       }
+      file.setReadable(true, false);
       Stopwatch stop = new Stopwatch().start();
       CommandLine cmdLine = new CommandLine(scanner);
       if (scanner.matches(".*clamd?scan"))
