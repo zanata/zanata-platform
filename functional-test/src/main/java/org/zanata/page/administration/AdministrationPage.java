@@ -30,6 +30,9 @@ public class AdministrationPage extends AbstractPage
    @FindBy(id = "Admin_Manage_languages_home")
    private WebElement manageLanguagesLink;
 
+   @FindBy(id = "Admin_Manage_users_home")
+   private WebElement manageUsersLink;
+
    public AdministrationPage(WebDriver driver)
    {
       super(driver);
@@ -39,5 +42,11 @@ public class AdministrationPage extends AbstractPage
    {
       manageLanguagesLink.click();
       return new ManageLanguagePage(getDriver());
+   }
+
+   public ManageUserPage goToManageUserPage()
+   {
+      manageUsersLink.click();
+      return new ManageUserPage(getDriver());
    }
 }
