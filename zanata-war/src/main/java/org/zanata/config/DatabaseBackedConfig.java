@@ -20,8 +20,6 @@
  */
 package org.zanata.config;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,7 +40,7 @@ import org.zanata.model.HApplicationConfiguration;
 @Name("databaseBackedConfig")
 @Scope(ScopeType.APPLICATION)
 @AutoCreate
-public class DatabaseBackedConfig implements ConfigurationStore<String, String>
+public class DatabaseBackedConfig
 {
 
    @In
@@ -54,15 +52,13 @@ public class DatabaseBackedConfig implements ConfigurationStore<String, String>
     * Resets the store by clearing out all values. This means that values will need to be
     * reloaded as they are requested.
     */
-   @Override
    @Create
    public void reset()
    {
       configurationValues = new HashMap<String, String>();
    }
 
-   @Override
-   public String getConfigValue(String key)
+   private String getConfigValue(String key)
    {
       if( !configurationValues.containsKey(key) )
       {
@@ -77,8 +73,7 @@ public class DatabaseBackedConfig implements ConfigurationStore<String, String>
       return configurationValues.get(key);
    }
 
-   @Override
-   public boolean containsKey(String key)
+   private boolean containsKey(String key)
    {
       // Preemptively load the key
       return getConfigValue(key) != null;

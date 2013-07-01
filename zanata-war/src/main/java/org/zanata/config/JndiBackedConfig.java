@@ -45,7 +45,7 @@ import org.jboss.seam.annotations.Scope;
 @Name("jndiBackedConfig")
 @Scope(ScopeType.APPLICATION)
 @AutoCreate
-public class JndiBackedConfig implements ConfigurationStore<String, String>
+public class JndiBackedConfig
 {
 
    private static final String KEY_AUTH_POLICY           = "java:global/zanata/security/auth-policy-names/";
@@ -60,8 +60,7 @@ public class JndiBackedConfig implements ConfigurationStore<String, String>
 
    private Map<String, String> configurationValues;
 
-   @Override
-   public String getConfigValue(String key)
+   private String getConfigValue(String key)
    {
       if( !configurationValues.containsKey(key) )
       {
@@ -85,8 +84,7 @@ public class JndiBackedConfig implements ConfigurationStore<String, String>
       return configurationValues.get(key);
    }
 
-   @Override
-   public boolean containsKey(String key)
+   private boolean containsKey(String key)
    {
       // Only one way to know if it's there... and that is to go look for it
       getConfigValue(key);
@@ -97,7 +95,6 @@ public class JndiBackedConfig implements ConfigurationStore<String, String>
     * Resets the store by clearing out all values. This means that values will need to be
     * reloaded as they are requested.
     */
-   @Override
    @Create
    public void reset()
    {
@@ -113,7 +110,7 @@ public class JndiBackedConfig implements ConfigurationStore<String, String>
     * @param base The base context to look for sub keys.
     * @return An array with all the available keys in the context.
     */
-   public Set<String> getSubKeys(String base)
+   private Set<String> getSubKeys(String base)
    {
       try
       {

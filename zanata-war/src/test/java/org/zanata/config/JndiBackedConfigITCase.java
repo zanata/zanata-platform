@@ -73,7 +73,8 @@ public class JndiBackedConfigITCase extends ArquillianTest
    @Test
    public void getNonExistentProperty() throws Exception
    {
-      String val = jndiBackedConfig.getConfigValue("java:global/I/dont/exist");
+      // This value must NOT be provided in the standalone.xml file used for arquillian tests.
+      String val = jndiBackedConfig.getSmtpHostName();
       assertThat(val, nullValue());
    }
 }

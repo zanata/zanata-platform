@@ -65,7 +65,8 @@ public class DatabaseBackedConfigTest extends ZanataDbunitJpaTest
    @Test
    public void getNonExistentValue() throws Exception
    {
-      assertThat(databaseBackedConfig.getConfigValue("I.dont.exist"), nullValue());
+      // This value is NOT provided in the DB Unit script above
+      assertThat(databaseBackedConfig.getAdminEmailAddress(), nullValue());
    }
 
    @Test

@@ -211,7 +211,7 @@
                 <smtp-server outbound-socket-binding-ref="mail-smtp"/>
             </mail-session>
         </subsystem>
-        <subsystem xmlns="urn:jboss:domain:naming:1.2">
+        <subsystem xmlns="urn:jboss:domain:naming:1.3">
             <bindings>
                 <simple name="java:global/zanata/security/auth-policy-names/internal" value="zanata.internal"/>
                 <simple name="java:global/zanata/security/admin-users" value="admin"/>
