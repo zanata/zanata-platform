@@ -212,6 +212,10 @@
             </mail-session>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:naming:1.2">
+            <bindings>
+                <simple name="java:global/zanata/security/auth-policy-names/internal" value="zanata.internal"/>
+                <simple name="java:global/zanata/security/admin-users" value="admin"/>
+            </bindings>
             <remote-naming/>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:pojo:1.0"/>
