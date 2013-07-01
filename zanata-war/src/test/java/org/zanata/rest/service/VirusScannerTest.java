@@ -50,29 +50,26 @@ public class VirusScannerTest
    public void virusScanSafeFile() throws IOException
    {
       String data = "This is a simple test file, which doesn't contain a virus.\n";
-      File f = File.createTempFile("data", ".tmp");
+      File file = File.createTempFile("data", ".tmp");
       try
       {
-         Files.writeFile(data, f);
-         virusScanner.scan(f, "safe");
+         Files.writeFile(data, file);
+         virusScanner.scan(file, "safe");
       }
       finally
       {
-         f.delete();
+         file.delete();
       }
    }
 
    public void virusScanEicarFile() throws IOException
    {
-      // See http://www.eicar.org/86-0-Intended-use.html
-      // We use ROT13 so that virus scanners won't think this source file
-      // is "infected" with EICAR.
-      String eicar = rot13("K5B!C%@NC[4\\CMK54(C^)7PP)7}$RVPNE-FGNAQNEQ-NAGVIVEHF-GRFG-SVYR!$U+U*\n");
-      File f = File.createTempFile("eicar", ".tmp");
+      String eicar = generateFakeVirus();
+      File file = File.createTempFile("eicar", ".tmp");
       try
       {
-         Files.writeFile(eicar, f);
-         virusScanner.scan(f, "eicar");
+         Files.writeFile(eicar, file);
+         virusScanner.scan(file, "eicar");
          virusNotFound("failed to detect eicar test signature");
       }
       catch (VirusDetectedException e)
@@ -81,8 +78,17 @@ public class VirusScannerTest
       }
       finally
       {
-         f.delete();
+         file.delete();
       }
+   }
+
+   private String generateFakeVirus()
+   {
+      // See http://www.eicar.org/86-0-Intended-use.html
+      // We use ROT13 so that virus scanners won't think this source file
+      // is "infected" with EICAR.
+      String eicar = rot13("K5B!C%@NC[4\\CMK54(C^)7PP)7}$RVPNE-FGNAQNEQ-NAGVIVEHF-GRFG-SVYR!$U+U*\n");
+      return eicar;
    }
 
    private void virusNotFound(String msg)
