@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<dataset>
+    <HApplicationConfiguration
+            id="1"
+            creationDate="2009-01-14 11:39:00"
+            lastChanged="2009-01-14 11:39:00"
+            versionNum="1"
+            config_key="pages.home.content"
+            config_value="This is the home content"
+            />
+    <HApplicationConfiguration
+            id="2"
+            creationDate="2009-01-14 11:39:00"
+            lastChanged="2009-01-14 11:39:00"
+            versionNum="1"
+            config_key="pages.help.content"
+            config_value="This is the help content"
+            />
+</dataset>
