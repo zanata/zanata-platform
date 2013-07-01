@@ -27,6 +27,7 @@ import java.util.Set;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NameClassPair;
+import javax.naming.NameNotFoundException;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 
@@ -67,11 +68,18 @@ public class JndiBackedConfig implements ConfigurationStore<String, String>
          try
          {
             Context ctx = new InitialContext();
-            configurationValues.put(key, (String) ctx.lookup(key));
+            String configVal = null;
+            configVal = (String) ctx.lookup(key);
+            configurationValues.put(key, configVal);
          }
-         catch (NamingException e)
+         catch(NameNotFoundException nnfex)
          {
-            throw new RuntimeException("Problem when fetching Jndi config key '" + key + "'", e);
+            // Name not found, just cache a null value
+            configurationValues.put(key, null);
+         }
+         catch (NamingException nex)
+         {
+            throw new RuntimeException("Problem when fetching Jndi config key '" + key + "'", nex);
          }
       }
       return configurationValues.get(key);
@@ -134,6 +142,11 @@ public class JndiBackedConfig implements ConfigurationStore<String, String>
    public Set<String> getEnabledAuthenticationPolicies()
    {
       return getSubKeys(KEY_AUTH_POLICY);
+   }
+
+   public String getAuthPolicyName( String authType )
+   {
+      return getConfigValue(KEY_AUTH_POLICY + authType);
    }
 
    public String getAdminUsersList()

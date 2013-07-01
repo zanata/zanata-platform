@@ -28,6 +28,7 @@ import org.zanata.seam.SeamAutowire;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.nullValue;
 
 /**
  * Tests for the Database backed config store.
@@ -59,6 +60,12 @@ public class DatabaseBackedConfigTest extends ZanataDbunitJpaTest
    public void getHomeContent()
    {
       assertThat(databaseBackedConfig.getHomeContent(), equalTo("This is the home content"));
+   }
+
+   @Test
+   public void getNonExistentValue() throws Exception
+   {
+      assertThat(databaseBackedConfig.getConfigValue("I.dont.exist"), nullValue());
    }
 
    @Test

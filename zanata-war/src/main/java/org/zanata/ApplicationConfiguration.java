@@ -43,22 +43,12 @@ import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.jboss.seam.web.ServletContexts;
-import org.zanata.dao.ApplicationConfigurationDAO;
+import org.zanata.config.DatabaseBackedConfig;
+import org.zanata.config.JndiBackedConfig;
 import org.zanata.log4j.ZanataHTMLLayout;
 import org.zanata.log4j.ZanataSMTPAppender;
 import org.zanata.model.HApplicationConfiguration;
 import org.zanata.security.AuthenticationType;
-import org.zanata.util.ZanataBasicConfig;
-
-import static org.zanata.util.ZanataBasicConfig.KEY_ADMIN_USERS;
-import static org.zanata.util.ZanataBasicConfig.KEY_AUTH_POLICY;
-import static org.zanata.util.ZanataBasicConfig.KEY_DEFAULT_FROM_ADDRESS;
-import static org.zanata.util.ZanataBasicConfig.KEY_EMAIL_HOST;
-import static org.zanata.util.ZanataBasicConfig.KEY_EMAIL_PASSWORD;
-import static org.zanata.util.ZanataBasicConfig.KEY_EMAIL_PORT;
-import static org.zanata.util.ZanataBasicConfig.KEY_EMAIL_SSL;
-import static org.zanata.util.ZanataBasicConfig.KEY_EMAIL_TLS;
-import static org.zanata.util.ZanataBasicConfig.KEY_EMAIL_USERNAME;
 
 @Name("applicationConfiguration")
 @Scope(ScopeType.APPLICATION)
@@ -89,12 +79,11 @@ public class ApplicationConfiguration implements Serializable
          HApplicationConfiguration.KEY_REGISTER
       };
 
-   private static final ZanataBasicConfig externalConfig = ZanataBasicConfig.getInstance();
+   private DatabaseBackedConfig databaseBackedConfig;
+   private JndiBackedConfig jndiBackedConfig;
 
    private static final ZanataSMTPAppender smtpAppenderInstance = new ZanataSMTPAppender();
 
-   private Map<String, String> configValues = new HashMap<String, String>();
-   
    private boolean debug;
    private int authenticatedSessionTimeoutMinutes = 0;
    private String version;
@@ -109,43 +98,23 @@ public class ApplicationConfiguration implements Serializable
    {
       log.info("Reloading configuration");
       Map<String, String> configValues = new HashMap<String, String>();
-      //setDefaults(configValues);
+      databaseBackedConfig = (DatabaseBackedConfig)Component.getInstance(DatabaseBackedConfig.class);
+      jndiBackedConfig = (JndiBackedConfig)Component.getInstance(JndiBackedConfig.class);
 
-      ApplicationConfigurationDAO applicationConfigurationDAO = (ApplicationConfigurationDAO) Component.getInstance(ApplicationConfigurationDAO.class, ScopeType.STATELESS);
-      List<HApplicationConfiguration> storedConfigValues = applicationConfigurationDAO.findAll();
-      for (HApplicationConfiguration value : storedConfigValues)
-      {
-         configValues.put(value.getKey(), value.getValue());
-         log.debug("Setting value {0} to {1}", value.getKey(), value.getValue());
-      }
-      this.configValues = configValues;
-
-      this.loadExternalConfig();
+      this.loadLoginModuleNames();
       this.validateConfiguration();
       this.applyLoggingConfiguration();
    }
 
-   private void loadExternalConfig()
+   /**
+    * Loads the accepted login module (JAAS) names from the underlying configuration
+    */
+   private void loadLoginModuleNames()
    {
-      // Authentication policies
-      for( AuthenticationType authType : AuthenticationType.values() )
+      for( String policyName : jndiBackedConfig.getEnabledAuthenticationPolicies() )
       {
-         String key = KEY_AUTH_POLICY + "." + authType.name().toLowerCase();
-         if( externalConfig.containsKey( key ) )
-         {
-            loginModuleNames.put( authType, externalConfig.getProperty(key) );
-         }
-      }
-
-      // Admin users
-      if( externalConfig.containsKey( KEY_ADMIN_USERS ) )
-      {
-         String userList = externalConfig.getProperty(KEY_ADMIN_USERS);
-
-         for( String userName : userList.split(",") )
-         {
-            adminUsers.add( userName.trim() );
-         }
+         AuthenticationType authType = AuthenticationType.valueOf( policyName.toUpperCase() );
+         loginModuleNames.put(authType, jndiBackedConfig.getAuthPolicyName( policyName ));
       }
    }
 
@@ -157,19 +126,19 @@ public class ApplicationConfiguration implements Serializable
       // Validate that only internal / openid authentication is enabled at once
       if( loginModuleNames.size() > 2 )
       {
-         throw new RuntimeException("Multiple invalid authentication types present in zanata.properties");
+         throw new RuntimeException("Multiple invalid authentication types present in Zanata configuration.");
       }
       else if( loginModuleNames.size() == 2 )
       {
          // Internal and Open id are the only allowed combined authentication types
-         if( !(loginModuleNames.containsKey(AuthenticationType.INTERNAL) && loginModuleNames.containsKey(AuthenticationType.INTERNAL) ) )
+         if( !(loginModuleNames.containsKey(AuthenticationType.OPENID) && loginModuleNames.containsKey(AuthenticationType.INTERNAL) ) )
          {
-            throw new RuntimeException("Multiple invalid authentication types present in zanata.properties");
+            throw new RuntimeException("Multiple invalid authentication types present in Zanata configuration.");
          }
       }
       else if( loginModuleNames.size() < 1)
       {
-         throw new RuntimeException("At least one authentication type must be configured in zanata.properties");
+         throw new RuntimeException("At least one authentication type must be configured in Zanata configuration.");
       }
    }
 
@@ -185,7 +154,7 @@ public class ApplicationConfiguration implements Serializable
          // NB: This appender uses Seam's email configuration (no need for host or port)
          smtpAppenderInstance.setName(EMAIL_APPENDER_NAME);
          smtpAppenderInstance.setFrom(getFromEmailAddr());
-         smtpAppenderInstance.setTo(this.configValues.get(HApplicationConfiguration.KEY_LOG_DESTINATION_EMAIL));
+         smtpAppenderInstance.setTo(databaseBackedConfig.getLogEventsDestinationEmailAddress());
          // TODO use hostname, not URL
          smtpAppenderInstance.setSubject("%p log message from Zanata at " + this.getServerPath());
          smtpAppenderInstance.setLayout(new ZanataHTMLLayout());
@@ -207,12 +176,12 @@ public class ApplicationConfiguration implements Serializable
 
    public String getRegisterPath()
    {
-      return configValues.get(HApplicationConfiguration.KEY_REGISTER);
+      return databaseBackedConfig.getRegistrationUrl();
    }
 
    public String getServerPath()
    {
-      String configuredValue = configValues.get(HApplicationConfiguration.KEY_HOST);
+      String configuredValue = databaseBackedConfig.getServerHost();
       // Try to determine a server path if one is not configured
       if( configuredValue == null )
       {
@@ -226,19 +195,14 @@ public class ApplicationConfiguration implements Serializable
       return configuredValue;
    }
 
-   public String getByKey(String key)
-   {
-      return configValues.get(key);
-   }
-
    public String getDomainName()
    {
-      return configValues.get(HApplicationConfiguration.KEY_DOMAIN);
+      return databaseBackedConfig.getDomain();
    }
 
    public List<String> getAdminEmail()
    {
-      String s = configValues.get(HApplicationConfiguration.KEY_ADMIN_EMAIL);
+      String s = databaseBackedConfig.getAdminEmailAddress();
       if (s == null || s.trim().length() == 0)
       {
          return new ArrayList<String>();
@@ -252,12 +216,12 @@ public class ApplicationConfiguration implements Serializable
       String emailAddr = null;
 
       // Look in the database first
-      emailAddr = configValues.get(HApplicationConfiguration.KEY_EMAIL_FROM_ADDRESS);
+      emailAddr = databaseBackedConfig.getFromEmailAddress();
 
       // Look in the properties file next
-      if (emailAddr == null && externalConfig.containsKey(KEY_DEFAULT_FROM_ADDRESS))
+      if (emailAddr == null && jndiBackedConfig.getDefaultFromEmailAddress() != null)
       {
-         emailAddr = externalConfig.getProperty(KEY_DEFAULT_FROM_ADDRESS);
+         emailAddr = jndiBackedConfig.getDefaultFromEmailAddress();
       }
 
       // Finally, just throw an Exception
@@ -270,12 +234,12 @@ public class ApplicationConfiguration implements Serializable
 
    public String getHomeContent()
    {
-      return configValues.get(HApplicationConfiguration.KEY_HOME_CONTENT);
+      return databaseBackedConfig.getHomeContent();
    }
 
    public String getHelpContent()
    {
-      return configValues.get(HApplicationConfiguration.KEY_HELP_CONTENT);
+      return databaseBackedConfig.getHelpContent();
    }
    
    public boolean isInternalAuth()
@@ -345,7 +309,7 @@ public class ApplicationConfiguration implements Serializable
 
    public boolean isEmailLogAppenderEnabled()
    {
-      String strVal = configValues.get(HApplicationConfiguration.KEY_EMAIL_LOG_EVENTS);
+      String strVal = databaseBackedConfig.getShouldLogEvents();
 
       if(strVal == null)
       {
@@ -359,7 +323,7 @@ public class ApplicationConfiguration implements Serializable
 
    public List<String> getLogDestinationEmails()
    {
-      String s = configValues.get(HApplicationConfiguration.KEY_LOG_DESTINATION_EMAIL);
+      String s = databaseBackedConfig.getLogEventsDestinationEmailAddress();
       if (s == null || s.trim().length() == 0)
       {
          return new ArrayList<String>();
@@ -370,22 +334,22 @@ public class ApplicationConfiguration implements Serializable
 
    public String getEmailLogLevel()
    {
-      return configValues.get(HApplicationConfiguration.KEY_EMAIL_LOG_LEVEL);
+      return databaseBackedConfig.getEmailLogLevel();
    }
 
    public String getPiwikUrl()
    {
-      return configValues.get(HApplicationConfiguration.KEY_PIWIK_URL);
+      return databaseBackedConfig.getPiwikUrl();
    }
 
    public String getPiwikIdSite()
    {
-      return configValues.get(HApplicationConfiguration.KEY_PIWIK_IDSITE);
+      return databaseBackedConfig.getPiwikSiteId();
    }
 
    public String getEmailServerHost()
    {
-      String host = externalConfig.getProperty(KEY_EMAIL_HOST);
+      String host = jndiBackedConfig.getSmtpHostName();
 
       // Default to localhost
       if( host == null )
@@ -397,7 +361,7 @@ public class ApplicationConfiguration implements Serializable
 
    public int getEmailServerPort()
    {
-      String port = externalConfig.getProperty(KEY_EMAIL_PORT);
+      String port = jndiBackedConfig.getSmtpPort();
 
       // Default to 25
       if( port == null )
@@ -409,29 +373,21 @@ public class ApplicationConfiguration implements Serializable
 
    public String getEmailServerUsername()
    {
-      return externalConfig.getProperty(KEY_EMAIL_USERNAME);
+      return jndiBackedConfig.getSmtpUsername();
    }
 
    public String getEmailServerPassword()
    {
-      return externalConfig.getProperty(KEY_EMAIL_PASSWORD);
+      return jndiBackedConfig.getSmtpPassword();
    }
 
    public boolean useEmailServerTls()
    {
-      if(externalConfig.containsKey(KEY_EMAIL_TLS))
-      {
-         return Boolean.parseBoolean( externalConfig.getProperty(KEY_EMAIL_TLS) );
-      }
-      return false;
+      return jndiBackedConfig.getSmtpUsesTls() != null ? Boolean.parseBoolean(jndiBackedConfig.getSmtpUsesTls()) : false;
    }
 
    public boolean useEmailServerSsl()
    {
-      if(externalConfig.containsKey(KEY_EMAIL_SSL))
-      {
-         return Boolean.parseBoolean( externalConfig.getProperty(KEY_EMAIL_SSL) );
-      }
-      return false;
+      return jndiBackedConfig.getStmpUsesSsl() != null ? Boolean.parseBoolean(jndiBackedConfig.getStmpUsesSsl()) : false;
    }
 }

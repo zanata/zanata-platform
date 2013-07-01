@@ -45,20 +45,6 @@ import org.zanata.model.HApplicationConfiguration;
 public class DatabaseBackedConfig implements ConfigurationStore<String, String>
 {
 
-   private static final String[] allConfigKeys = new String[]
-   {
-         HApplicationConfiguration.KEY_ADMIN_EMAIL,
-         HApplicationConfiguration.KEY_DOMAIN,
-         HApplicationConfiguration.KEY_EMAIL_FROM_ADDRESS,
-         HApplicationConfiguration.KEY_EMAIL_LOG_EVENTS,
-         HApplicationConfiguration.KEY_EMAIL_LOG_LEVEL,
-         HApplicationConfiguration.KEY_HELP_CONTENT,
-         HApplicationConfiguration.KEY_HOME_CONTENT,
-         HApplicationConfiguration.KEY_HOST,
-         HApplicationConfiguration.KEY_LOG_DESTINATION_EMAIL,
-         HApplicationConfiguration.KEY_REGISTER
-   };
-
    @In
    private ApplicationConfigurationDAO applicationConfigurationDAO;
 
@@ -72,7 +58,7 @@ public class DatabaseBackedConfig implements ConfigurationStore<String, String>
    @Create
    public void reset()
    {
-      configurationValues = new HashMap<String, String>( allConfigKeys.length );
+      configurationValues = new HashMap<String, String>();
    }
 
    @Override
@@ -81,7 +67,12 @@ public class DatabaseBackedConfig implements ConfigurationStore<String, String>
       if( !configurationValues.containsKey(key) )
       {
          HApplicationConfiguration configRecord = applicationConfigurationDAO.findByKey(key);
-         configurationValues.put(key, configRecord.getValue());
+         String storedVal = null;
+         if( configRecord != null )
+         {
+            storedVal = configRecord.getValue();
+         }
+         configurationValues.put(key, storedVal);
       }
       return configurationValues.get(key);
    }
@@ -89,14 +80,8 @@ public class DatabaseBackedConfig implements ConfigurationStore<String, String>
    @Override
    public boolean containsKey(String key)
    {
-      for( String k : allConfigKeys )
-      {
-         if( k.equals(key) )
-         {
-            return true;
-         }
-      }
-      return false;
+      // Preemptively load the key
+      return getConfigValue(key) != null;
    }
 
    /**
@@ -152,5 +137,15 @@ public class DatabaseBackedConfig implements ConfigurationStore<String, String>
    public String getRegistrationUrl()
    {
       return getConfigValue(HApplicationConfiguration.KEY_REGISTER);
+   }
+
+   public String getPiwikUrl()
+   {
+      return getConfigValue(HApplicationConfiguration.KEY_PIWIK_URL);
+   }
+
+   public String getPiwikSiteId()
+   {
+      return getConfigValue(HApplicationConfiguration.KEY_PIWIK_IDSITE);
    }
 }

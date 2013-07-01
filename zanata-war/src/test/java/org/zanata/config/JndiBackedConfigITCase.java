@@ -29,6 +29,7 @@ import org.zanata.ArquillianTest;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 /**
  * Integration test for the JNDI backed configuration store.
@@ -67,5 +68,12 @@ public class JndiBackedConfigITCase extends ArquillianTest
       jndiBackedConfig.reset();
       String reloaded = jndiBackedConfig.getAdminUsersList();
       assertThat(reloaded, equalTo(original));
+   }
+
+   @Test
+   public void getNonExistentProperty() throws Exception
+   {
+      String val = jndiBackedConfig.getConfigValue("java:global/I/dont/exist");
+      assertThat(val, nullValue());
    }
 }
