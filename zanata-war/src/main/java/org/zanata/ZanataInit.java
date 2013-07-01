@@ -156,6 +156,17 @@ public class ZanataInit
 
    private void checkLuceneLocks(File indexDir) throws ZanataInitializationException
    {
+      if( !indexDir.exists() )
+      {
+         if(indexDir.mkdirs())
+         {
+            log.info("Created lucene index directory.");
+         }
+         else
+         {
+            log.warn("Could not create lucene index directory");
+         }
+      }
       Collection<File> lockFiles = FileUtils.listFiles(indexDir, new String[]{"lock"}, true);
       Collection<String> lockedDirs = Lists.newArrayList();
       for (File f : lockFiles)
