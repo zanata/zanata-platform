@@ -30,6 +30,9 @@
             <column name="targetVersion" type="int">
                 <constraints nullable="false"/>
             </column>
+            <column name="versionNum" type="int">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
         <addForeignKeyConstraint constraintName="FKtarget_review_commenter"
                                  referencedTableName="HPerson" referencedColumnNames="id"

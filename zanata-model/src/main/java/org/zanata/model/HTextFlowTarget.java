@@ -397,10 +397,11 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
       return reviewComments;
    }
 
-   public HTextFlowTarget addUserComment(String comment, HPerson commenter)
+   public HTextFlowTargetReviewComment addReviewComment(String comment, HPerson commenter)
    {
-      getReviewComments().add(new HTextFlowTargetReviewComment(this, comment, commenter));
-      return this;
+      HTextFlowTargetReviewComment reviewComment = new HTextFlowTargetReviewComment(this, comment, commenter);
+      getReviewComments().add(reviewComment);
+      return reviewComment;
    }
 
    @PreUpdate

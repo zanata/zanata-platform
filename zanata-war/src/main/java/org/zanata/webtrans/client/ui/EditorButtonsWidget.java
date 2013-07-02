@@ -1,7 +1,9 @@
 package org.zanata.webtrans.client.ui;
 
+import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.CssResource;
@@ -35,6 +37,8 @@ public class EditorButtonsWidget extends Composite
    InlineLabel acceptIcon;
    @UiField
    InlineLabel rejectIcon;
+   @UiField
+   InlineLabel commentIcon;
 
    private TargetContentsDisplay.Listener listener;
    private TransUnitId id;
@@ -113,15 +117,28 @@ public class EditorButtonsWidget extends Composite
       event.stopPropagation();
    }
 
+   @UiHandler("commentIcon")
+   public void onCommentClick(ClickEvent event)
+   {
+      listener.commentTranslation(id);
+      event.stopPropagation();
+   }
+
    public void setListener(TargetContentsDisplay.Listener listener)
    {
       this.listener = listener;
       displayReviewButtons(listener.canReviewTranslation());
    }
 
-   public void setId(TransUnitId id)
+   public void setIdAndState(TransUnitId id, ContentState state)
    {
       this.id = id;
+      enableComment(state.isTranslated() || state.isRejectedOrFuzzy());
+   }
+
+   private void enableComment(boolean enable)
+   {
+      commentIcon.setVisible(enable);
    }
 
 

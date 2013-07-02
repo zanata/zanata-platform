@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.zanata.common.ContentState;
-import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.ui.Editor;
 import org.zanata.webtrans.client.ui.EditorButtonsWidget;
 import org.zanata.webtrans.client.ui.ToggleEditor;
@@ -33,23 +32,17 @@ import org.zanata.webtrans.client.ui.ValidationMessagePanelView;
 import org.zanata.webtrans.client.util.ContentStateToStyleUtil;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
-import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -120,8 +113,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    @Override
    public void setValueAndCreateNewEditors(TransUnit transUnit)
    {
-      cachedValue = transUnit;
-      buttons.setId(cachedValue.getId());
+      setCachedTU(transUnit);
 
       editors.clear();
       List<String> cachedTargets = cachedValue.getTargets();
@@ -139,35 +131,12 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
          editors.add(editor);
          rowIndex++;
       }
-      editorGrid.setStyleName(resolveStyleName(cachedValue.getStatus()));
       editingState = EditingState.SAVED;
    }
 
    private static String resolveStyleName(ContentState status)
    {
-      // TODO consolidate and simplify all the state styling. See also SearchResultsDocumentTable, TranslationHistoryView
       return ContentStateToStyleUtil.stateToStyle(status, "TableEditorRow ");
-//      String state = "";
-//      switch (status)
-//      {
-//         case Approved:
-//            state = " Approved";
-//            break;
-//         case NeedReview:
-//            state = " Fuzzy";
-//            break;
-//         case New:
-//            state = " New";
-//            break;
-//         case Translated:
-//            state = " Translated";
-//            break;
-//         case Rejected:
-//            state = " Rejected";
-//            break;
-//      }
-//      styles += state + "StateDecoration";
-//      return styles;
    }
 
    @Override
@@ -204,8 +173,14 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    @Override
    public void updateCachedTargetsAndVersion(List<String> targets, Integer verNum, ContentState status)
    {
-      cachedValue = TransUnit.Builder.from(cachedValue).setTargets(targets).setVerNum(verNum).setStatus(status).build();
+      setCachedTU(TransUnit.Builder.from(cachedValue).setTargets(targets).setVerNum(verNum).setStatus(status).build());
+   }
+
+   private void setCachedTU(TransUnit newTransUnit)
+   {
+      cachedValue = newTransUnit;
       editorGrid.setStyleName(resolveStyleName(cachedValue.getStatus()));
+      buttons.setIdAndState(cachedValue.getId(), cachedValue.getStatus());
    }
 
    @Override
@@ -241,6 +216,12 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    public List<String> getCachedTargets()
    {
       return cachedValue.getTargets();
+   }
+
+   @Override
+   public ContentState getCachedState()
+   {
+      return cachedValue.getStatus();
    }
 
    @Override

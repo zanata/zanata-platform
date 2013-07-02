@@ -32,7 +32,7 @@ public class TransUnit implements IsSerializable, HasTransUnitId
    private int rowIndex;
    private int verNum;
    private String targetComment;
-   private boolean hasUserComment;
+   private int commentsCount;
 
    // for GWT
    @SuppressWarnings("unused")
@@ -56,7 +56,7 @@ public class TransUnit implements IsSerializable, HasTransUnitId
       this.rowIndex = builder.rowIndex;
       this.verNum = builder.verNum;
       this.targetComment = builder.targetComment;
-      this.hasUserComment = builder.hasUserComment;
+      this.commentsCount = builder.commentsCount;
    }
 
    @Override
@@ -191,14 +191,14 @@ public class TransUnit implements IsSerializable, HasTransUnitId
       this.targetComment = targetComment;
    }
 
-   public boolean isHasUserComment()
+   public int getCommentsCount()
    {
-      return hasUserComment;
+      return commentsCount;
    }
 
-   void setHasUserComment(boolean hasUserComment)
+   void setCommentsCount(int commentsCount)
    {
-      this.hasUserComment = hasUserComment;
+      this.commentsCount = commentsCount;
    }
 
    public String debugString()
@@ -236,7 +236,7 @@ public class TransUnit implements IsSerializable, HasTransUnitId
       private int rowIndex;
       private int verNum = -1; // to fail check if not set before build
       private String targetComment;
-      private boolean hasUserComment;
+      private int commentsCount;
 
       private Builder(TransUnit transUnit)
       {
@@ -253,7 +253,7 @@ public class TransUnit implements IsSerializable, HasTransUnitId
          this.lastModifiedTime = transUnit.lastModifiedTime;
          this.rowIndex = transUnit.rowIndex;
          this.verNum = transUnit.verNum;
-         this.hasUserComment = transUnit.hasUserComment;
+         this.commentsCount = transUnit.commentsCount;
       }
 
       private Builder()
@@ -398,9 +398,9 @@ public class TransUnit implements IsSerializable, HasTransUnitId
          return this;
       }
 
-      public Builder setHasUserComment(boolean hasUserComment)
+      public Builder setCommentsCount(int commentsCount)
       {
-         this.hasUserComment = hasUserComment;
+         this.commentsCount = commentsCount;
          return this;
       }
    }

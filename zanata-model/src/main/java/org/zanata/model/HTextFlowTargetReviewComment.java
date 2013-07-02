@@ -87,6 +87,10 @@ public class HTextFlowTargetReviewComment extends ModelEntityBase
    @Transient
    public String getCommenterName()
    {
+      if (commenterName == null)
+      {
+         commenterName = getCommenter().getName();
+      }
       return commenterName;
    }
 

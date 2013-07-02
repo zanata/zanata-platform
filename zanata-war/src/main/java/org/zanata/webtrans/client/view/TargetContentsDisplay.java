@@ -70,6 +70,8 @@ public interface TargetContentsDisplay extends WidgetDisplay, HasTransUnitId, Ha
 
    void setEnableSpellCheck(boolean spellCheckEnabled);
 
+   ContentState getCachedState();
+
    interface Listener
    {
       void validate(ToggleEditor editor);
@@ -101,6 +103,8 @@ public interface TargetContentsDisplay extends WidgetDisplay, HasTransUnitId, Ha
       void acceptTranslation(TransUnitId id);
 
       void rejectTranslation(TransUnitId id);
+
+      void commentTranslation(TransUnitId id);
    }
 
    enum EditingState

@@ -20,14 +20,7 @@
  */
 package org.zanata.dao;
 
-import java.util.Date;
-import java.util.List;
-
-import lombok.Cleanup;
-import lombok.extern.slf4j.Slf4j;
-
 import org.dbunit.operation.DatabaseOperation;
-import org.hamcrest.Matchers;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 import org.testng.annotations.BeforeMethod;
@@ -36,17 +29,15 @@ import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.ContentState;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
-import org.zanata.model.HPerson;
-import org.zanata.model.HTextFlowTargetReviewComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 
+import lombok.Cleanup;
+import lombok.extern.slf4j.Slf4j;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
 
 @Test(groups = { "jpa-tests" })
 @Slf4j
@@ -111,55 +102,5 @@ public class TextFlowTargetDAOTest extends ZanataDbunitJpaTest
       ScrollableResults scroll = this.textFlowTargetDAO.findMatchingTranslations(doc, hLocale, true, true, true, true);
    }
 
-   @Test
-   public void testTargetUserComment()
-   {
-      PersonDAO personDAO = new PersonDAO(getSession());
-      HPerson person = personDAO.findById(1L, false);
-      HTextFlowTarget target = textFlowTargetDAO.findById(1L, false);
 
-      List<HTextFlowTargetReviewComment> userComments = target.getReviewComments();
-
-      assertThat(userComments, Matchers.empty());
-
-      target.addUserComment("bad translation", person);
-      getEm().persist(target);
-
-      // @formatter:off
-      HTextFlowTargetReviewComment result = getEm()
-            .createQuery("from HTextFlowTargetReviewComment where comment = :comment", HTextFlowTargetReviewComment.class)
-            .setParameter("comment", "bad translation").getSingleResult();
-      // @formatter:on
-
-      assertThat(result.getContentsOfCommentedTarget(), Matchers.equalTo(target.getContents()));
-      assertThat(result.getCommenterName(), Matchers.equalTo(person.getName()));
-      assertThat(result.getCreationDate(), Matchers.lessThanOrEqualTo(new Date()));
-   }
-
-   @Test
-   public void testTargetUserCommentMadeOnPreviousTranslation()
-   {
-      PersonDAO personDAO = new PersonDAO(getSession());
-      HPerson person = personDAO.findById(1L, false);
-      HTextFlowTarget target = textFlowTargetDAO.findById(2L, false);
-
-      List<String> oldTranslation = target.getContents();
-      int oldVersion = target.getVersionNum();
-
-      target.addUserComment("comment blah", person);
-      getEm().persist(target);
-
-      // change target after making comment
-      target.setContent0("new translation");
-      getEm().persist(target);
-
-      // @formatter:off
-      HTextFlowTargetReviewComment result = getEm()
-            .createQuery("from HTextFlowTargetReviewComment where comment = :comment", HTextFlowTargetReviewComment.class)
-            .setParameter("comment", "comment blah").getSingleResult();
-      // @formatter:on
-
-      assertThat(result.getContentsOfCommentedTarget(), Matchers.equalTo(oldTranslation));
-      assertThat(result.getTargetVersion(), Matchers.equalTo(oldVersion));
-   }
 }
