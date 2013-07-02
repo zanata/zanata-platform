@@ -44,7 +44,13 @@
          <s:decorate id="projectTypeField" template="edit.xhtml">
             <ui:define name="label">#{messages['jsf.projectType']}</ui:define>
             <h:selectOneMenu id="selectField" value="#{projectHome.instance.defaultProjectType}">
-                <f:selectItems value="#{projectHome.projectTypeList}"/>
+                <f:selectItem itemValue="#{null}"
+                              itemLabel="#{messages['jsf.projectType.NoSelection']}"
+                              noSelectionOption="true" />
+                <f:selectItems value="#{projectHome.projectTypeList}"
+                               var="projectType"
+                               itemValue="#{projectType}"
+                               itemLabel="#{messages['jsf.projectType.detail.'.concat(projectType)]}" />
             </h:selectOneMenu>
             <s:span styleClass="icon-info-circle-2 input_help" id="defaultProjectTypeHelp">
                 <rich:tooltip>
