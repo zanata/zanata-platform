@@ -23,6 +23,7 @@ package org.zanata.action;
 import static org.zanata.common.EntityStatus.OBSOLETE;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -47,7 +48,6 @@ public abstract class SlugHome<E> extends EntityHome<E>
    private static final long serialVersionUID = 1L;
 
    private List<SelectItem> statusList = new ArrayList<SelectItem>();
-   private List<SelectItem> projectTypeList = new ArrayList<SelectItem>();
 
    @SuppressWarnings("unchecked")
    @Override
@@ -90,34 +90,26 @@ public abstract class SlugHome<E> extends EntityHome<E>
       return statusList;
    }
 
-   public List<SelectItem> getProjectTypeList()
+   public List<ProjectType>getProjectTypeList()
    {
-      if (projectTypeList.isEmpty())
-      {
-         projectTypeList.add(new SelectItem(null, getMessages().get("jsf.projectType.NoSelection")));
-         for (ProjectType projectType : ProjectType.values())
-         {
-            SelectItem option = new SelectItem(projectType, projectType.name());
-            projectTypeList.add(option);
-         }
-      }
-      Collections.sort(projectTypeList, new Comparator<SelectItem>()
+      List<ProjectType> projectTypes = Arrays.asList(ProjectType.values());
+      Collections.sort(projectTypes, new Comparator<ProjectType>()
       {
          @Override
-         public int compare(SelectItem o1, SelectItem o2)
+         public int compare(ProjectType o1, ProjectType o2)
          {
-            if (o1.getValue() == null)
+            if (o1 == null)
             {
                return -1;
             }
-            if (o2.getValue() == null)
+            if (o2 == null)
             {
                return 1;
             }
-            return o1.getLabel().compareTo(o2.getLabel());
+            return o1.toString().compareTo(o2.toString());
          }
       });
-      return projectTypeList;
+      return projectTypes;
    }
 
 }
