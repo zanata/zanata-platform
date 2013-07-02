@@ -85,7 +85,7 @@ public class Deployments
       archive.addAsResource(new ClassLoaderAsset("arquillian/components.properties"), "components.properties");
       archive.addAsResource("import.sql");
       archive.addAsResource("security.drl");
-      archive.addAsWebInfResource("arquillian/jboss-deployment-structure.xml");
+      archive.addAsWebInfResource("src/main/webapp-jboss/WEB-INF/jboss-deployment-structure.xml");
       archive.addAsWebInfResource(new ClassLoaderAsset("arquillian/zanata.properties"), "classes/zanata.properties");
       archive.setWebXML("arquillian/test-web.xml");
 
