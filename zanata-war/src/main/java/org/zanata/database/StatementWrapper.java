@@ -19,7 +19,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.zanata.jdbc;
+package org.zanata.database;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -27,9 +27,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.Statement;
 
 import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -37,47 +37,63 @@ import lombok.RequiredArgsConstructor;
  *
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class ResultSetWrapper implements InvocationHandler
+public class StatementWrapper implements InvocationHandler
 {
-   public static ResultSet wrap(ResultSet resultSet, Connection connection, boolean streaming)
+   public static Statement wrap(Statement statement, Connection connection)
    {
-      if (Proxy.isProxyClass(resultSet.getClass()) && Proxy.getInvocationHandler(resultSet) instanceof ResultSetWrapper)
+      if (Proxy.isProxyClass(statement.getClass()) && Proxy.getInvocationHandler(statement) instanceof StatementWrapper)
       {
-         return resultSet;
+         return statement;
       }
-      ResultSetWrapper h = new ResultSetWrapper(resultSet, connection, streaming);
+      StatementWrapper h = new StatementWrapper(statement, connection);
       ClassLoader cl = h.getClass().getClassLoader();
-      return (ResultSet) Proxy.newProxyInstance(cl, resultSet.getClass().getInterfaces(), h);
+      return (Statement) Proxy.newProxyInstance(cl, statement.getClass().getInterfaces(), h);
    }
 
-   @Getter
-   private final ResultSet resultSet;
+   private final Statement statement;
    private final Connection connection;
-   private final boolean streaming;
-   @Getter
-   private final Throwable throwable = new Throwable("Unclosed ResultSet was created here");
+   private boolean makeStreamingResultSet;
 
    @Override
    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
    {
+      if (method.getName().equals("getConnection"))
+      {
+         return connection;
+      }
       if (method.getName().equals("toString"))
       {
-         return "ResultSetWrapper->"+resultSet.toString();
+         return "StatementWrapper->"+statement.toString();
+      }
+      if (method.getName().equals("setFetchSize") && args[0].equals(Integer.MIN_VALUE))
+      {
+         // don't pass it to wrapped connection since it is probably not going to understand it
+         makeStreamingResultSet = true;
+         return null;
       }
       try
       {
-         Object result = method.invoke(resultSet, args);
-         if (method.getName().equals("close"))
+         Object result = method.invoke(statement, args);
+         if (result instanceof ResultSet)
          {
+            ResultSet resultSet = (ResultSet) result;
             ConnectionWrapper connectionWrapper = (ConnectionWrapper) Proxy.getInvocationHandler(connection);
-            if (streaming)
+            ResultSet rsProxy = ResultSetWrapper.wrap(resultSet, connection, makeStreamingResultSet);
+            ResultSetWrapper rsWrap = (ResultSetWrapper) Proxy.getInvocationHandler(rsProxy);
+            if (makeStreamingResultSet)
             {
-               connectionWrapper.streamingResultSetClosed();
+               connectionWrapper.streamingResultSetOpened(rsWrap.getThrowable());
             }
             else
             {
-               connectionWrapper.resultSetClosed(throwable);
+               connectionWrapper.resultSetOpened(rsWrap.getThrowable());
             }
+            return rsProxy;
+         }
+         else if (method.getName().startsWith("execute"))
+         {
+            ConnectionWrapper connectionWrapper = (ConnectionWrapper) Proxy.getInvocationHandler(connection);
+            connectionWrapper.executed();
          }
          return result;
       }

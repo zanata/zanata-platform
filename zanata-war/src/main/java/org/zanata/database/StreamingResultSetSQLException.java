@@ -19,30 +19,54 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.zanata.dao;
+package org.zanata.database;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 
-import org.hibernate.service.jdbc.connections.internal.DriverManagerConnectionProviderImpl;
-import org.zanata.jdbc.ConnectionWrapper;
-
 /**
- * This class wraps JDBC Connections/Statements/ResultSets to detect
- * attempts to use mysql's streaming ResultSet feature.  It then watches
- * for any usage which would exceed the limitations of mysql's streaming
- * ResultSets, and throws an SQLException.  This enables us to catch
- * these problems without having to test against mysql in our unit tests.
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class WrappedConnectionProvider extends DriverManagerConnectionProviderImpl
+public class StreamingResultSetSQLException extends SQLException
 {
-   @Override
-   public Connection getConnection() throws SQLException
+
+   public StreamingResultSetSQLException()
    {
-      Connection connection = super.getConnection();
-      return ConnectionWrapper.wrap(connection);
+   }
+
+   public StreamingResultSetSQLException(String reason)
+   {
+      super(reason);
+   }
+
+   public StreamingResultSetSQLException(Throwable cause)
+   {
+      super(cause);
+   }
+
+   public StreamingResultSetSQLException(String reason, String SQLState)
+   {
+      super(reason, SQLState);
+   }
+
+   public StreamingResultSetSQLException(String reason, Throwable cause)
+   {
+      super(reason, cause);
+   }
+
+   public StreamingResultSetSQLException(String reason, String SQLState, int vendorCode)
+   {
+      super(reason, SQLState, vendorCode);
+   }
+
+   public StreamingResultSetSQLException(String reason, String sqlState, Throwable cause)
+   {
+      super(reason, sqlState, cause);
+   }
+
+   public StreamingResultSetSQLException(String reason, String sqlState, int vendorCode, Throwable cause)
+   {
+      super(reason, sqlState, vendorCode, cause);
    }
 
 }

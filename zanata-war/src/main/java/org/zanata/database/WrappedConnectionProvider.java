@@ -19,54 +19,41 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.zanata.jdbc;
+package org.zanata.database;
 
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
+import org.hibernate.service.jdbc.connections.internal.DriverManagerConnectionProviderImpl;
+
 /**
+ * This class wraps JDBC Connections/Statements/ResultSets to detect
+ * attempts to use mysql's streaming ResultSet feature.  It then watches
+ * for any usage which would exceed the limitations of mysql's streaming
+ * ResultSets, and throws an SQLException.  This enables us to catch
+ * these problems without having to test against mysql in our unit tests.
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class StreamingResultSetSQLException extends SQLException
+public class WrappedConnectionProvider extends DriverManagerConnectionProviderImpl
 {
+   private static final long serialVersionUID = 1L;
 
-   public StreamingResultSetSQLException()
+   @Override
+   public Connection getConnection() throws SQLException
    {
-   }
-
-   public StreamingResultSetSQLException(String reason)
-   {
-      super(reason);
-   }
-
-   public StreamingResultSetSQLException(Throwable cause)
-   {
-      super(cause);
-   }
-
-   public StreamingResultSetSQLException(String reason, String SQLState)
-   {
-      super(reason, SQLState);
-   }
-
-   public StreamingResultSetSQLException(String reason, Throwable cause)
-   {
-      super(reason, cause);
-   }
-
-   public StreamingResultSetSQLException(String reason, String SQLState, int vendorCode)
-   {
-      super(reason, SQLState, vendorCode);
-   }
-
-   public StreamingResultSetSQLException(String reason, String sqlState, Throwable cause)
-   {
-      super(reason, sqlState, cause);
-   }
-
-   public StreamingResultSetSQLException(String reason, String sqlState, int vendorCode, Throwable cause)
-   {
-      super(reason, sqlState, vendorCode, cause);
+      Connection connection = super.getConnection();
+      DatabaseMetaData metaData = connection.getMetaData();
+      String databaseName = metaData.getDatabaseProductName();
+      if ("MySQL".equals(databaseName))
+      {
+         return connection;
+      }
+      else
+      {
+         return ConnectionWrapper.wrap(connection);
+      }
    }
 
 }
