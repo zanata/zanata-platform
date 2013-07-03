@@ -27,6 +27,7 @@ import org.zanata.webtrans.client.ui.SearchField;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -195,9 +196,70 @@ public class TransFilterView extends Composite implements TransFilterDisplay
    }
 
    @UiHandler({"translatedChk", "fuzzyChk", "untranslatedChk", "approvedChk", "rejectedChk", "hasErrorChk"})
-   public void onTranslatedChkChanged(ValueChangeEvent<Boolean> event)
+   public void onFilterOptionsChanged(ValueChangeEvent<Boolean> event)
    {
+      toggleCompleteChk();
+      toggleIncompleteChk();
+      
       listener.messageFilterOptionChanged(translatedChk.getValue(), fuzzyChk.getValue(), untranslatedChk.getValue(), approvedChk.getValue(), rejectedChk.getValue(), hasErrorChk.getValue());
+   }
+   
+   public void toggleCompleteChk()
+   {
+      if(translatedChk.getValue() == approvedChk.getValue() && approvedChk.getValue() == hasErrorChk.getValue())
+      {
+         if(hasErrorChk.getValue() == true)
+         {
+            completeChk.setValue(true);
+         } 
+         else
+         {
+            completeChk.setValue(false);
+         }
+      }
+      else
+      {
+         //Should be indeterminate states if all checkboxes has different states, but GWT checkbox doesn't support it
+         completeChk.setValue(false);
+      }
+   }
+   
+   public void toggleIncompleteChk()
+   {
+      if(untranslatedChk.getValue() == fuzzyChk.getValue() && fuzzyChk.getValue() == rejectedChk.getValue() && rejectedChk.getValue())
+      {
+         if(rejectedChk.getValue() == true)
+         {
+            incompleteChk.setValue(true);
+         } 
+         else
+         {
+            incompleteChk.setValue(false);
+         }
+      }
+      else
+      {
+         //Should be indeterminate states if all checkboxes has different states
+         incompleteChk.setValue(false);
+      }
+   }
+   
+   @UiHandler("incompleteChk")
+   public void onIncompleteChkChanged(ValueChangeEvent<Boolean> event)
+   {
+      untranslatedChk.setValue(event.getValue());
+      fuzzyChk.setValue(event.getValue());
+      rejectedChk.setValue(event.getValue());
+      onFilterOptionsChanged(event);
+   }
+   
+   @UiHandler("completeChk")
+   public void onCompleteChkChanged(ValueChangeEvent<Boolean> event)
+   {
+      translatedChk.setValue(event.getValue());
+      approvedChk.setValue(event.getValue());
+      hasErrorChk.setValue(event.getValue());
+      onFilterOptionsChanged(event);
    }
 
    @Override
@@ -208,6 +270,5 @@ public class TransFilterView extends Composite implements TransFilterDisplay
       untranslatedChk.setValue(state.isFilterByUntranslated());
       approvedChk.setValue(state.isFilterByApproved());
       rejectedChk.setValue(state.isFilterByRejected());
-
    }
 }
