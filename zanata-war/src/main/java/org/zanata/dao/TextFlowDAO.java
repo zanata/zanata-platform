@@ -271,10 +271,11 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
    }
 
    @SuppressWarnings("unchecked")
-   public List<HTextFlow> getTextFlowsByDocumentId(DocumentId documentId, int startIndex, int maxSize)
+   public List<HTextFlow> getTextFlowsByDocumentId(DocumentId documentId, HLocale hLocale, int startIndex, int maxSize)
    {
-      Query q = getSession().createQuery("from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id order by tf.pos");
+      Query q = getSession().createQuery("from HTextFlow tf left join tf.targets tft with tft.index = :locale where tf.obsolete=0 and tf.document.id = :id order by tf.pos");
       q.setParameter("id", documentId.getId());
+      q.setParameter("locale", hLocale.getId());
       q.setFirstResult(startIndex);
       q.setMaxResults(maxSize);
       q.setCacheable(true).setComment("TextFlowDAO.getTextFlowsByDocumentId");

@@ -55,11 +55,11 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest
       }
 
       //3 text flows with single en-US fuzzy target
-      List<HTextFlow> doc2TextFlows = dao.getTextFlowsByDocumentId(new DocumentId(2L, ""), 0, 9999);
-      for (HTextFlow doc2tf : doc2TextFlows)
-      {
-         log.debug("text flow id {} - targets {}", doc2tf.getId(), doc2tf.getTargets());
-      }
+//      List<HTextFlow> doc2TextFlows = dao.getTextFlowsByDocumentId(new DocumentId(2L, ""), hLocale, 0, 9999);
+//      for (HTextFlow doc2tf : doc2TextFlows)
+//      {
+//         log.debug("text flow id {} - targets {}", doc2tf.getId(), doc2tf.getTargets());
+//      }
 
       //single text flow no target
       HTextFlow textFlow6 = dao.findById(6L, false);
@@ -181,6 +181,16 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest
             "where (exists (from HTextFlowTarget where textFlow = tf and content0 like '%mssg%'))";
       Query query = getSession().createQuery(queryString);
       List result = query.list();
+
+   }
+
+   @Test
+   public void canGetTextFlowWithTranslationEagerlyLoaded()
+   {
+      //3 text flows with single en-US fuzzy target
+      HLocale enUSLocale = getEm().find(HLocale.class, 4L);
+      log.info("*************");
+      List<HTextFlow> doc2TextFlows = dao.getTextFlowsByDocumentId(new DocumentId(2L, ""), enUSLocale, 0, 9999);
 
    }
 }
