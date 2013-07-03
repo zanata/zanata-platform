@@ -25,11 +25,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.naming.InitialContext;
-import javax.naming.NameClassPair;
-import javax.naming.NamingEnumeration;
+import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
-
-import org.jboss.as.naming.NamingContext;
 
 import liquibase.change.custom.CustomTaskChange;
 import liquibase.database.Database;
@@ -39,7 +36,6 @@ import liquibase.exception.DatabaseException;
 import liquibase.exception.SetupException;
 import liquibase.exception.ValidationErrors;
 import liquibase.resource.ResourceAccessor;
-import lombok.Cleanup;
 
 /**
  * Custom change set to migrate authentication data to the HCredentials table.
@@ -113,10 +109,9 @@ public class MigrateDataToHCredentials implements CustomTaskChange
       try
       {
          initContext = new InitialContext();
-         NamingContext context = (NamingContext) initContext.lookup("java:global/zanata/security/auth-policy-names/");
+         String openid = (String) initContext.lookup("java:global/zanata/security/auth-policy-names/openid");
 
-         NamingEnumeration<NameClassPair> list = context.list("");
-         if (list.hasMore() && list.next().getName().equalsIgnoreCase("OPENID"))
+         if (openid != null)
          {
             dbAuthType = "OPENID";
          }
@@ -124,6 +119,10 @@ public class MigrateDataToHCredentials implements CustomTaskChange
          {
             dbAuthType = "OTHER";
          }
+      }
+      catch (NameNotFoundException e)
+      {
+         dbAuthType = "OTHER";
       }
       catch (NamingException e)
       {
