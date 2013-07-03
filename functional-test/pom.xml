@@ -35,7 +35,6 @@
 
         <ds.jndi.name>zanataDatasource</ds.jndi.name>
         <!--<ds.hibernate.dialect>org.hibernate.dialect.H2Dialect</ds.hibernate.dialect>-->
-        <!-- use profile -Pusemysql to switch to mysql database -->
         <ds.driver.class>org.h2.Driver</ds.driver.class>
         <ds.connection.url>jdbc:h2:file:${project.build.directory}/h2/zanata;AUTO_SERVER=TRUE</ds.connection.url>
         <ds.username>sa</ds.username>
@@ -240,22 +239,13 @@
                                     </configfile>
                                     <!-- see above zipUrlInstaller/extractDir-->
                                     <!-- cargo will force todir and tofile to be relative to container home directory -->
-                                    <configfile>
-                                        <file>${project.basedir}/src/test/resources/as7module/zanata/module.xml</file>
-                                        <todir>${cargo.install.relative.to.container.home}/modules/org/zanata/settings/main</todir>
-                                    </configfile>
-                                    <configfile>
-                                        <file>${project.basedir}/src/test/resources/conf/zanata.properties</file>
-                                        <todir>${cargo.install.relative.to.container.home}/modules/org/zanata/settings/main</todir>
-                                    </configfile>
-
                                     <!-- enable javamelody -->
                                     <configfile>
                                         <file>${project.basedir}/src/test/resources/as7module/sun/module.xml</file>
                                         <todir>${cargo.install.relative.to.container.home}/modules/system/layers/base/sun/jdk/main</todir>
                                     </configfile>
 
-                                    <!-- security -->
+                                    <!-- security and jndi for properties -->
                                     <configfile>
                                         <file>${project.basedir}/src/test/resources/conf/standalone.xml</file>
                                         <todir>configuration</todir>

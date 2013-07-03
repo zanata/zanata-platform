@@ -1670,6 +1670,13 @@
         </dependency>
 
         <dependency>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-naming</artifactId>
+            <version>7.1.3.Final</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.jboss.arquillian.extension</groupId>
             <artifactId>arquillian-seam2</artifactId>
             <version>1.0.0.Alpha2</version>

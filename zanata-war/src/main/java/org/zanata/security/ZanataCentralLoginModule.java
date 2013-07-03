@@ -29,9 +29,9 @@ import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
-import org.zanata.util.ZanataBasicConfig;
+import org.jboss.seam.Component;
+import org.zanata.config.JndiBackedConfig;
 
-import static org.zanata.util.ZanataBasicConfig.KEY_AUTH_POLICY;
 
 /**
  * This is a login module that works as a central dispatcher for all other configurable
@@ -41,11 +41,6 @@ import static org.zanata.util.ZanataBasicConfig.KEY_AUTH_POLICY;
  */
 public class ZanataCentralLoginModule implements LoginModule
 {
-   // Module options
-   private static final String INTERNAL_AUTH_DOMAIN = "internalAuthDomain";
-   private static final String KERBEROS_DOMAIN = "kerberosDomain";
-   private static final String OPENID_DOMAIN = "openIdDomain";
-   private static final String JAAS_DOMAIN = "jaasDomain";
 
    private String internalAuthDomain;
    private String kerberosDomain;
@@ -54,24 +49,19 @@ public class ZanataCentralLoginModule implements LoginModule
 
    private Subject subject;
    private CallbackHandler callbackHandler;
-   private Map<String, ?> options;
-
-   private LoginContext delegate;
 
    @Override
    public void initialize(Subject subject, CallbackHandler callbackHandler, Map<String, ?> sharedState, Map<String, ?> options)
    {
       this.subject = subject;
       this.callbackHandler = callbackHandler;
-      this.options = options;
 
-      // TODO Use JNDI variables to get this information
-      ZanataBasicConfig basicConfig = ZanataBasicConfig.getInstance();
+      JndiBackedConfig jndiConfig = (JndiBackedConfig) Component.getInstance(JndiBackedConfig.class);
 
-      internalAuthDomain = basicConfig.getProperty(KEY_AUTH_POLICY + "." + AuthenticationType.INTERNAL.name().toLowerCase());
-      kerberosDomain = basicConfig.getProperty(KEY_AUTH_POLICY + "." + AuthenticationType.KERBEROS.name().toLowerCase());
-      openIdDomain = basicConfig.getProperty(KEY_AUTH_POLICY + "." + AuthenticationType.OPENID.name().toLowerCase());
-      jaasDomain = basicConfig.getProperty(KEY_AUTH_POLICY + "." + AuthenticationType.JAAS.name().toLowerCase());
+      internalAuthDomain = jndiConfig.getAuthPolicyName(AuthenticationType.INTERNAL.name().toLowerCase());
+      kerberosDomain = jndiConfig.getAuthPolicyName(AuthenticationType.KERBEROS.name().toLowerCase());
+      openIdDomain = jndiConfig.getAuthPolicyName(AuthenticationType.OPENID.name().toLowerCase());
+      jaasDomain = jndiConfig.getAuthPolicyName(AuthenticationType.JAAS.name().toLowerCase());
    }
 
    @Override
@@ -115,7 +105,7 @@ public class ZanataCentralLoginModule implements LoginModule
             break;
       }
 
-      delegate = new LoginContext(delegateName, subject, callbackHandler);
+      LoginContext delegate = new LoginContext(delegateName, subject, callbackHandler);
       delegate.login();
       return true;
    }
