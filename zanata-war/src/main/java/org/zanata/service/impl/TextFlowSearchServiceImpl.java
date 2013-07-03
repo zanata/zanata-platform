@@ -139,7 +139,7 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
          return Collections.emptyList();
       }
 
-      if (!constraints.isIncludeNew() && !constraints.isIncludeFuzzy() && !constraints.isIncludeTranslated())
+      if (!constraints.isNewIncluded() && !constraints.isFuzzyIncluded() && !constraints.isTranslatedIncluded())
       {
          // including nothing
          return Collections.emptyList();
@@ -159,7 +159,7 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
 
    /**
     *
-    * @see org.zanata.dao.TextFlowDAO#getTextFlowByDocumentIdWithConstraint(org.zanata.webtrans.shared.model.DocumentId, org.zanata.model.HLocale, org.zanata.search.FilterConstraints, int, int)
+    * @see org.zanata.dao.TextFlowDAO#getTextFlowByDocumentIdWithConstraints(org.zanata.webtrans.shared.model.DocumentId, org.zanata.model.HLocale, org.zanata.search.FilterConstraints, int, int)
     */
    private List<HTextFlow> findTextFlowsWithDatabaseSearch(String projectSlug, String iterationSlug, List<String> documentPaths, FilterConstraints constraints, HLocale hLocale)
    {
@@ -298,19 +298,19 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
          }
          targetQuery.add(localeQuery, Occur.MUST);
 
-         if (!constraints.isIncludeTranslated())
+         if (!constraints.isTranslatedIncluded())
          {
             TermQuery approvedStateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.Approved.toString()));
             targetQuery.add(approvedStateQuery, Occur.MUST_NOT);
          }
 
-         if (!constraints.isIncludeFuzzy())
+         if (!constraints.isFuzzyIncluded())
          {
             TermQuery approvedStateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.NeedReview.toString()));
             targetQuery.add(approvedStateQuery, Occur.MUST_NOT);
          }
 
-         if (!constraints.isIncludeNew())
+         if (!constraints.isNewIncluded())
          {
             TermQuery approvedStateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.New.toString()));
             targetQuery.add(approvedStateQuery, Occur.MUST_NOT);

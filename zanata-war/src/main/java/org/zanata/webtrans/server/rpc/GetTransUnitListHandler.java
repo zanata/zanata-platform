@@ -143,12 +143,12 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
          log.debug("Fetch TransUnits filtered by status and/or search: {}", constraints);
          if (!hasValidationFilter(action))
          {
-            textFlows = textFlowDAO.getTextFlowByDocumentIdWithConstraint(action.getDocumentId(), hLocale, constraints, offset, action.getCount());
+            textFlows = textFlowDAO.getTextFlowByDocumentIdWithConstraints(action.getDocumentId(), hLocale, constraints, offset, action.getCount());
          }
          // has validation filter
          else
          {
-            textFlows = textFlowDAO.getAllTextFlowByDocumentIdWithConstraint(action.getDocumentId(), hLocale, constraints);
+            textFlows = textFlowDAO.getAllTextFlowByDocumentIdWithConstraints(action.getDocumentId(), hLocale, constraints);
             textFlows = validationServiceImpl.filterHasErrorTexFlow(textFlows, action.getValidationIds(), hLocale.getLocaleId(), offset, action.getCount());
          }
       }

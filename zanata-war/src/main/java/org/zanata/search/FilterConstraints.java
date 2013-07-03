@@ -45,24 +45,24 @@ public class FilterConstraints
    private boolean searchInSource;
    private boolean searchInTarget;
 
-   private boolean includeNew;
-   private boolean includeFuzzy;
-   private boolean includeTranslated;
-   private boolean includeApproved;
-   private boolean includeRejected;
+   private boolean newIncluded;
+   private boolean fuzzyIncluded;
+   private boolean translatedIncluded;
+   private boolean approvedIncluded;
+   private boolean rejectedIncluded;
 
    //TODO rhbz953734 - need to consider other content state??
-   private FilterConstraints(String searchString, boolean caseSensitive, boolean searchInSource, boolean searchInTarget, boolean includeNew, boolean includeFuzzy, boolean includeTranslated, boolean includeApproved, boolean includeRejected)
+   private FilterConstraints(String searchString, boolean caseSensitive, boolean searchInSource, boolean searchInTarget, boolean newIncluded, boolean fuzzyIncluded, boolean translatedIncluded, boolean approvedIncluded, boolean rejectedIncluded)
    {
       this.searchString = searchString;
       this.isCaseSensitive = caseSensitive;
       this.searchInSource = searchInSource;
       this.searchInTarget = searchInTarget;
-      this.includeNew = includeNew;
-      this.includeFuzzy = includeFuzzy;
-      this.includeTranslated = includeTranslated;
-      this.includeApproved = includeApproved;
-      this.includeRejected = includeRejected;
+      this.newIncluded = newIncluded;
+      this.fuzzyIncluded = fuzzyIncluded;
+      this.translatedIncluded = translatedIncluded;
+      this.approvedIncluded = approvedIncluded;
+      this.rejectedIncluded = rejectedIncluded;
    }
 
    /**
@@ -178,7 +178,7 @@ public class FilterConstraints
     */
    public FilterConstraints excludeNew()
    {
-      includeNew = false;
+      newIncluded = false;
       return this;
    }
 
@@ -189,7 +189,7 @@ public class FilterConstraints
     */
    public FilterConstraints excludeFuzzy()
    {
-      includeFuzzy = false;
+      fuzzyIncluded = false;
       return this;
    }
 
@@ -200,19 +200,19 @@ public class FilterConstraints
     */
    public FilterConstraints excludeTranslated()
    {
-      includeTranslated = false;
+      translatedIncluded = false;
       return this;
    }
    
    public FilterConstraints excludeApproved()
    {
-      includeApproved = false;
+      approvedIncluded = false;
       return this;
    }
    
    public FilterConstraints excludeRejected()
    {
-      includeRejected = false;
+      rejectedIncluded = false;
       return this;
    }
 
@@ -239,29 +239,29 @@ public class FilterConstraints
       return searchInTarget;
    }
 
-   public boolean isIncludeNew()
+   public boolean isNewIncluded()
    {
-      return includeNew;
+      return newIncluded;
    }
 
-   public boolean isIncludeFuzzy()
+   public boolean isFuzzyIncluded()
    {
-      return includeFuzzy;
+      return fuzzyIncluded;
    }
 
-   public boolean isIncludeTranslated()
+   public boolean isTranslatedIncluded()
    {
-      return includeTranslated;
+      return translatedIncluded;
    }
    
-   public boolean isIncludeApproved()
+   public boolean isApprovedIncluded()
    {
-      return includeApproved;
+      return approvedIncluded;
    }
    
-   public boolean isIncludeRejected()
+   public boolean isRejectedIncluded()
    {
-      return includeRejected;
+      return rejectedIncluded;
    }
 
    public FilterConstraints filterByStatus(boolean newState, boolean fuzzyState, boolean translatedState, boolean approvedState, boolean rejectedState)
@@ -273,31 +273,31 @@ public class FilterConstraints
       return new FilterConstraints(searchString, isCaseSensitive, isSearchInSource(), isSearchInTarget(), newState, fuzzyState, translatedState, approvedState, rejectedState);
    }
 
-   public boolean isIncludeAllState()
+   public boolean isAllStateIncluded()
    {
-      return includeTranslated && includeFuzzy && includeNew && includeApproved && includeRejected;
+      return translatedIncluded && fuzzyIncluded && newIncluded && approvedIncluded && rejectedIncluded;
    }
 
    public List<ContentState> getContentStateAsList()
    {
       List<ContentState> result = Lists.newArrayList();
-      if (includeTranslated)
+      if (translatedIncluded)
       {
          result.add(ContentState.Translated);
       }
-      if (includeFuzzy)
+      if (fuzzyIncluded)
       {
          result.add(ContentState.NeedReview);
       }
-      if (includeNew)
+      if (newIncluded)
       {
          result.add(ContentState.New);
       }
-      if (includeApproved)
+      if (approvedIncluded)
       {
          result.add(ContentState.Approved);
       }
-      if (includeRejected)
+      if (rejectedIncluded)
       {
          result.add(ContentState.Rejected);
       }
@@ -313,11 +313,11 @@ public class FilterConstraints
             add("isCaseSensitive", isCaseSensitive).
             add("searchInSource", searchInSource).
             add("searchInTarget", searchInTarget).
-            add("includeNew", includeNew).
-            add("includeFuzzy", includeFuzzy).
-            add("includeTranslated", includeTranslated).
-            add("includeApproved", includeApproved).
-            add("includeRejected", includeRejected).
+            add("newIncluded", newIncluded).
+            add("fuzzyIncluded", fuzzyIncluded).
+            add("translatedIncluded", translatedIncluded).
+            add("approvedIncluded", approvedIncluded).
+            add("rejectedIncluded", rejectedIncluded).
             toString();
       // @formatter:on
    }

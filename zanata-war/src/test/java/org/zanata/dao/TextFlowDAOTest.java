@@ -73,11 +73,11 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest
       log.info("locale: {}", deLocale);
 
       FilterConstraints untranslated = FilterConstraints.keepAll().excludeFuzzy().excludeTranslated();
-      List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraint(new DocumentId(1L, ""), deLocale, untranslated, 0, 10);
+      List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraints(new DocumentId(1L, ""), deLocale, untranslated, 0, 10);
       assertThat(result.size(), is(0));
 
       HLocale frLocale = getEm().find(HLocale.class, 6L);
-      result = dao.getTextFlowByDocumentIdWithConstraint(new DocumentId(1L, ""), frLocale, untranslated, 0, 10);
+      result = dao.getTextFlowByDocumentIdWithConstraints(new DocumentId(1L, ""), frLocale, untranslated, 0, 10);
       assertThat(result.size(), is(1));
 
    }
@@ -87,7 +87,7 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest
       HLocale deLocale = getEm().find(HLocale.class, 3L);
 
       FilterConstraints untranslated = FilterConstraints.keepAll().excludeFuzzy().excludeTranslated();
-      List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraint(new DocumentId(4L, ""), deLocale, untranslated, 0, 10);
+      List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraints(new DocumentId(4L, ""), deLocale, untranslated, 0, 10);
       assertThat(result, Matchers.hasSize(1));
    }
 
@@ -100,23 +100,23 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest
       DocumentId documentId1 = new DocumentId(1L, ""); // esLocale fuzzy,
                                                        // frLocale new, deLocale
                                                        // approved
-      List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraint(documentId1, esLocale, FilterConstraints.keepAll().excludeTranslated().excludeNew(), 0, 10);
+      List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraints(documentId1, esLocale, FilterConstraints.keepAll().excludeTranslated().excludeNew(), 0, 10);
       assertThat(result, Matchers.hasSize(1));
 
-      result = dao.getTextFlowByDocumentIdWithConstraint(documentId1, frLocale, FilterConstraints.keepAll().excludeFuzzy(), 0, 10);
+      result = dao.getTextFlowByDocumentIdWithConstraints(documentId1, frLocale, FilterConstraints.keepAll().excludeFuzzy(), 0, 10);
       assertThat(result, Matchers.hasSize(1));
 
-      result = dao.getTextFlowByDocumentIdWithConstraint(documentId1, deLocale, FilterConstraints.keepAll().excludeFuzzy().excludeNew(), 0, 10);
+      result = dao.getTextFlowByDocumentIdWithConstraints(documentId1, deLocale, FilterConstraints.keepAll().excludeFuzzy().excludeNew(), 0, 10);
       assertThat(result, Matchers.hasSize(1));
 
       HLocale enUSLocale = getEm().find(HLocale.class, 4L);
       DocumentId documentId2 = new DocumentId(2L, ""); // all 3 text flows has
                                                        // en-US fuzzy target
 
-      result = dao.getTextFlowByDocumentIdWithConstraint(documentId2, enUSLocale, FilterConstraints.keepAll().excludeTranslated().excludeFuzzy(), 0, 10);
+      result = dao.getTextFlowByDocumentIdWithConstraints(documentId2, enUSLocale, FilterConstraints.keepAll().excludeTranslated().excludeFuzzy(), 0, 10);
       assertThat(result, Matchers.<HTextFlow>empty());
 
-      result = dao.getTextFlowByDocumentIdWithConstraint(documentId2, enUSLocale, FilterConstraints.keepAll().excludeNew(), 0, 10);
+      result = dao.getTextFlowByDocumentIdWithConstraints(documentId2, enUSLocale, FilterConstraints.keepAll().excludeNew(), 0, 10);
       assertThat(result, Matchers.hasSize(3));
    }
 
@@ -156,7 +156,7 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest
    {
       HLocale deLocale = getEm().find(HLocale.class, 3L);
 
-      List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraint(new DocumentId(new Long(4), ""), deLocale, FilterConstraints.filterBy("mssg").excludeTranslated().excludeFuzzy(), 0, 10);
+      List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraints(new DocumentId(new Long(4), ""), deLocale, FilterConstraints.filterBy("mssg").excludeTranslated().excludeFuzzy(), 0, 10);
 
       assertThat(result, Matchers.hasSize(1));
    }
