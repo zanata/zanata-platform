@@ -24,6 +24,7 @@ package org.zanata.rest.service;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,7 @@ import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteStreamHandler;
 import org.apache.commons.exec.ExecuteWatchdog;
+import org.apache.commons.exec.Executor;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.jboss.seam.annotations.Name;
 import org.zanata.exception.VirusDetectedException;
@@ -67,9 +69,10 @@ public class VirusScanner
 
    public VirusScanner()
    {
-      // if the system property is empty or null, we try to use
+      // If the system property is empty or null, we try to use
       // clamdscan, but we don't throw an exception if we can't find it.
-      String scannerProperty = System.getProperty("virusScanner"); // clamscan would work too, but takes ~15 seconds
+      // clamscan would work too, but takes ~15 seconds
+      String scannerProperty = System.getProperty("virusScanner");
       this.disabled = "DISABLED".equals(scannerProperty);
       if (scannerProperty == null || scannerProperty.isEmpty())
       {
@@ -85,7 +88,8 @@ public class VirusScanner
    }
 
    /**
-    * Scans the specified file by calling out to ClamAV.
+    * Scans the specified file by calling out to ClamAV,
+    * unless disabled by system property.
     * <p>
     * Note 1: the file will be made world readable, so that clamd can access it.
     * <p>
@@ -111,31 +115,13 @@ public class VirusScanner
    {
       Stopwatch stop = new Stopwatch().start();
       CommandLine cmdLine = buildCommandLine(file);
-      ByteArrayOutputStream output = new ByteArrayOutputStream();
-      DefaultExecutor executor = buildExecutor(output);
-      // We want to handle all exit values directly (not as ExecuteException).
-      // If another scanner is used, we may not use the ideal
-      // exception when something goes wrong, but as long as zero
-      // still means "no virus" it should be okay.
-      executor.setExitValues(null);
+      ByteArrayOutputStream scannerOutput = new ByteArrayOutputStream();
+      Executor executor = buildExecutor(scannerOutput);
       try
       {
          int exitValue = executor.execute(cmdLine);
          log.debug("{} to scan file: '{}'", stop, documentName);
-         switch(exitValue)
-         {
-         case 0: // clamscan: 0 : No virus found.
-            log.info("{} says file '{}' is clean: {}", scannerName, documentName, output);
-            return;
-         case 1: // clamscan: 1 : Virus(es) found.
-            throw new VirusDetectedException(scannerName + " detected virus: " + output);
-         case 2: // clamscan: 2 : Some error(s) occured.
-         default:
-            // This can happen if clamdscan is found, but the clamd service is not running.
-            String msg = scannerName + " returned error scanning file '"+documentName+"': " + output +
-               (usingClam ? "\nPlease ensure clamd service is running." : "");
-            throw new RuntimeException(msg);
-         }
+         handleResult(exitValue, documentName, scannerOutput);
       }
       catch (IOException e)
       {
@@ -148,6 +134,31 @@ public class VirusScanner
             throw new RuntimeException(msg);
          }
          log.error(msg);
+      }
+   }
+
+   private void handleResult(int exitValue, String documentName, Object output)
+   {
+      // The following return codes are taken from the clamdscan manpage.
+      // If another scanner is used, we may not use the ideal
+      // exception when something goes wrong, but as long as zero
+      // still means "no virus" it should be okay.
+      final int noVirusFound = 0;
+      final int virusFound = 1;
+      final int someErrorOccurred = 2;
+      switch(exitValue)
+      {
+      case noVirusFound:
+         log.info("{} says file '{}' is clean: {}", scannerName, documentName, output);
+         return;
+      case virusFound:
+         throw new VirusDetectedException(scannerName + " detected virus: " + output);
+      case someErrorOccurred:
+      default:
+         // This can happen if clamdscan is found, but the clamd service is not running.
+         String msg = scannerName + " returned error scanning file '"+documentName+"': " + output +
+            (usingClam ? "\nPlease ensure clamd service is running." : "");
+         throw new RuntimeException(msg);
       }
    }
 
@@ -167,13 +178,23 @@ public class VirusScanner
       return cmdLine;
    }
 
-   private DefaultExecutor buildExecutor(ByteArrayOutputStream output)
+   /**
+    * Builds an Executor which will output to the specified OutputStream.
+    * <p>
+    * The Executor will be configured to return exit values as int, rather
+    * than throwing ExecuteException.
+    * @param output
+    * @return a configured Executor
+    */
+   private Executor buildExecutor(OutputStream output)
    {
       DefaultExecutor executor = new DefaultExecutor();
       ExecuteWatchdog watchdog = new ExecuteWatchdog(60000);
       executor.setWatchdog(watchdog);
       ExecuteStreamHandler psh = new PumpStreamHandler(output);
       executor.setStreamHandler(psh);
+      // We want to handle all exit values directly (not as ExecuteException).
+      executor.setExitValues(null);
       return executor;
    }
 
