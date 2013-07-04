@@ -26,6 +26,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Set;
@@ -55,7 +56,7 @@ public class ConnectionWrapper implements InvocationHandler
    private Set<Throwable> resultSetsOpened = Sets.newHashSet();
    private Throwable streamingResultSetOpened;
 
-   public static Connection wrap(Connection connection) 
+   public static Connection wrap(Connection connection)
    {
       if (Proxy.isProxyClass(connection.getClass()) && Proxy.getInvocationHandler(connection) instanceof ConnectionWrapper)
       {
@@ -64,6 +65,20 @@ public class ConnectionWrapper implements InvocationHandler
       ConnectionWrapper h = new ConnectionWrapper(connection);
       ClassLoader cl = h.getClass().getClassLoader();
       return (Connection) Proxy.newProxyInstance(cl, connection.getClass().getInterfaces(), h);
+   }
+
+   public static Connection wrapUnlessMysql(Connection connection) throws SQLException
+   {
+      DatabaseMetaData metaData = connection.getMetaData();
+      String databaseName = metaData.getDatabaseProductName();
+      if ("MySQL".equals(databaseName))
+      {
+         return connection;
+      }
+      else
+      {
+         return wrap(connection);
+      }
    }
 
    /**

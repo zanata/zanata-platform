@@ -22,7 +22,6 @@
 package org.zanata.database;
 
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
 import org.hibernate.service.jdbc.connections.internal.DriverManagerConnectionProviderImpl;
@@ -36,24 +35,14 @@ import org.hibernate.service.jdbc.connections.internal.DriverManagerConnectionPr
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class WrappedConnectionProvider extends DriverManagerConnectionProviderImpl
+public class WrappedDriverManagerConnectionProvider extends DriverManagerConnectionProviderImpl
 {
    private static final long serialVersionUID = 1L;
 
    @Override
    public Connection getConnection() throws SQLException
    {
-      Connection connection = super.getConnection();
-      DatabaseMetaData metaData = connection.getMetaData();
-      String databaseName = metaData.getDatabaseProductName();
-      if ("MySQL".equals(databaseName))
-      {
-         return connection;
-      }
-      else
-      {
-         return ConnectionWrapper.wrap(connection);
-      }
+      return ConnectionWrapper.wrapUnlessMysql(super.getConnection());
    }
 
 }
