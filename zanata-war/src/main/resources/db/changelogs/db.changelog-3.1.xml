@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
+                  http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    
+    <changeSet id="1" author="camunoz@redhat.com">
+        <comment>Create Translation Memory tables.</comment>
+
+        <createTable tableName="TransMemory">
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="slug" type="varchar(40)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <!-- Base entity columns -->
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="creationDate" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lastChanged" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="versionNum" type="integer">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="TMTranslationUnit">
+            <column name="trans_unit_id" type="longtext">
+                <constraints nullable="true"/>
+            </column>
+            <column name="source_language" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="tm_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <!-- Base entity columns -->
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="creationDate" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lastChanged" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="versionNum" type="integer">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="TMTranslationUnit" baseColumnNames="tm_id" constraintName="FK_tmunit_trans_memory"
+                                 referencedTableName="TransMemory"
+                                 referencedColumnNames="id"/>
+
+        <createTable tableName="TMTransUnitVariant">
+            <column name="language" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content" type="longtext">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content_hash" type="char(32)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <!-- Base entity columns -->
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="creationDate" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lastChanged" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="versionNum" type="integer">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="TMTranslationUnit_TransUnitVariant">
+            <column name="trans_unit_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="trans_unit_variant_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="TMTranslationUnit_TransUnitVariant" baseColumnNames="trans_unit_id"
+                                 constraintName="FK_manytomany_trans_unit" referencedTableName="TMTranslationUnit"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="TMTranslationUnit_TransUnitVariant"
+                                 baseColumnNames="trans_unit_variant_id"
+                                 constraintName="FK_manytomany_trans_unit_variant"
+                                 referencedTableName="TMTransUnitVariant"
+                                 referencedColumnNames="id"/>
+
+        <createIndex tableName="TMTranslationUnit_TransUnitVariant" indexName="UK_trans_unit_variant">
+            <column name="trans_unit_id"/>
+            <column name="trans_unit_variant_id"/>
+        </createIndex>
+
+    </changeSet>
+</databaseChangeLog>
