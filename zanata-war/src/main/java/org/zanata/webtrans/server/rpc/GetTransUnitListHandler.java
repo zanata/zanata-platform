@@ -123,7 +123,8 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
          log.debug("Fetch TransUnits:*");
          if (!hasValidationFilter(action))
          {
-            textFlows = textFlowDAO.getTextFlowsAndTargetsByDocumentId(action.getDocumentId(), hLocale, offset, action.getCount());
+            // TODO debt: this should use a left join to fetch target (and possibly comments)
+            textFlows = textFlowDAO.getTextFlowsByDocumentId(action.getDocumentId(), offset, action.getCount());
          }
          // has validation filter
          else

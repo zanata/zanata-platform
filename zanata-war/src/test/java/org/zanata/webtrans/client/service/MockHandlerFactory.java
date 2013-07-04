@@ -67,7 +67,7 @@ public class MockHandlerFactory
       // @formatter:on
 
       int maxSize = Math.min(startIndex + count, hTextFlows.size());
-      when(textFlowDAO.getTextFlowsAndTargetsByDocumentId(documentId, hLocale, startIndex, count)).thenReturn(hTextFlows.subList(startIndex, maxSize));
+      when(textFlowDAO.getTextFlowsByDocumentId(documentId, startIndex, count)).thenReturn(hTextFlows.subList(startIndex, maxSize));
       when(localeServiceImpl.validateLocaleByProjectIteration(any(LocaleId.class), anyString(), anyString())).thenReturn(hLocale);
       when(resourceUtils.getNumPlurals(any(HDocument.class), any(HLocale.class))).thenReturn(1);
 
