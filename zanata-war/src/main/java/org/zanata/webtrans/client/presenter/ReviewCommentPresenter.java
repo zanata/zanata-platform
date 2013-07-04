@@ -21,16 +21,16 @@
 
 package org.zanata.webtrans.client.presenter;
 
+import org.zanata.webtrans.client.events.ReviewCommentEvent;
+import org.zanata.webtrans.client.events.ReviewCommentEventHandler;
 import org.zanata.webtrans.client.rpc.AbstractAsyncCallback;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.view.ReviewCommentDisplay;
-import org.zanata.webtrans.shared.model.ReviewComment;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentAction;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentResult;
 import org.zanata.webtrans.shared.rpc.GetReviewCommentsAction;
 import org.zanata.webtrans.shared.rpc.GetReviewCommentsResult;
-import com.google.gwt.view.client.ListDataProvider;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -41,7 +41,7 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class ReviewCommentPresenter extends WidgetPresenter<ReviewCommentDisplay> implements ReviewCommentDisplay.Listener
+public class ReviewCommentPresenter extends WidgetPresenter<ReviewCommentDisplay> implements ReviewCommentDisplay.Listener, ReviewCommentEventHandler
 {
    private final ReviewCommentDisplay display;
    private final CachingDispatchAsync dispatcher;
@@ -63,11 +63,13 @@ public class ReviewCommentPresenter extends WidgetPresenter<ReviewCommentDisplay
    @Override
    protected void onBind()
    {
+      eventBus.addHandler(ReviewCommentEvent.TYPE, this);
    }
 
-   public void displayCommentView(TransUnitId transUnitId)
+   @Override
+   public void onShowReviewComment(ReviewCommentEvent event)
    {
-      this.transUnitId = transUnitId;
+      this.transUnitId = event.getTransUnitId();
       dataProvider.setLoading(true);
       dispatcher.execute(new GetReviewCommentsAction(transUnitId), new AbstractAsyncCallback<GetReviewCommentsResult>()
       {

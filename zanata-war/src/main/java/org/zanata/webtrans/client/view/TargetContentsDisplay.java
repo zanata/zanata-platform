@@ -102,7 +102,6 @@ public interface TargetContentsDisplay extends WidgetDisplay, HasTransUnitId, Ha
 
       void rejectTranslation(TransUnitId id);
 
-      void commentTranslation(TransUnitId id);
    }
 
    enum EditingState

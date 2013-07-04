@@ -29,6 +29,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.webtrans.client.events.ReviewCommentEvent;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.view.ReviewCommentDisplay;
 import org.zanata.webtrans.shared.model.ReviewComment;
@@ -80,7 +81,7 @@ public class ReviewCommentPresenterTest
       ArgumentCaptor<GetReviewCommentsAction> actionCaptor = ArgumentCaptor.forClass(GetReviewCommentsAction.class);
       ArgumentCaptor<AsyncCallback> resultCaptor = ArgumentCaptor.forClass(AsyncCallback.class);
 
-      presenter.displayCommentView(transUnitId);
+      presenter.onShowReviewComment(new ReviewCommentEvent(transUnitId));
 
       verify(dataProvider).setLoading(true);
       verify(dispather).execute(actionCaptor.capture(), resultCaptor.capture());

@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.zanata.common.ContentState;
+import org.zanata.webtrans.client.events.ReviewCommentEvent;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.ui.Editor;
 import org.zanata.webtrans.client.ui.EditorButtonsWidget;
@@ -37,9 +38,11 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -48,10 +51,13 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
+import net.customware.gwt.presenter.client.EventBus;
+
 public class TargetContentsView extends Composite implements TargetContentsDisplay
 {
    private static final int COLUMNS = 1;
    private static Binder binder = GWT.create(Binder.class);
+   private final EventBus eventBus;
 
    @UiField
    Grid editorGrid;
@@ -64,7 +70,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
 
    @UiField
    Label savingIndicator;
-   @UiField
+   @UiField(provided = true)
    EditorButtonsWidget buttons;
    @UiField
    Label commentIndicator;
@@ -77,14 +83,22 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    private TransUnit cachedValue;
 
    @Inject
-   public TargetContentsView(Provider<ValidationMessagePanelView> validationMessagePanelViewProvider)
+   public TargetContentsView(Provider<ValidationMessagePanelView> validationMessagePanelViewProvider, EventBus eventBus)
    {
+      this.eventBus = eventBus;
+      buttons = new EditorButtonsWidget(eventBus);
       validationPanel = validationMessagePanelViewProvider.get();
       rootPanel = binder.createAndBindUi(this);
       editorGrid.addStyleName("TableEditorCell-Target-Table");
       editorGrid.ensureDebugId("target-contents-grid");
       editorGrid.setWidth("100%");
       editors = Lists.newArrayList();
+   }
+
+   @UiHandler("commentIndicator")
+   public void commentIndicatorClicked(ClickEvent event)
+   {
+      eventBus.fireEvent(new ReviewCommentEvent(getId()));
    }
 
    @Override

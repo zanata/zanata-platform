@@ -148,6 +148,7 @@ public class TargetContentsPresenter implements
       eventBus.addHandler(CopyDataToEditorEvent.getType(), this);
       eventBus.addHandler(TransUnitEditEvent.getType(), this);
       eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this);
+      reviewCommentPresenter.bind();
    }
 
    public void savePendingChangesIfApplicable()
@@ -681,13 +682,6 @@ public class TargetContentsPresenter implements
    {
       ensureRowSelection(id);
       saveCurrent(ContentState.Rejected);
-   }
-
-   @Override
-   public void commentTranslation(TransUnitId id)
-   {
-      ensureRowSelection(id);
-      reviewCommentPresenter.displayCommentView(id);
    }
 
    /**
