@@ -26,12 +26,10 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.lucene.util.OpenBitSet;
-import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.ResultTransformer;
 import org.hibernate.type.StandardBasicTypes;
 import org.jboss.seam.ScopeType;
@@ -130,7 +128,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
             .append(" WHERE tf.document_id = :docId AND tf.obsolete = 0");
       queryBuilder
             .append(" AND ")
-            .append(buildContentStateCondition(filterConstraints.isIncludeApproved(), filterConstraints.isIncludeFuzzy(), filterConstraints.isIncludeNew(), "tft"));
+            .append(buildContentStateCondition(filterConstraints, "tft"));
       boolean hasSearchString = !Strings.isNullOrEmpty(filterConstraints.getSearchString());
       if (hasSearchString)
       {
@@ -171,9 +169,11 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
     * @param alias HTextFlowTarget alias
     * @return '1' if accept all status or a SQL condition clause with target content state conditions in parentheses '()' joined by 'or'
     */
-   protected static String buildContentStateCondition(boolean acceptApproved, boolean acceptFuzzy, boolean acceptUntranslated, String alias)
+   protected static String buildContentStateCondition(FilterConstraints filterConstraints, String alias)
    {
-      if (acceptApproved == acceptFuzzy && acceptApproved == acceptUntranslated)
+      
+      if (filterConstraints.isTranslatedIncluded() == filterConstraints.isFuzzyIncluded() 
+            && filterConstraints.isTranslatedIncluded() == filterConstraints.isNewIncluded())
       {
          return "1";
       }
@@ -181,17 +181,17 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       builder.append("(");
       List<String> conditions = Lists.newArrayList();
       final String column = alias + ".state";
-      if (acceptApproved)
+      if (filterConstraints.isTranslatedIncluded())
       {
          conditions.add(column + "=2"); // Translated
          conditions.add(column + "=3"); // Approved
       }
-      if (acceptFuzzy)
+      if (filterConstraints.isFuzzyIncluded())
       {
          conditions.add(column + "=1"); // Fuzzy
          conditions.add(column + "=4"); // Rejected
       }
-      if (acceptUntranslated)
+      if (filterConstraints.isNewIncluded())
       {
          conditions.add(column + "=0 or " + column + " is null");
       }
@@ -303,7 +303,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
     * @return a list of HTextFlow that matches the constraint.
     * @see org.zanata.service.impl.TextFlowSearchServiceImpl#findTextFlows(org.zanata.webtrans.shared.model.WorkspaceId, org.zanata.search.FilterConstraints)
     */
-   public List<HTextFlow> getTextFlowByDocumentIdWithConstraint(DocumentId documentId, HLocale hLocale, FilterConstraints constraints, int firstResult, int maxResult)
+   public List<HTextFlow> getTextFlowByDocumentIdWithConstraints(DocumentId documentId, HLocale hLocale, FilterConstraints constraints, int firstResult, int maxResult)
    {
       FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.filterInSingleDocument(constraints, documentId);
       String queryString = constraintToQuery.toHQL();
@@ -320,7 +320,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       return result;
    }
 
-   public List<HTextFlow> getAllTextFlowByDocumentIdWithConstraint(DocumentId documentId, HLocale hLocale, FilterConstraints constraints)
+   public List<HTextFlow> getAllTextFlowByDocumentIdWithConstraints(DocumentId documentId, HLocale hLocale, FilterConstraints constraints)
    {
       FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery.filterInSingleDocument(constraints, documentId);
       String queryString = constraintToQuery.toHQL();

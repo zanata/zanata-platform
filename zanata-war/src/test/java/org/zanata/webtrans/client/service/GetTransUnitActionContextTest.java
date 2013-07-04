@@ -73,6 +73,24 @@ public class GetTransUnitActionContextTest
       assertThat(context.isFilterUntranslated(), Matchers.is(false));
       assertThat(result.isFilterUntranslated(), Matchers.is(true));
    }
+   
+   @Test
+   public void testChangeFilterApproved() throws Exception
+   {
+      GetTransUnitActionContext result = context.changeFilterApproved(true);
+
+      assertThat(context.isFilterApproved(), Matchers.is(false));
+      assertThat(result.isFilterApproved(), Matchers.is(true));
+   }
+   
+   @Test
+   public void testChangeFilterRejected() throws Exception
+   {
+      GetTransUnitActionContext result = context.changeFilterRejected(true);
+
+      assertThat(context.isFilterRejected(), Matchers.is(false));
+      assertThat(result.isFilterRejected(), Matchers.is(true));
+   }
 
    @Test
    public void testNeedReloadList() throws Exception
@@ -80,6 +98,8 @@ public class GetTransUnitActionContextTest
       verifyNeedReloadTransUnits(context, context.changeFilterNeedReview(true), NEEDED);
       verifyNeedReloadTransUnits(context, context.changeFilterUntranslated(true), NEEDED);
       verifyNeedReloadTransUnits(context, context.changeFilterTranslated(true), NEEDED);
+      verifyNeedReloadTransUnits(context, context.changeFilterApproved(true), NEEDED);
+      verifyNeedReloadTransUnits(context, context.changeFilterRejected(true), NEEDED);
       verifyNeedReloadTransUnits(context, context.changeDocument(documentInfo(99, "")), NEEDED);
       verifyNeedReloadTransUnits(context, context.changeFindMessage("find message"), NEEDED);
       verifyNeedReloadTransUnits(context, context.changeCount(2), NEEDED);
@@ -99,6 +119,8 @@ public class GetTransUnitActionContextTest
       verifyNeedReloadNavigationIndex(context, context.changeFilterNeedReview(true), NEEDED);
       verifyNeedReloadNavigationIndex(context, context.changeFilterUntranslated(true), NEEDED);
       verifyNeedReloadNavigationIndex(context, context.changeFilterTranslated(true), NEEDED);
+      verifyNeedReloadNavigationIndex(context, context.changeFilterApproved(true), NEEDED);
+      verifyNeedReloadNavigationIndex(context, context.changeFilterRejected(true), NEEDED);
       verifyNeedReloadNavigationIndex(context, context.changeDocument(documentInfo(99, "")), NEEDED);
       verifyNeedReloadNavigationIndex(context, context.changeFindMessage("find message"), NEEDED);
 

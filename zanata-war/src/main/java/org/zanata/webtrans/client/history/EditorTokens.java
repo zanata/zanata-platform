@@ -12,6 +12,8 @@ enum EditorTokens implements TokensConverter
    static final String KEY_MESSAGE_FILTER_UNTRANSLATED = "untranslated";
    static final String KEY_MESSAGE_FILTER_TRANSLATED = "translated";
    static final String KEY_MESSAGE_FILTER_FUZZY = "fuzzy";
+   static final String KEY_MESSAGE_FILTER_APPROVED = "approved";
+   static final String KEY_MESSAGE_FILTER_REJECTED = "rejected";
    static final String KEY_MESSAGE_FILTER_ERROR = "error";
    static final String VALUE_MESSAGE_FILTER = "show";
 
@@ -44,6 +46,14 @@ enum EditorTokens implements TokensConverter
       {
          historyToken.setFilterTranslated(true);
       }
+      if (key.equals(KEY_MESSAGE_FILTER_APPROVED))
+      {
+         historyToken.setFilterApproved(true);
+      }
+      if (key.equals(KEY_MESSAGE_FILTER_REJECTED))
+      {
+         historyToken.setFilterRejected(true);
+      }
       if (key.equals(KEY_MESSAGE_FILTER_ERROR))
       {
          historyToken.setFilterHasError(true);
@@ -68,7 +78,11 @@ enum EditorTokens implements TokensConverter
          tokens.add(new Token(KEY_TEXT_FLOW_ID, historyToken.getTextFlowId().toString()));
       }
 
-      if (historyToken.isFilterUntranslated() != historyToken.isFilterFuzzy() || historyToken.isFilterUntranslated() != historyToken.isFilterTranslated() || historyToken.isFilterUntranslated() != historyToken.isFilterHasError())
+      if (historyToken.isFilterUntranslated() != historyToken.isFilterFuzzy() 
+            || historyToken.isFilterUntranslated() != historyToken.isFilterTranslated() 
+            || historyToken.isFilterUntranslated() != historyToken.isFilterHasError()
+            || historyToken.isFilterUntranslated() != historyToken.isFilterApproved()
+            || historyToken.isFilterUntranslated() != historyToken.isFilterRejected())
       {
          // if filter options is set (not showing everything)
          if (historyToken.isFilterUntranslated())
@@ -82,6 +96,14 @@ enum EditorTokens implements TokensConverter
          if (historyToken.isFilterTranslated())
          {
             tokens.add(new Token(KEY_MESSAGE_FILTER_TRANSLATED, VALUE_MESSAGE_FILTER));
+         }
+         if (historyToken.isFilterApproved())
+         {
+            tokens.add(new Token(KEY_MESSAGE_FILTER_APPROVED, VALUE_MESSAGE_FILTER));
+         }
+         if (historyToken.isFilterRejected())
+         {
+            tokens.add(new Token(KEY_MESSAGE_FILTER_REJECTED, VALUE_MESSAGE_FILTER));
          }
          if (historyToken.isFilterHasError())
          {

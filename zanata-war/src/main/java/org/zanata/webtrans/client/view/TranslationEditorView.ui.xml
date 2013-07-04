@@ -5,7 +5,6 @@
 	
 	<ui:with field="resources" type="org.zanata.webtrans.client.resources.Resources" />
 	<ui:style>
-
 		.editor {
 			background-color: #ffffff;
 			border-bottom: 1px solid #E5E5E5;
@@ -34,8 +33,8 @@
 		}
 	</ui:style>
 
-			<g:LayoutPanel>
-				<g:layer top="0" height="32px">
+			<g:LayoutPanel styleName="translatorEditorContainer">
+				<g:layer top="0" height="2.5em">
 					<g:HorizontalPanel styleName="{style.topBar}" verticalAlignment="ALIGN_MIDDLE">
 						<g:cell>
 							<g:HTMLPanel ui:field="filterPanelContainer"/>		
@@ -48,7 +47,7 @@
 						</g:cell>
 					</g:HorizontalPanel>
 				</g:layer>
-				<g:layer top="32px" bottom="2em">
+				<g:layer top="2.5em" bottom="2em">
 					<g:LayoutPanel ui:field="editor" styleName="{style.editor}"/>
 				</g:layer>
 				<g:layer bottom="0px" height="2em" left="0" right="16px">
