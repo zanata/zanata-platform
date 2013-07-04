@@ -21,9 +21,6 @@
 package org.zanata.action;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import org.jboss.seam.ScopeType;
@@ -182,7 +179,37 @@ public class LanguageTeamAction implements Serializable
       }
       else
       {
-         FacesMessages.instance().add("{0} has been removed from Team Coordinators", member.getPerson().getAccount().getUsername());
+         FacesMessages.instance().add("{0} has been removed from as Team Coordinators", member.getPerson().getAccount().getUsername());
+      }
+   }
+   
+   @Restrict("#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}")
+   public void saveTeamReviewer( HLocaleMember member )
+   {
+      this.localeDAO.makePersistent(getLocale());
+      this.localeDAO.flush();
+      if( member.isReviewer() )
+      {
+         FacesMessages.instance().add("{0} has been made a Team Reviewer", member.getPerson().getAccount().getUsername());
+      }
+      else
+      {
+         FacesMessages.instance().add("{0} has been removed from as Team Reviewer", member.getPerson().getAccount().getUsername());
+      }
+   }
+   
+   @Restrict("#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}")
+   public void saveTeamTranslator( HLocaleMember member )
+   {
+      this.localeDAO.makePersistent(getLocale());
+      this.localeDAO.flush();
+      if( member.isReviewer() )
+      {
+         FacesMessages.instance().add("{0} has been made a Team Translator", member.getPerson().getAccount().getUsername());
+      }
+      else
+      {
+         FacesMessages.instance().add("{0} has been removed from as Team Translator", member.getPerson().getAccount().getUsername());
       }
    }
 

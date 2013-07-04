@@ -44,20 +44,36 @@
                   </rich:column>
                   <rich:column width="auto" rendered="#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}">
                     <f:facet name="header">#{messages['jsf.Email']}</f:facet>
-                    <h:outputText>
                         #{member.person.email}
-                    </h:outputText>
                   </rich:column>
+                  
+                  <rich:column width="auto" styleClass="centered">
+                    <f:facet name="header">#{messages['jsf.Translator']}</f:facet>
+                    <h:selectBooleanCheckbox value="#{member.translator}"
+                        rendered="#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}">
+                        <a4j:ajax event="change" render="threads" execute="@this" listener="#{languageTeamAction.saveTeamTranslator(member)}"/>
+                    </h:selectBooleanCheckbox>
+	                <s:span styleClass="icon-ok checkmark" rendered="#{not s:hasPermission(languageTeamAction.locale, 'manage-language-team') and member.translator}"/>
+                  </rich:column>
+                  
+                  <rich:column width="auto" styleClass="centered">
+                    <f:facet name="header">#{messages['jsf.Reviewer']}</f:facet>
+                    <h:selectBooleanCheckbox value="#{member.reviewer}"
+                        rendered="#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}">
+                        <a4j:ajax event="change" render="threads" execute="@this" listener="#{languageTeamAction.saveTeamReviewer(member)}"/>
+                    </h:selectBooleanCheckbox>
+                    <s:span styleClass="icon-ok checkmark" rendered="#{not s:hasPermission(languageTeamAction.locale, 'manage-language-team')}"/>
+                  </rich:column>
+                  
                   <rich:column width="auto" styleClass="centered">
                     <f:facet name="header">#{messages['jsf.Coordinator']}</f:facet>
                     <h:selectBooleanCheckbox value="#{member.coordinator}"
                         rendered="#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}">
                         <a4j:ajax event="change" render="threads" execute="@this" listener="#{languageTeamAction.saveTeamCoordinator(member)}"/>
                     </h:selectBooleanCheckbox>
-                    <h:outputText rendered="#{not s:hasPermission(languageTeamAction.locale, 'manage-language-team') and member.coordinator}">
-                        <span class="icon-ok checkmark"/>
-                    </h:outputText>
+                    <s:span styleClass="icon-ok checkmark" rendered="#{not s:hasPermission(languageTeamAction.locale, 'manage-language-team') and member.coordinator}"/>
                   </rich:column>
+                  
                   <rich:column width="auto" styleClass="centered"
                       rendered="#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}">
                       <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
@@ -133,6 +149,34 @@
 	                  <f:facet name="header">#{messages['jsf.Username']}</f:facet>
 	                  #{person.account.username}
 	                </rich:column>
+	                
+	              	<rich:column width="auto" styleClass="centered">
+                    	<f:facet name="header">#{messages['jsf.Translator']}</f:facet>
+                    		<h:selectBooleanCheckbox value="#{member.translator}"
+                        	rendered="#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}">
+                        		<a4j:ajax event="change" render="threads" execute="@this" listener="#{languageTeamAction.saveTeamTranslator(member)}"/>
+                    	</h:selectBooleanCheckbox>
+	                	<s:span styleClass="icon-ok checkmark" rendered="#{not s:hasPermission(languageTeamAction.locale, 'manage-language-team') and member.translator}"/>
+                  	</rich:column>
+                  
+                  	<rich:column width="auto" styleClass="centered">
+                    	<f:facet name="header">#{messages['jsf.Reviewer']}</f:facet>
+                    	<h:selectBooleanCheckbox value="#{member.reviewer}"
+                        	rendered="#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}">
+                        	<a4j:ajax event="change" render="threads" execute="@this" listener="#{languageTeamAction.saveTeamReviewer(member)}"/>
+                    	</h:selectBooleanCheckbox>
+                    	<s:span styleClass="icon-ok checkmark" rendered="#{not s:hasPermission(languageTeamAction.locale, 'manage-language-team')}"/>
+                  	</rich:column>
+                  
+                  	<rich:column width="auto" styleClass="centered">
+                    	<f:facet name="header">#{messages['jsf.Coordinator']}</f:facet>
+                    	<h:selectBooleanCheckbox value="#{member.coordinator}"
+                        	rendered="#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}">
+                        	<a4j:ajax event="change" render="threads" execute="@this" listener="#{languageTeamAction.saveTeamCoordinator(member)}"/>
+                    	</h:selectBooleanCheckbox>
+                    	<s:span styleClass="icon-ok checkmark" rendered="#{not s:hasPermission(languageTeamAction.locale, 'manage-language-team') and member.coordinator}"/>
+                  	</rich:column>
+                  
 	                <rich:column styleClass="centered">
 	                  <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
 	                  <a4j:commandButton id="addBtn" value="#{messages['jsf.Add']}"

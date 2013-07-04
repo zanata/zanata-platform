@@ -270,7 +270,7 @@ public class RegisterServiceImpl implements RegisterService
 
             if( activeMembership == null )
             {
-               activeMembership = new HLocaleMember(activePerson, obsoleteMembership.getSupportedLanguage(), obsoleteMembership.isCoordinator());
+               activeMembership = new HLocaleMember(activePerson, obsoleteMembership.getSupportedLanguage(), obsoleteMembership.isTranslator(), obsoleteMembership.isReviewer(), obsoleteMembership.isCoordinator());
             }
 
             activeMembership.setCoordinator(activeMembership.isCoordinator() || obsoleteMembership.isCoordinator());

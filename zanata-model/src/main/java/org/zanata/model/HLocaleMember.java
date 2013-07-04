@@ -55,10 +55,16 @@ public class HLocaleMember implements Serializable
    
    private boolean isCoordinator;
    
-   public HLocaleMember( HPerson person, HLocale supportedLanguage, boolean isCoordinator )
+   private boolean isReviewer;
+   
+   private boolean isTranslator;
+   
+   public HLocaleMember( HPerson person, HLocale supportedLanguage, boolean isTranslator, boolean isReviewer, boolean isCoordinator)
    {
       id.setPerson(person);
       id.setSupportedLanguage(supportedLanguage);
+      setTranslator(isTranslator);
+      setReviewer(isReviewer);
       setCoordinator(isCoordinator);
    }
    
@@ -77,6 +83,18 @@ public class HLocaleMember implements Serializable
    public boolean isCoordinator()
    {
       return isCoordinator;
+   }
+   
+   @Column(name="isReviewer")
+   public boolean isReviewer()
+   {
+      return isReviewer;
+   }
+   
+   @Column(name="isTranslator")
+   public boolean isTranslator()
+   {
+      return isTranslator;
    }
 
    @Transient

@@ -65,7 +65,7 @@ public class LanguageTeamServiceImpl implements LanguageTeamService
          }
          else
          {
-            HLocaleMember localeMember = new HLocaleMember(currentPerson, lang, false);
+            HLocaleMember localeMember = new HLocaleMember(currentPerson, lang, true, false, false);
             lang.getMembers().add(localeMember);
             localeMemberDAO.makePersistent(localeMember);
             localeMemberDAO.flush();
@@ -83,7 +83,6 @@ public class LanguageTeamServiceImpl implements LanguageTeamService
 
       if (membership != null)
       {
-//         localeMemberDAO.flush();
          localeMemberDAO.makeTransient(membership);
          lang.getMembers().remove(membership);
          localeMemberDAO.flush();

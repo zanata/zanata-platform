@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog 
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
+						http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+ 
+ 	<changeSet author="aeng@redhat.com" id="1">
+    	<comment>Add a flag indicating when a member of a Language team (locale) is a team reviewer.</comment>
+		<addColumn tableName="HLocale_Member">
+			<column name="isReviewer" type="boolean" defaultValueBoolean="false">
+				<constraints nullable="false" />
+			</column>
+		</addColumn>
+    </changeSet>
+    
+    <changeSet author="aeng@redhat.com" id="2">
+    	<comment>Add a flag indicating when a member of a Language team (locale) is a team translator.</comment>
+		<addColumn tableName="HLocale_Member">
+			<column name="isTranslator" type="boolean" defaultValueBoolean="false">
+				<constraints nullable="false" />
+			</column>
+		</addColumn>
+    </changeSet>
+    
+    <changeSet author="aeng@redhat.com" id="3" >
+        <comment>Make current locale members and coordinator as translator</comment>
+        <sql>
+            update HLocale_Member set isTranslator = 1;
+        </sql>
+    </changeSet>
+    
+	
+</databaseChangeLog>
