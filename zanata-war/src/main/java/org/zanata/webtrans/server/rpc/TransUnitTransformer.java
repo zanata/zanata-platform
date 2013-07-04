@@ -59,7 +59,7 @@ public class TransUnitTransformer
       return transform(hTextFlow, target, hLocale);
    }
 
-   private TransUnit transform(HTextFlow hTextFlow, HTextFlowTarget target, HLocale hLocale)
+   public TransUnit transform(HTextFlow hTextFlow, HTextFlowTarget target, HLocale hLocale)
    {
       String msgContext = null;
       if (hTextFlow.getPotEntryData() != null)

@@ -29,14 +29,19 @@ import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
+import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetReviewComment;
 import org.zanata.service.SecurityService;
 import org.zanata.webtrans.server.ActionHandlerFor;
+import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.shared.model.ReviewComment;
 import org.zanata.webtrans.shared.model.ReviewCommentId;
+import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentAction;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentResult;
+import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 
 import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -60,12 +65,15 @@ public class AddReviewCommentHandler extends AbstractActionHandler<AddReviewComm
    @In(value = JpaIdentityStore.AUTHENTICATED_USER)
    private HAccount authenticatedAccount;
 
+   @In
+   TransUnitTransformer transUnitTransformer;
+
    @Override
    public AddReviewCommentResult execute(AddReviewCommentAction action, ExecutionContext context) throws ActionException
    {
       SecurityService.SecurityCheckResult securityCheckResult = securityServiceImpl.checkPermission(action, SecurityService.TranslationAction.MODIFY);
       HLocale hLocale = securityCheckResult.getLocale();
-//      TranslationWorkspace workspace = securityCheckResult.getWorkspace();
+      TranslationWorkspace workspace = securityCheckResult.getWorkspace();
 
       HTextFlowTarget hTextFlowTarget = textFlowTargetDAO.getTextFlowTarget(action.getTransUnitId().getValue(), hLocale.getLocaleId());
       if (hTextFlowTarget == null || hTextFlowTarget.getState().isUntranslated())
@@ -76,8 +84,17 @@ public class AddReviewCommentHandler extends AbstractActionHandler<AddReviewComm
       textFlowTargetDAO.makePersistent(hTextFlowTarget);
       textFlowTargetDAO.flush();
 
-      // TODO pahuang we will need to publish event to event service if we want client up to date all the time. But do we care?
+      publishTransUnitUpdatedEvent(action, hLocale, hTextFlowTarget, workspace);
+
       return new AddReviewCommentResult(toDTO(hComment));
+   }
+
+   private void publishTransUnitUpdatedEvent(AddReviewCommentAction action, HLocale hLocale, HTextFlowTarget hTextFlowTarget, TranslationWorkspace workspace)
+   {
+      HTextFlow textFlow = hTextFlowTarget.getTextFlow();
+      TransUnit transUnit = transUnitTransformer.transform(textFlow, hTextFlowTarget, hLocale);
+      TransUnitUpdated transUnitUpdated = new TransUnitUpdated(new TransUnitUpdateInfo(true, false, action.getDocumentId(), transUnit, textFlow.getWordCount().intValue(), transUnit.getVerNum(), transUnit.getStatus()), action.getEditorClientId(), TransUnitUpdated.UpdateType.AddComment);
+      workspace.publish(transUnitUpdated);
    }
 
    private static ReviewComment toDTO(HTextFlowTargetReviewComment hComment)

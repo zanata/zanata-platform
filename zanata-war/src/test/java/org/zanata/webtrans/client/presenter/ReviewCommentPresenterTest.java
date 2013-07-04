@@ -24,6 +24,7 @@ package org.zanata.webtrans.client.presenter;
 import java.util.List;
 
 import org.hamcrest.Matchers;
+import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -31,7 +32,9 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.ReviewCommentEvent;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.service.GetTransUnitActionContextHolder;
 import org.zanata.webtrans.client.view.ReviewCommentDisplay;
+import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ReviewComment;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentAction;
@@ -62,6 +65,8 @@ public class ReviewCommentPresenterTest
    private CachingDispatchAsync dispather;
    @Mock
    private ReviewCommentDataProvider dataProvider;
+   @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+   private GetTransUnitActionContextHolder contextHolder;
 
 
    @BeforeMethod
@@ -69,7 +74,7 @@ public class ReviewCommentPresenterTest
    {
       MockitoAnnotations.initMocks(this);
 
-      presenter = new ReviewCommentPresenter(display, eventBus, dispather, dataProvider);
+      presenter = new ReviewCommentPresenter(display, eventBus, dispather, dataProvider, contextHolder);
 
       verify(display).setDataProvider(dataProvider);
       verify(display).setListener(presenter);
@@ -98,6 +103,7 @@ public class ReviewCommentPresenterTest
    @Test
    public void testAddComment() throws Exception
    {
+      when(contextHolder.getContext().getDocument().getId()).thenReturn(new DocumentId(1L, "doc"));
       ArgumentCaptor<AddReviewCommentAction> actionCaptor = ArgumentCaptor.forClass(AddReviewCommentAction.class);
       ArgumentCaptor<AsyncCallback> resultCaptor = ArgumentCaptor.forClass(AsyncCallback.class);
       List<ReviewComment> mockList = mock(List.class);

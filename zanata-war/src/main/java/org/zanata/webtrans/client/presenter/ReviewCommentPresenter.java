@@ -25,6 +25,7 @@ import org.zanata.webtrans.client.events.ReviewCommentEvent;
 import org.zanata.webtrans.client.events.ReviewCommentEventHandler;
 import org.zanata.webtrans.client.rpc.AbstractAsyncCallback;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.service.GetTransUnitActionContextHolder;
 import org.zanata.webtrans.client.view.ReviewCommentDisplay;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentAction;
@@ -46,15 +47,17 @@ public class ReviewCommentPresenter extends WidgetPresenter<ReviewCommentDisplay
    private final ReviewCommentDisplay display;
    private final CachingDispatchAsync dispatcher;
    private final ReviewCommentDataProvider dataProvider;
+   private final GetTransUnitActionContextHolder contextHolder;
    private TransUnitId transUnitId;
 
    @Inject
-   public ReviewCommentPresenter(ReviewCommentDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, ReviewCommentDataProvider dataProvider)
+   public ReviewCommentPresenter(ReviewCommentDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, ReviewCommentDataProvider dataProvider, GetTransUnitActionContextHolder contextHolder)
    {
       super(display, eventBus);
       this.display = display;
       this.dispatcher = dispatcher;
       this.dataProvider = dataProvider;
+      this.contextHolder = contextHolder;
 
       display.setListener(this);
       display.setDataProvider(dataProvider);
@@ -86,7 +89,7 @@ public class ReviewCommentPresenter extends WidgetPresenter<ReviewCommentDisplay
    @Override
    public void addComment(String content)
    {
-      dispatcher.execute(new AddReviewCommentAction(transUnitId, content), new AbstractAsyncCallback<AddReviewCommentResult>()
+      dispatcher.execute(new AddReviewCommentAction(transUnitId, content, contextHolder.getContext().getDocument().getId()), new AbstractAsyncCallback<AddReviewCommentResult>()
       {
          @Override
          public void onSuccess(AddReviewCommentResult result)

@@ -25,7 +25,6 @@ import java.util.List;
 
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.ReviewCommentEvent;
-import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.ui.Editor;
 import org.zanata.webtrans.client.ui.EditorButtonsWidget;
 import org.zanata.webtrans.client.ui.ToggleEditor;
@@ -34,7 +33,6 @@ import org.zanata.webtrans.client.ui.ValidationMessagePanelView;
 import org.zanata.webtrans.client.util.ContentStateToStyleUtil;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
-
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
@@ -131,8 +129,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    public void setValueAndCreateNewEditors(TransUnit transUnit)
    {
       setCachedTU(transUnit);
-      commentIndicator.setVisible(transUnit.getCommentsCount() > 0);
-      commentIndicator.setText(String.valueOf(transUnit.getCommentsCount()));
+      updateCommentIndicator(transUnit.getCommentsCount());
 
       editors.clear();
       List<String> cachedTargets = cachedValue.getTargets();
@@ -156,6 +153,13 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    private static String resolveStyleName(ContentState status)
    {
       return ContentStateToStyleUtil.stateToStyle(status, "TableEditorRow ");
+   }
+
+   @Override
+   public void updateCommentIndicator(int commentsCount)
+   {
+      commentIndicator.setVisible(commentsCount > 0);
+      commentIndicator.setText(String.valueOf(commentsCount));
    }
 
    @Override
@@ -321,6 +325,8 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
       String unsaved();
 
       String saving();
+
+      String commentIndicator();
    }
 
    interface Binder extends UiBinder<HorizontalPanel, TargetContentsView>

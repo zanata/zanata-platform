@@ -21,6 +21,7 @@
 
 package org.zanata.webtrans.shared.rpc;
 
+import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
 /**
@@ -31,6 +32,7 @@ public class AddReviewCommentAction extends AbstractWorkspaceAction<AddReviewCom
    private static final long serialVersionUID = 1L;
 
    private String content;
+   private DocumentId documentId;
    private TransUnitId transUnitId;
 
    @SuppressWarnings("unused")
@@ -38,10 +40,11 @@ public class AddReviewCommentAction extends AbstractWorkspaceAction<AddReviewCom
    {
    }
 
-   public AddReviewCommentAction(TransUnitId transUnitId, String content)
+   public AddReviewCommentAction(TransUnitId transUnitId, String content, DocumentId id)
    {
       this.transUnitId = transUnitId;
       this.content = content;
+      documentId = id;
    }
 
    public String getContent()
@@ -52,5 +55,10 @@ public class AddReviewCommentAction extends AbstractWorkspaceAction<AddReviewCom
    public TransUnitId getTransUnitId()
    {
       return transUnitId;
+   }
+
+   public DocumentId getDocumentId()
+   {
+      return documentId;
    }
 }

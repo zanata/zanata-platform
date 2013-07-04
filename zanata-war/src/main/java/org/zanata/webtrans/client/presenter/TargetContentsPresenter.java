@@ -684,6 +684,16 @@ public class TargetContentsPresenter implements
       saveCurrent(ContentState.Rejected);
    }
 
+
+   public void updateCommentCount(TransUnitId id, int commentsCount)
+   {
+      Optional<TargetContentsDisplay> displayOptional = Finds.findDisplayById(displayList, id);
+      if (displayOptional.isPresent())
+      {
+         displayOptional.get().updateCommentIndicator(commentsCount);
+      }
+   }
+
    /**
     * For testing only
     * @param currentTransUnitId current trans unit id

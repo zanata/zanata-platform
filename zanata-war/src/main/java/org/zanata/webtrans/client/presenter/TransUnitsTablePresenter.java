@@ -289,7 +289,14 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
             translationHistoryPresenter.displayEntries(latest, Collections.<TransHistoryItem> emptyList());
          }
       }
-      targetContentsPresenter.updateRow(updatedTransUnit);
+      if (updateType == TransUnitUpdated.UpdateType.AddComment)
+      {
+         targetContentsPresenter.updateCommentCount(updatedTransUnit.getId(), updatedTransUnit.getCommentsCount());
+      }
+      else
+      {
+         targetContentsPresenter.updateRow(updatedTransUnit);
+      }
    }
 
    // update type is web editor save or web editor save fuzzy and coming from
