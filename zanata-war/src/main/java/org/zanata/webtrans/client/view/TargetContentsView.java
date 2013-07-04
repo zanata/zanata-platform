@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.zanata.common.ContentState;
+import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.ui.Editor;
 import org.zanata.webtrans.client.ui.EditorButtonsWidget;
 import org.zanata.webtrans.client.ui.ToggleEditor;
@@ -65,6 +66,8 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    Label savingIndicator;
    @UiField
    EditorButtonsWidget buttons;
+   @UiField
+   Label commentIndicator;
 
    private HorizontalPanel rootPanel;
    private ArrayList<ToggleEditor> editors;
@@ -114,6 +117,8 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    public void setValueAndCreateNewEditors(TransUnit transUnit)
    {
       setCachedTU(transUnit);
+      commentIndicator.setVisible(transUnit.getCommentsCount() > 0);
+      commentIndicator.setText(String.valueOf(transUnit.getCommentsCount()));
 
       editors.clear();
       List<String> cachedTargets = cachedValue.getTargets();
@@ -216,12 +221,6 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    public List<String> getCachedTargets()
    {
       return cachedValue.getTargets();
-   }
-
-   @Override
-   public ContentState getCachedState()
-   {
-      return cachedValue.getStatus();
    }
 
    @Override

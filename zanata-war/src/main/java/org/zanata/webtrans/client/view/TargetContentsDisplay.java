@@ -70,8 +70,6 @@ public interface TargetContentsDisplay extends WidgetDisplay, HasTransUnitId, Ha
 
    void setEnableSpellCheck(boolean spellCheckEnabled);
 
-   ContentState getCachedState();
-
    interface Listener
    {
       void validate(ToggleEditor editor);
