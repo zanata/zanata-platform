@@ -20,14 +20,13 @@
  */
 package org.zanata.liquibase.custom;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Properties;
-import java.util.ResourceBundle;
+import javax.naming.InitialContext;
+import javax.naming.NameNotFoundException;
+import javax.naming.NamingException;
 
 import liquibase.change.custom.CustomTaskChange;
 import liquibase.database.Database;
@@ -106,37 +105,42 @@ public class MigrateDataToHCredentials implements CustomTaskChange
    @Override
    public void setUp() throws SetupException
    {
-      // Get the zanata.properties file from the classpath
-      Properties zanataProperties = new Properties();
-      InputStream iStream = this.getClass().getClassLoader().getResourceAsStream("/zanata.properties");
+      InitialContext initContext = null;
       try
       {
-         zanataProperties.load(iStream);
+         initContext = new InitialContext();
+         String openid = (String) initContext.lookup("java:global/zanata/security/auth-policy-names/openid");
+
+         if (openid != null)
+         {
+            dbAuthType = "OPENID";
+         }
+         else
+         {
+            dbAuthType = "OTHER";
+         }
       }
-      catch (IOException e)
+      catch (NameNotFoundException e)
+      {
+         dbAuthType = "OTHER";
+      }
+      catch (NamingException e)
       {
          throw new SetupException(e);
       }
       finally
       {
-         try
+         if (initContext != null)
          {
-            iStream.close();
+            try
+            {
+               initContext.close();
+            }
+            catch (NamingException e)
+            {
+               e.printStackTrace();
+            }
          }
-         catch (IOException e)
-         {
-            // stream already closed
-         }
-      }
-
-      // Currently only care for Open Id
-      if( zanataProperties.containsKey("zanata.security.auth.policy.openid"))
-      {
-         dbAuthType = "OPENID";
-      }
-      else
-      {
-         dbAuthType = "OTHER";
       }
    }
 

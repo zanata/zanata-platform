@@ -87,7 +87,7 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       GetTransUnitsNavigationResult navigationResult = null;
       if (action.isNeedReloadIndex())
       {
-         GetTransUnitsNavigation getTransUnitsNavigation = new GetTransUnitsNavigation(action.getDocumentId().getId(), action.getPhrase(), action.isFilterUntranslated(), action.isFilterNeedReview(), action.isFilterTranslated());
+         GetTransUnitsNavigation getTransUnitsNavigation = new GetTransUnitsNavigation(action.getDocumentId().getId(), action.getPhrase(), action.isFilterUntranslated(), action.isFilterNeedReview(), action.isFilterTranslated(), action.isFilterApproved(), action.isFilterRejected());
          log.debug("get trans unit navigation action: {}", getTransUnitsNavigation);
          navigationResult = getTransUnitsNavigationService.getNavigationIndexes(getTransUnitsNavigation, hLocale);
 
@@ -138,17 +138,17 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
          // @formatter:off
          FilterConstraints constraints = FilterConstraints
                .filterBy(action.getPhrase()).ignoreCase().filterSource().filterTarget()
-               .filterByStatus(action.isFilterUntranslated(), action.isFilterNeedReview(), action.isFilterTranslated());
+               .filterByStatus(action.isFilterUntranslated(), action.isFilterNeedReview(), action.isFilterTranslated(), action.isFilterApproved(), action.isFilterRejected());
          // @formatter:on
          log.debug("Fetch TransUnits filtered by status and/or search: {}", constraints);
          if (!hasValidationFilter(action))
          {
-            textFlows = textFlowDAO.getTextFlowByDocumentIdWithConstraint(action.getDocumentId(), hLocale, constraints, offset, action.getCount());
+            textFlows = textFlowDAO.getTextFlowByDocumentIdWithConstraints(action.getDocumentId(), hLocale, constraints, offset, action.getCount());
          }
          // has validation filter
          else
          {
-            textFlows = textFlowDAO.getAllTextFlowByDocumentIdWithConstraint(action.getDocumentId(), hLocale, constraints);
+            textFlows = textFlowDAO.getAllTextFlowByDocumentIdWithConstraints(action.getDocumentId(), hLocale, constraints);
             textFlows = validationServiceImpl.filterHasErrorTexFlow(textFlows, action.getValidationIds(), hLocale.getLocaleId(), offset, action.getCount());
          }
       }

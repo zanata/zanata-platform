@@ -16,7 +16,7 @@ public class FilterViewEvent extends GwtEvent<FilterViewEventHandler> implements
     * Handler type.
     */
    private static Type<FilterViewEventHandler> TYPE;
-   public static final FilterViewEvent DEFAULT = new FilterViewEvent(false, false, false, false, false, null);
+   public static final FilterViewEvent DEFAULT = new FilterViewEvent(false, false, false, false, false, false, false, null);
 
    /**
     * Gets the type associated with this event.
@@ -32,15 +32,17 @@ public class FilterViewEvent extends GwtEvent<FilterViewEventHandler> implements
       return TYPE;
    }
 
-   private boolean filterTranslated, filterNeedReview, filterUntranslated, filterHasError;
+   private boolean filterTranslated, filterNeedReview, filterUntranslated, filterApproved, filterRejected, filterHasError;
    private boolean cancelFilter;
    private List<ValidationId> enabledValidationIds;
 
-   public FilterViewEvent(boolean filterTranslated, boolean filterNeedReview, boolean filterUntranslated, boolean filterHasError, boolean cancelFilter, List<ValidationId> enabledValidationIds)
+   public FilterViewEvent(boolean filterTranslated, boolean filterNeedReview, boolean filterUntranslated, boolean filterApproved, boolean filterRejected, boolean filterHasError, boolean cancelFilter, List<ValidationId> enabledValidationIds)
    {
       this.filterTranslated = filterTranslated;
       this.filterNeedReview = filterNeedReview;
       this.filterUntranslated = filterUntranslated;
+      this.filterApproved = filterApproved;
+      this.filterRejected = filterRejected;
       this.filterHasError = filterHasError;
       this.cancelFilter = cancelFilter;
       this.enabledValidationIds = enabledValidationIds;
@@ -74,11 +76,21 @@ public class FilterViewEvent extends GwtEvent<FilterViewEventHandler> implements
       return filterUntranslated;
    }
 
+   public boolean isFilterApproved()
+   {
+      return filterApproved;
+   }
+   
+   public boolean isFilterRejected()
+   {
+      return filterRejected;
+   }
+   
    public boolean isCancelFilter()
    {
       return cancelFilter;
    }
-
+   
    public boolean isFilterHasError()
    {
       return filterHasError;
@@ -93,7 +105,13 @@ public class FilterViewEvent extends GwtEvent<FilterViewEventHandler> implements
    public GetTransUnitActionContext updateContext(GetTransUnitActionContext currentContext)
    {
       Preconditions.checkNotNull(currentContext, "current context can not be null");
-      return currentContext.changeFilterNeedReview(filterNeedReview).changeFilterTranslated(filterTranslated).changeFilterUntranslated(filterUntranslated).changeFilterHasError(filterHasError).changeValidationIds(enabledValidationIds);
+      return currentContext.changeFilterNeedReview(filterNeedReview)
+            .changeFilterTranslated(filterTranslated)
+            .changeFilterUntranslated(filterUntranslated)
+            .changeFilterApproved(filterApproved)
+            .changeFilterRejected(filterRejected)
+            .changeFilterHasError(filterHasError)
+            .changeValidationIds(enabledValidationIds);
    }
 
    @Override
@@ -103,6 +121,8 @@ public class FilterViewEvent extends GwtEvent<FilterViewEventHandler> implements
             add("filterTranslated", filterTranslated).
             add("filterNeedReview", filterNeedReview).
             add("filterUntranslated", filterUntranslated).
+            add("filterApproved", filterApproved).
+            add("filterRejected", filterRejected).
             add("filterHasError", filterHasError).
             add("cancelFilter", cancelFilter).
             toString();

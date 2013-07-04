@@ -41,6 +41,8 @@ public class HistoryTokenTests
       assertThat(token.isFilterTranslated(), Matchers.equalTo(false));
       assertThat(token.isFilterUntranslated(), Matchers.equalTo(false));
       assertThat(token.isFilterFuzzy(), Matchers.equalTo(false));
+      assertThat(token.isFilterApproved(), Matchers.equalTo(false));
+      assertThat(token.isFilterRejected(), Matchers.equalTo(false));
       assertThat(token.isFilterHasError(), Matchers.equalTo(false));
    }
 
@@ -61,6 +63,8 @@ public class HistoryTokenTests
       assertThat(token.isFilterTranslated(), Matchers.equalTo(false));
       assertThat(token.isFilterUntranslated(), Matchers.equalTo(false));
       assertThat(token.isFilterFuzzy(), Matchers.equalTo(false));
+      assertThat(token.isFilterApproved(), Matchers.equalTo(false));
+      assertThat(token.isFilterRejected(), Matchers.equalTo(false));
       assertThat(token.isFilterHasError(), Matchers.equalTo(false));
    }
 
@@ -81,6 +85,8 @@ public class HistoryTokenTests
       assertThat(token.isFilterTranslated(), Matchers.equalTo(false));
       assertThat(token.isFilterUntranslated(), Matchers.equalTo(false));
       assertThat(token.isFilterFuzzy(), Matchers.equalTo(false));
+      assertThat(token.isFilterApproved(), Matchers.equalTo(false));
+      assertThat(token.isFilterRejected(), Matchers.equalTo(false));
       assertThat(token.isFilterHasError(), Matchers.equalTo(false));
    }
 
@@ -413,6 +419,8 @@ public class HistoryTokenTests
       token.setFilterFuzzy(true);
       token.setFilterTranslated(true);
       token.setFilterUntranslated(true);
+      token.setFilterApproved(true);
+      token.setFilterRejected(true);
       token.setFilterHasError(true);
 
       String tokenString = token.toTokenString();

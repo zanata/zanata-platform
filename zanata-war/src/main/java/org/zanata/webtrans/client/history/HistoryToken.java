@@ -51,6 +51,8 @@ public class HistoryToken
    private boolean filterUntranslated;
    private boolean filterFuzzy;
    private boolean filterTranslated;
+   private boolean filterApproved;
+   private boolean filterRejected;
    private boolean filterHasError;
 
    public HistoryToken()
@@ -262,6 +264,16 @@ public class HistoryToken
    {
       this.filterTranslated = filterTranslated;
    }
+   
+   public void setFilterApproved(boolean filterApproved)
+   {
+      this.filterApproved = filterApproved;
+   }
+   
+   public void setFilterRejected(boolean filterRejected)
+   {
+      this.filterRejected = filterRejected;
+   }
 
    public boolean isFilterUntranslated()
    {
@@ -271,6 +283,16 @@ public class HistoryToken
    public boolean isFilterTranslated()
    {
       return filterTranslated;
+   }
+   
+   public boolean isFilterApproved()
+   {
+      return filterApproved;
+   }
+
+   public boolean isFilterRejected()
+   {
+      return filterRejected;
    }
 
    public boolean isFilterFuzzy()
@@ -294,6 +316,8 @@ public class HistoryToken
       filterHasError = false;
       filterTranslated = false;
       filterUntranslated = false;
+      filterApproved = false;
+      filterRejected = false;
       searchText = DEFAULT_SEARCH_TEXT;
    }
 
