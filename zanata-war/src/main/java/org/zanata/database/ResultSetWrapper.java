@@ -37,7 +37,7 @@ import lombok.RequiredArgsConstructor;
  *
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class ResultSetWrapper implements InvocationHandler
+class ResultSetWrapper implements InvocationHandler
 {
    public static ResultSet wrap(ResultSet resultSet, Connection connection, boolean streaming)
    {
@@ -45,9 +45,7 @@ public class ResultSetWrapper implements InvocationHandler
       {
          return resultSet;
       }
-      ResultSetWrapper h = new ResultSetWrapper(resultSet, connection, streaming);
-      ClassLoader cl = h.getClass().getClassLoader();
-      return (ResultSet) Proxy.newProxyInstance(cl, resultSet.getClass().getInterfaces(), h);
+      return ProxyUtil.newProxy(resultSet, new ResultSetWrapper(resultSet, connection, streaming));
    }
 
    @Getter

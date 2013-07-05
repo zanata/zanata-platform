@@ -99,7 +99,7 @@ public class WrappedConnectionProviderTest extends ZanataDbunitJpaTest
 
    private void concurrentResultSetNotDetected()
    {
-      Assert.fail("Failed to detect concurrent ResultSet - is WrappedConnectionProvider enabled in persistence.xml?");
+      Assert.fail("Failed to detect concurrent ResultSet - is Wrapped*ConnectionProvider enabled in persistence.xml?");
    }
 
    private void checkExceptionType(JDBCException e)

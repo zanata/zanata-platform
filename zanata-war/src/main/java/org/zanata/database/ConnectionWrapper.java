@@ -29,12 +29,14 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 import java.util.Set;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.lang.ClassUtils;
 import org.testng.internal.annotations.Sets;
 
 /**
@@ -43,7 +45,7 @@ import org.testng.internal.annotations.Sets;
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Slf4j
-public class ConnectionWrapper implements InvocationHandler
+class ConnectionWrapper implements InvocationHandler
 {
    // For reference, this is what the mysql exception looks like:
    // Streaming result set com.mysql.jdbc.RowDataDynamic@1950740 is
@@ -62,9 +64,7 @@ public class ConnectionWrapper implements InvocationHandler
       {
          return connection;
       }
-      ConnectionWrapper h = new ConnectionWrapper(connection);
-      ClassLoader cl = h.getClass().getClassLoader();
-      return (Connection) Proxy.newProxyInstance(cl, connection.getClass().getInterfaces(), h);
+      return ProxyUtil.newProxy(connection, new ConnectionWrapper(connection));
    }
 
    public static Connection wrapUnlessMysql(Connection connection) throws SQLException

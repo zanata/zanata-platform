@@ -37,7 +37,7 @@ import lombok.RequiredArgsConstructor;
  *
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class StatementWrapper implements InvocationHandler
+class StatementWrapper implements InvocationHandler
 {
    public static Statement wrap(Statement statement, Connection connection)
    {
@@ -45,9 +45,7 @@ public class StatementWrapper implements InvocationHandler
       {
          return statement;
       }
-      StatementWrapper h = new StatementWrapper(statement, connection);
-      ClassLoader cl = h.getClass().getClassLoader();
-      return (Statement) Proxy.newProxyInstance(cl, statement.getClass().getInterfaces(), h);
+      return ProxyUtil.newProxy(statement, new StatementWrapper(statement, connection));
    }
 
    private final Statement statement;
