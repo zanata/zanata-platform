@@ -12,7 +12,7 @@ public interface LanguageTeamService
 
    List<HLocale> getLanguageMemberships(String userName);
 
-   boolean joinLanguageTeam(String locale, Long personId) throws ZanataServiceException;
+   void joinOrUpdateLanguageTeam(String locale, Long personId, boolean isTranslator, boolean isReviewer, boolean isCoordinator) throws ZanataServiceException;
 
    boolean leaveLanguageTeam(String locale, Long personId);
 }

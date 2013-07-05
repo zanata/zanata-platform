@@ -51,12 +51,13 @@ public class LanguageTeamServiceImpl implements LanguageTeamService
       return personDAO.getLanguageMembershipByUsername(userName);
    }
 
-   public boolean joinLanguageTeam(String locale, Long personId) throws ZanataServiceException
+   public void joinOrUpdateLanguageTeam(String locale, Long personId, boolean isTranslator, boolean isReviewer, boolean isCoordinator) throws ZanataServiceException
    {
-      HLocale lang = localeDAO.findByLocaleId(new LocaleId(locale));
+      LocaleId localeId  = new LocaleId(locale);
       HPerson currentPerson = personDAO.findById(personId, false);
-      final boolean alreadyJoined = localeMemberDAO.findById(new HLocaleMemberPk(currentPerson, lang), false) == null;
-
+      
+      boolean alreadyJoined = localeMemberDAO.isLocaleMember(personId, localeId);
+      
       if (!alreadyJoined)
       {
          if (currentPerson.getLanguageMemberships().size() >= MAX_NUMBER_MEMBERSHIP)
@@ -65,14 +66,22 @@ public class LanguageTeamServiceImpl implements LanguageTeamService
          }
          else
          {
-            HLocaleMember localeMember = new HLocaleMember(currentPerson, lang, true, false, false);
-            lang.getMembers().add(localeMember);
-            localeMemberDAO.makePersistent(localeMember);
+            HLocale lang = localeDAO.findByLocaleId(localeId);
+            HLocaleMember newMember = new HLocaleMember(currentPerson, lang, isTranslator, isReviewer, isCoordinator);
+            lang.getMembers().add(newMember);
+            localeMemberDAO.makePersistent(newMember);
             localeMemberDAO.flush();
-            return true;
          }
       }
-      return false;
+      else
+      {
+         HLocaleMember localeMember = localeMemberDAO.findByPersonAndLocale(personId, localeId);
+         localeMember.setTranslator(isTranslator);
+         localeMember.setReviewer(isReviewer);
+         localeMember.setCoordinator(isCoordinator);
+         localeMemberDAO.makePersistent(localeMember);
+         localeMemberDAO.flush();
+      }
    }
 
    public boolean leaveLanguageTeam(String locale, Long personId)
