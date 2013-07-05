@@ -251,16 +251,4 @@
 
     </dependencies>
 
-    <profiles>
-        <profile>
-            <id>mysql</id>
-            <properties>
-                <env.dbunit.type>MYSQL</env.dbunit.type>
-                <ds.jndi.name>zanataDatasource</ds.jndi.name>
-                <ds.hibernate.dialect>org.zanata.ZanataMySQL5InnoDBDialect</ds.hibernate.dialect>
-                <ds.driver.class>com.mysql.jdbc.Driver</ds.driver.class>
-            </properties>
-        </profile>
-    </profiles>
-
 </project>
