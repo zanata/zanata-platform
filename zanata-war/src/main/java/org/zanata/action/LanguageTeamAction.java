@@ -280,23 +280,23 @@ public class LanguageTeamAction implements Serializable
    
    public void searchForTeamMembers()
    {
+      getSearchResults().clear();
       List<HPerson> results = this.personDAO.findAllContainingName( this.searchTerm );
-      
       for(HPerson person: results)
       {
          HLocaleMember localeMember = getLocaleMember(person.getId());
-         boolean selected = localeMember == null ? false : true;
+         boolean isMember = localeMember == null ? false : true;
          boolean isReviewer = false;
          boolean isTranslator = false;
          boolean isCoordinator = false;
          
-         if(selected != false)
+         if(isMember)
          {
             isTranslator = localeMember.isTranslator();
             isReviewer = localeMember.isReviewer();
             isCoordinator = localeMember.isCoordinator();
          }
-         getSearchResults().add(new SelectablePerson(person, selected, isTranslator, isReviewer, isCoordinator));
+         getSearchResults().add(new SelectablePerson(person, isMember, isTranslator, isReviewer, isCoordinator));
       }
    }
    

@@ -23,10 +23,9 @@ package org.zanata.dao;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.Criteria;
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
@@ -108,11 +107,15 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long>
    @SuppressWarnings("unchecked")
    public List<HPerson> findAllContainingName(String name)
    {
-      Query query = getSession().createQuery("from HPerson as p where p.account.username like :name or p.name like :name");
-      query.setParameter("name", "%" + name + "%");
-      query.setCacheable(false);
-      query.setComment("PersonDAO.findAllContainingName");
-      return query.list();
+      if(!StringUtils.isEmpty(name))
+      {
+         Query query = getSession().createQuery("from HPerson as p where p.account.username like :name or p.name like :name");
+         query.setParameter("name", "%" + name + "%");
+         query.setCacheable(false);
+         query.setComment("PersonDAO.findAllContainingName");
+         return query.list();
+      }
+      return new ArrayList<HPerson>();
    }
 
    public int getTotalTranslator()
