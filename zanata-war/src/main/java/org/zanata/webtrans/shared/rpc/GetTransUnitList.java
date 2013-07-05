@@ -16,7 +16,7 @@ public class GetTransUnitList extends AbstractWorkspaceAction<GetTransUnitListRe
    private int count;
    private DocumentId documentId;
    private String phrase;
-   private boolean filterTranslated, filterNeedReview, filterUntranslated, filterHasError;
+   private boolean filterTranslated, filterNeedReview, filterUntranslated, filterApproved, filterRejected, filterHasError;
    private List<ValidationId> validationIds;
    private TransUnitId targetTransUnitId;
    private boolean needReloadIndex = false;
@@ -26,7 +26,7 @@ public class GetTransUnitList extends AbstractWorkspaceAction<GetTransUnitListRe
    {
    }
 
-   private GetTransUnitList(DocumentId id, int offset, int count, String phrase, boolean filterTranslated, boolean filterNeedReview, boolean filterUntranslated, boolean filterHasError, TransUnitId targetTransUnitId, List<ValidationId> validationIds)
+   private GetTransUnitList(DocumentId id, int offset, int count, String phrase, boolean filterTranslated, boolean filterNeedReview, boolean filterUntranslated, boolean filterApproved, boolean filterRejected, boolean filterHasError, TransUnitId targetTransUnitId, List<ValidationId> validationIds)
    {
       this.documentId = id;
       this.offset = offset;
@@ -35,6 +35,8 @@ public class GetTransUnitList extends AbstractWorkspaceAction<GetTransUnitListRe
       this.filterTranslated = filterTranslated;
       this.filterNeedReview = filterNeedReview;
       this.filterUntranslated = filterUntranslated;
+      this.filterApproved = filterApproved;
+      this.filterRejected = filterRejected;
       this.filterHasError = filterHasError;
       this.targetTransUnitId = targetTransUnitId;
       this.validationIds = validationIds;
@@ -43,7 +45,7 @@ public class GetTransUnitList extends AbstractWorkspaceAction<GetTransUnitListRe
 
    public static GetTransUnitList newAction(GetTransUnitActionContext context)
    {
-      return new GetTransUnitList(context.getDocument().getId(), context.getOffset(), context.getCount(), context.getFindMessage(), context.isFilterTranslated(), context.isFilterNeedReview(), context.isFilterUntranslated(), context.isFilterHasError(), context.getTargetTransUnitId(), context.getValidationIds());
+      return new GetTransUnitList(context.getDocument().getId(), context.getOffset(), context.getCount(), context.getFindMessage(), context.isFilterTranslated(), context.isFilterNeedReview(), context.isFilterUntranslated(), context.isFilterApproved(), context.isFilterRejected(), context.isFilterHasError(), context.getTargetTransUnitId(), context.getValidationIds());
    }
 
    public boolean isNeedReloadIndex()
@@ -91,6 +93,16 @@ public class GetTransUnitList extends AbstractWorkspaceAction<GetTransUnitListRe
    {
       return filterUntranslated;
    }
+   
+   public boolean isFilterApproved()
+   {
+      return filterApproved;
+   }
+   
+   public boolean isFilterRejected()
+   {
+      return filterRejected;
+   }
 
    public boolean isFilterHasError()
    {
@@ -110,7 +122,7 @@ public class GetTransUnitList extends AbstractWorkspaceAction<GetTransUnitListRe
    public boolean isAcceptAllStatus()
    {
       //all filter options are checked or unchecked
-      return filterNeedReview == filterTranslated && filterNeedReview == filterUntranslated;
+      return filterNeedReview == filterTranslated && filterNeedReview == filterUntranslated && filterNeedReview == filterHasError && filterApproved == filterNeedReview && filterRejected == filterNeedReview;
    }
 
    @Override
@@ -125,6 +137,8 @@ public class GetTransUnitList extends AbstractWorkspaceAction<GetTransUnitListRe
             add("filterTranslated", filterTranslated).
             add("filterNeedReview", filterNeedReview).
             add("filterUntranslated", filterUntranslated).
+            add("filterApproved", filterApproved).
+            add("filterRejected", filterRejected).
             add("filterHasError", filterHasError).
             add("targetTransUnitId", targetTransUnitId).
             add("needReloadIndex", needReloadIndex).

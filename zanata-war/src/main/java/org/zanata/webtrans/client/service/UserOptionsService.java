@@ -112,10 +112,11 @@ public class UserOptionsService
       configMap.put(UserOptions.TransMemoryDisplayMode, configHolder.getState().getTransMemoryDisplayMode().name());
       configMap.put(UserOptions.DisplayTransMemory, Boolean.toString(configHolder.getState().isShowTMPanel()));
       configMap.put(UserOptions.DisplayGlossary, Boolean.toString(configHolder.getState().isShowGlossaryPanel()));
-
       configMap.put(UserOptions.TranslatedMessageFilter, Boolean.toString(configHolder.getState().isFilterByTranslated()));
       configMap.put(UserOptions.NeedReviewMessageFilter, Boolean.toString(configHolder.getState().isFilterByNeedReview()));
       configMap.put(UserOptions.UntranslatedMessageFilter, Boolean.toString(configHolder.getState().isFilterByUntranslated()));
+      configMap.put(UserOptions.ApprovedMessageFilter, Boolean.toString(configHolder.getState().isFilterByApproved()));
+      configMap.put(UserOptions.RejectedMessageFilter, Boolean.toString(configHolder.getState().isFilterByRejected()));
       configMap.put(UserOptions.Navigation, configHolder.getState().getNavOption().toString());
       configMap.put(UserOptions.ShowSaveApprovedWarning, Boolean.toString(configHolder.getState().isShowSaveApprovedWarning()));
 
@@ -148,6 +149,8 @@ public class UserOptionsService
       configHolder.setFilterByTranslated(UserConfigHolder.DEFAULT_FILTER);
       configHolder.setFilterByNeedReview(UserConfigHolder.DEFAULT_FILTER);
       configHolder.setFilterByUntranslated(UserConfigHolder.DEFAULT_FILTER);
+      configHolder.setFilterByApproved(UserConfigHolder.DEFAULT_FILTER);
+      configHolder.setFilterByRejected(UserConfigHolder.DEFAULT_FILTER);
       configHolder.setFilterByHasError(UserConfigHolder.DEFAULT_FILTER);
       configHolder.setEnabledValidationIds(new ArrayList<ValidationId>());
       configHolder.setNavOption(NavOption.FUZZY_UNTRANSLATED);

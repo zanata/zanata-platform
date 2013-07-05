@@ -69,6 +69,8 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String>
       configHolder.setFilterByUntranslated(newHistoryToken.isFilterUntranslated());
       configHolder.setFilterByNeedReview(newHistoryToken.isFilterFuzzy());
       configHolder.setFilterByTranslated(newHistoryToken.isFilterTranslated());
+      configHolder.setFilterByApproved(newHistoryToken.isFilterApproved());
+      configHolder.setFilterByRejected(newHistoryToken.isFilterRejected());
       configHolder.setFilterByHasError(newHistoryToken.isFilterHasError());
 
       DocumentId documentId = documentListPresenter.getDocumentId(newHistoryToken.getDocumentPath());
@@ -155,12 +157,14 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String>
       if (!equal(token.isFilterUntranslated(), currentHistoryState.isFilterUntranslated())
             || !equal(token.isFilterFuzzy(), currentHistoryState.isFilterFuzzy())
             || !equal(token.isFilterTranslated(), currentHistoryState.isFilterTranslated())
+            || !equal(token.isFilterApproved(), currentHistoryState.isFilterApproved())
+            || !equal(token.isFilterRejected(), currentHistoryState.isFilterRejected())
             || !equal(token.isFilterHasError(), currentHistoryState.isFilterHasError()))
       {
          Log.info("[gwt-history] message filter option has changed");
 
          eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
-         eventBus.fireEvent(new FilterViewEvent(token.isFilterTranslated(), token.isFilterFuzzy(), token.isFilterUntranslated(), token.isFilterHasError(), false, configHolder.getState().getEnabledValidationIds()));
+         eventBus.fireEvent(new FilterViewEvent(token.isFilterTranslated(), token.isFilterFuzzy(), token.isFilterUntranslated(), token.isFilterApproved(), token.isFilterRejected(), token.isFilterHasError(), false, configHolder.getState().getEnabledValidationIds()));
       }
    }
 

@@ -1,5 +1,8 @@
 # Zanata change log summary
 
+## zanata-3.1.0
+ * Add descriptions on project type selectors
+
 ## zanata-3.0.0
  * Allow adapter parameters to be set on source document upload
  * Add attention key shortcut: Alt+X

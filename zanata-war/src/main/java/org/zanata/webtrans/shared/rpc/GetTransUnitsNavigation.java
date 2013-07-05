@@ -28,25 +28,27 @@ public class GetTransUnitsNavigation
 {
    private Long id;
    private String phrase;
-   private boolean isFuzzyState, isNewState, isApprovedState;
+   private boolean isFuzzyState, isNewState, isTranslatedState, isApprovedState, isRejectedState;
 
    @SuppressWarnings("unused")
    private GetTransUnitsNavigation()
    {
    }
 
-   public GetTransUnitsNavigation(Long id, String phrase, boolean isNewState, boolean isFuzzyState, boolean isApprovedState)
+   public GetTransUnitsNavigation(Long id, String phrase, boolean isNewState, boolean isFuzzyState, boolean isTranslatedState, boolean isApprovedState, boolean isRejectedState)
    {
       this.id = id;
       this.phrase = phrase;
       this.isNewState = isNewState;
       this.isFuzzyState = isFuzzyState;
+      this.isTranslatedState = isTranslatedState;
       this.isApprovedState = isApprovedState;
+      this.isRejectedState = isRejectedState;
    }
 
    public static GetTransUnitsNavigation newAction(GetTransUnitActionContext context)
    {
-      return new GetTransUnitsNavigation(context.getDocument().getId().getId(), context.getFindMessage(), context.isFilterUntranslated(), context.isFilterNeedReview(), context.isFilterTranslated());
+      return new GetTransUnitsNavigation(context.getDocument().getId().getId(), context.getFindMessage(), context.isFilterUntranslated(), context.isFilterNeedReview(), context.isFilterTranslated(), context.isFilterApproved(), context.isFilterRejected());
    }
 
    public Long getId()
@@ -69,9 +71,19 @@ public class GetTransUnitsNavigation
       return isNewState;
    }
 
+   public boolean isTranslatedState()
+   {
+      return isTranslatedState;
+   }
+   
    public boolean isApprovedState()
    {
       return isApprovedState;
+   }
+   
+   public boolean isRejectedState()
+   {
+      return isRejectedState;
    }
 
    @Override
@@ -83,7 +95,9 @@ public class GetTransUnitsNavigation
             add("phrase", phrase).
             add("isFuzzyState", isFuzzyState).
             add("isNewState", isNewState).
+            add("isTranslatedState", isTranslatedState).
             add("isApprovedState", isApprovedState).
+            add("isRejectedState", isRejectedState).
             toString();
       // @formatter:on
    }

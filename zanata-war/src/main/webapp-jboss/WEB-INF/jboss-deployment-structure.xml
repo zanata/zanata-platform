@@ -20,11 +20,9 @@
           <module name="org.dom4j" />
           <module name="org.hibernate" />
           <module name="org.hibernate.validator" />
-<!--           <module name="org.jboss.as.jpa.hibernate" /> -->
           <module name="org.jboss.security.negotiation" />
           <module name="org.slf4j" />
-          <module name="org.zanata.settings" />
-            <module name="com.h2database.h2" />
+          <module name="com.h2database.h2" />
         </dependencies>
     </deployment>
 </jboss-deployment-structure>

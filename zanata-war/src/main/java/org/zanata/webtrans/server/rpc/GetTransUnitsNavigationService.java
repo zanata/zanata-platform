@@ -53,7 +53,7 @@ public class GetTransUnitsNavigationService
 
    protected GetTransUnitsNavigationResult getNavigationIndexes(GetTransUnitsNavigation action, HLocale hLocale)
    {
-      FilterConstraints filterConstraints = FilterConstraints.filterBy(action.getPhrase()).filterSource().filterTarget().filterByStatus(action.isNewState(), action.isFuzzyState(), action.isApprovedState());
+      FilterConstraints filterConstraints = FilterConstraints.filterBy(action.getPhrase()).filterSource().filterTarget().filterByStatus(action.isNewState(), action.isFuzzyState(), action.isTranslatedState(), action.isApprovedState(), action.isRejectedState());
       List<TransUnitId> idIndexList = new ArrayList<TransUnitId>();
       Map<TransUnitId, ContentState> transIdStateMap = new HashMap<TransUnitId, ContentState>();
 
