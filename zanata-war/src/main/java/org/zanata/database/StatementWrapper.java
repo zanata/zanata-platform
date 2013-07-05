@@ -39,17 +39,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 class StatementWrapper implements InvocationHandler
 {
-   public static Statement wrap(Statement statement, Connection connection)
+   public static Statement wrap(Statement statement, Connection connectionProxy)
    {
       if (Proxy.isProxyClass(statement.getClass()) && Proxy.getInvocationHandler(statement) instanceof StatementWrapper)
       {
          return statement;
       }
-      return ProxyUtil.newProxy(statement, new StatementWrapper(statement, connection));
+      return ProxyUtil.newProxy(statement, new StatementWrapper(statement, connectionProxy));
    }
 
    private final Statement statement;
-   private final Connection connection;
+   private final Connection connectionProxy;
    private boolean makeStreamingResultSet;
 
    @Override
@@ -57,7 +57,7 @@ class StatementWrapper implements InvocationHandler
    {
       if (method.getName().equals("getConnection"))
       {
-         return connection;
+         return connectionProxy;
       }
       if (method.getName().equals("toString"))
       {
@@ -75,8 +75,8 @@ class StatementWrapper implements InvocationHandler
          if (result instanceof ResultSet)
          {
             ResultSet resultSet = (ResultSet) result;
-            ConnectionWrapper connectionWrapper = (ConnectionWrapper) Proxy.getInvocationHandler(connection);
-            ResultSet rsProxy = ResultSetWrapper.wrap(resultSet, connection, makeStreamingResultSet);
+            ConnectionWrapper connectionWrapper = (ConnectionWrapper) Proxy.getInvocationHandler(connectionProxy);
+            ResultSet rsProxy = ResultSetWrapper.wrap(resultSet, (Statement) proxy, connectionProxy, makeStreamingResultSet);
             ResultSetWrapper rsWrap = (ResultSetWrapper) Proxy.getInvocationHandler(rsProxy);
             if (makeStreamingResultSet)
             {
@@ -90,7 +90,7 @@ class StatementWrapper implements InvocationHandler
          }
          else if (method.getName().startsWith("execute"))
          {
-            ConnectionWrapper connectionWrapper = (ConnectionWrapper) Proxy.getInvocationHandler(connection);
+            ConnectionWrapper connectionWrapper = (ConnectionWrapper) Proxy.getInvocationHandler(connectionProxy);
             connectionWrapper.executed();
          }
          return result;

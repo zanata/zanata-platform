@@ -27,6 +27,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.Statement;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -39,18 +40,19 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 class ResultSetWrapper implements InvocationHandler
 {
-   public static ResultSet wrap(ResultSet resultSet, Connection connection, boolean streaming)
+   public static ResultSet wrap(ResultSet resultSet, Statement statementProxy, Connection connectionProxy, boolean streaming)
    {
       if (Proxy.isProxyClass(resultSet.getClass()) && Proxy.getInvocationHandler(resultSet) instanceof ResultSetWrapper)
       {
          return resultSet;
       }
-      return ProxyUtil.newProxy(resultSet, new ResultSetWrapper(resultSet, connection, streaming));
+      return ProxyUtil.newProxy(resultSet, new ResultSetWrapper(resultSet, statementProxy, connectionProxy, streaming));
    }
 
    @Getter
    private final ResultSet resultSet;
-   private final Connection connection;
+   private final Statement statementProxy;
+   private final Connection connectionProxy;
    private final boolean streaming;
    @Getter
    private final Throwable throwable = new Throwable("Unclosed ResultSet was created here");
@@ -58,6 +60,10 @@ class ResultSetWrapper implements InvocationHandler
    @Override
    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
    {
+      if (method.getName().equals("getStatement"))
+      {
+         return statementProxy;
+      }
       if (method.getName().equals("toString"))
       {
          return "ResultSetWrapper->"+resultSet.toString();
@@ -67,7 +73,7 @@ class ResultSetWrapper implements InvocationHandler
          Object result = method.invoke(resultSet, args);
          if (method.getName().equals("close"))
          {
-            ConnectionWrapper connectionWrapper = (ConnectionWrapper) Proxy.getInvocationHandler(connection);
+            ConnectionWrapper connectionWrapper = (ConnectionWrapper) Proxy.getInvocationHandler(connectionProxy);
             if (streaming)
             {
                connectionWrapper.streamingResultSetClosed();
