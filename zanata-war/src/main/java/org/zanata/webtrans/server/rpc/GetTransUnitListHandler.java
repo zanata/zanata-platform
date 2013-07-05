@@ -35,6 +35,7 @@ import org.zanata.dao.TextFlowDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
+import org.zanata.search.ActiveStates;
 import org.zanata.search.FilterConstraints;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
@@ -136,9 +137,17 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       else
       {
          // @formatter:off
-         FilterConstraints constraints = FilterConstraints
-               .filterBy(action.getPhrase()).ignoreCase().filterSource().filterTarget()
-               .filterByStatus(action.isFilterUntranslated(), action.isFilterNeedReview(), action.isFilterTranslated(), action.isFilterApproved(), action.isFilterRejected());
+         FilterConstraints constraints = FilterConstraints.builder()
+               .filterBy(action.getPhrase())
+               .caseSensitive(false).checkInSource(true).checkInTarget(true)
+               .includeStates(ActiveStates.builder()
+                     .setNewOn(action.isFilterUntranslated())
+                     .setFuzzyOn(action.isFilterNeedReview())
+                     .setTranslatedOn(action.isFilterTranslated())
+                     .setApprovedOn(action.isFilterApproved())
+                     .setRejectedOn(action.isFilterRejected())
+                     .build())
+               .build();
          // @formatter:on
          log.debug("Fetch TransUnits filtered by status and/or search: {}", constraints);
          if (!hasValidationFilter(action))

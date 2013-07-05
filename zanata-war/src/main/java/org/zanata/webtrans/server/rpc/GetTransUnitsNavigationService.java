@@ -35,6 +35,7 @@ import org.zanata.dao.TextFlowDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.search.ActiveStates;
 import org.zanata.search.FilterConstraints;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
@@ -53,7 +54,18 @@ public class GetTransUnitsNavigationService
 
    protected GetTransUnitsNavigationResult getNavigationIndexes(GetTransUnitsNavigation action, HLocale hLocale)
    {
-      FilterConstraints filterConstraints = FilterConstraints.filterBy(action.getPhrase()).filterSource().filterTarget().filterByStatus(action.isNewState(), action.isFuzzyState(), action.isTranslatedState(), action.isApprovedState(), action.isRejectedState());
+      FilterConstraints filterConstraints = FilterConstraints.builder()
+            .filterBy(action.getPhrase())
+            .checkInSource(true).checkInTarget(true)
+            .includeStates(ActiveStates.builder()
+                  .setNewOn(action.isNewState())
+                  .setFuzzyOn(action.isFuzzyState())
+                  .setTranslatedOn(action.isTranslatedState())
+                  .setApprovedOn(action.isApprovedState())
+                  .setRejectedOn(action.isRejectedState())
+                  .build())
+            .build();
+
       List<TransUnitId> idIndexList = new ArrayList<TransUnitId>();
       Map<TransUnitId, ContentState> transIdStateMap = new HashMap<TransUnitId, ContentState>();
 

@@ -16,6 +16,7 @@ public class GetTransUnitList extends AbstractWorkspaceAction<GetTransUnitListRe
    private int count;
    private DocumentId documentId;
    private String phrase;
+   // TODO give this thing an ActiveStates
    private boolean filterTranslated, filterNeedReview, filterUntranslated, filterApproved, filterRejected, filterHasError;
    private List<ValidationId> validationIds;
    private TransUnitId targetTransUnitId;

@@ -28,6 +28,8 @@ public class GetTransUnitsNavigation
 {
    private Long id;
    private String phrase;
+
+   // FIXME use state object
    private boolean isFuzzyState, isNewState, isTranslatedState, isApprovedState, isRejectedState;
 
    @SuppressWarnings("unused")

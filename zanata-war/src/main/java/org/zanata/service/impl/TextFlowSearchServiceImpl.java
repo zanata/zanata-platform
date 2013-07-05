@@ -57,6 +57,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.search.ActiveStates;
 import org.zanata.search.FilterConstraintToQuery;
 import org.zanata.search.FilterConstraints;
 import org.zanata.service.LocaleService;
@@ -139,7 +140,8 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
          return Collections.emptyList();
       }
 
-      if (!constraints.isNewIncluded() && !constraints.isFuzzyIncluded() && !constraints.isTranslatedIncluded())
+      ActiveStates includedStates = constraints.getIncludedStates();
+      if (!includedStates.isNewOn() && !includedStates.isFuzzyOn() && !includedStates.isTranslatedOn())
       {
          // including nothing
          return Collections.emptyList();
@@ -298,19 +300,19 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
          }
          targetQuery.add(localeQuery, Occur.MUST);
 
-         if (!constraints.isTranslatedIncluded())
+         if (!constraints.getIncludedStates().isTranslatedOn())
          {
             TermQuery approvedStateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.Approved.toString()));
             targetQuery.add(approvedStateQuery, Occur.MUST_NOT);
          }
 
-         if (!constraints.isFuzzyIncluded())
+         if (!constraints.getIncludedStates().isFuzzyOn())
          {
             TermQuery approvedStateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.NeedReview.toString()));
             targetQuery.add(approvedStateQuery, Occur.MUST_NOT);
          }
 
-         if (!constraints.isNewIncluded())
+         if (!constraints.getIncludedStates().isNewOn())
          {
             TermQuery approvedStateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.New.toString()));
             targetQuery.add(approvedStateQuery, Occur.MUST_NOT);

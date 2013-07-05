@@ -41,6 +41,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
+import org.zanata.search.ActiveStates;
 import org.zanata.search.FilterConstraintToQuery;
 import org.zanata.search.FilterConstraints;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -70,7 +71,6 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       super(HTextFlow.class, session);
    }
 
-   @SuppressWarnings("unchecked")
    public OpenBitSet findIdsWithTranslations(LocaleId locale)
    {
       Query q = getSession().getNamedQuery(HTextFlow.QUERY_TRANSLATED_TEXTFLOWIDS);
@@ -169,11 +169,11 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
     * @param alias HTextFlowTarget alias
     * @return '1' if accept all status or a SQL condition clause with target content state conditions in parentheses '()' joined by 'or'
     */
-   protected static String buildContentStateCondition(FilterConstraints filterConstraints, String alias)
+   protected static String buildContentStateCondition(FilterConstraints constraints, String alias)
    {
-      
-      if (filterConstraints.isTranslatedIncluded() == filterConstraints.isFuzzyIncluded() 
-            && filterConstraints.isTranslatedIncluded() == filterConstraints.isNewIncluded())
+
+      ActiveStates includedStates = constraints.getIncludedStates();
+      if (includedStates.hasAllStates() || includedStates.hasNoStates())
       {
          return "1";
       }
@@ -181,17 +181,17 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       builder.append("(");
       List<String> conditions = Lists.newArrayList();
       final String column = alias + ".state";
-      if (filterConstraints.isTranslatedIncluded())
+      if (constraints.getIncludedStates().isTranslatedOn())
       {
          conditions.add(column + "=2"); // Translated
          conditions.add(column + "=3"); // Approved
       }
-      if (filterConstraints.isFuzzyIncluded())
+      if (constraints.getIncludedStates().isFuzzyOn())
       {
          conditions.add(column + "=1"); // Fuzzy
          conditions.add(column + "=4"); // Rejected
       }
-      if (filterConstraints.isNewIncluded())
+      if (constraints.getIncludedStates().isNewOn())
       {
          conditions.add(column + "=0 or " + column + " is null");
       }
