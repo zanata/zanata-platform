@@ -26,6 +26,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.zanata.page.account.RegisterPage;
 import org.zanata.page.administration.AdministrationPage;
 import org.zanata.page.groups.VersionGroupsPage;
 import org.zanata.page.projects.ProjectsPage;
@@ -107,5 +108,13 @@ public class HomePage extends AbstractPage
       WebElement adminLink = getDriver().findElement(By.id("Administration"));
       adminLink.click();
       return new AdministrationPage(getDriver());
+   }
+
+   public RegisterPage goToRegistration()
+   {
+      getDriver().findElement(By.linkText("More")).click();
+      WebElement registerLink = getDriver().findElement(By.id("Register"));
+      registerLink.click();
+      return new RegisterPage(getDriver());
    }
 }
