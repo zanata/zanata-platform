@@ -20,6 +20,9 @@
  */
 package org.zanata.page.projects;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -40,6 +43,18 @@ public class CreateVersionPage extends AbstractPage
    @FindBy(id = "iterationForm:save")
    private WebElement saveButton;
 
+   private static final Map<String, String> projectTypeOptions = new HashMap<String, String>();
+   static
+   {
+      projectTypeOptions.put("File", "File. For plain text, LibreOffice, InDesign.");
+      projectTypeOptions.put("Gettext", "Gettext. For gettext software strings.");
+      projectTypeOptions.put("Podir", "Podir. For publican/docbook strings.");
+      projectTypeOptions.put("Properties", "Properties. For Java properties files.");
+      projectTypeOptions.put("Utf8Properties", "Utf8Properties. For UTF8-encoded Java properties.");
+      projectTypeOptions.put("Xliff", "Xliff. For supported XLIFF files.");
+      projectTypeOptions.put("Xml", "Xml. For XML from the Zanata REST API.");
+   }
+
    public CreateVersionPage(final WebDriver driver)
    {
       super(driver);
@@ -53,7 +68,7 @@ public class CreateVersionPage extends AbstractPage
 
    public CreateVersionPage selectProjectType(String projectType)
    {
-      new Select(projectTypeSelection).selectByVisibleText(projectType);
+      new Select(projectTypeSelection).selectByVisibleText(projectTypeOptions.get(projectType));
       return this;
    }
 
