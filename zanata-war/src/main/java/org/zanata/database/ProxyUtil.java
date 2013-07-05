@@ -36,7 +36,7 @@ class ProxyUtil
 
    public static <T> T newProxy(T object, InvocationHandler handler)
    {
-      ClassLoader cl = handler.getClass().getClassLoader();
+      ClassLoader cl = object.getClass().getClassLoader();
       Class<?> clazz = object.getClass();
       List<Class<?>> allInterfaces = ClassUtils.getAllInterfaces(clazz);
       Class<?>[] interfaces = allInterfaces.toArray(new Class<?>[0]);
