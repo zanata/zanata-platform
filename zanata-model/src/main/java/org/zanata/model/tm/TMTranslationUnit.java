@@ -20,6 +20,7 @@
  */
 package org.zanata.model.tm;
 
+import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -46,7 +47,7 @@ import lombok.ToString;
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Entity
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true, of = {"transUnitId", "sourceLanguage", "translationMemory"})
 @ToString(exclude = "translationMemory")
 @Access(AccessType.FIELD)
 public class TMTranslationUnit extends ModelEntityBase
@@ -70,5 +71,5 @@ public class TMTranslationUnit extends ModelEntityBase
               joinColumns = @JoinColumn(name = "trans_unit_id"),
               inverseJoinColumns = @JoinColumn(name = "trans_unit_variant_id"))
    @MapKey(name = "language")
-   private Map<String, TMTransUnitVariant> transUnitVariants;
+   private Map<String, TMTransUnitVariant> transUnitVariants = new HashMap<String, TMTransUnitVariant>();
 }

@@ -20,21 +20,18 @@
  */
 package org.zanata.model.tm;
 
+import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
-import org.zanata.model.SlugContainer;
-import org.zanata.model.HasSlug;
-import org.zanata.model.ModelEntityBase;
+import org.zanata.model.SlugEntityBase;
 
 import lombok.AccessLevel;
-import lombok.Delegate;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -46,20 +43,17 @@ import lombok.ToString;
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Entity
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true, of = {"name"})
 @ToString(exclude = "translationUnits")
 @Access(AccessType.FIELD)
-public class TransMemory extends ModelEntityBase implements HasSlug
+public class TransMemory extends SlugEntityBase
 {
    @Getter @Setter
    @Column
    private String name;
 
-   @Setter(AccessLevel.PROTECTED)
+   @Getter @Setter(AccessLevel.PROTECTED)
    @OneToMany(cascade = CascadeType.ALL, mappedBy = "translationMemory")
-   private Set<TMTranslationUnit> translationUnits;
+   private Set<TMTranslationUnit> translationUnits = new HashSet<TMTranslationUnit>();
 
-   @Embedded
-   @Delegate
-   private SlugContainer slugContainer;
 }

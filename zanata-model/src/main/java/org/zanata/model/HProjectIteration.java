@@ -62,6 +62,7 @@ import org.hibernate.search.annotations.Indexed;
 import javax.validation.constraints.NotNull;
 import org.jboss.seam.annotations.security.Restrict;
 import org.zanata.annotation.EntityRestrict;
+import org.zanata.common.EntityStatus;
 import org.zanata.common.ProjectType;
 import org.zanata.hibernate.search.GroupSearchBridge;
 import org.zanata.model.type.EntityStatusType;
@@ -83,7 +84,7 @@ import com.google.common.collect.ImmutableList;
 @Setter
 @NoArgsConstructor
 @ToString(callSuper = true, of = {"project"})
-public class HProjectIteration extends SlugEntityBase implements Iterable<DocumentWithId>
+public class HProjectIteration extends SlugEntityBase implements Iterable<DocumentWithId>, HasStatus
 {
 
    private static final long serialVersionUID = 182037127575991478L;
@@ -103,6 +104,7 @@ public class HProjectIteration extends SlugEntityBase implements Iterable<Docume
 
    private ProjectType projectType;
    private Boolean requireTranslationReview = false;
+   private EntityStatus status = EntityStatus.ACTIVE;
 
    public boolean getOverrideLocales()
    {
@@ -213,5 +215,13 @@ public class HProjectIteration extends SlugEntityBase implements Iterable<Docume
    public Iterator<DocumentWithId> iterator()
    {
       return ImmutableList.<DocumentWithId>copyOf(getDocuments().values()).iterator();
+   }
+
+   @Type(type = "entityStatus")
+   @NotNull
+   @Override
+   public EntityStatus getStatus()
+   {
+      return status;
    }
 }

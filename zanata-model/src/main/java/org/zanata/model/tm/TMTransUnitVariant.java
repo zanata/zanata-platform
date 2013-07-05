@@ -27,8 +27,11 @@ import org.zanata.model.ModelEntityBase;
 import org.zanata.util.HashUtil;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -41,6 +44,7 @@ import lombok.ToString;
 @Entity
 @EqualsAndHashCode(exclude = "content")
 @ToString(exclude = "contentHash")
+@NoArgsConstructor
 public class TMTransUnitVariant extends ModelEntityBase
 {
    @Getter @Setter
@@ -54,6 +58,12 @@ public class TMTransUnitVariant extends ModelEntityBase
    @Getter @Setter(AccessLevel.PROTECTED)
    @Column(name ="content_hash", nullable = false)
    private String contentHash;
+
+   public TMTransUnitVariant(String language, String content)
+   {
+      this.language = language;
+      this.content = content;
+   }
 
    public void setContent(String content)
    {

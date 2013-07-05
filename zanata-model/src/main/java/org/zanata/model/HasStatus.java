@@ -20,34 +20,12 @@
  */
 package org.zanata.model;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.Embeddable;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
-import org.hibernate.annotations.NaturalId;
-import org.hibernate.search.annotations.Field;
-import org.zanata.model.validator.Slug;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.zanata.common.EntityStatus;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Embeddable
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
-@Access(AccessType.FIELD)
-public class SlugContainer implements HasSlug
+public interface HasStatus
 {
-   @NaturalId
-   @Size(min = 1, max = 40)
-   @Slug
-   @NotNull
-   @Field
-   private String slug;
+   EntityStatus getStatus();
 }
