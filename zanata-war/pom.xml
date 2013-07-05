@@ -489,53 +489,6 @@
 				</configuration>
 			</plugin>
 
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>hibernate3-maven-plugin</artifactId>
-        <version>2.2</version>
-        <configuration>
-          <components>
-            <component>
-              <name>hbm2ddl</name>
-              <implementation>jpaconfiguration</implementation>
-            </component>
-          </components>
-          <componentProperties>
-            <export>false</export>
-            <update>false</update>
-            <drop>false</drop>
-            <create>false</create>
-            <outputfilename>schema.ddl</outputfilename>
-            <persistenceunit>zanataTestDatasourcePU</persistenceunit>
-          </componentProperties>
-        </configuration>
-<!--
-        <executions>
-          <execution>
-            <phase>process-test-classes</phase>
-            <goals>
-              <goal>hbm2ddl</goal>
-            </goals>
-          </execution>
-        </executions>
--->
-        <dependencies>
-<!--
-          <dependency>
-                <groupId>mysql</groupId>
-                <artifactId>mysql-connector-java</artifactId>
-                <version>5.1.9</version>
-          </dependency>
- -->
-          <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>1.3.170</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-
-
 			<!--
 				This is to make the GWT plugin happy (http://code.google.com/p/google-web-toolkit/issues/detail?id=4600).
 				Taken from https://issues.sonatype.org/browse/MNGECLIPSE-864?focusedCommentId=148457&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-148457
@@ -905,7 +858,7 @@
 
         <profile>
             <!-- This profile tells GWT to use an alternative GWT module which has
-                    only one permutation, and to compile in draft mode -->
+                    only two permutations, and to compile in draft mode -->
             <id>chromefirefox</id>
             <properties>
                 <zanata.gwt.module>org.zanata.webtrans.ApplicationChromeFirefox</zanata.gwt.module>
@@ -923,56 +876,6 @@
                 </plugins>
             </build>
         </profile>
-
-		<profile>
-			<id>eclipse</id>
-			<build>
-				<finalName>zanata-dev</finalName>
-				<resources>
-					<resource>
-						<directory>src/main/resources-dev</directory>
-						<filtering>false</filtering>
-					</resource>
-				</resources>
-
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-eclipse-plugin</artifactId>
-                  <version>2.9</version>
-						<configuration>
-							<wtpversion>2.0</wtpversion>
-
-							<additionalBuildcommands>
-								<buildCommand>
-									<name>com.google.gdt.eclipse.core.webAppProjectValidator</name>
-								</buildCommand>
-								<buildCommand>
-									<name>com.google.gwt.eclipse.core.gwtProjectValidator</name>
-								</buildCommand>
-							</additionalBuildcommands>
-
-							<additionalProjectnatures>
-								<projectnature>com.google.gwt.eclipse.core.gwtNature</projectnature>
-								<projectnature>com.google.gdt.eclipse.core.webAppNature</projectnature>
-							</additionalProjectnatures>
-
-							<classpathContainers>
-								<classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
-								<classpathContainer>com.google.gwt.eclipse.core.GWT_CONTAINER</classpathContainer>
-							</classpathContainers>
-							<excludes>
-								<!-- These are provided by the GWT container -->
-								<exclude>com.google.gwt:gwt-servlet</exclude>
-								<exclude>com.google.gwt:gwt-user</exclude>
-							</excludes>
-						</configuration>
-					</plugin>
-
-				</plugins>
-
-			</build>
-		</profile>
 
         <profile>
             <id>it-coverage</id>
