@@ -2,6 +2,7 @@ package org.zanata.webtrans.shared.rpc;
 
 import java.util.List;
 
+import org.zanata.search.ActiveStates;
 import org.zanata.webtrans.client.service.GetTransUnitActionContext;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -16,37 +17,37 @@ public class GetTransUnitList extends AbstractWorkspaceAction<GetTransUnitListRe
    private int count;
    private DocumentId documentId;
    private String phrase;
-   // TODO give this thing an ActiveStates
-   private boolean filterTranslated, filterNeedReview, filterUntranslated, filterApproved, filterRejected, filterHasError;
+   private ActiveStates filterStates;
+   private boolean filterHasError;
    private List<ValidationId> validationIds;
    private TransUnitId targetTransUnitId;
    private boolean needReloadIndex = false;
 
-   @SuppressWarnings("unused")
    private GetTransUnitList()
    {
    }
 
-   private GetTransUnitList(DocumentId id, int offset, int count, String phrase, boolean filterTranslated, boolean filterNeedReview, boolean filterUntranslated, boolean filterApproved, boolean filterRejected, boolean filterHasError, TransUnitId targetTransUnitId, List<ValidationId> validationIds)
+   private GetTransUnitList(GetTransUnitActionContext context)
    {
-      this.documentId = id;
-      this.offset = offset;
-      this.count = count;
-      this.phrase = phrase;
-      this.filterTranslated = filterTranslated;
-      this.filterNeedReview = filterNeedReview;
-      this.filterUntranslated = filterUntranslated;
-      this.filterApproved = filterApproved;
-      this.filterRejected = filterRejected;
-      this.filterHasError = filterHasError;
-      this.targetTransUnitId = targetTransUnitId;
-      this.validationIds = validationIds;
-
+      documentId = context.getDocument().getId();
+      offset = context.getOffset();
+      count = context.getCount();
+      phrase = context.getFindMessage();
+      filterStates = ActiveStates.builder()
+            .setNewOn(context.isFilterUntranslated())
+            .setFuzzyOn(context.isFilterNeedReview())
+            .setTranslatedOn(context.isFilterTranslated())
+            .setApprovedOn(context.isFilterApproved())
+            .setRejectedOn(context.isFilterRejected())
+            .build();
+      filterHasError = context.isFilterHasError();
+      targetTransUnitId = context.getTargetTransUnitId();
+      validationIds = context.getValidationIds();
    }
 
    public static GetTransUnitList newAction(GetTransUnitActionContext context)
    {
-      return new GetTransUnitList(context.getDocument().getId(), context.getOffset(), context.getCount(), context.getFindMessage(), context.isFilterTranslated(), context.isFilterNeedReview(), context.isFilterUntranslated(), context.isFilterApproved(), context.isFilterRejected(), context.isFilterHasError(), context.getTargetTransUnitId(), context.getValidationIds());
+      return new GetTransUnitList(context);
    }
 
    public boolean isNeedReloadIndex()
@@ -80,29 +81,34 @@ public class GetTransUnitList extends AbstractWorkspaceAction<GetTransUnitListRe
       return this.phrase;
    }
 
+   public ActiveStates getFilterStates()
+   {
+      return filterStates;
+   }
+
    public boolean isFilterTranslated()
    {
-      return filterTranslated;
+      return filterStates.isTranslatedOn();
    }
 
    public boolean isFilterNeedReview()
    {
-      return filterNeedReview;
+      return filterStates.isFuzzyOn();
    }
 
    public boolean isFilterUntranslated()
    {
-      return filterUntranslated;
+      return filterStates.isNewOn();
    }
    
    public boolean isFilterApproved()
    {
-      return filterApproved;
+      return filterStates.isApprovedOn();
    }
    
    public boolean isFilterRejected()
    {
-      return filterRejected;
+      return filterStates.isRejectedOn();
    }
 
    public boolean isFilterHasError()
@@ -123,7 +129,7 @@ public class GetTransUnitList extends AbstractWorkspaceAction<GetTransUnitListRe
    public boolean isAcceptAllStatus()
    {
       //all filter options are checked or unchecked
-      return filterNeedReview == filterTranslated && filterNeedReview == filterUntranslated && filterNeedReview == filterHasError && filterApproved == filterNeedReview && filterRejected == filterNeedReview;
+      return filterStates.hasNoStates() && !filterHasError || filterStates.hasAllStates() && filterHasError;
    }
 
    @Override
@@ -135,11 +141,7 @@ public class GetTransUnitList extends AbstractWorkspaceAction<GetTransUnitListRe
             add("count", count).
             add("documentId", documentId).
             add("phrase", phrase).
-            add("filterTranslated", filterTranslated).
-            add("filterNeedReview", filterNeedReview).
-            add("filterUntranslated", filterUntranslated).
-            add("filterApproved", filterApproved).
-            add("filterRejected", filterRejected).
+            add("filterStates", filterStates).
             add("filterHasError", filterHasError).
             add("targetTransUnitId", targetTransUnitId).
             add("needReloadIndex", needReloadIndex).
