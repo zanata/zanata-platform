@@ -52,8 +52,11 @@ public class TransUnitTransformer
 
    public TransUnit transform(HTextFlow hTextFlow, HLocale hLocale)
    {
-      // TODO debt: we iterate over a collection of text flow and call this method, if target is not eagerly loaded it will cause hibernate n+1.
-      // We may want to have a method as transform(Collection<HTextFlow> hTextFlows, HLocale hLocale) and use query internally or change caller code to always eager load targets.
+      // TODO debt: we iterate over a collection of text flow and call this
+      // method, if target is not eagerly loaded it will cause hibernate n+1.
+      // We may want to have a method as transform(Collection<HTextFlow>
+      // hTextFlows, HLocale hLocale) and use query internally or change caller
+      // code to always eager load targets.
       HTextFlowTarget target = hTextFlow.getTargets().get(hLocale.getId());
 
       return transform(hTextFlow, target, hLocale);
