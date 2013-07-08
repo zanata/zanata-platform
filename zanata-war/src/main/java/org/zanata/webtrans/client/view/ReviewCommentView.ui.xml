@@ -23,6 +23,13 @@
              xmlns:g='urn:import:com.google.gwt.user.client.ui'
              xmlns:z='urn:import:org.zanata.webtrans.client.ui'>
     <ui:with field="messages" type="org.zanata.webtrans.client.resources.WebTransMessages"/>
+    <ui:style field="style" type="org.zanata.webtrans.client.view.ReviewCommentView.Styles">
+        .obsoleteComment
+        {
+            font-style: italic;
+            text-decoration: line-through;
+        }
+    </ui:style>
 
     <g:HTMLPanel width="800px" height="600px">
         <g:ScrollPanel>

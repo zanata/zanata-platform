@@ -26,12 +26,15 @@ import org.zanata.webtrans.client.events.ReviewCommentEventHandler;
 import org.zanata.webtrans.client.rpc.AbstractAsyncCallback;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.GetTransUnitActionContextHolder;
+import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.client.view.ReviewCommentDisplay;
+import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentAction;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentResult;
 import org.zanata.webtrans.shared.rpc.GetReviewCommentsAction;
 import org.zanata.webtrans.shared.rpc.GetReviewCommentsResult;
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -48,16 +51,18 @@ public class ReviewCommentPresenter extends WidgetPresenter<ReviewCommentDisplay
    private final CachingDispatchAsync dispatcher;
    private final ReviewCommentDataProvider dataProvider;
    private final GetTransUnitActionContextHolder contextHolder;
+   private final NavigationService navigationService;
    private TransUnitId transUnitId;
 
    @Inject
-   public ReviewCommentPresenter(ReviewCommentDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, ReviewCommentDataProvider dataProvider, GetTransUnitActionContextHolder contextHolder)
+   public ReviewCommentPresenter(ReviewCommentDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, ReviewCommentDataProvider dataProvider, GetTransUnitActionContextHolder contextHolder, NavigationService navigationService)
    {
       super(display, eventBus);
       this.display = display;
       this.dispatcher = dispatcher;
       this.dataProvider = dataProvider;
       this.contextHolder = contextHolder;
+      this.navigationService = navigationService;
 
       display.setListener(this);
       display.setDataProvider(dataProvider);
@@ -73,6 +78,8 @@ public class ReviewCommentPresenter extends WidgetPresenter<ReviewCommentDisplay
    public void onShowReviewComment(ReviewCommentEvent event)
    {
       this.transUnitId = event.getTransUnitId();
+      Integer currentTargetVersion = navigationService.getByIdOrNull(transUnitId).getVerNum();
+      display.setCurrentTargetVersion(currentTargetVersion);
       dataProvider.setLoading(true);
       dispatcher.execute(new GetReviewCommentsAction(transUnitId), new AbstractAsyncCallback<GetReviewCommentsResult>()
       {

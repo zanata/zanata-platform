@@ -26,11 +26,14 @@ import org.zanata.webtrans.client.ui.CellTableResources;
 import org.zanata.webtrans.client.ui.DialogBoxCloseButton;
 import org.zanata.webtrans.client.util.DateUtil;
 import org.zanata.webtrans.shared.model.ReviewComment;
+import com.google.common.base.Objects;
+import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
@@ -62,10 +65,13 @@ public class ReviewCommentView extends DialogBox implements ReviewCommentDisplay
    WebTransMessages messages;
    @UiField
    VerticalPanel commentsContainer;
+   @UiField
+   Styles style;
 
    private final CellTable<ReviewComment> commentTable;
    private Listener listener;
    private TextBox commentInputBox;
+   private Integer currentTargetVersion;
 
    public ReviewCommentView()
    {
@@ -91,8 +97,7 @@ public class ReviewCommentView extends DialogBox implements ReviewCommentDisplay
       FlowPanel panel = new FlowPanel();
       commentInputBox = new TextBox();
       panel.add(commentInputBox);
-      // TODO pahuang localize
-      Button addButton = new Button("Add", new ClickHandler()
+      Button addButton = new Button(messages.reviewComment(), new ClickHandler()
       {
          @Override
          public void onClick(ClickEvent event)
@@ -126,7 +131,7 @@ public class ReviewCommentView extends DialogBox implements ReviewCommentDisplay
       return table;
    }
 
-   private static Column<ReviewComment, String> createCommentColumn()
+   private Column<ReviewComment, String> createCommentColumn()
    {
       return new Column<ReviewComment, String>(new TextCell())
       {
@@ -134,6 +139,16 @@ public class ReviewCommentView extends DialogBox implements ReviewCommentDisplay
          public String getValue(ReviewComment object)
          {
             return object.getComment();
+         }
+
+         @Override
+         public String getCellStyleNames(Cell.Context context, ReviewComment object)
+         {
+            if (!Objects.equal(object.getTargetVersion(), currentTargetVersion))
+            {
+               return style.obsoleteComment();
+            }
+            return super.getCellStyleNames(context, object);
          }
       };
    }
@@ -169,6 +184,12 @@ public class ReviewCommentView extends DialogBox implements ReviewCommentDisplay
    }
 
    @Override
+   public void setCurrentTargetVersion(Integer targetVersion)
+   {
+      this.currentTargetVersion = targetVersion;
+   }
+
+   @Override
    public void setDataProvider(ListDataProvider<ReviewComment> dataProvider)
    {
       dataProvider.addDataDisplay(commentTable);
@@ -182,5 +203,11 @@ public class ReviewCommentView extends DialogBox implements ReviewCommentDisplay
 
    interface AddReviewCommentViewUiBinder extends UiBinder<HTMLPanel, ReviewCommentView>
    {
+   }
+
+   interface Styles extends CssResource
+   {
+
+      String obsoleteComment();
    }
 }

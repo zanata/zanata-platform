@@ -48,6 +48,8 @@ public interface ReviewCommentDisplay extends WidgetDisplay
 
    void clearInput();
 
+   void setCurrentTargetVersion(Integer targetVersion);
+
    interface Listener
    {
       void addComment(String comment);

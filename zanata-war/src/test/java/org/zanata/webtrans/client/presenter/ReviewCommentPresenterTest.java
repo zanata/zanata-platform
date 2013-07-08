@@ -33,6 +33,7 @@ import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.ReviewCommentEvent;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.GetTransUnitActionContextHolder;
+import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.client.view.ReviewCommentDisplay;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ReviewComment;
@@ -67,6 +68,8 @@ public class ReviewCommentPresenterTest
    private ReviewCommentDataProvider dataProvider;
    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
    private GetTransUnitActionContextHolder contextHolder;
+   @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+   private NavigationService navigationService;
 
 
    @BeforeMethod
@@ -74,7 +77,7 @@ public class ReviewCommentPresenterTest
    {
       MockitoAnnotations.initMocks(this);
 
-      presenter = new ReviewCommentPresenter(display, eventBus, dispather, dataProvider, contextHolder);
+      presenter = new ReviewCommentPresenter(display, eventBus, dispather, dataProvider, contextHolder, navigationService);
 
       verify(display).setDataProvider(dataProvider);
       verify(display).setListener(presenter);
@@ -82,12 +85,16 @@ public class ReviewCommentPresenterTest
    @Test
    public void testDisplayCommentView() throws Exception
    {
+      // Given: trans unit id 1 and current target version 99
       TransUnitId transUnitId = new TransUnitId(1L);
+      when(navigationService.getByIdOrNull(transUnitId).getVerNum()).thenReturn(99);
       ArgumentCaptor<GetReviewCommentsAction> actionCaptor = ArgumentCaptor.forClass(GetReviewCommentsAction.class);
       ArgumentCaptor<AsyncCallback> resultCaptor = ArgumentCaptor.forClass(AsyncCallback.class);
 
+      // When:
       presenter.onShowReviewComment(new ReviewCommentEvent(transUnitId));
 
+      // Then:
       verify(dataProvider).setLoading(true);
       verify(dispather).execute(actionCaptor.capture(), resultCaptor.capture());
       assertThat(actionCaptor.getValue().getTransUnitId(), Matchers.equalTo(transUnitId));
@@ -96,6 +103,7 @@ public class ReviewCommentPresenterTest
       GetReviewCommentsResult result = new GetReviewCommentsResult(Lists.newArrayList(new ReviewComment()));
       callback.onSuccess(result);
 
+      verify(display).setCurrentTargetVersion(99);
       verify(dataProvider).setLoading(false);
       verify(dataProvider).setList(result.getComments());
    }
