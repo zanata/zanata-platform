@@ -43,8 +43,12 @@
 
         .hasError {
             border-left:3px solid #FF4500;
+            padding-right:5px;
+            opacity:0.6;
+            transition: .3s;
+            display:inline !important;
         }
-        
+      
 		.filterListToggle {
 			font-size:16px;
 			cursor:pointer;
@@ -109,7 +113,7 @@
 			-moz-transition: .3s;
 		}
 		
-		.filterList li span:hover {
+		.filterList li span:hover, .hasError:hover {
 			background-color: #fff;
 			opacity: 1;
 		}
@@ -166,10 +170,11 @@
 					<li>
 						<g:CheckBox ui:field="approvedChk" styleName="{style.approved} {style.checkbox}"><ui:msg>Approved</ui:msg></g:CheckBox>
 					</li>
-					<li>	
-						<g:CheckBox ui:field="hasErrorChk" styleName="{style.hasError} {style.checkbox}"><ui:msg>Has warning</ui:msg></g:CheckBox>
-					</li>
 				</ul>
+			</li>
+			
+			<li class="{style.drop-down}">	
+				<g:CheckBox ui:field="hasErrorChk" styleName="{style.hasError} {style.checkbox}"><ui:msg>Has warning</ui:msg></g:CheckBox>
 			</li>
 		</ul>
 	</g:HTMLPanel>
