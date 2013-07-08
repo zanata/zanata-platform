@@ -57,7 +57,9 @@
 
       <!-- Automatic schema export and drop -->
       <property name="hibernate.hbm2ddl.auto" value="${env.hibernate.hbm2ddl.auto}"/>
-      
+
+      <property name="hibernate.connection.provider_class" value="org.zanata.database.WrappedDatasourceConnectionProvider" />
+
       <!-- Logging -->
       <property name="hibernate.show_sql" value="${env.hibernate.show_sql}"/>
       <property name="hibernate.use_sql_comments" value="true"/>

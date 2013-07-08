@@ -42,12 +42,12 @@ public class SimpleSourceContents implements SourceContents
 {
    private final String qualifiedId;
    private final Map<LocaleId, TargetContents> targets;
-   private final LocaleId locale;
+   private final @Nonnull LocaleId locale;
    private List<String> contents;
 
    public SimpleSourceContents(String qualifiedId,
          Map<LocaleId, TargetContents> targets,
-         LocaleId locale,
+         @Nonnull LocaleId locale,
          List<String> contents)
    {
       this.qualifiedId = qualifiedId;
@@ -57,7 +57,7 @@ public class SimpleSourceContents implements SourceContents
    }
 
    public SimpleSourceContents(String qualifiedId,
-         LocaleId locale,
+         @Nonnull LocaleId locale,
          @Nonnull String content0,
          Map<LocaleId, TargetContents> targets)
    {
@@ -66,7 +66,7 @@ public class SimpleSourceContents implements SourceContents
 
    public SimpleSourceContents(String qualifiedId,
          Map<LocaleId, TargetContents> targets,
-         LocaleId locale,
+         @Nonnull LocaleId locale,
          @Nonnull String... contents)
    {
       this(qualifiedId, targets, locale, ImmutableList.copyOf(contents));

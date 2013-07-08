@@ -19,21 +19,24 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.zanata.jdbc;
+package org.zanata.database;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 import java.util.Set;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.lang.ClassUtils;
 import org.testng.internal.annotations.Sets;
 
 /**
@@ -42,7 +45,7 @@ import org.testng.internal.annotations.Sets;
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Slf4j
-public class ConnectionWrapper implements InvocationHandler
+class ConnectionWrapper implements InvocationHandler
 {
    // For reference, this is what the mysql exception looks like:
    // Streaming result set com.mysql.jdbc.RowDataDynamic@1950740 is
@@ -55,15 +58,27 @@ public class ConnectionWrapper implements InvocationHandler
    private Set<Throwable> resultSetsOpened = Sets.newHashSet();
    private Throwable streamingResultSetOpened;
 
-   public static Connection wrap(Connection connection) 
+   public static Connection wrap(Connection connection)
    {
       if (Proxy.isProxyClass(connection.getClass()) && Proxy.getInvocationHandler(connection) instanceof ConnectionWrapper)
       {
          return connection;
       }
-      ConnectionWrapper h = new ConnectionWrapper(connection);
-      ClassLoader cl = h.getClass().getClassLoader();
-      return (Connection) Proxy.newProxyInstance(cl, connection.getClass().getInterfaces(), h);
+      return ProxyUtil.newProxy(connection, new ConnectionWrapper(connection));
+   }
+
+   public static Connection wrapUnlessMysql(Connection connection) throws SQLException
+   {
+      DatabaseMetaData metaData = connection.getMetaData();
+      String databaseName = metaData.getDatabaseProductName();
+      if ("MySQL".equals(databaseName))
+      {
+         return connection;
+      }
+      else
+      {
+         return wrap(connection);
+      }
    }
 
    /**

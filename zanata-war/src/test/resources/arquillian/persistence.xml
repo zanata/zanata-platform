@@ -65,6 +65,8 @@
 			<property name="hibernate.cache.region.factory_class" value="org.hibernate.testing.cache.CachingRegionFactory" />
 			<property name="hibernate.hbm2ddl.auto" value="create-drop"/>
 
+         <property name="hibernate.connection.provider_class" value="org.zanata.database.WrappedDatasourceConnectionProvider" />
+
 			<!--<property name="hibernate.connection.driver_class" value="org.h2.Driver" />
 			&lt;!&ndash; Configure the in-memory database to be shared, and so that it
 				 doesn't disappear after it has been set up by Hibernate: &ndash;&gt;
