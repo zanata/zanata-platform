@@ -96,12 +96,14 @@ public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetPr
          return new GetProjectTransUnitListsResult(action, docPaths, matchingTUs);
       }
 
+      // @formatter:off
       FilterConstraints filterConstraints = FilterConstraints.builder()
             .filterBy(action.getSearchString())
             .caseSensitive(action.isCaseSensitive())
             .checkInSource(action.isSearchInSource())
             .checkInTarget(action.isSearchInTarget())
             .build();
+      // @formatter:on
 
       List<HTextFlow> matchingFlows = textFlowSearchServiceImpl.findTextFlows(action.getWorkspaceId(), action.getDocumentPaths(), filterConstraints);
       log.info("Returned {} results for search", matchingFlows.size());

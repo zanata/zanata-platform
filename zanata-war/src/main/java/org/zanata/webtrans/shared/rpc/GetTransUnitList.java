@@ -33,6 +33,7 @@ public class GetTransUnitList extends AbstractWorkspaceAction<GetTransUnitListRe
       offset = context.getOffset();
       count = context.getCount();
       phrase = context.getFindMessage();
+      // @formatter :off
       filterStates = ActiveStates.builder()
             .setNewOn(context.isFilterUntranslated())
             .setFuzzyOn(context.isFilterNeedReview())
@@ -40,6 +41,7 @@ public class GetTransUnitList extends AbstractWorkspaceAction<GetTransUnitListRe
             .setApprovedOn(context.isFilterApproved())
             .setRejectedOn(context.isFilterRejected())
             .build();
+      // @formatter :on
       filterHasError = context.isFilterHasError();
       targetTransUnitId = context.getTargetTransUnitId();
       validationIds = context.getValidationIds();
