@@ -51,7 +51,7 @@ public class LanguageTeamServiceImpl implements LanguageTeamService
       return personDAO.getLanguageMembershipByUsername(userName);
    }
 
-   public void joinOrUpdateLanguageTeam(String locale, Long personId, boolean isTranslator, boolean isReviewer, boolean isCoordinator) throws ZanataServiceException
+   public void joinOrUpdateRoleInLanguageTeam(String locale, Long personId, boolean isTranslator, boolean isReviewer, boolean isCoordinator) throws ZanataServiceException
    {
       LocaleId localeId  = new LocaleId(locale);
       HPerson currentPerson = personDAO.findById(personId, false);

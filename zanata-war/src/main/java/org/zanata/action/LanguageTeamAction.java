@@ -171,7 +171,7 @@ public class LanguageTeamAction implements Serializable
       }
       try
       {
-         languageTeamServiceImpl.joinOrUpdateLanguageTeam(this.language, authenticatedAccount.getPerson().getId(), true, true, true);
+         languageTeamServiceImpl.joinOrUpdateRoleInLanguageTeam(this.language, authenticatedAccount.getPerson().getId(), true, true, true);
          Events.instance().raiseEvent("personJoinedTribe");
          log.info("{0} joined tribe {1}", authenticatedAccount.getUsername(), this.language);
          // FIXME use localizable string
@@ -245,7 +245,7 @@ public class LanguageTeamAction implements Serializable
 
    private void addTeamMember( final Long personId, boolean isTranslator, boolean isReviewer, boolean isCoordinator )
    {
-      this.languageTeamServiceImpl.joinOrUpdateLanguageTeam(this.language, personId, isTranslator, isReviewer, isCoordinator);
+      this.languageTeamServiceImpl.joinOrUpdateRoleInLanguageTeam(this.language, personId, isTranslator, isReviewer, isCoordinator);
    }
 
    @Restrict("#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}")

@@ -11,28 +11,29 @@
   <ui:param name="toEmailAddr" value="#{emailServiceImpl.toEmailAddr}" />
   <ui:param name="replyToName" value="#{sendEmail.fromName}" />
   <ui:param name="replyToEmail" value="#{sendEmail.replyEmail}" />
-  <ui:param name="subject" value="#{messages['jsf.email.joinrequest.Subject']}" />
+  <ui:param name="subject" value="#{languageJoinUpdateRoleAction.subject}" />
 
   <ui:define name="body">
         <p>#{messages['jsf.email.coordinator.DearCoordinator']}</p>
+        
         <p>#{messages['jsf.email.joinrequest.UserRequestingToJoin']}
         
-	        <s:fragment rendered="#{languageJoinAction.hasRoleRequest()}">
+	        <s:fragment rendered="#{languageJoinUpdateRoleAction.hasRoleRequest()}">
 	        	#{messages['jsf.email.joinrequest.RoleRequest']}
 	        	<ul>
-		        	<s:fragment rendered="#{languageJoinAction.joinAsTranslator}">
+		        	<s:fragment rendered="#{languageJoinUpdateRoleAction.requestAsTranslator}">
 	        			<li>
 	        				#{messages['jsf.Translator']}
 		        		</li>
 		        	</s:fragment>
 		        	
-		        	<s:fragment rendered="#{languageJoinAction.joinAsReviewer}">
+		        	<s:fragment rendered="#{languageJoinUpdateRoleAction.requestAsReviewer}">
 	        			<li>
 	        				#{messages['jsf.Reviewer']}
 		        		</li>
 		        	</s:fragment>
 		        	
-		        	<s:fragment rendered="#{languageJoinAction.joinAsCoordinator}">
+		        	<s:fragment rendered="#{languageJoinUpdateRoleAction.requestAsCoordinator}">
 	        			<li>
 	        				#{messages['jsf.Coordinator']}
 		        		</li>

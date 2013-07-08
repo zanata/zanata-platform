@@ -21,7 +21,6 @@
 package org.zanata.service;
 
 import java.util.List;
-import java.util.Set;
 
 import org.zanata.model.HPerson;
 
@@ -32,7 +31,7 @@ public interface EmailService
 {
    public static final String ADMIN_EMAIL_TEMPLATE = "/WEB-INF/facelets/email/email_admin.xhtml";
    public static final String COORDINATOR_EMAIL_TEMPLATE = "/WEB-INF/facelets/email/email_coordinator.xhtml";
-   public static final String REQUEST_TO_JOIN_EMAIL_TEMPLATE = "/WEB-INF/facelets/email/email_request_to_join_language.xhtml";
+   public static final String REQUEST_TO_JOIN_UPDATE_ROLE_EMAIL_TEMPLATE = "/WEB-INF/facelets/email/email_request_to_join_update_role_language.xhtml";
    public static final String REQUEST_TO_JOIN_GROUP_EMAIL_TEMPLATE = "/WEB-INF/facelets/email/email_request_to_join_group.xhtml";
    public static final String ACTIVATION_ACCOUNT_EMAIL_TEMPLATE = "/WEB-INF/facelets/email/activation.xhtml";
    /**

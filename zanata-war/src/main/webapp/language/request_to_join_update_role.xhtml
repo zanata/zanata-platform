@@ -11,20 +11,20 @@
 
    <ui:param name="showGlobalMessages" value="true"/>
 
-   <ui:define name="page_title">#{messages['jsf.RequestToJoinLanguageTeamTitle']}</ui:define>
+   <ui:define name="page_title">#{languageJoinUpdateRoleAction.title}</ui:define>
    <ui:define name="center_content">
       <h:form id="request_join_language_form">
          <s:token allowMultiplePosts="true" />
          <rich:panel>
          	 <div class="roleMsg">
-			 	#{messages['jsf.JoinAs']}
-	            <h:selectBooleanCheckbox id="translatorChk" value="#{languageJoinAction.joinAsTranslator}"/>
+			 	#{messages['jsf.RequestRoleAs']}
+	            <h:selectBooleanCheckbox id="translatorChk" value="#{languageJoinUpdateRoleAction.requestAsTranslator}"/>
 	            <label for="translatorChk">#{messages['jsf.Translator']}</label>
 	            
-	            <h:selectBooleanCheckbox id="reviewerChk" value="#{languageJoinAction.joinAsReviewer}"/>
+	            <h:selectBooleanCheckbox id="reviewerChk" value="#{languageJoinUpdateRoleAction.requestAsReviewer}"/>
 	            <label for="translatorChk">#{messages['jsf.Reviewer']}</label>
 	            
-	            <h:selectBooleanCheckbox id="coordinatorChk" value="#{languageJoinAction.joinAsCoordinator}"/>
+	            <h:selectBooleanCheckbox id="coordinatorChk" value="#{languageJoinUpdateRoleAction.requestAsCoordinator}"/>
 	            <label for="translatorChk">#{messages['jsf.Coordinator']}</label>
 			</div>
 			
@@ -42,7 +42,7 @@
 			   
             <s:decorate id="subjectField" template="../WEB-INF/layout/display.xhtml">
                <ui:define name="label">#{messages['jsf.email.Subject']}</ui:define>
-               <h:outputText id="subject" value="#{messages['jsf.email.joinrequest.Subject']}" required="true" />
+               <h:outputText id="subject" value="#{languageJoinUpdateRoleAction.subject}" required="true" />
             </s:decorate>
 
             <s:decorate id="messageField" template="../WEB-INF/layout/edit.xhtml">
@@ -50,7 +50,7 @@
 
               <s:span styleClass="icon-info-circle-2 input_help" id="slugHelp">
             	 <rich:tooltip>
-	               #{messages['jsf.email.joinrequest.AdditionalInfoMessage']}
+	               #{messages['jsf.email.AdditionalInfoMessage']}
 	             </rich:tooltip>
            	  </s:span>
 	          <br/><br/>
