@@ -20,18 +20,24 @@
  */
 package org.zanata.model.tm;
 
+import java.util.HashMap;
+import java.util.Map;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.JoinTable;
+import javax.persistence.Lob;
+import javax.persistence.MapKeyClass;
 
 import org.zanata.model.ModelEntityBase;
 import org.zanata.util.HashUtil;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -42,11 +48,17 @@ import lombok.ToString;
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Entity
-@EqualsAndHashCode(exclude = "content")
-@ToString(exclude = "contentHash")
+@EqualsAndHashCode(exclude = {"content"})
+@ToString(exclude = {"contentHash", "metadata"})
 @NoArgsConstructor
+@Access(AccessType.FIELD)
 public class TMTransUnitVariant extends ModelEntityBase
 {
+   public enum TMTransUnitVariantMetadata
+   {
+      TMX_SEG;
+   }
+
    @Getter @Setter
    @Column(nullable = false)
    private String language;
@@ -59,10 +71,17 @@ public class TMTransUnitVariant extends ModelEntityBase
    @Column(name ="content_hash", nullable = false)
    private String contentHash;
 
+   @Getter @Setter
+   @ElementCollection
+   @MapKeyClass(TMTransUnitVariantMetadata.class)
+   @JoinTable(name = "TMTransUnitVariant_Metadata")
+   @Lob
+   private Map<TMTransUnitVariantMetadata, String> metadata = new HashMap<TMTransUnitVariantMetadata, String>();
+
    public TMTransUnitVariant(String language, String content)
    {
       this.language = language;
-      this.content = content;
+      this.setContent(content);
    }
 
    public void setContent(String content)
