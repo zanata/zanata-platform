@@ -833,6 +833,18 @@ input.language_action_button {
 .disabled_lang_row {
     background-color: #FEEDEF;
 }
+
+.roleMsg {
+	font-size:1.2em;
+	font-weight:bold;
+	padding-bottom:1.5em;
+}
+
+.roleMsg input {
+	vertical-align:middle;
+	margin-left:2em;
+}
+
 /* -----------------------  End Language Administration CSS  -------------------------*/
 
 /* -----------------------  Project iteration CSS  -------------------------*/
