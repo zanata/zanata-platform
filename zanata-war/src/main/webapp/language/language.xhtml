@@ -108,7 +108,7 @@
           <s:link styleClass="action_link" value="#{messages['jsf.RequestToJoinLanguageTeam']}" view="/language/request_to_join.xhtml" rendered="#{identity.loggedIn and not languageTeamAction.isUserInTeam()}">
           		<f:param name="emailType" value="request_to_join_language_team"/>
           		<f:param name="id" value="#{languageTeamAction.language}"/>
-          </s:link>		
+          </s:link>	
           <s:link styleClass="action_link" value="#{messages['jsf.contactLanguageTeamCoordinator']}" view="/language/contact_coordinator.xhtml" propagation="none"  rendered="#{identity.loggedIn}" >
           		<f:param name="emailType" value="contact_coordinator"/>
           		<f:param name="id" value="#{languageTeamAction.language}"/>
@@ -169,20 +169,17 @@
 	                
 	                <rich:column width="auto" styleClass="#{selectablePerson.selected ? 'highlighted_datatable_row' : ''} centered">
                     	<f:facet name="header">#{messages['jsf.Translator']}</f:facet>
-                    		<h:selectBooleanCheckbox value="#{selectablePerson.translator}">
-                    	</h:selectBooleanCheckbox>
+                    		<h:selectBooleanCheckbox value="#{selectablePerson.translator}"/>
                   	</rich:column>
                   
                   	<rich:column width="auto" styleClass="#{selectablePerson.selected ? 'highlighted_datatable_row' : ''} centered">
                     	<f:facet name="header">#{messages['jsf.Reviewer']}</f:facet>
-                    	<h:selectBooleanCheckbox value="#{selectablePerson.reviewer}">
-                    	</h:selectBooleanCheckbox>
+                    	<h:selectBooleanCheckbox value="#{selectablePerson.reviewer}"/>
                   	</rich:column>
                   
                   	<rich:column width="auto" styleClass="#{selectablePerson.selected ? 'highlighted_datatable_row' : ''} centered">
                     	<f:facet name="header">#{messages['jsf.Coordinator']}</f:facet>
-                    	<h:selectBooleanCheckbox value="#{selectablePerson.coordinator}">
-                    	</h:selectBooleanCheckbox>
+                    	<h:selectBooleanCheckbox value="#{selectablePerson.coordinator}"/>
                   	</rich:column>
                   	
 	              </rich:dataTable>

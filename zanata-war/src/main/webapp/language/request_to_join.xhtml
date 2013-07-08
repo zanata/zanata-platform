@@ -42,7 +42,18 @@
 	               #{messages['jsf.email.joinrequest.AdditionalInfoMessage']}
 	             </rich:tooltip>
            	  </s:span>
-
+           	  
+ 			   	 #{messages['jsf.JoinAs']}
+	             <h:selectBooleanCheckbox id="translatorChk"/>
+	             <label for="translatorChk">#{messages['jsf.Translator']}</label>
+	             
+	             
+	             <h:selectBooleanCheckbox id="reviewerChk"/>
+	             <label for="translatorChk">#{messages['jsf.Reviewer']}</label>
+	             
+	             <h:selectBooleanCheckbox id="coordinatorChk"/>
+	             <label for="translatorChk">#{messages['jsf.Coordinator']}</label>
+			
 	           <br/><br/>
                <rich:editor id="message" width="400" height="300"
                             style="width:400px;" required="false"
