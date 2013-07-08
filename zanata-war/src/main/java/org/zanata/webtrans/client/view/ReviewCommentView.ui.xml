@@ -31,7 +31,7 @@
         }
     </ui:style>
 
-    <g:HTMLPanel width="800px" height="600px">
+    <g:HTMLPanel width="800px" height="100%">
         <g:ScrollPanel>
             <g:VerticalPanel ui:field="commentsContainer" width="100%" height="100%" />
         </g:ScrollPanel>
