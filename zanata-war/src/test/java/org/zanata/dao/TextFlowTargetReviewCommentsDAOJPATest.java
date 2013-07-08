@@ -65,9 +65,10 @@ public class TextFlowTargetReviewCommentsDAOJPATest extends ZanataDbunitJpaTest
    @Test
    public void testQuery()
    {
-      List<HTextFlowTargetReviewComment> reviewComments = reviewCommentsDAO.getReviewComments(new TransUnitId(1L), new LocaleId("as"));
+      List<HTextFlowTargetReviewComment> reviewComments = reviewCommentsDAO.getReviewComments(new TransUnitId(5L), LocaleId.EN_US);
 
-      assertThat(reviewComments, Matchers.empty());
+      assertThat(reviewComments, Matchers.hasSize(1));
+      assertThat(reviewComments.get(0).getCommenter().getName(), Matchers.equalTo("Sample User"));
    }
 
    @Test

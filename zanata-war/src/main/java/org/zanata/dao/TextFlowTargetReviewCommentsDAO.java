@@ -57,7 +57,7 @@ public class TextFlowTargetReviewCommentsDAO extends AbstractDAOImpl<HTextFlowTa
 
    public List<HTextFlowTargetReviewComment> getReviewComments(TransUnitId textFlowId, LocaleId localeId)
    {
-      Query query = getSession().createQuery("select c from HTextFlowTargetReviewComment c inner join c.commenter where c.textFlowTarget.textFlow.id = :textFlowId and c.textFlowTarget.locale.localeId = :localeId");
+      Query query = getSession().createQuery("select c from HTextFlowTargetReviewComment c join fetch c.commenter where c.textFlowTarget.textFlow.id = :textFlowId and c.textFlowTarget.locale.localeId = :localeId");
       query.setParameter("textFlowId", textFlowId.getValue());
       query.setParameter("localeId", localeId);
       query.setComment("TextFlowTargetReviewCommentsDAO.getReviewComments");

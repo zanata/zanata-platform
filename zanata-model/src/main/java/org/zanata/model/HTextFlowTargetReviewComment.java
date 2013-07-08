@@ -103,7 +103,7 @@ public class HTextFlowTargetReviewComment extends ModelEntityBase
 
    @NotNull
    @NaturalId
-   @ManyToOne
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "target_id")
    @IndexedEmbedded
    public HTextFlowTarget getTextFlowTarget()
