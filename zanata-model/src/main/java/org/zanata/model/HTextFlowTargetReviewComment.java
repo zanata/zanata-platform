@@ -118,25 +118,4 @@ public class HTextFlowTargetReviewComment extends ModelEntityBase
       return targetVersion;
    }
 
-   // TODO pahuang we probably want to cache below two methods
-   @Transient
-   public ContentState getContentStateOfCommentedTarget()
-   {
-      if (textFlowTarget.getVersionNum().equals(targetVersion))
-      {
-         return textFlowTarget.getState();
-      }
-      return textFlowTarget.getHistory().get(targetVersion).getState();
-   }
-
-   @Transient
-   public List<String> getContentsOfCommentedTarget()
-   {
-      if (textFlowTarget.getVersionNum().equals(targetVersion))
-      {
-         return textFlowTarget.getContents();
-      }
-      return textFlowTarget.getHistory().get(targetVersion).getContents();
-   }
-
 }

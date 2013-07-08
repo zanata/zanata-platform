@@ -88,7 +88,6 @@ public class TextFlowTargetReviewCommentsDAOJPATest extends ZanataDbunitJpaTest
       List<HTextFlowTargetReviewComment> result = reviewCommentsDAO.getReviewComments(new TransUnitId(target.getTextFlow().getId()), target.getLocaleId());
 
       assertThat(result, Matchers.hasSize(1));
-      assertThat(result.get(0).getContentsOfCommentedTarget(), Matchers.equalTo(target.getContents()));
       assertThat(result.get(0).getCommenterName(), Matchers.equalTo(person.getName()));
       assertThat(result.get(0).getCreationDate(), Matchers.lessThanOrEqualTo(new Date()));
    }
@@ -113,7 +112,6 @@ public class TextFlowTargetReviewCommentsDAOJPATest extends ZanataDbunitJpaTest
       List<HTextFlowTargetReviewComment> result = reviewCommentsDAO.getReviewComments(new TransUnitId(target.getTextFlow().getId()), target.getLocaleId());
 
 
-      assertThat(result.get(0).getContentsOfCommentedTarget(), Matchers.equalTo(oldTranslation));
       assertThat(result.get(0).getTargetVersion(), Matchers.equalTo(oldVersion));
    }
 }
