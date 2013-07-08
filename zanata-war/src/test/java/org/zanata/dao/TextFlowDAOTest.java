@@ -93,37 +93,79 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest
    }
 
    @Test
-   public void canGetTextFlowsByStatus() {
-      HLocale esLocale = getEm().find(HLocale.class, 5L);
-      HLocale frLocale = getEm().find(HLocale.class, 6L);
-      HLocale deLocale = getEm().find(HLocale.class, 3L);
-
-      DocumentId documentId1 = new DocumentId(1L, ""); // esLocale fuzzy,
-                                                       // frLocale new, deLocale
-                                                       // approved
-      List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraints(documentId1, esLocale,
-            FilterConstraints.builder().keepAll().excludeTranslated().excludeNew().build(), 0, 10);
-      assertThat(result, Matchers.hasSize(1));
-
-      result = dao.getTextFlowByDocumentIdWithConstraints(documentId1, frLocale,
-            FilterConstraints.builder().keepAll().excludeFuzzy().build(), 0, 10);
-      assertThat(result, Matchers.hasSize(1));
-
-      result = dao.getTextFlowByDocumentIdWithConstraints(documentId1, deLocale,
-            FilterConstraints.builder().keepAll().excludeFuzzy().excludeNew().build(), 0, 10);
-      assertThat(result, Matchers.hasSize(1));
-
+   public void canGetTextFlowsByStatusNotNew()
+   {
       HLocale enUSLocale = getEm().find(HLocale.class, 4L);
-      DocumentId documentId2 = new DocumentId(2L, ""); // all 3 text flows has
-                                                       // en-US fuzzy target
-
-      result = dao.getTextFlowByDocumentIdWithConstraints(documentId2, enUSLocale,
-            FilterConstraints.builder().keepAll().excludeTranslated().excludeFuzzy().build(), 0, 10);
-      assertThat(result, Matchers.<HTextFlow>empty());
-
-      result = dao.getTextFlowByDocumentIdWithConstraints(documentId2, enUSLocale,
+      // all 3 text flows are fuzzy for en-US in this document
+      DocumentId documentId2 = new DocumentId(2L, "");
+      List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraints(documentId2, enUSLocale,
             FilterConstraints.builder().keepAll().excludeNew().build(), 0, 10);
+
       assertThat(result, Matchers.hasSize(3));
+   }
+
+   @Test
+   public void canGetTextFlowsByStatusNotFuzzy()
+   {
+      // frLocale new in this document
+      DocumentId documentId = new DocumentId(1L, "");
+      HLocale frLocale = getEm().find(HLocale.class, 6L);
+      FilterConstraints notFuzzy = FilterConstraints.builder().keepAll().excludeFuzzy().build();
+
+      List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraints(documentId, frLocale,
+            notFuzzy, 0, 10);
+      assertThat(result, Matchers.hasSize(1));
+   }
+
+   @Test
+   public void canGetTextFlowsByStatusNotTranslatedNotNew()
+   {
+      // esLocale fuzzy in this document
+      DocumentId documentId = new DocumentId(1L, "");
+      HLocale esLocale = getEm().find(HLocale.class, 5L);
+      FilterConstraints notNewOrTranslated = FilterConstraints.builder().keepAll().excludeTranslated().excludeNew().build();
+
+      List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraints(documentId, esLocale,
+            notNewOrTranslated, 0, 10);
+      assertThat(result, Matchers.hasSize(1));
+   }
+
+   @Test
+   public void canGetTextFlowsByStatusNotFuzzyNotNew()
+   {
+      // deLocale approved in this document
+      DocumentId documentId = new DocumentId(1L, "");
+      HLocale deLocale = getEm().find(HLocale.class, 3L);
+      FilterConstraints notNewOrFuzzy =
+            FilterConstraints.builder().keepAll().excludeFuzzy().excludeNew().build();
+
+      List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraints(documentId, deLocale,
+            notNewOrFuzzy, 0, 10);
+      assertThat(result, Matchers.hasSize(1));
+   }
+
+   @Test
+   public void canGetTextFlowsByStatusNotFuzzyNotTranslated()
+   {
+      HLocale enUSLocale = getEm().find(HLocale.class, 4L);
+      // all 3 text flows are fuzzy for en-US in this document
+      DocumentId documentId2 = new DocumentId(2L, "");
+      FilterConstraints notFuzzyOrTranslated =
+            FilterConstraints.builder().keepAll().excludeTranslated().excludeFuzzy().build();
+      List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraints(documentId2, enUSLocale,
+            notFuzzyOrTranslated, 0, 10);
+      assertThat(result, Matchers.<HTextFlow>empty());
+   }
+
+   @Test
+   public void thisBreaksForSomeReason() {
+      // fails regardless of using different documentId, locale or constraints
+      DocumentId id = new DocumentId(1L, "");
+      HLocale locale = getEm().find(HLocale.class, 3L);
+      FilterConstraints constraints = FilterConstraints.builder().build();
+
+      dao.getTextFlowByDocumentIdWithConstraints(id, locale, constraints, 0, 10);
+      dao.getTextFlowByDocumentIdWithConstraints(id, locale, constraints, 0, 10);
    }
 
 
@@ -222,6 +264,8 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest
       assertThat(result, Matchers.hasSize(1));
    }
 
+   // What is this testing? I can't tell if it is ensuring that no exception is thrown,
+   // or if it is just half-written and useless.
    @Test
    public void queryTest1()
    {
