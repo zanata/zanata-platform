@@ -102,7 +102,6 @@ public class HTextFlowTargetReviewComment extends ModelEntityBase
    }
 
    @NotNull
-   @NaturalId
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "target_id")
    @IndexedEmbedded
@@ -112,7 +111,6 @@ public class HTextFlowTargetReviewComment extends ModelEntityBase
    }
 
    @NotNull
-   @NaturalId
    public Integer getTargetVersion()
    {
       return targetVersion;
