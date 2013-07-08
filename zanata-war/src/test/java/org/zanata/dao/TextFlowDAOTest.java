@@ -126,35 +126,74 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest
       assertThat(result, Matchers.hasSize(3));
    }
 
-   // TODO this should be split into 8 tests
+
+   @Test
+   public void canBuildAcceptAllQuery()
+   {
+      String contentStateCondition = TextFlowDAO.buildContentStateCondition(
+            FilterConstraints.builder().keepAll().build(), "tft");
+      assertThat("Conditional that accepts all should be '1'", contentStateCondition, is("1"));
+   }
+
+   @Test
+   public void canBuildAcceptAllQueryWhenNoStatesSelected()
+   {
+      String contentStateCondition = TextFlowDAO.buildContentStateCondition(
+            FilterConstraints.builder().keepNone().build(), "tft");
+      assertThat("Conditional that accepts all should be '1'", contentStateCondition, is("1"));
+   }
+
+   @Test
+   public void canBuildNewOnlyConditional()
+   {
+      FilterConstraints constraints = FilterConstraints.builder()
+            .keepNone().includeNew().build();
+      String contentStateCondition = TextFlowDAO.buildContentStateCondition(constraints, "tft");
+      assertThat(contentStateCondition, is("(tft.state=0 or tft.state is null)"));
+   }
+
+   @Test
+   public void canBuildFuzzyOnlyConditional()
+   {
+      FilterConstraints constraints = FilterConstraints.builder()
+            .keepNone().includeFuzzy().build();
+      String contentStateCondition = TextFlowDAO.buildContentStateCondition(constraints, "tft");
+      assertThat(contentStateCondition, is("(tft.state=1 or tft.state=4)"));
+   }
+
+   @Test
+   public void canBuildTranslatedOnlyConditional()
+   {
+      FilterConstraints constraints = FilterConstraints.builder()
+            .keepNone().includeTranslated().build();
+      String contentStateCondition = TextFlowDAO.buildContentStateCondition(constraints, "tft");
+      assertThat(contentStateCondition, is("(tft.state=2 or tft.state=3)"));
+   }
+
    @Test
    public void canBuildContentStateQuery()
    {
-      // accept all
-      assertThat(TextFlowDAO.buildContentStateCondition(FilterConstraints.builder().keepAll().build(), "tft"), Matchers.equalTo("1"));
-      assertThat(TextFlowDAO.buildContentStateCondition(FilterConstraints.builder().keepNone().build(), "tft"), Matchers.equalTo("1"));
+      FilterConstraints constraints = FilterConstraints.builder()
+            .keepNone().includeNew().includeFuzzy().build();
+      String contentStateCondition = TextFlowDAO.buildContentStateCondition(constraints, "tft");
+      assertThat(contentStateCondition, is("(tft.state=1 or tft.state=4 or tft.state=0 or tft.state is null)"));
+   }
+   @Test
+   public void canBuildNewAndTranslatedConditional()
+   {
+      FilterConstraints constraints = FilterConstraints.builder()
+            .keepNone().includeNew().includeTranslated().build();
+      String contentStateCondition = TextFlowDAO.buildContentStateCondition(constraints, "tft");
+      assertThat(contentStateCondition, is("(tft.state=2 or tft.state=3 or tft.state=0 or tft.state is null)"));
+   }
 
-      // single status filter
-      FilterConstraints.Builder constraints = FilterConstraints.builder();
-
-      constraints.keepNone().includeTranslated();
-      assertThat(TextFlowDAO.buildContentStateCondition(constraints.build(), "tft"), Matchers.equalTo("(tft.state=2 or tft.state=3)"));
-
-      constraints.keepNone().includeFuzzy();
-      assertThat(TextFlowDAO.buildContentStateCondition(constraints.build(), "tft"), Matchers.equalTo("(tft.state=1 or tft.state=4)"));
-
-      constraints.keepNone().includeNew();
-      assertThat(TextFlowDAO.buildContentStateCondition(constraints.build(), "tft"), Matchers.equalTo("(tft.state=0 or tft.state is null)"));
-
-      // two status
-      constraints.keepNone().includeNew().includeTranslated();
-      assertThat(TextFlowDAO.buildContentStateCondition(constraints.build(), "tft"), Matchers.equalTo("(tft.state=2 or tft.state=3 or tft.state=0 or tft.state is null)"));
-
-      constraints.keepNone().includeFuzzy().includeApproved();
-      assertThat(TextFlowDAO.buildContentStateCondition(constraints.build(), "tft"), Matchers.equalTo("(tft.state=2 or tft.state=3 or tft.state=1 or tft.state=4)"));
-
-      constraints.keepNone().includeNew().includeFuzzy();
-      assertThat(TextFlowDAO.buildContentStateCondition(constraints.build(), "tft"), Matchers.equalTo("(tft.state=1 or tft.state=4 or tft.state=0 or tft.state is null)"));
+   @Test
+   public void canBuildFuzzyAndTranslatedConditional()
+   {
+      FilterConstraints constraints = FilterConstraints.builder()
+            .keepNone().includeFuzzy().includeTranslated().build();
+      String contentStateCondition = TextFlowDAO.buildContentStateCondition(constraints, "tft");
+      assertThat(contentStateCondition, is("(tft.state=2 or tft.state=3 or tft.state=1 or tft.state=4)"));
    }
 
    @Test
