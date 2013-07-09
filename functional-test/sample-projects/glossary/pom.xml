@@ -13,6 +13,7 @@
                 </configuration>
                 <groupId>org.zanata</groupId>
                 <artifactId>zanata-maven-plugin</artifactId>
+                <version>${zanata.client.version}</version>
             </plugin>
         </plugins>
     </build>

@@ -206,9 +206,9 @@ public class TransFilterView extends Composite implements TransFilterDisplay
    
    public void toggleCompleteChk()
    {
-      if(translatedChk.getValue() == approvedChk.getValue() && approvedChk.getValue() == hasErrorChk.getValue())
+      if(translatedChk.getValue() == approvedChk.getValue())
       {
-         if(hasErrorChk.getValue() == true)
+         if(approvedChk.getValue() == true)
          {
             completeChk.setValue(true);
          } 
@@ -258,7 +258,6 @@ public class TransFilterView extends Composite implements TransFilterDisplay
    {
       translatedChk.setValue(event.getValue());
       approvedChk.setValue(event.getValue());
-      hasErrorChk.setValue(event.getValue());
       onFilterOptionsChanged(event);
    }
 
@@ -270,5 +269,6 @@ public class TransFilterView extends Composite implements TransFilterDisplay
       untranslatedChk.setValue(state.isFilterByUntranslated());
       approvedChk.setValue(state.isFilterByApproved());
       rejectedChk.setValue(state.isFilterByRejected());
+      hasErrorChk.setValue(state.isFilterByHasError());
    }
 }

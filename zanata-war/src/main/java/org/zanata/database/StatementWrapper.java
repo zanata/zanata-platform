@@ -19,7 +19,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.zanata.jdbc;
+package org.zanata.database;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -37,21 +37,19 @@ import lombok.RequiredArgsConstructor;
  *
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class StatementWrapper implements InvocationHandler
+class StatementWrapper implements InvocationHandler
 {
-   public static Statement wrap(Statement statement, Connection connection)
+   public static Statement wrap(Statement statement, Connection connectionProxy)
    {
       if (Proxy.isProxyClass(statement.getClass()) && Proxy.getInvocationHandler(statement) instanceof StatementWrapper)
       {
          return statement;
       }
-      StatementWrapper h = new StatementWrapper(statement, connection);
-      ClassLoader cl = h.getClass().getClassLoader();
-      return (Statement) Proxy.newProxyInstance(cl, statement.getClass().getInterfaces(), h);
+      return ProxyUtil.newProxy(statement, new StatementWrapper(statement, connectionProxy));
    }
 
    private final Statement statement;
-   private final Connection connection;
+   private final Connection connectionProxy;
    private boolean makeStreamingResultSet;
 
    @Override
@@ -59,7 +57,7 @@ public class StatementWrapper implements InvocationHandler
    {
       if (method.getName().equals("getConnection"))
       {
-         return connection;
+         return connectionProxy;
       }
       if (method.getName().equals("toString"))
       {
@@ -77,8 +75,8 @@ public class StatementWrapper implements InvocationHandler
          if (result instanceof ResultSet)
          {
             ResultSet resultSet = (ResultSet) result;
-            ConnectionWrapper connectionWrapper = (ConnectionWrapper) Proxy.getInvocationHandler(connection);
-            ResultSet rsProxy = ResultSetWrapper.wrap(resultSet, connection, makeStreamingResultSet);
+            ConnectionWrapper connectionWrapper = (ConnectionWrapper) Proxy.getInvocationHandler(connectionProxy);
+            ResultSet rsProxy = ResultSetWrapper.wrap(resultSet, (Statement) proxy, connectionProxy, makeStreamingResultSet);
             ResultSetWrapper rsWrap = (ResultSetWrapper) Proxy.getInvocationHandler(rsProxy);
             if (makeStreamingResultSet)
             {
@@ -92,7 +90,7 @@ public class StatementWrapper implements InvocationHandler
          }
          else if (method.getName().startsWith("execute"))
          {
-            ConnectionWrapper connectionWrapper = (ConnectionWrapper) Proxy.getInvocationHandler(connection);
+            ConnectionWrapper connectionWrapper = (ConnectionWrapper) Proxy.getInvocationHandler(connectionProxy);
             connectionWrapper.executed();
          }
          return result;
