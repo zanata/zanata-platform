@@ -22,6 +22,8 @@
 package org.zanata.model;
 
 import java.util.List;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -41,6 +43,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import org.zanata.common.ContentState;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
@@ -52,20 +55,34 @@ import lombok.Setter;
 @Immutable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @BatchSize(size = 20)
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Access(AccessType.FIELD)
 public class HTextFlowTargetReviewComment extends ModelEntityBase
 {
    private static final long serialVersionUID = 1413384329431214946L;
 
+   @Getter
+   @ManyToOne(fetch = FetchType.LAZY)
+   @JoinColumn(name = "commenter_id", nullable = false)
    private HPerson commenter;
+
+   @NotNull
+   @ManyToOne(fetch = FetchType.LAZY)
+   @JoinColumn(name = "target_id")
+   @IndexedEmbedded
+   @Getter
    private HTextFlowTarget textFlowTarget;
+
+   @NotNull
+   @Type(type = "text")
+   @Getter
    private String comment;
 
    @Setter(AccessLevel.PROTECTED)
+   @Getter
+   @NotNull
    private Integer targetVersion;
 
-   @Setter(AccessLevel.NONE)
    private transient String commenterName;
 
    public HTextFlowTargetReviewComment(HTextFlowTarget target, String comment, HPerson commenter)
@@ -77,13 +94,6 @@ public class HTextFlowTargetReviewComment extends ModelEntityBase
       targetVersion = target.getVersionNum();
    }
 
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "commenter_id", nullable = false)
-   public HPerson getCommenter()
-   {
-      return commenter;
-   }
-
    @Transient
    public String getCommenterName()
    {
@@ -92,28 +102,6 @@ public class HTextFlowTargetReviewComment extends ModelEntityBase
          commenterName = getCommenter().getName();
       }
       return commenterName;
-   }
-
-   @NotNull
-   @Type(type = "text")
-   public String getComment()
-   {
-      return comment;
-   }
-
-   @NotNull
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "target_id")
-   @IndexedEmbedded
-   public HTextFlowTarget getTextFlowTarget()
-   {
-      return textFlowTarget;
-   }
-
-   @NotNull
-   public Integer getTargetVersion()
-   {
-      return targetVersion;
    }
 
 }
