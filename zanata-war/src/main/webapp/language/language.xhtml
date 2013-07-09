@@ -107,14 +107,12 @@
           </a4j:commandLink>
           <s:link styleClass="action_link" value="#{messages['jsf.RequestToJoinLanguageTeam']}" view="/language/request_to_join_update_role.xhtml" 
           		rendered="#{identity.loggedIn and not languageTeamAction.isUserInTeam()}">
-          		<f:param name="emailType" value="request_to_join_update_role_language"/>
-          		<f:param name="requestType" value="join"/>
+          		<f:param name="emailType" value="request_join_language"/>
           		<f:param name="id" value="#{languageTeamAction.language}"/>
           </s:link>	
           <s:link styleClass="action_link" value="#{messages['jsf.RequestUpdateRoleLanguageTeam']}" view="/language/request_to_join_update_role.xhtml" 
           		rendered="#{identity.loggedIn and languageTeamAction.isUserInTeam() and !(s:hasPermission(languageTeamAction.locale, 'manage-language-team'))}">
-          		<f:param name="emailType" value="request_to_join_update_role_language"/>
-          		<f:param name="requestType" value="role"/>
+          		<f:param name="emailType" value="request_role_language"/>
           		<f:param name="id" value="#{languageTeamAction.language}"/>
           </s:link>	
           <s:link styleClass="action_link" value="#{messages['jsf.contactLanguageTeamCoordinator']}" view="/language/contact_coordinator.xhtml" propagation="none"  rendered="#{identity.loggedIn}" >

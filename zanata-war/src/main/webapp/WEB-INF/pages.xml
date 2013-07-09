@@ -867,7 +867,7 @@
   
   <page view-id="/language/request_to_join_update_role.xhtml">
     <param name="emailType" value="#{sendEmail.emailType}" />
-    <param name="requestType" value="#{languageJoinUpdateRoleAction.requestType}" />
+    <param name="emailType" value="#{languageJoinUpdateRoleAction.emailType}" />
     <param name="id" value="#{languageJoinUpdateRoleAction.language}" />
     <param name="id" value="#{sendEmail.language}" />
     <action execute="#{breadcrumbs.clear}"/>

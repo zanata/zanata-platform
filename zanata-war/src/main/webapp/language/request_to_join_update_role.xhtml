@@ -18,14 +18,21 @@
          <rich:panel>
          	 <div class="roleMsg">
 			 	#{messages['jsf.RequestRoleAs']}
-	            <h:selectBooleanCheckbox id="translatorChk" value="#{languageJoinUpdateRoleAction.requestAsTranslator}"/>
-	            <label for="translatorChk">#{messages['jsf.Translator']}</label>
+			 	
+			 	<s:fragment rendered="#{!languageJoinUpdateRoleAction.isTranslator()}">
+	            	<h:selectBooleanCheckbox id="translatorChk" value="#{languageJoinUpdateRoleAction.requestAsTranslator}"/>
+		            <label for="translatorChk">#{messages['jsf.Translator']}</label>
+			 	</s:fragment>
 	            
-	            <h:selectBooleanCheckbox id="reviewerChk" value="#{languageJoinUpdateRoleAction.requestAsReviewer}"/>
-	            <label for="translatorChk">#{messages['jsf.Reviewer']}</label>
+	            <s:fragment rendered="#{!languageJoinUpdateRoleAction.isReviewer()}">
+	            	<h:selectBooleanCheckbox id="reviewerChk" value="#{languageJoinUpdateRoleAction.requestAsReviewer}"/>
+	            	<label for="translatorChk">#{messages['jsf.Reviewer']}</label>
+	            </s:fragment>
 	            
-	            <h:selectBooleanCheckbox id="coordinatorChk" value="#{languageJoinUpdateRoleAction.requestAsCoordinator}"/>
-	            <label for="translatorChk">#{messages['jsf.Coordinator']}</label>
+	            <s:fragment rendered="#{!languageJoinUpdateRoleAction.isCoordinator()}">
+	            	<h:selectBooleanCheckbox id="coordinatorChk" value="#{languageJoinUpdateRoleAction.requestAsCoordinator}"/>
+	            	<label for="translatorChk">#{messages['jsf.Coordinator']}</label>
+				</s:fragment>
 			</div>
 			
 			

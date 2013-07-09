@@ -30,7 +30,11 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.security.management.JpaIdentityStore;
+import org.zanata.annotation.CachedMethodResult;
+import org.zanata.common.LocaleId;
+import org.zanata.dao.LocaleMemberDAO;
 import org.zanata.model.HAccount;
+import org.zanata.model.HLocaleMember;
 import org.zanata.util.ZanataMessages;
 
 /**
@@ -43,52 +47,51 @@ public class LanguageJoinUpdateRoleAction implements Serializable
 {
    private static final long serialVersionUID = 1L;
    
-   private static final String JOIN_REQUEST = "join";
-   
-   private static final String ROLE_REQUEST = "role";
+   private static final String EMAIL_TYPE_REQUEST_JOIN = "request_join_language";
+   private static final String EMAIL_TYPE_REQUEST_ROLE = "request_role_language";
    
    
    @In
    private ZanataMessages zanataMessages;
+   
+   @In
+   private LocaleMemberDAO localeMemberDAO;
    
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    private HAccount authenticatedAccount;
    
    @Getter
    @Setter
-   private boolean requestAsTranslator;
+   private Boolean requestAsTranslator;
    
    @Getter
    @Setter
-   private boolean requestAsReviewer;
+   private Boolean requestAsReviewer;
    
    @Getter
    @Setter
-   private boolean requestAsCoordinator;
+   private Boolean requestAsCoordinator;
    
    @Getter
    @Setter
-   private String requestType;
+   private String emailType;
    
    @Setter
+   @Getter
    private String language;
-   
-   private String roleMessage;
    
    private String title;
    
    private String subject;
-   
    
    public boolean hasRoleRequest()
    {
       return requestAsTranslator || requestAsReviewer || requestAsCoordinator;
    }
    
-   
    public String getSubject()
    {
-      if(requestType.equals(JOIN_REQUEST))
+      if(emailType.equals(EMAIL_TYPE_REQUEST_JOIN))
       {
          subject = zanataMessages.getMessage("jsf.email.joinrequest.Subject");
       }
@@ -101,7 +104,7 @@ public class LanguageJoinUpdateRoleAction implements Serializable
    
    public String getTitle()
    {
-      if(requestType.equals(JOIN_REQUEST))
+      if(emailType.equals(EMAIL_TYPE_REQUEST_JOIN))
       {
          title = zanataMessages.getMessage("jsf.RequestToJoinLanguageTeamTitle");
       }
@@ -112,38 +115,39 @@ public class LanguageJoinUpdateRoleAction implements Serializable
       return title;
    }
    
-   public String getRoleMessage()
+   public boolean isTranslator()
    {
-      StringBuilder sb = new StringBuilder();
-      
-      sb.append(zanataMessages.getMessage("jsf.email.joinrequest.Subject"));
-      
-      if(requestAsTranslator || requestAsReviewer || requestAsCoordinator)
+      HLocaleMember member = getLocaleMember();
+      if(member != null)
       {
-         sb.append(" as");
-         if(requestAsTranslator)
-         {
-            sb.append(" (");
-            sb.append(zanataMessages.getMessage("jsf.Translator"));
-            sb.append(" )");
-         }
-         
-         if(requestAsReviewer)
-         {
-            sb.append(" (");
-            sb.append(zanataMessages.getMessage("jsf.Reviewer"));
-            sb.append(" )");
-         }
-         
-         if(requestAsCoordinator)
-         {
-            sb.append(" (");
-            sb.append(zanataMessages.getMessage("jsf.Coordinator"));
-            sb.append(" )");
-         }
+         return getLocaleMember().isTranslator();
       }
-      roleMessage = sb.toString();
-      return roleMessage;
+      return false;
    }
-
+   
+   public boolean isReviewer()
+   {
+      HLocaleMember member = getLocaleMember();
+      if(member != null)
+      {
+         return getLocaleMember().isReviewer();
+      }
+      return false;
+   }
+   
+   public boolean isCoordinator()
+   {
+      HLocaleMember member = getLocaleMember();
+      if(member != null)
+      {
+         return getLocaleMember().isCoordinator();
+      }
+      return false;
+   }
+   
+   @CachedMethodResult
+   private HLocaleMember getLocaleMember()
+   {
+      return localeMemberDAO.findByPersonAndLocale(authenticatedAccount.getPerson().getId(), new LocaleId(language));
+   }
 }
