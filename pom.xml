@@ -894,6 +894,7 @@
 			<dependency>
 			    <groupId>xom</groupId>
 			    <artifactId>xom</artifactId>
+			    <!-- NB: the latest version currently packaged for Fedora: -->
 			    <version>1.0</version>
 			</dependency>
 
