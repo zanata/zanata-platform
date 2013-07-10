@@ -19,32 +19,28 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.zanata.model;
+package org.zanata.database;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
+import java.util.List;
 
-import org.zanata.common.HasContents;
-import org.zanata.common.LocaleId;
+import org.apache.commons.lang.ClassUtils;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public interface SourceContents extends HasContents
+class ProxyUtil
 {
-   public @Nonnull LocaleId getLocale();
-   public @Nonnull String getQualifiedId();
-   /**
-    * Gets the TargetContents for a single locale.
-    * Note that default implementation in HTextFlow requires a lot of database I/O
-    * @param localeId
-    * @return
-    */
-   public @Nullable TargetContents getTargetContents(@Nonnull LocaleId localeId);
-   /**
-    * Gets the TargetContents for all available locales.
-    * @return
-    */
-   public @Nonnull Iterable<TargetContents> getAllTargetContents();
+
+   public static <T> T newProxy(T object, InvocationHandler handler)
+   {
+      Class<?> clazz = object.getClass();
+      ClassLoader cl = clazz.getClassLoader();
+      List<Class<?>> allInterfaces = ClassUtils.getAllInterfaces(clazz);
+      Class<?>[] interfaces = allInterfaces.toArray(new Class<?>[0]);
+      return (T) Proxy.newProxyInstance(cl, interfaces, handler);
+   }
+
 }

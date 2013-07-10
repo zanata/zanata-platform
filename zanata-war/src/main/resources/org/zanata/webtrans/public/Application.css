@@ -824,6 +824,10 @@ a.downloadLink
 	cursor:pointer;
 }
 
+.translatorEditorContainer > div:nth-of-type(2) {
+	overflow:visible !important;
+} 
+
 
 /* -------------- Fixed size dialog box ---------------*/
 .gwt-DialogBox-fixedSize

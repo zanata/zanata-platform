@@ -27,6 +27,7 @@ import org.zanata.webtrans.client.ui.SearchField;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -34,6 +35,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -50,8 +52,11 @@ public class TransFilterView extends Composite implements TransFilterDisplay
    Styles style;
 
    @UiField
-   CheckBox translatedChk, draftChk, untranslatedChk, hasErrorChk;
-
+   CheckBox translatedChk, fuzzyChk, untranslatedChk, approvedChk, rejectedChk, hasErrorChk;
+   
+   @UiField
+   CheckBox incompleteChk, completeChk;
+   
    private String hintMessage;
 
    private boolean focused = false;
@@ -119,13 +124,25 @@ public class TransFilterView extends Composite implements TransFilterDisplay
    @Override
    public void setNeedReviewFilter(boolean filterByNeedReview)
    {
-      draftChk.setValue(filterByNeedReview);
+      fuzzyChk.setValue(filterByNeedReview);
    }
 
    @Override
    public void setUntranslatedFilter(boolean filterByUntranslated)
    {
       untranslatedChk.setValue(filterByUntranslated);
+   }
+   
+   @Override
+   public void setApprovedFilter(boolean filterByApproved)
+   {
+      approvedChk.setValue(filterByApproved);
+   }
+   
+   @Override
+   public void setRejectedFilter(boolean filterByRejected)
+   {
+      rejectedChk.setValue(filterByRejected);
    }
 
    @Override
@@ -178,18 +195,80 @@ public class TransFilterView extends Composite implements TransFilterDisplay
       }
    }
 
-   @UiHandler({"translatedChk", "draftChk", "untranslatedChk", "hasErrorChk"})
-   public void onTranslatedChkChanged(ValueChangeEvent<Boolean> event)
+   @UiHandler({"translatedChk", "fuzzyChk", "untranslatedChk", "approvedChk", "rejectedChk", "hasErrorChk"})
+   public void onFilterOptionsChanged(ValueChangeEvent<Boolean> event)
    {
-      listener.messageFilterOptionChanged(translatedChk.getValue(), draftChk.getValue(), untranslatedChk.getValue(), hasErrorChk.getValue());
+      toggleCompleteChk();
+      toggleIncompleteChk();
+      
+      listener.messageFilterOptionChanged(translatedChk.getValue(), fuzzyChk.getValue(), untranslatedChk.getValue(), approvedChk.getValue(), rejectedChk.getValue(), hasErrorChk.getValue());
+   }
+   
+   public void toggleCompleteChk()
+   {
+      if(translatedChk.getValue() == approvedChk.getValue())
+      {
+         if(approvedChk.getValue() == true)
+         {
+            completeChk.setValue(true);
+         } 
+         else
+         {
+            completeChk.setValue(false);
+         }
+      }
+      else
+      {
+         //Should be indeterminate states if all checkboxes has different states, but GWT checkbox doesn't support it
+         completeChk.setValue(false);
+      }
+   }
+   
+   public void toggleIncompleteChk()
+   {
+      if(untranslatedChk.getValue() == fuzzyChk.getValue() && fuzzyChk.getValue() == rejectedChk.getValue() && rejectedChk.getValue())
+      {
+         if(rejectedChk.getValue() == true)
+         {
+            incompleteChk.setValue(true);
+         } 
+         else
+         {
+            incompleteChk.setValue(false);
+         }
+      }
+      else
+      {
+         //Should be indeterminate states if all checkboxes has different states
+         incompleteChk.setValue(false);
+      }
+   }
+   
+   @UiHandler("incompleteChk")
+   public void onIncompleteChkChanged(ValueChangeEvent<Boolean> event)
+   {
+      untranslatedChk.setValue(event.getValue());
+      fuzzyChk.setValue(event.getValue());
+      rejectedChk.setValue(event.getValue());
+      onFilterOptionsChanged(event);
+   }
+   
+   @UiHandler("completeChk")
+   public void onCompleteChkChanged(ValueChangeEvent<Boolean> event)
+   {
+      translatedChk.setValue(event.getValue());
+      approvedChk.setValue(event.getValue());
+      onFilterOptionsChanged(event);
    }
 
    @Override
    public void setOptionsState(ConfigurationState state)
    {
       translatedChk.setValue(state.isFilterByTranslated());
-      draftChk.setValue(state.isFilterByNeedReview());
+      fuzzyChk.setValue(state.isFilterByNeedReview());
       untranslatedChk.setValue(state.isFilterByUntranslated());
-
+      approvedChk.setValue(state.isFilterByApproved());
+      rejectedChk.setValue(state.isFilterByRejected());
+      hasErrorChk.setValue(state.isFilterByHasError());
    }
 }

@@ -92,6 +92,8 @@ public class UserConfigHolder
       state.filterByNeedReview = DEFAULT_FILTER;
       state.filterByTranslated = DEFAULT_FILTER;
       state.filterByUntranslated = DEFAULT_FILTER;
+      state.filterByApproved = DEFAULT_FILTER;
+      state.filterByRejected = DEFAULT_FILTER;
       state.filterByHasError = DEFAULT_FILTER;
 
       state.spellCheckEnabled = DEFAULT_SPELL_CHECK;
@@ -193,6 +195,18 @@ public class UserConfigHolder
       state = new ConfigurationState(state);
       state.filterByTranslated = filterByTranslated;
    }
+   
+   public void setFilterByApproved(Boolean filterByApproved)
+   {
+      state = new ConfigurationState(state);
+      state.filterByApproved = filterByApproved;
+   }
+   
+   public void setFilterByRejected(Boolean filterByRejected)
+   {
+      state = new ConfigurationState(state);
+      state.filterByRejected = filterByRejected;
+   }
 
    public void setFilterByHasError(boolean filterByHasError)
    {
@@ -250,7 +264,11 @@ public class UserConfigHolder
 
    public boolean isAcceptAllStatus()
    {
-      return state.isFilterByNeedReview() == state.isFilterByTranslated() && state.isFilterByNeedReview() == state.isFilterByUntranslated();
+      return state.isFilterByTranslated() == state.isFilterByNeedReview() 
+            && state.isFilterByUntranslated() == state.isFilterByNeedReview()
+            && state.isFilterByHasError() == state.isFilterByNeedReview()
+            && state.isFilterByApproved() == state.isFilterByNeedReview()
+            && state.isFilterByRejected() == state.isFilterByNeedReview();
    }
 
    /**
@@ -269,6 +287,8 @@ public class UserConfigHolder
       private boolean filterByUntranslated;
       private boolean filterByNeedReview;
       private boolean filterByTranslated;
+      private boolean filterByApproved;
+      private boolean filterByRejected;
       private boolean filterByHasError;
 
       private boolean showSaveApprovedWarning;
@@ -299,6 +319,8 @@ public class UserConfigHolder
          this.filterByUntranslated = old.isFilterByUntranslated();
          this.filterByNeedReview = old.isFilterByNeedReview();
          this.filterByTranslated = old.isFilterByTranslated();
+         this.filterByApproved = old.isFilterByApproved();
+         this.filterByRejected = old.isFilterByRejected();
          this.filterByHasError = old.isFilterByHasError();
          this.showSaveApprovedWarning = old.isShowSaveApprovedWarning();
          this.spellCheckEnabled = old.isSpellCheckEnabled();
@@ -359,6 +381,16 @@ public class UserConfigHolder
       {
          return filterByTranslated;
       }
+      
+      public boolean isFilterByApproved()
+      {
+         return filterByApproved;
+      }
+      
+      public boolean isFilterByRejected()
+      {
+         return filterByRejected;
+      }
 
       public boolean isFilterByHasError()
       {
@@ -405,6 +437,4 @@ public class UserConfigHolder
          return enabledValidationIds;
       }
    }
-
-
 }

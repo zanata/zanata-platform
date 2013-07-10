@@ -75,19 +75,23 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay> im
    }
 
    @Override
-   public void messageFilterOptionChanged(Boolean translatedChkValue, Boolean draftChkValue, Boolean untranslatedChkValue, Boolean hasErrorChkValue)
+   public void messageFilterOptionChanged(Boolean translatedChkValue, Boolean fuzzyChkValue, Boolean untranslatedChkValue, Boolean approvedChkValue, Boolean rejectedChkValue, Boolean hasErrorChkValue)
    {
       UserConfigHolder configHolder = userOptionsService.getConfigHolder();
       configHolder.setFilterByTranslated(translatedChkValue);
-      configHolder.setFilterByNeedReview(draftChkValue);
+      configHolder.setFilterByNeedReview(fuzzyChkValue);
       configHolder.setFilterByUntranslated(untranslatedChkValue);
+      configHolder.setFilterByApproved(approvedChkValue);
+      configHolder.setFilterByRejected(rejectedChkValue);
       configHolder.setFilterByHasError(hasErrorChkValue);
 
       // push history
       HistoryToken token = history.getHistoryToken();
       token.setFilterTranslated(translatedChkValue);
-      token.setFilterFuzzy(draftChkValue);
+      token.setFilterFuzzy(fuzzyChkValue);
       token.setFilterUntranslated(untranslatedChkValue);
+      token.setFilterApproved(approvedChkValue);
+      token.setFilterRejected(rejectedChkValue);
       token.setFilterHasError(hasErrorChkValue);
       history.newItem(token);
    }
@@ -118,6 +122,8 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay> im
          display.setTranslatedFilter(configurationState.isFilterByTranslated());
          display.setNeedReviewFilter(configurationState.isFilterByNeedReview());
          display.setUntranslatedFilter(configurationState.isFilterByUntranslated());
+         display.setApprovedFilter(configurationState.isFilterByApproved());
+         display.setRejectedFilter(configurationState.isFilterByRejected());
          display.setHasErrorFilter(configurationState.isFilterByHasError());
       }
 
@@ -131,6 +137,8 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay> im
          display.setTranslatedFilter(event.isFilterTranslated());
          display.setNeedReviewFilter(event.isFilterNeedReview());
          display.setUntranslatedFilter(event.isFilterUntranslated());
+         display.setApprovedFilter(event.isFilterApproved());
+         display.setRejectedFilter(event.isFilterRejected());
          display.setHasErrorFilter(event.isFilterHasError());
       }
    }

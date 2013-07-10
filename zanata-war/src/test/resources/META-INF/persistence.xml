@@ -60,7 +60,7 @@
 			<property name="hibernate.cache.region.factory_class" value="org.hibernate.testing.cache.CachingRegionFactory" />
 			<property name="hibernate.hbm2ddl.auto" value="create"/>
 
-			<property name="hibernate.connection.provider_class" value="org.zanata.dao.WrappedConnectionProvider" />
+			<property name="hibernate.connection.provider_class" value="org.zanata.database.WrappedDriverManagerConnectionProvider" />
 
 			<property name="hibernate.connection.driver_class" value="org.h2.Driver" />
 			<!-- Configure the in-memory database to be shared, and so that it

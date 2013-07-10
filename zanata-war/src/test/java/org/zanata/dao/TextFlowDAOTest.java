@@ -72,12 +72,12 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest
       HLocale deLocale = getEm().find(HLocale.class, 3L);
       log.info("locale: {}", deLocale);
 
-      FilterConstraints untranslated = FilterConstraints.keepAll().excludeFuzzy().excludeApproved();
-      List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraint(new DocumentId(1L, ""), deLocale, untranslated, 0, 10);
+      FilterConstraints untranslated = FilterConstraints.keepAll().excludeFuzzy().excludeTranslated();
+      List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraints(new DocumentId(1L, ""), deLocale, untranslated, 0, 10);
       assertThat(result.size(), is(0));
 
       HLocale frLocale = getEm().find(HLocale.class, 6L);
-      result = dao.getTextFlowByDocumentIdWithConstraint(new DocumentId(1L, ""), frLocale, untranslated, 0, 10);
+      result = dao.getTextFlowByDocumentIdWithConstraints(new DocumentId(1L, ""), frLocale, untranslated, 0, 10);
       assertThat(result.size(), is(1));
 
    }
@@ -86,8 +86,8 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest
    public void canGetTextFlowWithNullTarget() {
       HLocale deLocale = getEm().find(HLocale.class, 3L);
 
-      FilterConstraints untranslated = FilterConstraints.keepAll().excludeFuzzy().excludeApproved();
-      List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraint(new DocumentId(4L, ""), deLocale, untranslated, 0, 10);
+      FilterConstraints untranslated = FilterConstraints.keepAll().excludeFuzzy().excludeTranslated();
+      List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraints(new DocumentId(4L, ""), deLocale, untranslated, 0, 10);
       assertThat(result, Matchers.hasSize(1));
    }
 
@@ -100,23 +100,23 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest
       DocumentId documentId1 = new DocumentId(1L, ""); // esLocale fuzzy,
                                                        // frLocale new, deLocale
                                                        // approved
-      List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraint(documentId1, esLocale, FilterConstraints.keepAll().excludeApproved().excludeNew(), 0, 10);
+      List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraints(documentId1, esLocale, FilterConstraints.keepAll().excludeTranslated().excludeNew(), 0, 10);
       assertThat(result, Matchers.hasSize(1));
 
-      result = dao.getTextFlowByDocumentIdWithConstraint(documentId1, frLocale, FilterConstraints.keepAll().excludeFuzzy(), 0, 10);
+      result = dao.getTextFlowByDocumentIdWithConstraints(documentId1, frLocale, FilterConstraints.keepAll().excludeFuzzy(), 0, 10);
       assertThat(result, Matchers.hasSize(1));
 
-      result = dao.getTextFlowByDocumentIdWithConstraint(documentId1, deLocale, FilterConstraints.keepAll().excludeFuzzy().excludeNew(), 0, 10);
+      result = dao.getTextFlowByDocumentIdWithConstraints(documentId1, deLocale, FilterConstraints.keepAll().excludeFuzzy().excludeNew(), 0, 10);
       assertThat(result, Matchers.hasSize(1));
 
       HLocale enUSLocale = getEm().find(HLocale.class, 4L);
       DocumentId documentId2 = new DocumentId(2L, ""); // all 3 text flows has
                                                        // en-US fuzzy target
 
-      result = dao.getTextFlowByDocumentIdWithConstraint(documentId2, enUSLocale, FilterConstraints.keepAll().excludeApproved().excludeFuzzy(), 0, 10);
+      result = dao.getTextFlowByDocumentIdWithConstraints(documentId2, enUSLocale, FilterConstraints.keepAll().excludeTranslated().excludeFuzzy(), 0, 10);
       assertThat(result, Matchers.<HTextFlow>empty());
 
-      result = dao.getTextFlowByDocumentIdWithConstraint(documentId2, enUSLocale, FilterConstraints.keepAll().excludeNew(), 0, 10);
+      result = dao.getTextFlowByDocumentIdWithConstraints(documentId2, enUSLocale, FilterConstraints.keepAll().excludeNew(), 0, 10);
       assertThat(result, Matchers.hasSize(3));
    }
 
@@ -124,18 +124,31 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest
    public void canBuildContentStateQuery()
    {
       // accept all
-      assertThat(TextFlowDAO.buildContentStateCondition(true, true, true, "tft"), Matchers.equalTo("1"));
-      assertThat(TextFlowDAO.buildContentStateCondition(false, false, false, "tft"), Matchers.equalTo("1"));
+      assertThat(TextFlowDAO.buildContentStateCondition(FilterConstraints.keepAll(), "tft"), Matchers.equalTo("1"));
+      assertThat(TextFlowDAO.buildContentStateCondition(FilterConstraints.keepNone(), "tft"), Matchers.equalTo("1"));
 
       // single status filter
-      assertThat(TextFlowDAO.buildContentStateCondition(true, false, false, "tft"), Matchers.equalTo("(tft.state=2 or tft.state=3)"));
-      assertThat(TextFlowDAO.buildContentStateCondition(false, true, false, "tft"), Matchers.equalTo("(tft.state=1 or tft.state=4)"));
-      assertThat(TextFlowDAO.buildContentStateCondition(false, false, true, "tft"), Matchers.equalTo("(tft.state=0 or tft.state is null)"));
+      FilterConstraints filterConstraints = FilterConstraints.keepNone();
+      
+      filterConstraints = filterConstraints.filterByStatus(false, false, true, false, false);
+      assertThat(TextFlowDAO.buildContentStateCondition(filterConstraints, "tft"), Matchers.equalTo("(tft.state=2 or tft.state=3)"));
+      
+      filterConstraints = filterConstraints.filterByStatus(false, true, false, false, false);
+      assertThat(TextFlowDAO.buildContentStateCondition(filterConstraints, "tft"), Matchers.equalTo("(tft.state=1 or tft.state=4)"));
+      
+      filterConstraints = filterConstraints.filterByStatus(true, false, false, false, false);
+      assertThat(TextFlowDAO.buildContentStateCondition(filterConstraints, "tft"), Matchers.equalTo("(tft.state=0 or tft.state is null)"));
 
       // two status
-      assertThat(TextFlowDAO.buildContentStateCondition(true, false, true, "tft"), Matchers.equalTo("(tft.state=2 or tft.state=3 or tft.state=0 or tft.state is null)"));
-      assertThat(TextFlowDAO.buildContentStateCondition(true, true, false, "tft"), Matchers.equalTo("(tft.state=2 or tft.state=3 or tft.state=1 or tft.state=4)"));
-      assertThat(TextFlowDAO.buildContentStateCondition(false, true, true, "tft"), Matchers.equalTo("(tft.state=1 or tft.state=4 or tft.state=0 or tft.state is null)"));
+      
+      filterConstraints = filterConstraints.filterByStatus(true, false, true, false, false);
+      assertThat(TextFlowDAO.buildContentStateCondition(filterConstraints, "tft"), Matchers.equalTo("(tft.state=2 or tft.state=3 or tft.state=0 or tft.state is null)"));
+      
+      filterConstraints = filterConstraints.filterByStatus(false, true, true, false, false);
+      assertThat(TextFlowDAO.buildContentStateCondition(filterConstraints, "tft"), Matchers.equalTo("(tft.state=2 or tft.state=3 or tft.state=1 or tft.state=4)"));
+      
+      filterConstraints = filterConstraints.filterByStatus(true, true, false, false, false);
+      assertThat(TextFlowDAO.buildContentStateCondition(filterConstraints, "tft"), Matchers.equalTo("(tft.state=1 or tft.state=4 or tft.state=0 or tft.state is null)"));
    }
 
    @Test
@@ -156,7 +169,7 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest
    {
       HLocale deLocale = getEm().find(HLocale.class, 3L);
 
-      List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraint(new DocumentId(new Long(4), ""), deLocale, FilterConstraints.filterBy("mssg").excludeApproved().excludeFuzzy(), 0, 10);
+      List<HTextFlow> result = dao.getTextFlowByDocumentIdWithConstraints(new DocumentId(new Long(4), ""), deLocale, FilterConstraints.filterBy("mssg").excludeTranslated().excludeFuzzy(), 0, 10);
 
       assertThat(result, Matchers.hasSize(1));
    }
