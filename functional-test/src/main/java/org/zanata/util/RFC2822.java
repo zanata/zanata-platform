@@ -9,10 +9,15 @@ import java.util.Map;
 public class RFC2822 {
 
    /*
+    * Synopsis:
+    * The functions of this class contain valid and invalid email addresses, as stipulated in the
+    * RFC2822 Internet Message Format standard, or referred to standards.
+    *
     * Definitions
     * localpart: the section of an address preceding the @ symbol
     * domain: the section of an address following the @ symbol
-    * label: section of domain between the @ symbol or period and the next period or end e.g example in me@example.com
+    * label: section of localpart or domain between the start, @ symbol, period or end (also referred to as "atom")
+    *     e.g. me, myself, example, com in me.myself@example.com
     * quote / quoting: a section of the localpart contained within quotation marks
     *
     * BUG982048
