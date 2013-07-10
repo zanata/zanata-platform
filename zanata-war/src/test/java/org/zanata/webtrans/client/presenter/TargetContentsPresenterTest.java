@@ -440,7 +440,8 @@ public class TargetContentsPresenterTest
    public void testIsDisplayButtons()
    {
       userWorkspaceContext.setHasWriteAccess(false);
-
+      userWorkspaceContext.setHasReviewAccess(false);
+      
       boolean displayButtons = presenter.isDisplayButtons();
 
       assertThat(displayButtons, Matchers.is(false));

@@ -62,6 +62,11 @@ public class WorkspaceRestrictions implements IsSerializable
    {
       return new WorkspaceRestrictions(isProjectActive, hasWriteAccess, hasGlossaryUpdateAccess, hasReviewAccess, projectRequireReview);
    }
+   
+   public WorkspaceRestrictions changeReviewAccess(boolean hasReviewAccess)
+   {
+      return new WorkspaceRestrictions(isProjectActive, hasWriteAccess, hasGlossaryUpdateAccess, hasReviewAccess, projectRequireReview);
+   }
 
    @Override
    public String toString()

@@ -244,8 +244,8 @@ public class SearchResultsPresenterTest
       when(mockKeyShortcutPresenter.register(capturedKeyShortcuts.capture())).thenReturn(handlerRegistration);
       when(mockDataProviderDoc1.getList()).thenReturn(dataProviderDoc1List);
 
-      boolean workspaceIsReadOnly = false;
-      when(mockUserWorkspaceContext.hasReadOnlyAccess()).thenReturn(workspaceIsReadOnly);
+      boolean hasModifyTranslationAccess = true;
+      when(mockUserWorkspaceContext.hasWriteAccess()).thenReturn(hasModifyTranslationAccess);
 
       searchResultsPresenter.bind();
 
@@ -259,7 +259,7 @@ public class SearchResultsPresenterTest
       verify(mockEventBus).addHandler(eq(WorkspaceContextUpdateEvent.getType()), capturedWorkspaceContextUpdatedEventHandler.capture());
 
 
-      verify(mockDisplay).setReplaceAllButtonVisible(!workspaceIsReadOnly);
+      verify(mockDisplay).setReplaceAllButtonVisible(hasModifyTranslationAccess);
       verify(mockDisplay).setReplaceAllButtonEnabled(false);
 
       verify(mockDisplay).addSearchFieldsSelect("search target", "target");
