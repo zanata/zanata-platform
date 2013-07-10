@@ -75,7 +75,7 @@
 		}
 			
 		.drop-down {
-			position:relative:
+			position:relative;
 		}
 		
 		.drop-down:hover {
