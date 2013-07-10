@@ -57,11 +57,11 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.search.ActiveStates;
 import org.zanata.search.FilterConstraintToQuery;
 import org.zanata.search.FilterConstraints;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TextFlowSearchService;
+import org.zanata.webtrans.shared.model.ContentStateGroup;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 
@@ -140,8 +140,10 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
          return Collections.emptyList();
       }
 
-      ActiveStates includedStates = constraints.getIncludedStates();
-      if (!includedStates.isNewOn() && !includedStates.isFuzzyOn() && !includedStates.isTranslatedOn())
+      // FIXME this looks like it assumes only 3 states and would not work properly for getting
+      // e.g. only approved strings while there is a search active.
+      ContentStateGroup includedStates = constraints.getIncludedStates();
+      if (!includedStates.hasNew() && !includedStates.hasFuzzy() && !includedStates.hasTranslated())
       {
          // including nothing
          return Collections.emptyList();
@@ -300,19 +302,19 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService
          }
          targetQuery.add(localeQuery, Occur.MUST);
 
-         if (!constraints.getIncludedStates().isTranslatedOn())
+         if (!constraints.getIncludedStates().hasTranslated())
          {
             TermQuery approvedStateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.Approved.toString()));
             targetQuery.add(approvedStateQuery, Occur.MUST_NOT);
          }
 
-         if (!constraints.getIncludedStates().isFuzzyOn())
+         if (!constraints.getIncludedStates().hasFuzzy())
          {
             TermQuery approvedStateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.NeedReview.toString()));
             targetQuery.add(approvedStateQuery, Occur.MUST_NOT);
          }
 
-         if (!constraints.getIncludedStates().isNewOn())
+         if (!constraints.getIncludedStates().hasNew())
          {
             TermQuery approvedStateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.New.toString()));
             targetQuery.add(approvedStateQuery, Occur.MUST_NOT);

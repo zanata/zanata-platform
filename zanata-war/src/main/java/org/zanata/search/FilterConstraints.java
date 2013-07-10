@@ -23,6 +23,8 @@ package org.zanata.search;
 //TODO May want to add document(someDocument) to these constraints
 //so that only one search method is needed on the interface.
 
+import org.zanata.webtrans.shared.model.ContentStateGroup;
+
 import lombok.Getter;
 
 import com.google.common.base.Objects;
@@ -39,11 +41,11 @@ public class FilterConstraints
    private boolean isCaseSensitive;
    private boolean searchInSource;
    private boolean searchInTarget;
-   private ActiveStates includedStates;
+   private ContentStateGroup includedStates;
 
    private FilterConstraints(String searchString, boolean caseSensitive,
                              boolean searchInSource, boolean searchInTarget,
-                             ActiveStates includedStates)
+                             ContentStateGroup includedStates)
    {
       this.searchString = searchString;
       this.isCaseSensitive = caseSensitive;
@@ -77,11 +79,11 @@ public class FilterConstraints
       private boolean caseSensitive;
       private boolean searchInSource;
       private boolean searchInTarget;
-      private ActiveStates.Builder states;
+      private ContentStateGroup.Builder states;
 
       public Builder()
       {
-         states = ActiveStates.builder();
+         states = ContentStateGroup.builder();
          setKeepAll();
       }
 
@@ -103,7 +105,7 @@ public class FilterConstraints
          caseSensitive = false;
          searchInSource = true;
          searchInTarget = true;
-         states.allOn();
+         states.addAll();
       }
 
       public Builder keepNone()
@@ -112,7 +114,7 @@ public class FilterConstraints
          caseSensitive = false;
          searchInSource = false;
          searchInTarget = false;
-         states.allOff();
+         states.removeAll();
          return this;
       }
 
@@ -140,7 +142,7 @@ public class FilterConstraints
          return this;
       }
 
-      public Builder includeStates(ActiveStates states)
+      public Builder includeStates(ContentStateGroup states)
       {
          //FIXME this behaviour is too surprising.
          // It exists because the editor UI should show all states when either
@@ -148,7 +150,7 @@ public class FilterConstraints
          // in the editor backend *before* sending a request to the server.
          if (states.hasNoStates())
          {
-            this.states.allOn();
+            this.states.addAll();
          }
          else
          {
@@ -159,61 +161,61 @@ public class FilterConstraints
 
       public Builder includeNew()
       {
-         states.setNewOn(true);
+         states.includeNew(true);
          return this;
       }
 
       public Builder excludeNew()
       {
-         states.setNewOn(false);
+         states.includeNew(false);
          return this;
       }
 
       public Builder includeFuzzy()
       {
-         states.setFuzzyOn(true);
+         states.includeFuzzy(true);
          return this;
       }
 
       public Builder excludeFuzzy()
       {
-         states.setFuzzyOn(false);
+         states.includeFuzzy(false);
          return this;
       }
 
       public Builder includeTranslated()
       {
-         states.setTranslatedOn(true);
+         states.includeTranslated(true);
          return this;
       }
 
       public Builder excludeTranslated()
       {
-         states.setTranslatedOn(false);
+         states.includeTranslated(false);
          return this;
       }
 
       public Builder includeApproved()
       {
-         states.setApprovedOn(true);
+         states.includeApproved(true);
          return this;
       }
 
       public Builder excludeApproved()
       {
-         states.setApprovedOn(false);
+         states.includeApproved(false);
          return this;
       }
 
       public Builder includeRejected()
       {
-         states.setRejectedOn(true);
+         states.includeRejected(true);
          return this;
       }
 
       public Builder excludeRejected()
       {
-         states.setRejectedOn(false);
+         states.includeRejected(false);
          return this;
       }
 

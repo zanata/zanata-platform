@@ -41,9 +41,9 @@ import org.zanata.common.LocaleId;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
-import org.zanata.search.ActiveStates;
 import org.zanata.search.FilterConstraintToQuery;
 import org.zanata.search.FilterConstraints;
+import org.zanata.webtrans.shared.model.ContentStateGroup;
 import org.zanata.webtrans.shared.model.DocumentId;
 
 import com.google.common.base.Joiner;
@@ -172,7 +172,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
    protected static String buildContentStateCondition(FilterConstraints constraints, String alias)
    {
 
-      ActiveStates includedStates = constraints.getIncludedStates();
+      ContentStateGroup includedStates = constraints.getIncludedStates();
       if (includedStates.hasAllStates() || includedStates.hasNoStates())
       {
          return "1";
@@ -181,17 +181,17 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       builder.append("(");
       List<String> conditions = Lists.newArrayList();
       final String column = alias + ".state";
-      if (constraints.getIncludedStates().isTranslatedOn())
+      if (constraints.getIncludedStates().hasTranslated())
       {
          conditions.add(column + "=2"); // Translated
          conditions.add(column + "=3"); // Approved
       }
-      if (constraints.getIncludedStates().isFuzzyOn())
+      if (constraints.getIncludedStates().hasFuzzy())
       {
          conditions.add(column + "=1"); // Fuzzy
          conditions.add(column + "=4"); // Rejected
       }
-      if (constraints.getIncludedStates().isNewOn())
+      if (constraints.getIncludedStates().hasNew())
       {
          conditions.add(column + "=0 or " + column + " is null");
       }

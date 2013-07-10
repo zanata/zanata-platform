@@ -2,8 +2,8 @@ package org.zanata.webtrans.shared.rpc;
 
 import java.util.List;
 
-import org.zanata.search.ActiveStates;
 import org.zanata.webtrans.client.service.GetTransUnitActionContext;
+import org.zanata.webtrans.shared.model.ContentStateGroup;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.ValidationId;
@@ -17,7 +17,7 @@ public class GetTransUnitList extends AbstractWorkspaceAction<GetTransUnitListRe
    private int count;
    private DocumentId documentId;
    private String phrase;
-   private ActiveStates filterStates;
+   private ContentStateGroup filterStates;
    private boolean filterHasError;
    private List<ValidationId> validationIds;
    private TransUnitId targetTransUnitId;
@@ -34,12 +34,12 @@ public class GetTransUnitList extends AbstractWorkspaceAction<GetTransUnitListRe
       count = context.getCount();
       phrase = context.getFindMessage();
       // @formatter :off
-      filterStates = ActiveStates.builder()
-            .setNewOn(context.isFilterUntranslated())
-            .setFuzzyOn(context.isFilterNeedReview())
-            .setTranslatedOn(context.isFilterTranslated())
-            .setApprovedOn(context.isFilterApproved())
-            .setRejectedOn(context.isFilterRejected())
+      filterStates = ContentStateGroup.builder()
+            .includeNew(context.isFilterUntranslated())
+            .includeFuzzy(context.isFilterNeedReview())
+            .includeTranslated(context.isFilterTranslated())
+            .includeApproved(context.isFilterApproved())
+            .includeRejected(context.isFilterRejected())
             .build();
       // @formatter :on
       filterHasError = context.isFilterHasError();
@@ -83,34 +83,34 @@ public class GetTransUnitList extends AbstractWorkspaceAction<GetTransUnitListRe
       return this.phrase;
    }
 
-   public ActiveStates getFilterStates()
+   public ContentStateGroup getFilterStates()
    {
       return filterStates;
    }
 
    public boolean isFilterTranslated()
    {
-      return filterStates.isTranslatedOn();
+      return filterStates.hasTranslated();
    }
 
    public boolean isFilterNeedReview()
    {
-      return filterStates.isFuzzyOn();
+      return filterStates.hasFuzzy();
    }
 
    public boolean isFilterUntranslated()
    {
-      return filterStates.isNewOn();
+      return filterStates.hasNew();
    }
    
    public boolean isFilterApproved()
    {
-      return filterStates.isApprovedOn();
+      return filterStates.hasApproved();
    }
    
    public boolean isFilterRejected()
    {
-      return filterStates.isRejectedOn();
+      return filterStates.hasRejected();
    }
 
    public boolean isFilterHasError()

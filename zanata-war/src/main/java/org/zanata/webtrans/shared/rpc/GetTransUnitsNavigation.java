@@ -21,8 +21,9 @@
 package org.zanata.webtrans.shared.rpc;
 
 
-import org.zanata.search.ActiveStates;
 import org.zanata.webtrans.client.service.GetTransUnitActionContext;
+import org.zanata.webtrans.shared.model.ContentStateGroup;
+
 import com.google.common.base.Objects;
 
 public class GetTransUnitsNavigation
@@ -30,14 +31,14 @@ public class GetTransUnitsNavigation
    private Long id;
    private String phrase;
 
-   private ActiveStates activeStates;
+   private ContentStateGroup activeStates;
 
    @SuppressWarnings("unused")
    private GetTransUnitsNavigation()
    {
    }
 
-   public GetTransUnitsNavigation(Long id, String phrase, ActiveStates activeStates)
+   public GetTransUnitsNavigation(Long id, String phrase, ContentStateGroup activeStates)
    {
       this.id = id;
       this.phrase = phrase;
@@ -48,12 +49,12 @@ public class GetTransUnitsNavigation
    {
       this(context.getDocument().getId().getId(),
            context.getFindMessage(),
-           ActiveStates.builder()
-              .setNewOn(context.isFilterUntranslated())
-              .setFuzzyOn(context.isFilterNeedReview())
-              .setTranslatedOn(context.isFilterTranslated())
-              .setApprovedOn(context.isFilterApproved())
-              .setRejectedOn(context.isFilterRejected())
+           ContentStateGroup.builder()
+              .includeNew(context.isFilterUntranslated())
+              .includeFuzzy(context.isFilterNeedReview())
+              .includeTranslated(context.isFilterTranslated())
+              .includeApproved(context.isFilterApproved())
+              .includeRejected(context.isFilterRejected())
               .build());
    }
 
@@ -72,7 +73,7 @@ public class GetTransUnitsNavigation
       return this.phrase;
    }
 
-   public ActiveStates getActiveStates()
+   public ContentStateGroup getActiveStates()
    {
       return activeStates;
    }
