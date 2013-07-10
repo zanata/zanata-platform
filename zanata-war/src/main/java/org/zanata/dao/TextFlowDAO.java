@@ -128,7 +128,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
             .append(" WHERE tf.document_id = :docId AND tf.obsolete = 0");
       queryBuilder
             .append(" AND ")
-            .append(buildContentStateCondition(filterConstraints, "tft"));
+            .append(buildContentStateCondition(filterConstraints.getIncludedStates(), "tft"));
       boolean hasSearchString = !Strings.isNullOrEmpty(filterConstraints.getSearchString());
       if (hasSearchString)
       {
@@ -163,16 +163,12 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
     * This will build a SQL query condition in where clause.
     * If all status are equal (i.e. all true or all false), it's treated as accept all and it will return '1'.
     *
-    * @param acceptApproved accept approved status
-    * @param acceptFuzzy accept fuzzy status
-    * @param acceptUntranslated accept untranslated status
-    * @param alias HTextFlowTarget alias
+    * @param includedStates
+    * @param hTextFlowTargetTableAlias alias being used for the target table in the current query
     * @return '1' if accept all status or a SQL condition clause with target content state conditions in parentheses '()' joined by 'or'
     */
-   protected static String buildContentStateCondition(FilterConstraints constraints, String alias)
+   protected static String buildContentStateCondition(ContentStateGroup includedStates, String hTextFlowTargetTableAlias)
    {
-
-      ContentStateGroup includedStates = constraints.getIncludedStates();
       if (includedStates.hasAllStates() || includedStates.hasNoStates())
       {
          return "1";
@@ -180,20 +176,26 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       StringBuilder builder = new StringBuilder();
       builder.append("(");
       List<String> conditions = Lists.newArrayList();
-      final String column = alias + ".state";
-      if (constraints.getIncludedStates().hasTranslated())
+      final String stateColumn = hTextFlowTargetTableAlias + ".state";
+      if (includedStates.hasNew())
       {
-         conditions.add(column + "=2"); // Translated
-         conditions.add(column + "=3"); // Approved
+         conditions.add(stateColumn + "=0 or " + stateColumn + " is null");
       }
-      if (constraints.getIncludedStates().hasFuzzy())
+      if (includedStates.hasFuzzy())
       {
-         conditions.add(column + "=1"); // Fuzzy
-         conditions.add(column + "=4"); // Rejected
+         conditions.add(stateColumn + "=1");
       }
-      if (constraints.getIncludedStates().hasNew())
+      if (includedStates.hasTranslated())
       {
-         conditions.add(column + "=0 or " + column + " is null");
+         conditions.add(stateColumn + "=2");
+      }
+      if (includedStates.hasApproved())
+      {
+         conditions.add(stateColumn + "=3");
+      }
+      if (includedStates.hasRejected())
+      {
+         conditions.add(stateColumn + "=4");
       }
       Joiner joiner = Joiner.on(" or ");
       joiner.appendTo(builder, conditions);
