@@ -891,6 +891,12 @@
                 <version>1.5.2</version>
 			</dependency>
 
+			<dependency>
+			    <groupId>xom</groupId>
+			    <artifactId>xom</artifactId>
+			    <version>1.0</version>
+			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 
