@@ -80,6 +80,16 @@
            <scope>test</scope>
        </dependency>
 
+       <dependency>
+			<groupId>xom</groupId>
+			<artifactId>xom</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>xml-apis</artifactId>
+					<groupId>xml-apis</groupId>
+				</exclusion>
+			</exclusions>
+       </dependency>
    </dependencies>
 
     <build>
