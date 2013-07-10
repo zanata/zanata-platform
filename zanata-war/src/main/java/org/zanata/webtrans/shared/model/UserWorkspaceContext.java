@@ -38,7 +38,7 @@ public class UserWorkspaceContext implements IsSerializable
 
    public boolean hasReadOnlyAccess()
    {
-      return (!getWorkspaceRestrictions().isProjectActive() || !getWorkspaceRestrictions().isHasWriteAccess());
+      return (!getWorkspaceRestrictions().isProjectActive() || (!getWorkspaceRestrictions().isHasWriteAccess() && !getWorkspaceRestrictions().isHasReviewAccess()));
    }
 
    public WorkspaceRestrictions getWorkspaceRestrictions()

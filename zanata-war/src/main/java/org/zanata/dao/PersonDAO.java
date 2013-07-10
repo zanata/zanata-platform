@@ -146,6 +146,43 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long>
    }
 
    /**
+    * Indicates if a Person is a translator of a language team.
+    * @param person The person
+    * @param language The language team
+    * @return True if person is a translator of the language team.
+    */
+   public boolean isTranslatorOfLanguageTeam( HPerson person, HLocale language )
+   {
+      Query q = getSession().createQuery("select count(*) from HLocaleMember " +
+            "where id.person = :person and id.supportedLanguage = :language " +
+            "and translator = true")
+            .setParameter("person", person)
+            .setParameter("language", language);
+      q.setCacheable(false).setComment("PersonDAO.isTranslatorOfLanguageTeam");
+      Long totalCount = (Long) q.uniqueResult();
+      return totalCount > 0L;
+   }
+   
+   /**
+    * Indicates if a Person is a reviewer of a language team.
+    * @param person The person
+    * @param language The language team
+    * @return True if person is a reviewer of the language team.
+    */
+   public boolean isReviewerOfLanguageTeam( HPerson person, HLocale language )
+   {
+      Query q = getSession().createQuery("select count(*) from HLocaleMember " +
+            "where id.person = :person and id.supportedLanguage = :language " +
+            "and reviewer = true")
+            .setParameter("person", person)
+            .setParameter("language", language);
+      q.setCacheable(false).setComment("PersonDAO.isReviewerOfLanguageTeam");
+      Long totalCount = (Long) q.uniqueResult();
+      return totalCount > 0L;
+   }
+   
+   
+   /**
     * Indicates if a Person is a coordinator of a language team.
     * @param person The person
     * @param language The language team

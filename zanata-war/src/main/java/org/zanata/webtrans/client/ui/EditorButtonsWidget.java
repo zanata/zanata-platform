@@ -43,12 +43,20 @@ public class EditorButtonsWidget extends Composite
    {
       initWidget(ourUiBinder.createAndBindUi(this));
       displayReviewButtons(listener != null && listener.canReviewTranslation());
+      displayModifyTranslationButtons(listener != null && listener.canModifyTranslation());
    }
 
    private void displayReviewButtons(boolean canReview)
    {
       acceptIcon.setVisible(canReview);
       rejectIcon.setVisible(canReview);
+   }
+   
+   private void displayModifyTranslationButtons(boolean canModify)
+   {
+      saveIcon.setVisible(canModify);
+      fuzzyIcon.setVisible(canModify);
+      cancelIcon.setVisible(canModify);
    }
 
    public void addUndo(final UndoLink undoLink)
@@ -117,6 +125,7 @@ public class EditorButtonsWidget extends Composite
    {
       this.listener = listener;
       displayReviewButtons(listener.canReviewTranslation());
+      displayModifyTranslationButtons(listener.canModifyTranslation());
    }
 
    public void setId(TransUnitId id)

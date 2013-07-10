@@ -665,6 +665,13 @@ public class TargetContentsPresenter implements
       WorkspaceRestrictions restrictions = userWorkspaceContext.getWorkspaceRestrictions();
       return restrictions.isHasReviewAccess() && restrictions.isProjectRequireReview();
    }
+   
+   @Override
+   public boolean canModifyTranslation()
+   {
+      WorkspaceRestrictions restrictions = userWorkspaceContext.getWorkspaceRestrictions();
+      return restrictions.isHasWriteAccess();
+   }
 
    @Override
    public void acceptTranslation(TransUnitId id)

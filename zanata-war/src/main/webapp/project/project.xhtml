@@ -57,7 +57,7 @@
                     <rich:dataGrid value="#{versionDetailsAction.getSupportedLocaleList(_version.slug)}" var="language"  columns="3" styleClass="version_details_panel" >
                         <s:div styleClass="version_details_cell">
                             <h:outputLink
-                                rendered="#{not applicationConfiguration.debug and not projectHome.isUserAllowedToTranslate(_version.slug, language) }"
+                                rendered="#{not projectHome.isUserAllowedToTranslateOrReview(_version.slug, language) }"
                                 value="#{request.contextPath}/webtrans/Application.seam" styleClass="table_link" title="#{messages['jsf.Open']}">
                                 <f:param name="project" value="#{projectHome.slug}" />
                                 <f:param name="iteration" value="#{_version.slug}" />
@@ -68,19 +68,7 @@
                             </h:outputLink>
 
                             <h:outputLink
-                                rendered="#{applicationConfiguration.debug and not projectHome.isUserAllowedToTranslate(_version.slug, language)}"
-                                value="#{request.contextPath}/webtrans/Application.seam" styleClass="table_link" title="#{messages['jsf.OpenGWTDevMode']}">
-                                <f:param name="project" value="#{projectHome.slug}" />
-                                <f:param name="iteration" value="#{_version.slug}" />
-                                <f:param name="localeId" value="#{language.localeId}" />
-                                <f:param name="locale" value="#{locale.language}" />
-                                <f:param name="gwt.codesvr" value="127.0.0.1:9997" />
-                                <span>#{language.localeId.id}</span>
-                                <span class="icon-eye icon" />
-                            </h:outputLink>
-
-                            <h:outputLink
-                                rendered="#{not applicationConfiguration.debug and projectHome.isUserAllowedToTranslate(_version.slug, language)}"
+                                rendered="#{projectHome.isUserAllowedToTranslateOrReview(_version.slug, language)}"
                                 value="#{request.contextPath}/webtrans/Application.seam" styleClass="table_link" title="#{messages['jsf.Translate']}">
                                 <f:param name="project" value="#{projectHome.slug}" />
                                 <f:param name="iteration" value="#{_version.slug}" />
@@ -90,17 +78,7 @@
                                 <span class="icon-edit icon"/>
                             </h:outputLink>
 
-                            <h:outputLink
-                                rendered="#{applicationConfiguration.debug and projectHome.isUserAllowedToTranslate(_version.slug, language)}"
-                                value="#{request.contextPath}/webtrans/Application.seam" styleClass="table_link" title="#{messages['jsf.TranslateGWTDevMode']}">
-                                <f:param name="project" value="#{projectHome.slug}" />
-                                <f:param name="iteration" value="#{_version.slug}" />
-                                <f:param name="localeId" value="#{language.localeId}" />
-                                <f:param name="locale" value="#{locale.language}" />
-                                <f:param name="gwt.codesvr" value="127.0.0.1:9997" />
-                                <span>#{language.localeId.id}</span>
-                                <span class="icon-edit icon"/>
-                            </h:outputLink>
+                           
                         </s:div>
                     </rich:dataGrid>
                 </c:if>

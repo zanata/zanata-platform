@@ -11,7 +11,7 @@
   <ui:param name="toEmailAddr" value="#{emailServiceImpl.toEmailAddr}" />
   <ui:param name="replyToName" value="#{sendEmail.fromName}" />
   <ui:param name="replyToEmail" value="#{sendEmail.replyEmail}" />
-  <ui:param name="subject" value="#{languageJoinUpdateRoleAction.subject}" />
+  <ui:param name="subject" value="#{messages['jsf.email.joinrequest.Subject']}" />
 
   <ui:define name="body">
         <p>#{messages['jsf.email.coordinator.DearCoordinator']}</p>

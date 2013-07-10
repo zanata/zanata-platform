@@ -66,14 +66,27 @@ public class SecurityFunctions
       }
    }
 
-   public static boolean isUserMemberOfLanguageTeam( HLocale lang )
+   public static boolean isUserTranslatorOfLanguageTeam( HLocale lang )
    {
       HAccount authenticatedAccount = getAuthenticatedAccount();
       PersonDAO personDAO = (PersonDAO)Component.getInstance(PersonDAO.class);
 
       if( authenticatedAccount != null )
       {
-         return personDAO.isMemberOfLanguageTeam( authenticatedAccount.getPerson(), lang );
+         return personDAO.isTranslatorOfLanguageTeam( authenticatedAccount.getPerson(), lang );
+      }
+
+      return false; // No authenticated user
+   }
+   
+   public static boolean isUserReviewerOfLanguageTeam( HLocale lang )
+   {
+      HAccount authenticatedAccount = getAuthenticatedAccount();
+      PersonDAO personDAO = (PersonDAO)Component.getInstance(PersonDAO.class);
+
+      if( authenticatedAccount != null )
+      {
+         return personDAO.isReviewerOfLanguageTeam( authenticatedAccount.getPerson(), lang );
       }
 
       return false; // No authenticated user

@@ -105,7 +105,7 @@
                 </rich:column>
 
 				 <rich:column
-					rendered="#{identity.loggedIn and not applicationConfiguration.debug and not projectIterationFilesAction.isUserAllowedToTranslate()}" 
+					rendered="#{identity.loggedIn and not projectIterationFilesAction.isUserAllowedToTranslate() and not projectIterationFilesAction.isUserAllowedToReview()}" 
 					styleClass="centered actionCol">
 					<f:facet name="header">#{messages['jsf.Actions']}</f:facet>
 					<div style="float:left">
@@ -115,50 +115,23 @@
 	                       		<span class="icon-eye icon" title="#{messages['jsf.Open']}"/>
 	                    </h:outputLink>
                     </div>
-                    <div>
-	                     <s:fragment rendered="#{projectIterationFilesAction.fileUploadAllowed}">
-		                     <a href="#" onclick="openUploadPanel('#{doc.docId}'); return false;" class="table_link" title="#{messages['jsf.Upload']}">
-		                      	<span class="icon-upload icon" title="#{messages['jsf.Upload.Title']}"/> 
-		                    </a>
-	                    </s:fragment>
-                    </div>
 				</rich:column>
 
-				<rich:column 
-					rendered="#{identity.loggedIn and applicationConfiguration.debug and not projectIterationFilesAction.isUserAllowedToTranslate()}" 
-					styleClass="centered actionCol">
-					<f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-					<div style="float:left">
-						<h:outputLink
-	                            title="#{messages['jsf.OpenGWTDevMode']}" styleClass="table_link" 
-	                            value="#{request.contextPath}/webtrans/Application.seam?project=#{projectIterationFilesAction.projectSlug}&amp;iteration=#{projectIterationFilesAction.iterationSlug}&amp;localeId=#{projectIterationFilesAction.localeId}&amp;locale=#{locale.language}#view:doc;doc:#{doc.docId}">
-	                       		<f:param name="gwt.codesvr" value="127.0.0.1:9997" />
-
-	                            <span class="icon-eye icon" title="#{messages['jsf.OpenGWTDevMode']}"/>
-	                    </h:outputLink>
-                    </div>
-                    <div>
-	                     <s:fragment rendered="#{projectIterationFilesAction.fileUploadAllowed}">
-		                     <a href="#" onclick="openUploadPanel('#{doc.docId}'); return false;" class="table_link" title="#{messages['jsf.Upload']}">
-		                      	<span class="icon-upload icon" title="#{messages['jsf.Upload.Title']}"/> 
-		                    </a>
-	                    </s:fragment>
-                    </div>
-				</rich:column>
+				
 
 				<rich:column 
-					rendered="#{identity.loggedIn and not applicationConfiguration.debug and projectIterationFilesAction.isUserAllowedToTranslate()}" 
+					rendered="#{identity.loggedIn and (projectIterationFilesAction.isUserAllowedToTranslate() or projectIterationFilesAction.isUserAllowedToReview())}" 
 					styleClass="centered actionCol">
 					<f:facet name="header">#{messages['jsf.Actions']}</f:facet>
 					<div style="float:left">
 						<h:outputLink
 	                            title="#{messages['jsf.Translate']}" styleClass="table_link" 
 	                            value="#{request.contextPath}/webtrans/Application.seam?project=#{projectIterationFilesAction.projectSlug}&amp;iteration=#{projectIterationFilesAction.iterationSlug}&amp;localeId=#{projectIterationFilesAction.localeId}&amp;locale=#{locale.language}#view:doc;doc:#{doc.docId}">
-	                       		<span class="icon-edit icon" title="#{messages['jsf.Translate']}	"/>
+	                       		<span class="icon-edit icon" title="#{messages['jsf.Translate']}"/>
 	                    </h:outputLink>
                     </div>
                     <div>
-	                     <s:fragment rendered="#{projectIterationFilesAction.fileUploadAllowed}">
+	                     <s:fragment rendered="#{projectIterationFilesAction.fileUploadAllowed and projectIterationFilesAction.isUserAllowedToTranslate()}">
 		                     <a href="#" onclick="openUploadPanel('#{doc.docId}'); return false;" class="table_link" title="#{messages['jsf.Upload']}">
 		                      	<span class="icon-upload icon" title="#{messages['jsf.Upload.Title']}"/> 
 		                    </a>
@@ -166,28 +139,7 @@
                     </div>
 				</rich:column>
 
-				<rich:column 
-					rendered="#{identity.loggedIn and applicationConfiguration.debug and projectIterationFilesAction.isUserAllowedToTranslate()}" 
-					styleClass="centered actionCol">
-					<f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-					<div style="float:left">
-						<h:outputLink
-	                            title="#{messages['jsf.TranslateGWTDevMode']}" styleClass="table_link" 
-	                            value="#{request.contextPath}/webtrans/Application.seam?project=#{projectIterationFilesAction.projectSlug}&amp;iteration=#{projectIterationFilesAction.iterationSlug}&amp;localeId=#{projectIterationFilesAction.localeId}&amp;locale=#{locale.language}#view:doc;doc:#{doc.docId}">
-	                       		<f:param name="gwt.codesvr" value="127.0.0.1:9997" />
-
-	                            <span class="icon-edit icon" title="#{messages['jsf.TranslateGWTDevMode']}"/>
-	                    </h:outputLink>
-                    </div>
-                    <div>
-	                    <s:fragment rendered="#{projectIterationFilesAction.fileUploadAllowed}">
-		                     <a href="#" onclick="openUploadPanel('#{doc.docId}'); return false;" class="table_link" title="#{messages['jsf.Upload']}">
-		                      	<span class="icon-upload icon" title="#{messages['jsf.Upload.Title']}"/> 
-		                    </a>
-	                    </s:fragment>
-                    </div>
-				</rich:column>
-
+				
                  <rich:column>
                     <f:facet name="header">
                         #{messages['jsf.iteration.files.Download']}
@@ -314,7 +266,7 @@
             <h:form>
 
             	<h:outputLink
-					rendered="#{not applicationConfiguration.debug and not projectIterationFilesAction.isUserAllowedToTranslate() }"
+					rendered="#{not projectIterationFilesAction.isUserAllowedToTranslate() and not projectIterationFilesAction.isUserAllowedToReview()}"
 					value="#{request.contextPath}/webtrans/Application.seam" styleClass="action_link">
 					<f:param name="project" value="#{projectIterationFilesAction.projectSlug}" />
 					<f:param name="iteration" value="#{projectIterationFilesAction.iterationSlug}" />
@@ -322,20 +274,9 @@
 					<f:param name="locale" value="#{locale.language}" />
 					<span class="icon-eye"/>#{messages['jsf.Open']}
 				</h:outputLink>
-
+				
 				<h:outputLink
-					rendered="#{applicationConfiguration.debug and not projectIterationFilesAction.isUserAllowedToTranslate()}"
-					value="#{request.contextPath}/webtrans/Application.seam" styleClass="action_link">
-					<f:param name="project" value="#{projectIterationFilesAction.projectSlug}" />
-					<f:param name="iteration" value="#{projectIterationFilesAction.iterationSlug}" />
-					<f:param name="localeId" value="#{projectIterationFilesAction.localeId}" />
-					<f:param name="locale" value="#{locale.language}" />
-					<f:param name="gwt.codesvr" value="127.0.0.1:9997" />
-					<span class="icon-eye"/>#{messages['jsf.OpenGWTDevMode']}
-    			</h:outputLink>
-
-				<h:outputLink
-					rendered="#{not applicationConfiguration.debug and projectIterationFilesAction.isUserAllowedToTranslate()}"
+					rendered="#{projectIterationFilesAction.isUserAllowedToTranslate() or projectIterationFilesAction.isUserAllowedToReview()}"
 					value="#{request.contextPath}/webtrans/Application.seam" styleClass="action_link">
 					<f:param name="project" value="#{projectIterationFilesAction.projectSlug}" />
 					<f:param name="iteration" value="#{projectIterationFilesAction.iterationSlug}" />
@@ -343,19 +284,6 @@
 					<f:param name="locale" value="#{locale.language}" />
 					<span class="icon-edit"/>#{messages['jsf.Translate']}
     			</h:outputLink>
-
-				<h:outputLink
-					rendered="#{applicationConfiguration.debug and projectIterationFilesAction.isUserAllowedToTranslate()}"
-					value="#{request.contextPath}/webtrans/Application.seam" styleClass="action_link">
-					<f:param name="project" value="#{projectIterationFilesAction.projectSlug}" />
-					<f:param name="iteration" value="#{projectIterationFilesAction.iterationSlug}" />
-					<f:param name="localeId" value="#{projectIterationFilesAction.localeId}" />
-					<f:param name="locale" value="#{locale.language}" />
-					<f:param name="gwt.codesvr" value="127.0.0.1:9997" />
-					<span class="icon-edit"/>#{messages['jsf.TranslateGWTDevMode']}
-    			</h:outputLink>
-
-
 
                 <s:link styleClass="action_link"
                         rendered="#{projectIterationFilesAction.poProject}"
@@ -404,7 +332,7 @@
            </h:form>
         </rich:panel>
 
-        <rich:panel rendered="#{identity.loggedIn and not projectIterationFilesAction.isUserAllowedToTranslate()}">
+        <rich:panel rendered="#{identity.loggedIn and not projectIterationFilesAction.isUserAllowedToTranslate() and not projectIterationFilesAction.isUserAllowedToReview()}">
             <h3 class="translate_restriction_title">
                 <span class="icon-eye" style="font-size: 16px"></span>#{messages['jsf.iteration.files.WhyCantITranslate']}
             </h3>

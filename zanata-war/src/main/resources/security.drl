@@ -16,7 +16,8 @@ import org.jboss.seam.security.permission.PermissionCheck;
 import org.jboss.seam.security.permission.RoleCheck;
 
 import function org.zanata.security.SecurityFunctions.isUserAllowedAccess;
-import function org.zanata.security.SecurityFunctions.isUserMemberOfLanguageTeam;
+import function org.zanata.security.SecurityFunctions.isUserTranslatorOfLanguageTeam;
+import function org.zanata.security.SecurityFunctions.isUserReviewerOfLanguageTeam;
 import function org.zanata.security.SecurityFunctions.isUserCoordinatorOfLanguageTeam;
 
 /* admin can do anything */
@@ -191,7 +192,7 @@ when
   $project: HProject( eval(isUserAllowedAccess($project)) )
   eval(authenticatedPerson != null)
   $locale: HLocale(
-    eval(isUserMemberOfLanguageTeam($locale))
+    eval(isUserTranslatorOfLanguageTeam($locale))
   )
 then
   check.grant();
@@ -469,16 +470,15 @@ end
 ******************************************************************************************/
 rule ReviewerReviewTranslation
   no-loop
-  activation-group "permisstions"
+  activation-group "permissions"
 when
   check: PermissionCheck(action == "translation-review", granted == false)
   $project: HProject(
     eval( isUserAllowedAccess($project) )
   )
   $locale: HLocale(
-    eval( isUserMemberOfLanguageTeam($locale) )
+    eval( isUserReviewerOfLanguageTeam($locale) )
   )
-  Role(name == "reviewer")
 then
   check.grant();
 end
