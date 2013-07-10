@@ -20,13 +20,20 @@
  */
 package org.zanata.model.tm;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.JoinTable;
+import javax.persistence.Lob;
+import javax.persistence.MapKeyClass;
 import javax.persistence.OneToMany;
 
 import org.zanata.model.SlugEntityBase;
@@ -48,6 +55,11 @@ import lombok.ToString;
 @Access(AccessType.FIELD)
 public class TransMemory extends SlugEntityBase
 {
+   public enum TransMemoryMetadata
+   {
+      DEFAULT;
+   }
+
    @Getter @Setter
    @Column
    private String name;
@@ -55,5 +67,12 @@ public class TransMemory extends SlugEntityBase
    @Getter @Setter(AccessLevel.PROTECTED)
    @OneToMany(cascade = CascadeType.ALL, mappedBy = "translationMemory")
    private Set<TMTranslationUnit> translationUnits = new HashSet<TMTranslationUnit>();
+
+   @Getter @Setter
+   @ElementCollection
+   @MapKeyClass(TransMemoryMetadata.class)
+   @JoinTable(name = "TransMemory_Metadata")
+   @Lob
+   private Map<TransMemoryMetadata, String> metadata = new HashMap<TransMemoryMetadata, String>();
 
 }

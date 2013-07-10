@@ -22,6 +22,8 @@ package org.zanata.model;
 
 import java.util.List;
 
+import org.dbunit.operation.DatabaseOperation;
+import org.hamcrest.Matchers;
 import org.hibernate.criterion.Restrictions;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
@@ -30,8 +32,10 @@ import org.zanata.model.tm.TMTranslationUnit;
 import org.zanata.model.tm.TransMemory;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.startsWith;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -41,6 +45,7 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
    @Override
    protected void prepareDBUnitOperations()
    {
+      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/ClearAllTables.dbunit.xml", DatabaseOperation.DELETE_ALL));
    }
 
    private TransMemory createDefaultTransMemoryInstance()
@@ -70,6 +75,20 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
    }
 
    @Test
+   public void saveWithMetadata() throws Exception
+   {
+      TransMemory tm = createDefaultTransMemoryInstance();
+      String defaultMetadataVal = "This is a test";
+      tm.getMetadata().put(TransMemory.TransMemoryMetadata.DEFAULT, defaultMetadataVal);
+      super.getEm().persist(tm);
+
+      TransMemory stored = getTransMemory("new-trans-memory");
+      assertThat(stored.getName(), is(tm.getName()));
+      assertThat(stored.getMetadata().size(), is( tm.getMetadata().size() ));
+      assertThat(stored.getMetadata().get(TransMemory.TransMemoryMetadata.DEFAULT), equalTo(defaultMetadataVal));
+   }
+
+   @Test
    public void saveWithTransUnits() throws Exception
    {
       TransMemory tm = createDefaultTransMemoryInstance();
@@ -90,6 +109,35 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
       TransMemory stored = getTransMemory("new-trans-memory");
 
       assertThat(stored.getTranslationUnits().size(), is(5));
+   }
+
+   @Test
+   public void saveTransUnitsWithMetadata() throws Exception
+   {
+      TransMemory tm = createDefaultTransMemoryInstance();
+
+      // add some units
+      for( int i = 0; i<5; i++ )
+      {
+         TMTranslationUnit unit = new TMTranslationUnit();
+         unit.setTranslationMemory(tm);
+         unit.setSourceLanguage("en-US");
+         unit.setTransUnitId("unit-id-" + i);
+         unit.getMetadata().put(TMTranslationUnit.TMTranslationUnitMetadata.DEFAULT, "Metadata " + i);
+         tm.getTranslationUnits().add(unit);
+      }
+
+      super.getEm().persist(tm);
+
+      // Fetch it, should have the same elements
+      TransMemory stored = getTransMemory("new-trans-memory");
+
+      assertThat(stored.getTranslationUnits().size(), is(5));
+      for( TMTranslationUnit tu : tm.getTranslationUnits() )
+      {
+         assertThat(tu.getMetadata().size(), is(1));
+         assertThat(tu.getMetadata().get(TMTranslationUnit.TMTranslationUnitMetadata.DEFAULT), startsWith("Metadata "));
+      }
    }
 
    @Test

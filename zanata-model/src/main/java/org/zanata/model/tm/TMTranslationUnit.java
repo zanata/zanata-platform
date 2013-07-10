@@ -26,13 +26,16 @@ import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
+import javax.persistence.MapKeyClass;
 
 import org.zanata.model.ModelEntityBase;
 
@@ -52,6 +55,11 @@ import lombok.ToString;
 @Access(AccessType.FIELD)
 public class TMTranslationUnit extends ModelEntityBase
 {
+   public enum TMTranslationUnitMetadata
+   {
+      DEFAULT;
+   }
+
    @Getter @Setter
    @Column(name = "trans_unit_id", nullable = true)
    private String transUnitId;
@@ -72,4 +80,11 @@ public class TMTranslationUnit extends ModelEntityBase
               inverseJoinColumns = @JoinColumn(name = "trans_unit_variant_id"))
    @MapKey(name = "language")
    private Map<String, TMTransUnitVariant> transUnitVariants = new HashMap<String, TMTransUnitVariant>();
+
+   @Getter @Setter
+   @ElementCollection
+   @MapKeyClass(TMTranslationUnitMetadata.class)
+   @JoinTable(name = "TMTransUnit_Metadata")
+   @Lob
+   private Map<TMTranslationUnitMetadata, String> metadata = new HashMap<TMTranslationUnitMetadata, String>();
 }

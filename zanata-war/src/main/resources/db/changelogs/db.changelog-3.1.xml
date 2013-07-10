@@ -109,4 +109,50 @@
         </createIndex>
 
     </changeSet>
+
+    <changeSet id="2" author="camunoz@redhat.com">
+        <comment>Create Translation Memory metadata tables.</comment>
+        
+        <createTable tableName="TransMemory_Metadata">
+            <column name="transmemory_id" type="bigint">
+                <constraints  primaryKey="true" nullable="false"/>
+            </column>
+            <column name="metadata_key" type="varchar(75)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="metadata" type="longtext"/>
+        </createTable>
+        <createTable tableName="TMTransUnit_Metadata">
+            <column name="tmtransunit_id" type="bigint">
+                <constraints  primaryKey="true" nullable="false"/>
+            </column>
+            <column name="metadata_key" type="varchar(75)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="metadata" type="longtext"/>
+        </createTable>
+        <createTable tableName="TMTransUnitVariant_Metadata">
+            <column name="tmtransunitvariant_id" type="bigint">
+                <constraints  primaryKey="true" nullable="false"/>
+            </column>
+            <column name="metadata_key" type="varchar(75)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="metadata" type="longtext"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="TransMemory_Metadata" baseColumnNames="transmemory_id"
+                                 constraintName="FK_Metadata_TransMemory"
+                                 referencedTableName="TransMemory"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="TMTransUnit_Metadata" baseColumnNames="tmtransunit_id"
+                                 constraintName="FK_Metadata_TMTransUnit"
+                                 referencedTableName="TMTranslationUnit"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="TMTransUnitVariant_Metadata" baseColumnNames="tmtransunitvariant_id"
+                                 constraintName="FK_Metadata_TMTransUnitVariant"
+                                 referencedTableName="TMTransUnitVariant"
+                                 referencedColumnNames="id"/>
+
+    </changeSet>
 </databaseChangeLog>
