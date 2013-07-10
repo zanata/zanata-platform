@@ -4,12 +4,12 @@ import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
-import org.zanata.webtrans.client.presenter.TransHistoryVersionComparator;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.util.ContentStateToStyleUtil;
 import org.zanata.webtrans.client.util.DateUtil;
+import org.zanata.webtrans.shared.model.ComparableByDate;
+import org.zanata.webtrans.shared.model.ReviewComment;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 
 import com.google.common.base.Strings;
@@ -30,14 +30,11 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent;
-import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionModel;
 import com.google.inject.Inject;
@@ -50,12 +47,12 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    private static final int COMPARISON_TAB_INDEX = 1;
    private static final CellTableResources CELL_TABLE_RESOURCES = GWT.create(CellTableResources.class);
    private static TranslationHistoryViewUiBinder uiBinder = GWT.create(TranslationHistoryViewUiBinder.class);
-   private final CellTable<TransHistoryItem> historyTable;
+//   private final CellTable<TransHistoryItem> historyTable;
    private final EventBus eventBus;
    @UiField
    WebTransMessages messages;
    @UiField
-   VerticalPanel historyPanel;
+   HTMLPanel historyPanel;
    @UiField
    HistoryEntryComparisonPanel comparisonPanel;
    @UiField
@@ -68,6 +65,9 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    private Column<TransHistoryItem,String> versionColumn;
    @UiField
    Button compareButton;
+   @UiField
+   UnorderedListWidget itemList;
+   private Listener listener;
 
    @Inject
    public TranslationHistoryView(EventBus eventBus)
@@ -80,14 +80,30 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
       tabLayoutPanel.ensureDebugId("transHistoryTabPanel");
       setGlassEnabled(true);
 
-      historyTable = setUpHistoryTable();
+//      historyTable = setUpHistoryTable();
 
-      SimplePager simplePager = new SimplePager();
-      simplePager.setDisplay(historyTable);
+//      SimplePager simplePager = new SimplePager();
+//      simplePager.setDisplay(historyTable);
 
-      historyPanel.add(historyTable);
-      historyPanel.add(simplePager);
+//      historyPanel.add(historyTable);
+//      historyPanel.add(simplePager);
       setWidget(container);
+   }
+
+   @Override
+   public void setData(List<ComparableByDate> items)
+   {
+      for (ComparableByDate item : items)
+      {
+         if (item instanceof TransHistoryItem)
+         {
+            itemList.add(new TransHistoryItemLine((TransHistoryItem) item, listener));
+         }
+         if (item instanceof ReviewComment)
+         {
+            itemList.add(new ReviewCommentItemLine((ReviewComment) item));
+         }
+      }
    }
 
    private CellTable<TransHistoryItem> setUpHistoryTable()
@@ -182,16 +198,16 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    @Override
    public void setSelectionModel(SelectionModel<TransHistoryItem> multiSelectionModel)
    {
-      historyTable.setSelectionModel(multiSelectionModel, DefaultSelectionEventManager.<TransHistoryItem>createCheckboxManager());
-      Column<TransHistoryItem, Boolean> checkboxColumn = createCheckboxColumn(multiSelectionModel);
-      historyTable.insertColumn(0, checkboxColumn);
-      historyTable.setColumnWidth(checkboxColumn, 10, Style.Unit.PX);
+//      historyTable.setSelectionModel(multiSelectionModel, DefaultSelectionEventManager.<TransHistoryItem>createCheckboxManager());
+//      Column<TransHistoryItem, Boolean> checkboxColumn = createCheckboxColumn(multiSelectionModel);
+//      historyTable.insertColumn(0, checkboxColumn);
+//      historyTable.setColumnWidth(checkboxColumn, 10, Style.Unit.PX);
    }
 
    @Override
    public void setDataProvider(ListDataProvider<TransHistoryItem> dataProvider)
    {
-      dataProvider.addDataDisplay(historyTable);
+//      dataProvider.addDataDisplay(historyTable);
    }
 
    @Override
@@ -201,12 +217,18 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    }
 
    @Override
+   public void setListener(Listener listener)
+   {
+      this.listener = listener;
+   }
+
+   @Override
    public void addVersionSortHandler(ColumnSortEvent.ListHandler<TransHistoryItem> sortHandler)
    {
-      sortHandler.setComparator(versionColumn, TransHistoryVersionComparator.COMPARATOR);
-      historyTable.addColumnSortHandler(sortHandler);
-      //push it to make column sort in desc order at start
-      historyTable.getColumnSortList().push(versionColumn);
+//      sortHandler.setComparator(versionColumn, TransHistoryVersionComparator.COMPARATOR);
+//      historyTable.addColumnSortHandler(sortHandler);
+//      push it to make column sort in desc order at start
+//      historyTable.getColumnSortList().push(versionColumn);
    }
 
    private void setComparisonTitle(String description)
@@ -218,8 +240,8 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    @Override
    public void resetView()
    {
-      historyTable.setPageStart(0);
-      disableComparison();
+//      historyTable.setPageStart(0);
+//      disableComparison();
    }
 
    private static Column<TransHistoryItem, String> createVersionColumn()

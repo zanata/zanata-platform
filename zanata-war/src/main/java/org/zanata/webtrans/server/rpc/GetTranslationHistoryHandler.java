@@ -1,5 +1,6 @@
 package org.zanata.webtrans.server.rpc;
 
+import java.util.List;
 import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
@@ -11,21 +12,26 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.dao.TextFlowDAO;
+import org.zanata.dao.TextFlowTargetReviewCommentsDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
+import org.zanata.model.HTextFlowTargetReviewComment;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.webtrans.server.ActionHandlerFor;
+import org.zanata.webtrans.shared.model.ReviewComment;
+import org.zanata.webtrans.shared.model.ReviewCommentId;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryAction;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryResult;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 /**
@@ -38,13 +44,16 @@ import com.google.common.collect.Maps;
 public class GetTranslationHistoryHandler extends AbstractActionHandler<GetTranslationHistoryAction, GetTranslationHistoryResult>
 {
    @In
-   ZanataIdentity identity;
+   private ZanataIdentity identity;
 
    @In
-   LocaleService localeServiceImpl;
+   private LocaleService localeServiceImpl;
 
    @In
-   TextFlowDAO textFlowDAO;
+   private TextFlowDAO textFlowDAO;
+
+   @In
+   private TextFlowTargetReviewCommentsDAO textFlowTargetReviewCommentsDAO;
 
    @Override
    public GetTranslationHistoryResult execute(GetTranslationHistoryAction action, ExecutionContext context) throws ActionException
@@ -77,13 +86,33 @@ public class GetTranslationHistoryHandler extends AbstractActionHandler<GetTrans
       }
 
       Iterable<TransHistoryItem> historyItems = Iterables.transform(history.values(), new TargetHistoryToTransHistoryItemFunction());
+
       log.debug("found {} history for text flow id {}", Iterables.size(historyItems), action.getTransUnitId());
-      return new GetTranslationHistoryResult(historyItems, latest);
+
+      List<ReviewComment> reviewComments = getReviewComments(action);
+      log. debug("found {} review comments for text flow id {}", reviewComments.size(), action.getTransUnitId());
+
+      // we re-wrap the list because gwt rpc doesn't like other list implementation
+      return new GetTranslationHistoryResult(Lists.newArrayList(historyItems), latest, Lists.newArrayList(reviewComments));
    }
 
    private static String nameOrEmptyString(HPerson lastModifiedBy)
    {
       return lastModifiedBy != null ? lastModifiedBy.getName() : "";
+   }
+
+   private List<ReviewComment> getReviewComments(GetTranslationHistoryAction action)
+   {
+      List<HTextFlowTargetReviewComment> hComments = textFlowTargetReviewCommentsDAO.getReviewComments(action.getTransUnitId(), action.getWorkspaceId().getLocaleId());
+
+      return Lists.transform(hComments, new Function<HTextFlowTargetReviewComment, ReviewComment>()
+      {
+         @Override
+         public ReviewComment apply(HTextFlowTargetReviewComment input)
+         {
+            return new ReviewComment(new ReviewCommentId(input.getId()), input.getComment(), input.getCommenterName(), input.getCreationDate(), input.getTargetVersion());
+         }
+      });
    }
 
    @Override

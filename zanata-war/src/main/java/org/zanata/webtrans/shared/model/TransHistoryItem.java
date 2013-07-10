@@ -12,7 +12,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class TransHistoryItem implements IsSerializable
+public class TransHistoryItem extends ComparableByDate implements IsSerializable
 {
    private String versionNum;
    private List<String> contents;
@@ -63,6 +63,12 @@ public class TransHistoryItem implements IsSerializable
    public void setVersionNum(String newVersionNum)
    {
       versionNum = newVersionNum;
+   }
+
+   @Override
+   protected Date getDate()
+   {
+      return modifiedDate;
    }
 
    @Override

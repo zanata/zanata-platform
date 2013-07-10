@@ -27,6 +27,7 @@ import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.TranslationHistoryDisplay;
+import org.zanata.webtrans.shared.model.ReviewComment;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryAction;
@@ -199,6 +200,6 @@ public class TranslationHistoryPresenterTest
 
    private static GetTranslationHistoryResult createTranslationHistory(TransHistoryItem latest, TransHistoryItem... historyItems)
    {
-      return new GetTranslationHistoryResult(Lists.newArrayList(historyItems), latest);
+      return new GetTranslationHistoryResult(Lists.newArrayList(historyItems), latest, Lists.<ReviewComment>newArrayList());
    }
 }

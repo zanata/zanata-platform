@@ -1,0 +1,3900 @@
+/*
+
+# Styleguide
+*/
+/*
+  Mixins are slightly modified from Benjamin Doherty's first implementations: http://gist.github.com/377912
+  rgba-background mixin can now be passed an option $dir variable
+*/
+/*
+
+## Settings
+*/
+/*
+
+### Colors
+*/
+/*
+  <div class="ph__color-primary">$color-primary</div>
+*/
+/*
+  <div class="ph__color-secondary">$color-secondary</div>
+*/
+/*
+  <div class="ph__color-base-font">$color-base-font</div>
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_placeholders\.scss}line{font-family:\0000327}}
+[class*="ph__color"] {
+  margin-bottom: 1.5em;
+  width: 100%;
+  font-family: Monaco, Courier, monospace;
+  line-height: 2.25em;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_placeholders\.scss}line{font-family:\0000332}}
+[class*="ph__color"]:before {
+  display: block;
+  content: "";
+  height: 3em;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_placeholders\.scss}line{font-family:\0000337}}
+[class*="ph__color"]:after {
+  display: block;
+  padding: 0 0.75em;
+  background-color: rgba(0, 0, 0, 0.025);
+}
+@media (min-width: 53.75em) {
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_placeholders\.scss}line{font-family:\0000327}}
+  [class*="ph__color"] {
+    line-height: 4.5em;
+    padding: 0;
+    background-color: rgba(0, 0, 0, 0.025);
+  }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_placeholders\.scss}line{font-family:\0000346}}
+  [class*="ph__color"]:before {
+    height: 4.5em;
+    float: left;
+    width: 20%;
+    margin-right: 0.75em;
+  }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_placeholders\.scss}line{font-family:\0000352}}
+  [class*="ph__color"]:after {
+    float: right;
+    width: 20%;
+    text-align: center;
+    margin-left: 0.75em;
+  }
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_placeholders\.scss}line{font-family:\0000363}}
+.ph__color-primary:before {
+  background-color: #4e9fdd;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_placeholders\.scss}line{font-family:\0000366}}
+.ph__color-primary:after {
+  content: "#4e9fdd";
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_placeholders\.scss}line{font-family:\0000363}}
+.ph__color-secondary:before {
+  background-color: #416988;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_placeholders\.scss}line{font-family:\0000366}}
+.ph__color-secondary:after {
+  content: "#416988";
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_placeholders\.scss}line{font-family:\0000363}}
+.ph__color-base-font:before {
+  background-color: #444c54;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_placeholders\.scss}line{font-family:\0000366}}
+.ph__color-base-font:after {
+  content: "#444c54";
+}
+
+/*
+### Font (Font Family)
+
+*/
+/*
+  <div class="ph__font-family-base">$font-family-base</div>
+*/
+/*
+  <div class="ph__font-family-heading">$font-family-heading</div>
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_placeholders\.scss}line{font-family:\0000382}}
+[class*="ph__font"] {
+  margin-bottom: 1.5em;
+  padding: 0 0.75em;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.025);
+  font-family: Monaco, Courier, monospace;
+  line-height: 2.25em;
+  line-height: 3em;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_placeholders\.scss}line{font-family:\0000390}}
+[class*="ph__font"]:before {
+  display: block;
+  margin: 0 -0.75em;
+  padding: 0 0.75em;
+  background-color: rgba(0, 0, 0, 0.025);
+  content: "";
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_placeholders\.scss}line{font-family:\00003102}}
+.ph__font-family-base:before {
+  font-family: "Source Sans Pro", "Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif;
+  content: '"Source Sans Pro", "Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif';
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_placeholders\.scss}line{font-family:\00003102}}
+.ph__font-family-heading:before {
+  font-family: "Source Sans Pro", "Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif;
+  content: '"Source Sans Pro", "Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif';
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_placeholders\.scss}line{font-family:\00003109}}
+.ph__block, .ph__inline-block {
+  line-height: 7.5em;
+  text-align: center;
+  background-color: #e6e6e6;
+  display: block;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_placeholders\.scss}line{font-family:\00003116}}
+.ph__inline-block {
+  display: inline-block;
+}
+
+/*
+
+## Elements
+NOTE: No classes should go in element files
+
+*/
+@-ms-viewport {
+  width: device-width;
+}
+
+@viewport {
+  width: device-width;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_global\.scss}line{font-family:\0000312}}
+*,
+*:before,
+*:after {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_global\.scss}line{font-family:\0000327}}
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+main,
+hgroup,
+nav,
+section,
+summary {
+  display: block;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_global\.scss}line{font-family:\0000331}}
+[hidden] {
+  display: none;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_global\.scss}line{font-family:\0000335}}
+html {
+  line-height: 1.5em;
+  color: #444c54;
+  font-size: 16px;
+  font-family: "Source Sans Pro", "Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+}
+@media (min-width: 42.5em) {
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_global\.scss}line{font-family:\0000335}}
+  html {
+    font-size: 1em;
+    line-height: 1.5em;
+  }
+}
+@media (min-width: 53.75em) {
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_global\.scss}line{font-family:\0000335}}
+  html {
+    font-size: 1em;
+    line-height: 1.5em;
+  }
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_global\.scss}line{font-family:\0000351}}
+body {
+  margin: 0;
+  background: #f0f2f4;
+  -webkit-overflow-scroll: touch;
+}
+
+/*
+### Headings
+
+#### General headings
+
+Used to section content and create hierarchy
+
+```
+<h1>Heading 1</h1>
+<h2>Heading 2</h2>
+<h3>Heading 3</h3>
+<h4>Heading 4</h4>
+<h5>Heading 5</h5>
+<h6>Heading 6</h6>
+```
+```
+<div class="alpha">Alpha</div>
+<div class="beta">Beta</div>
+<div class="gamma">Gamma</div>
+<div class="delta">Delta</div>
+<div class="epsilon">Epsilon</div>
+<div class="zeta">Zeta</div>
+```
+
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_headings\.scss}line{font-family:\0000338}}
+h1,
+.alpha, h2,
+.beta, h3,
+.gamma, h4,
+.delta, h5,
+.epsilon, h6,
+.zeta {
+  color: #416988;
+  margin: 0;
+  font-family: "Source Sans Pro", "Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.05em;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_headings\.scss}line{font-family:\0000344}}
+h1 a,
+.alpha a, h2 a,
+.beta a, h3 a,
+.gamma a, h4 a,
+.delta a, h5 a,
+.epsilon a, h6 a,
+.zeta a {
+  display: inline-block;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_headings\.scss}line{font-family:\0000350}}
+h1,
+.alpha {
+  font-size: 2.25em;
+  line-height: 1.33333em;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_headings\.scss}line{font-family:\0000355}}
+h1 {
+  margin-bottom: 0.33333em;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_headings\.scss}line{font-family:\0000360}}
+h2,
+.beta {
+  font-size: 1.75em;
+  line-height: 1.28571em;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_headings\.scss}line{font-family:\0000365}}
+h2 {
+  margin-top: 0.85714em;
+  margin-bottom: 0.42857em;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_headings\.scss}line{font-family:\0000371}}
+h3,
+.gamma {
+  font-size: 1.5em;
+  line-height: 1.5em;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_headings\.scss}line{font-family:\0000376}}
+h3 {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_headings\.scss}line{font-family:\0000382}}
+h4,
+.delta {
+  font-size: 1.25em;
+  line-height: 1.2em;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_headings\.scss}line{font-family:\0000387}}
+h4 {
+  margin-top: 0.6em;
+  margin-bottom: 0.3em;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_headings\.scss}line{font-family:\0000393}}
+h5,
+.epsilon {
+  font-size: 1.125em;
+  line-height: 1.33333em;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_headings\.scss}line{font-family:\0000398}}
+h5 {
+  margin-top: 0.66667em;
+  margin-bottom: 0.66667em;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_headings\.scss}line{font-family:\00003104}}
+h6,
+.zeta {
+  font-size: 1em;
+  line-height: 1.5em;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_headings\.scss}line{font-family:\00003109}}
+h6 {
+  margin-top: 0.75em;
+}
+
+/*
+
+### Text
+
+#### Standard Paragraph
+
+```
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis luctus nisi et eros bibendum lacinia. Curabitur sed est nec urna pretium vulputate ut eget lectus. In ultricies, tellus non vehicula malesuada, augue sem aliquet tellus, ut faucibus turpis ante quis nibh. Ut vel turpis tortor, a consectetur ipsum. Sed posuere commodo vestibulum. Pellentesque volutpat diam sem.</p>
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis luctus nisi et eros bibendum lacinia. Curabitur sed est nec urna pretium vulputate ut eget lectus. In ultricies, tellus non vehicula malesuada, augue sem aliquet tellus, ut faucibus turpis ante quis nibh. Ut vel turpis tortor, a consectetur ipsum. Sed posuere commodo vestibulum. Pellentesque volutpat diam sem.</p>
+```
+
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_text\.scss}line{font-family:\0000314}}
+p {
+  margin: 0 0 0.75em;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_text\.scss}line{font-family:\0000316}}
+p:last-child {
+  margin-bottom: 0;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_text\.scss}line{font-family:\0000321}}
+abbr[title] {
+  border-bottom: 1px dotted;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_text\.scss}line{font-family:\0000326}}
+b,
+strong {
+  font-weight: 700;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_text\.scss}line{font-family:\0000330}}
+em {
+  font-style: italic;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_text\.scss}line{font-family:\0000334}}
+dfn {
+  font-style: italic;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_text\.scss}line{font-family:\0000338}}
+mark {
+  background: #ff0;
+  color: #000;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_text\.scss}line{font-family:\0000346}}
+code,
+kbd,
+pre,
+samp {
+  font-family: monospace, serif;
+  font-size: 1em;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_text\.scss}line{font-family:\0000351}}
+pre {
+  white-space: pre;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_text\.scss}line{font-family:\0000357}}
+q {
+  quotes: "\201C" "\201D" "\2018" "\2019";
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_text\.scss}line{font-family:\0000361}}
+small {
+  font-size: 80%;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_text\.scss}line{font-family:\0000366}}
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_text\.scss}line{font-family:\0000373}}
+sup {
+  top: -0.5em;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_text\.scss}line{font-family:\0000377}}
+sub {
+  bottom: -0.25em;
+}
+
+/*
+
+### Links
+
+```
+<a href="#">Link</a>
+<br>
+<a href="#" class=":hover">Link (Hover)</a>
+<br>
+<a href="#" class=":active">Link (Active)</a>
+<br>
+<a href="#" class=":focus">Link (Focus)</a>
+```
+
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_links\.scss}line{font-family:\0000317}}
+a {
+  color: #4e9fdd;
+  text-decoration: none;
+  -webkit-transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  -moz-transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  -o-transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_links\.scss}line{font-family:\0000329}}
+a:hover,
+.\3A hover,
+a:focus,
+.\3A focus {
+  color: #2479bb;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_links\.scss}line{font-family:\0000334}}
+a:focus,
+.\3A focus {
+  outline: thin dotted;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_links\.scss}line{font-family:\0000341}}
+a:active,
+.\3A active
+a:hover,
+.\3A hover {
+  outline: 0;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_links\.scss}line{font-family:\0000347}}
+a:active,
+a.is-active,
+.\3A active {
+  color: #444c54;
+}
+
+/*
+
+### Lists
+
+#### Unordered List
+
+```
+<ul>
+  <li>List item</li>
+  <li>List item</li>
+  <li>List item</li>
+  <li>List item</li>
+</ul>
+```
+
+#### Ordered List
+
+```
+<ol>
+  <li>List item</li>
+  <li>List item</li>
+  <li>List item</li>
+  <li>List item</li>
+</ol>
+```
+
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_lists\.scss}line{font-family:\0000330}}
+ul,
+ol {
+  margin: 0.75em 0;
+  padding: 0 0 0 1.5em;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_lists\.scss}line{font-family:\0000333}}
+ul li,
+ol li {
+  font-size: 1em;
+  line-height: 1.5em;
+}
+
+/*
+
+#### Definition List
+
+```
+<dl>
+  <dt>Term</dt>
+  <dd>Definition</dd>
+  <dt>Term</dt>
+  <dd>Definition</dd>
+  <dt>Term</dt>
+  <dd>Definition</dd>
+  <dt>Term</dt>
+  <dd>Definition</dd>
+</dl>
+```
+
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_lists\.scss}line{font-family:\0000357}}
+dd {
+  margin: 0 0 0 1.5em;
+}
+
+/*
+
+### Tables
+
+
+```
+<table>
+  <thead>
+    <tr>
+      <th>Foo</th>
+      <th>Bar</th>
+    </tr>
+      <th>Lorem</th>
+      <th>Ipsum</th>
+      <th>Dolor</th>
+      <th>Sit</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Sit</th>
+      <td>Dolor</td>
+      <td>03.788</td>
+      <td>Lorem</td>
+    </tr>
+    <tr>
+      <td>Dolor</td>
+      <td>32.210</td>
+      <td>Lorem</td>
+      <td>Lorem</td>
+    </tr>
+    <tr>
+      <td>Dolor</td>
+      <td>47.797</td>
+      <td>Lorem</td>
+      <td>Lorem</td>
+    </tr>
+    <tr>
+      <th>Sit</th>
+      <td>Dolor</td>
+      <td>09.640</td>
+      <td>Lorem</td>
+    </tr>
+    <tr>
+      <td>Dolor</td>
+      <td>12.117</td>
+      <td>Lorem</td>
+      <td>Lorem</td>
+    </tr>
+  </tbody>
+</table>
+```
+
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_tables\.scss}line{font-family:\0000359}}
+table {
+  position: relative;
+  display: block;
+  overflow: auto;
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: collapse;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_tables\.scss}line{font-family:\0000369}}
+thead {
+  border-bottom: 1px solid #b3b3b3;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_tables\.scss}line{font-family:\0000374}}
+th,
+td {
+  padding: 0.1875em 0.375em;
+  text-align: left;
+}
+@media (min-width: 42.5em) {
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_tables\.scss}line{font-family:\0000374}}
+  th,
+  td {
+    padding: 0.375em 0.75em;
+  }
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_tables\.scss}line{font-family:\0000385}}
+[colspan] {
+  text-align: center;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_tables\.scss}line{font-family:\0000388}}
+[colspan="1"] {
+  text-align: left;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_tables\.scss}line{font-family:\0000391}}
+[rowspan] {
+  vertical-align: middle;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_tables\.scss}line{font-family:\0000394}}
+[rowspan="1"] {
+  vertical-align: top;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_tables\.scss}line{font-family:\0000397}}
+.numerical {
+  text-align: right;
+}
+
+/*
+
+### Forms
+
+#### Basic Elements
+
+```
+<div class="l__wrapper">
+  <form>
+    <label for="basic-input">This is a label.</label>
+    <input type="text" id="basic-input" name="basic-input" placeholder="Standard Input">
+    <fieldset>
+      <legend>Fieldset Name</legend>
+      <input type="text" placeholder="Street">
+      <div class="g--tight">
+        <div class="w--two-quarters w--s-two-quarters g__item">
+          <input type="text" placeholder="City">
+        </div>
+        <div class="w--one-quarter w--s-one-quarter g__item">
+          <input type="text" placeholder="State">
+        </div>
+        <div class="w--one-quarter w--s-one-quarter g__item">
+          <input type="text" placeholder="ZIP">
+        </div>
+      </div>
+    </fieldset>
+    <textarea placeholder="Message"></textarea>
+  </form>
+</div>
+```
+
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_forms\.scss}line{font-family:\0000358}}
+form {
+  margin: 0 0 0.75em;
+  font-family: "Source Sans Pro", "Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif;
+  font-size: 1em;
+  line-height: 1.5em;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_forms\.scss}line{font-family:\0000364}}
+fieldset {
+  border-width: 0.0625em;
+  border-style: solid;
+  padding: 0.6875em;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  margin: 1.125em 0;
+  padding-bottom: 0;
+  border-color: #e6e6e6;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_forms\.scss}line{font-family:\0000372}}
+legend {
+  border: 0;
+  font-weight: bold;
+  background: white;
+  padding: 0 0.1875em;
+  margin-left: -0.1875em;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_forms\.scss}line{font-family:\0000380}}
+label {
+  font-size: 1em;
+  line-height: 1.5em;
+  display: block;
+  margin-bottom: 0.375em;
+  color: #444c54;
+  font-weight: bold;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_forms\.scss}line{font-family:\0000393}}
+button,
+input,
+select,
+textarea {
+  margin: 0;
+  font-size: 100%;
+  font-family: inherit;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_forms\.scss}line{font-family:\00003100}}
+button,
+input {
+  line-height: normal;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_forms\.scss}line{font-family:\00003107}}
+button,
+html input[type="button"],
+input[type="reset"],
+input[type="submit"] {
+  cursor: pointer;
+  -webkit-appearance: none;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_forms\.scss}line{font-family:\00003114}}
+button[disabled],
+input[disabled] {
+  cursor: default;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_forms\.scss}line{font-family:\00003119}}
+input[type="checkbox"],
+input[type="radio"] {
+  padding: 0;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_forms\.scss}line{font-family:\00003123}}
+input[type="search"] {
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  -webkit-appearance: textfield;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_forms\.scss}line{font-family:\00003129}}
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_forms\.scss}line{font-family:\00003134}}
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+  padding: 0;
+  border: 0;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_forms\.scss}line{font-family:\00003149}}
+input[type="text"],
+input[type="password"],
+input[type="date"],
+input[type="datetime"],
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="time"],
+input[type="url"],
+textarea {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  -webkit-transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  -moz-transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  -o-transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  font-size: "em"/1;
+  border-width: 0.0625em;
+  border-style: solid;
+  padding: 0.3125em;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  display: block;
+  width: 100%;
+  border-color: #cccccc;
+  background-color: #f7f7f7;
+  color: #333333;
+  margin: 0 0 0.75em;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_forms\.scss}line{font-family:\00003161}}
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="date"]:focus,
+input[type="datetime"]:focus,
+input[type="email"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus,
+input[type="tel"]:focus,
+input[type="time"]:focus,
+input[type="url"]:focus,
+textarea:focus {
+  -webkit-transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  -moz-transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  -o-transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  outline: none !important;
+  border-color: #333333;
+  background: white;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_forms\.scss}line{font-family:\00003167}}
+input[type="text"][disabled],
+input[type="password"][disabled],
+input[type="date"][disabled],
+input[type="datetime"][disabled],
+input[type="email"][disabled],
+input[type="number"][disabled],
+input[type="search"][disabled],
+input[type="tel"][disabled],
+input[type="time"][disabled],
+input[type="url"][disabled],
+textarea[disabled] {
+  background-color: #cccccc;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_forms\.scss}line{font-family:\00003170}}
+textarea {
+  overflow: auto;
+  height: auto;
+  vertical-align: top;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_forms\.scss}line{font-family:\00003176}}
+select {
+  width: 100%;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_media\.scss}line{font-family:\000033}}
+audio,
+canvas,
+video {
+  display: inline-block;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_media\.scss}line{font-family:\000037}}
+audio:not([controls]) {
+  display: none;
+  height: 0;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_media\.scss}line{font-family:\0000312}}
+img {
+  max-width: 100%;
+  border: 0;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_media\.scss}line{font-family:\0000317}}
+svg:not(:root) {
+  overflow: hidden;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_media\.scss}line{font-family:\0000321}}
+figure {
+  margin: 0;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_media\.scss}line{font-family:\0000325}}
+figcaption {
+  color: gray;
+}
+
+/*
+
+### Miscellaneous
+
+#### Horizontal Rule
+
+```
+<hr>
+```
+
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_elements\/_misc\.scss}line{font-family:\0000313}}
+hr {
+  height: 1.5em;
+  width: 100%;
+  border: 0;
+  margin: 1.5em 0;
+  background: transparent;
+}
+
+/*
+
+## Global Components
+
+These are components that can be utilised or are depended on by other components
+*/
+/*
+
+### Layout Helpers
+
+#### Clearfix
+
+<div class="ph__block l--clearfix">
+  .l--clearfix
+  (use overflow:hidden)
+</div>
+
+<div class="ph__block l--clearfix-overflow">
+  .l--clearfix-overflow
+  (old style)
+</div>
+
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\0000333}}
+.l--clearfix {
+  overflow: hidden;
+  *zoom: 1;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\0000337}}
+.l--clearfix-overflow {
+  *zoom: 1;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/\.rvm\/gems\/ruby-2\.0\.0-p0\/gems\/compass-0\.13\.alpha\.4\/frameworks\/compass\/stylesheets\/compass\/utilities\/general\/_clearfix\.scss}line{font-family:\0000338}}
+.l--clearfix-overflow:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/*
+
+#### Floats
+
+```
+<div class="ph__block l--float-left">
+  .l--float-left
+</div>
+
+<div class="ph__block l--float-right">
+  .l--float-right
+</div>
+```
+
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\0000357}}
+.l--float-left {
+  float: left !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\0000361}}
+.l--float-right {
+  float: right !important;
+}
+
+/*
+
+#### Wrapper
+
+$max-site-width is assigned to this
+
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\0000374}}
+.l__wrapper {
+  max-width: 120em;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 0.75em;
+}
+@media (min-width: 42.5em) {
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\0000374}}
+  .l__wrapper {
+    padding: 0 1.5em;
+  }
+}
+@media (min-width: 53.75em) {
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\0000374}}
+  .l__wrapper {
+    padding: 0 3em;
+  }
+}
+
+/*
+
+#### Spacing
+
+These classes use `!important` as you would not be applying these should always "win".
+Only use them if it does not make sense to add this styling to another element/component.
+
+*/
+/*
+```
+<div class="ph__block l--push-top-0">
+  .l--push-top-0
+</div>
+
+<div class="ph__block l--pad-top-0">
+  .l--pad-top-0
+</div>
+```
+*/
+/*
+```
+<div class="ph__block l--push-bottom-0">
+  .l--push-bottom-0
+</div>
+
+<div class="ph__block l--pad-bottom-0">
+  .l--pad-bottom-0
+</div>
+```
+*/
+/*
+```
+<div class="ph__block l--push-left-0">
+  .l--push-left-0
+</div>
+
+<div class="ph__block l--pad-left-0">
+  .l--pad-left-0
+</div>
+```
+*/
+/*
+```
+<div class="ph__block l--push-right-0">
+  .l--push-right-0
+</div>
+
+<div class="ph__block l--pad-right-0">
+  .l--pad-right-0
+</div>
+```
+*/
+/*
+```
+<div class="ph__block l--push-v-0">
+  .l--push-v-0
+</div>
+
+<div class="ph__block l--pad-v-0">
+  .l--pad-v-0
+</div>
+
+<div class="ph__block l--push-h-0">
+  .l--push-h-0
+</div>
+
+<div class="ph__block l--pad-h-0">
+  .l--pad-h-0
+</div>
+
+<div class="ph__block l--push-all-0">
+  .l--push-v-0
+</div>
+
+<div class="ph__block l--pad-all-0">
+  .l--pad-v-0
+</div>
+```
+*/
+/*
+```
+<div class="ph__block l--push-top-half">
+  .l--push-top-half
+</div>
+
+<div class="ph__block l--pad-top-half">
+  .l--pad-top-half
+</div>
+```
+*/
+/*
+```
+<div class="ph__block l--push-bottom-half">
+  .l--push-bottom-half
+</div>
+
+<div class="ph__block l--pad-bottom-half">
+  .l--pad-bottom-half
+</div>
+```
+*/
+/*
+```
+<div class="ph__block l--push-left-half">
+  .l--push-left-half
+</div>
+
+<div class="ph__block l--pad-left-half">
+  .l--pad-left-half
+</div>
+```
+*/
+/*
+```
+<div class="ph__block l--push-right-half">
+  .l--push-right-half
+</div>
+
+<div class="ph__block l--pad-right-half">
+  .l--pad-right-half
+</div>
+```
+*/
+/*
+```
+<div class="ph__block l--push-v-half">
+  .l--push-v-half
+</div>
+
+<div class="ph__block l--pad-v-half">
+  .l--pad-v-half
+</div>
+
+<div class="ph__block l--push-h-half">
+  .l--push-h-half
+</div>
+
+<div class="ph__block l--pad-h-half">
+  .l--pad-h-half
+</div>
+
+<div class="ph__block l--push-all-half">
+  .l--push-v-half
+</div>
+
+<div class="ph__block l--pad-all-half">
+  .l--pad-v-half
+</div>
+```
+*/
+/*
+```
+<div class="ph__block l--push-top-1">
+  .l--push-top-1
+</div>
+
+<div class="ph__block l--pad-top-1">
+  .l--pad-top-1
+</div>
+```
+*/
+/*
+```
+<div class="ph__block l--push-bottom-1">
+  .l--push-bottom-1
+</div>
+
+<div class="ph__block l--pad-bottom-1">
+  .l--pad-bottom-1
+</div>
+```
+*/
+/*
+```
+<div class="ph__block l--push-left-1">
+  .l--push-left-1
+</div>
+
+<div class="ph__block l--pad-left-1">
+  .l--pad-left-1
+</div>
+```
+*/
+/*
+```
+<div class="ph__block l--push-right-1">
+  .l--push-right-1
+</div>
+
+<div class="ph__block l--pad-right-1">
+  .l--pad-right-1
+</div>
+```
+*/
+/*
+```
+<div class="ph__block l--push-v-1">
+  .l--push-v-1
+</div>
+
+<div class="ph__block l--pad-v-1">
+  .l--pad-v-1
+</div>
+
+<div class="ph__block l--push-h-1">
+  .l--push-h-1
+</div>
+
+<div class="ph__block l--pad-h-1">
+  .l--pad-h-1
+</div>
+
+<div class="ph__block l--push-all-1">
+  .l--push-v-1
+</div>
+
+<div class="ph__block l--pad-all-1">
+  .l--pad-v-1
+</div>
+```
+*/
+/*
+```
+<div class="ph__block l--push-top-2">
+  .l--push-top-2
+</div>
+
+<div class="ph__block l--pad-top-2">
+  .l--pad-top-2
+</div>
+```
+*/
+/*
+```
+<div class="ph__block l--push-bottom-2">
+  .l--push-bottom-2
+</div>
+
+<div class="ph__block l--pad-bottom-2">
+  .l--pad-bottom-2
+</div>
+```
+*/
+/*
+```
+<div class="ph__block l--push-left-2">
+  .l--push-left-2
+</div>
+
+<div class="ph__block l--pad-left-2">
+  .l--pad-left-2
+</div>
+```
+*/
+/*
+```
+<div class="ph__block l--push-right-2">
+  .l--push-right-2
+</div>
+
+<div class="ph__block l--pad-right-2">
+  .l--pad-right-2
+</div>
+```
+*/
+/*
+```
+<div class="ph__block l--push-v-2">
+  .l--push-v-2
+</div>
+
+<div class="ph__block l--pad-v-2">
+  .l--pad-v-2
+</div>
+
+<div class="ph__block l--push-h-2">
+  .l--push-h-2
+</div>
+
+<div class="ph__block l--pad-h-2">
+  .l--pad-h-2
+</div>
+
+<div class="ph__block l--push-all-2">
+  .l--push-v-2
+</div>
+
+<div class="ph__block l--pad-all-2">
+  .l--pad-v-2
+</div>
+```
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003145}}
+.l--push-top-0 {
+  margin-top: 0em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003148}}
+.l--pad-top-0 {
+  padding-top: 0em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003145}}
+.l--push-bottom-0 {
+  margin-bottom: 0em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003148}}
+.l--pad-bottom-0 {
+  padding-bottom: 0em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003145}}
+.l--push-left-0 {
+  margin-left: 0em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003148}}
+.l--pad-left-0 {
+  padding-left: 0em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003145}}
+.l--push-right-0 {
+  margin-right: 0em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003148}}
+.l--pad-right-0 {
+  padding-right: 0em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003152}}
+.l--push-v-0 {
+  margin-top: 0em !important;
+  margin-bottom: 0em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003156}}
+.l--pad-v-0 {
+  padding-top: 0em !important;
+  padding-bottom: 0em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003160}}
+.l--push-h-0 {
+  margin-left: 0em !important;
+  margin-right: 0em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003164}}
+.l--pad-h-0 {
+  padding-left: 0em !important;
+  padding-right: 0em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003168}}
+.l--push-all-0 {
+  margin: 0em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003171}}
+.l--pad-all-0 {
+  padding: 0em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003145}}
+.l--push-top-half {
+  margin-top: 0.75em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003148}}
+.l--pad-top-half {
+  padding-top: 0.75em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003145}}
+.l--push-bottom-half {
+  margin-bottom: 0.75em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003148}}
+.l--pad-bottom-half {
+  padding-bottom: 0.75em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003145}}
+.l--push-left-half {
+  margin-left: 0.75em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003148}}
+.l--pad-left-half {
+  padding-left: 0.75em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003145}}
+.l--push-right-half {
+  margin-right: 0.75em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003148}}
+.l--pad-right-half {
+  padding-right: 0.75em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003152}}
+.l--push-v-half {
+  margin-top: 0.75em !important;
+  margin-bottom: 0.75em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003156}}
+.l--pad-v-half {
+  padding-top: 0.75em !important;
+  padding-bottom: 0.75em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003160}}
+.l--push-h-half {
+  margin-left: 0.75em !important;
+  margin-right: 0.75em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003164}}
+.l--pad-h-half {
+  padding-left: 0.75em !important;
+  padding-right: 0.75em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003168}}
+.l--push-all-half {
+  margin: 0.75em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003171}}
+.l--pad-all-half {
+  padding: 0.75em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003145}}
+.l--push-top-1 {
+  margin-top: 1.5em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003148}}
+.l--pad-top-1 {
+  padding-top: 1.5em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003145}}
+.l--push-bottom-1 {
+  margin-bottom: 1.5em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003148}}
+.l--pad-bottom-1 {
+  padding-bottom: 1.5em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003145}}
+.l--push-left-1 {
+  margin-left: 1.5em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003148}}
+.l--pad-left-1 {
+  padding-left: 1.5em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003145}}
+.l--push-right-1 {
+  margin-right: 1.5em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003148}}
+.l--pad-right-1 {
+  padding-right: 1.5em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003152}}
+.l--push-v-1 {
+  margin-top: 1.5em !important;
+  margin-bottom: 1.5em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003156}}
+.l--pad-v-1 {
+  padding-top: 1.5em !important;
+  padding-bottom: 1.5em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003160}}
+.l--push-h-1 {
+  margin-left: 1.5em !important;
+  margin-right: 1.5em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003164}}
+.l--pad-h-1 {
+  padding-left: 1.5em !important;
+  padding-right: 1.5em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003168}}
+.l--push-all-1 {
+  margin: 1.5em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003171}}
+.l--pad-all-1 {
+  padding: 1.5em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003145}}
+.l--push-top-2 {
+  margin-top: 3em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003148}}
+.l--pad-top-2 {
+  padding-top: 3em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003145}}
+.l--push-bottom-2 {
+  margin-bottom: 3em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003148}}
+.l--pad-bottom-2 {
+  padding-bottom: 3em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003145}}
+.l--push-left-2 {
+  margin-left: 3em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003148}}
+.l--pad-left-2 {
+  padding-left: 3em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003145}}
+.l--push-right-2 {
+  margin-right: 3em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003148}}
+.l--pad-right-2 {
+  padding-right: 3em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003152}}
+.l--push-v-2 {
+  margin-top: 3em !important;
+  margin-bottom: 3em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003156}}
+.l--pad-v-2 {
+  padding-top: 3em !important;
+  padding-bottom: 3em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003160}}
+.l--push-h-2 {
+  margin-left: 3em !important;
+  margin-right: 3em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003164}}
+.l--pad-h-2 {
+  padding-left: 3em !important;
+  padding-right: 3em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003168}}
+.l--push-all-2 {
+  margin: 3em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_layout\.scss}line{font-family:\00003171}}
+.l--pad-all-2 {
+  padding: 3em !important;
+}
+
+/*
+
+###  The Grid
+
+#### Standard Grid
+
+```
+<div class="l__wrapper">
+  <div class="g">
+    <div class="w--one-whole g__item"><div class="ph__block">One Whole</div></div>
+  </div>
+
+  <div class="g">
+    <div class="w--five-sixths g__item">
+      <div class="g">
+        <div class="w--one-half g__item"><div class="ph__block">One Half of Five Sixths</div></div>
+        <div class="w--one-half g__item"><div class="ph__block">One Half of Five Sixths</div></div>
+      </div>
+    </div>
+    <div class="w--one-sixth g__item"><div class="ph__block">One Sixth</div></div>
+  </div>
+
+  <div class="g">
+    <div class="w--two-thirds g__item"><div class="ph__block">Two Thirds</div></div>
+    <div class="w--one-third g__item"><div class="ph__block">One Third</div></div>
+  </div>
+
+  <div class="g">
+    <div class="w--three-tenths g__item"><div class="ph__block">Three Tenths</div></div>
+    <div class="w--seven-tenths g__item"><div class="ph__block">Seven Tenths</div></div>
+  </div>
+</div>
+```
+
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_grid\.scss}line{font-family:\0000347}}
+.g, .g--tight, .g--collapsed, .g--rev, .g--right, .g--centered {
+  *zoom: 1;
+  margin: 0;
+  margin-left: -0.75em;
+  padding: 0;
+  list-style: none;
+  letter-spacing: -0.31em;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/\.rvm\/gems\/ruby-2\.0\.0-p0\/gems\/compass-0\.13\.alpha\.4\/frameworks\/compass\/stylesheets\/compass\/utilities\/general\/_clearfix\.scss}line{font-family:\0000338}}
+.g:after, .g--tight:after, .g--collapsed:after, .g--rev:after, .g--right:after, .g--centered:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+@media (min-width: 42.5em) {
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_grid\.scss}line{font-family:\0000347}}
+  .g, .g--tight, .g--collapsed, .g--rev, .g--right, .g--centered {
+    margin-left: -1.5em;
+  }
+}
+@media (min-width: 53.75em) {
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_grid\.scss}line{font-family:\0000347}}
+  .g, .g--tight, .g--collapsed, .g--rev, .g--right, .g--centered {
+    margin-left: -3em;
+  }
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_grid\.scss}line{font-family:\0000360}}
+.g > .g, .g--tight > .g, .g--collapsed > .g, .g--rev > .g, .g--right > .g, .g--centered > .g, .g > .g--tight, .g--tight > .g--tight, .g--collapsed > .g--tight, .g--rev > .g--tight, .g--right > .g--tight, .g--centered > .g--tight, .g > .g--collapsed, .g--tight > .g--collapsed, .g--collapsed > .g--collapsed, .g--rev > .g--collapsed, .g--right > .g--collapsed, .g--centered > .g--collapsed, .g > .g--rev, .g--tight > .g--rev, .g--collapsed > .g--rev, .g--rev > .g--rev, .g--right > .g--rev, .g--centered > .g--rev, .g > .g--right, .g--tight > .g--right, .g--collapsed > .g--right, .g--rev > .g--right, .g--right > .g--right, .g--centered > .g--right, .g > .g--centered, .g--tight > .g--centered, .g--collapsed > .g--centered, .g--rev > .g--centered, .g--right > .g--centered, .g--centered > .g--centered {
+  margin-left: 0;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_grid\.scss}line{font-family:\0000366}}
+.opera:-o-prefocus,
+.grid {
+  word-spacing: -0.43em;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_grid\.scss}line{font-family:\0000370}}
+.g__item {
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+  padding-left: 0.75em;
+  width: 100%;
+  vertical-align: top;
+  word-spacing: normal;
+  letter-spacing: normal;
+  *zoom: 1;
+}
+@media (min-width: 42.5em) {
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_grid\.scss}line{font-family:\0000370}}
+  .g__item {
+    padding-left: 1.5em;
+  }
+}
+@media (min-width: 53.75em) {
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_grid\.scss}line{font-family:\0000370}}
+  .g__item {
+    padding-left: 3em;
+  }
+}
+
+/*
+
+#### Tight Grid
+
+Tight grids have all the properties of regular grids, minus any spacing.
+
+```
+<div class="l__wrapper">
+  <div class="g--tight">
+    <div class="w--five-sixths g__item"><div class="ph__block">Five Sixths</div></div>
+    <div class="w--one-sixth g__item"><div class="ph__block">One Sixth</div></div>
+  </div>
+</div>
+```
+
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_grid\.scss}line{font-family:\00003105}}
+.g--tight {
+  margin-left: -0.375em;
+}
+@media (min-width: 42.5em) {
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_grid\.scss}line{font-family:\00003105}}
+  .g--tight {
+    margin-left: -0.75em;
+  }
+}
+@media (min-width: 53.75em) {
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_grid\.scss}line{font-family:\00003105}}
+  .g--tight {
+    margin-left: -1.5em;
+  }
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_grid\.scss}line{font-family:\00003114}}
+.g--tight > .g__item {
+  padding-left: 0.375em;
+}
+@media (min-width: 42.5em) {
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_grid\.scss}line{font-family:\00003114}}
+  .g--tight > .g__item {
+    padding-left: 0.75em;
+  }
+}
+@media (min-width: 53.75em) {
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_grid\.scss}line{font-family:\00003114}}
+  .g--tight > .g__item {
+    padding-left: 1.5em;
+  }
+}
+
+/*
+
+#### Collapsed Grid
+
+Collapsed grids have all the properties of regular grids, minus any spacing.
+
+```
+<div class="l__wrapper">
+  <div class="g--collapsed">
+    <div class="w--five-sixths g__item"><div class="ph__block">Five Sixths</div></div>
+    <div class="w--one-sixth g__item"><div class="ph__block">One Sixth</div></div>
+  </div>
+</div>
+```
+
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_grid\.scss}line{font-family:\00003142}}
+.g--collapsed {
+  margin-left: 0;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_grid\.scss}line{font-family:\00003146}}
+.g--collapsed > .g__item {
+  padding-left: 0;
+}
+
+/*
+
+#### Reversed Grid
+
+```
+<div class="l__wrapper">
+  <div class="g--rev">
+    <div class="w--five-sixths g__item"><div class="ph__block">Five Sixths</div></div>
+    <div class="w--one-sixth g__item"><div class="ph__block">One Sixth</div></div>
+  </div>
+</div>
+```
+
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_grid\.scss}line{font-family:\00003166}}
+.g--rev {
+  direction: rtl;
+  text-align: left;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_grid\.scss}line{font-family:\00003171}}
+.g--rev > .g__item {
+  direction: ltr;
+  text-align: left;
+}
+
+/*
+
+#### Right Aligned Grid
+
+Align the entire grid to the right.
+
+```
+<div class="l__wrapper">
+  <div class="g--right">
+    <div class="w--three-sixths g__item"><div class="ph__block">Three Sixths</div></div>
+    <div class="w--one-sixth g__item"><div class="ph__block">One Sixth</div></div>
+  </div>
+</div>
+```
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_grid\.scss}line{font-family:\00003193}}
+.g--right {
+  text-align: right;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_grid\.scss}line{font-family:\00003197}}
+.g--right > .g__item {
+  text-align: left;
+}
+
+/*
+
+#### Center Aligned Grid
+
+Centered grids align grid items centrally without needing to use push or pull classes.
+
+```
+<div class="l__wrapper">
+  <div class="g--centered">
+    <div class="w--three-sixths g__item"><div class="ph__block">Three Sixths</div></div>
+    <div class="w--one-sixth g__item"><div class="ph__block">One Sixth</div></div>
+  </div>
+</div>
+```
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_grid\.scss}line{font-family:\00003219}}
+.g--centered {
+  text-align: center;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_grid\.scss}line{font-family:\00003223}}
+.g--centered > .g__item {
+  text-align: left;
+}
+
+@media (min-width: 42.5em) {
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000312}}
+  .w--1 {
+    width: 100%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000316}}
+  .w--1-2, .w--2-4, .w--3-6, .w--4-8, .w--5-10, .w--6-12 {
+    width: 50%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000320}}
+  .w--1-3, .w--2-6, .w--4-12 {
+    width: 33.333%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000323}}
+  .w--2-3, .w--4-6, .w--8-12 {
+    width: 66.666%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000327}}
+  .w--1-4, .w--2-8, .w--3-12 {
+    width: 25%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000333}}
+  .w--3-4, .w--6-8, .w--9-12 {
+    width: 75%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000337}}
+  .w--1-5, .w--2-10 {
+    width: 20%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000340}}
+  .w--2-5, .w--4-10 {
+    width: 40%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000343}}
+  .w--3-5, .w--6-10 {
+    width: 60%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000346}}
+  .w--4-5, .w--8-10 {
+    width: 80%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000350}}
+  .w--1-6, .w--2-12 {
+    width: 16.666%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000362}}
+  .w--5-6, .w--10-12 {
+    width: 83.333%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000366}}
+  .w--1-8 {
+    width: 12.5%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000372}}
+  .w--3-8 {
+    width: 37.5%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000378}}
+  .w--5-8 {
+    width: 62.5%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000384}}
+  .w--7-8 {
+    width: 87.5%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000389}}
+  .w--1-10 {
+    width: 10%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000395}}
+  .w--3-10 {
+    width: 30%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\00003107}}
+  .w--7-10 {
+    width: 70%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\00003113}}
+  .w--9-10 {
+    width: 90%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\00003117}}
+  .w--1-12 {
+    width: 8.333%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\00003129}}
+  .w--5-12 {
+    width: 41.666%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\00003135}}
+  .w--7-12 {
+    width: 58.333%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\00003147}}
+  .w--11-12 {
+    width: 91.666%;
+  }
+}
+@media (max-width: 42.4375em) {
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000312}}
+  .w--s-1 {
+    width: 100%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000316}}
+  .w--s-1-2, .w--s-2-4, .w--s-3-6, .w--s-4-8, .w--s-5-10, .w--s-6-12 {
+    width: 50%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000320}}
+  .w--s-1-3, .w--s-2-6, .w--s-4-12 {
+    width: 33.333%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000323}}
+  .w--s-2-3, .w--s-4-6, .w--s-8-12 {
+    width: 66.666%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000327}}
+  .w--s-1-4, .w--s-2-8, .w--s-3-12 {
+    width: 25%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000333}}
+  .w--s-3-4, .w--s-6-8, .w--s-9-12 {
+    width: 75%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000337}}
+  .w--s-1-5, .w--s-2-10 {
+    width: 20%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000340}}
+  .w--s-2-5, .w--s-4-10 {
+    width: 40%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000343}}
+  .w--s-3-5, .w--s-6-10 {
+    width: 60%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000346}}
+  .w--s-4-5, .w--s-8-10 {
+    width: 80%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000350}}
+  .w--s-1-6, .w--s-2-12 {
+    width: 16.666%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000362}}
+  .w--s-5-6, .w--s-10-12 {
+    width: 83.333%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000366}}
+  .w--s-1-8 {
+    width: 12.5%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000372}}
+  .w--s-3-8 {
+    width: 37.5%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000378}}
+  .w--s-5-8 {
+    width: 62.5%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000384}}
+  .w--s-7-8 {
+    width: 87.5%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000389}}
+  .w--s-1-10 {
+    width: 10%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000395}}
+  .w--s-3-10 {
+    width: 30%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\00003107}}
+  .w--s-7-10 {
+    width: 70%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\00003113}}
+  .w--s-9-10 {
+    width: 90%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\00003117}}
+  .w--s-1-12 {
+    width: 8.333%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\00003129}}
+  .w--s-5-12 {
+    width: 41.666%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\00003135}}
+  .w--s-7-12 {
+    width: 58.333%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\00003147}}
+  .w--s-11-12 {
+    width: 91.666%;
+  }
+}
+@media (min-width: 42.5em) and (max-width: 53.6875em) {
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000312}}
+  .w--m-1 {
+    width: 100%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000316}}
+  .w--m-1-2, .w--m-2-4, .w--m-3-6, .w--m-4-8, .w--m-5-10, .w--m-6-12 {
+    width: 50%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000320}}
+  .w--m-1-3, .w--m-2-6, .w--m-4-12 {
+    width: 33.333%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000323}}
+  .w--m-2-3, .w--m-4-6, .w--m-8-12 {
+    width: 66.666%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000327}}
+  .w--m-1-4, .w--m-2-8, .w--m-3-12 {
+    width: 25%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000333}}
+  .w--m-3-4, .w--m-6-8, .w--m-9-12 {
+    width: 75%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000337}}
+  .w--m-1-5, .w--m-2-10 {
+    width: 20%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000340}}
+  .w--m-2-5, .w--m-4-10 {
+    width: 40%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000343}}
+  .w--m-3-5, .w--m-6-10 {
+    width: 60%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000346}}
+  .w--m-4-5, .w--m-8-10 {
+    width: 80%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000350}}
+  .w--m-1-6, .w--m-2-12 {
+    width: 16.666%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000362}}
+  .w--m-5-6, .w--m-10-12 {
+    width: 83.333%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000366}}
+  .w--m-1-8 {
+    width: 12.5%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000372}}
+  .w--m-3-8 {
+    width: 37.5%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000378}}
+  .w--m-5-8 {
+    width: 62.5%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000384}}
+  .w--m-7-8 {
+    width: 87.5%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000389}}
+  .w--m-1-10 {
+    width: 10%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000395}}
+  .w--m-3-10 {
+    width: 30%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\00003107}}
+  .w--m-7-10 {
+    width: 70%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\00003113}}
+  .w--m-9-10 {
+    width: 90%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\00003117}}
+  .w--m-1-12 {
+    width: 8.333%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\00003129}}
+  .w--m-5-12 {
+    width: 41.666%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\00003135}}
+  .w--m-7-12 {
+    width: 58.333%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\00003147}}
+  .w--m-11-12 {
+    width: 91.666%;
+  }
+}
+@media (min-width: 53.75em) and (max-width: 87.4375em) {
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000312}}
+  .w--l-1 {
+    width: 100%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000316}}
+  .w--l-1-2, .w--l-2-4, .w--l-3-6, .w--l-4-8, .w--l-5-10, .w--l-6-12 {
+    width: 50%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000320}}
+  .w--l-1-3, .w--l-2-6, .w--l-4-12 {
+    width: 33.333%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000323}}
+  .w--l-2-3, .w--l-4-6, .w--l-8-12 {
+    width: 66.666%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000327}}
+  .w--l-1-4, .w--l-2-8, .w--l-3-12 {
+    width: 25%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000333}}
+  .w--l-3-4, .w--l-6-8, .w--l-9-12 {
+    width: 75%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000337}}
+  .w--l-1-5, .w--l-2-10 {
+    width: 20%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000340}}
+  .w--l-2-5, .w--l-4-10 {
+    width: 40%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000343}}
+  .w--l-3-5, .w--l-6-10 {
+    width: 60%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000346}}
+  .w--l-4-5, .w--l-8-10 {
+    width: 80%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000350}}
+  .w--l-1-6, .w--l-2-12 {
+    width: 16.666%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000362}}
+  .w--l-5-6, .w--l-10-12 {
+    width: 83.333%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000366}}
+  .w--l-1-8 {
+    width: 12.5%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000372}}
+  .w--l-3-8 {
+    width: 37.5%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000378}}
+  .w--l-5-8 {
+    width: 62.5%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000384}}
+  .w--l-7-8 {
+    width: 87.5%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000389}}
+  .w--l-1-10 {
+    width: 10%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000395}}
+  .w--l-3-10 {
+    width: 30%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\00003107}}
+  .w--l-7-10 {
+    width: 70%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\00003113}}
+  .w--l-9-10 {
+    width: 90%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\00003117}}
+  .w--l-1-12 {
+    width: 8.333%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\00003129}}
+  .w--l-5-12 {
+    width: 41.666%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\00003135}}
+  .w--l-7-12 {
+    width: 58.333%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\00003147}}
+  .w--l-11-12 {
+    width: 91.666%;
+  }
+}
+@media (min-width: 87.5em) {
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000312}}
+  .w--h-1 {
+    width: 100%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000316}}
+  .w--h-1-2, .w--h-2-4, .w--h-3-6, .w--h-4-8, .w--h-5-10, .w--h-6-12 {
+    width: 50%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000320}}
+  .w--h-1-3, .w--h-2-6, .w--h-4-12 {
+    width: 33.333%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000323}}
+  .w--h-2-3, .w--h-4-6, .w--h-8-12 {
+    width: 66.666%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000327}}
+  .w--h-1-4, .w--h-2-8, .w--h-3-12 {
+    width: 25%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000333}}
+  .w--h-3-4, .w--h-6-8, .w--h-9-12 {
+    width: 75%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000337}}
+  .w--h-1-5, .w--h-2-10 {
+    width: 20%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000340}}
+  .w--h-2-5, .w--h-4-10 {
+    width: 40%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000343}}
+  .w--h-3-5, .w--h-6-10 {
+    width: 60%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000346}}
+  .w--h-4-5, .w--h-8-10 {
+    width: 80%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000350}}
+  .w--h-1-6, .w--h-2-12 {
+    width: 16.666%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000362}}
+  .w--h-5-6, .w--h-10-12 {
+    width: 83.333%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000366}}
+  .w--h-1-8 {
+    width: 12.5%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000372}}
+  .w--h-3-8 {
+    width: 37.5%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000378}}
+  .w--h-5-8 {
+    width: 62.5%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000384}}
+  .w--h-7-8 {
+    width: 87.5%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000389}}
+  .w--h-1-10 {
+    width: 10%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\0000395}}
+  .w--h-3-10 {
+    width: 30%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\00003107}}
+  .w--h-7-10 {
+    width: 70%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\00003113}}
+  .w--h-9-10 {
+    width: 90%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\00003117}}
+  .w--h-1-12 {
+    width: 8.333%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\00003129}}
+  .w--h-5-12 {
+    width: 41.666%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\00003135}}
+  .w--h-7-12 {
+    width: 58.333%;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_widths\.scss}line{font-family:\00003147}}
+  .w--h-11-12 {
+    width: 91.666%;
+  }
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_states\.scss}line{font-family:\000031}}
+.is-hidden {
+  display: none;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_states\.scss}line{font-family:\000035}}
+.is-invisible {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_states\.scss}line{font-family:\0000311}}
+.is-transition, .accent--faint, .accent--high, .accent--pop-high, .no-touch .dropdown__menu > li:hover,
+.accent--high:hover,
+.accent--high--hover:hover, .accent--higher, .tabs--accent .tabs__nav a:hover, .tabs--accent .tabs__nav a.is-active, .accent--pop-higher, .dropdown__menu,
+.accent--higher:hover,
+.accent--higher--hover:hover, .accent--highest, .accent--pop-highest, .tabs--accent .tabs__nav,
+.accent--highest:hover,
+.accent--highest--hover:hover, .accent--low,
+.accent--low--hover:hover, .accent--lower,
+.accent--lower--hover:hover, .accent--lowest,
+.accent--lowest--hover:hover, .dropdown__toggle {
+  -webkit-transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  -moz-transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  -o-transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+}
+
+/*
+
+### Icons
+
+*/
+@font-face {
+  font-family: 'Zanata';
+  src: url("../fonts/zanata-v1/Zanata.eot");
+  src: url("../fonts/zanata-v1/Zanata.eot?#iefix") format("embedded-opentype"), url("../fonts/zanata-v1/Zanata.woff") format("woff"), url("../fonts/zanata-v1/Zanata.ttf") format("truetype"), url("../fonts/zanata-v1/Zanata.svg#Zanata") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_icons\.scss}line{font-family:\0000319}}
+[data-icon]:before {
+  display: -moz-inline-stack;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  zoom: 1;
+  *display: inline;
+  content: attr(data-icon);
+  text-transform: none;
+  font-weight: normal;
+  font-variant: normal;
+  font-family: 'Zanata';
+  line-height: 1em;
+  speak: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+/*
+<pre><i class="icon--list"></i> .icon--list</pre>
+*/
+/*
+<pre><i class="icon--code"></i> .icon--code</pre>
+*/
+/*
+<pre><i class="icon--eye"></i> .icon--eye</pre>
+*/
+/*
+<pre><i class="icon--globe"></i> .icon--globe</pre>
+*/
+/*
+<pre><i class="icon--star"></i> .icon--star</pre>
+*/
+/*
+<pre><i class="icon--bell"></i> .icon--bell</pre>
+*/
+/*
+<pre><i class="icon--clipboard"></i> .icon--clipboard</pre>
+*/
+/*
+<pre><i class="icon--document-alt-fill"></i> .icon--document-alt-fill</pre>
+*/
+/*
+<pre><i class="icon--clock"></i> .icon--clock</pre>
+*/
+/*
+<pre><i class="icon--history"></i> .icon--history</pre>
+*/
+/*
+<pre><i class="icon--infinity"></i> .icon--infinity</pre>
+*/
+/*
+<pre><i class="icon--network"></i> .icon--network</pre>
+*/
+/*
+<pre><i class="icon--users"></i> .icon--users</pre>
+*/
+/*
+<pre><i class="icon--user"></i> .icon--user</pre>
+*/
+/*
+<pre><i class="icon--cog"></i> .icon--cog</pre>
+*/
+/*
+<pre><i class="icon--plus"></i> .icon--plus</pre>
+*/
+/*
+<pre><i class="icon--pencil"></i> .icon--pencil</pre>
+*/
+/*
+<pre><i class="icon--cross"></i> .icon--cross</pre>
+*/
+/*
+<pre><i class="icon--checkmark"></i> .icon--checkmark</pre>
+*/
+/*
+<pre><i class="icon--arrow-left"></i> .icon--arrow-left</pre>
+*/
+/*
+<pre><i class="icon--arrow-down"></i> .icon--arrow-down</pre>
+*/
+/*
+<pre><i class="icon--arrow-up"></i> .icon--arrow-up</pre>
+*/
+/*
+<pre><i class="icon--arrow-right"></i> .icon--arrow-right</pre>
+*/
+/*
+<pre><i class="icon--star-2"></i> .icon--star-2</pre>
+*/
+/*
+<pre><i class="icon--search"></i> .icon--search</pre>
+*/
+/*
+<pre><i class="icon--keyboard"></i> .icon--keyboard</pre>
+*/
+/*
+<pre><i class="icon--comment"></i> .icon--comment</pre>
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_icons\.scss}line{font-family:\0000340}}
+.icon--list, .icon--code, .icon--eye, .icon--globe, .icon--star, .icon--bell, .icon--clipboard, .icon--document-alt-fill, .icon--clock, .icon--history, .icon--infinity, .icon--network, .icon--users, .icon--user, .icon--cog, .icon--plus, .icon--pencil, .icon--cross, .icon--checkmark, .icon--arrow-left, .icon--arrow-down, .icon--arrow-up, .icon--arrow-right, .icon--star-2, .icon--search, .icon--keyboard, .icon--comment {
+  display: -moz-inline-stack;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  zoom: 1;
+  *display: inline;
+  text-transform: none;
+  font-weight: normal;
+  font-style: normal;
+  font-variant: normal;
+  font-family: 'Zanata';
+  line-height: 1em;
+  speak: none;
+  -webkit-font-smoothing: antialiased;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_icons\.scss}line{font-family:\0000350}}
+.list--horizontal .icon--list, .list--horizontal .icon--code, .list--horizontal .icon--eye, .list--horizontal .icon--globe, .list--horizontal .icon--star, .list--horizontal .icon--bell, .list--horizontal .icon--clipboard, .list--horizontal .icon--document-alt-fill, .list--horizontal .icon--clock, .list--horizontal .icon--history, .list--horizontal .icon--infinity, .list--horizontal .icon--network, .list--horizontal .icon--users, .list--horizontal .icon--user, .list--horizontal .icon--cog, .list--horizontal .icon--plus, .list--horizontal .icon--pencil, .list--horizontal .icon--cross, .list--horizontal .icon--checkmark, .list--horizontal .icon--arrow-left, .list--horizontal .icon--arrow-down, .list--horizontal .icon--arrow-up, .list--horizontal .icon--arrow-right, .list--horizontal .icon--star-2, .list--horizontal .icon--search, .list--horizontal .icon--keyboard, .list--horizontal .icon--comment {
+  margin-top: -0.18em;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_icons\.scss}line{font-family:\0000355}}
+.icon--large {
+  font-size: 1.5em;
+  line-height: 1em;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_icons\.scss}line{font-family:\0000359}}
+.icon--list:before {
+  content: "\f0ac";
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_icons\.scss}line{font-family:\0000362}}
+.icon--code:before {
+  content: "\e000";
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_icons\.scss}line{font-family:\0000365}}
+.icon--eye:before {
+  content: "\e002";
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_icons\.scss}line{font-family:\0000368}}
+.icon--globe:before {
+  content: "\e003";
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_icons\.scss}line{font-family:\0000371}}
+.icon--star:before {
+  content: "\e001";
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_icons\.scss}line{font-family:\0000374}}
+.icon--bell:before {
+  content: "\e004";
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_icons\.scss}line{font-family:\0000377}}
+.icon--clipboard {
+  margin-top: -0.18em;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_icons\.scss}line{font-family:\0000379}}
+.icon--clipboard:before {
+  content: "\e005";
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_icons\.scss}line{font-family:\0000383}}
+.icon--document-alt-fill:before {
+  content: "\e007";
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_icons\.scss}line{font-family:\0000386}}
+.icon--clock:before {
+  content: "\e008";
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_icons\.scss}line{font-family:\0000389}}
+.icon--history:before {
+  content: "\e009";
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_icons\.scss}line{font-family:\0000392}}
+.icon--infinity:before {
+  content: "\e00a";
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_icons\.scss}line{font-family:\0000395}}
+.icon--network:before {
+  content: "\e00b";
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_icons\.scss}line{font-family:\0000398}}
+.icon--users:before {
+  content: "\e00c";
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_icons\.scss}line{font-family:\00003101}}
+.icon--user:before {
+  content: "\e00e";
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_icons\.scss}line{font-family:\00003104}}
+.icon--cog:before {
+  content: "\e00f";
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_icons\.scss}line{font-family:\00003107}}
+.icon--plus:before {
+  content: "\e011";
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_icons\.scss}line{font-family:\00003110}}
+.icon--pencil:before {
+  content: "\e014";
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_icons\.scss}line{font-family:\00003113}}
+.icon--cross:before {
+  content: "\e006";
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_icons\.scss}line{font-family:\00003116}}
+.icon--checkmark:before {
+  content: "\e00d";
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_icons\.scss}line{font-family:\00003119}}
+.icon--arrow-left:before {
+  content: "\e010";
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_icons\.scss}line{font-family:\00003122}}
+.icon--arrow-down:before {
+  content: "\e012";
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_icons\.scss}line{font-family:\00003125}}
+.icon--arrow-up:before {
+  content: "\e013";
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_icons\.scss}line{font-family:\00003128}}
+.icon--arrow-right:before {
+  content: "\e015";
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_icons\.scss}line{font-family:\00003131}}
+.icon--star-2:before {
+  content: "\e016";
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_icons\.scss}line{font-family:\00003134}}
+.icon--search:before {
+  content: "\e017";
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_icons\.scss}line{font-family:\00003137}}
+.icon--keyboard:before {
+  content: "\e018";
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_icons\.scss}line{font-family:\00003140}}
+.icon--comment:before {
+  content: "\e019";
+}
+
+/*
+
+## Componenents
+*/
+/*
+
+### Text Modifiers
+
+#### Text Transforms
+
+```
+<p class="text--lowercase">Lowercase</p>
+<p class="text--uppercase">Uppercase</p>
+<p class="text--capitalize">capitalize</p>
+```
+
+#### Text Alignment
+
+```
+<p class="text--align-left">Align Left</p>
+<p class="text--align-right">Align Right</p>
+<p class="text--align-center">Align Center</p>
+```
+
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_text\.scss}line{font-family:\0000332}}
+.text--lowercase {
+  text-transform: lowercase;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_text\.scss}line{font-family:\0000336}}
+.text--uppercase {
+  text-transform: uppercase;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_text\.scss}line{font-family:\0000340}}
+.text--capitalize {
+  text-transform: capitalize;
+}
+
+@media (max-width: 42.4375em) {
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_text\.scss}line{font-family:\0000345}}
+  .text--s-align-left {
+    text-align: left;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_text\.scss}line{font-family:\0000349}}
+  .text--s-align-right {
+    text-align: right;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_text\.scss}line{font-family:\0000353}}
+  .text--s-align-center {
+    text-align: center;
+  }
+}
+@media (min-width: 42.5em) {
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_text\.scss}line{font-family:\0000359}}
+  .text--align-left {
+    text-align: left;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_text\.scss}line{font-family:\0000363}}
+  .text--align-right {
+    text-align: right;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_text\.scss}line{font-family:\0000367}}
+  .text--align-center {
+    text-align: center;
+  }
+}
+/*
+
+#### Text Invert
+
+
+
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_text\.scss}line{font-family:\0000380}}
+.text--invert {
+  color: #f0f2f4;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_text\.scss}line{font-family:\0000383}}
+.text--invert a {
+  color: #c4ccd4;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_text\.scss}line{font-family:\0000385}}
+.text--invert a:hover {
+  color: white;
+  background-color: #393f46;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_text\.scss}line{font-family:\0000390}}
+.text--invert a:active, .text--invert a.is-active {
+  color: white;
+  background-color: #2d3338;
+}
+
+/*
+
+#### Text Hero
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_text\.scss}line{font-family:\00003102}}
+.text--hero {
+  font-size: 1.75em;
+  line-height: 1.28571em;
+  font-weight: 300;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_text\.scss}line{font-family:\00003105}}
+.text--hero strong {
+  font-weight: 600;
+}
+
+/*
+
+#### Text Meta
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_text\.scss}line{font-family:\00003115}}
+.text--meta {
+  font-size: 0.875em;
+  line-height: 1.71429em;
+  color: #7c96ac;
+}
+
+/*
+
+#### Text Important
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_text\.scss}line{font-family:\00003125}}
+.text--important {
+  font-weight: 700;
+}
+
+/*
+
+#### Text Status
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_text\.scss}line{font-family:\00003135}}
+.text--status--ok {
+  color: #70a98b;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_text\.scss}line{font-family:\00003139}}
+.text--status--unsure {
+  color: #e0c350;
+}
+
+/*
+#### Sub Heading
+
+Sub-headings can be used when placing a heading under another heading.
+
+```
+<h2>Heading 1</h2>
+<h2 class="heading--sub">Heading Sub 2</h2>
+<br>
+<h3>Heading 3</h3>
+<h4 class="heading--sub">Heading Sub 4</h4>
+```
+
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_headings\.scss}line{font-family:\0000319}}
+.heading--sub {
+  margin-top: 0;
+  font-weight: 400;
+  color: #84a8c4;
+  display: -moz-inline-stack;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  zoom: 1;
+  *display: inline;
+}
+
+/*
+#### Heading secondary
+
+```
+<h2 class="heading--secondary">Heading Secondary 2</h2>
+
+<h3 class="heading--secondary">Heading Secondary 3</h3>
+
+<h4 class="heading--secondary">Heading Secondary 4</h4>
+
+<h5 class="heading--secondary">Heading Secondary 5</h5>
+
+<h6 class="heading--secondary">Heading Secondary 6</h6>
+```
+
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_headings\.scss}line{font-family:\0000343}}
+.heading--secondary {
+  margin-top: 0;
+  font-weight: 400;
+}
+
+/*
+### Lists
+
+#### No Bullet List
+
+```
+<ul class="list--no-bullets">
+  <li>List item</li>
+  <li>List item</li>
+  <li>List item</li>
+  <li>List item</li>
+</ul>
+```
+
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_lists\.scss}line{font-family:\0000327}}
+.list--no-bullets, nav ul,
+nav ol, .list--horizontal, .list--slat {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/\.rvm\/gems\/ruby-2\.0\.0-p0\/gems\/compass-0\.13\.alpha\.4\/frameworks\/compass\/stylesheets\/compass\/typography\/lists\/_bullets\.scss}line{font-family:\0000311}}
+.list--no-bullets li, nav ul li,
+nav ol li, .list--horizontal li, .list--slat li {
+  list-style-image: none;
+  list-style-type: none;
+  margin-left: 0;
+}
+
+/*
+
+#### Navigation list
+
+```
+<nav>
+  <ul>
+    <li>List item</li>
+    <li>List item</li>
+    <li>List item</li>
+    <li>List item</li>
+  </ul>
+</nav>
+```
+
+*/
+/*
+
+#### Horizontal List
+
+```
+<ul class="list--horizontal">
+  <li>List item</li>
+  <li>List item</li>
+  <li>List item</li>
+  <li>List item</li>
+</ul>
+```
+
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_lists\.scss}line{font-family:\0000373}}
+.list--horizontal li {
+  display: inline-block;
+  margin-left: 0.375em;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_lists\.scss}line{font-family:\0000376}}
+.list--horizontal li:first-child {
+  margin-left: 0;
+}
+
+/*
+
+#### List Slat
+
+```
+<ul class="list--slat">
+  <li>Standard</li>
+  <li><a href="#">Link</a></li>
+  <li><span class="list__title">Title</span></li>
+  <li><span class="list__title"><a href="#">Title Link</a></span></li>
+</ul>
+```
+
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_lists\.scss}line{font-family:\0000399}}
+.list--slat > li {
+  border-top: 1px solid #d9e1e7;
+  padding: 0.375em 0;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_lists\.scss}line{font-family:\00003102}}
+.list--slat > li > a {
+  display: inline-block;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_lists\.scss}line{font-family:\00003105}}
+.list--slat > li:first-child {
+  border-top: none;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_lists\.scss}line{font-family:\00003111}}
+.list__title {
+  margin: 0;
+  font-weight: 600;
+  font-size: 1em;
+  line-height: 1.5em;
+}
+
+/*
+
+#### List Block Links
+
+```
+<ul class="list--block-links">
+  <li><a href="#">Link</a></li>
+  <li><a href="#">Link</a></li>
+  <li><a href="#">Link</a></li>
+  <li><a href="#">Link</a></li>
+</ul>
+```
+
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_lists\.scss}line{font-family:\00003133}}
+.list--block-links li {
+  padding: 0;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_lists\.scss}line{font-family:\00003135}}
+.list--block-links li > a {
+  display: block;
+  padding: 0.75em;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_tabs\.scss}line{font-family:\000036}}
+.tabs__nav {
+  letter-spacing: -0.31em;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_tabs\.scss}line{font-family:\000038}}
+.tabs__nav li {
+  display: -moz-inline-stack;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  zoom: 1;
+  *display: inline;
+  letter-spacing: normal;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_tabs\.scss}line{font-family:\0000312}}
+.tabs__nav a {
+  padding: 0.75em 0.75em;
+  display: -moz-inline-stack;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  zoom: 1;
+  *display: inline;
+  min-width: 3em;
+  text-align: center;
+  font-weight: 600;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_tabs\.scss}line{font-family:\0000319}}
+.tabs__nav .tab__end {
+  float: right;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_tabs\.scss}line{font-family:\0000325}}
+.tabs--lined .tabs__nav {
+  border-bottom: 2px solid #d9e1e7;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_tabs\.scss}line{font-family:\0000327}}
+.tabs--lined .tabs__nav a {
+  margin-bottom: -2px;
+  border-bottom: 2px solid transparent;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_tabs\.scss}line{font-family:\0000331}}
+.tabs--lined .tabs__nav a:hover {
+  border-bottom-color: #c6d2db;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_tabs\.scss}line{font-family:\0000334}}
+.tabs--lined .tabs__nav a.is-active {
+  border-bottom-color: #4e9fdd;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_tabs\.scss}line{font-family:\0000341}}
+.tabs--accent .tabs__nav {
+  z-index: 1;
+  position: relative;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_tabs\.scss}line{font-family:\0000348}}
+.tabs--accent .tabs__nav a.is-active {
+  background-image: -webkit-linear-gradient(left, rgba(0, 0, 0, 0.05) 0%, rgba(255, 255, 255, 0) 10%, rgba(255, 255, 255, 0) 90%, rgba(0, 0, 0, 0.05) 100%);
+  background-image: -moz-linear-gradient(left, rgba(0, 0, 0, 0.05) 0%, rgba(255, 255, 255, 0) 10%, rgba(255, 255, 255, 0) 90%, rgba(0, 0, 0, 0.05) 100%);
+  background-image: -o-linear-gradient(left, rgba(0, 0, 0, 0.05) 0%, rgba(255, 255, 255, 0) 10%, rgba(255, 255, 255, 0) 90%, rgba(0, 0, 0, 0.05) 100%);
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0.05) 0%, rgba(255, 255, 255, 0) 10%, rgba(255, 255, 255, 0) 90%, rgba(0, 0, 0, 0.05) 100%);
+  position: relative;
+  padding-bottom: 0.9em;
+  margin-bottom: -0.15em;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_tabs\.scss}line{font-family:\0000354}}
+.tabs--accent .tabs__nav a.is-active:after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_tabs\.scss}line{font-family:\0000364}}
+.tabs--accent .tabs__nav li:first-child a.is-active {
+  background-image: -webkit-linear-gradient(left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 90%, rgba(0, 0, 0, 0.05) 100%);
+  background-image: -moz-linear-gradient(left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 90%, rgba(0, 0, 0, 0.05) 100%);
+  background-image: -o-linear-gradient(left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 90%, rgba(0, 0, 0, 0.05) 100%);
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 90%, rgba(0, 0, 0, 0.05) 100%);
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_tabs\.scss}line{font-family:\0000368}}
+.tabs--accent .tabs__nav .tab__end a.is-active {
+  background-image: -webkit-linear-gradient(left, rgba(0, 0, 0, 0.05) 0%, rgba(255, 255, 255, 0) 10%, rgba(255, 255, 255, 0) 100%);
+  background-image: -moz-linear-gradient(left, rgba(0, 0, 0, 0.05) 0%, rgba(255, 255, 255, 0) 10%, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(left, rgba(0, 0, 0, 0.05) 0%, rgba(255, 255, 255, 0) 10%, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0.05) 0%, rgba(255, 255, 255, 0) 10%, rgba(255, 255, 255, 0) 100%);
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_tabs\.scss}line{font-family:\0000372}}
+.tabs--accent .tabs__content {
+  z-index: 0;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_accent\.scss}line{font-family:\0000312}}
+.accent--faint {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);
+  opacity: 0.8;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_accent\.scss}line{font-family:\0000316}}
+.no-touch .accent--faint:hover {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+  opacity: 1;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_accent\.scss}line{font-family:\0000326}}
+.accent--high, .accent--pop-high, .no-touch .dropdown__menu > li:hover,
+.accent--high:hover,
+.accent--pop-high:hover,
+.no-touch .dropdown__menu > li:hover,
+.accent--high--hover:hover {
+  background-color: #f5f7f8;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_accent\.scss}line{font-family:\0000333}}
+.accent--higher, .tabs--accent .tabs__nav a:hover, .tabs--accent .tabs__nav a.is-active, .tabs--accent .tabs__nav a.is-active:after, .accent--pop-higher, .dropdown__menu,
+.accent--higher:hover,
+.tabs--accent .tabs__nav a:hover,
+.accent--pop-higher:hover,
+.dropdown__menu:hover,
+.accent--higher--hover:hover {
+  background-color: #fdfdfd;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_accent\.scss}line{font-family:\0000340}}
+.accent--highest, .accent--pop-highest, .tabs--accent .tabs__nav, .dropdown__toggle.is-active, .dropdown.is-active .dropdown__menu,
+.accent--highest:hover,
+.accent--pop-highest:hover,
+.tabs--accent .tabs__nav:hover,
+.dropdown__toggle.is-active:hover,
+.dropdown.is-active .dropdown__menu:hover,
+.accent--highest--hover:hover {
+  background-color: white;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_accent\.scss}line{font-family:\0000346}}
+.accent--low,
+.accent--low--hover:hover {
+  background-color: #d3d8de;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_accent\.scss}line{font-family:\0000352}}
+.accent--lower,
+.accent--lower--hover:hover {
+  background-color: #a6b2be;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_accent\.scss}line{font-family:\0000358}}
+.accent--lowest,
+.accent--lowest--hover:hover {
+  background-color: #7a8c9e;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_accent\.scss}line{font-family:\0000363}}
+.accent--pop-high {
+  -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_accent\.scss}line{font-family:\0000368}}
+.accent--pop-higher {
+  -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_accent\.scss}line{font-family:\0000373}}
+.accent--pop-highest, .tabs--accent .tabs__nav, .dropdown__toggle.is-active, .dropdown.is-active .dropdown__menu {
+  -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+/*
+
+### Media
+
+#### Media Circle
+
+```
+<div class="media--circle">
+  <a href="/profile"><img src="http://placehold.it/115x115" alt="Luke Brooker"></a>
+</div>
+```
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_media\.scss}line{font-family:\0000314}}
+.media--circle {
+  border-radius: 50%;
+  display: -moz-inline-stack;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  zoom: 1;
+  *display: inline;
+  overflow: hidden;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_media\.scss}line{font-family:\0000318}}
+.media--circle img {
+  display: block;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\0000310}}
+.off-canvas__outer {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  background-color: #444c54;
+  -webkit-transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  -moz-transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  -o-transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  z-index: 0;
+  -webkit-backface-visibility: hidden;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\0000321}}
+.off-canvas__inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  background-color: #f0f2f4;
+  -webkit-transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  -moz-transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  -o-transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  -webkit-backface-visibility: hidden;
+}
+@media (max-width: 87.4375em) {
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\0000332}}
+  .no-csstransforms3d .off-canvas--left-under .off-canvas__inner {
+    left: 16.5em;
+  }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\0000335}}
+  .csstransforms3d .off-canvas--left-under .off-canvas__inner {
+    -webkit-transform: translate3d(16.5em, 0, 0);
+    -moz-transform: translate3d(16.5em, 0, 0);
+    -ms-transform: translate3d(16.5em, 0, 0);
+    -o-transform: translate3d(16.5em, 0, 0);
+    transform: translate3d(16.5em, 0, 0);
+  }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\0000340}}
+  .no-csstransforms3d .off-canvas--right-under .off-canvas__inner {
+    right: 16.5em;
+  }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\0000343}}
+  .csstransforms3d .off-canvas--right-under .off-canvas__inner {
+    -webkit-transform: translate3d(-16.5em, 0, 0);
+    -moz-transform: translate3d(-16.5em, 0, 0);
+    -ms-transform: translate3d(-16.5em, 0, 0);
+    -o-transform: translate3d(-16.5em, 0, 0);
+    transform: translate3d(-16.5em, 0, 0);
+  }
+}
+
+@media (min-width: 87.5em) {
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\0000351}}
+  .off-canvas--left-under {
+    padding-left: 16.5em;
+  }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\0000354}}
+  .off-canvas--right-under {
+    padding-right: 16.5em;
+  }
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\0000359}}
+.off-canvas__toggle, .off-canvas__toggle--left, .off-canvas__toggle--right, .off-canvas__close {
+  font-size: 1.5em;
+  line-height: 1em;
+  display: -moz-inline-stack;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  zoom: 1;
+  *display: inline;
+  padding: 0.375em;
+  text-align: center;
+  height: 2em;
+  width: 2em;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\0000366}}
+.off-canvas__toggle.is-active, .is-active.off-canvas__toggle--left, .is-active.off-canvas__toggle--right, .is-active.off-canvas__close {
+  color: #444c54;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\0000371}}
+.off-canvas__toggle--left {
+  border-right: 1px solid #d9e1e7;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\0000376}}
+.off-canvas__toggle--right {
+  border-left: 1px solid #d9e1e7;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\0000381}}
+.off-canvas__header {
+  background-color: #5b6670;
+  height: 3em;
+  -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\0000385}}
+[data-off-canvas=over] .off-canvas__header {
+  background-color: white;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\0000390}}
+.off-canvas--left, .off-canvas--right {
+  width: 16.5em;
+  background-color: #444c54;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  -webkit-transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  -moz-transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  -o-transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  -webkit-box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.2);
+  -webkit-backface-visibility: hidden;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\00003100}}
+[data-off-canvas=over].off-canvas--left, [data-off-canvas=over].off-canvas--right {
+  background-color: #fdfdfd;
+  -webkit-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 100;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\00003107}}
+.off-canvas--left {
+  left: 0;
+  -webkit-backface-visibility: hidden;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\00003111}}
+.off-canvas--left[data-off-canvas=over] {
+  left: -16.5em;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\00003113}}
+.js .off-canvas--left[data-off-canvas=over] {
+  left: 0;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\00003116}}
+.no-csstransforms3d .off-canvas--left[data-off-canvas=over] {
+  left: -16.5em;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\00003119}}
+.csstransforms3d .off-canvas--left[data-off-canvas=over] {
+  -webkit-transform: translate3d(-16.5em, 0, 0);
+  -moz-transform: translate3d(-16.5em, 0, 0);
+  -ms-transform: translate3d(-16.5em, 0, 0);
+  -o-transform: translate3d(-16.5em, 0, 0);
+  transform: translate3d(-16.5em, 0, 0);
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\00003124}}
+.no-csstransforms3d .off-canvas--left-over .off-canvas--left {
+  left: 0;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\00003127}}
+.csstransforms3d .off-canvas--left-over .off-canvas--left {
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate3d(0, 0, 0);
+  -ms-transform: translate3d(0, 0, 0);
+  -o-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+}
+@media (min-width: 87.5em) {
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\00003133}}
+  .no-csstransforms3d .off-canvas--left-under .off-canvas--left {
+    left: 0;
+  }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\00003136}}
+  .csstransforms3d .off-canvas--left-under .off-canvas--left {
+    -webkit-transform: translate3d(0, 0, 0);
+    -moz-transform: translate3d(0, 0, 0);
+    -ms-transform: translate3d(0, 0, 0);
+    -o-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\00003143}}
+.off-canvas--right {
+  right: 0;
+  -webkit-backface-visibility: hidden;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\00003147}}
+.off-canvas--right[data-off-canvas=over] {
+  right: -16.5em;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\00003149}}
+.js .off-canvas--right[data-off-canvas=over] {
+  right: 0;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\00003152}}
+.no-csstransforms3d .off-canvas--right[data-off-canvas=over] {
+  right: -16.5em;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\00003155}}
+.csstransforms3d .off-canvas--right[data-off-canvas=over] {
+  -webkit-transform: translate3d(16.5em, 0, 0);
+  -moz-transform: translate3d(16.5em, 0, 0);
+  -ms-transform: translate3d(16.5em, 0, 0);
+  -o-transform: translate3d(16.5em, 0, 0);
+  transform: translate3d(16.5em, 0, 0);
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\00003160}}
+.no-csstransforms3d .off-canvas--right-over .off-canvas--right {
+  right: 16.5em;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\00003163}}
+.csstransforms3d .off-canvas--right-over .off-canvas--right {
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate3d(0, 0, 0);
+  -ms-transform: translate3d(0, 0, 0);
+  -o-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\00003169}}
+.off-canvas__close {
+  font-size: 1.5em;
+  line-height: 1em;
+  margin: 0.5em;
+  padding: 0;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  background-color: #8e99a3;
+  color: #5b6670;
+  float: right;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\00003180}}
+.off-canvas__close i {
+  vertical-align: top;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\00003183}}
+.off-canvas__close:hover {
+  background-color: #9ca5af;
+  color: #444c54;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\00003187}}
+.off-canvas--left .off-canvas__close {
+  float: left;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\00003190}}
+[data-off-canvas=over] .off-canvas__close {
+  background-color: #dbe0e5;
+  color: white;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_off-canvas\.scss}line{font-family:\00003193}}
+[data-off-canvas=over] .off-canvas__close:hover {
+  background-color: #c4ccd4;
+  color: white;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_progress-bar\.scss}line{font-family:\000031}}
+.progress-bar {
+  background-color: #c6d2db;
+  height: 0.375em;
+  margin-bottom: 0.375em;
+  width: 100%;
+  position: relative;
+  -webkit-transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  -moz-transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  -o-transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_progress-bar\.scss}line{font-family:\0000310}}
+.no-touch .progress-bar__expander:hover .progress-bar {
+  height: 0.75em;
+  margin-bottom: 0;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_progress-bar\.scss}line{font-family:\0000315}}
+.progress-bar__item, .progress-bar__translated, .progress-bar__fuzzy, .progress-bar__rejected, .progress-bar__approved {
+  position: absolute;
+  height: 100%;
+  left: 0;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_progress-bar\.scss}line{font-family:\0000321}}
+.progress-bar__translated {
+  background-color: #70a98b;
+  z-index: 1;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_progress-bar\.scss}line{font-family:\0000327}}
+.progress-bar__fuzzy {
+  background-color: #e0c350;
+  z-index: 2;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_progress-bar\.scss}line{font-family:\0000333}}
+.progress-bar__rejected {
+  background-color: #e3824e;
+  z-index: 3;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_progress-bar\.scss}line{font-family:\0000339}}
+.progress-bar__approved {
+  background-color: #4e9fdd;
+  z-index: 4;
+}
+
+/*
+
+### Dropdown
+
+```
+<div class="dropdown" ng-class="{is-active: is-active}">
+  <a class="dropdown__toggle" href="#" ng-click="is-active=!is-active"><i class="icon--arrow-down dropdown__toggle__icon"></i> Action</a>
+  <ul class="dropdown__menu" role="menu" aria-labelledby="dropdownMenu">
+    <li><a tabindex="-1" href="#">Action </a></li>
+    <li><a tabindex="-1" href="#">Another action</a></li>
+    <li><a tabindex="-1" href="#">Something else here</a></li>
+    <li class="dropdown__divider"></li>
+    <li><a tabindex="-1" href="#">Separated link</a></li>
+  </ul>
+</div>
+```
+
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_dropdown\.scss}line{font-family:\0000320}}
+.dropdown__container {
+  z-index: 2;
+  position: relative;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_dropdown\.scss}line{font-family:\0000323}}
+.dropdown__container.is-active {
+  z-index: 3;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+  opacity: 1;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_dropdown\.scss}line{font-family:\0000326}}
+.dropdown__container.is-active + .dropdown__container {
+  z-index: 2;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_dropdown\.scss}line{font-family:\0000332}}
+.dropdown {
+  -webkit-transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  -moz-transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  -o-transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  position: relative;
+  z-index: 11;
+  margin: 0 -0.375em;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_dropdown\.scss}line{font-family:\0000339}}
+.dropdown__toggle {
+  position: relative;
+  z-index: 13;
+  display: block;
+  padding: 0.1875em 0.375em 0.1875em 0;
+  cursor: pointer;
+  color: #4e9fdd;
+  border: 1px solid transparent;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_dropdown\.scss}line{font-family:\0000349}}
+.dropdown:hover .dropdown__toggle {
+  color: #2479bb;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_dropdown\.scss}line{font-family:\0000352}}
+.dropdown__toggle:hover {
+  background-color: rgba(65, 105, 136, 0.03);
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_dropdown\.scss}line{font-family:\0000355}}
+.dropdown__toggle:active {
+  background-color: white;
+  border: 1px solid rgba(65, 105, 136, 0.15);
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_dropdown\.scss}line{font-family:\0000359}}
+.dropdown__toggle.is-active {
+  margin: -0.1875em 0;
+  padding: 0.375em 0.375em 0.375em 0;
+  color: #444c54;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_dropdown\.scss}line{font-family:\0000367}}
+.dropdown__toggle__icon {
+  -webkit-transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  -moz-transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  -o-transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  transition: 0.3s cubic-bezier(0.26, 0.47, 0.36, 0.94);
+  font-size: 1.125em;
+  line-height: 1.33333em;
+  position: relative;
+  float: left;
+  padding: 0 0.33333em;
+  margin-top: 0.09em;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_dropdown\.scss}line{font-family:\0000374}}
+.dropdown__toggle.is-active .dropdown__toggle__icon {
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+@media (min-width: 42.5em) {
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_dropdown\.scss}line{font-family:\0000367}}
+  .dropdown__toggle__icon {
+    padding: 0 0.16667em;
+  }
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_dropdown\.scss}line{font-family:\0000382}}
+.dropdown__menu {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+  opacity: 0;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 12;
+  visibility: hidden;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  max-height: 0;
+  width: 100%;
+  float: left;
+  min-width: 6em;
+  -webkit-transform: translate3d(0, -1.5em, 0);
+  -moz-transform: translate3d(0, -1.5em, 0);
+  -ms-transform: translate3d(0, -1.5em, 0);
+  -o-transform: translate3d(0, -1.5em, 0);
+  transform: translate3d(0, -1.5em, 0);
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_dropdown\.scss}line{font-family:\0000398}}
+.dropdown__menu > li {
+  list-style: none;
+  margin: 0;
+  padding: 0.375em 0.375em 0.375em 1.95em;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_dropdown\.scss}line{font-family:\00003107}}
+.dropdown__menu > li > a {
+  display: block;
+  margin: 0;
+}
+@media (min-width: 42.5em) {
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_dropdown\.scss}line{font-family:\0000398}}
+  .dropdown__menu > li {
+    padding-left: 1.5em;
+  }
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_dropdown\.scss}line{font-family:\00003115}}
+.dropdown__menu .dropdown__header {
+  border-bottom: 1px solid #f0f2f4;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_dropdown\.scss}line{font-family:\00003118}}
+.no-touch .dropdown__menu .dropdown__header:hover {
+  background-color: transparent;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_dropdown\.scss}line{font-family:\00003125}}
+.dropdown__divider {
+  display: block;
+  overflow: hidden;
+  padding: 0 !important;
+  width: 100%;
+  height: 1px;
+  border-bottom: 1px solid transparent;
+  background-color: #f0f2f4;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_dropdown\.scss}line{font-family:\00003135}}
+.dropdown.is-active .dropdown__menu {
+  visibility: visible;
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate3d(0, 0, 0);
+  -ms-transform: translate3d(0, 0, 0);
+  -o-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+  opacity: 1;
+  max-height: 15em;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_dropdown\.scss}line{font-family:\00003144}}
+.dropdown--right .dropdown__toggle__icon {
+  float: right;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_dropdown\.scss}line{font-family:\00003147}}
+.dropdown--right .dropdown__menu {
+  left: auto;
+  right: 0;
+  float: right;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_dropdown\.scss}line{font-family:\00003154}}
+.dropdown--inline {
+  display: inline-block;
+  margin-left: 0.1875em;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_dropdown\.scss}line{font-family:\00003157}}
+.dropdown--inline .dropdown__toggle {
+  margin: -0.375em 0;
+  padding: 0.1875em 0 0.1875em 0.375em;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_dropdown\.scss}line{font-family:\00003161}}
+.dropdown--inline .dropdown__toggle__icon {
+  float: none;
+  padding: 0;
+  margin-left: -0.16667em;
+  margin-top: 0;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_dropdown\.scss}line{font-family:\00003167}}
+.dropdown--inline .dropdown__menu {
+  width: auto;
+  margin-top: 0.375em;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_dropdown\.scss}line{font-family:\00003170}}
+.dropdown--inline .dropdown__menu > li {
+  white-space: nowrap;
+  padding: 0.375em 1.125em;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_divide\.scss}line{font-family:\000031}}
+.divide, .divide--left, .divide--bottom, .divide--top {
+  border-width: 0;
+  border-color: #d9e1e7;
+  border-style: solid;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_divide\.scss}line{font-family:\000037}}
+.divide--right {
+  border-right-width: 1px;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_divide\.scss}line{font-family:\0000311}}
+.divide--left {
+  border-left-width: 1px;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_divide\.scss}line{font-family:\0000316}}
+.divide--bottom {
+  border-bottom-width: 1px;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_divide\.scss}line{font-family:\0000321}}
+.divide--top {
+  border-top-width: 1px;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_labels\.scss}line{font-family:\000031}}
+.label {
+  background-color: #d9e1e7;
+  padding: 0 0.375em;
+  display: -moz-inline-stack;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  zoom: 1;
+  *display: inline;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_buttons\.scss}line{font-family:\000035}}
+.button--full {
+  display: block;
+  width: 100%;
+}
+
+/*
+
+### Header
+
+#### Site Logo
+
+```
+
+<header role="banner" class="accent__pop-more--large header">
+  <div class="l__wrapper">
+    <h1 class="gamma text--align-center heading--sub"><a href="/"><img src="assets/img/logo.svg"> {{ site.name }}</a></h1>
+  </div>
+</header>
+
+```
+
+*/
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_header\.scss}line{font-family:\0000319}}
+.header__title {
+  font-size: 1.75em;
+  line-height: 1.71429em;
+  padding: 0;
+  margin: 0;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/lukebrooker\/Sites\/zanata-proto\/src\/assets\/sass\/_components\/_header\.scss}line{font-family:\0000325}}
+.header__site-logo {
+  height: 1.07143em;
+  margin-bottom: -0.21429em;
+}

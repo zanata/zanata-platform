@@ -1,5 +1,8 @@
 package org.zanata.webtrans.client.ui;
 
+import java.util.List;
+
+import org.zanata.webtrans.shared.model.ComparableByDate;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 import com.google.gwt.user.cellview.client.ColumnSortEvent;
 import com.google.gwt.view.client.ListDataProvider;
@@ -38,4 +41,13 @@ public interface TranslationHistoryDisplay extends WidgetDisplay
    void setDataProvider(ListDataProvider<TransHistoryItem> dataProvider);
 
    void setTitle(String title);
+
+   void setListener(Listener listener);
+
+   void setData(List<ComparableByDate> items);
+
+   interface Listener
+   {
+
+   }
 }
