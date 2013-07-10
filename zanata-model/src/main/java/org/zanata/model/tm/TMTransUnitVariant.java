@@ -33,6 +33,7 @@ import javax.persistence.MapKeyClass;
 
 import org.zanata.model.ModelEntityBase;
 import org.zanata.util.HashUtil;
+import org.zanata.util.OkapiUtil;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -63,13 +64,17 @@ public class TMTransUnitVariant extends ModelEntityBase
    @Column(nullable = false)
    private String language;
 
-   @Getter
-   @Column(nullable = false)
-   private String content;
+   @Getter @Setter
+   @Column(name = "tagged_segment", nullable = false)
+   private String taggedSegment;
 
    @Getter @Setter(AccessLevel.PROTECTED)
-   @Column(name ="content_hash", nullable = false)
-   private String contentHash;
+   @Column(name = "plain_text_segment", nullable = true)
+   private String plainTextSegment;
+
+   @Getter @Setter(AccessLevel.PROTECTED)
+   @Column(name ="plain_text_segment_hash", nullable = false)
+   private String plainTextSegmentHash;
 
    @Getter @Setter
    @ElementCollection
@@ -81,17 +86,25 @@ public class TMTransUnitVariant extends ModelEntityBase
    public TMTransUnitVariant(String language, String content)
    {
       this.language = language;
-      this.setContent(content);
+      this.setTaggedSegment(content);
    }
 
-   public void setContent(String content)
+   public void setTaggedSegment(String taggedSegment)
    {
-      this.content = content;
-      updateContentHash();
+      this.taggedSegment = taggedSegment;
+      updatePlainTextSegment();
    }
 
-   private void updateContentHash()
+   private void updatePlainTextSegmentHash()
    {
-      this.contentHash = HashUtil.generateHash(this.content);
+      this.plainTextSegmentHash = HashUtil.generateHash(this.plainTextSegment);
    }
+
+   private void updatePlainTextSegment()
+   {
+      this.plainTextSegment = OkapiUtil.extractPlainTextTmxContent(taggedSegment);
+      updatePlainTextSegmentHash();
+   }
+
+
 }

@@ -22,12 +22,12 @@ package org.zanata.util;
 
 import javax.annotation.Nonnull;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sf.okapi.common.LocaleId;
 import net.sf.okapi.steps.tokenization.Tokenizer;
 import net.sf.okapi.steps.tokenization.tokens.Tokens;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class OkapiUtil
 {
@@ -82,6 +82,48 @@ public class OkapiUtil
          log.error("unable to count words in string '{}' for locale '{}'", args);
          return 0;
       }
+   }
+
+   /**
+    * Extracts plain text from a TMX entry. This ignores the TMX elements that mark up native code sequences:
+    * <bpt></bpt>
+    * <ept></ept>
+    * <it></it>
+    * <ph></ph>
+    *
+    * @param markedUpContent The tmx marked up content.
+    * @return A string with all tmx mark-up content stripped out. Essentially a plain text version of the string.
+    */
+   public static String extractPlainTextTmxContent(String markedUpContent)
+   {
+      return removeXmlTags(markedUpContent, "bpt", "ept", "it", "ph");
+   }
+
+   /**
+    * Removes all ocurrences of an xml tag (and it's contents) from the given String.
+    * Example:
+    *
+    * <code>removeXmlTags("This <a>is</a> a string", "a")</code> will yield the string "This is  a string"
+    *
+    * @param content The content to be stripped of the xml tags.
+    * @param xmlTagNames The tag names to be removed from the content (Don't use the angle braces)
+    * @return A string with all the given xml tags (and their sub-content) removed.
+    */
+   private static String removeXmlTags( final String content, String ... xmlTagNames )
+   {
+      String processedContent = content;
+      for( String xmlTagName : xmlTagNames )
+      {
+         String openTag = "<" + xmlTagName;
+         String closeTag = "</" + xmlTagName + ">";
+         while( processedContent.contains(openTag) )
+         {
+            int openIdx = processedContent.indexOf(openTag);
+            int closeIdx = processedContent.indexOf(closeTag);
+            processedContent = processedContent.substring(0,openIdx) + processedContent.substring(closeIdx + closeTag.length());
+         }
+      }
+      return processedContent;
    }
 
    private static class StringTokenizer extends Tokenizer

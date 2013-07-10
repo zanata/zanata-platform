@@ -23,7 +23,6 @@ package org.zanata.model;
 import java.util.List;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.hamcrest.Matchers;
 import org.hibernate.criterion.Restrictions;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
@@ -164,7 +163,32 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
       }
 
       // Verify they were saved
-      List results = getEm().createQuery("from TMTransUnitVariant").getResultList();
+      List results = getEm().createQuery(
+            "select tu.transUnitVariants from TMTranslationUnit tu where tu.translationMemory.slug = 'new-trans-memory'").getResultList();
       assertThat(results.size(), greaterThan(0));
+   }
+
+   @Test
+   public void saveTransUnitVariantWithFormatting() throws Exception
+   {
+      // Save them from the bottom up, as that is probably how it will need to be done due to the large amount of them
+      saveWithTransUnits();
+
+      // Fetch the translation memory
+      TransMemory stored = getTransMemory("new-trans-memory");
+
+      // Store a Trans unit variant with formatting
+      TMTranslationUnit tu = stored.getTranslationUnits().iterator().next();
+      TMTransUnitVariant tuvES = new TMTransUnitVariant("es", "Mensaje <bpt>&lt;b></bpt>de<ept i=\"1\">&lt;b></ept> Prueba");
+
+      tu.getTransUnitVariants().put(tuvES.getLanguage(), tuvES);
+
+      super.getEm().merge(tu);
+
+      // Verify they were saved
+      TMTransUnitVariant tuv
+            = (TMTransUnitVariant)getEm().createQuery(
+               "select tu.transUnitVariants from TMTranslationUnit tu where tu.translationMemory.slug = 'new-trans-memory'").getSingleResult();
+      assertThat(tuv.getPlainTextSegment(), equalTo("Mensaje de Prueba"));
    }
 }

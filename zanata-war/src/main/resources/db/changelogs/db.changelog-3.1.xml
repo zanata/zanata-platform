@@ -64,10 +64,13 @@
             <column name="language" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="content" type="longtext">
+            <column name="tagged_segment" type="longtext">
                 <constraints nullable="false"/>
             </column>
-            <column name="content_hash" type="char(32)">
+            <column name="plain_text_segment" type="longtext">
+                <constraints nullable="true"/>
+            </column>
+            <column name="plain_text_segment_hash" type="char(32)">
                 <constraints nullable="false" unique="true"/>
             </column>
             <!-- Base entity columns -->
