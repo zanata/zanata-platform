@@ -1,7 +1,6 @@
 package org.zanata.client.commands.push;
 
 import static com.google.common.collect.Sets.newTreeSet;
-import static com.google.common.collect.Lists.newArrayList;
 import static org.apache.commons.io.FileUtils.listFiles;
 import static org.apache.commons.io.FilenameUtils.removeExtension;
 
@@ -15,17 +14,11 @@ import org.slf4j.LoggerFactory;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 
-import com.google.common.collect.Constraints;
+import com.google.common.collect.Lists;
 
 public class GettextPushStrategy extends AbstractGettextPushStrategy
 {
    private static final Logger log = LoggerFactory.getLogger(GettextPushStrategy.class);
-
-   private static <T> List<T> nonNullableArrayList()
-   {
-      List<T> l = newArrayList();
-      return Constraints.constrainedList(l, Constraints.notNull());
-   }
 
    @Override
    List<LocaleMapping> findLocales()
@@ -40,7 +33,7 @@ public class GettextPushStrategy extends AbstractGettextPushStrategy
          String localeName = removeExtension(f.getName());
          localeNames.add(localeName);
       }
-      List<LocaleMapping> locales = nonNullableArrayList();
+      List<LocaleMapping> locales = Lists.newArrayList();
       for (String localeName: localeNames)
       {
          LocaleMapping localLocale;
