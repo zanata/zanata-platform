@@ -20,18 +20,22 @@
  */
 package org.zanata.feature.account;
 
+import lombok.extern.slf4j.Slf4j;
 import org.hamcrest.Matchers;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.zanata.page.HomePage;
 import org.zanata.page.account.RegisterPage;
-import org.zanata.util.ResetDatabaseRule;
 import org.zanata.util.RFC2822;
-import org.zanata.workflow.AbstractWebWorkFlow;
+import org.zanata.util.ResetDatabaseRule;
+import org.zanata.workflow.BasicWorkFlow;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
@@ -40,7 +44,7 @@ import lombok.extern.slf4j.Slf4j;
 public class RegisterDetailedTest
 {
    @ClassRule
-   public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule(ResetDatabaseRule.Config.WithData, ResetDatabaseRule.Config.NoResetAfter);
+   public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
 
    Map<String, String> fields;
    private HomePage homePage;
@@ -59,7 +63,7 @@ public class RegisterDetailedTest
       fields.put("password", "testpassword");
       fields.put("confirmpassword", "testpassword");
       fields.put("captcha", "555"); // TODO: Expect captcha error, fix
-      homePage = new AbstractWebWorkFlow().goToHome();
+      homePage = new BasicWorkFlow().goToHome();
    }
 
    @Test
@@ -93,61 +97,22 @@ public class RegisterDetailedTest
    }
 
    @Test
-   public void usernameCharacterValidation()
-   {
-      String errorMsg = "lowercase letters and digits (regex \"^[a-z\\d_]{3,20}$\")";
-      fields.put("email", "character.test@example.com");
-      for (Map.Entry<String, String> entry : usernameCharacterValidationData().entrySet())
-      {
-         log.info("Test " + entry.getKey() + ":" + entry.getValue());
-         fields.put("username", entry.getValue());
-         RegisterPage registerPage = new AbstractWebWorkFlow().goToHome().goToRegistration().setFields(fields);
-         assertThat("Validation errors are shown", registerPage.getErrors(), Matchers.hasItem(errorMsg));
-      }
-   }
-
-   @Test
    @Ignore("Captcha prevents test completion")
    public void usernamePreExisting()
    {
       String errorMsg = "This username is not available";
-      fields.put("email", "exists.test@test.com");
-      fields.put("username", "alreadyexists");
-      RegisterPage registerPage = new AbstractWebWorkFlow().goToHome().goToRegistration().setFields(fields);
-      registerPage.register();
-
-      fields.put("email", "exists2.test@test.com");
-      registerPage = new AbstractWebWorkFlow().goToHome().goToRegistration().setFields(fields);
-      assertThat("Username not available message is shown", registerPage.getErrors(), Matchers.hasItem(errorMsg));
+      RegisterPage registerPage = new BasicWorkFlow().goToHome().goToRegistration().enterUserName("admin");
+      assertThat("Username not available message is shown", registerPage.waitForErrors(), Matchers.hasItem(errorMsg));
    }
 
    @Test
    public void emailValidation()
    {
       String errorMsg = "not a well-formed email address";
+      fields.put("email", RFC2822.PLAIN_ADDRESS);
       fields.put("username", "emailvalidation");
-      for (Map.Entry<String, String> entry : RFC2822.invalidEmailAddresses().entrySet())
-      {
-         log.info("Test " + entry.getKey() + ":" + entry.getValue());
-         fields.put("email", entry.getValue());
-         RegisterPage registerPage = new AbstractWebWorkFlow().goToHome().goToRegistration().setFields(fields);
-         assertThat("Email validation errors are shown", registerPage.getErrors(), Matchers.hasItem(errorMsg));
-      }
-   }
-
-   @Test
-   public void validEmailAcceptance()
-   {
-      String errorMsg = "not a well-formed email address";
-      fields.put("username", "emailvalidation");
-      for (Map.Entry<String, String> entry : RFC2822.validEmailAddresses().entrySet())
-      {
-         log.info("Test " + entry.getKey() + ":" + entry.getValue());
-         fields.put("email", entry.getValue());
-         RegisterPage registerPage = new AbstractWebWorkFlow().goToHome().goToRegistration().setFields(fields);
-         assertThat("Email validation errors are not shown", registerPage.getErrors(),
-               Matchers.not(Matchers.hasItem(errorMsg)));
-      }
+      RegisterPage registerPage = new BasicWorkFlow().goToHome().goToRegistration().setFields(fields);
+      assertThat("Email validation errors are shown", registerPage.getErrors(), Matchers.hasItem(errorMsg));
    }
 
    @Test
@@ -158,7 +123,7 @@ public class RegisterDetailedTest
       fields.put("email", "rejectbadcaptcha@example.com");
       fields.put("captcha", "9000");
 
-      RegisterPage registerPage = new AbstractWebWorkFlow().goToHome().goToRegistration().setFields(fields).registerFailure();
+      RegisterPage registerPage = new BasicWorkFlow().goToHome().goToRegistration().setFields(fields).registerFailure();
       assertThat("The Captcha entry is rejected", registerPage.getErrors(), Matchers.contains(errorMsg));
    }
 
@@ -171,7 +136,7 @@ public class RegisterDetailedTest
       fields.put("password", "passwordsmatch");
       fields.put("confirmpassword", "passwordsdonotmatch");
 
-      RegisterPage registerPage = new AbstractWebWorkFlow().goToHome().goToRegistration().setFields(fields);
+      RegisterPage registerPage = new BasicWorkFlow().goToHome().goToRegistration().setFields(fields);
       assertThat("Passwords fail to match error is shown", registerPage.getErrors(), Matchers.contains(errorMsg));
    }
 
@@ -185,7 +150,7 @@ public class RegisterDetailedTest
       fields.put("password", "");
       fields.put("confirmpassword", "");
 
-      RegisterPage registerPage = new AbstractWebWorkFlow().goToHome().goToRegistration().setFields(fields);
+      RegisterPage registerPage = new BasicWorkFlow().goToHome().goToRegistration().setFields(fields);
       assertThat("Value is required shows for all fields", registerPage.getErrors(),
             Matchers.contains(errorMsg, errorMsg, errorMsg, errorMsg, errorMsg));
    }
@@ -194,67 +159,12 @@ public class RegisterDetailedTest
       Bugs
     */
    @Test(expected = AssertionError.class)
-   public void bug981082_inaccurateErrorMessage()
-   {
-      String errorMsg = "size must be between 3 and 20";
-      fields.put("email", "bug981082test@test.com");
-      fields.put("username", "mo");
-
-      RegisterPage registerPage = new AbstractWebWorkFlow().goToHome().goToRegistration().setFields(fields);
-      assertThat("Size errors are shown for string too short", registerPage.getErrors(), Matchers.hasItem(errorMsg));
-
-      fields.put("username", "johndoeusernamevalidation");
-      registerPage = registerPage.setFields(fields);
-      assertThat("Size errors are shown for string too long", registerPage.getErrors(), Matchers.hasItem(errorMsg));
-   }
-
-   @Test(expected = AssertionError.class)
    public void bug981498_underscoreRules()
    {
       String errorMsg = "lowercase letters and digits (regex \"^[a-z\\d_]{3,20}$\")";
       fields.put("email", "bug981498test@example.com");
       fields.put("username", "______");
-      RegisterPage registerPage = new AbstractWebWorkFlow().goToHome().goToRegistration().setFields(fields);
+      RegisterPage registerPage = new BasicWorkFlow().goToHome().goToRegistration().setFields(fields);
       assertThat("A username of all underscores is not valid", registerPage.getErrors(), Matchers.hasItem(errorMsg));
-   }
-
-   /*
-      Returns a hash of invalid characters for a username
-      Hash is String reason for invalid 'character', String character
-    */
-   private LinkedHashMap<String, String> usernameCharacterValidationData()
-   {
-      LinkedHashMap<String, String> inputData = new LinkedHashMap<String, String>(100);
-      inputData.put("Invalid char |", "user|name");
-      inputData.put("Invalid char /", "user/name");
-      inputData.put("Invalid char ", "user\\name");
-      inputData.put("Invalid char +", "user+name");
-      inputData.put("Invalid char *", "user*name");
-      inputData.put("Invalid char |", "user|name");
-      inputData.put("Invalid char (", "user(name");
-      inputData.put("Invalid char )", "user)name");
-      inputData.put("Invalid char $", "user$name");
-      inputData.put("Invalid char [", "user[name");
-      inputData.put("Invalid char ]", "user]name");
-      inputData.put("Invalid char :", "user:name");
-      inputData.put("Invalid char ;", "user;name");
-      inputData.put("Invalid char '", "user'name");
-      inputData.put("Invalid char ,", "user,name");
-      inputData.put("Invalid char ?", "user?name");
-      inputData.put("Invalid char !", "user!name");
-      inputData.put("Invalid char @", "user@name");
-      inputData.put("Invalid char #", "user#name");
-      inputData.put("Invalid char %", "user%name");
-      inputData.put("Invalid char ^", "user^name");
-      inputData.put("Invalid char =", "user=name");
-      inputData.put("Invalid char .", "user.name");
-      inputData.put("Invalid char {", "user{name");
-      inputData.put("Invalid char }", "user}name");
-      // Capital letters are prohibited
-      for (char c = 'A'; c <= 'Z'; c++) {
-         String letter = String.valueOf(c);
-         inputData.put("Invalid capital char ".concat(letter), "user".concat(letter).concat("name"));
-      }
-      return inputData;
    }
 }
