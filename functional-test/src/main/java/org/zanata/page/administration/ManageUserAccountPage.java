@@ -32,7 +32,6 @@ import org.zanata.page.AbstractPage;
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-
 public class ManageUserAccountPage extends AbstractPage
 {
 
@@ -67,35 +66,33 @@ public class ManageUserAccountPage extends AbstractPage
       roleMap.put("user", "4");
    }
 
-   public ManageUserAccountPage enterUsername(String username)
+   public void clearAndEnterUsername(String username)
    {
+      usernameField.clear();
       usernameField.sendKeys(username);
-      return new ManageUserAccountPage(getDriver());
    }
 
-   public ManageUserAccountPage enterPassword(String password)
+   public void clearAndEnterPassword(String password)
    {
+      passwordField.clear();
       passwordField.sendKeys(password);
-      return new ManageUserAccountPage(getDriver());
    }
 
-   public ManageUserAccountPage enterConfirmPassword(String confirmPassword)
+   public void clearAndEnterConfirmPassword(String confirmPassword)
    {
+      passwordConfirmField.clear();
       passwordConfirmField.sendKeys(confirmPassword);
-      return new ManageUserAccountPage(getDriver());
    }
 
-   public ManageUserAccountPage clickEnabled()
+   public void clickEnabled()
    {
       enabledField.click();
-      return new ManageUserAccountPage(getDriver());
    }
 
-   public ManageUserAccountPage clickRole(String role)
+   public void clickRole(String role)
    {
       WebElement roleBox = getDriver().findElement(By.id("userdetailForm:rolesField:roles:".concat(roleMap.get(role))));
       roleBox.click();
-      return new ManageUserAccountPage(getDriver());
    }
 
    public boolean isRoleChecked(String role)
@@ -107,19 +104,5 @@ public class ManageUserAccountPage extends AbstractPage
    {
       saveButton.click();
       return new ManageUserPage(getDriver());
-   }
-
-   public ManageUserPage cancelEditUser()
-   {
-      cancelButton.click();
-      return new ManageUserPage(getDriver());
-   }
-
-   public ManageUserAccountPage clearFields()
-   {
-      usernameField.clear();
-      passwordField.clear();
-      passwordConfirmField.clear();
-      return new ManageUserAccountPage(getDriver());
    }
 }

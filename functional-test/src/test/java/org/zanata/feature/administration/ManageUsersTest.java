@@ -20,6 +20,8 @@
  */
 package org.zanata.feature.administration;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.concordion.api.extension.Extensions;
 import org.concordion.ext.ScreenshotExtension;
 import org.concordion.ext.TimestampFormatterExtension;
@@ -36,6 +38,7 @@ import org.zanata.page.administration.ManageUserAccountPage;
 
 @RunWith(ConcordionRunner.class)
 @Extensions({ScreenshotExtension.class, TimestampFormatterExtension.class, CustomResourceExtension.class})
+@Slf4j
 public class ManageUsersTest
 {
    @ClassRule
@@ -58,13 +61,19 @@ public class ManageUsersTest
       return manageUserPage.editUserAccount(username);
    }
 
-   public ManageUserPage changeUsernameAndPassword(ManageUserAccountPage manageUserAccount, String username, String password)
+   public ManageUserPage changeUsernameAndPassword(ManageUserAccountPage manageUserAccount, String newUsername, String newPassword)
    {
-      return manageUserAccount.clearFields().enterUsername(username).enterPassword(password).enterConfirmPassword(password).saveUser();
+      manageUserAccount.clearAndEnterUsername(newUsername);
+      manageUserAccount.clearAndEnterPassword(newPassword);
+      manageUserAccount.clearAndEnterConfirmPassword(newPassword);
+      ManageUserPage page = manageUserAccount.saveUser();
+      
+      return page;
    }
 
    public boolean userListContains(ManageUserPage manageUserPage, String username)
    {
+      log.info(manageUserPage.getUserList() + "");
       return manageUserPage.getUserList().contains(username);
    }
 

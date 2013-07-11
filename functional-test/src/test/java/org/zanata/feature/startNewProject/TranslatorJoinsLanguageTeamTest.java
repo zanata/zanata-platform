@@ -2,6 +2,8 @@ package org.zanata.feature.startNewProject;
 
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.concordion.api.extension.Extensions;
 import org.concordion.ext.ScreenshotExtension;
 import org.concordion.ext.TimestampFormatterExtension;
@@ -14,8 +16,6 @@ import org.zanata.page.administration.ManageLanguagePage;
 import org.zanata.page.administration.ManageLanguageTeamMemberPage;
 import org.zanata.util.TableRow;
 import org.zanata.workflow.LoginWorkFlow;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
