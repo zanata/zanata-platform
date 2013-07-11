@@ -114,9 +114,9 @@ public class TransFilterView extends Composite implements TransFilterDisplay
    }
 
    @Override
-   public void setTranslatedFilter(boolean filterByTranslated)
+   public void setUntranslatedFilter(boolean filterByUntranslated)
    {
-      translatedChk.setValue(filterByTranslated);
+      untranslatedChk.setValue(filterByUntranslated);
    }
 
    @Override
@@ -126,17 +126,17 @@ public class TransFilterView extends Composite implements TransFilterDisplay
    }
 
    @Override
-   public void setUntranslatedFilter(boolean filterByUntranslated)
+   public void setTranslatedFilter(boolean filterByTranslated)
    {
-      untranslatedChk.setValue(filterByUntranslated);
+      translatedChk.setValue(filterByTranslated);
    }
-   
+
    @Override
    public void setApprovedFilter(boolean filterByApproved)
    {
       approvedChk.setValue(filterByApproved);
    }
-   
+
    @Override
    public void setRejectedFilter(boolean filterByRejected)
    {
@@ -258,9 +258,9 @@ public class TransFilterView extends Composite implements TransFilterDisplay
    @Override
    public void setOptionsState(ConfigurationState state)
    {
-      translatedChk.setValue(state.isFilterByTranslated());
-      fuzzyChk.setValue(state.isFilterByNeedReview());
       untranslatedChk.setValue(state.isFilterByUntranslated());
+      fuzzyChk.setValue(state.isFilterByNeedReview());
+      translatedChk.setValue(state.isFilterByTranslated());
       approvedChk.setValue(state.isFilterByApproved());
       rejectedChk.setValue(state.isFilterByRejected());
       hasErrorChk.setValue(state.isFilterByHasError());
