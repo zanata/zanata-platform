@@ -58,7 +58,7 @@ public class TMXParser
 
    public void parseTMX(InputStream input) throws XMLStreamException
    {
-      XMLInputFactory factory = XMLInputFactory.newFactory().newInstance();
+      XMLInputFactory factory = XMLInputFactory.newInstance();
       factory.setProperty(XMLInputFactory.IS_VALIDATING, false);
       factory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
       reader = factory.createXMLEventReader(input);
