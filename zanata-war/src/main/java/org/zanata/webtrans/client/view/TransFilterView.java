@@ -32,6 +32,7 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasValue;
@@ -197,29 +198,47 @@ public class TransFilterView extends Composite implements TransFilterDisplay
    @UiHandler({"translatedChk", "fuzzyChk", "untranslatedChk", "approvedChk", "rejectedChk", "hasErrorChk"})
    public void onFilterOptionsChanged(ValueChangeEvent<Boolean> event)
    {
-      updateStateCheckboxGroups();
+      updateParentCheckboxes();
       listener.messageFilterOptionChanged(translatedChk.getValue(), fuzzyChk.getValue(),
             untranslatedChk.getValue(), approvedChk.getValue(), rejectedChk.getValue(), hasErrorChk.getValue());
    }
 
-   private void updateStateCheckboxGroups()
+   private void updateParentCheckboxes()
    {
-      // TODO show intermediate state if some but not all are checked
-      incompleteChk.setValue(allChecked(untranslatedChk, fuzzyChk, rejectedChk));
-      completeChk.setValue(allChecked(translatedChk, approvedChk));
+      updateParentCheckboxToMatchChildren(incompleteChk, untranslatedChk, fuzzyChk, rejectedChk);
+      updateParentCheckboxToMatchChildren(completeChk, translatedChk, approvedChk);
    }
 
-   private static boolean allChecked(CheckBox... toggles)
+   private void updateParentCheckboxToMatchChildren(CheckBox parent, CheckBox... children)
    {
-      for (HasValue<Boolean> toggle : toggles)
+      boolean allChecked = allHaveValue(true, children);
+      boolean noneChecked = allHaveValue(false, children);
+      boolean partiallyChecked = !(allChecked || noneChecked);
+
+      parent.setValue(allChecked);
+      setPartiallyChecked(parent, partiallyChecked);
+   }
+
+   private static boolean allHaveValue(boolean checkValue, CheckBox... checkboxes)
+   {
+      for (CheckBox checkbox : checkboxes)
       {
-         if (!toggle.getValue())
+         if (checkbox.getValue() != checkValue)
          {
             return false;
          }
       }
       return true;
    }
+
+   private static void setPartiallyChecked(CheckBox checkbox, boolean partiallyChecked)
+   {
+      setElementIndeterminate(checkbox.getElement(), partiallyChecked);
+   }
+
+   private static native void setElementIndeterminate(Element elem, boolean indeterminate)/*-{
+      elem.getElementsByTagName('input')[0].indeterminate = indeterminate;
+   }-*/;
 
    @UiHandler("incompleteChk")
    public void onIncompleteChkChanged(ValueChangeEvent<Boolean> event)
