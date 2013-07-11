@@ -294,12 +294,26 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>findbugs-maven-plugin</artifactId>
+                <version>2.5.2</version>
+                <configuration>
+                  <!-- NB: If we want to failOnError, we may need to
+                       remove GuavaBetaDetector/library-detectors. -->
+                  <failOnError>false</failOnError>
+                  <plugins>
+                      <plugin>
+                          <groupId>com.overstock.findbugs</groupId>
+                          <artifactId>library-detectors</artifactId>
+                          <version>1.1</version>
+                      </plugin>
+                  </plugins>
+                </configuration>
                 <executions>
-                    <execution>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
+                   <execution>
+                     <id>default</id>
+                     <goals>
+                       <goal>check</goal>
+                     </goals>
+                   </execution>
                 </executions>
             </plugin>
 
@@ -411,22 +425,6 @@
                 <plugin>
                     <artifactId>maven-eclipse-plugin</artifactId>
                     <version>2.9</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>findbugs-maven-plugin</artifactId>
-                    <version>2.5.2</version>
-                    <configuration>
-                        <plugins>
-                            <plugin>
-                                <groupId>com.overstock.findbugs</groupId>
-                                <artifactId>library-detectors</artifactId>
-                                <version>1.1</version>
-                            </plugin>
-                        </plugins>
-                        <!--FindDeadLocalStores,UnreadFields-->
-                        <visitors>GuavaBetaDetector</visitors>
-                    </configuration>
                 </plugin>
                 <plugin>
                     <artifactId>maven-install-plugin</artifactId>
