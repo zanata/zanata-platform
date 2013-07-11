@@ -27,7 +27,6 @@ import org.zanata.webtrans.client.ui.SearchField;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -35,7 +34,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -53,10 +52,10 @@ public class TransFilterView extends Composite implements TransFilterDisplay
 
    @UiField
    CheckBox translatedChk, fuzzyChk, untranslatedChk, approvedChk, rejectedChk, hasErrorChk;
-   
+
    @UiField
    CheckBox incompleteChk, completeChk;
-   
+
    private String hintMessage;
 
    private boolean focused = false;
@@ -198,52 +197,30 @@ public class TransFilterView extends Composite implements TransFilterDisplay
    @UiHandler({"translatedChk", "fuzzyChk", "untranslatedChk", "approvedChk", "rejectedChk", "hasErrorChk"})
    public void onFilterOptionsChanged(ValueChangeEvent<Boolean> event)
    {
-      toggleCompleteChk();
-      toggleIncompleteChk();
-      
-      listener.messageFilterOptionChanged(translatedChk.getValue(), fuzzyChk.getValue(), untranslatedChk.getValue(), approvedChk.getValue(), rejectedChk.getValue(), hasErrorChk.getValue());
+      updateStateCheckboxGroups();
+      listener.messageFilterOptionChanged(translatedChk.getValue(), fuzzyChk.getValue(),
+            untranslatedChk.getValue(), approvedChk.getValue(), rejectedChk.getValue(), hasErrorChk.getValue());
    }
-   
-   public void toggleCompleteChk()
+
+   private void updateStateCheckboxGroups()
    {
-      if(translatedChk.getValue() == approvedChk.getValue())
+      // TODO show intermediate state if some but not all are checked
+      incompleteChk.setValue(allChecked(untranslatedChk, fuzzyChk, rejectedChk));
+      completeChk.setValue(allChecked(translatedChk, approvedChk));
+   }
+
+   private static boolean allChecked(CheckBox... toggles)
+   {
+      for (HasValue<Boolean> toggle : toggles)
       {
-         if(approvedChk.getValue() == true)
+         if (!toggle.getValue())
          {
-            completeChk.setValue(true);
-         } 
-         else
-         {
-            completeChk.setValue(false);
+            return false;
          }
       }
-      else
-      {
-         //Should be indeterminate states if all checkboxes has different states, but GWT checkbox doesn't support it
-         completeChk.setValue(false);
-      }
+      return true;
    }
-   
-   public void toggleIncompleteChk()
-   {
-      if(untranslatedChk.getValue() == fuzzyChk.getValue() && fuzzyChk.getValue() == rejectedChk.getValue() && rejectedChk.getValue())
-      {
-         if(rejectedChk.getValue() == true)
-         {
-            incompleteChk.setValue(true);
-         } 
-         else
-         {
-            incompleteChk.setValue(false);
-         }
-      }
-      else
-      {
-         //Should be indeterminate states if all checkboxes has different states
-         incompleteChk.setValue(false);
-      }
-   }
-   
+
    @UiHandler("incompleteChk")
    public void onIncompleteChkChanged(ValueChangeEvent<Boolean> event)
    {
