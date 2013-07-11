@@ -35,7 +35,6 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -52,10 +51,9 @@ public class TransFilterView extends Composite implements TransFilterDisplay
    Styles style;
 
    @UiField
-   CheckBox translatedChk, fuzzyChk, untranslatedChk, approvedChk, rejectedChk, hasErrorChk;
-
-   @UiField
-   CheckBox incompleteChk, completeChk;
+   CheckBox parentIncompleteChk, untranslatedChk, fuzzyChk, rejectedChk,
+            parentCompleteChk, translatedChk, approvedChk,
+            hasErrorChk;
 
    private String hintMessage;
 
@@ -205,8 +203,8 @@ public class TransFilterView extends Composite implements TransFilterDisplay
 
    private void updateParentCheckboxes()
    {
-      updateParentCheckboxToMatchChildren(incompleteChk, untranslatedChk, fuzzyChk, rejectedChk);
-      updateParentCheckboxToMatchChildren(completeChk, translatedChk, approvedChk);
+      updateParentCheckboxToMatchChildren(parentIncompleteChk, untranslatedChk, fuzzyChk, rejectedChk);
+      updateParentCheckboxToMatchChildren(parentCompleteChk, translatedChk, approvedChk);
    }
 
    private void updateParentCheckboxToMatchChildren(CheckBox parent, CheckBox... children)
@@ -240,7 +238,7 @@ public class TransFilterView extends Composite implements TransFilterDisplay
       elem.getElementsByTagName('input')[0].indeterminate = indeterminate;
    }-*/;
 
-   @UiHandler("incompleteChk")
+   @UiHandler("parentIncompleteChk")
    public void onIncompleteChkChanged(ValueChangeEvent<Boolean> event)
    {
       untranslatedChk.setValue(event.getValue());
@@ -249,7 +247,7 @@ public class TransFilterView extends Composite implements TransFilterDisplay
       onFilterOptionsChanged(event);
    }
    
-   @UiHandler("completeChk")
+   @UiHandler("parentCompleteChk")
    public void onCompleteChkChanged(ValueChangeEvent<Boolean> event)
    {
       translatedChk.setValue(event.getValue());
