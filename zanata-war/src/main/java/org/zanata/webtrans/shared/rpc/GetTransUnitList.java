@@ -33,6 +33,15 @@ public class GetTransUnitList extends AbstractWorkspaceAction<GetTransUnitListRe
       offset = context.getOffset();
       count = context.getCount();
       phrase = context.getFindMessage();
+      setIncludeStatesFrom(context);
+      setIncludeAllStateIfNoneSelected();
+      filterHasError = context.isFilterHasError();
+      targetTransUnitId = context.getTargetTransUnitId();
+      validationIds = context.getValidationIds();
+   }
+
+   private void setIncludeStatesFrom(GetTransUnitActionContext context)
+   {
       // @formatter :off
       filterStates = ContentStateGroup.builder()
             .includeNew(context.isFilterUntranslated())
@@ -42,9 +51,14 @@ public class GetTransUnitList extends AbstractWorkspaceAction<GetTransUnitListRe
             .includeRejected(context.isFilterRejected())
             .build();
       // @formatter :on
-      filterHasError = context.isFilterHasError();
-      targetTransUnitId = context.getTargetTransUnitId();
-      validationIds = context.getValidationIds();
+   }
+
+   private void setIncludeAllStateIfNoneSelected()
+   {
+      if (filterStates.hasNoStates())
+      {
+         filterStates = ContentStateGroup.builder().addAll().build();
+      }
    }
 
    public static GetTransUnitList newAction(GetTransUnitActionContext context)
