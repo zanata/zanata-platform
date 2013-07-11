@@ -80,16 +80,6 @@
            <scope>test</scope>
        </dependency>
 
-       <dependency>
-			<groupId>xom</groupId>
-			<artifactId>xom</artifactId>
-			<exclusions>
-				<exclusion>
-					<artifactId>xml-apis</artifactId>
-					<groupId>xml-apis</groupId>
-				</exclusion>
-			</exclusions>
-       </dependency>
    </dependencies>
 
     <build>
@@ -98,18 +88,18 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <inherited>true</inherited>
+                <configuration>
+                    <failOnWarning>true</failOnWarning>
+                    <usedDependencies>
+                        <usedDependency>org.slf4j:slf4j-log4j12</usedDependency>
+                    </usedDependencies>
+                </configuration>
                 <executions>
                     <execution>
                         <id>analyze</id>
                         <goals>
                             <goal>analyze-only</goal>
                         </goals>
-                        <configuration>
-                            <failOnWarning>true</failOnWarning>
-                            <usedDependencies>
-                                <usedDependency>org.slf4j:slf4j-log4j12</usedDependency>
-                            </usedDependencies>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
