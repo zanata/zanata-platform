@@ -20,6 +20,7 @@
  */
 package org.zanata.config;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,8 +41,10 @@ import org.zanata.model.HApplicationConfiguration;
 @Name("databaseBackedConfig")
 @Scope(ScopeType.APPLICATION)
 @AutoCreate
-public class DatabaseBackedConfig
+public class DatabaseBackedConfig implements Serializable
 {
+
+   private static final long serialVersionUID = 1L;
 
    @In
    private ApplicationConfigurationDAO applicationConfigurationDAO;
