@@ -32,9 +32,9 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -51,10 +51,9 @@ public class TransFilterView extends Composite implements TransFilterDisplay
    Styles style;
 
    @UiField
-   CheckBox translatedChk, fuzzyChk, untranslatedChk, approvedChk, rejectedChk, hasErrorChk;
-
-   @UiField
-   CheckBox incompleteChk, completeChk;
+   CheckBox parentIncompleteChk, untranslatedChk, fuzzyChk, rejectedChk,
+            parentCompleteChk, translatedChk, approvedChk,
+            hasErrorChk;
 
    private String hintMessage;
 
@@ -115,9 +114,9 @@ public class TransFilterView extends Composite implements TransFilterDisplay
    }
 
    @Override
-   public void setTranslatedFilter(boolean filterByTranslated)
+   public void setUntranslatedFilter(boolean filterByUntranslated)
    {
-      translatedChk.setValue(filterByTranslated);
+      untranslatedChk.setValue(filterByUntranslated);
    }
 
    @Override
@@ -127,17 +126,17 @@ public class TransFilterView extends Composite implements TransFilterDisplay
    }
 
    @Override
-   public void setUntranslatedFilter(boolean filterByUntranslated)
+   public void setTranslatedFilter(boolean filterByTranslated)
    {
-      untranslatedChk.setValue(filterByUntranslated);
+      translatedChk.setValue(filterByTranslated);
    }
-   
+
    @Override
    public void setApprovedFilter(boolean filterByApproved)
    {
       approvedChk.setValue(filterByApproved);
    }
-   
+
    @Override
    public void setRejectedFilter(boolean filterByRejected)
    {
@@ -197,23 +196,32 @@ public class TransFilterView extends Composite implements TransFilterDisplay
    @UiHandler({"translatedChk", "fuzzyChk", "untranslatedChk", "approvedChk", "rejectedChk", "hasErrorChk"})
    public void onFilterOptionsChanged(ValueChangeEvent<Boolean> event)
    {
-      updateStateCheckboxGroups();
+      updateParentCheckboxes();
       listener.messageFilterOptionChanged(translatedChk.getValue(), fuzzyChk.getValue(),
             untranslatedChk.getValue(), approvedChk.getValue(), rejectedChk.getValue(), hasErrorChk.getValue());
    }
 
-   private void updateStateCheckboxGroups()
+   private void updateParentCheckboxes()
    {
-      // TODO show intermediate state if some but not all are checked
-      incompleteChk.setValue(allChecked(untranslatedChk, fuzzyChk, rejectedChk));
-      completeChk.setValue(allChecked(translatedChk, approvedChk));
+      updateParentCheckboxToMatchChildren(parentIncompleteChk, untranslatedChk, fuzzyChk, rejectedChk);
+      updateParentCheckboxToMatchChildren(parentCompleteChk, translatedChk, approvedChk);
    }
 
-   private static boolean allChecked(CheckBox... toggles)
+   private void updateParentCheckboxToMatchChildren(CheckBox parent, CheckBox... children)
    {
-      for (HasValue<Boolean> toggle : toggles)
+      boolean allChecked = allHaveValue(true, children);
+      boolean noneChecked = allHaveValue(false, children);
+      boolean partiallyChecked = !(allChecked || noneChecked);
+
+      parent.setValue(allChecked);
+      setPartiallyChecked(parent, partiallyChecked);
+   }
+
+   private static boolean allHaveValue(boolean checkValue, CheckBox... checkboxes)
+   {
+      for (CheckBox checkbox : checkboxes)
       {
-         if (!toggle.getValue())
+         if (checkbox.getValue() != checkValue)
          {
             return false;
          }
@@ -221,7 +229,16 @@ public class TransFilterView extends Composite implements TransFilterDisplay
       return true;
    }
 
-   @UiHandler("incompleteChk")
+   private static void setPartiallyChecked(CheckBox checkbox, boolean partiallyChecked)
+   {
+      setElementIndeterminate(checkbox.getElement(), partiallyChecked);
+   }
+
+   private static native void setElementIndeterminate(Element elem, boolean indeterminate)/*-{
+      elem.getElementsByTagName('input')[0].indeterminate = indeterminate;
+   }-*/;
+
+   @UiHandler("parentIncompleteChk")
    public void onIncompleteChkChanged(ValueChangeEvent<Boolean> event)
    {
       untranslatedChk.setValue(event.getValue());
@@ -230,7 +247,7 @@ public class TransFilterView extends Composite implements TransFilterDisplay
       onFilterOptionsChanged(event);
    }
    
-   @UiHandler("completeChk")
+   @UiHandler("parentCompleteChk")
    public void onCompleteChkChanged(ValueChangeEvent<Boolean> event)
    {
       translatedChk.setValue(event.getValue());
@@ -241,9 +258,9 @@ public class TransFilterView extends Composite implements TransFilterDisplay
    @Override
    public void setOptionsState(ConfigurationState state)
    {
-      translatedChk.setValue(state.isFilterByTranslated());
-      fuzzyChk.setValue(state.isFilterByNeedReview());
       untranslatedChk.setValue(state.isFilterByUntranslated());
+      fuzzyChk.setValue(state.isFilterByNeedReview());
+      translatedChk.setValue(state.isFilterByTranslated());
       approvedChk.setValue(state.isFilterByApproved());
       rejectedChk.setValue(state.isFilterByRejected());
       hasErrorChk.setValue(state.isFilterByHasError());
