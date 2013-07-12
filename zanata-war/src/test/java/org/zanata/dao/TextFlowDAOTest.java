@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -26,7 +25,7 @@ import org.zanata.webtrans.shared.model.DocumentId;
 @Slf4j
 public class TextFlowDAOTest extends ZanataDbunitJpaTest
 {
-
+   private static final boolean PRINT_TEST_DATA = false;
    private TextFlowDAO dao;
 
    @Override
@@ -43,7 +42,10 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest
    public void setup()
    {
       dao = new TextFlowDAO((Session) getEm().getDelegate());
-//      printTestData();
+      if (PRINT_TEST_DATA)
+      {
+          printTestData();
+      }
    }
 
    private void printTestData()
@@ -179,13 +181,12 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest
       assertThat("Conditional that accepts all should be '1'", contentStateCondition, is("1"));
    }
 
-   // FIXME the 'none == all' logic should be limited to the editor
    @Test
    public void canBuildAcceptAllQueryWhenNoStatesSelected()
    {
       String contentStateCondition = TextFlowDAO.buildContentStateCondition(
             ContentStateGroup.builder().removeAll().build(), "tft");
-      assertThat("Conditional that accepts all should be '1'", contentStateCondition, is("1"));
+      assertThat("Conditional that accepts none should be '0'", contentStateCondition, is("0"));
    }
 
    @Test
@@ -285,14 +286,4 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest
       assertThat(result, Matchers.hasSize(1));
    }
 
-   // What is this testing? I can't tell if it is ensuring that no exception is thrown,
-   // or if it is just half-written and useless.
-   @Test
-   public void queryTest1()
-   {
-      String queryString = "from HTextFlow tf left join tf.targets tft with (index(tft) = 3) " +
-            "where (exists (from HTextFlowTarget where textFlow = tf and content0 like '%mssg%'))";
-      Query query = getSession().createQuery(queryString);
-      List result = query.list();
-   }
 }

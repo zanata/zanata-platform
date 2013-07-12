@@ -160,19 +160,23 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
    }
 
    /**
-    * This will build a SQL query condition in where clause.
-    * If all status are equal (i.e. all true or all false), it's treated as accept all and it will return '1'.
+    * Build a SQL query condition that is true only for text flows with one of the given states.
     *
-    * @param includedStates
+    * @param includedStates states of targets that should return true
     * @param hTextFlowTargetTableAlias alias being used for the target table in the current query
-    * @return '1' if accept all status or a SQL condition clause with target content state conditions in parentheses '()' joined by 'or'
+    * @return a valid SQL query condition that is wrapped in parentheses if necessary
     */
    protected static String buildContentStateCondition(ContentStateGroup includedStates, String hTextFlowTargetTableAlias)
    {
-      if (includedStates.hasAllStates() || includedStates.hasNoStates())
+      if (includedStates.hasAllStates())
       {
          return "1";
       }
+      if (includedStates.hasNoStates())
+      {
+         return "0";
+      }
+
       StringBuilder builder = new StringBuilder();
       builder.append("(");
       List<String> conditions = Lists.newArrayList();
