@@ -32,8 +32,8 @@ import org.zanata.util.ResetDatabaseRule;
 @Suite.SuiteClasses({
       RegisterDetailedTest.class,
       UsernameValidationTest.class,
-      RFC2822PositiveTest.class,
-      RFC2822NegativeTest.class
+      ValidEmailAddressTest.class,
+      InvalidEmailAddressTest.class
 })
 public class RegisterTestSuite
 {

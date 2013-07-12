@@ -28,7 +28,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.zanata.page.HomePage;
 import org.zanata.page.account.RegisterPage;
-import org.zanata.util.RFC2822;
+import org.zanata.util.rfc2822.InvalidEmailAddressRFC2822;
 import org.zanata.util.ResetDatabaseRule;
 import org.zanata.workflow.BasicWorkFlow;
 
@@ -109,7 +109,7 @@ public class RegisterDetailedTest
    public void emailValidation()
    {
       String errorMsg = "not a well-formed email address";
-      fields.put("email", RFC2822.PLAIN_ADDRESS);
+      fields.put("email", InvalidEmailAddressRFC2822.PLAIN_ADDRESS.toString());
       fields.put("username", "emailvalidation");
       RegisterPage registerPage = new BasicWorkFlow().goToHome().goToRegistration().setFields(fields);
       assertThat("Email validation errors are shown", registerPage.getErrors(), Matchers.hasItem(errorMsg));
