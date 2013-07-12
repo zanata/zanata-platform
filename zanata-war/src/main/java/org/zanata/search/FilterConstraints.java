@@ -144,18 +144,7 @@ public class FilterConstraints
 
       public Builder includeStates(ContentStateGroup states)
       {
-         //FIXME this behaviour is too surprising.
-         // It exists because the editor UI should show all states when either
-         // all or none of the states are checked. This logic should just happen
-         // in the editor backend *before* sending a request to the server.
-         if (states.hasNoStates())
-         {
-            this.states.addAll();
-         }
-         else
-         {
-            this.states.fromStates(states);
-         }
+         this.states.fromStates(states);
          return this;
       }
 

@@ -144,8 +144,7 @@ public class GetTransUnitList extends AbstractWorkspaceAction<GetTransUnitListRe
 
    public boolean isAcceptAllStatus()
    {
-      //all filter options are checked or unchecked
-      return filterStates.hasNoStates() && !filterHasError || filterStates.hasAllStates() && filterHasError;
+      return filterStates.hasAllStates() && !filterHasError;
    }
 
    @Override
