@@ -6,6 +6,7 @@ import java.util.List;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.AbstractAsyncCallback;
@@ -147,6 +148,12 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
             display.clearInput();
          }
       });
+   }
+
+   @Override
+   public void copyIntoEditor(List<String> contents)
+   {
+      eventBus.fireEvent(new CopyDataToEditorEvent(contents));
    }
 
    @Override

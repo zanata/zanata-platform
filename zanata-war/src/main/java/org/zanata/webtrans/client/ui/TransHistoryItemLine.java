@@ -21,14 +21,18 @@
 
 package org.zanata.webtrans.client.ui;
 
+import java.util.List;
+
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.util.DateUtil;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.InlineHTML;
@@ -39,6 +43,7 @@ public class TransHistoryItemLine extends Composite
    private static TransHistoryItemLineUiBinder ourUiBinder = GWT.create(TransHistoryItemLineUiBinder.class);
    private static TransHistoryItemTemplate template = GWT.create(TransHistoryItemTemplate.class);
    private final TranslationHistoryDisplay.Listener listener;
+   private final List<String> contents;
 
    @UiField(provided = true)
    InlineHTML heading;
@@ -56,6 +61,7 @@ public class TransHistoryItemLine extends Composite
    public TransHistoryItemLine(TransHistoryItem item, TranslationHistoryDisplay.Listener listener)
    {
       this.listener = listener;
+      contents = item.getContents();
       heading = new InlineHTML(template.heading(item.getModifiedBy(), stateToStyle(item.getStatus()), item.getStatus().name()));
       targetContents = new InlineHTML(template.targetContent(TextContentsDisplay.asSyntaxHighlight(item.getContents()).toSafeHtml()));
       revision = new InlineHTML(template.targetRevision(item.getVersionNum(), ""));
@@ -64,7 +70,6 @@ public class TransHistoryItemLine extends Composite
       creationDate.setText(DateUtil.formatShortDate(item.getModifiedDate()));
 
    }
-   // TODO uiHandler for compare and copyIntoEditor
 
    // TODO pahuang confirm styles
    private static String stateToStyle(ContentState status)
@@ -83,6 +88,12 @@ public class TransHistoryItemLine extends Composite
             return "text--status--rejected";
       }
       return "";
+   }
+
+   @UiHandler("copyIntoEditor")
+   public void copyIntoEditorClicked(ClickEvent event)
+   {
+      listener.copyIntoEditor(contents);
    }
 
    interface TransHistoryItemLineUiBinder extends UiBinder<HTMLPanel, TransHistoryItemLine>

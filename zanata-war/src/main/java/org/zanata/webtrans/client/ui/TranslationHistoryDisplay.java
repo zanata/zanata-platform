@@ -49,5 +49,7 @@ public interface TranslationHistoryDisplay extends WidgetDisplay
    {
 
       void addComment(String commentContent);
+
+      void copyIntoEditor(List<String> contents);
    }
 }
