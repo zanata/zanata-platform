@@ -18,7 +18,7 @@
             <column name="lastChanged" type="DATETIME">
                 <constraints nullable="false" />
             </column>
-            <column name="commenter_id" type="int">
+            <column name="commenter_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
             <column name="target_id" type="bigint">
