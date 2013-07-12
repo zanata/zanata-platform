@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Level;
@@ -47,7 +48,6 @@ import org.zanata.config.DatabaseBackedConfig;
 import org.zanata.config.JndiBackedConfig;
 import org.zanata.log4j.ZanataHTMLLayout;
 import org.zanata.log4j.ZanataSMTPAppender;
-import org.zanata.model.HApplicationConfiguration;
 import org.zanata.security.AuthenticationType;
 
 @Name("applicationConfiguration")
@@ -62,22 +62,6 @@ public class ApplicationConfiguration implements Serializable
 
    private static final String EMAIL_APPENDER_NAME = "zanata.log.appender.email";
    public static final String EVENT_CONFIGURATION_CHANGED = "zanata.configuration.changed";
-
-
-
-   private static final String[] allConfigKeys = new String[]
-      {
-         HApplicationConfiguration.KEY_ADMIN_EMAIL,
-         HApplicationConfiguration.KEY_DOMAIN,
-         HApplicationConfiguration.KEY_EMAIL_FROM_ADDRESS,
-         HApplicationConfiguration.KEY_EMAIL_LOG_EVENTS,
-         HApplicationConfiguration.KEY_EMAIL_LOG_LEVEL,
-         HApplicationConfiguration.KEY_HELP_CONTENT,
-         HApplicationConfiguration.KEY_HOME_CONTENT,
-         HApplicationConfiguration.KEY_HOST,
-         HApplicationConfiguration.KEY_LOG_DESTINATION_EMAIL,
-         HApplicationConfiguration.KEY_REGISTER
-      };
 
    private DatabaseBackedConfig databaseBackedConfig;
    private JndiBackedConfig jndiBackedConfig;
@@ -97,7 +81,6 @@ public class ApplicationConfiguration implements Serializable
    public void load()
    {
       log.info("Reloading configuration");
-      Map<String, String> configValues = new HashMap<String, String>();
       databaseBackedConfig = (DatabaseBackedConfig)Component.getInstance(DatabaseBackedConfig.class);
       jndiBackedConfig = (JndiBackedConfig)Component.getInstance(JndiBackedConfig.class);
 

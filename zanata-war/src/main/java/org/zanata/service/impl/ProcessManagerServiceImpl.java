@@ -144,7 +144,7 @@ public class ProcessManagerServiceImpl implements ProcessManagerService
    /**
     * Internal class to detect when a process is complete.
     */
-   private final class DefaultProcessListener implements RunnableProcessListener<ProcessHandle>, Serializable
+   private final class DefaultProcessListener implements RunnableProcessListener<ProcessHandle>
    {
       private static final long serialVersionUID = 1L;
 

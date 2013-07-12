@@ -335,7 +335,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             }
             Log.debug("found matching TU for TU update, id: " + updateInfo.getTransUnit().getId().getId());
 
-            if (replaceInfo.getReplaceState() == ReplacementState.Replaced && replaceInfo.getTransUnit().getVerNum() != updateInfo.getTransUnit().getVerNum())
+            if (replaceInfo.getReplaceState() == ReplacementState.Replaced && !(replaceInfo.getTransUnit().getVerNum().equals(updateInfo.getTransUnit().getVerNum())))
             {
                // can't undo after additional update
                setReplaceState(replaceInfo, ReplacementState.NotReplaced);

@@ -157,7 +157,6 @@ public class GlossaryDetailsPresenterTest
    public void onSaveClickAndCallbackSuccess()
    {
       GlossaryDetails glossaryDetails = mock(GlossaryDetails.class);
-      Date lastModifiedDate = new Date();
       when(mockUserWorkspaceContext.getWorkspaceRestrictions().isHasGlossaryUpdateAccess()).thenReturn(true);
       when(display.getTargetText()).thenReturn(targetText);
       when(targetText.getText()).thenReturn("new target Text");
