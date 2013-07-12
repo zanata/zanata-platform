@@ -17,7 +17,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.Source;
-import javax.xml.transform.stax.StAXSource;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -71,11 +70,10 @@ public class XliffReader extends XliffCommon
    /*
     * Validate xliff file against schema version 1.1
     */
-   private void validateXliffFile(InputSource inputSource)
+   private void validateXliffFile(StreamSource source)
    {
       try
       {
-         final XMLStreamReader xmlr = xmlif.createXMLStreamReader(inputSource.getByteStream());
          final Source schemaSource = new StreamSource(Thread.currentThread().getContextClassLoader().getResourceAsStream("schema/xliff-core-1.1.xsd"));
 
          factory.setResourceResolver(new LSResourceResolver()
@@ -90,14 +88,7 @@ public class XliffReader extends XliffCommon
 
          Schema schema = factory.newSchema(schemaSource);
          Validator validator = schema.newValidator();
-         validator.validate(new StAXSource(xmlr));
-
-         xmlr.close();
-
-      }
-      catch (XMLStreamException e)
-      {
-         throw new RuntimeException("Invalid XLIFF file format  ", e);
+         validator.validate(source);
       }
       catch (SAXException saxException)
       {
@@ -116,7 +107,7 @@ public class XliffReader extends XliffCommon
       {
          InputSource inputSource = new InputSource(new FileInputStream(file));
          inputSource.setEncoding("utf8");
-         validateXliffFile(new InputSource(new FileInputStream(file)));
+         validateXliffFile(new StreamSource(file));
       }
 
       try
