@@ -26,8 +26,8 @@
                     <g:HTMLPanel ui:field="historyPanel" styleName="l__wrapper" >
                         <div class="g">
                             <div class="g__item w--1-12 text--align-right"><i class="icon-comment-3"></i><span class="is-invisible">Comment</span></div>
-                            <div class="w--9-12 g__item"><textarea name="comment" placeholder="Add a comment..."></textarea></div>
-                            <div class="w--2-12 g__item"><g:Button addStyleNames="button--full" text="Add Comment" /></div>
+                            <div class="w--9-12 g__item"><g:TextArea name="comment" ui:field="commentTextArea" /></div>
+                            <div class="w--2-12 g__item"><g:Button addStyleNames="button--full" text="Add Comment" ui:field="addCommentButton" /></div>
                         </div>
                         <z:UnorderedListWidget styleName="list--slat divide--top" ui:field="itemList"/>
                     </g:HTMLPanel>

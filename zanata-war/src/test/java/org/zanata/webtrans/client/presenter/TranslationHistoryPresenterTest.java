@@ -26,6 +26,7 @@ import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.service.GetTransUnitActionContextHolder;
 import org.zanata.webtrans.client.ui.TranslationHistoryDisplay;
 import org.zanata.webtrans.shared.model.ReviewComment;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
@@ -69,18 +70,16 @@ public class TranslationHistoryPresenterTest
    @Captor
    private ArgumentCaptor<AsyncCallback<GetTranslationHistoryResult>> resultCaptor;
    private final TransUnitId transUnitId = new TransUnitId(1L);
+   @Mock
+   private GetTransUnitActionContextHolder contextHolder;
 
    @BeforeMethod
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new TranslationHistoryPresenter(display, eventBus, dispatcher, messages, selectionModel, dataProvider);
+      presenter = new TranslationHistoryPresenter(display, eventBus, dispatcher, messages, contextHolder);
       presenter.setCurrentValueHolder(targetContentsPresenter);
       
-      verify(display).setDataProvider(dataProvider);
-      verify(display).setSelectionModel(selectionModel);
-      verify(display).addVersionSortHandler(sortHandlerCaptor.capture());
-
       when(dataProvider.getList()).thenReturn(Lists.<TransHistoryItem>newArrayList());
       doNothing().when(dispatcher).execute(actionCaptor.capture(), resultCaptor.capture());
    }

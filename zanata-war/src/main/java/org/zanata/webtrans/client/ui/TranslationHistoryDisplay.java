@@ -3,6 +3,7 @@ package org.zanata.webtrans.client.ui;
 import java.util.List;
 
 import org.zanata.webtrans.shared.model.ComparableByDate;
+import org.zanata.webtrans.shared.model.ReviewComment;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 import com.google.gwt.user.cellview.client.ColumnSortEvent;
 import com.google.gwt.view.client.ListDataProvider;
@@ -34,20 +35,19 @@ public interface TranslationHistoryDisplay extends WidgetDisplay
 
    void disableComparison();
 
-   void addVersionSortHandler(ColumnSortEvent.ListHandler<TransHistoryItem> sortHandler);
-
-   void setSelectionModel(SelectionModel<TransHistoryItem> multiSelectionModel);
-
-   void setDataProvider(ListDataProvider<TransHistoryItem> dataProvider);
-
    void setTitle(String title);
 
    void setListener(Listener listener);
 
    void setData(List<ComparableByDate> items);
 
+   void addCommentToList(ReviewComment comment);
+
+   void clearInput();
+
    interface Listener
    {
 
+      void addComment(String commentContent);
    }
 }
