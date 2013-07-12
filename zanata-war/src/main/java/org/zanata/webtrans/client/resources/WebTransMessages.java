@@ -542,4 +542,6 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Download document with extension {0}")
    String downloadFileTitle(String key);
 
+   @DefaultMessage("Comment")
+   String reviewComment();
 }
