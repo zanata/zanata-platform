@@ -5,6 +5,7 @@ package org.zanata.util;
 
 import java.util.Date;
 
+import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -14,7 +15,6 @@ import org.joda.time.format.DateTimeFormatter;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  */
-// FIXME SimpleDateFormat is not thread safe; we should use JODA
 public class DateUtil
 {
    private final static String DATE_TIME_SHORT_PATTERN = "dd/MM/yy HH:mm";
@@ -30,7 +30,7 @@ public class DateUtil
       if(date != null)
       {
          DateTimeFormatter fmt = DateTimeFormat.forPattern(DATE_TIME_SHORT_PATTERN);
-         return fmt.toString();
+         return fmt.print(new DateTime(date));
       }
       return null;
    }
@@ -45,7 +45,7 @@ public class DateUtil
       if(date != null)
       {
          DateTimeFormatter fmt = DateTimeFormat.forPattern(TIME_SHORT_PATTERN);
-         return fmt.toString();
+         return fmt.print(new DateTime(date));
       }
       return null;
    }
