@@ -116,37 +116,43 @@ public class TransFilterView extends Composite implements TransFilterDisplay
    @Override
    public void setUntranslatedFilter(boolean filterByUntranslated)
    {
-      untranslatedChk.setValue(filterByUntranslated);
+      updateChildCheckbox(untranslatedChk, filterByUntranslated);
    }
 
    @Override
    public void setNeedReviewFilter(boolean filterByNeedReview)
    {
-      fuzzyChk.setValue(filterByNeedReview);
+      updateChildCheckbox(fuzzyChk, filterByNeedReview);
    }
 
    @Override
    public void setTranslatedFilter(boolean filterByTranslated)
    {
-      translatedChk.setValue(filterByTranslated);
+      updateChildCheckbox(translatedChk, filterByTranslated);
    }
 
    @Override
    public void setApprovedFilter(boolean filterByApproved)
    {
-      approvedChk.setValue(filterByApproved);
+      updateChildCheckbox(approvedChk, filterByApproved);
    }
 
    @Override
    public void setRejectedFilter(boolean filterByRejected)
    {
-      rejectedChk.setValue(filterByRejected);
+      updateChildCheckbox(rejectedChk, filterByRejected);
    }
 
    @Override
    public void setHasErrorFilter(boolean filterByHasError)
    {
-      hasErrorChk.setValue(filterByHasError);
+      updateChildCheckbox(hasErrorChk, filterByHasError);
+   }
+
+   private void updateChildCheckbox(CheckBox checkbox, boolean value)
+   {
+      checkbox.setValue(value);
+      updateParentCheckboxes();
    }
 
    @Override
