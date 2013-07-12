@@ -1928,6 +1928,11 @@
 	       <artifactId>xmlunit</artifactId>
 	       <version>1.4</version>
 	   </dependency>
+      <dependency>
+         <groupId>xom</groupId>
+         <artifactId>xom</artifactId>
+      </dependency>
 	</dependencies>
+
 
 </project>

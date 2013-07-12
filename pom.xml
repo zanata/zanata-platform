@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>zanata-parent</artifactId>
-    <version>10</version>
+    <version>13-SNAPSHOT</version>
     <relativePath>../parent</relativePath>
   </parent>
 
