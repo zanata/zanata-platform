@@ -183,14 +183,4 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest
       List result = query.list();
 
    }
-
-   @Test
-   public void canGetTextFlowWithTranslationEagerlyLoaded()
-   {
-      //3 text flows with single en-US fuzzy target
-      HLocale enUSLocale = getEm().find(HLocale.class, 4L);
-      log.info("*************");
-      List<HTextFlow> doc2TextFlows = dao.getTextFlowsByDocumentId(new DocumentId(2L, ""), 0, 9999);
-
-   }
 }

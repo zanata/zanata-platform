@@ -8,42 +8,42 @@
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <jta-data-source>java:jboss/datasources/${ds.jndi.name}</jta-data-source>
     <mapping-file>META-INF/orm.xml</mapping-file>
-    
-    <class>org.zanata.model.HAccountActivationKey</class>
-    <class>org.zanata.model.HAccount</class>
-    <class>org.zanata.model.HAccountResetPasswordKey</class>
-    <class>org.zanata.model.HAccountRole</class>
-    <class>org.zanata.model.HApplicationConfiguration</class>
-    <class>org.zanata.model.HasSimpleComment</class>
-    <class>org.zanata.model.HCopyTransOptions</class>
-    <class>org.zanata.model.HDocumentHistory</class>
-    <class>org.zanata.model.HDocument</class>
-    <class>org.zanata.model.HDocumentUpload</class>
-    <class>org.zanata.model.HDocumentUploadPart</class>
-    <class>org.zanata.model.HAccountOption</class>
-    <class>org.zanata.model.HProject</class>
-    <class>org.zanata.model.HLocale</class>
-    <class>org.zanata.model.HLocaleMember</class>
-    <class>org.zanata.model.HPerson</class>
-    <class>org.zanata.model.HPersonEmailValidationKey</class>
-    <class>org.zanata.model.HProjectIteration</class>
-    <class>org.zanata.model.HRawDocument</class>
-    <class>org.zanata.model.HRoleAssignmentRule</class>
-    <class>org.zanata.model.HSimpleComment</class>
-    <class>org.zanata.model.HTextFlowHistory</class>
-    <class>org.zanata.model.HTextFlow</class>
-    <class>org.zanata.model.HTextFlowTargetHistory</class>
-    <class>org.zanata.model.HTextFlowTarget</class>
-    <class>org.zanata.model.HTextFlowTargetReviewComment</class>
-    <class>org.zanata.model.HGlossaryEntry</class>
-    <class>org.zanata.model.HGlossaryTerm</class>
-    <class>org.zanata.model.HTermComment</class>
-    <class>org.zanata.model.HIterationGroup</class>
-    <class>org.zanata.model.po.HPoHeader</class>
-    <class>org.zanata.model.po.HPoTargetHeader</class>
-    <class>org.zanata.model.po.HPotEntryData</class>
-    <class>org.zanata.model.security.HCredentials</class>
-    <class>org.zanata.model.security.HOpenIdCredentials</class>
+
+      <class>org.zanata.model.HAccount</class>
+      <class>org.zanata.model.HAccountActivationKey</class>
+      <class>org.zanata.model.HAccountOption</class>
+      <class>org.zanata.model.HAccountResetPasswordKey</class>
+      <class>org.zanata.model.HAccountRole</class>
+      <class>org.zanata.model.HApplicationConfiguration</class>
+      <class>org.zanata.model.HasSimpleComment</class>
+      <class>org.zanata.model.HCopyTransOptions</class>
+      <class>org.zanata.model.HDocument</class>
+      <class>org.zanata.model.HDocumentHistory</class>
+      <class>org.zanata.model.HDocumentUpload</class>
+      <class>org.zanata.model.HDocumentUploadPart</class>
+      <class>org.zanata.model.HGlossaryEntry</class>
+      <class>org.zanata.model.HGlossaryTerm</class>
+      <class>org.zanata.model.HIterationGroup</class>
+      <class>org.zanata.model.HLocale</class>
+      <class>org.zanata.model.HLocaleMember</class>
+      <class>org.zanata.model.HPerson</class>
+      <class>org.zanata.model.HPersonEmailValidationKey</class>
+      <class>org.zanata.model.HProject</class>
+      <class>org.zanata.model.HProjectIteration</class>
+      <class>org.zanata.model.HRawDocument</class>
+      <class>org.zanata.model.HRoleAssignmentRule</class>
+      <class>org.zanata.model.HSimpleComment</class>
+      <class>org.zanata.model.HTermComment</class>
+      <class>org.zanata.model.HTextFlowHistory</class>
+      <class>org.zanata.model.HTextFlow</class>
+      <class>org.zanata.model.HTextFlowTarget</class>
+      <class>org.zanata.model.HTextFlowTargetHistory</class>
+      <class>org.zanata.model.HTextFlowTargetReviewComment</class>
+      <class>org.zanata.model.po.HPoHeader</class>
+      <class>org.zanata.model.po.HPoTargetHeader</class>
+      <class>org.zanata.model.po.HPotEntryData</class>
+      <class>org.zanata.model.security.HCredentials</class>
+      <class>org.zanata.model.security.HOpenIdCredentials</class>
 	
 	<properties>
       <!--    
