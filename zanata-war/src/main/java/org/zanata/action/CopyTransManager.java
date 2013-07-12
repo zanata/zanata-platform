@@ -69,18 +69,29 @@ public class CopyTransManager implements Serializable
          Collections.synchronizedMap( new HashMap<CopyTransProcessKey, CopyTransProcessHandle>() );
 
    // Collection of recently cancelled copy trans processes (discards the oldest ones)
+   // TODO deprecated, switch to CacheBuilder
    private Map<CopyTransProcessKey, CopyTransProcessHandle> recentlyCancelled =
          new MapMaker()
                .softValues()
                .expiration(1, TimeUnit.HOURS) // keep them for an hour
                .makeMap();
+//         CacheBuilder.newBuilder()
+//               .softValues()
+//               .expireAfterWrite(1, TimeUnit.HOURS) // keep them for an hour
+//               .build().asMap();
 
    // Collection of recently completed copy trans processes (discards the olders ones)
+   // TODO deprecated, switch to CacheBuilder
    private Map<CopyTransProcessKey, CopyTransProcessHandle> recentlyFinished =
          new MapMaker()
                .softValues()
                .expiration(1, TimeUnit.HOURS) // keep them for an hour
                .makeMap();
+
+//         CacheBuilder.newBuilder()
+//               .softValues()
+//               .expireAfterWrite(1, TimeUnit.HOURS) // keep them for an hour
+//               .build().asMap();
 
    @In
    private ProcessManagerService processManagerServiceImpl;
