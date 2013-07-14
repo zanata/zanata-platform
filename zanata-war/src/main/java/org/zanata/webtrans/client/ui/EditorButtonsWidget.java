@@ -42,17 +42,17 @@ public class EditorButtonsWidget extends Composite
    public EditorButtonsWidget()
    {
       initWidget(ourUiBinder.createAndBindUi(this));
-      displayReviewButtons(listener != null && listener.canReviewTranslation());
-      displayModifyTranslationButtons(listener != null && listener.canModifyTranslation());
+      setDisplayReviewButtons(listener != null && listener.canReviewTranslation());
+      setDisplayModifyTranslationButtons(listener != null && listener.canModifyTranslation());
    }
 
-   private void displayReviewButtons(boolean canReview)
+   private void setDisplayReviewButtons(boolean canReview)
    {
       acceptIcon.setVisible(canReview);
       rejectIcon.setVisible(canReview);
    }
    
-   private void displayModifyTranslationButtons(boolean canModify)
+   private void setDisplayModifyTranslationButtons(boolean canModify)
    {
       saveIcon.setVisible(canModify);
       fuzzyIcon.setVisible(canModify);
@@ -124,8 +124,8 @@ public class EditorButtonsWidget extends Composite
    public void setListener(TargetContentsDisplay.Listener listener)
    {
       this.listener = listener;
-      displayReviewButtons(listener.canReviewTranslation());
-      displayModifyTranslationButtons(listener.canModifyTranslation());
+      setDisplayReviewButtons(listener.canReviewTranslation());
+      setDisplayModifyTranslationButtons(listener.canModifyTranslation());
    }
 
    public void setId(TransUnitId id)

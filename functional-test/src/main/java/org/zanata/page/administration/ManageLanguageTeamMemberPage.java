@@ -26,8 +26,9 @@ public class ManageLanguageTeamMemberPage extends AbstractPage
    private WebElement memberPanel;
 
    public static final int USERNAME_COLUMN = 0;
-   public static final int ISTRANSLATOR_COLUMN = 3;
+   public static final int SEARCH_RESULT_SELECTED_COLUMN = 0;
    public static final int SEARCH_RESULT_PERSON_COLUMN = 1;
+   public static final int ISTRANSLATOR_COLUMN = 3;
 
    public ManageLanguageTeamMemberPage(WebDriver driver)
    {
@@ -130,17 +131,17 @@ public class ManageLanguageTeamMemberPage extends AbstractPage
    {
       final String personUsername = personRow.getCellContents().get(1);
       log.info("username to be added: {}", personUsername);
-      WebElement firstCell = personRow.getCells().get(0).findElement(By.tagName("input"));
-      WebElement translatorCell = personRow.getCells().get(3).findElement(By.tagName("input"));
+      WebElement selectRowToUpdateCell = personRow.getCells().get(SEARCH_RESULT_SELECTED_COLUMN).findElement(By.tagName("input"));
+      WebElement isTranslatorCell = personRow.getCells().get(ISTRANSLATOR_COLUMN).findElement(By.tagName("input"));
       
-      if (!translatorCell.isSelected())
+      if (!isTranslatorCell.isSelected())
       {
-         if(!firstCell.isSelected())
+         if(!selectRowToUpdateCell.isSelected())
          {
-            firstCell.click();
+            selectRowToUpdateCell.click();
          }
          
-         translatorCell.click();
+         isTranslatorCell.click();
          
          WebElement addButton = getDriver().findElement(By.id("resultForm:addSelectedBtn"));
          addButton.click();

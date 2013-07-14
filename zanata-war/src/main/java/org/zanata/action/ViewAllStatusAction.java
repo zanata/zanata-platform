@@ -296,7 +296,7 @@ public class ViewAllStatusAction implements Serializable
 
          if (!statsMap.containsKey(var.getLocaleId()))
          {
-            boolean isMember = authenticatedAccount != null ? personDAO.isMemberOfLanguageTeam(authenticatedAccount.getPerson(), var) : false;
+            boolean isMember = authenticatedAccount != null ? personDAO.isUserInLanguageTeamWithRoles(authenticatedAccount.getPerson(), var, null, null, null) : false;
 
             Status op = new Status(var.getLocaleId().getId(), var.retrieveNativeName(), stats, isMember);
             statsMap.put(var.getLocaleId(), op);

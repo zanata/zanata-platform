@@ -73,7 +73,7 @@ public class SecurityFunctions
 
       if( authenticatedAccount != null )
       {
-         return personDAO.isTranslatorOfLanguageTeam( authenticatedAccount.getPerson(), lang );
+         return personDAO.isUserInLanguageTeamWithRoles(authenticatedAccount.getPerson(), lang, true, null, null);
       }
 
       return false; // No authenticated user
@@ -86,7 +86,7 @@ public class SecurityFunctions
 
       if( authenticatedAccount != null )
       {
-         return personDAO.isReviewerOfLanguageTeam( authenticatedAccount.getPerson(), lang );
+         return personDAO.isUserInLanguageTeamWithRoles( authenticatedAccount.getPerson(), lang, null, true, null );
       }
 
       return false; // No authenticated user
@@ -99,7 +99,7 @@ public class SecurityFunctions
 
       if( authenticatedAccount != null )
       {
-         return personDAO.isCoordinatorOfLanguageTeam( authenticatedAccount.getPerson(), lang );
+         return personDAO.isUserInLanguageTeamWithRoles( authenticatedAccount.getPerson(), lang, null, null, true );
       }
 
       return false; // No authenticated user

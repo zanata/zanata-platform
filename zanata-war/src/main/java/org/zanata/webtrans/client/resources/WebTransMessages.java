@@ -200,7 +200,7 @@ public interface WebTransMessages extends Messages
    String noReplacementsToMake();
 
    @DefaultMessage("You have no access to modify translations")
-   String noModifyTranslationAccess();
+   String youAreNotAllowedToModifyTranslations();
 
    @DefaultMessage("View in editor")
    String viewDocInEditor();

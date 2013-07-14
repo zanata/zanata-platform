@@ -650,7 +650,7 @@ public class ProjectIterationFilesAction implements Serializable
       }
 
       // User not member of language team
-      if (!personDAO.isTranslatorOfLanguageTeam(authenticatedAccount.getPerson(), getLocale()))
+      if (!personDAO.isUserInLanguageTeamWithRoles(authenticatedAccount.getPerson(), getLocale(), true, null, null))
       {
          displayMessages.add(zanataMessages.getMessage("jsf.iteration.files.translateDenied.UserNotTranslatorInLanguageTeam", getLocale().retrieveDisplayName()));
       }

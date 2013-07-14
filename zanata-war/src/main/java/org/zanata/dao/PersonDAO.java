@@ -129,73 +129,42 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long>
    }
 
    /**
-    * Indicates if a Person is member of a language team.
-    * @param person The person
-    * @param language The language team
-    * @return True if person is a member of the language team.
+    * Indicates if a Person is a member of a language team with selected roles.
+    * @param person
+    * @param language
+    * @param isTranslator
+    * @param isReviewer
+    * @param isCoordinator
+    * @return True if person is a member of the language team with selected roles.
     */
-   public boolean isMemberOfLanguageTeam( HPerson person, HLocale language )
+   public boolean isUserInLanguageTeamWithRoles(HPerson person, HLocale language, Boolean isTranslator, Boolean isReviewer, Boolean isCoordinator)
    {
-      Query q = getSession().createQuery("select count(*) from HLocaleMember " +
-            "where id.person = :person and id.supportedLanguage = :language")
+      StringBuilder sb = new StringBuilder();
+      sb.append("select count(*) from HLocaleMember where ");
+      sb.append("id.person = :person ");
+      sb.append("and id.supportedLanguage = :language ");
+      
+      if(isTranslator != null)
+      {
+         sb.append("and translator = :isTranslator ");
+      }
+      if(isReviewer != null)
+      {
+         sb.append("and reviewer = :isReviewer ");
+      }
+      if(isCoordinator != null)
+      {
+         sb.append("and coordinator = :isCoordinator ");
+      }
+      
+      Query q = getSession().createQuery(sb.toString().trim())
             .setParameter("person", person)
-            .setParameter("language", language);
-      q.setCacheable(false).setComment("PersonDAO.isMemberOfLanguageTeam");
-      Long totalCount = (Long) q.uniqueResult();
-      return totalCount > 0L;
-   }
-
-   /**
-    * Indicates if a Person is a translator of a language team.
-    * @param person The person
-    * @param language The language team
-    * @return True if person is a translator of the language team.
-    */
-   public boolean isTranslatorOfLanguageTeam( HPerson person, HLocale language )
-   {
-      Query q = getSession().createQuery("select count(*) from HLocaleMember " +
-            "where id.person = :person and id.supportedLanguage = :language " +
-            "and translator = true")
-            .setParameter("person", person)
-            .setParameter("language", language);
-      q.setCacheable(false).setComment("PersonDAO.isTranslatorOfLanguageTeam");
-      Long totalCount = (Long) q.uniqueResult();
-      return totalCount > 0L;
-   }
-   
-   /**
-    * Indicates if a Person is a reviewer of a language team.
-    * @param person The person
-    * @param language The language team
-    * @return True if person is a reviewer of the language team.
-    */
-   public boolean isReviewerOfLanguageTeam( HPerson person, HLocale language )
-   {
-      Query q = getSession().createQuery("select count(*) from HLocaleMember " +
-            "where id.person = :person and id.supportedLanguage = :language " +
-            "and reviewer = true")
-            .setParameter("person", person)
-            .setParameter("language", language);
-      q.setCacheable(false).setComment("PersonDAO.isReviewerOfLanguageTeam");
-      Long totalCount = (Long) q.uniqueResult();
-      return totalCount > 0L;
-   }
-   
-   
-   /**
-    * Indicates if a Person is a coordinator of a language team.
-    * @param person The person
-    * @param language The language team
-    * @return True if person is a coordinator of the language team.
-    */
-   public boolean isCoordinatorOfLanguageTeam( HPerson person, HLocale language )
-   {
-      Query q = getSession().createQuery("select count(*) from HLocaleMember " +
-            "where id.person = :person and id.supportedLanguage = :language " +
-            "and coordinator = true")
-            .setParameter("person", person)
-            .setParameter("language", language);
-      q.setCacheable(false).setComment("PersonDAO.isCoordinatorOfLanguageTeam");
+            .setParameter("language", language)
+            .setParameter("isTranslator", isTranslator.booleanValue())
+            .setParameter("isReviewer", isReviewer.booleanValue())
+            .setParameter("isCoordinator", isCoordinator.booleanValue());
+      
+      q.setCacheable(false).setComment("PersonDAO.isUserInLanguageTeamWithRoles");
       Long totalCount = (Long) q.uniqueResult();
       return totalCount > 0L;
    }

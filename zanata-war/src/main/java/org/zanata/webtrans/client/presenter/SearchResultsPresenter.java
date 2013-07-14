@@ -862,7 +862,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
    {
       if (!userWorkspaceContext.hasWriteAccess())
       {
-         eventBus.fireEvent(new NotificationEvent(Severity.Warning, messages.noModifyTranslationAccess()));
+         eventBus.fireEvent(new NotificationEvent(Severity.Warning, messages.youAreNotAllowedToModifyTranslations()));
          return;
       }
 
