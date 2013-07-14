@@ -75,7 +75,7 @@
 		}
 			
 		.drop-down {
-			position:relative:
+			position:relative;
 		}
 		
 		.drop-down:hover {
@@ -145,7 +145,7 @@
 			</li>
 			
 			<li class="{style.drop-down}">
-				<g:CheckBox ui:field="incompleteChk" styleName="{style.checkbox}"><ui:msg>Incomplete</ui:msg></g:CheckBox>
+				<g:CheckBox ui:field="parentIncompleteChk" styleName="{style.checkbox}"><ui:msg>Incomplete</ui:msg></g:CheckBox>
 				<span class="icon-down-open {style.filterListToggle}"/>
 				<ul class="{style.filterList}">
 					<li>
@@ -161,7 +161,7 @@
 			</li>
 			
 			<li class="{style.drop-down}">
-				<g:CheckBox ui:field="completeChk" styleName="{style.checkbox}"><ui:msg>Complete</ui:msg></g:CheckBox>
+				<g:CheckBox ui:field="parentCompleteChk" styleName="{style.checkbox}"><ui:msg>Complete</ui:msg></g:CheckBox>
 				<span class="icon-down-open {style.filterListToggle}"/>
 				<ul class="{style.filterList}">
 					<li>

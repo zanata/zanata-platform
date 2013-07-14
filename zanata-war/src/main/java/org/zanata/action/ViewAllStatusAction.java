@@ -60,7 +60,6 @@ import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 import org.zanata.rest.service.StatisticsResource;
-import org.zanata.seam.scope.FlashScopeBean;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
@@ -105,9 +104,6 @@ public class ViewAllStatusAction implements Serializable
 
    @In
    CopyTransManager copyTransManager;
-
-   @In
-   FlashScopeBean flashScope;
 
    private String iterationSlug;
 

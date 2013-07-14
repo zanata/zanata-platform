@@ -221,6 +221,17 @@
     content0="mssgTrans4"
   />
 
+    <HTextFlowTargetReviewComment
+            id="1"
+            versionNum="1"
+            creationDate="2009-09-01 20:30:16"
+            lastChanged="2009-09-01 20:30:16"
+            target_id="8"
+            comment="comment 1"
+            commenter_id="2"
+            targetVersion="1"
+            />
+
     <!-- HDocument
           Single Text Flow with no Translation -->
 

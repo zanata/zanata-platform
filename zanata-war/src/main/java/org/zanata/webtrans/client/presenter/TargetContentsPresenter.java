@@ -89,6 +89,7 @@ public class TargetContentsPresenter implements
    private final TableEditorMessages messages;
    private final SourceContentsPresenter sourceContentsPresenter;
    private final TranslationHistoryPresenter historyPresenter;
+   private final ReviewCommentPresenter reviewCommentPresenter;
    private final Provider<TargetContentsDisplay> displayProvider;
    private final EditorTranslators editorTranslators;
    private final EditorKeyShortcuts editorKeyShortcuts;
@@ -115,7 +116,8 @@ public class TargetContentsPresenter implements
                                   EditorKeyShortcuts editorKeyShortcuts,
                                   TranslationHistoryPresenter historyPresenter,
                                   UserOptionsService userOptionsService, 
-                                  SaveAsApprovedConfirmationDisplay saveAsApprovedConfirmation)
+                                  SaveAsApprovedConfirmationDisplay saveAsApprovedConfirmation,
+                                  ReviewCommentPresenter reviewCommentPresenter)
    // @formatter:on
    {
       this.displayProvider = displayProvider;
@@ -126,6 +128,7 @@ public class TargetContentsPresenter implements
       this.sourceContentsPresenter = sourceContentsPresenter;
       this.editorKeyShortcuts = editorKeyShortcuts;
       this.historyPresenter = historyPresenter;
+      this.reviewCommentPresenter = reviewCommentPresenter;
       this.historyPresenter.setCurrentValueHolder(this);
       this.userOptionsService = userOptionsService;
       this.saveAsApprovedConfirmation = saveAsApprovedConfirmation;
@@ -145,6 +148,7 @@ public class TargetContentsPresenter implements
       eventBus.addHandler(CopyDataToEditorEvent.getType(), this);
       eventBus.addHandler(TransUnitEditEvent.getType(), this);
       eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this);
+      reviewCommentPresenter.bind();
    }
 
    public void savePendingChangesIfApplicable()
@@ -685,6 +689,16 @@ public class TargetContentsPresenter implements
    {
       ensureRowSelection(id);
       saveCurrent(ContentState.Rejected);
+   }
+
+
+   public void updateCommentCount(TransUnitId id, int commentsCount)
+   {
+      Optional<TargetContentsDisplay> displayOptional = Finds.findDisplayById(displayList, id);
+      if (displayOptional.isPresent())
+      {
+         displayOptional.get().updateCommentIndicator(commentsCount);
+      }
    }
 
    /**

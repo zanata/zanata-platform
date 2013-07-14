@@ -3,8 +3,11 @@
  */
 package org.zanata.util;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 
 /**
@@ -12,15 +15,11 @@ import java.util.Date;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  */
-// FIXME SimpleDateFormat is not thread safe; we should use JODA
 public class DateUtil
 {
    private final static String DATE_TIME_SHORT_PATTERN = "dd/MM/yy HH:mm";
    private final static String TIME_SHORT_PATTERN = "hh:mm:ss";
 
-   private final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(DATE_TIME_SHORT_PATTERN);
-   private final static SimpleDateFormat TIME_FORMAT = new SimpleDateFormat(TIME_SHORT_PATTERN);
-   
    /**
     * Format date to dd/MM/yy hh:mm a
     * @param date
@@ -30,7 +29,8 @@ public class DateUtil
    {
       if(date != null)
       {
-         return DATE_FORMAT.format(date);
+         DateTimeFormatter fmt = DateTimeFormat.forPattern(DATE_TIME_SHORT_PATTERN);
+         return fmt.print(new DateTime(date));
       }
       return null;
    }
@@ -44,7 +44,8 @@ public class DateUtil
    {
       if(date != null)
       {
-         return TIME_FORMAT.format(date);
+         DateTimeFormatter fmt = DateTimeFormat.forPattern(TIME_SHORT_PATTERN);
+         return fmt.print(new DateTime(date));
       }
       return null;
    }

@@ -1,5 +1,7 @@
 package org.zanata.webtrans.client.ui;
 
+import org.zanata.common.ContentState;
+import org.zanata.webtrans.client.events.ReviewCommentEvent;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import com.google.gwt.core.client.GWT;
@@ -13,9 +15,12 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
+import net.customware.gwt.presenter.client.EventBus;
+
 public class EditorButtonsWidget extends Composite
 {
    private static EditorButtonsWidgetUiBinder ourUiBinder = GWT.create(EditorButtonsWidgetUiBinder.class);
+   private final EventBus eventBus;
 
    @UiField
    HTMLPanel buttons;
@@ -35,12 +40,15 @@ public class EditorButtonsWidget extends Composite
    InlineLabel acceptIcon;
    @UiField
    InlineLabel rejectIcon;
+   @UiField
+   InlineLabel commentIcon;
 
    private TargetContentsDisplay.Listener listener;
    private TransUnitId id;
 
-   public EditorButtonsWidget()
+   public EditorButtonsWidget(EventBus eventBus)
    {
+      this.eventBus = eventBus;
       initWidget(ourUiBinder.createAndBindUi(this));
       setDisplayReviewButtons(listener != null && listener.canReviewTranslation());
       setDisplayModifyTranslationButtons(listener != null && listener.canModifyTranslation());
@@ -121,6 +129,12 @@ public class EditorButtonsWidget extends Composite
       event.stopPropagation();
    }
 
+   @UiHandler("commentIcon")
+   public void onCommentClick(ClickEvent event)
+   {
+      eventBus.fireEvent(new ReviewCommentEvent(id));
+   }
+
    public void setListener(TargetContentsDisplay.Listener listener)
    {
       this.listener = listener;
@@ -128,9 +142,15 @@ public class EditorButtonsWidget extends Composite
       setDisplayModifyTranslationButtons(listener.canModifyTranslation());
    }
 
-   public void setId(TransUnitId id)
+   public void setIdAndState(TransUnitId id, ContentState state)
    {
       this.id = id;
+      enableComment(state.isTranslated() || state.isRejectedOrFuzzy());
+   }
+
+   private void enableComment(boolean enable)
+   {
+      commentIcon.setVisible(enable);
    }
 
 

@@ -31,4 +31,5 @@
     <HTextFlowTarget/>
     <HTextFlowTargetContentHistory/>
     <HTextFlowTargetHistory/>
+    <HTextFlowTargetReviewComment/>
 </dataset>

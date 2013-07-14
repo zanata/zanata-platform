@@ -264,12 +264,12 @@ public class HistoryToken
    {
       this.filterTranslated = filterTranslated;
    }
-   
+
    public void setFilterApproved(boolean filterApproved)
    {
       this.filterApproved = filterApproved;
    }
-   
+
    public void setFilterRejected(boolean filterRejected)
    {
       this.filterRejected = filterRejected;
