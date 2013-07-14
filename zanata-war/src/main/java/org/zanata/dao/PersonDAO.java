@@ -159,10 +159,20 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long>
       
       Query q = getSession().createQuery(sb.toString().trim())
             .setParameter("person", person)
-            .setParameter("language", language)
-            .setParameter("isTranslator", isTranslator.booleanValue())
-            .setParameter("isReviewer", isReviewer.booleanValue())
-            .setParameter("isCoordinator", isCoordinator.booleanValue());
+            .setParameter("language", language);
+      
+      if(isTranslator != null)
+      {
+            q.setParameter("isTranslator", isTranslator.booleanValue());
+      }
+      if(isReviewer != null)
+      {
+            q.setParameter("isReviewer", isReviewer.booleanValue());
+      }
+      if(isCoordinator != null)
+      {
+         q.setParameter("isCoordinator", isCoordinator.booleanValue());
+      }
       
       q.setCacheable(false).setComment("PersonDAO.isUserInLanguageTeamWithRoles");
       Long totalCount = (Long) q.uniqueResult();
