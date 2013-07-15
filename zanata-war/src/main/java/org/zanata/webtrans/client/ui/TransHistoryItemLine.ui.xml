@@ -37,10 +37,10 @@
                     <g:InlineHTML ui:field="revision"/>
                 </li>
                 <li>
-                    <g:InlineLabel ui:field="compare" text="Compare"/>
+                    <g:Anchor ui:field="compare" text="Compare" />
                 </li>
                 <li>
-                    <g:InlineLabel ui:field="copyIntoEditor" text="Copy to Editor"/>
+                    <g:Anchor ui:field="copyIntoEditor" text="Copy to Editor"/>
                 </li>
             </ul>
         </div>

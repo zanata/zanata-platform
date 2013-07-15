@@ -38,7 +38,6 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
 {
    private static final int COMPARISON_TAB_INDEX = 1;
    private static TranslationHistoryViewUiBinder uiBinder = GWT.create(TranslationHistoryViewUiBinder.class);
-   private final EventBus eventBus;
    @UiField
    WebTransMessages messages;
    @UiField
@@ -63,13 +62,11 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    private Listener listener;
    private List<ComparableByDate> items = Lists.newArrayList();
 
-   @Inject
-   public TranslationHistoryView(EventBus eventBus)
+   public TranslationHistoryView()
    {
       super(true, true);
       closeButton = new DialogBoxCloseButton(this);
       HTMLPanel container = uiBinder.createAndBindUi(this);
-      this.eventBus = eventBus;
       ensureDebugId("transHistory");
       tabLayoutPanel.ensureDebugId("transHistoryTabPanel");
       setGlassEnabled(true);

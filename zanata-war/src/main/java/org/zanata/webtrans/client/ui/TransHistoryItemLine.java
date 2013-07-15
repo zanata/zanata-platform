@@ -31,9 +31,11 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.InlineHTML;
+import com.google.gwt.user.client.ui.InlineHyperlink;
 import com.google.gwt.user.client.ui.InlineLabel;
 
 public class TransHistoryItemLine extends Composite
@@ -52,9 +54,9 @@ public class TransHistoryItemLine extends Composite
    @UiField(provided = true)
    InlineHTML revision;
    @UiField
-   InlineLabel compare;
+   Anchor compare;
    @UiField
-   InlineLabel copyIntoEditor;
+   Anchor copyIntoEditor;
 
    public TransHistoryItemLine(TransHistoryItem item, TranslationHistoryDisplay.Listener listener)
    {
@@ -66,7 +68,6 @@ public class TransHistoryItemLine extends Composite
       initWidget(ourUiBinder.createAndBindUi(this));
 
       creationDate.setText(DateUtil.formatShortDate(item.getModifiedDate()));
-
    }
 
    // TODO pahuang confirm styles
