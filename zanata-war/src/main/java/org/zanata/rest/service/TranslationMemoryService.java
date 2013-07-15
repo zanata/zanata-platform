@@ -20,16 +20,21 @@
  */
 package org.zanata.rest.service;
 
+import java.io.InputStream;
 import java.util.Iterator;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
-import lombok.extern.slf4j.Slf4j;
-
+import org.apache.commons.io.IOUtils;
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.TransactionPropagationType;
@@ -41,6 +46,8 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.SourceContents;
 import org.zanata.service.LocaleService;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Name("translationMemoryService")
 @Path("/tm")
@@ -101,6 +108,21 @@ public class TranslationMemoryService implements TranslationMemoryResource
       }
       tuIter = textFlowStreamDAO.findTextFlowsByProjectIteration(hProjectIteration);
       return buildTMX(tuIter, projectSlug, iterationSlug, locale);
+   }
+
+   @POST
+   @Path("/{slug}")
+   @Consumes(MediaType.MULTIPART_FORM_DATA)
+   public Response updateTranslationMemory(@PathParam("slug") String slug, MultipartFormDataInput input) throws Exception
+   {
+      for(InputPart inputPart : input.getFormDataMap().get("uploadedFile"))
+      {
+         InputStream inputStream = inputPart.getBody(InputStream.class, null);
+
+         byte [] bytes = IOUtils.toByteArray(inputStream);
+         System.out.println(new String(bytes));
+      }
+      return Response.status(200).build();
    }
 
    private Response buildTMX(@Nonnull Iterator<? extends SourceContents> tuIter, @Nullable String projectSlug, @Nullable String iterationSlug, @Nullable LocaleId locale)

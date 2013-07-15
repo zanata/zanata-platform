@@ -1,0 +1,147 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:richext="http://java.sun.com/jsf/composite/richext"
+                template="../WEB-INF/layout/template.xhtml">
+
+    <ui:define name="page_title">#{messages['jsf.TranslationMemory']}</ui:define>
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            function showUploadPanel(tmSlug) {
+                var formAction = "#{request.contextPath}/rest/tm/" + tmSlug;
+                jQuery("#uploadFileForm").attr("action", formAction);
+                jQuery("#uploadProgress").html("");
+                #{rich:component("uploadFilePanel")}.show();
+                return false;
+            }
+
+            function hideUploadPanel() {
+                #{rich:component("uploadFilePanel")}.hide();
+            }
+
+            function submitUpload() {
+                var uploadForm = jQuery("#uploadFileForm");
+                // Only HTML 5
+                var formData = new FormData(uploadForm[0]);
+
+                jQuery.ajax({
+                    type: "POST",
+                    url: uploadForm.attr("action"),
+                    /*xhr: function() {
+                        var myXhr = jQuery.ajaxSettings.xhr();
+                        if(myXhr.upload){ // check if upload property exists
+                            myXhr.upload.addEventListener('progress', handleUploadProgress, false); // for handling the progress of the upload
+                        }
+                    },*/
+                    data: formData,
+                    cache: false,
+                    contentType: false, // If not there, boundary marker is not set. See: http://stackoverflow.com/a/5976031/33080
+                    processData:false,
+                    beforeSend: function() {
+                        jQuery("#uploadProgress").html("Uploading...");
+                    },
+                    success: function(data) {
+                        hideUploadPanel();
+                        alert("Successfully uploaded the Translation Memory file.");
+                    },
+                    failure: function(data) {
+                        hideUploadPanel();
+                        alert("There was an error uploading the file.");
+                    }
+                });
+                return false;
+            }
+
+            function handleUploadProgress(event) {
+                var percent = 0;
+                if (oEvent.lengthComputable) {
+                    percent = oEvent.loaded / oEvent.total;
+                }
+                else {
+                    percent = "";
+                }
+                jQuery("#uploadProgress").html("Uploading... " + percent);
+            }
+        </script>
+    </ui:define>
+
+    <ui:define name="right_content">
+        <rich:panel id="loggedIn">
+            <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+            <s:link id="createTmLink" styleClass="action_link"
+                    value="#{messages['jsf.transmemory.ImportNew']}"
+                    view="/tm/create.xhtml"
+                    propagation="none"/>
+        </rich:panel>
+    </ui:define>
+
+    <ui:define name="center_content" >
+        <!-- Simply needed to load jQuery -->
+        <rich:jQuery query="jquery" />
+
+        <s:decorate id="main_content">
+            <s:fragment rendered="#{translationMemoryAction.allTranslationMemories.size() eq 0}">
+                <h:outputText value="#{messages['jsf.transmemory.NoTransMemories']}" />
+            </s:fragment>
+
+            <s:fragment rendered="#{translationMemoryAction.allTranslationMemories.size() > 0}">
+                <h:form id="form">
+
+                    <rich:dataTable id="tmList"
+                                    value="#{translationMemoryAction.allTranslationMemories}" var="tm">
+                        <rich:column>
+                            <f:facet name="header">#{messages['jsf.Slug']}
+                                <richext:columnSorter />
+                            </f:facet>
+                            <h:outputText value="#{tm.slug}" />
+                        </rich:column>
+                        <rich:column>
+                            <f:facet name="header">#{messages['jsf.Description']}</f:facet>
+                            <h:outputText value="#{tm.description}" />
+                        </rich:column>
+                        <rich:column>
+                            <f:facet name="header">#{messages['jsf.transmemory.NoOfEntries']}</f:facet>
+                            <h:outputText value="#{tm.translationUnits.size()}" />
+                        </rich:column>
+                        <rich:column >
+                            <f:facet name="header">#{messages['jsf.CreationDate']}
+                                <richext:columnSorter />
+                            </f:facet>
+                            <h:outputText value="#{tm.creationDate}">
+                                <f:convertDateTime type="date" dateStyle="default"/>
+                            </h:outputText>
+                        </rich:column>
+                        <rich:column>
+                            <f:facet name="header">#{messages['jsf.Upload']}</f:facet>
+                            <a href="#" onclick="return showUploadPanel('#{tm.slug}')">
+                                <span class="icon-upload icon" title="#{messages['jsf.transmemory.Upload.Title']}"/>
+                            </a>
+                        </rich:column>
+                    </rich:dataTable>
+
+                </h:form>
+            </s:fragment>
+        </s:decorate>
+
+        <rich:popupPanel id="uploadFilePanel"
+                         autosized="true">
+            <form id="uploadFileForm" action="/" method="post" enctype="multipart/form-data" >
+                <input type="file" name="uploadedFile"/>
+                <div>
+                    <input type="button" name="uploadBtn" value="#{messages['jsf.Upload']}" onclick="submitUpload()"/>
+                    <input type="button" name="cancelBtn" value="#{messages['jsf.Cancel']}" onclick="hideUploadPanel()"/>
+                </div>
+            </form>
+            <div id="uploadProgress"></div>
+        </rich:popupPanel>
+
+    </ui:define>
+
+</ui:composition>

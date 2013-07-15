@@ -39,9 +39,9 @@ public class SlugEntityBaseTest
       entity.setSlug("abc");
       entity.setId(1L);
       entity.setVersionNum(2);
-      assertThat(entity.toString(), containsString("[id=1,versionNum=2], slug=abc, status=ACTIVE)"));
+      assertThat(entity.toString(), containsString("[id=1,versionNum=2], slug=abc)"));
 
-      SlugEntityBase other = new SlugEntityBase("abc", EntityStatus.ACTIVE);
+      SlugEntityBase other = new SlugEntityBase("abc");
       assertThat(entity.equals(other), equalTo(false));
 
       other.setId(entity.getId());

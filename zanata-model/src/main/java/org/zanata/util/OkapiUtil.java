@@ -20,7 +20,17 @@
  */
 package org.zanata.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.StringWriter;
 import javax.annotation.Nonnull;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLEventWriter;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.XMLEvent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,40 +100,72 @@ public class OkapiUtil
     * <ept></ept>
     * <it></it>
     * <ph></ph>
+    * <seg></seg>
     *
-    * @param markedUpContent The tmx marked up content.
+    * @param content The tmx marked up content.
     * @return A string with all tmx mark-up content stripped out. Essentially a plain text version of the string.
     */
-   public static String extractPlainTextTmxContent(String markedUpContent)
+   public static String removeFormattingMarkup(/*final*/ String content)
    {
-      return removeXmlTags(markedUpContent, "bpt", "ept", "it", "ph");
-   }
+      // Wrap the content up in a seg just in case
+      content = "<seg>" + content + "</seg>";
 
-   /**
-    * Removes all ocurrences of an xml tag (and it's contents) from the given String.
-    * Example:
-    *
-    * <code>removeXmlTags("This <a>is</a> a string", "a")</code> will yield the string "This is  a string"
-    *
-    * @param content The content to be stripped of the xml tags.
-    * @param xmlTagNames The tag names to be removed from the content (Don't use the angle braces)
-    * @return A string with all the given xml tags (and their sub-content) removed.
-    */
-   private static String removeXmlTags( final String content, String ... xmlTagNames )
-   {
-      String processedContent = content;
-      for( String xmlTagName : xmlTagNames )
+      try
       {
-         String openTag = "<" + xmlTagName;
-         String closeTag = "</" + xmlTagName + ">";
-         while( processedContent.contains(openTag) )
+         StringWriter sanitized = new StringWriter();
+         XMLInputFactory inputFactory = XMLInputFactory.newFactory();
+         XMLOutputFactory outputFactory = XMLOutputFactory.newFactory();
+         inputFactory.setProperty(XMLInputFactory.IS_VALIDATING, false);
+         inputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+         XMLEventReader reader = inputFactory.createXMLEventReader(new ByteArrayInputStream(content.getBytes()));
+         XMLEventWriter writer = outputFactory.createXMLEventWriter(sanitized);
+
+         int level = 0; // Nesting level. When this is > 0 it means we are ignoring events
+
+         while( reader.hasNext() )
          {
-            int openIdx = processedContent.indexOf(openTag);
-            int closeIdx = processedContent.indexOf(closeTag);
-            processedContent = processedContent.substring(0,openIdx) + processedContent.substring(closeIdx + closeTag.length());
+            XMLEvent nextEv = reader.nextEvent();
+
+            switch (nextEv.getEventType())
+            {
+               case XMLStreamConstants.START_ELEMENT:
+                  String elemName = nextEv.asStartElement().getName().getLocalPart();
+
+                  if( elemName.equals("seg") )
+                  {
+                     break;
+                  }
+                  else if( elemName.equals("bpt") || elemName.equals("ept") || elemName.equals("it") || elemName.equals("ph")
+                           || elemName.equals("sub") )
+                  {
+                     level ++;
+                     break;
+                  }
+               case XMLStreamConstants.END_ELEMENT:
+                  elemName = nextEv.asEndElement().getName().getLocalPart();
+
+                  if( elemName.equals("seg") )
+                  {
+                     break;
+                  }
+                  else if( elemName.equals("bpt") || elemName.equals("ept") || elemName.equals("it") || elemName.equals("ph")
+                        || elemName.equals("sub"))
+                  {
+                     if( level > 0 ) level --;
+                     break;
+                  }
+               case XMLStreamConstants.CHARACTERS:
+                  if( level == 0 ) writer.add(nextEv);
+                  break;
+            }
          }
+
+         return sanitized.toString();
       }
-      return processedContent;
+      catch (XMLStreamException e)
+      {
+         throw new RuntimeException(e);
+      }
    }
 
    private static class StringTokenizer extends Tokenizer

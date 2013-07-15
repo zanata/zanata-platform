@@ -61,8 +61,7 @@ public class TransMemory extends SlugEntityBase
    }
 
    @Getter @Setter
-   @Column
-   private String name;
+   private String description;
 
    @Getter @Setter(AccessLevel.PROTECTED)
    @OneToMany(cascade = CascadeType.ALL, mappedBy = "translationMemory")

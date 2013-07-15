@@ -60,19 +60,34 @@ public class OkapiUtilTest
    @Test
    public void extractPlainTextContent() throws Exception
    {
-      assertThat(OkapiUtil.extractPlainTextTmxContent("<bpt i=\"1\" x=\"1\">{\\b </bpt>Special<ept i=\"1\">}</ept> text"),
+      assertThat(OkapiUtil.removeFormattingMarkup("<bpt i=\"1\" x=\"1\">{\\b </bpt>Special<ept i=\"1\">}</ept> text"),
             equalTo("Special text"));
-      assertThat(OkapiUtil.extractPlainTextTmxContent("<bpt i=\"1\" x=\"1\">{\\cf7 </bpt>Special<ept i=\"1\">}</ept> text"),
+      assertThat(OkapiUtil.removeFormattingMarkup("<bpt i=\"1\" x=\"1\">{\\cf7 </bpt>Special<ept i=\"1\">}</ept> text"),
             equalTo("Special text"));
-      assertThat(OkapiUtil.extractPlainTextTmxContent("<bpt i=\"1\" x=\"1\">&lt;B></bpt>Special<ept i=\"1\">&lt;/B></ept> text"),
+      assertThat(OkapiUtil.removeFormattingMarkup("<bpt i=\"1\" x=\"1\">&lt;B></bpt>Special<ept i=\"1\">&lt;/B></ept> text"),
             equalTo("Special text"));
 
-      assertThat(OkapiUtil.extractPlainTextTmxContent("The <bpt i=\"1\" x=\"1\">&lt;i></bpt><bpt i=\"2\" x=\"2\">&lt;b></bpt>" +
+      assertThat(OkapiUtil.removeFormattingMarkup("The <bpt i=\"1\" x=\"1\">&lt;i></bpt><bpt i=\"2\" x=\"2\">&lt;b></bpt>" +
             "big<ept i=\"2\">&lt;/b></ept> black<ept i=\"1\">&lt;/i></ept> cat."),
             equalTo("The big black cat."));
 
-      assertThat(OkapiUtil.extractPlainTextTmxContent("The icon <ph x=\"1\">&lt;img src=\"testNode.gif\"/></ph>represents " +
+      assertThat(OkapiUtil.removeFormattingMarkup("The icon <ph x=\"1\">&lt;img src=\"testNode.gif\"/></ph>represents " +
             "a conditional node."),
             equalTo("The icon represents a conditional node."));
+   }
+
+   @Test
+   public void extractPlainTextContentWithNested() throws Exception
+   {
+      assertThat(OkapiUtil.removeFormattingMarkup("Elephants<ph type=\"fnote\">{\\cs16\\super \\chftn {\\footnote \\pard\\plain" +
+            "\\s15\\widctlpar \\f4\\fs20" +
+            "{\\cs16\\super \\chftn } <sub>An elephant is a very " +
+            "large animal.</sub>}}</ph> are big."),
+            equalTo("Elephants are big."));
+      assertThat(OkapiUtil.removeFormattingMarkup("Elephants<ph type=\"fnote\">{\\cs16\\super \\chftn {\\footnote \\pard\\plain" +
+            "\\s15\\widctlpar \\f4\\fs20" +
+            "{\\cs16\\super \\chftn } <sub>An elephant is a very " +
+            "large animal.</sub>}}</ph> are big."),
+            equalTo("Elephants are big."));
    }
 }

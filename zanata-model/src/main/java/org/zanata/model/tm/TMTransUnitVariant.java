@@ -102,7 +102,7 @@ public class TMTransUnitVariant extends ModelEntityBase
 
    private void updatePlainTextSegment()
    {
-      this.plainTextSegment = OkapiUtil.extractPlainTextTmxContent(taggedSegment);
+      this.plainTextSegment = OkapiUtil.removeFormattingMarkup(taggedSegment);
       updatePlainTextSegmentHash();
    }
 
