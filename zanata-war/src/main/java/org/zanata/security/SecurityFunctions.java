@@ -66,7 +66,7 @@ public class SecurityFunctions
       }
    }
 
-   public static boolean isUserTranslatorOfLanguageTeam( HLocale lang )
+   public static boolean isUserTranslatorOfLanguage( HLocale lang )
    {
       HAccount authenticatedAccount = getAuthenticatedAccount();
       PersonDAO personDAO = (PersonDAO)Component.getInstance(PersonDAO.class);
@@ -79,7 +79,7 @@ public class SecurityFunctions
       return false; // No authenticated user
    }
    
-   public static boolean isUserReviewerOfLanguageTeam( HLocale lang )
+   public static boolean isUserReviewerOfLanguage( HLocale lang )
    {
       HAccount authenticatedAccount = getAuthenticatedAccount();
       PersonDAO personDAO = (PersonDAO)Component.getInstance(PersonDAO.class);
@@ -92,7 +92,7 @@ public class SecurityFunctions
       return false; // No authenticated user
    }
 
-   public static boolean isUserCoordinatorOfLanguageTeam( HLocale lang )
+   public static boolean isUserCoordinatorOfLanguage( HLocale lang )
    {
       HAccount authenticatedAccount = getAuthenticatedAccount();
       PersonDAO personDAO = (PersonDAO)Component.getInstance(PersonDAO.class);

@@ -16,9 +16,9 @@ import org.jboss.seam.security.permission.PermissionCheck;
 import org.jboss.seam.security.permission.RoleCheck;
 
 import function org.zanata.security.SecurityFunctions.isUserAllowedAccess;
-import function org.zanata.security.SecurityFunctions.isUserTranslatorOfLanguageTeam;
-import function org.zanata.security.SecurityFunctions.isUserReviewerOfLanguageTeam;
-import function org.zanata.security.SecurityFunctions.isUserCoordinatorOfLanguageTeam;
+import function org.zanata.security.SecurityFunctions.isUserTranslatorOfLanguage;
+import function org.zanata.security.SecurityFunctions.isUserReviewerOfLanguage;
+import function org.zanata.security.SecurityFunctions.isUserCoordinatorOfLanguage;
 
 /* admin can do anything */
 rule AdminAnything
