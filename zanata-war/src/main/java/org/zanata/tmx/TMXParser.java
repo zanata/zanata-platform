@@ -61,7 +61,6 @@ public class TMXParser
    public void parseTMX(InputStream input) throws XMLStreamException
    {
       final TransMemory tm = new TransMemory();
-      tm.setName("TEST");
       tm.setSlug("test-slug");
       // TODO Save TM
       parseTMX(input, new Effect<Element>()
