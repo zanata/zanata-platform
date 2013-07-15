@@ -81,6 +81,7 @@ import org.zanata.exception.ChunkUploadException;
 import org.zanata.exception.HashMismatchException;
 import org.zanata.exception.VirusDetectedException;
 import org.zanata.exception.ZanataServiceException;
+import org.zanata.file.GlobalDocumentId;
 import org.zanata.model.HDocument;
 import org.zanata.model.HDocumentUpload;
 import org.zanata.model.HDocumentUploadPart;
@@ -178,6 +179,7 @@ public class FileService implements FileResource
    {
       try
       {
+         GlobalDocumentId id = new GlobalDocumentId(projectSlug, iterationSlug, docId);
          checkSourceUploadPreconditions(projectSlug, iterationSlug, docId, uploadForm);
 
          Optional<File> tempFile;
@@ -185,7 +187,7 @@ public class FileService implements FileResource
 
          if (!uploadForm.getLast())
          {
-            HDocumentUpload upload = saveUploadPart(projectSlug, iterationSlug, docId, NULL_LOCALE, uploadForm);
+            HDocumentUpload upload = saveUploadPart(id.getProjectSlug(), id.getVersionSlug(), id.getDocId(), NULL_LOCALE, uploadForm);
             totalChunks = upload.getParts().size();
             return Response.status(Status.ACCEPTED)
                   .entity(new ChunkUploadResponse(upload.getId(), totalChunks, true,
