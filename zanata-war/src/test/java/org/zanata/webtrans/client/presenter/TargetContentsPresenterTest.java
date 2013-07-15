@@ -441,7 +441,7 @@ public class TargetContentsPresenterTest
    @Test
    public void testIsDisplayButtons()
    {
-      userWorkspaceContext.setHasWriteAccess(false);
+      userWorkspaceContext.setHasEditTranslationAccess(false);
       userWorkspaceContext.setHasReviewAccess(false);
       
       boolean displayButtons = presenter.isDisplayButtons();
@@ -569,7 +569,8 @@ public class TargetContentsPresenterTest
       // Given: event sets workspace to read only
       WorkspaceContextUpdateEvent event = mock(WorkspaceContextUpdateEvent.class);
       when(event.isProjectActive()).thenReturn(false);
-
+      userWorkspaceContext.setHasEditTranslationAccess(false);
+      
       // When:
       presenter.onWorkspaceContextUpdated(event);
 
@@ -791,6 +792,7 @@ public class TargetContentsPresenterTest
    {
       // Given:
       userWorkspaceContext.setProjectActive(false);
+      userWorkspaceContext.setHasEditTranslationAccess(false);
       selectedTU = currentPageRows.get(0);
       ArrayList<ToggleEditor> currentEditors = Lists.newArrayList(editor);
       when(editor.getId()).thenReturn(selectedTU.getId());

@@ -245,7 +245,7 @@ public class SearchResultsPresenterTest
       when(mockDataProviderDoc1.getList()).thenReturn(dataProviderDoc1List);
 
       boolean hasModifyTranslationAccess = true;
-      when(mockUserWorkspaceContext.hasWriteAccess()).thenReturn(hasModifyTranslationAccess);
+      when(mockUserWorkspaceContext.hasEditTranslationAccess()).thenReturn(hasModifyTranslationAccess);
 
       searchResultsPresenter.bind();
 

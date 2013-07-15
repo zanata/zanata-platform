@@ -257,7 +257,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TranslationMemoryDispl
    @Override
    public void onTransMemoryCopy(TransMemoryShortcutCopyEvent event)
    {
-      if (userWorkspaceContext.hasWriteAccess())
+      if (userWorkspaceContext.hasEditTranslationAccess())
       {
          TransMemoryResultItem item = getTMResultOrNull(event);
          if (item != null)

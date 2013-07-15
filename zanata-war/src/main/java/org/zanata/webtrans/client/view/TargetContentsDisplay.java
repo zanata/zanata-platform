@@ -98,9 +98,9 @@ public interface TargetContentsDisplay extends WidgetDisplay, HasTransUnitId, Ha
 
       UserConfigHolder.ConfigurationState getConfigState();
 
-      boolean canReviewTranslation();
+      boolean canReview();
       
-      boolean canModifyTranslation();
+      boolean canEditTranslation();
 
       void acceptTranslation(TransUnitId id);
 

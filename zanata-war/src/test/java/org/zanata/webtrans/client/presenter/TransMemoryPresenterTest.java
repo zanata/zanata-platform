@@ -374,7 +374,7 @@ public class TransMemoryPresenterTest
    public void testOnTransMemoryCopy()
    {
       presenter.setStatesForTesting(Lists.newArrayList(transMemoryResultItem), null);
-      when(userWorkspaceContext.hasWriteAccess()).thenReturn(true);
+      when(userWorkspaceContext.hasEditTranslationAccess()).thenReturn(true);
       List<String> targetContents = Lists.newArrayList("a");
       when(transMemoryResultItem.getTargetContents()).thenReturn(targetContents);
 

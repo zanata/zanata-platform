@@ -174,7 +174,7 @@ public class ActivateWorkspaceHandlerTest
       UserWorkspaceContext userWorkspaceContext = result.getUserWorkspaceContext();
       assertThat(userWorkspaceContext.getWorkspaceRestrictions().isHasGlossaryUpdateAccess(), Matchers.equalTo(true));
       assertThat(userWorkspaceContext.getWorkspaceRestrictions().isProjectActive(), Matchers.equalTo(true));
-      assertThat(userWorkspaceContext.getWorkspaceRestrictions().isHasWriteAccess(), Matchers.equalTo(true));
+      assertThat(userWorkspaceContext.getWorkspaceRestrictions().isHasEditTranslationAccess(), Matchers.equalTo(true));
 
       assertThat(result.getStoredUserConfiguration(), Matchers.sameInstance(optionsResult.getConfiguration()));
    }

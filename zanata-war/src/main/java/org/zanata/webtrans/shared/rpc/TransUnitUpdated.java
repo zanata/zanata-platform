@@ -31,7 +31,7 @@ public class TransUnitUpdated implements SessionEventData, HasTransUnitUpdatedDa
 
    public enum UpdateType
    {
-      WebEditorSave, WebEditorSaveFuzzy, ReplaceText, TMMerge, AddComment, Revert
+      WebEditorSave, WebEditorSaveFuzzy, WebEditorSaveReview, ReplaceText, TMMerge, AddComment, Revert
       // TODO add types for updates through REST, copytrans, etc.
    }
 

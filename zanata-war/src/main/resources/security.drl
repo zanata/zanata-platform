@@ -198,13 +198,30 @@ then
   check.grant();
 end
 
+/* Language Team reviewer can approve/reject translation */
+
+rule LangTeamReviewerReviewTranslation
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(action == "review-translation", granted == false)
+  authenticatedPerson: HPerson()
+  $project: HProject( eval(isUserAllowedAccess($project)) )
+  eval(authenticatedPerson != null)
+  $locale: HLocale(
+    eval(isUserReviewerOfLanguageTeam($locale))
+  )
+then
+  check.grant();
+end
+
 /* Project Maintainers can add a translation for their projects */
 
 rule ProjectMaintainerAddTranslation
   no-loop
   activation-group "permissions"
 when
-  check: PermissionCheck(action == "add-translation" || action == "modify-translation", granted == false)
+  check: PermissionCheck(action == "add-translation" || action == "modify-translation" || action == "review-translation", granted == false)
   authenticatedPerson: HPerson() 
   eval(authenticatedPerson != null)
   $project: HProject(

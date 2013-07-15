@@ -50,8 +50,8 @@ public class EditorButtonsWidget extends Composite
    {
       this.eventBus = eventBus;
       initWidget(ourUiBinder.createAndBindUi(this));
-      setDisplayReviewButtons(listener != null && listener.canReviewTranslation());
-      setDisplayModifyTranslationButtons(listener != null && listener.canModifyTranslation());
+      setDisplayReviewButtons(listener != null && listener.canReview());
+      setDisplayModifyTranslationButtons(listener != null && listener.canEditTranslation());
    }
 
    private void setDisplayReviewButtons(boolean canReview)
@@ -138,8 +138,8 @@ public class EditorButtonsWidget extends Composite
    public void setListener(TargetContentsDisplay.Listener listener)
    {
       this.listener = listener;
-      setDisplayReviewButtons(listener.canReviewTranslation());
-      setDisplayModifyTranslationButtons(listener.canModifyTranslation());
+      setDisplayReviewButtons(listener.canReview());
+      setDisplayModifyTranslationButtons(listener.canEditTranslation());
    }
 
    public void setIdAndState(TransUnitId id, ContentState state)

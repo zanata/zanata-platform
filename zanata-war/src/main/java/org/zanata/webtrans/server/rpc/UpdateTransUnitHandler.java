@@ -45,6 +45,7 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
+import org.zanata.webtrans.shared.rpc.TransUnitUpdated.UpdateType;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
@@ -67,7 +68,18 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
    @Override
    public UpdateTransUnitResult execute(UpdateTransUnit action, ExecutionContext context) throws ActionException
    {
-      SecurityService.SecurityCheckResult securityCheckResult = securityServiceImpl.checkPermission(action, SecurityService.TranslationAction.MODIFY);
+      SecurityService.SecurityCheckResult securityCheckResult;
+      
+      if(action.getUpdateType() == UpdateType.WebEditorSaveReview)
+      {
+         securityCheckResult = securityServiceImpl.checkPermission(action, SecurityService.TranslationAction.REVIEW);
+      }
+      else
+      {
+         securityCheckResult = securityServiceImpl.checkPermission(action, SecurityService.TranslationAction.MODIFY);
+      }
+      
+      
       HLocale hLocale = securityCheckResult.getLocale();
       TranslationWorkspace workspace = securityCheckResult.getWorkspace();
 

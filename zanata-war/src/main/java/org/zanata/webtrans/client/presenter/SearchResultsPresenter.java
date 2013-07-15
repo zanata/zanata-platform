@@ -255,7 +255,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
       docPaths = new HashMap<Long, String>();
       selectAllDocList = new HashMap<Long, HasValue<Boolean>>();
       setUiForNothingSelected();
-      display.setReplaceAllButtonVisible(userWorkspaceContext.hasWriteAccess());
+      display.setReplaceAllButtonVisible(userWorkspaceContext.hasEditTranslationAccess());
 
       display.addSearchFieldsSelect("search both", "both");
       display.addSearchFieldsSelect("search target", "target");
@@ -368,7 +368,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
             userWorkspaceContext.setProjectActive(event.isProjectActive());
             userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().setProjectType(event.getProjectType());
 
-            display.setReplaceAllButtonVisible(userWorkspaceContext.hasWriteAccess());
+            display.setReplaceAllButtonVisible(userWorkspaceContext.hasEditTranslationAccess());
 
             for (TransUnitReplaceInfo info : allReplaceInfos.values())
             {
@@ -860,7 +860,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
     */
    private void fireReplaceTextEvent(List<TransUnitReplaceInfo> toReplace)
    {
-      if (!userWorkspaceContext.hasWriteAccess())
+      if (!userWorkspaceContext.hasEditTranslationAccess())
       {
          eventBus.fireEvent(new NotificationEvent(Severity.Warning, messages.youAreNotAllowedToModifyTranslations()));
          return;
@@ -1325,7 +1325,7 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
     */
    private void setReplaceState(TransUnitReplaceInfo replaceInfo, ReplacementState replaceState)
    {
-      if (!userWorkspaceContext.hasWriteAccess())
+      if (!userWorkspaceContext.hasEditTranslationAccess())
       {
          replaceInfo.setReplaceState(ReplacementState.NotAllowed);
       }
