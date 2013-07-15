@@ -183,6 +183,16 @@ public class FileService implements FileResource
          Optional<File> tempFile;
          int totalChunks;
 
+         if (!uploadForm.getLast())
+         {
+            HDocumentUpload upload = saveUploadPart(projectSlug, iterationSlug, docId, NULL_LOCALE, uploadForm);
+            totalChunks = upload.getParts().size();
+            return Response.status(Status.ACCEPTED)
+                  .entity(new ChunkUploadResponse(upload.getId(), totalChunks, true,
+                        "Chunk accepted, awaiting remaining chunks."))
+                  .build();
+         }
+
          if (isSinglePart(uploadForm))
          {
             totalChunks = 1;
@@ -192,13 +202,6 @@ public class FileService implements FileResource
          {
             HDocumentUpload upload = saveUploadPart(projectSlug, iterationSlug, docId, NULL_LOCALE, uploadForm);
             totalChunks = upload.getParts().size();
-            if (!uploadForm.getLast())
-            {
-               return Response.status(Status.ACCEPTED)
-                     .entity(new ChunkUploadResponse(upload.getId(), totalChunks, true,
-                           "Chunk accepted, awaiting remaining chunks."))
-                     .build();
-            }
             tempFile = Optional.of(combineToTempFileAndDeleteUploadRecord(upload));
          }
 
@@ -398,7 +401,7 @@ public class FileService implements FileResource
       return tempFile;
    }
 
-   private boolean isSinglePart(DocumentFileUploadForm uploadForm)
+   private static boolean isSinglePart(DocumentFileUploadForm uploadForm)
    {
       return uploadForm.getFirst() && uploadForm.getLast();
    }
