@@ -593,31 +593,31 @@ td.RejectedStateDecoration div div div
 
 .confirmationDialogPanel {
 	background: #4C4C4C;
-	padding: 5px 20px 0px 20px;
+	padding: 1em;
 	color: #FFFFFF;
-	border-radius: 20px;
+	border-radius: 12px;
 	font-weight: bold;
 }
 
-.confirmationDialogPanel .message {
-	text-align:left;
-	font-size:14px;
-	font-weight:bold;
-	color:#FFC000;
+.confirmationDialogPanel button {
+  margin:0.8em 0.2em 0.2em 0.2em;
 }
 
-.confirmationDialogPanel table {
-	color: #FFFFFF;
+.confirmationDialogPanel .message {
+	text-align:center;
+	font-size:1.1em;
+	font-weight:bold;
+	color:#FFC000;
 }
 
 .confirmationDialogPanel .info {
 	color: #FFFFFF;
 	font-weight: normal;
-	font-size:12px;
-	padding:5px;
+	font-size:0.9em;
+	margin:0.8em;
+	padding:0.3em;
 	border:1px dotted #808080;
-	border-radius:5px;
-	text-align:left;
+	border-radius:3px;
 }
 
 .confirmationDialogPanel .info .infoIcon {

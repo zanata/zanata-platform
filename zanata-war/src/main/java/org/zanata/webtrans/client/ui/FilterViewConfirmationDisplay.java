@@ -28,7 +28,7 @@ public interface FilterViewConfirmationDisplay
 {
    interface Listener
    {
-      void saveChangesAndFilter();
+      void saveAsTranslatedAndFilter();
       void saveAsFuzzyAndFilter();
       void discardChangesAndFilter();
       void cancelFilter();

@@ -494,6 +494,11 @@ public class TargetContentsPresenter implements
 
    public void showData(List<TransUnit> transUnits)
    {
+      if(display != null)
+      {
+         display.resetEditorsAndCachedTargets();
+      }
+      
       ImmutableList.Builder<TargetContentsDisplay> builder = ImmutableList.builder();
       for (TransUnit transUnit : transUnits)
       {

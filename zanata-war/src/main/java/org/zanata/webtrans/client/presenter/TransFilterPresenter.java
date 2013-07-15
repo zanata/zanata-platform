@@ -79,21 +79,13 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay> im
    {
       UserConfigHolder configHolder = userOptionsService.getConfigHolder();
       configHolder.setFilterByTranslated(translatedChkValue);
-      configHolder.setFilterByNeedReview(fuzzyChkValue);
+      configHolder.setFilterByFuzzy(fuzzyChkValue);
       configHolder.setFilterByUntranslated(untranslatedChkValue);
       configHolder.setFilterByApproved(approvedChkValue);
       configHolder.setFilterByRejected(rejectedChkValue);
       configHolder.setFilterByHasError(hasErrorChkValue);
 
-      // push history
-      HistoryToken token = history.getHistoryToken();
-      token.setFilterTranslated(translatedChkValue);
-      token.setFilterFuzzy(fuzzyChkValue);
-      token.setFilterUntranslated(untranslatedChkValue);
-      token.setFilterApproved(approvedChkValue);
-      token.setFilterRejected(rejectedChkValue);
-      token.setFilterHasError(hasErrorChkValue);
-      history.newItem(token);
+      pushFilterHistory(translatedChkValue, fuzzyChkValue, untranslatedChkValue, approvedChkValue, rejectedChkValue, hasErrorChkValue);
    }
 
    @Override
@@ -119,12 +111,9 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay> im
       if (event.getView() == MainView.Editor)
       {
          UserConfigHolder.ConfigurationState configurationState = userOptionsService.getConfigHolder().getState();
-         display.setTranslatedFilter(configurationState.isFilterByTranslated());
-         display.setNeedReviewFilter(configurationState.isFilterByNeedReview());
-         display.setUntranslatedFilter(configurationState.isFilterByUntranslated());
-         display.setApprovedFilter(configurationState.isFilterByApproved());
-         display.setRejectedFilter(configurationState.isFilterByRejected());
-         display.setHasErrorFilter(configurationState.isFilterByHasError());
+
+         updateFilterStates(configurationState.isFilterByTranslated(), configurationState.isFilterByFuzzy(), configurationState.isFilterByUntranslated(), configurationState.isFilterByApproved(), configurationState.isFilterByRejected(), configurationState.isFilterByHasError());
+         pushFilterHistory(configurationState.isFilterByTranslated(), configurationState.isFilterByFuzzy(), configurationState.isFilterByUntranslated(), configurationState.isFilterByApproved(), configurationState.isFilterByRejected(), configurationState.isFilterByHasError());
       }
 
    }
@@ -134,12 +123,31 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay> im
    {
       if (event.isCancelFilter())
       {
-         display.setTranslatedFilter(event.isFilterTranslated());
-         display.setNeedReviewFilter(event.isFilterNeedReview());
-         display.setUntranslatedFilter(event.isFilterUntranslated());
-         display.setApprovedFilter(event.isFilterApproved());
-         display.setRejectedFilter(event.isFilterRejected());
-         display.setHasErrorFilter(event.isFilterHasError());
+         updateFilterStates(event.isFilterTranslated(), event.isFilterFuzzy(), event.isFilterUntranslated(), event.isFilterApproved(), event.isFilterRejected(), event.isFilterHasError());
+         pushFilterHistory(event.isFilterTranslated(), event.isFilterFuzzy(), event.isFilterUntranslated(), event.isFilterApproved(), event.isFilterRejected(), event.isFilterHasError());
+
       }
+   }
+
+   public void updateFilterStates(boolean filterByTranslated, boolean filterByFuzzy, boolean filterByUntranslated, boolean filterByApproved, boolean filterByRejected, boolean filterByHasError)
+   {
+      display.setTranslatedFilter(filterByTranslated);
+      display.setNeedReviewFilter(filterByFuzzy);
+      display.setUntranslatedFilter(filterByUntranslated);
+      display.setApprovedFilter(filterByApproved);
+      display.setRejectedFilter(filterByRejected);
+      display.setHasErrorFilter(filterByHasError);
+   }
+
+   private void pushFilterHistory(boolean filterByTranslated, boolean filterByFuzzy, boolean filterByUntranslated, boolean filterByApproved, boolean filterByRejected, boolean filterByHasError)
+   {
+      HistoryToken token = history.getHistoryToken();
+      token.setFilterTranslated(filterByTranslated);
+      token.setFilterFuzzy(filterByFuzzy);
+      token.setFilterUntranslated(filterByUntranslated);
+      token.setFilterApproved(filterByApproved);
+      token.setFilterRejected(filterByRejected);
+      token.setFilterHasError(filterByHasError);
+      history.newItem(token);
    }
 }
