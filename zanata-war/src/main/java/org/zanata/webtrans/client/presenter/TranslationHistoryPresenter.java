@@ -10,6 +10,8 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.events.ReviewCommentEvent;
+import org.zanata.webtrans.client.events.ReviewCommentEventHandler;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.AbstractAsyncCallback;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -36,7 +38,8 @@ import com.google.inject.Singleton;
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHistoryDisplay> implements TranslationHistoryDisplay.Listener
+public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHistoryDisplay>
+      implements TranslationHistoryDisplay.Listener, ReviewCommentEventHandler
 {
    private final TranslationHistoryDisplay display;
    private final EventBus eventBus;
@@ -58,6 +61,12 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
       this.contextHolder = contextHolder;
 
       display.setListener(this);
+   }
+
+   @Override
+   public void onShowReviewComment(ReviewCommentEvent event)
+   {
+      showTranslationHistory(event.getTransUnitId());
    }
 
    public void showTranslationHistory(final TransUnitId transUnitId)
@@ -101,7 +110,7 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
          List<String> newTargets = targetContentsPresenter.getNewTargets();
          if (!Objects.equal(latest.getContents(), newTargets))
          {
-            all.add(new TransHistoryItem(messages.unsaved(), newTargets, ContentState.New, "You", new Date()));
+            all.add(new TransHistoryItem(messages.unsaved(), newTargets, ContentState.New, messages.you(), new Date()));
          }
       }
       all.addAll(otherEntries);

@@ -101,7 +101,7 @@ public class GetTranslationHistoryHandler extends AbstractActionHandler<GetTrans
       return lastModifiedBy != null ? lastModifiedBy.getName() : "";
    }
 
-   private List<ReviewComment> getReviewComments(GetTranslationHistoryAction action)
+   protected List<ReviewComment> getReviewComments(GetTranslationHistoryAction action)
    {
       List<HTextFlowTargetReviewComment> hComments = textFlowTargetReviewCommentsDAO.getReviewComments(action.getTransUnitId(), action.getWorkspaceId().getLocaleId());
 
