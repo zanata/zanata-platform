@@ -23,13 +23,13 @@ package org.zanata.model;
 import java.util.List;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.hamcrest.Matchers;
 import org.hibernate.criterion.Restrictions;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.model.tm.TMTransUnitVariant;
 import org.zanata.model.tm.TMTranslationUnit;
 import org.zanata.model.tm.TransMemory;
+import org.zanata.model.tm.TMMetadataType;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -79,13 +79,13 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
    {
       TransMemory tm = createDefaultTransMemoryInstance();
       String defaultMetadataVal = "This is a test";
-      tm.getMetadata().put(TransMemory.TransMemoryMetadata.DEFAULT, defaultMetadataVal);
+      tm.getMetadata().put(TMMetadataType.TMX14, defaultMetadataVal);
       super.getEm().persist(tm);
 
       TransMemory stored = getTransMemory("new-trans-memory");
       assertThat(stored.getName(), is(tm.getName()));
       assertThat(stored.getMetadata().size(), is( tm.getMetadata().size() ));
-      assertThat(stored.getMetadata().get(TransMemory.TransMemoryMetadata.DEFAULT), equalTo(defaultMetadataVal));
+      assertThat(stored.getMetadata().get(TMMetadataType.TMX14), equalTo(defaultMetadataVal));
    }
 
    @Test
@@ -123,7 +123,7 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
          unit.setTranslationMemory(tm);
          unit.setSourceLanguage("en-US");
          unit.setTransUnitId("unit-id-" + i);
-         unit.getMetadata().put(TMTranslationUnit.TMTranslationUnitMetadata.DEFAULT, "Metadata " + i);
+//         unit.getMetadata().put(TMTranslationUnit.TMTranslationUnitMetadata.DEFAULT, "Metadata " + i);
          tm.getTranslationUnits().add(unit);
       }
 
@@ -136,7 +136,7 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
       for( TMTranslationUnit tu : tm.getTranslationUnits() )
       {
          assertThat(tu.getMetadata().size(), is(1));
-         assertThat(tu.getMetadata().get(TMTranslationUnit.TMTranslationUnitMetadata.DEFAULT), startsWith("Metadata "));
+//         assertThat(tu.getMetadata().get(TMTranslationUnit.TMTranslationUnitMetadata.DEFAULT), startsWith("Metadata "));
       }
    }
 
@@ -164,7 +164,7 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
       }
 
       // Verify they were saved
-      List results = getEm().createQuery("from TMTransUnitVariant").getResultList();
+      List<TMTransUnitVariant> results = getEm().createQuery("from TMTransUnitVariant").getResultList();
       assertThat(results.size(), greaterThan(0));
    }
 }

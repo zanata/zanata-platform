@@ -20,8 +20,8 @@
  */
 package org.zanata.model.tm;
 
-import java.util.HashMap;
 import java.util.Map;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
@@ -31,15 +31,17 @@ import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.MapKeyClass;
 
-import org.zanata.model.ModelEntityBase;
-import org.zanata.util.HashUtil;
-
 import lombok.AccessLevel;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
+import org.zanata.model.ModelEntityBase;
+import org.zanata.util.HashUtil;
+
+import com.google.common.collect.Maps;
 
 /**
  * A translation unit variant.
@@ -48,35 +50,33 @@ import lombok.ToString;
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Entity
-@EqualsAndHashCode(exclude = {"content"})
+@EqualsAndHashCode(callSuper=true, exclude = {"content"})
 @ToString(exclude = {"contentHash", "metadata"})
 @NoArgsConstructor
 @Access(AccessType.FIELD)
-public class TMTransUnitVariant extends ModelEntityBase
+@Data
+public class TMTransUnitVariant extends ModelEntityBase implements HasTMMetadata
 {
-   public enum TMTransUnitVariantMetadata
-   {
-      TMX_SEG;
-   }
+   private static final long serialVersionUID = 1L;
 
-   @Getter @Setter
    @Column(nullable = false)
    private String language;
 
-   @Getter
    @Column(nullable = false)
    private String content;
 
-   @Getter @Setter(AccessLevel.PROTECTED)
+   @Setter(AccessLevel.NONE)
    @Column(name ="content_hash", nullable = false)
    private String contentHash;
 
-   @Getter @Setter
+   /**
+    * Map values are Json strings containing metadata for the particular type of translation memory
+    */
    @ElementCollection
-   @MapKeyClass(TMTransUnitVariantMetadata.class)
+   @MapKeyClass(TMMetadataType.class)
    @JoinTable(name = "TMTransUnitVariant_Metadata")
    @Lob
-   private Map<TMTransUnitVariantMetadata, String> metadata = new HashMap<TMTransUnitVariantMetadata, String>();
+   private Map<TMMetadataType, String> metadata = Maps.newHashMap();
 
    public TMTransUnitVariant(String language, String content)
    {

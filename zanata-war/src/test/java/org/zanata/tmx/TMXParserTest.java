@@ -22,7 +22,12 @@ package org.zanata.tmx;
 
 import java.io.InputStream;
 
+import nu.xom.Element;
+
 import org.testng.annotations.Test;
+import org.zanata.model.tm.TMTranslationUnit;
+
+import fj.Effect;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
