@@ -39,6 +39,7 @@ import javax.persistence.MapKeyClass;
 
 import org.zanata.model.ModelEntityBase;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -52,6 +53,7 @@ import lombok.ToString;
 @Entity
 @EqualsAndHashCode(callSuper = true, of = {"transUnitId", "sourceLanguage", "translationMemory"})
 @ToString(exclude = "translationMemory")
+@Data
 @Access(AccessType.FIELD)
 public class TMTranslationUnit extends ModelEntityBase
 {
@@ -60,20 +62,16 @@ public class TMTranslationUnit extends ModelEntityBase
       DEFAULT;
    }
 
-   @Getter @Setter
    @Column(name = "trans_unit_id", nullable = true)
    private String transUnitId;
 
-   @Getter @Setter
    @Column(name = "source_language", nullable = true)
    private String sourceLanguage;
 
-   @Getter @Setter
    @ManyToOne(optional = false, fetch = FetchType.LAZY)
    @JoinColumn(name = "tm_id", nullable = false)
    private TransMemory translationMemory;
 
-   @Getter @Setter
    @ManyToMany(cascade = CascadeType.ALL)
    @JoinTable(name = "TMTranslationUnit_TransUnitVariant",
               joinColumns = @JoinColumn(name = "trans_unit_id"),
@@ -81,7 +79,6 @@ public class TMTranslationUnit extends ModelEntityBase
    @MapKey(name = "language")
    private Map<String, TMTransUnitVariant> transUnitVariants = new HashMap<String, TMTransUnitVariant>();
 
-   @Getter @Setter
    @ElementCollection
    @MapKeyClass(TMTranslationUnitMetadata.class)
    @JoinTable(name = "TMTransUnit_Metadata")

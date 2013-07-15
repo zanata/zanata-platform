@@ -26,9 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.JoinTable;
@@ -39,8 +37,8 @@ import javax.persistence.OneToMany;
 import org.zanata.model.SlugEntityBase;
 
 import lombok.AccessLevel;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -52,6 +50,7 @@ import lombok.ToString;
 @Entity
 @EqualsAndHashCode(callSuper = true, of = {"name"})
 @ToString(exclude = "translationUnits")
+@Data
 @Access(AccessType.FIELD)
 public class TransMemory extends SlugEntityBase
 {
@@ -60,14 +59,12 @@ public class TransMemory extends SlugEntityBase
       DEFAULT;
    }
 
-   @Getter @Setter
    private String description;
 
-   @Getter @Setter(AccessLevel.PROTECTED)
+   @Setter(AccessLevel.PROTECTED)
    @OneToMany(cascade = CascadeType.ALL, mappedBy = "translationMemory")
    private Set<TMTranslationUnit> translationUnits = new HashSet<TMTranslationUnit>();
 
-   @Getter @Setter
    @ElementCollection
    @MapKeyClass(TransMemoryMetadata.class)
    @JoinTable(name = "TransMemory_Metadata")

@@ -36,8 +36,8 @@ import org.zanata.util.HashUtil;
 import org.zanata.util.OkapiUtil;
 
 import lombok.AccessLevel;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
@@ -52,6 +52,7 @@ import lombok.ToString;
 @EqualsAndHashCode(exclude = {"content"})
 @ToString(exclude = {"contentHash", "metadata"})
 @NoArgsConstructor
+@Data
 @Access(AccessType.FIELD)
 public class TMTransUnitVariant extends ModelEntityBase
 {
@@ -60,23 +61,20 @@ public class TMTransUnitVariant extends ModelEntityBase
       TMX_SEG;
    }
 
-   @Getter @Setter
    @Column(nullable = false)
    private String language;
 
-   @Getter @Setter
    @Column(name = "tagged_segment", nullable = false)
    private String taggedSegment;
 
-   @Getter @Setter(AccessLevel.PROTECTED)
+   @Setter(AccessLevel.PROTECTED)
    @Column(name = "plain_text_segment", nullable = true)
    private String plainTextSegment;
 
-   @Getter @Setter(AccessLevel.PROTECTED)
+   @Setter(AccessLevel.PROTECTED)
    @Column(name ="plain_text_segment_hash", nullable = false)
    private String plainTextSegmentHash;
 
-   @Getter @Setter
    @ElementCollection
    @MapKeyClass(TMTransUnitVariantMetadata.class)
    @JoinTable(name = "TMTransUnitVariant_Metadata")
