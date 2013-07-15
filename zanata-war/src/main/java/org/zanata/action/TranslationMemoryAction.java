@@ -69,8 +69,9 @@ public class TranslationMemoryAction extends EntityHome<TransMemory>
       return slugEntityServiceImpl.isSlugAvailable(slug, TransMemory.class);
    }
 
-   public void cancel()
+   public String cancel()
    {
       // Navigation logic in pages.xml
+      return "cancel";
    }
 }

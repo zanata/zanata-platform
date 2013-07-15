@@ -56,7 +56,6 @@ import com.google.common.collect.Maps;
 @NoArgsConstructor
 @Data
 @Access(AccessType.FIELD)
-@Data
 public class TMTransUnitVariant extends ModelEntityBase implements HasTMMetadata
 {
    private static final long serialVersionUID = 1L;

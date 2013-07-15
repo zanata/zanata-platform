@@ -51,7 +51,6 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
    private TransMemory createDefaultTransMemoryInstance()
    {
       TransMemory tm = new TransMemory();
-      tm.setName("New Trans Memory");
       tm.setSlug("new-trans-memory");
       return tm;
    }
@@ -71,7 +70,7 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
 
       TransMemory stored = getTransMemory("new-trans-memory");
 
-      assertThat(stored.getName(), is(tm.getName()));
+      assertThat(stored.getSlug(), is(tm.getSlug()));
    }
 
    @Test
@@ -83,7 +82,7 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
       super.getEm().persist(tm);
 
       TransMemory stored = getTransMemory("new-trans-memory");
-      assertThat(stored.getName(), is(tm.getName()));
+      assertThat(stored.getSlug(), is(tm.getSlug()));
       assertThat(stored.getMetadata().size(), is( tm.getMetadata().size() ));
       assertThat(stored.getMetadata().get(TMMetadataType.TMX14), equalTo(defaultMetadataVal));
    }

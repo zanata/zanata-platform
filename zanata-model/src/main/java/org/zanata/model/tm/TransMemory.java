@@ -32,10 +32,9 @@ import javax.persistence.Lob;
 import javax.persistence.MapKeyClass;
 import javax.persistence.OneToMany;
 
-import org.testng.collections.Sets;
 import org.zanata.model.SlugEntityBase;
-
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import lombok.AccessLevel;
 import lombok.Data;

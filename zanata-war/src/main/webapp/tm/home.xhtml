@@ -76,7 +76,7 @@
         <rich:panel id="loggedIn">
             <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
             <s:link id="createTmLink" styleClass="action_link"
-                    value="#{messages['jsf.transmemory.ImportNew']}"
+                    value="#{messages['jsf.transmemory.CreateNew']}"
                     view="/tm/create.xhtml"
                     propagation="none"/>
         </rich:panel>
@@ -97,7 +97,7 @@
                     <rich:dataTable id="tmList"
                                     value="#{translationMemoryAction.allTranslationMemories}" var="tm">
                         <rich:column>
-                            <f:facet name="header">#{messages['jsf.Slug']}
+                            <f:facet name="header">#{messages['jsf.Id']}
                                 <richext:columnSorter />
                             </f:facet>
                             <h:outputText value="#{tm.slug}" />
