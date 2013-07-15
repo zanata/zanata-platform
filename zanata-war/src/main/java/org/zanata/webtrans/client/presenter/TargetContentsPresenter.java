@@ -436,7 +436,7 @@ public class TargetContentsPresenter implements
    @Override
    public void onRequestValidation(RequestValidationEvent event)
    {
-      if (equal(sourceContentsPresenter.getCurrentTransUnitIdOrNull(), currentTransUnitId))
+      if (hasSelectedRow() && equal(sourceContentsPresenter.getCurrentTransUnitIdOrNull(), currentTransUnitId))
       {
          for (ToggleEditor editor : display.getEditors())
          {
@@ -494,11 +494,6 @@ public class TargetContentsPresenter implements
 
    public void showData(List<TransUnit> transUnits)
    {
-      if(display != null)
-      {
-         display.resetEditorsAndCachedTargets();
-      }
-      
       ImmutableList.Builder<TargetContentsDisplay> builder = ImmutableList.builder();
       for (TransUnit transUnit : transUnits)
       {
@@ -513,6 +508,7 @@ public class TargetContentsPresenter implements
          builder.add(display);
       }
       displayList = builder.build();
+      display = null;
    }
 
    public List<TargetContentsDisplay> getDisplays()

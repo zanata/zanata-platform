@@ -238,25 +238,13 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    @Override
    public List<String> getCachedTargets()
    {
-      ArrayList<String> result = Lists.newArrayList();
-      if (cachedValue != null)
-      {
-         result.addAll(cachedValue.getTargets());
-      }
-      return result;
+      return cachedValue.getTargets();
    }
 
    @Override
    public TransUnitId getId()
    {
       return cachedValue.getId();
-   }
-
-   @Override
-   public void resetEditorsAndCachedTargets()
-   {
-      cachedValue = null;
-      editors.clear();
    }
 
    @Override

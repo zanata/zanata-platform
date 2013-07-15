@@ -69,8 +69,6 @@ public interface TargetContentsDisplay extends WidgetDisplay, HasTransUnitId, Ha
    void setEnableSpellCheck(boolean spellCheckEnabled);
 
    void updateCommentIndicator(int commentsCount);
-   
-   void resetEditorsAndCachedTargets();
 
    interface Listener
    {
