@@ -169,7 +169,7 @@ public class TransUnitsTablePresenterTest
    {
       when(targetContentsPresenter.getCurrentTransUnitIdOrNull()).thenReturn(new TransUnitId(1));
 
-      presenter.saveChangesAndFilter();
+      presenter.saveAsTranslatedAndFilter();
 
       verify(targetContentsPresenter).saveCurrent(ContentState.Translated);
       verify(display).hideFilterConfirmation();

@@ -33,7 +33,7 @@ public class GetTransUnitActionContextHolder
       context = new GetTransUnitActionContext(document)
             .changeCount(configHolder.getState().getEditorPageSize())
             .changeFindMessage(findMessage)
-            .changeFilterNeedReview(configHolder.getState().isFilterByNeedReview())
+            .changeFilterFuzzy(configHolder.getState().isFilterByFuzzy())
             .changeFilterTranslated(configHolder.getState().isFilterByTranslated())
             .changeFilterUntranslated(configHolder.getState().isFilterByUntranslated())
             .changeFilterApproved(configHolder.getState().isFilterByApproved())

@@ -119,7 +119,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
    @Test
    public void testExecuteWithStatusFilterOnly() throws Exception
    {
-      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(document).changeFilterNeedReview(true).changeFilterUntranslated(true));
+      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(document).changeFilterFuzzy(true).changeFilterUntranslated(true));
       prepareActionAndMockLocaleService(action);
 
       GetTransUnitListResult result = handler.execute(action, null);
@@ -167,7 +167,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
    {
       // Given: we want to search for file (mixed case) in fuzzy and untranslated text flows
       GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(document)
-            .changeFindMessage("FiLe").changeFilterUntranslated(true).changeFilterNeedReview(true));
+            .changeFindMessage("FiLe").changeFilterUntranslated(true).changeFilterFuzzy(true));
       prepareActionAndMockLocaleService(action);
 
       // When:
@@ -183,7 +183,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
    @Test
    public void testExecuteWithSearchAndStatusFilter2() throws Exception
    {
-      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(document).changeFindMessage("FiLe").changeFilterUntranslated(true).changeFilterNeedReview(true).changeFilterHasError(true));
+      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(document).changeFindMessage("FiLe").changeFilterUntranslated(true).changeFilterFuzzy(true).changeFilterHasError(true));
       prepareActionAndMockLocaleService(action);
 
       // When:
