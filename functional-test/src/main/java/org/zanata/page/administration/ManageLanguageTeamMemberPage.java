@@ -129,7 +129,7 @@ public class ManageLanguageTeamMemberPage extends AbstractPage
 
    public ManageLanguageTeamMemberPage addToTeam(TableRow personRow)
    {
-      final String personUsername = personRow.getCellContents().get(1);
+      final String personUsername = personRow.getCellContents().get(SEARCH_RESULT_PERSON_COLUMN);
       log.info("username to be added: {}", personUsername);
       WebElement selectRowToUpdateCell = personRow.getCells().get(SEARCH_RESULT_SELECTED_COLUMN).findElement(By.tagName("input"));
       WebElement isTranslatorCell = personRow.getCells().get(ISTRANSLATOR_COLUMN).findElement(By.tagName("input"));
