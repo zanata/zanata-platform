@@ -20,31 +20,34 @@
  */
 package org.zanata.tmx;
 
+import static org.zanata.tmx.TMXAttribute.*;
+
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.Date;
 import java.util.Map;
+
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
-import org.zanata.model.tm.TMTransUnitVariant;
+import nu.xom.Attribute;
+import nu.xom.Element;
+
+import org.codehaus.jackson.map.ObjectMapper;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.zanata.common.util.ElementBuilder;
+import org.zanata.model.tm.TMMetadataHelper;
 import org.zanata.model.tm.TMTranslationUnit;
 import org.zanata.model.tm.TransMemory;
+import org.zanata.model.tm.TMMetadataType;
 
-import static org.zanata.tmx.TMXEvent.BodyEnd;
-import static org.zanata.tmx.TMXEvent.BodyStart;
-import static org.zanata.tmx.TMXEvent.HeaderEnd;
-import static org.zanata.tmx.TMXEvent.HeaderStart;
-import static org.zanata.tmx.TMXEvent.TMXEnd;
-import static org.zanata.tmx.TMXEvent.TMXStart;
-import static org.zanata.tmx.TMXEvent.TUEnd;
-import static org.zanata.tmx.TMXEvent.TUStart;
-import static org.zanata.tmx.TMXEvent.TUVStart;
+import com.google.common.collect.Maps;
+
+import fj.Effect;
 
 /**
  * Parses TMX input.
@@ -53,215 +56,84 @@ import static org.zanata.tmx.TMXEvent.TUVStart;
  */
 public class TMXParser
 {
-
-   private XMLEventReader reader;
+   private static final DateTimeFormatter ISO8601Z = DateTimeFormat.forPattern("yyyyMMdd'T'HHmmss'Z").withZoneUTC();
 
    public void parseTMX(InputStream input) throws XMLStreamException
    {
-      XMLInputFactory factory = XMLInputFactory.newFactory().newInstance();
-      factory.setProperty(XMLInputFactory.IS_VALIDATING, false);
-      factory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
-      reader = factory.createXMLEventReader(input);
-
-      advanceUntil(TMXStart);
-      advanceUntil(HeaderStart);
-
-      handleHeader();
-      advanceUntil(BodyStart);
-      handleBody();
-
-      advanceUntil(TMXEnd);
-      expectNext(TMXEnd);
-      reader.close();
-   }
-
-   private void expectNext(TMXEvent ... expected) throws XMLStreamException
-   {
-      XMLEvent nextEvent = reader.peek();
-
-      for( TMXEvent expectedEvent : expected )
-      {
-         if( expectedEvent.matches( nextEvent ) )
-         {
-            return;
-         }
-      }
-
-      throw new RuntimeException("Did not find any of the expected elements: " + Arrays.toString(expected)
-            + ". Found " + eventToString(nextEvent) + " instead.");
-   }
-
-   private static String eventToString(XMLEvent event)
-   {
-      if( event.isStartElement() )
-      {
-         return "Start Elem: " + event.asStartElement().getName().getLocalPart();
-      }
-      else if( event.isEndElement() )
-      {
-         return "End Elem: " + event.asStartElement().getName().getLocalPart();
-      }
-      else if( event.isAttribute() )
-      {
-         return "Attribute: " + event;
-      }
-      else if( event.isCharacters() )
-      {
-         return "Chars: " + event.asCharacters().getData();
-      }
-      else if( event.isEntityReference() )
-      {
-         return "Entity ref: " + event;
-      }
-      else if( event.isNamespace() )
-      {
-         return "Namespace: " + event;
-      }
-      else if( event.isProcessingInstruction() )
-      {
-         return "Processing Instr: " + event;
-      }
-      else if( event.isStartDocument() )
-      {
-         return "Start Doc: " + event;
-      }
-      else if( event.isEndDocument() )
-      {
-         return "End Doc: " + event;
-      }
-      else
-      {
-         return event.toString();
-      }
-   }
-
-   private void advanceUntil(TMXEvent ... events) throws XMLStreamException
-   {
-      while(reader.hasNext())
-      {
-         XMLEvent nextEvent = reader.peek();
-
-         for( TMXEvent e : events )
-         {
-            if( e.matches(nextEvent) )
-            {
-               return;
-            }
-         }
-
-         reader.nextEvent();
-      }
-   }
-
-   private Map<String, String> collectElementAttributes( StartElement startEvent, String ... attNames ) throws XMLStreamException
-   {
-      Map<String, String> collected = new HashMap<String, String>();
-      Iterator it = startEvent.getAttributes();
-      while( it.hasNext() )
-      {
-         for( String providedAttName : attNames )
-         {
-            Attribute nextAtt = (Attribute) it.next();
-            String currAttName = nextAtt.getName().getLocalPart();
-            if(currAttName.equals( providedAttName ))
-            {
-               collected.put(currAttName, nextAtt.getValue());
-            }
-         }
-      }
-
-      return collected;
-   }
-
-   private TMTransUnitVariant handleTransUnitVariant(XMLEvent event) throws XMLStreamException
-   {
-      expectNext(TUVStart);
-      XMLEvent tuvEvent = reader.nextEvent();
-      Map<String, String> tuvAttributes = collectElementAttributes(tuvEvent.asStartElement(), "name");
-
-
-      String lang =  tuvAttributes.get("name");
-      advanceUntil(TMXEvent.SEGStart);
-      reader.nextEvent(); // Consume the start event
-      String content = reader.nextEvent().asCharacters().getData();
-      advanceUntil(TMXEvent.SEGEnd);
-      advanceUntil(TMXEvent.TUVEnd);
-      reader.nextEvent(); // Consume the end Event
-
-      return new TMTransUnitVariant(lang, content);
-   }
-
-   private void handleTransUnit(XMLEvent event) throws XMLStreamException
-   {
-      expectNext(TUStart);
-      XMLEvent tuEvent = reader.nextEvent();
-      TMTranslationUnit tu = new TMTranslationUnit();
-      advanceUntil(TUVStart, TUEnd);
-
-      while( reader.hasNext() )
-      {
-         expectNext(TUVStart, TUEnd);
-         XMLEvent nextEvent = reader.peek();
-
-         // Found a TUV
-         if( TUVStart.matches(nextEvent) )
-         {
-            TMTransUnitVariant tuv = handleTransUnitVariant(nextEvent);
-            tu.getTransUnitVariants().put(tuv.getLanguage(), tuv);
-         }
-         // Reached the End of the TU
-         else if( TUEnd.matches(nextEvent) )
-         {
-            break;
-         }
-
-         advanceUntil(TUVStart, TUEnd);
-      }
-
-      expectNext(TUEnd);
-      reader.nextEvent(); // Consume the end Event
-
-      // TODO Save the TU
-   }
-
-   private void handleBody() throws XMLStreamException
-   {
-      expectNext(BodyStart);
-      reader.nextEvent(); // At the start of the body element
-      advanceUntil(TUStart, BodyEnd);
-
-      while(reader.hasNext())
-      {
-         expectNext(TUStart, BodyEnd);
-         XMLEvent nextEvent = reader.peek();
-
-         if( TUStart.matches(nextEvent) )
-         {
-            // TODO pass the trans unit name maybe
-            handleTransUnit(nextEvent);
-         }
-         else if( BodyEnd.matches(nextEvent) )
-         {
-            break;
-         }
-
-         advanceUntil(TUStart, BodyEnd);
-      }
-
-      expectNext(BodyEnd);
-      reader.nextEvent(); // Consume the end Event
-   }
-
-   private void handleHeader() throws XMLStreamException
-   {
-      expectNext(HeaderStart);
-
-      TransMemory tm = new TransMemory();
+      final TransMemory tm = new TransMemory();
       tm.setName("TEST");
       tm.setSlug("test-slug");
       // TODO Save TM
+      parseTMX(input, new Effect<Element>()
+      {
+         @Override
+         public void e(Element tuElem)
+         {
+            TMTranslationUnit tu = new TMTranslationUnit();
+            String creationDate = creationdate.getAttribute(tuElem);
+            if (creationDate != null)
+            {
+               tu.setCreationDate(parseDate(creationDate));
+            }
+            String changeDate = changedate.getAttribute(tuElem);
+            if (changeDate != null)
+            {
+               tu.setLastChanged(parseDate(changeDate));
+            }
+            tu.setSourceLanguage(srclang.getAttribute(tuElem));
+            tu.setTranslationMemory(tm);
+            tu.setTransUnitId(tuid.getAttribute(tuElem));
 
-      advanceUntil(HeaderEnd);
-      reader.nextEvent(); // Consume the header end event
+            Map<String, String> metadata = Maps.newHashMap();
+            for (int i=0; i < tuElem.getAttributeCount(); i++)
+            {
+               Attribute attr = tuElem.getAttribute(i);
+               String name = attr.getQualifiedName();
+               if (!TMXAttribute.contains(name))
+               {
+                  String value = attr.getValue();
+                  metadata.put(name, value);
+               }
+            }
+            TMMetadataHelper.setTMXMetadata(tu, metadata);
+
+//          TMTransUnitVariant tuv = handleTransUnitVariant(nextEvent);
+//          tu.getTransUnitVariants().put(tuv.getLanguage(), tuv);
+//            tu.setTransUnitVariants(transUnitVariants);
+            tu.setVersionNum(0);
+            // TODO Save the TU
+         }
+      });
    }
+
+   private Date parseDate(String dateString)
+   {
+      return ISO8601Z.parseDateTime(dateString).toDate();
+   }
+
+   public void parseTMX(InputStream input, Effect<Element> sideEffect) throws XMLStreamException
+   {
+      XMLInputFactory factory = XMLInputFactory.newInstance();
+      factory.setProperty(XMLInputFactory.IS_VALIDATING, false);
+      factory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+      XMLEventReader reader = factory.createXMLEventReader(input);
+
+      QName tu = new QName("tu");
+
+      while (reader.hasNext())
+      {
+         XMLEvent event = reader.nextEvent();
+         if (event.isStartElement())
+         {
+            StartElement startElem = event.asStartElement();
+            if (startElem.getName().equals(tu))
+            {
+               Element tuElem = ElementBuilder.buildElement(startElem, reader);
+               sideEffect.e(tuElem);
+            }
+         }
+      }
+      reader.close();
+   }
+
 }

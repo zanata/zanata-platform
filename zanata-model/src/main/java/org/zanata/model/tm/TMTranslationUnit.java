@@ -20,7 +20,6 @@
  */
 package org.zanata.model.tm;
 
-import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -39,6 +38,8 @@ import javax.persistence.MapKeyClass;
 
 import org.zanata.model.ModelEntityBase;
 
+import com.google.common.collect.Maps;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -55,12 +56,9 @@ import lombok.ToString;
 @ToString(exclude = "translationMemory")
 @Data
 @Access(AccessType.FIELD)
-public class TMTranslationUnit extends ModelEntityBase
+public class TMTranslationUnit extends ModelEntityBase implements HasTMMetadata
 {
-   public enum TMTranslationUnitMetadata
-   {
-      DEFAULT;
-   }
+   private static final long serialVersionUID = 1L;
 
    @Column(name = "trans_unit_id", nullable = true)
    private String transUnitId;
@@ -77,11 +75,14 @@ public class TMTranslationUnit extends ModelEntityBase
               joinColumns = @JoinColumn(name = "trans_unit_id"),
               inverseJoinColumns = @JoinColumn(name = "trans_unit_variant_id"))
    @MapKey(name = "language")
-   private Map<String, TMTransUnitVariant> transUnitVariants = new HashMap<String, TMTransUnitVariant>();
+   private Map<String, TMTransUnitVariant> transUnitVariants = Maps.newHashMap();
 
+   /**
+    * Map values are Json strings containing metadata for the particular type of translation memory
+    */
    @ElementCollection
-   @MapKeyClass(TMTranslationUnitMetadata.class)
+   @MapKeyClass(TMMetadataType.class)
    @JoinTable(name = "TMTransUnit_Metadata")
    @Lob
-   private Map<TMTranslationUnitMetadata, String> metadata = new HashMap<TMTranslationUnitMetadata, String>();
+   private Map<TMMetadataType, String> metadata = Maps.newHashMap();
 }

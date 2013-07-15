@@ -20,8 +20,6 @@
  */
 package org.zanata.model.tm;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import javax.persistence.Access;
@@ -34,7 +32,10 @@ import javax.persistence.Lob;
 import javax.persistence.MapKeyClass;
 import javax.persistence.OneToMany;
 
+import org.testng.collections.Sets;
 import org.zanata.model.SlugEntityBase;
+
+import com.google.common.collect.Maps;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -52,23 +53,23 @@ import lombok.ToString;
 @ToString(exclude = "translationUnits")
 @Data
 @Access(AccessType.FIELD)
-public class TransMemory extends SlugEntityBase
+public class TransMemory extends SlugEntityBase implements HasTMMetadata
 {
-   public enum TransMemoryMetadata
-   {
-      DEFAULT;
-   }
+   private static final long serialVersionUID = 1L;
 
    private String description;
 
    @Setter(AccessLevel.PROTECTED)
    @OneToMany(cascade = CascadeType.ALL, mappedBy = "translationMemory")
-   private Set<TMTranslationUnit> translationUnits = new HashSet<TMTranslationUnit>();
+   private Set<TMTranslationUnit> translationUnits = Sets.newHashSet();
 
+   /**
+    * Map values are Json strings containing metadata for the particular type of translation memory
+    */
    @ElementCollection
-   @MapKeyClass(TransMemoryMetadata.class)
+   @MapKeyClass(TMMetadataType.class)
    @JoinTable(name = "TransMemory_Metadata")
    @Lob
-   private Map<TransMemoryMetadata, String> metadata = new HashMap<TransMemoryMetadata, String>();
+   private Map<TMMetadataType, String> metadata = Maps.newHashMap();
 
 }
