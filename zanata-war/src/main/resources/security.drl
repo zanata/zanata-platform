@@ -192,7 +192,7 @@ when
   $project: HProject( eval(isUserAllowedAccess($project)) )
   eval(authenticatedPerson != null)
   $locale: HLocale(
-    eval(isUserTranslatorOfLanguageTeam($locale))
+    eval(isUserTranslatorOfLanguage($locale))
   )
 then
   check.grant();
@@ -209,7 +209,7 @@ when
   $project: HProject( eval(isUserAllowedAccess($project)) )
   eval(authenticatedPerson != null)
   $locale: HLocale(
-    eval(isUserReviewerOfLanguageTeam($locale))
+    eval(isUserReviewerOfLanguage($locale))
   )
 then
   check.grant();
@@ -304,7 +304,7 @@ when
   authenticatedPerson: HPerson() 
   eval(authenticatedPerson != null)
   $locale: HLocale(
-    eval(isUserCoordinatorOfLanguageTeam($locale))
+    eval(isUserCoordinatorOfLanguage($locale))
   )
   check: PermissionCheck(action == "manage-language-team", granted == false)
 then
@@ -324,7 +324,7 @@ when
   HLocaleMember()
   authenticatedPerson: HPerson() 
   eval(authenticatedPerson != null)
-  $member: HLocaleMember( $locale : supportedLanguage, isUserCoordinatorOfLanguageTeam($locale) )
+  $member: HLocaleMember( $locale : supportedLanguage, isUserCoordinatorOfLanguage($locale) )
   check: PermissionCheck(
     target == $member, 
     action == "insert" || action == "update" || action == "delete", 
@@ -494,7 +494,7 @@ when
     eval( isUserAllowedAccess($project) )
   )
   $locale: HLocale(
-    eval( isUserReviewerOfLanguageTeam($locale) )
+    eval( isUserReviewerOfLanguage($locale) )
   )
 then
   check.grant();
