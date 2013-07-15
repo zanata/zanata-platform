@@ -22,33 +22,45 @@ package org.zanata.webtrans.shared.rpc;
 
 
 import org.zanata.webtrans.client.service.GetTransUnitActionContext;
+import org.zanata.webtrans.shared.model.ContentStateGroup;
+
 import com.google.common.base.Objects;
 
 public class GetTransUnitsNavigation
 {
    private Long id;
    private String phrase;
-   private boolean isFuzzyState, isNewState, isTranslatedState, isApprovedState, isRejectedState;
+
+   private ContentStateGroup activeStates;
 
    @SuppressWarnings("unused")
    private GetTransUnitsNavigation()
    {
    }
 
-   public GetTransUnitsNavigation(Long id, String phrase, boolean isNewState, boolean isFuzzyState, boolean isTranslatedState, boolean isApprovedState, boolean isRejectedState)
+   public GetTransUnitsNavigation(Long id, String phrase, ContentStateGroup activeStates)
    {
       this.id = id;
       this.phrase = phrase;
-      this.isNewState = isNewState;
-      this.isFuzzyState = isFuzzyState;
-      this.isTranslatedState = isTranslatedState;
-      this.isApprovedState = isApprovedState;
-      this.isRejectedState = isRejectedState;
+      this.activeStates = activeStates;
+   }
+
+   public GetTransUnitsNavigation(GetTransUnitActionContext context)
+   {
+      this(context.getDocument().getId().getId(),
+           context.getFindMessage(),
+           ContentStateGroup.builder()
+              .includeNew(context.isFilterUntranslated())
+              .includeFuzzy(context.isFilterNeedReview())
+              .includeTranslated(context.isFilterTranslated())
+              .includeApproved(context.isFilterApproved())
+              .includeRejected(context.isFilterRejected())
+              .build());
    }
 
    public static GetTransUnitsNavigation newAction(GetTransUnitActionContext context)
    {
-      return new GetTransUnitsNavigation(context.getDocument().getId().getId(), context.getFindMessage(), context.isFilterUntranslated(), context.isFilterNeedReview(), context.isFilterTranslated(), context.isFilterApproved(), context.isFilterRejected());
+      return new GetTransUnitsNavigation(context);
    }
 
    public Long getId()
@@ -61,29 +73,9 @@ public class GetTransUnitsNavigation
       return this.phrase;
    }
 
-   public boolean isFuzzyState()
+   public ContentStateGroup getActiveStates()
    {
-      return isFuzzyState;
-   }
-
-   public boolean isNewState()
-   {
-      return isNewState;
-   }
-
-   public boolean isTranslatedState()
-   {
-      return isTranslatedState;
-   }
-   
-   public boolean isApprovedState()
-   {
-      return isApprovedState;
-   }
-   
-   public boolean isRejectedState()
-   {
-      return isRejectedState;
+      return activeStates;
    }
 
    @Override
@@ -93,11 +85,7 @@ public class GetTransUnitsNavigation
       return Objects.toStringHelper(this).
             add("id", id).
             add("phrase", phrase).
-            add("isFuzzyState", isFuzzyState).
-            add("isNewState", isNewState).
-            add("isTranslatedState", isTranslatedState).
-            add("isApprovedState", isApprovedState).
-            add("isRejectedState", isRejectedState).
+            add("activeStates", activeStates).
             toString();
       // @formatter:on
    }

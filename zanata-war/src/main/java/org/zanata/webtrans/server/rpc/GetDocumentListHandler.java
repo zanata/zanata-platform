@@ -14,13 +14,11 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.DocumentDAO;
-import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.TranslationFileService;
-import org.zanata.service.TranslationStateCache;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.AuditInfo;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -41,13 +39,7 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
    private DocumentDAO documentDAO;
 
    @In
-   private TranslationStateCache translationStateCacheImpl;
-
-   @In
    private TranslationFileService translationFileServiceImpl;
-   
-   @In
-   private TextFlowTargetDAO textFlowTargetDAO;
 
    @Override
    public GetDocumentListResult execute(GetDocumentList action, ExecutionContext context) throws ActionException

@@ -10,7 +10,6 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.zanata.dao.LocaleDAO;
 import org.zanata.service.ValidationService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -24,9 +23,6 @@ public class RunDocValidationHandler extends AbstractActionHandler<RunDocValidat
 {
    @In
    private ValidationService validationServiceImpl;
-
-   @In
-   private LocaleDAO localeDAO;
 
    @Override
    public RunDocValidationResult execute(RunDocValidationAction action, ExecutionContext context) throws ActionException
