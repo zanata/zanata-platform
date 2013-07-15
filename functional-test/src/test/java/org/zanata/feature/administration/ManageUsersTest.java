@@ -63,10 +63,10 @@ public class ManageUsersTest
 
    public ManageUserPage changeUsernameAndPassword(ManageUserAccountPage manageUserAccount, String newUsername, String newPassword)
    {
-      manageUserAccount.clearAndEnterUsername(newUsername);
-      manageUserAccount.clearAndEnterPassword(newPassword);
-      manageUserAccount.clearAndEnterConfirmPassword(newPassword);
-      ManageUserPage page = manageUserAccount.saveUser();
+      ManageUserPage page = manageUserAccount.clearAndEnterUsername(newUsername)
+      .clearAndEnterPassword(newPassword)
+      .clearAndEnterConfirmPassword(newPassword)
+      .saveUser();
       
       return page;
    }

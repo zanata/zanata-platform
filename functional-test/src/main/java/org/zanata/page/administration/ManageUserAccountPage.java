@@ -66,22 +66,25 @@ public class ManageUserAccountPage extends AbstractPage
       roleMap.put("user", "4");
    }
 
-   public void clearAndEnterUsername(String username)
+   public ManageUserAccountPage clearAndEnterUsername(String username)
    {
       usernameField.clear();
       usernameField.sendKeys(username);
+      return new ManageUserAccountPage(getDriver());
    }
 
-   public void clearAndEnterPassword(String password)
+   public ManageUserAccountPage clearAndEnterPassword(String password)
    {
       passwordField.clear();
       passwordField.sendKeys(password);
+      return new ManageUserAccountPage(getDriver());
    }
 
-   public void clearAndEnterConfirmPassword(String confirmPassword)
+   public ManageUserAccountPage clearAndEnterConfirmPassword(String confirmPassword)
    {
       passwordConfirmField.clear();
       passwordConfirmField.sendKeys(confirmPassword);
+      return new ManageUserAccountPage(getDriver());
    }
 
    public void clickEnabled()
