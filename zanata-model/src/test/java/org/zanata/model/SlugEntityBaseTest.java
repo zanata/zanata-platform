@@ -20,8 +20,9 @@
  */
 package org.zanata.model;
 
+import lombok.NoArgsConstructor;
+
 import org.testng.annotations.Test;
-import org.zanata.common.EntityStatus;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -32,21 +33,29 @@ import static org.hamcrest.Matchers.equalTo;
  */
 public class SlugEntityBaseTest
 {
+   @NoArgsConstructor
+   static class SlugClass extends SlugEntityBase
+   {
+      public SlugClass(String slug)
+      {
+         super(slug);
+      }
+   }
    @Test
    public void lombokToStringAndEqualsTest() {
-      SlugEntityBase entity = new SlugEntityBase();
+      SlugEntityBase entity = new SlugClass();
 
       entity.setSlug("abc");
       entity.setId(1L);
       entity.setVersionNum(2);
       assertThat(entity.toString(), containsString("[id=1,versionNum=2], slug=abc)"));
 
-      SlugEntityBase other = new SlugEntityBase("abc");
+      SlugEntityBase other = new SlugClass("abc");
       assertThat(entity.equals(other), equalTo(false));
 
       other.setId(entity.getId());
       other.setVersionNum(entity.getVersionNum());
-      assertThat(entity.equals(other), equalTo(true));
+      assertThat(entity, equalTo(other));
 
       assertThat(entity.hashCode(), equalTo(other.hashCode()));
 
