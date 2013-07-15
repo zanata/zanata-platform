@@ -70,13 +70,13 @@ public class RegisterDetailedTest
    @Ignore("Captcha prevents test completion")
    public void registerSuccessful()
    {
-      RegisterPage registerPage = homePage.goToRegistration();
-      registerPage = registerPage.setFields(fields);
+      RegisterPage registerPage = homePage.goToRegistration().setFields(fields);
       assertThat("No errors are shown", registerPage.getErrors().size(), Matchers.equalTo(0));
       registerPage.register();
    }
 
    @Test
+   @Ignore("Unstable length matching ")
    public void usernameLengthValidation()
    {
       String errorMsg = "size must be between 3 and 20";
@@ -101,7 +101,7 @@ public class RegisterDetailedTest
    public void usernamePreExisting()
    {
       String errorMsg = "This username is not available";
-      RegisterPage registerPage = new BasicWorkFlow().goToHome().goToRegistration().enterUserName("admin");
+      RegisterPage registerPage = homePage.goToRegistration().enterUserName("admin");
       assertThat("Username not available message is shown", registerPage.waitForErrors(), Matchers.hasItem(errorMsg));
    }
 
@@ -111,7 +111,7 @@ public class RegisterDetailedTest
       String errorMsg = "not a well-formed email address";
       fields.put("email", InvalidEmailAddressRFC2822.PLAIN_ADDRESS.toString());
       fields.put("username", "emailvalidation");
-      RegisterPage registerPage = new BasicWorkFlow().goToHome().goToRegistration().setFields(fields);
+      RegisterPage registerPage = homePage.goToRegistration().setFields(fields);
       assertThat("Email validation errors are shown", registerPage.getErrors(), Matchers.hasItem(errorMsg));
    }
 
@@ -123,7 +123,7 @@ public class RegisterDetailedTest
       fields.put("email", "rejectbadcaptcha@example.com");
       fields.put("captcha", "9000");
 
-      RegisterPage registerPage = new BasicWorkFlow().goToHome().goToRegistration().setFields(fields).registerFailure();
+      RegisterPage registerPage = homePage.goToRegistration().setFields(fields).registerFailure();
       assertThat("The Captcha entry is rejected", registerPage.getErrors(), Matchers.contains(errorMsg));
    }
 
@@ -136,7 +136,7 @@ public class RegisterDetailedTest
       fields.put("password", "passwordsmatch");
       fields.put("confirmpassword", "passwordsdonotmatch");
 
-      RegisterPage registerPage = new BasicWorkFlow().goToHome().goToRegistration().setFields(fields);
+      RegisterPage registerPage = homePage.goToRegistration().setFields(fields);
       assertThat("Passwords fail to match error is shown", registerPage.getErrors(), Matchers.contains(errorMsg));
    }
 
@@ -150,7 +150,7 @@ public class RegisterDetailedTest
       fields.put("password", "");
       fields.put("confirmpassword", "");
 
-      RegisterPage registerPage = new BasicWorkFlow().goToHome().goToRegistration().setFields(fields);
+      RegisterPage registerPage = homePage.goToRegistration().setFields(fields);
       assertThat("Value is required shows for all fields", registerPage.getErrors(),
             Matchers.contains(errorMsg, errorMsg, errorMsg, errorMsg, errorMsg));
    }
@@ -164,7 +164,7 @@ public class RegisterDetailedTest
       String errorMsg = "lowercase letters and digits (regex \"^[a-z\\d_]{3,20}$\")";
       fields.put("email", "bug981498test@example.com");
       fields.put("username", "______");
-      RegisterPage registerPage = new BasicWorkFlow().goToHome().goToRegistration().setFields(fields);
+      RegisterPage registerPage = homePage.goToRegistration().setFields(fields);
       assertThat("A username of all underscores is not valid", registerPage.getErrors(), Matchers.hasItem(errorMsg));
    }
 }

@@ -24,14 +24,15 @@ package org.zanata.util.rfc2822;
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  * @see <a href="http://www.ietf.org/rfc/rfc2822.txt">RFC2822 Internet Message Format Standard</a>
  * Synopsis:
- * The functions of this class contain invalid email addresses, as stipulated in the
+ * This enumeration represents a collection of invalid email addresses, as stipulated in the
  * RFC2822 Internet Message Format standard, or referred to standards.
  *
  * Definitions
  * localpart: the section of an address preceding the @ symbol
  * domain: the section of an address following the @ symbol
- * label: section of localpart or domain between the start, @ symbol, period or end (also referred to as "atom")
- *     e.g. me, myself, example, com in me.myself@example.com
+ * label: section of localpart or domain between the start, @ symbol, period or
+ *    end (also referred to as "atom")
+ *    e.g. me, myself, example, com in me.myself@example.com
  * quote / quoting: a section of the localpart contained within quotation marks
  *
  * Untested:
@@ -88,8 +89,8 @@ public enum InvalidEmailAddressRFC2822 {
    INVALID_SINGLE_QUOTING("test\"user@example.com"),
 
    /**
-    * If an email is using the obsolete quoting on a per-label basis, then the email address consists of unquoted
-    * or quoted chunks separated by periods
+    * If an email is using the obsolete quoting on a per-label basis, then the email
+    * address consists of unquoted or quoted chunks separated by periods
     * @see "RFC 2822, section 4.4"
     */
    INVALID_QUOTING_SEPARATION("\"test\"user@example.com"),
@@ -114,15 +115,16 @@ public enum InvalidEmailAddressRFC2822 {
    INVALID_QUOTED_TAB("test.\"".concat("\t").concat("\".user@example.com")),
 
    /**
-    * If the quoted local part has a backslash, the following character is escaped and must not be 10 (LF), 13 (CR).
+    * If the quoted local part has a backslash, the following character is escaped and must not be
+    * 10 (LF), 13 (CR).
     * @see "RFC 2822, section 3.4.1"
     */
    INVALID_QUOTED_RETURN("test.\"\\".concat("\r").concat("\".user@example.com")),
    INVALID_QUOTED_LINEFEED("test.\"\\".concat("\n").concat("\".user@example.com")),
 
    /**
-    * A plain domain consists of labels separated with periods. No period can start or end a domain name.
-    * No two periods in succession can be in a domain name.
+    * A plain domain consists of labels separated with periods. No period can start or end a
+    * domain name. No two periods in succession can be in a domain name.
     * @see "RFC 1035, section 2.3.4"
     */
    TRAILING_DOMAIN_DOT("email@example.com."),
@@ -158,8 +160,8 @@ public enum InvalidEmailAddressRFC2822 {
    MULTIPLE_DASHES_BRACKETED_DOMAIN("email@[exa--mple.com]"),
 
    /**
-    * The contents of a bracketed domain can have a \ precede a character to escape it, and the following character
-    * must not be 10 (LF) or 13 (CR).
+    * The contents of a bracketed domain can have a \ precede a character to escape it, and the
+    * following character must not be 10 (LF) or 13 (CR).
     * @see "RFC2822, section 3.4.1"
     */
    INVALID_BRACKETED_DOMAIN_RETURN("test@[\\".concat("\r").concat("example.com]")),

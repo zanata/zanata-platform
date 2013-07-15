@@ -24,14 +24,15 @@ package org.zanata.util.rfc2822;
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  * @see <a href="http://www.ietf.org/rfc/rfc2822.txt">RFC2822 Internet Message Format Standard</a>
  * Synopsis:
- * The functions of this class contain valid email addresses, as stipulated in the
+ * This enumeration represents a collection of valid email addresses, as stipulated in the
  * RFC2822 Internet Message Format standard, or referred to standards.
  *
  * Definitions
  * localpart: the section of an address preceding the @ symbol
  * domain: the section of an address following the @ symbol
- * label: section of localpart or domain between the start, @ symbol, period or end (also referred to as "atom")
- *     e.g. me, myself, example, com in me.myself@example.com
+ * label: section of localpart or domain between the start, @ symbol, period or
+ *    end (also referred to as "atom")
+ *    e.g. me, myself, example, com in me.myself@example.com
  * quote / quoting: a section of the localpart contained within quotation marks
  *
  * Untested:
@@ -68,17 +69,18 @@ public enum ValidEmailAddressRFC2822 {
    SPECIAL_CHARACTERS_LOCALPART("email.!#$%'*+-/=?^_`{|}~.dot@example.com"),
 
    /**
-    * If an email is using the obsolete quoting on a per-label basis, then the email address consists of unquoted
-    * or quoted chunks separated by periods.
+    * If an email is using the obsolete quoting on a per-label basis, then the email address
+    * consists of unquoted or quoted chunks separated by periods.
     * @see "RFC 2822, section 4.4"
     */
    ENCLOSED_QUOTED_LABEL("dot.\"email\".dot@example.com"),
    LOCALPART_WITH_EMPTY_QUOTE("dot.\"\".dot@example.com"),
 
    /**
-    * If the quoted local part has a backslash, the following character is escaped and must not be 10 (LF), 13 (CR).
-    * This supersedes the previous rule, allowing spaces and quotation marks in the email address as long as they
-    * are escaped.
+    * If the quoted local part has a backslash, the following character is escaped and must not
+    * be 10 (LF), 13 (CR).
+    * This supersedes the previous rule, allowing spaces and quotation marks in the email address
+    * as long as they are escaped.
     * @see "RFC 2822, section 3.4.1"
     */
    QUOTED_ESCAPED_SPECIAL_CHARACTERS("email.\"(),:;<>\\@\\[\\]\\\\\"@example.com"),
@@ -94,7 +96,8 @@ public enum ValidEmailAddressRFC2822 {
    BRACKETED_IPV6_DOMAIN("email@[IPv6:2001:2d12:c4fe:5afe::1]"),
 
    /**
-    * A plain domain consists of labels separated with periods. No period can start or end a domain name.
+    * A plain domain consists of labels separated with periods. No period can start or end
+    * a domain name.
     * @see "RFC 1035, section 2.3.4"
     */
    LOCALPART_MULTIPLE_LABELS("another.email@example.com"),

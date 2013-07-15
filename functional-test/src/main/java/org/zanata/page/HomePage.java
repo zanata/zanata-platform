@@ -112,7 +112,7 @@ public class HomePage extends AbstractPage
 
    public RegisterPage goToRegistration()
    {
-      getDriver().findElement(By.linkText("More")).click();
+      getDriver().findElement(By.id("systemCol")).click();
       WebElement registerLink = getDriver().findElement(By.id("Register"));
       registerLink.click();
       return new RegisterPage(getDriver());

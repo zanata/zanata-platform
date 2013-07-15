@@ -60,12 +60,12 @@ public class InvalidEmailAddressTest {
    @DataPoint public static InvalidEmailAddressRFC2822 TEST_INVALID_ENCODED_HTML = INVALID_ENCODED_HTML;
    @DataPoint public static InvalidEmailAddressRFC2822 TEST_INVALID_FOLLOWING_TEXT = INVALID_FOLLOWING_TEXT;
 
-   // BUG982048 @DataPoint public static InvalidEmailAddressRFC2822 TEST_INVALID_IP_FORMAT = EmailAddressRFC2822.INVALID_IP_FORMAT;
-   // BUG982048 @DataPoint public static InvalidEmailAddressRFC2822 TEST_MAX_EMAIL_LENGTH_EXCEEDED = EmailAddressRFC2822.MAX_EMAIL_LENGTH_EXCEEDED;
-   // BUG982048 @DataPoint public static InvalidEmailAddressRFC2822 TEST_NON_UNICODE_CHARACTERS = EmailAddressRFC2822.NON_UNICODE_CHARACTERS;
-   // BUG982048 @DataPoint public static InvalidEmailAddressRFC2822 TEST_LEADING_DASH_DOMAIN = EmailAddressRFC2822.LEADING_DASH_DOMAIN;
-   // BUG982048 @DataPoint public static InvalidEmailAddressRFC2822 TEST_TRAILING_DASH_DOMAIN = EmailAddressRFC2822.TRAILING_DASH_DOMAIN;
-   // BUG982048 @DataPoint public static InvalidEmailAddressRFC2822 TEST_MULTIPLE_DASHES_DOMAIN = EmailAddressRFC2822.MULTIPLE_DASHES_DOMAIN;
+   // BUG982048 @DataPoint public static InvalidEmailAddressRFC2822 TEST_INVALID_IP_FORMAT = INVALID_IP_FORMAT;
+   // BUG982048 @DataPoint public static InvalidEmailAddressRFC2822 TEST_MAX_EMAIL_LENGTH_EXCEEDED = MAX_EMAIL_LENGTH_EXCEEDED;
+   // BUG982048 @DataPoint public static InvalidEmailAddressRFC2822 TEST_NON_UNICODE_CHARACTERS = NON_UNICODE_CHARACTERS;
+   // BUG982048 @DataPoint public static InvalidEmailAddressRFC2822 TEST_LEADING_DASH_DOMAIN = LEADING_DASH_DOMAIN;
+   // BUG982048 @DataPoint public static InvalidEmailAddressRFC2822 TEST_TRAILING_DASH_DOMAIN = TRAILING_DASH_DOMAIN;
+   // BUG982048 @DataPoint public static InvalidEmailAddressRFC2822 TEST_MULTIPLE_DASHES_DOMAIN = MULTIPLE_DASHES_DOMAIN;
 
    @Theory
    public void invalidEmailRejection(InvalidEmailAddressRFC2822 emailAddress)
