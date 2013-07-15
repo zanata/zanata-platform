@@ -20,14 +20,24 @@
  */
 package org.zanata.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.StringWriter;
 import javax.annotation.Nonnull;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLEventWriter;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.XMLEvent;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.okapi.common.LocaleId;
 import net.sf.okapi.steps.tokenization.Tokenizer;
 import net.sf.okapi.steps.tokenization.tokens.Tokens;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class OkapiUtil
 {
@@ -81,6 +91,80 @@ public class OkapiUtil
          Object[] args = new Object[] {s, bcp47Locale, e};
          log.error("unable to count words in string '{}' for locale '{}'", args);
          return 0;
+      }
+   }
+
+   /**
+    * Extracts plain text from a TMX entry. This ignores the TMX elements that mark up native code sequences:
+    * <bpt></bpt>
+    * <ept></ept>
+    * <it></it>
+    * <ph></ph>
+    * <seg></seg>
+    *
+    * @param content The tmx marked up content.
+    * @return A string with all tmx mark-up content stripped out. Essentially a plain text version of the string.
+    */
+   public static String removeFormattingMarkup(/*final*/ String content)
+   {
+      // Wrap the content up in a seg just in case
+      content = "<seg>" + content + "</seg>";
+
+      try
+      {
+         StringWriter sanitized = new StringWriter();
+         XMLInputFactory inputFactory = XMLInputFactory.newFactory();
+         XMLOutputFactory outputFactory = XMLOutputFactory.newFactory();
+         inputFactory.setProperty(XMLInputFactory.IS_VALIDATING, false);
+         inputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+         XMLEventReader reader = inputFactory.createXMLEventReader(new ByteArrayInputStream(content.getBytes()));
+         XMLEventWriter writer = outputFactory.createXMLEventWriter(sanitized);
+
+         int level = 0; // Nesting level. When this is > 0 it means we are ignoring events
+
+         while( reader.hasNext() )
+         {
+            XMLEvent nextEv = reader.nextEvent();
+
+            switch (nextEv.getEventType())
+            {
+               case XMLStreamConstants.START_ELEMENT:
+                  String elemName = nextEv.asStartElement().getName().getLocalPart();
+
+                  if( elemName.equals("seg") )
+                  {
+                     break;
+                  }
+                  else if( elemName.equals("bpt") || elemName.equals("ept") || elemName.equals("it") || elemName.equals("ph")
+                           || elemName.equals("sub") )
+                  {
+                     level ++;
+                     break;
+                  }
+               case XMLStreamConstants.END_ELEMENT:
+                  elemName = nextEv.asEndElement().getName().getLocalPart();
+
+                  if( elemName.equals("seg") )
+                  {
+                     break;
+                  }
+                  else if( elemName.equals("bpt") || elemName.equals("ept") || elemName.equals("it") || elemName.equals("ph")
+                        || elemName.equals("sub"))
+                  {
+                     if( level > 0 ) level --;
+                     break;
+                  }
+               case XMLStreamConstants.CHARACTERS:
+                  if( level == 0 ) writer.add(nextEv);
+                  break;
+            }
+         }
+
+         return sanitized.toString();
+      }
+      catch (XMLStreamException e)
+      {
+         throw new RuntimeException(e);
       }
    }
 
