@@ -3,6 +3,7 @@ package org.zanata.webtrans.client.ui;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
@@ -41,7 +42,6 @@ public class Pager extends Composite implements HasPager
 
       String disabled();
    }
-
 
    @UiField
    InlineLabel firstPage, lastPage, nextPage, prevPage;
@@ -158,7 +158,7 @@ public class Pager extends Composite implements HasPager
    @Override
    public void setValue(Integer value, boolean fireEvents)
    {
-      if (value != this.currentPage)
+      if (value != this.currentPage && (value > 0 && value <= pageCount))
       {
          this.currentPage = value;
          if (fireEvents)
@@ -183,22 +183,39 @@ public class Pager extends Composite implements HasPager
       {
          if (event.getSource() == firstPage)
          {
-            setValue(1);
+            if (isButtonEnabled(firstPage))
+            {
+               setValue(1);
+            }
          }
          else if (event.getSource() == lastPage)
          {
-            setValue(pageCount);
+            if (isButtonEnabled(lastPage))
+            {
+               setValue(pageCount);
+            }
          }
          else if (event.getSource() == nextPage)
          {
-            setValue(currentPage + 1);
+            if (isButtonEnabled(nextPage))
+            {
+               setValue(currentPage + 1);
+            }
          }
          else if (event.getSource() == prevPage)
          {
-            setValue(currentPage - 1);
+            if (isButtonEnabled(prevPage))
+            {
+               setValue(currentPage - 1);
+            }
          }
       }
    };
+
+   private boolean isButtonEnabled(InlineLabel button)
+   {
+      return button.getStyleName().contains(style.enabled());
+   }
 
    @Override
    public HandlerRegistration addFocusHandler(FocusHandler handler)
@@ -214,7 +231,7 @@ public class Pager extends Composite implements HasPager
 
    private void setEnabled(InlineLabel button, boolean enabled)
    {
-      if(enabled)
+      if (enabled)
       {
          button.removeStyleName(style.disabled());
          button.addStyleName(style.enabled());

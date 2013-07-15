@@ -40,6 +40,7 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.ValidationService;
 import org.zanata.webtrans.server.ActionHandlerFor;
+import org.zanata.webtrans.shared.model.ContentStateGroup;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
@@ -87,7 +88,7 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       GetTransUnitsNavigationResult navigationResult = null;
       if (action.isNeedReloadIndex())
       {
-         GetTransUnitsNavigation getTransUnitsNavigation = new GetTransUnitsNavigation(action.getDocumentId().getId(), action.getPhrase(), action.isFilterUntranslated(), action.isFilterNeedReview(), action.isFilterTranslated(), action.isFilterApproved(), action.isFilterRejected());
+         GetTransUnitsNavigation getTransUnitsNavigation = new GetTransUnitsNavigation(action.getDocumentId().getId(), action.getPhrase(), action.getFilterStates());
          log.debug("get trans unit navigation action: {}", getTransUnitsNavigation);
          navigationResult = getTransUnitsNavigationService.getNavigationIndexes(getTransUnitsNavigation, hLocale);
 
@@ -116,17 +117,14 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
    private List<HTextFlow> getTextFlows(GetTransUnitList action, HLocale hLocale, int offset)
    {
       List<HTextFlow> textFlows;
-      // no status and phrase filter
       if (!hasStatusAndPhaseFilter(action))
       {
-         // no validation filter
          log.debug("Fetch TransUnits:*");
          if (!hasValidationFilter(action))
          {
             // TODO debt: this should use a left join to fetch target (and possibly comments)
             textFlows = textFlowDAO.getTextFlowsByDocumentId(action.getDocumentId(), offset, action.getCount());
          }
-         // has validation filter
          else
          {
             // TODO debt: this is not scalable. But we may not have other choice for validation filter. Maybe use scrollable result will help?
@@ -138,9 +136,11 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       else
       {
          // @formatter:off
-         FilterConstraints constraints = FilterConstraints
-               .filterBy(action.getPhrase()).ignoreCase().filterSource().filterTarget()
-               .filterByStatus(action.isFilterUntranslated(), action.isFilterNeedReview(), action.isFilterTranslated(), action.isFilterApproved(), action.isFilterRejected());
+         FilterConstraints constraints = FilterConstraints.builder()
+               .filterBy(action.getPhrase())
+               .caseSensitive(false).checkInSource(true).checkInTarget(true)
+               .includeStates(action.getFilterStates())
+               .build();
          // @formatter:on
          log.debug("Fetch TransUnits filtered by status and/or search: {}", constraints);
          if (!hasValidationFilter(action))
