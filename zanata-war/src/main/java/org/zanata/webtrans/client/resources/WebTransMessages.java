@@ -377,8 +377,8 @@ public interface WebTransMessages extends Messages
    String translationHistoryComparisonTitle();
 
    @Description("latest version in translation history")
-   @DefaultMessage("{0} Latest")
-   String latestVersion(String versionNum);
+   @DefaultMessage("Latest")
+   String latest();
 
    @Description("current unsaved value in editor for translation history display")
    @DefaultMessage("Unsaved")
@@ -544,4 +544,7 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Comment")
    String reviewComment();
+
+   @DefaultMessage("You")
+   String you();
 }

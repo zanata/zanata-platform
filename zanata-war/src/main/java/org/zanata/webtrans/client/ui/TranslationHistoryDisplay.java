@@ -51,5 +51,9 @@ public interface TranslationHistoryDisplay extends WidgetDisplay
       void addComment(String commentContent);
 
       void copyIntoEditor(List<String> contents);
+
+      void compareClicked(TransHistoryItem item);
+
+      boolean isItemInComparison(TransHistoryItem item);
    }
 }

@@ -90,40 +90,6 @@ public class TranslationHistoryPresenterTest
    }
 
    @Test
-   public void onSelectionChangeIfNotTwoSelectionWillDisableComparison()
-   {
-      // Given: no item is selected
-      when(selectionModel.getSelectedSet()).thenReturn(Collections.<TransHistoryItem>emptySet());
-
-      // When:
-      presenter.onSelectionChange(selectionChangeEvent);
-
-      // Then:
-      verify(display).disableComparison();
-   }
-
-   @Test
-   public void onSelectionChangeIfTwoAreSelectedWillEnableComparison()
-   {
-      // Given: two items are selected
-      TransHistoryItem itemOne = historyItem("1");
-      TransHistoryItem itemTwo = historyItem("2");
-      // this is to get around arbitrary order in set (so that we can mock the method call)
-      Iterator<TransHistoryItem> tempIterator = Lists.newArrayList(itemOne, itemTwo).iterator();
-      Set<TransHistoryItem> mockHistoryItems = Mockito.mock(Set.class);
-      when(selectionModel.getSelectedSet()).thenReturn(mockHistoryItems);
-      when(mockHistoryItems.size()).thenReturn(2);
-      when(mockHistoryItems.iterator()).thenReturn(tempIterator);
-      when(messages.translationHistoryComparison("1", "2")).thenReturn("compare ver. 1 to 2");
-
-      // When:
-      presenter.onSelectionChange(selectionChangeEvent);
-
-      // Then:
-      verify(display).showDiff(itemOne, itemTwo, "compare ver. 1 to 2");
-   }
-
-   @Test
    public void willNotifyErrorAndHideTranslationHistoryOnFailure()
    {
       // Given:
@@ -158,7 +124,7 @@ public class TranslationHistoryPresenterTest
       TransHistoryItem latest = historyItem(latestVersion);
       // latest contents and current contents are equal
       when(targetContentsPresenter.getNewTargets()).thenReturn(Lists.newArrayList(latest.getContents()));
-      when(messages.latestVersion(latestVersion)).thenReturn("2 latest");
+      when(messages.latest()).thenReturn("latest");
 
       // When: request history for trans unit id 1
       presenter.showTranslationHistory(transUnitId);
@@ -184,7 +150,7 @@ public class TranslationHistoryPresenterTest
       TransHistoryItem latest = historyItem(latestVersion);
       // latest contents and current contents are NOT equal
       when(targetContentsPresenter.getNewTargets()).thenReturn(Lists.newArrayList("b"));
-      when(messages.latestVersion(latestVersion)).thenReturn("2 latest");
+      when(messages.latest()).thenReturn("latest");
       when(messages.unsaved()).thenReturn("unsaved");
 
       // When: request history for trans unit id 1

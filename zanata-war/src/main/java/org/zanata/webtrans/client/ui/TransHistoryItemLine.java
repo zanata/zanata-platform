@@ -21,8 +21,6 @@
 
 package org.zanata.webtrans.client.ui;
 
-import java.util.List;
-
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.util.DateUtil;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
@@ -42,8 +40,8 @@ public class TransHistoryItemLine extends Composite
 {
    private static TransHistoryItemLineUiBinder ourUiBinder = GWT.create(TransHistoryItemLineUiBinder.class);
    private static TransHistoryItemTemplate template = GWT.create(TransHistoryItemTemplate.class);
+   private final TransHistoryItem item;
    private final TranslationHistoryDisplay.Listener listener;
-   private final List<String> contents;
 
    @UiField(provided = true)
    InlineHTML heading;
@@ -60,11 +58,11 @@ public class TransHistoryItemLine extends Composite
 
    public TransHistoryItemLine(TransHistoryItem item, TranslationHistoryDisplay.Listener listener)
    {
+      this.item = item;
       this.listener = listener;
-      contents = item.getContents();
       heading = new InlineHTML(template.heading(item.getModifiedBy(), stateToStyle(item.getStatus()), item.getStatus().name()));
       targetContents = new InlineHTML(template.targetContent(TextContentsDisplay.asSyntaxHighlight(item.getContents()).toSafeHtml()));
-      revision = new InlineHTML(template.targetRevision(item.getVersionNum(), ""));
+      revision = new InlineHTML(template.targetRevision(item.getVersionNum(), item.getOptionalTag()));
       initWidget(ourUiBinder.createAndBindUi(this));
 
       creationDate.setText(DateUtil.formatShortDate(item.getModifiedDate()));
@@ -93,7 +91,22 @@ public class TransHistoryItemLine extends Composite
    @UiHandler("copyIntoEditor")
    public void copyIntoEditorClicked(ClickEvent event)
    {
-      listener.copyIntoEditor(contents);
+      listener.copyIntoEditor(item.getContents());
+   }
+
+   @UiHandler("compare")
+   public void compareClicked(ClickEvent event)
+   {
+      listener.compareClicked(item);
+      if (listener.isItemInComparison(item))
+      {
+         // TODO pahuang different style
+         compare.setText("Remove from comparison");
+      }
+      else
+      {
+         compare.setText("Compare");
+      }
    }
 
    interface TransHistoryItemLineUiBinder extends UiBinder<HTMLPanel, TransHistoryItemLine>
@@ -108,7 +121,7 @@ public class TransHistoryItemLine extends Composite
       @Template("<div class='text--meta'>{0} created a <strong class='{1}'>{2}</strong> revision</div>")
       SafeHtml heading(String person, String contentStateStyle, String contentState);
 
-      @Template("<span class='text--important'>Revision {0}</span><span class=\"label\">{1}</span>")
+      @Template("<span class='text--important'>Revision {0} </span><span class=\"label\">{1}</span>")
       SafeHtml targetRevision(String versionNum, String optionalLabel);
    }
 }

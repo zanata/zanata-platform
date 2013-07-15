@@ -1,11 +1,13 @@
 package org.zanata.webtrans.client.presenter;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.resources.WebTransMessages;
@@ -23,6 +25,7 @@ import org.zanata.webtrans.shared.rpc.GetTranslationHistoryAction;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryResult;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.view.client.SelectionChangeEvent;
@@ -42,6 +45,7 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
    private final GetTransUnitActionContextHolder contextHolder;
    private TargetContentsPresenter targetContentsPresenter;
    private TransUnitId transUnitId;
+   private ComparingPair comparingPair = ComparingPair.empty();
 
    @Inject
    public TranslationHistoryPresenter(TranslationHistoryDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, WebTransMessages messages, GetTransUnitActionContextHolder contextHolder)
@@ -81,10 +85,7 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
 
    protected void popupAndShowLoading(String title)
    {
-      //here we CANNOT use listDataProvider.setList() because we need to retain the same list reference which is used by ColumnSortEvent.ListHandler
-//      listDataProvider.getList().clear();
-//      listDataProvider.setLoading(true);
-//      selectionModel.clear();
+      comparingPair = ComparingPair.empty();
       display.setTitle(title);
       display.resetView();
       display.center();
@@ -95,51 +96,25 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
       List<ComparableByDate> all = Lists.newArrayList();
       if (latest != null)
       {
-         all.add(latest);
+         //add indicator for latest version
+         all.add(latest.setOptionalTag(messages.latest()));
+         List<String> newTargets = targetContentsPresenter.getNewTargets();
+         if (!Objects.equal(latest.getContents(), newTargets))
+         {
+            all.add(new TransHistoryItem(messages.unsaved(), newTargets, ContentState.New, "You", new Date()));
+         }
       }
       all.addAll(otherEntries);
       all.addAll(reviewComments);
       Collections.sort(all, Collections.reverseOrder());
       display.setData(all);
-      // TODO implement this
-//      if (latest != null)
-//      {
-//         //add indicator for latest version
-//         latest.setVersionNum(messages.latestVersion(latest.getVersionNum()));
-//         List<String> newTargets = targetContentsPresenter.getNewTargets();
-//         if (!Objects.equal(latest.getContents(), newTargets))
-//         {
-//            listDataProvider.getList().add(new TransHistoryItem(messages.unsaved(), newTargets, ContentState.New, "", null));
-//         }
-//         listDataProvider.getList().add(latest);
-//      }
-//      listDataProvider.getList().addAll(otherEntries);
-//      Comparator<TransHistoryItem> reverseComparator = Collections.reverseOrder(TransHistoryVersionComparator.COMPARATOR);
-//      Collections.sort(listDataProvider.getList(), reverseComparator);
-//      listDataProvider.setLoading(false);
-   }
-
-   public void onSelectionChange(SelectionChangeEvent event)
-   {
-//      Set<TransHistoryItem> historyItems = selectionModel.getSelectedSet();
-//      if (historyItems.size() == 2)
-//      {
-//         //selected two. Compare against each other
-//         Iterator<TransHistoryItem> iterator = historyItems.iterator();
-//         TransHistoryItem one = iterator.next();
-//         TransHistoryItem two = iterator.next();
-//         display.showDiff(one, two, messages.translationHistoryComparison(one.getVersionNum(), two.getVersionNum()));
-//      }
-//      else
-//      {
-//         display.disableComparison();
-//      }
    }
 
    @Override
    public void addComment(String commentContent)
    {
-      dispatcher.execute(new AddReviewCommentAction(transUnitId, commentContent, contextHolder.getContext().getDocument().getId()), new AbstractAsyncCallback<AddReviewCommentResult>()
+      dispatcher.execute(new AddReviewCommentAction(transUnitId, commentContent,
+            contextHolder.getContext().getDocument().getId()), new AbstractAsyncCallback<AddReviewCommentResult>()
       {
          @Override
          public void onSuccess(AddReviewCommentResult result)
@@ -154,6 +129,27 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
    public void copyIntoEditor(List<String> contents)
    {
       eventBus.fireEvent(new CopyDataToEditorEvent(contents));
+   }
+
+   @Override
+   public void compareClicked(TransHistoryItem item)
+   {
+      comparingPair = comparingPair.addOrRemove(item);
+      if (comparingPair.isFull())
+      {
+         display.showDiff(comparingPair.one(), comparingPair.two(), messages.translationHistoryComparison(
+               comparingPair.one().getVersionNum(), comparingPair.two().getVersionNum()));
+      }
+      else
+      {
+         display.disableComparison();
+      }
+   }
+
+   @Override
+   public boolean isItemInComparison(TransHistoryItem item)
+   {
+      return comparingPair.contains(item);
    }
 
    @Override
