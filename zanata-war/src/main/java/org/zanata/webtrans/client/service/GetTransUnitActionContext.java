@@ -23,6 +23,7 @@ package org.zanata.webtrans.client.service;
 
 import java.util.List;
 
+import org.zanata.webtrans.shared.model.ContentStateGroup;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.ValidationId;
@@ -292,7 +293,33 @@ public class GetTransUnitActionContext
             && filterUntranslated == filterHasError
             && filterHasError == filterApproved
             && filterApproved == filterRejected;
-      
+
       return messageFilterAcceptAll && Strings.isNullOrEmpty(findMessage);
+   }
+
+   public ContentStateGroup getCurrentFilterStates()
+   {
+      return filterStatesFromCheckboxStates(getCheckboxStates());
+   }
+
+   private ContentStateGroup getCheckboxStates()
+   {
+      ContentStateGroup checkboxStates = ContentStateGroup.builder()
+            .includeNew(filterUntranslated)
+            .includeFuzzy(filterNeedReview)
+            .includeTranslated(filterTranslated)
+            .includeApproved(filterApproved)
+            .includeRejected(filterRejected)
+            .build();
+      return checkboxStates;
+   }
+
+   private static ContentStateGroup filterStatesFromCheckboxStates(ContentStateGroup filterStates)
+   {
+      if (filterStates.hasNoStates())
+      {
+         filterStates = ContentStateGroup.builder().addAll().build();
+      }
+      return filterStates;
    }
 }

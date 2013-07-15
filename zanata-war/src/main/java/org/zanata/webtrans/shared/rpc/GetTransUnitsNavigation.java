@@ -50,11 +50,7 @@ public class GetTransUnitsNavigation
       this(context.getDocument().getId().getId(),
            context.getFindMessage(),
            ContentStateGroup.builder()
-              .includeNew(context.isFilterUntranslated())
-              .includeFuzzy(context.isFilterNeedReview())
-              .includeTranslated(context.isFilterTranslated())
-              .includeApproved(context.isFilterApproved())
-              .includeRejected(context.isFilterRejected())
+              .fromStates(context.getCurrentFilterStates())
               .build());
    }
 
