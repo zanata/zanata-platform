@@ -262,7 +262,7 @@ public class FileService implements FileResource
       try
       {
          checkUploadPreconditions(projectSlug, iterationSlug, docId, uploadForm);
-         checkSourceUploadAllowed(projectSlug, iterationSlug);
+         checkSourceUploadAllowed(projectSlug, iterationSlug, identity, projectIterationDAO);
       }
       catch (AuthorizationException e)
       {
@@ -271,9 +271,9 @@ public class FileService implements FileResource
       checkValidSourceUploadType(uploadForm, translationFileServiceImpl);
    }
 
-   private void checkSourceUploadAllowed(String projectSlug, String iterationSlug)
+   private static void checkSourceUploadAllowed(String projectSlug, String iterationSlug, ZanataIdentity identity, ProjectIterationDAO projIterDAO)
    {
-      if (!isDocumentUploadAllowed(projectSlug, iterationSlug, identity, projectIterationDAO))
+      if (!isDocumentUploadAllowed(projectSlug, iterationSlug, identity, projIterDAO))
       {
          throw new ChunkUploadException(Status.FORBIDDEN,
                "You do not have permission to upload source documents to project-version \""
