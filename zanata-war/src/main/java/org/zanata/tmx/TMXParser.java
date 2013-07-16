@@ -20,11 +20,7 @@
  */
 package org.zanata.tmx;
 
-import static org.zanata.tmx.TMXAttribute.*;
-
 import java.io.InputStream;
-import java.util.Date;
-import java.util.Map;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
@@ -33,19 +29,13 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
-import nu.xom.Attribute;
 import nu.xom.Element;
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Name;
 import org.zanata.common.util.ElementBuilder;
-import org.zanata.model.tm.TMMetadataHelper;
-import org.zanata.model.tm.TMTranslationUnit;
+import org.zanata.dao.TransMemoryDAO;
 import org.zanata.model.tm.TransMemory;
-import org.zanata.model.tm.TMMetadataType;
-
-import com.google.common.collect.Maps;
 
 import fj.Effect;
 
@@ -54,60 +44,29 @@ import fj.Effect;
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@Name("tmxParser")
 public class TMXParser
 {
-   private static final DateTimeFormatter ISO8601Z = DateTimeFormat.forPattern("yyyyMMdd'T'HHmmss'Z").withZoneUTC();
+   @In
+   private TransMemoryDAO transMemoryDAO;
+
+   public TMXParser()
+   {
+   }
+
+   public TMXParser(TransMemoryDAO transMemoryDAO)
+   {
+      this.transMemoryDAO = transMemoryDAO;
+   }
 
    public void parseTMX(InputStream input) throws XMLStreamException
    {
       final TransMemory tm = new TransMemory();
       tm.setSlug("test-slug");
       // TODO Save TM
-      parseTMX(input, new Effect<Element>()
-      {
-         @Override
-         public void e(Element tuElem)
-         {
-            TMTranslationUnit tu = new TMTranslationUnit();
-            String creationDate = creationdate.getAttribute(tuElem);
-            if (creationDate != null)
-            {
-               tu.setCreationDate(parseDate(creationDate));
-            }
-            String changeDate = changedate.getAttribute(tuElem);
-            if (changeDate != null)
-            {
-               tu.setLastChanged(parseDate(changeDate));
-            }
-            tu.setSourceLanguage(srclang.getAttribute(tuElem));
-            tu.setTranslationMemory(tm);
-            tu.setTransUnitId(tuid.getAttribute(tuElem));
+//      transMemoryDAO.makePersistent(tm);
 
-            Map<String, String> metadata = Maps.newHashMap();
-            for (int i=0; i < tuElem.getAttributeCount(); i++)
-            {
-               Attribute attr = tuElem.getAttribute(i);
-               String name = attr.getQualifiedName();
-               if (!TMXAttribute.contains(name))
-               {
-                  String value = attr.getValue();
-                  metadata.put(name, value);
-               }
-            }
-            TMMetadataHelper.setTMXMetadata(tu, metadata);
-
-//          TMTransUnitVariant tuv = handleTransUnitVariant(nextEvent);
-//          tu.getTransUnitVariants().put(tuv.getLanguage(), tuv);
-//            tu.setTransUnitVariants(transUnitVariants);
-            tu.setVersionNum(0);
-            // TODO Save the TU
-         }
-      });
-   }
-
-   private Date parseDate(String dateString)
-   {
-      return ISO8601Z.parseDateTime(dateString).toDate();
+      parseTMX(input, new TransUnitPersister(tm));
    }
 
    public void parseTMX(InputStream input, Effect<Element> sideEffect) throws XMLStreamException
