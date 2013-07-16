@@ -51,7 +51,7 @@ public class ManageUsersDetailedTest
       ManageUserPage manageUserPage = homePage.goToAdministration().goToManageUserPage();
 
       ManageUserAccountPage manageUserAccountPage = manageUserPage.editUserAccount("admin");
-      manageUserPage = manageUserAccountPage.clearAndEnterUsername(username).saveUser();
+      manageUserPage = manageUserAccountPage.clearFields().enterUsername(username).saveUser();
       assertThat("Administrator is displayed", manageUserPage.getUserList(), Matchers.hasItem(username));
    }
 
