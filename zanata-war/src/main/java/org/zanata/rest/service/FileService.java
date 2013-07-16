@@ -221,7 +221,7 @@ public class FileService implements FileResource
          {
             if (!tempFile.isPresent())
             {
-               tempFile = Optional.of(persistTempFileFromUpload(uploadForm));
+               tempFile = Optional.of(persistTempFileFromUpload(uploadForm, translationFileServiceImpl));
             }
             processAdapterFile(tempFile.get(), projectSlug, iterationSlug, docId, uploadForm);
          }
@@ -292,14 +292,14 @@ public class FileService implements FileResource
       }
    }
 
-   private File persistTempFileFromUpload(DocumentFileUploadForm uploadForm)
+   private static File persistTempFileFromUpload(DocumentFileUploadForm uploadForm, TranslationFileService transFileService)
    {
       File tempFile;
       try
       {
          MessageDigest md = MessageDigest.getInstance("MD5");
          InputStream fileContents = new DigestInputStream(uploadForm.getFileStream(), md);
-         tempFile = translationFileServiceImpl.persistToTempFile(fileContents);
+         tempFile = transFileService.persistToTempFile(fileContents);
          String md5hash = new String(Hex.encodeHex(md.digest()));
          if (!md5hash.equals(uploadForm.getHash()))
          {
@@ -679,7 +679,7 @@ public class FileService implements FileResource
          {
             if (!tempFile.isPresent())
             {
-               tempFile = Optional.of(persistTempFileFromUpload(uploadForm));
+               tempFile = Optional.of(persistTempFileFromUpload(uploadForm, translationFileServiceImpl));
             }
             // FIXME this is misusing the 'filename' field. the method should probably take a
             // type anyway
