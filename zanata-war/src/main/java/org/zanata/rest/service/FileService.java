@@ -261,7 +261,7 @@ public class FileService implements FileResource
    {
       try
       {
-         checkUploadPreconditions(projectSlug, iterationSlug, docId, uploadForm);
+         checkUploadPreconditions(projectSlug, iterationSlug, docId, uploadForm, identity, projectIterationDAO, session);
          checkSourceUploadAllowed(projectSlug, iterationSlug, identity, projectIterationDAO);
       }
       catch (AuthorizationException e)
@@ -495,7 +495,9 @@ public class FileService implements FileResource
       session.flush();
    }
 
-   private void checkUploadPreconditions(String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm)
+   private static void checkUploadPreconditions(String projectSlug, String iterationSlug, String docId,
+         DocumentFileUploadForm uploadForm, ZanataIdentity identity,
+         ProjectIterationDAO projectIterationDAO, Session session)
    {
       if (!identity.isLoggedIn())
       {
@@ -819,7 +821,7 @@ public class FileService implements FileResource
 
    private void checkTranslationUploadPreconditions(String projectSlug, String iterationSlug, String docId, String localeId, DocumentFileUploadForm uploadForm)
    {
-      checkUploadPreconditions(projectSlug, iterationSlug, docId, uploadForm);
+      checkUploadPreconditions(projectSlug, iterationSlug, docId, uploadForm, identity, projectIterationDAO, session);
 
       // TODO check translation upload allowed
 
