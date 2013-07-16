@@ -193,7 +193,8 @@ public class FileService implements FileResource
 
          if (!uploadForm.getLast())
          {
-            HDocumentUpload upload = saveUploadPart(id.getProjectSlug(), id.getVersionSlug(), id.getDocId(), NULL_LOCALE, uploadForm);
+            HDocumentUpload upload = saveUploadPart(id.getProjectSlug(), id.getVersionSlug(),
+                  id.getDocId(), NULL_LOCALE, uploadForm, session, projectIterationDAO);
             totalChunks = upload.getParts().size();
             return Response.status(Status.ACCEPTED)
                   .entity(new ChunkUploadResponse(upload.getId(), totalChunks, true,
@@ -208,7 +209,8 @@ public class FileService implements FileResource
          }
          else
          {
-            HDocumentUpload upload = saveUploadPart(projectSlug, iterationSlug, docId, NULL_LOCALE, uploadForm);
+            HDocumentUpload upload = saveUploadPart(projectSlug, iterationSlug, docId, NULL_LOCALE,
+                  uploadForm, session, projectIterationDAO);
             totalChunks = upload.getParts().size();
             tempFile = Optional.of(combineToTempFileAndDeleteUploadRecord(upload, session, translationFileServiceImpl));
          }
@@ -478,7 +480,9 @@ public class FileService implements FileResource
       return upload;
    }
 
-   private HDocumentUpload createMultipartUpload(String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm, HLocale locale)
+   private static HDocumentUpload createMultipartUpload(String projectSlug, String iterationSlug,
+         String docId, DocumentFileUploadForm uploadForm, HLocale locale,
+         ProjectIterationDAO projectIterationDAO)
    {
       HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
       HDocumentUpload newUpload = new HDocumentUpload();
@@ -489,16 +493,6 @@ public class FileService implements FileResource
       newUpload.setLocale(locale);
       newUpload.setContentHash(uploadForm.getHash());
       return newUpload;
-   }
-
-   private void saveUploadPart(DocumentFileUploadForm uploadForm, HDocumentUpload upload)
-   {
-      Blob partContent = session.getLobHelper().createBlob(uploadForm.getFileStream(), uploadForm.getSize().intValue());
-      HDocumentUploadPart newPart = new HDocumentUploadPart();
-      newPart.setContent(partContent);
-      upload.getParts().add(newPart);
-      session.saveOrUpdate(upload);
-      session.flush();
    }
 
    private static void checkUploadPreconditions(String projectSlug, String iterationSlug, String docId,
@@ -665,7 +659,8 @@ public class FileService implements FileResource
          }
          else
          {
-            HDocumentUpload upload = saveUploadPart(projectSlug, iterationSlug, docId, locale, uploadForm);
+            HDocumentUpload upload = saveUploadPart(projectSlug, iterationSlug, docId, locale,
+                  uploadForm, session, projectIterationDAO);
             totalChunks = upload.getParts().size();
             if (!uploadForm.getLast())
             {
@@ -769,19 +764,32 @@ public class FileService implements FileResource
       return extensions;
    }
 
-   private HDocumentUpload saveUploadPart(String projectSlug, String iterationSlug, String docId, HLocale locale, DocumentFileUploadForm uploadForm)
+   private static HDocumentUpload saveUploadPart(String projectSlug, String iterationSlug, String docId,
+         HLocale locale, DocumentFileUploadForm uploadForm, Session session,
+         ProjectIterationDAO projectIterationDAO)
    {
       HDocumentUpload upload;
       if (uploadForm.getFirst())
       {
-         upload = createMultipartUpload(projectSlug, iterationSlug, docId, uploadForm, locale);
+         upload = createMultipartUpload(projectSlug, iterationSlug, docId, uploadForm, locale, projectIterationDAO);
       }
       else
       {
          upload = retrieveUploadObject(uploadForm, session);
       }
-      saveUploadPart(uploadForm, upload);
+      saveUploadPart(uploadForm, upload, session);
       return upload;
+   }
+
+   private static void saveUploadPart(DocumentFileUploadForm uploadForm, HDocumentUpload upload,
+         Session session)
+   {
+      Blob partContent = session.getLobHelper().createBlob(uploadForm.getFileStream(), uploadForm.getSize().intValue());
+      HDocumentUploadPart newPart = new HDocumentUploadPart();
+      newPart.setContent(partContent);
+      upload.getParts().add(newPart);
+      session.saveOrUpdate(upload);
+      session.flush();
    }
 
    private void checkTranslationUploadAllowed(String projectSlug, String iterationSlug, String localeId, HLocale locale)
