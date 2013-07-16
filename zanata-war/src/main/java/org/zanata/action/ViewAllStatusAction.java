@@ -219,8 +219,8 @@ public class ViewAllStatusAction implements Serializable
    {
       HProjectIteration iteration = projectIterationDAO.getBySlug(this.projectSlug, this.iterationSlug);
       
-      List<HLocale> locale = this.getDisplayLocales();
-      String[] localeIds = getLocaleIds(locale);
+      List<HLocale> localeList = this.getDisplayLocales();
+      String[] localeIds = getLocaleIds(localeList);
       
       ContainerTranslationStatistics iterationStats = statisticsServiceImpl.getStatistics(this.projectSlug, this.iterationSlug, false, true, localeIds);
 
@@ -234,9 +234,9 @@ public class ViewAllStatusAction implements Serializable
          total = projectIterationDAO.getTotalCountForIteration(iteration.getId());
       }
       
-      for (HLocale var : locale)
+      for (HLocale locale : localeList)
       {
-         TranslationStatistics stats = iterationStats.getStats(var.getLocaleId().getId(), statsOption);
+         TranslationStatistics stats = iterationStats.getStats(locale.getLocaleId().getId(), statsOption);
          if (stats == null)
          {
             stats = new TranslationStatistics(statsOption);
@@ -244,9 +244,9 @@ public class ViewAllStatusAction implements Serializable
 //            stats.setTotal(total);
          }
 
-         if (statsMap.containsKey(var.getLocaleId()))
+         if (statsMap.containsKey(locale.getLocaleId()))
          {
-            statsMap.get(var.getLocaleId()).setStats(stats);
+            statsMap.get(locale.getLocaleId()).setStats(stats);
          }
       }
    }
