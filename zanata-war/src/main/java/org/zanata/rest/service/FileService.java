@@ -218,7 +218,8 @@ public class FileService implements FileResource
          if (uploadForm.getFileType().equals(".pot"))
          {
             InputStream potStream = getInputStream(tempFile, uploadForm);
-            parsePotFile(potStream, projectSlug, iterationSlug, docId, uploadForm);
+            parsePotFile(potStream, projectSlug, iterationSlug, docId, uploadForm,
+                  translationFileServiceImpl, documentServiceImpl, documentDAO);
          }
          else
          {
@@ -431,11 +432,6 @@ public class FileService implements FileResource
       return uploadForm.getFirst() && uploadForm.getLast();
    }
 
-   private boolean useOfflinePo(String projectSlug, String iterationSlug, String docId)
-   {
-      return !isNewDocument(projectSlug, iterationSlug, docId, documentDAO) && !translationFileServiceImpl.isPoDocument(projectSlug, iterationSlug, docId);
-   }
-
    private static boolean isNewDocument(String projectSlug, String iterationSlug, String docId, DocumentDAO dao)
    {
       return dao.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId) == null;
@@ -587,18 +583,24 @@ public class FileService implements FileResource
       }
    }
 
-   private void parsePotFile(InputStream potStream, String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm)
-   {
-      parsePotFile(potStream, docId, uploadForm.getFileType(), projectSlug, iterationSlug, useOfflinePo(projectSlug, iterationSlug, docId));
-   }
-
-   private void parsePotFile(InputStream documentStream, String docId, String fileType, String projectSlug, String iterationSlug, boolean asOfflinePo)
+   private static void parsePotFile(InputStream potStream, String projectSlug, String iterationSlug,
+         String docId, DocumentFileUploadForm uploadForm,
+         TranslationFileService translationFileServiceImpl,
+         DocumentService documentServiceImpl,
+         DocumentDAO documentDAO)
    {
       Resource doc;
-      doc = translationFileServiceImpl.parseUpdatedPotFile(documentStream, docId, fileType, asOfflinePo);
+      doc = translationFileServiceImpl.parseUpdatedPotFile(potStream, docId, uploadForm.getFileType(),
+            useOfflinePo(projectSlug, iterationSlug, docId, documentDAO, translationFileServiceImpl));
       doc.setLang( new LocaleId("en-US") );
       // TODO Copy Trans values
       documentServiceImpl.saveDocument(projectSlug, iterationSlug, doc, new StringSet(ExtensionType.GetText.toString()), false);
+   }
+
+   private static boolean useOfflinePo(String projectSlug, String iterationSlug, String docId,
+         DocumentDAO documentDAO, TranslationFileService translationFileServiceImpl)
+   {
+      return !isNewDocument(projectSlug, iterationSlug, docId, documentDAO) && !translationFileServiceImpl.isPoDocument(projectSlug, iterationSlug, docId);
    }
 
    private static Response sourceUploadSuccessResponse(boolean isNewDocument, int acceptedChunks)
