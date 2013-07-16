@@ -69,6 +69,7 @@ import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.exception.ChunkUploadException;
 import org.zanata.file.DocumentUpload;
+import org.zanata.file.SourceDocumentUpload;
 import org.zanata.model.HDocument;
 import org.zanata.model.HDocumentUpload;
 import org.zanata.model.HLocale;
@@ -161,7 +162,7 @@ public class FileService implements FileResource
                                      @QueryParam("docId") String docId,
                                      @MultipartForm DocumentFileUploadForm uploadForm )
    {
-      DocumentUpload uploader = new DocumentUpload(identity, session, documentDAO, projectIterationDAO,
+      SourceDocumentUpload uploader = new SourceDocumentUpload(identity, session, documentDAO, projectIterationDAO,
             documentServiceImpl, virusScanner, translationFileServiceImpl);
       return uploader.tryUploadSourceFile(projectSlug, iterationSlug, docId, uploadForm);
    }
