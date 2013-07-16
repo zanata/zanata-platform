@@ -20,96 +20,59 @@
  */
 package org.zanata.webtrans.client.ui;
 
+import org.zanata.webtrans.client.resources.TableEditorMessages;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DecoratedPopupPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.inject.Inject;
 
 /**
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-public class FilterViewConfirmationPanel extends DecoratedPopupPanel implements FilterViewConfirmationDisplay
+public class FilterViewConfirmationPanel extends PopupPanel implements FilterViewConfirmationDisplay
 {
-   private Button saveChanges = new Button("Save Changes");
-   private Button saveFuzzy = new Button("Save as Fuzzy");
-   private Button discardChanges = new Button("Discard Changes");
-   private Button cancelFilter = new Button("Cancel filter");
+   private final Button saveTranslated;
+   private final Button saveFuzzy;
+   private final Button discardChanges;
+   private final Button cancelFilter;
 
-   private boolean filterTranslated, filterNeedReview, filterUntranslated;
    private Listener listener;
 
-   public FilterViewConfirmationPanel()
+   @Inject
+   public FilterViewConfirmationPanel(TableEditorMessages messages)
    {
       super(false, true);
-      VerticalPanel vp = new VerticalPanel();
-      vp.setSpacing(10);
-      vp.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+      FlowPanel panel = new FlowPanel();
+      
+      saveTranslated = new Button(messages.saveAsTranslated());
+      saveFuzzy = new Button(messages.saveAsFuzzy());
+      discardChanges = new Button(messages.discardChanges());
+      cancelFilter = new Button(messages.cancelFilter());
 
-      Label message = new Label("Save changes before filtering view?");
-      HorizontalPanel buttonPanel = new HorizontalPanel();
-      buttonPanel.setSpacing(5);
-      buttonPanel.setSize("100%", "100%");
-      buttonPanel.add(saveChanges);
-      buttonPanel.add(saveFuzzy);
-      buttonPanel.add(discardChanges);
-      buttonPanel.add(cancelFilter);
+      Label message = new Label(messages.saveChangesConfirmationMessage());
+      message.addStyleName("message");
+
       setStyleName("confirmationDialogPanel");
-
-      vp.add(message);
-      vp.add(buttonPanel);
-      add(vp);
+    
+      panel.add(message);
+      panel.add(saveTranslated);
+      panel.add(saveFuzzy);
+      panel.add(discardChanges);
+      panel.add(cancelFilter);
+      
+      add(panel);
 
       hide();
-   }
-
-   //TODO to be removed below methods
-   public HasClickHandlers getSaveChangesAndFilterButton()
-   {
-      return saveChanges;
-   }
-
-   public HasClickHandlers getSaveFuzzyAndFilterButton()
-   {
-      return saveFuzzy;
-   }
-
-   public HasClickHandlers getDiscardChangesAndFilterButton()
-   {
-      return discardChanges;
-   }
-
-   public HasClickHandlers getCancelFilterButton()
-   {
-      return cancelFilter;
-   }
-
-   public void updateFilter(boolean filterTranslated, boolean filterNeedReview, boolean filterUntranslated)
-   {
-      this.filterTranslated = filterTranslated;
-      this.filterNeedReview = filterNeedReview;
-      this.filterUntranslated = filterUntranslated;
-   }
-
-   public boolean isFilterTranslated()
-   {
-      return filterTranslated;
-   }
-
-   public boolean isFilterNeedReview()
-   {
-      return filterNeedReview;
-   }
-
-   public boolean isFilterUntranslated()
-   {
-      return filterUntranslated;
    }
 
    @Override
@@ -121,12 +84,12 @@ public class FilterViewConfirmationPanel extends DecoratedPopupPanel implements 
 
    private void addListenerToButtons()
    {
-      saveChanges.addClickHandler(new ClickHandler()
+      saveTranslated.addClickHandler(new ClickHandler()
       {
          @Override
          public void onClick(ClickEvent event)
          {
-            listener.saveChangesAndFilter();
+            listener.saveAsTranslatedAndFilter();
          }
       });
       saveFuzzy.addClickHandler(new ClickHandler()

@@ -28,6 +28,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.AbstractPage;
+import com.google.common.base.Predicate;
 
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
@@ -35,9 +36,6 @@ import org.zanata.page.AbstractPage;
 
 public class ManageUserAccountPage extends AbstractPage
 {
-
-   @FindBy(id = "userdetailForm:usernameField:username")
-   private WebElement usernameField;
 
    @FindBy(id = "userdetailForm:passwordField:password")
    private WebElement passwordField;
@@ -56,6 +54,9 @@ public class ManageUserAccountPage extends AbstractPage
 
    private Map<String, String> roleMap;
 
+   // username field will trigger ajax call and become stale
+   private By usernameBy = By.id("userdetailForm:usernameField:username");
+
    public ManageUserAccountPage(WebDriver driver)
    {
       super(driver);
@@ -67,9 +68,18 @@ public class ManageUserAccountPage extends AbstractPage
       roleMap.put("user", "4");
    }
 
-   public ManageUserAccountPage enterUsername(String username)
+   public ManageUserAccountPage enterUsername(final String username)
    {
-      usernameField.sendKeys(username);
+      waitForTenSec().until(new Predicate<WebDriver>()
+      {
+         @Override
+         public boolean apply(WebDriver input)
+         {
+            WebElement usernameField = input.findElement(usernameBy);
+            usernameField.sendKeys(username);
+            return input.findElement(usernameBy).getAttribute("value").equals(username);
+         }
+      });
       return new ManageUserAccountPage(getDriver());
    }
 
@@ -117,7 +127,15 @@ public class ManageUserAccountPage extends AbstractPage
 
    public ManageUserAccountPage clearFields()
    {
-      usernameField.clear();
+      waitForTenSec().until(new Predicate<WebDriver>()
+      {
+         @Override
+         public boolean apply(WebDriver input)
+         {
+            input.findElement(usernameBy).clear();
+            return input.findElement(usernameBy).getAttribute("value").isEmpty();
+         }
+      });
       passwordField.clear();
       passwordConfirmField.clear();
       return new ManageUserAccountPage(getDriver());

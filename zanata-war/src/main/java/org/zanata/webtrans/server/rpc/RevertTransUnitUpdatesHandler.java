@@ -22,7 +22,6 @@ package org.zanata.webtrans.server.rpc;
 
 import java.util.List;
 
-import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
@@ -54,7 +53,6 @@ import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 @Name("webtrans.gwt.RevertTransUnitUpdatesHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(RevertTransUnitUpdates.class)
-@Slf4j
 public class RevertTransUnitUpdatesHandler extends AbstractActionHandler<RevertTransUnitUpdates, UpdateTransUnitResult>
 {
    @In

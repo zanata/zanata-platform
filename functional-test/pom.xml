@@ -53,6 +53,7 @@
         <webdriver.chrome.bin>/opt/google/chrome/google-chrome</webdriver.chrome.bin>
         <!-- this decides what web driver type we intended to use-->
         <webdriver.type>chrome</webdriver.type>
+        <webdriver.display>:0</webdriver.display>
         <webdriver.log>${project.build.directory}/webdriver.log</webdriver.log>
 
         <!-- this is the path we store H2 backup script which will be used to reset database state -->
@@ -402,7 +403,11 @@
                                 <!--<echo>-Dzanata.client.version=maven client version to use. Currently: ${zanata.client.version}</echo>-->
                                 <echo>-Dzanata.sample.projects.basedir=${project.build.testOutputDirectory}/sample-projects</echo>
                                 <echo>-Dcargo.debug.jvm.args : If not set by default will listen to port 8787. Need to set to empty on jenkins</echo>
-                                <echo>-Dinclude.test.patterns : by default is **/*TestSuite.java. Can be used to control what test to run.</echo>
+                                <echo>-Dinclude.test.patterns=test filter pattern. Can be used to control what test to run. Default is **/*TestSuite.java.</echo>
+                                <echo>-Dwebdriver.type=run tests in htmlUnit, chrome or firefox. For chrome, see also webdriver.chrome.* Default is htmlUnit.</echo>
+                                <echo>-Dwebdriver.display=display to run test browser in, for Xnest or otherwise. Default is :0.</echo>
+                                <echo>-Dwebdriver.chrome.bin=full path to chrome binary.</echo>
+                                <echo>-Dwebdriver.chrome.driver=full path to chromedriver binary.</echo>
                                 <echo>==========================================================</echo>
                             </target>
                         </configuration>

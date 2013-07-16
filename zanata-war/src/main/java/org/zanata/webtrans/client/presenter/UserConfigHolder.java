@@ -89,7 +89,7 @@ public class UserConfigHolder
       state.showSaveApprovedWarning = DEFAULT_SHOW_SAVE_APPROVED_WARNING;
       state.transMemoryDisplayMode = DEFAULT_TM_DISPLAY_MODE;
 
-      state.filterByNeedReview = DEFAULT_FILTER;
+      state.filterByFuzzy = DEFAULT_FILTER;
       state.filterByTranslated = DEFAULT_FILTER;
       state.filterByUntranslated = DEFAULT_FILTER;
       state.filterByApproved = DEFAULT_FILTER;
@@ -184,10 +184,10 @@ public class UserConfigHolder
       state.filterByUntranslated = filterByUntranslated;
    }
 
-   public void setFilterByNeedReview(boolean filterByNeedReview)
+   public void setFilterByFuzzy(boolean filterByFuzzy)
    {
       state = new ConfigurationState(state);
-      state.filterByNeedReview = filterByNeedReview;
+      state.filterByFuzzy = filterByFuzzy;
    }
 
    public void setFilterByTranslated(boolean filterByTranslated)
@@ -264,11 +264,11 @@ public class UserConfigHolder
 
    public boolean isAcceptAllStatus()
    {
-      return state.isFilterByTranslated() == state.isFilterByNeedReview() 
-            && state.isFilterByUntranslated() == state.isFilterByNeedReview()
-            && state.isFilterByHasError() == state.isFilterByNeedReview()
-            && state.isFilterByApproved() == state.isFilterByNeedReview()
-            && state.isFilterByRejected() == state.isFilterByNeedReview();
+      return state.isFilterByTranslated() == state.isFilterByFuzzy() 
+            && state.isFilterByUntranslated() == state.isFilterByFuzzy()
+            && state.isFilterByHasError() == state.isFilterByFuzzy()
+            && state.isFilterByApproved() == state.isFilterByFuzzy()
+            && state.isFilterByRejected() == state.isFilterByFuzzy();
    }
 
    /**
@@ -285,7 +285,7 @@ public class UserConfigHolder
       private boolean useCodeMirrorEditor;
 
       private boolean filterByUntranslated;
-      private boolean filterByNeedReview;
+      private boolean filterByFuzzy;
       private boolean filterByTranslated;
       private boolean filterByApproved;
       private boolean filterByRejected;
@@ -317,7 +317,7 @@ public class UserConfigHolder
          this.showError = old.isShowError();
          this.useCodeMirrorEditor = old.isUseCodeMirrorEditor();
          this.filterByUntranslated = old.isFilterByUntranslated();
-         this.filterByNeedReview = old.isFilterByNeedReview();
+         this.filterByFuzzy = old.isFilterByFuzzy();
          this.filterByTranslated = old.isFilterByTranslated();
          this.filterByApproved = old.isFilterByApproved();
          this.filterByRejected = old.isFilterByRejected();
@@ -372,9 +372,9 @@ public class UserConfigHolder
          return filterByUntranslated;
       }
 
-      public boolean isFilterByNeedReview()
+      public boolean isFilterByFuzzy()
       {
-         return filterByNeedReview;
+         return filterByFuzzy;
       }
 
       public boolean isFilterByTranslated()

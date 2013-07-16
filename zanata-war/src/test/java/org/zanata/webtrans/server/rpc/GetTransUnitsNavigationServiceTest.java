@@ -80,7 +80,7 @@ public class GetTransUnitsNavigationServiceTest extends ZanataDbunitJpaTest
    public void testExecuteWithAllStatus() throws Exception
    {
       // filter with all status set to tru
-      GetTransUnitActionContext context = new GetTransUnitActionContext(document).changeFilterNeedReview(true).changeFilterUntranslated(true).changeFilterTranslated(true);
+      GetTransUnitActionContext context = new GetTransUnitActionContext(document).changeFilterFuzzy(true).changeFilterUntranslated(true).changeFilterTranslated(true);
       GetTransUnitsNavigation action = GetTransUnitsNavigation.newAction(context);
 
       GetTransUnitsNavigationResult result = service.getNavigationIndexes(action, jaLocale);
@@ -93,7 +93,7 @@ public class GetTransUnitsNavigationServiceTest extends ZanataDbunitJpaTest
    public void testExecuteWithStatus() throws Exception
    {
       // filter fuzzy and new status
-      GetTransUnitActionContext context = new GetTransUnitActionContext(document).changeFilterNeedReview(true).changeFilterUntranslated(true);
+      GetTransUnitActionContext context = new GetTransUnitActionContext(document).changeFilterFuzzy(true).changeFilterUntranslated(true);
       GetTransUnitsNavigation action = GetTransUnitsNavigation.newAction(context);
 
       GetTransUnitsNavigationResult result = service.getNavigationIndexes(action, jaLocale);
@@ -135,7 +135,7 @@ public class GetTransUnitsNavigationServiceTest extends ZanataDbunitJpaTest
    public void testExecuteWithSearchAndStatusFilter() throws Exception
    {
       // filter by search term in mixed cases and accept fuzzy and new
-      GetTransUnitActionContext context = new GetTransUnitActionContext(document).changeFindMessage("FiLe").changeFilterNeedReview(true).changeFilterUntranslated(true);
+      GetTransUnitActionContext context = new GetTransUnitActionContext(document).changeFindMessage("FiLe").changeFilterFuzzy(true).changeFilterUntranslated(true);
       GetTransUnitsNavigation action = GetTransUnitsNavigation.newAction(context);
 
       GetTransUnitsNavigationResult result = service.getNavigationIndexes(action, jaLocale);

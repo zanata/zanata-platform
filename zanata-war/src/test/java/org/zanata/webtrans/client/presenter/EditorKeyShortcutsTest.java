@@ -190,7 +190,7 @@ public class EditorKeyShortcutsTest
    {
       // by default user config settings
       when(messages.saveAsFuzzy()).thenReturn("save fuzzy");
-      when(messages.saveAsApproved()).thenReturn("save approved");
+      when(messages.saveAsTranslated()).thenReturn("save approved");
       when(messages.copyFromSource()).thenReturn("copy from source");
 
       keyShortcuts.registerEditorActionKeys(targetContentsPresenter);
@@ -208,7 +208,7 @@ public class EditorKeyShortcutsTest
    {
       // enter and esc now active
       when(messages.saveAsFuzzy()).thenReturn("save fuzzy");
-      when(messages.saveAsApproved()).thenReturn("save approved");
+      when(messages.saveAsTranslated()).thenReturn("save approved");
       when(messages.copyFromSource()).thenReturn("copy from source");
 
       configHolder.setEnterSavesApproved(true);
@@ -277,7 +277,7 @@ public class EditorKeyShortcutsTest
    public void testOnUserConfigChangedToEnterSaves() throws Exception
    {
       // Given: change user config enter save approved
-      when(messages.saveAsApproved()).thenReturn("enter save as approved");
+      when(messages.saveAsTranslated()).thenReturn("enter save as approved");
       keyShortcuts.registerKeys(targetContentsPresenter);
       configHolder.setEnterSavesApproved(true);
 

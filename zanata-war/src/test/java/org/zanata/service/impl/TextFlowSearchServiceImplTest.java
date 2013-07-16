@@ -24,16 +24,13 @@ import org.zanata.service.LocaleService;
 import org.zanata.service.TextFlowSearchService;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 
-import lombok.extern.slf4j.Slf4j;
 import static org.hamcrest.MatcherAssert.*;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.when;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Test(groups = { "jpa-tests" })
-@Slf4j
 public class TextFlowSearchServiceImplTest extends ZanataDbunitJpaTest
 {
    private TextFlowSearchService service;
@@ -69,7 +66,8 @@ public class TextFlowSearchServiceImplTest extends ZanataDbunitJpaTest
    @Test
    public void testFindTextFlows() throws Exception
    {
-      List<HTextFlow> result = service.findTextFlows(workspaceId, FilterConstraints.filterBy("file"));
+      List<HTextFlow> result = service.findTextFlows(workspaceId,
+            FilterConstraints.builder().filterBy("file").build());
 
       assertThat(result.size(), Matchers.equalTo(7));
    }

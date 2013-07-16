@@ -66,7 +66,7 @@ public class LoadOptionsHandlerTest extends ZanataDbunitJpaTest
       configMap.put(UserOptions.DocumentListPageSize, Integer.toString(configHolder.getState().getEditorPageSize()));
 
       configMap.put(UserOptions.TranslatedMessageFilter, Boolean.toString(configHolder.getState().isFilterByTranslated()));
-      configMap.put(UserOptions.NeedReviewMessageFilter, Boolean.toString(configHolder.getState().isFilterByNeedReview()));
+      configMap.put(UserOptions.FuzzyMessageFilter, Boolean.toString(configHolder.getState().isFilterByFuzzy()));
       configMap.put(UserOptions.UntranslatedMessageFilter, Boolean.toString(configHolder.getState().isFilterByUntranslated()));
       configMap.put(UserOptions.Navigation, configHolder.getState().getNavOption().toString());
 

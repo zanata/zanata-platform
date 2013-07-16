@@ -197,7 +197,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    }
 
    @Override
-   public void saveChangesAndFilter()
+   public void saveAsTranslatedAndFilter()
    {
       saveAndFilter(ContentState.Translated);
    }
@@ -228,7 +228,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    @Override
    public void cancelFilter()
    {
-      eventBus.fireEvent(new FilterViewEvent(previousFilterOptions.isFilterTranslated(), previousFilterOptions.isFilterNeedReview(), previousFilterOptions.isFilterUntranslated(), previousFilterOptions.isFilterApproved(), previousFilterOptions.isFilterRejected(), previousFilterOptions.isFilterHasError(), true, previousFilterOptions.getEnabledValidationIds()));
+      eventBus.fireEvent(new FilterViewEvent(previousFilterOptions.isFilterTranslated(), previousFilterOptions.isFilterFuzzy(), previousFilterOptions.isFilterUntranslated(), previousFilterOptions.isFilterApproved(), previousFilterOptions.isFilterRejected(), previousFilterOptions.isFilterHasError(), true, previousFilterOptions.getEnabledValidationIds()));
       display.hideFilterConfirmation();
    }
 
