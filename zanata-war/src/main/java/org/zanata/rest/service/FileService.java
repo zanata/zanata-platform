@@ -229,7 +229,7 @@ public class FileService implements FileResource
          {
             tempFile.get().delete();
          }
-         return sourceUploadSuccessResponse(isNewDocument(projectSlug, iterationSlug, docId), totalChunks);
+         return sourceUploadSuccessResponse(isNewDocument(projectSlug, iterationSlug, docId, documentDAO), totalChunks);
       }
       catch (ChunkUploadException e)
       {
@@ -417,12 +417,12 @@ public class FileService implements FileResource
 
    private boolean useOfflinePo(String projectSlug, String iterationSlug, String docId)
    {
-      return !isNewDocument(projectSlug, iterationSlug, docId) && !translationFileServiceImpl.isPoDocument(projectSlug, iterationSlug, docId);
+      return !isNewDocument(projectSlug, iterationSlug, docId, documentDAO) && !translationFileServiceImpl.isPoDocument(projectSlug, iterationSlug, docId);
    }
 
-   private boolean isNewDocument(String projectSlug, String iterationSlug, String docId)
+   private static boolean isNewDocument(String projectSlug, String iterationSlug, String docId, DocumentDAO dao)
    {
-      return documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId) == null;
+      return dao.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId) == null;
    }
 
    private File combineToTempFile(HDocumentUpload upload) throws SQLException
@@ -840,7 +840,7 @@ public class FileService implements FileResource
 
    private void checkDocumentExists(String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm)
    {
-      if (isNewDocument(projectSlug, iterationSlug, docId))
+      if (isNewDocument(projectSlug, iterationSlug, docId, documentDAO))
       {
          throw new ChunkUploadException(Status.NOT_FOUND, 
                "No document with id \"" + docId + "\" exists in project-version \"" +
