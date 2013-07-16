@@ -67,7 +67,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
    public UpdateTransUnitResult execute(UpdateTransUnit action, ExecutionContext context) throws ActionException
    {
       SecurityService.SecurityCheckResult securityCheckResult;
-      
+
       if(action.getUpdateType() == UpdateType.WebEditorSaveReview)
       {
          securityCheckResult = securityServiceImpl.checkPermission(action, SecurityService.TranslationAction.REVIEW);
@@ -76,8 +76,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       {
          securityCheckResult = securityServiceImpl.checkPermission(action, SecurityService.TranslationAction.MODIFY);
       }
-      
-      
+
       HLocale hLocale = securityCheckResult.getLocale();
       TranslationWorkspace workspace = securityCheckResult.getWorkspace();
 

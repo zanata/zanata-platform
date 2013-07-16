@@ -864,7 +864,7 @@
       </rule>
     </navigation>
   </page>
-  
+
   <page view-id="/language/request_to_join_update_role.xhtml">
     <param name="emailType" value="#{sendEmail.emailType}" />
     <param name="emailType" value="#{languageJoinUpdateRoleAction.emailType}" />
@@ -874,11 +874,11 @@
     <action execute="#{breadcrumbs.addLocation('/language/home.xhtml', messages['jsf.Languages'])}"/>
     <action execute="#{breadcrumbs.addLocation('/language/language.xhtml', sendEmail.locale.localeId.id).param('id', sendEmail.locale.localeId.id)}"/>
     <action execute="#{breadcrumbs.addLocation('', languageJoinUpdateRoleAction.title)}"/>
-    
+
     <navigation from-action="#{sendEmail.send}">
       <rule if-outcome="success">
         <redirect view-id="/language/language.xhtml">
-          <param name="id" value="#{sendEmail.language}" />        
+          <param name="id" value="#{sendEmail.language}" />
         </redirect>
       </rule>
       <rule if-outcome="failure">
@@ -893,7 +893,7 @@
       </rule>
     </navigation>
   </page>
-  
+
   <!-- Exceptions -->
   <page view-id="/error.xhtml">
     <action execute="#{breadcrumbs.clear}"/>

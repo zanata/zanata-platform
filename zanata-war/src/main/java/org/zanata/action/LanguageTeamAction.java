@@ -52,28 +52,28 @@ import org.zanata.service.LocaleService;
 public class LanguageTeamAction implements Serializable
 {
    private static final long serialVersionUID = 1L;
-   
+
    @In
    private LanguageTeamService languageTeamServiceImpl;
-   
+
    @In
    private LocaleDAO localeDAO;
 
    @In
    private LocaleMemberDAO localeMemberDAO;
-   
+
    @In
    private PersonDAO personDAO;
-   
+
    @In
    private LocaleService localeServiceImpl;
-   
+
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    HAccount authenticatedAccount;
-   
+
    @Logger
    Log log;
-   
+
    private String language;
    private String searchTerm;
    private List<SelectablePerson> searchResults;
@@ -88,7 +88,7 @@ public class LanguageTeamAction implements Serializable
    {
       this.language = language;
    }
-   
+
    public String getSearchTerm()
    {
       return searchTerm;
@@ -105,7 +105,7 @@ public class LanguageTeamAction implements Serializable
       {
          searchResults = new ArrayList<SelectablePerson>();
       }
-      
+
       return searchResults;
    }
 
@@ -113,7 +113,7 @@ public class LanguageTeamAction implements Serializable
    {
       return authenticatedAccount != null && this.isPersonInTeam( this.authenticatedAccount.getId() );
    }
-   
+
    public void selectAll()
    {
       for (SelectablePerson selectablePerson : getSearchResults())
@@ -124,7 +124,7 @@ public class LanguageTeamAction implements Serializable
          }
       }
    }
-   
+
    @Restrict("#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}")
    public void addSelected()
    {
@@ -197,7 +197,7 @@ public class LanguageTeamAction implements Serializable
       log.info("{0} left tribe {1}", authenticatedAccount.getUsername(), this.language);
       FacesMessages.instance().add("You have left the {0} language team", getLocale().retrieveNativeName());
    }
-   
+
    @Restrict("#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}")
    public void saveTeamCoordinator( HLocaleMember member )
    {
@@ -212,7 +212,7 @@ public class LanguageTeamAction implements Serializable
          FacesMessages.instance().add("{0} has been removed from as Team Coordinators", member.getPerson().getAccount().getUsername());
       }
    }
-   
+
    @Restrict("#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}")
    public void saveTeamReviewer( HLocaleMember member )
    {
@@ -227,7 +227,7 @@ public class LanguageTeamAction implements Serializable
          FacesMessages.instance().add("{0} has been removed from as Team Reviewer", member.getPerson().getAccount().getUsername());
       }
    }
-   
+
    @Restrict("#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}")
    public void saveTeamTranslator( HLocaleMember member )
    {
@@ -253,7 +253,7 @@ public class LanguageTeamAction implements Serializable
    {
       this.languageTeamServiceImpl.leaveLanguageTeam(this.language, member.getPerson().getId());
    }
-   
+
    public boolean isPersonInTeam( final Long personId )
    {
       for( HLocaleMember lm : getLocale().getMembers() )
@@ -265,7 +265,7 @@ public class LanguageTeamAction implements Serializable
       }
       return false;
    }
-   
+
    private HLocaleMember getLocaleMember( final Long personId )
    {
       for( HLocaleMember lm : getLocale().getMembers() )
@@ -277,7 +277,7 @@ public class LanguageTeamAction implements Serializable
       }
       return null;
    }
-   
+
    public void searchForTeamMembers()
    {
       getSearchResults().clear();
@@ -299,7 +299,7 @@ public class LanguageTeamAction implements Serializable
          getSearchResults().add(new SelectablePerson(person, isMember, isTranslator, isReviewer, isCoordinator));
       }
    }
-   
+
    public boolean isSelectAll()
    {
       return selectAll;
@@ -309,16 +309,16 @@ public class LanguageTeamAction implements Serializable
    {
       this.selectAll = selectAll;
    }
-   
+
    public final class SelectablePerson
    {
       private HPerson person;
       private boolean selected;
-      
+
       private boolean isReviewer;
       private boolean isCoordinator;
       private boolean isTranslator;
-      
+
       public SelectablePerson(HPerson person, boolean selected, boolean isTranslator, boolean isReviewer, boolean isCoordinator)
       {
          this.person = person;
@@ -357,7 +357,7 @@ public class LanguageTeamAction implements Serializable
       {
          this.isTranslator = isTranslator;
       }
-      
+
       public HPerson getPerson()
       {
          return person;
@@ -375,5 +375,5 @@ public class LanguageTeamAction implements Serializable
          this.selected = selected;
       }
    }
-   
+
 }

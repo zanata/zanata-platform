@@ -15,30 +15,30 @@
 
   <ui:define name="body">
         <p>#{messages['jsf.email.coordinator.DearCoordinator']}</p>
-        
+
         <p>
-        	#{messages['jsf.email.rolerequest.UserRequestingRole']}
-        	<ul>
-	        	<s:fragment rendered="#{languageJoinUpdateRoleAction.requestAsTranslator and !languageJoinUpdateRoleAction.isTranslator()}">
-        			<li>
-        				#{messages['jsf.Translator']}
-	        		</li>
-	        	</s:fragment>
-	        	
-	        	<s:fragment rendered="#{languageJoinUpdateRoleAction.requestAsReviewer and !languageJoinUpdateRoleAction.isReviewer()}">
-        			<li>
-        				#{messages['jsf.Reviewer']}
-	        		</li>
-	        	</s:fragment>
-	        	
-	        	<s:fragment rendered="#{languageJoinUpdateRoleAction.requestAsCoordinator and !languageJoinUpdateRoleAction.isCoordinator()}">
-        			<li>
-        				#{messages['jsf.Coordinator']}
-	        		</li>
-	        	</s:fragment>
-        	</ul>
+            #{messages['jsf.email.rolerequest.UserRequestingRole']}
+            <ul>
+                <s:fragment rendered="#{languageJoinUpdateRoleAction.requestAsTranslator and !languageJoinUpdateRoleAction.isTranslator()}">
+                    <li>
+                        #{messages['jsf.Translator']}
+                    </li>
+                </s:fragment>
+
+                <s:fragment rendered="#{languageJoinUpdateRoleAction.requestAsReviewer and !languageJoinUpdateRoleAction.isReviewer()}">
+                    <li>
+                        #{messages['jsf.Reviewer']}
+                    </li>
+                </s:fragment>
+
+                <s:fragment rendered="#{languageJoinUpdateRoleAction.requestAsCoordinator and !languageJoinUpdateRoleAction.isCoordinator()}">
+                    <li>
+                        #{messages['jsf.Coordinator']}
+                    </li>
+                </s:fragment>
+            </ul>
         </p>
-        
+
         <s:fragment rendered="#{not empty sendEmail.htmlMessage}">
           <p>#{messages['jsf.email.UserMessageIntro']}</p>
           <hr/>

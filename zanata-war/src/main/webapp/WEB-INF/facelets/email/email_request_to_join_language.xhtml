@@ -16,31 +16,31 @@
   <ui:define name="body">
         <p>#{messages['jsf.email.coordinator.DearCoordinator']}</p>
         <p>
-        	#{messages['jsf.email.joinrequest.UserRequestingToJoin']}
-	        <s:fragment rendered="#{languageJoinUpdateRoleAction.hasRoleRequest()}">
-	        	<br/>#{messages['jsf.email.joinrequest.RoleRequested']}
-	        	<ul>
-		        	<s:fragment rendered="#{languageJoinUpdateRoleAction.requestAsTranslator}">
-	        			<li>
-	        				#{messages['jsf.Translator']}
-		        		</li>
-		        	</s:fragment>
-		        	
-		        	<s:fragment rendered="#{languageJoinUpdateRoleAction.requestAsReviewer}">
-	        			<li>
-	        				#{messages['jsf.Reviewer']}
-		        		</li>
-		        	</s:fragment>
-		        	
-		        	<s:fragment rendered="#{languageJoinUpdateRoleAction.requestAsCoordinator}">
-	        			<li>
-	        				#{messages['jsf.Coordinator']}
-		        		</li>
-		        	</s:fragment>
-	        	</ul>
-	        </s:fragment>
+            #{messages['jsf.email.joinrequest.UserRequestingToJoin']}
+            <s:fragment rendered="#{languageJoinUpdateRoleAction.hasRoleRequest()}">
+                <br/>#{messages['jsf.email.joinrequest.RoleRequested']}
+                <ul>
+                    <s:fragment rendered="#{languageJoinUpdateRoleAction.requestAsTranslator}">
+                        <li>
+                            #{messages['jsf.Translator']}
+                        </li>
+                    </s:fragment>
+
+                    <s:fragment rendered="#{languageJoinUpdateRoleAction.requestAsReviewer}">
+                        <li>
+                            #{messages['jsf.Reviewer']}
+                        </li>
+                    </s:fragment>
+
+                    <s:fragment rendered="#{languageJoinUpdateRoleAction.requestAsCoordinator}">
+                        <li>
+                            #{messages['jsf.Coordinator']}
+                        </li>
+                    </s:fragment>
+                </ul>
+            </s:fragment>
         </p>
-      
+
         <s:fragment rendered="#{not empty sendEmail.htmlMessage}">
           <p>#{messages['jsf.email.UserMessageIntro']}</p>
           <hr/>

@@ -67,7 +67,7 @@ public class ManageUsersTest
       .clearAndEnterPassword(newPassword)
       .clearAndEnterConfirmPassword(newPassword)
       .saveUser();
-      
+
       return page;
    }
 

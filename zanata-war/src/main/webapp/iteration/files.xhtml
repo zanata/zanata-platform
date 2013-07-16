@@ -117,8 +117,6 @@
                     </div>
 				</rich:column>
 
-				
-
 				<rich:column 
 					rendered="#{identity.loggedIn and (projectIterationFilesAction.isUserAllowedToTranslate() or projectIterationFilesAction.isUserAllowedToReview())}" 
 					styleClass="centered actionCol">
@@ -139,7 +137,6 @@
                     </div>
 				</rich:column>
 
-				
                  <rich:column>
                     <f:facet name="header">
                         #{messages['jsf.iteration.files.Download']}
@@ -274,7 +271,7 @@
 					<f:param name="locale" value="#{locale.language}" />
 					<span class="icon-eye"/>#{messages['jsf.Open']}
 				</h:outputLink>
-				
+
 				<h:outputLink
 					rendered="#{projectIterationFilesAction.isUserAllowedToTranslate() or projectIterationFilesAction.isUserAllowedToReview()}"
 					value="#{request.contextPath}/webtrans/Application.seam" styleClass="action_link">
