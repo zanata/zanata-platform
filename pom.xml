@@ -505,6 +505,16 @@
             <type>test-jar</type>
             <scope>test</scope>
       </dependency>
+          <!--
+            In the server, we can use a newer version than Fedora has
+            (and we need it for concordion).
+            This one also has a source jar!
+          -->
+          <dependency>
+            <groupId>xom</groupId>
+            <artifactId>xom</artifactId>
+            <version>1.2.5</version>
+          </dependency>
    </dependencies>
 
    <!--
