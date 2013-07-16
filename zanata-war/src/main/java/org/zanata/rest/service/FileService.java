@@ -161,13 +161,12 @@ public class FileService implements FileResource
                                      @QueryParam("docId") String docId,
                                      @MultipartForm DocumentFileUploadForm uploadForm )
    {
-      DocumentUpload upload = new DocumentUpload();
-      return upload.tryUploadSourceFile(projectSlug, iterationSlug, docId, uploadForm,
-            identity, session, translationFileServiceImpl, projectIterationDAO,
-            documentDAO, documentServiceImpl, virusScanner);
+      DocumentUpload uploader = new DocumentUpload(identity, session, documentDAO, projectIterationDAO,
+            documentServiceImpl, virusScanner, translationFileServiceImpl);
+      return uploader.tryUploadSourceFile(projectSlug, iterationSlug, docId, uploadForm);
    }
 
-   // TODO this shares a lot of logic with .uploadSourceFile(), try to unify.
+   // TODO this shares a lot of logic with .tryUploadSourceFile(), try to unify.
    @Override
    @POST
    @Path(TRANSLATION_UPLOAD_TEMPLATE)

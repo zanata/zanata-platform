@@ -79,15 +79,35 @@ public class DocumentUpload
 
    public static final HLocale NULL_LOCALE = null;
 
-   public Response tryUploadSourceFile(String projectSlug, String iterationSlug, String docId,
-         DocumentFileUploadForm uploadForm,
+   private final DocumentService documentServiceImpl;
+   private final VirusScanner virusScanner;
+   private final ZanataIdentity identity;
+   private final Session session;
+   private final DocumentDAO documentDAO;
+   private final ProjectIterationDAO projectIterationDAO;
+   private final TranslationFileService translationFileServiceImpl;
+
+
+   public DocumentUpload(
          ZanataIdentity identity,
          Session session,
-         TranslationFileService translationFileServiceImpl,
-         ProjectIterationDAO projectIterationDAO,
          DocumentDAO documentDAO,
+         ProjectIterationDAO projectIterationDAO,
          DocumentService documentServiceImpl,
-         VirusScanner virusScanner)
+         VirusScanner virusScanner,
+         TranslationFileService translationFileServiceImpl)
+   {
+      this.identity = identity;
+      this.session = session;
+      this.documentDAO = documentDAO;
+      this.projectIterationDAO = projectIterationDAO;
+      this.documentServiceImpl = documentServiceImpl;
+      this.virusScanner = virusScanner;
+      this.translationFileServiceImpl = translationFileServiceImpl;
+   }
+
+   public Response tryUploadSourceFile(String projectSlug, String iterationSlug, String docId,
+         DocumentFileUploadForm uploadForm)
    {
       try
       {
