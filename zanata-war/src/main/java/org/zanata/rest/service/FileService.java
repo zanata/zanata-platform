@@ -268,12 +268,12 @@ public class FileService implements FileResource
       {
          throw new ChunkUploadException(Status.UNAUTHORIZED, e.getMessage());
       }
-      checkValidSourceUploadType(uploadForm);
+      checkValidSourceUploadType(uploadForm, translationFileServiceImpl);
    }
 
    private void checkSourceUploadAllowed(String projectSlug, String iterationSlug)
    {
-      if (!isDocumentUploadAllowed(projectSlug, iterationSlug))
+      if (!isDocumentUploadAllowed(projectSlug, iterationSlug, identity, projectIterationDAO))
       {
          throw new ChunkUploadException(Status.FORBIDDEN,
                "You do not have permission to upload source documents to project-version \""
@@ -281,10 +281,17 @@ public class FileService implements FileResource
       }
    }
 
-   private void checkValidSourceUploadType(DocumentFileUploadForm uploadForm)
+   private static boolean isDocumentUploadAllowed(String projectSlug, String iterationSlug, ZanataIdentity identity, ProjectIterationDAO projIterDAO)
+   {
+      HProjectIteration projectIteration = projIterDAO.getBySlug(projectSlug, iterationSlug);
+      return projectIteration.getStatus() == EntityStatus.ACTIVE && projectIteration.getProject().getStatus() == EntityStatus.ACTIVE
+            && identity != null && identity.hasPermission("import-template", projectIteration);
+   }
+
+   private static void checkValidSourceUploadType(DocumentFileUploadForm uploadForm, TranslationFileService transFileService)
    {
       if (!uploadForm.getFileType().equals(".pot")
-            && !translationFileServiceImpl.hasAdapterFor(DocumentType.typeFor(uploadForm.getFileType())))
+            && !transFileService.hasAdapterFor(DocumentType.typeFor(uploadForm.getFileType())))
       {
          throw new ChunkUploadException(Status.BAD_REQUEST,
                "The type \"" + uploadForm.getFileType() + "\" specified in form parameter 'type' "
@@ -576,13 +583,6 @@ public class FileService implements FileResource
                "The project-version \"" + projectSlug + ":" + iterationSlug +
                "\" is not active. Document upload is not allowed.");
       }
-   }
-
-   private boolean isDocumentUploadAllowed(String projectSlug, String iterationSlug)
-   {
-      HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-      return projectIteration.getStatus() == EntityStatus.ACTIVE && projectIteration.getProject().getStatus() == EntityStatus.ACTIVE
-            && identity != null && identity.hasPermission("import-template", projectIteration);
    }
 
    private void parsePotFile(InputStream potStream, String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm)
