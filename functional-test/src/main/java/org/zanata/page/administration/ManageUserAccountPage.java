@@ -87,15 +87,17 @@ public class ManageUserAccountPage extends AbstractPage
       return new ManageUserAccountPage(getDriver());
    }
 
-   public void clickEnabled()
+   public ManageUserAccountPage clickEnabled()
    {
       enabledField.click();
+      return new ManageUserAccountPage(getDriver());
    }
 
-   public void clickRole(String role)
+   public ManageUserAccountPage clickRole(String role)
    {
       WebElement roleBox = getDriver().findElement(By.id("userdetailForm:rolesField:roles:".concat(roleMap.get(role))));
       roleBox.click();
+      return new ManageUserAccountPage(getDriver());
    }
 
    public boolean isRoleChecked(String role)
