@@ -388,7 +388,7 @@ public class FileService implements FileResource
       File tempFile;
       try
       {
-         tempFile = combineToTempFile(upload);
+         tempFile = combineToTempFile(upload, translationFileServiceImpl);
       }
       catch (HashMismatchException e)
       {
@@ -425,7 +425,7 @@ public class FileService implements FileResource
       return dao.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId) == null;
    }
 
-   private File combineToTempFile(HDocumentUpload upload) throws SQLException
+   private static File combineToTempFile(HDocumentUpload upload, TranslationFileService service) throws SQLException
    {
       Vector<InputStream> partStreams = new Vector<InputStream>();
       for (HDocumentUploadPart part : upload.getParts())
@@ -445,7 +445,7 @@ public class FileService implements FileResource
       }
       InputStream combinedParts = new SequenceInputStream(partStreams.elements());
       combinedParts = new DigestInputStream(combinedParts, md);
-      File tempFile = translationFileServiceImpl.persistToTempFile(combinedParts);
+      File tempFile = service.persistToTempFile(combinedParts);
       String md5hash = new String(Hex.encodeHex(md.digest()));
 
       if (!md5hash.equals(upload.getContentHash()))
