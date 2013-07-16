@@ -226,12 +226,6 @@ public class FileService implements FileResource
          }
          return sourceUploadSuccessResponse(isNewDocument(projectSlug, iterationSlug, docId), totalChunks);
       }
-      catch (AuthorizationException e)
-      {
-         return Response.status(Status.UNAUTHORIZED)
-         .entity(new ChunkUploadResponse(e.getMessage()))
-         .build();
-      }
       catch (ChunkUploadException e)
       {
          return Response.status(e.getStatusCode())
@@ -260,8 +254,15 @@ public class FileService implements FileResource
 
    private void checkSourceUploadPreconditions(String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm)
    {
-      checkUploadPreconditions(projectSlug, iterationSlug, docId, uploadForm);
-      checkSourceUploadAllowed(projectSlug, iterationSlug);
+      try
+      {
+         checkUploadPreconditions(projectSlug, iterationSlug, docId, uploadForm);
+         checkSourceUploadAllowed(projectSlug, iterationSlug);
+      }
+      catch (AuthorizationException e)
+      {
+         throw new ChunkUploadException(Status.UNAUTHORIZED, e.getMessage());
+      }
       checkValidSourceUploadType(uploadForm);
    }
 
