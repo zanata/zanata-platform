@@ -79,7 +79,7 @@ public class DocumentUpload
 
    public static final HLocale NULL_LOCALE = null;
 
-   public static Response tryUploadSourceFile(String projectSlug, String iterationSlug, String docId,
+   public Response tryUploadSourceFile(String projectSlug, String iterationSlug, String docId,
          DocumentFileUploadForm uploadForm,
          ZanataIdentity identity,
          Session session,

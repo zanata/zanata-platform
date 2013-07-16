@@ -161,7 +161,8 @@ public class FileService implements FileResource
                                      @QueryParam("docId") String docId,
                                      @MultipartForm DocumentFileUploadForm uploadForm )
    {
-      return DocumentUpload.tryUploadSourceFile(projectSlug, iterationSlug, docId, uploadForm,
+      DocumentUpload upload = new DocumentUpload();
+      return upload.tryUploadSourceFile(projectSlug, iterationSlug, docId, uploadForm,
             identity, session, translationFileServiceImpl, projectIterationDAO,
             documentDAO, documentServiceImpl, virusScanner);
    }
