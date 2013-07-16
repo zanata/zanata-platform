@@ -463,7 +463,7 @@ public class FileService implements FileResource
       return tempFile;
    }
 
-   private HDocumentUpload retrieveUploadObject(DocumentFileUploadForm uploadForm)
+   private static HDocumentUpload retrieveUploadObject(DocumentFileUploadForm uploadForm, Session session)
    {
       // TODO put in DAO
       Criteria criteria = session.createCriteria(HDocumentUpload.class);
@@ -529,7 +529,7 @@ public class FileService implements FileResource
                   "Form parameter 'uploadId' must be provided when this is not the first part.");
          }
 
-         HDocumentUpload upload = retrieveUploadObject(uploadForm);
+         HDocumentUpload upload = retrieveUploadObject(uploadForm, session);
          if (upload == null)
          {
             throw new ChunkUploadException(Status.PRECONDITION_FAILED,
@@ -770,7 +770,7 @@ public class FileService implements FileResource
       }
       else
       {
-         upload = retrieveUploadObject(uploadForm);
+         upload = retrieveUploadObject(uploadForm, session);
       }
       saveUploadPart(uploadForm, upload);
       return upload;
