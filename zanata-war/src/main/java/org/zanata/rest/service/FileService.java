@@ -185,7 +185,8 @@ public class FileService implements FileResource
       try
       {
          GlobalDocumentId id = new GlobalDocumentId(projectSlug, iterationSlug, docId);
-         checkSourceUploadPreconditions(projectSlug, iterationSlug, docId, uploadForm);
+         checkSourceUploadPreconditions(projectSlug, iterationSlug, docId, uploadForm, identity,
+               session, projectIterationDAO, translationFileServiceImpl);
 
          Optional<File> tempFile;
          int totalChunks;
@@ -257,7 +258,12 @@ public class FileService implements FileResource
       }
    }
 
-   private void checkSourceUploadPreconditions(String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm)
+   private static void checkSourceUploadPreconditions(String projectSlug, String iterationSlug, String docId,
+         DocumentFileUploadForm uploadForm,
+         ZanataIdentity identity,
+         Session session,
+         ProjectIterationDAO projectIterationDAO,
+         TranslationFileService translationFileServiceImpl)
    {
       try
       {
