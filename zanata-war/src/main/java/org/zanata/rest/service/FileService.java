@@ -209,7 +209,7 @@ public class FileService implements FileResource
          {
             HDocumentUpload upload = saveUploadPart(projectSlug, iterationSlug, docId, NULL_LOCALE, uploadForm);
             totalChunks = upload.getParts().size();
-            tempFile = Optional.of(combineToTempFileAndDeleteUploadRecord(upload));
+            tempFile = Optional.of(combineToTempFileAndDeleteUploadRecord(upload, session, translationFileServiceImpl));
          }
 
          if (uploadForm.getFileType().equals(".pot"))
@@ -383,12 +383,13 @@ public class FileService implements FileResource
       translationFileServiceImpl.removeTempFile(tempFile);
    }
 
-   private File combineToTempFileAndDeleteUploadRecord(HDocumentUpload upload)
+   private static File combineToTempFileAndDeleteUploadRecord(HDocumentUpload upload, Session session,
+         TranslationFileService transFileService)
    {
       File tempFile;
       try
       {
-         tempFile = combineToTempFile(upload, translationFileServiceImpl);
+         tempFile = combineToTempFile(upload, transFileService);
       }
       catch (HashMismatchException e)
       {
@@ -665,7 +666,7 @@ public class FileService implements FileResource
                            "Chunk accepted, awaiting remaining chunks."))
                      .build();
             }
-            tempFile = Optional.of(combineToTempFileAndDeleteUploadRecord(upload));
+            tempFile = Optional.of(combineToTempFileAndDeleteUploadRecord(upload, session, translationFileServiceImpl));
          }
 
          TranslationsResource transRes;
