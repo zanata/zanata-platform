@@ -41,7 +41,7 @@
     <from casesensitive="true">^/language/join/(.+)$</from>
     <to last="true">/language/request_to_join_update_role.seam\?emailType=request_to_join_update_role_language&amp;id=$1</to>
   </rule>
-  
+
   <rule>
     <from casesensitive="true">/language/contact/(.+)$</from>
     <to last="true">/language/contact_coordinator.seam\?emailType=contact_coordinator&amp;id=$1</to>

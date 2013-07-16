@@ -133,16 +133,16 @@ public class ManageLanguageTeamMemberPage extends AbstractPage
       log.info("username to be added: {}", personUsername);
       WebElement selectRowToUpdateCell = personRow.getCells().get(SEARCH_RESULT_SELECTED_COLUMN).findElement(By.tagName("input"));
       WebElement isTranslatorCell = personRow.getCells().get(ISTRANSLATOR_COLUMN).findElement(By.tagName("input"));
-      
+
       if (!isTranslatorCell.isSelected())
       {
          if(!selectRowToUpdateCell.isSelected())
          {
             selectRowToUpdateCell.click();
          }
-         
+
          isTranslatorCell.click();
-         
+
          WebElement addButton = getDriver().findElement(By.id("resultForm:addSelectedBtn"));
          addButton.click();
          WebElement closeButton = getDriver().findElement(By.id("searchForm:closeBtn"));

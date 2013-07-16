@@ -44,7 +44,7 @@ public class LanguageWorkFlow extends AbstractWebWorkFlow
          log.warn("admin has already joined the language [{}]", localeId);
       }
    }
-   
+
    public ManageLanguagePage addLanguage(String localeId)
    {
       ManageLanguagePage manageLanguagePage = goToHome().goToAdministration().goToManageLanguagePage();

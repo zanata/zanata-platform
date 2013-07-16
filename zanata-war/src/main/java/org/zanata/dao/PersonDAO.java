@@ -93,7 +93,7 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long>
       query.setComment("PersonDAO.findByUsername");
       return (HPerson) query.uniqueResult();
    }
-   
+
    public String findEmail(String username)
    {
       Query query = getSession().createQuery("select p.email from HPerson as p where p.account.username = :username");
@@ -143,7 +143,7 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long>
       sb.append("select count(*) from HLocaleMember where ");
       sb.append("id.person = :person ");
       sb.append("and id.supportedLanguage = :language ");
-      
+
       if(isTranslator != null)
       {
          sb.append("and translator = :isTranslator ");
@@ -156,11 +156,11 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long>
       {
          sb.append("and coordinator = :isCoordinator ");
       }
-      
+
       Query q = getSession().createQuery(sb.toString().trim())
             .setParameter("person", person)
             .setParameter("language", language);
-      
+
       if(isTranslator != null)
       {
             q.setParameter("isTranslator", isTranslator.booleanValue());
@@ -173,7 +173,7 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long>
       {
          q.setParameter("isCoordinator", isCoordinator.booleanValue());
       }
-      
+
       q.setCacheable(false).setComment("PersonDAO.isUserInLanguageTeamWithRoles");
       Long totalCount = (Long) q.uniqueResult();
       return totalCount > 0L;

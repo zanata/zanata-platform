@@ -43,23 +43,23 @@
     </changeSet>
 
     <changeSet author="aeng@redhat.com" id="2">
-    	<comment>Add a flag indicating when a member of a Language team (locale) is a team reviewer.</comment>
-		<addColumn tableName="HLocale_Member">
-			<column name="isReviewer" type="boolean" defaultValueBoolean="false">
-				<constraints nullable="false" />
-			</column>
-		</addColumn>
+        <comment>Add a flag indicating when a member of a Language team (locale) is a team reviewer.</comment>
+        <addColumn tableName="HLocale_Member">
+            <column name="isReviewer" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
     </changeSet>
-    
+
     <changeSet author="aeng@redhat.com" id="3">
-    	<comment>Add a flag indicating when a member of a Language team (locale) is a team translator.</comment>
-		<addColumn tableName="HLocale_Member">
-			<column name="isTranslator" type="boolean" defaultValueBoolean="false">
-				<constraints nullable="false" />
-			</column>
-		</addColumn>
+        <comment>Add a flag indicating when a member of a Language team (locale) is a team translator.</comment>
+        <addColumn tableName="HLocale_Member">
+            <column name="isTranslator" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
     </changeSet>
-    
+
     <changeSet author="aeng@redhat.com" id="4" >
         <comment>Make current locale members and coordinator as translator</comment>
         <sql>

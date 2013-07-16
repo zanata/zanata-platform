@@ -30,7 +30,7 @@ public class UserWorkspaceContext implements IsSerializable
    {
       workspaceRestrictions = workspaceRestrictions.changeEditTranslationAccess(hasEditTranslationAccess);
    }
-   
+
    public void setHasReviewAccess(boolean hasReviewAccess)
    {
       workspaceRestrictions = workspaceRestrictions.changeReviewAccess(hasReviewAccess);
@@ -45,7 +45,7 @@ public class UserWorkspaceContext implements IsSerializable
    {
       return (!getWorkspaceRestrictions().isProjectActive() || (!getWorkspaceRestrictions().isHasEditTranslationAccess() && !getWorkspaceRestrictions().isHasReviewAccess()));
    }
-   
+
    public boolean hasEditTranslationAccess()
    {
       return (getWorkspaceRestrictions().isProjectActive() && getWorkspaceRestrictions().isHasEditTranslationAccess());

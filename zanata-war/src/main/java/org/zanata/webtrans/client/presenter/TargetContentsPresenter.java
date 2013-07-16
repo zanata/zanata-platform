@@ -599,16 +599,16 @@ public class TargetContentsPresenter implements
       // FIXME once setting codemirror editor to readonly it won't be editable again
       userWorkspaceContext.setProjectActive(event.isProjectActive());
       userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().setProjectType(event.getProjectType());
-      
+
       for (TargetContentsDisplay targetContentsDisplay : displayList)
       {
          ViewMode viewMode = canEditTranslation() ? ViewMode.EDIT : ViewMode.VIEW;
          boolean showButtons = userWorkspaceContext.hasReadOnlyAccess() ? false : isDisplayButtons();
-         
+
          targetContentsDisplay.setToMode(viewMode);
          targetContentsDisplay.showButtons(showButtons);
       }
-      
+
       if (userWorkspaceContext.hasReadOnlyAccess())
       {
          concealDisplay();
@@ -674,7 +674,7 @@ public class TargetContentsPresenter implements
       WorkspaceRestrictions restrictions = userWorkspaceContext.getWorkspaceRestrictions();
       return restrictions.isHasReviewAccess() && restrictions.isProjectRequireReview();
    }
-   
+
    @Override
    public boolean canEditTranslation()
    {

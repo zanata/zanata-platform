@@ -50,15 +50,13 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 public class HLocaleMember implements Serializable
 {
    private static final long serialVersionUID = 1L;
-   
+
    private HLocaleMemberPk id = new HLocaleMemberPk();
-   
+
    private boolean isCoordinator;
-   
    private boolean isReviewer;
-   
    private boolean isTranslator;
-   
+
    public HLocaleMember( HPerson person, HLocale supportedLanguage, boolean isTranslator, boolean isReviewer, boolean isCoordinator)
    {
       id.setPerson(person);
@@ -67,13 +65,13 @@ public class HLocaleMember implements Serializable
       setReviewer(isReviewer);
       setCoordinator(isCoordinator);
    }
-   
+
    @EmbeddedId
    protected HLocaleMemberPk getId()
    {
       return id;
    }
-   
+
    protected void setId(HLocaleMemberPk id)
    {
       this.id = id;
@@ -84,13 +82,13 @@ public class HLocaleMember implements Serializable
    {
       return isCoordinator;
    }
-   
+
    @Column(name="isReviewer")
    public boolean isReviewer()
    {
       return isReviewer;
    }
-   
+
    @Column(name="isTranslator")
    public boolean isTranslator()
    {
