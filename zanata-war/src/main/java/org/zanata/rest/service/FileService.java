@@ -232,13 +232,6 @@ public class FileService implements FileResource
          .entity(new ChunkUploadResponse(e.getMessage()))
          .build();
       }
-      catch (VirusDetectedException e)
-      {
-         log.warn("File failed virus scan: {}", e.getMessage());
-         return Response.status(Status.BAD_REQUEST)
-               .entity(new ChunkUploadResponse("uploaded file did not pass virus scan"))
-               .build();
-      }
       catch (ChunkUploadException e)
       {
          return Response.status(e.getStatusCode())
@@ -322,7 +315,15 @@ public class FileService implements FileResource
          String docId, DocumentFileUploadForm uploadForm) throws VirusDetectedException
    {
       String name = projectSlug+":"+iterationSlug+":"+docId;
-      virusScanner.scan(tempFile, name);
+      try
+      {
+         virusScanner.scan(tempFile, name);
+      }
+      catch (VirusDetectedException e)
+      {
+         log.warn("File failed virus scan: {}", e.getMessage());
+         throw new ChunkUploadException(Status.BAD_REQUEST, "Uploaded file did not pass virus scan");
+      }
 
       HDocument document;
       Optional<String> params;
