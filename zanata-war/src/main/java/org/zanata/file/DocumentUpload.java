@@ -178,7 +178,7 @@ public class DocumentUpload
       }
    }
 
-   public static void checkSourceUploadPreconditions(String projectSlug, String iterationSlug, String docId,
+   private static void checkSourceUploadPreconditions(String projectSlug, String iterationSlug, String docId,
          DocumentFileUploadForm uploadForm,
          ZanataIdentity identity,
          Session session,
@@ -289,7 +289,7 @@ public class DocumentUpload
       }
    }
 
-   public static HDocumentUpload retrieveUploadObject(DocumentFileUploadForm uploadForm, Session session)
+   private static HDocumentUpload retrieveUploadObject(DocumentFileUploadForm uploadForm, Session session)
    {
       // TODO put in DAO
       Criteria criteria = session.createCriteria(HDocumentUpload.class);
@@ -298,7 +298,7 @@ public class DocumentUpload
       return upload;
    }
 
-   public static void checkSourceUploadAllowed(String projectSlug, String iterationSlug, ZanataIdentity identity, ProjectIterationDAO projIterDAO)
+   private static void checkSourceUploadAllowed(String projectSlug, String iterationSlug, ZanataIdentity identity, ProjectIterationDAO projIterDAO)
    {
       if (!isDocumentUploadAllowed(projectSlug, iterationSlug, identity, projIterDAO))
       {
@@ -308,14 +308,14 @@ public class DocumentUpload
       }
    }
 
-   public static boolean isDocumentUploadAllowed(String projectSlug, String iterationSlug, ZanataIdentity identity, ProjectIterationDAO projIterDAO)
+   private static boolean isDocumentUploadAllowed(String projectSlug, String iterationSlug, ZanataIdentity identity, ProjectIterationDAO projIterDAO)
    {
       HProjectIteration projectIteration = projIterDAO.getBySlug(projectSlug, iterationSlug);
       return projectIteration.getStatus() == EntityStatus.ACTIVE && projectIteration.getProject().getStatus() == EntityStatus.ACTIVE
             && identity != null && identity.hasPermission("import-template", projectIteration);
    }
 
-   public static void checkValidSourceUploadType(DocumentFileUploadForm uploadForm, TranslationFileService transFileService)
+   private static void checkValidSourceUploadType(DocumentFileUploadForm uploadForm, TranslationFileService transFileService)
    {
       if (!uploadForm.getFileType().equals(".pot")
             && !transFileService.hasAdapterFor(DocumentType.typeFor(uploadForm.getFileType())))
@@ -343,7 +343,7 @@ public class DocumentUpload
       return upload;
    }
 
-   public static HDocumentUpload createMultipartUpload(String projectSlug, String iterationSlug,
+   private static HDocumentUpload createMultipartUpload(String projectSlug, String iterationSlug,
          String docId, DocumentFileUploadForm uploadForm, HLocale locale,
          ProjectIterationDAO projectIterationDAO)
    {
@@ -358,7 +358,7 @@ public class DocumentUpload
       return newUpload;
    }
 
-   public static void saveUploadPart(DocumentFileUploadForm uploadForm, HDocumentUpload upload,
+   private static void saveUploadPart(DocumentFileUploadForm uploadForm, HDocumentUpload upload,
          Session session)
    {
       Blob partContent = session.getLobHelper().createBlob(uploadForm.getFileStream(), uploadForm.getSize().intValue());
@@ -402,7 +402,7 @@ public class DocumentUpload
       return tempFile;
    }
 
-   public static File combineToTempFile(HDocumentUpload upload, TranslationFileService service) throws SQLException
+   private static File combineToTempFile(HDocumentUpload upload, TranslationFileService service) throws SQLException
    {
       Vector<InputStream> partStreams = new Vector<InputStream>();
       for (HDocumentUploadPart part : upload.getParts())
@@ -444,7 +444,7 @@ public class DocumentUpload
       }
    }
 
-   public static void parsePotFile(InputStream potStream, String projectSlug, String iterationSlug,
+   private static void parsePotFile(InputStream potStream, String projectSlug, String iterationSlug,
          String docId, DocumentFileUploadForm uploadForm,
          TranslationFileService translationFileServiceImpl,
          DocumentService documentServiceImpl,
@@ -458,7 +458,7 @@ public class DocumentUpload
       documentServiceImpl.saveDocument(projectSlug, iterationSlug, doc, new StringSet(ExtensionType.GetText.toString()), false);
    }
 
-   public static boolean useOfflinePo(String projectSlug, String iterationSlug, String docId,
+   private static boolean useOfflinePo(String projectSlug, String iterationSlug, String docId,
          DocumentDAO documentDAO, TranslationFileService translationFileServiceImpl)
    {
       return !isNewDocument(projectSlug, iterationSlug, docId, documentDAO) && !translationFileServiceImpl.isPoDocument(projectSlug, iterationSlug, docId);
@@ -494,7 +494,7 @@ public class DocumentUpload
       return tempFile;
    }
 
-   public static void processAdapterFile(@Nonnull File tempFile, String projectSlug, String iterationSlug,
+   private static void processAdapterFile(@Nonnull File tempFile, String projectSlug, String iterationSlug,
          String docId, DocumentFileUploadForm uploadForm,
          VirusScanner virusScanner,
          DocumentDAO documentDAO,
@@ -565,7 +565,7 @@ public class DocumentUpload
       translationFileServiceImpl.removeTempFile(tempFile);
    }
 
-   public static Response sourceUploadSuccessResponse(boolean isNewDocument, int acceptedChunks)
+   private static Response sourceUploadSuccessResponse(boolean isNewDocument, int acceptedChunks)
    {
       Response response;
       ChunkUploadResponse uploadResponse = new ChunkUploadResponse();
