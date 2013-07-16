@@ -598,7 +598,7 @@ public class FileService implements FileResource
       documentServiceImpl.saveDocument(projectSlug, iterationSlug, doc, new StringSet(ExtensionType.GetText.toString()), false);
    }
 
-   private Response sourceUploadSuccessResponse(boolean isNewDocument, int acceptedChunks)
+   private static Response sourceUploadSuccessResponse(boolean isNewDocument, int acceptedChunks)
    {
       Response response;
       ChunkUploadResponse uploadResponse = new ChunkUploadResponse();
