@@ -32,6 +32,7 @@ import org.zanata.page.AbstractPage;
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
+
 public class ManageUserAccountPage extends AbstractPage
 {
 
@@ -66,36 +67,44 @@ public class ManageUserAccountPage extends AbstractPage
       roleMap.put("user", "4");
    }
 
-   public ManageUserAccountPage clearAndEnterUsername(String username)
+   public ManageUserAccountPage enterUsername(final String username)
    {
-      usernameField.clear();
-      usernameField.sendKeys(username);
+      waitForTenSec().until(new Predicate<WebDriver>()
+      {
+         @Override
+         public boolean apply(WebDriver input)
+         {
+            WebElement usernameField = input.findElement(usernameBy);
+            usernameField.sendKeys(username);
+            return input.findElement(usernameBy).getAttribute("value").equals(username);
+         }
+      });
       return new ManageUserAccountPage(getDriver());
    }
 
-   public ManageUserAccountPage clearAndEnterPassword(String password)
+   public ManageUserAccountPage enterPassword(String password)
    {
-      passwordField.clear();
       passwordField.sendKeys(password);
       return new ManageUserAccountPage(getDriver());
    }
 
-   public ManageUserAccountPage clearAndEnterConfirmPassword(String confirmPassword)
+   public ManageUserAccountPage enterConfirmPassword(String confirmPassword)
    {
-      passwordConfirmField.clear();
       passwordConfirmField.sendKeys(confirmPassword);
       return new ManageUserAccountPage(getDriver());
    }
 
-   public void clickEnabled()
+   public ManageUserAccountPage clickEnabled()
    {
       enabledField.click();
+      return new ManageUserAccountPage(getDriver());
    }
 
-   public void clickRole(String role)
+   public ManageUserAccountPage clickRole(String role)
    {
       WebElement roleBox = getDriver().findElement(By.id("userdetailForm:rolesField:roles:".concat(roleMap.get(role))));
       roleBox.click();
+      return new ManageUserAccountPage(getDriver());
    }
 
    public boolean isRoleChecked(String role)
@@ -107,5 +116,27 @@ public class ManageUserAccountPage extends AbstractPage
    {
       saveButton.click();
       return new ManageUserPage(getDriver());
+   }
+
+   public ManageUserPage cancelEditUser()
+   {
+      cancelButton.click();
+      return new ManageUserPage(getDriver());
+   }
+
+   public ManageUserAccountPage clearFields()
+   {
+      waitForTenSec().until(new Predicate<WebDriver>()
+      {
+         @Override
+         public boolean apply(WebDriver input)
+         {
+            input.findElement(usernameBy).clear();
+            return input.findElement(usernameBy).getAttribute("value").isEmpty();
+         }
+      });
+      passwordField.clear();
+      passwordConfirmField.clear();
+      return new ManageUserAccountPage(getDriver());
    }
 }

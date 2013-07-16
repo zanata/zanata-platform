@@ -90,7 +90,7 @@ public class GetTransUnitList extends AbstractWorkspaceAction<GetTransUnitListRe
       return filterStates.hasTranslated();
    }
 
-   public boolean isFilterNeedReview()
+   public boolean isFilterFuzzy()
    {
       return filterStates.hasFuzzy();
    }

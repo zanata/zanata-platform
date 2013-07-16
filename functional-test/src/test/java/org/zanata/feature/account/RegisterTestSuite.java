@@ -1,5 +1,5 @@
 /*
- * Copyright 2012, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -18,25 +18,25 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
+package org.zanata.feature.account;
 
-package org.zanata.webtrans.client.ui;
+import org.junit.ClassRule;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.zanata.util.ResetDatabaseRule;
 
-import com.google.inject.ImplementedBy;
-
-@ImplementedBy(FilterViewConfirmationPanel.class)
-public interface FilterViewConfirmationDisplay
+/**
+ * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ */
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+      RegisterDetailedTest.class,
+      UsernameValidationTest.class,
+      ValidEmailAddressTest.class,
+      InvalidEmailAddressTest.class
+})
+public class RegisterTestSuite
 {
-   interface Listener
-   {
-      void saveAsTranslatedAndFilter();
-      void saveAsFuzzyAndFilter();
-      void discardChangesAndFilter();
-      void cancelFilter();
-   }
-
-   void center();
-
-   void hide();
-
-   void setListener(Listener listener);
+   @ClassRule
+   public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
 }

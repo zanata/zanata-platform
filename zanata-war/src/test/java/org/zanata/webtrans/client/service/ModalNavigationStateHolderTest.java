@@ -98,7 +98,7 @@ public class ModalNavigationStateHolderTest
    @Test
    public void testGetNextRowWithContentStateFilterOn()
    {
-      configHolder.setFilterByNeedReview(true);
+      configHolder.setFilterByFuzzy(true);
       configHolder.setFilterByUntranslated(true);
 
       navigationStateHolder.updateSelected(new TransUnitId(2));

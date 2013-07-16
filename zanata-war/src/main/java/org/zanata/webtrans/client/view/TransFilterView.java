@@ -265,7 +265,7 @@ public class TransFilterView extends Composite implements TransFilterDisplay
    public void setOptionsState(ConfigurationState state)
    {
       untranslatedChk.setValue(state.isFilterByUntranslated());
-      fuzzyChk.setValue(state.isFilterByNeedReview());
+      fuzzyChk.setValue(state.isFilterByFuzzy());
       translatedChk.setValue(state.isFilterByTranslated());
       approvedChk.setValue(state.isFilterByApproved());
       rejectedChk.setValue(state.isFilterByRejected());

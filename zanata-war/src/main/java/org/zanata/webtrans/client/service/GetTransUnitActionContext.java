@@ -44,7 +44,7 @@ public class GetTransUnitActionContext
    private int offset = 0;
    private int count = 5; //this should be set to UserConfigHolder.getPageSize()
    private boolean filterTranslated;
-   private boolean filterNeedReview;
+   private boolean filterFuzzy;
    private boolean filterUntranslated;
    private boolean filterApproved;
    private boolean filterRejected;
@@ -64,7 +64,7 @@ public class GetTransUnitActionContext
       offset = other.getOffset();
       count = other.getCount();
       filterTranslated = other.isFilterTranslated();
-      filterNeedReview = other.isFilterNeedReview();
+      filterFuzzy = other.isFilterFuzzy();
       filterUntranslated = other.isFilterUntranslated();
       filterApproved = other.isFilterApproved();
       filterRejected = other.isFilterRejected();
@@ -109,15 +109,15 @@ public class GetTransUnitActionContext
       return result;
    }
 
-   public boolean isFilterNeedReview()
+   public boolean isFilterFuzzy()
    {
-      return filterNeedReview;
+      return filterFuzzy;
    }
 
-   public GetTransUnitActionContext changeFilterNeedReview(boolean filterNeedReview)
+   public GetTransUnitActionContext changeFilterFuzzy(boolean filterFuzzy)
    {
       GetTransUnitActionContext result = new GetTransUnitActionContext(this);
-      result.filterNeedReview = filterNeedReview;
+      result.filterFuzzy = filterFuzzy;
       return result;
    }
 
@@ -221,7 +221,7 @@ public class GetTransUnitActionContext
    {
       GetTransUnitActionContext result = new GetTransUnitActionContext(this);
       result.filterTranslated = false;
-      result.filterNeedReview = false;
+      result.filterFuzzy = false;
       result.filterHasError = false;
       result.filterUntranslated = false;
       result.filterApproved = false;
@@ -240,7 +240,7 @@ public class GetTransUnitActionContext
             add("offset", offset).
             add("count", count).
             add("filterTranslated", filterTranslated).
-            add("filterNeedReview", filterNeedReview).
+            add("filterFuzzy", filterFuzzy).
             add("filterUntranslated", filterUntranslated).
             add("filterApproved", filterApproved).
             add("filterRejected", filterRejected).
@@ -273,7 +273,7 @@ public class GetTransUnitActionContext
       }
 
       // @formatter:off
-      return filterNeedReview != newContext.filterNeedReview
+      return filterFuzzy != newContext.filterFuzzy
             || filterTranslated != newContext.filterTranslated
             || filterUntranslated != newContext.filterUntranslated
             || filterApproved != newContext.filterApproved
@@ -287,8 +287,8 @@ public class GetTransUnitActionContext
 
    public boolean acceptAll()
    {
-      boolean messageFilterAcceptAll = filterHasError == filterNeedReview 
-            && filterNeedReview == filterTranslated 
+      boolean messageFilterAcceptAll = filterHasError == filterFuzzy 
+            && filterFuzzy == filterTranslated 
             && filterTranslated == filterUntranslated
             && filterUntranslated == filterHasError
             && filterHasError == filterApproved
@@ -306,7 +306,7 @@ public class GetTransUnitActionContext
    {
       ContentStateGroup checkboxStates = ContentStateGroup.builder()
             .includeNew(filterUntranslated)
-            .includeFuzzy(filterNeedReview)
+            .includeFuzzy(filterFuzzy)
             .includeTranslated(filterTranslated)
             .includeApproved(filterApproved)
             .includeRejected(filterRejected)
