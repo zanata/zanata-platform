@@ -20,12 +20,14 @@
  */
 package org.zanata.feature.account;
 
-import lombok.extern.slf4j.Slf4j;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.zanata.feature.BasicAcceptanceTest;
+import org.zanata.feature.DetailedTest;
 import org.zanata.page.HomePage;
 import org.zanata.page.account.RegisterPage;
 import org.zanata.util.rfc2822.InvalidEmailAddressRFC2822;
@@ -40,8 +42,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
-public class RegisterDetailedTest
+@Category(DetailedTest.class)
+public class RegisterFullTest
 {
    @ClassRule
    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
@@ -67,6 +69,7 @@ public class RegisterDetailedTest
    }
 
    @Test
+   @Category(BasicAcceptanceTest.class)
    @Ignore("Captcha prevents test completion")
    public void registerSuccessful()
    {

@@ -22,10 +22,12 @@ package org.zanata.feature.account;
 
 import org.hamcrest.Matchers;
 import org.junit.ClassRule;
+import org.junit.experimental.categories.Category;
 import org.junit.experimental.theories.DataPoint;
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
+import org.zanata.feature.DetailedTest;
 import org.zanata.page.account.RegisterPage;
 import org.zanata.util.ResetDatabaseRule;
 import org.zanata.workflow.BasicWorkFlow;
@@ -36,6 +38,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @RunWith(Theories.class)
+@Category(DetailedTest.class)
 public class UsernameValidationTest
 {
    @ClassRule

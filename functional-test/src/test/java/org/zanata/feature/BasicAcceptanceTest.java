@@ -18,21 +18,16 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.feature.account;
-
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-
+package org.zanata.feature;
 /**
+ * Interface for the execution of the Basic Acceptance Tests (BAT) category.
+ *
+ * Tests in this category exercise features only so far as to demonstrate that the feature works,
+ * and perhaps have a single handled negative case.
+ * BAT suites should not exceed an agreed interval (e.g. approximately 10 minutes) in order to
+ * maintain a positive GitHub workflow.
+ *
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @see "http://junit.org/javadoc/4.9/org/junit/experimental/categories/Categories.html"
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-      RegisterFullTest.class,
-      UsernameValidationTest.class,
-      ValidEmailAddressTest.class,
-      InvalidEmailAddressTest.class
-})
-public class RegisterTestSuite
-{
-}
+public interface BasicAcceptanceTest { }
