@@ -91,8 +91,7 @@ public class SourceDocumentUpload extends DocumentUpload
       try
       {
          GlobalDocumentId id = new GlobalDocumentId(projectSlug, iterationSlug, docId);
-         checkSourceUploadPreconditions(projectSlug, iterationSlug, docId, uploadForm, identity,
-               session, projectIterationDAO, translationFileServiceImpl);
+         checkSourceUploadPreconditions(projectSlug, iterationSlug, docId, uploadForm);
 
          Optional<File> tempFile;
          int totalChunks;
@@ -124,8 +123,7 @@ public class SourceDocumentUpload extends DocumentUpload
          if (uploadForm.getFileType().equals(".pot"))
          {
             InputStream potStream = getInputStream(tempFile, uploadForm);
-            parsePotFile(potStream, projectSlug, iterationSlug, docId, uploadForm,
-                  translationFileServiceImpl, documentServiceImpl, documentDAO);
+            parsePotFile(potStream, projectSlug, iterationSlug, docId, uploadForm);
          }
          else
          {
@@ -133,9 +131,7 @@ public class SourceDocumentUpload extends DocumentUpload
             {
                tempFile = Optional.of(persistTempFileFromUpload(uploadForm, translationFileServiceImpl));
             }
-            processAdapterFile(tempFile.get(), projectSlug, iterationSlug, docId, uploadForm,
-                  virusScanner, documentDAO, documentServiceImpl, translationFileServiceImpl,
-                  identity);
+            processAdapterFile(tempFile.get(), projectSlug, iterationSlug, docId, uploadForm);
          }
          if (tempFile.isPresent())
          {
@@ -157,28 +153,24 @@ public class SourceDocumentUpload extends DocumentUpload
       }
    }
 
-   private static void checkSourceUploadPreconditions(String projectSlug, String iterationSlug, String docId,
-         DocumentFileUploadForm uploadForm,
-         ZanataIdentity identity,
-         Session session,
-         ProjectIterationDAO projectIterationDAO,
-         TranslationFileService translationFileServiceImpl)
+   private void checkSourceUploadPreconditions(String projectSlug, String iterationSlug, String docId,
+         DocumentFileUploadForm uploadForm)
    {
       try
       {
          checkUploadPreconditions(projectSlug, iterationSlug, docId, uploadForm, identity, projectIterationDAO, session);
-         checkSourceUploadAllowed(projectSlug, iterationSlug, identity, projectIterationDAO);
+         checkSourceUploadAllowed(projectSlug, iterationSlug);
       }
       catch (AuthorizationException e)
       {
          throw new ChunkUploadException(Status.UNAUTHORIZED, e.getMessage());
       }
-      checkValidSourceUploadType(uploadForm, translationFileServiceImpl);
+      checkValidSourceUploadType(uploadForm);
    }
 
-   private static void checkSourceUploadAllowed(String projectSlug, String iterationSlug, ZanataIdentity identity, ProjectIterationDAO projIterDAO)
+   private void checkSourceUploadAllowed(String projectSlug, String iterationSlug)
    {
-      if (!isDocumentUploadAllowed(projectSlug, iterationSlug, identity, projIterDAO))
+      if (!isDocumentUploadAllowed(projectSlug, iterationSlug))
       {
          throw new ChunkUploadException(Status.FORBIDDEN,
                "You do not have permission to upload source documents to project-version \""
@@ -186,17 +178,17 @@ public class SourceDocumentUpload extends DocumentUpload
       }
    }
 
-   private static boolean isDocumentUploadAllowed(String projectSlug, String iterationSlug, ZanataIdentity identity, ProjectIterationDAO projIterDAO)
+   private boolean isDocumentUploadAllowed(String projectSlug, String iterationSlug)
    {
-      HProjectIteration projectIteration = projIterDAO.getBySlug(projectSlug, iterationSlug);
+      HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
       return projectIteration.getStatus() == EntityStatus.ACTIVE && projectIteration.getProject().getStatus() == EntityStatus.ACTIVE
             && identity != null && identity.hasPermission("import-template", projectIteration);
    }
 
-   private static void checkValidSourceUploadType(DocumentFileUploadForm uploadForm, TranslationFileService transFileService)
+   private void checkValidSourceUploadType(DocumentFileUploadForm uploadForm)
    {
       if (!uploadForm.getFileType().equals(".pot")
-            && !transFileService.hasAdapterFor(DocumentType.typeFor(uploadForm.getFileType())))
+            && !translationFileServiceImpl.hasAdapterFor(DocumentType.typeFor(uploadForm.getFileType())))
       {
          throw new ChunkUploadException(Status.BAD_REQUEST,
                "The type \"" + uploadForm.getFileType() + "\" specified in form parameter 'type' "
@@ -227,13 +219,8 @@ public class SourceDocumentUpload extends DocumentUpload
       return response;
    }
 
-   private static void processAdapterFile(@Nonnull File tempFile, String projectSlug, String iterationSlug,
-         String docId, DocumentFileUploadForm uploadForm,
-         VirusScanner virusScanner,
-         DocumentDAO documentDAO,
-         DocumentService documentServiceImpl,
-         TranslationFileService translationFileServiceImpl,
-         ZanataIdentity identity)
+   private void processAdapterFile(@Nonnull File tempFile, String projectSlug, String iterationSlug,
+         String docId, DocumentFileUploadForm uploadForm)
    {
       String name = projectSlug + ":" + iterationSlug + ":" + docId;
       try
@@ -299,22 +286,18 @@ public class SourceDocumentUpload extends DocumentUpload
       translationFileServiceImpl.removeTempFile(tempFile);
    }
 
-   private static void parsePotFile(InputStream potStream, String projectSlug, String iterationSlug,
-         String docId, DocumentFileUploadForm uploadForm,
-         TranslationFileService translationFileServiceImpl,
-         DocumentService documentServiceImpl,
-         DocumentDAO documentDAO)
+   private void parsePotFile(InputStream potStream, String projectSlug, String iterationSlug,
+         String docId, DocumentFileUploadForm uploadForm)
    {
       Resource doc;
       doc = translationFileServiceImpl.parseUpdatedPotFile(potStream, docId, uploadForm.getFileType(),
-            useOfflinePo(projectSlug, iterationSlug, docId, documentDAO, translationFileServiceImpl));
+            useOfflinePo(projectSlug, iterationSlug, docId));
       doc.setLang(new LocaleId("en-US"));
       // TODO Copy Trans values
       documentServiceImpl.saveDocument(projectSlug, iterationSlug, doc, new StringSet(ExtensionType.GetText.toString()), false);
    }
 
-   private static boolean useOfflinePo(String projectSlug, String iterationSlug, String docId,
-         DocumentDAO documentDAO, TranslationFileService translationFileServiceImpl)
+   private boolean useOfflinePo(String projectSlug, String iterationSlug, String docId)
    {
       return !isNewDocument(projectSlug, iterationSlug, docId, documentDAO) && !translationFileServiceImpl.isPoDocument(projectSlug, iterationSlug, docId);
    }
