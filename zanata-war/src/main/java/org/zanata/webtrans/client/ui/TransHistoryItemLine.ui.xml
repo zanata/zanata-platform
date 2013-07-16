@@ -21,28 +21,30 @@
 
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:g='urn:import:com.google.gwt.user.client.ui'>
-    <g:HTMLPanel styleName="g">
-        <div class="g__item w--1-12 text--align-right">
-            <i class="icon-edit"/>
-            <span class="is-invisible">Translation</span>
-        </div>
-        <div class="g__item w--9-12">
-            <g:InlineHTML ui:field="heading" />
-            <g:InlineHTML ui:field="targetContents" />
-            <ul class="text--meta list--horizontal">
-                <li>
-                    <g:InlineLabel ui:field="creationDate"/>
-                </li>
-                <li class="divide--left l--pad-left-half">
-                    <g:InlineHTML ui:field="revision"/>
-                </li>
-                <li>
-                    <g:Anchor ui:field="compare" text="Compare" />
-                </li>
-                <li>
-                    <g:Anchor ui:field="copyIntoEditor" text="Copy to Editor"/>
-                </li>
-            </ul>
+    <g:HTMLPanel tag="li" styleName="l--pad-v-1 bg--higher">
+        <div class="g">
+            <div class="g__item w--1-12 txt--align-right">
+                <i class="icon-edit"/>
+                <span class="is-invisible">Translation</span>
+            </div>
+            <div class="g__item w--9-12">
+                <g:InlineHTML ui:field="heading" />
+                <g:InlineHTML ui:field="targetContents" />
+                <ul class="txt--meta list--horizontal">
+                    <li>
+                        <g:InlineLabel ui:field="creationDate"/>
+                    </li>
+                    <li class="divide--left l--pad-left-half">
+                        <g:InlineHTML ui:field="revision"/>
+                    </li>
+                    <li>
+                        <g:Anchor ui:field="compare" text="Compare" />
+                    </li>
+                    <li>
+                        <g:Anchor ui:field="copyIntoEditor" text="Copy to Editor"/>
+                    </li>
+                </ul>
+            </div>
         </div>
     </g:HTMLPanel>
 </ui:UiBinder>

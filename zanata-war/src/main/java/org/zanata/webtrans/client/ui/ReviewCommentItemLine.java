@@ -59,13 +59,13 @@ public class ReviewCommentItemLine extends Composite
 
    interface ReviewCommentItemTemplate extends SafeHtmlTemplates
    {
-      @Template("<div class='text--meta'>{0} left a comment</div>")
+      @Template("<div class='txt--meta'>{0} left a comment</div>")
       SafeHtml heading(String person);
 
       @Template("<div class='l--pad-v-half'>{0}</div>")
       SafeHtml content(String comment);
 
-      @Template("<ul class='text--meta list--horizontal'><li>{0}</li></ul>")
+      @Template("<ul class='txt--meta list--horizontal'><li>{0}</li></ul>")
       SafeHtml timestamp(String commentTime);
    }
 }

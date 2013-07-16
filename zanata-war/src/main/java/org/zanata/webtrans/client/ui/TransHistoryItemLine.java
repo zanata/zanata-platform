@@ -70,21 +70,20 @@ public class TransHistoryItemLine extends Composite
       creationDate.setText(DateUtil.formatShortDate(item.getModifiedDate()));
    }
 
-   // TODO pahuang confirm styles
    private static String stateToStyle(ContentState status)
    {
       switch (status)
       {
          case New:
-            return "text--status--new";
+            return "txt--status--new";
          case NeedReview:
-            return "text--status--unsure";
+            return "txt--status--unsure";
          case Translated:
-            return "text--status--ok";
+            return "txt--status--success";
          case Approved:
-            return "text--status--approved";
+            return "txt--status--approved";
          case Rejected:
-            return "text--status--rejected";
+            return "txt--status--warning";
       }
       return "";
    }
@@ -101,7 +100,6 @@ public class TransHistoryItemLine extends Composite
       listener.compareClicked(item);
       if (listener.isItemInComparison(item))
       {
-         // TODO pahuang different style
          compare.setText("Remove from comparison");
       }
       else
@@ -119,10 +117,10 @@ public class TransHistoryItemLine extends Composite
       @Template("<div class='l--pad-v-half'>{0}</div>")
       SafeHtml targetContent(SafeHtml message);
 
-      @Template("<div class='text--meta'>{0} created a <strong class='{1}'>{2}</strong> revision</div>")
+      @Template("<div class='txt--meta'>{0} created a <strong class='{1}'>{2}</strong> revision</div>")
       SafeHtml heading(String person, String contentStateStyle, String contentState);
 
-      @Template("<span class='text--important'>Revision {0} </span><span class=\"label\">{1}</span>")
+      @Template("<span class='txt--important'>Revision {0} </span><span class=\"label\">{1}</span>")
       SafeHtml targetRevision(String versionNum, String optionalLabel);
    }
 }
