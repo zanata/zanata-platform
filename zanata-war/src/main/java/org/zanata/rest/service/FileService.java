@@ -313,7 +313,7 @@ public class FileService implements FileResource
    }
 
    private void processAdapterFile(@Nonnull File tempFile, String projectSlug, String iterationSlug,
-         String docId, DocumentFileUploadForm uploadForm) throws VirusDetectedException
+         String docId, DocumentFileUploadForm uploadForm)
    {
       String name = projectSlug+":"+iterationSlug+":"+docId;
       try
