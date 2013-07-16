@@ -177,6 +177,11 @@ public class FileService implements FileResource
                                      @QueryParam("docId") String docId,
                                      @MultipartForm DocumentFileUploadForm uploadForm )
    {
+      return tryUploadSourceFile(projectSlug, iterationSlug, docId, uploadForm);
+   }
+
+   private Response tryUploadSourceFile(String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm)
+   {
       try
       {
          GlobalDocumentId id = new GlobalDocumentId(projectSlug, iterationSlug, docId);
@@ -629,6 +634,11 @@ public class FileService implements FileResource
                                           @QueryParam("merge") String merge,
                                           @MultipartForm DocumentFileUploadForm uploadForm )
    {
+      return tryUploadTranslationFile(projectSlug, iterationSlug, docId, localeId, merge, uploadForm);
+   }
+
+   private Response tryUploadTranslationFile(String projectSlug, String iterationSlug, String docId, String localeId, String mergeType, DocumentFileUploadForm uploadForm)
+   {
       HLocale locale;
       try
       {
@@ -683,7 +693,7 @@ public class FileService implements FileResource
          Set<String> extensions = newExtensions(uploadForm.getFileType().equals(".po"));
          // TODO useful error message for failed saving?
          List<String> warnings = translationServiceImpl.translateAllInDoc(projectSlug, iterationSlug,
-               docId, locale.getLocaleId(), transRes, extensions, mergeTypeFromString(merge));
+               docId, locale.getLocaleId(), transRes, extensions, mergeTypeFromString(mergeType));
 
          return transUploadResponse(totalChunks, warnings);
       }
