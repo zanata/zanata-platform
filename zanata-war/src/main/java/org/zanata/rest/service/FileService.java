@@ -227,7 +227,9 @@ public class FileService implements FileResource
             {
                tempFile = Optional.of(persistTempFileFromUpload(uploadForm, translationFileServiceImpl));
             }
-            processAdapterFile(tempFile.get(), projectSlug, iterationSlug, docId, uploadForm);
+            processAdapterFile(tempFile.get(), projectSlug, iterationSlug, docId, uploadForm,
+                  virusScanner, documentDAO, documentServiceImpl, translationFileServiceImpl,
+                  identity);
          }
          if (tempFile.isPresent())
          {
@@ -333,8 +335,13 @@ public class FileService implements FileResource
       return tempFile;
    }
 
-   private void processAdapterFile(@Nonnull File tempFile, String projectSlug, String iterationSlug,
-         String docId, DocumentFileUploadForm uploadForm)
+   private static void processAdapterFile(@Nonnull File tempFile, String projectSlug, String iterationSlug,
+         String docId, DocumentFileUploadForm uploadForm,
+         VirusScanner virusScanner,
+         DocumentDAO documentDAO,
+         DocumentService documentServiceImpl,
+         TranslationFileService translationFileServiceImpl,
+         ZanataIdentity identity)
    {
       String name = projectSlug+":"+iterationSlug+":"+docId;
       try
