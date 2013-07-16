@@ -177,10 +177,20 @@ public class FileService implements FileResource
                                      @QueryParam("docId") String docId,
                                      @MultipartForm DocumentFileUploadForm uploadForm )
    {
-      return tryUploadSourceFile(projectSlug, iterationSlug, docId, uploadForm);
+      return tryUploadSourceFile(projectSlug, iterationSlug, docId, uploadForm,
+            identity, session, translationFileServiceImpl, projectIterationDAO,
+            documentDAO, documentServiceImpl, virusScanner);
    }
 
-   private Response tryUploadSourceFile(String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm)
+   private static Response tryUploadSourceFile(String projectSlug, String iterationSlug, String docId,
+         DocumentFileUploadForm uploadForm,
+         ZanataIdentity identity,
+         Session session,
+         TranslationFileService translationFileServiceImpl,
+         ProjectIterationDAO projectIterationDAO,
+         DocumentDAO documentDAO,
+         DocumentService documentServiceImpl,
+         VirusScanner virusScanner)
    {
       try
       {
