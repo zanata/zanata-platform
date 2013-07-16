@@ -245,7 +245,7 @@ public class FileService implements FileResource
       }
    }
 
-   private InputStream getInputStream(Optional<File> tempFile, DocumentFileUploadForm uploadForm) throws FileNotFoundException
+   private static InputStream getInputStream(Optional<File> tempFile, DocumentFileUploadForm uploadForm) throws FileNotFoundException
    {
       if (tempFile.isPresent())
       {
