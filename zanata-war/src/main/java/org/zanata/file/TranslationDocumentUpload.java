@@ -86,15 +86,15 @@ public class TranslationDocumentUpload extends DocumentUpload
       this.translationServiceImpl = translationServiceImpl;
    }
 
-   public Response tryUploadTranslationFile(String projectSlug, String iterationSlug, String docId,
+   public Response tryUploadTranslationFile(GlobalDocumentId id,
          String localeId, String mergeType, DocumentFileUploadForm uploadForm)
    {
       HLocale locale;
       try
       {
-         checkTranslationUploadPreconditions(projectSlug, iterationSlug, docId, localeId, uploadForm);
+         checkTranslationUploadPreconditions(id, localeId, uploadForm);
          locale = findHLocale(localeId);
-         checkTranslationUploadAllowed(projectSlug, iterationSlug, localeId, locale);
+         checkTranslationUploadAllowed(id, localeId, locale);
 
          Optional<File> tempFile;
          int totalChunks;
@@ -106,8 +106,7 @@ public class TranslationDocumentUpload extends DocumentUpload
          }
          else
          {
-            HDocumentUpload upload = saveUploadPart(new GlobalDocumentId(projectSlug, iterationSlug, docId), locale,
-                  uploadForm);
+            HDocumentUpload upload = saveUploadPart(id, locale, uploadForm);
             totalChunks = upload.getParts().size();
             if (!uploadForm.getLast())
             {
@@ -123,7 +122,8 @@ public class TranslationDocumentUpload extends DocumentUpload
          if (uploadForm.getFileType().equals(".po"))
          {
             InputStream poStream = getInputStream(tempFile, uploadForm);
-            transRes = translationFileServiceImpl.parsePoFile(poStream, projectSlug, iterationSlug, docId);
+            transRes = translationFileServiceImpl.parsePoFile(poStream, id.getProjectSlug(),
+                  id.getVersionSlug(), id.getDocId());
          }
          else
          {
@@ -134,7 +134,7 @@ public class TranslationDocumentUpload extends DocumentUpload
             // FIXME this is misusing the 'filename' field. the method should probably take a
             // type anyway
             transRes = translationFileServiceImpl.parseAdapterTranslationFile(tempFile.get(),
-                  projectSlug, iterationSlug, docId, localeId, uploadForm.getFileType());
+                  id.getProjectSlug(), id.getVersionSlug(), id.getDocId(), localeId, uploadForm.getFileType());
          }
          if (tempFile.isPresent())
          {
@@ -143,8 +143,8 @@ public class TranslationDocumentUpload extends DocumentUpload
 
          Set<String> extensions = newExtensions(uploadForm.getFileType().equals(".po"));
          // TODO useful error message for failed saving?
-         List<String> warnings = translationServiceImpl.translateAllInDoc(projectSlug, iterationSlug,
-               docId, locale.getLocaleId(), transRes, extensions, mergeTypeFromString(mergeType));
+         List<String> warnings = translationServiceImpl.translateAllInDoc(id.getProjectSlug(), id.getVersionSlug(),
+               id.getDocId(), locale.getLocaleId(), transRes, extensions, mergeTypeFromString(mergeType));
 
          return transUploadResponse(totalChunks, warnings);
       }
@@ -168,26 +168,24 @@ public class TranslationDocumentUpload extends DocumentUpload
       }
    }
 
-   private void checkTranslationUploadPreconditions(String projectSlug, String iterationSlug,
-         String docId, String localeId, DocumentFileUploadForm uploadForm)
+   private void checkTranslationUploadPreconditions(GlobalDocumentId id, String localeId,
+         DocumentFileUploadForm uploadForm)
    {
-      checkUploadPreconditions(new GlobalDocumentId(projectSlug, iterationSlug, docId),
-            uploadForm);
+      checkUploadPreconditions(id, uploadForm);
 
       // TODO check translation upload allowed
 
-      checkDocumentExists(projectSlug, iterationSlug, docId, uploadForm);
+      checkDocumentExists(id, uploadForm);
       checkValidTranslationUploadType(uploadForm);
    }
 
-   private void checkDocumentExists(String projectSlug, String iterationSlug, String docId,
-         DocumentFileUploadForm uploadForm)
+   private void checkDocumentExists(GlobalDocumentId id, DocumentFileUploadForm uploadForm)
    {
-      if (isNewDocument(new GlobalDocumentId(projectSlug, iterationSlug, docId)))
+      if (isNewDocument(id))
       {
          throw new ChunkUploadException(Status.NOT_FOUND,
-               "No document with id \"" + docId + "\" exists in project-version \"" +
-               projectSlug + ":" + iterationSlug + "\".");
+               "No document with id \"" + id.getDocId() + "\" exists in project-version \"" +
+               id.getProjectSlug() + ":" + id.getVersionSlug() + "\".");
       }
    }
 
@@ -225,19 +223,19 @@ public class TranslationDocumentUpload extends DocumentUpload
       return locale;
    }
 
-   private void checkTranslationUploadAllowed(String projectSlug, String iterationSlug, String localeId, HLocale locale)
+   private void checkTranslationUploadAllowed(GlobalDocumentId id, String localeId, HLocale locale)
    {
-      if (!isTranslationUploadAllowed(projectSlug, iterationSlug, locale))
+      if (!isTranslationUploadAllowed(id, locale))
       {
          throw new ChunkUploadException(Status.FORBIDDEN,
                "You do not have permission to upload translations for locale \"" + localeId +
-               "\" to project-version \"" + projectSlug + ":" + iterationSlug + "\".");
+               "\" to project-version \"" + id.getProjectSlug() + ":" + id.getVersionSlug() + "\".");
       }
    }
 
-   private boolean isTranslationUploadAllowed(String projectSlug, String iterationSlug, HLocale localeId)
+   private boolean isTranslationUploadAllowed(GlobalDocumentId id, HLocale localeId)
    {
-      HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+      HProjectIteration projectIteration = projectIterationDAO.getBySlug(id.getProjectSlug(), id.getVersionSlug());
       // TODO should this check be "add-translation" or "modify-translation"?
       // They appear to be granted identically at the moment.
       return projectIteration.getStatus() == EntityStatus.ACTIVE && projectIteration.getProject().getStatus() == EntityStatus.ACTIVE
