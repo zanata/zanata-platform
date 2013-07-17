@@ -183,10 +183,20 @@ public class FileService implements FileResource
                                           @QueryParam("merge") String merge,
                                           @MultipartForm DocumentFileUploadForm uploadForm )
    {
-      return tryUploadTranslationFile(projectSlug, iterationSlug, docId, localeId, merge, uploadForm);
+      return tryUploadTranslationFile(projectSlug, iterationSlug, docId, localeId, merge, uploadForm,
+            identity, projectIterationDAO, session, documentDAO, localeDAO,
+            translationFileServiceImpl, translationServiceImpl);
    }
 
-   private Response tryUploadTranslationFile(String projectSlug, String iterationSlug, String docId, String localeId, String mergeType, DocumentFileUploadForm uploadForm)
+   private static Response tryUploadTranslationFile(String projectSlug, String iterationSlug, String docId,
+         String localeId, String mergeType, DocumentFileUploadForm uploadForm,
+         ZanataIdentity identity,
+         ProjectIterationDAO projectIterationDAO,
+         Session session,
+         DocumentDAO documentDAO,
+         LocaleDAO localeDAO,
+         TranslationFileService translationFileServiceImpl,
+         TranslationService translationServiceImpl)
    {
       HLocale locale;
       try
