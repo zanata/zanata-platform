@@ -358,10 +358,11 @@ public class FileService implements FileResource
       // TODO check translation upload allowed
 
       checkDocumentExists(projectSlug, iterationSlug, docId, uploadForm, documentDAO);
-      checkValidTranslationUploadType(uploadForm);
+      checkValidTranslationUploadType(uploadForm, translationFileServiceImpl);
    }
 
-   private void checkValidTranslationUploadType(DocumentFileUploadForm uploadForm)
+   private static void checkValidTranslationUploadType(DocumentFileUploadForm uploadForm,
+         TranslationFileService translationFileServiceImpl)
    {
       String fileType = uploadForm.getFileType();
       if (!fileType.equals(".po")
