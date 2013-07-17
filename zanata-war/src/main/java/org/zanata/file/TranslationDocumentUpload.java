@@ -170,7 +170,7 @@ public class TranslationDocumentUpload extends DocumentUpload
       }
    }
 
-   public static void checkTranslationUploadPreconditions(String projectSlug, String iterationSlug,
+   private static void checkTranslationUploadPreconditions(String projectSlug, String iterationSlug,
          String docId, String localeId, DocumentFileUploadForm uploadForm,
          ZanataIdentity identity,
          ProjectIterationDAO projectIterationDAO,
@@ -187,7 +187,7 @@ public class TranslationDocumentUpload extends DocumentUpload
       checkValidTranslationUploadType(uploadForm, translationFileServiceImpl);
    }
 
-   public static void checkDocumentExists(String projectSlug, String iterationSlug, String docId,
+   private static void checkDocumentExists(String projectSlug, String iterationSlug, String docId,
          DocumentFileUploadForm uploadForm,
          DocumentDAO documentDAO)
    {
@@ -199,7 +199,7 @@ public class TranslationDocumentUpload extends DocumentUpload
       }
    }
 
-   public static void checkValidTranslationUploadType(DocumentFileUploadForm uploadForm,
+   private static void checkValidTranslationUploadType(DocumentFileUploadForm uploadForm,
          TranslationFileService translationFileServiceImpl)
    {
       String fileType = uploadForm.getFileType();
@@ -212,7 +212,7 @@ public class TranslationDocumentUpload extends DocumentUpload
       }
    }
 
-   public static HLocale findHLocale(String localeString, LocaleDAO localeDAO)
+   private static HLocale findHLocale(String localeString, LocaleDAO localeDAO)
    {
       LocaleId localeId;
       try
@@ -234,7 +234,7 @@ public class TranslationDocumentUpload extends DocumentUpload
       return locale;
    }
 
-   public static void checkTranslationUploadAllowed(String projectSlug, String iterationSlug, String localeId, HLocale locale,
+   private static void checkTranslationUploadAllowed(String projectSlug, String iterationSlug, String localeId, HLocale locale,
          ProjectIterationDAO projectIterationDAO,
          ZanataIdentity identity)
    {
@@ -247,7 +247,7 @@ public class TranslationDocumentUpload extends DocumentUpload
       }
    }
 
-   public static boolean isTranslationUploadAllowed(String projectSlug, String iterationSlug, HLocale localeId,
+   private static boolean isTranslationUploadAllowed(String projectSlug, String iterationSlug, HLocale localeId,
          ProjectIterationDAO projectIterationDAO,
          ZanataIdentity identity)
    {
@@ -258,7 +258,7 @@ public class TranslationDocumentUpload extends DocumentUpload
             && identity != null && identity.hasPermission("add-translation", projectIteration.getProject(), localeId);
    }
 
-   public static Set<String> newExtensions(boolean gettextExtensions)
+   private static Set<String> newExtensions(boolean gettextExtensions)
    {
       Set<String> extensions;
       if (gettextExtensions)
@@ -272,7 +272,7 @@ public class TranslationDocumentUpload extends DocumentUpload
       return extensions;
    }
 
-   public static Response transUploadResponse(int totalChunks, List<String> warnings)
+   private static Response transUploadResponse(int totalChunks, List<String> warnings)
    {
       ChunkUploadResponse response = new ChunkUploadResponse();
       response.setExpectingMore(false);
@@ -288,7 +288,7 @@ public class TranslationDocumentUpload extends DocumentUpload
       return Response.status(Status.OK).entity(response).build();
    }
 
-   public static String buildWarningString(List<String> warnings)
+   private static String buildWarningString(List<String> warnings)
    {
       StringBuilder warningText = new StringBuilder("Upload succeeded but had the following warnings:");
       for (String warning : warnings)
@@ -301,7 +301,7 @@ public class TranslationDocumentUpload extends DocumentUpload
       return warningString;
    }
 
-   public static MergeType mergeTypeFromString(String type)
+   private static MergeType mergeTypeFromString(String type)
    {
       if ("import".equals(type))
       {
