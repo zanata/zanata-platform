@@ -81,6 +81,7 @@ import org.zanata.exception.ChunkUploadException;
 import org.zanata.exception.HashMismatchException;
 import org.zanata.exception.VirusDetectedException;
 import org.zanata.exception.ZanataServiceException;
+import org.zanata.file.GlobalDocumentId;
 import org.zanata.model.HDocument;
 import org.zanata.model.HDocumentUpload;
 import org.zanata.model.HDocumentUploadPart;
@@ -178,10 +179,21 @@ public class FileService implements FileResource
    {
       try
       {
+         GlobalDocumentId id = new GlobalDocumentId(projectSlug, iterationSlug, docId);
          checkSourceUploadPreconditions(projectSlug, iterationSlug, docId, uploadForm);
 
          Optional<File> tempFile;
          int totalChunks;
+
+         if (!uploadForm.getLast())
+         {
+            HDocumentUpload upload = saveUploadPart(id.getProjectSlug(), id.getVersionSlug(), id.getDocId(), NULL_LOCALE, uploadForm);
+            totalChunks = upload.getParts().size();
+            return Response.status(Status.ACCEPTED)
+                  .entity(new ChunkUploadResponse(upload.getId(), totalChunks, true,
+                        "Chunk accepted, awaiting remaining chunks."))
+                  .build();
+         }
 
          if (isSinglePart(uploadForm))
          {
@@ -192,13 +204,6 @@ public class FileService implements FileResource
          {
             HDocumentUpload upload = saveUploadPart(projectSlug, iterationSlug, docId, NULL_LOCALE, uploadForm);
             totalChunks = upload.getParts().size();
-            if (!uploadForm.getLast())
-            {
-               return Response.status(Status.ACCEPTED)
-                     .entity(new ChunkUploadResponse(upload.getId(), totalChunks, true,
-                           "Chunk accepted, awaiting remaining chunks."))
-                     .build();
-            }
             tempFile = Optional.of(combineToTempFileAndDeleteUploadRecord(upload));
          }
 
@@ -220,19 +225,6 @@ public class FileService implements FileResource
             tempFile.get().delete();
          }
          return sourceUploadSuccessResponse(isNewDocument(projectSlug, iterationSlug, docId), totalChunks);
-      }
-      catch (AuthorizationException e)
-      {
-         return Response.status(Status.UNAUTHORIZED)
-         .entity(new ChunkUploadResponse(e.getMessage()))
-         .build();
-      }
-      catch (VirusDetectedException e)
-      {
-         log.warn("File failed virus scan: {}", e.getMessage());
-         return Response.status(Status.BAD_REQUEST)
-               .entity(new ChunkUploadResponse("uploaded file did not pass virus scan"))
-               .build();
       }
       catch (ChunkUploadException e)
       {
@@ -262,8 +254,15 @@ public class FileService implements FileResource
 
    private void checkSourceUploadPreconditions(String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm)
    {
-      checkUploadPreconditions(projectSlug, iterationSlug, docId, uploadForm);
-      checkSourceUploadAllowed(projectSlug, iterationSlug);
+      try
+      {
+         checkUploadPreconditions(projectSlug, iterationSlug, docId, uploadForm);
+         checkSourceUploadAllowed(projectSlug, iterationSlug);
+      }
+      catch (AuthorizationException e)
+      {
+         throw new ChunkUploadException(Status.UNAUTHORIZED, e.getMessage());
+      }
       checkValidSourceUploadType(uploadForm);
    }
 
@@ -314,10 +313,18 @@ public class FileService implements FileResource
    }
 
    private void processAdapterFile(@Nonnull File tempFile, String projectSlug, String iterationSlug,
-         String docId, DocumentFileUploadForm uploadForm) throws VirusDetectedException
+         String docId, DocumentFileUploadForm uploadForm)
    {
       String name = projectSlug+":"+iterationSlug+":"+docId;
-      virusScanner.scan(tempFile, name);
+      try
+      {
+         virusScanner.scan(tempFile, name);
+      }
+      catch (VirusDetectedException e)
+      {
+         log.warn("File failed virus scan: {}", e.getMessage());
+         throw new ChunkUploadException(Status.BAD_REQUEST, "Uploaded file did not pass virus scan");
+      }
 
       HDocument document;
       Optional<String> params;
@@ -398,7 +405,7 @@ public class FileService implements FileResource
       return tempFile;
    }
 
-   private boolean isSinglePart(DocumentFileUploadForm uploadForm)
+   private static boolean isSinglePart(DocumentFileUploadForm uploadForm)
    {
       return uploadForm.getFirst() && uploadForm.getLast();
    }
