@@ -22,7 +22,6 @@ package org.zanata.rest.service;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -31,7 +30,6 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -50,35 +48,23 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.hibernate.Session;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.security.AuthorizationException;
 import org.zanata.adapter.FileFormatAdapter;
 import org.zanata.adapter.po.PoWriter2;
 import org.zanata.common.ContentState;
-import org.zanata.common.DocumentType;
-import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
-import org.zanata.common.MergeType;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.exception.ChunkUploadException;
-import org.zanata.file.DocumentUpload;
 import org.zanata.file.GlobalDocumentId;
 import org.zanata.file.SourceDocumentUpload;
+import org.zanata.file.TranslationDocumentUpload;
 import org.zanata.model.HDocument;
-import org.zanata.model.HDocumentUpload;
-import org.zanata.model.HLocale;
-import org.zanata.model.HProjectIteration;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.StringSet;
-import org.zanata.rest.dto.ChunkUploadResponse;
-import org.zanata.rest.dto.extensions.ExtensionType;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -98,7 +84,6 @@ import com.google.common.io.ByteStreams;
 @Path(FileResource.FILE_RESOURCE)
 @Produces( { MediaType.APPLICATION_OCTET_STREAM })
 @Consumes( { MediaType.APPLICATION_OCTET_STREAM })
-@Slf4j
 public class FileService implements FileResource
 {
    private static final String FILE_TYPE_OFFLINE_PO = "offlinepo";
@@ -183,243 +168,9 @@ public class FileService implements FileResource
                                           @QueryParam("merge") String merge,
                                           @MultipartForm DocumentFileUploadForm uploadForm )
    {
-      return tryUploadTranslationFile(projectSlug, iterationSlug, docId, localeId, merge, uploadForm,
+      return TranslationDocumentUpload.tryUploadTranslationFile(projectSlug, iterationSlug, docId, localeId, merge, uploadForm,
             identity, projectIterationDAO, session, documentDAO, localeDAO,
             translationFileServiceImpl, translationServiceImpl);
-   }
-
-   private static Response tryUploadTranslationFile(String projectSlug, String iterationSlug, String docId,
-         String localeId, String mergeType, DocumentFileUploadForm uploadForm,
-         ZanataIdentity identity,
-         ProjectIterationDAO projectIterationDAO,
-         Session session,
-         DocumentDAO documentDAO,
-         LocaleDAO localeDAO,
-         TranslationFileService translationFileServiceImpl,
-         TranslationService translationServiceImpl)
-   {
-      HLocale locale;
-      try
-      {
-         checkTranslationUploadPreconditions(projectSlug, iterationSlug, docId, localeId, uploadForm,
-               identity, projectIterationDAO, session, documentDAO, translationFileServiceImpl);
-         locale = findHLocale(localeId, localeDAO);
-         checkTranslationUploadAllowed(projectSlug, iterationSlug, localeId, locale,
-               projectIterationDAO, identity);
-
-         Optional<File> tempFile;
-         int totalChunks;
-
-         if (DocumentUpload.isSinglePart(uploadForm))
-         {
-            totalChunks = 1;
-            tempFile = Optional.<File>absent();
-         }
-         else
-         {
-            HDocumentUpload upload = DocumentUpload.saveUploadPart(new GlobalDocumentId(projectSlug, iterationSlug, docId), locale,
-                  uploadForm, session, projectIterationDAO);
-            totalChunks = upload.getParts().size();
-            if (!uploadForm.getLast())
-            {
-               return Response.status(Status.ACCEPTED)
-                     .entity(new ChunkUploadResponse(upload.getId(), totalChunks, true,
-                           "Chunk accepted, awaiting remaining chunks."))
-                     .build();
-            }
-            tempFile = Optional.of(DocumentUpload.combineToTempFileAndDeleteUploadRecord(upload, session, translationFileServiceImpl));
-         }
-
-         TranslationsResource transRes;
-         if (uploadForm.getFileType().equals(".po"))
-         {
-            InputStream poStream = DocumentUpload.getInputStream(tempFile, uploadForm);
-            transRes = translationFileServiceImpl.parsePoFile(poStream, projectSlug, iterationSlug, docId);
-         }
-         else
-         {
-            if (!tempFile.isPresent())
-            {
-               tempFile = Optional.of(DocumentUpload.persistTempFileFromUpload(uploadForm, translationFileServiceImpl));
-            }
-            // FIXME this is misusing the 'filename' field. the method should probably take a
-            // type anyway
-            transRes = translationFileServiceImpl.parseAdapterTranslationFile(tempFile.get(),
-                  projectSlug, iterationSlug, docId, localeId, uploadForm.getFileType());
-         }
-         if (tempFile.isPresent())
-         {
-            tempFile.get().delete();
-         }
-
-         Set<String> extensions = newExtensions(uploadForm.getFileType().equals(".po"));
-         // TODO useful error message for failed saving?
-         List<String> warnings = translationServiceImpl.translateAllInDoc(projectSlug, iterationSlug,
-               docId, locale.getLocaleId(), transRes, extensions, mergeTypeFromString(mergeType));
-
-         return transUploadResponse(totalChunks, warnings);
-      }
-      catch (AuthorizationException e)
-      {
-         return Response.status(Status.UNAUTHORIZED)
-               .entity(new ChunkUploadResponse(e.getMessage()))
-               .build();
-      }
-      catch (FileNotFoundException e)
-      {
-         log.error("failed to create input stream from temp file", e);
-         return Response.status(Status.INTERNAL_SERVER_ERROR)
-               .entity(e).build();
-      }
-      catch (ChunkUploadException e)
-      {
-         return Response.status(e.getStatusCode())
-               .entity(new ChunkUploadResponse(e.getMessage()))
-               .build();
-      }
-   }
-
-   private static Response transUploadResponse(int totalChunks, List<String> warnings)
-   {
-      ChunkUploadResponse response = new ChunkUploadResponse();
-      response.setExpectingMore(false);
-      response.setAcceptedChunks(totalChunks);
-      if (warnings != null && !warnings.isEmpty())
-      {
-         response.setSuccessMessage(buildWarningString(warnings));
-      }
-      else
-      {
-         response.setSuccessMessage("Translations uploaded successfully");
-      }
-      return Response.status(Status.OK).entity(response).build();
-   }
-
-   private static String buildWarningString(List<String> warnings)
-   {
-      StringBuilder warningText = new StringBuilder("Upload succeeded but had the following warnings:");
-      for (String warning : warnings)
-      {
-         warningText.append("\n\t");
-         warningText.append(warning);
-      }
-      warningText.append("\n");
-      String warningString = warningText.toString();
-      return warningString;
-   }
-
-   private static Set<String> newExtensions(boolean gettextExtensions)
-   {
-      Set<String> extensions;
-      if (gettextExtensions)
-      {
-         extensions = new StringSet(ExtensionType.GetText.toString());
-      }
-      else
-      {
-         extensions = Collections.<String>emptySet();
-      }
-      return extensions;
-   }
-
-   private static void checkTranslationUploadAllowed(String projectSlug, String iterationSlug, String localeId, HLocale locale,
-         ProjectIterationDAO projectIterationDAO,
-         ZanataIdentity identity)
-   {
-      if (!isTranslationUploadAllowed(projectSlug, iterationSlug, locale,
-            projectIterationDAO, identity))
-      {
-         throw new ChunkUploadException(Status.FORBIDDEN,
-               "You do not have permission to upload translations for locale \"" + localeId +
-               "\" to project-version \"" + projectSlug + ":" + iterationSlug + "\".");
-      }
-   }
-
-   private static boolean isTranslationUploadAllowed(String projectSlug, String iterationSlug, HLocale localeId,
-         ProjectIterationDAO projectIterationDAO,
-         ZanataIdentity identity)
-   {
-      HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-      // TODO should this check be "add-translation" or "modify-translation"?
-      // They appear to be granted identically at the moment.
-      return projectIteration.getStatus() == EntityStatus.ACTIVE && projectIteration.getProject().getStatus() == EntityStatus.ACTIVE
-            && identity != null && identity.hasPermission("add-translation", projectIteration.getProject(), localeId);
-   }
-
-   private static HLocale findHLocale(String localeString, LocaleDAO localeDAO)
-   {
-      LocaleId localeId;
-      try
-      {
-         localeId = new LocaleId(localeString);
-      }
-      catch (IllegalArgumentException e)
-      {
-         throw new ChunkUploadException(Status.BAD_REQUEST,
-               "Invalid value for locale", e);
-      }
-
-      HLocale locale = localeDAO.findByLocaleId(localeId);
-      if (locale == null)
-      {
-         throw new ChunkUploadException(Status.NOT_FOUND,
-               "The specified locale \"" + localeString + "\" does not exist on this server.");
-      }
-      return locale;
-   }
-
-   private static void checkTranslationUploadPreconditions(String projectSlug, String iterationSlug,
-         String docId, String localeId, DocumentFileUploadForm uploadForm,
-         ZanataIdentity identity,
-         ProjectIterationDAO projectIterationDAO,
-         Session session,
-         DocumentDAO documentDAO,
-         TranslationFileService translationFileServiceImpl)
-   {
-      DocumentUpload.checkUploadPreconditions(new GlobalDocumentId(projectSlug, iterationSlug, docId),
-            uploadForm, identity, projectIterationDAO, session);
-
-      // TODO check translation upload allowed
-
-      checkDocumentExists(projectSlug, iterationSlug, docId, uploadForm, documentDAO);
-      checkValidTranslationUploadType(uploadForm, translationFileServiceImpl);
-   }
-
-   private static void checkValidTranslationUploadType(DocumentFileUploadForm uploadForm,
-         TranslationFileService translationFileServiceImpl)
-   {
-      String fileType = uploadForm.getFileType();
-      if (!fileType.equals(".po")
-            && !translationFileServiceImpl.hasAdapterFor(DocumentType.typeFor(fileType)))
-      {
-         throw new ChunkUploadException(Status.BAD_REQUEST,
-               "The type \"" + fileType + "\" specified in form parameter 'type' " +
-               "is not valid for a translation file on this server.");
-      }
-   }
-
-   private static void checkDocumentExists(String projectSlug, String iterationSlug, String docId,
-         DocumentFileUploadForm uploadForm,
-         DocumentDAO documentDAO)
-   {
-      if (DocumentUpload.isNewDocument(new GlobalDocumentId(projectSlug, iterationSlug, docId), documentDAO))
-      {
-         throw new ChunkUploadException(Status.NOT_FOUND, 
-               "No document with id \"" + docId + "\" exists in project-version \"" +
-               projectSlug + ":" + iterationSlug + "\".");
-      }
-   }
-
-   private static MergeType mergeTypeFromString(String type)
-   {
-      if ("import".equals(type))
-      {
-         return MergeType.IMPORT;
-      }
-      else
-      {
-         return MergeType.AUTO;
-      }
    }
 
    /**
