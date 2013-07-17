@@ -400,7 +400,7 @@ public class FileService implements FileResource
       }
    }
 
-   private MergeType mergeTypeFromString(String type)
+   private static MergeType mergeTypeFromString(String type)
    {
       if ("import".equals(type))
       {
