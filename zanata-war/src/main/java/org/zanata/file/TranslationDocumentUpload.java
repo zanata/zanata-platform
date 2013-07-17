@@ -107,7 +107,7 @@ public class TranslationDocumentUpload extends DocumentUpload
          else
          {
             HDocumentUpload upload = saveUploadPart(new GlobalDocumentId(projectSlug, iterationSlug, docId), locale,
-                  uploadForm, session, projectIterationDAO);
+                  uploadForm);
             totalChunks = upload.getParts().size();
             if (!uploadForm.getLast())
             {
@@ -116,7 +116,7 @@ public class TranslationDocumentUpload extends DocumentUpload
                            "Chunk accepted, awaiting remaining chunks."))
                      .build();
             }
-            tempFile = Optional.of(combineToTempFileAndDeleteUploadRecord(upload, session, translationFileServiceImpl));
+            tempFile = Optional.of(combineToTempFileAndDeleteUploadRecord(upload));
          }
 
          TranslationsResource transRes;
@@ -129,7 +129,7 @@ public class TranslationDocumentUpload extends DocumentUpload
          {
             if (!tempFile.isPresent())
             {
-               tempFile = Optional.of(DocumentUpload.persistTempFileFromUpload(uploadForm, translationFileServiceImpl));
+               tempFile = Optional.of(persistTempFileFromUpload(uploadForm));
             }
             // FIXME this is misusing the 'filename' field. the method should probably take a
             // type anyway
@@ -172,7 +172,7 @@ public class TranslationDocumentUpload extends DocumentUpload
          String docId, String localeId, DocumentFileUploadForm uploadForm)
    {
       checkUploadPreconditions(new GlobalDocumentId(projectSlug, iterationSlug, docId),
-            uploadForm, identity, projectIterationDAO, session);
+            uploadForm);
 
       // TODO check translation upload allowed
 
@@ -183,7 +183,7 @@ public class TranslationDocumentUpload extends DocumentUpload
    private void checkDocumentExists(String projectSlug, String iterationSlug, String docId,
          DocumentFileUploadForm uploadForm)
    {
-      if (isNewDocument(new GlobalDocumentId(projectSlug, iterationSlug, docId), documentDAO))
+      if (isNewDocument(new GlobalDocumentId(projectSlug, iterationSlug, docId)))
       {
          throw new ChunkUploadException(Status.NOT_FOUND,
                "No document with id \"" + docId + "\" exists in project-version \"" +

@@ -96,7 +96,7 @@ public class SourceDocumentUpload extends DocumentUpload
 
          if (!uploadForm.getLast())
          {
-            HDocumentUpload upload = saveUploadPart(id, NULL_LOCALE, uploadForm, session, projectIterationDAO);
+            HDocumentUpload upload = saveUploadPart(id, NULL_LOCALE, uploadForm);
             totalChunks = upload.getParts().size();
             return Response.status(Status.ACCEPTED)
                   .entity(new ChunkUploadResponse(upload.getId(), totalChunks, true,
@@ -111,10 +111,9 @@ public class SourceDocumentUpload extends DocumentUpload
          }
          else
          {
-            HDocumentUpload upload = saveUploadPart(id, NULL_LOCALE,
-                  uploadForm, session, projectIterationDAO);
+            HDocumentUpload upload = saveUploadPart(id, NULL_LOCALE, uploadForm);
             totalChunks = upload.getParts().size();
-            tempFile = Optional.of(combineToTempFileAndDeleteUploadRecord(upload, session, translationFileServiceImpl));
+            tempFile = Optional.of(combineToTempFileAndDeleteUploadRecord(upload));
          }
 
          if (uploadForm.getFileType().equals(".pot"))
@@ -126,7 +125,7 @@ public class SourceDocumentUpload extends DocumentUpload
          {
             if (!tempFile.isPresent())
             {
-               tempFile = Optional.of(persistTempFileFromUpload(uploadForm, translationFileServiceImpl));
+               tempFile = Optional.of(persistTempFileFromUpload(uploadForm));
             }
             processAdapterFile(tempFile.get(), id, uploadForm);
          }
@@ -134,7 +133,7 @@ public class SourceDocumentUpload extends DocumentUpload
          {
             tempFile.get().delete();
          }
-         return sourceUploadSuccessResponse(isNewDocument(id, documentDAO), totalChunks);
+         return sourceUploadSuccessResponse(isNewDocument(id), totalChunks);
       }
       catch (ChunkUploadException e)
       {
@@ -155,7 +154,7 @@ public class SourceDocumentUpload extends DocumentUpload
    {
       try
       {
-         checkUploadPreconditions(id, uploadForm, identity, projectIterationDAO, session);
+         checkUploadPreconditions(id, uploadForm);
          checkSourceUploadAllowed(id);
       }
       catch (AuthorizationException e)
@@ -294,7 +293,7 @@ public class SourceDocumentUpload extends DocumentUpload
 
    private boolean useOfflinePo(GlobalDocumentId id)
    {
-      return !isNewDocument(id, documentDAO)
+      return !isNewDocument(id)
             && !translationFileServiceImpl.isPoDocument(id.getProjectSlug(), id.getVersionSlug(), id.getDocId());
    }
 

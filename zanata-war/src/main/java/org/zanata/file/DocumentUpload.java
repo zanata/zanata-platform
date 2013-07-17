@@ -89,9 +89,8 @@ public class DocumentUpload
       this.translationFileServiceImpl = translationFileServiceImpl;
    }
 
-   protected static void checkUploadPreconditions(GlobalDocumentId id,
-         DocumentFileUploadForm uploadForm, ZanataIdentity identity,
-         ProjectIterationDAO projectIterationDAO, Session session)
+   protected void checkUploadPreconditions(GlobalDocumentId id,
+         DocumentFileUploadForm uploadForm)
    {
       if (!identity.isLoggedIn())
       {
@@ -125,7 +124,7 @@ public class DocumentUpload
                   "Form parameter 'uploadId' must be provided when this is not the first part.");
          }
    
-         HDocumentUpload upload = retrieveUploadObject(uploadForm, session);
+         HDocumentUpload upload = retrieveUploadObject(uploadForm);
          if (upload == null)
          {
             throw new ChunkUploadException(Status.PRECONDITION_FAILED,
@@ -181,7 +180,23 @@ public class DocumentUpload
       }
    }
 
-   private static HDocumentUpload retrieveUploadObject(DocumentFileUploadForm uploadForm, Session session)
+   protected HDocumentUpload saveUploadPart(GlobalDocumentId id,
+         HLocale locale, DocumentFileUploadForm uploadForm)
+   {
+      HDocumentUpload upload;
+      if (uploadForm.getFirst())
+      {
+         upload = createMultipartUpload(id, uploadForm, locale);
+      }
+      else
+      {
+         upload = retrieveUploadObject(uploadForm);
+      }
+      saveUploadPart(uploadForm, upload);
+      return upload;
+   }
+
+   private HDocumentUpload retrieveUploadObject(DocumentFileUploadForm uploadForm)
    {
       // TODO put in DAO
       Criteria criteria = session.createCriteria(HDocumentUpload.class);
@@ -190,25 +205,7 @@ public class DocumentUpload
       return upload;
    }
 
-   protected static HDocumentUpload saveUploadPart(GlobalDocumentId id,
-         HLocale locale, DocumentFileUploadForm uploadForm, Session session,
-         ProjectIterationDAO projectIterationDAO)
-   {
-      HDocumentUpload upload;
-      if (uploadForm.getFirst())
-      {
-         upload = createMultipartUpload(id, uploadForm, locale, projectIterationDAO);
-      }
-      else
-      {
-         upload = retrieveUploadObject(uploadForm, session);
-      }
-      saveUploadPart(uploadForm, upload, session);
-      return upload;
-   }
-
-   private static HDocumentUpload createMultipartUpload(GlobalDocumentId id, DocumentFileUploadForm uploadForm, HLocale locale,
-         ProjectIterationDAO projectIterationDAO)
+   private HDocumentUpload createMultipartUpload(GlobalDocumentId id, DocumentFileUploadForm uploadForm, HLocale locale)
    {
       HProjectIteration projectIteration = projectIterationDAO.getBySlug(id.getProjectSlug(), id.getVersionSlug());
       HDocumentUpload newUpload = new HDocumentUpload();
@@ -221,8 +218,7 @@ public class DocumentUpload
       return newUpload;
    }
 
-   private static void saveUploadPart(DocumentFileUploadForm uploadForm, HDocumentUpload upload,
-         Session session)
+   private void saveUploadPart(DocumentFileUploadForm uploadForm, HDocumentUpload upload)
    {
       Blob partContent = session.getLobHelper().createBlob(uploadForm.getFileStream(), uploadForm.getSize().intValue());
       HDocumentUploadPart newPart = new HDocumentUploadPart();
@@ -237,13 +233,12 @@ public class DocumentUpload
       return uploadForm.getFirst() && uploadForm.getLast();
    }
 
-   protected static File combineToTempFileAndDeleteUploadRecord(HDocumentUpload upload, Session session,
-         TranslationFileService transFileService)
+   protected File combineToTempFileAndDeleteUploadRecord(HDocumentUpload upload)
    {
       File tempFile;
       try
       {
-         tempFile = DocumentUpload.combineToTempFile(upload, transFileService);
+         tempFile = combineToTempFile(upload);
       }
       catch (HashMismatchException e)
       {
@@ -265,7 +260,7 @@ public class DocumentUpload
       return tempFile;
    }
 
-   private static File combineToTempFile(HDocumentUpload upload, TranslationFileService service) throws SQLException
+   private File combineToTempFile(HDocumentUpload upload) throws SQLException
    {
       Vector<InputStream> partStreams = new Vector<InputStream>();
       for (HDocumentUploadPart part : upload.getParts())
@@ -285,7 +280,7 @@ public class DocumentUpload
       }
       InputStream combinedParts = new SequenceInputStream(partStreams.elements());
       combinedParts = new DigestInputStream(combinedParts, md);
-      File tempFile = service.persistToTempFile(combinedParts);
+      File tempFile = translationFileServiceImpl.persistToTempFile(combinedParts);
       String md5hash = new String(Hex.encodeHex(md.digest()));
    
       if (!md5hash.equals(upload.getContentHash()))
@@ -307,19 +302,19 @@ public class DocumentUpload
       }
    }
 
-   protected static boolean isNewDocument(GlobalDocumentId id, DocumentDAO dao)
+   protected boolean isNewDocument(GlobalDocumentId id)
    {
-      return dao.getByProjectIterationAndDocId(id.getProjectSlug(), id.getVersionSlug(), id.getDocId()) == null;
+      return documentDAO.getByProjectIterationAndDocId(id.getProjectSlug(), id.getVersionSlug(), id.getDocId()) == null;
    }
 
-   protected static File persistTempFileFromUpload(DocumentFileUploadForm uploadForm, TranslationFileService transFileService)
+   protected File persistTempFileFromUpload(DocumentFileUploadForm uploadForm)
    {
       File tempFile;
       try
       {
          MessageDigest md = MessageDigest.getInstance("MD5");
          InputStream fileContents = new DigestInputStream(uploadForm.getFileStream(), md);
-         tempFile = transFileService.persistToTempFile(fileContents);
+         tempFile = translationFileServiceImpl.persistToTempFile(fileContents);
          String md5hash = new String(Hex.encodeHex(md.digest()));
          if (!md5hash.equals(uploadForm.getHash()))
          {
