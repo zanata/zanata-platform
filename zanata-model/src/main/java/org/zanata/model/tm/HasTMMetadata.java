@@ -23,11 +23,13 @@ package org.zanata.model.tm;
 
 import java.util.Map;
 
+import org.zanata.model.HasEntityDates;
+
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public interface HasTMMetadata
+public interface HasTMMetadata extends HasEntityDates
 {
    Map<TMMetadataType, String> getMetadata();
 }

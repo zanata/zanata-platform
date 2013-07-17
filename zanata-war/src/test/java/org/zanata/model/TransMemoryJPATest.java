@@ -95,7 +95,7 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
       // add some units
       for( int i = 0; i<5; i++ )
       {
-         TMTranslationUnit unit = new TMTranslationUnit();
+         TMTranslationUnit unit = new TMTranslationUnit("uid:" + i);
          unit.setTranslationMemory(tm);
          unit.setSourceLanguage("en-US");
          unit.setTransUnitId("unit-id-" + i);
@@ -118,11 +118,11 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
       // add some units
       for( int i = 0; i<5; i++ )
       {
-         TMTranslationUnit unit = new TMTranslationUnit();
+         TMTranslationUnit unit = new TMTranslationUnit("uid:" + i);
          unit.setTranslationMemory(tm);
          unit.setSourceLanguage("en-US");
          unit.setTransUnitId("unit-id-" + i);
-//         unit.getMetadata().put(TMTranslationUnit.TMTranslationUnitMetadata.DEFAULT, "Metadata " + i);
+         unit.getMetadata().put(TMMetadataType.TMX14, "Metadata " + i);
          tm.getTranslationUnits().add(unit);
       }
 
@@ -135,7 +135,7 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
       for( TMTranslationUnit tu : tm.getTranslationUnits() )
       {
          assertThat(tu.getMetadata().size(), is(1));
-//         assertThat(tu.getMetadata().get(TMTranslationUnit.TMTranslationUnitMetadata.DEFAULT), startsWith("Metadata "));
+         assertThat(tu.getMetadata().get(TMMetadataType.TMX14), startsWith("Metadata "));
       }
    }
 

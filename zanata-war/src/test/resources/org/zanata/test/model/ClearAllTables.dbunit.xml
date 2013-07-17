@@ -31,4 +31,10 @@
     <HTextFlowTarget/>
     <HTextFlowTargetContentHistory/>
     <HTextFlowTargetHistory/>
+    <TransMemory_Metadata/>
+    <TMTransUnit_Metadata/>
+    <TMTransUnitVariant_Metadata/>
+    <TMTranslationUnit/>
+    <TMTransUnitVariant/>
+    <TransMemory/>
 </dataset>

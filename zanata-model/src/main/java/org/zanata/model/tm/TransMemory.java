@@ -25,6 +25,7 @@ import java.util.Set;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.JoinTable;
@@ -57,6 +58,9 @@ public class TransMemory extends SlugEntityBase implements HasTMMetadata
    private static final long serialVersionUID = 1L;
 
    private String description;
+
+   @Column(name = "source_language", nullable = true)
+   private String sourceLanguage;
 
    @Setter(AccessLevel.PROTECTED)
    @OneToMany(cascade = CascadeType.ALL, mappedBy = "translationMemory")

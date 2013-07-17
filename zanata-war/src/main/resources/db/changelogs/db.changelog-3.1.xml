@@ -16,6 +16,9 @@
             <column name="slug" type="varchar(40)">
                 <constraints nullable="false" unique="true"/>
             </column>
+            <column name="source_language" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
             <!-- Base entity columns -->
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -39,7 +42,13 @@
                 <constraints nullable="true"/>
             </column>
             <column name="tm_id" type="bigint">
-                <constraints nullable="false"/>
+                <constraints nullable="false" uniqueConstraintName="UK_natural_id"/>
+            </column>
+            <column name="unique_id" type="varchar(255)">
+                <constraints nullable="false" uniqueConstraintName="UK_natural_id"/>
+            </column>
+            <column name="position" type="integer">
+                <constraints nullable="true"/>
             </column>
             <!-- Base entity columns -->
             <column name="id" type="bigint" autoIncrement="true">

@@ -40,9 +40,11 @@ import org.zanata.model.ModelEntityBase;
 
 import com.google.common.collect.Maps;
 
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -55,6 +57,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true, of = {"transUnitId", "sourceLanguage", "translationMemory"})
 @ToString(exclude = "translationMemory")
 @Data
+@NoArgsConstructor
 @Access(AccessType.FIELD)
 public class TMTranslationUnit extends ModelEntityBase implements HasTMMetadata
 {
@@ -69,6 +72,12 @@ public class TMTranslationUnit extends ModelEntityBase implements HasTMMetadata
    @ManyToOne(optional = false, fetch = FetchType.LAZY)
    @JoinColumn(name = "tm_id", nullable = false)
    private TransMemory translationMemory;
+
+   @Column(name = "unique_id", nullable = false)
+   private String uniqueId;
+
+   @Column(nullable = true)
+   private Integer position;
 
    @ManyToMany(cascade = CascadeType.ALL)
    @JoinTable(name = "TMTranslationUnit_TransUnitVariant",
@@ -85,4 +94,9 @@ public class TMTranslationUnit extends ModelEntityBase implements HasTMMetadata
    @JoinTable(name = "TMTransUnit_Metadata")
    @Lob
    private Map<TMMetadataType, String> metadata = Maps.newHashMap();
+
+   public TMTranslationUnit(String uniqueId)
+   {
+      this.uniqueId = uniqueId;
+   }
 }
