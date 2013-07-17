@@ -26,6 +26,8 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -33,14 +35,21 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
+import lombok.Setter;
 import nu.xom.Attribute;
 import nu.xom.Element;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.zanata.common.util.ElementBuilder;
 import org.zanata.model.tm.TMMetadataHelper;
+import org.zanata.model.tm.TMTransUnitVariant;
 import org.zanata.model.tm.TMTranslationUnit;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.model.tm.TMMetadataType;
@@ -48,60 +57,33 @@ import org.zanata.model.tm.TMMetadataType;
 import com.google.common.collect.Maps;
 
 import fj.Effect;
+import nu.xom.Elements;
 
 /**
  * Parses TMX input.
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@Name("tmxParser")
+@Scope(ScopeType.STATELESS)
+@AutoCreate
 public class TMXParser
 {
    private static final DateTimeFormatter ISO8601Z = DateTimeFormat.forPattern("yyyyMMdd'T'HHmmss'Z").withZoneUTC();
 
-   public void parseTMX(InputStream input) throws XMLStreamException
+   @In
+   @Setter
+   private EntityManager entityManager;
+
+   public void parseAndSaveTMX(InputStream input, final TransMemory tm) throws XMLStreamException
    {
-      final TransMemory tm = new TransMemory();
-      tm.setName("TEST");
-      tm.setSlug("test-slug");
       // TODO Save TM
       parseTMX(input, new Effect<Element>()
       {
          @Override
          public void e(Element tuElem)
          {
-            TMTranslationUnit tu = new TMTranslationUnit();
-            String creationDate = creationdate.getAttribute(tuElem);
-            if (creationDate != null)
-            {
-               tu.setCreationDate(parseDate(creationDate));
-            }
-            String changeDate = changedate.getAttribute(tuElem);
-            if (changeDate != null)
-            {
-               tu.setLastChanged(parseDate(changeDate));
-            }
-            tu.setSourceLanguage(srclang.getAttribute(tuElem));
-            tu.setTranslationMemory(tm);
-            tu.setTransUnitId(tuid.getAttribute(tuElem));
-
-            Map<String, String> metadata = Maps.newHashMap();
-            for (int i=0; i < tuElem.getAttributeCount(); i++)
-            {
-               Attribute attr = tuElem.getAttribute(i);
-               String name = attr.getQualifiedName();
-               if (!TMXAttribute.contains(name))
-               {
-                  String value = attr.getValue();
-                  metadata.put(name, value);
-               }
-            }
-            TMMetadataHelper.setTMXMetadata(tu, metadata);
-
-//          TMTransUnitVariant tuv = handleTransUnitVariant(nextEvent);
-//          tu.getTransUnitVariants().put(tuv.getLanguage(), tuv);
-//            tu.setTransUnitVariants(transUnitVariants);
-            tu.setVersionNum(0);
-            // TODO Save the TU
+            parseAndSaveTransUnit(tuElem, tm);
          }
       });
    }
@@ -109,6 +91,59 @@ public class TMXParser
    private Date parseDate(String dateString)
    {
       return ISO8601Z.parseDateTime(dateString).toDate();
+   }
+
+   private void parseAndSaveTransUnit(Element tuElem, TransMemory tm)
+   {
+      TMTranslationUnit tu = new TMTranslationUnit();
+      String creationDate = creationdate.getAttribute(tuElem);
+      if (creationDate != null)
+      {
+         tu.setCreationDate(parseDate(creationDate));
+      }
+      String changeDate = changedate.getAttribute(tuElem);
+      if (changeDate != null)
+      {
+         tu.setLastChanged(parseDate(changeDate));
+      }
+      tu.setSourceLanguage(srclang.getAttribute(tuElem));
+      tu.setTranslationMemory(tm);
+      tu.setTransUnitId(tuid.getAttribute(tuElem));
+
+      Map<String, String> metadata = Maps.newHashMap();
+      for (int i=0; i < tuElem.getAttributeCount(); i++)
+      {
+         Attribute attr = tuElem.getAttribute(i);
+         String name = attr.getQualifiedName();
+         if (!TMXAttribute.contains(name))
+         {
+            String value = attr.getValue();
+            metadata.put(name, value);
+         }
+      }
+      TMMetadataHelper.setTMXMetadata(tu, metadata);
+
+      tu.setVersionNum(0);
+
+      // Parse the tuv's
+      Elements tuvElems = tuElem.getChildElements("tuv");
+      for( int i=0; i<tuvElems.size(); i++ )
+      {
+         Element tuvElem = tuvElems.get(i);
+         parseAndSaveTransUnitVariant(tuvElem, tu);
+      }
+
+      entityManager.persist(tu);
+   }
+
+   private void parseAndSaveTransUnitVariant(Element tuvElem, TMTranslationUnit tu)
+   {
+      String language = tuvElem.getAttributeValue("lang", XMLConstants.XML_NS_URI);
+      String content = tuvElem.getFirstChildElement("seg").getChild(0).toXML();
+
+      TMTransUnitVariant tuv = new TMTransUnitVariant(language, content);
+      //TODO save metadata
+      tu.getTransUnitVariants().put(language, tuv);
    }
 
    public void parseTMX(InputStream input, Effect<Element> sideEffect) throws XMLStreamException

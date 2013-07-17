@@ -20,6 +20,10 @@
  */
 package org.zanata.dao;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -47,4 +51,13 @@ public class TransMemoryDAO extends AbstractDAOImpl<TransMemory, Long>
       super(TransMemory.class, session);
    }
 
+   public @Nullable
+   TransMemory getBySlug(@Nonnull String slug)
+   {
+      if(!StringUtils.isEmpty(slug))
+      {
+         return (TransMemory) getSession().byNaturalId(TransMemory.class).using("slug", slug).load();
+      }
+      return null;
+   }
 }

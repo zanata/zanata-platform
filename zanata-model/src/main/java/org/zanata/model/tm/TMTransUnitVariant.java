@@ -64,10 +64,12 @@ public class TMTransUnitVariant extends ModelEntityBase implements HasTMMetadata
    private String language;
 
    @Column(name = "tagged_segment", nullable = false)
+   @Lob
    private String taggedSegment;
 
    @Setter(AccessLevel.NONE)
    @Column(name = "plain_text_segment", nullable = true)
+   @Lob
    private String plainTextSegment;
 
    @Setter(AccessLevel.PROTECTED)

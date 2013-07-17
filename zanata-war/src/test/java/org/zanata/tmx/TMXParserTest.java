@@ -22,23 +22,63 @@ package org.zanata.tmx;
 
 import java.io.InputStream;
 
-import nu.xom.Element;
-
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.ZanataDbunitJpaTest;
+import org.zanata.dao.TransMemoryDAO;
 import org.zanata.model.tm.TMTranslationUnit;
+import org.zanata.model.tm.TransMemory;
+import org.zanata.seam.SeamAutowire;
 
-import fj.Effect;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class TMXParserTest
+public class TMXParserTest extends ZanataDbunitJpaTest
 {
+   private SeamAutowire seam = SeamAutowire.instance();
+
+   @Override
+   protected void prepareDBUnitOperations()
+   {
+   }
+
+   @BeforeMethod
+   public void initializeSeam()
+   {
+      seam.reset()
+          .ignoreNonResolvable()
+          .use("entityManager", getEm())
+          .use("session", getSession());
+   }
+
    @Test
    public void parseTMX() throws Exception
    {
-      TMXParser parser = new TMXParser();
+      // Create a TM
+      TransMemoryDAO transMemoryDAO = seam.autowire(TransMemoryDAO.class);
+      TransMemory tm = new TransMemory();
+      tm.setSlug("new-tm");
+      tm.setDescription("New test tm");
+      transMemoryDAO.makePersistent(tm);
+
+      TMXParser parser = seam.autowire(TMXParser.class);
       InputStream is = getClass().getResourceAsStream("/tmx/fedora-readme-burning-isos.tmx");
-      parser.parseTMX(is);
+
+      parser.parseAndSaveTMX(is, tm);
+
+      // Make sure everything is stored properly
+      getEm().refresh(tm);
+      assertThat(tm.getTranslationUnits().size(), is(168));
+
+      for(TMTranslationUnit tu : tm.getTranslationUnits())
+      {
+         assertThat(tu.getTransUnitVariants().size(), greaterThan(0));
+      }
    }
 }

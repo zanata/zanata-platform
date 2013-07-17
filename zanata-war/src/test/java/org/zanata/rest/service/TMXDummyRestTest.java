@@ -1,7 +1,5 @@
 package org.zanata.rest.service;
 
-import java.util.Map;
-
 import javax.ws.rs.core.Response;
 
 import org.hibernate.Session;
@@ -16,8 +14,6 @@ import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowStreamDAO;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
-
-import com.google.common.collect.ImmutableMap;
 
 public class TMXDummyRestTest extends ZanataRestTest
 {
@@ -68,7 +64,7 @@ public class TMXDummyRestTest extends ZanataRestTest
             .use("identity", mockIdentity);
       // @formatter:on
 
-      TranslationMemoryService tmService = seam.autowire(TranslationMemoryService.class);
+      TranslationMemoryResourceService tmService = seam.autowire(TranslationMemoryResourceService.class);
       resources.add(seam.autowire(TextFlowStreamDAO.class));
       resources.add(tmService);
    }

@@ -21,13 +21,9 @@
 package org.zanata.util;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.StringWriter;
 import javax.annotation.Nonnull;
 import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
@@ -112,13 +108,11 @@ public class OkapiUtil
 
       try
       {
-         StringWriter sanitized = new StringWriter();
          XMLInputFactory inputFactory = XMLInputFactory.newFactory();
-         XMLOutputFactory outputFactory = XMLOutputFactory.newFactory();
          inputFactory.setProperty(XMLInputFactory.IS_VALIDATING, false);
          inputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
          XMLEventReader reader = inputFactory.createXMLEventReader(new ByteArrayInputStream(content.getBytes()));
-         XMLEventWriter writer = outputFactory.createXMLEventWriter(sanitized);
+         StringBuilder writer = new StringBuilder();
 
          int level = 0; // Nesting level. When this is > 0 it means we are ignoring events
 
@@ -155,12 +149,12 @@ public class OkapiUtil
                      break;
                   }
                case XMLStreamConstants.CHARACTERS:
-                  if( level == 0 ) writer.add(nextEv);
+                  if( level == 0 ) writer.append(nextEv.asCharacters().getData());
                   break;
             }
          }
 
-         return sanitized.toString();
+         return writer.toString();
       }
       catch (XMLStreamException e)
       {

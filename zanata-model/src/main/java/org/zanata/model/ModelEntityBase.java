@@ -102,11 +102,11 @@ public class ModelEntityBase implements Serializable, HashableState
    @PrePersist
    private void onPersist()
    {
-      if (creationDate != null)
+      if (creationDate == null)
       {
          creationDate = new Date();
       }
-      if (lastChanged != null)
+      if (lastChanged == null)
       {
          lastChanged = creationDate;
       }
