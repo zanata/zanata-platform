@@ -71,7 +71,7 @@ public class DocumentUpload
    protected final ProjectIterationDAO projectIterationDAO;
    protected final TranslationFileService translationFileServiceImpl;
 
-   public DocumentUpload(
+   protected DocumentUpload(
          ZanataIdentity identity,
          Session session,
          DocumentDAO documentDAO,
@@ -89,7 +89,7 @@ public class DocumentUpload
       this.translationFileServiceImpl = translationFileServiceImpl;
    }
 
-   public static void checkUploadPreconditions(GlobalDocumentId id,
+   protected static void checkUploadPreconditions(GlobalDocumentId id,
          DocumentFileUploadForm uploadForm, ZanataIdentity identity,
          ProjectIterationDAO projectIterationDAO, Session session)
    {
@@ -190,7 +190,7 @@ public class DocumentUpload
       return upload;
    }
 
-   public static HDocumentUpload saveUploadPart(GlobalDocumentId id,
+   protected static HDocumentUpload saveUploadPart(GlobalDocumentId id,
          HLocale locale, DocumentFileUploadForm uploadForm, Session session,
          ProjectIterationDAO projectIterationDAO)
    {
@@ -232,12 +232,12 @@ public class DocumentUpload
       session.flush();
    }
 
-   public static boolean isSinglePart(DocumentFileUploadForm uploadForm)
+   protected static boolean isSinglePart(DocumentFileUploadForm uploadForm)
    {
       return uploadForm.getFirst() && uploadForm.getLast();
    }
 
-   public static File combineToTempFileAndDeleteUploadRecord(HDocumentUpload upload, Session session,
+   protected static File combineToTempFileAndDeleteUploadRecord(HDocumentUpload upload, Session session,
          TranslationFileService transFileService)
    {
       File tempFile;
@@ -295,7 +295,7 @@ public class DocumentUpload
       return tempFile;
    }
 
-   public static InputStream getInputStream(Optional<File> tempFile, DocumentFileUploadForm uploadForm) throws FileNotFoundException
+   protected static InputStream getInputStream(Optional<File> tempFile, DocumentFileUploadForm uploadForm) throws FileNotFoundException
    {
       if (tempFile.isPresent())
       {
@@ -307,12 +307,12 @@ public class DocumentUpload
       }
    }
 
-   public static boolean isNewDocument(GlobalDocumentId id, DocumentDAO dao)
+   protected static boolean isNewDocument(GlobalDocumentId id, DocumentDAO dao)
    {
       return dao.getByProjectIterationAndDocId(id.getProjectSlug(), id.getVersionSlug(), id.getDocId()) == null;
    }
 
-   public static File persistTempFileFromUpload(DocumentFileUploadForm uploadForm, TranslationFileService transFileService)
+   protected static File persistTempFileFromUpload(DocumentFileUploadForm uploadForm, TranslationFileService transFileService)
    {
       File tempFile;
       try
