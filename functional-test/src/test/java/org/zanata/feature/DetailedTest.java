@@ -18,21 +18,14 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.feature.account;
-
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-
+package org.zanata.feature;
 /**
+ * Interface for the execution of the detailed tests category.
+ *
+ * Tests that fall under this category exercise features more so than the Basic Acceptance Tests
+ * (BAT), but are time constrained and are as such not in the "Long" test collection.
+ *
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @see "http://junit.org/javadoc/4.9/org/junit/experimental/categories/Categories.html"
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-      RegisterFullTest.class,
-      UsernameValidationTest.class,
-      ValidEmailAddressTest.class,
-      InvalidEmailAddressTest.class
-})
-public class RegisterTestSuite
-{
-}
+public interface DetailedTest { }

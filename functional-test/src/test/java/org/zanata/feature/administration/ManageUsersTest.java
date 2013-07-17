@@ -20,16 +20,16 @@
  */
 package org.zanata.feature.administration;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.concordion.api.extension.Extensions;
 import org.concordion.ext.ScreenshotExtension;
 import org.concordion.ext.TimestampFormatterExtension;
 import org.concordion.integration.junit4.ConcordionRunner;
 import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.zanata.concordion.CustomResourceExtension;
+import org.zanata.feature.ConcordionTest;
 import org.zanata.page.HomePage;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.util.ResetDatabaseRule;
@@ -38,7 +38,7 @@ import org.zanata.page.administration.ManageUserAccountPage;
 
 @RunWith(ConcordionRunner.class)
 @Extensions({ScreenshotExtension.class, TimestampFormatterExtension.class, CustomResourceExtension.class})
-@Slf4j
+@Category(ConcordionTest.class)
 public class ManageUsersTest
 {
    @ClassRule
@@ -61,20 +61,13 @@ public class ManageUsersTest
       return manageUserPage.editUserAccount(username);
    }
 
-   public ManageUserPage changeUsernameAndPassword(ManageUserAccountPage manageUserAccount, String newUsername, String newPassword)
+   public ManageUserPage changeUsernameAndPassword(ManageUserAccountPage manageUserAccount, String username, String password)
    {
-      ManageUserPage page = manageUserAccount.clearFields()
-      .enterUsername(newUsername)
-      .enterPassword(newPassword)
-      .enterConfirmPassword(newPassword)
-      .saveUser();
-
-      return page;
+      return manageUserAccount.clearFields().enterUsername(username).enterPassword(password).enterConfirmPassword(password).saveUser();
    }
 
    public boolean userListContains(ManageUserPage manageUserPage, String username)
    {
-      log.info(manageUserPage.getUserList() + "");
       return manageUserPage.getUserList().contains(username);
    }
 
