@@ -22,6 +22,7 @@
 package org.zanata.webtrans.client.ui;
 
 import org.zanata.common.ContentState;
+import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.util.DateUtil;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 import com.google.gwt.core.client.GWT;
@@ -57,12 +58,16 @@ public class TransHistoryItemLine extends Composite
    Anchor compare;
    @UiField
    Anchor copyIntoEditor;
+   @UiField
+   WebTransMessages messages;
 
-   public TransHistoryItemLine(TransHistoryItem item, TranslationHistoryDisplay.Listener listener)
+   public TransHistoryItemLine(TransHistoryItem item, TranslationHistoryDisplay.Listener listener, ContentStateRenderer stateRenderer)
    {
       this.item = item;
       this.listener = listener;
-      heading = new InlineHTML(template.heading(item.getModifiedBy(), stateToStyle(item.getStatus()), item.getStatus().name()));
+      // modified by person can be empty if translation is pushed from client
+      String person = item.getModifiedBy().isEmpty() ? "(Someone offline)" : item.getModifiedBy();
+      heading = new InlineHTML(template.heading(person, stateToStyle(item.getStatus()), stateRenderer.render(item.getStatus())));
       targetContents = new InlineHTML(template.targetContent(TextContentsDisplay.asSyntaxHighlight(item.getContents()).toSafeHtml()));
       revision = new InlineHTML(template.targetRevision(item.getVersionNum(), item.getOptionalTag()));
       initWidget(ourUiBinder.createAndBindUi(this));
@@ -72,18 +77,22 @@ public class TransHistoryItemLine extends Composite
 
    private static String stateToStyle(ContentState status)
    {
+      if (status == null)
+      {
+         return "";
+      }
       switch (status)
       {
          case New:
-            return "txt--status--new";
+            return "txt--state-neutral";
          case NeedReview:
-            return "txt--status--unsure";
+            return "txt--state-unsure";
          case Translated:
-            return "txt--status--success";
+            return "txt--state-success";
          case Approved:
-            return "txt--status--approved";
+            return "txt--state-highlight";
          case Rejected:
-            return "txt--status--warning";
+            return "txt--state-danger";
       }
       return "";
    }
@@ -100,11 +109,11 @@ public class TransHistoryItemLine extends Composite
       listener.compareClicked(item);
       if (listener.isItemInComparison(item))
       {
-         compare.setText("Remove from comparison");
+         compare.setText(messages.removeFromComparison());
       }
       else
       {
-         compare.setText("Compare");
+         compare.setText(messages.compare());
       }
    }
 

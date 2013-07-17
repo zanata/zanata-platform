@@ -110,7 +110,7 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
          List<String> newTargets = targetContentsPresenter.getNewTargets();
          if (!Objects.equal(latest.getContents(), newTargets))
          {
-            all.add(new TransHistoryItem(messages.unsaved(), newTargets, ContentState.New, messages.you(), new Date()));
+            all.add(new TransHistoryItem(messages.unsaved(), newTargets, null, messages.you(), new Date()));
          }
       }
       all.addAll(otherEntries);

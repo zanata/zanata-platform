@@ -547,4 +547,10 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("You")
    String you();
+
+   @DefaultMessage("Compare")
+   String compare();
+
+   @DefaultMessage("Remove from comparison")
+   String removeFromComparison();
 }

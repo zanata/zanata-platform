@@ -23,7 +23,7 @@
              xmlns:g='urn:import:com.google.gwt.user.client.ui'>
     <g:HTMLPanel tag="li" styleName="l--pad-v-half">
         <div class="g">
-            <div class="g__item w--1-12 txt--align-right"><i class="icon-comment-3"/><span class="is-invisible">Comment</span></div>
+            <div class="g__item w--1-12 txt--align-right"><i class="i--comment i"/><span class="is-invisible">Comment</span></div>
             <div class="g__item w--9-12">
                 <g:InlineHTML ui:field="heading"/>
                 <g:InlineHTML ui:field="commentContent"/>
