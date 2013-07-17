@@ -269,7 +269,7 @@ public class FileService implements FileResource
       }
    }
 
-   private Response transUploadResponse(int totalChunks, List<String> warnings)
+   private static Response transUploadResponse(int totalChunks, List<String> warnings)
    {
       ChunkUploadResponse response = new ChunkUploadResponse();
       response.setExpectingMore(false);
@@ -285,7 +285,7 @@ public class FileService implements FileResource
       return Response.status(Status.OK).entity(response).build();
    }
 
-   private String buildWarningString(List<String> warnings)
+   private static String buildWarningString(List<String> warnings)
    {
       StringBuilder warningText = new StringBuilder("Upload succeeded but had the following warnings:");
       for (String warning : warnings)
