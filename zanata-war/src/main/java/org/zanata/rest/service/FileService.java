@@ -193,7 +193,7 @@ public class FileService implements FileResource
       {
          checkTranslationUploadPreconditions(projectSlug, iterationSlug, docId, localeId, uploadForm,
                identity, projectIterationDAO, session, documentDAO, translationFileServiceImpl);
-         locale = findHLocale(localeId);
+         locale = findHLocale(localeId, localeDAO);
          checkTranslationUploadAllowed(projectSlug, iterationSlug, localeId, locale);
 
          Optional<File> tempFile;
@@ -330,7 +330,7 @@ public class FileService implements FileResource
             && identity != null && identity.hasPermission("add-translation", projectIteration.getProject(), localeId);
    }
 
-   private HLocale findHLocale(String localeString)
+   private static HLocale findHLocale(String localeString, LocaleDAO localeDAO)
    {
       LocaleId localeId;
       try
