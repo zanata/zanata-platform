@@ -18,38 +18,21 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.feature.startNewProject;
+package org.zanata.feature.administration;
 
 import org.concordion.api.extension.Extensions;
-import org.concordion.ext.ScreenshotExtension;
-import org.concordion.ext.TimestampFormatterExtension;
 import org.concordion.integration.junit4.ConcordionRunner;
-import org.junit.Before;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-import org.zanata.concordion.CustomResourceExtension;
+import org.zanata.concordion.IndexPageBuilderExtension;
 import org.zanata.feature.ConcordionTest;
-import org.zanata.page.projects.ProjectPage;
-import org.zanata.workflow.LoginWorkFlow;
-import org.zanata.workflow.ProjectWorkFlow;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @RunWith(ConcordionRunner.class)
-@Extensions({ScreenshotExtension.class, TimestampFormatterExtension.class, CustomResourceExtension.class})
+@Extensions({IndexPageBuilderExtension.class})
 @Category(ConcordionTest.class)
-public class CreateNewProjectTest
+public class AdministrationTest
 {
-
-   @Before
-   public void beforeMethod()
-   {
-      new LoginWorkFlow().signIn("admin", "admin");
-   }
-
-   public ProjectPage createNewProject(String projectSlug, String projectName)
-   {
-      return new ProjectWorkFlow().createNewProject(projectSlug, projectName);
-   }
 }

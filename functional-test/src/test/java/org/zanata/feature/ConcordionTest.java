@@ -18,21 +18,16 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.feature.account;
-
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-
+package org.zanata.feature;
 /**
+ * Interface for the execution of the Concordion Tests category.
+ *
+ * Tests in this category exercise features to a limited point,in order to validate the feature
+ * in a given use case and generate what is, effectively, a user manual.
+ * These tests are of a low priority due to the specific system requirements, e.g. actions which
+ * result in screenshots require a single display environment.
+ *
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @see "http://junit.org/javadoc/4.9/org/junit/experimental/categories/Categories.html"
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-      RegisterFullTest.class,
-      UsernameValidationTest.class,
-      ValidEmailAddressTest.class,
-      InvalidEmailAddressTest.class
-})
-public class RegisterTestSuite
-{
-}
+public interface ConcordionTest { }

@@ -18,21 +18,17 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.feature.account;
+package org.zanata.feature;
 
+import org.junit.experimental.categories.Categories;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 
 /**
+ * Filter by the Concordion Test category
+ *
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-      RegisterFullTest.class,
-      UsernameValidationTest.class,
-      ValidEmailAddressTest.class,
-      InvalidEmailAddressTest.class
-})
-public class RegisterTestSuite
-{
+@RunWith(Categories.class)
+@Categories.IncludeCategory(ConcordionTest.class)
+public class ConcordionTestSuite extends AggregateTestSuite {
 }
