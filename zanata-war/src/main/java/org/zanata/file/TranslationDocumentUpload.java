@@ -79,7 +79,7 @@ public class TranslationDocumentUpload extends DocumentUpload
             translationFileServiceImpl);
    }
 
-   public static Response tryUploadTranslationFile(String projectSlug, String iterationSlug, String docId,
+   public Response tryUploadTranslationFile(String projectSlug, String iterationSlug, String docId,
          String localeId, String mergeType, DocumentFileUploadForm uploadForm,
          ZanataIdentity identity,
          ProjectIterationDAO projectIterationDAO,

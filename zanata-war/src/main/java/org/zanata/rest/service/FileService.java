@@ -168,7 +168,11 @@ public class FileService implements FileResource
                                           @QueryParam("merge") String merge,
                                           @MultipartForm DocumentFileUploadForm uploadForm )
    {
-      return TranslationDocumentUpload.tryUploadTranslationFile(projectSlug, iterationSlug, docId, localeId, merge, uploadForm,
+
+      TranslationDocumentUpload uploader = new TranslationDocumentUpload(identity, session, documentDAO, projectIterationDAO,
+            documentServiceImpl, virusScanner, translationFileServiceImpl);
+
+      return uploader.tryUploadTranslationFile(projectSlug, iterationSlug, docId, localeId, merge, uploadForm,
             identity, projectIterationDAO, session, documentDAO, localeDAO,
             translationFileServiceImpl, translationServiceImpl);
    }
