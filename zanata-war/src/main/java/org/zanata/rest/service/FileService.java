@@ -313,7 +313,8 @@ public class FileService implements FileResource
 
    private void checkTranslationUploadAllowed(String projectSlug, String iterationSlug, String localeId, HLocale locale)
    {
-      if (!isTranslationUploadAllowed(projectSlug, iterationSlug, locale))
+      if (!isTranslationUploadAllowed(projectSlug, iterationSlug, locale,
+            projectIterationDAO, identity))
       {
          throw new ChunkUploadException(Status.FORBIDDEN,
                "You do not have permission to upload translations for locale \"" + localeId +
@@ -321,7 +322,9 @@ public class FileService implements FileResource
       }
    }
 
-   private boolean isTranslationUploadAllowed(String projectSlug, String iterationSlug, HLocale localeId)
+   private static boolean isTranslationUploadAllowed(String projectSlug, String iterationSlug, HLocale localeId,
+         ProjectIterationDAO projectIterationDAO,
+         ZanataIdentity identity)
    {
       HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
       // TODO should this check be "add-translation" or "modify-translation"?
