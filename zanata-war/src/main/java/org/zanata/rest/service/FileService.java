@@ -194,7 +194,8 @@ public class FileService implements FileResource
          checkTranslationUploadPreconditions(projectSlug, iterationSlug, docId, localeId, uploadForm,
                identity, projectIterationDAO, session, documentDAO, translationFileServiceImpl);
          locale = findHLocale(localeId, localeDAO);
-         checkTranslationUploadAllowed(projectSlug, iterationSlug, localeId, locale);
+         checkTranslationUploadAllowed(projectSlug, iterationSlug, localeId, locale,
+               projectIterationDAO, identity);
 
          Optional<File> tempFile;
          int totalChunks;
@@ -311,7 +312,9 @@ public class FileService implements FileResource
       return extensions;
    }
 
-   private void checkTranslationUploadAllowed(String projectSlug, String iterationSlug, String localeId, HLocale locale)
+   private static void checkTranslationUploadAllowed(String projectSlug, String iterationSlug, String localeId, HLocale locale,
+         ProjectIterationDAO projectIterationDAO,
+         ZanataIdentity identity)
    {
       if (!isTranslationUploadAllowed(projectSlug, iterationSlug, locale,
             projectIterationDAO, identity))
