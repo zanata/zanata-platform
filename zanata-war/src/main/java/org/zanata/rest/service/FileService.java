@@ -298,7 +298,7 @@ public class FileService implements FileResource
       return warningString;
    }
 
-   private Set<String> newExtensions(boolean gettextExtensions)
+   private static Set<String> newExtensions(boolean gettextExtensions)
    {
       Set<String> extensions;
       if (gettextExtensions)
