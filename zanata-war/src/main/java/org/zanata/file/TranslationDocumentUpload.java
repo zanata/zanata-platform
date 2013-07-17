@@ -92,11 +92,9 @@ public class TranslationDocumentUpload extends DocumentUpload
       HLocale locale;
       try
       {
-         checkTranslationUploadPreconditions(projectSlug, iterationSlug, docId, localeId, uploadForm,
-               identity, projectIterationDAO, session, documentDAO, translationFileServiceImpl);
-         locale = findHLocale(localeId, localeDAO);
-         checkTranslationUploadAllowed(projectSlug, iterationSlug, localeId, locale,
-               projectIterationDAO, identity);
+         checkTranslationUploadPreconditions(projectSlug, iterationSlug, docId, localeId, uploadForm);
+         locale = findHLocale(localeId);
+         checkTranslationUploadAllowed(projectSlug, iterationSlug, localeId, locale);
 
          Optional<File> tempFile;
          int totalChunks;
@@ -170,26 +168,20 @@ public class TranslationDocumentUpload extends DocumentUpload
       }
    }
 
-   private static void checkTranslationUploadPreconditions(String projectSlug, String iterationSlug,
-         String docId, String localeId, DocumentFileUploadForm uploadForm,
-         ZanataIdentity identity,
-         ProjectIterationDAO projectIterationDAO,
-         Session session,
-         DocumentDAO documentDAO,
-         TranslationFileService translationFileServiceImpl)
+   private void checkTranslationUploadPreconditions(String projectSlug, String iterationSlug,
+         String docId, String localeId, DocumentFileUploadForm uploadForm)
    {
       checkUploadPreconditions(new GlobalDocumentId(projectSlug, iterationSlug, docId),
             uploadForm, identity, projectIterationDAO, session);
 
       // TODO check translation upload allowed
 
-      checkDocumentExists(projectSlug, iterationSlug, docId, uploadForm, documentDAO);
-      checkValidTranslationUploadType(uploadForm, translationFileServiceImpl);
+      checkDocumentExists(projectSlug, iterationSlug, docId, uploadForm);
+      checkValidTranslationUploadType(uploadForm);
    }
 
-   private static void checkDocumentExists(String projectSlug, String iterationSlug, String docId,
-         DocumentFileUploadForm uploadForm,
-         DocumentDAO documentDAO)
+   private void checkDocumentExists(String projectSlug, String iterationSlug, String docId,
+         DocumentFileUploadForm uploadForm)
    {
       if (isNewDocument(new GlobalDocumentId(projectSlug, iterationSlug, docId), documentDAO))
       {
@@ -199,8 +191,7 @@ public class TranslationDocumentUpload extends DocumentUpload
       }
    }
 
-   private static void checkValidTranslationUploadType(DocumentFileUploadForm uploadForm,
-         TranslationFileService translationFileServiceImpl)
+   private void checkValidTranslationUploadType(DocumentFileUploadForm uploadForm)
    {
       String fileType = uploadForm.getFileType();
       if (!fileType.equals(".po")
@@ -212,7 +203,7 @@ public class TranslationDocumentUpload extends DocumentUpload
       }
    }
 
-   private static HLocale findHLocale(String localeString, LocaleDAO localeDAO)
+   private HLocale findHLocale(String localeString)
    {
       LocaleId localeId;
       try
@@ -234,12 +225,9 @@ public class TranslationDocumentUpload extends DocumentUpload
       return locale;
    }
 
-   private static void checkTranslationUploadAllowed(String projectSlug, String iterationSlug, String localeId, HLocale locale,
-         ProjectIterationDAO projectIterationDAO,
-         ZanataIdentity identity)
+   private void checkTranslationUploadAllowed(String projectSlug, String iterationSlug, String localeId, HLocale locale)
    {
-      if (!isTranslationUploadAllowed(projectSlug, iterationSlug, locale,
-            projectIterationDAO, identity))
+      if (!isTranslationUploadAllowed(projectSlug, iterationSlug, locale))
       {
          throw new ChunkUploadException(Status.FORBIDDEN,
                "You do not have permission to upload translations for locale \"" + localeId +
@@ -247,9 +235,7 @@ public class TranslationDocumentUpload extends DocumentUpload
       }
    }
 
-   private static boolean isTranslationUploadAllowed(String projectSlug, String iterationSlug, HLocale localeId,
-         ProjectIterationDAO projectIterationDAO,
-         ZanataIdentity identity)
+   private boolean isTranslationUploadAllowed(String projectSlug, String iterationSlug, HLocale localeId)
    {
       HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
       // TODO should this check be "add-translation" or "modify-translation"?
