@@ -170,11 +170,9 @@ public class FileService implements FileResource
    {
 
       TranslationDocumentUpload uploader = new TranslationDocumentUpload(identity, session, documentDAO, projectIterationDAO,
-            documentServiceImpl, virusScanner, translationFileServiceImpl);
+            documentServiceImpl, virusScanner, translationFileServiceImpl, localeDAO, translationServiceImpl);
 
-      return uploader.tryUploadTranslationFile(projectSlug, iterationSlug, docId, localeId, merge, uploadForm,
-            identity, projectIterationDAO, session, documentDAO, localeDAO,
-            translationFileServiceImpl, translationServiceImpl);
+      return uploader.tryUploadTranslationFile(projectSlug, iterationSlug, docId, localeId, merge, uploadForm);
    }
 
    /**

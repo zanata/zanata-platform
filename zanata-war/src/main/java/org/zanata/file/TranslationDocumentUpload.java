@@ -62,13 +62,18 @@ import com.google.common.base.Optional;
 public class TranslationDocumentUpload extends DocumentUpload
 {
 
+   private final LocaleDAO localeDAO;
+   private final TranslationService translationServiceImpl;
+
    public TranslationDocumentUpload(ZanataIdentity identity,
          Session session,
          DocumentDAO documentDAO,
          ProjectIterationDAO projectIterationDAO,
          DocumentService documentServiceImpl,
          VirusScanner virusScanner,
-         TranslationFileService translationFileServiceImpl)
+         TranslationFileService translationFileServiceImpl,
+         LocaleDAO localeDAO,
+         TranslationService translationServiceImpl)
    {
       super(identity,
             session,
@@ -77,17 +82,12 @@ public class TranslationDocumentUpload extends DocumentUpload
             documentServiceImpl,
             virusScanner,
             translationFileServiceImpl);
+      this.localeDAO = localeDAO;
+      this.translationServiceImpl = translationServiceImpl;
    }
 
    public Response tryUploadTranslationFile(String projectSlug, String iterationSlug, String docId,
-         String localeId, String mergeType, DocumentFileUploadForm uploadForm,
-         ZanataIdentity identity,
-         ProjectIterationDAO projectIterationDAO,
-         Session session,
-         DocumentDAO documentDAO,
-         LocaleDAO localeDAO,
-         TranslationFileService translationFileServiceImpl,
-         TranslationService translationServiceImpl)
+         String localeId, String mergeType, DocumentFileUploadForm uploadForm)
    {
       HLocale locale;
       try
