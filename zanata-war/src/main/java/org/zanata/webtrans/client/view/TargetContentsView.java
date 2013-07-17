@@ -167,10 +167,6 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    @Override
    public void setState(EditingState editingState)
    {
-      if (this.editingState == editingState)
-      {
-         return;
-      }
       this.editingState = editingState;
       if (editingState == EditingState.UNSAVED)
       {
