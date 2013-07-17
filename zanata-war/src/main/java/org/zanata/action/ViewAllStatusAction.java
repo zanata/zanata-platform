@@ -256,8 +256,8 @@ public class ViewAllStatusAction implements Serializable
    {
       HProjectIteration iteration = projectIterationDAO.getBySlug(this.projectSlug, this.iterationSlug);
 
-      List<HLocale> locale = this.getDisplayLocales();
-      String[] localeIds = getLocaleIds(locale);
+      List<HLocale> localeList = this.getDisplayLocales();
+      String[] localeIds = getLocaleIds(localeList);
 
       ContainerTranslationStatistics iterationStats = statisticsServiceImpl.getStatistics(this.projectSlug, this.iterationSlug, false, true, localeIds);
 
@@ -271,15 +271,15 @@ public class ViewAllStatusAction implements Serializable
          total = projectIterationDAO.getTotalCountForIteration(iteration.getId());
       }
 
-      for (HLocale var : locale)
+      for (HLocale locale : localeList)
       {
-         TranslationStatistics stats = iterationStats.getStats(var.getLocaleId().getId(), statsOption);
+         TranslationStatistics stats = iterationStats.getStats(locale.getLocaleId().getId(), statsOption);
          if (stats == null)
          {
             stats = new TranslationStatistics(statsOption);
             stats.setUntranslated(total);
 
-            HTextFlowTarget lastTranslatedTarget = localeServiceImpl.getLastTranslated(projectSlug, iterationSlug, var.getLocaleId());
+            HTextFlowTarget lastTranslatedTarget = localeServiceImpl.getLastTranslated(projectSlug, iterationSlug, locale.getLocaleId());
 
             if (lastTranslatedTarget != null)
             {
@@ -290,16 +290,16 @@ public class ViewAllStatusAction implements Serializable
          }
 
 
-         if (!statsMap.containsKey(var.getLocaleId()))
+         if (!statsMap.containsKey(locale.getLocaleId()))
          {
-            boolean isMember = authenticatedAccount != null ? personDAO.isUserInLanguageTeamWithRoles(authenticatedAccount.getPerson(), var, null, null, null) : false;
+            boolean isMember = authenticatedAccount != null ? personDAO.isUserInLanguageTeamWithRoles(authenticatedAccount.getPerson(), locale, null, null, null) : false;
 
-            Status op = new Status(var.getLocaleId().getId(), var.retrieveNativeName(), stats, isMember);
-            statsMap.put(var.getLocaleId(), op);
+            Status op = new Status(locale.getLocaleId().getId(), locale.retrieveNativeName(), stats, isMember);
+            statsMap.put(locale.getLocaleId(), op);
          }
          else
          {
-            statsMap.get(var.getLocaleId()).setStats(stats);
+            statsMap.get(locale.getLocaleId()).setStats(stats);
          }
       }
 
