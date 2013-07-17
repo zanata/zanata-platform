@@ -357,7 +357,7 @@ public class FileService implements FileResource
 
       // TODO check translation upload allowed
 
-      checkDocumentExists(projectSlug, iterationSlug, docId, uploadForm);
+      checkDocumentExists(projectSlug, iterationSlug, docId, uploadForm, documentDAO);
       checkValidTranslationUploadType(uploadForm);
    }
 
@@ -373,7 +373,9 @@ public class FileService implements FileResource
       }
    }
 
-   private void checkDocumentExists(String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm)
+   private static void checkDocumentExists(String projectSlug, String iterationSlug, String docId,
+         DocumentFileUploadForm uploadForm,
+         DocumentDAO documentDAO)
    {
       if (DocumentUpload.isNewDocument(new GlobalDocumentId(projectSlug, iterationSlug, docId), documentDAO))
       {
