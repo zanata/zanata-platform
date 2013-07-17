@@ -85,21 +85,18 @@ public class SourceDocumentUpload extends DocumentUpload
             translationFileServiceImpl);
    }
 
-   public Response tryUploadSourceFile(String projectSlug, String iterationSlug, String docId,
-         DocumentFileUploadForm uploadForm)
+   public Response tryUploadSourceFile(GlobalDocumentId id, DocumentFileUploadForm uploadForm)
    {
       try
       {
-         GlobalDocumentId id = new GlobalDocumentId(projectSlug, iterationSlug, docId);
-         checkSourceUploadPreconditions(projectSlug, iterationSlug, docId, uploadForm);
+         checkSourceUploadPreconditions(id, uploadForm);
 
          Optional<File> tempFile;
          int totalChunks;
 
          if (!uploadForm.getLast())
          {
-            HDocumentUpload upload = saveUploadPart(id.getProjectSlug(), id.getVersionSlug(),
-                  id.getDocId(), NULL_LOCALE, uploadForm, session, projectIterationDAO);
+            HDocumentUpload upload = saveUploadPart(id, NULL_LOCALE, uploadForm, session, projectIterationDAO);
             totalChunks = upload.getParts().size();
             return Response.status(Status.ACCEPTED)
                   .entity(new ChunkUploadResponse(upload.getId(), totalChunks, true,
@@ -114,7 +111,7 @@ public class SourceDocumentUpload extends DocumentUpload
          }
          else
          {
-            HDocumentUpload upload = saveUploadPart(projectSlug, iterationSlug, docId, NULL_LOCALE,
+            HDocumentUpload upload = saveUploadPart(id, NULL_LOCALE,
                   uploadForm, session, projectIterationDAO);
             totalChunks = upload.getParts().size();
             tempFile = Optional.of(combineToTempFileAndDeleteUploadRecord(upload, session, translationFileServiceImpl));
@@ -123,7 +120,7 @@ public class SourceDocumentUpload extends DocumentUpload
          if (uploadForm.getFileType().equals(".pot"))
          {
             InputStream potStream = getInputStream(tempFile, uploadForm);
-            parsePotFile(potStream, projectSlug, iterationSlug, docId, uploadForm);
+            parsePotFile(potStream, id, uploadForm);
          }
          else
          {
@@ -131,13 +128,13 @@ public class SourceDocumentUpload extends DocumentUpload
             {
                tempFile = Optional.of(persistTempFileFromUpload(uploadForm, translationFileServiceImpl));
             }
-            processAdapterFile(tempFile.get(), projectSlug, iterationSlug, docId, uploadForm);
+            processAdapterFile(tempFile.get(), id, uploadForm);
          }
          if (tempFile.isPresent())
          {
             tempFile.get().delete();
          }
-         return sourceUploadSuccessResponse(isNewDocument(projectSlug, iterationSlug, docId, documentDAO), totalChunks);
+         return sourceUploadSuccessResponse(isNewDocument(id, documentDAO), totalChunks);
       }
       catch (ChunkUploadException e)
       {
@@ -153,13 +150,13 @@ public class SourceDocumentUpload extends DocumentUpload
       }
    }
 
-   private void checkSourceUploadPreconditions(String projectSlug, String iterationSlug, String docId,
+   private void checkSourceUploadPreconditions(GlobalDocumentId id,
          DocumentFileUploadForm uploadForm)
    {
       try
       {
-         checkUploadPreconditions(projectSlug, iterationSlug, docId, uploadForm, identity, projectIterationDAO, session);
-         checkSourceUploadAllowed(projectSlug, iterationSlug);
+         checkUploadPreconditions(id, uploadForm, identity, projectIterationDAO, session);
+         checkSourceUploadAllowed(id);
       }
       catch (AuthorizationException e)
       {
@@ -168,19 +165,19 @@ public class SourceDocumentUpload extends DocumentUpload
       checkValidSourceUploadType(uploadForm);
    }
 
-   private void checkSourceUploadAllowed(String projectSlug, String iterationSlug)
+   private void checkSourceUploadAllowed(GlobalDocumentId id)
    {
-      if (!isDocumentUploadAllowed(projectSlug, iterationSlug))
+      if (!isDocumentUploadAllowed(id))
       {
          throw new ChunkUploadException(Status.FORBIDDEN,
                "You do not have permission to upload source documents to project-version \""
-                     + projectSlug + ":" + iterationSlug + "\".");
+                     + id.getProjectSlug() + ":" + id.getVersionSlug() + "\".");
       }
    }
 
-   private boolean isDocumentUploadAllowed(String projectSlug, String iterationSlug)
+   private boolean isDocumentUploadAllowed(GlobalDocumentId id)
    {
-      HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+      HProjectIteration projectIteration = projectIterationDAO.getBySlug(id.getProjectSlug(), id.getVersionSlug());
       return projectIteration.getStatus() == EntityStatus.ACTIVE && projectIteration.getProject().getStatus() == EntityStatus.ACTIVE
             && identity != null && identity.hasPermission("import-template", projectIteration);
    }
@@ -219,10 +216,9 @@ public class SourceDocumentUpload extends DocumentUpload
       return response;
    }
 
-   private void processAdapterFile(@Nonnull File tempFile, String projectSlug, String iterationSlug,
-         String docId, DocumentFileUploadForm uploadForm)
+   private void processAdapterFile(@Nonnull File tempFile, GlobalDocumentId id, DocumentFileUploadForm uploadForm)
    {
-      String name = projectSlug + ":" + iterationSlug + ":" + docId;
+      String name = id.getProjectSlug() + ":" + id.getVersionSlug() + ":" + id.getDocId();
       try
       {
          virusScanner.scan(tempFile, name);
@@ -238,14 +234,14 @@ public class SourceDocumentUpload extends DocumentUpload
       params = Optional.fromNullable(Strings.emptyToNull(uploadForm.getAdapterParams()));
       if (!params.isPresent())
       {
-         params = documentDAO.getAdapterParams(projectSlug, iterationSlug, docId);
+         params = documentDAO.getAdapterParams(id.getProjectSlug(), id.getVersionSlug(), id.getDocId());
       }
       try
       {
-         Resource doc = translationFileServiceImpl.parseUpdatedAdapterDocumentFile(tempFile.toURI(), docId, uploadForm.getFileType(), params);
+         Resource doc = translationFileServiceImpl.parseUpdatedAdapterDocumentFile(tempFile.toURI(), id.getDocId(), uploadForm.getFileType(), params);
          doc.setLang(new LocaleId("en-US"));
          // TODO Copy Trans values
-         document = documentServiceImpl.saveDocument(projectSlug, iterationSlug, doc, Collections.<String> emptySet(), false);
+         document = documentServiceImpl.saveDocument(id.getProjectSlug(), id.getVersionSlug(), doc, Collections.<String> emptySet(), false);
       }
       catch (SecurityException e)
       {
@@ -286,20 +282,20 @@ public class SourceDocumentUpload extends DocumentUpload
       translationFileServiceImpl.removeTempFile(tempFile);
    }
 
-   private void parsePotFile(InputStream potStream, String projectSlug, String iterationSlug,
-         String docId, DocumentFileUploadForm uploadForm)
+   private void parsePotFile(InputStream potStream, GlobalDocumentId id, DocumentFileUploadForm uploadForm)
    {
       Resource doc;
-      doc = translationFileServiceImpl.parseUpdatedPotFile(potStream, docId, uploadForm.getFileType(),
-            useOfflinePo(projectSlug, iterationSlug, docId));
+      doc = translationFileServiceImpl.parseUpdatedPotFile(potStream, id.getDocId(), uploadForm.getFileType(),
+            useOfflinePo(id));
       doc.setLang(new LocaleId("en-US"));
       // TODO Copy Trans values
-      documentServiceImpl.saveDocument(projectSlug, iterationSlug, doc, new StringSet(ExtensionType.GetText.toString()), false);
+      documentServiceImpl.saveDocument(id.getProjectSlug(), id.getVersionSlug(), doc, new StringSet(ExtensionType.GetText.toString()), false);
    }
 
-   private boolean useOfflinePo(String projectSlug, String iterationSlug, String docId)
+   private boolean useOfflinePo(GlobalDocumentId id)
    {
-      return !isNewDocument(projectSlug, iterationSlug, docId, documentDAO) && !translationFileServiceImpl.isPoDocument(projectSlug, iterationSlug, docId);
+      return !isNewDocument(id, documentDAO)
+            && !translationFileServiceImpl.isPoDocument(id.getProjectSlug(), id.getVersionSlug(), id.getDocId());
    }
 
 }

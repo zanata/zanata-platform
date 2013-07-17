@@ -89,7 +89,7 @@ public class DocumentUpload
       this.translationFileServiceImpl = translationFileServiceImpl;
    }
 
-   public static void checkUploadPreconditions(String projectSlug, String iterationSlug, String docId,
+   public static void checkUploadPreconditions(GlobalDocumentId id,
          DocumentFileUploadForm uploadForm, ZanataIdentity identity,
          ProjectIterationDAO projectIterationDAO, Session session)
    {
@@ -99,7 +99,7 @@ public class DocumentUpload
                " server were not included in the request.");
       }
    
-      if (docId == null || docId.isEmpty())
+      if (id.getDocId() == null || id.getDocId().isEmpty())
       {
          throw new ChunkUploadException(Status.PRECONDITION_FAILED,
                "Required query string parameter 'docId' was not found.");
@@ -131,11 +131,11 @@ public class DocumentUpload
             throw new ChunkUploadException(Status.PRECONDITION_FAILED,
                   "No incomplete uploads found for uploadId '" + uploadForm.getUploadId() + "'.");
          }
-         if (!upload.getDocId().equals(docId))
+         if (!upload.getDocId().equals(id.getDocId()))
          {
             throw new ChunkUploadException(Status.PRECONDITION_FAILED,
                   "Supplied uploadId '" + uploadForm.getUploadId()
-                  + "' in request is not valid for document '" + docId + "'.");
+                  + "' in request is not valid for document '" + id.getDocId() + "'.");
          }
       }
    
@@ -159,24 +159,24 @@ public class DocumentUpload
                "Required form parameter 'hash' was not found.");
       }
    
-      HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+      HProjectIteration projectIteration = projectIterationDAO.getBySlug(id.getProjectSlug(), id.getVersionSlug());
       if (projectIteration == null)
       {
          throw new ChunkUploadException(Status.NOT_FOUND,
-               "The specified project-version \"" + projectSlug + ":" + iterationSlug +
+               "The specified project-version \"" + id.getProjectSlug() + ":" + id.getVersionSlug() +
                "\" does not exist on this server.");
       }
    
       if (projectIteration.getProject().getStatus() != EntityStatus.ACTIVE)
       {
          throw new ChunkUploadException(Status.FORBIDDEN,
-               "The project \"" + projectSlug + "\" is not active. Document upload is not allowed.");
+               "The project \"" + id.getProjectSlug() + "\" is not active. Document upload is not allowed.");
       }
    
       if (projectIteration.getStatus() != EntityStatus.ACTIVE)
       {
          throw new ChunkUploadException(Status.FORBIDDEN,
-               "The project-version \"" + projectSlug + ":" + iterationSlug +
+               "The project-version \"" + id.getProjectSlug() + ":" + id.getVersionSlug() +
                "\" is not active. Document upload is not allowed.");
       }
    }
@@ -190,14 +190,14 @@ public class DocumentUpload
       return upload;
    }
 
-   public static HDocumentUpload saveUploadPart(String projectSlug, String iterationSlug, String docId,
+   public static HDocumentUpload saveUploadPart(GlobalDocumentId id,
          HLocale locale, DocumentFileUploadForm uploadForm, Session session,
          ProjectIterationDAO projectIterationDAO)
    {
       HDocumentUpload upload;
       if (uploadForm.getFirst())
       {
-         upload = createMultipartUpload(projectSlug, iterationSlug, docId, uploadForm, locale, projectIterationDAO);
+         upload = createMultipartUpload(id, uploadForm, locale, projectIterationDAO);
       }
       else
       {
@@ -207,14 +207,13 @@ public class DocumentUpload
       return upload;
    }
 
-   private static HDocumentUpload createMultipartUpload(String projectSlug, String iterationSlug,
-         String docId, DocumentFileUploadForm uploadForm, HLocale locale,
+   private static HDocumentUpload createMultipartUpload(GlobalDocumentId id, DocumentFileUploadForm uploadForm, HLocale locale,
          ProjectIterationDAO projectIterationDAO)
    {
-      HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+      HProjectIteration projectIteration = projectIterationDAO.getBySlug(id.getProjectSlug(), id.getVersionSlug());
       HDocumentUpload newUpload = new HDocumentUpload();
       newUpload.setProjectIteration(projectIteration);
-      newUpload.setDocId(docId);
+      newUpload.setDocId(id.getDocId());
       newUpload.setType(DocumentType.typeFor(uploadForm.getFileType()));
       // locale intentionally left null for source
       newUpload.setLocale(locale);
@@ -308,9 +307,9 @@ public class DocumentUpload
       }
    }
 
-   public static boolean isNewDocument(String projectSlug, String iterationSlug, String docId, DocumentDAO dao)
+   public static boolean isNewDocument(GlobalDocumentId id, DocumentDAO dao)
    {
-      return dao.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId) == null;
+      return dao.getByProjectIterationAndDocId(id.getProjectSlug(), id.getVersionSlug(), id.getDocId()) == null;
    }
 
    public static File persistTempFileFromUpload(DocumentFileUploadForm uploadForm, TranslationFileService transFileService)

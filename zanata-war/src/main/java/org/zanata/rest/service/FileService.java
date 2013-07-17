@@ -69,6 +69,7 @@ import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.exception.ChunkUploadException;
 import org.zanata.file.DocumentUpload;
+import org.zanata.file.GlobalDocumentId;
 import org.zanata.file.SourceDocumentUpload;
 import org.zanata.model.HDocument;
 import org.zanata.model.HDocumentUpload;
@@ -162,9 +163,11 @@ public class FileService implements FileResource
                                      @QueryParam("docId") String docId,
                                      @MultipartForm DocumentFileUploadForm uploadForm )
    {
+      GlobalDocumentId id = new GlobalDocumentId(projectSlug, iterationSlug, docId);
+
       SourceDocumentUpload uploader = new SourceDocumentUpload(identity, session, documentDAO, projectIterationDAO,
             documentServiceImpl, virusScanner, translationFileServiceImpl);
-      return uploader.tryUploadSourceFile(projectSlug, iterationSlug, docId, uploadForm);
+      return uploader.tryUploadSourceFile(id, uploadForm);
    }
 
    // TODO this shares a lot of logic with .tryUploadSourceFile(), try to unify.
@@ -202,7 +205,7 @@ public class FileService implements FileResource
          }
          else
          {
-            HDocumentUpload upload = DocumentUpload.saveUploadPart(projectSlug, iterationSlug, docId, locale,
+            HDocumentUpload upload = DocumentUpload.saveUploadPart(new GlobalDocumentId(projectSlug, iterationSlug, docId), locale,
                   uploadForm, session, projectIterationDAO);
             totalChunks = upload.getParts().size();
             if (!uploadForm.getLast())
@@ -350,7 +353,7 @@ public class FileService implements FileResource
 
    private void checkTranslationUploadPreconditions(String projectSlug, String iterationSlug, String docId, String localeId, DocumentFileUploadForm uploadForm)
    {
-      DocumentUpload.checkUploadPreconditions(projectSlug, iterationSlug, docId, uploadForm, identity, projectIterationDAO, session);
+      DocumentUpload.checkUploadPreconditions(new GlobalDocumentId(projectSlug, iterationSlug, docId), uploadForm, identity, projectIterationDAO, session);
 
       // TODO check translation upload allowed
 
@@ -372,7 +375,7 @@ public class FileService implements FileResource
 
    private void checkDocumentExists(String projectSlug, String iterationSlug, String docId, DocumentFileUploadForm uploadForm)
    {
-      if (DocumentUpload.isNewDocument(projectSlug, iterationSlug, docId, documentDAO))
+      if (DocumentUpload.isNewDocument(new GlobalDocumentId(projectSlug, iterationSlug, docId), documentDAO))
       {
          throw new ChunkUploadException(Status.NOT_FOUND, 
                "No document with id \"" + docId + "\" exists in project-version \"" +
