@@ -10,10 +10,10 @@ public class GlobalDocumentId
    private final String versionSlug;
    private final String docId;
 
-   public GlobalDocumentId(String projectSlug, String iterationSlug, String docId)
+   public GlobalDocumentId(String projectSlug, String versionSlug, String docId)
    {
       this.projectSlug = projectSlug;
-      this.versionSlug = iterationSlug;
+      this.versionSlug = versionSlug;
       this.docId = docId;
    }
 
