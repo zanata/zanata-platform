@@ -21,20 +21,12 @@
 
 package org.zanata.tmx;
 
-import static org.zanata.tmx.TMXAttribute.changedate;
-import static org.zanata.tmx.TMXAttribute.creationdate;
-import static org.zanata.tmx.TMXAttribute.srclang;
-import static org.zanata.tmx.TMXAttribute.tuid;
-
-import java.util.Date;
 import java.util.Map;
 
 import nu.xom.Attribute;
 import nu.xom.Element;
 
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.zanata.model.tm.TMMetadataHelper;
+import org.zanata.model.tm.TMXMetadataHelper;
 import org.zanata.model.tm.TMTranslationUnit;
 import org.zanata.model.tm.TransMemory;
 
@@ -48,7 +40,6 @@ import fj.Effect;
  */
 class TransUnitPersister extends Effect<Element>
 {
-   private static final DateTimeFormatter ISO8601Z = DateTimeFormat.forPattern("yyyyMMdd'T'HHmmss'Z").withZoneUTC();
    private final TransMemory tm;
 
    TransUnitPersister(TransMemory tm)
@@ -60,32 +51,17 @@ class TransUnitPersister extends Effect<Element>
    public void e(Element tuElem)
    {
       TMTranslationUnit tu = new TMTranslationUnit();
-      String creationDate = creationdate.getAttribute(tuElem);
-      if (creationDate != null)
-      {
-         tu.setCreationDate(parseDate(creationDate));
-      }
-      String changeDate = changedate.getAttribute(tuElem);
-      if (changeDate != null)
-      {
-         tu.setLastChanged(parseDate(changeDate));
-      }
-      tu.setSourceLanguage(srclang.getAttribute(tuElem));
       tu.setTranslationMemory(tm);
-      tu.setTransUnitId(tuid.getAttribute(tuElem));
 
       Map<String, String> metadata = Maps.newHashMap();
       for (int i=0; i < tuElem.getAttributeCount(); i++)
       {
          Attribute attr = tuElem.getAttribute(i);
          String name = attr.getQualifiedName();
-         if (!TMXAttribute.contains(name))
-         {
-            String value = attr.getValue();
-            metadata.put(name, value);
-         }
+         String value = attr.getValue();
+         metadata.put(name, value);
       }
-      TMMetadataHelper.setTMXMetadata(tu, metadata);
+      TMXMetadataHelper.setMetadata(tu, metadata);
 
 //          TMTransUnitVariant tuv = handleTransUnitVariant(nextEvent);
 //          tu.getTransUnitVariants().put(tuv.getLanguage(), tuv);
@@ -93,11 +69,6 @@ class TransUnitPersister extends Effect<Element>
       tu.setVersionNum(0);
       // TODO Save the TU
       // TMTranslationUnitDAO.makePersistent(tu);
-   }
-
-   private Date parseDate(String dateString)
-   {
-      return ISO8601Z.parseDateTime(dateString).toDate();
    }
 
 }

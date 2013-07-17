@@ -19,43 +19,18 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.zanata.model.tm;
+package org.zanata.model;
 
-import java.util.Map;
-
-import org.codehaus.jackson.map.ObjectMapper;
+import java.util.Date;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class TMMetadataHelper
+public interface HasEntityDates
 {
-   private static final ObjectMapper mapper = new ObjectMapper();
-
-   public static Map<String, String> getTMXMetadata(HasTMMetadata entity)
-   {
-      String metadataString = entity.getMetadata().get(TMMetadataType.TMX14);
-      try
-      {
-         return mapper.readValue(metadataString, Map.class);
-      }
-      catch (Exception e)
-      {
-         throw new RuntimeException(e);
-      }
-   }
-
-   public static void setTMXMetadata(HasTMMetadata entity, Map<String, String> metadata)
-   {
-      try
-      {
-         String metadataString = mapper.writeValueAsString(metadata);
-         entity.getMetadata().put(TMMetadataType.TMX14, metadataString);
-      }
-      catch (Exception e)
-      {
-         throw new RuntimeException(e);
-      }
-   }
+   public Date getCreationDate();
+   public void setCreationDate(Date creationDate);
+   public Date getLastChanged();
+   public void setLastChanged(Date lastChanged);
 }
