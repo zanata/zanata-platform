@@ -1,3 +1,23 @@
+/*
+ * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
+ * @author tags. See the copyright.txt file in the distribution for a full
+ * listing of individual contributors.
+ * 
+ * This is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This software is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this software; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
+ * site: http://www.fsf.org.
+ */
 package org.zanata.webtrans.client.ui;
 
 import org.zanata.webtrans.client.resources.Resources;
@@ -13,7 +33,6 @@ import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -27,9 +46,14 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
+ *
+ */
 public class Pager extends Composite implements HasPager
 {
-
+   public static final int PAGECOUNT_UNKNOWN = -1;
+   
    private static PagerUiBinder uiBinder = GWT.create(PagerUiBinder.class);
 
    interface PagerUiBinder extends UiBinder<Widget, Pager>
@@ -59,10 +83,9 @@ public class Pager extends Composite implements HasPager
    Styles style;
 
    private int pageCount = PAGECOUNT_UNKNOWN;
+   private int minPageCount = 0;
    private int currentPage;
    private boolean isFocused;
-
-   public static final int PAGECOUNT_UNKNOWN = -1;
 
    public Pager(final WebTransMessages messages, final Resources resources)
    {
@@ -87,29 +110,36 @@ public class Pager extends Composite implements HasPager
    {
       isFocused = false;
    }
+   
+   @UiHandler("gotoPage")
+   public void onGotoPageKeyDown(KeyDownEvent event)
+   {
+      if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
+      {
+         try
+         {
+            int newValue = Integer.parseInt(gotoPage.getText());
+            if (newValue < minPageCount)
+            {
+               newValue = minPageCount;
+            }
+            else if(newValue > pageCount)
+            {
+               newValue = pageCount;
+            }
+            setValue(newValue);
+         }
+         catch (NumberFormatException nfe)
+         {
+            Log.error("Invalid page number entered");
+         }
+      }
+   }
 
    @Override
    protected void onLoad()
    {
       super.onLoad();
-      gotoPage.addKeyDownHandler(new KeyDownHandler()
-      {
-         @Override
-         public void onKeyDown(KeyDownEvent event)
-         {
-            if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
-            {
-               try
-               {
-                  int newValue = Integer.parseInt(gotoPage.getText());
-                  setValue(newValue);
-               }
-               catch (NumberFormatException nfe)
-               {
-               }
-            }
-         }
-      });
 
       firstPage.addClickHandler(clickHandler);
       lastPage.addClickHandler(clickHandler);
@@ -122,8 +152,8 @@ public class Pager extends Composite implements HasPager
    {
       String page = pageCount == PAGECOUNT_UNKNOWN ? "" : "of " + pageCount;
       pageCountLabel.setText(page);
-      setEnabled(firstPage, currentPage != 1);
-      setEnabled(prevPage, currentPage != 1);
+      setEnabled(firstPage, currentPage > minPageCount);
+      setEnabled(prevPage, currentPage > minPageCount);
       setEnabled(nextPage, currentPage != pageCount);
       setEnabled(lastPage, currentPage != pageCount && pageCount != PAGECOUNT_UNKNOWN);
 
@@ -134,6 +164,7 @@ public class Pager extends Composite implements HasPager
    public void setPageCount(int pageCount)
    {
       this.pageCount = pageCount;
+      this.minPageCount = pageCount <= 0 ? 0 : 1;
       refresh();
    }
 
@@ -158,7 +189,7 @@ public class Pager extends Composite implements HasPager
    @Override
    public void setValue(Integer value, boolean fireEvents)
    {
-      if (value != this.currentPage && (value > 0 && value <= pageCount))
+      if (value >= minPageCount && value <= pageCount)
       {
          this.currentPage = value;
          if (fireEvents)
@@ -177,34 +208,25 @@ public class Pager extends Composite implements HasPager
 
    private final ClickHandler clickHandler = new ClickHandler()
    {
-
       @Override
       public void onClick(ClickEvent event)
       {
-         if (event.getSource() == firstPage)
+         Widget clickedButton = (Widget) event.getSource();
+         if (isButtonEnabled(clickedButton))
          {
-            if (isButtonEnabled(firstPage))
+            if (clickedButton == firstPage)
             {
                setValue(1);
             }
-         }
-         else if (event.getSource() == lastPage)
-         {
-            if (isButtonEnabled(lastPage))
+            else if (clickedButton == lastPage)
             {
                setValue(pageCount);
             }
-         }
-         else if (event.getSource() == nextPage)
-         {
-            if (isButtonEnabled(nextPage))
+            else if (clickedButton == nextPage)
             {
                setValue(currentPage + 1);
             }
-         }
-         else if (event.getSource() == prevPage)
-         {
-            if (isButtonEnabled(prevPage))
+            else if (clickedButton == prevPage)
             {
                setValue(currentPage - 1);
             }
@@ -212,7 +234,7 @@ public class Pager extends Composite implements HasPager
       }
    };
 
-   private boolean isButtonEnabled(InlineLabel button)
+   private boolean isButtonEnabled(Widget button)
    {
       return button.getStyleName().contains(style.enabled());
    }

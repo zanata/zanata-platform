@@ -6,11 +6,11 @@ import org.zanata.webtrans.client.ui.HasPager;
 
 import com.google.gwt.user.client.ui.HasVisibility;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+
 
 
 /**
- * @author aeng
+ * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  */
 public interface TranslationEditorDisplay extends WidgetDisplay
@@ -38,6 +38,8 @@ public interface TranslationEditorDisplay extends WidgetDisplay
       void onPagerFocused();
 
       void onPagerBlurred();
+
+      void onPagerValueChanged(Integer pageNumber);
    }
 
    HasVisibility getResizeButton();
