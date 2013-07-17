@@ -191,7 +191,8 @@ public class FileService implements FileResource
       HLocale locale;
       try
       {
-         checkTranslationUploadPreconditions(projectSlug, iterationSlug, docId, localeId, uploadForm);
+         checkTranslationUploadPreconditions(projectSlug, iterationSlug, docId, localeId, uploadForm,
+               identity, projectIterationDAO, session, documentDAO, translationFileServiceImpl);
          locale = findHLocale(localeId);
          checkTranslationUploadAllowed(projectSlug, iterationSlug, localeId, locale);
 
@@ -351,9 +352,16 @@ public class FileService implements FileResource
       return locale;
    }
 
-   private void checkTranslationUploadPreconditions(String projectSlug, String iterationSlug, String docId, String localeId, DocumentFileUploadForm uploadForm)
+   private static void checkTranslationUploadPreconditions(String projectSlug, String iterationSlug,
+         String docId, String localeId, DocumentFileUploadForm uploadForm,
+         ZanataIdentity identity,
+         ProjectIterationDAO projectIterationDAO,
+         Session session,
+         DocumentDAO documentDAO,
+         TranslationFileService translationFileServiceImpl)
    {
-      DocumentUpload.checkUploadPreconditions(new GlobalDocumentId(projectSlug, iterationSlug, docId), uploadForm, identity, projectIterationDAO, session);
+      DocumentUpload.checkUploadPreconditions(new GlobalDocumentId(projectSlug, iterationSlug, docId),
+            uploadForm, identity, projectIterationDAO, session);
 
       // TODO check translation upload allowed
 
