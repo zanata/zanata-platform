@@ -17,7 +17,7 @@
         <p>#{messages['jsf.email.maintainer.DearMaintainer']}</p>
         <p>#{messages['jsf.email.joingrouprequest.RequestingToJoinGroup']}</p>
         <s:fragment rendered="#{not empty sendEmail.htmlMessage}">
-          <p>#{messages['jsf.email.joinrequest.UserMessageIntro']}</p>
+          <p>#{messages['jsf.email.UserMessageIntro']}</p>
           <hr/>
           <h:outputText value="#{sendEmail.htmlMessage}" escape="false" />
           <hr/>

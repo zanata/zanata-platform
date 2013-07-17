@@ -26,6 +26,9 @@ public class ManageLanguageTeamMemberPage extends AbstractPage
    private WebElement memberPanel;
 
    public static final int USERNAME_COLUMN = 0;
+   public static final int SEARCH_RESULT_SELECTED_COLUMN = 0;
+   public static final int SEARCH_RESULT_PERSON_COLUMN = 1;
+   public static final int ISTRANSLATOR_COLUMN = 3;
 
    public ManageLanguageTeamMemberPage(WebDriver driver)
    {
@@ -112,7 +115,7 @@ public class ManageLanguageTeamMemberPage extends AbstractPage
             WebElement table = driver.findElement(By.id("resultForm:personTable"));
             List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(), table);
             //we want to wait until search result comes back
-            if (tableRows.isEmpty() || !tableRows.get(0).getCellContents().get(0).contains(personName))
+            if (tableRows.isEmpty() || !tableRows.get(0).getCellContents().get(SEARCH_RESULT_PERSON_COLUMN).contains(personName))
             {
                log.debug("waiting for search result refresh...");
                return null;
@@ -126,18 +129,26 @@ public class ManageLanguageTeamMemberPage extends AbstractPage
 
    public ManageLanguageTeamMemberPage addToTeam(TableRow personRow)
    {
-      List<WebElement> cells = personRow.getCells();
-      final String personUsername = personRow.getCellContents().get(0);
+      final String personUsername = personRow.getCellContents().get(SEARCH_RESULT_PERSON_COLUMN);
       log.info("username to be added: {}", personUsername);
-      WebElement lastColumn = cells.get(cells.size() - 1);
-      if (!lastColumn.getText().contains("Already in Team"))
+      WebElement selectRowToUpdateCell = personRow.getCells().get(SEARCH_RESULT_SELECTED_COLUMN).findElement(By.tagName("input"));
+      WebElement isTranslatorCell = personRow.getCells().get(ISTRANSLATOR_COLUMN).findElement(By.tagName("input"));
+
+      if (!isTranslatorCell.isSelected())
       {
-         WebElement addButton = lastColumn.findElement(By.xpath(".//input[@value='Add']"));
+         if(!selectRowToUpdateCell.isSelected())
+         {
+            selectRowToUpdateCell.click();
+         }
+
+         isTranslatorCell.click();
+
+         WebElement addButton = getDriver().findElement(By.id("resultForm:addSelectedBtn"));
          addButton.click();
          WebElement closeButton = getDriver().findElement(By.id("searchForm:closeBtn"));
          closeButton.click();
          // we need to wait for the page to refresh
-         WebElementUtil.waitForSeconds(getDriver(), 5).until(new Predicate<WebDriver>()
+         WebElementUtil.waitForSeconds(getDriver(), 10).until(new Predicate<WebDriver>()
          {
             @Override
             public boolean apply(WebDriver driver)

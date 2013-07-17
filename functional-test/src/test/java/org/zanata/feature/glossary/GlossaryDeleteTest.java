@@ -80,7 +80,7 @@ public class GlossaryDeleteTest
    public void translate(String locale)
    {
 
-      new LoginWorkFlow().signIn("translator", "translator");
+      new LoginWorkFlow().signIn("admin", "admin");
       editorPage = new BasicWorkFlow().goToPage("webtrans/translate?project=about-fedora&iteration=master&localeId=" + locale + "&locale=en#view:doc;doc:About_Fedora", EditorPage.class);
    }
 

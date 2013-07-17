@@ -52,6 +52,7 @@ public class ManageUsersFullTest
    {
       String username = "administratornamechange";
       ManageUserPage manageUserPage = homePage.goToAdministration().goToManageUserPage();
+
       ManageUserAccountPage manageUserAccountPage = manageUserPage.editUserAccount("admin");
       manageUserPage = manageUserAccountPage.clearFields().enterUsername(username).saveUser();
       assertThat("Administrator is displayed", manageUserPage.getUserList(), Matchers.hasItem(username));
