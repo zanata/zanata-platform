@@ -144,7 +144,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
                navigationStateHolder.init(result.getNavigationIndex().getTransIdStateList(), result.getNavigationIndex().getIdIndexList());
                eventBus.fireEvent(new PageCountChangeEvent(navigationStateHolder.getPageCount()));
             }
-            navigationStateHolder.updateCurrentPage(result.getTargetPage());
+            navigationStateHolder.updateCurrentPage(result.getTargetPageIndex());
 
             if (!units.isEmpty())
             {
@@ -153,7 +153,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
                // in case there is pending save (as fuzzy) happening, we do not want to trigger another pending save
                eventBus.fireEvent(new TableRowSelectedEvent(selectedId).setSuppressSavePending(true));
             }
-            eventBus.fireEvent(new PageChangeEvent(result.getTargetPage()));
+            eventBus.fireEvent(new PageChangeEvent(result.getTargetPageIndex()));
             highlightSearch();
 
             // run validation on TransUnit and display error message

@@ -5,9 +5,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -20,9 +18,6 @@ import org.zanata.webtrans.client.view.TransFilterDisplay;
 import org.zanata.webtrans.client.view.TransUnitNavigationDisplay;
 import org.zanata.webtrans.client.view.TransUnitsTableDisplay;
 import org.zanata.webtrans.client.view.TranslationEditorDisplay;
-
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -85,21 +80,6 @@ public class TranslationEditorPresenterTest
 
       verify(eventBus).addHandler(PageChangeEvent.TYPE, presenter);
       verify(eventBus).addHandler(PageChangeEvent.TYPE, presenter);
-
-      // test page navigation value change handler
-      ArgumentCaptor<ValueChangeHandler> pageValueChangeHandlerCaptor = ArgumentCaptor.forClass(ValueChangeHandler.class);
-      verify(pageNavigation).addValueChangeHandler(pageValueChangeHandlerCaptor.capture());
-      ValueChangeHandler valueChangeHandler = pageValueChangeHandlerCaptor.getValue();
-      valueChangeHandler.onValueChange(createMockEventWithValue(1));
-      verify(transUnitsTablePresenter).goToPage(1);
-   }
-
-   private static ValueChangeEvent<Integer> createMockEventWithValue(int value)
-   {
-      @SuppressWarnings("unchecked")
-      ValueChangeEvent<Integer> valueChangeEvent = Mockito.mock(ValueChangeEvent.class);
-      when(valueChangeEvent.getValue()).thenReturn(value);
-      return valueChangeEvent;
    }
 
    @Test
@@ -117,6 +97,13 @@ public class TranslationEditorPresenterTest
       presenter.onPageCountChange(new PageCountChangeEvent(99));
 
       verify(pageNavigation).setPageCount(99);
+   }
+   
+   @Test
+   public void testOnPagerValueChanged()
+   {
+      presenter.onPagerValueChanged(100);
+      verify(transUnitsTablePresenter).goToPage(100);
    }
 
    @Test

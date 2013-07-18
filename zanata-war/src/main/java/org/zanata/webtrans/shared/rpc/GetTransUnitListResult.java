@@ -53,7 +53,7 @@ public class GetTransUnitListResult implements DispatchResult
       return targetOffset;
    }
 
-   public int getTargetPage()
+   public int getTargetPageIndex()
    {
       return targetPage;
    }
