@@ -492,7 +492,7 @@ public class FileService implements FileResource
       }
 
       @Override
-      public void write(@SuppressWarnings("null") @Nonnull OutputStream output) throws IOException, WebApplicationException
+      public void write(@Nonnull OutputStream output) throws IOException, WebApplicationException
       {
          FileInputStream input = new FileInputStream(this.file);
          try
