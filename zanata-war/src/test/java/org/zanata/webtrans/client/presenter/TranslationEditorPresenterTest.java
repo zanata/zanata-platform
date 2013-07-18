@@ -98,7 +98,7 @@ public class TranslationEditorPresenterTest
 
       verify(pageNavigation).setPageCount(99);
    }
-   
+
    @Test
    public void testOnPagerValueChanged()
    {
@@ -123,7 +123,7 @@ public class TranslationEditorPresenterTest
       verify(transUnitsTablePresenter).unbind();
       verify(transUnitNavigationPresenter).unbind();
    }
-   
+
    @Test
    public void onRefreshCurrentPage()
    {

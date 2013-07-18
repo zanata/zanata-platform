@@ -44,7 +44,6 @@ import com.google.inject.Inject;
 
 public class TranslationEditorView extends Composite implements TranslationEditorDisplay
 {
-
    private static TranslationEditorViewUiBinder uiBinder = GWT.create(TranslationEditorViewUiBinder.class);
 
    interface TranslationEditorViewUiBinder extends UiBinder<Widget, TranslationEditorView>
@@ -65,7 +64,7 @@ public class TranslationEditorView extends Composite implements TranslationEdito
 
    @UiField
    HTMLPanel filterPanelContainer;
-   
+
    @UiField
    InlineLabel refreshCurrentPage, resize;
 
@@ -84,7 +83,7 @@ public class TranslationEditorView extends Composite implements TranslationEdito
       this.messages = messages;
 
       initWidget(uiBinder.createAndBindUi(this));
-      
+
       refreshCurrentPage.setTitle(messages.refreshCurrentPage());
       resize.setTitle(messages.hideSouthPanel());
       resize.addStyleName(STYLE_HIDE_SOUTHPANEL);
@@ -158,7 +157,7 @@ public class TranslationEditorView extends Composite implements TranslationEdito
    {
       return pager.isFocused();
    }
-   
+
    @UiHandler("refreshCurrentPage")
    public void onRedrawCurrentPageClicked(ClickEvent event)
    {
@@ -181,7 +180,7 @@ public class TranslationEditorView extends Composite implements TranslationEdito
    {
       listener.onPagerBlurred();
    }
-   
+
    @UiHandler("pager")
    public void onPagerValueChanged(ValueChangeEvent<Integer> event)
    {

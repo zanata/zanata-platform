@@ -53,7 +53,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class Pager extends Composite implements HasPager
 {
    public static final int PAGECOUNT_UNKNOWN = -1;
-   
+
    private static PagerUiBinder uiBinder = GWT.create(PagerUiBinder.class);
 
    interface PagerUiBinder extends UiBinder<Widget, Pager>
@@ -110,7 +110,7 @@ public class Pager extends Composite implements HasPager
    {
       isFocused = false;
    }
-   
+
    @UiHandler("gotoPage")
    public void onGotoPageKeyDown(KeyDownEvent event)
    {
@@ -126,7 +126,7 @@ public class Pager extends Composite implements HasPager
          }
       }
    }
-   
+
    private int getCorrectedGotoPage()
    {
       int page = Integer.parseInt(gotoPage.getText());
@@ -134,7 +134,7 @@ public class Pager extends Composite implements HasPager
       {
          page = minPageCount;
       }
-      else if(page > pageCount)
+      else if (page > pageCount)
       {
          page = pageCount;
       }

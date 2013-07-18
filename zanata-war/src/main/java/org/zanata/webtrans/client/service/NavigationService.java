@@ -202,27 +202,27 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
       TransUnitId targetId;
       switch (event.getRowType())
       {
-         case PrevEntry:
-            targetId = navigationStateHolder.getPrevId();
-            break;
-         case NextEntry:
-            targetId = navigationStateHolder.getNextId();
-            break;
-         case PrevState:
-            targetId = navigationStateHolder.getPreviousStateId();
-            break;
-         case NextState:
-            targetId = navigationStateHolder.getNextStateId();
-            break;
-         case FirstEntry:
-            targetId = navigationStateHolder.getFirstId();
-            break;
-         case LastEntry:
-            targetId = navigationStateHolder.getLastId();
-            break;
-         default:
-            Log.warn("ignore unknown navigation type:" + event.getRowType());
-            return;
+      case PrevEntry:
+         targetId = navigationStateHolder.getPrevId();
+         break;
+      case NextEntry:
+         targetId = navigationStateHolder.getNextId();
+         break;
+      case PrevState:
+         targetId = navigationStateHolder.getPreviousStateId();
+         break;
+      case NextState:
+         targetId = navigationStateHolder.getNextStateId();
+         break;
+      case FirstEntry:
+         targetId = navigationStateHolder.getFirstId();
+         break;
+      case LastEntry:
+         targetId = navigationStateHolder.getLastId();
+         break;
+      default:
+         Log.warn("ignore unknown navigation type:" + event.getRowType());
+         return;
       }
       int targetPage = navigationStateHolder.getTargetPage(targetId);
       Log.info("target page : [" + targetPage + "] target TU id: " + targetId);
@@ -249,7 +249,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler, FindMess
    @Override
    public void onTransUnitUpdated(TransUnitUpdatedEvent event)
    {
-      if(contextHolder.isContextInitialized())
+      if (contextHolder.isContextInitialized())
       {
          if (Objects.equal(event.getUpdateInfo().getDocumentId(), contextHolder.getContext().getDocument().getId()))
          {

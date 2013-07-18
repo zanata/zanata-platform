@@ -113,10 +113,10 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       result.setNavigationIndex(navigationResult);
       return result;
    }
-   
+
    private int getTotalPageIndex(int indexListSize, int countPerPage)
    {
-      int totalPageNumber = (int)Math.ceil((float)indexListSize / countPerPage);
+      int totalPageNumber = (int) Math.ceil((float) indexListSize / countPerPage);
       return totalPageNumber > 0 ? totalPageNumber - 1 : totalPageNumber;
    }
 

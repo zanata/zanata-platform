@@ -35,8 +35,6 @@ import com.google.inject.Inject;
 
 public class TranslationEditorPresenter extends WidgetPresenter<TranslationEditorDisplay> implements PageChangeEventHandler, PageCountChangeEventHandler, TranslationEditorDisplay.Listener
 {
-
- 
    private final TransUnitNavigationPresenter transUnitNavigationPresenter;
    private final TransFilterPresenter transFilterPresenter;
    private final TransUnitsTablePresenter transUnitsTablePresenter;
@@ -81,7 +79,7 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    {
       display.getPageNavigation().setPageCount(event.getPageCount());
    }
-   
+
    @Override
    public void refreshCurrentPage()
    {
@@ -123,7 +121,7 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    {
       editorKeyShortcuts.enableEditContext();
    }
-   
+
    @Override
    public void onPagerValueChanged(Integer pageNumber)
    {
@@ -135,5 +133,4 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
       display.getResizeButton().setVisible(isReadOnly);
    }
 
-   
 }
