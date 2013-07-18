@@ -92,7 +92,7 @@ public class ManageLanguageTeamMemberPage extends AbstractPage
       return this;
    }
 
-   public List<TableRow> searchPerson(final String personName)
+   public ManageLanguageTeamMemberPage searchPersonAndAddToTeam(final String personName)
    {
       final WebElement addUserPanel = getDriver().findElement(By.id("userAddPanel_container"));
 
@@ -107,10 +107,10 @@ public class ManageLanguageTeamMemberPage extends AbstractPage
       WebElement searchButton = getDriver().findElement(By.id("searchForm:searchBtn"));
       searchButton.click();
 
-      WebElement searchResultTable = waitForTenSec().until(new Function<WebDriver, WebElement>()
+      return waitForTenSec().until(new Function<WebDriver, ManageLanguageTeamMemberPage>()
       {
          @Override
-         public WebElement apply(WebDriver driver)
+         public ManageLanguageTeamMemberPage apply(WebDriver driver)
          {
             WebElement table = driver.findElement(By.id("resultForm:personTable"));
             List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(), table);
@@ -120,47 +120,45 @@ public class ManageLanguageTeamMemberPage extends AbstractPage
                log.debug("waiting for search result refresh...");
                return null;
             }
-            return table;
+
+            return addToTeam(tableRows.get(0));
          }
       });
 
-      return WebElementUtil.getTableRows(getDriver(), searchResultTable);
    }
 
-   public ManageLanguageTeamMemberPage addToTeam(TableRow personRow)
+   private ManageLanguageTeamMemberPage addToTeam(TableRow personRow)
    {
       final String personUsername = personRow.getCellContents().get(SEARCH_RESULT_PERSON_COLUMN);
       log.info("username to be added: {}", personUsername);
-      WebElement selectRowToUpdateCell = personRow.getCells().get(SEARCH_RESULT_SELECTED_COLUMN).findElement(By.tagName("input"));
-      WebElement isTranslatorCell = personRow.getCells().get(ISTRANSLATOR_COLUMN).findElement(By.tagName("input"));
+      WebElement selectRowToUpdateCheckBox = personRow.getCells().get(SEARCH_RESULT_SELECTED_COLUMN).findElement(By.tagName("input"));
+      WebElement isTranslatorCheckBox = personRow.getCells().get(ISTRANSLATOR_COLUMN).findElement(By.tagName("input"));
 
-      if (!isTranslatorCell.isSelected())
+      if (!isTranslatorCheckBox.isSelected())
       {
-         if(!selectRowToUpdateCell.isSelected())
+         if(!selectRowToUpdateCheckBox.isSelected())
          {
-            selectRowToUpdateCell.click();
+            selectRowToUpdateCheckBox.click();
          }
 
-         isTranslatorCell.click();
+         isTranslatorCheckBox.click();
 
          WebElement addButton = getDriver().findElement(By.id("resultForm:addSelectedBtn"));
          addButton.click();
          WebElement closeButton = getDriver().findElement(By.id("searchForm:closeBtn"));
          closeButton.click();
-         // we need to wait for the page to refresh
-         WebElementUtil.waitForSeconds(getDriver(), 10).until(new Predicate<WebDriver>()
-         {
-            @Override
-            public boolean apply(WebDriver driver)
-            {
-               By byId = By.id("memberPanel:threads");
-               List<String> usernameColumn = WebElementUtil.getColumnContents(getDriver(), byId, USERNAME_COLUMN);
-               log.info("username column: {}", usernameColumn);
-               return usernameColumn.contains(personUsername);
-            }
-         });
-         return new ManageLanguageTeamMemberPage(getDriver());
       }
-      return this;
+      // we need to wait for the page to refresh
+      return refreshPageUntil(this, new Predicate<WebDriver>()
+      {
+         @Override
+         public boolean apply(WebDriver driver)
+         {
+            By byId = By.id("memberPanel:threads");
+            List<String> usernameColumn = WebElementUtil.getColumnContents(getDriver(), byId, USERNAME_COLUMN);
+            log.info("username column: {}", usernameColumn);
+            return usernameColumn.contains(personUsername);
+         }
+      });
    }
 }
