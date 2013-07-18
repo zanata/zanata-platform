@@ -41,7 +41,6 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.security.AuthorizationException;
 import org.jboss.seam.util.Hex;
 import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
@@ -75,18 +74,29 @@ public class DocumentUploadUtil
    @In
    private TranslationFileService translationFileServiceImpl;
 
-   // TODO change name and add thrown exception to make it clear
-   //      that this is meant to throw.
-   protected void checkUploadPreconditions(GlobalDocumentId id,
-         DocumentFileUploadForm uploadForm)
+   public void failIfUploadNotValid(GlobalDocumentId id, DocumentFileUploadForm uploadForm)
+         throws ChunkUploadException
+   {
+      failIfNotLoggedIn();
+      failIfRequiredParametersNullOrEmpty(id, uploadForm);
+      failIfUploadPartIsOrphaned(id, uploadForm);
+      failIfDocumentTypeNotRecognized(uploadForm);
+      failIfVersionCannotAcceptUpload(id);
+   }
+
+   private void failIfNotLoggedIn() throws ChunkUploadException
    {
       if (!identity.isLoggedIn())
       {
-         throw new AuthorizationException("Valid combination of username and api-key for this" +
-               " server were not included in the request.");
+         throw new ChunkUploadException(Status.UNAUTHORIZED, "Valid combination of username and " +
+               "api-key for this server were not included in the request.");
       }
+   }
 
-      if (id.getDocId() == null || id.getDocId().isEmpty())
+   private static void failIfRequiredParametersNullOrEmpty(GlobalDocumentId id, DocumentFileUploadForm uploadForm)
+         throws ChunkUploadException
+   {
+      if (isNullOrEmpty(id.getDocId()))
       {
          throw new ChunkUploadException(Status.PRECONDITION_FAILED,
                "Required query string parameter 'docId' was not found.");
@@ -104,48 +114,68 @@ public class DocumentUploadUtil
                "Form parameters 'first' and 'last' must both be provided.");
       }
 
-      if (!uploadForm.getFirst())
-      {
-         if (uploadForm.getUploadId() == null)
-         {
-            throw new ChunkUploadException(Status.PRECONDITION_FAILED,
-                  "Form parameter 'uploadId' must be provided when this is not the first part.");
-         }
-
-         HDocumentUpload upload = retrieveUploadObject(uploadForm);
-         if (upload == null)
-         {
-            throw new ChunkUploadException(Status.PRECONDITION_FAILED,
-                  "No incomplete uploads found for uploadId '" + uploadForm.getUploadId() + "'.");
-         }
-         if (!upload.getDocId().equals(id.getDocId()))
-         {
-            throw new ChunkUploadException(Status.PRECONDITION_FAILED,
-                  "Supplied uploadId '" + uploadForm.getUploadId()
-                        + "' in request is not valid for document '" + id.getDocId() + "'.");
-         }
-      }
-
-      String fileType = uploadForm.getFileType();
-      if (fileType == null || fileType.isEmpty())
+      if (isNullOrEmpty(uploadForm.getFileType()))
       {
          throw new ChunkUploadException(Status.PRECONDITION_FAILED,
                "Required form parameter 'type' was not found.");
       }
 
-      if (DocumentType.typeFor(fileType) == null)
-      {
-         throw new ChunkUploadException(Status.PRECONDITION_FAILED,
-               "Value '" + fileType + "' is not a recognized document type.");
-      }
-
-      String contentHash = uploadForm.getHash();
-      if (contentHash == null || contentHash.isEmpty())
+      if (isNullOrEmpty(uploadForm.getHash()))
       {
          throw new ChunkUploadException(Status.PRECONDITION_FAILED,
                "Required form parameter 'hash' was not found.");
       }
+   }
 
+   private static boolean isNullOrEmpty(String string)
+   {
+      return string == null || string.isEmpty();
+   }
+
+   private void failIfUploadPartIsOrphaned(GlobalDocumentId id, DocumentFileUploadForm uploadForm)
+         throws ChunkUploadException
+   {
+      if (!uploadForm.getFirst())
+      {
+         failIfUploadIdNotValidAndMatching(id, uploadForm);
+      }
+   }
+
+   private void failIfUploadIdNotValidAndMatching(GlobalDocumentId id, DocumentFileUploadForm uploadForm)
+         throws ChunkUploadException
+   {
+      if (uploadForm.getUploadId() == null)
+      {
+         throw new ChunkUploadException(Status.PRECONDITION_FAILED,
+               "Form parameter 'uploadId' must be provided when this is not the first part.");
+      }
+
+      HDocumentUpload upload = retrieveUploadObject(uploadForm);
+      if (upload == null)
+      {
+         throw new ChunkUploadException(Status.PRECONDITION_FAILED,
+               "No incomplete uploads found for uploadId '" + uploadForm.getUploadId() + "'.");
+      }
+      if (!upload.getDocId().equals(id.getDocId()))
+      {
+         throw new ChunkUploadException(Status.PRECONDITION_FAILED,
+               "Supplied uploadId '" + uploadForm.getUploadId()
+                     + "' in request is not valid for document '" + id.getDocId() + "'.");
+      }
+   }
+
+   private static void failIfDocumentTypeNotRecognized(DocumentFileUploadForm uploadForm)
+         throws ChunkUploadException
+   {
+      if (DocumentType.typeFor(uploadForm.getFileType()) == null)
+      {
+         throw new ChunkUploadException(Status.PRECONDITION_FAILED,
+               "Value '" + uploadForm.getFileType() + "' is not a recognized document type.");
+      }
+   }
+
+   private void failIfVersionCannotAcceptUpload(GlobalDocumentId id) throws ChunkUploadException
+   {
       HProjectIteration projectIteration = projectIterationDAO.getBySlug(id.getProjectSlug(), id.getVersionSlug());
       if (projectIteration == null)
       {

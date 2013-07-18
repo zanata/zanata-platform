@@ -37,7 +37,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.security.AuthorizationException;
 import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -80,20 +79,18 @@ public class TranslationDocumentUpload
    public Response tryUploadTranslationFile(GlobalDocumentId id,
          String localeId, String mergeType, DocumentFileUploadForm uploadForm)
    {
-      HLocale locale;
       try
       {
-         checkTranslationUploadPreconditions(id, localeId, uploadForm);
-         locale = findHLocale(localeId);
-         checkTranslationUploadAllowed(id, localeId, locale);
+         failIfTranslationUploadNotValid(id, localeId, uploadForm);
 
+         HLocale locale = findHLocale(localeId);
          Optional<File> tempFile;
          int totalChunks;
 
          if (isSinglePart(uploadForm))
          {
             totalChunks = 1;
-            tempFile = Optional.<File>absent();
+            tempFile = Optional.<File> absent();
          }
          else
          {
@@ -139,12 +136,6 @@ public class TranslationDocumentUpload
 
          return transUploadResponse(totalChunks, warnings);
       }
-      catch (AuthorizationException e)
-      {
-         return Response.status(Status.UNAUTHORIZED)
-               .entity(new ChunkUploadResponse(e.getMessage()))
-               .build();
-      }
       catch (FileNotFoundException e)
       {
          log.error("failed to create input stream from temp file", e);
@@ -159,28 +150,26 @@ public class TranslationDocumentUpload
       }
    }
 
-   private void checkTranslationUploadPreconditions(GlobalDocumentId id, String localeId,
-         DocumentFileUploadForm uploadForm)
+   private void failIfTranslationUploadNotValid(GlobalDocumentId id, String localeId,
+         DocumentFileUploadForm uploadForm) throws ChunkUploadException
    {
-      util.checkUploadPreconditions(id, uploadForm);
-
-      // TODO check translation upload allowed
-
-      checkDocumentExists(id, uploadForm);
-      checkValidTranslationUploadType(uploadForm);
+      util.failIfUploadNotValid(id, uploadForm);
+      failIfDocumentDoesNotExist(id);
+      failIfFileTypeNotValid(uploadForm);
+      failIfTranslationUploadNotAllowed(id, localeId);
    }
 
-   private void checkDocumentExists(GlobalDocumentId id, DocumentFileUploadForm uploadForm)
+   private void failIfDocumentDoesNotExist(GlobalDocumentId id) throws ChunkUploadException
    {
       if (util.isNewDocument(id))
       {
          throw new ChunkUploadException(Status.NOT_FOUND,
                "No document with id \"" + id.getDocId() + "\" exists in project-version \"" +
-               id.getProjectSlug() + ":" + id.getVersionSlug() + "\".");
+                     id.getProjectSlug() + ":" + id.getVersionSlug() + "\".");
       }
    }
 
-   private void checkValidTranslationUploadType(DocumentFileUploadForm uploadForm)
+   private void failIfFileTypeNotValid(DocumentFileUploadForm uploadForm) throws ChunkUploadException
    {
       String fileType = uploadForm.getFileType();
       if (!fileType.equals(".po")
@@ -188,7 +177,19 @@ public class TranslationDocumentUpload
       {
          throw new ChunkUploadException(Status.BAD_REQUEST,
                "The type \"" + fileType + "\" specified in form parameter 'type' " +
-               "is not valid for a translation file on this server.");
+                     "is not valid for a translation file on this server.");
+      }
+   }
+
+   private void failIfTranslationUploadNotAllowed(GlobalDocumentId id, String localeId)
+         throws ChunkUploadException
+   {
+      HLocale locale = findHLocale(localeId);
+      if (!isTranslationUploadAllowed(id, locale))
+      {
+         throw new ChunkUploadException(Status.FORBIDDEN,
+               "You do not have permission to upload translations for locale \"" + localeId +
+                     "\" to project-version \"" + id.getProjectSlug() + ":" + id.getVersionSlug() + "\".");
       }
    }
 
@@ -214,16 +215,6 @@ public class TranslationDocumentUpload
       return locale;
    }
 
-   private void checkTranslationUploadAllowed(GlobalDocumentId id, String localeId, HLocale locale)
-   {
-      if (!isTranslationUploadAllowed(id, locale))
-      {
-         throw new ChunkUploadException(Status.FORBIDDEN,
-               "You do not have permission to upload translations for locale \"" + localeId +
-               "\" to project-version \"" + id.getProjectSlug() + ":" + id.getVersionSlug() + "\".");
-      }
-   }
-
    private boolean isTranslationUploadAllowed(GlobalDocumentId id, HLocale localeId)
    {
       HProjectIteration projectIteration = projectIterationDAO.getBySlug(id.getProjectSlug(), id.getVersionSlug());
@@ -242,7 +233,7 @@ public class TranslationDocumentUpload
       }
       else
       {
-         extensions = Collections.<String>emptySet();
+         extensions = Collections.<String> emptySet();
       }
       return extensions;
    }

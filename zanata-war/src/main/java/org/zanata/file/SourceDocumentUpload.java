@@ -39,7 +39,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.LobHelper;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.security.AuthorizationException;
 import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -92,7 +91,7 @@ public class SourceDocumentUpload
    {
       try
       {
-         checkSourceUploadPreconditions(id, uploadForm);
+         failIfSourceUploadNotValid(id, uploadForm);
 
          Optional<File> tempFile;
          int totalChunks;
@@ -152,22 +151,15 @@ public class SourceDocumentUpload
       }
    }
 
-   private void checkSourceUploadPreconditions(GlobalDocumentId id,
-         DocumentFileUploadForm uploadForm)
+   private void failIfSourceUploadNotValid(GlobalDocumentId id, DocumentFileUploadForm uploadForm)
+         throws ChunkUploadException
    {
-      try
-      {
-         util.checkUploadPreconditions(id, uploadForm);
-         checkSourceUploadAllowed(id);
-      }
-      catch (AuthorizationException e)
-      {
-         throw new ChunkUploadException(Status.UNAUTHORIZED, e.getMessage());
-      }
-      checkValidSourceUploadType(uploadForm);
+      util.failIfUploadNotValid(id, uploadForm);
+      failIfSourceUploadNotAllowed(id);
+      failIfFileTypeNotValid(uploadForm);
    }
 
-   private void checkSourceUploadAllowed(GlobalDocumentId id)
+   private void failIfSourceUploadNotAllowed(GlobalDocumentId id) throws ChunkUploadException
    {
       if (!isDocumentUploadAllowed(id))
       {
@@ -184,15 +176,30 @@ public class SourceDocumentUpload
             && identity != null && identity.hasPermission("import-template", projectIteration);
    }
 
-   private void checkValidSourceUploadType(DocumentFileUploadForm uploadForm)
+   private void failIfFileTypeNotValid(DocumentFileUploadForm uploadForm) throws ChunkUploadException
    {
-      if (!uploadForm.getFileType().equals(".pot")
-            && !translationFileServiceImpl.hasAdapterFor(DocumentType.typeFor(uploadForm.getFileType())))
+      DocumentType type = DocumentType.typeFor(uploadForm.getFileType());
+      if (!isSourceDocumentType(type))
       {
          throw new ChunkUploadException(Status.BAD_REQUEST,
                "The type \"" + uploadForm.getFileType() + "\" specified in form parameter 'type' "
                      + "is not valid for a source file on this server.");
       }
+   }
+
+   private boolean isSourceDocumentType(DocumentType type)
+   {
+      return isPotType(type) || isAdapterType(type);
+   }
+
+   private boolean isPotType(DocumentType type)
+   {
+      return type == DocumentType.GETTEXT_PORTABLE_OBJECT_TEMPLATE;
+   }
+
+   private boolean isAdapterType(DocumentType type)
+   {
+      return translationFileServiceImpl.hasAdapterFor(type);
    }
 
    private static Response sourceUploadSuccessResponse(boolean isNewDocument, int acceptedChunks)
