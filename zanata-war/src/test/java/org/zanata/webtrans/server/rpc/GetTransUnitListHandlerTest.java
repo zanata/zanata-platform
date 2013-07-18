@@ -126,7 +126,9 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
    @Test
    public void testExecuteWithStatusFilterOnly() throws Exception
    {
-      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(document).changeFilterFuzzy(true).changeFilterUntranslated(true));
+      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(document)
+         .changeFilterFuzzy(true)
+         .changeFilterUntranslated(true));
       prepareActionAndMockLocaleService(action);
 
       GetTransUnitListResult result = handler.execute(action, null);
@@ -156,7 +158,10 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
    {
       // Given: we want to search for file (mixed case) and we change page size
       // to 10 and start from index 2
-      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(document).changeFindMessage("FiLe").changeCount(10).changeOffset(1));
+      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(document)
+         .changeFindMessage("FiLe")
+         .changeCount(10)
+         .changeOffset(1));
       prepareActionAndMockLocaleService(action);
 
       // When:
@@ -174,7 +179,10 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
    {
       // Given: we want to search for file (mixed case) in fuzzy and
       // untranslated text flows
-      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(document).changeFindMessage("FiLe").changeFilterUntranslated(true).changeFilterFuzzy(true));
+      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(document)
+         .changeFindMessage("FiLe")
+         .changeFilterUntranslated(true)
+         .changeFilterFuzzy(true));
       prepareActionAndMockLocaleService(action);
 
       // When:
@@ -190,7 +198,11 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
    @Test
    public void testExecuteWithSearchAndStatusFilter2() throws Exception
    {
-      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(document).changeFindMessage("FiLe").changeFilterUntranslated(true).changeFilterFuzzy(true).changeFilterHasError(true));
+      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(document)
+         .changeFindMessage("FiLe")
+         .changeFilterUntranslated(true)
+         .changeFilterFuzzy(true)
+         .changeFilterHasError(true));
       prepareActionAndMockLocaleService(action);
 
       // When:
@@ -212,7 +224,13 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
       int offset = 76;
       int countPerPage = 25;
 
-      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(document).changeFindMessage("FiLe").changeFilterUntranslated(true).changeFilterFuzzy(true).changeFilterHasError(true).changeOffset(offset).changeCount(countPerPage));
+      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(document)
+         .changeFindMessage("FiLe")
+         .changeFilterUntranslated(true)
+         .changeFilterFuzzy(true)
+         .changeFilterHasError(true)
+         .changeOffset(offset)
+         .changeCount(countPerPage));
 
       prepareActionAndMockLocaleService(action);
 
@@ -239,7 +257,13 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
          idIndexList.add(new TransUnitId(i));
       }
 
-      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(document).changeFindMessage("FiLe").changeFilterUntranslated(true).changeFilterFuzzy(true).changeFilterHasError(true).changeOffset(offset).changeCount(countPerPage));
+      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(document)
+         .changeFindMessage("FiLe")
+         .changeFilterUntranslated(true)
+         .changeFilterFuzzy(true)
+         .changeFilterHasError(true)
+         .changeOffset(offset)
+         .changeCount(countPerPage));
       action.setNeedReloadIndex(true);
 
       prepareActionAndMockLocaleService(action);
