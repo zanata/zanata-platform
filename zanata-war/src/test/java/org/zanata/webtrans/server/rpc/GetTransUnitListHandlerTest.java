@@ -1,9 +1,9 @@
 package org.zanata.webtrans.server.rpc;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +77,19 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
       resourceUtils.create(); // postConstruct
       TransUnitTransformer transUnitTransformer = SeamAutowire.instance().use("resourceUtils", resourceUtils).autowire(TransUnitTransformer.class);
 
-      SeamAutowire seam = SeamAutowire.instance().use("localeServiceImpl", localeService).use("documentDAO", new DocumentDAO(getSession())).use("projectIterationDAO", new ProjectIterationDAO(getSession())).use("entityManager", new FullTextEntityManagerImpl(getEm())).use("session", new FullTextSessionImpl(getSession())).use("identity", identity).use("textFlowDAO", new TextFlowDAO(getSession())).use("transUnitTransformer", transUnitTransformer).use("webtrans.gwt.GetTransUnitsNavigationHandler", getTransUnitsNavigationService).useImpl(TranslationStateCacheImpl.class).useImpl(TextFlowSearchServiceImpl.class).useImpl(ValidationServiceImpl.class).allowCycles();
+      SeamAutowire seam = SeamAutowire.instance()
+            .use("localeServiceImpl", localeService)
+            .use("documentDAO", new DocumentDAO(getSession()))
+            .use("projectIterationDAO", new ProjectIterationDAO(getSession()))
+            .use("entityManager", new FullTextEntityManagerImpl(getEm()))
+            .use("session", new FullTextSessionImpl(getSession()))
+            .use("identity", identity).use("textFlowDAO", new TextFlowDAO(getSession()))
+            .use("transUnitTransformer", transUnitTransformer)
+            .use("webtrans.gwt.GetTransUnitsNavigationHandler", getTransUnitsNavigationService)
+            .useImpl(TranslationStateCacheImpl.class)
+            .useImpl(TextFlowSearchServiceImpl.class)
+            .useImpl(ValidationServiceImpl.class)
+            .allowCycles();
 
       // @formatter:off
       handler = seam.autowire(GetTransUnitListHandler.class);
@@ -214,10 +226,8 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
    public void testExecuteWithPageSizeNeedReload() throws Exception
    {
       /**
-       * Client request for page 4 data - 
-       * Offset:75
-       * Count per page: 25
-       * Assuming tft from getTransUnitsNavigationService.getNavigationIndexes = 74
+       * Client request for page 4 data - Offset:75 Count per page: 25 Assuming
+       * tft from getTransUnitsNavigationService.getNavigationIndexes = 74
        */
       int offset = 75;
       int countPerPage = 25;

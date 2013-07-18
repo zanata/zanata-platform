@@ -118,22 +118,27 @@ public class Pager extends Composite implements HasPager
       {
          try
          {
-            int newValue = Integer.parseInt(gotoPage.getText());
-            if (newValue < minPageCount)
-            {
-               newValue = minPageCount;
-            }
-            else if(newValue > pageCount)
-            {
-               newValue = pageCount;
-            }
-            setValue(newValue);
+            setValue(getCorrectedGotoPage(gotoPage.getText()));
          }
          catch (NumberFormatException nfe)
          {
             Log.error("Invalid page number entered");
          }
       }
+   }
+   
+   private int getCorrectedGotoPage(String pageText)
+   {
+      int page = Integer.parseInt(pageText);
+      if (page < minPageCount)
+      {
+         page = minPageCount;
+      }
+      else if(page > pageCount)
+      {
+         page = pageCount;
+      }
+      return page;
    }
 
    @Override
