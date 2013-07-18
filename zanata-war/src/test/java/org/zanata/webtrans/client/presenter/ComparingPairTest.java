@@ -55,7 +55,7 @@ public class ComparingPairTest
    public void testAddWhenItsEmpty() throws Exception
    {
       TransHistoryItem newItem = newItem("1");
-      pair = ComparingPair.empty().addOrRemove(newItem);
+      pair = ComparingPair.empty().tryAddOrRemoveIfExists(newItem);
 
       assertThat(pair.one(), Matchers.sameInstance(newItem));
       assertThat(pair.two(), Matchers.nullValue());
@@ -65,7 +65,7 @@ public class ComparingPairTest
    public void addSameItemTwiceWillRemoveIt()
    {
       TransHistoryItem newItem = newItem("1");
-      pair = ComparingPair.empty().addOrRemove(newItem).addOrRemove(newItem);
+      pair = ComparingPair.empty().tryAddOrRemoveIfExists(newItem).tryAddOrRemoveIfExists(newItem);
 
       assertThat(pair.one(), Matchers.nullValue());
       assertThat(pair.two(), Matchers.nullValue());
@@ -77,13 +77,13 @@ public class ComparingPairTest
       TransHistoryItem one = newItem("1");
       TransHistoryItem two = newItem("2");
       TransHistoryItem three = newItem("3");
-      pair = ComparingPair.empty().addOrRemove(one).addOrRemove(two);
+      pair = ComparingPair.empty().tryAddOrRemoveIfExists(one).tryAddOrRemoveIfExists(two);
 
       assertThat(pair.isFull(), Matchers.is(true));
       assertThat(pair.one(), Matchers.sameInstance(one));
       assertThat(pair.two(), Matchers.sameInstance(two));
 
-      pair = pair.addOrRemove(three);
+      pair = pair.tryAddOrRemoveIfExists(three);
 
       assertThat(pair.isFull(), Matchers.is(true));
       assertThat(pair.one(), Matchers.sameInstance(one));
@@ -95,7 +95,7 @@ public class ComparingPairTest
    {
       TransHistoryItem one = newItem("1");
       TransHistoryItem two = newItem("2");
-      pair = ComparingPair.empty().addOrRemove(one);
+      pair = ComparingPair.empty().tryAddOrRemoveIfExists(one);
 
       assertThat(pair.contains(one), Matchers.is(true));
       assertThat(pair.contains(two), Matchers.is(false));

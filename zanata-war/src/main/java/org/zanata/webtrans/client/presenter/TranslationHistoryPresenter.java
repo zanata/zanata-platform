@@ -7,7 +7,6 @@ import java.util.List;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.ReviewCommentEvent;
@@ -30,7 +29,6 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -143,7 +141,7 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
    @Override
    public void compareClicked(TransHistoryItem item)
    {
-      comparingPair = comparingPair.addOrRemove(item);
+      comparingPair = comparingPair.tryAddOrRemoveIfExists(item);
       if (comparingPair.isFull())
       {
          display.showDiff(comparingPair.one(), comparingPair.two(), messages.translationHistoryComparison(

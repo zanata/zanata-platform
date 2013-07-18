@@ -64,7 +64,7 @@ class ComparingPair
     * @param newItem to be added/removed item
     * @return a new object of this class
     */
-   public ComparingPair addOrRemove(TransHistoryItem newItem)
+   public ComparingPair tryAddOrRemoveIfExists(TransHistoryItem newItem)
    {
       if (isEmpty())
       {
