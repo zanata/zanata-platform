@@ -20,6 +20,9 @@
  */
 package org.zanata.file;
 
+import static org.zanata.file.DocumentUploadUtil.getInputStream;
+import static org.zanata.file.DocumentUploadUtil.isSinglePart;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -32,13 +35,13 @@ import javax.ws.rs.core.Response.Status;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.hibernate.Session;
+import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Name;
 import org.jboss.seam.security.AuthorizationException;
 import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
-import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.exception.ChunkUploadException;
@@ -50,41 +53,29 @@ import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.ChunkUploadResponse;
 import org.zanata.rest.dto.extensions.ExtensionType;
 import org.zanata.rest.dto.resource.TranslationsResource;
-import org.zanata.rest.service.VirusScanner;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.service.DocumentService;
 import org.zanata.service.TranslationFileService;
 import org.zanata.service.TranslationService;
 
 import com.google.common.base.Optional;
 
 @Slf4j
-public class TranslationDocumentUpload extends DocumentUpload
+@Name("translationDocumentUploader")
+public class TranslationDocumentUpload
 {
 
-   private final LocaleDAO localeDAO;
-   private final TranslationService translationServiceImpl;
-
-   public TranslationDocumentUpload(ZanataIdentity identity,
-         Session session,
-         DocumentDAO documentDAO,
-         ProjectIterationDAO projectIterationDAO,
-         DocumentService documentServiceImpl,
-         VirusScanner virusScanner,
-         TranslationFileService translationFileServiceImpl,
-         LocaleDAO localeDAO,
-         TranslationService translationServiceImpl)
-   {
-      super(identity,
-            session,
-            documentDAO,
-            projectIterationDAO,
-            documentServiceImpl,
-            virusScanner,
-            translationFileServiceImpl);
-      this.localeDAO = localeDAO;
-      this.translationServiceImpl = translationServiceImpl;
-   }
+   @In(create = true, value = "documentUploadUtil")
+   private DocumentUploadUtil util;
+   @In
+   private ZanataIdentity identity;
+   @In
+   private LocaleDAO localeDAO;
+   @In
+   private ProjectIterationDAO projectIterationDAO;
+   @In
+   private TranslationService translationServiceImpl;
+   @In
+   private TranslationFileService translationFileServiceImpl;
 
    public Response tryUploadTranslationFile(GlobalDocumentId id,
          String localeId, String mergeType, DocumentFileUploadForm uploadForm)
@@ -106,7 +97,7 @@ public class TranslationDocumentUpload extends DocumentUpload
          }
          else
          {
-            HDocumentUpload upload = saveUploadPart(id, locale, uploadForm);
+            HDocumentUpload upload = util.saveUploadPart(id, locale, uploadForm);
             totalChunks = upload.getParts().size();
             if (!uploadForm.getLast())
             {
@@ -115,7 +106,7 @@ public class TranslationDocumentUpload extends DocumentUpload
                            "Chunk accepted, awaiting remaining chunks."))
                      .build();
             }
-            tempFile = Optional.of(combineToTempFileAndDeleteUploadRecord(upload));
+            tempFile = Optional.of(util.combineToTempFileAndDeleteUploadRecord(upload));
          }
 
          TranslationsResource transRes;
@@ -129,7 +120,7 @@ public class TranslationDocumentUpload extends DocumentUpload
          {
             if (!tempFile.isPresent())
             {
-               tempFile = Optional.of(persistTempFileFromUpload(uploadForm));
+               tempFile = Optional.of(util.persistTempFileFromUpload(uploadForm));
             }
             // FIXME this is misusing the 'filename' field. the method should probably take a
             // type anyway
@@ -171,7 +162,7 @@ public class TranslationDocumentUpload extends DocumentUpload
    private void checkTranslationUploadPreconditions(GlobalDocumentId id, String localeId,
          DocumentFileUploadForm uploadForm)
    {
-      checkUploadPreconditions(id, uploadForm);
+      util.checkUploadPreconditions(id, uploadForm);
 
       // TODO check translation upload allowed
 
@@ -181,7 +172,7 @@ public class TranslationDocumentUpload extends DocumentUpload
 
    private void checkDocumentExists(GlobalDocumentId id, DocumentFileUploadForm uploadForm)
    {
-      if (isNewDocument(id))
+      if (util.isNewDocument(id))
       {
          throw new ChunkUploadException(Status.NOT_FOUND,
                "No document with id \"" + id.getDocId() + "\" exists in project-version \"" +

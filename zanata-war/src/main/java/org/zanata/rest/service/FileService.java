@@ -48,7 +48,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 
-import org.hibernate.Session;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -57,8 +56,6 @@ import org.zanata.adapter.po.PoWriter2;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
-import org.zanata.dao.LocaleDAO;
-import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.file.GlobalDocumentId;
 import org.zanata.file.SourceDocumentUpload;
 import org.zanata.file.TranslationDocumentUpload;
@@ -68,16 +65,12 @@ import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
-import org.zanata.security.ZanataIdentity;
-import org.zanata.service.DocumentService;
 import org.zanata.service.FileSystemService;
 import org.zanata.service.FileSystemService.DownloadDescriptorProperties;
 import org.zanata.service.TranslationFileService;
-import org.zanata.service.TranslationService;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
-
 import com.google.common.io.ByteStreams;
 
 @Name("fileService")
@@ -90,28 +83,13 @@ public class FileService implements FileResource
    private static final String FILE_TYPE_OFFLINE_PO_TEMPLATE = "offlinepot";
 
    @In
-   private ZanataIdentity identity;
-
-   @In
-   private LocaleDAO localeDAO;
-
-   @In
    private DocumentDAO documentDAO;
-
-   @In
-   private DocumentService documentServiceImpl;
-
-   @In
-   private ProjectIterationDAO projectIterationDAO;
 
    @In(create=true)
    private TranslatedDocResourceService translatedDocResourceService;
 
    @In
    private FileSystemService fileSystemServiceImpl;
-
-   @In
-   private TranslationService translationServiceImpl;
 
    @In
    private TranslationFileService translationFileServiceImpl;
@@ -122,9 +100,11 @@ public class FileService implements FileResource
    @In
    private VirusScanner virusScanner;
 
-   // FIXME remove when using DAO for HDocumentUpload
-   @In
-   private Session session;
+   @In(value = "sourceDocumentUploader", create = true)
+   private SourceDocumentUpload sourceUploader;
+
+   @In(value = "translationDocumentUploader", create = true)
+   private TranslationDocumentUpload translationUploader;
 
    @Override
    @GET
@@ -149,13 +129,9 @@ public class FileService implements FileResource
                                      @MultipartForm DocumentFileUploadForm uploadForm )
    {
       GlobalDocumentId id = new GlobalDocumentId(projectSlug, iterationSlug, docId);
-
-      SourceDocumentUpload uploader = new SourceDocumentUpload(identity, session, documentDAO, projectIterationDAO,
-            documentServiceImpl, virusScanner, translationFileServiceImpl);
-      return uploader.tryUploadSourceFile(id, uploadForm);
+      return sourceUploader.tryUploadSourceFile(id, uploadForm);
    }
 
-   // TODO this shares a lot of logic with .tryUploadSourceFile(), try to unify.
    @Override
    @POST
    @Path(TRANSLATION_UPLOAD_TEMPLATE)
@@ -169,11 +145,7 @@ public class FileService implements FileResource
                                           @MultipartForm DocumentFileUploadForm uploadForm )
    {
       GlobalDocumentId id = new GlobalDocumentId(projectSlug, iterationSlug, docId);
-
-      TranslationDocumentUpload uploader = new TranslationDocumentUpload(identity, session, documentDAO, projectIterationDAO,
-            documentServiceImpl, virusScanner, translationFileServiceImpl, localeDAO, translationServiceImpl);
-
-      return uploader.tryUploadTranslationFile(id, localeId, merge, uploadForm);
+      return translationUploader.tryUploadTranslationFile(id, localeId, merge, uploadForm);
    }
 
    /**

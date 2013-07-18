@@ -20,6 +20,9 @@
  */
 package org.zanata.file;
 
+import static org.zanata.file.DocumentUploadUtil.getInputStream;
+import static org.zanata.file.DocumentUploadUtil.isSinglePart;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -34,7 +37,8 @@ import javax.ws.rs.core.Response.Status;
 import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.LobHelper;
-import org.hibernate.Session;
+import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Name;
 import org.jboss.seam.security.AuthorizationException;
 import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
@@ -63,27 +67,26 @@ import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 
 @Slf4j
-public class SourceDocumentUpload extends DocumentUpload
+@Name("sourceDocumentUploader")
+public class SourceDocumentUpload
 {
 
    private static final HLocale NULL_LOCALE = null;
 
-   public SourceDocumentUpload(ZanataIdentity identity,
-         Session session,
-         DocumentDAO documentDAO,
-         ProjectIterationDAO projectIterationDAO,
-         DocumentService documentServiceImpl,
-         VirusScanner virusScanner,
-         TranslationFileService translationFileServiceImpl)
-   {
-      super(identity,
-            session,
-            documentDAO,
-            projectIterationDAO,
-            documentServiceImpl,
-            virusScanner,
-            translationFileServiceImpl);
-   }
+   @In(create = true, value = "documentUploadUtil")
+   private DocumentUploadUtil util;
+   @In
+   private ZanataIdentity identity;
+   @In
+   private ProjectIterationDAO projectIterationDAO;
+   @In
+   private TranslationFileService translationFileServiceImpl;
+   @In
+   private VirusScanner virusScanner;
+   @In
+   private DocumentDAO documentDAO;
+   @In
+   private DocumentService documentServiceImpl;
 
    public Response tryUploadSourceFile(GlobalDocumentId id, DocumentFileUploadForm uploadForm)
    {
@@ -96,7 +99,7 @@ public class SourceDocumentUpload extends DocumentUpload
 
          if (!uploadForm.getLast())
          {
-            HDocumentUpload upload = saveUploadPart(id, NULL_LOCALE, uploadForm);
+            HDocumentUpload upload = util.saveUploadPart(id, NULL_LOCALE, uploadForm);
             totalChunks = upload.getParts().size();
             return Response.status(Status.ACCEPTED)
                   .entity(new ChunkUploadResponse(upload.getId(), totalChunks, true,
@@ -111,9 +114,9 @@ public class SourceDocumentUpload extends DocumentUpload
          }
          else
          {
-            HDocumentUpload upload = saveUploadPart(id, NULL_LOCALE, uploadForm);
+            HDocumentUpload upload = util.saveUploadPart(id, NULL_LOCALE, uploadForm);
             totalChunks = upload.getParts().size();
-            tempFile = Optional.of(combineToTempFileAndDeleteUploadRecord(upload));
+            tempFile = Optional.of(util.combineToTempFileAndDeleteUploadRecord(upload));
          }
 
          if (uploadForm.getFileType().equals(".pot"))
@@ -125,7 +128,7 @@ public class SourceDocumentUpload extends DocumentUpload
          {
             if (!tempFile.isPresent())
             {
-               tempFile = Optional.of(persistTempFileFromUpload(uploadForm));
+               tempFile = Optional.of(util.persistTempFileFromUpload(uploadForm));
             }
             processAdapterFile(tempFile.get(), id, uploadForm);
          }
@@ -133,7 +136,7 @@ public class SourceDocumentUpload extends DocumentUpload
          {
             tempFile.get().delete();
          }
-         return sourceUploadSuccessResponse(isNewDocument(id), totalChunks);
+         return sourceUploadSuccessResponse(util.isNewDocument(id), totalChunks);
       }
       catch (ChunkUploadException e)
       {
@@ -154,7 +157,7 @@ public class SourceDocumentUpload extends DocumentUpload
    {
       try
       {
-         checkUploadPreconditions(id, uploadForm);
+         util.checkUploadPreconditions(id, uploadForm);
          checkSourceUploadAllowed(id);
       }
       catch (AuthorizationException e)
@@ -293,7 +296,7 @@ public class SourceDocumentUpload extends DocumentUpload
 
    private boolean useOfflinePo(GlobalDocumentId id)
    {
-      return !isNewDocument(id)
+      return !util.isNewDocument(id)
             && !translationFileServiceImpl.isPoDocument(id.getProjectSlug(), id.getVersionSlug(), id.getDocId());
    }
 

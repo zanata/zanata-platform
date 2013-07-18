@@ -39,6 +39,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Name;
 import org.jboss.seam.security.AuthorizationException;
 import org.jboss.seam.util.Hex;
 import org.zanata.common.DocumentType;
@@ -52,43 +54,29 @@ import org.zanata.model.HDocumentUploadPart;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.rest.DocumentFileUploadForm;
-import org.zanata.rest.service.VirusScanner;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.service.DocumentService;
 import org.zanata.service.TranslationFileService;
 
 import com.google.common.base.Optional;
 
 @Slf4j
-public class DocumentUpload
+@Name("documentUploadUtil")
+public class DocumentUploadUtil
 {
 
-   protected final DocumentService documentServiceImpl;
-   protected final VirusScanner virusScanner;
-   protected final ZanataIdentity identity;
-   protected final Session session;
-   protected final DocumentDAO documentDAO;
-   protected final ProjectIterationDAO projectIterationDAO;
-   protected final TranslationFileService translationFileServiceImpl;
+   @In
+   private ZanataIdentity identity;
+   @In
+   private Session session;
+   @In
+   private DocumentDAO documentDAO;
+   @In
+   private ProjectIterationDAO projectIterationDAO;
+   @In
+   private TranslationFileService translationFileServiceImpl;
 
-   protected DocumentUpload(
-         ZanataIdentity identity,
-         Session session,
-         DocumentDAO documentDAO,
-         ProjectIterationDAO projectIterationDAO,
-         DocumentService documentServiceImpl,
-         VirusScanner virusScanner,
-         TranslationFileService translationFileServiceImpl)
-   {
-      this.identity = identity;
-      this.session = session;
-      this.documentDAO = documentDAO;
-      this.projectIterationDAO = projectIterationDAO;
-      this.documentServiceImpl = documentServiceImpl;
-      this.virusScanner = virusScanner;
-      this.translationFileServiceImpl = translationFileServiceImpl;
-   }
-
+   // TODO change name and add thrown exception to make it clear
+   //      that this is meant to throw.
    protected void checkUploadPreconditions(GlobalDocumentId id,
          DocumentFileUploadForm uploadForm)
    {
@@ -97,25 +85,25 @@ public class DocumentUpload
          throw new AuthorizationException("Valid combination of username and api-key for this" +
                " server were not included in the request.");
       }
-   
+
       if (id.getDocId() == null || id.getDocId().isEmpty())
       {
          throw new ChunkUploadException(Status.PRECONDITION_FAILED,
                "Required query string parameter 'docId' was not found.");
       }
-   
+
       if (uploadForm.getFileStream() == null)
       {
          throw new ChunkUploadException(Status.PRECONDITION_FAILED,
                "Required form parameter 'file' containing file content was not found.");
       }
-   
+
       if (uploadForm.getFirst() == null || uploadForm.getLast() == null)
       {
          throw new ChunkUploadException(Status.PRECONDITION_FAILED,
                "Form parameters 'first' and 'last' must both be provided.");
       }
-   
+
       if (!uploadForm.getFirst())
       {
          if (uploadForm.getUploadId() == null)
@@ -123,7 +111,7 @@ public class DocumentUpload
             throw new ChunkUploadException(Status.PRECONDITION_FAILED,
                   "Form parameter 'uploadId' must be provided when this is not the first part.");
          }
-   
+
          HDocumentUpload upload = retrieveUploadObject(uploadForm);
          if (upload == null)
          {
@@ -134,49 +122,49 @@ public class DocumentUpload
          {
             throw new ChunkUploadException(Status.PRECONDITION_FAILED,
                   "Supplied uploadId '" + uploadForm.getUploadId()
-                  + "' in request is not valid for document '" + id.getDocId() + "'.");
+                        + "' in request is not valid for document '" + id.getDocId() + "'.");
          }
       }
-   
+
       String fileType = uploadForm.getFileType();
       if (fileType == null || fileType.isEmpty())
       {
          throw new ChunkUploadException(Status.PRECONDITION_FAILED,
                "Required form parameter 'type' was not found.");
       }
-   
+
       if (DocumentType.typeFor(fileType) == null)
       {
          throw new ChunkUploadException(Status.PRECONDITION_FAILED,
                "Value '" + fileType + "' is not a recognized document type.");
       }
-   
+
       String contentHash = uploadForm.getHash();
       if (contentHash == null || contentHash.isEmpty())
       {
          throw new ChunkUploadException(Status.PRECONDITION_FAILED,
                "Required form parameter 'hash' was not found.");
       }
-   
+
       HProjectIteration projectIteration = projectIterationDAO.getBySlug(id.getProjectSlug(), id.getVersionSlug());
       if (projectIteration == null)
       {
          throw new ChunkUploadException(Status.NOT_FOUND,
                "The specified project-version \"" + id.getProjectSlug() + ":" + id.getVersionSlug() +
-               "\" does not exist on this server.");
+                     "\" does not exist on this server.");
       }
-   
+
       if (projectIteration.getProject().getStatus() != EntityStatus.ACTIVE)
       {
          throw new ChunkUploadException(Status.FORBIDDEN,
                "The project \"" + id.getProjectSlug() + "\" is not active. Document upload is not allowed.");
       }
-   
+
       if (projectIteration.getStatus() != EntityStatus.ACTIVE)
       {
          throw new ChunkUploadException(Status.FORBIDDEN,
                "The project-version \"" + id.getProjectSlug() + ":" + id.getVersionSlug() +
-               "\" is not active. Document upload is not allowed.");
+                     "\" is not active. Document upload is not allowed.");
       }
    }
 
@@ -244,8 +232,8 @@ public class DocumentUpload
       {
          throw new ChunkUploadException(Status.CONFLICT,
                "MD5 hash \"" + e.getExpectedHash() + "\" sent with initial request does not match" +
-               " server-generated hash of combined parts \"" + e.getGeneratedHash() +
-               "\". Upload aborted. Retry upload from first part.");
+                     " server-generated hash of combined parts \"" + e.getGeneratedHash() +
+                     "\". Upload aborted. Retry upload from first part.");
       }
       catch (SQLException e)
       {
@@ -267,7 +255,7 @@ public class DocumentUpload
       {
          partStreams.add(part.getContent().getBinaryStream());
       }
-   
+
       MessageDigest md;
       try
       {
@@ -282,7 +270,7 @@ public class DocumentUpload
       combinedParts = new DigestInputStream(combinedParts, md);
       File tempFile = translationFileServiceImpl.persistToTempFile(combinedParts);
       String md5hash = new String(Hex.encodeHex(md.digest()));
-   
+
       if (!md5hash.equals(upload.getContentHash()))
       {
          throw new HashMismatchException("MD5 hashes do not match.\n", upload.getContentHash(), md5hash);
@@ -319,9 +307,8 @@ public class DocumentUpload
          if (!md5hash.equals(uploadForm.getHash()))
          {
             throw new ChunkUploadException(Status.CONFLICT,
-                  "MD5 hash \"" + uploadForm.getHash() +
-                  "\" sent with request does not match server-generated hash. " +
-                  "Aborted upload operation.");
+                  "MD5 hash \"" + uploadForm.getHash() + "\" sent with request does not match " +
+                        "server-generated hash. Aborted upload operation.");
          }
       }
       catch (NoSuchAlgorithmException e)

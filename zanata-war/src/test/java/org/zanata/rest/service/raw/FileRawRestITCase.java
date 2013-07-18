@@ -53,7 +53,7 @@ public class FileRawRestITCase extends RestTest
       addBeforeTestOperation(new DataSetOperation("org/zanata/test/model/LocalesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
       addBeforeTestOperation(new DataSetOperation("org/zanata/test/model/TextFlowTestData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
    }
-   
+
    @Test
    @RunAsClient
    public void getPo() throws Exception
@@ -69,6 +69,8 @@ public class FileRawRestITCase extends RestTest
          @Override
          protected void onResponse(ClientResponse response)
          {
+            System.out.println("getPo() response object");
+            printResponse(response);
             assertThat(response.getStatus(), is(200)); // Ok
             assertHeaderValue(response, "Content-Disposition", "attachment; filename=\"document.txt.po\"");
             assertHeaderValue(response, HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN);
@@ -78,7 +80,7 @@ public class FileRawRestITCase extends RestTest
          }
       }.run();
    }
-   
+
    @Test
    @RunAsClient
    public void getPo2() throws Exception
@@ -94,6 +96,8 @@ public class FileRawRestITCase extends RestTest
          @Override
          protected void onResponse(ClientResponse response)
          {
+            System.out.println("getPo2() response object");
+            printResponse(response);
             assertThat(response.getStatus(), is(200)); // Ok
             assertHeaderValue(response, "Content-Disposition", "attachment; filename=\"document-2.txt.po\"");
             assertHeaderValue(response, HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN);
@@ -105,15 +109,21 @@ public class FileRawRestITCase extends RestTest
          }
       }.run();
    }
-   
+
+   private static void printResponse(ClientResponse response)
+   {
+      System.out.println("Status: " + response.getStatus());
+      System.out.println("Entity: " + (String) response.getEntity(String.class));
+   }
+
    private static void assertPoFileCorrect( String poFileContents )
    {
       MessageStreamParser messageParser = new MessageStreamParser( new StringReader(poFileContents) );
-      
+
       while (messageParser.hasNext())
       {
          Message message = messageParser.next();
-         
+
          if( message.isHeader() )
          {
             // assert that expected headers are present (with values if needed)
@@ -128,7 +138,7 @@ public class FileRawRestITCase extends RestTest
          }
       }
    }
-   
+
    /**
     * Validates that the po files contains the appropriate translations.
     * @param poFileContents The contents of the PO file as a string
@@ -140,16 +150,17 @@ public class FileRawRestITCase extends RestTest
       {
          throw new AssertionError("Translation parameters should be given in pairs.");
       }
-      
+
       MessageStreamParser messageParser = new MessageStreamParser( new StringReader(poFileContents) );
-      
+
       List<String> found = new ArrayList<String>( translations.length );
-      
+
+      // FIXME extract method instead of adding comment
       // Assert that all the given translations are present
       while (messageParser.hasNext())
       {
          Message message = messageParser.next();
-         
+
          if( !message.isHeader() )
          {
             // Find the message id in the array given to check
@@ -173,7 +184,7 @@ public class FileRawRestITCase extends RestTest
             }
          }
       }
-      
+
       // If there are some messages not found
       if( found.size() < translations.length / 2 )
       {
@@ -185,7 +196,7 @@ public class FileRawRestITCase extends RestTest
                assertionError.append( translations[i]+" | " );
             }
          }
-         
+
          throw new AssertionError( assertionError.toString() );
       }
    }
