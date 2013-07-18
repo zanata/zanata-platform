@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<f:view contentType="text/html" xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:a="http://richfaces.org/a4j"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j">
+<html>
+
+	<h:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>#{messages['jsf.Zanata']}: <ui:insert name="page_title" /></title>
+		<link rel="shortcut icon"
+		  href="#{request.contextPath}/images/favicon.ico" type="image/x-icon" />
+        <link type="text/css" rel="stylesheet" href="#{request.contextPath}/resources/fontello/css/fontello.css"/>
+        <link type="text/css" rel="stylesheet" href="//webassets-zanata.rhcloud.com/1/assets/css/style.css"/>
+        <link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,400italic"/>
+		<ui:insert name="head" />
+	</h:head>
+
+	<h:body>
+		<div class="header">
+			<ui:include src="menu.xhtml" />	
+		</div>
+		
+		<div id="main_body_content">
+			<ui:insert name="center_content" />
+		</div>
+		
+		
+		
+		<s:fragment rendered="#{not empty applicationConfiguration.piwikUrl and not empty applicationConfiguration.piwikIdSite}">
+			<!-- Piwik --> <script type="text/javascript">//<![CDATA[
+			//remove any trailing slash
+			function stripTrailingSlash(url) 
+			{
+		    	return url.replace(/\/$/, "");
+			}
+			
+			//if url doesn't contain protocol, append to it
+			function checkProtocol(url)
+			{
+				var protocol="";
+				
+				if((url.indexOf("http") == -1) && (url.indexOf("https") == -1))
+				{
+					protocol = (("https:" == document.location.protocol) ? "https://" : "http://");
+				}
+				return stripTrailingSlash(protocol + url);
+			}
+
+			var pkBaseURL = checkProtocol("#{applicationConfiguration.piwikUrl}") + "/";
+			
+			document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+			//]]></script>
+			<script type="text/javascript">//<![CDATA[
+			try {
+			var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", #{applicationConfiguration.piwikIdSite});
+			var username =  "#{identity.username}";
+			if(#{identity.loggedIn} == false)
+			{
+				username = "anonymous";
+			} 
+			piwikTracker.setCustomVariable (1, "Visit", username, "visit" ); 
+			piwikTracker.setCustomVariable (2, "View page", username, "page" ); 
+			
+			piwikTracker.trackPageView();
+			piwikTracker.enableLinkTracking();
+			} catch( err ) {}
+			//]]></script>
+			<!-- End Piwik Code -->
+		</s:fragment>
+	</h:body>
+</html>
+</f:view>
