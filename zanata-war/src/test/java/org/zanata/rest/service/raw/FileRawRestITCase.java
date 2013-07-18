@@ -145,7 +145,6 @@ public class FileRawRestITCase extends RestTest
 
       List<String> found = new ArrayList<String>( translations.length );
 
-      // FIXME extract method instead of adding comment
       // Assert that all the given translations are present
       while (messageParser.hasNext())
       {
