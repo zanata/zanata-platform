@@ -46,10 +46,12 @@ import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowStreamDAO;
+import org.zanata.dao.TransMemoryDAO;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.SourceContents;
 import org.zanata.service.LocaleService;
+import org.zanata.tmx.TMXParser;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -67,6 +69,10 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
    private RestSlugValidator restSlugValidator;
    @In
    private TextFlowStreamDAO textFlowStreamDAO;
+   @In
+   private TransMemoryDAO transMemoryDAO;
+   @In
+   private TMXParser tmxParser;
 
    @Override
    @Restrict("#{s:hasRole('admin')}")
@@ -123,39 +129,12 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
       {
          InputStream inputStream = inputPart.getBody(InputStream.class, null);
 
-         byte [] bytes = IOUtils.toByteArray(inputStream);
-         System.out.println(new String(bytes));
+         tmxParser.parseAndSaveTMX(inputStream, transMemoryDAO.getBySlug(slug));
       }
       return Response.status(200).build();
    }
 
-   @GET
-   @Path("basic")
-   @Produces("text/plain")
-   public void getBasic(final @Suspend(Long.MAX_VALUE) AsynchronousResponse response) throws Exception
-   {
-      Thread t = new Thread(new Runnable()
-      {
-         @Override
-         public void run()
-         {
-            int i = 0;
-            while(i<60)
-            {
-               try
-               {
-                  Thread.sleep(10000);
-               } catch (InterruptedException e)
-               {
-               }
-               i++;
-               System.out.println("Waiting for " + (i*10) + " seconds");
-            }
-            response.setResponse(Response.ok("Finished").build());
-         }
-      });
-      t.start();
-   }
+
 
    private Response buildTMX(@Nonnull Iterator<? extends SourceContents> tuIter, @Nullable String projectSlug, @Nullable String iterationSlug, @Nullable LocaleId locale)
    {

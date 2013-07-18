@@ -21,28 +21,30 @@
 package org.zanata.model.tm;
 
 import java.util.Map;
-
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.MapKeyClass;
+import javax.persistence.MapKeyColumn;
+import javax.persistence.MapKeyEnumerated;
 
+import org.zanata.model.ModelEntityBase;
+import org.zanata.util.HashUtil;
 import org.zanata.util.OkapiUtil;
+import com.google.common.collect.Maps;
+
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
-import org.zanata.model.ModelEntityBase;
-import org.zanata.util.HashUtil;
-
-import com.google.common.collect.Maps;
 
 /**
  * A translation unit variant.
@@ -63,13 +65,11 @@ public class TMTransUnitVariant extends ModelEntityBase implements HasTMMetadata
    @Column(nullable = false)
    private String language;
 
-   @Column(name = "tagged_segment", nullable = false)
-   @Lob
+   @Column(name = "tagged_segment", nullable = false, length = Integer.MAX_VALUE)
    private String taggedSegment;
 
    @Setter(AccessLevel.NONE)
-   @Column(name = "plain_text_segment", nullable = true)
-   @Lob
+   @Column(name = "plain_text_segment", nullable = true, length = Integer.MAX_VALUE)
    private String plainTextSegment;
 
    @Setter(AccessLevel.PROTECTED)
@@ -80,9 +80,10 @@ public class TMTransUnitVariant extends ModelEntityBase implements HasTMMetadata
     * Map values are Json strings containing metadata for the particular type of translation memory
     */
    @ElementCollection
-   @MapKeyClass(TMMetadataType.class)
-   @JoinTable(name = "TMTransUnitVariant_Metadata")
-   @Lob
+   @JoinTable(name = "TMTransUnitVariant_Metadata", joinColumns = {@JoinColumn(name = "tm_trans_unit_variant_id")})
+   @MapKeyEnumerated(EnumType.STRING)
+   @MapKeyColumn(name = "metadata_key")
+   @Column(name = "metadata", length = Integer.MAX_VALUE)
    private Map<TMMetadataType, String> metadata = Maps.newHashMap();
 
    public TMTransUnitVariant(String language, String content)

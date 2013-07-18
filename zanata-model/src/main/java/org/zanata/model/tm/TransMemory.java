@@ -28,9 +28,13 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.MapKeyClass;
+import javax.persistence.MapKeyColumn;
+import javax.persistence.MapKeyEnumerated;
 import javax.persistence.OneToMany;
 
 import org.zanata.model.SlugEntityBase;
@@ -70,9 +74,10 @@ public class TransMemory extends SlugEntityBase implements HasTMMetadata
     * Map values are Json strings containing metadata for the particular type of translation memory
     */
    @ElementCollection
-   @MapKeyClass(TMMetadataType.class)
-   @JoinTable(name = "TransMemory_Metadata")
-   @Lob
+   @MapKeyEnumerated(EnumType.STRING)
+   @MapKeyColumn(name = "metadata_key")
+   @JoinTable(name = "TransMemory_Metadata", joinColumns = {@JoinColumn(name = "trans_memory_id")})
+   @Column(name = "metadata",length = Integer.MAX_VALUE)
    private Map<TMMetadataType, String> metadata = Maps.newHashMap();
 
 }

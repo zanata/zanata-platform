@@ -27,6 +27,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -35,17 +36,15 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.MapKeyClass;
+import javax.persistence.MapKeyColumn;
+import javax.persistence.MapKeyEnumerated;
 
 import org.zanata.model.ModelEntityBase;
-
 import com.google.common.collect.Maps;
 
-import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 /**
@@ -90,9 +89,10 @@ public class TMTranslationUnit extends ModelEntityBase implements HasTMMetadata
     * Map values are Json strings containing metadata for the particular type of translation memory
     */
    @ElementCollection
-   @MapKeyClass(TMMetadataType.class)
-   @JoinTable(name = "TMTransUnit_Metadata")
-   @Lob
+   @MapKeyEnumerated(EnumType.STRING)
+   @MapKeyColumn(name = "metadata_key")
+   @JoinTable(name = "TMTransUnit_Metadata", joinColumns = {@JoinColumn(name = "tm_trans_unit_id")})
+   @Column(name = "metadata", length = Integer.MAX_VALUE)
    private Map<TMMetadataType, String> metadata = Maps.newHashMap();
 
    public TMTranslationUnit(String uniqueId)

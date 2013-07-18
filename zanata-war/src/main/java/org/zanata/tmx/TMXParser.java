@@ -31,6 +31,7 @@ import javax.xml.stream.events.XMLEvent;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Transactional;
 import org.zanata.common.util.ElementBuilder;
 import org.zanata.model.tm.TransMemory;
 
@@ -49,10 +50,27 @@ public class TMXParser
    @In
    private TransMemoryAdapter transMemoryAdapter;
 
+   @Transactional
    public void parseAndSaveTMX(InputStream input, final TransMemory tm) throws XMLStreamException
    {
-      transMemoryAdapter.setTm(tm);
-      parseTMX(input, transMemoryAdapter.getHeaderPersister(), transMemoryAdapter.getTransUnitPersister());
+      parseTMX(input,
+            new Effect<Element>()
+            {
+               @Override
+               public void e(Element element)
+               {
+                  transMemoryAdapter.persistHeader(tm, element);
+               }
+            },
+            new Effect<Element>()
+            {
+               @Override
+               public void e(Element element)
+               {
+                  transMemoryAdapter.persistTransUnit(tm, element);
+               }
+            }
+      );
    }
 
    public void parseTMX(InputStream input, Effect<Element> headerHandler, Effect<Element> tuHandler) throws XMLStreamException

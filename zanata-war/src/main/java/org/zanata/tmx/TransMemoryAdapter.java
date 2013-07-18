@@ -30,114 +30,94 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nu.xom.Attribute;
 import nu.xom.Element;
+import nu.xom.Elements;
+import nu.xom.Node;
 
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.zanata.model.tm.TMMetadataType;
 import org.zanata.model.tm.TMTransUnitVariant;
-import org.zanata.model.tm.TMXMetadataHelper;
 import org.zanata.model.tm.TMTranslationUnit;
+import org.zanata.model.tm.TMXMetadataHelper;
 import org.zanata.model.tm.TransMemory;
 
 import com.google.common.collect.Maps;
 
-import fj.Effect;
-import nu.xom.Elements;
-import nu.xom.Node;
-
 /**
- * Translation Memory Adapter for the TMX parser. Provides callback effects (functions) to be used when
- * the parser encounters certain specific events.
- *
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
- *
+ * Translation Memory Adapter for the TMX parser. Provides callback effects
+ * (functions) to be used when the parser encounters certain specific events.
+ * 
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * 
  */
 @Name("transMemoryAdapter")
 @AutoCreate
 @NoArgsConstructor
-class TransMemoryAdapter
+public class TransMemoryAdapter
 {
    @In
    private EntityManager entityManager;
 
-   @Setter
-   private TransMemory tm;
-
-   TransMemoryAdapter(TransMemory tm)
+   /**
+    * Returns an effect function that persists the header elements when
+    * encountered while parsing. This modifies the translation memory fields and
+    * metadata.
+    */
+   public void persistHeader(TransMemory tm, Element headerElem)
    {
-      this.tm = tm;
+      Map<String, String> metadata = Maps.newHashMap();
+      for (int i = 0; i < headerElem.getAttributeCount(); i++)
+      {
+         Attribute attr = headerElem.getAttribute(i);
+         String name = attr.getQualifiedName();
+         String value = attr.getValue();
+         metadata.put(name, value);
+      }
+      // Header might also have sub nodes (save them as pure xml)
+      StringBuilder childrenContent = new StringBuilder();
+      for (int i = 0; i < headerElem.getChildCount(); i++)
+      {
+         Node child = headerElem.getChild(i);
+         childrenContent.append(child.toXML());
+      }
+      metadata.put(TMXMetadataHelper.TMX_HEADER_CONTENT, childrenContent.toString());
+
+      TMXMetadataHelper.setMetadata(tm, metadata);
+      entityManager.merge(tm);
    }
 
    /**
-    * Returns an effect function that persists the header elements when encountered while parsing.
-    * This modifies the translation memory fields and metadata.
+    * Returns an effect function that persists a translation unit when a <tu>
+    * element is encountered while parsing.
     */
-   public Effect<Element> getHeaderPersister()
+   public void persistTransUnit(TransMemory tm, Element tuElem)
    {
-      return new Effect<Element>() {
-         @Override
-         public void e(Element headerElem)
-         {
-            Map<String, String> metadata = Maps.newHashMap();
-            for (int i=0; i < headerElem.getAttributeCount(); i++)
-            {
-               Attribute attr = headerElem.getAttribute(i);
-               String name = attr.getQualifiedName();
-               String value = attr.getValue();
-               metadata.put(name, value);
-            }
-            // Header might also have sub nodes (save them as pure xml)
-            StringBuilder childrenContent = new StringBuilder();
-            for (int i=0; i < headerElem.getChildCount(); i++)
-            {
-               Node child = headerElem.getChild(i);
-               childrenContent.append(child.toXML());
-            }
-            metadata.put(TMXMetadataHelper.TMX_HEADER_CONTENT, childrenContent.toString());
+      TMTranslationUnit tu = new TMTranslationUnit();
+      tu.setTranslationMemory(tm);
 
-            TMXMetadataHelper.setMetadata(tm, metadata);
-            entityManager.merge(tm);
-         }
-      };
-   }
+      Map<String, String> metadata = Maps.newHashMap();
+      for (int i = 0; i < tuElem.getAttributeCount(); i++)
+      {
+         Attribute attr = tuElem.getAttribute(i);
+         String name = attr.getQualifiedName();
+         String value = attr.getValue();
+         metadata.put(name, value);
+      }
+      TMXMetadataHelper.setMetadata(tu, metadata);
+      tu.setVersionNum(0);
 
-   /**
-    * Returns an effect function that persists a translation unit when a <tu> element
-    * is encountered while parsing.
-    */
-   public Effect<Element> getTransUnitPersister()
-   {
-      return new Effect<Element>() {
-         @Override
-         public void e(Element tuElem)
-         {
-            TMTranslationUnit tu = new TMTranslationUnit();
-            tu.setTranslationMemory(tm);
+      // Parse the tuvs
+      Elements tuvElems = tuElem.getChildElements("tuv");
+      for (int i = 0; i < tuvElems.size(); i++)
+      {
+         Element tuvElem = tuvElems.get(i);
+         parseAndSaveTransUnitVariant(tuvElem, tu);
+      }
 
-            Map<String, String> metadata = Maps.newHashMap();
-            for (int i=0; i < tuElem.getAttributeCount(); i++)
-            {
-               Attribute attr = tuElem.getAttribute(i);
-               String name = attr.getQualifiedName();
-               String value = attr.getValue();
-               metadata.put(name, value);
-            }
-            TMXMetadataHelper.setMetadata(tu, metadata);
-            tu.setVersionNum(0);
-
-            // Parse the tuv's
-            Elements tuvElems = tuElem.getChildElements("tuv");
-            for( int i=0; i<tuvElems.size(); i++ )
-            {
-               Element tuvElem = tuvElems.get(i);
-               parseAndSaveTransUnitVariant(tuvElem, tu);
-            }
-
-            tu.setUniqueId( determineUniqueId(tu) );
-            entityManager.persist(tu);
-         }
-      };
+      tu.setUniqueId(determineUniqueId(tu));
+      entityManager.persist(tu);
+      entityManager.flush();
    }
 
    private void parseAndSaveTransUnitVariant(Element tuvElem, TMTranslationUnit tu)
@@ -146,13 +126,13 @@ class TransMemoryAdapter
       String content = tuvElem.getFirstChildElement("seg").getChild(0).toXML();
 
       TMTransUnitVariant tuv = new TMTransUnitVariant(language, content);
-      //TODO save metadata
+      // TODO save metadata
       tu.getTransUnitVariants().put(language, tuv);
    }
 
-   private String determineUniqueId( TMTranslationUnit tu )
+   private String determineUniqueId(TMTranslationUnit tu)
    {
-      if( tu.getTransUnitId() != null )
+      if (tu.getTransUnitId() != null)
       {
          // tuid is the natural id by default
          return tu.getTransUnitId();
@@ -161,21 +141,20 @@ class TransMemoryAdapter
       {
          // Go looking for a source content hash
          String srcLang = tu.getSourceLanguage() != null ? tu.getSourceLanguage() : tu.getTranslationMemory().getSourceLanguage();
-         if(srcLang != null)
+         if (srcLang != null)
          {
             // source lang is *all*
-            if( srcLang.equalsIgnoreCase("*all*") )
+            if (srcLang.equalsIgnoreCase("*all*"))
             {
                srcLang = tu.getSourceLanguage();
-               if(srcLang == null || srcLang.equalsIgnoreCase("*all*"))
+               if (srcLang == null || srcLang.equalsIgnoreCase("*all*"))
                {
-                  throw new RuntimeException("Source language cannot be determined for Translation unit. " +
-                        "It must be defined either in the <tu> or the <header> element.");
+                  throw new RuntimeException("Source language cannot be determined for Translation unit. " + "It must be defined either in the <tu> or the <header> element.");
                }
             }
 
             TMTransUnitVariant sourceVariant = tu.getTransUnitVariants().get(srcLang);
-            if( sourceVariant == null )
+            if (sourceVariant == null)
             {
                throw new RuntimeException("Source variant cannot be determined for Translation unit with no tuid.");
             }
@@ -188,6 +167,5 @@ class TransMemoryAdapter
          }
       }
    }
-
 
 }
