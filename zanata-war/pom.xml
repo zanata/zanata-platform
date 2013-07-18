@@ -757,7 +757,6 @@
 							<configuration>
 								<type>existing</type>
 								<home>${jboss.home}/standalone</home>
-                        <pingTimeout>60000</pingTimeout>
                         <properties>
                            <cargo.jboss.configuration>default</cargo.jboss.configuration>
                         </properties>
@@ -765,6 +764,7 @@
                      <deployables>
                         <deployable>
                            <pingURL>http://localhost:${port}/${war.name}/</pingURL>
+                           <pingTimeout>60000</pingTimeout>
                            <location>${project.build.directory}/zanata</location>
                            <properties>
                               <context>zanata</context>
