@@ -118,7 +118,7 @@ public class Pager extends Composite implements HasPager
       {
          try
          {
-            setValue(getCorrectedGotoPage(gotoPage.getText()));
+            setValue(getCorrectedGotoPage());
          }
          catch (NumberFormatException nfe)
          {
@@ -127,9 +127,9 @@ public class Pager extends Composite implements HasPager
       }
    }
    
-   private int getCorrectedGotoPage(String pageText)
+   private int getCorrectedGotoPage()
    {
-      int page = Integer.parseInt(pageText);
+      int page = Integer.parseInt(gotoPage.getText());
       if (page < minPageCount)
       {
          page = minPageCount;
