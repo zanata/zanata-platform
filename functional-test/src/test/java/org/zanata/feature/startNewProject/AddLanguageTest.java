@@ -20,7 +20,6 @@
  */
 package org.zanata.feature.startNewProject;
 
-import lombok.extern.slf4j.Slf4j;
 import org.concordion.api.extension.Extensions;
 import org.concordion.ext.ScreenshotExtension;
 import org.concordion.ext.TimestampFormatterExtension;
@@ -38,7 +37,6 @@ import org.zanata.workflow.LoginWorkFlow;
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 @RunWith(ConcordionRunner.class)
 @Extensions({ScreenshotExtension.class, TimestampFormatterExtension.class, CustomResourceExtension.class})
 @Category(ConcordionTest.class)
