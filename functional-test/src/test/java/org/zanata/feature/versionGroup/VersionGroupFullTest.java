@@ -20,28 +20,25 @@
  */
 package org.zanata.feature.versionGroup;
 
-import java.util.*;
-
 import org.hamcrest.Matchers;
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import org.junit.*;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.BasicAcceptanceTest;
 import org.zanata.feature.DetailedTest;
 import org.zanata.page.HomePage;
+import org.zanata.page.groups.CreateVersionGroupPage;
 import org.zanata.page.groups.VersionGroupPage;
 import org.zanata.page.groups.VersionGroupsPage;
-import org.zanata.page.groups.CreateVersionGroupPage;
 import org.zanata.util.ResetDatabaseRule;
 import org.zanata.workflow.LoginWorkFlow;
 
-import lombok.extern.slf4j.Slf4j;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 @Category(DetailedTest.class)
 public class VersionGroupFullTest
 {
@@ -74,21 +71,6 @@ public class VersionGroupFullTest
    }
 
    @Test
-   public void inputValidationForID()
-   {
-      String errorMsg = "must start and end with letter or number, and contain only letters, numbers, underscores and hyphens.";
-      for (Map.Entry<String, String> entry : inputValidationForIDData().entrySet())
-      {
-         VersionGroupFullTest.log.info("Test " + entry.getKey() + ":" + entry.getValue());
-         VersionGroupsPage versionGroupsPage = homePage.goToGroups();
-         CreateVersionGroupPage groupPage = versionGroupsPage.createNewGroup();
-         groupPage.inputGroupId(entry.getValue()).inputGroupName(entry.getValue());
-         groupPage.saveGroupFailure();
-         assertThat("Validation error is displayed for " + entry.getKey(), groupPage.getErrors().contains(errorMsg));
-      }
-   }
-
-   @Test
    public void requiredFields()
    {
       String errorMsg = "value is required";
@@ -96,7 +78,7 @@ public class VersionGroupFullTest
       String groupName = "verifyRequiredFieldsGroupName";
 
       CreateVersionGroupPage groupPage = homePage.goToGroups().createNewGroup().saveGroupFailure();
-      assertThat("The two errors are value is required", groupPage.getErrors(),Matchers.contains(errorMsg, errorMsg));
+      assertThat("The two errors are value is required", groupPage.getErrors(), Matchers.contains(errorMsg, errorMsg));
 
       groupPage.clearFields();
       groupPage.inputGroupName(groupName);
@@ -148,43 +130,6 @@ public class VersionGroupFullTest
       VersionGroupsPage verGroupsPage = groupPage.inputGroupDescription(groupDescription).saveGroup();
       assertThat("A group description of 100 chars is valid", verGroupsPage.getGroupNames(), Matchers.hasItem(groupName));
 
-   }
-
-   private LinkedHashMap<String, String> inputValidationForIDData()
-   {
-      LinkedHashMap<String, String> inputData = new LinkedHashMap<String, String>(100);
-      inputData.put("Invalid char |", "Group|ID");
-      inputData.put("Invalid char /", "Group/ID");
-      inputData.put("Invalid char ", "Group\\ID");
-      inputData.put("Invalid char +", "Group+ID");
-      inputData.put("Invalid char *", "Group*ID");
-      inputData.put("Invalid char |", "Group|ID");
-      inputData.put("Invalid char (", "Group(ID");
-      inputData.put("Invalid char )", "Group)ID");
-      inputData.put("Invalid char $", "Group$ID");
-      inputData.put("Invalid char [", "Group[ID");
-      inputData.put("Invalid char ]", "Group]ID");
-      inputData.put("Invalid char :", "Group:ID");
-      inputData.put("Invalid char ;", "Group;ID");
-      inputData.put("Invalid char '", "Group'ID");
-      inputData.put("Invalid char ,", "Group,ID");
-      inputData.put("Invalid char ?", "Group?ID");
-      inputData.put("Invalid char !", "Group!ID");
-      inputData.put("Invalid char @", "Group@ID");
-      inputData.put("Invalid char #", "Group#ID");
-      inputData.put("Invalid char %", "Group%ID");
-      inputData.put("Invalid char ^", "Group^ID");
-      inputData.put("Invalid char =", "Group=ID");
-      inputData.put("Must start with alphanumeric", "-GroupID");
-      inputData.put("Must end with alphanumeric", "GroupID-");
-
-      /* BUG id=973509 - remove/uncomment depending on outcome
-      inputData.put("Invalid char .", "Group.ID");
-      inputData.put("Invalid char {", "Group{ID");
-      inputData.put("Invalid char }", "Group}ID");
-      */
-
-      return inputData;
    }
 
 }
