@@ -17,7 +17,13 @@
     <from>.*</from>
     <to last="true" type="temporary-redirect">/robots.txt</to>
   </rule>
-
+  
+  <!-- Dashboard Rules -->
+  <rule>
+    <from casesensitive="true">^/dashboard/?(\?.*)?$</from>
+    <to last="true">/dashboard/home.seam$1</to>
+  </rule>
+  
   <!-- Admin Rules -->
   <rule>
     <from casesensitive="true">^/admin/([^/\?\.]+)(\?.*)?$</from>
@@ -26,7 +32,6 @@
 
 
   <!-- Language rules -->
-
   <rule>
     <from casesensitive="true">^/language/view/(.+)$</from>
     <to last="true">/language/language.seam\?id=$1</to>
@@ -301,6 +306,11 @@
     <from casesensitive="true">^/webtrans/translate(.*)$</from>
     <to last="true">/webtrans/Application.seam$1</to>
   </rule>
+  
+  <outbound-rule>
+    <from>^(/.+)?/dashboard/home.seam(.+)?$</from>
+    <to>$1/dashboard/$2</to>
+  </outbound-rule>
   
   <outbound-rule>
     <from>^(/.+)?/admin/(.+).seam(.*)$</from>

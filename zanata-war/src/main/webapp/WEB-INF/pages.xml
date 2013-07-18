@@ -11,7 +11,11 @@
       </rule>
     </navigation>
   </page>
-
+  
+  <page view-id="/home.xhtml">
+  	<action execute="#{userRedirect.redirectToDashboard}"/>
+  </page>
+  
   <!-- Landing page for open id authentication -->
   <page view-id="/openid.xhtml">
 	 <navigation>
@@ -25,7 +29,7 @@
 	        <redirect view-id="/account/login_input.xhtml" />
 	      </rule>
 	      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and !userRedirect.redirect}">
-	        <redirect view-id="/home.xhtml" />
+	        <redirect view-id="/dashboard/home.xhtml" />
 	      </rule>
 	      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.redirect}">
 	        <redirect url="#{userRedirect.url}" />
@@ -73,6 +77,9 @@
       <rule if-outcome="inactive">
         <redirect view-id="/account/inactive_account.xhtml"/>
       </rule>
+      <rule if-outcome="dashboard">
+        <redirect view-id="/dashboard/home.xhtml" />
+      </rule>
       <rule if-outcome="home">
         <redirect view-id="/home.xhtml" />
       </rule>
@@ -98,7 +105,7 @@
         <redirect view-id="/account/inactive_account.xhtml"/>
       </rule>
       <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and !userRedirect.redirect}">
-        <redirect view-id="/home.xhtml" />
+        <redirect view-id="/dashboard/home.xhtml" />
       </rule>
       <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.redirect}">
         <redirect url="#{userRedirect.url}" />
