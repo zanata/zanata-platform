@@ -24,7 +24,10 @@ package org.zanata.webtrans.client.presenter;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 
 /**
-* @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * This class holds two distinct translation history items at most. They are then used for comparison.
+ * The object created is immutable. See test for more detail.
+ *
+ * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
 */
 class ComparingPair
 {
@@ -52,6 +55,15 @@ class ComparingPair
       return two;
    }
 
+   /**
+    * Add item to this holder.
+    * If item already exist in this holder, it will be removed.
+    * If current holder is full (already contains two items), new item won't be added in. i.e. no op.
+    * Otherwise it will be added to the holder.
+    *
+    * @param newItem to be added/removed item
+    * @return a new object of this class
+    */
    public ComparingPair addOrRemove(TransHistoryItem newItem)
    {
       if (isEmpty())
