@@ -57,6 +57,7 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.TranslationFileService;
 
 import com.google.common.base.Optional;
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 @Slf4j
 @Name("documentUploadUtil")
@@ -125,11 +126,6 @@ public class DocumentUploadUtil
          throw new ChunkUploadException(Status.PRECONDITION_FAILED,
                "Required form parameter 'hash' was not found.");
       }
-   }
-
-   private static boolean isNullOrEmpty(String string)
-   {
-      return string == null || string.isEmpty();
    }
 
    private void failIfUploadPartIsOrphaned(GlobalDocumentId id, DocumentFileUploadForm uploadForm)
