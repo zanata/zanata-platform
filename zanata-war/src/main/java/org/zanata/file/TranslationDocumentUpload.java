@@ -56,6 +56,7 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.TranslationFileService;
 import org.zanata.service.TranslationService;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 
 @Slf4j
@@ -256,16 +257,9 @@ public class TranslationDocumentUpload
 
    private static String buildWarningString(List<String> warnings)
    {
-      StringBuilder warningText = new StringBuilder("Upload succeeded but had the following warnings:");
-      for (String warning : warnings)
-      {
-         warningText.append("\n\t");
-         warningText.append(warning);
+      return Joiner.on("\n\t")
+            .join("Upload succeeded but had the following warnings:", warnings) + "\n";
       }
-      warningText.append("\n");
-      String warningString = warningText.toString();
-      return warningString;
-   }
 
    private static MergeType mergeTypeFromString(String type)
    {
