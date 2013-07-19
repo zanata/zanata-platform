@@ -6,10 +6,92 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich"
-                template="../WEB-INF/layout/templateV3.xhtml">
+                template="../WEB-INF/layout/template_v1.xhtml">
 
     <ui:define name="page_title">#{messages['jsf.PageTitle']}</ui:define>
     <ui:define name="center_content">
-
+	    <s:fragment rendered="#{identity.loggedIn}">
+		<div class="g">
+			<div class="g__item w--1-2 l--push-v-1">
+			    <div class="l--float-left w--2-6-s l--push-right-1">
+				    <div class="media--circle">
+				    	<s:link id="profile" view="/profile/view.xhtml" propagation="none">
+							<img src="#{gravatarServiceImpl.getUserImageUrl(115)}" alt="#{personHome.instance.name}"/>
+						</s:link>
+				    </div>
+			    </div>
+							
+			    <div class="txt--s-align-right">
+			    	<h1 class="delta">#{personHome.instance.name}</h1>
+			      	<ul class="list--no-bullets">
+			        	<li>#{personHome.instance.account.username}</li>
+			        	<li>
+			        		<s:link id="profile" view="/profile/view.xhtml" propagation="none">
+			        			Settings <i aria-hidden="true" class="i i--cog"></i>
+			        		</s:link>
+			        	</li>
+			      	</ul>
+			    </div>
+			</div>
+		</div>
+		
+		<div class="g">
+			<div class="g__item l--push-v-1 w--1-2 w--4-10-h">
+				<div class="l--push-left-half">
+			      <h2 class="heading--secondary">#{messages['jsf.YourActivity']}</h2>
+			    </div>
+			    <ul class="list--no-bullets">
+			    	
+				</ul>
+			</div>
+			
+			<div class="g__item w--1-2 w--6-10-h">
+				<div class="g">
+					<div class="g__item w--1-2-h l--push-v-1">
+						<div class="bg--pop-high">
+							<div class="tabs--accent">
+								<header class="bg--pop-higher l--pad-all-half">
+					             	<div class="g--tight">
+					                	<div class="g__item w--6-10 w--6-10-s">
+					                  		<h2 class="delta heading--secondary">#{messages['jsf.MaintainedProjects']}</h2>
+					                	</div>
+					                	<div class="g__item w--4-10 w--4-10-s txt--align-right txt--s-align-right">
+					                  		<span class="txt--meta">#{personHome.instance.maintainerProjects.size}<i aria-hidden="true" class="i i--clipboard"></i></span>
+					                	</div>
+					            	</div>
+					            </header>
+					            <ul class="list--no-bullets">
+						            <ui:repeat value="#{personHome.instance.maintainerProjects.toArray()}" var="project">
+									    <li class="bg--faint l--pad-top-half bg--highest--hover progress-bar__expander dropdown__container">
+									    	<div class="g--tight l--pad-h-half">
+							                	<div class="g__item w--3-4 w--3-4-s">
+							                    	<h3 class="epsilon">
+							                    		<s:link id="project" styleClass="table_link" value="#{project.name} " propagation="none"
+					                                		view="/project/project.xhtml">
+					                            			<f:param name="slug" value="#{project.slug}"/>
+	 				                        			</s:link>
+							                    	</h3>
+							                  	</div>
+							                  	<div class="g__item w--1-4 w--1-4-s txt--align-right txt--s-align-right">
+							                    	<ul class=" list--horizontal">
+							                      		<li>
+							                        		<span class="txt--meta"><i aria-hidden="true" class="i i--network"></i><span class="is-invisible">Translator</span></span>
+							                      		</li>
+							                      		<li>
+							                        		<span class="txt--meta"><i aria-hidden="true" class="i i--pencil"></i><span class="is-invisible">Maintainer</span></span>
+							                      		</li>
+							                    	</ul>
+							                	</div>
+							                </div>
+									    </li>
+									</ui:repeat>
+					            </ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	    </s:fragment>
     </ui:define>
 </ui:composition>

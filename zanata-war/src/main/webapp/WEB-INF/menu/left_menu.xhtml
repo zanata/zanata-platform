@@ -1,0 +1,25 @@
+<div class="off-canvas__target off-canvas--left" id="off-canvas--left"
+	data-off-canvas="over"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:s="http://jboss.org/schema/seam/taglib"
+	xmlns:rich="http://richfaces.org/rich">
+	
+	<header class="off-canvas__header">
+		<a href="#off-canvas--left" class="off-canvas__close"> <i
+			class="i i--cross"></i> <span class="is-invisible">Close</span>
+		</a>
+	</header>
+	<nav>
+		<ul class="list--slat list--block-links">
+			<li><s:link id="Projects" view="/project/home.xhtml" propagation="none">#{messages['jsf.Projects']}</s:link></li>
+			<li><s:link id="version-groups" view="/version-group/home.xhtml" propagation="none">#{messages['jsf.Groups']}</s:link></li>
+			<li><a href="#">Users</a></li>
+			<li><s:link id="Languages" view="/language/home.xhtml" propagation="none">#{messages['jsf.Languages']}</s:link></li>
+			<li><s:link id="help" view="/help/view.xhtml" propagation="none">#{messages['jsf.Help']}</s:link></li>
+		</ul>
+	</nav>
+</div>
