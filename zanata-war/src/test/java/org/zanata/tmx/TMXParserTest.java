@@ -23,6 +23,8 @@ package org.zanata.tmx;
 import java.io.InputStream;
 import java.util.Calendar;
 
+import javax.xml.stream.XMLStreamException;
+
 import org.dbunit.operation.DatabaseOperation;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -66,21 +68,12 @@ public class TMXParserTest extends ZanataDbunitJpaTest
    public void parseTMX() throws Exception
    {
       // Create a TM
-      TransMemoryDAO transMemoryDAO = seam.autowire(TransMemoryDAO.class);
-      TransMemory tm = new TransMemory();
-      tm.setSlug("new-tm");
-      tm.setDescription("New test tm");
-      transMemoryDAO.makePersistent(tm);
-
-      TMXParser parser = seam.autowire(TMXParser.class);
-      InputStream is = getClass().getResourceAsStream("/tmx/fedora-readme-burning-isos.tmx");
-
-      parser.parseAndSaveTMX(is, tm);
+      TransMemory tm = parseAndSaveTMFromFile("/tmx/default-valid-tm.tmx");
 
       // Make sure everything is stored properly
       getEm().flush();
       getEm().refresh(tm);
-      assertThat(tm.getTranslationUnits().size(), is(168));
+      assertThat(tm.getTranslationUnits().size(), is(4));
 
       // Dates were modified to match the TM header in the file
       Calendar cal = Calendar.getInstance();
@@ -102,19 +95,68 @@ public class TMXParserTest extends ZanataDbunitJpaTest
       }
    }
 
-   @Test(expectedExceptions = RuntimeException.class)
-   public void undiscernibleSourceLang() throws Exception
+   private TransMemory parseAndSaveTMFromFile(String file) throws XMLStreamException
    {
-      // Create a TM
       TransMemoryDAO transMemoryDAO = seam.autowire(TransMemoryDAO.class);
       TransMemory tm = new TransMemory();
       tm.setSlug("new-tm");
       tm.setDescription("New test tm");
       transMemoryDAO.makePersistent(tm);
 
+      return parseAndSaveTMFromFile(tm, file);
+   }
+
+   private TransMemory parseAndSaveTMFromFile(TransMemory tm, String file) throws XMLStreamException
+   {
       TMXParser parser = seam.autowire(TMXParser.class);
-      InputStream is = getClass().getResourceAsStream("/tmx/invalid-tmx-no-discernible-srclang.xml");
+      InputStream is = getClass().getResourceAsStream(file);
 
       parser.parseAndSaveTMX(is, tm);
+      return tm;
+   }
+
+   @Test(expectedExceptions = RuntimeException.class)
+   public void undiscernibleSourceLang() throws Exception
+   {
+      // Create a TM
+      parseAndSaveTMFromFile("/tmx/invalid-tmx-no-discernible-srclang.xml");
+   }
+
+   @Test
+   public void mergeSameTM() throws Exception
+   {
+      // Initial load
+      TransMemory tm = parseAndSaveTMFromFile("/tmx/default-valid-tm.tmx");
+
+      // Make sure everything is stored properly
+      getEm().flush();
+      getEm().refresh(tm);
+      assertThat(tm.getTranslationUnits().size(), is(4));
+
+      // Second load (should yield the same result)
+      parseAndSaveTMFromFile(tm, "/tmx/default-valid-tm.tmx");
+
+      getEm().flush();
+      getEm().refresh(tm);
+      assertThat(tm.getTranslationUnits().size(), is(4));
+   }
+
+   @Test
+   public void mergeComplimentaryTM() throws Exception
+   {
+      // Initial load
+      TransMemory tm = parseAndSaveTMFromFile("/tmx/default-valid-tm.tmx");
+
+      // Make sure everything is stored properly
+      getEm().flush();
+      getEm().refresh(tm);
+      assertThat(tm.getTranslationUnits().size(), is(4));
+
+      // Second load (should add all new tuids)
+      parseAndSaveTMFromFile(tm, "/tmx/valid-tm-with-tuids.tmx");
+
+      getEm().flush();
+      getEm().refresh(tm);
+      assertThat(tm.getTranslationUnits().size(), is(8));
    }
 }

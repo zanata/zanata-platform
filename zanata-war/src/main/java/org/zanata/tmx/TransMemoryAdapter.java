@@ -120,6 +120,13 @@ public class TransMemoryAdapter
       }
 
       tu.setUniqueId(determineUniqueId(tu));
+
+      // Find if there is already a tu and replace it
+      TMTranslationUnit existingTu = transMemoryDAO.findTranslationUnit(tm.getSlug(), tu.getUniqueId());
+      if( existingTu != null )
+      {
+         entityManager.remove(existingTu);
+      }
       entityManager.persist(tu);
       entityManager.flush();
    }

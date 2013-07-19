@@ -20,6 +20,7 @@
  */
 package org.zanata.dao;
 
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -68,5 +69,21 @@ public class TransMemoryDAO extends AbstractDAOImpl<TransMemory, Long>
       TransMemory tm = getBySlug(slug);
       tm.getTranslationUnits().clear();
       getSession().update(tm);
+   }
+
+   public @Nullable
+   TMTranslationUnit findTranslationUnit(@Nonnull String tmSlug, @Nonnull String uniqueId)
+   {
+
+      List results = getSession()
+            .createQuery("from TMTranslationUnit tu where tu.uniqueId = :uniqueId and tu.translationMemory.slug = :tmSlug")
+            .setString("uniqueId", uniqueId)
+            .setString("tmSlug", tmSlug)
+            .list();
+      if( results.size() > 0 )
+      {
+         return (TMTranslationUnit)results.get(0);
+      }
+      return null;
    }
 }
