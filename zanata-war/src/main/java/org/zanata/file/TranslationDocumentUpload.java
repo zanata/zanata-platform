@@ -59,6 +59,7 @@ import org.zanata.service.TranslationService;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 
+//TODO damason: add thorough unit testing
 @Slf4j
 @Name("translationDocumentUploader")
 public class TranslationDocumentUpload
