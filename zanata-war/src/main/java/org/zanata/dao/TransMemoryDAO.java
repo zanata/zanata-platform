@@ -29,6 +29,8 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.model.tm.TMTransUnitVariant;
+import org.zanata.model.tm.TMTranslationUnit;
 import org.zanata.model.tm.TransMemory;
 
 /**
@@ -59,5 +61,12 @@ public class TransMemoryDAO extends AbstractDAOImpl<TransMemory, Long>
          return (TransMemory) getSession().byNaturalId(TransMemory.class).using("slug", slug).load();
       }
       return null;
+   }
+
+   public void deleteTransMemoryContents(@Nonnull String slug)
+   {
+      TransMemory tm = getBySlug(slug);
+      tm.getTranslationUnits().clear();
+      getSession().update(tm);
    }
 }

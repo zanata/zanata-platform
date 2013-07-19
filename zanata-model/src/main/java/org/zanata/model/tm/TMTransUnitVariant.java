@@ -30,6 +30,7 @@ import javax.persistence.EnumType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyClass;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.MapKeyEnumerated;
@@ -109,5 +110,9 @@ public class TMTransUnitVariant extends ModelEntityBase implements HasTMMetadata
       updatePlainTextSegmentHash();
    }
 
-
+   @Override
+   protected boolean logPersistence()
+   {
+      return false;
+   }
 }

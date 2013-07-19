@@ -22,14 +22,18 @@ package org.zanata.action;
 
 import java.util.List;
 
+import javax.faces.event.ValueChangeEvent;
+
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.framework.EntityHome;
 import org.zanata.dao.TransMemoryDAO;
+import org.zanata.model.HProject;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.service.SlugEntityService;
 
@@ -52,9 +56,6 @@ public class TranslationMemoryAction extends EntityHome<TransMemory>
 
    private List<TransMemory> transMemoryList;
 
-   @Getter @Setter
-   private String slug;
-
    public List<TransMemory> getAllTranslationMemories()
    {
       if( transMemoryList == null )
@@ -64,9 +65,25 @@ public class TranslationMemoryAction extends EntityHome<TransMemory>
       return transMemoryList;
    }
 
-   public boolean verifySlugAvailable()
+   public void verifySlugAvailable(ValueChangeEvent e)
    {
-      return slugEntityServiceImpl.isSlugAvailable(slug, TransMemory.class);
+      String slug = (String) e.getNewValue();
+      validateSlug(slug, e.getComponent().getId());
+   }
+
+   public boolean validateSlug(String slug, String componentId)
+   {
+      if (!slugEntityServiceImpl.isSlugAvailable(slug, TransMemory.class))
+      {
+         FacesMessages.instance().addToControl(componentId, "This Id is not available");
+         return false;
+      }
+      return true;
+   }
+
+   public void clearTransMemory(String transMemorySlug)
+   {
+      transMemoryDAO.deleteTransMemoryContents(transMemorySlug);
    }
 
    public String cancel()

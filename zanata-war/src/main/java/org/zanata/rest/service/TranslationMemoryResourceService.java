@@ -25,6 +25,7 @@ import java.util.Iterator;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -134,7 +135,14 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
       return Response.status(200).build();
    }
 
-
+   @DELETE
+   @Path("/{slug}/transunits")
+   @Transactional
+   public Response deleteTranslationUnits(@PathParam("slug") String slug)
+   {
+      transMemoryDAO.deleteTransMemoryContents(slug);
+      return Response.ok().build();
+   }
 
    private Response buildTMX(@Nonnull Iterator<? extends SourceContents> tuIter, @Nullable String projectSlug, @Nullable String iterationSlug, @Nullable LocaleId locale)
    {

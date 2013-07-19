@@ -208,6 +208,17 @@
     <to last="true">/profile/merge_account.seam$1</to>
   </rule>
 
+  <!-- Translation Memory -->
+  <rule>
+    <from casesensitive="true">^/tm/?(\?.*)?$</from>
+    <to last="true">/tm/home.seam$1</to>
+  </rule>
+
+  <rule>
+    <from casesensitive="true">^/tm/create(\?.*)?$</from>
+    <to last="true">/tm/create.seam$1</to>
+  </rule>
+
 
   <!-- help / -->
 
@@ -489,6 +500,11 @@
   <outbound-rule>
     <from>^(/.+)?/profile/merge_account.seam(.+)?$</from>
     <to>$1/profile/merge_account$2</to>
+  </outbound-rule>
+
+  <outbound-rule>
+      <from>^(/.+)?/tm/create.seam(.+)?$</from>
+      <to>$1/tm/create$2</to>
   </outbound-rule>
 
   <outbound-rule>

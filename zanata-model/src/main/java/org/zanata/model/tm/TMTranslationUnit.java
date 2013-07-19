@@ -38,6 +38,7 @@ import javax.persistence.MapKey;
 import javax.persistence.MapKeyClass;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.MapKeyEnumerated;
+import javax.persistence.OneToMany;
 
 import org.zanata.model.ModelEntityBase;
 import com.google.common.collect.Maps;
@@ -78,10 +79,8 @@ public class TMTranslationUnit extends ModelEntityBase implements HasTMMetadata
    @Column(nullable = true)
    private Integer position;
 
-   @ManyToMany(cascade = CascadeType.ALL)
-   @JoinTable(name = "TMTranslationUnit_TransUnitVariant",
-              joinColumns = @JoinColumn(name = "trans_unit_id"),
-              inverseJoinColumns = @JoinColumn(name = "trans_unit_variant_id"))
+   @OneToMany(cascade = CascadeType.ALL)
+   @JoinColumn(name = "trans_unit_id", nullable = false)
    @MapKey(name = "language")
    private Map<String, TMTransUnitVariant> transUnitVariants = Maps.newHashMap();
 
@@ -98,5 +97,11 @@ public class TMTranslationUnit extends ModelEntityBase implements HasTMMetadata
    public TMTranslationUnit(String uniqueId)
    {
       this.uniqueId = uniqueId;
+   }
+
+   @Override
+   protected boolean logPersistence()
+   {
+      return false;
    }
 }

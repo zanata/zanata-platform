@@ -13,6 +13,7 @@
     <ui:define name="page_title">#{messages['jsf.TranslationMemory']}</ui:define>
 
     <ui:define name="head">
+        <a4j:jsFunction name="refreshDataTable" render="tmList"/>
         <script type="text/javascript">
             function showUploadPanel(tmSlug) {
                 var formAction = "#{request.contextPath}/rest/tm/" + tmSlug;
@@ -24,6 +25,11 @@
 
             function hideUploadPanel() {
                 #{rich:component("uploadFilePanel")}.hide();
+            }
+
+            function confirmClearTm()
+            {
+                return confirm("#{messages['jsf.transmemory.ConfirmClearTM']}");
             }
 
             function submitUpload() {
@@ -39,6 +45,7 @@
                         if(myXhr.upload){ // check if upload property exists
                             myXhr.upload.addEventListener('progress', handleUploadProgress, false); // for handling the progress of the upload
                         }
+                        return myXhr;
                     },*/
                     data: formData,
                     cache: false,
@@ -46,14 +53,21 @@
                     processData:false,
                     beforeSend: function() {
                         jQuery("#uploadProgress").html("Uploading...");
+                        jQuery("[name='uploadBtn']").hide();
+                        jQuery("[name='cancelBtn']").hide();
                     },
                     success: function(data) {
-                        hideUploadPanel();
                         alert("Successfully uploaded the Translation Memory file.");
+                        refreshDataTable();
                     },
-                    failure: function(data) {
-                        hideUploadPanel();
+                    error: function(data) {
                         alert("There was an error uploading the file.");
+                    },
+                    complete: function(data) {
+                        jQuery("[name='uploadBtn']").show();
+                        jQuery("[name='cancelBtn']").show();
+                        hideUploadPanel();
+                        jQuery("#uploadProgress").html("");
                     }
                 });
                 return false;
@@ -61,8 +75,8 @@
 
             function handleUploadProgress(event) {
                 var percent = 0;
-                if (oEvent.lengthComputable) {
-                    percent = oEvent.loaded / oEvent.total;
+                if (event.lengthComputable) {
+                    percent = event.loaded / event.total;
                 }
                 else {
                     percent = "";
@@ -97,7 +111,7 @@
                     <rich:dataTable id="tmList"
                                     value="#{translationMemoryAction.allTranslationMemories}" var="tm">
                         <rich:column>
-                            <f:facet name="header">#{messages['jsf.Id']}
+                            <f:facet name="header">#{messages['jsf.transmemory.Id']}
                                 <richext:columnSorter />
                             </f:facet>
                             <h:outputText value="#{tm.slug}" />
@@ -118,11 +132,19 @@
                                 <f:convertDateTime type="date" dateStyle="default"/>
                             </h:outputText>
                         </rich:column>
-                        <rich:column>
+                        <rich:column style="text-align: center">
                             <f:facet name="header">#{messages['jsf.Upload']}</f:facet>
                             <a href="#" onclick="return showUploadPanel('#{tm.slug}')">
                                 <span class="icon-upload icon" title="#{messages['jsf.transmemory.Upload.Title']}"/>
                             </a>
+                        </rich:column>
+                        <rich:column style="text-align: center">
+                            <f:facet name="header">#{messages['jsf.Clear']}</f:facet>
+                            <a4j:commandLink value="#{messages['jsf.Clear']}"
+                                             action="#{translationMemoryAction.clearTransMemory(tm.slug)}"
+                                             render="tmList"
+                                             rendered="#{tm.translationUnits.size() gt 0}"
+                                             onclick="return confirmClearTm()"/>
                         </rich:column>
                     </rich:dataTable>
 

@@ -73,6 +73,9 @@
             <column name="language" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
+            <column name="trans_unit_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
             <column name="tagged_segment" type="longtext">
                 <constraints nullable="false"/>
             </column>
@@ -97,29 +100,10 @@
             </column>
         </createTable>
 
-        <createTable tableName="TMTranslationUnit_TransUnitVariant">
-            <column name="trans_unit_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="trans_unit_variant_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <addForeignKeyConstraint baseTableName="TMTranslationUnit_TransUnitVariant" baseColumnNames="trans_unit_id"
-                                 constraintName="FK_manytomany_trans_unit" referencedTableName="TMTranslationUnit"
+        <addForeignKeyConstraint baseTableName="TMTransUnitVariant" baseColumnNames="trans_unit_id"
+                                 constraintName="FK_TransUnitVariant_TransUnit"
+                                 referencedTableName="TMTranslationUnit"
                                  referencedColumnNames="id"/>
-        <addForeignKeyConstraint baseTableName="TMTranslationUnit_TransUnitVariant"
-                                 baseColumnNames="trans_unit_variant_id"
-                                 constraintName="FK_manytomany_trans_unit_variant"
-                                 referencedTableName="TMTransUnitVariant"
-                                 referencedColumnNames="id"/>
-
-        <createIndex tableName="TMTranslationUnit_TransUnitVariant" indexName="UK_trans_unit_variant">
-            <column name="trans_unit_id"/>
-            <column name="trans_unit_variant_id"/>
-        </createIndex>
-
     </changeSet>
 
     <changeSet id="2" author="camunoz@redhat.com">

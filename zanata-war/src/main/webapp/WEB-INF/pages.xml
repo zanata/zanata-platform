@@ -896,14 +896,10 @@
   <page view-id="/tm/create.xhtml">
       <!--<restrict>#{s:hasPermission(tr.instance, 'insert')}</restrict>-->
       <action execute="#{breadcrumbs.clear}"/>
-      <action execute="#{breadcrumbs.addLocation('/tm/home.xhtml', messages['jsf.TransMemory'])}"/>
-      <action execute="#{breadcrumbs.addLocation('', messages['jsf.CreateNewTransMemory'])}"/>
+      <action execute="#{breadcrumbs.addLocation('/tm/home.xhtml', messages['jsf.transmemory.Title'])}"/>
+      <action execute="#{breadcrumbs.addLocation('', messages['jsf.transmemory.title.New'])}"/>
       <navigation from-action="#{translationMemoryAction.persist}">
-          <rule if="#{translationMemoryAction.managed}">
-              <redirect view-id="/tm/home.xhtml">
-                  <param name="slug" value="#{translationMemoryAction.instance.slug}" />
-              </redirect>
-          </rule>
+          <redirect view-id="/tm/home.xhtml"/>
       </navigation>
       <navigation from-action="#{translationMemoryAction.cancel}">
           <redirect view-id="/tm/home.xhtml" />

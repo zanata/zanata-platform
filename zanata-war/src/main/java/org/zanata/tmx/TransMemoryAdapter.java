@@ -36,6 +36,7 @@ import nu.xom.Node;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.zanata.dao.TransMemoryDAO;
 import org.zanata.model.tm.TMTransUnitVariant;
 import org.zanata.model.tm.TMTranslationUnit;
 import org.zanata.model.tm.TMXMetadataHelper;
@@ -58,6 +59,9 @@ public class TransMemoryAdapter
 {
    @In
    private EntityManager entityManager;
+
+   @In
+   private TransMemoryDAO transMemoryDAO;
 
    /**
     * Returns an effect function that persists the header elements when
