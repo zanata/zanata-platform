@@ -765,7 +765,7 @@
                         <deployable>
                            <pingURL>http://localhost:${port}/${war.name}/</pingURL>
                            <pingTimeout>60000</pingTimeout>
-                           <location>${project.build.directory}/zanata</location>
+                           <location>${project.build.directory}/zanata-${project.version}.war</location>
                            <properties>
                               <context>zanata</context>
                            </properties>
