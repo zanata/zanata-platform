@@ -21,6 +21,8 @@
 package org.zanata.feature.administration;
 
 import org.junit.*;
+import org.junit.experimental.categories.Category;
+import org.zanata.feature.DetailedTest;
 import org.zanata.page.HomePage;
 import org.zanata.page.administration.ManageUserPage;
 import org.zanata.page.administration.ManageUserAccountPage;
@@ -28,11 +30,12 @@ import org.zanata.util.ResetDatabaseRule;
 import org.zanata.workflow.LoginWorkFlow;
 import org.hamcrest.Matchers;
 import static org.hamcrest.MatcherAssert.assertThat;
+
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-
-public class ManageUsersDetailedTest
+@Category(DetailedTest.class)
+public class ManageUsersFullTest
 {
    @ClassRule
    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule(ResetDatabaseRule.Config.Empty);
@@ -49,6 +52,7 @@ public class ManageUsersDetailedTest
    {
       String username = "administratornamechange";
       ManageUserPage manageUserPage = homePage.goToAdministration().goToManageUserPage();
+
       ManageUserAccountPage manageUserAccountPage = manageUserPage.editUserAccount("admin");
       manageUserPage = manageUserAccountPage.clearFields().enterUsername(username).saveUser();
       assertThat("Administrator is displayed", manageUserPage.getUserList(), Matchers.hasItem(username));

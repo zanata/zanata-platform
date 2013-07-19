@@ -1,29 +1,49 @@
+/*
+ * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
+ * @author tags. See the copyright.txt file in the distribution for a full
+ * listing of individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This software is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this software; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
+ * site: http://www.fsf.org.
+ */
 package org.zanata.feature.versionGroup;
 
-import java.util.*;
-
 import org.hamcrest.Matchers;
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import org.junit.*;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.zanata.feature.BasicAcceptanceTest;
+import org.zanata.feature.DetailedTest;
 import org.zanata.page.HomePage;
+import org.zanata.page.groups.CreateVersionGroupPage;
 import org.zanata.page.groups.VersionGroupPage;
 import org.zanata.page.groups.VersionGroupsPage;
-import org.zanata.page.groups.CreateVersionGroupPage;
 import org.zanata.util.ResetDatabaseRule;
 import org.zanata.workflow.LoginWorkFlow;
 
-import lombok.extern.slf4j.Slf4j;
-
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
-public class VersionGroupDetailedTest
+@Category(DetailedTest.class)
+public class VersionGroupFullTest
 {
    @ClassRule
-   public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule(ResetDatabaseRule.Config.Empty);
+   public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
    private HomePage homePage;
 
    @Before
@@ -33,6 +53,7 @@ public class VersionGroupDetailedTest
    }
 
    @Test
+   @Category(BasicAcceptanceTest.class)
    public void createABasicGroup()
    {
       String groupID = "basic-group";
@@ -50,21 +71,6 @@ public class VersionGroupDetailedTest
    }
 
    @Test
-   public void inputValidationForID()
-   {
-      String errorMsg = "must start and end with letter or number, and contain only letters, numbers, underscores and hyphens.";
-      for (Map.Entry<String, String> entry : inputValidationForIDData().entrySet())
-      {
-         log.info("Test " + entry.getKey() + ":" + entry.getValue());
-         VersionGroupsPage versionGroupsPage = homePage.goToGroups();
-         CreateVersionGroupPage groupPage = versionGroupsPage.createNewGroup();
-         groupPage.inputGroupId(entry.getValue()).inputGroupName(entry.getValue());
-         groupPage.saveGroupFailure();
-         assertThat("Validation error is displayed for " + entry.getKey(), groupPage.getErrors().contains(errorMsg));
-      }
-   }
-
-   @Test
    public void requiredFields()
    {
       String errorMsg = "value is required";
@@ -72,7 +78,7 @@ public class VersionGroupDetailedTest
       String groupName = "verifyRequiredFieldsGroupName";
 
       CreateVersionGroupPage groupPage = homePage.goToGroups().createNewGroup().saveGroupFailure();
-      assertThat("The two errors are value is required", groupPage.getErrors(),Matchers.contains(errorMsg, errorMsg));
+      assertThat("The two errors are value is required", groupPage.getErrors(), Matchers.contains(errorMsg, errorMsg));
 
       groupPage.clearFields();
       groupPage.inputGroupName(groupName);
@@ -124,43 +130,6 @@ public class VersionGroupDetailedTest
       VersionGroupsPage verGroupsPage = groupPage.inputGroupDescription(groupDescription).saveGroup();
       assertThat("A group description of 100 chars is valid", verGroupsPage.getGroupNames(), Matchers.hasItem(groupName));
 
-   }
-
-   private LinkedHashMap<String, String> inputValidationForIDData()
-   {
-      LinkedHashMap<String, String> inputData = new LinkedHashMap<String, String>(100);
-      inputData.put("Invalid char |", "Group|ID");
-      inputData.put("Invalid char /", "Group/ID");
-      inputData.put("Invalid char ", "Group\\ID");
-      inputData.put("Invalid char +", "Group+ID");
-      inputData.put("Invalid char *", "Group*ID");
-      inputData.put("Invalid char |", "Group|ID");
-      inputData.put("Invalid char (", "Group(ID");
-      inputData.put("Invalid char )", "Group)ID");
-      inputData.put("Invalid char $", "Group$ID");
-      inputData.put("Invalid char [", "Group[ID");
-      inputData.put("Invalid char ]", "Group]ID");
-      inputData.put("Invalid char :", "Group:ID");
-      inputData.put("Invalid char ;", "Group;ID");
-      inputData.put("Invalid char '", "Group'ID");
-      inputData.put("Invalid char ,", "Group,ID");
-      inputData.put("Invalid char ?", "Group?ID");
-      inputData.put("Invalid char !", "Group!ID");
-      inputData.put("Invalid char @", "Group@ID");
-      inputData.put("Invalid char #", "Group#ID");
-      inputData.put("Invalid char %", "Group%ID");
-      inputData.put("Invalid char ^", "Group^ID");
-      inputData.put("Invalid char =", "Group=ID");
-      inputData.put("Must start with alphanumeric", "-GroupID");
-      inputData.put("Must end with alphanumeric", "GroupID-");
-
-      /* BUG id=973509 - remove/uncomment depending on outcome
-      inputData.put("Invalid char .", "Group.ID");
-      inputData.put("Invalid char {", "Group{ID");
-      inputData.put("Invalid char }", "Group}ID");
-      */
-
-      return inputData;
    }
 
 }

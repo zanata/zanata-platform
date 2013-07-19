@@ -36,7 +36,6 @@ import com.google.common.base.Predicate;
 
 public class ManageUserAccountPage extends AbstractPage
 {
-
    @FindBy(id = "userdetailForm:passwordField:password")
    private WebElement passwordField;
 
@@ -52,10 +51,10 @@ public class ManageUserAccountPage extends AbstractPage
    @FindBy(id = "userdetailForm:userdetailCancel")
    private WebElement cancelButton;
 
-   private Map<String, String> roleMap;
-
    // username field will trigger ajax call and become stale
    private By usernameBy = By.id("userdetailForm:usernameField:username");
+   
+   private Map<String, String> roleMap;
 
    public ManageUserAccountPage(WebDriver driver)
    {

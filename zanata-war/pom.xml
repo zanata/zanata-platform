@@ -20,7 +20,7 @@
 	<properties>
 		<jboss.embedded.version>beta3.SP12</jboss.embedded.version>
 		<war.config.dir>${basedir}/src/etc</war.config.dir>
-		<containerId>jboss5x</containerId>
+		<containerId>jboss71x</containerId>
         <allow.deploy.skip>true</allow.deploy.skip>
 		
 		<!-- application properties -->
@@ -740,7 +740,7 @@
 					<plugin>
 						<groupId>org.codehaus.cargo</groupId>
 						<artifactId>cargo-maven2-plugin</artifactId>
-						<version>1.1.0</version>
+						<version>1.3.1</version>
 						<executions>
 							<execution>
 								<phase>package</phase>
@@ -756,53 +756,23 @@
 							</container>
 							<configuration>
 								<type>existing</type>
-								<home>${jboss.home}/server/default</home>
+								<home>${jboss.home}/standalone</home>
+                        <properties>
+                           <cargo.jboss.configuration>default</cargo.jboss.configuration>
+                        </properties>
 							</configuration>
-							<deployer>
-								<deployables>
-									<deployable>
-										<pingURL>http://localhost:${port}/${war.name}/</pingURL>
-										<location>${project.build.directory}/zanata</location>
-										<properties>
-											<context>zanata</context>
-										</properties>
-									</deployable>
-								</deployables>
-							</deployer>
+                     <deployables>
+                        <deployable>
+                           <pingURL>http://localhost:${port}/${war.name}/</pingURL>
+                           <pingTimeout>60000</pingTimeout>
+                           <location>${project.build.directory}/zanata</location>
+                           <properties>
+                              <context>zanata</context>
+                           </properties>
+                        </deployable>
+                     </deployables>
 						</configuration>
 					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-resources-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>copy-ds-context</id>
-								<goals>
-									<goal>copy-resources</goal>
-								</goals>
-								<phase>package</phase>
-								<configuration>
-									<outputDirectory>${as.deploy}</outputDirectory>
-									<resources>
-										<resource>
-											<directory>${basedir}/src/etc</directory>
-											<filtering>true</filtering>
-											<includes>
-												<include>zanata-ds.xml</include>
-											</includes>
-										</resource>
-									</resources>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>jboss-maven-plugin</artifactId> 
-						<version>1.4</version> <configuration> <serverName>default</serverName> </configuration> 
-						<executions> <execution> <id>deploy-ds</id> <phase>package</phase> <goals><goal>hard-deploy</goal></goals> 
-						<configuration> <fileName>${project.build.directory}/classes/zanata-ds.xml</fileName> 
-						</configuration> </execution> <execution> <id>deploy-war-unpacked</id> <phase>package</phase> 
-						<goals><goal>hard-deploy</goal></goals> <configuration> <fileName>${project.build.directory}/zanata.war</fileName> 
-						<unpack>true</unpack> </configuration> </execution> </executions> </plugin> -->
 				</plugins>
 			</build>
 		</profile>

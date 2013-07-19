@@ -199,8 +199,8 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("No replacements to make")
    String noReplacementsToMake();
 
-   @DefaultMessage("Replace not possible in read-only workspace")
-   String cannotReplaceInReadOnlyMode();
+   @DefaultMessage("You have no access to modify translations")
+   String youAreNotAllowedToModifyTranslations();
 
    @DefaultMessage("View in editor")
    String viewDocInEditor();

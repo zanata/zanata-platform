@@ -22,8 +22,6 @@ package org.zanata.action;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import org.jboss.seam.ScopeType;
@@ -54,31 +52,32 @@ import org.zanata.service.LocaleService;
 public class LanguageTeamAction implements Serializable
 {
    private static final long serialVersionUID = 1L;
-   
+
    @In
    private LanguageTeamService languageTeamServiceImpl;
-   
+
    @In
    private LocaleDAO localeDAO;
 
    @In
    private LocaleMemberDAO localeMemberDAO;
-   
+
    @In
    private PersonDAO personDAO;
-   
+
    @In
    private LocaleService localeServiceImpl;
-   
+
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    HAccount authenticatedAccount;
-   
+
    @Logger
    Log log;
-   
+
    private String language;
    private String searchTerm;
-   private List<HPerson> searchResults;
+   private List<SelectablePerson> searchResults;
+   private boolean selectAll = false;
 
    public String getLanguage()
    {
@@ -89,7 +88,7 @@ public class LanguageTeamAction implements Serializable
    {
       this.language = language;
    }
-   
+
    public String getSearchTerm()
    {
       return searchTerm;
@@ -100,14 +99,42 @@ public class LanguageTeamAction implements Serializable
       this.searchTerm = searchTerm;
    }
 
-   public List<HPerson> getSearchResults()
+   public List<SelectablePerson> getSearchResults()
    {
+      if(searchResults == null)
+      {
+         searchResults = new ArrayList<SelectablePerson>();
+      }
+
       return searchResults;
    }
 
    public boolean isUserInTeam()
    {
       return authenticatedAccount != null && this.isPersonInTeam( this.authenticatedAccount.getId() );
+   }
+
+   public void selectAll()
+   {
+      for (SelectablePerson selectablePerson : getSearchResults())
+      {
+         if (!isPersonInTeam(selectablePerson.getPerson().getId()))
+         {
+            selectablePerson.setSelected(selectAll);
+         }
+      }
+   }
+
+   @Restrict("#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}")
+   public void addSelected()
+   {
+      for (SelectablePerson selectablePerson : getSearchResults())
+      {
+         if (selectablePerson.isSelected())
+         {
+            addTeamMember(selectablePerson.getPerson().getId(), selectablePerson.isTranslator, selectablePerson.isReviewer, selectablePerson.isCoordinator);
+         }
+      }
    }
 
    public HLocale getLocale()
@@ -144,7 +171,7 @@ public class LanguageTeamAction implements Serializable
       }
       try
       {
-         languageTeamServiceImpl.joinLanguageTeam(this.language, authenticatedAccount.getPerson().getId());
+         languageTeamServiceImpl.joinOrUpdateRoleInLanguageTeam(this.language, authenticatedAccount.getPerson().getId(), true, true, true);
          Events.instance().raiseEvent("personJoinedTribe");
          log.info("{0} joined tribe {1}", authenticatedAccount.getUsername(), this.language);
          // FIXME use localizable string
@@ -170,7 +197,7 @@ public class LanguageTeamAction implements Serializable
       log.info("{0} left tribe {1}", authenticatedAccount.getUsername(), this.language);
       FacesMessages.instance().add("You have left the {0} language team", getLocale().retrieveNativeName());
    }
-   
+
    @Restrict("#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}")
    public void saveTeamCoordinator( HLocaleMember member )
    {
@@ -182,14 +209,43 @@ public class LanguageTeamAction implements Serializable
       }
       else
       {
-         FacesMessages.instance().add("{0} has been removed from Team Coordinators", member.getPerson().getAccount().getUsername());
+         FacesMessages.instance().add("{0} has been removed from as Team Coordinators", member.getPerson().getAccount().getUsername());
       }
    }
 
    @Restrict("#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}")
-   public void addTeamMember( final Long personId )
+   public void saveTeamReviewer( HLocaleMember member )
    {
-      this.languageTeamServiceImpl.joinLanguageTeam(this.language, personId);
+      this.localeDAO.makePersistent(getLocale());
+      this.localeDAO.flush();
+      if( member.isReviewer() )
+      {
+         FacesMessages.instance().add("{0} has been made a Team Reviewer", member.getPerson().getAccount().getUsername());
+      }
+      else
+      {
+         FacesMessages.instance().add("{0} has been removed from as Team Reviewer", member.getPerson().getAccount().getUsername());
+      }
+   }
+
+   @Restrict("#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}")
+   public void saveTeamTranslator( HLocaleMember member )
+   {
+      this.localeDAO.makePersistent(getLocale());
+      this.localeDAO.flush();
+      if( member.isReviewer() )
+      {
+         FacesMessages.instance().add("{0} has been made a Team Translator", member.getPerson().getAccount().getUsername());
+      }
+      else
+      {
+         FacesMessages.instance().add("{0} has been removed from as Team Translator", member.getPerson().getAccount().getUsername());
+      }
+   }
+
+   private void addTeamMember( final Long personId, boolean isTranslator, boolean isReviewer, boolean isCoordinator )
+   {
+      this.languageTeamServiceImpl.joinOrUpdateRoleInLanguageTeam(this.language, personId, isTranslator, isReviewer, isCoordinator);
    }
 
    @Restrict("#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}")
@@ -197,7 +253,7 @@ public class LanguageTeamAction implements Serializable
    {
       this.languageTeamServiceImpl.leaveLanguageTeam(this.language, member.getPerson().getId());
    }
-   
+
    public boolean isPersonInTeam( final Long personId )
    {
       for( HLocaleMember lm : getLocale().getMembers() )
@@ -209,10 +265,115 @@ public class LanguageTeamAction implements Serializable
       }
       return false;
    }
-   
+
+   private HLocaleMember getLocaleMember( final Long personId )
+   {
+      for( HLocaleMember lm : getLocale().getMembers() )
+      {
+         if( lm.getPerson().getId().equals( personId ) )
+         {
+            return lm;
+         }
+      }
+      return null;
+   }
+
    public void searchForTeamMembers()
    {
-      this.searchResults = this.personDAO.findAllContainingName( this.searchTerm );
+      getSearchResults().clear();
+      List<HPerson> results = this.personDAO.findAllContainingName( this.searchTerm );
+      for(HPerson person: results)
+      {
+         HLocaleMember localeMember = getLocaleMember(person.getId());
+         boolean isMember = localeMember == null ? false : true;
+         boolean isReviewer = false;
+         boolean isTranslator = false;
+         boolean isCoordinator = false;
+         
+         if(isMember)
+         {
+            isTranslator = localeMember.isTranslator();
+            isReviewer = localeMember.isReviewer();
+            isCoordinator = localeMember.isCoordinator();
+         }
+         getSearchResults().add(new SelectablePerson(person, isMember, isTranslator, isReviewer, isCoordinator));
+      }
    }
-   
+
+   public boolean isSelectAll()
+   {
+      return selectAll;
+   }
+
+   public void setSelectAll(boolean selectAll)
+   {
+      this.selectAll = selectAll;
+   }
+
+   public final class SelectablePerson
+   {
+      private HPerson person;
+      private boolean selected;
+
+      private boolean isReviewer;
+      private boolean isCoordinator;
+      private boolean isTranslator;
+
+      public SelectablePerson(HPerson person, boolean selected, boolean isTranslator, boolean isReviewer, boolean isCoordinator)
+      {
+         this.person = person;
+         this.selected = selected;
+         this.isReviewer = isReviewer;
+         this.isCoordinator = isCoordinator;
+         this.isTranslator = isTranslator;
+      }
+
+      public boolean isReviewer()
+      {
+         return isReviewer;
+      }
+
+      public void setReviewer(boolean isReviewer)
+      {
+         this.isReviewer = isReviewer;
+      }
+
+      public boolean isCoordinator()
+      {
+         return isCoordinator;
+      }
+
+      public void setCoordinator(boolean isCoordinator)
+      {
+         this.isCoordinator = isCoordinator;
+      }
+
+      public boolean isTranslator()
+      {
+         return isTranslator;
+      }
+
+      public void setTranslator(boolean isTranslator)
+      {
+         this.isTranslator = isTranslator;
+      }
+
+      public HPerson getPerson()
+      {
+         return person;
+      }
+      public void setPerson(HPerson person)
+      {
+         this.person = person;
+      }
+      public boolean isSelected()
+      {
+         return selected;
+      }
+      public void setSelected(boolean selected)
+      {
+         this.selected = selected;
+      }
+   }
+
 }
