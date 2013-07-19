@@ -28,7 +28,6 @@ import java.io.SequenceInputStream;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.Vector;
 
@@ -77,6 +76,8 @@ public class DocumentUploadUtil
    private ProjectIterationDAO projectIterationDAO;
    @In
    private TranslationFileService translationFileServiceImpl;
+   @In("blobPersistService")
+   private UploadPartPersistService uploadPartPersistService;
 
    // TODO damason: move all validation checks to separate class
    public void failIfUploadNotValid(GlobalDocumentId id, DocumentFileUploadForm uploadForm)
@@ -240,18 +241,10 @@ public class DocumentUploadUtil
    {
       InputStream contentStream = uploadForm.getFileStream();
       int contentLength = uploadForm.getSize().intValue();
-      HDocumentUploadPart newPart = newUploadPartFromStream(contentStream, contentLength);
+      HDocumentUploadPart newPart = uploadPartPersistService.newUploadPartFromStream(contentStream, contentLength);
       upload.getParts().add(newPart);
       session.saveOrUpdate(upload);
       session.flush();
-   }
-
-   private HDocumentUploadPart newUploadPartFromStream(InputStream partContentStream, int contentLength)
-   {
-      HDocumentUploadPart newPart = new HDocumentUploadPart();
-      Blob partContent = session.getLobHelper().createBlob(partContentStream, contentLength);
-      newPart.setContent(partContent);
-      return newPart;
    }
 
    protected static boolean isSinglePart(DocumentFileUploadForm uploadForm)

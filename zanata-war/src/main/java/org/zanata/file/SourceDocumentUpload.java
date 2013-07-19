@@ -24,10 +24,8 @@ import static org.zanata.file.DocumentUploadUtil.getInputStream;
 import static org.zanata.file.DocumentUploadUtil.isSinglePart;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.sql.Blob;
 import java.util.Collections;
 
 import javax.annotation.Nonnull;
@@ -36,7 +34,6 @@ import javax.ws.rs.core.Response.Status;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.hibernate.LobHelper;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.zanata.common.DocumentType;
@@ -75,6 +72,8 @@ public class SourceDocumentUpload
 
    @In(create = true, value = "documentUploadUtil")
    private DocumentUploadUtil util;
+   @In("blobPersistService")
+   private FilePersistService filePersistService;
    @In
    private ZanataIdentity identity;
    @In
@@ -278,32 +277,13 @@ public class SourceDocumentUpload
       rawDocument.setContentHash(contentHash);
       rawDocument.setType(documentType);
       rawDocument.setUploadedBy(identity.getCredentials().getUsername());
-      persistRawDocumentContentFromFile(rawDocument, rawFile);
+      filePersistService.persistRawDocumentContentFromFile(rawDocument, rawFile);
       if (params.isPresent())
       {
          rawDocument.setAdapterParameters(params.get());
       }
       documentDAO.addRawDocument(document, rawDocument);
       documentDAO.flush();
-   }
-
-   private void persistRawDocumentContentFromFile(HRawDocument rawDocument, File rawFile)
-   {
-      FileInputStream tempFileStream;
-      try
-      {
-         tempFileStream = new FileInputStream(rawFile);
-      }
-      catch (FileNotFoundException e)
-      {
-         log.error("Failed to open stream from temp source file", e);
-         throw new ChunkUploadException(Status.INTERNAL_SERVER_ERROR,
-               "Error saving uploaded document on server, download in original format may fail.\n",
-               e);
-      }
-      LobHelper lobHelper = documentDAO.getLobHelper();
-      Blob fileContents = lobHelper.createBlob(tempFileStream, (int) rawFile.length());
-      rawDocument.setContent(fileContents);
    }
 
    private void parsePotFile(InputStream potStream, GlobalDocumentId id, DocumentFileUploadForm uploadForm)
