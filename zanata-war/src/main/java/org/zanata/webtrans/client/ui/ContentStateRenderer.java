@@ -19,32 +19,48 @@
  * site: http://www.fsf.org.
  */
 
-package org.zanata.webtrans.shared.rpc;
+package org.zanata.webtrans.client.ui;
 
-import java.util.List;
-
-import org.zanata.webtrans.shared.model.ReviewComment;
+import org.zanata.common.ContentState;
+import org.zanata.webtrans.client.resources.EnumMessages;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class GetReviewCommentsResult implements DispatchResult
+@Singleton
+public class ContentStateRenderer extends EnumRenderer<ContentState>
 {
-   private static final long serialVersionUID = 1L;
-   private List<ReviewComment> comments;
+   private final EnumMessages messages;
 
-   @SuppressWarnings("unused")
-   public GetReviewCommentsResult()
+   @Inject
+   public ContentStateRenderer(EnumMessages messages)
    {
+      this.messages = messages;
    }
 
-   public GetReviewCommentsResult(List<ReviewComment> comments)
+   @Override
+   public String render(ContentState object)
    {
-      this.comments = comments;
-   }
-
-   public List<ReviewComment> getComments()
-   {
-      return comments;
+      if (object == null)
+      {
+         return messages.contentStateUnsaved();
+      }
+      switch (object)
+      {
+         case New:
+            return messages.contentStateUntranslated();
+         case NeedReview:
+            return messages.contentStateFuzzy();
+         case Translated:
+            return messages.contentStateTranslated();
+         case Approved:
+            return messages.contentStateApproved();
+         case Rejected:
+            return messages.contentStateRejected();
+         default:
+            return getEmptyValue();
+      }
    }
 }

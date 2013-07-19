@@ -56,4 +56,22 @@ public interface EnumMessages extends com.google.gwt.i18n.client.Messages
 
    @DefaultMessage("Next Fuzzy/Rejected/Untranslated")
    String nextIncomplete();
+
+   @DefaultMessage("Untranslated")
+   String contentStateUntranslated();
+
+   @DefaultMessage("Fuzzy")
+   String contentStateFuzzy();
+
+   @DefaultMessage("Translated")
+   String contentStateTranslated();
+
+   @DefaultMessage("Approved")
+   String contentStateApproved();
+
+   @DefaultMessage("Rejected")
+   String contentStateRejected();
+
+   @DefaultMessage("Unsaved")
+   String contentStateUnsaved();
 }

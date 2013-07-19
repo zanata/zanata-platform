@@ -6,19 +6,21 @@ import java.util.List;
 import org.zanata.common.ContentState;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class TransHistoryItem implements IsSerializable
+public class TransHistoryItem extends ComparableByDate implements IsSerializable
 {
    private String versionNum;
    private List<String> contents;
    private ContentState status;
    private String modifiedBy;
    private Date modifiedDate;
+   private String optionalTag = "";
 
    @SuppressWarnings("unused")
    private TransHistoryItem()
@@ -60,9 +62,10 @@ public class TransHistoryItem implements IsSerializable
       return modifiedDate;
    }
 
-   public void setVersionNum(String newVersionNum)
+   @Override
+   protected Date getDate()
    {
-      versionNum = newVersionNum;
+      return modifiedDate;
    }
 
    @Override
@@ -77,5 +80,16 @@ public class TransHistoryItem implements IsSerializable
             add("modifiedDate", modifiedDate).
             toString();
       // @formatter:on
+   }
+
+   public TransHistoryItem setOptionalTag(String optionalTag)
+   {
+      this.optionalTag = Strings.nullToEmpty(optionalTag);
+      return this;
+   }
+
+   public String getOptionalTag()
+   {
+      return Strings.nullToEmpty(optionalTag);
    }
 }

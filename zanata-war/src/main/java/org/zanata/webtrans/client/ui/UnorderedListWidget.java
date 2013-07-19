@@ -19,33 +19,32 @@
  * site: http://www.fsf.org.
  */
 
-package org.zanata.webtrans.client.presenter;
+package org.zanata.webtrans.client.ui;
 
-import org.zanata.webtrans.client.view.ReviewCommentDisplay;
-import org.zanata.webtrans.shared.model.ReviewComment;
-import com.google.gwt.view.client.ListDataProvider;
-import com.google.inject.Singleton;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.UListElement;
+import com.google.gwt.user.client.ui.ComplexPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Singleton
-public class ReviewCommentDataProvider extends ListDataProvider<ReviewComment>
+public class UnorderedListWidget extends ComplexPanel
 {
-   public ReviewCommentDataProvider()
+   public UnorderedListWidget()
    {
-      super(ReviewCommentDisplay.COMMENT_PROVIDES_KEY);
+      setElement(Document.get().createULElement());
    }
 
-   public void setLoading(boolean loading)
+   public void setDir(String dir)
    {
-      if (loading)
-      {
-         updateRowCount(0, false);
-      }
-      else
-      {
-         updateRowCount(getList().size(), true);
-      }
+      // Set an attribute specific to this tag
+      ((UListElement) getElement().cast()).setDir(dir);
+   }
+
+   public void add(Widget widget)
+   {
+      // ComplexPanel requires the two-arg add() method
+      super.add(widget, getElement());
    }
 }

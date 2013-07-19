@@ -86,7 +86,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    public TargetContentsView(Provider<ValidationMessagePanelView> validationMessagePanelViewProvider, EventBus eventBus)
    {
       this.eventBus = eventBus;
-      buttons = new EditorButtonsWidget(eventBus);
+      buttons = new EditorButtonsWidget();
       validationPanel = validationMessagePanelViewProvider.get();
       rootPanel = binder.createAndBindUi(this);
       editorGrid.addStyleName("TableEditorCell-Target-Table");
@@ -201,7 +201,7 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    {
       cachedValue = newTransUnit;
       editorGrid.setStyleName(resolveStyleName(cachedValue.getStatus()));
-      buttons.setIdAndState(cachedValue.getId(), cachedValue.getStatus());
+      buttons.setId(cachedValue.getId());
    }
 
    @Override
