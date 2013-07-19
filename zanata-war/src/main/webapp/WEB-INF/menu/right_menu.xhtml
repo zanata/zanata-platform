@@ -16,11 +16,11 @@
 	<nav>
 		<ul class="list--slat list--block-links txt--invert">
 			<li><a href="#" class="is-active">#{messages['jsf.Dashboard']}<span class="badge--highlight badge--inline l--float-right"><!-- This is for notification count --></span></a></li>
-			<li><s:link id="Projects" view="/project/home.xhtml" propagation="none">#{messages['jsf.Projects']}</s:link></li>
-			<li><s:link id="version-groups" view="/version-group/home.xhtml" propagation="none">#{messages['jsf.Groups']}</s:link></li>
+			<li><s:link id="right_menu_projects_link" view="/project/home.xhtml" propagation="none">#{messages['jsf.Projects']}</s:link></li>
+			<li><s:link id="right_menu_version-groups_link" view="/version-group/home.xhtml" propagation="none">#{messages['jsf.Groups']}</s:link></li>
 			<li><a href="#">Settings</a></li>
 			<li>
-				<s:link id="Sign_out" view="/account/logout.seam" propagation="none">#{messages['jsf.Logout']}</s:link>
+				<s:link id="right_menu_sign_out_link" view="/account/logout.seam" propagation="none">#{messages['jsf.Logout']}</s:link>
 			</li>
 		</ul>
 	</nav>
