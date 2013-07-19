@@ -262,15 +262,37 @@ public class SourceDocumentUpload
          throw new ChunkUploadException(Status.INTERNAL_SERVER_ERROR, e.getMessage(), e);
       }
 
+      String contentHash = uploadForm.getHash();
+      DocumentType documentType = DocumentType.typeFor(uploadForm.getFileType());
+
+      persistRawDocument(document, tempFile, contentHash, documentType, params);
+
+      translationFileServiceImpl.removeTempFile(tempFile);
+   }
+
+   private void persistRawDocument(HDocument document, File rawFile, String contentHash,
+         DocumentType documentType, Optional<String> params)
+   {
       HRawDocument rawDocument = new HRawDocument();
       rawDocument.setDocument(document);
-      rawDocument.setContentHash(uploadForm.getHash());
-      rawDocument.setType(DocumentType.typeFor(uploadForm.getFileType()));
+      rawDocument.setContentHash(contentHash);
+      rawDocument.setType(documentType);
       rawDocument.setUploadedBy(identity.getCredentials().getUsername());
+      persistRawDocumentContentFromFile(rawDocument, rawFile);
+      if (params.isPresent())
+      {
+         rawDocument.setAdapterParameters(params.get());
+      }
+      documentDAO.addRawDocument(document, rawDocument);
+      documentDAO.flush();
+   }
+
+   private void persistRawDocumentContentFromFile(HRawDocument rawDocument, File rawFile)
+   {
       FileInputStream tempFileStream;
       try
       {
-         tempFileStream = new FileInputStream(tempFile);
+         tempFileStream = new FileInputStream(rawFile);
       }
       catch (FileNotFoundException e)
       {
@@ -280,16 +302,8 @@ public class SourceDocumentUpload
                e);
       }
       LobHelper lobHelper = documentDAO.getLobHelper();
-      Blob fileContents = lobHelper.createBlob(tempFileStream, (int) tempFile.length());
+      Blob fileContents = lobHelper.createBlob(tempFileStream, (int) rawFile.length());
       rawDocument.setContent(fileContents);
-      if (params.isPresent())
-      {
-         rawDocument.setAdapterParameters(params.get());
-      }
-      documentDAO.addRawDocument(document, rawDocument);
-      documentDAO.flush();
-
-      translationFileServiceImpl.removeTempFile(tempFile);
    }
 
    private void parsePotFile(InputStream potStream, GlobalDocumentId id, DocumentFileUploadForm uploadForm)

@@ -238,12 +238,20 @@ public class DocumentUploadUtil
 
    private void saveUploadPart(DocumentFileUploadForm uploadForm, HDocumentUpload upload)
    {
-      Blob partContent = session.getLobHelper().createBlob(uploadForm.getFileStream(), uploadForm.getSize().intValue());
-      HDocumentUploadPart newPart = new HDocumentUploadPart();
-      newPart.setContent(partContent);
+      InputStream contentStream = uploadForm.getFileStream();
+      int contentLength = uploadForm.getSize().intValue();
+      HDocumentUploadPart newPart = newUploadPartFromStream(contentStream, contentLength);
       upload.getParts().add(newPart);
       session.saveOrUpdate(upload);
       session.flush();
+   }
+
+   private HDocumentUploadPart newUploadPartFromStream(InputStream partContentStream, int contentLength)
+   {
+      HDocumentUploadPart newPart = new HDocumentUploadPart();
+      Blob partContent = session.getLobHelper().createBlob(partContentStream, contentLength);
+      newPart.setContent(partContent);
+      return newPart;
    }
 
    protected static boolean isSinglePart(DocumentFileUploadForm uploadForm)
