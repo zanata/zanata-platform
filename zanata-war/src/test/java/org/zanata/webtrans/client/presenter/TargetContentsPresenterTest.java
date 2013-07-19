@@ -134,7 +134,9 @@ public class TargetContentsPresenterTest
       when(userOptionsService.getConfigHolder()).thenReturn(configHolder);
 
       userWorkspaceContext = TestFixture.userWorkspaceContext();
-      presenter = new TargetContentsPresenter(displayProvider, editorTranslators, eventBus, tableEditorMessages, sourceContentPresenter, userWorkspaceContext, editorKeyShortcuts, historyPresenter, userOptionsService, saveAsApprovedConfirmation);
+      presenter = new TargetContentsPresenter(displayProvider, editorTranslators, eventBus,
+            tableEditorMessages, sourceContentPresenter, userWorkspaceContext, editorKeyShortcuts,
+            historyPresenter, userOptionsService, saveAsApprovedConfirmation);
 
       verify(eventBus).addHandler(UserConfigChangeEvent.TYPE, presenter);
       verify(eventBus).addHandler(RequestValidationEvent.getType(), presenter);

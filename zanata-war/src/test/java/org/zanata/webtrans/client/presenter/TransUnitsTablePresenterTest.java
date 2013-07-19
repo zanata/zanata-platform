@@ -327,7 +327,8 @@ public class TransUnitsTablePresenterTest
       ArgumentCaptor<TransHistoryItem> transHistoryCaptor = ArgumentCaptor.forClass(TransHistoryItem.class);
       InOrder inOrder = Mockito.inOrder(targetContentsPresenter, translationHistoryPresenter);
       inOrder.verify(translationHistoryPresenter).popupAndShowLoading("please resolve conflict");
-      inOrder.verify(translationHistoryPresenter).displayEntries(transHistoryCaptor.capture(), eq(Collections.<TransHistoryItem>emptyList()), eq(Collections.<ReviewComment>emptyList()));
+      inOrder.verify(translationHistoryPresenter).displayEntries(transHistoryCaptor.capture(),
+            eq(Collections.<TransHistoryItem>emptyList()), eq(Collections.<ReviewComment>emptyList()));
       assertThat(transHistoryCaptor.getValue().getVersionNum(), Matchers.equalTo(updatedTransUnit.getVerNum().toString()));
       assertThat(transHistoryCaptor.getValue().getContents(), Matchers.equalTo(updatedTransUnit.getTargets()));
       inOrder.verify(targetContentsPresenter).updateRow(updatedTransUnit);
