@@ -66,6 +66,8 @@ public class DocumentUploadUtil
 
    @In
    private ZanataIdentity identity;
+
+   // TODO technical debt: use entityManager
    @In
    private Session session;
    @In
@@ -75,6 +77,7 @@ public class DocumentUploadUtil
    @In
    private TranslationFileService translationFileServiceImpl;
 
+   // TODO damason: move all validation checks to separate class
    public void failIfUploadNotValid(GlobalDocumentId id, DocumentFileUploadForm uploadForm)
          throws ChunkUploadException
    {
@@ -212,7 +215,7 @@ public class DocumentUploadUtil
 
    private HDocumentUpload retrieveUploadObject(DocumentFileUploadForm uploadForm)
    {
-      // TODO put in DAO
+      // TODO damason: move to DAO (maybe DocumentDAO)
       Criteria criteria = session.createCriteria(HDocumentUpload.class);
       criteria.add(Restrictions.idEq(uploadForm.getUploadId()));
       HDocumentUpload upload = (HDocumentUpload) criteria.uniqueResult();
