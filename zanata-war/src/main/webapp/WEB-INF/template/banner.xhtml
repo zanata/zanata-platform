@@ -13,7 +13,10 @@
 	</a>
 	
 	<h1 class="header__title heading--sub">
-		<a href="/"><img class="header__site-logo" src="//webassets-zanata.rhcloud.com/1/logo.svg"/>#{messages['jsf.Zanata']}</a>
+		<s:link view="/home.xhtml" propagation="none">
+			<img class="header__site-logo" src="//webassets-zanata.rhcloud.com/1/logo.svg"/>
+			#{messages['jsf.Zanata']}
+		</s:link>
 	</h1>
 	
 	<s:fragment rendered="#{identity.loggedIn}">
