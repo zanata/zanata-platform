@@ -13,7 +13,7 @@
 	<h:head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<title>#{messages['jsf.Zanata']}: <ui:insert name="page_title" /></title>
-		<link rel="shortcut icon" href="//webassets-zanata.rhcloud.com/1/logo.svg" type="image/x-icon" />
+		<link rel="shortcut icon logo" href="//webassets-zanata.rhcloud.com/1/logo.svg" type="image/svg" />
 
 		<link type="text/css" rel="stylesheet" class="user" href="//webassets-zanata.rhcloud.com/1/assets/css/old-zanata.css"/>
         <link type="text/css" rel="stylesheet" href="#{request.contextPath}/resources/fontello/css/fontello.css"/>
@@ -68,6 +68,8 @@
 			</div>
 		</div>
 		<ui:include src="piwik.xhtml"/>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+		<script src="//webassets-zanata.rhcloud.com/1/assets/js/script.js"></script>
 	</h:body>
 </html>
 </f:view>
