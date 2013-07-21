@@ -373,19 +373,15 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
       q.setCacheable(false).setComment("ProjectIterationDAO.searchLikeSlugOrProjectSlug");
 
       return q.list();
-
-      // final String FIELDS[] = { "slug", GroupSearchBridge.PROJECT_FIELD };
-      //
-      // MultiFieldQueryParser parser = new
-      // MultiFieldQueryParser(Version.LUCENE_29, FIELDS, new
-      // StandardAnalyzer(Version.LUCENE_29));
-      // org.apache.lucene.search.Query textQuery = parser.parse(searchTerm);
-      //
-      // org.hibernate.search.jpa.FullTextQuery ftQuery =
-      // entityManager.createFullTextQuery(textQuery, HProjectIteration.class);
-      // @SuppressWarnings("unchecked")
-      // List<HProjectIteration> matches = (List<HProjectIteration>)
-      // ftQuery.getResultList();
-      // return matches;
+   }
+   
+   public HProjectIteration getLastCreatedVersion(Long projectId)
+   {
+      Query q = getSession().createQuery("from HProjectIteration t where t.project.id = :projectId order by t.creationDate");
+      q.setParameter("projectId", projectId);
+      q.setCacheable(true);
+      q.setMaxResults(1).setComment("ProjectIterationDAO.getLastCreatedVersion");
+      return (HProjectIteration)q.uniqueResult();
+      
    }
 }

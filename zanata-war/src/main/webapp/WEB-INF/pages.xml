@@ -16,6 +16,11 @@
   	<action execute="#{userRedirect.redirectToDashboard}"/>
   </page>
   
+  <page view-id="/dashboard/home.xhtml">
+  	<action execute="#{dashboardAction.init()}"/>
+  </page>
+  
+  
   <!-- Landing page for open id authentication -->
   <page view-id="/openid.xhtml">
 	 <navigation>

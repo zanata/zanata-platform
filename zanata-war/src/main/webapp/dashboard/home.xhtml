@@ -16,18 +16,18 @@
 			    <div class="l--float-left w--2-6-s l--push-right-1">
 				    <div class="media--circle">
 				    	<s:link id="profile" view="/profile/view.xhtml" propagation="none">
-							<img src="#{gravatarServiceImpl.getUserImageUrl(115)}" alt="#{personHome.instance.name}"/>
+							<img src="#{dashboardAction.getUserImageUrl()}" alt="#{dashboardAction.getUsername()}"/>
 						</s:link>
 				    </div>
 			    </div>
 							
 			    <div class="txt--s-align-right">
-			    	<h1 class="delta">#{personHome.instance.name}</h1>
+			    	<h1 class="delta">#{dashboardAction.getUserFullName()}</h1>
 			      	<ul class="list--no-bullets">
-			        	<li>#{personHome.instance.account.username}</li>
+			        	<li>#{dashboardAction.getUsername()}</li>
 			        	<li>
 			        		<s:link id="profile" view="/profile/view.xhtml" propagation="none">
-			        			Settings <i aria-hidden="true" class="i i--cog"></i>
+			        			#{messages['jsf.Settings']} <i aria-hidden="true" class="i i--cog"></i>
 			        		</s:link>
 			        	</li>
 			      	</ul>
@@ -56,12 +56,14 @@
 					                  		<h2 class="delta heading--secondary">#{messages['jsf.MaintainedProjects']}</h2>
 					                	</div>
 					                	<div class="g__item w--4-10 w--4-10-s txt--align-right txt--s-align-right">
-					                  		<span class="txt--meta">#{personHome.instance.maintainerProjects.size}<i aria-hidden="true" class="i i--clipboard"></i></span>
+					                  		<span class="txt--meta">#{dashboardAction.getUserMaintainedProjectsSize()}
+					                  			<i aria-hidden="true" class="i i--clipboard"></i>
+					                  		</span>
 					                	</div>
 					            	</div>
 					            </header>
 					            <ul class="list--no-bullets">
-						            <ui:repeat value="#{personHome.instance.maintainerProjects.toArray()}" var="project">
+						            <ui:repeat value="#{dashboardAction.getUserMaintainedProjects()}" var="project">
 									    <li class="bg--faint l--pad-top-half bg--highest--hover progress-bar__expander dropdown__container">
 									    	<div class="g--tight l--pad-h-half">
 							                	<div class="g__item w--3-4 w--3-4-s">
@@ -75,12 +77,54 @@
 							                  	<div class="g__item w--1-4 w--1-4-s txt--align-right txt--s-align-right">
 							                    	<ul class=" list--horizontal">
 							                      		<li>
-							                        		<span class="txt--meta"><i aria-hidden="true" class="i i--network"></i><span class="is-invisible">Translator</span></span>
+							                        		<span class="txt--meta">
+							                        			<i aria-hidden="true" class="i i--network"></i>
+							                        			<span class="is-invisible">#{messages['jsf.Translator']}</span>
+							                        		</span>
 							                      		</li>
 							                      		<li>
-							                        		<span class="txt--meta"><i aria-hidden="true" class="i i--pencil"></i><span class="is-invisible">Maintainer</span></span>
+							                        		<span class="txt--meta">
+							                        			<i aria-hidden="true" class="i i--pencil"></i>
+							                        			<span class="is-invisible">#{messages['jsf.Maintainer']}</span>
+							                        		</span>
 							                      		</li>
 							                    	</ul>
+							                	</div>
+							                </div>
+							                <div class="l--pad-h-half l--pad-bottom-half">
+							                	<div class="dropdown" ng-class="{is-active: is-active}">
+							                		<div class="dropdown__toggle" href="#" ng-click="is-active=!is-active">
+							                			<i class="i i--arrow-down dropdown__toggle__icon"></i>
+							                			<ui:param name="latestVersion" value="#{dashboardAction.getLatestVersion(project.id)}"/>
+							                			<ul class="dropdown__toggle__content list--horizontal ">
+									                    	<li>
+										                        <s:link view="/iteration/view.xhtml" title="#{latestVersion.slug}">
+												                 	<f:param name="projectSlug" value="#{project.slug}"/>
+												                	<f:param name="iterationSlug" value="#{latestVersion.slug}"/>
+												                	<i aria-hidden="true" class="i i--star-2"></i>
+										                            <span class="is-invisible">#{messages['jsf.Version']}</span> #{latestVersion.slug}
+												                </s:link>
+									                        </li>
+									                        <li>
+									                        	<a href="#" title="#{dashboardAction.getDocumentCount(latestVersion.id)} #{messages['jsf.Documents']}">
+									                        		<i aria-hidden="true" class="i i--document-alt-fill"></i>
+									                        		<span class="is-invisible">#{messages['jsf.Documents']}</span> #{dashboardAction.getDocumentCount(latestVersion.id)}
+									                        	</a>
+									                        </li>
+									                        <li>
+									                        	<a href="#" title="#{dashboardAction.getEnabledLocalesCount(latestVersion.id)} #{messages['jsf.Languages']}">
+									                        		<i aria-hidden="true" class="i i--globe"></i>
+									                        		<span class="is-invisible">#{messages['jsf.Languages']}</span> #{dashboardAction.getEnabledLocalesCount(latestVersion.id)}
+									                        	</a>
+									                        </li>
+									                        <li>
+									                        	<a href="#" title="Go to Japanese translation">JP</a>
+									                        </li>
+									                        <li class="l--float-right">
+									                        	<span class="txt--state-success">73%</span>
+									                        </li>
+									                	</ul>
+							                		</div>
 							                	</div>
 							                </div>
 									    </li>
