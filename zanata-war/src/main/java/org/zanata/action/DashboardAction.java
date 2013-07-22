@@ -95,7 +95,7 @@ public class DashboardAction implements Serializable
       @Override
       public int compare(HProjectIteration o1, HProjectIteration o2)
       {
-         return o2.getCreationDate().after(o1.getCreationDate()) ? -1 : 1;
+         return o2.getCreationDate().after(o1.getCreationDate()) ? 1 : -1;
       }
    };
    

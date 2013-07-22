@@ -30,10 +30,8 @@ import javax.annotation.Nullable;
 import javax.ws.rs.core.EntityTag;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -377,7 +375,7 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
    
    public HProjectIteration getLastCreatedVersion(Long projectId)
    {
-      Query q = getSession().createQuery("from HProjectIteration t where t.project.id = :projectId order by t.creationDate");
+      Query q = getSession().createQuery("from HProjectIteration t where t.project.id = :projectId order by t.creationDate DESC");
       q.setParameter("projectId", projectId);
       q.setCacheable(true);
       q.setMaxResults(1).setComment("ProjectIterationDAO.getLastCreatedVersion");

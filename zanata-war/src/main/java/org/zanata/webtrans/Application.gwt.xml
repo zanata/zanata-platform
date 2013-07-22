@@ -32,9 +32,6 @@
       <!-- Specify the app entry point class.                         -->
       <entry-point class='org.zanata.webtrans.client.Application'/>
 
-      <!-- Specify the application specific style sheet.              -->
-      <stylesheet src="//webassets-zanata.rhcloud.com/1/assets/css/Application.css" />
-
       <!-- Add gwt-log support, default level `OFF` - check for
            extended property 'log_level' to see if this is overridden
 -->
