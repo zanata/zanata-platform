@@ -26,20 +26,16 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.io.IOUtils;
-import org.jboss.resteasy.annotations.Suspend;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
-import org.jboss.resteasy.spi.AsynchronousResponse;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.TransactionPropagationType;
@@ -48,9 +44,12 @@ import org.jboss.seam.annotations.security.Restrict;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowStreamDAO;
 import org.zanata.dao.TransMemoryDAO;
+import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.SourceContents;
+import org.zanata.model.tm.TMTranslationUnit;
+import org.zanata.model.tm.TransMemory;
 import org.zanata.service.LocaleService;
 import org.zanata.tmx.TMXParser;
 
@@ -79,7 +78,7 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
    @Restrict("#{s:hasRole('admin')}")
    public Response getAllTranslationMemory(@Nullable LocaleId locale)
    {
-      TranslationMemoryResourceService.log.debug("exporting TM for all projects, locale {}", locale);
+      log.debug("exporting TMX for all projects, locale {}", locale);
       Iterator<? extends SourceContents> tuIter;
       if (locale != null)
       {
@@ -87,13 +86,14 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
          // TODO findTextFlowsByLocale
       }
       tuIter = textFlowStreamDAO.findTextFlows();
-      return buildTMX(tuIter, null, null, locale);
+      String filename = makeTMXFilename(null, null, locale);
+      return buildTMX(tuIter, locale, filename);
    }
 
    @Override
    public Response getProjectTranslationMemory(@Nonnull String projectSlug, @Nullable LocaleId locale)
    {
-      TranslationMemoryResourceService.log.debug("exporting TM for project {}, locale {}", projectSlug, locale);
+      log.debug("exporting TMX for project {}, locale {}", projectSlug, locale);
       Iterator<? extends SourceContents> tuIter;
       HProject hProject = restSlugValidator.retrieveAndCheckProject(projectSlug, false);
       if (locale != null)
@@ -102,14 +102,15 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
          // TODO findTextFlowsByProjectAndLocale
       }
       tuIter = textFlowStreamDAO.findTextFlowsByProject(hProject);
-      return buildTMX(tuIter, projectSlug, null, locale);
+      String filename = makeTMXFilename(projectSlug, null, locale);
+      return buildTMX(tuIter, locale, filename);
    }
 
    @Override
    public Response getProjectIterationTranslationMemory(
          @Nonnull String projectSlug, @Nonnull String iterationSlug, @Nullable LocaleId locale)
    {
-      TranslationMemoryResourceService.log.debug("exporting TM for project {}, iteration {}, locale {}", projectSlug, iterationSlug, locale);
+      log.debug("exporting TMX for project {}, iteration {}, locale {}", projectSlug, iterationSlug, locale);
       Iterator<? extends SourceContents> tuIter;
       HProjectIteration hProjectIteration = restSlugValidator.retrieveAndCheckIteration(projectSlug, iterationSlug, false);
       if (locale != null)
@@ -118,7 +119,25 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
          // TODO findTextFlowsByProjectIterationAndLocale
       }
       tuIter = textFlowStreamDAO.findTextFlowsByProjectIteration(hProjectIteration);
-      return buildTMX(tuIter, projectSlug, iterationSlug, locale);
+      String filename = makeTMXFilename(projectSlug, iterationSlug, locale);
+      return buildTMX(tuIter, locale, filename);
+   }
+
+   @Override
+   public Response getTranslationMemory(@Nonnull String slug, @Nullable String locale)
+   {
+      log.debug("exporting TMX for translation memory {}, locale {}", slug, locale);
+      Iterator<? extends TMTranslationUnit> tuIter;
+      TransMemory transMemory = transMemoryDAO.getBySlug(slug);
+      if (transMemory == null)
+      {
+         throw new ZanataServiceException("Translation memory " + slug + " was not found.", 404);
+      }
+      // TODO check locale?
+//      tuIter = transMemoryStreamDAO.findTransUnitsByTM(transMemory);
+      tuIter = null;
+      String filename = makeTMXFilename(slug, locale);
+      return buildTMX(tuIter, locale, filename);
    }
 
    @Override
@@ -142,22 +161,41 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
       return Response.ok().build();
    }
 
-   private Response buildTMX(@Nonnull Iterator<? extends SourceContents> tuIter, @Nullable String projectSlug, @Nullable String iterationSlug, @Nullable LocaleId locale)
+   private Response buildTMX(
+         @Nonnull Iterator<? extends SourceContents> tuIter,
+         @Nullable LocaleId locale, @Nonnull String filename)
    {
-      StreamingOutput output = new TMXStreamingOutput(tuIter, locale);
-      String filename = makeTMXFilename(projectSlug, iterationSlug, locale);
+      StreamingOutput output = new TMXStreamingOutput(tuIter, locale, new ExportTUStrategy(locale));
+      return okResponse(filename, output);
+   }
+
+   private Response buildTMX(Iterator<? extends TMTranslationUnit> tuIter, String locale, String filename)
+   {
+      LocaleId localeId = locale == null ? null : new LocaleId(locale);
+      StreamingOutput output = new TMXStreamingOutput(tuIter, localeId, new ExportTUStrategy(localeId));
+      return okResponse(filename, output);
+   }
+
+   private Response okResponse(String filename, StreamingOutput output)
+   {
       return Response.ok()
             .header("Content-Disposition", "attachment; filename=\"" + filename + "\"")
             .type(PREFERRED_MEDIA_TYPE)
             .entity(output).build();
    }
 
-   private static String makeTMXFilename(@Nullable String projectSlug, @Nullable String iterationSlug, @Nullable LocaleId locale)
+   private static @Nonnull String makeTMXFilename(@Nullable String projectSlug, @Nullable String iterationSlug, @Nullable LocaleId locale)
    {
       String p = projectSlug != null ? projectSlug : "allProjects";
       String i = iterationSlug != null ? iterationSlug : "allVersions";
       String l = locale != null ? locale.getId() : "allLocales";
       return "zanata-"+p+"-"+i+"-"+l+".tmx";
+   }
+
+   private static @Nonnull String makeTMXFilename(@Nullable String tmSlug, @Nullable String locale)
+   {
+      String l = locale != null ? locale : "allLocales";
+      return "zanata-"+tmSlug+"-"+l+".tmx";
    }
 
 }

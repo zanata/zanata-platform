@@ -21,6 +21,9 @@
 
 package org.zanata.rest.service;
 
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import lombok.extern.slf4j.Slf4j;
 import net.sf.okapi.common.resource.ITextUnit;
 import net.sf.okapi.common.resource.TextFragment;
@@ -37,7 +40,8 @@ import org.zanata.util.OkapiUtil;
  *
  */
 @Slf4j
-public class ExportTUStrategy
+@ParametersAreNonnullByDefault
+public class ExportTUStrategy<TU extends SourceContents> //implements ExportTUStrategy<SourceContents>
 {
    private final LocaleId localeId;
 
@@ -45,7 +49,7 @@ public class ExportTUStrategy
     * Exports one or all locales.  If localeId is null, export all locales.
     * @param localeId
     */
-   public ExportTUStrategy(LocaleId localeId)
+   public ExportTUStrategy(@Nullable LocaleId localeId)
    {
       this.localeId = localeId;
    }
@@ -56,8 +60,9 @@ public class ExportTUStrategy
     * @param tuidPrefix String to be prepended to all resIds when generating tuids
     * @param tf the SourceContents (TextFlow) whose contents and translations are to be exported
     */
-   public void exportTranslationUnit(ZanataTMXWriter tmxWriter, SourceContents tf, net.sf.okapi.common.LocaleId sourceLocaleId)
+   public void exportTranslationUnit(ZanataTMXWriter tmxWriter, SourceContents tf)
    {
+      net.sf.okapi.common.LocaleId sourceLocaleId = OkapiUtil.toOkapiLocaleOrEmpty(tf.getLocale());
       String tuid = tf.getQualifiedId();
       // Perhaps we could encode plurals using TMX attributes?
       String srcContent = tf.getContents().get(0);

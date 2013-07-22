@@ -51,7 +51,7 @@ public class TMXStreamingOutputTest
    public void exportAllLocales() throws Exception
    {
       LocaleId targetLocale = null;
-      StreamingOutput output = new TMXStreamingOutput(createTestData(), targetLocale);
+      StreamingOutput output = new TMXStreamingOutput(createTestData(), targetLocale, new ExportTUStrategy(targetLocale));
 
       Document doc = writeToXmlWithValidation(output);
 
@@ -63,7 +63,7 @@ public class TMXStreamingOutputTest
    public void exportFrench() throws Exception
    {
       LocaleId targetLocale = LocaleId.FR;
-      StreamingOutput output = new TMXStreamingOutput(createTestData(), targetLocale);
+      StreamingOutput output = new TMXStreamingOutput(createTestData(), targetLocale, new ExportTUStrategy(targetLocale));
 
       Document doc = writeToXmlWithValidation(output);
 
@@ -76,7 +76,7 @@ public class TMXStreamingOutputTest
    public void exportGerman() throws Exception
    {
       LocaleId targetLocale = LocaleId.DE;
-      StreamingOutput output = new TMXStreamingOutput(createTestData(), targetLocale);
+      StreamingOutput output = new TMXStreamingOutput(createTestData(), targetLocale, new ExportTUStrategy(targetLocale));
 
       Document doc = writeToXmlWithValidation(output);
 

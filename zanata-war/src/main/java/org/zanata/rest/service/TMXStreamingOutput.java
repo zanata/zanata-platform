@@ -47,33 +47,23 @@ import org.zanata.util.VersionUtility;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class TMXStreamingOutput implements StreamingOutput
+public class TMXStreamingOutput<TU extends SourceContents> implements StreamingOutput
 {
    private static final String creationTool = "Zanata " + TMXStreamingOutput.class.getSimpleName();
    private static final String creationToolVersion =
          VersionUtility.getVersionInfo(TMXStreamingOutput.class).getVersionNo();
-   private final @Nonnull Iterator<? extends SourceContents> tuIter;
+   private final @Nonnull Iterator<TU> tuIter;
    private final @Nullable LocaleId targetLocale;
-   private final ExportTUStrategy exportTUStrategy;
+   private final ExportTUStrategy<TU> exportTUStrategy;
 
-   public TMXStreamingOutput(@Nonnull Iterator<? extends SourceContents> tuIter,
-         @Nullable LocaleId targetLocale)
+   public TMXStreamingOutput(
+         @Nonnull Iterator<TU> tuIter,
+         @Nullable LocaleId targetLocale,
+         @Nonnull ExportTUStrategy<TU> exportTUStrategy)
    {
       this.tuIter = tuIter;
       this.targetLocale = targetLocale;
-      this.exportTUStrategy = new ExportTUStrategy(targetLocale);
-   }
-
-   @SuppressWarnings("null")
-   private @Nonnull net.sf.okapi.common.LocaleId toOkapiLocaleOrEmpty(@Nullable LocaleId locale)
-   {
-      if (locale == null)
-      {
-         // TMXWriter demands a non-null target locale, but if you write
-         // your TUs with writeTUFull(), it is never actually used.
-         return net.sf.okapi.common.LocaleId.EMPTY;
-      }
-      return OkapiUtil.toOkapiLocale(locale);
+      this.exportTUStrategy = exportTUStrategy;
    }
 
    @Override
@@ -94,14 +84,16 @@ public class TMXStreamingOutput implements StreamingOutput
    
          tmxWriter.writeStartDocument(
                allLocale,
-               toOkapiLocaleOrEmpty(targetLocale),
+               // TMXWriter demands a non-null target locale, but if you write
+               // your TUs with writeTUFull(), it is never actually used.
+               OkapiUtil.toOkapiLocaleOrEmpty(targetLocale),
                creationTool, creationToolVersion,
                segType, null, dataType);
    
          while (tuIter.hasNext())
          {
-            SourceContents tu = tuIter.next();
-            exportTUStrategy.exportTranslationUnit(tmxWriter, tu, toOkapiLocaleOrEmpty(tu.getLocale()));
+            TU tu = tuIter.next();
+            exportTUStrategy.exportTranslationUnit(tmxWriter, tu);
          }
          tmxWriter.writeEndDocument();
       }
