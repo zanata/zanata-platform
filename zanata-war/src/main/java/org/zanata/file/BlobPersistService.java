@@ -25,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.sql.Blob;
+import java.sql.SQLException;
 
 import javax.ws.rs.core.Response.Status;
 
@@ -39,6 +40,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.exception.ChunkUploadException;
+import org.zanata.model.HDocument;
 import org.zanata.model.HDocumentUploadPart;
 import org.zanata.model.HRawDocument;
 
@@ -82,4 +84,24 @@ public class BlobPersistService implements FilePersistService, UploadPartPersist
       rawDocument.setContent(fileContents);
    }
 
+   @Override
+   public InputStream getRawDocumentContentAsStream(HRawDocument document)
+   {
+      try
+      {
+         return document.getContent().getBinaryStream();
+      }
+      catch (SQLException e)
+      {
+         throw new RawDocumentContentAccessException(e);
+      }
+   }
+
+   @Override
+   public boolean hasPersistedDocument(GlobalDocumentId id)
+   {
+      HDocument doc = documentDAO.getByProjectIterationAndDocId(id.getProjectSlug(),
+            id.getVersionSlug(), id.getDocId());
+      return doc.getRawDocument() != null;
+   }
 }

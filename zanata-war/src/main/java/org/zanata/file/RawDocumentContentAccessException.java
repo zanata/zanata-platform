@@ -20,23 +20,21 @@
  */
 package org.zanata.file;
 
-import java.io.File;
-import java.io.InputStream;
-
-import org.zanata.model.HRawDocument;
-
-public interface FilePersistService
+@SuppressWarnings("serial")
+public class RawDocumentContentAccessException extends RuntimeException
 {
+   public RawDocumentContentAccessException(String message)
+   {
+      super(message);
+   }
 
-   public void persistRawDocumentContentFromFile(HRawDocument rawDocument, File rawFile);
+   public RawDocumentContentAccessException(Throwable cause)
+   {
+      super(cause);
+   }
 
-   // TODO damason: parsing code only needs a file URI for this. Change to return
-   //               uri when files are persisted to server.
-   // Other implementations may need a way to specify that they are finished with the
-   // document resource and cleanup is possible, in case temp files were generated.
-   public InputStream getRawDocumentContentAsStream(HRawDocument document)
-         throws RawDocumentContentAccessException;
-
-   boolean hasPersistedDocument(GlobalDocumentId id);
-
+   public RawDocumentContentAccessException(String message, Throwable cause)
+   {
+      super(message, cause);
+   }
 }

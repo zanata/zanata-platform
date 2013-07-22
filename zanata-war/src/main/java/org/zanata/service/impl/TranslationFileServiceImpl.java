@@ -395,13 +395,6 @@ public class TranslationFileServiceImpl implements TranslationFileService
    }
 
    @Override
-   public boolean hasPersistedDocument(String projectSlug, String iterationSlug, String docPath, String docName)
-   {
-      HDocument doc = documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docPath+docName);
-      return doc.getRawDocument() != null;
-   }
-
-   @Override
    public String getFileExtension(String projectSlug, String iterationSlug, String docPath, String docName)
    {
       HDocument doc = documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docPath+docName);
