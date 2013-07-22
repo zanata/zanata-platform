@@ -74,7 +74,7 @@ public class TMXStreamingOutput<TU extends SourceContents> implements StreamingO
       @Cleanup
       Closeable closeable = (Closeable) (tuIter instanceof Closeable ? tuIter : NullCloseable.INSTANCE);
       @SuppressWarnings("null")
-      PeekingIterator<SourceContents> iter = Iterators.peekingIterator(tuIter);
+      PeekingIterator<TU> iter = Iterators.peekingIterator(tuIter);
       // Fetch the first result, so that we can fail fast, before
       // writing any output. This should enable RESTEasy to return an
       // error instead of simply aborting the output stream.
