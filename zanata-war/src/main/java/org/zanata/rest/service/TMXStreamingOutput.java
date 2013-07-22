@@ -35,6 +35,7 @@ import javax.ws.rs.core.StreamingOutput;
 
 import lombok.Cleanup;
 import net.sf.okapi.common.XMLWriter;
+import net.sf.okapi.common.filterwriter.TMXWriter;
 
 import org.zanata.common.LocaleId;
 import org.zanata.model.SourceContents;
@@ -83,7 +84,7 @@ public class TMXStreamingOutput implements StreamingOutput
       @Cleanup
       XMLWriter xmlWriter = new XMLWriter(writer);
       @Cleanup
-      ZanataTMXWriter tmxWriter = new ZanataTMXWriter(xmlWriter);
+      TMXWriter tmxWriter = new TMXWriter(xmlWriter);
       String segType = "block"; // TODO other segmentation types
       String dataType = "unknown"; // TODO track data type metadata throughout the system
 

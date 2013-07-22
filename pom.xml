@@ -30,7 +30,7 @@
       <lucene.version>3.5.0</lucene.version>
       <seam.version>2.3.0.Final</seam.version>
       <gwteventservice.version>1.2.1</gwteventservice.version>
-      <okapi.version>0.21</okapi.version>
+      <okapi.version>0.22</okapi.version>
 
       <zanata.api.version>3.0.1-SNAPSHOT</zanata.api.version>
       <!-- This should always be the previous version of the used api version above -->

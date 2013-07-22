@@ -22,6 +22,7 @@
 package org.zanata.rest.service;
 
 import lombok.extern.slf4j.Slf4j;
+import net.sf.okapi.common.filterwriter.TMXWriter;
 import net.sf.okapi.common.resource.ITextUnit;
 import net.sf.okapi.common.resource.TextFragment;
 import net.sf.okapi.common.resource.TextUnit;
@@ -56,7 +57,7 @@ public class ExportTUStrategy
     * @param tuidPrefix String to be prepended to all resIds when generating tuids
     * @param tf the SourceContents (TextFlow) whose contents and translations are to be exported
     */
-   public void exportTranslationUnit(ZanataTMXWriter tmxWriter, SourceContents tf, net.sf.okapi.common.LocaleId sourceLocaleId)
+   public void exportTranslationUnit(TMXWriter tmxWriter, SourceContents tf, net.sf.okapi.common.LocaleId sourceLocaleId)
    {
       String tuid = tf.getQualifiedId();
       // Perhaps we could encode plurals using TMX attributes?
