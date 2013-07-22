@@ -84,6 +84,7 @@ public class TMXStreamingOutput implements StreamingOutput
       XMLWriter xmlWriter = new XMLWriter(writer);
       @Cleanup
       TMXWriter tmxWriter = new TMXWriter(xmlWriter);
+      tmxWriter.setWriteAllPropertiesAsAttributes(true);
       String segType = "block"; // TODO other segmentation types
       String dataType = "unknown"; // TODO track data type metadata throughout the system
 
