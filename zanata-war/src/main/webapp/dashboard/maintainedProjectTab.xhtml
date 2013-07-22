@@ -43,8 +43,8 @@
                 	</div>
                 </div>
                 <div class="l--pad-h-half l--pad-bottom-half">
-                	<div class="dropdown" ng-class="{is-active: is-active}">
-                		<div class="dropdown__toggle" href="#" ng-click="is-active=!is-active">
+                	<div class="dropdown">
+                		<div class="dropdown__toggle" href="#">
                 			<i class="i i--arrow-down dropdown__toggle__icon"></i>
                 			<ui:param name="latestVersion" value="#{dashboardAction.getLatestVersion(project.id)}"/>
                 			<ul class="dropdown__toggle__content list--horizontal ">
@@ -86,7 +86,7 @@
 		                	</ul>
                 		</div>
                 		
-                		<ul class="dropdown__menu">
+                		<ul class="dropdown__content">
 	                       	<ui:repeat value="#{dashboardAction.getRemainingVersions(project.id)}" var="version">
 		                    	<li>
 	                        		<ul class="list--horizontal">
