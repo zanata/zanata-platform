@@ -382,6 +382,5 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
       q.setCacheable(true);
       q.setMaxResults(1).setComment("ProjectIterationDAO.getLastCreatedVersion");
       return (HProjectIteration)q.uniqueResult();
-      
    }
 }

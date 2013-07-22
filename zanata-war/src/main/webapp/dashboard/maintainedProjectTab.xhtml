@@ -23,7 +23,7 @@
 		    	<div class="g--tight l--pad-h-half">
                 	<div class="g__item w--3-4 w--3-4-s">
                     	<h3 class="epsilon">
-                    		<s:link id="project" styleClass="table_link" value="#{project.name} " propagation="none"
+                    		<s:link styleClass="table_link" value="#{project.name} " propagation="none"
                               		view="/project/project.xhtml">
                           		<f:param name="slug" value="#{project.slug}"/>
                        		</s:link>
@@ -31,18 +31,14 @@
                   	</div>
                   	<div class="g__item w--1-4 w--1-4-s txt--align-right txt--s-align-right">
                     	<ul class=" list--horizontal">
-                      		<li>
-                        		<span class="txt--meta">
-                        			<i aria-hidden="true" class="i i--network"></i>
-                        			<span class="is-invisible">#{messages['jsf.Translator']}</span>
-                        		</span>
-                      		</li>
-                      		<li>
-                        		<span class="txt--meta">
-                        			<i aria-hidden="true" class="i i--pencil"></i>
-                        			<span class="is-invisible">#{messages['jsf.Maintainer']}</span>
-                        		</span>
-                      		</li>
+                      		<s:fragment rendered="#{dashboard.isUserMaintainer(project.id)}">
+	                      		<li>
+	                        		<span class="txt--meta">
+	                        			<i aria-hidden="true" class="i i--pencil"></i>
+	                        			<span class="is-invisible">#{messages['jsf.Maintainer']}</span>
+	                        		</span>
+	                      		</li>
+                      		</s:fragment>
                     	</ul>
                 	</div>
                 </div>
@@ -53,7 +49,7 @@
                 			<ui:param name="latestVersion" value="#{dashboardAction.getLatestVersion(project.id)}"/>
                 			<ul class="dropdown__toggle__content list--horizontal ">
 		                    	<li>
-			                        <s:link view="/iteration/view.xhtml" title="#{latestVersion.slug}">
+			                        <s:link view="/iteration/view.xhtml" title="#{messages['jsf.Version']} #{latestVersion.slug}">
 					                 	<f:param name="projectSlug" value="#{project.slug}"/>
 					                	<f:param name="iterationSlug" value="#{latestVersion.slug}"/>
 					                	<i aria-hidden="true" class="i i--star-2"></i>
@@ -61,27 +57,72 @@
 					                </s:link>
 		                        </li>
 		                        <li>
-		                        	<a href="#" title="#{dashboardAction.getDocumentCount(latestVersion.id)} #{messages['jsf.Documents']}">
-		                        		<i aria-hidden="true" class="i i--document-alt-fill"></i>
-		                        		<span class="is-invisible">#{messages['jsf.Documents']}</span> 
+		                        	<s:link view="/iteration/source_files.xhtml" propagation="none" 
+		                        	 	title="#{dashboardAction.getDocumentCount(latestVersion.id)} #{messages['jsf.SourceDocuments']}">
+						                <f:param name="project" value="#{project.slug}"/>
+						                <f:param name="iteration" value="#{latestVersion.slug}" />
+						                <i aria-hidden="true" class="i i--document-alt-fill"></i>
+		                        		<span class="is-invisible">#{messages['jsf.SourceDocuments']}</span> 
 		                        		#{dashboardAction.getDocumentCount(latestVersion.id)}
-		                        	</a>
+						            </s:link>
 		                        </li>
 		                        <li>
-		                        	<a href="#" title="#{dashboardAction.getEnabledLocalesCount(latestVersion.id)} #{messages['jsf.Languages']}">
+		                        	<a href="#" title="#{dashboardAction.getSupportedLocalesCount(latestVersion.id)} #{messages['jsf.Languages']}">
 		                        		<i aria-hidden="true" class="i i--globe"></i>
 		                        		<span class="is-invisible">#{messages['jsf.Languages']}</span> 
-		                        		#{dashboardAction.getEnabledLocalesCount(latestVersion.id)}
+		                        		#{dashboardAction.getSupportedLocalesCount(latestVersion.id)}
 		                        	</a>
 		                        </li>
 		                        <li>
-		                        	<a href="#" title="Go to Japanese translation">JP</a>
+		                        	<ui:repeat value="#{dashboardAction.getSupportedLocales(project.slug, latestVersion.slug)}" var="language">
+		                        		<s:link title="Go to #{language.retrieveNativeName()} translation" 
+		                        			rendered="#{dashboardAction.isUserAllowedToTranslateOrReview(latestVersion.id, language)}">
+		                        			#{language.localeId.id}
+		                        		</s:link>
+		                        	</ui:repeat>
 		                        </li>
 		                        <li class="l--float-right">
-		                        	<span class="txt--state-success">73%</span>
 		                        </li>
 		                	</ul>
                 		</div>
+                		
+                		<ul class="dropdown__menu">
+	                       	<ui:repeat value="#{dashboardAction.getRemainingVersions(project.id)}" var="version">
+		                    	<li>
+	                        		<ul class="list--horizontal">
+		                          		<li>
+		                            		<s:link view="/iteration/view.xhtml" title="#{messages['jsf.Version']} #{version.slug}">
+							                	<f:param name="projectSlug" value="#{project.slug}"/>
+							                	<f:param name="iterationSlug" value="#{version.slug}"/>
+							                	<i aria-hidden="true" class="i i--star-2"></i>
+					                            <span class="is-invisible">#{messages['jsf.Version']}</span> #{version.slug}
+							                </s:link>
+		                          		</li>
+		                          		<li>
+		                            		<s:link view="/iteration/source_files.xhtml" propagation="none" 
+				                        	 	title="#{dashboardAction.getDocumentCount(version.id)} #{messages['jsf.SourceDocuments']}">
+								                <f:param name="project" value="#{project.slug}"/>
+								                <f:param name="iteration" value="#{version.slug}" />
+								                <i aria-hidden="true" class="i i--document-alt-fill"></i>
+				                        		<span class="is-invisible">#{messages['jsf.SourceDocuments']}</span> 
+				                        		#{dashboardAction.getDocumentCount(version.id)}
+								            </s:link>
+		                          		</li>
+		                          		<li>
+		                            		<a href="#" title="#{dashboardAction.getSupportedLocalesCount(version.id)} #{messages['jsf.Languages']}">
+				                        		<i aria-hidden="true" class="i i--globe"></i>
+				                        		<span class="is-invisible">#{messages['jsf.Languages']}</span> 
+				                        		#{dashboardAction.getSupportedLocalesCount(version.id)}
+		                        			</a>
+		                          		</li>
+		                        	</ul>
+		                      	</li>
+                          	</ui:repeat>
+	                      	<li class="dropdown__divider"></li>
+	                      	<li>
+	                        	<span class="txt--meta">Last updated #{dashboardAction.getFormattedDate(project.lastChanged)}</span>
+	                      	</li>
+	                    </ul>
                 	</div>
                 </div>
 		    </li>

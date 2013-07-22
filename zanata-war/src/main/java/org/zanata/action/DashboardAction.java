@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -34,14 +35,20 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
-import org.zanata.dao.DocumentDAO;
+import org.zanata.annotation.CachedMethodResult;
+import org.zanata.common.EntityStatus;
+import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
+import org.zanata.model.HLocaleMember;
+import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.GravatarService;
 import org.zanata.service.LocaleService;
+import org.zanata.util.DateUtil;
 
 @Name("dashboardAction")
 @Scope(ScopeType.PAGE)
@@ -61,8 +68,14 @@ public class DashboardAction implements Serializable
    @In
    private ProjectIterationDAO projectIterationDAO;
    
+   @In
+   private ProjectDAO projectDAO;
+   
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    private HAccount authenticatedAccount;
+   
+   @In
+   private ZanataIdentity identity;
    
    private final int USER_IMAGE_SIZE = 115;
    
@@ -74,6 +87,15 @@ public class DashboardAction implements Serializable
       public int compare(HProject o1, HProject o2)
       {
          return o2.getCreationDate().after(o1.getCreationDate()) ? 1 : -1;
+      }
+   };
+   
+   private final Comparator<HProjectIteration> projectVersionCreationDateComparator = new Comparator<HProjectIteration>()
+   {
+      @Override
+      public int compare(HProjectIteration o1, HProjectIteration o2)
+      {
+         return o2.getCreationDate().after(o1.getCreationDate()) ? -1 : 1;
       }
    };
    
@@ -117,13 +139,32 @@ public class DashboardAction implements Serializable
       return projectIterationDAO.getLastCreatedVersion(projectId);
    }
    
+   public List<HProjectIteration> getRemainingVersions(Long projectId)
+   {
+      HProject project = projectDAO.findById(projectId, false);
+      
+      List<HProjectIteration> projectVersions = project.getProjectIterations();
+      
+      Collections.sort(projectVersions, projectVersionCreationDateComparator);
+      
+      return projectVersions.subList(1, projectVersions.size());
+   }
+   
+   public boolean isUserMaintainer(Long projectId)
+   {
+      HProject project = projectDAO.findById(projectId, false);
+      return authenticatedAccount.getPerson().isMaintainer(project);
+   }
+   
+   @CachedMethodResult
    public int getDocumentCount(Long versionId)
    {
       HProjectIteration version = projectIterationDAO.findById(versionId, false);
       return version.getDocuments().size();
    }
    
-   public int getEnabledLocalesCount(Long versionId)
+   @CachedMethodResult
+   public int getSupportedLocalesCount(Long versionId)
    {
       HProjectIteration version = projectIterationDAO.findById(versionId, false);
       Set<HLocale> result = version.getCustomizedLocales();
@@ -140,5 +181,51 @@ public class DashboardAction implements Serializable
       
       return result.size();
    }
-
+   
+   @CachedMethodResult
+   public List<HLocale> getSupportedLocales(String projectSlug, String versionSlug)
+   {
+      List<HLocale> result = new ArrayList<HLocale>();
+      List<HLocale> localeList = localeServiceImpl.getSupportedLangugeByProjectIteration(projectSlug, versionSlug);
+      
+      HPerson person = authenticatedAccount.getPerson();
+      
+      for (HLocale locale : localeList)
+      {
+         if (isPersonInTeam(locale, person.getId()))
+         {
+            result.add(locale);
+         }
+      }
+      return result;
+   }
+   
+   private boolean isPersonInTeam(HLocale locale, final Long personId)
+   {
+      for (HLocaleMember lm : locale.getMembers())
+      {
+         if (lm.getPerson().getId().equals(personId))
+         {
+            return true;
+         }
+      }
+      return false;
+   }
+   
+   public boolean isUserAllowedToTranslateOrReview(Long versionId, HLocale localeId)
+   {
+      HProjectIteration version = projectIterationDAO.findById(versionId, false);
+      
+      return version != null
+            && localeId != null 
+            && version.getProject().getStatus() == EntityStatus.ACTIVE 
+            && version.getStatus() == EntityStatus.ACTIVE
+            && authenticatedAccount != null 
+            && (identity.hasPermission("add-translation", version.getProject(), localeId) || identity.hasPermission("translation-review", version.getProject(), localeId));
+   }
+   
+   public String getFormattedDate(Date date)
+   {
+      return DateUtil.formatShortDate(date);
+   }
 }
