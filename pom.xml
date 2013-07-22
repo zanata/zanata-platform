@@ -508,6 +508,12 @@
 	         <groupId>xom</groupId>
 	         <artifactId>xom</artifactId>
 	         <version>1.2.5</version>
+	         <exclusions>
+	            <exclusion>
+	               <artifactId>xml-apis</artifactId>
+	               <groupId>xml-apis</groupId>
+	            </exclusion>
+	         </exclusions>
 	       </dependency>
 
       </dependencies>
