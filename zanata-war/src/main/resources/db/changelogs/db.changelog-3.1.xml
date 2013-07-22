@@ -66,7 +66,38 @@
             update HLocale_Member set isTranslator = 1;
         </sql>
     </changeSet>
-
-
+    
+    
+    <changeSet id="5" author="aeng@redhat.com">
+        <comment>Add HActivities table to support user activities.</comment>
+        <createTable tableName="HActivities">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="personId" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="project_iteration_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="action" type="longtext">
+                <constraints nullable="false" />
+            </column>
+            <column name="creationDate" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="lastChanged" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        
+        <addForeignKeyConstraint constraintName="FK_HActivities_HPerson" 
+			referencedTableName="HPerson" referencedColumnNames="id"
+			baseTableName="HActivities" baseColumnNames="personId"/>
+			
+		<addForeignKeyConstraint constraintName="FK_HActivities_HProjectIteration" 
+			referencedTableName="HProjectIteration" referencedColumnNames="id"
+			baseTableName="HActivities" baseColumnNames="project_iteration_id"/>
+    </changeSet>
 
 </databaseChangeLog>
