@@ -43,7 +43,7 @@ import org.zanata.common.UserActionType;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @NoArgsConstructor
 @Access(AccessType.FIELD)
-public class HActivities extends ModelEntityBase implements Serializable
+public class HPersonActivities extends ModelEntityBase implements Serializable
 {
    private static final long serialVersionUID = 1L;
 
@@ -59,7 +59,7 @@ public class HActivities extends ModelEntityBase implements Serializable
    @Enumerated(EnumType.STRING)
    private UserActionType action;
 
-   public HActivities(HPerson person, HProjectIteration projectIteration, UserActionType action)
+   public HPersonActivities(HPerson person, HProjectIteration projectIteration, UserActionType action)
    {
       this.person = person;
       this.projectIteration = projectIteration;

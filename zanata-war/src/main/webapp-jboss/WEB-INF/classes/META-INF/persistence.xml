@@ -14,7 +14,6 @@
       <class>org.zanata.model.HAccountOption</class>
       <class>org.zanata.model.HAccountResetPasswordKey</class>
       <class>org.zanata.model.HAccountRole</class>
-      <class>org.zanata.model.HActivities</class>
       <class>org.zanata.model.HApplicationConfiguration</class>
       <class>org.zanata.model.HasSimpleComment</class>
       <class>org.zanata.model.HCopyTransOptions</class>
@@ -29,6 +28,7 @@
       <class>org.zanata.model.HLocaleMember</class>
       <class>org.zanata.model.HPerson</class>
       <class>org.zanata.model.HPersonEmailValidationKey</class>
+      <class>org.zanata.model.HPersonActivities</class>
       <class>org.zanata.model.HProject</class>
       <class>org.zanata.model.HProjectIteration</class>
       <class>org.zanata.model.HRawDocument</class>
