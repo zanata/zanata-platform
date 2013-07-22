@@ -894,7 +894,7 @@
 
   <!-- Translation Memory -->
   <page view-id="/tm/create.xhtml">
-      <!--<restrict>#{s:hasPermission(tr.instance, 'insert')}</restrict>-->
+      <restrict>#{s:hasRole('admin')}</restrict>
       <action execute="#{breadcrumbs.clear}"/>
       <action execute="#{breadcrumbs.addLocation('/tm/home.xhtml', messages['jsf.transmemory.Title'])}"/>
       <action execute="#{breadcrumbs.addLocation('', messages['jsf.transmemory.title.New'])}"/>

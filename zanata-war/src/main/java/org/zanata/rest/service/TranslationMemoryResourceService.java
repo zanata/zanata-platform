@@ -121,10 +121,9 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
       return buildTMX(tuIter, projectSlug, iterationSlug, locale);
    }
 
-   @POST
-   @Path("/{slug}")
-   @Consumes(MediaType.MULTIPART_FORM_DATA)
-   public Response updateTranslationMemory(@PathParam("slug") String slug, MultipartFormDataInput input) throws Exception
+   @Override
+   @Restrict("#{s:hasRole('admin')}")
+   public Response updateTranslationMemory(String slug, MultipartFormDataInput input) throws Exception
    {
       for(InputPart inputPart : input.getFormDataMap().get("uploadedFile"))
       {
@@ -135,10 +134,9 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
       return Response.status(200).build();
    }
 
-   @DELETE
-   @Path("/{slug}/transunits")
-   @Transactional
-   public Response deleteTranslationUnits(@PathParam("slug") String slug)
+   @Override
+   @Restrict("#{s:hasRole('admin')}")
+   public Response deleteTranslationUnits(String slug)
    {
       transMemoryDAO.deleteTransMemoryContents(slug);
       return Response.ok().build();

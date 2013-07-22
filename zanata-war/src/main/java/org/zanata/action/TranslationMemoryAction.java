@@ -30,6 +30,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.framework.EntityHome;
 import org.zanata.dao.TransMemoryDAO;
@@ -46,6 +47,7 @@ import lombok.Setter;
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Name("translationMemoryAction")
+@Restrict("#{s:hasRole('admin')}")
 public class TranslationMemoryAction extends EntityHome<TransMemory>
 {
    @In
