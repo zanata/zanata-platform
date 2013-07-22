@@ -39,6 +39,7 @@
 		<class>org.zanata.model.HLocale</class>
         <class>org.zanata.model.HLocaleMember</class>
         <class>org.zanata.model.HPerson</class>
+        <class>org.zanata.model.HPersonActivities</class>
         <class>org.zanata.model.HPersonEmailValidationKey</class>
         <class>org.zanata.model.HProject</class>
         <class>org.zanata.model.HProjectIteration</class>
