@@ -398,9 +398,13 @@ public class ProjectHome extends SlugHome<HProject>
       return identity != null && identity.hasPermission("HProject", "view-obsolete");
    }
 
-   public boolean isUserAllowedToTranslate(String versionSlug, HLocale localeId)
+   public boolean isUserAllowedToTranslateOrReview(String versionSlug, HLocale localeId)
    {
-      return !StringUtils.isEmpty(versionSlug) && localeId != null && isIterationActive(versionSlug) && identity != null && identity.hasPermission("add-translation", getInstance(), localeId);
+      return !StringUtils.isEmpty(versionSlug) 
+            && localeId != null 
+            && isIterationActive(versionSlug) 
+            && identity != null 
+            && (identity.hasPermission("add-translation", getInstance(), localeId) || identity.hasPermission("translation-review", getInstance(), localeId));
    }
 
    private boolean isIterationActive(String versionSlug)

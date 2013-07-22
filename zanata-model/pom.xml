@@ -254,50 +254,10 @@
           <artifactId>joda-time</artifactId>
         </dependency>
 
+		<dependency>
+			<groupId>com.google.code.findbugs</groupId>
+			<artifactId>jsr305</artifactId>
+		</dependency>
     </dependencies>
-
-    <profiles>
-        <profile>
-            <id>mysql</id>
-            <properties>
-                <env.dbunit.type>MYSQL</env.dbunit.type>
-                <ds.jndi.name>zanataDatasource</ds.jndi.name>
-                <ds.hibernate.dialect>org.zanata.ZanataMySQL5InnoDBDialect</ds.hibernate.dialect>
-                <ds.driver.class>com.mysql.jdbc.Driver</ds.driver.class>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>hibernate3-maven-plugin</artifactId>
-                        <version>2.2</version>
-                        <configuration>
-                            <components>
-                                <component>
-                                    <name>hbm2ddl</name>
-                                    <implementation>jpaconfiguration</implementation>
-                                </component>
-                            </components>
-                            <componentProperties>
-                                <persistenceunit>zanataDatabase</persistenceunit>
-                                <outputfilename>schema.ddl</outputfilename>
-                                <drop>false</drop>
-                                <create>true</create>
-                                <export>false</export>
-                                <format>true</format>
-                            </componentProperties>
-                        </configuration>
-                        <dependencies>
-                            <dependency>
-                                <groupId>mysql</groupId>
-                                <artifactId>mysql-connector-java</artifactId>
-                                <version>5.1.9</version>
-                            </dependency>
-                        </dependencies>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 
 </project>

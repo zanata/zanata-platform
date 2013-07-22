@@ -85,10 +85,15 @@ public class Editor extends Composite implements ToggleEditor
       // determine whether to show or hide buttons
       showCopySourceButton(listener.isDisplayButtons());
 
-      if (!listener.isReadOnly())
+      if(!listener.canEditTranslation())
+      {
+         setViewMode(ViewMode.VIEW);
+      }
+      else
       {
          setViewMode(ViewMode.EDIT);
       }
+     
       setText(displayString);
    }
 
@@ -101,7 +106,7 @@ public class Editor extends Composite implements ToggleEditor
 
    private void fireValidationEvent()
    {
-      if (getViewMode() == ViewMode.EDIT)
+      if(listener.canEditTranslation())
       {
          listener.validate(this);
       }
@@ -205,7 +210,7 @@ public class Editor extends Composite implements ToggleEditor
       String preCursor = textArea.getText().substring(0, textArea.getCursorPos());
       String postCursor = textArea.getText().substring(textArea.getCursorPos(), textArea.getText().length());
 
-      textArea.setText(preCursor + suggestion + postCursor);
+      setTextAndValidate(preCursor + suggestion + postCursor);
       textArea.setCursorPos(textArea.getText().indexOf(suggestion) + suggestion.length());
    }
 

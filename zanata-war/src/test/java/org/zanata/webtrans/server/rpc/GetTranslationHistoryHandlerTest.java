@@ -2,6 +2,7 @@ package org.zanata.webtrans.server.rpc;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.hamcrest.Matchers;
@@ -9,30 +10,36 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.TextFlowDAO;
+import org.zanata.dao.TextFlowTargetReviewCommentsDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
+import org.zanata.model.HTextFlowTargetReviewComment;
+import org.zanata.model.TestFixture;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
+import org.zanata.webtrans.shared.model.ReviewComment;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryAction;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryResult;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -57,6 +64,8 @@ public class GetTranslationHistoryHandlerTest
    @Mock 
    private HLocale hLocale;
    private LocaleId localeId = new LocaleId("en-US");
+   @Mock
+   private TextFlowTargetReviewCommentsDAO reviewCommentsDAO;
 
    @BeforeMethod
    public void beforeMethod()
@@ -67,6 +76,7 @@ public class GetTranslationHistoryHandlerTest
             .use("identity", identity)
             .use("localeServiceImpl", localeService)
             .use("textFlowDAO", textFlowDAO)
+            .use("textFlowTargetReviewCommentsDAO", reviewCommentsDAO)
             .autowire(GetTranslationHistoryHandler.class);
       // @formatter:on
       action = new GetTranslationHistoryAction(transUnitId);
@@ -182,5 +192,35 @@ public class GetTranslationHistoryHandlerTest
       HTextFlowTargetHistory targetHistory = new HTextFlowTargetHistory(target);
       targetHistory.setContents(target.getContents());
       return targetHistory;
+   }
+
+   @Test
+   public void canGetReviewComments()
+   {
+      GetTranslationHistoryAction action = new GetTranslationHistoryAction(new TransUnitId(1L));
+      action.setWorkspaceId(TestFixture.workspaceId());
+      LocaleId localeId = action.getWorkspaceId().getLocaleId();
+      when(reviewCommentsDAO.getReviewComments(action.getTransUnitId(), localeId))
+            .thenReturn(Lists.newArrayList(
+                  makeCommentEntity(localeId, "a comment"), makeCommentEntity(localeId, "another comment")));
+
+      List<ReviewComment> result = handler.getReviewComments(action);
+
+      assertThat(result, Matchers.hasSize(2));
+      assertThat(result.get(0).getComment(), Matchers.equalTo("a comment"));
+      assertThat(result.get(1).getComment(), Matchers.equalTo("another comment"));
+   }
+
+   private static HTextFlowTargetReviewComment makeCommentEntity(LocaleId localeId, String comment)
+   {
+      HLocale hLocale = new HLocale(localeId);
+      TestFixture.setId(2L, hLocale);
+
+      HTextFlow textFlow = TestFixture.makeHTextFlow(1L, hLocale, ContentState.Rejected);
+
+      HPerson commenter = new HPerson();
+      TestFixture.setId(3L, commenter);
+
+      return new HTextFlowTargetReviewComment(textFlow.getTargets().get(hLocale.getId()), comment, commenter);
    }
 }

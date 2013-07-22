@@ -58,4 +58,7 @@ sdf adf
   <HTextFlowTarget id="62" creationDate="2012-07-09 09:42:46.0" lastChanged="2012-07-09 11:10:15.0" versionNum="3" state="2" tf_revision="1" last_modified_by_id="1" locale="3" tf_id="4" content0="adsf"/>
   <HTextFlowTarget id="63" creationDate="2012-07-09 11:11:21.0" lastChanged="2012-07-09 11:11:21.0" versionNum="1" state="1" tf_revision="1" comment_id="3948" last_modified_by_id="1" locale="3" tf_id="5" content0="ZXc"/>
   <HTextFlowTarget id="64" creationDate="2012-07-09 11:11:21.0" lastChanged="2012-07-09 11:11:21.0" versionNum="1" state="1" tf_revision="1" comment_id="3949" last_modified_by_id="1" locale="3" tf_id="6" content0="ZXc"/>
+
+    <HTextFlowTargetReviewComment creationDate="2012-07-09 09:42:40.0" lastChanged="2012-08-08 12:21:57.0" targetVersion="8" target_id="60" comment="a comment" commenter_id="1" versionNum="0"/>
+    <HTextFlowTargetReviewComment creationDate="2012-07-09 09:42:40.0" lastChanged="2012-08-08 12:21:57.0" targetVersion="8" target_id="60" comment="another comment" commenter_id="1" versionNum="0" />
 </dataset>

@@ -30,13 +30,10 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.inject.Inject;
 
 /**
@@ -44,7 +41,7 @@ import com.google.inject.Inject;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-public class SaveAsApprovedConfirmationPanel extends DecoratedPopupPanel implements SaveAsApprovedConfirmationDisplay
+public class SaveAsApprovedConfirmationPanel extends PopupPanel implements SaveAsApprovedConfirmationDisplay
 {
    private final Button saveAsApproved;
    private final Button cancel;
@@ -58,15 +55,13 @@ public class SaveAsApprovedConfirmationPanel extends DecoratedPopupPanel impleme
    {
       super(false, true);
 
-      saveAsApproved = new Button(messages.saveAsApproved());
+      FlowPanel panel = new FlowPanel();
+      
+      saveAsApproved = new Button(messages.saveAsTranslated());
       cancel = new Button(messages.cancel());
       rememberDecision = new CheckBox(messages.saveAsApprovedDialogRememberDecision());
 
-      VerticalPanel vp = new VerticalPanel();
-      vp.setSpacing(10);
-      vp.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-
-      Label message = new Label(messages.saveAsApprovedDialogWarning1());
+      Label message = new Label(messages.saveAsTranslatedDialogWarning1());
       message.addStyleName("message");
 
 
@@ -86,18 +81,15 @@ public class SaveAsApprovedConfirmationPanel extends DecoratedPopupPanel impleme
       infoPanel.add(message4);
       infoPanel.add(message5);
 
-      HorizontalPanel buttonPanel = new HorizontalPanel();
-      buttonPanel.setSpacing(5);
-      buttonPanel.setHeight("100%");
-      buttonPanel.add(saveAsApproved);
-      buttonPanel.add(cancel);
-      buttonPanel.add(rememberDecision);
       setStyleName("confirmationDialogPanel");
 
-      vp.add(message);
-      vp.add(infoPanel);
-      vp.add(buttonPanel);
-      add(vp);
+      panel.add(message);
+      panel.add(infoPanel);
+      panel.add(saveAsApproved);
+      panel.add(cancel);
+      panel.add(rememberDecision);
+      
+      add(panel);
 
       hide();
    }

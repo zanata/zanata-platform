@@ -34,8 +34,6 @@ import org.zanata.webtrans.shared.model.HasTransUnitId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
-import com.google.gwt.user.client.ui.IsWidget;
-
 public interface TargetContentsDisplay extends WidgetDisplay, HasTransUnitId, HasUpdateValidationWarning, NeedsRefresh
 {
    void showButtons(boolean displayButtons);
@@ -70,6 +68,8 @@ public interface TargetContentsDisplay extends WidgetDisplay, HasTransUnitId, Ha
 
    void setEnableSpellCheck(boolean spellCheckEnabled);
 
+   void updateCommentIndicator(int commentsCount);
+
    interface Listener
    {
       void validate(ToggleEditor editor);
@@ -96,16 +96,18 @@ public interface TargetContentsDisplay extends WidgetDisplay, HasTransUnitId, Ha
 
       UserConfigHolder.ConfigurationState getConfigState();
 
-      boolean canReviewTranslation();
+      boolean canReview();
+      
+      boolean canEditTranslation();
 
       void acceptTranslation(TransUnitId id);
 
       void rejectTranslation(TransUnitId id);
+
    }
 
    enum EditingState
    {
       SAVING, UNSAVED, SAVED
    }
-
 }

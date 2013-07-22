@@ -1,20 +1,19 @@
 package org.zanata.dao;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
+
 import javax.persistence.EntityManager;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.security.Identity;
-import org.jboss.seam.security.NotLoggedInException;
 import org.junit.Test;
 import org.zanata.ArquillianTest;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.zanata.provider.DBUnitProvider.DataSetOperation;
+import org.zanata.provider.DBUnitProvider.DataSetOperation;
 
 public class LocaleMemberDAOITCase extends ArquillianTest
 {
@@ -46,7 +45,7 @@ public class LocaleMemberDAOITCase extends ArquillianTest
       assertThat(locale, notNullValue());
       assertThat(account, notNullValue());
 
-      HLocaleMember newMember = new HLocaleMember(account.getPerson(), locale, true);
+      HLocaleMember newMember = new HLocaleMember(account.getPerson(), locale, true, true, true);
       // Should fail as there is no user logged in
       localeMemberDAO.makePersistent(newMember);
    }
@@ -65,7 +64,7 @@ public class LocaleMemberDAOITCase extends ArquillianTest
       assertThat(locale, notNullValue());
       assertThat(account, notNullValue());
 
-      HLocaleMember newMember = new HLocaleMember(account.getPerson(), locale, true);
+      HLocaleMember newMember = new HLocaleMember(account.getPerson(), locale, true, true, true);
       localeMemberDAO.makePersistent(newMember);
    }
 }

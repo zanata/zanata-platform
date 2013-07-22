@@ -3,32 +3,38 @@ package org.zanata.webtrans.client.presenter;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
+import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.service.GetTransUnitActionContextHolder;
 import org.zanata.webtrans.client.ui.TranslationHistoryDisplay;
+import org.zanata.webtrans.shared.model.ComparableByDate;
+import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.ReviewComment;
+import org.zanata.webtrans.shared.model.ReviewCommentId;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.rpc.AddReviewCommentAction;
+import org.zanata.webtrans.shared.rpc.AddReviewCommentResult;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryAction;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryResult;
 
@@ -53,11 +59,6 @@ public class TranslationHistoryPresenterTest
    @Mock
    private WebTransMessages messages;
    @Mock
-   private TransHistorySelectionModel selectionModel;
-   @Mock
-   private TransHistoryDataProvider dataProvider;
-
-   @Mock
    private TargetContentsPresenter targetContentsPresenter;
    @Mock
    private SelectionChangeEvent selectionChangeEvent;
@@ -68,59 +69,22 @@ public class TranslationHistoryPresenterTest
    @Captor
    private ArgumentCaptor<AsyncCallback<GetTranslationHistoryResult>> resultCaptor;
    private final TransUnitId transUnitId = new TransUnitId(1L);
+   @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+   private GetTransUnitActionContextHolder contextHolder;
 
    @BeforeMethod
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new TranslationHistoryPresenter(display, eventBus, dispatcher, messages, selectionModel, dataProvider);
+      presenter = new TranslationHistoryPresenter(display, eventBus, dispatcher, messages, contextHolder);
       presenter.setCurrentValueHolder(targetContentsPresenter);
       
-      verify(display).setDataProvider(dataProvider);
-      verify(display).setSelectionModel(selectionModel);
-      verify(display).addVersionSortHandler(sortHandlerCaptor.capture());
-
-      when(dataProvider.getList()).thenReturn(Lists.<TransHistoryItem>newArrayList());
       doNothing().when(dispatcher).execute(actionCaptor.capture(), resultCaptor.capture());
    }
 
    private static TransHistoryItem historyItem(String versionNum)
    {
       return new TransHistoryItem(versionNum, Lists.newArrayList("a"), ContentState.Approved, "admin", new Date());
-   }
-
-   @Test
-   public void onSelectionChangeIfNotTwoSelectionWillDisableComparison()
-   {
-      // Given: no item is selected
-      when(selectionModel.getSelectedSet()).thenReturn(Collections.<TransHistoryItem>emptySet());
-
-      // When:
-      presenter.onSelectionChange(selectionChangeEvent);
-
-      // Then:
-      verify(display).disableComparison();
-   }
-
-   @Test
-   public void onSelectionChangeIfTwoAreSelectedWillEnableComparison()
-   {
-      // Given: two items are selected
-      TransHistoryItem itemOne = historyItem("1");
-      TransHistoryItem itemTwo = historyItem("2");
-      // this is to get around arbitrary order in set (so that we can mock the method call)
-      Iterator<TransHistoryItem> tempIterator = Lists.newArrayList(itemOne, itemTwo).iterator();
-      Set<TransHistoryItem> mockHistoryItems = Mockito.mock(Set.class);
-      when(selectionModel.getSelectedSet()).thenReturn(mockHistoryItems);
-      when(mockHistoryItems.size()).thenReturn(2);
-      when(mockHistoryItems.iterator()).thenReturn(tempIterator);
-      when(messages.translationHistoryComparison("1", "2")).thenReturn("compare ver. 1 to 2");
-
-      // When:
-      presenter.onSelectionChange(selectionChangeEvent);
-
-      // Then:
-      verify(display).showDiff(itemOne, itemTwo, "compare ver. 1 to 2");
    }
 
    @Test
@@ -133,9 +97,7 @@ public class TranslationHistoryPresenterTest
       presenter.showTranslationHistory(transUnitId);
 
       // Then:
-      verify(dataProvider).setLoading(true);
       verify(display).setTitle("translation history");
-      verify(selectionModel).clear();
       verify(display).resetView();
       verify(display).center();
       assertThat(actionCaptor.getValue().getTransUnitId(), Matchers.equalTo(transUnitId));
@@ -158,21 +120,18 @@ public class TranslationHistoryPresenterTest
       TransHistoryItem latest = historyItem(latestVersion);
       // latest contents and current contents are equal
       when(targetContentsPresenter.getNewTargets()).thenReturn(Lists.newArrayList(latest.getContents()));
-      when(messages.latestVersion(latestVersion)).thenReturn("2 latest");
+      when(messages.latest()).thenReturn("latest");
 
       // When: request history for trans unit id 1
       presenter.showTranslationHistory(transUnitId);
 
       // Then:on success
-      verify(dataProvider).setLoading(true);
       verify(display).setTitle("translation history");
-      verify(selectionModel).clear();
       verify(display).resetView();
       verify(display).center();
       AsyncCallback<GetTranslationHistoryResult> result = resultCaptor.getValue();
       result.onSuccess(createTranslationHistory(latest, historyItem));
-      MatcherAssert.assertThat(dataProvider.getList(), Matchers.contains(latest, historyItem));
-      verify(dataProvider).setLoading(false);
+      verify(display).setData(Lists.<ComparableByDate>newArrayList(latest, historyItem));
    }
 
    @Test
@@ -184,7 +143,7 @@ public class TranslationHistoryPresenterTest
       TransHistoryItem latest = historyItem(latestVersion);
       // latest contents and current contents are NOT equal
       when(targetContentsPresenter.getNewTargets()).thenReturn(Lists.newArrayList("b"));
-      when(messages.latestVersion(latestVersion)).thenReturn("2 latest");
+      when(messages.latest()).thenReturn("latest");
       when(messages.unsaved()).thenReturn("unsaved");
 
       // When: request history for trans unit id 1
@@ -193,12 +152,92 @@ public class TranslationHistoryPresenterTest
       // Then: on success
       AsyncCallback<GetTranslationHistoryResult> result = resultCaptor.getValue();
       result.onSuccess(createTranslationHistory(latest, historyItem));
-      MatcherAssert.assertThat(dataProvider.getList(), Matchers.hasSize(3));
-      MatcherAssert.assertThat(dataProvider.getList().get(0).getVersionNum(), Matchers.equalTo("unsaved"));
+
+      ArgumentCaptor<List> listArgumentCaptor = ArgumentCaptor.forClass(List.class);
+      verify(display).setData(listArgumentCaptor.capture());
+      assertThat((List<ComparableByDate>) listArgumentCaptor.getValue(), Matchers.<ComparableByDate>hasSize(3));
    }
 
    private static GetTranslationHistoryResult createTranslationHistory(TransHistoryItem latest, TransHistoryItem... historyItems)
    {
-      return new GetTranslationHistoryResult(Lists.newArrayList(historyItems), latest);
+      return new GetTranslationHistoryResult(Lists.newArrayList(historyItems), latest, Lists.<ReviewComment>newArrayList());
    }
+
+   @Test
+   public void canCopyIntoEditor()
+   {
+      List<String> contents = Lists.newArrayList("a");
+
+      presenter.copyIntoEditor(contents);
+
+      ArgumentCaptor<CopyDataToEditorEvent> eventCaptor = ArgumentCaptor.forClass(CopyDataToEditorEvent.class);
+      verify(eventBus).fireEvent(eventCaptor.capture());
+
+      assertThat(eventCaptor.getValue().getTargetResult(), Matchers.equalTo(contents));
+   }
+
+   @Test
+   public void testAddComment() throws Exception
+   {
+      when(contextHolder.getContext().getDocument().getId()).thenReturn(new DocumentId(1L, "doc"));
+      ArgumentCaptor<AddReviewCommentAction> actionCaptor = ArgumentCaptor.forClass(AddReviewCommentAction.class);
+      ArgumentCaptor<AsyncCallback> resultCaptor = ArgumentCaptor.forClass(AsyncCallback.class);
+
+      presenter.addComment("some comment");
+
+      verify(dispatcher).execute(actionCaptor.capture(), resultCaptor.capture());
+      assertThat(actionCaptor.getValue().getContent(), Matchers.equalTo("some comment"));
+
+      AsyncCallback<AddReviewCommentResult> callback = resultCaptor.getValue();
+      AddReviewCommentResult result = new AddReviewCommentResult(new ReviewComment());
+      callback.onSuccess(result);
+
+      verify(display).addCommentToList(result.getComment());
+      verify(display).clearInput();
+   }
+
+   @Test
+   public void canDisplayEntriesInOrder()
+   {
+      // no unsaved content
+      when(targetContentsPresenter.getNewTargets()).thenReturn(Lists.newArrayList("a"));
+      long now = new Date().getTime();
+      // items in time order
+      TransHistoryItem latest = new TransHistoryItem("5", Lists.newArrayList("a"), ContentState.Approved, "admin",
+            new Date(now - 1000));
+      TransHistoryItem item = new TransHistoryItem("4", Lists.newArrayList("a"), ContentState.Approved, "admin",
+            new Date(now - 2000));
+      ReviewComment comment = new ReviewComment(new ReviewCommentId(1L), "comment", "admin", new Date(now), 5);
+
+      presenter.displayEntries(latest, Lists.newArrayList(item), Lists.newArrayList(comment));
+
+      ArgumentCaptor<List> listArgumentCaptor = ArgumentCaptor.forClass(List.class);
+      verify(display).setData(listArgumentCaptor.capture());
+      List<ComparableByDate> result = (List<ComparableByDate>) listArgumentCaptor.getValue();
+      assertThat(result, Matchers.<ComparableByDate>contains(comment, latest, item));
+   }
+
+   @Test
+   public void onCompareClickedWhenThePairIsNotFull()
+   {
+      // the pair is empty initially
+      presenter.compareClicked(historyItem("5"));
+
+      verify(display).disableComparison();
+   }
+
+   @Test
+   public void onCompareClickedWhichMakesTwoItems()
+   {
+      when(messages.translationHistoryComparison("5", "4")).thenReturn("comparison of 5 and 4");
+      TransHistoryItem one = historyItem("5");
+      presenter.compareClicked(one);
+      verify(display).disableComparison();
+
+      TransHistoryItem two = historyItem("4");
+      presenter.compareClicked(two);
+      verify(display).showDiff(one, two, "comparison of 5 and 4");
+
+   }
+
 }

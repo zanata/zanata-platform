@@ -16,8 +16,9 @@ import org.jboss.seam.security.permission.PermissionCheck;
 import org.jboss.seam.security.permission.RoleCheck;
 
 import function org.zanata.security.SecurityFunctions.isUserAllowedAccess;
-import function org.zanata.security.SecurityFunctions.isUserMemberOfLanguageTeam;
-import function org.zanata.security.SecurityFunctions.isUserCoordinatorOfLanguageTeam;
+import function org.zanata.security.SecurityFunctions.isUserTranslatorOfLanguage;
+import function org.zanata.security.SecurityFunctions.isUserReviewerOfLanguage;
+import function org.zanata.security.SecurityFunctions.isUserCoordinatorOfLanguage;
 
 /* admin can do anything */
 rule AdminAnything
@@ -191,7 +192,24 @@ when
   $project: HProject( eval(isUserAllowedAccess($project)) )
   eval(authenticatedPerson != null)
   $locale: HLocale(
-    eval(isUserMemberOfLanguageTeam($locale))
+    eval(isUserTranslatorOfLanguage($locale))
+  )
+then
+  check.grant();
+end
+
+/* Language Team reviewer can approve/reject translation */
+
+rule LangTeamReviewerReviewTranslation
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(action == "review-translation", granted == false)
+  authenticatedPerson: HPerson()
+  $project: HProject( eval(isUserAllowedAccess($project)) )
+  eval(authenticatedPerson != null)
+  $locale: HLocale(
+    eval(isUserReviewerOfLanguage($locale))
   )
 then
   check.grant();
@@ -203,7 +221,7 @@ rule ProjectMaintainerAddTranslation
   no-loop
   activation-group "permissions"
 when
-  check: PermissionCheck(action == "add-translation" || action == "modify-translation", granted == false)
+  check: PermissionCheck(action == "add-translation" || action == "modify-translation" || action == "review-translation", granted == false)
   authenticatedPerson: HPerson() 
   eval(authenticatedPerson != null)
   $project: HProject(
@@ -286,7 +304,7 @@ when
   authenticatedPerson: HPerson() 
   eval(authenticatedPerson != null)
   $locale: HLocale(
-    eval(isUserCoordinatorOfLanguageTeam($locale))
+    eval(isUserCoordinatorOfLanguage($locale))
   )
   check: PermissionCheck(action == "manage-language-team", granted == false)
 then
@@ -306,7 +324,7 @@ when
   HLocaleMember()
   authenticatedPerson: HPerson() 
   eval(authenticatedPerson != null)
-  $member: HLocaleMember( $locale : supportedLanguage, isUserCoordinatorOfLanguageTeam($locale) )
+  $member: HLocaleMember( $locale : supportedLanguage, isUserCoordinatorOfLanguage($locale) )
   check: PermissionCheck(
     target == $member, 
     action == "insert" || action == "update" || action == "delete", 
@@ -469,16 +487,15 @@ end
 ******************************************************************************************/
 rule ReviewerReviewTranslation
   no-loop
-  activation-group "permisstions"
+  activation-group "permissions"
 when
   check: PermissionCheck(action == "translation-review", granted == false)
   $project: HProject(
     eval( isUserAllowedAccess($project) )
   )
   $locale: HLocale(
-    eval( isUserMemberOfLanguageTeam($locale) )
+    eval( isUserReviewerOfLanguage($locale) )
   )
-  Role(name == "reviewer")
 then
   check.grant();
 end

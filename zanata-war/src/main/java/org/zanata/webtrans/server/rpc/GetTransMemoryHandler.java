@@ -47,7 +47,6 @@ import org.zanata.search.LevenshteinUtil;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationMemoryQueryService;
-import org.zanata.service.TranslationStateCache;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
@@ -71,9 +70,6 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
 
    @In
    private LocaleService localeServiceImpl;
-
-   @In
-   private TranslationStateCache translationStateCacheImpl;
 
    @In
    private TranslationMemoryQueryService translationMemoryQueryService;

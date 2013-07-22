@@ -25,6 +25,7 @@ import org.custommonkey.xmlunit.XpathEngine;
 import org.custommonkey.xmlunit.exceptions.XpathException;
 import org.testng.annotations.Test;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import org.zanata.common.LocaleId;
@@ -164,13 +165,15 @@ public class TMXStreamingOutputTest
    }
 
    @SuppressWarnings("deprecation") // Eclipse seems to confuse org.junit with junit.framework
-   private static void assertSingleTU(String docId, String resId, Document doc) throws XpathException, SAXException, IOException
+   private void assertSingleTU(String docId, String resId, Document doc) throws XpathException, SAXException, IOException
    {
       String xpath = "//tu[@tuid='"+docId+":"+resId+"']";
       XpathEngine simpleXpathEngine = XMLUnit.newXpathEngine();
       NodeList nodeList = simpleXpathEngine.getMatchingNodes(xpath, doc);
       int matches = nodeList.getLength();
       assertEquals("Should be only one tu node per docId:resId", 1, matches);
+      Node srclang = nodeList.item(0).getAttributes().getNamedItem("srclang");
+      assertEquals(sourceLocale.getId(), srclang.getNodeValue());
    }
 
    private static void assertTUContainsSegment(String segmentText, String docId, String resId, String lang, Document doc) throws XpathException, SAXException, IOException

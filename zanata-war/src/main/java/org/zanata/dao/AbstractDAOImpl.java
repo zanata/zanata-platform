@@ -13,9 +13,10 @@ import org.jboss.seam.annotations.In;
 /**
  * Based on code from http://community.jboss.org/wiki/GenericDataAccessObjects
  */
-public abstract class AbstractDAOImpl<T, ID extends Serializable> implements GenericDAO<T, ID>
+public abstract class AbstractDAOImpl<T, ID extends Serializable> implements GenericDAO<T, ID>, Serializable
 {
-
+   private static final long serialVersionUID = 1L;
+   
    private Class<T> persistentClass;
    private Session session;
 

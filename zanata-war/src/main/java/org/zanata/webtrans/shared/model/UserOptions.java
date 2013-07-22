@@ -22,7 +22,7 @@ public enum UserOptions implements IsSerializable
    ShowErrors(common()+ ".ShowErrors"),
    Themes(common()+ ".Themes"),
    TranslatedMessageFilter(editor()+ ".TranslatedMessageFilter"), 
-   NeedReviewMessageFilter(editor()+ ".NeedReviewMessageFilter"), 
+   FuzzyMessageFilter(editor()+ ".FuzzyMessageFilter"), 
    UntranslatedMessageFilter(editor()+ ".UntranslatedMessageFilter"), 
    ApprovedMessageFilter(editor()+ ".ApprovedMessageFilter"), 
    RejectedMessageFilter(editor()+ ".RejectedMessageFilter"), 

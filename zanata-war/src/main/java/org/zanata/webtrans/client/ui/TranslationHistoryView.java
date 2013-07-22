@@ -4,22 +4,19 @@ import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.zanata.common.ContentState;
-import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
-import org.zanata.webtrans.client.presenter.TransHistoryVersionComparator;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.util.ContentStateToStyleUtil;
 import org.zanata.webtrans.client.util.DateUtil;
+import org.zanata.webtrans.shared.model.ComparableByDate;
+import org.zanata.webtrans.shared.model.ReviewComment;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.google.gwt.cell.client.AbstractCell;
-import com.google.gwt.cell.client.ActionCell;
 import com.google.gwt.cell.client.Cell;
-import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
@@ -27,35 +24,25 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.ColumnSortEvent;
-import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.view.client.DefaultSelectionEventManager;
-import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.SelectionModel;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class TranslationHistoryView extends DialogBox implements TranslationHistoryDisplay
 {
-   private static final int PAGE_SIZE = 5;
    private static final int COMPARISON_TAB_INDEX = 1;
-   private static final CellTableResources CELL_TABLE_RESOURCES = GWT.create(CellTableResources.class);
    private static TranslationHistoryViewUiBinder uiBinder = GWT.create(TranslationHistoryViewUiBinder.class);
-   private final CellTable<TransHistoryItem> historyTable;
-   private final EventBus eventBus;
+   private final ContentStateRenderer stateRenderer;
    @UiField
    WebTransMessages messages;
    @UiField
-   VerticalPanel historyPanel;
+   HTMLPanel historyPanel;
    @UiField
    HistoryEntryComparisonPanel comparisonPanel;
    @UiField
@@ -65,102 +52,82 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    @UiField
    TabLayoutPanel tabLayoutPanel;
 
-   private Column<TransHistoryItem,String> versionColumn;
    @UiField
    Button compareButton;
+   @UiField
+   UnorderedListWidget itemList;
+   @UiField
+   Button addCommentButton;
+   @UiField
+   TextArea commentTextArea;
+   private Listener listener;
+   private List<ComparableByDate> items = Lists.newArrayList();
 
    @Inject
-   public TranslationHistoryView(EventBus eventBus)
+   public TranslationHistoryView(ContentStateRenderer stateRenderer)
    {
       super(true, true);
+      this.stateRenderer = stateRenderer;
       closeButton = new DialogBoxCloseButton(this);
       HTMLPanel container = uiBinder.createAndBindUi(this);
-      this.eventBus = eventBus;
       ensureDebugId("transHistory");
       tabLayoutPanel.ensureDebugId("transHistoryTabPanel");
       setGlassEnabled(true);
 
-      historyTable = setUpHistoryTable();
+      commentTextArea.getElement().setAttribute("placeholder", "Add a comment...");
 
-      SimplePager simplePager = new SimplePager();
-      simplePager.setDisplay(historyTable);
-
-      historyPanel.add(historyTable);
-      historyPanel.add(simplePager);
       setWidget(container);
    }
 
-   private CellTable<TransHistoryItem> setUpHistoryTable()
+   @Override
+   public void setData(List<ComparableByDate> items)
    {
-      CellTable<TransHistoryItem> historyTable = new CellTable<TransHistoryItem>(PAGE_SIZE, CELL_TABLE_RESOURCES, HISTORY_ITEM_PROVIDES_KEY);
-      historyTable.setEmptyTableWidget(new Label(messages.noContent()));
-      historyTable.setLoadingIndicator(new Label(messages.loading()));
+      this.items = items;
+      commentTextArea.setEnabled(!items.isEmpty());
+      addCommentButton.setEnabled(!items.isEmpty());
 
-      versionColumn = createVersionColumn();
-      versionColumn.setSortable(true);
-      Column<TransHistoryItem, List<String>> contentsColumn = createContentsColumn();
-      Column<TransHistoryItem, String> modifiedByColumn = createModifiedByColumn();
-      Column<TransHistoryItem, String> modifiedDateColumn = createModifiedDateColumn();
-      Column<TransHistoryItem, TransHistoryItem> pasteActionColumn = createCopyActionColumn(messages);
-
-      historyTable.addColumn(versionColumn, messages.versionNumber());
-      historyTable.setColumnWidth(versionColumn, 10, Style.Unit.PCT);
-      historyTable.getColumnSortList().push(versionColumn);
-
-      historyTable.addColumn(contentsColumn, messages.target());
-      historyTable.setColumnWidth(contentsColumn, 40, Style.Unit.PCT);
-
-      historyTable.addColumn(pasteActionColumn, messages.actions());
-      historyTable.setColumnWidth(pasteActionColumn, 20, Style.Unit.PCT);
-      pasteActionColumn.setCellStyleNames(style.pasteButton());
-
-      historyTable.addColumn(modifiedByColumn, messages.modifiedBy());
-      historyTable.setColumnWidth(modifiedByColumn, 10, Style.Unit.PCT);
-
-      historyTable.addColumn(modifiedDateColumn, messages.modifiedDate());
-      historyTable.setColumnWidth(modifiedDateColumn, 20, Style.Unit.PCT);
-
-      return historyTable;
+      redrawList();
    }
 
-   private static Column<TransHistoryItem, Boolean> createCheckboxColumn(final SelectionModel<TransHistoryItem> selectionModel)
+   private void redrawList()
    {
-      return new Column<TransHistoryItem, Boolean>(
-            new CheckboxCell(true, false)) {
-         @Override
-         public Boolean getValue(TransHistoryItem object) {
-            // Get the value from the selection model.
-            return selectionModel.isSelected(object);
+      itemList.clear();
+      for (ComparableByDate item : items)
+      {
+         if (item instanceof TransHistoryItem)
+         {
+            itemList.add(new TransHistoryItemLine((TransHistoryItem) item, listener, stateRenderer));
          }
-      };
+         if (item instanceof ReviewComment)
+         {
+            itemList.add(new ReviewCommentItemLine((ReviewComment) item));
+         }
+      }
    }
 
-   private Column<TransHistoryItem, TransHistoryItem> createCopyActionColumn(WebTransMessages messages)
+   @Override
+   public void addCommentToList(ReviewComment comment)
    {
-      Cell<TransHistoryItem> copyActionCell = new ActionCell<TransHistoryItem>(messages.pasteIntoEditor(), new ActionCell.Delegate<TransHistoryItem>()
-      {
-         @Override
-         public void execute(TransHistoryItem historyItem)
-         {
-            eventBus.fireEvent(new CopyDataToEditorEvent(historyItem.getContents()));
-            hide();
-         }
-      });
-      return new Column<TransHistoryItem, TransHistoryItem>(copyActionCell)
-      {
+      items.add(0, comment);
+      redrawList();
+   }
 
-         @Override
-         public TransHistoryItem getValue(TransHistoryItem object)
-         {
-            return object;
-         }
-      };
+   @Override
+   public void clearInput()
+   {
+      commentTextArea.setValue("");
    }
 
    @UiHandler("compareButton")
    public void onCompareButtonClick(ClickEvent event)
    {
       tabLayoutPanel.selectTab(COMPARISON_TAB_INDEX);
+   }
+
+   @UiHandler("addCommentButton")
+   public void onAddCommentButtonClick(ClickEvent event)
+   {
+      listener.addComment(commentTextArea.getText());
    }
 
    @Override
@@ -180,33 +147,15 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    }
 
    @Override
-   public void setSelectionModel(SelectionModel<TransHistoryItem> multiSelectionModel)
-   {
-      historyTable.setSelectionModel(multiSelectionModel, DefaultSelectionEventManager.<TransHistoryItem>createCheckboxManager());
-      Column<TransHistoryItem, Boolean> checkboxColumn = createCheckboxColumn(multiSelectionModel);
-      historyTable.insertColumn(0, checkboxColumn);
-      historyTable.setColumnWidth(checkboxColumn, 10, Style.Unit.PX);
-   }
-
-   @Override
-   public void setDataProvider(ListDataProvider<TransHistoryItem> dataProvider)
-   {
-      dataProvider.addDataDisplay(historyTable);
-   }
-
-   @Override
    public void setTitle(String title)
    {
       getCaption().setText(title);
    }
 
    @Override
-   public void addVersionSortHandler(ColumnSortEvent.ListHandler<TransHistoryItem> sortHandler)
+   public void setListener(Listener listener)
    {
-      sortHandler.setComparator(versionColumn, TransHistoryVersionComparator.COMPARATOR);
-      historyTable.addColumnSortHandler(sortHandler);
-      //push it to make column sort in desc order at start
-      historyTable.getColumnSortList().push(versionColumn);
+      this.listener = listener;
    }
 
    private void setComparisonTitle(String description)
@@ -218,72 +167,9 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    @Override
    public void resetView()
    {
-      historyTable.setPageStart(0);
+      items = Lists.newArrayList();
+      redrawList();
       disableComparison();
-   }
-
-   private static Column<TransHistoryItem, String> createVersionColumn()
-   {
-      return new Column<TransHistoryItem, String>(new TextCell())
-      {
-         @Override
-         public String getValue(TransHistoryItem historyItem)
-         {
-            return historyItem.getVersionNum();
-         }
-      };
-   }
-
-   private static Column<TransHistoryItem, List<String>> createContentsColumn()
-   {
-      Cell<List<String>> contentCell = new AbstractCell<List<String>>()
-      {
-         @Override
-         public void render(Context context, List<String> contents, SafeHtmlBuilder sb)
-         {
-            SafeHtml safeHtml = TextContentsDisplay.asSyntaxHighlight(contents).toSafeHtml();
-            sb.appendHtmlConstant(safeHtml.asString());
-         }
-      };
-      return new Column<TransHistoryItem, List<String>>(contentCell)
-      {
-         @Override
-         public List<String> getValue(TransHistoryItem historyItem)
-         {
-            return historyItem.getContents();
-         }
-
-         @Override
-         public String getCellStyleNames(Cell.Context context, TransHistoryItem historyItem)
-         {
-            String styleNames = Strings.nullToEmpty(super.getCellStyleNames(context, historyItem));
-            return ContentStateToStyleUtil.stateToStyle(historyItem.getStatus(), styleNames);
-         }
-      };
-   }
-
-   private static Column<TransHistoryItem, String> createModifiedByColumn()
-   {
-      return new Column<TransHistoryItem, String>(new TextCell())
-      {
-         @Override
-         public String getValue(TransHistoryItem historyItem)
-         {
-            return historyItem.getModifiedBy();
-         }
-      };
-   }
-
-   private static Column<TransHistoryItem, String> createModifiedDateColumn()
-   {
-      return new Column<TransHistoryItem, String>(new TextCell())
-      {
-         @Override
-         public String getValue(TransHistoryItem historyItem)
-         {
-            return DateUtil.formatShortDate(historyItem.getModifiedDate());
-         }
-      };
    }
 
    interface TranslationHistoryViewUiBinder extends UiBinder<HTMLPanel, TranslationHistoryView>

@@ -25,7 +25,9 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import lombok.extern.slf4j.Slf4j;
+import net.sf.okapi.common.filterwriter.TMXWriter;
 import net.sf.okapi.common.resource.ITextUnit;
+import net.sf.okapi.common.resource.Property;
 import net.sf.okapi.common.resource.TextFragment;
 import net.sf.okapi.common.resource.TextUnit;
 
@@ -60,8 +62,9 @@ public class ExportTUStrategy<TU extends SourceContents> //implements ExportTUSt
     * @param tuidPrefix String to be prepended to all resIds when generating tuids
     * @param tf the SourceContents (TextFlow) whose contents and translations are to be exported
     */
-   public void exportTranslationUnit(ZanataTMXWriter tmxWriter, SourceContents tf)
+   public void exportTranslationUnit(TMXWriter tmxWriter, SourceContents tf)
    {
+      assert tmxWriter.isWriteAllPropertiesAsAttributes();
       net.sf.okapi.common.LocaleId sourceLocaleId = OkapiUtil.toOkapiLocaleOrEmpty(tf.getLocale());
       String tuid = tf.getQualifiedId();
       // Perhaps we could encode plurals using TMX attributes?
@@ -73,6 +76,7 @@ public class ExportTUStrategy<TU extends SourceContents> //implements ExportTUSt
       }
 
       ITextUnit textUnit = new TextUnit(tuid, srcContent);
+      setSrcLang(textUnit, sourceLocaleId);
       textUnit.setName(tuid);
       if (localeId != null)
       {
@@ -95,6 +99,11 @@ public class ExportTUStrategy<TU extends SourceContents> //implements ExportTUSt
       {
          tmxWriter.writeTUFull(textUnit, sourceLocaleId);
       }
+   }
+
+   private void setSrcLang(ITextUnit textUnit, net.sf.okapi.common.LocaleId sourceLocaleId)
+   {
+      textUnit.setProperty(new Property("srclang", sourceLocaleId.toBCP47()));
    }
 
    private void addTargetToTextUnit(ITextUnit textUnit, TargetContents tfTarget)

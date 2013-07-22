@@ -184,14 +184,14 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler
       // @formatter:off
       KeyShortcut ctrlEnterShortcut = KeyShortcut.Builder.builder()
             .addKey(new Keys(Keys.CTRL_KEY, KeyCodes.KEY_ENTER))
-            .setContext(ShortcutContext.Edit).setDescription(messages.saveAsApproved())
+            .setContext(ShortcutContext.Edit).setDescription(messages.saveAsTranslated())
             .setPreventDefault(true).setStopPropagation(true)
             .setHandler(saveAsApprovedKeyShortcutHandler)
             .build();
       keyShortcutPresenter.register(ctrlEnterShortcut);
       enterSavesApprovedShortcut = KeyShortcut.Builder.builder()
             .addKey(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER))
-            .setContext(ShortcutContext.Edit).setDescription(messages.saveAsApproved())
+            .setContext(ShortcutContext.Edit).setDescription(messages.saveAsTranslated())
             .setPreventDefault(true).setStopPropagation(true)
             .setHandler(saveAsApprovedKeyShortcutHandler)
             .build();

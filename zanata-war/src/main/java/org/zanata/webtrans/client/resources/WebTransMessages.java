@@ -199,8 +199,8 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("No replacements to make")
    String noReplacementsToMake();
 
-   @DefaultMessage("Replace not possible in read-only workspace")
-   String cannotReplaceInReadOnlyMode();
+   @DefaultMessage("You have no access to modify translations")
+   String youAreNotAllowedToModifyTranslations();
 
    @DefaultMessage("View in editor")
    String viewDocInEditor();
@@ -377,8 +377,8 @@ public interface WebTransMessages extends Messages
    String translationHistoryComparisonTitle();
 
    @Description("latest version in translation history")
-   @DefaultMessage("{0} Latest")
-   String latestVersion(String versionNum);
+   @DefaultMessage("Latest")
+   String latest();
 
    @Description("current unsaved value in editor for translation history display")
    @DefaultMessage("Unsaved")
@@ -542,4 +542,15 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Download document with extension {0}")
    String downloadFileTitle(String key);
 
+   @DefaultMessage("Comment")
+   String reviewComment();
+
+   @DefaultMessage("You")
+   String you();
+
+   @DefaultMessage("Compare")
+   String compare();
+
+   @DefaultMessage("Remove from comparison")
+   String removeFromComparison();
 }

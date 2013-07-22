@@ -344,8 +344,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
             Integer row = pageRows.get(entry.getKey());
             if (row != null)
             {
-               display.updateStats(row.intValue(), docInfo.getStats());
-               display.updateLastTranslated(row.intValue(), docInfo.getLastTranslated());
+               display.updateStats(row, docInfo.getStats());
+               display.updateLastTranslated(row, docInfo.getLastTranslated());
             }
             eventBus.fireEvent(new DocumentStatsUpdatedEvent(entry.getKey(), docInfo.getStats()));
             eventBus.fireEvent(new ProjectStatsUpdatedEvent(docInfo.getStats()));
@@ -462,7 +462,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    public void onTransUnitUpdated(TransUnitUpdatedEvent event)
    {
       TransUnitUpdateInfo updateInfo = event.getUpdateInfo();
-      Log.info("********** updated Info:" + updateInfo);
       // update stats for containing document
       DocumentInfo updatedDoc = getDocumentInfo(updateInfo.getDocumentId());
       ContainerTranslationStatistics currentStats = updatedDoc.getStats();
@@ -476,24 +475,12 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
          Integer row = pageRows.get(updatedDoc.getId());
          if (row != null)
          {
-            display.updateStats(row.intValue(), updatedDoc.getStats());
+            display.updateStats(row, updatedDoc.getStats());
             AuditInfo lastTranslated = new AuditInfo(event.getUpdateInfo().getTransUnit().getLastModifiedTime(), event.getUpdateInfo().getTransUnit().getLastModifiedBy());
-            display.updateLastTranslated(row.intValue(), lastTranslated);
+            display.updateLastTranslated(row, lastTranslated);
          }
          eventBus.fireEvent(new DocumentStatsUpdatedEvent(updatedDoc.getId(), currentStats));
       }
-   }
-
-   private static void logStatistics(String msg, TranslationStatistics statistics)
-   {
-      String string = com.google.common.base.Objects.toStringHelper(statistics).
-            add("unit", statistics.getUnit()).
-            add("approved", statistics.getApproved()).
-            add("draft", statistics.getDraft()).
-            add("new", statistics.getUntranslated()).
-//            add("locale", statistics.getLocale()).
-            toString();
-      Log.info(msg + " statistics: " + string);
    }
 
    private void updateLastTranslatedInfo(DocumentInfo doc, TransUnit updatedTransUnit)
@@ -510,10 +497,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
       TranslationStatistics msgStatistic = stats.getStats(localeId.getId(), StatUnit.MESSAGE);
       TranslationStatistics wordStatistic = stats.getStats(localeId.getId(), StatUnit.WORD);
       
-      logStatistics("before adjust", msgStatistic);
       msgStatistic.decrement(updateInfo.getPreviousState(), 1);
       msgStatistic.increment(updateInfo.getTransUnit().getStatus(), 1);
-      logStatistics("after adjust", msgStatistic);
 
       wordStatistic.decrement(updateInfo.getPreviousState(), updateInfo.getSourceWordCount());
       wordStatistic.increment(updateInfo.getTransUnit().getStatus(), updateInfo.getSourceWordCount());

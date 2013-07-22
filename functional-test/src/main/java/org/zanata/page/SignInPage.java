@@ -74,7 +74,6 @@ public class SignInPage extends AbstractPage
       usernameField.clear();
       usernameField.sendKeys(username);
       passwordField.sendKeys(password);
-      log.info("after input, username is: {}, password is: {}", usernameField.getText(), passwordField.getText());
       signInButton.click();
       waitForTenSec().until(new Predicate<WebDriver>()
       {

@@ -169,7 +169,18 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler, CheckSta
 
    private TransUnitUpdated.UpdateType workoutUpdateType(ContentState status)
    {
-      return status == ContentState.NeedReview ? TransUnitUpdated.UpdateType.WebEditorSaveFuzzy : TransUnitUpdated.UpdateType.WebEditorSave;
+      if(status == ContentState.Approved || status == ContentState.Rejected)
+      {
+         return TransUnitUpdated.UpdateType.WebEditorSaveReview;
+      }
+      else if(status == ContentState.NeedReview)
+      {
+         return TransUnitUpdated.UpdateType.WebEditorSaveFuzzy;
+      }
+      else
+      {
+         return TransUnitUpdated.UpdateType.WebEditorSave;
+      }
    }
 
    private class UpdateTransUnitCallback implements AsyncCallback<UpdateTransUnitResult>

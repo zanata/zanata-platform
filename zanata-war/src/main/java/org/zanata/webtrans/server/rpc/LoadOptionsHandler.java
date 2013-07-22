@@ -151,9 +151,9 @@ public class LoadOptionsHandler extends AbstractActionHandler<LoadOptionsAction,
          configHolder.setFilterByTranslated(filteredOptions.get(UserOptions.TranslatedMessageFilter.getPersistentName()).getValueAsBoolean());
       }
 
-      if (filteredOptions.containsKey(UserOptions.NeedReviewMessageFilter.getPersistentName()))
+      if (filteredOptions.containsKey(UserOptions.FuzzyMessageFilter.getPersistentName()))
       {
-         configHolder.setFilterByNeedReview(filteredOptions.get(UserOptions.NeedReviewMessageFilter.getPersistentName()).getValueAsBoolean());
+         configHolder.setFilterByFuzzy(filteredOptions.get(UserOptions.FuzzyMessageFilter.getPersistentName()).getValueAsBoolean());
       }
 
       if (filteredOptions.containsKey(UserOptions.UntranslatedMessageFilter.getPersistentName()))

@@ -257,16 +257,12 @@ public class ValidationServiceImpl implements ValidationService
       }
 
       int toIndex = startIndex + maxSize;
-      validateIndexes(startIndex, toIndex, result.size(), maxSize);
+      
+      toIndex = toIndex > result.size() ? result.size() : toIndex;
+      startIndex = startIndex > toIndex ? toIndex - maxSize : startIndex;
+      startIndex = startIndex < 0 ? 0 : startIndex;
 
       return result.subList(startIndex, toIndex);
-   }
-
-   private void validateIndexes(int startIndex, int toIndex, int actualResultSize, int expectedResultSize)
-   {
-      toIndex = toIndex > actualResultSize ? actualResultSize : toIndex;
-      startIndex = startIndex > toIndex ? toIndex - expectedResultSize : startIndex;
-      startIndex = startIndex < 0 ? 0 : startIndex;
    }
 
    private boolean textFlowTargetHasError(Long textFlowId, List<ValidationId> validationIds, LocaleId localeId)

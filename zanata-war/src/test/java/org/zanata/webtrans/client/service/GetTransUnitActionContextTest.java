@@ -59,10 +59,10 @@ public class GetTransUnitActionContextTest
    @Test
    public void testChangeFilterNeedReview() throws Exception
    {
-      GetTransUnitActionContext result = context.changeFilterNeedReview(true);
+      GetTransUnitActionContext result = context.changeFilterFuzzy(true);
 
-      assertThat(context.isFilterNeedReview(), Matchers.is(false));
-      assertThat(result.isFilterNeedReview(), Matchers.is(true));
+      assertThat(context.isFilterFuzzy(), Matchers.is(false));
+      assertThat(result.isFilterFuzzy(), Matchers.is(true));
    }
 
    @Test
@@ -95,7 +95,7 @@ public class GetTransUnitActionContextTest
    @Test
    public void testNeedReloadList() throws Exception
    {
-      verifyNeedReloadTransUnits(context, context.changeFilterNeedReview(true), NEEDED);
+      verifyNeedReloadTransUnits(context, context.changeFilterFuzzy(true), NEEDED);
       verifyNeedReloadTransUnits(context, context.changeFilterUntranslated(true), NEEDED);
       verifyNeedReloadTransUnits(context, context.changeFilterTranslated(true), NEEDED);
       verifyNeedReloadTransUnits(context, context.changeFilterApproved(true), NEEDED);
@@ -116,7 +116,7 @@ public class GetTransUnitActionContextTest
    @Test
    public void testNeedReloadNavigationIndex() throws Exception
    {
-      verifyNeedReloadNavigationIndex(context, context.changeFilterNeedReview(true), NEEDED);
+      verifyNeedReloadNavigationIndex(context, context.changeFilterFuzzy(true), NEEDED);
       verifyNeedReloadNavigationIndex(context, context.changeFilterUntranslated(true), NEEDED);
       verifyNeedReloadNavigationIndex(context, context.changeFilterTranslated(true), NEEDED);
       verifyNeedReloadNavigationIndex(context, context.changeFilterApproved(true), NEEDED);

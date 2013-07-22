@@ -2,6 +2,7 @@ package org.zanata.webtrans.shared.rpc;
 
 import java.util.List;
 
+import org.zanata.webtrans.shared.model.ReviewComment;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 
 import com.google.common.collect.Lists;
@@ -12,18 +13,19 @@ import com.google.common.collect.Lists;
 public class GetTranslationHistoryResult implements DispatchResult
 {
    private List<TransHistoryItem> historyItems = Lists.newArrayList();
+   private List<ReviewComment> reviewComments = Lists.newArrayList();
    private TransHistoryItem latest;
-
 
    @SuppressWarnings("unused")
    private GetTranslationHistoryResult()
    {
    }
 
-   public GetTranslationHistoryResult(Iterable<TransHistoryItem> historyItems, TransHistoryItem latest)
+   public GetTranslationHistoryResult(List<TransHistoryItem> historyItems, TransHistoryItem latest, List<ReviewComment> reviewComments)
    {
       this.latest = latest;
-      this.historyItems = Lists.newArrayList(historyItems);
+      this.historyItems = historyItems;
+      this.reviewComments = reviewComments;
    }
 
    public List<TransHistoryItem> getHistoryItems()
@@ -34,5 +36,10 @@ public class GetTranslationHistoryResult implements DispatchResult
    public TransHistoryItem getLatest()
    {
       return latest;
+   }
+
+   public List<ReviewComment> getReviewComments()
+   {
+      return reviewComments;
    }
 }

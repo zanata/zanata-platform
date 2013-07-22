@@ -124,7 +124,7 @@ public class TransUnitSaveServiceTest
 
       UpdateTransUnit updateTransUnit = actionCaptor.getValue();
       assertThat(updateTransUnit.getUpdateRequests(), hasSize(1));
-      assertThat(updateTransUnit.getUpdateType(), equalTo(TransUnitUpdated.UpdateType.WebEditorSave));
+      assertThat(updateTransUnit.getUpdateType(), equalTo(TransUnitUpdated.UpdateType.WebEditorSaveReview));
 
       TransUnitUpdateRequest request = updateTransUnit.getUpdateRequests().get(0);
       assertThat(request.getTransUnitId(), equalTo(TRANS_UNIT_ID));
@@ -149,7 +149,7 @@ public class TransUnitSaveServiceTest
 
       UpdateTransUnit updateTransUnit = actionCaptor.getValue();
       assertThat(updateTransUnit.getUpdateRequests(), hasSize(1));
-      assertThat(updateTransUnit.getUpdateType(), equalTo(TransUnitUpdated.UpdateType.WebEditorSave));
+      assertThat(updateTransUnit.getUpdateType(), equalTo(TransUnitUpdated.UpdateType.WebEditorSaveReview));
 
       TransUnitUpdateRequest request = updateTransUnit.getUpdateRequests().get(0);
       assertThat(request.getTransUnitId(), equalTo(TRANS_UNIT_ID));

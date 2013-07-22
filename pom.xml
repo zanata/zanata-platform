@@ -30,12 +30,12 @@
       <lucene.version>3.5.0</lucene.version>
       <seam.version>2.3.0.Final</seam.version>
       <gwteventservice.version>1.2.1</gwteventservice.version>
-      <okapi.version>0.21</okapi.version>
+      <okapi.version>0.22</okapi.version>
 
       <zanata.api.version>3.0.1-SNAPSHOT</zanata.api.version>
       <!-- This should always be the previous version of the used api version above -->
       <zanata.api.compat.version>3.0.1-SNAPSHOT</zanata.api.compat.version>
-      <zanata.client.version>3.0.0</zanata.client.version>
+      <zanata.client.version>3.0.1-SNAPSHOT</zanata.client.version>
       <zanata.common.version>3.0.1-SNAPSHOT</zanata.common.version>
 
       <richfaces.version>4.3.2.Final</richfaces.version>
@@ -535,6 +535,16 @@
             <type>test-jar</type>
             <scope>test</scope>
       </dependency>
+          <!--
+            In the server, we can use a newer version than Fedora has
+            (and we need it for concordion).
+            This one also has a source jar!
+          -->
+          <dependency>
+            <groupId>xom</groupId>
+            <artifactId>xom</artifactId>
+            <version>1.2.5</version>
+          </dependency>
    </dependencies>
 
    <!--

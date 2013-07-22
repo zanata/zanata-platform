@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.firefox.FirefoxBinary;
@@ -105,11 +106,11 @@ public enum WebDriverFactory
       driverService = new ChromeDriverService.Builder()
             .usingDriverExecutable(new File(PropertiesHolder.properties.getProperty("webdriver.chrome.driver")))
             .usingAnyFreePort()
+            .withEnvironment(ImmutableMap.of("DISPLAY", PropertiesHolder.properties.getProperty("webdriver.display")))
             .withLogFile(new File(PropertiesHolder.properties.getProperty("webdriver.log")))
             .build();
       DesiredCapabilities capabilities = DesiredCapabilities.chrome();
       capabilities.setCapability("chrome.binary", PropertiesHolder.properties.getProperty("webdriver.chrome.bin"));
-//      System.setProperty("webdriver.chrome.driver", properties.getProperty("webdriver.chrome.driver"));
       try
       {
          driverService.start();
@@ -134,11 +135,13 @@ public enum WebDriverFactory
       {
          firefoxBinary = new FirefoxBinary();
       }
-      //we timeout the connection in 10 seconds
-//      firefoxBinary.setTimeout(SECONDS.toMillis(10));
-
+      /*
+       * TODO: Evaluate current timeout
+       * Timeout the connection in 30 seconds
+       * firefoxBinary.setTimeout(TimeUnit.SECONDS.toMillis(30));
+       */
+      firefoxBinary.setEnvironmentProperty("DISPLAY", PropertiesHolder.properties.getProperty("webdriver.display"));
       return new FirefoxDriver(firefoxBinary, makeFirefoxProfile());
-//      return new FirefoxDriver();
    }
 
    private FirefoxProfile makeFirefoxProfile()
@@ -149,12 +152,16 @@ public enum WebDriverFactory
          // TODO - look at FirefoxDriver.getProfile().
       }
       final FirefoxProfile firefoxProfile = new FirefoxProfile();
-      // firefoxProfile.setPreference("browser.safebrowsing.malware.enabled",
-      // false); // disables connection to sb-ssl.google.com
+
+      /*
+       * TODO: Evaluate need for this
+       * Disable unnecessary connection to sb-ssl.google.com
+       * firefoxProfile.setPreference("browser.safebrowsing.malware.enabled", false);
+       */
+
       firefoxProfile.setAlwaysLoadNoFocusLib(true);
       firefoxProfile.setEnableNativeEvents(true);
       firefoxProfile.setAcceptUntrustedCertificates(true);
-//      firefoxProfile.setPort(8000);
       return firefoxProfile;
    }
 

@@ -25,7 +25,6 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.io.Writer;
 import java.util.Iterator;
 
 import javax.annotation.Nonnull;
@@ -35,11 +34,16 @@ import javax.ws.rs.core.StreamingOutput;
 
 import lombok.Cleanup;
 import net.sf.okapi.common.XMLWriter;
+import net.sf.okapi.common.filterwriter.TMXWriter;
 
 import org.zanata.common.LocaleId;
 import org.zanata.model.SourceContents;
+import org.zanata.util.NullCloseable;
 import org.zanata.util.OkapiUtil;
 import org.zanata.util.VersionUtility;
+
+import com.google.common.collect.Iterators;
+import com.google.common.collect.PeekingIterator;
 
 /**
  * Exports a collection of NamedDocument (ie a project iteration) to an
@@ -53,7 +57,6 @@ public class TMXStreamingOutput<TU extends SourceContents> implements StreamingO
    private static final String creationToolVersion =
          VersionUtility.getVersionInfo(TMXStreamingOutput.class).getVersionNo();
    private final @Nonnull Iterator<TU> tuIter;
-   private final @Nullable LocaleId targetLocale;
    private final ExportTUStrategy<TU> exportTUStrategy;
 
    public TMXStreamingOutput(
@@ -62,48 +65,51 @@ public class TMXStreamingOutput<TU extends SourceContents> implements StreamingO
          @Nonnull ExportTUStrategy<TU> exportTUStrategy)
    {
       this.tuIter = tuIter;
-      this.targetLocale = targetLocale;
       this.exportTUStrategy = exportTUStrategy;
    }
 
    @Override
    public void write(OutputStream output) throws IOException, WebApplicationException
    {
-      try
+      @Cleanup
+      Closeable closeable = (Closeable) (tuIter instanceof Closeable ? tuIter : NullCloseable.INSTANCE);
+      @SuppressWarnings("null")
+      PeekingIterator<SourceContents> iter = Iterators.peekingIterator(tuIter);
+      // Fetch the first result, so that we can fail fast, before
+      // writing any output. This should enable RESTEasy to return an
+      // error instead of simply aborting the output stream.
+      if (iter.hasNext()) iter.peek();
+
+      @Cleanup
+      PrintWriter writer = new PrintWriter(output);
+      @Cleanup
+      XMLWriter xmlWriter = new XMLWriter(writer);
+      @Cleanup
+      TMXWriter tmxWriter = new TMXWriter(xmlWriter);
+      tmxWriter.setWriteAllPropertiesAsAttributes(true);
+      String segType = "block"; // TODO other segmentation types
+      String dataType = "unknown"; // TODO track data type metadata throughout the system
+
+      net.sf.okapi.common.LocaleId allLocale = new net.sf.okapi.common.LocaleId("*all*", false);
+
+      tmxWriter.writeStartDocument(
+            allLocale,
+            // TMXWriter demands a non-null target locale, but if you write
+            // your TUs with writeTUFull(), it is never used.
+            net.sf.okapi.common.LocaleId.EMPTY,
+            creationTool, creationToolVersion,
+            segType, null, dataType);
+
+      while (iter.hasNext())
       {
-         @Cleanup
-         Writer writer = new PrintWriter(output);
-         @Cleanup
-         XMLWriter xmlWriter = new XMLWriter(writer);
-         @Cleanup
-         ZanataTMXWriter tmxWriter = new ZanataTMXWriter(xmlWriter);
-         String segType = "block"; // TODO other segmentation types
-         String dataType = "unknown"; // TODO track data type metadata throughout the system
-   
-         net.sf.okapi.common.LocaleId allLocale = new net.sf.okapi.common.LocaleId("*all*", false);
-   
-         tmxWriter.writeStartDocument(
-               allLocale,
-               // TMXWriter demands a non-null target locale, but if you write
-               // your TUs with writeTUFull(), it is never actually used.
-               OkapiUtil.toOkapiLocaleOrEmpty(targetLocale),
-               creationTool, creationToolVersion,
-               segType, null, dataType);
-   
-         while (tuIter.hasNext())
+         TU tu = iter.next();
+         exportTUStrategy.exportTranslationUnit(tmxWriter, tu);
+         if (writer.checkError())
          {
-            TU tu = tuIter.next();
-            exportTUStrategy.exportTranslationUnit(tmxWriter, tu);
-         }
-         tmxWriter.writeEndDocument();
-      }
-      finally
-      {
-         if (tuIter instanceof Closeable)
-         {
-            ((Closeable) tuIter).close();
+            throw new IOException("error writing to output");
          }
       }
+      tmxWriter.writeEndDocument();
    }
 
 }

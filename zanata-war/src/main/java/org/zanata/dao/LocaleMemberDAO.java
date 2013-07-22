@@ -96,4 +96,14 @@ public class LocaleMemberDAO extends AbstractDAOImpl<HLocaleMember, HLocaleMembe
       //We need to evict the HLocale to refresh member list within
       getSession().getSessionFactory().getCache().evictEntity(HLocale.class, locale.getId());
    }
+
+   public HLocaleMember findByPersonAndLocale(Long personId, LocaleId localeId)
+   {
+      Query query = getSession().createQuery("from HLocaleMember as m where m.id.supportedLanguage.localeId = :localeId " +
+            "and m.id.person.id = :personId");
+      query.setParameter("localeId", localeId)
+           .setParameter("personId", personId);
+      query.setComment("LocaleMemberDAO.findByPersonAndLocale");
+      return (HLocaleMember)query.uniqueResult();
+   }
 }

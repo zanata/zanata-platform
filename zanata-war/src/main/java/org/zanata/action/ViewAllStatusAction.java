@@ -60,7 +60,6 @@ import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 import org.zanata.rest.service.StatisticsResource;
-import org.zanata.seam.scope.FlashScopeBean;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
@@ -105,9 +104,6 @@ public class ViewAllStatusAction implements Serializable
 
    @In
    CopyTransManager copyTransManager;
-
-   @In
-   FlashScopeBean flashScope;
 
    private String iterationSlug;
 
@@ -223,8 +219,8 @@ public class ViewAllStatusAction implements Serializable
    {
       HProjectIteration iteration = projectIterationDAO.getBySlug(this.projectSlug, this.iterationSlug);
       
-      List<HLocale> locale = this.getDisplayLocales();
-      String[] localeIds = getLocaleIds(locale);
+      List<HLocale> localeList = this.getDisplayLocales();
+      String[] localeIds = getLocaleIds(localeList);
       
       ContainerTranslationStatistics iterationStats = statisticsServiceImpl.getStatistics(this.projectSlug, this.iterationSlug, false, true, localeIds);
 
@@ -238,9 +234,9 @@ public class ViewAllStatusAction implements Serializable
          total = projectIterationDAO.getTotalCountForIteration(iteration.getId());
       }
       
-      for (HLocale var : locale)
+      for (HLocale locale : localeList)
       {
-         TranslationStatistics stats = iterationStats.getStats(var.getLocaleId().getId(), statsOption);
+         TranslationStatistics stats = iterationStats.getStats(locale.getLocaleId().getId(), statsOption);
          if (stats == null)
          {
             stats = new TranslationStatistics(statsOption);
@@ -248,9 +244,9 @@ public class ViewAllStatusAction implements Serializable
 //            stats.setTotal(total);
          }
 
-         if (statsMap.containsKey(var.getLocaleId()))
+         if (statsMap.containsKey(locale.getLocaleId()))
          {
-            statsMap.get(var.getLocaleId()).setStats(stats);
+            statsMap.get(locale.getLocaleId()).setStats(stats);
          }
       }
    }
@@ -260,8 +256,8 @@ public class ViewAllStatusAction implements Serializable
    {
       HProjectIteration iteration = projectIterationDAO.getBySlug(this.projectSlug, this.iterationSlug);
 
-      List<HLocale> locale = this.getDisplayLocales();
-      String[] localeIds = getLocaleIds(locale);
+      List<HLocale> localeList = this.getDisplayLocales();
+      String[] localeIds = getLocaleIds(localeList);
 
       ContainerTranslationStatistics iterationStats = statisticsServiceImpl.getStatistics(this.projectSlug, this.iterationSlug, false, true, localeIds);
 
@@ -275,15 +271,15 @@ public class ViewAllStatusAction implements Serializable
          total = projectIterationDAO.getTotalCountForIteration(iteration.getId());
       }
 
-      for (HLocale var : locale)
+      for (HLocale locale : localeList)
       {
-         TranslationStatistics stats = iterationStats.getStats(var.getLocaleId().getId(), statsOption);
+         TranslationStatistics stats = iterationStats.getStats(locale.getLocaleId().getId(), statsOption);
          if (stats == null)
          {
             stats = new TranslationStatistics(statsOption);
             stats.setUntranslated(total);
 
-            HTextFlowTarget lastTranslatedTarget = localeServiceImpl.getLastTranslated(projectSlug, iterationSlug, var.getLocaleId());
+            HTextFlowTarget lastTranslatedTarget = localeServiceImpl.getLastTranslated(projectSlug, iterationSlug, locale.getLocaleId());
 
             if (lastTranslatedTarget != null)
             {
@@ -294,16 +290,16 @@ public class ViewAllStatusAction implements Serializable
          }
 
 
-         if (!statsMap.containsKey(var.getLocaleId()))
+         if (!statsMap.containsKey(locale.getLocaleId()))
          {
-            boolean isMember = authenticatedAccount != null ? personDAO.isMemberOfLanguageTeam(authenticatedAccount.getPerson(), var) : false;
+            boolean isMember = authenticatedAccount != null ? personDAO.isUserInLanguageTeamWithRoles(authenticatedAccount.getPerson(), locale, null, null, null) : false;
 
-            Status op = new Status(var.getLocaleId().getId(), var.retrieveNativeName(), stats, isMember);
-            statsMap.put(var.getLocaleId(), op);
+            Status op = new Status(locale.getLocaleId().getId(), locale.retrieveNativeName(), stats, isMember);
+            statsMap.put(locale.getLocaleId(), op);
          }
          else
          {
-            statsMap.get(var.getLocaleId()).setStats(stats);
+            statsMap.get(locale.getLocaleId()).setStats(stats);
          }
       }
 

@@ -47,7 +47,7 @@ public interface SecurityService
       ADD("add-translation"),
       MODIFY("modify-translation"),
       REMOVE("remove-translation"),
-      APPROVE("approve-translation");
+      REVIEW("review-translation");
 
       private final String action;
 

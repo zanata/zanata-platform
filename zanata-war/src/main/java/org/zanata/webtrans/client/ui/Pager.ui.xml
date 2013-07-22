@@ -6,7 +6,7 @@
 	
 	<ui:style type="org.zanata.webtrans.client.ui.Pager.Styles">
 		 .nav-button {
-           font-size:16px;
+           font-size:1.1em;
         }
         
         .rootContainer {
@@ -23,6 +23,11 @@
         {
 			opacity:1;
 			cursor:pointer;
+			transition:0.2s;
+		}
+		
+		.enabled:hover {
+			color:#0085cc;
 		}
 		
 		.disabled

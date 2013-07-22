@@ -134,7 +134,9 @@ public class TargetContentsPresenterTest
       when(userOptionsService.getConfigHolder()).thenReturn(configHolder);
 
       userWorkspaceContext = TestFixture.userWorkspaceContext();
-      presenter = new TargetContentsPresenter(displayProvider, editorTranslators, eventBus, tableEditorMessages, sourceContentPresenter, userWorkspaceContext, editorKeyShortcuts, historyPresenter, userOptionsService, saveAsApprovedConfirmation);
+      presenter = new TargetContentsPresenter(displayProvider, editorTranslators, eventBus,
+            tableEditorMessages, sourceContentPresenter, userWorkspaceContext, editorKeyShortcuts,
+            historyPresenter, userOptionsService, saveAsApprovedConfirmation);
 
       verify(eventBus).addHandler(UserConfigChangeEvent.TYPE, presenter);
       verify(eventBus).addHandler(RequestValidationEvent.getType(), presenter);
@@ -439,8 +441,9 @@ public class TargetContentsPresenterTest
    @Test
    public void testIsDisplayButtons()
    {
-      userWorkspaceContext.setHasWriteAccess(false);
-
+      userWorkspaceContext.setHasEditTranslationAccess(false);
+      userWorkspaceContext.setHasReviewAccess(false);
+      
       boolean displayButtons = presenter.isDisplayButtons();
 
       assertThat(displayButtons, Matchers.is(false));
@@ -566,7 +569,8 @@ public class TargetContentsPresenterTest
       // Given: event sets workspace to read only
       WorkspaceContextUpdateEvent event = mock(WorkspaceContextUpdateEvent.class);
       when(event.isProjectActive()).thenReturn(false);
-
+      userWorkspaceContext.setHasEditTranslationAccess(false);
+      
       // When:
       presenter.onWorkspaceContextUpdated(event);
 
@@ -788,6 +792,7 @@ public class TargetContentsPresenterTest
    {
       // Given:
       userWorkspaceContext.setProjectActive(false);
+      userWorkspaceContext.setHasEditTranslationAccess(false);
       selectedTU = currentPageRows.get(0);
       ArrayList<ToggleEditor> currentEditors = Lists.newArrayList(editor);
       when(editor.getId()).thenReturn(selectedTU.getId());

@@ -30,7 +30,6 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.zanata.security.ZanataIdentity;
 import org.zanata.service.ValidationService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.ValidationAction;
@@ -49,8 +48,6 @@ import org.zanata.webtrans.shared.rpc.GetValidationRulesResult;
 @Scope(ScopeType.STATELESS)
 public class GetValidationRulesHandler extends AbstractActionHandler<GetValidationRulesAction, GetValidationRulesResult>
 {
-   @In
-   private ZanataIdentity identity;
 
    @In
    private ValidationService validationServiceImpl;

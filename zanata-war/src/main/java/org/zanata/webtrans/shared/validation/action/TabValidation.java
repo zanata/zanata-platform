@@ -44,6 +44,7 @@ public class TabValidation extends AbstractValidationAction
    @Override
    public void doValidate(ArrayList<String> errorList, String source, String target)
    {
+      @edu.umd.cs.findbugs.annotations.SuppressWarnings("GBU_GUAVA_BETA_CLASS_USAGE")
       CharMatcher tabs = CharMatcher.is('\t');
       int sourceTabs = tabs.countIn(source);
       int targetTabs = tabs.countIn(target);

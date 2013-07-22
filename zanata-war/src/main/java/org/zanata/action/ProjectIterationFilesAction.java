@@ -575,6 +575,11 @@ public class ProjectIterationFilesAction implements Serializable
    {
       return isIterationActive() && identity != null && identity.hasPermission("add-translation", getProjectIteration().getProject(), getLocale());
    }
+   
+   public boolean isUserAllowedToReview()
+   {
+      return isIterationActive() && identity != null && identity.hasPermission("translation-review", getProjectIteration().getProject(), getLocale());
+   }
 
    public boolean isIterationReadOnly()
    {
@@ -645,9 +650,9 @@ public class ProjectIterationFilesAction implements Serializable
       }
 
       // User not member of language team
-      if (!personDAO.isMemberOfLanguageTeam(authenticatedAccount.getPerson(), getLocale()))
+      if (!personDAO.isUserInLanguageTeamWithRoles(authenticatedAccount.getPerson(), getLocale(), true, null, null))
       {
-         displayMessages.add(zanataMessages.getMessage("jsf.iteration.files.translateDenied.UserNotInLanguageTeam", getLocale().retrieveDisplayName()));
+         displayMessages.add(zanataMessages.getMessage("jsf.iteration.files.translateDenied.UserNotTranslatorInLanguageTeam", getLocale().retrieveDisplayName()));
       }
 
       // User not part of the allowed roles

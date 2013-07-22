@@ -1,0 +1,57 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:s="http://jboss.org/schema/seam/taglib"
+   xmlns:ui="http://java.sun.com/jsf/facelets"
+   xmlns:f="http://java.sun.com/jsf/core"
+   xmlns:h="http://java.sun.com/jsf/html"
+   xmlns:a4j="http://richfaces.org/a4j"
+   xmlns:rich="http://richfaces.org/rich"
+   template="/WEB-INF/facelets/email/template_email.xhtml">
+
+  <ui:param name="toName" value="#{emailServiceImpl.toName}" />
+  <ui:param name="toEmailAddr" value="#{emailServiceImpl.toEmailAddr}" />
+  <ui:param name="replyToName" value="#{sendEmail.fromName}" />
+  <ui:param name="replyToEmail" value="#{sendEmail.replyEmail}" />
+  <ui:param name="subject" value="#{messages['jsf.email.rolerequest.Subject']}" />
+
+  <ui:define name="body">
+        <p>#{messages['jsf.email.coordinator.DearCoordinator']}</p>
+
+        <p>
+            #{messages['jsf.email.rolerequest.UserRequestingRole']}
+            <ul>
+                <s:fragment rendered="#{languageJoinUpdateRoleAction.requestAsTranslator and !languageJoinUpdateRoleAction.isTranslator()}">
+                    <li>
+                        #{messages['jsf.Translator']}
+                    </li>
+                </s:fragment>
+
+                <s:fragment rendered="#{languageJoinUpdateRoleAction.requestAsReviewer and !languageJoinUpdateRoleAction.isReviewer()}">
+                    <li>
+                        #{messages['jsf.Reviewer']}
+                    </li>
+                </s:fragment>
+
+                <s:fragment rendered="#{languageJoinUpdateRoleAction.requestAsCoordinator and !languageJoinUpdateRoleAction.isCoordinator()}">
+                    <li>
+                        #{messages['jsf.Coordinator']}
+                    </li>
+                </s:fragment>
+            </ul>
+        </p>
+
+        <s:fragment rendered="#{not empty sendEmail.htmlMessage}">
+          <p>#{messages['jsf.email.UserMessageIntro']}</p>
+          <hr/>
+          <h:outputText value="#{sendEmail.htmlMessage}" escape="false" />
+          <hr/>
+        </s:fragment>
+        <p>#{messages['jsf.email.rolerequest.AddUserInstructions']}</p>
+        <p>#{messages['jsf.email.coordinator.ResponseInstructions']}</p>
+        <p>
+          <a href="#{applicationConfiguration.serverPath}/language/view/#{sendEmail.locale.localeId.id}">
+            #{applicationConfiguration.serverPath}/language/view/#{sendEmail.locale.localeId.id}
+          </a>
+        </p>
+  </ui:define>
+
+</ui:composition>

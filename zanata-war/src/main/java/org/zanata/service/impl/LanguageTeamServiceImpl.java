@@ -24,7 +24,7 @@ public class LanguageTeamServiceImpl implements LanguageTeamService
    private PersonDAO personDAO;
 
    private LocaleDAO localeDAO;
-   
+
    private LocaleMemberDAO localeMemberDAO;
 
    @In
@@ -32,47 +32,50 @@ public class LanguageTeamServiceImpl implements LanguageTeamService
    {
       this.personDAO = personDAO;
    }
-   
+
    @In
    public void setLocaleDAO(LocaleDAO localeDAO)
    {
       this.localeDAO = localeDAO;
    }
-   
+
    @In
    public void setLocaleMemberDAO(LocaleMemberDAO localeMemberDAO)
    {
       this.localeMemberDAO = localeMemberDAO;
    }
-   
 
    public List<HLocale> getLanguageMemberships(String userName)
    {
       return personDAO.getLanguageMembershipByUsername(userName);
    }
 
-   public boolean joinLanguageTeam(String locale, Long personId) throws ZanataServiceException
+   public void joinOrUpdateRoleInLanguageTeam(String locale, Long personId, boolean isTranslator, boolean isReviewer, boolean isCoordinator) throws ZanataServiceException
    {
-      HLocale lang = localeDAO.findByLocaleId(new LocaleId(locale));
+      LocaleId localeId = new LocaleId(locale);
       HPerson currentPerson = personDAO.findById(personId, false);
-      final boolean alreadyJoined = localeMemberDAO.findById(new HLocaleMemberPk(currentPerson, lang), false) == null;
 
+      boolean alreadyJoined = localeMemberDAO.isLocaleMember(personId, localeId);
+      HLocaleMember localeMember;
       if (!alreadyJoined)
       {
          if (currentPerson.getLanguageMemberships().size() >= MAX_NUMBER_MEMBERSHIP)
          {
             throw new ZanataServiceException("You can only be a member of up to " + MAX_NUMBER_MEMBERSHIP + " languages at one time.");
          }
-         else
-         {
-            HLocaleMember localeMember = new HLocaleMember(currentPerson, lang, false);
-            lang.getMembers().add(localeMember);
-            localeMemberDAO.makePersistent(localeMember);
-            localeMemberDAO.flush();
-            return true;
-         }
+         HLocale lang = localeDAO.findByLocaleId(localeId);
+         localeMember = new HLocaleMember(currentPerson, lang, isTranslator, isReviewer, isCoordinator);
+         lang.getMembers().add(localeMember);
       }
-      return false;
+      else
+      {
+         localeMember = localeMemberDAO.findByPersonAndLocale(personId, localeId);
+         localeMember.setTranslator(isTranslator);
+         localeMember.setReviewer(isReviewer);
+         localeMember.setCoordinator(isCoordinator);
+      }
+      localeMemberDAO.makePersistent(localeMember);
+      localeMemberDAO.flush();
    }
 
    public boolean leaveLanguageTeam(String locale, Long personId)
@@ -83,7 +86,6 @@ public class LanguageTeamServiceImpl implements LanguageTeamService
 
       if (membership != null)
       {
-//         localeMemberDAO.flush();
          localeMemberDAO.makeTransient(membership);
          lang.getMembers().remove(membership);
          localeMemberDAO.flush();

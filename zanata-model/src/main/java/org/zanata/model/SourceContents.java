@@ -21,6 +21,9 @@
 
 package org.zanata.model;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.zanata.common.HasContents;
 import org.zanata.common.LocaleId;
 
@@ -30,18 +33,18 @@ import org.zanata.common.LocaleId;
  */
 public interface SourceContents extends HasContents
 {
-   public LocaleId getLocale();
-   public String getQualifiedId();
+   public @Nonnull LocaleId getLocale();
+   public @Nonnull String getQualifiedId();
    /**
     * Gets the TargetContents for a single locale.
     * Note that default implementation in HTextFlow requires a lot of database I/O
     * @param localeId
     * @return
     */
-   public TargetContents getTargetContents(LocaleId localeId);
+   public @Nullable TargetContents getTargetContents(@Nonnull LocaleId localeId);
    /**
     * Gets the TargetContents for all available locales.
     * @return
     */
-   public Iterable<TargetContents> getAllTargetContents();
+   public @Nonnull Iterable<TargetContents> getAllTargetContents();
 }

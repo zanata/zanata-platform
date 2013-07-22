@@ -3,4 +3,3 @@ INSERT INTO HAccount (id,creationDate,lastChanged,versionNum,apiKey,enabled,pass
 INSERT INTO HPerson (id,creationDate,lastChanged,versionNum,email,name,accountId) VALUES (2,{ts '2012-04-03 15:06:28'},{ts '2012-04-03 15:06:28'},0,'translator@example.com','translator',2);
 
 INSERT INTO HAccountMembership (accountId,memberOf) VALUES (2,1);
-INSERT INTO HAccountMembership (accountId,memberOf) VALUES (2,5);

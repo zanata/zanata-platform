@@ -21,6 +21,8 @@
 package org.zanata.webtrans.server.rpc;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -31,8 +33,12 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.model.HTextFlowTargetReviewComment;
 import org.zanata.rest.service.ResourceUtils;
+import org.zanata.webtrans.shared.model.ReviewCommentId;
 import org.zanata.webtrans.shared.model.TransUnit;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 
 @Name("transUnitTransformer")
 @Scope(ScopeType.STATELESS)
@@ -46,17 +52,17 @@ public class TransUnitTransformer
 
    public TransUnit transform(HTextFlow hTextFlow, HLocale hLocale)
    {
+      // TODO debt: we iterate over a collection of text flow and call this
+      // method, if target is not eagerly loaded it will cause hibernate n+1.
+      // We may want to have a method as transform(Collection<HTextFlow>
+      // hTextFlows, HLocale hLocale) and use query internally or change caller
+      // code to always eager load targets.
       HTextFlowTarget target = hTextFlow.getTargets().get(hLocale.getId());
 
       return transform(hTextFlow, target, hLocale);
    }
 
-   public TransUnit transform(HTextFlow hTextFlow, HTextFlowTarget target)
-   {
-      return transform(hTextFlow, target, target.getLocale());
-   }
-
-   private TransUnit transform(HTextFlow hTextFlow, HTextFlowTarget target, HLocale hLocale)
+   public TransUnit transform(HTextFlow hTextFlow, HTextFlowTarget target, HLocale hLocale)
    {
       String msgContext = null;
       if (hTextFlow.getPotEntryData() != null)
@@ -68,7 +74,22 @@ public class TransUnitTransformer
       ArrayList<String> sourceContents = GwtRpcUtil.getSourceContents(hTextFlow);
       ArrayList<String> targetContents = GwtRpcUtil.getTargetContentsWithPadding(hTextFlow, target, nPlurals);
 
-      TransUnit.Builder builder = TransUnit.Builder.newTransUnitBuilder().setId(hTextFlow.getId()).setResId(hTextFlow.getResId()).setLocaleId(hLocale.getLocaleId()).setPlural(hTextFlow.isPlural()).setSources(sourceContents).setSourceComment(commentToString(hTextFlow.getComment())).setTargets(targetContents).setTargetContent(target == null ? null : commentToString(target.getComment())).setMsgContext(msgContext).setRowIndex(hTextFlow.getPos()).setVerNum(target == null ? NULL_TARGET_VERSION_NUM : target.getVersionNum());
+      // @formatter:off
+      TransUnit.Builder builder = TransUnit.Builder.newTransUnitBuilder()
+            .setId(hTextFlow.getId())
+            .setResId(hTextFlow.getResId())
+            .setLocaleId(hLocale.getLocaleId())
+            .setPlural(hTextFlow.isPlural())
+            .setSources(sourceContents)
+            .setSourceComment(commentToString(hTextFlow.getComment()))
+            .setTargets(targetContents)
+            .setTargetComment(target == null ? null : commentToString(target.getComment()))
+            .setMsgContext(msgContext)
+            .setRowIndex(hTextFlow.getPos())
+            .setVerNum(target == null ? NULL_TARGET_VERSION_NUM : target.getVersionNum())
+            .setCommentsCount(getCommentCount(target))
+            ;
+      // @formatter:on
 
       if (target != null)
       {
@@ -81,6 +102,17 @@ public class TransUnitTransformer
       }
       return builder.build();
    }
+
+   private static int getCommentCount(HTextFlowTarget target)
+   {
+      if (target == null)
+      {
+         return 0;
+      }
+      // TODO pahuang this will cause extra database call for each target. See above transform(HTextFlow, HLocale).
+      return target.getReviewComments().size();
+   }
+
 
    private static String commentToString(HSimpleComment comment)
    {

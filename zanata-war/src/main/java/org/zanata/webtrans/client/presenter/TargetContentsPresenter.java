@@ -114,7 +114,7 @@ public class TargetContentsPresenter implements
                                   UserWorkspaceContext userWorkspaceContext,
                                   EditorKeyShortcuts editorKeyShortcuts,
                                   TranslationHistoryPresenter historyPresenter,
-                                  UserOptionsService userOptionsService, 
+                                  UserOptionsService userOptionsService,
                                   SaveAsApprovedConfirmationDisplay saveAsApprovedConfirmation)
    // @formatter:on
    {
@@ -191,7 +191,7 @@ public class TargetContentsPresenter implements
       }
       display.showButtons(isDisplayButtons());
 
-      if (userWorkspaceContext.hasReadOnlyAccess())
+      if(!canEditTranslation())
       {
          display.setToMode(ViewMode.VIEW);
          concealDisplay();
@@ -384,12 +384,15 @@ public class TargetContentsPresenter implements
    @Override
    public void copySource(ToggleEditor editor, TransUnitId id)
    {
-      currentEditorIndex = editor.getIndex();
-      ensureRowSelection(id);
-      editor.setTextAndValidate(sourceContentsPresenter.getSelectedSource());
-      editor.setFocus();
-
-      eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
+      if(canEditTranslation())
+      {
+         currentEditorIndex = editor.getIndex();
+         ensureRowSelection(id);
+         editor.setTextAndValidate(sourceContentsPresenter.getSelectedSource());
+         editor.setFocus();
+   
+         eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
+      }
    }
 
    protected void copySourceForActiveRow()
@@ -432,7 +435,7 @@ public class TargetContentsPresenter implements
    @Override
    public void onRequestValidation(RequestValidationEvent event)
    {
-      if (equal(sourceContentsPresenter.getCurrentTransUnitIdOrNull(), currentTransUnitId))
+      if (hasSelectedRow() && equal(sourceContentsPresenter.getCurrentTransUnitIdOrNull(), currentTransUnitId))
       {
          for (ToggleEditor editor : display.getEditors())
          {
@@ -455,21 +458,24 @@ public class TargetContentsPresenter implements
 
    private void copyTextWhenIsEditing(List<String> contents, boolean isInsertText)
    {
-      if (isInsertText)
+      if(canEditTranslation())
       {
-         getCurrentEditor().insertTextInCursorPosition(contents.get(0));
-         validate(getCurrentEditor());
-      }
-      else
-      {
-         ArrayList<ToggleEditor> editors = display.getEditors();
-         for (int i = 0; i < contents.size(); i++)
+         if (isInsertText)
          {
-            ToggleEditor editor = editors.get(i);
-            editor.setTextAndValidate(contents.get(i));
+            getCurrentEditor().insertTextInCursorPosition(contents.get(0));
+            validate(getCurrentEditor());
          }
+         else
+         {
+            ArrayList<ToggleEditor> editors = display.getEditors();
+            for (int i = 0; i < contents.size(); i++)
+            {
+               ToggleEditor editor = editors.get(i);
+               editor.setTextAndValidate(contents.get(i));
+            }
+         }
+         eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
       }
-      eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
    }
 
    public void revealDisplay()
@@ -496,14 +502,17 @@ public class TargetContentsPresenter implements
          TargetContentsDisplay display = displayProvider.get();
          display.setListener(this);
          display.setValueAndCreateNewEditors(transUnit);
-         if (userWorkspaceContext.hasReadOnlyAccess())
+         
+         if(!canEditTranslation())
          {
             display.setToMode(ViewMode.VIEW);
          }
+         
          display.showButtons(isDisplayButtons());
          builder.add(display);
       }
       displayList = builder.build();
+      display = null;
    }
 
    public List<TargetContentsDisplay> getDisplays()
@@ -587,27 +596,23 @@ public class TargetContentsPresenter implements
       userWorkspaceContext.setProjectActive(event.isProjectActive());
       userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().setProjectType(event.getProjectType());
 
-      if (userWorkspaceContext.hasReadOnlyAccess())
+      for (TargetContentsDisplay targetContentsDisplay : displayList)
       {
-         Log.info("from editable to readonly");
-         for (TargetContentsDisplay targetContentsDisplay : displayList)
-         {
-            targetContentsDisplay.setToMode(ViewMode.VIEW);
-            targetContentsDisplay.showButtons(false);
-         }
-         concealDisplay();
-      }
-      else if (!userWorkspaceContext.hasReadOnlyAccess())
-      {
-         Log.info("from readonly mode to writable");
-         for (TargetContentsDisplay targetContentsDisplay : displayList)
-         {
-            targetContentsDisplay.setToMode(ViewMode.EDIT);
-            targetContentsDisplay.showButtons(isDisplayButtons());
-         }
-         revealDisplay();
+         ViewMode viewMode = canEditTranslation() ? ViewMode.EDIT : ViewMode.VIEW;
+         boolean showButtons = userWorkspaceContext.hasReadOnlyAccess() ? false : isDisplayButtons();
+
+         targetContentsDisplay.setToMode(viewMode);
+         targetContentsDisplay.showButtons(showButtons);
       }
 
+      if (userWorkspaceContext.hasReadOnlyAccess())
+      {
+         concealDisplay();
+      }
+      else
+      {
+         revealDisplay();
+      }
    }
 
    /**
@@ -660,10 +665,17 @@ public class TargetContentsPresenter implements
    }
 
    @Override
-   public boolean canReviewTranslation()
+   public boolean canReview()
    {
       WorkspaceRestrictions restrictions = userWorkspaceContext.getWorkspaceRestrictions();
       return restrictions.isHasReviewAccess() && restrictions.isProjectRequireReview();
+   }
+
+   @Override
+   public boolean canEditTranslation()
+   {
+      WorkspaceRestrictions restrictions = userWorkspaceContext.getWorkspaceRestrictions();
+      return restrictions.isHasEditTranslationAccess();
    }
 
    @Override
@@ -678,6 +690,16 @@ public class TargetContentsPresenter implements
    {
       ensureRowSelection(id);
       saveCurrent(ContentState.Rejected);
+   }
+
+
+   public void updateCommentCount(TransUnitId id, int commentsCount)
+   {
+      Optional<TargetContentsDisplay> displayOptional = Finds.findDisplayById(displayList, id);
+      if (displayOptional.isPresent())
+      {
+         displayOptional.get().updateCommentIndicator(commentsCount);
+      }
    }
 
    /**

@@ -20,8 +20,6 @@
  */
 package org.zanata.dao;
 
-import lombok.Cleanup;
-
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
@@ -34,22 +32,26 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 
+import lombok.Cleanup;
+import lombok.extern.slf4j.Slf4j;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 
 @Test(groups = { "jpa-tests" })
+@Slf4j
 public class TextFlowTargetDAOTest extends ZanataDbunitJpaTest
 {
 
    private TextFlowTargetDAO textFlowTargetDAO;
-   
+
    
    @Override
    protected void prepareDBUnitOperations()
    {
-      //      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/ClearAllTables.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/ClearAllTables.dbunit.xml", DatabaseOperation.DELETE_ALL));
+      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/AccountData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/TextFlowTestData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
       beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/LocalesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));      
@@ -99,4 +101,6 @@ public class TextFlowTargetDAOTest extends ZanataDbunitJpaTest
       @Cleanup
       ScrollableResults scroll = this.textFlowTargetDAO.findMatchingTranslations(doc, hLocale, true, true, true, true);
    }
+
+
 }

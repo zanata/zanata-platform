@@ -1,6 +1,5 @@
 package org.zanata.webtrans.server.rpc;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -8,10 +7,8 @@ import net.customware.gwt.dispatch.shared.ActionException;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.log.Log;
 import org.zanata.dao.GlossaryDAO;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;

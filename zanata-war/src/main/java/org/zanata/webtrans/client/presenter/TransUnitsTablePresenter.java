@@ -53,6 +53,7 @@ import org.zanata.webtrans.client.view.SourceContentsDisplay;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.client.view.TransUnitsTableDisplay;
 import org.zanata.webtrans.shared.auth.EditorClientId;
+import org.zanata.webtrans.shared.model.ReviewComment;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -197,7 +198,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    }
 
    @Override
-   public void saveChangesAndFilter()
+   public void saveAsTranslatedAndFilter()
    {
       saveAndFilter(ContentState.Translated);
    }
@@ -228,7 +229,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    @Override
    public void cancelFilter()
    {
-      eventBus.fireEvent(new FilterViewEvent(previousFilterOptions.isFilterTranslated(), previousFilterOptions.isFilterNeedReview(), previousFilterOptions.isFilterUntranslated(), previousFilterOptions.isFilterApproved(), previousFilterOptions.isFilterRejected(), previousFilterOptions.isFilterHasError(), true, previousFilterOptions.getEnabledValidationIds()));
+      eventBus.fireEvent(new FilterViewEvent(previousFilterOptions.isFilterTranslated(), previousFilterOptions.isFilterFuzzy(), previousFilterOptions.isFilterUntranslated(), previousFilterOptions.isFilterApproved(), previousFilterOptions.isFilterRejected(), previousFilterOptions.isFilterHasError(), true, previousFilterOptions.getEnabledValidationIds()));
       display.hideFilterConfirmation();
    }
 
@@ -286,10 +287,17 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
          {
             translationHistoryPresenter.popupAndShowLoading(messages.concurrentEditTitle());
             TransHistoryItem latest = new TransHistoryItem(updatedTransUnit.getVerNum().toString(), updatedTransUnit.getTargets(), updatedTransUnit.getStatus(), updatedTransUnit.getLastModifiedBy(), updatedTransUnit.getLastModifiedTime());
-            translationHistoryPresenter.displayEntries(latest, Collections.<TransHistoryItem> emptyList());
+            translationHistoryPresenter.displayEntries(latest, Collections.<TransHistoryItem> emptyList(), Collections.<ReviewComment>emptyList());
          }
       }
-      targetContentsPresenter.updateRow(updatedTransUnit);
+      if (updateType == TransUnitUpdated.UpdateType.AddComment)
+      {
+         targetContentsPresenter.updateCommentCount(updatedTransUnit.getId(), updatedTransUnit.getCommentsCount());
+      }
+      else
+      {
+         targetContentsPresenter.updateRow(updatedTransUnit);
+      }
    }
 
    // update type is web editor save or web editor save fuzzy and coming from

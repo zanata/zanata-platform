@@ -21,7 +21,7 @@ public interface TransFilterDisplay extends WidgetDisplay, SearchFieldListener
    void setNeedReviewFilter(boolean filterByNeedReview);
 
    void setUntranslatedFilter(boolean filterByUntranslated);
-   
+
    void setApprovedFilter(boolean filterByApproved);
 
    void setRejectedFilter(boolean filterByRejected);

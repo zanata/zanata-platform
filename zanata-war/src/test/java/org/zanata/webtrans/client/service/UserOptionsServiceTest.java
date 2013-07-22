@@ -142,7 +142,7 @@ public class UserOptionsServiceTest
       assertThat(map.containsKey(UserOptions.UseCodeMirrorEditor), Matchers.equalTo(true));
       assertThat(map.containsKey(UserOptions.TransMemoryDisplayMode), Matchers.equalTo(true));
       assertThat(map.containsKey(UserOptions.EnableSpellCheck), Matchers.equalTo(true));
-      assertThat(map.containsKey(UserOptions.NeedReviewMessageFilter), Matchers.equalTo(true));
+      assertThat(map.containsKey(UserOptions.FuzzyMessageFilter), Matchers.equalTo(true));
       assertThat(map.containsKey(UserOptions.UntranslatedMessageFilter), Matchers.equalTo(true));
       assertThat(map.containsKey(UserOptions.ApprovedMessageFilter), Matchers.equalTo(true));
       assertThat(map.containsKey(UserOptions.RejectedMessageFilter), Matchers.equalTo(true));
@@ -183,7 +183,7 @@ public class UserOptionsServiceTest
       assertThat(configHolder.getState().isShowError(), Matchers.equalTo(UserConfigHolder.DEFAULT_SHOW_ERROR));
       assertThat(configHolder.getState().isDisplayButtons(), Matchers.equalTo(UserConfigHolder.DEFAULT_DISPLAY_BUTTONS));
       assertThat(configHolder.getState().isEnterSavesApproved(), Matchers.equalTo(UserConfigHolder.DEFAULT_ENTER_SAVES_APPROVED));
-      assertThat(configHolder.getState().isFilterByNeedReview(), Matchers.equalTo(UserConfigHolder.DEFAULT_FILTER));
+      assertThat(configHolder.getState().isFilterByFuzzy(), Matchers.equalTo(UserConfigHolder.DEFAULT_FILTER));
       assertThat(configHolder.getState().isFilterByTranslated(), Matchers.equalTo(UserConfigHolder.DEFAULT_FILTER));
       assertThat(configHolder.getState().isFilterByUntranslated(), Matchers.equalTo(UserConfigHolder.DEFAULT_FILTER));
       assertThat(configHolder.getState().isFilterByApproved(), Matchers.equalTo(UserConfigHolder.DEFAULT_FILTER));

@@ -32,6 +32,7 @@ public class TransUnit implements IsSerializable, HasTransUnitId
    private int rowIndex;
    private int verNum;
    private String targetComment;
+   private int commentsCount;
 
    // for GWT
    @SuppressWarnings("unused")
@@ -55,6 +56,7 @@ public class TransUnit implements IsSerializable, HasTransUnitId
       this.rowIndex = builder.rowIndex;
       this.verNum = builder.verNum;
       this.targetComment = builder.targetComment;
+      this.commentsCount = builder.commentsCount;
    }
 
    @Override
@@ -189,6 +191,16 @@ public class TransUnit implements IsSerializable, HasTransUnitId
       this.targetComment = targetComment;
    }
 
+   public int getCommentsCount()
+   {
+      return commentsCount;
+   }
+
+   void setCommentsCount(int commentsCount)
+   {
+      this.commentsCount = commentsCount;
+   }
+
    public String debugString()
    {
       return Objects.toStringHelper(this).
@@ -224,6 +236,7 @@ public class TransUnit implements IsSerializable, HasTransUnitId
       private int rowIndex;
       private int verNum = -1; // to fail check if not set before build
       private String targetComment;
+      private int commentsCount;
 
       private Builder(TransUnit transUnit)
       {
@@ -240,6 +253,7 @@ public class TransUnit implements IsSerializable, HasTransUnitId
          this.lastModifiedTime = transUnit.lastModifiedTime;
          this.rowIndex = transUnit.rowIndex;
          this.verNum = transUnit.verNum;
+         this.commentsCount = transUnit.commentsCount;
       }
 
       private Builder()
@@ -271,9 +285,9 @@ public class TransUnit implements IsSerializable, HasTransUnitId
          return new Builder(transUnit);
       }
 
-      private static List<String> nullToEmpty(List<String> contents)
+      private static <T> List<T> nullToEmpty(List<T> contents)
       {
-         return contents == null ? Lists.<String>newArrayList() : contents;
+         return contents == null ? Lists.<T>newArrayList() : contents;
       }
 
       public Builder setStatus(ContentState status)
@@ -378,9 +392,15 @@ public class TransUnit implements IsSerializable, HasTransUnitId
          return this;
       }
 
-      public Builder setTargetContent(String targetComment)
+      public Builder setTargetComment(String targetComment)
       {
          this.targetComment = targetComment;
+         return this;
+      }
+
+      public Builder setCommentsCount(int commentsCount)
+      {
+         this.commentsCount = commentsCount;
          return this;
       }
    }

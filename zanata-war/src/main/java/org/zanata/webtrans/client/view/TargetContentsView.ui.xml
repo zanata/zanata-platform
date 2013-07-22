@@ -33,12 +33,28 @@
             background-color: #ff4500;
         }
 
+        .commentIndicator {
+            position: absolute;
+            right: 5px;
+            font-size: smaller;
+            color: #ffffff;
+            z-index: 1;
+            background-color: #ff0000;
+            border-radius: 10px;
+            border: thick double #ffffff;
+            padding-left: 2px;
+            padding-right: 2px;
+            box-shadow: 2px 2px 2px #888;
+            cursor: pointer;
+        }
+
     </ui:style>
 
     <g:HorizontalPanel width="100%" addStyleNames="{style.targetContentsCell}">
         <g:cell verticalAlignment="ALIGN_TOP">
         	<g:FlowPanel styleName="{style.editorGridWrapper}">
                 <g:Label ui:field="savingIndicator" text="{messages.saving}" styleName="icon-progress {style.saving}" visible="false"/>
+                <g:Label ui:field="commentIndicator" styleName="{style.commentIndicator}" visible="false"/>
                 <g:Grid ui:field="editorGrid" />
                 <fui:ValidationMessagePanelView ui:field="validationPanel"/>
             </g:FlowPanel>

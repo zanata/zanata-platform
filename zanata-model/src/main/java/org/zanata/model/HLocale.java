@@ -96,7 +96,6 @@ public class HLocale extends ModelEntityBase implements Serializable
    }
 
    @OneToMany(cascade=CascadeType.ALL, mappedBy="id.supportedLanguage")
-//   @JoinColumn(name = "supportedLanguageId")
    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
    public Set<HLocaleMember> getMembers()
    {

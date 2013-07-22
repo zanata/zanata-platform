@@ -119,7 +119,7 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
       HProjectIteration projectIteration = projectIterationDAO.getBySlug(workspaceId.getProjectIterationId().getProjectSlug(), workspaceId.getProjectIterationId().getIterationSlug());
       
       boolean isProjectActive = isProjectIterationActive(project.getStatus(), projectIteration.getStatus());
-      boolean hasWriteAccess = hasPermission(project, locale);
+      boolean hasWriteAccess = hasWritePermission(project, locale);
       boolean hasGlossaryUpdateAccess = hasGlossaryUpdatePermission();
       boolean requireReview = projectIteration.getRequireTranslationReview();
       boolean hasReviewAccess = hasReviewerPermission(locale, project);
@@ -142,7 +142,7 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
       return ServletContexts.instance().getRequest().getSession().getId();
    }
 
-   private boolean hasPermission(HProject project, HLocale locale)
+   private boolean hasWritePermission(HProject project, HLocale locale)
    {
       return identity.hasPermission(SecurityService.TranslationAction.MODIFY.action(), project, locale);
    }

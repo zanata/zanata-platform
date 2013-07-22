@@ -864,23 +864,25 @@
       </rule>
     </navigation>
   </page>
-  
-  <page view-id="/language/request_to_join.xhtml">
+
+  <page view-id="/language/request_to_join_update_role.xhtml">
     <param name="emailType" value="#{sendEmail.emailType}" />
+    <param name="emailType" value="#{languageJoinUpdateRoleAction.emailType}" />
+    <param name="id" value="#{languageJoinUpdateRoleAction.language}" />
     <param name="id" value="#{sendEmail.language}" />
     <action execute="#{breadcrumbs.clear}"/>
     <action execute="#{breadcrumbs.addLocation('/language/home.xhtml', messages['jsf.Languages'])}"/>
     <action execute="#{breadcrumbs.addLocation('/language/language.xhtml', sendEmail.locale.localeId.id).param('id', sendEmail.locale.localeId.id)}"/>
-    <action execute="#{breadcrumbs.addLocation('', messages['jsf.RequestToJoinLanguageTeamTitle'])}"/>
-    
+    <action execute="#{breadcrumbs.addLocation('', languageJoinUpdateRoleAction.title)}"/>
+
     <navigation from-action="#{sendEmail.send}">
       <rule if-outcome="success">
         <redirect view-id="/language/language.xhtml">
-          <param name="id" value="#{sendEmail.language}" />        
+          <param name="id" value="#{sendEmail.language}" />
         </redirect>
       </rule>
       <rule if-outcome="failure">
-        <redirect view-id="/language/request_to_join.xhtml" />
+        <redirect view-id="/language/request_to_join_update_role.xhtml" />
       </rule>
     </navigation>
     <navigation from-action="#{sendEmail.cancel}">
@@ -905,7 +907,6 @@
           <redirect view-id="/tm/home.xhtml" />
       </navigation>
   </page>
-
   <!-- Exceptions -->
   <page view-id="/error.xhtml">
     <action execute="#{breadcrumbs.clear}"/>

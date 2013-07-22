@@ -67,7 +67,7 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String>
       processForProjectWideSearch(newHistoryToken);
 
       configHolder.setFilterByUntranslated(newHistoryToken.isFilterUntranslated());
-      configHolder.setFilterByNeedReview(newHistoryToken.isFilterFuzzy());
+      configHolder.setFilterByFuzzy(newHistoryToken.isFilterFuzzy());
       configHolder.setFilterByTranslated(newHistoryToken.isFilterTranslated());
       configHolder.setFilterByApproved(newHistoryToken.isFilterApproved());
       configHolder.setFilterByRejected(newHistoryToken.isFilterRejected());

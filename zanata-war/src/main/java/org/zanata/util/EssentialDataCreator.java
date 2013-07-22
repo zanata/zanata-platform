@@ -1,5 +1,7 @@
 package org.zanata.util;
 
+import static org.zanata.model.HAccountRole.RoleType.MANUAL;
+
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -22,10 +24,6 @@ import org.zanata.dao.LocaleDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
 import org.zanata.model.HLocale;
-import org.zanata.model.HPerson;
-
-import static org.zanata.model.HAccountRole.RoleType.AUTO;
-import static org.zanata.model.HAccountRole.RoleType.MANUAL;
 
 /**
  * Ensures that roles 'user', 'admin' and 'translator' exist, and that there is
@@ -135,15 +133,6 @@ public class EssentialDataCreator
          if (!adminExists)
          {
             log.warn("No admin users found. Admin users can be enabled in zanata.properties");
-         }
-
-         if (!accountRoleDAO.roleExists("translator"))
-         {
-            log.info("Creating 'translator' role");
-            if (accountRoleDAO.create("translator", MANUAL) == null)
-            {
-               throw new RuntimeException("Couldn't create 'translator' role");
-            }
          }
 
          // Enable en-US by default

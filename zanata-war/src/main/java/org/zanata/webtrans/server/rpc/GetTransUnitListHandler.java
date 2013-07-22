@@ -83,51 +83,59 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
 
       log.info("action: {}", action);
       int targetOffset = action.getOffset();
-      int targetPage = action.getOffset() / action.getCount();
+      int targetPageIndex = targetOffset / action.getCount();
       GetTransUnitsNavigationResult navigationResult = null;
       if (action.isNeedReloadIndex())
       {
-         GetTransUnitsNavigation getTransUnitsNavigation = new GetTransUnitsNavigation(action.getDocumentId().getId(), action.getPhrase(), action.isFilterUntranslated(), action.isFilterNeedReview(), action.isFilterTranslated(), action.isFilterApproved(), action.isFilterRejected());
+         GetTransUnitsNavigation getTransUnitsNavigation = new GetTransUnitsNavigation(action.getDocumentId().getId(), action.getPhrase(), action.getFilterStates());
          log.debug("get trans unit navigation action: {}", getTransUnitsNavigation);
          navigationResult = getTransUnitsNavigationService.getNavigationIndexes(getTransUnitsNavigation, hLocale);
 
-         int totalPageNumber = navigationResult.getIdIndexList().size() / action.getCount();
-         if (targetPage > totalPageNumber)
+         int totalPageIndex = getTotalPageIndex(navigationResult.getIdIndexList().size(), action.getCount());
+
+         if (targetPageIndex > totalPageIndex)
          {
-            targetPage = totalPageNumber;
-            targetOffset = action.getCount() * targetPage;
+            targetPageIndex = totalPageIndex;
+            targetOffset = action.getCount() * targetPageIndex;
          }
-            
+
          if (action.getTargetTransUnitId() != null)
          {
             int targetIndexInDoc = navigationResult.getIdIndexList().indexOf(action.getTargetTransUnitId());
-            targetPage = targetIndexInDoc / action.getCount();
-            targetOffset = action.getCount() * targetPage;
+            targetPageIndex = targetIndexInDoc / action.getCount();
+            targetOffset = action.getCount() * targetPageIndex;
          }
       }
 
       List<HTextFlow> textFlows = getTextFlows(action, hLocale, targetOffset);
-      
-      GetTransUnitListResult result = transformToTransUnits(action, hLocale, textFlows, targetOffset, targetPage);
+
+      GetTransUnitListResult result = transformToTransUnits(action, hLocale, textFlows, targetOffset, targetPageIndex);
       result.setNavigationIndex(navigationResult);
       return result;
+   }
+
+   private int getTotalPageIndex(int indexListSize, int countPerPage)
+   {
+      int totalPageNumber = (int) Math.ceil((float) indexListSize / countPerPage);
+      return totalPageNumber > 0 ? totalPageNumber - 1 : totalPageNumber;
    }
 
    private List<HTextFlow> getTextFlows(GetTransUnitList action, HLocale hLocale, int offset)
    {
       List<HTextFlow> textFlows;
-      // no status and phrase filter
       if (!hasStatusAndPhaseFilter(action))
       {
-         // no validation filter
          log.debug("Fetch TransUnits:*");
          if (!hasValidationFilter(action))
          {
+            // TODO debt: this should use a left join to fetch target (and
+            // possibly comments)
             textFlows = textFlowDAO.getTextFlowsByDocumentId(action.getDocumentId(), offset, action.getCount());
          }
-         // has validation filter
          else
          {
+            // TODO debt: this is not scalable. But we may not have other choice
+            // for validation filter. Maybe use scrollable result will help?
             textFlows = textFlowDAO.getAllTextFlowsByDocumentId(action.getDocumentId());
             textFlows = validationServiceImpl.filterHasErrorTexFlow(textFlows, action.getValidationIds(), hLocale.getLocaleId(), offset, action.getCount());
          }
@@ -136,9 +144,11 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       else
       {
          // @formatter:off
-         FilterConstraints constraints = FilterConstraints
-               .filterBy(action.getPhrase()).ignoreCase().filterSource().filterTarget()
-               .filterByStatus(action.isFilterUntranslated(), action.isFilterNeedReview(), action.isFilterTranslated(), action.isFilterApproved(), action.isFilterRejected());
+         FilterConstraints constraints = FilterConstraints.builder()
+               .filterBy(action.getPhrase())
+               .caseSensitive(false).checkInSource(true).checkInTarget(true)
+               .includeStates(action.getFilterStates())
+               .build();
          // @formatter:on
          log.debug("Fetch TransUnits filtered by status and/or search: {}", constraints);
          if (!hasValidationFilter(action))
@@ -190,7 +200,8 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
             gotoRow = row;
          }
       }
-      // stupid GWT RPC can't handle com.google.common.collect.Lists$TransformingRandomAccessList
+      // stupid GWT RPC can't handle
+      // com.google.common.collect.Lists$TransformingRandomAccessList
       return new GetTransUnitListResult(action.getDocumentId(), Lists.newArrayList(units), gotoRow, targetOffset, targetPage);
    }
 

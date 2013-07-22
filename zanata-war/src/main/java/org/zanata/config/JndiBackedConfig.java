@@ -20,10 +20,12 @@
  */
 package org.zanata.config;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NameClassPair;
@@ -45,9 +47,10 @@ import org.jboss.seam.annotations.Scope;
 @Name("jndiBackedConfig")
 @Scope(ScopeType.APPLICATION)
 @AutoCreate
-public class JndiBackedConfig
+public class JndiBackedConfig implements Serializable
 {
-
+   private static final long serialVersionUID = 1L;
+   
    private static final String KEY_AUTH_POLICY           = "java:global/zanata/security/auth-policy-names/";
    private static final String KEY_ADMIN_USERS           = "java:global/zanata/security/admin-users";
    private static final String KEY_DEFAULT_FROM_ADDRESS  = "java:global/zanata/email/default-from-address";

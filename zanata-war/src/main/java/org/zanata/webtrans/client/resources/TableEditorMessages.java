@@ -69,7 +69,7 @@ public interface TableEditorMessages extends Messages
    String saveAsFuzzy();
 
    @DefaultMessage("Save as Translated")
-   String saveAsApproved();
+   String saveAsTranslated();
 
    @DefaultMessage("Cancel")
    String editCancelShortcut();
@@ -95,8 +95,8 @@ public interface TableEditorMessages extends Messages
    @DefaultMessage("Don''t show this warning again.")
    String saveAsApprovedDialogRememberDecision();
 
-   @DefaultMessage("Warning! Saving a ''Need Review'' translation as ''Approved'' without changes.")
-   String saveAsApprovedDialogWarning1();
+   @DefaultMessage("Warning! Saving a ''Fuzzy'' translation as ''Translated'' without changes.")
+   String saveAsTranslatedDialogWarning1();
 
    @DefaultMessage("For navigation only, please use:")
    String saveAsApprovedDialogInfo1();
@@ -112,4 +112,16 @@ public interface TableEditorMessages extends Messages
 
    @DefaultMessage("Reject translation")
    String reviewReject();
+
+   @DefaultMessage("Comment")
+   String comment();
+   
+   @DefaultMessage("Discard Changes")
+   String discardChanges();
+      
+   @DefaultMessage("Cancel filter")
+   String cancelFilter();
+      
+   @DefaultMessage("Save changes before filtering view?")
+   String saveChangesConfirmationMessage();
 }

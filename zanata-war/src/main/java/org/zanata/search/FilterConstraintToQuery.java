@@ -140,7 +140,7 @@ public class FilterConstraintToQuery
 
    protected String buildStateCondition()
    {
-      if (constraints.isAllStateIncluded())
+      if (constraints.getIncludedStates().hasAllStates())
       {
          return null;
       }
@@ -148,7 +148,7 @@ public class FilterConstraintToQuery
 
       String stateInListWhereClause = and(textFlowAndLocaleRestriction.toString(), String.format("state in (%s)", STATE_LIST_PLACEHOLDER));
       String stateInListCondition = QueryBuilder.exists().from("HTextFlowTarget").where(stateInListWhereClause).toQueryString();
-      if (constraints.isNewIncluded())
+      if (constraints.getIncludedStates().hasNew())
       {
          String nullTargetCondition = String.format("%s not in indices(tf.targets)", LOCALE_PLACEHOLDER);
          if (hasSearch && constraints.isSearchInSource())
@@ -175,9 +175,9 @@ public class FilterConstraintToQuery
       {
          textFlowQuery.setParameter(SEARCH_NAMED_PARAM, searchString);
       }
-      if (!constraints.isAllStateIncluded())
+      if (!constraints.getIncludedStates().hasAllStates())
       {
-         textFlowQuery.setParameterList(STATE_LIST_NAMED_PARAM, constraints.getContentStateAsList());
+         textFlowQuery.setParameterList(STATE_LIST_NAMED_PARAM, constraints.getIncludedStates().asList());
       }
       return textFlowQuery;
    }

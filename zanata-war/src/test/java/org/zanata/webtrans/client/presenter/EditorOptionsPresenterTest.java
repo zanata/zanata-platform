@@ -243,7 +243,7 @@ public class EditorOptionsPresenterTest
    @Test
    public void onPersistOption()
    {
-      configHolder.setFilterByNeedReview(true);
+      configHolder.setFilterByFuzzy(true);
       configHolder.setFilterByTranslated(false);
       configHolder.setFilterByUntranslated(true);
 

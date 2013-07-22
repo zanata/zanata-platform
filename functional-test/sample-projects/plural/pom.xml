@@ -9,7 +9,8 @@
          <plugin>
             <groupId>org.zanata</groupId>
             <artifactId>zanata-maven-plugin</artifactId>
-            <configuration>
+             <version>${zanata.client.version}</version>
+             <configuration>
                <srcDir>pot</srcDir>
                <transDir>.</transDir>
             </configuration>

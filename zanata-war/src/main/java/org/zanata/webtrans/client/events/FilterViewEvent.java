@@ -32,14 +32,14 @@ public class FilterViewEvent extends GwtEvent<FilterViewEventHandler> implements
       return TYPE;
    }
 
-   private boolean filterTranslated, filterNeedReview, filterUntranslated, filterApproved, filterRejected, filterHasError;
+   private boolean filterTranslated, filterFuzzy, filterUntranslated, filterApproved, filterRejected, filterHasError;
    private boolean cancelFilter;
    private List<ValidationId> enabledValidationIds;
 
-   public FilterViewEvent(boolean filterTranslated, boolean filterNeedReview, boolean filterUntranslated, boolean filterApproved, boolean filterRejected, boolean filterHasError, boolean cancelFilter, List<ValidationId> enabledValidationIds)
+   public FilterViewEvent(boolean filterTranslated, boolean filterFuzzy, boolean filterUntranslated, boolean filterApproved, boolean filterRejected, boolean filterHasError, boolean cancelFilter, List<ValidationId> enabledValidationIds)
    {
       this.filterTranslated = filterTranslated;
-      this.filterNeedReview = filterNeedReview;
+      this.filterFuzzy = filterFuzzy;
       this.filterUntranslated = filterUntranslated;
       this.filterApproved = filterApproved;
       this.filterRejected = filterRejected;
@@ -66,9 +66,9 @@ public class FilterViewEvent extends GwtEvent<FilterViewEventHandler> implements
       return filterTranslated;
    }
 
-   public boolean isFilterNeedReview()
+   public boolean isFilterFuzzy()
    {
-      return filterNeedReview;
+      return filterFuzzy;
    }
 
    public boolean isFilterUntranslated()
@@ -105,7 +105,7 @@ public class FilterViewEvent extends GwtEvent<FilterViewEventHandler> implements
    public GetTransUnitActionContext updateContext(GetTransUnitActionContext currentContext)
    {
       Preconditions.checkNotNull(currentContext, "current context can not be null");
-      return currentContext.changeFilterNeedReview(filterNeedReview)
+      return currentContext.changeFilterFuzzy(filterFuzzy)
             .changeFilterTranslated(filterTranslated)
             .changeFilterUntranslated(filterUntranslated)
             .changeFilterApproved(filterApproved)
@@ -119,7 +119,7 @@ public class FilterViewEvent extends GwtEvent<FilterViewEventHandler> implements
    {
       return Objects.toStringHelper(this).
             add("filterTranslated", filterTranslated).
-            add("filterNeedReview", filterNeedReview).
+            add("filterFuzzy", filterFuzzy).
             add("filterUntranslated", filterUntranslated).
             add("filterApproved", filterApproved).
             add("filterRejected", filterRejected).

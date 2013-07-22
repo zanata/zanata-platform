@@ -60,7 +60,8 @@ public class SendEmailAction implements Serializable
 
    private static final String EMAIL_TYPE_CONTACT_ADMIN = "contact_admin";
    private static final String EMAIL_TYPE_CONTACT_COORDINATOR = "contact_coordinator";
-   private static final String EMAIL_TYPE_REQUEST_TO_JOIN = "request_to_join_language_team";
+   private static final String EMAIL_TYPE_REQUEST_JOIN = "request_join_language";
+   private static final String EMAIL_TYPE_REQUEST_ROLE = "request_role_language";
    private static final String EMAIL_TYPE_REQUEST_TO_JOIN_GROUP = "request_to_join_group";
 
    @In
@@ -224,9 +225,15 @@ public class SendEmailAction implements Serializable
             FacesMessages.instance().add(msg);
             return "success";
          }
-         else if (emailType.equals(EMAIL_TYPE_REQUEST_TO_JOIN))
+         else if (emailType.equals(EMAIL_TYPE_REQUEST_JOIN))
          {
             String msg = emailServiceImpl.sendToLanguageCoordinators(EmailService.REQUEST_TO_JOIN_EMAIL_TEMPLATE, getCoordinators(), fromName, fromLoginName, replyEmail, subject, message, language);
+            FacesMessages.instance().add(msg);
+            return "success";
+         }
+         else if (emailType.equals(EMAIL_TYPE_REQUEST_ROLE))
+         {
+            String msg = emailServiceImpl.sendToLanguageCoordinators(EmailService.REQUEST_ROLE_EMAIL_TEMPLATE, getCoordinators(), fromName, fromLoginName, replyEmail, subject, message, language);
             FacesMessages.instance().add(msg);
             return "success";
          }
