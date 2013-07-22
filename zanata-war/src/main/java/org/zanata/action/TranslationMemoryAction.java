@@ -21,25 +21,16 @@
 package org.zanata.action;
 
 import java.util.List;
-
 import javax.faces.event.ValueChangeEvent;
 
-import org.hibernate.criterion.NaturalIdentifier;
-import org.hibernate.criterion.Restrictions;
-import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.framework.EntityHome;
 import org.zanata.dao.TransMemoryDAO;
-import org.zanata.model.HProject;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.service.SlugEntityService;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Controller class for the Translation Memory UI.
@@ -86,6 +77,7 @@ public class TranslationMemoryAction extends EntityHome<TransMemory>
    public void clearTransMemory(String transMemorySlug)
    {
       transMemoryDAO.deleteTransMemoryContents(transMemorySlug);
+      transMemoryList = null; // Refresh the trans memory list
    }
 
    public String cancel()

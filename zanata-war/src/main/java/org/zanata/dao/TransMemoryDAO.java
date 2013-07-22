@@ -20,6 +20,7 @@
  */
 package org.zanata.dao;
 
+import java.util.Iterator;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -67,8 +68,13 @@ public class TransMemoryDAO extends AbstractDAOImpl<TransMemory, Long>
    public void deleteTransMemoryContents(@Nonnull String slug)
    {
       TransMemory tm = getBySlug(slug);
-      tm.getTranslationUnits().clear();
-      getSession().update(tm);
+      Iterator it = tm.getTranslationUnits().iterator();
+      while(it.hasNext())
+      {
+         getSession().delete(it.next());
+         it.remove();
+      }
+      makePersistent(tm);
    }
 
    public @Nullable

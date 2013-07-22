@@ -29,12 +29,13 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.MapKeyClass;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.MapKeyEnumerated;
 
+import org.hibernate.search.annotations.AnalyzerDiscriminator;
+import org.hibernate.search.annotations.ClassBridge;
+import org.zanata.hibernate.search.TextContainerAnalyzerDiscriminator;
+import org.zanata.hibernate.search.TransUnitVariantClassBridge;
 import org.zanata.model.ModelEntityBase;
 import org.zanata.util.HashUtil;
 import org.zanata.util.OkapiUtil;
@@ -59,6 +60,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @Data
 @Access(AccessType.FIELD)
+@ClassBridge(impl = TransUnitVariantClassBridge.class)
+@AnalyzerDiscriminator(impl = TextContainerAnalyzerDiscriminator.class)
 public class TMTransUnitVariant extends ModelEntityBase implements HasTMMetadata
 {
    private static final long serialVersionUID = 1L;

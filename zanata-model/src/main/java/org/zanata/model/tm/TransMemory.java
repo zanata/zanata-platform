@@ -67,8 +67,7 @@ public class TransMemory extends SlugEntityBase implements HasTMMetadata
    private String sourceLanguage;
 
    @Setter(AccessLevel.PROTECTED)
-   // Only cascade on remove as the relationship is managed by the other side
-   @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "translationMemory", orphanRemoval = true)
+   @OneToMany(mappedBy = "translationMemory", orphanRemoval = true)
    private Set<TMTranslationUnit> translationUnits = Sets.newHashSet();
 
    /**
