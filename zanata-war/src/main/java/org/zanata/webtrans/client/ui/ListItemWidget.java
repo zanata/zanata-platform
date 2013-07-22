@@ -19,30 +19,34 @@
  * site: http://www.fsf.org.
  */
 
-package org.zanata.webtrans.shared.rpc;
+package org.zanata.webtrans.client.ui;
 
-import org.zanata.webtrans.shared.model.TransUnitId;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
+ * This is the widget to create a &lt;li&gt;.
+ *
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class GetReviewCommentsAction extends AbstractWorkspaceAction<GetReviewCommentsResult>
+public class ListItemWidget extends SimplePanel
 {
-   private static final long serialVersionUID = 1L;
-   private TransUnitId transUnitId;
-
-   @SuppressWarnings("unused")
-   public GetReviewCommentsAction()
+   public ListItemWidget()
    {
+      super((Element) Document.get().createLIElement().cast());
    }
 
-   public GetReviewCommentsAction(TransUnitId transUnitId)
+   public ListItemWidget(String text)
    {
-      this.transUnitId = transUnitId;
+      this();
+      getElement().setInnerText(text);
    }
 
-   public TransUnitId getTransUnitId()
+   public ListItemWidget(Widget widget)
    {
-      return transUnitId;
+      this();
+      add(widget);
    }
 }

@@ -21,7 +21,6 @@
         <g:InlineLabel ui:field="fuzzyIcon" title="{messages.editSaveAsFuzzyShortcut}" styleName="icon-flag-1 {style.button}" />
         <g:InlineLabel ui:field="cancelIcon" title="{messages.editCancelShortcut}" styleName="icon-cancel-circle {style.button}" />
         <g:InlineLabel ui:field="historyIcon" title="{messages.history}" styleName="icon-back-in-time {style.button}" />
-        <g:InlineLabel ui:field="commentIcon" title="{messages.comment}" styleName="icon-comment-alt-1 {style.button}" />
         <g:SimplePanel ui:field="undoContainer" />
     </g:HTMLPanel>
 </ui:UiBinder>

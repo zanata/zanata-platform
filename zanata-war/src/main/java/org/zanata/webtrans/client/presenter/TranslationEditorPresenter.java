@@ -31,14 +31,10 @@ import org.zanata.webtrans.client.events.PageCountChangeEventHandler;
 import org.zanata.webtrans.client.events.RefreshPageEvent;
 import org.zanata.webtrans.client.view.TranslationEditorDisplay;
 
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.inject.Inject;
 
 public class TranslationEditorPresenter extends WidgetPresenter<TranslationEditorDisplay> implements PageChangeEventHandler, PageCountChangeEventHandler, TranslationEditorDisplay.Listener
 {
-
- 
    private final TransUnitNavigationPresenter transUnitNavigationPresenter;
    private final TransFilterPresenter transFilterPresenter;
    private final TransUnitsTablePresenter transUnitsTablePresenter;
@@ -68,14 +64,6 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
       transUnitNavigationPresenter.bind();
       display.setTransUnitNavigation(transUnitNavigationPresenter.getDisplay().asWidget());
 
-      registerHandler(display.getPageNavigation().addValueChangeHandler(new ValueChangeHandler<Integer>()
-      {
-         @Override
-         public void onValueChange(ValueChangeEvent<Integer> event)
-         {
-            transUnitsTablePresenter.goToPage(event.getValue());
-         }
-      }));
       registerHandler(eventBus.addHandler(PageChangeEvent.TYPE, this));
       registerHandler(eventBus.addHandler(PageCountChangeEvent.TYPE, this));
    }
@@ -91,7 +79,7 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    {
       display.getPageNavigation().setPageCount(event.getPageCount());
    }
-   
+
    @Override
    public void refreshCurrentPage()
    {
@@ -134,8 +122,15 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
       editorKeyShortcuts.enableEditContext();
    }
 
+   @Override
+   public void onPagerValueChanged(Integer pageNumber)
+   {
+      transUnitsTablePresenter.goToPage(pageNumber);
+   }
+
    public void setReadOnly(boolean isReadOnly)
    {
       display.getResizeButton().setVisible(isReadOnly);
    }
+
 }

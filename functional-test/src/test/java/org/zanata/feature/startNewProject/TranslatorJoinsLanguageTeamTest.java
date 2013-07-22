@@ -20,10 +20,6 @@
  */
 package org.zanata.feature.startNewProject;
 
-import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.concordion.api.extension.Extensions;
 import org.concordion.ext.ScreenshotExtension;
 import org.concordion.ext.TimestampFormatterExtension;
@@ -36,7 +32,6 @@ import org.zanata.feature.ConcordionTest;
 import org.zanata.page.HomePage;
 import org.zanata.page.administration.ManageLanguagePage;
 import org.zanata.page.administration.ManageLanguageTeamMemberPage;
-import org.zanata.util.TableRow;
 import org.zanata.workflow.LoginWorkFlow;
 
 /**
@@ -71,8 +66,7 @@ public class TranslatorJoinsLanguageTeamTest
    public ManageLanguageTeamMemberPage addToLanguage(String person)
    {
       ManageLanguageTeamMemberPage teamMemberPage = manageLanguageTeamMemberPage.clickAddTeamMember();
-      List<TableRow> searchResult = teamMemberPage.searchPerson(person);
-      return teamMemberPage.addToTeam(searchResult.get(0));
+      return teamMemberPage.searchPersonAndAddToTeam(person);
    }
 
 }

@@ -19,39 +19,20 @@
  * site: http://www.fsf.org.
  */
 
-package org.zanata.webtrans.client.view;
+package org.zanata.webtrans.shared.model;
 
-import org.zanata.webtrans.shared.model.ReviewComment;
-import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.ProvidesKey;
-import com.google.inject.ImplementedBy;
+import java.util.Date;
 
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
-
-@ImplementedBy(ReviewCommentView.class)
-public interface ReviewCommentDisplay extends WidgetDisplay
+/**
+ * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ */
+public abstract class ComparableByDate implements Comparable<ComparableByDate>
 {
-   static final ProvidesKey<ReviewComment> COMMENT_PROVIDES_KEY = new ProvidesKey<ReviewComment>()
+   protected abstract Date getDate();
+
+   @Override
+   public int compareTo(ComparableByDate o)
    {
-      @Override
-      public Object getKey(ReviewComment item)
-      {
-         return item.getId();
-      }
-   };
-
-   void setDataProvider(ListDataProvider<ReviewComment> dataProvider);
-
-   void setListener(Listener listener);
-
-   void center();
-
-   void clearInput();
-
-   void setCurrentTargetVersion(Integer targetVersion);
-
-   interface Listener
-   {
-      void addComment(String comment);
+      return getDate().compareTo(o.getDate());
    }
 }

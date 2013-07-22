@@ -53,6 +53,7 @@ import org.zanata.webtrans.client.view.SourceContentsDisplay;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.client.view.TransUnitsTableDisplay;
 import org.zanata.webtrans.shared.auth.EditorClientId;
+import org.zanata.webtrans.shared.model.ReviewComment;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -286,7 +287,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
          {
             translationHistoryPresenter.popupAndShowLoading(messages.concurrentEditTitle());
             TransHistoryItem latest = new TransHistoryItem(updatedTransUnit.getVerNum().toString(), updatedTransUnit.getTargets(), updatedTransUnit.getStatus(), updatedTransUnit.getLastModifiedBy(), updatedTransUnit.getLastModifiedTime());
-            translationHistoryPresenter.displayEntries(latest, Collections.<TransHistoryItem> emptyList());
+            translationHistoryPresenter.displayEntries(latest, Collections.<TransHistoryItem> emptyList(), Collections.<ReviewComment>emptyList());
          }
       }
       if (updateType == TransUnitUpdated.UpdateType.AddComment)

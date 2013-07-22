@@ -40,7 +40,6 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.ValidationService;
 import org.zanata.webtrans.server.ActionHandlerFor;
-import org.zanata.webtrans.shared.model.ContentStateGroup;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
@@ -84,7 +83,7 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
 
       log.info("action: {}", action);
       int targetOffset = action.getOffset();
-      int targetPage = action.getOffset() / action.getCount();
+      int targetPageIndex = targetOffset / action.getCount();
       GetTransUnitsNavigationResult navigationResult = null;
       if (action.isNeedReloadIndex())
       {
@@ -92,26 +91,33 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
          log.debug("get trans unit navigation action: {}", getTransUnitsNavigation);
          navigationResult = getTransUnitsNavigationService.getNavigationIndexes(getTransUnitsNavigation, hLocale);
 
-         int totalPageNumber = navigationResult.getIdIndexList().size() / action.getCount();
-         if (targetPage > totalPageNumber)
+         int totalPageIndex = getTotalPageIndex(navigationResult.getIdIndexList().size(), action.getCount());
+
+         if (targetPageIndex > totalPageIndex)
          {
-            targetPage = totalPageNumber;
-            targetOffset = action.getCount() * targetPage;
+            targetPageIndex = totalPageIndex;
+            targetOffset = action.getCount() * targetPageIndex;
          }
-            
+
          if (action.getTargetTransUnitId() != null)
          {
             int targetIndexInDoc = navigationResult.getIdIndexList().indexOf(action.getTargetTransUnitId());
-            targetPage = targetIndexInDoc / action.getCount();
-            targetOffset = action.getCount() * targetPage;
+            targetPageIndex = targetIndexInDoc / action.getCount();
+            targetOffset = action.getCount() * targetPageIndex;
          }
       }
 
       List<HTextFlow> textFlows = getTextFlows(action, hLocale, targetOffset);
-      
-      GetTransUnitListResult result = transformToTransUnits(action, hLocale, textFlows, targetOffset, targetPage);
+
+      GetTransUnitListResult result = transformToTransUnits(action, hLocale, textFlows, targetOffset, targetPageIndex);
       result.setNavigationIndex(navigationResult);
       return result;
+   }
+
+   private int getTotalPageIndex(int indexListSize, int countPerPage)
+   {
+      int totalPageNumber = (int) Math.ceil((float) indexListSize / countPerPage);
+      return totalPageNumber > 0 ? totalPageNumber - 1 : totalPageNumber;
    }
 
    private List<HTextFlow> getTextFlows(GetTransUnitList action, HLocale hLocale, int offset)
@@ -122,12 +128,14 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
          log.debug("Fetch TransUnits:*");
          if (!hasValidationFilter(action))
          {
-            // TODO debt: this should use a left join to fetch target (and possibly comments)
+            // TODO debt: this should use a left join to fetch target (and
+            // possibly comments)
             textFlows = textFlowDAO.getTextFlowsByDocumentId(action.getDocumentId(), offset, action.getCount());
          }
          else
          {
-            // TODO debt: this is not scalable. But we may not have other choice for validation filter. Maybe use scrollable result will help?
+            // TODO debt: this is not scalable. But we may not have other choice
+            // for validation filter. Maybe use scrollable result will help?
             textFlows = textFlowDAO.getAllTextFlowsByDocumentId(action.getDocumentId());
             textFlows = validationServiceImpl.filterHasErrorTexFlow(textFlows, action.getValidationIds(), hLocale.getLocaleId(), offset, action.getCount());
          }
@@ -192,7 +200,8 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
             gotoRow = row;
          }
       }
-      // stupid GWT RPC can't handle com.google.common.collect.Lists$TransformingRandomAccessList
+      // stupid GWT RPC can't handle
+      // com.google.common.collect.Lists$TransformingRandomAccessList
       return new GetTransUnitListResult(action.getDocumentId(), Lists.newArrayList(units), gotoRow, targetOffset, targetPage);
    }
 

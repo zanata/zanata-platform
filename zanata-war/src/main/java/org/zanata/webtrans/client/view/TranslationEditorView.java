@@ -29,6 +29,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -43,7 +44,6 @@ import com.google.inject.Inject;
 
 public class TranslationEditorView extends Composite implements TranslationEditorDisplay
 {
-
    private static TranslationEditorViewUiBinder uiBinder = GWT.create(TranslationEditorViewUiBinder.class);
 
    interface TranslationEditorViewUiBinder extends UiBinder<Widget, TranslationEditorView>
@@ -64,7 +64,7 @@ public class TranslationEditorView extends Composite implements TranslationEdito
 
    @UiField
    HTMLPanel filterPanelContainer;
-   
+
    @UiField
    InlineLabel refreshCurrentPage, resize;
 
@@ -83,7 +83,7 @@ public class TranslationEditorView extends Composite implements TranslationEdito
       this.messages = messages;
 
       initWidget(uiBinder.createAndBindUi(this));
-      
+
       refreshCurrentPage.setTitle(messages.refreshCurrentPage());
       resize.setTitle(messages.hideSouthPanel());
       resize.addStyleName(STYLE_HIDE_SOUTHPANEL);
@@ -157,7 +157,7 @@ public class TranslationEditorView extends Composite implements TranslationEdito
    {
       return pager.isFocused();
    }
-   
+
    @UiHandler("refreshCurrentPage")
    public void onRedrawCurrentPageClicked(ClickEvent event)
    {
@@ -179,6 +179,12 @@ public class TranslationEditorView extends Composite implements TranslationEdito
    public void onPagerBlurred(BlurEvent event)
    {
       listener.onPagerBlurred();
+   }
+
+   @UiHandler("pager")
+   public void onPagerValueChanged(ValueChangeEvent<Integer> event)
+   {
+      listener.onPagerValueChanged(event.getValue());
    }
 
    @UiHandler("resize")

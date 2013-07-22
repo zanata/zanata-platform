@@ -89,7 +89,6 @@ public class TargetContentsPresenter implements
    private final TableEditorMessages messages;
    private final SourceContentsPresenter sourceContentsPresenter;
    private final TranslationHistoryPresenter historyPresenter;
-   private final ReviewCommentPresenter reviewCommentPresenter;
    private final Provider<TargetContentsDisplay> displayProvider;
    private final EditorTranslators editorTranslators;
    private final EditorKeyShortcuts editorKeyShortcuts;
@@ -115,9 +114,8 @@ public class TargetContentsPresenter implements
                                   UserWorkspaceContext userWorkspaceContext,
                                   EditorKeyShortcuts editorKeyShortcuts,
                                   TranslationHistoryPresenter historyPresenter,
-                                  UserOptionsService userOptionsService, 
-                                  SaveAsApprovedConfirmationDisplay saveAsApprovedConfirmation,
-                                  ReviewCommentPresenter reviewCommentPresenter)
+                                  UserOptionsService userOptionsService,
+                                  SaveAsApprovedConfirmationDisplay saveAsApprovedConfirmation)
    // @formatter:on
    {
       this.displayProvider = displayProvider;
@@ -128,7 +126,6 @@ public class TargetContentsPresenter implements
       this.sourceContentsPresenter = sourceContentsPresenter;
       this.editorKeyShortcuts = editorKeyShortcuts;
       this.historyPresenter = historyPresenter;
-      this.reviewCommentPresenter = reviewCommentPresenter;
       this.historyPresenter.setCurrentValueHolder(this);
       this.userOptionsService = userOptionsService;
       this.saveAsApprovedConfirmation = saveAsApprovedConfirmation;
@@ -148,7 +145,6 @@ public class TargetContentsPresenter implements
       eventBus.addHandler(CopyDataToEditorEvent.getType(), this);
       eventBus.addHandler(TransUnitEditEvent.getType(), this);
       eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this);
-      reviewCommentPresenter.bind();
    }
 
    public void savePendingChangesIfApplicable()

@@ -9,7 +9,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class ReviewComment implements IsSerializable
+public class ReviewComment extends ComparableByDate implements IsSerializable
 {
    private ReviewCommentId id;
    private String comment;
@@ -75,39 +75,9 @@ public class ReviewComment implements IsSerializable
       return targetVersion;
    }
 
-   // setters to make gwt serialization happy
-   void setId(ReviewCommentId id)
+   @Override
+   protected Date getDate()
    {
-      this.id = id;
-   }
-
-   void setComment(String comment)
-   {
-      this.comment = comment;
-   }
-
-   void setTargetContents(List<String> targetContents)
-   {
-      this.targetContents = targetContents;
-   }
-
-   void setCommenterName(String commenterName)
-   {
-      this.commenterName = commenterName;
-   }
-
-   void setCreationDate(Date creationDate)
-   {
-      this.creationDate = creationDate;
-   }
-
-   void setTargetState(ContentState targetState)
-   {
-      this.targetState = targetState;
-   }
-
-   void setTargetVersion(Integer targetVersion)
-   {
-      this.targetVersion = targetVersion;
+      return creationDate;
    }
 }

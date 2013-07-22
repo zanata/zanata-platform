@@ -20,7 +20,7 @@
 	<properties>
 		<jboss.embedded.version>beta3.SP12</jboss.embedded.version>
 		<war.config.dir>${basedir}/src/etc</war.config.dir>
-		<containerId>jboss5x</containerId>
+		<containerId>jboss71x</containerId>
         <allow.deploy.skip>true</allow.deploy.skip>
 		
 		<!-- application properties -->
@@ -723,89 +723,79 @@
 
 	<profiles>
 		<profile>
+         <!-- This profile will copy the exploded war to AS7 and trigger a re-deployment. -->
 			<id>explode</id>
-			<activation>
-				<property>
-					<name>env</name>
-					<value>dev</value>
-				</property>
-			</activation>
-			<properties>
-				<!-- common config for Cargo -->
-				<port>8080</port>
-				<installDir>${java.io.tmpdir}/cargo/installs</installDir>
-			</properties>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.codehaus.cargo</groupId>
-						<artifactId>cargo-maven2-plugin</artifactId>
-						<version>1.1.0</version>
-						<executions>
-							<execution>
-								<phase>package</phase>
-								<goals>
-									<goal>redeploy</goal>
-								</goals>
-							</execution>
-						</executions>
-						<configuration>
-							<wait>false</wait>
-							<container>
-								<containerId>${containerId}</containerId>
-							</container>
-							<configuration>
-								<type>existing</type>
-								<home>${jboss.home}/server/default</home>
-							</configuration>
-							<deployer>
-								<deployables>
-									<deployable>
-										<pingURL>http://localhost:${port}/${war.name}/</pingURL>
-										<location>${project.build.directory}/zanata</location>
-										<properties>
-											<context>zanata</context>
-										</properties>
-									</deployable>
-								</deployables>
-							</deployer>
-						</configuration>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-resources-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>copy-ds-context</id>
-								<goals>
-									<goal>copy-resources</goal>
-								</goals>
-								<phase>package</phase>
-								<configuration>
-									<outputDirectory>${as.deploy}</outputDirectory>
-									<resources>
-										<resource>
-											<directory>${basedir}/src/etc</directory>
-											<filtering>true</filtering>
-											<includes>
-												<include>zanata-ds.xml</include>
-											</includes>
-										</resource>
-									</resources>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>jboss-maven-plugin</artifactId> 
-						<version>1.4</version> <configuration> <serverName>default</serverName> </configuration> 
-						<executions> <execution> <id>deploy-ds</id> <phase>package</phase> <goals><goal>hard-deploy</goal></goals> 
-						<configuration> <fileName>${project.build.directory}/classes/zanata-ds.xml</fileName> 
-						</configuration> </execution> <execution> <id>deploy-war-unpacked</id> <phase>package</phase> 
-						<goals><goal>hard-deploy</goal></goals> <configuration> <fileName>${project.build.directory}/zanata.war</fileName> 
-						<unpack>true</unpack> </configuration> </execution> </executions> </plugin> -->
-				</plugins>
-			</build>
+         <activation>
+            <property>
+               <name>env</name>
+               <value>dev</value>
+            </property>
+         </activation>
+         <properties>
+            <as7.dodeploy.marker>${jboss.home}/standalone/deployments/zanata.war.dodeploy</as7.dodeploy.marker>
+         </properties>
+         <build>
+            <plugins>
+               <plugin>
+                  <artifactId>maven-antrun-plugin</artifactId>
+                  <executions>
+                     <execution>
+                        <phase>package</phase>
+                        <configuration>
+                           <tasks>
+                              <copy todir="${jboss.home}/standalone/deployments/zanata.war">
+                                 <fileset dir="${project.build.directory}/zanata"/>
+                              </copy>
+                              <touch file="${as7.dodeploy.marker}"/>
+                           </tasks>
+                        </configuration>
+                        <goals>
+                           <goal>run</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+               </plugin>
+            </plugins>
+         </build>
 		</profile>
+      <profile>
+         <id>replace-static</id>
+         <!-- This profile will replace exploded war in AS7 WITHOUT triggering a re-deployment.
+         If you change xhtml or similar which does not require a redeployment, you can use this profile. -->
+         <activation>
+            <property>
+               <name>env</name>
+               <value>dev</value>
+            </property>
+         </activation>
+         <properties>
+            <as7.skip.deploy.marker>${jboss.home}/standalone/deployments/zanata.war.skipdeploy</as7.skip.deploy.marker>
+         </properties>
+         <build>
+            <plugins>
+               <plugin>
+                  <artifactId>maven-antrun-plugin</artifactId>
+                  <executions>
+                     <execution>
+                        <phase>package</phase>
+                        <configuration>
+                           <tasks>
+                              <touch file="${as7.skip.deploy.marker}"/>
+                              <copy todir="${jboss.home}/standalone/deployments/zanata.war">
+                                 <fileset dir="${project.build.directory}/zanata"/>
+                              </copy>
+                              <delete file="${as7.skip.deploy.marker}"/>
+                           </tasks>
+                        </configuration>
+                        <goals>
+                           <goal>run</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
 		
 		<profile>
 			<id>nogwt</id>

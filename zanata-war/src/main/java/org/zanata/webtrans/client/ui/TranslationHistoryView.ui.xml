@@ -13,8 +13,8 @@
         }
     </ui:style>
 
-    <g:HTMLPanel width="800px" height="600px">
-        <g:Button ui:field="compareButton" title="{messages.translationHistoryComparisonTitle}" styleName="icon-exchange {style.compareButton}" />
+    <g:HTMLPanel width="800px" height="600px" styleName="new-zanata">
+        <g:Button ui:field="compareButton" title="{messages.translationHistoryComparisonTitle}" styleName="icon-exchange {style.compareButton} l--push-v-half" />
         <g:TabLayoutPanel ui:field="tabLayoutPanel" barUnit='PX' barHeight='20' width="100%" height="95%">
             <g:tab>
                 <g:customHeader>
@@ -23,7 +23,14 @@
                     </g:HTMLPanel>
                 </g:customHeader>
                 <g:ScrollPanel>
-                    <g:VerticalPanel ui:field="historyPanel" width="100%" height="100%" />
+                    <g:HTMLPanel ui:field="historyPanel" styleName="l__wrapper l--push-v-1" >
+                        <div class="g">
+                            <div class="g__item w--1-12 txt--align-right"><i class="i--comment i"/><span class="is-invisible">Comment</span></div>
+                            <div class="w--9-12 g__item"><g:TextArea name="comment" styleName="basic-input" ui:field="commentTextArea" /></div>
+                            <div class="w--2-12 g__item"><g:Button addStyleNames="button--full" text="Add Comment" ui:field="addCommentButton" /></div>
+                        </div>
+                        <z:UnorderedListWidget styleName="list--slat d--top" ui:field="itemList"/>
+                    </g:HTMLPanel>
                 </g:ScrollPanel>
             </g:tab>
             <g:tab>
