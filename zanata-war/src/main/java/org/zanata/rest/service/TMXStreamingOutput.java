@@ -25,7 +25,6 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.io.Writer;
 import java.util.Iterator;
 
 import javax.annotation.Nonnull;
@@ -79,7 +78,7 @@ public class TMXStreamingOutput implements StreamingOutput
       if (iter.hasNext()) iter.peek();
 
       @Cleanup
-      Writer writer = new PrintWriter(output);
+      PrintWriter writer = new PrintWriter(output);
       @Cleanup
       XMLWriter xmlWriter = new XMLWriter(writer);
       @Cleanup
@@ -102,6 +101,10 @@ public class TMXStreamingOutput implements StreamingOutput
          SourceContents tu = iter.next();
          net.sf.okapi.common.LocaleId sourceLocale = OkapiUtil.toOkapiLocale(tu.getLocale());
          exportTUStrategy.exportTranslationUnit(tmxWriter, tu, sourceLocale);
+         if (writer.checkError())
+         {
+            throw new IOException("error writing to output");
+         }
       }
       tmxWriter.writeEndDocument();
    }
