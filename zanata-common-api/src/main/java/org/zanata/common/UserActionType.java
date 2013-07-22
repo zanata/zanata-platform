@@ -5,5 +5,5 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "userActionType")
 public enum UserActionType
 {
-   LAST_TRANSLATED, UPLOAD_DOC, REVIEWED_TRANSLATION;
+   UPDATE_TRANSLATION, REVIEWED_TRANSLATION, UPLOAD_DOCUMENT;
 }

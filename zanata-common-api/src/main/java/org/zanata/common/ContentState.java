@@ -18,6 +18,7 @@ public enum ContentState
 
    public static final Collection<ContentState> DRAFT_STATES = Collections.unmodifiableCollection(new HashSet<ContentState>(Arrays.asList(NeedReview, Rejected)));
    public static final Collection<ContentState> TRANSLATED_STATES = Collections.unmodifiableCollection(new HashSet<ContentState>(Arrays.asList(Approved, Translated)));
+   public static final Collection<ContentState> REVIEWED_STATES = Collections.unmodifiableCollection(new HashSet<ContentState>(Arrays.asList(Approved, Rejected)));
 
    public boolean isTranslated()
    {
@@ -27,6 +28,11 @@ public enum ContentState
    public boolean isRejectedOrFuzzy()
    {
       return DRAFT_STATES.contains(this);
+   }
+   
+   public boolean isReviewed()
+   {
+      return REVIEWED_STATES.contains(this);
    }
 
    public boolean isUntranslated()
