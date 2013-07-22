@@ -18,7 +18,12 @@ public class GlobalDocumentIdTest
    @BeforeMethod
    public void setup()
    {
-      id = new GlobalDocumentId(PROJECT_SLUG, VERSION_SLUG, DOCUMENT_ID);
+      id = newBasicInstance();
+   }
+
+   private GlobalDocumentId newBasicInstance()
+   {
+      return new GlobalDocumentId(PROJECT_SLUG, VERSION_SLUG, DOCUMENT_ID);
    }
 
    public void getDocId()
@@ -34,5 +39,23 @@ public class GlobalDocumentIdTest
    public void getProjectSlug()
    {
       assertThat(id.getProjectSlug(), is(PROJECT_SLUG));
+   }
+
+   public void equalsIsReflexive()
+   {
+      assertThat(id, equalTo(id));
+   }
+
+   public void equalsIsSymmetric()
+   {
+      GlobalDocumentId sameId = newBasicInstance();
+      assertThat(sameId, equalTo(id));
+      assertThat(id, equalTo(sameId));
+   }
+
+   public void sameHashForEqualObjects()
+   {
+      GlobalDocumentId sameId = newBasicInstance();
+      assertThat(sameId.hashCode(), is(id.hashCode()));
    }
 }
