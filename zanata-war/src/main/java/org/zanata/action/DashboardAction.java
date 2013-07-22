@@ -141,7 +141,7 @@ public class DashboardAction implements Serializable
    
    public List<HProjectIteration> getRemainingVersions(Long projectId)
    {
-      HProject project = projectDAO.findById(projectId, false);
+      HProject project = getProject(projectId);
       
       List<HProjectIteration> projectVersions = project.getProjectIterations();
       
@@ -152,21 +152,21 @@ public class DashboardAction implements Serializable
    
    public boolean isUserMaintainer(Long projectId)
    {
-      HProject project = projectDAO.findById(projectId, false);
+      HProject project = getProject(projectId);
       return authenticatedAccount.getPerson().isMaintainer(project);
    }
    
    @CachedMethodResult
    public int getDocumentCount(Long versionId)
    {
-      HProjectIteration version = projectIterationDAO.findById(versionId, false);
+      HProjectIteration version = getProjectVersion(versionId);
       return version.getDocuments().size();
    }
    
    @CachedMethodResult
    public int getSupportedLocalesCount(Long versionId)
    {
-      HProjectIteration version = projectIterationDAO.findById(versionId, false);
+      HProjectIteration version = getProjectVersion(versionId);
       Set<HLocale> result = version.getCustomizedLocales();
       
       if(result.isEmpty())
@@ -200,21 +200,9 @@ public class DashboardAction implements Serializable
       return result;
    }
    
-   private boolean isPersonInTeam(HLocale locale, final Long personId)
-   {
-      for (HLocaleMember lm : locale.getMembers())
-      {
-         if (lm.getPerson().getId().equals(personId))
-         {
-            return true;
-         }
-      }
-      return false;
-   }
-   
    public boolean isUserAllowedToTranslateOrReview(Long versionId, HLocale localeId)
    {
-      HProjectIteration version = projectIterationDAO.findById(versionId, false);
+      HProjectIteration version = getProjectVersion(versionId);
       
       return version != null
             && localeId != null 
@@ -227,5 +215,29 @@ public class DashboardAction implements Serializable
    public String getFormattedDate(Date date)
    {
       return DateUtil.formatShortDate(date);
+   }
+   
+   private boolean isPersonInTeam(HLocale locale, final Long personId)
+   {
+      for (HLocaleMember lm : locale.getMembers())
+      {
+         if (lm.getPerson().getId().equals(personId))
+         {
+            return true;
+         }
+      }
+      return false;
+   }
+   
+   @CachedMethodResult
+   private HProjectIteration getProjectVersion(Long versionId)
+   {
+      return projectIterationDAO.findById(versionId, false);
+   }
+   
+   @CachedMethodResult
+   private HProject getProject(Long projectId)
+   {
+      return projectDAO.findById(projectId, false);
    }
 }
