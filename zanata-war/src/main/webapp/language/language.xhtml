@@ -63,7 +63,7 @@
                         rendered="#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}">
                         <a4j:ajax event="change" render="threads" execute="@this" listener="#{languageTeamAction.saveTeamReviewer(member)}"/>
                     </h:selectBooleanCheckbox>
-                    <s:span styleClass="icon-ok checkmark" rendered="#{not s:hasPermission(languageTeamAction.locale, 'manage-language-team')}"/>
+                    <s:span styleClass="icon-ok checkmark" rendered="#{not s:hasPermission(languageTeamAction.locale, 'manage-language-team') and member.reviewer}"/>
                   </rich:column>
 
                   <rich:column width="auto" styleClass="centered">
