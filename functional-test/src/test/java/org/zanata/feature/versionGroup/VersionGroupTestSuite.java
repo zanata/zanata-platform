@@ -10,7 +10,8 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
       VersionGroupTest.class,
       VersionGroupFullTest.class,
-      VersionGroupBasicTest.class
+      VersionGroupBasicTest.class,
+      VersionGroupIDValidationTest.class
 })
 public class VersionGroupTestSuite
 {

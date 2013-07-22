@@ -20,24 +20,21 @@
  */
 package org.zanata.page.projects;
 
-import java.util.List;
-
+import com.google.common.base.Function;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.zanata.page.AbstractPage;
+import org.zanata.page.BasePage;
 import org.zanata.page.webtrans.DocumentsViewPage;
-import org.zanata.util.WebElementUtil;
-import com.google.common.base.Function;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
 
 @Slf4j
-public class ProjectVersionPage extends AbstractPage
+public class ProjectVersionPage extends BasePage
 {
    @FindBy(id = "iterationLanguageForm:data_table:tb")
    private WebElement localeTableTBody;

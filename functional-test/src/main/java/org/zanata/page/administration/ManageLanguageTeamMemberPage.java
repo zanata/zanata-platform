@@ -1,26 +1,24 @@
 package org.zanata.page.administration;
 
-import java.util.Collections;
-import java.util.List;
-
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.zanata.page.AbstractPage;
+import org.zanata.page.BasePage;
 import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-
-import lombok.extern.slf4j.Slf4j;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Slf4j
-public class ManageLanguageTeamMemberPage extends AbstractPage
+public class ManageLanguageTeamMemberPage extends BasePage
 {
    @FindBy(id = "memberPanel")
    private WebElement memberPanel;

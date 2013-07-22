@@ -22,12 +22,12 @@ package org.zanata.page.account;
 
 
 import com.google.common.base.Function;
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.zanata.page.AbstractPage;
+import org.zanata.page.BasePage;
+import org.zanata.page.utility.HomePage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +36,7 @@ import java.util.Map;
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
-public class RegisterPage extends AbstractPage
+public class RegisterPage extends BasePage
 {
 
    @FindBy(id = "registerForm:nameField:name")
@@ -122,10 +121,10 @@ public class RegisterPage extends AbstractPage
    }
 
    // TODO: Add a "signup success" page
-   public AbstractPage register()
+   public HomePage register()
    {
       registerButton.click();
-      return new AbstractPage(getDriver());
+      return new HomePage(getDriver());
    }
 
    public RegisterPage registerFailure()
@@ -174,19 +173,4 @@ public class RegisterPage extends AbstractPage
       return getErrors();
    }
 
-   /*
-    * Wait for all necessary entities to be available
-    */
-   private void waitForPage(List<String> elements) {
-      for (final String element : elements) {
-         waitForTenSec().until(new Function<WebDriver, WebElement>()
-         {
-            @Override
-            public WebElement apply(WebDriver driver)
-            {
-               return getDriver().findElement(By.id(element));
-            }
-         });
-      }
-   }
 }

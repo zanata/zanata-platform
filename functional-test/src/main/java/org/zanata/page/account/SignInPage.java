@@ -18,7 +18,7 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.page;
+package org.zanata.page.account;
 
 import java.util.List;
 
@@ -31,9 +31,11 @@ import org.openqa.selenium.support.PageFactory;
 import com.google.common.base.Predicate;
 
 import lombok.extern.slf4j.Slf4j;
+import org.zanata.page.AbstractPage;
+import org.zanata.page.BasePage;
 
 @Slf4j
-public class SignInPage extends AbstractPage
+public class SignInPage extends BasePage
 {
    @FindBy(id = "login:usernameField:username")
    private WebElement usernameField;
@@ -43,6 +45,9 @@ public class SignInPage extends AbstractPage
 
    @FindBy(id = "login:Sign_in")
    private WebElement signInButton;
+
+   @FindBy(linkText = "Forgot your password?")
+   private WebElement forgotPasswordLink;
 
    public SignInPage(final WebDriver driver)
    {
@@ -57,20 +62,51 @@ public class SignInPage extends AbstractPage
       }
       catch (IllegalAccessError iae)
       {
-         log.warn("Login failed. May due to some weired issue. Will Try again.");
+         SignInPage.log.warn("Login failed. May due to some weird issue. Will Try again.");
          doSignIn(username, password);
       }
       catch (TimeoutException e)
       {
-         log.error("timeout on login. If you are running tests manually with cargo.wait, you probably forget to create the user admin/admin. See ManualRunHelper.");
+         SignInPage.log.error("timeout on login. If you are running tests manually with cargo.wait, you probably forget to create the user admin/admin. See ManualRunHelper.");
          throw e;
       }
       return PageFactory.initElements(getDriver(), pageClass);
    }
 
+   public SignInPage signInFailure(String username, String password)
+   {
+      SignInPage.log.info("log in as username: {}", username);
+      usernameField.clear();
+      usernameField.sendKeys(username);
+      passwordField.sendKeys(password);
+      signInButton.click();
+      waitForTenSec().until(new Predicate<WebDriver>()
+      {
+         @Override
+         public boolean apply(WebDriver driver)
+         {
+            List<WebElement> messages = driver.findElements(By.id("messages"));
+            return messages.size() > 0 && messages.get(0).getText().contains("Login failed");
+         }
+      });
+      return new SignInPage(getDriver());
+   }
+
+   public ResetPasswordPage gotToResetPassword()
+   {
+      forgotPasswordLink.click();
+      return new ResetPasswordPage(getDriver());
+   }
+
+   public String getNotificationMessage()
+   {
+      List<WebElement> messages = getDriver().findElements(By.id("messages"));
+      return messages.size() > 0 ? messages.get(0).getText() : "";
+   }
+
    private void doSignIn(String username, String password)
    {
-      log.info("log in as username: {}", username);
+      SignInPage.log.info("log in as username: {}", username);
       usernameField.clear();
       usernameField.sendKeys(username);
       passwordField.sendKeys(password);

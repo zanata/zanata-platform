@@ -1,25 +1,21 @@
 package org.zanata.page.groups;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
+import com.google.common.base.Predicate;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.zanata.page.AbstractPage;
+import org.zanata.page.BasePage;
 import org.zanata.util.WebElementUtil;
 
-import com.google.common.base.Predicate;
-
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Slf4j
-public class VersionGroupsPage extends AbstractPage
+public class VersionGroupsPage extends BasePage
 {
    public static final int GROUP_NAME_COLUMN = 0;
    public static final int GROUP_DESCRIPTION_COLUMN = 1;
