@@ -723,15 +723,19 @@
 
 	<profiles>
 		<profile>
+         <!-- This profile will copy the exploded war to AS7 and trigger a re-deployment. -->
 			<id>explode</id>
-			<activation>
-				<property>
-					<name>env</name>
-					<value>dev</value>
-				</property>
-			</activation>
-			<build>
-				<plugins>
+         <activation>
+            <property>
+               <name>env</name>
+               <value>dev</value>
+            </property>
+         </activation>
+         <properties>
+            <as7.dodeploy.marker>${jboss.home}/standalone/deployments/zanata.war.dodeploy</as7.dodeploy.marker>
+         </properties>
+         <build>
+            <plugins>
                <plugin>
                   <artifactId>maven-antrun-plugin</artifactId>
                   <executions>
@@ -742,7 +746,7 @@
                               <copy todir="${jboss.home}/standalone/deployments/zanata.war">
                                  <fileset dir="${project.build.directory}/zanata"/>
                               </copy>
-                              <touch file="${jboss.home}/standalone/deployments/zanata.war.dodeploy"/>
+                              <touch file="${as7.dodeploy.marker}"/>
                            </tasks>
                         </configuration>
                         <goals>
@@ -751,9 +755,47 @@
                      </execution>
                   </executions>
                </plugin>
-				</plugins>
-			</build>
+            </plugins>
+         </build>
 		</profile>
+      <profile>
+         <id>replace-static</id>
+         <!-- This profile will replace exploded war in AS7 WITHOUT triggering a re-deployment.
+         If you change xhtml or similar which does not require a redeployment, you can use this profile. -->
+         <activation>
+            <property>
+               <name>env</name>
+               <value>dev</value>
+            </property>
+         </activation>
+         <properties>
+            <as7.skip.deploy.marker>${jboss.home}/standalone/deployments/zanata.war.skipdeploy</as7.skip.deploy.marker>
+         </properties>
+         <build>
+            <plugins>
+               <plugin>
+                  <artifactId>maven-antrun-plugin</artifactId>
+                  <executions>
+                     <execution>
+                        <phase>package</phase>
+                        <configuration>
+                           <tasks>
+                              <touch file="${as7.skip.deploy.marker}"/>
+                              <copy todir="${jboss.home}/standalone/deployments/zanata.war">
+                                 <fileset dir="${project.build.directory}/zanata"/>
+                              </copy>
+                              <delete file="${as7.skip.deploy.marker}"/>
+                           </tasks>
+                        </configuration>
+                        <goals>
+                           <goal>run</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
 		
 		<profile>
 			<id>nogwt</id>
