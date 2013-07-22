@@ -203,7 +203,7 @@ public class TMXStreamingOutputTest
    private void assertValidTMX(String xml) throws MalformedURLException, SAXException
    {
       StringReader reader = new StringReader(xml);
-      String systemID = getClass().getResource("/org/zanata/tmx14.dtd").toString();
+      String systemID = getClass().getResource("/org/zanata/xml/tmx14.dtd").toString();
       String doctype = "tmx";
       Validator v = new Validator(reader, systemID, doctype);
       assertTrue(v.toString(), v.isValid());
