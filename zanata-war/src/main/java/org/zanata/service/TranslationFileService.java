@@ -152,8 +152,6 @@ public interface TranslationFileService
     */
    void removeTempFile(File tempFile);
 
-   boolean hasPersistedDocument(String projectSlug, String iterationSlug, String docPath, String docName);
-
    String getFileExtension(String projectSlug, String iterationSlug, String docPath, String docName);
 
    /**
