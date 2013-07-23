@@ -28,6 +28,7 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.process.RunnableProcess;
 import org.zanata.search.ClassIndexer;
 import org.zanata.search.GenericClassIndexer;
+import org.zanata.search.HTextFlowTargetIndexer;
 import org.zanata.search.IndexerProcessHandle;
 import org.zanata.service.ProcessManagerService;
 
@@ -179,11 +180,16 @@ public class ReindexAsyncBean extends RunnableProcess<IndexerProcessHandle> impl
    }
 
    @SuppressWarnings("rawtypes")
-   ClassIndexer getIndexer(Class clazz)
+   ClassIndexer getIndexer(Class<?> clazz)
    {
-//    TODO clazz.getAnnotation(IndexerType.class).getIndexerClass().newInstance();
-    ClassIndexer indexer = new GenericClassIndexer();
-    return indexer;
+      if( clazz.equals( HTextFlowTarget.class ) )
+      {
+         return new HTextFlowTargetIndexer();
+      }
+      else
+      {
+         return new GenericClassIndexer();
+      }
    }
 
    /**
