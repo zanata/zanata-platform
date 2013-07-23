@@ -47,12 +47,13 @@ public class TMXStreamingOutputTest
       XMLUnit.setXpathNamespaceContext(ctx);
    }
    private LocaleId sourceLocale = LocaleId.EN;
+   private LocaleId targetLocale;
 
    @Test
    public void exportAllLocales() throws Exception
    {
-      LocaleId targetLocale = null;
-      StreamingOutput output = new TMXStreamingOutput(createTestData(), targetLocale, new ExportTUStrategy(targetLocale));
+      targetLocale = null;
+      StreamingOutput output = streamSourceContents();
 
       Document doc = writeToXmlWithValidation(output);
 
@@ -63,8 +64,8 @@ public class TMXStreamingOutputTest
    @Test
    public void exportFrench() throws Exception
    {
-      LocaleId targetLocale = LocaleId.FR;
-      StreamingOutput output = new TMXStreamingOutput(createTestData(), targetLocale, new ExportTUStrategy(targetLocale));
+      targetLocale = LocaleId.FR;
+      StreamingOutput output = streamSourceContents();
 
       Document doc = writeToXmlWithValidation(output);
 
@@ -76,8 +77,8 @@ public class TMXStreamingOutputTest
    @Test
    public void exportGerman() throws Exception
    {
-      LocaleId targetLocale = LocaleId.DE;
-      StreamingOutput output = new TMXStreamingOutput(createTestData(), targetLocale, new ExportTUStrategy(targetLocale));
+      targetLocale = LocaleId.DE;
+      StreamingOutput output = streamSourceContents();
 
       Document doc = writeToXmlWithValidation(output);
 
@@ -86,6 +87,11 @@ public class TMXStreamingOutputTest
       assertTUAbsent("doc1", "resId0", doc);
 
       assertLangAbsent("fr", doc);
+   }
+
+   private TMXStreamingOutput<SourceContents> streamSourceContents()
+   {
+      return new TMXStreamingOutput<SourceContents>(createTestData(), targetLocale, new ExportSourceContentsStrategy(targetLocale));
    }
 
    private @Nonnull Iterator<SourceContents> createTestData()

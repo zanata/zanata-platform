@@ -80,7 +80,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="plain_text_segment" type="longtext">
-                <constraints nullable="true"/>
+                <constraints nullable="false"/>
             </column>
             <column name="plain_text_segment_hash" type="char(32)">
                 <constraints nullable="false"/>

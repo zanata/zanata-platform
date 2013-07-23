@@ -39,7 +39,6 @@ import net.sf.okapi.common.filterwriter.TMXWriter;
 import org.zanata.common.LocaleId;
 import org.zanata.model.SourceContents;
 import org.zanata.util.NullCloseable;
-import org.zanata.util.OkapiUtil;
 import org.zanata.util.VersionUtility;
 
 import com.google.common.collect.Iterators;
@@ -57,12 +56,12 @@ public class TMXStreamingOutput<TU extends SourceContents> implements StreamingO
    private static final String creationToolVersion =
          VersionUtility.getVersionInfo(TMXStreamingOutput.class).getVersionNo();
    private final @Nonnull Iterator<TU> tuIter;
-   private final ExportTUStrategy<TU> exportTUStrategy;
+   private final AbstractExportTUStrategy<TU> exportTUStrategy;
 
    public TMXStreamingOutput(
          @Nonnull Iterator<TU> tuIter,
          @Nullable LocaleId targetLocale,
-         @Nonnull ExportTUStrategy<TU> exportTUStrategy)
+         @Nonnull AbstractExportTUStrategy<TU> exportTUStrategy)
    {
       this.tuIter = tuIter;
       this.exportTUStrategy = exportTUStrategy;

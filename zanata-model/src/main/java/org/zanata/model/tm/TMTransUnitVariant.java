@@ -70,7 +70,7 @@ public class TMTransUnitVariant extends ModelEntityBase implements HasTMMetadata
    private String taggedSegment;
 
    @Setter(AccessLevel.NONE)
-   @Column(name = "plain_text_segment", nullable = true, length = Integer.MAX_VALUE)
+   @Column(name = "plain_text_segment", nullable = false, length = Integer.MAX_VALUE)
    private String plainTextSegment;
 
    @Setter(AccessLevel.PROTECTED)
