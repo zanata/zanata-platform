@@ -62,6 +62,11 @@ public interface TranslationMemoryResource
          @PathParam("iterationSlug") @Nonnull String iterationSlug,
          @QueryParam("locale") @Nullable LocaleId locale);
 
+   @GET
+   @Path("{slug}")
+   public Response getTranslationMemory(
+         @PathParam("slug") @Nonnull String slug);
+
    @POST
    @Path("{slug}")
    @Consumes(MediaType.MULTIPART_FORM_DATA)
