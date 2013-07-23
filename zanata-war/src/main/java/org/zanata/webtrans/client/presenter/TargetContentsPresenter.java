@@ -690,8 +690,11 @@ public class TargetContentsPresenter implements
    public void rejectTranslation(TransUnitId id)
    {
       ensureRowSelection(id);
-      TransUnitSaveEvent event = new TransUnitSaveEvent(getNewTargets(), ContentState.Rejected, display.getId(), display.getVerNum(), display.getCachedTargets());
-      eventBus.fireEvent(new CommentBeforeSaveEvent(event));
+      if (display.getCachedState() != ContentState.Rejected)
+      {
+         TransUnitSaveEvent event = new TransUnitSaveEvent(getNewTargets(), ContentState.Rejected, display.getId(), display.getVerNum(), display.getCachedTargets());
+         eventBus.fireEvent(new CommentBeforeSaveEvent(event));
+      }
    }
 
 
