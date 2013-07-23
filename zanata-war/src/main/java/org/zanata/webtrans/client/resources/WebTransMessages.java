@@ -554,6 +554,6 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Remove from comparison")
    String removeFromComparison();
 
-   @DefaultMessage("Enter reject reason or close to cancel")
+   @DefaultMessage("Why is this translation rejected?")
    String rejectCommentTitle();
 }
