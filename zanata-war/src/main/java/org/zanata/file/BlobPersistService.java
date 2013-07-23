@@ -26,10 +26,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.sql.Blob;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.List;
 
 import javax.ws.rs.core.Response.Status;
 
@@ -37,9 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.LobHelper;
 import org.hibernate.SQLQuery;
-import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
-import org.hibernate.engine.jdbc.LobCreator;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
