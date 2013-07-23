@@ -67,6 +67,20 @@
         </sql>
     </changeSet>
 
+    <changeSet author="damason@redhat.com" id="1">
+        <comment>Add contentLocation to HRawDocument</comment>
+        <addColumn tableName="HRawDocument">
+            <column name="contentLocation" type="longtext" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="damason@redhat.com" id="2">
+        <comment>Initialise contentLocation with id, can guarantee uniqueness during migration</comment>
+        <sql>
+            update HRawDocument set contentLocation = id
+        </sql>
+        <addNotNullConstraint tableName="HRawDocument" columnName="contentLocation" columnDataType="longtext" />
+    </changeSet>
 
 
 </databaseChangeLog>

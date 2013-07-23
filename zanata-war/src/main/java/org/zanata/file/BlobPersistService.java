@@ -82,6 +82,11 @@ public class BlobPersistService implements FilePersistService, UploadPartPersist
       LobHelper lobHelper = documentDAO.getLobHelper();
       Blob fileContents = lobHelper.createBlob(tempFileStream, (int) rawFile.length());
       rawDocument.setContent(fileContents);
+
+      // FIXME temporary id assignment during blob migration - needs to be unique but only while
+      //       migration is in progress.
+      String temporaryLocation = "document:" + rawDocument.getDocument().getId().toString();
+      rawDocument.setContentLocation(temporaryLocation);
    }
 
    @Override

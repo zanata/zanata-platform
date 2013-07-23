@@ -52,6 +52,7 @@ public class HRawDocument extends ModelEntityBase implements Serializable
 
    // TODO none of these should allow null
    private String contentHash;
+   private String contentLocation;
    private Blob content;
    private DocumentType type;
    private String uploadedBy;
@@ -105,6 +106,9 @@ public class HRawDocument extends ModelEntityBase implements Serializable
             + ",contentHash=" + contentHash + "]";
    }
 
-   // TODO override equals to use contentHash
+   // TODON'T: override equals to use contentHash would be logically flawed
+   //          same document with different parameters leads to different text flows
+   //          different types could theoretically share the same hash, but would be parsed
+   //          completely differently.
 
 }
