@@ -245,30 +245,6 @@
                         <resource>
                         	<directory>${project.build.directory}/zanata</directory>
                         </resource>
-
-                  <!-- below 3 are for setting zanata web assets version -->
-                  <resource>
-                     <directory>src/main/webapp</directory>
-                     <filtering>false</filtering>
-                     <excludes>
-                        <exclude>WEB-INF/layout/template.xhtml</exclude>
-                     </excludes>
-                  </resource>
-                  <resource>
-                     <directory>src/main/webapp</directory>
-                     <filtering>true</filtering>
-                     <includes>
-                        <include>WEB-INF/layout/template.xhtml</include>
-                     </includes>
-                  </resource>
-                  <resource>
-                     <directory>src/main/resources</directory>
-                     <filtering>true</filtering>
-                     <includes>
-                        <include>org/zanata/webtrans/public/Application.xhtml</include>
-                     </includes>
-                  </resource>
-
 					</webResources>
 					<archive>
 						<manifest>
