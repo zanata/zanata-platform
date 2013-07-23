@@ -66,40 +66,51 @@ public class BlobPersistService implements FilePersistService, UploadPartPersist
 
    public void persistRawDocumentContentFromFile(HRawDocument rawDocument, File rawFile)
    {
-      FileInputStream tempFileStream;
-      try
-      {
-         tempFileStream = new FileInputStream(rawFile);
-      }
-      catch (FileNotFoundException e)
-      {
-         // TODO damason: throw more appropriate exception and handle in caller
-         log.error("Failed to open stream from temp source file", e);
-         throw new ChunkUploadException(Status.INTERNAL_SERVER_ERROR,
-               "Error saving uploaded document on server, download in original format may fail.\n",
-               e);
-      }
-      LobHelper lobHelper = documentDAO.getLobHelper();
-      Blob fileContents = lobHelper.createBlob(tempFileStream, (int) rawFile.length());
-      rawDocument.setContent(fileContents);
+      throw new RuntimeException("Migration of contents in progress, unable to persist file contents");
 
-      // FIXME temporary id assignment during blob migration - needs to be unique but only while
-      //       migration is in progress.
-      String temporaryLocation = "document:" + rawDocument.getDocument().getId().toString();
-      rawDocument.setContentLocation(temporaryLocation);
+//      oldPersistRawDocumentContentFromFile(rawDocument, rawFile);
    }
+
+//   private void oldPersistRawDocumentContentFromFile(HRawDocument rawDocument, File rawFile)
+//   {
+//      FileInputStream tempFileStream;
+//      try
+//      {
+//         tempFileStream = new FileInputStream(rawFile);
+//      }
+//      catch (FileNotFoundException e)
+//      {
+//         // TODO damason: throw more appropriate exception and handle in caller
+//         log.error("Failed to open stream from temp source file", e);
+//         throw new ChunkUploadException(Status.INTERNAL_SERVER_ERROR,
+//               "Error saving uploaded document on server, download in original format may fail.\n",
+//               e);
+//      }
+//      LobHelper lobHelper = documentDAO.getLobHelper();
+//      Blob fileContents = lobHelper.createBlob(tempFileStream, (int) rawFile.length());
+//
+//      rawDocument.setContent(fileContents);
+//
+//      // FIXME temporary id assignment during blob migration - needs to be unique but only while
+//      //       migration is in progress.
+//      String temporaryLocation = "document:" + rawDocument.getDocument().getId().toString();
+//      rawDocument.setContentLocation(temporaryLocation);
+//   }
 
    @Override
    public InputStream getRawDocumentContentAsStream(HRawDocument document)
    {
-      try
-      {
-         return document.getContent().getBinaryStream();
-      }
-      catch (SQLException e)
-      {
-         throw new RawDocumentContentAccessException(e);
-      }
+      throw new RawDocumentContentAccessException(
+            "Migration of contents in progress, unable to retrieve file contents");
+
+//      try
+//      {
+//         return document.getContent().getBinaryStream();
+//      }
+//      catch (SQLException e)
+//      {
+//         throw new RawDocumentContentAccessException(e);
+//      }
    }
 
    @Override

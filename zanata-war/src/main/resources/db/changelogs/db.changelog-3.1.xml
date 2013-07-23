@@ -82,5 +82,30 @@
         <addNotNullConstraint tableName="HRawDocument" columnName="contentLocation" columnDataType="longtext" />
     </changeSet>
 
+    <changeSet author="damason@redhat.com" id="3">
+        <comment>Add temporary table for blobs during migration</comment>
+        <createTable tableName="HRawDocumentContent">
+            <column name="contentLocation" type="longtext">
+                <constraints nullable="false" />
+            </column>
+            <column name="content" type="longblob">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="damason@redhat.com" id="4">
+        <comment>Copy raw document content to HRawDocumentContent</comment>
+        <sql>
+            insert into HRawDocumentContent (contentLocation, content)
+                select contentLocation, content from HRawDocument
+        </sql>
+    </changeSet>
+
+    <changeSet author="damason@redhat.com" id="5">
+        <comment>Remove obsolete HRawDocument.content column</comment>
+        <dropColumn tableName="HRawDocument" columnName="content" />
+    </changeSet>
+
 
 </databaseChangeLog>
