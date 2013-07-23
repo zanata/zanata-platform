@@ -24,6 +24,8 @@ import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.jboss.seam.security.management.JpaIdentityStore;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
@@ -31,7 +33,10 @@ import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
 import org.zanata.exception.ConcurrentTranslationException;
+import org.zanata.model.HLocale;
+import org.zanata.model.HProject;
 import org.zanata.seam.SeamAutowire;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.TranslationService;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
@@ -43,6 +48,9 @@ import com.google.common.collect.Lists;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 import static org.zanata.service.TranslationService.TranslationResult;
 
 /**
@@ -52,6 +60,8 @@ import static org.zanata.service.TranslationService.TranslationResult;
 public class TranslationServiceImplTest extends ZanataDbunitJpaTest
 {
    private SeamAutowire seam = SeamAutowire.instance();
+   @Mock
+   private ZanataIdentity identity;
 
    @Override
    protected void prepareDBUnitOperations()
@@ -66,10 +76,12 @@ public class TranslationServiceImplTest extends ZanataDbunitJpaTest
    @BeforeMethod
    public void initializeSeam()
    {
+      MockitoAnnotations.initMocks(this);
       seam.reset()
           .use("entityManager", getEm())
           .use("session", getSession())
           .use(JpaIdentityStore.AUTHENTICATED_USER, seam.autowire(AccountDAO.class).getByUsername("demo"))
+          .use("identity", identity)
           .useImpl(LocaleServiceImpl.class)
           .ignoreNonResolvable();
    }
@@ -147,5 +159,23 @@ public class TranslationServiceImplTest extends ZanataDbunitJpaTest
       List<TranslationResult> result = transService.translate(new LocaleId("de"), translationRequests);
 
       assertThat(result.get(0).isTranslationSuccessful(), Matchers.is(false));
+   }
+
+   @Test
+   public void willCheckPermissionForReviewState()
+   {
+      TranslationService transService = seam.autowire(TranslationServiceImpl.class);
+
+      // untranslated
+      TransUnitId transUnitId = new TransUnitId(3L);
+      TransUnitUpdateRequest translateReq = new TransUnitUpdateRequest(transUnitId, Lists.newArrayList("a", "b"), ContentState.Approved, 0);
+
+      List<TranslationResult> result = transService.translate(new LocaleId("de"), Lists.newArrayList(translateReq));
+
+      verify(identity).checkPermission(eq("translation-review"), isA(HProject.class), isA(HLocale.class));
+      assertThat(result.get(0).isTranslationSuccessful(), is(true));
+      assertThat(result.get(0).getBaseVersionNum(), is(0));
+      assertThat(result.get(0).getTranslatedTextFlowTarget().getVersionNum(), is(1)); // moved up only one version
+      assertThat(result.get(0).getTranslatedTextFlowTarget().getState(), is(ContentState.Translated));
    }
 }
