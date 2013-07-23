@@ -28,7 +28,6 @@ import java.io.PrintWriter;
 import java.util.Iterator;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
 
@@ -36,10 +35,8 @@ import lombok.Cleanup;
 import net.sf.okapi.common.XMLWriter;
 import net.sf.okapi.common.filterwriter.TMXWriter;
 
-import org.zanata.common.LocaleId;
 import org.zanata.model.SourceContents;
 import org.zanata.util.NullCloseable;
-import org.zanata.util.OkapiUtil;
 import org.zanata.util.VersionUtility;
 
 import com.google.common.collect.Iterators;
@@ -51,18 +48,17 @@ import com.google.common.collect.PeekingIterator;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class TMXStreamingOutput<TU extends SourceContents> implements StreamingOutput
+public class TMXStreamingOutput<TU> implements StreamingOutput
 {
    private static final String creationTool = "Zanata " + TMXStreamingOutput.class.getSimpleName();
    private static final String creationToolVersion =
          VersionUtility.getVersionInfo(TMXStreamingOutput.class).getVersionNo();
    private final @Nonnull Iterator<TU> tuIter;
-   private final ExportTUStrategy<TU> exportTUStrategy;
+   private final AbstractExportTUStrategy<TU> exportTUStrategy;
 
    public TMXStreamingOutput(
          @Nonnull Iterator<TU> tuIter,
-         @Nullable LocaleId targetLocale,
-         @Nonnull ExportTUStrategy<TU> exportTUStrategy)
+         @Nonnull AbstractExportTUStrategy<TU> exportTUStrategy)
    {
       this.tuIter = tuIter;
       this.exportTUStrategy = exportTUStrategy;

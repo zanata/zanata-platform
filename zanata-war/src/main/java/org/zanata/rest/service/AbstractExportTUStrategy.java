@@ -21,10 +21,12 @@
 
 package org.zanata.rest.service;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import lombok.extern.slf4j.Slf4j;
+
 import net.sf.okapi.common.filterwriter.TMXWriter;
 import net.sf.okapi.common.resource.ITextUnit;
 import net.sf.okapi.common.resource.Property;
@@ -32,28 +34,19 @@ import net.sf.okapi.common.resource.TextFragment;
 import net.sf.okapi.common.resource.TextUnit;
 
 import org.zanata.common.LocaleId;
-import org.zanata.model.SourceContents;
-import org.zanata.model.TargetContents;
-import org.zanata.util.OkapiUtil;
 
 /**
- * Writes one or more translations for a single TextFlow as a TMX translation unit.
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
+ * @param <TU>
  */
-@Slf4j
 @ParametersAreNonnullByDefault
-public class ExportTUStrategy<TU extends SourceContents> //implements ExportTUStrategy<SourceContents>
+@Slf4j
+public abstract class AbstractExportTUStrategy<TU>
 {
-   private final LocaleId localeId;
 
-   /**
-    * Exports one or all locales.  If localeId is null, export all locales.
-    * @param localeId
-    */
-   public ExportTUStrategy(@Nullable LocaleId localeId)
+   public AbstractExportTUStrategy()
    {
-      this.localeId = localeId;
    }
 
    /**
@@ -62,13 +55,13 @@ public class ExportTUStrategy<TU extends SourceContents> //implements ExportTUSt
     * @param tuidPrefix String to be prepended to all resIds when generating tuids
     * @param tf the SourceContents (TextFlow) whose contents and translations are to be exported
     */
-   public void exportTranslationUnit(TMXWriter tmxWriter, SourceContents tf)
+   public void exportTranslationUnit(TMXWriter tmxWriter, TU tf)
    {
       assert tmxWriter.isWriteAllPropertiesAsAttributes();
-      net.sf.okapi.common.LocaleId sourceLocaleId = OkapiUtil.toOkapiLocaleOrEmpty(tf.getLocale());
-      String tuid = tf.getQualifiedId();
+      net.sf.okapi.common.LocaleId sourceLocaleId = getSourceLocale(tf);
+      String tuid = getTUID(tf);
       // Perhaps we could encode plurals using TMX attributes?
-      String srcContent = tf.getContents().get(0);
+      String srcContent = getSrcContent(tf);
       if (srcContent.contains("\0"))
       {
          log.warn("illegal null character; discarding SourceContents with id="+tuid);
@@ -78,19 +71,7 @@ public class ExportTUStrategy<TU extends SourceContents> //implements ExportTUSt
       ITextUnit textUnit = new TextUnit(tuid, srcContent);
       setSrcLang(textUnit, sourceLocaleId);
       textUnit.setName(tuid);
-      if (localeId != null)
-      {
-         TargetContents tfTarget = tf.getTargetContents(localeId);
-         addTargetToTextUnit(textUnit, tfTarget);
-      }
-      else
-      {
-         Iterable<TargetContents> allTargetContents = tf.getAllTargetContents();
-         for (TargetContents tfTarget : allTargetContents)
-         {
-            addTargetToTextUnit(textUnit, tfTarget);
-         }
-      }
+      addTextUnitVariants(textUnit, tf);
       // If there aren't any translations for this TU, we shouldn't include it.
       // From the TMX spec: "Logically, a complete translation-memory
       // database will contain at least two <tuv> elements in each translation
@@ -101,25 +82,27 @@ public class ExportTUStrategy<TU extends SourceContents> //implements ExportTUSt
       }
    }
 
-   private void setSrcLang(ITextUnit textUnit, net.sf.okapi.common.LocaleId sourceLocaleId)
+   protected void setSrcLang(ITextUnit textUnit, net.sf.okapi.common.LocaleId sourceLocaleId)
    {
       textUnit.setProperty(new Property("srclang", sourceLocaleId.toBCP47()));
    }
 
-   private void addTargetToTextUnit(ITextUnit textUnit, TargetContents tfTarget)
+   protected void addTargetToTextUnit(ITextUnit textUnit, net.sf.okapi.common.LocaleId locId, String trgContent)
    {
-      if (tfTarget != null && tfTarget.getState().isTranslated())
+      if (trgContent.contains("\0"))
       {
-         String trgContent = tfTarget.getContents().get(0);
-         if (trgContent.contains("\0"))
-         {
-            log.warn("illegal null character; discarding TargetContents with sourceId="+textUnit.getId()+", locale="+tfTarget.getLocaleId());
-            return;
-         }
-         net.sf.okapi.common.LocaleId locId = OkapiUtil.toOkapiLocale(tfTarget.getLocaleId());
-         TextFragment target = new TextFragment(trgContent);
-         textUnit.setTargetContent(locId, target);
+         log.warn("illegal null character; discarding TargetContents with sourceId="+textUnit.getId()+", locale="+locId);
+      }
+      else
+      {
+      TextFragment target = new TextFragment(trgContent);
+      textUnit.setTargetContent(locId, target);
       }
    }
+
+   protected abstract @Nonnull net.sf.okapi.common.LocaleId getSourceLocale(TU tf);
+   protected abstract @Nullable String getTUID(TU tf);
+   protected abstract void addTextUnitVariants(ITextUnit textUnit, TU tf);
+   protected abstract String getSrcContent(TU tf);
 
 }

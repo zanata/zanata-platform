@@ -134,6 +134,7 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
          throw new ZanataServiceException("Translation memory " + slug + " was not found.", 404);
       }
       // TODO check locale?
+      // FIXME:
 //      tuIter = transMemoryStreamDAO.findTransUnitsByTM(transMemory);
       tuIter = null;
       String filename = makeTMXFilename(slug, locale);
@@ -165,14 +166,14 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
          @Nonnull Iterator<? extends SourceContents> tuIter,
          @Nullable LocaleId locale, @Nonnull String filename)
    {
-      StreamingOutput output = new TMXStreamingOutput(tuIter, locale, new ExportTUStrategy(locale));
+      StreamingOutput output = new TMXStreamingOutput(tuIter, locale, new ExportSourceContentsStrategy(locale));
       return okResponse(filename, output);
    }
 
    private Response buildTMX(Iterator<? extends TMTranslationUnit> tuIter, String locale, String filename)
    {
       LocaleId localeId = locale == null ? null : new LocaleId(locale);
-      StreamingOutput output = new TMXStreamingOutput(tuIter, localeId, new ExportTUStrategy(localeId));
+      StreamingOutput output = new TMXStreamingOutput(tuIter, localeId, new ExportTransUnitStrategy(localeId));
       return okResponse(filename, output);
    }
 

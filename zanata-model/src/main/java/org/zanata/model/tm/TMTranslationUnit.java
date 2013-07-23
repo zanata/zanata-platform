@@ -63,6 +63,14 @@ public class TMTranslationUnit extends ModelEntityBase implements HasTMMetadata
 {
    private static final long serialVersionUID = 1L;
 
+   public TMTranslationUnit(String transUnitId, String sourceLanguage, String sourceContent, Map<String, TMTransUnitVariant> transUnitVariants)
+   {
+      this.transUnitId = transUnitId;
+      this.transUnitVariants = transUnitVariants;
+      this.sourceLanguage = sourceLanguage;
+      this.transUnitVariants.put(sourceLanguage, new TMTransUnitVariant(sourceLanguage, sourceContent));
+   }
+
    @Column(name = "trans_unit_id", nullable = true)
    private String transUnitId;
 
