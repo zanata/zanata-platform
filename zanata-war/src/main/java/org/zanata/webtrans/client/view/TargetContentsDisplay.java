@@ -70,6 +70,8 @@ public interface TargetContentsDisplay extends WidgetDisplay, HasTransUnitId, Ha
 
    void updateCommentIndicator(int commentsCount);
 
+   ContentState getCachedState();
+
    interface Listener
    {
       void validate(ToggleEditor editor);

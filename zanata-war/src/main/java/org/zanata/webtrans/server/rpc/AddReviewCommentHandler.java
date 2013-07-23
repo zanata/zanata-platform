@@ -21,6 +21,7 @@
 
 package org.zanata.webtrans.server.rpc;
 
+import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -42,6 +43,8 @@ import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentAction;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentResult;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Throwables;
 
 import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -71,6 +74,8 @@ public class AddReviewCommentHandler extends AbstractActionHandler<AddReviewComm
    @Override
    public AddReviewCommentResult execute(AddReviewCommentAction action, ExecutionContext context) throws ActionException
    {
+      throwExceptionIfCommentIsInvalid(action);
+
       SecurityService.SecurityCheckResult securityCheckResult = securityServiceImpl.checkPermission(action, SecurityService.TranslationAction.MODIFY);
       HLocale hLocale = securityCheckResult.getLocale();
       TranslationWorkspace workspace = securityCheckResult.getWorkspace();
@@ -87,6 +92,14 @@ public class AddReviewCommentHandler extends AbstractActionHandler<AddReviewComm
       publishTransUnitUpdatedEvent(action, hLocale, hTextFlowTarget, workspace);
 
       return new AddReviewCommentResult(toDTO(hComment));
+   }
+
+   private void throwExceptionIfCommentIsInvalid(AddReviewCommentAction action) throws ActionException
+   {
+      if (StringUtils.isBlank(action.getContent()))
+      {
+         throw new ActionException("comment can not be blank");
+      }
    }
 
    private void publishTransUnitUpdatedEvent(AddReviewCommentAction action, HLocale hLocale, HTextFlowTarget hTextFlowTarget, TranslationWorkspace workspace)

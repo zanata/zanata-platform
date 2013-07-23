@@ -279,6 +279,12 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
          // Ignored.
          return;
       }
+      if (updateType == TransUnitUpdated.UpdateType.AddComment)
+      {
+         targetContentsPresenter.updateCommentCount(updatedTransUnit.getId(), updatedTransUnit.getCommentsCount());
+         return;
+      }
+
       if (Objects.equal(selectedId, updatedTransUnit.getId()) && !Objects.equal(editorClientId, translatorService.getCurrentEditorClientId()))
       {
          // updatedTU is our active row but done by another user
@@ -290,14 +296,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
             translationHistoryPresenter.displayEntries(latest, Collections.<TransHistoryItem> emptyList(), Collections.<ReviewComment>emptyList());
          }
       }
-      if (updateType == TransUnitUpdated.UpdateType.AddComment)
-      {
-         targetContentsPresenter.updateCommentCount(updatedTransUnit.getId(), updatedTransUnit.getCommentsCount());
-      }
-      else
-      {
-         targetContentsPresenter.updateRow(updatedTransUnit);
-      }
+      targetContentsPresenter.updateRow(updatedTransUnit);
    }
 
    // update type is web editor save or web editor save fuzzy and coming from
