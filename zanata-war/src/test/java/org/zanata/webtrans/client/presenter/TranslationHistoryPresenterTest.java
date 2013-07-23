@@ -23,6 +23,7 @@ import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.events.ReviewCommentEvent;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.GetTransUnitActionContextHolder;
@@ -80,6 +81,7 @@ public class TranslationHistoryPresenterTest
       presenter.setCurrentValueHolder(targetContentsPresenter);
       
       doNothing().when(dispatcher).execute(actionCaptor.capture(), resultCaptor.capture());
+      verify(eventBus).addHandler(ReviewCommentEvent.TYPE, presenter);
    }
 
    private static TransHistoryItem historyItem(String versionNum)

@@ -31,6 +31,7 @@ import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.CheckStateHasChangedEvent;
+import org.zanata.webtrans.client.events.CommentBeforeSaveEvent;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.events.CopyDataToEditorHandler;
 import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
@@ -689,7 +690,11 @@ public class TargetContentsPresenter implements
    public void rejectTranslation(TransUnitId id)
    {
       ensureRowSelection(id);
-      saveCurrent(ContentState.Rejected);
+      if (display.getCachedState() != ContentState.Rejected)
+      {
+         TransUnitSaveEvent event = new TransUnitSaveEvent(getNewTargets(), ContentState.Rejected, display.getId(), display.getVerNum(), display.getCachedTargets());
+         eventBus.fireEvent(new CommentBeforeSaveEvent(event));
+      }
    }
 
 
