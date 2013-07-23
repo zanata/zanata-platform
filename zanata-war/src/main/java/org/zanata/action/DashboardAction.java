@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -41,13 +40,10 @@ import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
-import org.zanata.model.HLocaleMember;
-import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.GravatarService;
-import org.zanata.service.LocaleService;
 import org.zanata.util.DateUtil;
 
 @Name("dashboardAction")
@@ -63,9 +59,6 @@ public class DashboardAction implements Serializable
    private GravatarService gravatarServiceImpl;
    
    @In
-   private LocaleService localeServiceImpl;
-   
-   @In
    private ProjectIterationDAO projectIterationDAO;
    
    @In
@@ -78,8 +71,6 @@ public class DashboardAction implements Serializable
    private ZanataIdentity identity;
    
    private final int USER_IMAGE_SIZE = 115;
-   
-   private int SUPPORTED_LOCALES_SIZE;
    
    private final Comparator<HProject> projectCreationDateComparator = new Comparator<HProject>()
    {
@@ -101,7 +92,6 @@ public class DashboardAction implements Serializable
    
    public void init()
    {
-      SUPPORTED_LOCALES_SIZE = localeServiceImpl.getSupportedLocales().size();
    }
 
    public String getUserImageUrl()
@@ -163,43 +153,6 @@ public class DashboardAction implements Serializable
       return version.getDocuments().size();
    }
    
-   @CachedMethodResult
-   public int getSupportedLocalesCount(Long versionId)
-   {
-      HProjectIteration version = getProjectVersion(versionId);
-      Set<HLocale> result = version.getCustomizedLocales();
-      
-      if(result.isEmpty())
-      {
-         result = version.getProject().getCustomizedLocales();
-         
-         if(result.isEmpty())
-         {
-            return SUPPORTED_LOCALES_SIZE;
-         }
-      }
-      
-      return result.size();
-   }
-   
-   @CachedMethodResult
-   public List<HLocale> getSupportedLocales(String projectSlug, String versionSlug)
-   {
-      List<HLocale> result = new ArrayList<HLocale>();
-      List<HLocale> localeList = localeServiceImpl.getSupportedLangugeByProjectIteration(projectSlug, versionSlug);
-      
-      HPerson person = authenticatedAccount.getPerson();
-      
-      for (HLocale locale : localeList)
-      {
-         if (isPersonInTeam(locale, person.getId()))
-         {
-            result.add(locale);
-         }
-      }
-      return result;
-   }
-   
    public boolean isUserAllowedToTranslateOrReview(Long versionId, HLocale localeId)
    {
       HProjectIteration version = getProjectVersion(versionId);
@@ -215,18 +168,6 @@ public class DashboardAction implements Serializable
    public String getFormattedDate(Date date)
    {
       return DateUtil.formatShortDate(date);
-   }
-   
-   private boolean isPersonInTeam(HLocale locale, final Long personId)
-   {
-      for (HLocaleMember lm : locale.getMembers())
-      {
-         if (lm.getPerson().getId().equals(personId))
-         {
-            return true;
-         }
-      }
-      return false;
    }
    
    @CachedMethodResult

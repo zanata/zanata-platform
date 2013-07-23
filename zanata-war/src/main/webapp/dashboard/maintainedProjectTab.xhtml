@@ -66,21 +66,6 @@
 		                        		#{dashboardAction.getDocumentCount(latestVersion.id)}
 						            </s:link>
 		                        </li>
-		                        <li>
-		                        	<a href="#" title="#{dashboardAction.getSupportedLocalesCount(latestVersion.id)} #{messages['jsf.Languages']}">
-		                        		<i aria-hidden="true" class="i i--globe"></i>
-		                        		<span class="is-invisible">#{messages['jsf.Languages']}</span> 
-		                        		#{dashboardAction.getSupportedLocalesCount(latestVersion.id)}
-		                        	</a>
-		                        </li>
-		                        <li>
-		                        	<ui:repeat value="#{dashboardAction.getSupportedLocales(project.slug, latestVersion.slug)}" var="language">
-		                        		<s:link title="Go to #{language.retrieveNativeName()} translation" 
-		                        			rendered="#{dashboardAction.isUserAllowedToTranslateOrReview(latestVersion.id, language)}">
-		                        			#{language.localeId.id}
-		                        		</s:link>
-		                        	</ui:repeat>
-		                        </li>
 		                        <li class="l--float-right">
 		                        </li>
 		                	</ul>
@@ -108,13 +93,6 @@
 				                        		#{dashboardAction.getDocumentCount(version.id)}
 								            </s:link>
 		                          		</li>
-		                          		<li>
-		                            		<a href="#" title="#{dashboardAction.getSupportedLocalesCount(version.id)} #{messages['jsf.Languages']}">
-				                        		<i aria-hidden="true" class="i i--globe"></i>
-				                        		<span class="is-invisible">#{messages['jsf.Languages']}</span> 
-				                        		#{dashboardAction.getSupportedLocalesCount(version.id)}
-		                        			</a>
-		                          		</li>
 		                        	</ul>
 		                      	</li>
                           	</ui:repeat>
@@ -128,4 +106,15 @@
 		    </li>
 		</ui:repeat>
 	</ul>
+	<div class="l--pad-all-half">
+    	<div class="txt--align-center txt--meta">
+       		<p>
+	    		<s:fragment rendered="#{dashboardAction.getUserMaintainedProjects().isEmpty()}">
+	        		<em>#{messages['jsf.YouHaveNoMaintainedProjects']}</em>
+		        	<br/>
+	    		</s:fragment>
+	            <strong>Want more projects?</strong> Find an <s:link id="banner_projects_link" view="/project/home.xhtml" propagation="none"> existing project</s:link> or <s:link view="/project/create_project.xhtml" propagation="none">create your own</s:link>.
+            </p>
+        </div>
+    </div>
 </div>

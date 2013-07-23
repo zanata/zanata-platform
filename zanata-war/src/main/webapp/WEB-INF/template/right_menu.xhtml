@@ -15,7 +15,12 @@
 	</header>
 	<nav>
 		<ul class="list--slat list--block-links txt--invert">
-			<li><a href="#" class="is-active">#{messages['jsf.Dashboard']}<span class="badge--highlight badge--inline l--float-right"><!-- This is for notification count --></span></a></li>
+			<li>
+				<s:link view="/dashboard/home.xhtml" propagation="none">
+					<span class="badge--highlight badge--inline l--float-right"><!-- This is for notification count --></span>
+					#{messages['jsf.Dashboard']}
+				</s:link>
+			</li>
 			<li><s:link id="profile" view="/profile/view.xhtml" propagation="none">#{messages['jsf.Settings']}</s:link></li>
 			<li>
 				<s:link id="right_menu_sign_out_link" view="/account/logout.seam" propagation="none">#{messages['jsf.Logout']}</s:link>
