@@ -24,7 +24,6 @@ package org.zanata.webtrans.client.view;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.DialogBoxCloseButton;
 import org.zanata.webtrans.client.ui.ReviewCommentInputWidget;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.inject.Inject;
@@ -47,6 +46,7 @@ public class ForceReviewCommentWidget extends DialogBox implements ForceReviewCo
       setText(messages.rejectCommentTitle());
 
       inputWidget = new ReviewCommentInputWidget();
+      inputWidget.setButtonText(messages.confirmRejection());
       FlowPanel panel = new FlowPanel();
       panel.setStyleName("new-zanata");
       panel.setWidth("800px");

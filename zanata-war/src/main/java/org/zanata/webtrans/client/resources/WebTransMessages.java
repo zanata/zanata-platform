@@ -556,4 +556,7 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Why is this translation rejected?")
    String rejectCommentTitle();
+
+   @DefaultMessage("Confirm rejection")
+   String confirmRejection();
 }

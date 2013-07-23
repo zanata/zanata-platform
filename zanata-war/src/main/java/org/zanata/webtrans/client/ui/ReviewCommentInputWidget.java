@@ -72,6 +72,11 @@ public class ReviewCommentInputWidget extends Composite
       commentTextArea.setValue("");
    }
 
+   public void setButtonText(String buttonText)
+   {
+      addCommentButton.setText(buttonText);
+   }
+
    interface ReviewCommentInputWidgetUiBinder extends UiBinder<HTMLPanel, ReviewCommentInputWidget>
    {
    }
