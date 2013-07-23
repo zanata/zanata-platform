@@ -31,7 +31,6 @@ import javax.persistence.EntityManager;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.apache.http.Header;
 import org.hibernate.HibernateException;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -51,6 +50,7 @@ import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
+import org.zanata.events.DocumentUploadedEvent;
 import org.zanata.events.TextFlowTargetStateEvent;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.lock.Lock;
@@ -236,12 +236,16 @@ public class TranslationServiceImpl implements TranslationService
          hTextFlowTarget.setTextFlowRevision(textFlow.getRevision());
          hTextFlowTarget.setLastModifiedBy(authenticatedAccount.getPerson());
          log.debug("last modified by :{}", authenticatedAccount.getPerson().getName());
-
-         this.signalPostTranslateEvent(hTextFlowTarget);
       }
 
       // save the target histories
       entityManager.flush();
+      
+      //fire event after flush
+      if (targetChanged || hTextFlowTarget.getVersionNum() == 0)
+      {
+         this.signalPostTranslateEvent(hTextFlowTarget);
+      }
 
       return targetChanged;
    }
@@ -599,6 +603,11 @@ public class TranslationServiceImpl implements TranslationService
                   return null;
                }
             }.workInTransaction();
+            
+            Events.instance().raiseTransactionSuccessEvent(
+                  DocumentUploadedEvent.EVENT_NAME,
+                  new DocumentUploadedEvent(document.getId(), false, hLocale.getLocaleId()
+            ));
          }
          catch (Exception e)
          {

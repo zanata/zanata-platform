@@ -37,6 +37,7 @@
   	tf_id="1"
   	tf_revision="1"
     content0="hei verden"
+    last_modified_by_id="1"
   />
   <HTextFlowTarget
   	id="2"
@@ -48,6 +49,7 @@
   	tf_id="1"
   	tf_revision="1"
     content0="hello welt"
+    last_modified_by_id="2"
   />
   <HTextFlowTarget
   	id="3"

@@ -69,12 +69,12 @@
     
     
     <changeSet id="5" author="aeng@redhat.com">
-        <comment>Add HActivities table to support user activities.</comment>
-        <createTable tableName="HActivities">
+        <comment>Add HPersonActivity table to support person activities.</comment>
+        <createTable tableName="HPersonActivity">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="personId" type="bigint">
+            <column name="person_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
             <column name="project_iteration_id" type="bigint">
@@ -83,21 +83,18 @@
             <column name="action" type="longtext">
                 <constraints nullable="false" />
             </column>
-            <column name="creationDate" type="DATETIME">
-                <constraints nullable="false" />
-            </column>
             <column name="lastChanged" type="DATETIME">
                 <constraints nullable="false" />
             </column>
         </createTable>
         
-        <addForeignKeyConstraint constraintName="FK_HActivities_HPerson" 
+        <addForeignKeyConstraint constraintName="FK_HPersonActivity_HPerson" 
 			referencedTableName="HPerson" referencedColumnNames="id"
-			baseTableName="HActivities" baseColumnNames="personId"/>
+			baseTableName="HPersonActivity" baseColumnNames="person_id"/>
 			
-		<addForeignKeyConstraint constraintName="FK_HActivities_HProjectIteration" 
+		<addForeignKeyConstraint constraintName="FK_HPersonActivity_HProjectIteration" 
 			referencedTableName="HProjectIteration" referencedColumnNames="id"
-			baseTableName="HActivities" baseColumnNames="project_iteration_id"/>
+			baseTableName="HPersonActivity" baseColumnNames="project_iteration_id"/>
     </changeSet>
 
 </databaseChangeLog>

@@ -29,47 +29,47 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.UserActionType;
-import org.zanata.model.HPersonActivities;
+import org.zanata.model.HPersonActivity;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("personActivitiesDAO")
+@Name("personActivityDAO")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
-public class PersonActivitiesDAO extends AbstractDAOImpl<HPersonActivities, Long>
+public class PersonActivityDAO extends AbstractDAOImpl<HPersonActivity, Long>
 {
    private static final long serialVersionUID = 1L;
 
-   public PersonActivitiesDAO()
+   public PersonActivityDAO()
    {
-      super(HPersonActivities.class);
+      super(HPersonActivity.class);
    }
 
-   public PersonActivitiesDAO(Session session)
+   public PersonActivityDAO(Session session)
    {
-      super(HPersonActivities.class, session);
+      super(HPersonActivity.class, session);
    }
 
    @SuppressWarnings("unchecked")
-   public HPersonActivities findUserActivity(Long personId, Long versionId, UserActionType action)
+   public HPersonActivity findUserActivity(Long personId, Long versionId, UserActionType action)
    {
-      Query query = getSession().createQuery("FROM HPersonActivities WHERE person.id = :personId "
-            + "AND projectIteration.id = :versionId "
-            + "AND action = :action");
+      Query query = getSession().createQuery("FROM HPersonActivity pa WHERE pa.person.id = :personId "
+            + "AND pa.projectIteration.id = :versionId "
+            + "AND pa.action = :action");
       query.setParameter("personId", personId);
       query.setParameter("versionId", versionId);
       query.setParameter("action", action);
       query.setCacheable(true);
       query.setComment("PersonActivitiesDAO.findUserActivity");
-      return (HPersonActivities)query.uniqueResult();
+      return (HPersonActivity)query.uniqueResult();
    }
 
    @SuppressWarnings("unchecked")
-   public List<HPersonActivities> findAllUserActivities(Long personId, Long versionId, int offset, int count)
+   public List<HPersonActivity> findAllUserActivities(Long personId, Long versionId, int offset, int count)
    {
-      Query query = getSession().createQuery("FROM HPersonActivities WHERE person.id = :personId "
-            + "AND projectIteration.id = :versionId");
+      Query query = getSession().createQuery("FROM HPersonActivity pa WHERE pa.person.id = :personId "
+            + "AND pa.projectIteration.id = :versionId");
       query.setParameter("personId", personId);
       query.setParameter("versionId", versionId);
       query.setMaxResults(count);

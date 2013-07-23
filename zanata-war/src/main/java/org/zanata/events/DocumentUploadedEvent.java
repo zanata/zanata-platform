@@ -18,47 +18,25 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.service;
 
-import java.util.List;
+package org.zanata.events;
 
-import org.zanata.common.UserActionType;
-import org.zanata.model.HPersonActivities;
+import org.zanata.common.LocaleId;
+
+import lombok.Data;
+
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
+ *
  */
-public interface UserActivitiesService
+@Data
+public final class DocumentUploadedEvent
 {
-   /**
-    * Get user activities on given action
-    * 
-    * @param personId
-    * @param versionId
-    * @param action
-    * @return List<HPersonActivities>
-    */
-   HPersonActivities getUserActivity(Long personId, Long versionId, UserActionType action);
-   
-   /**
-    * Get all user activities
-    * @param personId
-    * @param versionId
-    * @param offset
-    * @param count
-    * @return List<HPersonActivities>
-    */
-   List<HPersonActivities> getAllUserActivities(Long personId, Long versionId, int offset, int count);
-   
-   /**
-    * Insert or update user activity.
-    * 
-    * @param personId
-    * @param versionId
-    * @param action
-    */
-   void insertOrUpdateActivity(Long personId, Long versionId, UserActionType action);
+   public static final String EVENT_NAME = "org.zanata.event.HDocumentUploaded";
 
-   
+   private final Long documentId;
+   private final boolean isSourceDocument;
+   private final LocaleId localeId;
    
 }
