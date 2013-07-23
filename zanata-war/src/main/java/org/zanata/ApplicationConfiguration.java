@@ -374,8 +374,8 @@ public class ApplicationConfiguration implements Serializable
       return jndiBackedConfig.getStmpUsesSsl() != null ? Boolean.parseBoolean(jndiBackedConfig.getStmpUsesSsl()) : false;
    }
 
-   public String getWebAssetUrl()
+   public String getWebAssetUrlBase()
    {
-      return jndiBackedConfig.getWebAssetUrl();
+      return jndiBackedConfig.getWebAssetUrlBase();
    }
 }
