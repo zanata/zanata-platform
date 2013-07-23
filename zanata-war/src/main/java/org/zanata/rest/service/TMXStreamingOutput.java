@@ -25,7 +25,6 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.io.Writer;
 import java.util.Iterator;
 
 import javax.annotation.Nonnull;
@@ -35,6 +34,7 @@ import javax.ws.rs.core.StreamingOutput;
 
 import lombok.Cleanup;
 import net.sf.okapi.common.XMLWriter;
+import net.sf.okapi.common.filterwriter.TMXWriter;
 
 import org.zanata.common.LocaleId;
 import org.zanata.model.SourceContents;
@@ -79,11 +79,12 @@ public class TMXStreamingOutput implements StreamingOutput
       if (iter.hasNext()) iter.peek();
 
       @Cleanup
-      Writer writer = new PrintWriter(output);
+      PrintWriter writer = new PrintWriter(output);
       @Cleanup
       XMLWriter xmlWriter = new XMLWriter(writer);
       @Cleanup
-      ZanataTMXWriter tmxWriter = new ZanataTMXWriter(xmlWriter);
+      TMXWriter tmxWriter = new TMXWriter(xmlWriter);
+      tmxWriter.setWriteAllPropertiesAsAttributes(true);
       String segType = "block"; // TODO other segmentation types
       String dataType = "unknown"; // TODO track data type metadata throughout the system
 
@@ -102,6 +103,10 @@ public class TMXStreamingOutput implements StreamingOutput
          SourceContents tu = iter.next();
          net.sf.okapi.common.LocaleId sourceLocale = OkapiUtil.toOkapiLocale(tu.getLocale());
          exportTUStrategy.exportTranslationUnit(tmxWriter, tu, sourceLocale);
+         if (writer.checkError())
+         {
+            throw new IOException("error writing to output");
+         }
       }
       tmxWriter.writeEndDocument();
    }

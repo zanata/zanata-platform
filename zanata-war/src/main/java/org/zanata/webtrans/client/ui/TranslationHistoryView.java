@@ -2,34 +2,21 @@ package org.zanata.webtrans.client.ui;
 
 import java.util.List;
 
-import net.customware.gwt.presenter.client.EventBus;
-
 import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.client.util.ContentStateToStyleUtil;
-import org.zanata.webtrans.client.util.DateUtil;
 import org.zanata.webtrans.shared.model.ComparableByDate;
 import org.zanata.webtrans.shared.model.ReviewComment;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
-
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.google.gwt.cell.client.AbstractCell;
-import com.google.gwt.cell.client.Cell;
-import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.CssResource;
-import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
-import com.google.gwt.user.client.ui.TextArea;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -56,10 +43,9 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    Button compareButton;
    @UiField
    UnorderedListWidget itemList;
+
    @UiField
-   Button addCommentButton;
-   @UiField
-   TextArea commentTextArea;
+   ReviewCommentInputWidget commentInput;
    private Listener listener;
    private List<ComparableByDate> items = Lists.newArrayList();
 
@@ -74,8 +60,6 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
       tabLayoutPanel.ensureDebugId("transHistoryTabPanel");
       setGlassEnabled(true);
 
-      commentTextArea.getElement().setAttribute("placeholder", "Add a comment...");
-
       setWidget(container);
    }
 
@@ -83,9 +67,7 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    public void setData(List<ComparableByDate> items)
    {
       this.items = items;
-      commentTextArea.setEnabled(!items.isEmpty());
-      addCommentButton.setEnabled(!items.isEmpty());
-
+      commentInput.setEnabled(!items.isEmpty());
       redrawList();
    }
 
@@ -115,19 +97,13 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    @Override
    public void clearInput()
    {
-      commentTextArea.setValue("");
+      commentInput.clearInput();
    }
 
    @UiHandler("compareButton")
    public void onCompareButtonClick(ClickEvent event)
    {
       tabLayoutPanel.selectTab(COMPARISON_TAB_INDEX);
-   }
-
-   @UiHandler("addCommentButton")
-   public void onAddCommentButtonClick(ClickEvent event)
-   {
-      listener.addComment(commentTextArea.getText());
    }
 
    @Override
@@ -156,6 +132,7 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    public void setListener(Listener listener)
    {
       this.listener = listener;
+      commentInput.setListener(listener);
    }
 
    private void setComparisonTitle(String description)

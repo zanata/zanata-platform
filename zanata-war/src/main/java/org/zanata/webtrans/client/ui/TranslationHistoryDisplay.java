@@ -2,13 +2,10 @@ package org.zanata.webtrans.client.ui;
 
 import java.util.List;
 
+import org.zanata.webtrans.client.view.ForceReviewCommentDisplay;
 import org.zanata.webtrans.shared.model.ComparableByDate;
 import org.zanata.webtrans.shared.model.ReviewComment;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
-import com.google.gwt.user.cellview.client.ColumnSortEvent;
-import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.ProvidesKey;
-import com.google.gwt.view.client.SelectionModel;
 import com.google.inject.ImplementedBy;
 
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
@@ -16,14 +13,6 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 @ImplementedBy(TranslationHistoryView.class)
 public interface TranslationHistoryDisplay extends WidgetDisplay
 {
-   ProvidesKey<TransHistoryItem> HISTORY_ITEM_PROVIDES_KEY = new ProvidesKey<TransHistoryItem>()
-   {
-      @Override
-      public Object getKey(TransHistoryItem item)
-      {
-         return item.getVersionNum();
-      }
-   };
 
    void center();
 
@@ -45,10 +34,8 @@ public interface TranslationHistoryDisplay extends WidgetDisplay
 
    void clearInput();
 
-   interface Listener
+   interface Listener extends ForceReviewCommentDisplay.Listener
    {
-
-      void addComment(String commentContent);
 
       void copyIntoEditor(List<String> contents);
 

@@ -553,4 +553,10 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Remove from comparison")
    String removeFromComparison();
+
+   @DefaultMessage("Why is this translation rejected?")
+   String rejectCommentTitle();
+
+   @DefaultMessage("Confirm rejection")
+   String confirmRejection();
 }

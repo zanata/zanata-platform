@@ -92,6 +92,15 @@ public class AddReviewCommentHandlerTest
       // @formatter:on
    }
 
+   @Test(expectedExceptions = ActionException.class)
+   public void testExecuteWithBlankComment() throws ActionException
+   {
+      String blankComment = "   \t \n";
+      AddReviewCommentAction action = new AddReviewCommentAction(new TransUnitId(1L), blankComment, documentId);
+
+      handler.execute(action, null);
+   }
+
    @Test
    public void testExecute() throws Exception
    {
