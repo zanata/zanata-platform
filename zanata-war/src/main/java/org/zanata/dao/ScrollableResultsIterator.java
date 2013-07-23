@@ -25,9 +25,11 @@ import java.io.Closeable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.hibernate.HibernateException;
+import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.ScrollableResults;
 
+@Slf4j
 class ScrollableResultsIterator implements Iterator<Object[]>, Closeable
 {
    private boolean closed;
@@ -82,8 +84,11 @@ class ScrollableResultsIterator implements Iterator<Object[]>, Closeable
       catch (RuntimeException e)
       {
          // UGLY hack to work around https://hibernate.atlassian.net/browse/HHH-2811
-         if (e.getMessage() != null && e.getMessage().contains("could not perform sequential read of results (forward)"))
+         if (e.getMessage() != null &&
+               (e.getMessage().contains("could not perform sequential read of results (forward)") ||
+                e.getMessage().contains("could not doAfterTransactionCompletion sequential read of results (forward)")))
          {
+            log.debug("assuming empty ResultSet", e);
             close();
             return false;
          }
