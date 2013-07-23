@@ -20,19 +20,26 @@
  */
 package org.zanata.file;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.sql.Blob;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.List;
 
 import javax.ws.rs.core.Response.Status;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.LobHelper;
+import org.hibernate.SQLQuery;
+import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
+import org.hibernate.engine.jdbc.LobCreator;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -98,19 +105,26 @@ public class BlobPersistService implements FilePersistService, UploadPartPersist
 //   }
 
    @Override
-   public InputStream getRawDocumentContentAsStream(HRawDocument document)
+   public InputStream getRawDocumentContentAsStream(HRawDocument rawDoc)
    {
-      throw new RawDocumentContentAccessException(
-            "Migration of contents in progress, unable to retrieve file contents");
+      String locator = rawDoc.getContentLocation();
+      return getRawDocumentFromTemporaryBlobTable(locator);
+   }
 
-//      try
-//      {
-//         return document.getContent().getBinaryStream();
-//      }
-//      catch (SQLException e)
-//      {
-//         throw new RawDocumentContentAccessException(e);
-//      }
+   private InputStream getRawDocumentFromTemporaryBlobTable(String locator)
+   {
+      String queryString = "SELECT content" +
+                           " FROM HRawDocumentContent" +
+                           " WHERE contentLocation = '" + locator + "';";
+      SQLQuery query = session.createSQLQuery(queryString);
+      Object result = query.uniqueResult();
+      if (result != null)
+      {
+         byte[] content = (byte[]) result;
+         return new ByteArrayInputStream(content);
+      }
+      throw new RawDocumentContentAccessException(
+            "No raw document content for locator \"" + locator + "\"");
    }
 
    @Override
