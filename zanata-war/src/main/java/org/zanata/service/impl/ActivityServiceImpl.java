@@ -67,9 +67,15 @@ public class ActivityServiceImpl implements ActivityService
    private DocumentDAO documentDAO;
    
    @Override
-   public List<Activity> getAllPersonActivities(Long personId, Long versionId, int offset, int count)
+   public List<Activity> getAllPersonActivities(Long personId, Long contextId, int offset, int count)
    {
-      return activityDAO.findAllUserActivities(personId, versionId, offset, count);
+      return activityDAO.findAllUserActivities(personId, contextId, offset, count);
+   }
+   
+   @Override
+   public Activity findUserActivityInTimeRange(Long acterId, Long contextId, UserActionType action, Date roundOffActionTime)
+   {
+      return activityDAO.findUserActivityInTimeRange(acterId, contextId, action, roundOffActionTime);
    }
 
    @Override
@@ -77,9 +83,9 @@ public class ActivityServiceImpl implements ActivityService
    {
       if (acter != null && context != null && action != null)
       {
-         Date roundOffActionTime = DateUtils.truncate(new Date(), Calendar.HOUR);
+         Date roundOffActionTime = DateUtils.truncate(new Date(), Calendar.MINUTE);
          
-         Activity activity = activityDAO.findUserActivityInTimeRange(acter.getId(), context.getId(), action, roundOffActionTime);
+         Activity activity = findUserActivityInTimeRange(acter.getId(), context.getId(), action, roundOffActionTime);
 
          if (activity != null && DateUtil.isDateInRange(activity.getLastChanged(), new Date(), ROLLUP_TIME_RANGE))
          {

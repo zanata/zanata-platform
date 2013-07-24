@@ -59,7 +59,7 @@ public class ActivityDAO extends AbstractDAOImpl<Activity, Long>
             + "AND a.contextId = :contextId "
             + "AND a.action = :action "
             + "AND a.startOffset <= :roundOffActionTime "
-            + "AND a.endOffset >= :roundOffActionTime "
+            + "AND a.endOffset > :roundOffActionTime "
             + "order by a.lastChanged DESC");
       query.setParameter("personId", personId);
       query.setParameter("contextId", contextId);

@@ -20,6 +20,7 @@
  */
 package org.zanata.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.zanata.common.UserActionType;
@@ -35,12 +36,12 @@ public interface ActivityService
    /**
     * Get all user activities
     * @param personId
-    * @param versionId
+    * @param contextId
     * @param offset
     * @param count
     * @return List<Activity>
     */
-   List<Activity> getAllPersonActivities(Long personId, Long versionId, int offset, int count);
+   List<Activity> getAllPersonActivities(Long personId, Long contextId, int offset, int count);
    
    /**
     * Log activity, record roll up in hourly basis
@@ -52,4 +53,16 @@ public interface ActivityService
     * @param wordCount
     */
    void logActivity(HPerson acter, ILoggable context, ILoggable target, UserActionType action, int wordCount);
+
+   
+   /**
+    * Find activity with given person, context, action and time
+    * 
+    * @param acterId
+    * @param contextId
+    * @param action
+    * @param roundOffActionTime
+    * @return
+    */
+   Activity findUserActivityInTimeRange(Long acterId, Long contextId, UserActionType action, Date roundOffActionTime);
 }
