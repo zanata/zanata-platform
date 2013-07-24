@@ -36,6 +36,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 import org.zanata.model.TestFixture;
+import org.zanata.webtrans.client.events.CommentBeforeSaveEvent;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
@@ -81,6 +82,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
+import static org.zanata.model.TestFixture.extractFromEvents;
 import static org.zanata.model.TestFixture.makeTransUnit;
 
 @Test(groups = { "unit-tests" })
@@ -811,5 +813,32 @@ public class TargetContentsPresenterTest
       verify(display).showButtons(false);
       verify(display).setToMode(ToggleEditor.ViewMode.VIEW);
       verify(editorKeyShortcuts).enableNavigationContext();
+   }
+
+   @Test
+   public void willIgnoreRejectIfItsAlreadyRejectedState()
+   {
+      selectedTU = currentPageRows.get(1);
+      when(display.getId()).thenReturn(selectedTU.getId());
+      when(display.getCachedState()).thenReturn(ContentState.Rejected);
+      presenter.setStatesForTesting(selectedTU.getId(), 0, display);
+
+      presenter.rejectTranslation(selectedTU.getId());
+
+      verifyZeroInteractions(eventBus);
+   }
+
+   @Test
+   public void rejectTranslationWillForceComment()
+   {
+      selectedTU = currentPageRows.get(1);
+      when(display.getId()).thenReturn(selectedTU.getId());
+      presenter.setStatesForTesting(selectedTU.getId(), 0, display);
+
+      presenter.rejectTranslation(selectedTU.getId());
+
+      verify(eventBus).fireEvent(eventCaptor.capture());
+      CommentBeforeSaveEvent commentBeforeSaveEvent = extractFromEvents(eventCaptor.getAllValues(), CommentBeforeSaveEvent.class);
+      assertThat(commentBeforeSaveEvent.getSaveEvent().getStatus(), Matchers.equalTo(ContentState.Rejected));
    }
 }

@@ -165,6 +165,12 @@ public class TargetContentsView extends Composite implements TargetContentsDispl
    }
 
    @Override
+   public ContentState getCachedState()
+   {
+      return cachedValue.getStatus();
+   }
+
+   @Override
    public void setState(EditingState editingState)
    {
       this.editingState = editingState;

@@ -26,10 +26,10 @@
 			<meta name="viewport" content="width=device-width, minimum-scale=1.0" />
 			<meta http-equiv="cleartype" content="on" />
 		
-			<link rel="shortcut icon" href="//webassets-zanata.rhcloud.com/1/favicon.ico" type="image/x-icon" />
+			<link rel="shortcut icon" href="#{applicationConfiguration.baseWebAssetsUrl}/favicon.ico" type="image/x-icon" />
 		
 			<!--[if gt IE 8]><!-->
-				<link type="text/css" rel="stylesheet" href="//webassets-zanata.rhcloud.com/1/assets/css/style.css" />
+				<link type="text/css" rel="stylesheet" href="#{applicationConfiguration.webAssetsUrl}" />
 			<!--<![endif]-->
 		
 			<!--[if (lt IE 9) & (!IEMobile)]>
@@ -37,7 +37,6 @@
 			<![endif]-->
 		
 			<title>#{messages['jsf.Zanata']}: <ui:insert name="page_title" /></title>
-			<link rel="shortcut icon" href="//webassets-zanata.rhcloud.com/1/logo.svg" type="image/x-icon" />
 			<link type="text/css" rel="stylesheet" href="#{request.contextPath}/resources/fontello/css/fontello.css" />
 			<link type="text/css" rel="stylesheet"
 				href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,400italic" />
@@ -67,7 +66,7 @@
 			<ui:include src="piwik.xhtml"/>
 				
 			<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-			<script src="//webassets-zanata.rhcloud.com/1/assets/js/script.js"></script>
+			<script src="#{applicationConfiguration.baseWebAssetsUrl}/assets/js/script.js"></script>
 		</h:body>
 	</html>
 </f:view>
