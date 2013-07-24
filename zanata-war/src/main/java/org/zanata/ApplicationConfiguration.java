@@ -49,6 +49,7 @@ import org.zanata.config.JndiBackedConfig;
 import org.zanata.log4j.ZanataHTMLLayout;
 import org.zanata.log4j.ZanataSMTPAppender;
 import org.zanata.security.AuthenticationType;
+import com.google.common.base.Objects;
 
 @Name("applicationConfiguration")
 @Scope(ScopeType.APPLICATION)
@@ -75,6 +76,9 @@ public class ApplicationConfiguration implements Serializable
    private boolean enableCopyTrans = true;
    private Map<AuthenticationType, String> loginModuleNames = new HashMap<AuthenticationType, String>();
    private Set<String> adminUsers = new HashSet<String>();
+
+   // set by component.xml
+   private String webAssetsVersion = "";
 
    @Observer( { EVENT_CONFIGURATION_CHANGED })
    @Create
@@ -377,5 +381,11 @@ public class ApplicationConfiguration implements Serializable
    public boolean useEmailServerSsl()
    {
       return jndiBackedConfig.getStmpUsesSsl() != null ? Boolean.parseBoolean(jndiBackedConfig.getStmpUsesSsl()) : false;
+   }
+
+   public String getWebAssetsUrl()
+   {
+      return String.format("%s/%s/assets/css/style.css",
+            Objects.firstNonNull(jndiBackedConfig.getWebAssetsUrlBase(), "//assets-zanata.rhcloud.com"), webAssetsVersion);
    }
 }
