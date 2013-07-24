@@ -20,6 +20,7 @@
  */
 package org.zanata.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.jboss.seam.ScopeType;
@@ -28,6 +29,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.Transactional;
 import org.zanata.common.UserActionType;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.PersonActivityDAO;
@@ -40,6 +42,7 @@ import org.zanata.model.HPersonActivity;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.service.PersonActivityService;
+import org.zanata.util.DateUtil;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -49,19 +52,21 @@ import org.zanata.service.PersonActivityService;
 @Scope(ScopeType.STATELESS)
 public class PersonActivityServiceImpl implements PersonActivityService
 {
+   private static int ROLLUP_TIME_RANGE = 1; // in hour
+   
    @In
    private PersonActivityDAO personActivityDAO;
 
    @In
    private TextFlowTargetDAO textFlowTargetDAO;
-   
+
    @In
    private DocumentDAO documentDAO;
-
+   
    @Override
-   public HPersonActivity getPersonActivity(Long personId, Long versionId, UserActionType action)
+   public HPersonActivity getPersonLastestActivity(Long personId, Long versionId, UserActionType action)
    {
-      return personActivityDAO.findUserActivity(personId, versionId, action);
+      return personActivityDAO.findUserLastestActivity(personId, versionId, action);
    }
 
    @Override
@@ -73,11 +78,11 @@ public class PersonActivityServiceImpl implements PersonActivityService
    @Override
    public void insertOrUpdateActivity(HPerson person, HProjectIteration projectIteration, UserActionType action)
    {
-      if(person != null && projectIteration != null && action != null)
+      if (person != null && projectIteration != null && action != null)
       {
-         HPersonActivity activity = personActivityDAO.findUserActivity(person.getId(), projectIteration.getId(), action);
+         HPersonActivity activity = personActivityDAO.findUserLastestActivity(person.getId(), projectIteration.getId(), action);
 
-         if (activity != null)
+         if (activity != null && DateUtil.isDateInRange(activity.getLastChanged(), new Date(), ROLLUP_TIME_RANGE))
          {
             activity.updateLastChanged();
          }
@@ -89,13 +94,13 @@ public class PersonActivityServiceImpl implements PersonActivityService
          personActivityDAO.flush();
       }
    }
-
+   
    /**
     * This method contains all logic to be run immediately after a Text Flow Target has
     * been successfully translated.
     */
    @Observer(TextFlowTargetStateEvent.EVENT_NAME)
-   @Override
+   @Transactional
    public void textFlowStateUpdated(TextFlowTargetStateEvent event)
    {
       HTextFlowTarget target = textFlowTargetDAO.getById(event.getTextFlowTargetId());
@@ -105,14 +110,18 @@ public class PersonActivityServiceImpl implements PersonActivityService
       insertOrUpdateActivity(target.getLastModifiedBy(), document.getProjectIteration(), actionType);
    }
 
+   /**
+    * This method contains all logic to be run immediately after a Source/Translation document has
+    * been successfully uploaded.
+    */
    @Observer(DocumentUploadedEvent.EVENT_NAME)
-   @Override
+   @Transactional
    public void documentUploaded(DocumentUploadedEvent event)
    {
       HDocument document = documentDAO.getById(event.getDocumentId());
-      
+
       UserActionType actionType = event.isSourceDocument() ? UserActionType.UPLOAD_SOURCE_DOCUMENT : UserActionType.UPLOAD_TRANSLATION_DOCUMENT;
-      
+
       insertOrUpdateActivity(document.getLastModifiedBy(), document.getProjectIteration(), actionType);
    }
 }

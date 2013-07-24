@@ -52,14 +52,16 @@ public class PersonActivityDAO extends AbstractDAOImpl<HPersonActivity, Long>
    }
 
    @SuppressWarnings("unchecked")
-   public HPersonActivity findUserActivity(Long personId, Long versionId, UserActionType action)
+   public HPersonActivity findUserLastestActivity(Long personId, Long versionId, UserActionType action)
    {
       Query query = getSession().createQuery("FROM HPersonActivity pa WHERE pa.person.id = :personId "
             + "AND pa.projectIteration.id = :versionId "
-            + "AND pa.action = :action");
+            + "AND pa.action = :action "
+            + "order by pa.lastChanged DESC");
       query.setParameter("personId", personId);
       query.setParameter("versionId", versionId);
       query.setParameter("action", action);
+      query.setMaxResults(1);
       query.setCacheable(true);
       query.setComment("PersonActivitiesDAO.findUserActivity");
       return (HPersonActivity)query.uniqueResult();

@@ -56,6 +56,8 @@ public class PersonActivityServiceImplTest extends ZanataDbunitJpaTest
    Long projectVersionId = new Long(1);
    Long documentId = new Long(1);
    Long textFlowTargetId = new Long(1);
+   
+   private PersonActivityServiceImpl personActivityService;
 
    @Override
    protected void prepareDBUnitOperations()
@@ -75,25 +77,23 @@ public class PersonActivityServiceImplTest extends ZanataDbunitJpaTest
             .use("textFlowTargetDAO", new TextFlowTargetDAO(getSession()))
             .use("documentDAO", new DocumentDAO(getSession()))
             .ignoreNonResolvable();
+      
+      personActivityService = seam.autowire(PersonActivityServiceImpl.class);
    }
 
    @Test
    public void testNewReviewActivityInserted() throws Exception
    {
-      PersonActivityService personActivityService = seam.autowire(PersonActivityServiceImpl.class);
-      recordShouldNotExist(personActivityService, personId, projectVersionId, UserActionType.REVIEWED_TRANSLATION);
-
       personActivityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
             ContentState.Approved));
-      HPersonActivity activity = personActivityService.getPersonActivity(personId, projectVersionId, UserActionType.REVIEWED_TRANSLATION);
+      HPersonActivity activity = personActivityService.getPersonLastestActivity(personId, projectVersionId, UserActionType.REVIEWED_TRANSLATION);
       assertThat(activity, not(nullValue()));
    }
 
    @Test
    public void testNewReviewActivityUpdated() throws Exception
    {
-      PersonActivityService personActivityService = seam.autowire(PersonActivityServiceImpl.class);
-      HPersonActivity activity = personActivityService.getPersonActivity(personId, projectVersionId, UserActionType.REVIEWED_TRANSLATION);
+      HPersonActivity activity = personActivityService.getPersonLastestActivity(personId, projectVersionId, UserActionType.REVIEWED_TRANSLATION);
 
       Long entryId = activity.getId();
       Date lastChanged = activity.getLastChanged();
@@ -101,38 +101,43 @@ public class PersonActivityServiceImplTest extends ZanataDbunitJpaTest
       personActivityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
             ContentState.Rejected));
 
-      activity = personActivityService.getPersonActivity(personId, new Long(1), UserActionType.REVIEWED_TRANSLATION);
+      activity = personActivityService.getPersonLastestActivity(personId, new Long(1), UserActionType.REVIEWED_TRANSLATION);
       assertThat(activity.getId(), Matchers.equalTo(entryId));
       assertThat(activity.getLastChanged(), not(Matchers.equalTo(lastChanged)));
    }
 
    @Test
-   public void testNewTranslatedActivityInserted() throws Exception
+   public void testActivityInsertAndUpdate() throws Exception
    {
-      PersonActivityService personActivityService = seam.autowire(PersonActivityServiceImpl.class);
       recordShouldNotExist(personActivityService, personId, projectVersionId, UserActionType.UPDATE_TRANSLATION);
 
       personActivityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
             ContentState.Translated));
-      HPersonActivity activity = personActivityService.getPersonActivity(personId, projectVersionId, UserActionType.UPDATE_TRANSLATION);
-
+      
+      HPersonActivity activity = personActivityService.getPersonLastestActivity(personId, projectVersionId, UserActionType.UPDATE_TRANSLATION);
       assertThat(activity, not(nullValue()));
+
+      
+      personActivityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
+            ContentState.NeedReview));
+      
+      List<HPersonActivity> activities = personActivityService.getAllPersonActivities(personId, projectVersionId, 0, 10);
+      assertThat(activities.size(), Matchers.equalTo(1));
    }
 
    @Test
    public void testGetAllPersonActivities() throws Exception
    {
-      PersonActivityService personActivityService = seam.autowire(PersonActivityServiceImpl.class);
       Long documentId2 = new Long(2);
 
       personActivityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId2, null, LocaleId.EN_US, new Long(5),
             ContentState.Translated));
 
-      personActivityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId2, null, LocaleId.EN_US, new Long(6),
-            ContentState.Rejected));
-      
       personActivityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId2, null, LocaleId.EN_US, new Long(5),
             ContentState.Approved));
+
+      personActivityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId2, null, LocaleId.EN_US, new Long(6),
+            ContentState.Rejected));
 
       personActivityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId2, null, LocaleId.EN_US, new Long(6),
             ContentState.NeedReview));
@@ -142,9 +147,11 @@ public class PersonActivityServiceImplTest extends ZanataDbunitJpaTest
       assertThat(activities.size(), Matchers.equalTo(2));
    }
 
+   
+   
    private void recordShouldNotExist(PersonActivityService personActivityService, Long personId, Long projectVersionId, UserActionType action)
    {
-      HPersonActivity activity = personActivityService.getPersonActivity(personId, projectVersionId, action);
+      HPersonActivity activity = personActivityService.getPersonLastestActivity(personId, projectVersionId, action);
       assertThat(activity, nullValue());
    }
 

@@ -23,8 +23,6 @@ package org.zanata.service;
 import java.util.List;
 
 import org.zanata.common.UserActionType;
-import org.zanata.events.DocumentUploadedEvent;
-import org.zanata.events.TextFlowTargetStateEvent;
 import org.zanata.model.HPerson;
 import org.zanata.model.HPersonActivity;
 import org.zanata.model.HProjectIteration;
@@ -35,14 +33,14 @@ import org.zanata.model.HProjectIteration;
 public interface PersonActivityService
 {
    /**
-    * Get user activities on given action
+    * Get user lastest activity on given action
     * 
     * @param personId
     * @param versionId
     * @param action
     * @return List<HPersonActivity>
     */
-   HPersonActivity getPersonActivity(Long personId, Long versionId, UserActionType action);
+   HPersonActivity getPersonLastestActivity(Long personId, Long versionId, UserActionType action);
    
    /**
     * Get all user activities
@@ -56,24 +54,11 @@ public interface PersonActivityService
    
    
    /**
-    * Insert or update user activity.
+    * Insert or update user activity, record roll up in hourly basis
     * 
     * @param personId
     * @param versionId
     * @param action
     */
    void insertOrUpdateActivity(HPerson person, HProjectIteration projectIteration, UserActionType action);
-
-   /**
-    * On TextFlowTargetStateEvent triggered, update user activity
-    * @param event
-    */
-   void textFlowStateUpdated(TextFlowTargetStateEvent event);
-
-   
-   /**
-    * On DocumentUploadedEvent triggered, update user activity
-    * @param event
-    */
-   void documentUploaded(DocumentUploadedEvent event);
 }
