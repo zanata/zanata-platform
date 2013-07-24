@@ -105,7 +105,7 @@ public class FileServiceTest
       .use("translationFileServiceImpl", translationFileService)
       .use("documentServiceImpl", documentService)
       .use("documentDAO", documentDAO)
-      .use("blobPersistService", filePersistService)
+      .use("fileSystemPersistService", filePersistService)
       .allowCycles();
 
       fileService = seam.autowire(FileService.class);

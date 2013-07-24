@@ -17,4 +17,9 @@ public class GlobalDocumentId
       this.docId = docId;
    }
 
+   @Override
+   public String toString()
+   {
+      return projectSlug + ":" + versionSlug + ":" + docId;
+   }
 }

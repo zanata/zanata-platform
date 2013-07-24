@@ -59,7 +59,7 @@ public class GetDocumentListHandlerTest
             .use("documentDAO", documentDAO)
             .use("translationFileServiceImpl", translationFileServiceImpl)
             .use("translationStateCacheImpl", translationStateCacheImpl)
-            .use("blobPersistService", filePersistService)
+            .use("fileSystemPersistService", filePersistService)
             .ignoreNonResolvable()
             .autowire(GetDocumentListHandler.class);
       // @formatter:on

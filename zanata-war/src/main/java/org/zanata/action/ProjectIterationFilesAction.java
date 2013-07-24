@@ -124,7 +124,7 @@ public class ProjectIterationFilesAction implements Serializable
    @In
    private LocaleDAO localeDAO;
 
-   @In("blobPersistService")
+   @In("fileSystemPersistService")
    private FilePersistService filePersistService;
 
    @In
@@ -326,6 +326,7 @@ public class ProjectIterationFilesAction implements Serializable
    }
 
    // TODO add logging for disk writing errors
+   // TODO damason: unify this with Source/TranslationDocumentUpload
    private void uploadAdapterFile()
    {
       String fileName = documentFileUpload.getFileName();

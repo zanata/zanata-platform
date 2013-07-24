@@ -124,8 +124,7 @@ public class BlobPersistService implements FilePersistService, UploadPartPersist
    @Override
    public boolean hasPersistedDocument(GlobalDocumentId id)
    {
-      HDocument doc = documentDAO.getByProjectIterationAndDocId(id.getProjectSlug(),
-            id.getVersionSlug(), id.getDocId());
+      HDocument doc = documentDAO.getByGlobalId(id);
       return doc.getRawDocument() != null;
    }
 }
