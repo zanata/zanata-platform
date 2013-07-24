@@ -20,6 +20,7 @@
  */
 package org.zanata.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -29,51 +30,54 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.UserActionType;
-import org.zanata.model.HPersonActivity;
+import org.zanata.model.Activity;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("personActivityDAO")
+@Name("activityDAO")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
-public class PersonActivityDAO extends AbstractDAOImpl<HPersonActivity, Long>
+public class ActivityDAO extends AbstractDAOImpl<Activity, Long>
 {
    private static final long serialVersionUID = 1L;
 
-   public PersonActivityDAO()
+   public ActivityDAO()
    {
-      super(HPersonActivity.class);
+      super(Activity.class);
    }
 
-   public PersonActivityDAO(Session session)
+   public ActivityDAO(Session session)
    {
-      super(HPersonActivity.class, session);
+      super(Activity.class, session);
    }
 
    @SuppressWarnings("unchecked")
-   public HPersonActivity findUserLastestActivity(Long personId, Long versionId, UserActionType action)
+   public Activity findUserActivityInTimeRange(Long personId, Long contextId, UserActionType action, Date roundOffActionTime)
    {
-      Query query = getSession().createQuery("FROM HPersonActivity pa WHERE pa.person.id = :personId "
-            + "AND pa.projectIteration.id = :versionId "
-            + "AND pa.action = :action "
-            + "order by pa.lastChanged DESC");
+      Query query = getSession().createQuery("FROM Activity a WHERE a.acter.id = :personId "
+            + "AND a.contextId = :contextId "
+            + "AND a.action = :action "
+            + "AND a.startOffset <= :roundOffActionTime "
+            + "AND a.endOffset >= :roundOffActionTime "
+            + "order by a.lastChanged DESC");
       query.setParameter("personId", personId);
-      query.setParameter("versionId", versionId);
+      query.setParameter("contextId", contextId);
       query.setParameter("action", action);
       query.setMaxResults(1);
       query.setCacheable(true);
-      query.setComment("PersonActivitiesDAO.findUserActivity");
-      return (HPersonActivity)query.uniqueResult();
+      query.setComment("PersonActivitiesDAO.findUserActivityInTimeRange");
+      return (Activity) query.uniqueResult();
    }
 
    @SuppressWarnings("unchecked")
-   public List<HPersonActivity> findAllUserActivities(Long personId, Long versionId, int offset, int count)
+   public List<Activity> findAllUserActivities(Long personId, Long contextId, int offset, int count)
    {
-      Query query = getSession().createQuery("FROM HPersonActivity pa WHERE pa.person.id = :personId "
-            + "AND pa.projectIteration.id = :versionId");
+      Query query = getSession().createQuery("FROM Activity a WHERE a.acter.id = :personId "
+            + "AND a.contextId = :contextId "
+            + "order by a.roundOffDate DESC");
       query.setParameter("personId", personId);
-      query.setParameter("versionId", versionId);
+      query.setParameter("contextId", contextId);
       query.setMaxResults(count);
       query.setFirstResult(offset);
       query.setCacheable(true);

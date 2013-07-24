@@ -25,86 +25,115 @@ import java.util.Date;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.apache.commons.lang.time.DateUtils;
 import org.zanata.common.UserActionType;
+import org.zanata.model.type.EntityType;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@NoArgsConstructor
 @Access(AccessType.FIELD)
-public class HPersonActivity implements Serializable
+public class Activity extends ModelEntityBase implements Serializable
 {
    private static final long serialVersionUID = 1L;
 
-   @Id
-   @GeneratedValue
-   @Getter
-   protected Long id;
-   
-   @Getter
-   @Temporal(TemporalType.TIMESTAMP)
-   @NotNull
-   private Date lastChanged;
-   
    @Getter
    @NotNull
    @JoinColumn(name = "person_id", nullable = false)
    @ManyToOne
-   private HPerson person;
+   private HPerson acter;
+   
+   @Getter
+   @Temporal(TemporalType.TIMESTAMP)
+   @NotNull
+   private Date startOffset;
+   
+   @Getter
+   @Temporal(TemporalType.TIMESTAMP)
+   @NotNull
+   private Date endOffset;
+   
+   @Getter
+   @Setter
+   @Temporal(TemporalType.TIMESTAMP)
+   @NotNull
+   private Date roundOffDate;
    
    @Getter
    @NotNull
-   @JoinColumn(name = "project_iteration_id", nullable = false)
-   @ManyToOne
-   private HProjectIteration projectIteration;
+   @Enumerated(EnumType.STRING)
+   private EntityType contextType;
+   
+   @Getter
+   @Setter
+   @NotNull
+   @Column(name = "context_id")
+   private Long contextId;
+   
+   @Getter
+   @Enumerated(EnumType.STRING)
+   private EntityType lastTargetType;
+   
+   @Getter
+   @Setter
+   @NotNull
+   @Column(name = "last_target_id")
+   private Long lastTargetId;
    
    @Getter
    @Enumerated(EnumType.STRING)
    private UserActionType action;
+   
+   @Getter
+   private int counter = 1;
+   
+   @Getter
+   private int wordCount;
+   
+   @Transient
+   private static int ROLLUP_TIME_RANGE = 1; // in hour
 
-   public HPersonActivity(HPerson person, HProjectIteration projectIteration, UserActionType action)
+   public Activity(HPerson acter, Date roundOffDate, EntityType contextType, Long contextId, EntityType lastTargetType, Long lastTargetId, UserActionType action, int wordCount)
    {
-      this.person = person;
-      this.projectIteration = projectIteration;
+      this.acter = acter;
+      this.roundOffDate = roundOffDate;
+      this.contextType = contextType;
+      this.contextId = contextId;
+      this.lastTargetType = lastTargetType;
+      this.lastTargetId = lastTargetId;
       this.action = action;
+      this.wordCount = wordCount;
    }
-   
-   public void updateLastChanged()
-   {
-      lastChanged = new Date();
-   }
-   
+
    @SuppressWarnings("unused")
    @PrePersist
    private void onPersist()
    {
-      updateLastChanged();
+      startOffset = new Date();
+      endOffset = DateUtils.addHours(startOffset, ROLLUP_TIME_RANGE);
    }
    
    @SuppressWarnings("unused")
    @PreUpdate
    private void onUpdate()
    {
-      updateLastChanged();
+      counter++;
    }
 }

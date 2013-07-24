@@ -20,9 +20,11 @@
  */
 package org.zanata.service.impl;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -31,31 +33,32 @@ import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.zanata.common.UserActionType;
+import org.zanata.dao.ActivityDAO;
 import org.zanata.dao.DocumentDAO;
-import org.zanata.dao.PersonActivityDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.events.DocumentUploadedEvent;
 import org.zanata.events.TextFlowTargetStateEvent;
+import org.zanata.model.Activity;
 import org.zanata.model.HDocument;
 import org.zanata.model.HPerson;
-import org.zanata.model.HPersonActivity;
-import org.zanata.model.HProjectIteration;
+import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.service.PersonActivityService;
+import org.zanata.model.ILoggable;
+import org.zanata.service.ActivityService;
 import org.zanata.util.DateUtil;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("personActivityServiceImpl")
+@Name("activityServiceImpl")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
-public class PersonActivityServiceImpl implements PersonActivityService
+public class ActivityServiceImpl implements ActivityService
 {
    private static int ROLLUP_TIME_RANGE = 1; // in hour
    
    @In
-   private PersonActivityDAO personActivityDAO;
+   private ActivityDAO activityDAO;
 
    @In
    private TextFlowTargetDAO textFlowTargetDAO;
@@ -64,34 +67,30 @@ public class PersonActivityServiceImpl implements PersonActivityService
    private DocumentDAO documentDAO;
    
    @Override
-   public HPersonActivity getPersonLastestActivity(Long personId, Long versionId, UserActionType action)
+   public List<Activity> getAllPersonActivities(Long personId, Long versionId, int offset, int count)
    {
-      return personActivityDAO.findUserLastestActivity(personId, versionId, action);
+      return activityDAO.findAllUserActivities(personId, versionId, offset, count);
    }
 
    @Override
-   public List<HPersonActivity> getAllPersonActivities(Long personId, Long versionId, int offset, int count)
+   public void logActivity(HPerson acter, ILoggable context, ILoggable target, UserActionType action, int wordCount)
    {
-      return personActivityDAO.findAllUserActivities(personId, versionId, offset, count);
-   }
-
-   @Override
-   public void insertOrUpdateActivity(HPerson person, HProjectIteration projectIteration, UserActionType action)
-   {
-      if (person != null && projectIteration != null && action != null)
+      if (acter != null && context != null && action != null)
       {
-         HPersonActivity activity = personActivityDAO.findUserLastestActivity(person.getId(), projectIteration.getId(), action);
+         Date roundOffActionTime = DateUtils.truncate(new Date(), Calendar.HOUR);
+         
+         Activity activity = activityDAO.findUserActivityInTimeRange(acter.getId(), context.getId(), action, roundOffActionTime);
 
          if (activity != null && DateUtil.isDateInRange(activity.getLastChanged(), new Date(), ROLLUP_TIME_RANGE))
          {
-            activity.updateLastChanged();
+            activity.setRoundOffDate(roundOffActionTime);
          }
          else
          {
-            activity = new HPersonActivity(person, projectIteration, action);
+            activity = new Activity(acter, roundOffActionTime, context.getEntityType(), context.getId(), target.getEntityType(), target.getId(), action, wordCount);
          }
-         personActivityDAO.makePersistent(activity);
-         personActivityDAO.flush();
+         activityDAO.makePersistent(activity);
+         activityDAO.flush();
       }
    }
    
@@ -107,7 +106,7 @@ public class PersonActivityServiceImpl implements PersonActivityService
       HDocument document = documentDAO.getById(event.getDocumentId());
       UserActionType actionType = event.getNewState().isReviewed() ? UserActionType.REVIEWED_TRANSLATION : UserActionType.UPDATE_TRANSLATION;
 
-      insertOrUpdateActivity(target.getLastModifiedBy(), document.getProjectIteration(), actionType);
+      logActivity(target.getLastModifiedBy(), document.getProjectIteration(), target, actionType, target.getTextFlow().getWordCount().intValue());
    }
 
    /**
@@ -122,6 +121,17 @@ public class PersonActivityServiceImpl implements PersonActivityService
 
       UserActionType actionType = event.isSourceDocument() ? UserActionType.UPLOAD_SOURCE_DOCUMENT : UserActionType.UPLOAD_TRANSLATION_DOCUMENT;
 
-      insertOrUpdateActivity(document.getLastModifiedBy(), document.getProjectIteration(), actionType);
+      logActivity(document.getLastModifiedBy(), document.getProjectIteration(), document, actionType, getDocumentWordCount(document));
+   }
+   
+   private int getDocumentWordCount(HDocument document)
+   {
+      int total = 0;
+      
+      for(HTextFlow textFlow: document.getTextFlows())
+      {
+         total += textFlow.getWordCount().intValue();
+      }
+      return total;
    }
 }

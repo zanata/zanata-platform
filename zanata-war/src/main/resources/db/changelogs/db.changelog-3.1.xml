@@ -69,32 +69,56 @@
     
     
     <changeSet id="5" author="aeng@redhat.com">
-        <comment>Add HPersonActivity table to support person activities.</comment>
-        <createTable tableName="HPersonActivity">
+        <comment>Add Activity table to support person activities.</comment>
+        <createTable tableName="Activity">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="person_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="project_iteration_id" type="bigint">
-                <constraints nullable="false" />
-            </column>
-            <column name="action" type="longtext">
+            <column name="creationDate" type="DATETIME">
                 <constraints nullable="false" />
             </column>
             <column name="lastChanged" type="DATETIME">
                 <constraints nullable="false" />
             </column>
+            <column name="versionNum" type="int">
+                <constraints nullable="false"/>
+            </column>
+            
+            <column name="person_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="startOffset" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="endOffset" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="roundOffDate" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+            <column name="contextType" type="longtext">
+                <constraints nullable="false" />
+            </column>
+            <column name="context_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lastTargetType" type="longtext">
+                <constraints nullable="false" />
+            </column>
+            <column name="last_target_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="action" type="longtext">
+                <constraints nullable="false" />
+            </column>
+            <column name="counter" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="wordCount" type="int">
+                <constraints nullable="false"/>
+            </column>
+            
         </createTable>
-        
-        <addForeignKeyConstraint constraintName="FK_HPersonActivity_HPerson" 
-			referencedTableName="HPerson" referencedColumnNames="id"
-			baseTableName="HPersonActivity" baseColumnNames="person_id"/>
-			
-		<addForeignKeyConstraint constraintName="FK_HPersonActivity_HProjectIteration" 
-			referencedTableName="HProjectIteration" referencedColumnNames="id"
-			baseTableName="HPersonActivity" baseColumnNames="project_iteration_id"/>
     </changeSet>
 
 </databaseChangeLog>

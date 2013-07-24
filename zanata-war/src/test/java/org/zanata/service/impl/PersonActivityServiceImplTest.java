@@ -36,12 +36,12 @@ import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.UserActionType;
 import org.zanata.dao.DocumentDAO;
-import org.zanata.dao.PersonActivityDAO;
+import org.zanata.dao.ActivityDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.events.TextFlowTargetStateEvent;
-import org.zanata.model.HPersonActivity;
+import org.zanata.model.Activity;
 import org.zanata.seam.SeamAutowire;
-import org.zanata.service.PersonActivityService;
+import org.zanata.service.ActivityService;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -56,7 +56,7 @@ public class PersonActivityServiceImplTest extends ZanataDbunitJpaTest
    private Long documentId = new Long(1);
    private Long textFlowTargetId = new Long(1);
    
-   private PersonActivityServiceImpl personActivityService;
+   private ActivityServiceImpl personActivityService;
 
    @Override
    protected void prepareDBUnitOperations()
@@ -72,12 +72,12 @@ public class PersonActivityServiceImplTest extends ZanataDbunitJpaTest
    public void initializeSeam()
    {
       seam.reset()
-            .use("personActivityDAO", new PersonActivityDAO(getSession()))
+            .use("personActivityDAO", new ActivityDAO(getSession()))
             .use("textFlowTargetDAO", new TextFlowTargetDAO(getSession()))
             .use("documentDAO", new DocumentDAO(getSession()))
             .ignoreNonResolvable();
       
-      personActivityService = seam.autowire(PersonActivityServiceImpl.class);
+      personActivityService = seam.autowire(ActivityServiceImpl.class);
    }
 
    @Test
@@ -85,7 +85,7 @@ public class PersonActivityServiceImplTest extends ZanataDbunitJpaTest
    {
       personActivityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
             ContentState.Approved));
-      HPersonActivity activity = personActivityService.getPersonLastestActivity(personId, projectVersionId, UserActionType.REVIEWED_TRANSLATION);
+      Activity activity = personActivityService.getPersonLastestActivity(personId, projectVersionId, UserActionType.REVIEWED_TRANSLATION);
       assertThat(activity, not(nullValue()));
    }
 
@@ -95,7 +95,7 @@ public class PersonActivityServiceImplTest extends ZanataDbunitJpaTest
       personActivityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
             ContentState.Approved));
       
-      HPersonActivity activity = personActivityService.getPersonLastestActivity(personId, projectVersionId, UserActionType.REVIEWED_TRANSLATION);
+      Activity activity = personActivityService.getPersonLastestActivity(personId, projectVersionId, UserActionType.REVIEWED_TRANSLATION);
 
       Long entryId = activity.getId();
       Date lastChanged = activity.getLastChanged();
@@ -116,7 +116,7 @@ public class PersonActivityServiceImplTest extends ZanataDbunitJpaTest
       personActivityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
             ContentState.Translated));
       
-      HPersonActivity activity = personActivityService.getPersonLastestActivity(personId, projectVersionId, UserActionType.UPDATE_TRANSLATION);
+      Activity activity = personActivityService.getPersonLastestActivity(personId, projectVersionId, UserActionType.UPDATE_TRANSLATION);
       assertThat(activity, not(nullValue()));
       
       Long id = activity.getId();
@@ -146,16 +146,16 @@ public class PersonActivityServiceImplTest extends ZanataDbunitJpaTest
       personActivityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId2, null, LocaleId.EN_US, new Long(6),
             ContentState.NeedReview));
 
-      List<HPersonActivity> activities = personActivityService.getAllPersonActivities(documentId2, projectVersionId, 0, 10);
+      List<Activity> activities = personActivityService.getAllPersonActivities(documentId2, projectVersionId, 0, 10);
 
       assertThat(activities.size(), Matchers.equalTo(2));
    }
 
    
    
-   private void recordShouldNotExist(PersonActivityService personActivityService, Long personId, Long projectVersionId, UserActionType action)
+   private void recordShouldNotExist(ActivityService personActivityService, Long personId, Long projectVersionId, UserActionType action)
    {
-      HPersonActivity activity = personActivityService.getPersonLastestActivity(personId, projectVersionId, action);
+      Activity activity = personActivityService.getPersonLastestActivity(personId, projectVersionId, action);
       assertThat(activity, nullValue());
    }
 

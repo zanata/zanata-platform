@@ -59,12 +59,15 @@ import org.hibernate.annotations.Where;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Indexed;
+
 import javax.validation.constraints.NotNull;
+
 import org.jboss.seam.annotations.security.Restrict;
 import org.zanata.annotation.EntityRestrict;
 import org.zanata.common.ProjectType;
 import org.zanata.hibernate.search.GroupSearchBridge;
 import org.zanata.model.type.EntityStatusType;
+import org.zanata.model.type.EntityType;
 import org.zanata.rest.dto.ProjectIteration;
 
 import com.google.common.collect.ImmutableList;
@@ -83,7 +86,7 @@ import com.google.common.collect.ImmutableList;
 @Setter
 @NoArgsConstructor
 @ToString(callSuper = true, of = {"project"})
-public class HProjectIteration extends SlugEntityBase implements Iterable<DocumentWithId>
+public class HProjectIteration extends SlugEntityBase implements Iterable<DocumentWithId>, ILoggable
 {
 
    private static final long serialVersionUID = 182037127575991478L;
@@ -213,5 +216,11 @@ public class HProjectIteration extends SlugEntityBase implements Iterable<Docume
    public Iterator<DocumentWithId> iterator()
    {
       return ImmutableList.<DocumentWithId>copyOf(getDocuments().values()).iterator();
+   }
+
+   @Override
+   public EntityType getEntityType()
+   {
+      return EntityType.HProjectIteration;
    }
 }

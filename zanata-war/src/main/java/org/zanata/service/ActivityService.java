@@ -23,42 +23,33 @@ package org.zanata.service;
 import java.util.List;
 
 import org.zanata.common.UserActionType;
+import org.zanata.model.Activity;
 import org.zanata.model.HPerson;
-import org.zanata.model.HPersonActivity;
-import org.zanata.model.HProjectIteration;
+import org.zanata.model.ILoggable;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-public interface PersonActivityService
+public interface ActivityService
 {
-   /**
-    * Get user lastest activity on given action
-    * 
-    * @param personId
-    * @param versionId
-    * @param action
-    * @return List<HPersonActivity>
-    */
-   HPersonActivity getPersonLastestActivity(Long personId, Long versionId, UserActionType action);
-   
    /**
     * Get all user activities
     * @param personId
     * @param versionId
     * @param offset
     * @param count
-    * @return List<HPersonActivity>
+    * @return List<Activity>
     */
-   List<HPersonActivity> getAllPersonActivities(Long personId, Long versionId, int offset, int count);
-   
+   List<Activity> getAllPersonActivities(Long personId, Long versionId, int offset, int count);
    
    /**
-    * Insert or update user activity, record roll up in hourly basis
+    * Log activity, record roll up in hourly basis
     * 
-    * @param personId
-    * @param versionId
+    * @param acter
+    * @param context
+    * @param target
     * @param action
+    * @param wordCount
     */
-   void insertOrUpdateActivity(HPerson person, HProjectIteration projectIteration, UserActionType action);
+   void logActivity(HPerson acter, ILoggable context, ILoggable target, UserActionType action, int wordCount);
 }

@@ -24,6 +24,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -36,6 +37,10 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,60 +49,33 @@ public class ModelEntityBase implements Serializable, HashableState
 {
 
    private static final long serialVersionUID = -6139220551322868743L;
-   protected Long id;
-   protected Date creationDate;
-   protected Date lastChanged;
-
-   protected Integer versionNum;
-
+   
    @Id
    @GeneratedValue
-   public Long getId()
-   {
-      return id;
-   }
-
-   protected void setId(Long id)
-   {
-      this.id = id;
-   }
+   @Getter
+   @Setter(AccessLevel.PROTECTED)
+   protected Long id;
+   
+   @Getter
+   @Setter
+   @Temporal(TemporalType.TIMESTAMP)
+   @Column(nullable = false)
+   protected Date creationDate;
+   
+   @Getter
+   @Setter
+   @Temporal(TemporalType.TIMESTAMP)
+   @Column(nullable = false)
+   protected Date lastChanged;
 
    @Version
+   @Getter
+   @Setter
    @Column(nullable = false)
-   public Integer getVersionNum()
-   {
-      return versionNum;
-   }
+   protected Integer versionNum;
 
-   public void setVersionNum(Integer versionNum)
-   {
-      this.versionNum = versionNum;
-   }
 
-   @Temporal(TemporalType.TIMESTAMP)
-   @Column(nullable = false)
-   public Date getCreationDate()
-   {
-      return creationDate;
-   }
-
-   public void setCreationDate(Date creationDate)
-   {
-      this.creationDate = creationDate;
-   }
-
-   @Temporal(TemporalType.TIMESTAMP)
-   @Column(nullable = false)
-   public Date getLastChanged()
-   {
-      return lastChanged;
-   }
-
-   public void setLastChanged(Date lastChanged)
-   {
-      this.lastChanged = lastChanged;
-   }
-
+   
    @SuppressWarnings("unused")
    @PrePersist
    private void onPersist()
