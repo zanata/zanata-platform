@@ -381,4 +381,17 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
       q.setMaxResults(1).setComment("ProjectIterationDAO.getLastCreatedVersion");
       return (HProjectIteration)q.uniqueResult();
    }
+
+   public HProjectIteration getLastCreatedVersionExcludeStatus(Long projectId, EntityStatus excludeStatus)
+   {
+      Query q = getSession().createQuery("from HProjectIteration t "
+            + "where t.project.id = :projectId "
+            + "and t.status != :status "
+            + "order by t.creationDate DESC");
+      q.setParameter("projectId", projectId);
+      q.setParameter("status", excludeStatus);
+      q.setCacheable(true);
+      q.setMaxResults(1).setComment("ProjectIterationDAO.getLastCreatedVersionExcludeStatus");
+      return (HProjectIteration)q.uniqueResult();
+   }
 }

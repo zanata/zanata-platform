@@ -47,28 +47,36 @@
                 		<div class="dropdown__toggle" href="#">
                 			<i class="i i--arrow-down dropdown__toggle__icon"></i>
                 			<ui:param name="latestVersion" value="#{dashboardAction.getLatestVersion(project.id)}"/>
-                			<ul class="dropdown__toggle__content list--horizontal ">
-		                    	<li>
-			                        <s:link view="/iteration/view.xhtml" title="#{messages['jsf.Version']} #{latestVersion.slug}">
-					                 	<f:param name="projectSlug" value="#{project.slug}"/>
-					                	<f:param name="iterationSlug" value="#{latestVersion.slug}"/>
-					                	<i aria-hidden="true" class="i i--star-2"></i>
-			                            <span class="is-invisible">#{messages['jsf.Version']}</span> #{latestVersion.slug}
-					                </s:link>
-		                        </li>
-		                        <li>
-		                        	<s:link view="/iteration/source_files.xhtml" propagation="none" 
-		                        	 	title="#{dashboardAction.getDocumentCount(latestVersion.id)} #{messages['jsf.SourceDocuments']}">
-						                <f:param name="project" value="#{project.slug}"/>
-						                <f:param name="iteration" value="#{latestVersion.slug}" />
-						                <i aria-hidden="true" class="i i--document-alt-fill"></i>
-		                        		<span class="is-invisible">#{messages['jsf.SourceDocuments']}</span> 
-		                        		#{dashboardAction.getDocumentCount(latestVersion.id)}
-						            </s:link>
-		                        </li>
-		                        <li class="l--float-right">
-		                        </li>
-		                	</ul>
+                			<s:fragment rendered="#{latestVersion != null}">
+	                			<ul class="dropdown__toggle__content list--horizontal ">
+			                    	<li>
+				                        <s:link view="/iteration/view.xhtml" title="#{messages['jsf.Version']} #{latestVersion.slug}">
+						                 	<f:param name="projectSlug" value="#{project.slug}"/>
+						                	<f:param name="iterationSlug" value="#{latestVersion.slug}"/>
+						                	<i aria-hidden="true" class="i i--star-2"></i>
+				                            <span class="is-invisible">#{messages['jsf.Version']}</span> #{latestVersion.slug}
+						                </s:link>
+			                        </li>
+			                        <li>
+			                        	<s:link view="/iteration/source_files.xhtml" propagation="none" 
+			                        	 	title="#{dashboardAction.getDocumentCount(latestVersion.id)} #{messages['jsf.SourceDocuments']}">
+							                <f:param name="project" value="#{project.slug}"/>
+							                <f:param name="iteration" value="#{latestVersion.slug}" />
+							                <i aria-hidden="true" class="i i--document-alt-fill"></i>
+			                        		<span class="is-invisible">#{messages['jsf.SourceDocuments']}</span> 
+			                        		#{dashboardAction.getDocumentCount(latestVersion.id)}
+							            </s:link>
+			                        </li>
+			                        <li class="l--float-right">
+			                        	<s:fragment rendered="#{latestVersion.status == 'READONLY'}">
+					                    	<span class="txt--meta">#{messages['jsf.ReadOnly']}</span>
+					                    </s:fragment>
+					                    <s:fragment rendered="#{latestVersion.status == 'OBSOLETE'}">
+					                        <span class="txt--meta">#{messages['jsf.Obsolete']}</span>
+					                    </s:fragment>
+			                        </li>
+			                	</ul>
+		                	</s:fragment>
                 		</div>
                 		
                 		<ul class="dropdown__content">
@@ -93,6 +101,14 @@
 				                        		#{dashboardAction.getDocumentCount(version.id)}
 								            </s:link>
 		                          		</li>
+		                          		<li class="l--float-right">
+		                          			<s:fragment rendered="#{version.status == 'READONLY'}">
+				                        		 <span class="txt--meta">#{messages['jsf.ReadOnly']}</span>
+				                        	</s:fragment>
+				                        	<s:fragment rendered="#{version.status == 'OBSOLETE'}">
+				                        		 <span class="txt--meta">#{messages['jsf.Obsolete']}</span>
+				                        	</s:fragment>
+				                        </li>
 		                        	</ul>
 		                      	</li>
                           	</ui:repeat>

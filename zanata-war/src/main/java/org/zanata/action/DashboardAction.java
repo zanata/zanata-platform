@@ -57,21 +57,21 @@ public class DashboardAction implements Serializable
 
    @In
    private GravatarService gravatarServiceImpl;
-   
+
    @In
    private ProjectIterationDAO projectIterationDAO;
-   
+
    @In
    private ProjectDAO projectDAO;
-   
+
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    private HAccount authenticatedAccount;
-   
+
    @In
    private ZanataIdentity identity;
-   
+
    private final int USER_IMAGE_SIZE = 115;
-   
+
    private final Comparator<HProject> projectCreationDateComparator = new Comparator<HProject>()
    {
       @Override
@@ -80,7 +80,7 @@ public class DashboardAction implements Serializable
          return o2.getCreationDate().after(o1.getCreationDate()) ? 1 : -1;
       }
    };
-   
+
    private final Comparator<HProjectIteration> projectVersionCreationDateComparator = new Comparator<HProjectIteration>()
    {
       @Override
@@ -89,7 +89,7 @@ public class DashboardAction implements Serializable
          return o2.getCreationDate().after(o1.getCreationDate()) ? 1 : -1;
       }
    };
-   
+
    public void init()
    {
    }
@@ -117,65 +117,93 @@ public class DashboardAction implements Serializable
    public List<HProject> getUserMaintainedProjects()
    {
       List<HProject> sortedList = new ArrayList<HProject>();
-      sortedList.addAll(authenticatedAccount.getPerson().getMaintainerProjects());
 
+      if(checkViewObsolete())
+      {
+         sortedList.addAll(authenticatedAccount.getPerson().getMaintainerProjects());
+      }
+      else
+      {
+         for (HProject project : authenticatedAccount.getPerson().getMaintainerProjects())
+         {
+            if(project.getStatus() != EntityStatus.OBSOLETE)
+            {
+               sortedList.add(project);
+            }
+         }
+      }
       Collections.sort(sortedList, projectCreationDateComparator);
- 
+
       return sortedList;
    }
-   
+
+   public boolean checkViewObsolete()
+   {
+      return identity != null && identity.hasPermission("HProject", "view-obsolete");
+   }
+
    public HProjectIteration getLatestVersion(Long projectId)
    {
-      return projectIterationDAO.getLastCreatedVersion(projectId);
+      if(checkViewObsolete())
+      {
+         return projectIterationDAO.getLastCreatedVersion(projectId);
+      }
+      else
+      {
+         return projectIterationDAO.getLastCreatedVersionExcludeStatus(projectId, EntityStatus.OBSOLETE);
+      }
    }
-   
+
    public List<HProjectIteration> getRemainingVersions(Long projectId)
    {
       HProject project = getProject(projectId);
-      
       List<HProjectIteration> projectVersions = project.getProjectIterations();
-      
-      Collections.sort(projectVersions, projectVersionCreationDateComparator);
-      
-      return projectVersions.subList(1, projectVersions.size());
+
+      if(checkViewObsolete())
+      {
+         Collections.sort(projectVersions, projectVersionCreationDateComparator);
+         return projectVersions.subList(1, projectVersions.size());
+      }
+      else
+      {
+         List<HProjectIteration> result = new ArrayList<HProjectIteration>();
+         
+         for(HProjectIteration version: projectVersions)
+         {
+            if(version.getStatus() != EntityStatus.OBSOLETE)
+            {
+               result.add(version);
+            }
+         }
+         Collections.sort(result, projectVersionCreationDateComparator);
+         return result.subList(1, result.size());
+      }
    }
-   
+
    public boolean isUserMaintainer(Long projectId)
    {
       HProject project = getProject(projectId);
       return authenticatedAccount.getPerson().isMaintainer(project);
    }
-   
+
    @CachedMethodResult
    public int getDocumentCount(Long versionId)
    {
       HProjectIteration version = getProjectVersion(versionId);
       return version.getDocuments().size();
    }
-   
-   public boolean isUserAllowedToTranslateOrReview(Long versionId, HLocale localeId)
-   {
-      HProjectIteration version = getProjectVersion(versionId);
-      
-      return version != null
-            && localeId != null 
-            && version.getProject().getStatus() == EntityStatus.ACTIVE 
-            && version.getStatus() == EntityStatus.ACTIVE
-            && authenticatedAccount != null 
-            && (identity.hasPermission("add-translation", version.getProject(), localeId) || identity.hasPermission("translation-review", version.getProject(), localeId));
-   }
-   
+
    public String getFormattedDate(Date date)
    {
       return DateUtil.formatShortDate(date);
    }
-   
+
    @CachedMethodResult
    private HProjectIteration getProjectVersion(Long versionId)
    {
       return projectIterationDAO.findById(versionId, false);
    }
-   
+
    @CachedMethodResult
    private HProject getProject(Long projectId)
    {
