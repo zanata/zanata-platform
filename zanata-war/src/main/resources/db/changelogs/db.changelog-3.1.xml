@@ -107,5 +107,9 @@
         <dropColumn tableName="HRawDocument" columnName="content" />
     </changeSet>
 
+    <changeSet author="damason@redhat.com" id="6">
+        <comment>Migrate existing raw document contents from database to file system</comment>
+        <customChange class="org.zanata.liquibase.custom.MigrateRawDocumentsToFileSystem"/>
+    </changeSet>
 
 </databaseChangeLog>
