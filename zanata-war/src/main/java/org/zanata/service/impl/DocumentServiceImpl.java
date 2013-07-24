@@ -147,7 +147,7 @@ public class DocumentServiceImpl implements DocumentService
       changed |= resourceUtils.transferFromResource(sourceDoc, document, extensions, hLocale, nextDocRev);
       documentDAO.flush();
       
-      if(changed)
+      if(changed && Events.exists())
       {
          Events.instance().raiseTransactionSuccessEvent(
                DocumentUploadedEvent.EVENT_NAME,

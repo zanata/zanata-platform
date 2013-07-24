@@ -45,17 +45,16 @@ import org.zanata.service.PersonActivityService;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- *
  */
 @Test(groups = { "business-tests" })
 public class PersonActivityServiceImplTest extends ZanataDbunitJpaTest
 {
    private SeamAutowire seam = SeamAutowire.instance();
 
-   Long personId = new Long(1);
-   Long projectVersionId = new Long(1);
-   Long documentId = new Long(1);
-   Long textFlowTargetId = new Long(1);
+   private Long personId = new Long(1);
+   private Long projectVersionId = new Long(1);
+   private Long documentId = new Long(1);
+   private Long textFlowTargetId = new Long(1);
    
    private PersonActivityServiceImpl personActivityService;
 
@@ -93,6 +92,9 @@ public class PersonActivityServiceImplTest extends ZanataDbunitJpaTest
    @Test
    public void testNewReviewActivityUpdated() throws Exception
    {
+      personActivityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
+            ContentState.Approved));
+      
       HPersonActivity activity = personActivityService.getPersonLastestActivity(personId, projectVersionId, UserActionType.REVIEWED_TRANSLATION);
 
       Long entryId = activity.getId();
@@ -116,13 +118,15 @@ public class PersonActivityServiceImplTest extends ZanataDbunitJpaTest
       
       HPersonActivity activity = personActivityService.getPersonLastestActivity(personId, projectVersionId, UserActionType.UPDATE_TRANSLATION);
       assertThat(activity, not(nullValue()));
+      
+      Long id = activity.getId();
 
       
       personActivityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
             ContentState.NeedReview));
       
-      List<HPersonActivity> activities = personActivityService.getAllPersonActivities(personId, projectVersionId, 0, 10);
-      assertThat(activities.size(), Matchers.equalTo(1));
+      activity = personActivityService.getPersonLastestActivity(personId, projectVersionId, UserActionType.UPDATE_TRANSLATION);
+      assertThat(activity.getId(), Matchers.equalTo(id));
    }
 
    @Test

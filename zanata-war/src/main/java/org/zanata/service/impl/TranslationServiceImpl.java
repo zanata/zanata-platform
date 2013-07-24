@@ -604,10 +604,13 @@ public class TranslationServiceImpl implements TranslationService
                }
             }.workInTransaction();
             
-            Events.instance().raiseTransactionSuccessEvent(
-                  DocumentUploadedEvent.EVENT_NAME,
-                  new DocumentUploadedEvent(document.getId(), false, hLocale.getLocaleId()
-            ));
+            if(Events.exists())
+            {
+               Events.instance().raiseTransactionSuccessEvent(
+                     DocumentUploadedEvent.EVENT_NAME,
+                     new DocumentUploadedEvent(document.getId(), false, hLocale.getLocaleId()
+               ));
+            }
          }
          catch (Exception e)
          {
