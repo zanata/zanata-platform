@@ -68,7 +68,7 @@ public class TranslationMemoryQueryServiceImpl implements TranslationMemoryQuery
 
    @Override
    public List<Object[]> getSearchResult(TransMemoryQuery query, LocaleId sourceLocale,
-         LocaleId targetLocale, final int maxResult, boolean useTargetIndex) throws ParseException
+         LocaleId targetLocale, final int maxResult) throws ParseException
    {
       String queryText = null;
       String[] multiQueryText = null;
@@ -119,18 +119,9 @@ public class TranslationMemoryQueryServiceImpl implements TranslationMemoryQuery
       }
 
       FullTextQuery ftQuery;
-      if (useTargetIndex)
-      {
-         org.apache.lucene.search.Query textQuery = generateQuery(query, sourceLocale, targetLocale, queryText, multiQueryText, IndexFieldLabels.TF_CONTENT_FIELDS, useTargetIndex);
-         ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlowTarget.class);
-      }
-      else
-      {
-         org.apache.lucene.search.Query textQuery = generateQuery(query, sourceLocale, targetLocale, queryText, multiQueryText, IndexFieldLabels.CONTENT_FIELDS, useTargetIndex);
-         ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlow.class);
-         Filter filter = translationStateCacheImpl.getFilter(targetLocale);
-         ftQuery.setFilter(filter);
-      }
+      // Use the TextFlowTarget index
+      org.apache.lucene.search.Query textQuery = generateQuery(query, sourceLocale, targetLocale, queryText, multiQueryText, IndexFieldLabels.TF_CONTENT_FIELDS);
+      ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlowTarget.class);
 
       ftQuery.setProjection(FullTextQuery.SCORE, FullTextQuery.THIS);
       @SuppressWarnings("unchecked")
@@ -151,7 +142,7 @@ public class TranslationMemoryQueryServiceImpl implements TranslationMemoryQuery
     * @return
     * @throws ParseException
     */
-   private org.apache.lucene.search.Query generateQuery(TransMemoryQuery query, LocaleId sourceLocale, LocaleId targetLocale, String queryText, String[] multiQueryText, String contentFields[], boolean useTargetIndex) throws ParseException
+   private org.apache.lucene.search.Query generateQuery(TransMemoryQuery query, LocaleId sourceLocale, LocaleId targetLocale, String queryText, String[] multiQueryText, String contentFields[]) throws ParseException
    {
       org.apache.lucene.search.Query contentQuery;
       // Analyzer determined by the language
@@ -176,28 +167,21 @@ public class TranslationMemoryQueryServiceImpl implements TranslationMemoryQuery
          contentQuery = parser.parse(queryText);
       }
 
-      if (useTargetIndex)
-      {
-         TermQuery localeQuery = new TermQuery(new Term(IndexFieldLabels.LOCALE_ID_FIELD, targetLocale.getId()));
-         
-         TermQuery newStateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.New.toString()));
-         TermQuery needReviewStateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.NeedReview.toString()));
-         TermQuery rejectedReviewStateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.Rejected.toString()));
-         
-         BooleanQuery targetQuery = new BooleanQuery();
-         targetQuery.add(contentQuery, Occur.MUST);
-         targetQuery.add(localeQuery, Occur.MUST);
-         
-         targetQuery.add(newStateQuery, Occur.MUST_NOT);
-         targetQuery.add(needReviewStateQuery, Occur.MUST_NOT);
-         targetQuery.add(rejectedReviewStateQuery, Occur.MUST_NOT);
+      TermQuery localeQuery = new TermQuery(new Term(IndexFieldLabels.LOCALE_ID_FIELD, targetLocale.getId()));
 
-         return targetQuery;
-      }
-      else
-      {
-         return contentQuery;
-      }
+      TermQuery newStateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.New.toString()));
+      TermQuery needReviewStateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.NeedReview.toString()));
+      TermQuery rejectedReviewStateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.Rejected.toString()));
+
+      BooleanQuery targetQuery = new BooleanQuery();
+      targetQuery.add(contentQuery, Occur.MUST);
+      targetQuery.add(localeQuery, Occur.MUST);
+
+      targetQuery.add(newStateQuery, Occur.MUST_NOT);
+      targetQuery.add(needReviewStateQuery, Occur.MUST_NOT);
+      targetQuery.add(rejectedReviewStateQuery, Occur.MUST_NOT);
+
+      return targetQuery;
    }
 
 }

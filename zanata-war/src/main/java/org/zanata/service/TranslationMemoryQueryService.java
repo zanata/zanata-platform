@@ -39,12 +39,10 @@ public interface TranslationMemoryQueryService
     * @param query
     * @param sourceLocale
     * @param maxResult number of results to return
-    * @param useTargetIndex use the HTextFlowTarget index
-    * (rather than HTextFlow + TranslatedTextFlowFilter)
     * @return
     * @throws ParseException
     */
    public List<Object[]> getSearchResult(TransMemoryQuery query, LocaleId sourceLocale,
-         LocaleId targetLocale, int maxResult, boolean useTargetIndex) throws ParseException;
+         LocaleId targetLocale, int maxResult) throws ParseException;
 
 }

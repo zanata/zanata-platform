@@ -64,8 +64,6 @@ import com.google.common.collect.Lists;
 public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationMemory, GetTranslationMemoryResult>
 {
 
-   private static final boolean useTargetIndex = false;
-
    static final int MAX_RESULTS = 10;
 
    @In
@@ -99,18 +97,11 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
       try
       {
          List<Object[]> matches;
-         matches = translationMemoryQueryService.getSearchResult(transMemoryQuery, sourceLocaleId, targetLocale.getLocaleId(), MAX_RESULTS, useTargetIndex);
+         matches = translationMemoryQueryService.getSearchResult(transMemoryQuery, sourceLocaleId, targetLocale.getLocaleId(), MAX_RESULTS);
          Map<TMKey, TransMemoryResultItem> matchesMap = new LinkedHashMap<TMKey, TransMemoryResultItem>(matches.size());
          for (Object[] match : matches)
          {
-            if (useTargetIndex)
-            {
-               processTargetIndexMatch(transMemoryQuery, matchesMap, match);
-            }
-            else
-            {
-               processTextFlowIndexMatch(targetLocale, transMemoryQuery, matchesMap, match);
-            }
+            processTargetIndexMatch(transMemoryQuery, matchesMap, match);
          }
          results.addAll(matchesMap.values());
       }
