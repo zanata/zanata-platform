@@ -24,10 +24,8 @@ import static org.zanata.file.DocumentUploadUtil.getInputStream;
 import static org.zanata.file.DocumentUploadUtil.isSinglePart;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.sql.Blob;
 import java.util.Collections;
 
 import javax.annotation.Nonnull;
@@ -36,7 +34,6 @@ import javax.ws.rs.core.Response.Status;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.hibernate.LobHelper;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.zanata.common.DocumentType;
@@ -75,6 +72,8 @@ public class SourceDocumentUpload
 
    @In(create = true, value = "documentUploadUtil")
    private DocumentUploadUtil util;
+   @In("blobPersistService")
+   private FilePersistService filePersistService;
    @In
    private ZanataIdentity identity;
    @In
@@ -262,34 +261,29 @@ public class SourceDocumentUpload
          throw new ChunkUploadException(Status.INTERNAL_SERVER_ERROR, e.getMessage(), e);
       }
 
+      String contentHash = uploadForm.getHash();
+      DocumentType documentType = DocumentType.typeFor(uploadForm.getFileType());
+
+      persistRawDocument(document, tempFile, contentHash, documentType, params);
+
+      translationFileServiceImpl.removeTempFile(tempFile);
+   }
+
+   private void persistRawDocument(HDocument document, File rawFile, String contentHash,
+         DocumentType documentType, Optional<String> params)
+   {
       HRawDocument rawDocument = new HRawDocument();
       rawDocument.setDocument(document);
-      rawDocument.setContentHash(uploadForm.getHash());
-      rawDocument.setType(DocumentType.typeFor(uploadForm.getFileType()));
+      rawDocument.setContentHash(contentHash);
+      rawDocument.setType(documentType);
       rawDocument.setUploadedBy(identity.getCredentials().getUsername());
-      FileInputStream tempFileStream;
-      try
-      {
-         tempFileStream = new FileInputStream(tempFile);
-      }
-      catch (FileNotFoundException e)
-      {
-         log.error("Failed to open stream from temp source file", e);
-         throw new ChunkUploadException(Status.INTERNAL_SERVER_ERROR,
-               "Error saving uploaded document on server, download in original format may fail.\n",
-               e);
-      }
-      LobHelper lobHelper = documentDAO.getLobHelper();
-      Blob fileContents = lobHelper.createBlob(tempFileStream, (int) tempFile.length());
-      rawDocument.setContent(fileContents);
+      filePersistService.persistRawDocumentContentFromFile(rawDocument, rawFile);
       if (params.isPresent())
       {
          rawDocument.setAdapterParameters(params.get());
       }
       documentDAO.addRawDocument(document, rawDocument);
       documentDAO.flush();
-
-      translationFileServiceImpl.removeTempFile(tempFile);
    }
 
    private void parsePotFile(InputStream potStream, GlobalDocumentId id, DocumentFileUploadForm uploadForm)

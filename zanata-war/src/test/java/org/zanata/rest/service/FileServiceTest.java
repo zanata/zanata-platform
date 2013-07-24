@@ -20,6 +20,12 @@
  */
 package org.zanata.rest.service;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.when;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -41,6 +47,7 @@ import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.file.BlobPersistService;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
@@ -55,12 +62,6 @@ import org.zanata.service.DocumentService;
 import org.zanata.service.TranslationFileService;
 
 import com.google.common.base.Optional;
-
-import static org.mockito.Mockito.when;
-import static org.mockito.Matchers.eq;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
@@ -80,6 +81,8 @@ public class FileServiceTest
    @Mock private TranslationFileService translationFileService;
    @Mock private DocumentService documentService;
    @Mock private DocumentDAO documentDAO;
+
+   @Mock private BlobPersistService filePersistService;
    @Mock private LobHelper lobHelper;
 
    @Mock private HProject project;
@@ -102,6 +105,7 @@ public class FileServiceTest
       .use("translationFileServiceImpl", translationFileService)
       .use("documentServiceImpl", documentService)
       .use("documentDAO", documentDAO)
+      .use("blobPersistService", filePersistService)
       .allowCycles();
 
       fileService = seam.autowire(FileService.class);
