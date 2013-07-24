@@ -27,6 +27,7 @@ import org.zanata.common.UserActionType;
 import org.zanata.model.Activity;
 import org.zanata.model.HPerson;
 import org.zanata.model.ILoggable;
+import org.zanata.model.type.EntityType;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -65,4 +66,14 @@ public interface ActivityService
     * @return
     */
    Activity findUserActivityInTimeRange(Long acterId, Long contextId, UserActionType action, Date roundOffActionTime);
+
+   /**
+    * Get target or lastTarget entity in activity
+    * 
+    * @param entityType
+    * @param entityId
+    * @return
+    * @throws Exception
+    */
+   Object getEntity(EntityType entityType, Long entityId) throws Exception;
 }

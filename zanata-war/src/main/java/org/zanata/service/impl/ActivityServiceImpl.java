@@ -35,15 +35,18 @@ import org.jboss.seam.annotations.Transactional;
 import org.zanata.common.UserActionType;
 import org.zanata.dao.ActivityDAO;
 import org.zanata.dao.DocumentDAO;
+import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.events.DocumentUploadedEvent;
 import org.zanata.events.TextFlowTargetStateEvent;
 import org.zanata.model.Activity;
 import org.zanata.model.HDocument;
 import org.zanata.model.HPerson;
+import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.ILoggable;
+import org.zanata.model.type.EntityType;
 import org.zanata.service.ActivityService;
 import org.zanata.util.DateUtil;
 
@@ -65,6 +68,9 @@ public class ActivityServiceImpl implements ActivityService
 
    @In
    private DocumentDAO documentDAO;
+   
+   @In
+   private ProjectIterationDAO projectIterationDAO;
    
    @Override
    public List<Activity> getAllPersonActivities(Long personId, Long contextId, int offset, int count)
@@ -98,6 +104,33 @@ public class ActivityServiceImpl implements ActivityService
          activityDAO.makePersistent(activity);
          activityDAO.flush();
       }
+   }
+   
+   @Override
+   public Object getEntity(EntityType entityType, Long entityId) throws Exception
+   {
+      Object result = null;
+      
+      if(entityType == EntityType.HDocument)
+      {
+         HDocument document = documentDAO.getById(entityId);
+         result = (entityType.getEntityType().cast(document));
+      }
+      else if(entityType == EntityType.HProjectIteration)
+      {
+         HProjectIteration projectVersion = projectIterationDAO.findById(entityId, false);
+         result = (entityType.getEntityType().cast(projectVersion));
+      }
+      else if(entityType == EntityType.HTexFlowTarget)
+      {
+         HTextFlowTarget target = textFlowTargetDAO.findById(entityId, false);
+         result = (entityType.getEntityType().cast(target));
+      }
+      else
+      {
+         throw new Exception("Unsupported entity type");
+      }
+      return result;
    }
    
    /**
