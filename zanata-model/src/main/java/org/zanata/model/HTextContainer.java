@@ -74,9 +74,7 @@ abstract class HTextContainer implements HasContents, Serializable
 
    @SuppressWarnings("unused")
    @Field(name=IndexFieldLabels.CONTENT,
-          bridge = @FieldBridge(impl = StringListBridge.class,
-                                params = {@Parameter(name="case", value="fold"),
-                                          @Parameter(name="ngrams", value="multisize")}))
+          bridge = @FieldBridge(impl = StringListBridge.class))
    @AnalyzerDiscriminator(impl = TextContainerAnalyzerDiscriminator.class)
    private List<String> getContentsToIndex()
    {

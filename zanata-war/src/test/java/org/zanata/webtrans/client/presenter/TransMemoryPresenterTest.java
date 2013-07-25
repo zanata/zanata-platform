@@ -11,6 +11,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
+import static org.zanata.webtrans.shared.model.TransMemoryResultItem.MatchType;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -161,7 +162,7 @@ public class TransMemoryPresenterTest
    @Test
    public void showTMDetails()
    {
-      TransMemoryResultItem object = new TransMemoryResultItem(new ArrayList<String>(), new ArrayList<String>(), ContentState.Approved, 0, 0);
+      TransMemoryResultItem object = new TransMemoryResultItem(new ArrayList<String>(), new ArrayList<String>(), MatchType.ApprovedInternal, 0, 0);
       when(display.getSearchType()).thenReturn(searchType);
 
       presenter.showTMDetails(object);
@@ -172,7 +173,7 @@ public class TransMemoryPresenterTest
    @Test
    public void fireCopyEvent()
    {
-      TransMemoryResultItem object = new TransMemoryResultItem(new ArrayList<String>(), new ArrayList<String>(), ContentState.Approved, 0, 0);
+      TransMemoryResultItem object = new TransMemoryResultItem(new ArrayList<String>(), new ArrayList<String>(), MatchType.ApprovedInternal, 0, 0);
       ArgumentCaptor<CopyDataToEditorEvent> eventCaptor = ArgumentCaptor.forClass(CopyDataToEditorEvent.class);
       
       when(display.getSearchType()).thenReturn(searchType);

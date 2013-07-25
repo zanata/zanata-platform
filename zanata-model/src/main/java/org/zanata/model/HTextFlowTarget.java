@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Nonnull;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -44,10 +43,6 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
@@ -58,7 +53,6 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.search.annotations.Parameter;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.common.ContentState;
 import org.zanata.common.HasContents;
@@ -68,9 +62,12 @@ import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.hibernate.search.LocaleIdBridge;
 import org.zanata.hibernate.search.StringListBridge;
 import org.zanata.hibernate.search.TextContainerAnalyzerDiscriminator;
-
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
+
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Represents a flow of translated text that should be processed as a
@@ -237,9 +234,7 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    @NotEmpty
    // TODO extend HTextContainer and remove this
    @Field(name=IndexFieldLabels.CONTENT,
-         bridge = @FieldBridge(impl = StringListBridge.class,
-               params = {@Parameter(name="case", value="fold"),
-                     @Parameter(name="ngrams", value="multisize")}))
+         bridge = @FieldBridge(impl = StringListBridge.class))
    @AnalyzerDiscriminator(impl = TextContainerAnalyzerDiscriminator.class)
    public List<String> getContents()
    {

@@ -64,6 +64,7 @@ import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
+import static org.zanata.webtrans.shared.model.TransMemoryResultItem.MatchType;
 import static org.zanata.webtrans.shared.rpc.HasSearchType.SearchType.FUZZY_PLURAL;
 
 /**
@@ -134,7 +135,7 @@ public class TransMemoryMergeHandlerTest
 
    private static TransMemoryResultItem tmResult(Long sourceId, int percent)
    {
-      TransMemoryResultItem resultItem = new TransMemoryResultItem(tmSource, tmTarget, ContentState.Approved, 1D, percent);
+      TransMemoryResultItem resultItem = new TransMemoryResultItem(tmSource, tmTarget, MatchType.ApprovedInternal, 1D, percent);
       resultItem.addSourceId(sourceId);
       return resultItem;
    }

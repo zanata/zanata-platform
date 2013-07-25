@@ -58,6 +58,8 @@ import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
+import org.zanata.webtrans.shared.model.TransMemoryResultItem.MatchType;
+
 @Name("webtrans.gwt.GetTransMemoryHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(GetTranslationMemory.class)
@@ -137,20 +139,38 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
          }
          ArrayList<String> textFlowContents = new ArrayList<String>(textFlowTarget.getTextFlow().getContents());
          ArrayList<String> targetContents = new ArrayList<String>(textFlowTarget.getContents());
-         addOrIncrementResultItem(transMemoryQuery, matchesMap, match, textFlowTarget.getState(), textFlowContents, targetContents, textFlowTarget.getId());
+         MatchType matchType = fromContentState(textFlowTarget.getState());
+         addOrIncrementResultItem(transMemoryQuery, matchesMap, match, matchType, textFlowContents,
+               targetContents, textFlowTarget.getId());
       }
       else if( entity instanceof TMTranslationUnit )
       {
+         System.out.println("Found TM match!!");
          TMTranslationUnit transUnit = (TMTranslationUnit) entity;
          ArrayList<String> sourceContents = Lists.newArrayList(transUnit.getTransUnitVariants().get(sourceLocaleId.getId()).getPlainTextSegment());
          ArrayList<String> targetContents = Lists.newArrayList(transUnit.getTransUnitVariants().get(targetLocaleId.getId()).getPlainTextSegment());
-         addOrIncrementResultItem(transMemoryQuery, matchesMap, match, null, sourceContents, targetContents,
+         addOrIncrementResultItem(transMemoryQuery, matchesMap, match, MatchType.Imported, sourceContents, targetContents,
                transUnit.getId());
       }
    }
 
+   private static MatchType fromContentState( ContentState contentState )
+   {
+      switch (contentState)
+      {
+         case Approved:
+            return MatchType.ApprovedInternal;
+
+         case Translated:
+            return MatchType.TranslatedInternal;
+
+         default:
+            throw new RuntimeException("Cannot map content state: " + contentState);
+      }
+   }
+
    private void addOrIncrementResultItem(TransMemoryQuery transMemoryQuery, Map<TMKey, TransMemoryResultItem> matchesMap,
-                                         Object[] match, ContentState contentState, ArrayList<String> sourceContents,
+                                         Object[] match, MatchType matchType, ArrayList<String> sourceContents,
                                          ArrayList<String> targetContents, Long sourceId)
    {
       TMKey key = new TMKey(sourceContents, targetContents);
@@ -159,7 +179,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
       {
          float score = (Float) match[0];
          double percent = calculateSimilarityPercentage(transMemoryQuery, sourceContents);
-         item = new TransMemoryResultItem(sourceContents, targetContents, contentState, score, percent);
+         item = new TransMemoryResultItem(sourceContents, targetContents, matchType, score, percent);
          matchesMap.put(key, item);
       }
       item.incMatchCount();
@@ -187,7 +207,6 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
    private static double calculateSimilarityPercentage(TransMemoryQuery query, List<String> sourceContents)
    {
       double percent;
-      // TODO use LevenshteinTokenUtil, *but* we need to distinguish 100% token match from 100% text match
       if (query.getSearchType() == SearchType.FUZZY_PLURAL)
       {
          percent = 100 * LevenshteinTokenUtil.getSimilarity(query.getQueries(), sourceContents);
@@ -262,9 +281,15 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
             // sort higher similarity first
             return -result;
          }
+
          result = compare(m1.getSourceContents(), m2.getSourceContents());
-         // sort longer string lists first (more plural forms)
-         return -result;
+         if( result != 0 )
+         {
+            // sort longer string lists first (more plural forms)
+            return -result;
+         }
+
+         return -m1.getMatchType().compareTo( m2.getMatchType() );
       }
 
       private int compare(List<String> list1, List<String> list2)

@@ -134,7 +134,7 @@ public class TransMemoryAdapter
    private void parseAndSaveTransUnitVariant(Element tuvElem, TMTranslationUnit tu)
    {
       String language = tuvElem.getAttributeValue("lang", XMLConstants.XML_NS_URI);
-      String content = tuvElem.getFirstChildElement("seg").getChild(0).toXML();
+      String content = tuvElem.getFirstChildElement("seg").toXML();
 
       TMTransUnitVariant tuv = new TMTransUnitVariant(language, content);
       // TODO save metadata

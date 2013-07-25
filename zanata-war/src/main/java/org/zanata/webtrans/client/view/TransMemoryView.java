@@ -45,6 +45,8 @@ import com.google.gwt.user.client.ui.ValueListBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
+import static org.zanata.webtrans.shared.model.TransMemoryResultItem.MatchType;
+
 public class TransMemoryView extends Composite implements TranslationMemoryDisplay
 {
 
@@ -291,13 +293,17 @@ public class TransMemoryView extends Composite implements TranslationMemoryDispl
       SimplePanel panel = new SimplePanel();
       // display multiple target strings
       
-      if(object.getContentState() == ContentState.Approved)
+      if(object.getMatchType() == MatchType.ApprovedInternal)
       {
          panel.addStyleName(style.approved());
       }
-      else if(object.getContentState() == ContentState.Translated)
+      else if(object.getMatchType() == MatchType.TranslatedInternal)
       {
          panel.addStyleName(style.translated());
+      }
+      else if(object.getMatchType() == MatchType.Imported)
+      {
+         // TODO Add a style
       }
       
       SafeHtml safeHtml = TextContentsDisplay.asSyntaxHighlight(object.getTargetContents()).toSafeHtml();

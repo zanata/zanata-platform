@@ -68,8 +68,8 @@ public class TranslationMemoryQueryServiceImpl implements TranslationMemoryQuery
    @In
    private FullTextEntityManager entityManager;
 
-   @In
-   private TranslationStateCache translationStateCacheImpl;
+   /*@In
+   private TranslationStateCache translationStateCacheImpl;*/
 
    @Override
    public List<Object[]> getSearchResult(TransMemoryQuery query, LocaleId sourceLocale,
@@ -150,7 +150,9 @@ public class TranslationMemoryQueryServiceImpl implements TranslationMemoryQuery
    private Query generateQuery(TransMemoryQuery query, LocaleId sourceLocale, LocaleId targetLocale, String queryText, String[] multiQueryText, String contentFields[]) throws ParseException
    {
       Query textFlowTargetQuery = generateTextFlowTargetQuery(query, sourceLocale, targetLocale, queryText, multiQueryText, contentFields);
-      Query transUnitQuery = generateTransMemoryQuery(sourceLocale, targetLocale, queryText, multiQueryText);
+
+      String tmQueryText = query.getSearchType() == SearchType.FUZZY_PLURAL ? multiQueryText[0] : queryText;
+      Query transUnitQuery = generateTransMemoryQuery(sourceLocale, targetLocale, tmQueryText);
 
       // Join the queries for each different type
       return join(Occur.SHOULD, textFlowTargetQuery, transUnitQuery);
@@ -214,18 +216,16 @@ public class TranslationMemoryQueryServiceImpl implements TranslationMemoryQuery
     * @param sourceLocale
     * @param targetLocale
     * @param queryText
-    * @param multiQueryText
     * @return
     */
-   private Query generateTransMemoryQuery(LocaleId sourceLocale, LocaleId targetLocale, String queryText, String[] multiQueryText)
+   private Query generateTransMemoryQuery(LocaleId sourceLocale, LocaleId targetLocale, String queryText) throws ParseException
    {
-      String textToSearch = queryText;
-      if( textToSearch == null )
-      {
-         textToSearch = multiQueryText[0];
-      }
+      // Analyzer determined by the language
+      String analyzerDefName = TextContainerAnalyzerDiscriminator.getAnalyzerDefinitionName(sourceLocale.getId());
+      Analyzer analyzer = entityManager.getSearchFactory().getAnalyzer(analyzerDefName);
 
-      TermQuery sourceContentQuery = new TermQuery(new Term("tuv." + sourceLocale.getId(), textToSearch));
+      QueryParser parser = new QueryParser(LUCENE_VERSION, "tuv." + sourceLocale.getId(), analyzer);
+      Query sourceContentQuery = parser.parse(queryText);
       WildcardQuery targetContentQuery = new WildcardQuery(new Term("tuv." + targetLocale.getId(), "*"));
       return join(Occur.MUST, sourceContentQuery, targetContentQuery);
    }

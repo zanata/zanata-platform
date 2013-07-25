@@ -24,6 +24,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.hibernate.search.bridge.FieldBridge;
 import org.hibernate.search.bridge.LuceneOptions;
+import org.zanata.common.LocaleId;
 import org.zanata.model.tm.TMTransUnitVariant;
 
 /**
@@ -39,8 +40,7 @@ public class TransUnitVariantClassBridge implements FieldBridge
       TMTransUnitVariant variant = (TMTransUnitVariant)value;
 
       String textToIndex = variant.getPlainTextSegment();
-      String lang = variant.getLanguage().replaceAll("_", "-");
-      Field field = new Field("tuv." + variant.getLanguage(), textToIndex,
+      Field field = new Field("tuv." + LocaleId.fromJavaName(variant.getLanguage()), textToIndex,
             luceneOptions.getStore(), luceneOptions.getIndex(), luceneOptions.getTermVector());
       field.setBoost(luceneOptions.getBoost());
       document.add(field);
