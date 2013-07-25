@@ -114,4 +114,20 @@ public class ChangePasswordTest
       assertThat("Incorrect password message displayed", changePasswordPage.getErrors(),
             Matchers.contains(emptyPassword, emptyPassword, emptyPassword));
    }
+
+   @Test
+   public void changePasswordRequiredLength()
+   {
+      String passwordSizeError = "size must be between 6 and 20";
+      String tooShort = "test5";
+      String tooLong = "t12345678901234567890";
+      MyAccountPage myAccountPage = new LoginWorkFlow().signIn("translator", "translator").goToMyProfile();
+      ChangePasswordPage changePasswordPage = myAccountPage.goToChangePassword();
+      changePasswordPage = changePasswordPage.enterNewPassword("test5").enterConfirmNewPassword(tooShort);
+      assertThat("Incorrect password message displayed", changePasswordPage.waitForErrors(),
+            Matchers.hasItem(passwordSizeError));
+      changePasswordPage = changePasswordPage.enterNewPassword(tooLong).enterConfirmNewPassword(tooLong);
+      assertThat("Incorrect password message displayed", changePasswordPage.waitForErrors(),
+            Matchers.hasItem(passwordSizeError));
+   }
 }
