@@ -107,7 +107,7 @@ public class FileService implements FileResource
    @In(value = "translationDocumentUploader", create = true)
    private TranslationDocumentUpload translationUploader;
 
-   @In("fileSystemPersistService")
+   @In("filePersistService")
    private FilePersistService filePersistService;
 
    @Override

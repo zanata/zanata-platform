@@ -43,7 +43,7 @@ import org.zanata.rest.service.VirusScanner;
 
 import com.google.common.io.Files;
 
-@Name("fileSystemPersistService")
+@Name("filePersistService")
 @Scope(ScopeType.STATELESS)
 @AutoCreate
 @Slf4j

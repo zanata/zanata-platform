@@ -43,7 +43,7 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
    @In
    private TranslationFileService translationFileServiceImpl;
 
-   @In("fileSystemPersistService")
+   @In("filePersistService")
    private FilePersistService filePersistService;
 
    @Override

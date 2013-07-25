@@ -124,7 +124,7 @@ public class ProjectIterationFilesAction implements Serializable
    @In
    private LocaleDAO localeDAO;
 
-   @In("fileSystemPersistService")
+   @In("filePersistService")
    private FilePersistService filePersistService;
 
    @In
