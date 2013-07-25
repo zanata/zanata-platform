@@ -54,7 +54,6 @@ public class ChangePasswordPage extends BasePage
 
    public ChangePasswordPage enterOldPassword(String password)
    {
-      oldPasswordField.click();
       oldPasswordField.sendKeys(password);
       return new ChangePasswordPage(getDriver());
    }
@@ -83,7 +82,7 @@ public class ChangePasswordPage extends BasePage
       return new MyAccountPage(getDriver());
    }
 
-   public ChangePasswordPage changePasswordFailure()
+   public ChangePasswordPage changePasswordExpectingFailure()
    {
       changePasswordButton.click();
       return new ChangePasswordPage(getDriver());
