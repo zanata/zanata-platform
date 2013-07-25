@@ -39,6 +39,7 @@ import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.events.DocumentUploadedEvent;
 import org.zanata.events.TextFlowTargetStateEvent;
+import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.Activity;
 import org.zanata.model.HDocument;
 import org.zanata.model.HPerson;
@@ -103,7 +104,7 @@ public class ActivityServiceImpl implements ActivityService
    }
    
    @Override
-   public Object getEntity(EntityType entityType, Long entityId) throws Exception
+   public Object getEntity(EntityType entityType, Long entityId) throws ZanataServiceException
    {
       Object result = null;
       
@@ -124,7 +125,7 @@ public class ActivityServiceImpl implements ActivityService
       }
       else
       {
-         throw new Exception("Unsupported entity type");
+         throw new ZanataServiceException("Unsupported entity type");
       }
       return result;
    }

@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.zanata.common.ActivityType;
+import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.Activity;
 import org.zanata.model.HPerson;
 import org.zanata.model.HasEntityType;
@@ -76,5 +77,5 @@ public interface ActivityService
     * @return
     * @throws Exception
     */
-   Object getEntity(EntityType entityType, Long entityId) throws Exception;
+   Object getEntity(EntityType entityType, Long entityId) throws ZanataServiceException;
 }
