@@ -22,6 +22,13 @@
 				</s:link>
 			</li>
 			<li><s:link id="profile" view="/profile/view.xhtml" propagation="none">#{messages['jsf.Settings']}</s:link></li>
+			<s:fragment rendered="#{identity.loggedIn and s:hasRole('admin')}">
+				<li>
+					<s:link id="administration" view="/admin/home.xhtml" propagation="none">
+						#{messages['jsf.Administration']}
+					</s:link>
+				</li>
+			</s:fragment>
 			<li>
 				<s:link id="right_menu_sign_out_link" view="/account/logout.seam" propagation="none">#{messages['jsf.Logout']}</s:link>
 			</li>

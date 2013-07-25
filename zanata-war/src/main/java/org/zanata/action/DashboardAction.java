@@ -39,7 +39,6 @@ import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
-import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
@@ -80,16 +79,7 @@ public class DashboardAction implements Serializable
          return o2.getCreationDate().after(o1.getCreationDate()) ? 1 : -1;
       }
    };
-
-   private final Comparator<HProjectIteration> projectVersionCreationDateComparator = new Comparator<HProjectIteration>()
-   {
-      @Override
-      public int compare(HProjectIteration o1, HProjectIteration o2)
-      {
-         return o2.getCreationDate().after(o1.getCreationDate()) ? 1 : -1;
-      }
-   };
-
+  
    public void init()
    {
    }
@@ -137,55 +127,33 @@ public class DashboardAction implements Serializable
       return sortedList;
    }
 
+   @CachedMethodResult
    public boolean checkViewObsolete()
    {
       return identity != null && identity.hasPermission("HProject", "view-obsolete");
    }
 
-   public HProjectIteration getLatestVersion(Long projectId)
+   @CachedMethodResult
+   public List<HProjectIteration> getProjectVersions(Long projectId)
    {
+      List<HProjectIteration> result = new ArrayList<HProjectIteration>();
       if(checkViewObsolete())
       {
-         return projectIterationDAO.getLastCreatedVersion(projectId);
+         result.addAll(projectIterationDAO.searchByProjectId(projectId));
       }
       else
       {
-         return projectIterationDAO.getLastCreatedVersionExcludeStatus(projectId, EntityStatus.OBSOLETE);
+         result.addAll(projectIterationDAO.searchByProjectIdExcludeObsolete(projectId));
       }
+      return result;
    }
-
-   public List<HProjectIteration> getRemainingVersions(Long projectId)
-   {
-      HProject project = getProject(projectId);
-      List<HProjectIteration> projectVersions = project.getProjectIterations();
-
-      if(checkViewObsolete())
-      {
-         Collections.sort(projectVersions, projectVersionCreationDateComparator);
-         return projectVersions.subList(1, projectVersions.size());
-      }
-      else
-      {
-         List<HProjectIteration> result = new ArrayList<HProjectIteration>();
-         
-         for(HProjectIteration version: projectVersions)
-         {
-            if(version.getStatus() != EntityStatus.OBSOLETE)
-            {
-               result.add(version);
-            }
-         }
-         Collections.sort(result, projectVersionCreationDateComparator);
-         return result.subList(1, result.size());
-      }
-   }
-
+   
    public boolean isUserMaintainer(Long projectId)
    {
       HProject project = getProject(projectId);
       return authenticatedAccount.getPerson().isMaintainer(project);
    }
-
+   
    @CachedMethodResult
    public int getDocumentCount(Long versionId)
    {
