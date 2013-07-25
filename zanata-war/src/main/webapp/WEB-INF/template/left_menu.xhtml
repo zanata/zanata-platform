@@ -7,13 +7,13 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:s="http://jboss.org/schema/seam/taglib"
 	xmlns:rich="http://richfaces.org/rich">
-	
+
 	<header class="off-canvas__header">
 		<a href="#off-canvas--left" class="off-canvas__close"> <i
 			class="i i--cross"></i> <span class="is-invisible">Close</span>
 		</a>
 	</header>
-	<nav>
+	<nav id="#nav-main-side">
 		<ul class="list--slat list--block-links">
 			<li><s:link id="left_menu_projects_link" view="/project/home.xhtml" propagation="none">#{messages['jsf.Projects']}</s:link></li>
 			<li><s:link id="left_menu_version-groups_link" view="/version-group/home.xhtml" propagation="none">#{messages['jsf.Groups']}</s:link></li>

@@ -6,14 +6,14 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:s="http://jboss.org/schema/seam/taglib"
 	xmlns:rich="http://richfaces.org/rich">
-	
+
 	<header class="off-canvas__header">
 		<a href="#off-canvas--right" class="off-canvas__close">
 			<i class="i i--cross"></i>
 			<span class="is-invisible">Close</span>
 		</a>
 	</header>
-	<nav>
+	<nav id="#nav-user">
 		<ul class="list--slat list--block-links txt--invert">
 			<li>
 				<s:link view="/dashboard/home.xhtml" propagation="none">
@@ -27,5 +27,5 @@
 			</li>
 		</ul>
 	</nav>
-	
+
 </div>
