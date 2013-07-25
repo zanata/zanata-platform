@@ -28,11 +28,12 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-      RegisterFullTest.class,
+      ChangePasswordTest.class,
+      RegisterTest.class,
       UsernameValidationTest.class,
       ValidEmailAddressTest.class,
       InvalidEmailAddressTest.class
 })
-public class RegisterTestSuite
+public class AccountTestSuite
 {
 }

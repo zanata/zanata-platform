@@ -33,6 +33,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.zanata.page.account.MyAccountPage;
 import org.zanata.page.account.RegisterPage;
 import org.zanata.page.account.SignInPage;
 import org.zanata.page.administration.AdministrationPage;
@@ -78,6 +79,13 @@ public class BasePage extends AbstractPage
    {
       super(driver);
       navMenuItems = navBar.findElements(By.tagName("a"));
+   }
+
+   public MyAccountPage goToMyProfile()
+   {
+      userColumn.click();
+      getDriver().findElement(By.id("MyProfile")).click();
+      return new MyAccountPage(getDriver());
    }
 
    public ProjectsPage goToProjects()
