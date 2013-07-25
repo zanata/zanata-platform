@@ -32,7 +32,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
-import org.zanata.common.UserActionType;
+import org.zanata.common.ActivityType;
 import org.zanata.dao.ActivityDAO;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
@@ -45,7 +45,7 @@ import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.ILoggable;
+import org.zanata.model.HasEntityType;
 import org.zanata.model.type.EntityType;
 import org.zanata.service.ActivityService;
 
@@ -76,27 +76,26 @@ public class ActivityServiceImpl implements ActivityService
    }
    
    @Override
-   public Activity findUserActivityInRoundOffDate(Long acterId, Long contextId, UserActionType action, Date actionTime)
+   public Activity findActivity(Long actorId, EntityType contextType, Long contextId, ActivityType action, Date actionTime)
    {
-      return activityDAO.findUserActivityInRoundOffDate(acterId, contextId, action, DateUtils.truncate(actionTime, Calendar.HOUR));
+      return activityDAO.findActivity(actorId, contextType, contextId, action, DateUtils.truncate(actionTime, Calendar.HOUR));
    }
 
    @Override
-   public void logActivity(HPerson acter, ILoggable context, ILoggable target, UserActionType action, int wordCount)
+   public void logActivity(HPerson actor, HasEntityType context, HasEntityType target, ActivityType action, int wordCount)
    {
-      if (acter != null && context != null && action != null)
+      if (actor != null && context != null && action != null)
       {
          Date currentActionTime = new Date();
-         Activity activity = findUserActivityInRoundOffDate(acter.getId(), context.getId(), action, currentActionTime);
+         Activity activity = findActivity(actor.getId(), context.getEntityType(), context.getId(), action, currentActionTime);
          
          if (activity != null)
          {
-            activity.setStartOffset(currentActionTime);
-            activity.setEndOffset(currentActionTime);
+            activity.updateActivity(currentActionTime, wordCount);
          }
          else
          {
-            activity = new Activity(acter, context.getEntityType(), context.getId(), target.getEntityType(), target.getId(), action, wordCount);
+            activity = new Activity(actor, context.getEntityType(), context.getId(), target.getEntityType(), target.getId(), action, wordCount);
          }
          activityDAO.makePersistent(activity);
          activityDAO.flush();
@@ -111,17 +110,17 @@ public class ActivityServiceImpl implements ActivityService
       if(entityType == EntityType.HDocument)
       {
          HDocument document = documentDAO.getById(entityId);
-         result = (entityType.getEntityType().cast(document));
+         result = (entityType.getEntityClass().cast(document));
       }
       else if(entityType == EntityType.HProjectIteration)
       {
          HProjectIteration projectVersion = projectIterationDAO.findById(entityId, false);
-         result = (entityType.getEntityType().cast(projectVersion));
+         result = (entityType.getEntityClass().cast(projectVersion));
       }
       else if(entityType == EntityType.HTexFlowTarget)
       {
          HTextFlowTarget target = textFlowTargetDAO.findById(entityId, false);
-         result = (entityType.getEntityType().cast(target));
+         result = (entityType.getEntityClass().cast(target));
       }
       else
       {
@@ -140,7 +139,7 @@ public class ActivityServiceImpl implements ActivityService
    {
       HTextFlowTarget target = textFlowTargetDAO.getById(event.getTextFlowTargetId());
       HDocument document = documentDAO.getById(event.getDocumentId());
-      UserActionType actionType = event.getNewState().isReviewed() ? UserActionType.REVIEWED_TRANSLATION : UserActionType.UPDATE_TRANSLATION;
+      ActivityType actionType = event.getNewState().isReviewed() ? ActivityType.REVIEWED_TRANSLATION : ActivityType.UPDATE_TRANSLATION;
 
       logActivity(target.getLastModifiedBy(), document.getProjectIteration(), target, actionType, target.getTextFlow().getWordCount().intValue());
    }
@@ -155,7 +154,7 @@ public class ActivityServiceImpl implements ActivityService
    {
       HDocument document = documentDAO.getById(event.getDocumentId());
 
-      UserActionType actionType = event.isSourceDocument() ? UserActionType.UPLOAD_SOURCE_DOCUMENT : UserActionType.UPLOAD_TRANSLATION_DOCUMENT;
+      ActivityType actionType = event.isSourceDocument() ? ActivityType.UPLOAD_SOURCE_DOCUMENT : ActivityType.UPLOAD_TRANSLATION_DOCUMENT;
 
       logActivity(document.getLastModifiedBy(), document.getProjectIteration(), document, actionType, getDocumentWordCount(document));
    }

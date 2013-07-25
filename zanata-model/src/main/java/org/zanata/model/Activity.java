@@ -43,7 +43,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import org.apache.commons.lang.time.DateUtils;
-import org.zanata.common.UserActionType;
+import org.zanata.common.ActivityType;
 import org.zanata.model.type.EntityType;
 
 /**
@@ -60,24 +60,20 @@ public class Activity extends ModelEntityBase implements Serializable
    @NotNull
    @JoinColumn(name = "person_id", nullable = false)
    @ManyToOne
-   private HPerson acter;
-   
-   @Getter
-   @Setter
-   @Temporal(TemporalType.TIMESTAMP)
-   @NotNull
-   private Date startOffset;
-   
-   @Getter
-   @Setter
-   @Temporal(TemporalType.TIMESTAMP)
-   @NotNull
-   private Date endOffset;
+   private HPerson actor;
    
    @Getter
    @Temporal(TemporalType.TIMESTAMP)
    @NotNull
-   private Date roundOffDate;
+   private Date approxTime;
+   
+   @Getter
+   @NotNull
+   private Long startOffsetMillis;
+   
+   @Getter
+   @NotNull
+   private Long endOffsetMillis;
    
    @Getter
    @NotNull
@@ -85,7 +81,6 @@ public class Activity extends ModelEntityBase implements Serializable
    private EntityType contextType;
    
    @Getter
-   @Setter
    @NotNull
    @Column(name = "context_id")
    private Long contextId;
@@ -95,14 +90,13 @@ public class Activity extends ModelEntityBase implements Serializable
    private EntityType lastTargetType;
    
    @Getter
-   @Setter
    @NotNull
    @Column(name = "last_target_id")
    private Long lastTargetId;
    
    @Getter
    @Enumerated(EnumType.STRING)
-   private UserActionType action;
+   private ActivityType action;
    
    @Getter
    private int counter = 1;
@@ -110,9 +104,9 @@ public class Activity extends ModelEntityBase implements Serializable
    @Getter
    private int wordCount;
    
-   public Activity(HPerson acter, EntityType contextType, Long contextId, EntityType lastTargetType, Long lastTargetId, UserActionType action, int wordCount)
+   public Activity(HPerson actor, EntityType contextType, Long contextId, EntityType lastTargetType, Long lastTargetId, ActivityType action, int wordCount)
    {
-      this.acter = acter;
+      this.actor = actor;
       this.contextType = contextType;
       this.contextId = contextId;
       this.lastTargetType = lastTargetType;
@@ -121,24 +115,21 @@ public class Activity extends ModelEntityBase implements Serializable
       this.wordCount = wordCount;
    }
 
-   @SuppressWarnings("unused")
+   @Override
    @PrePersist
-   private void onPersist()
+   protected void onPersist()
    {
-      creationDate = new Date();
-      lastChanged = creationDate;
+      super.onPersist();
       
-      startOffset = new Date();
-      endOffset = startOffset;
-      roundOffDate = DateUtils.truncate(startOffset, Calendar.HOUR);
+      approxTime = DateUtils.truncate(getCreationDate(), Calendar.HOUR);
+      startOffsetMillis = getCreationDate().getTime() - approxTime.getTime();
+      endOffsetMillis = startOffsetMillis;
    }
    
-   @SuppressWarnings("unused")
-   @PreUpdate
-   private void onUpdate()
+   public void updateActivity(Date currentTime, int wordCount)
    {
-      lastChanged = new Date();
-      
-      counter++;
+      this.endOffsetMillis = currentTime.getTime() - approxTime.getTime();
+      this.wordCount += wordCount;
+      this.counter++;
    }
 }

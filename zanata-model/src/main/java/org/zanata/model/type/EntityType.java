@@ -36,10 +36,10 @@ public enum EntityType
    HDocument(HDocument.class);
 
    @Getter
-   public final Class<?> entityType;
+   private final Class<?> entityClass;
 
-   EntityType(Class<?> entityType)
+   EntityType(Class<?> entityClass)
    {
-      this.entityType = entityType;
+      this.entityClass = entityClass;
    }
 }

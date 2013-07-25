@@ -84,7 +84,7 @@ import com.google.common.collect.ImmutableList;
 @Setter
 @NoArgsConstructor
 @ToString(of = {"name", "path", "docId", "locale", "revision"})
-public class HDocument extends ModelEntityBase implements DocumentWithId, IDocumentHistory, Serializable, Iterable<SourceContents>, ILoggable
+public class HDocument extends ModelEntityBase implements DocumentWithId, IDocumentHistory, Serializable, Iterable<SourceContents>, HasEntityType
 {
    private static final long serialVersionUID = 5129552589912687504L;
    private String docId;

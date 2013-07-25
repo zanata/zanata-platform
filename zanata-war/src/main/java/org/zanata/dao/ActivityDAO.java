@@ -29,8 +29,9 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.zanata.common.UserActionType;
+import org.zanata.common.ActivityType;
 import org.zanata.model.Activity;
+import org.zanata.model.type.EntityType;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -53,29 +54,31 @@ public class ActivityDAO extends AbstractDAOImpl<Activity, Long>
    }
 
    @SuppressWarnings("unchecked")
-   public Activity findUserActivityInRoundOffDate(Long personId, Long contextId, UserActionType action, Date roundOffDate)
+   public Activity findActivity(Long personId, EntityType contextType, Long contextId, ActivityType actionType, Date approxTime)
    {
-      Query query = getSession().createQuery("FROM Activity a WHERE a.acter.id = :personId "
+      Query query = getSession().createQuery("FROM Activity a WHERE a.actor.id = :personId "
             + "AND a.contextId = :contextId "
             + "AND a.action = :action "
-            + "AND :roundOffDate = a.roundOffDate");
+            + "AND a.contextType = :contextType "
+            + "AND :approxTime = a.approxTime");
       
       query.setParameter("personId", personId);
       query.setParameter("contextId", contextId);
-      query.setParameter("action", action);
-      query.setTimestamp("roundOffDate", roundOffDate); 
+      query.setParameter("action", actionType);
+      query.setParameter("contextType", contextType);
+      query.setTimestamp("approxTime", approxTime); 
       query.setMaxResults(1);
       query.setCacheable(true);
-      query.setComment("PersonActivitiesDAO.findUserActivityInTimeRange");
+      query.setComment("PersonActivitiesDAO.findActivity");
       return (Activity) query.uniqueResult();
    }
 
    @SuppressWarnings("unchecked")
    public List<Activity> findAllUserActivities(Long personId, Long contextId, int offset, int count)
    {
-      Query query = getSession().createQuery("FROM Activity a WHERE a.acter.id = :personId "
+      Query query = getSession().createQuery("FROM Activity a WHERE a.actor.id = :personId "
             + "AND a.contextId = :contextId "
-            + "order by a.roundOffDate DESC");
+            + "order by a.approxTime DESC");
       query.setParameter("personId", personId);
       query.setParameter("contextId", contextId);
       query.setMaxResults(count);

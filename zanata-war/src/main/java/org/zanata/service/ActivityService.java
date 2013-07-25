@@ -23,10 +23,10 @@ package org.zanata.service;
 import java.util.Date;
 import java.util.List;
 
-import org.zanata.common.UserActionType;
+import org.zanata.common.ActivityType;
 import org.zanata.model.Activity;
 import org.zanata.model.HPerson;
-import org.zanata.model.ILoggable;
+import org.zanata.model.HasEntityType;
 import org.zanata.model.type.EntityType;
 
 /**
@@ -53,19 +53,20 @@ public interface ActivityService
     * @param action
     * @param wordCount
     */
-   void logActivity(HPerson acter, ILoggable context, ILoggable target, UserActionType action, int wordCount);
+   void logActivity(HPerson acter, HasEntityType context, HasEntityType target, ActivityType action, int wordCount);
 
    
    /**
     * Find activity with given person, context, action in the hour of given action time
     * 
-    * @param acterId
+    * @param actorId
+    * @param contextType
     * @param contextId
     * @param action
     * @param actionTime
     * @return
     */
-   Activity findUserActivityInRoundOffDate(Long acterId, Long contextId, UserActionType action, Date actionTime);
+   Activity findActivity(Long actorId, EntityType contextType, Long contextId, ActivityType action, Date actionTime);
 
    /**
     * Get target or lastTarget entity in activity

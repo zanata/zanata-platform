@@ -34,12 +34,14 @@ import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
-import org.zanata.common.UserActionType;
+import org.zanata.common.ActivityType;
 import org.zanata.dao.ActivityDAO;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.TextFlowTargetDAO;
+import org.zanata.events.DocumentUploadedEvent;
 import org.zanata.events.TextFlowTargetStateEvent;
 import org.zanata.model.Activity;
+import org.zanata.model.type.EntityType;
 import org.zanata.seam.SeamAutowire;
 
 /**
@@ -84,7 +86,7 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest
    {
       activityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
             ContentState.Approved));
-      Activity activity = activityService.findUserActivityInRoundOffDate(personId, projectVersionId, UserActionType.REVIEWED_TRANSLATION, new Date());
+      Activity activity = activityService.findActivity(personId, EntityType.HProjectIteration, projectVersionId, ActivityType.REVIEWED_TRANSLATION, new Date());
       assertThat(activity, not(nullValue()));
       assertThat(activity.getCounter(), Matchers.equalTo(1));
    }
@@ -104,30 +106,41 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest
       activities = activityService.getAllPersonActivities(personId, projectVersionId, 0, 10);
       assertThat(activities.size(), Matchers.equalTo(1));
       
-      Activity activity = activityService.findUserActivityInRoundOffDate(personId, projectVersionId, UserActionType.REVIEWED_TRANSLATION, new Date());
+      Activity activity = activityService.findActivity(personId, EntityType.HProjectIteration, projectVersionId, ActivityType.REVIEWED_TRANSLATION, new Date());
       assertThat(activity.getCounter(), Matchers.equalTo(2));
    }
 
    @Test
    public void testActivityInsertAndUpdate() throws Exception
    {
-      Activity activity = activityService.findUserActivityInRoundOffDate(personId, projectVersionId, UserActionType.UPDATE_TRANSLATION, new Date());
-      assertThat(activity, nullValue());
-      
       activityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
             ContentState.Translated));
       
-      activity = activityService.findUserActivityInRoundOffDate(personId, projectVersionId, UserActionType.UPDATE_TRANSLATION, new Date());
+      Activity activity = activityService.findActivity(personId, EntityType.HProjectIteration, projectVersionId, ActivityType.UPDATE_TRANSLATION, new Date());
       assertThat(activity, not(nullValue()));
       
       Long id = activity.getId();
 
-      
       activityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
             ContentState.NeedReview));
       
-      activity = activityService.findUserActivityInRoundOffDate(personId, projectVersionId, UserActionType.UPDATE_TRANSLATION, new Date());
+      activity = activityService.findActivity(personId, EntityType.HProjectIteration, projectVersionId, ActivityType.UPDATE_TRANSLATION, new Date());
       assertThat(activity.getId(), Matchers.equalTo(id));
+   }
+   
+   @Test
+   public void testActivityInsertMultipleTypeActivities() throws Exception
+   {
+      activityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
+            ContentState.Translated));
+
+      activityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
+            ContentState.Approved));
+      
+      activityService.documentUploaded(new DocumentUploadedEvent(documentId, false, new LocaleId("as")));
+      
+      List<Activity> activities = activityService.getAllPersonActivities(personId, projectVersionId, 0, 10);
+      assertThat(activities.size(), Matchers.equalTo(3));
    }
 
    @Test

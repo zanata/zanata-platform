@@ -86,13 +86,13 @@
             <column name="person_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
-            <column name="startOffset" type="DATETIME">
+            <column name="startOffsetMillis" type="int">
                 <constraints nullable="false" />
             </column>
-            <column name="endOffset" type="DATETIME">
+            <column name="endOffsetMillis" type="int">
                 <constraints nullable="false" />
             </column>
-            <column name="roundOffDate" type="DATETIME">
+            <column name="approxTime" type="DATETIME">
                 <constraints nullable="false" />
             </column>
             <column name="contextType" type="varchar(150)">

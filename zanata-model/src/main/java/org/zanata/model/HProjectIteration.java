@@ -87,7 +87,7 @@ import com.google.common.collect.ImmutableList;
 @Setter
 @NoArgsConstructor
 @ToString(callSuper = true, of = {"project"})
-public class HProjectIteration extends SlugEntityBase implements Iterable<DocumentWithId>, ILoggable
+public class HProjectIteration extends SlugEntityBase implements Iterable<DocumentWithId>, HasEntityType
 {
 
    private static final long serialVersionUID = 182037127575991478L;
