@@ -58,30 +58,28 @@ public class ActivityDAO extends AbstractDAOImpl<Activity, Long>
    {
       Query query = getSession().createQuery("FROM Activity a WHERE a.actor.id = :personId "
             + "AND a.contextId = :contextId "
-            + "AND a.action = :action "
+            + "AND a.action = :actionType "
             + "AND a.contextType = :contextType "
             + "AND :approxTime = a.approxTime");
-      
       query.setParameter("personId", personId);
       query.setParameter("contextId", contextId);
-      query.setParameter("action", actionType);
+      query.setParameter("actionType", actionType);
       query.setParameter("contextType", contextType);
       query.setTimestamp("approxTime", approxTime); 
-      query.setMaxResults(1);
       query.setCacheable(true);
       query.setComment("PersonActivitiesDAO.findActivity");
       return (Activity) query.uniqueResult();
    }
 
    @SuppressWarnings("unchecked")
-   public List<Activity> findAllUserActivities(Long personId, Long contextId, int offset, int count)
+   public List<Activity> findUserActivities(Long personId, Long contextId, int offset, int maxResults)
    {
       Query query = getSession().createQuery("FROM Activity a WHERE a.actor.id = :personId "
             + "AND a.contextId = :contextId "
             + "order by a.approxTime DESC");
       query.setParameter("personId", personId);
       query.setParameter("contextId", contextId);
-      query.setMaxResults(count);
+      query.setMaxResults(maxResults);
       query.setFirstResult(offset);
       query.setCacheable(true);
       query.setComment("PersonActivitiesDAO.findAllUserActivities");

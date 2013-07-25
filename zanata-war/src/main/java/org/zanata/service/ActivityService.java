@@ -43,7 +43,7 @@ public interface ActivityService
     * @param count
     * @return List<Activity>
     */
-   List<Activity> getAllPersonActivities(Long personId, Long contextId, int offset, int count);
+   List<Activity> getUserActivities(long personId, long contextId, int offset, int count);
    
    /**
     * Log activity, records roll up in hourly basis
@@ -67,7 +67,7 @@ public interface ActivityService
     * @param actionTime
     * @return
     */
-   Activity findActivity(Long actorId, EntityType contextType, Long contextId, ActivityType action, Date actionTime);
+   Activity findActivity(long actorId, EntityType contextType, long contextId, ActivityType action, Date actionTime);
 
    /**
     * Get target or lastTarget entity in activity

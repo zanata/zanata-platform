@@ -86,13 +86,13 @@
             <column name="person_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
+            <column name="approxTime" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
             <column name="startOffsetMillis" type="int">
                 <constraints nullable="false" />
             </column>
             <column name="endOffsetMillis" type="int">
-                <constraints nullable="false" />
-            </column>
-            <column name="approxTime" type="DATETIME">
                 <constraints nullable="false" />
             </column>
             <column name="contextType" type="varchar(150)">
@@ -110,7 +110,7 @@
             <column name="action" type="varchar(150)">
                 <constraints nullable="false" />
             </column>
-            <column name="counter" type="int">
+            <column name="eventCount" type="int">
                 <constraints nullable="false"/>
             </column>
             <column name="wordCount" type="int">
@@ -122,7 +122,7 @@
                                  baseTableName="Activity" baseColumnNames="person_id"/>
         
         <addUniqueConstraint tableName="Activity"
-		    columnNames="person_id,roundOffDate,action,contextType,context_id" 
+		    columnNames="person_id,approxTime,action,contextType,context_id" 
 		    constraintName="UKactivity"/>
     </changeSet>
 

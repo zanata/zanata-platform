@@ -69,11 +69,11 @@ public class Activity extends ModelEntityBase implements Serializable
    
    @Getter
    @NotNull
-   private Long startOffsetMillis;
+   private long startOffsetMillis;
    
    @Getter
    @NotNull
-   private Long endOffsetMillis;
+   private long endOffsetMillis;
    
    @Getter
    @NotNull
@@ -83,7 +83,7 @@ public class Activity extends ModelEntityBase implements Serializable
    @Getter
    @NotNull
    @Column(name = "context_id")
-   private Long contextId;
+   private long contextId;
    
    @Getter
    @Enumerated(EnumType.STRING)
@@ -92,14 +92,14 @@ public class Activity extends ModelEntityBase implements Serializable
    @Getter
    @NotNull
    @Column(name = "last_target_id")
-   private Long lastTargetId;
+   private long lastTargetId;
    
    @Getter
    @Enumerated(EnumType.STRING)
    private ActivityType action;
    
    @Getter
-   private int counter = 1;
+   private int eventCount = 1;
    
    @Getter
    private int wordCount;
@@ -130,6 +130,6 @@ public class Activity extends ModelEntityBase implements Serializable
    {
       this.endOffsetMillis = currentTime.getTime() - approxTime.getTime();
       this.wordCount += wordCount;
-      this.counter++;
+      this.eventCount++;
    }
 }

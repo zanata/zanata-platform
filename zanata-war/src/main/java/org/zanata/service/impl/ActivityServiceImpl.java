@@ -71,13 +71,13 @@ public class ActivityServiceImpl implements ActivityService
    private ProjectIterationDAO projectIterationDAO;
    
    @Override
-   public List<Activity> getAllPersonActivities(Long personId, Long contextId, int offset, int count)
+   public List<Activity> getUserActivities(long personId, long contextId, int offset, int maxResults)
    {
-      return activityDAO.findAllUserActivities(personId, contextId, offset, count);
+      return activityDAO.findUserActivities(personId, contextId, offset, maxResults);
    }
    
    @Override
-   public Activity findActivity(Long actorId, EntityType contextType, Long contextId, ActivityType action, Date actionTime)
+   public Activity findActivity(long actorId, EntityType contextType, long contextId, ActivityType action, Date actionTime)
    {
       return activityDAO.findActivity(actorId, contextType, contextId, action, DateUtils.truncate(actionTime, Calendar.HOUR));
    }
