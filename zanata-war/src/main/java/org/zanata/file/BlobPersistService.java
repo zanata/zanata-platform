@@ -20,42 +20,26 @@
  */
 package org.zanata.file;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.sql.Blob;
 
-import javax.ws.rs.core.Response.Status;
-
-import lombok.extern.slf4j.Slf4j;
-
-import org.hibernate.LobHelper;
-import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.zanata.dao.DocumentDAO;
-import org.zanata.exception.ChunkUploadException;
-import org.zanata.model.HDocument;
 import org.zanata.model.HDocumentUploadPart;
-import org.zanata.model.HRawDocument;
 
+// TODO damason: replace with file system implementation
 @Name("blobPersistService")
 @Scope(ScopeType.STATELESS)
 @AutoCreate
-@Slf4j
-public class BlobPersistService implements FilePersistService, UploadPartPersistService
+public class BlobPersistService implements UploadPartPersistService
 {
 
    @In
    private Session session;
-   @In
-   private DocumentDAO documentDAO;
 
    public HDocumentUploadPart newUploadPartFromStream(InputStream partContentStream, int contentLength)
    {
@@ -65,66 +49,4 @@ public class BlobPersistService implements FilePersistService, UploadPartPersist
       return newPart;
    }
 
-   public void persistRawDocumentContentFromFile(HRawDocument rawDocument, File rawFile)
-   {
-      throw new RuntimeException("Migration of contents in progress, unable to persist file contents");
-
-//      oldPersistRawDocumentContentFromFile(rawDocument, rawFile);
-   }
-
-//   private void oldPersistRawDocumentContentFromFile(HRawDocument rawDocument, File rawFile)
-//   {
-//      FileInputStream tempFileStream;
-//      try
-//      {
-//         tempFileStream = new FileInputStream(rawFile);
-//      }
-//      catch (FileNotFoundException e)
-//      {
-//         // TODO damason: throw more appropriate exception and handle in caller
-//         log.error("Failed to open stream from temp source file", e);
-//         throw new ChunkUploadException(Status.INTERNAL_SERVER_ERROR,
-//               "Error saving uploaded document on server, download in original format may fail.\n",
-//               e);
-//      }
-//      LobHelper lobHelper = documentDAO.getLobHelper();
-//      Blob fileContents = lobHelper.createBlob(tempFileStream, (int) rawFile.length());
-//
-//      rawDocument.setContent(fileContents);
-//
-//      // FIXME temporary id assignment during blob migration - needs to be unique but only while
-//      //       migration is in progress.
-//      String temporaryLocation = "document:" + rawDocument.getDocument().getId().toString();
-//      rawDocument.setContentLocation(temporaryLocation);
-//   }
-
-   @Override
-   public InputStream getRawDocumentContentAsStream(HRawDocument rawDoc)
-   {
-      String locator = rawDoc.getContentLocation();
-      return getRawDocumentFromTemporaryBlobTable(locator);
-   }
-
-   private InputStream getRawDocumentFromTemporaryBlobTable(String locator)
-   {
-      String queryString = "SELECT content" +
-                           " FROM HRawDocumentContent" +
-                           " WHERE contentLocation = '" + locator + "';";
-      SQLQuery query = session.createSQLQuery(queryString);
-      Object result = query.uniqueResult();
-      if (result != null)
-      {
-         byte[] content = (byte[]) result;
-         return new ByteArrayInputStream(content);
-      }
-      throw new RawDocumentContentAccessException(
-            "No raw document content for locator \"" + locator + "\"");
-   }
-
-   @Override
-   public boolean hasPersistedDocument(GlobalDocumentId id)
-   {
-      HDocument doc = documentDAO.getByGlobalId(id);
-      return doc.getRawDocument() != null;
-   }
 }
