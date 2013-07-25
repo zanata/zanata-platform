@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -24,29 +24,42 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
+import org.zanata.page.utility.HomePage;
 
-public class AdministrationPage extends BasePage
-{
-   @FindBy(id = "Admin_Manage_languages_home")
-   private WebElement manageLanguagesLink;
+/**
+ * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ */
+public class EditHomeCodePage extends BasePage {
 
-   @FindBy(id = "Admin_Manage_users_home")
-   private WebElement manageUsersLink;
+   @FindBy(id = "homeContentForm:homeContent")
+   private WebElement textEdit;
 
-   public AdministrationPage(WebDriver driver)
+   @FindBy(id = "homeContentForm:update")
+   private WebElement updateButton;
+
+   @FindBy(id = "homeContentForm:cancel")
+   private WebElement cancelButton;
+
+   public EditHomeCodePage(final WebDriver driver)
    {
       super(driver);
    }
 
-   public ManageLanguagePage goToManageLanguagePage()
+   public EditHomeCodePage enterText(String text)
    {
-      manageLanguagesLink.click();
-      return new ManageLanguagePage(getDriver());
+      textEdit.sendKeys(text);
+      return new EditHomeCodePage(getDriver());
    }
 
-   public ManageUserPage goToManageUserPage()
+   public HomePage update()
    {
-      manageUsersLink.click();
-      return new ManageUserPage(getDriver());
+      updateButton.click();
+      return new HomePage(getDriver());
+   }
+
+   public HomePage cancelUpdate()
+   {
+      updateButton.click();
+      return new HomePage(getDriver());
    }
 }

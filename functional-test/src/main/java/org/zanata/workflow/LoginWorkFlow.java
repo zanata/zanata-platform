@@ -20,8 +20,8 @@
  */
 package org.zanata.workflow;
 
-import org.zanata.page.HomePage;
-import org.zanata.page.SignInPage;
+import org.zanata.page.utility.HomePage;
+import org.zanata.page.account.SignInPage;
 
 import lombok.extern.slf4j.Slf4j;
 

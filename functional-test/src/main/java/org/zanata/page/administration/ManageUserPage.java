@@ -20,24 +20,24 @@
  */
 package org.zanata.page.administration;
 
-import java.util.List;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.zanata.page.AbstractPage;
-import org.zanata.util.TableRow;
-import org.zanata.util.WebElementUtil;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.zanata.page.BasePage;
+import org.zanata.util.TableRow;
+import org.zanata.util.WebElementUtil;
+
+import java.util.List;
 
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-public class ManageUserPage extends AbstractPage
+public class ManageUserPage extends BasePage
 {
    public static final int USERNAME_COLUMN = 0;
    @FindBy(id = "usermanagerForm:threads")

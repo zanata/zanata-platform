@@ -27,7 +27,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.zanata.page.AbstractPage;
+import org.zanata.page.BasePage;
 import org.zanata.util.WebElementUtil;
 
 import com.google.common.base.Optional;
@@ -38,7 +38,7 @@ import com.google.common.collect.Iterables;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ProjectPage extends AbstractPage
+public class ProjectPage extends BasePage
 {
 
    @FindBy(id = "main_content")

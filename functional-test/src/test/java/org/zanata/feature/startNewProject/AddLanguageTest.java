@@ -29,7 +29,7 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.zanata.concordion.CustomResourceExtension;
 import org.zanata.feature.ConcordionTest;
-import org.zanata.page.HomePage;
+import org.zanata.page.utility.HomePage;
 import org.zanata.page.administration.ManageLanguagePage;
 import org.zanata.page.administration.ManageLanguageTeamMemberPage;
 import org.zanata.workflow.LoginWorkFlow;

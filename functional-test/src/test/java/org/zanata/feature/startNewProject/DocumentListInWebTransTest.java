@@ -28,7 +28,7 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.zanata.concordion.CustomResourceExtension;
 import org.zanata.feature.ConcordionTest;
-import org.zanata.page.HomePage;
+import org.zanata.page.utility.HomePage;
 import org.zanata.page.projects.ProjectVersionPage;
 import org.zanata.page.webtrans.DocumentsViewPage;
 import org.zanata.workflow.BasicWorkFlow;

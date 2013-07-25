@@ -27,7 +27,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.BasicAcceptanceTest;
 import org.zanata.feature.DetailedTest;
-import org.zanata.page.HomePage;
+import org.zanata.page.utility.HomePage;
 import org.zanata.page.groups.CreateVersionGroupPage;
 import org.zanata.page.groups.VersionGroupPage;
 import org.zanata.page.groups.VersionGroupsPage;
@@ -80,9 +80,7 @@ public class VersionGroupFullTest
       CreateVersionGroupPage groupPage = homePage.goToGroups().createNewGroup().saveGroupFailure();
       assertThat("The two errors are value is required", groupPage.getErrors(), Matchers.contains(errorMsg, errorMsg));
 
-      groupPage.clearFields();
-      groupPage.inputGroupName(groupName);
-      groupPage.saveGroupFailure();
+      groupPage = groupPage.clearFields().inputGroupName(groupName).saveGroupFailure();
       assertThat("The value required error shown", groupPage.getErrors(), Matchers.contains(errorMsg));
 
       groupPage = groupPage.clearFields().inputGroupId(groupID).saveGroupFailure();
