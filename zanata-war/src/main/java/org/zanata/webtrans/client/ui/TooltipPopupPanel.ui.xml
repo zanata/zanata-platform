@@ -93,7 +93,7 @@
         }
 
         .draft {
-            background: #FFC000;
+            background: #e0c350;
             border: 1px solid #CD8E00;
             color: #7D3E00;
         }
@@ -139,4 +139,4 @@
 
 		</g:Grid>
 	</g:HTMLPanel>
-</ui:UiBinder> 
+</ui:UiBinder>

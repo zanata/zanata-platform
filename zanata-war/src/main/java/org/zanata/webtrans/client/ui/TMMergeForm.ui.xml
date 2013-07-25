@@ -19,7 +19,7 @@
         }
 
         .downgrade_action {
-            background-color: #FFC000;
+            background-color: #e0c350;
             text-align: center;
             width: 100px;
             display: block;

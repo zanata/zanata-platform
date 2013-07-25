@@ -5,60 +5,60 @@
 	<ui:style type="org.zanata.webtrans.client.view.TransFilterView.Styles">
 		.container {
 		}
-		
+
 		.container ul {
 			display:inline-block;
 			margin:0;
-			padding:0;	
+			padding:0;
 		}
-		
+
 		.container > ul > li {
 			display:inline-block;
 		}
-		
+
 		.transFilterTextBoxEmpty {
 			color: grey;
 			font-style: italic;
 		}
 
 		 .translated {
-			border-left:3px solid #099B09;
+			border-left:3px solid #70a98b;
         }
 
         .fuzzy {
-            border-left:3px solid #FFC000;
+            border-left:3px solid #e0c350;
         }
 
         .untranslated {
-			border-left:3px solid #4e4e4e;
+			border-left:3px solid #a2b4c3;
         }
-        
+
         .approved {
-			border-left:3px solid lightblue;
+			border-left:3px solid #4e9fdd;
 		}
-		
+
 		.rejected {
-			border-left:3px solid #FF4500;
+			border-left:3px solid #e3824e;
 		}
 
         .hasError {
-            border-left:3px solid #FF4500;
+            border-left:3px solid #e0575b;
             padding-right:5px;
             opacity:0.6;
             transition: .3s;
             display:inline !important;
         }
-      
+
 		.filterListToggle {
 			font-size:16px;
 			cursor:pointer;
 			padding: 7px 3px 7px 0;
 		}
-		
+
         .drop-down:hover .filterListToggle {
 			color:#0085cc;
 		}
-        
+
         .container ul.filterList {
 			display:none;
 			min-width: 100%;
@@ -69,24 +69,24 @@
 			background-color: #fafafa;
 			box-shadow: 0 1px 1px rgba(0,0,0,0.2), inset 0 1px 1px rgba(0,0,0,0.2);
 		}
-		
+
 		.container ul.filterList li {
 			display:inherit;
 		}
-			
+
 		.drop-down {
 			position:relative;
 		}
-		
+
 		.drop-down:hover {
 			background-color: #fff;
 			box-shadow: 0 1px 1px rgba(0,0,0,0.2);
 		}
-		
+
 		.drop-down:hover .filterList {
 			display: block;
 		}
-		
+
 		.drop-down label,
 		.drop-down input[type=checkbox],
 		.filterList li label,
@@ -95,16 +95,16 @@
 			display: inline-block;
 			vertical-align: middle;
 		}
-		
+
 		.drop-down label,
 		.filterList li label {
 			line-height: 32px;
 		}
-		
+
 		.drop-down input[type=checkbox] {
-			margin: 0 3px 0 6px;	
+			margin: 0 3px 0 6px;
 		}
-		
+
 		.filterList li span {
 	        display: block;
 			opacity: 0.6;
@@ -112,12 +112,12 @@
 			-webkit-transition: .3s;
 			-moz-transition: .3s;
 		}
-		
+
 		.filterList li span:hover, .hasError:hover {
 			background-color: #fff;
 			opacity: 1;
 		}
-		
+
 		.filterList li input[type=checkbox] {
 			margin: 0;
 			padding:0;
@@ -125,25 +125,25 @@
 			left:4px;
 			position:absolute;
 		}
-		
+
 		.filterList li label {
 			padding: 0 6px 0 20px;
 			display: block;
 		}
-		
+
 		.checkbox {
 			position:relative;
 			display:inline-block;
-		}		
-		
+		}
+
 	</ui:style>
-	
+
 	<g:HTMLPanel styleName="{style.container}">
 		<ul>
 			<li>
 				<fui:SearchField ui:field="searchField"/>
 			</li>
-			
+
 			<li class="{style.drop-down}">
 				<g:CheckBox ui:field="parentIncompleteChk" styleName="{style.checkbox}"><ui:msg>Incomplete</ui:msg></g:CheckBox>
 				<span class="icon-down-open {style.filterListToggle}"/>
@@ -154,12 +154,12 @@
 					<li>
 						<g:CheckBox ui:field="fuzzyChk" styleName="{style.fuzzy} {style.checkbox}"><ui:msg>Fuzzy</ui:msg></g:CheckBox>
 					</li>
-					<li>	
+					<li>
 						<g:CheckBox ui:field="rejectedChk" styleName="{style.rejected} {style.checkbox}"><ui:msg>Rejected</ui:msg></g:CheckBox>
 					</li>
 				</ul>
 			</li>
-			
+
 			<li class="{style.drop-down}">
 				<g:CheckBox ui:field="parentCompleteChk" styleName="{style.checkbox}"><ui:msg>Complete</ui:msg></g:CheckBox>
 				<span class="icon-down-open {style.filterListToggle}"/>
@@ -172,10 +172,10 @@
 					</li>
 				</ul>
 			</li>
-			
-			<li class="{style.drop-down}">	
+
+			<li class="{style.drop-down}">
 				<g:CheckBox ui:field="hasErrorChk" styleName="{style.hasError} {style.checkbox}"><ui:msg>Has warning</ui:msg></g:CheckBox>
 			</li>
 		</ul>
 	</g:HTMLPanel>
-</ui:UiBinder> 
+</ui:UiBinder>

@@ -14,7 +14,7 @@
         }
 
         .draft {
-            background: #ffc000;
+            background: #e0c350;
             z-index: 0;
         }
 
@@ -24,7 +24,7 @@
         }
 
         .translated {
-	        background: #099b09;
+	        background: #70a98b;
             z-index: 0;
         }
 
@@ -60,4 +60,4 @@
 			<g:Label ui:field='label' styleName='{style.label}'/>
 		</g:layer>
 	</g:LayoutPanel>
-</ui:UiBinder> 
+</ui:UiBinder>
