@@ -68,24 +68,24 @@
     </changeSet>
 
     <changeSet author="damason@redhat.com" id="1">
-        <comment>Add contentLocation to HRawDocument</comment>
+        <comment>Add fileId to HRawDocument</comment>
         <addColumn tableName="HRawDocument">
-            <column name="contentLocation" type="longtext" />
+            <column name="fileId" type="longtext" />
         </addColumn>
     </changeSet>
 
     <changeSet author="damason@redhat.com" id="2">
-        <comment>Initialise contentLocation with id, can guarantee uniqueness during migration</comment>
+        <comment>Initialise fileId with id, can guarantee uniqueness during migration</comment>
         <sql>
-            update HRawDocument set contentLocation = id
+            update HRawDocument set fileId = id
         </sql>
-        <addNotNullConstraint tableName="HRawDocument" columnName="contentLocation" columnDataType="longtext" />
+        <addNotNullConstraint tableName="HRawDocument" columnName="fileId" columnDataType="longtext" />
     </changeSet>
 
     <changeSet author="damason@redhat.com" id="3">
         <comment>Add temporary table HRawDocumentContent for blobs during migration</comment>
         <createTable tableName="HRawDocumentContent">
-            <column name="contentLocation" type="longtext">
+            <column name="fileId" type="longtext">
                 <constraints nullable="false" />
             </column>
             <column name="content" type="longblob">
@@ -97,8 +97,8 @@
     <changeSet author="damason@redhat.com" id="4">
         <comment>Copy raw document content to HRawDocumentContent</comment>
         <sql>
-            insert into HRawDocumentContent (contentLocation, content)
-                select contentLocation, content from HRawDocument
+            insert into HRawDocumentContent (fileId, content)
+                select fileId, content from HRawDocument
         </sql>
     </changeSet>
 

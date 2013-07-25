@@ -50,7 +50,7 @@ public class HRawDocument extends ModelEntityBase implements Serializable
 
    // TODO none of these should allow null
    private String contentHash;
-   private String contentLocation;
+   private String fileId;
    private DocumentType type;
    private String uploadedBy;
 

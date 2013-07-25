@@ -52,14 +52,14 @@ public class MigrateRawDocumentsToFileSystem implements CustomTaskChange
    private static final String BASE_PATH_JNDI_NAME = "java:global/zanata/files/document-storage-directory";
    private static final String RAW_DOCUMENTS_SUBDIRECTORY = "documents";
 
-   private static final String CONTENTS_SQL = "select contentLocation, content from HRawDocumentContent";
+   private static final String CONTENTS_SQL = "select fileId, content from HRawDocumentContent";
    //@formatter:off
    private static final String ID_TYPE_SQL = "select d.documentId, rd.type" +
                                              " from HRawDocument rd, HDocument_RawDocument d" +
-                                             " where d.rawDocumentId = rd.id and rd.contentLocation = ?";
+                                             " where d.rawDocumentId = rd.id and rd.fileId = ?";
    //@formatter:on
-   private static final String UPDATE_LOCATION_SQL = "update HRawDocument set contentLocation = ? where contentLocation = ?";
-   private static final String DELETE_OLD_CONTENT_SQL = "delete from HRawDocumentContent where contentLocation = ?";
+   private static final String UPDATE_LOCATION_SQL = "update HRawDocument set fileId = ? where fileId = ?";
+   private static final String DELETE_OLD_CONTENT_SQL = "delete from HRawDocumentContent where fileId = ?";
 
    private File docsDirectory;
 
@@ -181,9 +181,9 @@ public class MigrateRawDocumentsToFileSystem implements CustomTaskChange
          try
          {
             docsCount++;
-            String oldLocation = contentsResult.getString("contentLocation");
+            String oldFileId = contentsResult.getString("fileId");
             Blob content = contentsResult.getBlob("content");
-            migrateRawContentFromLocation(content, oldLocation);
+            migrateRawContentFromLocation(content, oldFileId);
             successCount++;
          }
          catch (Exception e)
@@ -194,21 +194,21 @@ public class MigrateRawDocumentsToFileSystem implements CustomTaskChange
       }
    }
 
-   private void migrateRawContentFromLocation(Blob content, String oldLocation) throws SQLException, IOException
+   private void migrateRawContentFromLocation(Blob content, String oldFileId) throws SQLException, IOException
    {
-      idAndTypeStatement.setString(1, oldLocation);
+      idAndTypeStatement.setString(1, oldFileId);
       ResultSet idAndTypeResult = idAndTypeStatement.executeQuery();
       if (idAndTypeResult.next())
       {
          String fileName = fileNameFromResults(idAndTypeResult);
          writeBlobToFile(content, fileName);
-         changeLocationFromOldToNew(oldLocation, fileName);
-         deleteOldContent(oldLocation);
+         changeFileIdFromOldToNew(oldFileId, fileName);
+         deleteOldContent(oldFileId);
       }
       else
       {
          throw new RuntimeException("Raw document content with no matching raw document, " +
-               "HRawDocumentContent.contentLocation = " + oldLocation);
+               "HRawDocumentContent.fileId = " + oldFileId);
       }
    }
 
@@ -251,20 +251,20 @@ public class MigrateRawDocumentsToFileSystem implements CustomTaskChange
       Files.copy(input, file);
    }
 
-   private void changeLocationFromOldToNew(String oldLocation, String newLocation) throws SQLException
+   private void changeFileIdFromOldToNew(String oldFileId, String newFileId) throws SQLException
    {
-      updateLocationStatement.setString(1, newLocation);
-      updateLocationStatement.setString(2, oldLocation);
+      updateLocationStatement.setString(1, newFileId);
+      updateLocationStatement.setString(2, oldFileId);
       int updatedRows = updateLocationStatement.executeUpdate();
       if (updatedRows != 1)
       {
-         throw new RuntimeException("Tried to update contentLocation for 1 HRawDocument, but updated " + updatedRows);
+         throw new RuntimeException("Tried to update fileId for 1 HRawDocument, but updated " + updatedRows);
       }
    }
 
-   private void deleteOldContent(String oldLocation) throws SQLException
+   private void deleteOldContent(String oldFileId) throws SQLException
    {
-      deleteOldContentStatement.setString(1, oldLocation);
+      deleteOldContentStatement.setString(1, oldFileId);
       int deletedRows = deleteOldContentStatement.executeUpdate();
       if (deletedRows != 1)
       {

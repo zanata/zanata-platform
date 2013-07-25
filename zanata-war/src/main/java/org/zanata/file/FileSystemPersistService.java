@@ -63,9 +63,9 @@ public class FileSystemPersistService implements FilePersistService
    public void persistRawDocumentContentFromFile(HRawDocument rawDocument, File fromFile)
    {
       String fileName = generateFileNameFor(rawDocument);
-      rawDocument.setContentLocation(fileName);
+      rawDocument.setFileId(fileName);
 
-      File newFile = getFileFor(fileName);
+      File newFile = getFileForName(fileName);
       try
       {
          Files.copy(fromFile, newFile);
@@ -81,7 +81,7 @@ public class FileSystemPersistService implements FilePersistService
       virusScanner.scan(newFile, globalId.toString());
    }
 
-   private File getFileFor(String fileName)
+   private File getFileForName(String fileName)
    {
       File docsPath = ensureDocsDirectory();
       File newFile = new File(docsPath, fileName);
@@ -126,7 +126,7 @@ public class FileSystemPersistService implements FilePersistService
    @Override
    public InputStream getRawDocumentContentAsStream(HRawDocument document) throws RawDocumentContentAccessException
    {
-      File rawFile = getFileFor(document.getContentLocation());
+      File rawFile = getFileForRawDocument(document);
       try
       {
          return new FileInputStream(rawFile);
@@ -144,7 +144,12 @@ public class FileSystemPersistService implements FilePersistService
       HDocument doc = documentDAO.getByGlobalId(id);
       HRawDocument rawDocument = doc.getRawDocument();
       return rawDocument != null
-            && getFileFor(rawDocument.getContentLocation()).exists();
+            && getFileForRawDocument(rawDocument).exists();
+   }
+
+   private File getFileForRawDocument(HRawDocument rawDocument)
+   {
+      return getFileForName(rawDocument.getFileId());
    }
 
 }
