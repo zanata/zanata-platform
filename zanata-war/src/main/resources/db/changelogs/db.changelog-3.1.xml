@@ -83,7 +83,7 @@
     </changeSet>
 
     <changeSet author="damason@redhat.com" id="3">
-        <comment>Add temporary table for blobs during migration</comment>
+        <comment>Add temporary table HRawDocumentContent for blobs during migration</comment>
         <createTable tableName="HRawDocumentContent">
             <column name="contentLocation" type="longtext">
                 <constraints nullable="false" />
@@ -110,6 +110,11 @@
     <changeSet author="damason@redhat.com" id="6">
         <comment>Migrate existing raw document contents from database to file system</comment>
         <customChange class="org.zanata.liquibase.custom.MigrateRawDocumentsToFileSystem"/>
+    </changeSet>
+
+    <changeSet author="damason@redhat.com" id="7">
+        <comment>Remove obsolete HRawDocumentContent table</comment>
+        <dropTable tableName="HRawDocumentContent" cascadeConstraints="false" />
     </changeSet>
 
 </databaseChangeLog>
