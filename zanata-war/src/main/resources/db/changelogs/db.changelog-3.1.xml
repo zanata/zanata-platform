@@ -83,7 +83,7 @@
             <column name="versionNum" type="int">
                 <constraints nullable="false"/>
             </column>
-            <column name="person_id" type="bigint">
+            <column name="actor_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
             <column name="approxTime" type="DATETIME">
@@ -107,7 +107,7 @@
             <column name="last_target_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
-            <column name="action" type="varchar(150)">
+            <column name="actionType" type="varchar(150)">
                 <constraints nullable="false" />
             </column>
             <column name="eventCount" type="int">
@@ -119,10 +119,10 @@
         </createTable>
         <addForeignKeyConstraint constraintName="FKActivity_person"
                                  referencedTableName="HPerson" referencedColumnNames="id"
-                                 baseTableName="Activity" baseColumnNames="person_id"/>
+                                 baseTableName="Activity" baseColumnNames="actor_id"/>
         
         <addUniqueConstraint tableName="Activity"
-		    columnNames="person_id,approxTime,action,contextType,context_id" 
+		    columnNames="actor_id,approxTime,actionType,contextType,context_id" 
 		    constraintName="UKactivity"/>
     </changeSet>
 

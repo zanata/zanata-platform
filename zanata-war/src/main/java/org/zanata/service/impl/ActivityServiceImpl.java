@@ -77,18 +77,18 @@ public class ActivityServiceImpl implements ActivityService
    }
    
    @Override
-   public Activity findActivity(long actorId, EntityType contextType, long contextId, ActivityType action, Date actionTime)
+   public Activity findActivity(long actorId, EntityType contextType, long contextId, ActivityType actionType, Date actionTime)
    {
-      return activityDAO.findActivity(actorId, contextType, contextId, action, DateUtils.truncate(actionTime, Calendar.HOUR));
+      return activityDAO.findActivity(actorId, contextType, contextId, actionType, DateUtils.truncate(actionTime, Calendar.HOUR));
    }
 
    @Override
-   public void logActivity(HPerson actor, HasEntityType context, HasEntityType target, ActivityType action, int wordCount)
+   public void logActivity(HPerson actor, HasEntityType context, HasEntityType target, ActivityType actionType, int wordCount)
    {
-      if (actor != null && context != null && action != null)
+      if (actor != null && context != null && actionType != null)
       {
          Date currentActionTime = new Date();
-         Activity activity = findActivity(actor.getId(), context.getEntityType(), context.getId(), action, currentActionTime);
+         Activity activity = findActivity(actor.getId(), context.getEntityType(), context.getId(), actionType, currentActionTime);
          
          if (activity != null)
          {
@@ -96,7 +96,7 @@ public class ActivityServiceImpl implements ActivityService
          }
          else
          {
-            activity = new Activity(actor, context.getEntityType(), context.getId(), target.getEntityType(), target.getId(), action, wordCount);
+            activity = new Activity(actor, context.getEntityType(), context.getId(), target.getEntityType(), target.getId(), actionType, wordCount);
          }
          activityDAO.makePersistent(activity);
          activityDAO.flush();
@@ -104,7 +104,7 @@ public class ActivityServiceImpl implements ActivityService
    }
    
    @Override
-   public Object getEntity(EntityType entityType, Long entityId) throws ZanataServiceException
+   public Object getEntity(EntityType entityType, long entityId) throws ZanataServiceException
    {
       Object result = null;
       
@@ -138,7 +138,7 @@ public class ActivityServiceImpl implements ActivityService
    @Transactional
    public void textFlowStateUpdated(TextFlowTargetStateEvent event)
    {
-      HTextFlowTarget target = textFlowTargetDAO.getById(event.getTextFlowTargetId());
+      HTextFlowTarget target = textFlowTargetDAO.findById(event.getTextFlowTargetId(), false);
       HDocument document = documentDAO.getById(event.getDocumentId());
       ActivityType actionType = event.getNewState().isReviewed() ? ActivityType.REVIEWED_TRANSLATION : ActivityType.UPDATE_TRANSLATION;
 

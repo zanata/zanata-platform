@@ -54,11 +54,11 @@ public class ActivityDAO extends AbstractDAOImpl<Activity, Long>
    }
 
    @SuppressWarnings("unchecked")
-   public Activity findActivity(Long personId, EntityType contextType, Long contextId, ActivityType actionType, Date approxTime)
+   public Activity findActivity(long personId, EntityType contextType, long contextId, ActivityType actionType, Date approxTime)
    {
       Query query = getSession().createQuery("FROM Activity a WHERE a.actor.id = :personId "
             + "AND a.contextId = :contextId "
-            + "AND a.action = :actionType "
+            + "AND a.actionType = :actionType "
             + "AND a.contextType = :contextType "
             + "AND :approxTime = a.approxTime");
       query.setParameter("personId", personId);
@@ -72,7 +72,7 @@ public class ActivityDAO extends AbstractDAOImpl<Activity, Long>
    }
 
    @SuppressWarnings("unchecked")
-   public List<Activity> findUserActivities(Long personId, Long contextId, int offset, int maxResults)
+   public List<Activity> findUserActivities(long personId, long contextId, int offset, int maxResults)
    {
       Query query = getSession().createQuery("FROM Activity a WHERE a.actor.id = :personId "
             + "AND a.contextId = :contextId "

@@ -48,13 +48,13 @@ public interface ActivityService
    /**
     * Log activity, records roll up in hourly basis
     * 
-    * @param acter
+    * @param actor
     * @param context
     * @param target
-    * @param action
+    * @param actionType
     * @param wordCount
     */
-   void logActivity(HPerson acter, HasEntityType context, HasEntityType target, ActivityType action, int wordCount);
+   void logActivity(HPerson actor, HasEntityType context, HasEntityType target, ActivityType actionType, int wordCount);
 
    
    /**
@@ -63,11 +63,11 @@ public interface ActivityService
     * @param actorId
     * @param contextType
     * @param contextId
-    * @param action
+    * @param actionType
     * @param actionTime
     * @return
     */
-   Activity findActivity(long actorId, EntityType contextType, long contextId, ActivityType action, Date actionTime);
+   Activity findActivity(long actorId, EntityType contextType, long contextId, ActivityType actionType, Date actionTime);
 
    /**
     * Get target or lastTarget entity in activity
@@ -77,5 +77,5 @@ public interface ActivityService
     * @return
     * @throws Exception
     */
-   Object getEntity(EntityType entityType, Long entityId) throws ZanataServiceException;
+   Object getEntity(EntityType entityType, long entityId) throws ZanataServiceException;
 }

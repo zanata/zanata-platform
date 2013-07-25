@@ -33,14 +33,12 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.zanata.common.ActivityType;
@@ -58,7 +56,7 @@ public class Activity extends ModelEntityBase implements Serializable
 
    @Getter
    @NotNull
-   @JoinColumn(name = "person_id", nullable = false)
+   @JoinColumn(name = "actor_id", nullable = false)
    @ManyToOne
    private HPerson actor;
    
@@ -96,7 +94,7 @@ public class Activity extends ModelEntityBase implements Serializable
    
    @Getter
    @Enumerated(EnumType.STRING)
-   private ActivityType action;
+   private ActivityType actionType;
    
    @Getter
    private int eventCount = 1;
@@ -104,14 +102,14 @@ public class Activity extends ModelEntityBase implements Serializable
    @Getter
    private int wordCount;
    
-   public Activity(HPerson actor, EntityType contextType, Long contextId, EntityType lastTargetType, Long lastTargetId, ActivityType action, int wordCount)
+   public Activity(HPerson actor, EntityType contextType, Long contextId, EntityType lastTargetType, Long lastTargetId, ActivityType actionType, int wordCount)
    {
       this.actor = actor;
       this.contextType = contextType;
       this.contextId = contextId;
       this.lastTargetType = lastTargetType;
       this.lastTargetId = lastTargetId;
-      this.action = action;
+      this.actionType = actionType;
       this.wordCount = wordCount;
    }
 
