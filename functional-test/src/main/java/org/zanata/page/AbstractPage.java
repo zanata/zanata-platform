@@ -29,7 +29,6 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.zanata.util.WebElementUtil;
-
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
@@ -104,17 +103,30 @@ public class AbstractPage
       return WebElementUtil.elementsToText(errorSpans);
    }
 
+   public List<String> getExpectedNumberOfErrors(final int expectedNumber)
+   {
+      refreshPageUntil(this, new Predicate<WebDriver>()
+      {
+         @Override
+         public boolean apply(WebDriver input)
+         {
+            return getErrors().size() == expectedNumber;
+         }
+      });
+      return getErrors();
+   }
+
    /*
     * Wait for all necessary entities to be available
     */
-   public void waitForPage(List<String> elements) {
-      for (final String element : elements) {
+   public void waitForPage(List<By> bys) {
+      for (final By by : bys) {
          waitForTenSec().until(new Function<WebDriver, WebElement>()
          {
             @Override
             public WebElement apply(WebDriver driver)
             {
-               return getDriver().findElement(By.id(element));
+               return getDriver().findElement(by);
             }
          });
       }

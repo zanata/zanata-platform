@@ -22,6 +22,7 @@ package org.zanata.page.account;
 
 
 import com.google.common.base.Function;
+import com.google.common.collect.ImmutableList;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -66,16 +67,17 @@ public class RegisterPage extends BasePage
    public RegisterPage(WebDriver driver)
    {
       super(driver);
-      List<String> elements = new ArrayList<String>();
-      elements.add("registerForm:nameField:name");
-      elements.add("registerForm:emailField:email");
-      elements.add("registerForm:usernameField:username");
-      elements.add("registerForm:passwordField:password");
-      elements.add("registerForm:passwordConfirmField:passwordConfirm");
-      elements.add("registerForm:captcha:verifyCaptcha");
-      elements.add("registerForm:agreedToTerms:agreedToTerms");
-      elements.add("registerForm:registerButton");
-      waitForPage(elements);
+      List<By> elementBys = ImmutableList.<By>builder()
+            .add(By.id("registerForm:nameField:name"))
+            .add(By.id("registerForm:emailField:email"))
+            .add(By.id("registerForm:usernameField:username"))
+            .add(By.id("registerForm:passwordField:password"))
+            .add(By.id("registerForm:passwordConfirmField:passwordConfirm"))
+            .add(By.id("registerForm:captcha:verifyCaptcha"))
+            .add(By.id("registerForm:agreedToTerms:agreedToTerms"))
+            .add(By.id("registerForm:registerButton"))
+            .build();
+      waitForPage(elementBys);
    }
 
    public RegisterPage enterName(String name)

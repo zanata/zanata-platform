@@ -52,7 +52,7 @@ public class VersionGroupBasicTest
 {
 
    @ClassRule
-   public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule(ResetDatabaseRule.Config.Empty);
+   public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
    private final ProjectWorkFlow projectWorkFlow = new ProjectWorkFlow();
    private HomePage homePage;
    private VersionGroupPage versionGroupPage;
@@ -80,7 +80,8 @@ public class VersionGroupBasicTest
    public CreateVersionGroupPage invalidCharacters(String groupId)
    {
       VersionGroupsPage versionGroupsPage = homePage.goToGroups();
-      return versionGroupsPage.createNewGroup().inputGroupId(groupId).saveGroupFailure();
+      // we toggle the status here to trigger and wait for the validation of group id to happen
+      return versionGroupsPage.createNewGroup().inputGroupId(groupId).selectStatus("OBSOLETE").selectStatus("ACTIVE");
    }
 
    public boolean groupNamesContain(VersionGroupsPage versionGroupsPage, String groupName)
@@ -88,16 +89,15 @@ public class VersionGroupBasicTest
       return versionGroupsPage.getGroupNames().contains(groupName);
    }
 
-   public String getGroupsError(CreateVersionGroupPage createVersionGroupPage)
+   /**
+    * This assumes there will be ONE error on screen.
+    *
+    * @param createVersionGroupPage page
+    * @return the error
+    */
+   public String getFirstGroupsError(CreateVersionGroupPage createVersionGroupPage)
    {
-      try
-      {
-         return createVersionGroupPage.getErrors().get(0);
-      }
-      catch (ArrayIndexOutOfBoundsException exc)
-      {
-         return "";
-      }
+      return createVersionGroupPage.getExpectedNumberOfErrors(1).get(0);
    }
 
    public VersionGroupsPage toggleObsolete(VersionGroupsPage versionGroupsPage)
