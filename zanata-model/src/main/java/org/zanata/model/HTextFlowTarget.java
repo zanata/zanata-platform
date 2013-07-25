@@ -452,6 +452,7 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
    }
 
    @Override
+   @Transient
    public EntityType getEntityType()
    {
       return EntityType.HTexFlowTarget;

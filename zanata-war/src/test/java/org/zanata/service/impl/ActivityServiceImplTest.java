@@ -71,7 +71,7 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest
    public void initializeSeam()
    {
       seam.reset()
-            .use("personActivityDAO", new ActivityDAO(getSession()))
+            .use("activityDAO", new ActivityDAO(getSession()))
             .use("textFlowTargetDAO", new TextFlowTargetDAO(getSession()))
             .use("documentDAO", new DocumentDAO(getSession()))
             .ignoreNonResolvable();
@@ -84,8 +84,9 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest
    {
       activityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
             ContentState.Approved));
-      Activity activity = activityService.findUserActivityInTimeRange(personId, projectVersionId, UserActionType.REVIEWED_TRANSLATION, new Date());
+      Activity activity = activityService.findUserActivityInRoundOffDate(personId, projectVersionId, UserActionType.REVIEWED_TRANSLATION, new Date());
       assertThat(activity, not(nullValue()));
+      assertThat(activity.getCounter(), Matchers.equalTo(1));
    }
 
    @Test
@@ -94,29 +95,29 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest
       activityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
             ContentState.Approved));
       
-      Activity activity = activityService.findUserActivityInTimeRange(personId, projectVersionId, UserActionType.REVIEWED_TRANSLATION, new Date());
-
-      Long entryId = activity.getId();
-      Date lastChanged = activity.getLastChanged();
+      List<Activity> activities = activityService.getAllPersonActivities(personId, projectVersionId, 0, 10);
+      assertThat(activities.size(), Matchers.equalTo(1));
 
       activityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
             ContentState.Rejected));
 
-      activity = activityService.findUserActivityInTimeRange(personId, new Long(1), UserActionType.REVIEWED_TRANSLATION, new Date());
-      assertThat(activity.getId(), Matchers.equalTo(entryId));
-      assertThat(activity.getLastChanged(), not(Matchers.equalTo(lastChanged)));
+      activities = activityService.getAllPersonActivities(personId, projectVersionId, 0, 10);
+      assertThat(activities.size(), Matchers.equalTo(1));
+      
+      Activity activity = activityService.findUserActivityInRoundOffDate(personId, projectVersionId, UserActionType.REVIEWED_TRANSLATION, new Date());
+      assertThat(activity.getCounter(), Matchers.equalTo(2));
    }
 
    @Test
    public void testActivityInsertAndUpdate() throws Exception
    {
-      Activity activity = activityService.findUserActivityInTimeRange(personId, projectVersionId, UserActionType.UPDATE_TRANSLATION, new Date());
+      Activity activity = activityService.findUserActivityInRoundOffDate(personId, projectVersionId, UserActionType.UPDATE_TRANSLATION, new Date());
       assertThat(activity, nullValue());
       
       activityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
             ContentState.Translated));
       
-      activity = activityService.findUserActivityInTimeRange(personId, projectVersionId, UserActionType.UPDATE_TRANSLATION, new Date());
+      activity = activityService.findUserActivityInRoundOffDate(personId, projectVersionId, UserActionType.UPDATE_TRANSLATION, new Date());
       assertThat(activity, not(nullValue()));
       
       Long id = activity.getId();
@@ -125,7 +126,7 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest
       activityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
             ContentState.NeedReview));
       
-      activity = activityService.findUserActivityInTimeRange(personId, projectVersionId, UserActionType.UPDATE_TRANSLATION, new Date());
+      activity = activityService.findUserActivityInRoundOffDate(personId, projectVersionId, UserActionType.UPDATE_TRANSLATION, new Date());
       assertThat(activity.getId(), Matchers.equalTo(id));
    }
 

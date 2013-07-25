@@ -340,6 +340,7 @@ public class HDocument extends ModelEntityBase implements DocumentWithId, IDocum
    }
 
    @Override
+   @Transient
    public EntityType getEntityType()
    {
       return EntityType.HDocument;

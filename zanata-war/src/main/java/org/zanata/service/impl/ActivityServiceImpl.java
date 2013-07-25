@@ -48,7 +48,6 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.ILoggable;
 import org.zanata.model.type.EntityType;
 import org.zanata.service.ActivityService;
-import org.zanata.util.DateUtil;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -58,8 +57,6 @@ import org.zanata.util.DateUtil;
 @Scope(ScopeType.STATELESS)
 public class ActivityServiceImpl implements ActivityService
 {
-   private static int ROLLUP_TIME_RANGE = 1; // in hour
-   
    @In
    private ActivityDAO activityDAO;
 
@@ -79,9 +76,9 @@ public class ActivityServiceImpl implements ActivityService
    }
    
    @Override
-   public Activity findUserActivityInTimeRange(Long acterId, Long contextId, UserActionType action, Date roundOffActionTime)
+   public Activity findUserActivityInRoundOffDate(Long acterId, Long contextId, UserActionType action, Date actionTime)
    {
-      return activityDAO.findUserActivityInTimeRange(acterId, contextId, action, roundOffActionTime);
+      return activityDAO.findUserActivityInRoundOffDate(acterId, contextId, action, DateUtils.truncate(actionTime, Calendar.HOUR));
    }
 
    @Override
@@ -89,17 +86,17 @@ public class ActivityServiceImpl implements ActivityService
    {
       if (acter != null && context != null && action != null)
       {
-         Date roundOffActionTime = DateUtils.truncate(new Date(), Calendar.MINUTE);
+         Date currentActionTime = new Date();
+         Activity activity = findUserActivityInRoundOffDate(acter.getId(), context.getId(), action, currentActionTime);
          
-         Activity activity = findUserActivityInTimeRange(acter.getId(), context.getId(), action, roundOffActionTime);
-
-         if (activity != null && DateUtil.isDateInRange(activity.getLastChanged(), new Date(), ROLLUP_TIME_RANGE))
+         if (activity != null)
          {
-            activity.setRoundOffDate(roundOffActionTime);
+            activity.setStartOffset(currentActionTime);
+            activity.setEndOffset(currentActionTime);
          }
          else
          {
-            activity = new Activity(acter, roundOffActionTime, context.getEntityType(), context.getId(), target.getEntityType(), target.getId(), action, wordCount);
+            activity = new Activity(acter, context.getEntityType(), context.getId(), target.getEntityType(), target.getId(), action, wordCount);
          }
          activityDAO.makePersistent(activity);
          activityDAO.flush();

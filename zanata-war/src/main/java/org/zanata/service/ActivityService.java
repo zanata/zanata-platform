@@ -45,7 +45,7 @@ public interface ActivityService
    List<Activity> getAllPersonActivities(Long personId, Long contextId, int offset, int count);
    
    /**
-    * Log activity, record roll up in hourly basis
+    * Log activity, records roll up in hourly basis
     * 
     * @param acter
     * @param context
@@ -57,15 +57,15 @@ public interface ActivityService
 
    
    /**
-    * Find activity with given person, context, action and time
+    * Find activity with given person, context, action in the hour of given action time
     * 
     * @param acterId
     * @param contextId
     * @param action
-    * @param roundOffActionTime
+    * @param actionTime
     * @return
     */
-   Activity findUserActivityInTimeRange(Long acterId, Long contextId, UserActionType action, Date roundOffActionTime);
+   Activity findUserActivityInRoundOffDate(Long acterId, Long contextId, UserActionType action, Date actionTime);
 
    /**
     * Get target or lastTarget entity in activity

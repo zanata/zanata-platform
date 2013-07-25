@@ -45,6 +45,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+import javax.persistence.Transient;
 
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -219,6 +220,7 @@ public class HProjectIteration extends SlugEntityBase implements Iterable<Docume
    }
 
    @Override
+   @Transient
    public EntityType getEntityType()
    {
       return EntityType.HProjectIteration;

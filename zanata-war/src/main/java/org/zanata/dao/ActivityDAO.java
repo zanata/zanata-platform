@@ -53,17 +53,17 @@ public class ActivityDAO extends AbstractDAOImpl<Activity, Long>
    }
 
    @SuppressWarnings("unchecked")
-   public Activity findUserActivityInTimeRange(Long personId, Long contextId, UserActionType action, Date roundOffActionTime)
+   public Activity findUserActivityInRoundOffDate(Long personId, Long contextId, UserActionType action, Date roundOffDate)
    {
       Query query = getSession().createQuery("FROM Activity a WHERE a.acter.id = :personId "
             + "AND a.contextId = :contextId "
             + "AND a.action = :action "
-            + "AND a.startOffset <= :roundOffActionTime "
-            + "AND a.endOffset > :roundOffActionTime "
-            + "order by a.lastChanged DESC");
+            + "AND :roundOffDate = a.roundOffDate");
+      
       query.setParameter("personId", personId);
       query.setParameter("contextId", contextId);
       query.setParameter("action", action);
+      query.setTimestamp("roundOffDate", roundOffDate); 
       query.setMaxResults(1);
       query.setCacheable(true);
       query.setComment("PersonActivitiesDAO.findUserActivityInTimeRange");

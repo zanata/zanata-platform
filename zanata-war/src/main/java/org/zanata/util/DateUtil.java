@@ -51,26 +51,4 @@ public class DateUtil
       }
       return null;
    }
-   
-   /**
-    * Check if compareToDate is before startDate + hourRange 
-    * Checking only from the date hour upwards.
-    *    
-    * @param startDate
-    * @param compareToDate
-    * @param hourRange
-    * @return
-    */
-   public static boolean isDateInRange(Date startDate, Date compareToDate, int hourRange)
-   {
-      Date maxDate = DateUtils.addHours(startDate, hourRange);
-      
-      int result = DateUtils.truncatedCompareTo(compareToDate, maxDate, Calendar.HOUR);
-      //1 if maxDate is after compareToDate
-      if(result == 1)
-      {
-         return false;
-      }
-      return true;
-   }
 }

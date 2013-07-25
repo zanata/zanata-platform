@@ -21,6 +21,7 @@
 package org.zanata.model;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.persistence.Access;
@@ -35,7 +36,6 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
@@ -61,17 +61,18 @@ public class Activity extends ModelEntityBase implements Serializable
    private HPerson acter;
    
    @Getter
+   @Setter
    @Temporal(TemporalType.TIMESTAMP)
    @NotNull
    private Date startOffset;
    
    @Getter
+   @Setter
    @Temporal(TemporalType.TIMESTAMP)
    @NotNull
    private Date endOffset;
    
    @Getter
-   @Setter
    @Temporal(TemporalType.TIMESTAMP)
    @NotNull
    private Date roundOffDate;
@@ -107,13 +108,9 @@ public class Activity extends ModelEntityBase implements Serializable
    @Getter
    private int wordCount;
    
-   @Transient
-   private static int ROLLUP_TIME_RANGE = 1; // in hour
-
-   public Activity(HPerson acter, Date roundOffDate, EntityType contextType, Long contextId, EntityType lastTargetType, Long lastTargetId, UserActionType action, int wordCount)
+   public Activity(HPerson acter, EntityType contextType, Long contextId, EntityType lastTargetType, Long lastTargetId, UserActionType action, int wordCount)
    {
       this.acter = acter;
-      this.roundOffDate = roundOffDate;
       this.contextType = contextType;
       this.contextId = contextId;
       this.lastTargetType = lastTargetType;
@@ -126,14 +123,20 @@ public class Activity extends ModelEntityBase implements Serializable
    @PrePersist
    private void onPersist()
    {
+      creationDate = new Date();
+      lastChanged = creationDate;
+      
       startOffset = new Date();
-      endOffset = DateUtils.addHours(startOffset, ROLLUP_TIME_RANGE);
+      endOffset = startOffset;
+      roundOffDate = DateUtils.truncate(startOffset, Calendar.HOUR);
    }
    
    @SuppressWarnings("unused")
    @PreUpdate
    private void onUpdate()
    {
+      lastChanged = new Date();
+      
       counter++;
    }
 }

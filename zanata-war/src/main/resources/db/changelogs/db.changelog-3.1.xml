@@ -69,7 +69,7 @@
     
     
     <changeSet id="5" author="aeng@redhat.com">
-        <comment>Add Activity table to support person activities.</comment>
+        <comment>Add Activity table to support log activities.</comment>
         <createTable tableName="Activity">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -83,7 +83,6 @@
             <column name="versionNum" type="int">
                 <constraints nullable="false"/>
             </column>
-            
             <column name="person_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
@@ -96,19 +95,19 @@
             <column name="roundOffDate" type="DATETIME">
                 <constraints nullable="false" />
             </column>
-            <column name="contextType" type="longtext">
+            <column name="contextType" type="varchar(150)">
                 <constraints nullable="false" />
             </column>
             <column name="context_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
-            <column name="lastTargetType" type="longtext">
+            <column name="lastTargetType" type="varchar(150)">
                 <constraints nullable="false" />
             </column>
             <column name="last_target_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
-            <column name="action" type="longtext">
+            <column name="action" type="varchar(150)">
                 <constraints nullable="false" />
             </column>
             <column name="counter" type="int">
@@ -117,8 +116,14 @@
             <column name="wordCount" type="int">
                 <constraints nullable="false"/>
             </column>
-            
         </createTable>
+        <addForeignKeyConstraint constraintName="FKActivity_person"
+                                 referencedTableName="HPerson" referencedColumnNames="id"
+                                 baseTableName="Activity" baseColumnNames="person_id"/>
+        
+        <addUniqueConstraint tableName="Activity"
+		    columnNames="person_id,roundOffDate,action,contextType,context_id" 
+		    constraintName="UKactivity"/>
     </changeSet>
 
 </databaseChangeLog>
