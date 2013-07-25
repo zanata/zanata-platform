@@ -97,13 +97,13 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest
       activityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
             ContentState.Approved));
       
-      List<Activity> activities = activityService.getUserActivities(personId, projectVersionId, 0, 10);
+      List<Activity> activities = activityService.findActivities(personId, projectVersionId, 0, 10);
       assertThat(activities.size(), Matchers.equalTo(1));
 
       activityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
             ContentState.Rejected));
 
-      activities = activityService.getUserActivities(personId, projectVersionId, 0, 10);
+      activities = activityService.findActivities(personId, projectVersionId, 0, 10);
       assertThat(activities.size(), Matchers.equalTo(1));
       
       Activity activity = activityService.findActivity(personId, EntityType.HProjectIteration, projectVersionId, ActivityType.REVIEWED_TRANSLATION, new Date());
@@ -139,7 +139,7 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest
       
       activityService.documentUploaded(new DocumentUploadedEvent(documentId, false, new LocaleId("as")));
       
-      List<Activity> activities = activityService.getUserActivities(personId, projectVersionId, 0, 10);
+      List<Activity> activities = activityService.findActivities(personId, projectVersionId, 0, 10);
       assertThat(activities.size(), Matchers.equalTo(3));
    }
 
@@ -160,7 +160,7 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest
       activityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId2, null, LocaleId.EN_US, new Long(6),
             ContentState.NeedReview));
 
-      List<Activity> activities = activityService.getUserActivities(documentId2, projectVersionId, 0, 10);
+      List<Activity> activities = activityService.findActivities(documentId2, projectVersionId, 0, 10);
 
       assertThat(activities.size(), Matchers.equalTo(2));
    }

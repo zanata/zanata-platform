@@ -72,7 +72,7 @@ public class ActivityDAO extends AbstractDAOImpl<Activity, Long>
    }
 
    @SuppressWarnings("unchecked")
-   public List<Activity> findUserActivities(long personId, long contextId, int offset, int maxResults)
+   public List<Activity> findActivities(long personId, long contextId, int offset, int maxResults)
    {
       Query query = getSession().createQuery("FROM Activity a WHERE a.actor.id = :personId "
             + "AND a.contextId = :contextId "
@@ -83,6 +83,18 @@ public class ActivityDAO extends AbstractDAOImpl<Activity, Long>
       query.setFirstResult(offset);
       query.setCacheable(true);
       query.setComment("PersonActivitiesDAO.findAllUserActivities");
+      return query.list();
+   }
+
+   public List<Activity> findLatestActivities(long personId, int offset, int maxResults)
+   {
+      Query query = getSession().createQuery("FROM Activity a WHERE a.actor.id = :personId "
+            + "order by a.approxTime DESC");
+      query.setParameter("personId", personId);
+      query.setMaxResults(maxResults);
+      query.setFirstResult(offset);
+      query.setCacheable(true);
+      query.setComment("PersonActivitiesDAO.getRecentUserActivities");
       return query.list();
    }
 }

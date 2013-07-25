@@ -6,7 +6,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich"
-                template="../WEB-INF/template/template_v1.xhtml">
+                template="../WEB-INF/template/template.xhtml">
 
     <ui:define name="page_title">#{messages['jsf.PageTitle']}</ui:define>
     <ui:define name="center_content">
@@ -36,20 +36,13 @@
 		</div>
 		
 		<div class="g">
-			<div class="g__item l--push-v-1 w--1-2 w--4-10-h">
-				<div class="l--push-left-half">
-			      <h2 class="heading--secondary">#{messages['jsf.YourActivity']}</h2>
-			    </div>
-			    <ul class="list--no-bullets">
-			    	
-				</ul>
-			</div>
+			<ui:include src="activity.xhtml"/>
 			
 			<div class="g__item w--1-2 w--6-10-h">
 				<div class="g">
 					<div class="g__item w--1-2-h l--push-v-1">
 						<div class="bg--pop-high">
-							<ui:include src="maintainedProjectTab.xhtml"/>
+							<ui:include src="maintainedProject.xhtml"/>
 						</div>
 					</div>
 				</div>

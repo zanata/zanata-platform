@@ -36,14 +36,36 @@ import org.zanata.model.type.EntityType;
 public interface ActivityService
 {
    /**
-    * Get all user activities
+    * Find activity with given person, context, action in the hour of given action time
+    * 
+    * @param actorId
+    * @param contextType
+    * @param contextId
+    * @param actionType
+    * @param actionTime
+    * @return
+    */
+   Activity findActivity(long actorId, EntityType contextType, long contextId, ActivityType actionType, Date actionTime);
+   
+   
+   /**
+    * Get user activities with given contextId
     * @param personId
     * @param contextId
     * @param offset
     * @param count
     * @return List<Activity>
     */
-   List<Activity> getUserActivities(long personId, long contextId, int offset, int count);
+   List<Activity> findActivities(long personId, long contextId, int offset, int count);
+   
+   /**
+    * Get user activities regardless of which context
+    * @param personId
+    * @param offset
+    * @param count
+    * @return List<Activity>
+    */
+   List<Activity> findLatestActivities(long personId, int offset, int count);
    
    /**
     * Log activity, records roll up in hourly basis
@@ -55,19 +77,6 @@ public interface ActivityService
     * @param wordCount
     */
    void logActivity(HPerson actor, HasEntityType context, HasEntityType target, ActivityType actionType, int wordCount);
-
-   
-   /**
-    * Find activity with given person, context, action in the hour of given action time
-    * 
-    * @param actorId
-    * @param contextType
-    * @param contextId
-    * @param actionType
-    * @param actionTime
-    * @return
-    */
-   Activity findActivity(long actorId, EntityType contextType, long contextId, ActivityType actionType, Date actionTime);
 
    /**
     * Get target or lastTarget entity in activity

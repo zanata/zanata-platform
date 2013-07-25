@@ -1,0 +1,27 @@
+<div class="g__item l--push-v-1 w--1-2 w--4-10-h" xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich">
+                
+	<div class="l--push-left-half">
+		<h2 class="heading--secondary">#{messages['jsf.YourActivity']}</h2>
+	</div>
+	<ul class="list--no-bullets">
+		<ui:repeat value="#{dashboardAction.getActivities()}" var="activity">
+			<li class="l--pad-all-half bg--high--hover bg--faint">
+	        	<div class="g">
+	          		<div class="g__item w--2-3">
+	          			<h:outputText value="#{dashboardAction.getActivityMessage(activity)}" escape="false"/>
+	          		</div>
+	          		<div class="g__item w--1-3">
+	            		<p class="txt--meta txt--align-right">10 mins ago <i aria-hidden="true" class="i i--eye"></i>
+	            			<span class="is-invisible">Reviewer</span>
+	            		</p>
+	          		</div>
+	        	</div>
+	     	</li>
+     	</ui:repeat>
+	</ul>
+</div>
