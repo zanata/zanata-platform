@@ -67,19 +67,21 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
       super(HProjectIteration.class, session);
    }
 
-   public @Nullable HProjectIteration getBySlug(@Nonnull String projectSlug, @Nonnull String iterationSlug)
+   public @Nullable
+   HProjectIteration getBySlug(@Nonnull String projectSlug, @Nonnull String iterationSlug)
    {
-      HProject project = (HProject)getSession().byNaturalId(HProject.class).using("slug", projectSlug).load();
+      HProject project = (HProject) getSession().byNaturalId(HProject.class).using("slug", projectSlug).load();
       return getBySlug(project, iterationSlug);
    }
 
-   public @Nullable HProjectIteration getBySlug(@Nonnull HProject project, @Nonnull String iterationSlug)
+   public @Nullable
+   HProjectIteration getBySlug(@Nonnull HProject project, @Nonnull String iterationSlug)
    {
-      if( project == null || StringUtils.isEmpty(iterationSlug))
+      if (project == null || StringUtils.isEmpty(iterationSlug))
       {
          return null;
       }
-      return (HProjectIteration)getSession().byNaturalId(HProjectIteration.class).using("slug", iterationSlug).using("project",project).load();
+      return (HProjectIteration) getSession().byNaturalId(HProjectIteration.class).using("slug", iterationSlug).using("project", project).load();
    }
 
    /**
@@ -143,7 +145,6 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
       q.setCacheable(true).setComment("ProjectIterationDAO.getWordStatsForContainer");
       @SuppressWarnings("unchecked")
       List<StatusCount> stats = q.list();
-
 
       TransUnitWords stat = new TransUnitWords();
 
@@ -252,23 +253,23 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
       List<Map> stats = q.list();
       Map<String, TransUnitCount> retVal = new HashMap<String, TransUnitCount>();
 
-      for( Map row : stats )
+      for (Map row : stats)
       {
-         ContentState state = (ContentState)row.get("state");
-         Long count = (Long)row.get("count");
-         LocaleId localeId = (LocaleId)row.get("locale");
+         ContentState state = (ContentState) row.get("state");
+         Long count = (Long) row.get("count");
+         LocaleId localeId = (LocaleId) row.get("locale");
 
-         TransUnitCount transUnitCount = retVal.get( localeId.getId() );
-         if( transUnitCount == null )
+         TransUnitCount transUnitCount = retVal.get(localeId.getId());
+         if (transUnitCount == null)
          {
             transUnitCount = new TransUnitCount();
             retVal.put(localeId.getId(), transUnitCount);
          }
 
-         transUnitCount.set( state, count.intValue() );
+         transUnitCount.set(state, count.intValue());
       }
 
-      for( TransUnitCount stat : retVal.values() )
+      for (TransUnitCount stat : retVal.values())
       {
          Long totalCount = getTotalCountForIteration(iterationId);
          stat.set(ContentState.New, StatisticsUtil.calculateUntranslated(totalCount, stat));
@@ -362,36 +363,36 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
 
    public List<HProjectIteration> searchLikeSlugOrProjectSlug(String searchTerm)
    {
-      if(StringUtils.isEmpty(searchTerm))
+      if (StringUtils.isEmpty(searchTerm))
       {
          return new ArrayList<HProjectIteration>();
       }
-      Query q = getSession().createQuery("from HProjectIteration t where lower(t.slug) LIKE :searchTerm OR lower(t.project.slug) LIKE :searchTerm OR lower(t.project.name) LIKE :searchTerm");
+      Query q = getSession()
+            .createQuery(
+                  "from HProjectIteration t where lower(t.slug) LIKE :searchTerm OR lower(t.project.slug) LIKE :searchTerm OR lower(t.project.name) LIKE :searchTerm");
       q.setParameter("searchTerm", "%" + searchTerm.toLowerCase() + "%");
       q.setCacheable(false).setComment("ProjectIterationDAO.searchLikeSlugOrProjectSlug");
 
       return q.list();
    }
-   
-   public HProjectIteration getLastCreatedVersion(Long projectId)
+  
+   public List<HProjectIteration> searchByProjectId(Long projectId)
    {
-      Query q = getSession().createQuery("from HProjectIteration t where t.project.id = :projectId order by t.creationDate DESC");
-      q.setParameter("projectId", projectId);
-      q.setCacheable(true);
-      q.setMaxResults(1).setComment("ProjectIterationDAO.getLastCreatedVersion");
-      return (HProjectIteration)q.uniqueResult();
-   }
-
-   public HProjectIteration getLastCreatedVersionExcludeStatus(Long projectId, EntityStatus excludeStatus)
-   {
-      Query q = getSession().createQuery("from HProjectIteration t "
-            + "where t.project.id = :projectId "
-            + "and t.status != :status "
+      Query q = getSession().createQuery("from HProjectIteration t where t.project.id = :projectId "
             + "order by t.creationDate DESC");
       q.setParameter("projectId", projectId);
-      q.setParameter("status", excludeStatus);
-      q.setCacheable(true);
-      q.setMaxResults(1).setComment("ProjectIterationDAO.getLastCreatedVersionExcludeStatus");
-      return (HProjectIteration)q.uniqueResult();
+      q.setCacheable(false).setComment("ProjectIterationDAO.findByProjectId");
+      return q.list();
+   }
+   
+   public List<HProjectIteration> searchByProjectIdExcludeObsolete(Long projectId)
+   {
+      Query q = getSession().createQuery("FROM HProjectIteration t WHERE t.project.id = :projectId "
+            + "AND t.status != :obsoleteStatus "
+            + "order by t.creationDate DESC");
+      q.setParameter("projectId", projectId);
+      q.setParameter("obsoleteStatus", EntityStatus.OBSOLETE);
+      q.setCacheable(false).setComment("ProjectIterationDAO.searchByProjectIdExcludeObsolete");
+      return q.list();
    }
 }
