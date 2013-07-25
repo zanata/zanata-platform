@@ -30,7 +30,7 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.zanata.concordion.CustomResourceExtension;
 import org.zanata.feature.ConcordionTest;
-import org.zanata.page.HomePage;
+import org.zanata.page.utility.HomePage;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.util.ResetDatabaseRule;
 import org.zanata.page.administration.ManageUserPage;

@@ -100,7 +100,7 @@ public class ModelEntityBase implements Serializable, HashableState
 
    @SuppressWarnings("unused")
    @PrePersist
-   private void onPersist()
+   protected void onPersist()
    {
       creationDate = new Date();
       lastChanged = creationDate;

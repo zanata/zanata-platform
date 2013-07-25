@@ -24,9 +24,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.Select;
-import org.zanata.page.AbstractPage;
+import org.zanata.page.BasePage;
 
-public class CreateProjectPage extends AbstractPage
+public class CreateProjectPage extends BasePage
 {
    @FindBy(id = "projectForm:slugField:slug")
    private WebElement projectIdField;
@@ -74,7 +74,7 @@ public class CreateProjectPage extends AbstractPage
 
    public ProjectPage saveProject()
    {
-      clickSaveAndCheckErrors(saveButton);
+      clickAndCheckErrors(saveButton);
       return new ProjectPage(getDriver());
    }
 }

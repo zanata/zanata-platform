@@ -28,10 +28,10 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.BasicAcceptanceTest;
 import org.zanata.feature.DetailedTest;
-import org.zanata.page.HomePage;
 import org.zanata.page.account.RegisterPage;
-import org.zanata.util.rfc2822.InvalidEmailAddressRFC2822;
+import org.zanata.page.utility.HomePage;
 import org.zanata.util.ResetDatabaseRule;
+import org.zanata.util.rfc2822.InvalidEmailAddressRFC2822;
 import org.zanata.workflow.BasicWorkFlow;
 
 import java.util.HashMap;
@@ -73,9 +73,11 @@ public class RegisterFullTest
    @Ignore("Captcha prevents test completion")
    public void registerSuccessful()
    {
+      String successMessage = "You will soon receive an email with a link to activate your account.";
       RegisterPage registerPage = homePage.goToRegistration().setFields(fields);
       assertThat("No errors are shown", registerPage.getErrors().size(), Matchers.equalTo(0));
-      registerPage.register();
+      homePage = registerPage.register();
+      assertThat("Signup is successful", homePage.getNotificationMessage(), Matchers.equalTo(successMessage));
    }
 
    @Test

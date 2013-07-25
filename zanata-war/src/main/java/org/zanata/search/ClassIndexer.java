@@ -25,9 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;
-import org.hibernate.Query;
-import org.hibernate.ScrollMode;
-import org.hibernate.ScrollableResults;
 import org.hibernate.criterion.Projections;
 import org.hibernate.search.FullTextSession;
 
@@ -36,12 +33,13 @@ import org.hibernate.search.FullTextSession;
  *
  */
 @Slf4j
-public abstract class ClassIndexer <T>
+public class ClassIndexer<T>
 {
-   //TODO make this configurable
-   private static final int DEFAULT_BATCH_SIZE = 5000;
 
-   private final int batchSize = DEFAULT_BATCH_SIZE;
+   public AbstractIndexingStrategy<T> createIndexingStrategy(FullTextSession session, IndexerProcessHandle handle, Class<T> clazz)
+   {
+      return new SimpleClassIndexingStrategy(session, handle, clazz);
+   }
 
    public int getEntityCount(FullTextSession session, Class<T> clazz)
    {
@@ -54,26 +52,9 @@ public abstract class ClassIndexer <T>
       log.info("Setting manual-flush and ignore-cache for {}", clazz);
       session.setFlushMode(FlushMode.MANUAL);
       session.setCacheMode(CacheMode.IGNORE);
-      ScrollableResults results = null;
       try
       {
-         int n = 0;
-         results = getScrollableResults(session, clazz, n);
-         while (results.next() && !handle.shouldStop())
-         {
-            n++;
-            T entity = (T) results.get(0); // index each element
-            session.index(entity);
-            handle.incrementProgress(1);
-            if (n % batchSize == 0)
-            {
-               log.info("periodic flush and clear for {} (n={})", clazz, n);
-               session.flushToIndexes(); // apply changes to indexes
-               session.clear(); // clear since the queue is processed
-               results.close();
-               results = getScrollableResults(session, clazz, n);
-            }
-         }
+         createIndexingStrategy(session, handle, clazz).invoke();
          session.flushToIndexes(); // apply changes to indexes
          session.clear(); // clear since the queue is processed
       }
@@ -82,26 +63,6 @@ public abstract class ClassIndexer <T>
          log.warn("Unable to index objects of type {}", e, clazz.getName());
          handle.setHasError(true);
       }
-      finally
-      {
-         if (results != null)
-            results.close();
-      }
    }
-
-   private ScrollableResults getScrollableResults(FullTextSession session, Class<T> clazz, int fromIndex)
-   {
-      Query query = getQuery(session, clazz);
-//      Criteria query = session.createCriteria(clazz);
-      query.setFirstResult(fromIndex).setMaxResults(batchSize);
-      return query.scroll(ScrollMode.FORWARD_ONLY);
-   }
-
-   /**
-    * Create a query which returns all instances of clazz
-    * @param clazz
-    * @return
-    */
-   protected abstract Query getQuery(FullTextSession session, Class<T> clazz);
 
 }

@@ -18,35 +18,46 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.page.administration;
+package org.zanata.page.utility;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
+import org.zanata.page.administration.EditHomeCodePage;
+import org.zanata.page.administration.EditHomeContentPage;
 
-public class AdministrationPage extends BasePage
+public class HomePage extends BasePage
 {
-   @FindBy(id = "Admin_Manage_languages_home")
-   private WebElement manageLanguagesLink;
 
-   @FindBy(id = "Admin_Manage_users_home")
-   private WebElement manageUsersLink;
+   @FindBy(linkText = "Edit Page Content")
+   private WebElement editPageContent;
 
-   public AdministrationPage(WebDriver driver)
+   @FindBy(linkText = "Edit Page Code")
+   private WebElement editPageCode;
+
+   @FindBy(id = "main_body_content")
+   private WebElement mainBodyContent;
+
+   public HomePage(final WebDriver driver)
    {
       super(driver);
    }
 
-   public ManageLanguagePage goToManageLanguagePage()
+   public EditHomeContentPage goToEditPageContent()
    {
-      manageLanguagesLink.click();
-      return new ManageLanguagePage(getDriver());
+      editPageContent.click();
+      return new EditHomeContentPage(getDriver());
    }
 
-   public ManageUserPage goToManageUserPage()
+   public EditHomeCodePage goToEditPageCode()
    {
-      manageUsersLink.click();
-      return new ManageUserPage(getDriver());
+      editPageCode.click();
+      return new EditHomeCodePage(getDriver());
+   }
+
+   public String getMainBodyContent()
+   {
+      return mainBodyContent.getText();
    }
 }
