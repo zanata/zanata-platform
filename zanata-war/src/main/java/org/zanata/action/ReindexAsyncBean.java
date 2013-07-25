@@ -25,6 +25,7 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.model.tm.TMTranslationUnit;
 import org.zanata.process.RunnableProcess;
 import org.zanata.search.AbstractIndexingStrategy;
 import org.zanata.search.ClassIndexer;
@@ -67,6 +68,7 @@ public class ReindexAsyncBean extends RunnableProcess<IndexerProcessHandle> impl
       indexables.add(HGlossaryTerm.class);
       indexables.add(HProject.class);
       indexables.add(HProjectIteration.class);
+      indexables.add(TMTranslationUnit.class);
 
       // NB we put the largest tables at the bottom, so that the small
       // tables can be indexed early
