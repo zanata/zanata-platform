@@ -31,7 +31,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.model.HDocumentUploadPart;
 
-// TODO damason: replace with file system implementation
+// TODO damason: replace with file system implementation, named something like "filePartPersistService"
 @Name("blobPersistService")
 @Scope(ScopeType.STATELESS)
 @AutoCreate
