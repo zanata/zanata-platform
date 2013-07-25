@@ -36,12 +36,13 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
-import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.model.tm.TMTranslationUnit;
 import org.zanata.search.LevenshteinTokenUtil;
 import org.zanata.search.LevenshteinUtil;
 import org.zanata.security.ZanataIdentity;
@@ -101,7 +102,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
          Map<TMKey, TransMemoryResultItem> matchesMap = new LinkedHashMap<TMKey, TransMemoryResultItem>(matches.size());
          for (Object[] match : matches)
          {
-            processTargetIndexMatch(transMemoryQuery, matchesMap, match);
+            processIndexMatch(transMemoryQuery, matchesMap, match, sourceLocaleId, targetLocale.getLocaleId());
          }
          results.addAll(matchesMap.values());
       }
@@ -123,47 +124,46 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
       return results;
    }
 
-   private void processTargetIndexMatch(TransMemoryQuery transMemoryQuery, Map<TMKey, TransMemoryResultItem> matchesMap, Object[] match)
+   private void processIndexMatch(TransMemoryQuery transMemoryQuery, Map<TMKey, TransMemoryResultItem> matchesMap, Object[] match,
+                                  LocaleId sourceLocaleId, LocaleId targetLocaleId)
    {
-      HTextFlowTarget textFlowTarget = (HTextFlowTarget) match[1];
-      if (!isValidResult(textFlowTarget))
+      Object entity = match[1];
+      if( entity instanceof HTextFlowTarget )
       {
-         return;
+         HTextFlowTarget textFlowTarget = (HTextFlowTarget) entity;
+         if (!isValidResult(textFlowTarget))
+         {
+            return;
+         }
+         ArrayList<String> textFlowContents = new ArrayList<String>(textFlowTarget.getTextFlow().getContents());
+         ArrayList<String> targetContents = new ArrayList<String>(textFlowTarget.getContents());
+         addOrIncrementResultItem(transMemoryQuery, matchesMap, match, textFlowTarget.getState(), textFlowContents, targetContents, textFlowTarget.getId());
       }
-      ArrayList<String> textFlowContents = new ArrayList<String>(textFlowTarget.getTextFlow().getContents());
-      ArrayList<String> targetContents = new ArrayList<String>(textFlowTarget.getContents());
-      addOrIncrementResultItem(transMemoryQuery, matchesMap, match, textFlowTarget, textFlowContents, targetContents);
+      else if( entity instanceof TMTranslationUnit )
+      {
+         TMTranslationUnit transUnit = (TMTranslationUnit) entity;
+         ArrayList<String> sourceContents = Lists.newArrayList(transUnit.getTransUnitVariants().get(sourceLocaleId.getId()).getPlainTextSegment());
+         ArrayList<String> targetContents = Lists.newArrayList(transUnit.getTransUnitVariants().get(targetLocaleId.getId()).getPlainTextSegment());
+         addOrIncrementResultItem(transMemoryQuery, matchesMap, match, null, sourceContents, targetContents,
+               transUnit.getId());
+      }
    }
 
-   private void processTextFlowIndexMatch(HLocale targetLocale, TransMemoryQuery transMemoryQuery, Map<TMKey, TransMemoryResultItem> matchesMap, Object[] match)
+   private void addOrIncrementResultItem(TransMemoryQuery transMemoryQuery, Map<TMKey, TransMemoryResultItem> matchesMap,
+                                         Object[] match, ContentState contentState, ArrayList<String> sourceContents,
+                                         ArrayList<String> targetContents, Long sourceId)
    {
-      HTextFlow textFlow = (HTextFlow) match[1];
-      HTextFlowTarget textFlowTarget = textFlow.getTargets().get(targetLocale.getId());
-      if (!isValidResult(textFlowTarget))
-      {
-         return;
-      }
-      // double-check text flow is valid in case of caching issues
-      textFlow = textFlowTarget.getTextFlow();
-
-      ArrayList<String> textFlowContents = new ArrayList<String>(textFlow.getContents());
-      ArrayList<String> targetContents = new ArrayList<String>(textFlowTarget.getContents());
-      addOrIncrementResultItem(transMemoryQuery, matchesMap, match, textFlowTarget, textFlowContents, targetContents);
-   }
-
-   private void addOrIncrementResultItem(TransMemoryQuery transMemoryQuery, Map<TMKey, TransMemoryResultItem> matchesMap, Object[] match, HTextFlowTarget textFlowTarget, ArrayList<String> textFlowContents, ArrayList<String> targetContents)
-   {
-      TMKey key = new TMKey(textFlowContents, targetContents);
+      TMKey key = new TMKey(sourceContents, targetContents);
       TransMemoryResultItem item = matchesMap.get(key);
       if (item == null)
       {
          float score = (Float) match[0];
-         double percent = calculateSimilarityPercentage(transMemoryQuery, textFlowTarget.getTextFlow().getContents());
-         item = new TransMemoryResultItem(textFlowContents, targetContents, textFlowTarget.getState(), score, percent);
+         double percent = calculateSimilarityPercentage(transMemoryQuery, sourceContents);
+         item = new TransMemoryResultItem(sourceContents, targetContents, contentState, score, percent);
          matchesMap.put(key, item);
       }
       item.incMatchCount();
-      item.addSourceId(textFlowTarget.getTextFlow().getId());
+      item.addSourceId(sourceId);
    }
 
    private static boolean isValidResult(HTextFlowTarget textFlowTarget)

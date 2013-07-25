@@ -31,10 +31,13 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Filter;
+import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.util.Version;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
@@ -48,9 +51,11 @@ import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.hibernate.search.TextContainerAnalyzerDiscriminator;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.model.tm.TMTranslationUnit;
 import org.zanata.service.TranslationMemoryQueryService;
 import org.zanata.service.TranslationStateCache;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
+import org.zanata.webtrans.shared.rpc.HasSearchType;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 @Name("translationMemoryQueryService")
@@ -120,8 +125,8 @@ public class TranslationMemoryQueryServiceImpl implements TranslationMemoryQuery
 
       FullTextQuery ftQuery;
       // Use the TextFlowTarget index
-      org.apache.lucene.search.Query textQuery = generateQuery(query, sourceLocale, targetLocale, queryText, multiQueryText, IndexFieldLabels.TF_CONTENT_FIELDS);
-      ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlowTarget.class);
+      Query textQuery = generateQuery(query, sourceLocale, targetLocale, queryText, multiQueryText, IndexFieldLabels.TF_CONTENT_FIELDS);
+      ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlowTarget.class, TMTranslationUnit.class);
 
       ftQuery.setProjection(FullTextQuery.SCORE, FullTextQuery.THIS);
       @SuppressWarnings("unchecked")
@@ -130,9 +135,9 @@ public class TranslationMemoryQueryServiceImpl implements TranslationMemoryQuery
    }
 
    /**
-    * Generate HTextFlowTarget query with matching HTextFlow contents,
-    * HTextFlowTarget locale, HTextFlowTarget state = Approved
-    * 
+    * Generate the query to match all source contents in all the searchable indexes.
+    * (HTextFlowTarget and TMTranslationUnit)
+    *
     * @param query
     * @param sourceLocale
     * @param targetLocale
@@ -142,9 +147,29 @@ public class TranslationMemoryQueryServiceImpl implements TranslationMemoryQuery
     * @return
     * @throws ParseException
     */
-   private org.apache.lucene.search.Query generateQuery(TransMemoryQuery query, LocaleId sourceLocale, LocaleId targetLocale, String queryText, String[] multiQueryText, String contentFields[]) throws ParseException
+   private Query generateQuery(TransMemoryQuery query, LocaleId sourceLocale, LocaleId targetLocale, String queryText, String[] multiQueryText, String contentFields[]) throws ParseException
    {
-      org.apache.lucene.search.Query contentQuery;
+      Query textFlowTargetQuery = generateTextFlowTargetQuery(query, sourceLocale, targetLocale, queryText, multiQueryText, contentFields);
+      Query transUnitQuery = generateTransMemoryQuery(sourceLocale, targetLocale, queryText, multiQueryText);
+
+      // Join the queries for each different type
+      return join(Occur.SHOULD, textFlowTargetQuery, transUnitQuery);
+   }
+
+   /**
+    * Generates the Hibernate Search Query that will search for {@link HTextFlowTarget} objects for matches.
+    * @param query
+    * @param sourceLocale
+    * @param targetLocale
+    * @param queryText
+    * @param multiQueryText
+    * @param contentFields
+    * @return
+    * @throws ParseException
+    */
+   private Query generateTextFlowTargetQuery(TransMemoryQuery query, LocaleId sourceLocale, LocaleId targetLocale, String queryText, String[] multiQueryText, String[] contentFields) throws ParseException
+   {
+      Query contentQuery;
       // Analyzer determined by the language
       String analyzerDefName = TextContainerAnalyzerDiscriminator.getAnalyzerDefinitionName(sourceLocale.getId());
       Analyzer analyzer = entityManager.getSearchFactory().getAnalyzer(analyzerDefName);
@@ -184,4 +209,40 @@ public class TranslationMemoryQueryServiceImpl implements TranslationMemoryQuery
       return targetQuery;
    }
 
+   /**
+    * Generates the Hibernate Search Query that will search for {@link TMTranslationUnit} objects for matches.
+    * @param sourceLocale
+    * @param targetLocale
+    * @param queryText
+    * @param multiQueryText
+    * @return
+    */
+   private Query generateTransMemoryQuery(LocaleId sourceLocale, LocaleId targetLocale, String queryText, String[] multiQueryText)
+   {
+      String textToSearch = queryText;
+      if( textToSearch == null )
+      {
+         textToSearch = multiQueryText[0];
+      }
+
+      TermQuery sourceContentQuery = new TermQuery(new Term("tuv." + sourceLocale.getId(), textToSearch));
+      WildcardQuery targetContentQuery = new WildcardQuery(new Term("tuv." + targetLocale.getId(), "*"));
+      return join(Occur.MUST, sourceContentQuery, targetContentQuery);
+   }
+
+   /**
+    * Joins a given set of queries into a single one with the specified occurrence condition.
+    * @param condition The occurrence condition all the joined queries will have.
+    * @param queries The queries to be joined.
+    * @return A single query that evaluates all the given sub-queries using the given occurence condition.
+    */
+   private static Query join( Occur condition, Query ... queries )
+   {
+      BooleanQuery joinedQuery = new BooleanQuery();
+      for( Query q : queries )
+      {
+         joinedQuery.add(q, condition);
+      }
+      return  joinedQuery;
+   }
 }

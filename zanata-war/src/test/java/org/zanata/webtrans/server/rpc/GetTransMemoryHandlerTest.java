@@ -105,9 +105,9 @@ public class GetTransMemoryHandlerTest extends ZanataDbunitJpaTest
       // Note: Different method calls and return types are used depending whether source or target
       // index implementation is used
       List<Object[]> targetMatches = Lists.newArrayList(new Object[] {1.0F, tmMatch1}, new Object[] {1.1F, tmMatch2});
-      doReturn(targetMatches).when(translationMemoryQueryService).getSearchResult(eq(query), eq(sourceLocaleId), eq(targetLocaleId), eq(EXPECTED_MAX_RESULTS), eq(true));
+      doReturn(targetMatches).when(translationMemoryQueryService).getSearchResult(eq(query), eq(sourceLocaleId), eq(targetLocaleId), eq(EXPECTED_MAX_RESULTS));
       List<Object[]> textFlowMatches = Lists.newArrayList(new Object[] {1.0F, tmMatch1.getTextFlow()}, new Object[] {1.1F, tmMatch2.getTextFlow()});
-      doReturn(textFlowMatches).when(translationMemoryQueryService).getSearchResult(eq(query), eq(sourceLocaleId), eq(targetLocaleId), eq(EXPECTED_MAX_RESULTS), eq(false));
+      doReturn(textFlowMatches).when(translationMemoryQueryService).getSearchResult(eq(query), eq(sourceLocaleId), eq(targetLocaleId), eq(EXPECTED_MAX_RESULTS));
 
       GetTranslationMemory action = new GetTranslationMemory(query, targetLocaleId, sourceLocaleId);
 
@@ -147,7 +147,7 @@ public class GetTransMemoryHandlerTest extends ZanataDbunitJpaTest
    {
       // Given: hibernate search can not parse query
       TransMemoryQuery query = new TransMemoryQuery(Lists.newArrayList("file removed"), HasSearchType.SearchType.FUZZY_PLURAL);
-      doThrow(new ParseException("bad token")).when(translationMemoryQueryService).getSearchResult(eq(query), eq(sourceLocaleId), eq(targetLocaleId), eq(EXPECTED_MAX_RESULTS), anyBoolean());
+      doThrow(new ParseException("bad token")).when(translationMemoryQueryService).getSearchResult(eq(query), eq(sourceLocaleId), eq(targetLocaleId), eq(EXPECTED_MAX_RESULTS));
       GetTranslationMemory action = new GetTranslationMemory(query, targetLocaleId, sourceLocaleId);
 
       // When:
