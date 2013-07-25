@@ -49,7 +49,7 @@ import com.google.common.io.InputSupplier;
 public class MigrateRawDocumentsToFileSystem implements CustomTaskChange
 {
 
-   private static final String BASE_PATH_JNDI_NAME = "java:global/zanata/files/document-storage";
+   private static final String BASE_PATH_JNDI_NAME = "java:global/zanata/files/document-storage-directory";
    private static final String RAW_DOCUMENTS_SUBDIRECTORY = "documents";
 
    private static final String CONTENTS_SQL = "select contentLocation, content from HRawDocumentContent";
