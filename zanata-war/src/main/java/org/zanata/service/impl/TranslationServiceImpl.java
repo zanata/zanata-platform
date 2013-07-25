@@ -165,7 +165,8 @@ public class TranslationServiceImpl implements TranslationService
             try
             {
                int nPlurals = getNumPlurals(hLocale, hTextFlow);
-               result.targetChanged = translate(hTextFlowTarget, request.getNewContents(), request.getNewContentState(), nPlurals, projectIteration.getRequireTranslationReview());
+               result.targetChanged = translate(hTextFlowTarget, request.getNewContents(), request.getNewContentState(),
+                     nPlurals, projectIteration.getRequireTranslationReview());
                result.isSuccess = true;
             }
             catch (HibernateException e)

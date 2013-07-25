@@ -20,8 +20,10 @@
  */
 package org.zanata.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.dbunit.operation.DatabaseOperation;
-import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.mockito.Mock;
@@ -32,7 +34,6 @@ import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
-import org.zanata.exception.ConcurrentTranslationException;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.seam.SeamAutowire;
@@ -40,17 +41,13 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.TranslationService;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.common.collect.Lists;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.verify;
 import static org.zanata.service.TranslationService.TranslationResult;
 
 /**
