@@ -97,9 +97,6 @@ public class HRawDocument extends ModelEntityBase implements Serializable
             + ",contentHash=" + contentHash + "]";
    }
 
-   // TODON'T: override equals to use contentHash would be logically flawed
-   //          same document with different parameters leads to different text flows
-   //          different types could theoretically share the same hash, but would be parsed
-   //          completely differently.
+   // TODO override equals to use contentHash, type, parameters, etc.
 
 }
