@@ -10,7 +10,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import lombok.Cleanup;
-import lombok.val;
 
 import org.hibernate.Session;
 import org.hibernate.ejb.HibernateEntityManagerFactory;
@@ -21,6 +20,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.model.tm.TMTransUnitVariant;
 import org.zanata.model.tm.TMTranslationUnit;
 import org.zanata.model.tm.TransMemory;
+import org.zanata.util.CloseableIterator;
 
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
@@ -50,7 +50,7 @@ public class TransMemoryStreamingDAOTest extends ZanataJpaTest
 
       TransMemory transMemory = transMemoryDAO.getBySlug("testTM");
       @Cleanup
-      val iter = dao.findTransUnitsByTM(transMemory);
+      CloseableIterator<TMTranslationUnit> iter = dao.findTransUnitsByTM(transMemory);
       assertThat(Iterators.size(iter), equalTo(4));
 
       deleteTMData();

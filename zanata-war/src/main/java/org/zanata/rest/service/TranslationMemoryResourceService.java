@@ -42,13 +42,13 @@ import org.zanata.dao.TransMemoryStreamingDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.model.HTextFlow;
 import org.zanata.model.SourceContents;
 import org.zanata.model.tm.TMTranslationUnit;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.service.LocaleService;
 import org.zanata.tmx.TMXParser;
 
-import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 
 @Name("translationMemoryResourceService")
@@ -77,7 +77,7 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
    public Response getAllTranslationMemory(@Nullable LocaleId locale)
    {
       log.debug("exporting TMX for all projects, locale {}", locale);
-      Iterator<? extends SourceContents> tuIter;
+      Iterator<HTextFlow> tuIter;
       if (locale != null)
       {
          localeServiceImpl.validateSourceLocale(locale);
@@ -92,7 +92,7 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
    public Response getProjectTranslationMemory(@Nonnull String projectSlug, @Nullable LocaleId locale)
    {
       log.debug("exporting TMX for project {}, locale {}", projectSlug, locale);
-      Iterator<? extends SourceContents> tuIter;
+      Iterator<HTextFlow> tuIter;
       HProject hProject = restSlugValidator.retrieveAndCheckProject(projectSlug, false);
       if (locale != null)
       {
@@ -109,7 +109,7 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
          @Nonnull String projectSlug, @Nonnull String iterationSlug, @Nullable LocaleId locale)
    {
       log.debug("exporting TMX for project {}, iteration {}, locale {}", projectSlug, iterationSlug, locale);
-      Iterator<? extends SourceContents> tuIter;
+      Iterator<HTextFlow> tuIter;
       HProjectIteration hProjectIteration = restSlugValidator.retrieveAndCheckIteration(projectSlug, iterationSlug, false);
       if (locale != null)
       {
@@ -125,7 +125,7 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
    public Response getTranslationMemory(@Nonnull String slug)
    {
       log.debug("exporting TMX for translation memory {}", slug);
-      Iterator<? extends TMTranslationUnit> tuIter;
+      Iterator<TMTranslationUnit> tuIter;
       TransMemory transMemory = transMemoryDAO.getBySlug(slug);
       if (transMemory == null)
       {
@@ -161,13 +161,13 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
          @Nonnull Iterator<? extends SourceContents> tuIter,
          @Nullable LocaleId locale, @Nonnull String filename)
    {
-      val output = new TMXStreamingOutput(tuIter, new ExportSourceContentsStrategy(locale));
+      TMXStreamingOutput<HTextFlow> output = new TMXStreamingOutput(tuIter, new ExportSourceContentsStrategy(locale));
       return okResponse(filename, output);
    }
 
-   private Response buildTMX(Iterator<? extends TMTranslationUnit> tuIter, String filename)
+   private Response buildTMX(Iterator<TMTranslationUnit> tuIter, String filename)
    {
-      val output = new TMXStreamingOutput(tuIter, new ExportTransUnitStrategy());
+      TMXStreamingOutput<TMTranslationUnit> output = new TMXStreamingOutput<TMTranslationUnit>(tuIter, new ExportTransUnitStrategy());
       return okResponse(filename, output);
    }
 

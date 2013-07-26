@@ -22,8 +22,8 @@
 package org.zanata.dao;
 
 import lombok.NoArgsConstructor;
-import lombok.val;
 
+import org.hibernate.Query;
 import org.hibernate.ejb.HibernateEntityManagerFactory;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Name;
@@ -49,10 +49,10 @@ public class TransMemoryStreamingDAO extends StreamingDAO<TMTranslationUnit>
 
    public CloseableIterator<TMTranslationUnit> findTransUnitsByTM(TransMemory transMemory)
    {
-      val iter = createIterator();
+      StreamingEntityIterator<TMTranslationUnit> iter = createIterator();
       try
       {
-         val q = iter.getSession().createQuery(
+         Query q = iter.getSession().createQuery(
                "from TMTranslationUnit tu " +
                "inner join fetch tu.translationMemory tm " +
                "inner join fetch tu.transUnitVariants " +

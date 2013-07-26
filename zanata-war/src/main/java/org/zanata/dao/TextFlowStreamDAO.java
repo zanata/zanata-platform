@@ -24,8 +24,8 @@ package org.zanata.dao;
 import javax.annotation.Nonnull;
 
 import lombok.NoArgsConstructor;
-import lombok.val;
 
+import org.hibernate.Query;
 import org.hibernate.ejb.HibernateEntityManagerFactory;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Name;
@@ -63,10 +63,10 @@ public class TextFlowStreamDAO extends StreamingDAO<HTextFlow>
     */
    public @Nonnull CloseableIterator<HTextFlow> findTextFlows()
    {
-      val iter = createIterator();
+      StreamingEntityIterator<HTextFlow> iter = createIterator();
       try
       {
-         val q = iter.getSession().createQuery(
+         Query q = iter.getSession().createQuery(
                "from HTextFlow tf " + 
                "inner join fetch tf.targets target " + 
                "inner join fetch target.locale " + 
@@ -98,10 +98,10 @@ public class TextFlowStreamDAO extends StreamingDAO<HTextFlow>
     */
    public @Nonnull CloseableIterator<HTextFlow> findTextFlowsByProject(HProject hProject)
    {
-      val iter = createIterator();
+      StreamingEntityIterator<HTextFlow> iter = createIterator();
       try
       {
-         val q = iter.getSession().createQuery(
+         Query q = iter.getSession().createQuery(
                "from HTextFlow tf " + 
                "inner join fetch tf.targets target " + 
                "inner join fetch target.locale " + 
@@ -134,10 +134,10 @@ public class TextFlowStreamDAO extends StreamingDAO<HTextFlow>
     */
    public @Nonnull CloseableIterator<HTextFlow> findTextFlowsByProjectIteration(HProjectIteration hProjectIteration)
    {
-      val iter = createIterator();
+      StreamingEntityIterator<HTextFlow> iter = createIterator();
       try
       {
-         val q = iter.getSession().createQuery(
+         Query q = iter.getSession().createQuery(
                "from HTextFlow tf " + 
                "inner join fetch tf.targets target " + 
                "inner join fetch target.locale " + 
