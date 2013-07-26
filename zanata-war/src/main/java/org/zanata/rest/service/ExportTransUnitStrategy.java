@@ -40,12 +40,9 @@ import org.zanata.model.tm.TMTranslationUnit;
 @ParametersAreNonnullByDefault
 public class ExportTransUnitStrategy extends AbstractExportTUStrategy<TMTranslationUnit>
 {
-   private final @Nullable String localeId;
-
-   public ExportTransUnitStrategy(@Nullable String localeId)
+   public ExportTransUnitStrategy()
    {
       super();
-      this.localeId = localeId;
    }
 
    private String resolveSourceLanguage(TMTranslationUnit tu)
@@ -87,20 +84,9 @@ public class ExportTransUnitStrategy extends AbstractExportTUStrategy<TMTranslat
    @Override
    protected void addTextUnitVariants(ITextUnit textUnit, TMTranslationUnit tu)
    {
-      if (localeId != null)
+      for (TMTransUnitVariant tuv: tu.getTransUnitVariants().values())
       {
-         TMTransUnitVariant tuv = tu.getTransUnitVariants().get(localeId);
-         if (tuv != null)
-         {
-            addTUV(textUnit, tuv);
-         }
-      }
-      else
-      {
-         for (TMTransUnitVariant tuv: tu.getTransUnitVariants().values())
-         {
-            addTUV(textUnit, tuv);
-         }
+         addTUV(textUnit, tuv);
       }
    }
 

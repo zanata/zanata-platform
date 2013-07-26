@@ -1,90 +1,72 @@
 package org.zanata.rest.service;
 
+import static org.zanata.model.tm.TMTranslationUnit.tu;
+import static org.zanata.model.tm.TMTransUnitVariant.tuv;
+import static org.zanata.model.tm.TransMemory.tm;
+
 import java.util.Iterator;
-import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.ws.rs.core.StreamingOutput;
 
 import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
-import org.zanata.model.tm.TMTransUnitVariant;
 import org.zanata.model.tm.TMTranslationUnit;
+import org.zanata.model.tm.TransMemory;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 public class ExportTransUnitTest extends TMXStreamingOutputTest
 {
 
    @Test
-   public void exportAllLocales() throws Exception
+   public void exportTransMemory() throws Exception
    {
-      StreamingOutput output = streamSourceContents(null);
+      StreamingOutput output = streamSourceContents();
       checkAllLocales(output);
    }
 
-   @Test
-   public void exportFrench() throws Exception
+   private TMXStreamingOutput<TMTranslationUnit> streamSourceContents()
    {
-      StreamingOutput output = streamSourceContents(LocaleId.FR.getId());
-      checkFrench(output);
-   }
-
-   @Test
-   public void exportGerman() throws Exception
-   {
-      StreamingOutput output = streamSourceContents(LocaleId.DE.getId());
-
-      checkGerman(output);
-   }
-
-   private TMXStreamingOutput<TMTranslationUnit> streamSourceContents(String targetLocale)
-   {
-      return new TMXStreamingOutput<TMTranslationUnit>(createTestData(), new ExportTransUnitStrategy(targetLocale));
+      return new TMXStreamingOutput<TMTranslationUnit>(createTestData(), new ExportTransUnitStrategy());
    }
 
    private @Nonnull Iterator<TMTranslationUnit> createTestData()
    {
+      TransMemory tm = null;
       String fr = LocaleId.FR.getId();
       String de = LocaleId.DE.getId();
       String sourceLoc = sourceLocale.getId();
       return Lists.<TMTranslationUnit>newArrayList(
-            new TMTranslationUnit(
+            tu(
+                  tm,
+                  "doc0:resId0",
                   "doc0:resId0",
                   sourceLoc,
                   "source0",
-                  toMap(new TMTransUnitVariant(fr, "targetFR0"),
-                        new TMTransUnitVariant(de, "targetDE0"))
-                  ),
-            new TMTranslationUnit(
+                  tuv(fr, "targetFR0"),
+                  tuv(de, "targetDE0")),
+            tu(
+                  tm,
+                  "doc0:resId1",
                   "doc0:resId1",
                   sourceLoc,
                   "SOURCE0",
-                  toMap(new TMTransUnitVariant(fr, "TARGETfr0"))
-                  ),
-            new TMTranslationUnit(
+                  tuv(fr, "TARGETfr0")),
+            tu(
+                  tm,
+                  "doc1:resId0",
                   "doc1:resId0",
                   sourceLoc,
                   "source0",
-                  toMap(new TMTransUnitVariant(fr, "targetFR0"))
-                  ),
-            new TMTranslationUnit(
+                  tuv(fr, "targetFR0")),
+            tu(
+                  tm,
+                  "doc1:resId1",
                   "doc1:resId1",
                   sourceLoc,
                   "SOURCE0",
-                  toMap(new TMTransUnitVariant(de, "TARGETde0"))
-                  )).iterator();
-   }
-
-   private Map<String, TMTransUnitVariant> toMap(TMTransUnitVariant... targetContents)
-   {
-      Map<String, TMTransUnitVariant> map = Maps.newHashMap();
-      for (TMTransUnitVariant target : targetContents)
-      {
-         map.put(target.getLanguage(), target);
-      }
-      return map;
+                  tuv(de, "TARGETde0"))).iterator();
    }
 
 }

@@ -31,8 +31,6 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.Lob;
-import javax.persistence.MapKeyClass;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.MapKeyEnumerated;
 import javax.persistence.OneToMany;
@@ -53,7 +51,7 @@ import lombok.ToString;
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Entity
-@EqualsAndHashCode(callSuper = true, of = {"name"})
+@EqualsAndHashCode(callSuper = true, of = {"description"})
 @ToString(exclude = "translationUnits")
 @Data
 @Access(AccessType.FIELD)
@@ -65,6 +63,13 @@ public class TransMemory extends SlugEntityBase implements HasTMMetadata
 
    @Column(name = "source_language", nullable = true)
    private String sourceLanguage;
+   
+   public static TransMemory tm(String slug)
+   {
+      TransMemory tm = new TransMemory();
+      tm.setSlug(slug);
+      return tm;
+   }
 
    @Setter(AccessLevel.PROTECTED)
    // Only cascade on remove as the relationship is managed by the other side

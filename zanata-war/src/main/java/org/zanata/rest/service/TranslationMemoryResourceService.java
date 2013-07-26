@@ -24,16 +24,10 @@ import java.io.InputStream;
 import java.util.Iterator;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
-import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.seam.annotations.In;
@@ -44,6 +38,7 @@ import org.jboss.seam.annotations.security.Restrict;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowStreamDAO;
 import org.zanata.dao.TransMemoryDAO;
+import org.zanata.dao.TransMemoryStreamingDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
@@ -53,6 +48,7 @@ import org.zanata.model.tm.TransMemory;
 import org.zanata.service.LocaleService;
 import org.zanata.tmx.TMXParser;
 
+import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 
 @Name("translationMemoryResourceService")
@@ -69,6 +65,8 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
    private RestSlugValidator restSlugValidator;
    @In
    private TextFlowStreamDAO textFlowStreamDAO;
+   @In
+   private TransMemoryStreamingDAO transMemoryStreamingDAO;
    @In
    private TransMemoryDAO transMemoryDAO;
    @In
@@ -124,21 +122,18 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
    }
 
    @Override
-   public Response getTranslationMemory(@Nonnull String slug, @Nullable String locale)
+   public Response getTranslationMemory(@Nonnull String slug)
    {
-      log.debug("exporting TMX for translation memory {}, locale {}", slug, locale);
+      log.debug("exporting TMX for translation memory {}", slug);
       Iterator<? extends TMTranslationUnit> tuIter;
       TransMemory transMemory = transMemoryDAO.getBySlug(slug);
       if (transMemory == null)
       {
          throw new ZanataServiceException("Translation memory " + slug + " was not found.", 404);
       }
-      // TODO check locale?
-      // FIXME:
-//      tuIter = transMemoryStreamDAO.findTransUnitsByTM(transMemory);
-      tuIter = null;
-      String filename = makeTMXFilename(slug, locale);
-      return buildTMX(tuIter, locale, filename);
+      tuIter = transMemoryStreamingDAO.findTransUnitsByTM(transMemory);
+      String filename = makeTMXFilename(slug);
+      return buildTMX(tuIter, filename);
    }
 
    @Override
@@ -166,14 +161,13 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
          @Nonnull Iterator<? extends SourceContents> tuIter,
          @Nullable LocaleId locale, @Nonnull String filename)
    {
-      StreamingOutput output = new TMXStreamingOutput(tuIter, locale, new ExportSourceContentsStrategy(locale));
+      val output = new TMXStreamingOutput(tuIter, new ExportSourceContentsStrategy(locale));
       return okResponse(filename, output);
    }
 
-   private Response buildTMX(Iterator<? extends TMTranslationUnit> tuIter, String locale, String filename)
+   private Response buildTMX(Iterator<? extends TMTranslationUnit> tuIter, String filename)
    {
-      LocaleId localeId = locale == null ? null : new LocaleId(locale);
-      StreamingOutput output = new TMXStreamingOutput(tuIter, localeId, new ExportTransUnitStrategy(localeId));
+      val output = new TMXStreamingOutput(tuIter, new ExportTransUnitStrategy());
       return okResponse(filename, output);
    }
 
@@ -193,10 +187,9 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
       return "zanata-"+p+"-"+i+"-"+l+".tmx";
    }
 
-   private static @Nonnull String makeTMXFilename(@Nullable String tmSlug, @Nullable String locale)
+   private static @Nonnull String makeTMXFilename(@Nullable String tmSlug)
    {
-      String l = locale != null ? locale : "allLocales";
-      return "zanata-"+tmSlug+"-"+l+".tmx";
+      return "zanata-"+tmSlug+".tmx";
    }
 
 }

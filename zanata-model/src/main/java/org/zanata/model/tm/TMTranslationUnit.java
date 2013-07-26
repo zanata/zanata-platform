@@ -31,11 +31,8 @@ import javax.persistence.EnumType;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.Lob;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
-import javax.persistence.MapKeyClass;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.MapKeyEnumerated;
 import javax.persistence.OneToMany;
@@ -63,8 +60,15 @@ public class TMTranslationUnit extends ModelEntityBase implements HasTMMetadata
 {
    private static final long serialVersionUID = 1L;
 
-   public TMTranslationUnit(String transUnitId, String sourceLanguage, String sourceContent, Map<String, TMTransUnitVariant> transUnitVariants)
+   public static TMTranslationUnit tu(TransMemory tm, String uniqueId, String transUnitId, String sourceLanguage, String sourceContent, TMTransUnitVariant... transUnitVariants)
    {
+      return new TMTranslationUnit(tm, uniqueId, transUnitId, sourceLanguage, sourceContent, TMTransUnitVariant.newMap(transUnitVariants));
+   }
+
+   public TMTranslationUnit(TransMemory tm, String uniqueId, String transUnitId, String sourceLanguage, String sourceContent, Map<String, TMTransUnitVariant> transUnitVariants)
+   {
+      this.translationMemory = tm;
+      this.uniqueId = uniqueId;
       this.transUnitId = transUnitId;
       this.transUnitVariants = transUnitVariants;
       this.sourceLanguage = sourceLanguage;

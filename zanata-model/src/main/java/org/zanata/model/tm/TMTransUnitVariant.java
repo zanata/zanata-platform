@@ -87,6 +87,11 @@ public class TMTransUnitVariant extends ModelEntityBase implements HasTMMetadata
    @Column(name = "metadata", length = Integer.MAX_VALUE)
    private Map<TMMetadataType, String> metadata = Maps.newHashMap();
 
+   public static TMTransUnitVariant tuv(String language, String content)
+   {
+      return new TMTransUnitVariant(language, content);
+   }
+
    public TMTransUnitVariant(String language, String content)
    {
       this.language = language;
@@ -115,4 +120,15 @@ public class TMTransUnitVariant extends ModelEntityBase implements HasTMMetadata
    {
       return false;
    }
+
+   public static Map<String, TMTransUnitVariant> newMap(TMTransUnitVariant... tuvs)
+   {
+      Map<String, TMTransUnitVariant> map = Maps.newHashMap();
+      for (TMTransUnitVariant target : tuvs)
+      {
+         map.put(target.getLanguage(), target);
+      }
+      return map;
+   }
+
 }

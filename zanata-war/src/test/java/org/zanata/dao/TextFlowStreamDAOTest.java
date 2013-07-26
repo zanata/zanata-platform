@@ -16,6 +16,8 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.util.CloseableIterator;
 
+import com.google.common.collect.Iterators;
+
 @Test(groups = { "jpa-tests" })
 public class TextFlowStreamDAOTest extends ZanataDbunitJpaTest
 {
@@ -48,13 +50,7 @@ public class TextFlowStreamDAOTest extends ZanataDbunitJpaTest
    {
       @Cleanup
       CloseableIterator<HTextFlow> iter = dao.findTextFlows();
-      int n = 0;
-      while (iter.hasNext())
-      {
-         iter.next();
-         ++n;
-      }
-      assertThat(n, equalTo(5));
+      assertThat(Iterators.size(iter), equalTo(5));
    }
 
    @Test
@@ -63,13 +59,7 @@ public class TextFlowStreamDAOTest extends ZanataDbunitJpaTest
       HProject proj = projectDao.getBySlug("sample-project");
       @Cleanup
       CloseableIterator<HTextFlow> iter = dao.findTextFlowsByProject(proj);
-      int n = 0;
-      while (iter.hasNext())
-      {
-         iter.next();
-         ++n;
-      }
-      assertThat(n, equalTo(5));
+      assertThat(Iterators.size(iter), equalTo(5));
    }
 
    @Test
@@ -87,13 +77,7 @@ public class TextFlowStreamDAOTest extends ZanataDbunitJpaTest
       HProjectIteration projIter = projectIterDao.getBySlug("sample-project", "1.0");
       @Cleanup
       CloseableIterator<HTextFlow> iter = dao.findTextFlowsByProjectIteration(projIter);
-      int n = 0;
-      while (iter.hasNext())
-      {
-         iter.next();
-         ++n;
-      }
-      assertThat(n, equalTo(5));
+      assertThat(Iterators.size(iter), equalTo(5));
    }
 
    @Test

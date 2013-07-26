@@ -21,18 +21,13 @@
 
 package org.zanata.dao;
 
-import java.io.Closeable;
-import java.util.Iterator;
-
 import javax.annotation.Nonnull;
 
-import org.hibernate.Query;
-import org.hibernate.ScrollMode;
-import org.hibernate.ScrollableResults;
-import org.hibernate.Session;
+import lombok.NoArgsConstructor;
+import lombok.val;
+
 import org.hibernate.ejb.HibernateEntityManagerFactory;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.EntityStatus;
@@ -52,97 +47,13 @@ import org.zanata.util.CloseableIterator;
 
 // TODO queries should only return Translated/Approved TFTs
 // TODO build related queries using querydsl
-public class TextFlowStreamDAO
+@NoArgsConstructor
+public class TextFlowStreamDAO extends StreamingDAO<HTextFlow>
 {
-
-   @In
-   private HibernateEntityManagerFactory entityManagerFactory;
-   // MIN_VALUE gives a hint to mysql JDBC driver to stream results instead of keeping everything in memory.
-   // Note that this will tie up the JDBC connection until the ResultSet is closed.
-   // See http://www.numerati.com/2012/06/26/reading-large-result-sets-with-hibernate-and-mysql/
-   // and http://dev.mysql.com/doc/refman/5.5/en/connector-j-reference-implementation-notes.html
-   private int fetchSize = Integer.MIN_VALUE;
-
-   public TextFlowStreamDAO()
-   {
-   }
 
    public TextFlowStreamDAO(HibernateEntityManagerFactory emf)
    {
-      this.entityManagerFactory = emf;
-   }
-
-   class HTextFlowIterator implements CloseableIterator<HTextFlow>
-   {
-      private final @Nonnull Session session;
-      private int rowNum;
-      private ScrollableResultsIterator srIter;
-
-      public HTextFlowIterator(@Nonnull Session session)
-      {
-         this.session = session;
-      }
-
-      @Override
-      public void close()
-      {
-         if (srIter != null)
-         {
-            srIter.close();
-         }
-         session.close();
-      }
-
-      @Override
-      protected void finalize() throws Throwable
-      {
-         close();
-      }
-
-      @Override
-      public boolean hasNext()
-      {
-         return srIter.hasNext();
-      }
-
-      @Override
-      public HTextFlow next()
-      {
-         if (++rowNum % 1000 == 0) session.clear();
-         HTextFlow tf = (HTextFlow) srIter.next()[0];
-         session.evict(tf);
-         return tf;
-      }
-
-      @Override
-      public void remove()
-      {
-         throw new UnsupportedOperationException();
-      }
-
-      public void setQuery(Query q)
-      {
-         q.setFetchSize(fetchSize);
-         q.setReadOnly(true);
-         ScrollableResults scroll = q.scroll(ScrollMode.FORWARD_ONLY);
-         srIter = new ScrollableResultsIterator(scroll);
-      }
-
-   }
-
-   private HTextFlowIterator createIterator()
-   {
-      @SuppressWarnings("null")
-      @Nonnull Session session = entityManagerFactory.getSessionFactory().openSession();
-      try
-      {
-         return new HTextFlowIterator(session);
-      }
-      catch (Throwable e)
-      {
-         session.close();
-         throw new RuntimeException(e);
-      }
+      super(emf);
    }
 
    /**
@@ -152,10 +63,10 @@ public class TextFlowStreamDAO
     */
    public @Nonnull CloseableIterator<HTextFlow> findTextFlows()
    {
-      HTextFlowIterator iter = createIterator();
+      val iter = createIterator();
       try
       {
-         Query q = iter.session.createQuery(
+         val q = iter.getSession().createQuery(
                "from HTextFlow tf " + 
                "inner join fetch tf.targets target " + 
                "inner join fetch target.locale " + 
@@ -169,7 +80,7 @@ public class TextFlowStreamDAO
                "and tf.obsolete=0 "
                );
          q.setParameter("OBSOLETE", EntityStatus.OBSOLETE);
-         q.setComment("TextFlowStatelessDAO.findTextFlows");
+         q.setComment("TextFlowStreamDAO.findTextFlows");
          iter.setQuery(q);
          return iter;
       }
@@ -187,10 +98,10 @@ public class TextFlowStreamDAO
     */
    public @Nonnull CloseableIterator<HTextFlow> findTextFlowsByProject(HProject hProject)
    {
-      HTextFlowIterator iter = createIterator();
+      val iter = createIterator();
       try
       {
-         Query q = iter.session.createQuery(
+         val q = iter.getSession().createQuery(
                "from HTextFlow tf " + 
                "inner join fetch tf.targets target " + 
                "inner join fetch target.locale " + 
@@ -205,7 +116,7 @@ public class TextFlowStreamDAO
                );
          q.setParameter("OBSOLETE", EntityStatus.OBSOLETE);
          q.setParameter("proj", hProject);
-         q.setComment("TextFlowStatelessDAO.findTextFlowsByProject");
+         q.setComment("TextFlowStreamDAO.findTextFlowsByProject");
          iter.setQuery(q);
          return iter;
       }
@@ -223,10 +134,10 @@ public class TextFlowStreamDAO
     */
    public @Nonnull CloseableIterator<HTextFlow> findTextFlowsByProjectIteration(HProjectIteration hProjectIteration)
    {
-      HTextFlowIterator iter = createIterator();
+      val iter = createIterator();
       try
       {
-         Query q = iter.session.createQuery(
+         val q = iter.getSession().createQuery(
                "from HTextFlow tf " + 
                "inner join fetch tf.targets target " + 
                "inner join fetch target.locale " + 
@@ -239,7 +150,7 @@ public class TextFlowStreamDAO
                "and tf.document.projectIteration=:iter"
                );
          q.setParameter("iter", hProjectIteration);
-         q.setComment("TextFlowStatelessDAO.findTextFlowsByProjectIteration");
+         q.setComment("TextFlowStreamDAO.findTextFlowsByProjectIteration");
 
          iter.setQuery(q);
          return iter;
