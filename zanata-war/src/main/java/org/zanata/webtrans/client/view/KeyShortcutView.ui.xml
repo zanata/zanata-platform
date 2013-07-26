@@ -10,30 +10,30 @@
 			border-radius: 8px;
 			padding: 20px;
 		}
-		
+
 		.keyShortcutHeading {
 			font-size: 1.4em;
 		}
-		
+
 		.keyShortcutCategoryTitle {
 			font-size: 1.2em;
 			padding:4px 0;
 		}
-		
+
 		.keyShortcutTable
 		{
 			padding-bottom:5px;
 			font-size: 1.2em;
 		}
-		
+
 		.keyShortcutTable td
 		{
-			color:#FFA07A;
+			color: #ccc;
 			background:black;
-			padding: 2px 10px;
+			padding: 2px 10px 2px 0;
 			border-width: 0px;
 			border-bottom-width: 1px;
-			border-color: #301a1a;
+			border-color: #444;
 		}
 	</ui:style>
 
@@ -41,7 +41,7 @@
 		<g:cell horizontalAlignment="ALIGN_CENTER">
 			<g:Label ui:field="heading" styleName="{style.keyShortcutHeading}"/>
 		</g:cell>
-		
+
 		<g:cell>
 			<g:FlowPanel ui:field="shortcutContainer"/>
 		</g:cell>

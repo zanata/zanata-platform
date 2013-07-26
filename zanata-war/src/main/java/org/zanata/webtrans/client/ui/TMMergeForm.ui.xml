@@ -12,7 +12,7 @@
         }
 
         .ignore_action {
-            background-color: white;
+            background-color: #a2b4c3;
             text-align: center;
             width: 100px;
             display: block
@@ -26,14 +26,14 @@
         }
 
         .approved_action {
-            background-color: #099B09;
+            background-color: #70a98b;
             text-align: center;
             width: 100px;
             display: block
         }
 
         .reject_action {
-            background-color: red;
+            background-color: #e3824e;
             text-align: center;
             width: 100px;
             display: block

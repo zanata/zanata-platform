@@ -8,12 +8,11 @@
 	<ui:style field="style"
 		type="org.zanata.webtrans.client.ui.TooltipPopupPanel.Styles">
         .transUnitCountTooltip {
-            background-color: #FBFBFB;
+            background-color: #fff;
             text-align: center;
-            border-radius: 10px;
-            border: 2px solid #818181;
             padding: 2px;
             z-index: 100;
+            box-shadow: 0 1px 2px rgba($black, 0.2);
         }
 
         .table {
@@ -23,7 +22,7 @@
 
         .table td {
             width: 75px;
-            border-radius: 2px;
+            font-weight: 600;
         }
 
         .topHeader {
@@ -31,39 +30,40 @@
             color: #4F4F4F;
             white-space: nowrap;
             padding: 2px;
+            font-weight: 700;
         }
 
         .translated-header {
             border: none;
-            color: #002D00;
+            color: #70a98b;
             white-space: nowrap;
             padding: 2px;
         }
 
         .rejected-header {
             border: none;
-            color: darkred;
+            color: #e3824e;
             white-space: nowrap;
             padding: 2px;
         }
 
         .approved-header {
             border: none;
-            color: #00008b;
+            color: #4e9fdd;
             white-space: nowrap;
             padding: 2px;
         }
 
         .draft-header {
             border: none;
-            color: #7D3E00;
+            color: #e0c350;
             white-space: nowrap;
             padding: 2px;
         }
 
         .untranslated-header {
             border: none;
-            color: #6D6D6D;
+            color: #a2b4c3;
             white-space: nowrap;
             padding: 2px;
         }
@@ -76,32 +76,28 @@
         }
 
         .total {
-            border: 1px solid #6D6D6D;
+            border: none;
             color: #4F4F4F;
         }
 
         .translated {
-            background: #099B09;
-            border: 1px solid #006900;
-            color: #002D00;
+            background: #70a98b;
+            color: #fff;
         }
 
         .approved {
-            background: lightblue;
-            border: 1px solid #0000ff;
-            color: #0000CD;
+            background: #4e9fdd;
+            color: #fff;
         }
 
         .draft {
             background: #e0c350;
-            border: 1px solid #CD8E00;
-            color: #7D3E00;
+            color: #fff;
         }
 
         .untranslated {
-            background: #E5E5E5;
-            border: 1px solid #B3B3B3;
-            color: #6D6D6D;
+            background: #a2b4c3;
+            color: #fff;
         }
 
     </ui:style>
