@@ -65,8 +65,8 @@ public interface TranslationMemoryResource
    @GET
    @Path("{slug}")
    public Response getTranslationMemory(
-         @PathParam("slug") @Nonnull String slug,
-         @PathParam("locale") @Nullable String locale);
+         @PathParam("slug") @Nonnull String slug);
+
 
    @POST
    @Path("{slug}")
