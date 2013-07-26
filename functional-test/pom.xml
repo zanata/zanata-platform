@@ -248,7 +248,7 @@
 
                                     <!-- security and jndi for properties -->
                                     <configfile>
-                                        <file>${project.basedir}/src/test/resources/conf/standalone.xml</file>
+                                        <file>${project.build.testOutputDirectory}/conf/standalone.xml</file>
                                         <todir>configuration</todir>
                                     </configfile>
 
@@ -350,6 +350,7 @@
                     <include>**/*.sql</include>
                     <include>**/log4j.xml</include>
                     <include>**/zanata-ds.xml</include>
+                    <include>conf/standalone.xml</include>
                 </includes>
             </testResource>
             <testResource>
