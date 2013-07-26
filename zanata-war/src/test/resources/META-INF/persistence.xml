@@ -18,7 +18,8 @@
 		 -->
 		 
 		<!-- <mapping-file>META-INF/orm.xml</mapping-file> -->
-
+		
+		<class>org.zanata.model.Activity</class>
         <class>org.zanata.model.HAccount</class>
         <class>org.zanata.model.HAccountActivationKey</class>
         <class>org.zanata.model.HAccountOption</class>

@@ -20,21 +20,21 @@
  */
 package org.zanata.page.administration;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.google.common.base.Predicate;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.zanata.page.AbstractPage;
-import com.google.common.base.Predicate;
+import org.zanata.page.BasePage;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 
-public class ManageUserAccountPage extends AbstractPage
+public class ManageUserAccountPage extends BasePage
 {
    @FindBy(id = "userdetailForm:passwordField:password")
    private WebElement passwordField;

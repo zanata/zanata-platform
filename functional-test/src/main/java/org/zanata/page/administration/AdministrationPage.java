@@ -23,9 +23,9 @@ package org.zanata.page.administration;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.zanata.page.AbstractPage;
+import org.zanata.page.BasePage;
 
-public class AdministrationPage extends AbstractPage
+public class AdministrationPage extends BasePage
 {
    @FindBy(id = "Admin_Manage_languages_home")
    private WebElement manageLanguagesLink;

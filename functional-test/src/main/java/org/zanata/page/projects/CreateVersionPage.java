@@ -27,9 +27,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.Select;
-import org.zanata.page.AbstractPage;
+import org.zanata.page.BasePage;
 
-public class CreateVersionPage extends AbstractPage
+public class CreateVersionPage extends BasePage
 {
    @FindBy(id = "iterationForm:slugField:slug")
    private WebElement versionIdField;
@@ -80,7 +80,7 @@ public class CreateVersionPage extends AbstractPage
 
    public ProjectVersionPage saveVersion()
    {
-      clickSaveAndCheckErrors(saveButton);
+      clickAndCheckErrors(saveButton);
       return new ProjectVersionPage(getDriver());
    }
 }

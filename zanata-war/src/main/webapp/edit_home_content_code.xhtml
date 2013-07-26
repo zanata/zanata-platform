@@ -7,13 +7,13 @@
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:a4j="http://richfaces.org/a4j"
     xmlns:rich="http://richfaces.org/rich"
-    template="/WEB-INF/template/template.xhtml">
+    template="/WEB-INF/template/template_old.xhtml">
 
 <ui:define name="page_title">#{messages['jsf.server.EditHomePageCode.label']}</ui:define>
 <ui:define name="center_content" >
     <h1>#{messages['jsf.HomepageContent']}</h1>
 
-<h:form>
+<h:form id="homeContentForm">
     <s:token allowMultiplePosts="true" />
     <rich:panel id="loggedIn" >
 	    <h:inputTextarea id="homeContent"

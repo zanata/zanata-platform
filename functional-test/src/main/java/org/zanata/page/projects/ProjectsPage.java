@@ -20,21 +20,20 @@
  */
 package org.zanata.page.projects;
 
-import java.util.Collections;
-import java.util.List;
-
+import com.google.common.base.Function;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.zanata.page.AbstractPage;
+import org.zanata.page.BasePage;
 import org.zanata.util.WebElementUtil;
-import com.google.common.base.Function;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.Collections;
+import java.util.List;
 
 @Slf4j
-public class ProjectsPage extends AbstractPage
+public class ProjectsPage extends BasePage
 {
    public static final int PROJECT_NAME_COLUMN = 0;
    @FindBy(id = "main_body_content")

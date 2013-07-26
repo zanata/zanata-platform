@@ -20,16 +20,11 @@
  */
 package org.zanata.page;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-
-import javax.annotation.Nullable;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 import org.openqa.selenium.support.ui.FluentWait;
@@ -37,12 +32,7 @@ import org.zanata.util.WebElementUtil;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
-import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,17 +41,17 @@ public class AbstractPage
 {
    private final WebDriver driver;
    private final FluentWait<WebDriver> ajaxWaitForTenSec;
-   private List<WebElement> navMenuItems = Collections.emptyList();
 
-   @FindBy(className = "navBar")
-   WebElement navBar;
+   public void deleteCookies()
+   {
+      getDriver().manage().deleteAllCookies();
+   }
 
    public AbstractPage(final WebDriver driver)
    {
       PageFactory.initElements(new AjaxElementLocatorFactory(driver, 10), this);
       this.driver = driver;
       ajaxWaitForTenSec = WebElementUtil.waitForTenSeconds(driver);
-      navMenuItems = navBar.findElements(By.tagName("a"));
    }
 
    public WebDriver getDriver()
@@ -72,63 +62,6 @@ public class AbstractPage
    public String getTitle()
    {
       return driver.getTitle();
-   }
-
-   public List<String> getBreadcrumbLinks()
-   {
-      List<WebElement> breadcrumbs = driver.findElement(By.id("breadcrumbs_panel")).findElements(By.className("breadcrumbs_link"));
-      return WebElementUtil.elementsToText(breadcrumbs);
-   }
-
-   public String getLastBreadCrumbText()
-   {
-      WebElement breadcrumb = driver.findElement(By.id("breadcrumbs_panel")).findElement(By.className("breadcrumbs_display"));
-      return breadcrumb.getText();
-   }
-
-   public <P> P clickBreadcrumb(final String link, Class<P> pageClass)
-   {
-      List<WebElement> breadcrumbs = driver.findElement(By.id("breadcrumbs_panel")).findElements(By.className("breadcrumbs_link"));
-      Predicate<WebElement> predicate = new Predicate<WebElement>()
-      {
-         @Override
-         public boolean apply(WebElement input)
-         {
-            return input.getText().equals(link);
-         }
-      };
-      Optional<WebElement> breadcrumbLink = Iterables.tryFind(breadcrumbs, predicate);
-      if (breadcrumbLink.isPresent())
-      {
-         breadcrumbLink.get().click();
-         return PageFactory.initElements(driver, pageClass);
-      }
-      throw new RuntimeException("can not find " + link + " in breadcrumb: " + WebElementUtil.elementsToText(breadcrumbs));
-   }
-
-   public List<String> getNavigationMenuItems()
-   {
-      Collection<String> linkTexts = Collections2.transform(navMenuItems, new Function<WebElement, String>()
-      {
-         @Override
-         public String apply(WebElement link)
-         {
-            return link.getText();
-         }
-      });
-      return ImmutableList.copyOf(linkTexts);
-   }
-
-   public <P> P goToPage(String navLinkText, Class<P> pageClass)
-   {
-      log.info("click {} and go to page {}", navLinkText, pageClass.getName());
-      List<String> navigationMenuItems = getNavigationMenuItems();
-      int menuItemIndex = navigationMenuItems.indexOf(navLinkText);
-
-      Preconditions.checkState(menuItemIndex >= 0, navLinkText + " is not available in navigation menu");
-
-      navMenuItems.get(menuItemIndex).click();
-      return PageFactory.initElements(driver, pageClass);
    }
 
    // TODO this doesn't seem useful
@@ -145,9 +78,9 @@ public class AbstractPage
       return ajaxWaitForTenSec;
    }
    
-   protected void clickSaveAndCheckErrors(WebElement saveButton)
+   protected void clickAndCheckErrors(WebElement button)
    {
-      saveButton.click();
+      button.click();
       List<String> errors = getErrors();
       if (!errors.isEmpty())
       {
@@ -155,9 +88,9 @@ public class AbstractPage
       }
    }
 
-   protected void clickSaveAndExpectErrors(WebElement saveButton)
+   protected void clickAndExpectErrors(WebElement button)
    {
-      saveButton.click();
+      button.click();
       List<String> errors = getErrors();
       if (errors.isEmpty())
       {
@@ -169,6 +102,22 @@ public class AbstractPage
    {
       List<WebElement> errorSpans = getDriver().findElements(By.xpath("//span[@class='errors']"));
       return WebElementUtil.elementsToText(errorSpans);
+   }
+
+   /*
+    * Wait for all necessary entities to be available
+    */
+   public void waitForPage(List<String> elements) {
+      for (final String element : elements) {
+         waitForTenSec().until(new Function<WebDriver, WebElement>()
+         {
+            @Override
+            public WebElement apply(WebDriver driver)
+            {
+               return getDriver().findElement(By.id(element));
+            }
+         });
+      }
    }
 
    protected <P extends AbstractPage> P refreshPageUntil(P currentPage, Predicate<WebDriver> predicate)

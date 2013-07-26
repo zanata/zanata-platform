@@ -1,29 +1,24 @@
 package org.zanata.page.groups;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.FluentWait;
-import org.zanata.page.AbstractPage;
+import org.zanata.page.BasePage;
 import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
-import com.google.common.base.Function;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 
-import lombok.extern.slf4j.Slf4j;
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Slf4j
-public class VersionGroupPage extends AbstractPage
+public class VersionGroupPage extends BasePage
 {
    @FindBy(linkText = "Add Project Versions")
    private WebElement addProjectVersionsLink;

@@ -1,0 +1,37 @@
+<div class="g__item l--push-v-1 w--1-2 w--4-10-h" xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich">
+                
+	<div class="l--push-left-half">
+		<h2 class="heading--secondary">#{messages['jsf.YourActivity']}</h2>
+	</div>
+	<ul class="list--no-bullets">
+		<ui:repeat value="#{dashboardAction.getActivities()}" var="activity">
+			<li class="l--pad-all-half bg--high--hover bg--faint">
+	        	<div class="g--tight">
+				  <div class="g__item w--9-12">
+				  	<p>
+				  		<h:outputText value="#{dashboardAction.getHtmlMessage(activity)}" escape="false"/>
+				  	</p>
+				  </div>
+				  
+				  <div class="g__item w--3-12">
+				    <p class="txt--meta txt--align-right">#{dashboardAction.getTimeSinceAndType(activity)}</p>
+				  </div>
+				</div>
+				<p class="txt--meta l--push-top-half">
+					<a href="#">
+						<i aria-hidden="true" class="i i--document txt--neutral"></i>
+						<span class="is-invisible">Document</span> StringResource
+					</a>
+					<i aria-hidden="true" class="i i--language txt--neutral d--left l--push-left-half l--pad-left-half"></i>
+					<span class="is-invisible">Language</span>  
+					<a href="#">Language: zh-Hant中文 (繁體中文)</a>
+				</p>
+	     	</li>
+     	</ui:repeat>
+	</ul>
+</div>

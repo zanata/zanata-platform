@@ -31,7 +31,6 @@ import javax.persistence.EntityManager;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.apache.http.Header;
 import org.hibernate.HibernateException;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -51,6 +50,7 @@ import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
+import org.zanata.events.DocumentUploadedEvent;
 import org.zanata.events.TextFlowTargetStateEvent;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.lock.Lock;
@@ -76,6 +76,9 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 @Name("translationServiceImpl")
@@ -138,10 +141,17 @@ public class TranslationServiceImpl implements TranslationService
       HTextFlow sampleHTextFlow = entityManager.find(HTextFlow.class, translationRequests.get(0).getTransUnitId().getValue());
       HProjectIteration projectIteration = sampleHTextFlow.getDocument().getProjectIteration();
       HLocale hLocale = validateLocale(localeId, projectIteration);
+
+      // single permission check - assumes update requests are all from same project
+      validateReviewPermissionIfApplicable(translationRequests, projectIteration, hLocale);
+
       for (TransUnitUpdateRequest request : translationRequests)
       {
          HTextFlow hTextFlow = entityManager.find(HTextFlow.class, request.getTransUnitId().getValue());
+
          HTextFlowTarget hTextFlowTarget = textFlowTargetDAO.getOrCreateTarget(hTextFlow, hLocale);
+         // if hTextFlowTarget is created, any further hibernate fetch will trigger an implicit flush
+         // (which will save this target even if it's not fully ready!!!)
          if (request.hasTargetComment())
          {
             hTextFlowTarget.setComment(new HSimpleComment(request.getTargetComment()));
@@ -156,7 +166,8 @@ public class TranslationServiceImpl implements TranslationService
             try
             {
                int nPlurals = getNumPlurals(hLocale, hTextFlow);
-               result.targetChanged = translate(hTextFlowTarget, request.getNewContents(), request.getNewContentState(), nPlurals, projectIteration);
+               result.targetChanged = translate(hTextFlowTarget, request.getNewContents(), request.getNewContentState(),
+                     nPlurals, projectIteration.getRequireTranslationReview());
                result.isSuccess = true;
             }
             catch (HibernateException e)
@@ -168,7 +179,8 @@ public class TranslationServiceImpl implements TranslationService
          else
          {
             // concurrent edits not allowed
-            log.warn("translation failed for textflow {}: base versionNum {} does not match current versionNum {}", new Object[] { hTextFlow.getId(), request.getBaseTranslationVersion(), hTextFlowTarget.getVersionNum() });
+            log.warn("translation failed for textflow {}: base versionNum {} does not match current versionNum {}",
+                  hTextFlow.getId(), request.getBaseTranslationVersion(), hTextFlowTarget.getVersionNum());
             result.isSuccess = false;
          }
          result.translatedTextFlowTarget = hTextFlowTarget;
@@ -176,6 +188,27 @@ public class TranslationServiceImpl implements TranslationService
       }
 
       return results;
+   }
+
+   private void validateReviewPermissionIfApplicable(List<TransUnitUpdateRequest> translationRequests, HProjectIteration projectIteration, HLocale hLocale)
+   {
+      Optional<TransUnitUpdateRequest> hasReviewRequest = Iterables.tryFind(translationRequests, new Predicate<TransUnitUpdateRequest>()
+      {
+         @Override
+         public boolean apply(TransUnitUpdateRequest input)
+         {
+            return isReviewState(input.getNewContentState());
+         }
+      });
+      if (hasReviewRequest.isPresent())
+      {
+         identity.checkPermission("translation-review", projectIteration.getProject(), hLocale);
+      }
+   }
+
+   private static boolean isReviewState(ContentState contentState)
+   {
+      return contentState == ContentState.Approved || contentState == ContentState.Rejected;
    }
 
    /**
@@ -223,11 +256,11 @@ public class TranslationServiceImpl implements TranslationService
 
    private boolean translate(@Nonnull
                              HTextFlowTarget hTextFlowTarget, @Nonnull
-                             List<String> contentsToSave, ContentState requestedState, int nPlurals, HProjectIteration projectIteration)
+                             List<String> contentsToSave, ContentState requestedState, int nPlurals, Boolean requireTranslationReview)
    {
       boolean targetChanged = false;
       targetChanged |= setContentIfChanged(hTextFlowTarget, contentsToSave);
-      targetChanged |= setContentStateIfChanged(requestedState, hTextFlowTarget, nPlurals, projectIteration);
+      targetChanged |= setContentStateIfChanged(requestedState, hTextFlowTarget, nPlurals, requireTranslationReview);
 
       if (targetChanged || hTextFlowTarget.getVersionNum() == 0)
       {
@@ -236,12 +269,16 @@ public class TranslationServiceImpl implements TranslationService
          hTextFlowTarget.setTextFlowRevision(textFlow.getRevision());
          hTextFlowTarget.setLastModifiedBy(authenticatedAccount.getPerson());
          log.debug("last modified by :{}", authenticatedAccount.getPerson().getName());
-
-         this.signalPostTranslateEvent(hTextFlowTarget);
       }
 
       // save the target histories
       entityManager.flush();
+      
+      //fire event after flush
+      if (targetChanged || hTextFlowTarget.getVersionNum() == 0)
+      {
+         this.signalPostTranslateEvent(hTextFlowTarget);
+      }
 
       return targetChanged;
    }
@@ -275,7 +312,7 @@ public class TranslationServiceImpl implements TranslationService
     */
    private boolean setContentStateIfChanged(@Nonnull
                                             ContentState requestedState, @Nonnull
-                                            HTextFlowTarget target, int nPlurals, HProjectIteration projectIteration)
+                                            HTextFlowTarget target, int nPlurals, boolean requireTranslationReview)
    {
       boolean changed = false;
       ContentState previousState = target.getState();
@@ -286,13 +323,10 @@ public class TranslationServiceImpl implements TranslationService
       {
          log.warn(warning);
       }
-      boolean requireTranslationReview = projectIteration.getRequireTranslationReview();
-      boolean reviewResultState = target.getState() == ContentState.Approved || target.getState() == ContentState.Rejected;
       if (requireTranslationReview)
       {
-         if (reviewResultState)
+         if (isReviewState(target.getState()))
          {
-            identity.checkPermission("translation-review", projectIteration.getProject(), target.getLocale());
             // reviewer saved it
             target.setReviewer(authenticatedAccount.getPerson());
          }
@@ -599,6 +633,14 @@ public class TranslationServiceImpl implements TranslationService
                   return null;
                }
             }.workInTransaction();
+            
+            if(Events.exists())
+            {
+               Events.instance().raiseTransactionSuccessEvent(
+                     DocumentUploadedEvent.EVENT_NAME,
+                     new DocumentUploadedEvent(document.getId(), false, hLocale.getLocaleId()
+               ));
+            }
          }
          catch (Exception e)
          {

@@ -21,10 +21,12 @@
 package org.zanata.feature.versionGroup;
 
 import org.junit.ClassRule;
+import org.junit.experimental.categories.Category;
 import org.junit.experimental.theories.DataPoint;
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
+import org.zanata.feature.DetailedTest;
 import org.zanata.page.groups.CreateVersionGroupPage;
 import org.zanata.util.ResetDatabaseRule;
 import org.zanata.workflow.LoginWorkFlow;
@@ -35,6 +37,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @RunWith(Theories.class)
+@Category(DetailedTest.class)
 public class VersionGroupIDValidationTest {
 
    @ClassRule

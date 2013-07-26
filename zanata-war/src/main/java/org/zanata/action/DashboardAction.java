@@ -27,6 +27,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -35,15 +36,19 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.annotation.CachedMethodResult;
+import org.zanata.common.ActivityType;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.model.Activity;
 import org.zanata.model.HAccount;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.service.ActivityService;
 import org.zanata.service.GravatarService;
 import org.zanata.util.DateUtil;
+import org.zanata.util.ZanataMessages;
 
 @Name("dashboardAction")
 @Scope(ScopeType.PAGE)
@@ -56,6 +61,9 @@ public class DashboardAction implements Serializable
 
    @In
    private GravatarService gravatarServiceImpl;
+   
+   @In
+   private ActivityService activityServiceImpl;
 
    @In
    private ProjectIterationDAO projectIterationDAO;
@@ -68,8 +76,16 @@ public class DashboardAction implements Serializable
 
    @In
    private ZanataIdentity identity;
+   
+   @In
+   private ZanataMessages zanataMessages;
+   
+   @In
+   private ActivityMessageBuilder activityMessageBuilder;
 
    private final int USER_IMAGE_SIZE = 115;
+   private final int ACTIVITIES_COUNT_PER_PAGE = 10;
+   private int activityPageIndex = 0;
 
    private final Comparator<HProject> projectCreationDateComparator = new Comparator<HProject>()
    {
@@ -79,10 +95,6 @@ public class DashboardAction implements Serializable
          return o2.getCreationDate().after(o1.getCreationDate()) ? 1 : -1;
       }
    };
-  
-   public void init()
-   {
-   }
 
    public String getUserImageUrl()
    {
@@ -148,6 +160,7 @@ public class DashboardAction implements Serializable
       return result;
    }
    
+   @CachedMethodResult
    public boolean isUserMaintainer(Long projectId)
    {
       HProject project = getProject(projectId);
@@ -176,5 +189,20 @@ public class DashboardAction implements Serializable
    private HProject getProject(Long projectId)
    {
       return projectDAO.findById(projectId, false);
+   }
+   
+   public List<Activity> getActivities()
+   {
+      return activityServiceImpl.findLatestActivities(authenticatedAccount.getPerson().getId(), activityPageIndex, ACTIVITIES_COUNT_PER_PAGE);
+   }
+   
+   public String getHtmlMessage(Activity activity)
+   {
+      return activityMessageBuilder.getHtmlMessage(activity);
+   }
+   
+   public String getTimeSinceAndType(Activity activity)
+   {
+      return activityMessageBuilder.getTimeSinceAndType(activity);
    }
 }
