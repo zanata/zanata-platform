@@ -68,7 +68,6 @@ import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.hibernate.search.LocaleIdBridge;
 import org.zanata.hibernate.search.StringListBridge;
 import org.zanata.hibernate.search.TextContainerAnalyzerDiscriminator;
-import org.zanata.model.type.EntityType;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
@@ -86,7 +85,7 @@ import com.google.common.collect.Lists;
 @Indexed
 @Setter
 @NoArgsConstructor
-public class HTextFlowTarget extends ModelEntityBase implements HasContents, HasSimpleComment, ITextFlowTargetHistory, Serializable, TargetContents, HasEntityType
+public class HTextFlowTarget extends ModelEntityBase implements HasContents, HasSimpleComment, ITextFlowTargetHistory, Serializable, TargetContents
 {
 
    private static final long serialVersionUID = 302308010797605435L;
@@ -451,10 +450,4 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
       return false;
    }
 
-   @Override
-   @Transient
-   public EntityType getEntityType()
-   {
-      return EntityType.HTexFlowTarget;
-   }
 }

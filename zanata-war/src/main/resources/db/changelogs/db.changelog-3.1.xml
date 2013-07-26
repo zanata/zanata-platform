@@ -66,64 +66,7 @@
             update HLocale_Member set isTranslator = 1;
         </sql>
     </changeSet>
-    
-    
-    <changeSet id="5" author="aeng@redhat.com">
-        <comment>Add Activity table to support log activities.</comment>
-        <createTable tableName="Activity">
-            <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="creationDate" type="DATETIME">
-                <constraints nullable="false" />
-            </column>
-            <column name="lastChanged" type="DATETIME">
-                <constraints nullable="false" />
-            </column>
-            <column name="versionNum" type="int">
-                <constraints nullable="false"/>
-            </column>
-            <column name="actor_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="approxTime" type="DATETIME">
-                <constraints nullable="false" />
-            </column>
-            <column name="startOffsetMillis" type="int">
-                <constraints nullable="false" />
-            </column>
-            <column name="endOffsetMillis" type="int">
-                <constraints nullable="false" />
-            </column>
-            <column name="contextType" type="varchar(150)">
-                <constraints nullable="false" />
-            </column>
-            <column name="context_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="lastTargetType" type="varchar(150)">
-                <constraints nullable="false" />
-            </column>
-            <column name="last_target_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="actionType" type="varchar(150)">
-                <constraints nullable="false" />
-            </column>
-            <column name="eventCount" type="int">
-                <constraints nullable="false"/>
-            </column>
-            <column name="wordCount" type="int">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-        <addForeignKeyConstraint constraintName="FKActivity_person"
-                                 referencedTableName="HPerson" referencedColumnNames="id"
-                                 baseTableName="Activity" baseColumnNames="actor_id"/>
-        
-        <addUniqueConstraint tableName="Activity"
-		    columnNames="actor_id,approxTime,actionType,contextType,context_id" 
-		    constraintName="UKactivity"/>
-    </changeSet>
+
+
 
 </databaseChangeLog>
