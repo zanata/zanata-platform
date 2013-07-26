@@ -21,23 +21,24 @@
 package org.zanata.action;
 
 import java.io.Serializable;
-import java.util.Date;
 
-import org.apache.commons.lang.time.DateUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.ActivityType;
 import org.zanata.common.LocaleId;
+import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.Activity;
 import org.zanata.model.HDocument;
+import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.service.ActivityService;
-import org.zanata.util.DateUtil;
+import org.zanata.util.ZanataMessages;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -47,7 +48,7 @@ import org.zanata.util.DateUtil;
 public class ActivityMessageBuilder implements Serializable
 {
    private static final long serialVersionUID = 1L;
-   
+
    @In
    private ProjectIterationDAO projectIterationDAO;
 
@@ -55,72 +56,97 @@ public class ActivityMessageBuilder implements Serializable
    private ProjectDAO projectDAO;
    
    @In
+   private DocumentDAO documentDAO;
+
+   @In
    private ActivityService activityServiceImpl;
 
+   @In
+   private ZanataMessages zanataMessages;
+
+   /**
+    * Generate HTML output according to activity type
+    * 
+    * Sample output html:
+    * Update translation: 
+    *    You translated <strong>537 words</strong> in <a href="#">Zanata</a>, 
+    *    finishing on &#8220;<a href="#">Determines how the project is treated for upload…</a>&#8221;
+    *    
+    * Reviewed translation:
+    *    You reviewed <strong>145 words</strong> in <a href="#">Spacewalk</a>, 
+    *    finishing on &#8220;<a href="#">(GMT+0800) Australia (Western)</a>&#8221;
+    *    
+    * Upload source document:
+    *    You uploaded a document of <strong>2014 words</strong> to <a href="#">Zanata</a>, 
+    *    finishing on &#8220;<a href="#">If no project type is specified, the type from…</a>&#8221;
+    * 
+    * Upload translation document:
+    *    You uploaded a translation of <strong>2014 words</strong> to <a href="#">Zanata</a>, 
+    *    finishing on &#8220;<a href="#">If no project type is specified, the type from…</a>&#8221;
+    * @param activity
+    * @return Html output
+    */
    public String getHtmlMessage(Activity activity)
    {
-      
-//      <p>You reviewed <strong>145 words</strong> in <a href="#">Spacewalk <i class="i i--version"></i>master</a>, finishing on <a href="#"><code>(GMT+0800) Australia (Western)…</code></a></p>
-      
       StringBuilder sb = new StringBuilder();
       Object context = activityServiceImpl.getEntity(activity.getContextType(), activity.getContextId());
       Object lastTarget = activityServiceImpl.getEntity(activity.getLastTargetType(), activity.getLastTargetId());
-      
-      if (activity.getActionType() == ActivityType.UPDATE_TRANSLATION)
+
+      if (activity.getActionType() == ActivityType.UPDATE_TRANSLATION || activity.getActionType() == ActivityType.REVIEWED_TRANSLATION)
       {
-         HProjectIteration projectIteration = (HProjectIteration)context;
-         HTextFlowTarget textFlowTarget = (HTextFlowTarget)lastTarget;
+         HProjectIteration version = (HProjectIteration) context;
+         HTextFlowTarget tft = (HTextFlowTarget) lastTarget;
+
+         if (activity.getActionType() == ActivityType.UPDATE_TRANSLATION)
+         {
+            sb.append("You translated ");
+         }
+         else
+         {
+            sb.append("You reviewed ");
+         }
+         sb.append(getTranslationUpdateOrReviewMessage(version, tft, activity.getWordCount()));
       }
-      else if (activity.getActionType() == ActivityType.REVIEWED_TRANSLATION)
+      else if (activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT || activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
       {
-         HProjectIteration projectIteration = (HProjectIteration)context;
-         HTextFlowTarget textFlowTarget = (HTextFlowTarget)lastTarget;
-         
-         sb.append("Reviewed ");
-         sb.append(strongTag(activity.getWordCount() + " words"));
-         sb.append(" to ");
-         
-      }
-      else if (activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT)
-      {
-         HProjectIteration projectIteration = (HProjectIteration)context;
-         HDocument document = (HDocument)lastTarget;
-      }
-      else if (activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
-      {
-         HProjectIteration projectIteration = (HProjectIteration)context;
-         HDocument document = (HDocument)lastTarget;
+         HProjectIteration version = (HProjectIteration) context;
+         HDocument document = (HDocument) lastTarget;
+         HTextFlowTarget tft = documentDAO.getLastTranslatedTarget(document.getId(), document.getLocale().getLocaleId());
+
+         if (activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT)
+         {
+            sb.append("You uploaded a document of ");
+         }
+         else
+         {
+            sb.append("You uploaded a translation of ");
+         }
+         sb.append(getTranslationUpdateOrReviewMessage(version, tft, activity.getWordCount()));
          
       }
       return sb.toString();
    }
-   
-   public String getTimeSinceAndType(Activity activity)
+
+   private String projectUrl(String projectSlug)
    {
-      StringBuilder sb = new StringBuilder();
-      sb.append(timeDifferenceMessage(activity.getApproxTime(), activity.getEndOffsetMillis()));
-      sb.append(" <i aria-hidden='true' class='i i--large ");
-      sb.append(getActivityTypeCssIconClass(activity.getActionType()));
-      sb.append("'></i>");
-      sb.append(spanTag("is-invisible", getActivityTypeName(activity.getActionType())));
-      return sb.toString();
+      return "/iteration/view/" + projectSlug;
    }
 
    private String projectVersionUrl(String projectSlug, String versionSlug)
    {
-      return "/iteration/view/" + projectSlug + "/" + versionSlug;
+      return projectUrl(projectSlug) + "/" + versionSlug;
    }
-   
+
    private String editorBaseUrl(String projectSlug, String versionSlug, LocaleId targetLocaleId, LocaleId sourceLocaleId)
    {
       return "/webtrans/translate?project=" + projectSlug + "&iteration=" + versionSlug + "&localeId=" + targetLocaleId + "&locale=" + sourceLocaleId;
    }
-   
+
    private String editorDocumentUrl(String projectSlug, String versionSlug, LocaleId targetLocaleId, LocaleId sourceLocaleId, String docId)
    {
       return editorBaseUrl(projectSlug, versionSlug, targetLocaleId, sourceLocaleId) + " #view:doc;doc:" + docId;
    }
-   
+
    private String editorTransUnitUrl(String projectSlug, String versionSlug, LocaleId targetLocaleId, LocaleId sourceLocaleId, String docId, Long tuId)
    {
       return editorDocumentUrl(projectSlug, versionSlug, targetLocaleId, sourceLocaleId, docId) + ";textflow:" + tuId;
@@ -130,62 +156,28 @@ public class ActivityMessageBuilder implements Serializable
    {
       return "<strong>" + text + "</strong>";
    }
-   
-   private String spanTag(String cssClass, String text)
-   {
-      return "<span class='" + cssClass + "'>" + text + "</span>";
-   }
-
    private String hyperLinkTag(String url, String text)
    {
       return "<a href='" + url + "'>" + text + "</a>";
    }
    
-   private String getActivityTypeCssIconClass(ActivityType actionType)
+   private String getTranslationUpdateOrReviewMessage(HProjectIteration version, HTextFlowTarget tft, int wordCount)
    {
-      if (actionType == ActivityType.UPDATE_TRANSLATION)
-      {
-         return "i--translate";
-      }
-      else if (actionType == ActivityType.REVIEWED_TRANSLATION)
-      {
-         return "i--review";
-      }
-      else if (actionType == ActivityType.UPLOAD_SOURCE_DOCUMENT)
-      {
-         return "i--document";
-      }
-      else if (actionType == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
-      {
-         return "i--translate-up";
-      }
-      return "";
-   }
-   
-   private String getActivityTypeName(ActivityType actionType)
-   {
-      if (actionType == ActivityType.UPDATE_TRANSLATION)
-      {
-         return "Updated";
-      }
-      else if (actionType == ActivityType.REVIEWED_TRANSLATION)
-      {
-         return "Reviewed";
-      }
-      else if (actionType == ActivityType.UPLOAD_SOURCE_DOCUMENT)
-      {
-         return "Uploaded source document";
-      }
-      else if (actionType == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
-      {
-         return "Uploaded translation document";
-      }
-      return "";
-   }
-   
-   private String timeDifferenceMessage(Date approxTime, Long offsetMillis)
-   {
-      Date then = DateUtils.addMilliseconds(approxTime, offsetMillis.intValue());
-      return DateUtil.getReadableTime(then);
+      StringBuilder sb = new StringBuilder();
+
+      HProject project = version.getProject();
+      HTextFlow tf = tft.getTextFlow();
+
+      sb.append(strongTag(wordCount + " words "));
+      sb.append("in ");
+      sb.append(hyperLinkTag(projectUrl(project.getSlug()), project.getName()));
+      sb.append(", finishing on &#8220;");
+      sb.append(hyperLinkTag(
+            editorTransUnitUrl(project.getSlug(), version.getSlug(), tft.getLocaleId(),
+                  tf.getLocale(), tf.getDocument().getDocId(), tf.getId()),
+            tft.getContents().get(0)));
+      sb.append("&#8221;");
+
+      return sb.toString();
    }
 }

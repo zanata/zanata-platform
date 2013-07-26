@@ -111,11 +111,13 @@ public class DashboardAction implements Serializable
       return authenticatedAccount.getPerson().getName();
    }
 
+   @CachedMethodResult
    public int getUserMaintainedProjectsSize()
    {
       return authenticatedAccount.getPerson().getMaintainerProjects().size();
    }
 
+   @CachedMethodResult
    public List<HProject> getUserMaintainedProjects()
    {
       List<HProject> sortedList = new ArrayList<HProject>();
@@ -201,8 +203,66 @@ public class DashboardAction implements Serializable
       return activityMessageBuilder.getHtmlMessage(activity);
    }
    
-   public String getTimeSinceAndType(Activity activity)
+   @CachedMethodResult
+   public String getTime(Activity activity)
    {
-      return activityMessageBuilder.getTimeSinceAndType(activity);
+      Date now = new Date();
+      Date then = DateUtils.addMilliseconds(activity.getApproxTime(), (int)activity.getEndOffsetMillis());
+      
+      return DateUtil.getReadableTime(now, then);
+   }
+   
+   @CachedMethodResult
+   public String getActivityName(ActivityType actionType)
+   {
+      if (actionType == ActivityType.UPDATE_TRANSLATION)
+      {
+         return zanataMessages.getMessage("jsf.Translation");
+      }
+      else if (actionType == ActivityType.REVIEWED_TRANSLATION)
+      {
+         return zanataMessages.getMessage("jsf.Reviewed");
+      }
+      else if (actionType == ActivityType.UPLOAD_SOURCE_DOCUMENT)
+      {
+         return zanataMessages.getMessage("jsf.UploadSource");
+      }
+      else if (actionType == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
+      {
+         return zanataMessages.getMessage("jsf.UploadedTranslation");
+      }
+      return "";
+   }
+   
+   @CachedMethodResult
+   public String getCssIconClass(ActivityType actionType)
+   {
+      if (actionType == ActivityType.UPDATE_TRANSLATION)
+      {
+         return "i--translate";
+      }
+      else if (actionType == ActivityType.REVIEWED_TRANSLATION)
+      {
+         return "i--review";
+      }
+      else if (actionType == ActivityType.UPLOAD_SOURCE_DOCUMENT)
+      {
+         return "i--document";
+      }
+      else if (actionType == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
+      {
+         return "i--translate-up";
+      }
+      return "";
+   }
+   
+   public String getDocumentListUrl(Activity activity)
+   {
+      
+   }
+   
+   public String getDocumentName(Activity activity)
+   {
+      
    }
 }

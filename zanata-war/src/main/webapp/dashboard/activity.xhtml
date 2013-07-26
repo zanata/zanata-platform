@@ -10,27 +10,37 @@
 	</div>
 	<ul class="list--no-bullets">
 		<ui:repeat value="#{dashboardAction.getActivities()}" var="activity">
-			<li class="l--pad-all-half bg--high--hover bg--faint">
-	        	<div class="g--tight">
-				  <div class="g__item w--9-12">
-				  	<p>
-				  		<h:outputText value="#{dashboardAction.getHtmlMessage(activity)}" escape="false"/>
-				  	</p>
-				  </div>
-				  
-				  <div class="g__item w--3-12">
-				    <p class="txt--meta txt--align-right">#{dashboardAction.getTimeSinceAndType(activity)}</p>
-				  </div>
-				</div>
-				<p class="txt--meta l--push-top-half">
-					<a href="#">
-						<i aria-hidden="true" class="i i--document txt--neutral"></i>
-						<span class="is-invisible">Document</span> StringResource
-					</a>
-					<i aria-hidden="true" class="i i--language txt--neutral d--left l--push-left-half l--pad-left-half"></i>
-					<span class="is-invisible">Language</span>  
-					<a href="#">Language: zh-Hant中文 (繁體中文)</a>
+			<li class="l--pad-all-half bg--higher--hover bg--faint reveal">
+				<p class="l--float-right txt--neutral l--push-left-half">
+					<ui:param name="actionName" value="#{dashboard.getActivityName(activity.actionType)}"/>
+					<i aria-hidden="true" class="i--large #{dashboard.getCssIconClass(activity.actionType)}" title="#{actionName}"></i>
+					<span class="is-invisible">#{actionName}</span>
 				</p>
+	        	<p class="l--push-all-0">
+	        		<h:outputText value="#{dashboardAction.getHtmlMessage(activity)}" escape="false"/> 
+	        	</p>
+	        	<ul class="list--horizontal txt--meta">
+	          		<li>
+	          			<i aria-hidden="true" class="i i--clock txt--neutral" title="#{messages['jsf.Time']}"></i>
+	          			<span class="is-invisible">#{messages['jsf.Time']}</span>#{dashboard.getTime(activity)}
+	          		</li>
+	          		<li class="reveal__target">
+	          			<i aria-hidden="true" class="i i--document txt--neutral" title="#{messages['jsf.Document']}"></i>
+	          			<span class="is-invisible">#{messages['jsf.Document']}</span> 
+	          			<a href="#">StringResource</a>
+	          		</li>
+	          		<li class="reveal__target">
+	          			<i aria-hidden="true" class="i i--language txt--neutral" title="#{messages['jsf.Language']}"></i>
+	          			<span class="is-invisible">#{messages['jsf.Language']}</span> 
+	          			<a href="#">zh-Hant</a>
+	          		</li>
+	          		<li class="reveal__target">
+	          			<i aria-hidden="true" class="i i--version txt--neutral" title="#{messages['jsf.Version']}">
+	          				<span class="is-invisible">#{messages['jsf.Version']}</span>
+	          			</i> 
+	          			<a href="#">master</a>
+	          		</li>
+	        	</ul>
 	     	</li>
      	</ui:repeat>
 	</ul>
