@@ -48,11 +48,12 @@ public class ChangePasswordTest
    public void changePasswordSuccessful()
    {
       MyAccountPage myAccountPage = new LoginWorkFlow().signIn("translator", "translator").goToMyProfile();
-      ChangePasswordPage changePasswordPage = myAccountPage.goToChangePassword();
-      changePasswordPage.enterOldPassword("translator");
-      changePasswordPage.enterNewPassword("newpassword");
-      changePasswordPage.enterConfirmNewPassword("newpassword");
-      myAccountPage = changePasswordPage.changePassword();
+      myAccountPage = myAccountPage.goToChangePassword()
+            .enterOldPassword("translator")
+            .enterNewPassword("newpassword")
+            .enterConfirmNewPassword("newpassword")
+            .changePassword();
+
       assertThat("Confirmation message is displayed", myAccountPage.getNotificationMessage(),
             Matchers.equalTo("Your password has been successfully changed."));
       HomePage homePage = myAccountPage.signOut();
@@ -66,11 +67,12 @@ public class ChangePasswordTest
    {
       String incorrectPassword = "Old password is incorrect, please check and try again.";
       MyAccountPage myAccountPage = new LoginWorkFlow().signIn("translator", "translator").goToMyProfile();
-      ChangePasswordPage changePasswordPage = myAccountPage.goToChangePassword();
-      changePasswordPage.enterOldPassword("nottherightpassword");
-      changePasswordPage.enterNewPassword("somenewpassword");
-      changePasswordPage.enterConfirmNewPassword("somenewpassword");
-      changePasswordPage = changePasswordPage.changePasswordExpectingFailure();
+         ChangePasswordPage changePasswordPage = myAccountPage.goToChangePassword()
+            .enterOldPassword("nottherightpassword")
+            .enterNewPassword("somenewpassword")
+            .enterConfirmNewPassword("somenewpassword")
+            .changePasswordExpectingFailure();
+
       assertThat("Incorrect password message displayed", changePasswordPage.getErrors(),
             Matchers.contains(incorrectPassword));
    }
@@ -79,12 +81,14 @@ public class ChangePasswordTest
    public void changePasswordConfirmationMismatch()
    {
       String incorrectPassword = "Passwords do not match";
-      MyAccountPage myAccountPage = new LoginWorkFlow().signIn("translator", "translator").goToMyProfile();
-      ChangePasswordPage changePasswordPage = myAccountPage.goToChangePassword();
-      changePasswordPage.enterOldPassword("translator");
-      changePasswordPage.enterNewPassword("somenewpassword");
-      changePasswordPage.enterConfirmNewPassword("differentpassword");
-      changePasswordPage = changePasswordPage.changePasswordExpectingFailure();
+      ChangePasswordPage changePasswordPage = new LoginWorkFlow().signIn("translator", "translator")
+            .goToMyProfile()
+            .goToChangePassword()
+            .enterOldPassword("translator")
+            .enterNewPassword("somenewpassword")
+            .enterConfirmNewPassword("differentpassword")
+            .changePasswordExpectingFailure();
+
       assertThat("Incorrect password message displayed", changePasswordPage.getErrors(),
             Matchers.contains(incorrectPassword));
    }
@@ -92,12 +96,13 @@ public class ChangePasswordTest
    @Test
    public void changePasswordCancel()
    {
-      MyAccountPage myAccountPage = new LoginWorkFlow().signIn("translator", "translator").goToMyProfile();
-      ChangePasswordPage changePasswordPage = myAccountPage.goToChangePassword();
-      changePasswordPage.enterOldPassword("translator");
-      changePasswordPage.enterNewPassword("notnewpassword");
-      changePasswordPage.enterConfirmNewPassword("notnewpassword");
-      myAccountPage = changePasswordPage.cancelChangePassword();
+      MyAccountPage myAccountPage = new LoginWorkFlow().signIn("translator", "translator").goToMyProfile()
+            .goToChangePassword()
+            .enterOldPassword("translator")
+            .enterNewPassword("notnewpassword")
+            .enterConfirmNewPassword("notnewpassword")
+            .cancelChangePassword();
+
       HomePage homePage = myAccountPage.signOut();
       assertThat("User is logged out", !homePage.hasLoggedIn());
       homePage = new LoginWorkFlow().signIn("translator", "translator");
@@ -108,9 +113,11 @@ public class ChangePasswordTest
    public void changePasswordRequiredFieldsAreNotEmpty()
    {
       String emptyPassword = "value is required";
-      MyAccountPage myAccountPage = new LoginWorkFlow().signIn("translator", "translator").goToMyProfile();
-      ChangePasswordPage changePasswordPage = myAccountPage.goToChangePassword();
-      changePasswordPage = changePasswordPage.changePasswordExpectingFailure();
+      ChangePasswordPage changePasswordPage = new LoginWorkFlow().signIn("translator", "translator")
+            .goToMyProfile()
+            .goToChangePassword()
+            .changePasswordExpectingFailure();
+
       assertThat("Incorrect password message displayed", changePasswordPage.getErrors(),
             Matchers.contains(emptyPassword, emptyPassword, emptyPassword));
    }
@@ -121,12 +128,17 @@ public class ChangePasswordTest
       String passwordSizeError = "size must be between 6 and 20";
       String tooShort = "test5";
       String tooLong = "t12345678901234567890";
-      MyAccountPage myAccountPage = new LoginWorkFlow().signIn("translator", "translator").goToMyProfile();
-      ChangePasswordPage changePasswordPage = myAccountPage.goToChangePassword();
-      changePasswordPage = changePasswordPage.enterNewPassword("test5").enterConfirmNewPassword(tooShort);
+      ChangePasswordPage changePasswordPage = new LoginWorkFlow().signIn("translator", "translator")
+            .goToMyProfile()
+            .goToChangePassword()
+            .enterNewPassword("test5")
+            .enterConfirmNewPassword(tooShort);
+
       assertThat("Incorrect password message displayed", changePasswordPage.waitForErrors(),
             Matchers.hasItem(passwordSizeError));
+
       changePasswordPage = changePasswordPage.enterNewPassword(tooLong).enterConfirmNewPassword(tooLong);
+
       assertThat("Incorrect password message displayed", changePasswordPage.waitForErrors(),
             Matchers.hasItem(passwordSizeError));
    }
