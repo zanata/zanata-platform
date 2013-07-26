@@ -37,6 +37,9 @@ import javax.persistence.MapKeyColumn;
 import javax.persistence.MapKeyEnumerated;
 import javax.persistence.OneToMany;
 
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 import org.zanata.model.ModelEntityBase;
 import com.google.common.collect.Maps;
 
@@ -56,6 +59,7 @@ import lombok.ToString;
 @Data
 @NoArgsConstructor
 @Access(AccessType.FIELD)
+@Indexed
 public class TMTranslationUnit extends ModelEntityBase implements HasTMMetadata
 {
    private static final long serialVersionUID = 1L;
@@ -79,6 +83,7 @@ public class TMTranslationUnit extends ModelEntityBase implements HasTMMetadata
    private String transUnitId;
 
    @Column(name = "source_language", nullable = true)
+   @Field
    private String sourceLanguage;
 
    @ManyToOne(optional = false, fetch = FetchType.LAZY)
@@ -94,6 +99,7 @@ public class TMTranslationUnit extends ModelEntityBase implements HasTMMetadata
    @OneToMany(cascade = CascadeType.ALL)
    @JoinColumn(name = "trans_unit_id", nullable = false)
    @MapKey(name = "language")
+   @IndexedEmbedded
    private Map<String, TMTransUnitVariant> transUnitVariants = Maps.newHashMap();
 
    /**

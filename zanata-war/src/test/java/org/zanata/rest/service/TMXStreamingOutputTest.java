@@ -60,6 +60,7 @@ abstract class TMXStreamingOutputTest
       NamespaceContext ctx = new SimpleNamespaceContext(ImmutableMap.of("xml", "http://www.w3.org/XML/1998/namespace"));
       XMLUnit.setXpathNamespaceContext(ctx);
    }
+   private LocaleId targetLocale;
 
    LocaleId sourceLocale = LocaleId.EN;
 
