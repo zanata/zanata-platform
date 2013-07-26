@@ -22,6 +22,7 @@ import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
+import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
@@ -30,7 +31,6 @@ import org.zanata.service.TranslationMemoryQueryService;
 import org.zanata.service.ValidationService;
 import org.zanata.service.impl.TranslationMemoryQueryServiceImpl;
 import org.zanata.service.impl.TranslationStateCacheImpl;
-import org.zanata.service.impl.ValidationServiceImpl;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemory;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
@@ -102,12 +102,8 @@ public class GetTransMemoryHandlerTest extends ZanataDbunitJpaTest
       HTextFlowTarget tmMatch1 = getEm().find(HTextFlowTarget.class, 60L);
       HTextFlowTarget tmMatch2 = getEm().find(HTextFlowTarget.class, 62L);
 
-      // Note: Different method calls and return types are used depending whether source or target
-      // index implementation is used
       List<Object[]> targetMatches = Lists.newArrayList(new Object[] {1.0F, tmMatch1}, new Object[] {1.1F, tmMatch2});
       doReturn(targetMatches).when(translationMemoryQueryService).getSearchResult(eq(query), eq(sourceLocaleId), eq(targetLocaleId), eq(EXPECTED_MAX_RESULTS));
-      List<Object[]> textFlowMatches = Lists.newArrayList(new Object[] {1.0F, tmMatch1.getTextFlow()}, new Object[] {1.1F, tmMatch2.getTextFlow()});
-      doReturn(textFlowMatches).when(translationMemoryQueryService).getSearchResult(eq(query), eq(sourceLocaleId), eq(targetLocaleId), eq(EXPECTED_MAX_RESULTS));
 
       GetTranslationMemory action = new GetTranslationMemory(query, targetLocaleId, sourceLocaleId);
 
@@ -121,25 +117,23 @@ public class GetTransMemoryHandlerTest extends ZanataDbunitJpaTest
       assertThat(result.getMemories().get(1).getTargetContents(), Matchers.contains("%d files removed"));
    }
 
-   // This does not apply to the source index based implementation, but is left in
-   // case a return to the other implementation is required.
-//   @Test
-//   public void searchReturnNotApprovedResult() throws Exception
-//   {
-//      // Given: hibernate search finds 2 matches for query and they are not approved translation
-//      TransMemoryQuery query = new TransMemoryQuery(Lists.newArrayList("file removed"), HasSearchType.SearchType.FUZZY_PLURAL);
-//      HTextFlow tmMatch1 = getEm().find(HTextFlowTarget.class, 61L).getTextFlow();
-//      List<Object[]> matches = Lists.newArrayList(new Object[] {1.0F, tmMatch1}, new Object[] {1.1F, null});
-//      doReturn(matches).when(textFlowDAOSpy).getSearchResult(eq(query), anyList(), eq(sourceLocaleId), eq(targetLocaleId), eq(EXPECTED_MAX_RESULTS));
-//      GetTranslationMemory action = new GetTranslationMemory(query, targetLocaleId, sourceLocaleId);
-//
-//      // When:
-//      GetTranslationMemoryResult result = handler.execute(action, null);
-//
-//      // Then:
-//      verify(identity).checkLoggedIn();
-//      assertThat(result.getMemories(), Matchers.hasSize(0));
-//   }
+   @Test
+   public void searchReturnNotApprovedResult() throws Exception
+   {
+      // Given: hibernate search finds 2 matches for query and they are not approved translation
+      TransMemoryQuery query = new TransMemoryQuery(Lists.newArrayList("file removed"), HasSearchType.SearchType.FUZZY_PLURAL);
+      HTextFlow tmMatch1 = getEm().find(HTextFlowTarget.class, 61L).getTextFlow();
+      List<Object[]> matches = Lists.newArrayList(new Object[] {1.0F, tmMatch1}, new Object[] {1.1F, null});
+      doReturn(matches).when(translationMemoryQueryService).getSearchResult(eq(query), eq(sourceLocaleId), eq(targetLocaleId), eq(EXPECTED_MAX_RESULTS));
+      GetTranslationMemory action = new GetTranslationMemory(query, targetLocaleId, sourceLocaleId);
+
+      // When:
+      GetTranslationMemoryResult result = handler.execute(action, null);
+
+      // Then:
+      verify(identity).checkLoggedIn();
+      assertThat(result.getMemories(), Matchers.hasSize(0));
+   }
 
    @SuppressWarnings("unchecked")
    @Test
