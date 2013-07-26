@@ -36,6 +36,7 @@ import nu.xom.Node;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.zanata.common.LocaleId;
 import org.zanata.dao.TransMemoryDAO;
 import org.zanata.model.tm.TMTransUnitVariant;
 import org.zanata.model.tm.TMTranslationUnit;
@@ -138,7 +139,8 @@ public class TransMemoryAdapter
 
       TMTransUnitVariant tuv = new TMTransUnitVariant(language, content);
       // TODO save metadata
-      tu.getTransUnitVariants().put(language, tuv);
+      String locale = new LocaleId(language).getId(); // This will fail if the locale is not accepted
+      tu.getTransUnitVariants().put(locale, tuv);
    }
 
    private String determineUniqueId(TMTranslationUnit tu)

@@ -42,6 +42,9 @@ public interface UiMessages extends Messages
    @DefaultMessage("Details")
    String detailsLabel();
 
+   @DefaultMessage("Origin")
+   String originLabel();
+
    @DefaultMessage("Number of times translation has been used")
    String matchCountHeaderTooltip();
 

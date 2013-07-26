@@ -541,6 +541,11 @@ td.RejectedStateDecoration div div div
 	width:60px;
 }
 
+.resultTable .originCol
+{
+    width:100px;
+}
+
 .resultTable .similarityCol
 {
 	width:60px;

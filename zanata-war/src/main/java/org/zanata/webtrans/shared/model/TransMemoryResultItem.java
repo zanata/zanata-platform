@@ -27,6 +27,8 @@ import java.util.List;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
+ * A result item returned by a translation memory search.
+ *
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
@@ -48,8 +50,9 @@ public class TransMemoryResultItem extends SearchResultItem implements IsSeriali
 
    private ArrayList<String> sourceContents;
    private ArrayList<String> targetContents;
-   private int matchCount = 0;
+   private int matchCount = 0;                  // The number of occurrences for the source contents
    private MatchType matchType;
+   private List<String> origins;                 // The optional origin identifiers for this result (i.e. A Trans memory name)
 
    // for GWT
    @SuppressWarnings("unused")
@@ -63,12 +66,24 @@ public class TransMemoryResultItem extends SearchResultItem implements IsSeriali
     * @param relevanceScore
     * @param similarityPercent
     */
-   public TransMemoryResultItem(ArrayList<String> sourceContents, ArrayList<String> targetContents, MatchType matchType, double relevanceScore, double similarityPercent)
+   public TransMemoryResultItem(ArrayList<String> sourceContents, ArrayList<String> targetContents, MatchType matchType,
+                                double relevanceScore, double similarityPercent)
    {
       super(relevanceScore, similarityPercent);
       this.sourceContents = sourceContents;
       this.targetContents = targetContents;
       this.matchType = matchType;
+      this.origins = new ArrayList<String>();
+   }
+
+   public List<String> getOrigins()
+   {
+      return origins;
+   }
+
+   public void addOrigin(String origin)
+   {
+      this.origins.add(origin);
    }
 
    // FIXME remove this

@@ -141,7 +141,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
          ArrayList<String> targetContents = new ArrayList<String>(textFlowTarget.getContents());
          MatchType matchType = fromContentState(textFlowTarget.getState());
          addOrIncrementResultItem(transMemoryQuery, matchesMap, match, matchType, textFlowContents,
-               targetContents, textFlowTarget.getId());
+               targetContents, textFlowTarget.getTextFlow().getId(), "");
       }
       else if( entity instanceof TMTranslationUnit )
       {
@@ -150,7 +150,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
          ArrayList<String> sourceContents = Lists.newArrayList(transUnit.getTransUnitVariants().get(sourceLocaleId.getId()).getPlainTextSegment());
          ArrayList<String> targetContents = Lists.newArrayList(transUnit.getTransUnitVariants().get(targetLocaleId.getId()).getPlainTextSegment());
          addOrIncrementResultItem(transMemoryQuery, matchesMap, match, MatchType.Imported, sourceContents, targetContents,
-               transUnit.getId());
+               transUnit.getId(), transUnit.getTranslationMemory().getSlug());
       }
    }
 
@@ -171,7 +171,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
 
    private void addOrIncrementResultItem(TransMemoryQuery transMemoryQuery, Map<TMKey, TransMemoryResultItem> matchesMap,
                                          Object[] match, MatchType matchType, ArrayList<String> sourceContents,
-                                         ArrayList<String> targetContents, Long sourceId)
+                                         ArrayList<String> targetContents, Long sourceId, String origin)
    {
       TMKey key = new TMKey(sourceContents, targetContents);
       TransMemoryResultItem item = matchesMap.get(key);
@@ -183,6 +183,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
          matchesMap.put(key, item);
       }
       item.incMatchCount();
+      item.addOrigin(origin);
       item.addSourceId(sourceId);
    }
 

@@ -29,6 +29,7 @@ import javax.annotation.Nonnull;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.zanata.common.LocaleId;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
@@ -157,7 +158,7 @@ public class TMXMetadataHelper
       String srclang = metadata.remove(_srclang);
       if (srclang != null)
       {
-         toTransMemory.setSourceLanguage(srclang);
+         toTransMemory.setSourceLanguage(new LocaleId(srclang).getId()); // This will fail if the language is not accepted
       }
       setSharedMetadata(toTransMemory, metadata);
    }
