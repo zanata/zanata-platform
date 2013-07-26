@@ -43,7 +43,7 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
    @In
    private TranslationFileService translationFileServiceImpl;
 
-   @In("blobPersistService")
+   @In("filePersistService")
    private FilePersistService filePersistService;
 
    @Override

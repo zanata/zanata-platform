@@ -182,6 +182,11 @@ public class ApplicationConfiguration implements Serializable
       return configuredValue;
    }
 
+   public String getDocumentFileStorageLocation()
+   {
+      return jndiBackedConfig.getDocumentFileStorageLocation();
+   }
+
    public String getDomainName()
    {
       return databaseBackedConfig.getDomain();

@@ -27,6 +27,7 @@ import org.zanata.model.HRawDocument;
 
 public interface FilePersistService
 {
+   // TODO damason: add persistRawDocumentContentFromStream(HRawDocument, InputStream)
 
    public void persistRawDocumentContentFromFile(HRawDocument rawDocument, File rawFile);
 

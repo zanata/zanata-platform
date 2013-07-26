@@ -47,7 +47,7 @@ import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.file.BlobPersistService;
+import org.zanata.file.FilePersistService;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
@@ -82,7 +82,7 @@ public class FileServiceTest
    @Mock private DocumentService documentService;
    @Mock private DocumentDAO documentDAO;
 
-   @Mock private BlobPersistService filePersistService;
+   @Mock private FilePersistService filePersistService;
    @Mock private LobHelper lobHelper;
 
    @Mock private HProject project;
@@ -105,7 +105,7 @@ public class FileServiceTest
       .use("translationFileServiceImpl", translationFileService)
       .use("documentServiceImpl", documentService)
       .use("documentDAO", documentDAO)
-      .use("blobPersistService", filePersistService)
+      .use("filePersistService", filePersistService)
       .allowCycles();
 
       fileService = seam.autowire(FileService.class);
