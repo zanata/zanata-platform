@@ -27,6 +27,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -78,6 +79,9 @@ public class DashboardAction implements Serializable
    
    @In
    private ZanataMessages zanataMessages;
+   
+   @In
+   private ActivityMessageBuilder activityMessageBuilder;
 
    private final int USER_IMAGE_SIZE = 115;
    private final int ACTIVITIES_COUNT_PER_PAGE = 10;
@@ -192,9 +196,13 @@ public class DashboardAction implements Serializable
       return activityServiceImpl.findLatestActivities(authenticatedAccount.getPerson().getId(), activityPageIndex, ACTIVITIES_COUNT_PER_PAGE);
    }
    
-   public String getActivityMessage(Activity activity)
+   public String getHtmlMessage(Activity activity)
    {
-      return ActivityMessageBuilder.getHtmlMessage(activity);
-
+      return activityMessageBuilder.getHtmlMessage(activity);
+   }
+   
+   public String getTimeSinceAndType(Activity activity)
+   {
+      return activityMessageBuilder.getTimeSinceAndType(activity);
    }
 }

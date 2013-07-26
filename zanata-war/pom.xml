@@ -1714,6 +1714,12 @@
 		    <artifactId>commons-exec</artifactId>
 		    <version>1.1</version>
 		</dependency>
+		
+		<dependency>
+		    <groupId>org.ocpsoft.prettytime</groupId>
+		    <artifactId>prettytime</artifactId>
+		    <version>3.0.2.Final</version>
+		</dependency>
 
 		<!-- openid4java -->
 	    <dependency>
