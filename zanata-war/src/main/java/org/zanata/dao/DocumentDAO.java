@@ -21,6 +21,7 @@ import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
+import org.zanata.file.GlobalDocumentId;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
@@ -323,6 +324,11 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       }
 
       return returnStats;
+   }
+
+   public HDocument getByGlobalId(GlobalDocumentId id)
+   {
+      return getByProjectIterationAndDocId(id.getProjectSlug(), id.getVersionSlug(), id.getDocId());
    }
 
    public HDocument getByProjectIterationAndDocId(final String projectSlug, final String iterationSlug, final String docId)

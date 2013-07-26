@@ -54,6 +54,7 @@ public class JndiBackedConfig implements Serializable
    private static final String KEY_AUTH_POLICY           = "java:global/zanata/security/auth-policy-names/";
    private static final String KEY_ADMIN_USERS           = "java:global/zanata/security/admin-users";
    private static final String KEY_DEFAULT_FROM_ADDRESS  = "java:global/zanata/email/default-from-address";
+   private static final String KEY_DOCUMENT_FILE_STORE   = "java:global/zanata/files/document-storage-directory";
    private static final String KEY_EMAIL_HOST            = "java:global/zanata/smtp/host";
    private static final String KEY_EMAIL_PORT            = "java:global/zanata/smtp/port";
    private static final String KEY_EMAIL_USERNAME        = "java:global/zanata/smtp/username";
@@ -158,6 +159,11 @@ public class JndiBackedConfig implements Serializable
    public String getDefaultFromEmailAddress()
    {
       return getConfigValue(KEY_DEFAULT_FROM_ADDRESS);
+   }
+
+   public String getDocumentFileStorageLocation()
+   {
+      return getConfigValue(KEY_DOCUMENT_FILE_STORE);
    }
 
    public String getSmtpHostName()

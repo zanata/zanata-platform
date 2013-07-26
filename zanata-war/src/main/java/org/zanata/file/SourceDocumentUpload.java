@@ -72,7 +72,7 @@ public class SourceDocumentUpload
 
    @In(create = true, value = "documentUploadUtil")
    private DocumentUploadUtil util;
-   @In("blobPersistService")
+   @In("filePersistService")
    private FilePersistService filePersistService;
    @In
    private ZanataIdentity identity;
