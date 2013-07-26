@@ -59,6 +59,7 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
       this.contextHolder = contextHolder;
 
       display.setListener(this);
+      eventBus.addHandler(ReviewCommentEvent.TYPE, this);
    }
 
    @Override

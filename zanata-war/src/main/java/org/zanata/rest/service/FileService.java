@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -56,7 +55,9 @@ import org.zanata.adapter.po.PoWriter2;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
+import org.zanata.file.FilePersistService;
 import org.zanata.file.GlobalDocumentId;
+import org.zanata.file.RawDocumentContentAccessException;
 import org.zanata.file.SourceDocumentUpload;
 import org.zanata.file.TranslationDocumentUpload;
 import org.zanata.model.HDocument;
@@ -105,6 +106,9 @@ public class FileService implements FileResource
 
    @In(value = "translationDocumentUploader", create = true)
    private TranslationDocumentUpload translationUploader;
+
+   @In("filePersistService")
+   private FilePersistService filePersistService;
 
    @Override
    @GET
@@ -185,9 +189,9 @@ public class FileService implements FileResource
          InputStream fileContents;
          try
          {
-            fileContents = document.getRawDocument().getContent().getBinaryStream();
+            fileContents = filePersistService.getRawDocumentContentAsStream(document.getRawDocument());
          }
-         catch (SQLException e)
+         catch (RawDocumentContentAccessException e)
          {
             e.printStackTrace();
             return Response.status(Status.INTERNAL_SERVER_ERROR)
@@ -249,6 +253,7 @@ public class FileService implements FileResource
                                             @PathParam("fileType") String fileType,
                                             @QueryParam("docId") String docId )
    {
+      GlobalDocumentId id = new GlobalDocumentId(projectSlug, iterationSlug, docId);
       // TODO scan (again) for virus
       final Response response;
       HDocument document = this.documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId);
@@ -278,7 +283,7 @@ public class FileService implements FileResource
       }
       else if (FILETYPE_TRANSLATED_APPROVED.equals(fileType) || FILETYPE_TRANSLATED_APPROVED_AND_FUZZY.equals(fileType) )
       {
-         if (!translationFileServiceImpl.hasPersistedDocument(projectSlug, iterationSlug, document.getPath(), document.getName()))
+         if (!filePersistService.hasPersistedDocument(id))
          {
             return Response.status(Status.NOT_FOUND).build();
          }
@@ -299,20 +304,23 @@ public class FileService implements FileResource
          }
 
          HDocument hDocument = documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId);
-         URI uri;
+         InputStream inputStream;
          try
          {
-            File tempFile = translationFileServiceImpl.persistToTempFile(hDocument.getRawDocument().getContent().getBinaryStream());
-            String name = projectSlug+":"+iterationSlug+":"+docId;
-            virusScanner.scan(tempFile, name);
-            uri = tempFile.toURI();
+            inputStream = filePersistService.getRawDocumentContentAsStream(hDocument.getRawDocument());
          }
-         catch (SQLException e)
+         catch (RawDocumentContentAccessException e)
          {
             return Response.status(Status.INTERNAL_SERVER_ERROR)
                   .entity(e)
                   .build();
          }
+         File tempFile = translationFileServiceImpl.persistToTempFile(inputStream);
+         String name = projectSlug+":"+iterationSlug+":"+docId;
+         // TODO damason: this file is not transmitted, but used to generate a file later
+         //               the generated file should be scanned instead
+         virusScanner.scan(tempFile, name);
+         URI uri = tempFile.toURI();
          FileFormatAdapter adapter = translationFileServiceImpl.getAdapterFor(hDocument.getRawDocument().getType());
          String rawParamString = hDocument.getRawDocument().getAdapterParameters();
          Optional<String> params = Optional.<String>fromNullable(Strings.emptyToNull(rawParamString));
@@ -320,6 +328,9 @@ public class FileService implements FileResource
          response = Response.ok()
                .header("Content-Disposition", "attachment; filename=\"" + document.getName() + "\"")
                .entity(output).build();
+         // TODO damason: remove more immediately, but make sure response has finished with the file
+         //      Note: may not be necessary when file storage is on disk.
+         tempFile.deleteOnExit();
       }
       else
       {
@@ -475,6 +486,7 @@ public class FileService implements FileResource
       @Override
       public void write(OutputStream output) throws IOException, WebApplicationException
       {
+         // FIXME should the generated file be virus scanned?
          adapter.writeTranslatedFile(output, original, translations, locale, params);
       }
    }

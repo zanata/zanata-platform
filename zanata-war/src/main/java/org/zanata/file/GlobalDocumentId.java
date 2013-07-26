@@ -1,20 +1,22 @@
 package org.zanata.file;
 
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
 
 @Getter
+@AllArgsConstructor
+@EqualsAndHashCode
 public class GlobalDocumentId
 {
+   @NonNull private final String projectSlug;
+   @NonNull private final String versionSlug;
+   @NonNull private final String docId;
 
-   private final String projectSlug;
-   private final String versionSlug;
-   private final String docId;
-
-   public GlobalDocumentId(String projectSlug, String versionSlug, String docId)
+   @Override
+   public String toString()
    {
-      this.projectSlug = projectSlug;
-      this.versionSlug = versionSlug;
-      this.docId = docId;
+      return projectSlug + ":" + versionSlug + ":" + docId;
    }
-
 }

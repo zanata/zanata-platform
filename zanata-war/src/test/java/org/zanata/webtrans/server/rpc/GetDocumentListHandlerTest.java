@@ -16,6 +16,7 @@ import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.DocumentDAO;
+import org.zanata.file.FilePersistService;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
@@ -45,6 +46,8 @@ public class GetDocumentListHandlerTest
    private TranslationFileService translationFileServiceImpl;
    @Mock
    private TranslationStateCache translationStateCacheImpl;
+   @Mock
+   private FilePersistService filePersistService;
 
    @BeforeMethod
    public void setUp() throws Exception
@@ -56,6 +59,7 @@ public class GetDocumentListHandlerTest
             .use("documentDAO", documentDAO)
             .use("translationFileServiceImpl", translationFileServiceImpl)
             .use("translationStateCacheImpl", translationStateCacheImpl)
+            .use("filePersistService", filePersistService)
             .ignoreNonResolvable()
             .autowire(GetDocumentListHandler.class);
       // @formatter:on

@@ -45,6 +45,7 @@ import org.zanata.webtrans.client.presenter.AttentionKeyShortcutPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListOptionsPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.presenter.EditorOptionsPresenter;
+import org.zanata.webtrans.client.presenter.ForceReviewCommentPresenter;
 import org.zanata.webtrans.client.presenter.GlossaryDetailsPresenter;
 import org.zanata.webtrans.client.presenter.GlossaryPresenter;
 import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
@@ -164,6 +165,7 @@ public class WebTransClientModule extends AbstractPresenterModule
       bindPresenter(NotificationPresenter.class, NotificationDisplay.class, NotificationView.class);
       bindPresenter(TransUnitsTablePresenter.class, TransUnitsTableDisplay.class, TransUnitsTableView.class);
       bindPresenter(SideMenuPresenter.class, SideMenuDisplay.class, SideMenuView.class);
+      bind(ForceReviewCommentPresenter.class).asEagerSingleton();
 
       bind(SourceContentsPresenter.class).in(Singleton.class);
       bind(TargetContentsDisplay.class).to(TargetContentsView.class);

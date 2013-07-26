@@ -40,6 +40,7 @@ import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.common.ContentState;
 
 import lombok.AccessLevel;
@@ -73,7 +74,7 @@ public class HTextFlowTargetReviewComment extends ModelEntityBase
    @Getter
    private HTextFlowTarget textFlowTarget;
 
-   @NotNull
+   @NotEmpty
    @Type(type = "text")
    @Getter
    private String comment;

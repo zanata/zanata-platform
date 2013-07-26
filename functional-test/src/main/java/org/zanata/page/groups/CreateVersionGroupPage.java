@@ -1,18 +1,21 @@
 package org.zanata.page.groups;
 
 
-import org.openqa.selenium.By;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.Select;
-import org.zanata.page.AbstractPage;
-import lombok.extern.slf4j.Slf4j;
+import org.zanata.page.BasePage;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Slf4j
-public class CreateVersionGroupPage extends AbstractPage
+public class CreateVersionGroupPage extends BasePage
 {
    @FindBy(id = "projectForm:slugField:slug")
    private WebElement groupSlugField;
@@ -35,6 +38,12 @@ public class CreateVersionGroupPage extends AbstractPage
    public CreateVersionGroupPage(WebDriver driver)
    {
       super(driver);
+      List<String> elements = new ArrayList<String>();
+      elements.add("projectForm:slugField:slug");
+      elements.add("projectForm:nameField:name");
+      elements.add("projectForm:descriptionField:description");
+      elements.add("projectForm:save");
+      waitForPage(elements);
    }
 
    public CreateVersionGroupPage inputGroupId(String groupId)
@@ -63,13 +72,13 @@ public class CreateVersionGroupPage extends AbstractPage
 
    public VersionGroupsPage saveGroup()
    {
-      clickSaveAndCheckErrors(saveButton);
+      clickAndCheckErrors(saveButton);
       return new VersionGroupsPage(getDriver());
    }
 
    public CreateVersionGroupPage saveGroupFailure()
    {
-      clickSaveAndExpectErrors(saveButton);
+      clickAndExpectErrors(saveButton);
       return this;
    }
 

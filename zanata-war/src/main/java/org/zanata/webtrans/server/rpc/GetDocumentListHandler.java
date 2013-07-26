@@ -14,6 +14,8 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.DocumentDAO;
+import org.zanata.file.FilePersistService;
+import org.zanata.file.GlobalDocumentId;
 import org.zanata.model.HDocument;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
@@ -40,6 +42,9 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
 
    @In
    private TranslationFileService translationFileServiceImpl;
+
+   @In("filePersistService")
+   private FilePersistService filePersistService;
 
    @Override
    public GetDocumentListResult execute(GetDocumentList action, ExecutionContext context) throws ActionException
@@ -82,8 +87,9 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
          {
             downloadExtensions.put("offline .po", "offlinepo?docId=" + hDoc.getDocId());
          }
-
-         if (translationFileServiceImpl.hasPersistedDocument(iterationId.getProjectSlug(), iterationId.getIterationSlug(), hDoc.getPath(), hDoc.getName()))
+         GlobalDocumentId id = new GlobalDocumentId(iterationId.getProjectSlug(),
+               iterationId.getIterationSlug(), hDoc.getDocId());
+         if (filePersistService.hasPersistedDocument(id))
          {
             String extension = "." + translationFileServiceImpl.getFileExtension(iterationId.getProjectSlug(), iterationId.getIterationSlug(), hDoc.getPath(), hDoc.getName());
             downloadExtensions.put(extension, "baked?docId=" + hDoc.getDocId());

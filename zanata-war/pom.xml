@@ -39,6 +39,8 @@
         <!-- Groovy and Gmaven properties -->
         <gmavenProviderSelection>2.0</gmavenProviderSelection>
         <groovyVersion>2.0.7</groovyVersion>
+
+      <zanata.web.assets.version>1</zanata.web.assets.version>
     </properties>
 
 	<build>

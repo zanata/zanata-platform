@@ -23,14 +23,11 @@ package org.zanata.action;
 import static org.zanata.rest.dto.stats.TranslationStatistics.StatUnit.WORD;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -45,7 +42,6 @@ import javax.validation.ConstraintViolationException;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.hibernate.LobHelper;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -69,6 +65,8 @@ import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.exception.VirusDetectedException;
 import org.zanata.exception.ZanataServiceException;
+import org.zanata.file.FilePersistService;
+import org.zanata.file.GlobalDocumentId;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
 import org.zanata.model.HDocument;
@@ -83,7 +81,6 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
-import org.zanata.rest.service.FileService;
 import org.zanata.rest.service.StatisticsResource;
 import org.zanata.rest.service.VirusScanner;
 import org.zanata.security.SecurityFunctions;
@@ -126,6 +123,9 @@ public class ProjectIterationFilesAction implements Serializable
 
    @In
    private LocaleDAO localeDAO;
+
+   @In("filePersistService")
+   private FilePersistService filePersistService;
 
    @In
    private ProjectIterationDAO projectIterationDAO;
@@ -326,6 +326,7 @@ public class ProjectIterationFilesAction implements Serializable
    }
 
    // TODO add logging for disk writing errors
+   // TODO damason: unify this with Source/TranslationDocumentUpload
    private void uploadAdapterFile()
    {
       String fileName = documentFileUpload.getFileName();
@@ -407,31 +408,19 @@ public class ProjectIterationFilesAction implements Serializable
             rawDocument.setAdapterParameters(params.get());
          }
 
-         FileInputStream tempFileStream = null;
          try
          {
-            tempFileStream = new FileInputStream(tempFile);
-            try
-            {
-               String name = projectSlug+":"+iterationSlug+":"+docId;
-               virusScanner.scan(tempFile, name);
-               Blob fileContents = documentDAO.getLobHelper().createBlob(tempFileStream, (int) tempFile.length());
-               rawDocument.setContent(fileContents);
-               documentDAO.addRawDocument(document, rawDocument);
-               documentDAO.flush();
-            }
-            catch (VirusDetectedException e)
-            {
-               log.warn("File failed virus scan: {}", e.getMessage());
-               FacesMessages.instance().add(Severity.ERROR, "uploaded file did not pass virus scan");
-            }
-
+            String name = projectSlug+":"+iterationSlug+":"+docId;
+            virusScanner.scan(tempFile, name);
          }
-         catch (FileNotFoundException e)
+         catch (VirusDetectedException e)
          {
-            log.error("Failed to open stream from temp source file", e);
-            FacesMessages.instance().add(Severity.ERROR, "Error saving uploaded document {0} on server, download in original format may fail.", documentFileUpload.getFileName());
+            log.warn("File failed virus scan: {}", e.getMessage());
+            FacesMessages.instance().add(Severity.ERROR, "uploaded file did not pass virus scan");
          }
+         filePersistService.persistRawDocumentContentFromFile(rawDocument, tempFile);
+         documentDAO.addRawDocument(document, rawDocument);
+         documentDAO.flush();
       }
 
       translationFileServiceImpl.removeTempFile(tempFile);
@@ -521,10 +510,10 @@ public class ProjectIterationFilesAction implements Serializable
       return translationFileServiceImpl.isPoDocument(projectSlug, iterationSlug, docId);
    }
 
-   // line not found
    public boolean hasOriginal(String docPath, String docName)
    {
-      return translationFileServiceImpl.hasPersistedDocument(projectSlug, iterationSlug, docPath, docName);
+      GlobalDocumentId id = new GlobalDocumentId(projectSlug, iterationSlug, docPath + docName);
+      return filePersistService.hasPersistedDocument(id);
    }
 
    public String extensionOf(String docPath, String docName)

@@ -54,12 +54,14 @@ public class JndiBackedConfig implements Serializable
    private static final String KEY_AUTH_POLICY           = "java:global/zanata/security/auth-policy-names/";
    private static final String KEY_ADMIN_USERS           = "java:global/zanata/security/admin-users";
    private static final String KEY_DEFAULT_FROM_ADDRESS  = "java:global/zanata/email/default-from-address";
+   private static final String KEY_DOCUMENT_FILE_STORE   = "java:global/zanata/files/document-storage-directory";
    private static final String KEY_EMAIL_HOST            = "java:global/zanata/smtp/host";
    private static final String KEY_EMAIL_PORT            = "java:global/zanata/smtp/port";
    private static final String KEY_EMAIL_USERNAME        = "java:global/zanata/smtp/username";
    private static final String KEY_EMAIL_PASSWORD        = "java:global/zanata/smtp/password";
    private static final String KEY_EMAIL_TLS             = "java:global/zanata/smtp/tls";
    private static final String KEY_EMAIL_SSL             = "java:global/zanata/smtp/ssl";
+   private static final String KEY_WEB_ASSETS_URL_BASE   = "java:global/zanata/webassets/url-base";
 
    private Map<String, String> configurationValues;
 
@@ -159,6 +161,11 @@ public class JndiBackedConfig implements Serializable
       return getConfigValue(KEY_DEFAULT_FROM_ADDRESS);
    }
 
+   public String getDocumentFileStorageLocation()
+   {
+      return getConfigValue(KEY_DOCUMENT_FILE_STORE);
+   }
+
    public String getSmtpHostName()
    {
       return getConfigValue(KEY_EMAIL_HOST);
@@ -187,5 +194,10 @@ public class JndiBackedConfig implements Serializable
    public String getStmpUsesSsl()
    {
       return getConfigValue(KEY_EMAIL_SSL);
+   }
+
+   public String getWebAssetsUrlBase()
+   {
+      return getConfigValue(KEY_WEB_ASSETS_URL_BASE);
    }
 }

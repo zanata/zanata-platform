@@ -21,12 +21,10 @@
 package org.zanata.model;
 
 import java.io.Serializable;
-import java.sql.Blob;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 
 import lombok.Getter;
@@ -52,7 +50,7 @@ public class HRawDocument extends ModelEntityBase implements Serializable
 
    // TODO none of these should allow null
    private String contentHash;
-   private Blob content;
+   private String fileId;
    private DocumentType type;
    private String uploadedBy;
 
@@ -79,12 +77,6 @@ public class HRawDocument extends ModelEntityBase implements Serializable
       return contentHash;
    }
 
-   @Lob
-   public Blob getContent()
-   {
-      return content;
-   }
-
    @Enumerated(EnumType.STRING)
    public DocumentType getType()
    {
@@ -105,6 +97,6 @@ public class HRawDocument extends ModelEntityBase implements Serializable
             + ",contentHash=" + contentHash + "]";
    }
 
-   // TODO override equals to use contentHash
+   // TODO override equals to use contentHash, type, parameters, etc.
 
 }

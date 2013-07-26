@@ -23,9 +23,9 @@ package org.zanata.page.administration;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.zanata.page.AbstractPage;
+import org.zanata.page.BasePage;
 
-public class AddLanguagePage extends AbstractPage
+public class AddLanguagePage extends BasePage
 {
    @FindBy(xpath = "//input[@type='text' and contains(@id, 'localeName')]")
    private WebElement languageInput;
@@ -58,7 +58,7 @@ public class AddLanguagePage extends AbstractPage
 
    public ManageLanguagePage saveLanguage()
    {
-      clickSaveAndCheckErrors(saveButton);
+      clickAndCheckErrors(saveButton);
       return new ManageLanguagePage(getDriver());
    }
 }

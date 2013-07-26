@@ -21,9 +21,7 @@
 package org.zanata.workflow;
 
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.PageFactory;
-import org.zanata.page.AbstractPage;
-import org.zanata.page.HomePage;
+import org.zanata.page.utility.HomePage;
 import org.zanata.page.WebDriverFactory;
 
 public class AbstractWebWorkFlow

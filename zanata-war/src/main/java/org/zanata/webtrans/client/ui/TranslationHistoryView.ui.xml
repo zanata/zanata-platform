@@ -24,11 +24,7 @@
                 </g:customHeader>
                 <g:ScrollPanel>
                     <g:HTMLPanel ui:field="historyPanel" styleName="l__wrapper l--push-v-1" >
-                        <div class="g">
-                            <div class="g__item w--1-12 txt--align-right"><i class="i--comment i"/><span class="is-invisible">Comment</span></div>
-                            <div class="w--9-12 g__item"><g:TextArea name="comment" styleName="basic-input" ui:field="commentTextArea" /></div>
-                            <div class="w--2-12 g__item"><g:Button addStyleNames="button--full" text="Add Comment" ui:field="addCommentButton" /></div>
-                        </div>
+                        <z:ReviewCommentInputWidget ui:field="commentInput" />
                         <z:UnorderedListWidget styleName="list--slat d--top" ui:field="itemList"/>
                     </g:HTMLPanel>
                 </g:ScrollPanel>
