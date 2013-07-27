@@ -27,6 +27,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -38,17 +39,21 @@ import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.annotation.CachedMethodResult;
 import org.zanata.common.ActivityType;
 import org.zanata.common.EntityStatus;
+import org.zanata.common.LocaleId;
+import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.Activity;
 import org.zanata.model.HAccount;
+import org.zanata.model.HDocument;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.model.HTextFlowTarget;
+import org.zanata.model.type.EntityType;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.ActivityService;
 import org.zanata.service.GravatarService;
 import org.zanata.util.DateUtil;
-import org.zanata.util.ZanataMessages;
 
 @Name("dashboardAction")
 @Scope(ScopeType.PAGE)
@@ -61,7 +66,7 @@ public class DashboardAction implements Serializable
 
    @In
    private GravatarService gravatarServiceImpl;
-   
+
    @In
    private ActivityService activityServiceImpl;
 
@@ -71,21 +76,22 @@ public class DashboardAction implements Serializable
    @In
    private ProjectDAO projectDAO;
 
+   @In
+   private DocumentDAO documentDAO;
+
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    private HAccount authenticatedAccount;
 
    @In
    private ZanataIdentity identity;
-   
-   @In
-   private ZanataMessages zanataMessages;
-   
-   @In
-   private ActivityMessageBuilder activityMessageBuilder;
 
    private final int USER_IMAGE_SIZE = 115;
    private final int ACTIVITIES_COUNT_PER_PAGE = 10;
+   private final int MAX_CONTENT_LENGTH = 50;
+   private final String WRAPPED_POSTFIX = "...";
    private int activityPageIndex = 0;
+   
+   private final Date now = new Date();
 
    private final Comparator<HProject> projectCreationDateComparator = new Comparator<HProject>()
    {
@@ -122,7 +128,7 @@ public class DashboardAction implements Serializable
    {
       List<HProject> sortedList = new ArrayList<HProject>();
 
-      if(checkViewObsolete())
+      if (checkViewObsolete())
       {
          sortedList.addAll(authenticatedAccount.getPerson().getMaintainerProjects());
       }
@@ -130,7 +136,7 @@ public class DashboardAction implements Serializable
       {
          for (HProject project : authenticatedAccount.getPerson().getMaintainerProjects())
          {
-            if(project.getStatus() != EntityStatus.OBSOLETE)
+            if (project.getStatus() != EntityStatus.OBSOLETE)
             {
                sortedList.add(project);
             }
@@ -151,7 +157,7 @@ public class DashboardAction implements Serializable
    public List<HProjectIteration> getProjectVersions(Long projectId)
    {
       List<HProjectIteration> result = new ArrayList<HProjectIteration>();
-      if(checkViewObsolete())
+      if (checkViewObsolete())
       {
          result.addAll(projectIterationDAO.searchByProjectId(projectId));
       }
@@ -161,14 +167,14 @@ public class DashboardAction implements Serializable
       }
       return result;
    }
-   
+
    @CachedMethodResult
    public boolean isUserMaintainer(Long projectId)
    {
       HProject project = getProject(projectId);
       return authenticatedAccount.getPerson().isMaintainer(project);
    }
-   
+
    @CachedMethodResult
    public int getDocumentCount(Long versionId)
    {
@@ -192,77 +198,282 @@ public class DashboardAction implements Serializable
    {
       return projectDAO.findById(projectId, false);
    }
-   
+
    public List<Activity> getActivities()
    {
       return activityServiceImpl.findLatestActivities(authenticatedAccount.getPerson().getId(), activityPageIndex, ACTIVITIES_COUNT_PER_PAGE);
    }
-   
-   public String getHtmlMessage(Activity activity)
-   {
-      return activityMessageBuilder.getHtmlMessage(activity);
-   }
-   
+
    @CachedMethodResult
    public String getTime(Activity activity)
    {
-      Date now = new Date();
-      Date then = DateUtils.addMilliseconds(activity.getApproxTime(), (int)activity.getEndOffsetMillis());
-      
+      Date then = DateUtils.addMilliseconds(activity.getApproxTime(), (int) activity.getEndOffsetMillis());
+
       return DateUtil.getReadableTime(now, then);
    }
-   
+
    @CachedMethodResult
-   public String getActivityName(ActivityType actionType)
+   public String getProjectName(Activity activity)
    {
-      if (actionType == ActivityType.UPDATE_TRANSLATION)
+      Object context = getEntity(activity.getContextType(), activity.getContextId());
+
+      if (activity.getActionType() == ActivityType.UPDATE_TRANSLATION
+            || activity.getActionType() == ActivityType.REVIEWED_TRANSLATION
+            || activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
+            || activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
       {
-         return zanataMessages.getMessage("jsf.Translation");
-      }
-      else if (actionType == ActivityType.REVIEWED_TRANSLATION)
-      {
-         return zanataMessages.getMessage("jsf.Reviewed");
-      }
-      else if (actionType == ActivityType.UPLOAD_SOURCE_DOCUMENT)
-      {
-         return zanataMessages.getMessage("jsf.UploadSource");
-      }
-      else if (actionType == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
-      {
-         return zanataMessages.getMessage("jsf.UploadedTranslation");
+         HProjectIteration version = (HProjectIteration) context;
+         return version.getProject().getName();
       }
       return "";
    }
-   
+
    @CachedMethodResult
-   public String getCssIconClass(ActivityType actionType)
+   public String getProjectUrl(Activity activity)
    {
-      if (actionType == ActivityType.UPDATE_TRANSLATION)
+      Object context = getEntity(activity.getContextType(), activity.getContextId());
+
+      if (activity.getActionType() == ActivityType.UPDATE_TRANSLATION
+            || activity.getActionType() == ActivityType.REVIEWED_TRANSLATION
+            || activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
+            || activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
       {
-         return "i--translate";
-      }
-      else if (actionType == ActivityType.REVIEWED_TRANSLATION)
-      {
-         return "i--review";
-      }
-      else if (actionType == ActivityType.UPLOAD_SOURCE_DOCUMENT)
-      {
-         return "i--document";
-      }
-      else if (actionType == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
-      {
-         return "i--translate-up";
+         HProjectIteration version = (HProjectIteration) context;
+         return projectUrl(version.getProject().getSlug());
       }
       return "";
    }
+
    
-   public String getDocumentListUrl(Activity activity)
+
+   @CachedMethodResult
+   public String getTrimmedContent(Activity activity)
    {
-      
+      String wrappedContent = "";
+      Object lastTarget = getEntity(activity.getLastTargetType(), activity.getLastTargetId());
+
+      if (activity.getActionType() == ActivityType.UPDATE_TRANSLATION
+            || activity.getActionType() == ActivityType.REVIEWED_TRANSLATION)
+      {
+         HTextFlowTarget tft = (HTextFlowTarget) lastTarget;
+         wrappedContent = tft.getContents().get(0);
+      }
+      else if (activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
+            || activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
+      {
+         HDocument document = (HDocument) lastTarget;
+         HTextFlowTarget tft = documentDAO.getLastTranslatedTarget(document.getId());
+         wrappedContent = tft.getContents().get(0);
+      }
+
+      return trimString(wrappedContent);
    }
-   
+
+   @CachedMethodResult
+   public String getEditorUrl(Activity activity)
+   {
+      String url = "";
+      Object context = getEntity(activity.getContextType(), activity.getContextId());
+      Object lastTarget = getEntity(activity.getLastTargetType(), activity.getLastTargetId());
+
+      if (activity.getActionType() == ActivityType.UPDATE_TRANSLATION
+            || activity.getActionType() == ActivityType.REVIEWED_TRANSLATION)
+      {
+         HProjectIteration version = (HProjectIteration) context;
+         HTextFlowTarget tft = (HTextFlowTarget) lastTarget;
+
+         url = editorTransUnitUrl(version.getProject().getSlug(), version.getSlug(), tft.getLocaleId(),
+               tft.getTextFlow().getLocale(), tft.getTextFlow().getDocument().getDocId(), tft.getTextFlow().getId());
+      }
+      else if (activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
+            || activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
+      {
+         HProjectIteration version = (HProjectIteration) context;
+         HDocument document = (HDocument) lastTarget;
+         HTextFlowTarget tft = documentDAO.getLastTranslatedTarget(document.getId());
+
+         url = editorTransUnitUrl(version.getProject().getSlug(), version.getSlug(), tft.getLocaleId(),
+               document.getSourceLocaleId(), tft.getTextFlow().getDocument().getDocId(), tft.getTextFlow().getId());
+      }
+
+      return url;
+   }
+
+   @CachedMethodResult
+   public String getDocumentUrl(Activity activity)
+   {
+      String url = "";
+      Object context = getEntity(activity.getContextType(), activity.getContextId());
+      Object lastTarget = getEntity(activity.getLastTargetType(), activity.getLastTargetId());
+
+      if (activity.getActionType() == ActivityType.UPDATE_TRANSLATION
+            || activity.getActionType() == ActivityType.REVIEWED_TRANSLATION)
+      {
+         HProjectIteration version = (HProjectIteration) context;
+         HTextFlowTarget tft = (HTextFlowTarget) lastTarget;
+
+         url = editorDocumentUrl(version.getProject().getSlug(), version.getSlug(), tft.getLocaleId(),
+               tft.getTextFlow().getLocale(), tft.getTextFlow().getDocument().getDocId());
+      }
+      else if (activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
+            || activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
+      {
+         HProjectIteration version = (HProjectIteration) context;
+         HDocument document = (HDocument) lastTarget;
+         HTextFlowTarget tft = documentDAO.getLastTranslatedTarget(document.getId());
+
+         url = editorDocumentUrl(version.getProject().getSlug(), version.getSlug(), tft.getLocaleId(),
+               document.getSourceLocaleId(), tft.getTextFlow().getDocument().getDocId());
+      }
+      return url;
+   }
+
+   @CachedMethodResult
    public String getDocumentName(Activity activity)
    {
-      
+      Object lastTarget = getEntity(activity.getLastTargetType(), activity.getLastTargetId());
+      String docName = "";
+
+      if (activity.getActionType() == ActivityType.UPDATE_TRANSLATION
+            || activity.getActionType() == ActivityType.REVIEWED_TRANSLATION)
+      {
+         HTextFlowTarget tft = (HTextFlowTarget) lastTarget;
+         docName = tft.getTextFlow().getDocument().getName();
+      }
+      else if (activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
+            || activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
+      {
+         HDocument document = (HDocument) lastTarget;
+         docName = document.getName();
+      }
+      return docName;
+   }
+
+   @CachedMethodResult
+   public String getVersionUrl(Activity activity)
+   {
+      Object context = getEntity(activity.getContextType(), activity.getContextId());
+      String url = "";
+
+      if (activity.getActionType() == ActivityType.UPDATE_TRANSLATION
+            || activity.getActionType() == ActivityType.REVIEWED_TRANSLATION
+            || activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
+            || activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
+      {
+         HProjectIteration version = (HProjectIteration) context;
+         url = versionUrl(version.getProject().getSlug(), version.getSlug());
+      }
+
+      return url;
+   }
+
+   @CachedMethodResult
+   public String getVersionName(Activity activity)
+   {
+      Object context = getEntity(activity.getContextType(), activity.getContextId());
+      String name = "";
+
+      if (activity.getActionType() == ActivityType.UPDATE_TRANSLATION
+            || activity.getActionType() == ActivityType.REVIEWED_TRANSLATION
+            || activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
+            || activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
+      {
+         HProjectIteration version = (HProjectIteration) context;
+         name = version.getSlug();
+      }
+
+      return name;
+   }
+
+   @CachedMethodResult
+   public String getLanguageUrl(Activity activity)
+   {
+      Object lastTarget = getEntity(activity.getLastTargetType(), activity.getLastTargetId());
+      String url = "";
+
+      if (activity.getActionType() == ActivityType.UPDATE_TRANSLATION
+            || activity.getActionType() == ActivityType.REVIEWED_TRANSLATION)
+      {
+         HTextFlowTarget tft = (HTextFlowTarget) lastTarget;
+         url = languageUrl(tft.getLocaleId());
+      }
+      else if (activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
+            || activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
+      {
+         HDocument document = (HDocument) lastTarget;
+         HTextFlowTarget tft = documentDAO.getLastTranslatedTarget(document.getId());
+         url = languageUrl(tft.getLocaleId());
+      }
+
+      return url;
+   }
+
+   @CachedMethodResult
+   public String getLanguageName(Activity activity)
+   {
+      Object lastTarget = getEntity(activity.getLastTargetType(), activity.getLastTargetId());
+      String name = "";
+
+      if (activity.getActionType() == ActivityType.UPDATE_TRANSLATION
+            || activity.getActionType() == ActivityType.REVIEWED_TRANSLATION)
+      {
+         HTextFlowTarget tft = (HTextFlowTarget) lastTarget;
+         name = tft.getLocaleId().getId();
+      }
+      else if (activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
+            || activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
+      {
+         HDocument document = (HDocument) lastTarget;
+         HTextFlowTarget tft = documentDAO.getLastTranslatedTarget(document.getId());
+         name = tft.getLocaleId().getId();
+      }
+
+      return name;
+   }
+
+   @CachedMethodResult
+   private Object getEntity(EntityType contextType, long id)
+   {
+      return activityServiceImpl.getEntity(contextType, id);
+   }
+
+   private String languageUrl(LocaleId localeId)
+   {
+      return "/languages/" + localeId.getId();
+   }
+   
+   private String projectUrl(String projectSlug)
+   {
+      return "/iteration/view/" + projectSlug;
+   }
+
+   private String versionUrl(String projectSlug, String versionSlug)
+   {
+      return projectUrl(projectSlug) + "/" + versionSlug;
+   }
+
+   private String editorBaseUrl(String projectSlug, String versionSlug, LocaleId targetLocaleId, LocaleId sourceLocaleId)
+   {
+      return "/webtrans/translate?project=" + projectSlug + "&iteration=" + versionSlug + "&localeId=" + targetLocaleId + "&locale=" + sourceLocaleId;
+   }
+
+   private String editorDocumentUrl(String projectSlug, String versionSlug, LocaleId targetLocaleId, LocaleId sourceLocaleId, String docId)
+   {
+      return editorBaseUrl(projectSlug, versionSlug, targetLocaleId, sourceLocaleId) + " #view:doc;doc:" + docId;
+   }
+
+   private String editorTransUnitUrl(String projectSlug, String versionSlug, LocaleId targetLocaleId, LocaleId sourceLocaleId, String docId, Long tuId)
+   {
+      return editorDocumentUrl(projectSlug, versionSlug, targetLocaleId, sourceLocaleId, docId) + ";textflow:" + tuId;
+   }
+
+   private String trimString(String text)
+   {
+      if (StringUtils.length(text) > (MAX_CONTENT_LENGTH + StringUtils.length(WRAPPED_POSTFIX)))
+      {
+         text = StringUtils.substring(text, 0, MAX_CONTENT_LENGTH + StringUtils.length(WRAPPED_POSTFIX));
+         text = text + WRAPPED_POSTFIX;
+      }
+      return text;
    }
 }

@@ -155,7 +155,31 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       query.append("and tft.locale.localeId = :localeId ");
       query.append("order by tft.lastChanged DESC");
 
-      return (HTextFlowTarget) session.createQuery(query.toString()).setParameter("docId", documentId).setParameter("localeId", localeId).setCacheable(true).setMaxResults(1).setComment("DocumentDAO.getLastTranslated").uniqueResult();
+      return (HTextFlowTarget) session.createQuery(query.toString())
+            .setParameter("docId", documentId)
+            .setParameter("localeId", localeId)
+            .setCacheable(true)
+            .setMaxResults(1)
+            .setComment("DocumentDAO.getLastTranslated")
+            .uniqueResult();
+   }
+   
+   public HTextFlowTarget getLastTranslatedTarget(Long documentId)
+   {
+      Session session = getSession();
+
+      StringBuilder query = new StringBuilder();
+
+      query.append("from HTextFlowTarget tft ");
+      query.append("where tft.textFlow.document.id = :docId ");
+      query.append("order by tft.lastChanged DESC");
+
+      return (HTextFlowTarget) session.createQuery(query.toString())
+            .setParameter("docId", documentId)
+            .setCacheable(true)
+            .setMaxResults(1)
+            .setComment("DocumentDAO.getLastTranslated")
+            .uniqueResult();
    }
 
    /**
