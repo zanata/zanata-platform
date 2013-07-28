@@ -47,8 +47,9 @@ public class ChangePasswordTest
    @Category(BasicAcceptanceTest.class)
    public void changePasswordSuccessful()
    {
-      MyAccountPage myAccountPage = new LoginWorkFlow().signIn("translator", "translator").goToMyProfile();
-      myAccountPage = myAccountPage.goToChangePassword()
+      MyAccountPage myAccountPage = new LoginWorkFlow().signIn("translator", "translator")
+            .goToMyProfile()
+            .goToChangePassword()
             .enterOldPassword("translator")
             .enterNewPassword("newpassword")
             .enterConfirmNewPassword("newpassword")
@@ -56,6 +57,7 @@ public class ChangePasswordTest
 
       assertThat("Confirmation message is displayed", myAccountPage.getNotificationMessage(),
             Matchers.equalTo("Your password has been successfully changed."));
+
       HomePage homePage = myAccountPage.signOut();
       assertThat("User is logged out", !homePage.hasLoggedIn());
       homePage = new LoginWorkFlow().signIn("translator", "newpassword");
@@ -66,8 +68,9 @@ public class ChangePasswordTest
    public void changePasswordCurrentPasswordFailure()
    {
       String incorrectPassword = "Old password is incorrect, please check and try again.";
-      MyAccountPage myAccountPage = new LoginWorkFlow().signIn("translator", "translator").goToMyProfile();
-         ChangePasswordPage changePasswordPage = myAccountPage.goToChangePassword()
+      ChangePasswordPage changePasswordPage = new LoginWorkFlow().signIn("translator", "translator")
+            .goToMyProfile()
+            .goToChangePassword()
             .enterOldPassword("nottherightpassword")
             .enterNewPassword("somenewpassword")
             .enterConfirmNewPassword("somenewpassword")
@@ -96,7 +99,8 @@ public class ChangePasswordTest
    @Test
    public void changePasswordCancel()
    {
-      MyAccountPage myAccountPage = new LoginWorkFlow().signIn("translator", "translator").goToMyProfile()
+      MyAccountPage myAccountPage = new LoginWorkFlow().signIn("translator", "translator")
+            .goToMyProfile()
             .goToChangePassword()
             .enterOldPassword("translator")
             .enterNewPassword("notnewpassword")
