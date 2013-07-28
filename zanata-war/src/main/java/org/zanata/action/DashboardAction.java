@@ -39,7 +39,6 @@ import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.annotation.CachedMethodResult;
 import org.zanata.common.ActivityType;
 import org.zanata.common.EntityStatus;
-import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
@@ -54,6 +53,7 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.ActivityService;
 import org.zanata.service.GravatarService;
 import org.zanata.util.DateUtil;
+import org.zanata.util.UrlUtil;
 
 @Name("dashboardAction")
 @Scope(ScopeType.PAGE)
@@ -78,6 +78,9 @@ public class DashboardAction implements Serializable
 
    @In
    private DocumentDAO documentDAO;
+   
+   @In
+   private UrlUtil urlUtil;
 
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    private HAccount authenticatedAccount;
@@ -217,8 +220,7 @@ public class DashboardAction implements Serializable
    {
       Object context = getEntity(activity.getContextType(), activity.getContextId());
 
-      if (activity.getActionType() == ActivityType.UPDATE_TRANSLATION
-            || activity.getActionType() == ActivityType.REVIEWED_TRANSLATION
+      if (isTranslationUpdateActivity(activity.getActionType())
             || activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
             || activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
       {
@@ -233,13 +235,12 @@ public class DashboardAction implements Serializable
    {
       Object context = getEntity(activity.getContextType(), activity.getContextId());
 
-      if (activity.getActionType() == ActivityType.UPDATE_TRANSLATION
-            || activity.getActionType() == ActivityType.REVIEWED_TRANSLATION
+      if (isTranslationUpdateActivity(activity.getActionType())
             || activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
             || activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
       {
          HProjectIteration version = (HProjectIteration) context;
-         return projectUrl(version.getProject().getSlug());
+         return urlUtil.projectUrl(version.getProject().getSlug());
       }
       return "";
    }
@@ -252,14 +253,16 @@ public class DashboardAction implements Serializable
       String wrappedContent = "";
       Object lastTarget = getEntity(activity.getLastTargetType(), activity.getLastTargetId());
 
-      if (activity.getActionType() == ActivityType.UPDATE_TRANSLATION
-            || activity.getActionType() == ActivityType.REVIEWED_TRANSLATION)
+      if (isTranslationUpdateActivity(activity.getActionType()))
       {
          HTextFlowTarget tft = (HTextFlowTarget) lastTarget;
          wrappedContent = tft.getContents().get(0);
       }
-      else if (activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
-            || activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
+      else if(activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT)
+      {
+         //not supported for upload source action
+      }
+      else if (activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
       {
          HDocument document = (HDocument) lastTarget;
          HTextFlowTarget tft = documentDAO.getLastTranslatedTarget(document.getId());
@@ -276,25 +279,28 @@ public class DashboardAction implements Serializable
       Object context = getEntity(activity.getContextType(), activity.getContextId());
       Object lastTarget = getEntity(activity.getLastTargetType(), activity.getLastTargetId());
 
-      if (activity.getActionType() == ActivityType.UPDATE_TRANSLATION
-            || activity.getActionType() == ActivityType.REVIEWED_TRANSLATION)
+      if (isTranslationUpdateActivity(activity.getActionType()))
       {
          HProjectIteration version = (HProjectIteration) context;
          HTextFlowTarget tft = (HTextFlowTarget) lastTarget;
 
-         url = editorTransUnitUrl(version.getProject().getSlug(), version.getSlug(), tft.getLocaleId(),
+         url = urlUtil.editorTransUnitUrl(version.getProject().getSlug(), version.getSlug(), tft.getLocaleId(),
                tft.getTextFlow().getLocale(), tft.getTextFlow().getDocument().getDocId(), tft.getTextFlow().getId());
       }
-      else if (activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
-            || activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
+      else if(activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT)
+      {
+         // not supported for upload source action
+      }
+      else if (activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
       {
          HProjectIteration version = (HProjectIteration) context;
          HDocument document = (HDocument) lastTarget;
          HTextFlowTarget tft = documentDAO.getLastTranslatedTarget(document.getId());
 
-         url = editorTransUnitUrl(version.getProject().getSlug(), version.getSlug(), tft.getLocaleId(),
+         url = urlUtil.editorTransUnitUrl(version.getProject().getSlug(), version.getSlug(), tft.getLocaleId(),
                document.getSourceLocaleId(), tft.getTextFlow().getDocument().getDocId(), tft.getTextFlow().getId());
       }
+      
 
       return url;
    }
@@ -306,23 +312,26 @@ public class DashboardAction implements Serializable
       Object context = getEntity(activity.getContextType(), activity.getContextId());
       Object lastTarget = getEntity(activity.getLastTargetType(), activity.getLastTargetId());
 
-      if (activity.getActionType() == ActivityType.UPDATE_TRANSLATION
-            || activity.getActionType() == ActivityType.REVIEWED_TRANSLATION)
+      if (isTranslationUpdateActivity(activity.getActionType()))
       {
          HProjectIteration version = (HProjectIteration) context;
          HTextFlowTarget tft = (HTextFlowTarget) lastTarget;
 
-         url = editorDocumentUrl(version.getProject().getSlug(), version.getSlug(), tft.getLocaleId(),
+         url = urlUtil.editorDocumentUrl(version.getProject().getSlug(), version.getSlug(), tft.getLocaleId(),
                tft.getTextFlow().getLocale(), tft.getTextFlow().getDocument().getDocId());
       }
-      else if (activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
-            || activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
+      else if(activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT)
+      {
+         HProjectIteration version = (HProjectIteration) context;
+         url = urlUtil.sourceFilesUrl(version.getProject().getSlug(), version.getSlug());
+      }
+      else if (activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
       {
          HProjectIteration version = (HProjectIteration) context;
          HDocument document = (HDocument) lastTarget;
          HTextFlowTarget tft = documentDAO.getLastTranslatedTarget(document.getId());
 
-         url = editorDocumentUrl(version.getProject().getSlug(), version.getSlug(), tft.getLocaleId(),
+         url = urlUtil.editorDocumentUrl(version.getProject().getSlug(), version.getSlug(), tft.getLocaleId(),
                document.getSourceLocaleId(), tft.getTextFlow().getDocument().getDocId());
       }
       return url;
@@ -334,8 +343,7 @@ public class DashboardAction implements Serializable
       Object lastTarget = getEntity(activity.getLastTargetType(), activity.getLastTargetId());
       String docName = "";
 
-      if (activity.getActionType() == ActivityType.UPDATE_TRANSLATION
-            || activity.getActionType() == ActivityType.REVIEWED_TRANSLATION)
+      if (isTranslationUpdateActivity(activity.getActionType()))
       {
          HTextFlowTarget tft = (HTextFlowTarget) lastTarget;
          docName = tft.getTextFlow().getDocument().getName();
@@ -355,13 +363,12 @@ public class DashboardAction implements Serializable
       Object context = getEntity(activity.getContextType(), activity.getContextId());
       String url = "";
 
-      if (activity.getActionType() == ActivityType.UPDATE_TRANSLATION
-            || activity.getActionType() == ActivityType.REVIEWED_TRANSLATION
+      if (isTranslationUpdateActivity(activity.getActionType())
             || activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
             || activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
       {
          HProjectIteration version = (HProjectIteration) context;
-         url = versionUrl(version.getProject().getSlug(), version.getSlug());
+         url = urlUtil.versionUrl(version.getProject().getSlug(), version.getSlug());
       }
 
       return url;
@@ -373,38 +380,42 @@ public class DashboardAction implements Serializable
       Object context = getEntity(activity.getContextType(), activity.getContextId());
       String name = "";
 
-      if (activity.getActionType() == ActivityType.UPDATE_TRANSLATION
-            || activity.getActionType() == ActivityType.REVIEWED_TRANSLATION
+      if (isTranslationUpdateActivity(activity.getActionType())
             || activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
             || activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
       {
          HProjectIteration version = (HProjectIteration) context;
          name = version.getSlug();
       }
-
       return name;
    }
 
    @CachedMethodResult
-   public String getLanguageUrl(Activity activity)
+   public String getDocumentListUrl(Activity activity)
    {
+      Object context = getEntity(activity.getContextType(), activity.getContextId());
       Object lastTarget = getEntity(activity.getLastTargetType(), activity.getLastTargetId());
       String url = "";
 
-      if (activity.getActionType() == ActivityType.UPDATE_TRANSLATION
-            || activity.getActionType() == ActivityType.REVIEWED_TRANSLATION)
+      if (isTranslationUpdateActivity(activity.getActionType()))
       {
+         HProjectIteration version = (HProjectIteration) context;
          HTextFlowTarget tft = (HTextFlowTarget) lastTarget;
-         url = languageUrl(tft.getLocaleId());
+         
+         url = urlUtil.editorDocumentListUrl(version.getProject().getSlug(), version.getSlug(), tft.getLocaleId(), tft.getTextFlow().getLocale());
       }
-      else if (activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
-            || activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
+      else if(activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT)
       {
+         // not supported for upload source action
+      }
+      else if (activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
+      {
+         HProjectIteration version = (HProjectIteration) context;
          HDocument document = (HDocument) lastTarget;
          HTextFlowTarget tft = documentDAO.getLastTranslatedTarget(document.getId());
-         url = languageUrl(tft.getLocaleId());
+         
+         url = urlUtil.editorDocumentListUrl(version.getProject().getSlug(), version.getSlug(), tft.getLocaleId(), tft.getTextFlow().getLocale());
       }
-
       return url;
    }
 
@@ -414,14 +425,16 @@ public class DashboardAction implements Serializable
       Object lastTarget = getEntity(activity.getLastTargetType(), activity.getLastTargetId());
       String name = "";
 
-      if (activity.getActionType() == ActivityType.UPDATE_TRANSLATION
-            || activity.getActionType() == ActivityType.REVIEWED_TRANSLATION)
+      if (isTranslationUpdateActivity(activity.getActionType()))
       {
          HTextFlowTarget tft = (HTextFlowTarget) lastTarget;
          name = tft.getLocaleId().getId();
       }
-      else if (activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
-            || activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
+      else if(activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT)
+      {
+         // not supported for upload source action
+      }
+      else if (activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
       {
          HDocument document = (HDocument) lastTarget;
          HTextFlowTarget tft = documentDAO.getLastTranslatedTarget(document.getId());
@@ -437,36 +450,6 @@ public class DashboardAction implements Serializable
       return activityServiceImpl.getEntity(contextType, id);
    }
 
-   private String languageUrl(LocaleId localeId)
-   {
-      return "/languages/" + localeId.getId();
-   }
-   
-   private String projectUrl(String projectSlug)
-   {
-      return "/iteration/view/" + projectSlug;
-   }
-
-   private String versionUrl(String projectSlug, String versionSlug)
-   {
-      return projectUrl(projectSlug) + "/" + versionSlug;
-   }
-
-   private String editorBaseUrl(String projectSlug, String versionSlug, LocaleId targetLocaleId, LocaleId sourceLocaleId)
-   {
-      return "/webtrans/translate?project=" + projectSlug + "&iteration=" + versionSlug + "&localeId=" + targetLocaleId + "&locale=" + sourceLocaleId;
-   }
-
-   private String editorDocumentUrl(String projectSlug, String versionSlug, LocaleId targetLocaleId, LocaleId sourceLocaleId, String docId)
-   {
-      return editorBaseUrl(projectSlug, versionSlug, targetLocaleId, sourceLocaleId) + " #view:doc;doc:" + docId;
-   }
-
-   private String editorTransUnitUrl(String projectSlug, String versionSlug, LocaleId targetLocaleId, LocaleId sourceLocaleId, String docId, Long tuId)
-   {
-      return editorDocumentUrl(projectSlug, versionSlug, targetLocaleId, sourceLocaleId, docId) + ";textflow:" + tuId;
-   }
-
    private String trimString(String text)
    {
       if (StringUtils.length(text) > (MAX_CONTENT_LENGTH + StringUtils.length(WRAPPED_POSTFIX)))
@@ -475,5 +458,11 @@ public class DashboardAction implements Serializable
          text = text + WRAPPED_POSTFIX;
       }
       return text;
+   }
+   
+   private boolean isTranslationUpdateActivity(ActivityType activityType)
+   {
+      return activityType == ActivityType.UPDATE_TRANSLATION
+            || activityType == ActivityType.REVIEWED_TRANSLATION;
    }
 }

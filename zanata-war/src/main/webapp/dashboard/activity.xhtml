@@ -47,8 +47,7 @@
 	        		
 	        		<s:fragment rendered="#{activity.actionType == 'UPLOAD_SOURCE_DOCUMENT'}">
 	        			You uploaded a document of <strong>#{activity.wordCount} words</strong> to
-	        			<a href="#{dashboardAction.getProjectUrl(activity)}">#{dashboardAction.getProjectName(activity)}</a>,
-        				finishing on "<a href="#{dashboardAction.getEditorUrl(activity)}">#{dashboardAction.getTrimmedContent(activity)}</a>"
+	        			<a href="#{dashboardAction.getProjectUrl(activity)}">#{dashboardAction.getProjectName(activity)}</a>
 	        		</s:fragment>
 	        		
 	        		<s:fragment rendered="#{activity.actionType == 'UPLOAD_TRANSLATION_DOCUMENT'}">
@@ -70,7 +69,7 @@
 	          		<li class="reveal__target">
 	          			<i aria-hidden="true" class="i i--language txt--neutral" title="#{messages['jsf.Language']}"></i>
 	          			<span class="is-invisible">#{messages['jsf.Language']}</span> 
-	          			<a href="#{dashboardAction.getLanguageUrl(activity)}">#{dashboardAction.getLanguageName(activity)}</a>
+	          			<a href="#{dashboardAction.getDocumentListUrl(activity)}">#{dashboardAction.getLanguageName(activity)}</a>
 	          		</li>
 	          		<li class="reveal__target">
 	          			<i aria-hidden="true" class="i i--version txt--neutral" title="#{messages['jsf.Version']}">
