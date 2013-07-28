@@ -43,7 +43,7 @@ import org.zanata.common.EntityStatus;
 @Entity
 @Setter
 // @EqualsAndHashCode(callSuper = true)
-public class HIterationGroup extends SlugEntityBase implements HasStatus
+public class HIterationGroup extends SlugEntityBase implements HasEntityStatus
 {
    private static final long serialVersionUID = 5682522115222479842L;
    private String name;

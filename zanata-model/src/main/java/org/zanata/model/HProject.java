@@ -41,11 +41,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import lombok.Delegate;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -75,7 +73,7 @@ import org.zanata.rest.dto.Project;
 @Setter
 @Indexed
 @ToString(callSuper = true, of = "name")
-public class HProject extends SlugEntityBase implements Serializable, HasStatus
+public class HProject extends SlugEntityBase implements Serializable, HasEntityStatus
 {
    private static final long serialVersionUID = 1L;
    private String name;
