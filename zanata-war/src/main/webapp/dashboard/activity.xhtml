@@ -1,14 +1,15 @@
-<div class="g__item l--push-v-1 w--1-2 w--4-10-h" xmlns="http://www.w3.org/1999/xhtml"
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:s="http://jboss.org/schema/seam/taglib"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:rich="http://richfaces.org/rich">
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j">
                 
 	<div class="l--push-left-half">
 		<h2 class="heading--secondary">#{messages['jsf.YourActivity']}</h2>
 	</div>
-	<ul class="list--no-bullets">
+	<ul id="activityList" class="list--no-bullets">
 		<ui:repeat value="#{dashboardAction.getActivities()}" var="activity">
 			<li class="l--pad-all-half bg--higher--hover bg--faint reveal">
 				<p class="l--float-right txt--neutral l--push-left-half">
@@ -80,5 +81,12 @@
 	        	</ul>
 	     	</li>
      	</ui:repeat>
+     	<s:fragment rendered="#{dashboardAction.hasMoreActivities()}">
+	     	<p class="l--pad-all-half txt--align-center txt--s-align-center d--top">
+		    	<a4j:commandLink action="#{dashboard.loadMoreActivity()}" render="activityList">
+			    	#{messages['jsf.moreActivity']}
+			    </a4j:commandLink>
+		    </p>
+	    </s:fragment>
 	</ul>
-</div>
+</ui:composition>

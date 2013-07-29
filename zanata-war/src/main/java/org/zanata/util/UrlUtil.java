@@ -105,7 +105,7 @@ public class UrlUtil implements Serializable
    
    public String projectUrl(String projectSlug)
    {
-      return contextPath + "/iteration/view/" + projectSlug;
+      return contextPath + "/project/view/" + projectSlug;
    }
 
    public String versionUrl(String projectSlug, String versionSlug)

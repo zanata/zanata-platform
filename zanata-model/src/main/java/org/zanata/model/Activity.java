@@ -50,26 +50,23 @@ import org.zanata.model.type.EntityType;
 @Entity
 @NoArgsConstructor
 @Access(AccessType.FIELD)
+@Getter
 public class Activity extends ModelEntityBase implements Serializable
 {
    private static final long serialVersionUID = 1L;
 
-   @Getter
    @NotNull
    @JoinColumn(name = "actor_id", nullable = false)
    @ManyToOne
    private HPerson actor;
    
-   @Getter
    @Temporal(TemporalType.TIMESTAMP)
    @NotNull
    private Date approxTime;
    
-   @Getter
    @NotNull
    private long startOffsetMillis;
    
-   @Getter
    @NotNull
    private long endOffsetMillis;
    
@@ -78,28 +75,22 @@ public class Activity extends ModelEntityBase implements Serializable
    @Enumerated(EnumType.STRING)
    private EntityType contextType;
    
-   @Getter
    @NotNull
    @Column(name = "context_id")
    private long contextId;
    
-   @Getter
    @Enumerated(EnumType.STRING)
    private EntityType lastTargetType;
    
-   @Getter
    @NotNull
    @Column(name = "last_target_id")
    private long lastTargetId;
    
-   @Getter
    @Enumerated(EnumType.STRING)
    private ActivityType actionType;
    
-   @Getter
    private int eventCount = 1;
    
-   @Getter
    private int wordCount;
    
    public Activity(HPerson actor, EntityType contextType, Long contextId, EntityType lastTargetType, Long lastTargetId, ActivityType actionType, int wordCount)

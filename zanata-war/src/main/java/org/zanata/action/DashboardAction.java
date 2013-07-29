@@ -78,7 +78,7 @@ public class DashboardAction implements Serializable
 
    @In
    private DocumentDAO documentDAO;
-   
+
    @In
    private UrlUtil urlUtil;
 
@@ -88,12 +88,15 @@ public class DashboardAction implements Serializable
    @In
    private ZanataIdentity identity;
 
+   private List<Activity> activityList = new ArrayList<Activity>();
+
    private final int USER_IMAGE_SIZE = 115;
-   private final int ACTIVITIES_COUNT_PER_PAGE = 10;
-   private final int MAX_CONTENT_LENGTH = 50;
-   private final String WRAPPED_POSTFIX = "...";
+   private final int ACTIVITY_COUNT_PER_PAGE = 10;
+   private final int MAX_ACTIVITY_COUNT_PER_PAGE = 20;
+   private final int MAX_TARGET_CONTENT_LENGTH = 50;
+   private final String WRAPPED_POSTFIX = "…";
    private int activityPageIndex = 0;
-   
+
    private final Date now = new Date();
 
    private final Comparator<HProject> projectCreationDateComparator = new Comparator<HProject>()
@@ -204,7 +207,12 @@ public class DashboardAction implements Serializable
 
    public List<Activity> getActivities()
    {
-      return activityServiceImpl.findLatestActivities(authenticatedAccount.getPerson().getId(), activityPageIndex, ACTIVITIES_COUNT_PER_PAGE);
+      if ((activityPageIndex * ACTIVITY_COUNT_PER_PAGE) <= MAX_ACTIVITY_COUNT_PER_PAGE)
+      {
+         activityList.addAll(activityServiceImpl.findLatestActivities(authenticatedAccount.getPerson().getId(), activityPageIndex,
+               ACTIVITY_COUNT_PER_PAGE));
+      }
+      return activityList;
    }
 
    @CachedMethodResult
@@ -245,8 +253,6 @@ public class DashboardAction implements Serializable
       return "";
    }
 
-   
-
    @CachedMethodResult
    public String getTrimmedContent(Activity activity)
    {
@@ -258,7 +264,7 @@ public class DashboardAction implements Serializable
          HTextFlowTarget tft = (HTextFlowTarget) lastTarget;
          wrappedContent = tft.getContents().get(0);
       }
-      else if(activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT)
+      else if (activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT)
       {
          //not supported for upload source action
       }
@@ -287,7 +293,7 @@ public class DashboardAction implements Serializable
          url = urlUtil.editorTransUnitUrl(version.getProject().getSlug(), version.getSlug(), tft.getLocaleId(),
                tft.getTextFlow().getLocale(), tft.getTextFlow().getDocument().getDocId(), tft.getTextFlow().getId());
       }
-      else if(activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT)
+      else if (activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT)
       {
          // not supported for upload source action
       }
@@ -300,7 +306,6 @@ public class DashboardAction implements Serializable
          url = urlUtil.editorTransUnitUrl(version.getProject().getSlug(), version.getSlug(), tft.getLocaleId(),
                document.getSourceLocaleId(), tft.getTextFlow().getDocument().getDocId(), tft.getTextFlow().getId());
       }
-      
 
       return url;
    }
@@ -320,7 +325,7 @@ public class DashboardAction implements Serializable
          url = urlUtil.editorDocumentUrl(version.getProject().getSlug(), version.getSlug(), tft.getLocaleId(),
                tft.getTextFlow().getLocale(), tft.getTextFlow().getDocument().getDocId());
       }
-      else if(activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT)
+      else if (activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT)
       {
          HProjectIteration version = (HProjectIteration) context;
          url = urlUtil.sourceFilesUrl(version.getProject().getSlug(), version.getSlug());
@@ -401,10 +406,10 @@ public class DashboardAction implements Serializable
       {
          HProjectIteration version = (HProjectIteration) context;
          HTextFlowTarget tft = (HTextFlowTarget) lastTarget;
-         
+
          url = urlUtil.editorDocumentListUrl(version.getProject().getSlug(), version.getSlug(), tft.getLocaleId(), tft.getTextFlow().getLocale());
       }
-      else if(activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT)
+      else if (activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT)
       {
          // not supported for upload source action
       }
@@ -413,7 +418,7 @@ public class DashboardAction implements Serializable
          HProjectIteration version = (HProjectIteration) context;
          HDocument document = (HDocument) lastTarget;
          HTextFlowTarget tft = documentDAO.getLastTranslatedTarget(document.getId());
-         
+
          url = urlUtil.editorDocumentListUrl(version.getProject().getSlug(), version.getSlug(), tft.getLocaleId(), tft.getTextFlow().getLocale());
       }
       return url;
@@ -430,7 +435,7 @@ public class DashboardAction implements Serializable
          HTextFlowTarget tft = (HTextFlowTarget) lastTarget;
          name = tft.getLocaleId().getId();
       }
-      else if(activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT)
+      else if (activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT)
       {
          // not supported for upload source action
       }
@@ -444,6 +449,16 @@ public class DashboardAction implements Serializable
       return name;
    }
 
+   public void loadMoreActivity()
+   {
+      activityPageIndex++;
+   }
+   
+   public boolean hasMoreActivities()
+   {
+      return false;
+   }
+
    @CachedMethodResult
    private Object getEntity(EntityType contextType, long id)
    {
@@ -452,14 +467,14 @@ public class DashboardAction implements Serializable
 
    private String trimString(String text)
    {
-      if (StringUtils.length(text) > (MAX_CONTENT_LENGTH + StringUtils.length(WRAPPED_POSTFIX)))
+      if (StringUtils.length(text) > (MAX_TARGET_CONTENT_LENGTH + StringUtils.length(WRAPPED_POSTFIX)))
       {
-         text = StringUtils.substring(text, 0, MAX_CONTENT_LENGTH + StringUtils.length(WRAPPED_POSTFIX));
+         text = StringUtils.substring(text, 0, MAX_TARGET_CONTENT_LENGTH + StringUtils.length(WRAPPED_POSTFIX));
          text = text + WRAPPED_POSTFIX;
       }
       return text;
    }
-   
+
    private boolean isTranslationUpdateActivity(ActivityType activityType)
    {
       return activityType == ActivityType.UPDATE_TRANSLATION

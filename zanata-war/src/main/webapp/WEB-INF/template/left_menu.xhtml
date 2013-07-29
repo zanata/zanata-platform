@@ -27,5 +27,15 @@
 			
 			<li><s:link id="left_menu_help_link" view="/help/view.xhtml" propagation="none">#{messages['jsf.Help']}</s:link></li>
 		</ul>
+		<s:fragment rendered="#{not identity.loggedIn}">
+			<div class="l--push-all-half">
+				<s:link view="/account/register.xhtml" value="#{messages['jsf.Signup']}" propagation="none" styleClass="button--primary button--full"
+								rendered="#{applicationConfiguration.internalAuth}"/> 
+								
+				<s:fragment rendered="#{not applicationConfiguration.internalAuth}">
+					<a href="#{applicationConfiguration.registerPath}" class="button--primary button--full">#{messages['jsf.Signup']}</a>
+				</s:fragment>
+			</div>
+		</s:fragment>
 	</nav>
 </div>

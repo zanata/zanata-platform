@@ -14,7 +14,7 @@
 
 	<h1 class="header__title heading--sub">
 		<s:link view="/home.xhtml" propagation="none">
-			<img class="header__site-logo" src="//webassets-zanata.rhcloud.com/1/logo.svg"/>
+			<img class="header__site-logo" src="#{applicationConfiguration.baseWebAssetsUrl}/logo.svg"/>
 			#{messages['jsf.Zanata']}
 		</s:link>
 	</h1>
@@ -27,15 +27,32 @@
 		</a>
 	</s:fragment>
 	<s:fragment rendered="#{not identity.loggedIn}">
-		<div class="l--float-right l--pad-v-half l--push-right-2">
-			<h:outputLink id="Sign_in" value="#{request.contextPath}/account/sign_in?continue=#{urlUtil.getEncodedLocalUrl(request)}" propagation="none"
-	                     rendered="#{not applicationConfiguration.kerberosAuth}">#{messages['jsf.SignIn']}
+		<div class="header__login l--float-right">
+			<h:outputLink value="#{request.contextPath}/account/sign_in?continue=#{urlUtil.getEncodedLocalUrl(request)}" propagation="none"
+	        	rendered="#{not applicationConfiguration.kerberosAuth}">#{messages['jsf.Login']}
 			</h:outputLink>
-	        <h:outputLink id="kSign_in" value="#{request.contextPath}/account/klogin.seam?continue=#{urlUtil.getEncodedLocalUrl(request)}" propagation="none"
-	                      rendered="#{applicationConfiguration.kerberosAuth}">#{messages['jsf.SignIn']}
+			
+	        <h:outputLink value="#{request.contextPath}/account/klogin.seam?continue=#{urlUtil.getEncodedLocalUrl(request)}" propagation="none"
+	                      rendered="#{applicationConfiguration.kerberosAuth}">#{messages['jsf.Login']}
 	        </h:outputLink>
-		</div>
+	        
+	        <s:link view="/account/register.xhtml" value="#{messages['jsf.Signup']}" propagation="none" styleClass="is-hidden--s l--push-left-half button--primary"
+								rendered="#{applicationConfiguration.internalAuth}"/> 
+								
+			<s:fragment rendered="#{not applicationConfiguration.internalAuth}">
+				<a href="#{applicationConfiguration.registerPath}" class="is-hidden--s l--push-left-half button--primary">#{messages['jsf.Signup']}</a>
+			</s:fragment>
+
+        </div>
+        
 	</s:fragment>
+	
+	
+		
+        
+        
+        
+        
 
 	<nav id="nav-main" class="header__menu is-hidden--s l--push-left-half">
 	  <ul class="list--horizontal">
