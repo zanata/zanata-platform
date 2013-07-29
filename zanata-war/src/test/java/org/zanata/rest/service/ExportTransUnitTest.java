@@ -42,30 +42,30 @@ public class ExportTransUnitTest extends TMXStreamingOutputTest
                   "doc0:resId0",
                   "doc0:resId0",
                   sourceLoc,
-                  "source0",
-                  tuv(fr, "targetFR0"),
-                  tuv(de, "targetDE0")),
+                  "<seg>source0</seg>",
+                  tuv(fr, "<seg>targetFR0</seg>"),
+                  tuv(de, "<seg>targetDE0</seg>")),
             tu(
                   tm,
                   "doc0:resId1",
                   "doc0:resId1",
                   sourceLoc,
-                  "SOURCE0",
-                  tuv(fr, "TARGETfr0")),
+                  "<seg>SOURCE0</seg>",
+                  tuv(fr, "<seg>TARGETfr0</seg>")),
             tu(
                   tm,
                   "doc1:resId0",
                   "doc1:resId0",
                   sourceLoc,
-                  "source0",
-                  tuv(fr, "targetFR0")),
+                  "<seg>source0</seg>",
+                  tuv(fr, "<seg>targetFR0</seg>")),
             tu(
                   tm,
                   "doc1:resId1",
                   "doc1:resId1",
                   sourceLoc,
-                  "SOURCE0",
-                  tuv(de, "TARGETde0"))).iterator();
+                  "<seg>SOURCE0</seg>",
+                  tuv(de, "<seg>TARGETde0</seg>"))).iterator();
    }
 
 }
