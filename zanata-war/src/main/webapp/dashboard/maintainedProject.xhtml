@@ -60,13 +60,14 @@
 						                </s:link>
 			                        </li>
 			                        <li>
+			                        	<ui:param name="documentCount" value="#{dashboardAction.getDocumentCount(latestVersion.id)}"/>
 			                        	<s:link view="/iteration/source_files.xhtml" propagation="none" 
-			                        	 	title="#{dashboardAction.getDocumentCount(latestVersion.id)} #{messages['jsf.SourceDocuments']}">
+			                        	 	title="#{documentCount} #{messages['jsf.SourceDocuments']}">
 							                <f:param name="project" value="#{project.slug}"/>
 							                <f:param name="iteration" value="#{latestVersion.slug}" />
 							                <i aria-hidden="true" class="i i--document-alt-fill"></i>
 			                        		<span class="is-invisible">#{messages['jsf.SourceDocuments']}</span> 
-			                        		#{dashboardAction.getDocumentCount(latestVersion.id)}
+			                        		#{documentCount}
 							            </s:link>
 			                        </li>
 			                        <li class="l--float-right">
@@ -95,13 +96,14 @@
 								                </s:link>
 			                          		</li>
 			                          		<li>
+			                          			<ui:param name="documentCount" value="#{dashboardAction.getDocumentCount(version.id)}"/>
 			                            		<s:link view="/iteration/source_files.xhtml" propagation="none" 
-					                        	 	title="#{dashboardAction.getDocumentCount(version.id)} #{messages['jsf.SourceDocuments']}">
+					                        	 	title="#{documentCount} #{messages['jsf.SourceDocuments']}">
 									                <f:param name="project" value="#{project.slug}"/>
 									                <f:param name="iteration" value="#{version.slug}" />
 									                <i aria-hidden="true" class="i i--document-alt-fill"></i>
 					                        		<span class="is-invisible">#{messages['jsf.SourceDocuments']}</span> 
-					                        		#{dashboardAction.getDocumentCount(version.id)}
+					                        		#{documentCount}
 									            </s:link>
 			                          		</li>
 			                          		<li class="l--float-right">

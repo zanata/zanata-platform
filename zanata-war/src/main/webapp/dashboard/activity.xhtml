@@ -10,27 +10,74 @@
 	</div>
 	<ul class="list--no-bullets">
 		<ui:repeat value="#{dashboardAction.getActivities()}" var="activity">
-			<li class="l--pad-all-half bg--high--hover bg--faint">
-	        	<div class="g--tight">
-				  <div class="g__item w--9-12">
-				  	<p>
-				  		<h:outputText value="#{dashboardAction.getHtmlMessage(activity)}" escape="false"/>
-				  	</p>
-				  </div>
-				  
-				  <div class="g__item w--3-12">
-				    <p class="txt--meta txt--align-right">#{dashboardAction.getTimeSinceAndType(activity)}</p>
-				  </div>
-				</div>
-				<p class="txt--meta l--push-top-half">
-					<a href="#">
-						<i aria-hidden="true" class="i i--document txt--neutral"></i>
-						<span class="is-invisible">Document</span> StringResource
-					</a>
-					<i aria-hidden="true" class="i i--language txt--neutral d--left l--push-left-half l--pad-left-half"></i>
-					<span class="is-invisible">Language</span>  
-					<a href="#">Language: zh-Hant中文 (繁體中文)</a>
+			<li class="l--pad-all-half bg--higher--hover bg--faint reveal">
+				<p class="l--float-right txt--neutral l--push-left-half">
+					<s:fragment rendered="#{activity.actionType == 'UPDATE_TRANSLATION'}">
+						<i aria-hidden="true" class="i--large i--translate" title="#{messages['jsf.Translation']}"></i>
+						<span class="is-invisible">#{messages['jsf.Translation']}</span>
+					</s:fragment>
+					
+					<s:fragment rendered="#{activity.actionType == 'REVIEWED_TRANSLATION'}">
+						<i aria-hidden="true" class="i--large i--review" title="#{messages['jsf.Reviewed']}"></i>
+						<span class="is-invisible">#{messages['jsf.Reviewed']}</span>
+					</s:fragment>
+					
+					<s:fragment rendered="#{activity.actionType == 'UPLOAD_SOURCE_DOCUMENT'}">
+						<i aria-hidden="true" class="i--large i--document" title="#{messages['jsf.UploadSource']}"></i>
+						<span class="is-invisible">#{messages['jsf.UploadSource']}</span>
+					</s:fragment>
+					
+					<s:fragment rendered="#{activity.actionType == 'UPLOAD_TRANSLATION_DOCUMENT'}">
+						<i aria-hidden="true" class="i--large i--translate-up" title="#{messages['jsf.UploadedTranslation']}"></i>
+						<span class="is-invisible">#{messages['jsf.UploadedTranslation']}</span>
+					</s:fragment>
 				</p>
+	        	<p class="l--push-all-0">
+	        		<s:fragment rendered="#{activity.actionType == 'UPDATE_TRANSLATION'}">
+	        			You translated <strong>#{activity.wordCount} words</strong> in
+	        			<a href="#{dashboardAction.getProjectUrl(activity)}">#{dashboardAction.getProjectName(activity)}</a>,
+        				finishing on "<a href="#{dashboardAction.getEditorUrl(activity)}">#{dashboardAction.getTrimmedContent(activity)}</a>"
+	        		</s:fragment>
+	        		
+	        		<s:fragment rendered="#{activity.actionType == 'REVIEWED_TRANSLATION'}">
+	        			You reviewed <strong>#{activity.wordCount} words</strong> in
+	        			<a href="#{dashboardAction.getProjectUrl(activity)}">#{dashboardAction.getProjectName(activity)}</a>,
+        				finishing on "<a href="#{dashboardAction.getEditorUrl(activity)}">#{dashboardAction.getTrimmedContent(activity)}</a>"
+	        		</s:fragment>
+	        		
+	        		<s:fragment rendered="#{activity.actionType == 'UPLOAD_SOURCE_DOCUMENT'}">
+	        			You uploaded a document of <strong>#{activity.wordCount} words</strong> to
+	        			<a href="#{dashboardAction.getProjectUrl(activity)}">#{dashboardAction.getProjectName(activity)}</a>
+	        		</s:fragment>
+	        		
+	        		<s:fragment rendered="#{activity.actionType == 'UPLOAD_TRANSLATION_DOCUMENT'}">
+	        			You uploaded a translation of <strong>#{activity.wordCount} words</strong> to 
+	        			<a href="#{dashboardAction.getProjectUrl(activity)}">#{dashboardAction.getProjectName(activity)}</a>,
+        				finishing on "<a href="#{dashboardAction.getEditorUrl(activity)}">#{dashboardAction.getTrimmedContent(activity)}</a>"
+	        		</s:fragment>
+	        	</p>
+	        	<ul class="list--horizontal txt--meta">
+	          		<li>
+	          			<i aria-hidden="true" class="i i--clock txt--neutral" title="#{messages['jsf.Time']}"></i>
+	          			<span class="is-invisible">#{messages['jsf.Time']}</span>#{dashboardAction.getTime(activity)}
+	          		</li>
+	          		<li class="reveal__target">
+	          			<i aria-hidden="true" class="i i--document txt--neutral" title="#{messages['jsf.Document']}"></i>
+	          			<span class="is-invisible">#{messages['jsf.Document']}</span> 
+	          			<a href="#{dashboardAction.getDocumentUrl(activity)}">#{dashboardAction.getDocumentName(activity)}</a>
+	          		</li>
+	          		<li class="reveal__target">
+	          			<i aria-hidden="true" class="i i--language txt--neutral" title="#{messages['jsf.Language']}"></i>
+	          			<span class="is-invisible">#{messages['jsf.Language']}</span> 
+	          			<a href="#{dashboardAction.getDocumentListUrl(activity)}">#{dashboardAction.getLanguageName(activity)}</a>
+	          		</li>
+	          		<li class="reveal__target">
+	          			<i aria-hidden="true" class="i i--version txt--neutral" title="#{messages['jsf.Version']}">
+	          				<span class="is-invisible">#{messages['jsf.Version']}</span>
+	          			</i> 
+	          			<a href="#{dashboardAction.getVersionUrl(activity)}">#{dashboardAction.getVersionName(activity)}</a>
+	          		</li>
+	        	</ul>
 	     	</li>
      	</ui:repeat>
 	</ul>

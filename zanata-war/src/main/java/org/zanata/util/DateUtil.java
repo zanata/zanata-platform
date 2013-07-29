@@ -53,29 +53,17 @@ public class DateUtil
    }
    
    /**
-    * Round off date to up to the Hour
-    * e.g Fri Jul 26 06:12:28 EST 2013 to Fri Jul 26 06:00:00 EST 2013
-    * @param date
-    * @return truncated date
-    */
-   public static Date truncateToHour(Date date)
-   {
-      DateTime dateTime = new DateTime(date);
-      return dateTime.withMinuteOfHour(0).withSecondOfMinute(0).toDate();
-      
-      //org.apache.commons.lang.time.DateUtils.truncate(date, Calendar.HOUR);
-   }
-   
-   /**
     * Return readable string of time different compare to now 
     * e.g 10 minutes ago, 1 hour ago
+    * @param from
     * @param then
     * @return
     */
-   public static String getReadableTime(Date then)
+   public static String getReadableTime(Date from, Date then)
    {
       Locale locale = Locale.getDefault();
       PrettyTime p = new PrettyTime(locale);
+      //return PrettyDate.format(from, then);
       return p.formatUnrounded(then);
    }
 }

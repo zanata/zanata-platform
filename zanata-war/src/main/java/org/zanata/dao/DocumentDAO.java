@@ -21,6 +21,7 @@ import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
+import org.zanata.file.GlobalDocumentId;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
@@ -154,7 +155,31 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       query.append("and tft.locale.localeId = :localeId ");
       query.append("order by tft.lastChanged DESC");
 
-      return (HTextFlowTarget) session.createQuery(query.toString()).setParameter("docId", documentId).setParameter("localeId", localeId).setCacheable(true).setMaxResults(1).setComment("DocumentDAO.getLastTranslated").uniqueResult();
+      return (HTextFlowTarget) session.createQuery(query.toString())
+            .setParameter("docId", documentId)
+            .setParameter("localeId", localeId)
+            .setCacheable(true)
+            .setMaxResults(1)
+            .setComment("DocumentDAO.getLastTranslated")
+            .uniqueResult();
+   }
+   
+   public HTextFlowTarget getLastTranslatedTarget(Long documentId)
+   {
+      Session session = getSession();
+
+      StringBuilder query = new StringBuilder();
+
+      query.append("from HTextFlowTarget tft ");
+      query.append("where tft.textFlow.document.id = :docId ");
+      query.append("order by tft.lastChanged DESC");
+
+      return (HTextFlowTarget) session.createQuery(query.toString())
+            .setParameter("docId", documentId)
+            .setCacheable(true)
+            .setMaxResults(1)
+            .setComment("DocumentDAO.getLastTranslated")
+            .uniqueResult();
    }
 
    /**
@@ -323,6 +348,11 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       }
 
       return returnStats;
+   }
+
+   public HDocument getByGlobalId(GlobalDocumentId id)
+   {
+      return getByProjectIterationAndDocId(id.getProjectSlug(), id.getVersionSlug(), id.getDocId());
    }
 
    public HDocument getByProjectIterationAndDocId(final String projectSlug, final String iterationSlug, final String docId)
