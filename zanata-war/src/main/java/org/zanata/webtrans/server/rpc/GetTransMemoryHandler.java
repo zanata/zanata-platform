@@ -145,7 +145,6 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
       }
       else if( entity instanceof TransMemoryUnit)
       {
-         System.out.println("Found TM match!!");
          TransMemoryUnit transUnit = (TransMemoryUnit) entity;
          ArrayList<String> sourceContents = Lists.newArrayList(transUnit.getTransUnitVariants().get(sourceLocaleId.getId()).getPlainTextSegment());
          ArrayList<String> targetContents = Lists.newArrayList(transUnit.getTransUnitVariants().get(targetLocaleId.getId()).getPlainTextSegment());

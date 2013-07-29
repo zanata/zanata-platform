@@ -35,6 +35,7 @@ import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowDAO;
+import org.zanata.dao.TransMemoryUnitDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.TestFixture;
@@ -85,6 +86,8 @@ public class TransMemoryMergeHandlerTest
    @Mock
    private TextFlowDAO textFlowDAO;
    @Mock
+   private TransMemoryUnitDAO transMemoryUnitDAO;
+   @Mock
    private SecurityService.SecurityCheckResult securityResult;
    private HLocale hLocale = new HLocale(new LocaleId("en-US"));
    private HLocale sourceLocale = new HLocale(new LocaleId("en-US"));
@@ -108,6 +111,7 @@ public class TransMemoryMergeHandlerTest
             .use("webtrans.gwt.UpdateTransUnitHandler", updateTransUnitHandler)
             .use("securityServiceImpl", securityService)
             .use("textFlowDAO", textFlowDAO)
+            .use("transMemoryUnitDAO", transMemoryUnitDAO)
             .autowire(TransMemoryMergeHandler.class);
       // @formatter:on
 
@@ -121,7 +125,7 @@ public class TransMemoryMergeHandlerTest
          requests.add(new TransUnitUpdateRequest(new TransUnitId(tranUnitId), null, null, 0));
       }
       // we have TransMemoryMergeStatusResolverTest to cover various different merge options so here we don't test that
-      TransMemoryMerge action = new TransMemoryMerge(threshold, requests, MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK);
+      TransMemoryMerge action = new TransMemoryMerge(threshold, requests, MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK);
       mockSecurityService(action);
       return action;
    }
@@ -275,7 +279,7 @@ public class TransMemoryMergeHandlerTest
       // Given: an action with threshold 80% and trans unit id is 1, with different doc id option set to skip
       final long transUnitId = 1L;
       ArrayList<TransUnitUpdateRequest> requests = Lists.newArrayList(new TransUnitUpdateRequest(new TransUnitId(1L), null, null, 0));
-      TransMemoryMerge action = new TransMemoryMerge(80, requests, MergeOption.IGNORE_CHECK, MergeOption.REJECT, MergeOption.IGNORE_CHECK);
+      TransMemoryMerge action = new TransMemoryMerge(80, requests, MergeOption.IGNORE_CHECK, MergeOption.REJECT, MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK);
       mockSecurityService(action);
 
       HTextFlow hTextFlow = TestFixture.makeHTextFlow(transUnitId, hLocale, ContentState.New, "pot/a.po");

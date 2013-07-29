@@ -38,19 +38,23 @@ public class TransMemoryMerge extends AbstractWorkspaceAction<UpdateTransUnitRes
    private MergeOption differentProjectOption;
    private MergeOption differentDocumentOption;
    private MergeOption differentContextOption;
+   private MergeOption importedMatchOption;
 
    @SuppressWarnings("unused")
    TransMemoryMerge()
    {
    }
 
-   public TransMemoryMerge(int threshold, List<TransUnitUpdateRequest> updateRequests, MergeOption differentProjectOption, MergeOption differentDocumentOption, MergeOption differentContextOption)
+   public TransMemoryMerge(int threshold, List<TransUnitUpdateRequest> updateRequests, MergeOption differentProjectOption,
+                           MergeOption differentDocumentOption, MergeOption differentContextOption,
+                           MergeOption importedMatchOption)
    {
       thresholdPercent = threshold;
       this.updateRequests = updateRequests;
       this.differentProjectOption = differentProjectOption;
       this.differentDocumentOption = differentDocumentOption;
       this.differentContextOption = differentContextOption;
+      this.importedMatchOption = importedMatchOption;
    }
 
    public int getThresholdPercent()
@@ -71,6 +75,11 @@ public class TransMemoryMerge extends AbstractWorkspaceAction<UpdateTransUnitRes
    public MergeOption getDifferentContextOption()
    {
       return differentContextOption;
+   }
+
+   public MergeOption getImportedMatchOption()
+   {
+      return importedMatchOption;
    }
 
    public List<TransUnitUpdateRequest> getUpdateRequests()

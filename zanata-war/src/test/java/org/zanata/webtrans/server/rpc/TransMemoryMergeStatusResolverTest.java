@@ -87,30 +87,30 @@ public class TransMemoryMergeStatusResolverTest
       return new TransMemoryDetails(null, null, projectName, null, docId, resId, msgContext, null, null, null);
    }
 
-   private static TransMemoryMerge mergeTMAction(MergeOption differentProjectOption, MergeOption differentDocumentOption, MergeOption differentResIdOption)
+   private static TransMemoryMerge mergeTMAction(MergeOption differentProjectOption, MergeOption differentDocumentOption, MergeOption differentResIdOption, MergeOption importedMatchOption)
    {
       TransUnitUpdateRequest updateRequest = new TransUnitUpdateRequest(new TransUnitId(1), null, null, 0);
-      return new TransMemoryMerge(80, Lists.newArrayList(updateRequest), differentProjectOption, differentDocumentOption, differentResIdOption);
+      return new TransMemoryMerge(80, Lists.newArrayList(updateRequest), differentProjectOption, differentDocumentOption, differentResIdOption, importedMatchOption);
    }
 
    private static TransMemoryMerge mergeTMActionWhenResIdIsDifferent(MergeOption resIdOption)
    {
-      return mergeTMAction(MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK, resIdOption);
+      return mergeTMAction(MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK, resIdOption, MergeOption.IGNORE_CHECK);
    }
 
    private static TransMemoryMerge mergeTMActionWhenDocIdIsDifferent(MergeOption documentOption)
    {
-      return mergeTMAction(MergeOption.IGNORE_CHECK, documentOption, MergeOption.IGNORE_CHECK);
+      return mergeTMAction(MergeOption.IGNORE_CHECK, documentOption, MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK);
    }
 
    private TransMemoryMerge mergeTMActionWhenProjectNameIsDifferent(MergeOption projectOption)
    {
-      return mergeTMAction(projectOption, MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK);
+      return mergeTMAction(projectOption, MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK);
    }
 
    @Test
    public void notOneHundredMatchWillBeSetAsFuzzy() {
-      action = mergeTMAction(MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK);
+      action = mergeTMAction(MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK);
       ContentState result = resolver.workOutStatus(action, textFlow, tmDetail, tmResultWithSimilarity(90), null);
 
       assertThat(result, equalTo(ContentState.NeedReview));

@@ -118,6 +118,17 @@
         </g:row>
         <g:row>
             <g:customCell>
+                <g:Label text="{messages.importedMatch}" />
+            </g:customCell>
+            <g:customCell>
+                <g:InlineLabel ui:field="importedMatchStatus"/>
+            </g:customCell>
+            <g:customCell>
+                <g:HorizontalPanel ui:field="importedMatchPanel" />
+            </g:customCell>
+        </g:row>
+        <g:row>
+            <g:customCell>
                 <g:Label text="{messages.otherwise}" />
             </g:customCell>
             <g:customCell>

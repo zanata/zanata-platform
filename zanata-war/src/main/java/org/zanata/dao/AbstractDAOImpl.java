@@ -68,6 +68,11 @@ public class AbstractDAOImpl<T, ID extends Serializable> implements GenericDAO<T
       return entity;
    }
 
+   public T findById(ID id)
+   {
+      return findById(id, false);
+   }
+
    @Override
    public List<T> findAll()
    {

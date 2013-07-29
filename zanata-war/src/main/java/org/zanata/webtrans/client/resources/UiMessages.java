@@ -103,7 +103,7 @@ public interface UiMessages extends Messages
    @DefaultMessage("TM merge failed")
    String mergeTMFailed();
 
-   @DefaultMessage("TM merge success on folowing rows: {0,list,string}")
+   @DefaultMessage("TM merge success on following rows: {0,list,string}")
    String mergeTMSuccess(List<String> rowIndices);
 
    @DefaultMessage("Proceed to auto-fill")
@@ -126,6 +126,9 @@ public interface UiMessages extends Messages
 
    @DefaultMessage("On Context mismatch (resId, msgctxt):")
    String differentContext();
+
+   @DefaultMessage("On match from Imported Translation Memory:")
+   String importedMatch();
 
    @DefaultMessage("If not Rejected or downgraded to Fuzzy:")
    String otherwise();

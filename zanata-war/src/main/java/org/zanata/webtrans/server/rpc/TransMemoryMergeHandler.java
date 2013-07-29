@@ -32,10 +32,14 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.testng.collections.Lists;
 import org.zanata.common.ContentState;
+import org.zanata.dao.AbstractDAOImpl;
 import org.zanata.dao.TextFlowDAO;
+import org.zanata.dao.TransMemoryDAO;
+import org.zanata.dao.TransMemoryUnitDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.service.SecurityService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.server.TranslationWorkspace;
@@ -56,6 +60,7 @@ import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 import static com.google.common.collect.Collections2.*;
 import static org.zanata.service.SecurityService.TranslationAction.*;
+import static org.zanata.webtrans.shared.model.TransMemoryResultItem.MatchType;
 
 @Name("webtrans.gwt.TransMemoryMergeHandler")
 @Scope(ScopeType.STATELESS)
@@ -73,12 +78,15 @@ public class TransMemoryMergeHandler extends AbstractActionHandler<TransMemoryMe
 
    @In(value = "webtrans.gwt.UpdateTransUnitHandler", create = true)
    private UpdateTransUnitHandler updateTransUnitHandler;
-   
+
    @In
    private SecurityService securityServiceImpl;
    
    @In
    private TextFlowDAO textFlowDAO;
+
+   @In
+   private TransMemoryUnitDAO transMemoryUnitDAO;
 
    @Override
    public UpdateTransUnitResult execute(TransMemoryMerge action, ExecutionContext context) throws ActionException
@@ -153,22 +161,40 @@ public class TransMemoryMergeHandler extends AbstractActionHandler<TransMemoryMe
       }
    }
 
-   private TransUnitUpdateRequest createRequest(TransMemoryMerge action, HLocale hLocale, Map<Long, TransUnitUpdateRequest> requestMap, HTextFlow hTextFlowToBeFilled, TransMemoryResultItem tmResult, HTextFlowTarget oldTarget)
+   private TransUnitUpdateRequest createRequest(TransMemoryMerge action, HLocale hLocale,
+                                                Map<Long, TransUnitUpdateRequest> requestMap, HTextFlow hTextFlowToBeFilled,
+                                                TransMemoryResultItem tmResult, HTextFlowTarget oldTarget)
    {
       if (tmResult == NULL_OBJECT)
       {
          return null;
       }
+
       Long tmSourceId = tmResult.getSourceIdList().get(0);
-      HTextFlow tmSource = textFlowDAO.findById(tmSourceId, false);
-      TransMemoryDetails tmDetail = getTransMemoryDetailsHandler.getTransMemoryDetail(hLocale, tmSource);
-      ContentState statusToSet = TransMemoryMergeStatusResolver.newInstance().workOutStatus(action, hTextFlowToBeFilled, tmDetail, tmResult, oldTarget);
-      //statusToSet is null means we need to skip/reject the auto translation
+      ContentState statusToSet;
+      String comment;
+      if( tmResult.getMatchType() == MatchType.Imported )
+      {
+         TransMemoryUnit tu = transMemoryUnitDAO.findById(tmSourceId);
+         statusToSet = TransMemoryMergeStatusResolver.newInstance().workOutStatus(action, tmResult, oldTarget);
+         comment = buildTargetComment(tu);
+      }
+      else
+      {
+         HTextFlow tmSource = textFlowDAO.findById(tmSourceId, false);
+         TransMemoryDetails tmDetail = getTransMemoryDetailsHandler.getTransMemoryDetail(hLocale, tmSource);
+         statusToSet = TransMemoryMergeStatusResolver.newInstance().workOutStatus(action, hTextFlowToBeFilled,
+               tmDetail, tmResult, oldTarget);
+         //statusToSet is null means we need to skip/reject the auto translation
+         comment = buildTargetComment(tmDetail);
+      }
+
       if (statusToSet != null)
       {
          TransUnitUpdateRequest unfilledRequest = requestMap.get(hTextFlowToBeFilled.getId());
-         TransUnitUpdateRequest request = new TransUnitUpdateRequest(unfilledRequest.getTransUnitId(), tmResult.getTargetContents(), statusToSet, unfilledRequest.getBaseTranslationVersion());
-         request.addTargetComment(buildTargetComment(tmDetail));
+         TransUnitUpdateRequest request = new TransUnitUpdateRequest(unfilledRequest.getTransUnitId(),
+               tmResult.getTargetContents(), statusToSet, unfilledRequest.getBaseTranslationVersion());
+         request.addTargetComment(comment);
          log.debug("auto translate from translation memory {}", request);
          return request;
       }
@@ -181,6 +207,14 @@ public class TransMemoryMergeHandler extends AbstractActionHandler<TransMemoryMe
       builder.append("project: ").append(tmDetail.getProjectName())
             .append(", version: ").append(tmDetail.getIterationName())
             .append(", DocId: ").append(tmDetail.getDocId());
+      return builder.toString();
+   }
+
+   private static String buildTargetComment(TransMemoryUnit tu)
+   {
+      StringBuilder builder = new StringBuilder("auto translated by TM merge from ");
+      builder.append("translation memory: ").append(tu.getTranslationMemory().getSlug())
+            .append(", unique id: ").append(tu.getUniqueId());
       return builder.toString();
    }
 

@@ -53,6 +53,8 @@ public class TransMemoryResultItem extends SearchResultItem implements IsSeriali
    private int matchCount = 0;                  // The number of occurrences for the source contents
    private MatchType matchType;
    private List<String> origins;                 // The optional origin identifiers for this result (i.e. A Trans memory name)
+   private ArrayList<Long> sourceIdList = new ArrayList<Long>();
+
 
    // for GWT
    @SuppressWarnings("unused")
@@ -131,6 +133,16 @@ public class TransMemoryResultItem extends SearchResultItem implements IsSeriali
    public void incMatchCount()
    {
       ++this.matchCount;
+   }
+
+   public ArrayList<Long> getSourceIdList()
+   {
+      return sourceIdList;
+   }
+
+   public void addSourceId(Long sourceId)
+   {
+      this.sourceIdList.add(sourceId);
    }
 
 }

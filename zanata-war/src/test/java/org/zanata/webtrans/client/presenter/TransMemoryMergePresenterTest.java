@@ -131,7 +131,7 @@ public class TransMemoryMergePresenterTest
       mockCurrentPageToReturn(currentPageRows);
 
       // When:
-      presenter.proceedToMergeTM(80, MergeOption.IGNORE_CHECK, MergeOption.REJECT, MergeOption.FUZZY);
+      presenter.proceedToMergeTM(80, MergeOption.IGNORE_CHECK, MergeOption.REJECT, MergeOption.FUZZY, MergeOption.FUZZY);
 
       // Then:
       verify(eventBus).fireEvent(notificationEventCaptor.capture());
@@ -163,7 +163,7 @@ public class TransMemoryMergePresenterTest
       mockCurrentPageToReturn(currentPageRows);
 
       // When:
-      presenter.proceedToMergeTM(80, MergeOption.IGNORE_CHECK, MergeOption.REJECT, MergeOption.FUZZY);
+      presenter.proceedToMergeTM(80, MergeOption.IGNORE_CHECK, MergeOption.REJECT, MergeOption.FUZZY, MergeOption.FUZZY);
 
       // Then:
       InOrder inOrder = inOrder(display, dispatcher);
@@ -187,7 +187,7 @@ public class TransMemoryMergePresenterTest
       mockCurrentPageToReturn(currentPageRows);
 
       // When:
-      presenter.proceedToMergeTM(100, MergeOption.REJECT, MergeOption.IGNORE_CHECK, MergeOption.FUZZY);
+      presenter.proceedToMergeTM(100, MergeOption.REJECT, MergeOption.IGNORE_CHECK, MergeOption.FUZZY, MergeOption.FUZZY);
       verify(dispatcher).execute(transMemoryMergeCaptor.capture(), callbackCaptor.capture());
       AsyncCallback<UpdateTransUnitResult> callback = callbackCaptor.getValue();
       // rpc call failed
@@ -216,7 +216,7 @@ public class TransMemoryMergePresenterTest
       when(undoLinkProvider.get()).thenReturn(undoLink);
 
       // When:
-      presenter.proceedToMergeTM(100, MergeOption.REJECT, MergeOption.IGNORE_CHECK, MergeOption.FUZZY);
+      presenter.proceedToMergeTM(100, MergeOption.REJECT, MergeOption.IGNORE_CHECK, MergeOption.FUZZY, MergeOption.FUZZY);
       verify(dispatcher).execute(transMemoryMergeCaptor.capture(), callbackCaptor.capture());
       AsyncCallback<UpdateTransUnitResult> callback = callbackCaptor.getValue();
       // rpc call success and result has some updated info
@@ -249,7 +249,7 @@ public class TransMemoryMergePresenterTest
       when(undoLinkProvider.get()).thenReturn(undoLink);
 
       // When:
-      presenter.proceedToMergeTM(100, MergeOption.REJECT, MergeOption.IGNORE_CHECK, MergeOption.FUZZY);
+      presenter.proceedToMergeTM(100, MergeOption.REJECT, MergeOption.IGNORE_CHECK, MergeOption.FUZZY, MergeOption.FUZZY);
       verify(dispatcher).execute(transMemoryMergeCaptor.capture(), callbackCaptor.capture());
       AsyncCallback<UpdateTransUnitResult> callback = callbackCaptor.getValue();
       // rpc call success but result has no updated info

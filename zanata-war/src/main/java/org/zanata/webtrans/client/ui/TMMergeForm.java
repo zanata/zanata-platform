@@ -54,10 +54,10 @@ public class TMMergeForm extends Composite implements EnumRadioButtonGroup.Selec
    Button confirmButton, cancelButton;
 
    @UiField
-   HorizontalPanel differentProject, differentDocument, differentContext;
+   HorizontalPanel differentProject, differentDocument, differentContext, importedMatchPanel;
 
    @UiField
-   InlineLabel differentProjectStatus, differentDocIdStatus, differentContextStatus;
+   InlineLabel differentProjectStatus, differentDocIdStatus, differentContextStatus, importedMatchStatus;
 
    @UiField
    EnumMessages enumMessages;
@@ -73,6 +73,7 @@ public class TMMergeForm extends Composite implements EnumRadioButtonGroup.Selec
    private final EnumRadioButtonGroup<MergeOption> projectOptionGroup;
    private final EnumRadioButtonGroup<MergeOption> docIdOptionGroup;
    private final EnumRadioButtonGroup<MergeOption> contextOptionGroup;
+   private final EnumRadioButtonGroup<MergeOption> importedMatchOptionGroup;
    private final MergeStatusRenderer mergeStatusRenderer;
 
    private TransMemoryMergePopupPanelDisplay.Listener listener;
@@ -96,6 +97,10 @@ public class TMMergeForm extends Composite implements EnumRadioButtonGroup.Selec
       contextOptionGroup = new EnumRadioButtonGroup<MergeOption>(OptionType.CTX_MISMATCH.name(), MergeOption.class, mergeOptionRenderer);
       contextOptionGroup.setSelectionChangeListener(this);
       contextOptionGroup.addToContainer(differentContext).setDefaultSelected(MergeOption.FUZZY);
+
+      importedMatchOptionGroup = new EnumRadioButtonGroup<MergeOption>(OptionType.IMPORTED_MATCH.name(), MergeOption.class, mergeOptionRenderer);
+      importedMatchOptionGroup.setSelectionChangeListener(this);
+      importedMatchOptionGroup.addToContainer(importedMatchPanel).setDefaultSelected(MergeOption.FUZZY);
    }
 
    public void setListener(TransMemoryMergePopupPanelDisplay.Listener listener)
@@ -107,7 +112,8 @@ public class TMMergeForm extends Composite implements EnumRadioButtonGroup.Selec
    public void onConfirmButtonClick(ClickEvent event)
    {
       Preconditions.checkNotNull(listener, "Do you forget to call setListener on TMMergeForm?");
-      listener.proceedToMergeTM(getSelectedMatchThreshold(), projectOptionGroup.getSelected(), docIdOptionGroup.getSelected(), contextOptionGroup.getSelected());
+      listener.proceedToMergeTM(getSelectedMatchThreshold(), projectOptionGroup.getSelected(), docIdOptionGroup.getSelected(),
+            contextOptionGroup.getSelected(), importedMatchOptionGroup.getSelected());
    }
 
    private int getSelectedMatchThreshold()
@@ -157,6 +163,10 @@ public class TMMergeForm extends Composite implements EnumRadioButtonGroup.Selec
             differentContextStatus.setText(mergeStatusRenderer.render(option));
             differentContextStatus.setStyleName(resolveStyle(option));
             break;
+         case IMPORTED_MATCH:
+            importedMatchStatus.setText(mergeStatusRenderer.render(option));
+            importedMatchStatus.setStyleName(resolveStyle(option));
+            break;
       }
    }
 
@@ -195,6 +205,6 @@ public class TMMergeForm extends Composite implements EnumRadioButtonGroup.Selec
 
    enum OptionType
    {
-      PROJECT_MISMATCH, DOC_ID_MISMATCH, CTX_MISMATCH
+      PROJECT_MISMATCH, DOC_ID_MISMATCH, CTX_MISMATCH, IMPORTED_MATCH
    }
 }

@@ -21,6 +21,8 @@
 
 package org.zanata.webtrans.shared.model;
 
+import java.util.ArrayList;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -31,6 +33,7 @@ public class GlossaryResultItem extends SearchResultItem implements IsSerializab
 {
    private String source;
    private String target;
+   private ArrayList<Long> sourceIdList = new ArrayList<Long>();
 
 
    // for GWT
@@ -70,6 +73,16 @@ public class GlossaryResultItem extends SearchResultItem implements IsSerializab
    public void setTarget(String target)
    {
       this.target = target;
+   }
+
+   public ArrayList<Long> getSourceIdList()
+   {
+      return sourceIdList;
+   }
+
+   public void addSourceId(Long sourceId)
+   {
+      this.sourceIdList.add(sourceId);
    }
 
 }

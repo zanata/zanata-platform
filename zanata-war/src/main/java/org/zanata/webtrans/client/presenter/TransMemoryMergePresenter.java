@@ -82,7 +82,8 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
    }
 
    @Override
-   public void proceedToMergeTM(int percentage, MergeOption differentProjectOption, MergeOption differentDocumentOption, MergeOption differentResIdOption)
+   public void proceedToMergeTM(int percentage, MergeOption differentProjectOption, MergeOption differentDocumentOption,
+                                MergeOption differentResIdOption, MergeOption importedMatchOption)
    {
       Collection<TransUnit> items = getNotTranslatedItems();
 
@@ -94,7 +95,8 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
       }
 
       display.showProcessing();
-      TransMemoryMerge action = prepareTMMergeAction(items, percentage, differentProjectOption, differentDocumentOption, differentResIdOption);
+      TransMemoryMerge action = prepareTMMergeAction(items, percentage, differentProjectOption, differentDocumentOption,
+            differentResIdOption, importedMatchOption);
       dispatcher.execute(action, new AsyncCallback<UpdateTransUnitResult>()
       {
          @Override
@@ -143,7 +145,9 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
       });
    }
 
-   private TransMemoryMerge prepareTMMergeAction(Collection<TransUnit> untranslatedTUs, int threshold, MergeOption differentProjectOption, MergeOption differentDocumentOption, MergeOption differentResIdOption)
+   private TransMemoryMerge prepareTMMergeAction(Collection<TransUnit> untranslatedTUs, int threshold,
+                                                 MergeOption differentProjectOption, MergeOption differentDocumentOption,
+                                                 MergeOption differentResIdOption, MergeOption importedMatchOption)
    {
       List<TransUnitUpdateRequest> updateRequests = Lists.newArrayList(Collections2.transform(untranslatedTUs, new Function<TransUnit, TransUnitUpdateRequest>()
       {
@@ -153,7 +157,7 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
             return new TransUnitUpdateRequest(from.getId(), null, null, from.getVerNum());
          }
       }));
-      return new TransMemoryMerge(threshold, updateRequests, differentProjectOption, differentDocumentOption, differentResIdOption);
+      return new TransMemoryMerge(threshold, updateRequests, differentProjectOption, differentDocumentOption, differentResIdOption, importedMatchOption);
    }
 
    @Override
