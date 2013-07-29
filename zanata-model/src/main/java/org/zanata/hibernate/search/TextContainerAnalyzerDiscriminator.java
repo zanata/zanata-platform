@@ -58,7 +58,7 @@ public class TextContainerAnalyzerDiscriminator implements Discriminator
       else if( entity instanceof TransMemoryUnitVariant)
       {
          TransMemoryUnitVariant tuv = (TransMemoryUnitVariant)entity;
-         localeId = new LocaleId(tuv.getLanguage().replaceAll("_", "-"));
+         localeId = new LocaleId(tuv.getLanguage());
       }
       else
       {

@@ -116,8 +116,9 @@ public class OkapiUtil
     */
    public static String removeFormattingMarkup(/*final*/ String content)
    {
-      // Wrap the content up in a seg just in case
-      content = "<seg>" + content + "</seg>";
+      // The content must be a fully formed <seg> element.
+      assert content.trim().startsWith("<seg>");
+      assert content.trim().endsWith("</seg>");
 
       try
       {

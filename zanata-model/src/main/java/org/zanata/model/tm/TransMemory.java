@@ -60,6 +60,7 @@ public class TransMemory extends SlugEntityBase implements HasTMMetadata
 
    private String description;
 
+   // This is the BCP-47 language code
    @Column(name = "source_language", nullable = true)
    private String sourceLanguage;
    

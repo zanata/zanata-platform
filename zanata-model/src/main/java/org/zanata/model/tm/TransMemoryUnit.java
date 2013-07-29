@@ -82,6 +82,7 @@ public class TransMemoryUnit extends ModelEntityBase implements HasTMMetadata
    @Column(name = "trans_unit_id", nullable = true)
    private String transUnitId;
 
+   // This is the BCP-47 language code
    @Column(name = "source_language", nullable = true)
    @Field
    private String sourceLanguage;
@@ -108,7 +109,7 @@ public class TransMemoryUnit extends ModelEntityBase implements HasTMMetadata
    @ElementCollection
    @MapKeyEnumerated(EnumType.STRING)
    @MapKeyColumn(name = "metadata_key")
-   @JoinTable(name = "TMTransUnit_Metadata", joinColumns = {@JoinColumn(name = "tm_trans_unit_id")})
+   @JoinTable(name = "TransMemoryUnit_Metadata", joinColumns = {@JoinColumn(name = "tm_trans_unit_id")})
    @Column(name = "metadata", length = Integer.MAX_VALUE)
    private Map<TMMetadataType, String> metadata = Maps.newHashMap();
 

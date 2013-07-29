@@ -151,9 +151,9 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
       // For each trans unit, generate some variants
       for(TransMemoryUnit tu : stored.getTranslationUnits())
       {
-         TransMemoryUnitVariant tuvES = new TransMemoryUnitVariant("es", "Mensaje de Prueba");
-         TransMemoryUnitVariant tuvEN = new TransMemoryUnitVariant("en-US", "Test Message");
-         TransMemoryUnitVariant tuvFR = new TransMemoryUnitVariant("fr", "Message de test");
+         TransMemoryUnitVariant tuvES = new TransMemoryUnitVariant("es", "<seg>Mensaje de Prueba</seg>");
+         TransMemoryUnitVariant tuvEN = new TransMemoryUnitVariant("en-US", "<seg>Test Message</seg>");
+         TransMemoryUnitVariant tuvFR = new TransMemoryUnitVariant("fr", "<seg>Message de test</seg>");
 
          tu.getTransUnitVariants().put(tuvES.getLanguage(), tuvES);
          tu.getTransUnitVariants().put(tuvEN.getLanguage(), tuvEN);
@@ -179,7 +179,7 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
 
       // Store a Trans unit variant with formatting
       TransMemoryUnit tu = stored.getTranslationUnits().iterator().next();
-      TransMemoryUnitVariant tuvES = new TransMemoryUnitVariant("es", "Mensaje <bpt>&lt;b></bpt>de<ept i=\"1\">&lt;b></ept> Prueba");
+      TransMemoryUnitVariant tuvES = new TransMemoryUnitVariant("es", "<seg>Mensaje <bpt>&lt;b></bpt>de<ept i=\"1\">&lt;b></ept> Prueba</seg>");
 
       tu.getTransUnitVariants().put(tuvES.getLanguage(), tuvES);
 

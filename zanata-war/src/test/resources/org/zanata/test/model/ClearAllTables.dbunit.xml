@@ -33,9 +33,9 @@
     <HTextFlowTargetHistory/>
     <HTextFlowTargetReviewComment/>
     <TransMemory_Metadata/>
-    <TMTransUnit_Metadata/>
-    <TMTransUnitVariant_Metadata/>
-    <TMTranslationUnit/>
-    <TMTransUnitVariant/>
+    <TransMemoryUnit_Metadata/>
+    <TransMemoryUnitVariant_Metadata/>
     <TransMemory/>
+    <TransMemoryUnit/>
+    <TransMemoryUnitVariant/>
 </dataset>

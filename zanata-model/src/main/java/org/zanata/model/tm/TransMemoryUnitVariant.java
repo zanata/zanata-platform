@@ -66,6 +66,7 @@ public class TransMemoryUnitVariant extends ModelEntityBase implements HasTMMeta
 {
    private static final long serialVersionUID = 1L;
 
+   // This is the BCP-47 language code
    @Column(nullable = false)
    private String language;
 
@@ -84,7 +85,7 @@ public class TransMemoryUnitVariant extends ModelEntityBase implements HasTMMeta
     * Map values are Json strings containing metadata for the particular type of translation memory
     */
    @ElementCollection
-   @JoinTable(name = "TMTransUnitVariant_Metadata", joinColumns = {@JoinColumn(name = "tm_trans_unit_variant_id")})
+   @JoinTable(name = "TransMemoryUnitVariant_Metadata", joinColumns = {@JoinColumn(name = "tm_trans_unit_variant_id")})
    @MapKeyEnumerated(EnumType.STRING)
    @MapKeyColumn(name = "metadata_key")
    @Column(name = "metadata", length = Integer.MAX_VALUE)
@@ -95,10 +96,10 @@ public class TransMemoryUnitVariant extends ModelEntityBase implements HasTMMeta
       return new TransMemoryUnitVariant(language, content);
    }
 
-   public TransMemoryUnitVariant(String language, String content)
+   public TransMemoryUnitVariant(String language, String taggedSegment)
    {
       this.language = language;
-      this.setTaggedSegment(content);
+      this.setTaggedSegment(taggedSegment);
    }
 
    public void setTaggedSegment(String taggedSegment)
