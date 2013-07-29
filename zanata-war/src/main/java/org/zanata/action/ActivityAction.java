@@ -62,16 +62,16 @@ public class ActivityAction implements Serializable
    @In
    private ActivityService activityServiceImpl;
    
-   @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
-   private HAccount authenticatedAccount;
-
    @In
    private ZanataMessages zanataMessages;
    
+   @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
+   private HAccount authenticatedAccount;
+   
    private final int ACTIVITY_COUNT_PER_LOAD = 5;
-   private final int MAX_ACTIVITY_COUNT_PER_PAGE = 20;
-   private final int MAX_TARGET_CONTENT_LENGTH = 50;
-   private final String WRAPPED_POSTFIX = "…";
+   private final int MAX_ACTIVITIES_COUNT_PER_PAGE = 20;
+   private final int MAX_CONTENT_LENGTH = 50;
+   private final String TRIMMED_TEXT_POSTFIX = "…";
 
    private final Date now = new Date();
    
@@ -336,7 +336,7 @@ public class ActivityAction implements Serializable
       int loadedActivitiesCount = (activityPageIndex + 1) * ACTIVITY_COUNT_PER_LOAD;
       int totalActivitiesCount = activityServiceImpl.getActivityCountByActor(authenticatedAccount.getPerson().getId());
 
-      if ((loadedActivitiesCount < totalActivitiesCount) && (loadedActivitiesCount < MAX_ACTIVITY_COUNT_PER_PAGE))
+      if ((loadedActivitiesCount < totalActivitiesCount) && (loadedActivitiesCount < MAX_ACTIVITIES_COUNT_PER_PAGE))
       {
          return true;
       }
@@ -357,10 +357,10 @@ public class ActivityAction implements Serializable
    
    private String trimString(String text)
    {
-      if (StringUtils.length(text) > (MAX_TARGET_CONTENT_LENGTH + StringUtils.length(WRAPPED_POSTFIX)))
+      if (StringUtils.length(text) > (MAX_CONTENT_LENGTH + StringUtils.length(TRIMMED_TEXT_POSTFIX)))
       {
-         text = StringUtils.substring(text, 0, MAX_TARGET_CONTENT_LENGTH + StringUtils.length(WRAPPED_POSTFIX));
-         text = text + WRAPPED_POSTFIX;
+         text = StringUtils.substring(text, 0, MAX_CONTENT_LENGTH + StringUtils.length(TRIMMED_TEXT_POSTFIX));
+         text = text + TRIMMED_TEXT_POSTFIX;
       }
       return text;
    }
