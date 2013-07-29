@@ -62,7 +62,7 @@ import lombok.ToString;
 @Access(AccessType.FIELD)
 @ClassBridge(impl = TransUnitVariantClassBridge.class)
 @AnalyzerDiscriminator(impl = TextContainerAnalyzerDiscriminator.class)
-public class TMTransUnitVariant extends ModelEntityBase implements HasTMMetadata
+public class TransMemoryUnitVariant extends ModelEntityBase implements HasTMMetadata
 {
    private static final long serialVersionUID = 1L;
 
@@ -90,12 +90,12 @@ public class TMTransUnitVariant extends ModelEntityBase implements HasTMMetadata
    @Column(name = "metadata", length = Integer.MAX_VALUE)
    private Map<TMMetadataType, String> metadata = Maps.newHashMap();
 
-   public static TMTransUnitVariant tuv(String language, String content)
+   public static TransMemoryUnitVariant tuv(String language, String content)
    {
-      return new TMTransUnitVariant(language, content);
+      return new TransMemoryUnitVariant(language, content);
    }
 
-   public TMTransUnitVariant(String language, String content)
+   public TransMemoryUnitVariant(String language, String content)
    {
       this.language = language;
       this.setTaggedSegment(content);
@@ -124,10 +124,10 @@ public class TMTransUnitVariant extends ModelEntityBase implements HasTMMetadata
       return false;
    }
 
-   public static Map<String, TMTransUnitVariant> newMap(TMTransUnitVariant... tuvs)
+   public static Map<String, TransMemoryUnitVariant> newMap(TransMemoryUnitVariant... tuvs)
    {
-      Map<String, TMTransUnitVariant> map = Maps.newHashMap();
-      for (TMTransUnitVariant target : tuvs)
+      Map<String, TransMemoryUnitVariant> map = Maps.newHashMap();
+      for (TransMemoryUnitVariant target : tuvs)
       {
          map.put(target.getLanguage(), target);
       }

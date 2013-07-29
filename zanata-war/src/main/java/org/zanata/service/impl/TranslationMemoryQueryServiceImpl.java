@@ -31,10 +31,8 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardQuery;
@@ -49,13 +47,10 @@ import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.hibernate.search.TextContainerAnalyzerDiscriminator;
-import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.tm.TMTranslationUnit;
+import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.service.TranslationMemoryQueryService;
-import org.zanata.service.TranslationStateCache;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
-import org.zanata.webtrans.shared.rpc.HasSearchType;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 @Name("translationMemoryQueryService")
@@ -126,7 +121,7 @@ public class TranslationMemoryQueryServiceImpl implements TranslationMemoryQuery
       FullTextQuery ftQuery;
       // Use the TextFlowTarget index
       Query textQuery = generateQuery(query, sourceLocale, targetLocale, queryText, multiQueryText, IndexFieldLabels.TF_CONTENT_FIELDS);
-      ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlowTarget.class, TMTranslationUnit.class);
+      ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlowTarget.class, TransMemoryUnit.class);
 
       ftQuery.setProjection(FullTextQuery.SCORE, FullTextQuery.THIS);
       @SuppressWarnings("unchecked")
@@ -136,7 +131,7 @@ public class TranslationMemoryQueryServiceImpl implements TranslationMemoryQuery
 
    /**
     * Generate the query to match all source contents in all the searchable indexes.
-    * (HTextFlowTarget and TMTranslationUnit)
+    * (HTextFlowTarget and TransMemoryUnit)
     *
     * @param query
     * @param sourceLocale
@@ -212,7 +207,7 @@ public class TranslationMemoryQueryServiceImpl implements TranslationMemoryQuery
    }
 
    /**
-    * Generates the Hibernate Search Query that will search for {@link TMTranslationUnit} objects for matches.
+    * Generates the Hibernate Search Query that will search for {@link org.zanata.model.tm.TransMemoryUnit} objects for matches.
     * @param sourceLocale
     * @param targetLocale
     * @param queryText

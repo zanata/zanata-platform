@@ -28,18 +28,18 @@ import org.hibernate.ejb.HibernateEntityManagerFactory;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.zanata.model.tm.TMTranslationUnit;
+import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.util.CloseableIterator;
 
 /**
- * This class uses Hibernate's StatelessSession to iterate over large queries returning TMTranslationUnit.
+ * This class uses Hibernate's StatelessSession to iterate over large queries returning TransMemoryUnit.
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @Name("transMemoryStreamingDAO")
 @Scope(ScopeType.EVENT)
 @NoArgsConstructor
-public class TransMemoryStreamingDAO extends StreamingDAO<TMTranslationUnit>
+public class TransMemoryStreamingDAO extends StreamingDAO<TransMemoryUnit>
 {
 
    public TransMemoryStreamingDAO(HibernateEntityManagerFactory emf)
@@ -47,13 +47,13 @@ public class TransMemoryStreamingDAO extends StreamingDAO<TMTranslationUnit>
       super(emf);
    }
 
-   public CloseableIterator<TMTranslationUnit> findTransUnitsByTM(TransMemory transMemory)
+   public CloseableIterator<TransMemoryUnit> findTransUnitsByTM(TransMemory transMemory)
    {
-      StreamingEntityIterator<TMTranslationUnit> iter = createIterator();
+      StreamingEntityIterator<TransMemoryUnit> iter = createIterator();
       try
       {
          Query q = iter.getSession().createQuery(
-               "from TMTranslationUnit tu " +
+               "from TransMemoryUnit tu " +
                "inner join fetch tu.translationMemory tm " +
                "inner join fetch tu.transUnitVariants " +
                "where tm=:transMemory"

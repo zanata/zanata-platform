@@ -60,23 +60,23 @@ import lombok.ToString;
 @NoArgsConstructor
 @Access(AccessType.FIELD)
 @Indexed
-public class TMTranslationUnit extends ModelEntityBase implements HasTMMetadata
+public class TransMemoryUnit extends ModelEntityBase implements HasTMMetadata
 {
    private static final long serialVersionUID = 1L;
 
-   public static TMTranslationUnit tu(TransMemory tm, String uniqueId, String transUnitId, String sourceLanguage, String sourceContent, TMTransUnitVariant... transUnitVariants)
+   public static TransMemoryUnit tu(TransMemory tm, String uniqueId, String transUnitId, String sourceLanguage, String sourceContent, TransMemoryUnitVariant... transUnitVariants)
    {
-      return new TMTranslationUnit(tm, uniqueId, transUnitId, sourceLanguage, sourceContent, TMTransUnitVariant.newMap(transUnitVariants));
+      return new TransMemoryUnit(tm, uniqueId, transUnitId, sourceLanguage, sourceContent, TransMemoryUnitVariant.newMap(transUnitVariants));
    }
 
-   public TMTranslationUnit(TransMemory tm, String uniqueId, String transUnitId, String sourceLanguage, String sourceContent, Map<String, TMTransUnitVariant> transUnitVariants)
+   public TransMemoryUnit(TransMemory tm, String uniqueId, String transUnitId, String sourceLanguage, String sourceContent, Map<String, TransMemoryUnitVariant> transUnitVariants)
    {
       this.translationMemory = tm;
       this.uniqueId = uniqueId;
       this.transUnitId = transUnitId;
       this.transUnitVariants = transUnitVariants;
       this.sourceLanguage = sourceLanguage;
-      this.transUnitVariants.put(sourceLanguage, new TMTransUnitVariant(sourceLanguage, sourceContent));
+      this.transUnitVariants.put(sourceLanguage, new TransMemoryUnitVariant(sourceLanguage, sourceContent));
    }
 
    @Column(name = "trans_unit_id", nullable = true)
@@ -100,7 +100,7 @@ public class TMTranslationUnit extends ModelEntityBase implements HasTMMetadata
    @JoinColumn(name = "trans_unit_id", nullable = false)
    @MapKey(name = "language")
    @IndexedEmbedded
-   private Map<String, TMTransUnitVariant> transUnitVariants = Maps.newHashMap();
+   private Map<String, TransMemoryUnitVariant> transUnitVariants = Maps.newHashMap();
 
    /**
     * Map values are Json strings containing metadata for the particular type of translation memory
@@ -112,7 +112,7 @@ public class TMTranslationUnit extends ModelEntityBase implements HasTMMetadata
    @Column(name = "metadata", length = Integer.MAX_VALUE)
    private Map<TMMetadataType, String> metadata = Maps.newHashMap();
 
-   public TMTranslationUnit(String uniqueId)
+   public TransMemoryUnit(String uniqueId)
    {
       this.uniqueId = uniqueId;
    }

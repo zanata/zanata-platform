@@ -25,13 +25,12 @@ import org.hibernate.search.analyzer.Discriminator;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.tm.TMTransUnitVariant;
-import org.zanata.model.tm.TMTranslationUnit;
+import org.zanata.model.tm.TransMemoryUnitVariant;
 import com.ibm.icu.util.ULocale;
 
 /**
  * Analyzer Discriminator to determine the analyzer to use based on the object being indexed.
- * Currently only supports {@link HTextFlow}, {@link HTextFlowTarget} and {@link TMTransUnitVariant}.
+ * Currently only supports {@link HTextFlow}, {@link HTextFlowTarget} and {@link org.zanata.model.tm.TransMemoryUnitVariant}.
  *
  * This is a replacement for Lucene's {@link org.hibernate.search.annotations.AnalyzerDef}
  * annotations as they cannot be used with concrete Analyzer implementations (e.g. {@link StandardAnalyzer}).
@@ -56,9 +55,9 @@ public class TextContainerAnalyzerDiscriminator implements Discriminator
          HTextFlowTarget tft = (HTextFlowTarget)entity;
          localeId = tft.getLocale().getLocaleId();
       }
-      else if( entity instanceof TMTransUnitVariant )
+      else if( entity instanceof TransMemoryUnitVariant)
       {
-         TMTransUnitVariant tuv = (TMTransUnitVariant)entity;
+         TransMemoryUnitVariant tuv = (TransMemoryUnitVariant)entity;
          localeId = new LocaleId(tuv.getLanguage().replaceAll("_", "-"));
       }
       else

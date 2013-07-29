@@ -29,23 +29,23 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import net.sf.okapi.common.resource.ITextUnit;
 
-import org.zanata.model.tm.TMTransUnitVariant;
-import org.zanata.model.tm.TMTranslationUnit;
+import org.zanata.model.tm.TransMemoryUnitVariant;
+import org.zanata.model.tm.TransMemoryUnit;
 
 /**
- * Writes one or more variations for a single TMTranslationUnit as a TMX translation unit.
+ * Writes one or more variations for a single TransMemoryUnit as a TMX translation unit.
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
 @ParametersAreNonnullByDefault
-public class ExportTransUnitStrategy extends AbstractExportTUStrategy<TMTranslationUnit>
+public class ExportTransUnitStrategy extends AbstractExportTUStrategy<TransMemoryUnit>
 {
    public ExportTransUnitStrategy()
    {
       super();
    }
 
-   private String resolveSourceLanguage(TMTranslationUnit tu)
+   private String resolveSourceLanguage(TransMemoryUnit tu)
    {
       String tuSourceLanguage = tu.getSourceLanguage();
       if (tuSourceLanguage != null)
@@ -62,35 +62,35 @@ public class ExportTransUnitStrategy extends AbstractExportTUStrategy<TMTranslat
    }
 
    @Override
-   protected @Nonnull String getSrcContent(TMTranslationUnit tu)
+   protected @Nonnull String getSrcContent(TransMemoryUnit tu)
    {
-      TMTransUnitVariant tuv = tu.getTransUnitVariants().get(resolveSourceLanguage(tu));
+      TransMemoryUnitVariant tuv = tu.getTransUnitVariants().get(resolveSourceLanguage(tu));
       assert tuv != null;
       return tuv.getPlainTextSegment();
    }
 
    @Override
-   protected @Nonnull net.sf.okapi.common.LocaleId getSourceLocale(TMTranslationUnit tu)
+   protected @Nonnull net.sf.okapi.common.LocaleId getSourceLocale(TransMemoryUnit tu)
    {
       return fromBCP47(resolveSourceLanguage(tu));
    }
 
    @Override
-   protected @Nullable String getTUID(TMTranslationUnit tu)
+   protected @Nullable String getTUID(TransMemoryUnit tu)
    {
       return tu.getTransUnitId();
    }
 
    @Override
-   protected void addTextUnitVariants(ITextUnit textUnit, TMTranslationUnit tu)
+   protected void addTextUnitVariants(ITextUnit textUnit, TransMemoryUnit tu)
    {
-      for (TMTransUnitVariant tuv: tu.getTransUnitVariants().values())
+      for (TransMemoryUnitVariant tuv: tu.getTransUnitVariants().values())
       {
          addTUV(textUnit, tuv);
       }
    }
 
-   private void addTUV(ITextUnit textUnit, TMTransUnitVariant tuv)
+   private void addTUV(ITextUnit textUnit, TransMemoryUnitVariant tuv)
    {
       @Nonnull String trgContent = tuv.getPlainTextSegment();
       @Nonnull net.sf.okapi.common.LocaleId locId = fromBCP47(tuv.getLanguage());

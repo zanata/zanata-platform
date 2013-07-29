@@ -34,7 +34,7 @@
             </column>
         </createTable>
 
-        <createTable tableName="TMTranslationUnit">
+        <createTable tableName="TransMemoryUnit">
             <column name="trans_unit_id" type="longtext">
                 <constraints nullable="true"/>
             </column>
@@ -65,11 +65,11 @@
             </column>
         </createTable>
 
-        <addForeignKeyConstraint baseTableName="TMTranslationUnit" baseColumnNames="tm_id" constraintName="FK_tmunit_trans_memory"
+        <addForeignKeyConstraint baseTableName="TransMemoryUnit" baseColumnNames="tm_id" constraintName="FK_tmunit_trans_memory"
                                  referencedTableName="TransMemory"
                                  referencedColumnNames="id"/>
 
-        <createTable tableName="TMTransUnitVariant">
+        <createTable tableName="TransMemoryUnitVariant">
             <column name="language" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
@@ -100,9 +100,9 @@
             </column>
         </createTable>
 
-        <addForeignKeyConstraint baseTableName="TMTransUnitVariant" baseColumnNames="trans_unit_id"
+        <addForeignKeyConstraint baseTableName="TransMemoryUnitVariant" baseColumnNames="trans_unit_id"
                                  constraintName="FK_TransUnitVariant_TransUnit"
-                                 referencedTableName="TMTranslationUnit"
+                                 referencedTableName="TransMemoryUnit"
                                  referencedColumnNames="id"/>
     </changeSet>
 
@@ -118,7 +118,7 @@
             </column>
             <column name="metadata" type="longtext"/>
         </createTable>
-        <createTable tableName="TMTransUnit_Metadata">
+        <createTable tableName="TransMemoryUnit_Metadata">
             <column name="tm_trans_unit_id" type="bigint">
                 <constraints  primaryKey="true" nullable="false"/>
             </column>
@@ -127,7 +127,7 @@
             </column>
             <column name="metadata" type="longtext"/>
         </createTable>
-        <createTable tableName="TMTransUnitVariant_Metadata">
+        <createTable tableName="TransMemoryUnitVariant_Metadata">
             <column name="tm_trans_unit_variant_id" type="bigint">
                 <constraints  primaryKey="true" nullable="false"/>
             </column>
@@ -141,13 +141,13 @@
                                  constraintName="FK_Metadata_TransMemory"
                                  referencedTableName="TransMemory"
                                  referencedColumnNames="id"/>
-        <addForeignKeyConstraint baseTableName="TMTransUnit_Metadata" baseColumnNames="tm_trans_unit_id"
+        <addForeignKeyConstraint baseTableName="TransMemoryUnit_Metadata" baseColumnNames="tm_trans_unit_id"
                                  constraintName="FK_Metadata_TMTransUnit"
-                                 referencedTableName="TMTranslationUnit"
+                                 referencedTableName="TransMemoryUnit"
                                  referencedColumnNames="id"/>
-        <addForeignKeyConstraint baseTableName="TMTransUnitVariant_Metadata" baseColumnNames="tm_trans_unit_variant_id"
-                                 constraintName="FK_Metadata_TMTransUnitVariant"
-                                 referencedTableName="TMTransUnitVariant"
+        <addForeignKeyConstraint baseTableName="TransMemoryUnitVariant_Metadata" baseColumnNames="tm_trans_unit_variant_id"
+                                 constraintName="FK_Metadata_TransMemoryUnitVariant"
+                                 referencedTableName="TransMemoryUnitVariant"
                                  referencedColumnNames="id"/>
 
     </changeSet>

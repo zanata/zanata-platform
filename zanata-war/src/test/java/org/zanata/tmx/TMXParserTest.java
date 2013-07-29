@@ -31,7 +31,7 @@ import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.dao.TransMemoryDAO;
 import org.zanata.model.tm.TMMetadataType;
-import org.zanata.model.tm.TMTranslationUnit;
+import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.seam.SeamAutowire;
 
@@ -89,7 +89,7 @@ public class TMXParserTest extends ZanataDbunitJpaTest
       assertThat(tm.getMetadata().get(TMMetadataType.TMX14), notNullValue());
 
       // Translation Units
-      for(TMTranslationUnit tu : tm.getTranslationUnits())
+      for(TransMemoryUnit tu : tm.getTranslationUnits())
       {
          assertThat(tu.getTransUnitVariants().size(), greaterThan(0));
       }

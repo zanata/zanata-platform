@@ -27,7 +27,6 @@ import javax.persistence.EntityManager;
 import javax.xml.XMLConstants;
 
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nu.xom.Attribute;
 import nu.xom.Element;
 import nu.xom.Elements;
@@ -38,8 +37,8 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TransMemoryDAO;
-import org.zanata.model.tm.TMTransUnitVariant;
-import org.zanata.model.tm.TMTranslationUnit;
+import org.zanata.model.tm.TransMemoryUnitVariant;
+import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TMXMetadataHelper;
 import org.zanata.model.tm.TransMemory;
 
@@ -98,7 +97,7 @@ public class TransMemoryAdapter
     */
    public void persistTransUnit(TransMemory tm, Element tuElem)
    {
-      TMTranslationUnit tu = new TMTranslationUnit();
+      TransMemoryUnit tu = new TransMemoryUnit();
       tu.setTranslationMemory(tm);
 
       Map<String, String> metadata = Maps.newHashMap();
@@ -123,7 +122,7 @@ public class TransMemoryAdapter
       tu.setUniqueId(determineUniqueId(tu));
 
       // Find if there is already a tu and replace it
-      TMTranslationUnit existingTu = transMemoryDAO.findTranslationUnit(tm.getSlug(), tu.getUniqueId());
+      TransMemoryUnit existingTu = transMemoryDAO.findTranslationUnit(tm.getSlug(), tu.getUniqueId());
       if( existingTu != null )
       {
          entityManager.remove(existingTu);
@@ -132,18 +131,18 @@ public class TransMemoryAdapter
       entityManager.flush();
    }
 
-   private void parseAndSaveTransUnitVariant(Element tuvElem, TMTranslationUnit tu)
+   private void parseAndSaveTransUnitVariant(Element tuvElem, TransMemoryUnit tu)
    {
       String language = tuvElem.getAttributeValue("lang", XMLConstants.XML_NS_URI);
       String content = tuvElem.getFirstChildElement("seg").toXML();
 
-      TMTransUnitVariant tuv = new TMTransUnitVariant(language, content);
+      TransMemoryUnitVariant tuv = new TransMemoryUnitVariant(language, content);
       // TODO save metadata
       String locale = new LocaleId(language).getId(); // This will fail if the locale is not accepted
       tu.getTransUnitVariants().put(locale, tuv);
    }
 
-   private String determineUniqueId(TMTranslationUnit tu)
+   private String determineUniqueId(TransMemoryUnit tu)
    {
       if (tu.getTransUnitId() != null)
       {
@@ -166,7 +165,7 @@ public class TransMemoryAdapter
                }
             }
 
-            TMTransUnitVariant sourceVariant = tu.getTransUnitVariants().get(srcLang);
+            TransMemoryUnitVariant sourceVariant = tu.getTransUnitVariants().get(srcLang);
             if (sourceVariant == null)
             {
                throw new RuntimeException("Source variant cannot be determined for Translation unit with no tuid.");

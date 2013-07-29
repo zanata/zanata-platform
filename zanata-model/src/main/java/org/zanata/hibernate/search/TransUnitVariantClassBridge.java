@@ -25,7 +25,7 @@ import org.apache.lucene.document.Field;
 import org.hibernate.search.bridge.FieldBridge;
 import org.hibernate.search.bridge.LuceneOptions;
 import org.zanata.common.LocaleId;
-import org.zanata.model.tm.TMTransUnitVariant;
+import org.zanata.model.tm.TransMemoryUnitVariant;
 
 /**
  * This is a field bridge used to index all Translation Unit variants in a translation unit.
@@ -37,7 +37,7 @@ public class TransUnitVariantClassBridge implements FieldBridge
    @Override
    public void set(String s, Object value, Document document, LuceneOptions luceneOptions)
    {
-      TMTransUnitVariant variant = (TMTransUnitVariant)value;
+      TransMemoryUnitVariant variant = (TransMemoryUnitVariant)value;
 
       String textToIndex = variant.getPlainTextSegment();
       Field field = new Field("tuv." + LocaleId.fromJavaName(variant.getLanguage()), textToIndex,

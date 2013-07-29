@@ -81,7 +81,7 @@ public class TMXMetadataHelper
     * @param tu
     * @return
     */
-   public static @Nonnull ImmutableMap<String, String> getMetadata(TMTranslationUnit tu)
+   public static @Nonnull ImmutableMap<String, String> getMetadata(TransMemoryUnit tu)
    {
       Builder<String, String> m = ImmutableMap.builder();
       m.putAll(getSharedMetadata(tu));
@@ -103,7 +103,7 @@ public class TMXMetadataHelper
     * @param toTransUnit
     * @param fromMetadata
     */
-   public static void setMetadata(TMTranslationUnit toTransUnit, @Nonnull Map<String, String> fromMetadata)
+   public static void setMetadata(TransMemoryUnit toTransUnit, @Nonnull Map<String, String> fromMetadata)
    {
       Map<String, String> metadata = Maps.newHashMap(fromMetadata);
       String tuid = metadata.remove(_tuid);

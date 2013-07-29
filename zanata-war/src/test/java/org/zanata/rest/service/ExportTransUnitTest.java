@@ -1,8 +1,7 @@
 package org.zanata.rest.service;
 
-import static org.zanata.model.tm.TMTranslationUnit.tu;
-import static org.zanata.model.tm.TMTransUnitVariant.tuv;
-import static org.zanata.model.tm.TransMemory.tm;
+import static org.zanata.model.tm.TransMemoryUnit.tu;
+import static org.zanata.model.tm.TransMemoryUnitVariant.tuv;
 
 import java.util.Iterator;
 
@@ -11,7 +10,7 @@ import javax.ws.rs.core.StreamingOutput;
 
 import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
-import org.zanata.model.tm.TMTranslationUnit;
+import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemory;
 
 import com.google.common.collect.Lists;
@@ -26,18 +25,18 @@ public class ExportTransUnitTest extends TMXStreamingOutputTest
       checkAllLocales(output);
    }
 
-   private TMXStreamingOutput<TMTranslationUnit> streamSourceContents()
+   private TMXStreamingOutput<TransMemoryUnit> streamSourceContents()
    {
-      return new TMXStreamingOutput<TMTranslationUnit>(createTestData(), new ExportTransUnitStrategy());
+      return new TMXStreamingOutput<TransMemoryUnit>(createTestData(), new ExportTransUnitStrategy());
    }
 
-   private @Nonnull Iterator<TMTranslationUnit> createTestData()
+   private @Nonnull Iterator<TransMemoryUnit> createTestData()
    {
       TransMemory tm = null;
       String fr = LocaleId.FR.getId();
       String de = LocaleId.DE.getId();
       String sourceLoc = sourceLocale.getId();
-      return Lists.<TMTranslationUnit>newArrayList(
+      return Lists.<TransMemoryUnit>newArrayList(
             tu(
                   tm,
                   "doc0:resId0",

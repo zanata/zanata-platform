@@ -3,8 +3,8 @@ package org.zanata.dao;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.zanata.model.tm.TransMemory.tm;
-import static org.zanata.model.tm.TMTranslationUnit.tu;
-import static org.zanata.model.tm.TMTransUnitVariant.tuv;
+import static org.zanata.model.tm.TransMemoryUnit.tu;
+import static org.zanata.model.tm.TransMemoryUnitVariant.tuv;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -17,8 +17,8 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataJpaTest;
 import org.zanata.common.LocaleId;
-import org.zanata.model.tm.TMTransUnitVariant;
-import org.zanata.model.tm.TMTranslationUnit;
+import org.zanata.model.tm.TransMemoryUnitVariant;
+import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.util.CloseableIterator;
 
@@ -50,7 +50,7 @@ public class TransMemoryStreamingDAOTest extends ZanataJpaTest
 
       TransMemory transMemory = transMemoryDAO.getBySlug("testTM");
       @Cleanup
-      CloseableIterator<TMTranslationUnit> iter = dao.findTransUnitsByTM(transMemory);
+      CloseableIterator<TransMemoryUnit> iter = dao.findTransUnitsByTM(transMemory);
       assertThat(Iterators.size(iter), equalTo(4));
 
       deleteTMData();
@@ -63,7 +63,7 @@ public class TransMemoryStreamingDAOTest extends ZanataJpaTest
       String fr = LocaleId.FR.getId();
       String de = LocaleId.DE.getId();
       String sourceLoc = "en-US";
-      ArrayList<TMTranslationUnit> tus = Lists.newArrayList(
+      ArrayList<TransMemoryUnit> tus = Lists.newArrayList(
             tu(
                   tm,
                   "doc0:resId0",
@@ -93,7 +93,7 @@ public class TransMemoryStreamingDAOTest extends ZanataJpaTest
                   sourceLoc,
                   "SOURCE0",
                   tuv(de, "TARGETde0")));
-      for (TMTranslationUnit tu : tus)
+      for (TransMemoryUnit tu : tus)
       {
          session.save(tu);
       }
@@ -101,8 +101,8 @@ public class TransMemoryStreamingDAOTest extends ZanataJpaTest
 
    private void deleteTMData()
    {
-      AbstractDAOImpl<TMTransUnitVariant, Long> tuvDao = getDao(TMTransUnitVariant.class);
-      AbstractDAOImpl<TMTranslationUnit, Long> tuDao = getDao(TMTranslationUnit.class);
+      AbstractDAOImpl<TransMemoryUnitVariant, Long> tuvDao = getDao(TransMemoryUnitVariant.class);
+      AbstractDAOImpl<TransMemoryUnit, Long> tuDao = getDao(TransMemoryUnit.class);
       tuvDao.deleteAll();
       tuDao.deleteAll();
       transMemoryDAO.deleteAll();

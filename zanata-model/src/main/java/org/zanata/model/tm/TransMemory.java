@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.Set;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -73,7 +72,7 @@ public class TransMemory extends SlugEntityBase implements HasTMMetadata
 
    @Setter(AccessLevel.PROTECTED)
    @OneToMany(mappedBy = "translationMemory", orphanRemoval = true)
-   private Set<TMTranslationUnit> translationUnits = Sets.newHashSet();
+   private Set<TransMemoryUnit> translationUnits = Sets.newHashSet();
 
    /**
     * Map values are Json strings containing metadata for the particular type of translation memory

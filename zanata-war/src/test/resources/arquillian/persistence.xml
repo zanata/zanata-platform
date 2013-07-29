@@ -56,8 +56,8 @@
 		<class>org.zanata.model.po.HPotEntryData</class>
         <class>org.zanata.model.security.HCredentials</class>
         <class>org.zanata.model.security.HOpenIdCredentials</class>
-        <class>org.zanata.model.tm.TMTranslationUnit</class>
-        <class>org.zanata.model.tm.TMTransUnitVariant</class>
+        <class>org.zanata.model.tm.TransMemoryUnit</class>
+        <class>org.zanata.model.tm.TransMemoryUnitVariant</class>
         <class>org.zanata.model.tm.TransMemory</class>
 
         <!-- TODO This may be removed once the class files are packaged in the zanata-model jar as intended

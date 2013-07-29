@@ -31,8 +31,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.zanata.model.tm.TMTransUnitVariant;
-import org.zanata.model.tm.TMTranslationUnit;
+import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemory;
 
 /**
@@ -78,17 +77,17 @@ public class TransMemoryDAO extends AbstractDAOImpl<TransMemory, Long>
    }
 
    public @Nullable
-   TMTranslationUnit findTranslationUnit(@Nonnull String tmSlug, @Nonnull String uniqueId)
+   TransMemoryUnit findTranslationUnit(@Nonnull String tmSlug, @Nonnull String uniqueId)
    {
 
       List results = getSession()
-            .createQuery("from TMTranslationUnit tu where tu.uniqueId = :uniqueId and tu.translationMemory.slug = :tmSlug")
+            .createQuery("from TransMemoryUnit tu where tu.uniqueId = :uniqueId and tu.translationMemory.slug = :tmSlug")
             .setString("uniqueId", uniqueId)
             .setString("tmSlug", tmSlug)
             .list();
       if( results.size() > 0 )
       {
-         return (TMTranslationUnit)results.get(0);
+         return (TransMemoryUnit)results.get(0);
       }
       return null;
    }

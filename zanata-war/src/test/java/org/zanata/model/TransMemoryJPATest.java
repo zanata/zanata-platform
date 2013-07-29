@@ -26,8 +26,8 @@ import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.criterion.Restrictions;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
-import org.zanata.model.tm.TMTransUnitVariant;
-import org.zanata.model.tm.TMTranslationUnit;
+import org.zanata.model.tm.TransMemoryUnitVariant;
+import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.model.tm.TMMetadataType;
 
@@ -95,7 +95,7 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
       // add some units
       for( int i = 0; i<5; i++ )
       {
-         TMTranslationUnit unit = new TMTranslationUnit("uid:" + i);
+         TransMemoryUnit unit = new TransMemoryUnit("uid:" + i);
          unit.setTranslationMemory(tm);
          unit.setSourceLanguage("en-US");
          unit.setTransUnitId("unit-id-" + i);
@@ -118,7 +118,7 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
       // add some units
       for( int i = 0; i<5; i++ )
       {
-         TMTranslationUnit unit = new TMTranslationUnit("uid:" + i);
+         TransMemoryUnit unit = new TransMemoryUnit("uid:" + i);
          unit.setTranslationMemory(tm);
          unit.setSourceLanguage("en-US");
          unit.setTransUnitId("unit-id-" + i);
@@ -132,7 +132,7 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
       TransMemory stored = getTransMemory("new-trans-memory");
 
       assertThat(stored.getTranslationUnits().size(), is(5));
-      for( TMTranslationUnit tu : tm.getTranslationUnits() )
+      for( TransMemoryUnit tu : tm.getTranslationUnits() )
       {
          assertThat(tu.getMetadata().size(), is(1));
          assertThat(tu.getMetadata().get(TMMetadataType.TMX14), startsWith("Metadata "));
@@ -149,11 +149,11 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
       TransMemory stored = getTransMemory("new-trans-memory");
 
       // For each trans unit, generate some variants
-      for(TMTranslationUnit tu : stored.getTranslationUnits())
+      for(TransMemoryUnit tu : stored.getTranslationUnits())
       {
-         TMTransUnitVariant tuvES = new TMTransUnitVariant("es", "Mensaje de Prueba");
-         TMTransUnitVariant tuvEN = new TMTransUnitVariant("en-US", "Test Message");
-         TMTransUnitVariant tuvFR = new TMTransUnitVariant("fr", "Message de test");
+         TransMemoryUnitVariant tuvES = new TransMemoryUnitVariant("es", "Mensaje de Prueba");
+         TransMemoryUnitVariant tuvEN = new TransMemoryUnitVariant("en-US", "Test Message");
+         TransMemoryUnitVariant tuvFR = new TransMemoryUnitVariant("fr", "Message de test");
 
          tu.getTransUnitVariants().put(tuvES.getLanguage(), tuvES);
          tu.getTransUnitVariants().put(tuvEN.getLanguage(), tuvEN);
@@ -164,7 +164,7 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
 
       // Verify they were saved
       List results = getEm().createQuery(
-            "select tu.transUnitVariants from TMTranslationUnit tu where tu.translationMemory.slug = 'new-trans-memory'").getResultList();
+            "select tu.transUnitVariants from TransMemoryUnit tu where tu.translationMemory.slug = 'new-trans-memory'").getResultList();
       assertThat(results.size(), greaterThan(0));
    }
 
@@ -178,17 +178,17 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
       TransMemory stored = getTransMemory("new-trans-memory");
 
       // Store a Trans unit variant with formatting
-      TMTranslationUnit tu = stored.getTranslationUnits().iterator().next();
-      TMTransUnitVariant tuvES = new TMTransUnitVariant("es", "Mensaje <bpt>&lt;b></bpt>de<ept i=\"1\">&lt;b></ept> Prueba");
+      TransMemoryUnit tu = stored.getTranslationUnits().iterator().next();
+      TransMemoryUnitVariant tuvES = new TransMemoryUnitVariant("es", "Mensaje <bpt>&lt;b></bpt>de<ept i=\"1\">&lt;b></ept> Prueba");
 
       tu.getTransUnitVariants().put(tuvES.getLanguage(), tuvES);
 
       super.getEm().merge(tu);
 
       // Verify they were saved
-      TMTransUnitVariant tuv
-            = (TMTransUnitVariant)getEm().createQuery(
-               "select tu.transUnitVariants from TMTranslationUnit tu where tu.translationMemory.slug = 'new-trans-memory'").getSingleResult();
+      TransMemoryUnitVariant tuv
+            = (TransMemoryUnitVariant)getEm().createQuery(
+               "select tu.transUnitVariants from TransMemoryUnit tu where tu.translationMemory.slug = 'new-trans-memory'").getSingleResult();
       assertThat(tuv.getPlainTextSegment(), equalTo("Mensaje de Prueba"));
    }
 }

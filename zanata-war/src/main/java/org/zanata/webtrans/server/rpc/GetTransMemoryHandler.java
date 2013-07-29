@@ -42,7 +42,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.tm.TMTranslationUnit;
+import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.search.LevenshteinTokenUtil;
 import org.zanata.search.LevenshteinUtil;
 import org.zanata.security.ZanataIdentity;
@@ -143,10 +143,10 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
          addOrIncrementResultItem(transMemoryQuery, matchesMap, match, matchType, textFlowContents,
                targetContents, textFlowTarget.getTextFlow().getId(), "");
       }
-      else if( entity instanceof TMTranslationUnit )
+      else if( entity instanceof TransMemoryUnit)
       {
          System.out.println("Found TM match!!");
-         TMTranslationUnit transUnit = (TMTranslationUnit) entity;
+         TransMemoryUnit transUnit = (TransMemoryUnit) entity;
          ArrayList<String> sourceContents = Lists.newArrayList(transUnit.getTransUnitVariants().get(sourceLocaleId.getId()).getPlainTextSegment());
          ArrayList<String> targetContents = Lists.newArrayList(transUnit.getTransUnitVariants().get(targetLocaleId.getId()).getPlainTextSegment());
          addOrIncrementResultItem(transMemoryQuery, matchesMap, match, MatchType.Imported, sourceContents, targetContents,

@@ -44,7 +44,7 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.SourceContents;
-import org.zanata.model.tm.TMTranslationUnit;
+import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.service.LocaleService;
 import org.zanata.tmx.TMXParser;
@@ -125,7 +125,7 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
    public Response getTranslationMemory(@Nonnull String slug)
    {
       log.debug("exporting TMX for translation memory {}", slug);
-      Iterator<TMTranslationUnit> tuIter;
+      Iterator<TransMemoryUnit> tuIter;
       TransMemory transMemory = transMemoryDAO.getBySlug(slug);
       if (transMemory == null)
       {
@@ -165,9 +165,9 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
       return okResponse(filename, output);
    }
 
-   private Response buildTMX(Iterator<TMTranslationUnit> tuIter, String filename)
+   private Response buildTMX(Iterator<TransMemoryUnit> tuIter, String filename)
    {
-      TMXStreamingOutput<TMTranslationUnit> output = new TMXStreamingOutput<TMTranslationUnit>(tuIter, new ExportTransUnitStrategy());
+      TMXStreamingOutput<TransMemoryUnit> output = new TMXStreamingOutput<TransMemoryUnit>(tuIter, new ExportTransUnitStrategy());
       return okResponse(filename, output);
    }
 
