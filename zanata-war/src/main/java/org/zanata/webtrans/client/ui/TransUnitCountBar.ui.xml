@@ -9,7 +9,7 @@
         }
 
         .approved {
-             background: #0000CD;
+             background: #4e9fdd;
             z-index: 0;
         }
 
