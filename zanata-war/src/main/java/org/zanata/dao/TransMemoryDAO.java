@@ -31,8 +31,11 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.exception.EntityMissingException;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemory;
+
+import com.google.common.base.Optional;
 
 /**
  * Data Access Object for Translation Memory and related entities.
@@ -54,26 +57,30 @@ public class TransMemoryDAO extends AbstractDAOImpl<TransMemory, Long>
       super(TransMemory.class, session);
    }
 
-   public @Nullable
-   TransMemory getBySlug(@Nonnull String slug)
+   public Optional<TransMemory> getBySlug(@Nonnull String slug)
    {
       if(!StringUtils.isEmpty(slug))
       {
-         return (TransMemory) getSession().byNaturalId(TransMemory.class).using("slug", slug).load();
+         TransMemory tm = (TransMemory) getSession().byNaturalId(TransMemory.class).using("slug", slug).load();
+         return Optional.fromNullable(tm);
       }
-      return null;
+      return Optional.absent();
    }
 
    public void deleteTransMemoryContents(@Nonnull String slug)
    {
-      TransMemory tm = getBySlug(slug);
-      Iterator it = tm.getTranslationUnits().iterator();
+      Optional<TransMemory> tm = getBySlug(slug);
+      if (!tm.isPresent())
+      {
+         throw new EntityMissingException("Translation memory " + slug + " was not found.");
+      }
+      Iterator it = tm.get().getTranslationUnits().iterator();
       while(it.hasNext())
       {
          getSession().delete(it.next());
          it.remove();
       }
-      makePersistent(tm);
+      makePersistent(tm.get());
    }
 
    public @Nullable

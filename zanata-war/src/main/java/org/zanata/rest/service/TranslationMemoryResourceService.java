@@ -39,7 +39,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowStreamingDAO;
 import org.zanata.dao.TransMemoryDAO;
 import org.zanata.dao.TransMemoryStreamingDAO;
-import org.zanata.exception.ZanataServiceException;
+import org.zanata.exception.EntityMissingException;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
@@ -48,6 +48,8 @@ import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.service.LocaleService;
 import org.zanata.tmx.TMXParser;
+
+import com.google.common.base.Optional;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -126,12 +128,8 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
    {
       log.debug("exporting TMX for translation memory {}", slug);
       Iterator<TransMemoryUnit> tuIter;
-      TransMemory transMemory = transMemoryDAO.getBySlug(slug);
-      if (transMemory == null)
-      {
-         throw new ZanataServiceException("Translation memory " + slug + " was not found.", 404);
-      }
-      tuIter = transMemoryStreamingDAO.findTransUnitsByTM(transMemory);
+      Optional<TransMemory> tm = transMemoryDAO.getBySlug(slug);
+      tuIter = transMemoryStreamingDAO.findTransUnitsByTM(getTM(tm, slug));
       String filename = makeTMXFilename(slug);
       return buildTMX(tuIter, filename);
    }
@@ -144,9 +142,19 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
       {
          InputStream inputStream = inputPart.getBody(InputStream.class, null);
 
-         tmxParser.parseAndSaveTMX(inputStream, transMemoryDAO.getBySlug(slug));
+         Optional<TransMemory> tm = transMemoryDAO.getBySlug(slug);
+         tmxParser.parseAndSaveTMX(inputStream, getTM(tm, slug));
       }
       return Response.status(200).build();
+   }
+
+   private TransMemory getTM(Optional<TransMemory> tm, String slug)
+   {
+      if (!tm.isPresent())
+      {
+         throw new EntityMissingException("Translation memory " + slug + " was not found.");
+      }
+      return tm.get();
    }
 
    @Override

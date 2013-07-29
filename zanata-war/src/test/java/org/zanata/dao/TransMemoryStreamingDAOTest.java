@@ -22,6 +22,7 @@ import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.util.CloseableIterator;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 
@@ -48,9 +49,9 @@ public class TransMemoryStreamingDAOTest extends ZanataJpaTest
 
       session = newSession();
 
-      TransMemory transMemory = transMemoryDAO.getBySlug("testTM");
+      Optional<TransMemory> transMemory = transMemoryDAO.getBySlug("testTM");
       @Cleanup
-      CloseableIterator<TransMemoryUnit> iter = dao.findTransUnitsByTM(transMemory);
+      CloseableIterator<TransMemoryUnit> iter = dao.findTransUnitsByTM(transMemory.get());
       assertThat(Iterators.size(iter), equalTo(4));
 
       deleteTMData();
