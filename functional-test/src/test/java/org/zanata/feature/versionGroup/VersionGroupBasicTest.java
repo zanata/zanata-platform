@@ -97,7 +97,7 @@ public class VersionGroupBasicTest
     */
    public String getFirstGroupsError(CreateVersionGroupPage createVersionGroupPage)
    {
-      return createVersionGroupPage.getExpectedNumberOfErrors(1).get(0);
+      return createVersionGroupPage.getErrors(1).get(0);
    }
 
    public VersionGroupsPage toggleObsolete(VersionGroupsPage versionGroupsPage)

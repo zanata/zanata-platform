@@ -103,7 +103,13 @@ public class AbstractPage
       return WebElementUtil.elementsToText(errorSpans);
    }
 
-   public List<String> getExpectedNumberOfErrors(final int expectedNumber)
+   /**
+    * Wait until expected number of errors presented on page or timeout.
+    *
+    * @param expectedNumber expected number of errors on page
+    * @return list of error message
+    */
+   public List<String> getErrors(final int expectedNumber)
    {
       refreshPageUntil(this, new Predicate<WebDriver>()
       {
@@ -116,11 +122,15 @@ public class AbstractPage
       return getErrors();
    }
 
-   /*
-    * Wait for all necessary entities to be available
+   /**
+    * Wait for all necessary elements to be available on page.
+    *
+    * @param elementBys selenium search criteria for locating elements
     */
-   public void waitForPage(List<By> bys) {
-      for (final By by : bys) {
+   public void waitForPage(List<By> elementBys)
+   {
+      for (final By by : elementBys)
+      {
          waitForTenSec().until(new Function<WebDriver, WebElement>()
          {
             @Override
