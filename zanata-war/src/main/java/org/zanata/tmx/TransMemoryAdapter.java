@@ -58,7 +58,7 @@ public class TransMemoryAdapter
    private TransMemoryDAO transMemoryDAO;
 
    /**
-    * Returns an effect function that persists the header elements when
+    * Persists the header elements when
     * encountered while parsing. This modifies the translation memory fields and
     * metadata.
     */
@@ -69,7 +69,7 @@ public class TransMemoryAdapter
    }
 
    /**
-    * Returns an effect function that persists a translation unit when a <tu>
+    * Persists a translation unit when a <tu>
     * element is encountered while parsing.
     */
    public void persistTransUnit(TransMemory tm, Element tuElem)
@@ -125,13 +125,13 @@ public class TransMemoryAdapter
          String srcLang = tu.getSourceLanguage() != null ? tu.getSourceLanguage() : tu.getTranslationMemory().getSourceLanguage();
          if (srcLang != null)
          {
-            // source lang is *all*
             if (srcLang.equalsIgnoreCase("*all*"))
             {
                srcLang = tu.getSourceLanguage();
                if (srcLang == null || srcLang.equalsIgnoreCase("*all*"))
                {
-                  throw new RuntimeException("Source language cannot be determined for Translation unit. " + "It must be defined either in the <tu> or the <header> element.");
+                  throw new RuntimeException("Source language cannot be determined for Translation unit. "
+                        + "It must be defined either in the <tu> or the <header> element.");
                }
             }
 

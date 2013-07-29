@@ -185,7 +185,6 @@ public class TransMemoryMergeHandler extends AbstractActionHandler<TransMemoryMe
          TransMemoryDetails tmDetail = getTransMemoryDetailsHandler.getTransMemoryDetail(hLocale, tmSource);
          statusToSet = TransMemoryMergeStatusResolver.newInstance().workOutStatus(action, hTextFlowToBeFilled,
                tmDetail, tmResult, oldTarget);
-         //statusToSet is null means we need to skip/reject the auto translation
          comment = buildTargetComment(tmDetail);
       }
 
