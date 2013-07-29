@@ -22,6 +22,7 @@ import com.google.common.collect.Iterators;
 public class TextFlowStreamingDAOTest extends ZanataDbunitJpaTest
 {
 
+   private static final int TEXTFLOWS_IN_SAMPLE_PROJECT_10 = 5;
    private ProjectDAO projectDao;
    private ProjectIterationDAO projectIterDao;
    private TextFlowStreamingDAO dao;
@@ -50,7 +51,7 @@ public class TextFlowStreamingDAOTest extends ZanataDbunitJpaTest
    {
       @Cleanup
       CloseableIterator<HTextFlow> iter = dao.findTextFlows();
-      assertThat(Iterators.size(iter), equalTo(5));
+      assertThat(Iterators.size(iter), equalTo(TEXTFLOWS_IN_SAMPLE_PROJECT_10));
    }
 
    @Test
@@ -59,7 +60,7 @@ public class TextFlowStreamingDAOTest extends ZanataDbunitJpaTest
       HProject proj = projectDao.getBySlug("sample-project");
       @Cleanup
       CloseableIterator<HTextFlow> iter = dao.findTextFlowsByProject(proj);
-      assertThat(Iterators.size(iter), equalTo(5));
+      assertThat(Iterators.size(iter), equalTo(TEXTFLOWS_IN_SAMPLE_PROJECT_10));
    }
 
    @Test
@@ -77,7 +78,7 @@ public class TextFlowStreamingDAOTest extends ZanataDbunitJpaTest
       HProjectIteration projIter = projectIterDao.getBySlug("sample-project", "1.0");
       @Cleanup
       CloseableIterator<HTextFlow> iter = dao.findTextFlowsByProjectIteration(projIter);
-      assertThat(Iterators.size(iter), equalTo(5));
+      assertThat(Iterators.size(iter), equalTo(TEXTFLOWS_IN_SAMPLE_PROJECT_10));
    }
 
    @Test

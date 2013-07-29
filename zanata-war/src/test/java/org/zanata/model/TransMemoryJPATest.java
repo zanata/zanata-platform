@@ -42,6 +42,11 @@ import static org.hamcrest.Matchers.startsWith;
  */
 public class TransMemoryJPATest extends ZanataDbunitJpaTest
 {
+   /**
+    * 
+    */
+   private static final int NUM_TRANS_UNITS = 5;
+
    @Override
    protected void prepareDBUnitOperations()
    {
@@ -93,7 +98,7 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
       TransMemory tm = createDefaultTransMemoryInstance();
 
       // add some units
-      for( int i = 0; i<5; i++ )
+      for( int i = 0; i<NUM_TRANS_UNITS; i++ )
       {
          TransMemoryUnit unit = new TransMemoryUnit("uid:" + i);
          unit.setTranslationMemory(tm);
@@ -107,7 +112,7 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
       // Fetch it, should have the same elements
       TransMemory stored = getTransMemory("new-trans-memory");
 
-      assertThat(stored.getTranslationUnits().size(), is(5));
+      assertThat(stored.getTranslationUnits().size(), is(NUM_TRANS_UNITS));
    }
 
    @Test
@@ -116,7 +121,7 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
       TransMemory tm = createDefaultTransMemoryInstance();
 
       // add some units
-      for( int i = 0; i<5; i++ )
+      for( int i = 0; i<NUM_TRANS_UNITS; i++ )
       {
          TransMemoryUnit unit = new TransMemoryUnit("uid:" + i);
          unit.setTranslationMemory(tm);
@@ -131,7 +136,7 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
       // Fetch it, should have the same elements
       TransMemory stored = getTransMemory("new-trans-memory");
 
-      assertThat(stored.getTranslationUnits().size(), is(5));
+      assertThat(stored.getTranslationUnits().size(), is(NUM_TRANS_UNITS));
       for( TransMemoryUnit tu : tm.getTranslationUnits() )
       {
          assertThat(tu.getMetadata().size(), is(1));

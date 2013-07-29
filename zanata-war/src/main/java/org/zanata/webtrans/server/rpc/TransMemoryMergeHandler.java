@@ -176,14 +176,14 @@ public class TransMemoryMergeHandler extends AbstractActionHandler<TransMemoryMe
       if( tmResult.getMatchType() == MatchType.Imported )
       {
          TransMemoryUnit tu = transMemoryUnitDAO.findById(tmSourceId);
-         statusToSet = TransMemoryMergeStatusResolver.newInstance().workOutStatus(action, tmResult, oldTarget);
+         statusToSet = TransMemoryMergeStatusResolver.newInstance().decideStatus(action, tmResult, oldTarget);
          comment = buildTargetComment(tu);
       }
       else
       {
          HTextFlow tmSource = textFlowDAO.findById(tmSourceId, false);
          TransMemoryDetails tmDetail = getTransMemoryDetailsHandler.getTransMemoryDetail(hLocale, tmSource);
-         statusToSet = TransMemoryMergeStatusResolver.newInstance().workOutStatus(action, hTextFlowToBeFilled,
+         statusToSet = TransMemoryMergeStatusResolver.newInstance().decideStatus(action, hTextFlowToBeFilled,
                tmDetail, tmResult, oldTarget);
          comment = buildTargetComment(tmDetail);
       }
@@ -202,19 +202,17 @@ public class TransMemoryMergeHandler extends AbstractActionHandler<TransMemoryMe
 
    private static String buildTargetComment(TransMemoryDetails tmDetail)
    {
-      StringBuilder builder = new StringBuilder("auto translated by TM merge from ");
-      builder.append("project: ").append(tmDetail.getProjectName())
-            .append(", version: ").append(tmDetail.getIterationName())
-            .append(", DocId: ").append(tmDetail.getDocId());
-      return builder.toString();
+      return new StringBuilder("auto translated by TM merge from ")
+         .append("project: ").append(tmDetail.getProjectName())
+         .append(", version: ").append(tmDetail.getIterationName())
+         .append(", DocId: ").append(tmDetail.getDocId()).toString();
    }
 
    private static String buildTargetComment(TransMemoryUnit tu)
    {
-      StringBuilder builder = new StringBuilder("auto translated by TM merge from ");
-      builder.append("translation memory: ").append(tu.getTranslationMemory().getSlug())
-            .append(", unique id: ").append(tu.getUniqueId());
-      return builder.toString();
+      return new StringBuilder("auto translated by TM merge from ")
+         .append("translation memory: ").append(tu.getTranslationMemory().getSlug())
+         .append(", unique id: ").append(tu.getUniqueId()).toString();
    }
 
    @Override

@@ -62,7 +62,7 @@ public class TransMemoryMergeStatusResolver
     * @return content state to be set on auto translated target. If null means
     *         we want to reject the auto translation via TM merge
     */
-   public ContentState workOutStatus(TransMemoryMerge action, HTextFlow tfToBeFilled, TransMemoryDetails tmDetail, TransMemoryResultItem tmResult, HTextFlowTarget oldTarget)
+   public ContentState decideStatus(TransMemoryMerge action, HTextFlow tfToBeFilled, TransMemoryDetails tmDetail, TransMemoryResultItem tmResult, HTextFlowTarget oldTarget)
    {
 
       if ((int) tmResult.getSimilarityPercent() != 100)
@@ -100,7 +100,7 @@ public class TransMemoryMergeStatusResolver
     * @return content state to be set on auto translated target. If null means
     *         we want to reject the auto translation via TM merge
     */
-   public ContentState workOutStatus(TransMemoryMerge action, TransMemoryResultItem tmResult,
+   public ContentState decideStatus(TransMemoryMerge action, TransMemoryResultItem tmResult,
                                      HTextFlowTarget oldTarget)
    {
 
