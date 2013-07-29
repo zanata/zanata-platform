@@ -22,6 +22,7 @@
 package org.zanata.model.tm;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
@@ -33,7 +34,12 @@ import org.zanata.common.LocaleId;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+
+import nu.xom.Attribute;
+import nu.xom.Element;
+import nu.xom.Elements;
 
 /**
  * Adapts TMX metadata to the generic translation memory objects.
@@ -42,7 +48,7 @@ import com.google.common.collect.Maps;
  */
 public class TMXMetadataHelper
 {
-   public static final String TMX_HEADER_CONTENT = "__TMX_HEADER_CONTENT__";
+   private static final String TMX_ELEMENT_CHILDREN = "__TMX_ELEMENT_CHILDREN__";
 
    private static final DateTimeFormatter ISO8601Z = DateTimeFormat.forPattern("yyyyMMdd'T'HHmmss'Z").withZoneUTC();
    private static final ObjectMapper jsonMapper = new ObjectMapper();
@@ -101,11 +107,11 @@ public class TMXMetadataHelper
    /**
     * Sets all the TU's metadata, taken from a Map
     * @param toTransUnit
-    * @param fromMetadata
+    * @param tuElem
     */
-   public static void setMetadata(TransMemoryUnit toTransUnit, @Nonnull Map<String, String> fromMetadata)
+   public static void setMetadata(TransMemoryUnit toTransUnit, @Nonnull Element tuElem)
    {
-      Map<String, String> metadata = Maps.newHashMap(fromMetadata);
+      Map<String, String> metadata = buildMetadata(tuElem);
       String tuid = metadata.remove(_tuid);
       if (tuid != null)
       {
@@ -150,17 +156,23 @@ public class TMXMetadataHelper
    /**
     * Sets all the Translation Memory's metadata, taken from a map.
     * @param toTransMemory
-    * @param fromMetadata
+    * @param headerElem
     */
-   public static void setMetadata(TransMemory toTransMemory, @Nonnull Map<String, String> fromMetadata)
+   public static void setMetadata(TransMemory toTransMemory, @Nonnull Element headerElem)
    {
-      Map<String, String> metadata = Maps.newHashMap(fromMetadata);
+      Map<String, String> metadata = buildMetadata(headerElem);
       String srclang = metadata.remove(_srclang);
       if (srclang != null)
       {
          toTransMemory.setSourceLanguage(new LocaleId(srclang).getId()); // This will fail if the language is not accepted
       }
       setSharedMetadata(toTransMemory, metadata);
+   }
+
+
+   public static void setMetadata(TransMemoryUnitVariant tuv, Element tuvElem)
+   {
+
    }
 
    @SuppressWarnings("null")
@@ -175,4 +187,28 @@ public class TMXMetadataHelper
       return ISO8601Z.print(date.getTime());
    }
 
+   private static Map<String, String> buildMetadata(Element elem)
+   {
+      Map<String, String> metadata = Maps.newHashMap();
+      for (int i = 0; i < elem.getAttributeCount(); i++)
+      {
+         Attribute attr = elem.getAttribute(i);
+         String name = attr.getQualifiedName();
+         String value = attr.getValue();
+         metadata.put(name, value);
+      }
+      // Header might also have sub nodes (save them as pure xml)
+      List<String> childrenXml = Lists.newArrayList();
+      Elements childElements = elem.getChildElements();
+      for (int i = 0; i < childElements.size(); i++)
+      {
+         Element child = childElements.get(i);
+         if (child.getLocalName().equals("prop") || child.getLocalName().equals("note"))
+         {
+            childrenXml.add(child.toXML());
+         }
+      }
+      metadata.put(TMXMetadataHelper.TMX_ELEMENT_CHILDREN, childrenXml.toString());
+      return metadata;
+   }
 }

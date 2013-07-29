@@ -115,8 +115,8 @@ public class OkapiUtil
     */
    public static String removeFormattingMarkup(/*final*/ String content)
    {
-      // The content must be a fully formed <seg> element, with no leading/trailling whitespace.
-      assert content.trim().matches("<seg>.*</seg>");
+      // The content must be a fully formed <seg> element with optional attributes and with no leading/trailing whitespace
+      assert content.startsWith("<seg") && content.endsWith("</seg>");
 
       try
       {

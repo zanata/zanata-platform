@@ -21,16 +21,12 @@
 
 package org.zanata.tmx;
 
-import java.util.Map;
-
 import javax.persistence.EntityManager;
 import javax.xml.XMLConstants;
 
 import lombok.NoArgsConstructor;
-import nu.xom.Attribute;
 import nu.xom.Element;
 import nu.xom.Elements;
-import nu.xom.Node;
 
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -41,8 +37,6 @@ import org.zanata.model.tm.TransMemoryUnitVariant;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TMXMetadataHelper;
 import org.zanata.model.tm.TransMemory;
-
-import com.google.common.collect.Maps;
 
 /**
  * Translation Memory Adapter for the TMX parser. Provides callback effects
@@ -70,24 +64,7 @@ public class TransMemoryAdapter
     */
    public void persistHeader(TransMemory tm, Element headerElem)
    {
-      Map<String, String> metadata = Maps.newHashMap();
-      for (int i = 0; i < headerElem.getAttributeCount(); i++)
-      {
-         Attribute attr = headerElem.getAttribute(i);
-         String name = attr.getQualifiedName();
-         String value = attr.getValue();
-         metadata.put(name, value);
-      }
-      // Header might also have sub nodes (save them as pure xml)
-      StringBuilder childrenContent = new StringBuilder();
-      for (int i = 0; i < headerElem.getChildCount(); i++)
-      {
-         Node child = headerElem.getChild(i);
-         childrenContent.append(child.toXML());
-      }
-      metadata.put(TMXMetadataHelper.TMX_HEADER_CONTENT, childrenContent.toString());
-
-      TMXMetadataHelper.setMetadata(tm, metadata);
+      TMXMetadataHelper.setMetadata(tm, headerElem);
       entityManager.merge(tm);
    }
 
@@ -100,15 +77,7 @@ public class TransMemoryAdapter
       TransMemoryUnit tu = new TransMemoryUnit();
       tu.setTranslationMemory(tm);
 
-      Map<String, String> metadata = Maps.newHashMap();
-      for (int i = 0; i < tuElem.getAttributeCount(); i++)
-      {
-         Attribute attr = tuElem.getAttribute(i);
-         String name = attr.getQualifiedName();
-         String value = attr.getValue();
-         metadata.put(name, value);
-      }
-      TMXMetadataHelper.setMetadata(tu, metadata);
+      TMXMetadataHelper.setMetadata(tu, tuElem);
       tu.setVersionNum(0);
 
       // Parse the tuvs
@@ -116,7 +85,7 @@ public class TransMemoryAdapter
       for (int i = 0; i < tuvElems.size(); i++)
       {
          Element tuvElem = tuvElems.get(i);
-         parseAndSaveTransUnitVariant(tuvElem, tu);
+         addVariant(tu, tuvElem);
       }
 
       tu.setUniqueId(determineUniqueId(tu));
@@ -131,13 +100,14 @@ public class TransMemoryAdapter
       entityManager.flush();
    }
 
-   private void parseAndSaveTransUnitVariant(Element tuvElem, TransMemoryUnit tu)
+   private void addVariant(TransMemoryUnit tu, Element tuvElem)
    {
       String language = tuvElem.getAttributeValue("lang", XMLConstants.XML_NS_URI);
       String content = tuvElem.getFirstChildElement("seg").toXML();
 
       TransMemoryUnitVariant tuv = new TransMemoryUnitVariant(language, content);
-      // TODO save metadata
+      TMXMetadataHelper.setMetadata(tuv, tuvElem);
+
       String locale = new LocaleId(language).getId(); // This will fail if the locale is not accepted
       tu.getTransUnitVariants().put(locale, tuv);
    }
