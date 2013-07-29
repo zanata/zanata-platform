@@ -63,9 +63,6 @@ public class TranslationMemoryQueryServiceImpl implements TranslationMemoryQuery
    @In
    private FullTextEntityManager entityManager;
 
-   /*@In
-   private TranslationStateCache translationStateCacheImpl;*/
-
    @Override
    public List<Object[]> getSearchResult(TransMemoryQuery query, LocaleId sourceLocale,
          LocaleId targetLocale, final int maxResult) throws ParseException
@@ -219,9 +216,9 @@ public class TranslationMemoryQueryServiceImpl implements TranslationMemoryQuery
       String analyzerDefName = TextContainerAnalyzerDiscriminator.getAnalyzerDefinitionName(sourceLocale.getId());
       Analyzer analyzer = entityManager.getSearchFactory().getAnalyzer(analyzerDefName);
 
-      QueryParser parser = new QueryParser(LUCENE_VERSION, "tuv." + sourceLocale.getId(), analyzer);
+      QueryParser parser = new QueryParser(LUCENE_VERSION, IndexFieldLabels.TRANS_UNIT_VARIANT_FIELD + sourceLocale.getId(), analyzer);
       Query sourceContentQuery = parser.parse(queryText);
-      WildcardQuery targetContentQuery = new WildcardQuery(new Term("tuv." + targetLocale.getId(), "*"));
+      WildcardQuery targetContentQuery = new WildcardQuery(new Term(IndexFieldLabels.TRANS_UNIT_VARIANT_FIELD + targetLocale.getId(), "*"));
       return join(Occur.MUST, sourceContentQuery, targetContentQuery);
    }
 

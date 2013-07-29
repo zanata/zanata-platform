@@ -40,7 +40,7 @@ public class TransUnitVariantClassBridge implements FieldBridge
       TransMemoryUnitVariant variant = (TransMemoryUnitVariant)value;
 
       String textToIndex = variant.getPlainTextSegment();
-      Field field = new Field("tuv." + variant.getLanguage(), textToIndex,
+      Field field = new Field(IndexFieldLabels.TRANS_UNIT_VARIANT_FIELD + variant.getLanguage(), textToIndex,
             luceneOptions.getStore(), luceneOptions.getIndex(), luceneOptions.getTermVector());
       field.setBoost(luceneOptions.getBoost());
       document.add(field);

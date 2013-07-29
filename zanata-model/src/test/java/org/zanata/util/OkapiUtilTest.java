@@ -84,10 +84,5 @@ public class OkapiUtilTest
             "{\\cs16\\super \\chftn } <sub>An elephant is a very " +
             "large animal.</sub>}}</ph> are big.</seg>"),
             equalTo("Elephants are big."));
-      assertThat(OkapiUtil.removeFormattingMarkup("<seg>Elephants<ph type=\"fnote\">{\\cs16\\super \\chftn {\\footnote \\pard\\plain" +
-            "\\s15\\widctlpar \\f4\\fs20" +
-            "{\\cs16\\super \\chftn } <sub>An elephant is a very " +
-            "large animal.</sub>}}</ph> are big.</seg>"),
-            equalTo("Elephants are big."));
    }
 }
