@@ -11,7 +11,7 @@
 	</div>
 	<h:form id="activityList">
 		<ul class="list--no-bullets">
-			<ui:repeat value="#{dashboardAction.getActivities()}" var="activity">
+			<ui:repeat value="#{activityAction.getActivities()}" var="activity">
 				<li class="l--pad-all-half bg--higher--hover bg--faint reveal">
 					<p class="l--float-right txt--neutral l--push-left-half">
 						<s:fragment rendered="#{activity.actionType == 'UPDATE_TRANSLATION'}">
@@ -36,55 +36,55 @@
 					</p>
 		        	<p class="l--push-all-0">
 		        		<s:fragment rendered="#{activity.actionType == 'UPDATE_TRANSLATION'}">
-		        			You translated <strong>#{dashboardAction.getWordsCount(activity.wordCount)}</strong> in
-		        			<a href="#{dashboardAction.getProjectUrl(activity)}">#{dashboardAction.getProjectName(activity)}</a>,
-	        				finishing on "<a href="#{dashboardAction.getEditorUrl(activity)}">#{dashboardAction.getLastTargetContent(activity)}</a>"
+		        			You translated <strong>#{activityAction.getWordsCount(activity.wordCount)}</strong> in
+		        			<a href="#{dashboardAction.getProjectUrl(activity)}">#{activityAction.getProjectName(activity)}</a>,
+	        				finishing on "<a href="#{dashboardAction.getEditorUrl(activity)}">#{activityAction.getLastTextFlowContent(activity)}</a>"
 		        		</s:fragment>
 		        		
 		        		<s:fragment rendered="#{activity.actionType == 'REVIEWED_TRANSLATION'}">
-		        			You reviewed <strong>#{dashboardAction.getWordsCount(activity.wordCount)}</strong> in
-		        			<a href="#{dashboardAction.getProjectUrl(activity)}">#{dashboardAction.getProjectName(activity)}</a>,
-	        				finishing on "<a href="#{dashboardAction.getEditorUrl(activity)}">#{dashboardAction.getLastTargetContent(activity)}</a>"
+		        			You reviewed <strong>#{activityAction.getWordsCount(activity.wordCount)}</strong> in
+		        			<a href="#{dashboardAction.getProjectUrl(activity)}">#{activityAction.getProjectName(activity)}</a>,
+	        				finishing on "<a href="#{dashboardAction.getEditorUrl(activity)}">#{activityAction.getLastTextFlowContent(activity)}</a>"
 		        		</s:fragment>
 		        		
 		        		<s:fragment rendered="#{activity.actionType == 'UPLOAD_SOURCE_DOCUMENT'}">
-		        			You uploaded a document of <strong>#{dashboardAction.getWordsCount(activity.wordCount)}</strong> to
-		        			<a href="#{dashboardAction.getProjectUrl(activity)}">#{dashboardAction.getProjectName(activity)}</a>
+		        			You uploaded a document of <strong>#{activityAction.getWordsCount(activity.wordCount)}</strong> to
+		        			<a href="#{dashboardAction.getProjectUrl(activity)}">#{activityAction.getProjectName(activity)}</a>
 		        		</s:fragment>
 		        		
 		        		<s:fragment rendered="#{activity.actionType == 'UPLOAD_TRANSLATION_DOCUMENT'}">
-		        			You uploaded a translation of <strong>#{dashboardAction.getWordsCount(activity.wordCount)}</strong> to 
-		        			<a href="#{dashboardAction.getProjectUrl(activity)}">#{dashboardAction.getProjectName(activity)}</a>,
-	        				finishing on "<a href="#{dashboardAction.getEditorUrl(activity)}">#{dashboardAction.getLastTargetContent(activity)}</a>"
+		        			You uploaded a translation of <strong>#{activityAction.getWordsCount(activity.wordCount)}</strong> to 
+		        			<a href="#{dashboardAction.getProjectUrl(activity)}">#{activityAction.getProjectName(activity)}</a>,
+	        				finishing on "<a href="#{dashboardAction.getEditorUrl(activity)}">#{activityAction.getLastTextFlowContent(activity)}</a>"
 		        		</s:fragment>
 		        	</p>
 		        	<ul class="list--horizontal txt--meta">
 		          		<li>
 		          			<i aria-hidden="true" class="i i--clock txt--neutral" title="#{messages['jsf.Time']}"></i>
-		          			<span class="is-invisible">#{messages['jsf.Time']}</span>#{dashboardAction.getTime(activity)}
+		          			<span class="is-invisible">#{messages['jsf.Time']}</span>#{activityAction.getDurationTime(activity)}
 		          		</li>
 		          		<li class="reveal__target">
 		          			<i aria-hidden="true" class="i i--document txt--neutral" title="#{messages['jsf.Document']}"></i>
 		          			<span class="is-invisible">#{messages['jsf.Document']}</span> 
-		          			<a href="#{dashboardAction.getDocumentUrl(activity)}">#{dashboardAction.getDocumentName(activity)}</a>
+		          			<a href="#{dashboardAction.getDocumentUrl(activity)}">#{activityAction.getDocumentName(activity)}</a>
 		          		</li>
 		          		<li class="reveal__target">
 		          			<i aria-hidden="true" class="i i--language txt--neutral" title="#{messages['jsf.Language']}"></i>
 		          			<span class="is-invisible">#{messages['jsf.Language']}</span> 
-		          			<a href="#{dashboardAction.getDocumentListUrl(activity)}">#{dashboardAction.getLanguageName(activity)}</a>
+		          			<a href="#{dashboardAction.getDocumentListUrl(activity)}">#{activityAction.getLanguageName(activity)}</a>
 		          		</li>
 		          		<li class="reveal__target">
 		          			<i aria-hidden="true" class="i i--version txt--neutral" title="#{messages['jsf.Version']}">
 		          				<span class="is-invisible">#{messages['jsf.Version']}</span>
 		          			</i> 
-		          			<a href="#{dashboardAction.getVersionUrl(activity)}">#{dashboardAction.getVersionName(activity)}</a>
+		          			<a href="#{dashboardAction.getVersionUrl(activity)}">#{activityAction.getVersionName(activity)}</a>
 		          		</li>
 		        	</ul>
 		     	</li>
 	     	</ui:repeat>
-	     	<s:fragment rendered="#{dashboardAction.hasMoreActivities()}">
+	     	<s:fragment rendered="#{activityAction.hasMoreActivities()}">
 		     	<p class="l--pad-all-half txt--align-center txt--s-align-center d--top">
-			    	<a4j:commandLink action="#{dashboardAction.loadMoreActivity()}" render="activityList">
+			    	<a4j:commandLink action="#{activityAction.loadMoreActivity()}" render="activityList">
 				    	#{messages['jsf.moreActivity']}
 				    </a4j:commandLink>
 			    </p>
