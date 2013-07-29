@@ -110,7 +110,7 @@ public class UrlUtil implements Serializable
 
    public String versionUrl(String projectSlug, String versionSlug)
    {
-      return projectUrl(projectSlug) + "/" + versionSlug;
+      return contextPath + "/iteration/view/" + projectSlug + "/" + versionSlug;
    }
 
    public String editorDocumentListUrl(String projectSlug, String versionSlug, LocaleId targetLocaleId, LocaleId sourceLocaleId)
