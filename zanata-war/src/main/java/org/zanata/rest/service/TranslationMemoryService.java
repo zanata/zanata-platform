@@ -24,12 +24,18 @@ import java.util.Iterator;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.TransactionPropagationType;
@@ -101,6 +107,34 @@ public class TranslationMemoryService implements TranslationMemoryResource
       }
       tuIter = textFlowStreamDAO.findTextFlowsByProjectIteration(hProjectIteration);
       return buildTMX(tuIter, projectSlug, iterationSlug, locale);
+   }
+
+   @Override
+   @GET
+   @Path("{slug}")
+   public Response getTranslationMemory(@PathParam("slug") @Nonnull String slug)
+   {
+      // TODO Auto-generated method stub
+      return null;
+   }
+
+   @Override
+   @DELETE
+   @Path("{slug}/transunits")
+   public Response deleteTranslationUnits(@PathParam("slug") String slug)
+   {
+      // TODO Auto-generated method stub
+      return null;
+   }
+
+   @Override
+   @POST
+   @Path("{slug}")
+   @Consumes("multipart/form-data")
+   public Response updateTranslationMemory(@PathParam("slug") String slug, MultipartFormDataInput input) throws Exception
+   {
+      // TODO Auto-generated method stub
+      return null;
    }
 
    private Response buildTMX(@Nonnull Iterator<? extends SourceContents> tuIter, @Nullable String projectSlug, @Nullable String iterationSlug, @Nullable LocaleId locale)
