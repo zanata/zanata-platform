@@ -27,7 +27,7 @@ public class ExportTransUnitTest extends TMXStreamingOutputTest
 
    private TMXStreamingOutput<TransMemoryUnit> streamSourceContents()
    {
-      return new TMXStreamingOutput<TransMemoryUnit>(createTestData(), new ExportTransUnitStrategy());
+      return new TMXStreamingOutput<TransMemoryUnit>(createTestData(), new ExportTMXTransUnitStrategy());
    }
 
    private @Nonnull Iterator<TransMemoryUnit> createTestData()

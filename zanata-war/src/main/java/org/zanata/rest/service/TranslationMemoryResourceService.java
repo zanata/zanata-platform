@@ -167,7 +167,7 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
 
    private Response buildTMX(Iterator<TransMemoryUnit> tuIter, String filename)
    {
-      TMXStreamingOutput<TransMemoryUnit> output = new TMXStreamingOutput<TransMemoryUnit>(tuIter, new ExportTransUnitStrategy());
+      TMXStreamingOutput<TransMemoryUnit> output = new TMXStreamingOutput<TransMemoryUnit>(tuIter, new ExportTMXTransUnitStrategy());
       return okResponse(filename, output);
    }
 
