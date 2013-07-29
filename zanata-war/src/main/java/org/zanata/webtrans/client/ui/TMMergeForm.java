@@ -166,10 +166,10 @@ public class TMMergeForm extends Composite implements EnumRadioButtonGroup.Selec
       }
    }
 
-   private void setTextAndStyle(InlineLabel inlineLabel, MergeOption option)
+   private void setTextAndStyle(InlineLabel label, MergeOption option)
    {
-      inlineLabel.setText(mergeStatusRenderer.render(option));
-      differentProjectStatus.setStyleName(resolveStyle(option));
+      label.setText(mergeStatusRenderer.render(option));
+      label.setStyleName(resolveStyle(option));
    }
 
    private String resolveStyle(MergeOption option)

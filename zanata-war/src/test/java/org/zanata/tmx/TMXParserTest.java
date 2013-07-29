@@ -142,7 +142,7 @@ public class TMXParserTest extends ZanataDbunitJpaTest
    }
 
    @Test
-   public void mergeComplimentaryTM() throws Exception
+   public void mergeComplementaryTM() throws Exception
    {
       // Initial load
       TransMemory tm = parseAndSaveTMFromFile("/tmx/default-valid-tm.tmx");
