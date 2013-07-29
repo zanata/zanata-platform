@@ -67,12 +67,12 @@ public class TMXMetadataHelper
       }
    }
 
-   private static @Nonnull ImmutableMap<String, String> getSharedMetadata(HasTMMetadata entity)
+   private static @Nonnull ImmutableMap<String, String> getSharedMetadata(HasTMMetadata fromEntity)
    {
       Builder<String, String> m = ImmutableMap.builder();
-      m.putAll(getGenericMetadata(entity));
-      m.put(_creationdate, toString(entity.getCreationDate()));
-      m.put(_changedate, toString(entity.getLastChanged()));
+      m.putAll(getGenericMetadata(fromEntity));
+      m.put(_creationdate, toString(fromEntity.getCreationDate()));
+      m.put(_changedate, toString(fromEntity.getLastChanged()));
       return m.build();
    }
 
@@ -119,26 +119,26 @@ public class TMXMetadataHelper
       setSharedMetadata(toTransUnit, metadata);
    }
 
-   private static void setSharedMetadata(HasTMMetadata toEntity, Map<String, String> metadata)
+   private static void setSharedMetadata(HasTMMetadata toEntity, Map<String, String> fromMetadata)
    {
-      String creationdate = metadata.remove(_creationdate);
+      String creationdate = fromMetadata.remove(_creationdate);
       if (creationdate != null)
       {
          toEntity.setCreationDate(toDate(creationdate));
       }
-      String changedate = metadata.remove(_changedate);
+      String changedate = fromMetadata.remove(_changedate);
       if (changedate != null)
       {
          toEntity.setLastChanged(toDate(changedate));
       }
-      setGenericMetadata(toEntity, metadata);
+      setGenericMetadata(toEntity, fromMetadata);
    }
 
-   private static void setGenericMetadata(HasTMMetadata toEntity, Map<String, String> metadata)
+   private static void setGenericMetadata(HasTMMetadata toEntity, Map<String, String> fromMetadata)
    {
       try
       {
-         String json = jsonMapper.writeValueAsString(metadata);
+         String json = jsonMapper.writeValueAsString(fromMetadata);
          toEntity.getMetadata().put(TMMetadataType.TMX14, json);
       }
       catch (Exception e)

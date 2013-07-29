@@ -36,11 +36,11 @@ import net.sf.okapi.common.resource.TextUnit;
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
- * @param <TU>
+ * @param <T> a translation unit (either SourceContents/HTextFlow or TransMemoryUnit)
  */
 @ParametersAreNonnullByDefault
 @Slf4j
-public abstract class AbstractExportTUStrategy<TU>
+public abstract class AbstractExportTUStrategy<T>
 {
 
    public AbstractExportTUStrategy()
@@ -51,15 +51,15 @@ public abstract class AbstractExportTUStrategy<TU>
     * Writes the specified SourceContents (TextFlow) and one or all of its translations to the TMXWriter.
     * @param tmxWriter
     * @param tuidPrefix String to be prepended to all resIds when generating tuids
-    * @param tf the SourceContents (TextFlow) whose contents and translations are to be exported
+    * @param tu the SourceContents (TextFlow) whose contents and translations are to be exported
     */
-   public void exportTranslationUnit(TMXWriter tmxWriter, TU tf)
+   public void exportTranslationUnit(TMXWriter tmxWriter, T tu)
    {
       assert tmxWriter.isWriteAllPropertiesAsAttributes();
-      net.sf.okapi.common.LocaleId sourceLocaleId = getSourceLocale(tf);
-      String tuid = getTUID(tf);
+      net.sf.okapi.common.LocaleId sourceLocaleId = getSourceLocale(tu);
+      String tuid = getTUID(tu);
       // Perhaps we could encode plurals using TMX attributes?
-      String srcContent = getSrcContent(tf);
+      String srcContent = getSrcContent(tu);
       if (srcContent.contains("\0"))
       {
          log.warn("illegal null character; discarding SourceContents with id="+tuid);
@@ -69,7 +69,7 @@ public abstract class AbstractExportTUStrategy<TU>
       ITextUnit textUnit = new TextUnit(tuid, srcContent);
       setSrcLang(textUnit, sourceLocaleId);
       textUnit.setName(tuid);
-      addTextUnitVariants(textUnit, tf);
+      addTextUnitVariants(textUnit, tu);
       // If there aren't any translations for this TU, we shouldn't include it.
       // From the TMX spec: "Logically, a complete translation-memory
       // database will contain at least two <tuv> elements in each translation
@@ -98,9 +98,9 @@ public abstract class AbstractExportTUStrategy<TU>
       }
    }
 
-   protected abstract @Nonnull net.sf.okapi.common.LocaleId getSourceLocale(TU tf);
-   protected abstract @Nullable String getTUID(TU tf);
-   protected abstract void addTextUnitVariants(ITextUnit textUnit, TU tf);
-   protected abstract String getSrcContent(TU tf);
+   protected abstract @Nonnull net.sf.okapi.common.LocaleId getSourceLocale(T tu);
+   protected abstract @Nullable String getTUID(T tu);
+   protected abstract void addTextUnitVariants(ITextUnit textUnit, T tu);
+   protected abstract String getSrcContent(T tu);
 
 }

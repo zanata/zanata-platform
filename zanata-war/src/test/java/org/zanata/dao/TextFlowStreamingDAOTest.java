@@ -19,12 +19,12 @@ import org.zanata.util.CloseableIterator;
 import com.google.common.collect.Iterators;
 
 @Test(groups = { "jpa-tests" })
-public class TextFlowStreamDAOTest extends ZanataDbunitJpaTest
+public class TextFlowStreamingDAOTest extends ZanataDbunitJpaTest
 {
 
    private ProjectDAO projectDao;
    private ProjectIterationDAO projectIterDao;
-   private TextFlowStreamDAO dao;
+   private TextFlowStreamingDAO dao;
    private Session session;
 
    @Override
@@ -39,7 +39,7 @@ public class TextFlowStreamDAOTest extends ZanataDbunitJpaTest
    @BeforeMethod(firstTimeOnly = true)
    public void setup()
    {
-      dao = new TextFlowStreamDAO((HibernateEntityManagerFactory) getEmf());
+      dao = new TextFlowStreamingDAO((HibernateEntityManagerFactory) getEmf());
       session = getSession();
       projectDao = new ProjectDAO(session);
       projectIterDao = new ProjectIterationDAO(session);

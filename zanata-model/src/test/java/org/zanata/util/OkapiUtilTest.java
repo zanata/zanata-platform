@@ -35,9 +35,11 @@ public class OkapiUtilTest
 
          "/etc/rhsm/rhsm.conf", // NB okapi says 3, but looks like 4
    };
-      // @formatter:on
+// @formatter:on
+   // These counts represent the expected word counts for the strings listed above.
    long[] count = { 2, 2, 9,
-         // 4+8+7+4+3+5+11+12 = 54 ?
+         // Okapi says the fourth string has 49 words, but it looks like 54 ?!
+         // TODO work out why
          49, 3, 2, 3, };
 
    @Test

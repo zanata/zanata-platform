@@ -36,7 +36,7 @@ import org.jboss.seam.annotations.TransactionPropagationType;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
 import org.zanata.common.LocaleId;
-import org.zanata.dao.TextFlowStreamDAO;
+import org.zanata.dao.TextFlowStreamingDAO;
 import org.zanata.dao.TransMemoryDAO;
 import org.zanata.dao.TransMemoryStreamingDAO;
 import org.zanata.exception.ZanataServiceException;
@@ -64,7 +64,7 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
    @In
    private RestSlugValidator restSlugValidator;
    @In
-   private TextFlowStreamDAO textFlowStreamDAO;
+   private TextFlowStreamingDAO textFlowStreamDAO;
    @In
    private TransMemoryStreamingDAO transMemoryStreamingDAO;
    @In
