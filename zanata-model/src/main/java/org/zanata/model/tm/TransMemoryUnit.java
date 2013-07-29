@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  * 
@@ -64,12 +64,15 @@ public class TransMemoryUnit extends ModelEntityBase implements HasTMMetadata
 {
    private static final long serialVersionUID = 1L;
 
-   public static TransMemoryUnit tu(TransMemory tm, String uniqueId, String transUnitId, String sourceLanguage, String sourceContent, TransMemoryUnitVariant... transUnitVariants)
+   public static TransMemoryUnit tu(TransMemory tm, String uniqueId, String transUnitId, String sourceLanguage,
+         String sourceContent, TransMemoryUnitVariant... transUnitVariants)
    {
-      return new TransMemoryUnit(tm, uniqueId, transUnitId, sourceLanguage, sourceContent, TransMemoryUnitVariant.newMap(transUnitVariants));
+      return new TransMemoryUnit(tm, uniqueId, transUnitId, sourceLanguage, sourceContent,
+            TransMemoryUnitVariant.newMap(transUnitVariants));
    }
 
-   public TransMemoryUnit(TransMemory tm, String uniqueId, String transUnitId, String sourceLanguage, String sourceContent, Map<String, TransMemoryUnitVariant> transUnitVariants)
+   public TransMemoryUnit(TransMemory tm, String uniqueId, String transUnitId, String sourceLanguage,
+         String sourceContent, Map<String, TransMemoryUnitVariant> transUnitVariants)
    {
       this.translationMemory = tm;
       this.uniqueId = uniqueId;

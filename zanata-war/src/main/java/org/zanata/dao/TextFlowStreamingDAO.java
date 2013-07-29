@@ -48,10 +48,10 @@ import org.zanata.util.CloseableIterator;
 // TODO queries should only return Translated/Approved TFTs
 // TODO build related queries using querydsl
 @NoArgsConstructor
-public class TextFlowStreamDAO extends StreamingDAO<HTextFlow>
+public class TextFlowStreamingDAO extends StreamingDAO<HTextFlow>
 {
 
-   public TextFlowStreamDAO(HibernateEntityManagerFactory emf)
+   public TextFlowStreamingDAO(HibernateEntityManagerFactory emf)
    {
       super(emf);
    }

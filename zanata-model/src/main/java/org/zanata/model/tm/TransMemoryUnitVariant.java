@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  * 
@@ -108,15 +108,15 @@ public class TransMemoryUnitVariant extends ModelEntityBase implements HasTMMeta
       updatePlainTextSegment();
    }
 
-   private void updatePlainTextSegmentHash()
-   {
-      this.plainTextSegmentHash = HashUtil.generateHash(this.plainTextSegment);
-   }
-
    private void updatePlainTextSegment()
    {
       this.plainTextSegment = OkapiUtil.removeFormattingMarkup(taggedSegment);
       updatePlainTextSegmentHash();
+   }
+
+   private void updatePlainTextSegmentHash()
+   {
+      this.plainTextSegmentHash = HashUtil.generateHash(this.plainTextSegment);
    }
 
    @Override

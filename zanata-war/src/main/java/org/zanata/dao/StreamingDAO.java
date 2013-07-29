@@ -35,7 +35,7 @@ import org.jboss.seam.annotations.In;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @NoArgsConstructor
-public class StreamingDAO<T>
+public abstract class StreamingDAO<T>
 {
 
    @In

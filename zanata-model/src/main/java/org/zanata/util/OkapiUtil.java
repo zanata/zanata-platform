@@ -27,6 +27,8 @@ import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.EndElement;
+import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 import org.slf4j.Logger;
@@ -64,10 +66,7 @@ public class OkapiUtil
 
    /**
     * Count words using Okapi's WordCounter, which tries to implement the LISA
-    * standard GMX-V:
-    * http://web.archive.org/web/20090403134742/http://www.lisa.org/Global
-    * -information-m.105.0.html
-    * 
+    * standard <a href="http://web.archive.org/web/20090403134742/http://www.lisa.org/Global-information-m.105.0.html">GMX-V</a>
     * @param s
     * @param bcp47Locale
     * @return
@@ -105,20 +104,19 @@ public class OkapiUtil
 
    /**
     * Extracts plain text from a TMX entry. This ignores the TMX elements that mark up native code sequences:
-    * <bpt></bpt>
-    * <ept></ept>
-    * <it></it>
-    * <ph></ph>
-    * <seg></seg>
+    * &lt;bpt&gt;&lt;/bpt&gt;
+    * &lt;ept&gt;&lt;/ept&gt;
+    * &lt;it&gt;&lt;/it&gt;
+    * &lt;ph&gt;&lt;/ph&gt;
+    * &lt;seg&gt;&lt;/seg&gt;
     *
     * @param content The tmx marked up content.
     * @return A string with all tmx mark-up content stripped out. Essentially a plain text version of the string.
     */
    public static String removeFormattingMarkup(/*final*/ String content)
    {
-      // The content must be a fully formed <seg> element.
-      assert content.trim().startsWith("<seg>");
-      assert content.trim().endsWith("</seg>");
+      // The content must be a fully formed <seg> element, with no leading/trailling whitespace.
+      assert content.trim().matches("<seg>.*</seg>");
 
       try
       {
@@ -136,35 +134,15 @@ public class OkapiUtil
 
             switch (nextEv.getEventType())
             {
-               case XMLStreamConstants.START_ELEMENT:
-                  String elemName = nextEv.asStartElement().getName().getLocalPart();
-
-                  if( elemName.equals("seg") )
-                  {
-                     break;
-                  }
-                  else if( elemName.equals("bpt") || elemName.equals("ept") || elemName.equals("it") || elemName.equals("ph")
-                           || elemName.equals("sub") )
-                  {
-                     level ++;
-                     break;
-                  }
-               case XMLStreamConstants.END_ELEMENT:
-                  elemName = nextEv.asEndElement().getName().getLocalPart();
-
-                  if( elemName.equals("seg") )
-                  {
-                     break;
-                  }
-                  else if( elemName.equals("bpt") || elemName.equals("ept") || elemName.equals("it") || elemName.equals("ph")
-                        || elemName.equals("sub"))
-                  {
-                     if( level > 0 ) level --;
-                     break;
-                  }
-               case XMLStreamConstants.CHARACTERS:
-                  if( level == 0 ) writer.append(nextEv.asCharacters().getData());
-                  break;
+            case XMLStreamConstants.START_ELEMENT:
+               level = handleStartElem(level, nextEv.asStartElement());
+               break;
+            case XMLStreamConstants.END_ELEMENT:
+               level = handleEndElem(level, nextEv.asEndElement());
+               break;
+            case XMLStreamConstants.CHARACTERS:
+               if( level == 0 ) writer.append(nextEv.asCharacters().getData());
+               break;
             }
          }
 
@@ -174,6 +152,36 @@ public class OkapiUtil
       {
          throw new RuntimeException(e);
       }
+   }
+
+   private static int handleStartElem(int level, StartElement startElem)
+   {
+      String elemName = startElem.getName().getLocalPart();
+      if(isSubSegmentTag(elemName))
+      {
+         return level + 1;
+      }
+      return level;
+   }
+
+   private static int handleEndElem(int level, EndElement endElem)
+   {
+      String elemName = endElem.getName().getLocalPart();
+
+      if(isSubSegmentTag(elemName))
+      {
+         if(level > 0)
+         {
+            return level - 1;
+         }
+      }
+      return level;
+   }
+
+   private static boolean isSubSegmentTag(String elemName)
+   {
+      return elemName.equals("bpt") || elemName.equals("ept") || elemName.equals("it") || elemName.equals("ph")
+               || elemName.equals("sub");
    }
 
    private static class StringTokenizer extends Tokenizer

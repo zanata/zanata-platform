@@ -11,7 +11,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataRestTest;
 import org.zanata.common.LocaleId;
-import org.zanata.dao.TextFlowStreamDAO;
+import org.zanata.dao.TextFlowStreamingDAO;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
 
@@ -65,7 +65,7 @@ public class TMXDummyRestTest extends ZanataRestTest
       // @formatter:on
 
       TranslationMemoryResourceService tmService = seam.autowire(TranslationMemoryResourceService.class);
-      resources.add(seam.autowire(TextFlowStreamDAO.class));
+      resources.add(seam.autowire(TextFlowStreamingDAO.class));
       resources.add(tmService);
    }
 

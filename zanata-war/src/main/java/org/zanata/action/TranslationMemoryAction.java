@@ -77,7 +77,7 @@ public class TranslationMemoryAction extends EntityHome<TransMemory>
    public void clearTransMemory(String transMemorySlug)
    {
       transMemoryDAO.deleteTransMemoryContents(transMemorySlug);
-      transMemoryList = null; // Refresh the trans memory list
+      transMemoryList = null; // Force refresh next time list is requested
    }
 
    public String cancel()
