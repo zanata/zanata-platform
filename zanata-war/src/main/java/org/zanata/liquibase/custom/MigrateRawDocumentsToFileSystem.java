@@ -40,16 +40,21 @@ import liquibase.exception.DatabaseException;
 import liquibase.exception.SetupException;
 import liquibase.exception.ValidationErrors;
 import liquibase.resource.ResourceAccessor;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import org.zanata.common.DocumentType;
 
+import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import com.google.common.io.InputSupplier;
 
+@Slf4j
 public class MigrateRawDocumentsToFileSystem implements CustomTaskChange
 {
 
    private static final String BASE_PATH_JNDI_NAME = "java:global/zanata/files/document-storage-directory";
+   private static final String BASE_PATH_LIQUIBASE_PARAM = "document.storage.directory";
    private static final String RAW_DOCUMENTS_SUBDIRECTORY = "documents";
 
    private static final String CONTENTS_SQL = "select fileId, content from HRawDocumentContent";
@@ -60,6 +65,9 @@ public class MigrateRawDocumentsToFileSystem implements CustomTaskChange
    //@formatter:on
    private static final String UPDATE_LOCATION_SQL = "update HRawDocument set fileId = ? where fileId = ?";
    private static final String DELETE_OLD_CONTENT_SQL = "delete from HRawDocumentContent where fileId = ?";
+
+   @Setter
+   private String basePathParam;
 
    private File docsDirectory;
 
@@ -83,7 +91,21 @@ public class MigrateRawDocumentsToFileSystem implements CustomTaskChange
    @Override
    public void setUp() throws SetupException
    {
-      String basePath = getPathFromJndi();
+      resetCounts();
+      createDocsDirectoryFromConfig();
+   }
+
+   private void resetCounts()
+   {
+      docsCount = 0;
+      successCount = 0;
+      problemsCount = 0;
+   }
+
+   private void createDocsDirectoryFromConfig() throws SetupException
+   {
+      String basePath = getCongiguredBasePath();
+      log.info("Raw documents will be migrated to: " + basePath);
       docsDirectory = new File(basePath, RAW_DOCUMENTS_SUBDIRECTORY);
       try
       {
@@ -93,15 +115,24 @@ public class MigrateRawDocumentsToFileSystem implements CustomTaskChange
       {
          throw new SetupException(e);
       }
-      docsCount = 0;
-      successCount = 0;
-      problemsCount = 0;
+   }
+
+   private String getCongiguredBasePath() throws SetupException
+   {
+      try
+      {
+         return getPathFromJndi();
+      }
+      catch (SetupException e)
+      {
+         return tryGetFallbackBasePath(e);
+      }
    }
 
    private String getPathFromJndi() throws SetupException
    {
-      String failureMessage = "Unable to migrate documents to file system. Document storage must " +
-            "be properly configured in jndi under name \"" + BASE_PATH_JNDI_NAME + "\"";
+      String messageJndiNameNotBound = "Could not look up document storage directory under jndi name \""
+            + BASE_PATH_JNDI_NAME + "\".";
       InitialContext initContext = null;
       String basePath;
       try
@@ -111,16 +142,16 @@ public class MigrateRawDocumentsToFileSystem implements CustomTaskChange
 
          if (basePath == null)
          {
-            throw new SetupException(failureMessage);
+            throw new SetupException(messageJndiNameNotBound);
          }
       }
       catch (NameNotFoundException e)
       {
-         throw new SetupException(failureMessage, e);
+         throw new SetupException(messageJndiNameNotBound, e);
       }
       catch (NamingException e)
       {
-         throw new SetupException(failureMessage, e);
+         throw new SetupException(messageJndiNameNotBound, e);
       }
       finally
       {
@@ -137,6 +168,28 @@ public class MigrateRawDocumentsToFileSystem implements CustomTaskChange
          }
       }
       return basePath;
+   }
+
+   private String tryGetFallbackBasePath(SetupException initialFailureCause) throws SetupException
+   {
+      if (!basePathParamIsSet())
+      {
+         throw new SetupException("No information for document storage directory. " +
+               "Fallback liquibase parameter \"" + BASE_PATH_LIQUIBASE_PARAM + "\" not set. " +
+               "Cannot migrate documents to file system.",
+               initialFailureCause);
+      }
+      return basePathParam;
+   }
+
+   private boolean basePathParamIsSet()
+   {
+      if (Strings.isNullOrEmpty(basePathParam))
+      {
+         return false;
+      }
+      boolean paramIsExpanded = !basePathParam.equals("${" + BASE_PATH_LIQUIBASE_PARAM + "}");
+      return paramIsExpanded;
    }
 
    @Override
