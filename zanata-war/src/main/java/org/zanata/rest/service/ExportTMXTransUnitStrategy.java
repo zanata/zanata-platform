@@ -38,9 +38,9 @@ import org.zanata.model.tm.TMTranslationUnit;
  *
  */
 @ParametersAreNonnullByDefault
-public class ExportTransUnitStrategy extends AbstractExportTUStrategy<TMTranslationUnit>
+public class ExportTMXTransUnitStrategy extends AbstractExportTUStrategy<TMTranslationUnit>
 {
-   public ExportTransUnitStrategy()
+   public ExportTMXTransUnitStrategy()
    {
       super();
    }
