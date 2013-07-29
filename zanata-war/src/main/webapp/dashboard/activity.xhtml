@@ -5,7 +5,21 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich"
                 xmlns:a4j="http://richfaces.org/a4j">
-                
+    
+    
+    <script type="text/javascript">
+	    function showLoading(show)
+	    {
+	    	if(show == true)
+	    	{
+	    		document.getElementById("#{rich:clientId('loading')}").style.display='inline';
+	    	}
+	    	else
+	    	{
+	    		document.getElementById("#{rich:clientId('loading')}").style.display='none';
+	    	}
+	    }
+    </script>
 	<div class="l--push-left-half">
 		<h2 class="heading--secondary">#{messages['jsf.YourActivity']}</h2>
 	</div>
@@ -37,25 +51,25 @@
 		        	<p class="l--push-all-0">
 		        		<s:fragment rendered="#{activity.actionType == 'UPDATE_TRANSLATION'}">
 		        			You translated <strong>#{activityAction.getWordsCount(activity.wordCount)}</strong> in
-		        			<a href="#{dashboardAction.getProjectUrl(activity)}">#{activityAction.getProjectName(activity)}</a>,
-	        				finishing on "<a href="#{dashboardAction.getEditorUrl(activity)}">#{activityAction.getLastTextFlowContent(activity)}</a>"
+		        			<a href="#{activityAction.getProjectUrl(activity)}">#{activityAction.getProjectName(activity)}</a>,
+	        				finishing on "<a href="#{activityAction.getEditorUrl(activity)}">#{activityAction.getLastTextFlowContent(activity)}</a>"
 		        		</s:fragment>
 		        		
 		        		<s:fragment rendered="#{activity.actionType == 'REVIEWED_TRANSLATION'}">
 		        			You reviewed <strong>#{activityAction.getWordsCount(activity.wordCount)}</strong> in
-		        			<a href="#{dashboardAction.getProjectUrl(activity)}">#{activityAction.getProjectName(activity)}</a>,
-	        				finishing on "<a href="#{dashboardAction.getEditorUrl(activity)}">#{activityAction.getLastTextFlowContent(activity)}</a>"
+		        			<a href="#{activityAction.getProjectUrl(activity)}">#{activityAction.getProjectName(activity)}</a>,
+	        				finishing on "<a href="#{activityAction.getEditorUrl(activity)}">#{activityAction.getLastTextFlowContent(activity)}</a>"
 		        		</s:fragment>
 		        		
 		        		<s:fragment rendered="#{activity.actionType == 'UPLOAD_SOURCE_DOCUMENT'}">
 		        			You uploaded a document of <strong>#{activityAction.getWordsCount(activity.wordCount)}</strong> to
-		        			<a href="#{dashboardAction.getProjectUrl(activity)}">#{activityAction.getProjectName(activity)}</a>
+		        			<a href="#{activityAction.getProjectUrl(activity)}">#{activityAction.getProjectName(activity)}</a>
 		        		</s:fragment>
 		        		
 		        		<s:fragment rendered="#{activity.actionType == 'UPLOAD_TRANSLATION_DOCUMENT'}">
 		        			You uploaded a translation of <strong>#{activityAction.getWordsCount(activity.wordCount)}</strong> to 
-		        			<a href="#{dashboardAction.getProjectUrl(activity)}">#{activityAction.getProjectName(activity)}</a>,
-	        				finishing on "<a href="#{dashboardAction.getEditorUrl(activity)}">#{activityAction.getLastTextFlowContent(activity)}</a>"
+		        			<a href="#{activityAction.getProjectUrl(activity)}">#{activityAction.getProjectName(activity)}</a>,
+	        				finishing on "<a href="#{activityAction.getEditorUrl(activity)}">#{activityAction.getLastTextFlowContent(activity)}</a>"
 		        		</s:fragment>
 		        	</p>
 		        	<ul class="list--horizontal txt--meta">
@@ -66,25 +80,26 @@
 		          		<li class="reveal__target">
 		          			<i aria-hidden="true" class="i i--document txt--neutral" title="#{messages['jsf.Document']}"></i>
 		          			<span class="is-invisible">#{messages['jsf.Document']}</span> 
-		          			<a href="#{dashboardAction.getDocumentUrl(activity)}">#{activityAction.getDocumentName(activity)}</a>
+		          			<a href="#{activityAction.getDocumentUrl(activity)}">#{activityAction.getDocumentName(activity)}</a>
 		          		</li>
 		          		<li class="reveal__target">
 		          			<i aria-hidden="true" class="i i--language txt--neutral" title="#{messages['jsf.Language']}"></i>
 		          			<span class="is-invisible">#{messages['jsf.Language']}</span> 
-		          			<a href="#{dashboardAction.getDocumentListUrl(activity)}">#{activityAction.getLanguageName(activity)}</a>
+		          			<a href="#{activityAction.getDocumentListUrl(activity)}">#{activityAction.getLanguageName(activity)}</a>
 		          		</li>
 		          		<li class="reveal__target">
 		          			<i aria-hidden="true" class="i i--version txt--neutral" title="#{messages['jsf.Version']}">
 		          				<span class="is-invisible">#{messages['jsf.Version']}</span>
 		          			</i> 
-		          			<a href="#{dashboardAction.getVersionUrl(activity)}">#{activityAction.getVersionName(activity)}</a>
+		          			<a href="#{activityAction.getVersionUrl(activity)}">#{activityAction.getVersionName(activity)}</a>
 		          		</li>
 		        	</ul>
 		     	</li>
 	     	</ui:repeat>
 	     	<s:fragment rendered="#{activityAction.hasMoreActivities()}">
 		     	<p class="l--pad-all-half txt--align-center txt--s-align-center d--top">
-			    	<a4j:commandLink action="#{activityAction.loadMoreActivity()}" render="activityList">
+		     		<h:graphicImage value="/images/loading.gif" id="loading" style="display:none" />
+			    	<a4j:commandLink action="#{activityAction.loadMoreActivity()}" onclick="showLoading(true)" render="activityList">
 				    	#{messages['jsf.moreActivity']}
 				    </a4j:commandLink>
 			    </p>
