@@ -65,9 +65,9 @@ public class ActivityDAO extends AbstractDAOImpl<Activity, Long>
       query.setParameter("contextId", contextId);
       query.setParameter("actionType", actionType);
       query.setParameter("contextType", contextType);
-      query.setTimestamp("approxTime", approxTime); 
+      query.setTimestamp("approxTime", approxTime);
       query.setCacheable(true);
-      query.setComment("PersonActivitiesDAO.findActivity");
+      query.setComment("activityDAO.findActivity");
       return (Activity) query.uniqueResult();
    }
 
@@ -76,25 +76,39 @@ public class ActivityDAO extends AbstractDAOImpl<Activity, Long>
    {
       Query query = getSession().createQuery("FROM Activity a WHERE a.actor.id = :personId "
             + "AND a.contextId = :contextId "
-            + "order by a.approxTime DESC");
+            + "order by a.lastChanged DESC");
       query.setParameter("personId", personId);
       query.setParameter("contextId", contextId);
       query.setMaxResults(maxResults);
       query.setFirstResult(offset);
       query.setCacheable(true);
-      query.setComment("PersonActivitiesDAO.findAllUserActivities");
+      query.setComment("activityDAO.findActivities");
       return query.list();
    }
 
    public List<Activity> findLatestActivities(long personId, int offset, int maxResults)
    {
       Query query = getSession().createQuery("FROM Activity a WHERE a.actor.id = :personId "
-            + "order by a.approxTime DESC");
+            + "order by a.lastChanged DESC");
       query.setParameter("personId", personId);
       query.setMaxResults(maxResults);
       query.setFirstResult(offset);
       query.setCacheable(true);
-      query.setComment("PersonActivitiesDAO.getRecentUserActivities");
+      query.setComment("activityDAO.findLatestActivities");
       return query.list();
+   }
+
+   public int getActivityCountByActor(Long personId)
+   {
+      Query q = getSession().createQuery("select count(*) from Activity a where a.actor.id = :personId");
+      q.setParameter("personId", personId);
+      q.setCacheable(true);
+      q.setComment("activityDAO.getActivityCountByActor");
+      Long totalCount = (Long) q.uniqueResult();
+      if (totalCount == null)
+      {
+         return 0;
+      }
+      return totalCount.intValue();
    }
 }

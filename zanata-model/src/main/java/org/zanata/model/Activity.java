@@ -35,6 +35,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
@@ -120,5 +121,11 @@ public class Activity extends ModelEntityBase implements Serializable
       this.endOffsetMillis = currentTime.getTime() - approxTime.getTime();
       this.wordCount += wordCount;
       this.eventCount++;
+   }
+   
+   @Transient
+   public Date getEndDate()
+   {
+      return DateUtils.addMilliseconds(approxTime, (int)endOffsetMillis);
    }
 }

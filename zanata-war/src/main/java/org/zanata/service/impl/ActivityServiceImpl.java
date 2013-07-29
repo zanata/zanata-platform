@@ -21,6 +21,8 @@
 package org.zanata.service.impl;
 
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -66,26 +68,53 @@ public class ActivityServiceImpl implements ActivityService
 
    @In
    private DocumentDAO documentDAO;
-   
+
    @In
    private ProjectIterationDAO projectIterationDAO;
-   
+
+   public static void main(String args[])
+   {
+      Date now = new Date();
+      Date date2 = new Date();
+
+      date2 = DateUtils.addDays(date2, 2);
+
+      System.out.println(now.equals(date2));
+   }
+
+   private final Comparator<Activity> activityComparator = new Comparator<Activity>()
+   {
+      @Override
+      public int compare(Activity o1, Activity o2)
+      {
+         Date time1 = DateUtils.addMilliseconds(o1.getApproxTime(), (int) o1.getEndOffsetMillis());
+         Date time2 = DateUtils.addMilliseconds(o2.getApproxTime(), (int) o2.getEndOffsetMillis());
+         
+
+         return time2.after(time1) ? 1 : -1;
+      }
+   };
+
    @Override
    public Activity findActivity(long actorId, EntityType contextType, long contextId, ActivityType actionType, Date actionTime)
    {
       return activityDAO.findActivity(actorId, contextType, contextId, actionType, DateUtils.truncate(actionTime, Calendar.HOUR));
    }
-   
+
    @Override
    public List<Activity> findActivities(long personId, long contextId, int offset, int maxResults)
    {
-      return activityDAO.findActivities(personId, contextId, offset, maxResults);
+      List<Activity> result = activityDAO.findActivities(personId, contextId, offset, maxResults);
+      Collections.sort(result, activityComparator);
+      return result;
    }
-   
+
    @Override
    public List<Activity> findLatestActivities(long personId, int offset, int maxResults)
    {
-      return activityDAO.findLatestActivities(personId, offset, maxResults);
+      List<Activity> result = activityDAO.findLatestActivities(personId, offset, maxResults);
+      Collections.sort(result, activityComparator);
+      return result;
    }
 
    @Override
@@ -95,7 +124,7 @@ public class ActivityServiceImpl implements ActivityService
       {
          Date currentActionTime = new Date();
          Activity activity = findActivity(actor.getId(), context.getEntityType(), context.getId(), actionType, currentActionTime);
-         
+
          if (activity != null)
          {
             activity.updateActivity(currentActionTime, wordCount);
@@ -108,23 +137,23 @@ public class ActivityServiceImpl implements ActivityService
          activityDAO.flush();
       }
    }
-   
+
    @Override
    public Object getEntity(EntityType entityType, long entityId) throws ZanataServiceException
    {
       Object result = null;
-      
-      if(entityType == EntityType.HDocument)
+
+      if (entityType == EntityType.HDocument)
       {
          HDocument document = documentDAO.getById(entityId);
          result = (entityType.getEntityClass().cast(document));
       }
-      else if(entityType == EntityType.HProjectIteration)
+      else if (entityType == EntityType.HProjectIteration)
       {
          HProjectIteration projectVersion = projectIterationDAO.findById(entityId, false);
          result = (entityType.getEntityClass().cast(projectVersion));
       }
-      else if(entityType == EntityType.HTexFlowTarget)
+      else if (entityType == EntityType.HTexFlowTarget)
       {
          HTextFlowTarget target = textFlowTargetDAO.findById(entityId, false);
          result = (entityType.getEntityClass().cast(target));
@@ -135,7 +164,7 @@ public class ActivityServiceImpl implements ActivityService
       }
       return result;
    }
-   
+
    /**
     * This method contains all logic to be run immediately after a Text Flow Target has
     * been successfully translated.
@@ -165,15 +194,21 @@ public class ActivityServiceImpl implements ActivityService
 
       logActivity(document.getLastModifiedBy(), document.getProjectIteration(), document, actionType, getDocumentWordCount(document));
    }
-   
+
    private int getDocumentWordCount(HDocument document)
    {
       int total = 0;
-      
-      for(HTextFlow textFlow: document.getTextFlows())
+
+      for (HTextFlow textFlow : document.getTextFlows())
       {
          total += textFlow.getWordCount().intValue();
       }
       return total;
+   }
+
+   @Override
+   public int getActivityCountByActor(Long id)
+   {
+      return activityDAO.getActivityCountByActor(id);
    }
 }

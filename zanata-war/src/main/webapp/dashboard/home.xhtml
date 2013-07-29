@@ -15,7 +15,7 @@
 			<div class="g__item w--1-2 l--push-v-1">
 			    <div class="l--float-left w--2-6-s l--push-right-1">
 				    <div class="media--circle">
-				    	<s:link id="profile" view="/profile/view.xhtml" propagation="none">
+				    	<s:link view="/profile/view.xhtml" propagation="none">
 							<img src="#{dashboardAction.getUserImageUrl()}" alt="#{dashboardAction.getUsername()}"/>
 						</s:link>
 				    </div>
@@ -26,7 +26,7 @@
 			      	<ul class="list--no-bullets">
 			        	<li>#{dashboardAction.getUsername()}</li>
 			        	<li>
-			        		<s:link id="profile" view="/profile/view.xhtml" propagation="none">
+			        		<s:link view="/profile/view.xhtml" propagation="none">
 			        			#{messages['jsf.Settings']} <i aria-hidden="true" class="i i--cog"></i>
 			        		</s:link>
 			        	</li>

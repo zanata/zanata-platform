@@ -54,6 +54,7 @@ import org.zanata.service.ActivityService;
 import org.zanata.service.GravatarService;
 import org.zanata.util.DateUtil;
 import org.zanata.util.UrlUtil;
+import org.zanata.util.ZanataMessages;
 
 @Name("dashboardAction")
 @Scope(ScopeType.PAGE)
@@ -88,13 +89,15 @@ public class DashboardAction implements Serializable
    @In
    private ZanataIdentity identity;
 
-   private List<Activity> activityList = new ArrayList<Activity>();
+   @In
+   private ZanataMessages zanataMessages;
 
    private final int USER_IMAGE_SIZE = 115;
-   private final int ACTIVITY_COUNT_PER_PAGE = 10;
+   private final int ACTIVITY_COUNT_PER_LOAD = 5;
    private final int MAX_ACTIVITY_COUNT_PER_PAGE = 20;
    private final int MAX_TARGET_CONTENT_LENGTH = 50;
    private final String WRAPPED_POSTFIX = "…";
+
    private int activityPageIndex = 0;
 
    private final Date now = new Date();
@@ -205,22 +208,18 @@ public class DashboardAction implements Serializable
       return projectDAO.findById(projectId, false);
    }
 
+   @CachedMethodResult
    public List<Activity> getActivities()
    {
-      if ((activityPageIndex * ACTIVITY_COUNT_PER_PAGE) <= MAX_ACTIVITY_COUNT_PER_PAGE)
-      {
-         activityList.addAll(activityServiceImpl.findLatestActivities(authenticatedAccount.getPerson().getId(), activityPageIndex,
-               ACTIVITY_COUNT_PER_PAGE));
-      }
-      return activityList;
+      int count = (activityPageIndex + 1) * ACTIVITY_COUNT_PER_LOAD;
+      return activityServiceImpl.findLatestActivities(authenticatedAccount.getPerson().getId(), 0,
+            count);
    }
 
    @CachedMethodResult
    public String getTime(Activity activity)
    {
-      Date then = DateUtils.addMilliseconds(activity.getApproxTime(), (int) activity.getEndOffsetMillis());
-
-      return DateUtil.getReadableTime(now, then);
+      return DateUtil.getReadableTime(now, activity.getEndDate());
    }
 
    @CachedMethodResult
@@ -254,15 +253,15 @@ public class DashboardAction implements Serializable
    }
 
    @CachedMethodResult
-   public String getTrimmedContent(Activity activity)
+   public String getLastTargetContent(Activity activity)
    {
-      String wrappedContent = "";
+      String content = "";
       Object lastTarget = getEntity(activity.getLastTargetType(), activity.getLastTargetId());
 
       if (isTranslationUpdateActivity(activity.getActionType()))
       {
          HTextFlowTarget tft = (HTextFlowTarget) lastTarget;
-         wrappedContent = tft.getContents().get(0);
+         content = tft.getTextFlow().getContents().get(0);
       }
       else if (activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT)
       {
@@ -272,10 +271,10 @@ public class DashboardAction implements Serializable
       {
          HDocument document = (HDocument) lastTarget;
          HTextFlowTarget tft = documentDAO.getLastTranslatedTarget(document.getId());
-         wrappedContent = tft.getContents().get(0);
+         content = tft.getTextFlow().getContents().get(0);
       }
 
-      return trimString(wrappedContent);
+      return trimString(content);
    }
 
    @CachedMethodResult
@@ -453,9 +452,16 @@ public class DashboardAction implements Serializable
    {
       activityPageIndex++;
    }
-   
+
    public boolean hasMoreActivities()
    {
+      int loadedActivitiesCount = (activityPageIndex + 1) * ACTIVITY_COUNT_PER_LOAD;
+      int totalActivitiesCount = activityServiceImpl.getActivityCountByActor(authenticatedAccount.getPerson().getId());
+
+      if ((loadedActivitiesCount < totalActivitiesCount) && (loadedActivitiesCount < MAX_ACTIVITY_COUNT_PER_PAGE))
+      {
+         return true;
+      }
       return false;
    }
 
@@ -479,5 +485,14 @@ public class DashboardAction implements Serializable
    {
       return activityType == ActivityType.UPDATE_TRANSLATION
             || activityType == ActivityType.REVIEWED_TRANSLATION;
+   }
+
+   public String getWordsCount(int wordCount)
+   {
+      if (wordCount == 1)
+      {
+         return wordCount + " " + zanataMessages.getMessage("jsf.word");
+      }
+      return wordCount + " " + zanataMessages.getMessage("jsf.words");
    }
 }

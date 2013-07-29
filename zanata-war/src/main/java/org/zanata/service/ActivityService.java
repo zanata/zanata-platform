@@ -62,10 +62,10 @@ public interface ActivityService
     * Get user activities regardless of which context
     * @param personId
     * @param offset
-    * @param count
+    * @param maxResults
     * @return List<Activity>
     */
-   List<Activity> findLatestActivities(long personId, int offset, int count);
+   List<Activity> findLatestActivities(long personId, int offset, int maxResults);
    
    /**
     * Log activity, records roll up in hourly basis
@@ -87,4 +87,13 @@ public interface ActivityService
     * @throws Exception
     */
    Object getEntity(EntityType entityType, long entityId) throws ZanataServiceException;
+
+
+   /**
+    * Get activity count of an actor
+    * 
+    * @param id
+    * @return
+    */
+   int getActivityCountByActor(Long id);
 }
