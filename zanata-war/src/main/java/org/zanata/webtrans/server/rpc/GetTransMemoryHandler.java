@@ -51,14 +51,13 @@ import org.zanata.service.TranslationMemoryQueryService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
+import org.zanata.webtrans.shared.model.TransMemoryResultItem.MatchType;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemory;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
-
-import org.zanata.webtrans.shared.model.TransMemoryResultItem.MatchType;
 
 @Name("webtrans.gwt.GetTransMemoryHandler")
 @Scope(ScopeType.STATELESS)

@@ -151,23 +151,25 @@ public class TMMergeForm extends Composite implements EnumRadioButtonGroup.Selec
       OptionType optionType = OptionType.valueOf(groupName);
       switch (optionType)
       {
-         case PROJECT_MISMATCH:
-            differentProjectStatus.setText(mergeStatusRenderer.render(option));
-            differentProjectStatus.setStyleName(resolveStyle(option));
-            break;
-         case DOC_ID_MISMATCH:
-            differentDocIdStatus.setText(mergeStatusRenderer.render(option));
-            differentDocIdStatus.setStyleName(resolveStyle(option));
-            break;
-         case CTX_MISMATCH:
-            differentContextStatus.setText(mergeStatusRenderer.render(option));
-            differentContextStatus.setStyleName(resolveStyle(option));
-            break;
-         case IMPORTED_MATCH:
-            importedMatchStatus.setText(mergeStatusRenderer.render(option));
-            importedMatchStatus.setStyleName(resolveStyle(option));
-            break;
+      case PROJECT_MISMATCH:
+         setTextAndStyle(differentProjectStatus, option);
+         break;
+      case DOC_ID_MISMATCH:
+         setTextAndStyle(differentDocIdStatus, option);
+         break;
+      case CTX_MISMATCH:
+         setTextAndStyle(differentContextStatus, option);
+         break;
+      case IMPORTED_MATCH:
+         setTextAndStyle(importedMatchStatus, option);
+         break;
       }
+   }
+
+   private void setTextAndStyle(InlineLabel inlineLabel, MergeOption option)
+   {
+      inlineLabel.setText(mergeStatusRenderer.render(option));
+      differentProjectStatus.setStyleName(resolveStyle(option));
    }
 
    private String resolveStyle(MergeOption option)

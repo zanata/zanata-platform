@@ -58,7 +58,7 @@ public class TransMemoryAdapter
    private TransMemoryDAO transMemoryDAO;
 
    /**
-    * Returns an effect function that persists the header elements when
+    * Persists the header elements when
     * encountered while parsing. This modifies the translation memory fields and
     * metadata.
     */
@@ -69,7 +69,7 @@ public class TransMemoryAdapter
    }
 
    /**
-    * Returns an effect function that persists a translation unit when a <tu>
+    * Persists a translation unit when a tu
     * element is encountered while parsing.
     */
    public void persistTransUnit(TransMemory tm, Element tuElem)
@@ -80,24 +80,31 @@ public class TransMemoryAdapter
       TMXMetadataHelper.setMetadata(tu, tuElem);
       tu.setVersionNum(0);
 
-      // Parse the tuvs
-      Elements tuvElems = tuElem.getChildElements("tuv");
+      addTUVs(tu, tuElem.getChildElements("tuv"));
+
+      tu.setUniqueId(determineUniqueId(tu));
+
+      removeExistingTUIfAny(tm.getSlug(), tu.getUniqueId());
+      entityManager.persist(tu);
+      entityManager.flush();
+   }
+
+   private void removeExistingTUIfAny(String tmSlug, String uniqueId)
+   {
+      TransMemoryUnit existingTu = transMemoryDAO.findTranslationUnit(tmSlug, uniqueId);
+      if( existingTu != null )
+      {
+         entityManager.remove(existingTu);
+      }
+   }
+
+   private void addTUVs(TransMemoryUnit tu, Elements tuvElems)
+   {
       for (int i = 0; i < tuvElems.size(); i++)
       {
          Element tuvElem = tuvElems.get(i);
          addVariant(tu, tuvElem);
       }
-
-      tu.setUniqueId(determineUniqueId(tu));
-
-      // Find if there is already a tu and replace it
-      TransMemoryUnit existingTu = transMemoryDAO.findTranslationUnit(tm.getSlug(), tu.getUniqueId());
-      if( existingTu != null )
-      {
-         entityManager.remove(existingTu);
-      }
-      entityManager.persist(tu);
-      entityManager.flush();
    }
 
    private void addVariant(TransMemoryUnit tu, Element tuvElem)
@@ -108,7 +115,7 @@ public class TransMemoryAdapter
       TransMemoryUnitVariant tuv = new TransMemoryUnitVariant(language, content);
       TMXMetadataHelper.setMetadata(tuv, tuvElem);
 
-      String locale = new LocaleId(language).getId(); // This will fail if the locale is not accepted
+      String locale = new LocaleId(language).getId(); // Throws IllegalArgumentException if the locale is not accepted
       tu.getTransUnitVariants().put(locale, tuv);
    }
 
@@ -125,13 +132,13 @@ public class TransMemoryAdapter
          String srcLang = tu.getSourceLanguage() != null ? tu.getSourceLanguage() : tu.getTranslationMemory().getSourceLanguage();
          if (srcLang != null)
          {
-            // source lang is *all*
             if (srcLang.equalsIgnoreCase("*all*"))
             {
                srcLang = tu.getSourceLanguage();
                if (srcLang == null || srcLang.equalsIgnoreCase("*all*"))
                {
-                  throw new RuntimeException("Source language cannot be determined for Translation unit. " + "It must be defined either in the <tu> or the <header> element.");
+                  throw new RuntimeException("Source language cannot be determined for Translation unit. " +
+                        "It must be defined either in the <tu> or the <header> element.");
                }
             }
 

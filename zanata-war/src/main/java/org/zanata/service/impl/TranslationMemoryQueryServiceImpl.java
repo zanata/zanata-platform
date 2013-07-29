@@ -139,7 +139,8 @@ public class TranslationMemoryQueryServiceImpl implements TranslationMemoryQuery
     * @return
     * @throws ParseException
     */
-   private Query generateQuery(TransMemoryQuery query, LocaleId sourceLocale, LocaleId targetLocale, String queryText, String[] multiQueryText, String contentFields[]) throws ParseException
+   private Query generateQuery(TransMemoryQuery query, LocaleId sourceLocale, LocaleId targetLocale,
+         String queryText, String[] multiQueryText, String contentFields[]) throws ParseException
    {
       Query textFlowTargetQuery = generateTextFlowTargetQuery(query, sourceLocale, targetLocale, queryText, multiQueryText, contentFields);
 
