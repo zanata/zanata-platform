@@ -43,7 +43,7 @@ public class ResetPasswordPage extends BasePage
    @FindBy(id = "passwordResetRequestForm:emailField:email")
    private WebElement emailField;
 
-   @FindBy(xpath = "/html/body/div[2]/div/div[3]/div/div/form/div/div[2]/div[4]/input")
+   @FindBy(id = "passwordResetRequestForm:submitRequest")
    private WebElement submitButton;
 
    public ResetPasswordPage(WebDriver driver)

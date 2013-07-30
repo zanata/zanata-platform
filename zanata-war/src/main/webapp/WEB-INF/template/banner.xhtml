@@ -20,7 +20,7 @@
 	</h1>
 
 	<s:fragment rendered="#{identity.loggedIn}">
-		<a href="#off-canvas--right" id="user_avatar" class="off-canvas__toggle--right l--float-right badge__container">
+		<a href="#off-canvas--right" id="user_avatar" class="off-canvas__toggle--right l--float-right badge__container" title="#{personHome.instance.account.username}">
 			<span class="badge--bl"><!--  This is for notification count --></span>
 			<img src="#{gravatarServiceImpl.getUserImageUrl(72)}" alt="#{personHome.instance.name}"/>
 			<span class="is-invisible">Account</span>

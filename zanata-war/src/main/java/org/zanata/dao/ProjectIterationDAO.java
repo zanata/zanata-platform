@@ -393,7 +393,7 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
       for (EntityStatus status : exclude)
       {
          sb.append("AND t.status != :");
-         sb.append(exclude.toString());
+         sb.append(status.toString());
       }
       sb.append(" order by t.creationDate DESC");
       Query q = getSession().createQuery(sb.toString());

@@ -57,10 +57,9 @@ public class BasePage extends AbstractPage
 {
    private List<WebElement> navMenuItems = Collections.emptyList();
 
-   
-   private static final By BY_SIGN_OUT = By.id("Sign_out");
+   private static final By BY_SIGN_OUT = By.id("right_menu_sign_out_link");
 
-   @FindBy(className = "navBar")
+   @FindBy(id = "nav-main")
    WebElement navBar;
 
    @FindBy(id = "banner_projects_link")
@@ -73,8 +72,8 @@ public class BasePage extends AbstractPage
    private WebElement languagesLink;
 
    @FindBy(id = "user_avatar")
-   private WebElement userColumn;
-   
+   private WebElement userAvatar;
+
    private By BY_SIGN_IN = By.id("signin_link");
 
    public BasePage(final WebDriver driver)
@@ -85,8 +84,9 @@ public class BasePage extends AbstractPage
 
    public MyAccountPage goToMyProfile()
    {
-      userColumn.click();
-      getDriver().findElement(By.id("MyProfile")).click();
+      userAvatar.click();
+      
+      getDriver().findElement(By.id("profile")).click();
       return new MyAccountPage(getDriver());
    }
 
@@ -104,16 +104,16 @@ public class BasePage extends AbstractPage
 
    public AdministrationPage goToAdministration()
    {
-      getDriver().findElement(By.linkText("More")).click();
-      WebElement adminLink = getDriver().findElement(By.id("Administration"));
+      userAvatar.click();
+      
+      WebElement adminLink = getDriver().findElement(By.id("administration"));
       adminLink.click();
       return new AdministrationPage(getDriver());
    }
 
    public RegisterPage goToRegistration()
    {
-      getDriver().findElement(By.id("systemCol")).click();
-      WebElement registerLink = getDriver().findElement(By.id("Register"));
+      WebElement registerLink = getDriver().findElement(By.id("register_link_internal_auth"));
       registerLink.click();
       return new RegisterPage(getDriver());
    }
@@ -133,14 +133,13 @@ public class BasePage extends AbstractPage
 
    public String loggedInAs()
    {
-      WebElement username = userColumn.findElement(By.className("username"));
-      return username.getText().trim();
+      return userAvatar.getAttribute("title");
    }
 
-   public HomePage signOut()
+   public HomePage logout()
    {
-      userColumn.click();
-      WebElement signOut = userColumn.findElement(BY_SIGN_OUT);
+      userAvatar.click();
+      WebElement signOut = getDriver().findElement(BY_SIGN_OUT);
       signOut.click();
       waitForTenSec().until(new Function<WebDriver, WebElement>()
       {
@@ -187,9 +186,11 @@ public class BasePage extends AbstractPage
 
    public List<String> getNavigationMenuItems()
    {
-      Collection<String> linkTexts = Collections2.transform(navMenuItems, new Function<WebElement, String>() {
+      Collection<String> linkTexts = Collections2.transform(navMenuItems, new Function<WebElement, String>()
+      {
          @Override
-         public String apply(WebElement link) {
+         public String apply(WebElement link)
+         {
             return link.getText();
          }
       });

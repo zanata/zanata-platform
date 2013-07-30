@@ -58,7 +58,7 @@ public class ChangePasswordTest
       assertThat("Confirmation message is displayed", myAccountPage.getNotificationMessage(),
             Matchers.equalTo("Your password has been successfully changed."));
 
-      HomePage homePage = myAccountPage.signOut();
+      HomePage homePage = myAccountPage.logout();
       assertThat("User is logged out", !homePage.hasLoggedIn());
       homePage = new LoginWorkFlow().signIn("translator", "newpassword");
       assertThat("User has logged in with the new password", homePage.hasLoggedIn());
@@ -107,7 +107,7 @@ public class ChangePasswordTest
             .enterConfirmNewPassword("notnewpassword")
             .cancelChangePassword();
 
-      HomePage homePage = myAccountPage.signOut();
+      HomePage homePage = myAccountPage.logout();
       assertThat("User is logged out", !homePage.hasLoggedIn());
       homePage = new LoginWorkFlow().signIn("translator", "translator");
       assertThat("User has logged in with the original password", homePage.hasLoggedIn());

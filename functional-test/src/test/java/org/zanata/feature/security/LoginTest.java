@@ -56,10 +56,10 @@ public class LoginTest
       HomePage homePage = new LoginWorkFlow().goToHome();
       return homePage == null ? null : homePage.loggedInAs();
    }
-
-   public void signOut()
+   
+   public void logout()
    {
-      new LoginWorkFlow().goToHome().signOut();
+      new LoginWorkFlow().goToHome().logout();
    }
 
 }
