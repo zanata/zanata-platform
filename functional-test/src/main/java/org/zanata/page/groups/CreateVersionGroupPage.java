@@ -2,6 +2,8 @@ package org.zanata.page.groups;
 
 
 import lombok.extern.slf4j.Slf4j;
+
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -10,6 +12,8 @@ import org.zanata.page.BasePage;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -38,12 +42,12 @@ public class CreateVersionGroupPage extends BasePage
    public CreateVersionGroupPage(WebDriver driver)
    {
       super(driver);
-      List<String> elements = new ArrayList<String>();
-      elements.add("projectForm:slugField:slug");
-      elements.add("projectForm:nameField:name");
-      elements.add("projectForm:descriptionField:description");
-      elements.add("projectForm:save");
-      waitForPage(elements);
+      List<By> elementBys = ImmutableList.<By>builder()
+            .add(By.id("projectForm:slugField:slug"))
+            .add(By.id("projectForm:nameField:name"))
+            .add(By.id("projectForm:descriptionField:description"))
+            .add(By.id("projectForm:save")).build();
+      waitForPage(elementBys);
    }
 
    public CreateVersionGroupPage inputGroupId(String groupId)
