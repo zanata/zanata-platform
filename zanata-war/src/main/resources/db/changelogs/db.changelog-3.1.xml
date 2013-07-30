@@ -158,7 +158,7 @@
             <column name="last_target_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
-            <column name="actionType" type="varchar(150)">
+            <column name="activityType" type="varchar(150)">
                 <constraints nullable="false" />
             </column>
             <column name="eventCount" type="int">
@@ -173,7 +173,7 @@
                                  baseTableName="Activity" baseColumnNames="actor_id"/>
         
         <addUniqueConstraint tableName="Activity"
-		    columnNames="actor_id,approxTime,actionType,contextType,context_id" 
+		    columnNames="actor_id,approxTime,activityType,contextType,context_id" 
 		    constraintName="UKactivity"/>
     </changeSet>
 

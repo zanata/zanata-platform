@@ -185,6 +185,6 @@ public class DashboardAction implements Serializable
    
    public String getCreateVersionUrl(String projectSlug)
    {
-      return urlUtil.createVersionUrl(projectSlug);
+      return urlUtil.createNewVersionUrl(projectSlug);
    }
 }

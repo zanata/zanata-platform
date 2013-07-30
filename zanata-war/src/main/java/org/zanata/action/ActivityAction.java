@@ -98,9 +98,9 @@ public class ActivityAction implements Serializable
    {
       Object context = getEntity(activity.getContextType(), activity.getContextId());
 
-      if (isTranslationUpdateActivity(activity.getActionType())
-            || activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
-            || activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
+      if (isTranslationUpdateActivity(activity.getActivityType())
+            || activity.getActivityType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
+            || activity.getActivityType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
       {
          HProjectIteration version = (HProjectIteration) context;
          return version.getProject().getName();
@@ -112,9 +112,9 @@ public class ActivityAction implements Serializable
    {
       Object context = getEntity(activity.getContextType(), activity.getContextId());
 
-      if (isTranslationUpdateActivity(activity.getActionType())
-            || activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
-            || activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
+      if (isTranslationUpdateActivity(activity.getActivityType())
+            || activity.getActivityType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
+            || activity.getActivityType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
       {
          HProjectIteration version = (HProjectIteration) context;
          return urlUtil.projectUrl(version.getProject().getSlug());
@@ -127,16 +127,16 @@ public class ActivityAction implements Serializable
       String content = "";
       Object lastTarget = getEntity(activity.getLastTargetType(), activity.getLastTargetId());
 
-      if (isTranslationUpdateActivity(activity.getActionType()))
+      if (isTranslationUpdateActivity(activity.getActivityType()))
       {
          HTextFlowTarget tft = (HTextFlowTarget) lastTarget;
          content = tft.getTextFlow().getContents().get(0);
       }
-      else if (activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT)
+      else if (activity.getActivityType() == ActivityType.UPLOAD_SOURCE_DOCUMENT)
       {
          //not supported for upload source action
       }
-      else if (activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
+      else if (activity.getActivityType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
       {
          HDocument document = (HDocument) lastTarget;
          HTextFlowTarget tft = documentDAO.getLastTranslatedTargetOrNull(document.getId());
@@ -156,7 +156,7 @@ public class ActivityAction implements Serializable
       Object context = getEntity(activity.getContextType(), activity.getContextId());
       Object lastTarget = getEntity(activity.getLastTargetType(), activity.getLastTargetId());
 
-      if (isTranslationUpdateActivity(activity.getActionType()))
+      if (isTranslationUpdateActivity(activity.getActivityType()))
       {
          HProjectIteration version = (HProjectIteration) context;
          HTextFlowTarget tft = (HTextFlowTarget) lastTarget;
@@ -164,11 +164,11 @@ public class ActivityAction implements Serializable
          url = urlUtil.editorTransUnitUrl(version.getProject().getSlug(), version.getSlug(), tft.getLocaleId(),
                tft.getTextFlow().getLocale(), tft.getTextFlow().getDocument().getDocId(), tft.getTextFlow().getId());
       }
-      else if (activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT)
+      else if (activity.getActivityType() == ActivityType.UPLOAD_SOURCE_DOCUMENT)
       {
          // not supported for upload source action
       }
-      else if (activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
+      else if (activity.getActivityType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
       {
          HProjectIteration version = (HProjectIteration) context;
          HDocument document = (HDocument) lastTarget;
@@ -189,7 +189,7 @@ public class ActivityAction implements Serializable
       Object context = getEntity(activity.getContextType(), activity.getContextId());
       Object lastTarget = getEntity(activity.getLastTargetType(), activity.getLastTargetId());
 
-      if (isTranslationUpdateActivity(activity.getActionType()))
+      if (isTranslationUpdateActivity(activity.getActivityType()))
       {
          HProjectIteration version = (HProjectIteration) context;
          HTextFlowTarget tft = (HTextFlowTarget) lastTarget;
@@ -197,12 +197,12 @@ public class ActivityAction implements Serializable
          url = urlUtil.editorDocumentUrl(version.getProject().getSlug(), version.getSlug(), tft.getLocaleId(),
                tft.getTextFlow().getLocale(), tft.getTextFlow().getDocument().getDocId());
       }
-      else if (activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT)
+      else if (activity.getActivityType() == ActivityType.UPLOAD_SOURCE_DOCUMENT)
       {
          HProjectIteration version = (HProjectIteration) context;
          url = urlUtil.sourceFilesUrl(version.getProject().getSlug(), version.getSlug());
       }
-      else if (activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
+      else if (activity.getActivityType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
       {
          HProjectIteration version = (HProjectIteration) context;
          HDocument document = (HDocument) lastTarget;
@@ -222,13 +222,13 @@ public class ActivityAction implements Serializable
       Object lastTarget = getEntity(activity.getLastTargetType(), activity.getLastTargetId());
       String docName = "";
 
-      if (isTranslationUpdateActivity(activity.getActionType()))
+      if (isTranslationUpdateActivity(activity.getActivityType()))
       {
          HTextFlowTarget tft = (HTextFlowTarget) lastTarget;
          docName = tft.getTextFlow().getDocument().getName();
       }
-      else if (activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
-            || activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
+      else if (activity.getActivityType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
+            || activity.getActivityType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
       {
          HDocument document = (HDocument) lastTarget;
          docName = document.getName();
@@ -241,9 +241,9 @@ public class ActivityAction implements Serializable
       Object context = getEntity(activity.getContextType(), activity.getContextId());
       String url = "";
 
-      if (isTranslationUpdateActivity(activity.getActionType())
-            || activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
-            || activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
+      if (isTranslationUpdateActivity(activity.getActivityType())
+            || activity.getActivityType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
+            || activity.getActivityType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
       {
          HProjectIteration version = (HProjectIteration) context;
          url = urlUtil.versionUrl(version.getProject().getSlug(), version.getSlug());
@@ -257,9 +257,9 @@ public class ActivityAction implements Serializable
       Object context = getEntity(activity.getContextType(), activity.getContextId());
       String name = "";
 
-      if (isTranslationUpdateActivity(activity.getActionType())
-            || activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
-            || activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
+      if (isTranslationUpdateActivity(activity.getActivityType())
+            || activity.getActivityType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
+            || activity.getActivityType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
       {
          HProjectIteration version = (HProjectIteration) context;
          name = version.getSlug();
@@ -273,7 +273,7 @@ public class ActivityAction implements Serializable
       Object lastTarget = getEntity(activity.getLastTargetType(), activity.getLastTargetId());
       String url = "";
 
-      if (isTranslationUpdateActivity(activity.getActionType()))
+      if (isTranslationUpdateActivity(activity.getActivityType()))
       {
          HProjectIteration version = (HProjectIteration) context;
          HTextFlowTarget tft = (HTextFlowTarget) lastTarget;
@@ -281,11 +281,11 @@ public class ActivityAction implements Serializable
          url = urlUtil.editorDocumentListUrl(version.getProject().getSlug(), version.getSlug(), tft.getLocaleId(), tft
                .getTextFlow().getLocale());
       }
-      else if (activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT)
+      else if (activity.getActivityType() == ActivityType.UPLOAD_SOURCE_DOCUMENT)
       {
          // not supported for upload source action
       }
-      else if (activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
+      else if (activity.getActivityType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
       {
          HProjectIteration version = (HProjectIteration) context;
          HDocument document = (HDocument) lastTarget;
@@ -306,16 +306,16 @@ public class ActivityAction implements Serializable
       Object lastTarget = getEntity(activity.getLastTargetType(), activity.getLastTargetId());
       String name = "";
 
-      if (isTranslationUpdateActivity(activity.getActionType()))
+      if (isTranslationUpdateActivity(activity.getActivityType()))
       {
          HTextFlowTarget tft = (HTextFlowTarget) lastTarget;
          name = tft.getLocaleId().getId();
       }
-      else if (activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT)
+      else if (activity.getActivityType() == ActivityType.UPLOAD_SOURCE_DOCUMENT)
       {
          // not supported for upload source action
       }
-      else if (activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
+      else if (activity.getActivityType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
       {
          HDocument document = (HDocument) lastTarget;
          HTextFlowTarget tft = documentDAO.getLastTranslatedTargetOrNull(document.getId());

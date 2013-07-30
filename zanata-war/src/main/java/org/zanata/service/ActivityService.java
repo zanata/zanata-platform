@@ -41,11 +41,11 @@ public interface ActivityService
     * @param actorId
     * @param contextType
     * @param contextId
-    * @param actionType
+    * @param activityType
     * @param actionTime
     * @return
     */
-   Activity findActivity(long actorId, EntityType contextType, long contextId, ActivityType actionType, Date actionTime);
+   Activity findActivity(long actorId, EntityType contextType, long contextId, ActivityType activityType, Date actionTime);
    
    
    /**
@@ -56,7 +56,7 @@ public interface ActivityService
     * @param count
     * @return List<Activity>
     */
-   List<Activity> findActivities(long personId, long contextId, int offset, int count);
+   List<Activity> findLatestActivitiesForContext(long personId, long contextId, int offset, int count);
    
    /**
     * Get user activities regardless of which context
@@ -73,10 +73,10 @@ public interface ActivityService
     * @param actor
     * @param context
     * @param target
-    * @param actionType
+    * @param activityType
     * @param wordCount
     */
-   void logActivity(HPerson actor, IsEntityWithType context, IsEntityWithType target, ActivityType actionType, int wordCount);
+   void logActivity(HPerson actor, IsEntityWithType context, IsEntityWithType target, ActivityType activityType, int wordCount);
 
    /**
     * Get target or lastTarget entity in activity
@@ -92,8 +92,8 @@ public interface ActivityService
    /**
     * Get activity count of an actor
     * 
-    * @param id
+    * @param personId
     * @return
     */
-   int getActivityCountByActor(Long id);
+   int getActivityCountByActor(long personId);
 }

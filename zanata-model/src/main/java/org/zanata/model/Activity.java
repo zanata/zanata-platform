@@ -88,14 +88,14 @@ public class Activity extends ModelEntityBase implements Serializable
    private long lastTargetId;
 
    @Enumerated(EnumType.STRING)
-   private ActivityType actionType;
+   private ActivityType activityType;
 
    //Event count starts with 1 because there is a single event when new activity created
    private int eventCount = 1;
 
    private int wordCount;
 
-   public Activity(HPerson actor, IsEntityWithType context, IsEntityWithType target, ActivityType actionType,
+   public Activity(HPerson actor, IsEntityWithType context, IsEntityWithType target, ActivityType activityType,
          int wordCount)
    {
       this.actor = actor;
@@ -103,7 +103,7 @@ public class Activity extends ModelEntityBase implements Serializable
       this.contextId = context.getId();
       this.lastTargetType = target.getEntityType();
       this.lastTargetId = target.getId();
-      this.actionType = actionType;
+      this.activityType = activityType;
       this.wordCount = wordCount;
    }
 

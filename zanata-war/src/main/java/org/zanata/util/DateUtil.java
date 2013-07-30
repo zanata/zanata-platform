@@ -53,7 +53,7 @@ public class DateUtil
    }
    
    /**
-    * Return readable string of time different compare to now 
+    * Return readable string of time different compare between 'from' and 'then'
     * e.g 10 minutes ago, 1 hour ago
     * @param from
     * @param then
