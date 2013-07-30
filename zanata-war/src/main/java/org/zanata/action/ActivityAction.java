@@ -68,7 +68,7 @@ public class ActivityAction implements Serializable
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    private HAccount authenticatedAccount;
 
-   private final int ACTIVITY_COUNT_PER_LOAD = 1;
+   private final int ACTIVITY_COUNT_PER_LOAD = 5;
    private final int MAX_ACTIVITIES_COUNT_PER_PAGE = 20;
 
    private final Date now = new Date();

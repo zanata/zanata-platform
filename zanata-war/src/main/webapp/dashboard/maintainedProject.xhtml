@@ -54,7 +54,7 @@
                     <s:link view="/iteration/view.xhtml" title="#{messages['jsf.Version']} #{latestVersion.slug}">
                       <f:param name="projectSlug" value="#{project.slug}"/>
                       <f:param name="iterationSlug" value="#{latestVersion.slug}"/>
-                      <i aria-hidden="true" class="i i--star-2"></i>
+                      <i aria-hidden="true" class="i i--version"></i>
                       <span class="is-invisible">#{messages['jsf.Version']}</span>
                       #{latestVersion.slug}
                     </s:link>
@@ -92,7 +92,7 @@
                         <s:link view="/iteration/view.xhtml" title="#{messages['jsf.Version']} #{version.slug}">
                           <f:param name="projectSlug" value="#{project.slug}"/>
                           <f:param name="iterationSlug" value="#{version.slug}"/>
-                          <i aria-hidden="true" class="i i--star-2"></i>
+                          <i aria-hidden="true" class="i i--version"></i>
                           <span class="is-invisible">#{messages['jsf.Version']}</span>
                           #{version.slug}
                         </s:link>
