@@ -56,7 +56,7 @@ import lombok.ToString;
  */
 @Entity
 @EqualsAndHashCode(callSuper=true, exclude = {"content"})
-@ToString(exclude = {"contentHash", "metadata"})
+@ToString(exclude = {"contentHash", "plainTextSegmentHash"})
 @NoArgsConstructor
 @Data
 @Access(AccessType.FIELD)

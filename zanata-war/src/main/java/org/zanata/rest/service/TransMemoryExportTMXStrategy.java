@@ -68,7 +68,7 @@ public class TransMemoryExportTMXStrategy extends ExportTMXStrategy<TransMemoryU
    public void exportHeader(TMXWriter tmxWriter)
    {
       ImmutableMap<String, Object> metadata = TMXMetadataHelper.getMetadata(tm);
-      // TODO export child nodes (prop and note)
+      // TODO Okapi can't export header's child nodes (prop and note)
       net.sf.okapi.common.LocaleId sourceLocale;
       String srclang = tm.getSourceLanguage();
       if (srclang == null)

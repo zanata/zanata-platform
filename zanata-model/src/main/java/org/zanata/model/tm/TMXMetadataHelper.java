@@ -45,6 +45,7 @@ import nu.xom.Attribute;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Elements;
+import nu.xom.Node;
 
 /**
  * Adapts TMX metadata to the generic translation memory objects.
@@ -54,7 +55,6 @@ import nu.xom.Elements;
 public class TMXMetadataHelper
 {
    private static final String EMPTY_NAMESPACE = XMLConstants.NULL_NS_URI;
-   private static final String TMX14_NAMESPACE = "http://www.lisa.org/tmx14";
 
    private static final String TMX_ELEMENT_CHILDREN = "__TMX_ELEMENT_CHILDREN__";
 
@@ -313,7 +313,14 @@ public class TMXMetadataHelper
             metadata.put(name, value);
          }
       }
-      // Header might also have sub nodes (save them as pure xml)
+      List<String> childrenXml = getChildrenAsXml(elem);
+      metadata.put(TMX_ELEMENT_CHILDREN, childrenXml);
+      return metadata;
+   }
+
+   private static List<String> getChildrenAsXml(Element elem)
+   {
+      // elem might also have sub nodes (save them as pure xml)
       List<String> childrenXml = Lists.newArrayList();
       Elements childElements = elem.getChildElements();
       for (int i = 0; i < childElements.size(); i++)
@@ -323,15 +330,17 @@ public class TMXMetadataHelper
          String name = child.getLocalName();
          if (inTmxNamespace(uri) && (name.equals("prop") || name.equals("note")))
          {
-            childrenXml.add(child.toXML());
+            Element copy = (Element) child.copy();
+            copy.setNamespacePrefix("");
+            copy.setNamespaceURI("");
+            childrenXml.add(copy.toXML());
          }
       }
-      metadata.put(TMX_ELEMENT_CHILDREN, childrenXml);
-      return metadata;
+      return childrenXml;
    }
 
    private static boolean inTmxNamespace(String uri)
    {
-      return uri.equals(EMPTY_NAMESPACE) || uri.equals(TMX14_NAMESPACE);
+      return uri.equals(EMPTY_NAMESPACE) || uri.equals(TMXUtils.TMX14_NAMESPACE);
    }
 }
