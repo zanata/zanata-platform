@@ -20,7 +20,7 @@
         }
 
         .unsaved {
-            background-color: #56c0e6;
+            background-color: #416988;
         }
 
         .saving {
