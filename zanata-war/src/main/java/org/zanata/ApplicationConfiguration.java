@@ -20,6 +20,8 @@
  */
 package org.zanata;
 
+import static org.apache.commons.lang.StringUtils.isEmpty;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,7 +33,6 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.jboss.seam.Component;
@@ -65,6 +66,8 @@ public class ApplicationConfiguration implements Serializable
 
    private static final String EMAIL_APPENDER_NAME = "zanata.log.appender.email";
    public static final String EVENT_CONFIGURATION_CHANGED = "zanata.configuration.changed";
+   
+   private static final String STYLESHEET_LOCAL_PATH = "/assets/css/style.css";
 
    private DatabaseBackedConfig databaseBackedConfig;
    private JndiBackedConfig jndiBackedConfig;
@@ -395,16 +398,16 @@ public class ApplicationConfiguration implements Serializable
 
    public String getWebAssetsStyleUrl()
    {
-      if (StringUtils.isEmpty(webAssetsStyleUrl))
+      if (isEmpty(webAssetsStyleUrl))
       {
-         webAssetsStyleUrl = String.format("%s/%s/assets/css/style.css", getBaseWebAssetsUrl(), webAssetsVersion);
+         webAssetsStyleUrl = getWebAssetsUrl() + STYLESHEET_LOCAL_PATH;
       }
       return webAssetsStyleUrl;
    }
 
    public String getWebAssetsUrl()
    {
-      if (StringUtils.isEmpty(webAssetsUrl))
+      if (isEmpty(webAssetsUrl))
       {
          webAssetsUrl = String.format("%s/%s", getBaseWebAssetsUrl(), webAssetsVersion);
       }

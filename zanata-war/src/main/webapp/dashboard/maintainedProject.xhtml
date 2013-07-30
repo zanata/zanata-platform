@@ -43,42 +43,45 @@
         </div>
         <div class="l--pad-h-half l--pad-bottom-half">
           <div class="dropdown">
-            <div class="dropdown__toggle" href="#">
-              <i class="i i--arrow-down dropdown__toggle__icon"></i>
-              <ui:param name="projectVersions" value="#{dashboardAction.getProjectVersions(project.id)}"/>
 
-              <s:fragment rendered="#{!projectVersions.isEmpty()}">
-                <ui:param name="latestVersion" value="#{projectVersions[0]}"/>
-                <ul class="dropdown__toggle__content list--horizontal ">
-                  <li>
-                    <s:link view="/iteration/view.xhtml" title="#{messages['jsf.Version']} #{latestVersion.slug}">
-                      <f:param name="projectSlug" value="#{project.slug}"/>
-                      <f:param name="iterationSlug" value="#{latestVersion.slug}"/>
-                      <i aria-hidden="true" class="i i--version"></i>
-                      <span class="is-invisible">#{messages['jsf.Version']}</span>
-                      #{latestVersion.slug}
-                    </s:link>
-                  </li>
-                  <li>
-                    <ui:param name="documentCount" value="#{dashboardAction.getDocumentCount(latestVersion.id)}"/>
-                    <s:link view="/iteration/source_files.xhtml" propagation="none"
-                                  title="#{documentCount} #{messages['jsf.SourceDocuments']}">
-                      <f:param name="project" value="#{project.slug}"/>
-                      <f:param name="iteration" value="#{latestVersion.slug}" />
-                      <i aria-hidden="true" class="i i--document-alt-fill"></i>
-                      <span class="is-invisible">#{messages['jsf.SourceDocuments']}</span>
-                      #{documentCount}
-                    </s:link>
-                  </li>
-                  <li class="l--float-right">
-                    <s:fragment rendered="#{latestVersion.status == 'READONLY'}">
-                      <span class="txt--meta">#{messages['jsf.ReadOnly']}</span>
-                    </s:fragment>
-                    <s:fragment rendered="#{latestVersion.status == 'OBSOLETE'}">
-                      <span class="txt--meta">#{messages['jsf.Obsolete']}</span>
-                    </s:fragment>
-                  </li>
-                </ul>
+            <div class="dropdown__toggle" href="#">
+            	<i class="i i--arrow-down dropdown__toggle__icon"></i>
+	            <ui:param name="projectVersions" value="#{dashboardAction.getProjectVersions(project.id)}"/>
+	            <s:fragment rendered="#{!projectVersions.isEmpty()}">
+                	<ui:param name="latestVersion" value="#{projectVersions[0]}"/>
+                	<ul class="dropdown__toggle__content list--horizontal ">
+		            	<li>
+		                	<s:link view="/iteration/view.xhtml" title="#{messages['jsf.Version']} #{latestVersion.slug}">
+		                    	<f:param name="projectSlug" value="#{project.slug}"/>
+		                    	<f:param name="iterationSlug" value="#{latestVersion.slug}"/>
+		                    	<i aria-hidden="true" class="i i--version"></i>
+		                    	<span class="is-invisible">#{messages['jsf.Version']}</span>
+		                    		#{latestVersion.slug}
+		                    </s:link>
+		            	</li>
+		                <li>
+		                	<ui:param name="documentCount" value="#{dashboardAction.getDocumentCount(latestVersion.id)}"/>
+		                    <s:link view="/iteration/source_files.xhtml" propagation="none"
+		                                  title="#{documentCount} #{messages['jsf.SourceDocuments']}">
+		                      	<f:param name="project" value="#{project.slug}"/>
+		                      	<f:param name="iteration" value="#{latestVersion.slug}" />
+		                      	<i aria-hidden="true" class="i i--document-alt-fill"></i>
+		                      	<span class="is-invisible">#{messages['jsf.SourceDocuments']}</span>
+		                      		#{documentCount}
+		                    </s:link>
+		                </li>
+		                <li class="l--float-right">
+		                	<s:fragment rendered="#{latestVersion.status == 'READONLY'}">
+		                      <span class="txt--meta">#{messages['jsf.ReadOnly']}</span>
+		                    </s:fragment>
+		                    <s:fragment rendered="#{latestVersion.status == 'OBSOLETE'}">
+		                      <span class="txt--meta">#{messages['jsf.Obsolete']}</span>
+		                    </s:fragment>
+		                </li>
+                	</ul>
+              </s:fragment>
+              <s:fragment rendered="#{projectVersions.isEmpty()}">
+					<span class="txt--meta">#{messages['jsf.noVersions']} <a href="#{dashboardAction.getCreateVersionUrl(project.slug)}">#{messages['jsf.createAVersion']}</a></span>
               </s:fragment>
             </div>
 

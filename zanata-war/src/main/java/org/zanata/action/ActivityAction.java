@@ -21,6 +21,7 @@
 package org.zanata.action;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -77,9 +78,15 @@ public class ActivityAction implements Serializable
 
    public List<Activity> getActivities()
    {
-      int count = (activityPageIndex + 1) * ACTIVITY_COUNT_PER_LOAD;
-      return activityServiceImpl.findLatestActivities(authenticatedAccount.getPerson().getId(), 0,
+      List<Activity> activities = new ArrayList<Activity>();
+      
+      if(authenticatedAccount != null)
+      {
+         int count = (activityPageIndex + 1) * ACTIVITY_COUNT_PER_LOAD;
+         activities = activityServiceImpl.findLatestActivities(authenticatedAccount.getPerson().getId(), 0,
             count);
+      }
+      return activities;
    }
 
    public String getDurationTime(Activity activity)
@@ -304,12 +311,12 @@ public class ActivityAction implements Serializable
       return name;
    }
 
-   public void loadMoreActivity()
+   public void loadNextActivity()
    {
       activityPageIndex++;
    }
 
-   public String getWordsCount(int wordCount)
+   public String getWordsCountMessage(int wordCount)
    {
       if (wordCount == 1)
       {

@@ -27,7 +27,7 @@ import org.zanata.common.ActivityType;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.Activity;
 import org.zanata.model.HPerson;
-import org.zanata.model.HasEntityType;
+import org.zanata.model.IsEntityWithType;
 import org.zanata.model.type.EntityType;
 
 /**
@@ -76,7 +76,7 @@ public interface ActivityService
     * @param actionType
     * @param wordCount
     */
-   void logActivity(HPerson actor, HasEntityType context, HasEntityType target, ActivityType actionType, int wordCount);
+   void logActivity(HPerson actor, IsEntityWithType context, IsEntityWithType target, ActivityType actionType, int wordCount);
 
    /**
     * Get target or lastTarget entity in activity
