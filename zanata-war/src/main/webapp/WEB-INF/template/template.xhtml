@@ -26,10 +26,10 @@
 			<meta name="viewport" content="width=device-width, minimum-scale=1.0" />
 			<meta http-equiv="cleartype" content="on" />
 		
-			<link rel="shortcut icon" href="#{applicationConfiguration.baseWebAssetsUrl}/favicon.ico" type="image/x-icon" />
+			<link rel="shortcut icon" href="#{applicationConfiguration.webAssetsUrl}/favicon.ico" type="image/x-icon" />
 		
 			<!--[if gt IE 8]><!-->
-				<link type="text/css" rel="stylesheet" href="#{applicationConfiguration.webAssetsUrl}" />
+				<link type="text/css" rel="stylesheet" href="#{applicationConfiguration.webAssetsStyleUrl}" />
 			<!--<![endif]-->
 		
 			<!--[if (lt IE 9) & (!IEMobile)]>
@@ -66,7 +66,7 @@
 			<ui:include src="piwik.xhtml"/>
 				
 			<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-			<script src="#{applicationConfiguration.baseWebAssetsUrl}/assets/js/script.js"></script>
+			<script src="#{applicationConfiguration.webAssetsUrl}/assets/js/script.js"></script>
 		</h:body>
 	</html>
 </f:view>

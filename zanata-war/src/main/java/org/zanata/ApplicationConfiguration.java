@@ -31,6 +31,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.jboss.seam.Component;
@@ -49,6 +50,7 @@ import org.zanata.config.JndiBackedConfig;
 import org.zanata.log4j.ZanataHTMLLayout;
 import org.zanata.log4j.ZanataSMTPAppender;
 import org.zanata.security.AuthenticationType;
+
 import com.google.common.base.Objects;
 
 @Name("applicationConfiguration")
@@ -77,16 +79,19 @@ public class ApplicationConfiguration implements Serializable
    private Map<AuthenticationType, String> loginModuleNames = new HashMap<AuthenticationType, String>();
    private Set<String> adminUsers = new HashSet<String>();
 
+   private String webAssetsUrl;
+   private String webAssetsStyleUrl;
+
    // set by component.xml
    private String webAssetsVersion = "";
 
-   @Observer( { EVENT_CONFIGURATION_CHANGED })
+   @Observer({ EVENT_CONFIGURATION_CHANGED })
    @Create
    public void load()
    {
       log.info("Reloading configuration");
-      databaseBackedConfig = (DatabaseBackedConfig)Component.getInstance(DatabaseBackedConfig.class);
-      jndiBackedConfig = (JndiBackedConfig)Component.getInstance(JndiBackedConfig.class);
+      databaseBackedConfig = (DatabaseBackedConfig) Component.getInstance(DatabaseBackedConfig.class);
+      jndiBackedConfig = (JndiBackedConfig) Component.getInstance(JndiBackedConfig.class);
 
       this.loadLoginModuleNames();
       this.validateConfiguration();
@@ -98,10 +103,10 @@ public class ApplicationConfiguration implements Serializable
     */
    private void loadLoginModuleNames()
    {
-      for( String policyName : jndiBackedConfig.getEnabledAuthenticationPolicies() )
+      for (String policyName : jndiBackedConfig.getEnabledAuthenticationPolicies())
       {
-         AuthenticationType authType = AuthenticationType.valueOf( policyName.toUpperCase() );
-         loginModuleNames.put(authType, jndiBackedConfig.getAuthPolicyName( policyName ));
+         AuthenticationType authType = AuthenticationType.valueOf(policyName.toUpperCase());
+         loginModuleNames.put(authType, jndiBackedConfig.getAuthPolicyName(policyName));
       }
    }
 
@@ -111,19 +116,20 @@ public class ApplicationConfiguration implements Serializable
    private void validateConfiguration()
    {
       // Validate that only internal / openid authentication is enabled at once
-      if( loginModuleNames.size() > 2 )
+      if (loginModuleNames.size() > 2)
       {
          throw new RuntimeException("Multiple invalid authentication types present in Zanata configuration.");
       }
-      else if( loginModuleNames.size() == 2 )
+      else if (loginModuleNames.size() == 2)
       {
          // Internal and Open id are the only allowed combined authentication types
-         if( !(loginModuleNames.containsKey(AuthenticationType.OPENID) && loginModuleNames.containsKey(AuthenticationType.INTERNAL) ) )
+         if (!(loginModuleNames.containsKey(AuthenticationType.OPENID) && loginModuleNames
+               .containsKey(AuthenticationType.INTERNAL)))
          {
             throw new RuntimeException("Multiple invalid authentication types present in Zanata configuration.");
          }
       }
-      else if( loginModuleNames.size() < 1)
+      else if (loginModuleNames.size() < 1)
       {
          throw new RuntimeException("At least one authentication type must be configured in Zanata configuration.");
       }
@@ -136,7 +142,7 @@ public class ApplicationConfiguration implements Serializable
    {
       final Logger rootLogger = Logger.getRootLogger();
 
-      if( isEmailLogAppenderEnabled() )
+      if (isEmailLogAppenderEnabled())
       {
          // NB: This appender uses Seam's email configuration (no need for host or port)
          smtpAppenderInstance.setName(EMAIL_APPENDER_NAME);
@@ -170,13 +176,14 @@ public class ApplicationConfiguration implements Serializable
    {
       String configuredValue = databaseBackedConfig.getServerHost();
       // Try to determine a server path if one is not configured
-      if( configuredValue == null )
+      if (configuredValue == null)
       {
          HttpServletRequest request = ServletContexts.instance().getRequest();
-         if( request != null )
+         if (request != null)
          {
             configuredValue =
-                  request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+                  request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+                        + request.getContextPath();
          }
       }
       return configuredValue;
@@ -217,9 +224,10 @@ public class ApplicationConfiguration implements Serializable
       }
 
       // Finally, just throw an Exception
-      if( emailAddr == null )
+      if (emailAddr == null)
       {
-         throw new RuntimeException("'From' email address has not been defined in either zanata.properties or Zanata setup");
+         throw new RuntimeException(
+               "'From' email address has not been defined in either zanata.properties or Zanata setup");
       }
       return emailAddr;
    }
@@ -233,30 +241,30 @@ public class ApplicationConfiguration implements Serializable
    {
       return databaseBackedConfig.getHelpContent();
    }
-   
+
    public boolean isInternalAuth()
    {
-      return this.loginModuleNames.containsKey( AuthenticationType.INTERNAL );
+      return this.loginModuleNames.containsKey(AuthenticationType.INTERNAL);
    }
-   
+
    public boolean isOpenIdAuth()
    {
-      return this.loginModuleNames.containsKey( AuthenticationType.OPENID );
+      return this.loginModuleNames.containsKey(AuthenticationType.OPENID);
    }
-   
+
    public boolean isKerberosAuth()
    {
-      return this.loginModuleNames.containsKey( AuthenticationType.KERBEROS );
+      return this.loginModuleNames.containsKey(AuthenticationType.KERBEROS);
    }
 
    public boolean isJaasAuth()
    {
-      return this.loginModuleNames.containsKey( AuthenticationType.JAAS );
+      return this.loginModuleNames.containsKey(AuthenticationType.JAAS);
    }
-   
-   public String getLoginModuleName( AuthenticationType authType )
+
+   public String getLoginModuleName(AuthenticationType authType)
    {
-      return this.loginModuleNames.get( authType );
+      return this.loginModuleNames.get(authType);
    }
 
    public boolean isDebug()
@@ -273,8 +281,8 @@ public class ApplicationConfiguration implements Serializable
    {
       return version;
    }
-   
-   void setVersion( String version )
+
+   void setVersion(String version)
    {
       this.version = version;
    }
@@ -283,8 +291,8 @@ public class ApplicationConfiguration implements Serializable
    {
       return buildTimestamp;
    }
-   
-   void setBuildTimestamp( String buildTimestamp )
+
+   void setBuildTimestamp(String buildTimestamp)
    {
       this.buildTimestamp = buildTimestamp;
    }
@@ -296,20 +304,20 @@ public class ApplicationConfiguration implements Serializable
 
    public Set<String> getAdminUsers()
    {
-      return new HashSet<String>( adminUsers );
+      return new HashSet<String>(adminUsers);
    }
 
    public boolean isEmailLogAppenderEnabled()
    {
       String strVal = databaseBackedConfig.getShouldLogEvents();
 
-      if(strVal == null)
+      if (strVal == null)
       {
          return false;
       }
       else
       {
-         return Boolean.parseBoolean( strVal );
+         return Boolean.parseBoolean(strVal);
       }
    }
 
@@ -344,7 +352,7 @@ public class ApplicationConfiguration implements Serializable
       String host = jndiBackedConfig.getSmtpHostName();
 
       // Default to localhost
-      if( host == null )
+      if (host == null)
       {
          host = "localhost";
       }
@@ -356,7 +364,7 @@ public class ApplicationConfiguration implements Serializable
       String port = jndiBackedConfig.getSmtpPort();
 
       // Default to 25
-      if( port == null )
+      if (port == null)
       {
          port = "25";
       }
@@ -375,23 +383,36 @@ public class ApplicationConfiguration implements Serializable
 
    public boolean useEmailServerTls()
    {
-      return jndiBackedConfig.getSmtpUsesTls() != null ? Boolean.parseBoolean(jndiBackedConfig.getSmtpUsesTls()) : false;
+      return jndiBackedConfig.getSmtpUsesTls() != null ? Boolean.parseBoolean(jndiBackedConfig.getSmtpUsesTls())
+            : false;
    }
 
    public boolean useEmailServerSsl()
    {
-      return jndiBackedConfig.getStmpUsesSsl() != null ? Boolean.parseBoolean(jndiBackedConfig.getStmpUsesSsl()) : false;
+      return jndiBackedConfig.getStmpUsesSsl() != null ? Boolean.parseBoolean(jndiBackedConfig.getStmpUsesSsl())
+            : false;
+   }
+
+   public String getWebAssetsStyleUrl()
+   {
+      if (StringUtils.isEmpty(webAssetsStyleUrl))
+      {
+         webAssetsStyleUrl = String.format("%s/%s/assets/css/style.css", getBaseWebAssetsUrl(), webAssetsVersion);
+      }
+      return webAssetsStyleUrl;
    }
 
    public String getWebAssetsUrl()
    {
-      return String.format("%s/%s/assets/css/style.css",
-            Objects.firstNonNull(jndiBackedConfig.getWebAssetsUrlBase(), "//assets-zanata.rhcloud.com"), webAssetsVersion);
+      if (StringUtils.isEmpty(webAssetsUrl))
+      {
+         webAssetsUrl = String.format("%s/%s", getBaseWebAssetsUrl(), webAssetsVersion);
+      }
+      return webAssetsUrl;
    }
-   
-   public String getBaseWebAssetsUrl()
+
+   private String getBaseWebAssetsUrl()
    {
-      return String.format("%s/%s",
-            Objects.firstNonNull(jndiBackedConfig.getWebAssetsUrlBase(), "//assets-zanata.rhcloud.com"), webAssetsVersion);
+      return Objects.firstNonNull(jndiBackedConfig.getWebAssetsUrlBase(), "//assets-zanata.rhcloud.com");
    }
 }

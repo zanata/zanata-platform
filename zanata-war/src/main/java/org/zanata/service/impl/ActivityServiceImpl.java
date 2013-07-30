@@ -24,6 +24,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import org.apache.commons.lang.time.DateUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -41,11 +43,9 @@ import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.events.DocumentUploadedEvent;
 import org.zanata.events.TextFlowTargetStateEvent;
-import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.Activity;
 import org.zanata.model.HDocument;
 import org.zanata.model.HPerson;
-import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HasEntityType;
@@ -74,6 +74,9 @@ public class ActivityServiceImpl implements ActivityService
 
    @In
    private ProjectIterationDAO projectIterationDAO;
+   
+   @In
+   private EntityManager entityManager;
 
    @Override
    public Activity findActivity(long actorId, EntityType contextType, long contextId, ActivityType actionType, Date actionTime)
@@ -119,30 +122,9 @@ public class ActivityServiceImpl implements ActivityService
    }
 
    @Override
-   public Object getEntity(EntityType entityType, long entityId) throws ZanataServiceException
+   public Object getEntity(EntityType entityType, long entityId)
    {
-      Object result = null;
-
-      if (entityType == EntityType.HDocument)
-      {
-         HDocument document = documentDAO.getById(entityId);
-         result = (entityType.getEntityClass().cast(document));
-      }
-      else if (entityType == EntityType.HProjectIteration)
-      {
-         HProjectIteration projectVersion = projectIterationDAO.findById(entityId, false);
-         result = (entityType.getEntityClass().cast(projectVersion));
-      }
-      else if (entityType == EntityType.HTexFlowTarget)
-      {
-         HTextFlowTarget target = textFlowTargetDAO.findById(entityId, false);
-         result = (entityType.getEntityClass().cast(target));
-      }
-      else
-      {
-         throw new ZanataServiceException("Unsupported entity type");
-      }
-      return result;
+      return entityManager.find(entityType.getEntityClass(), entityId);
    }
 
    /**
