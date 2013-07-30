@@ -110,7 +110,7 @@ public class ActivityServiceImpl implements ActivityService
          }
          else
          {
-            activity = new Activity(actor, context.getEntityType(), context.getId(), target.getEntityType(), target.getId(), actionType, wordCount);
+            activity = new Activity(actor, context, target, actionType, wordCount);
          }
          activityDAO.makePersistent(activity);
          activityDAO.flush();
