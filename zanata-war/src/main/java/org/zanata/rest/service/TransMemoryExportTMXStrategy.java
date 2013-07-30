@@ -24,6 +24,7 @@ package org.zanata.rest.service;
 import static net.sf.okapi.common.LocaleId.fromBCP47;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -44,6 +45,7 @@ import org.zanata.util.VersionUtility;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 
 /**
  * Writes one or more variations for a single TransMemoryUnit as a TMX translation unit.
@@ -67,8 +69,9 @@ public class TransMemoryExportTMXStrategy extends ExportTMXStrategy<TransMemoryU
    @Override
    public void exportHeader(TMXWriter tmxWriter)
    {
-      ImmutableMap<String, Object> metadata = TMXMetadataHelper.getMetadata(tm);
+      ImmutableMap<String, String> metadata = TMXMetadataHelper.getAttributes(tm);
       // TODO Okapi can't export header's child nodes (prop and note)
+//      TMXMetadataHelper.getChildren(tm);
       net.sf.okapi.common.LocaleId sourceLocale;
       String srclang = tm.getSourceLanguage();
       if (srclang == null)
@@ -94,27 +97,39 @@ public class TransMemoryExportTMXStrategy extends ExportTMXStrategy<TransMemoryU
    }
 
    @Override
-   protected void addChildren(ITextUnit textUnit, TransMemoryUnit tu)
+   protected void exportMetadata(ITextUnit textUnit, TransMemoryUnit tu)
    {
-      try
+      ImmutableMap<String,String> attributes = TMXMetadataHelper.getAttributes(tu);
+      for (Map.Entry<String, String> attr : attributes.entrySet())
       {
-         List<Element> children = TMXMetadataHelper.getChildrenElements(TMXMetadataHelper.getMetadata(tu));
-         for (Element elem : children)
+         textUnit.setProperty(toProp(attr));
+      }
+      for (Property prop : toProps(TMXMetadataHelper.getChildren(tu)))
+      {
+         textUnit.setProperty(prop);
+      }
+   }
+
+   private Property toProp(Map.Entry<String, String> attr)
+   {
+      return new Property(attr.getKey(), attr.getValue());
+   }
+
+   private List<Property> toProps(List<Element> children)
+   {
+      List<Property> props = Lists.newArrayList();
+      for (Element elem : children)
+      {
+         if (elem.getLocalName().equals("prop"))
          {
-            if (elem.getLocalName().equals("prop"))
-            {
-               // TODO Okapi can only write string values for properties
-               Property property = new Property(elem.getAttributeValue("type"), elem.getValue());
-               // TODO Okapi doesn't allow multiple props with same type
-               textUnit.setProperty(property);
-            }
-            // TODO Okapi can't write note elements
+            // TODO Okapi can only write string values for properties
+            Property property = new Property(elem.getAttributeValue("type"), elem.getValue());
+            // TODO Okapi doesn't allow multiple props with same type
+            props.add(property);
          }
+         // TODO Okapi can't write note elements
       }
-      catch (Exception e)
-      {
-         throw new RuntimeException(e);
-      }
+      return props;
    }
 
    @Override
@@ -177,7 +192,14 @@ public class TransMemoryExportTMXStrategy extends ExportTMXStrategy<TransMemoryU
    {
       @Nonnull String trgContent = tuv.getPlainTextSegment();
       @Nonnull net.sf.okapi.common.LocaleId locId = fromBCP47(tuv.getLanguage());
-      addTargetToTextUnit(textUnit, locId, trgContent);
+      ImmutableMap<String,String> attributes = TMXMetadataHelper.getAttributes(tuv);
+      List<Property> props = Lists.newArrayList();
+      for (Map.Entry<String, String> attr : attributes.entrySet())
+      {
+         props.add(toProp(attr));
+      }
+      props.addAll(toProps(TMXMetadataHelper.getChildren(tuv)));
+      addTargetToTextUnit(textUnit, locId, trgContent, props);
    }
 
 }

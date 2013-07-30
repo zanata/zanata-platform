@@ -21,11 +21,14 @@
 
 package org.zanata.rest.service;
 
+import java.util.Collections;
+
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import net.sf.okapi.common.filterwriter.TMXWriter;
 import net.sf.okapi.common.resource.ITextUnit;
+import net.sf.okapi.common.resource.Property;
 
 import org.zanata.common.LocaleId;
 import org.zanata.model.SourceContents;
@@ -102,7 +105,7 @@ public class TranslationsExportTMXStrategy extends ExportTMXStrategy<SourceConte
    }
 
    @Override
-   protected void addChildren(ITextUnit textUnit, SourceContents tu)
+   protected void exportMetadata(ITextUnit textUnit, SourceContents tu)
    {
       // nothing to do
    }
@@ -134,7 +137,7 @@ public class TranslationsExportTMXStrategy extends ExportTMXStrategy<SourceConte
       {
          String trgContent = tfTarget.getContents().get(0);
          net.sf.okapi.common.LocaleId locId = OkapiUtil.toOkapiLocale(tfTarget.getLocaleId());
-         addTargetToTextUnit(textUnit, locId, trgContent);
+         addTargetToTextUnit(textUnit, locId, trgContent, Collections.<Property>emptyList());
       }
    }
 

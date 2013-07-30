@@ -21,6 +21,8 @@
 
 package org.zanata.rest.service;
 
+import java.util.List;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -75,7 +77,7 @@ public abstract class ExportTMXStrategy<T>
       ITextUnit textUnit = new TextUnit(tuid, srcContent);
       textUnit.setProperty(new Property(TMXUtils.SRCLANG, srcLang.toBCP47()));
       
-      addChildren(textUnit, tu);
+      exportMetadata(textUnit, tu);
 
       textUnit.setName(tuid);
       addTextUnitVariants(textUnit, tu);
@@ -96,7 +98,7 @@ public abstract class ExportTMXStrategy<T>
       }
    }
 
-   protected abstract void addChildren(ITextUnit textUnit, T tu);
+   protected abstract void exportMetadata(ITextUnit textUnit, T tu);
 
    protected LocaleId getSrcLangOrAll(Optional<LocaleId> sourceLocaleId)
    {
@@ -110,7 +112,7 @@ public abstract class ExportTMXStrategy<T>
       }
    }
 
-   protected void addTargetToTextUnit(ITextUnit textUnit, LocaleId locId, String trgContent)
+   protected void addTargetToTextUnit(ITextUnit textUnit, LocaleId locId, String trgContent, List<Property> props)
    {
       if (trgContent.contains("\0"))
       {
@@ -120,6 +122,10 @@ public abstract class ExportTMXStrategy<T>
       {
          TextFragment target = new TextFragment(trgContent);
          textUnit.setTargetContent(locId, target);
+         for (Property prop : props)
+         {
+            textUnit.setTargetProperty(locId, prop);
+         }
       }
    }
 

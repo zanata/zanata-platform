@@ -35,6 +35,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.zanata.common.LocaleId;
 import org.zanata.util.TMXUtils;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.Lists;
@@ -68,7 +69,7 @@ public class TMXMetadataHelper
    private static final String _lang = "lang";
    private static final String _tuid = "tuid";
 
-   public static List<String> getChildrenXml(Map<String, Object> metadata)
+   private static List<String> getChildrenXml(Map<String, Object> metadata)
    {
       List<String> children = (List<String>) metadata.get(TMX_ELEMENT_CHILDREN);
       if (children == null)
@@ -78,10 +79,17 @@ public class TMXMetadataHelper
       return children;
    }
 
-   public static List<Element> getChildrenElements(Map<String, Object> metadata)
+   public static List<Element> getChildren(HasTMMetadata entity)
    {
       try
       {
+         String metadataString = entity.getMetadata().get(TMMetadataType.TMX14);
+         if (metadataString == null)
+         {
+            return Lists.newArrayList();
+         }
+         Map<String, Object> metadata = jsonMapper.readValue(metadataString, Map.class);
+
          List<String> children = getChildrenXml(metadata);
          List<Element> result = Lists.newArrayListWithCapacity(children.size());
          for (String childXml : children)
@@ -103,9 +111,9 @@ public class TMXMetadataHelper
     * @param tu
     * @return
     */
-   public static @Nonnull ImmutableMap<String, Object> getMetadata(TransMemory tm)
+   public static @Nonnull ImmutableMap<String, String> getAttributes(TransMemory tm)
    {
-      Builder<String, Object> m = ImmutableMap.builder();
+      Builder<String, String> m = ImmutableMap.builder();
       m.putAll(getSharedMetadata(tm));
       String srclang = tm.getSourceLanguage();
       if (srclang != null)
@@ -120,9 +128,9 @@ public class TMXMetadataHelper
     * @param tu
     * @return
     */
-   public static @Nonnull ImmutableMap<String, Object> getMetadata(TransMemoryUnit tu)
+   public static @Nonnull ImmutableMap<String, String> getAttributes(TransMemoryUnit tu)
    {
-      Builder<String, Object> m = ImmutableMap.builder();
+      Builder<String, String> m = ImmutableMap.builder();
       m.putAll(getSharedMetadata(tu));
       String tuid = tu.getTransUnitId();
       if (tuid != null)
@@ -142,9 +150,9 @@ public class TMXMetadataHelper
     * @param tu
     * @return
     */
-   public static @Nonnull ImmutableMap<String, Object> getMetadata(TransMemoryUnitVariant tuv)
+   public static @Nonnull ImmutableMap<String, String> getAttributes(TransMemoryUnitVariant tuv)
    {
-      Builder<String, Object> m = ImmutableMap.builder();
+      Builder<String, String> m = ImmutableMap.builder();
       m.putAll(getSharedMetadata(tuv));
       String lang = tuv.getLanguage();
       if (lang != null)
@@ -154,9 +162,9 @@ public class TMXMetadataHelper
       return m.build();
    }
 
-   private static @Nonnull ImmutableMap<String, Object> getSharedMetadata(HasTMMetadata fromEntity)
+   private static @Nonnull ImmutableMap<String, String> getSharedMetadata(HasTMMetadata fromEntity)
    {
-      Builder<String, Object> m = ImmutableMap.builder();
+      Builder<String, String> m = ImmutableMap.builder();
       m.putAll(getGenericMetadata(fromEntity));
       Date creationDate = fromEntity.getCreationDate();
       if (creationDate != null)
@@ -172,7 +180,7 @@ public class TMXMetadataHelper
    }
 
    @SuppressWarnings("null")
-   private static @Nonnull Map<String, Object> getGenericMetadata(HasTMMetadata fromEntity)
+   private static @Nonnull Map<String, String> getGenericMetadata(HasTMMetadata fromEntity)
    {
       String metadataString = fromEntity.getMetadata().get(TMMetadataType.TMX14);
       if (metadataString == null)
@@ -181,7 +189,9 @@ public class TMXMetadataHelper
       }
       try
       {
-         return jsonMapper.readValue(metadataString, Map.class);
+         Map<String, String> map = jsonMapper.readValue(metadataString, Map.class);
+         map.remove(TMX_ELEMENT_CHILDREN);
+         return map;
       }
       catch (Exception e)
       {

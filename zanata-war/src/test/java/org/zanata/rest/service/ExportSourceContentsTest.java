@@ -41,6 +41,19 @@ public class ExportSourceContentsTest extends TMXStreamingOutputTest
       checkGerman(output);
    }
 
+   @Override
+   boolean expectAttributes()
+   {
+      return false;
+   }
+
+   @Override
+   boolean expectProperties()
+   {
+      return false;
+   }
+   
+
    private TMXStreamingOutput<SourceContents> streamSourceContents(LocaleId targetLocale)
    {
       return new TMXStreamingOutput<SourceContents>(createTestData(), new TranslationsExportTMXStrategy(targetLocale));

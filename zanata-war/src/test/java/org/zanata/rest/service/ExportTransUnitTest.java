@@ -3,6 +3,7 @@ package org.zanata.rest.service;
 import static org.zanata.model.tm.TransMemoryUnit.tu;
 import static org.zanata.model.tm.TransMemoryUnitVariant.tuv;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -14,7 +15,11 @@ import javax.xml.XMLConstants;
 import nu.xom.Attribute;
 import nu.xom.Element;
 
+import org.custommonkey.xmlunit.exceptions.XpathException;
 import org.testng.annotations.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 import org.zanata.common.LocaleId;
 import org.zanata.model.tm.TMXMetadataHelper;
 import org.zanata.model.tm.TransMemoryUnit;
@@ -35,6 +40,18 @@ public class ExportTransUnitTest extends TMXStreamingOutputTest
       checkAllLocales(output);
    }
 
+   @Override
+   boolean expectAttributes()
+   {
+      return true;
+   }
+
+   @Override
+   boolean expectProperties()
+   {
+      return true;
+   }
+   
    private TMXStreamingOutput<TransMemoryUnit> streamSourceContents()
    {
       return new TMXStreamingOutput<TransMemoryUnit>(createTestData(), new TransMemoryExportTMXStrategy(createTM()));
