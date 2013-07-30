@@ -153,7 +153,7 @@ public class TranslationMemoryQueryServiceImpl implements TranslationMemoryQuery
 
    /**
     * Generates the Hibernate Search Query that will search for {@link HTextFlowTarget} objects for matches.
-    * @param query
+    * @param queryParams
     * @param sourceLocale
     * @param targetLocale
     * @param queryText
@@ -162,9 +162,25 @@ public class TranslationMemoryQueryServiceImpl implements TranslationMemoryQuery
     * @return
     * @throws ParseException
     */
-   private Query generateTextFlowTargetQuery(TransMemoryQuery query, LocaleId sourceLocale, LocaleId targetLocale, String queryText, String[] multiQueryText, String[] contentFields) throws ParseException
+   private Query generateTextFlowTargetQuery(TransMemoryQuery queryParams, LocaleId sourceLocale, LocaleId targetLocale, String queryText, String[] multiQueryText, String[] contentFields) throws ParseException
    {
-      Query contentQuery;
+      BooleanQuery query = new BooleanQuery();
+
+      Query contentQuery = buildContentQuery(queryParams, sourceLocale, queryText, multiQueryText, contentFields);
+      query.add(contentQuery, Occur.MUST);
+
+      TermQuery localeQuery = new TermQuery(new Term(IndexFieldLabels.LOCALE_ID_FIELD, targetLocale.getId()));
+      query.add(localeQuery, Occur.MUST);
+
+      query.add(buildStateQuery(ContentState.New), Occur.MUST_NOT);
+      query.add(buildStateQuery(ContentState.NeedReview), Occur.MUST_NOT);
+      query.add(buildStateQuery(ContentState.Rejected), Occur.MUST_NOT);
+
+      return query;
+   }
+
+   private Query buildContentQuery(TransMemoryQuery query, LocaleId sourceLocale, String queryText, String[] multiQueryText, String[] contentFields) throws ParseException
+   {
       // Analyzer determined by the language
       String analyzerDefName = TextContainerAnalyzerDiscriminator.getAnalyzerDefinitionName(sourceLocale.getId());
       Analyzer analyzer = entityManager.getSearchFactory().getAnalyzer(analyzerDefName);
@@ -179,29 +195,18 @@ public class TranslationMemoryQueryServiceImpl implements TranslationMemoryQuery
          String[] searchFields = new String[queriesSize];
          System.arraycopy(contentFields, 0, searchFields, 0, queriesSize);
 
-         contentQuery = MultiFieldQueryParser.parse(LUCENE_VERSION, multiQueryText, searchFields, analyzer);
+         return MultiFieldQueryParser.parse(LUCENE_VERSION, multiQueryText, searchFields, analyzer);
       }
       else
       {
          MultiFieldQueryParser parser = new MultiFieldQueryParser(LUCENE_VERSION, contentFields, analyzer);
-         contentQuery = parser.parse(queryText);
+         return parser.parse(queryText);
       }
+   }
 
-      TermQuery localeQuery = new TermQuery(new Term(IndexFieldLabels.LOCALE_ID_FIELD, targetLocale.getId()));
-
-      TermQuery newStateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.New.toString()));
-      TermQuery needReviewStateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.NeedReview.toString()));
-      TermQuery rejectedReviewStateQuery = new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.Rejected.toString()));
-
-      BooleanQuery targetQuery = new BooleanQuery();
-      targetQuery.add(contentQuery, Occur.MUST);
-      targetQuery.add(localeQuery, Occur.MUST);
-
-      targetQuery.add(newStateQuery, Occur.MUST_NOT);
-      targetQuery.add(needReviewStateQuery, Occur.MUST_NOT);
-      targetQuery.add(rejectedReviewStateQuery, Occur.MUST_NOT);
-
-      return targetQuery;
+   private static TermQuery buildStateQuery(ContentState state)
+   {
+      return new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, state.toString()));
    }
 
    /**

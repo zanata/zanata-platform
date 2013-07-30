@@ -39,6 +39,11 @@ import org.zanata.util.CloseableIterator;
 @Name("transMemoryStreamingDAO")
 @Scope(ScopeType.EVENT)
 @NoArgsConstructor
+/**
+ * Note: unless the find* methods throw an exception, the caller is
+ * responsible for closing the Iterator, or a database connection
+ * may leak.
+ */
 public class TransMemoryStreamingDAO extends StreamingDAO<TransMemoryUnit>
 {
 
@@ -47,6 +52,14 @@ public class TransMemoryStreamingDAO extends StreamingDAO<TransMemoryUnit>
       super(emf);
    }
 
+   /**
+    * Finds all the TransMemoryUnits for a given TransMemory.
+    * <p>
+    * NB: caller must close the iterator, or call next() until the iterator is exhausted,
+    * or else a database connection will be leaked.
+    * @param transMemory
+    * @return
+    */
    public CloseableIterator<TransMemoryUnit> findTransUnitsByTM(TransMemory transMemory)
    {
       StreamingEntityIterator<TransMemoryUnit> iter = createIterator();
@@ -61,7 +74,7 @@ public class TransMemoryStreamingDAO extends StreamingDAO<TransMemoryUnit>
          q.setParameter("transMemory", transMemory);
          q.setComment("TransMemoryStreamingDAO.findTransUnitsByTM");
 
-         iter.setQuery(q);
+         iter.initQuery(q);
          return iter;
       }
       catch (Throwable e)

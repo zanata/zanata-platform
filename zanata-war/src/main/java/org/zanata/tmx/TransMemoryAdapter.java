@@ -22,7 +22,6 @@
 package org.zanata.tmx;
 
 import javax.persistence.EntityManager;
-import javax.xml.XMLConstants;
 
 import lombok.NoArgsConstructor;
 import nu.xom.Element;
@@ -109,11 +108,12 @@ public class TransMemoryAdapter
 
    private void addVariant(TransMemoryUnit tu, Element tuvElem)
    {
-      String language = tuvElem.getAttributeValue("lang", XMLConstants.XML_NS_URI);
-      String content = tuvElem.getFirstChildElement("seg").toXML();
+      String taggedSegment = tuvElem.getFirstChildElement("seg").toXML();
 
-      TransMemoryUnitVariant tuv = new TransMemoryUnitVariant(language, content);
+      TransMemoryUnitVariant tuv = new TransMemoryUnitVariant();
+      tuv.setTaggedSegment(taggedSegment);
       TMXMetadataHelper.setMetadata(tuv, tuvElem);
+      String language = tuv.getLanguage();
 
       String locale = new LocaleId(language).getId(); // Throws IllegalArgumentException if the locale is not accepted
       tu.getTransUnitVariants().put(locale, tuv);

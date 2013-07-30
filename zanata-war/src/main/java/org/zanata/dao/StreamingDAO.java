@@ -46,6 +46,12 @@ public abstract class StreamingDAO<T>
       this.entityManagerFactory = emf;
    }
 
+   /**
+    * Note: unless this method throws an exception, the caller is
+    * responsible for closing the Iterator, or a database connection
+    * may leak.
+    * @return a CloseableIterator
+    */
    StreamingEntityIterator<T> createIterator()
    {
       @SuppressWarnings("null")

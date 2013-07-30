@@ -22,6 +22,8 @@ package org.zanata.model;
 
 import java.util.List;
 
+import javax.persistence.Query;
+
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.criterion.Restrictions;
 import org.testng.annotations.Test;
@@ -60,7 +62,7 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
       return tm;
    }
 
-   private TransMemory getTransMemory(String slug)
+   private TransMemory loadTM(String slug)
    {
       return (TransMemory)
             super.getSession().createCriteria(TransMemory.class).add(Restrictions.naturalId().set("slug", slug))
@@ -73,7 +75,7 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
       TransMemory tm = createDefaultTransMemoryInstance();
       super.getEm().persist(tm);
 
-      TransMemory stored = getTransMemory("new-trans-memory");
+      TransMemory stored = loadTM("new-trans-memory");
 
       assertThat(stored.getSlug(), is(tm.getSlug()));
    }
@@ -86,7 +88,7 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
       tm.getMetadata().put(TMMetadataType.TMX14, defaultMetadataVal);
       super.getEm().persist(tm);
 
-      TransMemory stored = getTransMemory("new-trans-memory");
+      TransMemory stored = loadTM("new-trans-memory");
       assertThat(stored.getSlug(), is(tm.getSlug()));
       assertThat(stored.getMetadata().size(), is( tm.getMetadata().size() ));
       assertThat(stored.getMetadata().get(TMMetadataType.TMX14), equalTo(defaultMetadataVal));
@@ -110,7 +112,7 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
       super.getEm().persist(tm);
 
       // Fetch it, should have the same elements
-      TransMemory stored = getTransMemory("new-trans-memory");
+      TransMemory stored = loadTM("new-trans-memory");
 
       assertThat(stored.getTranslationUnits().size(), is(NUM_TRANS_UNITS));
    }
@@ -134,7 +136,7 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
       super.getEm().persist(tm);
 
       // Fetch it, should have the same elements
-      TransMemory stored = getTransMemory("new-trans-memory");
+      TransMemory stored = loadTM("new-trans-memory");
 
       assertThat(stored.getTranslationUnits().size(), is(NUM_TRANS_UNITS));
       for( TransMemoryUnit tu : tm.getTranslationUnits() )
@@ -151,7 +153,7 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
       saveWithTransUnits();
 
       // Fetch the translation memory
-      TransMemory stored = getTransMemory("new-trans-memory");
+      TransMemory stored = loadTM("new-trans-memory");
 
       // For each trans unit, generate some variants
       for(TransMemoryUnit tu : stored.getTranslationUnits())
@@ -168,8 +170,7 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
       }
 
       // Verify they were saved
-      List results = getEm().createQuery(
-            "select tu.transUnitVariants from TransMemoryUnit tu where tu.translationMemory.slug = 'new-trans-memory'").getResultList();
+      List results = queryTUVs().getResultList();
       assertThat(results.size(), greaterThan(0));
    }
 
@@ -180,7 +181,7 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
       saveWithTransUnits();
 
       // Fetch the translation memory
-      TransMemory stored = getTransMemory("new-trans-memory");
+      TransMemory stored = loadTM("new-trans-memory");
 
       // Store a Trans unit variant with formatting
       TransMemoryUnit tu = stored.getTranslationUnits().iterator().next();
@@ -191,9 +192,13 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
       super.getEm().merge(tu);
 
       // Verify they were saved
-      TransMemoryUnitVariant tuv
-            = (TransMemoryUnitVariant)getEm().createQuery(
-               "select tu.transUnitVariants from TransMemoryUnit tu where tu.translationMemory.slug = 'new-trans-memory'").getSingleResult();
+      TransMemoryUnitVariant tuv = (TransMemoryUnitVariant)queryTUVs().getSingleResult();
       assertThat(tuv.getPlainTextSegment(), equalTo("Mensaje de Prueba"));
+   }
+
+   private Query queryTUVs()
+   {
+      return getEm().createQuery(
+         "select tu.transUnitVariants from TransMemoryUnit tu where tu.translationMemory.slug = 'new-trans-memory'");
    }
 }

@@ -18,7 +18,7 @@ class StreamingEntityIterator<E> implements CloseableIterator<E>
 
    private final @Nonnull Session session;
    private int rowNum;
-   private ScrollableResultsIterator srIter;
+   private ScrollableResultsIterator iter;
 
    public StreamingEntityIterator(@Nonnull Session session)
    {
@@ -28,9 +28,9 @@ class StreamingEntityIterator<E> implements CloseableIterator<E>
    @Override
    public void close()
    {
-      if (srIter != null)
+      if (iter != null)
       {
-         srIter.close();
+         iter.close();
       }
       session.close();
    }
@@ -49,14 +49,14 @@ class StreamingEntityIterator<E> implements CloseableIterator<E>
    @Override
    public boolean hasNext()
    {
-      return srIter.hasNext();
+      return iter.hasNext();
    }
 
    @Override
    public E next()
    {
       if (++rowNum % 1000 == 0) session.clear();
-      E tf = (E) srIter.next()[0];
+      E tf = (E) iter.next()[0];
       session.evict(tf);
       return tf;
    }
@@ -67,12 +67,13 @@ class StreamingEntityIterator<E> implements CloseableIterator<E>
       throw new UnsupportedOperationException();
    }
 
-   public void setQuery(Query q)
+   public void initQuery(Query q)
    {
+      assert iter == null;
       q.setFetchSize(fetchSize);
       q.setReadOnly(true);
       ScrollableResults scroll = q.scroll(ScrollMode.FORWARD_ONLY);
-      srIter = new ScrollableResultsIterator(scroll);
+      iter = new ScrollableResultsIterator(scroll);
    }
 
 }

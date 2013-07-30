@@ -48,6 +48,11 @@ import org.zanata.util.CloseableIterator;
 // TODO queries should only return Translated/Approved TFTs
 // TODO build related queries using querydsl
 @NoArgsConstructor
+/**
+ * Note: unless the find* methods throw an exception, the caller is
+ * responsible for closing the Iterator, or a database connection
+ * may leak.
+ */
 public class TextFlowStreamingDAO extends StreamingDAO<HTextFlow>
 {
 
@@ -59,6 +64,9 @@ public class TextFlowStreamingDAO extends StreamingDAO<HTextFlow>
    /**
     * Returns all HTextFlows in all projects, eagerly fetches targets, document, iteration and project.  
     * Obsolete projects, iterations, documents and textflows are skipped.
+    * <p>
+    * NB: caller must close the iterator, or call next() until the iterator is exhausted,
+    * or else a database connection will be leaked.
     * @return
     */
    public @Nonnull CloseableIterator<HTextFlow> findTextFlows()
@@ -81,7 +89,7 @@ public class TextFlowStreamingDAO extends StreamingDAO<HTextFlow>
                );
          q.setParameter("OBSOLETE", EntityStatus.OBSOLETE);
          q.setComment("TextFlowStreamDAO.findTextFlows");
-         iter.setQuery(q);
+         iter.initQuery(q);
          return iter;
       }
       catch (Throwable e)
@@ -94,6 +102,9 @@ public class TextFlowStreamingDAO extends StreamingDAO<HTextFlow>
    /**
     * Returns all HTextFlows in project, eagerly fetches targets, document, iteration and project.
     * Obsolete iterations, documents and textflows are skipped.
+    * <p>
+    * NB: caller must close the iterator, or call next() until the iterator is exhausted,
+    * or else a database connection will be leaked.
     * @return
     */
    public @Nonnull CloseableIterator<HTextFlow> findTextFlowsByProject(HProject hProject)
@@ -117,7 +128,7 @@ public class TextFlowStreamingDAO extends StreamingDAO<HTextFlow>
          q.setParameter("OBSOLETE", EntityStatus.OBSOLETE);
          q.setParameter("proj", hProject);
          q.setComment("TextFlowStreamDAO.findTextFlowsByProject");
-         iter.setQuery(q);
+         iter.initQuery(q);
          return iter;
       }
       catch (Throwable e)
@@ -130,6 +141,9 @@ public class TextFlowStreamingDAO extends StreamingDAO<HTextFlow>
    /**
     * Returns all HTextFlows in project iteration, eagerly fetches targets, document, iteration and project.
     * Obsolete documents and textflows are skipped.
+    * <p>
+    * NB: caller must close the iterator, or call next() until the iterator is exhausted,
+    * or else a database connection will be leaked.
     * @return
     */
    public @Nonnull CloseableIterator<HTextFlow> findTextFlowsByProjectIteration(HProjectIteration hProjectIteration)
@@ -152,7 +166,7 @@ public class TextFlowStreamingDAO extends StreamingDAO<HTextFlow>
          q.setParameter("iter", hProjectIteration);
          q.setComment("TextFlowStreamDAO.findTextFlowsByProjectIteration");
 
-         iter.setQuery(q);
+         iter.initQuery(q);
          return iter;
       }
       catch (Throwable e)

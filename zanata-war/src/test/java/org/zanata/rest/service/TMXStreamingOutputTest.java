@@ -119,7 +119,7 @@ abstract class TMXStreamingOutputTest
       assertXpathNotExists("//tuv[@xml:lang='"+lang+"']", doc);
    }
 
-   Document writeToXmlWithValidation(StreamingOutput output) throws IOException, SAXException
+   private Document writeToXmlWithValidation(StreamingOutput output) throws IOException, SAXException
    {
       StringBuilderWriter sbWriter = new StringBuilderWriter();
       WriterOutputStream writerOutputStream = new WriterOutputStream(sbWriter);
