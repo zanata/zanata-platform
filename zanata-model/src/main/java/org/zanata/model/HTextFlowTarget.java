@@ -86,7 +86,7 @@ import com.google.common.collect.Lists;
 @Indexed
 @Setter
 @NoArgsConstructor
-public class HTextFlowTarget extends ModelEntityBase implements HasContents, HasSimpleComment, ITextFlowTargetHistory, Serializable, TargetContents, HasEntityType
+public class HTextFlowTarget extends ModelEntityBase implements HasContents, HasSimpleComment, ITextFlowTargetHistory, Serializable, TargetContents, IsEntityWithType
 {
 
    private static final long serialVersionUID = 302308010797605435L;

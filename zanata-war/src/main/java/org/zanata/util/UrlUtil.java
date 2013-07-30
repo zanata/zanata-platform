@@ -107,6 +107,11 @@ public class UrlUtil implements Serializable
    {
       return contextPath + "/project/view/" + projectSlug;
    }
+   
+   public String createVersionUrl(String projectSlug)
+   {
+      return contextPath + "/project/add_iteration.seam?projectSlug=" + projectSlug;
+   }
 
    public String versionUrl(String projectSlug, String versionSlug)
    {

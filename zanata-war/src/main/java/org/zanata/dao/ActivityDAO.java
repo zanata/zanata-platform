@@ -72,7 +72,7 @@ public class ActivityDAO extends AbstractDAOImpl<Activity, Long>
    }
 
    @SuppressWarnings("unchecked")
-   public List<Activity> findActivities(long personId, long contextId, int offset, int maxResults)
+   public List<Activity> findLatestActivitiesForContext(long personId, long contextId, int offset, int maxResults)
    {
       Query query = getSession().createQuery("FROM Activity a WHERE a.actor.id = :personId "
             + "AND a.contextId = :contextId "

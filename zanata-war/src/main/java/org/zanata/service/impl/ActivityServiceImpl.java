@@ -48,7 +48,7 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HPerson;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.HasEntityType;
+import org.zanata.model.IsEntityWithType;
 import org.zanata.model.type.EntityType;
 import org.zanata.service.ActivityService;
 
@@ -87,7 +87,7 @@ public class ActivityServiceImpl implements ActivityService
    @Override
    public List<Activity> findActivities(long personId, long contextId, int offset, int maxResults)
    {
-      return activityDAO.findActivities(personId, contextId, offset, maxResults);
+      return activityDAO.findLatestActivitiesForContext(personId, contextId, offset, maxResults);
    }
 
    @Override
@@ -97,7 +97,7 @@ public class ActivityServiceImpl implements ActivityService
    }
 
    @Override
-   public void logActivity(HPerson actor, HasEntityType context, HasEntityType target, ActivityType actionType, int wordCount)
+   public void logActivity(HPerson actor, IsEntityWithType context, IsEntityWithType target, ActivityType actionType, int wordCount)
    {
       if (actor != null && context != null && actionType != null)
       {

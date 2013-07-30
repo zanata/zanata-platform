@@ -36,24 +36,24 @@
 					</p>
 		        	<p class="l--push-all-0">
 		        		<s:fragment rendered="#{activity.actionType == 'UPDATE_TRANSLATION'}">
-		        			You translated <strong>#{activityAction.getWordsCount(activity.wordCount)}</strong> in
+		        			You translated <strong>#{activityAction.getWordsCountMessage(activity.wordCount)}</strong> in
 		        			<a href="#{activityAction.getProjectUrl(activity)}">#{activityAction.getProjectName(activity)}</a>,
 	        				finishing on "<a href="#{activityAction.getEditorUrl(activity)}">#{activityAction.getLastTextFlowContent(activity)}</a>"
 		        		</s:fragment>
 		        		
 		        		<s:fragment rendered="#{activity.actionType == 'REVIEWED_TRANSLATION'}">
-		        			You reviewed <strong>#{activityAction.getWordsCount(activity.wordCount)}</strong> in
+		        			You reviewed <strong>#{activityAction.getWordsCountMessage(activity.wordCount)}</strong> in
 		        			<a href="#{activityAction.getProjectUrl(activity)}">#{activityAction.getProjectName(activity)}</a>,
 	        				finishing on "<a href="#{activityAction.getEditorUrl(activity)}">#{activityAction.getLastTextFlowContent(activity)}</a>"
 		        		</s:fragment>
 		        		
 		        		<s:fragment rendered="#{activity.actionType == 'UPLOAD_SOURCE_DOCUMENT'}">
-		        			You uploaded a document of <strong>#{activityAction.getWordsCount(activity.wordCount)}</strong> to
+		        			You uploaded a document of <strong>#{activityAction.getWordsCountMessage(activity.wordCount)}</strong> to
 		        			<a href="#{activityAction.getProjectUrl(activity)}">#{activityAction.getProjectName(activity)}</a>
 		        		</s:fragment>
 		        		
 		        		<s:fragment rendered="#{activity.actionType == 'UPLOAD_TRANSLATION_DOCUMENT'}">
-		        			You uploaded a translation of <strong>#{activityAction.getWordsCount(activity.wordCount)}</strong> to 
+		        			You uploaded a translation of <strong>#{activityAction.getWordsCountMessage(activity.wordCount)}</strong> to 
 		        			<a href="#{activityAction.getProjectUrl(activity)}">#{activityAction.getProjectName(activity)}</a>,
 	        				finishing on "<a href="#{activityAction.getEditorUrl(activity)}">#{activityAction.getLastTextFlowContent(activity)}</a>"
 		        		</s:fragment>
@@ -83,7 +83,7 @@
 		     	</li>
 	     	</ui:repeat>
 	     	<s:fragment rendered="#{activityAction.hasMoreActivities()}">
-		    	<a4j:commandLink styleClass="d--top loader" action="#{activityAction.loadMoreActivity()}" render="activityList">
+		    	<a4j:commandLink styleClass="d--top loader" action="#{activityAction.loadNextActivity()}" render="activityList">
 			    	<span class="loader__label">#{messages['jsf.moreActivity']}</span>
 			    </a4j:commandLink>
 		    </s:fragment>

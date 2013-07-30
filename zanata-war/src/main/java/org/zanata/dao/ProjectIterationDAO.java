@@ -67,15 +67,15 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
       super(HProjectIteration.class, session);
    }
 
-   public @Nullable
-   HProjectIteration getBySlug(@Nonnull String projectSlug, @Nonnull String iterationSlug)
+   @Nullable
+   public HProjectIteration getBySlug(@Nonnull String projectSlug, @Nonnull String iterationSlug)
    {
       HProject project = (HProject) getSession().byNaturalId(HProject.class).using("slug", projectSlug).load();
       return getBySlug(project, iterationSlug);
    }
 
-   public @Nullable
-   HProjectIteration getBySlug(@Nonnull HProject project, @Nonnull String iterationSlug)
+   @Nullable 
+   public HProjectIteration getBySlug(@Nonnull HProject project, @Nonnull String iterationSlug)
    {
       if (project == null || StringUtils.isEmpty(iterationSlug))
       {
@@ -386,7 +386,7 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
       return q.list();
    }
 
-   public List<HProjectIteration> searchByProjectIdExcludeStatus(Long projectId, EntityStatus... exclude)
+   public List<HProjectIteration> searchByProjectIdExcludingStatus(Long projectId, EntityStatus... exclude)
    {
       StringBuilder sb = new StringBuilder();
       sb.append("FROM HProjectIteration t WHERE t.project.id = :projectId ");

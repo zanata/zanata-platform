@@ -25,7 +25,7 @@ import org.zanata.model.type.EntityType;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-public interface HasEntityType
+public interface IsEntityWithType
 {
    Long getId();
    

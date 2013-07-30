@@ -44,6 +44,9 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.GravatarService;
 import org.zanata.util.DateUtil;
+import org.zanata.util.UrlUtil;
+
+import com.ctc.wstx.util.URLUtil;
 
 @Name("dashboardAction")
 @Scope(ScopeType.PAGE)
@@ -63,11 +66,14 @@ public class DashboardAction implements Serializable
    @In
    private ProjectDAO projectDAO;
 
-   @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
-   private HAccount authenticatedAccount;
-
    @In
    private ZanataIdentity identity;
+   
+   @In
+   private UrlUtil urlUtil;
+   
+   @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
+   private HAccount authenticatedAccount;
 
    private final int USER_IMAGE_SIZE = 115;
 
@@ -96,7 +102,7 @@ public class DashboardAction implements Serializable
    }
 
    @CachedMethodResult
-   public int getUserMaintainedProjectsSize()
+   public int getUserMaintainedProjectsCount()
    {
       return authenticatedAccount.getPerson().getMaintainerProjects().size();
    }
@@ -106,7 +112,7 @@ public class DashboardAction implements Serializable
    {
       List<HProject> sortedList = new ArrayList<HProject>();
 
-      if (checkViewObsolete())
+      if (canViewObsolete())
       {
          sortedList.addAll(authenticatedAccount.getPerson().getMaintainerProjects());
       }
@@ -126,7 +132,7 @@ public class DashboardAction implements Serializable
    }
 
    @CachedMethodResult
-   public boolean checkViewObsolete()
+   public boolean canViewObsolete()
    {
       return identity != null && identity.hasPermission("HProject", "view-obsolete");
    }
@@ -135,13 +141,13 @@ public class DashboardAction implements Serializable
    public List<HProjectIteration> getProjectVersions(Long projectId)
    {
       List<HProjectIteration> result = new ArrayList<HProjectIteration>();
-      if (checkViewObsolete())
+      if (canViewObsolete())
       {
          result.addAll(projectIterationDAO.searchByProjectId(projectId));
       }
       else
       {
-         result.addAll(projectIterationDAO.searchByProjectIdExcludeStatus(projectId, EntityStatus.OBSOLETE));
+         result.addAll(projectIterationDAO.searchByProjectIdExcludingStatus(projectId, EntityStatus.OBSOLETE));
       }
       return result;
    }
@@ -175,5 +181,10 @@ public class DashboardAction implements Serializable
    private HProject getProject(Long projectId)
    {
       return projectDAO.findById(projectId, false);
+   }
+   
+   public String getCreateVersionUrl(String projectSlug)
+   {
+      return urlUtil.createVersionUrl(projectSlug);
    }
 }

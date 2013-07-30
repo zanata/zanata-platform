@@ -21,6 +21,7 @@
 package org.zanata.action;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -77,9 +78,15 @@ public class ActivityAction implements Serializable
 
    public List<Activity> getActivities()
    {
-      int count = (activityPageIndex + 1) * ACTIVITY_COUNT_PER_LOAD;
-      return activityServiceImpl.findLatestActivities(authenticatedAccount.getPerson().getId(), 0,
-            count);
+      List<Activity> activities = new ArrayList<Activity>();
+
+      if (authenticatedAccount != null)
+      {
+         int count = (activityPageIndex + 1) * ACTIVITY_COUNT_PER_LOAD;
+         activities = activityServiceImpl.findLatestActivities(authenticatedAccount.getPerson().getId(), 0,
+               count);
+      }
+      return activities;
    }
 
    public String getDurationTime(Activity activity)
@@ -132,8 +139,12 @@ public class ActivityAction implements Serializable
       else if (activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
       {
          HDocument document = (HDocument) lastTarget;
-         HTextFlowTarget tft = documentDAO.getLastTranslatedTarget(document.getId());
-         content = tft.getTextFlow().getContents().get(0);
+         HTextFlowTarget tft = documentDAO.getLastTranslatedTargetOrNull(document.getId());
+         
+         if (tft != null)
+         {
+            content = tft.getTextFlow().getContents().get(0);
+         }
       }
 
       return ShortString.shorten(content);
@@ -161,10 +172,13 @@ public class ActivityAction implements Serializable
       {
          HProjectIteration version = (HProjectIteration) context;
          HDocument document = (HDocument) lastTarget;
-         HTextFlowTarget tft = documentDAO.getLastTranslatedTarget(document.getId());
+         HTextFlowTarget tft = documentDAO.getLastTranslatedTargetOrNull(document.getId());
 
-         url = urlUtil.editorTransUnitUrl(version.getProject().getSlug(), version.getSlug(), tft.getLocaleId(),
-               document.getSourceLocaleId(), tft.getTextFlow().getDocument().getDocId(), tft.getTextFlow().getId());
+         if (tft != null)
+         {
+            url = urlUtil.editorTransUnitUrl(version.getProject().getSlug(), version.getSlug(), tft.getLocaleId(),
+                  document.getSourceLocaleId(), tft.getTextFlow().getDocument().getDocId(), tft.getTextFlow().getId());
+         }
       }
       return url;
    }
@@ -192,10 +206,13 @@ public class ActivityAction implements Serializable
       {
          HProjectIteration version = (HProjectIteration) context;
          HDocument document = (HDocument) lastTarget;
-         HTextFlowTarget tft = documentDAO.getLastTranslatedTarget(document.getId());
+         HTextFlowTarget tft = documentDAO.getLastTranslatedTargetOrNull(document.getId());
 
-         url = urlUtil.editorDocumentUrl(version.getProject().getSlug(), version.getSlug(), tft.getLocaleId(),
-               document.getSourceLocaleId(), tft.getTextFlow().getDocument().getDocId());
+         if (tft != null)
+         {
+            url = urlUtil.editorDocumentUrl(version.getProject().getSlug(), version.getSlug(), tft.getLocaleId(),
+                  document.getSourceLocaleId(), tft.getTextFlow().getDocument().getDocId());
+         }
       }
       return url;
    }
@@ -272,10 +289,14 @@ public class ActivityAction implements Serializable
       {
          HProjectIteration version = (HProjectIteration) context;
          HDocument document = (HDocument) lastTarget;
-         HTextFlowTarget tft = documentDAO.getLastTranslatedTarget(document.getId());
+         HTextFlowTarget tft = documentDAO.getLastTranslatedTargetOrNull(document.getId());
 
-         url = urlUtil.editorDocumentListUrl(version.getProject().getSlug(), version.getSlug(), tft.getLocaleId(), tft
-               .getTextFlow().getLocale());
+         if (tft != null)
+         {
+            url = urlUtil.editorDocumentListUrl(version.getProject().getSlug(), version.getSlug(), tft.getLocaleId(),
+                  tft
+                        .getTextFlow().getLocale());
+         }
       }
       return url;
    }
@@ -297,19 +318,23 @@ public class ActivityAction implements Serializable
       else if (activity.getActionType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
       {
          HDocument document = (HDocument) lastTarget;
-         HTextFlowTarget tft = documentDAO.getLastTranslatedTarget(document.getId());
-         name = tft.getLocaleId().getId();
+         HTextFlowTarget tft = documentDAO.getLastTranslatedTargetOrNull(document.getId());
+         
+         if (tft != null)
+         {
+            name = tft.getLocaleId().getId();
+         }
       }
 
       return name;
    }
 
-   public void loadMoreActivity()
+   public void loadNextActivity()
    {
       activityPageIndex++;
    }
 
-   public String getWordsCount(int wordCount)
+   public String getWordsCountMessage(int wordCount)
    {
       if (wordCount == 1)
       {
