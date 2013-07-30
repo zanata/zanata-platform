@@ -147,7 +147,7 @@ public class DashboardAction implements Serializable
       }
       else
       {
-         result.addAll(projectIterationDAO.searchByProjectIdExcludeStatus(projectId, EntityStatus.OBSOLETE));
+         result.addAll(projectIterationDAO.searchByProjectIdExcludingStatus(projectId, EntityStatus.OBSOLETE));
       }
       return result;
    }
