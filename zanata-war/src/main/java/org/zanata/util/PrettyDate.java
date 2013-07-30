@@ -96,7 +96,7 @@ public class PrettyDate
 
    private static String getMessage(int duration, UNIT unit)
    {
-      String passOrFuture = passOrFuture(duration);
+      String passOrFuture = pastOrFuture(duration);
 
       if (isSingular(duration))
       {
@@ -110,10 +110,10 @@ public class PrettyDate
 
    private static int getPositiveValue(int duration)
    {
-      return duration > 0 ? duration : duration * -1;
+      return Math.abs(duration);
    }
 
-   private static String passOrFuture(int duration)
+   private static String pastOrFuture(int duration)
    {
       return duration > 0 ? " ago" : " in future";
    }

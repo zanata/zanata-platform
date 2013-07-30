@@ -57,23 +57,25 @@ public class BasePage extends AbstractPage
 {
    private List<WebElement> navMenuItems = Collections.emptyList();
 
-   private static final By BY_SIGN_IN = By.id("Sign_in");
+   
    private static final By BY_SIGN_OUT = By.id("Sign_out");
 
    @FindBy(className = "navBar")
    WebElement navBar;
 
-   @FindBy(id = "Projects")
+   @FindBy(id = "banner_projects_link")
    private WebElement projectsLink;
 
-   @FindBy(id = "version-groups")
+   @FindBy(id = "banner_version-groups_link")
    private WebElement groupsLink;
 
-   @FindBy(id = "Languages")
+   @FindBy(id = "banner_languages_link")
    private WebElement languagesLink;
 
-   @FindBy(id = "userCol")
+   @FindBy(id = "user_avatar")
    private WebElement userColumn;
+   
+   private By BY_SIGN_IN = By.id("signin_link");
 
    public BasePage(final WebDriver driver)
    {
@@ -118,16 +120,15 @@ public class BasePage extends AbstractPage
 
    public SignInPage clickSignInLink()
    {
-      log.info("header text: {}", userColumn.getText());
-      WebElement signInLink = userColumn.findElement(BY_SIGN_IN);
+      WebElement signInLink = getDriver().findElement(BY_SIGN_IN);
       signInLink.click();
       return new SignInPage(getDriver());
    }
 
    public boolean hasLoggedIn()
    {
-      List<WebElement> signOutLink = getDriver().findElements(BY_SIGN_IN);
-      return signOutLink.size() == 0;
+      List<WebElement> signInLink = getDriver().findElements(BY_SIGN_IN);
+      return signInLink.size() == 0;
    }
 
    public String loggedInAs()

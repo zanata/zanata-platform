@@ -84,7 +84,7 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest
    @Test
    public void testNewReviewActivityInserted() throws Exception
    {
-      activityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
+      activityService.logTextFlowStateUpdate(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
             ContentState.Approved));
       Activity activity = activityService.findActivity(personId, EntityType.HProjectIteration, projectVersionId, ActivityType.REVIEWED_TRANSLATION, new Date());
       assertThat(activity, not(nullValue()));
@@ -94,16 +94,16 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest
    @Test
    public void testNewReviewActivityUpdated() throws Exception
    {
-      activityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
+      activityService.logTextFlowStateUpdate(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
             ContentState.Approved));
       
-      List<Activity> activities = activityService.findActivities(personId, projectVersionId, 0, 10);
+      List<Activity> activities = activityService.findLatestActivitiesForContext(personId, projectVersionId, 0, 10);
       assertThat(activities.size(), Matchers.equalTo(1));
 
-      activityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
+      activityService.logTextFlowStateUpdate(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
             ContentState.Rejected));
 
-      activities = activityService.findActivities(personId, projectVersionId, 0, 10);
+      activities = activityService.findLatestActivitiesForContext(personId, projectVersionId, 0, 10);
       assertThat(activities.size(), Matchers.equalTo(1));
       
       Activity activity = activityService.findActivity(personId, EntityType.HProjectIteration, projectVersionId, ActivityType.REVIEWED_TRANSLATION, new Date());
@@ -113,7 +113,7 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest
    @Test
    public void testActivityInsertAndUpdate() throws Exception
    {
-      activityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
+      activityService.logTextFlowStateUpdate(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
             ContentState.Translated));
       
       Activity activity = activityService.findActivity(personId, EntityType.HProjectIteration, projectVersionId, ActivityType.UPDATE_TRANSLATION, new Date());
@@ -121,7 +121,7 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest
       
       Long id = activity.getId();
 
-      activityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
+      activityService.logTextFlowStateUpdate(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
             ContentState.NeedReview));
       
       activity = activityService.findActivity(personId, EntityType.HProjectIteration, projectVersionId, ActivityType.UPDATE_TRANSLATION, new Date());
@@ -131,15 +131,15 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest
    @Test
    public void testActivityInsertMultipleTypeActivities() throws Exception
    {
-      activityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
+      activityService.logTextFlowStateUpdate(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
             ContentState.Translated));
 
-      activityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
+      activityService.logTextFlowStateUpdate(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
             ContentState.Approved));
       
-      activityService.documentUploaded(new DocumentUploadedEvent(documentId, false, new LocaleId("as")));
+      activityService.onDocumentUploaded(new DocumentUploadedEvent(documentId, false, new LocaleId("as")));
       
-      List<Activity> activities = activityService.findActivities(personId, projectVersionId, 0, 10);
+      List<Activity> activities = activityService.findLatestActivitiesForContext(personId, projectVersionId, 0, 10);
       assertThat(activities.size(), Matchers.equalTo(3));
    }
 
@@ -148,19 +148,19 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest
    {
       Long documentId2 = new Long(2);
 
-      activityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId2, null, LocaleId.EN_US, new Long(5),
+      activityService.logTextFlowStateUpdate(new TextFlowTargetStateEvent(documentId2, null, LocaleId.EN_US, new Long(5),
             ContentState.Translated));
 
-      activityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId2, null, LocaleId.EN_US, new Long(5),
+      activityService.logTextFlowStateUpdate(new TextFlowTargetStateEvent(documentId2, null, LocaleId.EN_US, new Long(5),
             ContentState.Approved));
 
-      activityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId2, null, LocaleId.EN_US, new Long(6),
+      activityService.logTextFlowStateUpdate(new TextFlowTargetStateEvent(documentId2, null, LocaleId.EN_US, new Long(6),
             ContentState.Rejected));
 
-      activityService.textFlowStateUpdated(new TextFlowTargetStateEvent(documentId2, null, LocaleId.EN_US, new Long(6),
+      activityService.logTextFlowStateUpdate(new TextFlowTargetStateEvent(documentId2, null, LocaleId.EN_US, new Long(6),
             ContentState.NeedReview));
 
-      List<Activity> activities = activityService.findActivities(documentId2, projectVersionId, 0, 10);
+      List<Activity> activities = activityService.findLatestActivitiesForContext(documentId2, projectVersionId, 0, 10);
 
       assertThat(activities.size(), Matchers.equalTo(2));
    }

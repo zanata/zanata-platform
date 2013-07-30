@@ -20,7 +20,7 @@
 	</h1>
 
 	<s:fragment rendered="#{identity.loggedIn}">
-		<a href="#off-canvas--right" class="off-canvas__toggle--right l--float-right badge__container">
+		<a href="#off-canvas--right" id="user_avatar" class="off-canvas__toggle--right l--float-right badge__container">
 			<span class="badge--bl"><!--  This is for notification count --></span>
 			<img src="#{gravatarServiceImpl.getUserImageUrl(72)}" alt="#{personHome.instance.name}"/>
 			<span class="is-invisible">Account</span>
@@ -28,19 +28,19 @@
 	</s:fragment>
 	<s:fragment rendered="#{not identity.loggedIn}">
 		<div class="header__login l--float-right">
-			<h:outputLink value="#{request.contextPath}/account/sign_in?continue=#{urlUtil.getEncodedLocalUrl(request)}" propagation="none"
+			<h:outputLink id="signin_link" value="#{request.contextPath}/account/sign_in?continue=#{urlUtil.getEncodedLocalUrl(request)}" propagation="none"
 	        	rendered="#{not applicationConfiguration.kerberosAuth}">#{messages['jsf.Login']}
 			</h:outputLink>
 			
-	        <h:outputLink value="#{request.contextPath}/account/klogin.seam?continue=#{urlUtil.getEncodedLocalUrl(request)}" propagation="none"
+	        <h:outputLink id="ksignin_link" value="#{request.contextPath}/account/klogin.seam?continue=#{urlUtil.getEncodedLocalUrl(request)}" propagation="none"
 	                      rendered="#{applicationConfiguration.kerberosAuth}">#{messages['jsf.Login']}
 	        </h:outputLink>
 	        
-	        <s:link view="/account/register.xhtml" value="#{messages['jsf.Signup']}" propagation="none" styleClass="is-hidden--s l--push-left-half button--primary"
+	        <s:link id="register_link_internal_auth" view="/account/register.xhtml" value="#{messages['jsf.Signup']}" propagation="none" styleClass="is-hidden--s l--push-left-half button--primary"
 								rendered="#{applicationConfiguration.internalAuth}"/> 
 								
 			<s:fragment rendered="#{not applicationConfiguration.internalAuth}">
-				<a href="#{applicationConfiguration.registerPath}" class="is-hidden--s l--push-left-half button--primary">#{messages['jsf.Signup']}</a>
+				<a id="register_link" href="#{applicationConfiguration.registerPath}" class="is-hidden--s l--push-left-half button--primary">#{messages['jsf.Signup']}</a>
 			</s:fragment>
 
         </div>

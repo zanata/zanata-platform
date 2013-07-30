@@ -14,45 +14,45 @@
 			<ui:repeat value="#{activityAction.getActivities()}" var="activity">
 				<li class="l--pad-all-half bg--higher--hover bg--faint reveal">
 					<p class="l--float-right txt--neutral l--push-left-half">
-						<s:fragment rendered="#{activity.actionType == 'UPDATE_TRANSLATION'}">
+						<s:fragment rendered="#{activity.activityType == 'UPDATE_TRANSLATION'}">
 							<i aria-hidden="true" class="i--large i--translate" title="#{messages['jsf.Translation']}"></i>
 							<span class="is-invisible">#{messages['jsf.Translation']}</span>
 						</s:fragment>
 						
-						<s:fragment rendered="#{activity.actionType == 'REVIEWED_TRANSLATION'}">
+						<s:fragment rendered="#{activity.activityType == 'REVIEWED_TRANSLATION'}">
 							<i aria-hidden="true" class="i--large i--review" title="#{messages['jsf.Reviewed']}"></i>
 							<span class="is-invisible">#{messages['jsf.Reviewed']}</span>
 						</s:fragment>
 						
-						<s:fragment rendered="#{activity.actionType == 'UPLOAD_SOURCE_DOCUMENT'}">
+						<s:fragment rendered="#{activity.activityType == 'UPLOAD_SOURCE_DOCUMENT'}">
 							<i aria-hidden="true" class="i--large i--document" title="#{messages['jsf.UploadSource']}"></i>
 							<span class="is-invisible">#{messages['jsf.UploadSource']}</span>
 						</s:fragment>
 						
-						<s:fragment rendered="#{activity.actionType == 'UPLOAD_TRANSLATION_DOCUMENT'}">
+						<s:fragment rendered="#{activity.activityType == 'UPLOAD_TRANSLATION_DOCUMENT'}">
 							<i aria-hidden="true" class="i--large i--translate-up" title="#{messages['jsf.UploadedTranslation']}"></i>
 							<span class="is-invisible">#{messages['jsf.UploadedTranslation']}</span>
 						</s:fragment>
 					</p>
 		        	<p class="l--push-all-0">
-		        		<s:fragment rendered="#{activity.actionType == 'UPDATE_TRANSLATION'}">
+		        		<s:fragment rendered="#{activity.activityType == 'UPDATE_TRANSLATION'}">
 		        			You translated <strong>#{activityAction.getWordsCountMessage(activity.wordCount)}</strong> in
 		        			<a href="#{activityAction.getProjectUrl(activity)}">#{activityAction.getProjectName(activity)}</a>,
 	        				finishing on "<a href="#{activityAction.getEditorUrl(activity)}">#{activityAction.getLastTextFlowContent(activity)}</a>"
 		        		</s:fragment>
 		        		
-		        		<s:fragment rendered="#{activity.actionType == 'REVIEWED_TRANSLATION'}">
+		        		<s:fragment rendered="#{activity.activityType == 'REVIEWED_TRANSLATION'}">
 		        			You reviewed <strong>#{activityAction.getWordsCountMessage(activity.wordCount)}</strong> in
 		        			<a href="#{activityAction.getProjectUrl(activity)}">#{activityAction.getProjectName(activity)}</a>,
 	        				finishing on "<a href="#{activityAction.getEditorUrl(activity)}">#{activityAction.getLastTextFlowContent(activity)}</a>"
 		        		</s:fragment>
 		        		
-		        		<s:fragment rendered="#{activity.actionType == 'UPLOAD_SOURCE_DOCUMENT'}">
+		        		<s:fragment rendered="#{activity.activityType == 'UPLOAD_SOURCE_DOCUMENT'}">
 		        			You uploaded a document of <strong>#{activityAction.getWordsCountMessage(activity.wordCount)}</strong> to
 		        			<a href="#{activityAction.getProjectUrl(activity)}">#{activityAction.getProjectName(activity)}</a>
 		        		</s:fragment>
 		        		
-		        		<s:fragment rendered="#{activity.actionType == 'UPLOAD_TRANSLATION_DOCUMENT'}">
+		        		<s:fragment rendered="#{activity.activityType == 'UPLOAD_TRANSLATION_DOCUMENT'}">
 		        			You uploaded a translation of <strong>#{activityAction.getWordsCountMessage(activity.wordCount)}</strong> to 
 		        			<a href="#{activityAction.getProjectUrl(activity)}">#{activityAction.getProjectName(activity)}</a>,
 	        				finishing on "<a href="#{activityAction.getEditorUrl(activity)}">#{activityAction.getLastTextFlowContent(activity)}</a>"
