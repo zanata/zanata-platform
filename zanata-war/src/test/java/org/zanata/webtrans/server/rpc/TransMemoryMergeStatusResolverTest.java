@@ -44,6 +44,7 @@ import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+import static org.zanata.webtrans.shared.model.TransMemoryResultItem.MatchType;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -79,7 +80,12 @@ public class TransMemoryMergeStatusResolverTest
 
    private static TransMemoryResultItem tmResultWithSimilarity(double percent)
    {
-      return new TransMemoryResultItem(null, null, null, 0, percent);
+      return new TransMemoryResultItem(null, null, MatchType.TranslatedInternal, 0, percent);
+   }
+
+   private static TransMemoryResultItem tmResultWithSimilarityAndExternallyImported( double percent )
+   {
+      return new TransMemoryResultItem(null, null, MatchType.Imported, 0, percent);
    }
 
    private static TransMemoryDetails tmDetail(String projectName, String docId, String resId, String msgContext)
@@ -212,6 +218,36 @@ public class TransMemoryMergeStatusResolverTest
       oldTarget.setState(ContentState.NeedReview);
 
       assertThat(resolver.decideStatus(action, textFlow, tmDetail, tmResultWithSimilarity(100), oldTarget), is(nullValue()));
+   }
+
+   @Test
+   public void fromImportedTmAndOptionIsFuzzy()
+   {
+      TransMemoryMerge transMemoryMerge =
+            mergeTMAction(MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK, MergeOption.FUZZY);
+      assertThat(
+            resolver.decideStatus(transMemoryMerge, tmResultWithSimilarityAndExternallyImported(100), null),
+            equalTo(ContentState.NeedReview));
+   }
+
+   @Test
+   public void fromImportedTmAndOptionIsIgnore()
+   {
+      TransMemoryMerge transMemoryMerge =
+            mergeTMAction(MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK);
+      assertThat(
+            resolver.decideStatus(transMemoryMerge, tmResultWithSimilarityAndExternallyImported(100), null),
+            equalTo(ContentState.Translated));
+   }
+
+   @Test
+   public void fromImportedTmAndOptionIsReject()
+   {
+      TransMemoryMerge transMemoryMerge =
+            mergeTMAction(MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK, MergeOption.REJECT);
+      assertThat(
+            resolver.decideStatus(transMemoryMerge, tmResultWithSimilarityAndExternallyImported(100), null),
+            nullValue());
    }
 
 }

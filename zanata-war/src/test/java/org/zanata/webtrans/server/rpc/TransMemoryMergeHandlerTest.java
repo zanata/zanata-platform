@@ -39,6 +39,7 @@ import org.zanata.dao.TransMemoryUnitDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.TestFixture;
+import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.service.SecurityService;
 import org.zanata.webtrans.server.TranslationWorkspace;
@@ -59,6 +60,7 @@ import com.google.common.collect.Lists;
 import net.customware.gwt.dispatch.shared.ActionException;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
@@ -119,13 +121,22 @@ public class TransMemoryMergeHandlerTest
 
    private TransMemoryMerge prepareActionAndMockSecurityService(int threshold, long... tranUnitIds) throws NoSuchWorkspaceException
    {
+      return  prepareActionAndMockSecurityService(threshold, true, tranUnitIds);
+   }
+
+   private TransMemoryMerge prepareActionAndMockSecurityService(int threshold, boolean acceptImportedTMResults, long... tranUnitIds)
+         throws NoSuchWorkspaceException
+   {
       List<TransUnitUpdateRequest> requests = newArrayList();
       for (long tranUnitId : tranUnitIds)
       {
          requests.add(new TransUnitUpdateRequest(new TransUnitId(tranUnitId), null, null, 0));
       }
       // we have TransMemoryMergeStatusResolverTest to cover various different merge options so here we don't test that
-      TransMemoryMerge action = new TransMemoryMerge(threshold, requests, MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK);
+      MergeOption importedTMOption = acceptImportedTMResults ? MergeOption.IGNORE_CHECK : MergeOption.REJECT;
+      TransMemoryMerge action =
+            new TransMemoryMerge(threshold, requests, MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK,
+                                 MergeOption.IGNORE_CHECK, importedTMOption);
       mockSecurityService(action);
       return action;
    }
@@ -140,6 +151,13 @@ public class TransMemoryMergeHandlerTest
    private static TransMemoryResultItem tmResult(Long sourceId, int percent)
    {
       TransMemoryResultItem resultItem = new TransMemoryResultItem(tmSource, tmTarget, MatchType.ApprovedInternal, 1D, percent);
+      resultItem.addSourceId(sourceId);
+      return resultItem;
+   }
+
+   private static TransMemoryResultItem importedTmResult(Long sourceId, int percent)
+   {
+      TransMemoryResultItem resultItem = new TransMemoryResultItem(tmSource, tmTarget, MatchType.Imported, 1D, percent);
       resultItem.addSourceId(sourceId);
       return resultItem;
    }
@@ -355,5 +373,72 @@ public class TransMemoryMergeHandlerTest
       assertThat(oneHundred <= 100, Matchers.is(false));
       assertThat((int)oneHundred <= 100, Matchers.is(true));
 
+   }
+
+   @Test
+   public void canAutoTranslateImportedTMResults() throws Exception
+   {
+      // Given:
+      // an action with threshold 80% and trans unit id
+      final long transUnitId = 1L;
+      TransMemoryMerge mergeAction = prepareActionAndMockSecurityService(80, transUnitId);
+      // A Text Flow to be translated
+      HTextFlow hTextFlow = TestFixture.makeHTextFlow(transUnitId, hLocale, ContentState.New, "pot/a.po");
+      // An imported Translation Unit match source ...
+      TransMemoryUnit tuResultSource = TestFixture.makeTransMemoryUnit(10L, hLocale);
+      // ... wrapped around a result item
+      TransMemoryResultItem mostSimilarTM = importedTmResult(11L, 100);
+      // A Translation memory query
+      TransMemoryQuery tmQuery = new TransMemoryQuery(hTextFlow.getContents(), FUZZY_PLURAL);
+
+      // Expectations:
+      when(textFlowDAO.findByIdList(newArrayList(transUnitId))).thenReturn(newArrayList(hTextFlow));
+      when(getTransMemoryHandler.searchTransMemory(hLocale, tmQuery, sourceLocale.getLocaleId()))
+            .thenReturn(newArrayList(mostSimilarTM, tmResult(12L, 90), tmResult(13L, 80)));
+      when(transMemoryUnitDAO.findById(11L)).thenReturn(tuResultSource);
+
+      // When: execute the action
+      handler.execute(mergeAction, null);
+
+      // Then: we should have text flow auto translated by using the most similar TM
+      verify(updateTransUnitHandler).doTranslation(same(hLocale.getLocaleId()), same(workspace), updateRequestCaptor.capture(),
+            same(mergeAction.getEditorClientId()), eq(TransUnitUpdated.UpdateType.TMMerge));
+      List<TransUnitUpdateRequest> updateRequest = updateRequestCaptor.getValue();
+      assertThat(updateRequest, Matchers.hasSize(1));
+      TransUnitUpdateRequest transUnitUpdateRequest = updateRequest.get(0);
+      assertThat(transUnitUpdateRequest.getNewContents(), Matchers.equalTo(mostSimilarTM.getTargetContents()));
+      assertThat(transUnitUpdateRequest.getTargetComment(), Matchers.equalTo("auto translated by TM merge from translation memory: test-tm, unique id: uid10"));
+   }
+
+   @Test
+   public void willIgnoreImportedTMResults() throws Exception
+   {
+      // Given:
+      // an action with threshold 80% and trans unit id
+      final long transUnitId = 1L;
+      prepareActionAndMockSecurityService(80, transUnitId);
+      TransMemoryMerge mergeAction = prepareActionAndMockSecurityService(80, false, transUnitId);
+      // A Text Flow to be translated
+      HTextFlow hTextFlow = TestFixture.makeHTextFlow(transUnitId, hLocale, ContentState.New, "pot/a.po");
+      // An imported Translation Unit match source ...
+      TransMemoryUnit tuResultSource = TestFixture.makeTransMemoryUnit(10L, hLocale);
+      // ... wrapped around a result item
+      TransMemoryResultItem mostSimilarTM = importedTmResult(11L, 100);
+      // A Translation memory query
+      TransMemoryQuery tmQuery = new TransMemoryQuery(hTextFlow.getContents(), FUZZY_PLURAL);
+
+      // Expectations:
+      when(textFlowDAO.findByIdList(newArrayList(transUnitId))).thenReturn(newArrayList(hTextFlow));
+      when(getTransMemoryHandler.searchTransMemory(hLocale, tmQuery, sourceLocale.getLocaleId()))
+            .thenReturn(newArrayList(mostSimilarTM, tmResult(12L, 90), tmResult(13L, 80)));
+      when(transMemoryUnitDAO.findById(11L)).thenReturn(tuResultSource);
+
+      // When: execute the action
+      UpdateTransUnitResult result = handler.execute(mergeAction, null);
+
+      // Then: We should not have anything auto-translated
+      // Then: we should have EMPTY trans unit update request
+      verifyZeroInteractions(updateTransUnitHandler);
+      assertThat(result.getUpdateInfoList(), Matchers.<TransUnitUpdateInfo>empty());
    }
 }
