@@ -128,10 +128,10 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
    {
       log.debug("exporting TMX for translation memory {}", slug);
       Iterator<TransMemoryUnit> tuIter;
-      Optional<TransMemory> tm = transMemoryDAO.getBySlug(slug);
-      tuIter = transMemoryStreamingDAO.findTransUnitsByTM(getTM(tm, slug));
+      TransMemory tm = getTM(transMemoryDAO.getBySlug(slug), slug);
+      tuIter = transMemoryStreamingDAO.findTransUnitsByTM(tm);
       String filename = makeTMXFilename(slug);
-      return buildTMX(tuIter, filename);
+      return buildTMX(tm, tuIter, filename);
    }
 
    @Override
@@ -169,13 +169,13 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
          @Nonnull Iterator<? extends SourceContents> tuIter,
          @Nullable LocaleId locale, @Nonnull String filename)
    {
-      TMXStreamingOutput<HTextFlow> output = new TMXStreamingOutput(tuIter, new ExportSourceContentsStrategy(locale));
+      TMXStreamingOutput<HTextFlow> output = new TMXStreamingOutput(tuIter, new TranslationsExportTMXStrategy(locale));
       return okResponse(filename, output);
    }
 
-   private Response buildTMX(Iterator<TransMemoryUnit> tuIter, String filename)
+   private Response buildTMX(TransMemory tm, Iterator<TransMemoryUnit> tuIter, String filename)
    {
-      TMXStreamingOutput<TransMemoryUnit> output = new TMXStreamingOutput<TransMemoryUnit>(tuIter, new ExportTMXTransUnitStrategy());
+      TMXStreamingOutput<TransMemoryUnit> output = new TMXStreamingOutput<TransMemoryUnit>(tuIter, new TransMemoryExportTMXStrategy(tm));
       return okResponse(filename, output);
    }
 

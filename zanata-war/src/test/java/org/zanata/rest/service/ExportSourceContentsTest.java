@@ -43,7 +43,7 @@ public class ExportSourceContentsTest extends TMXStreamingOutputTest
 
    private TMXStreamingOutput<SourceContents> streamSourceContents(LocaleId targetLocale)
    {
-      return new TMXStreamingOutput<SourceContents>(createTestData(), new ExportSourceContentsStrategy(targetLocale));
+      return new TMXStreamingOutput<SourceContents>(createTestData(), new TranslationsExportTMXStrategy(targetLocale));
    }
 
    private @Nonnull Iterator<SourceContents> createTestData()

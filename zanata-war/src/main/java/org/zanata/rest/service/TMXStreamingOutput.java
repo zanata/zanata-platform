@@ -35,9 +35,7 @@ import lombok.Cleanup;
 import net.sf.okapi.common.XMLWriter;
 import net.sf.okapi.common.filterwriter.TMXWriter;
 
-import org.zanata.model.SourceContents;
 import org.zanata.util.NullCloseable;
-import org.zanata.util.VersionUtility;
 
 import com.google.common.collect.Iterators;
 import com.google.common.collect.PeekingIterator;
@@ -50,18 +48,15 @@ import com.google.common.collect.PeekingIterator;
  */
 public class TMXStreamingOutput<TU> implements StreamingOutput
 {
-   private static final String creationTool = "Zanata " + TMXStreamingOutput.class.getSimpleName();
-   private static final String creationToolVersion =
-         VersionUtility.getVersionInfo(TMXStreamingOutput.class).getVersionNo();
    private final @Nonnull Iterator<TU> tuIter;
-   private final AbstractExportTUStrategy<TU> exportTUStrategy;
+   private final ExportTMXStrategy<TU> exportStrategy;
 
    public TMXStreamingOutput(
          @Nonnull Iterator<TU> tuIter,
-         @Nonnull AbstractExportTUStrategy<TU> exportTUStrategy)
+         @Nonnull ExportTMXStrategy<TU> exportTUStrategy)
    {
       this.tuIter = tuIter;
-      this.exportTUStrategy = exportTUStrategy;
+      this.exportStrategy = exportTUStrategy;
    }
 
    @Override
@@ -81,25 +76,15 @@ public class TMXStreamingOutput<TU> implements StreamingOutput
       @Cleanup
       XMLWriter xmlWriter = new XMLWriter(writer);
       @Cleanup
-      TMXWriter tmxWriter = new TMXWriter(xmlWriter);
+      MultiLangTMXWriter tmxWriter = new MultiLangTMXWriter(xmlWriter);
       tmxWriter.setWriteAllPropertiesAsAttributes(true);
-      String segType = "block"; // TODO other segmentation types
-      String dataType = "unknown"; // TODO track data type metadata throughout the system
 
-      net.sf.okapi.common.LocaleId allLocale = new net.sf.okapi.common.LocaleId("*all*", false);
-
-      tmxWriter.writeStartDocument(
-            allLocale,
-            // TMXWriter demands a non-null target locale, but if you write
-            // your TUs with writeTUFull(), it is never used.
-            net.sf.okapi.common.LocaleId.EMPTY,
-            creationTool, creationToolVersion,
-            segType, null, dataType);
+      exportStrategy.exportHeader(tmxWriter);
 
       while (iter.hasNext())
       {
          TU tu = iter.next();
-         exportTUStrategy.exportTranslationUnit(tmxWriter, tu);
+         exportStrategy.exportTranslationUnit(tmxWriter, tu);
          if (writer.checkError())
          {
             throw new IOException("error writing to output");

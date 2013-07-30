@@ -76,7 +76,7 @@ public class TransMemoryAdapter
       TransMemoryUnit tu = new TransMemoryUnit();
       tu.setTranslationMemory(tm);
 
-      TMXMetadataHelper.setMetadata(tu, tuElem);
+      TMXMetadataHelper.setMetadata(tu, tuElem, tm.getSourceLanguage());
       tu.setVersionNum(0);
 
       addTUVs(tu, tuElem.getChildElements("tuv"));
@@ -88,12 +88,31 @@ public class TransMemoryAdapter
       entityManager.flush();
    }
 
-   private void removeExistingTUIfAny(String tmSlug, String uniqueId)
+   private String determineUniqueId(TransMemoryUnit tu)
    {
-      TransMemoryUnit existingTu = transMemoryDAO.findTranslationUnit(tmSlug, uniqueId);
-      if( existingTu != null )
+      if (tu.getTransUnitId() != null)
       {
-         entityManager.remove(existingTu);
+         // tuid is the natural id by default
+         return tu.getTransUnitId();
+      }
+      else
+      {
+         // Go looking for a source content hash
+         String srcLang = tu.getSourceLanguage();
+         if (srcLang != null)
+         {
+            TransMemoryUnitVariant sourceVariant = tu.getTransUnitVariants().get(srcLang);
+            if (sourceVariant == null)
+            {
+               throw new RuntimeException("Source variant cannot be determined for Translation unit with no tuid.");
+            }
+            return sourceVariant.getPlainTextSegmentHash();
+         }
+         else
+         {
+            throw new RuntimeException("Source language cannot be determined for Translation unit with no tuid. " +
+                  "It must be defined either in the <tu> or the <header> element.");
+         }
       }
    }
 
@@ -119,41 +138,12 @@ public class TransMemoryAdapter
       tu.getTransUnitVariants().put(locale, tuv);
    }
 
-   private String determineUniqueId(TransMemoryUnit tu)
+   private void removeExistingTUIfAny(String tmSlug, String uniqueId)
    {
-      if (tu.getTransUnitId() != null)
+      TransMemoryUnit existingTu = transMemoryDAO.findTranslationUnit(tmSlug, uniqueId);
+      if( existingTu != null )
       {
-         // tuid is the natural id by default
-         return tu.getTransUnitId();
-      }
-      else
-      {
-         // Go looking for a source content hash
-         String srcLang = tu.getSourceLanguage() != null ? tu.getSourceLanguage() : tu.getTranslationMemory().getSourceLanguage();
-         if (srcLang != null)
-         {
-            if (srcLang.equalsIgnoreCase("*all*"))
-            {
-               srcLang = tu.getSourceLanguage();
-               if (srcLang == null || srcLang.equalsIgnoreCase("*all*"))
-               {
-                  throw new RuntimeException("Source language cannot be determined for Translation unit. " +
-                        "It must be defined either in the <tu> or the <header> element.");
-               }
-            }
-
-            TransMemoryUnitVariant sourceVariant = tu.getTransUnitVariants().get(srcLang);
-            if (sourceVariant == null)
-            {
-               throw new RuntimeException("Source variant cannot be determined for Translation unit with no tuid.");
-            }
-
-            return sourceVariant.getPlainTextSegmentHash();
-         }
-         else
-         {
-            throw new RuntimeException("Source language cannot be determined for Translation unit with no tuid.");
-         }
+         entityManager.remove(existingTu);
       }
    }
 

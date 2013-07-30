@@ -25,8 +25,15 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import org.zanata.model.tm.TMXMetadataHelper;
+import org.zanata.util.TMXUtils;
+
+import com.google.common.base.Optional;
+
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import net.sf.okapi.common.LocaleId;
 import net.sf.okapi.common.filterwriter.TMXWriter;
 import net.sf.okapi.common.resource.ITextUnit;
 import net.sf.okapi.common.resource.Property;
@@ -40,23 +47,21 @@ import net.sf.okapi.common.resource.TextUnit;
  */
 @ParametersAreNonnullByDefault
 @Slf4j
-public abstract class AbstractExportTUStrategy<T>
+@NoArgsConstructor
+public abstract class ExportTMXStrategy<T>
 {
-
-   public AbstractExportTUStrategy()
-   {
-   }
 
    /**
     * Writes the specified SourceContents (TextFlow) and one or all of its translations to the TMXWriter.
     * @param tmxWriter
     * @param tuidPrefix String to be prepended to all resIds when generating tuids
     * @param tu the SourceContents (TextFlow) whose contents and translations are to be exported
+    * @throws Exception 
     */
-   public void exportTranslationUnit(TMXWriter tmxWriter, T tu)
+   public void exportTranslationUnit(MultiLangTMXWriter tmxWriter, T tu)
    {
       assert tmxWriter.isWriteAllPropertiesAsAttributes();
-      net.sf.okapi.common.LocaleId sourceLocaleId = getSourceLocale(tu);
+      Optional<LocaleId> sourceLocaleId = getSourceLocale(tu);
       String tuid = getTUID(tu);
       // Perhaps we could encode plurals using TMX attributes?
       String srcContent = getSrcContent(tu);
@@ -66,8 +71,12 @@ public abstract class AbstractExportTUStrategy<T>
          return;
       }
 
+      LocaleId srcLang = getSrcLangOrAll(sourceLocaleId);
       ITextUnit textUnit = new TextUnit(tuid, srcContent);
-      setSrcLang(textUnit, sourceLocaleId);
+      textUnit.setProperty(new Property(TMXUtils.SRCLANG, srcLang.toBCP47()));
+      
+      addChildren(textUnit, tu);
+
       textUnit.setName(tuid);
       addTextUnitVariants(textUnit, tu);
       // If there aren't any translations for this TU, we shouldn't include it.
@@ -76,16 +85,32 @@ public abstract class AbstractExportTUStrategy<T>
       // unit."
       if (!textUnit.getTargetLocales().isEmpty())
       {
-         tmxWriter.writeTUFull(textUnit, sourceLocaleId);
+         if (sourceLocaleId.isPresent())
+         {
+            tmxWriter.writeTUFull(textUnit, srcLang);
+         }
+         else
+         {
+            tmxWriter.writeTUFullMultiLang(textUnit);
+         }
       }
    }
 
-   protected void setSrcLang(ITextUnit textUnit, net.sf.okapi.common.LocaleId sourceLocaleId)
+   protected abstract void addChildren(ITextUnit textUnit, T tu);
+
+   protected LocaleId getSrcLangOrAll(Optional<LocaleId> sourceLocaleId)
    {
-      textUnit.setProperty(new Property("srclang", sourceLocaleId.toBCP47()));
+      if (sourceLocaleId.isPresent())
+      {
+         return sourceLocaleId.get();
+      }
+      else
+      {
+         return TMXUtils.ALL_LOCALE;
+      }
    }
 
-   protected void addTargetToTextUnit(ITextUnit textUnit, net.sf.okapi.common.LocaleId locId, String trgContent)
+   protected void addTargetToTextUnit(ITextUnit textUnit, LocaleId locId, String trgContent)
    {
       if (trgContent.contains("\0"))
       {
@@ -93,12 +118,14 @@ public abstract class AbstractExportTUStrategy<T>
       }
       else
       {
-      TextFragment target = new TextFragment(trgContent);
-      textUnit.setTargetContent(locId, target);
+         TextFragment target = new TextFragment(trgContent);
+         textUnit.setTargetContent(locId, target);
       }
    }
 
-   protected abstract @Nonnull net.sf.okapi.common.LocaleId getSourceLocale(T tu);
+   protected abstract void exportHeader(TMXWriter tmxWriter);
+   protected abstract Optional<LocaleId> getSourceLocale(T tu);
+   protected abstract @Nonnull LocaleId resolveSourceLocale(T tu);
    protected abstract @Nullable String getTUID(T tu);
    protected abstract void addTextUnitVariants(ITextUnit textUnit, T tu);
    protected abstract String getSrcContent(T tu);

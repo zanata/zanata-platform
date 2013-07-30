@@ -21,6 +21,7 @@
 
 package org.zanata.model.tm;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -32,13 +33,16 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.zanata.common.LocaleId;
+import org.zanata.util.TMXUtils;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import net.sf.okapi.common.resource.Property;
 import nu.xom.Attribute;
+import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Elements;
 
@@ -60,18 +64,65 @@ public class TMXMetadataHelper
    // TMX attributes which we store as fields (*not* in the generic metadata map):
    private static final String _creationdate = "creationdate";
    private static final String _changedate = "changedate";
-   private static final String _srclang = "srclang";
+   private static final String _srclang = TMXUtils.SRCLANG;
    private static final String _lang = "lang";
    private static final String _tuid = "tuid";
+
+   public static List<String> getChildrenXml(Map<String, Object> metadata)
+   {
+      List<String> children = (List<String>) metadata.get(TMX_ELEMENT_CHILDREN);
+      if (children == null)
+      {
+         return Collections.emptyList();
+      }
+      return children;
+   }
+
+   public static List<Element> getChildrenElements(Map<String, Object> metadata)
+   {
+      try
+      {
+         List<String> children = getChildrenXml(metadata);
+         List<Element> result = Lists.newArrayListWithCapacity(children.size());
+         for (String childXml : children)
+         {
+            Document doc = new nu.xom.Builder().build(childXml, null);
+            Element elem = doc.getRootElement();
+            result.add(elem);
+         }
+         return result;
+      }
+      catch (Exception e)
+      {
+         throw new RuntimeException(e);
+      }
+   }
 
    /**
     * Gets all the metadata in a single Map.
     * @param tu
     * @return
     */
-   public static @Nonnull ImmutableMap<String, String> getMetadata(TransMemoryUnit tu)
+   public static @Nonnull ImmutableMap<String, Object> getMetadata(TransMemory tm)
    {
-      Builder<String, String> m = ImmutableMap.builder();
+      Builder<String, Object> m = ImmutableMap.builder();
+      m.putAll(getSharedMetadata(tm));
+      String srclang = tm.getSourceLanguage();
+      if (srclang != null)
+      {
+         m.put(_srclang, srclang);
+      }
+      return m.build();
+   }
+
+   /**
+    * Gets all the metadata in a single Map.
+    * @param tu
+    * @return
+    */
+   public static @Nonnull ImmutableMap<String, Object> getMetadata(TransMemoryUnit tu)
+   {
+      Builder<String, Object> m = ImmutableMap.builder();
       m.putAll(getSharedMetadata(tu));
       String tuid = tu.getTransUnitId();
       if (tuid != null)
@@ -86,19 +137,48 @@ public class TMXMetadataHelper
       return m.build();
    }
 
-   private static @Nonnull ImmutableMap<String, String> getSharedMetadata(HasTMMetadata fromEntity)
+   /**
+    * Gets all the metadata in a single Map.
+    * @param tu
+    * @return
+    */
+   public static @Nonnull ImmutableMap<String, Object> getMetadata(TransMemoryUnitVariant tuv)
    {
-      Builder<String, String> m = ImmutableMap.builder();
+      Builder<String, Object> m = ImmutableMap.builder();
+      m.putAll(getSharedMetadata(tuv));
+      String lang = tuv.getLanguage();
+      if (lang != null)
+      {
+         m.put(_lang, lang);
+      }
+      return m.build();
+   }
+
+   private static @Nonnull ImmutableMap<String, Object> getSharedMetadata(HasTMMetadata fromEntity)
+   {
+      Builder<String, Object> m = ImmutableMap.builder();
       m.putAll(getGenericMetadata(fromEntity));
-      m.put(_creationdate, toString(fromEntity.getCreationDate()));
-      m.put(_changedate, toString(fromEntity.getLastChanged()));
+      Date creationDate = fromEntity.getCreationDate();
+      if (creationDate != null)
+      {
+         m.put(_creationdate, toString(creationDate));
+      }
+      Date lastChanged = fromEntity.getLastChanged();
+      if (lastChanged != null)
+      {
+         m.put(_changedate, toString(lastChanged));
+      }
       return m.build();
    }
 
    @SuppressWarnings("null")
-   private static @Nonnull Map<String, String> getGenericMetadata(HasTMMetadata fromEntity)
+   private static @Nonnull Map<String, Object> getGenericMetadata(HasTMMetadata fromEntity)
    {
       String metadataString = fromEntity.getMetadata().get(TMMetadataType.TMX14);
+      if (metadataString == null)
+      {
+         return ImmutableMap.of();
+      }
       try
       {
          return jsonMapper.readValue(metadataString, Map.class);
@@ -116,11 +196,11 @@ public class TMXMetadataHelper
     */
    public static void setMetadata(TransMemory toTransMemory, @Nonnull Element headerElem)
    {
-      Map<String, String> metadata = buildMetadata(headerElem);
-      String srclang = metadata.remove(_srclang);
+      Map<String, Object> metadata = buildMetadata(headerElem);
+      String srclang = (String) metadata.remove(_srclang);
       if (srclang != null)
       {
-         toTransMemory.setSourceLanguage(new LocaleId(srclang).getId()); // This will fail if the language is not accepted
+         toTransMemory.setSourceLanguage(checkLang(srclang));
       }
       setSharedMetadata(toTransMemory, metadata);
    }
@@ -129,42 +209,64 @@ public class TMXMetadataHelper
     * Sets all the TU's metadata, taken from a Map
     * @param toTransUnit
     * @param tuElem
+    * @param tmSrcLang 
     */
-   public static void setMetadata(TransMemoryUnit toTransUnit, @Nonnull Element tuElem)
+   public static void setMetadata(TransMemoryUnit toTransUnit, @Nonnull Element tuElem, String tmSrcLang)
    {
-      Map<String, String> metadata = buildMetadata(tuElem);
-      String tuid = metadata.remove(_tuid);
+      Map<String, Object> metadata = buildMetadata(tuElem);
+      String tuid = (String) metadata.remove(_tuid);
       if (tuid != null)
       {
          toTransUnit.setTransUnitId(tuid);
       }
-      String srclang = metadata.remove(_srclang);
+      String srclang = (String) metadata.remove(_srclang);
       if (srclang != null)
       {
-         toTransUnit.setSourceLanguage(srclang);
+         if (srclang.equalsIgnoreCase(TMXUtils.ALL_LOCALE.toBCP47()))
+         {
+            toTransUnit.setSourceLanguage(null);
+         }
+         else
+         {
+            toTransUnit.setSourceLanguage(checkLang(srclang));
+         }
+      }
+      else
+      {
+         toTransUnit.setSourceLanguage(tmSrcLang);
       }
       setSharedMetadata(toTransUnit, metadata);
    }
 
    public static void setMetadata(TransMemoryUnitVariant tuv, Element tuvElem)
    {
-      Map<String, String> metadata = buildMetadata(tuvElem);
-      String lang = metadata.remove(_lang);
+      Map<String, Object> metadata = buildMetadata(tuvElem);
+      String lang = (String) metadata.remove(_lang);
       if (lang != null)
       {
-         tuv.setLanguage(lang);
+         tuv.setLanguage(checkLang(lang));
       }
       setSharedMetadata(tuv, metadata);
    }
 
-   private static void setSharedMetadata(HasTMMetadata toEntity, Map<String, String> fromMetadata)
+   /**
+    * Throws IllegalArgumentException if the language is not accepted
+    * @param lang
+    * @return lang
+    */
+   private static String checkLang(String lang)
    {
-      String creationdate = fromMetadata.remove(_creationdate);
+      return new LocaleId(lang).getId();
+   }
+
+   private static void setSharedMetadata(HasTMMetadata toEntity, Map<String, Object> fromMetadata)
+   {
+      String creationdate = (String) fromMetadata.remove(_creationdate);
       if (creationdate != null)
       {
          toEntity.setCreationDate(toDate(creationdate));
       }
-      String changedate = fromMetadata.remove(_changedate);
+      String changedate = (String) fromMetadata.remove(_changedate);
       if (changedate != null)
       {
          toEntity.setLastChanged(toDate(changedate));
@@ -172,7 +274,7 @@ public class TMXMetadataHelper
       setGenericMetadata(toEntity, fromMetadata);
    }
 
-   private static void setGenericMetadata(HasTMMetadata toEntity, Map<String, String> fromMetadata)
+   private static void setGenericMetadata(HasTMMetadata toEntity, Map<String, Object> fromMetadata)
    {
       try
       {
@@ -197,15 +299,15 @@ public class TMXMetadataHelper
       return ISO8601Z.print(date.getTime());
    }
 
-   private static Map<String, String> buildMetadata(Element elem)
+   private static Map<String, Object> buildMetadata(Element elem)
    {
-      Map<String, String> metadata = Maps.newHashMap();
+      Map<String, Object> metadata = Maps.newHashMap();
       for (int i = 0; i < elem.getAttributeCount(); i++)
       {
          Attribute attr = elem.getAttribute(i);
          String uri = attr.getNamespaceURI();
          String name = attr.getLocalName();
-         if (inTmxNamespace(uri) || (uri.equals(XMLConstants.XML_NS_URI) && name.equals("lang")))
+         if (inTmxNamespace(uri) || (uri.equals(XMLConstants.XML_NS_URI) && name.equals(_lang)))
          {
             String value = attr.getValue();
             metadata.put(name, value);
@@ -224,7 +326,7 @@ public class TMXMetadataHelper
             childrenXml.add(child.toXML());
          }
       }
-      metadata.put(TMXMetadataHelper.TMX_ELEMENT_CHILDREN, childrenXml.toString());
+      metadata.put(TMX_ELEMENT_CHILDREN, childrenXml);
       return metadata;
    }
 

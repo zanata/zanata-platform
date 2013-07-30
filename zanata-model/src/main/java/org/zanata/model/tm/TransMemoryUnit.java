@@ -85,7 +85,7 @@ public class TransMemoryUnit extends ModelEntityBase implements HasTMMetadata
    @Column(name = "trans_unit_id", nullable = true)
    private String transUnitId;
 
-   // This is the BCP-47 language code
+   // This is the BCP-47 language code, or null iff the TU supports all source languages (*all* in TMX)
    @Column(name = "source_language", nullable = true)
    @Field
    private String sourceLanguage;

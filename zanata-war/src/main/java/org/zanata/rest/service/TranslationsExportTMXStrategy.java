@@ -24,21 +24,29 @@ package org.zanata.rest.service;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import net.sf.okapi.common.filterwriter.TMXWriter;
 import net.sf.okapi.common.resource.ITextUnit;
 
 import org.zanata.common.LocaleId;
 import org.zanata.model.SourceContents;
 import org.zanata.model.TargetContents;
 import org.zanata.util.OkapiUtil;
+import org.zanata.util.TMXUtils;
+import org.zanata.util.VersionUtility;
+
+import com.google.common.base.Optional;
 
 /**
- * Writes one or more translations for a single TextFlow as a TMX translation unit.
+ * Writes translations for Zanata Projects/TextFlows as TMX.
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
 @ParametersAreNonnullByDefault
-public class ExportSourceContentsStrategy extends AbstractExportTUStrategy<SourceContents>
+public class TranslationsExportTMXStrategy extends ExportTMXStrategy<SourceContents>
 {
+   private static final String creationTool = "Zanata " + TranslationsExportTMXStrategy.class.getSimpleName();
+   private static final String creationToolVersion =
+         VersionUtility.getVersionInfo(TranslationsExportTMXStrategy.class).getVersionNo();
 
    private final @Nullable LocaleId localeId;
 
@@ -46,28 +54,57 @@ public class ExportSourceContentsStrategy extends AbstractExportTUStrategy<Sourc
     * Exports one or all locales.  If localeId is null, export all locales.
     * @param localeId
     */
-   public ExportSourceContentsStrategy(@Nullable LocaleId localeId)
+   public TranslationsExportTMXStrategy(@Nullable LocaleId localeId)
    {
       super();
       this.localeId = localeId;
    }
 
    @Override
+   public void exportHeader(TMXWriter tmxWriter)
+   {
+      String segType = "block"; // TODO other segmentation types
+      String dataType = "unknown"; // TODO track data type metadata throughout the system
+
+      tmxWriter.writeStartDocument(
+            TMXUtils.ALL_LOCALE,
+            // TMXWriter demands a non-null target locale, but if you write
+            // your TUs with writeTUFull(), it is never used.
+            net.sf.okapi.common.LocaleId.EMPTY,
+            creationTool, creationToolVersion,
+            segType, null, dataType);
+   }
+
+
+   
+   @Override
    protected String getSrcContent(SourceContents tf)
    {
       return tf.getContents().get(0);
    }
-   
+
    @Override
-   protected net.sf.okapi.common.LocaleId getSourceLocale(SourceContents tf)
+   protected Optional<net.sf.okapi.common.LocaleId> getSourceLocale(SourceContents tu)
    {
-      return OkapiUtil.toOkapiLocaleOrEmpty(tf.getLocale());
+      return Optional.of(resolveSourceLocale(tu));
+   }
+
+   @Override
+   protected net.sf.okapi.common.LocaleId resolveSourceLocale(SourceContents tf)
+   {
+      return OkapiUtil.toOkapiLocale(tf.getLocale());
    }
 
    @Override
    protected String getTUID(SourceContents tf)
    {
       return tf.getQualifiedId();
+   }
+
+   @Override
+   protected void addChildren(ITextUnit textUnit, SourceContents tu)
+   {
+      // nothing to do
    }
 
    @Override

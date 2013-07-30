@@ -3,6 +3,7 @@ package org.zanata.rest.service;
 import static org.zanata.model.tm.TransMemoryUnit.tu;
 import static org.zanata.model.tm.TransMemoryUnitVariant.tuv;
 
+import java.util.Date;
 import java.util.Iterator;
 
 import javax.annotation.Nonnull;
@@ -19,6 +20,7 @@ public class ExportTransUnitTest extends TMXStreamingOutputTest
 {
 
    @Test
+   @org.junit.Test
    public void exportTransMemory() throws Exception
    {
       StreamingOutput output = streamSourceContents();
@@ -27,7 +29,16 @@ public class ExportTransUnitTest extends TMXStreamingOutputTest
 
    private TMXStreamingOutput<TransMemoryUnit> streamSourceContents()
    {
-      return new TMXStreamingOutput<TransMemoryUnit>(createTestData(), new ExportTMXTransUnitStrategy());
+      return new TMXStreamingOutput<TransMemoryUnit>(createTestData(), new TransMemoryExportTMXStrategy(createTM()));
+   }
+
+   private TransMemory createTM()
+   {
+      Date now = new Date();
+      TransMemory tm = new TransMemory();
+      tm.setCreationDate(now);
+      tm.setLastChanged(now);
+      return tm;
    }
 
    private @Nonnull Iterator<TransMemoryUnit> createTestData()
