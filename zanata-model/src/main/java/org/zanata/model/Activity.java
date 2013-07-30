@@ -60,41 +60,42 @@ public class Activity extends ModelEntityBase implements Serializable
    @JoinColumn(name = "actor_id", nullable = false)
    @ManyToOne
    private HPerson actor;
-   
+
    @Temporal(TemporalType.TIMESTAMP)
    @NotNull
    private Date approxTime;
-   
+
    @NotNull
    private long startOffsetMillis;
-   
+
    @NotNull
    private long endOffsetMillis;
-   
+
    @Getter
    @NotNull
    @Enumerated(EnumType.STRING)
    private EntityType contextType;
-   
+
    @NotNull
    @Column(name = "context_id")
    private long contextId;
-   
+
    @Enumerated(EnumType.STRING)
    private EntityType lastTargetType;
-   
+
    @NotNull
    @Column(name = "last_target_id")
    private long lastTargetId;
-   
+
    @Enumerated(EnumType.STRING)
    private ActivityType actionType;
-   
+
    private int eventCount = 1;
-   
+
    private int wordCount;
-   
-   public Activity(HPerson actor, EntityType contextType, Long contextId, EntityType lastTargetType, Long lastTargetId, ActivityType actionType, int wordCount)
+
+   public Activity(HPerson actor, EntityType contextType, Long contextId, EntityType lastTargetType, Long lastTargetId,
+         ActivityType actionType, int wordCount)
    {
       this.actor = actor;
       this.contextType = contextType;
@@ -105,27 +106,24 @@ public class Activity extends ModelEntityBase implements Serializable
       this.wordCount = wordCount;
    }
 
-   @Override
    @PrePersist
-   protected void onPersist()
+   private void onPrePersist()
    {
-      super.onPersist();
-      
       approxTime = DateUtils.truncate(getCreationDate(), Calendar.HOUR);
       startOffsetMillis = getCreationDate().getTime() - approxTime.getTime();
       endOffsetMillis = startOffsetMillis;
    }
-   
+
    public void updateActivity(Date currentTime, int wordCount)
    {
       this.endOffsetMillis = currentTime.getTime() - approxTime.getTime();
       this.wordCount += wordCount;
       this.eventCount++;
    }
-   
+
    @Transient
    public Date getEndDate()
    {
-      return DateUtils.addMilliseconds(approxTime, (int)endOffsetMillis);
+      return DateUtils.addMilliseconds(approxTime, (int) endOffsetMillis);
    }
 }

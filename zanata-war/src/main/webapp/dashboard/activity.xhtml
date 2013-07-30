@@ -6,20 +6,6 @@
                 xmlns:rich="http://richfaces.org/rich"
                 xmlns:a4j="http://richfaces.org/a4j">
     
-    
-    <script type="text/javascript">
-	    function showLoading(show)
-	    {
-	    	if(show == true)
-	    	{
-	    		document.getElementById("#{rich:clientId('loading')}").style.display='inline';
-	    	}
-	    	else
-	    	{
-	    		document.getElementById("#{rich:clientId('loading')}").style.display='none';
-	    	}
-	    }
-    </script>
 	<div class="l--push-left-half">
 		<h2 class="heading--secondary">#{messages['jsf.YourActivity']}</h2>
 	</div>
@@ -97,12 +83,9 @@
 		     	</li>
 	     	</ui:repeat>
 	     	<s:fragment rendered="#{activityAction.hasMoreActivities()}">
-		     	<p class="l--pad-all-half txt--align-center txt--s-align-center d--top">
-		     		<h:graphicImage value="/images/loading.gif" id="loading" style="display:none" />
-			    	<a4j:commandLink action="#{activityAction.loadMoreActivity()}" onclick="showLoading(true)" render="activityList">
-				    	#{messages['jsf.moreActivity']}
-				    </a4j:commandLink>
-			    </p>
+		    	<a4j:commandLink styleClass="d--top loader" action="#{activityAction.loadMoreActivity()}" render="activityList">
+			    	<span class="loader__label">#{messages['jsf.moreActivity']}</span>
+			    </a4j:commandLink>
 		    </s:fragment>
 		</ul>
 	</h:form>

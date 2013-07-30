@@ -24,7 +24,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -41,6 +40,7 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.type.EntityType;
 import org.zanata.service.ActivityService;
 import org.zanata.util.DateUtil;
+import org.zanata.util.ShortString;
 import org.zanata.util.UrlUtil;
 import org.zanata.util.ZanataMessages;
 
@@ -52,47 +52,41 @@ import org.zanata.util.ZanataMessages;
 public class ActivityAction implements Serializable
 {
    private static final long serialVersionUID = 1L;
-   
+
    @In
    private DocumentDAO documentDAO;
 
    @In
    private UrlUtil urlUtil;
-   
+
    @In
    private ActivityService activityServiceImpl;
-   
+
    @In
    private ZanataMessages zanataMessages;
-   
+
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    private HAccount authenticatedAccount;
-   
+
    private final int ACTIVITY_COUNT_PER_LOAD = 5;
    private final int MAX_ACTIVITIES_COUNT_PER_PAGE = 20;
-   private final int MAX_CONTENT_LENGTH = 50;
-   private final String TRIMMED_TEXT_POSTFIX = "…";
 
    private final Date now = new Date();
-   
+
    private int activityPageIndex = 0;
-   
-   
-   @CachedMethodResult
+
    public List<Activity> getActivities()
    {
       int count = (activityPageIndex + 1) * ACTIVITY_COUNT_PER_LOAD;
       return activityServiceImpl.findLatestActivities(authenticatedAccount.getPerson().getId(), 0,
             count);
    }
-   
-   @CachedMethodResult
+
    public String getDurationTime(Activity activity)
    {
       return DateUtil.getReadableTime(now, activity.getLastChanged());
    }
 
-   @CachedMethodResult
    public String getProjectName(Activity activity)
    {
       Object context = getEntity(activity.getContextType(), activity.getContextId());
@@ -107,7 +101,6 @@ public class ActivityAction implements Serializable
       return "";
    }
 
-   @CachedMethodResult
    public String getProjectUrl(Activity activity)
    {
       Object context = getEntity(activity.getContextType(), activity.getContextId());
@@ -121,8 +114,7 @@ public class ActivityAction implements Serializable
       }
       return "";
    }
-   
-   @CachedMethodResult
+
    public String getLastTextFlowContent(Activity activity)
    {
       String content = "";
@@ -144,10 +136,9 @@ public class ActivityAction implements Serializable
          content = tft.getTextFlow().getContents().get(0);
       }
 
-      return trimString(content);
+      return ShortString.shorten(content);
    }
 
-   @CachedMethodResult
    public String getEditorUrl(Activity activity)
    {
       String url = "";
@@ -177,8 +168,7 @@ public class ActivityAction implements Serializable
       }
       return url;
    }
-   
-   @CachedMethodResult
+
    public String getDocumentUrl(Activity activity)
    {
       String url = "";
@@ -210,7 +200,6 @@ public class ActivityAction implements Serializable
       return url;
    }
 
-   @CachedMethodResult
    public String getDocumentName(Activity activity)
    {
       Object lastTarget = getEntity(activity.getLastTargetType(), activity.getLastTargetId());
@@ -229,8 +218,7 @@ public class ActivityAction implements Serializable
       }
       return docName;
    }
-   
-   @CachedMethodResult
+
    public String getVersionUrl(Activity activity)
    {
       Object context = getEntity(activity.getContextType(), activity.getContextId());
@@ -247,7 +235,6 @@ public class ActivityAction implements Serializable
       return url;
    }
 
-   @CachedMethodResult
    public String getVersionName(Activity activity)
    {
       Object context = getEntity(activity.getContextType(), activity.getContextId());
@@ -262,8 +249,7 @@ public class ActivityAction implements Serializable
       }
       return name;
    }
-   
-   @CachedMethodResult
+
    public String getDocumentListUrl(Activity activity)
    {
       Object context = getEntity(activity.getContextType(), activity.getContextId());
@@ -275,7 +261,8 @@ public class ActivityAction implements Serializable
          HProjectIteration version = (HProjectIteration) context;
          HTextFlowTarget tft = (HTextFlowTarget) lastTarget;
 
-         url = urlUtil.editorDocumentListUrl(version.getProject().getSlug(), version.getSlug(), tft.getLocaleId(), tft.getTextFlow().getLocale());
+         url = urlUtil.editorDocumentListUrl(version.getProject().getSlug(), version.getSlug(), tft.getLocaleId(), tft
+               .getTextFlow().getLocale());
       }
       else if (activity.getActionType() == ActivityType.UPLOAD_SOURCE_DOCUMENT)
       {
@@ -287,12 +274,12 @@ public class ActivityAction implements Serializable
          HDocument document = (HDocument) lastTarget;
          HTextFlowTarget tft = documentDAO.getLastTranslatedTarget(document.getId());
 
-         url = urlUtil.editorDocumentListUrl(version.getProject().getSlug(), version.getSlug(), tft.getLocaleId(), tft.getTextFlow().getLocale());
+         url = urlUtil.editorDocumentListUrl(version.getProject().getSlug(), version.getSlug(), tft.getLocaleId(), tft
+               .getTextFlow().getLocale());
       }
       return url;
    }
-   
-   @CachedMethodResult
+
    public String getLanguageName(Activity activity)
    {
       Object lastTarget = getEntity(activity.getLastTargetType(), activity.getLastTargetId());
@@ -316,12 +303,12 @@ public class ActivityAction implements Serializable
 
       return name;
    }
-   
+
    public void loadMoreActivity()
    {
       activityPageIndex++;
    }
-   
+
    public String getWordsCount(int wordCount)
    {
       if (wordCount == 1)
@@ -330,7 +317,7 @@ public class ActivityAction implements Serializable
       }
       return wordCount + " " + zanataMessages.getMessage("jsf.words");
    }
-   
+
    public boolean hasMoreActivities()
    {
       int loadedActivitiesCount = (activityPageIndex + 1) * ACTIVITY_COUNT_PER_LOAD;
@@ -342,27 +329,16 @@ public class ActivityAction implements Serializable
       }
       return false;
    }
-   
+
    @CachedMethodResult
    private Object getEntity(EntityType contextType, long id)
    {
       return activityServiceImpl.getEntity(contextType, id);
    }
-   
+
    private boolean isTranslationUpdateActivity(ActivityType activityType)
    {
       return activityType == ActivityType.UPDATE_TRANSLATION
             || activityType == ActivityType.REVIEWED_TRANSLATION;
    }
-   
-   private String trimString(String text)
-   {
-      if (StringUtils.length(text) > (MAX_CONTENT_LENGTH + StringUtils.length(TRIMMED_TEXT_POSTFIX)))
-      {
-         text = StringUtils.substring(text, 0, MAX_CONTENT_LENGTH + StringUtils.length(TRIMMED_TEXT_POSTFIX));
-         text = text + TRIMMED_TEXT_POSTFIX;
-      }
-      return text;
-   }
-
 }

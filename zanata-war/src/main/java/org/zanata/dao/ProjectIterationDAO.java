@@ -81,7 +81,8 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
       {
          return null;
       }
-      return (HProjectIteration) getSession().byNaturalId(HProjectIteration.class).using("slug", iterationSlug).using("project", project).load();
+      return (HProjectIteration) getSession().byNaturalId(HProjectIteration.class).using("slug", iterationSlug)
+            .using("project", project).load();
    }
 
    /**
@@ -375,7 +376,7 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
 
       return q.list();
    }
-  
+
    public List<HProjectIteration> searchByProjectId(Long projectId)
    {
       Query q = getSession().createQuery("from HProjectIteration t where t.project.id = :projectId "
@@ -384,14 +385,24 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
       q.setCacheable(false).setComment("ProjectIterationDAO.findByProjectId");
       return q.list();
    }
-   
-   public List<HProjectIteration> searchByProjectIdExcludeObsolete(Long projectId)
+
+   public List<HProjectIteration> searchByProjectIdExcludeStatus(Long projectId, EntityStatus... exclude)
    {
-      Query q = getSession().createQuery("FROM HProjectIteration t WHERE t.project.id = :projectId "
-            + "AND t.status != :obsoleteStatus "
-            + "order by t.creationDate DESC");
+      StringBuilder sb = new StringBuilder();
+      sb.append("FROM HProjectIteration t WHERE t.project.id = :projectId ");
+      for (EntityStatus status : exclude)
+      {
+         sb.append("AND t.status != :");
+         sb.append(exclude.toString());
+      }
+      sb.append(" order by t.creationDate DESC");
+      Query q = getSession().createQuery(sb.toString());
       q.setParameter("projectId", projectId);
-      q.setParameter("obsoleteStatus", EntityStatus.OBSOLETE);
+      
+      for (EntityStatus status : exclude)
+      {
+         q.setParameter(status.toString(), status);
+      }
       q.setCacheable(false).setComment("ProjectIterationDAO.searchByProjectIdExcludeObsolete");
       return q.list();
    }
