@@ -52,7 +52,7 @@
       and <i>group1</i> has already been created, when the Group ID is
       <span c:execute="#createVersionGroupPage = groupIDAlreadyExists(#groupId, #groupName, #groupDescription, #groupStatus)">
          attempted to be used as a new Group ID</span>, the form will give the error message
-         <span c:assertEquals="getGroupsError(#createVersionGroupPage)">This Group ID is not available</span>.
+         <span c:assertEquals="getFirstGroupsError(#createVersionGroupPage)">This Group ID is not available</span>.
    </p>
    <span ext:screenshot="" />
 
@@ -68,7 +68,7 @@
       will not be accepted</span>, for the use of slashes and not ending in an alphanumeric character.
       <br />
       The form will give the error message
-      <span c:assertEquals="getGroupsError(#invalidCharactersPage)">must start and end with letter or number, and contain only letters, numbers, underscores and hyphens.</span>
+      <span c:assertEquals="getFirstGroupsError(#invalidCharactersPage)">must start and end with letter or number, and contain only letters, numbers, underscores and hyphens.</span>
    </p>
    <span ext:screenshot="" />
 
