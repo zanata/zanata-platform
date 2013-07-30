@@ -102,7 +102,7 @@ public class DashboardAction implements Serializable
    }
 
    @CachedMethodResult
-   public int getUserMaintainedProjectsSize()
+   public int getUserMaintainedProjectsCount()
    {
       return authenticatedAccount.getPerson().getMaintainerProjects().size();
    }
