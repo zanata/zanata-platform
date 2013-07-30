@@ -22,17 +22,22 @@ package org.zanata.tmx;
 
 import java.io.InputStream;
 import java.util.Calendar;
-
+import java.util.Collection;
+import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 import org.dbunit.operation.DatabaseOperation;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.dao.TransMemoryDAO;
 import org.zanata.model.tm.TMMetadataType;
-import org.zanata.model.tm.TransMemoryUnit;
+import org.zanata.model.tm.TMXMetadataHelper;
 import org.zanata.model.tm.TransMemory;
+import org.zanata.model.tm.TransMemoryUnit;
+import org.zanata.model.tm.TransMemoryUnitVariant;
 import org.zanata.seam.SeamAutowire;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -62,6 +67,38 @@ public class TMXParserTest extends ZanataDbunitJpaTest
           .ignoreNonResolvable()
           .use("entityManager", getEm())
           .use("session", getSession());
+   }
+
+   private TransMemory parseAndSaveTMFromFile(String file) throws XMLStreamException
+   {
+      TransMemoryDAO transMemoryDAO = seam.autowire(TransMemoryDAO.class);
+      TransMemory tm = new TransMemory();
+      tm.setSlug("new-tm");
+      tm.setDescription("New test tm");
+      transMemoryDAO.makePersistent(tm);
+
+      return parseAndSaveTMFromFile(tm, file);
+   }
+
+   private TransMemory parseAndSaveTMFromFile(TransMemory tm, String file) throws XMLStreamException
+   {
+      TMXParser parser = seam.autowire(TMXParser.class);
+      InputStream is = getClass().getResourceAsStream(file);
+
+      parser.parseAndSaveTMX(is, tm);
+      return tm;
+   }
+
+   private TransMemoryUnit findInCollection(Collection<TransMemoryUnit> col, final String tuid)
+   {
+      return (TransMemoryUnit)CollectionUtils.find(col, new Predicate()
+      {
+         @Override
+         public boolean evaluate(Object o)
+         {
+            return ((TransMemoryUnit)o).getTransUnitId().equals(tuid);
+         }
+      });
    }
 
    @Test
@@ -95,24 +132,41 @@ public class TMXParserTest extends ZanataDbunitJpaTest
       }
    }
 
-   private TransMemory parseAndSaveTMFromFile(String file) throws XMLStreamException
+   @Test
+   public void parseTMXWithMetadata() throws Exception
    {
-      TransMemoryDAO transMemoryDAO = seam.autowire(TransMemoryDAO.class);
-      TransMemory tm = new TransMemory();
-      tm.setSlug("new-tm");
-      tm.setDescription("New test tm");
-      transMemoryDAO.makePersistent(tm);
+      // Create a TM
+      TransMemory tm = parseAndSaveTMFromFile("/tmx/valid-tmx-with-metadata.tmx");
 
-      return parseAndSaveTMFromFile(tm, file);
-   }
+      // Make sure everything is stored properly
+      getEm().flush();
+      getEm().refresh(tm);
 
-   private TransMemory parseAndSaveTMFromFile(TransMemory tm, String file) throws XMLStreamException
-   {
-      TMXParser parser = seam.autowire(TMXParser.class);
-      InputStream is = getClass().getResourceAsStream(file);
+      // Metadata at the header level
+      Map<String,Object> tmMetadata = TMXMetadataHelper.getMetadata(tm);
+      assertThat(tmMetadata.size(), is(10));
+      // TODO Add assertions about the metadata contents
+      System.out.println(tmMetadata);
 
-      parser.parseAndSaveTMX(is, tm);
-      return tm;
+      // Metadata at the TU level
+      TransMemoryUnit tu0 = findInCollection(tm.getTranslationUnits(), "doc0:resId0");
+      Map<String,Object> tu0Metadata = TMXMetadataHelper.getMetadata(tu0);
+      System.out.println(tu0Metadata);
+      assertThat(tu0Metadata.size(), is(5));
+      // TODO Add assertions about the metadata contents
+
+      TransMemoryUnit tu1 = findInCollection(tm.getTranslationUnits(), "doc0:resId1");
+      Map<String,Object> tu1Metadata = TMXMetadataHelper.getMetadata(tu1);
+      System.out.println(tu1Metadata);
+      assertThat(tu1Metadata.size(), is(5));
+      // TODO Add assertions about the metadata contents
+
+      // Metadata at the TUV level
+      TransMemoryUnitVariant tuv0 = tu0.getTransUnitVariants().get("en");
+      Map<String, Object> tuv0Metadata = TMXMetadataHelper.getMetadata(tuv0);
+      System.out.println(tuv0Metadata);
+      assertThat(tuv0Metadata.size(), is(4));
+      // TODO Add assertions about the metadata contents
    }
 
    @Test(expectedExceptions = RuntimeException.class)
