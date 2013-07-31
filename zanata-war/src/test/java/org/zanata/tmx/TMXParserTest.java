@@ -30,7 +30,6 @@ import javax.xml.stream.XMLStreamException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.dbunit.operation.DatabaseOperation;
-import org.hamcrest.Matcher;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
@@ -46,13 +45,10 @@ import nu.xom.Element;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasKey;
-import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
@@ -155,18 +151,15 @@ public class TMXParserTest extends ZanataDbunitJpaTest
       // Metadata at the header level
       Map<String,String> tmAtts = TMXMetadataHelper.getAttributes(tm);
       assertThat(tmAtts.size(), is(9));
-      assertThat(tmAtts,
-            allOf(
-                  hasEntry("segtype", "paragraph"),
-                  hasEntry("creationtoolversion", "unknown"),
-                  hasEntry("creationtool", "Zanata TransMemoryExportTMXStrategy"),
-                  hasEntry("datatype", "unknown"),
-                  hasEntry("adminlang", "en"),
-                  hasEntry("o-tmf", "unknown"),
-                  hasEntry("srclang", "*all*"),
-                  hasKey("creationdate"),
-                  hasKey("changedate")
-            ));
+      assertThat(tmAtts, hasEntry("segtype", "paragraph"));
+      assertThat(tmAtts, hasEntry("creationtoolversion", "unknown"));
+      assertThat(tmAtts, hasEntry("creationtool", "Zanata TransMemoryExportTMXStrategy"));
+      assertThat(tmAtts, hasEntry("datatype", "unknown"));
+      assertThat(tmAtts, hasEntry("adminlang", "en"));
+      assertThat(tmAtts, hasEntry("o-tmf", "unknown"));
+      assertThat(tmAtts, hasEntry("srclang", "*all*"));
+      assertThat(tmAtts, hasKey("creationdate"));
+      assertThat(tmAtts, hasKey("changedate"));
 
       List<Element> tmChildren = TMXMetadataHelper.getChildren(tm);
       assertThat(tmChildren.size(), is(2));
@@ -179,13 +172,10 @@ public class TMXParserTest extends ZanataDbunitJpaTest
       TransMemoryUnit tu0 = findInCollection(tm.getTranslationUnits(), "doc0:resId0");
       Map<String,String> tu0Atts = TMXMetadataHelper.getAttributes(tu0);
       assertThat(tu0Atts.size(), is(4));
-      assertThat(tu0Atts,
-            allOf(
-                  hasEntry("tuid", "doc0:resId0"),
-                  hasEntry("srclang", "en"),
-                  hasKey("creationdate"),
-                  hasKey("changedate")
-            ));
+      assertThat(tmAtts, hasEntry("tuid", "doc0:resId0"));
+      assertThat(tmAtts, hasEntry("srclang", "en"));
+      assertThat(tmAtts, hasKey("creationdate"));
+      assertThat(tmAtts, hasKey("changedate"));
 
       List<Element> tu0Children = TMXMetadataHelper.getChildren(tu0);
       assertThat(tu0Children.size(), is(2));
@@ -197,13 +187,10 @@ public class TMXParserTest extends ZanataDbunitJpaTest
       TransMemoryUnit tu1 = findInCollection(tm.getTranslationUnits(), "doc0:resId1");
       Map<String,String> tu1Atts = TMXMetadataHelper.getAttributes(tu1);
       assertThat(tu1Atts.size(), is(4));
-      assertThat(tu1Atts,
-            allOf(
-                  hasEntry("tuid", "doc0:resId1"),
-                  hasEntry("srclang", "en"),
-                  hasKey("creationdate"),
-                  hasKey("changedate")
-            ));
+      assertThat(tmAtts, hasEntry("tuid", "doc0:resId1"));
+      assertThat(tmAtts, hasEntry("srclang", "en"));
+      assertThat(tmAtts, hasKey("creationdate"));
+      assertThat(tmAtts, hasKey("changedate"));
 
       List<Element> tu1Children = TMXMetadataHelper.getChildren(tu1);
       assertThat(tu1Children.size(), is(4));
@@ -220,12 +207,10 @@ public class TMXParserTest extends ZanataDbunitJpaTest
       TransMemoryUnitVariant tuv0 = tu0.getTransUnitVariants().get("en");
       Map<String, String> tuv0Atts = TMXMetadataHelper.getAttributes(tuv0);
       assertThat(tuv0Atts.size(), is(3));
-      assertThat(tuv0Atts,
-            allOf(
-                  hasEntry("lang", "en"),
-                  hasKey("creationdate"),
-                  hasKey("changedate")
-            ));
+
+      assertThat(tmAtts, hasEntry("lang", "en"));
+      assertThat(tmAtts, hasKey("creationdate"));
+      assertThat(tmAtts, hasKey("changedate"));
 
       List<Element> tuv0Children = TMXMetadataHelper.getChildren(tuv0);
       assertThat(tuv0Children.size(), is(2));
