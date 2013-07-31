@@ -3,23 +3,17 @@ package org.zanata.rest.service;
 import static org.zanata.model.tm.TransMemoryUnit.tu;
 import static org.zanata.model.tm.TransMemoryUnitVariant.tuv;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 
 import javax.annotation.Nonnull;
 import javax.ws.rs.core.StreamingOutput;
-import javax.xml.XMLConstants;
 
 import nu.xom.Attribute;
 import nu.xom.Element;
 
-import org.custommonkey.xmlunit.exceptions.XpathException;
 import org.testng.annotations.Test;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
 import org.zanata.common.LocaleId;
 import org.zanata.model.tm.TMXMetadataHelper;
 import org.zanata.model.tm.TransMemoryUnit;
@@ -33,7 +27,6 @@ public class ExportTransUnitTest extends TMXStreamingOutputTest
 {
 
    @Test
-   @org.junit.Test
    public void exportTransMemory() throws Exception
    {
       StreamingOutput output = streamSourceContents();
@@ -62,7 +55,10 @@ public class ExportTransUnitTest extends TMXStreamingOutputTest
       Date now = new Date();
       TransMemory tm = new TransMemory();
       Element headerElem = newTmxElement("header");
-      headerElem.addAttribute(new Attribute("xml:lang", XMLConstants.XML_NS_URI, sourceLocale.getId()));
+      headerElem.addAttribute(new Attribute("adminlang", "en-US"));
+      headerElem.addAttribute(new Attribute("datatype", "unknown"));
+      headerElem.addAttribute(new Attribute("o-tmf", "OTMF"));
+      headerElem.addAttribute(new Attribute("segtype", "paragraph"));
       addCustomProperty(headerElem);
       TMXMetadataHelper.setMetadata(tm, headerElem);
       tm.setSourceLanguage(sourceLocale.getId());
@@ -98,8 +94,8 @@ public class ExportTransUnitTest extends TMXStreamingOutputTest
                   "doc1:resId0",
                   "doc1:resId0",
                   sourceLoc,
-                  "<seg>source0</seg>",
-                  tuv(fr, "<seg>targetFR0</seg>")),
+                  "<seg>\nsource0  </seg>",
+                  tuv(fr, "<seg>\ntargetFR0  </seg>")),
             tu(
                   tm,
                   "doc1:resId1",

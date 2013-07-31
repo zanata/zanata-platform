@@ -24,7 +24,6 @@ package org.zanata.rest.service;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.util.Iterator;
 
 import javax.annotation.Nonnull;
@@ -32,11 +31,18 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
 
 import lombok.Cleanup;
-import net.sf.okapi.common.XMLWriter;
-import net.sf.okapi.common.filterwriter.TMXWriter;
+import lombok.extern.slf4j.Slf4j;
 
+import nu.xom.Attribute;
+import nu.xom.Element;
+import nu.xom.Text;
+
+import org.zanata.common.LocaleId;
 import org.zanata.util.NullCloseable;
+import org.zanata.util.TMXUtils;
+import org.zanata.xml.StreamSerializer;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.PeekingIterator;
 
@@ -46,6 +52,7 @@ import com.google.common.collect.PeekingIterator;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
+@Slf4j
 public class TMXStreamingOutput<TU> implements StreamingOutput
 {
    private final @Nonnull Iterator<TU> tuIter;
@@ -71,26 +78,46 @@ public class TMXStreamingOutput<TU> implements StreamingOutput
       // error instead of simply aborting the output stream.
       if (iter.hasNext()) iter.peek();
 
-      @Cleanup
-      PrintWriter writer = new PrintWriter(output);
-      @Cleanup
-      XMLWriter xmlWriter = new XMLWriter(writer);
-      @Cleanup
-      MultiLangTMXWriter tmxWriter = new MultiLangTMXWriter(xmlWriter);
-      tmxWriter.setWriteAllPropertiesAsAttributes(true);
+      StreamSerializer tmxWriter = new StreamSerializer(output);
+      // Can't use Serializer's indent, or it will mess up whitespace in seg elements
+//      tmxWriter.setIndent(2);
 
-      exportStrategy.exportHeader(tmxWriter);
+      Element tmx = new Element("tmx");
+      tmx.addAttribute(new Attribute("version", "1.4"));
+      tmxWriter.writeStartTag(tmx);
+      tmxWriter.newLine();
+
+      Text indentText = new Text("  ");
+      tmxWriter.write(indentText);
+      Element header = exportStrategy.buildHeader();
+      tmxWriter.write(header);
+      tmxWriter.newLine();
+
+      tmxWriter.write(indentText);
+      Element body = new Element("body");
+      tmxWriter.writeStartTag(body);
+      tmxWriter.newLine();
 
       while (iter.hasNext())
       {
          TU tu = iter.next();
-         exportStrategy.exportTranslationUnit(tmxWriter, tu);
-         if (writer.checkError())
+         Element textUnit = exportStrategy.buildTU(tu);
+         // If there aren't any translations for this TU, we shouldn't include it.
+         // From the TMX spec: "Logically, a complete translation-memory
+         // database will contain at least two <tuv> elements in each translation
+         // unit."
+         if (textUnit != null && textUnit.getChildElements("tuv").size() >= 2)
          {
-            throw new IOException("error writing to output");
+            tmxWriter.write(textUnit);
+            tmxWriter.newLine();
          }
       }
-      tmxWriter.writeEndDocument();
+      tmxWriter.write(indentText);
+      tmxWriter.writeEndTag(body);
+      tmxWriter.newLine();
+      tmxWriter.writeEndTag(tmx);
+      tmxWriter.newLine();
+      tmxWriter.flush();
    }
 
 }

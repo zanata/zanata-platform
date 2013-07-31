@@ -36,17 +36,14 @@ import org.zanata.common.LocaleId;
 import org.zanata.util.TMXUtils;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMap.Builder;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import net.sf.okapi.common.resource.Property;
 import nu.xom.Attribute;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Elements;
-import nu.xom.Node;
 
 /**
  * Adapts TMX metadata to the generic translation memory objects.
@@ -66,7 +63,7 @@ public class TMXMetadataHelper
    private static final String _creationdate = "creationdate";
    private static final String _changedate = "changedate";
    private static final String _srclang = TMXUtils.SRCLANG;
-   private static final String _lang = "lang";
+   private static final String _xmllang = "xml:lang";
    private static final String _tuid = "tuid";
 
    private static List<String> getChildrenXml(Map<String, Object> metadata)
@@ -86,19 +83,19 @@ public class TMXMetadataHelper
          String metadataString = entity.getMetadata().get(TMMetadataType.TMX14);
          if (metadataString == null)
          {
-            return Lists.newArrayList();
+            return Collections.emptyList();
          }
          Map<String, Object> metadata = jsonMapper.readValue(metadataString, Map.class);
 
          List<String> children = getChildrenXml(metadata);
-         List<Element> result = Lists.newArrayListWithCapacity(children.size());
+         Builder<Element> result = ImmutableList.builder();
          for (String childXml : children)
          {
             Document doc = new nu.xom.Builder().build(childXml, null);
-            Element elem = doc.getRootElement();
+            Element elem = (Element) doc.getRootElement().copy();
             result.add(elem);
          }
-         return result;
+         return result.build();
       }
       catch (Exception e)
       {
@@ -113,7 +110,7 @@ public class TMXMetadataHelper
     */
    public static @Nonnull ImmutableMap<String, String> getAttributes(TransMemory tm)
    {
-      Builder<String, String> m = ImmutableMap.builder();
+      ImmutableMap.Builder<String, String> m = ImmutableMap.builder();
       m.putAll(getSharedMetadata(tm));
       String srclang = tm.getSourceLanguage();
       if (srclang != null)
@@ -130,7 +127,7 @@ public class TMXMetadataHelper
     */
    public static @Nonnull ImmutableMap<String, String> getAttributes(TransMemoryUnit tu)
    {
-      Builder<String, String> m = ImmutableMap.builder();
+      ImmutableMap.Builder<String, String> m = ImmutableMap.builder();
       m.putAll(getSharedMetadata(tu));
       String tuid = tu.getTransUnitId();
       if (tuid != null)
@@ -152,19 +149,17 @@ public class TMXMetadataHelper
     */
    public static @Nonnull ImmutableMap<String, String> getAttributes(TransMemoryUnitVariant tuv)
    {
-      Builder<String, String> m = ImmutableMap.builder();
+      ImmutableMap.Builder<String, String> m = ImmutableMap.builder();
       m.putAll(getSharedMetadata(tuv));
       String lang = tuv.getLanguage();
-      if (lang != null)
-      {
-         m.put(_lang, lang);
-      }
+      assert lang != null;
+      m.put(_xmllang, lang);
       return m.build();
    }
 
    private static @Nonnull ImmutableMap<String, String> getSharedMetadata(HasTMMetadata fromEntity)
    {
-      Builder<String, String> m = ImmutableMap.builder();
+      ImmutableMap.Builder<String, String> m = ImmutableMap.builder();
       m.putAll(getGenericMetadata(fromEntity));
       Date creationDate = fromEntity.getCreationDate();
       if (creationDate != null)
@@ -232,7 +227,7 @@ public class TMXMetadataHelper
       String srclang = (String) metadata.remove(_srclang);
       if (srclang != null)
       {
-         if (srclang.equalsIgnoreCase(TMXUtils.ALL_LOCALE.toBCP47()))
+         if (srclang.equalsIgnoreCase(TMXUtils.ALL_LOCALE))
          {
             toTransUnit.setSourceLanguage(null);
          }
@@ -251,7 +246,7 @@ public class TMXMetadataHelper
    public static void setMetadata(TransMemoryUnitVariant tuv, Element tuvElem)
    {
       Map<String, Object> metadata = buildMetadata(tuvElem);
-      String lang = (String) metadata.remove(_lang);
+      String lang = (String) metadata.remove(_xmllang);
       if (lang != null)
       {
          tuv.setLanguage(checkLang(lang));
@@ -317,10 +312,15 @@ public class TMXMetadataHelper
          Attribute attr = elem.getAttribute(i);
          String uri = attr.getNamespaceURI();
          String name = attr.getLocalName();
-         if (inTmxNamespace(uri) || (uri.equals(XMLConstants.XML_NS_URI) && name.equals(_lang)))
+         if (inTmxNamespace(uri))
          {
             String value = attr.getValue();
             metadata.put(name, value);
+         }
+         else if (attr.getQualifiedName().equals(_xmllang))
+         {
+            String value = attr.getValue();
+            metadata.put(attr.getQualifiedName(), value);
          }
       }
       List<String> childrenXml = getChildrenAsXml(elem);
@@ -331,7 +331,7 @@ public class TMXMetadataHelper
    private static List<String> getChildrenAsXml(Element elem)
    {
       // elem might also have sub nodes (save them as pure xml)
-      List<String> childrenXml = Lists.newArrayList();
+      Builder<String> childrenXml = ImmutableList.builder();
       Elements childElements = elem.getChildElements();
       for (int i = 0; i < childElements.size(); i++)
       {
@@ -346,7 +346,7 @@ public class TMXMetadataHelper
             childrenXml.add(copy.toXML());
          }
       }
-      return childrenXml;
+      return childrenXml.build();
    }
 
    private static boolean inTmxNamespace(String uri)

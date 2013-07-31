@@ -79,11 +79,11 @@ public class ExportSourceContentsTest extends TMXStreamingOutputTest
                   ),
             new SimpleSourceContents(
                   "doc1:resId0",
-                  toMap(new SimpleTargetContents(fr, Approved, "targetFR0", "targetFR1"),
+                  toMap(new SimpleTargetContents(fr, Approved, "\ntargetFR0  ", "targetFR1"),
                         // NULL contents to be skipped:
                         new SimpleTargetContents(de, Approved, "target\0DE0", "targetDE1")),
                   sourceLocale,
-                  "source0", "source1"
+                  "\nsource0  ", "source1"
                   ),
             new SimpleSourceContents(
                   "doc1:resId1",

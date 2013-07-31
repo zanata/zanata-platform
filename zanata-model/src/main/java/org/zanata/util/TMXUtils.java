@@ -21,8 +21,6 @@
 
 package org.zanata.util;
 
-import net.sf.okapi.common.LocaleId;
-
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
@@ -30,7 +28,7 @@ import net.sf.okapi.common.LocaleId;
 public class TMXUtils
 {
    public static final String TMX14_NAMESPACE = "http://www.lisa.org/tmx14";
-   public static final LocaleId ALL_LOCALE = new LocaleId("*all*", false);
+   public static final String ALL_LOCALE = "*all*";
    public static final String DATA_TYPE = "datatype";
    public static final String SEG_TYPE = "segtype";
    public static final String SRCLANG = "srclang";

@@ -104,11 +104,12 @@ public class OkapiUtil
 
    /**
     * Extracts plain text from a TMX entry. This ignores the TMX elements that mark up native code sequences:
-    * &lt;bpt&gt;&lt;/bpt&gt;
-    * &lt;ept&gt;&lt;/ept&gt;
-    * &lt;it&gt;&lt;/it&gt;
-    * &lt;ph&gt;&lt;/ph&gt;
-    * &lt;seg&gt;&lt;/seg&gt;
+    * {@code
+    * <bpt></bpt>
+    * <ept></ept>
+    * <it></it>
+    * <ph></ph>
+    * <seg></seg>}
     *
     * @param content The tmx marked up content.
     * @return A string with all tmx mark-up content stripped out. Essentially a plain text version of the string.

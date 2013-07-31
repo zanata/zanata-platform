@@ -21,21 +21,20 @@
 
 package org.zanata.rest.service;
 
-import static net.sf.okapi.common.LocaleId.fromBCP47;
-
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.xml.XMLConstants;
 
-import net.sf.okapi.common.LocaleId;
-import net.sf.okapi.common.filterwriter.TMXWriter;
-import net.sf.okapi.common.resource.ITextUnit;
-import net.sf.okapi.common.resource.Property;
+import lombok.extern.slf4j.Slf4j;
+
+import nu.xom.Attribute;
 import nu.xom.Element;
 
+import org.zanata.common.LocaleId;
 import org.zanata.model.tm.TMXMetadataHelper;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.model.tm.TransMemoryUnitVariant;
@@ -53,7 +52,8 @@ import com.google.common.collect.Lists;
  *
  */
 @ParametersAreNonnullByDefault
-public class TransMemoryExportTMXStrategy extends ExportTMXStrategy<TransMemoryUnit>
+@Slf4j
+public class TransMemoryExportTMXStrategy implements ExportTMXStrategy<TransMemoryUnit>
 {
    private static final String creationTool = "Zanata " + TransMemoryExportTMXStrategy.class.getSimpleName();
    private static final String creationToolVersion =
@@ -67,139 +67,114 @@ public class TransMemoryExportTMXStrategy extends ExportTMXStrategy<TransMemoryU
    }
 
    @Override
-   public void exportHeader(TMXWriter tmxWriter)
+   public Element buildHeader() throws IOException
    {
-      ImmutableMap<String, String> metadata = TMXMetadataHelper.getAttributes(tm);
-      // TODO Okapi can't export header's child nodes (prop and note)
-//      TMXMetadataHelper.getChildren(tm);
-      net.sf.okapi.common.LocaleId sourceLocale;
-      String srclang = tm.getSourceLanguage();
-      if (srclang == null)
-      {
-         sourceLocale = TMXUtils.ALL_LOCALE;
-      }
-      else
-      {
-         sourceLocale = new net.sf.okapi.common.LocaleId(srclang);
-      }
-      // TMXWriter demands a non-null target locale, but if you write
-      // your TUs with writeTUFull(), it is never used.
-      LocaleId targetLocale = net.sf.okapi.common.LocaleId.EMPTY;
-      String segType = (String) metadata.get(TMXUtils.SEG_TYPE);
-      String originalTMFormat = (String) metadata.get(TMXUtils.O_TMF);
-      String dataType = (String) metadata.get(TMXUtils.DATA_TYPE);
-
-      tmxWriter.writeStartDocument(
-            sourceLocale,
-            targetLocale,
-            creationTool, creationToolVersion,
-            segType, originalTMFormat, dataType);
+      Element header = new Element("header");
+      addAttributesAndChildren(header, tm);
+      header.addAttribute(new Attribute("creationtool", creationTool));
+      header.addAttribute(new Attribute("creationtoolversion", creationToolVersion));
+      return header;
    }
 
+   /**
+    * Writes the specified SourceContents (TextFlow) and one or all of its translations to the TMXWriter.
+    * @param tu the SourceContents (TextFlow) whose contents and translations are to be exported
+    * @param tuidPrefix String to be prepended to all resIds when generating tuids
+    * @return 
+    * @throws IOException 
+    * @throws Exception 
+    */
    @Override
-   protected void exportMetadata(ITextUnit textUnit, TransMemoryUnit tu)
+   public Element buildTU(TransMemoryUnit tu) throws IOException
    {
-      ImmutableMap<String,String> attributes = TMXMetadataHelper.getAttributes(tu);
-      for (Map.Entry<String, String> attr : attributes.entrySet())
+      Element textUnit = new Element("tu");
+
+      Optional<LocaleId> sourceLocaleId = getSourceLocale(tu);
+      String srcLang = sourceLocaleId.isPresent() ?
+            sourceLocaleId.get().getId() : TMXUtils.ALL_LOCALE;
+      textUnit.addAttribute(new Attribute(TMXUtils.SRCLANG, srcLang));
+
+      String tuid = tu.getTransUnitId();
+      if (tuid != null)
       {
-         textUnit.setProperty(toProp(attr));
+         textUnit.addAttribute(new Attribute("tuid", tuid));
       }
-      for (Property prop : toProps(TMXMetadataHelper.getChildren(tu)))
+
+      addAttributesAndChildren(textUnit, tu);
+
+      for (TransMemoryUnitVariant tuv: tu.getTransUnitVariants().values())
       {
-         textUnit.setProperty(prop);
+         textUnit.appendChild(buildTUV(tuv));
       }
+      return textUnit;
    }
 
-   private Property toProp(Map.Entry<String, String> attr)
-   {
-      return new Property(attr.getKey(), attr.getValue());
-   }
-
-   private List<Property> toProps(List<Element> children)
-   {
-      List<Property> props = Lists.newArrayList();
-      for (Element elem : children)
-      {
-         if (elem.getLocalName().equals("prop"))
-         {
-            // TODO Okapi can only write string values for properties
-            Property property = new Property(elem.getAttributeValue("type"), elem.getValue());
-            // TODO Okapi doesn't allow multiple props with same type
-            props.add(property);
-         }
-         // TODO Okapi can't write note elements
-      }
-      return props;
-   }
-
-   @Override
-   protected Optional<LocaleId> getSourceLocale(TransMemoryUnit tu)
+   private Optional<LocaleId> getSourceLocale(TransMemoryUnit tu)
    {
       String tuSourceLanguage = tu.getSourceLanguage();
       if (tuSourceLanguage != null)
       {
-         return Optional.of(LocaleId.fromBCP47(tuSourceLanguage));
+         return Optional.of(new LocaleId(tuSourceLanguage));
       }
       return Optional.absent();
    }
 
-   @Override
-   protected @Nonnull net.sf.okapi.common.LocaleId resolveSourceLocale(TransMemoryUnit tu)
+   private void addAttributesAndChildren(Element header, TransMemory transMemory)
    {
-      return fromBCP47(resolveSourceLanguage(tu));
+      ImmutableMap<String,String> attributes = TMXMetadataHelper.getAttributes(transMemory);
+      for (Map.Entry<String, String> attr : attributes.entrySet())
+      {
+         header.addAttribute(toAttribute(attr));
+      }
+      for (Element child : TMXMetadataHelper.getChildren(transMemory))
+      {
+         header.appendChild(child);
+      }
    }
 
-   private @Nonnull String resolveSourceLanguage(TransMemoryUnit tu)
+   private void addAttributesAndChildren(Element tu, TransMemoryUnit transUnit)
    {
-      String tuSourceLanguage = tu.getSourceLanguage();
-      if (tuSourceLanguage != null)
+      ImmutableMap<String,String> attributes = TMXMetadataHelper.getAttributes(transUnit);
+      for (Map.Entry<String, String> attr : attributes.entrySet())
       {
-         return tuSourceLanguage;
+         tu.addAttribute(toAttribute(attr));
+      }
+      for (Element child : TMXMetadataHelper.getChildren(transUnit))
+      {
+         tu.appendChild(child);
+      }
+   }
+   
+   private Attribute toAttribute(Map.Entry<String, String> attr)
+   {
+      String name = attr.getKey();
+      if (name.equals("xml:lang"))
+      {
+         return new Attribute(name, XMLConstants.XML_NS_URI, attr.getValue());
       }
       else
       {
-         String tmSourceLanguage = tu.getTranslationMemory().getSourceLanguage();
-         assert tmSourceLanguage != null;
-         return tmSourceLanguage;
-      }
-
-   }
-
-   @Override
-   protected @Nonnull String getSrcContent(TransMemoryUnit tu)
-   {
-      TransMemoryUnitVariant tuv = tu.getTransUnitVariants().get(resolveSourceLanguage(tu));
-      assert tuv != null;
-      return tuv.getPlainTextSegment();
-   }
-
-   @Override
-   protected @Nullable String getTUID(TransMemoryUnit tu)
-   {
-      return tu.getTransUnitId();
-   }
-
-   @Override
-   protected void addTextUnitVariants(ITextUnit textUnit, TransMemoryUnit tu)
-   {
-      for (TransMemoryUnitVariant tuv: tu.getTransUnitVariants().values())
-      {
-         addTUV(textUnit, tuv);
+         return new Attribute(name, attr.getValue());
       }
    }
 
-   private void addTUV(ITextUnit textUnit, TransMemoryUnitVariant tuv)
+   private Element buildTUV(TransMemoryUnitVariant tuv)
    {
+      Element result = new Element("tuv");
       @Nonnull String trgContent = tuv.getPlainTextSegment();
-      @Nonnull net.sf.okapi.common.LocaleId locId = fromBCP47(tuv.getLanguage());
       ImmutableMap<String,String> attributes = TMXMetadataHelper.getAttributes(tuv);
-      List<Property> props = Lists.newArrayList();
       for (Map.Entry<String, String> attr : attributes.entrySet())
       {
-         props.add(toProp(attr));
+         result.addAttribute(toAttribute(attr));
       }
-      props.addAll(toProps(TMXMetadataHelper.getChildren(tuv)));
-      addTargetToTextUnit(textUnit, locId, trgContent, props);
+      for (Element child : TMXMetadataHelper.getChildren(tuv))
+      {
+         result.appendChild(child);
+      }
+      Element seg = new Element("seg");
+      seg.appendChild(trgContent);
+      result.appendChild(seg);
+      return result;
    }
 
 }

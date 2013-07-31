@@ -60,7 +60,6 @@ abstract class TMXStreamingOutputTest
       NamespaceContext ctx = new SimpleNamespaceContext(ImmutableMap.of("xml", "http://www.w3.org/XML/1998/namespace"));
       XMLUnit.setXpathNamespaceContext(ctx);
    }
-   private LocaleId targetLocale;
 
    LocaleId sourceLocale = LocaleId.EN;
    XpathEngine simpleXpathEngine = XMLUnit.newXpathEngine();
@@ -102,7 +101,7 @@ abstract class TMXStreamingOutputTest
       String xpathTU = "//tu[@tuid='"+docId+":"+resId+"']";
       NodeList nodeList = simpleXpathEngine.getMatchingNodes(xpathTU, doc);
       int matches = nodeList.getLength();
-      assertEquals("Should be only one tu node per docId:resId", 1, matches);
+      assertEquals("Should be one tu node per docId:resId", 1, matches);
       Node tuNode = nodeList.item(0);
       Node srclang = tuNode.getAttributes().getNamedItem("srclang");
       assertEquals(sourceLocale.getId(), srclang.getNodeValue());
@@ -171,7 +170,7 @@ abstract class TMXStreamingOutputTest
       String doctype = "tmx";
       Validator v = new Validator(reader, systemID, doctype);
       // Invalid: Okapi puts seg before note and prop when outputting tuv!
-//      assertTrue(v.toString(), v.isValid());
+      assertTrue(v.toString(), v.isValid());
    }
 
    void assertContainsFrenchTUs(Document doc) throws XpathException, SAXException, IOException
@@ -184,8 +183,8 @@ abstract class TMXStreamingOutputTest
       assertTUContainsSegment("TARGETfr0", "doc0", "resId1", "fr", doc);
 
       assertSingleTU("doc1", "resId0", doc);
-      assertTUContainsSegment("source0", "doc1", "resId0", "en", doc);
-      assertTUContainsSegment("targetFR0", "doc1", "resId0", "fr", doc);
+      assertTUContainsSegment("\nsource0  ", "doc1", "resId0", "en", doc);
+      assertTUContainsSegment("\ntargetFR0  ", "doc1", "resId0", "fr", doc);
    }
 
    void assertContainsGermanTUs(Document doc) throws XpathException, SAXException, IOException

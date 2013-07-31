@@ -21,23 +21,25 @@
 
 package org.zanata.rest.service;
 
-import java.util.Collections;
+import java.io.IOException;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.xml.XMLConstants;
 
-import net.sf.okapi.common.filterwriter.TMXWriter;
-import net.sf.okapi.common.resource.ITextUnit;
-import net.sf.okapi.common.resource.Property;
+import lombok.extern.slf4j.Slf4j;
+import nu.xom.Attribute;
+import nu.xom.Element;
 
 import org.zanata.common.LocaleId;
 import org.zanata.model.SourceContents;
 import org.zanata.model.TargetContents;
-import org.zanata.util.OkapiUtil;
 import org.zanata.util.TMXUtils;
 import org.zanata.util.VersionUtility;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.Sets;
 
 /**
  * Writes translations for Zanata Projects/TextFlows as TMX.
@@ -45,7 +47,8 @@ import com.google.common.base.Optional;
  *
  */
 @ParametersAreNonnullByDefault
-public class TranslationsExportTMXStrategy extends ExportTMXStrategy<SourceContents>
+@Slf4j
+public class TranslationsExportTMXStrategy implements ExportTMXStrategy<SourceContents>
 {
    private static final String creationTool = "Zanata " + TranslationsExportTMXStrategy.class.getSimpleName();
    private static final String creationToolVersion =
@@ -64,61 +67,67 @@ public class TranslationsExportTMXStrategy extends ExportTMXStrategy<SourceConte
    }
 
    @Override
-   public void exportHeader(TMXWriter tmxWriter)
+   public Element buildHeader() throws IOException
    {
       String segType = "block"; // TODO other segmentation types
       String dataType = "unknown"; // TODO track data type metadata throughout the system
 
-      tmxWriter.writeStartDocument(
-            TMXUtils.ALL_LOCALE,
-            // TMXWriter demands a non-null target locale, but if you write
-            // your TUs with writeTUFull(), it is never used.
-            net.sf.okapi.common.LocaleId.EMPTY,
-            creationTool, creationToolVersion,
-            segType, null, dataType);
+      Element header = new Element("header");
+      header.addAttribute(new Attribute("creationtool", creationTool));
+      header.addAttribute(new Attribute("creationtoolversion", creationToolVersion));
+      header.addAttribute(new Attribute("segtype", segType));
+      header.addAttribute(new Attribute("o-tmf", "unknown"));
+      header.addAttribute(new Attribute("adminlang", "en"));
+      header.addAttribute(new Attribute("srclang", TMXUtils.ALL_LOCALE));
+      header.addAttribute(new Attribute("datatype", dataType));
+      return header;
    }
 
-
-   
-   @Override
-   protected String getSrcContent(SourceContents tf)
+   /**
+    * Writes the specified SourceContents (TextFlow) and one or all of its translations to the TMXWriter.
+    * @param tu the SourceContents (TextFlow) whose contents and translations are to be exported
+    * @param tuidPrefix String to be prepended to all resIds when generating tuids
+    * @return 
+    * @throws IOException 
+    * @throws Exception 
+    */
+   public Element buildTU(SourceContents tu) throws IOException
    {
-      return tf.getContents().get(0);
+      Element textUnit = new Element("tu");
+
+      LocaleId sourceLocaleId = tu.getLocale();
+      String tuid = tu.getQualifiedId();
+      // Perhaps we could encode plurals using TMX attributes?
+      String srcContent = tu.getContents().get(0);
+      if (srcContent.contains("\0"))
+      {
+         log.warn("illegal null character; discarding SourceContents with id="+tuid);
+         return null;
+      }
+      String srcLang = sourceLocaleId.getId();
+      textUnit.addAttribute(new Attribute(TMXUtils.SRCLANG, srcLang));
+
+      textUnit.addAttribute(new Attribute("tuid", tuid));
+
+      Set<Element> tuvs = buildTUVs(tu);
+      for (Element tuv : tuvs)
+      {
+         textUnit.appendChild(tuv);
+      }
+      return textUnit;
    }
 
-   @Override
-   protected Optional<net.sf.okapi.common.LocaleId> getSourceLocale(SourceContents tu)
+   private Set<Element> buildTUVs(SourceContents tf)
    {
-      return Optional.of(resolveSourceLocale(tu));
-   }
-
-   @Override
-   protected net.sf.okapi.common.LocaleId resolveSourceLocale(SourceContents tf)
-   {
-      return OkapiUtil.toOkapiLocale(tf.getLocale());
-   }
-
-   @Override
-   protected String getTUID(SourceContents tf)
-   {
-      return tf.getQualifiedId();
-   }
-
-   @Override
-   protected void exportMetadata(ITextUnit textUnit, SourceContents tu)
-   {
-      // nothing to do
-   }
-
-   @Override
-   protected void addTextUnitVariants(ITextUnit textUnit, SourceContents tf)
-   {
+      Set<Element> result = Sets.newLinkedHashSet();
+      result.add(buildSourceTUV(tf));
       if (localeId != null)
       {
          TargetContents tfTarget = tf.getTargetContents(localeId);
          if (tfTarget != null)
          {
-            addTargetToTextUnit(textUnit, tfTarget);
+            Optional<Element> tuv = buildTargetTUV(tfTarget);
+            result.addAll(tuv.asSet());
          }
       }
       else
@@ -126,19 +135,43 @@ public class TranslationsExportTMXStrategy extends ExportTMXStrategy<SourceConte
          Iterable<TargetContents> allTargetContents = tf.getAllTargetContents();
          for (TargetContents tfTarget : allTargetContents)
          {
-            addTargetToTextUnit(textUnit, tfTarget);
+            Optional<Element> tuv = buildTargetTUV(tfTarget);
+            result.addAll(tuv.asSet());
          }
       }
+      return result;
    }
 
-   private void addTargetToTextUnit(ITextUnit textUnit, TargetContents tfTarget)
+   private Element buildSourceTUV(SourceContents tf)
+   {
+      Element sourceTuv = new Element("tuv");
+      sourceTuv.addAttribute(new Attribute("xml:lang", XMLConstants.XML_NS_URI, tf.getLocale().getId()));
+      Element seg = new Element("seg");
+      seg.appendChild(tf.getContents().get(0));
+      sourceTuv.appendChild(seg);
+      return sourceTuv;
+   }
+
+   private Optional<Element> buildTargetTUV(TargetContents tfTarget)
    {
       if (tfTarget.getState().isTranslated())
       {
+         LocaleId locId = tfTarget.getLocaleId();
          String trgContent = tfTarget.getContents().get(0);
-         net.sf.okapi.common.LocaleId locId = OkapiUtil.toOkapiLocale(tfTarget.getLocaleId());
-         addTargetToTextUnit(textUnit, locId, trgContent, Collections.<Property>emptyList());
+         if (trgContent.contains("\0"))
+         {
+            log.warn("illegal null character; discarding TargetContents with locale="+
+                  locId+", contents="+trgContent);
+            return Optional.absent();
+         }
+         Element tuv = new Element("tuv");
+         tuv.addAttribute(new Attribute("xml:lang", XMLConstants.XML_NS_URI, locId.getId()));
+         Element seg = new Element("seg");
+         seg.appendChild(trgContent);
+         tuv.appendChild(seg);
+         return Optional.of(tuv);
       }
+      return Optional.absent();
    }
 
 }

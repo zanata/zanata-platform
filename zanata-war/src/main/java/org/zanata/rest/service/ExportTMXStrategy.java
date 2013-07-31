@@ -21,26 +21,11 @@
 
 package org.zanata.rest.service;
 
-import java.util.List;
+import java.io.IOException;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import org.zanata.model.tm.TMXMetadataHelper;
-import org.zanata.util.TMXUtils;
-
-import com.google.common.base.Optional;
-
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import net.sf.okapi.common.LocaleId;
-import net.sf.okapi.common.filterwriter.TMXWriter;
-import net.sf.okapi.common.resource.ITextUnit;
-import net.sf.okapi.common.resource.Property;
-import net.sf.okapi.common.resource.TextFragment;
-import net.sf.okapi.common.resource.TextUnit;
+import nu.xom.Element;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
@@ -48,92 +33,8 @@ import net.sf.okapi.common.resource.TextUnit;
  * @param <T> a translation unit (either SourceContents/HTextFlow or TransMemoryUnit)
  */
 @ParametersAreNonnullByDefault
-@Slf4j
-@NoArgsConstructor
-public abstract class ExportTMXStrategy<T>
+public interface ExportTMXStrategy<T>
 {
-
-   /**
-    * Writes the specified SourceContents (TextFlow) and one or all of its translations to the TMXWriter.
-    * @param tmxWriter
-    * @param tuidPrefix String to be prepended to all resIds when generating tuids
-    * @param tu the SourceContents (TextFlow) whose contents and translations are to be exported
-    * @throws Exception 
-    */
-   public void exportTranslationUnit(MultiLangTMXWriter tmxWriter, T tu)
-   {
-      assert tmxWriter.isWriteAllPropertiesAsAttributes();
-      Optional<LocaleId> sourceLocaleId = getSourceLocale(tu);
-      String tuid = getTUID(tu);
-      // Perhaps we could encode plurals using TMX attributes?
-      String srcContent = getSrcContent(tu);
-      if (srcContent.contains("\0"))
-      {
-         log.warn("illegal null character; discarding SourceContents with id="+tuid);
-         return;
-      }
-
-      LocaleId srcLang = getSrcLangOrAll(sourceLocaleId);
-      ITextUnit textUnit = new TextUnit(tuid, srcContent);
-      textUnit.setProperty(new Property(TMXUtils.SRCLANG, srcLang.toBCP47()));
-      
-      exportMetadata(textUnit, tu);
-
-      textUnit.setName(tuid);
-      addTextUnitVariants(textUnit, tu);
-      // If there aren't any translations for this TU, we shouldn't include it.
-      // From the TMX spec: "Logically, a complete translation-memory
-      // database will contain at least two <tuv> elements in each translation
-      // unit."
-      if (!textUnit.getTargetLocales().isEmpty())
-      {
-         if (sourceLocaleId.isPresent())
-         {
-            tmxWriter.writeTUFull(textUnit, srcLang);
-         }
-         else
-         {
-            tmxWriter.writeTUFullMultiLang(textUnit);
-         }
-      }
-   }
-
-   protected abstract void exportMetadata(ITextUnit textUnit, T tu);
-
-   protected LocaleId getSrcLangOrAll(Optional<LocaleId> sourceLocaleId)
-   {
-      if (sourceLocaleId.isPresent())
-      {
-         return sourceLocaleId.get();
-      }
-      else
-      {
-         return TMXUtils.ALL_LOCALE;
-      }
-   }
-
-   protected void addTargetToTextUnit(ITextUnit textUnit, LocaleId locId, String trgContent, List<Property> props)
-   {
-      if (trgContent.contains("\0"))
-      {
-         log.warn("illegal null character; discarding TargetContents with sourceId="+textUnit.getId()+", locale="+locId);
-      }
-      else
-      {
-         TextFragment target = new TextFragment(trgContent);
-         textUnit.setTargetContent(locId, target);
-         for (Property prop : props)
-         {
-            textUnit.setTargetProperty(locId, prop);
-         }
-      }
-   }
-
-   protected abstract void exportHeader(TMXWriter tmxWriter);
-   protected abstract Optional<LocaleId> getSourceLocale(T tu);
-   protected abstract @Nonnull LocaleId resolveSourceLocale(T tu);
-   protected abstract @Nullable String getTUID(T tu);
-   protected abstract void addTextUnitVariants(ITextUnit textUnit, T tu);
-   protected abstract String getSrcContent(T tu);
-
+   public abstract Element buildHeader() throws IOException;
+   public abstract Element buildTU(T tu) throws IOException;
 }

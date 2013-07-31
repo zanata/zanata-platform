@@ -207,7 +207,7 @@ public class TMXParserTest extends ZanataDbunitJpaTest
       TransMemoryUnitVariant tuv0 = tu0.getTransUnitVariants().get("en");
       Map<String, String> tuv0Atts = TMXMetadataHelper.getAttributes(tuv0);
       assertThat(tuv0Atts.size(), is(3));
-      assertThat(tuv0Atts, hasEntry("lang", "en"));
+      assertThat(tuv0Atts, hasEntry("xml:lang", "en"));
       assertThat(tuv0Atts, hasKey("creationdate"));
       assertThat(tuv0Atts, hasKey("changedate"));
 
