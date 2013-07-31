@@ -172,10 +172,10 @@ public class TMXParserTest extends ZanataDbunitJpaTest
       TransMemoryUnit tu0 = findInCollection(tm.getTranslationUnits(), "doc0:resId0");
       Map<String,String> tu0Atts = TMXMetadataHelper.getAttributes(tu0);
       assertThat(tu0Atts.size(), is(4));
-      assertThat(tmAtts, hasEntry("tuid", "doc0:resId0"));
-      assertThat(tmAtts, hasEntry("srclang", "en"));
-      assertThat(tmAtts, hasKey("creationdate"));
-      assertThat(tmAtts, hasKey("changedate"));
+      assertThat(tu0Atts, hasEntry("tuid", "doc0:resId0"));
+      assertThat(tu0Atts, hasEntry("srclang", "en"));
+      assertThat(tu0Atts, hasKey("creationdate"));
+      assertThat(tu0Atts, hasKey("changedate"));
 
       List<Element> tu0Children = TMXMetadataHelper.getChildren(tu0);
       assertThat(tu0Children.size(), is(2));
@@ -187,10 +187,10 @@ public class TMXParserTest extends ZanataDbunitJpaTest
       TransMemoryUnit tu1 = findInCollection(tm.getTranslationUnits(), "doc0:resId1");
       Map<String,String> tu1Atts = TMXMetadataHelper.getAttributes(tu1);
       assertThat(tu1Atts.size(), is(4));
-      assertThat(tmAtts, hasEntry("tuid", "doc0:resId1"));
-      assertThat(tmAtts, hasEntry("srclang", "en"));
-      assertThat(tmAtts, hasKey("creationdate"));
-      assertThat(tmAtts, hasKey("changedate"));
+      assertThat(tu1Atts, hasEntry("tuid", "doc0:resId1"));
+      assertThat(tu1Atts, hasEntry("srclang", "en"));
+      assertThat(tu1Atts, hasKey("creationdate"));
+      assertThat(tu1Atts, hasKey("changedate"));
 
       List<Element> tu1Children = TMXMetadataHelper.getChildren(tu1);
       assertThat(tu1Children.size(), is(4));
@@ -207,10 +207,9 @@ public class TMXParserTest extends ZanataDbunitJpaTest
       TransMemoryUnitVariant tuv0 = tu0.getTransUnitVariants().get("en");
       Map<String, String> tuv0Atts = TMXMetadataHelper.getAttributes(tuv0);
       assertThat(tuv0Atts.size(), is(3));
-
-      assertThat(tmAtts, hasEntry("lang", "en"));
-      assertThat(tmAtts, hasKey("creationdate"));
-      assertThat(tmAtts, hasKey("changedate"));
+      assertThat(tuv0Atts, hasEntry("lang", "en"));
+      assertThat(tuv0Atts, hasKey("creationdate"));
+      assertThat(tuv0Atts, hasKey("changedate"));
 
       List<Element> tuv0Children = TMXMetadataHelper.getChildren(tuv0);
       assertThat(tuv0Children.size(), is(2));
