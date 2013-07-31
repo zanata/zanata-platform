@@ -66,6 +66,10 @@ public class RegisterTest
       fields.put("confirmpassword", "testpassword");
       fields.put("captcha", "555"); // TODO: Expect captcha error, fix
       homePage = new BasicWorkFlow().goToHome();
+      if (homePage.hasLoggedIn())
+      {
+         homePage.signOut();
+      }
    }
 
    @Test
