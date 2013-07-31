@@ -63,6 +63,8 @@
         <cargo.debug.jvm.args> -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787 -Xnoagent -Djava.compiler=NONE</cargo.debug.jvm.args>
         <!-- this property can be used to control what test needs to be run by failsafe -->
         <include.test.patterns>**/AggregateTestSuite.java</include.test.patterns>
+        <document.storage.directory>${project.build.directory}/zanata-documents</document.storage.directory>
+        <zanata.testdata.directory>${basedir}/testdata</zanata.testdata.directory>
     </properties>
 
     <dependencies>

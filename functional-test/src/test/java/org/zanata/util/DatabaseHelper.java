@@ -8,11 +8,16 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nullable;
+
+import org.apache.commons.io.FileUtils;
 import org.hamcrest.Matchers;
 import org.openqa.selenium.support.ui.FluentWait;
 import com.google.common.base.Predicate;
@@ -187,6 +192,22 @@ public class DatabaseHelper
    {
       executeQuery("RUNSCRIPT FROM '" + backupPath + "' CHARSET 'UTF-8'");
       waitUntil("select count(*) from HProjectIteration", 0);
+   }
+
+   public void resetFileData()
+   {
+      File path = new File(PropertiesHolder.getProperty("document.storage.directory"));
+      if(path.exists())
+      {
+         try {
+            FileUtils.deleteDirectory(path);
+         }catch (IOException e)
+         {
+            log.error("Failed to delete", path, e);
+            throw new RuntimeException("error");
+         }
+      }
+
    }
 
    private void waitUntil(final String sql, final int expectedResultCount)

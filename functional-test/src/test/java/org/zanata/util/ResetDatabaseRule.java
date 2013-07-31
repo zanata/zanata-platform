@@ -28,6 +28,8 @@ public class ResetDatabaseRule extends ExternalResource
          return;
       }
 
+      DatabaseHelper.database().resetFileData();
+
       if (configSet.contains(Config.WithData))
       {
          DatabaseHelper.database().resetDatabaseWithData();
