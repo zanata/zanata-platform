@@ -26,6 +26,9 @@ import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.util.DateUtil;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
@@ -60,6 +63,8 @@ public class TransHistoryItemLine extends Composite
    Anchor copyIntoEditor;
    @UiField
    WebTransMessages messages;
+   @UiField
+   SpanElement icon;
 
    public TransHistoryItemLine(TransHistoryItem item, TranslationHistoryDisplay.Listener listener, ContentStateRenderer stateRenderer)
    {
@@ -72,6 +77,14 @@ public class TransHistoryItemLine extends Composite
       revision = new InlineHTML(template.targetRevision(item.getVersionNum(), item.getOptionalTag()));
       initWidget(ourUiBinder.createAndBindUi(this));
 
+      if (item.getStatus() == ContentState.Approved || item.getStatus() == ContentState.Rejected)
+      {
+         icon.addClassName("i--review");
+      }
+      else
+      {
+         icon.addClassName("i--translate");
+      }
       creationDate.setText(DateUtil.formatShortDate(item.getModifiedDate()));
    }
 

@@ -26,10 +26,10 @@
     <g:HTMLPanel tag="li" styleName="l--pad-v-1 bg--higher">
         <div class="g--tight">
             <div class="g__item w--1-12 txt--align-right">
-                <i class="i--translate i--large txt--neutral"/>
+                <span class="i--large txt--neutral" ui:field="icon"/>
                 <span class="is-invisible">Translation</span>
             </div>
-            <div class="g__item w--9-12">
+            <div class="g__item w--9-12" ui:field="daa">
                 <g:InlineHTML ui:field="heading" />
                 <g:InlineHTML ui:field="targetContents" />
                 <ul class="txt--meta list--horizontal">
