@@ -40,8 +40,6 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    TabLayoutPanel tabLayoutPanel;
 
    @UiField
-   Button compareButton;
-   @UiField
    UnorderedListWidget itemList;
 
    @UiField
@@ -100,16 +98,9 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
       commentInput.clearInput();
    }
 
-   @UiHandler("compareButton")
-   public void onCompareButtonClick(ClickEvent event)
-   {
-      tabLayoutPanel.selectTab(COMPARISON_TAB_INDEX);
-   }
-
    @Override
    public void showDiff(TransHistoryItem one, TransHistoryItem two, String description)
    {
-      compareButton.setEnabled(true);
       comparisonPanel.compare(one, two);
       setComparisonTitle(description);
    }
@@ -117,7 +108,6 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    @Override
    public void disableComparison()
    {
-      compareButton.setEnabled(false);
       comparisonPanel.clear();
       setComparisonTitle(messages.translationHistoryComparisonTitle());
    }
@@ -138,7 +128,6 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    private void setComparisonTitle(String description)
    {
       tabLayoutPanel.setTabText(1, description);
-      compareButton.setText(description);
    }
 
    @Override
@@ -158,6 +147,5 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
 
       String pasteButton();
 
-      String compareButton();
    }
 }
