@@ -20,17 +20,25 @@
  */
 package org.zanata.rest.service;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.sameInstance;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+
+import javax.ws.rs.core.Response;
+
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.zanata.dao.DocumentDAO;
-import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.file.FilePersistService;
+import org.zanata.file.GlobalDocumentId;
+import org.zanata.file.SourceDocumentUpload;
+import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.seam.SeamAutowire;
-import org.zanata.security.ZanataIdentity;
-import org.zanata.service.DocumentService;
-import org.zanata.service.TranslationFileService;
 
 /**
  * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
@@ -39,17 +47,12 @@ import org.zanata.service.TranslationFileService;
 public class FileServiceTest
 {
 
-
    SeamAutowire seam = SeamAutowire.instance();
 
-   @Mock private ZanataIdentity identity;
+   @Mock private SourceDocumentUpload sourceUploader;
 
-   @Mock private ProjectIterationDAO projectIterationDAO;
-   @Mock private TranslationFileService translationFileService;
-   @Mock private DocumentService documentService;
-   @Mock private DocumentDAO documentDAO;
-
-   @Mock private FilePersistService filePersistService;
+   @Captor private ArgumentCaptor<GlobalDocumentId> idCaptor;
+   @Captor private ArgumentCaptor<DocumentFileUploadForm> formCaptor;
 
    private FileResource fileService;
 
@@ -60,19 +63,43 @@ public class FileServiceTest
 
       seam.reset();
       seam.ignoreNonResolvable()
-      .use("identity", identity)
-      .use("projectIterationDAO", projectIterationDAO)
-      .use("translationFileServiceImpl", translationFileService)
-      .use("documentServiceImpl", documentService)
-      .use("documentDAO", documentDAO)
-      .use("filePersistService", filePersistService)
-      .allowCycles();
+            .use("sourceDocumentUploader", sourceUploader)
+            .allowCycles();
 
       fileService = seam.autowire(FileService.class);
    }
 
-   // TODO damason: test that parameters are correctly passed to SourceDocumentUpload
+   public void correctSourceUploadIdFromParams()
+   {
+      when(sourceUploader.tryUploadSourceFile(idCaptor.capture(), formCaptor.capture()))
+            .thenReturn(Response.ok().build());
 
+      GlobalDocumentId id = new GlobalDocumentId("myproject", "myversion", "myDocument");
+      fileService.uploadSourceFile("myproject", "myversion", "myDocument", new DocumentFileUploadForm());
 
+      assertThat(idCaptor.getValue(), is(equalTo(id)));
+   }
 
+   public void sourceUploadFormPassedToUploader()
+   {
+      when(sourceUploader.tryUploadSourceFile(idCaptor.capture(), formCaptor.capture()))
+            .thenReturn(Response.ok().build());
+
+      DocumentFileUploadForm uploadForm = new DocumentFileUploadForm();
+      fileService.uploadSourceFile("test", "test", "test", uploadForm);
+
+      assertThat(formCaptor.getValue(), is(sameInstance(uploadForm)));
+   }
+
+   public void sourceUploadResponseReturnedDirectly()
+   {
+      Response uploaderResponse = Response.ok().build();
+      when(sourceUploader.tryUploadSourceFile(any(GlobalDocumentId.class), any(DocumentFileUploadForm.class)))
+            .thenReturn(uploaderResponse);
+
+      Response returnedResponse =
+            fileService.uploadSourceFile("test", "test", "test", new DocumentFileUploadForm());
+
+      assertThat(returnedResponse, is(sameInstance(uploaderResponse)));
+   }
 }
