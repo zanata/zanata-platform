@@ -23,12 +23,14 @@ package org.zanata.tmx;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.dbunit.operation.DatabaseOperation;
+import org.hamcrest.Matcher;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
@@ -40,9 +42,17 @@ import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemoryUnitVariant;
 import org.zanata.seam.SeamAutowire;
 
+import nu.xom.Element;
+
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
@@ -143,30 +153,72 @@ public class TMXParserTest extends ZanataDbunitJpaTest
       getEm().refresh(tm);
 
       // Metadata at the header level
-      Map<String,Object> tmMetadata = TMXMetadataHelper.getMetadata(tm);
-      assertThat(tmMetadata.size(), is(10));
-      // TODO Add assertions about the metadata contents
-      System.out.println(tmMetadata);
+      Map<String,String> tmAtts = TMXMetadataHelper.getAttributes(tm);
+      assertThat(tmAtts.size(), is(9));
+      assertThat(tmAtts,
+            allOf(
+                  hasEntry("segtype", "paragraph"),
+                  hasEntry("creationtoolversion", "unknown"),
+                  hasEntry("creationtool", "Zanata TransMemoryExportTMXStrategy"),
+                  hasEntry("datatype", "unknown"),
+                  hasEntry("adminlang", "en"),
+                  hasEntry("o-tmf", "unknown"),
+                  hasEntry("srclang", "*all*"),
+                  hasKey("creationdate"),
+                  hasKey("changedate")
+            ));
+
+      List<Element> tmChildren = TMXMetadataHelper.getChildren(tm);
+      assertThat(tmChildren.size(), is(2));
+      assertThat(tmChildren.get(0).getLocalName(), is("prop"));
+      assertThat(tmChildren.get(0).getValue(), is("Header Prop value"));
+      assertThat(tmChildren.get(1).getLocalName(), is("note"));
+      assertThat(tmChildren.get(1).getValue(), is("Header Note value"));
 
       // Metadata at the TU level
       TransMemoryUnit tu0 = findInCollection(tm.getTranslationUnits(), "doc0:resId0");
-      Map<String,Object> tu0Metadata = TMXMetadataHelper.getMetadata(tu0);
-      System.out.println(tu0Metadata);
-      assertThat(tu0Metadata.size(), is(5));
-      // TODO Add assertions about the metadata contents
+      Map<String,String> tu0Atts = TMXMetadataHelper.getAttributes(tu0);
+      assertThat(tu0Atts.size(), is(4));
+      assertThat(tu0Atts,
+            allOf(
+                  hasEntry("tuid", "doc0:resId0"),
+                  hasEntry("srclang", "en"),
+                  hasKey("creationdate"),
+                  hasKey("changedate")
+            ));
+
+      List<Element> tu0Children = TMXMetadataHelper.getChildren(tu0);
+      assertThat(tu0Children.size(), is(2));
+      assertThat(tu0Children.get(0).getLocalName(), is("prop"));
+      assertThat(tu0Children.get(0).getValue(), is("Custom prop0 value"));
+      assertThat(tu0Children.get(1).getLocalName(), is("prop"));
+      assertThat(tu0Children.get(1).getValue(), is("Custom prop1 value"));
+      assertThat(tu0Children.get(2).getLocalName(), is("note"));
+      assertThat(tu0Children.get(2).getValue(), is("Custom note0 value"));
+      assertThat(tu0Children.get(3).getLocalName(), is("note"));
+      assertThat(tu0Children.get(3).getValue(), is("Custom note1 value"));
 
       TransMemoryUnit tu1 = findInCollection(tm.getTranslationUnits(), "doc0:resId1");
-      Map<String,Object> tu1Metadata = TMXMetadataHelper.getMetadata(tu1);
-      System.out.println(tu1Metadata);
-      assertThat(tu1Metadata.size(), is(5));
-      // TODO Add assertions about the metadata contents
+      Map<String,String> tu1Atts = TMXMetadataHelper.getAttributes(tu1);
+      assertThat(tu1Atts.size(), is(4));
+      assertThat(tu1Atts,
+            allOf(
+                  hasEntry("tuid", "doc0:resId1"),
+                  hasEntry("srclang", "en"),
+                  hasKey("creationdate"),
+                  hasKey("changedate")
+            ));
 
       // Metadata at the TUV level
       TransMemoryUnitVariant tuv0 = tu0.getTransUnitVariants().get("en");
-      Map<String, Object> tuv0Metadata = TMXMetadataHelper.getMetadata(tuv0);
-      System.out.println(tuv0Metadata);
-      assertThat(tuv0Metadata.size(), is(4));
-      // TODO Add assertions about the metadata contents
+      Map<String, String> tuv0Atts = TMXMetadataHelper.getAttributes(tuv0);
+      assertThat(tuv0Atts.size(), is(3));
+      assertThat(tuv0Atts,
+            allOf(
+                  hasEntry("lang", "en"),
+                  hasKey("creationdate"),
+                  hasKey("changedate")
+            ));
    }
 
    @Test(expectedExceptions = RuntimeException.class)
