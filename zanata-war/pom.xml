@@ -734,6 +734,7 @@
             </property>
          </activation>
          <properties>
+            <as7.skip.deploy.marker>${jboss.home}/standalone/deployments/zanata.war.skipdeploy</as7.skip.deploy.marker>
             <as7.dodeploy.marker>${jboss.home}/standalone/deployments/zanata.war.dodeploy</as7.dodeploy.marker>
          </properties>
          <build>
@@ -745,9 +746,12 @@
                         <phase>package</phase>
                         <configuration>
                            <tasks>
+                              <touch file="${as7.skip.deploy.marker}"/>
+                              <delete dir="${jboss.home}/standalone/deployments/zanata.war" />
                               <copy todir="${jboss.home}/standalone/deployments/zanata.war">
                                  <fileset dir="${project.build.directory}/zanata"/>
                               </copy>
+                              <delete file="${as7.skip.deploy.marker}"/>
                               <touch file="${as7.dodeploy.marker}"/>
                            </tasks>
                         </configuration>
@@ -783,6 +787,7 @@
                         <configuration>
                            <tasks>
                               <touch file="${as7.skip.deploy.marker}"/>
+                              <delete dir="${jboss.home}/standalone/deployments/zanata.war" />
                               <copy todir="${jboss.home}/standalone/deployments/zanata.war">
                                  <fileset dir="${project.build.directory}/zanata"/>
                               </copy>
