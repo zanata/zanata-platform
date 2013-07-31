@@ -21,15 +21,10 @@
 package org.zanata.page.account;
 
 
-import com.google.common.base.Function;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.zanata.page.AbstractPage;
 import org.zanata.page.BasePage;
-
-import java.util.List;
 
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
