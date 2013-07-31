@@ -21,10 +21,9 @@
 package org.zanata.rest.service;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
-import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 import javax.ws.rs.core.Response;
@@ -33,10 +32,12 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.file.GlobalDocumentId;
 import org.zanata.file.SourceDocumentUpload;
+import org.zanata.file.TranslationDocumentUpload;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.seam.SeamAutowire;
 
@@ -46,15 +47,25 @@ import org.zanata.seam.SeamAutowire;
 @Test(groups = { "unit-tests" })
 public class FileServiceTest
 {
+   private static final String PROJ_SLUG = "project-slug";
+   private static final String VER_SLUG = "version-slug";
+   private static final String DOC_ID = "docId";
+   private static final String LOCALE = "es";
+   private static final String MERGE = "auto";
 
    SeamAutowire seam = SeamAutowire.instance();
 
    @Mock private SourceDocumentUpload sourceUploader;
+   @Mock private TranslationDocumentUpload transUploader;
 
-   @Captor private ArgumentCaptor<GlobalDocumentId> idCaptor;
    @Captor private ArgumentCaptor<DocumentFileUploadForm> formCaptor;
 
    private FileResource fileService;
+
+   private GlobalDocumentId id;
+   private DocumentFileUploadForm form;
+   private Response okResponse;
+   private Response response;
 
    @BeforeMethod
    public void beforeTest()
@@ -64,42 +75,51 @@ public class FileServiceTest
       seam.reset();
       seam.ignoreNonResolvable()
             .use("sourceDocumentUploader", sourceUploader)
+            .use("translationDocumentUploader", transUploader)
             .allowCycles();
 
       fileService = seam.autowire(FileService.class);
+
+      id = new GlobalDocumentId(PROJ_SLUG, VER_SLUG, DOC_ID);
+      form = new DocumentFileUploadForm();
+      okResponse = Response.ok().build();
    }
 
-   public void correctSourceUploadIdFromParams()
+   @AfterMethod
+   public void afterMethod()
    {
-      when(sourceUploader.tryUploadSourceFile(idCaptor.capture(), formCaptor.capture()))
-            .thenReturn(Response.ok().build());
-
-      GlobalDocumentId id = new GlobalDocumentId("myproject", "myversion", "myDocument");
-      fileService.uploadSourceFile("myproject", "myversion", "myDocument", new DocumentFileUploadForm());
-
-      assertThat(idCaptor.getValue(), is(equalTo(id)));
+      id = null;
+      form = null;
+      okResponse = null;
+      response = null;
    }
 
-   public void sourceUploadFormPassedToUploader()
+   public void sourceUploadParamsHandledCorrectly()
    {
-      when(sourceUploader.tryUploadSourceFile(idCaptor.capture(), formCaptor.capture()))
-            .thenReturn(Response.ok().build());
-
-      DocumentFileUploadForm uploadForm = new DocumentFileUploadForm();
-      fileService.uploadSourceFile("test", "test", "test", uploadForm);
-
-      assertThat(formCaptor.getValue(), is(sameInstance(uploadForm)));
+      when(sourceUploader.tryUploadSourceFile(eq(id), formCaptor.capture())).thenReturn(okResponse);
+      fileService.uploadSourceFile(PROJ_SLUG, VER_SLUG, DOC_ID, form);
+      assertThat(formCaptor.getValue(), is(sameInstance(form)));
    }
 
    public void sourceUploadResponseReturnedDirectly()
    {
-      Response uploaderResponse = Response.ok().build();
-      when(sourceUploader.tryUploadSourceFile(any(GlobalDocumentId.class), any(DocumentFileUploadForm.class)))
-            .thenReturn(uploaderResponse);
+      when(sourceUploader.tryUploadSourceFile(id, form)).thenReturn(okResponse);
+      response = fileService.uploadSourceFile(PROJ_SLUG, VER_SLUG, DOC_ID, form);
+      assertThat(response, is(sameInstance(okResponse)));
+   }
 
-      Response returnedResponse =
-            fileService.uploadSourceFile("test", "test", "test", new DocumentFileUploadForm());
+   public void translationUploadParamsHandledCorrectly()
+   {
+      when(transUploader.tryUploadTranslationFile(eq(id), eq(LOCALE), eq(MERGE), formCaptor.capture()))
+            .thenReturn(okResponse);
+      fileService.uploadTranslationFile(PROJ_SLUG, VER_SLUG, LOCALE, DOC_ID, MERGE, form);
+      assertThat(formCaptor.getValue(), is(sameInstance(form)));
+   }
 
-      assertThat(returnedResponse, is(sameInstance(uploaderResponse)));
+   public void translationUploadResponseReturnedDirectly()
+   {
+      when(transUploader.tryUploadTranslationFile(id, LOCALE, MERGE, form)).thenReturn(okResponse);
+      response = fileService.uploadTranslationFile(PROJ_SLUG, VER_SLUG, LOCALE, DOC_ID, MERGE, form);
+      assertThat(response, is(sameInstance(okResponse)));
    }
 }
