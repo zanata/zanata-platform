@@ -191,12 +191,8 @@ public class TMXParserTest extends ZanataDbunitJpaTest
       assertThat(tu0Children.size(), is(2));
       assertThat(tu0Children.get(0).getLocalName(), is("prop"));
       assertThat(tu0Children.get(0).getValue(), is("Custom prop0 value"));
-      assertThat(tu0Children.get(1).getLocalName(), is("prop"));
-      assertThat(tu0Children.get(1).getValue(), is("Custom prop1 value"));
-      assertThat(tu0Children.get(2).getLocalName(), is("note"));
-      assertThat(tu0Children.get(2).getValue(), is("Custom note0 value"));
-      assertThat(tu0Children.get(3).getLocalName(), is("note"));
-      assertThat(tu0Children.get(3).getValue(), is("Custom note1 value"));
+      assertThat(tu0Children.get(1).getLocalName(), is("note"));
+      assertThat(tu0Children.get(1).getValue(), is("Custom note"));
 
       TransMemoryUnit tu1 = findInCollection(tm.getTranslationUnits(), "doc0:resId1");
       Map<String,String> tu1Atts = TMXMetadataHelper.getAttributes(tu1);
@@ -209,6 +205,17 @@ public class TMXParserTest extends ZanataDbunitJpaTest
                   hasKey("changedate")
             ));
 
+      List<Element> tu1Children = TMXMetadataHelper.getChildren(tu1);
+      assertThat(tu1Children.size(), is(4));
+      assertThat(tu1Children.get(0).getLocalName(), is("prop"));
+      assertThat(tu1Children.get(0).getValue(), is("Custom prop0 value"));
+      assertThat(tu1Children.get(1).getLocalName(), is("prop"));
+      assertThat(tu1Children.get(1).getValue(), is("Custom prop1 value"));
+      assertThat(tu1Children.get(2).getLocalName(), is("note"));
+      assertThat(tu1Children.get(2).getValue(), is("Custom note0"));
+      assertThat(tu1Children.get(3).getLocalName(), is("note"));
+      assertThat(tu1Children.get(3).getValue(), is("Custom note1"));
+
       // Metadata at the TUV level
       TransMemoryUnitVariant tuv0 = tu0.getTransUnitVariants().get("en");
       Map<String, String> tuv0Atts = TMXMetadataHelper.getAttributes(tuv0);
@@ -219,6 +226,13 @@ public class TMXParserTest extends ZanataDbunitJpaTest
                   hasKey("creationdate"),
                   hasKey("changedate")
             ));
+
+      List<Element> tuv0Children = TMXMetadataHelper.getChildren(tuv0);
+      assertThat(tuv0Children.size(), is(2));
+      assertThat(tuv0Children.get(0).getLocalName(), is("prop"));
+      assertThat(tuv0Children.get(0).getValue(), is("Custom prop0 value on tuv"));
+      assertThat(tuv0Children.get(1).getLocalName(), is("note"));
+      assertThat(tuv0Children.get(1).getValue(), is("Custom note on tuv"));
    }
 
    @Test(expectedExceptions = RuntimeException.class)

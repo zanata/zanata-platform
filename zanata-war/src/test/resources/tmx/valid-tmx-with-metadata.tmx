@@ -14,7 +14,7 @@
                 <note xml:lang="en">Custom note on tuv</note>
                 <seg>source0</seg>
             </tuv>
-            <tuv xml:lang="en">
+            <tuv xml:lang="en-US">
                 <seg>source0</seg>
             </tuv>
             <tuv xml:lang="fr">
@@ -27,12 +27,12 @@
         <tu tuid="doc0:resId1" srclang="en">
             <prop name="doc0:resId1:prop0">Custom prop0 value</prop>
             <prop name="doc0:resId1:prop1">Custom prop1 value</prop>
+            <note xml:lang="en">Custom note0</note>
             <note xml:lang="en">Custom note1</note>
-            <note xml:lang="en">Custom note2</note>
             <tuv xml:lang="en">
                 <seg>SOURCE0</seg>
             </tuv>
-            <tuv xml:lang="en">
+            <tuv xml:lang="en-US">
                 <seg>SOURCE0</seg>
             </tuv>
             <tuv xml:lang="fr">
@@ -43,7 +43,7 @@
             <tuv xml:lang="en">
                 <seg>source0</seg>
             </tuv>
-            <tuv xml:lang="en">
+            <tuv xml:lang="en-US">
                 <seg>source0</seg>
             </tuv>
             <tuv xml:lang="fr">
@@ -54,7 +54,7 @@
             <tuv xml:lang="en">
                 <seg>SOURCE0</seg>
             </tuv>
-            <tuv xml:lang="en">
+            <tuv xml:lang="en-US">
                 <seg>SOURCE0</seg>
             </tuv>
             <tuv xml:lang="de">
