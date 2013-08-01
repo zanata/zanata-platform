@@ -66,13 +66,13 @@ public class BasePage extends AbstractPage
    @FindBy(id = "nav-main")
    WebElement navBar;
 
-   @FindBy(id = "banner_projects_link")
+   @FindBy(id = "projects_link")
    private WebElement projectsLink;
 
-   @FindBy(id = "banner_version-groups_link")
+   @FindBy(id = "version-groups_link")
    private WebElement groupsLink;
 
-   @FindBy(id = "banner_languages_link")
+   @FindBy(id = "languages_link")
    private WebElement languagesLink;
 
    @FindBy(id = "user_avatar")

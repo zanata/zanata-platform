@@ -95,7 +95,7 @@
     <header name="Cache-Control" value="no-cache, no-store, max-age=0, must-revalidate" />
     <param name="continue" value="#{userRedirect.encodedUrl}" />
     <action execute="#{breadcrumbs.clear}"/>
-    <action execute="#{breadcrumbs.addLocation('', messages['jsf.SignIn'])}"/>
+    <action execute="#{breadcrumbs.addLocation('', messages['jsf.Login'])}"/>
     <navigation from-action="#{loginAction.login}">
       <rule if="#{authenticationManager.authenticated and authenticationManager.newUser}">
         <redirect view-id="/profile/edit.xhtml" />

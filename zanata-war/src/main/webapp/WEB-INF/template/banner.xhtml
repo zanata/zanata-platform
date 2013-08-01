@@ -9,7 +9,7 @@
 
 	<a href="#off-canvas--left" class="off-canvas__toggle--left is-hidden--m-up l--float-left">
 		<i class="i i--large i--list"></i>
-		<span class="is-invisible">Menu</span>
+		<span class="is-invisible">#{messages['jsf.Menu']}</span>
 	</a>
 
 	<h1 class="header__title heading--sub">
@@ -23,7 +23,7 @@
 		<a href="#off-canvas--right" id="user_avatar" class="off-canvas__toggle--right l--float-right badge__container" title="#{personHome.instance.account.username}">
 			<span class="badge--bl"><!--  This is for notification count --></span>
 			<img src="#{gravatarServiceImpl.getUserImageUrl(72)}" alt="#{personHome.instance.name}"/>
-			<span class="is-invisible">Account</span>
+			<span class="is-invisible">#{messages['jsf.Account']}</span>
 		</a>
 	</s:fragment>
 	<s:fragment rendered="#{not identity.loggedIn}">
@@ -49,21 +49,21 @@
 	<nav id="nav-main" class="header__menu is-hidden--s l--push-left-half">
 	  <ul class="list--horizontal">
 	    <li class="l--push-left-half">
-	    	<s:link id="banner_projects_link" view="/project/home.xhtml" propagation="none">#{messages['jsf.Projects']}</s:link>
+	    	<s:link id="projects_link" view="/project/home.xhtml" propagation="none">#{messages['jsf.Projects']}</s:link>
 	    </li>
 	    <li class="l--push-left-half">
-	    	<s:link id="banner_version-groups_link" view="/version-group/home.xhtml" propagation="none">#{messages['jsf.Groups']}</s:link>
+	    	<s:link id="version-groups_link" view="/version-group/home.xhtml" propagation="none">#{messages['jsf.Groups']}</s:link>
 	    </li>
 	    <li class="l--push-left-half">
-	    	<s:link id="banner_languages_link" view="/language/home.xhtml" propagation="none">#{messages['jsf.Languages']}</s:link>
+	    	<s:link id="languages_link" view="/language/home.xhtml" propagation="none">#{messages['jsf.Languages']}</s:link>
 	    </li>
 	    <s:fragment rendered="#{identity.loggedIn}">
 			<li class="l--push-left-half">
-				<s:link id="banner_glossary_link" view="/glossary/view.xhtml" propagation="none">#{messages['jsf.Glossary']}</s:link>
+				<s:link id="glossary_link" view="/glossary/view.xhtml" propagation="none">#{messages['jsf.Glossary']}</s:link>
 			</li>
 		</s:fragment>
 					
-	    <li class="l--push-left-half"><s:link id="banner_help_link" view="/help/view.xhtml" propagation="none">#{messages['jsf.Help']}</s:link></li>
+	    <li class="l--push-left-half"><s:link id="help_link" view="/help/view.xhtml" propagation="none">#{messages['jsf.Help']}</s:link></li>
 	  </ul>
 	</nav>
 </header>
