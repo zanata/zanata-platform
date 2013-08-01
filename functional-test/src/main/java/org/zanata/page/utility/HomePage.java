@@ -44,18 +44,21 @@ public class HomePage extends BasePage
       super(driver);
    }
 
+   @Deprecated // home page replace by dashboard
    public EditHomeContentPage goToEditPageContent()
    {
       editPageContent.click();
       return new EditHomeContentPage(getDriver());
    }
 
+   @Deprecated // home page replace by dashboard
    public EditHomeCodePage goToEditPageCode()
    {
       editPageCode.click();
       return new EditHomeCodePage(getDriver());
    }
 
+   @Deprecated // home page replace by dashboard
    public String getMainBodyContent()
    {
       return mainBodyContent.getText();

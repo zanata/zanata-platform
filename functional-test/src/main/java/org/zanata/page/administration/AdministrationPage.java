@@ -20,18 +20,15 @@
  */
 package org.zanata.page.administration;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 
 public class AdministrationPage extends BasePage
 {
-   @FindBy(id = "Admin_Manage_languages_home")
-   private WebElement manageLanguagesLink;
+   private final By MANAGE_LANGUAGE_LINK = By.id("Admin_Manage_languages_home");
 
-   @FindBy(id = "Admin_Manage_users_home")
-   private WebElement manageUsersLink;
+   private final By MANAGE_USER_LINK = By.id("Admin_Manage_users_home");
 
    public AdministrationPage(WebDriver driver)
    {
@@ -40,13 +37,13 @@ public class AdministrationPage extends BasePage
 
    public ManageLanguagePage goToManageLanguagePage()
    {
-      manageLanguagesLink.click();
+      clickLinkAfterAnimation(MANAGE_LANGUAGE_LINK);
       return new ManageLanguagePage(getDriver());
    }
 
    public ManageUserPage goToManageUserPage()
    {
-      manageUsersLink.click();
+      clickLinkAfterAnimation(MANAGE_USER_LINK);
       return new ManageUserPage(getDriver());
    }
 }

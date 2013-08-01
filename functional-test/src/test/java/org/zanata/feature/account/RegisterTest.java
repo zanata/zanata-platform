@@ -65,6 +65,10 @@ public class RegisterTest
       fields.put("password", "testpassword");
       fields.put("confirmpassword", "testpassword");
       fields.put("captcha", "555"); // TODO: Expect captcha error, fix
+      
+      // Remove all cookies, no previous login is allowed
+      new BasicWorkFlow().goToHome().deleteCookies();
+      
       homePage = new BasicWorkFlow().goToHome();
    }
 

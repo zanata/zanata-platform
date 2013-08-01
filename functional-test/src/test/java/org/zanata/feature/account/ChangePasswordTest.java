@@ -21,6 +21,7 @@
 package org.zanata.feature.account;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -30,6 +31,7 @@ import org.zanata.page.account.ChangePasswordPage;
 import org.zanata.page.account.MyAccountPage;
 import org.zanata.page.utility.HomePage;
 import org.zanata.util.ResetDatabaseRule;
+import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -42,6 +44,13 @@ public class ChangePasswordTest
 {
    @Rule
    public ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
+
+   @Before
+   public void before()
+   {
+      // Remove all cookies, no previous login is allowed
+      new BasicWorkFlow().goToHome().deleteCookies();
+   }
 
    @Test
    @Category(BasicAcceptanceTest.class)

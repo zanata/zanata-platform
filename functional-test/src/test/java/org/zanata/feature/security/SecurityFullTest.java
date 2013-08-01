@@ -38,12 +38,14 @@ import org.zanata.workflow.LoginWorkFlow;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
+@Slf4j
 public class SecurityFullTest
 {
    @ClassRule
@@ -126,10 +128,15 @@ public class SecurityFullTest
       emptyUsernameErrors.add("must match ^[a-z\\d_]{3,20}$");
       String emptyEmailError = "may not be empty";
 
+      log.info("click0");
       SignInPage signInPage = new BasicWorkFlow().goToHome().clickSignInLink();
+      log.info("click1");
       ResetPasswordPage resetPasswordPage = signInPage.gotToResetPassword();
+      log.info("click2");
       resetPasswordPage = resetPasswordPage.clearFields();
+      log.info("click3");
       resetPasswordPage = resetPasswordPage.resetFailure();
+      log.info("click4");
 
       assertThat("Empty email error is displayed", resetPasswordPage.waitForErrors(),
             Matchers.hasItem(emptyEmailError));

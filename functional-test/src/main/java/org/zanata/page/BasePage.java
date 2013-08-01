@@ -27,12 +27,16 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.zanata.page.account.MyAccountPage;
 import org.zanata.page.account.RegisterPage;
 import org.zanata.page.account.SignInPage;
@@ -75,6 +79,8 @@ public class BasePage extends AbstractPage
    private WebElement userAvatar;
 
    private By BY_SIGN_IN = By.id("signin_link");
+   private By BY_PROFILE_LINK = By.id("profile");
+   private By BY_ADMINISTRATION_LINK = By.id("administration");
 
    public BasePage(final WebDriver driver)
    {
@@ -85,8 +91,10 @@ public class BasePage extends AbstractPage
    public MyAccountPage goToMyProfile()
    {
       userAvatar.click();
+      waitForSideMenuOpened();
       
-      getDriver().findElement(By.id("profile")).click();
+      clickLinkAfterAnimation(BY_PROFILE_LINK);
+
       return new MyAccountPage(getDriver());
    }
 
@@ -105,9 +113,9 @@ public class BasePage extends AbstractPage
    public AdministrationPage goToAdministration()
    {
       userAvatar.click();
+      waitForSideMenuOpened();
       
-      WebElement adminLink = getDriver().findElement(By.id("administration"));
-      adminLink.click();
+      clickLinkAfterAnimation(BY_ADMINISTRATION_LINK);
       return new AdministrationPage(getDriver());
    }
 
@@ -139,8 +147,11 @@ public class BasePage extends AbstractPage
    public HomePage logout()
    {
       userAvatar.click();
-      WebElement signOut = getDriver().findElement(BY_SIGN_OUT);
-      signOut.click();
+
+      waitForSideMenuOpened();
+      
+      clickLinkAfterAnimation(BY_SIGN_OUT);
+
       waitForTenSec().until(new Function<WebDriver, WebElement>()
       {
          @Override
@@ -154,19 +165,22 @@ public class BasePage extends AbstractPage
 
    public List<String> getBreadcrumbLinks()
    {
-      List<WebElement> breadcrumbs = getDriver().findElement(By.id("breadcrumbs_panel")).findElements(By.className("breadcrumbs_link"));
+      List<WebElement> breadcrumbs = getDriver().findElement(By.id("breadcrumbs_panel")).findElements(
+            By.className("breadcrumbs_link"));
       return WebElementUtil.elementsToText(breadcrumbs);
    }
 
    public String getLastBreadCrumbText()
    {
-      WebElement breadcrumb = getDriver().findElement(By.id("breadcrumbs_panel")).findElement(By.className("breadcrumbs_display"));
+      WebElement breadcrumb = getDriver().findElement(By.id("breadcrumbs_panel")).findElement(
+            By.className("breadcrumbs_display"));
       return breadcrumb.getText();
    }
 
    public <P> P clickBreadcrumb(final String link, Class<P> pageClass)
    {
-      List<WebElement> breadcrumbs = getDriver().findElement(By.id("breadcrumbs_panel")).findElements(By.className("breadcrumbs_link"));
+      List<WebElement> breadcrumbs = getDriver().findElement(By.id("breadcrumbs_panel")).findElements(
+            By.className("breadcrumbs_link"));
       Predicate<WebElement> predicate = new Predicate<WebElement>()
       {
          @Override
@@ -181,7 +195,8 @@ public class BasePage extends AbstractPage
          breadcrumbLink.get().click();
          return PageFactory.initElements(getDriver(), pageClass);
       }
-      throw new RuntimeException("can not find " + link + " in breadcrumb: " + WebElementUtil.elementsToText(breadcrumbs));
+      throw new RuntimeException("can not find " + link + " in breadcrumb: "
+            + WebElementUtil.elementsToText(breadcrumbs));
    }
 
    public List<String> getNavigationMenuItems()
@@ -226,6 +241,29 @@ public class BasePage extends AbstractPage
          }
       });
       return getErrors();
+   }
+   
+   /**
+    * This is a workaround for https://code.google.com/p/selenium/issues/detail?id=2766
+    * Elemenet not clickable at point due to the change coordinate of element in page.
+    * @param locator
+    */
+   public void clickLinkAfterAnimation(By locator)
+   {
+      JavascriptExecutor executor = (JavascriptExecutor) getDriver();
+      executor.executeScript("arguments[0].click();", getDriver().findElement(locator));
+   }
+
+   public void waitForSideMenuClosed()
+   {
+      WebElementUtil.waitForTenSeconds(getDriver()).until(
+            ExpectedConditions.invisibilityOfElementLocated(By.className("off-canvas--right-under")));
+   }
+   
+   public void waitForSideMenuOpened()
+   {
+      WebElementUtil.waitForTenSeconds(getDriver()).until(
+            ExpectedConditions.visibilityOfElementLocated(By.className("off-canvas--right-under")));
    }
 
 }
