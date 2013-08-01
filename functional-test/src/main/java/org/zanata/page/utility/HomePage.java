@@ -20,6 +20,7 @@
  */
 package org.zanata.page.utility;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -29,12 +30,6 @@ import org.zanata.page.administration.EditHomeContentPage;
 
 public class HomePage extends BasePage
 {
-
-   @FindBy(linkText = "Edit Page Content")
-   private WebElement editPageContent;
-
-   @FindBy(linkText = "Edit Page Code")
-   private WebElement editPageCode;
 
    @FindBy(id = "main_body_content")
    private WebElement mainBodyContent;
@@ -46,13 +41,13 @@ public class HomePage extends BasePage
 
    public EditHomeContentPage goToEditPageContent()
    {
-      editPageContent.click();
+      getDriver().findElement(By.linkText("Edit Page Content")).click();
       return new EditHomeContentPage(getDriver());
    }
 
    public EditHomeCodePage goToEditPageCode()
    {
-      editPageCode.click();
+      getDriver().findElement(By.linkText("Edit Page Code")).click();
       return new EditHomeCodePage(getDriver());
    }
 
