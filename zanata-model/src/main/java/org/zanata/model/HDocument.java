@@ -87,7 +87,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString(of = {"name", "path", "docId", "locale", "revision"})
-public class HDocument extends ModelEntityBase implements DocumentWithId, IDocumentHistory, Serializable, Iterable<SourceContents>
+public class HDocument extends ModelEntityBase implements DocumentWithId, IDocumentHistory, Serializable, Iterable<ITextFlow>
 {
    private static final long serialVersionUID = 5129552589912687504L;
    private String docId;
@@ -282,9 +282,9 @@ public class HDocument extends ModelEntityBase implements DocumentWithId, IDocum
    }
 
    @Override
-   public Iterator<SourceContents> iterator()
+   public Iterator<ITextFlow> iterator()
    {
-      return ImmutableList.<SourceContents>copyOf(getTextFlows()).iterator();
+      return ImmutableList.<ITextFlow>copyOf(getTextFlows()).iterator();
    }
 
    public boolean isObsolete()

@@ -10,15 +10,13 @@ import javax.ws.rs.core.StreamingOutput;
 
 import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
-import org.zanata.model.SimpleSourceContents;
-import org.zanata.model.SimpleTargetContents;
-import org.zanata.model.SourceContents;
-import org.zanata.model.TargetContents;
+import org.zanata.model.ITextFlow;
+import org.zanata.model.ITextFlowTarget;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-public class ExportSourceContentsTest extends TMXStreamingOutputTest
+public class ExportTranslationsTest extends TMXStreamingOutputTest
 {
    @Test
    public void exportAllLocales() throws Exception
@@ -54,56 +52,56 @@ public class ExportSourceContentsTest extends TMXStreamingOutputTest
    }
    
 
-   private TMXStreamingOutput<SourceContents> streamSourceContents(LocaleId targetLocale)
+   private TMXStreamingOutput<ITextFlow> streamSourceContents(LocaleId targetLocale)
    {
-      return new TMXStreamingOutput<SourceContents>(createTestData(), new TranslationsExportTMXStrategy(targetLocale));
+      return new TMXStreamingOutput<ITextFlow>(createTestData(), new TranslationsTMXExportStrategy(targetLocale));
    }
 
-   private @Nonnull Iterator<SourceContents> createTestData()
+   private @Nonnull Iterator<ITextFlow> createTestData()
    {
       LocaleId fr = LocaleId.FR;
       LocaleId de = LocaleId.DE;
-      return Lists.<SourceContents>newArrayList(
-            new SimpleSourceContents(
+      return Lists.<ITextFlow>newArrayList(
+            new SimpleTextFlow(
                   "doc0:resId0",
-                  toMap(new SimpleTargetContents(fr, Approved, "targetFR0", "targetFR1"),
-                        new SimpleTargetContents(de, Approved, "targetDE0", "targetDE1")),
+                  toMap(new SimpleTextFlowTarget(fr, Approved, "targetFR0", "targetFR1"),
+                        new SimpleTextFlowTarget(de, Approved, "targetDE0", "targetDE1")),
                   sourceLocale,
                   "source0", "source1"
                   ),
-            new SimpleSourceContents(
+            new SimpleTextFlow(
                   "doc0:resId1",
-                  toMap(new SimpleTargetContents(fr, Approved, "TARGETfr0", "TARGETfr1")),
+                  toMap(new SimpleTextFlowTarget(fr, Approved, "TARGETfr0", "TARGETfr1")),
                   sourceLocale,
                   "SOURCE0", "SOURCE1"
                   ),
-            new SimpleSourceContents(
+            new SimpleTextFlow(
                   "doc1:resId0",
-                  toMap(new SimpleTargetContents(fr, Approved, "\ntargetFR0  ", "targetFR1"),
+                  toMap(new SimpleTextFlowTarget(fr, Approved, "\ntargetFR0  ", "targetFR1"),
                         // NULL contents to be skipped:
-                        new SimpleTargetContents(de, Approved, "target\0DE0", "targetDE1")),
+                        new SimpleTextFlowTarget(de, Approved, "target\0DE0", "targetDE1")),
                   sourceLocale,
                   "\nsource0  ", "source1"
                   ),
-            new SimpleSourceContents(
+            new SimpleTextFlow(
                   "doc1:resId1",
-                  toMap(new SimpleTargetContents(de, Approved, "TARGETde0", "TARGETde1")),
+                  toMap(new SimpleTextFlowTarget(de, Approved, "TARGETde0", "TARGETde1")),
                   sourceLocale,
                   "SOURCE0", "SOURCE1"
                   ),
-            new SimpleSourceContents(
+            new SimpleTextFlow(
                   "doc1:resId2",
-                  toMap(new SimpleTargetContents(de, Approved, "TARGETde0", "TARGETde1")),
+                  toMap(new SimpleTextFlowTarget(de, Approved, "TARGETde0", "TARGETde1")),
                   sourceLocale,
                   // NULL contents to be skipped:
                   "SOURCE\00", "SOURCE1"
                   )).iterator();
    }
 
-   private Map<LocaleId, TargetContents> toMap(SimpleTargetContents... targetContents)
+   private Map<LocaleId, ITextFlowTarget> toMap(SimpleTextFlowTarget... targetContents)
    {
-      Map<LocaleId, TargetContents> map = Maps.newHashMap();
-      for (SimpleTargetContents target : targetContents)
+      Map<LocaleId, ITextFlowTarget> map = Maps.newHashMap();
+      for (SimpleTextFlowTarget target : targetContents)
       {
          map.put(target.getLocaleId(), target);
       }

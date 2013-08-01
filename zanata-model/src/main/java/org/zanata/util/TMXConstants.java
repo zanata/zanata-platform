@@ -19,22 +19,18 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.zanata.rest.service;
-
-import java.io.IOException;
-
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import nu.xom.Element;
+package org.zanata.util;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
- * @param <T> a translation unit (either SourceContents/HTextFlow or TransMemoryUnit)
  */
-@ParametersAreNonnullByDefault
-public interface ExportTMXStrategy<T>
+public class TMXConstants
 {
-   public abstract Element buildHeader() throws IOException;
-   public abstract Element buildTU(T tu) throws IOException;
+   public static final String TMX14_NAMESPACE = "http://www.lisa.org/tmx14";
+   public static final String ALL_LOCALE = "*all*";
+   public static final String DATA_TYPE = "datatype";
+   public static final String SEG_TYPE = "segtype";
+   public static final String SRCLANG = "srclang";
+   public static final String O_TMF = "o-tmf";
 }

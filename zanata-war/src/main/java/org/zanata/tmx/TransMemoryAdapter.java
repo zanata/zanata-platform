@@ -132,10 +132,14 @@ public class TransMemoryAdapter
       TransMemoryUnitVariant tuv = new TransMemoryUnitVariant();
       tuv.setTaggedSegment(taggedSegment);
       TMXMetadataHelper.setMetadata(tuv, tuvElem);
-      String language = tuv.getLanguage();
-
-      String locale = new LocaleId(language).getId(); // Throws IllegalArgumentException if the locale is not accepted
+      String locale = validLocale(tuv.getLanguage());
       tu.getTransUnitVariants().put(locale, tuv);
+   }
+
+   private String validLocale(String language) throws IllegalArgumentException
+   {
+      // Throws IllegalArgumentException for illegal locale code
+      return new LocaleId(language).getId();
    }
 
    private void removeExistingTUIfAny(String tmSlug, String uniqueId)

@@ -39,7 +39,7 @@ import nu.xom.Text;
 
 import org.zanata.common.LocaleId;
 import org.zanata.util.NullCloseable;
-import org.zanata.util.TMXUtils;
+import org.zanata.util.TMXConstants;
 import org.zanata.xml.StreamSerializer;
 
 import com.google.common.base.Optional;
@@ -56,11 +56,11 @@ import com.google.common.collect.PeekingIterator;
 public class TMXStreamingOutput<TU> implements StreamingOutput
 {
    private final @Nonnull Iterator<TU> tuIter;
-   private final ExportTMXStrategy<TU> exportStrategy;
+   private final TMXExportStrategy<TU> exportStrategy;
 
    public TMXStreamingOutput(
          @Nonnull Iterator<TU> tuIter,
-         @Nonnull ExportTMXStrategy<TU> exportTUStrategy)
+         @Nonnull TMXExportStrategy<TU> exportTUStrategy)
    {
       this.tuIter = tuIter;
       this.exportStrategy = exportTUStrategy;
@@ -79,44 +79,42 @@ public class TMXStreamingOutput<TU> implements StreamingOutput
       if (iter.hasNext()) iter.peek();
 
       StreamSerializer tmxWriter = new StreamSerializer(output);
-      // Can't use Serializer's indent, or it will mess up whitespace in seg elements
-//      tmxWriter.setIndent(2);
 
       Element tmx = new Element("tmx");
       tmx.addAttribute(new Attribute("version", "1.4"));
       tmxWriter.writeStartTag(tmx);
-      tmxWriter.newLine();
+      tmxWriter.writeNewLine();
 
       Text indentText = new Text("  ");
       tmxWriter.write(indentText);
       Element header = exportStrategy.buildHeader();
       tmxWriter.write(header);
-      tmxWriter.newLine();
+      tmxWriter.writeNewLine();
 
       tmxWriter.write(indentText);
       Element body = new Element("body");
       tmxWriter.writeStartTag(body);
-      tmxWriter.newLine();
+      tmxWriter.writeNewLine();
 
       while (iter.hasNext())
       {
          TU tu = iter.next();
-         Element textUnit = exportStrategy.buildTU(tu);
+         Optional<Element> textUnit = exportStrategy.buildTU(tu);
          // If there aren't any translations for this TU, we shouldn't include it.
          // From the TMX spec: "Logically, a complete translation-memory
          // database will contain at least two <tuv> elements in each translation
          // unit."
-         if (textUnit != null && textUnit.getChildElements("tuv").size() >= 2)
+         if (textUnit.isPresent() && textUnit.get().getChildElements("tuv").size() >= 2)
          {
-            tmxWriter.write(textUnit);
-            tmxWriter.newLine();
+            tmxWriter.write(textUnit.get());
+            tmxWriter.writeNewLine();
          }
       }
       tmxWriter.write(indentText);
       tmxWriter.writeEndTag(body);
-      tmxWriter.newLine();
+      tmxWriter.writeNewLine();
       tmxWriter.writeEndTag(tmx);
-      tmxWriter.newLine();
+      tmxWriter.writeNewLine();
       tmxWriter.flush();
    }
 

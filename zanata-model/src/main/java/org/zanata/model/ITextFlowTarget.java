@@ -19,18 +19,20 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.zanata.util;
+package org.zanata.model;
+
+import javax.annotation.Nonnull;
+
+import org.zanata.common.ContentState;
+import org.zanata.common.HasContents;
+import org.zanata.common.LocaleId;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class TMXUtils
+public interface ITextFlowTarget extends HasContents
 {
-   public static final String TMX14_NAMESPACE = "http://www.lisa.org/tmx14";
-   public static final String ALL_LOCALE = "*all*";
-   public static final String DATA_TYPE = "datatype";
-   public static final String SEG_TYPE = "segtype";
-   public static final String SRCLANG = "srclang";
-   public static final String O_TMF = "o-tmf";
+   public @Nonnull LocaleId getLocaleId();
+   public @Nonnull ContentState getState();
 }

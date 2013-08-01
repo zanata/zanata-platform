@@ -39,7 +39,7 @@ public class StreamSerializer extends Serializer
       super(out);
    }
 
-   public void newLine() throws IOException
+   public void writeNewLine() throws IOException
    {
       super.breakLine();
    }

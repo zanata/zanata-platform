@@ -21,50 +21,30 @@
 
 package org.zanata.model;
 
-import java.util.Arrays;
-import java.util.List;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import lombok.Data;
-
-import org.zanata.common.ContentState;
+import org.zanata.common.HasContents;
 import org.zanata.common.LocaleId;
-
-import com.google.common.collect.ImmutableList;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-@Data
-public class SimpleTargetContents implements TargetContents
+public interface ITextFlow extends HasContents
 {
-   private final ContentState state;
-   private List<String> contents;
-   private final LocaleId localeId;
-
-   public SimpleTargetContents(LocaleId localeId, ContentState state, List<String> contents)
-   {
-      this.localeId = localeId;
-      this.state = state;
-      this.contents = contents;
-   }
-
-   public SimpleTargetContents(LocaleId localeId, ContentState state, String... contents)
-   {
-      this(localeId, state, ImmutableList.copyOf(contents));
-   }
-
-   // Lombok won't generate this because of the other setContents method
-   @Override
-   public void setContents(List<String> contents)
-   {
-      this.contents = contents;
-   }
-
-   @Override
-   public void setContents(String... contents)
-   {
-      setContents(Arrays.asList(contents));
-   }
-
+   public @Nonnull LocaleId getLocale();
+   public @Nonnull String getQualifiedId();
+   /**
+    * Gets the associated TargetContents for a single locale for this SourceContents.
+    * Note that default implementation in HTextFlow requires a lot of database I/O
+    * @param localeId
+    * @return
+    */
+   public @Nullable ITextFlowTarget getTargetContents(@Nonnull LocaleId localeId);
+   /**
+    * Gets the associated TargetContents for all available locales for this SourceContents.
+    * @return
+    */
+   public @Nonnull Iterable<ITextFlowTarget> getAllTargetContents();
 }

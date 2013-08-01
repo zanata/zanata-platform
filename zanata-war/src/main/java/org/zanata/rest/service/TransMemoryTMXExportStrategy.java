@@ -22,14 +22,11 @@
 package org.zanata.rest.service;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.xml.XMLConstants;
-
-import lombok.extern.slf4j.Slf4j;
 
 import nu.xom.Attribute;
 import nu.xom.Element;
@@ -39,12 +36,11 @@ import org.zanata.model.tm.TMXMetadataHelper;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.model.tm.TransMemoryUnitVariant;
 import org.zanata.model.tm.TransMemoryUnit;
-import org.zanata.util.TMXUtils;
+import org.zanata.util.TMXConstants;
 import org.zanata.util.VersionUtility;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 
 /**
  * Writes one or more variations for a single TransMemoryUnit as a TMX translation unit.
@@ -52,15 +48,14 @@ import com.google.common.collect.Lists;
  *
  */
 @ParametersAreNonnullByDefault
-@Slf4j
-public class TransMemoryExportTMXStrategy implements ExportTMXStrategy<TransMemoryUnit>
+public class TransMemoryTMXExportStrategy implements TMXExportStrategy<TransMemoryUnit>
 {
-   private static final String creationTool = "Zanata " + TransMemoryExportTMXStrategy.class.getSimpleName();
+   private static final String creationTool = "Zanata " + TransMemoryTMXExportStrategy.class.getSimpleName();
    private static final String creationToolVersion =
-         VersionUtility.getVersionInfo(TransMemoryExportTMXStrategy.class).getVersionNo();
+         VersionUtility.getVersionInfo(TransMemoryTMXExportStrategy.class).getVersionNo();
    private TransMemory tm;
 
-   public TransMemoryExportTMXStrategy(TransMemory tm)
+   public TransMemoryTMXExportStrategy(TransMemory tm)
    {
       super();
       this.tm = tm;
@@ -76,40 +71,32 @@ public class TransMemoryExportTMXStrategy implements ExportTMXStrategy<TransMemo
       return header;
    }
 
-   /**
-    * Writes the specified SourceContents (TextFlow) and one or all of its translations to the TMXWriter.
-    * @param tu the SourceContents (TextFlow) whose contents and translations are to be exported
-    * @param tuidPrefix String to be prepended to all resIds when generating tuids
-    * @return 
-    * @throws IOException 
-    * @throws Exception 
-    */
    @Override
-   public Element buildTU(TransMemoryUnit tu) throws IOException
+   public Optional<Element> buildTU(TransMemoryUnit transUnit) throws IOException
    {
-      Element textUnit = new Element("tu");
+      Element tu = new Element("tu");
 
-      Optional<LocaleId> sourceLocaleId = getSourceLocale(tu);
+      Optional<LocaleId> sourceLocaleId = getSourceLocale(transUnit);
       String srcLang = sourceLocaleId.isPresent() ?
-            sourceLocaleId.get().getId() : TMXUtils.ALL_LOCALE;
-      textUnit.addAttribute(new Attribute(TMXUtils.SRCLANG, srcLang));
+            sourceLocaleId.get().getId() : TMXConstants.ALL_LOCALE;
+      tu.addAttribute(new Attribute(TMXConstants.SRCLANG, srcLang));
 
-      String tuid = tu.getTransUnitId();
+      String tuid = transUnit.getTransUnitId();
       if (tuid != null)
       {
-         textUnit.addAttribute(new Attribute("tuid", tuid));
+         tu.addAttribute(new Attribute("tuid", tuid));
       }
 
-      addAttributesAndChildren(textUnit, tu);
+      addAttributesAndChildren(tu, transUnit);
 
-      for (TransMemoryUnitVariant tuv: tu.getTransUnitVariants().values())
+      for (TransMemoryUnitVariant tuv: transUnit.getTransUnitVariants().values())
       {
-         textUnit.appendChild(buildTUV(tuv));
+         tu.appendChild(buildTUV(tuv));
       }
-      return textUnit;
+      return Optional.of(tu);
    }
 
-   private Optional<LocaleId> getSourceLocale(TransMemoryUnit tu)
+   private static Optional<LocaleId> getSourceLocale(TransMemoryUnit tu)
    {
       String tuSourceLanguage = tu.getSourceLanguage();
       if (tuSourceLanguage != null)
@@ -119,33 +106,33 @@ public class TransMemoryExportTMXStrategy implements ExportTMXStrategy<TransMemo
       return Optional.absent();
    }
 
-   private void addAttributesAndChildren(Element header, TransMemory transMemory)
+   private static void addAttributesAndChildren(Element toHeader, TransMemory fromTransMemory)
    {
-      ImmutableMap<String,String> attributes = TMXMetadataHelper.getAttributes(transMemory);
+      ImmutableMap<String,String> attributes = TMXMetadataHelper.getAttributes(fromTransMemory);
       for (Map.Entry<String, String> attr : attributes.entrySet())
       {
-         header.addAttribute(toAttribute(attr));
+         toHeader.addAttribute(toAttribute(attr));
       }
-      for (Element child : TMXMetadataHelper.getChildren(transMemory))
+      for (Element child : TMXMetadataHelper.getChildren(fromTransMemory))
       {
-         header.appendChild(child);
+         toHeader.appendChild(child);
       }
    }
 
-   private void addAttributesAndChildren(Element tu, TransMemoryUnit transUnit)
+   private void addAttributesAndChildren(Element toTu, TransMemoryUnit fromTransUnit)
    {
-      ImmutableMap<String,String> attributes = TMXMetadataHelper.getAttributes(transUnit);
+      ImmutableMap<String,String> attributes = TMXMetadataHelper.getAttributes(fromTransUnit);
       for (Map.Entry<String, String> attr : attributes.entrySet())
       {
-         tu.addAttribute(toAttribute(attr));
+         toTu.addAttribute(toAttribute(attr));
       }
-      for (Element child : TMXMetadataHelper.getChildren(transUnit))
+      for (Element child : TMXMetadataHelper.getChildren(fromTransUnit))
       {
-         tu.appendChild(child);
+         toTu.appendChild(child);
       }
    }
-   
-   private Attribute toAttribute(Map.Entry<String, String> attr)
+
+   private static Attribute toAttribute(Map.Entry<String, String> attr)
    {
       String name = attr.getKey();
       if (name.equals("xml:lang"))
@@ -158,23 +145,23 @@ public class TransMemoryExportTMXStrategy implements ExportTMXStrategy<TransMemo
       }
    }
 
-   private Element buildTUV(TransMemoryUnitVariant tuv)
+   private static Element buildTUV(TransMemoryUnitVariant fromVariant)
    {
-      Element result = new Element("tuv");
-      @Nonnull String trgContent = tuv.getPlainTextSegment();
-      ImmutableMap<String,String> attributes = TMXMetadataHelper.getAttributes(tuv);
+      Element tuv = new Element("tuv");
+      @Nonnull String trgContent = fromVariant.getPlainTextSegment();
+      ImmutableMap<String,String> attributes = TMXMetadataHelper.getAttributes(fromVariant);
       for (Map.Entry<String, String> attr : attributes.entrySet())
       {
-         result.addAttribute(toAttribute(attr));
+         tuv.addAttribute(toAttribute(attr));
       }
-      for (Element child : TMXMetadataHelper.getChildren(tuv))
+      for (Element child : TMXMetadataHelper.getChildren(fromVariant))
       {
-         result.appendChild(child);
+         tuv.appendChild(child);
       }
       Element seg = new Element("seg");
       seg.appendChild(trgContent);
-      result.appendChild(seg);
-      return result;
+      tuv.appendChild(seg);
+      return tuv;
    }
 
 }

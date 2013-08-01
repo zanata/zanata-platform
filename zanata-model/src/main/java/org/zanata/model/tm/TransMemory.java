@@ -60,7 +60,7 @@ public class TransMemory extends SlugEntityBase implements HasTMMetadata
 
    private String description;
 
-   // This is the BCP-47 language code.  Null means *all*
+   // This is the BCP-47 language code.  Null means any source language (*all* in TMX)
    @Column(name = "source_language", nullable = true)
    private String sourceLanguage;
    

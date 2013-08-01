@@ -169,7 +169,6 @@ abstract class TMXStreamingOutputTest
       String systemID = getClass().getResource("/org/zanata/xml/tmx14.dtd").toString();
       String doctype = "tmx";
       Validator v = new Validator(reader, systemID, doctype);
-      // Invalid: Okapi puts seg before note and prop when outputting tuv!
       assertTrue(v.toString(), v.isValid());
    }
 

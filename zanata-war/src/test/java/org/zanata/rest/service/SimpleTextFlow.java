@@ -19,7 +19,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.zanata.model;
+package org.zanata.rest.service;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,6 +28,8 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 import org.zanata.common.LocaleId;
+import org.zanata.model.ITextFlow;
+import org.zanata.model.ITextFlowTarget;
 
 import com.google.common.collect.ImmutableList;
 
@@ -38,15 +40,15 @@ import lombok.Data;
  *
  */
 @Data
-public class SimpleSourceContents implements SourceContents
+class SimpleTextFlow implements ITextFlow
 {
    private final String qualifiedId;
-   private final Map<LocaleId, TargetContents> targets;
+   private final Map<LocaleId, ITextFlowTarget> targets;
    private final @Nonnull LocaleId locale;
    private List<String> contents;
 
-   public SimpleSourceContents(String qualifiedId,
-         Map<LocaleId, TargetContents> targets,
+   public SimpleTextFlow(String qualifiedId,
+         Map<LocaleId, ITextFlowTarget> targets,
          @Nonnull LocaleId locale,
          List<String> contents)
    {
@@ -56,16 +58,16 @@ public class SimpleSourceContents implements SourceContents
       this.contents = contents;
    }
 
-   public SimpleSourceContents(String qualifiedId,
+   public SimpleTextFlow(String qualifiedId,
          @Nonnull LocaleId locale,
          @Nonnull String content0,
-         Map<LocaleId, TargetContents> targets)
+         Map<LocaleId, ITextFlowTarget> targets)
    {
       this(qualifiedId, targets, locale, ImmutableList.of(content0));
    }
 
-   public SimpleSourceContents(String qualifiedId,
-         Map<LocaleId, TargetContents> targets,
+   public SimpleTextFlow(String qualifiedId,
+         Map<LocaleId, ITextFlowTarget> targets,
          @Nonnull LocaleId locale,
          @Nonnull String... contents)
    {
@@ -86,14 +88,14 @@ public class SimpleSourceContents implements SourceContents
    }
 
    @Override
-   public TargetContents getTargetContents(LocaleId localeId)
+   public ITextFlowTarget getTargetContents(LocaleId localeId)
    {
       return targets.get(localeId);
    }
 
    @Override
-   public Iterable<TargetContents> getAllTargetContents()
+   public Iterable<ITextFlowTarget> getAllTargetContents()
    {
-      return ImmutableList.<TargetContents>copyOf(getTargets().values());
+      return ImmutableList.<ITextFlowTarget>copyOf(getTargets().values());
    }
 }

@@ -19,11 +19,11 @@ import org.zanata.model.tm.TMXMetadataHelper;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.model.tm.TransMemoryUnitVariant;
-import org.zanata.util.TMXUtils;
+import org.zanata.util.TMXConstants;
 
 import com.google.common.collect.Lists;
 
-public class ExportTransUnitTest extends TMXStreamingOutputTest
+public class ExportTransMemoryTest extends TMXStreamingOutputTest
 {
 
    @Test
@@ -47,7 +47,7 @@ public class ExportTransUnitTest extends TMXStreamingOutputTest
    
    private TMXStreamingOutput<TransMemoryUnit> streamSourceContents()
    {
-      return new TMXStreamingOutput<TransMemoryUnit>(createTestData(), new TransMemoryExportTMXStrategy(createTM()));
+      return new TMXStreamingOutput<TransMemoryUnit>(createTestData(), new TransMemoryTMXExportStrategy(createTM()));
    }
 
    private TransMemory createTM()
@@ -135,7 +135,7 @@ public class ExportTransUnitTest extends TMXStreamingOutputTest
 
    private static Element newTmxElement(String localName)
    {
-      return new Element("tmx:"+localName, TMXUtils.TMX14_NAMESPACE);
+      return new Element("tmx:"+localName, TMXConstants.TMX14_NAMESPACE);
    }
 
 }

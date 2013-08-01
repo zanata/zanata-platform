@@ -19,32 +19,53 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.zanata.model;
+package org.zanata.rest.service;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.List;
 
-import org.zanata.common.HasContents;
+import lombok.Data;
+
+import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
+import org.zanata.model.ITextFlowTarget;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public interface SourceContents extends HasContents
+@Data
+class SimpleTextFlowTarget implements ITextFlowTarget
 {
-   public @Nonnull LocaleId getLocale();
-   public @Nonnull String getQualifiedId();
-   /**
-    * Gets the TargetContents for a single locale.
-    * Note that default implementation in HTextFlow requires a lot of database I/O
-    * @param localeId
-    * @return
-    */
-   public @Nullable TargetContents getTargetContents(@Nonnull LocaleId localeId);
-   /**
-    * Gets the TargetContents for all available locales.
-    * @return
-    */
-   public @Nonnull Iterable<TargetContents> getAllTargetContents();
+   private final ContentState state;
+   private List<String> contents;
+   private final LocaleId localeId;
+
+   public SimpleTextFlowTarget(LocaleId localeId, ContentState state, List<String> contents)
+   {
+      this.localeId = localeId;
+      this.state = state;
+      this.contents = contents;
+   }
+
+   public SimpleTextFlowTarget(LocaleId localeId, ContentState state, String... contents)
+   {
+      this(localeId, state, ImmutableList.copyOf(contents));
+   }
+
+   // Lombok won't generate this because of the other setContents method
+   @Override
+   public void setContents(List<String> contents)
+   {
+      this.contents = contents;
+   }
+
+   @Override
+   public void setContents(String... contents)
+   {
+      setContents(Arrays.asList(contents));
+   }
+
 }

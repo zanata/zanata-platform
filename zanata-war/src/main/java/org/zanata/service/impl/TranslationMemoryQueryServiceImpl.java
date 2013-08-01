@@ -117,7 +117,8 @@ public class TranslationMemoryQueryServiceImpl implements TranslationMemoryQuery
 
       FullTextQuery ftQuery;
       // Use the TextFlowTarget index
-      Query textQuery = generateQuery(query, sourceLocale, targetLocale, queryText, multiQueryText, IndexFieldLabels.TF_CONTENT_FIELDS);
+      Query textQuery = generateQuery(query, sourceLocale, targetLocale,
+            queryText, multiQueryText, IndexFieldLabels.TF_CONTENT_FIELDS);
       ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlowTarget.class, TransMemoryUnit.class);
 
       ftQuery.setProjection(FullTextQuery.SCORE, FullTextQuery.THIS);
@@ -142,7 +143,8 @@ public class TranslationMemoryQueryServiceImpl implements TranslationMemoryQuery
    private Query generateQuery(TransMemoryQuery query, LocaleId sourceLocale, LocaleId targetLocale,
          String queryText, String[] multiQueryText, String contentFields[]) throws ParseException
    {
-      Query textFlowTargetQuery = generateTextFlowTargetQuery(query, sourceLocale, targetLocale, queryText, multiQueryText, contentFields);
+      Query textFlowTargetQuery = generateTextFlowTargetQuery(
+            query, sourceLocale, targetLocale, queryText, multiQueryText, contentFields);
 
       String tmQueryText = query.getSearchType() == SearchType.FUZZY_PLURAL ? multiQueryText[0] : queryText;
       Query transUnitQuery = generateTransMemoryQuery(sourceLocale, targetLocale, tmQueryText);
@@ -162,7 +164,10 @@ public class TranslationMemoryQueryServiceImpl implements TranslationMemoryQuery
     * @return
     * @throws ParseException
     */
-   private Query generateTextFlowTargetQuery(TransMemoryQuery queryParams, LocaleId sourceLocale, LocaleId targetLocale, String queryText, String[] multiQueryText, String[] contentFields) throws ParseException
+   private Query generateTextFlowTargetQuery(
+         TransMemoryQuery queryParams, LocaleId sourceLocale,
+         LocaleId targetLocale, String queryText, String[] multiQueryText,
+         String[] contentFields) throws ParseException
    {
       BooleanQuery query = new BooleanQuery();
 
@@ -179,7 +184,9 @@ public class TranslationMemoryQueryServiceImpl implements TranslationMemoryQuery
       return query;
    }
 
-   private Query buildContentQuery(TransMemoryQuery query, LocaleId sourceLocale, String queryText, String[] multiQueryText, String[] contentFields) throws ParseException
+   private Query buildContentQuery(TransMemoryQuery query, LocaleId sourceLocale,
+         String queryText, String[] multiQueryText, String[] contentFields)
+               throws ParseException
    {
       // Analyzer determined by the language
       String analyzerDefName = TextContainerAnalyzerDiscriminator.getAnalyzerDefinitionName(sourceLocale.getId());
@@ -216,7 +223,8 @@ public class TranslationMemoryQueryServiceImpl implements TranslationMemoryQuery
     * @param queryText
     * @return
     */
-   private Query generateTransMemoryQuery(LocaleId sourceLocale, LocaleId targetLocale, String queryText) throws ParseException
+   private Query generateTransMemoryQuery(
+         LocaleId sourceLocale, LocaleId targetLocale, String queryText) throws ParseException
    {
       // Analyzer determined by the language
       String analyzerDefName = TextContainerAnalyzerDiscriminator.getAnalyzerDefinitionName(sourceLocale.getId());

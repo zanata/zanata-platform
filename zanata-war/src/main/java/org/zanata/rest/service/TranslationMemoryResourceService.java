@@ -43,11 +43,12 @@ import org.zanata.exception.EntityMissingException;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
-import org.zanata.model.SourceContents;
+import org.zanata.model.ITextFlow;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.service.LocaleService;
 import org.zanata.tmx.TMXParser;
+import org.zanata.util.CloseableIterator;
 
 import com.google.common.base.Optional;
 
@@ -79,31 +80,29 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
    public Response getAllTranslationMemory(@Nullable LocaleId locale)
    {
       log.debug("exporting TMX for all projects, locale {}", locale);
-      Iterator<HTextFlow> tuIter;
       if (locale != null)
       {
          localeServiceImpl.validateSourceLocale(locale);
          // TODO findTextFlowsByLocale
       }
-      tuIter = textFlowStreamDAO.findTextFlows();
       String filename = makeTMXFilename(null, null, locale);
-      return buildTMX(tuIter, locale, filename);
+      CloseableIterator<HTextFlow> iter = textFlowStreamDAO.findTextFlows();
+      return buildTMX(iter, locale, filename);
    }
 
    @Override
    public Response getProjectTranslationMemory(@Nonnull String projectSlug, @Nullable LocaleId locale)
    {
       log.debug("exporting TMX for project {}, locale {}", projectSlug, locale);
-      Iterator<HTextFlow> tuIter;
       HProject hProject = restSlugValidator.retrieveAndCheckProject(projectSlug, false);
       if (locale != null)
       {
          restSlugValidator.validateTargetLocale(locale, projectSlug);
          // TODO findTextFlowsByProjectAndLocale
       }
-      tuIter = textFlowStreamDAO.findTextFlowsByProject(hProject);
       String filename = makeTMXFilename(projectSlug, null, locale);
-      return buildTMX(tuIter, locale, filename);
+      Iterator<HTextFlow> iter = textFlowStreamDAO.findTextFlowsByProject(hProject);
+      return buildTMX(iter, locale, filename);
    }
 
    @Override
@@ -111,27 +110,25 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
          @Nonnull String projectSlug, @Nonnull String iterationSlug, @Nullable LocaleId locale)
    {
       log.debug("exporting TMX for project {}, iteration {}, locale {}", projectSlug, iterationSlug, locale);
-      Iterator<HTextFlow> tuIter;
       HProjectIteration hProjectIteration = restSlugValidator.retrieveAndCheckIteration(projectSlug, iterationSlug, false);
       if (locale != null)
       {
          restSlugValidator.validateTargetLocale(locale, projectSlug, iterationSlug);
          // TODO findTextFlowsByProjectIterationAndLocale
       }
-      tuIter = textFlowStreamDAO.findTextFlowsByProjectIteration(hProjectIteration);
       String filename = makeTMXFilename(projectSlug, iterationSlug, locale);
-      return buildTMX(tuIter, locale, filename);
+      Iterator<HTextFlow> iter = textFlowStreamDAO.findTextFlowsByProjectIteration(hProjectIteration);
+      return buildTMX(iter, locale, filename);
    }
 
    @Override
    public Response getTranslationMemory(@Nonnull String slug)
    {
       log.debug("exporting TMX for translation memory {}", slug);
-      Iterator<TransMemoryUnit> tuIter;
       TransMemory tm = getTM(transMemoryDAO.getBySlug(slug), slug);
-      tuIter = transMemoryStreamingDAO.findTransUnitsByTM(tm);
       String filename = makeTMXFilename(slug);
-      return buildTMX(tm, tuIter, filename);
+      Iterator<TransMemoryUnit> iter = transMemoryStreamingDAO.findTransUnitsByTM(tm);
+      return buildTMX(tm, iter, filename);
    }
 
    @Override
@@ -166,16 +163,16 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
    }
 
    private Response buildTMX(
-         @Nonnull Iterator<? extends SourceContents> tuIter,
+         @Nonnull Iterator<? extends ITextFlow> iter,
          @Nullable LocaleId locale, @Nonnull String filename)
    {
-      TMXStreamingOutput<HTextFlow> output = new TMXStreamingOutput(tuIter, new TranslationsExportTMXStrategy(locale));
+      TMXStreamingOutput<HTextFlow> output = new TMXStreamingOutput(iter, new TranslationsTMXExportStrategy(locale));
       return okResponse(filename, output);
    }
 
-   private Response buildTMX(TransMemory tm, Iterator<TransMemoryUnit> tuIter, String filename)
+   private Response buildTMX(TransMemory tm, Iterator<TransMemoryUnit> iter, String filename)
    {
-      TMXStreamingOutput<TransMemoryUnit> output = new TMXStreamingOutput<TransMemoryUnit>(tuIter, new TransMemoryExportTMXStrategy(tm));
+      TMXStreamingOutput<TransMemoryUnit> output = new TMXStreamingOutput<TransMemoryUnit>(iter, new TransMemoryTMXExportStrategy(tm));
       return okResponse(filename, output);
    }
 
