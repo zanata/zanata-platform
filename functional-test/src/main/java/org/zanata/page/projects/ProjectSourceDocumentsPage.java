@@ -20,16 +20,12 @@
  */
 package org.zanata.page.projects;
 
-import com.google.common.base.Function;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
-import org.zanata.page.webtrans.DocumentsViewPage;
 
 import java.util.List;
 
@@ -84,7 +80,6 @@ public class ProjectSourceDocumentsPage extends BasePage
    {
       return documentTableTBody.findElements(By.tagName("tr"));
    }
-
 
    public boolean sourceDocumentsContains(String document)
    {

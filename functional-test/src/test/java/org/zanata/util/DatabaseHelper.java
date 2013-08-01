@@ -1,5 +1,13 @@
 package org.zanata.util;
 
+import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
+import com.google.common.io.Files;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
+import org.hamcrest.Matchers;
+import org.openqa.selenium.support.ui.FluentWait;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -8,23 +16,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.annotation.Nullable;
-
-import org.apache.commons.io.FileUtils;
-import org.hamcrest.Matchers;
-import org.openqa.selenium.support.ui.FluentWait;
-import com.google.common.base.Predicate;
-import com.google.common.base.Strings;
-import com.google.common.io.Files;
-
-import lombok.extern.slf4j.Slf4j;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
@@ -207,7 +203,6 @@ public class DatabaseHelper
             throw new RuntimeException("error");
          }
       }
-
    }
 
    private void waitUntil(final String sql, final int expectedResultCount)

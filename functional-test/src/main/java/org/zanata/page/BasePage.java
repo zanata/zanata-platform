@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -41,7 +41,6 @@ import org.zanata.page.groups.VersionGroupsPage;
 import org.zanata.page.projects.ProjectsPage;
 import org.zanata.page.utility.HomePage;
 import org.zanata.util.WebElementUtil;
-
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
