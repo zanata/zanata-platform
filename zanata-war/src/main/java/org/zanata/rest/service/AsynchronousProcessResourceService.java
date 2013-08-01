@@ -21,9 +21,7 @@
 package org.zanata.rest.service;
 
 import java.io.InputStream;
-import java.util.List;
 import java.util.Set;
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.POST;
@@ -31,9 +29,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
@@ -304,13 +300,10 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
       }
    }
 
-   @POST
-   @Path("/tm/{slug}")
-   @Consumes(MediaType.MULTIPART_FORM_DATA)
    @Override
    public ProcessStatus updateTranslationMemory(@PathParam("slug") final String slug, MultipartFormDataInput input) throws Exception
    {
-      ProcessHandle handle = new ProcessHandle();
+      MessagesProcessHandle handle = new MessagesProcessHandle();
       for(InputPart inputPart : input.getFormDataMap().get("uploadedFile"))
       {
          final InputStream inputStream = inputPart.getBody(InputStream.class, null);
@@ -328,7 +321,8 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
          };
          processManagerServiceImpl.startProcess(process, handle);
       }
-      return getProcessStatus(handle.getId());
+      ProcessStatus processStatus = getProcessStatus(handle.getId());
+      return processStatus;
    }
 
    @Override

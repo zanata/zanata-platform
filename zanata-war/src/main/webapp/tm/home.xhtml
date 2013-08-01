@@ -55,6 +55,7 @@
                         jQuery("#uploadProgress").html("Uploading...");
                         jQuery("[name='uploadBtn']").hide();
                         jQuery("[name='cancelBtn']").hide();
+                        jQuery("[name='uploadedFile']").prop('disabled', true);
                     },
                     success: function(data) {
                         var pid = jQuery(data).find('url').text();
@@ -71,10 +72,6 @@
                 jQuery.ajax({
                     type: "GET",
                     url: "#{request.contextPath}/rest/async/" + pId,
-                    timeout: 2000,
-                    beforeSend: function() {
-                        jQuery("#uploadProgress").html("Processing...");
-                    },
                     complete: function(data) {
                         handlePollStatus(pId, data);
                     }
@@ -83,7 +80,7 @@
 
             function handlePollStatus(pId, data) {
                 var status = jQuery(data.responseText).find('statusCode').text();
-                var percentage = jQuery(data.responseText).find('percentageComplete');
+                var message = jQuery(data.responseText).find('message').text();
 
                 if( status == 'Finished' ) {
                     refreshDataTable();
@@ -94,14 +91,15 @@
                     resetUploadDialog();
                 }
                 else {
-                    //jQuery("#uploadProgress").html("Processing... " + percentage + "%");
-                    poll(pId);
+                    jQuery("#uploadProgress").html(message);
+                    setTimeout(function(){ poll(pId) }, 2000);
                 }
             }
 
             function resetUploadDialog() {
                 jQuery("[name='uploadBtn']").show();
                 jQuery("[name='cancelBtn']").show();
+                jQuery("[name='uploadedFile']").prop('disabled', false);
                 hideUploadPanel();
                 jQuery("#uploadProgress").html("");
             }

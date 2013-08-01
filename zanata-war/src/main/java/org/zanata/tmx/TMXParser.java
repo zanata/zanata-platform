@@ -21,10 +21,6 @@
 package org.zanata.tmx;
 
 import java.io.InputStream;
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.HeuristicRollbackException;
-import javax.transaction.RollbackException;
-import javax.transaction.SystemException;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -39,6 +35,9 @@ import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.transaction.Transaction;
 import org.zanata.common.util.ElementBuilder;
 import org.zanata.model.tm.TransMemory;
+import org.zanata.process.MessagesProcessHandle;
+
+import com.google.common.collect.Lists;
 
 import fj.Effect;
 import nu.xom.Element;
@@ -54,6 +53,9 @@ public class TMXParser
 {
    // Batch size to commit in a new transaction for long files
    private static final int BATCH_SIZE = 100;
+
+   @In(required = false)
+   private MessagesProcessHandle asynchronousProcessHandle;
 
    @In
    private TransMemoryAdapter transMemoryAdapter;
@@ -94,6 +96,7 @@ public class TMXParser
 
       while (reader.hasNext())
       {
+         updateProgress(handledTUs);
          if( handledTUs > 0 && handledTUs % BATCH_SIZE == 0 )
          {
             try
@@ -132,6 +135,16 @@ public class TMXParser
          }
       }
       reader.close();
+   }
+
+   private void updateProgress(int processed)
+   {
+      if( asynchronousProcessHandle != null )
+      {
+         // TODO Piggybacking on the messages field. We should move to {@link java.util.concurrent.Future}
+         // or implement a specific TMX Import handler.
+         asynchronousProcessHandle.setMessages(Lists.newArrayList("Processed Entries: " + processed));
+      }
    }
 
 }
