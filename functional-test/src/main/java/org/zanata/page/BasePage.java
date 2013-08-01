@@ -45,6 +45,7 @@ import org.zanata.util.WebElementUtil;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import javax.annotation.Nullable;
 
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
@@ -110,6 +111,8 @@ public class BasePage extends AbstractPage
 
    public RegisterPage goToRegistration()
    {
+      Preconditions.checkArgument(!hasLoggedIn(),
+            "User has logged in! You should sign out or delete cookie first in your test.");
       getDriver().findElement(By.id("systemCol")).click();
       WebElement registerLink = getDriver().findElement(By.id("Register"));
       registerLink.click();
