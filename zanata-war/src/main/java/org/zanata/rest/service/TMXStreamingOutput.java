@@ -27,19 +27,16 @@ import java.io.OutputStream;
 import java.util.Iterator;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
-
-import lombok.Cleanup;
-import lombok.extern.slf4j.Slf4j;
 
 import nu.xom.Attribute;
 import nu.xom.Element;
 import nu.xom.Text;
 
-import org.zanata.common.LocaleId;
+import org.zanata.util.CloseableIterator;
 import org.zanata.util.NullCloseable;
-import org.zanata.util.TMXConstants;
 import org.zanata.xml.StreamSerializer;
 
 import com.google.common.base.Optional;
@@ -47,76 +44,128 @@ import com.google.common.collect.Iterators;
 import com.google.common.collect.PeekingIterator;
 
 /**
- * Exports a collection of NamedDocument (ie a project iteration) to an
- * OutputStream in TMX format.
+ * Exports a series of tranlation units (T) to an OutputStream in TMX format.
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
- *
+ * @param T
  */
-@Slf4j
-public class TMXStreamingOutput<TU> implements StreamingOutput
+@ParametersAreNonnullByDefault
+public class TMXStreamingOutput<T> implements StreamingOutput, Closeable
 {
-   private final @Nonnull Iterator<TU> tuIter;
-   private final TMXExportStrategy<TU> exportStrategy;
+   private final @Nonnull Iterator<T> tuIter;
+   private final TMXExportStrategy<T> exportStrategy;
+   private final Closeable closeable;
 
-   public TMXStreamingOutput(
-         @Nonnull Iterator<TU> tuIter,
-         @Nonnull TMXExportStrategy<TU> exportTUStrategy)
+   private TMXStreamingOutput(
+         @Nonnull Iterator<T> tuIter,
+         @Nonnull TMXExportStrategy<T> exportTUStrategy,
+         Closeable closeable)
    {
       this.tuIter = tuIter;
       this.exportStrategy = exportTUStrategy;
+      this.closeable = (Closeable) (tuIter instanceof Closeable ? tuIter : NullCloseable.INSTANCE);
+   }
+
+   /**
+    * Constructs an instance which will write the translation units using the
+    * specified export strategy.
+    * @param tuIter an iterator over translation units to be exported.
+    * It will be closed after write() is called, or call close() to
+    * close it earlier.
+    * @param exportTUStrategy strategy to use when converting from translation units into TMX.
+    */
+   public TMXStreamingOutput(
+         @Nonnull CloseableIterator<T> tuIter,
+         @Nonnull TMXExportStrategy<T> exportTUStrategy)
+   {
+      this(tuIter, exportTUStrategy, tuIter);
+   }
+
+   /**
+    * Constructs an instance which will write the translation units using the
+    * specified export strategy.
+    * <p>
+    * Note that this constructor DOES NOT guarantee close the iterator.
+    * If you want the iterator closed, you should pass a CloseableIterator.
+    * @param tuIter an iterator over translation units to be exported.  It will NOT be closed.
+    * @param exportTUStrategy strategy to use when converting from translation units into TMX.
+    */
+   public TMXStreamingOutput(
+         @Nonnull Iterator<T> tuIter,
+         @Nonnull TMXExportStrategy<T> exportTUStrategy)
+   {
+      this(tuIter, exportTUStrategy, NullCloseable.INSTANCE);
    }
 
    @Override
+   public void close() throws IOException
+   {
+      closeable.close();
+   }
+
+   /**
+    * Goes through the translation units returned by this object's iterator
+    * (see {@link #TMXStreamingOutput(Iterator, TMXExportStrategy)}
+    * and writes each one to the OutputStream in TMX form.
+    * <p>
+    * Any resources associated with the iterator will be closed before
+    * this method exits.
+    */
+   @Override
    public void write(OutputStream output) throws IOException, WebApplicationException
    {
-      @Cleanup
-      Closeable closeable = (Closeable) (tuIter instanceof Closeable ? tuIter : NullCloseable.INSTANCE);
-      @SuppressWarnings("null")
-      PeekingIterator<TU> iter = Iterators.peekingIterator(tuIter);
-      // Fetch the first result, so that we can fail fast, before
-      // writing any output. This should enable RESTEasy to return an
-      // error instead of simply aborting the output stream.
-      if (iter.hasNext()) iter.peek();
-
-      StreamSerializer tmxWriter = new StreamSerializer(output);
-      tmxWriter.writeXMLDeclaration();
-
-      Element tmx = new Element("tmx");
-      tmx.addAttribute(new Attribute("version", "1.4"));
-      tmxWriter.writeStartTag(tmx);
-      tmxWriter.writeNewLine();
-
-      Text indentText = new Text("  ");
-      tmxWriter.write(indentText);
-      Element header = exportStrategy.buildHeader();
-      tmxWriter.write(header);
-      tmxWriter.writeNewLine();
-
-      tmxWriter.write(indentText);
-      Element body = new Element("body");
-      tmxWriter.writeStartTag(body);
-      tmxWriter.writeNewLine();
-
-      while (iter.hasNext())
+      try
       {
-         TU tu = iter.next();
-         Optional<Element> textUnit = exportStrategy.buildTU(tu);
-         // If there aren't any translations for this TU, we shouldn't include it.
-         // From the TMX spec: "Logically, a complete translation-memory
-         // database will contain at least two <tuv> elements in each translation
-         // unit."
-         if (textUnit.isPresent() && textUnit.get().getChildElements("tuv").size() >= 2)
+         @SuppressWarnings("null")
+         PeekingIterator<T> iter = Iterators.peekingIterator(tuIter);
+         // Fetch the first result, so that we can fail fast, before
+         // writing any output. This should enable RESTEasy to return an
+         // error instead of simply aborting the output stream.
+         if (iter.hasNext()) iter.peek();
+
+         StreamSerializer tmxWriter = new StreamSerializer(output);
+         tmxWriter.writeXMLDeclaration();
+
+         Element tmx = new Element("tmx");
+         tmx.addAttribute(new Attribute("version", "1.4"));
+         tmxWriter.writeStartTag(tmx);
+         tmxWriter.writeNewLine();
+
+         Text indentText = new Text("  ");
+         tmxWriter.write(indentText);
+         Element header = exportStrategy.buildHeader();
+         tmxWriter.write(header);
+         tmxWriter.writeNewLine();
+
+         tmxWriter.write(indentText);
+         Element body = new Element("body");
+         tmxWriter.writeStartTag(body);
+         tmxWriter.writeNewLine();
+
+         while (iter.hasNext())
          {
-            tmxWriter.write(textUnit.get());
-            tmxWriter.writeNewLine();
+            T tu = iter.next();
+            Optional<Element> textUnit = exportStrategy.buildTU(tu);
+            // If there aren't any translations for this TU, we shouldn't include it.
+            // From the TMX spec: "Logically, a complete translation-memory
+            // database will contain at least two <tuv> elements in each translation
+            // unit."
+            if (textUnit.isPresent() && textUnit.get().getChildElements("tuv").size() >= 2)
+            {
+               tmxWriter.write(textUnit.get());
+               tmxWriter.writeNewLine();
+            }
          }
+         tmxWriter.write(indentText);
+         tmxWriter.writeEndTag(body);
+         tmxWriter.writeNewLine();
+         tmxWriter.writeEndTag(tmx);
+         tmxWriter.writeNewLine();
+         tmxWriter.flush();
       }
-      tmxWriter.write(indentText);
-      tmxWriter.writeEndTag(body);
-      tmxWriter.writeNewLine();
-      tmxWriter.writeEndTag(tmx);
-      tmxWriter.writeNewLine();
-      tmxWriter.flush();
+      finally
+      {
+         close();
+      }
    }
 
 }
