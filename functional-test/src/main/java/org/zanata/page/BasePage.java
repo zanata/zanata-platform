@@ -125,7 +125,8 @@ public class BasePage extends AbstractPage
    {
 	Preconditions.checkArgument(!hasLoggedIn(),
             "User has logged in! You should sign out or delete cookie first in your test.");
-      WebElement registerLink = getDriver().findElement(By.id("register_link_internal_link"));
+	
+      WebElement registerLink = getDriver().findElement(By.id("register_link_internal_auth"));
       registerLink.click();
       return new RegisterPage(getDriver());
    }

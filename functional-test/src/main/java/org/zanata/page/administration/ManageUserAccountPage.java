@@ -21,6 +21,7 @@
 package org.zanata.page.administration;
 
 import com.google.common.base.Predicate;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -30,10 +31,13 @@ import org.zanata.page.BasePage;
 import java.util.HashMap;
 import java.util.Map;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 
+@Slf4j
 public class ManageUserAccountPage extends BasePage
 {
    @FindBy(id = "userdetailForm:passwordField:password")
@@ -53,7 +57,7 @@ public class ManageUserAccountPage extends BasePage
 
    // username field will trigger ajax call and become stale
    private By usernameBy = By.id("userdetailForm:usernameField:username");
-   
+
    private Map<String, String> roleMap;
 
    public ManageUserAccountPage(WebDriver driver)
@@ -69,9 +73,17 @@ public class ManageUserAccountPage extends BasePage
 
    public ManageUserAccountPage enterUsername(final String username)
    {
-      WebElement usernameField = getDriver().findElement(usernameBy);
-      usernameField.sendKeys(username);
-      
+      waitForTenSec().until(new Predicate<WebDriver>()
+      {
+         @Override
+         public boolean apply(WebDriver input)
+         {
+            WebElement usernameField = input.findElement(usernameBy);
+            usernameField.sendKeys(username);
+            return input.findElement(usernameBy).getAttribute("value").equals(username);
+         }
+      });
+
       return new ManageUserAccountPage(getDriver());
    }
 

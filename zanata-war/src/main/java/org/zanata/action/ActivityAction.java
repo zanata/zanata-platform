@@ -200,7 +200,7 @@ public class ActivityAction implements Serializable
       else if (activity.getActivityType() == ActivityType.UPLOAD_SOURCE_DOCUMENT)
       {
          HProjectIteration version = (HProjectIteration) context;
-         url = urlUtil.sourceFilesUrl(version.getProject().getSlug(), version.getSlug());
+         url = urlUtil.sourceFilesViewUrl(version.getProject().getSlug(), version.getSlug());
       }
       else if (activity.getActivityType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
       {

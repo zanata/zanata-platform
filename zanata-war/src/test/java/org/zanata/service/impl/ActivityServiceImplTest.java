@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  * 
@@ -21,6 +21,7 @@
 package org.zanata.service.impl;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 
@@ -28,13 +29,12 @@ import java.util.Date;
 import java.util.List;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.hamcrest.Matchers;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
+import org.zanata.common.ActivityType;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
-import org.zanata.common.ActivityType;
 import org.zanata.dao.ActivityDAO;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.TextFlowTargetDAO;
@@ -52,10 +52,10 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest
 {
    private SeamAutowire seam = SeamAutowire.instance();
 
-   private Long personId = new Long(1);
-   private Long projectVersionId = new Long(1);
-   private Long documentId = new Long(1);
-   private Long textFlowTargetId = new Long(1);
+   private Long personId = new Long(1L);
+   private Long projectVersionId = new Long(1L);
+   private Long documentId = new Long(1L);
+   private Long textFlowTargetId = new Long(1L);
    
    private ActivityServiceImpl activityService;
 
@@ -88,7 +88,7 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest
             ContentState.Approved));
       Activity activity = activityService.findActivity(personId, EntityType.HProjectIteration, projectVersionId, ActivityType.REVIEWED_TRANSLATION, new Date());
       assertThat(activity, not(nullValue()));
-      assertThat(activity.getEventCount(), Matchers.equalTo(1));
+      assertThat(activity.getEventCount(), equalTo(1));
    }
 
    @Test
@@ -98,16 +98,16 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest
             ContentState.Approved));
       
       List<Activity> activities = activityService.findLatestActivitiesForContext(personId, projectVersionId, 0, 10);
-      assertThat(activities.size(), Matchers.equalTo(1));
+      assertThat(activities.size(), equalTo(1));
 
       activityService.logTextFlowStateUpdate(new TextFlowTargetStateEvent(documentId, null, new LocaleId("as"), textFlowTargetId,
             ContentState.Rejected));
 
       activities = activityService.findLatestActivitiesForContext(personId, projectVersionId, 0, 10);
-      assertThat(activities.size(), Matchers.equalTo(1));
+      assertThat(activities.size(), equalTo(1));
       
       Activity activity = activityService.findActivity(personId, EntityType.HProjectIteration, projectVersionId, ActivityType.REVIEWED_TRANSLATION, new Date());
-      assertThat(activity.getEventCount(), Matchers.equalTo(2));
+      assertThat(activity.getEventCount(), equalTo(2));
    }
 
    @Test
@@ -125,7 +125,7 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest
             ContentState.NeedReview));
       
       activity = activityService.findActivity(personId, EntityType.HProjectIteration, projectVersionId, ActivityType.UPDATE_TRANSLATION, new Date());
-      assertThat(activity.getId(), Matchers.equalTo(id));
+      assertThat(activity.getId(), equalTo(id));
    }
    
    @Test
@@ -140,13 +140,13 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest
       activityService.onDocumentUploaded(new DocumentUploadedEvent(documentId, false, new LocaleId("as")));
       
       List<Activity> activities = activityService.findLatestActivitiesForContext(personId, projectVersionId, 0, 10);
-      assertThat(activities.size(), Matchers.equalTo(3));
+      assertThat(activities.size(), equalTo(3));
    }
 
    @Test
    public void testGetAllPersonActivities() throws Exception
    {
-      Long documentId2 = new Long(2);
+      Long documentId2 = new Long(2L);
 
       activityService.logTextFlowStateUpdate(new TextFlowTargetStateEvent(documentId2, null, LocaleId.EN_US, new Long(5),
             ContentState.Translated));
@@ -162,6 +162,6 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest
 
       List<Activity> activities = activityService.findLatestActivitiesForContext(documentId2, projectVersionId, 0, 10);
 
-      assertThat(activities.size(), Matchers.equalTo(2));
+      assertThat(activities.size(), equalTo(2));
    }
 }
