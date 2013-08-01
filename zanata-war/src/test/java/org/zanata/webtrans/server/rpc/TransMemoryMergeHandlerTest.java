@@ -382,12 +382,16 @@ public class TransMemoryMergeHandlerTest
       // an action with threshold 80% and trans unit id
       final long transUnitId = 1L;
       TransMemoryMerge mergeAction = prepareActionAndMockSecurityService(80, transUnitId);
+
       // A Text Flow to be translated
       HTextFlow hTextFlow = TestFixture.makeHTextFlow(transUnitId, hLocale, ContentState.New, "pot/a.po");
-      // An imported Translation Unit match source ...
+
+      // A matching imported Translation Unit
       TransMemoryUnit tuResultSource = TestFixture.makeTransMemoryUnit(10L, hLocale);
-      // ... wrapped around a result item
-      TransMemoryResultItem mostSimilarTM = importedTmResult(11L, 100);
+
+      // and an associated result item
+      TransMemoryResultItem mostSimilarTM = importedTmResult(tuResultSource.getId(), 100);
+
       // A Translation memory query
       TransMemoryQuery tmQuery = new TransMemoryQuery(hTextFlow.getContents(), FUZZY_PLURAL);
 
@@ -395,7 +399,7 @@ public class TransMemoryMergeHandlerTest
       when(textFlowDAO.findByIdList(newArrayList(transUnitId))).thenReturn(newArrayList(hTextFlow));
       when(getTransMemoryHandler.searchTransMemory(hLocale, tmQuery, sourceLocale.getLocaleId()))
             .thenReturn(newArrayList(mostSimilarTM, tmResult(12L, 90), tmResult(13L, 80)));
-      when(transMemoryUnitDAO.findById(11L)).thenReturn(tuResultSource);
+      when(transMemoryUnitDAO.findById(tuResultSource.getId())).thenReturn(tuResultSource);
 
       // When: execute the action
       handler.execute(mergeAction, null);
@@ -418,12 +422,16 @@ public class TransMemoryMergeHandlerTest
       final long transUnitId = 1L;
       prepareActionAndMockSecurityService(80, transUnitId);
       TransMemoryMerge mergeAction = prepareActionAndMockSecurityService(80, false, transUnitId);
+
       // A Text Flow to be translated
       HTextFlow hTextFlow = TestFixture.makeHTextFlow(transUnitId, hLocale, ContentState.New, "pot/a.po");
-      // An imported Translation Unit match source ...
+
+      // A matching imported Translation Unit
       TransMemoryUnit tuResultSource = TestFixture.makeTransMemoryUnit(10L, hLocale);
-      // ... wrapped around a result item
-      TransMemoryResultItem mostSimilarTM = importedTmResult(11L, 100);
+
+      // and an associated result item
+      TransMemoryResultItem mostSimilarTM = importedTmResult(tuResultSource.getId(), 100);
+
       // A Translation memory query
       TransMemoryQuery tmQuery = new TransMemoryQuery(hTextFlow.getContents(), FUZZY_PLURAL);
 
@@ -431,7 +439,7 @@ public class TransMemoryMergeHandlerTest
       when(textFlowDAO.findByIdList(newArrayList(transUnitId))).thenReturn(newArrayList(hTextFlow));
       when(getTransMemoryHandler.searchTransMemory(hLocale, tmQuery, sourceLocale.getLocaleId()))
             .thenReturn(newArrayList(mostSimilarTM, tmResult(12L, 90), tmResult(13L, 80)));
-      when(transMemoryUnitDAO.findById(11L)).thenReturn(tuResultSource);
+      when(transMemoryUnitDAO.findById(tuResultSource.getId())).thenReturn(tuResultSource);
 
       // When: execute the action
       UpdateTransUnitResult result = handler.execute(mergeAction, null);

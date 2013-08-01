@@ -144,16 +144,7 @@ public class TMXStreamingOutput<T> implements StreamingOutput, Closeable
          while (iter.hasNext())
          {
             T tu = iter.next();
-            Optional<Element> textUnit = exportStrategy.buildTU(tu);
-            // If there aren't any translations for this TU, we shouldn't include it.
-            // From the TMX spec: "Logically, a complete translation-memory
-            // database will contain at least two <tuv> elements in each translation
-            // unit."
-            if (textUnit.isPresent() && textUnit.get().getChildElements("tuv").size() >= 2)
-            {
-               tmxWriter.write(textUnit.get());
-               tmxWriter.writeNewLine();
-            }
+            writeIfComplete(tmxWriter, tu);
          }
          tmxWriter.write(indentText);
          tmxWriter.writeEndTag(body);
@@ -165,6 +156,20 @@ public class TMXStreamingOutput<T> implements StreamingOutput, Closeable
       finally
       {
          close();
+      }
+   }
+
+   private void writeIfComplete(StreamSerializer tmxWriter, T tu) throws IOException
+   {
+      Optional<Element> textUnit = exportStrategy.buildTU(tu);
+      // If there aren't any translations for this TU, we shouldn't include it.
+      // From the TMX spec: "Logically, a complete translation-memory
+      // database will contain at least two <tuv> elements in each translation
+      // unit."
+      if (textUnit.isPresent() && textUnit.get().getChildElements("tuv").size() >= 2)
+      {
+         tmxWriter.write(textUnit.get());
+         tmxWriter.writeNewLine();
       }
    }
 

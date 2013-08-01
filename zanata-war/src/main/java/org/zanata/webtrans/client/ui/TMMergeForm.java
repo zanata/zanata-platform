@@ -156,25 +156,19 @@ public class TMMergeForm extends Composite implements EnumRadioButtonGroup.Selec
 
    private InlineLabel getStatusLabelFor(OptionType optionType)
    {
-      InlineLabel label;
       switch (optionType)
       {
       case PROJECT_MISMATCH:
-         label = differentProjectStatus;
-         break;
+         return differentProjectStatus;
       case DOC_ID_MISMATCH:
-         label = differentDocIdStatus;
-         break;
+         return differentDocIdStatus;
       case CTX_MISMATCH:
-         label = differentContextStatus;
-         break;
+         return differentContextStatus;
       case IMPORTED_MATCH:
-         label = importedMatchStatus;
-         break;
+         return importedMatchStatus;
       default:
          throw new RuntimeException("unknown option: "+optionType);
       }
-      return label;
    }
 
    private String resolveStyle(MergeOption option)

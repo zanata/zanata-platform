@@ -75,7 +75,7 @@ public class TMXParserTest extends ZanataDbunitJpaTest
           .use("session", getSession());
    }
 
-   private TransMemory parseAndSaveTMFromFile(String file) throws XMLStreamException
+   private TransMemory createTMFromFile(String file) throws XMLStreamException
    {
       TransMemoryDAO transMemoryDAO = seam.autowire(TransMemoryDAO.class);
       TransMemory tm = new TransMemory();
@@ -83,16 +83,16 @@ public class TMXParserTest extends ZanataDbunitJpaTest
       tm.setDescription("New test tm");
       transMemoryDAO.makePersistent(tm);
 
-      return parseAndSaveTMFromFile(tm, file);
+      populateTMFromFile(tm, file);
+      return tm;
    }
 
-   private TransMemory parseAndSaveTMFromFile(TransMemory tm, String file) throws XMLStreamException
+   private void populateTMFromFile(TransMemory tm, String file) throws XMLStreamException
    {
       TMXParser parser = seam.autowire(TMXParser.class);
       InputStream is = getClass().getResourceAsStream(file);
 
       parser.parseAndSaveTMX(is, tm);
-      return tm;
    }
 
    private TransMemoryUnit findInCollection(Collection<TransMemoryUnit> col, final String tuid)
@@ -111,7 +111,7 @@ public class TMXParserTest extends ZanataDbunitJpaTest
    public void parseTMX() throws Exception
    {
       // Create a TM
-      TransMemory tm = parseAndSaveTMFromFile("/tmx/default-valid-tm.tmx");
+      TransMemory tm = createTMFromFile("/tmx/default-valid-tm.tmx");
 
       // Make sure everything is stored properly
       getEm().flush();
@@ -142,7 +142,7 @@ public class TMXParserTest extends ZanataDbunitJpaTest
    public void parseTMXWithMetadata() throws Exception
    {
       // Create a TM
-      TransMemory tm = parseAndSaveTMFromFile("/tmx/valid-tmx-with-metadata.tmx");
+      TransMemory tm = createTMFromFile("/tmx/valid-tmx-with-metadata.tmx");
 
       // Make sure everything is stored properly
       getEm().flush();
@@ -223,14 +223,14 @@ public class TMXParserTest extends ZanataDbunitJpaTest
    public void undiscernibleSourceLang() throws Exception
    {
       // Create a TM
-      parseAndSaveTMFromFile("/tmx/invalid-tmx-no-discernible-srclang.xml");
+      createTMFromFile("/tmx/invalid-tmx-no-discernible-srclang.xml");
    }
 
    @Test
    public void mergeSameTM() throws Exception
    {
       // Initial load
-      TransMemory tm = parseAndSaveTMFromFile("/tmx/default-valid-tm.tmx");
+      TransMemory tm = createTMFromFile("/tmx/default-valid-tm.tmx");
 
       // Make sure everything is stored properly
       getEm().flush();
@@ -238,7 +238,7 @@ public class TMXParserTest extends ZanataDbunitJpaTest
       assertThat(tm.getTranslationUnits().size(), is(4));
 
       // Second load (should yield the same result)
-      parseAndSaveTMFromFile(tm, "/tmx/default-valid-tm.tmx");
+      populateTMFromFile(tm, "/tmx/default-valid-tm.tmx");
 
       getEm().flush();
       getEm().refresh(tm);
@@ -249,7 +249,7 @@ public class TMXParserTest extends ZanataDbunitJpaTest
    public void mergeComplementaryTM() throws Exception
    {
       // Initial load
-      TransMemory tm = parseAndSaveTMFromFile("/tmx/default-valid-tm.tmx");
+      TransMemory tm = createTMFromFile("/tmx/default-valid-tm.tmx");
 
       // Make sure everything is stored properly
       getEm().flush();
@@ -257,7 +257,7 @@ public class TMXParserTest extends ZanataDbunitJpaTest
       assertThat(tm.getTranslationUnits().size(), is(4));
 
       // Second load (should add all new tuids)
-      parseAndSaveTMFromFile(tm, "/tmx/valid-tm-with-tuids.tmx");
+      populateTMFromFile(tm, "/tmx/valid-tm-with-tuids.tmx");
 
       getEm().flush();
       getEm().refresh(tm);
