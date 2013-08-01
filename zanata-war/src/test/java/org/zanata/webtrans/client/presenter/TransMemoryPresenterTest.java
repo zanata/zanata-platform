@@ -1,6 +1,7 @@
 package org.zanata.webtrans.client.presenter;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.doNothing;
@@ -442,12 +443,15 @@ public class TransMemoryPresenterTest
       verifyNoMoreInteractions(display);
    }
 
+   /**
+    * Make sure the Match type enum order is not changed as the UI depends on it.
+    * @throws Exception
+    * @see org.zanata.webtrans.server.rpc.GetTransMemoryHandler.TransMemoryResultComparator
+    */
    @Test
    public void matchTypeEnumOrder() throws Exception
    {
-      // Make sure the Match type enum order is not changed as the UI depends on it.
-      assertThat(MatchType.Imported.ordinal(), is(0));
-      assertThat(MatchType.TranslatedInternal.ordinal(), is(1));
-      assertThat(MatchType.ApprovedInternal.ordinal(), is(2));
+      assertThat(MatchType.ApprovedInternal, greaterThan(MatchType.TranslatedInternal));
+      assertThat(MatchType.TranslatedInternal, greaterThan(MatchType.Imported));
    }
 }
