@@ -122,36 +122,29 @@ public class TMXStreamingOutput<T> implements StreamingOutput, Closeable
          // error instead of simply aborting the output stream.
          if (iter.hasNext()) iter.peek();
 
-         StreamSerializer tmxWriter = new StreamSerializer(output);
-         tmxWriter.writeXMLDeclaration();
+         StreamSerializer stream = new StreamSerializer(output);
+         stream.writeXMLDeclaration();
 
          Element tmx = new Element("tmx");
          tmx.addAttribute(new Attribute("version", "1.4"));
-         tmxWriter.writeStartTag(tmx);
-         tmxWriter.writeNewLine();
+         startElem(stream, tmx);
 
-         Text indentText = new Text("  ");
-         tmxWriter.write(indentText);
-         Element header = exportStrategy.buildHeader();
-         tmxWriter.write(header);
-         tmxWriter.writeNewLine();
+         indent(stream);
+         writeElem(stream, exportStrategy.buildHeader());
 
-         tmxWriter.write(indentText);
+         indent(stream);
          Element body = new Element("body");
-         tmxWriter.writeStartTag(body);
-         tmxWriter.writeNewLine();
+         startElem(stream, body);
 
          while (iter.hasNext())
          {
             T tu = iter.next();
-            writeIfComplete(tmxWriter, tu);
+            writeIfComplete(stream, tu);
          }
-         tmxWriter.write(indentText);
-         tmxWriter.writeEndTag(body);
-         tmxWriter.writeNewLine();
-         tmxWriter.writeEndTag(tmx);
-         tmxWriter.writeNewLine();
-         tmxWriter.flush();
+         indent(stream);
+         endElem(stream, body);
+         endElem(stream, tmx);
+         stream.flush();
       }
       finally
       {
@@ -159,7 +152,30 @@ public class TMXStreamingOutput<T> implements StreamingOutput, Closeable
       }
    }
 
-   private void writeIfComplete(StreamSerializer tmxWriter, T tu) throws IOException
+   private void indent(StreamSerializer stream) throws IOException
+   {
+      stream.write(new Text("  "));
+   }
+
+   private void startElem(StreamSerializer stream, Element elem) throws IOException
+   {
+      stream.writeStartTag(elem);
+      stream.writeNewLine();
+   }
+
+   private void endElem(StreamSerializer stream, Element elem) throws IOException
+   {
+      stream.writeEndTag(elem);
+      stream.writeNewLine();
+   }
+
+   private void writeElem(StreamSerializer stream, Element elem) throws IOException
+   {
+      stream.write(elem);
+      stream.writeNewLine();
+   }
+
+   private void writeIfComplete(StreamSerializer stream, T tu) throws IOException
    {
       Optional<Element> textUnit = exportStrategy.buildTU(tu);
       // If there aren't any translations for this TU, we shouldn't include it.
@@ -168,8 +184,7 @@ public class TMXStreamingOutput<T> implements StreamingOutput, Closeable
       // unit."
       if (textUnit.isPresent() && textUnit.get().getChildElements("tuv").size() >= 2)
       {
-         tmxWriter.write(textUnit.get());
-         tmxWriter.writeNewLine();
+         writeElem(stream, textUnit.get());
       }
    }
 
