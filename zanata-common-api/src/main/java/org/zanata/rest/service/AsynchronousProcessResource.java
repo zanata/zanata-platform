@@ -31,6 +31,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.resource.Resource;
@@ -106,7 +107,7 @@ public interface AsynchronousProcessResource
                                                        @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans);
 
    /**
-    * Attempts to starts the translation of a document.
+    * Attempts to start the translation of a document.
     * NOTE: Still experimental.
     *
     * @param idNoSlash The document identifier. Some document ids could have forward slashes ('/') in them which would
@@ -136,6 +137,22 @@ public interface AsynchronousProcessResource
                                                            TranslationsResource translatedDoc,
                                                            @QueryParam("ext") Set<String> extensions,
                                                            @QueryParam("merge") String merge);
+
+   /**
+    * Attempts to starts the import of a TMX Document
+    * NOTE: Still experimental.
+    *
+    * @param slug The identifier for the translation memory where the imported entries will reside.
+    * @param input Multipart input containing the file(s) to upload.
+    * @return The following response status codes will be returned from this operation:<br>
+    * OK(200) - The contents of the response will indicate the process identifier which
+    * may be used to query for its status or a message indicating what happened.<br>
+    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
+    */
+   @POST
+   @Path("/tm/{slug}")
+   @Consumes(MediaType.MULTIPART_FORM_DATA)
+   public ProcessStatus updateTranslationMemory(@PathParam("slug") String slug, MultipartFormDataInput input) throws Exception;
 
    /**
     * Obtains the status of a previously started process.
