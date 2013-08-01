@@ -16,7 +16,7 @@
         <a4j:jsFunction name="refreshDataTable" render="tmList"/>
         <script type="text/javascript">
             function showUploadPanel(tmSlug) {
-                var formAction = "#{request.contextPath}/rest/tm/" + tmSlug;
+                var formAction = "#{request.contextPath}/rest/async/tm/" + tmSlug;
                 jQuery("#uploadFileForm").attr("action", formAction);
                 jQuery("#uploadProgress").html("");
                 #{rich:component("uploadFilePanel")}.show();
@@ -57,31 +57,53 @@
                         jQuery("[name='cancelBtn']").hide();
                     },
                     success: function(data) {
-                        alert("Successfully uploaded the Translation Memory file.");
-                        refreshDataTable();
+                        var pid = jQuery(data).find('url').text();
+                        poll(pid);
                     },
                     error: function(data) {
                         alert("There was an error uploading the file.");
-                    },
-                    complete: function(data) {
-                        jQuery("[name='uploadBtn']").show();
-                        jQuery("[name='cancelBtn']").show();
-                        hideUploadPanel();
-                        jQuery("#uploadProgress").html("");
                     }
                 });
                 return false;
             }
 
-            function handleUploadProgress(event) {
-                var percent = 0;
-                if (event.lengthComputable) {
-                    percent = event.loaded / event.total;
+            function poll(pId) {
+                jQuery.ajax({
+                    type: "GET",
+                    url: "#{request.contextPath}/rest/async/" + pId,
+                    timeout: 2000,
+                    beforeSend: function() {
+                        jQuery("#uploadProgress").html("Processing...");
+                    },
+                    complete: function(data) {
+                        handlePollStatus(pId, data);
+                    }
+                });
+            }
+
+            function handlePollStatus(pId, data) {
+                var status = jQuery(data.responseText).find('statusCode').text();
+                var percentage = jQuery(data.responseText).find('percentageComplete');
+
+                if( status == 'Finished' ) {
+                    refreshDataTable();
+                    resetUploadDialog();
+                }
+                else if( status == "NotAccepted" || status == "Failed" ) {
+                    alert("There was an error processing the file.");
+                    resetUploadDialog();
                 }
                 else {
-                    percent = "";
+                    //jQuery("#uploadProgress").html("Processing... " + percentage + "%");
+                    poll(pId);
                 }
-                jQuery("#uploadProgress").html("Uploading... " + percent);
+            }
+
+            function resetUploadDialog() {
+                jQuery("[name='uploadBtn']").show();
+                jQuery("[name='cancelBtn']").show();
+                hideUploadPanel();
+                jQuery("#uploadProgress").html("");
             }
         </script>
     </ui:define>

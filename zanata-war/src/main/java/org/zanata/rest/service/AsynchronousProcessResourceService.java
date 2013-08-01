@@ -20,17 +20,23 @@
  */
 package org.zanata.rest.service;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.resteasy.spi.NotFoundException;
 import org.jboss.seam.Component;
 import org.jboss.seam.annotations.In;
@@ -41,10 +47,12 @@ import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.dao.TransMemoryDAO;
 import org.zanata.lock.LockNotAcquiredException;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.model.tm.TransMemory;
 import org.zanata.process.MessagesProcessHandle;
 import org.zanata.process.ProcessHandle;
 import org.zanata.process.RunnableProcess;
@@ -60,6 +68,9 @@ import org.zanata.service.ProcessManagerService;
 import org.zanata.service.TranslationService;
 import org.zanata.service.impl.DocumentServiceImpl;
 import org.zanata.service.impl.TranslationServiceImpl;
+import org.zanata.tmx.TMXParser;
+
+import com.google.common.base.Optional;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -291,6 +302,33 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
          status.getMessages().add(errorMessage);
          return status;
       }
+   }
+
+   @POST
+   @Path("/tm/{slug}")
+   @Consumes(MediaType.MULTIPART_FORM_DATA)
+   @Override
+   public ProcessStatus updateTranslationMemory(@PathParam("slug") final String slug, MultipartFormDataInput input) throws Exception
+   {
+      ProcessHandle handle = new ProcessHandle();
+      for(InputPart inputPart : input.getFormDataMap().get("uploadedFile"))
+      {
+         final InputStream inputStream = inputPart.getBody(InputStream.class, null);
+
+         RunnableProcess<ProcessHandle> process = new RunnableProcess<ProcessHandle>()
+         {
+            @Override
+            protected void run(ProcessHandle handle) throws Throwable
+            {
+               TransMemoryDAO transMemoryDAO = (TransMemoryDAO)Component.getInstance(TransMemoryDAO.class);
+               Optional<TransMemory> tm = transMemoryDAO.getBySlug(slug);
+               TMXParser parser = (TMXParser)Component.getInstance(TMXParser.class);
+               parser.parseAndSaveTMX(inputStream, tm.get());
+            }
+         };
+         processManagerServiceImpl.startProcess(process, handle);
+      }
+      return getProcessStatus(handle.getId());
    }
 
    @Override

@@ -21,6 +21,10 @@
 package org.zanata.tmx;
 
 import java.io.InputStream;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -32,6 +36,7 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
+import org.jboss.seam.transaction.Transaction;
 import org.zanata.common.util.ElementBuilder;
 import org.zanata.model.tm.TransMemory;
 
@@ -47,6 +52,9 @@ import nu.xom.Element;
 @AutoCreate
 public class TMXParser
 {
+   // Batch size to commit in a new transaction for long files
+   private static final int BATCH_SIZE = 100;
+
    @In
    private TransMemoryAdapter transMemoryAdapter;
 
@@ -82,9 +90,30 @@ public class TMXParser
 
       QName tu = new QName("tu");
       QName header = new QName("header");
+      int handledTUs = 0;
 
       while (reader.hasNext())
       {
+         if( handledTUs > 0 && handledTUs % BATCH_SIZE == 0 )
+         {
+            try
+            {
+               Transaction.instance().commit();
+               Transaction.instance().begin();
+            }
+            catch (Exception e)
+            {
+               try
+               {
+                  Transaction.instance().rollback();
+               }
+               finally
+               {
+                  throw new RuntimeException(e);
+               }
+            }
+         }
+
          XMLEvent event = reader.nextEvent();
          if (event.isStartElement())
          {
@@ -98,6 +127,7 @@ public class TMXParser
             {
                Element tuElem = ElementBuilder.buildElement(startElem, reader);
                tuHandler.e(tuElem);
+               handledTUs++;
             }
          }
       }
