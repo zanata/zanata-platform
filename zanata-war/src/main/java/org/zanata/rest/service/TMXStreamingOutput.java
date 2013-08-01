@@ -79,6 +79,7 @@ public class TMXStreamingOutput<TU> implements StreamingOutput
       if (iter.hasNext()) iter.peek();
 
       StreamSerializer tmxWriter = new StreamSerializer(output);
+      tmxWriter.writeXMLDeclaration();
 
       Element tmx = new Element("tmx");
       tmx.addAttribute(new Attribute("version", "1.4"));
