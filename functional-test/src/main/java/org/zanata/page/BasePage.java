@@ -50,6 +50,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  *
@@ -60,8 +62,6 @@ import java.util.List;
 public class BasePage extends AbstractPage
 {
    private List<WebElement> navMenuItems = Collections.emptyList();
-
-   private static final By BY_SIGN_OUT = By.id("right_menu_sign_out_link");
 
    @FindBy(id = "nav-main")
    WebElement navBar;
@@ -78,10 +78,11 @@ public class BasePage extends AbstractPage
    @FindBy(id = "user_avatar")
    private WebElement userAvatar;
 
-   private By BY_SIGN_IN = By.id("signin_link");
-   private By BY_PROFILE_LINK = By.id("profile");
-   private By BY_ADMINISTRATION_LINK = By.id("administration");
-
+   private static final By BY_SIGN_IN = By.id("signin_link");
+   private static final By BY_SIGN_OUT = By.id("right_menu_sign_out_link");
+   private static final By BY_PROFILE_LINK = By.id("profile");
+   private static final By BY_ADMINISTRATION_LINK = By.id("administration");
+   
    public BasePage(final WebDriver driver)
    {
       super(driver);
@@ -116,12 +117,15 @@ public class BasePage extends AbstractPage
       waitForSideMenuOpened();
       
       clickLinkAfterAnimation(BY_ADMINISTRATION_LINK);
+
       return new AdministrationPage(getDriver());
    }
 
    public RegisterPage goToRegistration()
    {
-      WebElement registerLink = getDriver().findElement(By.id("register_link_internal_auth"));
+	Preconditions.checkArgument(!hasLoggedIn(),
+            "User has logged in! You should sign out or delete cookie first in your test.");
+      WebElement registerLink = getDriver().findElement(By.id("register_link_internal_link"));
       registerLink.click();
       return new RegisterPage(getDriver());
    }
@@ -149,38 +153,26 @@ public class BasePage extends AbstractPage
       userAvatar.click();
 
       waitForSideMenuOpened();
-      
-      clickLinkAfterAnimation(BY_SIGN_OUT);
 
-      waitForTenSec().until(new Function<WebDriver, WebElement>()
-      {
-         @Override
-         public WebElement apply(WebDriver driver)
-         {
-            return driver.findElement(BY_SIGN_IN);
-         }
-      });
+      clickLinkAfterAnimation(BY_SIGN_OUT);
       return new HomePage(getDriver());
    }
 
    public List<String> getBreadcrumbLinks()
    {
-      List<WebElement> breadcrumbs = getDriver().findElement(By.id("breadcrumbs_panel")).findElements(
-            By.className("breadcrumbs_link"));
+      List<WebElement> breadcrumbs = getDriver().findElement(By.id("breadcrumbs_panel")).findElements(By.className("breadcrumbs_link"));
       return WebElementUtil.elementsToText(breadcrumbs);
    }
 
    public String getLastBreadCrumbText()
    {
-      WebElement breadcrumb = getDriver().findElement(By.id("breadcrumbs_panel")).findElement(
-            By.className("breadcrumbs_display"));
+      WebElement breadcrumb = getDriver().findElement(By.id("breadcrumbs_panel")).findElement(By.className("breadcrumbs_display"));
       return breadcrumb.getText();
    }
 
    public <P> P clickBreadcrumb(final String link, Class<P> pageClass)
    {
-      List<WebElement> breadcrumbs = getDriver().findElement(By.id("breadcrumbs_panel")).findElements(
-            By.className("breadcrumbs_link"));
+      List<WebElement> breadcrumbs = getDriver().findElement(By.id("breadcrumbs_panel")).findElements(By.className("breadcrumbs_link"));
       Predicate<WebElement> predicate = new Predicate<WebElement>()
       {
          @Override
@@ -195,17 +187,14 @@ public class BasePage extends AbstractPage
          breadcrumbLink.get().click();
          return PageFactory.initElements(getDriver(), pageClass);
       }
-      throw new RuntimeException("can not find " + link + " in breadcrumb: "
-            + WebElementUtil.elementsToText(breadcrumbs));
+      throw new RuntimeException("can not find " + link + " in breadcrumb: " + WebElementUtil.elementsToText(breadcrumbs));
    }
 
    public List<String> getNavigationMenuItems()
    {
-      Collection<String> linkTexts = Collections2.transform(navMenuItems, new Function<WebElement, String>()
-      {
+      Collection<String> linkTexts = Collections2.transform(navMenuItems, new Function<WebElement, String>() {
          @Override
-         public String apply(WebElement link)
-         {
+         public String apply(WebElement link) {
             return link.getText();
          }
       });

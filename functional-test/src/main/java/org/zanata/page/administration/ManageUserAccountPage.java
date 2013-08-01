@@ -69,16 +69,9 @@ public class ManageUserAccountPage extends BasePage
 
    public ManageUserAccountPage enterUsername(final String username)
    {
-      waitForTenSec().until(new Predicate<WebDriver>()
-      {
-         @Override
-         public boolean apply(WebDriver input)
-         {
-            WebElement usernameField = input.findElement(usernameBy);
-            usernameField.sendKeys(username);
-            return input.findElement(usernameBy).getAttribute("value").equals(username);
-         }
-      });
+      WebElement usernameField = getDriver().findElement(usernameBy);
+      usernameField.sendKeys(username);
+      
       return new ManageUserAccountPage(getDriver());
    }
 

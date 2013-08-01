@@ -46,9 +46,8 @@ public class ChangePasswordTest
    public ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
 
    @Before
-   public void before()
+   public void setUp()
    {
-      // Remove all cookies, no previous login is allowed
       new BasicWorkFlow().goToHome().deleteCookies();
    }
 
