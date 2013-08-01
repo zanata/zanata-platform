@@ -32,6 +32,7 @@ package org.zanata.feature.document;
 
  import java.io.File;
  import java.io.IOException;
+ import java.io.RandomAccessFile;
 
  import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -63,6 +64,7 @@ public class UploadTest
             .pressUploadFileButton()
             .enterFilePath(filePath)
             .submitUpload();
+
       assertThat("Document uploaded notification shows",
             projectSourceDocumentsPage.getNotificationMessage(), Matchers.equalTo(successfullyUploaded));
       assertThat("Document shows in table", projectSourceDocumentsPage.sourceDocumentsContains(testFileName));
@@ -77,6 +79,7 @@ public class UploadTest
             .concat(testFileName);
 
       assertThat("Data file "+testFileName+" exists", new File(filePath).exists());
+
       ProjectSourceDocumentsPage projectSourceDocumentsPage = new LoginWorkFlow().signIn("admin", "admin")
             .goToProjects()
             .goToProject("about fedora")
@@ -85,10 +88,12 @@ public class UploadTest
             .pressUploadFileButton()
             .enterFilePath(filePath)
             .cancelUpload();
+
       assertThat("Document does not show in table",
             !projectSourceDocumentsPage.sourceDocumentsContains(testFileName));
    }
 
+   // RHBZ-990373
    @Test(expected = RuntimeException.class)
    public void emptyFilenameUpload()
    {
@@ -100,11 +105,44 @@ public class UploadTest
             .pressUploadFileButton()
             .submitUpload();
 
-      // RHBZ-990373
       projectSourceDocumentsPage.assertNoCriticalErrors();
       // TODO: Verify graceful handling of scenario
    }
 
+   // RHBZ990836
+   @Test(expected = RuntimeException.class)
+   public void handleReallyBigFile()
+   {
+      File bigFile;
+      int mbyte = 1024 * 1024;
+      int fileSize = 500;
+
+      try {
+         bigFile = File.createTempFile("bigFile", "txt");
+         RandomAccessFile randomAccessFile = new RandomAccessFile(bigFile, "rw");
+         randomAccessFile.setLength(mbyte*fileSize);
+      } catch (IOException e)
+      {
+         throw new RuntimeException("Unable to generate the test file");
+      }
+      assertThat("Data file "+bigFile+" exists", bigFile.exists());
+      assertThat("Data file "+bigFile+" is big", (int)bigFile.length() / mbyte,
+            Matchers.equalTo(fileSize));
+
+      ProjectSourceDocumentsPage projectSourceDocumentsPage = new LoginWorkFlow().signIn("admin", "admin")
+            .goToProjects()
+            .goToProject("about fedora")
+            .goToVersion("master")
+            .goToSourceDocuments()
+            .pressUploadFileButton()
+            .enterFilePath(bigFile.getAbsolutePath())
+            .submitUpload();
+
+      projectSourceDocumentsPage.assertNoCriticalErrors();
+      // TODO: Verify graceful handling of scenario
+   }
+
+   // RHBZ-990373
    @Test(expected = RuntimeException.class)
    public void failOnInvalidFileUpload()
    {
@@ -129,7 +167,6 @@ public class UploadTest
       assertThat("Data file " + noFile.getName() + " does not exists", !noFile.exists());
       projectSourceDocumentsPage = projectSourceDocumentsPage.submitUpload();
 
-      // RHBZ-990373
       projectSourceDocumentsPage.assertNoCriticalErrors();
       // TODO: Verify graceful handling of scenario
    }
