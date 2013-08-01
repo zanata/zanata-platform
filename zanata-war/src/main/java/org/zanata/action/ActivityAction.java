@@ -22,7 +22,6 @@ package org.zanata.action;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.jboss.seam.ScopeType;
@@ -72,8 +71,6 @@ public class ActivityAction implements Serializable
    private final int ACTIVITY_COUNT_PER_LOAD = 5;
    private final int MAX_ACTIVITIES_COUNT_PER_PAGE = 20;
 
-   private final Date now = new Date();
-
    private int activityPageIndex = 0;
 
    public List<Activity> getActivities()
@@ -89,9 +86,9 @@ public class ActivityAction implements Serializable
       return activities;
    }
 
-   public String getDurationTime(Activity activity)
+   public String getHowLongAgoDescription(Activity activity)
    {
-      return DateUtil.getReadableTime(now, activity.getLastChanged());
+      return DateUtil.getHowLongAgoDescription(activity.getLastChanged());
    }
 
    public String getProjectName(Activity activity)
@@ -338,9 +335,9 @@ public class ActivityAction implements Serializable
    {
       if (wordCount == 1)
       {
-         return wordCount + " " + zanataMessages.getMessage("jsf.word");
+         return wordCount + " word";
       }
-      return wordCount + " " + zanataMessages.getMessage("jsf.words");
+      return wordCount + " words";
    }
 
    public boolean hasMoreActivities()

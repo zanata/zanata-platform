@@ -53,17 +53,16 @@ public class DateUtil
    }
    
    /**
-    * Return readable string of time different compare between 'from' and 'then'
+    * Return readable string of time different compare between 'then' and current time
     * e.g 10 minutes ago, 1 hour ago
     * @param from
     * @param then
     * @return
     */
-   public static String getReadableTime(Date from, Date then)
+   public static String getHowLongAgoDescription(Date then)
    {
       Locale locale = Locale.getDefault();
       PrettyTime p = new PrettyTime(locale);
-      //return PrettyDate.format(from, then);
       return p.formatUnrounded(then);
    }
 }
