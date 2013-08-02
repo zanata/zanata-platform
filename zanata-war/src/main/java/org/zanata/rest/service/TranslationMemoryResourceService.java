@@ -21,15 +21,12 @@
 package org.zanata.rest.service;
 
 import java.io.InputStream;
-import java.util.Iterator;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
-import org.jboss.resteasy.plugins.providers.multipart.InputPart;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.TransactionPropagationType;
@@ -44,12 +41,11 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.ITextFlow;
-import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemory;
+import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.service.LocaleService;
 import org.zanata.tmx.TMXParser;
 import org.zanata.util.CloseableIterator;
-
 import com.google.common.base.Optional;
 
 import lombok.extern.slf4j.Slf4j;
@@ -133,15 +129,10 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
 
    @Override
    @Restrict("#{s:hasRole('admin')}")
-   public Response updateTranslationMemory(String slug, MultipartFormDataInput input) throws Exception
+   public Response updateTranslationMemory(String slug, InputStream input) throws Exception
    {
-      for(InputPart inputPart : input.getFormDataMap().get("uploadedFile"))
-      {
-         InputStream inputStream = inputPart.getBody(InputStream.class, null);
-
-         Optional<TransMemory> tm = transMemoryDAO.getBySlug(slug);
-         tmxParser.parseAndSaveTMX(inputStream, getTM(tm, slug));
-      }
+      Optional<TransMemory> tm = transMemoryDAO.getBySlug(slug);
+      tmxParser.parseAndSaveTMX(input, getTM(tm, slug));
       return Response.status(200).build();
    }
 
