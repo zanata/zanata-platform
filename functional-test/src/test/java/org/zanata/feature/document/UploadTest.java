@@ -21,6 +21,7 @@
 package org.zanata.feature.document;
 
  import org.hamcrest.Matchers;
+ import org.junit.Before;
  import org.junit.ClassRule;
  import org.junit.Test;
  import org.junit.experimental.categories.Category;
@@ -28,6 +29,7 @@ package org.zanata.feature.document;
  import org.zanata.page.projects.ProjectSourceDocumentsPage;
  import org.zanata.util.PropertiesHolder;
  import org.zanata.util.ResetDatabaseRule;
+ import org.zanata.workflow.BasicWorkFlow;
  import org.zanata.workflow.LoginWorkFlow;
 
  import java.io.File;
@@ -45,16 +47,26 @@ public class UploadTest
    @ClassRule
    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule(ResetDatabaseRule.Config.WithData);
 
+   @Before
+   public void before()
+   {
+      new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
+   }
+
    @Test
    public void uploadedDocumentIsInFilesystem()
    {
       String successfullyUploaded = "Document file uploadedDocumentIsInFilesystem.txt uploaded.";
       String testFileName = "uploadedDocumentIsInFilesystem.txt";
-      String filePath = PropertiesHolder.getProperty("zanata.testdata.directory")
+      String originalFilePath = PropertiesHolder.getProperty("zanata.testdata.directory")
             .concat(File.separator)
             .concat(testFileName);
+      String newFilePath = PropertiesHolder.getProperty("document.storage.directory")
+            .concat(File.separator).concat("documents");
 
-      assertThat("Data file "+testFileName+" exists", new File(filePath).exists());
+      assertThat("Data file "+testFileName+" exists", new File(originalFilePath).exists());
+      // We should be able to assume the target dir is non-existent
+      assertThat("Target directory does not exist", !(new File(newFilePath).exists()));
 
       ProjectSourceDocumentsPage projectSourceDocumentsPage = new LoginWorkFlow().signIn("admin", "admin")
             .goToProjects()
@@ -62,8 +74,12 @@ public class UploadTest
             .goToVersion("master")
             .goToSourceDocuments()
             .pressUploadFileButton()
-            .enterFilePath(filePath)
+            .enterFilePath(originalFilePath)
             .submitUpload();
+
+      // We should be able to assume the new file is the only file
+      assertThat("There is only one uploaded source file", new File(newFilePath).list().length,
+            Matchers.equalTo(1));
 
       assertThat("Document uploaded notification shows",
             projectSourceDocumentsPage.getNotificationMessage(), Matchers.equalTo(successfullyUploaded));
@@ -170,4 +186,5 @@ public class UploadTest
       projectSourceDocumentsPage.assertNoCriticalErrors();
       // TODO: Verify graceful handling of scenario
    }
+
 }

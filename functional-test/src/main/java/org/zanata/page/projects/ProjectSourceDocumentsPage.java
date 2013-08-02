@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -20,7 +20,6 @@
  */
 package org.zanata.page.projects;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -29,23 +28,10 @@ import org.zanata.page.BasePage;
 
 import java.util.List;
 
-@Slf4j
 public class ProjectSourceDocumentsPage extends BasePage
 {
    @FindBy(id = "iterationDocumentsForm:data_table:tb")
    private WebElement documentTableTBody;
-
-   @FindBy(id = "uploadSidebar:uploadDocumentButton")
-   private WebElement uploadDocumentButton;
-
-   @FindBy(id = "uploadDocForm:uploadFilename")
-   private WebElement uploadFilenameInput;
-
-   @FindBy(id = "uploadDocForm:uploadButton")
-   private WebElement uploadButton;
-
-   @FindBy(id = "uploadDocForm:cancelUploadButton")
-   private WebElement cancelUploadButton;
 
    public ProjectSourceDocumentsPage(final WebDriver driver)
    {
@@ -54,25 +40,25 @@ public class ProjectSourceDocumentsPage extends BasePage
 
    public ProjectSourceDocumentsPage pressUploadFileButton()
    {
-      uploadDocumentButton.click();
+      getDriver().findElement(By.id("uploadSidebar:uploadDocumentButton")).click();
       return new ProjectSourceDocumentsPage(getDriver());
    }
 
    public ProjectSourceDocumentsPage enterFilePath(String filePath)
    {
-      uploadFilenameInput.sendKeys(filePath);
+      getDriver().findElement(By.id("uploadDocForm:uploadFilename")).sendKeys(filePath);
       return new ProjectSourceDocumentsPage(getDriver());
    }
 
    public ProjectSourceDocumentsPage cancelUpload()
    {
-      cancelUploadButton.click();
+      getDriver().findElement(By.id("uploadDocForm:cancelUploadButton")).click();
       return new ProjectSourceDocumentsPage(getDriver());
    }
 
    public ProjectSourceDocumentsPage submitUpload()
    {
-      uploadButton.click();
+      getDriver().findElement(By.id("uploadDocForm:uploadButton")).click();
       return new ProjectSourceDocumentsPage(getDriver());
    }
 
