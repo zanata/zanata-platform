@@ -53,7 +53,7 @@ public class SecurityFullTest
    public void before()
    {
       // Remove all cookies, no previous login is allowed
-      new BasicWorkFlow().goToHome().deleteCookies();
+      new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
    }
 
    @Test
