@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -18,41 +18,34 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.page.utility;
+package org.zanata.page.account;
 
-import org.openqa.selenium.By;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
-import org.zanata.page.administration.EditHomeCodePage;
-import org.zanata.page.administration.EditHomeContentPage;
 
-public class HomePage extends BasePage
+/**
+ * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ */
+public class MyAccountPage extends BasePage
 {
 
-   @FindBy(id = "main_body_content")
-   private WebElement mainBodyContent;
+   @FindBy(linkText = "Edit Profile")
+   private WebElement editProfileButton;
 
-   public HomePage(final WebDriver driver)
+   @FindBy(linkText = "Change Password")
+   private WebElement changePasswordButton;
+
+   public MyAccountPage(WebDriver driver)
    {
       super(driver);
    }
 
-   public EditHomeContentPage goToEditPageContent()
+   public ChangePasswordPage goToChangePassword()
    {
-      getDriver().findElement(By.linkText("Edit Page Content")).click();
-      return new EditHomeContentPage(getDriver());
-   }
-
-   public EditHomeCodePage goToEditPageCode()
-   {
-      getDriver().findElement(By.linkText("Edit Page Code")).click();
-      return new EditHomeCodePage(getDriver());
-   }
-
-   public String getMainBodyContent()
-   {
-      return mainBodyContent.getText();
+      changePasswordButton.click();
+      return new ChangePasswordPage(getDriver());
    }
 }

@@ -21,6 +21,7 @@
 package org.zanata.feature.account;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.experimental.categories.Category;
 import org.junit.experimental.theories.DataPoint;
@@ -70,6 +71,12 @@ public class UsernameValidationTest
    @DataPoint public static String INVALID_RIGHT_BRACE = "user}name";
    @DataPoint public static String INVALID_CAPITAL_A = "userAname";
    @DataPoint public static String INVALID_CAPITAL_Z = "userZname";
+
+   @Before
+   public void setUp()
+   {
+      new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
+   }
 
    @Theory
    public void usernameCharacterValidation(String username)

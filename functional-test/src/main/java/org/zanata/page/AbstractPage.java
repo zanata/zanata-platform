@@ -29,7 +29,6 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.zanata.util.WebElementUtil;
-
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
@@ -42,9 +41,10 @@ public class AbstractPage
    private final WebDriver driver;
    private final FluentWait<WebDriver> ajaxWaitForTenSec;
 
-   public void deleteCookies()
+   public void deleteCookiesAndRefresh()
    {
       getDriver().manage().deleteAllCookies();
+      getDriver().navigate().refresh();
    }
 
    public AbstractPage(final WebDriver driver)
@@ -62,15 +62,6 @@ public class AbstractPage
    public String getTitle()
    {
       return driver.getTitle();
-   }
-
-   // TODO this doesn't seem useful
-   public <P> P goToUrl(String url, P page)
-   {
-      log.info("go to url: {}", url);
-      driver.get(url);
-      PageFactory.initElements(new AjaxElementLocatorFactory(driver, 30), page);
-      return page;
    }
 
    public FluentWait<WebDriver> waitForTenSec()
@@ -104,17 +95,40 @@ public class AbstractPage
       return WebElementUtil.elementsToText(errorSpans);
    }
 
-   /*
-    * Wait for all necessary entities to be available
+   /**
+    * Wait until expected number of errors presented on page or timeout.
+    *
+    * @param expectedNumber expected number of errors on page
+    * @return list of error message
     */
-   public void waitForPage(List<String> elements) {
-      for (final String element : elements) {
+   public List<String> getErrors(final int expectedNumber)
+   {
+      refreshPageUntil(this, new Predicate<WebDriver>()
+      {
+         @Override
+         public boolean apply(WebDriver input)
+         {
+            return getErrors().size() == expectedNumber;
+         }
+      });
+      return getErrors();
+   }
+
+   /**
+    * Wait for all necessary elements to be available on page.
+    *
+    * @param elementBys selenium search criteria for locating elements
+    */
+   public void waitForPage(List<By> elementBys)
+   {
+      for (final By by : elementBys)
+      {
          waitForTenSec().until(new Function<WebDriver, WebElement>()
          {
             @Override
             public WebElement apply(WebDriver driver)
             {
-               return getDriver().findElement(By.id(element));
+               return getDriver().findElement(by);
             }
          });
       }

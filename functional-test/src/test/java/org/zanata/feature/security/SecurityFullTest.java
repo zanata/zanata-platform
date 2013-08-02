@@ -53,7 +53,7 @@ public class SecurityFullTest
    public void before()
    {
       // Remove all cookies, no previous login is allowed
-      new BasicWorkFlow().goToHome().deleteCookies();
+      new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
    }
 
    @Test
@@ -75,7 +75,7 @@ public class SecurityFullTest
 
    @Test
    @Ignore("RHBZ-987707 | Cannot intercept email yet")
-   public void resetPassword()
+   public void resetPasswordSuccessful()
    {
       SignInPage signInPage = new BasicWorkFlow().goToHome().clickSignInLink();
       ResetPasswordPage resetPasswordPage = signInPage.gotToResetPassword();
@@ -85,7 +85,7 @@ public class SecurityFullTest
    }
 
    @Test
-   public void resetPasswordFailure()
+   public void resetPasswordFailureForInvalidAccount()
    {
       SignInPage signInPage = new BasicWorkFlow().goToHome().clickSignInLink();
       ResetPasswordPage resetPasswordPage = signInPage.gotToResetPassword();
@@ -109,9 +109,10 @@ public class SecurityFullTest
       resetPasswordPage = resetPasswordPage.enterUserName("b").enterEmail("b");
       resetPasswordPage = resetPasswordPage.resetFailure();
 
-      assertThat("Two field errors are displayed", resetPasswordPage.waitForErrors(),
+      assertThat("Invalid email error is displayed", resetPasswordPage.waitForErrors(),
             Matchers.hasItem(invalidEmailError));
-      assertThat("Username error shows",
+
+      assertThat("(One of the) Username error shows",
             invalidUsernameErrors.contains(resetPasswordPage.getErrors().get(0)));
 
    }
@@ -119,14 +120,22 @@ public class SecurityFullTest
    @Test
    public void emptyResetPasswordFieldEntries()
    {
-      String emptyUsernameError = "size must be between 3 and 20";
+      // Both are valid, but show seemingly at random
+      List<String> emptyUsernameErrors = new ArrayList<String>();
+      emptyUsernameErrors.add("size must be between 3 and 20");
+      emptyUsernameErrors.add("must match ^[a-z\\d_]{3,20}$");
       String emptyEmailError = "may not be empty";
+
       SignInPage signInPage = new BasicWorkFlow().goToHome().clickSignInLink();
       ResetPasswordPage resetPasswordPage = signInPage.gotToResetPassword();
       resetPasswordPage = resetPasswordPage.clearFields();
       resetPasswordPage = resetPasswordPage.resetFailure();
-      assertThat("Two field errors are displayed", resetPasswordPage.waitForErrors(),
-            Matchers.contains(emptyUsernameError, emptyEmailError));
+
+      assertThat("Empty email error is displayed", resetPasswordPage.waitForErrors(),
+            Matchers.hasItem(emptyEmailError));
+
+      assertThat("(One of the) Username error shows",
+            emptyUsernameErrors.contains(resetPasswordPage.getErrors().get(0)));
    }
 
 }

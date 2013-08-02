@@ -21,6 +21,7 @@
 package org.zanata.feature.account;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.experimental.categories.Category;
 import org.junit.experimental.theories.DataPoint;
@@ -89,6 +90,12 @@ public class InvalidEmailAddressTest {
    // BUG982048 @DataPoint public static InvalidEmailAddressRFC2822 TEST_LEADING_DASH_DOMAIN = LEADING_DASH_DOMAIN;
    // BUG982048 @DataPoint public static InvalidEmailAddressRFC2822 TEST_TRAILING_DASH_DOMAIN = TRAILING_DASH_DOMAIN;
    // BUG982048 @DataPoint public static InvalidEmailAddressRFC2822 TEST_MULTIPLE_DASHES_DOMAIN = MULTIPLE_DASHES_DOMAIN;
+
+   @Before
+   public void setUp()
+   {
+      new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
+   }
 
    @Theory
    public void invalidEmailRejection(InvalidEmailAddressRFC2822 emailAddress)

@@ -33,6 +33,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.zanata.page.account.MyAccountPage;
 import org.zanata.page.account.RegisterPage;
 import org.zanata.page.account.SignInPage;
 import org.zanata.page.administration.AdministrationPage;
@@ -44,6 +45,7 @@ import org.zanata.util.WebElementUtil;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import javax.annotation.Nullable;
 
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
@@ -80,6 +82,13 @@ public class BasePage extends AbstractPage
       navMenuItems = navBar.findElements(By.tagName("a"));
    }
 
+   public MyAccountPage goToMyProfile()
+   {
+      userColumn.click();
+      getDriver().findElement(By.id("MyProfile")).click();
+      return new MyAccountPage(getDriver());
+   }
+
    public ProjectsPage goToProjects()
    {
       projectsLink.click();
@@ -102,6 +111,8 @@ public class BasePage extends AbstractPage
 
    public RegisterPage goToRegistration()
    {
+      Preconditions.checkArgument(!hasLoggedIn(),
+            "User has logged in! You should sign out or delete cookie first in your test.");
       getDriver().findElement(By.id("systemCol")).click();
       WebElement registerLink = getDriver().findElement(By.id("Register"));
       registerLink.click();

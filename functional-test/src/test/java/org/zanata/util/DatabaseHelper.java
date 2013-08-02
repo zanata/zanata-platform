@@ -7,14 +7,11 @@ import java.nio.charset.Charset;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.annotation.Nullable;
 
 import org.hamcrest.Matchers;
 import org.openqa.selenium.support.ui.FluentWait;
@@ -23,7 +20,7 @@ import com.google.common.base.Strings;
 import com.google.common.io.Files;
 
 import lombok.extern.slf4j.Slf4j;
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>

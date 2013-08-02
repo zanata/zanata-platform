@@ -21,6 +21,7 @@
 package org.zanata.feature.account;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.experimental.categories.Category;
 import org.junit.experimental.theories.DataPoint;
@@ -65,6 +66,12 @@ public class ValidEmailAddressTest {
    // BUG982048 @DataPoint public static ValidEmailAddressRFC2822 TEST_BRACKETED_DOMAIN = BRACKETED_DOMAIN;
    // BUG982048 @DataPoint public static ValidEmailAddressRFC2822 TEST_BRACKETED_IPV4_DOMAIN = BRACKETED_IPV4_DOMAIN;
    // BUG982048 @DataPoint public static ValidEmailAddressRFC2822 TEST_BRACKETED_IPV6_DOMAIN = BRACKETED_IPV6_DOMAIN;
+
+   @Before
+   public void setUp()
+   {
+      new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
+   }
 
    @Theory
    public void validEmailAcceptance(ValidEmailAddressRFC2822 emailAddress)

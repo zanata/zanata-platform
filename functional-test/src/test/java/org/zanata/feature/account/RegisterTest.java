@@ -43,7 +43,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class RegisterFullTest
+public class RegisterTest
 {
    @ClassRule
    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
@@ -66,6 +66,7 @@ public class RegisterFullTest
       fields.put("confirmpassword", "testpassword");
       fields.put("captcha", "555"); // TODO: Expect captcha error, fix
       homePage = new BasicWorkFlow().goToHome();
+      homePage.deleteCookiesAndRefresh();
    }
 
    @Test

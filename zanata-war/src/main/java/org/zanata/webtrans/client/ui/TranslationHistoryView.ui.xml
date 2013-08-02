@@ -6,16 +6,10 @@
         .pasteButton Button {
             font-size: smaller;
         }
-
-        .compareButton {
-            margin: 5px;
-            padding: 5px;
-        }
     </ui:style>
 
     <g:HTMLPanel width="800px" height="600px" styleName="new-zanata">
-        <g:Button ui:field="compareButton" title="{messages.translationHistoryComparisonTitle}" styleName="icon-exchange {style.compareButton} l--push-v-half" />
-        <g:TabLayoutPanel ui:field="tabLayoutPanel" barUnit='PX' barHeight='20' width="100%" height="95%">
+        <g:TabLayoutPanel ui:field="tabLayoutPanel" barUnit='PX' barHeight='24' width="100%" height="95%">
             <g:tab>
                 <g:customHeader>
                     <g:HTMLPanel>
@@ -23,7 +17,7 @@
                     </g:HTMLPanel>
                 </g:customHeader>
                 <g:ScrollPanel>
-                    <g:HTMLPanel ui:field="historyPanel" styleName="l__wrapper l--push-v-1" >
+                    <g:HTMLPanel ui:field="historyPanel" styleName="l--push-v-1" >
                         <z:ReviewCommentInputWidget ui:field="commentInput" />
                         <z:UnorderedListWidget styleName="list--slat d--top" ui:field="itemList"/>
                     </g:HTMLPanel>
