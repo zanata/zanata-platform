@@ -31,18 +31,19 @@ import org.zanata.concordion.CustomResourceExtension;
 import org.zanata.feature.ConcordionTest;
 import org.zanata.page.utility.HomePage;
 import org.zanata.util.ResetDatabaseRule;
+import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
 @RunWith(ConcordionRunner.class)
-@Extensions({ScreenshotExtension.class, TimestampFormatterExtension.class, CustomResourceExtension.class})
+@Extensions({ ScreenshotExtension.class, TimestampFormatterExtension.class, CustomResourceExtension.class })
 @Category(ConcordionTest.class)
-public class DashboardRedirectTest
+public class DashboardTest
 {
    @ClassRule
-   public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
+   public static ResetDatabaseRule rule = new ResetDatabaseRule(ResetDatabaseRule.Config.NoResetAfter, ResetDatabaseRule.Config.WithData);
 
    private HomePage homePage;
-   
+
    public boolean signInAs(String username, String password)
    {
       homePage = new LoginWorkFlow().signIn(username, password);
@@ -54,12 +55,25 @@ public class DashboardRedirectTest
    {
       return homePage.containActivityListSection();
    }
-   
+
    public boolean hasMaintainedProjectsSection()
    {
       return homePage.containMyMaintainedProjectsSection();
    }
-   
-  
 
+   public void gotoDashboard()
+   {
+      new BasicWorkFlow().goToHome();
+   }
+
+   public boolean myActivitiesListNotEmpty()
+   {
+      return !homePage.getMyActivityList().isEmpty();
+   }
+
+   public boolean maintainedProjectNotEmpty()
+   {
+      return !homePage.getMyMaintainedProject().isEmpty();
+
+   }
 }
