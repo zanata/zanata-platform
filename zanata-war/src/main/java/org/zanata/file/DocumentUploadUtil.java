@@ -321,6 +321,7 @@ public class DocumentUploadUtil
       }
    }
 
+   // TODO damason: add getByGlobalDocumentId(GlobalDocumentId) to documentDAO, use it, and inline this method
    protected boolean isNewDocument(GlobalDocumentId id)
    {
       return documentDAO.getByProjectIterationAndDocId(id.getProjectSlug(), id.getVersionSlug(), id.getDocId()) == null;
