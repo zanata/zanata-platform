@@ -94,7 +94,7 @@ public class InvalidEmailAddressTest {
    @Before
    public void setUp()
    {
-      new BasicWorkFlow().goToHome().deleteCookies();
+      new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
    }
 
    @Theory

@@ -33,7 +33,6 @@ import org.zanata.page.utility.HomePage;
 import org.zanata.util.ResetDatabaseRule;
 import org.zanata.util.rfc2822.InvalidEmailAddressRFC2822;
 import org.zanata.workflow.BasicWorkFlow;
-import org.zanata.workflow.LoginWorkFlow;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -67,7 +66,7 @@ public class RegisterTest
       fields.put("confirmpassword", "testpassword");
       fields.put("captcha", "555"); // TODO: Expect captcha error, fix
       homePage = new BasicWorkFlow().goToHome();
-      homePage.deleteCookies();
+      homePage.deleteCookiesAndRefresh();
    }
 
    @Test

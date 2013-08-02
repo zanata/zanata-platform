@@ -27,7 +27,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.BasicAcceptanceTest;
 import org.zanata.feature.DetailedTest;
-import org.zanata.page.BasePage;
 import org.zanata.page.account.ChangePasswordPage;
 import org.zanata.page.account.MyAccountPage;
 import org.zanata.page.utility.HomePage;
@@ -49,7 +48,7 @@ public class ChangePasswordTest
    @Before
    public void setUp()
    {
-      new BasicWorkFlow().goToHome().deleteCookies();
+      new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
    }
 
    @Test
