@@ -20,6 +20,7 @@
  */
 package org.zanata.rest.service;
 
+import java.io.InputStream;
 import java.util.Iterator;
 
 import javax.annotation.Nonnull;
@@ -131,7 +132,7 @@ public class TranslationMemoryService implements TranslationMemoryResource
    @POST
    @Path("{slug}")
    @Consumes("multipart/form-data")
-   public Response updateTranslationMemory(@PathParam("slug") String slug, MultipartFormDataInput input) throws Exception
+   public Response updateTranslationMemory(@PathParam("slug") String slug, InputStream input) throws Exception
    {
       // TODO Auto-generated method stub
       return null;
