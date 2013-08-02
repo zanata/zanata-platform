@@ -21,6 +21,7 @@
 
 package org.zanata.rest.service;
 
+import java.io.InputStream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ws.rs.Consumes;
@@ -34,7 +35,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.zanata.common.LocaleId;
 
 /**
@@ -70,8 +70,8 @@ public interface TranslationMemoryResource
 
    @POST
    @Path("{slug}")
-   @Consumes(MediaType.MULTIPART_FORM_DATA)
-   public Response updateTranslationMemory(@PathParam("slug") String slug, MultipartFormDataInput input) throws Exception;
+   @Consumes(MediaType.WILDCARD)
+   public Response updateTranslationMemory(@PathParam("slug") String slug, InputStream input) throws Exception;
 
    @DELETE
    @Path("{slug}/transunits")
