@@ -44,6 +44,7 @@ public class AbstractPage
    public void deleteCookies()
    {
       getDriver().manage().deleteAllCookies();
+      getDriver().navigate().refresh();
    }
 
    public AbstractPage(final WebDriver driver)
