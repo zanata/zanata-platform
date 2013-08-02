@@ -130,6 +130,11 @@ input[readonly] {
     color:#545454;
 }
 
+input[disabled] {
+    opacity: 0.5;
+    cursor: default;
+}
+
 button:hover,input[type="reset"]:hover,input[type="submit"]:hover,input[type="button"]:hover 
 {
 	background: #CCC;
