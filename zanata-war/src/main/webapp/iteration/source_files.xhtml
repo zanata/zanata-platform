@@ -15,6 +15,7 @@
         <script type="text/javascript">
             function openUploadDocPanel() {
                 #{rich:component('uploadDocPanel')}.show();
+                checkIfGeneralFileSelected()
                 return false;
             }
 
@@ -22,6 +23,7 @@
                 #{rich:element('uploadPanelHeader')}.innerHTML = '#{messages['jsf.iteration.files.UploadDocument']}: ' + docId;
                 #{rich:element('uploadDocId')}.value = docId;
                 #{rich:component('uploadPanel')}.show();
+                checkIfSpecificFileSelected();
             }
 
             function hideUploadPanel() {
@@ -37,6 +39,22 @@
             function focusNameFilterInput() {
                 #{rich:element('name_filter_input')}.focus();
             }
+
+            function checkIfFileSelected(fileInput, submitButton) {
+                var noFileSelected = fileInput.value === undefined || fileInput.value === "";
+                submitButton.disabled = noFileSelected;
+            }
+
+            function checkIfSpecificFileSelected() {
+                checkIfFileSelected(#{rich:element('specificDocFileInput')},
+                                    #{rich:element('specificDocSubmitUploadButton')});
+            }
+
+            function checkIfGeneralFileSelected() {
+                checkIfFileSelected(#{rich:element('generalDocFileUpload')},
+                                    #{rich:element('generalDocSubmitUploadButton')});
+            }
+
         </script>
     </ui:define>
 
@@ -228,7 +246,9 @@
                 <h:outputText id="uploadPanelHeader"/>
             </f:facet>
             <h:form id="uploadForm" enctype="multipart/form-data">
-                <s:fileUpload accept="*"
+                <s:fileUpload id="specificDocFileInput"
+                              accept="*"
+                              onchange="checkIfSpecificFileSelected();"
                               data="#{projectIterationFilesAction.documentFileUpload.fileContents}"
                               fileName="#{projectIterationFilesAction.documentFileUpload.fileName}"/>
                 <h:inputHidden id="uploadDocId" value="#{projectIterationFilesAction.documentFileUpload.docId}"/>
@@ -256,7 +276,8 @@
                     </a>
                 </rich:collapsiblePanel>
                 <div align="right">
-                    <h:commandButton value="#{messages['jsf.Upload']}"
+                    <h:commandButton id="specificDocSubmitUploadButton"
+                                     value="#{messages['jsf.Upload']}"
                                      action="#{projectIterationFilesAction.uploadDocumentFile}"/>
                     <h:commandButton value="#{messages['jsf.Cancel']}"
                                      onclick="return hideUploadPanel();"/>
@@ -274,7 +295,9 @@
                 <h:outputText value="#{messages['jsf.iteration.files.UploadDocument']}"/>
             </f:facet>
             <h:form id="uploadDocForm" enctype="multipart/form-data">
-                <s:fileUpload accept="*"
+                <s:fileUpload id="generalDocFileUpload"
+                              accept="*"
+                              onchange="checkIfGeneralFileSelected();"
                               data="#{projectIterationFilesAction.documentFileUpload.fileContents}"
                               fileName="#{projectIterationFilesAction.documentFileUpload.fileName}"/>
                 <br/>
@@ -306,7 +329,8 @@
                     </a>
                 </rich:collapsiblePanel>
                 <div align="right">
-                    <h:commandButton value="#{messages['jsf.Upload']}"
+                    <h:commandButton id="generalDocSubmitUploadButton"
+                                     value="#{messages['jsf.Upload']}"
                                      action="#{projectIterationFilesAction.uploadDocumentFile}"/>
                     <h:commandButton value="#{messages['jsf.Cancel']}"
                                      onclick="return hideDocUploadPanel();"/>
