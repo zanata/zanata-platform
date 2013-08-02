@@ -20,6 +20,8 @@
  */
 package org.zanata.page.utility;
 
+import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -57,5 +59,15 @@ public class HomePage extends BasePage
    public String getMainBodyContent()
    {
       return mainBodyContent.getText();
+   }
+   
+   public boolean containActivityListSection()
+   {
+      return getDriver().findElement(By.id("activityList")) != null;
+   }
+   
+   public boolean containMyMaintainedProjectsSection()
+   {
+      return getDriver().findElement(By.id("maintainedProject")) != null;
    }
 }

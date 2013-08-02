@@ -1,0 +1,17 @@
+<html xmlns:c="http://www.concordion.org/2007/concordion" xmlns:ext="urn:concordion-extensions:2010">
+<head>
+   <title>Dashboard</title>
+</head>
+<body>
+   <h1>Redirect to dashboard when login</h1>
+
+   <p>
+      As a user, when I use username: <span c:set="#username">admin</span> with password: <span c:set="#password">admin</span>
+      to <span c:execute="#result = signInAs(#username, #password)">sign in</span>. 
+      
+      I should redirect to dashboard with <span c:assertTrue="hasMyActivitiesSection()">'Your Activity'</span> 
+      and <span c:assertTrue="hasMaintainedProjectsSection()">'Maintained Projects'</span>.
+   </p>
+   <span ext:screenshot="" />
+</body>
+</html>
