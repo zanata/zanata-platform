@@ -300,7 +300,7 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
       }
    }
 
-   @Override
+//   @Override
    public ProcessStatus updateTranslationMemory(@PathParam("slug") final String slug, MultipartFormDataInput input) throws Exception
    {
       MessagesProcessHandle handle = new MessagesProcessHandle();
