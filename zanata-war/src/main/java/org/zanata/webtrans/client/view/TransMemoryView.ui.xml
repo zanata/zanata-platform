@@ -8,7 +8,7 @@
             padding-right: 5px;
             padding-top: 5px;
             font-weight: bold;
-            color: #C35817;
+            color: #416988;
         }
 
         .searchBox {
@@ -26,15 +26,15 @@
             padding-left: 10px;
             min-height: 30px;
         }
-        
+
         .translated {
-           border-left: 2px solid #099b09;
-           border-right: 2px solid #099b09;
+           border-left: 2px solid #70a98b;
+           border-right: 2px solid #70a98b;
         }
-        
+
         .approved {
-			border-left: 2px solid #0000CD;
-            border-right: 2px solid #0000CD;
+			border-left: 2px solid #4e9fdd;
+            border-right: 2px solid #4e9fdd;
         }
 
     </ui:style>

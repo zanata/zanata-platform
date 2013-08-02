@@ -64,6 +64,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.model.po.HPoHeader;
 import org.zanata.model.po.HPoTargetHeader;
 import org.zanata.model.type.ContentTypeType;
+import org.zanata.model.type.EntityType;
 import org.zanata.rest.dto.resource.AbstractResourceMeta;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
@@ -87,7 +88,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString(of = {"name", "path", "docId", "locale", "revision"})
-public class HDocument extends ModelEntityBase implements DocumentWithId, IDocumentHistory, Serializable, Iterable<ITextFlow>
+public class HDocument extends ModelEntityBase implements DocumentWithId, IDocumentHistory, Serializable, Iterable<ITextFlow>, IsEntityWithType
 {
    private static final long serialVersionUID = 5129552589912687504L;
    private String docId;
@@ -340,6 +341,12 @@ public class HDocument extends ModelEntityBase implements DocumentWithId, IDocum
             setLastModifiedBy(account.getPerson());
          }
       }
+   }
+
+   @Override
+   public EntityType getEntityType()
+   {
+      return EntityType.HDocument;
    }
 
 }

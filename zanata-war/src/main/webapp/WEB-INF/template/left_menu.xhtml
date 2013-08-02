@@ -1,0 +1,41 @@
+<div class="off-canvas__target off-canvas--left" id="off-canvas--left"
+	data-off-canvas="over"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:s="http://jboss.org/schema/seam/taglib"
+	xmlns:rich="http://richfaces.org/rich">
+
+	<header class="off-canvas__header">
+		<a href="#off-canvas--left" class="off-canvas__close"> <i
+			class="i i--cross"></i> <span class="is-invisible">Close</span>
+		</a>
+	</header>
+	<nav id="nav-main-side">
+		<ul class="list--slat list--block-links">
+			<li><s:link id="left_menu_projects_link" view="/project/home.xhtml" propagation="none">#{messages['jsf.Projects']}</s:link></li>
+			<li><s:link id="left_menu_version-groups_link" view="/version-group/home.xhtml" propagation="none">#{messages['jsf.Groups']}</s:link></li>
+			<li><s:link id="left_menu_languages_link" view="/language/home.xhtml" propagation="none">#{messages['jsf.Languages']}</s:link></li>
+			
+			<s:fragment rendered="#{identity.loggedIn}">
+				<li>
+					<s:link id="left_menu_glossary_link" view="/glossary/view.xhtml" propagation="none">#{messages['jsf.Glossary']}</s:link>
+				</li>
+			</s:fragment>
+			
+			<li><s:link id="left_menu_help_link" view="/help/view.xhtml" propagation="none">#{messages['jsf.Help']}</s:link></li>
+		</ul>
+		<s:fragment rendered="#{not identity.loggedIn}">
+			<div class="l--push-all-half">
+				<s:link view="/account/register.xhtml" value="#{messages['jsf.Signup']}" propagation="none" styleClass="button--primary button--full"
+								rendered="#{applicationConfiguration.internalAuth}"/> 
+								
+				<s:fragment rendered="#{not applicationConfiguration.internalAuth}">
+					<a href="#{applicationConfiguration.registerPath}" class="button--primary button--full">#{messages['jsf.Signup']}</a>
+				</s:fragment>
+			</div>
+		</s:fragment>
+	</nav>
+</div>

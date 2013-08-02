@@ -128,8 +128,6 @@ public class TranslationStateCacheImpl implements TranslationStateCache
    /**
     * This method contains all logic to be run immediately after a Text Flow Target has
     * been successfully translated.
-    * <p>
-    * Note: it is not safe to access the database, since this event is triggered after the transaction has completed.
     */
    @Observer(TextFlowTargetStateEvent.EVENT_NAME)
    @Override

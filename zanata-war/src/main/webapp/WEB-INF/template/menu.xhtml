@@ -97,7 +97,7 @@
 						</li>
 						<li>
 							<s:link id="Sign_out" view="/account/logout.seam" propagation="none">
-								<span class="icon-logout"/>#{messages['jsf.SignOut']}
+								<span class="icon-logout"/>#{messages['jsf.Logout']}
 							</s:link>
 						</li>
 					</ul>
@@ -106,11 +106,11 @@
 			<s:fragment rendered="#{not identity.loggedIn}">
 				<h:outputLink id="Sign_in" value="#{request.contextPath}/account/sign_in?continue=#{urlUtil.getEncodedLocalUrl(request)}" propagation="none"
                         rendered="#{not applicationConfiguration.kerberosAuth}">
-					<span class="icon-login"/>#{messages['jsf.SignIn']}
+					<span class="icon-login"/>#{messages['jsf.Login']}
 				</h:outputLink>
                 <h:outputLink id="kSign_in" value="#{request.contextPath}/account/klogin.seam?continue=#{urlUtil.getEncodedLocalUrl(request)}" propagation="none"
                               rendered="#{applicationConfiguration.kerberosAuth}">
-                    <span class="icon-login"/>#{messages['jsf.SignIn']}
+                    <span class="icon-login"/>#{messages['jsf.Login']}
                 </h:outputLink>
 			</s:fragment>
 		</li>

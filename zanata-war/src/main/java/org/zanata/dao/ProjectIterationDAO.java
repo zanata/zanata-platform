@@ -30,10 +30,8 @@ import javax.annotation.Nullable;
 import javax.ws.rs.core.EntityTag;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -69,19 +67,22 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
       super(HProjectIteration.class, session);
    }
 
-   public @Nullable HProjectIteration getBySlug(@Nonnull String projectSlug, @Nonnull String iterationSlug)
+   @Nullable
+   public HProjectIteration getBySlug(@Nonnull String projectSlug, @Nonnull String iterationSlug)
    {
-      HProject project = (HProject)getSession().byNaturalId(HProject.class).using("slug", projectSlug).load();
+      HProject project = (HProject) getSession().byNaturalId(HProject.class).using("slug", projectSlug).load();
       return getBySlug(project, iterationSlug);
    }
 
-   public @Nullable HProjectIteration getBySlug(@Nonnull HProject project, @Nonnull String iterationSlug)
+   @Nullable 
+   public HProjectIteration getBySlug(@Nonnull HProject project, @Nonnull String iterationSlug)
    {
-      if( project == null || StringUtils.isEmpty(iterationSlug))
+      if (project == null || StringUtils.isEmpty(iterationSlug))
       {
          return null;
       }
-      return (HProjectIteration)getSession().byNaturalId(HProjectIteration.class).using("slug", iterationSlug).using("project",project).load();
+      return (HProjectIteration) getSession().byNaturalId(HProjectIteration.class).using("slug", iterationSlug)
+            .using("project", project).load();
    }
 
    /**
@@ -145,7 +146,6 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
       q.setCacheable(true).setComment("ProjectIterationDAO.getWordStatsForContainer");
       @SuppressWarnings("unchecked")
       List<StatusCount> stats = q.list();
-
 
       TransUnitWords stat = new TransUnitWords();
 
@@ -254,23 +254,23 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
       List<Map> stats = q.list();
       Map<String, TransUnitCount> retVal = new HashMap<String, TransUnitCount>();
 
-      for( Map row : stats )
+      for (Map row : stats)
       {
-         ContentState state = (ContentState)row.get("state");
-         Long count = (Long)row.get("count");
-         LocaleId localeId = (LocaleId)row.get("locale");
+         ContentState state = (ContentState) row.get("state");
+         Long count = (Long) row.get("count");
+         LocaleId localeId = (LocaleId) row.get("locale");
 
-         TransUnitCount transUnitCount = retVal.get( localeId.getId() );
-         if( transUnitCount == null )
+         TransUnitCount transUnitCount = retVal.get(localeId.getId());
+         if (transUnitCount == null)
          {
             transUnitCount = new TransUnitCount();
             retVal.put(localeId.getId(), transUnitCount);
          }
 
-         transUnitCount.set( state, count.intValue() );
+         transUnitCount.set(state, count.intValue());
       }
 
-      for( TransUnitCount stat : retVal.values() )
+      for (TransUnitCount stat : retVal.values())
       {
          Long totalCount = getTotalCountForIteration(iterationId);
          stat.set(ContentState.New, StatisticsUtil.calculateUntranslated(totalCount, stat));
@@ -364,28 +364,46 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
 
    public List<HProjectIteration> searchLikeSlugOrProjectSlug(String searchTerm)
    {
-      if(StringUtils.isEmpty(searchTerm))
+      if (StringUtils.isEmpty(searchTerm))
       {
          return new ArrayList<HProjectIteration>();
       }
-      Query q = getSession().createQuery("from HProjectIteration t where lower(t.slug) LIKE :searchTerm OR lower(t.project.slug) LIKE :searchTerm OR lower(t.project.name) LIKE :searchTerm");
+      Query q = getSession()
+            .createQuery(
+                  "from HProjectIteration t where lower(t.slug) LIKE :searchTerm OR lower(t.project.slug) LIKE :searchTerm OR lower(t.project.name) LIKE :searchTerm");
       q.setParameter("searchTerm", "%" + searchTerm.toLowerCase() + "%");
       q.setCacheable(false).setComment("ProjectIterationDAO.searchLikeSlugOrProjectSlug");
 
       return q.list();
+   }
 
-      // final String FIELDS[] = { "slug", GroupSearchBridge.PROJECT_FIELD };
-      //
-      // MultiFieldQueryParser parser = new
-      // MultiFieldQueryParser(Version.LUCENE_29, FIELDS, new
-      // StandardAnalyzer(Version.LUCENE_29));
-      // org.apache.lucene.search.Query textQuery = parser.parse(searchTerm);
-      //
-      // org.hibernate.search.jpa.FullTextQuery ftQuery =
-      // entityManager.createFullTextQuery(textQuery, HProjectIteration.class);
-      // @SuppressWarnings("unchecked")
-      // List<HProjectIteration> matches = (List<HProjectIteration>)
-      // ftQuery.getResultList();
-      // return matches;
+   public List<HProjectIteration> searchByProjectId(Long projectId)
+   {
+      Query q = getSession().createQuery("from HProjectIteration t where t.project.id = :projectId "
+            + "order by t.creationDate DESC");
+      q.setParameter("projectId", projectId);
+      q.setCacheable(false).setComment("ProjectIterationDAO.findByProjectId");
+      return q.list();
+   }
+
+   public List<HProjectIteration> searchByProjectIdExcludingStatus(Long projectId, EntityStatus... exclude)
+   {
+      StringBuilder sb = new StringBuilder();
+      sb.append("FROM HProjectIteration t WHERE t.project.id = :projectId ");
+      for (EntityStatus status : exclude)
+      {
+         sb.append("AND t.status != :");
+         sb.append(status.toString());
+      }
+      sb.append(" order by t.creationDate DESC");
+      Query q = getSession().createQuery(sb.toString());
+      q.setParameter("projectId", projectId);
+      
+      for (EntityStatus status : exclude)
+      {
+         q.setParameter(status.toString(), status);
+      }
+      q.setCacheable(false).setComment("ProjectIterationDAO.searchByProjectIdExcludeObsolete");
+      return q.list();
    }
 }

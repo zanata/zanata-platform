@@ -250,7 +250,7 @@ public class AuthenticationManager
             {
                return "redirect";
             }
-            return "home";
+            return "dashboard";
          }
          return "home";
       }

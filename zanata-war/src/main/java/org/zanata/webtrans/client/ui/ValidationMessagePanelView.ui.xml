@@ -3,7 +3,7 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
     <ui:with field="messages" type="org.zanata.webtrans.client.resources.TableEditorMessages" />
-	
+
 	<ui:style
 		type="org.zanata.webtrans.client.ui.ValidationMessagePanelView.Styles">
         .container {
@@ -22,7 +22,7 @@
 
         .label {
             font-size: 11px;
-            color:#D14836;
+            color: #e0575b;
         }
 
         .header {
@@ -31,23 +31,23 @@
             text-overflow: ellipsis;
             overflow: hidden;
             white-space: nowrap;
-            background:#D14836;
+            background: #e0575b;
         }
-        
+
         .header tr:hover
         {
-			background:#D14836;
+			background: #e0575b;
 			color:#FFFFFF;
 			text-decoration:underline;
 		}
 
         .content {
-            color: #D14836;
+            color: #e0575b;
         }
-      
+
     </ui:style>
 
-	
+
 
 	<g:DisclosurePanel addStyleNames="{style.container}" animationEnabled="true" ui:field="disclosurePanel">
         <g:customHeader>

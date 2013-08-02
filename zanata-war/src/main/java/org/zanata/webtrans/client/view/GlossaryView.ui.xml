@@ -4,30 +4,30 @@
 	<ui:style type="org.zanata.webtrans.client.view.GlossaryView.Styles">
 		.headerLabel {
             padding-right:5px;
-            padding-top:5px;	
+            padding-top:5px;
             font-weight:bold;
-            color:#C35817;
+            color: #416988;
         }
-       
+
         .rootContainer {
 			min-width:400px;
 			width:100%;
 		}
-		
+
 		.searchBox
 		{
 			border:1px solid #A7A7A7;
 			border-radius:3px;
 			padding:2px;
 		}
-		
+
 		.topBar
 		{
 			padding-left:10px;
 		}
-		
+
 	</ui:style>
-	
+
 	<g:ScrollPanel>
 		<g:VerticalPanel styleName="{style.rootContainer}">
 			<g:cell height="30px" verticalAlignment="ALIGN_MIDDLE">
@@ -46,4 +46,4 @@
 			</g:cell>
 		</g:VerticalPanel>
 	</g:ScrollPanel>
-</ui:UiBinder> 
+</ui:UiBinder>

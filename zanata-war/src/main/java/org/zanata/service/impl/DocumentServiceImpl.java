@@ -27,9 +27,11 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
+import org.jboss.seam.core.Events;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.events.DocumentUploadedEvent;
 import org.zanata.lock.Lock;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
@@ -144,6 +146,14 @@ public class DocumentServiceImpl implements DocumentService
 
       changed |= resourceUtils.transferFromResource(sourceDoc, document, extensions, hLocale, nextDocRev);
       documentDAO.flush();
+      
+      if(changed && Events.exists())
+      {
+         Events.instance().raiseTransactionSuccessEvent(
+               DocumentUploadedEvent.EVENT_NAME,
+               new DocumentUploadedEvent(document.getId(), true, hLocale.getLocaleId()
+         ));
+      }
 
       if (copyTrans && nextDocRev == 1)
       {
