@@ -41,9 +41,10 @@ public class AbstractPage
    private final WebDriver driver;
    private final FluentWait<WebDriver> ajaxWaitForTenSec;
 
-   public void deleteCookies()
+   public void deleteCookiesAndRefresh()
    {
       getDriver().manage().deleteAllCookies();
+      getDriver().navigate().refresh();
    }
 
    public AbstractPage(final WebDriver driver)
@@ -61,15 +62,6 @@ public class AbstractPage
    public String getTitle()
    {
       return driver.getTitle();
-   }
-
-   // TODO this doesn't seem useful
-   public <P> P goToUrl(String url, P page)
-   {
-      log.info("go to url: {}", url);
-      driver.get(url);
-      PageFactory.initElements(new AjaxElementLocatorFactory(driver, 30), page);
-      return page;
    }
 
    public FluentWait<WebDriver> waitForTenSec()
