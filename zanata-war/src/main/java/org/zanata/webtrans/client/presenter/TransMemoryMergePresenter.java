@@ -41,6 +41,7 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.rpc.MergeOption;
+import org.zanata.webtrans.shared.rpc.MergeOptions;
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 import org.zanata.webtrans.shared.util.StringNotEmptyPredicate;
@@ -82,8 +83,7 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
    }
 
    @Override
-   public void proceedToMergeTM(int percentage, MergeOption differentProjectOption, MergeOption differentDocumentOption,
-                                MergeOption differentResIdOption, MergeOption importedMatchOption)
+   public void proceedToMergeTM(int percentage, MergeOptions mergeOptions)
    {
       Collection<TransUnit> items = getNotTranslatedItems();
 
@@ -95,8 +95,7 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
       }
 
       display.showProcessing();
-      TransMemoryMerge action = prepareTMMergeAction(items, percentage, differentProjectOption, differentDocumentOption,
-            differentResIdOption, importedMatchOption);
+      TransMemoryMerge action = prepareTMMergeAction(items, percentage, mergeOptions);
       dispatcher.execute(action, new AsyncCallback<UpdateTransUnitResult>()
       {
          @Override
@@ -146,8 +145,7 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
    }
 
    private TransMemoryMerge prepareTMMergeAction(Collection<TransUnit> untranslatedTUs, int threshold,
-                                                 MergeOption differentProjectOption, MergeOption differentDocumentOption,
-                                                 MergeOption differentResIdOption, MergeOption importedMatchOption)
+                                                 MergeOptions mergeOptions)
    {
       List<TransUnitUpdateRequest> updateRequests = Lists.newArrayList(Collections2.transform(untranslatedTUs, new Function<TransUnit, TransUnitUpdateRequest>()
       {
@@ -157,7 +155,7 @@ public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergeP
             return new TransUnitUpdateRequest(from.getId(), null, null, from.getVerNum());
          }
       }));
-      return new TransMemoryMerge(threshold, updateRequests, differentProjectOption, differentDocumentOption, differentResIdOption, importedMatchOption);
+      return new TransMemoryMerge(threshold, updateRequests, mergeOptions);
    }
 
    @Override

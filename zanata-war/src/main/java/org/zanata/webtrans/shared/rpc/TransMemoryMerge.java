@@ -45,16 +45,14 @@ public class TransMemoryMerge extends AbstractWorkspaceAction<UpdateTransUnitRes
    {
    }
 
-   public TransMemoryMerge(int threshold, List<TransUnitUpdateRequest> updateRequests, MergeOption differentProjectOption,
-                           MergeOption differentDocumentOption, MergeOption differentContextOption,
-                           MergeOption importedMatchOption)
+   public TransMemoryMerge(int threshold, List<TransUnitUpdateRequest> updateRequests, MergeOptions mergeOptions)
    {
       thresholdPercent = threshold;
       this.updateRequests = updateRequests;
-      this.differentProjectOption = differentProjectOption;
-      this.differentDocumentOption = differentDocumentOption;
-      this.differentContextOption = differentContextOption;
-      this.importedMatchOption = importedMatchOption;
+      this.differentProjectOption = mergeOptions.getDifferentProject();
+      this.differentDocumentOption = mergeOptions.getDifferentDocument();
+      this.differentContextOption = mergeOptions.getDifferentResId();
+      this.importedMatchOption = mergeOptions.getImportedMatch();
    }
 
    public int getThresholdPercent()
@@ -94,9 +92,10 @@ public class TransMemoryMerge extends AbstractWorkspaceAction<UpdateTransUnitRes
       return Objects.toStringHelper(this).
             add("thresholdPercent", thresholdPercent).
             add("updateRequests", updateRequests).
-            add("differentProjectOption", differentProjectOption).
-            add("differentDocumentOption", differentDocumentOption).
-            add("differentContextOption", differentContextOption).
+            add("differentProjectOption", getDifferentProjectOption()).
+            add("differentDocumentOption", getDifferentDocumentOption()).
+            add("differentContextOption", getDifferentContextOption()).
+            add("importedMatchOption", getImportedMatchOption()).
             toString();
       // @formatter:on
    }

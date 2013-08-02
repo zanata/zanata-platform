@@ -51,6 +51,7 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.rpc.MergeOption;
+import org.zanata.webtrans.shared.rpc.MergeOptions;
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
@@ -134,9 +135,9 @@ public class TransMemoryMergeHandlerTest
       }
       // we have TransMemoryMergeStatusResolverTest to cover various different merge options so here we don't test that
       MergeOption importedTMOption = acceptImportedTMResults ? MergeOption.IGNORE_CHECK : MergeOption.REJECT;
-      TransMemoryMerge action =
-            new TransMemoryMerge(threshold, requests, MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK,
-                                 MergeOption.IGNORE_CHECK, importedTMOption);
+      MergeOptions opts = MergeOptions.allIgnore();
+      opts.setImportedMatch(importedTMOption);
+      TransMemoryMerge action = new TransMemoryMerge(threshold, requests, opts);
       mockSecurityService(action);
       return action;
    }
@@ -297,7 +298,9 @@ public class TransMemoryMergeHandlerTest
       // Given: an action with threshold 80% and trans unit id is 1, with different doc id option set to skip
       final long transUnitId = 1L;
       ArrayList<TransUnitUpdateRequest> requests = Lists.newArrayList(new TransUnitUpdateRequest(new TransUnitId(1L), null, null, 0));
-      TransMemoryMerge action = new TransMemoryMerge(80, requests, MergeOption.IGNORE_CHECK, MergeOption.REJECT, MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK);
+      MergeOptions opts = MergeOptions.allIgnore();
+      opts.setDifferentDocument(MergeOption.REJECT);
+      TransMemoryMerge action = new TransMemoryMerge(80, requests, opts);
       mockSecurityService(action);
 
       HTextFlow hTextFlow = TestFixture.makeHTextFlow(transUnitId, hLocale, ContentState.New, "pot/a.po");

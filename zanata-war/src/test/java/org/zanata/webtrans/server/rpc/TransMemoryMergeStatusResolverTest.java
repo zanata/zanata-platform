@@ -37,6 +37,7 @@ import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.rpc.MergeOption;
+import org.zanata.webtrans.shared.rpc.MergeOptions;
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
 import com.google.common.collect.Lists;
 
@@ -93,30 +94,36 @@ public class TransMemoryMergeStatusResolverTest
       return new TransMemoryDetails(null, null, projectName, null, docId, resId, msgContext, null, null, null);
    }
 
-   private static TransMemoryMerge mergeTMAction(MergeOption differentProjectOption, MergeOption differentDocumentOption, MergeOption differentResIdOption, MergeOption importedMatchOption)
+   private static TransMemoryMerge mergeTMAction(MergeOptions mergeOptions)
    {
       TransUnitUpdateRequest updateRequest = new TransUnitUpdateRequest(new TransUnitId(1), null, null, 0);
-      return new TransMemoryMerge(80, Lists.newArrayList(updateRequest), differentProjectOption, differentDocumentOption, differentResIdOption, importedMatchOption);
+      return new TransMemoryMerge(80, Lists.newArrayList(updateRequest), mergeOptions);
    }
 
    private static TransMemoryMerge mergeTMActionWhenResIdIsDifferent(MergeOption resIdOption)
    {
-      return mergeTMAction(MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK, resIdOption, MergeOption.IGNORE_CHECK);
+      MergeOptions opts = MergeOptions.allIgnore();
+      opts.setDifferentResId(resIdOption);
+      return mergeTMAction(opts);
    }
 
    private static TransMemoryMerge mergeTMActionWhenDocIdIsDifferent(MergeOption documentOption)
    {
-      return mergeTMAction(MergeOption.IGNORE_CHECK, documentOption, MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK);
+      MergeOptions opts = MergeOptions.allIgnore();
+      opts.setDifferentDocument(documentOption);
+      return mergeTMAction(opts);
    }
 
    private TransMemoryMerge mergeTMActionWhenProjectNameIsDifferent(MergeOption projectOption)
    {
-      return mergeTMAction(projectOption, MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK);
+      MergeOptions opts = MergeOptions.allIgnore();
+      opts.setDifferentProject(projectOption);
+      return mergeTMAction(opts);
    }
 
    @Test
    public void notOneHundredMatchWillBeSetAsFuzzy() {
-      action = mergeTMAction(MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK);
+      action = mergeTMAction(MergeOptions.allIgnore());
       ContentState result = resolver.decideStatus(action, textFlow, tmDetail, tmResultWithSimilarity(90), null);
 
       assertThat(result, equalTo(ContentState.NeedReview));
@@ -224,7 +231,7 @@ public class TransMemoryMergeStatusResolverTest
    public void fromImportedTmAndOptionIsFuzzy()
    {
       TransMemoryMerge transMemoryMerge =
-            mergeTMAction(MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK, MergeOption.FUZZY);
+            mergeTMAction(importedMatch(MergeOption.FUZZY));
       assertThat(
             resolver.decideStatus(transMemoryMerge, tmResultWithSimilarityAndExternallyImported(100), null),
             equalTo(ContentState.NeedReview));
@@ -234,7 +241,7 @@ public class TransMemoryMergeStatusResolverTest
    public void fromImportedTmAndOptionIsIgnore()
    {
       TransMemoryMerge transMemoryMerge =
-            mergeTMAction(MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK);
+            mergeTMAction(importedMatch(MergeOption.IGNORE_CHECK));
       assertThat(
             resolver.decideStatus(transMemoryMerge, tmResultWithSimilarityAndExternallyImported(100), null),
             equalTo(ContentState.Translated));
@@ -244,10 +251,17 @@ public class TransMemoryMergeStatusResolverTest
    public void fromImportedTmAndOptionIsReject()
    {
       TransMemoryMerge transMemoryMerge =
-            mergeTMAction(MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK, MergeOption.REJECT);
+            mergeTMAction(importedMatch(MergeOption.REJECT));
       assertThat(
             resolver.decideStatus(transMemoryMerge, tmResultWithSimilarityAndExternallyImported(100), null),
             nullValue());
+   }
+
+   private static MergeOptions importedMatch(MergeOption option)
+   {
+      MergeOptions opts = MergeOptions.allIgnore();
+      opts.setImportedMatch(option);
+      return opts;
    }
 
 }

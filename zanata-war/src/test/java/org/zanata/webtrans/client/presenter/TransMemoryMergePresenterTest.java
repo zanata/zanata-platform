@@ -45,6 +45,7 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.rpc.MergeOption;
+import org.zanata.webtrans.shared.rpc.MergeOptions;
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 import com.google.common.base.Function;
@@ -131,7 +132,10 @@ public class TransMemoryMergePresenterTest
       mockCurrentPageToReturn(currentPageRows);
 
       // When:
-      presenter.proceedToMergeTM(80, MergeOption.IGNORE_CHECK, MergeOption.REJECT, MergeOption.FUZZY, MergeOption.FUZZY);
+      MergeOptions opts = MergeOptions.allFuzzy();
+      opts.setDifferentProject(MergeOption.IGNORE_CHECK);
+      opts.setDifferentDocument(MergeOption.REJECT);
+      presenter.proceedToMergeTM(80, opts);
 
       // Then:
       verify(eventBus).fireEvent(notificationEventCaptor.capture());
@@ -163,7 +167,10 @@ public class TransMemoryMergePresenterTest
       mockCurrentPageToReturn(currentPageRows);
 
       // When:
-      presenter.proceedToMergeTM(80, MergeOption.IGNORE_CHECK, MergeOption.REJECT, MergeOption.FUZZY, MergeOption.FUZZY);
+      MergeOptions opts = MergeOptions.allFuzzy();
+      opts.setDifferentProject(MergeOption.IGNORE_CHECK);
+      opts.setDifferentDocument(MergeOption.REJECT);
+      presenter.proceedToMergeTM(80, opts);
 
       // Then:
       InOrder inOrder = inOrder(display, dispatcher);
@@ -177,6 +184,7 @@ public class TransMemoryMergePresenterTest
       assertThat(action.getDifferentProjectOption(), Matchers.equalTo(MergeOption.IGNORE_CHECK));
       assertThat(action.getDifferentDocumentOption(), Matchers.equalTo(MergeOption.REJECT));
       assertThat(action.getDifferentContextOption(), Matchers.equalTo(MergeOption.FUZZY));
+      assertThat(action.getImportedMatchOption(), Matchers.equalTo(MergeOption.FUZZY));
    }
 
    @Test
@@ -187,7 +195,11 @@ public class TransMemoryMergePresenterTest
       mockCurrentPageToReturn(currentPageRows);
 
       // When:
-      presenter.proceedToMergeTM(100, MergeOption.REJECT, MergeOption.IGNORE_CHECK, MergeOption.FUZZY, MergeOption.FUZZY);
+      MergeOptions opts = MergeOptions.allFuzzy();
+      opts.setDifferentProject(MergeOption.REJECT);
+      opts.setDifferentDocument(MergeOption.IGNORE_CHECK);
+      presenter.proceedToMergeTM(100, opts);
+
       verify(dispatcher).execute(transMemoryMergeCaptor.capture(), callbackCaptor.capture());
       AsyncCallback<UpdateTransUnitResult> callback = callbackCaptor.getValue();
       // rpc call failed
@@ -216,7 +228,11 @@ public class TransMemoryMergePresenterTest
       when(undoLinkProvider.get()).thenReturn(undoLink);
 
       // When:
-      presenter.proceedToMergeTM(100, MergeOption.REJECT, MergeOption.IGNORE_CHECK, MergeOption.FUZZY, MergeOption.FUZZY);
+      MergeOptions opts = MergeOptions.allFuzzy();
+      opts.setDifferentProject(MergeOption.REJECT);
+      opts.setDifferentDocument(MergeOption.IGNORE_CHECK);
+      presenter.proceedToMergeTM(100, opts);
+
       verify(dispatcher).execute(transMemoryMergeCaptor.capture(), callbackCaptor.capture());
       AsyncCallback<UpdateTransUnitResult> callback = callbackCaptor.getValue();
       // rpc call success and result has some updated info
@@ -249,7 +265,11 @@ public class TransMemoryMergePresenterTest
       when(undoLinkProvider.get()).thenReturn(undoLink);
 
       // When:
-      presenter.proceedToMergeTM(100, MergeOption.REJECT, MergeOption.IGNORE_CHECK, MergeOption.FUZZY, MergeOption.FUZZY);
+      MergeOptions opts = MergeOptions.allFuzzy();
+      opts.setDifferentProject(MergeOption.REJECT);
+      opts.setDifferentDocument(MergeOption.IGNORE_CHECK);
+      presenter.proceedToMergeTM(100, opts);
+
       verify(dispatcher).execute(transMemoryMergeCaptor.capture(), callbackCaptor.capture());
       AsyncCallback<UpdateTransUnitResult> callback = callbackCaptor.getValue();
       // rpc call success but result has no updated info

@@ -24,6 +24,8 @@ package org.zanata.webtrans.client.ui;
 import org.zanata.webtrans.client.resources.EnumMessages;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.shared.rpc.MergeOption;
+import org.zanata.webtrans.shared.rpc.MergeOptions;
+
 import com.google.common.base.Preconditions;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -112,8 +114,18 @@ public class TMMergeForm extends Composite implements EnumRadioButtonGroup.Selec
    public void onConfirmButtonClick(ClickEvent event)
    {
       Preconditions.checkNotNull(listener, "Do you forget to call setListener on TMMergeForm?");
-      listener.proceedToMergeTM(getSelectedMatchThreshold(), projectOptionGroup.getSelected(), docIdOptionGroup.getSelected(),
-            contextOptionGroup.getSelected(), importedMatchOptionGroup.getSelected());
+      listener.proceedToMergeTM(getSelectedMatchThreshold(), getSelectedMergeOptions());
+   }
+
+   private MergeOptions getSelectedMergeOptions()
+   {
+      // default to most conservative option
+      MergeOptions opts = MergeOptions.allReject();
+      opts.setDifferentDocument(docIdOptionGroup.getSelected());
+      opts.setDifferentProject(projectOptionGroup.getSelected());
+      opts.setDifferentResId(contextOptionGroup.getSelected());
+      opts.setImportedMatch(importedMatchOptionGroup.getSelected());
+      return opts;
    }
 
    private int getSelectedMatchThreshold()
