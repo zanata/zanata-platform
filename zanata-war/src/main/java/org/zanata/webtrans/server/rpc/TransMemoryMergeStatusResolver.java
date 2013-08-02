@@ -27,7 +27,7 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
-import org.zanata.webtrans.shared.rpc.MergeOption;
+import org.zanata.webtrans.shared.rpc.MergeRule;
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
 import com.google.common.base.Objects;
 
@@ -109,7 +109,7 @@ public class TransMemoryMergeStatusResolver
          needReview = true;
       }
 
-      setFlagsBasedOnOption(action.getImportedMatchOption());
+      setFlagsBasedOnOption(action.getImportedMatchRule());
 
       if (needSkip)
       {
@@ -129,16 +129,16 @@ public class TransMemoryMergeStatusResolver
 
    private void compareTextFlowResId(TransMemoryMerge action, HTextFlow tfToBeFilled, TransMemoryDetails tmDetail)
    {
-      if (action.getDifferentContextOption() != MergeOption.IGNORE_CHECK
+      if (action.getDifferentContextRule() != MergeRule.IGNORE_CHECK
             && notEqual(tfToBeFilled.getResId(), tmDetail.getResId()))
       {
-         setFlagsBasedOnOption(action.getDifferentContextOption());
+         setFlagsBasedOnOption(action.getDifferentContextRule());
       }
    }
 
    private void compareTextFlowMsgContext(TransMemoryMerge action, HTextFlow tfToBeFilled, TransMemoryDetails tmDetail)
    {
-      if (action.getDifferentContextOption() != MergeOption.IGNORE_CHECK)
+      if (action.getDifferentContextRule() != MergeRule.IGNORE_CHECK)
       {
          String msgCtx = null;
          if (tfToBeFilled.getPotEntryData() != null)
@@ -147,36 +147,36 @@ public class TransMemoryMergeStatusResolver
          }
          if (notEqual(msgCtx, tmDetail.getMsgContext()))
          {
-            setFlagsBasedOnOption(action.getDifferentContextOption());
+            setFlagsBasedOnOption(action.getDifferentContextRule());
          }
       }
    }
 
    private void compareDocId(TransMemoryMerge action, HTextFlow tfToBeFilled, TransMemoryDetails tmDetail)
    {
-      if (action.getDifferentDocumentOption() != MergeOption.IGNORE_CHECK
+      if (action.getDifferentDocumentRule() != MergeRule.IGNORE_CHECK
             && notEqual(tfToBeFilled.getDocument().getDocId(), tmDetail.getDocId()))
       {
-         setFlagsBasedOnOption(action.getDifferentDocumentOption());
+         setFlagsBasedOnOption(action.getDifferentDocumentRule());
       }
    }
 
    private void compareProjectName(TransMemoryMerge action, HTextFlow tfToBeFilled, TransMemoryDetails tmDetail)
    {
-      if (action.getDifferentProjectOption() != MergeOption.IGNORE_CHECK
+      if (action.getDifferentProjectRule() != MergeRule.IGNORE_CHECK
             && notEqual(tfToBeFilled.getDocument().getProjectIteration().getProject().getName(), tmDetail.getProjectName()))
       {
-         setFlagsBasedOnOption(action.getDifferentProjectOption());
+         setFlagsBasedOnOption(action.getDifferentProjectRule());
       }
    }
 
-   private void setFlagsBasedOnOption(MergeOption mergeOption)
+   private void setFlagsBasedOnOption(MergeRule mergeOption)
    {
-      if (mergeOption == MergeOption.REJECT)
+      if (mergeOption == MergeRule.REJECT)
       {
          needSkip = true;
       }
-      else if (mergeOption == MergeOption.FUZZY)
+      else if (mergeOption == MergeRule.FUZZY)
       {
          needReview = true;
       }

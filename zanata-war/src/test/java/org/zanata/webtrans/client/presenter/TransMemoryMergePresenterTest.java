@@ -44,7 +44,7 @@ import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
-import org.zanata.webtrans.shared.rpc.MergeOption;
+import org.zanata.webtrans.shared.rpc.MergeRule;
 import org.zanata.webtrans.shared.rpc.MergeOptions;
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
@@ -133,8 +133,8 @@ public class TransMemoryMergePresenterTest
 
       // When:
       MergeOptions opts = MergeOptions.allFuzzy();
-      opts.setDifferentProject(MergeOption.IGNORE_CHECK);
-      opts.setDifferentDocument(MergeOption.REJECT);
+      opts.setDifferentProject(MergeRule.IGNORE_CHECK);
+      opts.setDifferentDocument(MergeRule.REJECT);
       presenter.proceedToMergeTM(80, opts);
 
       // Then:
@@ -168,8 +168,8 @@ public class TransMemoryMergePresenterTest
 
       // When:
       MergeOptions opts = MergeOptions.allFuzzy();
-      opts.setDifferentProject(MergeOption.IGNORE_CHECK);
-      opts.setDifferentDocument(MergeOption.REJECT);
+      opts.setDifferentProject(MergeRule.IGNORE_CHECK);
+      opts.setDifferentDocument(MergeRule.REJECT);
       presenter.proceedToMergeTM(80, opts);
 
       // Then:
@@ -181,10 +181,10 @@ public class TransMemoryMergePresenterTest
       List<TransUnitUpdateRequest> updateRequests = action.getUpdateRequests();
       assertThat(updateRequests, Matchers.hasSize(5));
       assertThat(getIds(updateRequests), Matchers.contains(1L, 3L, 4L, 5L, 6L));
-      assertThat(action.getDifferentProjectOption(), Matchers.equalTo(MergeOption.IGNORE_CHECK));
-      assertThat(action.getDifferentDocumentOption(), Matchers.equalTo(MergeOption.REJECT));
-      assertThat(action.getDifferentContextOption(), Matchers.equalTo(MergeOption.FUZZY));
-      assertThat(action.getImportedMatchOption(), Matchers.equalTo(MergeOption.FUZZY));
+      assertThat(action.getDifferentProjectRule(), Matchers.equalTo(MergeRule.IGNORE_CHECK));
+      assertThat(action.getDifferentDocumentRule(), Matchers.equalTo(MergeRule.REJECT));
+      assertThat(action.getDifferentContextRule(), Matchers.equalTo(MergeRule.FUZZY));
+      assertThat(action.getImportedMatchRule(), Matchers.equalTo(MergeRule.FUZZY));
    }
 
    @Test
@@ -196,8 +196,8 @@ public class TransMemoryMergePresenterTest
 
       // When:
       MergeOptions opts = MergeOptions.allFuzzy();
-      opts.setDifferentProject(MergeOption.REJECT);
-      opts.setDifferentDocument(MergeOption.IGNORE_CHECK);
+      opts.setDifferentProject(MergeRule.REJECT);
+      opts.setDifferentDocument(MergeRule.IGNORE_CHECK);
       presenter.proceedToMergeTM(100, opts);
 
       verify(dispatcher).execute(transMemoryMergeCaptor.capture(), callbackCaptor.capture());
@@ -229,8 +229,8 @@ public class TransMemoryMergePresenterTest
 
       // When:
       MergeOptions opts = MergeOptions.allFuzzy();
-      opts.setDifferentProject(MergeOption.REJECT);
-      opts.setDifferentDocument(MergeOption.IGNORE_CHECK);
+      opts.setDifferentProject(MergeRule.REJECT);
+      opts.setDifferentDocument(MergeRule.IGNORE_CHECK);
       presenter.proceedToMergeTM(100, opts);
 
       verify(dispatcher).execute(transMemoryMergeCaptor.capture(), callbackCaptor.capture());
@@ -266,8 +266,8 @@ public class TransMemoryMergePresenterTest
 
       // When:
       MergeOptions opts = MergeOptions.allFuzzy();
-      opts.setDifferentProject(MergeOption.REJECT);
-      opts.setDifferentDocument(MergeOption.IGNORE_CHECK);
+      opts.setDifferentProject(MergeRule.REJECT);
+      opts.setDifferentDocument(MergeRule.IGNORE_CHECK);
       presenter.proceedToMergeTM(100, opts);
 
       verify(dispatcher).execute(transMemoryMergeCaptor.capture(), callbackCaptor.capture());

@@ -27,8 +27,8 @@ package org.zanata.webtrans.shared.rpc;
  */
 public class MergeOptions
 {
-   private MergeOptions(MergeOption differentProject, MergeOption differentDocument,
-         MergeOption differentResId, MergeOption importedMatch)
+   private MergeOptions(MergeRule differentProject, MergeRule differentDocument,
+         MergeRule differentResId, MergeRule importedMatch)
    {
       this.setDifferentProject(differentProject);
       this.setDifferentDocument(differentDocument);
@@ -36,56 +36,56 @@ public class MergeOptions
       this.setImportedMatch(importedMatch);
    }
 
-   private MergeOption differentProject;
-   private MergeOption differentDocument;
-   private MergeOption differentResId;
-   private MergeOption importedMatch;
+   private MergeRule differentProject;
+   private MergeRule differentDocument;
+   private MergeRule differentResId;
+   private MergeRule importedMatch;
 
    public static MergeOptions allReject()
    {
-      return new MergeOptions(MergeOption.REJECT, MergeOption.REJECT,
-            MergeOption.REJECT, MergeOption.REJECT);
+      return new MergeOptions(MergeRule.REJECT, MergeRule.REJECT,
+            MergeRule.REJECT, MergeRule.REJECT);
    }
    public static MergeOptions allIgnore()
    {
-      return new MergeOptions(MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK,
-            MergeOption.IGNORE_CHECK, MergeOption.IGNORE_CHECK);
+      return new MergeOptions(MergeRule.IGNORE_CHECK, MergeRule.IGNORE_CHECK,
+            MergeRule.IGNORE_CHECK, MergeRule.IGNORE_CHECK);
    }
    public static MergeOptions allFuzzy()
    {
-      return new MergeOptions(MergeOption.FUZZY, MergeOption.FUZZY,
-            MergeOption.FUZZY, MergeOption.FUZZY);
+      return new MergeOptions(MergeRule.FUZZY, MergeRule.FUZZY,
+            MergeRule.FUZZY, MergeRule.FUZZY);
    }
 
-   public MergeOption getDifferentProject()
+   public MergeRule getDifferentProject()
    {
       return differentProject;
    }
-   public void setDifferentProject(MergeOption differentProject)
+   public void setDifferentProject(MergeRule differentProject)
    {
       this.differentProject = differentProject;
    }
-   public MergeOption getDifferentDocument()
+   public MergeRule getDifferentDocument()
    {
       return differentDocument;
    }
-   public void setDifferentDocument(MergeOption differentDocument)
+   public void setDifferentDocument(MergeRule differentDocument)
    {
       this.differentDocument = differentDocument;
    }
-   public MergeOption getDifferentResId()
+   public MergeRule getDifferentResId()
    {
       return differentResId;
    }
-   public void setDifferentResId(MergeOption differentResId)
+   public void setDifferentResId(MergeRule differentResId)
    {
       this.differentResId = differentResId;
    }
-   public MergeOption getImportedMatch()
+   public MergeRule getImportedMatch()
    {
       return importedMatch;
    }
-   public void setImportedMatch(MergeOption importedMatch)
+   public void setImportedMatch(MergeRule importedMatch)
    {
       this.importedMatch = importedMatch;
    }

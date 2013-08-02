@@ -50,7 +50,7 @@ import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
-import org.zanata.webtrans.shared.rpc.MergeOption;
+import org.zanata.webtrans.shared.rpc.MergeRule;
 import org.zanata.webtrans.shared.rpc.MergeOptions;
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
@@ -134,7 +134,7 @@ public class TransMemoryMergeHandlerTest
          requests.add(new TransUnitUpdateRequest(new TransUnitId(tranUnitId), null, null, 0));
       }
       // we have TransMemoryMergeStatusResolverTest to cover various different merge options so here we don't test that
-      MergeOption importedTMOption = acceptImportedTMResults ? MergeOption.IGNORE_CHECK : MergeOption.REJECT;
+      MergeRule importedTMOption = acceptImportedTMResults ? MergeRule.IGNORE_CHECK : MergeRule.REJECT;
       MergeOptions opts = MergeOptions.allIgnore();
       opts.setImportedMatch(importedTMOption);
       TransMemoryMerge action = new TransMemoryMerge(threshold, requests, opts);
@@ -299,7 +299,7 @@ public class TransMemoryMergeHandlerTest
       final long transUnitId = 1L;
       ArrayList<TransUnitUpdateRequest> requests = Lists.newArrayList(new TransUnitUpdateRequest(new TransUnitId(1L), null, null, 0));
       MergeOptions opts = MergeOptions.allIgnore();
-      opts.setDifferentDocument(MergeOption.REJECT);
+      opts.setDifferentDocument(MergeRule.REJECT);
       TransMemoryMerge action = new TransMemoryMerge(80, requests, opts);
       mockSecurityService(action);
 
