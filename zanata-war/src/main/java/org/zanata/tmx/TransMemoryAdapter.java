@@ -61,7 +61,7 @@ public class TransMemoryAdapter
     * encountered while parsing. This modifies the translation memory fields and
     * metadata.
     */
-   public void persistHeader(TransMemory tm, Element headerElem)
+   public void processHeader(TransMemory tm, Element headerElem)
    {
       TMXMetadataHelper.setMetadata(tm, headerElem);
       entityManager.merge(tm);
@@ -71,7 +71,7 @@ public class TransMemoryAdapter
     * Persists a translation unit when a tu
     * element is encountered while parsing.
     */
-   public void persistTransUnit(TransMemory tm, Element tuElem)
+   public void processTransUnit(TransMemory tm, Element tuElem)
    {
       TransMemoryUnit tu = new TransMemoryUnit();
       tu.setTranslationMemory(tm);
@@ -85,7 +85,6 @@ public class TransMemoryAdapter
 
       removeExistingTUIfAny(tm.getSlug(), tu.getUniqueId());
       entityManager.persist(tu);
-      entityManager.flush();
    }
 
    private String determineUniqueId(TransMemoryUnit tu)

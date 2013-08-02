@@ -21,6 +21,13 @@
 package org.zanata.tmx;
 
 import java.io.InputStream;
+
+import javax.persistence.EntityExistsException;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -28,6 +35,12 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
+import lombok.Cleanup;
+import nu.xom.Element;
+
+import org.hibernate.CacheMode;
+import org.hibernate.FlushMode;
+import org.hibernate.Session;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -38,9 +51,6 @@ import org.zanata.model.tm.TransMemory;
 import org.zanata.process.MessagesProcessHandle;
 
 import com.google.common.collect.Lists;
-
-import fj.Effect;
-import nu.xom.Element;
 
 /**
  * Parses TMX input.
@@ -56,94 +66,80 @@ public class TMXParser
 
    @In(required = false)
    private MessagesProcessHandle asynchronousProcessHandle;
-
+   @In
+   private Session session;
    @In
    private TransMemoryAdapter transMemoryAdapter;
 
    @Transactional
-   public void parseAndSaveTMX(InputStream input, final TransMemory tm) throws XMLStreamException
+   public void parseAndSaveTMX(InputStream input, TransMemory transMemory) throws XMLStreamException, SecurityException, IllegalStateException, RollbackException, HeuristicMixedException, HeuristicRollbackException, SystemException, NotSupportedException
    {
-      parseTMX(input,
-            new Effect<Element>()
-            {
-               @Override
-               public void e(Element element)
-               {
-                  transMemoryAdapter.persistHeader(tm, element);
-               }
-            },
-            new Effect<Element>()
-            {
-               @Override
-               public void e(Element element)
-               {
-                  transMemoryAdapter.persistTransUnit(tm, element);
-               }
-            }
-      );
-   }
-
-   public void parseTMX(InputStream input, Effect<Element> headerHandler, Effect<Element> tuHandler) throws XMLStreamException
-   {
-      XMLInputFactory factory = XMLInputFactory.newInstance();
-      factory.setProperty(XMLInputFactory.IS_VALIDATING, false);
-      factory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
-      XMLEventReader reader = factory.createXMLEventReader(input);
-
-      QName tu = new QName("tu");
-      QName header = new QName("header");
-      int handledTUs = 0;
-
-      while (reader.hasNext())
+      try
       {
-         updateProgress(handledTUs);
-         if( handledTUs > 0 && handledTUs % BATCH_SIZE == 0 )
-         {
-            try
-            {
-               Transaction.instance().commit();
-               Transaction.instance().begin();
-            }
-            catch (Exception e)
-            {
-               try
-               {
-                  Transaction.instance().rollback();
-               }
-               finally
-               {
-                  throw new RuntimeException(e);
-               }
-            }
-         }
+         session.setFlushMode(FlushMode.MANUAL);
+         session.setCacheMode(CacheMode.IGNORE);
+         XMLInputFactory factory = XMLInputFactory.newInstance();
+         factory.setProperty(XMLInputFactory.IS_VALIDATING, false);
+         factory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+         @Cleanup
+         XMLEventReader reader = factory.createXMLEventReader(input);
 
-         XMLEvent event = reader.nextEvent();
-         if (event.isStartElement())
+         QName tu = new QName("tu");
+         QName header = new QName("header");
+         int handledTUs = 0;
+
+         while (reader.hasNext())
          {
-            StartElement startElem = event.asStartElement();
-            if(startElem.getName().equals(header))
+            if( handledTUs > 0 && handledTUs % BATCH_SIZE == 0 )
             {
-               Element headerElem = ElementBuilder.buildElement(startElem, reader);
-               headerHandler.e(headerElem);
+               commitBatch(handledTUs, true);
             }
-            else if (startElem.getName().equals(tu))
+            XMLEvent event = reader.nextEvent();
+            if (event.isStartElement())
             {
-               Element tuElem = ElementBuilder.buildElement(startElem, reader);
-               tuHandler.e(tuElem);
-               handledTUs++;
+               StartElement elem = event.asStartElement();
+               if (elem.getName().equals(tu))
+               {
+                  Element tuElem = ElementBuilder.buildElement(elem, reader);
+                  transMemoryAdapter.processTransUnit(transMemory, tuElem);
+                  handledTUs++;
+               }
+               else if (elem.getName().equals(header))
+               {
+                  Element headerElem = ElementBuilder.buildElement(elem, reader);
+                  transMemoryAdapter.processHeader(transMemory, headerElem);
+               }
             }
          }
+         commitBatch(handledTUs, false);
       }
-      reader.close();
+      catch (EntityExistsException e)
+      {
+         String msg = "Possible duplicate TU (duplicate tuid or duplicate" +
+               "src content without tuid)";
+         throw new EntityExistsException(msg, e);
+      }
    }
 
-   private void updateProgress(int processed)
+   private void commitBatch(int numProcessed, boolean beginTransaction) throws NotSupportedException, SystemException, SecurityException, IllegalStateException, RollbackException, HeuristicMixedException, HeuristicRollbackException
+   {
+      session.flush();
+      session.clear();
+      Transaction.instance().commit();
+      updateProgress(numProcessed);
+      if (beginTransaction)
+      {
+         Transaction.instance().begin();
+      }
+   }
+
+   private void updateProgress(int numProcessed)
    {
       if( asynchronousProcessHandle != null )
       {
          // TODO Piggybacking on the messages field. We should move to {@link java.util.concurrent.Future}
          // or implement a specific TMX Import handler.
-         asynchronousProcessHandle.setMessages(Lists.newArrayList("Processed Entries: " + processed));
+         asynchronousProcessHandle.setMessages(Lists.newArrayList("Processed Entries: " + numProcessed));
       }
    }
 

@@ -21,7 +21,7 @@
 package org.zanata.dao;
 
 import java.util.Iterator;
-import java.util.List;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -32,8 +32,8 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.exception.EntityMissingException;
-import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemory;
+import org.zanata.model.tm.TransMemoryUnit;
 
 import com.google.common.base.Optional;
 
@@ -83,19 +83,14 @@ public class TransMemoryDAO extends AbstractDAOImpl<TransMemory, Long>
       makePersistent(tm.get());
    }
 
-   public @Nullable
-   TransMemoryUnit findTranslationUnit(@Nonnull String tmSlug, @Nonnull String uniqueId)
+   public @Nullable TransMemoryUnit findTranslationUnit(
+         @Nonnull String tmSlug, @Nonnull String uniqueId)
    {
-
-      List results = getSession()
+      return (TransMemoryUnit) getSession()
             .createQuery("from TransMemoryUnit tu where tu.uniqueId = :uniqueId and tu.translationMemory.slug = :tmSlug")
             .setString("uniqueId", uniqueId)
             .setString("tmSlug", tmSlug)
-            .list();
-      if( results.size() > 0 )
-      {
-         return (TransMemoryUnit)results.get(0);
-      }
-      return null;
+            .setCacheable(false)
+            .uniqueResult();
    }
 }

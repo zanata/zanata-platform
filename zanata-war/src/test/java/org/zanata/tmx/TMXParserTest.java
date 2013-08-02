@@ -20,12 +20,21 @@
  */
 package org.zanata.tmx;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import javax.xml.stream.XMLStreamException;
+
+import nu.xom.Element;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
@@ -40,17 +49,6 @@ import org.zanata.model.tm.TransMemory;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemoryUnitVariant;
 import org.zanata.seam.SeamAutowire;
-
-import nu.xom.Element;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.hamcrest.Matchers.hasKey;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -75,7 +73,7 @@ public class TMXParserTest extends ZanataDbunitJpaTest
           .use("session", getSession());
    }
 
-   private TransMemory createTMFromFile(String file) throws XMLStreamException
+   private TransMemory createTMFromFile(String file) throws Exception
    {
       TransMemoryDAO transMemoryDAO = seam.autowire(TransMemoryDAO.class);
       TransMemory tm = new TransMemory();
@@ -87,7 +85,7 @@ public class TMXParserTest extends ZanataDbunitJpaTest
       return tm;
    }
 
-   private void populateTMFromFile(TransMemory tm, String file) throws XMLStreamException
+   private void populateTMFromFile(TransMemory tm, String file) throws Exception
    {
       TMXParser parser = seam.autowire(TMXParser.class);
       InputStream is = getClass().getResourceAsStream(file);
@@ -114,8 +112,7 @@ public class TMXParserTest extends ZanataDbunitJpaTest
       TransMemory tm = createTMFromFile("/tmx/default-valid-tm.tmx");
 
       // Make sure everything is stored properly
-      getEm().flush();
-      getEm().refresh(tm);
+      tm = getEm().find(TransMemory.class, tm.getId());
       assertThat(tm.getTranslationUnits().size(), is(4));
 
       // Dates were modified to match the TM header in the file
@@ -145,8 +142,7 @@ public class TMXParserTest extends ZanataDbunitJpaTest
       TransMemory tm = createTMFromFile("/tmx/valid-tmx-with-metadata.tmx");
 
       // Make sure everything is stored properly
-      getEm().flush();
-      getEm().refresh(tm);
+      tm = getEm().find(TransMemory.class, tm.getId());
 
       // Metadata at the header level
       Map<String,String> tmAtts = TMXMetadataHelper.getAttributes(tm);
@@ -233,15 +229,13 @@ public class TMXParserTest extends ZanataDbunitJpaTest
       TransMemory tm = createTMFromFile("/tmx/default-valid-tm.tmx");
 
       // Make sure everything is stored properly
-      getEm().flush();
-      getEm().refresh(tm);
+      tm = getEm().find(TransMemory.class, tm.getId());
       assertThat(tm.getTranslationUnits().size(), is(4));
 
       // Second load (should yield the same result)
       populateTMFromFile(tm, "/tmx/default-valid-tm.tmx");
 
-      getEm().flush();
-      getEm().refresh(tm);
+      tm = getEm().find(TransMemory.class, tm.getId());
       assertThat(tm.getTranslationUnits().size(), is(4));
    }
 
@@ -252,15 +246,13 @@ public class TMXParserTest extends ZanataDbunitJpaTest
       TransMemory tm = createTMFromFile("/tmx/default-valid-tm.tmx");
 
       // Make sure everything is stored properly
-      getEm().flush();
-      getEm().refresh(tm);
+      tm = getEm().find(TransMemory.class, tm.getId());
       assertThat(tm.getTranslationUnits().size(), is(4));
 
       // Second load (should add all new tuids)
       populateTMFromFile(tm, "/tmx/valid-tm-with-tuids.tmx");
 
-      getEm().flush();
-      getEm().refresh(tm);
+      tm = getEm().find(TransMemory.class, tm.getId());
       assertThat(tm.getTranslationUnits().size(), is(8));
    }
 }
