@@ -4,10 +4,12 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
+import org.zanata.util.Checkbox;
 import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
 
@@ -110,42 +112,40 @@ public class ManageLanguageTeamMemberPage extends BasePage
          @Override
          public ManageLanguageTeamMemberPage apply(WebDriver driver)
          {
-            WebElement table = driver.findElement(By.id("resultForm:personTable"));
-            List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(), table);
-            //we want to wait until search result comes back
-            if (tableRows.isEmpty() || !tableRows.get(0).getCellContents().get(SEARCH_RESULT_PERSON_COLUMN).contains(personName))
-            {
-               log.debug("waiting for search result refresh...");
-               return null;
-            }
+            TableRow firstRow = tryGetFirstRowInSearchPersonResult(driver, personName);
 
-            return addToTeam(tableRows.get(0));
+            final String personUsername = firstRow.getCellContents().get(SEARCH_RESULT_PERSON_COLUMN);
+            log.info("username to be added: {}", personUsername);
+            WebElement selectRowToUpdateCheckBox = firstRow.getCells().get(SEARCH_RESULT_SELECTED_COLUMN).findElement(By.tagName("input"));
+            Checkbox.of(selectRowToUpdateCheckBox).check(); // this causes a row redraw
+
+            firstRow = tryGetFirstRowInSearchPersonResult(driver, personName);
+            WebElement isTranslatorCheckBox = firstRow.getCells().get(ISTRANSLATOR_COLUMN).findElement(By.tagName("input"));
+            Checkbox.of(isTranslatorCheckBox).check();
+
+            getDriver().findElement(By.id("resultForm:addSelectedBtn")).click();
+            getDriver().findElement(By.id("searchForm:closeBtn")).click();
+            return confirmAdded(personName);
          }
       });
 
    }
 
-   private ManageLanguageTeamMemberPage addToTeam(TableRow personRow)
+   private TableRow tryGetFirstRowInSearchPersonResult(WebDriver driver, String personName)
    {
-      final String personUsername = personRow.getCellContents().get(SEARCH_RESULT_PERSON_COLUMN);
-      log.info("username to be added: {}", personUsername);
-      WebElement selectRowToUpdateCheckBox = personRow.getCells().get(SEARCH_RESULT_SELECTED_COLUMN).findElement(By.tagName("input"));
-      WebElement isTranslatorCheckBox = personRow.getCells().get(ISTRANSLATOR_COLUMN).findElement(By.tagName("input"));
-
-      if (!isTranslatorCheckBox.isSelected())
+      WebElement table = driver.findElement(By.id("resultForm:personTable"));
+      List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(), table);
+      //we want to wait until search result comes back
+      if (tableRows.isEmpty() || !tableRows.get(0).getCellContents().get(SEARCH_RESULT_PERSON_COLUMN).contains(personName))
       {
-         if(!selectRowToUpdateCheckBox.isSelected())
-         {
-            selectRowToUpdateCheckBox.click();
-         }
-
-         isTranslatorCheckBox.click();
-
-         WebElement addButton = getDriver().findElement(By.id("resultForm:addSelectedBtn"));
-         addButton.click();
-         WebElement closeButton = getDriver().findElement(By.id("searchForm:closeBtn"));
-         closeButton.click();
+         log.debug("waiting for search result refresh...");
+         throw new NoSuchElementException("result is not shown yet");
       }
+      return tableRows.get(0);
+   }
+
+   private ManageLanguageTeamMemberPage confirmAdded(final String personUsername)
+   {
       // we need to wait for the page to refresh
       return refreshPageUntil(this, new Predicate<WebDriver>()
       {
