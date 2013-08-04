@@ -46,19 +46,19 @@ public class ProjectSourceDocumentsPage extends BasePage
 
    public ProjectSourceDocumentsPage enterFilePath(String filePath)
    {
-      getDriver().findElement(By.id("uploadDocForm:uploadFilename")).sendKeys(filePath);
+      getDriver().findElement(By.id("uploadDocForm:generalDocFileUpload")).sendKeys(filePath);
       return new ProjectSourceDocumentsPage(getDriver());
    }
 
    public ProjectSourceDocumentsPage cancelUpload()
    {
-      getDriver().findElement(By.id("uploadDocForm:cancelUploadButton")).click();
+      getDriver().findElement(By.id("uploadDocForm:generalDocCancelUploadButton")).click();
       return new ProjectSourceDocumentsPage(getDriver());
    }
 
    public ProjectSourceDocumentsPage submitUpload()
    {
-      getDriver().findElement(By.id("uploadDocForm:uploadButton")).click();
+      getDriver().findElement(By.id("uploadDocForm:generalDocSubmitUploadButton")).click();
       return new ProjectSourceDocumentsPage(getDriver());
    }
 
@@ -78,6 +78,11 @@ public class ProjectSourceDocumentsPage extends BasePage
          }
       }
       return false;
+   }
+
+   public boolean canSubmitDocument()
+   {
+      return getDriver().findElement(By.id("uploadDocForm:generalDocSubmitUploadButton")).isEnabled();
    }
 
 }
