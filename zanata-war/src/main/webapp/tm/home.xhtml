@@ -16,7 +16,7 @@
         <a4j:jsFunction name="refreshDataTable" render="tmList"/>
         <script type="text/javascript">
             function showUploadPanel(tmSlug) {
-                var formAction = "#{request.contextPath}/rest/async/tm/" + tmSlug;
+                var formAction = "#{request.contextPath}/rest/tm/" + tmSlug;
                 jQuery("#uploadFileForm").attr("action", formAction);
                 jQuery("#uploadProgress").html("");
                 #{rich:component("uploadFilePanel")}.show();
@@ -33,67 +33,33 @@
             }
 
             function submitUpload() {
+                disableUploadDialog();
                 var uploadForm = jQuery("#uploadFileForm");
                 // Only HTML 5
-                var formData = new FormData(uploadForm[0]);
-
-                jQuery.ajax({
-                    type: "POST",
-                    url: uploadForm.attr("action"),
-                    /*xhr: function() {
-                        var myXhr = jQuery.ajaxSettings.xhr();
-                        if(myXhr.upload){ // check if upload property exists
-                            myXhr.upload.addEventListener('progress', handleUploadProgress, false); // for handling the progress of the upload
-                        }
-                        return myXhr;
-                    },*/
-                    data: formData,
-                    cache: false,
-                    contentType: false, // If not there, boundary marker is not set. See: http://stackoverflow.com/a/5976031/33080
-                    processData:false,
-                    beforeSend: function() {
-                        jQuery("#uploadProgress").html("Uploading...");
-                        jQuery("[name='uploadBtn']").hide();
-                        jQuery("[name='cancelBtn']").hide();
-                        jQuery("[name='uploadedFile']").prop('disabled', true);
-                    },
-                    success: function(data) {
-                        var pid = jQuery(data).find('url').text();
-                        poll(pid);
-                    },
-                    error: function(data) {
-                        alert("There was an error uploading the file.");
+                var req = new XMLHttpRequest();
+                req.open("POST", uploadForm.attr("action"), true);
+                req.setRequestHeader("Content-Type", "*/*");
+                req.upload.addEventListener("progress", function(evt) {
+                    if (evt.lengthComputable)
+                    {
+                        var percentComplete = (evt.loaded / evt.total)*100;
+                        jQuery("#uploadProgress").html("Uploading... " + Math.round(percentComplete*100)/100 + "%");
                     }
-                });
+                },
+                false);
+                req.onreadystatechange = function() {
+                    if (req.readyState != 4)  { return; }
+                    if (req.status != 200)  {
+                        alert("There was an error uploading the file: " + req.statusText + " (" + req.status + ")");
+                        return;
+                    }
+                    else {
+                        alert("Successfully imported the file");
+                    }
+                };
+                var file = uploadForm.find("input[name = 'uploadedFile']")[0].files[0];
+                req.send(file);
                 return false;
-            }
-
-            function poll(pId) {
-                jQuery.ajax({
-                    type: "GET",
-                    url: "#{request.contextPath}/rest/async/" + pId,
-                    complete: function(data) {
-                        handlePollStatus(pId, data);
-                    }
-                });
-            }
-
-            function handlePollStatus(pId, data) {
-                var status = jQuery(data.responseText).find('statusCode').text();
-                var message = jQuery(data.responseText).find('message').text();
-
-                if( status == 'Finished' ) {
-                    refreshDataTable();
-                    resetUploadDialog();
-                }
-                else if( status == "NotAccepted" || status == "Failed" ) {
-                    alert("There was an error processing the file.");
-                    resetUploadDialog();
-                }
-                else {
-                    jQuery("#uploadProgress").html(message);
-                    setTimeout(function(){ poll(pId) }, 2000);
-                }
             }
 
             function resetUploadDialog() {
@@ -102,6 +68,13 @@
                 jQuery("[name='uploadedFile']").prop('disabled', false);
                 hideUploadPanel();
                 jQuery("#uploadProgress").html("");
+            }
+
+            function disableUploadDialog() {
+                jQuery("#uploadProgress").html("Uploading...");
+                jQuery("[name='uploadBtn']").hide();
+                jQuery("[name='cancelBtn']").hide();
+                jQuery("[name='uploadedFile']").prop('disabled', true);
             }
         </script>
     </ui:define>
@@ -174,7 +147,7 @@
 
         <rich:popupPanel id="uploadFilePanel"
                          autosized="true">
-            <form id="uploadFileForm" action="/" method="post" enctype="multipart/form-data" >
+            <form id="uploadFileForm" action="/" method="post">
                 <input type="file" name="uploadedFile"/>
                 <div>
                     <input type="button" name="uploadBtn" value="#{messages['jsf.Upload']}" onclick="submitUpload()"/>
