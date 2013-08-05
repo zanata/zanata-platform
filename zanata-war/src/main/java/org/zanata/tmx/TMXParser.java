@@ -111,7 +111,7 @@ public class TMXParser
                }
             }
          }
-         commitBatch(handledTUs, false);
+         commitBatch(handledTUs, true); // A new transaction is needed for Seam to commit it
       }
       catch (EntityExistsException e)
       {

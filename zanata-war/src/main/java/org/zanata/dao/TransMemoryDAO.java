@@ -27,6 +27,7 @@ import javax.annotation.Nullable;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
+import org.hibernate.criterion.Projections;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
@@ -91,6 +92,14 @@ public class TransMemoryDAO extends AbstractDAOImpl<TransMemory, Long>
             .setString("uniqueId", uniqueId)
             .setString("tmSlug", tmSlug)
             .setCacheable(false)
+            .uniqueResult();
+   }
+
+   public long getTranslationMemorySize(@Nonnull String tmSlug)
+   {
+      return (Long)getSession()
+            .createQuery("select count(tu) from TransMemoryUnit tu where tu.translationMemory.slug = :tmSlug")
+            .setString("tmSlug", tmSlug)
             .uniqueResult();
    }
 }

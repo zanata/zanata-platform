@@ -20,6 +20,7 @@
  */
 package org.zanata.model.tm;
 
+import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -28,6 +29,7 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -106,15 +108,12 @@ public class TransMemoryUnit extends ModelEntityBase implements HasTMMetadata
    @IndexedEmbedded
    private Map<String, TransMemoryUnitVariant> transUnitVariants = Maps.newHashMap();
 
-   /**
-    * Map values are Json strings containing metadata for the particular type of translation memory
-    */
-   @ElementCollection
-   @MapKeyEnumerated(EnumType.STRING)
-   @MapKeyColumn(name = "metadata_key")
-   @JoinTable(name = "TransMemoryUnit_Metadata", joinColumns = {@JoinColumn(name = "tm_trans_unit_id")})
-   @Column(name = "metadata", length = Integer.MAX_VALUE)
-   private Map<TMMetadataType, String> metadata = Maps.newHashMap();
+   @Enumerated(EnumType.STRING)
+   @Column(name = "metadata_type", nullable = true)
+   private TMMetadataType metadataType;
+
+   @Column(nullable = true)
+   private String metadata;
 
    public TransMemoryUnit(String uniqueId)
    {
@@ -125,5 +124,16 @@ public class TransMemoryUnit extends ModelEntityBase implements HasTMMetadata
    protected boolean logPersistence()
    {
       return false;
+   }
+
+   @Override
+   public Map<TMMetadataType, String> getMetadata()
+   {
+      HashMap<TMMetadataType,String> metadata = Maps.newHashMap();
+      if( metadataType != null )
+      {
+         metadata.put(this.metadataType, this.metadata);
+      }
+      return metadata;
    }
 }

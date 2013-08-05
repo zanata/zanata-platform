@@ -80,7 +80,7 @@ public class TransMemory extends SlugEntityBase implements HasTMMetadata
     */
    @ElementCollection
    @MapKeyEnumerated(EnumType.STRING)
-   @MapKeyColumn(name = "metadata_key")
+   @MapKeyColumn(name = "metadata_type")
    @JoinTable(name = "TransMemory_Metadata", joinColumns = {@JoinColumn(name = "trans_memory_id")})
    @Column(name = "metadata",length = Integer.MAX_VALUE)
    private Map<TMMetadataType, String> metadata = Maps.newHashMap();

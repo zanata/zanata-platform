@@ -30,6 +30,7 @@ import nu.xom.Elements;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.transaction.Transaction;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TransMemoryDAO;
 import org.zanata.model.tm.TransMemoryUnitVariant;

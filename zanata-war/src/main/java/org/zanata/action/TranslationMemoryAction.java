@@ -80,6 +80,11 @@ public class TranslationMemoryAction extends EntityHome<TransMemory>
       transMemoryList = null; // Force refresh next time list is requested
    }
 
+   public long getTranslationMemorySize(String tmSlug)
+   {
+      return transMemoryDAO.getTranslationMemorySize(tmSlug);
+   }
+
    public String cancel()
    {
       // Navigation logic in pages.xml

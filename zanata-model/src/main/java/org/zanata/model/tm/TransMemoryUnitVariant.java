@@ -20,6 +20,7 @@
  */
 package org.zanata.model.tm;
 
+import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -27,6 +28,7 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.MapKeyColumn;
@@ -81,15 +83,12 @@ public class TransMemoryUnitVariant extends ModelEntityBase implements HasTMMeta
    @Column(name ="plain_text_segment_hash", nullable = false)
    private String plainTextSegmentHash;
 
-   /**
-    * Map values are Json strings containing metadata for the particular type of translation memory
-    */
-   @ElementCollection
-   @JoinTable(name = "TransMemoryUnitVariant_Metadata", joinColumns = {@JoinColumn(name = "tm_trans_unit_variant_id")})
-   @MapKeyEnumerated(EnumType.STRING)
-   @MapKeyColumn(name = "metadata_key")
-   @Column(name = "metadata", length = Integer.MAX_VALUE)
-   private Map<TMMetadataType, String> metadata = Maps.newHashMap();
+   @Enumerated(EnumType.STRING)
+   @Column(name = "metadata_type", nullable = true)
+   private TMMetadataType metadataType;
+
+   @Column(nullable = true)
+   private String metadata;
 
    public static TransMemoryUnitVariant tuv(String language, String content)
    {
@@ -123,6 +122,17 @@ public class TransMemoryUnitVariant extends ModelEntityBase implements HasTMMeta
    protected boolean logPersistence()
    {
       return false;
+   }
+
+   @Override
+   public Map<TMMetadataType, String> getMetadata()
+   {
+      HashMap<TMMetadataType,String> metadata = Maps.newHashMap();
+      if( metadataType != null )
+      {
+         metadata.put(this.metadataType, this.metadata);
+      }
+      return metadata;
    }
 
    public static Map<String, TransMemoryUnitVariant> newMap(TransMemoryUnitVariant... tuvs)
