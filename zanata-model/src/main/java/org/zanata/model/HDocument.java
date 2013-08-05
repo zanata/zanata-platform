@@ -71,10 +71,6 @@ import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 import com.google.common.collect.ImmutableList;
-
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 /**
  * @see AbstractResourceMeta
  * @see Resource
@@ -344,6 +340,7 @@ public class HDocument extends ModelEntityBase implements DocumentWithId, IDocum
    }
 
    @Override
+   @Transient
    public EntityType getEntityType()
    {
       return EntityType.HDocument;

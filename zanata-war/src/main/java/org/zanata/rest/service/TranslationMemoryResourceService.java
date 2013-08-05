@@ -21,11 +21,14 @@
 package org.zanata.rest.service;
 
 import java.io.InputStream;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
+
+import lombok.extern.slf4j.Slf4j;
 
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -47,8 +50,6 @@ import org.zanata.service.LocaleService;
 import org.zanata.tmx.TMXParser;
 import org.zanata.util.CloseableIterator;
 import com.google.common.base.Optional;
-
-import lombok.extern.slf4j.Slf4j;
 
 @Name("translationMemoryResourceService")
 @Path("/tm")
