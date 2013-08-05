@@ -32,6 +32,7 @@ import nu.xom.Attribute;
 import nu.xom.Element;
 
 import org.zanata.common.LocaleId;
+import org.zanata.model.tm.HasTMMetadata;
 import org.zanata.model.tm.TMXMetadataHelper;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.model.tm.TransMemoryUnitVariant;
@@ -65,7 +66,8 @@ public class TransMemoryTMXExportStrategy implements TMXExportStrategy<TransMemo
    public Element buildHeader() throws IOException
    {
       Element header = new Element("header");
-      addAttributesAndChildren(header, tm);
+      addAttributes(header, TMXMetadataHelper.getAttributes(tm));
+      addChildren(header, tm);
       header.addAttribute(new Attribute("creationtool", creationTool));
       header.addAttribute(new Attribute("creationtoolversion", creationToolVersion));
       return header;
@@ -86,8 +88,8 @@ public class TransMemoryTMXExportStrategy implements TMXExportStrategy<TransMemo
       {
          tu.addAttribute(new Attribute("tuid", tuid));
       }
-
-      addAttributesAndChildren(tu, transUnit);
+      addAttributes(tu, TMXMetadataHelper.getAttributes(transUnit));
+      addChildren(tu, transUnit);
 
       for (TransMemoryUnitVariant tuv: transUnit.getTransUnitVariants().values())
       {
@@ -106,29 +108,19 @@ public class TransMemoryTMXExportStrategy implements TMXExportStrategy<TransMemo
       return Optional.absent();
    }
 
-   private static void addAttributesAndChildren(Element toHeader, TransMemory fromTransMemory)
+   private static void addAttributes(Element toElem, ImmutableMap<String,String> attributes)
    {
-      ImmutableMap<String,String> attributes = TMXMetadataHelper.getAttributes(fromTransMemory);
       for (Map.Entry<String, String> attr : attributes.entrySet())
       {
-         toHeader.addAttribute(toAttribute(attr));
-      }
-      for (Element child : TMXMetadataHelper.getChildren(fromTransMemory))
-      {
-         toHeader.appendChild(child);
+         toElem.addAttribute(toAttribute(attr));
       }
    }
 
-   private void addAttributesAndChildren(Element toTu, TransMemoryUnit fromTransUnit)
+   private static void addChildren(Element toHeader, HasTMMetadata fromTransMemory)
    {
-      ImmutableMap<String,String> attributes = TMXMetadataHelper.getAttributes(fromTransUnit);
-      for (Map.Entry<String, String> attr : attributes.entrySet())
+      for (Element child : TMXMetadataHelper.getChildren(fromTransMemory))
       {
-         toTu.addAttribute(toAttribute(attr));
-      }
-      for (Element child : TMXMetadataHelper.getChildren(fromTransUnit))
-      {
-         toTu.appendChild(child);
+         toHeader.appendChild(child);
       }
    }
 
@@ -148,17 +140,10 @@ public class TransMemoryTMXExportStrategy implements TMXExportStrategy<TransMemo
    private static Element buildTUV(TransMemoryUnitVariant fromVariant)
    {
       Element tuv = new Element("tuv");
-      @Nonnull String trgContent = fromVariant.getPlainTextSegment();
-      ImmutableMap<String,String> attributes = TMXMetadataHelper.getAttributes(fromVariant);
-      for (Map.Entry<String, String> attr : attributes.entrySet())
-      {
-         tuv.addAttribute(toAttribute(attr));
-      }
-      for (Element child : TMXMetadataHelper.getChildren(fromVariant))
-      {
-         tuv.appendChild(child);
-      }
+      addAttributes(tuv, TMXMetadataHelper.getAttributes(fromVariant));
+      addChildren(tuv, fromVariant);
       Element seg = new Element("seg");
+      @Nonnull String trgContent = fromVariant.getPlainTextSegment();
       seg.appendChild(trgContent);
       tuv.appendChild(seg);
       return tuv;

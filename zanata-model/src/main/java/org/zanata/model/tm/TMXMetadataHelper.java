@@ -80,7 +80,7 @@ public class TMXMetadataHelper
    {
       try
       {
-         String metadataString = fromEntity.getMetadata().get(TMMetadataType.TMX14);
+         String metadataString = fromEntity.getMetadata(TMMetadataType.TMX14);
          if (metadataString == null)
          {
             return Collections.emptyList();
@@ -177,7 +177,7 @@ public class TMXMetadataHelper
    @SuppressWarnings("null")
    private static @Nonnull Map<String, String> getGenericMetadata(HasTMMetadata fromEntity)
    {
-      String metadataString = fromEntity.getMetadata().get(TMMetadataType.TMX14);
+      String metadataString = fromEntity.getMetadata(TMMetadataType.TMX14);
       if (metadataString == null)
       {
          return ImmutableMap.of();
@@ -287,7 +287,7 @@ public class TMXMetadataHelper
       try
       {
          String json = jsonMapper.writeValueAsString(fromMetadata);
-         toEntity.getMetadata().put(TMMetadataType.TMX14, json);
+         toEntity.setMetadata(TMMetadataType.TMX14, json);
       }
       catch (Exception e)
       {

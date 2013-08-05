@@ -85,4 +85,15 @@ public class TransMemory extends SlugEntityBase implements HasTMMetadata
    @Column(name = "metadata",length = Integer.MAX_VALUE)
    private Map<TMMetadataType, String> metadata = Maps.newHashMap();
 
+   @Override
+   public String getMetadata(TMMetadataType tmType)
+   {
+      return metadata.get(tmType);
+   }
+
+   @Override
+   public void setMetadata(TMMetadataType tmType, String metadata)
+   {
+      this.metadata.put(tmType, metadata);
+   }
 }

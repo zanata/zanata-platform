@@ -66,11 +66,10 @@ public class TransMemoryStreamingDAO extends StreamingDAO<TransMemoryUnit>
       try
       {
          Query q = iter.getSession().createQuery(
-               "from TransMemoryUnit tu " +
-               "inner join fetch tu.translationMemory tm " +
-               "inner join fetch tu.transUnitVariants " +
-               "where tm=:transMemory"
-               );
+               "FROM TransMemoryUnit tu FETCH ALL PROPERTIES " +
+               "JOIN FETCH tu.transUnitVariants tuv FETCH ALL PROPERTIES " +
+               "WHERE tu.translationMemory = :transMemory " +
+               "");
          q.setParameter("transMemory", transMemory);
          q.setComment("TransMemoryStreamingDAO.findTransUnitsByTM");
 

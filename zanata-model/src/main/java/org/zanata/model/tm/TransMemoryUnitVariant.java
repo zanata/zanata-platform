@@ -125,14 +125,24 @@ public class TransMemoryUnitVariant extends ModelEntityBase implements HasTMMeta
    }
 
    @Override
-   public Map<TMMetadataType, String> getMetadata()
+   public String getMetadata(TMMetadataType tmType)
    {
-      HashMap<TMMetadataType,String> metadata = Maps.newHashMap();
-      if( metadataType != null )
+      if (this.metadataType == tmType)
       {
-         metadata.put(this.metadataType, this.metadata);
+         return this.metadata;
       }
-      return metadata;
+      return null;
+   }
+
+   @Override
+   public void setMetadata(TMMetadataType tmType, String metadata)
+   {
+      if (getMetadataType() != null && getMetadataType() != tmType)
+      {
+         throw new RuntimeException("Only one type of metadata is supported");
+      }
+      setMetadataType(tmType);
+      setMetadata(metadata);
    }
 
    public static Map<String, TransMemoryUnitVariant> newMap(TransMemoryUnitVariant... tuvs)
