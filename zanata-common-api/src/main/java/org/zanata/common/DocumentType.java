@@ -1,7 +1,8 @@
 package org.zanata.common;
 
+import static java.util.Collections.unmodifiableList;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public enum DocumentType
@@ -24,7 +25,7 @@ public enum DocumentType
 
    IDML("idml");
 
-   private static List<String> allExtensions = buildExtensionsList();
+   private static final List<String> allExtensions = buildExtensionsList();
 
    private static List<String> buildExtensionsList()
    {
@@ -33,7 +34,7 @@ public enum DocumentType
       {
          allExtensions.add(type.getExtension());
       }
-      return allExtensions;
+      return unmodifiableList(allExtensions);
    }
 
    /**
@@ -42,10 +43,10 @@ public enum DocumentType
     */
    public static List<String> getAllExtensions()
    {
-      return Collections.unmodifiableList(allExtensions);
+      return allExtensions;
    }
 
-
+   // FIXME damason: rename typeFor to fromString
    public static DocumentType typeFor(String extension)
    {
       for (DocumentType type : DocumentType.values())
@@ -55,16 +56,18 @@ public enum DocumentType
             return type;
          }
       }
+      // FIXME damason: throw new IllegalArgumentException
       return null;
    }
 
+   private final String extension;
 
-   private String extension;
    DocumentType(String extension)
    {
       this.extension = extension;
    }
 
+   // FIXME damason: rename getExtension to toString
    public String getExtension()
    {
       return extension;
