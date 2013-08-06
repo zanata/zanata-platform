@@ -22,6 +22,8 @@ package org.zanata.model.tm;
 
 import java.util.Map;
 import java.util.Set;
+
+import javax.annotation.Nonnull;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
@@ -80,9 +82,20 @@ public class TransMemory extends SlugEntityBase implements HasTMMetadata
     */
    @ElementCollection
    @MapKeyEnumerated(EnumType.STRING)
-   @MapKeyColumn(name = "metadata_key")
+   @MapKeyColumn(name = "metadata_type")
    @JoinTable(name = "TransMemory_Metadata", joinColumns = {@JoinColumn(name = "trans_memory_id")})
    @Column(name = "metadata",length = Integer.MAX_VALUE)
    private Map<TMMetadataType, String> metadata = Maps.newHashMap();
 
+   @Override
+   public String getMetadata(TMMetadataType tmType)
+   {
+      return metadata.get(tmType);
+   }
+
+   @Override
+   public void setMetadata(@Nonnull TMMetadataType tmType, String metadata)
+   {
+      this.metadata.put(tmType, metadata);
+   }
 }

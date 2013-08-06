@@ -34,8 +34,6 @@
     <HTextFlowTargetHistory/>
     <HTextFlowTargetReviewComment/>
     <TransMemory_Metadata/>
-    <TransMemoryUnit_Metadata/>
-    <TransMemoryUnitVariant_Metadata/>
     <TransMemory/>
     <TransMemoryUnit/>
     <TransMemoryUnitVariant/>

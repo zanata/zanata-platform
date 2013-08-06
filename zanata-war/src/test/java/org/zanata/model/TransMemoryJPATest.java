@@ -129,7 +129,7 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
          unit.setTranslationMemory(tm);
          unit.setSourceLanguage("en-US");
          unit.setTransUnitId("unit-id-" + i);
-         unit.getMetadata().put(TMMetadataType.TMX14, "Metadata " + i);
+         unit.setMetadata(TMMetadataType.TMX14, "Metadata " + i);
          tm.getTranslationUnits().add(unit);
       }
 
@@ -141,8 +141,7 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest
       assertThat(stored.getTranslationUnits().size(), is(NUM_TRANS_UNITS));
       for( TransMemoryUnit tu : tm.getTranslationUnits() )
       {
-         assertThat(tu.getMetadata().size(), is(1));
-         assertThat(tu.getMetadata().get(TMMetadataType.TMX14), startsWith("Metadata "));
+         assertThat(tu.getMetadata(TMMetadataType.TMX14), startsWith("Metadata "));
       }
    }
 

@@ -5,10 +5,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.extern.slf4j.Slf4j;
 
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
@@ -21,14 +22,19 @@ import org.dbunit.dataset.datatype.DefaultDataTypeFactory;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.internal.SessionImpl;
+import org.junit.After;
+import org.junit.Before;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 
-import lombok.extern.slf4j.Slf4j;
-
+/**
+ * Adapted from org.jboss.seam.mock.DBUnitSeamTest
+ * @see org.jboss.seam.mock.DBUnitSeamTest
+ * @see org.jboss.seam.mock.DBJUnitSeamTest
+ */
 @Slf4j
 public abstract class ZanataDbunitJpaTest extends ZanataJpaTest
 {
@@ -69,6 +75,7 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest
    }
 
    @BeforeMethod
+   @Before
    public void prepareDataBeforeTest()
    {
       // This is not pretty but we unfortunately can not have dependencies
@@ -96,6 +103,7 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest
    }
 
    @AfterMethod
+   @After
    public void cleanDataAfterTest()
    {
       executeOperations(afterTestOperations);

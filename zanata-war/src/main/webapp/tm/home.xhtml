@@ -32,6 +32,15 @@
                 return confirm("#{messages['jsf.transmemory.ConfirmClearTM']}");
             }
 
+            function confirmDeleteTm()
+            {
+                return confirm("#{messages['jsf.transmemory.ConfirmDeleteTM']}");
+            }
+
+            function confirmExport() {
+                return confirm("#{messages['jsf.transmemory.ConfirmExport']}");
+            }
+
             function submitUpload() {
                 disableUploadDialog();
                 var uploadForm = jQuery("#uploadFileForm");
@@ -51,11 +60,12 @@
                     if (req.readyState != 4)  { return; }
                     if (req.status != 200)  {
                         alert("There was an error uploading the file: " + req.statusText + " (" + req.status + ")");
-                        return;
                     }
                     else {
                         alert("Successfully imported the file");
                     }
+                    resetUploadDialog();
+                    refreshDataTable();
                 };
                 var file = uploadForm.find("input[name = 'uploadedFile']")[0].files[0];
                 req.send(file);
@@ -115,7 +125,7 @@
                         </rich:column>
                         <rich:column>
                             <f:facet name="header">#{messages['jsf.transmemory.NoOfEntries']}</f:facet>
-                            <h:outputText value="#{tm.translationUnits.size()}" />
+                            <h:outputText value="#{translationMemoryAction.getTranslationMemorySize(tm.slug)}" />
                         </rich:column>
                         <rich:column >
                             <f:facet name="header">#{messages['jsf.CreationDate']}
@@ -126,18 +136,28 @@
                             </h:outputText>
                         </rich:column>
                         <rich:column style="text-align: center">
-                            <f:facet name="header">#{messages['jsf.Upload']}</f:facet>
+                            <f:facet name="header">#{messages['jsf.transmemory.Import']}</f:facet>
                             <a href="#" onclick="return showUploadPanel('#{tm.slug}')">
-                                <span class="icon-upload icon" title="#{messages['jsf.transmemory.Upload.Title']}"/>
+                                <span class="icon-upload icon" title="#{messages['jsf.transmemory.Import.Title']}"/>
                             </a>
                         </rich:column>
                         <rich:column style="text-align: center">
-                            <f:facet name="header">#{messages['jsf.Clear']}</f:facet>
-                            <a4j:commandLink value="#{messages['jsf.Clear']}"
-                                             action="#{translationMemoryAction.clearTransMemory(tm.slug)}"
-                                             render="tmList"
-                                             rendered="#{tm.translationUnits.size() gt 0}"
-                                             onclick="return confirmClearTm()"/>
+                            <f:facet name="header">#{messages['jsf.transmemory.Export']}</f:facet>
+                            <a href="#{request.contextPath}/rest/tm/#{tm.slug}" onclick="return confirmExport()">
+                                <span class="icon-download icon" title="#{messages['jsf.transmemory.Export.Title']}"/>
+                            </a>
+                        </rich:column>
+                        <rich:column style="text-align: center">
+                            <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+                            <a4j:commandButton value="#{messages['jsf.Clear']}"
+                                               action="#{translationMemoryAction.clearTransMemory(tm.slug)}"
+                                               render="tmList"
+                                               rendered="#{translationMemoryAction.getTranslationMemorySize(tm.slug) gt 0}"
+                                               onclick="return confirmClearTm()"/>
+                            <a4j:commandButton value="#{messages['jsf.Delete']}"
+                                               action="#{translationMemoryAction.deleteTransMemory(tm.slug)}"
+                                               render="tmList"
+                                               onclick="return confirmDeleteTm()"/>
                         </rich:column>
                     </rich:dataTable>
 
@@ -150,7 +170,7 @@
             <form id="uploadFileForm" action="/" method="post">
                 <input type="file" name="uploadedFile"/>
                 <div>
-                    <input type="button" name="uploadBtn" value="#{messages['jsf.Upload']}" onclick="submitUpload()"/>
+                    <input type="button" name="uploadBtn" value="#{messages['jsf.transmemory.Import']}" onclick="submitUpload()"/>
                     <input type="button" name="cancelBtn" value="#{messages['jsf.Cancel']}" onclick="hideUploadPanel()"/>
                 </div>
             </form>

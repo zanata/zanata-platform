@@ -34,11 +34,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.stream.XMLStreamException;
+
 import nu.xom.Element;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.dbunit.operation.DatabaseOperation;
+import org.junit.Before;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
@@ -65,6 +68,7 @@ public class TMXParserTest extends ZanataDbunitJpaTest
    }
 
    @BeforeMethod
+   @Before
    public void initializeSeam()
    {
       seam.reset()
@@ -106,6 +110,7 @@ public class TMXParserTest extends ZanataDbunitJpaTest
    }
 
    @Test
+   @org.junit.Test
    public void parseTMX() throws Exception
    {
       // Create a TM
@@ -136,6 +141,7 @@ public class TMXParserTest extends ZanataDbunitJpaTest
    }
 
    @Test
+   @org.junit.Test
    public void parseTMXWithMetadata() throws Exception
    {
       // Create a TM
@@ -215,7 +221,16 @@ public class TMXParserTest extends ZanataDbunitJpaTest
       assertThat(tuv0Children.get(1).getValue(), is("Custom note on tuv"));
    }
 
+   @Test(expectedExceptions = XMLStreamException.class)
+   @org.junit.Test(expected = XMLStreamException.class)
+   public void invalidTMXNoContents() throws Exception
+   {
+      // Create a TM
+      createTMFromFile("/tmx/invalid-tmx-no-contents.xml");
+   }
+
    @Test(expectedExceptions = RuntimeException.class)
+   @org.junit.Test(expected = RuntimeException.class)
    public void undiscernibleSourceLang() throws Exception
    {
       // Create a TM
@@ -223,6 +238,7 @@ public class TMXParserTest extends ZanataDbunitJpaTest
    }
 
    @Test
+   @org.junit.Test
    public void mergeSameTM() throws Exception
    {
       // Initial load
@@ -240,6 +256,7 @@ public class TMXParserTest extends ZanataDbunitJpaTest
    }
 
    @Test
+   @org.junit.Test
    public void mergeComplementaryTM() throws Exception
    {
       // Initial load
