@@ -18,6 +18,7 @@ import org.zanata.webtrans.client.view.TransFilterDisplay;
 import org.zanata.webtrans.client.view.TransUnitNavigationDisplay;
 import org.zanata.webtrans.client.view.TransUnitsTableDisplay;
 import org.zanata.webtrans.client.view.TranslationEditorDisplay;
+import org.zanata.webtrans.client.view.TransUnitChangeSourceLangDisplay;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -39,6 +40,10 @@ public class TranslationEditorPresenterTest
    @Mock
    private TransFilterDisplay transFilterDisplay;
    @Mock
+   private TransUnitChangeSourceLangPresenter transUnitSourceLangPresenter;
+   @Mock
+   private TransUnitChangeSourceLangDisplay transUnitSourceLangDisplay;
+   @Mock
    private TransUnitNavigationDisplay transUnitNavigationDisplay;
    @Mock
    private TransUnitsTableDisplay transUnitsTableDisplay;
@@ -51,7 +56,7 @@ public class TranslationEditorPresenterTest
    public void setUp() throws Exception
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new TranslationEditorPresenter(display, eventBus, transUnitNavigationPresenter, transFilterPresenter, transUnitsTablePresenter, editorKeyShortcuts);
+      presenter = new TranslationEditorPresenter(display, eventBus, transUnitNavigationPresenter, transFilterPresenter, transUnitsTablePresenter, transUnitSourceLangPresenter, editorKeyShortcuts);
 
       when(display.getPageNavigation()).thenReturn(pageNavigation);
    }
@@ -63,6 +68,7 @@ public class TranslationEditorPresenterTest
       when(transFilterPresenter.getDisplay()).thenReturn(transFilterDisplay);
       when(transUnitNavigationPresenter.getDisplay()).thenReturn(transUnitNavigationDisplay);
       when(transUnitsTablePresenter.getDisplay()).thenReturn(transUnitsTableDisplay);
+      when(transUnitSourceLangPresenter.getDisplay()).thenReturn(transUnitSourceLangDisplay);
 
       presenter.onBind();
 

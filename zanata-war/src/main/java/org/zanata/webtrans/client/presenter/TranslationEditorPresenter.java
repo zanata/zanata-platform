@@ -30,22 +30,23 @@ import org.zanata.webtrans.client.events.PageCountChangeEvent;
 import org.zanata.webtrans.client.events.PageCountChangeEventHandler;
 import org.zanata.webtrans.client.events.RefreshPageEvent;
 import org.zanata.webtrans.client.view.TranslationEditorDisplay;
-
 import com.google.inject.Inject;
 
 public class TranslationEditorPresenter extends WidgetPresenter<TranslationEditorDisplay> implements PageChangeEventHandler, PageCountChangeEventHandler, TranslationEditorDisplay.Listener
 {
    private final TransUnitNavigationPresenter transUnitNavigationPresenter;
    private final TransFilterPresenter transFilterPresenter;
+   private final TransUnitChangeSourceLangPresenter transUnitSourceLangPresenter;
    private final TransUnitsTablePresenter transUnitsTablePresenter;
    private final EditorKeyShortcuts editorKeyShortcuts;
 
    @Inject
-   public TranslationEditorPresenter(TranslationEditorDisplay display, EventBus eventBus, TransUnitNavigationPresenter transUnitNavigationPresenter, TransFilterPresenter transFilterPresenter, TransUnitsTablePresenter transUnitsTablePresenter, EditorKeyShortcuts editorKeyShortcuts)
+   public TranslationEditorPresenter(TranslationEditorDisplay display, EventBus eventBus, TransUnitNavigationPresenter transUnitNavigationPresenter, TransFilterPresenter transFilterPresenter, TransUnitsTablePresenter transUnitsTablePresenter, TransUnitChangeSourceLangPresenter transUnitSourceLangPresenter, EditorKeyShortcuts editorKeyShortcuts)
    {
       super(display, eventBus);
       this.transUnitNavigationPresenter = transUnitNavigationPresenter;
       this.transFilterPresenter = transFilterPresenter;
+      this.transUnitSourceLangPresenter = transUnitSourceLangPresenter;
       this.transUnitsTablePresenter = transUnitsTablePresenter;
       this.editorKeyShortcuts = editorKeyShortcuts;
 
@@ -60,7 +61,9 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
 
       transUnitsTablePresenter.bind();
       display.setEditorView(transUnitsTablePresenter.getDisplay().asWidget());
-
+      
+      transUnitSourceLangPresenter.bind();
+      display.setSourceLangView(transUnitSourceLangPresenter.getDisplay().asWidget());
       transUnitNavigationPresenter.bind();
       display.setTransUnitNavigation(transUnitNavigationPresenter.getDisplay().asWidget());
 
@@ -90,6 +93,7 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    protected void onUnbind()
    {
       transFilterPresenter.unbind();
+      transUnitSourceLangPresenter.unbind();
       transUnitsTablePresenter.unbind();
       transUnitNavigationPresenter.unbind();
    }
