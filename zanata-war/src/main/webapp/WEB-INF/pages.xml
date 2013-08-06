@@ -976,11 +976,8 @@
 
   <exception>
     <redirect view-id="/error.xhtml">
-      <message severity="error">#{messages['jsf.UnexpectedErrorPleaseTryAgain']}
-      [ Request: #{servletContexts.request.requestURI}?#{servletContexts.request.queryString} ]
-      </message>
+      <message severity="error">#{messages['jsf.UnexpectedError']}</message>
     </redirect>
   </exception>
-
 
 </pages>
