@@ -104,7 +104,7 @@ public class TransMemoryUnit extends ModelEntityBase implements HasTMMetadata
    @Column(nullable = true)
    private Integer position;
 
-   @OneToMany(cascade = CascadeType.ALL)
+   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
    @JoinColumn(name = "trans_unit_id", nullable = false)
    @MapKey(name = "language")
    @IndexedEmbedded

@@ -21,21 +21,19 @@
 package org.zanata.dao;
 
 import java.util.Iterator;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
-import org.hibernate.criterion.Projections;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.Transactional;
 import org.zanata.exception.EntityMissingException;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.model.tm.TransMemoryUnit;
-
 import com.google.common.base.Optional;
 
 /**
@@ -68,6 +66,7 @@ public class TransMemoryDAO extends AbstractDAOImpl<TransMemory, Long>
       return Optional.absent();
    }
 
+   @Transactional
    public void deleteTransMemoryContents(@Nonnull String slug)
    {
       Optional<TransMemory> tm = getBySlug(slug);
@@ -100,6 +99,7 @@ public class TransMemoryDAO extends AbstractDAOImpl<TransMemory, Long>
       return (Long)getSession()
             .createQuery("select count(tu) from TransMemoryUnit tu where tu.translationMemory.slug = :tmSlug")
             .setString("tmSlug", tmSlug)
+            .setCacheable(true)
             .uniqueResult();
    }
 }

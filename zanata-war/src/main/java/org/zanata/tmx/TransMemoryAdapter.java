@@ -152,7 +152,8 @@ public class TransMemoryAdapter
          existingTu.setPosition(newTU.getPosition());
          existingTu.setSourceLanguage(newTU.getSourceLanguage());
          existingTu.setTransUnitId(newTU.getTransUnitId());
-         existingTu.setTransUnitVariants( newTU.getTransUnitVariants() );
+         existingTu.getTransUnitVariants().clear();
+         existingTu.getTransUnitVariants().putAll( newTU.getTransUnitVariants() );
          // No need to set the unique id or parent Trans Memory, it should be the same
          return existingTu;
       }
