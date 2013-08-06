@@ -13,8 +13,47 @@
 
         <h1>#{messages['jsf.ErrorTitle']}</h1>
 
-        <h:messages id="errorMessage" styleClass="message" errorClass="errormsg icon-info-circle-2" infoClass="infomsg icon-info-circle-2" warnClass="warnmsg icon-attention" />
-        <h:outputText id="noErrorsMessage" rendered="#{empty org.jboss.seam.international.statusMessages.currentGlobalMessages}">#{messages['jsf.NoErrors']}</h:outputText>
+        <h:outputText id="noErrorsMessage"
+                      rendered="#{empty org.jboss.seam.international.statusMessages.currentGlobalMessages}"
+                      value="#{messages['jsf.NoErrors']}" />
+
+        <h:messages id="errorMessage"
+                    styleClass="message"
+                    infoClass="infomsg icon-info-circle-2"
+                    warnClass="warnmsg icon-attention"
+                    errorClass="errormsg icon-info-circle-2" />
+
+        <div style="padding: 5 10 20;
+                    margin: 35 50;
+                    text-align: center;
+                    border: 1px solid #eee;
+                    box-shadow: 8px 8px 10px #ddd;">
+
+            <p><h:outputText value="#{messages['jsf.ReportProblemInstructions']}" /></p>
+            <a href="https://bugzilla.redhat.com/enter_bug.cgi?format=guided&amp;product=Zanata"
+               target="_blank"
+               style="display: block;
+                      width: 120px;
+                      height: 36px;
+
+                      padding: 0 15;
+                      margin: 0 auto;
+                      border: 1px solid #ccc;
+                      box-shadow: 0px 3px 4px rgba(0, 0, 0, .3);
+
+                      color: #454545;
+                      font-size: 13px;
+                      font-family: helvetica;
+                      font-weight: bold;
+                      line-height: 36px;
+                      text-decoration: none;
+                      text-shadow: none;
+                      text-align: left;
+                      outline: none;">
+                <img src="#{request.contextPath}/images/crystal_project/_16x16/apps/bug.png"
+                     style="margin-right: 4px; vertical-align: middle;" />#{messages['jsf.ReportAProblem']}
+            </a>
+        </div>
 
     </ui:define>
 </ui:composition>
