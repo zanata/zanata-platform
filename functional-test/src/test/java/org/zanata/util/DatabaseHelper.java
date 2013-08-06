@@ -37,6 +37,7 @@ public class DatabaseHelper
    private static Statement statement;
    private static DatabaseHelper DB;
    private String backupPath;
+   private static int CURRENT_TABLE_COUNT = 76;
    private FluentWait<Statement> wait;
 
    private DatabaseHelper()
@@ -181,6 +182,7 @@ public class DatabaseHelper
    {
       String path = getFileFromClasspath("org/zanata/feature/zanata_with_data.sql").getAbsolutePath();
       executeQuery("RUNSCRIPT FROM '" + path + "' CHARSET 'UTF-8'");
+      waitUntil("select count(*) from INFORMATION_SCHEMA.tables", CURRENT_TABLE_COUNT);
       waitUntil("select count(*) from HProjectIteration", 1);
    }
 
@@ -188,6 +190,13 @@ public class DatabaseHelper
    {
       executeQuery("RUNSCRIPT FROM '" + backupPath + "' CHARSET 'UTF-8'");
       waitUntil("select count(*) from HProjectIteration", 0);
+      waitUntil("select count(*) from INFORMATION_SCHEMA.tables", CURRENT_TABLE_COUNT);
+   }
+
+   public void obliterateDatabase()
+   {
+      executeQuery("DROP ALL OBJECTS");
+      waitUntil("select count(*) from INFORMATION_SCHEMA.SEQUENCES", 0);
    }
 
    public void resetFileData()

@@ -29,6 +29,7 @@ public class ResetDatabaseRule extends ExternalResource
       }
 
       DatabaseHelper.database().resetFileData();
+      DatabaseHelper.database().obliterateDatabase();
 
       if (configSet.contains(Config.WithData))
       {
@@ -36,12 +37,10 @@ public class ResetDatabaseRule extends ExternalResource
       }
       else
       {
-         log.info("reset database before");
          DatabaseHelper.database().resetData();
          DatabaseHelper.database().addAdminUser();
          DatabaseHelper.database().addTranslatorUser();
       }
-
    }
 
    private boolean isResetEnabled()
@@ -55,6 +54,7 @@ public class ResetDatabaseRule extends ExternalResource
       // by default it will reset database after
       if (isResetEnabled() && !configSet.contains(Config.NoResetAfter))
       {
+         DatabaseHelper.database().obliterateDatabase();
          DatabaseHelper.database().resetData();
          log.info("reset database after");
       }
