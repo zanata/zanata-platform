@@ -32,6 +32,10 @@
                 return confirm("#{messages['jsf.transmemory.ConfirmClearTM']}");
             }
 
+            function confirmExport() {
+                return confirm("#{messages['jsf.transmemory.ConfirmExport']}");
+            }
+
             function submitUpload() {
                 disableUploadDialog();
                 var uploadForm = jQuery("#uploadFileForm");
@@ -127,9 +131,15 @@
                             </h:outputText>
                         </rich:column>
                         <rich:column style="text-align: center">
-                            <f:facet name="header">#{messages['jsf.Upload']}</f:facet>
+                            <f:facet name="header">#{messages['jsf.transmemory.Import']}</f:facet>
                             <a href="#" onclick="return showUploadPanel('#{tm.slug}')">
-                                <span class="icon-upload icon" title="#{messages['jsf.transmemory.Upload.Title']}"/>
+                                <span class="icon-upload icon" title="#{messages['jsf.transmemory.Import.Title']}"/>
+                            </a>
+                        </rich:column>
+                        <rich:column style="text-align: center">
+                            <f:facet name="header">#{messages['jsf.transmemory.Export']}</f:facet>
+                            <a href="#{request.contextPath}/rest/tm/#{tm.slug}" onclick="return confirmExport()">
+                                <span class="icon-download icon" title="#{messages['jsf.transmemory.Export.Title']}"/>
                             </a>
                         </rich:column>
                         <rich:column style="text-align: center">
@@ -151,7 +161,7 @@
             <form id="uploadFileForm" action="/" method="post">
                 <input type="file" name="uploadedFile"/>
                 <div>
-                    <input type="button" name="uploadBtn" value="#{messages['jsf.Upload']}" onclick="submitUpload()"/>
+                    <input type="button" name="uploadBtn" value="#{messages['jsf.transmemory.Import']}" onclick="submitUpload()"/>
                     <input type="button" name="cancelBtn" value="#{messages['jsf.Cancel']}" onclick="hideUploadPanel()"/>
                 </div>
             </form>

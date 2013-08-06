@@ -26,6 +26,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -115,6 +116,7 @@ public class TransMemoryUnit extends ModelEntityBase implements HasTMMetadata
    private TMMetadataType metadataType;
 
    @Column(nullable = true)
+   @Basic(fetch = FetchType.LAZY)
    private String metadata;
 
    public TransMemoryUnit(String uniqueId)

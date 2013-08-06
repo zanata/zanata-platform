@@ -26,11 +26,13 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.MapKeyColumn;
@@ -90,6 +92,7 @@ public class TransMemoryUnitVariant extends ModelEntityBase implements HasTMMeta
    private TMMetadataType metadataType;
 
    @Column(nullable = true)
+   @Basic(fetch = FetchType.LAZY)
    private String metadata;
 
    public static TransMemoryUnitVariant tuv(String language, String content)
