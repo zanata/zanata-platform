@@ -23,13 +23,10 @@ package org.zanata.common.util;
 
 import static javax.xml.stream.XMLStreamConstants.*;
 
-import java.io.File;
-import java.io.FileReader;
 import java.util.Iterator;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.events.Attribute;
@@ -38,7 +35,6 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.stax.StAXSource;
 
@@ -132,7 +128,7 @@ public class ElementBuilder
       return xElem;
    }
 
-   private static void copyAttributes(XMLStreamReader reader, Element toElem)
+   public static void copyAttributes(XMLStreamReader reader, Element toElem)
    {
       assert reader.getEventType() == START_ELEMENT;
       for (int i=0; i < reader.getAttributeCount(); i++)
@@ -149,7 +145,7 @@ public class ElementBuilder
       }
    }
 
-   private static void copyAttributes(StartElement fromElem, Element toElem)
+   public static void copyAttributes(StartElement fromElem, Element toElem)
    {
       Iterator<Attribute> attributes = fromElem.getAttributes();
       while (attributes.hasNext())
@@ -185,6 +181,7 @@ public class ElementBuilder
    {
       try
       {
+         if (name.equals("ENUMERATED")) return Type.ENUMERATION;
          return (Type) Type.class.getField(name).get(null);
       }
       catch (NoSuchFieldException e)
