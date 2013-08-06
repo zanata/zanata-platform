@@ -86,7 +86,7 @@
 		     	</ui:repeat>
 		     	<s:fragment rendered="#{activityAction.hasMoreActivities()}">
 			    	<a4j:commandLink styleClass="d--top loader" action="#{activityAction.loadNextActivity()}" render="activityList">
-				    	<span class="loader__label">#{messages['jsf.moreActivity']}</span>
+				    	<span id="moreActivity" class="loader__label">#{messages['jsf.moreActivity']}</span>
 				    </a4j:commandLink>
 			    </s:fragment>
 			</ul>

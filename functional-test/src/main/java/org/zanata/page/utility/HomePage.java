@@ -29,9 +29,11 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.zanata.page.BasePage;
 import org.zanata.page.administration.EditHomeCodePage;
 import org.zanata.page.administration.EditHomeContentPage;
+import org.zanata.util.WebElementUtil;
 
 @Slf4j
 public class HomePage extends BasePage
@@ -98,5 +100,21 @@ public class HomePage extends BasePage
          return listWrapper.findElements(By.xpath("./li"));
       }
       return new ArrayList<WebElement>();
+   }
+
+   public void clickMoreActivity()
+   {
+      WebElement moreActivity = getMoreActivityElement();
+      if (moreActivity != null)
+      {
+         moreActivity.click();
+         WebElementUtil.waitForTenSeconds(getDriver()).until(
+               ExpectedConditions.invisibilityOfElementLocated(By.className("loader__spinner")));
+      }
+   }
+
+   public WebElement getMoreActivityElement()
+   {
+      return getDriver().findElement(By.id("moreActivity"));
    }
 }

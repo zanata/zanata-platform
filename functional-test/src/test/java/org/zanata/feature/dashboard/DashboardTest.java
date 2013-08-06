@@ -20,6 +20,8 @@
  */
 package org.zanata.feature.dashboard;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.concordion.api.extension.Extensions;
 import org.concordion.ext.ScreenshotExtension;
 import org.concordion.ext.TimestampFormatterExtension;
@@ -37,6 +39,7 @@ import org.zanata.workflow.LoginWorkFlow;
 @RunWith(ConcordionRunner.class)
 @Extensions({ ScreenshotExtension.class, TimestampFormatterExtension.class, CustomResourceExtension.class })
 @Category(ConcordionTest.class)
+@Slf4j
 public class DashboardTest
 {
    @ClassRule
@@ -70,10 +73,24 @@ public class DashboardTest
    {
       return !homePage.getMyActivityList().isEmpty();
    }
+   
+   public int myActivitiesCount()
+   {
+      return homePage.getMyActivityList().size();
+   }
+   
+   public boolean myActivitiesCountIsMoreThan(int compareTo)
+   {
+      return homePage.getMyActivityList().size() > compareTo;
+   }
 
    public boolean maintainedProjectNotEmpty()
    {
       return !homePage.getMyMaintainedProject().isEmpty();
-
+   }
+   
+   public void clickMoreActivity()
+   {
+      homePage.clickMoreActivity();
    }
 }
