@@ -22,6 +22,8 @@ package org.zanata.model.tm;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.annotation.Nonnull;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
@@ -137,12 +139,10 @@ public class TransMemoryUnit extends ModelEntityBase implements HasTMMetadata
    }
 
    @Override
-   public void setMetadata(TMMetadataType tmType, String metadata)
+   public void setMetadata(@Nonnull TMMetadataType tmType, String metadata)
    {
-      if (getMetadataType() != null && getMetadataType() != tmType)
-      {
-         throw new RuntimeException("Only one type of metadata is supported");
-      }
+      assert this.metadataType == null || this.metadataType == tmType :
+         "Only one type of metadata is supported for this entity";
       setMetadataType(tmType);
       setMetadata(metadata);
    }

@@ -22,6 +22,8 @@ package org.zanata.model.tm;
 
 import java.util.Map;
 import java.util.Set;
+
+import javax.annotation.Nonnull;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
@@ -92,7 +94,7 @@ public class TransMemory extends SlugEntityBase implements HasTMMetadata
    }
 
    @Override
-   public void setMetadata(TMMetadataType tmType, String metadata)
+   public void setMetadata(@Nonnull TMMetadataType tmType, String metadata)
    {
       this.metadata.put(tmType, metadata);
    }

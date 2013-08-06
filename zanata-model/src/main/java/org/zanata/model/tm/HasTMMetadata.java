@@ -21,6 +21,8 @@
 
 package org.zanata.model.tm;
 
+import javax.annotation.Nonnull;
+
 import org.zanata.model.HasEntityDates;
 
 /**
@@ -30,5 +32,5 @@ import org.zanata.model.HasEntityDates;
 public interface HasTMMetadata extends HasEntityDates
 {
    String getMetadata(TMMetadataType tmType);
-   void setMetadata(TMMetadataType tmType, String metadata);
+   void setMetadata(@Nonnull TMMetadataType tmType, String metadata);
 }
