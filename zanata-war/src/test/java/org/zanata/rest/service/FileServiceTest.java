@@ -22,46 +22,24 @@ package org.zanata.rest.service;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 
-import org.hibernate.LobHelper;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.zanata.common.DocumentType;
-import org.zanata.common.EntityStatus;
-import org.zanata.dao.DocumentDAO;
-import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.file.FilePersistService;
-import org.zanata.model.HDocument;
-import org.zanata.model.HProject;
-import org.zanata.model.HProjectIteration;
-import org.zanata.model.HRawDocument;
+import org.zanata.file.GlobalDocumentId;
+import org.zanata.file.SourceDocumentUpload;
+import org.zanata.file.TranslationDocumentUpload;
 import org.zanata.rest.DocumentFileUploadForm;
-import org.zanata.rest.dto.ChunkUploadResponse;
-import org.zanata.rest.dto.resource.Resource;
 import org.zanata.seam.SeamAutowire;
-import org.zanata.security.ZanataCredentials;
-import org.zanata.security.ZanataIdentity;
-import org.zanata.service.DocumentService;
-import org.zanata.service.TranslationFileService;
-
-import com.google.common.base.Optional;
 
 /**
  * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
@@ -69,29 +47,25 @@ import com.google.common.base.Optional;
 @Test(groups = { "unit-tests" })
 public class FileServiceTest
 {
-
-   private static final String basicDocumentContent = "test";
-   private static final String hashOfBasicDocumentContent = "d41d8cd98f00b204e9800998ecf8427e";
+   private static final String PROJ_SLUG = "project-slug";
+   private static final String VER_SLUG = "version-slug";
+   private static final String DOC_ID = "docId";
+   private static final String LOCALE = "es";
+   private static final String MERGE = "auto";
 
    SeamAutowire seam = SeamAutowire.instance();
 
-   @Mock private ZanataIdentity identity;
+   @Mock private SourceDocumentUpload sourceUploader;
+   @Mock private TranslationDocumentUpload transUploader;
 
-   @Mock private ProjectIterationDAO projectIterationDAO;
-   @Mock private TranslationFileService translationFileService;
-   @Mock private DocumentService documentService;
-   @Mock private DocumentDAO documentDAO;
-
-   @Mock private FilePersistService filePersistService;
-   @Mock private LobHelper lobHelper;
-
-   @Mock private HProject project;
-   @Mock private HProjectIteration projectIteration;
-
-   @Captor private ArgumentCaptor<Optional<String>> paramCaptor;
-   @Captor private ArgumentCaptor<HRawDocument> persistedRawDocument;
+   @Captor private ArgumentCaptor<DocumentFileUploadForm> formCaptor;
 
    private FileResource fileService;
+
+   private GlobalDocumentId id;
+   private DocumentFileUploadForm form;
+   private Response okResponse;
+   private Response response;
 
    @BeforeMethod
    public void beforeTest()
@@ -100,445 +74,52 @@ public class FileServiceTest
 
       seam.reset();
       seam.ignoreNonResolvable()
-      .use("identity", identity)
-      .use("projectIterationDAO", projectIterationDAO)
-      .use("translationFileServiceImpl", translationFileService)
-      .use("documentServiceImpl", documentService)
-      .use("documentDAO", documentDAO)
-      .use("filePersistService", filePersistService)
-      .allowCycles();
+            .use("sourceDocumentUploader", sourceUploader)
+            .use("translationDocumentUploader", transUploader)
+            .allowCycles();
 
       fileService = seam.autowire(FileService.class);
+
+      id = new GlobalDocumentId(PROJ_SLUG, VER_SLUG, DOC_ID);
+      form = new DocumentFileUploadForm();
+      okResponse = Response.ok().build();
    }
 
-   public void respondUnauthorizedIfNotLoggedIn()
+   @AfterMethod
+   public void afterMethod()
    {
-      mockLoggedIn(false);
-      assertErrorResponse(
-            fileService.uploadSourceFile("project", "version", "doc", new DocumentFileUploadForm()),
-            Status.UNAUTHORIZED,
-            "Valid combination of username and api-key for this server were not included in the request.");
+      id = null;
+      form = null;
+      okResponse = null;
+      response = null;
    }
 
-   public void usefulMessageIfNoFileContent()
+   public void sourceUploadParamsHandledCorrectly()
    {
-      MockConfig conf = defaultUpload().fileStream(null).build();
-      mockLoggedIn(true);
-      assertErrorResponse(
-            fileService.uploadSourceFile(conf.projectSlug, conf.versionSlug, conf.docId, conf.uploadForm),
-            Status.PRECONDITION_FAILED,
-            "Required form parameter 'file' containing file content was not found.");
+      when(sourceUploader.tryUploadSourceFile(eq(id), formCaptor.capture())).thenReturn(okResponse);
+      fileService.uploadSourceFile(PROJ_SLUG, VER_SLUG, DOC_ID, form);
+      assertThat(formCaptor.getValue(), is(sameInstance(form)));
    }
 
-   public void usefulMessageIfNoFileType()
+   public void sourceUploadResponseReturnedDirectly()
    {
-      MockConfig conf = defaultUpload().fileType(null).build();
-      mockLoggedIn(true);
-      assertErrorResponse(
-            fileService.uploadSourceFile(conf.projectSlug, conf.versionSlug, conf.docId, conf.uploadForm),
-            Status.PRECONDITION_FAILED,
-            "Required form parameter 'type' was not found.");
+      when(sourceUploader.tryUploadSourceFile(id, form)).thenReturn(okResponse);
+      response = fileService.uploadSourceFile(PROJ_SLUG, VER_SLUG, DOC_ID, form);
+      assertThat(response, is(sameInstance(okResponse)));
    }
 
-   public void usefulMessageIfNoContentHash()
+   public void translationUploadParamsHandledCorrectly()
    {
-      MockConfig conf = defaultUpload().hash(null).build();
-      mockLoggedIn(true);
-      assertErrorResponse(
-            fileService.uploadSourceFile(conf.projectSlug, conf.versionSlug, conf.docId, conf.uploadForm),
-            Status.PRECONDITION_FAILED,
-            "Required form parameter 'hash' was not found.");
+      when(transUploader.tryUploadTranslationFile(eq(id), eq(LOCALE), eq(MERGE), formCaptor.capture()))
+            .thenReturn(okResponse);
+      fileService.uploadTranslationFile(PROJ_SLUG, VER_SLUG, LOCALE, DOC_ID, MERGE, form);
+      assertThat(formCaptor.getValue(), is(sameInstance(form)));
    }
 
-   public void usefulMessageIfProjectIsReadOnly() throws IOException
+   public void translationUploadResponseReturnedDirectly()
    {
-      testUsefulMessageForInactiveProject(EntityStatus.READONLY);
-   }
-
-   public void usefulMessageIfProjectIsObsolete() throws IOException
-   {
-      testUsefulMessageForInactiveProject(EntityStatus.OBSOLETE);
-   }
-
-   private void testUsefulMessageForInactiveProject(EntityStatus nonActiveStatus) throws IOException
-   {
-      MockConfig conf = defaultUpload().projectStatus(nonActiveStatus).build();
-      mockRequiredServices(conf);
-
-      assertErrorResponse(
-            fileService.uploadSourceFile(conf.projectSlug, conf.versionSlug, conf.docId, conf.uploadForm),
-            Status.FORBIDDEN,
-            "The project \"myproject\" is not active. Document upload is not allowed.");
-   }
-
-   public void usefulMessageIfVersionIsReadOnly() throws IOException
-   {
-      testUsefulMessageForInactiveVersion(EntityStatus.READONLY);
-   }
-
-   public void usefulMessageIfVersionIsObsolete() throws IOException
-   {
-      testUsefulMessageForInactiveVersion(EntityStatus.OBSOLETE);
-   }
-
-   private void testUsefulMessageForInactiveVersion(EntityStatus nonActiveStatus) throws IOException
-   {
-      MockConfig conf = defaultUpload().versionStatus(nonActiveStatus).build();
-      mockRequiredServices(conf);
-
-      assertErrorResponse(
-            fileService.uploadSourceFile(conf.projectSlug, conf.versionSlug, conf.docId, conf.uploadForm),
-            Status.FORBIDDEN,
-            "The project-version \"myproject:myversion\" is not active. Document upload is not allowed.");
-   }
-
-   public void usefulMessageWhenSourceUploadNotAllowed() throws IOException
-   {
-      MockConfig conf = defaultUpload().hasImportTemplatePermission(false).build();
-      mockRequiredServices(conf);
-
-      assertErrorResponse(
-            fileService.uploadSourceFile(conf.projectSlug, conf.versionSlug, conf.docId, conf.uploadForm),
-            Status.FORBIDDEN,
-            "You do not have permission to upload source documents to project-version \"myproject:myversion\".");
-   }
-
-   public void usefulMessageWhenFileTypeInvalid() throws IOException
-   {
-      // Note: could pass non-valid type rather than hacking it at the back
-      MockConfig conf = defaultUpload().plaintextAdapterAvailable(false).build();
-      mockRequiredServices(conf);
-
-      assertErrorResponse(
-            fileService.uploadSourceFile(conf.projectSlug, conf.versionSlug, conf.docId, conf.uploadForm),
-            Status.BAD_REQUEST,
-            "The type \"txt\" specified in form parameter 'type' is not valid for a source file on this server.");
-   }
-
-   public void usefulMessageWhenHashInvalid() throws IOException
-   {
-      MockConfig conf = defaultUpload().hash("incorrect hash").build();
-      mockRequiredServices(conf);
-
-      assertErrorResponse(
-            fileService.uploadSourceFile(conf.projectSlug, conf.versionSlug, conf.docId, conf.uploadForm),
-            Status.CONFLICT,
-            "MD5 hash \"incorrect hash\" sent with request does not match server-generated hash. Aborted upload operation.");
-   }
-
-   public void canUploadNewDocument() throws IOException
-   {
-      MockConfig conf = defaultUpload().build();
-      mockRequiredServices(conf);
-
-      Response response = fileService.uploadSourceFile(conf.projectSlug, conf.versionSlug, conf.docId, conf.uploadForm);
-
-      assertThat(Status.fromStatusCode(response.getStatus()), is(Status.CREATED));
-      ChunkUploadResponse chunkResponse = (ChunkUploadResponse) response.getEntity();
-      assertThat(chunkResponse.getAcceptedChunks(), is(1));
-      assertThat(chunkResponse.isExpectingMore(), is(false));
-      assertThat(chunkResponse.getSuccessMessage(),
-            is("Upload of new source document successful."));
-      assertThat(chunkResponse.getErrorMessage(), is(nullValue()));
-   }
-
-   public void canUploadExistingDocument() throws IOException
-   {
-      MockConfig conf = defaultUpload().existingDocument(new HDocument()).build();
-      mockRequiredServices(conf);
-
-      Response response = fileService.uploadSourceFile(conf.projectSlug, conf.versionSlug, conf.docId, conf.uploadForm);
-
-      assertThat(Status.fromStatusCode(response.getStatus()), is(Status.OK));
-      ChunkUploadResponse chunkResponse = (ChunkUploadResponse) response.getEntity();
-      assertThat(chunkResponse.getAcceptedChunks(), is(1));
-      assertThat(chunkResponse.isExpectingMore(), is(false));
-      assertThat(chunkResponse.getSuccessMessage(),
-            is("Upload of new version of source document successful."));
-      assertThat(chunkResponse.getErrorMessage(), is(nullValue()));
-   }
-
-   public void usesGivenParameters() throws IOException
-   {
-      MockConfig conf = defaultUpload().build();
-      mockRequiredServices(conf);
-      fileService.uploadSourceFile(conf.projectSlug, conf.versionSlug, conf.docId, conf.uploadForm);
-      assertThat(paramCaptor.getValue().get(), is(conf.params));
-   }
-
-   public void fallsBackOnStoredParameters() throws IOException
-   {
-      MockConfig conf = defaultUpload().params(null).build();
-      mockRequiredServices(conf);
-      fileService.uploadSourceFile(conf.projectSlug, conf.versionSlug, conf.docId, conf.uploadForm);
-      assertThat(paramCaptor.getValue().get(), is(conf.storedParams));
-   }
-
-   public void uploadParametersAreStored() throws IOException
-   {
-      MockConfig conf = defaultUpload().build();
-      mockRequiredServices(conf);
-      fileService.uploadSourceFile(conf.projectSlug, conf.versionSlug, conf.docId, conf.uploadForm);
-      assertThat(persistedRawDocument.getValue().getAdapterParameters(), is(conf.params));
-   }
-
-   public void storedParametersNotOverwrittenWithEmpty() throws IOException
-   {
-      MockConfig conf = defaultUpload().params("").build();
-      mockRequiredServices(conf);
-      fileService.uploadSourceFile(conf.projectSlug, conf.versionSlug, conf.docId, conf.uploadForm);
-      assertThat(persistedRawDocument.getValue().getAdapterParameters(), is(conf.storedParams));
-   }
-
-   private static void assertErrorResponse(Response response, Status errorStatus, String errorMessage)
-   {
-      assertThat(Status.fromStatusCode(response.getStatus()), is(errorStatus));
-      ChunkUploadResponse chunkResponse = (ChunkUploadResponse) response.getEntity();
-      assertThat(chunkResponse.getAcceptedChunks(), is(0));
-      assertThat(chunkResponse.isExpectingMore(), is(false));
-      assertThat(chunkResponse.getErrorMessage(),
-            is(errorMessage));
-   }
-
-   private void mockRequiredServices(MockConfig conf) throws IOException
-   {
-      mockLoggedIn(true);
-      mockProjectAndVersionStatus(conf);
-      when(identity.hasPermission("import-template", projectIteration)).thenReturn(conf.hasImportTemplatePermission);
-      when(translationFileService.hasAdapterFor(DocumentType.PLAIN_TEXT)).thenReturn(conf.plaintextAdapterAvailable);
-      ZanataCredentials creds = new ZanataCredentials();
-      creds.setUsername("johnsmith");
-      when(identity.getCredentials()).thenReturn(creds);
-      File someFile = File.createTempFile("tests", "something");
-      when(translationFileService.persistToTempFile(Matchers.<InputStream>any())).thenReturn(someFile);
-      when(documentDAO.getAdapterParams(conf.projectSlug, conf.versionSlug, conf.docId))
-            .thenReturn(Optional.fromNullable(conf.storedParams));
-      when(documentDAO.addRawDocument(Matchers.<HDocument>any(), persistedRawDocument.capture()))
-            .thenReturn(new HRawDocument());
-      when(documentDAO.getByProjectIterationAndDocId(conf.projectSlug, conf.versionSlug,
-            conf.docId)).thenReturn(conf.existingDocument);
-      when(documentDAO.getLobHelper()).thenReturn(lobHelper);
-      Resource document = new Resource();
-      when(translationFileService.parseUpdatedAdapterDocumentFile(
-            Matchers.<URI>any(), eq(conf.docId), eq(conf.fileType), paramCaptor.capture()))
-            .thenReturn(document);
-      when(documentService.saveDocument(eq(conf.projectSlug), eq(conf.versionSlug), Matchers.<Resource>any(),
-            Matchers.anySet(), Matchers.anyBoolean()))
-            .thenReturn(new HDocument());
-   }
-
-   private void mockLoggedIn(boolean loggedIn)
-   {
-      when(identity.isLoggedIn()).thenReturn(loggedIn);
-   }
-
-   private void mockProjectAndVersionStatus(MockConfig conf)
-   {
-      when(projectIterationDAO.getBySlug(conf.projectSlug, conf.versionSlug)).thenReturn(projectIteration);
-      when(projectIteration.getProject()).thenReturn(project);
-      when(project.getStatus()).thenReturn(conf.projectStatus);
-      when(projectIteration.getStatus()).thenReturn(conf.versionStatus);
-   }
-
-   /**
-    * @return builder with default valid set of upload parameters
-    *         for a valid 4-character plain text document that
-    *         does not yet exist in the server.
-    */
-   public static MockConfig.Builder defaultUpload()
-   {
-      MockConfig.Builder builder = new MockConfig.Builder();
-      builder.setSimpleUpload();
-      return builder;
-   }
-
-
-   /**
-    * Simplifies setup of mock scenarios that differ slightly from a standard scenario.
-    * 
-    * Exposes immutable fields to be used when mocking so that it is easy to use the
-    * same values when verifying.
-    *
-    */
-   private static class MockConfig
-   {
-      // exposed for reference in test assertions
-      public final String fileType;
-      public final boolean first, last;
-      public final long size;
-      // or just a string
-      public final InputStream fileStream;
-      public final String hash;
-      public final String params, storedParams;
-
-      public final DocumentFileUploadForm uploadForm;
-
-      public final String projectSlug, versionSlug, docId;
-      public final EntityStatus projectStatus, versionStatus;
-
-      public HDocument existingDocument;
-
-      public final boolean hasImportTemplatePermission, plaintextAdapterAvailable;
-
-      private MockConfig(Builder builder)
-      {
-         projectSlug = builder.projectSlug;
-         versionSlug = builder.versionSlug;
-         docId = builder.docId;
-         projectStatus = builder.projectStatus;
-         versionStatus = builder.versionStatus;
-
-         fileType = builder.fileType;
-         first = builder.first;
-         last = builder.last;
-         size = builder.size;
-         fileStream = builder.fileStream;
-         hash = builder.hash;
-         params = builder.params;
-         storedParams = builder.storedParams;
-
-         uploadForm = new DocumentFileUploadForm();
-         uploadForm.setFileType(fileType);
-         uploadForm.setFirst(first);
-         uploadForm.setLast(last);
-         uploadForm.setSize(size);
-         uploadForm.setFileStream(fileStream);
-         uploadForm.setHash(hash);
-         uploadForm.setAdapterParams(params);
-
-         existingDocument = builder.existingDocument;
-
-         hasImportTemplatePermission = builder.hasImportTemplatePermission;
-         plaintextAdapterAvailable = builder.plaintextAdapterAvailable;
-      }
-
-      private static class Builder
-      {
-         private String projectSlug, versionSlug, docId;
-         private EntityStatus projectStatus, versionStatus;
-         private String fileType;
-         private boolean first, last;
-         private long size;
-         private InputStream fileStream;
-         private String hash;
-         private String params, storedParams;
-         public HDocument existingDocument;
-         private boolean hasImportTemplatePermission, plaintextAdapterAvailable;
-
-         public Builder projectSlug(String projectSlug)
-         {
-            this.projectSlug = projectSlug;
-            return this;
-         }
-         public Builder versionSlug(String versionSlug)
-         {
-            this.versionSlug = versionSlug;
-            return this;
-         }
-         public Builder docId(String docId)
-         {
-            this.docId = docId;
-            return this;
-         }
-         public Builder projectStatus(EntityStatus projectStatus)
-         {
-            this.projectStatus = projectStatus;
-            return this;
-         }
-         public Builder versionStatus(EntityStatus versionStatus)
-         {
-            this.versionStatus = versionStatus;
-            return this;
-         }
-         public Builder fileType(String fileType)
-         {
-            this.fileType = fileType;
-            return this;
-         }
-         public Builder first(boolean first)
-         {
-            this.first = first;
-            return this;
-         }
-         public Builder last(boolean last)
-         {
-            this.last = last;
-            return this;
-         }
-         public Builder size(long size)
-         {
-            this.size = size;
-            return this;
-         }
-         public Builder fileStream(InputStream fileStream)
-         {
-            this.fileStream = fileStream;
-            return this;
-         }
-         public Builder hash(String hash)
-         {
-            this.hash = hash;
-            return this;
-         }
-         public Builder params(String params)
-         {
-            this.params = params;
-            return this;
-         }
-         public Builder storedParams(String storedParams)
-         {
-            this.storedParams = storedParams;
-            return this;
-         }
-         public Builder existingDocument(HDocument document)
-         {
-            this.existingDocument = document;
-            return this;
-         }
-         public Builder hasImportTemplatePermission(boolean hasPermission)
-         {
-            this.hasImportTemplatePermission = hasPermission;
-            return this;
-         }
-         public Builder plaintextAdapterAvailable(boolean available)
-         {
-            this.plaintextAdapterAvailable = available;
-            return this;
-         }
-
-         public Builder setSimpleUpload()
-         {
-            projectSlug = "myproject";
-            versionSlug = "myversion";
-            docId = "mydoc";
-            projectStatus = EntityStatus.ACTIVE;
-            versionStatus = EntityStatus.ACTIVE;
-
-            fileType("txt");
-            first = true;
-            last = true;
-            size = 4L;
-            fileStream = new ByteArrayInputStream(basicDocumentContent.getBytes());
-            hash = hashOfBasicDocumentContent;
-            params = "params";
-            storedParams = "stored params";
-
-            existingDocument = null;
-
-            hasImportTemplatePermission = true;
-            plaintextAdapterAvailable = true;
-
-            return this;
-         }
-
-         /**
-          * Set up mocks based on configured values.
-          */
-         public MockConfig build()
-         {
-            return new MockConfig(this);
-         }
-
-      }
+      when(transUploader.tryUploadTranslationFile(id, LOCALE, MERGE, form)).thenReturn(okResponse);
+      response = fileService.uploadTranslationFile(PROJ_SLUG, VER_SLUG, LOCALE, DOC_ID, MERGE, form);
+      assertThat(response, is(sameInstance(okResponse)));
    }
 }
