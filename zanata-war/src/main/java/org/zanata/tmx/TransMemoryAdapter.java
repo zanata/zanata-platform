@@ -84,8 +84,8 @@ public class TransMemoryAdapter
 
       tu.setUniqueId(determineUniqueId(tu));
 
-      removeExistingTUIfAny(tm.getSlug(), tu.getUniqueId());
-      entityManager.persist(tu);
+      tu = mergeWithExistingTUIfAny(tu);
+      entityManager.merge(tu);
    }
 
    private String determineUniqueId(TransMemoryUnit tu)
@@ -142,13 +142,21 @@ public class TransMemoryAdapter
       return new LocaleId(language).getId();
    }
 
-   private void removeExistingTUIfAny(String tmSlug, String uniqueId)
+   private TransMemoryUnit mergeWithExistingTUIfAny(TransMemoryUnit newTU)
    {
-      TransMemoryUnit existingTu = transMemoryDAO.findTranslationUnit(tmSlug, uniqueId);
+      TransMemoryUnit existingTu = transMemoryDAO.findTranslationUnit(newTU.getTranslationMemory().getSlug(),
+            newTU.getUniqueId());
       if( existingTu != null )
       {
-         entityManager.remove(existingTu);
+         existingTu.setMetadata(newTU.getMetadataType(), newTU.getMetadata());
+         existingTu.setPosition(newTU.getPosition());
+         existingTu.setSourceLanguage(newTU.getSourceLanguage());
+         existingTu.setTransUnitId(newTU.getTransUnitId());
+         existingTu.setTransUnitVariants( newTU.getTransUnitVariants() );
+         // No need to set the unique id or parent Trans Memory, it should be the same
+         return existingTu;
       }
+      return newTU;
    }
 
 }
