@@ -118,6 +118,7 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
    }
 
    @Override
+   @Restrict("#{s:hasRole('admin')}")
    public Response getTranslationMemory(@Nonnull String slug)
    {
       log.debug("exporting TMX for translation memory {}", slug);
