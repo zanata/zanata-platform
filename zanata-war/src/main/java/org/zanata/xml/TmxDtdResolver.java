@@ -37,11 +37,18 @@ import org.xml.sax.SAXException;
  */
 public class TmxDtdResolver implements XMLResolver, EntityResolver
 {
+   // example system IDs:
+   // http://www.lisa.org/tmx/tmx14.dtd
+   // http://www.ttt.org/oscarstandards/tmx/tmx14.dtd
+   private static boolean isTMX14(String systemId)
+   {
+      return systemId.endsWith("tmx14.dtd");
+   }
 
    @Override
    public Object resolveEntity(String publicID, String systemID, String baseURI, String namespace) throws XMLStreamException
    {
-      if ("http://www.lisa.org/tmx/tmx14.dtd".equals(systemID))
+      if (isTMX14(systemID))
       {
          InputStream stream = getClass().getResourceAsStream("tmx14.dtd");
          return stream;
@@ -55,7 +62,7 @@ public class TmxDtdResolver implements XMLResolver, EntityResolver
    @Override
    public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException
    {
-      if ("http://www.lisa.org/tmx/tmx14.dtd".equals(systemId))
+      if (isTMX14(systemId))
       {
          InputStream stream = getClass().getResourceAsStream("tmx14.dtd");
          return new InputSource(stream);
