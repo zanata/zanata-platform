@@ -159,7 +159,6 @@ abstract class TMXStreamingOutputTest
       output.write(writerOutputStream);
       writerOutputStream.close();
       String xml = sbWriter.toString();
-      System.out.println(xml);
       assertValidTMX(xml);
       DocumentBuilder controlParser = XMLUnit.newControlParser();
       controlParser.setEntityResolver(new TmxDtdResolver());
