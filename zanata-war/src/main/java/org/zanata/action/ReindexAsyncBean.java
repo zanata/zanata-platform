@@ -23,7 +23,6 @@ import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
-import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.process.RunnableProcess;
@@ -72,7 +71,6 @@ public class ReindexAsyncBean extends RunnableProcess<IndexerProcessHandle> impl
 
       // NB we put the largest tables at the bottom, so that the small
       // tables can be indexed early
-      indexables.add(HTextFlow.class);
       indexables.add(HTextFlowTarget.class);
 
       for (Class<?> clazz : indexables)
