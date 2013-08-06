@@ -269,7 +269,7 @@ public class TMXMetadataHelper
    {
       if (lang.contains("_"))
       {
-         log.debug("Converting invalid locale to BCP47: "+lang);
+         log.debug("Converting invalid locale to BCP47: {}", lang);
          return LocaleId.fromJavaName(lang).getId();
       }
       return new LocaleId(lang).getId();

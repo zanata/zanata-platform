@@ -30,8 +30,6 @@ import nu.xom.Elements;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.transaction.Transaction;
-import org.zanata.common.LocaleId;
 import org.zanata.dao.TransMemoryDAO;
 import org.zanata.model.tm.TransMemoryUnitVariant;
 import org.zanata.model.tm.TransMemoryUnit;
@@ -132,14 +130,7 @@ public class TransMemoryAdapter
       TransMemoryUnitVariant tuv = new TransMemoryUnitVariant();
       tuv.setTaggedSegment(taggedSegment);
       TMXMetadataHelper.setMetadata(tuv, tuvElem);
-      String locale = validLocale(tuv.getLanguage());
-      tu.getTransUnitVariants().put(locale, tuv);
-   }
-
-   private String validLocale(String language) throws IllegalArgumentException
-   {
-      // Throws IllegalArgumentException for illegal locale code
-      return new LocaleId(language).getId();
+      tu.getTransUnitVariants().put(tuv.getLanguage(), tuv);
    }
 
    private TransMemoryUnit mergeWithExistingTUIfAny(TransMemoryUnit newTU)
