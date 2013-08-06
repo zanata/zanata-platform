@@ -29,6 +29,8 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.xml.XMLConstants;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -50,6 +52,7 @@ import nu.xom.Elements;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
+@Slf4j
 public class TMXMetadataHelper
 {
    private static final String EMPTY_NAMESPACE = XMLConstants.NULL_NS_URI;
@@ -264,6 +267,11 @@ public class TMXMetadataHelper
     */
    private static String getValidLang(String lang)
    {
+      if (lang.contains("_"))
+      {
+         log.debug("Converting invalid locale to BCP47: "+lang);
+         return LocaleId.fromJavaName(lang).getId();
+      }
       return new LocaleId(lang).getId();
    }
 

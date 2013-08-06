@@ -31,8 +31,10 @@ import static org.hamcrest.Matchers.notNullValue;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -52,6 +54,9 @@ import org.zanata.model.tm.TransMemory;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemoryUnitVariant;
 import org.zanata.seam.SeamAutowire;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -138,6 +143,26 @@ public class TMXParserTest extends ZanataDbunitJpaTest
       {
          assertThat(tu.getTransUnitVariants().size(), greaterThan(0));
       }
+   }
+
+   @Test
+   @org.junit.Test
+   public void parseDubiousTMX() throws Exception
+   {
+      // Create a TM
+      TransMemory tm = createTMFromFile("/tmx/dubious-tm-with-underscores.tmx");
+
+      // Make sure everything is stored properly
+      tm = getEm().find(TransMemory.class, tm.getId());
+      assertThat(tm.getTranslationUnits().size(), is(1));
+
+      assertThat(tm.getSourceLanguage(), equalTo("en-US"));
+
+      Set<String> expectedLocales = Sets.newHashSet(
+            "en-US", "es", "es-ES", "fr", "fr-FR", "he", "it", "it-IT");
+      TransMemoryUnit tu = tm.getTranslationUnits().iterator().next();
+      HashSet<String> actualLocales = Sets.newHashSet(tu.getTransUnitVariants().keySet());
+      assertThat(actualLocales, equalTo(expectedLocales));
    }
 
    @Test
