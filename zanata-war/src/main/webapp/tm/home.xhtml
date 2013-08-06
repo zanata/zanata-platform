@@ -32,6 +32,11 @@
                 return confirm("#{messages['jsf.transmemory.ConfirmClearTM']}");
             }
 
+            function confirmDeleteTm()
+            {
+                return confirm("#{messages['jsf.transmemory.ConfirmDeleteTM']}");
+            }
+
             function confirmExport() {
                 return confirm("#{messages['jsf.transmemory.ConfirmExport']}");
             }
@@ -143,12 +148,16 @@
                             </a>
                         </rich:column>
                         <rich:column style="text-align: center">
-                            <f:facet name="header">#{messages['jsf.Clear']}</f:facet>
-                            <a4j:commandLink value="#{messages['jsf.Clear']}"
-                                             action="#{translationMemoryAction.clearTransMemory(tm.slug)}"
-                                             render="tmList"
-                                             rendered="#{translationMemoryAction.getTranslationMemorySize(tm.slug) gt 0}"
-                                             onclick="return confirmClearTm()"/>
+                            <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+                            <a4j:commandButton value="#{messages['jsf.Clear']}"
+                                               action="#{translationMemoryAction.clearTransMemory(tm.slug)}"
+                                               render="tmList"
+                                               rendered="#{translationMemoryAction.getTranslationMemorySize(tm.slug) gt 0}"
+                                               onclick="return confirmClearTm()"/>
+                            <a4j:commandButton value="#{messages['jsf.Delete']}"
+                                               action="#{translationMemoryAction.deleteTransMemory(tm.slug)}"
+                                               render="tmList"
+                                               onclick="return confirmDeleteTm()"/>
                         </rich:column>
                     </rich:dataTable>
 
