@@ -1,5 +1,7 @@
 package org.zanata;
 
+import java.util.Map;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -8,20 +10,17 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
-import org.hibernate.persister.collection.AbstractCollectionPersister;
-import org.hibernate.persister.entity.EntityPersister;
 import org.zanata.testng.TestMethodListener;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import java.util.Map;
 
 @Listeners(TestMethodListener.class)
 @Test(groups = { "jpa-tests" })
@@ -34,9 +33,10 @@ public abstract class ZanataJpaTest
 
    protected EntityManager em;
 
-   Log log = Logging.getLog(ZanataJpaTest.class);
+   private static final Log log = Logging.getLog(ZanataJpaTest.class);
 
    @BeforeMethod
+   @Before
    public void setupEM()
    {
       log.debug("Setting up EM");
@@ -45,6 +45,7 @@ public abstract class ZanataJpaTest
    }
 
    @AfterMethod
+   @After
    public void shutdownEM()
    {
       log.debug("Shutting down EM");
@@ -73,19 +74,21 @@ public abstract class ZanataJpaTest
    }
 
    @BeforeSuite
-   public void initializeEMF()
+   @BeforeClass
+   public static void initializeEMF()
    {
       log.debug("Initializing EMF");
       emf = Persistence.createEntityManagerFactory(PERSIST_NAME, createPropertiesMap());
    }
 
-   protected Map<?, ?> createPropertiesMap()
+   protected static Map<?, ?> createPropertiesMap()
    {
       return null;
    }
 
    @AfterSuite
-   public void shutDownEMF()
+   @AfterClass
+   public static void shutDownEMF()
    {
       log.debug("Shutting down EMF");
       emf.close();
