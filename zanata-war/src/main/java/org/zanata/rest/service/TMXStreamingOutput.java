@@ -32,6 +32,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
 
 import nu.xom.Attribute;
+import nu.xom.DocType;
 import nu.xom.Element;
 import nu.xom.Text;
 
@@ -124,6 +125,8 @@ public class TMXStreamingOutput<T> implements StreamingOutput, Closeable
 
          StreamSerializer stream = new StreamSerializer(output);
          stream.writeXMLDeclaration();
+         stream.write(new DocType("tmx", "http://www.lisa.org/tmx/tmx14.dtd"));
+         stream.writeNewLine();
 
          Element tmx = new Element("tmx");
          tmx.addAttribute(new Attribute("version", "1.4"));

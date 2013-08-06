@@ -31,6 +31,7 @@ import java.io.StringReader;
 import java.net.MalformedURLException;
 
 import javax.ws.rs.core.StreamingOutput;
+import javax.xml.parsers.DocumentBuilder;
 
 import org.apache.commons.io.output.StringBuilderWriter;
 import org.apache.commons.io.output.WriterOutputStream;
@@ -45,6 +46,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import org.zanata.common.LocaleId;
+import org.zanata.xml.TmxDtdResolver;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -159,7 +161,9 @@ abstract class TMXStreamingOutputTest
       String xml = sbWriter.toString();
       System.out.println(xml);
       assertValidTMX(xml);
-      Document doc = XMLUnit.buildControlDocument(xml);
+      DocumentBuilder controlParser = XMLUnit.newControlParser();
+      controlParser.setEntityResolver(new TmxDtdResolver());
+      Document doc = XMLUnit.buildDocument(controlParser, new StringReader(xml));
       return doc;
    }
 

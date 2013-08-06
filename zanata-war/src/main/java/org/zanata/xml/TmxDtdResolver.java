@@ -21,16 +21,21 @@
 
 package org.zanata.xml;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import javax.xml.stream.XMLResolver;
 import javax.xml.stream.XMLStreamException;
 
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class TmxDtdResolver implements XMLResolver
+public class TmxDtdResolver implements XMLResolver, EntityResolver
 {
 
    @Override
@@ -40,6 +45,20 @@ public class TmxDtdResolver implements XMLResolver
       {
          InputStream stream = getClass().getResourceAsStream("tmx14.dtd");
          return stream;
+      }
+      else
+      {
+         return null;
+      }
+   }
+
+   @Override
+   public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException
+   {
+      if ("http://www.lisa.org/tmx/tmx14.dtd".equals(systemId))
+      {
+         InputStream stream = getClass().getResourceAsStream("tmx14.dtd");
+         return new InputSource(stream);
       }
       else
       {
