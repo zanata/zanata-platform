@@ -408,7 +408,6 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter
       {
          filter.getParameters().fromString(params.get());
       }
-      log.info("filter parameters: " + filter.getParameters());
    }
 
 }
