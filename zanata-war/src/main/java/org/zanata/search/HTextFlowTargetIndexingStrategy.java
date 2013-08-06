@@ -35,9 +35,9 @@ import org.zanata.model.HTextFlowTarget;
  */
 public class HTextFlowTargetIndexingStrategy extends AbstractIndexingStrategy<HTextFlowTarget>
 {
-   public HTextFlowTargetIndexingStrategy(FullTextSession session, IndexerProcessHandle handle, Class clazz)
+   public HTextFlowTargetIndexingStrategy(FullTextSession session)
    {
-      super(session, handle, clazz);
+      super(HTextFlowTarget.class, session);
    }
 
    @Override
@@ -47,22 +47,17 @@ public class HTextFlowTargetIndexingStrategy extends AbstractIndexingStrategy<HT
    }
 
    @Override
-   protected ScrollableResults getScrollableResults(FullTextSession session, Class clazz, int firstResult)
+   protected ScrollableResults queryResults(int ignoredOffset)
    {
-      Query query = getQuery(session, clazz);
+      // TODO move this query into something like HTextFlowTargetStreamingDAO
+      Query query = getSession().createQuery("from HTextFlowTarget tft " +
+      "join fetch tft.locale " +
+      "join fetch tft.textFlow " +
+      "join fetch tft.textFlow.document " +
+      "join fetch tft.textFlow.document.locale " +
+      "join fetch tft.textFlow.document.projectIteration " +
+      "join fetch tft.textFlow.document.projectIteration.project");
       query.setFetchSize(Integer.MIN_VALUE);
       return query.scroll(ScrollMode.FORWARD_ONLY);
-   }
-
-   @Override
-   protected Query getQuery(FullTextSession session, Class clazz)
-   {
-      return session.createQuery("from HTextFlowTarget tft " +
-            "join fetch tft.locale " +
-            "join fetch tft.textFlow " +
-            "join fetch tft.textFlow.document " +
-            "join fetch tft.textFlow.document.locale " +
-            "join fetch tft.textFlow.document.projectIteration " +
-            "join fetch tft.textFlow.document.projectIteration.project");
    }
 }

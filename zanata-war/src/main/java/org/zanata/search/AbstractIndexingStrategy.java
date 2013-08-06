@@ -1,6 +1,5 @@
 package org.zanata.search;
 
-import org.hibernate.Query;
 import org.hibernate.ScrollableResults;
 import org.hibernate.search.FullTextSession;
 
@@ -14,33 +13,33 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public abstract class AbstractIndexingStrategy<T>
 {
-   private IndexerProcessHandle handle;
    private int sessionClearBatchSize = 1000;
-   FullTextSession session;
-   Class<T> clazz;
-   ScrollableResults scrollableResults;
+   private ScrollableResults newScrollableResults;
+   private final Class<T> clazz;
+   private final FullTextSession session;
 
-
-   public AbstractIndexingStrategy(FullTextSession session, IndexerProcessHandle handle, Class<T> clazz)
+   /**
+    * @param clazz The type of entity to be returned by the Scrollable results
+    */
+   public AbstractIndexingStrategy(Class<T> clazz, FullTextSession session)
    {
-      this.session = session;
-      this.handle = handle;
       this.clazz = clazz;
+      this.session = session;
    }
 
    /**
     * Performs the indexing.
     */
-   public void invoke()
+   public void invoke(IndexerProcessHandle handle)
    {
       int n = 0;
+      newScrollableResults = queryResults(n);
       try
       {
-         scrollableResults = getScrollableResults(session, clazz, n);
-         while (scrollableResults.next() && !handle.shouldStop())
+         while (newScrollableResults.next() && !handle.shouldStop())
          {
             n++;
-            T entity = (T) scrollableResults.get(0); // index each element
+            T entity = (T) newScrollableResults.get(0); // index each element
             session.index(entity);
             handle.incrementProgress(1);
             if (n % sessionClearBatchSize == 0)
@@ -54,9 +53,9 @@ public abstract class AbstractIndexingStrategy<T>
       }
       finally
       {
-         if( scrollableResults != null )
+         if( newScrollableResults != null )
          {
-            scrollableResults.close();
+            newScrollableResults.close();
          }
       }
    }
@@ -68,18 +67,31 @@ public abstract class AbstractIndexingStrategy<T>
    protected abstract void onEntityIndexed(int n);
 
    /**
-    * Returns the Scrollable results
-    * @param session Session used to query and index the entities
+    * Returns the Scrollable results for instances of clazz
+    * @param offset
     * @param clazz The type of entity to be returned by the Scrollable results
-    * @param firstResult
     * @return
     */
-   protected abstract ScrollableResults getScrollableResults(FullTextSession session, Class<T> clazz, int firstResult);
+   protected abstract ScrollableResults queryResults(int offset);
 
-   /**
-    * Create a query which returns instances of clazz
-    * @param clazz The type of objects being returned by this query.
-    * @return
-    */
-   protected abstract Query getQuery(FullTextSession session, Class<T> clazz);
+   Class<T> getClazz()
+   {
+      return clazz;
+   }
+
+   ScrollableResults getScrollableResults()
+   {
+      return newScrollableResults;
+   }
+
+   void setScrollableResults(ScrollableResults scrollableResults)
+   {
+      this.newScrollableResults = scrollableResults;
+   }
+
+   FullTextSession getSession()
+   {
+      return session;
+   }
+
 }

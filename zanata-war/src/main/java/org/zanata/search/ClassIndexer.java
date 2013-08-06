@@ -36,25 +36,38 @@ import org.hibernate.search.FullTextSession;
 public class ClassIndexer<T>
 {
 
-   public AbstractIndexingStrategy<T> createIndexingStrategy(FullTextSession session, IndexerProcessHandle handle, Class<T> clazz)
+   private final AbstractIndexingStrategy<T> indexingStrategy;
+   private FullTextSession session;
+   private IndexerProcessHandle handle;
+   private Class<?> clazz;
+
+   public ClassIndexer(FullTextSession session, IndexerProcessHandle handle, Class<?> clazz, AbstractIndexingStrategy<T> indexingStrategy)
    {
-      return new SimpleClassIndexingStrategy(session, handle, clazz);
+      this.session = session;
+      this.handle = handle;
+      this.clazz = clazz;
+      this.indexingStrategy = indexingStrategy;
    }
 
-   public int getEntityCount(FullTextSession session, Class<T> clazz)
+   public AbstractIndexingStrategy<T> getIndexingStrategy()
+   {
+      return indexingStrategy;
+   }
+
+   public int getEntityCount()
    {
       Long result = (Long) session.createCriteria(clazz).setProjection(Projections.rowCount()).list().get(0);
       return result.intValue();
    }
 
-   public void index(FullTextSession session, IndexerProcessHandle handle, Class<T> clazz)
+   public void index(Class<T> clazz)
    {
       log.info("Setting manual-flush and ignore-cache for {}", clazz);
       session.setFlushMode(FlushMode.MANUAL);
       session.setCacheMode(CacheMode.IGNORE);
       try
       {
-         createIndexingStrategy(session, handle, clazz).invoke();
+         indexingStrategy.invoke(handle);
          session.flushToIndexes(); // apply changes to indexes
          session.clear(); // clear since the queue is processed
       }

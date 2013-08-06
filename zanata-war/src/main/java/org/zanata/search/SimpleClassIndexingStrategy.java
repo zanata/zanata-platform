@@ -37,12 +37,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SimpleClassIndexingStrategy<T> extends AbstractIndexingStrategy<T>
 {
-
    public static final int MAX_QUERY_ROWS = 5000;
 
-   public SimpleClassIndexingStrategy(FullTextSession session, IndexerProcessHandle handle, Class<T> clazz)
+   public SimpleClassIndexingStrategy(Class<T> clazz, FullTextSession session)
    {
-      super(session, handle, clazz);
+      super(clazz, session);
    }
 
    @Override
@@ -50,24 +49,19 @@ public class SimpleClassIndexingStrategy<T> extends AbstractIndexingStrategy<T>
    {
       if (n % MAX_QUERY_ROWS == 0)
       {
-         SimpleClassIndexingStrategy.log.info("restarting query for {} (n={})", clazz, n);
-         scrollableResults.close();
-         scrollableResults = getScrollableResults(session, clazz, n);
+         SimpleClassIndexingStrategy.log.info("restarting query for {} (n={})", getClazz(), n);
+         getScrollableResults().close();
+         setScrollableResults(queryResults(n));
       }
    }
 
    @Override
-   protected ScrollableResults getScrollableResults(FullTextSession session, Class<T> clazz, int firstResult)
+   protected ScrollableResults queryResults(int offset)
    {
-      Query query = getQuery(session, clazz);
-      query.setFirstResult(firstResult);
+      Query query = getSession().createQuery("from "+getClazz().getName());
+      query.setFirstResult(offset);
       query.setMaxResults(MAX_QUERY_ROWS);
       return query.scroll(ScrollMode.FORWARD_ONLY);
    }
 
-   @Override
-   protected Query getQuery(FullTextSession session, Class<T> clazz)
-   {
-      return session.createQuery("from "+clazz.getName());
-   }
 }

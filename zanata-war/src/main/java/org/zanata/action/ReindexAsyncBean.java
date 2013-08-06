@@ -30,6 +30,7 @@ import org.zanata.search.AbstractIndexingStrategy;
 import org.zanata.search.ClassIndexer;
 import org.zanata.search.HTextFlowTargetIndexingStrategy;
 import org.zanata.search.IndexerProcessHandle;
+import org.zanata.search.SimpleClassIndexingStrategy;
 import org.zanata.service.ProcessManagerService;
 
 @Name("reindexAsync")
@@ -158,7 +159,7 @@ public class ReindexAsyncBean extends RunnableProcess<IndexerProcessHandle> impl
 
          if (opts.isReindex())
          {
-            totalOperations += getIndexer(clazz).getEntityCount(session, clazz);
+            totalOperations += getIndexer(clazz).getEntityCount();
          }
 
          if (opts.isOptimize())
@@ -182,20 +183,17 @@ public class ReindexAsyncBean extends RunnableProcess<IndexerProcessHandle> impl
    @SuppressWarnings("rawtypes")
    ClassIndexer getIndexer(Class<?> clazz)
    {
+      AbstractIndexingStrategy strategy;
+      // TODO add a strategy which uses TransMemoryStreamingDAO
       if( clazz.equals( HTextFlowTarget.class ) )
       {
-         return new ClassIndexer<HTextFlowTarget>() {
-            @Override
-            public AbstractIndexingStrategy<HTextFlowTarget> createIndexingStrategy(FullTextSession session, IndexerProcessHandle handle, Class clazz)
-            {
-               return new HTextFlowTargetIndexingStrategy(session, handle, clazz);
-            }
-         };
+         strategy = new HTextFlowTargetIndexingStrategy(session);
       }
       else
       {
-         return new ClassIndexer();
+         strategy = new SimpleClassIndexingStrategy(clazz, session);
       }
+      return new ClassIndexer(session, handle, clazz, strategy);
    }
 
    /**
@@ -225,7 +223,7 @@ public class ReindexAsyncBean extends RunnableProcess<IndexerProcessHandle> impl
          {
             log.info("reindexing {0}", clazz);
             currentClass = clazz;
-            getIndexer(clazz).index(session, handle, clazz);
+            getIndexer(clazz).index(clazz);
          }
          if (!handle.shouldStop() && indexingOptions.get(clazz).isOptimize())
          {
