@@ -62,6 +62,7 @@ public class ExportTransMemoryTest extends TMXStreamingOutputTest
       headerElem.addAttribute(new Attribute("datatype", "unknown"));
       headerElem.addAttribute(new Attribute("o-tmf", "OTMF"));
       headerElem.addAttribute(new Attribute("segtype", "paragraph"));
+      headerElem.addAttribute(new Attribute("srclang", "en-US"));
       addCustomProperty(headerElem, "prop1", "propval1");
       addCustomProperty(headerElem, "prop2", "propval2");
       TMXMetadataHelper.setMetadata(tm, headerElem);
@@ -111,7 +112,7 @@ public class ExportTransMemoryTest extends TMXStreamingOutputTest
       return tuList.iterator();
    }
 
-   private static void addMetadata(ArrayList<TransMemoryUnit> tuList, String sourceLoc) throws TMXParseException
+   private static void addMetadata(ArrayList<TransMemoryUnit> tuList, String srclang) throws TMXParseException
    {
       for (TransMemoryUnit tu : tuList)
       {
@@ -119,10 +120,11 @@ public class ExportTransMemoryTest extends TMXStreamingOutputTest
          tuElem.addAttribute(new Attribute("creationid", "TU_CREATOR"));
          addCustomProperty(tuElem, "prop1", "propval1");
          addCustomProperty(tuElem, "prop2", "propval2");
-         TMXMetadataHelper.setMetadata(tu, tuElem, sourceLoc);
+         TMXMetadataHelper.setMetadata(tu, tuElem, srclang);
          for (TransMemoryUnitVariant tuv : tu.getTransUnitVariants().values())
          {
             Element tuvElem = newTmxElement("tuv");
+            tuvElem.addAttribute(new Attribute("xml:lang", XMLConstants.XML_NS_URI, tuv.getLanguage()));
             tuvElem.addAttribute(new Attribute("creationid", "TUV_CREATOR"));
             addCustomProperty(tuvElem, "prop1", "propval1");
             addCustomProperty(tuvElem, "prop2", "propval2");
