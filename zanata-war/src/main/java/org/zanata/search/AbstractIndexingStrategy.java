@@ -14,16 +14,16 @@ import lombok.extern.slf4j.Slf4j;
 public abstract class AbstractIndexingStrategy<T>
 {
    private int sessionClearBatchSize = 1000;
-   private ScrollableResults newScrollableResults;
-   private final Class<T> clazz;
+   private ScrollableResults scrollableResults;
+   private final Class<T> entityType;
    private final FullTextSession session;
 
    /**
-    * @param clazz The type of entity to be returned by the Scrollable results
+    * @param entityType The type of entity to be returned by the Scrollable results
     */
-   public AbstractIndexingStrategy(Class<T> clazz, FullTextSession session)
+   public AbstractIndexingStrategy(Class<T> entityType, FullTextSession session)
    {
-      this.clazz = clazz;
+      this.entityType = entityType;
       this.session = session;
    }
 
@@ -33,18 +33,18 @@ public abstract class AbstractIndexingStrategy<T>
    public void invoke(IndexerProcessHandle handle)
    {
       int n = 0;
-      newScrollableResults = queryResults(n);
+      scrollableResults = queryResults(n);
       try
       {
-         while (newScrollableResults.next() && !handle.shouldStop())
+         while (scrollableResults.next() && !handle.shouldStop())
          {
             n++;
-            T entity = (T) newScrollableResults.get(0); // index each element
+            T entity = (T) scrollableResults.get(0);
             session.index(entity);
             handle.incrementProgress(1);
             if (n % sessionClearBatchSize == 0)
             {
-               log.info("periodic flush and clear for {} (n={})", clazz, n);
+               log.info("periodic flush and clear for {} (n={})", entityType, n);
                session.flushToIndexes(); // apply changes to indexes
                session.clear(); // clear since the queue is processed
             }
@@ -53,9 +53,9 @@ public abstract class AbstractIndexingStrategy<T>
       }
       finally
       {
-         if( newScrollableResults != null )
+         if( scrollableResults != null )
          {
-            newScrollableResults.close();
+            scrollableResults.close();
          }
       }
    }
@@ -69,24 +69,24 @@ public abstract class AbstractIndexingStrategy<T>
    /**
     * Returns the Scrollable results for instances of clazz
     * @param offset
-    * @param clazz The type of entity to be returned by the Scrollable results
+    * @param entityType The type of entity to be returned by the Scrollable results
     * @return
     */
    protected abstract ScrollableResults queryResults(int offset);
 
-   Class<T> getClazz()
+   Class<T> getEntityType()
    {
-      return clazz;
+      return entityType;
    }
 
    ScrollableResults getScrollableResults()
    {
-      return newScrollableResults;
+      return scrollableResults;
    }
 
    void setScrollableResults(ScrollableResults scrollableResults)
    {
-      this.newScrollableResults = scrollableResults;
+      this.scrollableResults = scrollableResults;
    }
 
    FullTextSession getSession()

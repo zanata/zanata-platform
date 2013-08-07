@@ -39,13 +39,14 @@ public class ClassIndexer<T>
    private final AbstractIndexingStrategy<T> indexingStrategy;
    private FullTextSession session;
    private IndexerProcessHandle handle;
-   private Class<?> clazz;
+   private Class<?> entityType;
 
-   public ClassIndexer(FullTextSession session, IndexerProcessHandle handle, Class<?> clazz, AbstractIndexingStrategy<T> indexingStrategy)
+   public ClassIndexer(FullTextSession session, IndexerProcessHandle handle,
+         Class<?> entityType, AbstractIndexingStrategy<T> indexingStrategy)
    {
       this.session = session;
       this.handle = handle;
-      this.clazz = clazz;
+      this.entityType = entityType;
       this.indexingStrategy = indexingStrategy;
    }
 
@@ -56,13 +57,13 @@ public class ClassIndexer<T>
 
    public int getEntityCount()
    {
-      Long result = (Long) session.createCriteria(clazz).setProjection(Projections.rowCount()).list().get(0);
+      Long result = (Long) session.createCriteria(entityType).setProjection(Projections.rowCount()).list().get(0);
       return result.intValue();
    }
 
-   public void index(Class<T> clazz)
+   public void index()
    {
-      log.info("Setting manual-flush and ignore-cache for {}", clazz);
+      log.info("Setting manual-flush and ignore-cache for {}", entityType);
       session.setFlushMode(FlushMode.MANUAL);
       session.setCacheMode(CacheMode.IGNORE);
       try
@@ -73,7 +74,7 @@ public class ClassIndexer<T>
       }
       catch (Exception e)
       {
-         log.warn("Unable to index objects of type {}", e, clazz.getName());
+         log.warn("Unable to index objects of type {}", e, entityType.getName());
          handle.setHasError(true);
       }
    }

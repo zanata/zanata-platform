@@ -223,7 +223,7 @@ public class ReindexAsyncBean extends RunnableProcess<IndexerProcessHandle> impl
          {
             log.info("reindexing {0}", clazz);
             currentClass = clazz;
-            getIndexer(clazz).index(clazz);
+            getIndexer(clazz).index();
          }
          if (!handle.shouldStop() && indexingOptions.get(clazz).isOptimize())
          {

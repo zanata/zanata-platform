@@ -39,9 +39,9 @@ public class SimpleClassIndexingStrategy<T> extends AbstractIndexingStrategy<T>
 {
    public static final int MAX_QUERY_ROWS = 5000;
 
-   public SimpleClassIndexingStrategy(Class<T> clazz, FullTextSession session)
+   public SimpleClassIndexingStrategy(Class<T> entityType, FullTextSession session)
    {
-      super(clazz, session);
+      super(entityType, session);
    }
 
    @Override
@@ -49,7 +49,7 @@ public class SimpleClassIndexingStrategy<T> extends AbstractIndexingStrategy<T>
    {
       if (n % MAX_QUERY_ROWS == 0)
       {
-         SimpleClassIndexingStrategy.log.info("restarting query for {} (n={})", getClazz(), n);
+         SimpleClassIndexingStrategy.log.info("restarting query for {} (n={})", getEntityType(), n);
          getScrollableResults().close();
          setScrollableResults(queryResults(n));
       }
@@ -58,7 +58,7 @@ public class SimpleClassIndexingStrategy<T> extends AbstractIndexingStrategy<T>
    @Override
    protected ScrollableResults queryResults(int offset)
    {
-      Query query = getSession().createQuery("from "+getClazz().getName());
+      Query query = getSession().createQuery("from "+getEntityType().getName());
       query.setFirstResult(offset);
       query.setMaxResults(MAX_QUERY_ROWS);
       return query.scroll(ScrollMode.FORWARD_ONLY);
