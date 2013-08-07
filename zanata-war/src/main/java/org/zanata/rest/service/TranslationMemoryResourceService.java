@@ -159,21 +159,21 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
    }
 
    private Response buildTMX(
-         String name,
+         String jobName,
          @Nonnull CloseableIterator<? extends ITextFlow> iter,
          @Nullable LocaleId locale, @Nonnull String filename)
    {
       TMXStreamingOutput<HTextFlow> output = new TMXStreamingOutput(
-            name, iter, new TranslationsTMXExportStrategy(locale));
+            jobName, iter, new TranslationsTMXExportStrategy(locale));
       return okResponse(filename, output);
    }
 
    private Response buildTMX(
-         String name,
+         String jobName,
          TransMemory tm, CloseableIterator<TransMemoryUnit> iter, String filename)
    {
       TMXStreamingOutput<TransMemoryUnit> output = new TMXStreamingOutput<TransMemoryUnit>(
-            name, iter, new TransMemoryTMXExportStrategy(tm));
+            jobName, iter, new TransMemoryTMXExportStrategy(tm));
       return okResponse(filename, output);
    }
 

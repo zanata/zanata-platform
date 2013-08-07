@@ -58,15 +58,15 @@ public class TMXStreamingOutput<T> implements StreamingOutput, Closeable
    private final @Nonnull Iterator<T> tuIter;
    private final TMXExportStrategy<T> exportStrategy;
    private final Closeable closeable;
-   private final String name;
+   private final String jobName;
 
    private TMXStreamingOutput(
-         String name,
+         String jobName,
          Iterator<T> tuIter,
          TMXExportStrategy<T> exportTUStrategy,
          Closeable closeable)
    {
-      this.name = name;
+      this.jobName = jobName;
       this.tuIter = tuIter;
       this.exportStrategy = exportTUStrategy;
       this.closeable = (Closeable) (tuIter instanceof Closeable ? tuIter : NullCloseable.INSTANCE);
@@ -81,11 +81,11 @@ public class TMXStreamingOutput<T> implements StreamingOutput, Closeable
     * @param exportTUStrategy strategy to use when converting from translation units into TMX.
     */
    public TMXStreamingOutput(
-         String name,
+         String jobName,
          CloseableIterator<T> tuIter,
          TMXExportStrategy<T> exportTUStrategy)
    {
-      this(name, tuIter, exportTUStrategy, tuIter);
+      this(jobName, tuIter, exportTUStrategy, tuIter);
    }
 
    /**
@@ -124,7 +124,7 @@ public class TMXStreamingOutput<T> implements StreamingOutput, Closeable
       int tuCount = 0;
       try
       {
-         log.info("streaming output started for: {}", name);
+         log.info("streaming output started for: {}", jobName);
          @SuppressWarnings("null")
          PeekingIterator<T> iter = Iterators.peekingIterator(tuIter);
          // Fetch the first result, so that we can fail fast, before
@@ -162,7 +162,7 @@ public class TMXStreamingOutput<T> implements StreamingOutput, Closeable
       finally
       {
          close();
-         log.info("streaming output stopped for: {}, TU count={}", name, tuCount);
+         log.info("streaming output stopped for: {}, TU count={}", jobName, tuCount);
       }
    }
 
