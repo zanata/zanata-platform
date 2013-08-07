@@ -45,8 +45,12 @@ import nu.xom.converters.DOMConverter;
 import org.w3c.dom.Document;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * ElementBuilder consumes a complete element from a StAX XMLStreamReader
+ * or XMLEventReader and returns it as a xom Element.
+ * <p>
+ * {@link nux.xom.io.StaxParser} implements a similar idea.
  *
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 public class ElementBuilder
 {
