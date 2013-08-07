@@ -35,6 +35,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import lombok.Cleanup;
+import lombok.extern.slf4j.Slf4j;
 import nu.xom.Element;
 
 import org.hibernate.CacheMode;
@@ -60,6 +61,7 @@ import com.google.common.collect.Lists;
  */
 @Name("tmxParser")
 @AutoCreate
+@Slf4j
 public class TMXParser
 {
    // Batch size to commit in a new transaction for long files
@@ -77,8 +79,10 @@ public class TMXParser
          throws TMXParseException, SecurityException, IllegalStateException, RollbackException,
          HeuristicMixedException, HeuristicRollbackException, SystemException, NotSupportedException
    {
+      int handledTUs = 0;
       try
       {
+         log.info("parsing started for: {}", transMemory.getSlug());
          session.setFlushMode(FlushMode.MANUAL);
          session.setCacheMode(CacheMode.IGNORE);
          XMLInputFactory factory = XMLInputFactory.newInstance();
@@ -90,7 +94,6 @@ public class TMXParser
 
          QName tu = new QName("tu");
          QName header = new QName("header");
-         int handledTUs = 0;
 
          while (reader.hasNext())
          {
@@ -126,6 +129,10 @@ public class TMXParser
       catch (XMLStreamException e)
       {
          throw new TMXParseException(e);
+      }
+      finally
+      {
+         log.info("parsing stopped for: {}, TU count={}", transMemory.getSlug(), handledTUs);
       }
    }
 

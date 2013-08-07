@@ -9,12 +9,14 @@ import java.util.Iterator;
 
 import javax.annotation.Nonnull;
 import javax.ws.rs.core.StreamingOutput;
+import javax.xml.XMLConstants;
 
 import nu.xom.Attribute;
 import nu.xom.Element;
 
 import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
+import org.zanata.model.tm.TMMetadataType;
 import org.zanata.model.tm.TMXMetadataHelper;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemory;
@@ -48,7 +50,7 @@ public class ExportTransMemoryTest extends TMXStreamingOutputTest
    
    private TMXStreamingOutput<TransMemoryUnit> streamSourceContents() throws TMXParseException
    {
-      return new TMXStreamingOutput<TransMemoryUnit>(createTestData(), new TransMemoryTMXExportStrategy(createTM()));
+      return TMXStreamingOutput.testInstance(createTestData(), new TransMemoryTMXExportStrategy(createTM()));
    }
 
    private TransMemory createTM() throws TMXParseException

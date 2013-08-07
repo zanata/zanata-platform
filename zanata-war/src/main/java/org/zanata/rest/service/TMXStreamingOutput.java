@@ -31,6 +31,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
 
+import lombok.extern.slf4j.Slf4j;
+
 import nu.xom.Attribute;
 import nu.xom.DocType;
 import nu.xom.Element;
@@ -50,17 +52,21 @@ import com.google.common.collect.PeekingIterator;
  * @param T
  */
 @ParametersAreNonnullByDefault
+@Slf4j
 public class TMXStreamingOutput<T> implements StreamingOutput, Closeable
 {
    private final @Nonnull Iterator<T> tuIter;
    private final TMXExportStrategy<T> exportStrategy;
    private final Closeable closeable;
+   private final String name;
 
    private TMXStreamingOutput(
-         @Nonnull Iterator<T> tuIter,
-         @Nonnull TMXExportStrategy<T> exportTUStrategy,
+         String name,
+         Iterator<T> tuIter,
+         TMXExportStrategy<T> exportTUStrategy,
          Closeable closeable)
    {
+      this.name = name;
       this.tuIter = tuIter;
       this.exportStrategy = exportTUStrategy;
       this.closeable = (Closeable) (tuIter instanceof Closeable ? tuIter : NullCloseable.INSTANCE);
@@ -75,10 +81,11 @@ public class TMXStreamingOutput<T> implements StreamingOutput, Closeable
     * @param exportTUStrategy strategy to use when converting from translation units into TMX.
     */
    public TMXStreamingOutput(
-         @Nonnull CloseableIterator<T> tuIter,
-         @Nonnull TMXExportStrategy<T> exportTUStrategy)
+         String name,
+         CloseableIterator<T> tuIter,
+         TMXExportStrategy<T> exportTUStrategy)
    {
-      this(tuIter, exportTUStrategy, tuIter);
+      this(name, tuIter, exportTUStrategy, tuIter);
    }
 
    /**
@@ -90,11 +97,11 @@ public class TMXStreamingOutput<T> implements StreamingOutput, Closeable
     * @param tuIter an iterator over translation units to be exported.  It will NOT be closed.
     * @param exportTUStrategy strategy to use when converting from translation units into TMX.
     */
-   public TMXStreamingOutput(
-         @Nonnull Iterator<T> tuIter,
-         @Nonnull TMXExportStrategy<T> exportTUStrategy)
+   public static <T> TMXStreamingOutput<T> testInstance(
+         Iterator<T> tuIter,
+         TMXExportStrategy<T> exportTUStrategy)
    {
-      this(tuIter, exportTUStrategy, NullCloseable.INSTANCE);
+      return new TMXStreamingOutput<T>("test", tuIter, exportTUStrategy, NullCloseable.INSTANCE);
    }
 
    @Override
@@ -114,8 +121,10 @@ public class TMXStreamingOutput<T> implements StreamingOutput, Closeable
    @Override
    public void write(OutputStream output) throws IOException, WebApplicationException
    {
+      int tuCount = 0;
       try
       {
+         log.info("streaming output started for: {}", name);
          @SuppressWarnings("null")
          PeekingIterator<T> iter = Iterators.peekingIterator(tuIter);
          // Fetch the first result, so that we can fail fast, before
@@ -143,6 +152,7 @@ public class TMXStreamingOutput<T> implements StreamingOutput, Closeable
          {
             T tu = iter.next();
             writeIfComplete(stream, tu);
+            ++tuCount;
          }
          indent(stream);
          endElem(stream, body);
@@ -152,6 +162,7 @@ public class TMXStreamingOutput<T> implements StreamingOutput, Closeable
       finally
       {
          close();
+         log.info("streaming output stopped for: {}, TU count={}", name, tuCount);
       }
    }
 

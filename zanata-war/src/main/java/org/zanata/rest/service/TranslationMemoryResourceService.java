@@ -21,11 +21,15 @@
 package org.zanata.rest.service;
 
 import java.io.InputStream;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
+
+import lombok.extern.slf4j.Slf4j;
 
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -46,14 +50,14 @@ import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.service.LocaleService;
 import org.zanata.tmx.TMXParser;
 import org.zanata.util.CloseableIterator;
-import com.google.common.base.Optional;
 
-import lombok.extern.slf4j.Slf4j;
+import com.google.common.base.Optional;
 
 @Name("translationMemoryResourceService")
 @Path("/tm")
 @Transactional(TransactionPropagationType.SUPPORTS)
 @Slf4j
+@ParametersAreNonnullByDefault
 // TODO options to export obsolete docs and textflows to TMX?
 public class TranslationMemoryResourceService implements TranslationMemoryResource
 {
@@ -83,7 +87,7 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
       }
       String filename = makeTMXFilename(null, null, locale);
       CloseableIterator<HTextFlow> iter = textFlowStreamDAO.findTextFlows();
-      return buildTMX(iter, locale, filename);
+      return buildTMX("getAllTranslationMemory", iter, locale, filename);
    }
 
    @Override
@@ -98,7 +102,7 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
       }
       String filename = makeTMXFilename(projectSlug, null, locale);
       CloseableIterator<HTextFlow> iter = textFlowStreamDAO.findTextFlowsByProject(hProject);
-      return buildTMX(iter, locale, filename);
+      return buildTMX("getProjectTranslationMemory-"+filename, iter, locale, filename);
    }
 
    @Override
@@ -114,7 +118,7 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
       }
       String filename = makeTMXFilename(projectSlug, iterationSlug, locale);
       CloseableIterator<HTextFlow> iter = textFlowStreamDAO.findTextFlowsByProjectIteration(hProjectIteration);
-      return buildTMX(iter, locale, filename);
+      return buildTMX("getProjectIterationTranslationMemory-"+filename, iter, locale, filename);
    }
 
    @Override
@@ -125,7 +129,7 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
       TransMemory tm = getTM(transMemoryDAO.getBySlug(slug), slug);
       String filename = makeTMXFilename(slug);
       CloseableIterator<TransMemoryUnit> iter = transMemoryStreamingDAO.findTransUnitsByTM(tm);
-      return buildTMX(tm, iter, filename);
+      return buildTMX("getTranslationMemory-"+filename, tm, iter, filename);
    }
 
    @Override
@@ -134,7 +138,7 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
    {
       Optional<TransMemory> tm = transMemoryDAO.getBySlug(slug);
       tmxParser.parseAndSaveTMX(input, getTM(tm, slug));
-      return Response.status(200).build();
+      return Response.ok().build();
    }
 
    private TransMemory getTM(Optional<TransMemory> tm, String slug)
@@ -155,17 +159,21 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
    }
 
    private Response buildTMX(
+         String name,
          @Nonnull CloseableIterator<? extends ITextFlow> iter,
          @Nullable LocaleId locale, @Nonnull String filename)
    {
-      TMXStreamingOutput<HTextFlow> output = new TMXStreamingOutput(iter, new TranslationsTMXExportStrategy(locale));
+      TMXStreamingOutput<HTextFlow> output = new TMXStreamingOutput(
+            name, iter, new TranslationsTMXExportStrategy(locale));
       return okResponse(filename, output);
    }
 
    private Response buildTMX(
+         String name,
          TransMemory tm, CloseableIterator<TransMemoryUnit> iter, String filename)
    {
-      TMXStreamingOutput<TransMemoryUnit> output = new TMXStreamingOutput<TransMemoryUnit>(iter, new TransMemoryTMXExportStrategy(tm));
+      TMXStreamingOutput<TransMemoryUnit> output = new TMXStreamingOutput<TransMemoryUnit>(
+            name, iter, new TransMemoryTMXExportStrategy(tm));
       return okResponse(filename, output);
    }
 
