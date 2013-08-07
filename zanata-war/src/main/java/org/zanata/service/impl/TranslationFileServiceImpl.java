@@ -279,6 +279,10 @@ public class TranslationFileServiceImpl implements TranslationFileService
    @Override
    public boolean hasAdapterFor(DocumentType type)
    {
+      if (type == null)
+      {
+         return false;
+      }
       return DOCTYPEMAP.containsKey(type);
    }
 
