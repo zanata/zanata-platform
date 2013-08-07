@@ -20,6 +20,7 @@ import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.model.tm.TransMemoryUnitVariant;
 import org.zanata.util.TMXConstants;
+import org.zanata.util.TMXParseException;
 
 import com.google.common.collect.Lists;
 
@@ -45,12 +46,12 @@ public class ExportTransMemoryTest extends TMXStreamingOutputTest
       return true;
    }
    
-   private TMXStreamingOutput<TransMemoryUnit> streamSourceContents()
+   private TMXStreamingOutput<TransMemoryUnit> streamSourceContents() throws TMXParseException
    {
       return new TMXStreamingOutput<TransMemoryUnit>(createTestData(), new TransMemoryTMXExportStrategy(createTM()));
    }
 
-   private TransMemory createTM()
+   private TransMemory createTM() throws TMXParseException
    {
       Date now = new Date();
       TransMemory tm = new TransMemory();
@@ -67,7 +68,7 @@ public class ExportTransMemoryTest extends TMXStreamingOutputTest
       return tm;
    }
 
-   private @Nonnull Iterator<TransMemoryUnit> createTestData()
+   private @Nonnull Iterator<TransMemoryUnit> createTestData() throws TMXParseException
    {
       TransMemory tm = null;
       String fr = LocaleId.FR.getId();
@@ -107,7 +108,7 @@ public class ExportTransMemoryTest extends TMXStreamingOutputTest
       return tuList.iterator();
    }
 
-   private static void addMetadata(ArrayList<TransMemoryUnit> tuList, String sourceLoc)
+   private static void addMetadata(ArrayList<TransMemoryUnit> tuList, String sourceLoc) throws TMXParseException
    {
       for (TransMemoryUnit tu : tuList)
       {

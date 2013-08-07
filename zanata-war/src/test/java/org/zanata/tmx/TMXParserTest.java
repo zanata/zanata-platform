@@ -36,8 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.stream.XMLStreamException;
-
 import nu.xom.Element;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -54,8 +52,8 @@ import org.zanata.model.tm.TransMemory;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemoryUnitVariant;
 import org.zanata.seam.SeamAutowire;
+import org.zanata.util.TMXParseException;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 /**
@@ -246,16 +244,16 @@ public class TMXParserTest extends ZanataDbunitJpaTest
       assertThat(tuv0Children.get(1).getValue(), is("Custom note on tuv"));
    }
 
-   @Test(expectedExceptions = XMLStreamException.class)
-   @org.junit.Test(expected = XMLStreamException.class)
+   @Test(expectedExceptions = TMXParseException.class)
+   @org.junit.Test(expected = TMXParseException.class)
    public void invalidTMXNoContents() throws Exception
    {
       // Create a TM
       createTMFromFile("/tmx/invalid-tmx-no-contents.xml");
    }
 
-   @Test(expectedExceptions = RuntimeException.class)
-   @org.junit.Test(expected = RuntimeException.class)
+   @Test(expectedExceptions = TMXParseException.class)
+   @org.junit.Test(expected = TMXParseException.class)
    public void undiscernibleSourceLang() throws Exception
    {
       // Create a TM

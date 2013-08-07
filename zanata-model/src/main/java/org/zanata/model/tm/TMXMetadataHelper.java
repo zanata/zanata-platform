@@ -30,22 +30,22 @@ import javax.annotation.Nonnull;
 import javax.xml.XMLConstants;
 
 import lombok.extern.slf4j.Slf4j;
+import nu.xom.Attribute;
+import nu.xom.Document;
+import nu.xom.Element;
+import nu.xom.Elements;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.zanata.common.LocaleId;
 import org.zanata.util.TMXConstants;
+import org.zanata.util.TMXParseException;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-
-import nu.xom.Attribute;
-import nu.xom.Document;
-import nu.xom.Element;
-import nu.xom.Elements;
 
 /**
  * Adapts TMX metadata to the generic translation memory objects.
@@ -79,14 +79,14 @@ public class TMXMetadataHelper
       return children;
    }
 
-   public static List<Element> getChildren(HasTMMetadata fromEntity)
+   public static ImmutableList<Element> getChildren(HasTMMetadata fromEntity)
    {
       try
       {
          String metadataString = fromEntity.getMetadata(TMMetadataType.TMX14);
          if (metadataString == null)
          {
-            return Collections.emptyList();
+            return ImmutableList.of();
          }
          Map<String, Object> metadata = jsonMapper.readValue(metadataString, Map.class);
 
@@ -102,6 +102,7 @@ public class TMXMetadataHelper
       }
       catch (Exception e)
       {
+         // error parsing XML or json, which "shouldn't happen"
          throw new RuntimeException(e);
       }
    }
@@ -193,6 +194,7 @@ public class TMXMetadataHelper
       }
       catch (Exception e)
       {
+         // error parsing json, which "shouldn't happen"
          throw new RuntimeException(e);
       }
    }
@@ -201,14 +203,19 @@ public class TMXMetadataHelper
     * Sets all the Translation Memory's metadata (attributes and children)
     * @param toTransMemory
     * @param fromHeaderElem
+    * @throws TMXParseException 
     */
-   public static void setMetadata(TransMemory toTransMemory, @Nonnull Element fromHeaderElem)
+   public static void setMetadata(TransMemory toTransMemory, @Nonnull Element fromHeaderElem) throws TMXParseException
    {
       Map<String, Object> metadata = buildMetadata(fromHeaderElem);
       String srclang = (String) metadata.remove(SRC_LANG);
       if (srclang != null)
       {
          toTransMemory.setSourceLanguage(getValidLang(srclang));
+      }
+      else
+      {
+         throw new TMXParseException("missing srclang in header");
       }
       setSharedMetadata(toTransMemory, metadata);
    }
@@ -248,14 +255,19 @@ public class TMXMetadataHelper
 
    /**
     * Sets all the TUV's metadata (attributes and children)
+    * @throws TMXParseException 
     */
-   public static void setMetadata(TransMemoryUnitVariant toTuv, Element fromTuvElem)
+   public static void setMetadata(TransMemoryUnitVariant toTuv, Element fromTuvElem) throws TMXParseException
    {
       Map<String, Object> metadata = buildMetadata(fromTuvElem);
       String lang = (String) metadata.remove(XML_LANG);
       if (lang != null)
       {
          toTuv.setLanguage(getValidLang(lang));
+      }
+      else
+      {
+         throw new TMXParseException("missing xml:lang in tuv: "+fromTuvElem.toXML());
       }
       setSharedMetadata(toTuv, metadata);
    }
