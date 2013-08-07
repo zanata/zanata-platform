@@ -107,7 +107,11 @@ public class TranslationStateCacheImpl implements TranslationStateCache
       this.targetValidationLoader = new HTextFlowTargetValidationLoader();
    }
 
-   public TranslationStateCacheImpl(CacheLoader<LocaleId, TranslatedTextFlowFilter> filterLoader, CacheLoader<LocaleId, OpenBitSet> bitsetLoader, CacheLoader<TranslatedDocumentKey, DocumentStatus> docStatsLoader, CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader, TextFlowTargetDAO textFlowTargetDAO, ValidationService validationServiceImpl)
+   public TranslationStateCacheImpl(CacheLoader<LocaleId, TranslatedTextFlowFilter> filterLoader,
+         CacheLoader<LocaleId, OpenBitSet> bitsetLoader,
+         CacheLoader<TranslatedDocumentKey, DocumentStatus> docStatsLoader,
+         CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader, TextFlowTargetDAO textFlowTargetDAO,
+         ValidationService validationServiceImpl)
    {
       // constructor for testing
       this.filterLoader = filterLoader;
@@ -155,7 +159,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache
 
       // TODO update this cache rather than invalidating
       invalidateTargetValidationCache(event.getTextFlowTargetId());
-      
+
       updateDocStatusCache(event.getDocumentId(), event.getLocaleId(), event.getTextFlowTargetId());
    }
 
@@ -196,8 +200,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache
    {
       DocumentStatus documentStatus = docStatusCache.get(new TranslatedDocumentKey(documentId, localeId));
       HTextFlowTarget target = textFlowTargetDAO.findById(updatedTargetId, false);
-      
-      createOrUpdateDocumentStatus(documentStatus, documentId, target, localeId);
+      updateDocumentStatus(documentStatus, documentId, localeId, target);
    }
 
    private void updateTranslatedTextFlowCache(Long textFlowId, LocaleId localeId, ContentState newState)
@@ -246,10 +249,12 @@ public class TranslationStateCacheImpl implements TranslationStateCache
       public DocumentStatus load(TranslatedDocumentKey key) throws Exception
       {
          HTextFlowTarget target = documentDAO.getLastTranslatedTarget(key.getDocumentId(), key.getLocaleId());
-         return createOrUpdateDocumentStatus(null, key.getDocumentId(), target, key.getLocaleId());
+         DocumentStatus documentStatus = new DocumentStatus();
+         
+         return updateDocumentStatus(documentStatus, key.getDocumentId(), key.getLocaleId(), target);
       }
    }
-   
+
    private final class HTextFlowTargetValidationLoader extends CacheLoader<Long, Map<ValidationId, Boolean>>
    {
       @Override
@@ -271,12 +276,10 @@ public class TranslationStateCacheImpl implements TranslationStateCache
       }
       return null;
    }
-   
-   private DocumentStatus createOrUpdateDocumentStatus(DocumentStatus documentStatus, Long documentId, HTextFlowTarget target, LocaleId localeId)
-   {
-      HDocument document = documentDAO.findById(documentId, false);
-      boolean hasError = validationServiceImpl.runDocValidationsWithServerRules(document, localeId);
 
+   private DocumentStatus updateDocumentStatus(DocumentStatus documentStatus, Long documentId, LocaleId localeId,
+         HTextFlowTarget target)
+   {
       Date lastTranslatedDate = null;
       String lastTranslatedBy = "";
 
@@ -289,16 +292,10 @@ public class TranslationStateCacheImpl implements TranslationStateCache
             lastTranslatedBy = target.getLastModifiedBy().getAccount().getUsername();
          }
       }
+      HDocument document = documentDAO.findById(documentId, false);
+      boolean hasError = validationServiceImpl.runDocValidationsWithServerRules(document, localeId);
       
-      if(documentStatus == null)
-      {
-         documentStatus = new DocumentStatus(new DocumentId(document.getId(), document.getDocId()), hasError, lastTranslatedDate, lastTranslatedBy);
-      }
-      else
-      {
-         documentStatus.updateStatus(lastTranslatedDate, lastTranslatedBy, hasError);
-      }
-      
+      documentStatus.update(new DocumentId(document.getId(), document.getDocId()), lastTranslatedDate, lastTranslatedBy, hasError);
       return documentStatus;
    }
 
