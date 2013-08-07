@@ -43,7 +43,6 @@
 	       width:40px;
 	       text-align:center;
 	       margin-left:3px;
-	       color:#323232;
 		}
 		
 		.timeStamp
@@ -96,7 +95,7 @@
 				    	<g:VerticalPanel ui:field="chatRoom" styleName="{style.chatRoom}"/>
 				    </g:ScrollPanel>
 				</g:layer>
-				<g:layer bottom="2px" height="24px">
+				<g:layer bottom="2px" height="25px">
 					<g:HorizontalPanel width="100%" spacing="3">
 		        		<g:cell>
 			        		<g:TextBox styleName="{style.chatInput}" ui:field="chatInput"/>

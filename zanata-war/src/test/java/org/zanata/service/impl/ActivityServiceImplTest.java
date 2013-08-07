@@ -139,7 +139,7 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest
       
       activityService.onDocumentUploaded(new DocumentUploadedEvent(documentId, false, new LocaleId("as")));
       
-      List<Activity> activities = activityService.findLatestActivitiesForContext(personId, projectVersionId, 0, 10);
+      List<Activity> activities = activityService.findLatestActivitiesForContext(personId, projectVersionId, 0, 5);
       assertThat(activities.size(), equalTo(3));
    }
 
