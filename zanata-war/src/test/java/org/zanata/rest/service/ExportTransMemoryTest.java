@@ -60,7 +60,8 @@ public class ExportTransMemoryTest extends TMXStreamingOutputTest
       headerElem.addAttribute(new Attribute("datatype", "unknown"));
       headerElem.addAttribute(new Attribute("o-tmf", "OTMF"));
       headerElem.addAttribute(new Attribute("segtype", "paragraph"));
-      addCustomProperty(headerElem);
+      addCustomProperty(headerElem, "prop1", "propval1");
+      addCustomProperty(headerElem, "prop2", "propval2");
       TMXMetadataHelper.setMetadata(tm, headerElem);
       tm.setSourceLanguage(sourceLocale.getId());
       tm.setCreationDate(now);
@@ -114,23 +115,25 @@ public class ExportTransMemoryTest extends TMXStreamingOutputTest
       {
          Element tuElem = newTmxElement("tu");
          tuElem.addAttribute(new Attribute("creationid", "TU_CREATOR"));
-         addCustomProperty(tuElem);
+         addCustomProperty(tuElem, "prop1", "propval1");
+         addCustomProperty(tuElem, "prop2", "propval2");
          TMXMetadataHelper.setMetadata(tu, tuElem, sourceLoc);
          for (TransMemoryUnitVariant tuv : tu.getTransUnitVariants().values())
          {
             Element tuvElem = newTmxElement("tuv");
             tuvElem.addAttribute(new Attribute("creationid", "TUV_CREATOR"));
-            addCustomProperty(tuvElem);
+            addCustomProperty(tuvElem, "prop1", "propval1");
+            addCustomProperty(tuvElem, "prop2", "propval2");
             TMXMetadataHelper.setMetadata(tuv, tuvElem);
          }
       }
    }
 
-   private static void addCustomProperty(Element elem)
+   private static void addCustomProperty(Element elem, String propType, String value)
    {
       Element prop = newTmxElement("prop");
-      prop.addAttribute(new Attribute("type", "custom_property"));
-      prop.appendChild("property_value");
+      prop.addAttribute(new Attribute("type", propType));
+      prop.appendChild(value);
       elem.appendChild(prop);
    }
 

@@ -22,6 +22,7 @@
 package org.zanata.rest.service;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathNotExists;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -120,8 +121,10 @@ abstract class TMXStreamingOutputTest
       }
       if (expectProperties())
       {
-         String xpathProp = xpathTU+"/prop[@type='custom_property']/text()";
-         assertXpathEvaluatesTo("property_value", xpathProp, doc);
+         String xpathProp1 = xpathTU+"/prop[@type='prop1']/text()";
+         assertXpathEvaluatesTo("propval1", xpathProp1, doc);
+         String xpathProp2 = xpathTU+"/prop[@type='prop2']/text()";
+         assertXpathEvaluatesTo("propval2", xpathProp2, doc);
       }
    }
 
@@ -131,12 +134,15 @@ abstract class TMXStreamingOutputTest
       if (expectAttributes())
       {
          String xpathAttr = xpathTUV+"/@creationid";
-         assertXpathEvaluatesTo("TUV_CREATOR", xpathAttr, doc);
+         assertXpathExists(xpathAttr, doc);
+//         assertXpathEvaluatesTo("TUV_CREATOR", xpathAttr, doc);
       }
       if (expectProperties())
       {
-         String xpathProp = xpathTUV+"/prop[@type='custom_property']/text()";
-         assertXpathEvaluatesTo("property_value", xpathProp, doc);
+         String xpathProp1 = xpathTUV+"/prop[@type='prop1']/text()";
+         assertXpathEvaluatesTo("propval1", xpathProp1, doc);
+         String xpathProp2 = xpathTUV+"/prop[@type='prop2']/text()";
+         assertXpathEvaluatesTo("propval2", xpathProp2, doc);
       }
 
       assertXpathEvaluatesTo(segmentText, xpathTUV + "/seg/text()", doc);
