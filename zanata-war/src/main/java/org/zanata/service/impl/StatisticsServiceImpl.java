@@ -243,7 +243,7 @@ public class StatisticsServiceImpl implements StatisticsResource
          {
             transUnitStats = stats.getStats(locale.getId(), StatUnit.MESSAGE);
          }
-         DocumentStatus docStat = translationStateCacheImpl.getDocStats(document.getId(), locale);
+         DocumentStatus docStat = translationStateCacheImpl.getDocumentStatus(document.getId(), locale);
 
          transUnitStats.setLastTranslatedBy(docStat.getLastTranslatedBy());
          transUnitStats.setLastTranslatedDate(docStat.getLastTranslatedDate());

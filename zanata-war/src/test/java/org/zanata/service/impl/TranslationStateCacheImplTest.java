@@ -129,8 +129,8 @@ public class TranslationStateCacheImplTest
       // When:
       when(docStatsLoader.load(key)).thenReturn(docStats);
       
-      DocumentStatus result1 = tsCache.getDocStats(documentId, testLocaleId);
-      DocumentStatus result2 = tsCache.getDocStats(documentId, testLocaleId);
+      DocumentStatus result1 = tsCache.getDocumentStatus(documentId, testLocaleId);
+      DocumentStatus result2 = tsCache.getDocumentStatus(documentId, testLocaleId);
 
       // Then:
       verify(docStatsLoader).load(key); // only load the value once

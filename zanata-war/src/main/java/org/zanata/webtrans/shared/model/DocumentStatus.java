@@ -10,10 +10,10 @@ public class DocumentStatus implements IsSerializable, Serializable
 {
    private static final long serialVersionUID = 1L;
 
-   private final DocumentId documentid;
-   private final boolean hasError;
-   private final Date lastTranslatedDate;
-   private final String lastTranslatedBy;
+   private DocumentId documentid;
+   private boolean hasError;
+   private Date lastTranslatedDate;
+   private String lastTranslatedBy;
 
    // for GWT
    @SuppressWarnings("unused")
@@ -48,6 +48,13 @@ public class DocumentStatus implements IsSerializable, Serializable
    public String getLastTranslatedBy()
    {
       return lastTranslatedBy;
+   }
+
+   public void updateStatus(Date lastTranslatedDate, String lastTranslatedBy, boolean hasError)
+   {
+      this.lastTranslatedBy = lastTranslatedBy;
+      this.lastTranslatedDate = lastTranslatedDate;
+      this.hasError = hasError;
    }
 
 }
