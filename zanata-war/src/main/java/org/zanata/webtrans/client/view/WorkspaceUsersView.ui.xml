@@ -18,7 +18,10 @@
 		
         .chatRoomScrollPanel 
         {
-			height:100%;
+			top:0;
+			bottom:25px;
+			width:100%;
+			position:absolute !important;
 		}
 		
 		.chatRoom
@@ -28,22 +31,21 @@
 		
 		.chatInput
 		{
-			border:1px solid #FFFFFF;
-			width:100%;
-			border-radius:3px;
-			height:18px;
-			font-size:12px;
+			border:none;
+			border-radius:2px;
+			height:1.4em;
+			width:75%;	
 		}
 		
 		.sendButton
 		{
-	       font-size:11px;
-	       border-radius:5px;
+	       font-size:0.85em;
+	       border-radius:3px;
 	       outline:none;
 	       width:40px;
 	       text-align:center;
-	       margin-left:3px;
-	       color:#323232;
+	       margin:0 3px;
+	       display:inline-block;
 		}
 		
 		.timeStamp
@@ -81,6 +83,12 @@
 			font-weight:bold;
 			font-size:12px;
 		}
+		
+		.bottomPanel {
+			position:absolute;
+			bottom:0;
+			width:100%;
+		}
     </ui:style>
 
     <g:SplitLayoutPanel ui:field="mainPanel" styleName="{style.mainPanel}">
@@ -90,23 +98,15 @@
             </g:ScrollPanel>
         </g:north>
         <g:center>
-        	<g:LayoutPanel height="100%" width="100%">
-	        	<g:layer top="0px" bottom="24px">
-					<g:ScrollPanel styleName="{style.chatRoomScrollPanel}" ui:field="chatRoomScrollPanel">
-				    	<g:VerticalPanel ui:field="chatRoom" styleName="{style.chatRoom}"/>
-				    </g:ScrollPanel>
-				</g:layer>
-				<g:layer bottom="2px" height="24px">
-					<g:HorizontalPanel width="100%" spacing="3">
-		        		<g:cell>
-			        		<g:TextBox styleName="{style.chatInput}" ui:field="chatInput"/>
-			        	</g:cell>
-			        	<g:cell width="40px">
-							<g:PushButton addStyleNames="{style.sendButton}" ui:field="sendButton"/>	
-						</g:cell>	        	
-		        	</g:HorizontalPanel>
-				</g:layer>
-        	</g:LayoutPanel>
+        	<g:HTMLPanel>
+        		<g:ScrollPanel styleName="{style.chatRoomScrollPanel}" ui:field="chatRoomScrollPanel">
+					<g:VerticalPanel ui:field="chatRoom" styleName="{style.chatRoom}"/>
+				</g:ScrollPanel>
+				<g:HTMLPanel styleName="{style.bottomPanel}">
+					<g:TextBox styleName="{style.chatInput}" ui:field="chatInput"/>
+					<g:PushButton addStyleNames="{style.sendButton}" ui:field="sendButton"/>
+				</g:HTMLPanel>
+        	</g:HTMLPanel>
         </g:center>
     </g:SplitLayoutPanel>
     
