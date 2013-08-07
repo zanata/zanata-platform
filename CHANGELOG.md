@@ -1,13 +1,12 @@
 # Zanata change log summary
 
-## zanata-3.1.0
- * Add descriptions on project type selectors
-
 ## zanata-3.0.0
+ * Add descriptions on project type selectors
  * Allow adapter parameters to be set on source document upload
  * Add attention key shortcut: Alt+X
  * Add attention shortcut to copy from source: Alt+X,G
  * Move raw document storage to file system
+ * Implement virus scanning using ClamAV (clamdscan)
 
 ## zanata-2.3.1
  * Bug fixes:
