@@ -313,8 +313,9 @@
                 <div id="invalidFilenameError" style="display: none;
                                                       color: red;
                                                       padding: 5px;
-                                                      margin-bottom: 5px;
-                ">Zanata does not support filenames that contain a semicolon.</div>
+                                                      margin-bottom: 5px;">
+                    #{messages['jsf.iteration.files.FilenameWithSemicolonNotSupported']}
+                </div>
                 <div>
                     <h:outputLabel for="docPath" value="#{messages['jsf.iteration.files.DocumentPath']}"/>
                     <h:inputText id="docPath"
