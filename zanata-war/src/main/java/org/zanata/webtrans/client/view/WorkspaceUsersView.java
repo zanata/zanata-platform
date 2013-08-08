@@ -16,8 +16,8 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
@@ -126,9 +126,9 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersDispl
    @Override
    public void appendChat(String user, String timestamp, String msg, MESSAGE_TYPE messageType)
    {
-      Label timestampLabel = new Label("[" + timestamp + "]");
+      InlineLabel timestampLabel = new InlineLabel("[" + timestamp + "]");
       timestampLabel.setStylePrimaryName(style.timeStamp());
-      Label msgLabel = new Label(msg);
+      InlineLabel msgLabel = new InlineLabel(msg);
       if (messageType == MESSAGE_TYPE.SYSTEM_MSG)
       {
          msgLabel.setStyleName(style.systemMsg());
@@ -142,16 +142,15 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersDispl
          msgLabel.setStyleName(style.msg());
       }
 
-      HorizontalPanel hp = new HorizontalPanel();
+      FlowPanel hp = new FlowPanel();
 
       if (!Strings.isNullOrEmpty(timestamp))
       {
          hp.add(timestampLabel);
-         hp.setCellWidth(timestampLabel, "107px");
       }
       if (!Strings.isNullOrEmpty(user))
       {
-         Label userLabel = new Label(user + ":");
+         InlineLabel userLabel = new InlineLabel(user + ":");
          userLabel.setStyleName(style.userName());
          hp.add(userLabel);
       }

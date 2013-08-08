@@ -61,6 +61,16 @@ public class DatabaseBackedConfig implements Serializable
       configurationValues = new HashMap<String, String>();
    }
 
+   /**
+    * Resets a single value of the configuration. This value will be reloaded from the
+    * configuration store the next time it's requested.
+    * @param key Configuration key to reset.
+    */
+   public void reset(String key)
+   {
+      configurationValues.remove(key);
+   }
+
    private String getConfigValue(String key)
    {
       if( !configurationValues.containsKey(key) )
@@ -117,6 +127,12 @@ public class DatabaseBackedConfig implements Serializable
       return getConfigValue(HApplicationConfiguration.KEY_HELP_CONTENT);
    }
 
+   //invalidate key will force reload of that value from db
+   public void invalidateHomeContent()
+   {
+      configurationValues.remove(HApplicationConfiguration.KEY_HOME_CONTENT);
+   }
+
    public String getHomeContent()
    {
       return getConfigValue(HApplicationConfiguration.KEY_HOME_CONTENT);
@@ -146,4 +162,6 @@ public class DatabaseBackedConfig implements Serializable
    {
       return getConfigValue(HApplicationConfiguration.KEY_PIWIK_IDSITE);
    }
+
+  
 }

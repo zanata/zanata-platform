@@ -107,6 +107,16 @@ public class JndiBackedConfig implements Serializable
    }
 
    /**
+    * Resets a single value of the configuration. This value will be reloaded from the
+    * configuration store the next time it's requested.
+    * @param key Configuration key to reset.
+    */
+   public void reset(String key)
+   {
+      configurationValues.remove(key);
+   }
+
+   /**
     * Specific to Directory-based configuration, this method returns a set of sub-keys available for the given
     * "parent" key. For example, if there are two Jndi properties called 'org/zanata/prop1' and 'org/zanata/prop2',
     * and the following invocation is made: <code>getSubKeys("org/zanata")</code>, the return value would be an array
