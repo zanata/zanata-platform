@@ -80,7 +80,6 @@ public class ApplicationConfiguration implements Serializable
    // set by component.xml
    private String webAssetsVersion = "";
 
-   @Observer( { EVENT_CONFIGURATION_CHANGED })
    @Create
    public void load()
    {
@@ -91,6 +90,14 @@ public class ApplicationConfiguration implements Serializable
       this.loadLoginModuleNames();
       this.validateConfiguration();
       this.applyLoggingConfiguration();
+   }
+
+   @Observer( { EVENT_CONFIGURATION_CHANGED })
+   public void resetConfigValue(String configName)
+   {
+      // Remove the value from all stores
+      databaseBackedConfig.reset(configName);
+      jndiBackedConfig.reset(configName);
    }
 
    /**

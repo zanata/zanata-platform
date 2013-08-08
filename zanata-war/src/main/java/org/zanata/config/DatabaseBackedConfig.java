@@ -61,6 +61,16 @@ public class DatabaseBackedConfig implements Serializable
       configurationValues = new HashMap<String, String>();
    }
 
+   /**
+    * Resets a single value of the configuration. This value will be reloaded from the
+    * configuration store the next time it's requested.
+    * @param key Configuration key to reset.
+    */
+   public void reset(String key)
+   {
+      configurationValues.remove(key);
+   }
+
    private String getConfigValue(String key)
    {
       if( !configurationValues.containsKey(key) )

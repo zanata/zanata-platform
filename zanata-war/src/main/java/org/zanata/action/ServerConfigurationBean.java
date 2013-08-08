@@ -36,7 +36,6 @@ import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.action.validator.EmailList;
-import org.zanata.config.DatabaseBackedConfig;
 import org.zanata.dao.ApplicationConfigurationDAO;
 import org.zanata.model.HApplicationConfiguration;
 import org.zanata.model.validator.Url;
@@ -60,9 +59,6 @@ public class ServerConfigurationBean implements Serializable
 
    @In
    private ApplicationConfiguration applicationConfiguration;
-   
-   @In
-   private DatabaseBackedConfig databaseBackedConfig;
 
    private String registerUrl;
    private String serverUrl;
@@ -134,57 +130,20 @@ public class ServerConfigurationBean implements Serializable
    public String updateHomeContent()
    {
       HApplicationConfiguration var = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_HOME_CONTENT);
-      if (var != null)
-      {
-         if (homeContent == null || homeContent.isEmpty())
-         {
-            applicationConfigurationDAO.makeTransient(var);
-         }
-         else
-         {
-            var.setValue(homeContent);
-         }
-      }
-      else if (homeContent != null && !homeContent.isEmpty())
-      {
-         HApplicationConfiguration op = new HApplicationConfiguration(HApplicationConfiguration.KEY_HOME_CONTENT, homeContent);
-         applicationConfigurationDAO.makePersistent(op);
-      }
+      persistApplicationConfig(HApplicationConfiguration.KEY_HOME_CONTENT, var, homeContent);
       applicationConfigurationDAO.flush();
+
       FacesMessages.instance().add("Home content was successfully updated.");
-      if (Events.exists())
-      {
-         Events.instance().raiseTransactionSuccessEvent(ApplicationConfiguration.EVENT_CONFIGURATION_CHANGED);
-      }
-      databaseBackedConfig.invalidateHomeContent();
       return "/home.xhtml";
    }
 
    public String updateHelpContent()
    {
       HApplicationConfiguration var = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_HELP_CONTENT);
-      if (var != null)
-      {
-         if (helpContent == null || helpContent.isEmpty())
-         {
-            applicationConfigurationDAO.makeTransient(var);
-         }
-         else
-         {
-            var.setValue(helpContent);
-         }
-      }
-      else if (helpContent != null && !helpContent.isEmpty())
-      {
-         HApplicationConfiguration op = new HApplicationConfiguration(HApplicationConfiguration.KEY_HELP_CONTENT, helpContent);
-         applicationConfigurationDAO.makePersistent(op);
-      }
+      persistApplicationConfig(HApplicationConfiguration.KEY_HELP_CONTENT, var, helpContent);
       applicationConfigurationDAO.flush();
+
       FacesMessages.instance().add("Help page content was successfully updated.");
-      if (Events.exists())
-      {
-         Events.instance().raiseTransactionSuccessEvent(ApplicationConfiguration.EVENT_CONFIGURATION_CHANGED);
-      }
       return "/help/view.xhtml";
    }
 
@@ -359,10 +318,6 @@ public class ServerConfigurationBean implements Serializable
 
       applicationConfigurationDAO.flush();
       FacesMessages.instance().add("Configuration was successfully updated.");
-      if (Events.exists())
-      {
-         Events.instance().raiseTransactionSuccessEvent(ApplicationConfiguration.EVENT_CONFIGURATION_CHANGED);
-      }
    }
 
    private void persistApplicationConfig(String key, HApplicationConfiguration appConfig, String newValue)
@@ -382,6 +337,11 @@ public class ServerConfigurationBean implements Serializable
       {
          appConfig = new HApplicationConfiguration(key, newValue);
          applicationConfigurationDAO.makePersistent(appConfig);
+      }
+
+      if (Events.exists())
+      {
+         Events.instance().raiseTransactionSuccessEvent(ApplicationConfiguration.EVENT_CONFIGURATION_CHANGED, key);
       }
    }
 
