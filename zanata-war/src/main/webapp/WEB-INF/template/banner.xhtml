@@ -48,6 +48,11 @@
 	
 	<nav id="nav-main" class="header__menu is-hidden--s l--push-left-half">
 	  <ul class="list--horizontal">
+	  	<s:fragment rendered="#{identity.loggedIn}">
+		  	<li class="l--push-left-half">
+		    	<s:link id="dashboard_link" view="/dashboard/home.xhtml" propagation="none">#{messages['jsf.Dashboard']}</s:link>
+		    </li>
+	    </s:fragment>
 	    <li class="l--push-left-half">
 	    	<s:link id="projects_link" view="/project/home.xhtml" propagation="none">#{messages['jsf.Projects']}</s:link>
 	    </li>

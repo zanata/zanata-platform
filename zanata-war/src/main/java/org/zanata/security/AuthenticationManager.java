@@ -246,9 +246,12 @@ public class AuthenticationManager
          }
          else if (identity.isLoggedIn())
          {
-            if (userRedirect != null && userRedirect.isRedirect())
+            if (userRedirect != null)
             {
-               return "redirect";
+               if(userRedirect.isRedirect() && !userRedirect.isRedirectToHome())
+               {
+                  return "redirect";
+               }
             }
             return "dashboard";
          }
