@@ -141,7 +141,7 @@ public class Highlighting
          var data = diffs[x][1]; // Text of change.
          var text = data.replace(pattern_amp, '&amp;').replace(pattern_lt,
                '&lt;').replace(pattern_gt, '&gt;').replace(pattern_para,
-               '&para;<br>');
+               '<span class="newline"></span><br>');
          switch (op) {
             case $wnd['DIFF_INSERT']:
                html[x] = text;

@@ -58,9 +58,10 @@ public class HighlightingLabel extends HTML implements SourceContentWrapper
    private void highlight()
    {
       Element preElement = getElement().getFirstChildElement();
-      String text = plainText == null ? "" : plainText.replaceAll("\n", "¶\n");
-      Highlighting.syntaxHighlight(text, preElement);
+      Highlighting.syntaxHighlight(Strings.nullToEmpty(plainText), preElement);
       preElement.addClassName("cm-s-default");
+      String styled = preElement.getInnerHTML().replaceAll("<br>", "<span class='newline'></span><br>");
+      preElement.setInnerHTML(styled);
    }
 
    @Override
