@@ -50,13 +50,14 @@ public class HTextFlowTargetIndexingStrategy extends AbstractIndexingStrategy<HT
    protected ScrollableResults queryResults(int ignoredOffset)
    {
       // TODO move this query into something like HTextFlowTargetStreamingDAO
-      Query query = getSession().createQuery("from HTextFlowTarget tft " +
-      "join fetch tft.locale " +
-      "join fetch tft.textFlow " +
-      "join fetch tft.textFlow.document " +
-      "join fetch tft.textFlow.document.locale " +
-      "join fetch tft.textFlow.document.projectIteration " +
-      "join fetch tft.textFlow.document.projectIteration.project");
+      Query query = getSession().createQuery(
+            "from HTextFlowTarget tft " +
+            "join fetch tft.locale " +
+            "join fetch tft.textFlow " +
+            "join fetch tft.textFlow.document " +
+            "join fetch tft.textFlow.document.locale " +
+            "join fetch tft.textFlow.document.projectIteration " +
+            "join fetch tft.textFlow.document.projectIteration.project");
       query.setFetchSize(Integer.MIN_VALUE);
       return query.scroll(ScrollMode.FORWARD_ONLY);
    }
