@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  * 
@@ -51,7 +51,6 @@ import org.zanata.config.JndiBackedConfig;
 import org.zanata.log4j.ZanataHTMLLayout;
 import org.zanata.log4j.ZanataSMTPAppender;
 import org.zanata.security.AuthenticationType;
-
 import com.google.common.base.Objects;
 
 @Name("applicationConfiguration")
@@ -66,7 +65,7 @@ public class ApplicationConfiguration implements Serializable
 
    private static final String EMAIL_APPENDER_NAME = "zanata.log.appender.email";
    public static final String EVENT_CONFIGURATION_CHANGED = "zanata.configuration.changed";
-   
+
    private static final String STYLESHEET_LOCAL_PATH = "/assets/css/style.css";
 
    private DatabaseBackedConfig databaseBackedConfig;
@@ -88,7 +87,6 @@ public class ApplicationConfiguration implements Serializable
    // set by component.xml
    private String webAssetsVersion = "";
 
-   @Observer({ EVENT_CONFIGURATION_CHANGED })
    @Create
    public void load()
    {
@@ -99,6 +97,14 @@ public class ApplicationConfiguration implements Serializable
       this.loadLoginModuleNames();
       this.validateConfiguration();
       this.applyLoggingConfiguration();
+   }
+
+   @Observer({ EVENT_CONFIGURATION_CHANGED })
+   public void resetConfigValue(String configName)
+   {
+      // Remove the value from all stores
+      databaseBackedConfig.reset(configName);
+      jndiBackedConfig.reset(configName);
    }
 
    /**
@@ -185,8 +191,7 @@ public class ApplicationConfiguration implements Serializable
          if (request != null)
          {
             configuredValue =
-                  request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-                        + request.getContextPath();
+                  request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
          }
       }
       return configuredValue;
@@ -229,8 +234,7 @@ public class ApplicationConfiguration implements Serializable
       // Finally, just throw an Exception
       if (emailAddr == null)
       {
-         throw new RuntimeException(
-               "'From' email address has not been defined in either zanata.properties or Zanata setup");
+         throw new RuntimeException("'From' email address has not been defined in either zanata.properties or Zanata setup");
       }
       return emailAddr;
    }
