@@ -192,7 +192,7 @@ public class ValidationServiceImpl implements ValidationService
       boolean result;
       if (USE_COMBINE_CACHE)
       {
-         DocumentStatus docStats = translationStateCacheImpl.getDocStats(hDocId, localeId);
+         DocumentStatus docStats = translationStateCacheImpl.getDocumentStatus(hDocId, localeId);
          result = docStats.hasError();
       }
       else
