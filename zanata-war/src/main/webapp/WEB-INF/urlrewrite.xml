@@ -17,7 +17,13 @@
     <from>.*</from>
     <to last="true" type="temporary-redirect">/robots.txt</to>
   </rule>
-
+  
+  <!-- Dashboard Rules -->
+  <rule>
+    <from casesensitive="true">^/dashboard/?(\?.*)?$</from>
+    <to last="true">/dashboard/home.seam$1</to>
+  </rule>
+  
   <!-- Admin Rules -->
   <rule>
     <from casesensitive="true">^/admin/([^/\?\.]+)(\?.*)?$</from>
@@ -26,7 +32,6 @@
 
 
   <!-- Language rules -->
-
   <rule>
     <from casesensitive="true">^/language/view/(.+)$</from>
     <to last="true">/language/language.seam\?id=$1</to>
@@ -208,6 +213,17 @@
     <to last="true">/profile/merge_account.seam$1</to>
   </rule>
 
+  <!-- Translation Memory -->
+  <rule>
+    <from casesensitive="true">^/tm/?(\?.*)?$</from>
+    <to last="true">/tm/home.seam$1</to>
+  </rule>
+
+  <rule>
+    <from casesensitive="true">^/tm/create(\?.*)?$</from>
+    <to last="true">/tm/create.seam$1</to>
+  </rule>
+
 
   <!-- help / -->
 
@@ -301,6 +317,11 @@
     <from casesensitive="true">^/webtrans/translate(.*)$</from>
     <to last="true">/webtrans/Application.seam$1</to>
   </rule>
+  
+  <outbound-rule>
+    <from>^(/.+)?/dashboard/home.seam(.+)?$</from>
+    <to>$1/dashboard/$2</to>
+  </outbound-rule>
   
   <outbound-rule>
     <from>^(/.+)?/admin/(.+).seam(.*)$</from>
@@ -489,6 +510,11 @@
   <outbound-rule>
     <from>^(/.+)?/profile/merge_account.seam(.+)?$</from>
     <to>$1/profile/merge_account$2</to>
+  </outbound-rule>
+
+  <outbound-rule>
+      <from>^(/.+)?/tm/create.seam(.+)?$</from>
+      <to>$1/tm/create$2</to>
   </outbound-rule>
 
   <outbound-rule>

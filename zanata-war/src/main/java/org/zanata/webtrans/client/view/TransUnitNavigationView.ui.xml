@@ -2,29 +2,29 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<ui:style type="org.zanata.webtrans.client.view.TransUnitNavigationView.Styles">
-            
+
         .navButton {
 	       cursor:pointer;
 	       font-size:18px;
 	       color:#4E4E4E;
         }
-        
+
         .navButton:hover {
-	       color:#0085CC;
+	       color:#4e9fdd;
         }
-        
+
         .fuzzyUntranslated {
-			color:#A67D00;
+			color:#a2b4c3;
 		}
-		
+
 		.fuzzy {
-			color:#FFC000;
+			color:#e0c350;
 		}
-		
+
 		.untranslated {
-			color:#4E4E4E;
+			color:#a2b4c3;
 		}
-       
+
 	</ui:style>
 	<g:FlowPanel>
 	   <g:InlineLabel ui:field="firstEntry" addStyleNames="{style.navButton} icon-to-start"/>
@@ -32,4 +32,4 @@
 	   <g:InlineLabel ui:field="nextState" addStyleNames="{style.navButton} icon-right-open-1"/>
 	   <g:InlineLabel ui:field="lastEntry" addStyleNames="{style.navButton} icon-to-end"/>
 	</g:FlowPanel>
-</ui:UiBinder> 
+</ui:UiBinder>

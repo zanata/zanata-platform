@@ -24,22 +24,37 @@ package org.zanata.webtrans.shared.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.text.AbstractDocument.Content;
-
-import org.zanata.common.ContentState;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
+ * A result item returned by a translation memory search.
+ *
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
 public class TransMemoryResultItem extends SearchResultItem implements IsSerializable
 {
+
+   /**
+    * Describes the type of match that is found.
+    */
+   public enum MatchType
+   {
+      // Note: The order is significant for ordering of TM results in the UI
+
+      /* Imported from an external source (i.e. TMX) */
+      Imported,
+      TranslatedInternal,
+      ApprovedInternal,
+   }
+
    private ArrayList<String> sourceContents;
    private ArrayList<String> targetContents;
-   private int matchCount = 0;
-   private ContentState contentState;
+   private int matchCount = 0;                  // The number of occurrences for the source contents
+   private MatchType matchType;
+   private List<String> origins;                 // The optional origin identifiers for this result (i.e. A Trans memory name)
+   private ArrayList<Long> sourceIdList = new ArrayList<Long>();
+
 
    // for GWT
    @SuppressWarnings("unused")
@@ -53,12 +68,24 @@ public class TransMemoryResultItem extends SearchResultItem implements IsSeriali
     * @param relevanceScore
     * @param similarityPercent
     */
-   public TransMemoryResultItem(ArrayList<String> sourceContents, ArrayList<String> targetContents, ContentState contentState, double relevanceScore, double similarityPercent)
+   public TransMemoryResultItem(ArrayList<String> sourceContents, ArrayList<String> targetContents, MatchType matchType,
+                                double relevanceScore, double similarityPercent)
    {
       super(relevanceScore, similarityPercent);
       this.sourceContents = sourceContents;
       this.targetContents = targetContents;
-      this.contentState = contentState;
+      this.matchType = matchType;
+      this.origins = new ArrayList<String>();
+   }
+
+   public List<String> getOrigins()
+   {
+      return origins;
+   }
+
+   public void addOrigin(String origin)
+   {
+      this.origins.add(origin);
    }
 
    // FIXME remove this
@@ -93,9 +120,9 @@ public class TransMemoryResultItem extends SearchResultItem implements IsSeriali
       return targetContents;
    }
 
-   public ContentState getContentState()
+   public MatchType getMatchType()
    {
-      return contentState;
+      return matchType;
    }
 
    public int getMatchCount()
@@ -105,7 +132,17 @@ public class TransMemoryResultItem extends SearchResultItem implements IsSeriali
 
    public void incMatchCount()
    {
-      ++this.matchCount ;
+      ++this.matchCount;
+   }
+
+   public ArrayList<Long> getSourceIdList()
+   {
+      return sourceIdList;
+   }
+
+   public void addSourceId(Long sourceId)
+   {
+      this.sourceIdList.add(sourceId);
    }
 
 }

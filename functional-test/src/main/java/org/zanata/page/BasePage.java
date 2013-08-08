@@ -27,12 +27,16 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.zanata.page.account.MyAccountPage;
 import org.zanata.page.account.RegisterPage;
 import org.zanata.page.account.SignInPage;
@@ -45,6 +49,7 @@ import org.zanata.util.WebElementUtil;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
 import javax.annotation.Nullable;
 
 /**
@@ -58,24 +63,26 @@ public class BasePage extends AbstractPage
 {
    private List<WebElement> navMenuItems = Collections.emptyList();
 
-   private static final By BY_SIGN_IN = By.id("Sign_in");
-   private static final By BY_SIGN_OUT = By.id("Sign_out");
-
-   @FindBy(className = "navBar")
+   @FindBy(id = "nav-main")
    WebElement navBar;
 
-   @FindBy(id = "Projects")
+   @FindBy(id = "projects_link")
    private WebElement projectsLink;
 
-   @FindBy(id = "version-groups")
+   @FindBy(id = "version-groups_link")
    private WebElement groupsLink;
 
-   @FindBy(id = "Languages")
+   @FindBy(id = "languages_link")
    private WebElement languagesLink;
 
-   @FindBy(id = "userCol")
-   private WebElement userColumn;
+   @FindBy(id = "user_avatar")
+   private WebElement userAvatar;
 
+   private static final By BY_SIGN_IN = By.id("signin_link");
+   private static final By BY_SIGN_OUT = By.id("right_menu_sign_out_link");
+   private static final By BY_PROFILE_LINK = By.id("profile");
+   private static final By BY_ADMINISTRATION_LINK = By.id("administration");
+   
    public BasePage(final WebDriver driver)
    {
       super(driver);
@@ -84,8 +91,11 @@ public class BasePage extends AbstractPage
 
    public MyAccountPage goToMyProfile()
    {
-      userColumn.click();
-      getDriver().findElement(By.id("MyProfile")).click();
+      userAvatar.click();
+      waitForSideMenuOpened();
+      
+      clickLinkAfterAnimation(BY_PROFILE_LINK);
+
       return new MyAccountPage(getDriver());
    }
 
@@ -103,55 +113,49 @@ public class BasePage extends AbstractPage
 
    public AdministrationPage goToAdministration()
    {
-      getDriver().findElement(By.linkText("More")).click();
-      WebElement adminLink = getDriver().findElement(By.id("Administration"));
-      adminLink.click();
+      userAvatar.click();
+      waitForSideMenuOpened();
+      
+      clickLinkAfterAnimation(BY_ADMINISTRATION_LINK);
+
       return new AdministrationPage(getDriver());
    }
 
    public RegisterPage goToRegistration()
    {
-      Preconditions.checkArgument(!hasLoggedIn(),
+	Preconditions.checkArgument(!hasLoggedIn(),
             "User has logged in! You should sign out or delete cookie first in your test.");
-      getDriver().findElement(By.id("systemCol")).click();
-      WebElement registerLink = getDriver().findElement(By.id("Register"));
+	
+      WebElement registerLink = getDriver().findElement(By.id("register_link_internal_auth"));
       registerLink.click();
       return new RegisterPage(getDriver());
    }
 
    public SignInPage clickSignInLink()
    {
-      log.info("header text: {}", userColumn.getText());
-      WebElement signInLink = userColumn.findElement(BY_SIGN_IN);
+      WebElement signInLink = getDriver().findElement(BY_SIGN_IN);
       signInLink.click();
       return new SignInPage(getDriver());
    }
 
    public boolean hasLoggedIn()
    {
-      List<WebElement> signOutLink = getDriver().findElements(BY_SIGN_IN);
-      return signOutLink.size() == 0;
+      List<WebElement> signInLink = getDriver().findElements(BY_SIGN_IN);
+      return signInLink.size() == 0;
    }
 
    public String loggedInAs()
    {
-      WebElement username = userColumn.findElement(By.className("username"));
-      return username.getText().trim();
+      return userAvatar.getAttribute("title");
    }
 
-   public HomePage signOut()
+   public HomePage logout()
    {
-      userColumn.click();
-      WebElement signOut = userColumn.findElement(BY_SIGN_OUT);
-      signOut.click();
-      waitForTenSec().until(new Function<WebDriver, WebElement>()
-      {
-         @Override
-         public WebElement apply(WebDriver driver)
-         {
-            return driver.findElement(BY_SIGN_IN);
-         }
-      });
+      userAvatar.click();
+
+      waitForSideMenuOpened();
+
+      clickLinkAfterAnimation(BY_SIGN_OUT);
       return new HomePage(getDriver());
    }
 
@@ -227,6 +231,29 @@ public class BasePage extends AbstractPage
          }
       });
       return getErrors();
+   }
+   
+   /**
+    * This is a workaround for https://code.google.com/p/selenium/issues/detail?id=2766
+    * Elemenet not clickable at point due to the change coordinate of element in page.
+    * @param locator
+    */
+   public void clickLinkAfterAnimation(By locator)
+   {
+      JavascriptExecutor executor = (JavascriptExecutor) getDriver();
+      executor.executeScript("arguments[0].click();", getDriver().findElement(locator));
+   }
+
+   public void waitForSideMenuClosed()
+   {
+      WebElementUtil.waitForTenSeconds(getDriver()).until(
+            ExpectedConditions.invisibilityOfElementLocated(By.className("off-canvas--right-under")));
+   }
+   
+   public void waitForSideMenuOpened()
+   {
+      WebElementUtil.waitForTenSeconds(getDriver()).until(
+            ExpectedConditions.visibilityOfElementLocated(By.className("off-canvas--right-under")));
    }
 
 }

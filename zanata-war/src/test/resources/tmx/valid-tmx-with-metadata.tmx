@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tmx version="1.4">
+    <header creationtool="Zanata TransMemoryExportTMXStrategy" creationtoolversion="unknown" segtype="paragraph"
+            o-tmf="unknown" adminlang="en" srclang="*all*" datatype="unknown">
+        <prop name="doc0:resId1:prop1">Header Prop value</prop>
+        <note xml:lang="en">Header Note value</note>
+    </header>
+    <body>
+        <tu tuid="doc0:resId0" srclang="en">
+            <prop name="doc0:resId0:prop0">Custom prop0 value</prop>
+            <note xml:lang="en">Custom note</note>
+            <tuv xml:lang="en">
+                <prop name="doc0:resId0:tuv0:prop0">Custom prop0 value on tuv</prop>
+                <note xml:lang="en">Custom note on tuv</note>
+                <seg>source0</seg>
+            </tuv>
+            <tuv xml:lang="en-US">
+                <seg>source0</seg>
+            </tuv>
+            <tuv xml:lang="fr">
+                <seg>targetFR0</seg>
+            </tuv>
+            <tuv xml:lang="de">
+                <seg>targetDE0</seg>
+            </tuv>
+        </tu>
+        <tu tuid="doc0:resId1" srclang="en">
+            <prop name="doc0:resId1:prop0">Custom prop0 value</prop>
+            <prop name="doc0:resId1:prop1">Custom prop1 value</prop>
+            <note xml:lang="en">Custom note0</note>
+            <note xml:lang="en">Custom note1</note>
+            <tuv xml:lang="en">
+                <seg>SOURCE0</seg>
+            </tuv>
+            <tuv xml:lang="en-US">
+                <seg>SOURCE0</seg>
+            </tuv>
+            <tuv xml:lang="fr">
+                <seg>TARGETfr0</seg>
+            </tuv>
+        </tu>
+        <tu tuid="doc1:resId0" srclang="en">
+            <tuv xml:lang="en">
+                <seg>source0</seg>
+            </tuv>
+            <tuv xml:lang="en-US">
+                <seg>source0</seg>
+            </tuv>
+            <tuv xml:lang="fr">
+                <seg>targetFR0</seg>
+            </tuv>
+        </tu>
+        <tu tuid="doc1:resId1" srclang="en">
+            <tuv xml:lang="en">
+                <seg>SOURCE0</seg>
+            </tuv>
+            <tuv xml:lang="en-US">
+                <seg>SOURCE0</seg>
+            </tuv>
+            <tuv xml:lang="de">
+                <seg>TARGETde0</seg>
+            </tuv>
+        </tu>
+    </body>
+</tmx>

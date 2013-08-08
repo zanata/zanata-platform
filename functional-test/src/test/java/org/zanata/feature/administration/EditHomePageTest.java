@@ -38,6 +38,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
+@Ignore //Home page replaced by dashboard. No longer have edit page
 public class EditHomePageTest
 {
    @ClassRule
@@ -56,6 +57,7 @@ public class EditHomePageTest
    }
 
    @Test(expected = AssertionError.class) // RHBZ-988162 - not updating immediately
+  
    public void goToEditPageCode()
    {
       EditHomeCodePage editHomeCodePage = new LoginWorkFlow().signIn("admin", "admin").goToEditPageCode();

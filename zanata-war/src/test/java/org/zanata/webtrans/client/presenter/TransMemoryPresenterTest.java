@@ -1,6 +1,8 @@
 package org.zanata.webtrans.client.presenter;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.inOrder;
@@ -11,6 +13,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
+import static org.zanata.webtrans.shared.model.TransMemoryResultItem.MatchType;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -161,7 +164,7 @@ public class TransMemoryPresenterTest
    @Test
    public void showTMDetails()
    {
-      TransMemoryResultItem object = new TransMemoryResultItem(new ArrayList<String>(), new ArrayList<String>(), ContentState.Approved, 0, 0);
+      TransMemoryResultItem object = new TransMemoryResultItem(new ArrayList<String>(), new ArrayList<String>(), MatchType.ApprovedInternal, 0, 0);
       when(display.getSearchType()).thenReturn(searchType);
 
       presenter.showTMDetails(object);
@@ -172,7 +175,7 @@ public class TransMemoryPresenterTest
    @Test
    public void fireCopyEvent()
    {
-      TransMemoryResultItem object = new TransMemoryResultItem(new ArrayList<String>(), new ArrayList<String>(), ContentState.Approved, 0, 0);
+      TransMemoryResultItem object = new TransMemoryResultItem(new ArrayList<String>(), new ArrayList<String>(), MatchType.ApprovedInternal, 0, 0);
       ArgumentCaptor<CopyDataToEditorEvent> eventCaptor = ArgumentCaptor.forClass(CopyDataToEditorEvent.class);
       
       when(display.getSearchType()).thenReturn(searchType);
@@ -438,5 +441,17 @@ public class TransMemoryPresenterTest
       presenter.onUserConfigChanged(UserConfigChangeEvent.DOCUMENT_CONFIG_CHANGE_EVENT);
 
       verifyNoMoreInteractions(display);
+   }
+
+   /**
+    * Make sure the Match type enum order is not changed as the UI depends on it.
+    * @throws Exception
+    * @see org.zanata.webtrans.server.rpc.GetTransMemoryHandler.TransMemoryResultComparator
+    */
+   @Test
+   public void matchTypeEnumOrder() throws Exception
+   {
+      assertThat(MatchType.ApprovedInternal, greaterThan(MatchType.TranslatedInternal));
+      assertThat(MatchType.TranslatedInternal, greaterThan(MatchType.Imported));
    }
 }

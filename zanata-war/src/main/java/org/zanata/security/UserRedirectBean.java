@@ -29,6 +29,8 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.faces.Redirect;
+import org.jboss.seam.security.Identity;
 import org.jboss.seam.web.ServletContexts;
 
 /**
@@ -38,8 +40,9 @@ import org.jboss.seam.web.ServletContexts;
  * parameter by adding child element
  * <code>&lt;param name="continue" value="#{userRedirect.encodedUrl}" /></code>
  * to the login page's {@code <page>} element in pages.xml
- *
- * TODO Use {@link org.jboss.seam.faces.Redirect} instead of this class (by extension or otherwise).
+ * 
+ * TODO Use {@link org.jboss.seam.faces.Redirect} instead of this class (by
+ * extension or otherwise).
  */
 @Name("userRedirect")
 // TODO verify that SESSION scope will not persist this too long
@@ -49,6 +52,7 @@ public class UserRedirectBean implements Serializable
 {
    private static final String HOME_URL = "/";
    private static final String ERROR_URL = "/error";
+   private static final String DASHBOARD_HOME_URL = "/dashboard/home.xhtml";
 
    /**
     * 
@@ -89,7 +93,6 @@ public class UserRedirectBean implements Serializable
          queryString = originalUrl.substring(qsIndex);
       }
 
-
       if (newUrl.endsWith(ERROR_URL))
       {
          newUrl = newUrl.substring(0, newUrl.length() - ERROR_URL.length());
@@ -105,14 +108,14 @@ public class UserRedirectBean implements Serializable
 
    /**
     * Sets the redirect url to a context local url.
-    *
+    * 
     * @param url The context local url to redirect to.
     * @see UserRedirectBean#setUrl(String)
     */
    public void setLocalUrl(String url)
    {
       String ctxPath = ServletContexts.instance().getRequest().getContextPath();
-      setUrl( ctxPath + url );
+      setUrl(ctxPath + url);
    }
 
    /**
@@ -172,5 +175,15 @@ public class UserRedirectBean implements Serializable
    public boolean isRedirect()
    {
       return url != null && !url.isEmpty();
+   }
+
+   public void redirectToDashboard()
+   {
+      if (Identity.instance().isLoggedIn())
+      {
+         Redirect redirect = Redirect.instance();
+         redirect.setViewId(DASHBOARD_HOME_URL);
+         redirect.execute();
+      }
    }
 }

@@ -42,7 +42,7 @@ public class LoginWorkFlow extends AbstractWebWorkFlow
             return homePage;
          }
          log.info("sign out first then sign back in as {}", username);
-         homePage = homePage.signOut();
+         homePage = homePage.logout();
       }
 
       SignInPage signInPage = homePage.clickSignInLink();

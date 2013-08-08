@@ -31,8 +31,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import net.sf.ehcache.CacheManager;
 
-import org.apache.lucene.search.Filter;
-import org.apache.lucene.util.OpenBitSet;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Destroy;
@@ -71,8 +69,6 @@ import com.google.common.cache.CacheLoader;
 public class TranslationStateCacheImpl implements TranslationStateCache
 {
    private static final String BASE = TranslationStateCacheImpl.class.getName();
-   private static final String CACHE_NAME = BASE + ".filterCache";
-   private static final String TRANSLATED_TEXT_FLOW_CACHE_NAME = BASE + ".translatedTextFlowCache";
    private static final String DOC_STATUS_CACHE_NAME = BASE + ".docStatusCache";
    private static final String TFT_VALIDATION_CACHE_NAME = BASE + ".targetValidationCache";
 
@@ -89,33 +85,25 @@ public class TranslationStateCacheImpl implements TranslationStateCache
    private ValidationService validationServiceImpl;
 
    private CacheManager cacheManager;
-   private CacheWrapper<LocaleId, TranslatedTextFlowFilter> filterCache;
-   private CacheWrapper<LocaleId, OpenBitSet> translatedTextFlowCache;
    private CacheWrapper<TranslatedDocumentKey, DocumentStatus> docStatusCache;
    private CacheWrapper<Long, Map<ValidationId, Boolean>> targetValidationCache;
-   private CacheLoader<LocaleId, TranslatedTextFlowFilter> filterLoader;
-   private CacheLoader<LocaleId, OpenBitSet> bitsetLoader;
    private CacheLoader<TranslatedDocumentKey, DocumentStatus> docStatusLoader;
    private CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader;
 
    public TranslationStateCacheImpl()
    {
       // constructor for Seam
-      this.filterLoader = new FilterLoader();
-      this.bitsetLoader = new BitsetLoader();
       this.docStatusLoader = new HTextFlowTargetIdLoader();
       this.targetValidationLoader = new HTextFlowTargetValidationLoader();
    }
 
-   public TranslationStateCacheImpl(CacheLoader<LocaleId, TranslatedTextFlowFilter> filterLoader,
-         CacheLoader<LocaleId, OpenBitSet> bitsetLoader,
+   public TranslationStateCacheImpl(
          CacheLoader<TranslatedDocumentKey, DocumentStatus> docStatsLoader,
-         CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader, TextFlowTargetDAO textFlowTargetDAO,
+         CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader, 
+         TextFlowTargetDAO textFlowTargetDAO,
          ValidationService validationServiceImpl)
    {
       // constructor for testing
-      this.filterLoader = filterLoader;
-      this.bitsetLoader = bitsetLoader;
       this.docStatusLoader = docStatsLoader;
       this.targetValidationLoader = targetValidationLoader;
       this.textFlowTargetDAO = textFlowTargetDAO;
@@ -126,8 +114,6 @@ public class TranslationStateCacheImpl implements TranslationStateCache
    public void create()
    {
       cacheManager = CacheManager.create();
-      filterCache = EhcacheWrapper.create(CACHE_NAME, cacheManager, filterLoader);
-      translatedTextFlowCache = EhcacheWrapper.create(TRANSLATED_TEXT_FLOW_CACHE_NAME, cacheManager, bitsetLoader);
       docStatusCache = EhcacheWrapper.create(DOC_STATUS_CACHE_NAME, cacheManager, docStatusLoader);
       targetValidationCache = EhcacheWrapper.create(TFT_VALIDATION_CACHE_NAME, cacheManager, targetValidationLoader);
    }
@@ -138,35 +124,18 @@ public class TranslationStateCacheImpl implements TranslationStateCache
       cacheManager.shutdown();
    }
 
-   @Override
-   public OpenBitSet getTranslatedTextFlowIds(final LocaleId localeId)
-   {
-      return translatedTextFlowCache.getWithLoader(localeId);
-   }
-
    /**
     * This method contains all logic to be run immediately after a Text Flow Target has
     * been successfully translated.
-    * <p>
-    * Note: it is not safe to access the database, since this event is triggered after the transaction has completed.
     */
    @Observer(TextFlowTargetStateEvent.EVENT_NAME)
    @Override
    public void textFlowStateUpdated(TextFlowTargetStateEvent event)
    {
-      updateTranslatedTextFlowCache(event.getTextFlowId(), event.getLocaleId(), event.getNewState());
-      updateFilterCache(event.getTextFlowId(), event.getLocaleId(), event.getNewState());
-
       // TODO update this cache rather than invalidating
       invalidateTargetValidationCache(event.getTextFlowTargetId());
 
       updateDocStatusCache(event.getDocumentId(), event.getLocaleId(), event.getTextFlowTargetId());
-   }
-
-   @Override
-   public Filter getFilter(LocaleId locale)
-   {
-      return filterCache.getWithLoader(locale);
    }
 
    @Override
@@ -187,15 +156,6 @@ public class TranslationStateCacheImpl implements TranslationStateCache
       return cacheEntry.get(validationId);
    }
 
-   private void updateFilterCache(Long textFlowId, LocaleId localeId, ContentState newState)
-   {
-      TranslatedTextFlowFilter filter = filterCache.get(localeId);
-      if (filter != null)
-      {
-         filter.onTranslationStateChange(textFlowId, newState);
-      }
-   }
-
    private void updateDocStatusCache(Long documentId, LocaleId localeId, Long updatedTargetId)
    {
       DocumentStatus documentStatus = docStatusCache.get(new TranslatedDocumentKey(documentId, localeId));
@@ -203,44 +163,9 @@ public class TranslationStateCacheImpl implements TranslationStateCache
       updateDocumentStatus(documentStatus, documentId, localeId, target);
    }
 
-   private void updateTranslatedTextFlowCache(Long textFlowId, LocaleId localeId, ContentState newState)
-   {
-      OpenBitSet bitSet = translatedTextFlowCache.get(localeId);
-      if (bitSet != null)
-      {
-         boolean translated = newState.isTranslated();
-         if (translated)
-         {
-            bitSet.set(textFlowId);
-         }
-         else
-         {
-            bitSet.clear(textFlowId);
-         }
-      }
-   }
-
    private void invalidateTargetValidationCache(Long textFlowTargetId)
    {
       targetValidationCache.remove(textFlowTargetId);
-   }
-
-   private final class BitsetLoader extends CacheLoader<LocaleId, OpenBitSet>
-   {
-      @Override
-      public OpenBitSet load(LocaleId localeId) throws Exception
-      {
-         return textFlowDAO.findIdsWithTranslations(localeId);
-      }
-   }
-
-   private final class FilterLoader extends CacheLoader<LocaleId, TranslatedTextFlowFilter>
-   {
-      @Override
-      public TranslatedTextFlowFilter load(LocaleId localeId) throws Exception
-      {
-         return new TranslatedTextFlowFilter(localeId);
-      }
    }
 
    private final class HTextFlowTargetIdLoader extends CacheLoader<TranslatedDocumentKey, DocumentStatus>

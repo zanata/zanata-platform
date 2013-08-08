@@ -28,6 +28,9 @@ import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
+import org.zanata.model.tm.TransMemory;
+import org.zanata.model.tm.TransMemoryUnit;
+import org.zanata.model.tm.TransMemoryUnitVariant;
 import org.zanata.webtrans.shared.model.AuditInfo;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
@@ -206,5 +209,19 @@ public class TestFixture
    public static DocumentInfo documentInfo(long id)
    {
       return documentInfo(id, "");
+   }
+
+   public static TransMemoryUnit makeTransMemoryUnit(Long l, HLocale hLocale)
+   {
+      TransMemory tm = new TransMemory();
+      tm.setSlug("test-tm");
+
+      return TransMemoryUnit.tu(tm,
+            "uid" + l,
+            "uid" + l,
+            hLocale.getLocaleId().getId(),
+            "<seg>source</seg>",
+            TransMemoryUnitVariant.tuv("lang", "<seg>target</seg>")
+      );
    }
 }

@@ -27,21 +27,18 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import lombok.extern.slf4j.Slf4j;
-import net.customware.gwt.dispatch.server.ExecutionContext;
-import net.customware.gwt.dispatch.shared.ActionException;
-
 import org.apache.lucene.queryParser.ParseException;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
-import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.search.LevenshteinTokenUtil;
 import org.zanata.search.LevenshteinUtil;
 import org.zanata.security.ZanataIdentity;
@@ -50,21 +47,22 @@ import org.zanata.service.TranslationMemoryQueryService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
+import org.zanata.webtrans.shared.model.TransMemoryResultItem.MatchType;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemory;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
-
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
+import lombok.extern.slf4j.Slf4j;
+import net.customware.gwt.dispatch.server.ExecutionContext;
+import net.customware.gwt.dispatch.shared.ActionException;
 @Name("webtrans.gwt.GetTransMemoryHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(GetTranslationMemory.class)
 @Slf4j
 public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationMemory, GetTranslationMemoryResult>
 {
-
-   private static final boolean useTargetIndex = false;
 
    static final int MAX_RESULTS = 10;
 
@@ -99,18 +97,11 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
       try
       {
          List<Object[]> matches;
-         matches = translationMemoryQueryService.getSearchResult(transMemoryQuery, sourceLocaleId, targetLocale.getLocaleId(), MAX_RESULTS, useTargetIndex);
+         matches = translationMemoryQueryService.getSearchResult(transMemoryQuery, sourceLocaleId, targetLocale.getLocaleId(), MAX_RESULTS);
          Map<TMKey, TransMemoryResultItem> matchesMap = new LinkedHashMap<TMKey, TransMemoryResultItem>(matches.size());
          for (Object[] match : matches)
          {
-            if (useTargetIndex)
-            {
-               processTargetIndexMatch(transMemoryQuery, matchesMap, match);
-            }
-            else
-            {
-               processTextFlowIndexMatch(targetLocale, transMemoryQuery, matchesMap, match);
-            }
+            processIndexMatch(transMemoryQuery, matchesMap, match, sourceLocaleId, targetLocale.getLocaleId());
          }
          results.addAll(matchesMap.values());
       }
@@ -132,47 +123,64 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
       return results;
    }
 
-   private void processTargetIndexMatch(TransMemoryQuery transMemoryQuery, Map<TMKey, TransMemoryResultItem> matchesMap, Object[] match)
+   private void processIndexMatch(TransMemoryQuery transMemoryQuery, Map<TMKey, TransMemoryResultItem> matchesMap, Object[] match,
+                                  LocaleId sourceLocaleId, LocaleId targetLocaleId)
    {
-      HTextFlowTarget textFlowTarget = (HTextFlowTarget) match[1];
-      if (!isValidResult(textFlowTarget))
+      Object entity = match[1];
+      if( entity instanceof HTextFlowTarget )
       {
-         return;
+         HTextFlowTarget textFlowTarget = (HTextFlowTarget) entity;
+         if (!isValidResult(textFlowTarget))
+         {
+            return;
+         }
+         ArrayList<String> textFlowContents = new ArrayList<String>(textFlowTarget.getTextFlow().getContents());
+         ArrayList<String> targetContents = new ArrayList<String>(textFlowTarget.getContents());
+         MatchType matchType = fromContentState(textFlowTarget.getState());
+         addOrIncrementResultItem(transMemoryQuery, matchesMap, match, matchType, textFlowContents,
+               targetContents, textFlowTarget.getTextFlow().getId(), "");
       }
-      ArrayList<String> textFlowContents = new ArrayList<String>(textFlowTarget.getTextFlow().getContents());
-      ArrayList<String> targetContents = new ArrayList<String>(textFlowTarget.getContents());
-      addOrIncrementResultItem(transMemoryQuery, matchesMap, match, textFlowTarget, textFlowContents, targetContents);
+      else if( entity instanceof TransMemoryUnit)
+      {
+         TransMemoryUnit transUnit = (TransMemoryUnit) entity;
+         ArrayList<String> sourceContents = Lists.newArrayList(transUnit.getTransUnitVariants().get(sourceLocaleId.getId()).getPlainTextSegment());
+         ArrayList<String> targetContents = Lists.newArrayList(transUnit.getTransUnitVariants().get(targetLocaleId.getId()).getPlainTextSegment());
+         addOrIncrementResultItem(transMemoryQuery, matchesMap, match, MatchType.Imported, sourceContents, targetContents,
+               transUnit.getId(), transUnit.getTranslationMemory().getSlug());
+      }
    }
 
-   private void processTextFlowIndexMatch(HLocale targetLocale, TransMemoryQuery transMemoryQuery, Map<TMKey, TransMemoryResultItem> matchesMap, Object[] match)
+   private static MatchType fromContentState( ContentState contentState )
    {
-      HTextFlow textFlow = (HTextFlow) match[1];
-      HTextFlowTarget textFlowTarget = textFlow.getTargets().get(targetLocale.getId());
-      if (!isValidResult(textFlowTarget))
+      switch (contentState)
       {
-         return;
-      }
-      // double-check text flow is valid in case of caching issues
-      textFlow = textFlowTarget.getTextFlow();
+         case Approved:
+            return MatchType.ApprovedInternal;
 
-      ArrayList<String> textFlowContents = new ArrayList<String>(textFlow.getContents());
-      ArrayList<String> targetContents = new ArrayList<String>(textFlowTarget.getContents());
-      addOrIncrementResultItem(transMemoryQuery, matchesMap, match, textFlowTarget, textFlowContents, targetContents);
+         case Translated:
+            return MatchType.TranslatedInternal;
+
+         default:
+            throw new RuntimeException("Cannot map content state: " + contentState);
+      }
    }
 
-   private void addOrIncrementResultItem(TransMemoryQuery transMemoryQuery, Map<TMKey, TransMemoryResultItem> matchesMap, Object[] match, HTextFlowTarget textFlowTarget, ArrayList<String> textFlowContents, ArrayList<String> targetContents)
+   private void addOrIncrementResultItem(TransMemoryQuery transMemoryQuery, Map<TMKey, TransMemoryResultItem> matchesMap,
+                                         Object[] match, MatchType matchType, ArrayList<String> sourceContents,
+                                         ArrayList<String> targetContents, Long sourceId, String origin)
    {
-      TMKey key = new TMKey(textFlowContents, targetContents);
+      TMKey key = new TMKey(sourceContents, targetContents);
       TransMemoryResultItem item = matchesMap.get(key);
       if (item == null)
       {
          float score = (Float) match[0];
-         double percent = calculateSimilarityPercentage(transMemoryQuery, textFlowTarget.getTextFlow().getContents());
-         item = new TransMemoryResultItem(textFlowContents, targetContents, textFlowTarget.getState(), score, percent);
+         double percent = calculateSimilarityPercentage(transMemoryQuery, sourceContents);
+         item = new TransMemoryResultItem(sourceContents, targetContents, matchType, score, percent);
          matchesMap.put(key, item);
       }
       item.incMatchCount();
-      item.addSourceId(textFlowTarget.getTextFlow().getId());
+      item.addOrigin(origin);
+      item.addSourceId(sourceId);
    }
 
    private static boolean isValidResult(HTextFlowTarget textFlowTarget)
@@ -196,7 +204,6 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
    private static double calculateSimilarityPercentage(TransMemoryQuery query, List<String> sourceContents)
    {
       double percent;
-      // TODO use LevenshteinTokenUtil, *but* we need to distinguish 100% token match from 100% text match
       if (query.getSearchType() == SearchType.FUZZY_PLURAL)
       {
          percent = 100 * LevenshteinTokenUtil.getSimilarity(query.getQueries(), sourceContents);
@@ -271,9 +278,15 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
             // sort higher similarity first
             return -result;
          }
+
          result = compare(m1.getSourceContents(), m2.getSourceContents());
-         // sort longer string lists first (more plural forms)
-         return -result;
+         if( result != 0 )
+         {
+            // sort longer string lists first (more plural forms)
+            return -result;
+         }
+
+         return -m1.getMatchType().compareTo( m2.getMatchType() );
       }
 
       private int compare(List<String> list1, List<String> list2)

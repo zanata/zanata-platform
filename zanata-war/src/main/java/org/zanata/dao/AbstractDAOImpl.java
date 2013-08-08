@@ -13,7 +13,7 @@ import org.jboss.seam.annotations.In;
 /**
  * Based on code from http://community.jboss.org/wiki/GenericDataAccessObjects
  */
-public abstract class AbstractDAOImpl<T, ID extends Serializable> implements GenericDAO<T, ID>, Serializable
+public class AbstractDAOImpl<T, ID extends Serializable> implements GenericDAO<T, ID>, Serializable
 {
    private static final long serialVersionUID = 1L;
    
@@ -68,10 +68,24 @@ public abstract class AbstractDAOImpl<T, ID extends Serializable> implements Gen
       return entity;
    }
 
+   public T findById(ID id)
+   {
+      return findById(id, false);
+   }
+
    @Override
    public List<T> findAll()
    {
       return findByCriteria();
+   }
+
+   @Override
+   public void deleteAll()
+   {
+      for(T t : findAll())
+      {
+         getSession().delete(t);
+      }
    }
 
    @SuppressWarnings("unchecked")
