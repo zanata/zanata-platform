@@ -40,13 +40,11 @@ import lombok.ToString;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SlugEntityBase extends ModelEntityBase
+public abstract class SlugEntityBase extends ModelEntityBase
 {
 
    private static final long serialVersionUID = -1911540675412928681L;
    private String slug;
-
-   private EntityStatus status = EntityStatus.ACTIVE;
 
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
@@ -57,12 +55,5 @@ public class SlugEntityBase extends ModelEntityBase
    public String getSlug()
    {
       return slug;
-   }
-
-   @Type(type = "entityStatus")
-   @NotNull
-   public EntityStatus getStatus()
-   {
-      return status;
    }
 }

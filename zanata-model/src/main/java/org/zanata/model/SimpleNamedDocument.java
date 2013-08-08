@@ -41,16 +41,16 @@ public class SimpleNamedDocument implements DocumentWithId
 {
    private final LocaleId sourceLocaleId;
    private final String qualifiedDocId;
-   private final List<SourceContents> sourceContentsList;
+   private final List<ITextFlow> sourceContentsList;
 
-   public SimpleNamedDocument(LocaleId sourceLocaleId, String qualifiedDocId, List<SourceContents> sourceContentsList)
+   public SimpleNamedDocument(LocaleId sourceLocaleId, String qualifiedDocId, List<ITextFlow> sourceContentsList)
    {
       this.sourceLocaleId = sourceLocaleId;
       this.qualifiedDocId = qualifiedDocId;
       this.sourceContentsList = sourceContentsList;
    }
 
-   public SimpleNamedDocument(LocaleId sourceLocaleId, String qualifiedDocId, @Nonnull SourceContents... sourceContentsList)
+   public SimpleNamedDocument(LocaleId sourceLocaleId, String qualifiedDocId, @Nonnull ITextFlow... sourceContentsList)
    {
       this.sourceLocaleId = sourceLocaleId;
       this.qualifiedDocId = qualifiedDocId;
@@ -58,7 +58,7 @@ public class SimpleNamedDocument implements DocumentWithId
    }
 
    @Override
-   public Iterator<SourceContents> iterator()
+   public Iterator<ITextFlow> iterator()
    {
       return sourceContentsList.iterator();
    }

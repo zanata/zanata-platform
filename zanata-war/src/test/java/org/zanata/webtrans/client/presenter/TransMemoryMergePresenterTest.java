@@ -44,7 +44,8 @@ import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
-import org.zanata.webtrans.shared.rpc.MergeOption;
+import org.zanata.webtrans.shared.rpc.MergeRule;
+import org.zanata.webtrans.shared.rpc.MergeOptions;
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 import com.google.common.base.Function;
@@ -131,7 +132,10 @@ public class TransMemoryMergePresenterTest
       mockCurrentPageToReturn(currentPageRows);
 
       // When:
-      presenter.proceedToMergeTM(80, MergeOption.IGNORE_CHECK, MergeOption.REJECT, MergeOption.FUZZY);
+      MergeOptions opts = MergeOptions.allFuzzy();
+      opts.setDifferentProject(MergeRule.IGNORE_CHECK);
+      opts.setDifferentDocument(MergeRule.REJECT);
+      presenter.proceedToMergeTM(80, opts);
 
       // Then:
       verify(eventBus).fireEvent(notificationEventCaptor.capture());
@@ -163,7 +167,10 @@ public class TransMemoryMergePresenterTest
       mockCurrentPageToReturn(currentPageRows);
 
       // When:
-      presenter.proceedToMergeTM(80, MergeOption.IGNORE_CHECK, MergeOption.REJECT, MergeOption.FUZZY);
+      MergeOptions opts = MergeOptions.allFuzzy();
+      opts.setDifferentProject(MergeRule.IGNORE_CHECK);
+      opts.setDifferentDocument(MergeRule.REJECT);
+      presenter.proceedToMergeTM(80, opts);
 
       // Then:
       InOrder inOrder = inOrder(display, dispatcher);
@@ -174,9 +181,10 @@ public class TransMemoryMergePresenterTest
       List<TransUnitUpdateRequest> updateRequests = action.getUpdateRequests();
       assertThat(updateRequests, Matchers.hasSize(5));
       assertThat(getIds(updateRequests), Matchers.contains(1L, 3L, 4L, 5L, 6L));
-      assertThat(action.getDifferentProjectOption(), Matchers.equalTo(MergeOption.IGNORE_CHECK));
-      assertThat(action.getDifferentDocumentOption(), Matchers.equalTo(MergeOption.REJECT));
-      assertThat(action.getDifferentContextOption(), Matchers.equalTo(MergeOption.FUZZY));
+      assertThat(action.getDifferentProjectRule(), Matchers.equalTo(MergeRule.IGNORE_CHECK));
+      assertThat(action.getDifferentDocumentRule(), Matchers.equalTo(MergeRule.REJECT));
+      assertThat(action.getDifferentContextRule(), Matchers.equalTo(MergeRule.FUZZY));
+      assertThat(action.getImportedMatchRule(), Matchers.equalTo(MergeRule.FUZZY));
    }
 
    @Test
@@ -187,7 +195,11 @@ public class TransMemoryMergePresenterTest
       mockCurrentPageToReturn(currentPageRows);
 
       // When:
-      presenter.proceedToMergeTM(100, MergeOption.REJECT, MergeOption.IGNORE_CHECK, MergeOption.FUZZY);
+      MergeOptions opts = MergeOptions.allFuzzy();
+      opts.setDifferentProject(MergeRule.REJECT);
+      opts.setDifferentDocument(MergeRule.IGNORE_CHECK);
+      presenter.proceedToMergeTM(100, opts);
+
       verify(dispatcher).execute(transMemoryMergeCaptor.capture(), callbackCaptor.capture());
       AsyncCallback<UpdateTransUnitResult> callback = callbackCaptor.getValue();
       // rpc call failed
@@ -216,7 +228,11 @@ public class TransMemoryMergePresenterTest
       when(undoLinkProvider.get()).thenReturn(undoLink);
 
       // When:
-      presenter.proceedToMergeTM(100, MergeOption.REJECT, MergeOption.IGNORE_CHECK, MergeOption.FUZZY);
+      MergeOptions opts = MergeOptions.allFuzzy();
+      opts.setDifferentProject(MergeRule.REJECT);
+      opts.setDifferentDocument(MergeRule.IGNORE_CHECK);
+      presenter.proceedToMergeTM(100, opts);
+
       verify(dispatcher).execute(transMemoryMergeCaptor.capture(), callbackCaptor.capture());
       AsyncCallback<UpdateTransUnitResult> callback = callbackCaptor.getValue();
       // rpc call success and result has some updated info
@@ -249,7 +265,11 @@ public class TransMemoryMergePresenterTest
       when(undoLinkProvider.get()).thenReturn(undoLink);
 
       // When:
-      presenter.proceedToMergeTM(100, MergeOption.REJECT, MergeOption.IGNORE_CHECK, MergeOption.FUZZY);
+      MergeOptions opts = MergeOptions.allFuzzy();
+      opts.setDifferentProject(MergeRule.REJECT);
+      opts.setDifferentDocument(MergeRule.IGNORE_CHECK);
+      presenter.proceedToMergeTM(100, opts);
+
       verify(dispatcher).execute(transMemoryMergeCaptor.capture(), callbackCaptor.capture());
       AsyncCallback<UpdateTransUnitResult> callback = callbackCaptor.getValue();
       // rpc call success but result has no updated info

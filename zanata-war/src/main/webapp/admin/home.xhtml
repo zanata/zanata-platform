@@ -6,7 +6,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich"
-                template="../WEB-INF/layout/template.xhtml">
+                template="../WEB-INF/template/template_2x.xhtml">
 
     <ui:define name="page_title">#{messages['jsf.Administration']}</ui:define>
     <ui:define name="center_content">
@@ -107,6 +107,17 @@
                     </div>
                     <div class="admin_link_title">
                         #{messages['jsf.ProcessManager']}
+                    </div>
+                </div>
+            </s:link>
+
+            <s:link id="Translation_Memory_home" view="/tm/home.xhtml" propagation="none" styleClass="admin_link">
+                <div class="admin_link_div">
+                    <div class="admin_link_img">
+                        <h:graphicImage value="../images/crystal_project/_48x48/apps/kcmmemory.png"/>
+                    </div>
+                    <div class="admin_link_title">
+                        #{messages['jsf.transmemory.Title']}
                     </div>
                 </div>
             </s:link>

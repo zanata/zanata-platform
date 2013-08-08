@@ -9,22 +9,22 @@
         }
 
         .approved {
-             background: #0000CD;
+             background: #4e9fdd;
             z-index: 0;
         }
 
         .draft {
-            background: #ffc000;
+            background: #e0c350;
             z-index: 0;
         }
 
         .untranslated {
-            background: #c6c6c6;
+            background: #a2b4c3;
             z-index: 0;
         }
 
         .translated {
-	        background: #099b09;
+	        background: #70a98b;
             z-index: 0;
         }
 
@@ -60,4 +60,4 @@
 			<g:Label ui:field='label' styleName='{style.label}'/>
 		</g:layer>
 	</g:LayoutPanel>
-</ui:UiBinder> 
+</ui:UiBinder>

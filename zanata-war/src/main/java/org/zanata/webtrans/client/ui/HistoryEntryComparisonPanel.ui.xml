@@ -16,11 +16,10 @@
 
         .header {
             /* copy from cell table header */
-            border-bottom: 2px solid #6F7277;
+            border-bottom: 2px solid #d9e1e7;
             padding: 3px 15px;
             text-align: left;
-            color: #4B4A4A;
-            text-shadow: #DDF 1px 1px 0;
+            color: #416988;
             overflow: hidden;
             font-weight: bold;
             height: 1em;
@@ -33,7 +32,7 @@
         }
 
         .originRow {
-            background-color: #EEE;
+            background-color: transparent;
         }
 
         .flipButton {

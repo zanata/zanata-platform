@@ -12,28 +12,28 @@
         }
 
         .ignore_action {
-            background-color: white;
+            background-color: #a2b4c3;
             text-align: center;
             width: 100px;
             display: block
         }
 
         .downgrade_action {
-            background-color: #FFC000;
+            background-color: #e0c350;
             text-align: center;
             width: 100px;
             display: block;
         }
 
         .approved_action {
-            background-color: #099B09;
+            background-color: #70a98b;
             text-align: center;
             width: 100px;
             display: block
         }
 
         .reject_action {
-            background-color: red;
+            background-color: #e3824e;
             text-align: center;
             width: 100px;
             display: block
@@ -114,6 +114,17 @@
             </g:customCell>
             <g:customCell>
                 <g:HorizontalPanel ui:field="differentContext" />
+            </g:customCell>
+        </g:row>
+        <g:row>
+            <g:customCell>
+                <g:Label text="{messages.importedMatch}" />
+            </g:customCell>
+            <g:customCell>
+                <g:InlineLabel ui:field="importedMatchStatus"/>
+            </g:customCell>
+            <g:customCell>
+                <g:HorizontalPanel ui:field="importedMatchPanel" />
             </g:customCell>
         </g:row>
         <g:row>

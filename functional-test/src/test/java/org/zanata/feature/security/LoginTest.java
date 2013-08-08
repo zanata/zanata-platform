@@ -33,8 +33,6 @@ import org.zanata.page.utility.HomePage;
 import org.zanata.util.ResetDatabaseRule;
 import org.zanata.workflow.LoginWorkFlow;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-
 
 @RunWith(ConcordionRunner.class)
 @Extensions({ScreenshotExtension.class, TimestampFormatterExtension.class, CustomResourceExtension.class})
@@ -56,10 +54,10 @@ public class LoginTest
       HomePage homePage = new LoginWorkFlow().goToHome();
       return homePage == null ? null : homePage.loggedInAs();
    }
-
-   public void signOut()
+   
+   public void logout()
    {
-      new LoginWorkFlow().goToHome().signOut();
+      new LoginWorkFlow().goToHome().logout();
    }
 
 }

@@ -3,17 +3,17 @@ package org.zanata.webtrans.client.view;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.DiffColorLegendPanel;
-import org.zanata.webtrans.shared.model.DiffMode;
 import org.zanata.webtrans.client.ui.EnumListBox;
 import org.zanata.webtrans.client.ui.SearchTypeRenderer;
 import org.zanata.webtrans.client.ui.TextContentsDisplay;
+import org.zanata.webtrans.shared.model.DiffMode;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
-
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -21,8 +21,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -44,6 +44,8 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ValueListBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
+
+import static org.zanata.webtrans.shared.model.TransMemoryResultItem.MatchType;
 
 public class TransMemoryView extends Composite implements TranslationMemoryDisplay
 {
@@ -104,7 +106,7 @@ public class TransMemoryView extends Composite implements TranslationMemoryDispl
    private final static int NUM_TRANS_COL = 2;
    private final static int ACTION_COL = 3;
    private final static int SIMILARITY_COL = 4;
-   private final static int DETAILS_COL = 5;
+   private final static int ORIGIN_COL = 5;
 
    @Inject
    public TransMemoryView(final UiMessages messages, SearchTypeRenderer searchTypeRenderer, final DiffColorLegendPanel diffLegendPanel)
@@ -124,7 +126,7 @@ public class TransMemoryView extends Composite implements TranslationMemoryDispl
       formatter.setStyleName(0, NUM_TRANS_COL, "th centered numTransCol");
       formatter.setStyleName(0, ACTION_COL, "th centered actionCol");
       formatter.setStyleName(0, SIMILARITY_COL, "th centered similarityCol");
-      formatter.setStyleName(0, DETAILS_COL, "th centered detailCol");
+      formatter.setStyleName(0, ORIGIN_COL, "th centered originCol");
 
       InlineLabel diffLegendInfo = new InlineLabel();
       diffLegendInfo.setStyleName("icon-info-circle-2 details");
@@ -152,7 +154,7 @@ public class TransMemoryView extends Composite implements TranslationMemoryDispl
       resultTable.setWidget(0, NUM_TRANS_COL, numTrans);
       resultTable.setWidget(0, ACTION_COL, null);
       resultTable.setWidget(0, SIMILARITY_COL, new Label(messages.similarityLabel()));
-      resultTable.setWidget(0, DETAILS_COL, new Label(messages.detailsLabel()));
+      resultTable.setWidget(0, ORIGIN_COL, new Label(messages.originLabel()));
 
       loadingLabel = new Label(messages.searching());
       loadingLabel.setStyleName("tableMsg");
@@ -291,13 +293,17 @@ public class TransMemoryView extends Composite implements TranslationMemoryDispl
       SimplePanel panel = new SimplePanel();
       // display multiple target strings
       
-      if(object.getContentState() == ContentState.Approved)
+      if(object.getMatchType() == MatchType.ApprovedInternal)
       {
          panel.addStyleName(style.approved());
       }
-      else if(object.getContentState() == ContentState.Translated)
+      else if(object.getMatchType() == MatchType.TranslatedInternal)
       {
          panel.addStyleName(style.translated());
+      }
+      else if(object.getMatchType() == MatchType.Imported)
+      {
+         // TODO Add a style
       }
       
       SafeHtml safeHtml = TextContentsDisplay.asSyntaxHighlight(object.getTargetContents()).toSafeHtml();
@@ -347,8 +353,17 @@ public class TransMemoryView extends Composite implements TranslationMemoryDispl
          resultTable.getFlexCellFormatter().setStyleName(i + 1, SIMILARITY_COL, "centered");
 
          InlineLabel infoCell = new InlineLabel();
-         infoCell.setStyleName("icon-info-circle-2 details");
-         infoCell.addClickHandler(new ClickHandler()
+         if( item.getMatchType() == MatchType.Imported )
+         {
+            String originStr = Joiner.on(", ").join(item.getOrigins());
+            String ellipsizedStr = Splitter.fixedLength(10).limit(2).split(originStr).iterator().next() + "...";
+            infoCell.setText(ellipsizedStr);
+            infoCell.setTitle(originStr);
+         }
+         else
+         {
+            infoCell.setStyleName("icon-info-circle-2 details");
+            infoCell.addClickHandler(new ClickHandler()
          {
             @Override
             public void onClick(ClickEvent event)
@@ -356,9 +371,10 @@ public class TransMemoryView extends Composite implements TranslationMemoryDispl
                listener.showTMDetails(item);
             }
          });
+         }
 
-         resultTable.setWidget(i + 1, DETAILS_COL, infoCell);
-         resultTable.getFlexCellFormatter().setStyleName(i + 1, DETAILS_COL, "centered");
+         resultTable.setWidget(i + 1, ORIGIN_COL, infoCell);
+         resultTable.getFlexCellFormatter().setStyleName(i + 1, ORIGIN_COL, "centered");
       }
       container.setWidget(resultTable);
    }

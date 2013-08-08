@@ -41,6 +41,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.Setter;
@@ -55,6 +56,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.search.annotations.Indexed;
 import org.jboss.seam.annotations.security.Restrict;
 import org.zanata.annotation.EntityRestrict;
+import org.zanata.common.EntityStatus;
 import org.zanata.common.ProjectType;
 import org.zanata.model.type.EntityStatusType;
 import org.zanata.rest.dto.Project;
@@ -71,7 +73,7 @@ import org.zanata.rest.dto.Project;
 @Setter
 @Indexed
 @ToString(callSuper = true, of = "name")
-public class HProject extends SlugEntityBase implements Serializable
+public class HProject extends SlugEntityBase implements Serializable, HasEntityStatus
 {
    private static final long serialVersionUID = 1L;
    private String name;
@@ -91,6 +93,7 @@ public class HProject extends SlugEntityBase implements Serializable
    private Set<String> customizedValidations;
 
    private List<HProjectIteration> projectIterations = new ArrayList<HProjectIteration>();
+   private EntityStatus status = EntityStatus.ACTIVE;
 
    @OneToMany(mappedBy = "project")
    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -218,5 +221,13 @@ public class HProject extends SlugEntityBase implements Serializable
          customizedValidations = new HashSet<String>();
       }
       return customizedValidations;
+   }
+
+   @Type(type = "entityStatus")
+   @NotNull
+   @Override
+   public EntityStatus getStatus()
+   {
+      return status;
    }
 }

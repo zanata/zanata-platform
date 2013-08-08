@@ -25,10 +25,7 @@ import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.apache.lucene.util.OpenBitSet;
 import org.hibernate.Query;
-import org.hibernate.ScrollMode;
-import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 import org.hibernate.transform.ResultTransformer;
 import org.hibernate.type.StandardBasicTypes;
@@ -37,7 +34,6 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.zanata.common.LocaleId;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
@@ -56,6 +52,8 @@ import com.google.common.collect.Lists;
 @Slf4j
 public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
 {
+   private static final long serialVersionUID = 1L;
+
    // TODO replace all getSession() code to use entityManager
 
    @In
@@ -69,32 +67,6 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
    public TextFlowDAO(Session session)
    {
       super(HTextFlow.class, session);
-   }
-
-   public OpenBitSet findIdsWithTranslations(LocaleId locale)
-   {
-      Query q = getSession().getNamedQuery(HTextFlow.QUERY_TRANSLATED_TEXTFLOWIDS);
-      q.setReadOnly(true);
-      // MIN_VALUE gives hint to JDBC driver to stream results
-      q.setFetchSize(Integer.MIN_VALUE);
-      q.setParameter("locale", locale);
-      // TranslationStateCache does its own caching
-      q.setCacheable(false).setComment("TextFlowDAO.findIdsWithTranslations");
-
-      ScrollableResults results = q.scroll(ScrollMode.FORWARD_ONLY);
-      try
-      {
-         OpenBitSet resultBitSet = new OpenBitSet();
-         while( results.next() )
-         {
-            resultBitSet.set( results.getLong(0) ); // results[0] => TextFlow id
-         }
-         return resultBitSet;
-      }
-      finally
-      {
-         results.close();
-      }
    }
 
    public HTextFlow getById(HDocument document, String id)

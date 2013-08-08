@@ -38,4 +38,6 @@ public interface IndexFieldLabels
       CONTENT + 5
    };
 
+   public static final String TRANS_UNIT_VARIANT_FIELD = "tuv.";
+
 }

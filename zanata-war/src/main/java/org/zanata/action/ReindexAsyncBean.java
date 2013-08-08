@@ -23,13 +23,14 @@ import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
-import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.process.RunnableProcess;
 import org.zanata.search.AbstractIndexingStrategy;
 import org.zanata.search.ClassIndexer;
 import org.zanata.search.HTextFlowTargetIndexingStrategy;
 import org.zanata.search.IndexerProcessHandle;
+import org.zanata.search.SimpleClassIndexingStrategy;
 import org.zanata.service.ProcessManagerService;
 
 @Name("reindexAsync")
@@ -67,10 +68,10 @@ public class ReindexAsyncBean extends RunnableProcess<IndexerProcessHandle> impl
       indexables.add(HGlossaryTerm.class);
       indexables.add(HProject.class);
       indexables.add(HProjectIteration.class);
+      indexables.add(TransMemoryUnit.class);
 
       // NB we put the largest tables at the bottom, so that the small
       // tables can be indexed early
-      indexables.add(HTextFlow.class);
       indexables.add(HTextFlowTarget.class);
 
       for (Class<?> clazz : indexables)
@@ -158,7 +159,7 @@ public class ReindexAsyncBean extends RunnableProcess<IndexerProcessHandle> impl
 
          if (opts.isReindex())
          {
-            totalOperations += getIndexer(clazz).getEntityCount(session, clazz);
+            totalOperations += getIndexer(clazz).getEntityCount();
          }
 
          if (opts.isOptimize())
@@ -182,20 +183,17 @@ public class ReindexAsyncBean extends RunnableProcess<IndexerProcessHandle> impl
    @SuppressWarnings("rawtypes")
    ClassIndexer getIndexer(Class<?> clazz)
    {
+      AbstractIndexingStrategy strategy;
+      // TODO add a strategy which uses TransMemoryStreamingDAO
       if( clazz.equals( HTextFlowTarget.class ) )
       {
-         return new ClassIndexer<HTextFlowTarget>() {
-            @Override
-            public AbstractIndexingStrategy<HTextFlowTarget> createIndexingStrategy(FullTextSession session, IndexerProcessHandle handle, Class clazz)
-            {
-               return new HTextFlowTargetIndexingStrategy(session, handle, clazz);
-            }
-         };
+         strategy = new HTextFlowTargetIndexingStrategy(session);
       }
       else
       {
-         return new ClassIndexer();
+         strategy = new SimpleClassIndexingStrategy(clazz, session);
       }
+      return new ClassIndexer(session, handle, clazz, strategy);
    }
 
    /**
@@ -225,7 +223,7 @@ public class ReindexAsyncBean extends RunnableProcess<IndexerProcessHandle> impl
          {
             log.info("reindexing {0}", clazz);
             currentClass = clazz;
-            getIndexer(clazz).index(session, handle, clazz);
+            getIndexer(clazz).index();
          }
          if (!handle.shouldStop() && indexingOptions.get(clazz).isOptimize())
          {

@@ -1,0 +1,38 @@
+<div class="off-canvas__target off-canvas--right" id="off-canvas--right"
+	data-off-canvas="under" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:s="http://jboss.org/schema/seam/taglib"
+	xmlns:rich="http://richfaces.org/rich">
+
+	<header class="off-canvas__header">
+		<a href="#off-canvas--right" class="off-canvas__close">
+			<i class="i i--cross"></i>
+			<span class="is-invisible">Close</span>
+		</a>
+	</header>
+	<nav id="nav-user">
+		<ul class="list--slat list--block-links txt--invert">
+			<li>
+				<s:link view="/dashboard/home.xhtml" propagation="none">
+					<span class="badge--highlight badge--inline l--float-right"><!-- This is for notification count --></span>
+					#{messages['jsf.Dashboard']}
+				</s:link>
+			</li>
+			<li><s:link id="profile" view="/profile/view.xhtml" propagation="none">#{messages['jsf.Settings']}</s:link></li>
+			<s:fragment rendered="#{identity.loggedIn and s:hasRole('admin')}">
+				<li>
+					<s:link id="administration" view="/admin/home.xhtml" propagation="none">
+						#{messages['jsf.Administration']}
+					</s:link>
+				</li>
+			</s:fragment>
+			<li>
+				<s:link id="right_menu_sign_out_link" view="/account/logout.seam" propagation="none">#{messages['jsf.Logout']}</s:link>
+			</li>
+		</ul>
+	</nav>
+
+</div>

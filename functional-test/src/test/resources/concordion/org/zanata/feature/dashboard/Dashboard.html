@@ -1,0 +1,32 @@
+<html xmlns:c="http://www.concordion.org/2007/concordion" xmlns:ext="urn:concordion-extensions:2010">
+<head>
+   <title>Dashboard</title>
+</head>
+<body>
+   <p>
+      As a user, when I use username: <span c:set="#username">admin</span> with password: <span c:set="#password">admin</span>
+      to <span c:execute="#result = signInAs(#username, #password)">sign in</span>. 
+      
+      I should redirect to dashboard with <span c:assertTrue="hasMyActivitiesSection()">'Your Activity'</span> 
+      and <span c:assertTrue="hasMaintainedProjectsSection()">'Maintained Projects'</span>.
+   </p>
+   <span ext:screenshot="" />
+   
+   
+   <p>
+      As a user with previous activities and maintained project, when I go to <span c:execute="gotoDashboard()">my dashboard</span>,
+      my activities on page should not be <span c:assertTrue="myActivitiesListNotEmpty()">empty</span> and 
+      my maintained project on page should not be <span c:assertTrue="maintainedProjectNotEmpty()">empty</span>
+   </p>
+   <span ext:screenshot="" />
+   
+   
+   <p>
+      As a user with more than <span c:set="#perLoadCount">5</span> previous activities, when I go to <span c:execute="gotoDashboard()">my dashboard</span>,
+      my activities count on page should be <span c:assertEquals="myActivitiesCount()">5</span>. 
+      After I click on <span c:execute="clickMoreActivity()">'More activity'</span>, I should see more activities on page
+      <span c:assertTrue="myActivitiesCountIsMoreThan(#perLoadCount)"/>
+   </p>
+   <span ext:screenshot="" />
+</body>
+</html>

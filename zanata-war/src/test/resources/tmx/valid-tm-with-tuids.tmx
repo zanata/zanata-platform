@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE tmx SYSTEM "http://www.lisa.org/tmx/tmx14.dtd">
+<tmx version="1.4">
+<header
+adminlang="en"
+srclang="en"
+creationtool="zanata.org"
+creationtoolversion="1.3.0devel"
+creationdate="20130509T141016Z"
+datatype="plaintext"
+segtype="paragraph"
+o-tmf="zanata.org"
+>
+</header>
+<body>
+  <tu tuid="1">
+    <tuv xml:lang="en">
+        <seg>This is the first entry.</seg>
+    </tuv>
+    <tuv xml:lang="es">
+        <seg>Esta es la primera entrada.</seg>
+    </tuv>
+    <tuv xml:lang="es-ES">
+        <seg>Esta es la primera entrada.</seg>
+    </tuv>
+    <tuv xml:lang="fr">
+        <seg>Il s'agit de la première entrée</seg>
+    </tuv>
+    <tuv xml:lang="fr-FR">
+        <seg>Il s'agit de la première entrée</seg>
+    </tuv>
+    <tuv xml:lang="he">
+        <seg>Αυτή είναι η πρώτη είσοδος</seg>
+    </tuv>
+    <tuv xml:lang="it">
+        <seg>Questo è il primo elemento.</seg>
+    </tuv>
+    <tuv xml:lang="it-IT">
+        <seg>Questo è il primo elemento.</seg>
+    </tuv>
+  </tu>
+  <tu tuid="2">
+    <tuv xml:lang="en">
+        <seg>Select &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="bg">
+        <seg>Изберете &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="ca">
+        <seg>Seleccioneu &lt;guimenuitem&gt;Enregistra la imatge&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="ca-ES">
+        <seg>Seleccioneu &lt;guimenuitem&gt;Enregistra la imatge&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="cs">
+        <seg>Vyberte &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="cs-CZ">
+        <seg>Vyberte &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="da">
+        <seg>Vælg &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="da-DK">
+        <seg>Vælg &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="de">
+        <seg>Wählen Sie &lt;guimenuitem&gt;Abbild brennen&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="de-DE">
+        <seg>Wählen Sie &lt;guimenuitem&gt;Abbild Brennen&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="el">
+        <seg>Επιλέξτε &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="el-GR">
+        <seg>Επιλέξτε &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="es">
+        <seg>Seleccione &lt;guimenuitem&gt;Grabar imagen&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="es-ES">
+        <seg>Seleccione &lt;guimenuitem&gt;Grabar Imagen&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="fi">
+        <seg>Valitse &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="fi-FI">
+        <seg>Valitse &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="fr">
+        <seg>Sélectionnez &lt;guimenuitem&gt;Graver une image&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="fr-FR">
+        <seg>Sélectionnez &lt;guimenuitem&gt;Graver une image&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="gu">
+        <seg>&lt;guimenuitem&gt;ઈમેજ બનાવો&lt;/guimenuitem&gt; પસંદ કરો.</seg>
+    </tuv>
+    <tuv xml:lang="gu-IN">
+        <seg>&lt;guimenuitem&gt;ઈમેજ બનાવો&lt;/guimenuitem&gt; પસંદ કરો.</seg>
+    </tuv>
+    <tuv xml:lang="he">
+        <seg>בחר ב־&lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="hi">
+        <seg>&lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt; चुनें.</seg>
+    </tuv>
+    <tuv xml:lang="hi-IN">
+        <seg>&lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt; चुनें.</seg>
+    </tuv>
+    <tuv xml:lang="hu">
+        <seg>Válassza a &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt; pontot.</seg>
+    </tuv>
+    <tuv xml:lang="hu-HU">
+        <seg>Válassza a &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt; pontot.</seg>
+    </tuv>
+    <tuv xml:lang="id">
+        <seg>Pilih &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="id-ID">
+        <seg>Pilih &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="it">
+        <seg>Selezionare &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="it-IT">
+        <seg>Selezionare &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="ja">
+        <seg>&lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt; を選択します。</seg>
+    </tuv>
+    <tuv xml:lang="ja-JP">
+        <seg>&lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt; を選択します。</seg>
+    </tuv>
+    <tuv xml:lang="kn">
+        <seg>&lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt; ಅನ್ನು ಆಯ್ಕೆ ಮಾಡಿ.</seg>
+    </tuv>
+    <tuv xml:lang="kn-IN">
+        <seg>&lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt; ಅನ್ನು ಆಯ್ಕೆ ಮಾಡಿ.</seg>
+    </tuv>
+    <tuv xml:lang="ml">
+        <seg>&lt;guimenuitem&gt;ഇമേജ് പകര്‍ത്തുക&lt;/guimenuitem&gt; എന്നതു് തെരഞ്ഞെടുക്കുക.</seg>
+    </tuv>
+    <tuv xml:lang="ml-IN">
+        <seg>&lt;guimenuitem&gt;ഇമേജ് പകര്‍ത്തുക&lt;/guimenuitem&gt; എന്നതു് തെരഞ്ഞെടുക്കുക.</seg>
+    </tuv>
+    <tuv xml:lang="mr">
+        <seg>&lt;guimenuitem&gt;प्रतिमा बर्ण करा&lt;/guimenuitem&gt; निवडा.</seg>
+    </tuv>
+    <tuv xml:lang="mr-IN">
+        <seg>&lt;guimenuitem&gt;प्रतिमा बर्ण करा&lt;/guimenuitem&gt; निवडा.</seg>
+    </tuv>
+    <tuv xml:lang="nb">
+        <seg>Velg &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="nb-NO">
+        <seg>Velg &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="nl">
+        <seg>Selecteer &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="nl-NL">
+        <seg>Selecteer &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="or">
+        <seg>&lt;guimenuitem&gt;ପ୍ରତିଛବିକୁ ଲେଖନ୍ତୁ&lt;/guimenuitem&gt; କୁ ବାଛନ୍ତୁ.</seg>
+    </tuv>
+    <tuv xml:lang="or-IN">
+        <seg>&lt;guimenuitem&gt;ପ୍ରତିଛବିକୁ ଲେଖନ୍ତୁ&lt;/guimenuitem&gt; କୁ ବାଛନ୍ତୁ.</seg>
+    </tuv>
+    <tuv xml:lang="pa">
+        <seg>&lt;guimenuitem&gt;ਈਮੇਜ਼ ਲਿਖੋ&lt;/guimenuitem&gt; ਚੁਣੋ।</seg>
+    </tuv>
+    <tuv xml:lang="pa-IN">
+        <seg>&lt;guimenuitem&gt;ਈਮੇਜ਼ ਲਿਖੋ&lt;/guimenuitem&gt; ਚੁਣੋ।</seg>
+    </tuv>
+    <tuv xml:lang="pl">
+        <seg>Należy wybrać &lt;guimenuitem&gt;Nagraj obraz&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="pl-PL">
+        <seg>Należy wybrać &lt;guimenuitem&gt;Nagraj obraz&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="pt">
+        <seg>Seleccione &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt; (Gravar a Imagem).</seg>
+    </tuv>
+    <tuv xml:lang="pt-BR">
+        <seg>Selecione &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="pt-PT">
+        <seg>Seleccione &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt; (Gravar a Imagem).</seg>
+    </tuv>
+    <tuv xml:lang="ru">
+        <seg>Выберите &lt;guimenuitem&gt;Записать образ&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="ru-RU">
+        <seg>Выберите &lt;guimenuitem&gt;Записать образ&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="sr">
+        <seg>Изаберите &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="sr-RS">
+        <seg>Изаберите &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="sv">
+        <seg>Välj &lt;guimenuitem&gt;Bränn avbild&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="sv-SE">
+        <seg>Välj &lt;guimenuitem&gt;Bränn avbild&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="te">
+        <seg>&lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt; యెంపికచేయుము.</seg>
+    </tuv>
+    <tuv xml:lang="te-IN">
+        <seg>&lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt; యెంపికచేయుము.</seg>
+    </tuv>
+    <tuv xml:lang="uk">
+        <seg>Виберіть &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="uk-UA">
+        <seg>Виберіть &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+    </tuv>
+    <tuv xml:lang="zh-CN">
+        <seg>选择 &lt;guimenuitem&gt;刻录镜像&lt;/guimenuitem&gt;</seg>
+    </tuv>
+    <tuv xml:lang="zh-TW">
+        <seg>選擇 &lt;guimenuitem&gt;燒錄映像&lt;/guimenuitem&gt;。</seg>
+    </tuv>
+  </tu>
+  <tu tuid="3">
+    <tuv xml:lang="en">
+        <seg>If you are using HashTab, you will need to enable the SHA256 checksum option. In order to do this you will to open the File Properties window (right click --&amp;gt; File Hashes tab --&amp;gt; Settings), then select the SHA256 option. It is advisable to uncheck any preselected hash options as they will only slow down the hash calculations.</seg>
+    </tuv>
+    <tuv xml:lang="fr">
+        <seg>Si vous utilisez HashTab, vous devrez activer l'option checksum SHA256.
+Pour le faire, vous devrez ouvrir la fenêtre File Properties(clic droit --&amp;gt; onglet File Hashes --&amp;gt; Réglages), ensuite sélectionnez l'option SHA256. Il est conseillé de décocher les options de hachage présélectionnés, puisqu'elles vont ralentir la calcul de hachage.</seg>
+    </tuv>
+    <tuv xml:lang="nl">
+        <seg>Als je HashTab gebruikt, zul je de SHA256 checksum optie aan moeten zetten. Om dit te doen moetr je het File Properties venster openen (klik rechts --&amp;gt; File Hashes tab --&amp;gt; Settings), en selecteer de SHA256 optie. Het wordt aanbevolen reeds geselecteerde hash opties uit te zetten omdat ze de hash berekeningen alleen zullen vertragen.</seg>
+    </tuv>
+    <tuv xml:lang="zh-CN">
+        <seg>如果您使用的是 HashTab，您需要启用 SHA256 校验选项。方法是，打开文件属性窗口（点击右键 --&amp;gt; 文件 Hash 值标签 --&amp;gt; 设置），然后选择 SHA256 选项。建议取消勾选预设的 hash 选项，因为这样会降低哈希值计算的速度。</seg>
+    </tuv>
+  </tu>
+  <tu tuid="4">
+    <tuv xml:lang="en">
+        <seg>Validating in the Windows Graphical Environment</seg>
+    </tuv>
+    <tuv xml:lang="bg">
+        <seg>Проверка чрез програма с графичен интерфейс във Windows</seg>
+    </tuv>
+    <tuv xml:lang="ca">
+        <seg>Validació en l'entorn gràfic de Windows</seg>
+    </tuv>
+    <tuv xml:lang="ca-ES">
+        <seg>Validació en l'entorn gràfic de Windows</seg>
+    </tuv>
+    <tuv xml:lang="cs">
+        <seg>Ověření v grafickém prostředí systému Windows</seg>
+    </tuv>
+    <tuv xml:lang="cs-CZ">
+        <seg>Ověření v grafickém prostředí systému Windows</seg>
+    </tuv>
+    <tuv xml:lang="da">
+        <seg>At validere i det grafiske Windows-miljø</seg>
+    </tuv>
+    <tuv xml:lang="da-DK">
+        <seg>At validere i det grafiske Windows-miljø</seg>
+    </tuv>
+    <tuv xml:lang="de">
+        <seg>Überprüfung in der grafischen Oberfläche von Windows</seg>
+    </tuv>
+    <tuv xml:lang="de-DE">
+        <seg>Überprüfen in der grafischen Oberfläche von Windows</seg>
+    </tuv>
+    <tuv xml:lang="el">
+        <seg>Επαλήθευση στο παραθυρικό περιβάλλον Windows</seg>
+    </tuv>
+    <tuv xml:lang="el-GR">
+        <seg>Επαλήθευση στο παραθυρικό περιβάλλον Windows</seg>
+    </tuv>
+    <tuv xml:lang="es">
+        <seg>La validación en el Entorno Gráfico de Windows</seg>
+    </tuv>
+    <tuv xml:lang="es-ES">
+        <seg>La validación en el Entorno Gráfico de Windows</seg>
+    </tuv>
+    <tuv xml:lang="fi">
+        <seg>Tarkistus graafisessa Windows-ympäristössä</seg>
+    </tuv>
+    <tuv xml:lang="fi-FI">
+        <seg>Tarkistus graafisessa Windows-ympäristössä</seg>
+    </tuv>
+    <tuv xml:lang="fr">
+        <seg>Vérification depuis l'environnement graphique de Windows</seg>
+    </tuv>
+    <tuv xml:lang="fr-FR">
+        <seg>Vérification depuis l'environnement graphique de Windows</seg>
+    </tuv>
+    <tuv xml:lang="gu">
+        <seg>Windows ગ્રાફિકવાળું પર્યાવરણની ખાતરી કરી રહ્યા છીએ</seg>
+    </tuv>
+    <tuv xml:lang="gu-IN">
+        <seg>Windows ગ્રાફિકવાળું પર્યાવરણની ખાતરી કરી રહ્યા છીએ</seg>
+    </tuv>
+    <tuv xml:lang="he">
+        <seg>אימות בסביבה גרפית של Windows</seg>
+    </tuv>
+    <tuv xml:lang="hi">
+        <seg>Windows आलेखी वातावरण में वैधीकरण</seg>
+    </tuv>
+    <tuv xml:lang="hi-IN">
+        <seg>Windows आलेखी वातावरण में वैधीकरण</seg>
+    </tuv>
+    <tuv xml:lang="hr">
+        <seg>Provjera valjanosti unutar Windows okruženja</seg>
+    </tuv>
+    <tuv xml:lang="hr-HR">
+        <seg>Provjera valjanosti unutar Windows okruženja</seg>
+    </tuv>
+    <tuv xml:lang="hu">
+        <seg>Ellenőrzés a Windows grafikus környezetében</seg>
+    </tuv>
+    <tuv xml:lang="hu-HU">
+        <seg>Ellenőrzés a Windows grafikus környezetében</seg>
+    </tuv>
+    <tuv xml:lang="id">
+        <seg>Memvalidasi di Lingkungan Grafis Windows</seg>
+    </tuv>
+    <tuv xml:lang="id-ID">
+        <seg>Memvalidasi di Lingkungan Grafis Windows</seg>
+    </tuv>
+    <tuv xml:lang="it">
+        <seg>Validazione nell'ambiente grafico Windows</seg>
+    </tuv>
+    <tuv xml:lang="it-IT">
+        <seg>Validazione nell'ambiente grafico Windows</seg>
+    </tuv>
+    <tuv xml:lang="ja">
+        <seg>Windows のグラフィカル環境で検証する方法</seg>
+    </tuv>
+    <tuv xml:lang="ja-JP">
+        <seg>Windows のグラフィカル環境で検証する方法</seg>
+    </tuv>
+    <tuv xml:lang="kn">
+        <seg>ವಿಂಡೋಸ್‌ನ ಚಿತ್ರಾತ್ಮಕ ಕ್ರಮದಲ್ಲಿ ಮಾನ್ಯಗೊಳಿಸುವಿಕೆ</seg>
+    </tuv>
+    <tuv xml:lang="kn-IN">
+        <seg>ವಿಂಡೋಸ್‌ನ ಚಿತ್ರಾತ್ಮಕ ಕ್ರಮದಲ್ಲಿ ಮಾನ್ಯಗೊಳಿಸುವಿಕೆ</seg>
+    </tuv>
+    <tuv xml:lang="ml">
+        <seg>വിന്‍ഡോസ് ഗ്രാഫിക്കല്‍ എന്‍വയോണ്‍മെന്റില്‍ പരിശോധിക്കുന്നു</seg>
+    </tuv>
+    <tuv xml:lang="ml-IN">
+        <seg>വിന്‍ഡോസ് ഗ്രാഫിക്കല്‍ എന്‍വയോണ്‍മെന്റില്‍ പരിശോധിക്കുന്നു</seg>
+    </tuv>
+    <tuv xml:lang="mr">
+        <seg>Windows चित्रलेखीय वातावरण अंतर्गत तपासणी करत आहे</seg>
+    </tuv>
+    <tuv xml:lang="mr-IN">
+        <seg>Windows चित्रलेखीय वातावरण अंतर्गत तपासणी करत आहे</seg>
+    </tuv>
+    <tuv xml:lang="nb">
+        <seg>Kontrollere i et grafisk Windowsmiljø</seg>
+    </tuv>
+    <tuv xml:lang="nb-NO">
+        <seg>Kontrollere i et grafisk Windowsmiljø</seg>
+    </tuv>
+    <tuv xml:lang="nl">
+        <seg>Validatie in de grafische omgeving van Windows</seg>
+    </tuv>
+    <tuv xml:lang="nl-NL">
+        <seg>Validatie in de grafische omgeving van Windows</seg>
+    </tuv>
+    <tuv xml:lang="or">
+        <seg>ୱିଣ୍ଡୋର ଆଲେଖିକ ପରିବେଶରେ ପୁଷ୍ଟି କରୁଅଛି</seg>
+    </tuv>
+    <tuv xml:lang="or-IN">
+        <seg>ୱିଣ୍ଡୋର ଆଲେଖିକ ପରିବେଶରେ ପୁଷ୍ଟି କରୁଅଛି</seg>
+    </tuv>
+    <tuv xml:lang="pa">
+        <seg>Windows ਗਰਾਫਿਕਲ ਵਾਤਾਵਰਨ ਵਿੱਚ ਜਾਂਚ ਕਰਨੀ</seg>
+    </tuv>
+    <tuv xml:lang="pa-IN">
+        <seg>Windows ਗਰਾਫਿਕਲ ਵਾਤਾਵਰਨ ਵਿੱਚ ਜਾਂਚ ਕਰਨੀ</seg>
+    </tuv>
+    <tuv xml:lang="pl">
+        <seg>Sprawdzanie w środowisku graficznym Windows</seg>
+    </tuv>
+    <tuv xml:lang="pl-PL">
+        <seg>Sprawdzanie w środowisku graficznym Windows</seg>
+    </tuv>
+    <tuv xml:lang="pt">
+        <seg>Validação no Ambiente Gráfico do Windows</seg>
+    </tuv>
+    <tuv xml:lang="pt-BR">
+        <seg>Validando no Ambiente Gráfico do Windows</seg>
+    </tuv>
+    <tuv xml:lang="pt-PT">
+        <seg>Validação no Ambiente Gráfico do Windows</seg>
+    </tuv>
+    <tuv xml:lang="ru">
+        <seg>Проверка в графической среде Windows</seg>
+    </tuv>
+    <tuv xml:lang="ru-RU">
+        <seg>Проверка в графической среде Windows</seg>
+    </tuv>
+    <tuv xml:lang="sr">
+        <seg>Провера у Windows графичком окружењу</seg>
+    </tuv>
+    <tuv xml:lang="sr-RS">
+        <seg>Провера у Windows графичком окружењу</seg>
+    </tuv>
+    <tuv xml:lang="sv">
+        <seg>Validera i Windows grafiska miljö</seg>
+    </tuv>
+    <tuv xml:lang="sv-SE">
+        <seg>Validera i Windows grafiska miljö</seg>
+    </tuv>
+    <tuv xml:lang="te">
+        <seg>Windows గ్రాఫికల్ ఎన్విరాన్మెంట్‌నందు నిర్ధారిస్తోంది</seg>
+    </tuv>
+    <tuv xml:lang="te-IN">
+        <seg>Windows గ్రాఫికల్ ఎన్విరాన్మెంట్‌నందు నిర్ధారిస్తోంది</seg>
+    </tuv>
+    <tuv xml:lang="uk">
+        <seg>Перевірка у графічному середовищі Windows</seg>
+    </tuv>
+    <tuv xml:lang="uk-UA">
+        <seg>Перевірка у графічному середовищі Windows</seg>
+    </tuv>
+    <tuv xml:lang="zh-CN">
+        <seg>在 Windows 图形环境下校验</seg>
+    </tuv>
+    <tuv xml:lang="zh-TW">
+        <seg>在 Windows 圖形化環境進行驗證</seg>
+    </tuv>
+  </tu>
+</body>
+</tmx>

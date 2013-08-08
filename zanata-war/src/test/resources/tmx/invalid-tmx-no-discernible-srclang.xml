@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE tmx SYSTEM "http://www.lisa.org/tmx/tmx14.dtd">
+<tmx version="1.4">
+    <header
+            adminlang="en"
+            srclang="*all*"
+            creationtool="Transifex.com"
+            creationtoolversion="1.3.0devel"
+            creationdate="20130509T141016Z"
+            datatype="plaintext"
+            segtype="paragraph"
+            o-tmf="Transifex.com"
+            >
+    </header>
+    <body>
+        <tu>
+            <tuv xml:lang="en">
+                <seg>Examples of popular CD burning software for Windows that you might already have on your computer include &lt;application&gt;InfraRecorder&lt;/application&gt;, &lt;application&gt;Nero Burning ROM&lt;/application&gt;, and &lt;application&gt;Roxio Creator&lt;/application&gt;. If you use a Windows operating system on your computer and do not have disc burning software installed (or you are not sure that the software can burn discs from image files) &lt;application&gt;InfraRecorder&lt;/application&gt; is a suitable solution available from &lt;ulink url="http://www.infrarecorder.org/" /&gt;, and is free and open-source.</seg>
+            </tuv>
+            <tuv xml:lang="bg">
+                <seg>Популярни програми за запис на CD-та под Windows са например &lt;application&gt;InfraRecorder&lt;/application&gt;, &lt;application&gt;Nero Burning ROM&lt;/application&gt; и &lt;application&gt;Roxio Creator&lt;/application&gt;, и Вие вероятно имате някоя от тях на компютъра си. Ако използвате операционната система Windows на Вашия компютър и нямате инсталиран софтуер за запис на дискове (или не сте сигурни дали програмите, които имате, могат да записват файлове с изображения на дискове) &lt;application&gt;InfraRecorder&lt;/application&gt; е подходяща програма за целта, налична на &lt;ulink url="http://www.infrarecorder.org/" /&gt;, която освен това е свободна и е с отворен код.</seg>
+            </tuv>
+            <tuv xml:lang="ca">
+                <seg>Exemples de programes popular per a l'enregistament de discs per a Windows, que potser ja els tingueu instal·lats en el vostre ordinadors, inclouen &lt;application&gt;InfraRecorder&lt;/application&gt;, &lt;application&gt;Nero Burning ROM&lt;/application&gt;, i &lt;application&gt;Roxio Creator&lt;/application&gt;. Si utilitzeu un sistema operatiu Windows en el vostre ordinador i no teniu cap programa d'enregistrament de discs instal·lat (o bé no esteu segurs que el vostre programari pugui enregistrar imatges de discs) &lt;application&gt;InfraRecorder&lt;/application&gt; és una solució aconsellable que està disponible a &lt;ulink url="http://www.infrarecorder.org/" /&gt;, i és lliure i de codi obert.</seg>
+            </tuv>
+            <tuv xml:lang="ca_ES">
+                <seg>Exemples de programes popular per a l'enregistament de discs per a Windows, que potser ja els tingueu instal·lats en el vostre ordinadors, inclouen &lt;application&gt;InfraRecorder&lt;/application&gt;, &lt;application&gt;Nero Burning ROM&lt;/application&gt;, i &lt;application&gt;Roxio Creator&lt;/application&gt;. Si utilitzeu un sistema operatiu Windows en el vostre ordinador i no teniu cap programa d'enregistrament de discs instal·lat (o bé no esteu segurs que el vostre programari pugui enregistrar imatges de discs) &lt;application&gt;InfraRecorder&lt;/application&gt; és una solució aconsellable que està disponible a &lt;ulink url="http://www.infrarecorder.org/" /&gt;, i és lliure i de codi obert.</seg>
+            </tuv>
+            <tuv xml:lang="cs">
+                <seg>Příklady známého softwaru vypalování CD pro Windows, který již můžete na svém počítači mít nainstalován, zahrnují &lt;application&gt;InfraRecorder&lt;/application&gt;, &lt;application&gt;Nero Burning ROM&lt;/application&gt; a &lt;application&gt;Roxio Creator&lt;/application&gt;. Používáte-li na vašem počítači operační systém Windows a nemáte nainstalovný vypalovací software (nebo si nejste jisti, že software dokáže vypalovat disky ze souborů obrazu), aplikace &lt;application&gt;InfraRecorder&lt;/application&gt; je pro vás vhodným řešením, dostupným ze stránek &lt;ulink url="http://www.infrarecorder.org/" /&gt;. A je zdarma a open source.</seg>
+            </tuv>
+            <tuv xml:lang="cs_CZ">
+                <seg>Příklady známého softwaru vypalování CD pro Windows, který již můžete na svém počítači mít nainstalován, zahrnují &lt;application&gt;InfraRecorder&lt;/application&gt;, &lt;application&gt;Nero Burning ROM&lt;/application&gt; a &lt;application&gt;Roxio Creator&lt;/application&gt;. Používáte-li na vašem počítači operační systém Windows a nemáte nainstalovný vypalovací software (nebo si nejste jisti, že software dokáže vypalovat disky ze souborů obrazu), aplikace &lt;application&gt;InfraRecorder&lt;/application&gt; je pro vás vhodným řešením, dostupným ze stránek &lt;ulink url="http://www.infrarecorder.org/" /&gt;. A je zdarma a open source.</seg>
+            </tuv>
+            <tuv xml:lang="de">
+                <seg>Beispiele bekannter CD-Brennsoftware für Windows, die Sie bereits auf Ihrem Computer haben könnten, sind &lt;application&gt;InfraRecorder&lt;/application&gt;, &lt;application&gt;Nero Burning ROM&lt;/application&gt; und &lt;application&gt;Roxio Creator&lt;/application&gt;. Wenn Sie ein Windowsbetriebssystem auf ihrem Computer verwenden und keine Brennsoftware installiert haben (oder sich nicht sicher sind, ob die Software Abbilddateien brennen kann) ist &lt;application&gt;InfraRecorder&lt;/application&gt; eine geeignete Lösung und kann von &lt;ulink url="http://www.infrarecorder.org/" /&gt; bezogen werden. Es ist kostenlos und open-source.</seg>
+            </tuv>
+            <tuv xml:lang="es">
+                <seg>Ejemplos de software de grabación de CD populares para Windows que podría tener ya en su ordenador son  &lt;application&gt;InfraRecorder&lt;/application&gt;, &lt;application&gt;Nero Burning ROM&lt;/application&gt; y &lt;application&gt;Roxio Creator&lt;/application&gt;. Si usa un sistema operativo Windows en su ordenador y no tiene algún software de grabación de discos instalado (o no está seguro que el software pueda grabar archivos de imagenes a discos)  &lt;application&gt;InfraRecorder&lt;/application&gt; es una solución adecuada disponible en &lt;ulink url="http://www.infrarecorder.org/" /&gt;, además es gratuito y de código abierto.</seg>
+            </tuv>
+            <tuv xml:lang="es_ES">
+                <seg>Algunos programas muy conocidos de grabado de CDs para Windows, que quizás ya tenga instalado en su computadora, son:  &lt;application&gt;InfraRecorder&lt;/application&gt;, &lt;application&gt;Nero Burning ROM&lt;/application&gt; y el &lt;application&gt;Roxio Creator&lt;/application&gt;. Si utiliza el sistema operativo Windows en su computadora y no tiene instalado software de grabado de disco (o no está seguro de que ese software pueda grabar discos a partir de archivos de imagen) &lt;application&gt;InfraRecorder&lt;/application&gt; es una alternativa apropiada disponible en &lt;ulink url="http://www.infrarecorder.org/" /&gt;, y es libre y de código abierto.</seg>
+            </tuv>
+            <tuv xml:lang="fi">
+                <seg>Koneella saattaa olla jo jokin CD:n poltto-ohjelma Windowsille, esimerkiksi &lt;application&gt;InfraRecorder&lt;/application&gt;, &lt;application&gt;Nero Burning ROM&lt;/application&gt; tai &lt;application&gt;Roxio Creator&lt;/application&gt;. Jos käytät Windows-käyttöjärjestelmää eikä koneella ole vielä levynpoltto-ohjelmaa (tai et ole varma, voiko koneella oleva ohjelma polttaa levyjä levykuvista), osoitteesta &lt;ulink url="http://www.infrarecorder.org/" /&gt; saatava vapaa avoimen lähdekoodin &lt;application&gt;InfraRecorder&lt;/application&gt;-ohjelma on hyvä vaihtoehto.</seg>
+            </tuv>
+            <tuv xml:lang="fi_FI">
+                <seg>Koneella saattaa olla jo jokin CD:n poltto-ohjelma Windowsille, esimerkiksi &lt;application&gt;InfraRecorder&lt;/application&gt;, &lt;application&gt;Nero Burning ROM&lt;/application&gt; tai &lt;application&gt;Roxio Creator&lt;/application&gt;. Jos käytät Windows-käyttöjärjestelmää eikä koneella ole vielä levynpoltto-ohjelmaa (tai et ole varma, voiko koneella oleva ohjelma polttaa levyjä levykuvista), osoitteesta &lt;ulink url="http://www.infrarecorder.org/" /&gt; saatava vapaa avoimen lähdekoodin &lt;application&gt;InfraRecorder&lt;/application&gt;-ohjelma on hyvä vaihtoehto.</seg>
+            </tuv>
+            <tuv xml:lang="fr">
+                <seg>On peut citer en guise d'exemples quelques logiciels de gravure populaires pour Windows que vous possédez peut-être déjà, comme &lt;application&gt;Nero Burning ROM&lt;/application&gt; et &lt;application&gt;Roxio Creator&lt;/application&gt;. Si vous avez un système d'exploitation Windows sur votre ordinateur et que vous n'avez pas de logiciel de gravure (ou que vous n'êtes pas sûr que votre logiciel puisse graver des images disques), &lt;application&gt;InfraRecorder&lt;/application&gt; est une solution appropriée téléchargeable depuis &lt;ulink url="http://www.infrarecorder.org/" /&gt;. De plus, il est libre et gratuit.</seg>
+            </tuv>
+            <tuv xml:lang="fr_FR">
+                <seg>On peut citer en guise d'exemples quelques logiciels de gravure populaires pour Windows que vous possédez peut-être déjà, comme &lt;application&gt;Nero Burning ROM&lt;/application&gt; et &lt;application&gt;Roxio Creator&lt;/application&gt;. Si vous avez un système d'exploitation Windows sur votre ordinateur et que vous n'avez pas de logiciel de gravure (ou que vous n'êtes pas sûr que votre logiciel puisse graver des images disques), &lt;application&gt;InfraRecorder&lt;/application&gt; est une solution appropriée téléchargeable depuis &lt;ulink url="http://www.infrarecorder.org/" /&gt;. De plus, il est libre et gratuit.</seg>
+            </tuv>
+            <tuv xml:lang="he">
+                <seg>ייתכן שאחת מהדוגמאות לתוכנות צריבה פופלריות עבור Windows כבר הותקנו במחשב שלך, כולל &lt;application&gt;InfraRecorder&lt;/application&gt;, &lt;application&gt;Nero Burning ROM&lt;/application&gt;, ו־&lt;application&gt;Roxio Creator&lt;/application&gt;. אם אתה משתמש במערכת הפעלה מסוג Windows במחשב שלך ואין לך תוכנה לצריבת תקליטורים (או שאינך בטוח אם התוכנה יודעת לצרוב תקליטורים מקובצי ISO) &lt;application&gt;InfraRecorder&lt;/application&gt; הוא הפתרון המתאים, זמין ב־&lt;ulink url="http://www.infrarecorder.org/" /&gt;, והוא חופשי בקוד פתוח.</seg>
+            </tuv>
+            <tuv xml:lang="id">
+                <seg>Contoh perangkat lunak pembakar CD populer untuk Windows yang kemungkinan telah anda miliki di komputer Anda antara lain &lt;application&gt;InfraRecorder&lt;/application&gt;, &lt;application&gt;Nero Burning ROM&lt;/application&gt; dan &lt;application&gt;Roxio Creator&lt;/application&gt;. Jika anda menggunakan sistem operasi Windows dan tidak memiliki perangkat lunak pembakar disk yang terpasang pada komputer Anda (atau Anda tidak yakin bahwa perangkat lunak tersebut mampu membakar disk dari berkas image) &lt;application&gt;InfraRecorder&lt;/application&gt; merupakan solusi tepat yang tersedia di &lt;ulink url="http://www.infrarecorder.org/" /&gt;, dan ia merupakan perangkat lunak bebas dan kode terbuka.</seg>
+            </tuv>
+            <tuv xml:lang="id_ID">
+                <seg>Contoh perangkat lunak pembakar CD populer untuk Windows yang kemungkinan telah anda miliki di komputer Anda antara lain &lt;application&gt;InfraRecorder&lt;/application&gt;, &lt;application&gt;Nero Burning ROM&lt;/application&gt; dan &lt;application&gt;Roxio Creator&lt;/application&gt;. Jika anda menggunakan sistem operasi Windows dan tidak memiliki perangkat lunak pembakar disk yang terpasang pada komputer Anda (atau Anda tidak yakin bahwa perangkat lunak tersebut mampu membakar disk dari berkas image) &lt;application&gt;InfraRecorder&lt;/application&gt; merupakan solusi tepat yang tersedia di &lt;ulink url="http://www.infrarecorder.org/" /&gt;, dan ia merupakan perangkat lunak bebas dan kode terbuka.</seg>
+            </tuv>
+            <tuv xml:lang="it">
+                <seg>Esempi di popolari software Windows per masterizzare che potrebbero essere già pronti includono &lt;application&gt;InfraRecorder&lt;/application&gt;, &lt;application&gt;Nero Burning ROM&lt;/application&gt; e &lt;application&gt;Roxio Creator&lt;/application&gt;. Se si usa un sistema operativo Windows e non si ha un software di masterizzazione installato (o non si è sicuri di poter masterizzare immagini), &lt;application&gt;InfraRecorder&lt;/application&gt; è la soluzione adatta scaricabile da &lt;ulink url="http://www.infrarecorder.org/" /&gt;, il quale è libero e opensource.</seg>
+            </tuv>
+            <tuv xml:lang="it_IT">
+                <seg>Esempi di popolari software Windows per masterizzare che potrebbero essere già pronti includono &lt;application&gt;InfraRecorder&lt;/application&gt;, &lt;application&gt;Nero Burning ROM&lt;/application&gt; e &lt;application&gt;Roxio Creator&lt;/application&gt;. Se si usa un sistema operativo Windows e non si ha un software di masterizzazione installato (o non si è sicuri di poter masterizzare immagini), &lt;application&gt;InfraRecorder&lt;/application&gt; è la soluzione adatta scarivabile da &lt;ulink url="http://www.infrarecorder.org/" /&gt;, libero e opensource.</seg>
+            </tuv>
+            <tuv xml:lang="ja">
+                <seg>例えば、&lt;application&gt;InfraRecorder&lt;/application&gt; や &lt;application&gt;Nero Burning ROM&lt;/application&gt;、そして、&lt;application&gt;Roxio Creator&lt;/application&gt; などの CD 書き込みソフトウェアがすでにお使いのコンピューターにインストールされている場合があります。もし、お使いのコンピューターで Windows オペレーティングシステムを利用していて、ディスク書き込みソフトウェアが何もインストールされていない場合 (もしくは ISO イメージファイルからディスクを作ることができない場合) 、解決策として &lt;application&gt;InfraRecorder&lt;/application&gt; が &lt;ulink url="http://www.infrarecorder.org/" /&gt; から入手できます。これはフリーで、かつオープンソースのアプリケーションです。</seg>
+            </tuv>
+            <tuv xml:lang="ja_JP">
+                <seg>例えば、&lt;application&gt;InfraRecorder&lt;/application&gt; や &lt;application&gt;Nero Burning ROM&lt;/application&gt;、そして、&lt;application&gt;Roxio Creator&lt;/application&gt; などの CD 書き込みソフトウェアがすでにお使いのコンピューターにインストールされている場合があります。もし、お使いのコンピューターで Windows オペレーティングシステムを利用していて、ディスク書き込みソフトウェアが何もインストールされていない場合 (もしくは ISO イメージファイルからディスクを作ることができない場合) 、解決策として &lt;application&gt;InfraRecorder&lt;/application&gt; が &lt;ulink url="http://www.infrarecorder.org/" /&gt; から入手できます。これはフリーで、かつオープンソースのアプリケーションです。</seg>
+            </tuv>
+            <tuv xml:lang="nl">
+                <seg>Voorbeelden van populaire CD brand programma's voor Windows die je misschien al op jouw computer hebt, zijn &lt;application&gt;InfraRecorder&lt;/application&gt;, &lt;application&gt;Nero Burning ROM&lt;/application&gt; en &lt;application&gt;Roxio Creator&lt;/application&gt;. Als je een Windows besturingssysteem op jouw computer gebruikt en je hebt geen schijf brandsoftware geïnstalleerd (of je bent er niet zeker van dat de software schijven kan branden van image bestanden) is &lt;application&gt;InfraRecorder&lt;/application&gt; een bruikbaar alternatief welke beschikbaar is van &lt;ulink url="http://www.infrarecorder.org/" /&gt;, en dit programma is vrije en open bron software.</seg>
+            </tuv>
+            <tuv xml:lang="nl_NL">
+                <seg>Voorbeelden van populaire CD brand programma&amp;#39;s voor Windows die je misschien al op je computer hebt, zijn &lt;application&gt;InfraRecorder&lt;/application&gt;, &lt;application&gt;Nero Burning ROM&lt;/application&gt; en &lt;application&gt;Roxio Creator&lt;/application&gt;. Als je een Windows besturingssysteem op jouw computer gebruikt en je hebt geen schijf brand software geïnstalleerd (of je bent er niet zeker van dat de software schijven kan branden van image bestanden) is &lt;application&gt;InfraRecorder&lt;/application&gt; een bruikbaar alternatief welke beschikbaar is van &lt;ulink url="http://www.infrarecorder.org/" /&gt;, en dit programma is vrije en open bron software.</seg>
+            </tuv>
+            <tuv xml:lang="pl">
+                <seg>Przykłady popularnego oprogramowania do nagrywania płyt CD dla systemu Windows, które mogą już być zainstalowane w komputerze to &lt;application&gt;InfraRecorder&lt;/application&gt;, &lt;application&gt;Nero Burning ROM&lt;/application&gt; i &lt;application&gt;Roxio Creator&lt;/application&gt;. Jeśli używany jest system operacyjny Windows bez żadnego oprogramowania do nagrywania (lub brak pewności, czy może nagrywać płyty z plików obrazów), program &lt;application&gt;InfraRecorder&lt;/application&gt; jest odpowiednim rozwiązaniem, dostępnym ze strony &lt;ulink url="http://www.infrarecorder.org/" /&gt;, a także jest wolnym oprogramowaniem i oprogramowaniem open source.</seg>
+            </tuv>
+            <tuv xml:lang="pl_PL">
+                <seg>Przykłady popularnego oprogramowania do nagrywania płyt CD dla systemu Windows, które mogą już być zainstalowane w komputerze to &lt;application&gt;InfraRecorder&lt;/application&gt;, &lt;application&gt;Nero Burning ROM&lt;/application&gt; i &lt;application&gt;Roxio Creator&lt;/application&gt;. Jeśli używany jest system operacyjny Windows bez żadnego oprogramowania do nagrywania (lub brak pewności, czy może nagrywać płyty z plików obrazów), program &lt;application&gt;InfraRecorder&lt;/application&gt; jest odpowiednim rozwiązaniem, dostępnym ze strony &lt;ulink url="http://www.infrarecorder.org/" /&gt;, a także jest wolnym oprogramowaniem i oprogramowaniem open source.</seg>
+            </tuv>
+            <tuv xml:lang="pt">
+                <seg>Exemplos de softwares de gravação de CDs para Windows que já pode conhecer e ter no seu computador incluindo o &lt;application&gt;InfraRecorder&lt;/application&gt;, &lt;application&gt;Nero Burning ROM&lt;/application&gt; e &lt;application&gt;Roxio Creator&lt;/application&gt;. Se usa um sistema operativo Windows no seu computador e não term software de gravação de CDs instalado (ou não tem a certeza de que o software consegue gravar a partir de ficheiros de imagem) o &lt;application&gt;InfraRecorder&lt;/application&gt; é uma solução viável disponível em &lt;ulink url="http://www.infrarecorder.org/" /&gt; e é livre e de código aberto e é livre e de código aberto.</seg>
+            </tuv>
+            <tuv xml:lang="ru">
+                <seg>Ниже приведены примеры популярных программ для записи компакт-дисков под Windows, которые уже возможно имеются на вашем компьютере. Это &lt;application&gt;InfraRecorder&lt;/application&gt;, &lt;application&gt;Nero Burning ROM&lt;/application&gt; и &lt;application&gt;Roxio Creator&lt;/application&gt;. Если вы используете Windows и у вас не установлено никаких специальных программ (или вы не уверены, что программа может записывать файл образа на диск), &lt;application&gt;InfraRecorder&lt;/application&gt; является  подходящим решением. Программу можно скачать по адресу &lt;ulink url="http://www.infrarecorder.org/" /&gt;, она открыта и свободна для использования.</seg>
+            </tuv>
+            <tuv xml:lang="sv">
+                <seg>Exempel på populära CD-brännarprogram för Windows som du kanske redan har på din dator är &lt;application&gt;InfraRecorder&lt;/application&gt;, &lt;application&gt;Nero Burning ROM&lt;/application&gt; och &lt;application&gt;Roxio Creator&lt;/application&gt;.  Om du använder ett Windowsoperativsystem på din dator och inte har något skivbränningsprogram installerat (eller om du inte är säker på att programmet kan skriva skivor från avbildsfiler) är &lt;application&gt;InfraRecorder&lt;/application&gt; ett lämpligt alternativ som är tillgängligt från &lt;ulink url="http://www.infrarecorder.org/" /&gt; och är fritt och öppen källkod.</seg>
+            </tuv>
+            <tuv xml:lang="sv_SE">
+                <seg>Exempel på populära CD-brännarprogram för Windows som du kanske redan har på din dator är &lt;application&gt;InfraRecorder&lt;/application&gt;, &lt;application&gt;Nero Burning ROM&lt;/application&gt; och &lt;application&gt;Roxio Creator&lt;/application&gt;.  Om du använder ett Windowsoperativsystem på din dator och inte har något skivbränningsprogram installerat (eller om du inte är säker på att programmet kan skriva skivor från avbildsfiler) är &lt;application&gt;InfraRecorder&lt;/application&gt; ett lämpligt alternativ som är tillgängligt från &lt;ulink url="http://www.infrarecorder.org/" /&gt; och är fritt och öppen källkod.</seg>
+            </tuv>
+            <tuv xml:lang="uk">
+                <seg>Наприклад, на вашому комп'ютері можуть бути встановлені такі програми для запису дисків: &lt;application&gt;InfraRecorder&lt;/application&gt;, &lt;application&gt;Nero Burning ROM&lt;/application&gt; та &lt;application&gt;Roxio Creator&lt;/application&gt;. Якщо ви використовуєте ОС Windows у вас не встановлено програму для запису дисків чи ви не знаєте, яка встановлена програма може записувати ISO-образи, скористайтесь безкоштовною програмою з відкритим кодом &lt;application&gt;InfraRecorder&lt;/application&gt;, яку можна звантажити за адресою &lt;ulink url="http://www.infrarecorder.org/"&gt;&lt;/ulink&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="uk_UA">
+                <seg>Наприклад, на вашому комп'ютері можуть бути встановлені такі програми для запису дисків: &lt;application&gt;InfraRecorder&lt;/application&gt;, &lt;application&gt;Nero Burning ROM&lt;/application&gt; та &lt;application&gt;Roxio Creator&lt;/application&gt;. Якщо ви використовуєте ОС Windows у вас не встановлено програму для запису дисків чи ви не знаєте, яка встановлена програма може записувати ISO-образи, скористайтесь безкоштовною програмою з відкритим кодом &lt;application&gt;InfraRecorder&lt;/application&gt;, яку можна звантажити за адресою &lt;ulink url="http://www.infrarecorder.org/"&gt;&lt;/ulink&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="zh_CN">
+                <seg>您可能已经安装了 Windows 下流行的 CD 刻录软件，比如 &lt;application&gt;InfraRecorder&lt;/application&gt;,&lt;application&gt;Nero Burning ROM&lt;/application&gt; 还有 &lt;application&gt;Roxio Creator&lt;/application&gt;。如果您使用 Windows 系统并且没有安装刻录软件 (或者您不确定您装的刻录软件是否可以将镜像文件刻录为光盘)，&lt;application&gt;InfraRecorder&lt;/application&gt; 是个合适的选择，可从 &lt;ulink url="http://www.infrarecorder.org/" /&gt;获得，它是免费且开源的。</seg>
+            </tuv>
+        </tu>
+        <tu>
+            <tuv xml:lang="en">
+                <seg>Select &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="bg">
+                <seg>Изберете &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="ca">
+                <seg>Seleccioneu &lt;guimenuitem&gt;Enregistra la imatge&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="ca_ES">
+                <seg>Seleccioneu &lt;guimenuitem&gt;Enregistra la imatge&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="cs">
+                <seg>Vyberte &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="cs_CZ">
+                <seg>Vyberte &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="da">
+                <seg>Vælg &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="da_DK">
+                <seg>Vælg &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="de">
+                <seg>Wählen Sie &lt;guimenuitem&gt;Abbild brennen&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="de_DE">
+                <seg>Wählen Sie &lt;guimenuitem&gt;Abbild Brennen&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="el">
+                <seg>Επιλέξτε &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="el_GR">
+                <seg>Επιλέξτε &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="es">
+                <seg>Seleccione &lt;guimenuitem&gt;Grabar imagen&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="es_ES">
+                <seg>Seleccione &lt;guimenuitem&gt;Grabar Imagen&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="fi">
+                <seg>Valitse &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="fi_FI">
+                <seg>Valitse &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="fr">
+                <seg>Sélectionnez &lt;guimenuitem&gt;Graver une image&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="fr_FR">
+                <seg>Sélectionnez &lt;guimenuitem&gt;Graver une image&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="gu">
+                <seg>&lt;guimenuitem&gt;ઈમેજ બનાવો&lt;/guimenuitem&gt; પસંદ કરો.</seg>
+            </tuv>
+            <tuv xml:lang="gu_IN">
+                <seg>&lt;guimenuitem&gt;ઈમેજ બનાવો&lt;/guimenuitem&gt; પસંદ કરો.</seg>
+            </tuv>
+            <tuv xml:lang="he">
+                <seg>בחר ב־&lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="hi">
+                <seg>&lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt; चुनें.</seg>
+            </tuv>
+            <tuv xml:lang="hi_IN">
+                <seg>&lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt; चुनें.</seg>
+            </tuv>
+            <tuv xml:lang="hu">
+                <seg>Válassza a &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt; pontot.</seg>
+            </tuv>
+            <tuv xml:lang="hu_HU">
+                <seg>Válassza a &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt; pontot.</seg>
+            </tuv>
+            <tuv xml:lang="id">
+                <seg>Pilih &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="id_ID">
+                <seg>Pilih &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="it">
+                <seg>Selezionare &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="it_IT">
+                <seg>Selezionare &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="ja">
+                <seg>&lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt; を選択します。</seg>
+            </tuv>
+            <tuv xml:lang="ja_JP">
+                <seg>&lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt; を選択します。</seg>
+            </tuv>
+            <tuv xml:lang="kn">
+                <seg>&lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt; ಅನ್ನು ಆಯ್ಕೆ ಮಾಡಿ.</seg>
+            </tuv>
+            <tuv xml:lang="kn_IN">
+                <seg>&lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt; ಅನ್ನು ಆಯ್ಕೆ ಮಾಡಿ.</seg>
+            </tuv>
+            <tuv xml:lang="ml">
+                <seg>&lt;guimenuitem&gt;ഇമേജ് പകര്‍ത്തുക&lt;/guimenuitem&gt; എന്നതു് തെരഞ്ഞെടുക്കുക.</seg>
+            </tuv>
+            <tuv xml:lang="ml_IN">
+                <seg>&lt;guimenuitem&gt;ഇമേജ് പകര്‍ത്തുക&lt;/guimenuitem&gt; എന്നതു് തെരഞ്ഞെടുക്കുക.</seg>
+            </tuv>
+            <tuv xml:lang="mr">
+                <seg>&lt;guimenuitem&gt;प्रतिमा बर्ण करा&lt;/guimenuitem&gt; निवडा.</seg>
+            </tuv>
+            <tuv xml:lang="mr_IN">
+                <seg>&lt;guimenuitem&gt;प्रतिमा बर्ण करा&lt;/guimenuitem&gt; निवडा.</seg>
+            </tuv>
+            <tuv xml:lang="nb">
+                <seg>Velg &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="nb_NO">
+                <seg>Velg &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="nl">
+                <seg>Selecteer &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="nl_NL">
+                <seg>Selecteer &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="or">
+                <seg>&lt;guimenuitem&gt;ପ୍ରତିଛବିକୁ ଲେଖନ୍ତୁ&lt;/guimenuitem&gt; କୁ ବାଛନ୍ତୁ.</seg>
+            </tuv>
+            <tuv xml:lang="or_IN">
+                <seg>&lt;guimenuitem&gt;ପ୍ରତିଛବିକୁ ଲେଖନ୍ତୁ&lt;/guimenuitem&gt; କୁ ବାଛନ୍ତୁ.</seg>
+            </tuv>
+            <tuv xml:lang="pa">
+                <seg>&lt;guimenuitem&gt;ਈਮੇਜ਼ ਲਿਖੋ&lt;/guimenuitem&gt; ਚੁਣੋ।</seg>
+            </tuv>
+            <tuv xml:lang="pa_IN">
+                <seg>&lt;guimenuitem&gt;ਈਮੇਜ਼ ਲਿਖੋ&lt;/guimenuitem&gt; ਚੁਣੋ।</seg>
+            </tuv>
+            <tuv xml:lang="pl">
+                <seg>Należy wybrać &lt;guimenuitem&gt;Nagraj obraz&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="pl_PL">
+                <seg>Należy wybrać &lt;guimenuitem&gt;Nagraj obraz&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="pt">
+                <seg>Seleccione &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt; (Gravar a Imagem).</seg>
+            </tuv>
+            <tuv xml:lang="pt_BR">
+                <seg>Selecione &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="pt_PT">
+                <seg>Seleccione &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt; (Gravar a Imagem).</seg>
+            </tuv>
+            <tuv xml:lang="ru">
+                <seg>Выберите &lt;guimenuitem&gt;Записать образ&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="ru_RU">
+                <seg>Выберите &lt;guimenuitem&gt;Записать образ&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="sr">
+                <seg>Изаберите &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="sr_RS">
+                <seg>Изаберите &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="sv">
+                <seg>Välj &lt;guimenuitem&gt;Bränn avbild&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="sv_SE">
+                <seg>Välj &lt;guimenuitem&gt;Bränn avbild&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="te">
+                <seg>&lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt; యెంపికచేయుము.</seg>
+            </tuv>
+            <tuv xml:lang="te_IN">
+                <seg>&lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt; యెంపికచేయుము.</seg>
+            </tuv>
+            <tuv xml:lang="uk">
+                <seg>Виберіть &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="uk_UA">
+                <seg>Виберіть &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
+            </tuv>
+            <tuv xml:lang="zh_CN">
+                <seg>选择 &lt;guimenuitem&gt;刻录镜像&lt;/guimenuitem&gt;</seg>
+            </tuv>
+            <tuv xml:lang="zh_TW">
+                <seg>選擇 &lt;guimenuitem&gt;燒錄映像&lt;/guimenuitem&gt;。</seg>
+            </tuv>
+        </tu>
+        <tu>
+            <tuv xml:lang="en">
+                <seg>If you are using HashTab, you will need to enable the SHA256 checksum option. In order to do this you will to open the File Properties window (right click --&amp;gt; File Hashes tab --&amp;gt; Settings), then select the SHA256 option. It is advisable to uncheck any preselected hash options as they will only slow down the hash calculations.</seg>
+            </tuv>
+            <tuv xml:lang="fr">
+                <seg>Si vous utilisez HashTab, vous devrez activer l'option checksum SHA256.
+                    Pour le faire, vous devrez ouvrir la fenêtre File Properties(clic droit --&amp;gt; onglet File Hashes --&amp;gt; Réglages), ensuite sélectionnez l'option SHA256. Il est conseillé de décocher les options de hachage présélectionnés, puisqu'elles vont ralentir la calcul de hachage.</seg>
+            </tuv>
+            <tuv xml:lang="nl">
+                <seg>Als je HashTab gebruikt, zul je de SHA256 checksum optie aan moeten zetten. Om dit te doen moetr je het File Properties venster openen (klik rechts --&amp;gt; File Hashes tab --&amp;gt; Settings), en selecteer de SHA256 optie. Het wordt aanbevolen reeds geselecteerde hash opties uit te zetten omdat ze de hash berekeningen alleen zullen vertragen.</seg>
+            </tuv>
+            <tuv xml:lang="zh_CN">
+                <seg>如果您使用的是 HashTab，您需要启用 SHA256 校验选项。方法是，打开文件属性窗口（点击右键 --&amp;gt; 文件 Hash 值标签 --&amp;gt; 设置），然后选择 SHA256 选项。建议取消勾选预设的 hash 选项，因为这样会降低哈希值计算的速度。</seg>
+            </tuv>
+        </tu>
+        <tu>
+            <tuv xml:lang="en">
+                <seg>Validating in the Windows Graphical Environment</seg>
+            </tuv>
+            <tuv xml:lang="bg">
+                <seg>Проверка чрез програма с графичен интерфейс във Windows</seg>
+            </tuv>
+            <tuv xml:lang="ca">
+                <seg>Validació en l'entorn gràfic de Windows</seg>
+            </tuv>
+            <tuv xml:lang="ca_ES">
+                <seg>Validació en l'entorn gràfic de Windows</seg>
+            </tuv>
+            <tuv xml:lang="cs">
+                <seg>Ověření v grafickém prostředí systému Windows</seg>
+            </tuv>
+            <tuv xml:lang="cs_CZ">
+                <seg>Ověření v grafickém prostředí systému Windows</seg>
+            </tuv>
+            <tuv xml:lang="da">
+                <seg>At validere i det grafiske Windows-miljø</seg>
+            </tuv>
+            <tuv xml:lang="da_DK">
+                <seg>At validere i det grafiske Windows-miljø</seg>
+            </tuv>
+            <tuv xml:lang="de">
+                <seg>Überprüfung in der grafischen Oberfläche von Windows</seg>
+            </tuv>
+            <tuv xml:lang="de_DE">
+                <seg>Überprüfen in der grafischen Oberfläche von Windows</seg>
+            </tuv>
+            <tuv xml:lang="el">
+                <seg>Επαλήθευση στο παραθυρικό περιβάλλον Windows</seg>
+            </tuv>
+            <tuv xml:lang="el_GR">
+                <seg>Επαλήθευση στο παραθυρικό περιβάλλον Windows</seg>
+            </tuv>
+            <tuv xml:lang="es">
+                <seg>La validación en el Entorno Gráfico de Windows</seg>
+            </tuv>
+            <tuv xml:lang="es_ES">
+                <seg>La validación en el Entorno Gráfico de Windows</seg>
+            </tuv>
+            <tuv xml:lang="fi">
+                <seg>Tarkistus graafisessa Windows-ympäristössä</seg>
+            </tuv>
+            <tuv xml:lang="fi_FI">
+                <seg>Tarkistus graafisessa Windows-ympäristössä</seg>
+            </tuv>
+            <tuv xml:lang="fr">
+                <seg>Vérification depuis l'environnement graphique de Windows</seg>
+            </tuv>
+            <tuv xml:lang="fr_FR">
+                <seg>Vérification depuis l'environnement graphique de Windows</seg>
+            </tuv>
+            <tuv xml:lang="gu">
+                <seg>Windows ગ્રાફિકવાળું પર્યાવરણની ખાતરી કરી રહ્યા છીએ</seg>
+            </tuv>
+            <tuv xml:lang="gu_IN">
+                <seg>Windows ગ્રાફિકવાળું પર્યાવરણની ખાતરી કરી રહ્યા છીએ</seg>
+            </tuv>
+            <tuv xml:lang="he">
+                <seg>אימות בסביבה גרפית של Windows</seg>
+            </tuv>
+            <tuv xml:lang="hi">
+                <seg>Windows आलेखी वातावरण में वैधीकरण</seg>
+            </tuv>
+            <tuv xml:lang="hi_IN">
+                <seg>Windows आलेखी वातावरण में वैधीकरण</seg>
+            </tuv>
+            <tuv xml:lang="hr">
+                <seg>Provjera valjanosti unutar Windows okruženja</seg>
+            </tuv>
+            <tuv xml:lang="hr_HR">
+                <seg>Provjera valjanosti unutar Windows okruženja</seg>
+            </tuv>
+            <tuv xml:lang="hu">
+                <seg>Ellenőrzés a Windows grafikus környezetében</seg>
+            </tuv>
+            <tuv xml:lang="hu_HU">
+                <seg>Ellenőrzés a Windows grafikus környezetében</seg>
+            </tuv>
+            <tuv xml:lang="id">
+                <seg>Memvalidasi di Lingkungan Grafis Windows</seg>
+            </tuv>
+            <tuv xml:lang="id_ID">
+                <seg>Memvalidasi di Lingkungan Grafis Windows</seg>
+            </tuv>
+            <tuv xml:lang="it">
+                <seg>Validazione nell'ambiente grafico Windows</seg>
+            </tuv>
+            <tuv xml:lang="it_IT">
+                <seg>Validazione nell'ambiente grafico Windows</seg>
+            </tuv>
+            <tuv xml:lang="ja">
+                <seg>Windows のグラフィカル環境で検証する方法</seg>
+            </tuv>
+            <tuv xml:lang="ja_JP">
+                <seg>Windows のグラフィカル環境で検証する方法</seg>
+            </tuv>
+            <tuv xml:lang="kn">
+                <seg>ವಿಂಡೋಸ್‌ನ ಚಿತ್ರಾತ್ಮಕ ಕ್ರಮದಲ್ಲಿ ಮಾನ್ಯಗೊಳಿಸುವಿಕೆ</seg>
+            </tuv>
+            <tuv xml:lang="kn_IN">
+                <seg>ವಿಂಡೋಸ್‌ನ ಚಿತ್ರಾತ್ಮಕ ಕ್ರಮದಲ್ಲಿ ಮಾನ್ಯಗೊಳಿಸುವಿಕೆ</seg>
+            </tuv>
+            <tuv xml:lang="ml">
+                <seg>വിന്‍ഡോസ് ഗ്രാഫിക്കല്‍ എന്‍വയോണ്‍മെന്റില്‍ പരിശോധിക്കുന്നു</seg>
+            </tuv>
+            <tuv xml:lang="ml_IN">
+                <seg>വിന്‍ഡോസ് ഗ്രാഫിക്കല്‍ എന്‍വയോണ്‍മെന്റില്‍ പരിശോധിക്കുന്നു</seg>
+            </tuv>
+            <tuv xml:lang="mr">
+                <seg>Windows चित्रलेखीय वातावरण अंतर्गत तपासणी करत आहे</seg>
+            </tuv>
+            <tuv xml:lang="mr_IN">
+                <seg>Windows चित्रलेखीय वातावरण अंतर्गत तपासणी करत आहे</seg>
+            </tuv>
+            <tuv xml:lang="nb">
+                <seg>Kontrollere i et grafisk Windowsmiljø</seg>
+            </tuv>
+            <tuv xml:lang="nb_NO">
+                <seg>Kontrollere i et grafisk Windowsmiljø</seg>
+            </tuv>
+            <tuv xml:lang="nl">
+                <seg>Validatie in de grafische omgeving van Windows</seg>
+            </tuv>
+            <tuv xml:lang="nl_NL">
+                <seg>Validatie in de grafische omgeving van Windows</seg>
+            </tuv>
+            <tuv xml:lang="or">
+                <seg>ୱିଣ୍ଡୋର ଆଲେଖିକ ପରିବେଶରେ ପୁଷ୍ଟି କରୁଅଛି</seg>
+            </tuv>
+            <tuv xml:lang="or_IN">
+                <seg>ୱିଣ୍ଡୋର ଆଲେଖିକ ପରିବେଶରେ ପୁଷ୍ଟି କରୁଅଛି</seg>
+            </tuv>
+            <tuv xml:lang="pa">
+                <seg>Windows ਗਰਾਫਿਕਲ ਵਾਤਾਵਰਨ ਵਿੱਚ ਜਾਂਚ ਕਰਨੀ</seg>
+            </tuv>
+            <tuv xml:lang="pa_IN">
+                <seg>Windows ਗਰਾਫਿਕਲ ਵਾਤਾਵਰਨ ਵਿੱਚ ਜਾਂਚ ਕਰਨੀ</seg>
+            </tuv>
+            <tuv xml:lang="pl">
+                <seg>Sprawdzanie w środowisku graficznym Windows</seg>
+            </tuv>
+            <tuv xml:lang="pl_PL">
+                <seg>Sprawdzanie w środowisku graficznym Windows</seg>
+            </tuv>
+            <tuv xml:lang="pt">
+                <seg>Validação no Ambiente Gráfico do Windows</seg>
+            </tuv>
+            <tuv xml:lang="pt_BR">
+                <seg>Validando no Ambiente Gráfico do Windows</seg>
+            </tuv>
+            <tuv xml:lang="pt_PT">
+                <seg>Validação no Ambiente Gráfico do Windows</seg>
+            </tuv>
+            <tuv xml:lang="ru">
+                <seg>Проверка в графической среде Windows</seg>
+            </tuv>
+            <tuv xml:lang="ru_RU">
+                <seg>Проверка в графической среде Windows</seg>
+            </tuv>
+            <tuv xml:lang="sr">
+                <seg>Провера у Windows графичком окружењу</seg>
+            </tuv>
+            <tuv xml:lang="sr_RS">
+                <seg>Провера у Windows графичком окружењу</seg>
+            </tuv>
+            <tuv xml:lang="sv">
+                <seg>Validera i Windows grafiska miljö</seg>
+            </tuv>
+            <tuv xml:lang="sv_SE">
+                <seg>Validera i Windows grafiska miljö</seg>
+            </tuv>
+            <tuv xml:lang="te">
+                <seg>Windows గ్రాఫికల్ ఎన్విరాన్మెంట్‌నందు నిర్ధారిస్తోంది</seg>
+            </tuv>
+            <tuv xml:lang="te_IN">
+                <seg>Windows గ్రాఫికల్ ఎన్విరాన్మెంట్‌నందు నిర్ధారిస్తోంది</seg>
+            </tuv>
+            <tuv xml:lang="uk">
+                <seg>Перевірка у графічному середовищі Windows</seg>
+            </tuv>
+            <tuv xml:lang="uk_UA">
+                <seg>Перевірка у графічному середовищі Windows</seg>
+            </tuv>
+            <tuv xml:lang="zh_CN">
+                <seg>在 Windows 图形环境下校验</seg>
+            </tuv>
+            <tuv xml:lang="zh_TW">
+                <seg>在 Windows 圖形化環境進行驗證</seg>
+            </tuv>
+        </tu>
+    </body>
+</tmx>

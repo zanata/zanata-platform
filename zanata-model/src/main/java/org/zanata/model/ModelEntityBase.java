@@ -102,18 +102,25 @@ public class ModelEntityBase implements Serializable, HashableState
    @PrePersist
    private void onPersist()
    {
-      creationDate = new Date();
-      lastChanged = creationDate;
+      Date now = new Date();
+      if (creationDate == null)
+      {
+         creationDate = now;
+      }
+      if (lastChanged == null)
+      {
+         lastChanged = now;
+      }
    }
-   
+
    @SuppressWarnings("unused")
-   @PreRemove
-   private void onRemove()
+   @PostPersist
+   private void postPersist()
    {
       if (logPersistence())
       {
          Logger log = LoggerFactory.getLogger(getClass());
-         log.info("remove entity: {}", this);
+         log.info("persist entity: {}", this);
       }
    }
 
@@ -125,13 +132,13 @@ public class ModelEntityBase implements Serializable, HashableState
    }
 
    @SuppressWarnings("unused")
-   @PostPersist
-   private void postPersist()
+   @PreRemove
+   private void onRemove()
    {
       if (logPersistence())
       {
          Logger log = LoggerFactory.getLogger(getClass());
-         log.info("persist entity: {}", this);
+         log.info("remove entity: {}", this);
       }
    }
 

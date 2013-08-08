@@ -35,22 +35,24 @@ public class TransMemoryMerge extends AbstractWorkspaceAction<UpdateTransUnitRes
    private static final long serialVersionUID = 1L;
    private int thresholdPercent;
    private List<TransUnitUpdateRequest> updateRequests;
-   private MergeOption differentProjectOption;
-   private MergeOption differentDocumentOption;
-   private MergeOption differentContextOption;
+   private MergeRule differentProjectRule;
+   private MergeRule differentDocumentRule;
+   private MergeRule differentContextRule;
+   private MergeRule importedMatchRule;
 
    @SuppressWarnings("unused")
    TransMemoryMerge()
    {
    }
 
-   public TransMemoryMerge(int threshold, List<TransUnitUpdateRequest> updateRequests, MergeOption differentProjectOption, MergeOption differentDocumentOption, MergeOption differentContextOption)
+   public TransMemoryMerge(int threshold, List<TransUnitUpdateRequest> updateRequests, MergeOptions mergeOptions)
    {
       thresholdPercent = threshold;
       this.updateRequests = updateRequests;
-      this.differentProjectOption = differentProjectOption;
-      this.differentDocumentOption = differentDocumentOption;
-      this.differentContextOption = differentContextOption;
+      this.differentProjectRule = mergeOptions.getDifferentProject();
+      this.differentDocumentRule = mergeOptions.getDifferentDocument();
+      this.differentContextRule = mergeOptions.getDifferentResId();
+      this.importedMatchRule = mergeOptions.getImportedMatch();
    }
 
    public int getThresholdPercent()
@@ -58,19 +60,24 @@ public class TransMemoryMerge extends AbstractWorkspaceAction<UpdateTransUnitRes
       return thresholdPercent;
    }
 
-   public MergeOption getDifferentProjectOption()
+   public MergeRule getDifferentProjectRule()
    {
-      return differentProjectOption;
+      return differentProjectRule;
    }
 
-   public MergeOption getDifferentDocumentOption()
+   public MergeRule getDifferentDocumentRule()
    {
-      return differentDocumentOption;
+      return differentDocumentRule;
    }
 
-   public MergeOption getDifferentContextOption()
+   public MergeRule getDifferentContextRule()
    {
-      return differentContextOption;
+      return differentContextRule;
+   }
+
+   public MergeRule getImportedMatchRule()
+   {
+      return importedMatchRule;
    }
 
    public List<TransUnitUpdateRequest> getUpdateRequests()
@@ -85,9 +92,10 @@ public class TransMemoryMerge extends AbstractWorkspaceAction<UpdateTransUnitRes
       return Objects.toStringHelper(this).
             add("thresholdPercent", thresholdPercent).
             add("updateRequests", updateRequests).
-            add("differentProjectOption", differentProjectOption).
-            add("differentDocumentOption", differentDocumentOption).
-            add("differentContextOption", differentContextOption).
+            add("differentProjectRule", getDifferentProjectRule()).
+            add("differentDocumentRule", getDifferentDocumentRule()).
+            add("differentContextRule", getDifferentContextRule()).
+            add("importedMatchRule", getImportedMatchRule()).
             toString();
       // @formatter:on
    }
