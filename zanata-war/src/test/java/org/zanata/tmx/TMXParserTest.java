@@ -145,7 +145,7 @@ public class TMXParserTest extends ZanataDbunitJpaTest
 
    @Test
    @org.junit.Test
-   public void parseDubiousTMX() throws Exception
+   public void parseDubiousTMXDespiteUnderscoresInLocales() throws Exception
    {
       // Create a TM
       TransMemory tm = createTMFromFile("/tmx/dubious-tm-with-underscores.tmx");
