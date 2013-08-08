@@ -134,8 +134,7 @@ abstract class TMXStreamingOutputTest
       if (expectAttributes())
       {
          String xpathAttr = xpathTUV+"/@creationid";
-         assertXpathExists(xpathAttr, doc);
-//         assertXpathEvaluatesTo("TUV_CREATOR", xpathAttr, doc);
+         assertXpathEvaluatesTo("TUV_CREATOR", xpathAttr, doc);
       }
       if (expectProperties())
       {
