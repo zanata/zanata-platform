@@ -69,7 +69,7 @@ import com.google.common.cache.CacheLoader;
 public class TranslationStateCacheImpl implements TranslationStateCache
 {
    private static final String BASE = TranslationStateCacheImpl.class.getName();
-   private static final String DOC_STATS_CACHE_NAME = BASE + ".docStatsCache";
+   private static final String DOC_STATUS_CACHE_NAME = BASE + ".docStatusCache";
    private static final String TFT_VALIDATION_CACHE_NAME = BASE + ".targetValidationCache";
 
    @In
@@ -85,27 +85,26 @@ public class TranslationStateCacheImpl implements TranslationStateCache
    private ValidationService validationServiceImpl;
 
    private CacheManager cacheManager;
-   private CacheWrapper<TranslatedDocumentKey, DocumentStatus> docStatsCache;
+   private CacheWrapper<TranslatedDocumentKey, DocumentStatus> docStatusCache;
    private CacheWrapper<Long, Map<ValidationId, Boolean>> targetValidationCache;
-   private CacheLoader<TranslatedDocumentKey, DocumentStatus> docStatsLoader;
+   private CacheLoader<TranslatedDocumentKey, DocumentStatus> docStatusLoader;
    private CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader;
 
    public TranslationStateCacheImpl()
    {
       // constructor for Seam
-      this.docStatsLoader = new HTextFlowTargetIdLoader();
+      this.docStatusLoader = new HTextFlowTargetIdLoader();
       this.targetValidationLoader = new HTextFlowTargetValidationLoader();
    }
 
    public TranslationStateCacheImpl(
-         CacheLoader<TranslatedDocumentKey,
-         DocumentStatus> docStatsLoader,
-         CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader,
+         CacheLoader<TranslatedDocumentKey, DocumentStatus> docStatsLoader,
+         CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader, 
          TextFlowTargetDAO textFlowTargetDAO,
          ValidationService validationServiceImpl)
    {
       // constructor for testing
-      this.docStatsLoader = docStatsLoader;
+      this.docStatusLoader = docStatsLoader;
       this.targetValidationLoader = targetValidationLoader;
       this.textFlowTargetDAO = textFlowTargetDAO;
       this.validationServiceImpl = validationServiceImpl;
@@ -115,7 +114,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache
    public void create()
    {
       cacheManager = CacheManager.create();
-      docStatsCache = EhcacheWrapper.create(DOC_STATS_CACHE_NAME, cacheManager, docStatsLoader);
+      docStatusCache = EhcacheWrapper.create(DOC_STATUS_CACHE_NAME, cacheManager, docStatusLoader);
       targetValidationCache = EhcacheWrapper.create(TFT_VALIDATION_CACHE_NAME, cacheManager, targetValidationLoader);
    }
 
@@ -134,14 +133,15 @@ public class TranslationStateCacheImpl implements TranslationStateCache
    public void textFlowStateUpdated(TextFlowTargetStateEvent event)
    {
       // TODO update this cache rather than invalidating
-      invalidateDocLastTranslatedCache(event.getDocumentId(), event.getLocaleId());
       invalidateTargetValidationCache(event.getTextFlowTargetId());
+
+      updateDocStatusCache(event.getDocumentId(), event.getLocaleId(), event.getTextFlowTargetId());
    }
 
    @Override
-   public DocumentStatus getDocStats(Long documentId, LocaleId localeId)
+   public DocumentStatus getDocumentStatus(Long documentId, LocaleId localeId)
    {
-      return docStatsCache.getWithLoader(new TranslatedDocumentKey(documentId, localeId));
+      return docStatusCache.getWithLoader(new TranslatedDocumentKey(documentId, localeId));
    }
 
    @Override
@@ -156,9 +156,11 @@ public class TranslationStateCacheImpl implements TranslationStateCache
       return cacheEntry.get(validationId);
    }
 
-   private void invalidateDocLastTranslatedCache(Long documentId, LocaleId localeId)
+   private void updateDocStatusCache(Long documentId, LocaleId localeId, Long updatedTargetId)
    {
-      docStatsCache.remove(new TranslatedDocumentKey(documentId, localeId));
+      DocumentStatus documentStatus = docStatusCache.get(new TranslatedDocumentKey(documentId, localeId));
+      HTextFlowTarget target = textFlowTargetDAO.findById(updatedTargetId, false);
+      updateDocumentStatus(documentStatus, documentId, localeId, target);
    }
 
    private void invalidateTargetValidationCache(Long textFlowTargetId)
@@ -172,23 +174,9 @@ public class TranslationStateCacheImpl implements TranslationStateCache
       public DocumentStatus load(TranslatedDocumentKey key) throws Exception
       {
          HTextFlowTarget target = documentDAO.getLastTranslatedTarget(key.getDocumentId(), key.getLocaleId());
-         HDocument document = documentDAO.findById(key.getDocumentId(), false);
-
-         boolean hasError = validationServiceImpl.runDocValidationsWithServerRules(document, key.getLocaleId());
-
-         Date lastTranslatedDate = null;
-         String lastTranslatedBy = "";
-
-         if (target != null)
-         {
-            lastTranslatedDate = target.getLastChanged();
-
-            if (target.getLastModifiedBy() != null)
-            {
-               lastTranslatedBy = target.getLastModifiedBy().getAccount().getUsername();
-            }
-         }
-         return new DocumentStatus(new DocumentId(document.getId(), document.getDocId()), hasError, lastTranslatedDate, lastTranslatedBy);
+         DocumentStatus documentStatus = new DocumentStatus();
+         
+         return updateDocumentStatus(documentStatus, key.getDocumentId(), key.getLocaleId(), target);
       }
    }
 
@@ -212,6 +200,28 @@ public class TranslationStateCacheImpl implements TranslationStateCache
          return !errorList.isEmpty();
       }
       return null;
+   }
+
+   private DocumentStatus updateDocumentStatus(DocumentStatus documentStatus, Long documentId, LocaleId localeId,
+         HTextFlowTarget target)
+   {
+      Date lastTranslatedDate = null;
+      String lastTranslatedBy = "";
+
+      if (target != null)
+      {
+         lastTranslatedDate = target.getLastChanged();
+
+         if (target.getLastModifiedBy() != null)
+         {
+            lastTranslatedBy = target.getLastModifiedBy().getAccount().getUsername();
+         }
+      }
+      HDocument document = documentDAO.findById(documentId, false);
+      boolean hasError = validationServiceImpl.runDocValidationsWithServerRules(document, localeId);
+      
+      documentStatus.update(new DocumentId(document.getId(), document.getDocId()), lastTranslatedDate, lastTranslatedBy, hasError);
+      return documentStatus;
    }
 
    @AllArgsConstructor

@@ -42,7 +42,7 @@ public class GetDocumentStatsHandler extends AbstractActionHandler<GetDocumentSt
          ContainerTranslationStatistics stats = statisticsServiceImpl.getDocStatistics(documentId.getId(), action.getWorkspaceId().getLocaleId());
          statsMap.put(documentId, stats);
 
-         DocumentStatus docStat = translationStateCacheImpl.getDocStats(documentId.getId(), action.getWorkspaceId().getLocaleId());
+         DocumentStatus docStat = translationStateCacheImpl.getDocumentStatus(documentId.getId(), action.getWorkspaceId().getLocaleId());
 
          lastTranslatedMap.put(documentId, new AuditInfo(docStat.getLastTranslatedDate(), docStat.getLastTranslatedBy()));
       }

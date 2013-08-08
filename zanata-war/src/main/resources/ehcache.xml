@@ -59,7 +59,7 @@
 	/>
 	
 	<cache
-		name="org.zanata.service.impl.TranslationStateCacheImpl.docStatsCache"
+		name="org.zanata.service.impl.TranslationStateCacheImpl.docStatusCache"
 		maxElementsInMemory="400"
 		eternal="false"
 		timeToIdleSeconds="86400"

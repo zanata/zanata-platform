@@ -52,7 +52,7 @@ public interface TranslationStateCache
     * @param localeId
     * @return
     */
-   DocumentStatus getDocStats(Long documentId, LocaleId localeId);
+   DocumentStatus getDocumentStatus(Long documentId, LocaleId localeId);
 	
 	/**
     * Return boolean of textFlowTarget has validation error against validation
