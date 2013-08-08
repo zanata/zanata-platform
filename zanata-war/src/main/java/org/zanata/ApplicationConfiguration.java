@@ -228,7 +228,7 @@ public class ApplicationConfiguration implements Serializable
    {
       return databaseBackedConfig.getHomeContent();
    }
-
+  
    public String getHelpContent()
    {
       return databaseBackedConfig.getHelpContent();

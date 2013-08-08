@@ -117,6 +117,12 @@ public class DatabaseBackedConfig implements Serializable
       return getConfigValue(HApplicationConfiguration.KEY_HELP_CONTENT);
    }
 
+   //invalidate key will force reload of that value from db
+   public void invalidateHomeContent()
+   {
+      configurationValues.remove(HApplicationConfiguration.KEY_HOME_CONTENT);
+   }
+
    public String getHomeContent()
    {
       return getConfigValue(HApplicationConfiguration.KEY_HOME_CONTENT);
@@ -146,4 +152,6 @@ public class DatabaseBackedConfig implements Serializable
    {
       return getConfigValue(HApplicationConfiguration.KEY_PIWIK_IDSITE);
    }
+
+  
 }

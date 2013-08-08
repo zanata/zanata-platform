@@ -36,6 +36,7 @@ import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.action.validator.EmailList;
+import org.zanata.config.DatabaseBackedConfig;
 import org.zanata.dao.ApplicationConfigurationDAO;
 import org.zanata.model.HApplicationConfiguration;
 import org.zanata.model.validator.Url;
@@ -59,6 +60,9 @@ public class ServerConfigurationBean implements Serializable
 
    @In
    private ApplicationConfiguration applicationConfiguration;
+   
+   @In
+   private DatabaseBackedConfig databaseBackedConfig;
 
    private String registerUrl;
    private String serverUrl;
@@ -152,6 +156,7 @@ public class ServerConfigurationBean implements Serializable
       {
          Events.instance().raiseTransactionSuccessEvent(ApplicationConfiguration.EVENT_CONFIGURATION_CHANGED);
       }
+      databaseBackedConfig.invalidateHomeContent();
       return "/home.xhtml";
    }
 
