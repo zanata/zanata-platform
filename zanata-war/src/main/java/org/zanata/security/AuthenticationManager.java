@@ -230,7 +230,8 @@ public class AuthenticationManager
     *         aimed for.<br/>
     *         home - Redirect the user to the home page.<br/>
     *         inactive - The user's account is inactive.<br/>
-    *         login - Redirect the user to the login page.
+    *         login - Redirect the user to the login page.<br/>
+    *         dashboard - Redirect the user to dashboard page.
     */
    public String getAuthenticationRedirect()
    {
@@ -246,9 +247,12 @@ public class AuthenticationManager
          }
          else if (identity.isLoggedIn())
          {
-            if (userRedirect != null && userRedirect.isRedirect())
+            if (userRedirect != null)
             {
-               return "redirect";
+               if(userRedirect.isRedirect() && !userRedirect.isRedirectToHome())
+               {
+                  return "redirect";
+               }
             }
             return "dashboard";
          }

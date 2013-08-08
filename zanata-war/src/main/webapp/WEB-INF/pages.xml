@@ -12,31 +12,6 @@
     </navigation>
   </page>
   
-  <page view-id="/home.xhtml">
-  	<action execute="#{userRedirect.redirectToDashboard}"/>
-  </page>
-  
-  <!-- Landing page for open id authentication -->
-  <page view-id="/openid.xhtml">
-	 <navigation>
-	      <rule if="#{authenticationManager.authenticated and authenticationManager.newUser}">
-	        <redirect view-id="/profile/edit.xhtml" />
-	      </rule>
-	      <rule if="#{!identity.isLoggedIn() and authenticationManager.authenticatedAccountWaitingForActivation}">
-	        <redirect view-id="/account/inactive_account.xhtml"/>
-	      </rule>
-	      <rule if="#{!identity.loggedIn}">
-	        <redirect view-id="/account/login_input.xhtml" />
-	      </rule>
-	      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and !userRedirect.redirect}">
-	        <redirect view-id="/dashboard/home.xhtml" />
-	      </rule>
-	      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.redirect}">
-	        <redirect url="#{userRedirect.url}" />
-	      </rule>
-     </navigation>
-  </page>
-
   <page view-id="/edit_home_content.xhtml">
     <action execute="#{breadcrumbs.clear}"/>
   	<action execute="#{breadcrumbs.addLocation('', messages['jsf.server.EditHomePage.label'])}"/>
@@ -61,8 +36,30 @@
   		<redirect view-id="/search.xhtml"/>
   	</navigation>
   </page>
+  
+  <!-- Landing page for open id authentication -->
+  <page view-id="/openid.xhtml">
+	 <navigation>
+	      <rule if="#{authenticationManager.authenticated and authenticationManager.newUser}">
+	        <redirect view-id="/profile/edit.xhtml" />
+	      </rule>
+	      <rule if="#{!identity.isLoggedIn() and authenticationManager.authenticatedAccountWaitingForActivation}">
+	        <redirect view-id="/account/inactive_account.xhtml"/>
+	      </rule>
+	      <rule if="#{!identity.loggedIn}">
+	        <redirect view-id="/account/login_input.xhtml" />
+	      </rule>
+	      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.redirectToHome}">
+	        <redirect view-id="/dashboard/home.xhtml" />
+	      </rule>
+	      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.redirect}">
+	        <redirect url="#{userRedirect.url}" />
+	      </rule>
+     </navigation>
+  </page>
+  
 
-  <!-- Kerberos Authentication -->
+  <!-- Landing page for Kerberos Authentication -->
   <page view-id="/account/klogin.xhtml">
     <header name="Cache-Control" value="no-cache, no-store, max-age=0, must-revalidate" />
     <param name="continue" value="#{userRedirect.encodedUrl}" />
@@ -90,7 +87,7 @@
     </navigation>
   </page>
 
-   <!-- Internal and JAAS authentication -->
+   <!-- Landing page for Internal and JAAS authentication -->
    <page view-id="/account/login_input.xhtml">
     <header name="Cache-Control" value="no-cache, no-store, max-age=0, must-revalidate" />
     <param name="continue" value="#{userRedirect.encodedUrl}" />
@@ -104,7 +101,7 @@
         <begin-conversation/>
         <redirect view-id="/account/inactive_account.xhtml"/>
       </rule>
-      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and !userRedirect.redirect}">
+      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.redirectToHome}">
         <redirect view-id="/dashboard/home.xhtml" />
       </rule>
       <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.redirect}">

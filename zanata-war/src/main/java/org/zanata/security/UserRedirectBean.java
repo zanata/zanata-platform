@@ -52,7 +52,6 @@ public class UserRedirectBean implements Serializable
 {
    private static final String HOME_URL = "/";
    private static final String ERROR_URL = "/error";
-   private static final String DASHBOARD_HOME_URL = "/dashboard/home.xhtml";
 
    /**
     * 
@@ -177,13 +176,23 @@ public class UserRedirectBean implements Serializable
       return url != null && !url.isEmpty();
    }
 
-   public void redirectToDashboard()
+   public boolean isRedirectToHome()
    {
-      if (Identity.instance().isLoggedIn())
+      if (isRedirect())
       {
-         Redirect redirect = Redirect.instance();
-         redirect.setViewId(DASHBOARD_HOME_URL);
-         redirect.execute();
+         String url = getUrl();
+         int qsIndex = url.indexOf('?');
+         if (qsIndex > 0)
+         {
+            url = url.substring(0, qsIndex);
+         }
+         
+         if (url.endsWith(HOME_URL))
+         {
+            return true;
+         }
+         
       }
+      return false;
    }
 }
