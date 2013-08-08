@@ -15,6 +15,7 @@
         <script type="text/javascript">
             function openUploadDocPanel() {
                 #{rich:component('uploadDocPanel')}.show();
+                checkIfGeneralFileSelected()
                 return false;
             }
 
@@ -22,6 +23,7 @@
                 #{rich:element('uploadPanelHeader')}.innerHTML = '#{messages['jsf.iteration.files.UploadDocument']}: ' + docId;
                 #{rich:element('uploadDocId')}.value = docId;
                 #{rich:component('uploadPanel')}.show();
+                checkIfSpecificFileSelected();
             }
 
             function hideUploadPanel() {
@@ -37,6 +39,32 @@
             function focusNameFilterInput() {
                 #{rich:element('name_filter_input')}.focus();
             }
+
+            function checkIfFileSelected(fileInput, submitButton) {
+                var noFileSelected = fileInput.value === undefined || fileInput.value === "";
+                submitButton.disabled = noFileSelected;
+            }
+
+            function checkIfSpecificFileSelected() {
+                checkIfFileSelected(#{rich:element('specificDocFileInput')},
+                                    #{rich:element('specificDocSubmitUploadButton')});
+            }
+
+            function checkIfGeneralFileSelected() {
+                var fileInput = #{rich:element('generalDocFileUpload')};
+                var submitButton = #{rich:element('generalDocSubmitUploadButton')};
+                var errorMessage = document.getElementById('invalidFilenameError');
+                checkIfFileSelected(fileInput, submitButton);
+                var fileName = fileInput.value;
+                var hasSemicolon = fileName !== undefined &amp;&amp; fileName.lastIndexOf(';') !== -1;
+                if (hasSemicolon) {
+                    errorMessage.style.display = '';
+                    submitButton.disabled = true;
+                } else {
+                    errorMessage.style.display = 'none';
+                }
+            }
+
         </script>
     </ui:define>
 
@@ -228,7 +256,9 @@
                 <h:outputText id="uploadPanelHeader"/>
             </f:facet>
             <h:form id="uploadForm" enctype="multipart/form-data">
-                <s:fileUpload accept="*"
+                <s:fileUpload id="specificDocFileInput"
+                              accept="*"
+                              onchange="checkIfSpecificFileSelected();"
                               data="#{projectIterationFilesAction.documentFileUpload.fileContents}"
                               fileName="#{projectIterationFilesAction.documentFileUpload.fileName}"/>
                 <h:inputHidden id="uploadDocId" value="#{projectIterationFilesAction.documentFileUpload.docId}"/>
@@ -256,7 +286,8 @@
                     </a>
                 </rich:collapsiblePanel>
                 <div align="right">
-                    <h:commandButton value="#{messages['jsf.Upload']}"
+                    <h:commandButton id="specificDocSubmitUploadButton"
+                                     value="#{messages['jsf.Upload']}"
                                      action="#{projectIterationFilesAction.uploadDocumentFile}"/>
                     <h:commandButton value="#{messages['jsf.Cancel']}"
                                      onclick="return hideUploadPanel();"/>
@@ -274,24 +305,33 @@
                 <h:outputText value="#{messages['jsf.iteration.files.UploadDocument']}"/>
             </f:facet>
             <h:form id="uploadDocForm" enctype="multipart/form-data">
-                <s:fileUpload accept="*"
+                <s:fileUpload id="generalDocFileUpload"
+                              accept="*"
+                              onchange="checkIfGeneralFileSelected();"
                               data="#{projectIterationFilesAction.documentFileUpload.fileContents}"
                               fileName="#{projectIterationFilesAction.documentFileUpload.fileName}"/>
-                <br/>
-                <h:outputLabel for="docPath" value="#{messages['jsf.iteration.files.DocumentPath']}"/>
-                <h:inputText id="docPath"
-                             value="#{projectIterationFilesAction.documentFileUpload.documentPath}">
-                </h:inputText>
-                <br/>
-                <h:selectOneMenu value="#{projectIterationFilesAction.documentFileUpload.sourceLang}">
-                    <s:selectItems value="#{projectIterationFilesAction.availableSourceLocales}"
-                                   var="locale"
-                                   label="#{locale.retrieveNativeName()}"
-                                   itemValue="#{locale.localeId.toString()}"
-                                   escape="true"/>
-                    <h:outputLabel value="#{messages['jsf.SourceLanguage']}"/>
-                </h:selectOneMenu>
-                <br/>
+                <div id="invalidFilenameError" style="display: none;
+                                                      color: red;
+                                                      padding: 5px;
+                                                      margin-bottom: 5px;">
+                    #{messages['jsf.iteration.files.FilenameWithSemicolonNotSupported']}
+                </div>
+                <div>
+                    <h:outputLabel for="docPath" value="#{messages['jsf.iteration.files.DocumentPath']}"/>
+                    <h:inputText id="docPath"
+                                 value="#{projectIterationFilesAction.documentFileUpload.documentPath}">
+                    </h:inputText>
+                </div>
+                <div>
+                    <h:selectOneMenu value="#{projectIterationFilesAction.documentFileUpload.sourceLang}">
+                        <s:selectItems value="#{projectIterationFilesAction.availableSourceLocales}"
+                                       var="locale"
+                                       label="#{locale.retrieveNativeName()}"
+                                       itemValue="#{locale.localeId.toString()}"
+                                       escape="true"/>
+                        <h:outputLabel value="#{messages['jsf.SourceLanguage']}"/>
+                    </h:selectOneMenu>
+                </div>
                 <rich:collapsiblePanel header="#{messages['jsf.iteration.files.CustomParams']}"
                                        switchType="client"
                                        expanded="false">
@@ -306,7 +346,8 @@
                     </a>
                 </rich:collapsiblePanel>
                 <div align="right">
-                    <h:commandButton value="#{messages['jsf.Upload']}"
+                    <h:commandButton id="generalDocSubmitUploadButton"
+                                     value="#{messages['jsf.Upload']}"
                                      action="#{projectIterationFilesAction.uploadDocumentFile}"/>
                     <h:commandButton value="#{messages['jsf.Cancel']}"
                                      onclick="return hideDocUploadPanel();"/>
