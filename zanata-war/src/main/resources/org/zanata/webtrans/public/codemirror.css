@@ -88,7 +88,7 @@ is visible outside of the scrolling box. */
   padding: 0; margin: 0;
   white-space: pre;
   word-wrap: normal;
-  line-height: inherit;
+  line-height: 1.5em;
   color: inherit;
 }
 
@@ -129,8 +129,8 @@ is visible outside of the scrolling box. */
   visibility: visible;
 }
 
-div.CodeMirror-selected { background: #d9d9d9; }
-.CodeMirror-focused div.CodeMirror-selected { background: #d7d4f0; }
+div.CodeMirror-selected { background: #dcecf7; }
+.CodeMirror-focused div.CodeMirror-selected { background: #cce2f5; }
 
 .CodeMirror-searching {
   background: #ffa;
@@ -152,7 +152,7 @@ div.CodeMirror-selected { background: #d9d9d9; }
 .cm-s-default span.cm-string {color: #a11;}
 .cm-s-default span.cm-string-2 {color: #f50;}
 .cm-s-default span.cm-meta {color: #555;}
-.cm-s-default span.cm-error {color: #f00;}
+.cm-s-default span.cm-error {color: #e0575b;}
 .cm-s-default span.cm-qualifier {color: #555;}
 .cm-s-default span.cm-builtin {color: #30a;}
 .cm-s-default span.cm-bracket {color: #cc7;}
@@ -190,7 +190,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
 /* visible space */
 .cm-space
 {
-    border-bottom: #d3d3d3 solid 2px;
+    border-bottom: #dcecf7 solid 2px;
 }
 
 /* visible line break*/

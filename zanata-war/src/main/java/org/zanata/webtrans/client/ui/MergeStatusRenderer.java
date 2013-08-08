@@ -22,7 +22,7 @@
 package org.zanata.webtrans.client.ui;
 
 import org.zanata.webtrans.client.resources.EnumMessages;
-import org.zanata.webtrans.shared.rpc.MergeOption;
+import org.zanata.webtrans.shared.rpc.MergeRule;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -30,7 +30,7 @@ import com.google.inject.Singleton;
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class MergeStatusRenderer extends EnumRenderer<MergeOption>
+public class MergeStatusRenderer extends EnumRenderer<MergeRule>
 {
    private final EnumMessages messages;
 
@@ -41,7 +41,7 @@ public class MergeStatusRenderer extends EnumRenderer<MergeOption>
    }
 
    @Override
-   public String render(MergeOption option)
+   public String render(MergeRule option)
    {
       switch (option)
       {

@@ -18,7 +18,8 @@
 		 -->
 		 
 		<!-- <mapping-file>META-INF/orm.xml</mapping-file> -->
-
+		
+		<class>org.zanata.model.Activity</class>
         <class>org.zanata.model.HAccount</class>
         <class>org.zanata.model.HAccountActivationKey</class>
         <class>org.zanata.model.HAccountOption</class>
@@ -54,6 +55,9 @@
         <class>org.zanata.model.po.HPotEntryData</class>
         <class>org.zanata.model.security.HCredentials</class>
         <class>org.zanata.model.security.HOpenIdCredentials</class>
+        <class>org.zanata.model.tm.TransMemoryUnit</class>
+        <class>org.zanata.model.tm.TransMemoryUnitVariant</class>
+        <class>org.zanata.model.tm.TransMemory</class>
 
 		<properties>
 			<property name="hibernate.show_sql" value="false" />

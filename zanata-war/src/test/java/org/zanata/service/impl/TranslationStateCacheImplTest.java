@@ -21,9 +21,7 @@
 package org.zanata.service.impl;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.sameInstance;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -31,8 +29,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.lucene.search.Filter;
-import org.apache.lucene.util.OpenBitSet;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.AfterMethod;
@@ -40,7 +36,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowTargetDAO;
-import org.zanata.model.HTextFlowTarget;
 import org.zanata.service.ValidationService;
 import org.zanata.service.impl.TranslationStateCacheImpl.TranslatedDocumentKey;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -55,10 +50,6 @@ public class TranslationStateCacheImplTest
 {
    TranslationStateCacheImpl tsCache;
    @Mock
-   private CacheLoader<LocaleId, TranslatedTextFlowFilter> filterLoader;
-   @Mock
-   private CacheLoader<LocaleId, OpenBitSet> bitsetLoader;
-   @Mock
    private CacheLoader<TranslatedDocumentKey, DocumentStatus> docStatsLoader;
    @Mock
    private TextFlowTargetDAO textFlowTargetDAO;
@@ -71,7 +62,7 @@ public class TranslationStateCacheImplTest
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-      tsCache = new TranslationStateCacheImpl(filterLoader, bitsetLoader, docStatsLoader, targetValidationLoader, textFlowTargetDAO, validationServiceImpl);
+      tsCache = new TranslationStateCacheImpl(docStatsLoader, targetValidationLoader, textFlowTargetDAO, validationServiceImpl);
 
       tsCache.create();
       tsCache.destroy();
@@ -82,40 +73,6 @@ public class TranslationStateCacheImplTest
    public void afterMethod()
    {
       tsCache.destroy();
-   }
-
-   public void testGetFilter() throws Exception
-   {
-      // Given:
-      LocaleId locale = new LocaleId("TEST");
-      Filter filter = new TranslatedTextFlowFilter(locale);
-
-      // When:
-      when(filterLoader.load(locale)).thenReturn((TranslatedTextFlowFilter) filter);
-      Filter result1 = tsCache.getFilter(locale);
-      Filter result2 = tsCache.getFilter(locale);
-
-      // Then:
-      verify(filterLoader).load(locale); // only load the value once
-      assertThat(result1, is(sameInstance(filter)));
-      assertThat(result2, is(sameInstance(filter)));
-   }
-
-   public void testGetTextFlowIds() throws Exception
-   {
-      // Given:
-      LocaleId locale = new LocaleId("TEST");
-      OpenBitSet bitset = new OpenBitSet();
-
-      // When:
-      when(bitsetLoader.load(locale)).thenReturn(bitset);
-      OpenBitSet result1 = tsCache.getTranslatedTextFlowIds(locale);
-      OpenBitSet result2 = tsCache.getTranslatedTextFlowIds(locale);
-
-      // Then:
-      verify(bitsetLoader).load(locale); // only load the value once
-      assertThat(result1, is(sameInstance(bitset)));
-      assertThat(result2, is(sameInstance(bitset)));
    }
 
    public void testGetLastModifiedTextFlowTarget() throws Exception
@@ -129,8 +86,8 @@ public class TranslationStateCacheImplTest
       // When:
       when(docStatsLoader.load(key)).thenReturn(docStats);
       
-      DocumentStatus result1 = tsCache.getDocStats(documentId, testLocaleId);
-      DocumentStatus result2 = tsCache.getDocStats(documentId, testLocaleId);
+      DocumentStatus result1 = tsCache.getDocumentStatus(documentId, testLocaleId);
+      DocumentStatus result2 = tsCache.getDocumentStatus(documentId, testLocaleId);
 
       // Then:
       verify(docStatsLoader).load(key); // only load the value once

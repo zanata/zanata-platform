@@ -9,7 +9,7 @@
                 xmlns:a4j="http://richfaces.org/a4j"
                 xmlns:richext="http://java.sun.com/jsf/composite/richext"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-                template="../WEB-INF/layout/template.xhtml">
+                template="../WEB-INF/template/template_2x.xhtml">
 
     <ui:define name="head">
         <script type="text/javascript">
@@ -51,8 +51,18 @@
             }
 
             function checkIfGeneralFileSelected() {
-                checkIfFileSelected(#{rich:element('generalDocFileUpload')},
-                                    #{rich:element('generalDocSubmitUploadButton')});
+                var fileInput = #{rich:element('generalDocFileUpload')};
+                var submitButton = #{rich:element('generalDocSubmitUploadButton')};
+                var errorMessage = document.getElementById('invalidFilenameError');
+                checkIfFileSelected(fileInput, submitButton);
+                var fileName = fileInput.value;
+                var hasSemicolon = fileName !== undefined &amp;&amp; fileName.lastIndexOf(';') !== -1;
+                if (hasSemicolon) {
+                    errorMessage.style.display = '';
+                    submitButton.disabled = true;
+                } else {
+                    errorMessage.style.display = 'none';
+                }
             }
 
         </script>
@@ -300,21 +310,28 @@
                               onchange="checkIfGeneralFileSelected();"
                               data="#{projectIterationFilesAction.documentFileUpload.fileContents}"
                               fileName="#{projectIterationFilesAction.documentFileUpload.fileName}"/>
-                <br/>
-                <h:outputLabel for="docPath" value="#{messages['jsf.iteration.files.DocumentPath']}"/>
-                <h:inputText id="docPath"
-                             value="#{projectIterationFilesAction.documentFileUpload.documentPath}">
-                </h:inputText>
-                <br/>
-                <h:selectOneMenu value="#{projectIterationFilesAction.documentFileUpload.sourceLang}">
-                    <s:selectItems value="#{projectIterationFilesAction.availableSourceLocales}"
-                                   var="locale"
-                                   label="#{locale.retrieveNativeName()}"
-                                   itemValue="#{locale.localeId.toString()}"
-                                   escape="true"/>
-                    <h:outputLabel value="#{messages['jsf.SourceLanguage']}"/>
-                </h:selectOneMenu>
-                <br/>
+                <div id="invalidFilenameError" style="display: none;
+                                                      color: red;
+                                                      padding: 5px;
+                                                      margin-bottom: 5px;">
+                    #{messages['jsf.iteration.files.FilenameWithSemicolonNotSupported']}
+                </div>
+                <div>
+                    <h:outputLabel for="docPath" value="#{messages['jsf.iteration.files.DocumentPath']}"/>
+                    <h:inputText id="docPath"
+                                 value="#{projectIterationFilesAction.documentFileUpload.documentPath}">
+                    </h:inputText>
+                </div>
+                <div>
+                    <h:selectOneMenu value="#{projectIterationFilesAction.documentFileUpload.sourceLang}">
+                        <s:selectItems value="#{projectIterationFilesAction.availableSourceLocales}"
+                                       var="locale"
+                                       label="#{locale.retrieveNativeName()}"
+                                       itemValue="#{locale.localeId.toString()}"
+                                       escape="true"/>
+                        <h:outputLabel value="#{messages['jsf.SourceLanguage']}"/>
+                    </h:selectOneMenu>
+                </div>
                 <rich:collapsiblePanel header="#{messages['jsf.iteration.files.CustomParams']}"
                                        switchType="client"
                                        expanded="false">

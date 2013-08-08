@@ -6,17 +6,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.hibernate.Criteria;
+import javax.annotation.Nullable;
+
 import org.hibernate.LobHelper;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.ResultTransformer;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.zanata.common.AbstractTranslationCount;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.TransUnitCount;
@@ -155,7 +154,32 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       query.append("and tft.locale.localeId = :localeId ");
       query.append("order by tft.lastChanged DESC");
 
-      return (HTextFlowTarget) session.createQuery(query.toString()).setParameter("docId", documentId).setParameter("localeId", localeId).setCacheable(true).setMaxResults(1).setComment("DocumentDAO.getLastTranslated").uniqueResult();
+      return (HTextFlowTarget) session.createQuery(query.toString())
+            .setParameter("docId", documentId)
+            .setParameter("localeId", localeId)
+            .setCacheable(true)
+            .setMaxResults(1)
+            .setComment("DocumentDAO.getLastTranslated")
+            .uniqueResult();
+   }
+   
+   @Nullable
+   public HTextFlowTarget getLastTranslatedTargetOrNull(Long documentId)
+   {
+      Session session = getSession();
+
+      StringBuilder query = new StringBuilder();
+
+      query.append("from HTextFlowTarget tft ");
+      query.append("where tft.textFlow.document.id = :docId ");
+      query.append("order by tft.lastChanged DESC");
+
+      return (HTextFlowTarget) session.createQuery(query.toString())
+            .setParameter("docId", documentId)
+            .setCacheable(true)
+            .setMaxResults(1)
+            .setComment("DocumentDAO.getLastTranslated")
+            .uniqueResult();
    }
 
    /**

@@ -18,7 +18,6 @@
 
         .editorOptsButton {
             float: right;
-            color: #000000;
             margin-right: 3px;
             border-radius: 3px;
         }

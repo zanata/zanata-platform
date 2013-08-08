@@ -11,6 +11,9 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+import static org.zanata.webtrans.shared.model.TransMemoryResultItem.MatchType.ApprovedInternal;
+import static org.zanata.webtrans.shared.model.TransMemoryResultItem.MatchType.TranslatedInternal;
+
 public class DummyGetTranslationMemoryCommand implements Command
 {
 
@@ -40,10 +43,10 @@ public class DummyGetTranslationMemoryCommand implements Command
       target3.add("<tr> &lt;target3</tr>");
       ArrayList<String> target4 = new ArrayList<String>();
       target4.add("<tr> &lt;target4</tr>");
-      matches.add(new TransMemoryResultItem(source, target1, ContentState.Approved, 3, 85));
-      matches.add(new TransMemoryResultItem(source, target2, ContentState.Approved, 3, 85));
-      matches.add(new TransMemoryResultItem(source, target3, ContentState.Translated, 3, 85));
-      matches.add(new TransMemoryResultItem(source, target4, ContentState.Translated, 3, 85));
+      matches.add(new TransMemoryResultItem(source, target1, ApprovedInternal, 3, 85));
+      matches.add(new TransMemoryResultItem(source, target2, ApprovedInternal, 3, 85));
+      matches.add(new TransMemoryResultItem(source, target3, TranslatedInternal, 3, 85));
+      matches.add(new TransMemoryResultItem(source, target4, TranslatedInternal, 3, 85));
       callback.onSuccess(new GetTranslationMemoryResult(action, matches));
       Log.info("EXIT DummyGetTranslationMemoryCommand.execute()");
    }

@@ -11,6 +11,7 @@ public interface GenericDAO<T, ID extends Serializable>
 
    T findById(ID id, boolean lock);
 
+   void deleteAll();
    List<T> findAll();
 
    T makePersistent(T entity);

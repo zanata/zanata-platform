@@ -37,8 +37,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.MapKeyColumn;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PostLoad;
@@ -64,9 +62,6 @@ import org.hibernate.annotations.NaturalId;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.FilterCacheModeType;
-import org.hibernate.search.annotations.FullTextFilterDef;
-import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.common.HasContents;
 import org.zanata.common.LocaleId;
@@ -79,8 +74,6 @@ import org.zanata.util.StringUtil;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
-import com.google.common.base.Objects;
-
 /**
  * Represents a flow of source text that should be processed as a stand-alone
  * structural unit.
@@ -91,23 +84,12 @@ import com.google.common.base.Objects;
  */
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@Indexed
-// See org.zanata.search.TranslatedTextFlowFilter
-@NamedQueries(@NamedQuery(
-      name = HTextFlow.QUERY_TRANSLATED_TEXTFLOWIDS,
-      query = "SELECT tft.textFlow.id FROM HTextFlowTarget tft " +
-            "WHERE tft.locale.localeId=:locale " +
-            "AND (tft.state=org.zanata.common.ContentState.Translated OR tft.state=org.zanata.common.ContentState.Approved) " +
-            "AND tft.textFlow.document.projectIteration.status<>org.zanata.common.EntityStatus.OBSOLETE " +
-            "AND tft.textFlow.document.projectIteration.project.status<>org.zanata.common.EntityStatus.OBSOLETE"
-))
 @Setter
 @NoArgsConstructor
 @ToString(of = {"resId", "revision", "comment", "obsolete"})
 @Slf4j
-public class HTextFlow extends HTextContainer implements Serializable, ITextFlowHistory, HasSimpleComment, HasContents, SourceContents
+public class HTextFlow extends HTextContainer implements Serializable, ITextFlowHistory, HasSimpleComment, HasContents, ITextFlow
 {
-   public static final String QUERY_TRANSLATED_TEXTFLOWIDS = "HTextFlow.QUERY_TRANSLATED_TEXTFLOWIDS";
    private static final long serialVersionUID = 3023080107971905435L;
 
    private Long id;
@@ -427,7 +409,7 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
    }
 
    @Override
-   public TargetContents getTargetContents(LocaleId localeId)
+   public ITextFlowTarget getTargetContents(LocaleId localeId)
    {
       // TODO performance: need efficient way to look up a target by LocaleId
       Collection<HTextFlowTarget> targets = getTargets().values();
@@ -441,9 +423,9 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
 
    @Transient
    @Override
-   public Iterable<TargetContents> getAllTargetContents()
+   public Iterable<ITextFlowTarget> getAllTargetContents()
    {
-      return ImmutableList.<TargetContents>copyOf(getTargets().values());
+      return ImmutableList.<ITextFlowTarget>copyOf(getTargets().values());
    }
 
    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = true)

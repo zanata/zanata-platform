@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 
 <dataset> 
+	<Activity/>
     <HAccount/>
     <HAccountActivationKey/>
     <HAccountMembership/>
@@ -32,4 +33,8 @@
     <HTextFlowTargetContentHistory/>
     <HTextFlowTargetHistory/>
     <HTextFlowTargetReviewComment/>
+    <TransMemory_Metadata/>
+    <TransMemory/>
+    <TransMemoryUnit/>
+    <TransMemoryUnitVariant/>
 </dataset>

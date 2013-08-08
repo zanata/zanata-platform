@@ -4,10 +4,12 @@
 package org.zanata.util;
 
 import java.util.Date;
+import java.util.Locale;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.ocpsoft.prettytime.PrettyTime;
 
 
 /**
@@ -48,5 +50,19 @@ public class DateUtil
          return fmt.print(new DateTime(date));
       }
       return null;
+   }
+   
+   /**
+    * Return readable string of time different compare between 'then' and current time
+    * e.g 10 minutes ago, 1 hour ago
+    * @param from
+    * @param then
+    * @return
+    */
+   public static String getHowLongAgoDescription(Date then)
+   {
+      Locale locale = Locale.getDefault();
+      PrettyTime p = new PrettyTime(locale);
+      return p.formatUnrounded(then);
    }
 }

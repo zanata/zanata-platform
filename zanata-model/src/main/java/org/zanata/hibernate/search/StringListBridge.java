@@ -1,18 +1,11 @@
 package org.zanata.hibernate.search;
 
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.util.Version;
 import org.hibernate.search.bridge.FieldBridge;
 import org.hibernate.search.bridge.LuceneOptions;
-import org.hibernate.search.bridge.ParameterizedBridge;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,47 +24,8 @@ import lombok.extern.slf4j.Slf4j;
  * 
  */
 @Slf4j
-public class StringListBridge implements FieldBridge, ParameterizedBridge
+public class StringListBridge implements FieldBridge
 {
-
-   private Analyzer analyzer;
-   private boolean caseSensitive = false;
-   private boolean multiNgrams = false;
-
-   @Override
-   public void setParameterValues(@SuppressWarnings("rawtypes") Map parameters)
-   {
-      if (parameters.containsKey("case"))
-      {
-         String caseBehaviour = (String) parameters.get("case");
-         if ("fold".equals(caseBehaviour))
-         {
-            caseSensitive = false;
-         }
-         else if ("preserve".equals(caseBehaviour))
-         {
-            caseSensitive = true;
-         }
-         else
-         {
-            log.warn("invalid value for parameter \"case\": \"{0}\", default will be used", caseBehaviour);
-            caseSensitive = false;
-         }
-      }
-      if (parameters.containsKey("ngrams"))
-      {
-         String ngrams = (String) parameters.get("ngrams");
-         if ("multisize".equals(ngrams))
-         {
-            multiNgrams = true;
-         }
-         else
-         {
-            log.warn("invalid value for parameter \"ngrams\": \"{0}\", default will be used", ngrams);
-            multiNgrams = false;
-         }
-      }
-   }
 
    @Override
    public void set(String name, Object value, Document luceneDocument, LuceneOptions luceneOptions)

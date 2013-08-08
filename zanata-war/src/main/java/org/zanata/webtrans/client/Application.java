@@ -50,6 +50,7 @@ public class Application implements EntryPoint
 {
    private static final WebTransGinjector injector = GWT.create(WebTransGinjector.class);
    private static final String APP_LOAD_ERROR_CSS_CLASS = "AppLoadError";
+   private static final String CONTENT_DIV_ID = "container";
 
    private static WorkspaceId workspaceId;
    private static UserWorkspaceContext userWorkspaceContext;
@@ -157,7 +158,7 @@ public class Application implements EntryPoint
    {
       final AppPresenter appPresenter = injector.getAppPresenter();
       final DocumentListPresenter documentListPresenter = injector.getDocumentListPresenter();
-      RootPanel.get("contentDiv").add(appPresenter.getDisplay().asWidget());
+      RootPanel.get(CONTENT_DIV_ID).add(appPresenter.getDisplay().asWidget());
       appPresenter.bind();
       Window.enableScrolling(true);
       // eager load document list
@@ -323,6 +324,6 @@ public class Application implements EntryPoint
          layoutPanel.add(stackTracePanel);
       }
 
-      RootPanel.get("contentDiv").add(layoutPanel);
+      RootPanel.get(CONTENT_DIV_ID).add(layoutPanel);
    }
 }

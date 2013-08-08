@@ -27,12 +27,15 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.Setter;
 
+import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.zanata.common.EntityStatus;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -40,7 +43,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 @Entity
 @Setter
 // @EqualsAndHashCode(callSuper = true)
-public class HIterationGroup extends SlugEntityBase
+public class HIterationGroup extends SlugEntityBase implements HasEntityStatus
 {
    private static final long serialVersionUID = 5682522115222479842L;
    private String name;
@@ -50,6 +53,8 @@ public class HIterationGroup extends SlugEntityBase
    private Set<HPerson> maintainers;
 
    private Set<HProjectIteration> projectIterations;
+
+   private EntityStatus status = EntityStatus.ACTIVE;
 
    @Size(max = 80)
    @NotEmpty
@@ -97,6 +102,14 @@ public class HIterationGroup extends SlugEntityBase
    public void addProjectIteration(HProjectIteration iteration)
    {
       this.getProjectIterations().add(iteration);
+   }
+
+   @Type(type = "entityStatus")
+   @NotNull
+   @Override
+   public EntityStatus getStatus()
+   {
+      return status;
    }
 
 }

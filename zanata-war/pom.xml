@@ -1719,6 +1719,12 @@
 		    <artifactId>commons-exec</artifactId>
 		    <version>1.1</version>
 		</dependency>
+		
+		<dependency>
+		    <groupId>org.ocpsoft.prettytime</groupId>
+		    <artifactId>prettytime</artifactId>
+		    <version>3.0.2.Final</version>
+		</dependency>
 
 		<!-- openid4java -->
 	    <dependency>
@@ -1794,12 +1800,10 @@
         <dependency>
           <groupId>org.fedorahosted.tennera</groupId>
           <artifactId>jgettext</artifactId>
-          <version>0.11</version>
         </dependency>
         <dependency>
           <groupId>joda-time</groupId>
           <artifactId>joda-time</artifactId>
-          <version>1.6</version>
         </dependency>
         <dependency>
           <groupId>commons-beanutils</groupId>
@@ -1834,6 +1838,15 @@
 	       <artifactId>xmlunit</artifactId>
 	       <version>1.4</version>
 	   </dependency>
+      <dependency>
+         <groupId>xom</groupId>
+         <artifactId>xom</artifactId>
+      </dependency>
+		<dependency>
+		    <groupId>org.functionaljava</groupId>
+		    <artifactId>functionaljava</artifactId>
+		</dependency>
 	</dependencies>
+
 
 </project>
