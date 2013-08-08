@@ -21,25 +21,51 @@
 
 package org.zanata.xml;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import javax.xml.stream.XMLResolver;
 import javax.xml.stream.XMLStreamException;
 
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class TmxDtdResolver implements XMLResolver
+public class TmxDtdResolver implements XMLResolver, EntityResolver
 {
+   // example system IDs:
+   // http://www.lisa.org/tmx/tmx14.dtd
+   // http://www.ttt.org/oscarstandards/tmx/tmx14.dtd
+   private static boolean isTMX14(String systemId)
+   {
+      return systemId.endsWith("tmx14.dtd");
+   }
 
    @Override
    public Object resolveEntity(String publicID, String systemID, String baseURI, String namespace) throws XMLStreamException
    {
-      if ("http://www.lisa.org/tmx/tmx14.dtd".equals(systemID))
+      if (isTMX14(systemID))
       {
          InputStream stream = getClass().getResourceAsStream("tmx14.dtd");
          return stream;
+      }
+      else
+      {
+         return null;
+      }
+   }
+
+   @Override
+   public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException
+   {
+      if (isTMX14(systemId))
+      {
+         InputStream stream = getClass().getResourceAsStream("tmx14.dtd");
+         return new InputSource(stream);
       }
       else
       {

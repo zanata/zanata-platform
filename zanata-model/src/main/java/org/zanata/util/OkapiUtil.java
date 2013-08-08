@@ -127,7 +127,7 @@ public class OkapiUtil
          XMLEventReader reader = inputFactory.createXMLEventReader(new ByteArrayInputStream(content.getBytes()));
          StringBuilder writer = new StringBuilder();
 
-         int level = 0; // Nesting level. When this is > 0 it means we are ignoring events
+         int ignoreLevel = 0; // Nesting level. When this is > 0 it means we are ignoring events
 
          while( reader.hasNext() )
          {
@@ -136,13 +136,13 @@ public class OkapiUtil
             switch (nextEv.getEventType())
             {
             case XMLStreamConstants.START_ELEMENT:
-               level = handleStartElem(level, nextEv.asStartElement());
+               ignoreLevel = handleStartElem(ignoreLevel, nextEv.asStartElement());
                break;
             case XMLStreamConstants.END_ELEMENT:
-               level = handleEndElem(level, nextEv.asEndElement());
+               ignoreLevel = handleEndElem(ignoreLevel, nextEv.asEndElement());
                break;
             case XMLStreamConstants.CHARACTERS:
-               if( level == 0 ) writer.append(nextEv.asCharacters().getData());
+               if( ignoreLevel == 0 ) writer.append(nextEv.asCharacters().getData());
                break;
             }
          }
@@ -155,32 +155,33 @@ public class OkapiUtil
       }
    }
 
-   private static int handleStartElem(int level, StartElement startElem)
+   private static int handleStartElem(int ignoreLevel, StartElement startElem)
    {
       String elemName = startElem.getName().getLocalPart();
-      if(isSubSegmentTag(elemName))
+      if (ignoreElement(elemName))
       {
-         return level + 1;
+         return ignoreLevel + 1;
       }
-      return level;
+      return ignoreLevel;
    }
 
-   private static int handleEndElem(int level, EndElement endElem)
+   private static int handleEndElem(int ignoreLevel, EndElement endElem)
    {
       String elemName = endElem.getName().getLocalPart();
 
-      if(isSubSegmentTag(elemName))
+      if (ignoreElement(elemName))
       {
-         if(level > 0)
+         if(ignoreLevel > 0)
          {
-            return level - 1;
+            return ignoreLevel - 1;
          }
       }
-      return level;
+      return ignoreLevel;
    }
 
-   private static boolean isSubSegmentTag(String elemName)
+   private static boolean ignoreElement(String elemName)
    {
+      // NB we do want the contents of 'hi' elements, but not these elements:
       return elemName.equals("bpt") || elemName.equals("ept") || elemName.equals("it") || elemName.equals("ph")
                || elemName.equals("sub");
    }

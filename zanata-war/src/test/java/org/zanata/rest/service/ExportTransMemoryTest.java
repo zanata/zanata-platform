@@ -9,17 +9,20 @@ import java.util.Iterator;
 
 import javax.annotation.Nonnull;
 import javax.ws.rs.core.StreamingOutput;
+import javax.xml.XMLConstants;
 
 import nu.xom.Attribute;
 import nu.xom.Element;
 
 import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
+import org.zanata.model.tm.TMMetadataType;
 import org.zanata.model.tm.TMXMetadataHelper;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.model.tm.TransMemoryUnitVariant;
 import org.zanata.util.TMXConstants;
+import org.zanata.util.TMXParseException;
 
 import com.google.common.collect.Lists;
 
@@ -45,12 +48,12 @@ public class ExportTransMemoryTest extends TMXStreamingOutputTest
       return true;
    }
    
-   private TMXStreamingOutput<TransMemoryUnit> streamSourceContents()
+   private TMXStreamingOutput<TransMemoryUnit> streamSourceContents() throws TMXParseException
    {
-      return new TMXStreamingOutput<TransMemoryUnit>(createTestData(), new TransMemoryTMXExportStrategy(createTM()));
+      return TMXStreamingOutput.testInstance(createTestData(), new TransMemoryTMXExportStrategy(createTM()));
    }
 
-   private TransMemory createTM()
+   private TransMemory createTM() throws TMXParseException
    {
       Date now = new Date();
       TransMemory tm = new TransMemory();
@@ -59,7 +62,9 @@ public class ExportTransMemoryTest extends TMXStreamingOutputTest
       headerElem.addAttribute(new Attribute("datatype", "unknown"));
       headerElem.addAttribute(new Attribute("o-tmf", "OTMF"));
       headerElem.addAttribute(new Attribute("segtype", "paragraph"));
-      addCustomProperty(headerElem);
+      headerElem.addAttribute(new Attribute("srclang", "en-US"));
+      addCustomProperty(headerElem, "prop1", "propval1");
+      addCustomProperty(headerElem, "prop2", "propval2");
       TMXMetadataHelper.setMetadata(tm, headerElem);
       tm.setSourceLanguage(sourceLocale.getId());
       tm.setCreationDate(now);
@@ -67,7 +72,7 @@ public class ExportTransMemoryTest extends TMXStreamingOutputTest
       return tm;
    }
 
-   private @Nonnull Iterator<TransMemoryUnit> createTestData()
+   private @Nonnull Iterator<TransMemoryUnit> createTestData() throws TMXParseException
    {
       TransMemory tm = null;
       String fr = LocaleId.FR.getId();
@@ -107,29 +112,32 @@ public class ExportTransMemoryTest extends TMXStreamingOutputTest
       return tuList.iterator();
    }
 
-   private static void addMetadata(ArrayList<TransMemoryUnit> tuList, String sourceLoc)
+   private static void addMetadata(ArrayList<TransMemoryUnit> tuList, String srclang) throws TMXParseException
    {
       for (TransMemoryUnit tu : tuList)
       {
          Element tuElem = newTmxElement("tu");
          tuElem.addAttribute(new Attribute("creationid", "TU_CREATOR"));
-         addCustomProperty(tuElem);
-         TMXMetadataHelper.setMetadata(tu, tuElem, sourceLoc);
+         addCustomProperty(tuElem, "prop1", "propval1");
+         addCustomProperty(tuElem, "prop2", "propval2");
+         TMXMetadataHelper.setMetadata(tu, tuElem, srclang);
          for (TransMemoryUnitVariant tuv : tu.getTransUnitVariants().values())
          {
             Element tuvElem = newTmxElement("tuv");
+            tuvElem.addAttribute(new Attribute("xml:lang", XMLConstants.XML_NS_URI, tuv.getLanguage()));
             tuvElem.addAttribute(new Attribute("creationid", "TUV_CREATOR"));
-            addCustomProperty(tuvElem);
+            addCustomProperty(tuvElem, "prop1", "propval1");
+            addCustomProperty(tuvElem, "prop2", "propval2");
             TMXMetadataHelper.setMetadata(tuv, tuvElem);
          }
       }
    }
 
-   private static void addCustomProperty(Element elem)
+   private static void addCustomProperty(Element elem, String propType, String value)
    {
       Element prop = newTmxElement("prop");
-      prop.addAttribute(new Attribute("type", "custom_property"));
-      prop.appendChild("property_value");
+      prop.addAttribute(new Attribute("type", propType));
+      prop.appendChild(value);
       elem.appendChild(prop);
    }
 

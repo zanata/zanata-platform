@@ -22,6 +22,7 @@
 package org.zanata.rest.service;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathNotExists;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -31,6 +32,7 @@ import java.io.StringReader;
 import java.net.MalformedURLException;
 
 import javax.ws.rs.core.StreamingOutput;
+import javax.xml.parsers.DocumentBuilder;
 
 import org.apache.commons.io.output.StringBuilderWriter;
 import org.apache.commons.io.output.WriterOutputStream;
@@ -45,6 +47,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import org.zanata.common.LocaleId;
+import org.zanata.xml.TmxDtdResolver;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -118,8 +121,10 @@ abstract class TMXStreamingOutputTest
       }
       if (expectProperties())
       {
-         String xpathProp = xpathTU+"/prop[@type='custom_property']/text()";
-         assertXpathEvaluatesTo("property_value", xpathProp, doc);
+         String xpathProp1 = xpathTU+"/prop[@type='prop1']/text()";
+         assertXpathEvaluatesTo("propval1", xpathProp1, doc);
+         String xpathProp2 = xpathTU+"/prop[@type='prop2']/text()";
+         assertXpathEvaluatesTo("propval2", xpathProp2, doc);
       }
    }
 
@@ -133,8 +138,10 @@ abstract class TMXStreamingOutputTest
       }
       if (expectProperties())
       {
-         String xpathProp = xpathTUV+"/prop[@type='custom_property']/text()";
-         assertXpathEvaluatesTo("property_value", xpathProp, doc);
+         String xpathProp1 = xpathTUV+"/prop[@type='prop1']/text()";
+         assertXpathEvaluatesTo("propval1", xpathProp1, doc);
+         String xpathProp2 = xpathTUV+"/prop[@type='prop2']/text()";
+         assertXpathEvaluatesTo("propval2", xpathProp2, doc);
       }
 
       assertXpathEvaluatesTo(segmentText, xpathTUV + "/seg/text()", doc);
@@ -157,9 +164,10 @@ abstract class TMXStreamingOutputTest
       output.write(writerOutputStream);
       writerOutputStream.close();
       String xml = sbWriter.toString();
-      System.out.println(xml);
       assertValidTMX(xml);
-      Document doc = XMLUnit.buildControlDocument(xml);
+      DocumentBuilder controlParser = XMLUnit.newControlParser();
+      controlParser.setEntityResolver(new TmxDtdResolver());
+      Document doc = XMLUnit.buildDocument(controlParser, new StringReader(xml));
       return doc;
    }
 

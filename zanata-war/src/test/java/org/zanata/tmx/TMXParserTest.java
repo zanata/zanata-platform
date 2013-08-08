@@ -31,10 +31,10 @@ import static org.hamcrest.Matchers.notNullValue;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
-import javax.xml.stream.XMLStreamException;
+import java.util.Set;
 
 import nu.xom.Element;
 
@@ -52,6 +52,9 @@ import org.zanata.model.tm.TransMemory;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemoryUnitVariant;
 import org.zanata.seam.SeamAutowire;
+import org.zanata.util.TMXParseException;
+
+import com.google.common.collect.Sets;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -142,6 +145,26 @@ public class TMXParserTest extends ZanataDbunitJpaTest
 
    @Test
    @org.junit.Test
+   public void parseDubiousTMXDespiteUnderscoresInLocales() throws Exception
+   {
+      // Create a TM
+      TransMemory tm = createTMFromFile("/tmx/dubious-tm-with-underscores.tmx");
+
+      // Make sure everything is stored properly
+      tm = getEm().find(TransMemory.class, tm.getId());
+      assertThat(tm.getTranslationUnits().size(), is(1));
+
+      assertThat(tm.getSourceLanguage(), equalTo("en-US"));
+
+      Set<String> expectedLocales = Sets.newHashSet(
+            "en-US", "es", "es-ES", "fr", "fr-FR", "he", "it", "it-IT");
+      TransMemoryUnit tu = tm.getTranslationUnits().iterator().next();
+      HashSet<String> actualLocales = Sets.newHashSet(tu.getTransUnitVariants().keySet());
+      assertThat(actualLocales, equalTo(expectedLocales));
+   }
+
+   @Test
+   @org.junit.Test
    public void parseTMXWithMetadata() throws Exception
    {
       // Create a TM
@@ -221,16 +244,16 @@ public class TMXParserTest extends ZanataDbunitJpaTest
       assertThat(tuv0Children.get(1).getValue(), is("Custom note on tuv"));
    }
 
-   @Test(expectedExceptions = XMLStreamException.class)
-   @org.junit.Test(expected = XMLStreamException.class)
+   @Test(expectedExceptions = TMXParseException.class)
+   @org.junit.Test(expected = TMXParseException.class)
    public void invalidTMXNoContents() throws Exception
    {
       // Create a TM
       createTMFromFile("/tmx/invalid-tmx-no-contents.xml");
    }
 
-   @Test(expectedExceptions = RuntimeException.class)
-   @org.junit.Test(expected = RuntimeException.class)
+   @Test(expectedExceptions = TMXParseException.class)
+   @org.junit.Test(expected = TMXParseException.class)
    public void undiscernibleSourceLang() throws Exception
    {
       // Create a TM

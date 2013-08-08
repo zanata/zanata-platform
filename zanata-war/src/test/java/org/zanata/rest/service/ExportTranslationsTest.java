@@ -54,7 +54,7 @@ public class ExportTranslationsTest extends TMXStreamingOutputTest
 
    private TMXStreamingOutput<ITextFlow> streamSourceContents(LocaleId targetLocale)
    {
-      return new TMXStreamingOutput<ITextFlow>(createTestData(), new TranslationsTMXExportStrategy(targetLocale));
+      return TMXStreamingOutput.testInstance(createTestData(), new TranslationsTMXExportStrategy(targetLocale));
    }
 
    private @Nonnull Iterator<ITextFlow> createTestData()

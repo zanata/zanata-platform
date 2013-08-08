@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE tmx SYSTEM "http://www.lisa.org/tmx/tmx14.dtd">
+<tmx version="1.4">
+<header
+adminlang="en_US"
+srclang="en_US"
+creationtool="zanata.org"
+creationtoolversion="1.3.0devel"
+creationdate="20130509T141016Z"
+datatype="plaintext"
+segtype="paragraph"
+o-tmf="zanata.org"
+>
+</header>
+<body>
+  <tu tuid="1">
+    <tuv xml:lang="en_US">
+        <seg>This is the first entry.</seg>
+    </tuv>
+    <tuv xml:lang="es">
+        <seg>Esta es la primera entrada.</seg>
+    </tuv>
+    <tuv xml:lang="es_ES">
+        <seg>Esta es la primera entrada.</seg>
+    </tuv>
+    <tuv xml:lang="fr">
+        <seg>Il s'agit de la première entrée</seg>
+    </tuv>
+    <tuv xml:lang="fr-FR">
+        <seg>Il s'agit de la première entrée</seg>
+    </tuv>
+    <tuv xml:lang="he">
+        <seg>Αυτή είναι η πρώτη είσοδος</seg>
+    </tuv>
+    <tuv xml:lang="it">
+        <seg>Questo è il primo elemento.</seg>
+    </tuv>
+    <tuv xml:lang="it_IT">
+        <seg>Questo è il primo elemento.</seg>
+    </tuv>
+  </tu>
+</body>
+</tmx>

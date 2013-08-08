@@ -20,7 +20,6 @@
  */
 package org.zanata.model.tm;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
@@ -28,15 +27,17 @@ import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.MapKeyColumn;
-import javax.persistence.MapKeyEnumerated;
+
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import org.hibernate.search.annotations.AnalyzerDiscriminator;
 import org.hibernate.search.annotations.ClassBridge;
@@ -45,14 +46,8 @@ import org.zanata.hibernate.search.TransUnitVariantClassBridge;
 import org.zanata.model.ModelEntityBase;
 import org.zanata.util.HashUtil;
 import org.zanata.util.OkapiUtil;
-import com.google.common.collect.Maps;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import com.google.common.collect.Maps;
 
 /**
  * A translation unit variant.

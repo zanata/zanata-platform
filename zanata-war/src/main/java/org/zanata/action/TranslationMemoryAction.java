@@ -89,16 +89,16 @@ public class TranslationMemoryAction extends EntityHome<TransMemory>
    @Transactional
    public void deleteTransMemory(String transMemorySlug)
    {
-      Optional<TransMemory> slugOp = transMemoryDAO.getBySlug(transMemorySlug);
-      if( !slugOp.isPresent() )
+      Optional<TransMemory> transMemory = transMemoryDAO.getBySlug(transMemorySlug);
+      if (transMemory.isPresent())
       {
-         FacesMessages.instance().addFromResourceBundle(ERROR, "jsf.transmemory.TransMemoryNotFound");
+         transMemoryDAO.deleteTransMemoryContents(transMemorySlug);
+         transMemoryDAO.makeTransient(transMemory.get());
+         transMemoryList = null; // Force refresh next time list is requested
       }
       else
       {
-         transMemoryDAO.deleteTransMemoryContents(transMemorySlug);
-         transMemoryDAO.makeTransient(slugOp.get());
-         transMemoryList = null; // Force refresh next time list is requested
+         FacesMessages.instance().addFromResourceBundle(ERROR, "jsf.transmemory.TransMemoryNotFound");
       }
    }
 

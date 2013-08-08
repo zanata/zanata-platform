@@ -152,7 +152,6 @@
                             <a4j:commandButton value="#{messages['jsf.Clear']}"
                                                action="#{translationMemoryAction.clearTransMemory(tm.slug)}"
                                                render="tmList"
-                                               rendered="#{translationMemoryAction.getTranslationMemorySize(tm.slug) gt 0}"
                                                onclick="return confirmClearTm()"/>
                             <a4j:commandButton value="#{messages['jsf.Delete']}"
                                                action="#{translationMemoryAction.deleteTransMemory(tm.slug)}"
