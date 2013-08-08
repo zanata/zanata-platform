@@ -132,16 +132,22 @@ public class TranslationStateCacheImpl implements TranslationStateCache
    @Override
    public void textFlowStateUpdated(TextFlowTargetStateEvent event)
    {
+      // updateDocStatusCache(event.getDocumentId(), event.getLocaleId(), event.getTextFlowTargetId());
+      
       // TODO update this cache rather than invalidating
+      invalidateDocLastTranslatedCache(event.getDocumentId(), event.getLocaleId());
       invalidateTargetValidationCache(event.getTextFlowTargetId());
-
-      updateDocStatusCache(event.getDocumentId(), event.getLocaleId(), event.getTextFlowTargetId());
    }
 
    @Override
    public DocumentStatus getDocumentStatus(Long documentId, LocaleId localeId)
    {
       return docStatusCache.getWithLoader(new TranslatedDocumentKey(documentId, localeId));
+   }
+   
+   private void invalidateDocLastTranslatedCache(Long documentId, LocaleId localeId)
+   {
+      docStatusCache.remove(new TranslatedDocumentKey(documentId, localeId));
    }
 
    @Override
