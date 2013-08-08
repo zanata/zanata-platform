@@ -32,23 +32,23 @@ public abstract class AbstractIndexingStrategy<T>
     */
    public void invoke(IndexerProcessHandle handle)
    {
-      int n = 0;
-      scrollableResults = queryResults(n);
+      int rowNum = 0;
+      scrollableResults = queryResults(rowNum);
       try
       {
          while (scrollableResults.next() && !handle.shouldStop())
          {
-            n++;
+            rowNum++;
             T entity = (T) scrollableResults.get(0);
             session.index(entity);
             handle.incrementProgress(1);
-            if (n % sessionClearBatchSize == 0)
+            if (rowNum % sessionClearBatchSize == 0)
             {
-               log.info("periodic flush and clear for {} (n={})", entityType, n);
+               log.info("periodic flush and clear for {} (n={})", entityType, rowNum);
                session.flushToIndexes(); // apply changes to indexes
                session.clear(); // clear since the queue is processed
             }
-            onEntityIndexed(n);
+            onEntityIndexed(rowNum);
          }
       }
       finally

@@ -45,13 +45,13 @@ public class SimpleClassIndexingStrategy<T> extends AbstractIndexingStrategy<T>
    }
 
    @Override
-   protected void onEntityIndexed(int n)
+   protected void onEntityIndexed(int rowNum)
    {
-      if (n % MAX_QUERY_ROWS == 0)
+      if (rowNum % MAX_QUERY_ROWS == 0)
       {
-         SimpleClassIndexingStrategy.log.info("restarting query for {} (n={})", getEntityType(), n);
+         log.info("restarting query for {} (rowNum={})", getEntityType(), rowNum);
          getScrollableResults().close();
-         setScrollableResults(queryResults(n));
+         setScrollableResults(queryResults(rowNum));
       }
    }
 
