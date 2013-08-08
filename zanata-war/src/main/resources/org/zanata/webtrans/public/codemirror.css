@@ -206,3 +206,9 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
 .CodeMirror-lines pre:last-child:after {
     content: '';
 }
+
+/* for highlighting label (runs code mirror runmode) */
+.newline:after {
+    content: '\00b6';
+    color: #aaaaaa;
+}

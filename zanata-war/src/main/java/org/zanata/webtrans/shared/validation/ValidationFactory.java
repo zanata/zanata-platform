@@ -58,7 +58,6 @@ public class ValidationFactory
     * 
     * Used in client side (ValidationAction)
     * 
-    * @param messages
     * @return Map<ValidationId, ValidationAction>
     */
    public Map<ValidationId, ValidationAction> getAllValidationActions()

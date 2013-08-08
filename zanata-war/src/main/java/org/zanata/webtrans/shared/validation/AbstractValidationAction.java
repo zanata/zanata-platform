@@ -27,6 +27,7 @@ import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.ValidationInfo;
+import org.zanata.webtrans.shared.validation.action.HtmlXmlTagValidation;
 import org.zanata.webtrans.shared.validation.action.JavaVariablesValidation;
 import org.zanata.webtrans.shared.validation.action.NewlineLeadTrailValidation;
 import org.zanata.webtrans.shared.validation.action.PrintfVariablesValidation;
@@ -41,7 +42,7 @@ import com.google.common.collect.Lists;
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
- * @see HtmlXMlTagValidation
+ * @see HtmlXmlTagValidation
  * @see JavaVariablesValidation
  * @see NewlineLeadTrailValidation
  * @see PrintfVariablesValidation
