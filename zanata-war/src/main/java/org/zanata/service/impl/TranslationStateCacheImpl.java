@@ -99,7 +99,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache
 
    public TranslationStateCacheImpl(
          CacheLoader<TranslatedDocumentKey, DocumentStatus> docStatsLoader,
-         CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader, 
+         CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader,
          TextFlowTargetDAO textFlowTargetDAO,
          ValidationService validationServiceImpl)
    {
@@ -132,16 +132,22 @@ public class TranslationStateCacheImpl implements TranslationStateCache
    @Override
    public void textFlowStateUpdated(TextFlowTargetStateEvent event)
    {
-      // TODO update this cache rather than invalidating
-      invalidateTargetValidationCache(event.getTextFlowTargetId());
+      // updateDocStatusCache(event.getDocumentId(), event.getLocaleId(), event.getTextFlowTargetId());
 
-      updateDocStatusCache(event.getDocumentId(), event.getLocaleId(), event.getTextFlowTargetId());
+      // TODO enhance TextFlowTargetStateEvent and update this cache directly (no database I/O) rather than invalidating
+      invalidateDocLastTranslatedCache(event.getDocumentId(), event.getLocaleId());
+      invalidateTargetValidationCache(event.getTextFlowTargetId());
    }
 
    @Override
    public DocumentStatus getDocumentStatus(Long documentId, LocaleId localeId)
    {
       return docStatusCache.getWithLoader(new TranslatedDocumentKey(documentId, localeId));
+   }
+
+   private void invalidateDocLastTranslatedCache(Long documentId, LocaleId localeId)
+   {
+      docStatusCache.remove(new TranslatedDocumentKey(documentId, localeId));
    }
 
    @Override
@@ -175,7 +181,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache
       {
          HTextFlowTarget target = documentDAO.getLastTranslatedTarget(key.getDocumentId(), key.getLocaleId());
          DocumentStatus documentStatus = new DocumentStatus();
-         
+
          return updateDocumentStatus(documentStatus, key.getDocumentId(), key.getLocaleId(), target);
       }
    }
@@ -219,7 +225,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache
       }
       HDocument document = documentDAO.findById(documentId, false);
       boolean hasError = validationServiceImpl.runDocValidationsWithServerRules(document, localeId);
-      
+
       documentStatus.update(new DocumentId(document.getId(), document.getDocId()), lastTranslatedDate, lastTranslatedBy, hasError);
       return documentStatus;
    }
