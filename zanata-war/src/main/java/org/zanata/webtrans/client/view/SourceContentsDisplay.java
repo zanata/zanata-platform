@@ -12,21 +12,21 @@ import org.zanata.webtrans.shared.model.TextFlowTarget;
 
 public interface SourceContentsDisplay extends HasTransUnitId, NeedsRefresh
 {
-   void setValue(TransUnit value);
+    void setValue(TransUnit value);
 
-   List<HasSelectableSource> getSourcePanelList();
+    List<HasSelectableSource> getSourcePanelList();
 
-   void setValue(TransUnit value, boolean fireEvents);
+    void setValue(TransUnit value, boolean fireEvents);
 
-   void highlightSearch(String search);
+    void highlightSearch(String search);
 
-   void setSourceSelectionHandler(ClickHandler clickHandler);
+    void setSourceSelectionHandler(ClickHandler clickHandler);
 
-   void toggleTransUnitDetails(boolean showTransUnitDetails);
+    void toggleTransUnitDetails(boolean showTransUnitDetails);
 
-   void updateTransUnitDetails(TransUnit transUnit);
-   
-   void showReference(TextFlowTarget reference);
-   
-   void hideReference();
+    void updateTransUnitDetails(TransUnit transUnit);
+
+    void showReference(TextFlowTarget reference);
+
+    void hideReference();
 }

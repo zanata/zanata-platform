@@ -1,5 +1,6 @@
 package org.zanata.webtrans.server.rpc;
 
+import com.ibm.icu.util.ULocale;
 import java.util.Locale;
 import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -14,6 +15,7 @@ import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
+import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.webtrans.server.ActionHandlerFor;
@@ -35,38 +37,18 @@ public class GetTargetForLocaleHandler extends AbstractActionHandler<GetTargetFo
     @In
     private TextFlowTargetDAO textFlowTargetDAO;
 
-    @In
-    private TextFlowDAO textFlowDAO;
-
-    @In
-    private ProjectIterationDAO projectIterationDAO;
-
-    @In
-    private ProjectDAO projectDAO;
-
-    @In
-    private LocaleDAO localeDAO;
-
-    @In
-    private TransUnitTransformer transUnitTransformer;
-
-    private ProjectIterationId iterationId;
-
-    private String projectSlug;
-
     @Override
     public GetTargetForLocaleResult execute(GetTargetForLocale action, ExecutionContext context) throws ActionException {
         try {
             identity.checkLoggedIn();
 
-            iterationId = action.getWorkspaceId().getProjectIterationId();
-            projectSlug = iterationId.getProjectSlug();
-
             HTextFlowTarget hTextFlowTarget = textFlowTargetDAO.getTextFlowTarget(action.getSourceTransUnitId().getId(), action.getLocale().getId().getLocaleId());
+            
             if (hTextFlowTarget == null) {
                 return new GetTargetForLocaleResult(null);
             } else {
-                TextFlowTarget textFlowTarget = new TextFlowTarget(new TextFlowTargetId(hTextFlowTarget.getId()), action.getLocale(), hTextFlowTarget.getContents().get(0));
+                String displayName = retrieveDisplayName(hTextFlowTarget.getLocale());
+                TextFlowTarget textFlowTarget = new TextFlowTarget(new TextFlowTargetId(hTextFlowTarget.getId()), action.getLocale(), hTextFlowTarget.getContents().get(0), displayName);
                 return new GetTargetForLocaleResult(textFlowTarget);
             }
         } catch (Exception e) {
@@ -74,6 +56,11 @@ public class GetTargetForLocaleHandler extends AbstractActionHandler<GetTargetFo
            return new GetTargetForLocaleResult(null);
         }
     }
+    
+    public String retrieveDisplayName(HLocale hLocale)
+   {
+      return hLocale.retrieveDisplayName();
+   }
 
     @Override
     public void rollback(GetTargetForLocale action, GetTargetForLocaleResult result, ExecutionContext context) throws ActionException {

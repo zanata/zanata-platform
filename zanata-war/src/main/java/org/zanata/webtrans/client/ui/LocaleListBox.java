@@ -6,7 +6,9 @@ import java.util.List;
 import org.zanata.webtrans.shared.model.Locale;
 
 /**
- *
+ * The LocaleListBox combines a ListBox-item with a Locale object for easy 
+ * accessing the chosen Locale.
+ * 
  * @author Hannes Eskebaek <hannes.eskebaek@databyran.se>
  */
 public class LocaleListBox extends ListBox {
@@ -19,12 +21,12 @@ public class LocaleListBox extends ListBox {
     }
 
     /**
-     * Adds a Locale to the list, adding the LocaleId as the String to display
+     * Adds a Locale to the list, adding the Locales displayName as the String to display
      *
      * @param locale
      */
     public void addItem(Locale locale) {
-        super.addItem(locale.getId().getLocaleId().getId());
+        super.addItem(locale.getDisplayName());
         locales.add(locale);
     }
 
@@ -54,7 +56,7 @@ public class LocaleListBox extends ListBox {
     }
     
     /**
-     * Gets the locale associated with the currently-selected item.
+     * Gets the locale associated with the currently selected item.
      * @return 
      */
     public Locale getLocaleAtSelectedIndex(){

@@ -192,4 +192,7 @@ public interface UiMessages extends Messages
     
     @DefaultMessage("In")
     String inLocale();
+    
+    @DefaultMessage("Choose a language")
+    String chooseRefLang();
 }

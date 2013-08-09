@@ -11,6 +11,8 @@ public class Locale implements HasIdentifier<IdForLocale>, IsSerializable {
 
     private IdForLocale id;
     
+    private String displayName;
+    
     public final static Locale notChosenLocale = new Locale();
 
     // for GWT
@@ -18,12 +20,18 @@ public class Locale implements HasIdentifier<IdForLocale>, IsSerializable {
     private Locale() {
     }
 
-    public Locale(IdForLocale id) {
+    public Locale(IdForLocale id, String displayName) {
         Preconditions.checkNotNull(id, "localeId cannot be null");
         this.id = id;
+        this.displayName = displayName;
     }
 
     public IdForLocale getId() {
         return id;
+    }
+
+    public String getDisplayName()
+    {
+        return displayName;
     }
 }

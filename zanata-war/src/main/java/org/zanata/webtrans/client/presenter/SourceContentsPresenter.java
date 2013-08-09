@@ -52,10 +52,13 @@ import com.google.inject.Inject;
 import org.zanata.webtrans.client.events.HideReferenceEvent;
 import org.zanata.webtrans.client.events.HideReferenceEventHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.events.RefreshPageEvent;
+import org.zanata.webtrans.client.events.RefreshPageEventHandler;
 import org.zanata.webtrans.client.events.ShowReferenceEvent;
 import org.zanata.webtrans.client.events.ShowReferenceEventHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.Locale;
+import org.zanata.webtrans.shared.model.TextFlowTarget;
 import org.zanata.webtrans.shared.rpc.GetTargetForLocale;
 import org.zanata.webtrans.shared.rpc.GetTargetForLocaleResult;
 
@@ -63,7 +66,7 @@ import org.zanata.webtrans.shared.rpc.GetTargetForLocaleResult;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  */
-public class SourceContentsPresenter implements ClickHandler, UserConfigChangeHandler, TransUnitUpdatedEventHandler, ShowReferenceEventHandler, HideReferenceEventHandler {
+public class SourceContentsPresenter implements ClickHandler, UserConfigChangeHandler, TransUnitUpdatedEventHandler, ShowReferenceEventHandler, HideReferenceEventHandler, RefreshPageEventHandler {
 
     private final EventBus eventBus;
 
@@ -93,6 +96,7 @@ public class SourceContentsPresenter implements ClickHandler, UserConfigChangeHa
         eventBus.addHandler(TransUnitUpdatedEvent.getType(), this);
         eventBus.addHandler(ShowReferenceEvent.getType(), this);
         eventBus.addHandler(HideReferenceEvent.getType(), this);
+        eventBus.addHandler(RefreshPageEvent.TYPE, this);
     }
 
    /**
@@ -247,7 +251,7 @@ public class SourceContentsPresenter implements ClickHandler, UserConfigChangeHa
                 }
             });
         }
-    }
+    }    
     
 
     @Override
@@ -256,6 +260,14 @@ public class SourceContentsPresenter implements ClickHandler, UserConfigChangeHa
             display.hideReference();
         }
         isReferenceShowing = false;
+    }
+    
+    @Override
+    public void onRefreshPage(RefreshPageEvent event)
+    {
+        if(isReferenceShowing){
+            showReference();
+        }
     }
 
     /**
