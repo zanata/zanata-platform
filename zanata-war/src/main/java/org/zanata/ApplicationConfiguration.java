@@ -20,17 +20,13 @@
  */
 package org.zanata;
 
-import static org.apache.commons.lang.StringUtils.isEmpty;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Level;
@@ -79,7 +75,7 @@ public class ApplicationConfiguration implements Serializable
    private String buildTimestamp;
    private boolean enableCopyTrans = true;
    private Map<AuthenticationType, String> loginModuleNames = new HashMap<AuthenticationType, String>();
-   private Set<String> adminUsers = new HashSet<String>();
+   private Set<String> adminUsers;
 
    private String webAssetsUrl;
    private String webAssetsStyleUrl;
@@ -311,7 +307,16 @@ public class ApplicationConfiguration implements Serializable
 
    public Set<String> getAdminUsers()
    {
-      return new HashSet<String>(adminUsers);
+      String configValue = jndiBackedConfig.getAdminUsersList();
+      if( adminUsers == null )
+      {
+         adminUsers = Sets.newHashSet();
+         for( String userName : configValue.split(",") )
+         {
+            adminUsers.add( userName.trim() );
+         }
+      }
+      return adminUsers;
    }
 
    public boolean isEmailLogAppenderEnabled()
