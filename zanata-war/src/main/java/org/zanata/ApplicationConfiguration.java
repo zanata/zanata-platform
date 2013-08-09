@@ -48,6 +48,9 @@ import org.zanata.log4j.ZanataHTMLLayout;
 import org.zanata.log4j.ZanataSMTPAppender;
 import org.zanata.security.AuthenticationType;
 import com.google.common.base.Objects;
+import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
+import com.google.common.collect.Sets;
 
 @Name("applicationConfiguration")
 @Scope(ScopeType.APPLICATION)
@@ -307,14 +310,10 @@ public class ApplicationConfiguration implements Serializable
 
    public Set<String> getAdminUsers()
    {
-      String configValue = jndiBackedConfig.getAdminUsersList();
+      String configValue = Strings.nullToEmpty(jndiBackedConfig.getAdminUsersList());
       if( adminUsers == null )
       {
-         adminUsers = Sets.newHashSet();
-         for( String userName : configValue.split(",") )
-         {
-            adminUsers.add( userName.trim() );
-         }
+         adminUsers = Sets.newHashSet(Splitter.on(",").omitEmptyStrings().trimResults().split(configValue));
       }
       return adminUsers;
    }
