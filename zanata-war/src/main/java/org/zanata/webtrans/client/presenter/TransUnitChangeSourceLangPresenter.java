@@ -79,13 +79,11 @@ public class TransUnitChangeSourceLangPresenter extends WidgetPresenter<TransUni
 
     @Override
     public void onShowButtonClick(Locale selectedLocale) {
-        Log.info("Firing showReferenceEvent,  TransUnitSourceLangPresenter");
         eventBus.fireEvent(new ShowReferenceEvent(selectedLocale));
     }
 
     @Override
     public void onHideButtonClick() {
-        Log.info("Firing hideReferenceEvent,  TransUnitSourceLangPresenter");
         eventBus.fireEvent(new HideReferenceEvent());
     }
 }

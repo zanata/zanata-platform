@@ -204,7 +204,7 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
         if (reference == null) {
             referenceLabel.setText(messages.noReferenceFoundText());
         } else {
-            referenceLabel.setText(messages.inLocale() + " locale " + reference.getLocale().getId().getLocaleId().getId() + ": " + reference.getContent());
+            referenceLabel.setText(messages.inLocale() + " " + reference.getDisplayName() + ": " + reference.getContent());
         }
         referenceLabel.setVisible(true);
     }

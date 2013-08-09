@@ -44,6 +44,8 @@ public class TransUnitChangeSourceLangView extends Composite implements TransUni
     private static TransUnitChangeSourceLangViewUiBinder uiBinder = GWT.create(TransUnitChangeSourceLangViewUiBinder.class);
 
     private Listener listener;
+    
+    private UiMessages messages;
 
     interface Styles extends CssResource {
     }
@@ -61,7 +63,7 @@ public class TransUnitChangeSourceLangView extends Composite implements TransUni
 
     @Inject
     public TransUnitChangeSourceLangView(final UiMessages messages) {
-
+        this.messages = messages;
         initWidget(uiBinder.createAndBindUi(this));
 
         descriptionLabel.setText(messages.changeSourceLangDescription());
@@ -76,7 +78,7 @@ public class TransUnitChangeSourceLangView extends Composite implements TransUni
     @Override
     public void buildListBox(List<Locale> locales) {
         sourceLangListBox.clear();
-        sourceLangListBox.addItem("", Locale.notChosenLocale);
+        sourceLangListBox.addItem(messages.chooseRefLang(), Locale.notChosenLocale);
         for (Locale locale : locales) {
             sourceLangListBox.addItem(locale);
         }

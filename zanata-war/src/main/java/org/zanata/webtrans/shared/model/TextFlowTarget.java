@@ -2,6 +2,7 @@ package org.zanata.webtrans.shared.model;
 
 import com.google.common.base.Preconditions;
 import com.google.gwt.user.client.rpc.IsSerializable;
+import com.ibm.icu.util.ULocale;
 
 /**
  *
@@ -14,17 +15,20 @@ public class TextFlowTarget implements HasIdentifier<TextFlowTargetId>, IsSerial
     private Locale locale;
 
     private String content;
-
+    
+    private String displayName;
+    
     // for GWT
     @SuppressWarnings("unused")
     private TextFlowTarget() {
     }
 
-    public TextFlowTarget(TextFlowTargetId id, Locale locale, String content) {
+    public TextFlowTarget(TextFlowTargetId id, Locale locale, String content, String displayName) {
         Preconditions.checkNotNull(id, "localeId cannot be null");
         this.id = id;
         this.locale = locale;
         this.content = content;
+        this.displayName = displayName;
     }
 
     public TextFlowTargetId getId() {
@@ -37,5 +41,10 @@ public class TextFlowTarget implements HasIdentifier<TextFlowTargetId>, IsSerial
 
     public String getContent() {
         return content;
+    }
+    
+     public String getDisplayName()
+    {
+        return displayName;
     }
 }
