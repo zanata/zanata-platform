@@ -998,6 +998,14 @@
     <http-error error-code="503" />
   </exception>
 
+  <exception class="org.jboss.seam.web.FileUploadException" log-level="warn">
+    <redirect view-id="/error.xhtml">
+      <message severity="error">
+        #{messages['jsf.iteration.files.UploadFailed']} #{org.jboss.seam.handledException.message}
+      </message>
+    </redirect>
+  </exception>
+
   <exception>
     <redirect view-id="/error.xhtml">
       <message severity="error">#{messages['jsf.UnexpectedError']}</message>
