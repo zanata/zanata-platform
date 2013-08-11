@@ -280,13 +280,7 @@ public class TMXMetadataHelper
     */
    private static String getValidLang(final String lang)
    {
-      String canonicalLang = ULocale.canonicalize(lang);
-      if (canonicalLang.contains("_"))
-      {
-         log.debug("Converting invalid locale to BCP47: {}", canonicalLang);
-         canonicalLang = canonicalLang.replace('_', '-');
-      }
-      return new LocaleId(canonicalLang).getId();
+      return ULocale.canonicalize(lang).replace('_', '-');
    }
 
    private static void setSharedMetadata(HasTMMetadata toEntity, Map<String, Object> fromMetadata)
