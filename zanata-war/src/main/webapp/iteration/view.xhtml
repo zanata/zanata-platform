@@ -49,36 +49,36 @@
 					</a4j:commandButton>
 					<br/><br/>
 					<rich:dataTable id="data_table" width="100%"
-						value="#{viewAllStatusAction.getAllStatus().toArray()}" var="stats"
+						value="#{viewAllStatusAction.getAllStatus().toArray()}" var="status"
 						styleClass="iteration_inline_tribes">
-						<rich:column sortBy="#{stats.locale}"
-							styleClass="#{stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
+						<rich:column sortBy="#{status.locale}"
+							styleClass="#{status.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
 							<f:facet name="header">#{messages['jsf.Language']}<richext:columnSorter/></f:facet>
 							<h:outputLink rendered="#{identity.loggedIn}"
 								value="#{request.contextPath}/webtrans/Application.seam"
 								title="#{messages['jsf.iteration.stats.OpenInWebEditor']}" styleClass="table_link">
 								<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
 								<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
-								<f:param name="localeId" value="#{stats.locale}" />
+								<f:param name="localeId" value="#{status.locale}" />
 								<f:param name="locale" value="#{locale.language}" />
-								<h:outputText value="#{stats.locale}" />
+								<h:outputText value="#{status.locale}" />
 								<richext:spacer width="5"/>
-								<h:outputText value="#{stats.nativeName}" styleClass="nativeName" />
+								<h:outputText value="#{status.nativeName}" styleClass="nativeName" />
 							</h:outputLink>
 							<s:fragment rendered="#{not identity.loggedIn}" >
-								<h:outputText value="#{stats.locale}" />
+								<h:outputText value="#{status.locale}" />
 								<richext:spacer width="5"/>
-								<h:outputText value="#{stats.nativeName}" styleClass="nativeName" />
+								<h:outputText value="#{status.nativeName}" styleClass="nativeName" />
 							</s:fragment>	
 						</rich:column>
 						<rich:column id="files"
 							rendered="#{identity.loggedIn}"
-							styleClass="#{stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''} centered">
+							styleClass="#{status.userInLanguageTeam ? 'highlighted_datatable_row' : ''} centered">
 							<f:facet name="header">#{messages['jsf.Documents']}</f:facet>
 							<s:link view="/iteration/files.xhtml" propagation="none" styleClass="table_icon_link">
 								<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
 								<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
-								<f:param name="localeId" value="#{stats.locale}" />
+								<f:param name="localeId" value="#{status.locale}" />
 								<span class="icon-docs icon"/>
 							</s:link>
                             <h:outputLink id="exportTMXIterLink" styleClass="table_icon_link"
@@ -91,7 +91,7 @@
                             </ui:remove>
 						</rich:column>
 						<rich:column
-							styleClass="#{stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
+							styleClass="#{status.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
 							<f:facet name="header">
 								<h:panelGroup>
 									<h:outputText value="#{messages['jsf.Statistics']}"/>
@@ -104,14 +104,14 @@
 								</h:panelGroup>
 							</f:facet>
 							
-							<ui:param name="tstatus" value="#{stats.stats}" />
+							<ui:param name="tstatus" value="#{status.stats}" />
 							<ui:include src="../WEB-INF/layout/statsbar.xhtml">
 								<ui:param name="status" value="#{tstatus}" />
 							</ui:include>
 						</rich:column>
-						<rich:column sortBy="#{stats.stats.lastTranslatedDate}" styleClass="#{stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
-							<f:facet name="header">#{messages['jsf.LastTranslated']}</f:facet>
-							<h:outputText value=" #{stats.stats.lastTranslated}"/>
+						<rich:column sortBy="#{status.stats.lastTranslatedDate}" styleClass="#{status.userInLanguageTeam ? 'highlighted_datatable_row' : ''} centered">
+							<f:facet name="header">#{messages['jsf.LastTranslated']}<richext:columnSorter/></f:facet>
+							<h:outputText value="#{status.stats.lastTranslated}"/>
 						</rich:column>
 
 					</rich:dataTable>
