@@ -73,7 +73,9 @@ public class ViewAllStatusAction implements Serializable
 {
    private static final long serialVersionUID = 1L;
 
-   private static final PeriodFormatterBuilder PERIOD_FORMATTER_BUILDER = new PeriodFormatterBuilder().appendDays().appendSuffix(" day", " days").appendSeparator(", ").appendHours().appendSuffix(" hour", " hours").appendSeparator(", ").appendMinutes().appendSuffix(" min", " mins");
+   private static final PeriodFormatterBuilder PERIOD_FORMATTER_BUILDER = new PeriodFormatterBuilder().appendDays()
+         .appendSuffix(" day", " days").appendSeparator(", ").appendHours().appendSuffix(" hour", " hours")
+         .appendSeparator(", ").appendMinutes().appendSuffix(" min", " mins");
 
    @Logger
    Log log;
@@ -119,8 +121,9 @@ public class ViewAllStatusAction implements Serializable
 
    private Map<LocaleId, Status> statsMap = new HashMap<LocaleId, Status>();
 
-   public static class Status implements Comparable<Status>
+   public static class Status implements Comparable<Status>, Serializable
    {
+      private static final long serialVersionUID = 1L;
       private String locale;
       private String nativeName;
       private TranslationStatistics stats;
@@ -148,17 +151,17 @@ public class ViewAllStatusAction implements Serializable
       {
          return stats;
       }
-      
+
       public void setStats(TranslationStatistics stats)
       {
          this.stats = stats;
       }
-      
+
       public boolean isUserInLanguageTeam()
       {
          return userInLanguageTeam;
       }
-      
+
       @Override
       public int compareTo(Status o)
       {
@@ -166,7 +169,7 @@ public class ViewAllStatusAction implements Serializable
                (int) Math.ceil(100.0 * getStats().getApproved() / getStats().getTotal());
          int comparePer = o.getStats().getTotal() == 0 ? 0 :
                (int) Math.ceil(100.0 * o.getStats().getApproved() / o.getStats().getTotal());
-         
+
          return Double.compare(comparePer, per);
       }
    }
@@ -198,7 +201,7 @@ public class ViewAllStatusAction implements Serializable
          throw new EntityNotFoundException(this.iterationSlug, HProjectIteration.class);
       }
    }
-   
+
    private String[] getLocaleIds(List<HLocale> locale)
    {
       String[] localeIds = new String[locale.size()];
@@ -218,11 +221,12 @@ public class ViewAllStatusAction implements Serializable
    public void refreshStatistic()
    {
       HProjectIteration iteration = projectIterationDAO.getBySlug(this.projectSlug, this.iterationSlug);
-      
+
       List<HLocale> localeList = this.getDisplayLocales();
       String[] localeIds = getLocaleIds(localeList);
-      
-      ContainerTranslationStatistics iterationStats = statisticsServiceImpl.getStatistics(this.projectSlug, this.iterationSlug, false, true, localeIds);
+
+      ContainerTranslationStatistics iterationStats = statisticsServiceImpl.getStatistics(this.projectSlug,
+            this.iterationSlug, false, true, localeIds);
 
       Long total;
       if (statsOption == WORD)
@@ -233,7 +237,7 @@ public class ViewAllStatusAction implements Serializable
       {
          total = projectIterationDAO.getTotalCountForIteration(iteration.getId());
       }
-      
+
       for (HLocale locale : localeList)
       {
          TranslationStatistics stats = iterationStats.getStats(locale.getLocaleId().getId(), statsOption);
@@ -241,7 +245,7 @@ public class ViewAllStatusAction implements Serializable
          {
             stats = new TranslationStatistics(statsOption);
             stats.setUntranslated(total);
-//            stats.setTotal(total);
+            //            stats.setTotal(total);
          }
 
          if (statsMap.containsKey(locale.getLocaleId()))
@@ -259,7 +263,8 @@ public class ViewAllStatusAction implements Serializable
       List<HLocale> localeList = this.getDisplayLocales();
       String[] localeIds = getLocaleIds(localeList);
 
-      ContainerTranslationStatistics iterationStats = statisticsServiceImpl.getStatistics(this.projectSlug, this.iterationSlug, false, true, localeIds);
+      ContainerTranslationStatistics iterationStats = statisticsServiceImpl.getStatistics(this.projectSlug,
+            this.iterationSlug, false, true, localeIds);
 
       Long total;
       if (statsOption == WORD)
@@ -279,20 +284,22 @@ public class ViewAllStatusAction implements Serializable
             stats = new TranslationStatistics(statsOption);
             stats.setUntranslated(total);
 
-            HTextFlowTarget lastTranslatedTarget = localeServiceImpl.getLastTranslated(projectSlug, iterationSlug, locale.getLocaleId());
+            HTextFlowTarget lastTranslatedTarget = localeServiceImpl.getLastTranslated(projectSlug, iterationSlug,
+                  locale.getLocaleId());
 
             if (lastTranslatedTarget != null)
             {
                stats.setLastTranslatedBy(lastTranslatedTarget.getLastModifiedBy().getAccount().getUsername());
                stats.setLastTranslatedDate(lastTranslatedTarget.getLastChanged());
-               stats.setLastTranslated(getLastTranslated(lastTranslatedTarget.getLastChanged(), lastTranslatedTarget.getLastModifiedBy().getAccount().getUsername()));
+               stats.setLastTranslated(getLastTranslated(lastTranslatedTarget.getLastChanged(), lastTranslatedTarget
+                     .getLastModifiedBy().getAccount().getUsername()));
             }
          }
 
-
          if (!statsMap.containsKey(locale.getLocaleId()))
          {
-            boolean isMember = authenticatedAccount != null ? personDAO.isUserInLanguageTeamWithRoles(authenticatedAccount.getPerson(), locale, null, null, null) : false;
+            boolean isMember = authenticatedAccount != null ? personDAO.isUserInLanguageTeamWithRoles(
+                  authenticatedAccount.getPerson(), locale, null, null, null) : false;
 
             Status op = new Status(locale.getLocaleId().getId(), locale.retrieveNativeName(), stats, isMember);
             statsMap.put(locale.getLocaleId(), op);
@@ -307,7 +314,7 @@ public class ViewAllStatusAction implements Serializable
       Collections.sort(result);
       return result;
    }
-   
+
    private String getLastTranslated(Date lastChanged, String lastModifiedBy)
    {
       StringBuilder result = new StringBuilder();
@@ -440,7 +447,8 @@ public class ViewAllStatusAction implements Serializable
             }
 
             // when was it done
-            message.append(formatTimePeriod(System.currentTimeMillis() - recentProcessHandle.getCancelledTime())).append(" ago.");
+            message.append(formatTimePeriod(System.currentTimeMillis() - recentProcessHandle.getCancelledTime()))
+                  .append(" ago.");
          }
          // completed
          else
@@ -459,7 +467,8 @@ public class ViewAllStatusAction implements Serializable
             }
 
             // when was it done
-            message.append(formatTimePeriod(System.currentTimeMillis() - recentProcessHandle.getFinishTime())).append(" ago.");
+            message.append(formatTimePeriod(System.currentTimeMillis() - recentProcessHandle.getFinishTime())).append(
+                  " ago.");
          }
 
          return message.toString();

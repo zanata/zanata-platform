@@ -267,6 +267,7 @@ public class StatisticsServiceImpl implements StatisticsResource
             
             wordsStats.setLastTranslatedBy(docStat.getLastTranslatedBy());
             wordsStats.setLastTranslatedDate(docStat.getLastTranslatedDate());
+            wordsStats.setLastTranslated(getLastTranslated(docStat.getLastTranslatedDate(), docStat.getLastTranslatedBy()));
             
             wordsStats.setRemainingHours(getRemainingHours(wordsStats.getDraft(), wordsStats.getUntranslated()));
             docStats.addStats(wordsStats);

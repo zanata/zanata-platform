@@ -53,6 +53,7 @@ import org.jboss.seam.international.StatusMessage.Severity;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.jboss.seam.util.Hex;
+import org.zanata.annotation.CachedMethodResult;
 import org.zanata.annotation.CachedMethods;
 import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
