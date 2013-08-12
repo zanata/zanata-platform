@@ -46,6 +46,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import com.ibm.icu.util.ULocale;
 
 /**
  * Adapts TMX metadata to the generic translation memory objects.
@@ -277,14 +278,9 @@ public class TMXMetadataHelper
     * @param lang
     * @return lang
     */
-   private static String getValidLang(String lang)
+   private static String getValidLang(final String lang)
    {
-      if (lang.contains("_"))
-      {
-         log.debug("Converting invalid locale to BCP47: {}", lang);
-         lang = lang.replace('_', '-');
-      }
-      return new LocaleId(lang).getId();
+      return ULocale.canonicalize(lang).replace('_', '-');
    }
 
    private static void setSharedMetadata(HasTMMetadata toEntity, Map<String, Object> fromMetadata)
