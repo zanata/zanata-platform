@@ -30,30 +30,30 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.zanata.concordion.CustomResourceExtension;
 import org.zanata.feature.ConcordionTest;
-import org.zanata.page.utility.HomePage;
-import org.zanata.workflow.LoginWorkFlow;
-import org.zanata.util.ResetDatabaseRule;
-import org.zanata.page.administration.ManageUserPage;
 import org.zanata.page.administration.ManageUserAccountPage;
+import org.zanata.page.administration.ManageUserPage;
+import org.zanata.page.utility.DashboardPage;
+import org.zanata.util.ResetDatabaseRule;
+import org.zanata.workflow.LoginWorkFlow;
 
 @RunWith(ConcordionRunner.class)
-@Extensions({ScreenshotExtension.class, TimestampFormatterExtension.class, CustomResourceExtension.class})
+@Extensions({ ScreenshotExtension.class, TimestampFormatterExtension.class, CustomResourceExtension.class })
 @Category(ConcordionTest.class)
 public class ManageUsersTest
 {
    @ClassRule
    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
-   private HomePage homePage;
+   private DashboardPage dashboardPage;
 
    @Before
    public void before()
    {
-      homePage = new LoginWorkFlow().signIn("admin", "admin");
+      dashboardPage = new LoginWorkFlow().signIn("admin", "admin");
    }
 
    public ManageUserPage goToUserAdministration()
    {
-      return homePage.goToAdministration().goToManageUserPage();
+      return dashboardPage.goToAdministration().goToManageUserPage();
    }
 
    public ManageUserAccountPage editUserAccount(ManageUserPage manageUserPage, String username)
@@ -61,9 +61,11 @@ public class ManageUsersTest
       return manageUserPage.editUserAccount(username);
    }
 
-   public ManageUserPage changeUsernameAndPassword(ManageUserAccountPage manageUserAccount, String username, String password)
+   public ManageUserPage changeUsernameAndPassword(ManageUserAccountPage manageUserAccount, String username,
+         String password)
    {
-      return manageUserAccount.clearFields().enterUsername(username).enterPassword(password).enterConfirmPassword(password).saveUser();
+      return manageUserAccount.clearFields().enterUsername(username).enterPassword(password)
+            .enterConfirmPassword(password).saveUser();
    }
 
    public boolean userListContains(ManageUserPage manageUserPage, String username)

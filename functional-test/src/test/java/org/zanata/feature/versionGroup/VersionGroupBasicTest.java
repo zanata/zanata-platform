@@ -20,7 +20,10 @@
  */
 package org.zanata.feature.versionGroup;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import java.util.List;
+
 import org.concordion.api.extension.Extensions;
 import org.concordion.ext.ScreenshotExtension;
 import org.concordion.ext.TimestampFormatterExtension;
@@ -31,22 +34,20 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.zanata.concordion.CustomResourceExtension;
 import org.zanata.feature.ConcordionTest;
-import org.zanata.page.utility.HomePage;
+import org.zanata.page.groups.CreateVersionGroupPage;
 import org.zanata.page.groups.VersionGroupPage;
 import org.zanata.page.groups.VersionGroupsPage;
-import org.zanata.page.groups.CreateVersionGroupPage;
 import org.zanata.page.projects.ProjectPage;
+import org.zanata.page.utility.DashboardPage;
+import org.zanata.util.ResetDatabaseRule;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
-import org.zanata.util.ResetDatabaseRule;
-
-import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @RunWith(ConcordionRunner.class)
-@Extensions({ScreenshotExtension.class, TimestampFormatterExtension.class, CustomResourceExtension.class})
+@Extensions({ ScreenshotExtension.class, TimestampFormatterExtension.class, CustomResourceExtension.class })
 @Category(ConcordionTest.class)
 public class VersionGroupBasicTest
 {
@@ -54,32 +55,35 @@ public class VersionGroupBasicTest
    @ClassRule
    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
    private final ProjectWorkFlow projectWorkFlow = new ProjectWorkFlow();
-   private HomePage homePage;
+   private DashboardPage dashboardPage;
    private VersionGroupPage versionGroupPage;
 
    @Before
    public void before()
    {
-      homePage = new LoginWorkFlow().signIn("admin", "admin");
+      dashboardPage = new LoginWorkFlow().signIn("admin", "admin");
    }
 
    public VersionGroupsPage createNewVersionGroup(String groupId, String groupName, String groupDesc, String groupStatus)
    {
-      VersionGroupsPage versionGroupsPage = homePage.goToGroups();
-      return versionGroupsPage.createNewGroup().inputGroupId(groupId).inputGroupName(groupName).inputGroupDescription(groupDesc).selectStatus(groupStatus).saveGroup();
+      VersionGroupsPage versionGroupsPage = dashboardPage.goToGroups();
+      return versionGroupsPage.createNewGroup().inputGroupId(groupId).inputGroupName(groupName)
+            .inputGroupDescription(groupDesc).selectStatus(groupStatus).saveGroup();
    }
 
-   public CreateVersionGroupPage groupIDAlreadyExists(String groupId, String groupName, String groupDesc, String groupStatus)
+   public CreateVersionGroupPage groupIDAlreadyExists(String groupId, String groupName, String groupDesc,
+         String groupStatus)
    {
-      VersionGroupsPage versionGroupsPage = homePage.goToGroups();
+      VersionGroupsPage versionGroupsPage = dashboardPage.goToGroups();
       List<String> groupNames = versionGroupsPage.getGroupNames();
       assertThat("Group does not exist, preconditions not met", groupNames.contains(groupName));
-      return versionGroupsPage.createNewGroup().inputGroupId(groupId).inputGroupName(groupName).inputGroupDescription(groupDesc).selectStatus(groupStatus).saveGroupFailure();
+      return versionGroupsPage.createNewGroup().inputGroupId(groupId).inputGroupName(groupName)
+            .inputGroupDescription(groupDesc).selectStatus(groupStatus).saveGroupFailure();
    }
 
    public CreateVersionGroupPage invalidCharacters(String groupId)
    {
-      VersionGroupsPage versionGroupsPage = homePage.goToGroups();
+      VersionGroupsPage versionGroupsPage = dashboardPage.goToGroups();
       // we toggle the status here to trigger and wait for the validation of group id to happen
       return versionGroupsPage.createNewGroup().inputGroupId(groupId).selectStatus("OBSOLETE").selectStatus("ACTIVE");
    }
@@ -114,7 +118,8 @@ public class VersionGroupBasicTest
    public void createProjectAndVersion(String projectId, String projectName, String version)
    {
       ProjectPage projectPage = projectWorkFlow.createNewProject(projectId, projectName);
-      projectPage.clickCreateVersionLink().inputVersionId(version).selectStatus("READONLY").selectStatus("ACTIVE").saveVersion();
+      projectPage.clickCreateVersionLink().inputVersionId(version).selectStatus("READONLY").selectStatus("ACTIVE")
+            .saveVersion();
    }
 
    public List<List<String>> searchProjectToAddToVersionGroup(String searchTerm)

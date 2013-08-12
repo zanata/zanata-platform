@@ -20,6 +20,8 @@
  */
 package org.zanata.feature.versionGroup;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -27,14 +29,12 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.BasicAcceptanceTest;
 import org.zanata.feature.DetailedTest;
-import org.zanata.page.utility.HomePage;
 import org.zanata.page.groups.CreateVersionGroupPage;
 import org.zanata.page.groups.VersionGroupPage;
 import org.zanata.page.groups.VersionGroupsPage;
+import org.zanata.page.utility.DashboardPage;
 import org.zanata.util.ResetDatabaseRule;
 import org.zanata.workflow.LoginWorkFlow;
-
-import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
@@ -44,12 +44,12 @@ public class VersionGroupFullTest
 {
    @ClassRule
    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
-   private HomePage homePage;
+   private DashboardPage dashboardPage;
 
    @Before
    public void before()
    {
-      homePage = new LoginWorkFlow().signIn("admin", "admin");
+      dashboardPage = new LoginWorkFlow().signIn("admin", "admin");
    }
 
    @Test
@@ -59,7 +59,7 @@ public class VersionGroupFullTest
       String groupID = "basic-group";
       String groupName = "A Basic Group";
 
-      CreateVersionGroupPage createVersionGroupPage = homePage.goToGroups().createNewGroup();
+      CreateVersionGroupPage createVersionGroupPage = dashboardPage.goToGroups().createNewGroup();
       createVersionGroupPage.inputGroupId(groupID);
       createVersionGroupPage.inputGroupName(groupName);
       createVersionGroupPage.inputGroupDescription("A basic group can be saved");
@@ -77,7 +77,7 @@ public class VersionGroupFullTest
       String groupID = "verifyRequiredFieldsGroupID";
       String groupName = "verifyRequiredFieldsGroupName";
 
-      CreateVersionGroupPage groupPage = homePage.goToGroups().createNewGroup().saveGroupFailure();
+      CreateVersionGroupPage groupPage = dashboardPage.goToGroups().createNewGroup().saveGroupFailure();
       assertThat("The two errors are value is required", groupPage.getErrors(), Matchers.contains(errorMsg, errorMsg));
 
       groupPage = groupPage.clearFields().inputGroupName(groupName).saveGroupFailure();
@@ -94,7 +94,7 @@ public class VersionGroupFullTest
       String groupID = "abcdefghijklmnopqrstuvwxyzabcdefghijklmno";
       String groupName = "verifyIDFieldSizeName";
 
-      CreateVersionGroupPage groupPage = homePage.goToGroups().createNewGroup();
+      CreateVersionGroupPage groupPage = dashboardPage.goToGroups().createNewGroup();
       groupPage.inputGroupId(groupID).inputGroupName(groupName).saveGroupFailure();
       assertThat("Invalid length error is shown", groupPage.getErrors(), Matchers.contains(errorMsg));
 
@@ -116,7 +116,7 @@ public class VersionGroupFullTest
          "This text is to test that the description field takes no more than exactly 100 characters - actually.";
 
       assertThat("Description length is greater than 100 characters", groupDescription.length(), Matchers.equalTo(101));
-      CreateVersionGroupPage groupPage = homePage.goToGroups().createNewGroup();
+      CreateVersionGroupPage groupPage = dashboardPage.goToGroups().createNewGroup();
       groupPage.inputGroupId(groupID).inputGroupName(groupName).inputGroupDescription(groupDescription);
       groupPage.saveGroupFailure();
       assertThat("Invalid length error is shown", groupPage.getErrors(), Matchers.contains(errorMsg));

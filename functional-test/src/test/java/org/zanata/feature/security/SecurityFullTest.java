@@ -20,6 +20,11 @@
  */
 package org.zanata.feature.security;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -30,16 +35,10 @@ import org.zanata.feature.BasicAcceptanceTest;
 import org.zanata.feature.DetailedTest;
 import org.zanata.page.account.ResetPasswordPage;
 import org.zanata.page.account.SignInPage;
-import org.zanata.page.utility.HomePage;
+import org.zanata.page.utility.DashboardPage;
 import org.zanata.util.ResetDatabaseRule;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
@@ -61,8 +60,8 @@ public class SecurityFullTest
    @Category(BasicAcceptanceTest.class)
    public void signInSuccessful()
    {
-      HomePage homePage = new LoginWorkFlow().signIn("admin", "admin");
-      assertThat("User is logged in", homePage.loggedInAs(), Matchers.equalTo("admin"));
+      DashboardPage dashboardPage = new LoginWorkFlow().signIn("admin", "admin");
+      assertThat("User is logged in", dashboardPage.loggedInAs(), Matchers.equalTo("admin"));
    }
 
    @Test

@@ -20,6 +20,8 @@
  */
 package org.zanata.feature.startNewProject;
 
+import java.util.List;
+
 import org.concordion.api.extension.Extensions;
 import org.concordion.ext.ScreenshotExtension;
 import org.concordion.ext.TimestampFormatterExtension;
@@ -28,19 +30,17 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.zanata.concordion.CustomResourceExtension;
 import org.zanata.feature.ConcordionTest;
-import org.zanata.page.utility.HomePage;
 import org.zanata.page.projects.ProjectVersionPage;
+import org.zanata.page.utility.DashboardPage;
 import org.zanata.page.webtrans.DocumentsViewPage;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
-
-import java.util.List;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @RunWith(ConcordionRunner.class)
-@Extensions({ScreenshotExtension.class, TimestampFormatterExtension.class, CustomResourceExtension.class})
+@Extensions({ ScreenshotExtension.class, TimestampFormatterExtension.class, CustomResourceExtension.class })
 @Category(ConcordionTest.class)
 public class DocumentListInWebTransTest
 {
@@ -49,16 +49,17 @@ public class DocumentListInWebTransTest
 
    public boolean signInAs(String username, String password)
    {
-      HomePage homePage = new LoginWorkFlow().signIn(username, password);
+      DashboardPage dashboardPage = new LoginWorkFlow().signIn(username, password);
 
-      return homePage.hasLoggedIn();
+      return dashboardPage.hasLoggedIn();
    }
 
    public ProjectVersionPage goToProjectVersion(String projectName, String versionSlug)
    {
-      projectVersionPage = new BasicWorkFlow().goToPage(String.format("iteration/view/plurals/%s", versionSlug), ProjectVersionPage.class);
-//      ProjectPage projectPage = homePage.goToProjects().goToProject(projectName);
-//      projectVersionPage = projectPage.goToVersion(versionSlug);
+      projectVersionPage = new BasicWorkFlow().goToPage(String.format("iteration/view/plurals/%s", versionSlug),
+            ProjectVersionPage.class);
+      //      ProjectPage projectPage = homePage.goToProjects().goToProject(projectName);
+      //      projectVersionPage = projectPage.goToVersion(versionSlug);
       return projectVersionPage;
    }
 
