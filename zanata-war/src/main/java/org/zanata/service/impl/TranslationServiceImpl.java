@@ -636,7 +636,7 @@ public class TranslationServiceImpl implements TranslationService
             
             if(Events.exists())
             {
-               Events.instance().raiseTransactionSuccessEvent(
+               Events.instance().raiseEvent(
                      DocumentUploadedEvent.EVENT_NAME,
                      new DocumentUploadedEvent(document.getId(), false, hLocale.getLocaleId()
                ));
