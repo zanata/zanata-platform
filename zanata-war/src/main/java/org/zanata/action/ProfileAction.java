@@ -179,7 +179,7 @@ public class ProfileAction implements Serializable
 
    @NotEmpty
    @Size(min = 3, max = 20)
-   @Pattern(regexp = "^[a-z\\d_]{3,20}$")
+   @Pattern(regexp = "^[a-z\\d_]{3,20}$", message = "{validation.username.constraints}")
    public String getUsername()
    {
       return username;
