@@ -50,7 +50,7 @@
 			        		</s:fragment>
 			        		
 			        		<s:fragment rendered="#{activity.activityType == 'UPLOAD_SOURCE_DOCUMENT'}">
-			        			You uploaded a document of <strong>#{activityAction.getWordsCountMessage(activity.wordCount)}</strong> to
+			        			You uploaded source documents of <strong>#{activityAction.getWordsCountMessage(activity.wordCount)}</strong> to
 			        			<a href="#{activityAction.getProjectUrl(activity)}">#{activityAction.getProjectName(activity)}</a>
 			        		</s:fragment>
 			        		
@@ -65,22 +65,31 @@
 			          			<i aria-hidden="true" class="i i--clock txt--neutral" title="#{messages['jsf.Time']}"></i>
 			          			<span class="is-invisible">#{messages['jsf.Time']}</span>#{activityAction.getHowLongAgoDescription(activity)}
 			          		</li>
+			          		<ui:param name="docName" value="#{activityAction.getDocumentName(activity)}"/>
+			          		<s:fragment rendered="#{docName != null and !docName.isEmpty()}">
 			          		<li class="reveal__target">
 			          			<i aria-hidden="true" class="i i--document txt--neutral" title="#{messages['jsf.Document']}"></i>
 			          			<span class="is-invisible">#{messages['jsf.Document']}</span> 
-			          			<a href="#{activityAction.getDocumentUrl(activity)}">#{activityAction.getDocumentName(activity)}</a>
+			          			<a href="#{activityAction.getDocumentUrl(activity)}">#{docName}</a>
 			          		</li>
-			          		<li class="reveal__target">
-			          			<i aria-hidden="true" class="i i--language txt--neutral" title="#{messages['jsf.Language']}"></i>
-			          			<span class="is-invisible">#{messages['jsf.Language']}</span> 
-			          			<a href="#{activityAction.getDocumentListUrl(activity)}">#{activityAction.getLanguageName(activity)}</a>
-			          		</li>
-			          		<li class="reveal__target">
-			          			<i aria-hidden="true" class="i i--version txt--neutral" title="#{messages['jsf.Version']}">
-			          				<span class="is-invisible">#{messages['jsf.Version']}</span>
-			          			</i> 
-			          			<a href="#{activityAction.getVersionUrl(activity)}">#{activityAction.getVersionName(activity)}</a>
-			          		</li>
+			          		</s:fragment>
+			          		<ui:param name="languageName" value="#{activityAction.getLanguageName(activity)}"/>
+			          		<s:fragment rendered="#{languageName != null and !languageName.isEmpty()}">
+				          		<li class="reveal__target">
+				          			<i aria-hidden="true" class="i i--language txt--neutral" title="#{messages['jsf.Language']}"></i>
+				          			<span class="is-invisible">#{messages['jsf.Language']}</span> 
+				          			<a href="#{activityAction.getDocumentListUrl(activity)}">#{languageName}</a>
+				          		</li>
+			          		</s:fragment>
+			          		<ui:param name="versionName" value="#{activityAction.getVersionName(activity)}"/>
+			          		<s:fragment rendered="#{versionName != null and !versionName.isEmpty()}">
+				          		<li class="reveal__target">
+				          			<i aria-hidden="true" class="i i--version txt--neutral" title="#{messages['jsf.Version']}">
+				          				<span class="is-invisible">#{messages['jsf.Version']}</span>
+				          			</i> 
+				          			<a href="#{activityAction.getVersionUrl(activity)}">#{versionName}</a>
+				          		</li>
+			          		</s:fragment>
 			        	</ul>
 			     	</li>
 		     	</ui:repeat>
