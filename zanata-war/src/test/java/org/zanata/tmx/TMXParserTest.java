@@ -112,6 +112,34 @@ public class TMXParserTest extends ZanataDbunitJpaTest
       });
    }
 
+   @Test(expectedExceptions = TMXParseException.class, expectedExceptionsMessageRegExp=".*Wrong root element.*")
+   @org.junit.Test(expected = TMXParseException.class)
+   public void parseInvalidXML() throws Exception
+   {
+      createTMFromFile("/tmx/invalid.xml");
+   }
+
+   @Test(expectedExceptions = TMXParseException.class)
+   @org.junit.Test(expected = TMXParseException.class)
+   public void parseEmptyTXT() throws Exception
+   {
+      createTMFromFile("/tmx/empty.txt");
+   }
+
+   @Test(expectedExceptions = TMXParseException.class)
+   @org.junit.Test(expected = TMXParseException.class)
+   public void parseInvalidTXT() throws Exception
+   {
+      createTMFromFile("/tmx/invalid.txt");
+   }
+
+   @Test(expectedExceptions = TMXParseException.class, expectedExceptionsMessageRegExp=".*Invalid TMX document.*")
+   @org.junit.Test(expected = TMXParseException.class)
+   public void parseInvalidHTML() throws Exception
+   {
+      createTMFromFile("/tmx/invalid.xhtml");
+   }
+
    @Test
    @org.junit.Test
    public void parseTMX() throws Exception

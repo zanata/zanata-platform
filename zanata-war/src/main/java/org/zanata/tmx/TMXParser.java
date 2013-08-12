@@ -92,9 +92,15 @@ public class TMXParser
          @Cleanup
          XMLStreamReader reader = factory.createXMLStreamReader(input);
 
-         QName tu = new QName("tu");
+         QName tmx = new QName("tmx");
          QName header = new QName("header");
+         QName tu = new QName("tu");
 
+         while (reader.hasNext() && reader.next() != XMLStreamConstants.START_ELEMENT) {}
+         if (!reader.hasNext()) throw new TMXParseException("No root element");
+         if (!reader.getName().equals(tmx)) throw new TMXParseException("Wrong root element: expected tmx");
+
+         // At this point, event = START_ELEMENT and name = tmx
          while (reader.hasNext())
          {
             int eventType = reader.next();

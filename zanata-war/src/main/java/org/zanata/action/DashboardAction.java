@@ -46,8 +46,6 @@ import org.zanata.service.GravatarService;
 import org.zanata.util.DateUtil;
 import org.zanata.util.UrlUtil;
 
-import com.ctc.wstx.util.URLUtil;
-
 @Name("dashboardAction")
 @Scope(ScopeType.PAGE)
 public class DashboardAction implements Serializable

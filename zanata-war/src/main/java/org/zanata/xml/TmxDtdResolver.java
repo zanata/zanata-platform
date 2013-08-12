@@ -55,7 +55,7 @@ public class TmxDtdResolver implements XMLResolver, EntityResolver
       }
       else
       {
-         return null;
+         throw new XMLStreamException("Invalid TMX document: expected tmx14.dtd");
       }
    }
 
@@ -69,7 +69,7 @@ public class TmxDtdResolver implements XMLResolver, EntityResolver
       }
       else
       {
-         return null;
+         throw new SAXException("Invalid TMX document: expected tmx14.dtd");
       }
    }
 
