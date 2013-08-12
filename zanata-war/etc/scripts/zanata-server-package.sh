@@ -4,10 +4,10 @@
 # Author: camunoz@redhat.com
 
 # This script prepares a Zanata standalone server package
-# based on JBoss 5 Community version.
+# based on JBoss 7.2.0 AS Community version.
 #
 # Parameters:
-# 1. JBoss 5 zip distribution location.
+# 1. JBoss 7 zip distribution location.
 #
 # Pre-requisites:
 # 1. Apache maven in the path
@@ -15,7 +15,7 @@
 # Mysql Driver version to be used
 MYSQL_DRV_VERSION=5.1.18
 
-# Get the JBoss 5 zip location from parameters
+# Get the JBoss 7 zip location from parameters
 JBOSS_ZIP_LOC=$1
 JBOSS_ZIP_PARENT=${JBOSS_ZIP_LOC%/*}
 
@@ -37,39 +37,29 @@ JBOSS_TMP_DIR=$TMP_DIR/$(ls $TMP_DIR | sort -n | head -1)
 
 # Remove unnecessary files from the package
 echo 'Customizing JBoss release...'
-rm -rf $JBOSS_TMP_DIR/client
+rm -rf $JBOSS_TMP_DIR/bin/client
 rm -rf $JBOSS_TMP_DIR/docs
-rm -rf $JBOSS_TMP_DIR/server/all
-rm -rf $JBOSS_TMP_DIR/server/minimal
-rm -rf $JBOSS_TMP_DIR/server/standard
-rm -rf $JBOSS_TMP_DIR/server/web
-rm -rf $JBOSS_TMP_DIR/server/default/deploy/admin-console.war
-rm -rf $JBOSS_TMP_DIR/server/default/deploy/jmx-console.war
-rm -rf $JBOSS_TMP_DIR/server/default/deploy/ROOT.war
-
-# Rename files
-mv $JBOSS_TMP_DIR/server/default $JBOSS_TMP_DIR/server/zanata
 
 # Add Zanata specific files
-cp $ZANATA_WAR_HOME/target/zanata-*.war $JBOSS_TMP_DIR/server/zanata/deploy/zanata.war
-cp $ZANATA_WAR_HOME/src/etc/zanata-ds.xml $JBOSS_TMP_DIR/server/zanata/deploy
+cp $ZANATA_WAR_HOME/target/zanata-*.war $JBOSS_TMP_DIR/standalone/deployments/zanata.war
+cp $ZANATA_WAR_HOME/src/etc/zanata-ds.xml $JBOSS_TMP_DIR//standalone/deployments
 cp -r $ZANATA_WAR_HOME/etc/public-package/* $JBOSS_TMP_DIR/
 
 # Get Maven dependencies
 mvn dependency:get -DrepoUrl=http://repo1.maven.org -Dartifact=mysql:mysql-connector-java:$MYSQL_DRV_VERSION
-cp ~/.m2/repository/mysql/mysql-connector-java/$MYSQL_DRV_VERSION/mysql-connector-java-$MYSQL_DRV_VERSION.jar $JBOSS_TMP_DIR/server/zanata/lib
+cp ~/.m2/repository/mysql/mysql-connector-java/$MYSQL_DRV_VERSION/mysql-connector-java-$MYSQL_DRV_VERSION.jar $JBOSS_TMP_DIR/standalone/deployments/mysql-connector-java.jar
 
 # Create zanata start scripts
 
 echo "# Zanata start script" >> $JBOSS_TMP_DIR/bin/start-zanata.sh
-echo "./run.sh -c zanata" >> $JBOSS_TMP_DIR/bin/start-zanata.sh
-echo "run.bat -c zanata" >> $JBOSS_TMP_DIR/bin/start-zanata.bat
+echo "./standalone.sh" >> $JBOSS_TMP_DIR/bin/start-zanata.sh
+echo "standalone.bat" >> $JBOSS_TMP_DIR/bin/start-zanata.bat
 chmod a+x $JBOSS_TMP_DIR/bin/start-zanata.sh
 
 # Rename the JBoss temporary directory
 mv $JBOSS_TMP_DIR $TMP_DIR/zanata-server-$zanata_version
 
-# Pack the war again
+# Pack the distribution
 echo 'Building distributable archive...'
 cd $TMP_DIR
 zip -rq zanata-server-${zanata_version}.zip zanata-server-$zanata_version
