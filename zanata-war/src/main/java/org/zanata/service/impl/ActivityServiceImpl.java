@@ -115,10 +115,6 @@ public class ActivityServiceImpl implements ActivityService
          activityDAO.makePersistent(activity);
          activityDAO.flush();
       }
-      else
-      {
-         log.warn("Unable to log activity. One or more of the information is null: actor-{0}, context-{1}, activityType-{2}", actor, context, activityType);
-      }
    }
 
    @Override
