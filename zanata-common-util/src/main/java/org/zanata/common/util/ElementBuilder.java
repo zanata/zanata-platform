@@ -21,6 +21,7 @@
 
 package org.zanata.common.util;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static javax.xml.stream.XMLStreamConstants.*;
 
 import java.util.Iterator;
@@ -168,7 +169,7 @@ public class ElementBuilder
 
    private static String getName(String prefix, String localName)
    {
-      String xPrefix = prefix.isEmpty() ? "" : prefix + ":";
+      String xPrefix = isNullOrEmpty(prefix) ? "" : prefix + ":";
       String prefixedName = xPrefix + localName;
       return prefixedName;
    }
@@ -176,7 +177,7 @@ public class ElementBuilder
    private static String getName(QName name)
    {
       String prefix = name.getPrefix();
-      String xPrefix = prefix.isEmpty() ? "" : prefix + ":";
+      String xPrefix = isNullOrEmpty(prefix) ? "" : prefix + ":";
       String prefixedName = xPrefix + name.getLocalPart();
       return prefixedName;
    }
