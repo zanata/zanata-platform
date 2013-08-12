@@ -17,7 +17,7 @@
 			</s:fragment>
 	
 			<s:fragment
-				rendered="#{empty org.jboss.seam.international.statusMessages.currentGlobalMessages}">
+				rendered="#{not empty org.jboss.seam.international.statusMessages.currentGlobalMessages}">
 				<ul class="list--no-bullets">
 					<li>
 						<div class="alert--danger">
