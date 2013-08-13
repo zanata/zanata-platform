@@ -702,14 +702,27 @@
              </plugin>
              <!-- change maven-release-plugin back to defaults (instead of oss-parent's settings)  -->
              <plugin>
-               <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-release-plugin</artifactId>
-               <version>2.1</version>
                <configuration>
                   <mavenExecutorId>invoker</mavenExecutorId>
                   <useReleaseProfile>true</useReleaseProfile>
-                  <arguments></arguments>
+                  <arguments>${arguments}</arguments>
                </configuration>
+             </plugin>
+             <plugin>
+                  <artifactId>maven-gpg-plugin</artifactId>
+                  <executions>
+                     <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                           <goal>sign</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+                  <configuration>
+                     <skip>true</skip>
+                  </configuration>
              </plugin>
          </plugins>
       </pluginManagement>
