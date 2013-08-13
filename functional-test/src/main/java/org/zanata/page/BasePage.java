@@ -78,7 +78,7 @@ public class BasePage extends AbstractPage
    
    @FindBy(id = "home")
    private WebElement homeLink;
-
+   
    private static final By BY_SIGN_IN = By.id("signin_link");
    private static final By BY_SIGN_OUT = By.id("right_menu_sign_out_link");
    private static final By BY_PROFILE_LINK = By.id("profile");
@@ -105,7 +105,7 @@ public class BasePage extends AbstractPage
       homeLink.click();
       return new HomePage(getDriver());
    }
-
+   
    public ProjectsPage goToProjects()
    {
       projectsLink.click();

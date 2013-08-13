@@ -40,7 +40,7 @@ import org.zanata.workflow.LoginWorkFlow;
 public class DashboardTest
 {
    @ClassRule
-   public static ResetDatabaseRule rule = new ResetDatabaseRule(ResetDatabaseRule.Config.NoResetAfter, ResetDatabaseRule.Config.WithData);
+   public static ResetDatabaseRule rule = new ResetDatabaseRule(ResetDatabaseRule.Config.WithData);
 
    private DashboardPage dashboardPage;
 
@@ -63,7 +63,7 @@ public class DashboardTest
 
    public void gotoDashboard()
    {
-      new BasicWorkFlow().goToHome();
+      dashboardPage = new BasicWorkFlow().goToDashboard();
    }
 
    public boolean myActivitiesListNotEmpty()
