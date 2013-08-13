@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>server</artifactId>
-  <version>3.0.0-alpha-2-SNAPSHOT</version>
+  <version>3.0.1-SNAPSHOT</version>
   <name>Zanata server modules</name>
   <packaging>pom</packaging>
   <parent>
@@ -699,6 +699,30 @@
                          <format>xml</format>
                      </formats>
                  </configuration>
+             </plugin>
+             <!-- change maven-release-plugin back to defaults (instead of oss-parent's settings)  -->
+             <plugin>
+               <artifactId>maven-release-plugin</artifactId>
+               <configuration>
+                  <mavenExecutorId>invoker</mavenExecutorId>
+                  <useReleaseProfile>true</useReleaseProfile>
+                  <arguments>${arguments}</arguments>
+               </configuration>
+             </plugin>
+             <plugin>
+                  <artifactId>maven-gpg-plugin</artifactId>
+                  <executions>
+                     <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                           <goal>sign</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+                  <configuration>
+                     <skip>true</skip>
+                  </configuration>
              </plugin>
          </plugins>
       </pluginManagement>
