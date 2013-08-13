@@ -1,7 +1,5 @@
 package org.zanata.webtrans.server.rpc;
 
-import com.ibm.icu.util.ULocale;
-import java.util.Locale;
 import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
@@ -10,16 +8,11 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.zanata.dao.LocaleDAO;
-import org.zanata.dao.ProjectDAO;
-import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.webtrans.server.ActionHandlerFor;
-import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.TextFlowTarget;
 import org.zanata.webtrans.shared.model.TextFlowTargetId;
 import org.zanata.webtrans.shared.rpc.GetTargetForLocale;

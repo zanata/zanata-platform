@@ -18,7 +18,6 @@
  */
 package org.zanata.webtrans.client.presenter;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import net.customware.gwt.presenter.client.EventBus;
@@ -26,6 +25,8 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 import org.zanata.webtrans.client.events.HideReferenceEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.ShowReferenceEvent;
+import org.zanata.webtrans.client.events.UserConfigChangeEvent;
+import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.view.TransUnitChangeSourceLangDisplay;
 import org.zanata.webtrans.shared.model.Locale;
@@ -33,57 +34,91 @@ import org.zanata.webtrans.shared.rpc.GetLocaleList;
 import org.zanata.webtrans.shared.rpc.GetLocaleListResult;
 
 /**
- *
- * @author hannes
+ * 
+ * @author Hannes Eskebaek <hannes.eskebaek@databyran.se>
  */
-public class TransUnitChangeSourceLangPresenter extends WidgetPresenter<TransUnitChangeSourceLangDisplay> implements TransUnitChangeSourceLangDisplay.Listener {
-
+public class TransUnitChangeSourceLangPresenter extends WidgetPresenter<TransUnitChangeSourceLangDisplay> implements TransUnitChangeSourceLangDisplay.Listener, UserConfigChangeHandler
+{
     private final CachingDispatchAsync dispatcher;
 
+    private final UserConfigHolder configHolder;
+
     @Inject
-    public TransUnitChangeSourceLangPresenter(TransUnitChangeSourceLangDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher) {
+    public TransUnitChangeSourceLangPresenter(TransUnitChangeSourceLangDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, UserConfigHolder configHolder)
+    {
         super(display, eventBus);
         this.dispatcher = dispatcher;
+        this.configHolder = configHolder;
         display.setListener(this);
+
+        setDisplayMode();
     }
 
     @Override
-    protected void onBind() {
+    protected void onBind()
+    {
         buildListBox();
+        registerHandler(eventBus.addHandler(UserConfigChangeEvent.TYPE, this));
     }
 
     @Override
-    protected void onUnbind() {
+    protected void onUnbind()
+    {
     }
 
     @Override
-    protected void onRevealDisplay() {
+    protected void onRevealDisplay()
+    {
     }
 
-    private void buildListBox() {
+    private void buildListBox()
+    {
         GetLocaleList action = new GetLocaleList();
-        
 
-        dispatcher.execute(action, new AsyncCallback<GetLocaleListResult>() {
+
+        dispatcher.execute(action, new AsyncCallback<GetLocaleListResult>()
+        {
             @Override
-            public void onFailure(Throwable caught) {
+            public void onFailure(Throwable caught)
+            {
                 eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Failed to fetch locales"));
             }
 
             @Override
-            public void onSuccess(GetLocaleListResult result) {
+            public void onSuccess(GetLocaleListResult result)
+            {
                 display.buildListBox(result.getLocales());
             }
         });
     }
 
     @Override
-    public void onShowButtonClick(Locale selectedLocale) {
+    public void onShowReference(Locale selectedLocale)
+    {
         eventBus.fireEvent(new ShowReferenceEvent(selectedLocale));
     }
 
     @Override
-    public void onHideButtonClick() {
+    public void onHideReference()
+    {
         eventBus.fireEvent(new HideReferenceEvent());
+    }
+
+    @Override
+    public void onUserConfigChanged(UserConfigChangeEvent event)
+    {
+        if (event == UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT) {
+            setDisplayMode();
+        }
+    }
+
+    private void setDisplayMode()
+    {
+        if (configHolder.getState().isEnabledReferenceForSourceLang()) {
+            display.showReferenceList();
+        } else {
+            eventBus.fireEvent(new HideReferenceEvent());
+            display.hideReferenceList();
+        }
     }
 }

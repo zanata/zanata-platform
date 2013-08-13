@@ -43,17 +43,24 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import org.zanata.common.LocaleId;
 import org.zanata.webtrans.client.resources.UiMessages;
+import org.zanata.webtrans.client.ui.LocaleListBox;
+import org.zanata.webtrans.shared.model.IdForLocale;
+import org.zanata.webtrans.shared.model.Locale;
 import org.zanata.webtrans.shared.model.TextFlowTarget;
 
 public class SourceContentsView extends Composite implements SourceContentsDisplay
 {
+    public static final int COLUMNS = 1;
 
-   public static final int COLUMNS = 1;
-   public static final int DEFAULT_ROWS = 1;
-   private final Grid sourcePanelContainer;
-   private List<HasSelectableSource> sourcePanelList;
-   private final TransUnitDetailsPanel transUnitDetailsPanel;
+    public static final int DEFAULT_ROWS = 1;
+
+    private final Grid sourcePanelContainer;
+
+    private List<HasSelectableSource> sourcePanelList;
+
+    private final TransUnitDetailsPanel transUnitDetailsPanel;
 
     private final UserConfigHolder configHolder;
 
@@ -66,7 +73,8 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
     private UiMessages messages;
 
     @Inject
-    public SourceContentsView(Provider<TransUnitDetailsPanel> transUnitDetailsPanelProvider, UserConfigHolder configHolder, History history, final UiMessages messages) {
+    public SourceContentsView(Provider<TransUnitDetailsPanel> transUnitDetailsPanelProvider, UserConfigHolder configHolder, History history, final UiMessages messages)
+    {
         this.configHolder = configHolder;
         this.history = history;
         this.messages = messages;
@@ -74,14 +82,14 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
         FlowPanel root = new FlowPanel();
         root.setSize("100%", "100%");
 
-      FlowPanel container = new FlowPanel();
-      container.setSize("100%", "100%");
+        FlowPanel container = new FlowPanel();
+        container.setSize("100%", "100%");
 
-      sourcePanelContainer = new Grid(DEFAULT_ROWS, COLUMNS);
-      sourcePanelContainer.addStyleName("sourceTable");
+        sourcePanelContainer = new Grid(DEFAULT_ROWS, COLUMNS);
+        sourcePanelContainer.addStyleName("sourceTable");
 
-      container.add(sourcePanelContainer);
-      root.add(container);
+        container.add(sourcePanelContainer);
+        root.add(container);
 
         referenceLabel = new Label(messages.noReferenceFoundText());
         referenceLabel.addStyleName("referenceLabel");
@@ -91,116 +99,111 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
         InlineLabel bookmarkIcon = createBookmarkIcon();
         root.add(bookmarkIcon);
 
-      transUnitDetailsPanel = transUnitDetailsPanelProvider.get();
-      root.add(transUnitDetailsPanel);
+        transUnitDetailsPanel = transUnitDetailsPanelProvider.get();
+        root.add(transUnitDetailsPanel);
 
-      initWidget(root);
-   }
+        initWidget(root);
+    }
 
-   private InlineLabel createBookmarkIcon()
-   {
-      InlineLabel bookmarkIcon = new InlineLabel();
-      bookmarkIcon.setStyleName("bookmark icon-bookmark-1");
-      bookmarkIcon.addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            HistoryToken historyToken = history.getHistoryToken();
-            historyToken.setTextFlowId(transUnit.getId().toString());
-            history.newItem(historyToken);
-         }
-      });
-      return bookmarkIcon;
-   }
-
-   @Override
-   public List<HasSelectableSource> getSourcePanelList()
-   {
-      return sourcePanelList;
-   }
-
-   @Override
-   public void setValue(TransUnit value)
-   {
-      setValue(value, false);
-   }
-
-   @Override
-   public void setValue(TransUnit value, boolean fireEvents)
-   {
-      transUnit = value;
-      transUnitDetailsPanel.setDetails(value);
-      sourcePanelContainer.resizeRows(value.getSources().size());
-      sourcePanelList.clear();
-
-      int rowIndex = 0;
-      boolean useCodeMirrorEditor = configHolder.getState().isUseCodeMirrorEditor();
-      for (String source : value.getSources())
-      {
-         SourcePanel sourcePanel = new SourcePanel(transUnit.getId(), useCodeMirrorEditor);
-         sourcePanel.setValue(source, value.getSourceComment(), value.isPlural());
-         sourcePanelContainer.setWidget(rowIndex, 0, sourcePanel);
-         sourcePanelList.add(sourcePanel);
-         rowIndex++;
-      }
-      toggleTransUnitDetails(configHolder.getState().isShowOptionalTransUnitDetails());
-   }
-
-   @Override
-   public void highlightSearch(String search)
-   {
-      for (Widget sourceLabel : sourcePanelContainer)
-      {
-         ((SourcePanel) sourceLabel).highlightSearch(search);
-      }
-   }
-
-   @Override
-   public void setSourceSelectionHandler(ClickHandler clickHandler)
-   {
-      Preconditions.checkState(!sourcePanelList.isEmpty(), "empty source panel list. Did you forget to call setValue() before this?");
-      for (HasSelectableSource hasSelectableSource : sourcePanelList)
-      {
-         hasSelectableSource.addClickHandler(clickHandler);
-      }
-   }
-
-   @Override
-   public void refresh()
-   {
-      for (HasSelectableSource hasSelectableSource : sourcePanelList)
-      {
-         hasSelectableSource.refresh();
-      }
-   }
-
-   @Override
-   public void toggleTransUnitDetails(boolean showTransUnitDetails)
-   {
-      if (transUnitDetailsPanel.hasNoMetaInfo() && !showTransUnitDetails)
-      {
-         transUnitDetailsPanel.setVisible(false);
-      }
-      else
-      {
-         transUnitDetailsPanel.setVisible(true);
-      }
-   }
-
-   @Override
-   public void updateTransUnitDetails(TransUnit transUnit)
-   {
-      transUnitDetailsPanel.setDetails(transUnit);
-   }
+    private InlineLabel createBookmarkIcon()
+    {
+        InlineLabel bookmarkIcon = new InlineLabel();
+        bookmarkIcon.setStyleName("bookmark icon-bookmark-1");
+        bookmarkIcon.addClickHandler(new ClickHandler()
+        {
+            @Override
+            public void onClick(ClickEvent event)
+            {
+                HistoryToken historyToken = history.getHistoryToken();
+                historyToken.setTextFlowId(transUnit.getId().toString());
+                history.newItem(historyToken);
+            }
+        });
+        return bookmarkIcon;
+    }
 
     @Override
-    public TransUnitId getId() {
+    public List<HasSelectableSource> getSourcePanelList()
+    {
+        return sourcePanelList;
+    }
+
+    @Override
+    public void setValue(TransUnit value)
+    {
+        setValue(value, false);
+    }
+
+    @Override
+    public void setValue(TransUnit value, boolean fireEvents)
+    {
+        transUnit = value;
+        transUnitDetailsPanel.setDetails(value);
+        sourcePanelContainer.resizeRows(value.getSources().size());
+        sourcePanelList.clear();
+
+        int rowIndex = 0;
+        boolean useCodeMirrorEditor = configHolder.getState().isUseCodeMirrorEditor();
+        for (String source : value.getSources()) {
+            SourcePanel sourcePanel = new SourcePanel(transUnit.getId(), useCodeMirrorEditor);
+            sourcePanel.setValue(source, value.getSourceComment(), value.isPlural());
+            sourcePanelContainer.setWidget(rowIndex, 0, sourcePanel);
+            sourcePanelList.add(sourcePanel);
+            rowIndex++;
+        }
+        toggleTransUnitDetails(configHolder.getState().isShowOptionalTransUnitDetails());
+    }
+
+    @Override
+    public void highlightSearch(String search)
+    {
+        for (Widget sourceLabel : sourcePanelContainer) {
+            ((SourcePanel) sourceLabel).highlightSearch(search);
+        }
+    }
+
+    @Override
+    public void setSourceSelectionHandler(ClickHandler clickHandler)
+    {
+        Preconditions.checkState(!sourcePanelList.isEmpty(), "empty source panel list. Did you forget to call setValue() before this?");
+        for (HasSelectableSource hasSelectableSource : sourcePanelList) {
+            hasSelectableSource.addClickHandler(clickHandler);
+        }
+    }
+
+    @Override
+    public void refresh()
+    {
+        for (HasSelectableSource hasSelectableSource : sourcePanelList) {
+            hasSelectableSource.refresh();
+        }
+    }
+
+    @Override
+    public void toggleTransUnitDetails(boolean showTransUnitDetails)
+    {
+        if (transUnitDetailsPanel.hasNoMetaInfo() && !showTransUnitDetails) {
+            transUnitDetailsPanel.setVisible(false);
+        } else {
+            transUnitDetailsPanel.setVisible(true);
+        }
+    }
+
+    @Override
+    public void updateTransUnitDetails(TransUnit transUnit)
+    {
+        transUnitDetailsPanel.setDetails(transUnit);
+    }
+
+    @Override
+    public TransUnitId getId()
+    {
         return transUnit.getId();
     }
 
     @Override
-    public void showReference(TextFlowTarget reference) {
+    public void showReference(TextFlowTarget reference)
+    {
         if (reference == null) {
             referenceLabel.setText(messages.noReferenceFoundText());
         } else {
@@ -210,7 +213,8 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
     }
 
     @Override
-    public void hideReference() {
+    public void hideReference()
+    {
         referenceLabel.setVisible(false);
     }
 }
