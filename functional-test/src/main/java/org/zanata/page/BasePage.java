@@ -20,13 +20,9 @@
  */
 package org.zanata.page;
 
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -46,11 +42,13 @@ import org.zanata.page.projects.ProjectsPage;
 import org.zanata.page.utility.HomePage;
 import org.zanata.util.WebElementUtil;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Nullable;
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
@@ -77,7 +75,10 @@ public class BasePage extends AbstractPage
 
    @FindBy(id = "user_avatar")
    private WebElement userAvatar;
-
+   
+   @FindBy(id = "home")
+   private WebElement homeLink;
+   
    private static final By BY_SIGN_IN = By.id("signin_link");
    private static final By BY_SIGN_OUT = By.id("right_menu_sign_out_link");
    private static final By BY_PROFILE_LINK = By.id("profile");
@@ -98,7 +99,13 @@ public class BasePage extends AbstractPage
 
       return new MyAccountPage(getDriver());
    }
-
+   
+   public HomePage goToHomePage()
+   {
+      homeLink.click();
+      return new HomePage(getDriver());
+   }
+   
    public ProjectsPage goToProjects()
    {
       projectsLink.click();

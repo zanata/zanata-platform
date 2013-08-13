@@ -29,9 +29,9 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.zanata.concordion.CustomResourceExtension;
 import org.zanata.feature.ConcordionTest;
-import org.zanata.page.utility.HomePage;
 import org.zanata.page.administration.ManageLanguagePage;
 import org.zanata.page.administration.ManageLanguageTeamMemberPage;
+import org.zanata.page.utility.DashboardPage;
 import org.zanata.workflow.LoginWorkFlow;
 
 /**
@@ -42,19 +42,19 @@ import org.zanata.workflow.LoginWorkFlow;
 @Category(ConcordionTest.class)
 public class TranslatorJoinsLanguageTeamTest
 {
-   private HomePage homePage;
+   private DashboardPage dashboardPage;
    private ManageLanguagePage manageLanguagePage;
    private ManageLanguageTeamMemberPage manageLanguageTeamMemberPage;
 
    @Before
    public void beforeMethod()
    {
-      homePage = new LoginWorkFlow().signIn("admin", "admin");
+      dashboardPage = new LoginWorkFlow().signIn("admin", "admin");
    }
 
    public void goToManageLanguagePage()
    {
-      manageLanguagePage = homePage.goToAdministration().goToManageLanguagePage();
+      manageLanguagePage = dashboardPage.goToAdministration().goToManageLanguagePage();
    }
 
    public ManageLanguageTeamMemberPage manageLanguage(String locale)

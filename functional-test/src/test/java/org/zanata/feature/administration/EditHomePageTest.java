@@ -26,6 +26,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
+import org.zanata.page.utility.DashboardPage;
 import org.zanata.page.utility.HomePage;
 import org.zanata.page.administration.EditHomeCodePage;
 import org.zanata.page.administration.EditHomeContentPage;
@@ -38,7 +39,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-@Ignore //Home page replaced by dashboard. No longer have edit page
 public class EditHomePageTest
 {
    @ClassRule
@@ -48,7 +48,9 @@ public class EditHomePageTest
    @Ignore("Cannot access the editor via WebDriver")
    public void goToEditPageContent()
    {
-      EditHomeContentPage editHomeContentPage = new LoginWorkFlow().signIn("admin", "admin").goToEditPageContent();
+      DashboardPage dashboard = new LoginWorkFlow().signIn("admin", "admin");
+      EditHomeContentPage editHomeContentPage = dashboard.goToHomePage().goToEditPageContent();
+
       assertThat("Correct page", editHomeContentPage.getTitle(), Matchers.equalTo("Zanata: Edit Home Page"));
       editHomeContentPage = editHomeContentPage.enterText("Test");
       HomePage homePage = editHomeContentPage.update();
@@ -56,13 +58,13 @@ public class EditHomePageTest
       editHomeContentPage.cancelUpdate();
    }
 
-   @Test(expected = AssertionError.class) // RHBZ-988162 - not updating immediately
-  
    public void goToEditPageCode()
    {
-      EditHomeCodePage editHomeCodePage = new LoginWorkFlow().signIn("admin", "admin").goToEditPageCode();
+      DashboardPage dashboard = new LoginWorkFlow().signIn("admin", "admin");
+      EditHomeCodePage editHomeCodePage = dashboard.goToHomePage().goToEditPageCode();
+
       assertThat("Correct page", editHomeCodePage.getTitle(), Matchers.equalTo("Zanata: Edit Page Code"));
-      HomePage homePage  = editHomeCodePage.enterText("Test").update();
+      HomePage homePage = editHomeCodePage.enterText("Test").update();
       assertThat("Message displayed", homePage.getNotificationMessage(),
             Matchers.equalTo("Home content was successfully updated."));
       editHomeCodePage = homePage.goToEditPageCode();

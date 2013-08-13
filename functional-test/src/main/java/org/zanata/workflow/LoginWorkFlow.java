@@ -20,33 +20,32 @@
  */
 package org.zanata.workflow;
 
-import org.zanata.page.utility.HomePage;
-import org.zanata.page.account.SignInPage;
-
 import lombok.extern.slf4j.Slf4j;
+
+import org.zanata.page.account.SignInPage;
+import org.zanata.page.utility.DashboardPage;
 
 @Slf4j
 public class LoginWorkFlow extends AbstractWebWorkFlow
 {
-   public HomePage signIn(String username, String password)
+   public DashboardPage signIn(String username, String password)
    {
-      // System.getProperties().put("webdriver.firefox.useExisting", "true");
       log.info("accessing zanata at: {}", hostUrl);
 
-      HomePage homePage = new HomePage(driver);
-      if (homePage.hasLoggedIn())
+      DashboardPage dashboardPage = new DashboardPage(driver);
+      if (dashboardPage.hasLoggedIn())
       {
          log.info("already logged in as {}", username);
-         if (homePage.loggedInAs().equals(username))
+         if (dashboardPage.loggedInAs().equals(username))
          {
-            return homePage;
+            return dashboardPage;
          }
          log.info("sign out first then sign back in as {}", username);
-         homePage = homePage.logout();
+         dashboardPage.logout();
       }
 
-      SignInPage signInPage = homePage.clickSignInLink();
-      return signInPage.signInAndGoToPage(username, password, HomePage.class);
+      SignInPage signInPage = dashboardPage.clickSignInLink();
+      return signInPage.signInAndGoToPage(username, password, DashboardPage.class);
    }
 
 }

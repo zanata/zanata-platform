@@ -23,12 +23,14 @@ package org.zanata.feature.administration;
 import org.junit.*;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
+import org.zanata.page.utility.DashboardPage;
 import org.zanata.page.utility.HomePage;
 import org.zanata.page.administration.ManageUserPage;
 import org.zanata.page.administration.ManageUserAccountPage;
 import org.zanata.util.ResetDatabaseRule;
 import org.zanata.workflow.LoginWorkFlow;
 import org.hamcrest.Matchers;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
@@ -39,19 +41,19 @@ public class ManageUsersFullTest
 {
    @ClassRule
    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule(ResetDatabaseRule.Config.Empty);
-   private HomePage homePage;
+   private DashboardPage dashboardPage;
 
    @Before
    public void before()
    {
-      homePage = new LoginWorkFlow().signIn("admin", "admin");
+      dashboardPage = new LoginWorkFlow().signIn("admin", "admin");
    }
 
    @Test
    public void changeAUsersUsername()
    {
       String username = "administratornamechange";
-      ManageUserPage manageUserPage = homePage.goToAdministration().goToManageUserPage();
+      ManageUserPage manageUserPage = dashboardPage.goToAdministration().goToManageUserPage();
 
       ManageUserAccountPage manageUserAccountPage = manageUserPage.editUserAccount("admin");
       manageUserPage = manageUserAccountPage.clearFields().enterUsername(username).saveUser();

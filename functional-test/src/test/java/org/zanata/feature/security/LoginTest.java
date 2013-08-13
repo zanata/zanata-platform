@@ -29,6 +29,7 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.zanata.concordion.CustomResourceExtension;
 import org.zanata.feature.ConcordionTest;
+import org.zanata.page.utility.DashboardPage;
 import org.zanata.page.utility.HomePage;
 import org.zanata.util.ResetDatabaseRule;
 import org.zanata.workflow.LoginWorkFlow;
@@ -44,9 +45,9 @@ public class LoginTest
 
    public boolean signInAs(String username, String password)
    {
-      HomePage homePage = new LoginWorkFlow().signIn(username, password);
+      DashboardPage dashboardPage = new LoginWorkFlow().signIn(username, password);
 
-      return homePage.hasLoggedIn();
+      return dashboardPage.hasLoggedIn();
    }
 
    public String getLoggedInUsername()

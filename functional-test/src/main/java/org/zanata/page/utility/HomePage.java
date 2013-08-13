@@ -20,22 +20,14 @@
  */
 package org.zanata.page.utility;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.zanata.page.BasePage;
 import org.zanata.page.administration.EditHomeCodePage;
 import org.zanata.page.administration.EditHomeContentPage;
-import org.zanata.util.WebElementUtil;
 
-@Slf4j
 public class HomePage extends BasePage
 {
 
@@ -47,74 +39,20 @@ public class HomePage extends BasePage
       super(driver);
    }
 
-   @Deprecated
-   // home page replace by dashboard
    public EditHomeContentPage goToEditPageContent()
    {
       getDriver().findElement(By.linkText("Edit Page Content")).click();
       return new EditHomeContentPage(getDriver());
    }
 
-   @Deprecated
-   // home page replace by dashboard
    public EditHomeCodePage goToEditPageCode()
    {
       getDriver().findElement(By.linkText("Edit Page Code")).click();
       return new EditHomeCodePage(getDriver());
    }
 
-   @Deprecated
-   // home page replace by dashboard
    public String getMainBodyContent()
    {
       return mainBodyContent.getText();
-   }
-
-   public boolean containActivityListSection()
-   {
-      return getDriver().findElement(By.id("activityList")) != null;
-   }
-
-   public boolean containMyMaintainedProjectsSection()
-   {
-      return getDriver().findElement(By.id("maintainedProject")) != null;
-   }
-
-   public List<WebElement> getMyActivityList()
-   {
-      WebElement listWrapper = getDriver().findElement(By.id("activityList")).findElement(By.tagName("ul"));
-
-      if (listWrapper != null)
-      {
-         return listWrapper.findElements(By.xpath("./li"));
-      }
-      return new ArrayList<WebElement>();
-   }
-
-   public List<WebElement> getMyMaintainedProject()
-   {
-      WebElement listWrapper = getDriver().findElement(By.id("maintainedProject")).findElement(By.tagName("ul"));
-
-      if (listWrapper != null)
-      {
-         return listWrapper.findElements(By.xpath("./li"));
-      }
-      return new ArrayList<WebElement>();
-   }
-
-   public void clickMoreActivity()
-   {
-      WebElement moreActivity = getMoreActivityElement();
-      if (moreActivity != null)
-      {
-         moreActivity.click();
-         WebElementUtil.waitForTenSeconds(getDriver()).until(
-               ExpectedConditions.invisibilityOfElementLocated(By.className("loader__spinner")));
-      }
-   }
-
-   public WebElement getMoreActivityElement()
-   {
-      return getDriver().findElement(By.id("moreActivity"));
    }
 }
