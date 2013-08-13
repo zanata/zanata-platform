@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.zanata</groupId>
 		<artifactId>server</artifactId>
-		<version>3.0.0-alpha-2-SNAPSHOT</version>
+		<version>3.0.0</version>
 	</parent>
 	<artifactId>zanata-war</artifactId>
 	<packaging>war</packaging>
@@ -746,13 +746,13 @@
                         <phase>package</phase>
                         <configuration>
                            <tasks>
-                              <touch file="${as7.skip.deploy.marker}"/>
+                              <touch file="${as7.skip.deploy.marker}" />
                               <delete dir="${jboss.home}/standalone/deployments/zanata.war" />
                               <copy todir="${jboss.home}/standalone/deployments/zanata.war">
-                                 <fileset dir="${project.build.directory}/zanata"/>
+                                 <fileset dir="${project.build.directory}/zanata" />
                               </copy>
-                              <delete file="${as7.skip.deploy.marker}"/>
-                              <touch file="${as7.dodeploy.marker}"/>
+                              <delete file="${as7.skip.deploy.marker}" />
+                              <touch file="${as7.dodeploy.marker}" />
                            </tasks>
                         </configuration>
                         <goals>
@@ -786,12 +786,12 @@
                         <phase>package</phase>
                         <configuration>
                            <tasks>
-                              <touch file="${as7.skip.deploy.marker}"/>
+                              <touch file="${as7.skip.deploy.marker}" />
                               <delete dir="${jboss.home}/standalone/deployments/zanata.war" />
                               <copy todir="${jboss.home}/standalone/deployments/zanata.war">
-                                 <fileset dir="${project.build.directory}/zanata"/>
+                                 <fileset dir="${project.build.directory}/zanata" />
                               </copy>
-                              <delete file="${as7.skip.deploy.marker}"/>
+                              <delete file="${as7.skip.deploy.marker}" />
                            </tasks>
                         </configuration>
                         <goals>
