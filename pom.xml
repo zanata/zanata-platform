@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>zanata-parent</artifactId>
-    <version>13</version>
+    <version>14-SNAPSHOT</version>
     <relativePath>../parent</relativePath>
   </parent>
 
@@ -55,20 +55,76 @@
 
    <dependencyManagement>
       <dependencies>
+
+         <!-- arquillian and shrinkwrap boms must precede other boms -->
+         <dependency>
+            <groupId>org.jboss.shrinkwrap</groupId>
+            <artifactId>shrinkwrap-bom</artifactId>
+            <version>1.1.2</version>
+            <scope>import</scope>
+            <type>pom</type>
+         </dependency>
+
+         <!-- Override dependency resolver with latest version.
+         This must go *BEFORE* the Arquillian BOM. -->
+         <dependency>
+            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+            <artifactId>shrinkwrap-resolver-bom</artifactId>
+            <version>2.0.0</version>
+            <scope>import</scope>
+            <type>pom</type>
+         </dependency>
+
+          <dependency>
+              <groupId>org.jboss.arquillian</groupId>
+              <artifactId>arquillian-bom</artifactId>
+              <version>1.0.3.Final</version>
+              <scope>import</scope>
+              <type>pom</type>
+          </dependency>
+
+         <!-- repeat resteasy version to make sure the seam bom doesn't downgrade it -->
+         <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-bom</artifactId>
+            <version>${resteasy.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+         </dependency>
+
+            <!-- make sure the richfaces version is not provided by the seam bom -->
+            <dependency>
+                <groupId>org.richfaces</groupId>
+                <artifactId>richfaces-bom</artifactId>
+                <version>${richfaces.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+
+
+            <dependency>
+            <groupId>org.jboss.seam</groupId>
+            <artifactId>bom</artifactId>
+            <version>${seam.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+         </dependency>
+
+          <dependency>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-parent</artifactId>
+            <version>7.1.3.Final</version>
+            <type>pom</type>
+            <scope>import</scope>
+          </dependency>
+
           <!-- zanata api -->
           <dependency>
              <groupId>org.zanata</groupId>
              <artifactId>zanata-common-api</artifactId>
              <version>${zanata.api.version}</version>
           </dependency>
-          <dependency>
-             <groupId>org.zanata</groupId>
-             <artifactId>zanata-common-api</artifactId>
-             <version>${zanata.api.version}</version>
-             <type>test-jar</type>
-             <scope>test</scope>
-          </dependency>
-    
+
           <!-- zanata common -->
           <dependency>
              <groupId>org.zanata</groupId>
@@ -237,9 +293,20 @@
 
         <dependency>
             <groupId>net.sf.okapi.steps</groupId>
+            <artifactId>okapi-step-tokenization</artifactId>
+            <version>${okapi.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.sf.okapi.logbind</groupId>
+                    <artifactId>build-log4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.okapi.steps</groupId>
             <artifactId>okapi-step-wordcount</artifactId>
             <version>${okapi.version}</version>
-            <!-- see latest version at http://repository-okapi.forge.cloudbees.com/snapshot/net/sf/okapi/steps/okapi-step-wordcount/ -->
             <exclusions>
                 <exclusion>
                     <groupId>net.sf.okapi.logbind</groupId>
@@ -326,33 +393,6 @@
 				<version>1.0_02.CR6</version>
 			</dependency>
 
-			<!-- repeat resteasy version to make sure the seam bom doesn't downgrade it -->
-			<dependency>
-				<groupId>org.jboss.resteasy</groupId>
-				<artifactId>resteasy-bom</artifactId>
-				<version>${resteasy.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-
-            <!-- make sure the richfaces version is not provided by the seam bom -->
-            <dependency>
-                <groupId>org.richfaces</groupId>
-                <artifactId>richfaces-bom</artifactId>
-                <version>${richfaces.version}</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-
-
-            <dependency>
-				<groupId>org.jboss.seam</groupId>
-				<artifactId>bom</artifactId>
-				<version>${seam.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-
 			<dependency>
 				<groupId>org.jboss.seam</groupId>
 				<artifactId>jboss-seam</artifactId>
@@ -425,42 +465,6 @@
 			<scope>compile</scope>
 		</dependency>
 
-          <!-- Arquillian Dependencies -->
-          <!-- Override the Maven resolver to the latest version -->
-          <!-- TODO Use the arquillian Shrinkwrap bom -->
-          <dependency>
-              <groupId>org.jboss.shrinkwrap.resolver</groupId>
-              <artifactId>shrinkwrap-resolver-api</artifactId>
-              <version>2.0.0-beta-3</version>
-              <!-- TODO Overwritten from arquillian BOM 1.0.3.Final to use the MavenImporter -->
-          </dependency>
-          <dependency>
-              <groupId>org.jboss.shrinkwrap.resolver</groupId>
-              <artifactId>shrinkwrap-resolver-api-maven</artifactId>
-              <version>2.0.0-beta-3</version>
-              <!-- TODO Overwritten from arquillian BOM 1.0.3.Final to use the MavenImporter -->
-          </dependency>
-          <dependency>
-              <groupId>org.jboss.shrinkwrap.resolver</groupId>
-              <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
-              <version>2.0.0-beta-3</version>
-              <!-- TODO Overwritten from arquillian BOM 1.0.3.Final to use the MavenImporter -->
-          </dependency>
-
-          <dependency>
-              <groupId>org.jboss.arquillian.protocol</groupId>
-              <artifactId>arquillian-protocol-servlet</artifactId>
-              <version>1.0.3.Final</version>
-          </dependency>
-
-          <!-- Arquillian -->
-          <dependency>
-              <groupId>org.jboss.arquillian</groupId>
-              <artifactId>arquillian-bom</artifactId>
-              <version>1.0.3.Final</version>
-              <scope>import</scope>
-              <type>pom</type>
-          </dependency>
           <dependency>
               <groupId>org.concordion</groupId>
               <artifactId>concordion</artifactId>
@@ -516,36 +520,15 @@
 	         </exclusions>
 	       </dependency>
 
+
+         <dependency>
+             <groupId>javax.xml.stream</groupId>
+             <artifactId>stax-api</artifactId>
+             <version>1.0</version>
+         </dependency>
+
       </dependencies>
    </dependencyManagement>    
-
-   <dependencies>
-      <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-      </dependency>
-      <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <scope>test</scope>
-      </dependency>
-      <dependency>
-            <groupId>org.zanata</groupId>
-            <artifactId>zanata-common-api</artifactId>
-            <type>test-jar</type>
-            <scope>test</scope>
-      </dependency>
-          <!--
-            In the server, we can use a newer version than Fedora has
-            (and we need it for concordion).
-            This one also has a source jar!
-          -->
-          <dependency>
-            <groupId>xom</groupId>
-            <artifactId>xom</artifactId>
-            <version>1.2.5</version>
-          </dependency>
-   </dependencies>
 
    <!--
    https://community.jboss.org/wiki/MavenRepository
@@ -626,47 +609,33 @@
           </plugin>
 
          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-enforcer-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>enforce-ban-duplicate-classes</id>
-                <goals>
-                  <goal>enforce</goal>
-                </goals>
-                <configuration>
-                  <rules>
+            <configuration>
+                <rules>
                     <banDuplicateClasses>
-                       <ignoreClasses combine.children="append">
-                          <!-- caused by Lombok (but fortunately lombok is "provided") -->
-                          <ignoreClass>com.sun.jna.*</ignoreClass>
-                       </ignoreClasses>
+                       <dependencies combine.children="append">
+                           <!-- lombok is "provided", so these duplicate classes don't get deployed -->
+                           <dependency>
+                              <groupId>org.projectlombok</groupId>
+                              <artifactId>lombok</artifactId>
+                              <ignoreClasses>
+                                <ignoreClass>com.sun.jna.*</ignoreClass>
+                              </ignoreClasses>
+                           </dependency>
+                       </dependencies>
                     </banDuplicateClasses>
-                  </rules>
-                </configuration>
-              </execution>
-
-              <execution>
-                <id>enforce-no-repositories</id>
-                <goals>
-                  <goal>enforce</goal>
-                </goals>
-                <configuration>
-                  <rules>
                     <requireNoRepositories>
                       <allowedRepositories combine.children="append">
                         <allowedRepository>jboss-public-repository-group</allowedRepository>
                         <allowedRepository>okapi-cloudbees-release</allowedRepository>
                       </allowedRepositories>
-                      <allowedPluginRepositories>
+                      <allowedPluginRepositories combine.children="append">
                         <allowedPluginRepository>cobertura-it-maven-plugin-maven2-release</allowedPluginRepository>
                         <allowedPluginRepository>jboss-public-repository-group</allowedPluginRepository>
                       </allowedPluginRepositories>
                     </requireNoRepositories>
-                  </rules>
-                </configuration>
-              </execution>
-            </executions>
+                </rules>
+            </configuration>
          </plugin>
       </plugins>
       <pluginManagement>

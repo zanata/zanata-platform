@@ -28,6 +28,19 @@
             </resource>
         </resources>
         <plugins>
+
+           <plugin>
+              <artifactId>maven-dependency-plugin</artifactId>
+              <configuration>
+                 <failOnWarning>true</failOnWarning>
+                 <usedDependencies combine.children="append">
+                    <usedDependency>junit:junit</usedDependency>
+                    <usedDependency>org.projectlombok:lombok</usedDependency>
+                    <usedDependency>org.hibernate:hibernate-search</usedDependency>
+                 </usedDependencies>
+              </configuration>
+           </plugin>
+
 <!--
             <plugin>
                <groupId>com.mysema.maven</groupId>
@@ -119,34 +132,22 @@
             <artifactId>hamcrest-library</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>javax.xml.stream</groupId>
+            <artifactId>stax-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.zanata</groupId>
-            <artifactId>zanata-common-api</artifactId>
-            <exclusions>
-            				<exclusion>
-            								<artifactId>
-            												javassist
-            								</artifactId>
-            								<groupId>javassist</groupId>
-            				</exclusion>
-            				<exclusion>
-            								<artifactId>
-            												commons-logging
-            								</artifactId>
-            								<groupId>
-            												commons-logging
-            								</groupId>
-            				</exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
@@ -155,9 +156,13 @@
         </dependency>
 
         <dependency>
+            <groupId>net.sf.okapi</groupId>
+            <artifactId>okapi-core</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>net.sf.okapi.steps</groupId>
-            <artifactId>okapi-step-wordcount</artifactId>
-            <!-- see latest version at http://repository-okapi.forge.cloudbees.com/snapshot/net/sf/okapi/steps/okapi-step-wordcount/ -->
+            <artifactId>okapi-step-tokenization</artifactId>
         </dependency>
 
         <dependency>
@@ -212,6 +217,11 @@
             </exclusions>
         </dependency>
 
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+        </dependency>
+
         <!-- Hibernate / JPA -->
         <dependency>
             <groupId>org.jboss.seam</groupId>
@@ -226,6 +236,11 @@
 
         <dependency>
             <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-search-engine</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
         </dependency>
 
@@ -235,13 +250,23 @@
         </dependency>
 
         <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.0-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
         </dependency>
 
         <dependency>
             <groupId>com.ibm.icu</groupId>
             <artifactId>icu4j</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
         </dependency>
 
 		<dependency>
@@ -258,6 +283,27 @@
 			<groupId>com.google.code.findbugs</groupId>
 			<artifactId>jsr305</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.zanata</groupId>
+			<artifactId>zanata-common-api</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>javassist</artifactId>
+					<groupId>javassist</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+      <dependency>
+         <groupId>xom</groupId>
+         <artifactId>xom</artifactId>
+         <exclusions>
+            <exclusion>
+               <artifactId>xalan</artifactId>
+               <groupId>xalan</groupId>
+            </exclusion>
+         </exclusions>
+      </dependency>
     </dependencies>
 
 </project>

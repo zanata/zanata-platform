@@ -21,6 +21,9 @@
 package org.zanata.arquillian;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -34,7 +37,17 @@ import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.RejectDependenciesFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.DefaultTransitiveExclusionPolicy;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.RejectDependenciesStrategy;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.TransitiveExclusionPolicy;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.TransitiveStrategy;
+import org.openxri.resolve.ResolveChain;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * Contains Suite-wide deployments to avoid having to deploy the same package for
@@ -46,18 +59,32 @@ public class Deployments
 {
    public static final String DEPLOYMENT_NAME = "zanata-tests";
 
+   public static void main(String[] args)
+   {
+      System.out.println("resolving dependencies:");
+      List<File> depList = Arrays.asList(runtimeDependenciesFromPom());
+      Collections.sort(depList);
+      System.out.println(depList);
+      System.out.println("dependency count: "+depList.size());
+   }
+
+   private static File[] runtimeDependenciesFromPom()
+   {
+      return Maven.resolver()
+            .loadPomFromFile("pom.xml")
+            .importRuntimeDependencies()
+            .resolve().using(
+                  // JavaMelody's ServletFilter/Listener interfere with test deployments
+                  new RejectDependenciesStrategy(false, "net.bull.javamelody:javamelody-core")
+            )
+            .asFile();
+   }
+
    @Deployment(name = "zanata.war")
    public static Archive<?> createDeployment()
    {
-
       WebArchive archive =  ShrinkWrap.create(WebArchive.class, DEPLOYMENT_NAME + ".war");
-      archive.addAsLibraries(Maven.resolver()
-            .loadPomFromFile("pom.xml")
-            .importRuntimeDependencies(
-                  // Reject some not needed dependencies
-                  new RejectDependenciesStrategy("net.bull.javamelody:javamelody-core")
-            )
-            .asFile());
+      archive.addAsLibraries(runtimeDependenciesFromPom());
 
       // Test dependencies
       archive.addAsLibraries(Maven.resolver().loadPomFromFile("pom.xml").resolve("org.hibernate:hibernate-testing").withoutTransitivity().asFile());
