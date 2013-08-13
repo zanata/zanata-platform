@@ -131,7 +131,7 @@ public class UserOptionsServiceTest
    {
       Map<UserOptions, String> map = service.getEditorOptions();
 
-      assertThat(map.size(), Matchers.equalTo(17));
+      assertThat(map.size(), Matchers.equalTo(18));
       
       assertThat(map.containsKey(UserOptions.ShowErrors), Matchers.equalTo(true));
       assertThat(map.containsKey(UserOptions.Themes), Matchers.equalTo(true));
@@ -148,6 +148,7 @@ public class UserOptionsServiceTest
       assertThat(map.containsKey(UserOptions.RejectedMessageFilter), Matchers.equalTo(true));
       assertThat(map.containsKey(UserOptions.Navigation), Matchers.equalTo(true));
       assertThat(map.containsKey(UserOptions.ShowSaveApprovedWarning), Matchers.equalTo(true));
+      assertThat(map.containsKey(UserOptions.EnableReferenceLang), Matchers.equalTo(true));
    }
 
    @Test

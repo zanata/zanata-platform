@@ -23,23 +23,13 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import com.google.common.collect.Lists;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.junit.client.GWTTestCase;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import net.customware.gwt.presenter.client.EventBus;
 import static org.hamcrest.MatcherAssert.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.when;
 import org.junit.Assert.*;
-import org.zanata.common.LocaleId;
-import org.zanata.webtrans.client.events.ShowReferenceEvent;
-import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
-import org.zanata.webtrans.shared.model.IdForLocale;
-import org.zanata.webtrans.shared.model.Locale;
-import org.zanata.webtrans.shared.model.TextFlowTarget;
-import org.zanata.webtrans.shared.model.TextFlowTargetId;
 
 /**
  * @author Patrick Huang <a
@@ -49,22 +39,31 @@ import org.zanata.webtrans.shared.model.TextFlowTargetId;
 public class SourceContentsPresenterTest
 {
     private SourceContentsPresenter presenter;
+
     @Mock
     private EventBus eventBus;
+
     @Mock
     private CachingDispatchAsync dispatcher;
+
     @Mock
     private Provider<SourceContentsDisplay> displayProvider;
+
     @Mock
     private SourceContentsDisplay display1;
+
     @Mock
     private SourceContentsDisplay display2;
+
     @Mock
     private HasSelectableSource hasSelectableSource1;
+
     @Mock
     private HasSelectableSource hasSelectableSource2;
+
     @Mock
-    private ClickEvent clickEvent;      
+    private ClickEvent clickEvent;
+
     private UserConfigHolder configHolder;
 
     @BeforeMethod
@@ -209,7 +208,7 @@ public class SourceContentsPresenterTest
     }
 
     @Test
-   public void onTransUnitUpdated()
+    public void onTransUnitUpdated()
     {
         // Given: two display
         List<TransUnit> transUnits = Lists.newArrayList(TestFixture.makeTransUnit(1), TestFixture.makeTransUnit(2));
@@ -219,13 +218,13 @@ public class SourceContentsPresenterTest
         presenter.showData(transUnits);
 
         // When:
-      TransUnitUpdatedEvent event = mock(TransUnitUpdatedEvent.class, Mockito.RETURNS_DEEP_STUBS);
-      TransUnit updated = TestFixture.makeTransUnit(1);
-      when(event.getUpdateInfo().getTransUnit()).thenReturn(updated);
+        TransUnitUpdatedEvent event = mock(TransUnitUpdatedEvent.class, Mockito.RETURNS_DEEP_STUBS);
+        TransUnit updated = TestFixture.makeTransUnit(1);
+        when(event.getUpdateInfo().getTransUnit()).thenReturn(updated);
 
-      presenter.onTransUnitUpdated(event);
+        presenter.onTransUnitUpdated(event);
 
-      verify(display1).updateTransUnitDetails(updated);
-      verify(display1).refresh();
+        verify(display1).updateTransUnitDetails(updated);
+        verify(display1).refresh();
     }
 }

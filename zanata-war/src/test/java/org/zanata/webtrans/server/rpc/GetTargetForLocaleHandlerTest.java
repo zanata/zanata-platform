@@ -95,6 +95,19 @@ public class GetTargetForLocaleHandlerTest extends ZanataDbunitJpaTest
 
         assertThat(result.getTarget().getContent(), Matchers.equalTo(getEm().find(HTextFlowTarget.class, 61L).getContents().get(0)));
     }
+    
+    @Test
+    public void testExecuteWhenTargetLangDoesNotExsist() throws Exception
+    {        
+        when(textFlowTargetDAO.getTextFlowTarget(sourceTransUnitId.getId(), jaHLocale.getLocaleId())).thenReturn(null);
+
+        
+        GetTargetForLocaleResult result = handler.execute(action, null);
+        
+        verify(identity).checkLoggedIn();
+
+        assertThat(result.getTarget(), Matchers.equalTo(null));
+    }
 
     @Test
     public void testRollback() throws Exception

@@ -20,7 +20,6 @@
  */
 package org.zanata.webtrans.client.view;
 
-
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.resources.WebTransMessages;
@@ -47,265 +46,281 @@ import com.google.inject.Inject;
 
 public class EditorOptionsView extends Composite implements EditorOptionsDisplay
 {
-   private static EditorOptionsUiBinder uiBinder = GWT.create(EditorOptionsUiBinder.class);
-   private final EnumRadioButtonGroup<NavOption> navOptionGroup;
+    private static EditorOptionsUiBinder uiBinder = GWT.create(EditorOptionsUiBinder.class);
 
-   @UiField
-   CheckBox enterChk, editorButtonsChk;
+    private final EnumRadioButtonGroup<NavOption> navOptionGroup;
 
-   @UiField
-   Label navOptionHeader, editorOptionHeader;
+    @UiField
+    CheckBox enterChk, editorButtonsChk;
 
-   @UiField
-   VerticalPanel optionsContainer;
-   @UiField
-   Label pageSizeHeader;
-   @UiField
-   InlineLabel five;
-   @UiField
-   InlineLabel ten;
-   @UiField
-   InlineLabel fifty;
-   @UiField
-   InlineLabel twentyFive;
-   @UiField
-   Styles style;
-   @UiField
-   CheckBox useCodeMirrorChk;
-   @UiField
-   CheckBox showSaveApprovedWarningChk;
-   @UiField
-   CheckBox spellCheckChk;
-   @UiField
-   Label transMemoryHeader;
-   @UiField
-   RadioButton diffModeDiff;
-   @UiField
-   RadioButton diffModeHighlight;
-   @UiField
-   Label displayHeader;
-   @UiField
-   CheckBox showTMChk;
-   @UiField
-   CheckBox showGlossaryChk;
-   @UiField
-   CheckBox showOptionalTransUnitDetailsChk;
+    @UiField
+    Label navOptionHeader, editorOptionHeader;
 
-   private Listener listener;
+    @UiField
+    VerticalPanel optionsContainer;
 
-   @Inject
-   public EditorOptionsView(WebTransMessages messages, NavOptionRenderer navOptionRenderer, UiMessages uiMessages)
-   {
-      initWidget(uiBinder.createAndBindUi(this));
-      navOptionGroup = new EnumRadioButtonGroup<NavOption>("navOption", NavOption.class, navOptionRenderer);
-      navOptionGroup.addToContainer(optionsContainer);
+    @UiField
+    Label pageSizeHeader;
 
-      editorOptionHeader.setText(messages.editorOptions());
-      navOptionHeader.setText(messages.navOption());
-      pageSizeHeader.setText(messages.pageSize());
-      transMemoryHeader.setText(messages.transMemoryOption());
+    @UiField
+    InlineLabel five;
 
-      useCodeMirrorChk.setTitle(messages.useCodeMirrorEditorTooltip());
-      showSaveApprovedWarningChk.setTitle(messages.showSaveApprovedWarningTooltip());
-      // TODO at the moment browser spell check only works in Firefox. If later Chrome supports it then change the tooltip.
-      spellCheckChk.setTitle(messages.spellCheckTooltip());
+    @UiField
+    InlineLabel ten;
 
-      diffModeDiff.setText(uiMessages.diffModeAsDiff());
-      diffModeHighlight.setText(uiMessages.diffModeAsHighlight());
-      diffModeDiff.setValue(true);
+    @UiField
+    InlineLabel fifty;
 
-      displayHeader.setText(messages.displayConfiguration());
-      displayHeader.setTitle(messages.displayConfigurationTooltip());
-      showTMChk.setText(messages.showTranslationMemoryPanel());
-      showGlossaryChk.setText(messages.showGlossaryPanel());
-      showOptionalTransUnitDetailsChk.setText(messages.showTransUnitDetails());
-      showOptionalTransUnitDetailsChk.setTitle(messages.showTransUnitDetailsTooltip());
-   }
+    @UiField
+    InlineLabel twentyFive;
 
-   @Override
-   public Widget asWidget()
-   {
-      return this;
-   }
+    @UiField
+    Styles style;
 
-   @UiHandler("five")
-   public void onPageSizeFiveClicked(ClickEvent event)
-   {
-      selectFive();
-      listener.onPageSizeClick(5);
-   }
+    @UiField
+    CheckBox useCodeMirrorChk;
 
-   private void selectFive()
-   {
-      five.setStyleName(style.selectedPageSize());
-      ten.removeStyleName(style.selectedPageSize());
-      twentyFive.removeStyleName(style.selectedPageSize());
-      fifty.removeStyleName(style.selectedPageSize());
-   }
+    @UiField
+    CheckBox showSaveApprovedWarningChk;
 
-   @UiHandler("ten")
-   public void onPageSizeTenClicked(ClickEvent event)
-   {
-      selectTen();
-      listener.onPageSizeClick(10);
-   }
+    @UiField
+    CheckBox spellCheckChk;
 
-   private void selectTen()
-   {
-      five.removeStyleName(style.selectedPageSize());
-      ten.setStyleName(style.selectedPageSize());
-      twentyFive.removeStyleName(style.selectedPageSize());
-      fifty.removeStyleName(style.selectedPageSize());
-   }
+    @UiField
+    Label transMemoryHeader;
 
-   @UiHandler("twentyFive")
-   public void onPageSizeTwentyFiveClicked(ClickEvent event)
-   {
-      selectTwentyFive();
-      listener.onPageSizeClick(25);
-   }
+    @UiField
+    RadioButton diffModeDiff;
 
-   private void selectTwentyFive()
-   {
-      five.removeStyleName(style.selectedPageSize());
-      ten.removeStyleName(style.selectedPageSize());
-      twentyFive.setStyleName(style.selectedPageSize());
-      fifty.removeStyleName(style.selectedPageSize());
-   }
+    @UiField
+    RadioButton diffModeHighlight;
 
-   @UiHandler("fifty")
-   public void onPageSizeFiftyClicked(ClickEvent event)
-   {
-      selectFifty();
-      listener.onPageSizeClick(50);
-   }
+    @UiField
+    Label displayHeader;
 
-   private void selectFifty()
-   {
-      five.removeStyleName(style.selectedPageSize());
-      ten.removeStyleName(style.selectedPageSize());
-      twentyFive.removeStyleName(style.selectedPageSize());
-      fifty.setStyleName(style.selectedPageSize());
-   }
+    @UiField
+    CheckBox showTMChk;
 
-   @UiHandler("editorButtonsChk")
-   public void onEditorButtonsOptionChanged(ValueChangeEvent<Boolean> event)
-   {
-      listener.onEditorButtonsOptionChanged(editorButtonsChk.getValue());
-   }
+    @UiField
+    CheckBox showGlossaryChk;
 
-   @UiHandler("enterChk")
-   public void onEnterSaveOptionChanged(ValueChangeEvent<Boolean> event)
-   {
-      listener.onEnterSaveOptionChanged(enterChk.getValue());
-   }
+    @UiField
+    CheckBox showOptionalTransUnitDetailsChk;
 
-   @UiHandler("useCodeMirrorChk")
-   public void onCodeMirrorOptionChanged(ValueChangeEvent<Boolean> event)
-   {
-      listener.onUseCodeMirrorOptionChanged(useCodeMirrorChk.getValue());
-   }
-   
-   @UiHandler("showSaveApprovedWarningChk")
-   public void onShowSaveApprovedWarningChanged(ValueChangeEvent<Boolean> event)
-   {
-      listener.onShowSaveApprovedWarningChanged(showSaveApprovedWarningChk.getValue());
-   }
+    @UiField
+    CheckBox enableReferenceForSourceLang;
 
-   @UiHandler("spellCheckChk")
-   public void onSpellCheckChanged(ValueChangeEvent<Boolean> event)
-   {
-      listener.onSpellCheckOptionChanged(spellCheckChk.getValue());
-   }
+    private Listener listener;
 
-   @UiHandler({"diffModeDiff", "diffModeHighlight"})
-   public void onDiffModeOptionChange(ValueChangeEvent<Boolean> event)
-   {
-      if (diffModeDiff.getValue())
-      {
-         listener.onTransMemoryDisplayModeChanged(DiffMode.NORMAL);
-      }
-      else
-      {
-         listener.onTransMemoryDisplayModeChanged(DiffMode.HIGHLIGHT);
-      }
-   }
+    @Inject
+    public EditorOptionsView(WebTransMessages messages, NavOptionRenderer navOptionRenderer, UiMessages uiMessages)
+    {
+        initWidget(uiBinder.createAndBindUi(this));
+        navOptionGroup = new EnumRadioButtonGroup<NavOption>("navOption", NavOption.class, navOptionRenderer);
+        navOptionGroup.addToContainer(optionsContainer);
 
-   @UiHandler({"showTMChk", "showGlossaryChk"})
-   public void onTMOrGlossaryDisplayOptionsChanged(ValueChangeEvent<Boolean> event)
-   {
-      listener.onTMOrGlossaryDisplayOptionsChanged(showTMChk.getValue(), showGlossaryChk.getValue());
-   }
+        editorOptionHeader.setText(messages.editorOptions());
+        navOptionHeader.setText(messages.navOption());
+        pageSizeHeader.setText(messages.pageSize());
+        transMemoryHeader.setText(messages.transMemoryOption());
 
-   @UiHandler("showOptionalTransUnitDetailsChk")
-   public void onDisplayTransUnitDetailsOptionChanged(ValueChangeEvent<Boolean> event)
-   {
-      listener.onDisplayTransUnitDetailsOptionChanged(showOptionalTransUnitDetailsChk.getValue());
-   }
+        useCodeMirrorChk.setTitle(messages.useCodeMirrorEditorTooltip());
+        showSaveApprovedWarningChk.setTitle(messages.showSaveApprovedWarningTooltip());
+        // TODO at the moment browser spell check only works in Firefox. If later Chrome supports it then change the tooltip.
+        spellCheckChk.setTitle(messages.spellCheckTooltip());
 
-   @Override
-   public void setListener(Listener listener)
-   {
-      this.listener = listener;
-      navOptionGroup.setSelectionChangeListener(listener);
-   }
+        diffModeDiff.setText(uiMessages.diffModeAsDiff());
+        diffModeHighlight.setText(uiMessages.diffModeAsHighlight());
+        diffModeDiff.setValue(true);
 
-   @Override
-   public void setOptionsState(UserConfigHolder.ConfigurationState state)
-   {
-      enterChk.setValue(state.isEnterSavesApproved());
-      editorButtonsChk.setValue(state.isDisplayButtons());
+        displayHeader.setText(messages.displayConfiguration());
+        displayHeader.setTitle(messages.displayConfigurationTooltip());
+        showTMChk.setText(messages.showTranslationMemoryPanel());
+        showGlossaryChk.setText(messages.showGlossaryPanel());
+        showOptionalTransUnitDetailsChk.setText(messages.showTransUnitDetails());
+        showOptionalTransUnitDetailsChk.setTitle(messages.showTransUnitDetailsTooltip());
+        enableReferenceForSourceLang.setText(messages.enableReferenceForSourceLang());
+        enableReferenceForSourceLang.setTitle(messages.enableReferenceForSourceLangTooltip());
+    }
 
-      navOptionGroup.setDefaultSelected(state.getNavOption());
-      selectPageSize(state.getEditorPageSize());
-      useCodeMirrorChk.setValue(state.isUseCodeMirrorEditor());
-      showSaveApprovedWarningChk.setValue(state.isShowSaveApprovedWarning());
-      spellCheckChk.setValue(state.isSpellCheckEnabled());
+    @Override
+    public Widget asWidget()
+    {
+        return this;
+    }
 
-      if (state.getTransMemoryDisplayMode() == DiffMode.NORMAL)
-      {
-         diffModeDiff.setValue(true);
-      }
-      else
-      {
-         diffModeHighlight.setValue(true);
-      }
+    @UiHandler("five")
+    public void onPageSizeFiveClicked(ClickEvent event)
+    {
+        selectFive();
+        listener.onPageSizeClick(5);
+    }
 
-      showTMChk.setValue(state.isShowTMPanel());
-      showGlossaryChk.setValue(state.isShowGlossaryPanel());
-      showOptionalTransUnitDetailsChk.setValue(state.isShowOptionalTransUnitDetails());
-   }
+    private void selectFive()
+    {
+        five.setStyleName(style.selectedPageSize());
+        ten.removeStyleName(style.selectedPageSize());
+        twentyFive.removeStyleName(style.selectedPageSize());
+        fifty.removeStyleName(style.selectedPageSize());
+    }
 
-   private void selectPageSize(int pageSize)
-   {
-      if (pageSize == 5)
-      {
-         selectFive();
-      }
-      else if (pageSize == 10)
-      {
-         selectTen();
-      }
-      else if (pageSize == 25)
-      {
-         selectTwentyFive();
-      }
-      else if (pageSize ==50)
-      {
-         selectFifty();
-      }
-   }
+    @UiHandler("ten")
+    public void onPageSizeTenClicked(ClickEvent event)
+    {
+        selectTen();
+        listener.onPageSizeClick(10);
+    }
 
-   interface EditorOptionsUiBinder extends UiBinder<VerticalPanel, EditorOptionsView>
-   {
-   }
+    private void selectTen()
+    {
+        five.removeStyleName(style.selectedPageSize());
+        ten.setStyleName(style.selectedPageSize());
+        twentyFive.removeStyleName(style.selectedPageSize());
+        fifty.removeStyleName(style.selectedPageSize());
+    }
 
-   interface Styles extends CssResource
-   {
-      String selectedPageSize();
+    @UiHandler("twentyFive")
+    public void onPageSizeTwentyFiveClicked(ClickEvent event)
+    {
+        selectTwentyFive();
+        listener.onPageSizeClick(25);
+    }
 
-      String mainPanel();
+    private void selectTwentyFive()
+    {
+        five.removeStyleName(style.selectedPageSize());
+        ten.removeStyleName(style.selectedPageSize());
+        twentyFive.setStyleName(style.selectedPageSize());
+        fifty.removeStyleName(style.selectedPageSize());
+    }
 
-      String pageSizeContainer();
-   }
+    @UiHandler("fifty")
+    public void onPageSizeFiftyClicked(ClickEvent event)
+    {
+        selectFifty();
+        listener.onPageSizeClick(50);
+    }
+
+    private void selectFifty()
+    {
+        five.removeStyleName(style.selectedPageSize());
+        ten.removeStyleName(style.selectedPageSize());
+        twentyFive.removeStyleName(style.selectedPageSize());
+        fifty.setStyleName(style.selectedPageSize());
+    }
+
+    @UiHandler("editorButtonsChk")
+    public void onEditorButtonsOptionChanged(ValueChangeEvent<Boolean> event)
+    {
+        listener.onEditorButtonsOptionChanged(editorButtonsChk.getValue());
+    }
+
+    @UiHandler("enterChk")
+    public void onEnterSaveOptionChanged(ValueChangeEvent<Boolean> event)
+    {
+        listener.onEnterSaveOptionChanged(enterChk.getValue());
+    }
+
+    @UiHandler("useCodeMirrorChk")
+    public void onCodeMirrorOptionChanged(ValueChangeEvent<Boolean> event)
+    {
+        listener.onUseCodeMirrorOptionChanged(useCodeMirrorChk.getValue());
+    }
+
+    @UiHandler("showSaveApprovedWarningChk")
+    public void onShowSaveApprovedWarningChanged(ValueChangeEvent<Boolean> event)
+    {
+        listener.onShowSaveApprovedWarningChanged(showSaveApprovedWarningChk.getValue());
+    }
+
+    @UiHandler("spellCheckChk")
+    public void onSpellCheckChanged(ValueChangeEvent<Boolean> event)
+    {
+        listener.onSpellCheckOptionChanged(spellCheckChk.getValue());
+    }
+
+    @UiHandler({"diffModeDiff", "diffModeHighlight"})
+    public void onDiffModeOptionChange(ValueChangeEvent<Boolean> event)
+    {
+        if (diffModeDiff.getValue()) {
+            listener.onTransMemoryDisplayModeChanged(DiffMode.NORMAL);
+        } else {
+            listener.onTransMemoryDisplayModeChanged(DiffMode.HIGHLIGHT);
+        }
+    }
+
+    @UiHandler({"showTMChk", "showGlossaryChk"})
+    public void onTMOrGlossaryDisplayOptionsChanged(ValueChangeEvent<Boolean> event)
+    {
+        listener.onTMOrGlossaryDisplayOptionsChanged(showTMChk.getValue(), showGlossaryChk.getValue());
+    }
+
+    @UiHandler("showOptionalTransUnitDetailsChk")
+    public void onDisplayTransUnitDetailsOptionChanged(ValueChangeEvent<Boolean> event)
+    {
+        listener.onDisplayTransUnitDetailsOptionChanged(showOptionalTransUnitDetailsChk.getValue());
+    }
+    
+    @UiHandler("enableReferenceForSourceLang")
+    public void onEnableReferenceForSourceLangOptionChanged(ValueChangeEvent<Boolean> event)
+    {
+        listener.onEnableReferenceForSourceLangOptionChanged(enableReferenceForSourceLang.getValue());
+    }
+
+    @Override
+    public void setListener(Listener listener)
+    {
+        this.listener = listener;
+        navOptionGroup.setSelectionChangeListener(listener);
+    }
+
+    @Override
+    public void setOptionsState(UserConfigHolder.ConfigurationState state)
+    {
+        enterChk.setValue(state.isEnterSavesApproved());
+        editorButtonsChk.setValue(state.isDisplayButtons());
+
+        navOptionGroup.setDefaultSelected(state.getNavOption());
+        selectPageSize(state.getEditorPageSize());
+        useCodeMirrorChk.setValue(state.isUseCodeMirrorEditor());
+        showSaveApprovedWarningChk.setValue(state.isShowSaveApprovedWarning());
+        spellCheckChk.setValue(state.isSpellCheckEnabled());
+
+        if (state.getTransMemoryDisplayMode() == DiffMode.NORMAL) {
+            diffModeDiff.setValue(true);
+        } else {
+            diffModeHighlight.setValue(true);
+        }
+
+        showTMChk.setValue(state.isShowTMPanel());
+        showGlossaryChk.setValue(state.isShowGlossaryPanel());
+        showOptionalTransUnitDetailsChk.setValue(state.isShowOptionalTransUnitDetails());
+        enableReferenceForSourceLang.setValue(state.isEnabledReferenceForSourceLang());
+    }
+
+    private void selectPageSize(int pageSize)
+    {
+        if (pageSize == 5) {
+            selectFive();
+        } else if (pageSize == 10) {
+            selectTen();
+        } else if (pageSize == 25) {
+            selectTwentyFive();
+        } else if (pageSize == 50) {
+            selectFifty();
+        }
+    }
+
+    interface EditorOptionsUiBinder extends UiBinder<VerticalPanel, EditorOptionsView>
+    {
+    }
+
+    interface Styles extends CssResource
+    {
+        String selectedPageSize();
+
+        String mainPanel();
+
+        String pageSizeContainer();
+    }
 }

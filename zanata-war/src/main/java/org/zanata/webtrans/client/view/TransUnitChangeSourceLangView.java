@@ -39,15 +39,16 @@ import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.LocaleListBox;
 import org.zanata.webtrans.shared.model.Locale;
 
-public class TransUnitChangeSourceLangView extends Composite implements TransUnitChangeSourceLangDisplay, ChangeHandler {
-
+public class TransUnitChangeSourceLangView extends Composite implements TransUnitChangeSourceLangDisplay, ChangeHandler
+{
     private static TransUnitChangeSourceLangViewUiBinder uiBinder = GWT.create(TransUnitChangeSourceLangViewUiBinder.class);
 
     private Listener listener;
-    
+
     private UiMessages messages;
 
-    interface Styles extends CssResource {
+    interface Styles extends CssResource
+    {
     }
 
     @UiField
@@ -62,7 +63,8 @@ public class TransUnitChangeSourceLangView extends Composite implements TransUni
     LocaleListBox sourceLangListBox;
 
     @Inject
-    public TransUnitChangeSourceLangView(final UiMessages messages) {
+    public TransUnitChangeSourceLangView(final UiMessages messages)
+    {
         this.messages = messages;
         initWidget(uiBinder.createAndBindUi(this));
 
@@ -76,7 +78,8 @@ public class TransUnitChangeSourceLangView extends Composite implements TransUni
     }
 
     @Override
-    public void buildListBox(List<Locale> locales) {
+    public void buildListBox(List<Locale> locales)
+    {
         sourceLangListBox.clear();
         sourceLangListBox.addItem(messages.chooseRefLang(), Locale.notChosenLocale);
         for (Locale locale : locales) {
@@ -86,24 +89,43 @@ public class TransUnitChangeSourceLangView extends Composite implements TransUni
     }
 
     @Override
-    public Widget asWidget() {
+    public Widget asWidget()
+    {
         return this;
     }
 
     @Override
-    public void setListener(Listener listener) {
+    public void setListener(Listener listener)
+    {
         this.listener = listener;
     }
 
     @Override
-    public void onChange(ChangeEvent event) {
+    public void onChange(ChangeEvent event)
+    {
         if (sourceLangListBox.getLocaleAtSelectedIndex() == Locale.notChosenLocale) {
-            listener.onHideButtonClick();
+            listener.onHideReference();
         } else {
-            listener.onShowButtonClick(sourceLangListBox.getLocaleAtSelectedIndex());
+            listener.onShowReference(sourceLangListBox.getLocaleAtSelectedIndex());
         }
     }
 
-    interface TransUnitChangeSourceLangViewUiBinder extends UiBinder<Widget, TransUnitChangeSourceLangView> {
+    @Override
+    public void showReferenceList()
+    {
+        sourceLangListBox.setVisible(true);
+        descriptionLabel.setVisible(true);
+    }
+
+    @Override
+    public void hideReferenceList()
+    {
+        sourceLangListBox.setSelectedIndex(0);
+        sourceLangListBox.setVisible(false);
+        descriptionLabel.setVisible(false);
+    }
+
+    interface TransUnitChangeSourceLangViewUiBinder extends UiBinder<Widget, TransUnitChangeSourceLangView>
+    {
     }
 }
