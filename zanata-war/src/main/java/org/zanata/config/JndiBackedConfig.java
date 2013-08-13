@@ -63,7 +63,7 @@ public class JndiBackedConfig implements Serializable
    private static final String KEY_EMAIL_SSL             = "java:global/zanata/smtp/ssl";
    private static final String KEY_WEB_ASSETS_URL_BASE   = "java:global/zanata/webassets/url-base";
 
-   private Map<String, String> configurationValues;
+   private final Map<String, String> configurationValues = new HashMap<String, String>();
 
    private String getConfigValue(String key)
    {
@@ -103,7 +103,7 @@ public class JndiBackedConfig implements Serializable
    @Create
    public void reset()
    {
-      configurationValues = new HashMap<String, String>();
+      configurationValues.clear();
    }
 
    /**
