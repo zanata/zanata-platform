@@ -56,7 +56,8 @@ public class ZanataCentralLoginModule implements LoginModule
       this.subject = subject;
       this.callbackHandler = callbackHandler;
 
-      JndiBackedConfig jndiConfig = (JndiBackedConfig) Component.getInstance(JndiBackedConfig.class);
+      // Avoid using Seam components in Login Modules
+      JndiBackedConfig jndiConfig = new JndiBackedConfig();
 
       internalAuthDomain = jndiConfig.getAuthPolicyName(AuthenticationType.INTERNAL.name().toLowerCase());
       kerberosDomain = jndiConfig.getAuthPolicyName(AuthenticationType.KERBEROS.name().toLowerCase());
