@@ -20,17 +20,19 @@
  */
 package org.zanata.dao;
 
-import java.util.Iterator;
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
+import org.hibernate.search.FullTextSession;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Transactional;
+import org.jboss.seam.transaction.Transaction;
 import org.zanata.exception.EntityMissingException;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.model.tm.TransMemoryUnit;
@@ -46,6 +48,10 @@ import com.google.common.base.Optional;
 @AutoCreate
 public class TransMemoryDAO extends AbstractDAOImpl<TransMemory, Long>
 {
+
+   @In
+   private FullTextSession session;
+
    public TransMemoryDAO()
    {
       super(TransMemory.class);
@@ -66,7 +72,13 @@ public class TransMemoryDAO extends AbstractDAOImpl<TransMemory, Long>
       return Optional.absent();
    }
 
-   @Transactional
+   /**
+    * Deletes the contents for a single translation memory.
+    * Because TMs could potentially contain very large numbers of translation units,
+    * this process is broken into multiple transactions and could take a long time.
+    *
+    * @param slug Translation memory identifier to clear.
+    */
    public void deleteTransMemoryContents(@Nonnull String slug)
    {
       Optional<TransMemory> tm = getBySlug(slug);
@@ -74,13 +86,54 @@ public class TransMemoryDAO extends AbstractDAOImpl<TransMemory, Long>
       {
          throw new EntityMissingException("Translation memory " + slug + " was not found.");
       }
-      Iterator it = tm.get().getTranslationUnits().iterator();
-      while(it.hasNext())
+
+      final int batchSize = 1000;
+      int deleted;
+      do
       {
-         getSession().delete(it.next());
-         it.remove();
+         try
+         {
+            Transaction.instance().begin();
+         }
+         catch (Exception e)
+         {
+            throw new RuntimeException(e);
+         }
+
+         List<TransMemoryUnit> toRemove =
+            session.createQuery("from TransMemoryUnit tu where tu.translationMemory = :tm")
+                  .setParameter("tm", tm.get())
+                  .setFirstResult(0)
+                  .setFetchSize(batchSize)
+                  .list();
+
+         // Remove each batch (Takes advantage of CASCADE deletes on the db)
+         for( TransMemoryUnit tmu : toRemove )
+         {
+            session.purge(TransMemoryUnit.class, tmu);
+         }
+
+         if( toRemove.size() > 0 )
+         {
+            deleted = session.createQuery("delete TransMemoryUnit tu where tu in :tus")
+                        .setParameterList("tus", toRemove)
+                        .executeUpdate();
+         }
+         else
+         {
+            deleted = 0;
+         }
+
+         try
+         {
+            Transaction.instance().commit();
+         }
+         catch (Exception e)
+         {
+            throw new RuntimeException(e);
+         }
       }
-      makePersistent(tm.get());
+      while(deleted == batchSize);
    }
 
    public @Nullable TransMemoryUnit findTranslationUnit(

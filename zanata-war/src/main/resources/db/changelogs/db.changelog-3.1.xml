@@ -135,7 +135,24 @@
         <addForeignKeyConstraint baseTableName="TransMemoryUnitVariant" baseColumnNames="trans_unit_id"
                                  constraintName="FK_TransUnitVariant_TransUnit"
                                  referencedTableName="TransMemoryUnit"
-                                 referencedColumnNames="id"/>
+                                 referencedColumnNames="id" />
+    </changeSet>
+
+    <changeSet id="5" author="camunoz@redhat.com">
+        <comment>Modify Trans Memory Foreign Keys to cascade delete.</comment>
+        <dropForeignKeyConstraint baseTableName="TransMemoryUnitVariant" constraintName="FK_TransUnitVariant_TransUnit"/>
+        <dropForeignKeyConstraint baseTableName="TransMemoryUnit" constraintName="FK_tmunit_trans_memory"/>
+
+        <addForeignKeyConstraint baseTableName="TransMemoryUnitVariant" baseColumnNames="trans_unit_id"
+                                 constraintName="FK_TransUnitVariant_TransUnit"
+                                 referencedTableName="TransMemoryUnit"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+        <addForeignKeyConstraint baseTableName="TransMemoryUnit" baseColumnNames="tm_id"
+                                 constraintName="FK_tmunit_trans_memory"
+                                 referencedTableName="TransMemory"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
     </changeSet>
 
     <changeSet id="1" author="pahuang@redhat.com">

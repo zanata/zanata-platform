@@ -149,17 +149,27 @@
                         </rich:column>
                         <rich:column style="text-align: center">
                             <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-                            <a4j:commandButton value="#{messages['jsf.Clear']}"
-                                               action="#{translationMemoryAction.clearTransMemory(tm.slug)}"
-                                               render="tmList"
-                                               onclick="return confirmClearTm()"/>
-                            <a4j:commandButton value="#{messages['jsf.Delete']}"
-                                               action="#{translationMemoryAction.deleteTransMemory(tm.slug)}"
-                                               render="tmList"
-                                               onclick="return confirmDeleteTm()"/>
+                            <s:fragment rendered="#{not translationMemoryAction.isTransMemoryBeingCleared(tm.slug)}">
+                                <a4j:commandButton value="#{messages['jsf.Clear']}"
+                                                   action="#{translationMemoryAction.clearTransMemory(tm.slug)}"
+                                                   render="tmListPoll,tmList"
+                                                   onclick="return confirmClearTm()"/>
+                                <a4j:commandButton value="#{messages['jsf.Delete']}"
+                                                   action="#{translationMemoryAction.deleteTransMemory(tm.slug)}"
+                                                   render="tmList"
+                                                   onclick="return confirmDeleteTm()"
+                                                   disabled="#{translationMemoryAction.deleteTransMemoryDisabled(tm.slug)}"
+                                                   title="#{translationMemoryAction.deleteTransMemoryDisabled(tm.slug) ? messages['jsf.transmemory.Delete.Title'] : ''}"/>
+                            </s:fragment>
+                            <s:fragment rendered="#{translationMemoryAction.isTransMemoryBeingCleared(tm.slug)}">
+                                #{messages['jsf.transmemory.Clearing.Message']}
+                            </s:fragment>
                         </rich:column>
                     </rich:dataTable>
 
+                </h:form>
+                <h:form>
+                    <a4j:poll id="tmListPoll" interval="3000" render="tmListPoll,tmList" enabled="#{translationMemoryAction.tablePollEnabled}"/>
                 </h:form>
             </s:fragment>
         </s:decorate>

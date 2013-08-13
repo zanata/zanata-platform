@@ -20,20 +20,27 @@
  */
 package org.zanata.action;
 
+import java.io.Serializable;
 import java.util.List;
 import javax.faces.event.ValueChangeEvent;
 
+import org.jboss.seam.Component;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.framework.EntityHome;
-import org.jboss.seam.international.StatusMessage;
 import org.zanata.dao.TransMemoryDAO;
 import org.zanata.model.tm.TransMemory;
+import org.zanata.process.ProcessHandle;
+import org.zanata.process.RunnableProcess;
+import org.zanata.service.ProcessManagerService;
 import org.zanata.service.SlugEntityService;
 import com.google.common.base.Optional;
+
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 
 import static org.jboss.seam.international.StatusMessage.Severity.ERROR;
 
@@ -51,6 +58,9 @@ public class TranslationMemoryAction extends EntityHome<TransMemory>
 
    @In
    private SlugEntityService slugEntityServiceImpl;
+
+   @In
+   private ProcessManagerService processManagerServiceImpl;
 
    private List<TransMemory> transMemoryList;
 
@@ -79,10 +89,22 @@ public class TranslationMemoryAction extends EntityHome<TransMemory>
       return true;
    }
 
-   @Transactional
-   public void clearTransMemory(String transMemorySlug)
+   public void clearTransMemory(final String transMemorySlug)
    {
-      transMemoryDAO.deleteTransMemoryContents(transMemorySlug);
+      processManagerServiceImpl.startProcess(
+            new RunnableProcess<ProcessHandle>()
+            {
+               @Override
+               protected void run(ProcessHandle handle) throws Throwable
+               {
+                  TransMemoryDAO transMemoryDAO = (TransMemoryDAO) Component.getInstance(TransMemoryDAO.class);
+                  transMemoryDAO.deleteTransMemoryContents(transMemorySlug);
+               }
+            },
+            new ProcessHandle(),
+            new ClearTransMemoryProcessKey(transMemorySlug)
+      );
+
       transMemoryList = null; // Force refresh next time list is requested
    }
 
@@ -92,7 +114,6 @@ public class TranslationMemoryAction extends EntityHome<TransMemory>
       Optional<TransMemory> transMemory = transMemoryDAO.getBySlug(transMemorySlug);
       if (transMemory.isPresent())
       {
-         transMemoryDAO.deleteTransMemoryContents(transMemorySlug);
          transMemoryDAO.makeTransient(transMemory.get());
          transMemoryList = null; // Force refresh next time list is requested
       }
@@ -100,6 +121,31 @@ public class TranslationMemoryAction extends EntityHome<TransMemory>
       {
          FacesMessages.instance().addFromResourceBundle(ERROR, "jsf.transmemory.TransMemoryNotFound");
       }
+   }
+
+   public boolean isTransMemoryBeingCleared(String transMemorySlug)
+   {
+      ProcessHandle handle = processManagerServiceImpl.getProcessHandle( new ClearTransMemoryProcessKey(transMemorySlug) );
+      return handle != null && !handle.isFinished();
+   }
+
+   public boolean deleteTransMemoryDisabled(String transMemorySlug)
+   {
+      // Translation memories have to be cleared before deleting them
+      return getTranslationMemorySize(transMemorySlug) > 0;
+   }
+
+   public boolean isTablePollEnabled()
+   {
+      // Poll is enabled only when there is something being cleared
+      for( TransMemory tm : transMemoryList )
+      {
+         if( isTransMemoryBeingCleared(tm.getSlug()) )
+         {
+            return true;
+         }
+      }
+      return false;
    }
 
    public long getTranslationMemorySize(String tmSlug)
@@ -111,5 +157,18 @@ public class TranslationMemoryAction extends EntityHome<TransMemory>
    {
       // Navigation logic in pages.xml
       return "cancel";
+   }
+
+   /**
+    * Represents a key to index a translation memory clear process.
+    *
+    * NB: Eventually this class might need to live outside if there are
+    * other services that need to control this process.
+    */
+   @AllArgsConstructor
+   @EqualsAndHashCode
+   private class ClearTransMemoryProcessKey implements Serializable
+   {
+      private String slug;
    }
 }
