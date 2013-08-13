@@ -27,12 +27,12 @@
 							</s:fragment>
 							
 							<s:fragment rendered="#{activity.activityType == 'UPLOAD_SOURCE_DOCUMENT'}">
-								<i aria-hidden="true" class="i--large i--document" title="#{messages['jsf.UploadSource']}"></i>
+								<i aria-hidden="true" class="i--large i--document" title="#{messages['jsf.UploadedSource']}"></i>
 								<span class="is-invisible">#{messages['jsf.UploadSource']}</span>
 							</s:fragment>
 							
 							<s:fragment rendered="#{activity.activityType == 'UPLOAD_TRANSLATION_DOCUMENT'}">
-								<i aria-hidden="true" class="i--large i--translate-up" title="#{messages['jsf.UploadedTranslation']}"></i>
+								<i aria-hidden="true" class="i--large i--translate-up" title="#{messages['jsf.UploadedTranslations']}"></i>
 								<span class="is-invisible">#{messages['jsf.UploadedTranslation']}</span>
 							</s:fragment>
 						</p>
@@ -55,7 +55,7 @@
 			        		</s:fragment>
 			        		
 			        		<s:fragment rendered="#{activity.activityType == 'UPLOAD_TRANSLATION_DOCUMENT'}">
-			        			You uploaded a translation of <strong>#{activityAction.getWordsCountMessage(activity.wordCount)}</strong> to 
+			        			You uploaded translations of <strong>#{activityAction.getWordsCountMessage(activity.wordCount)}</strong> to 
 			        			<a href="#{activityAction.getProjectUrl(activity)}">#{activityAction.getProjectName(activity)}</a>,
 		        				finishing on "<a href="#{activityAction.getEditorUrl(activity)}">#{activityAction.getLastTextFlowContent(activity)}</a>"
 			        		</s:fragment>
