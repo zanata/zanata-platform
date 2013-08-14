@@ -28,6 +28,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.annotation.CachedMethodResult;
 import org.zanata.common.ActivityType;
@@ -49,6 +50,7 @@ import org.zanata.util.ZanataMessages;
  */
 @Name("activityAction")
 @Scope(ScopeType.PAGE)
+@Restrict("#{identity.loggedIn}")
 public class ActivityAction implements Serializable
 {
    private static final long serialVersionUID = 1L;

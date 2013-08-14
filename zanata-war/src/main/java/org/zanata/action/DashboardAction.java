@@ -32,6 +32,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.annotation.CachedMethodResult;
@@ -48,6 +49,7 @@ import org.zanata.util.UrlUtil;
 
 @Name("dashboardAction")
 @Scope(ScopeType.PAGE)
+@Restrict("#{identity.loggedIn}")
 public class DashboardAction implements Serializable
 {
    private static final long serialVersionUID = 1L;
