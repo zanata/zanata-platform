@@ -115,11 +115,13 @@ public class Activity extends ModelEntityBase implements Serializable
       endOffsetMillis = startOffsetMillis;
    }
 
-   public void updateActivity(Date currentTime, int wordCount)
+   public void updateActivity(Date currentTime, IsEntityWithType target, int wordCount)
    {
       this.endOffsetMillis = currentTime.getTime() - approxTime.getTime();
       this.wordCount += wordCount;
       this.eventCount++;
+      this.lastTargetType = target.getEntityType();
+      this.lastTargetId = target.getId();
    }
 
    @Transient
