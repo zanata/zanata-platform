@@ -129,20 +129,6 @@ public class ActivityAction implements Serializable
          HTextFlowTarget tft = (HTextFlowTarget) lastTarget;
          content = tft.getTextFlow().getContents().get(0);
       }
-      else if (activity.getActivityType() == ActivityType.UPLOAD_SOURCE_DOCUMENT)
-      {
-         //not supported for upload source action
-      }
-      else if (activity.getActivityType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
-      {
-         HDocument document = (HDocument) lastTarget;
-         HTextFlowTarget tft = documentDAO.getLastTranslatedTargetOrNull(document.getId());
-         
-         if (tft != null)
-         {
-            content = tft.getTextFlow().getContents().get(0);
-         }
-      }
 
       return ShortString.shorten(content);
    }

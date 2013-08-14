@@ -56,8 +56,7 @@
 			        		
 			        		<s:fragment rendered="#{activity.activityType == 'UPLOAD_TRANSLATION_DOCUMENT'}">
 			        			You uploaded translations of <strong>#{activityAction.getWordsCountMessage(activity.wordCount)}</strong> to 
-			        			<a href="#{activityAction.getProjectUrl(activity)}">#{activityAction.getProjectName(activity)}</a>,
-		        				finishing on "<a href="#{activityAction.getEditorUrl(activity)}">#{activityAction.getLastTextFlowContent(activity)}</a>"
+			        			<a href="#{activityAction.getProjectUrl(activity)}">#{activityAction.getProjectName(activity)}</a>
 			        		</s:fragment>
 			        	</p>
 			        	<ul class="list--horizontal txt--meta">

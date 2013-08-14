@@ -62,7 +62,7 @@ public class ActivityServiceImpl implements ActivityService
 {
    @Logger
    private Log log;
-   
+
    @In
    private ActivityDAO activityDAO;
 
@@ -74,14 +74,16 @@ public class ActivityServiceImpl implements ActivityService
 
    @In
    private ProjectIterationDAO projectIterationDAO;
-   
+
    @In
    private EntityManager entityManager;
 
    @Override
-   public Activity findActivity(long actorId, EntityType contextType, long contextId, ActivityType activityType, Date actionTime)
+   public Activity findActivity(long actorId, EntityType contextType, long contextId, ActivityType activityType,
+         Date actionTime)
    {
-      return activityDAO.findActivity(actorId, contextType, contextId, activityType, DateUtils.truncate(actionTime, Calendar.HOUR));
+      return activityDAO.findActivity(actorId, contextType, contextId, activityType,
+            DateUtils.truncate(actionTime, Calendar.HOUR));
    }
 
    @Override
@@ -97,16 +99,18 @@ public class ActivityServiceImpl implements ActivityService
    }
 
    @Override
-   public void logActivity(HPerson actor, IsEntityWithType context, IsEntityWithType target, ActivityType activityType, int wordCount)
+   public void logActivity(HPerson actor, IsEntityWithType context, IsEntityWithType target, ActivityType activityType,
+         int wordCount)
    {
       if (actor != null && context != null && activityType != null)
       {
          Date currentActionTime = new Date();
-         Activity activity = findActivity(actor.getId(), context.getEntityType(), context.getId(), activityType, currentActionTime);
+         Activity activity = findActivity(actor.getId(), context.getEntityType(), context.getId(), activityType,
+               currentActionTime);
 
          if (activity != null)
          {
-            activity.updateActivity(currentActionTime, wordCount);
+            activity.updateActivity(currentActionTime, target, wordCount);
          }
          else
          {
@@ -132,9 +136,11 @@ public class ActivityServiceImpl implements ActivityService
    {
       HTextFlowTarget target = textFlowTargetDAO.findById(event.getTextFlowTargetId(), false);
       HDocument document = documentDAO.getById(event.getDocumentId());
-      ActivityType activityType = event.getNewState().isReviewed() ? ActivityType.REVIEWED_TRANSLATION : ActivityType.UPDATE_TRANSLATION;
+      ActivityType activityType = event.getNewState().isReviewed() ? ActivityType.REVIEWED_TRANSLATION
+            : ActivityType.UPDATE_TRANSLATION;
 
-      logActivity(target.getLastModifiedBy(), document.getProjectIteration(), target, activityType, target.getTextFlow().getWordCount().intValue());
+      logActivity(target.getLastModifiedBy(), document.getProjectIteration(), target, activityType, target
+            .getTextFlow().getWordCount().intValue());
    }
 
    /**
@@ -145,9 +151,11 @@ public class ActivityServiceImpl implements ActivityService
    public void onDocumentUploaded(DocumentUploadedEvent event)
    {
       HDocument document = documentDAO.getById(event.getDocumentId());
-      ActivityType activityType = event.isSourceDocument() ? ActivityType.UPLOAD_SOURCE_DOCUMENT : ActivityType.UPLOAD_TRANSLATION_DOCUMENT;
-      
-      logActivity(document.getLastModifiedBy(), document.getProjectIteration(), document, activityType, getDocumentWordCount(document));
+      ActivityType activityType = event.isSourceDocument() ? ActivityType.UPLOAD_SOURCE_DOCUMENT
+            : ActivityType.UPLOAD_TRANSLATION_DOCUMENT;
+
+      logActivity(document.getLastModifiedBy(), document.getProjectIteration(), document, activityType,
+            getDocumentWordCount(document));
    }
 
    private int getDocumentWordCount(HDocument document)
