@@ -15,14 +15,6 @@
 	</header>
 	<nav id="nav-main-side">
 		<ul class="list--slat list--block-links">
-			
-			<s:fragment rendered="#{identity.loggedIn}">
-				<li>
-					<s:link id="left_menu_dashboard_link" view="/dashboard/home.xhtml" propagation="none">
-						#{messages['jsf.Dashboard']}
-					</s:link>
-				</li>
-			</s:fragment>
 			<li><s:link id="left_menu_projects_link" view="/project/home.xhtml" propagation="none">#{messages['jsf.Projects']}</s:link></li>
 			<li><s:link id="left_menu_version-groups_link" view="/version-group/home.xhtml" propagation="none">#{messages['jsf.Groups']}</s:link></li>
 			<li><s:link id="left_menu_languages_link" view="/language/home.xhtml" propagation="none">#{messages['jsf.Languages']}</s:link></li>
