@@ -48,25 +48,6 @@
 			</plugin>
 
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>analyze</id>
-                        <goals>
-                            <goal>analyze-only</goal>
-                        </goals>
-                        <configuration>
-                            <failOnWarning>true</failOnWarning>
-                            <usedDependencies>
-                                <usedDependency>org.slf4j:slf4j-log4j12</usedDependency>
-                            </usedDependencies>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
                 <groupId>org.codehaus.groovy.maven</groupId>
                 <artifactId>gmaven-plugin</artifactId>
                 <version>1.0</version>
@@ -213,7 +194,7 @@
             <version>1.0.0.GA</version>
         </dependency>
 
-        <dependency>
+      <dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxrs</artifactId>
 		</dependency>
