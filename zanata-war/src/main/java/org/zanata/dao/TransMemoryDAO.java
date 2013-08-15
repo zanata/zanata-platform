@@ -87,7 +87,7 @@ public class TransMemoryDAO extends AbstractDAOImpl<TransMemory, Long>
          throw new EntityMissingException("Translation memory " + slug + " was not found.");
       }
 
-      final int batchSize = 1000;
+      final int batchSize = 100;
       int deleted;
       do
       {
@@ -104,7 +104,7 @@ public class TransMemoryDAO extends AbstractDAOImpl<TransMemory, Long>
             session.createQuery("from TransMemoryUnit tu where tu.translationMemory = :tm")
                   .setParameter("tm", tm.get())
                   .setFirstResult(0)
-                  .setFetchSize(batchSize)
+                  .setMaxResults(batchSize)
                   .list();
 
          // Remove each batch (Takes advantage of CASCADE deletes on the db)
