@@ -24,6 +24,7 @@ package org.zanata.webtrans.client.presenter;
 import org.hamcrest.Matchers;
 import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -32,6 +33,9 @@ import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.CommentBeforeSaveEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
+import org.zanata.webtrans.client.keys.KeyShortcut;
+import org.zanata.webtrans.client.keys.ShortcutContext;
+import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.GetTransUnitActionContextHolder;
 import org.zanata.webtrans.client.view.ForceReviewCommentDisplay;
@@ -65,16 +69,26 @@ public class ForceReviewCommentPresenterTest
    private CommentBeforeSaveEvent commentBeforeSaveEvent;
    @Mock
    private TransUnitSaveEvent saveEvent;
+   @Mock
+   private KeyShortcutPresenter keyShortcutPresenter;
+   @Mock
+   private WebTransMessages messages;
+   @Captor
+   private ArgumentCaptor<KeyShortcut> shortcutCapture;
 
    @BeforeMethod
    public void setUp() throws Exception
    {
       MockitoAnnotations.initMocks(this);
 
-      presenter = new ForceReviewCommentPresenter(display, eventBus, dispatcher, contextHolder);
+      presenter = new ForceReviewCommentPresenter(display, eventBus, dispatcher, contextHolder, keyShortcutPresenter, messages);
 
       verify(display).setListener(presenter);
       verify(eventBus).addHandler(CommentBeforeSaveEvent.TYPE, presenter);
+      verify(keyShortcutPresenter).register(shortcutCapture.capture());
+
+      KeyShortcut keyShortcut = shortcutCapture.getValue();
+      assertThat(keyShortcut.getContext(), Matchers.equalTo(ShortcutContext.Popup));
    }
 
    @Test
@@ -83,6 +97,8 @@ public class ForceReviewCommentPresenterTest
       presenter.onCommentBeforeSave(commentBeforeSaveEvent);
 
       verify(display).center();
+      verify(keyShortcutPresenter).setContextActive(ShortcutContext.Edit, false);
+      verify(keyShortcutPresenter).setContextActive(ShortcutContext.Popup, true);
    }
 
    @Test
@@ -108,5 +124,7 @@ public class ForceReviewCommentPresenterTest
       verify(eventBus).fireEvent(saveEvent);
       verify(eventBus).fireEvent(NavTransUnitEvent.NEXT_ENTRY_EVENT);
       verify(display).hide();
+      verify(keyShortcutPresenter).setContextActive(ShortcutContext.Edit, true);
+      verify(keyShortcutPresenter).setContextActive(ShortcutContext.Popup, false);
    }
 }

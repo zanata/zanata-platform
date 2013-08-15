@@ -95,7 +95,7 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
    @Override
    public void clearInput()
    {
-      commentInput.clearInput();
+      commentInput.setText("");
    }
 
    @Override

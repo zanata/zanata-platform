@@ -36,6 +36,8 @@ public interface ForceReviewCommentDisplay extends WidgetDisplay
 
    void center();
 
+   String getComment();
+
    interface Listener
    {
 

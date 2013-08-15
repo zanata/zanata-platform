@@ -66,6 +66,12 @@ public class ForceReviewCommentWidget extends DialogBox implements ForceReviewCo
    @Override
    public void clearInput()
    {
-      inputWidget.clearInput();
+      inputWidget.setText("");
+   }
+
+   @Override
+   public String getComment()
+   {
+      return inputWidget.getText();
    }
 }
