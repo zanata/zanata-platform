@@ -63,7 +63,7 @@
 
         .untranslated-header {
             border: none;
-            color: #a2b4c3;
+            color: #c6d2db;
             white-space: nowrap;
             padding: 2px;
         }
@@ -96,7 +96,7 @@
         }
 
         .untranslated {
-            background: #a2b4c3;
+            background: #c6d2db;
             color: #fff;
         }
 
