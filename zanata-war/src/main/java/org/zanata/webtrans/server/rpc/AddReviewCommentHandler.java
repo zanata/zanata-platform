@@ -89,14 +89,15 @@ public class AddReviewCommentHandler extends AbstractActionHandler<AddReviewComm
       WorkspaceId workspaceId = action.getWorkspaceId();
       securityServiceImpl.checkWorkspaceStatus(workspaceId);
 
-      HLocale hLocale = localeServiceImpl.getByLocaleId(workspaceId.getLocaleId());
-      TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(workspaceId);
-
       HTextFlowTarget hTextFlowTarget = textFlowTargetDAO.getTextFlowTarget(action.getTransUnitId().getValue(), workspaceId.getLocaleId());
       if (hTextFlowTarget == null || hTextFlowTarget.getState().isUntranslated())
       {
          throw new ActionException("comment on untranslated message is pointless!");
       }
+
+      HLocale hLocale = localeServiceImpl.getByLocaleId(workspaceId.getLocaleId());
+      TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(workspaceId);
+
       HTextFlowTargetReviewComment hComment = hTextFlowTarget.addReviewComment(action.getContent(), authenticatedAccount.getPerson());
       textFlowTargetDAO.makePersistent(hTextFlowTarget);
       textFlowTargetDAO.flush();
