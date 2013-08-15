@@ -33,13 +33,17 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetReviewComment;
+import org.zanata.security.ZanataIdentity;
+import org.zanata.service.LocaleService;
 import org.zanata.service.SecurityService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.server.TranslationWorkspace;
+import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.shared.model.ReviewComment;
 import org.zanata.webtrans.shared.model.ReviewCommentId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
+import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentAction;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentResult;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
@@ -71,16 +75,24 @@ public class AddReviewCommentHandler extends AbstractActionHandler<AddReviewComm
    @In
    TransUnitTransformer transUnitTransformer;
 
+   @In
+   private LocaleService localeServiceImpl;
+
+   @In
+   private TranslationWorkspaceManager translationWorkspaceManager;
+
    @Override
    public AddReviewCommentResult execute(AddReviewCommentAction action, ExecutionContext context) throws ActionException
    {
       throwExceptionIfCommentIsInvalid(action);
 
-      SecurityService.SecurityCheckResult securityCheckResult = securityServiceImpl.checkPermission(action, SecurityService.TranslationAction.MODIFY);
-      HLocale hLocale = securityCheckResult.getLocale();
-      TranslationWorkspace workspace = securityCheckResult.getWorkspace();
+      WorkspaceId workspaceId = action.getWorkspaceId();
+      securityServiceImpl.checkWorkspaceStatus(workspaceId);
 
-      HTextFlowTarget hTextFlowTarget = textFlowTargetDAO.getTextFlowTarget(action.getTransUnitId().getValue(), hLocale.getLocaleId());
+      HLocale hLocale = localeServiceImpl.getByLocaleId(workspaceId.getLocaleId());
+      TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(workspaceId);
+
+      HTextFlowTarget hTextFlowTarget = textFlowTargetDAO.getTextFlowTarget(action.getTransUnitId().getValue(), workspaceId.getLocaleId());
       if (hTextFlowTarget == null || hTextFlowTarget.getState().isUntranslated())
       {
          throw new ActionException("comment on untranslated message is pointless!");
