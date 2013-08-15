@@ -20,9 +20,9 @@
  */
 package org.zanata.feature.account;
 
+
 import org.hamcrest.Matchers;
 import org.junit.Before;
-import org.junit.ClassRule;
 import org.junit.experimental.categories.Category;
 import org.junit.experimental.theories.DataPoint;
 import org.junit.experimental.theories.Theories;
@@ -30,12 +30,47 @@ import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 import org.zanata.feature.DetailedTest;
 import org.zanata.page.account.RegisterPage;
-import org.zanata.util.ResetDatabaseRule;
 import org.zanata.util.rfc2822.InvalidEmailAddressRFC2822;
 import org.zanata.workflow.BasicWorkFlow;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.*;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.DOMAIN_LABEL_LENGTH_EXCEEDED;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.INCORRECTLY_BRACKETED_DOMAIN;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.INCORRECTLY_ESCAPED_DOMAIN;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.INVALID_BRACKETED_DOMAIN_LINEFEED;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.INVALID_BRACKETED_DOMAIN_RETURN;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.INVALID_DOMAIN_CHARACTER;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.INVALID_ENCODED_HTML;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.INVALID_FOLLOWING_TEXT;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.INVALID_QUOTED_BACKSLASH;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.INVALID_QUOTED_CARAT;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.INVALID_QUOTED_COMMA;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.INVALID_QUOTED_LEFT_BRACKET;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.INVALID_QUOTED_LINEFEED;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.INVALID_QUOTED_QUOTE;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.INVALID_QUOTED_RETURN;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.INVALID_QUOTED_RIGHT_BRACKET;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.INVALID_QUOTED_SPACE;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.INVALID_QUOTING_SEPARATION;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.INVALID_SINGLE_QUOTING;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.INVALID_UNQUOTED_COMMA;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.INVALID_UNQUOTED_LEFT_PARENTHESES;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.INVALID_UNQUOTED_RIGHT_PARENTHESES;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.LEADING_DASH_BRACKETED_DOMAIN;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.LEADING_DOMAIN_DOT;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.LEADING_DOT;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.LOCALPART_LENGTH_EXCEEDED;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.MISSING_AMPERSAT;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.MISSING_DOMAIN;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.MISSING_LOCALPART;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.MULTIPLE_APERSAT;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.MULTIPLE_DASHES_BRACKETED_DOMAIN;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.MULTIPLE_DOTS;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.PLAIN_ADDRESS;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.SUCCESSIVE_DOMAIN_DOTS;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.TRAILING_DASH_BRACKETED_DOMAIN;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.TRAILING_DOMAIN_DOT;
+import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.TRAILING_DOT;
 
 /**
  * @author Damian Jansen <a
@@ -44,8 +79,6 @@ import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.*;
 @RunWith(Theories.class)
 @Category(DetailedTest.class)
 public class InvalidEmailAddressTest {
-    @ClassRule
-    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
 
     @DataPoint
     public static InvalidEmailAddressRFC2822 TEST_PLAIN_ADDRESS = PLAIN_ADDRESS;

@@ -25,8 +25,8 @@ import static org.hamcrest.Matchers.*;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
-import org.junit.ClassRule;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.BasicAcceptanceTest;
@@ -34,7 +34,7 @@ import org.zanata.feature.DetailedTest;
 import org.zanata.page.account.ResetPasswordPage;
 import org.zanata.page.account.SignInPage;
 import org.zanata.page.utility.DashboardPage;
-import org.zanata.util.ResetDatabaseRule;
+import org.zanata.util.AddUsersRule;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
@@ -44,8 +44,8 @@ import org.zanata.workflow.LoginWorkFlow;
  */
 @Category(DetailedTest.class)
 public class SecurityFullTest {
-    @ClassRule
-    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
+    @Rule
+    public AddUsersRule addUsersRule = new AddUsersRule();
 
     @Before
     public void before() {
@@ -135,8 +135,8 @@ public class SecurityFullTest {
         assertThat(
                 resetPasswordPage.getErrors().get(0),
                 either(equalTo("size must be between 3 and 20")).or(
-                        equalTo("may not be empty")).or(
-                        equalTo("must match ^[a-z\\d_]{3,20}$")));
+                    equalTo("may not be empty")).or(
+                    equalTo("must match ^[a-z\\d_]{3,20}$")));
 
     }
 

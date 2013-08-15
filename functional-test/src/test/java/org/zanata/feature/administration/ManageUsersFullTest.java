@@ -20,15 +20,17 @@
  */
 package org.zanata.feature.administration;
 
-import org.junit.*;
+import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
-import org.zanata.page.utility.DashboardPage;
-import org.zanata.page.administration.ManageUserPage;
 import org.zanata.page.administration.ManageUserAccountPage;
-import org.zanata.util.ResetDatabaseRule;
+import org.zanata.page.administration.ManageUserPage;
+import org.zanata.page.utility.DashboardPage;
+import org.zanata.util.AddUsersRule;
 import org.zanata.workflow.LoginWorkFlow;
-import org.hamcrest.Matchers;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -38,9 +40,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
  */
 @Category(DetailedTest.class)
 public class ManageUsersFullTest {
-    @ClassRule
-    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule(
-            ResetDatabaseRule.Config.Empty);
+    @Rule
+    public AddUsersRule addUsersRule = new AddUsersRule();
+
     private DashboardPage dashboardPage;
 
     @Before

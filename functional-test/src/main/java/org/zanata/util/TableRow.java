@@ -1,9 +1,9 @@
 package org.zanata.util;
 
-import java.util.List;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+
+import java.util.List;
 
 /**
  * @author Patrick Huang <a

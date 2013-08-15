@@ -22,7 +22,6 @@ package org.zanata.feature.account;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
-import org.junit.ClassRule;
 import org.junit.experimental.categories.Category;
 import org.junit.experimental.theories.DataPoint;
 import org.junit.experimental.theories.Theories;
@@ -30,12 +29,19 @@ import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 import org.zanata.feature.DetailedTest;
 import org.zanata.page.account.RegisterPage;
-import org.zanata.util.ResetDatabaseRule;
 import org.zanata.util.rfc2822.ValidEmailAddressRFC2822;
 import org.zanata.workflow.BasicWorkFlow;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.zanata.util.rfc2822.ValidEmailAddressRFC2822.*;
+import static org.zanata.util.rfc2822.ValidEmailAddressRFC2822.BASIC_EMAIL;
+import static org.zanata.util.rfc2822.ValidEmailAddressRFC2822.DOMAIN_LABEL_MAX_CHARACTERS;
+import static org.zanata.util.rfc2822.ValidEmailAddressRFC2822.DOMAIN_MULTIPLE_LABELS;
+import static org.zanata.util.rfc2822.ValidEmailAddressRFC2822.HYPHENATED_DOMAIN_LABEL;
+import static org.zanata.util.rfc2822.ValidEmailAddressRFC2822.HYPHENATED_LOCALPART_LABEL;
+import static org.zanata.util.rfc2822.ValidEmailAddressRFC2822.LOCALPART_LABEL_MAX_CHARACTERS;
+import static org.zanata.util.rfc2822.ValidEmailAddressRFC2822.LOCALPART_MAX_LENGTH;
+import static org.zanata.util.rfc2822.ValidEmailAddressRFC2822.LOCALPART_MULTIPLE_LABELS;
+import static org.zanata.util.rfc2822.ValidEmailAddressRFC2822.SPECIAL_CHARACTERS_LOCALPART;
 
 /**
  * @author Damian Jansen <a
@@ -44,9 +50,6 @@ import static org.zanata.util.rfc2822.ValidEmailAddressRFC2822.*;
 @RunWith(Theories.class)
 @Category(DetailedTest.class)
 public class ValidEmailAddressTest {
-
-    @ClassRule
-    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
 
     @DataPoint
     public static ValidEmailAddressRFC2822 TEST_BASIC_EMAIL = BASIC_EMAIL;

@@ -20,16 +20,9 @@
  */
 package org.zanata.page;
 
-import static org.zanata.util.Constants.chrome;
-import static org.zanata.util.Constants.firefox;
-import static org.zanata.util.Constants.webDriverType;
-import static org.zanata.util.Constants.zanataInstance;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.firefox.FirefoxBinary;
@@ -41,9 +34,14 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.service.DriverService;
 import org.zanata.util.PropertiesHolder;
 
-import com.google.common.base.Strings;
+import java.io.File;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
-import lombok.extern.slf4j.Slf4j;
+import static org.zanata.util.Constants.chrome;
+import static org.zanata.util.Constants.firefox;
+import static org.zanata.util.Constants.webDriverType;
+import static org.zanata.util.Constants.zanataInstance;
 
 @Slf4j
 public enum WebDriverFactory {

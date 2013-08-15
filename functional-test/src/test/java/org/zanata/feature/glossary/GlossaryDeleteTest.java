@@ -20,26 +20,29 @@
  */
 package org.zanata.feature.glossary;
 
-import java.io.File;
-import java.util.List;
-
+import com.google.common.base.Joiner;
 import org.concordion.api.extension.Extensions;
 import org.concordion.ext.ScreenshotExtension;
 import org.concordion.ext.TimestampFormatterExtension;
 import org.concordion.integration.junit4.ConcordionRunner;
+import org.junit.Rule;
 import org.junit.experimental.categories.Category;
+import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 import org.zanata.concordion.CustomResourceExtension;
 import org.zanata.feature.ConcordionTest;
 import org.zanata.page.webtrans.EditorPage;
+import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.ClientPushWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
-import com.google.common.base.Joiner;
+
+import java.io.File;
+import java.util.List;
 
 /**
  * @see <a href="https://tcms.engineering.redhat.com/case/167899/">TCMS case</a>
- *
+ * 
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
@@ -48,6 +51,9 @@ import com.google.common.base.Joiner;
         CustomResourceExtension.class })
 @Category(ConcordionTest.class)
 public class GlossaryDeleteTest {
+    @Rule
+    public TestRule sampleProjectRule = new SampleProjectRule();
+
     private ClientPushWorkFlow clientPushWorkFlow = new ClientPushWorkFlow();
     private File projectRootPath;
     private EditorPage editorPage;

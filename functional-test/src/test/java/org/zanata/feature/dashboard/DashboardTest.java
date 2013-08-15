@@ -20,28 +20,122 @@
  */
 package org.zanata.feature.dashboard;
 
+import com.github.huangp.entityunit.entity.Callbacks;
+import com.github.huangp.entityunit.entity.EntityMaker;
+import com.github.huangp.entityunit.entity.EntityMakerBuilder;
+import com.github.huangp.entityunit.entity.TakeCopyCallback;
+import com.github.huangp.entityunit.entity.WireManyToManyCallback;
+import com.github.huangp.entityunit.maker.FixedValueMaker;
+import com.github.huangp.entityunit.maker.IntervalValuesMaker;
+import com.github.huangp.entityunit.maker.RangeValuesMaker;
+import com.github.huangp.entityunit.maker.SkipFieldValueMaker;
+import lombok.extern.slf4j.Slf4j;
 import org.concordion.api.extension.Extensions;
 import org.concordion.ext.ScreenshotExtension;
 import org.concordion.ext.TimestampFormatterExtension;
 import org.concordion.integration.junit4.ConcordionRunner;
-import org.junit.ClassRule;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import org.zanata.common.ActivityType;
 import org.zanata.concordion.CustomResourceExtension;
 import org.zanata.feature.ConcordionTest;
+import org.zanata.model.Activity;
+import org.zanata.model.HDocument;
+import org.zanata.model.HProject;
+import org.zanata.model.HProjectIteration;
+import org.zanata.model.HTextFlowTarget;
 import org.zanata.page.utility.DashboardPage;
-import org.zanata.util.ResetDatabaseRule;
+import org.zanata.util.EntityManagerFactoryHolder;
+import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
+
+import javax.persistence.EntityManager;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 @RunWith(ConcordionRunner.class)
 @Extensions({ ScreenshotExtension.class, TimestampFormatterExtension.class,
         CustomResourceExtension.class })
 @Category(ConcordionTest.class)
+@Slf4j
 public class DashboardTest {
-    @ClassRule
-    public static ResetDatabaseRule rule = new ResetDatabaseRule(
-            ResetDatabaseRule.Config.WithData);
+
+    @Rule
+    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
+
+    @Before
+    public void setUp() {
+        EntityManager entityManager =
+                EntityManagerFactoryHolder.holder().getEmFactory()
+                        .createEntityManager();
+
+        // here we use glossarist to test because the query to fetch activity is
+        // cachable. Unless we use cache provider that supports clustering we
+        // will have to avoid hitting any query cache.
+        WireManyToManyCallback manyToManyCallback = Callbacks
+            .wireManyToMany(HProject.class, sampleProjectRule.getGlossarist());
+        TakeCopyCallback copyCallback = Callbacks.takeCopy();
+        EntityMakerBuilder.builder()
+            .reuseEntities(sampleProjectRule.getGlossarist(),
+                sampleProjectRule.getGlossarist().getAccount())
+            .build()
+            .makeAndPersist(entityManager, HTextFlowTarget.class,
+                Callbacks.chain(manyToManyCallback, copyCallback));
+
+        EntityMakerBuilder builder = EntityMakerBuilder.builder()
+            .reuseEntities(copyCallback.getCopy())
+                // public Activity(HPerson actor, IsEntityWithType
+                // context, IsEntityWithType target, ActivityType
+                // activityType, int wordCount)
+            .addConstructorParameterMaker(
+                Activity.class, 0,
+                FixedValueMaker.fix(sampleProjectRule
+                    .getGlossarist()))
+            .addConstructorParameterMaker(Activity.class, 1,
+                FixedValueMaker.fix(
+                    copyCallback.getByType(HProjectIteration.class)))
+            .addConstructorParameterMaker(
+                Activity.class, 2,
+                RangeValuesMaker.cycle(
+                    copyCallback.getByType(HDocument.class),
+                    copyCallback.getByType(HTextFlowTarget.class)))
+            .addConstructorParameterMaker(
+                Activity.class, 3,
+                RangeValuesMaker
+                    .cycle(ActivityType.UPLOAD_SOURCE_DOCUMENT,
+                        ActivityType.UPDATE_TRANSLATION,
+                        ActivityType.UPLOAD_TRANSLATION_DOCUMENT,
+                        ActivityType.REVIEWED_TRANSLATION))
+            .addConstructorParameterMaker(Activity.class, 4,
+                FixedValueMaker.fix(10))
+                // below two fields are primitive types. It can not tell
+                // whether it has default value or not so we have to
+                // skip them
+            .addFieldOrPropertyMaker(Activity.class, "contextId",
+                SkipFieldValueMaker.MAKER)
+            .addFieldOrPropertyMaker(Activity.class, "lastTargetId",
+                SkipFieldValueMaker.MAKER)
+            .addFieldOrPropertyMaker(
+                Activity.class, "creationDate",
+                        IntervalValuesMaker.startFrom(new Date(),
+                            -TimeUnit.DAYS.toMillis(1)));
+
+        EntityMaker maker = builder.build();
+
+        // make 6 activities
+        Activity activity = maker.makeAndPersist(entityManager, Activity.class);
+        log.info("activity: {} - {} - {} - {}", activity.getContextType(),
+                activity.getContextId(), activity.getActivityType(),
+            activity.getActor());
+        maker.makeAndPersist(entityManager, Activity.class);
+        maker.makeAndPersist(entityManager, Activity.class);
+        maker.makeAndPersist(entityManager, Activity.class);
+        maker.makeAndPersist(entityManager, Activity.class);
+        maker.makeAndPersist(entityManager, Activity.class);
+    }
 
     private DashboardPage dashboardPage;
 

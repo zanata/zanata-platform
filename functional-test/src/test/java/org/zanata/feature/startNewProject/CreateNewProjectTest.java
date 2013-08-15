@@ -42,7 +42,6 @@ import org.zanata.workflow.ProjectWorkFlow;
         CustomResourceExtension.class })
 @Category(ConcordionTest.class)
 public class CreateNewProjectTest {
-
     @Before
     public void beforeMethod() {
         new LoginWorkFlow().signIn("admin", "admin");

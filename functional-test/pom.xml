@@ -36,7 +36,7 @@
     <ds.jndi.name>zanataDatasource</ds.jndi.name>
     <!--<ds.hibernate.dialect>org.hibernate.dialect.H2Dialect</ds.hibernate.dialect>-->
     <ds.driver.class>org.h2.Driver</ds.driver.class>
-    <ds.connection.url>jdbc:h2:file:${project.build.directory}/h2/zanata;AUTO_SERVER=TRUE</ds.connection.url>
+    <ds.connection.url>jdbc:h2:file:${project.build.directory}/h2/zanata;AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=FALSE</ds.connection.url>
     <ds.username>sa</ds.username>
     <ds.password />
 
@@ -55,9 +55,6 @@
     <webdriver.type>chrome</webdriver.type>
     <webdriver.display>:0</webdriver.display>
     <webdriver.log>${project.build.directory}/webdriver.log</webdriver.log>
-
-    <!-- this is the path we store H2 backup script which will be used to reset database state -->
-    <zanata.database.backup>${project.build.directory}/zanata.database.backup.sql</zanata.database.backup>
 
     <!-- on jenkins, this needs to be set to empty - so that cargo can shutdown. see http://stackoverflow.com/questions/1096642/tomcat-failed-to-shutdown -->
     <cargo.debug.jvm.args>
@@ -113,6 +110,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
+      <version>14.0.1</version>
     </dependency>
 
     <dependency>
@@ -196,6 +194,151 @@
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
       <version>2.4</version>
+    </dependency>
+
+    <!-- to be able to create entity in functional test -->
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>zanata-model</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.seam</groupId>
+      <artifactId>jboss-seam</artifactId>
+      <type>ejb</type>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.testng</groupId>
+          <artifactId>testng</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.ibm.icu</groupId>
+      <artifactId>icu4j</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>zanata-common-util</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.okapi</groupId>
+      <artifactId>okapi-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.okapi.steps</groupId>
+      <artifactId>okapi-step-tokenization</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>zanata-common-api</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.resteasy</groupId>
+          <artifactId>jaxrs-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.resteasy</groupId>
+          <artifactId>resteasy-jaxrs</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.resteasy</groupId>
+          <artifactId>resteasy-multipart-provider</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.resteasy</groupId>
+          <artifactId>resteasy-jaxb-provider</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.codehaus.jackson</groupId>
+          <artifactId>jackson-core-asl</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.codehaus.jackson</groupId>
+          <artifactId>jackson-mapper-asl</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.xml.stream</groupId>
+          <artifactId>stax-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-search</artifactId>
+      <version>${hibernate.search.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!--<dependency>-->
+    <!--<groupId>org.hibernate</groupId>-->
+    <!--<artifactId>hibernate-search-orm</artifactId>-->
+    <!--<version>${hibernate.search.version}</version>-->
+    <!--</dependency>-->
+
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-search-engine</artifactId>
+      <version>${hibernate.search.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-search-analyzers</artifactId>
+      <version>${hibernate.search.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.javassist</groupId>
+      <artifactId>javassist</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <!--<dependency>-->
+    <!--<groupId>org.hibernate</groupId>-->
+    <!--<artifactId>hibernate-ehcache</artifactId>-->
+    <!--<version>${hibernate.version}</version>-->
+    <!--</dependency>-->
+
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-testing</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.github.huangp</groupId>
+      <artifactId>entityunit</artifactId>
+      <version>0.1</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.solr</groupId>
+      <artifactId>solr-core</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-io</artifactId>
+        </exclusion>
+        <exclusion>
+          <artifactId>servlet-api</artifactId>
+          <groupId>javax.servlet</groupId>
+        </exclusion>
+      </exclusions>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.solr</groupId>
+      <artifactId>solr-solrj</artifactId>
+      <scope>test</scope>
     </dependency>
 
   </dependencies>
@@ -381,6 +524,7 @@
           <include>**/log4j.xml</include>
           <include>**/zanata-ds.xml</include>
           <include>conf/standalone.xml</include>
+          <include>META-INF/persistence.xml</include>
         </includes>
       </testResource>
       <testResource>

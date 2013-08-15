@@ -21,7 +21,11 @@
 package org.zanata.util;
 
 import org.apache.commons.io.FileUtils;
-import java.io.*;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 
 /**
  * Create and manipulate basic text files for testing.

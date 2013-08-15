@@ -20,10 +20,9 @@
  */
 package org.zanata.feature.versionGroup;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import org.hamcrest.Matchers;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -33,8 +32,10 @@ import org.zanata.page.groups.CreateVersionGroupPage;
 import org.zanata.page.groups.VersionGroupPage;
 import org.zanata.page.groups.VersionGroupsPage;
 import org.zanata.page.utility.DashboardPage;
-import org.zanata.util.ResetDatabaseRule;
+import org.zanata.util.AddUsersRule;
 import org.zanata.workflow.LoginWorkFlow;
+
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * @author Damian Jansen <a
@@ -42,10 +43,8 @@ import org.zanata.workflow.LoginWorkFlow;
  */
 @Category(DetailedTest.class)
 public class VersionGroupFullTest {
-
-    @ClassRule
-    public static ResetDatabaseRule resetDatabaseRule =
-            new ResetDatabaseRule(ResetDatabaseRule.Config.WithData);
+    @Rule
+    public AddUsersRule addUsersRule = new AddUsersRule();
     private DashboardPage dashboardPage;
 
     @Before

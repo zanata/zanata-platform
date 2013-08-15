@@ -21,7 +21,7 @@
 package org.zanata.page.administration;
 
 import com.google.common.base.Predicate;
-
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -30,8 +30,6 @@ import org.zanata.page.BasePage;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Damian Jansen <a
@@ -75,6 +73,7 @@ public class ManageUserAccountPage extends BasePage {
             @Override
             public boolean apply(WebDriver input) {
                 WebElement usernameField = input.findElement(usernameBy);
+                usernameField.clear();
                 usernameField.sendKeys(username);
                 return input.findElement(usernameBy).getAttribute("value")
                         .equals(username);

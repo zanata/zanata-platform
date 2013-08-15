@@ -20,12 +20,15 @@
  */
 package org.zanata.util;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.common.base.Function;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
@@ -34,11 +37,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.FluentWait;
 
-import com.google.common.base.Function;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class WebElementUtil {
     private WebElementUtil() {
@@ -117,18 +116,18 @@ public class WebElementUtil {
 
     public static List<String> getColumnContents(WebDriver driver, final By by,
             final int columnIndex) {
-        try {
-            driver.findElement(by);
-        } catch (NoSuchElementException noElement) {
-            // Some pages don't show a table, if there's no items to show
-            return Collections.emptyList();
-        }
-
         return waitForTenSeconds(driver).until(
                 new Function<WebDriver, List<String>>() {
                     @Override
                     public List<String> apply(WebDriver input) {
-                        WebElement table = input.findElement(by);
+                        WebElement table;
+                        try {
+                            table = input.findElement(by);
+                        } catch (NoSuchElementException noElement) {
+                            // Some pages don't show a table, if there's no
+                            // items to show
+                            return Collections.emptyList();
+                        }
                         List<WebElement> rows =
                                 table.findElements(By.xpath(".//tbody[1]/tr"));
                         List<TableRow> tableRows =

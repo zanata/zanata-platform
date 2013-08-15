@@ -20,8 +20,6 @@
  */
 package org.zanata.feature.startNewProject;
 
-import java.util.List;
-
 import org.concordion.api.extension.Extensions;
 import org.concordion.ext.ScreenshotExtension;
 import org.concordion.ext.TimestampFormatterExtension;
@@ -35,6 +33,8 @@ import org.zanata.page.utility.DashboardPage;
 import org.zanata.page.webtrans.DocumentsViewPage;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
+
+import java.util.List;
 
 /**
  * @author Patrick Huang <a
@@ -60,7 +60,7 @@ public class DocumentListInWebTransTest {
         projectVersionPage =
                 new BasicWorkFlow()
                         .goToPage(String.format("iteration/view/plurals/%s",
-                                versionSlug), ProjectVersionPage.class);
+                            versionSlug), ProjectVersionPage.class);
         // ProjectPage projectPage =
         // homePage.goToProjects().goToProject(projectName);
         // projectVersionPage = projectPage.goToVersion(versionSlug);

@@ -1,23 +1,26 @@
 package org.zanata.feature.glossary;
 
-import java.io.File;
-import java.util.List;
-
+import com.google.common.base.Joiner;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import org.concordion.api.extension.Extensions;
 import org.concordion.ext.ScreenshotExtension;
 import org.concordion.ext.TimestampFormatterExtension;
 import org.concordion.integration.junit4.ConcordionRunner;
+import org.junit.Rule;
+import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 import org.zanata.concordion.CustomResourceExtension;
+import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.ClientPushWorkFlow;
-import com.google.common.base.Joiner;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
+
+import java.io.File;
+import java.util.List;
 
 /**
  * @see <a href="https://tcms.engineering.redhat.com/case/167901/">TCMS test
  *      case 167901</a>
- *
+ * 
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
@@ -25,6 +28,9 @@ import com.google.common.collect.Iterables;
 @Extensions({ ScreenshotExtension.class, TimestampFormatterExtension.class,
         CustomResourceExtension.class })
 public class UnauthorizedGlossaryDeleteTest {
+    @Rule
+    public TestRule sampleProjectRule = new SampleProjectRule();
+
     private ClientPushWorkFlow clientPushWorkFlow = new ClientPushWorkFlow();
     private File projectRootPath;
 

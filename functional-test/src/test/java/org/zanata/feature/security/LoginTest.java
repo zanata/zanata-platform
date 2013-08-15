@@ -24,14 +24,14 @@ import org.concordion.api.extension.Extensions;
 import org.concordion.ext.ScreenshotExtension;
 import org.concordion.ext.TimestampFormatterExtension;
 import org.concordion.integration.junit4.ConcordionRunner;
-import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.zanata.concordion.CustomResourceExtension;
 import org.zanata.feature.ConcordionTest;
 import org.zanata.page.utility.DashboardPage;
 import org.zanata.page.utility.HomePage;
-import org.zanata.util.ResetDatabaseRule;
+import org.zanata.util.AddUsersRule;
 import org.zanata.workflow.LoginWorkFlow;
 
 @RunWith(ConcordionRunner.class)
@@ -39,8 +39,8 @@ import org.zanata.workflow.LoginWorkFlow;
         CustomResourceExtension.class })
 @Category(ConcordionTest.class)
 public class LoginTest {
-    @ClassRule
-    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
+    @Rule
+    public AddUsersRule addUsersRule = new AddUsersRule();
 
     public boolean signInAs(String username, String password) {
         DashboardPage dashboardPage =

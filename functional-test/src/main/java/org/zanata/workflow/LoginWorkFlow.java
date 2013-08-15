@@ -47,9 +47,8 @@ public class LoginWorkFlow extends AbstractWebWorkFlow {
             log.warn("Login failed. May due to some weird issue. Will Try again.");
             doSignIn(username, password);
         } catch (TimeoutException e) {
-            log.error("timeout on login. If you are running tests manually"+
-                    " with cargo.wait, you probably forget to create the user"+
-                    " admin/admin. See ManualRunHelper.");
+            log.error("timeout on login. If you are running tests manually" +
+                " with cargo.wait, you probably forget to create the user admin/admin.");
             throw e;
         }
         return PageFactory.initElements(driver, pageClass);
