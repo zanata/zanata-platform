@@ -14,7 +14,7 @@
         }
 
         .fuzzyUntranslated {
-			color:#a2b4c3;
+			color:#c6d2db;
 		}
 
 		.fuzzy {
@@ -22,7 +22,7 @@
 		}
 
 		.untranslated {
-			color:#a2b4c3;
+			color:#c6d2db;
 		}
 
 	</ui:style>

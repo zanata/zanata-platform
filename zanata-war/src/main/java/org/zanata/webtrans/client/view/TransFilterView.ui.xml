@@ -30,7 +30,7 @@
         }
 
         .untranslated {
-			border-left:3px solid #a2b4c3;
+			border-left:3px solid #c6d2db;
         }
 
         .approved {
