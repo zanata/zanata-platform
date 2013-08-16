@@ -58,10 +58,11 @@
                 false);
                 req.onreadystatechange = function() {
                     if (req.readyState != 4)  { return; }
-                    if (req.status != 200)  {
+                    if (req.status == 503)  {
+                        alert("There was an error uploading the file: " + req.responseText + " (" + req.status + ")");
+                    } else if (req.status != 200)  {
                         alert("There was an error uploading the file: " + req.statusText + " (" + req.status + ")");
-                    }
-                    else {
+                    } else {
                         alert("Successfully imported the file");
                     }
                     resetUploadDialog();
@@ -110,7 +111,9 @@
 
             <s:fragment rendered="#{translationMemoryAction.allTranslationMemories.size() > 0}">
                 <h:form id="form">
-
+                    <s:div id="processResult">
+                        #{translationMemoryAction.processError}
+                    </s:div>
                     <rich:dataTable id="tmList"
                                     value="#{translationMemoryAction.allTranslationMemories}" var="tm">
                         <rich:column>
@@ -152,7 +155,7 @@
                             <s:fragment rendered="#{not translationMemoryAction.isTransMemoryBeingCleared(tm.slug)}">
                                 <a4j:commandButton value="#{messages['jsf.Clear']}"
                                                    action="#{translationMemoryAction.clearTransMemory(tm.slug)}"
-                                                   render="tmListPoll,tmList"
+                                                   render="tmListPoll,tmList,processResult,processResultPoll"
                                                    onclick="return confirmClearTm()"/>
                                 <a4j:commandButton value="#{messages['jsf.Delete']}"
                                                    action="#{translationMemoryAction.deleteTransMemory(tm.slug)}"
@@ -169,7 +172,8 @@
 
                 </h:form>
                 <h:form>
-                    <a4j:poll id="tmListPoll" interval="3000" render="tmListPoll,tmList" enabled="#{translationMemoryAction.tablePollEnabled}"/>
+                    <a4j:poll id="tmListPoll" interval="3000" render="tmListPoll,tmList,processResultPoll,processResult" enabled="#{translationMemoryAction.tablePollEnabled}"/>
+                    <a4j:poll id="processResultPoll" interval="3000" render="processResultPoll,processResult" enabled="#{translationMemoryAction.processErrorPollEnabled}"/>
                 </h:form>
             </s:fragment>
         </s:decorate>
