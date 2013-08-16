@@ -294,5 +294,4 @@ public class EditorOptionsPresenterTest
       assertThat(configHolder.getState().isEnabledReferenceForSourceLang(), Matchers.equalTo(true));
       verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
    }
-
 }

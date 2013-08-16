@@ -7,36 +7,40 @@ import org.zanata.webtrans.shared.model.TransUnitId;
  *
  * @author Hannes Eskebaek
  */
-public class GetTargetForLocale extends AbstractWorkspaceAction<GetTargetForLocaleResult> {
+public class GetTargetForLocale extends AbstractWorkspaceAction<GetTargetForLocaleResult>
+{
+   private static final long serialVersionUID = 1L;
+   private TransUnitId sourceTransUnitId;
+   private Locale locale;
 
-    private static final long serialVersionUID = 1L;
+   @SuppressWarnings("unused")
+   private GetTargetForLocale()
+   {
+   }
 
-    private TransUnitId sourceTransUnitId;
+   public GetTargetForLocale(TransUnitId sourceTransUnitId, Locale locale)
+   {
+      this.sourceTransUnitId = sourceTransUnitId;
+      this.locale = locale;
+   }
 
-    private Locale locale;
+   public TransUnitId getSourceTransUnitId()
+   {
+      return sourceTransUnitId;
+   }
 
-    @SuppressWarnings("unused")
-    private GetTargetForLocale() {
-    }
+   public void setSourceTransUnitId(TransUnitId sourceTransUnitId)
+   {
+      this.sourceTransUnitId = sourceTransUnitId;
+   }
 
-    public GetTargetForLocale(TransUnitId sourceTransUnitId, Locale locale) {
-        this.sourceTransUnitId = sourceTransUnitId;
-        this.locale = locale;
-    }
+   public Locale getLocale()
+   {
+      return locale;
+   }
 
-    public TransUnitId getSourceTransUnitId() {
-        return sourceTransUnitId;
-    }
-
-    public void setSourceTransUnitId(TransUnitId sourceTransUnitId) {
-        this.sourceTransUnitId = sourceTransUnitId;
-    }
-
-    public Locale getLocale() {
-        return locale;
-    }
-
-    public void setLocale(Locale locale) {
-        this.locale = locale;
-    }
+   public void setLocale(Locale locale)
+   {
+      this.locale = locale;
+   }
 }

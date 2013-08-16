@@ -30,6 +30,7 @@ import org.zanata.webtrans.client.events.PageCountChangeEvent;
 import org.zanata.webtrans.client.events.PageCountChangeEventHandler;
 import org.zanata.webtrans.client.events.RefreshPageEvent;
 import org.zanata.webtrans.client.view.TranslationEditorDisplay;
+
 import com.google.inject.Inject;
 
 public class TranslationEditorPresenter extends WidgetPresenter<TranslationEditorDisplay> implements PageChangeEventHandler, PageCountChangeEventHandler, TranslationEditorDisplay.Listener
@@ -60,8 +61,7 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
       display.setFilterView(transFilterPresenter.getDisplay().asWidget());
 
       transUnitsTablePresenter.bind();
-      display.setEditorView(transUnitsTablePresenter.getDisplay().asWidget());
-      
+      display.setEditorView(transUnitsTablePresenter.getDisplay().asWidget());      
       transUnitSourceLangPresenter.bind();
       display.setSourceLangView(transUnitSourceLangPresenter.getDisplay().asWidget());
       transUnitNavigationPresenter.bind();

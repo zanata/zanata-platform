@@ -1,7 +1,7 @@
 package org.zanata.webtrans.shared.rpc;
 
 /**
- * 
+ *
  * @author Hannes Eskebaek
  */
 public class GetLocaleList extends AbstractWorkspaceAction<GetLocaleListResult>

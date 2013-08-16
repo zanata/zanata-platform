@@ -3,24 +3,26 @@ package org.zanata.webtrans.shared.rpc;
 import org.zanata.webtrans.shared.model.TextFlowTarget;
 
 /**
- * 
+ *
  * @author Hannes Eskebaek
  */
-public class GetTargetForLocaleResult implements DispatchResult {
+public class GetTargetForLocaleResult implements DispatchResult
+{
+   private static final long serialVersionUID = 1L;
+   private TextFlowTarget target;
 
-    private static final long serialVersionUID = 1L;
+   @SuppressWarnings("unused")
+   private GetTargetForLocaleResult()
+   {
+   }
 
-    private TextFlowTarget target;
+   public GetTargetForLocaleResult(TextFlowTarget target)
+   {
+      this.target = target;
+   }
 
-    @SuppressWarnings("unused")
-    private GetTargetForLocaleResult() {
-    }
-
-    public GetTargetForLocaleResult(TextFlowTarget target) {
-        this.target = target;
-    }
-
-    public TextFlowTarget getTarget() {
-        return target;
-    }
+   public TextFlowTarget getTarget()
+   {
+      return target;
+   }
 }

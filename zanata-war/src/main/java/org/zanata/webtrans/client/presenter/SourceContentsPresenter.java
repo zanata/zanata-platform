@@ -58,7 +58,6 @@ import org.zanata.webtrans.client.events.ShowReferenceEvent;
 import org.zanata.webtrans.client.events.ShowReferenceEventHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.Locale;
-import org.zanata.webtrans.shared.model.TextFlowTarget;
 import org.zanata.webtrans.shared.rpc.GetTargetForLocale;
 import org.zanata.webtrans.shared.rpc.GetTargetForLocaleResult;
 
@@ -66,38 +65,33 @@ import org.zanata.webtrans.shared.rpc.GetTargetForLocaleResult;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  */
-public class SourceContentsPresenter implements ClickHandler, UserConfigChangeHandler, TransUnitUpdatedEventHandler, ShowReferenceEventHandler, HideReferenceEventHandler, RefreshPageEventHandler {
+public class SourceContentsPresenter implements ClickHandler, UserConfigChangeHandler, TransUnitUpdatedEventHandler, ShowReferenceEventHandler, HideReferenceEventHandler, RefreshPageEventHandler
+{
+   private final EventBus eventBus;
+   private final Provider<SourceContentsDisplay> displayProvider;
+   private final UserConfigHolder configHolder;
+   private final CachingDispatchAsync dispatcher;
+   
+   // states
+   private List<SourceContentsDisplay> displayList = Collections.emptyList();
+   private TransUnitId currentTransUnitId;
+   private HasSelectableSource selectedSource;
+   private Boolean isReferenceShowing = false;
+   private Locale selectedReferenceLocale;
 
-    private final EventBus eventBus;
-
-    private final Provider<SourceContentsDisplay> displayProvider;
-
-    private final UserConfigHolder configHolder;
-
-    private final CachingDispatchAsync dispatcher;
-
-    // states
-    private List<SourceContentsDisplay> displayList = Collections.emptyList();
-
-    private TransUnitId currentTransUnitId;
-
-    private HasSelectableSource selectedSource;
-    
-    private Boolean isReferenceShowing = false;
-    private Locale selectedReferenceLocale;
-
-    @Inject
-    public SourceContentsPresenter(EventBus eventBus, Provider<SourceContentsDisplay> displayProvider, CachingDispatchAsync dispatcher, UserConfigHolder configHolder) {
-        this.eventBus = eventBus;
-        this.displayProvider = displayProvider;
-        this.configHolder = configHolder;
-        this.dispatcher = dispatcher;
-        eventBus.addHandler(UserConfigChangeEvent.TYPE, this);
-        eventBus.addHandler(TransUnitUpdatedEvent.getType(), this);
-        eventBus.addHandler(ShowReferenceEvent.getType(), this);
-        eventBus.addHandler(HideReferenceEvent.getType(), this);
-        eventBus.addHandler(RefreshPageEvent.TYPE, this);
-    }
+   @Inject
+   public SourceContentsPresenter(EventBus eventBus, Provider<SourceContentsDisplay> displayProvider, CachingDispatchAsync dispatcher, UserConfigHolder configHolder)
+   {
+      this.eventBus = eventBus;
+      this.displayProvider = displayProvider;
+      this.configHolder = configHolder;
+      this.dispatcher = dispatcher;
+      eventBus.addHandler(UserConfigChangeEvent.TYPE, this);
+      eventBus.addHandler(TransUnitUpdatedEvent.getType(), this);
+      eventBus.addHandler(ShowReferenceEvent.getType(), this);
+      eventBus.addHandler(HideReferenceEvent.getType(), this);
+      eventBus.addHandler(RefreshPageEvent.TYPE, this);
+   }
 
    /**
     * Select first source in the list when row is selected or reselect previous
@@ -143,20 +137,22 @@ public class SourceContentsPresenter implements ClickHandler, UserConfigChangeHa
       return selectedSource == null ? null : selectedSource.getSource();
    }
 
-    public void showData(List<TransUnit> transUnits) {
-        selectedSource = null; // clear cache
-        ImmutableList.Builder<SourceContentsDisplay> builder = ImmutableList.builder();
-        for (TransUnit transUnit : transUnits) {
-            SourceContentsDisplay display = displayProvider.get();
-            display.setValue(transUnit);
-            display.setSourceSelectionHandler(this);
-            builder.add(display);
-        }
-        displayList = builder.build();
-        if(isReferenceShowing){
+   public void showData(List<TransUnit> transUnits)
+   {
+      selectedSource = null; // clear cache
+      ImmutableList.Builder<SourceContentsDisplay> builder = ImmutableList.builder();
+      for (TransUnit transUnit : transUnits)
+      {
+         SourceContentsDisplay display = displayProvider.get();
+         display.setValue(transUnit);
+         display.setSourceSelectionHandler(this);
+         builder.add(display);
+      }
+      displayList = builder.build();
+       if(isReferenceShowing){
             showReference();
         }
-    }
+   }
 
    public List<SourceContentsDisplay> getDisplays()
    {
@@ -227,71 +223,75 @@ public class SourceContentsPresenter implements ClickHandler, UserConfigChangeHa
       }
    }
 
-    @Override
-    public void onShowReference(ShowReferenceEvent event) {       
-        isReferenceShowing = true;
-        selectedReferenceLocale = event.getSelectedLocale();
-        showReference();
-    }
-    
-    private void showReference() {
-         for (final SourceContentsDisplay display : displayList) {
-
+   @Override
+   public void onShowReference(ShowReferenceEvent event) {       
+       isReferenceShowing = true;
+       selectedReferenceLocale = event.getSelectedLocale();
+       showReference();
+   }
+   
+   private void showReference() {
+        for (final SourceContentsDisplay display : displayList) {
             GetTargetForLocale action = new GetTargetForLocale(display.getId(), selectedReferenceLocale);
-
             dispatcher.execute(action, new AsyncCallback<GetTargetForLocaleResult>() {
+               @Override
+               public void onFailure(Throwable caught) {
+                   eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Failed to fetch target"));
+               }
                 @Override
-                public void onFailure(Throwable caught) {
-                    eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Failed to fetch target"));
-                }
-
-                @Override
-                public void onSuccess(GetTargetForLocaleResult result) {
-                    display.showReference(result.getTarget());
-                }
-            });
-        }
-    }    
+               public void onSuccess(GetTargetForLocaleResult result) {
+                   display.showReference(result.getTarget());
+               }
+           });
+       }
+   }    
     
 
-    @Override
-    public void onHideReference(HideReferenceEvent event) {
-        for (SourceContentsDisplay display : displayList) {
-            display.hideReference();
-        }
-        isReferenceShowing = false;
-    }
-    
-    @Override
-    public void onRefreshPage(RefreshPageEvent event)
-    {
-        if(isReferenceShowing){
-            showReference();
-        }
-    }
+   @Override
+   public void onHideReference(HideReferenceEvent event) {
+       for (SourceContentsDisplay display : displayList) {
+           display.hideReference();
+       }
+       isReferenceShowing = false;
+   }
+   
+   @Override
+   public void onRefreshPage(RefreshPageEvent event)
+   {
+       if(isReferenceShowing){
+           showReference();
+       }
+   }
 
-    /**
-     * Get the source string for a trans unit on the current page. This will be
-     * the currently selected plural form if any is selected.
-     *
-     * @param id for the trans unit to check
-     * @return currently selected plural, or the first plural if none is
-     * selected. The value will be absent if the trans unit is not on the
-     * current page.
-     */
-    public Optional<String> getSourceContent(TransUnitId id) {
-        Optional<SourceContentsDisplay> view = Finds.findDisplayById(displayList, id);
-        if (view.isPresent()) {
-            List<HasSelectableSource> sourcePanelList = view.get().getSourcePanelList();
-            Optional<HasSelectableSource> selectedSourceOptional = tryFindSelectedSourcePanel(sourcePanelList);
-            if (selectedSourceOptional.isPresent()) {
-                return Optional.of(selectedSourceOptional.get().getSource());
-            } else {
-                // by default return the first one
-                return Optional.of(sourcePanelList.get(0).getSource());
-            }
-        } else {
-            return Optional.absent();
-        }
-    }
+   /**
+    * Get the source string for a trans unit on the current page. This will be
+    * the currently selected plural form if any is selected.
+    * 
+    * @param id for the trans unit to check
+    * @return currently selected plural, or the first plural if none is
+    *         selected. The value will be absent if the trans unit is not on the
+    *         current page.
+    */
+   public Optional<String> getSourceContent(TransUnitId id)
+   {
+      Optional<SourceContentsDisplay> view = Finds.findDisplayById(displayList, id);
+      if (view.isPresent())
+      {
+         List<HasSelectableSource> sourcePanelList = view.get().getSourcePanelList();
+         Optional<HasSelectableSource> selectedSourceOptional = tryFindSelectedSourcePanel(sourcePanelList);
+         if (selectedSourceOptional.isPresent())
+         {
+            return Optional.of(selectedSourceOptional.get().getSource());
+         }
+         else
+         {
+            // by default return the first one
+            return Optional.of(sourcePanelList.get(0).getSource());
+         }
+      }
+      else
+      {
+         return Optional.absent();
+      }
+   }
 }

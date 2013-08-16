@@ -50,147 +50,145 @@ import com.google.inject.Inject;
 
 public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay> implements EditorOptionsDisplay.Listener, OptionsDisplay.CommonOptionsListener, WorkspaceContextUpdateEventHandler, ReloadUserConfigUIHandler
 {
-    private final ValidationOptionsPresenter validationOptionsPresenter;
+   private final ValidationOptionsPresenter validationOptionsPresenter;
+   private final UserWorkspaceContext userWorkspaceContext;
+   private final CachingDispatchAsync dispatcher;
+   private final UserOptionsService userOptionsService;
 
-    private final UserWorkspaceContext userWorkspaceContext;
+   @Inject
+   public EditorOptionsPresenter(EditorOptionsDisplay display, EventBus eventBus, UserWorkspaceContext userWorkspaceContext,
+                                 ValidationOptionsPresenter validationDetailsPresenter,
+                                 CachingDispatchAsync dispatcher, UserOptionsService userOptionsService)
+   {
+      super(display, eventBus);
+      this.validationOptionsPresenter = validationDetailsPresenter;
+      this.userWorkspaceContext = userWorkspaceContext;
+      this.dispatcher = dispatcher;
+      this.userOptionsService = userOptionsService;
+      display.setListener(this);
+   }
 
-    private final CachingDispatchAsync dispatcher;
+   @Override
+   protected void onBind()
+   {
+      validationOptionsPresenter.bind();
+      if(userWorkspaceContext.hasReadOnlyAccess())
+      {
+         setReadOnly(true);
+      }
 
-    private final UserOptionsService userOptionsService;
+      registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this));
+      registerHandler(eventBus.addHandler(ReloadUserConfigUIEvent.TYPE, this));
 
-    @Inject
-    public EditorOptionsPresenter(EditorOptionsDisplay display, EventBus eventBus, UserWorkspaceContext userWorkspaceContext,
-            ValidationOptionsPresenter validationDetailsPresenter,
-            CachingDispatchAsync dispatcher, UserOptionsService userOptionsService)
-    {
-        super(display, eventBus);
-        this.validationOptionsPresenter = validationDetailsPresenter;
-        this.userWorkspaceContext = userWorkspaceContext;
-        this.dispatcher = dispatcher;
-        this.userOptionsService = userOptionsService;
-        display.setListener(this);
-    }
+      //set options default values
+      display.setOptionsState(userOptionsService.getConfigHolder().getState());
+   }
 
-    @Override
-    protected void onBind()
-    {
-        validationOptionsPresenter.bind();
-        if (userWorkspaceContext.hasReadOnlyAccess()) {
-            setReadOnly(true);
-        }
+   @Override
+   public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
+   {
+      userWorkspaceContext.setProjectActive(event.isProjectActive());
+      userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().setProjectType(event.getProjectType());
+      setReadOnly(userWorkspaceContext.hasReadOnlyAccess());
+   }
 
-        registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this));
-        registerHandler(eventBus.addHandler(ReloadUserConfigUIEvent.TYPE, this));
+   private void setReadOnly(boolean readOnly)
+   {
+      boolean displayButtons = !readOnly && userOptionsService.getConfigHolder().getState().isDisplayButtons();
+      userOptionsService.getConfigHolder().setDisplayButtons(displayButtons);
+      userOptionsService.getConfigHolder().setShowTMPanel(false);
+      userOptionsService.getConfigHolder().setShowGlossaryPanel(false);
+      display.setOptionsState(userOptionsService.getConfigHolder().getState());
+      eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+   }
 
-        //set options default values
-        display.setOptionsState(userOptionsService.getConfigHolder().getState());
-    }
+   @Override
+   public void onSelectionChange(String groupName, NavOption navOption)
+   {
+      if (userOptionsService.getConfigHolder().getState().getNavOption() != navOption)
+      {
+         userOptionsService.getConfigHolder().setNavOption(navOption);
+         eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+      }
+   }
 
-    @Override
-    public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
-    {
-        userWorkspaceContext.setProjectActive(event.isProjectActive());
-        userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().setProjectType(event.getProjectType());
-        setReadOnly(userWorkspaceContext.hasReadOnlyAccess());
-    }
+   @Override
+   public void onPageSizeClick(int pageSize)
+   {
+      if (userOptionsService.getConfigHolder().getState().getEditorPageSize() != pageSize)
+      {
+         userOptionsService.getConfigHolder().setEditorPageSize(pageSize);
+         eventBus.fireEvent(new EditorPageSizeChangeEvent(pageSize));
+      }
+   }
 
-    private void setReadOnly(boolean readOnly)
-    {
-        boolean displayButtons = !readOnly && userOptionsService.getConfigHolder().getState().isDisplayButtons();
-        userOptionsService.getConfigHolder().setDisplayButtons(displayButtons);
-        userOptionsService.getConfigHolder().setShowTMPanel(false);
-        userOptionsService.getConfigHolder().setShowGlossaryPanel(false);
-        display.setOptionsState(userOptionsService.getConfigHolder().getState());
-        eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
-    }
+   @Override
+   public void onEnterSaveOptionChanged(Boolean enterSaveApproved)
+   {
+      if (userOptionsService.getConfigHolder().getState().isEnterSavesApproved() != enterSaveApproved)
+      {
+         userOptionsService.getConfigHolder().setEnterSavesApproved(enterSaveApproved);
+         eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+      }
+   }
 
-    @Override
-    public void onSelectionChange(String groupName, NavOption navOption)
-    {
-        if (userOptionsService.getConfigHolder().getState().getNavOption() != navOption) {
-            userOptionsService.getConfigHolder().setNavOption(navOption);
-            eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
-        }
-    }
+   @Override
+   public void onEditorButtonsOptionChanged(Boolean editorButtons)
+   {
+      if (userOptionsService.getConfigHolder().getState().isDisplayButtons() != editorButtons)
+      {
+         userOptionsService.getConfigHolder().setDisplayButtons(editorButtons);
+         eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+      }
+   }
 
-    @Override
-    public void onPageSizeClick(int pageSize)
-    {
-        if (userOptionsService.getConfigHolder().getState().getEditorPageSize() != pageSize) {
-            userOptionsService.getConfigHolder().setEditorPageSize(pageSize);
-            eventBus.fireEvent(new EditorPageSizeChangeEvent(pageSize));
-        }
-    }
+   @Override
+   public void onShowSaveApprovedWarningChanged(Boolean showSaveApprovedWarning)
+   {
+      if (userOptionsService.getConfigHolder().getState().isShowSaveApprovedWarning() != showSaveApprovedWarning)
+      {
+         userOptionsService.getConfigHolder().setShowSaveApprovedWarning(showSaveApprovedWarning);
+         eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+      }
+   }
 
-    @Override
-    public void onEnterSaveOptionChanged(Boolean enterSaveApproved)
-    {
-        if (userOptionsService.getConfigHolder().getState().isEnterSavesApproved() != enterSaveApproved) {
-            userOptionsService.getConfigHolder().setEnterSavesApproved(enterSaveApproved);
-            eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
-        }
-    }
+   @Override
+   public void onSpellCheckOptionChanged(Boolean spellCheckChkValue)
+   {
+      if (userOptionsService.getConfigHolder().getState().isSpellCheckEnabled() != spellCheckChkValue)
+      {
+         userOptionsService.getConfigHolder().setSpellCheckEnabled(spellCheckChkValue);
+         eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+      }
+   }
 
-    @Override
-    public void onEditorButtonsOptionChanged(Boolean editorButtons)
-    {
-        if (userOptionsService.getConfigHolder().getState().isDisplayButtons() != editorButtons) {
-            userOptionsService.getConfigHolder().setDisplayButtons(editorButtons);
-            eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
-        }
-    }
+   @Override
+   public void onTransMemoryDisplayModeChanged(DiffMode displayMode)
+   {
+      if (userOptionsService.getConfigHolder().getState().getTransMemoryDisplayMode() != displayMode)
+      {
+         userOptionsService.getConfigHolder().setTMDisplayMode(displayMode);
+         eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+      }
+   }
 
-    @Override
-    public void onShowSaveApprovedWarningChanged(Boolean showSaveApprovedWarning)
-    {
-        if (userOptionsService.getConfigHolder().getState().isShowSaveApprovedWarning() != showSaveApprovedWarning) {
-            userOptionsService.getConfigHolder().setShowSaveApprovedWarning(showSaveApprovedWarning);
-            eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
-        }
-    }
-
-    @Override
-    public void onSpellCheckOptionChanged(Boolean spellCheckChkValue)
-    {
-        if (userOptionsService.getConfigHolder().getState().isSpellCheckEnabled() != spellCheckChkValue) {
-            userOptionsService.getConfigHolder().setSpellCheckEnabled(spellCheckChkValue);
-            eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
-        }
-    }
-
-    @Override
-    public void onTransMemoryDisplayModeChanged(DiffMode displayMode)
-    {
-        if (userOptionsService.getConfigHolder().getState().getTransMemoryDisplayMode() != displayMode) {
-            userOptionsService.getConfigHolder().setTMDisplayMode(displayMode);
-            eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
-        }
-    }
-
-    @Override
-    public void onTMOrGlossaryDisplayOptionsChanged(Boolean showTMChkValue, Boolean showGlossaryChkValue)
-    {
-        UserConfigHolder.ConfigurationState state = userOptionsService.getConfigHolder().getState();
-        if (state.isShowTMPanel() != showTMChkValue) {
-            userOptionsService.getConfigHolder().setShowTMPanel(showTMChkValue);
-        }
-        if (state.isShowGlossaryPanel() != showGlossaryChkValue) {
-            userOptionsService.getConfigHolder().setShowGlossaryPanel(showGlossaryChkValue);
-        }
-        boolean displaySouthPanel = showTMChkValue || showGlossaryChkValue;
-        eventBus.fireEvent(new DisplaySouthPanelEvent(displaySouthPanel));
-    }
-
-    @Override
-    public void onDisplayTransUnitDetailsOptionChanged(Boolean showTransUnitDetailsChkValue)
-    {
-        if (userOptionsService.getConfigHolder().getState().isShowOptionalTransUnitDetails() != showTransUnitDetailsChkValue) {
-            userOptionsService.getConfigHolder().setShowOptionalTransUnitDetails(showTransUnitDetailsChkValue);
-        }
-        eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
-    }
-
-    @Override
+   @Override
+   public void onTMOrGlossaryDisplayOptionsChanged(Boolean showTMChkValue, Boolean showGlossaryChkValue)
+   {
+      UserConfigHolder.ConfigurationState state = userOptionsService.getConfigHolder().getState();
+      if (state.isShowTMPanel() != showTMChkValue)
+      {
+         userOptionsService.getConfigHolder().setShowTMPanel(showTMChkValue);
+      }
+      if (state.isShowGlossaryPanel() != showGlossaryChkValue)
+      {
+         userOptionsService.getConfigHolder().setShowGlossaryPanel(showGlossaryChkValue);
+      }
+      boolean displaySouthPanel = showTMChkValue || showGlossaryChkValue;
+      eventBus.fireEvent(new DisplaySouthPanelEvent(displaySouthPanel));
+   }
+   
+   @Override
     public void onEnableReferenceForSourceLangOptionChanged(Boolean displayReference)
     {
         if (userOptionsService.getConfigHolder().getState().isEnabledReferenceForSourceLang() != displayReference) {
@@ -199,74 +197,86 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
         eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
     }
 
-    @Override
-    public void onUseCodeMirrorOptionChanged(Boolean useCodeMirrorChkValue)
-    {
-        if (userOptionsService.getConfigHolder().getState().isUseCodeMirrorEditor() != useCodeMirrorChkValue) {
-            userOptionsService.getConfigHolder().setUseCodeMirrorEditor(useCodeMirrorChkValue);
-            eventBus.fireEvent(RefreshPageEvent.REDRAW_PAGE_EVENT);
-        }
-    }
+   @Override
+   public void onDisplayTransUnitDetailsOptionChanged(Boolean showTransUnitDetailsChkValue)
+   {
+      if (userOptionsService.getConfigHolder().getState().isShowOptionalTransUnitDetails() != showTransUnitDetailsChkValue)
+      {
+         userOptionsService.getConfigHolder().setShowOptionalTransUnitDetails(showTransUnitDetailsChkValue);
+      }
+      eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+   }
 
-    @Override
-    protected void onUnbind()
-    {
-    }
+   @Override
+   public void onUseCodeMirrorOptionChanged(Boolean useCodeMirrorChkValue)
+   {
+      if (userOptionsService.getConfigHolder().getState().isUseCodeMirrorEditor() != useCodeMirrorChkValue)
+      {
+         userOptionsService.getConfigHolder().setUseCodeMirrorEditor(useCodeMirrorChkValue);
+         eventBus.fireEvent(RefreshPageEvent.REDRAW_PAGE_EVENT);
+      }
+   }
 
-    @Override
-    public void onRevealDisplay()
-    {
-    }
+   @Override
+   protected void onUnbind()
+   {
+   }
 
-    @Override
-    public void persistOptionChange()
-    {
-        userOptionsService.persistOptionChange(userOptionsService.getEditorOptions());
-    }
+   @Override
+   public void onRevealDisplay()
+   {
+   }
 
-    @Override
-    public void loadOptions()
-    {
-        ArrayList<String> prefixes = new ArrayList<String>();
-        prefixes.add(UserOptions.editor());
-        prefixes.add(UserOptions.common());
+   @Override
+   public void persistOptionChange()
+   {
+      userOptionsService.persistOptionChange(userOptionsService.getEditorOptions());
+   }
 
-        dispatcher.execute(new LoadOptionsAction(prefixes), new AsyncCallback<LoadOptionsResult>()
-        {
-            @Override
-            public void onFailure(Throwable caught)
-            {
-                eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Unable to Load editor Options"));
-            }
+   @Override
+   public void loadOptions()
+   {
+      ArrayList<String> prefixes = new ArrayList<String>();
+      prefixes.add(UserOptions.editor());
+      prefixes.add(UserOptions.common());
 
-            @Override
-            public void onSuccess(LoadOptionsResult result)
-            {
-                userOptionsService.getConfigHolder().setState(result.getConfiguration());
-                refreshOptions();
-            }
-        });
-    }
+      dispatcher.execute(new LoadOptionsAction(prefixes), new AsyncCallback<LoadOptionsResult>()
+      {
+         @Override
+         public void onFailure(Throwable caught)
+         {
+            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Unable to Load editor Options"));
+         }
 
-    @Override
-    public void loadDefaultOptions()
-    {
-        userOptionsService.loadEditorDefaultOptions();
-        refreshOptions();
-    }
+         @Override
+         public void onSuccess(LoadOptionsResult result)
+         {
+            userOptionsService.getConfigHolder().setState(result.getConfiguration());
+            refreshOptions();
+         }
+      });
+   }
 
-    @Override
-    public void onReloadUserConfigUI(ReloadUserConfigUIEvent event)
-    {
-        if (event.getView() == MainView.Editor) {
-            display.setOptionsState(userOptionsService.getConfigHolder().getState());
-        }
-    }
+   @Override
+   public void loadDefaultOptions()
+   {
+      userOptionsService.loadEditorDefaultOptions();
+      refreshOptions();
+   }
 
-    private void refreshOptions()
-    {
-        display.setOptionsState(userOptionsService.getConfigHolder().getState());
-        eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
-        eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Loaded default editor options."));
-    }
+   @Override
+   public void onReloadUserConfigUI(ReloadUserConfigUIEvent event)
+   {
+      if (event.getView() == MainView.Editor)
+      {
+         display.setOptionsState(userOptionsService.getConfigHolder().getState());
+      }
+   }
+
+   private void refreshOptions()
+   {
+      display.setOptionsState(userOptionsService.getConfigHolder().getState());
+      eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+      eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Loaded default editor options."));
+   }
 }

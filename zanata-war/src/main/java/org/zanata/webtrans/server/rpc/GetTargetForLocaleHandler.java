@@ -22,40 +22,41 @@ import org.zanata.webtrans.shared.rpc.GetTargetForLocaleResult;
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(GetTargetForLocale.class)
 @Slf4j
-public class GetTargetForLocaleHandler extends AbstractActionHandler<GetTargetForLocale, GetTargetForLocaleResult> {
+public class GetTargetForLocaleHandler extends AbstractActionHandler<GetTargetForLocale, GetTargetForLocaleResult>
+{
+   @In
+   private ZanataIdentity identity;
+   @In
+   private TextFlowTargetDAO textFlowTargetDAO;
 
-    @In
-    private ZanataIdentity identity;
+   @Override
+   public GetTargetForLocaleResult execute(GetTargetForLocale action, ExecutionContext context) throws ActionException
+   {
+      try {
+         identity.checkLoggedIn();
 
-    @In
-    private TextFlowTargetDAO textFlowTargetDAO;
+         HTextFlowTarget hTextFlowTarget = textFlowTargetDAO.getTextFlowTarget(action.getSourceTransUnitId().getId(), action.getLocale().getId().getLocaleId());
 
-    @Override
-    public GetTargetForLocaleResult execute(GetTargetForLocale action, ExecutionContext context) throws ActionException {
-        try {
-            identity.checkLoggedIn();
+         if (hTextFlowTarget == null) {
+            return new GetTargetForLocaleResult(null);
+         } else {
+            String displayName = retrieveDisplayName(hTextFlowTarget.getLocale());
+            TextFlowTarget textFlowTarget = new TextFlowTarget(new TextFlowTargetId(hTextFlowTarget.getId()), action.getLocale(), hTextFlowTarget.getContents().get(0), displayName);
+            return new GetTargetForLocaleResult(textFlowTarget);
+         }
+      } catch (Exception e) {
+         log.error("Exception when fetching target: ", e);
+         return new GetTargetForLocaleResult(null);
+      }
+   }
 
-            HTextFlowTarget hTextFlowTarget = textFlowTargetDAO.getTextFlowTarget(action.getSourceTransUnitId().getId(), action.getLocale().getId().getLocaleId());
-            
-            if (hTextFlowTarget == null) {
-                return new GetTargetForLocaleResult(null);
-            } else {
-                String displayName = retrieveDisplayName(hTextFlowTarget.getLocale());
-                TextFlowTarget textFlowTarget = new TextFlowTarget(new TextFlowTargetId(hTextFlowTarget.getId()), action.getLocale(), hTextFlowTarget.getContents().get(0), displayName);
-                return new GetTargetForLocaleResult(textFlowTarget);
-            }
-        } catch (Exception e) {
-           log.error("Exception when fetching target: ", e);
-           return new GetTargetForLocaleResult(null);
-        }
-    }
-    
-    public String retrieveDisplayName(HLocale hLocale)
+   public String retrieveDisplayName(HLocale hLocale)
    {
       return hLocale.retrieveDisplayName();
    }
 
-    @Override
-    public void rollback(GetTargetForLocale action, GetTargetForLocaleResult result, ExecutionContext context) throws ActionException {
-    }
+   @Override
+   public void rollback(GetTargetForLocale action, GetTargetForLocaleResult result, ExecutionContext context) throws ActionException
+   {
+   }
 }
