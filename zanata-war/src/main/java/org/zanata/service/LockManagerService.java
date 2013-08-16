@@ -36,6 +36,14 @@ public interface LockManagerService
     */
    public boolean checkAndAttain( Lock l );
 
+
+   /**
+    * Checks for the availability of a lock and attains it if available.
+    * @param lock The lock to attain.
+    * @return null if the lock was obtained, otherwise the username of the lock owner
+    */
+   public String attainLockOrReturnOwner(Lock lock);
+
    /**
     * Attains a lock.
     *

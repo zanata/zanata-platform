@@ -20,16 +20,18 @@
  */
 package org.zanata.service.impl;
 
-import java.util.Collections;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
+import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
+import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.lock.Lock;
 import org.zanata.lock.LockNotAcquiredException;
+import org.zanata.model.HAccount;
 import org.zanata.service.LockManagerService;
 
 /**
@@ -43,29 +45,33 @@ import org.zanata.service.LockManagerService;
 @Startup
 public class LockManagerServiceImpl implements LockManagerService
 {
-   private final Set<Lock> locks = Collections.newSetFromMap(new ConcurrentHashMap<Lock, Boolean>());
+   /**
+    * Maps locks to their owners' usernames
+    */
+   private final ConcurrentMap<Lock, String> locks = new ConcurrentHashMap<Lock, String>();
 
    @Override
-   public synchronized boolean checkAndAttain(Lock l)
+   public boolean checkAndAttain(Lock lock)
    {
-      if( locks.contains( l ) )
-      {
-         return false;
-      }
-      else
-      {
-         locks.add(l);
-         return true;
-      }
+      return attainLockOrReturnOwner(lock) == null;
    }
 
    @Override
    public void attain(Lock l) throws LockNotAcquiredException
    {
-      if( !checkAndAttain(l) )
+      String owner = attainLockOrReturnOwner(l);
+      if(owner != null)
       {
-         throw new LockNotAcquiredException(l, "Lock not available");
+         throw new LockNotAcquiredException(l, "Already locked by user: "+owner);
       }
+   }
+
+   @Override
+   public String attainLockOrReturnOwner(Lock lock)
+   {
+      String newLocker = getCurrentUser();
+      String previousLocker = locks.putIfAbsent(lock, newLocker);
+      return previousLocker;
    }
 
    @Override
@@ -73,4 +79,12 @@ public class LockManagerServiceImpl implements LockManagerService
    {
       locks.remove(l);
    }
+
+   private String getCurrentUser()
+   {
+      HAccount user = (HAccount) Component.getInstance(JpaIdentityStore.AUTHENTICATED_USER);
+      String newLocker = user != null ? user.getUsername() : "unknown";
+      return newLocker;
+   }
+
 }
