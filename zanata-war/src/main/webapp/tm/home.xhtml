@@ -114,8 +114,8 @@
                     <s:div id="processResult">
                         #{translationMemoryAction.processError}
                     </s:div>
-                    <rich:dataTable id="tmList"
-                                    value="#{translationMemoryAction.allTranslationMemories}" var="tm">
+                    <s:div id="tmList">
+                      <rich:dataTable value="#{translationMemoryAction.allTranslationMemories}" var="tm">
                         <rich:column>
                             <f:facet name="header">#{messages['jsf.transmemory.Id']}
                                 <richext:columnSorter />
@@ -157,9 +157,8 @@
                                                    action="#{translationMemoryAction.clearTransMemory(tm.slug)}"
                                                    render="tmListPoll,tmList,processResult,processResultPoll"
                                                    onclick="return confirmClearTm()"/>
-                                <a4j:commandButton value="#{messages['jsf.Delete']}"
+                                <h:commandButton value="#{messages['jsf.Delete']}"
                                                    action="#{translationMemoryAction.deleteTransMemory(tm.slug)}"
-                                                   render="tmList"
                                                    onclick="return confirmDeleteTm()"
                                                    disabled="#{translationMemoryAction.deleteTransMemoryDisabled(tm.slug)}"
                                                    title="#{translationMemoryAction.deleteTransMemoryDisabled(tm.slug) ? messages['jsf.transmemory.Delete.Title'] : ''}"/>
@@ -168,7 +167,8 @@
                                 #{messages['jsf.transmemory.Clearing.Message']}
                             </s:fragment>
                         </rich:column>
-                    </rich:dataTable>
+                      </rich:dataTable>
+                    </s:div>
 
                 </h:form>
                 <h:form>
