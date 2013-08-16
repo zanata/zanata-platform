@@ -27,11 +27,14 @@ import static org.testng.Assert.fail;
 
 import org.hibernate.Session;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.EntityStatus;
+import org.zanata.dao.DocumentUploadDAO;
 import org.zanata.exception.ChunkUploadException;
+import org.zanata.model.HDocumentUpload;
 import org.zanata.service.TranslationFileService;
 
 @Test(groups = { "unit-tests" })
@@ -53,6 +56,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest
             .use("identity", identity)
             .use("session", session)
             .use("documentDAO", documentDAO)
+            .use("documentUploadDAO", documentUploadDAO)
             .use("projectIterationDAO", projectIterationDAO)
             .use("translationFileService", translationFileService)
             .use("uploadPartPersistService", uploadPartPersistService)
@@ -237,7 +241,24 @@ public class DocumentUploadUtilTest extends DocumentUploadTest
       }
    }
 
-   // TODO damason: test not first part but no existing upload
+   public void subsequentPartUploadNotPresent()
+   {
+      conf = defaultUpload().first(false).uploadId(5L).build();
+      mockLoggedIn();
+      mockProjectAndVersionStatus();
+      Mockito.when(documentUploadDAO.findById(conf.uploadId)).thenReturn(null);
+
+      try
+      {
+         util.failIfUploadNotValid(conf.id, conf.uploadForm);
+      }
+      catch (ChunkUploadException e)
+      {
+         assertThat(e.getStatusCode(), is(PRECONDITION_FAILED));
+         assertThat(e.getMessage(), is("No incomplete uploads found for uploadId '5'."));
+      }
+   }
+
    // TODO damason: test not first part but docId does not match existing upload
 
    // TODO damason: test returning correct stream depending whether file exists

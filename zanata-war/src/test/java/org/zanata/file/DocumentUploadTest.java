@@ -14,6 +14,7 @@ import javax.ws.rs.core.Response.Status;
 import org.mockito.Mock;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.DocumentDAO;
+import org.zanata.dao.DocumentUploadDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProject;
@@ -32,6 +33,7 @@ public class DocumentUploadTest
    protected SeamAutowire seam = SeamAutowire.instance();
 
    @Mock protected DocumentDAO documentDAO;
+   @Mock protected DocumentUploadDAO documentUploadDAO;
    @Mock protected ZanataIdentity identity;
    @Mock protected ProjectIterationDAO projectIterationDAO;
 
