@@ -58,7 +58,6 @@ import org.zanata.service.SlugEntityService;
 @Name("translationMemoryAction")
 @Restrict("#{s:hasRole('admin')}")
 @Slf4j
-@Scope(ScopeType.PAGE)
 public class TranslationMemoryAction extends EntityHome<TransMemory>
 {
    @In
@@ -78,13 +77,13 @@ public class TranslationMemoryAction extends EntityHome<TransMemory>
    /**
     * Stores the last process handle, in page scope (ie for this user).
     */
+   @In(scope=ScopeType.PAGE, required=false)
+   @Out(scope=ScopeType.PAGE, required=false)
    private ProcessHandle myProcessHandle;
 
    /**
     * Stores the last process error, but only for the duration of the event.
     */
-   @In(scope=ScopeType.EVENT, required=false)
-   @Out(scope=ScopeType.EVENT, required=false)
    private String myProcessError;
 
    public List<TransMemory> getAllTranslationMemories()
