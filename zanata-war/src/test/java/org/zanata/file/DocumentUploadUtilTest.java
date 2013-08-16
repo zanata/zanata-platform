@@ -25,6 +25,7 @@ import static javax.ws.rs.core.Response.Status.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.fail;
 import static org.zanata.file.DocumentUploadUtil.getInputStream;
@@ -34,9 +35,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Blob;
+import java.sql.SQLException;
 
 import org.apache.commons.io.IOUtils;
 import org.hibernate.Session;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -45,6 +50,7 @@ import org.testng.annotations.Test;
 import org.zanata.common.EntityStatus;
 import org.zanata.exception.ChunkUploadException;
 import org.zanata.model.HDocumentUpload;
+import org.zanata.model.HDocumentUploadPart;
 import org.zanata.service.TranslationFileService;
 
 import com.google.common.base.Optional;
@@ -54,9 +60,15 @@ import com.google.common.io.Files;
 public class DocumentUploadUtilTest extends DocumentUploadTest
 {
 
+   private static final String HASH_OF_ABCDEFGHI = "d41d8cd98f00b204e9800998ecf8427e";
    @Mock Session session;
    @Mock TranslationFileService translationFileService;
    @Mock UploadPartPersistService uploadPartPersistService;
+
+   @Mock Blob partBlob0;
+   @Mock Blob partBlob1;
+
+   @Captor private ArgumentCaptor<InputStream> persistedInputStreamCaptor;
 
    private DocumentUploadUtil util;
 
@@ -71,7 +83,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest
             .use("documentDAO", documentDAO)
             .use("documentUploadDAO", documentUploadDAO)
             .use("projectIterationDAO", projectIterationDAO)
-            .use("translationFileService", translationFileService)
+            .use("translationFileServiceImpl", translationFileService)
             .use("uploadPartPersistService", uploadPartPersistService)
             .allowCycles();
 
@@ -327,7 +339,58 @@ public class DocumentUploadUtilTest extends DocumentUploadTest
       }
    }
 
-   // TODO damason: test combining upload parts
-   // TODO damason: test mismatched hash when combining upload parts
+   public void canCombineUploadPartsInOrder() throws SQLException, IOException
+   {
+      HDocumentUpload upload = mockTwoPartUploadUsingHash(HASH_OF_ABCDEFGHI);
+
+      InputStream finalPartStream = new ByteArrayInputStream("ghi".getBytes());
+      File persistedFile = new File("test");
+
+      when(translationFileService.persistToTempFile(persistedInputStreamCaptor.capture()))
+            .thenReturn(persistedFile);
+
+      File returnedFile = util.combineToTempFileAndDeleteUploadRecord(upload, finalPartStream);
+
+      assertThat(returnedFile, is(sameInstance(persistedFile)));
+      String persistedContents = IOUtils.toString(persistedInputStreamCaptor.getValue(), "utf-8");
+      assertThat(persistedContents, is("abcdefghi"));
+      verify(session).delete(upload);
+   }
+
+   public void combineFailsOnHashMismatch() throws SQLException
+   {
+      HDocumentUpload upload = mockTwoPartUploadUsingHash("incorrect hash");
+      InputStream finalPartStream = new ByteArrayInputStream("ghi".getBytes());
+
+      try
+      {
+         util.combineToTempFileAndDeleteUploadRecord(upload, finalPartStream);
+      }
+      catch (ChunkUploadException e)
+      {
+         assertThat(e.getStatusCode(), is(CONFLICT));
+         assertThat(e.getMessage(), is("MD5 hash \"incorrect hash\" sent with initial request" +
+               " does not match server-generated hash of combined parts \"" + HASH_OF_ABCDEFGHI +
+               "\". Upload aborted. Retry upload from first part."));
+      }
+   }
+
+   private HDocumentUpload mockTwoPartUploadUsingHash(String hash) throws SQLException
+   {
+      HDocumentUpload upload = new HDocumentUpload();
+      upload.setContentHash(hash);
+
+      HDocumentUploadPart part0 = new HDocumentUploadPart();
+      when(partBlob0.getBinaryStream()).thenReturn(new ByteArrayInputStream("abc".getBytes()));
+      part0.setContent(partBlob0);
+      upload.getParts().add(part0);
+
+      HDocumentUploadPart part1 = new HDocumentUploadPart();
+      when(partBlob1.getBinaryStream()).thenReturn(new ByteArrayInputStream("def".getBytes()));
+      part1.setContent(partBlob1);
+      upload.getParts().add(part1);
+      return upload;
+   }
+
    // TODO damason: test mismatched hash when persisting temp file
 }
