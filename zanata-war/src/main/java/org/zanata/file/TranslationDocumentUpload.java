@@ -41,6 +41,7 @@ import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
+import org.zanata.dao.DocumentUploadDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.exception.ChunkUploadException;
@@ -77,6 +78,7 @@ public class TranslationDocumentUpload
    private TranslationService translationServiceImpl;
    @In
    private TranslationFileService translationFileServiceImpl;
+   @In private DocumentUploadDAO documentUploadDAO;
 
    public Response tryUploadTranslationFile(GlobalDocumentId id,
          String localeId, String mergeType, DocumentFileUploadForm uploadForm)
@@ -96,16 +98,22 @@ public class TranslationDocumentUpload
          }
          else
          {
-            HDocumentUpload upload = util.saveUploadPart(id, locale, uploadForm);
-            totalChunks = upload.getParts().size();
             if (!uploadForm.getLast())
             {
+               HDocumentUpload upload = util.saveUploadPart(id, locale, uploadForm);
+               totalChunks = upload.getParts().size();
                return Response.status(Status.ACCEPTED)
                      .entity(new ChunkUploadResponse(upload.getId(), totalChunks, true,
                            "Chunk accepted, awaiting remaining chunks."))
                      .build();
             }
-            tempFile = Optional.of(util.combineToTempFileAndDeleteUploadRecord(upload));
+            else
+            {
+               HDocumentUpload upload = documentUploadDAO.findById(uploadForm.getUploadId());
+               totalChunks = upload.getParts().size() + 1;
+               tempFile = Optional.of(
+                     util.combineToTempFileAndDeleteUploadRecord(upload, uploadForm.getFileStream()));
+            }
          }
 
          TranslationsResource transRes;
@@ -260,7 +268,7 @@ public class TranslationDocumentUpload
    {
       return Joiner.on("\n\t")
             .join("Upload succeeded but had the following warnings:", warnings) + "\n";
-      }
+   }
 
    private static MergeType mergeTypeFromString(String type)
    {

@@ -243,12 +243,12 @@ public class DocumentUploadUtil
       return uploadForm.getFirst() && uploadForm.getLast();
    }
 
-   protected File combineToTempFileAndDeleteUploadRecord(HDocumentUpload upload)
+   public File combineToTempFileAndDeleteUploadRecord(HDocumentUpload upload, InputStream finalPart)
    {
       File tempFile;
       try
       {
-         tempFile = combineToTempFile(upload);
+         tempFile = combineToTempFile(upload, finalPart);
       }
       catch (HashMismatchException e)
       {
@@ -270,13 +270,14 @@ public class DocumentUploadUtil
       return tempFile;
    }
 
-   private File combineToTempFile(HDocumentUpload upload) throws SQLException
+   private File combineToTempFile(HDocumentUpload upload, InputStream finalPart) throws SQLException
    {
       Vector<InputStream> partStreams = new Vector<InputStream>();
       for (HDocumentUploadPart part : upload.getParts())
       {
          partStreams.add(part.getContent().getBinaryStream());
       }
+      partStreams.add(finalPart);
 
       MessageDigest md;
       try

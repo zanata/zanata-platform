@@ -40,6 +40,7 @@ import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
+import org.zanata.dao.DocumentUploadDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.exception.ChunkUploadException;
 import org.zanata.exception.VirusDetectedException;
@@ -84,6 +85,7 @@ public class SourceDocumentUpload
    private VirusScanner virusScanner;
    @In
    private DocumentDAO documentDAO;
+   @In private DocumentUploadDAO documentUploadDAO;
    @In
    private DocumentService documentServiceImpl;
 
@@ -113,9 +115,9 @@ public class SourceDocumentUpload
          }
          else
          {
-            HDocumentUpload upload = util.saveUploadPart(id, NULL_LOCALE, uploadForm);
-            totalChunks = upload.getParts().size();
-            tempFile = Optional.of(util.combineToTempFileAndDeleteUploadRecord(upload));
+            HDocumentUpload upload = documentUploadDAO.findById(uploadForm.getUploadId());
+            totalChunks = upload.getParts().size() + 1;
+            tempFile = Optional.of(util.combineToTempFileAndDeleteUploadRecord(upload, uploadForm.getFileStream()));
          }
 
          if (uploadForm.getFileType().equals(".pot"))
