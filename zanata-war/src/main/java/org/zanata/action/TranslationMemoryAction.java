@@ -36,7 +36,6 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
-import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesMessages;
@@ -111,7 +110,6 @@ public class TranslationMemoryAction extends EntityHome<TransMemory>
       return true;
    }
 
-   @Restrict("#{s:hasRole('admin')}")
    public void clearTransMemory(final String transMemorySlug)
    {
       this.myProcessHandle = new ProcessHandle();
