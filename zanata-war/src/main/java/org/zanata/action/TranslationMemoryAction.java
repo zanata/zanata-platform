@@ -20,29 +20,34 @@
  */
 package org.zanata.action;
 
+import static org.jboss.seam.international.StatusMessage.Severity.ERROR;
+
 import java.io.Serializable;
 import java.util.List;
+
 import javax.faces.event.ValueChangeEvent;
 
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.extern.slf4j.Slf4j;
+
 import org.jboss.seam.Component;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.framework.EntityHome;
 import org.zanata.dao.TransMemoryDAO;
+import org.zanata.exception.EntityMissingException;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.process.ProcessHandle;
 import org.zanata.process.RunnableProcess;
+import org.zanata.rest.service.TranslationMemoryResourceService;
 import org.zanata.service.ProcessManagerService;
 import org.zanata.service.SlugEntityService;
-import com.google.common.base.Optional;
-
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-
-import static org.jboss.seam.international.StatusMessage.Severity.ERROR;
 
 /**
  * Controller class for the Translation Memory UI.
@@ -51,10 +56,14 @@ import static org.jboss.seam.international.StatusMessage.Severity.ERROR;
  */
 @Name("translationMemoryAction")
 @Restrict("#{s:hasRole('admin')}")
+@Slf4j
 public class TranslationMemoryAction extends EntityHome<TransMemory>
 {
    @In
    private TransMemoryDAO transMemoryDAO;
+
+   @In
+   private TranslationMemoryResourceService translationMemoryResource;
 
    @In
    private SlugEntityService slugEntityServiceImpl;
@@ -63,6 +72,18 @@ public class TranslationMemoryAction extends EntityHome<TransMemory>
    private ProcessManagerService processManagerServiceImpl;
 
    private List<TransMemory> transMemoryList;
+
+   /**
+    * Stores the last process handle, in page scope (ie for this user).
+    */
+   @In(scope=ScopeType.PAGE, required=false)
+   @Out(scope=ScopeType.PAGE, required=false)
+   private ProcessHandle myProcessHandle;
+
+   /**
+    * Stores the last process error, but only for the duration of the event.
+    */
+   private String myProcessError;
 
    public List<TransMemory> getAllTranslationMemories()
    {
@@ -91,33 +112,65 @@ public class TranslationMemoryAction extends EntityHome<TransMemory>
 
    public void clearTransMemory(final String transMemorySlug)
    {
+      this.myProcessHandle = new ProcessHandle();
       processManagerServiceImpl.startProcess(
             new RunnableProcess<ProcessHandle>()
             {
                @Override
                protected void run(ProcessHandle handle) throws Throwable
                {
-                  TransMemoryDAO transMemoryDAO = (TransMemoryDAO) Component.getInstance(TransMemoryDAO.class);
-                  transMemoryDAO.deleteTransMemoryContents(transMemorySlug);
+                  TranslationMemoryResourceService tmResource = (TranslationMemoryResourceService) Component.getInstance("translationMemoryResource");
+                  String msg = tmResource.deleteTranslationUnitsUnguarded(transMemorySlug).toString();
+                  log.info(msg);
                }
             },
-            new ProcessHandle(),
+            myProcessHandle,
             new ClearTransMemoryProcessKey(transMemorySlug)
       );
 
       transMemoryList = null; // Force refresh next time list is requested
    }
 
+   private boolean isProcessing()
+   {
+      return myProcessHandle != null;
+   }
+
+   public boolean isProcessErrorPollEnabled()
+   {
+      // No need to poll just for process erorrs if we are already polling the table
+      return isProcessing() && !isTablePollEnabled();
+   }
+
+   /**
+    * Gets the error (if any) for this user's last Clear operation, if it finished since the last poll.
+    * NB: If the process has just finished, this method will return the error only until the event scope exists.
+    * @return
+    */
+   public String getProcessError()
+   {
+      if (myProcessError != null) return myProcessError;
+      if (myProcessHandle != null && myProcessHandle.isFinished())
+      {
+         processManagerServiceImpl.removeIfInactive(myProcessHandle);
+         Throwable error = myProcessHandle.getError();
+         // remember the result, just until this event finishes
+         this.myProcessError = error != null ? error.getMessage() : "";
+         this.myProcessHandle = null;
+         return myProcessError;
+      }
+      return "";
+   }
+
    @Transactional
    public void deleteTransMemory(String transMemorySlug)
    {
-      Optional<TransMemory> transMemory = transMemoryDAO.getBySlug(transMemorySlug);
-      if (transMemory.isPresent())
+      try
       {
-         transMemoryDAO.makeTransient(transMemory.get());
+         translationMemoryResource.deleteTranslationMemory(transMemorySlug);
          transMemoryList = null; // Force refresh next time list is requested
       }
-      else
+      catch (EntityMissingException e)
       {
          FacesMessages.instance().addFromResourceBundle(ERROR, "jsf.transmemory.TransMemoryNotFound");
       }

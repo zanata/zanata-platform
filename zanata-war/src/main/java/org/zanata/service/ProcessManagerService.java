@@ -64,4 +64,5 @@ public interface ProcessManagerService
    public Collection<ProcessHandle> getAllInactiveProcessHandles();
 
    public void clearInactive();
+   boolean removeIfInactive(ProcessHandle h);
 }
