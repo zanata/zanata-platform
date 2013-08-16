@@ -4,24 +4,26 @@ import java.util.List;
 import org.zanata.webtrans.shared.model.Locale;
 
 /**
- * 
+ *
  * @author Hannes Eskebaek
  */
-public class GetLocaleListResult implements DispatchResult {
+public class GetLocaleListResult implements DispatchResult
+{
+   private static final long serialVersionUID = 1L;
+   private List<Locale> locales;
 
-    private static final long serialVersionUID = 1L;
+   @SuppressWarnings("unused")
+   private GetLocaleListResult()
+   {
+   }
 
-    private List<Locale> locales;
+   public GetLocaleListResult(List<Locale> locales)
+   {
+      this.locales = locales;
+   }
 
-    @SuppressWarnings("unused")
-    private GetLocaleListResult() {
-    }
-
-    public GetLocaleListResult(List<Locale> locales) {
-        this.locales = locales;
-    }
-
-    public List<Locale> getLocales() {
-        return locales;
-    }
+   public List<Locale> getLocales()
+   {
+      return locales;
+   }
 }

@@ -23,12 +23,9 @@ package org.zanata.webtrans.client.view;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -41,91 +38,85 @@ import org.zanata.webtrans.shared.model.Locale;
 
 public class TransUnitChangeSourceLangView extends Composite implements TransUnitChangeSourceLangDisplay, ChangeHandler
 {
-    private static TransUnitChangeSourceLangViewUiBinder uiBinder = GWT.create(TransUnitChangeSourceLangViewUiBinder.class);
+   private static TransUnitChangeSourceLangViewUiBinder uiBinder = GWT.create(TransUnitChangeSourceLangViewUiBinder.class);
+   private Listener listener;
+   private UiMessages messages;
 
-    private Listener listener;
+   interface Styles extends CssResource
+   {
+   }
+   @UiField
+   FlowPanel flowPanel;
+   @UiField
+   Label descriptionLabel;
+   @UiField
+   Styles style;
+   LocaleListBox sourceLangListBox;
 
-    private UiMessages messages;
+   @Inject
+   public TransUnitChangeSourceLangView(final UiMessages messages)
+   {
+      this.messages = messages;
+      initWidget(uiBinder.createAndBindUi(this));
 
-    interface Styles extends CssResource
-    {
-    }
+      descriptionLabel.setText(messages.changeSourceLangDescription());
 
-    @UiField
-    FlowPanel flowPanel;
+      sourceLangListBox = new LocaleListBox();
+      sourceLangListBox.addChangeHandler(this);
 
-    @UiField
-    Label descriptionLabel;
+      flowPanel.add(sourceLangListBox);
 
-    @UiField
-    Styles style;
+   }
 
-    LocaleListBox sourceLangListBox;
+   @Override
+   public void buildListBox(List<Locale> locales)
+   {
+      sourceLangListBox.clear();
+      sourceLangListBox.addItem(messages.chooseRefLang(), Locale.notChosenLocale);
+      for (Locale locale : locales) {
+         sourceLangListBox.addItem(locale);
+      }
+      sourceLangListBox.setSelectedIndex(0);
+   }
 
-    @Inject
-    public TransUnitChangeSourceLangView(final UiMessages messages)
-    {
-        this.messages = messages;
-        initWidget(uiBinder.createAndBindUi(this));
+   @Override
+   public Widget asWidget()
+   {
+      return this;
+   }
 
-        descriptionLabel.setText(messages.changeSourceLangDescription());
+   @Override
+   public void setListener(Listener listener)
+   {
+      this.listener = listener;
+   }
 
-        sourceLangListBox = new LocaleListBox();
-        sourceLangListBox.addChangeHandler(this);
+   @Override
+   public void onChange(ChangeEvent event)
+   {
+      if (sourceLangListBox.getLocaleAtSelectedIndex() == Locale.notChosenLocale) {
+         listener.onHideReference();
+      } else {
+         listener.onShowReference(sourceLangListBox.getLocaleAtSelectedIndex());
+      }
+   }
 
-        flowPanel.add(sourceLangListBox);
+   @Override
+   public void showReferenceList()
+   {
+      sourceLangListBox.setVisible(true);
+      descriptionLabel.setVisible(true);
+   }
 
-    }
+   @Override
+   public void hideReferenceList()
+   {
+      sourceLangListBox.setSelectedIndex(0);
+      sourceLangListBox.setVisible(false);
+      descriptionLabel.setVisible(false);
+   }
 
-    @Override
-    public void buildListBox(List<Locale> locales)
-    {
-        sourceLangListBox.clear();
-        sourceLangListBox.addItem(messages.chooseRefLang(), Locale.notChosenLocale);
-        for (Locale locale : locales) {
-            sourceLangListBox.addItem(locale);
-        }
-        sourceLangListBox.setSelectedIndex(0);
-    }
-
-    @Override
-    public Widget asWidget()
-    {
-        return this;
-    }
-
-    @Override
-    public void setListener(Listener listener)
-    {
-        this.listener = listener;
-    }
-
-    @Override
-    public void onChange(ChangeEvent event)
-    {
-        if (sourceLangListBox.getLocaleAtSelectedIndex() == Locale.notChosenLocale) {
-            listener.onHideReference();
-        } else {
-            listener.onShowReference(sourceLangListBox.getLocaleAtSelectedIndex());
-        }
-    }
-
-    @Override
-    public void showReferenceList()
-    {
-        sourceLangListBox.setVisible(true);
-        descriptionLabel.setVisible(true);
-    }
-
-    @Override
-    public void hideReferenceList()
-    {
-        sourceLangListBox.setSelectedIndex(0);
-        sourceLangListBox.setVisible(false);
-        descriptionLabel.setVisible(false);
-    }
-
-    interface TransUnitChangeSourceLangViewUiBinder extends UiBinder<Widget, TransUnitChangeSourceLangView>
-    {
-    }
+   interface TransUnitChangeSourceLangViewUiBinder extends UiBinder<Widget, TransUnitChangeSourceLangView>
+   {
+   }
 }

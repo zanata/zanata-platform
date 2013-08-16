@@ -32,65 +32,60 @@ import org.zanata.webtrans.shared.rpc.GetLocaleListResult;
 @ActionHandlerFor(GetLocaleList.class)
 public class GetLocaleListHandler extends AbstractActionHandler<GetLocaleList, GetLocaleListResult>
 {
-    @In
-    private ZanataIdentity identity;
+   @In
+   private ZanataIdentity identity;
+   @In
+   private LocaleDAO localeDAO;
+   @In
+   private ProjectIterationDAO projectIterationDAO;
+   @In
+   private ProjectDAO projectDAO;
+   private ProjectIterationId iterationId;
+   private String projectSlug;
 
-    @In
-    private LocaleDAO localeDAO;
+   @Override
+   public GetLocaleListResult execute(GetLocaleList action, ExecutionContext context) throws ActionException
+   {
+      identity.checkLoggedIn();
 
-    @In
-    private ProjectIterationDAO projectIterationDAO;
+      iterationId = action.getWorkspaceId().getProjectIterationId();
+      projectSlug = iterationId.getProjectSlug();
 
-    @In
-    private ProjectDAO projectDAO;
+      List<Locale> locales = new ArrayList<Locale>();
 
-    private ProjectIterationId iterationId;
+      List<HLocale> hLocales = getLocaleList();
 
-    private String projectSlug;
+      for (HLocale hLocale : hLocales) {
+         Locale locale = new Locale(new IdForLocale(hLocale.getId(), hLocale.getLocaleId()), hLocale.retrieveDisplayName());
+         locales.add(locale);
+      }
+      return new GetLocaleListResult(locales);
+   }
 
-    @Override
-    public GetLocaleListResult execute(GetLocaleList action, ExecutionContext context) throws ActionException
-    {
-            identity.checkLoggedIn();
+   @Override
+   public void rollback(GetLocaleList action, GetLocaleListResult result, ExecutionContext context) throws ActionException
+   {
+   }
 
-            iterationId = action.getWorkspaceId().getProjectIterationId();
-            projectSlug = iterationId.getProjectSlug();
+   /**
+    *
+    * @return the current locales for this iteration
+    */
+   private List<HLocale> getLocaleList()
+   {
+      HProjectIteration iteration = projectIterationDAO.getBySlug(projectSlug, iterationId.getIterationSlug());
+      if (iteration.getOverrideLocales()) {
+         return new ArrayList<HLocale>(iteration.getCustomizedLocales());
+      }
+      return getSupportedLanguageByProject(projectSlug);
+   }
 
-            List<Locale> locales = new ArrayList<Locale>();
-
-            List<HLocale> hLocales = getLocaleList();
-
-            for (HLocale hLocale : hLocales) {
-                Locale locale = new Locale(new IdForLocale(hLocale.getId(), hLocale.getLocaleId()), hLocale.retrieveDisplayName());
-                locales.add(locale);
-            }
-            return new GetLocaleListResult(locales);
-    }
-
-    @Override
-    public void rollback(GetLocaleList action, GetLocaleListResult result, ExecutionContext context) throws ActionException
-    {
-    }
-
-    /**
-     *
-     * @return the current locales for this iteration
-     */
-    private List<HLocale> getLocaleList()
-    {
-        HProjectIteration iteration = projectIterationDAO.getBySlug(projectSlug, iterationId.getIterationSlug());
-        if (iteration.getOverrideLocales()) {
-            return new ArrayList<HLocale>(iteration.getCustomizedLocales());
-        }
-        return getSupportedLanguageByProject(projectSlug);
-    }
-
-    private List<HLocale> getSupportedLanguageByProject(@Nonnull String project)
-    {
-        HProject proj = projectDAO.getBySlug(project);
-        if (proj.getOverrideLocales()) {
-            return new ArrayList<HLocale>(proj.getCustomizedLocales());
-        }
-        return localeDAO.findAllActiveAndEnabledByDefault();
-    }
+   private List<HLocale> getSupportedLanguageByProject(@Nonnull String project)
+   {
+      HProject proj = projectDAO.getBySlug(project);
+      if (proj.getOverrideLocales()) {
+         return new ArrayList<HLocale>(proj.getCustomizedLocales());
+      }
+      return localeDAO.findAllActiveAndEnabledByDefault();
+   }
 }

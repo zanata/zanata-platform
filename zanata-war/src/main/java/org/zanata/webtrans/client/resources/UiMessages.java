@@ -187,18 +187,18 @@ public interface UiMessages extends Messages
    @DefaultMessage("Show as Diff")
    String diffModeAsDiff();
 
-    @DefaultMessage("Highlight matches")
-    String diffModeAsHighlight();
+   @DefaultMessage("Highlight matches")
+   String diffModeAsHighlight();
 
-    @DefaultMessage("Show reference for source language")
-    String changeSourceLangDescription();
-    
-    @DefaultMessage("No reference found")
-    String noReferenceFoundText();
-    
-    @DefaultMessage("In")
-    String inLocale();
-    
-    @DefaultMessage("Choose a language")
-    String chooseRefLang();
+   @DefaultMessage("Show reference for source language")
+   String changeSourceLangDescription();
+
+   @DefaultMessage("No reference found")
+   String noReferenceFoundText();
+
+   @DefaultMessage("In")
+   String inLocale();
+
+   @DefaultMessage("Choose a language")
+   String chooseRefLang();
 }
