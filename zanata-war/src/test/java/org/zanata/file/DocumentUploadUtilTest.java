@@ -259,7 +259,27 @@ public class DocumentUploadUtilTest extends DocumentUploadTest
       }
    }
 
-   // TODO damason: test not first part but docId does not match existing upload
+   public void subsequentPartUploadMismatchedDocId()
+   {
+      conf = defaultUpload().first(false).uploadId(5L).docId("mismatched-id").build();
+      mockLoggedIn();
+      mockProjectAndVersionStatus();
+
+      HDocumentUpload upload = new HDocumentUpload();
+      upload.setDocId("correct-id");
+      Mockito.when(documentUploadDAO.findById(conf.uploadId)).thenReturn(upload);
+
+      try
+      {
+         util.failIfUploadNotValid(conf.id, conf.uploadForm);
+      }
+      catch (ChunkUploadException e)
+      {
+         assertThat(e.getStatusCode(), is(PRECONDITION_FAILED));
+         assertThat(e.getMessage(),
+               is("Supplied uploadId '5' in request is not valid for document 'mismatched-id'."));
+      }
+   }
 
    // TODO damason: test returning correct stream depending whether file exists
 
