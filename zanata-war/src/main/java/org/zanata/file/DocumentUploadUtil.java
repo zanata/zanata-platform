@@ -35,15 +35,14 @@ import javax.ws.rs.core.Response.Status;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.util.Hex;
 import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.DocumentDAO;
+import org.zanata.dao.DocumentUploadDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.exception.ChunkUploadException;
 import org.zanata.exception.HashMismatchException;
@@ -78,6 +77,7 @@ public class DocumentUploadUtil
    private TranslationFileService translationFileServiceImpl;
    @In("blobPersistService")
    private UploadPartPersistService uploadPartPersistService;
+   @In private DocumentUploadDAO documentUploadDAO;
 
    // TODO damason: move all validation checks to separate class
    public void failIfUploadNotValid(GlobalDocumentId id, DocumentFileUploadForm uploadForm)
@@ -151,7 +151,7 @@ public class DocumentUploadUtil
                "Form parameter 'uploadId' must be provided when this is not the first part.");
       }
 
-      HDocumentUpload upload = retrieveUploadObject(uploadForm);
+      HDocumentUpload upload = documentUploadDAO.findById(uploadForm.getUploadId());
       if (upload == null)
       {
          throw new ChunkUploadException(Status.PRECONDITION_FAILED,
@@ -209,18 +209,9 @@ public class DocumentUploadUtil
       }
       else
       {
-         upload = retrieveUploadObject(uploadForm);
+         upload = documentUploadDAO.findById(uploadForm.getUploadId());
       }
       saveUploadPart(uploadForm, upload);
-      return upload;
-   }
-
-   private HDocumentUpload retrieveUploadObject(DocumentFileUploadForm uploadForm)
-   {
-      // TODO damason: move to DAO (maybe DocumentDAO)
-      Criteria criteria = session.createCriteria(HDocumentUpload.class);
-      criteria.add(Restrictions.idEq(uploadForm.getUploadId()));
-      HDocumentUpload upload = (HDocumentUpload) criteria.uniqueResult();
       return upload;
    }
 
@@ -301,7 +292,6 @@ public class DocumentUploadUtil
       combinedParts = new DigestInputStream(combinedParts, md);
       File tempFile = translationFileServiceImpl.persistToTempFile(combinedParts);
       String md5hash = new String(Hex.encodeHex(md.digest()));
-
       if (!md5hash.equals(upload.getContentHash()))
       {
          throw new HashMismatchException("MD5 hashes do not match.\n", upload.getContentHash(), md5hash);
