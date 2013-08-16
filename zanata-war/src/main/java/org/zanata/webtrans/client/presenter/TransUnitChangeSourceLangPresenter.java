@@ -22,9 +22,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
-import org.zanata.webtrans.client.events.HideReferenceEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
-import org.zanata.webtrans.client.events.ShowReferenceEvent;
+import org.zanata.webtrans.client.events.ReferenceVisibleEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -95,13 +94,13 @@ public class TransUnitChangeSourceLangPresenter extends WidgetPresenter<TransUni
     @Override
     public void onShowReference(Locale selectedLocale)
     {
-        eventBus.fireEvent(new ShowReferenceEvent(selectedLocale));
+        eventBus.fireEvent(new ReferenceVisibleEvent(selectedLocale, true));
     }
 
     @Override
     public void onHideReference()
     {
-        eventBus.fireEvent(new HideReferenceEvent());
+        eventBus.fireEvent(new ReferenceVisibleEvent(null, false));
     }
 
     @Override
@@ -117,7 +116,7 @@ public class TransUnitChangeSourceLangPresenter extends WidgetPresenter<TransUni
         if (configHolder.getState().isEnabledReferenceForSourceLang()) {
             display.showReferenceList();
         } else {
-            eventBus.fireEvent(new HideReferenceEvent());
+            eventBus.fireEvent(new ReferenceVisibleEvent(null, false));
             display.hideReferenceList();
         }
     }
