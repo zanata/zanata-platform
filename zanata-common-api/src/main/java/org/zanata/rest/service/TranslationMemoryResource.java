@@ -75,5 +75,5 @@ public interface TranslationMemoryResource
 
    @DELETE
    @Path("{slug}/transunits")
-   public Response deleteTranslationUnits(@PathParam("slug") String slug);
+   public Object deleteTranslationUnits(@PathParam("slug") String slug);
 }
