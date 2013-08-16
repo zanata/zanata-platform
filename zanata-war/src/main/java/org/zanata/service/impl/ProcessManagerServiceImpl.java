@@ -141,6 +141,19 @@ public class ProcessManagerServiceImpl implements ProcessManagerService
       this.recentlyFinished.invalidateAll();
    }
 
+   @Override
+   public boolean removeIfInactive(ProcessHandle h)
+   {
+      ProcessHandle handle = this.recentlyFinished.getIfPresent(h.getId());
+      if (handle != null)
+      {
+         this.keyedProcesses.values().remove(h);
+         this.recentlyFinished.invalidate(h.getId());
+         return true;
+      }
+      return false;
+   }
+
    /**
     * Internal class to detect when a process is complete.
     */
