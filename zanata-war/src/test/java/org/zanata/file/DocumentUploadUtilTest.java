@@ -20,11 +20,22 @@
  */
 package org.zanata.file;
 
+import static com.google.common.base.Charsets.UTF_8;
 import static javax.ws.rs.core.Response.Status.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.sameInstance;
+import static org.mockito.Mockito.when;
 import static org.testng.Assert.fail;
+import static org.zanata.file.DocumentUploadUtil.getInputStream;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.apache.commons.io.IOUtils;
 import org.hibernate.Session;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -32,10 +43,12 @@ import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.EntityStatus;
-import org.zanata.dao.DocumentUploadDAO;
 import org.zanata.exception.ChunkUploadException;
 import org.zanata.model.HDocumentUpload;
 import org.zanata.service.TranslationFileService;
+
+import com.google.common.base.Optional;
+import com.google.common.io.Files;
 
 @Test(groups = { "unit-tests" })
 public class DocumentUploadUtilTest extends DocumentUploadTest
@@ -267,7 +280,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest
 
       HDocumentUpload upload = new HDocumentUpload();
       upload.setDocId("correct-id");
-      Mockito.when(documentUploadDAO.findById(conf.uploadId)).thenReturn(upload);
+      when(documentUploadDAO.findById(conf.uploadId)).thenReturn(upload);
 
       try
       {
@@ -281,7 +294,38 @@ public class DocumentUploadUtilTest extends DocumentUploadTest
       }
    }
 
-   // TODO damason: test returning correct stream depending whether file exists
+   public void returnFormStreamWhenFileIsAbsent() throws FileNotFoundException
+   {
+      InputStream streamFromForm = new ByteArrayInputStream("test".getBytes());
+      conf = defaultUpload().fileStream(streamFromForm).build();
+      InputStream returnedStream = getInputStream(Optional.<File> absent(), conf.uploadForm);
+
+      assertThat(returnedStream, is(sameInstance(streamFromForm)));
+   }
+
+   public void returnFileStreamWhenFileIsPresent() throws IOException
+   {
+      File f = null;
+      try
+      {
+         f = File.createTempFile("test", "test");
+         Files.write("text in file", f, UTF_8);
+         Optional<File> presentFile = Optional.of(f);
+         InputStream streamFromForm = new ByteArrayInputStream("test".getBytes());
+         conf = defaultUpload().fileStream(streamFromForm).build();
+
+         InputStream returnedStream = getInputStream(presentFile, conf.uploadForm);
+
+         assertThat(IOUtils.toString(returnedStream, "utf-8"), is("text in file"));
+      }
+      finally
+      {
+         if (f != null)
+         {
+            f.delete();
+         }
+      }
+   }
 
    // TODO damason: test combining upload parts
    // TODO damason: test mismatched hash when combining upload parts
