@@ -105,6 +105,19 @@ public class SecurityFunctions
       return false; // No authenticated user
    }
 
+   public static boolean isLanguageTeamMember(HLocale lang)
+   {
+      HAccount authenticatedAccount = getAuthenticatedAccount();
+      PersonDAO personDAO = (PersonDAO)Component.getInstance(PersonDAO.class);
+
+      if( authenticatedAccount != null )
+      {
+         return personDAO.isUserInLanguageTeamWithRoles( authenticatedAccount.getPerson(), lang, null, null, null );
+      }
+
+      return false; // No authenticated user
+   }
+
    private static final ZanataIdentity getIdentity()
    {
       return (ZanataIdentity) Component.getInstance(ZanataIdentity.class, ScopeType.SESSION);

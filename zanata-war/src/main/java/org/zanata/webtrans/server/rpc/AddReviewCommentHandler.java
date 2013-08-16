@@ -30,6 +30,7 @@ import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
+import org.zanata.model.HProject;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetReviewComment;
@@ -81,13 +82,16 @@ public class AddReviewCommentHandler extends AbstractActionHandler<AddReviewComm
    @In
    private TranslationWorkspaceManager translationWorkspaceManager;
 
+   @In
+   private ZanataIdentity identity;
+
    @Override
    public AddReviewCommentResult execute(AddReviewCommentAction action, ExecutionContext context) throws ActionException
    {
       throwExceptionIfCommentIsInvalid(action);
 
       WorkspaceId workspaceId = action.getWorkspaceId();
-      securityServiceImpl.checkWorkspaceStatus(workspaceId);
+      HProject project = securityServiceImpl.checkWorkspaceStatus(workspaceId);
 
       HTextFlowTarget hTextFlowTarget = textFlowTargetDAO.getTextFlowTarget(action.getTransUnitId().getValue(), workspaceId.getLocaleId());
       if (hTextFlowTarget == null || hTextFlowTarget.getState().isUntranslated())
@@ -95,14 +99,17 @@ public class AddReviewCommentHandler extends AbstractActionHandler<AddReviewComm
          throw new ActionException("comment on untranslated message is pointless!");
       }
 
-      HLocale hLocale = localeServiceImpl.getByLocaleId(workspaceId.getLocaleId());
+      HLocale locale = localeServiceImpl.getByLocaleId(workspaceId.getLocaleId());
+
+      identity.checkPermission("review-comment", locale, project);
+
       TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(workspaceId);
 
       HTextFlowTargetReviewComment hComment = hTextFlowTarget.addReviewComment(action.getContent(), authenticatedAccount.getPerson());
       textFlowTargetDAO.makePersistent(hTextFlowTarget);
       textFlowTargetDAO.flush();
 
-      publishTransUnitUpdatedEvent(action, hLocale, hTextFlowTarget, workspace);
+      publishTransUnitUpdatedEvent(action, locale, hTextFlowTarget, workspace);
 
       return new AddReviewCommentResult(toDTO(hComment));
    }

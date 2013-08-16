@@ -34,11 +34,13 @@ import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
+import org.zanata.model.HProject;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetReviewComment;
 import org.zanata.model.TestFixture;
 import org.zanata.seam.SeamAutowire;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SecurityService;
 import org.zanata.webtrans.server.TranslationWorkspace;
@@ -88,6 +90,10 @@ public class AddReviewCommentHandlerTest
    private TranslationWorkspaceManager translationWorkspaceManager;
    @Mock
    private TranslationWorkspace workspace;
+   @Mock
+   private ZanataIdentity identity;
+   @Mock
+   private HProject hProject;
 
    @BeforeMethod
    public void setUp() throws Exception
@@ -100,6 +106,7 @@ public class AddReviewCommentHandlerTest
             .use("transUnitTransformer", transUnitTransformer)
             .use("localeServiceImpl", localeService)
             .use("translationWorkspaceManager", translationWorkspaceManager)
+            .use("identity", identity)
             .autowire(AddReviewCommentHandler.class);
    }
 
@@ -122,6 +129,7 @@ public class AddReviewCommentHandlerTest
       AddReviewCommentAction action = new AddReviewCommentAction(transUnitId, commentContent, documentId);
       action.setWorkspaceId(TestFixture.workspaceId(LocaleId.DE));
       when(authenticatedAccount.getPerson()).thenReturn(hPerson);
+      when(securityServiceImpl.checkWorkspaceStatus(action.getWorkspaceId())).thenReturn(hProject);
       when(translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId())).thenReturn(workspace);
       when(localeService.getByLocaleId(action.getWorkspaceId().getLocaleId())).thenReturn(hLocale);
       when(textFlowTargetDAO.getTextFlowTarget(transUnitId.getValue(), hLocale.getLocaleId())).thenReturn(hTextFlowTarget);
@@ -135,9 +143,10 @@ public class AddReviewCommentHandlerTest
       AddReviewCommentResult result = handler.execute(action, null);
 
       // Then:
-      InOrder inOrder = Mockito.inOrder(textFlowTargetDAO, hTextFlowTarget, workspace, securityServiceImpl);
+      InOrder inOrder = Mockito.inOrder(textFlowTargetDAO, hTextFlowTarget, workspace, securityServiceImpl, identity);
       inOrder.verify(securityServiceImpl).checkWorkspaceStatus(action.getWorkspaceId());
       inOrder.verify(textFlowTargetDAO).getTextFlowTarget(transUnitId.getValue(), hLocale.getLocaleId());
+      inOrder.verify(identity).checkPermission("review-comment", hLocale, hProject);
       inOrder.verify(hTextFlowTarget).addReviewComment(commentContent, hPerson);
       inOrder.verify(textFlowTargetDAO).makePersistent(hTextFlowTarget);
       inOrder.verify(textFlowTargetDAO).flush();
