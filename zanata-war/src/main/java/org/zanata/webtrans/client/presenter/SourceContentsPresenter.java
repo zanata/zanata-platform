@@ -49,13 +49,11 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
-import org.zanata.webtrans.client.events.HideReferenceEvent;
-import org.zanata.webtrans.client.events.HideReferenceEventHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.RefreshPageEvent;
 import org.zanata.webtrans.client.events.RefreshPageEventHandler;
-import org.zanata.webtrans.client.events.ShowReferenceEvent;
-import org.zanata.webtrans.client.events.ShowReferenceEventHandler;
+import org.zanata.webtrans.client.events.ReferenceVisibleEvent;
+import org.zanata.webtrans.client.events.ReferenceVisibleEventHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.Locale;
 import org.zanata.webtrans.shared.rpc.GetTargetForLocale;
@@ -65,7 +63,7 @@ import org.zanata.webtrans.shared.rpc.GetTargetForLocaleResult;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  */
-public class SourceContentsPresenter implements ClickHandler, UserConfigChangeHandler, TransUnitUpdatedEventHandler, ShowReferenceEventHandler, HideReferenceEventHandler, RefreshPageEventHandler
+public class SourceContentsPresenter implements ClickHandler, UserConfigChangeHandler, TransUnitUpdatedEventHandler, ReferenceVisibleEventHandler, RefreshPageEventHandler
 {
    private final EventBus eventBus;
    private final Provider<SourceContentsDisplay> displayProvider;
@@ -88,8 +86,7 @@ public class SourceContentsPresenter implements ClickHandler, UserConfigChangeHa
       this.dispatcher = dispatcher;
       eventBus.addHandler(UserConfigChangeEvent.TYPE, this);
       eventBus.addHandler(TransUnitUpdatedEvent.getType(), this);
-      eventBus.addHandler(ShowReferenceEvent.getType(), this);
-      eventBus.addHandler(HideReferenceEvent.getType(), this);
+      eventBus.addHandler(ReferenceVisibleEvent.getType(), this);
       eventBus.addHandler(RefreshPageEvent.TYPE, this);
    }
 
@@ -224,35 +221,45 @@ public class SourceContentsPresenter implements ClickHandler, UserConfigChangeHa
    }
 
    @Override
-   public void onShowReference(ShowReferenceEvent event) {       
-       isReferenceShowing = true;
-       selectedReferenceLocale = event.getSelectedLocale();
-       showReference();
-   }
-   
-   private void showReference() {
-        for (final SourceContentsDisplay display : displayList) {
-            GetTargetForLocale action = new GetTargetForLocale(display.getId(), selectedReferenceLocale);
-            dispatcher.execute(action, new AsyncCallback<GetTargetForLocaleResult>() {
-               @Override
-               public void onFailure(Throwable caught) {
-                   eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Failed to fetch target"));
-               }
-                @Override
-               public void onSuccess(GetTargetForLocaleResult result) {
-                   display.showReference(result.getTarget());
-               }
-           });
-       }
-   }    
-    
+   public void onShowHideReference(ReferenceVisibleEvent event)
+   {
 
-   @Override
-   public void onHideReference(HideReferenceEvent event) {
-       for (SourceContentsDisplay display : displayList) {
-           display.hideReference();
-       }
-       isReferenceShowing = false;
+      if (event.isDisplay()) {
+         isReferenceShowing = true;
+         selectedReferenceLocale = event.getSelectedLocale();
+         showReference();
+      } else {
+         hideReference();
+      }
+   }
+
+   private void showReference()
+   {
+      for (final SourceContentsDisplay display : displayList) {
+         GetTargetForLocale action = new GetTargetForLocale(display.getId(), selectedReferenceLocale);
+         dispatcher.execute(action, new AsyncCallback<GetTargetForLocaleResult>()
+         {
+            @Override
+            public void onFailure(Throwable caught)
+            {
+               eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Failed to fetch target"));
+            }
+
+            @Override
+            public void onSuccess(GetTargetForLocaleResult result)
+            {
+               display.showReference(result.getTarget());
+            }
+         });
+      }
+   }
+
+   public void hideReference()
+   {
+      for (SourceContentsDisplay display : displayList) {
+         display.hideReference();
+      }
+      isReferenceShowing = false;
    }
    
    @Override
