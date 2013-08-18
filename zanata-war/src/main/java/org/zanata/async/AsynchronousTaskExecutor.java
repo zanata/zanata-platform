@@ -20,7 +20,10 @@
  */
 package org.zanata.async;
 
+import java.security.Principal;
 import java.util.Collection;
+
+import javax.security.auth.Subject;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -28,6 +31,8 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.async.Asynchronous;
 import org.jboss.seam.contexts.Context;
+import org.jboss.seam.security.Identity;
+import org.jboss.seam.security.RunAsOperation;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -44,21 +49,40 @@ import lombok.extern.slf4j.Slf4j;
 public class AsynchronousTaskExecutor
 {
    @Asynchronous
-   public <V, H extends AsyncHandle<V>> void runAsynchronously(AsyncTask<V, H> task, Collection<Context> inheritedContexts)
+   public <V, H extends AsyncHandle<V>> void runAsynchronously(final AsyncTask<V, H> task, final Identity runAs)
    {
-      // Copy the contexts to the newly-created contexts for the async invocation
-      AsyncUtils.restoreAsyncContexts(inheritedContexts);
       AsyncUtils.outject(task.getHandle(), ScopeType.EVENT);
 
-      try
+      RunAsOperation runAsOp = new RunAsOperation()
       {
-         V returnValue = task.call();
-         task.getHandle().set(returnValue);
-      }
-      catch( Throwable t )
-      {
-         task.getHandle().setException(t);
-      }
+         @Override
+         public void execute()
+         {
+            try
+            {
+               V returnValue = task.call();
+               task.getHandle().set(returnValue);
+            }
+            catch (Exception t)
+            {
+               task.getHandle().setException(t);
+            }
+         }
+
+         @Override
+         public Principal getPrincipal()
+         {
+            return runAs.getPrincipal();
+         }
+
+         @Override
+         public Subject getSubject()
+         {
+            return runAs.getSubject();
+         }
+      };
+
+      runAsOp.run();
    }
 
 }

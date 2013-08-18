@@ -28,6 +28,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.contexts.Context;
+import org.jboss.seam.security.Identity;
 
 import com.google.common.collect.Sets;
 
@@ -60,8 +61,7 @@ public class TaskExecutor
          throw new RuntimeException("An Asynchronous task should always return a non-null handle");
       }
 
-      Set<Context> currentContexts = AsyncUtils.getCurrentContexts();
-      asynchronousTaskExecutor.runAsynchronously(task, currentContexts);
+      asynchronousTaskExecutor.runAsynchronously(task, Identity.instance());
       return handle;
    }
 
