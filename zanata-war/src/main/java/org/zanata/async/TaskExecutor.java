@@ -52,7 +52,7 @@ public class TaskExecutor
     *
     * @param handle The handle to be used for the running process.
     */
-   public <V, H extends AsyncHandle<V>> AsyncHandle<V> startProcess(AsyncTask<V, H> task)
+   public <V, H extends AsyncHandle<V>> AsyncHandle<V> startTask(AsyncTask<V, H> task)
    {
       H handle = task.getHandle();
       if( handle == null )

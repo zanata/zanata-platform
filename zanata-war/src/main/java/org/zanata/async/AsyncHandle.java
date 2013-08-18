@@ -36,13 +36,13 @@ import lombok.Setter;
 public class AsyncHandle<V> extends AbstractFuture<V>
 {
    @Getter @Setter
-   public int maxProgress;
+   public int maxProgress = 100;
 
    @Getter @Setter
-   public int minProgress;
+   public int minProgress = 0;
 
    @Getter @Setter
-   public int currentProgress;
+   public int currentProgress = 0;
 
    @Override
    protected boolean setException(Throwable throwable)
@@ -54,5 +54,11 @@ public class AsyncHandle<V> extends AbstractFuture<V>
    protected boolean set(@Nullable V value)
    {
       return super.set(value);
+   }
+
+   public int increaseProgress(int increaseBy)
+   {
+      currentProgress += increaseBy;
+      return currentProgress;
    }
 }

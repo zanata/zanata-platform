@@ -20,7 +20,6 @@
  */
 package org.zanata.async;
 
-import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 import org.hamcrest.MatcherAssert;
@@ -55,7 +54,7 @@ public class AsyncTaskITCase extends ArquillianTest
 
       // Start an asynchronous process
       AsyncHandle<String> handle =
-         taskExecutor.startProcess(new SimpleAsyncTask<String>()
+         taskExecutor.startTask(new SimpleAsyncTask<String>()
          {
             @Override
             public String call() throws Exception
@@ -76,7 +75,7 @@ public class AsyncTaskITCase extends ArquillianTest
    {
       // Start an asynchronous process that throws an exception
       AsyncHandle<String> handle =
-         taskExecutor.startProcess(new SimpleAsyncTask<String>()
+         taskExecutor.startTask(new SimpleAsyncTask<String>()
          {
             @Override
             public String call() throws Exception
