@@ -51,16 +51,16 @@ public class AsyncUtils
       }
    }
 
-   public static final Optional<AsyncHandle<?>> getEventAsyncHandle()
+   public static final <H extends AsyncHandle> Optional<H> getEventAsyncHandle( Class<H> type )
    {
-      return getAsyncHandle(ScopeType.EVENT);
+      return getAsyncHandle(ScopeType.EVENT, type);
    }
 
-   public static final Optional<AsyncHandle<?>> getAsyncHandle(ScopeType scopeType)
+   public static final <H extends AsyncHandle> Optional<H> getAsyncHandle(ScopeType scopeType, Class<H> type)
    {
       if(scopeType.isContextActive())
       {
-         return Optional.<AsyncHandle<?>>fromNullable( (AsyncHandle<?>)scopeType.getContext().get(ASYNC_HANDLE_NAME) );
+         return Optional.<H>fromNullable( (H)scopeType.getContext().get(ASYNC_HANDLE_NAME) );
       }
       return  Optional.absent();
    }

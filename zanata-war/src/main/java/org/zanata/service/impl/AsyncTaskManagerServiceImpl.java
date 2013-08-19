@@ -22,6 +22,7 @@ package org.zanata.service.impl;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.Maps;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Name;
@@ -32,11 +33,13 @@ import org.zanata.async.AsyncTask;
 import org.zanata.async.TaskExecutor;
 import org.zanata.process.ProcessHandle;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -51,9 +54,6 @@ import java.util.concurrent.TimeUnit;
 @Startup
 public class AsyncTaskManagerServiceImpl
 {
-   // Collection of currently running processes
-   private Map<String, ProcessHandle> currentlyRunning =
-         Collections.synchronizedMap(new HashMap<String, ProcessHandle>());
 
    // Collection of all managed task Handles. It's self pruned, and it is indexed by
    // long valued keys
@@ -63,6 +63,9 @@ public class AsyncTaskManagerServiceImpl
                .expireAfterWrite(1, TimeUnit.HOURS)
                //.removalListener(new RecentlyFinishedRemovalListener())
                .build();
+
+   private ConcurrentMap<Serializable, AsyncHandle> keyedHandles =
+         Maps.newConcurrentMap();
 
    public <V, H extends AsyncHandle<V>> String startTask(AsyncTask<V,H> task)
    {
@@ -77,9 +80,20 @@ public class AsyncTaskManagerServiceImpl
       return taskKey.toString();
    }
 
+   public <V, H extends AsyncHandle<V>> void startTask(AsyncTask<V,H> task, Serializable key)
+   {
+      String taskId = startTask(task);
+      keyedHandles.put(key, getHandle(taskId));
+   }
+
    public AsyncHandle getHandle(String taskId)
    {
       return getHandle(taskId, false);
+   }
+
+   public AsyncHandle getHandleByKey( Serializable key )
+   {
+      return keyedHandles.get(key);
    }
 
    public AsyncHandle getHandle(String taskId, boolean removeIfFinished)

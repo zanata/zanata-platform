@@ -27,6 +27,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.security.Identity;
+import org.zanata.async.tasks.CopyTransTask;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
@@ -34,6 +35,7 @@ import org.zanata.process.RunnableProcessListener;
 import org.zanata.process.CopyTransProcess;
 import org.zanata.process.CopyTransProcessHandle;
 import org.zanata.service.ProcessManagerService;
+import org.zanata.service.impl.AsyncTaskManagerServiceImpl;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -46,6 +48,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import static org.zanata.async.tasks.CopyTransTask.CopyTransTaskHandle;
 
 /**
  * Manager Bean that keeps track of manual copy trans being run
@@ -61,40 +65,8 @@ public class CopyTransManager implements Serializable
 {
    private static final long serialVersionUID = 1L;
 
-   // Single instance of the process listener
-   private final CopyTransProcessListener listenerInstance = new CopyTransProcessListener();
-
-   // Collection of currently running copy trans processes
-   private Map<CopyTransProcessKey, CopyTransProcessHandle> currentlyRunning =
-         Collections.synchronizedMap( new HashMap<CopyTransProcessKey, CopyTransProcessHandle>() );
-
-   // Collection of recently cancelled copy trans processes (discards the oldest ones)
-   // TODO deprecated, switch to CacheBuilder
-   private Map<CopyTransProcessKey, CopyTransProcessHandle> recentlyCancelled =
-         new MapMaker()
-               .softValues()
-               .expiration(1, TimeUnit.HOURS) // keep them for an hour
-               .makeMap();
-//         CacheBuilder.newBuilder()
-//               .softValues()
-//               .expireAfterWrite(1, TimeUnit.HOURS) // keep them for an hour
-//               .build().asMap();
-
-   // Collection of recently completed copy trans processes (discards the olders ones)
-   // TODO deprecated, switch to CacheBuilder
-   private Map<CopyTransProcessKey, CopyTransProcessHandle> recentlyFinished =
-         new MapMaker()
-               .softValues()
-               .expiration(1, TimeUnit.HOURS) // keep them for an hour
-               .makeMap();
-
-//         CacheBuilder.newBuilder()
-//               .softValues()
-//               .expireAfterWrite(1, TimeUnit.HOURS) // keep them for an hour
-//               .build().asMap();
-
    @In
-   private ProcessManagerService processManagerServiceImpl;
+   private AsyncTaskManagerServiceImpl asyncTaskManagerServiceImpl;
 
    @In
    private Identity identity;
@@ -117,20 +89,8 @@ public class CopyTransManager implements Serializable
          throw new IllegalArgumentException("Copy Trans can only run for HProjectIteration and HDocument");
       }
 
-      if( currentlyRunning.containsKey(key) )
-      {
-         CopyTransProcessHandle handle = currentlyRunning.get(key);
-
-         if( handle != null )
-         {
-            if( !handle.isInProgress() )
-            {
-               currentlyRunning.remove(key);
-            }
-            return handle.isInProgress();
-         }
-      }
-      return false;
+      CopyTransTaskHandle handle = (CopyTransTaskHandle)asyncTaskManagerServiceImpl.getHandleByKey(key);
+      return handle != null && !handle.isDone();
    }
 
    /**
@@ -154,11 +114,9 @@ public class CopyTransManager implements Serializable
          throw new RuntimeException("Copy Trans is already running for document '" + document.getDocId() + "'");
       }
 
-      CopyTransProcessHandle handle = new CopyTransProcessHandle( document, identity.getCredentials().getUsername(), options );
-      handle.addListener(listenerInstance);
-
-      processManagerServiceImpl.startProcess(new CopyTransProcess(), handle);
-      currentlyRunning.put(CopyTransProcessKey.getKey(document), handle);
+      CopyTransProcessKey key = CopyTransProcessKey.getKey(document);
+      CopyTransTask task = new CopyTransTask(document, options);
+      asyncTaskManagerServiceImpl.startTask(task, key);
    }
 
    /**
@@ -172,14 +130,12 @@ public class CopyTransManager implements Serializable
          throw new RuntimeException("Copy Trans is already running for version '" + iteration.getSlug() + "'");
       }
 
-      CopyTransProcessHandle handle = new CopyTransProcessHandle( iteration, identity.getCredentials().getUsername(), options );
-      handle.addListener(listenerInstance);
-
-      processManagerServiceImpl.startProcess(new CopyTransProcess(), handle);
-      currentlyRunning.put(CopyTransProcessKey.getKey(iteration), handle);
+      CopyTransProcessKey key = CopyTransProcessKey.getKey(iteration);
+      CopyTransTask task = new CopyTransTask(iteration, options);
+      asyncTaskManagerServiceImpl.startTask(task, key);
    }
 
-   public CopyTransProcessHandle getCopyTransProcessHandle(Object target)
+   public CopyTransTaskHandle getCopyTransProcessHandle(Object target)
    {
       CopyTransProcessKey key;
 
@@ -195,7 +151,7 @@ public class CopyTransManager implements Serializable
       {
          throw new IllegalArgumentException("Copy Trans can only run for HProjectIteration and HDocument");
       }
-      return currentlyRunning.get( key );
+      return (CopyTransTaskHandle)asyncTaskManagerServiceImpl.getHandleByKey(key);
    }
 
    public void cancelCopyTrans( HProjectIteration iteration )
@@ -203,87 +159,10 @@ public class CopyTransManager implements Serializable
       if( isCopyTransRunning(iteration) )
       {
          CopyTransProcessKey key = CopyTransProcessKey.getKey(iteration);
-         CopyTransProcessHandle handle = this.getCopyTransProcessHandle(iteration);
-         handle.stop();
+         CopyTransTaskHandle handle = this.getCopyTransProcessHandle(iteration);
+         handle.cancel(true);
          handle.setCancelledTime(System.currentTimeMillis());
          handle.setCancelledBy(identity.getCredentials().getUsername());
-         this.recentlyCancelled.put(key, handle);
-      }
-   }
-
-   /**
-    * Obtains the most recently finished (cancelled or otherwise) process handle for a copy trans on a given target.
-    * If a long time has passed since the last cancelled process, or if there has not been a recent cancellation, this
-    * method may return null.
-    *
-    * @param target The target for which to retrieve the most recently finished process handle.
-    * @return Most recently finished process handle for the project iteration, or null if there isn't one.
-    */
-   public CopyTransProcessHandle getMostRecentlyFinished( Object target )
-   {
-      CopyTransProcessKey key;
-
-      if( target instanceof HProjectIteration )
-      {
-         key = CopyTransProcessKey.getKey((HProjectIteration)target);
-      }
-      else if( target instanceof HDocument )
-      {
-         key = CopyTransProcessKey.getKey((HDocument)target);
-      }
-      else
-      {
-         throw new IllegalArgumentException("Copy Trans can only run for HProjectIteration and HDocument");
-      }
-
-      // Only if copy trans is not running
-      if( !this.isCopyTransRunning(target) )
-      {
-         CopyTransProcessHandle mostRecent = this.recentlyCancelled.get( key );
-         CopyTransProcessHandle recentlyRan = this.recentlyFinished.get( key );
-
-         if( mostRecent == null )
-         {
-            mostRecent = recentlyRan;
-         }
-         else if( recentlyRan != null && mostRecent != null
-               && recentlyRan.getStartTime() > mostRecent.getStartTime() )
-         {
-            mostRecent = recentlyRan;
-         }
-
-         return mostRecent;
-      }
-      else
-      {
-         return null;
-      }
-   }
-
-   /**
-    * Internal class to detect when a copy trans process is complete.
-    */
-   private final class CopyTransProcessListener implements RunnableProcessListener<CopyTransProcessHandle>, Serializable
-   {
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      public void onComplete(CopyTransProcessHandle handle)
-      {
-         // move the entry to the recently finished, if not already done (i.e. it was cancelled)
-         if( currentlyRunning.containsValue( handle ) )
-         {
-            CopyTransProcessKey key;
-            if( handle.getProjectIteration() != null )
-            {
-               key = CopyTransProcessKey.getKey(handle.getProjectIteration());
-            }
-            else
-            {
-               key = CopyTransProcessKey.getKey(handle.getDocument());
-            }
-            recentlyFinished.put( key, currentlyRunning.remove( key ) );
-         }
       }
    }
 

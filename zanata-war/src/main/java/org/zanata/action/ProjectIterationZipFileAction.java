@@ -43,7 +43,7 @@ public class ProjectIterationZipFileAction implements Serializable
 
    private String localeId;
 
-   private AsyncHandle<InputStream> zipFilePrepHandle;
+   private AsyncHandle<String> zipFilePrepHandle;
 
    @Begin(join = true)
    @Restrict("#{s:hasPermission(projectIterationZipFileAction.projectIteration, 'download-all')}")
@@ -59,7 +59,8 @@ public class ProjectIterationZipFileAction implements Serializable
       ZipFileBuildTask task = new ZipFileBuildTask(this.projectSlug, this.iterationSlug, this.localeId,
             Identity.instance().getCredentials().getUsername(), offlinePo);
 
-      asyncTaskManagerServiceImpl.startTask(task);
+      String taskId = asyncTaskManagerServiceImpl.startTask(task);
+      zipFilePrepHandle = asyncTaskManagerServiceImpl.getHandle(taskId);
    }
 
    @End
@@ -103,12 +104,12 @@ public class ProjectIterationZipFileAction implements Serializable
       this.localeId = localeId;
    }
 
-   public AsyncHandle<InputStream> getZipFilePrepHandle()
+   public AsyncHandle<String> getZipFilePrepHandle()
    {
       return zipFilePrepHandle;
    }
 
-   public void setZipFilePrepHandle(AsyncHandle<InputStream> zipFilePrepHandle)
+   public void setZipFilePrepHandle(AsyncHandle<String> zipFilePrepHandle)
    {
       this.zipFilePrepHandle = zipFilePrepHandle;
    }

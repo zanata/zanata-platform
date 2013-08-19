@@ -59,7 +59,7 @@ import java.util.zip.ZipOutputStream;
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class ZipFileBuildTask implements AsyncTask<InputStream, AsyncHandle<InputStream>>
+public class ZipFileBuildTask implements AsyncTask<String, AsyncHandle<String>>
 {
 
    private final String projectSlug;
@@ -68,7 +68,7 @@ public class ZipFileBuildTask implements AsyncTask<InputStream, AsyncHandle<Inpu
    private final String userName;
    private final boolean isOfflinePo;
 
-   private AsyncHandle<InputStream> handle;
+   private AsyncHandle<String> handle;
 
    public ZipFileBuildTask(String projectSlug, String iterationSlug, String localeId, String userName, boolean offlinePo)
    {
@@ -80,7 +80,7 @@ public class ZipFileBuildTask implements AsyncTask<InputStream, AsyncHandle<Inpu
    }
 
    @Override
-   public AsyncHandle<InputStream> getHandle()
+   public AsyncHandle<String> getHandle()
    {
       if( handle == null )
       {
@@ -89,9 +89,9 @@ public class ZipFileBuildTask implements AsyncTask<InputStream, AsyncHandle<Inpu
       return handle;
    }
 
-   private AsyncHandle<InputStream> buildHandle()
+   private AsyncHandle<String> buildHandle()
    {
-      AsyncHandle<InputStream> newHandle = new AsyncHandle<InputStream>();
+      AsyncHandle<String> newHandle = new AsyncHandle<String>();
 
       // Max documents to process
       DocumentDAO documentDAO = (DocumentDAO) Component.getInstance(DocumentDAO.class);
@@ -102,7 +102,7 @@ public class ZipFileBuildTask implements AsyncTask<InputStream, AsyncHandle<Inpu
    }
 
    @Override
-   public InputStream call() throws Exception
+   public String call() throws Exception
    {
       // Needed Components
       DocumentDAO documentDAO = (DocumentDAO) Component.getInstance(DocumentDAO.class);
@@ -173,6 +173,6 @@ public class ZipFileBuildTask implements AsyncTask<InputStream, AsyncHandle<Inpu
       zipOutput.flush();
       zipOutput.close();
 
-      return new FileInputStream(downloadFile);
+      return downloadId;
    }
 }

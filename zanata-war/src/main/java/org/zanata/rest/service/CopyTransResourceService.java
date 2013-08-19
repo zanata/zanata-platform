@@ -27,6 +27,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
 import org.zanata.action.CopyTransManager;
+import org.zanata.async.tasks.CopyTransTask;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.model.HDocument;
 import org.zanata.process.CopyTransProcessHandle;
@@ -112,11 +113,7 @@ public class CopyTransResourceService implements CopyTransResource
 
       identity.checkPermission("copy-trans", document.getProjectIteration());
 
-      CopyTransProcessHandle processHandle = copyTransManager.getCopyTransProcessHandle(document);
-      if( processHandle == null )
-      {
-         processHandle = copyTransManager.getMostRecentlyFinished( document );
-      }
+      CopyTransTask.CopyTransTaskHandle processHandle = copyTransManager.getCopyTransProcessHandle(document);
 
       if( processHandle == null )
       {
@@ -124,7 +121,7 @@ public class CopyTransResourceService implements CopyTransResource
       }
 
       CopyTransStatus status = new CopyTransStatus();
-      status.setInProgress( processHandle.isInProgress() );
+      status.setInProgress( !processHandle.isDone() );
       float percent = ((float)processHandle.getCurrentProgress() / processHandle.getMaxProgress())*100;
       status.setPercentageComplete( (int)percent );
       return status;
