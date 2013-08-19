@@ -115,9 +115,10 @@ public class SourceDocumentUpload
          }
          else
          {
-            HDocumentUpload upload = documentUploadDAO.findById(uploadForm.getUploadId());
-            totalChunks = upload.getParts().size() + 1;
-            tempFile = Optional.of(util.combineToTempFileAndDeleteUploadRecord(upload, uploadForm.getFileStream()));
+            HDocumentUpload previousParts = documentUploadDAO.findById(uploadForm.getUploadId());
+            totalChunks = previousParts.getParts().size();
+            totalChunks++; // add final part
+            tempFile = Optional.of(util.combineToTempFileAndDeleteUploadRecord(previousParts, uploadForm.getFileStream()));
          }
 
          if (uploadForm.getFileType().equals(".pot"))

@@ -109,10 +109,11 @@ public class TranslationDocumentUpload
             }
             else
             {
-               HDocumentUpload upload = documentUploadDAO.findById(uploadForm.getUploadId());
-               totalChunks = upload.getParts().size() + 1;
+               HDocumentUpload previousParts = documentUploadDAO.findById(uploadForm.getUploadId());
+               totalChunks = previousParts.getParts().size();
+               totalChunks++; // add final part
                tempFile = Optional.of(
-                     util.combineToTempFileAndDeleteUploadRecord(upload, uploadForm.getFileStream()));
+                     util.combineToTempFileAndDeleteUploadRecord(previousParts, uploadForm.getFileStream()));
             }
          }
 
