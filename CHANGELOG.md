@@ -1,12 +1,28 @@
 # Zanata change log summary
 
 ## zanata-3.0.0
- * Add descriptions on project type selectors
- * Allow adapter parameters to be set on source document upload
- * Add attention key shortcut: Alt+X
- * Add attention shortcut to copy from source: Alt+X,G
- * Move raw document storage to file system
- * Implement virus scanning using ClamAV (clamdscan)
+ * File upload
+  * Move raw document storage to file system
+  * Implement virus scanning using ClamAV (clamdscan)
+  * Add descriptions on project type selectors
+  * Allow adapter parameters to be set on source document upload
+  * Add attention key shortcut: Alt+X
+  * Add attention shortcut to copy from source: Alt+X,G
+ * TMX import/export
+  * Allow users to export translations to TMX (from Project/Version pages)
+  * Allow admins to export **all** project translations to TMX (from Projects page)
+  * Allow admins to import and export TMX translation memories (from Admin pages)
+  * Imported TMX shown in translation memory search results
+ * Translation review/approval
+  * Coordinators can assign reviewers for their languages
+  * Project maintainers can require review for translations in their projects
+  * Reviewers can approve or reject translations
+  * Translators and reviewers can add comments to translations
+ * New visual style for Zanata
+ * Add Zanata dashboard
+  * Recent translation/review activity
+  * List of maintained projects
+ * Upgrade platform to JBoss EAP 6.1
 
 ## zanata-2.3.1
  * Bug fixes:
