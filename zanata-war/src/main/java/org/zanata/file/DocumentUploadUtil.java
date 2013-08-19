@@ -20,6 +20,8 @@
  */
 package org.zanata.file;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -55,7 +57,6 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.TranslationFileService;
 
 import com.google.common.base.Optional;
-import static com.google.common.base.Strings.isNullOrEmpty;
 
 // TODO damason: add thorough unit testing
 @Slf4j
@@ -260,7 +261,7 @@ public class DocumentUploadUtil
       catch (SQLException e)
       {
          throw new ChunkUploadException(Status.INTERNAL_SERVER_ERROR,
-               "Error while retreiving document upload part contents", e);
+               "Error while retrieving document upload part contents", e);
       }
       finally
       {
