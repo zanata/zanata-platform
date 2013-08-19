@@ -218,13 +218,31 @@ public class DocumentUploadUtilTest extends DocumentUploadTest
       }
    }
 
-   // TODO damason: test not first part but no upload id
-   // TODO damason: test not first part but no exsiting upload
+   public void subsequentPartNoUploadId()
+   {
+      conf = defaultUpload().first(false).uploadId(null).build();
+      mockLoggedIn();
+      mockProjectAndVersionStatus();
+      try
+      {
+         util.failIfUploadNotValid(conf.id, conf.uploadForm);
+         fail("Should throw exception if this is not the first part but no uploadId is supplied");
+      }
+      catch (ChunkUploadException e)
+      {
+         assertThat(e.getStatusCode(), is(PRECONDITION_FAILED));
+         assertThat(e.getMessage(), is("Form parameter 'uploadId' must be provided when this is " +
+               "not the first part."));
+
+      }
+   }
+
+   // TODO damason: test not first part but no existing upload
    // TODO damason: test not first part but docId does not match existing upload
 
    // TODO damason: test returning correct stream depending whether file exists
 
    // TODO damason: test combining upload parts
    // TODO damason: test mismatched hash when combining upload parts
-   // TODO damason: test mismatchig hash when persisting temp file
+   // TODO damason: test mismatched hash when persisting temp file
 }

@@ -108,6 +108,7 @@ public class DocumentUploadTest
    {
       public final String fileType;
       public final boolean first, last;
+      public final Long uploadId;
       public final long size;
       public final InputStream fileStream;
       public final String hash;
@@ -135,6 +136,7 @@ public class DocumentUploadTest
          fileType = builder.fileType;
          first = builder.first;
          last = builder.last;
+         uploadId = builder.uploadId;
          size = builder.size;
          fileStream = builder.fileStream;
          hash = builder.hash;
@@ -145,6 +147,7 @@ public class DocumentUploadTest
          uploadForm.setFileType(fileType);
          uploadForm.setFirst(first);
          uploadForm.setLast(last);
+         uploadForm.setUploadId(uploadId);
          uploadForm.setSize(size);
          uploadForm.setFileStream(fileStream);
          uploadForm.setHash(hash);
@@ -165,6 +168,7 @@ public class DocumentUploadTest
          private EntityStatus projectStatus, versionStatus;
          private String fileType;
          private boolean first, last;
+         private Long uploadId;
          private long size;
          private InputStream fileStream;
          private String hash;
@@ -217,6 +221,12 @@ public class DocumentUploadTest
          public Builder last(boolean last)
          {
             this.last = last;
+            return this;
+         }
+
+         public Builder uploadId(Long uploadId)
+         {
+            this.uploadId = uploadId;
             return this;
          }
 
