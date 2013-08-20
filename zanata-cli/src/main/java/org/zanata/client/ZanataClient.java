@@ -9,6 +9,7 @@ import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
+import org.zanata.client.commands.AppAbortException;
 import org.zanata.client.commands.AppAbortStrategy;
 import org.zanata.client.commands.ArgsUtil;
 import org.zanata.client.commands.BasicOptions;
@@ -106,9 +107,10 @@ public class ZanataClient extends BasicOptionsImpl
       {
          if (!getHelp() && args.length != 0)
          {
-            err.println(e.getMessage());
+            String msg = e.getMessage();
+            err.println(msg);
             printHelp(err);
-            abortStrategy.abort(null);
+            abortStrategy.abort(msg);
          }
       }
       if (getHelp() && command == null)
@@ -140,15 +142,20 @@ public class ZanataClient extends BasicOptionsImpl
          BasicOptions options = getOptionsMap().get(command);
          if (options == null)
          {
-            err.println("Unknown command '" + command + "'");
+            String msg = "Unknown command '" + command + "'";
+            err.println(msg);
             printHelp(err);
-            abortStrategy.abort(null);
+            abortStrategy.abort(msg);
          }
          else
          {
             copyGlobalOptionsTo(options);
             new ArgsUtil(abortStrategy, out, err, getCommandName()).process(otherArgs, options);
          }
+      }
+      catch (AppAbortException e)
+      {
+         throw e;
       }
       catch (Exception e)
       {
