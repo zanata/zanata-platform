@@ -41,6 +41,8 @@ import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.jboss.seam.util.Work;
+import org.zanata.async.AsyncHandle;
+import org.zanata.async.AsyncUtils;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
@@ -115,10 +117,9 @@ public class TranslationServiceImpl implements TranslationService
    @In
    private LockManagerService lockManagerServiceImpl;
 
-   @In(required = false, scope = ScopeType.EVENT)
-   MessagesProcessHandle asynchronousProcessHandle;
    @In(value = JpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION, required = false)
    private HAccount authenticatedAccount;
+
    @In
    private ZanataIdentity identity;
 
@@ -419,7 +420,7 @@ public class TranslationServiceImpl implements TranslationService
    @Override
    // This will not run in a transaction. Instead, transactions are controlled within the method itself.
    @Transactional(TransactionPropagationType.NEVER)
-   public void translateAllInDoc( String projectSlug, String iterationSlug, String docId, LocaleId locale,
+   public List<String> translateAllInDoc( String projectSlug, String iterationSlug, String docId, LocaleId locale,
                                   TranslationsResource translations, Set<String> extensions, MergeType mergeType,
                                   boolean lock)
    {
@@ -431,9 +432,10 @@ public class TranslationServiceImpl implements TranslationService
          lockManagerServiceImpl.attain(transLock);
       }
 
+      List<String> messages = Lists.newArrayList();
       try
       {
-         this.translateAllInDoc(projectSlug, iterationSlug, docId, locale, translations, extensions, mergeType);
+         messages = this.translateAllInDoc(projectSlug, iterationSlug, docId, locale, translations, extensions, mergeType);
       }
       finally
       {
@@ -442,6 +444,7 @@ public class TranslationServiceImpl implements TranslationService
             lockManagerServiceImpl.release(transLock);
          }
       }
+      return messages;
    }
 
    @Override
@@ -474,6 +477,12 @@ public class TranslationServiceImpl implements TranslationService
       boolean changed = false;
 
       final HLocale hLocale = localeServiceImpl.validateLocaleByProjectIteration(locale, projectSlug, iterationSlug);
+      final Optional<AsyncHandle> handleOp = AsyncUtils.getEventAsyncHandle(AsyncHandle.class);
+
+      if( handleOp.isPresent() )
+      {
+         handleOp.get().setMaxProgress( translations.getTextFlowTargets().size() );
+      }
 
       try
       {
@@ -535,10 +544,6 @@ public class TranslationServiceImpl implements TranslationService
                         // return warning for unknown resId to caller
                         String warning = "Could not find TextFlow for TextFlowTarget "+resId+" with contents: " + incomingTarget.getContents();
                         warnings.add(warning);
-                        if( asynchronousProcessHandle != null )
-                        {
-                           asynchronousProcessHandle.addMessages(warning);
-                        }
                         log.warn("skipping TextFlowTarget with unknown resId: {}", resId);
                      }
                      else
@@ -596,9 +601,9 @@ public class TranslationServiceImpl implements TranslationService
                      textFlowTargetDAO.flush();
                      personDAO.clear();
                      textFlowTargetDAO.clear();
-                     if( asynchronousProcessHandle != null )
+                     if( handleOp.isPresent() )
                      {
-                        asynchronousProcessHandle.incrementProgress(1);
+                        handleOp.get().increaseProgress(1);
                      }
                   }
 

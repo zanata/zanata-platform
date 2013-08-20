@@ -20,7 +20,9 @@
  */
 package org.zanata.rest.service;
 
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -33,18 +35,16 @@ import org.jboss.seam.Component;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
+import org.zanata.async.AsyncHandle;
+import org.zanata.async.SimpleAsyncTask;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.lock.LockNotAcquiredException;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
-import org.zanata.process.MessagesProcessHandle;
-import org.zanata.process.ProcessHandle;
-import org.zanata.process.RunnableProcess;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.ReadOnlyEntityException;
 import org.zanata.rest.dto.ProcessStatus;
@@ -53,10 +53,11 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.DocumentService;
 import org.zanata.service.LocaleService;
-import org.zanata.service.ProcessManagerService;
 import org.zanata.service.TranslationService;
+import org.zanata.service.impl.AsyncTaskManagerServiceImpl;
 import org.zanata.service.impl.DocumentServiceImpl;
 import org.zanata.service.impl.TranslationServiceImpl;
+import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -75,7 +76,7 @@ import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode;
 public class AsynchronousProcessResourceService implements AsynchronousProcessResource
 {
    @In
-   private ProcessManagerService processManagerServiceImpl;
+   private AsyncTaskManagerServiceImpl asyncTaskManagerServiceImpl;
 
    @In
    private LocaleService localeServiceImpl;
@@ -101,7 +102,6 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
                                                final @QueryParam("ext") Set<String> extensions,
                                                final @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans)
    {
-      ProcessHandle handle = new ProcessHandle();
       String errorMessage = null;
 
       HProjectIteration hProjectIteration = retrieveAndCheckIteration(projectSlug, iterationSlug, true);
@@ -122,24 +122,23 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
 
       if( errorMessage == null )
       {
-         RunnableProcess<ProcessHandle> process =
-            new RunnableProcess<ProcessHandle>()
-            {
-               @Override
-               protected void run(ProcessHandle handle) throws Throwable
+         SimpleAsyncTask<Void> task =
+               new SimpleAsyncTask<Void>()
                {
-                  DocumentService documentServiceImpl =
-                        (DocumentService)Component.getInstance(DocumentServiceImpl.class);
-                  documentServiceImpl.saveDocument(
-                        projectSlug, iterationSlug, resource, extensions, copytrans, true);
-                  handle.setCurrentProgress( handle.getMaxProgress() ); // TODO This should update with real progress
-               }
-            }.withIdentity(identity);
+                  @Override
+                  public Void call() throws Exception
+                  {
+                     DocumentService documentServiceImpl =
+                           (DocumentService)Component.getInstance(DocumentServiceImpl.class);
+                     documentServiceImpl.saveDocument(
+                           projectSlug, iterationSlug, resource, extensions, copytrans, true);
+                     getHandle().setCurrentProgress(getHandle().getMaxProgress()); // TODO This should update with real progress
+                     return null;
+                  }
+               };
 
-         processManagerServiceImpl.startProcess(process,handle);
-
-         //response.setStatus(Response.Status.ACCEPTED.getStatusCode());
-         return this.getProcessStatus(handle.getId());
+         String taskId = asyncTaskManagerServiceImpl.startTask(task);
+         return getProcessStatus(taskId); // TODO Change to return 202 Accepted, with a url to get the progress
       }
       else
       {
@@ -158,58 +157,28 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
                                                        final @QueryParam("ext") Set<String> extensions,
                                                        final @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans)
    {
-      ProcessHandle handle = new ProcessHandle();
-      String errorMessage = null;
 
       HProjectIteration hProjectIteration = retrieveAndCheckIteration(projectSlug, iterationSlug, true);
 
       resourceUtils.validateExtensions(extensions); //gettext, comment
 
-      if( errorMessage == null )
-      {
-         RunnableProcess<ProcessHandle> process =
-               new RunnableProcess<ProcessHandle>()
+      SimpleAsyncTask<Void> task =
+            new SimpleAsyncTask<Void>()
+            {
+               @Override
+               public Void call() throws Exception
                {
-                  @Override
-                  protected void prepare(ProcessHandle handle)
-                  {
-                     handle.setMaxProgress(resource.getTextFlows().size());
-                  }
+                  DocumentService documentServiceImpl =
+                        (DocumentService)Component.getInstance(DocumentServiceImpl.class);
+                  documentServiceImpl.saveDocument(
+                        projectSlug, iterationSlug, resource, extensions, copytrans, true);
+                  getHandle().setCurrentProgress( getHandle().getMaxProgress() ); // TODO This should update with real progress
+                  return null;
+               }
+            };
 
-                  @Override
-                  protected void run(ProcessHandle handle) throws Throwable
-                  {
-                     DocumentService documentServiceImpl =
-                           (DocumentService)Component.getInstance(DocumentServiceImpl.class);
-                     documentServiceImpl.saveDocument(
-                           projectSlug, iterationSlug, resource, extensions, copytrans, true);
-                     handle.setCurrentProgress( handle.getMaxProgress() ); // TODO This should update with real progress
-                  }
-
-                  @Override
-                  protected void handleThrowable(ProcessHandle handle, Throwable t)
-                  {
-                     // Ignore Lock exceptions
-                     if( !(t instanceof LockNotAcquiredException) )
-                     {
-                        AsynchronousProcessResourceService.log.error("Error pushing source document", t);
-                     }
-                     super.handleThrowable(handle, t);
-                  }
-               }.withIdentity(identity);
-
-         processManagerServiceImpl.startProcess(process,handle);
-
-         //response.setStatus(Response.Status.ACCEPTED.getStatusCode());
-         return this.getProcessStatus(handle.getId());
-      }
-      else
-      {
-         ProcessStatus status = new ProcessStatus();
-         status.setStatusCode(ProcessStatusCode.Failed);
-         status.getMessages().add(errorMessage);
-         return status;
-      }
+      String taskId = asyncTaskManagerServiceImpl.startTask(task);
+      return this.getProcessStatus(taskId); // TODO Change to return 202 Accepted, with a url to get the progress
    }
 
    @Override
@@ -226,8 +195,6 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
             this.getSecuredIteration(projectSlug, iterationSlug).getProject());
 
       String errorMessage = null;
-      MessagesProcessHandle handle = new MessagesProcessHandle();
-
       MergeType mergeType = null;
       try
       {
@@ -240,46 +207,28 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
 
       final String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       final MergeType finalMergeType = mergeType;
-      final String userName = identity.getCredentials().getUsername();
-      HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
 
       if( errorMessage == null )
       {
-         RunnableProcess<MessagesProcessHandle> process =
-               new RunnableProcess<MessagesProcessHandle>()
-               {
-                  @Override
-                  protected void prepare(MessagesProcessHandle handle)
-                  {
-                     handle.setMaxProgress( translatedDoc.getTextFlowTargets().size() );
-                  }
+         SimpleAsyncTask<List<String>> task = new SimpleAsyncTask<List<String>>()
+         {
+            @Override
+            public List<String> call() throws Exception
+            {
+               TranslationService translationServiceImpl =
+                     (TranslationService)Component.getInstance(TranslationServiceImpl.class);
 
-                  @Override
-                  protected void run(MessagesProcessHandle handle) throws Throwable
-                  {
-                     TranslationService translationServiceImpl =
-                           (TranslationService)Component.getInstance(TranslationServiceImpl.class);
+               // Translate
+               List<String> messages =
+                  translationServiceImpl.translateAllInDoc(projectSlug, iterationSlug, id, locale, translatedDoc,
+                     extensions, finalMergeType, true);
 
-                     // Translate
-                     translationServiceImpl.translateAllInDoc(projectSlug, iterationSlug, id, locale, translatedDoc,
-                           extensions, finalMergeType, true);
-                  }
+               return messages;
+            }
+         };
 
-                  @Override
-                  protected void handleThrowable(MessagesProcessHandle handle, Throwable t)
-                  {
-                     // Ignore Lock exceptions
-                     if( !(t instanceof LockNotAcquiredException) )
-                     {
-                        AsynchronousProcessResourceService.log.error("Error pushing translations", t);
-                     }
-                     super.handleThrowable(handle, t);
-                  }
-               }.withIdentity(identity);
-
-         processManagerServiceImpl.startProcess(process,handle);
-
-         return this.getProcessStatus(handle.getId());
+         String taskId = asyncTaskManagerServiceImpl.startTask(task);
+         return this.getProcessStatus(taskId);
       }
       else
       {
@@ -293,7 +242,7 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
    @Override
    public ProcessStatus getProcessStatus(@PathParam("processId") String processId)
    {
-      ProcessHandle handle = processManagerServiceImpl.getProcessHandle(processId);
+      AsyncHandle handle = asyncTaskManagerServiceImpl.getHandle(processId);
 
       if( handle == null )
       {
@@ -301,7 +250,7 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
       }
 
       ProcessStatus status = new ProcessStatus();
-      status.setStatusCode(handle.isInProgress() ? ProcessStatusCode.Running : ProcessStatusCode.Finished);
+      status.setStatusCode(handle.isDone() ? ProcessStatusCode.Finished : ProcessStatusCode.Running);
       int perComplete = 100;
       if(handle.getMaxProgress() > 0)
       {
@@ -309,25 +258,31 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
       }
       status.setPercentageComplete(perComplete);
       status.setUrl("" + processId);
-      if( handle.getError() != null )
-      {
-         // Lock Exception, tell the client to keep waiting
-         if( handle.getError() instanceof LockNotAcquiredException )
-         {
-            status.getMessages().add("Waiting to acquire lock.");
-            status.setStatusCode(ProcessStatusCode.NotAccepted);
-         }
-         else
-         {
-            status.setStatusCode(ProcessStatusCode.Failed);
-            status.getMessages().add(handle.getError().getMessage());
-         }
-      }
 
-      if( handle instanceof MessagesProcessHandle )
+      if( handle.isDone() )
       {
-         MessagesProcessHandle messagesProcessHandle = (MessagesProcessHandle)handle;
-         status.getMessages().addAll( messagesProcessHandle.getMessages() );
+         Object result = null;
+         try
+         {
+            result = handle.get();
+         }
+         catch (InterruptedException e)
+         {
+            // The process was forcefully cancelled
+            status.setMessages(Lists.newArrayList(e.getMessage()));
+         }
+         catch (ExecutionException e)
+         {
+            // Exception thrown while running the task
+            status.setMessages(Lists.newArrayList(e.getCause().getMessage()));
+         }
+
+         // TODO Need to find a generic way of returning all object types. Since the only current
+         // scenario involves lists of strings, hardcoding to that
+         if( result != null && result instanceof List )
+         {
+            status.getMessages().addAll( (List)result );
+         }
       }
 
       return status;
