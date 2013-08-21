@@ -2,6 +2,8 @@ package org.zanata.action;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -12,6 +14,7 @@ import org.jboss.seam.annotations.security.Restrict;
 import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
+import org.zanata.async.AsyncHandle;
 
 @Name("reindexAction")
 @Scope(ScopeType.APPLICATION)
@@ -101,7 +104,7 @@ public class ReindexActionBean implements Serializable
 
    public boolean isInProgress()
    {
-      return reindexAsync.getProcessHandle().isInProgress();
+      return reindexAsync.getProcessHandle() != null && !reindexAsync.getProcessHandle().isDone();
    }
 
    public String getCurrentClass()
@@ -111,22 +114,60 @@ public class ReindexActionBean implements Serializable
 
    public boolean isError()
    {
-      return reindexAsync.getProcessHandle().hasError();
+      AsyncHandle<Boolean> taskHandle = reindexAsync.getProcessHandle();
+      if( taskHandle == null )
+      {
+         return false;
+      }
+      else if( taskHandle.isDone() )
+      {
+         try
+         {
+            taskHandle.get();
+         }
+         catch (InterruptedException e)
+         {
+            return true;
+         }
+         catch (ExecutionException e)
+         {
+            return true;
+         }
+         catch (CancellationException e)
+         {
+            return false;
+         }
+      }
+      return false;
    }
 
    public int getReindexCount()
    {
-      return reindexAsync.getProcessHandle().getMaxProgress();
+      if(reindexAsync.getProcessHandle() == null)
+      {
+         return 0;
+      }
+      else
+      {
+         return reindexAsync.getProcessHandle().getMaxProgress();
+      }
    }
 
    public int getReindexProgress()
    {
-      return reindexAsync.getProcessHandle().getCurrentProgress();
+      if(reindexAsync.getProcessHandle() == null)
+      {
+         return 0;
+      }
+      else
+      {
+         return reindexAsync.getProcessHandle().getCurrentProgress();
+      }
    }
 
    public void reindexDatabase()
    {
-      if (!reindexAsync.getProcessHandle().isInProgress())
+      if (reindexAsync.getProcessHandle() == null || reindexAsync.getProcessHandle().isDone())
       {
          reindexAsync.startProcess();
       }
@@ -134,17 +175,12 @@ public class ReindexActionBean implements Serializable
 
    public void cancel()
    {
-      reindexAsync.getProcessHandle().stop();
+      reindexAsync.getProcessHandle().cancel(false);
    }
 
    public boolean isCanceled()
    {
-      return reindexAsync.getProcessHandle().shouldStop();
-   }
-
-   public boolean isStarted()
-   {
-      return reindexAsync.getProcessHandle().isStarted();
+      return reindexAsync.getProcessHandle() != null && reindexAsync.getProcessHandle().isCancelled();
    }
 
    // TODO move to common location with ViewAllStatusAction
@@ -171,7 +207,7 @@ public class ReindexActionBean implements Serializable
       }
    }
 
-   public String getElapsedTime()
+   /*public String getElapsedTime()
    {
       return formatTimePeriod(reindexAsync.getProcessHandle().getElapsedTime());
    }
@@ -179,5 +215,5 @@ public class ReindexActionBean implements Serializable
    public String getEstimatedTimeRemaining()
    {
       return formatTimePeriod(reindexAsync.getProcessHandle().getEstimatedTimeRemaining());
-   }
+   }*/
 }

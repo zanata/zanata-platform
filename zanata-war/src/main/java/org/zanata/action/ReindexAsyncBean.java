@@ -18,6 +18,9 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.log.Log;
+import org.zanata.async.AsyncHandle;
+import org.zanata.async.AsyncTask;
+import org.zanata.async.SimpleAsyncTask;
 import org.zanata.model.HAccount;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
@@ -25,18 +28,18 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.tm.TransMemoryUnit;
-import org.zanata.process.RunnableProcess;
 import org.zanata.search.AbstractIndexingStrategy;
 import org.zanata.search.ClassIndexer;
 import org.zanata.search.HTextFlowTargetIndexingStrategy;
-import org.zanata.search.IndexerProcessHandle;
 import org.zanata.search.SimpleClassIndexingStrategy;
-import org.zanata.service.ProcessManagerService;
+import org.zanata.service.impl.AsyncTaskManagerServiceImpl;
+
+import lombok.AllArgsConstructor;
 
 @Name("reindexAsync")
 @Scope(ScopeType.APPLICATION)
 @Startup
-public class ReindexAsyncBean extends RunnableProcess<IndexerProcessHandle> implements Serializable
+public class ReindexAsyncBean implements Serializable
 {
    private static final long serialVersionUID = 1L;
 
@@ -47,7 +50,7 @@ public class ReindexAsyncBean extends RunnableProcess<IndexerProcessHandle> impl
    EntityManagerFactory entityManagerFactory;
 
    @In
-   ProcessManagerService processManagerServiceImpl;
+   AsyncTaskManagerServiceImpl asyncTaskManagerServiceImpl;
 
    private FullTextSession session;
 
@@ -56,13 +59,11 @@ public class ReindexAsyncBean extends RunnableProcess<IndexerProcessHandle> impl
    private LinkedHashMap<Class<?>, ReindexClassOptions> indexingOptions = new LinkedHashMap<Class<?>, ReindexClassOptions>();
    private Class<?> currentClass;
 
-   private IndexerProcessHandle handle;
+   private AsyncHandle<Boolean> handle;
 
    @Create
    public void create()
    {
-      handle = new IndexerProcessHandle(0);
-
       indexables.add(HAccount.class);
       indexables.add(HGlossaryEntry.class);
       indexables.add(HGlossaryTerm.class);
@@ -118,7 +119,7 @@ public class ReindexAsyncBean extends RunnableProcess<IndexerProcessHandle> impl
       return result;
    }
 
-   public IndexerProcessHandle getProcessHandle()
+   public AsyncHandle<Boolean> getProcessHandle()
    {
       return handle;
    }
@@ -133,18 +134,10 @@ public class ReindexAsyncBean extends RunnableProcess<IndexerProcessHandle> impl
    }
 
    /**
-    * Prepare to reindex lucene search index. This ensures that progress counts
-    * are properly initialised before the asynchronous run() method is
-    * called.
+    * Returns the number of total operations to perform
     */
-   private void prepareReindex()
+   private int getTotalOperations()
    {
-      // TODO print message? throw exception?
-      if (handle.isInProgress())
-         return;
-
-      log.info("Re-indexing started");
-
       session = Search.getFullTextSession((Session) entityManagerFactory.createEntityManager().getDelegate());
 
       // set up progress counter
@@ -167,7 +160,7 @@ public class ReindexAsyncBean extends RunnableProcess<IndexerProcessHandle> impl
             totalOperations++;
          }
       }
-      handle = new IndexerProcessHandle(totalOperations);
+      return totalOperations;
    }
 
    /**
@@ -175,9 +168,8 @@ public class ReindexAsyncBean extends RunnableProcess<IndexerProcessHandle> impl
     */
    public void startProcess()
    {
-      prepareReindex();
-      // Invoke a self proxy
-      processManagerServiceImpl.startProcess(this, this.handle);
+      String taskId = asyncTaskManagerServiceImpl.startTask(new ReindexTask());
+      this.handle = asyncTaskManagerServiceImpl.getHandle(taskId);
    }
 
    @SuppressWarnings("rawtypes")
@@ -197,58 +189,76 @@ public class ReindexAsyncBean extends RunnableProcess<IndexerProcessHandle> impl
    }
 
    /**
-    * Begin reindexing lucene search index. This method should only be called
-    * after a single call to prepareReindex()
+    * Private reindex Asynchronous task.
+    * NB: Separate from the main Bean class as it is not recommended to reuse async tasks.
     */
-   @Override
-   protected void run(IndexerProcessHandle handle) throws Exception
+   private class ReindexTask implements AsyncTask<Boolean, AsyncHandle<Boolean>>
    {
-      // TODO this is necessary because isInProgress checks number of operations, which may be 0
-      // look at updating isInProgress not to care about count
-      if (handle.getMaxProgress() == 0)
+      private AsyncHandle<Boolean> handle;
+
+      @Override
+      public AsyncHandle<Boolean> getHandle()
       {
-         log.info("Reindexing aborted because there are no actions to perform (may be indexing an empty table)");
-         return;
-      }
-      for (Class<?> clazz : indexables)
-      {
-         if (!handle.shouldStop() && indexingOptions.get(clazz).isPurge())
+         if( handle == null )
          {
-            log.info("purging index for {0}", clazz);
-            currentClass = clazz;
-            session.purgeAll(clazz);
-            handle.incrementProgress(1);
+            handle = new AsyncHandle<Boolean>();
+            handle.setMaxProgress( getTotalOperations() );
          }
-         if (!handle.shouldStop() && indexingOptions.get(clazz).isReindex())
-         {
-            log.info("reindexing {0}", clazz);
-            currentClass = clazz;
-            getIndexer(clazz).index();
-         }
-         if (!handle.shouldStop() && indexingOptions.get(clazz).isOptimize())
-         {
-            log.info("optimizing {0}", clazz);
-            currentClass = clazz;
-            session.getSearchFactory().optimize(clazz);
-            handle.incrementProgress(1);
-         }
+         return handle;
       }
 
-      if (handle.shouldStop()) {
-         log.info("index operation canceled by user");
-      }
-      else
+      @Override
+      public Boolean call() throws Exception
       {
-         if (handle.getCurrentProgress() != handle.getMaxProgress())
+         // TODO this is necessary because isInProgress checks number of operations, which may be 0
+         // look at updating isInProgress not to care about count
+         if (getHandle().getMaxProgress() == 0)
          {
-            // @formatter: off
-            log.warn("Did not reindex the expected number of objects. Counted {0} but indexed {1}. "
-                  + "The index may be out-of-sync. "
-                  + "This may be caused by lack of sufficient memory, or by database activity during reindexing.", handle.getMaxProgress(), handle.getCurrentProgress());
-            // @formatter: on
+            log.info("Reindexing aborted because there are no actions to perform (may be indexing an empty table)");
+            return null;
+         }
+         for (Class<?> clazz : indexables)
+         {
+            if (!getHandle().isCancelled() && indexingOptions.get(clazz).isPurge())
+            {
+               log.info("purging index for {0}", clazz);
+               currentClass = clazz;
+               session.purgeAll(clazz);
+               getHandle().increaseProgress(1);
+            }
+            if (!getHandle().isCancelled() && indexingOptions.get(clazz).isReindex())
+            {
+               log.info("reindexing {0}", clazz);
+               currentClass = clazz;
+               getIndexer(clazz).index();
+            }
+            if (!getHandle().isCancelled() && indexingOptions.get(clazz).isOptimize())
+            {
+               log.info("optimizing {0}", clazz);
+               currentClass = clazz;
+               session.getSearchFactory().optimize(clazz);
+               getHandle().increaseProgress(1);
+            }
          }
 
-         log.info("Re-indexing finished" + (handle.hasError() ? " with errors" : ""));
+         if (getHandle().isCancelled()) {
+            log.info("index operation canceled by user");
+         }
+         else
+         {
+            if (getHandle().getCurrentProgress() != getHandle().getMaxProgress())
+            {
+               // @formatter: off
+               log.warn("Did not reindex the expected number of objects. Counted {0} but indexed {1}. "
+                     + "The index may be out-of-sync. "
+                     + "This may be caused by lack of sufficient memory, or by database activity during reindexing.",
+                     getHandle().getMaxProgress(), getHandle().getCurrentProgress());
+               // @formatter: on
+            }
+
+            log.info("Re-indexing finished");
+         }
+         return true;
       }
    }
 }
