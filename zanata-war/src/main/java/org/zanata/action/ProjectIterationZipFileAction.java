@@ -14,7 +14,7 @@ import org.zanata.ApplicationConfiguration;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.tasks.ZipFileBuildTask;
 import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.service.impl.AsyncTaskManagerServiceImpl;
+import org.zanata.service.AsyncTaskManagerService;
 
 @Name("projectIterationZipFileAction")
 @Scope(ScopeType.CONVERSATION)
@@ -27,7 +27,7 @@ public class ProjectIterationZipFileAction implements Serializable
    private ProjectIterationDAO projectIterationDAO;
 
    @In
-   AsyncTaskManagerServiceImpl asyncTaskManagerServiceImpl;
+   AsyncTaskManagerService asyncTaskManagerServiceImpl;
 
    @In
    private ApplicationConfiguration applicationConfiguration;

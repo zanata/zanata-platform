@@ -35,7 +35,7 @@ import org.zanata.process.RunnableProcessListener;
 import org.zanata.process.CopyTransProcess;
 import org.zanata.process.CopyTransProcessHandle;
 import org.zanata.service.ProcessManagerService;
-import org.zanata.service.impl.AsyncTaskManagerServiceImpl;
+import org.zanata.service.AsyncTaskManagerService;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -66,7 +66,7 @@ public class CopyTransManager implements Serializable
    private static final long serialVersionUID = 1L;
 
    @In
-   private AsyncTaskManagerServiceImpl asyncTaskManagerServiceImpl;
+   private AsyncTaskManagerService asyncTaskManagerServiceImpl;
 
    @In
    private Identity identity;

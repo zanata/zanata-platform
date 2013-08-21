@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-
 import javax.persistence.EntityManagerFactory;
 
 import org.hibernate.Session;
@@ -18,8 +17,8 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.log.Log;
-import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTask;
+import org.zanata.async.AsyncTaskHandle;
 import org.zanata.model.HAccount;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
@@ -31,7 +30,7 @@ import org.zanata.search.AbstractIndexingStrategy;
 import org.zanata.search.ClassIndexer;
 import org.zanata.search.HTextFlowTargetIndexingStrategy;
 import org.zanata.search.SimpleClassIndexingStrategy;
-import org.zanata.service.impl.AsyncTaskManagerServiceImpl;
+import org.zanata.service.AsyncTaskManagerService;
 
 @Name("reindexAsync")
 @Scope(ScopeType.APPLICATION)
@@ -47,7 +46,7 @@ public class ReindexAsyncBean implements Serializable
    EntityManagerFactory entityManagerFactory;
 
    @In
-   AsyncTaskManagerServiceImpl asyncTaskManagerServiceImpl;
+   AsyncTaskManagerService asyncTaskManagerServiceImpl;
 
    private FullTextSession session;
 

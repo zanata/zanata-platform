@@ -31,6 +31,7 @@ import org.jboss.seam.annotations.Startup;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTask;
 import org.zanata.async.TaskExecutor;
+import org.zanata.service.AsyncTaskManagerService;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -49,7 +50,7 @@ import java.util.concurrent.TimeUnit;
 @Name("asyncTaskManagerServiceImpl")
 @Scope(ScopeType.APPLICATION)
 @Startup
-public class AsyncTaskManagerServiceImpl
+public class AsyncTaskManagerServiceImpl implements AsyncTaskManagerService
 {
 
    // Collection of all managed task Handles. It's self pruned, and it is indexed by
@@ -64,7 +65,8 @@ public class AsyncTaskManagerServiceImpl
    private ConcurrentMap<Serializable, AsyncTaskHandle> keyedHandles =
          Maps.newConcurrentMap();
 
-   public <V, H extends AsyncTaskHandle<V>> String startTask(AsyncTask<V,H> task)
+   @Override
+   public <V, H extends AsyncTaskHandle<V>> String startTask(AsyncTask<V, H> task)
    {
       TaskExecutor taskExecutor = (TaskExecutor) Component.getInstance(TaskExecutor.class);
       AsyncTaskHandle<V> handle = taskExecutor.startTask(task);
@@ -77,22 +79,26 @@ public class AsyncTaskManagerServiceImpl
       return taskKey.toString();
    }
 
-   public <V, H extends AsyncTaskHandle<V>> void startTask(AsyncTask<V,H> task, Serializable key)
+   @Override
+   public <V, H extends AsyncTaskHandle<V>> void startTask(AsyncTask<V, H> task, Serializable key)
    {
       String taskId = startTask(task);
       keyedHandles.put(key, getHandle(taskId));
    }
 
+   @Override
    public AsyncTaskHandle getHandle(String taskId)
    {
       return getHandle(taskId, false);
    }
 
-   public AsyncTaskHandle getHandleByKey( Serializable key )
+   @Override
+   public AsyncTaskHandle getHandleByKey(Serializable key)
    {
       return keyedHandles.get(key);
    }
 
+   @Override
    public AsyncTaskHandle getHandle(String taskId, boolean removeIfFinished)
    {
       try
@@ -111,6 +117,7 @@ public class AsyncTaskManagerServiceImpl
       }
    }
 
+   @Override
    public void clearInactive()
    {
       synchronized (taskHandles)

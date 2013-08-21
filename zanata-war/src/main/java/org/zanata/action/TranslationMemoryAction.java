@@ -35,8 +35,8 @@ import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.SimpleAsyncTask;
 import org.zanata.dao.TransMemoryDAO;
 import org.zanata.model.tm.TransMemory;
+import org.zanata.service.AsyncTaskManagerService;
 import org.zanata.service.SlugEntityService;
-import org.zanata.service.impl.AsyncTaskManagerServiceImpl;
 import com.google.common.base.Optional;
 
 import lombok.AllArgsConstructor;
@@ -60,7 +60,7 @@ public class TranslationMemoryAction extends EntityHome<TransMemory>
    private SlugEntityService slugEntityServiceImpl;
 
    @In
-   private AsyncTaskManagerServiceImpl asyncTaskManagerServiceImpl;
+   private AsyncTaskManagerService asyncTaskManagerServiceImpl;
 
    private List<TransMemory> transMemoryList;
 

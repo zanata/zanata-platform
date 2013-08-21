@@ -51,10 +51,10 @@ import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.service.AsyncTaskManagerService;
 import org.zanata.service.DocumentService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationService;
-import org.zanata.service.impl.AsyncTaskManagerServiceImpl;
 import org.zanata.service.impl.DocumentServiceImpl;
 import org.zanata.service.impl.TranslationServiceImpl;
 import com.google.common.collect.Lists;
@@ -76,7 +76,7 @@ import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode;
 public class AsynchronousProcessResourceService implements AsynchronousProcessResource
 {
    @In
-   private AsyncTaskManagerServiceImpl asyncTaskManagerServiceImpl;
+   private AsyncTaskManagerService asyncTaskManagerServiceImpl;
 
    @In
    private LocaleService localeServiceImpl;
