@@ -25,7 +25,7 @@ import java.util.concurrent.Callable;
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public interface AsyncTask<V, H extends AsyncHandle<V>> extends Callable<V>
+public interface AsyncTask<V, H extends AsyncTaskHandle<V>> extends Callable<V>
 {
 
    H getHandle();

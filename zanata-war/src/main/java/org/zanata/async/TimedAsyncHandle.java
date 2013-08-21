@@ -20,16 +20,14 @@
  */
 package org.zanata.async;
 
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * An Asynchronous handle that has facility methods to time the duration of the task.
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class TimedAsyncHandle<V> extends AsyncHandle<V>
+public class TimedAsyncHandle<V> extends AsyncTaskHandle<V>
 {
    @Getter
    private long startTime;

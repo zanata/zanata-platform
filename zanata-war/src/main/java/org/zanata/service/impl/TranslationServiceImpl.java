@@ -41,7 +41,7 @@ import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.jboss.seam.util.Work;
-import org.zanata.async.AsyncHandle;
+import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncUtils;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
@@ -65,7 +65,6 @@ import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
-import org.zanata.process.MessagesProcessHandle;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.ResourceUtils;
@@ -477,7 +476,7 @@ public class TranslationServiceImpl implements TranslationService
       boolean changed = false;
 
       final HLocale hLocale = localeServiceImpl.validateLocaleByProjectIteration(locale, projectSlug, iterationSlug);
-      final Optional<AsyncHandle> handleOp = AsyncUtils.getEventAsyncHandle(AsyncHandle.class);
+      final Optional<AsyncTaskHandle> handleOp = AsyncUtils.getEventAsyncHandle(AsyncTaskHandle.class);
 
       if( handleOp.isPresent() )
       {

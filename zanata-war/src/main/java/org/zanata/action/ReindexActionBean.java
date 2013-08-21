@@ -14,7 +14,7 @@ import org.jboss.seam.annotations.security.Restrict;
 import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
-import org.zanata.async.AsyncHandle;
+import org.zanata.async.AsyncTaskHandle;
 
 @Name("reindexAction")
 @Scope(ScopeType.APPLICATION)
@@ -114,7 +114,7 @@ public class ReindexActionBean implements Serializable
 
    public boolean isError()
    {
-      AsyncHandle<Boolean> taskHandle = reindexAsync.getProcessHandle();
+      AsyncTaskHandle<Boolean> taskHandle = reindexAsync.getProcessHandle();
       if( taskHandle == null )
       {
          return false;

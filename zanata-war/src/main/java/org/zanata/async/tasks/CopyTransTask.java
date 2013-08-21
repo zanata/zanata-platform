@@ -24,7 +24,6 @@ import java.util.List;
 
 import org.jboss.seam.Component;
 import org.jboss.seam.security.Identity;
-import org.zanata.async.AsyncHandle;
 import org.zanata.async.AsyncTask;
 import org.zanata.async.TimedAsyncHandle;
 import org.zanata.model.HCopyTransOptions;
@@ -36,7 +35,6 @@ import org.zanata.service.LocaleService;
 import org.zanata.service.impl.CopyTransServiceImpl;
 import org.zanata.service.impl.LocaleServiceImpl;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 

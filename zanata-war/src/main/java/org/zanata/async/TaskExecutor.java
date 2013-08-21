@@ -20,17 +20,12 @@
  */
 package org.zanata.async;
 
-import java.util.Set;
-
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.contexts.Context;
 import org.jboss.seam.security.Identity;
-
-import com.google.common.collect.Sets;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -53,7 +48,7 @@ public class TaskExecutor
     *
     * @param handle The handle to be used for the running process.
     */
-   public <V, H extends AsyncHandle<V>> AsyncHandle<V> startTask(AsyncTask<V, H> task)
+   public <V, H extends AsyncTaskHandle<V>> AsyncTaskHandle<V> startTask(AsyncTask<V, H> task)
    {
       H handle = task.getHandle();
       if( handle == null )

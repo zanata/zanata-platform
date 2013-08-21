@@ -39,7 +39,7 @@ public class AsyncUtils
 {
    private static final String ASYNC_HANDLE_NAME = "__ASYNC_HANDLE__";
 
-   public static final void outject( AsyncHandle<?> handle, ScopeType scopeType)
+   public static final void outject( AsyncTaskHandle<?> handle, ScopeType scopeType)
    {
       if(scopeType.isContextActive())
       {
@@ -51,12 +51,12 @@ public class AsyncUtils
       }
    }
 
-   public static final <H extends AsyncHandle> Optional<H> getEventAsyncHandle( Class<H> type )
+   public static final <H extends AsyncTaskHandle> Optional<H> getEventAsyncHandle( Class<H> type )
    {
       return getAsyncHandle(ScopeType.EVENT, type);
    }
 
-   public static final <H extends AsyncHandle> Optional<H> getAsyncHandle(ScopeType scopeType, Class<H> type)
+   public static final <H extends AsyncTaskHandle> Optional<H> getAsyncHandle(ScopeType scopeType, Class<H> type)
    {
       if(scopeType.isContextActive())
       {

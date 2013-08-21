@@ -18,9 +18,8 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.log.Log;
-import org.zanata.async.AsyncHandle;
+import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTask;
-import org.zanata.async.SimpleAsyncTask;
 import org.zanata.model.HAccount;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
@@ -33,8 +32,6 @@ import org.zanata.search.ClassIndexer;
 import org.zanata.search.HTextFlowTargetIndexingStrategy;
 import org.zanata.search.SimpleClassIndexingStrategy;
 import org.zanata.service.impl.AsyncTaskManagerServiceImpl;
-
-import lombok.AllArgsConstructor;
 
 @Name("reindexAsync")
 @Scope(ScopeType.APPLICATION)
@@ -59,7 +56,7 @@ public class ReindexAsyncBean implements Serializable
    private LinkedHashMap<Class<?>, ReindexClassOptions> indexingOptions = new LinkedHashMap<Class<?>, ReindexClassOptions>();
    private Class<?> currentClass;
 
-   private AsyncHandle<Boolean> handle;
+   private AsyncTaskHandle<Boolean> handle;
 
    @Create
    public void create()
@@ -119,7 +116,7 @@ public class ReindexAsyncBean implements Serializable
       return result;
    }
 
-   public AsyncHandle<Boolean> getProcessHandle()
+   public AsyncTaskHandle<Boolean> getProcessHandle()
    {
       return handle;
    }
@@ -192,16 +189,16 @@ public class ReindexAsyncBean implements Serializable
     * Private reindex Asynchronous task.
     * NB: Separate from the main Bean class as it is not recommended to reuse async tasks.
     */
-   private class ReindexTask implements AsyncTask<Boolean, AsyncHandle<Boolean>>
+   private class ReindexTask implements AsyncTask<Boolean, AsyncTaskHandle<Boolean>>
    {
-      private AsyncHandle<Boolean> handle;
+      private AsyncTaskHandle<Boolean> handle;
 
       @Override
-      public AsyncHandle<Boolean> getHandle()
+      public AsyncTaskHandle<Boolean> getHandle()
       {
          if( handle == null )
          {
-            handle = new AsyncHandle<Boolean>();
+            handle = new AsyncTaskHandle<Boolean>();
             handle.setMaxProgress( getTotalOperations() );
          }
          return handle;

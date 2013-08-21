@@ -31,12 +31,12 @@ import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.framework.EntityHome;
+import org.zanata.async.AsyncTaskHandle;
+import org.zanata.async.SimpleAsyncTask;
 import org.zanata.dao.TransMemoryDAO;
 import org.zanata.model.tm.TransMemory;
-import org.zanata.process.ProcessHandle;
-import org.zanata.process.RunnableProcess;
-import org.zanata.service.ProcessManagerService;
 import org.zanata.service.SlugEntityService;
+import org.zanata.service.impl.AsyncTaskManagerServiceImpl;
 import com.google.common.base.Optional;
 
 import lombok.AllArgsConstructor;
@@ -60,7 +60,7 @@ public class TranslationMemoryAction extends EntityHome<TransMemory>
    private SlugEntityService slugEntityServiceImpl;
 
    @In
-   private ProcessManagerService processManagerServiceImpl;
+   private AsyncTaskManagerServiceImpl asyncTaskManagerServiceImpl;
 
    private List<TransMemory> transMemoryList;
 
@@ -91,17 +91,17 @@ public class TranslationMemoryAction extends EntityHome<TransMemory>
 
    public void clearTransMemory(final String transMemorySlug)
    {
-      processManagerServiceImpl.startProcess(
-            new RunnableProcess<ProcessHandle>()
+      asyncTaskManagerServiceImpl.startTask(
+            new SimpleAsyncTask<Void>()
             {
                @Override
-               protected void run(ProcessHandle handle) throws Throwable
+               public Void call() throws Exception
                {
                   TransMemoryDAO transMemoryDAO = (TransMemoryDAO) Component.getInstance(TransMemoryDAO.class);
                   transMemoryDAO.deleteTransMemoryContents(transMemorySlug);
+                  return null;
                }
             },
-            new ProcessHandle(),
             new ClearTransMemoryProcessKey(transMemorySlug)
       );
 
@@ -125,8 +125,9 @@ public class TranslationMemoryAction extends EntityHome<TransMemory>
 
    public boolean isTransMemoryBeingCleared(String transMemorySlug)
    {
-      ProcessHandle handle = processManagerServiceImpl.getProcessHandle( new ClearTransMemoryProcessKey(transMemorySlug) );
-      return handle != null && !handle.isFinished();
+      AsyncTaskHandle<Void> handle =
+            asyncTaskManagerServiceImpl.getHandleByKey(new ClearTransMemoryProcessKey(transMemorySlug));
+      return handle != null && !handle.isDone();
    }
 
    public boolean deleteTransMemoryDisabled(String transMemorySlug)

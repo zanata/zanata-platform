@@ -1,6 +1,5 @@
 package org.zanata.action;
 
-import java.io.InputStream;
 import java.io.Serializable;
 
 import org.jboss.seam.ScopeType;
@@ -12,13 +11,9 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.security.Identity;
 import org.zanata.ApplicationConfiguration;
-import org.zanata.async.AsyncHandle;
+import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.tasks.ZipFileBuildTask;
 import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.process.IterationZipFileBuildProcess;
-import org.zanata.process.IterationZipFileBuildProcessHandle;
-import org.zanata.process.ProcessHandle;
-import org.zanata.service.ProcessManagerService;
 import org.zanata.service.impl.AsyncTaskManagerServiceImpl;
 
 @Name("projectIterationZipFileAction")
@@ -43,7 +38,7 @@ public class ProjectIterationZipFileAction implements Serializable
 
    private String localeId;
 
-   private AsyncHandle<String> zipFilePrepHandle;
+   private AsyncTaskHandle<String> zipFilePrepHandle;
 
    @Begin(join = true)
    @Restrict("#{s:hasPermission(projectIterationZipFileAction.projectIteration, 'download-all')}")
@@ -104,12 +99,12 @@ public class ProjectIterationZipFileAction implements Serializable
       this.localeId = localeId;
    }
 
-   public AsyncHandle<String> getZipFilePrepHandle()
+   public AsyncTaskHandle<String> getZipFilePrepHandle()
    {
       return zipFilePrepHandle;
    }
 
-   public void setZipFilePrepHandle(AsyncHandle<String> zipFilePrepHandle)
+   public void setZipFilePrepHandle(AsyncTaskHandle<String> zipFilePrepHandle)
    {
       this.zipFilePrepHandle = zipFilePrepHandle;
    }

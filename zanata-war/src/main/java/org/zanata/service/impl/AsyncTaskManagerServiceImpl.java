@@ -28,14 +28,11 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
-import org.zanata.async.AsyncHandle;
+import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTask;
 import org.zanata.async.TaskExecutor;
-import org.zanata.process.ProcessHandle;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -57,20 +54,20 @@ public class AsyncTaskManagerServiceImpl
 
    // Collection of all managed task Handles. It's self pruned, and it is indexed by
    // long valued keys
-   private Cache<Long, AsyncHandle> taskHandles =
+   private Cache<Long, AsyncTaskHandle> taskHandles =
          CacheBuilder.newBuilder()
                .softValues()
                .expireAfterWrite(1, TimeUnit.HOURS)
                //.removalListener(new RecentlyFinishedRemovalListener())
                .build();
 
-   private ConcurrentMap<Serializable, AsyncHandle> keyedHandles =
+   private ConcurrentMap<Serializable, AsyncTaskHandle> keyedHandles =
          Maps.newConcurrentMap();
 
-   public <V, H extends AsyncHandle<V>> String startTask(AsyncTask<V,H> task)
+   public <V, H extends AsyncTaskHandle<V>> String startTask(AsyncTask<V,H> task)
    {
       TaskExecutor taskExecutor = (TaskExecutor) Component.getInstance(TaskExecutor.class);
-      AsyncHandle<V> handle = taskExecutor.startTask(task);
+      AsyncTaskHandle<V> handle = taskExecutor.startTask(task);
       Long taskKey;
       synchronized (taskHandles)
       {
@@ -80,28 +77,28 @@ public class AsyncTaskManagerServiceImpl
       return taskKey.toString();
    }
 
-   public <V, H extends AsyncHandle<V>> void startTask(AsyncTask<V,H> task, Serializable key)
+   public <V, H extends AsyncTaskHandle<V>> void startTask(AsyncTask<V,H> task, Serializable key)
    {
       String taskId = startTask(task);
       keyedHandles.put(key, getHandle(taskId));
    }
 
-   public AsyncHandle getHandle(String taskId)
+   public AsyncTaskHandle getHandle(String taskId)
    {
       return getHandle(taskId, false);
    }
 
-   public AsyncHandle getHandleByKey( Serializable key )
+   public AsyncTaskHandle getHandleByKey( Serializable key )
    {
       return keyedHandles.get(key);
    }
 
-   public AsyncHandle getHandle(String taskId, boolean removeIfFinished)
+   public AsyncTaskHandle getHandle(String taskId, boolean removeIfFinished)
    {
       try
       {
          Long taskKey = Long.parseLong(taskId);
-         AsyncHandle handle = taskHandles.getIfPresent(taskKey);
+         AsyncTaskHandle handle = taskHandles.getIfPresent(taskKey);
          if( removeIfFinished )
          {
             taskHandles.invalidate(taskKey);
@@ -118,7 +115,7 @@ public class AsyncTaskManagerServiceImpl
    {
       synchronized (taskHandles)
       {
-         for (Map.Entry<Long, AsyncHandle> entry : taskHandles.asMap().entrySet())
+         for (Map.Entry<Long, AsyncTaskHandle> entry : taskHandles.asMap().entrySet())
          {
             if( entry.getValue().isDone() )
             {

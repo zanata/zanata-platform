@@ -24,12 +24,12 @@ import lombok.Getter;
 
 /**
  * Simple default partial implementation of an async task that produces a bare bones
- * {@link AsyncHandle} that tracks progress.
+ * {@link AsyncTaskHandle} that tracks progress.
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public abstract class SimpleAsyncTask<V> implements AsyncTask<V, AsyncHandle<V>>
+public abstract class SimpleAsyncTask<V> implements AsyncTask<V, AsyncTaskHandle<V>>
 {
    @Getter
-   private final AsyncHandle<V> handle = new AsyncHandle<V>();
+   private final AsyncTaskHandle<V> handle = new AsyncTaskHandle<V>();
 }

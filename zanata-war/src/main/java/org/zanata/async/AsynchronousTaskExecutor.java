@@ -21,7 +21,6 @@
 package org.zanata.async;
 
 import java.security.Principal;
-import java.util.Collection;
 
 import javax.security.auth.Subject;
 
@@ -30,7 +29,6 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.async.Asynchronous;
-import org.jboss.seam.contexts.Context;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.RunAsOperation;
 
@@ -49,7 +47,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AsynchronousTaskExecutor
 {
    @Asynchronous
-   public <V, H extends AsyncHandle<V>> void runAsynchronously(final AsyncTask<V, H> task, final Identity runAs)
+   public <V, H extends AsyncTaskHandle<V>> void runAsynchronously(final AsyncTask<V, H> task, final Identity runAs)
    {
       AsyncUtils.outject(task.getHandle(), ScopeType.EVENT);
 

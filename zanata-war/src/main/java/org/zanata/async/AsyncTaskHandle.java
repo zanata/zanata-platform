@@ -33,7 +33,7 @@ import lombok.Setter;
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class AsyncHandle<V> extends AbstractFuture<V>
+public class AsyncTaskHandle<V> extends AbstractFuture<V>
 {
    @Getter @Setter
    public int maxProgress = 100;

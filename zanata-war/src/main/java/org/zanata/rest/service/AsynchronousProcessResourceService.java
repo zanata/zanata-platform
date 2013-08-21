@@ -35,7 +35,7 @@ import org.jboss.seam.Component;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
-import org.zanata.async.AsyncHandle;
+import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.SimpleAsyncTask;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -242,7 +242,7 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
    @Override
    public ProcessStatus getProcessStatus(@PathParam("processId") String processId)
    {
-      AsyncHandle handle = asyncTaskManagerServiceImpl.getHandle(processId);
+      AsyncTaskHandle handle = asyncTaskManagerServiceImpl.getHandle(processId);
 
       if( handle == null )
       {

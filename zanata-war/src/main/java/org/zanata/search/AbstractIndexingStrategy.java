@@ -2,7 +2,7 @@ package org.zanata.search;
 
 import org.hibernate.ScrollableResults;
 import org.hibernate.search.FullTextSession;
-import org.zanata.async.AsyncHandle;
+import org.zanata.async.AsyncTaskHandle;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,7 +31,7 @@ public abstract class AbstractIndexingStrategy<T>
    /**
     * Performs the indexing.
     */
-   public void invoke(AsyncHandle handle)
+   public void invoke(AsyncTaskHandle handle)
    {
       int rowNum = 0;
       scrollableResults = queryResults(rowNum);

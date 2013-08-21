@@ -21,11 +21,10 @@
 package org.zanata.async.tasks;
 
 import com.google.common.base.Optional;
-import lombok.AllArgsConstructor;
 import org.jboss.seam.Component;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.adapter.po.PoWriter2;
-import org.zanata.async.AsyncHandle;
+import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTask;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
@@ -43,9 +42,7 @@ import org.zanata.service.impl.ConfigurationServiceImpl;
 import org.zanata.service.impl.FileSystemServiceImpl;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -59,7 +56,7 @@ import java.util.zip.ZipOutputStream;
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class ZipFileBuildTask implements AsyncTask<String, AsyncHandle<String>>
+public class ZipFileBuildTask implements AsyncTask<String, AsyncTaskHandle<String>>
 {
 
    private final String projectSlug;
@@ -68,7 +65,7 @@ public class ZipFileBuildTask implements AsyncTask<String, AsyncHandle<String>>
    private final String userName;
    private final boolean isOfflinePo;
 
-   private AsyncHandle<String> handle;
+   private AsyncTaskHandle<String> handle;
 
    public ZipFileBuildTask(String projectSlug, String iterationSlug, String localeId, String userName, boolean offlinePo)
    {
@@ -80,7 +77,7 @@ public class ZipFileBuildTask implements AsyncTask<String, AsyncHandle<String>>
    }
 
    @Override
-   public AsyncHandle<String> getHandle()
+   public AsyncTaskHandle<String> getHandle()
    {
       if( handle == null )
       {
@@ -89,9 +86,9 @@ public class ZipFileBuildTask implements AsyncTask<String, AsyncHandle<String>>
       return handle;
    }
 
-   private AsyncHandle<String> buildHandle()
+   private AsyncTaskHandle<String> buildHandle()
    {
-      AsyncHandle<String> newHandle = new AsyncHandle<String>();
+      AsyncTaskHandle<String> newHandle = new AsyncTaskHandle<String>();
 
       // Max documents to process
       DocumentDAO documentDAO = (DocumentDAO) Component.getInstance(DocumentDAO.class);

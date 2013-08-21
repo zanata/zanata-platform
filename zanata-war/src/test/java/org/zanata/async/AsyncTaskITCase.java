@@ -53,7 +53,7 @@ public class AsyncTaskITCase extends ArquillianTest
       Contexts.getEventContext().set(compName, component);
 
       // Start an asynchronous process
-      AsyncHandle<String> handle =
+      AsyncTaskHandle<String> handle =
          taskExecutor.startTask(new SimpleAsyncTask<String>()
          {
             @Override
@@ -74,7 +74,7 @@ public class AsyncTaskITCase extends ArquillianTest
    public void executionError() throws Exception
    {
       // Start an asynchronous process that throws an exception
-      AsyncHandle<String> handle =
+      AsyncTaskHandle<String> handle =
          taskExecutor.startTask(new SimpleAsyncTask<String>()
          {
             @Override
