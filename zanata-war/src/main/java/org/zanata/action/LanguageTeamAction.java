@@ -353,19 +353,24 @@ public class LanguageTeamAction implements Serializable
       public void setReviewer(boolean isReviewer)
       {
          this.isReviewer = isReviewer;
-         this.selected = true; //user needs to be selected when a role is selected
+         refreshSelected();
       }
 
       public void setCoordinator(boolean isCoordinator)
       {
          this.isCoordinator = isCoordinator;
-         this.selected = true; //user needs to be selected when a role is selected
+         refreshSelected();
       }
 
       public void setTranslator(boolean isTranslator)
       {
          this.isTranslator = isTranslator;
-         this.selected = true; //user needs to be selected when a role is selected
+         refreshSelected();
+      }
+      
+      private void refreshSelected()
+      {
+          this.selected = isReviewer || isTranslator || isCoordinator;
       }
    }
 
