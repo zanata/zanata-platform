@@ -24,6 +24,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -299,6 +302,11 @@ public class LanguageTeamAction implements Serializable
          getSearchResults().add(new SelectablePerson(person, isMember, isTranslator, isReviewer, isCoordinator));
       }
    }
+   
+   public void clearSearchResult()
+   {
+      getSearchResults().clear();
+   }
 
    public boolean isSelectAll()
    {
@@ -312,11 +320,19 @@ public class LanguageTeamAction implements Serializable
 
    public final class SelectablePerson
    {
+      @Getter
       private HPerson person;
+      
+      @Getter
       private boolean selected;
 
+      @Getter
       private boolean isReviewer;
+      
+      @Getter
       private boolean isCoordinator;
+      
+      @Getter
       private boolean isTranslator;
 
       public SelectablePerson(HPerson person, boolean selected, boolean isTranslator, boolean isReviewer, boolean isCoordinator)
@@ -328,51 +344,28 @@ public class LanguageTeamAction implements Serializable
          this.isTranslator = isTranslator;
       }
 
-      public boolean isReviewer()
+      public void setSelected(boolean selected)
       {
-         return isReviewer;
+         this.selected = selected;
+         this.isTranslator = true; //if selected, by default translator role is assigned
       }
 
       public void setReviewer(boolean isReviewer)
       {
          this.isReviewer = isReviewer;
-      }
-
-      public boolean isCoordinator()
-      {
-         return isCoordinator;
+         this.selected = true; //user needs to be selected when a role is selected
       }
 
       public void setCoordinator(boolean isCoordinator)
       {
          this.isCoordinator = isCoordinator;
-      }
-
-      public boolean isTranslator()
-      {
-         return isTranslator;
+         this.selected = true; //user needs to be selected when a role is selected
       }
 
       public void setTranslator(boolean isTranslator)
       {
          this.isTranslator = isTranslator;
-      }
-
-      public HPerson getPerson()
-      {
-         return person;
-      }
-      public void setPerson(HPerson person)
-      {
-         this.person = person;
-      }
-      public boolean isSelected()
-      {
-         return selected;
-      }
-      public void setSelected(boolean selected)
-      {
-         this.selected = selected;
+         this.selected = true; //user needs to be selected when a role is selected
       }
    }
 

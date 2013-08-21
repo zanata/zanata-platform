@@ -137,7 +137,9 @@
                                  render="searchResults"
                                  status="searchStatus" />
               <h:commandButton id="closeBtn" value="#{messages['jsf.Close']}"
-                               onclick="#{rich:component('userAddPanel')}.hide(); return false;" />
+              					 action="#{languageTeamAction.clearSearchResult}"
+                                 render="searchResults"
+                                 onclick="#{rich:component('userAddPanel')}.hide(); return false;" />
             </p>
           </h:form>
 
@@ -174,17 +176,23 @@
 
                     <rich:column width="auto" styleClass="#{selectablePerson.selected ? 'highlighted_datatable_row' : ''} centered">
                         <f:facet name="header">#{messages['jsf.Translator']}</f:facet>
-                            <h:selectBooleanCheckbox value="#{selectablePerson.translator}"/>
+                            <h:selectBooleanCheckbox value="#{selectablePerson.translator}">
+                            	<a4j:ajax event="change" render="searchResults"/>
+                            </h:selectBooleanCheckbox>
                     </rich:column>
 
                     <rich:column width="auto" styleClass="#{selectablePerson.selected ? 'highlighted_datatable_row' : ''} centered">
                         <f:facet name="header">#{messages['jsf.Reviewer']}</f:facet>
-                        <h:selectBooleanCheckbox value="#{selectablePerson.reviewer}"/>
+                        <h:selectBooleanCheckbox value="#{selectablePerson.reviewer}">
+                        	<a4j:ajax event="change" render="searchResults"/>
+                        </h:selectBooleanCheckbox>
                     </rich:column>
 
                     <rich:column width="auto" styleClass="#{selectablePerson.selected ? 'highlighted_datatable_row' : ''} centered">
                         <f:facet name="header">#{messages['jsf.Coordinator']}</f:facet>
-                        <h:selectBooleanCheckbox value="#{selectablePerson.coordinator}"/>
+                        <h:selectBooleanCheckbox value="#{selectablePerson.coordinator}">
+                        	<a4j:ajax event="change" render="searchResults"/>
+                        </h:selectBooleanCheckbox>
                     </rich:column>
 
 	              </rich:dataTable>
