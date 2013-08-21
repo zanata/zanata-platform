@@ -1,22 +1,21 @@
 package org.zanata.client;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.lang.reflect.Field;
 
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
+import org.kohsuke.args4j.spi.SubCommand;
+import org.kohsuke.args4j.spi.SubCommands;
 import org.zanata.client.commands.AppAbortException;
 import org.zanata.client.commands.AppAbortStrategy;
 import org.zanata.client.commands.ArgsUtil;
 import org.zanata.client.commands.BasicOptions;
 import org.zanata.client.commands.BasicOptionsImpl;
+import org.zanata.client.commands.ListLocalOptionsImpl;
 import org.zanata.client.commands.ListRemoteOptionsImpl;
-//import org.zanata.client.commands.PublicanPullOptionsImpl;
-//import org.zanata.client.commands.PublicanPushOptionsImpl;
 import org.zanata.client.commands.PutProjectOptionsImpl;
 import org.zanata.client.commands.PutUserOptionsImpl;
 import org.zanata.client.commands.PutVersionOptionsImpl;
@@ -27,18 +26,63 @@ import org.zanata.client.commands.push.PushOptionsImpl;
 import org.zanata.client.commands.stats.GetStatisticsOptionsImpl;
 import org.zanata.util.VersionUtility;
 
+import com.google.common.collect.ImmutableMap;
+
+/**
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ *
+ */
 public class ZanataClient extends BasicOptionsImpl
 {
-   private String command;
-   private boolean version;
+   public static final String COMMAND_NAME = System.getProperty("app.name", "zanata-cli");
+   public static final String COMMAND_DESCRIPTION = "Zanata Java command-line client";
 
-   @Argument(index = 1, multiValued = true)
-   private final List<String> arguments = new ArrayList<String>();
+   private boolean version;
    private final CmdLineParser parser = new CmdLineParser(this);
-   private final LinkedHashMap<String, BasicOptions> optionsMap = new LinkedHashMap<String, BasicOptions>();
    private final AppAbortStrategy abortStrategy;
    private final PrintStream out;
    private final PrintStream err;
+
+   @Argument(handler=SubCommandHandler2.class, metaVar="<command>")
+   @SubCommands({
+      @SubCommand(name="help", impl=HelpOptions.class),
+//      @SubCommand(name="list-local", impl=ListLocalOptionsImpl.class),
+      @SubCommand(name="list-remote", impl=ListRemoteOptionsImpl.class),
+      @SubCommand(name="pull", impl=PullOptionsImpl.class),
+      @SubCommand(name="push", impl=PushOptionsImpl.class),
+      @SubCommand(name="put-project", impl=PutProjectOptionsImpl.class),
+      @SubCommand(name="put-user", impl=PutUserOptionsImpl.class),
+      @SubCommand(name="put-version", impl=PutVersionOptionsImpl.class),
+      @SubCommand(name="stats", impl=GetStatisticsOptionsImpl.class),
+   })
+   // if this field name changes, change COMMAND_FIELD too
+   private Object command;
+   private static final String COMMAND_FIELD = "command";
+   public static final ImmutableMap<String, Class<BasicOptions>> OPTIONS;
+
+   static
+   {
+      try
+      {
+         ImmutableMap.Builder<String, Class<BasicOptions>> m = ImmutableMap.builder();
+
+         Field cmdField = ZanataClient.class.getDeclaredField(COMMAND_FIELD);
+         SubCommands subCommands = cmdField.getAnnotation(SubCommands.class);
+         for (SubCommand sub : subCommands.value())
+         {
+            if (BasicOptions.class.isAssignableFrom(sub.impl()))
+            {
+               Class<BasicOptions> clazz = (Class<BasicOptions>) sub.impl();
+               m.put(sub.name(), clazz);
+            }
+         }
+         OPTIONS = m.build();
+      }
+      catch (Exception e)
+      {
+         throw new RuntimeException(e);
+      }
+   }
 
    public static void main(String[] args)
    {
@@ -52,9 +96,6 @@ public class ZanataClient extends BasicOptionsImpl
       return null;
    }
 
-   /**
-    * Only for testing (allows access to optionsMap)
-    */
    ZanataClient()
    {
       this(new SystemExitStrategy(), System.out, System.err);
@@ -65,93 +106,74 @@ public class ZanataClient extends BasicOptionsImpl
       this.abortStrategy = strategy;
       this.out = out;
       this.err = err;
-      // addCommand(new ListLocalOptionsImpl());
-      addCommand(new ListRemoteOptionsImpl());
-      addCommand(new PullOptionsImpl());
-      addCommand(new PushOptionsImpl());
-      addCommand(new PutProjectOptionsImpl());
-      addCommand(new PutUserOptionsImpl());
-      addCommand(new PutVersionOptionsImpl());
-      addCommand(new GetStatisticsOptionsImpl());
    }
 
-   private void addCommand(BasicOptions opts)
-   {
-      getOptionsMap().put(opts.getCommandName(), opts);
-   }
-
+   @Override
    public String getCommandName()
    {
-      return System.getProperty("app.name", "zanata-cli");
+      return COMMAND_NAME;
    }
 
+   @Override
    public String getCommandDescription()
    {
-      return "Zanata Java command-line client";
-   }
-
-   protected LinkedHashMap<String, BasicOptions> getOptionsMap()
-   {
-      return optionsMap;
+      return COMMAND_DESCRIPTION;
    }
 
    protected void processArgs(String... args)
    {
-      // workaround for failing test (client used in multiple tests)
-      arguments.clear();
       try
       {
-         parser.parseArgument(args);
-      }
-      catch (CmdLineException e)
-      {
-         if (!getHelp() && args.length != 0)
+         if (args.length == 2 && OPTIONS.containsKey(args[0]) && args[1].equals("--help"))
          {
-            String msg = e.getMessage();
-            err.println(msg);
-            printHelp(err);
-            abortStrategy.abort(msg);
+            String cmdName = args[0];
+            BasicOptions opts = OPTIONS.get(cmdName).newInstance();
+            new ArgsUtil(abortStrategy, opts).printHelp(out, getCommandName());
+            return;
          }
-      }
-      if (getHelp() && command == null)
-      {
-         printHelp(out);
-         return;
-      }
-      if (version)
-      {
-         out.println(getCommandName());
-         VersionUtility.printVersions(ZanataClient.class, out);
-         return;
-      }
-      if ("help".equals(command))
-      {
-         setHelp(true);
-         command = null;
-         if (arguments.size() != 0)
-            command = arguments.remove(0);
-      }
-      if (command == null)
-      {
-         printHelp(out);
-         return;
-      }
-      String[] otherArgs = arguments.toArray(new String[0]);
-      try
-      {
-         BasicOptions options = getOptionsMap().get(command);
-         if (options == null)
+         parser.parseArgument(args);
+         if (version)
          {
-            String msg = "Unknown command '" + command + "'";
-            err.println(msg);
-            printHelp(err);
-            abortStrategy.abort(msg);
+            out.println(getCommandName());
+            VersionUtility.printVersions(ZanataClient.class, out);
+         }
+         else if (getHelp() || command == null)
+         {
+            printHelp(out);
+         }
+         else if (command instanceof HelpOptions)
+         {
+            HelpOptions helpCmd = (HelpOptions) command;
+            if (helpCmd.getCommand() == null)
+            {
+               // generic help
+               printHelp(out);
+            }
+            else
+            {
+               // help for a sub-command
+               String cmdName = helpCmd.getCommand();
+               BasicOptions opts = OPTIONS.get(cmdName).newInstance();
+               new ArgsUtil(abortStrategy, opts).printHelp(out, getCommandName());
+            }
+         }
+         else if (command instanceof BasicOptions)
+         {
+            BasicOptions opts = (BasicOptions) command;
+            copyGlobalOptionsTo(opts);
+            new ArgsUtil(abortStrategy, opts).runCommand();
          }
          else
          {
-            copyGlobalOptionsTo(options);
-            new ArgsUtil(abortStrategy, out, err, getCommandName()).process(otherArgs, options);
+            throw new RuntimeException("unexpected command type");
          }
+      }
+      catch (CmdLineException e)
+      {
+         String msg = e.getMessage();
+         err.println(msg);
+         printHelp(err);
+         abortStrategy.abort(msg);
       }
       catch (AppAbortException e)
       {
@@ -185,9 +207,9 @@ public class ZanataClient extends BasicOptionsImpl
       out.println("Type '" + getCommandName() + " help <command>' for help on a specific command.");
       out.println();
       out.println("Available commands:");
-      for (String cmd : getOptionsMap().keySet())
+      for (String cmd : OPTIONS.keySet())
       {
-         out.println("  " + cmd);
+         out.println("  " + cmd /*+ ": " + OPTIONS.get(cmd).newInstance().getCommandDescription()*/);
       }
    }
 
@@ -195,14 +217,6 @@ public class ZanataClient extends BasicOptionsImpl
    public void setVersion(boolean version)
    {
       this.version = version;
-   }
-
-   @Argument(index = 0, usage = "Command name", metaVar = "<command>")
-   public void setCommand(String command)
-   {
-      this.command = command;
-      // save remaining options for the subcommand's parser
-      parser.stopOptionParsing();
    }
 
 }

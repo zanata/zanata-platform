@@ -7,7 +7,6 @@ import java.io.PrintStream;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
-import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,23 +19,14 @@ public class ArgsUtil
 {
    private static final Logger log = LoggerFactory.getLogger(ArgsUtil.class);
    private final AppAbortStrategy abortStrategy;
-   private final PrintStream out;
-   private final PrintStream err;
-   private final String clientName;
+   private final BasicOptions opts;
+   private final CmdLineParser parser;
 
-   public ArgsUtil(AppAbortStrategy strategy, PrintStream out, PrintStream err, String clientName)
+   public ArgsUtil(AppAbortStrategy strategy, BasicOptions opts)
    {
       this.abortStrategy = strategy;
-      this.out = out;
-      this.err = err;
-      this.clientName = clientName;
-   }
-
-   public void process(String[] args, BasicOptions opts)
-   {
-      log.debug("process(args: {}, opts: {})", args, opts);
-      CmdLineParser parser = new CmdLineParser(opts);
-
+      this.opts = opts;
+      this.parser = new CmdLineParser(opts);
       try
       {
          parser.setUsageWidth(Integer.parseInt(System.getenv("COLUMNS")));
@@ -45,27 +35,10 @@ public class ArgsUtil
       {
          parser.setUsageWidth(120);
       }
-      try
-      {
-         parser.parseArgument(args);
-      }
-      catch (CmdLineException e)
-      {
-         if (!opts.getHelp() && args.length != 0)
-         {
-            err.println(e.getMessage());
-            printHelp(opts, err);
-            parser.printUsage(err);
-            abortStrategy.abort(e);
-         }
-      }
+   }
 
-      if (opts.getHelp() || args.length == 0)
-      {
-         printHelp(opts, out);
-         parser.printUsage(out);
-         return;
-      }
+   public void runCommand()
+   {
       // while loading config, we use the global logging options
       setLogLevels(opts);
 
@@ -136,11 +109,12 @@ public class ArgsUtil
       }
    }
 
-   private void printHelp(BasicOptions cmd, PrintStream output)
+   public void printHelp(PrintStream output, String clientName)
    {
-      output.println("Usage: " + clientName + " " + cmd.getCommandName() + " [options]");
-      output.println(cmd.getCommandDescription());
+      output.println("Usage: " + clientName + " " + opts.getCommandName() + " [options]");
+      output.println(opts.getCommandDescription());
       output.println();
+      parser.printUsage(output);
    }
 
    public static void handleException(Exception e, boolean outputErrors, AppAbortStrategy abortStrategy)
