@@ -6,6 +6,7 @@
   * Implement virus scanning using ClamAV (clamdscan)
   * Add descriptions on project type selectors
   * Allow adapter parameters to be set on source document upload
+ * Editor improvements
   * Add attention key shortcut: Alt+X
   * Add attention shortcut to copy from source: Alt+X,G
  * TMX import/export
