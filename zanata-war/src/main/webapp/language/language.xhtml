@@ -151,20 +151,6 @@
 	            <rich:dataTable id="personTable"
 	                            value="#{languageTeamAction.searchResults}" var="selectablePerson" rendered="#{not empty languageTeamAction.searchResults}">
 
-	                <rich:column styleClass="#{selectablePerson.selected ? 'highlighted_datatable_row' : ''} centered">
-	                    <f:facet name="header">
-                            <h:panelGroup>
-                                <h:selectBooleanCheckbox title="#{messages['jsf.ManageSearch.SelectAll']}" value="#{languageTeamAction.selectAll}">
-                                    <a4j:ajax event="change" render="searchResults" listener="#{languageTeamAction.selectAll()}"/>
-                                </h:selectBooleanCheckbox>
-                            </h:panelGroup>
-                        </f:facet>
-
-                        <h:selectBooleanCheckbox title="#{messages['jsf.Select']}" value="#{selectablePerson.selected}">
-                            <a4j:ajax event="change" render="searchResults"/>
-                        </h:selectBooleanCheckbox>
-                    </rich:column>
-
                     <rich:column sortBy="#{selectablePerson.person.name}" styleClass="#{selectablePerson.selected ? 'highlighted_datatable_row' : ''}">
 	                	<f:facet name="header">#{messages['jsf.Name']}</f:facet>
                         #{selectablePerson.person.name}

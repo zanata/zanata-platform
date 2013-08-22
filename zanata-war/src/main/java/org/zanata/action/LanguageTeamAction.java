@@ -80,7 +80,6 @@ public class LanguageTeamAction implements Serializable
    private String language;
    private String searchTerm;
    private List<SelectablePerson> searchResults;
-   private boolean selectAll = false;
 
    public String getLanguage()
    {
@@ -115,17 +114,6 @@ public class LanguageTeamAction implements Serializable
    public boolean isUserInTeam()
    {
       return authenticatedAccount != null && this.isPersonInTeam( this.authenticatedAccount.getId() );
-   }
-
-   public void selectAll()
-   {
-      for (SelectablePerson selectablePerson : getSearchResults())
-      {
-         if (!isPersonInTeam(selectablePerson.getPerson().getId()))
-         {
-            selectablePerson.setSelected(selectAll);
-         }
-      }
    }
 
    @Restrict("#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}")
@@ -283,7 +271,7 @@ public class LanguageTeamAction implements Serializable
 
    public void searchForTeamMembers()
    {
-      getSearchResults().clear();
+      clearSearchResult();
       List<HPerson> results = this.personDAO.findAllContainingName( this.searchTerm );
       for(HPerson person: results)
       {
@@ -306,16 +294,6 @@ public class LanguageTeamAction implements Serializable
    public void clearSearchResult()
    {
       getSearchResults().clear();
-   }
-
-   public boolean isSelectAll()
-   {
-      return selectAll;
-   }
-
-   public void setSelectAll(boolean selectAll)
-   {
-      this.selectAll = selectAll;
    }
 
    public final class SelectablePerson
@@ -342,12 +320,6 @@ public class LanguageTeamAction implements Serializable
          this.isReviewer = isReviewer;
          this.isCoordinator = isCoordinator;
          this.isTranslator = isTranslator;
-      }
-
-      public void setSelected(boolean selected)
-      {
-         this.selected = selected;
-         this.isTranslator = true; //if selected, by default translator role is assigned
       }
 
       public void setReviewer(boolean isReviewer)
