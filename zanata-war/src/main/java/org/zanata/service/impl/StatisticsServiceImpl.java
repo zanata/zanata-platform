@@ -84,6 +84,8 @@ public class StatisticsServiceImpl implements StatisticsResource
    @In
    private TranslationStateCache translationStateCacheImpl;
 
+   // TODO Need to refactor this method to get Message statistic by default. 
+   // This is to be consistance with UI which uses message stats, and for calculating remaining hours.
    @Override
    public ContainerTranslationStatistics getStatistics(String projectSlug, String iterationSlug, boolean includeDetails, boolean includeWordStats, String[] locales)
    {
@@ -117,11 +119,8 @@ public class StatisticsServiceImpl implements StatisticsResource
       }
 
       Map<String, TransUnitCount> transUnitIterationStats = projectIterationDAO.getAllStatisticsForContainer(iteration.getId());
-      Map<String, TransUnitWords> wordIterationStats = null;
-      if (includeWordStats)
-      {
-         wordIterationStats = projectIterationDAO.getAllWordStatsStatistics(iteration.getId());
-      }
+      Map<String, TransUnitWords> wordIterationStats = projectIterationDAO.getAllWordStatsStatistics(iteration.getId());
+     
       ContainerTranslationStatistics iterationStats = new ContainerTranslationStatistics();
       iterationStats.setId(iterationSlug);
       iterationStats.addRef(new Link(URI.create(zPathService.generatePathForProjectIteration(iteration)), "statSource", "PROJ_ITER"));
@@ -152,19 +151,19 @@ public class StatisticsServiceImpl implements StatisticsResource
             }
          }
 
+         TransUnitWords wordCount = wordIterationStats.get(locId.getId());
+         if (wordCount == null)
+         {
+            wordCount = new TransUnitWords(0, 0, (int) iterationTotalWords);
+         }
+         
          TranslationStatistics transUnitStats = getMessageStats(count, locId, lastModifiedDate, lastModifiedBy);
-         transUnitStats.setRemainingHours(getRemainingHours(count.get(ContentState.NeedReview), count.get(ContentState.New)));
+         transUnitStats.setRemainingHours(getRemainingHours(wordCount.get(ContentState.NeedReview), wordCount.get(ContentState.New)));
          iterationStats.addStats(transUnitStats);
-
+         
          // word level stats
          if (includeWordStats)
          {
-            TransUnitWords wordCount = wordIterationStats.get(locId.getId());
-            if (wordCount == null)
-            {
-               wordCount = new TransUnitWords(0, 0, (int) iterationTotalWords);
-            }
-
             TranslationStatistics wordsStats = getWordsStats(wordCount, locId, lastModifiedDate, lastModifiedBy);
             wordsStats.setRemainingHours(getRemainingHours(wordCount.get(ContentState.NeedReview), wordCount.get(ContentState.New)));
             iterationStats.addStats(wordsStats);
