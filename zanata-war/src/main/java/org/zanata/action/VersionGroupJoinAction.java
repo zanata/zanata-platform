@@ -58,14 +58,14 @@ public class VersionGroupJoinAction implements Serializable
    @In
    private ProjectIterationDAO projectIterationDAO;
 
-   @In(create=true)
+   @In(create = true)
    private SendEmailAction sendEmail;
 
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
-   HAccount authenticatedAccount;
+   private HAccount authenticatedAccount;
 
    @Logger
-   Log log;
+   private Log log;
 
    private List<SelectableHProject> projectVersions;
 
@@ -97,13 +97,13 @@ public class VersionGroupJoinAction implements Serializable
 
    public void searchProjectVersion()
    {
-      if(StringUtils.isNotEmpty(iterationSlug) && StringUtils.isNotEmpty(projectSlug))
+      if (StringUtils.isNotEmpty(iterationSlug) && StringUtils.isNotEmpty(projectSlug))
       {
-          HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-          if(projectIteration != null)
-          {
+         HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+         if (projectIteration != null)
+         {
             getProjectVersions().add(new SelectableHProject(projectIteration, true));
-          }
+         }
 
       }
    }
