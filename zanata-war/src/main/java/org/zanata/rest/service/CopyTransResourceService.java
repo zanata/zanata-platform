@@ -30,7 +30,6 @@ import org.zanata.action.CopyTransManager;
 import org.zanata.async.tasks.CopyTransTask;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.model.HDocument;
-import org.zanata.process.CopyTransProcessHandle;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.dto.CopyTransStatus;
 import org.zanata.security.ZanataIdentity;

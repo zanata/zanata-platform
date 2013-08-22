@@ -29,13 +29,12 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.security.Identity;
 import org.zanata.ApplicationConfiguration;
+import org.zanata.async.AsyncTaskHandle;
+import org.zanata.async.tasks.ZipFileBuildTask;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HProjectIteration;
-import org.zanata.process.IterationZipFileBuildProcess;
-import org.zanata.process.IterationZipFileBuildProcessHandle;
-import org.zanata.process.ProcessHandle;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.service.ProcessManagerService;
+import org.zanata.service.AsyncTaskManagerService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.rpc.DownloadAllFilesAction;
 import org.zanata.webtrans.shared.rpc.DownloadAllFilesResult;
@@ -57,12 +56,12 @@ public class DownloadAllFilesHandler extends AbstractActionHandler<DownloadAllFi
    private ZanataIdentity identity;
 
    @In
-   private ProcessManagerService processManagerServiceImpl;
+   private AsyncTaskManagerService asyncTaskManagerServiceImpl;
 
    @In
    private ProjectIterationDAO projectIterationDAO;
 
-   private ProcessHandle zipFilePrepHandle;
+   private AsyncTaskHandle<String> zipFilePrepHandle;
 
    @Override
    public DownloadAllFilesResult execute(DownloadAllFilesAction action, ExecutionContext context) throws ActionException
@@ -70,28 +69,24 @@ public class DownloadAllFilesHandler extends AbstractActionHandler<DownloadAllFi
       HProjectIteration version = projectIterationDAO.getBySlug(action.getProjectSlug(), action.getVersionSlug());
       if (identity.hasPermission(version, "download-all"))
       {
-         if (this.zipFilePrepHandle != null && this.zipFilePrepHandle.isInProgress())
+         if (this.zipFilePrepHandle != null && !this.zipFilePrepHandle.isDone())
          {
             // Cancel any other processes
-            this.zipFilePrepHandle.stop();
+            this.zipFilePrepHandle.cancel(false);
          }
 
-         // Build a background process Handle
-         IterationZipFileBuildProcessHandle processHandle = new IterationZipFileBuildProcessHandle();
-         this.zipFilePrepHandle = processHandle;
-         processHandle.setProjectSlug(action.getProjectSlug());
-         processHandle.setIterationSlug(action.getVersionSlug());
-         processHandle.setLocaleId(action.getLocaleId());
-         processHandle.setInitiatingUserName(Identity.instance().getCredentials().getUsername());
-         processHandle.setOfflinePo(action.isOfflinePo());
-         processHandle.setServerPath(applicationConfiguration.getServerPath());
+         // Build a new task
+         // TODO This should be in a service and share code with the JSF pages that do the same thing
+         ZipFileBuildTask task = new ZipFileBuildTask(action.getProjectSlug(),
+                                                      action.getVersionSlug(),
+                                                      action.getLocaleId(),
+                                                      Identity.instance().getCredentials().getUsername(),
+                                                      action.isOfflinePo());
 
          // Fire the zip file building process and wait until it is ready to
          // return
-         processManagerServiceImpl.startProcess(new IterationZipFileBuildProcess(), processHandle);
-         processHandle.waitUntilReady();
-
-         return new DownloadAllFilesResult(true, processHandle.getId());
+         String taskId = asyncTaskManagerServiceImpl.startTask(task);
+         return new DownloadAllFilesResult(true, taskId);
       }
 
       return new DownloadAllFilesResult(false, null);
@@ -103,7 +98,7 @@ public class DownloadAllFilesHandler extends AbstractActionHandler<DownloadAllFi
    {
    }
 
-   public ProcessHandle getZipFilePrepHandle()
+   public AsyncTaskHandle<String> getZipFilePrepHandle()
    {
       return zipFilePrepHandle;
    }

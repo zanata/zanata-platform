@@ -76,6 +76,7 @@ public class SeamAutowire
    {
       rewireSeamComponentClass();
       rewireSeamTransactionClass();
+      rewireSeamIdentityClass();
    }
 
    protected SeamAutowire()
@@ -339,6 +340,32 @@ public class SeamAutowire
       invokePostConstructMethod(component);
 
       return component;
+   }
+
+   private static void rewireSeamIdentityClass()
+   {
+      try
+      {
+         ClassPool pool = ClassPool.getDefault();
+         CtClass instanceCls = pool.get("org.jboss.seam.security.Identity");
+
+         // Replace Component's method bodies with the ones in AutowireComponent
+         CtMethod methodToReplace = instanceCls.getDeclaredMethod("instance");
+         methodToReplace.setBody(
+               pool.get(AutowireIdentity.class.getName()).getDeclaredMethod("instance"),
+               null);
+
+         instanceCls.toClass();
+      }
+      catch (NotFoundException e)
+      {
+         throw new RuntimeException("Problem rewiring Seam's Component class", e);
+      }
+      catch (CannotCompileException e)
+      {
+         throw new RuntimeException("Problem rewiring Seam's Component class", e);
+      }
+
    }
 
    private static void rewireSeamComponentClass()

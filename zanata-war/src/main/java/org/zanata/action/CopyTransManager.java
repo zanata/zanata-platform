@@ -31,10 +31,6 @@ import org.zanata.async.tasks.CopyTransTask;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
-import org.zanata.process.RunnableProcessListener;
-import org.zanata.process.CopyTransProcess;
-import org.zanata.process.CopyTransProcessHandle;
-import org.zanata.service.ProcessManagerService;
 import org.zanata.service.AsyncTaskManagerService;
 
 import java.io.Serializable;

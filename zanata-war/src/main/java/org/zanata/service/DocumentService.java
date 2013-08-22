@@ -21,7 +21,6 @@
 package org.zanata.service;
 
 import org.zanata.model.HDocument;
-import org.zanata.process.ProcessHandle;
 import org.zanata.rest.dto.resource.Resource;
 
 import java.util.Set;

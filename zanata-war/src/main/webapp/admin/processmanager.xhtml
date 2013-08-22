@@ -35,48 +35,29 @@
             </h:form>
         </a4j:region>
         <h:form>
-            <rich:dataTable id="processTable" value="#{processManagerAction.runningProcesses}" var="processHandle">
+            <rich:dataTable id="processTable" value="#{processManagerAction.runningProcesses}" var="handle">
                 <rich:column>
                     <f:facet name="header">#{messages['jsf.processmanager.Type']}</f:facet>
-                    #{processHandle.getClass().getSimpleName()}
+                    #{handle.getClass().getSimpleName()}
                 </rich:column>
                 <rich:column>
                     <f:facet name="header">#{messages['jsf.Status']}</f:facet>
                     <s:span styleClass="icon-stop" style="font-size:20px; color:red;"
-                            rendered="#{not processHandle.inProgress}" title="#{messages['jsf.processmanager.status.Stopped']}"></s:span>
+                            rendered="#{handle.done}" title="#{messages['jsf.processmanager.status.Stopped']}"></s:span>
                     <s:span styleClass="icon-play" style="font-size:20px; color:green;"
-                            rendered="#{processHandle.inProgress and not processHandle.shouldStop()}" title="#{messages['jsf.processmanager.status.Running']}"></s:span>
-                    <s:span styleClass="icon-to-end" style="font-size:20px; color:orange;"
-                            rendered="#{processHandle.inProgress and processHandle.shouldStop()}" title="#{messages['jsf.processmanager.status.WaitingToStop']}"></s:span>
+                            rendered="#{not handle.done}" title="#{messages['jsf.processmanager.status.Running']}"></s:span>
                 </rich:column>
                 <rich:column>
                     <f:facet name="header">#{messages['jsf.processmanager.Progress']}</f:facet>
-                    <rich:progressBar style="width:100px;" value="#{processHandle.currentProgress}" minValue="#{processHandle.minProgress}" maxValue="#{processHandle.maxProgress}"
-                            rendered="#{processHandle.inProgress}" enabled="false" />
-                    <h:outputText value="Stopped" rendered="#{not processHandle.inProgress}"/>
-                </rich:column>
-                <rich:column>
-                    <f:facet name="header">#{messages['jsf.processmanager.StartTime']}</f:facet>
-                    <h:outputText value="#{processManagerAction.getDateFromLong(processHandle.startTime)}">
-                        <f:convertDateTime type="both"/>
-                    </h:outputText>
-                </rich:column>
-                <rich:column>
-                    <f:facet name="header">#{messages['jsf.processmanager.FinishTime']}</f:facet>
-                    <h:outputText value="#{processManagerAction.getDateFromLong(processHandle.finishTime)}"
-                            rendered="#{processHandle.finished}">
-                        <f:convertDateTime type="both"/>
-                    </h:outputText>
-                </rich:column>
-                <rich:column>
-                    <f:facet name="header">#{messages['jsf.processmanager.Duration']}</f:facet>
-                    <h:outputText value="#{processManagerAction.getProcessDuration(processHandle)} mins"/>
+                    <rich:progressBar style="width:100px;" value="#{handle.currentProgress}" minValue="#{handle.minProgress}" maxValue="#{handle.maxProgress}"
+                            rendered="#{not handle.done}" enabled="false" />
+                    <h:outputText value="Stopped" rendered="#{handle.done}"/>
                 </rich:column>
                 <rich:column>
                     <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-                    <a4j:commandButton action="#{processManagerAction.cancel(processHandle)}"
+                    <a4j:commandButton action="#{processManagerAction.cancel(handle)}"
                                        value="#{messages['jsf.Cancel']}"
-                                       rendered="#{processHandle.inProgress}"/>
+                                       rendered="#{not handle.done}"/>
                 </rich:column>
             </rich:dataTable>
         </h:form>

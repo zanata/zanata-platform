@@ -24,7 +24,6 @@ import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
-import org.zanata.process.CopyTransProcessHandle;
 
 public interface CopyTransService
 {

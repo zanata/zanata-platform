@@ -31,8 +31,8 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
-import org.zanata.process.ProcessHandle;
-import org.zanata.service.ProcessManagerService;
+import org.zanata.async.AsyncTaskHandle;
+import org.zanata.service.AsyncTaskManagerService;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -43,22 +43,21 @@ import org.zanata.service.ProcessManagerService;
 public class ProcessManagerAction
 {
    @In
-   private ProcessManagerService processManagerServiceImpl;
+   private AsyncTaskManagerService asyncTaskManagerServiceImpl;
 
-   public Collection<ProcessHandle> getRunningProcesses()
+   public Collection<AsyncTaskHandle> getRunningProcesses()
    {
-      ArrayList<ProcessHandle> allHandles = new ArrayList<ProcessHandle>();
-      allHandles.addAll(processManagerServiceImpl.getAllActiveProcessHandles());
-      allHandles.addAll( processManagerServiceImpl.getAllInactiveProcessHandles() );
+      ArrayList<AsyncTaskHandle> allHandles = new ArrayList<AsyncTaskHandle>();
+      allHandles.addAll(asyncTaskManagerServiceImpl.getAllHandles());
 
       // Sort by Start Date
       Collections.sort(allHandles,
-            new Comparator<ProcessHandle>()
+            new Comparator<AsyncTaskHandle>()
             {
                @Override
-               public int compare(ProcessHandle o1, ProcessHandle o2)
+               public int compare(AsyncTaskHandle o1, AsyncTaskHandle o2)
                {
-                  return new Long(o2.getStartTime()).compareTo( new Long(o1.getStartTime()) );
+                  return o2.toString().compareTo(o1.toString());
                }
             });
 
@@ -67,12 +66,20 @@ public class ProcessManagerAction
 
    public int getRunningCount()
    {
-      return processManagerServiceImpl.getAllActiveProcessHandles().size();
+      int running = 0;
+      for( AsyncTaskHandle h : asyncTaskManagerServiceImpl.getAllHandles() )
+      {
+         if( !h.isDone() )
+         {
+            running++;
+         }
+      }
+      return running;
    }
 
    public int getStoppedCount()
    {
-      return processManagerServiceImpl.getAllInactiveProcessHandles().size();
+      return asyncTaskManagerServiceImpl.getAllHandles().size() - getRunningCount();
    }
 
    public Date getDateFromLong(long value)
@@ -82,27 +89,12 @@ public class ProcessManagerAction
 
    public void clearAllFinished()
    {
-      processManagerServiceImpl.clearInactive();
+      asyncTaskManagerServiceImpl.clearInactive();
    }
 
-   public void cancel( ProcessHandle handle )
+   public void cancel( AsyncTaskHandle handle )
    {
-      handle.stop();
-   }
-
-   /**
-    * Returns process duration in minutes.
-    */
-   public long getProcessDuration(ProcessHandle handle)
-   {
-      if( handle.isInProgress() )
-      {
-         return handle.getElapsedTime() / (1000 * 60);
-      }
-      else
-      {
-         return (handle.getFinishTime() - handle.getStartTime()) / (1000 * 60);
-      }
+      handle.cancel(false);
    }
 
 }

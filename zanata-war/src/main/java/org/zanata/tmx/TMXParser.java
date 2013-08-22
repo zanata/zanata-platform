@@ -48,11 +48,9 @@ import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.transaction.Transaction;
 import org.zanata.common.util.ElementBuilder;
 import org.zanata.model.tm.TransMemory;
-import org.zanata.process.MessagesProcessHandle;
 import org.zanata.util.TMXParseException;
 import org.zanata.xml.TmxDtdResolver;
 
-import com.google.common.collect.Lists;
 
 /**
  * Parses TMX input.
@@ -67,8 +65,6 @@ public class TMXParser
    // Batch size to commit in a new transaction for long files
    private static final int BATCH_SIZE = 100;
 
-   @In(required = false)
-   private MessagesProcessHandle asynchronousProcessHandle;
    @In
    private Session session;
    @In
@@ -149,18 +145,7 @@ public class TMXParser
       session.flush();
       session.clear();
       Transaction.instance().commit();
-      updateProgress(numProcessed);
       Transaction.instance().begin();
-   }
-
-   private void updateProgress(int numProcessed)
-   {
-      if( asynchronousProcessHandle != null )
-      {
-         // TODO Piggybacking on the messages field. We should move to {@link java.util.concurrent.Future}
-         // or implement a specific TMX Import handler.
-         asynchronousProcessHandle.setMessages(Lists.newArrayList("Processed Entries: " + numProcessed));
-      }
    }
 
 }

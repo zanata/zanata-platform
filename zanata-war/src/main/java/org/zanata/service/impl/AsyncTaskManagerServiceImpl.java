@@ -34,6 +34,7 @@ import org.zanata.async.TaskExecutor;
 import org.zanata.service.AsyncTaskManagerService;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -130,6 +131,12 @@ public class AsyncTaskManagerServiceImpl implements AsyncTaskManagerService
             }
          }
       }
+   }
+
+   @Override
+   public Collection<AsyncTaskHandle> getAllHandles()
+   {
+      return taskHandles.asMap().values();
    }
 
    private Long generateNextAvailableKey()

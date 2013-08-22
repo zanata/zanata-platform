@@ -31,12 +31,6 @@ import org.jboss.seam.ScopeType;
  */
 public class AutowireComponent
 {
-   private static SeamAutowire instance;
-
-   public static void setInstance(SeamAutowire instance)
-   {
-      AutowireComponent.instance = instance;
-   }
 
    public static Object getInstance(String name, boolean create, boolean allowAutocreation)
    {
@@ -58,13 +52,6 @@ public class AutowireComponent
       return SeamAutowire.instance().autowire(clazz);
    }
 
-   // Seam 2.2.0
-   public static Object getInstance(String name, boolean create, boolean allowAutoCreation, Object result)
-   {
-      return SeamAutowire.instance().getComponent(name);
-   }
-
-   // Seam 2.2.2
    public static Object getInstance(String name, boolean create, boolean allowAutoCreation, Object result, ScopeType scopeType)
    {
       return SeamAutowire.instance().getComponent(name);

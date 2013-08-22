@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  * 
@@ -18,19 +18,21 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.process;
+package org.zanata.seam;
+
+import org.jboss.seam.security.Identity;
 
 /**
- * Listener interface for background process events.
+ * Replacement class for Seam's {@link org.jboss.seam.security.Identity}.
+ * Tests that use the {@link SeamAutowire} class will use this class instead of
+ * Seam's one to request the identity object.
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public interface RunnableProcessListener<T extends ProcessHandle>
+public class AutowireIdentity
 {
-   /**
-    * Invoked when the process is finished.
-    *
-    * @param handle The process' handle.
-    */
-   void onComplete( T handle );
+   public static Identity instance()
+   {
+      return (Identity)SeamAutowire.instance().getComponent("identity");
+   }
 }

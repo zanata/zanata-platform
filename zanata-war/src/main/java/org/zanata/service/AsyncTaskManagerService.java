@@ -21,6 +21,7 @@
 package org.zanata.service;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 import org.zanata.async.AsyncTask;
 import org.zanata.async.AsyncTaskHandle;
@@ -39,6 +40,8 @@ public interface AsyncTaskManagerService
    AsyncTaskHandle getHandleByKey(Serializable key);
 
    AsyncTaskHandle getHandle(String taskId, boolean removeIfFinished);
+
+   Collection<AsyncTaskHandle> getAllHandles();
 
    void clearInactive();
 }
