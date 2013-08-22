@@ -159,7 +159,7 @@ public class VersionGroupAction implements Serializable
 
    public boolean isVersionInGroup(Long projectIterationId)
    {
-      return versionGroupServiceImpl.isVersionInGroup(group, projectIterationId);
+      return versionGroupServiceImpl.isVersionInGroup(group.getSlug(), projectIterationId);
    }
 
    @Transactional
