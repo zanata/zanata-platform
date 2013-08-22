@@ -34,21 +34,28 @@ import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
+import org.zanata.model.HProject;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetReviewComment;
 import org.zanata.model.TestFixture;
 import org.zanata.seam.SeamAutowire;
+import org.zanata.security.ZanataIdentity;
+import org.zanata.service.LocaleService;
 import org.zanata.service.SecurityService;
+import org.zanata.webtrans.server.TranslationWorkspace;
+import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ReviewCommentId;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentAction;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentResult;
+import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 
 import net.customware.gwt.dispatch.shared.ActionException;
 import static org.hamcrest.MatcherAssert.*;
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -77,19 +84,30 @@ public class AddReviewCommentHandlerTest
    private TransUnitTransformer transUnitTransformer;
    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
    private HTextFlow hTextFlow;
+   @Mock
+   private LocaleService localeService;
+   @Mock
+   private TranslationWorkspaceManager translationWorkspaceManager;
+   @Mock
+   private TranslationWorkspace workspace;
+   @Mock
+   private ZanataIdentity identity;
+   @Mock
+   private HProject hProject;
 
    @BeforeMethod
    public void setUp() throws Exception
    {
       MockitoAnnotations.initMocks(this);
-      // @formatter:off
       handler = SeamAutowire.instance().reset()
             .use("securityServiceImpl", securityServiceImpl)
             .use("textFlowTargetDAO", textFlowTargetDAO)
             .use(JpaIdentityStore.AUTHENTICATED_USER, authenticatedAccount)
             .use("transUnitTransformer", transUnitTransformer)
+            .use("localeServiceImpl", localeService)
+            .use("translationWorkspaceManager", translationWorkspaceManager)
+            .use("identity", identity)
             .autowire(AddReviewCommentHandler.class);
-      // @formatter:on
    }
 
    @Test(expectedExceptions = ActionException.class)
@@ -109,8 +127,11 @@ public class AddReviewCommentHandlerTest
       TransUnitId transUnitId = new TransUnitId(2L);
       HLocale hLocale = new HLocale(LocaleId.DE);
       AddReviewCommentAction action = new AddReviewCommentAction(transUnitId, commentContent, documentId);
+      action.setWorkspaceId(TestFixture.workspaceId(LocaleId.DE));
       when(authenticatedAccount.getPerson()).thenReturn(hPerson);
-      when(securityServiceImpl.checkPermission(action, SecurityService.TranslationAction.MODIFY).getLocale()).thenReturn(hLocale);
+      when(securityServiceImpl.checkWorkspaceStatus(action.getWorkspaceId())).thenReturn(hProject);
+      when(translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId())).thenReturn(workspace);
+      when(localeService.getByLocaleId(action.getWorkspaceId().getLocaleId())).thenReturn(hLocale);
       when(textFlowTargetDAO.getTextFlowTarget(transUnitId.getValue(), hLocale.getLocaleId())).thenReturn(hTextFlowTarget);
       when(hTextFlowTarget.getState()).thenReturn(ContentState.Rejected);
       when(hTextFlowTarget.getTextFlow()).thenReturn(hTextFlow);
@@ -122,11 +143,14 @@ public class AddReviewCommentHandlerTest
       AddReviewCommentResult result = handler.execute(action, null);
 
       // Then:
-      InOrder inOrder = Mockito.inOrder(textFlowTargetDAO, hTextFlowTarget);
+      InOrder inOrder = Mockito.inOrder(textFlowTargetDAO, hTextFlowTarget, workspace, securityServiceImpl, identity);
+      inOrder.verify(securityServiceImpl).checkWorkspaceStatus(action.getWorkspaceId());
       inOrder.verify(textFlowTargetDAO).getTextFlowTarget(transUnitId.getValue(), hLocale.getLocaleId());
+      inOrder.verify(identity).checkPermission("review-comment", hLocale, hProject);
       inOrder.verify(hTextFlowTarget).addReviewComment(commentContent, hPerson);
       inOrder.verify(textFlowTargetDAO).makePersistent(hTextFlowTarget);
       inOrder.verify(textFlowTargetDAO).flush();
+      inOrder.verify(workspace).publish(isA(TransUnitUpdated.class));
 
       assertThat(result.getComment().getId(), Matchers.equalTo(new ReviewCommentId(1L)));
    }
@@ -137,9 +161,9 @@ public class AddReviewCommentHandlerTest
       // Given: we want to add comment to trans unit id 1 and locale id DE but target is null
       String commentContent = "new comment";
       AddReviewCommentAction action = new AddReviewCommentAction(new TransUnitId(1L), commentContent, documentId);
+      action.setWorkspaceId(TestFixture.workspaceId(LocaleId.DE));
       when(authenticatedAccount.getPerson()).thenReturn(hPerson);
       when(hPerson.getName()).thenReturn("John Smith");
-      when(securityServiceImpl.checkPermission(action, SecurityService.TranslationAction.MODIFY).getLocale()).thenReturn(new HLocale(LocaleId.DE));
       when(textFlowTargetDAO.getTextFlowTarget(1L, LocaleId.DE)).thenReturn(null);
 
       // When:
@@ -152,9 +176,9 @@ public class AddReviewCommentHandlerTest
       // Given: we want to add comment to trans unit id 1 and locale id DE but target is new
       String commentContent = "new comment";
       AddReviewCommentAction action = new AddReviewCommentAction(new TransUnitId(1L), commentContent, documentId);
+      action.setWorkspaceId(TestFixture.workspaceId(LocaleId.DE));
       when(authenticatedAccount.getPerson()).thenReturn(hPerson);
       when(hPerson.getName()).thenReturn("John Smith");
-      when(securityServiceImpl.checkPermission(action, SecurityService.TranslationAction.MODIFY).getLocale()).thenReturn(new HLocale(LocaleId.DE));
       when(textFlowTargetDAO.getTextFlowTarget(1L, LocaleId.DE)).thenReturn(hTextFlowTarget);
       when(hTextFlowTarget.getState()).thenReturn(ContentState.New);
 

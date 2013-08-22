@@ -66,26 +66,33 @@ public class SecurityServiceImpl implements SecurityService
    @Override
    public SecurityCheckResult checkPermission(AbstractWorkspaceAction action, TranslationAction translationAction) throws NoSuchWorkspaceException
    {
-      identity.checkLoggedIn();
-
       WorkspaceId workspaceId = action.getWorkspaceId();
+      HProject project = checkWorkspaceStatus(workspaceId);
+
       TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(workspaceId);
-      
-      HProject project = projectDAO.getBySlug(workspaceId.getProjectIterationId().getProjectSlug());
-      HProjectIteration projectIteration = projectIterationDAO.getBySlug(workspaceId.getProjectIterationId().getProjectSlug(), workspaceId.getProjectIterationId().getIterationSlug());
-      
-      if (projectIterationIsInactive(project.getStatus(), projectIteration.getStatus()))
-      {
-         throw new AuthorizationException("Project or version is read-only");
-      }
-      
       HLocale locale = localeServiceImpl.getByLocaleId(workspaceId.getLocaleId());
+
       identity.checkPermission(translationAction.action(), locale, project);
 
       return new SecurityCheckResultImpl(locale, workspace);
    }
-   
-   private boolean projectIterationIsInactive(EntityStatus projectStatus, EntityStatus iterStatus)
+
+   @Override
+   public HProject checkWorkspaceStatus(WorkspaceId workspaceId)
+   {
+      identity.checkLoggedIn();
+
+      HProject project = projectDAO.getBySlug(workspaceId.getProjectIterationId().getProjectSlug());
+      HProjectIteration projectIteration = projectIterationDAO.getBySlug(workspaceId.getProjectIterationId().getProjectSlug(), workspaceId.getProjectIterationId().getIterationSlug());
+
+      if (projectIterationIsInactive(project.getStatus(), projectIteration.getStatus()))
+      {
+         throw new AuthorizationException("Project or version is read-only");
+      }
+      return project;
+   }
+
+   private static boolean projectIterationIsInactive(EntityStatus projectStatus, EntityStatus iterStatus)
    {
       return !(projectStatus.equals(EntityStatus.ACTIVE) && iterStatus.equals(EntityStatus.ACTIVE));
    }

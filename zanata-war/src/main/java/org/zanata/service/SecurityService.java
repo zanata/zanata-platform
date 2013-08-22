@@ -22,8 +22,10 @@
 package org.zanata.service;
 
 import org.zanata.model.HLocale;
+import org.zanata.model.HProject;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
+import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.AbstractWorkspaceAction;
 
 /**
@@ -40,6 +42,8 @@ public interface SecurityService
     * @throws org.jboss.seam.security.AuthorizationException, org.jboss.seam.security.NotLoggedInException org.zanata.webtrans.shared.NoSuchWorkspaceException
     */
    SecurityCheckResult checkPermission(AbstractWorkspaceAction action, TranslationAction translationAction) throws NoSuchWorkspaceException;
+
+   HProject checkWorkspaceStatus(WorkspaceId workspaceId);
 
    public enum TranslationAction
    {
