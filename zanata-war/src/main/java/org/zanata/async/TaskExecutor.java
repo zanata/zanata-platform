@@ -30,7 +30,7 @@ import org.jboss.seam.security.Identity;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * This component executes {@link org.zanata.process.RunnableProcess} objects.
+ * This component executes {@link org.zanata.async.AsyncTask} instances.
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
@@ -44,9 +44,10 @@ public class TaskExecutor
    private AsynchronousTaskExecutor asynchronousTaskExecutor;
 
    /**
-    * Executes a process in the background.
+    * Executes an asynchronous in the background.
     *
-    * @param handle The handle to be used for the running process.
+    * @param task The task to execute.
+    * @return The task handle to keep track of the executed task.
     */
    public <V, H extends AsyncTaskHandle<V>> AsyncTaskHandle<V> startTask(AsyncTask<V, H> task)
    {

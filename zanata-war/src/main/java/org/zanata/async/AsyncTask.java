@@ -23,11 +23,21 @@ package org.zanata.async;
 import java.util.concurrent.Callable;
 
 /**
+ * Public common interface for all asynchronous tasks in the system.
+ *
+ * @param <V> The type of value returned by this task once finished.
+ * @param <H> The type of task handler provided by the task to keep callers
+ *           informed of progress and/or other task related information.
+ *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public interface AsyncTask<V, H extends AsyncTaskHandle<V>> extends Callable<V>
 {
 
+   /**
+    * @return The handle used to keep task information. Tasks must always return the
+    * same instance of a handle.
+    */
    H getHandle();
 
 }

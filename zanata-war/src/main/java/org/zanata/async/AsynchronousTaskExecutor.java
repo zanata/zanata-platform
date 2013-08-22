@@ -36,7 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * This class executes a Runnable Process asynchronously. Do not use this class directly.
- * Use {@link org.zanata.process.ProcessExecutor} instead.
+ * Use {@link org.zanata.async.TaskExecutor} instead.
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */

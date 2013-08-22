@@ -99,7 +99,7 @@ public class CopyTransRestTest extends ZanataRestTest
       CopyTransResource copyTransResource = getClientRequestFactory().createProxy(CopyTransResource.class);
 
       copyTransResource.startCopyTrans("sample-project", "1.0", "my/path/document.txt");
-      verify(mockIdentity, atLeastOnce()).getSubject();
+      verify(mockIdentity, atLeastOnce()).checkPermission(eq("copy-trans"), anyVararg());
    }
 
    @Test
@@ -108,7 +108,6 @@ public class CopyTransRestTest extends ZanataRestTest
       CopyTransResource copyTransResource = getClientRequestFactory().createProxy(CopyTransResource.class);
 
       copyTransResource.startCopyTrans("sample-project", "1.0", "my/path/document.txt");
-      verify(mockIdentity, atLeastOnce()).getSubject();
 
       CopyTransStatus status = copyTransResource.getCopyTransStatus("sample-project", "1.0", "my/path/document.txt");
       assertThat(status, notNullValue());

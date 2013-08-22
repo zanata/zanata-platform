@@ -39,6 +39,13 @@ public class AsyncUtils
 {
    private static final String ASYNC_HANDLE_NAME = "__ASYNC_HANDLE__";
 
+   /**
+    * Outjects an asynchronous task handle. Use {@link AsyncUtils#getAsyncHandle(org.jboss.seam.ScopeType, Class)} or
+    * {@link AsyncUtils#getEventAsyncHandle(Class)} to retrieve the outjected handle.
+    *
+    * @param handle The handle to outject.
+    * @param scopeType The scope to outject the handle to.
+    */
    public static final void outject( AsyncTaskHandle<?> handle, ScopeType scopeType)
    {
       if(scopeType.isContextActive())
@@ -51,11 +58,24 @@ public class AsyncUtils
       }
    }
 
+   /**
+    * Fetches an asynchronous task handle fro mthe event context.
+    *
+    * @param type The expected handle type.
+    * @return null if no handle is found.
+    */
    public static final <H extends AsyncTaskHandle> Optional<H> getEventAsyncHandle( Class<H> type )
    {
       return getAsyncHandle(ScopeType.EVENT, type);
    }
 
+   /**
+    * Fetches an asynchronous task handle from a Seam context.
+    *
+    * @param scopeType The seam scope to look for the handle.
+    * @param type The expected handle type.
+    * @return null if no handle is found.
+    */
    public static final <H extends AsyncTaskHandle> Optional<H> getAsyncHandle(ScopeType scopeType, Class<H> type)
    {
       if(scopeType.isContextActive())
@@ -63,70 +83,6 @@ public class AsyncUtils
          return Optional.<H>fromNullable( (H)scopeType.getContext().get(ASYNC_HANDLE_NAME) );
       }
       return  Optional.absent();
-   }
-
-   public static final Set<Context> getCurrentContexts()
-   {
-      return Sets.newHashSet(
-            Contexts.getApplicationContext(),
-            Contexts.getBusinessProcessContext(),
-            Contexts.getConversationContext(),
-            Contexts.getEventContext(),
-            Contexts.getMethodContext(),
-            Contexts.getPageContext(),
-            Contexts.getPageContext(),
-            Contexts.getSessionContext()
-      );
-   }
-
-   public static final void restoreAsyncContexts(Collection<Context> toRestore)
-   {
-      for( Context ctx : toRestore )
-      {
-         if( ctx == null )
-         {
-            continue; // Nothing to restore
-         }
-
-         Context destination = null;
-         switch (ctx.getType())
-         {
-            case APPLICATION:
-               destination = Contexts.getApplicationContext();
-               break;
-
-            case BUSINESS_PROCESS:
-               destination = Contexts.getBusinessProcessContext();
-               break;
-
-            case CONVERSATION:
-               destination = Contexts.getConversationContext();
-               break;
-
-            case EVENT:
-               destination = Contexts.getEventContext();
-               break;
-
-            case METHOD:
-               destination = Contexts.getMethodContext();
-               break;
-
-            case SESSION:
-               destination = Contexts.getSessionContext();
-               break;
-
-            default:
-               break; // Page, Stateless, and Unspecified do not get restored by this utility
-         }
-
-         if( destination != null )
-         {
-            for(String name : ctx.getNames())
-            {
-               destination.set(name, ctx.get(name));
-            }
-         }
-      }
    }
 
 }

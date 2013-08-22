@@ -28,7 +28,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Asynchronous handle to provide communication between an asynchronous process
+ * Asynchronous handle to provide communication between an asynchronous task
  * and interested clients.
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>

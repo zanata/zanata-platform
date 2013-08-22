@@ -76,7 +76,7 @@ public class SeamAutowire
    {
       rewireSeamComponentClass();
       rewireSeamTransactionClass();
-      rewireSeamIdentityClass();
+      rewireSeamContextsClass();
    }
 
    protected SeamAutowire()
@@ -342,28 +342,26 @@ public class SeamAutowire
       return component;
    }
 
-   private static void rewireSeamIdentityClass()
+   private static void rewireSeamContextsClass()
    {
       try
       {
          ClassPool pool = ClassPool.getDefault();
-         CtClass instanceCls = pool.get("org.jboss.seam.security.Identity");
+         CtClass contextsCls = pool.get("org.jboss.seam.contexts.Contexts");
 
          // Replace Component's method bodies with the ones in AutowireComponent
-         CtMethod methodToReplace = instanceCls.getDeclaredMethod("instance");
-         methodToReplace.setBody(
-               pool.get(AutowireIdentity.class.getName()).getDeclaredMethod("instance"),
-               null);
+         CtMethod methodToReplace = contextsCls.getDeclaredMethod("isSessionContextActive");
+         methodToReplace.setBody("return true;");
 
-         instanceCls.toClass();
+         contextsCls.toClass();
       }
       catch (NotFoundException e)
       {
-         throw new RuntimeException("Problem rewiring Seam's Component class", e);
+         throw new RuntimeException("Problem rewiring Seam's Contexts class", e);
       }
       catch (CannotCompileException e)
       {
-         throw new RuntimeException("Problem rewiring Seam's Component class", e);
+         throw new RuntimeException("Problem rewiring Seam's Contexts class", e);
       }
 
    }
