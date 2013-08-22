@@ -96,7 +96,7 @@ public class DocumentListPresenterTest
    private ArgumentCaptor<HistoryToken> capturedHistoryToken;
 
    private static final String TEST_BY_WORDS_MESSAGE = "By Words";
-   private static final String TEST_BY_MESSAGE_MESSAGE = "By Message";
+   private static final String TEST_BY_MESSAGE_MESSAGE = "By Messages";
 
    private WorkspaceId workspaceId;
 

@@ -482,7 +482,7 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Words")
    String byWords();
 
-   @DefaultMessage("Message")
+   @DefaultMessage("Messages")
    String byMessage();
 
    @DefaultMessage("Refresh current page")

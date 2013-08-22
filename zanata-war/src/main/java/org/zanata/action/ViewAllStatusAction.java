@@ -30,6 +30,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -78,55 +81,72 @@ public class ViewAllStatusAction implements Serializable
          .appendSeparator(", ").appendMinutes().appendSuffix(" min", " mins");
 
    @Logger
-   Log log;
+   private Log log;
 
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
-   HAccount authenticatedAccount;
+   private HAccount authenticatedAccount;
 
    @In
-   ZanataIdentity identity;
+   private ZanataIdentity identity;
 
    @In
-   ProjectIterationDAO projectIterationDAO;
+   private ProjectIterationDAO projectIterationDAO;
 
    @In
-   PersonDAO personDAO;
+   private PersonDAO personDAO;
 
    @In
-   LocaleService localeServiceImpl;
+   private LocaleService localeServiceImpl;
 
    @In
-   CopyTransService copyTransServiceImpl;
+   private CopyTransService copyTransServiceImpl;
 
    @In
-   VersionGroupService versionGroupServiceImpl;
+   private VersionGroupService versionGroupServiceImpl;
 
    @In
-   StatisticsResource statisticsServiceImpl;
+   private StatisticsResource statisticsServiceImpl;
 
    @In
-   CopyTransManager copyTransManager;
+   private CopyTransManager copyTransManager;
 
+   @Setter
+   @Getter
    private String iterationSlug;
 
+   @Setter
+   @Getter
    private String projectSlug;
 
+   @Setter
+   @Getter
    private String searchTerm;
+   
+   @Setter
+   @Getter
+   private StatUnit statsOption = WORD;
 
    private HProjectIteration projectIteration;
 
    private List<HIterationGroup> searchResults;
-
-   private StatUnit statsOption = WORD;
 
    private Map<LocaleId, Status> statsMap = new HashMap<LocaleId, Status>();
 
    public static class Status implements Comparable<Status>, Serializable
    {
       private static final long serialVersionUID = 1L;
+      
+      @Getter
       private String locale;
+      
+      @Getter
       private String nativeName;
+      
+      @Setter
+      @Getter
       private TranslationStatistics stats;
+      
+      @Getter
       private boolean userInLanguageTeam;
 
       public Status(String locale, String nativeName, TranslationStatistics stats, boolean userInLanguageTeam)
@@ -135,31 +155,6 @@ public class ViewAllStatusAction implements Serializable
          this.nativeName = nativeName;
          this.stats = stats;
          this.userInLanguageTeam = userInLanguageTeam;
-      }
-
-      public String getLocale()
-      {
-         return locale;
-      }
-
-      public String getNativeName()
-      {
-         return nativeName;
-      }
-
-      public TranslationStatistics getStats()
-      {
-         return stats;
-      }
-
-      public void setStats(TranslationStatistics stats)
-      {
-         this.stats = stats;
-      }
-
-      public boolean isUserInLanguageTeam()
-      {
-         return userInLanguageTeam;
       }
 
       @Override
@@ -172,26 +167,6 @@ public class ViewAllStatusAction implements Serializable
 
          return Double.compare(comparePer, per);
       }
-   }
-
-   public void setProjectSlug(String slug)
-   {
-      this.projectSlug = slug;
-   }
-
-   public String getProjectSlug()
-   {
-      return this.projectSlug;
-   }
-
-   public void setIterationSlug(String slug)
-   {
-      this.iterationSlug = slug;
-   }
-
-   public String getIterationSlug()
-   {
-      return this.iterationSlug;
    }
 
    public void validateIteration()
@@ -245,7 +220,6 @@ public class ViewAllStatusAction implements Serializable
          {
             stats = new TranslationStatistics(statsOption);
             stats.setUntranslated(total);
-            //            stats.setTotal(total);
          }
 
          if (statsMap.containsKey(locale.getLocaleId()))
@@ -511,16 +485,6 @@ public class ViewAllStatusAction implements Serializable
       return searchResults;
    }
 
-   public String getSearchTerm()
-   {
-      return searchTerm;
-   }
-
-   public void setSearchTerm(String searchTerm)
-   {
-      this.searchTerm = searchTerm;
-   }
-
    public void searchGroup()
    {
       searchResults = versionGroupServiceImpl.searchLikeSlugAndName(searchTerm);
@@ -530,17 +494,7 @@ public class ViewAllStatusAction implements Serializable
    {
       return versionGroupServiceImpl.isGroupInVersion(groupSlug, getProjectIteration().getId());
    }
-
-   public StatUnit getStatsOption()
-   {
-      return statsOption;
-   }
-
-   public void setStatsOption(StatUnit statsOption)
-   {
-      this.statsOption = statsOption;
-   }
-
+   
    public boolean isPoProject()
    {
       ProjectType type = getProjectIteration().getProjectType();
