@@ -82,30 +82,6 @@
 
    </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <inherited>true</inherited>
-                <configuration>
-                    <failOnWarning>true</failOnWarning>
-                    <usedDependencies>
-                        <usedDependency>org.slf4j:slf4j-log4j12</usedDependency>
-                    </usedDependencies>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>analyze</id>
-                        <goals>
-                            <goal>analyze-only</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
   <modules>
     <module>zanata-common-util</module>
     <module>zanata-adapter-po</module>
