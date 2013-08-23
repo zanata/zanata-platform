@@ -33,7 +33,8 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 public class ZanataClientTest
 {
    @Rule
-   public ParameterRule<String> rule = new ParameterRule<String>("list-remote", "pull", "push", "put-project", "put-user", "put-version", "stats");
+   public ParameterRule<String> cmdNameRule = new ParameterRule<String>(
+         "list-remote", "pull", "push", "put-project", "put-user", "put-version", "stats");
 
    private ByteArrayOutputStream out;
    private ByteArrayOutputStream err;
@@ -98,7 +99,7 @@ public class ZanataClientTest
    @Test
    public void testHelpSubCommand() throws Exception
    {
-      client.processArgs("help", rule.getParameter());
+      client.processArgs("help", cmdNameRule.getParameter());
       assertOutputIncludesUsage(out);
       assertThat("Usage should not list subcommands", !outputListsCommands(out));
    }
@@ -110,7 +111,7 @@ public class ZanataClientTest
    @Test
    public void testHelpSubOption() throws Exception
    {
-      client.processArgs(rule.getParameter(), "--help");
+      client.processArgs(cmdNameRule.getParameter(), "--help");
       assertOutputIncludesUsage(out);
       assertThat("Usage should not list subcommands", !outputListsCommands(out));
    }
@@ -146,7 +147,7 @@ public class ZanataClientTest
    @Test
    public void testInvalidSubOption() throws Exception
    {
-      client.processArgs(rule.getParameter(), "--nosuchoption");
+      client.processArgs(cmdNameRule.getParameter(), "--nosuchoption");
       assertOutputIncludesUsage(err);
       // ideally, we would get the subcommand's help, but args4j doesn't return the subcommand name when something goes wrong:
 //      assertThat("Usage should not list subcommands", !outputListsCommands(err));
