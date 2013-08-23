@@ -20,18 +20,23 @@
  */
 package org.zanata.async;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.jboss.seam.Component;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.contexts.Contexts;
 import org.junit.Test;
 import org.zanata.ArquillianTest;
+import com.google.common.collect.Lists;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 
 
 /**
+ * Integration tests for the Asynchrnous task framework.
+ *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public class AsyncTaskITCase extends ArquillianTest
@@ -45,12 +50,10 @@ public class AsyncTaskITCase extends ArquillianTest
    }
 
    @Test
-   public void contextInheritance() throws Exception
+   public void taskReturnsValue() throws Exception
    {
-      // A given context component
-      final String compName = "TEST";
-      String component = "A test Component";
-      Contexts.getEventContext().set(compName, component);
+      // Given an expected return value
+      final String expectedRetVal = "EXPECTED";
 
       // Start an asynchronous process
       AsyncTaskHandle<String> handle =
@@ -59,7 +62,7 @@ public class AsyncTaskITCase extends ArquillianTest
             @Override
             public String call() throws Exception
             {
-               return Component.getInstance(compName).toString();
+               return expectedRetVal;
             }
          });
 
@@ -67,7 +70,7 @@ public class AsyncTaskITCase extends ArquillianTest
       String comp = handle.get();
 
       // Must be the same as the component that was inserted outside of the task
-      MatcherAssert.assertThat(comp, Matchers.equalTo(component));
+      assertThat(comp, equalTo(expectedRetVal));
    }
 
    @Test(expected = ExecutionException.class)
@@ -85,8 +88,66 @@ public class AsyncTaskITCase extends ArquillianTest
          });
 
       // Wait for it to finish and get the result
-      String result = handle.get();
+      waitUntilTaskIsDone(handle);
+      assertThat(handle.isDone(), is(true));
+      handle.get(); // Should throw an exception
    }
 
+   @Test
+   public void progressUpdates() throws Exception
+   {
+      final List<Integer> progressUpdates = Lists.newArrayList();
+      // "Mock" the task handle so that progress updates are recorded
+      final AsyncTaskHandle<Void> taskHandle = new AsyncTaskHandle<Void>()
+      {
+         @Override
+         public void setCurrentProgress(int progress)
+         {
+            super.setCurrentProgress(progress);
+            progressUpdates.add(progress);
+         }
+      };
+
+      // Start an asynchronous process that updates its progress
+      AsyncTaskHandle<Void> handle =
+            taskExecutor.startTask(new AsyncTask<Void, AsyncTaskHandle<Void>>()
+            {
+               @Override
+               public AsyncTaskHandle<Void> getHandle()
+               {
+                  return taskHandle;
+               }
+
+               @Override
+               public Void call() throws Exception
+               {
+                  getHandle().setCurrentProgress(25);
+                  getHandle().setCurrentProgress(50);
+                  getHandle().setCurrentProgress(75);
+                  getHandle().setCurrentProgress(100);
+                  return null;
+               }
+            });
+
+      // Wait for it to finish and get the result
+      waitUntilTaskIsDone(handle);
+
+      // Progress update calls should match the task's internal updates
+      assertThat(handle.getCurrentProgress(), is(100));
+      assertThat(progressUpdates.size(), is(4));
+      assertThat(progressUpdates, contains(25, 50, 75, 100));
+   }
+
+   /**
+    * This is an active wait for a task to finish.
+    * Only use for short lived tasks.
+    */
+   private static void waitUntilTaskIsDone( AsyncTaskHandle handle )
+   {
+      while( !handle.isDone() )
+      {
+         // Wait until it's done.
+      }
+   }
 
 }
