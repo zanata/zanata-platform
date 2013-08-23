@@ -1,77 +1,50 @@
 package org.zanata.client;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.net.URL;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.kohsuke.args4j.spi.SubCommand;
+import org.mockito.Mockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.zanata.client.commands.NullAbortStrategy;
+import org.zanata.client.commands.ZanataCommand;
+import org.zanata.client.commands.stats.GetStatisticsOptionsImpl;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Collection;
-
-import org.kohsuke.args4j.spi.SubCommand;
-import org.mockito.Mockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.testng.IObjectFactory;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.ObjectFactory;
-import org.testng.annotations.Test;
-import org.zanata.client.commands.NullAbortStrategy;
-import org.zanata.client.commands.ZanataCommand;
-import org.zanata.client.commands.stats.GetStatisticsOptionsImpl;
-
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
 @PrepareForTest(SubCommandHandler2.class)
+@PowerMockIgnore("org.apache.log4j.*")
+@RunWith(PowerMockRunner.class)
 public class ZanataClientTest
 {
-   ByteArrayOutputStream out;
-   ByteArrayOutputStream err;
-   ZanataClient client;
+   @Rule
+   public ParameterRule<String> rule = new ParameterRule<String>("list-remote", "pull", "push", "put-project", "put-user", "put-version", "stats");
 
-   @ObjectFactory
-   public IObjectFactory getObjectFactory()
-   {
-      return new org.powermock.modules.testng.PowerMockObjectFactory();
-   }
+   private ByteArrayOutputStream out;
+   private ByteArrayOutputStream err;
+   private ZanataClient client;
 
-   @BeforeMethod
-   void before()
+   @Before
+   public void before()
    {
       out = new ByteArrayOutputStream();
       err = new ByteArrayOutputStream();
       client = new ZanataClient(new NullAbortStrategy(), new PrintStream(out), new PrintStream(err));
-   }
-
-   @DataProvider(name = "commands")
-   public static Object[][] createCommandNames() throws Exception
-   {
-      return toGrid(Arrays.asList(/*"help",*/ "list-remote", "pull",
-            "push", "put-project", "put-user", "put-version", "stats"));
-   }
-
-   /**
-    * Useful for TestNG DataProvider methods.
-    * 
-    * @param collection
-    * @return
-    * @throws Exception
-    */
-   private static Object[][] toGrid(Collection<?> collection) throws Exception
-   {
-      Object[][] result = new Object[collection.size()][1];
-      int i = 0;
-      for (Object obj : collection)
-      {
-         result[i++] = new Object[] { obj };
-      }
-      return result;
    }
 
    /**
@@ -122,10 +95,10 @@ public class ZanataClientTest
     * zanata-cli help sub-command
     * @throws Exception
     */
-   @Test(dataProvider = "commands")
-   public void testHelpSubCommand(String cmdName) throws Exception
+   @Test
+   public void testHelpSubCommand() throws Exception
    {
-      client.processArgs("help", cmdName);
+      client.processArgs("help", rule.getParameter());
       assertOutputIncludesUsage(out);
       assertThat("Usage should not list subcommands", !outputListsCommands(out));
    }
@@ -134,10 +107,10 @@ public class ZanataClientTest
     * zanata-cli sub-command --help
     * @throws Exception
     */
-   @Test(dataProvider = "commands")
-   public void testHelpSubOption(String cmdName) throws Exception
+   @Test
+   public void testHelpSubOption() throws Exception
    {
-      client.processArgs(cmdName, "--help");
+      client.processArgs(rule.getParameter(), "--help");
       assertOutputIncludesUsage(out);
       assertThat("Usage should not list subcommands", !outputListsCommands(out));
    }
@@ -153,7 +126,7 @@ public class ZanataClientTest
       assertOutputIncludesUsage(err);
       assertThat("Usage should list subcommands", outputListsCommands(err));
    }
-   
+
    /**
     * zanata-cli --nosuchoption
     * @throws Exception
@@ -165,15 +138,15 @@ public class ZanataClientTest
       assertOutputIncludesUsage(err);
       assertThat("Usage should list subcommands", outputListsCommands(err));
    }
-   
+
    /**
     * zanata-cli sub-command --nosuchoption
     * @throws Exception
     */
-   @Test(dataProvider = "commands")
-   public void testInvalidSubOption(String cmdName) throws Exception
+   @Test
+   public void testInvalidSubOption() throws Exception
    {
-      client.processArgs(cmdName, "--nosuchoption");
+      client.processArgs(rule.getParameter(), "--nosuchoption");
       assertOutputIncludesUsage(err);
       // ideally, we would get the subcommand's help, but args4j doesn't return the subcommand name when something goes wrong:
 //      assertThat("Usage should not list subcommands", !outputListsCommands(err));
