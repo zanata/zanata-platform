@@ -17,7 +17,7 @@ public class TestProxyFactory extends ZanataProxyFactory
 
    public TestProxyFactory(URI base, String username, String apiKey, ClientExecutor executor, VersionInfo ver)
    {
-      super(base, username, apiKey, executor, ver, false);
+      super(base, username, apiKey, executor, ver, false, false);
    }
 
    public TestProxyFactory(ClientExecutor executor) throws URISyntaxException

@@ -22,6 +22,7 @@
       <zanata.api.version>3.0.1</zanata.api.version>
       <zanata.common.version>3.0.1</zanata.common.version>
       <powermock.version>1.4.12</powermock.version>
+       <httpclient.version>4.1.2</httpclient.version>
     </properties>
 
    <dependencyManagement>
@@ -137,6 +138,11 @@
                   </exclusion>
               </exclusions>
           </dependency>
+         <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${httpclient.version}</version>
+         </dependency>
           <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-api-mockito</artifactId>

@@ -152,7 +152,7 @@ public class OptionsUtil
             throw new ConfigException("Username must be specified");
          if (opts.getKey() == null)
             throw new ConfigException("API key must be specified");
-         return new ZanataProxyFactory(opts.getUrl().toURI(), opts.getUsername(), opts.getKey(), VersionUtility.getAPIVersionInfo(), opts.getLogHttp());
+         return new ZanataProxyFactory(opts.getUrl().toURI(), opts.getUsername(), opts.getKey(), VersionUtility.getAPIVersionInfo(), opts.getLogHttp(), opts.isSSLCertDisabled());
       }
       catch (URISyntaxException e)
       {

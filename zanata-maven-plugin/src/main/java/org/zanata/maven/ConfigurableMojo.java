@@ -86,6 +86,14 @@ public abstract class ConfigurableMojo<O extends ConfigurableOptions> extends Ab
     */
    private boolean logHttp = false;
 
+
+   /**
+    * Disable SSL certificate verification when connecting to Zanata host by https.
+    *
+    * @parameter expression="${zanata.disableSSLCert}" default-value="false"
+    */
+   private boolean disableSSLCert = false;
+
    public ConfigurableMojo()
    {
    }
@@ -309,4 +317,15 @@ public abstract class ConfigurableMojo<O extends ConfigurableOptions> extends Ab
       this.logHttp = logHttp;
    }
 
+   @Override
+   public boolean isSSLCertDisabled()
+   {
+      return disableSSLCert;
+   }
+
+   @Override
+   public void setDisableSSLCert(boolean disableSSLCert)
+   {
+      this.disableSSLCert = disableSSLCert;
+   }
 }

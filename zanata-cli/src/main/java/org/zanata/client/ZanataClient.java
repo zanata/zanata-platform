@@ -53,7 +53,7 @@ public class ZanataClient extends BasicOptionsImpl
       @SubCommand(name="put-project", impl=PutProjectOptionsImpl.class),
       @SubCommand(name="put-user", impl=PutUserOptionsImpl.class),
       @SubCommand(name="put-version", impl=PutVersionOptionsImpl.class),
-      @SubCommand(name="stats", impl=GetStatisticsOptionsImpl.class),
+      @SubCommand(name="stats", impl=GetStatisticsOptionsImpl.class)
    })
    // if this field name changes, change COMMAND_FIELD too
    private Object command;

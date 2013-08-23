@@ -4,11 +4,28 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
+import javax.ws.rs.core.Response;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.jboss.resteasy.client.ClientExecutor;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.resteasy.client.core.executors.ApacheHttpClient4Executor;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.slf4j.Logger;
@@ -18,8 +35,9 @@ import org.zanata.rest.dto.VersionInfo;
 import org.zanata.rest.service.AsynchronousProcessResource;
 import org.zanata.rest.service.CopyTransResource;
 import org.zanata.rest.service.StatisticsResource;
-
-import javax.ws.rs.core.Response;
+import com.google.common.base.Predicates;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
 public class ZanataProxyFactory implements ITranslationResourcesFactory
 {
@@ -35,28 +53,42 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
    private static final Logger log = LoggerFactory.getLogger(ZanataProxyFactory.class);
    private final ClientRequestFactory crf;
 
-   public ZanataProxyFactory(String username, String apiKey, VersionInfo clientApiVersion)
+   /**
+    * This will by default pass a null ClientExecutor to the ClientRequestFactory which in turn create default client executor.
+    * If sslCertDisabled is true, we will create our customized ClientExecutor.
+    *
+    * @param base base url
+    * @param username username
+    * @param apiKey api key
+    * @param apiVersionInfo client API version
+    * @param logHttp whether to log http output
+    * @param sslCertDisabled whether to disable SSL certificate verification
+    */
+   public ZanataProxyFactory(URI base, String username, String apiKey, VersionInfo apiVersionInfo, boolean logHttp, boolean sslCertDisabled)
    {
-      this(null, username, apiKey, clientApiVersion);
+      this(base, username, apiKey, null, apiVersionInfo, logHttp, sslCertDisabled);
    }
 
-   public ZanataProxyFactory(URI base, String username, String apiKey, VersionInfo clientApiVersion)
+   /**
+    * This is used by test to substitute a mocked ClientExecutor. 
+    * When used in production, if sslCertDisabled is true, we will always create a customised ClientExecutor that will disable
+    * SSL certificate verification.
+    *
+    * @param executor client executor
+    * @param sslCertDisabled whether to disable SSL certificate verification
+    */
+   protected ZanataProxyFactory(URI base, String username, String apiKey, ClientExecutor executor, VersionInfo clientApiVersion,
+                             boolean logHttp, boolean sslCertDisabled)
    {
-      this(base, username, apiKey, null, clientApiVersion, false);
-   }
-   
-   public ZanataProxyFactory(URI base, String username, String apiKey, VersionInfo clientApiVersion, boolean logHttp)
-   {
-      this(base, username, apiKey, null, clientApiVersion, logHttp);
-   }
-
-   public ZanataProxyFactory(URI base, String username, String apiKey, ClientExecutor executor, VersionInfo clientApiVersion,
-                             boolean logHttp)
-   {
-      crf = new ClientRequestFactory(executor, null, fixBase(base));
+      ClientExecutor clientExecutor = executor;
+      if (sslCertDisabled)
+      {
+         clientExecutor = createClientExecutor();
+      }
+      crf = new ClientRequestFactory(clientExecutor, null, fixBase(base));
       registerPrefixInterceptor(new TraceDebugInterceptor(logHttp));
       registerPrefixInterceptor(new ApiKeyHeaderDecorator(username, apiKey, clientApiVersion.getVersionNo()));
-      
+
       clientVersion = clientApiVersion.getVersionNo();
       String clientTimestamp = clientApiVersion.getBuildTimeStamp();
       IVersionResource iversion = createIVersionResource();
@@ -83,6 +115,32 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
       {
          log.warn("client API timestamp is {}, but server API timestamp is {}", clientTimestamp, serverTimestamp);
       }
+   }
+
+   private ApacheHttpClient4Executor createClientExecutor()
+   {
+      try
+      {
+         // Create a trust manager that does not validate certificate chains against our server
+         TrustManager[] trustOurCerts = new TrustManager[] {new SkippableX509TrustManager()};
+
+         SSLContext sslContext = SSLContext.getInstance("TLS");
+         sslContext.init(null, trustOurCerts, new SecureRandom());
+
+         SSLSocketFactory factory = new SSLSocketFactory(sslContext);
+
+         HttpClient client = new DefaultHttpClient();
+         ClientConnectionManager manager = client.getConnectionManager();
+         manager.getSchemeRegistry().register(new Scheme("https", 443, factory));
+         return new ApacheHttpClient4Executor(client);
+
+      }
+      catch (Exception e)
+      {
+         log.warn("error disabling SSL certificate", e);
+      }
+      log.warn("fall back to SSL certificate verification.");
+      return null;
    }
 
    /**
@@ -367,5 +425,47 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
    }
 
 
+   private class SkippableX509TrustManager implements X509TrustManager
+   {
+      private final X509TrustManager defaultTrustManager;
+
+      public SkippableX509TrustManager() throws NoSuchAlgorithmException, KeyStoreException
+      {
+         TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+         trustManagerFactory.init((KeyStore) null);
+         // default trust manager
+         defaultTrustManager = (X509TrustManager) Iterables.find(
+               Lists.newArrayList(trustManagerFactory.getTrustManagers()), Predicates.instanceOf(X509TrustManager.class));
+      }
+
+      public X509Certificate[] getAcceptedIssuers()
+      {
+         return defaultTrustManager.getAcceptedIssuers();
+      }
+
+      public void checkClientTrusted(X509Certificate[] certs, String authType) throws CertificateException
+      {
+         defaultTrustManager.checkClientTrusted(certs, authType);
+      }
+
+      public void checkServerTrusted(X509Certificate[] certs, String authType) throws CertificateException
+      {
+         for (X509Certificate cert : certs)
+         {
+            String host = getBaseUrl().getHost();
+            String commonNameInCert = String.format("CN=%s,", host);
+            if (cert.getSubjectDN().getName().contains(commonNameInCert))
+            {
+               log.warn("Skipped SSL certificate verification for {}", host);
+               log.warn("You should consider adding the certificate instead of skipping it.");
+               //we should link a wiki or something to allow users to follow
+            }
+            else
+            {
+               defaultTrustManager.checkServerTrusted(certs, authType);
+            }
+         }
+      }
+   }
 }
 
