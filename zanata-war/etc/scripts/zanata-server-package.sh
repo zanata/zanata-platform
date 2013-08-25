@@ -42,8 +42,8 @@ rm -rf $JBOSS_TMP_DIR/docs
 
 # Add Zanata specific files
 cp $ZANATA_WAR_HOME/target/zanata-*.war $JBOSS_TMP_DIR/standalone/deployments/zanata.war
-cp $ZANATA_WAR_HOME/src/etc/zanata-ds.xml $JBOSS_TMP_DIR//standalone/deployments
-cp -r $ZANATA_WAR_HOME/etc/public-package/* $JBOSS_TMP_DIR/
+cp $ZANATA_WAR_HOME/src/etc/zanata-ds.xml $JBOSS_TMP_DIR/standalone/deployments
+patch -p1 --verbose -d $JBOSS_TMP_DIR/ < $ZANATA_WAR_HOME/etc/public-package/patches/as7.patch
 
 # Get Maven dependencies
 mvn dependency:get -DrepoUrl=http://repo1.maven.org -Dartifact=mysql:mysql-connector-java:$MYSQL_DRV_VERSION
