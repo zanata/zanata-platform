@@ -20,7 +20,8 @@
  */
 package org.zanata.action;
 
-import com.google.common.collect.MapMaker;
+import java.io.Serializable;
+
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -32,12 +33,6 @@ import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
 import org.zanata.service.AsyncTaskManagerService;
-
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
