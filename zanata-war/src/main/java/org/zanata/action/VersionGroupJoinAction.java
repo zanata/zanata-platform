@@ -25,8 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import lombok.Getter;
+import lombok.Setter;
 
+import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -56,23 +58,29 @@ public class VersionGroupJoinAction implements Serializable
    @In
    private ProjectIterationDAO projectIterationDAO;
 
-   @In(create=true)
+   @In(create = true)
    private SendEmailAction sendEmail;
 
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
-   HAccount authenticatedAccount;
+   private HAccount authenticatedAccount;
 
    @Logger
-   Log log;
+   private Log log;
 
    private List<SelectableHProject> projectVersions;
 
    private HIterationGroup group;
 
+   @Getter
+   @Setter
    private String slug;
 
+   @Getter
+   @Setter
    private String iterationSlug;
 
+   @Getter
+   @Setter
    private String projectSlug;
 
    public void searchMaintainedProjectVersion()
@@ -89,13 +97,13 @@ public class VersionGroupJoinAction implements Serializable
 
    public void searchProjectVersion()
    {
-      if(StringUtils.isNotEmpty(iterationSlug) && StringUtils.isNotEmpty(projectSlug))
+      if (StringUtils.isNotEmpty(iterationSlug) && StringUtils.isNotEmpty(projectSlug))
       {
-          HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-          if(projectIteration != null)
-          {
+         HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+         if (projectIteration != null)
+         {
             getProjectVersions().add(new SelectableHProject(projectIteration, true));
-          }
+         }
 
       }
    }
@@ -111,7 +119,7 @@ public class VersionGroupJoinAction implements Serializable
 
    public boolean isVersionInGroup(Long projectIterationId)
    {
-      return versionGroupServiceImpl.isVersionInGroup(group, projectIterationId);
+      return versionGroupServiceImpl.isVersionInGroup(slug, projectIterationId);
    }
 
    public String cancel()
@@ -153,36 +161,6 @@ public class VersionGroupJoinAction implements Serializable
          group = versionGroupServiceImpl.getBySlug(slug);
       }
       return group;
-   }
-
-   public String getSlug()
-   {
-      return slug;
-   }
-
-   public void setSlug(String slug)
-   {
-      this.slug = slug;
-   }
-
-   public String getIterationSlug()
-   {
-      return iterationSlug;
-   }
-
-   public void setIterationSlug(String iterationSlug)
-   {
-      this.iterationSlug = iterationSlug;
-   }
-
-   public String getProjectSlug()
-   {
-      return projectSlug;
-   }
-
-   public void setProjectSlug(String projectSlug)
-   {
-      this.projectSlug = projectSlug;
    }
 
    public String getQuery()

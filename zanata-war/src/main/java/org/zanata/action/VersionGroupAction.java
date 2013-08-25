@@ -123,7 +123,8 @@ public class VersionGroupAction implements Serializable
 
             if (paramSet.length == 2)
             {
-               HProjectIteration projectVersion = versionGroupServiceImpl.getProjectIterationBySlug(paramSet[0], paramSet[1]);
+               HProjectIteration projectVersion = versionGroupServiceImpl.getProjectIterationBySlug(paramSet[0],
+                     paramSet[1]);
                if (projectVersion != null)
                {
                   getSearchResults().add(new SelectableHProject(projectVersion, true));
@@ -159,7 +160,7 @@ public class VersionGroupAction implements Serializable
 
    public boolean isVersionInGroup(Long projectIterationId)
    {
-      return versionGroupServiceImpl.isVersionInGroup(group, projectIterationId);
+      return versionGroupServiceImpl.isVersionInGroup(group.getSlug(), projectIterationId);
    }
 
    @Transactional
@@ -225,7 +226,7 @@ public class VersionGroupAction implements Serializable
       List<HIterationGroup> result = new ArrayList<HIterationGroup>();
       for (HIterationGroup group : allVersionGroups)
       {
-         if(filterGroupByStatus(group))
+         if (filterGroupByStatus(group))
          {
             result.add(group);
          }

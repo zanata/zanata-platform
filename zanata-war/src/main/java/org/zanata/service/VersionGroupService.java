@@ -51,7 +51,7 @@ public interface VersionGroupService
 
    HProjectIteration getProjectIterationBySlug(String projectSlug, String iterationSlug);
 
-   boolean isVersionInGroup(HIterationGroup group, Long projectIterationId);
+   boolean isVersionInGroup(String groupSlug, Long projectIterationId);
 
    boolean isGroupInVersion(String groupSlug, Long id);
 
