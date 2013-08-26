@@ -76,7 +76,7 @@ public class CopyTransTask implements AsyncTask<Void, CopyTransTask.CopyTransTas
    @Override
    public Void call() throws Exception
    {
-      getHandle().start();
+      getHandle().startTiming();
       getHandle().setTriggeredBy(Identity.instance().getPrincipal().getName());
       calculateMaxProgress();
 
@@ -92,7 +92,7 @@ public class CopyTransTask implements AsyncTask<Void, CopyTransTask.CopyTransTas
          copyTransServiceImpl.copyTransForDocument( document );
       }
 
-      getHandle().finish();
+      getHandle().finishTiming();
       return null;
    }
 

@@ -35,12 +35,12 @@ public class TimedAsyncHandle<V> extends AsyncTaskHandle<V>
    @Getter
    private long finishTime;
 
-   public void start()
+   public void startTiming()
    {
       startTime = System.currentTimeMillis();
    }
 
-   public void finish()
+   public void finishTiming()
    {
       finishTime = System.currentTimeMillis();
    }
