@@ -22,8 +22,6 @@ package org.zanata.action;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 
 import org.jboss.seam.ScopeType;
@@ -49,17 +47,6 @@ public class ProcessManagerAction
    {
       ArrayList<AsyncTaskHandle> allHandles = new ArrayList<AsyncTaskHandle>();
       allHandles.addAll(asyncTaskManagerServiceImpl.getAllHandles());
-
-      // Sort by Start Date
-      Collections.sort(allHandles,
-            new Comparator<AsyncTaskHandle>()
-            {
-               @Override
-               public int compare(AsyncTaskHandle o1, AsyncTaskHandle o2)
-               {
-                  return o2.toString().compareTo(o1.toString());
-               }
-            });
 
       return allHandles;
    }

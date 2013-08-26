@@ -60,7 +60,6 @@ public class AsyncTaskManagerServiceImpl implements AsyncTaskManagerService
          CacheBuilder.newBuilder()
                .softValues()
                .expireAfterWrite(1, TimeUnit.HOURS)
-               //.removalListener(new RecentlyFinishedRemovalListener())
                .build();
 
    private ConcurrentMap<Serializable, AsyncTaskHandle> keyedHandles =
