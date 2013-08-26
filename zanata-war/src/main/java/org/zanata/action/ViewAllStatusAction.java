@@ -407,7 +407,7 @@ public class ViewAllStatusAction implements Serializable
    public String getCopyTransEstimatedTimeLeft()
    {
       CopyTransTaskHandle handle = copyTransManager.getCopyTransProcessHandle(getProjectIteration());
-      return formatTimePeriod(handle.getEstimatedTimeRemaining());
+      return formatTimePeriod(handle.getEstimatedTimeInMillis());
    }
 
    // FIXME this is not localizable
