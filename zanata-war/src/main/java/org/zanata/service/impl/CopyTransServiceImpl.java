@@ -81,22 +81,6 @@ public class CopyTransServiceImpl implements CopyTransService
    @Logger
    Log log;
 
-
-   /**
-    * Internal helper class to keep track of copy trans matches.
-    */
-   private class CopyTransMatch
-   {
-      private CopyTransMatch(HTextFlowTarget matchingTarget, ContentState targetState)
-      {
-         this.matchingTarget = matchingTarget;
-         this.targetState = targetState;
-      }
-
-      HTextFlowTarget matchingTarget;
-      ContentState targetState;
-   }
-
    @Observer(TranslatedDocResourceService.EVENT_COPY_TRANS)
    public void runCopyTrans(Long docId, String project, String iterationSlug)
    {
