@@ -372,7 +372,7 @@ public class CopyTransServiceImpl implements CopyTransService
 
       if( taskHandleOpt.isPresent() )
       {
-         taskHandleOpt.get().setDocumentsProcessed( taskHandleOpt.get().getDocumentsProcessed() + 1 );
+         taskHandleOpt.get().incrementDocumentsProcessed();
       }
       log.info("copyTrans finished: document \"{0}\"", document.getDocId());
    }

@@ -90,5 +90,13 @@ public abstract class CopyTransTask implements AsyncTask<Void, CopyTransTask.Cop
       @Setter
       private String triggeredBy;
 
+      /**
+       * Increments the processed documents by 1
+       */
+      public void incrementDocumentsProcessed()
+      {
+         documentsProcessed++;
+      }
+
    }
 }
