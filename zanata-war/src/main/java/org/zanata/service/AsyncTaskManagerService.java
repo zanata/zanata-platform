@@ -27,6 +27,9 @@ import org.zanata.async.AsyncTask;
 import org.zanata.async.AsyncTaskHandle;
 
 /**
+ * The Task manager Service offers a central location where tasks running asynchronously
+ * can be started, and queried.
+ *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public interface AsyncTaskManagerService

@@ -46,7 +46,7 @@ public class TaskExecutor
    private AsynchronousTaskExecutor asynchronousTaskExecutor;
 
    /**
-    * Executes an asynchronous in the background.
+    * Executes an asynchronous task in the background.
     *
     * @param task The task to execute.
     * @return The task handle to keep track of the executed task.
