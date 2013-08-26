@@ -50,6 +50,7 @@ public class TaskExecutor
     *
     * @param task The task to execute.
     * @return The task handle to keep track of the executed task.
+    * @throws RuntimeException If the provided task value is null.
     */
    public <V, H extends AsyncTaskHandle<V>> AsyncTaskHandle<V> startTask(AsyncTask<V, H> task)
    {
