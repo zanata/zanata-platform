@@ -129,7 +129,6 @@ public class ZipFileBuildTask implements AsyncTask<String, AsyncTaskHandle<Strin
       String downloadId = fileSystemService.createDownloadDescriptorFile(downloadFile,
             projectSlug + "_" + iterationSlug + "_" + localeId + ".zip",
             userName);
-      //zipHandle.setDownloadId(downloadId);
 
       // Add the config file at the root of the project directory
       String configFilename = projectDirectory + configurationService.getConfigurationFileName();

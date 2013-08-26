@@ -172,7 +172,7 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
                         (DocumentService)Component.getInstance(DocumentServiceImpl.class);
                   documentServiceImpl.saveDocument(
                         projectSlug, iterationSlug, resource, extensions, copytrans, true);
-                  getHandle().setCurrentProgress( getHandle().getMaxProgress() ); // TODO This should update with real progress
+                  // TODO This should update with real progress
                   return null;
                }
             };

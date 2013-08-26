@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  * 
@@ -65,17 +65,16 @@ public class AsyncTaskManagerServiceImpl implements AsyncTaskManagerService
    private ConcurrentMap<Serializable, AsyncTaskHandle> handlesByKey =
          Maps.newConcurrentMap();
 
+   private long lastAssignedKey = 1;
+
    @Override
    public <V, H extends AsyncTaskHandle<V>> String startTask(AsyncTask<V, H> task)
    {
       TaskExecutor taskExecutor = (TaskExecutor) Component.getInstance(TaskExecutor.class);
       AsyncTaskHandle<V> handle = taskExecutor.startTask(task);
       Long taskKey;
-      synchronized (handlesById)
-      {
-         taskKey = generateNextAvailableKey();
-         handlesById.put(taskKey, handle);
-      }
+      taskKey = generateNextAvailableKey();
+      handlesById.put(taskKey, handle);
       return taskKey.toString();
    }
 
@@ -138,22 +137,9 @@ public class AsyncTaskManagerServiceImpl implements AsyncTaskManagerService
       return handlesById.asMap().values();
    }
 
-   private Long generateNextAvailableKey()
+   private synchronized long generateNextAvailableKey()
    {
-      // Sorted set of keys (to find an available one)
-      Set<Long> keys = new TreeSet<Long>( handlesById.asMap().keySet() );
-
-      // Find the next available key
-      long keyCandidate = 1;
-      for( Long key : keys )
-      {
-         if( keyCandidate != key.longValue() )
-         {
-            return keyCandidate;
-         }
-         keyCandidate++;
-      }
-      return keyCandidate;
+      return lastAssignedKey++;
    }
 
 }

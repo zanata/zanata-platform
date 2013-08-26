@@ -49,7 +49,7 @@ public class TimedAsyncHandle<V> extends AsyncTaskHandle<V>
     * @return The estimated time (in milliseconds) remaining for completion of the process.
     * If the system is not able to provide an estimate, this method returns -1.
     */
-   public long getEstimatedTimeInMillis()
+   public long getEstimatedTimeRemaining()
    {
       if( this.startTime > 0 && currentProgress > 0 )
       {
