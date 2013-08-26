@@ -27,8 +27,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.security.Identity;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * This component executes {@link org.zanata.async.AsyncTask} instances.
  * It is generally more advisable to use the {@link org.zanata.service.AsyncTaskManagerService}
@@ -39,7 +37,6 @@ import lombok.extern.slf4j.Slf4j;
 @Name("taskExecutor")
 @Scope(ScopeType.STATELESS)
 @AutoCreate
-@Slf4j
 public class TaskExecutor
 {
    @In
