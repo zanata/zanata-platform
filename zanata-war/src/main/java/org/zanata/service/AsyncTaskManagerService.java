@@ -31,17 +31,50 @@ import org.zanata.async.AsyncTaskHandle;
  */
 public interface AsyncTaskManagerService
 {
+   /**
+    * Starts a task asynchronously.
+    *
+    * @param task The asynchronous task to run.
+    * @return The key by which the handle for the task may be retrieved.
+    */
    <V, H extends AsyncTaskHandle<V>> String startTask(AsyncTask<V, H> task);
 
+   /**
+    * Starts a task asynchronously while providing a key to store the task's handle.
+    * The handle may be retrieved later using the provided key.
+    *
+    * @param task The asynchronous task to run.
+    * @param key The key that may be used to retrieve the task handle later.
+    */
    <V, H extends AsyncTaskHandle<V>> void startTask(AsyncTask<V, H> task, Serializable key);
 
+   /**
+    * Retrieves a task handle.
+    *
+    * @param taskId The task Id (as returned by {@link AsyncTaskManagerService#startTask(org.zanata.async.AsyncTask)})
+    * @return A task handle, or null if the task with said Id is not being handled by this service.
+    */
    AsyncTaskHandle getHandle(String taskId);
 
+   /**
+    * Retrieves a task handle.
+    *
+    * @param key The task id as provided to {@link AsyncTaskManagerService#startTask(org.zanata.async.AsyncTask, java.io.Serializable)}
+    * @return A task handle, or null if there is no task with the provided id being handled by this service.
+    */
    AsyncTaskHandle getHandleByKey(Serializable key);
 
    AsyncTaskHandle getHandle(String taskId, boolean removeIfFinished);
 
+   /**
+    * @return All handles for all tasks being managed by this service.
+    */
    Collection<AsyncTaskHandle> getAllHandles();
 
+   /**
+    * Clears all the inactive handles managed by this service.
+    * Inactive handles all all those handles that reference a task that is either finished,
+    * has encountered an error, or has been cancelled.
+    */
    void clearInactive();
 }
