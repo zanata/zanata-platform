@@ -26,9 +26,8 @@ public class ManageLanguageTeamMemberPage extends BasePage
    private WebElement memberPanel;
 
    public static final int USERNAME_COLUMN = 0;
-   public static final int SEARCH_RESULT_SELECTED_COLUMN = 0;
-   public static final int SEARCH_RESULT_PERSON_COLUMN = 1;
-   public static final int ISTRANSLATOR_COLUMN = 3;
+   public static final int SEARCH_RESULT_PERSON_COLUMN = 0;
+   public static final int ISTRANSLATOR_COLUMN = 2;
 
    public ManageLanguageTeamMemberPage(WebDriver driver)
    {
@@ -116,10 +115,6 @@ public class ManageLanguageTeamMemberPage extends BasePage
 
             final String personUsername = firstRow.getCellContents().get(SEARCH_RESULT_PERSON_COLUMN);
             log.info("username to be added: {}", personUsername);
-            WebElement selectRowToUpdateCheckBox = firstRow.getCells().get(SEARCH_RESULT_SELECTED_COLUMN).findElement(By.tagName("input"));
-            Checkbox.of(selectRowToUpdateCheckBox).check(); // this causes a row redraw
-
-            firstRow = tryGetFirstRowInSearchPersonResult(driver, personName);
             WebElement isTranslatorCheckBox = firstRow.getCells().get(ISTRANSLATOR_COLUMN).findElement(By.tagName("input"));
             Checkbox.of(isTranslatorCheckBox).check();
 
