@@ -23,7 +23,6 @@ package org.zanata.async.tasks;
 import java.util.List;
 
 import org.jboss.seam.Component;
-import org.jboss.seam.security.Identity;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;

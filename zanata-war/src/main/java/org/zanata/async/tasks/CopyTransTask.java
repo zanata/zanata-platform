@@ -20,20 +20,10 @@
  */
 package org.zanata.async.tasks;
 
-import java.util.List;
-
-import org.jboss.seam.Component;
 import org.jboss.seam.security.Identity;
 import org.zanata.async.AsyncTask;
 import org.zanata.async.TimedAsyncHandle;
 import org.zanata.model.HCopyTransOptions;
-import org.zanata.model.HDocument;
-import org.zanata.model.HLocale;
-import org.zanata.model.HProjectIteration;
-import org.zanata.service.CopyTransService;
-import org.zanata.service.LocaleService;
-import org.zanata.service.impl.CopyTransServiceImpl;
-import org.zanata.service.impl.LocaleServiceImpl;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -20,14 +20,9 @@
  */
 package org.zanata.async;
 
-import java.util.Collection;
-import java.util.Set;
-
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.contexts.Context;
-import org.jboss.seam.contexts.Contexts;
+
 import com.google.common.base.Optional;
-import com.google.common.collect.Sets;
 
 import lombok.extern.slf4j.Slf4j;
 
