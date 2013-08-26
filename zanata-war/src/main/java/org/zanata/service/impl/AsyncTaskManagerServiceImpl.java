@@ -56,13 +56,13 @@ public class AsyncTaskManagerServiceImpl implements AsyncTaskManagerService
 
    // Collection of all managed task Handles. It's self pruned, and it is indexed by
    // long valued keys
-   private Cache<Long, AsyncTaskHandle> taskHandles =
+   private Cache<Long, AsyncTaskHandle> handlesById =
          CacheBuilder.newBuilder()
                .softValues()
                .expireAfterWrite(1, TimeUnit.HOURS)
                .build();
 
-   private ConcurrentMap<Serializable, AsyncTaskHandle> keyedHandles =
+   private ConcurrentMap<Serializable, AsyncTaskHandle> handlesByKey =
          Maps.newConcurrentMap();
 
    @Override
@@ -71,10 +71,10 @@ public class AsyncTaskManagerServiceImpl implements AsyncTaskManagerService
       TaskExecutor taskExecutor = (TaskExecutor) Component.getInstance(TaskExecutor.class);
       AsyncTaskHandle<V> handle = taskExecutor.startTask(task);
       Long taskKey;
-      synchronized (taskHandles)
+      synchronized (handlesById)
       {
          taskKey = generateNextAvailableKey();
-         taskHandles.put(taskKey, handle);
+         handlesById.put(taskKey, handle);
       }
       return taskKey.toString();
    }
@@ -83,7 +83,7 @@ public class AsyncTaskManagerServiceImpl implements AsyncTaskManagerService
    public <V, H extends AsyncTaskHandle<V>> void startTask(AsyncTask<V, H> task, Serializable key)
    {
       String taskId = startTask(task);
-      keyedHandles.put(key, getHandle(taskId));
+      handlesByKey.put(key, getHandle(taskId));
    }
 
    @Override
@@ -95,7 +95,7 @@ public class AsyncTaskManagerServiceImpl implements AsyncTaskManagerService
    @Override
    public AsyncTaskHandle getHandleByKey(Serializable key)
    {
-      return keyedHandles.get(key);
+      return handlesByKey.get(key);
    }
 
    @Override
@@ -104,10 +104,10 @@ public class AsyncTaskManagerServiceImpl implements AsyncTaskManagerService
       try
       {
          Long taskKey = Long.parseLong(taskId);
-         AsyncTaskHandle handle = taskHandles.getIfPresent(taskKey);
+         AsyncTaskHandle handle = handlesById.getIfPresent(taskKey);
          if( removeIfFinished )
          {
-            taskHandles.invalidate(taskKey);
+            handlesById.invalidate(taskKey);
          }
          return handle;
       }
@@ -120,13 +120,13 @@ public class AsyncTaskManagerServiceImpl implements AsyncTaskManagerService
    @Override
    public void clearInactive()
    {
-      synchronized (taskHandles)
+      synchronized (handlesById)
       {
-         for (Map.Entry<Long, AsyncTaskHandle> entry : taskHandles.asMap().entrySet())
+         for (Map.Entry<Long, AsyncTaskHandle> entry : handlesById.asMap().entrySet())
          {
             if( entry.getValue().isDone() )
             {
-               taskHandles.invalidate(entry.getKey());
+               handlesById.invalidate(entry.getKey());
             }
          }
       }
@@ -135,13 +135,13 @@ public class AsyncTaskManagerServiceImpl implements AsyncTaskManagerService
    @Override
    public Collection<AsyncTaskHandle> getAllHandles()
    {
-      return taskHandles.asMap().values();
+      return handlesById.asMap().values();
    }
 
    private Long generateNextAvailableKey()
    {
       // Sorted set of keys (to find an available one)
-      Set<Long> keys = new TreeSet<Long>( taskHandles.asMap().keySet() );
+      Set<Long> keys = new TreeSet<Long>( handlesById.asMap().keySet() );
 
       // Find the next available key
       long keyCandidate = 1;
