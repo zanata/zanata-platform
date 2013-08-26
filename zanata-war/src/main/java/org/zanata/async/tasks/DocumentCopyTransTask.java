@@ -24,81 +24,46 @@ import java.util.List;
 
 import org.jboss.seam.Component;
 import org.jboss.seam.security.Identity;
-import org.zanata.async.AsyncTask;
-import org.zanata.async.TimedAsyncHandle;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
-import org.zanata.model.HProjectIteration;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.impl.CopyTransServiceImpl;
 import org.zanata.service.impl.LocaleServiceImpl;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
- * Asynchronous Task that runs copy trans.
- * Subclasses should allow for running copy trans against different targets.
+ * Copy Trans task that runs copy trans on a single document and all languages
+ * available to its iteration.
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public abstract class CopyTransTask implements AsyncTask<Void, CopyTransTask.CopyTransTaskHandle>
+public class DocumentCopyTransTask extends CopyTransTask
 {
+   private HDocument document;
 
-   protected HCopyTransOptions copyTransOptions;
-
-   private final CopyTransTaskHandle handle = new CopyTransTaskHandle();
-
-   public CopyTransTask(HCopyTransOptions copyTransOptions)
+   public DocumentCopyTransTask(HDocument document, HCopyTransOptions copyTransOptions)
    {
-      this.copyTransOptions = copyTransOptions;
+      super(copyTransOptions);
+      this.document = document;
    }
 
    @Override
-   public CopyTransTaskHandle getHandle()
+   protected int getMaxProgress()
    {
-      return handle;
+      LocaleService localeService = (LocaleService)Component.getInstance(LocaleServiceImpl.class);
+      List<HLocale> localeList =
+            localeService.getSupportedLangugeByProjectIteration(document.getProjectIteration().getProject().getSlug(),
+                  document.getProjectIteration().getSlug());
+
+      return localeList.size();
    }
-
-   /**
-    * @return The maximum progress for the copy trans task.
-    */
-   protected abstract int getMaxProgress();
-
-   protected abstract void callCopyTrans();
 
    @Override
-   public Void call() throws Exception
+   protected void callCopyTrans()
    {
-      getHandle().startTiming();
-      getHandle().setTriggeredBy(Identity.instance().getPrincipal().getName());
-      getHandle().setMaxProgress( getMaxProgress() );
-
-      callCopyTrans();
-
-      getHandle().finishTiming();
-      return null;
-   }
-
-   public static class CopyTransTaskHandle extends TimedAsyncHandle<Void>
-   {
-      @Getter
-      @Setter
-      private int documentsProcessed;
-
-      @Getter
-      @Setter
-      private String cancelledBy;
-
-      @Getter
-      @Setter
-      private long cancelledTime;
-
-      @Getter
-      @Setter
-      private String triggeredBy;
-
+      CopyTransService copyTransServiceImpl =
+            (CopyTransService) Component.getInstance(CopyTransServiceImpl.class);
+      copyTransServiceImpl.copyTransForDocument(document, copyTransOptions);
    }
 }

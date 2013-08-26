@@ -29,6 +29,8 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.security.Identity;
 import org.zanata.async.tasks.CopyTransTask;
+import org.zanata.async.tasks.DocumentCopyTransTask;
+import org.zanata.async.tasks.IterationCopyTransTask;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
@@ -106,7 +108,7 @@ public class CopyTransManager implements Serializable
       }
 
       CopyTransProcessKey key = CopyTransProcessKey.getKey(document);
-      CopyTransTask task = new CopyTransTask(document, options);
+      CopyTransTask task = new DocumentCopyTransTask(document, options);
       asyncTaskManagerServiceImpl.startTask(task, key);
    }
 
@@ -122,7 +124,7 @@ public class CopyTransManager implements Serializable
       }
 
       CopyTransProcessKey key = CopyTransProcessKey.getKey(iteration);
-      CopyTransTask task = new CopyTransTask(iteration, options);
+      CopyTransTask task = new IterationCopyTransTask(iteration, options);
       asyncTaskManagerServiceImpl.startTask(task, key);
    }
 
