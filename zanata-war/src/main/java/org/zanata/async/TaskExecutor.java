@@ -31,6 +31,8 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * This component executes {@link org.zanata.async.AsyncTask} instances.
+ * It is generally more advisable to use the {@link org.zanata.service.AsyncTaskManagerService}
+ * component when running asynchronous tasks.
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
