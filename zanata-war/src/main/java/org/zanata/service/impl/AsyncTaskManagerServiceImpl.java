@@ -88,32 +88,22 @@ public class AsyncTaskManagerServiceImpl implements AsyncTaskManagerService
    @Override
    public AsyncTaskHandle getHandle(String taskId)
    {
-      return getHandle(taskId, false);
+      try
+      {
+         Long taskKey = Long.parseLong(taskId);
+         AsyncTaskHandle handle = handlesById.getIfPresent(taskKey);
+         return handle;
+      }
+      catch (NumberFormatException e)
+      {
+         return null; // Non-number keys are not allowed in this implementation
+      }
    }
 
    @Override
    public AsyncTaskHandle getHandleByKey(Serializable key)
    {
       return handlesByKey.get(key);
-   }
-
-   @Override
-   public AsyncTaskHandle getHandle(String taskId, boolean removeIfFinished)
-   {
-      try
-      {
-         Long taskKey = Long.parseLong(taskId);
-         AsyncTaskHandle handle = handlesById.getIfPresent(taskKey);
-         if( removeIfFinished )
-         {
-            handlesById.invalidate(taskKey);
-         }
-         return handle;
-      }
-      catch (NumberFormatException e)
-      {
-         return null; // Non-number keys don't exist in this implementation
-      }
    }
 
    @Override

@@ -24,6 +24,7 @@ import static org.jboss.seam.international.StatusMessage.Severity.ERROR;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.faces.event.ValueChangeEvent;
 
@@ -48,6 +49,8 @@ import org.zanata.model.tm.TransMemory;
 import org.zanata.service.AsyncTaskManagerService;
 import org.zanata.rest.service.TranslationMemoryResourceService;
 import org.zanata.service.SlugEntityService;
+
+import com.google.common.base.Optional;
 
 /**
  * Controller class for the Translation Memory UI.
@@ -78,7 +81,7 @@ public class TranslationMemoryAction extends EntityHome<TransMemory>
     */
    @In(scope=ScopeType.PAGE, required=false)
    @Out(scope=ScopeType.PAGE, required=false)
-   private ProcessHandle myProcessHandle;
+   private AsyncTaskHandle myTaskHandle;
 
    /**
     * Stores the last process error, but only for the duration of the event.
@@ -131,7 +134,7 @@ public class TranslationMemoryAction extends EntityHome<TransMemory>
 
    private boolean isProcessing()
    {
-      return myProcessHandle != null;
+      return myTaskHandle != null;
    }
 
    public boolean isProcessErrorPollEnabled()
@@ -148,13 +151,22 @@ public class TranslationMemoryAction extends EntityHome<TransMemory>
    public String getProcessError()
    {
       if (myProcessError != null) return myProcessError;
-      if (myProcessHandle != null && myProcessHandle.isFinished())
+      if (myTaskHandle != null && myTaskHandle.isDone())
       {
-         processManagerServiceImpl.removeIfInactive(myProcessHandle);
-         Throwable error = myProcessHandle.getError();
-         // remember the result, just until this event finishes
-         this.myProcessError = error != null ? error.getMessage() : "";
-         this.myProcessHandle = null;
+         try
+         {
+            myTaskHandle.get();
+         }
+         catch (InterruptedException e)
+         {
+            // no error, just interrupted
+         }
+         catch (ExecutionException e)
+         {
+            // remember the result, just until this event finishes
+            this.myProcessError = e.getCause() != null ? e.getCause().getMessage() : "";
+         }
+         myTaskHandle = null;
          return myProcessError;
       }
       return "";

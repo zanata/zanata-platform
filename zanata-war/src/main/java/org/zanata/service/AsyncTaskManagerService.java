@@ -67,8 +67,6 @@ public interface AsyncTaskManagerService
     */
    AsyncTaskHandle getHandleByKey(Serializable key);
 
-   AsyncTaskHandle getHandle(String taskId, boolean removeIfFinished);
-
    /**
     * @return All handles for all tasks being managed by this service.
     */
