@@ -153,7 +153,7 @@ public class CopyTransManager implements Serializable
       {
          CopyTransProcessKey key = CopyTransProcessKey.getKey(iteration);
          CopyTransTaskHandle handle = this.getCopyTransProcessHandle(iteration);
-         handle.cancel(true);
+         handle.forceCancel();
          handle.setCancelledTime(System.currentTimeMillis());
          handle.setCancelledBy(identity.getCredentials().getUsername());
       }

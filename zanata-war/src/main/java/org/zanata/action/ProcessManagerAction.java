@@ -81,7 +81,7 @@ public class ProcessManagerAction
 
    public void cancel( AsyncTaskHandle handle )
    {
-      handle.cancel(false);
+      handle.cancel();
    }
 
 }

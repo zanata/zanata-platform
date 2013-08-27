@@ -175,7 +175,7 @@ public class ReindexActionBean implements Serializable
 
    public void cancel()
    {
-      reindexAsync.getProcessHandle().cancel(false);
+      reindexAsync.getProcessHandle().cancel();
    }
 
    public boolean isCanceled()

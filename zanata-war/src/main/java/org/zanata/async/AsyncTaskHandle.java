@@ -61,4 +61,30 @@ public class AsyncTaskHandle<V> extends AbstractFuture<V>
       currentProgress += increaseBy;
       return currentProgress;
    }
+
+   /**
+    * Cancels the task without trying to forcefully interrupt the task.
+    * This is equivalent to calling <code>cancel(false)</code>
+    *
+    * @see AsyncTaskHandle#cancel(boolean)
+    * @return false if the task could not be cancelled, typically because it has already completed normally;
+    * true otherwise
+    */
+   public boolean cancel()
+   {
+      return cancel(false);
+   }
+
+   /**
+    * Cancels the task, forcefully cancelling the task if needed.
+    * This is equivalent to calling <code>cancel(true)</code>
+    *
+    * @see AsyncTaskHandle#cancel(boolean)
+    * @return false if the task could not be cancelled, typically because it has already completed normally;
+    * true otherwise
+    */
+   public boolean forceCancel()
+   {
+      return cancel(true);
+   }
 }

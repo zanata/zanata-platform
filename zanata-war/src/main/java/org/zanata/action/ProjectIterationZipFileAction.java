@@ -47,7 +47,7 @@ public class ProjectIterationZipFileAction implements Serializable
       if( this.zipFilePrepHandle != null && !this.zipFilePrepHandle.isDone() )
       {
          // Cancel any other processes for this conversation
-         this.zipFilePrepHandle.cancel(true);
+         this.zipFilePrepHandle.forceCancel();
       }
 
       // Start a zip file task
@@ -61,7 +61,7 @@ public class ProjectIterationZipFileAction implements Serializable
    @End
    public void cancelFileDownload()
    {
-      this.zipFilePrepHandle.cancel(false);
+      this.zipFilePrepHandle.cancel();
    }
 
    public Object getProjectIteration()

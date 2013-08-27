@@ -72,7 +72,7 @@ public class DownloadAllFilesHandler extends AbstractActionHandler<DownloadAllFi
          if (this.zipFilePrepHandle != null && !this.zipFilePrepHandle.isDone())
          {
             // Cancel any other processes
-            this.zipFilePrepHandle.cancel(false);
+            this.zipFilePrepHandle.cancel();
          }
 
          // Build a new task
