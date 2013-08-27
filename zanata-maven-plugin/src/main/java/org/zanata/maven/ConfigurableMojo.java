@@ -318,7 +318,7 @@ public abstract class ConfigurableMojo<O extends ConfigurableOptions> extends Ab
    }
 
    @Override
-   public boolean isSSLCertDisabled()
+   public boolean isDisableSSLCert()
    {
       return disableSSLCert;
    }

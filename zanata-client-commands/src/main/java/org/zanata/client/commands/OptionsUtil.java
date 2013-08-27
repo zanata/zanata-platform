@@ -147,12 +147,23 @@ public class OptionsUtil
       try
       {
          if (opts.getUrl() == null)
+         {
             throw new ConfigException("Server URL must be specified");
+         }
          if (opts.getUsername() == null)
+         {
             throw new ConfigException("Username must be specified");
+         }
          if (opts.getKey() == null)
+         {
             throw new ConfigException("API key must be specified");
-         return new ZanataProxyFactory(opts.getUrl().toURI(), opts.getUsername(), opts.getKey(), VersionUtility.getAPIVersionInfo(), opts.getLogHttp(), opts.isSSLCertDisabled());
+         }
+         if (opts.isDisableSSLCert())
+         {
+            log.warn("Skipping SSL certificate verification for {}", opts.getUrl());
+            log.warn("You should consider adding the certificate instead of skipping it.");
+         }
+         return new ZanataProxyFactory(opts.getUrl().toURI(), opts.getUsername(), opts.getKey(), VersionUtility.getAPIVersionInfo(), opts.getLogHttp(), opts.isDisableSSLCert());
       }
       catch (URISyntaxException e)
       {

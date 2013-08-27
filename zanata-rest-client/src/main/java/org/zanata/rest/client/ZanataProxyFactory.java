@@ -4,15 +4,11 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.core.Response;
 
@@ -35,9 +31,6 @@ import org.zanata.rest.dto.VersionInfo;
 import org.zanata.rest.service.AsynchronousProcessResource;
 import org.zanata.rest.service.CopyTransResource;
 import org.zanata.rest.service.StatisticsResource;
-import com.google.common.base.Predicates;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 
 public class ZanataProxyFactory implements ITranslationResourcesFactory
 {
@@ -60,27 +53,13 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
     * @param base base url
     * @param username username
     * @param apiKey api key
-    * @param apiVersionInfo client API version
+    * @param clientApiVersion client API version
     * @param logHttp whether to log http output
     * @param sslCertDisabled whether to disable SSL certificate verification
     */
-   public ZanataProxyFactory(URI base, String username, String apiKey, VersionInfo apiVersionInfo, boolean logHttp, boolean sslCertDisabled)
+   public ZanataProxyFactory(URI base, String username, String apiKey, VersionInfo clientApiVersion, boolean logHttp, boolean sslCertDisabled)
    {
-      this(base, username, apiKey, null, apiVersionInfo, logHttp, sslCertDisabled);
-   }
-
-   /**
-    * This is used by test to substitute a mocked ClientExecutor. 
-    * When used in production, if sslCertDisabled is true, we will always create a customised ClientExecutor that will disable
-    * SSL certificate verification.
-    *
-    * @param executor client executor
-    * @param sslCertDisabled whether to disable SSL certificate verification
-    */
-   protected ZanataProxyFactory(URI base, String username, String apiKey, ClientExecutor executor, VersionInfo clientApiVersion,
-                             boolean logHttp, boolean sslCertDisabled)
-   {
-      ClientExecutor clientExecutor = executor;
+      ClientExecutor clientExecutor = null;
       if (sslCertDisabled)
       {
          clientExecutor = createClientExecutor();
@@ -117,12 +96,12 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
       }
    }
 
-   private ApacheHttpClient4Executor createClientExecutor()
+   protected ClientExecutor createClientExecutor()
    {
       try
       {
          // Create a trust manager that does not validate certificate chains against our server
-         TrustManager[] trustOurCerts = new TrustManager[] {new SkippableX509TrustManager()};
+         TrustManager[] trustOurCerts = new TrustManager[] {new AcceptAllX509TrustManager()};
 
          SSLContext sslContext = SSLContext.getInstance("TLS");
          sslContext.init(null, trustOurCerts, new SecureRandom());
@@ -425,46 +404,19 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
    }
 
 
-   private class SkippableX509TrustManager implements X509TrustManager
+   private static class AcceptAllX509TrustManager implements X509TrustManager
    {
-      private final X509TrustManager defaultTrustManager;
-
-      public SkippableX509TrustManager() throws NoSuchAlgorithmException, KeyStoreException
-      {
-         TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-         trustManagerFactory.init((KeyStore) null);
-         // default trust manager
-         defaultTrustManager = (X509TrustManager) Iterables.find(
-               Lists.newArrayList(trustManagerFactory.getTrustManagers()), Predicates.instanceOf(X509TrustManager.class));
-      }
-
       public X509Certificate[] getAcceptedIssuers()
       {
-         return defaultTrustManager.getAcceptedIssuers();
+         return null;
       }
 
       public void checkClientTrusted(X509Certificate[] certs, String authType) throws CertificateException
       {
-         defaultTrustManager.checkClientTrusted(certs, authType);
       }
 
       public void checkServerTrusted(X509Certificate[] certs, String authType) throws CertificateException
       {
-         for (X509Certificate cert : certs)
-         {
-            String host = getBaseUrl().getHost();
-            String commonNameInCert = String.format("CN=%s,", host);
-            if (cert.getSubjectDN().getName().contains(commonNameInCert))
-            {
-               log.warn("Skipped SSL certificate verification for {}", host);
-               log.warn("You should consider adding the certificate instead of skipping it.");
-               //we should link a wiki or something to allow users to follow
-            }
-            else
-            {
-               defaultTrustManager.checkServerTrusted(certs, authType);
-            }
-         }
       }
    }
 }

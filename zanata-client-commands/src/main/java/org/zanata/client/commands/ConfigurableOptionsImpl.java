@@ -132,13 +132,13 @@ public abstract class ConfigurableOptionsImpl extends BasicOptionsImpl implement
 
 
    @Override
-   public boolean isSSLCertDisabled()
+   public boolean isDisableSSLCert()
    {
       return disableSSLCert;
    }
 
    @Override
-   @Option(name = "--disable-ssl-cert", metaVar = "BOOLEAN", usage = "Whether verification of SSL certificates should be disabled")
+   @Option(name = "--disable-ssl-cert", usage = "Whether verification of SSL certificates should be disabled")
    public void setDisableSSLCert(boolean disableSSLCert)
    {
       this.disableSSLCert = disableSSLCert;
