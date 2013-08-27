@@ -98,7 +98,9 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends Configu
       {
          Console console = System.console();
          if (console == null)
-            throw new RuntimeException("console not available: please run Maven from a console, or use batch mode (mvn -B)");
+         {
+            throw new RuntimeException("console not available: please run Maven from a console, or use batch mode option (-B)");
+         }
          console.printf(message + "\nAre you sure (y/n)? ");
          expectYes(console);
       }
@@ -108,9 +110,13 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends Configu
    {
       String line = console.readLine();
       if (line == null)
+      {
          throw new IOException("console stream closed");
+      }
       if (!line.toLowerCase().equals("y") && !line.toLowerCase().equals("yes"))
+      {
          throw new RuntimeException("operation aborted by user");
+      }
    }
 
    protected void debug(Object jaxbElement)
