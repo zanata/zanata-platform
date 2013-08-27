@@ -76,6 +76,7 @@ public class SeamAutowire
    {
       rewireSeamComponentClass();
       rewireSeamTransactionClass();
+      rewireSeamContextsClass();
    }
 
    protected SeamAutowire()
@@ -339,6 +340,30 @@ public class SeamAutowire
       invokePostConstructMethod(component);
 
       return component;
+   }
+
+   private static void rewireSeamContextsClass()
+   {
+      try
+      {
+         ClassPool pool = ClassPool.getDefault();
+         CtClass contextsCls = pool.get("org.jboss.seam.contexts.Contexts");
+
+         // Replace Component's method bodies with the ones in AutowireComponent
+         CtMethod methodToReplace = contextsCls.getDeclaredMethod("isSessionContextActive");
+         methodToReplace.setBody("return true;");
+
+         contextsCls.toClass();
+      }
+      catch (NotFoundException e)
+      {
+         throw new RuntimeException("Problem rewiring Seam's Contexts class", e);
+      }
+      catch (CannotCompileException e)
+      {
+         throw new RuntimeException("Problem rewiring Seam's Contexts class", e);
+      }
+
    }
 
    private static void rewireSeamComponentClass()

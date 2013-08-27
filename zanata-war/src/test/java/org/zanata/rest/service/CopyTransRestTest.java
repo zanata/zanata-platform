@@ -23,18 +23,21 @@ package org.zanata.rest.service;
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.resteasy.client.ClientResponseFailure;
 import org.jboss.seam.security.AuthorizationException;
-import org.jboss.seam.security.Credentials;
+import org.jboss.seam.security.Identity;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.testng.IObjectFactory;
+import org.testng.annotations.ObjectFactory;
 import org.testng.annotations.Test;
 import org.zanata.ZanataRestTest;
 import org.zanata.rest.dto.CopyTransStatus;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataCredentials;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.service.impl.AsyncTaskManagerServiceImpl;
 import org.zanata.service.impl.CopyTransServiceImpl;
 import org.zanata.service.impl.LocaleServiceImpl;
-import org.zanata.service.impl.ProcessManagerServiceImpl;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -43,8 +46,8 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.anyVararg;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -71,7 +74,7 @@ public class CopyTransRestTest extends ZanataRestTest
             .use("session", getSession())
             .use("identity", mockIdentity)
             .useImpl(CopyTransServiceImpl.class)
-            .useImpl(ProcessManagerServiceImpl.class)
+            .useImpl(AsyncTaskManagerServiceImpl.class)
             .useImpl(LocaleServiceImpl.class);
 
       CopyTransResource copyTransResource = seamAutowire.autowire(CopyTransResourceService.class);
@@ -96,7 +99,7 @@ public class CopyTransRestTest extends ZanataRestTest
       CopyTransResource copyTransResource = getClientRequestFactory().createProxy(CopyTransResource.class);
 
       copyTransResource.startCopyTrans("sample-project", "1.0", "my/path/document.txt");
-      verify(mockIdentity).getCredentials();
+      verify(mockIdentity, atLeastOnce()).checkPermission(eq("copy-trans"), anyVararg());
    }
 
    @Test
@@ -105,11 +108,10 @@ public class CopyTransRestTest extends ZanataRestTest
       CopyTransResource copyTransResource = getClientRequestFactory().createProxy(CopyTransResource.class);
 
       copyTransResource.startCopyTrans("sample-project", "1.0", "my/path/document.txt");
-      verify(mockIdentity).getCredentials();
 
       CopyTransStatus status = copyTransResource.getCopyTransStatus("sample-project", "1.0", "my/path/document.txt");
       assertThat(status, notNullValue());
-      verify(mockIdentity, atLeast(1)).checkPermission(eq("copy-trans"), anyVararg());
+      verify(mockIdentity, atLeastOnce()).checkPermission(eq("copy-trans"), anyVararg());
    }
 
    @Test

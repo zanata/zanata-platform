@@ -20,6 +20,8 @@
  */
 package org.zanata.webtrans.server.rpc;
 
+import java.util.concurrent.ExecutionException;
+
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
@@ -27,8 +29,8 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.zanata.process.IterationZipFileBuildProcessHandle;
-import org.zanata.service.ProcessManagerService;
+import org.zanata.async.AsyncTaskHandle;
+import org.zanata.service.AsyncTaskManagerService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgress;
 import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgressResult;
@@ -44,7 +46,7 @@ import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgressResult;
 public class GetDownloadAllFilesProgressHandler extends AbstractActionHandler<GetDownloadAllFilesProgress, GetDownloadAllFilesProgressResult>
 {
    @In
-   private ProcessManagerService processManagerServiceImpl;
+   private AsyncTaskManagerService asyncTaskManagerServiceImpl;
 
    @Override
    public GetDownloadAllFilesProgressResult execute(GetDownloadAllFilesProgress action, ExecutionContext context) throws ActionException
@@ -53,12 +55,26 @@ public class GetDownloadAllFilesProgressHandler extends AbstractActionHandler<Ge
       int maxProgress = 0;
       String downloadId = "";
       
-      IterationZipFileBuildProcessHandle processHandle = (IterationZipFileBuildProcessHandle) processManagerServiceImpl.getProcessHandle(action.getProcessId());
-      if (processHandle != null)
+      AsyncTaskHandle<String> handle = asyncTaskManagerServiceImpl.getHandle(action.getProcessId());
+      if (handle != null)
       {
-         downloadId = processHandle.getDownloadId();
-         currentProgress = processHandle.getCurrentProgress();
-         maxProgress = processHandle.getMaxProgress();
+         if( handle.isDone() )
+         {
+            try
+            {
+               downloadId = handle.get();
+            }
+            catch (InterruptedException e)
+            {
+               throw new ActionException("Zip file preparation was interrupted", e);
+            }
+            catch (ExecutionException e)
+            {
+               throw new ActionException("Error preparing zip file for download", e);
+            }
+         }
+         currentProgress = handle.getCurrentProgress();
+         maxProgress = handle.getMaxProgress();
       }
 
       return new GetDownloadAllFilesProgressResult(currentProgress, maxProgress, downloadId);

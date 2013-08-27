@@ -20,10 +20,10 @@
  */
 package org.zanata.service;
 
+import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
-import org.zanata.process.CopyTransProcessHandle;
 
 public interface CopyTransService
 {
@@ -56,6 +56,15 @@ public interface CopyTransService
    void copyTransForDocument(HDocument document);
 
    /**
+    * Similar to {@link CopyTransService#copyTransForDocument(org.zanata.model.HDocument)},
+    * with custom copy trans options.
+    *
+    * @param document the document to copy translations into
+    * @param copyTransOptions The copy Trans options to use.
+    */
+   void copyTransForDocument(HDocument document, HCopyTransOptions copyTransOptions);
+
+   /**
     * Copies previous matching translations for all available locales and documents
     * in a given project iteration. Translations are matching if their document id,
     * textflow id and source content are identical, and their state is approved.
@@ -65,6 +74,7 @@ public interface CopyTransService
     * revision.
     *
     * @param iteration The project iteration to copy translations into
+    * @param copyTransOptions The copy Trans options to use.
     */
-   void copyTransForIteration( HProjectIteration iteration );
+   void copyTransForIteration( HProjectIteration iteration, HCopyTransOptions copyTransOptions );
 }

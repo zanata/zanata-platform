@@ -18,64 +18,68 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.process;
+package org.zanata.async;
+
+import java.security.Principal;
+
+import javax.security.auth.Subject;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.async.Asynchronous;
-import org.jboss.seam.contexts.Contexts;
-import org.zanata.security.ZanataIdentity;
-
-import lombok.extern.slf4j.Slf4j;
+import org.jboss.seam.security.Identity;
+import org.jboss.seam.security.RunAsOperation;
 
 /**
  * This class executes a Runnable Process asynchronously. Do not use this class directly.
- * Use {@link ProcessExecutor} instead.
+ * Use {@link org.zanata.async.TaskExecutor} instead as this is just a wrapper to make sure
+ * Seam can run the task in the background. {@link TaskExecutor} is able to do this as well as
+ * return an instance of the task handle to keep track of the task's progress.
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("asynchronousExecutor")
+@Name("asynchronousTaskExecutor")
 @Scope(ScopeType.STATELESS)
 @AutoCreate
-@Slf4j
-public class AsynchronousExecutor
+public class AsynchronousTaskExecutor
 {
    @Asynchronous
-   public <H extends ProcessHandle> void runAsynchronously(RunnableProcess<H> process, H handle)
+   public <V, H extends AsyncTaskHandle<V>> void runAsynchronously(final AsyncTask<V, H> task, final Identity runAs)
    {
-      outjectProcessHandle(handle);
+      AsyncUtils.outject(task.getHandle(), ScopeType.EVENT);
 
-      try
+      RunAsOperation runAsOp = new RunAsOperation()
       {
-         // Authenticate as the provided credentials
-         if( process.getRunAsUsername() != null )
+         @Override
+         public void execute()
          {
-            ZanataIdentity identity = ZanataIdentity.instance();
-            identity.getCredentials().setUsername( process.getRunAsUsername() );
-            identity.setApiKey( process.getRunAsApiKey() );
-            identity.login();
+            try
+            {
+               V returnValue = task.call();
+               task.getHandle().set(returnValue);
+            }
+            catch (Exception t)
+            {
+               task.getHandle().setException(t);
+            }
          }
 
-         process.run(handle);
-      }
-      catch( Throwable t )
-      {
-         log.error("Exception with long running process: " + t.getMessage(), t);
-         process.handleThrowable(handle, t);
-      }
-      finally
-      {
-         handle.finish();
-      }
+         @Override
+         public Principal getPrincipal()
+         {
+            return runAs.getPrincipal();
+         }
+
+         @Override
+         public Subject getSubject()
+         {
+            return runAs.getSubject();
+         }
+      };
+
+      runAsOp.run();
    }
 
-   private void outjectProcessHandle(ProcessHandle handle)
-   {
-      if (Contexts.isEventContextActive())
-      {
-         Contexts.getEventContext().set("asynchronousProcessHandle", handle);
-      }
-   }
 }

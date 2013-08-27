@@ -105,10 +105,10 @@
 
             <a4j:outputPanel id="progress">
               <h2>#{messages['jsf.ManageSearch.CurrentProgress']}</h2>
-              <h:outputText rendered="#{!reindexAction.started}" escape="false">
+              <h:outputText rendered="#{!reindexAction.inProgress}" escape="false">
                 <p>#{messages['jsf.ManageSearch.NoOperationsRunning']}</p>
               </h:outputText>
-              <h:outputText rendered="#{reindexAction.started and !reindexAction.inProgress and !reindexAction.canceled and !reindexAction.error}">
+              <h:outputText rendered="#{!reindexAction.inProgress and !reindexAction.canceled and !reindexAction.error}">
                 <p>#{messages['jsf.ManageSearch.Completed']}</p>
               </h:outputText>
               <h:outputText rendered="#{reindexAction.canceled}" escape="false">

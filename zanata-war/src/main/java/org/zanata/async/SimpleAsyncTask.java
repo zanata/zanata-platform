@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  * 
@@ -18,19 +18,18 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.process;
+package org.zanata.async;
+
+import lombok.Getter;
 
 /**
- * Listener interface for background process events.
+ * Simple default partial implementation of an async task that produces a bare bones
+ * {@link AsyncTaskHandle} that tracks progress.
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public interface RunnableProcessListener<T extends ProcessHandle>
+public abstract class SimpleAsyncTask<V> implements AsyncTask<V, AsyncTaskHandle<V>>
 {
-   /**
-    * Invoked when the process is finished.
-    *
-    * @param handle The process' handle.
-    */
-   void onComplete( T handle );
+   @Getter
+   private final AsyncTaskHandle<V> handle = new AsyncTaskHandle<V>();
 }

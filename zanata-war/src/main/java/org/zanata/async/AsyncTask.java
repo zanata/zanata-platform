@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  * 
@@ -18,35 +18,26 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.process;
+package org.zanata.async;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.zanata.service.CopyTransService;
-import org.zanata.service.impl.CopyTransServiceImpl;
+import java.util.concurrent.Callable;
 
 /**
- * Performs copy trans as a background process.
+ * Public common interface for all asynchronous tasks in the system.
+ *
+ * @param <V> The type of value returned by this task once finished.
+ * @param <H> The type of task handler provided by the task to keep callers
+ *           informed of progress and/or other task related information.
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class CopyTransProcess extends RunnableProcess<CopyTransProcessHandle>
+public interface AsyncTask<V, H extends AsyncTaskHandle<V>> extends Callable<V>
 {
-   @Override
-   protected void run(CopyTransProcessHandle handle) throws Throwable
-   {
-      CopyTransService copyTransServiceImpl =
-            (CopyTransService)Component.getInstance(CopyTransServiceImpl.class);
 
-      if( handle.getProjectIteration() != null )
-      {
-         copyTransServiceImpl.copyTransForIteration( handle.getProjectIteration() );
-      }
-      else
-      {
-         copyTransServiceImpl.copyTransForDocument( handle.getDocument() );
-      }
-   }
+   /**
+    * @return The handle used to keep task information. Tasks must always return the
+    * same instance of a handle.
+    */
+   H getHandle();
+
 }

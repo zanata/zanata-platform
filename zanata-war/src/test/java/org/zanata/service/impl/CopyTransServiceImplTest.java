@@ -31,6 +31,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
+import org.zanata.async.tasks.CopyTransTask;
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
@@ -42,7 +43,6 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.process.CopyTransProcessHandle;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.service.CopyTransService;
 
@@ -54,6 +54,7 @@ import lombok.ToString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+import static org.zanata.async.tasks.CopyTransTask.CopyTransTaskHandle;
 import static org.zanata.common.ContentState.*;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY;
@@ -198,11 +199,9 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
 
       HCopyTransOptions options = new HCopyTransOptions( execution.getContextMismatchAction(),
             execution.getDocumentMismatchAction(), execution.getProjectMismatchAction() );
-      CopyTransProcessHandle handle = new CopyTransProcessHandle(projectIteration, "admin", options);
-
-      CopyTransService copyTransService = seam.use("asynchronousProcessHandle", handle)
+      CopyTransService copyTransService = seam//.use("asynchronousProcessHandle", handle)
                                               .autowire(CopyTransServiceImpl.class);
-      copyTransService.copyTransForIteration(projectIteration);
+      copyTransService.copyTransForIteration(projectIteration, options);
 
       // Validate execution
       HTextFlow targetTextFlow = (HTextFlow)

@@ -20,6 +20,7 @@
  */
 package org.zanata.service.impl;
 
+import static org.zanata.async.tasks.CopyTransTask.CopyTransTaskHandle;
 import static org.zanata.common.ContentState.*;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.REJECT;
@@ -38,6 +39,7 @@ import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.util.Work;
+import org.zanata.async.AsyncUtils;
 import org.zanata.common.ContentState;
 import org.zanata.dao.DatabaseConstants;
 import org.zanata.dao.DocumentDAO;
@@ -50,10 +52,10 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.process.CopyTransProcessHandle;
 import org.zanata.rest.service.TranslatedDocResourceService;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
+import com.google.common.base.Optional;
 
 //TODO unit test suite for this class
 
@@ -75,28 +77,9 @@ public class CopyTransServiceImpl implements CopyTransService
 
    @In
    private ProjectDAO projectDAO;
-
-   @In(required = false, scope = ScopeType.EVENT)
-   private CopyTransProcessHandle asynchronousProcessHandle;
    
    @Logger
    Log log;
-
-
-   /**
-    * Internal helper class to keep track of copy trans matches.
-    */
-   private class CopyTransMatch
-   {
-      private CopyTransMatch(HTextFlowTarget matchingTarget, ContentState targetState)
-      {
-         this.matchingTarget = matchingTarget;
-         this.targetState = targetState;
-      }
-
-      HTextFlowTarget matchingTarget;
-      ContentState targetState;
-   }
 
    @Observer(TranslatedDocResourceService.EVENT_COPY_TRANS)
    public void runCopyTrans(Long docId, String project, String iterationSlug)
@@ -202,6 +185,13 @@ public class CopyTransServiceImpl implements CopyTransService
                return null;
             }
          }.workInTransaction();
+
+         // Advance the task handler if there is one
+         Optional<CopyTransTaskHandle> taskHandle = AsyncUtils.getEventAsyncHandle(CopyTransTaskHandle.class);
+         if( taskHandle.isPresent() )
+         {
+            taskHandle.get().increaseProgress(1);
+         }
       }
       catch (Exception e)
       {
@@ -327,22 +317,12 @@ public class CopyTransServiceImpl implements CopyTransService
    @Override
    public void copyTransForDocument(HDocument document)
    {
-      // Set the max progress only if it hasn't been set yet
-      if( asynchronousProcessHandle != null && !asynchronousProcessHandle.isMaxProgressSet() )
-      {
-         List<HLocale> localeList =
-               localeServiceImpl.getSupportedLangugeByProjectIteration(document.getProjectIteration().getProject().getSlug(),
-                     document.getProjectIteration().getSlug());
+      copyTransForDocument(document, null);
+   }
 
-         asynchronousProcessHandle.setMaxProgress(localeList.size());
-      }
-
-      HCopyTransOptions copyTransOpts = null;
-      // Use process handle options
-      if( asynchronousProcessHandle != null )
-      {
-         copyTransOpts = asynchronousProcessHandle.getOptions();
-      }
+   @Override
+   public void copyTransForDocument(HDocument document, HCopyTransOptions copyTransOpts)
+   {
       // use project level options
       if( copyTransOpts == null )
       {
@@ -356,71 +336,40 @@ public class CopyTransServiceImpl implements CopyTransService
          copyTransOpts = new HCopyTransOptions();
       }
 
-      this.copyTransForDocument(document, copyTransOpts, asynchronousProcessHandle);
-   }
-
-   @Override
-   public void copyTransForIteration(HProjectIteration iteration)
-   {
-      if( asynchronousProcessHandle != null )
-      {
-         List<HLocale> localeList =
-               localeServiceImpl.getSupportedLangugeByProjectIteration(iteration.getProject().getSlug(),
-                     iteration.getSlug());
-
-         asynchronousProcessHandle.setMaxProgress( iteration.getDocuments().size() * localeList.size() );
-         asynchronousProcessHandle.setCurrentProgress(0);
-      }
-
-      // TODO RunnableProcess handle may not be null
-      for( HDocument doc : iteration.getDocuments().values() )
-      {
-         if( asynchronousProcessHandle.shouldStop() )
-         {
-            return;
-         }
-         this.copyTransForDocument(doc, asynchronousProcessHandle.getOptions(), asynchronousProcessHandle);
-      }
-   }
-
-   /**
-    * NB: The handle's options will be ignored. This is a convenience method to have the logic
-    * in a single place.
-    * @see CopyTransServiceImpl#copyTransForDocument(org.zanata.model.HDocument)
-    */
-   private void copyTransForDocument(HDocument document, HCopyTransOptions options, CopyTransProcessHandle processHandle)
-   {
       log.info("copyTrans start: document \"{0}\"", document.getDocId());
+      Optional<CopyTransTaskHandle> taskHandleOpt = AsyncUtils.getEventAsyncHandle(CopyTransTaskHandle.class);
       List<HLocale> localeList =
             localeServiceImpl.getSupportedLangugeByProjectIteration(document.getProjectIteration().getProject().getSlug(),
                   document.getProjectIteration().getSlug());
 
       for (HLocale locale : localeList)
       {
-         if( processHandle != null && processHandle.shouldStop() )
+         if( taskHandleOpt.isPresent() && taskHandleOpt.get().isCancelled() )
          {
             return;
          }
-         copyTransForLocale(document, locale, options, processHandle);
+         copyTransForLocale(document, locale, copyTransOpts);
       }
 
-      if( processHandle != null )
+      if( taskHandleOpt.isPresent() )
       {
-         processHandle.setDocumentsProcessed( processHandle.getDocumentsProcessed() + 1 );
+         taskHandleOpt.get().incrementDocumentsProcessed();
       }
       log.info("copyTrans finished: document \"{0}\"", document.getDocId());
    }
 
-   /**
-    * @see CopyTransServiceImpl#copyTransForLocale(org.zanata.model.HDocument, org.zanata.model.HLocale, HCopyTransOptions, org.zanata.process.CopyTransProcessHandle)
-    */
-   private void copyTransForLocale(HDocument document, HLocale locale, HCopyTransOptions options, CopyTransProcessHandle procHandle)
+   @Override
+   public void copyTransForIteration(HProjectIteration iteration, HCopyTransOptions copyTransOptions)
    {
-      this.copyTransForLocale(document, locale, options);
+      Optional<CopyTransTaskHandle> taskHandleOpt = AsyncUtils.getEventAsyncHandle(CopyTransTaskHandle.class);
 
-      if( procHandle != null )
+      for( HDocument doc : iteration.getDocuments().values() )
       {
-         procHandle.incrementProgress(1);
+         if( taskHandleOpt.isPresent() && taskHandleOpt.get().isCancelled() )
+         {
+            return;
+         }
+         this.copyTransForDocument(doc, copyTransOptions);
       }
    }
 

@@ -18,48 +18,47 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.process;
+package org.zanata.async;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.async.Asynchronous;
-
-import lombok.extern.slf4j.Slf4j;
+import org.jboss.seam.security.Identity;
 
 /**
- * This component executes {@link RunnableProcess} objects.
+ * This component executes {@link org.zanata.async.AsyncTask} instances.
+ * It is generally more advisable to use the {@link org.zanata.service.AsyncTaskManagerService}
+ * component when running asynchronous tasks.
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("processExecutor")
+@Name("taskExecutor")
 @Scope(ScopeType.STATELESS)
 @AutoCreate
-@Slf4j
-public class ProcessExecutor
+public class TaskExecutor
 {
    @In
-   private AsynchronousExecutor asynchronousExecutor;
+   private AsynchronousTaskExecutor asynchronousTaskExecutor;
 
    /**
-    * Executes a process in the background.
+    * Executes an asynchronous task in the background.
     *
-    * @param handle The handle to be used for the running process.
+    * @param task The task to execute.
+    * @return The task handle to keep track of the executed task.
+    * @throws RuntimeException If the provided task value is null.
     */
-   public <H extends ProcessHandle> void startProcess(RunnableProcess<H> process, H handle)
+   public <V, H extends AsyncTaskHandle<V>> AsyncTaskHandle<V> startTask(AsyncTask<V, H> task)
    {
-      // make sure the process handle is not being reused
-      if( handle.isStarted() || handle.isFinished() )
+      H handle = task.getHandle();
+      if( handle == null )
       {
-         throw new RuntimeException("Process handles cannot be reused.");
+         throw new RuntimeException("An Asynchronous task should always return a non-null handle");
       }
 
-      process.prepare(handle);
-      handle.start();
-
-      asynchronousExecutor.runAsynchronously(process, handle);
+      asynchronousTaskExecutor.runAsynchronously(task, Identity.instance());
+      return handle;
    }
 
 }

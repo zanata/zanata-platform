@@ -20,8 +20,6 @@
  */
 package org.zanata.action;
 
-import static org.zanata.rest.dto.stats.TranslationStatistics.StatUnit.WORD;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,7 +56,6 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.process.CopyTransProcessHandle;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
@@ -68,6 +65,11 @@ import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.VersionGroupService;
 import org.zanata.util.DateUtil;
+
+import com.google.common.base.Optional;
+
+import static org.zanata.async.tasks.CopyTransTask.CopyTransTaskHandle;
+import static org.zanata.rest.dto.stats.TranslationStatistics.StatUnit.WORD;
 
 @Name("viewAllStatusAction")
 @Scope(ScopeType.PAGE)
@@ -346,7 +348,7 @@ public class ViewAllStatusAction implements Serializable
 
    public int getCopyTransProgress()
    {
-      CopyTransProcessHandle handle = copyTransManager.getCopyTransProcessHandle(getProjectIteration());
+      CopyTransTaskHandle handle = copyTransManager.getCopyTransProcessHandle(getProjectIteration());
       if (handle != null)
       {
          return handle.getCurrentProgress();
@@ -360,7 +362,7 @@ public class ViewAllStatusAction implements Serializable
 
    public int getCopyTransMaxProgress()
    {
-      CopyTransProcessHandle handle = copyTransManager.getCopyTransProcessHandle(getProjectIteration());
+      CopyTransTaskHandle handle = copyTransManager.getCopyTransProcessHandle(getProjectIteration());
       if (handle != null)
       {
          return handle.getMaxProgress();
@@ -373,20 +375,23 @@ public class ViewAllStatusAction implements Serializable
 
    public String getCopyTransStartTime()
    {
-      CopyTransProcessHandle handle = copyTransManager.getCopyTransProcessHandle(getProjectIteration());
-      long durationSinceStart = 0;
-      if (handle.isStarted())
-      {
-         durationSinceStart = (System.currentTimeMillis() - handle.getStartTime());
-      }
-
+      CopyTransTaskHandle handle = copyTransManager.getCopyTransProcessHandle(getProjectIteration());
+      long durationSinceStart = (System.currentTimeMillis() - handle.getStartTime());
       return formatTimePeriod(durationSinceStart);
    }
 
    public String getCopyTransEstimatedTimeLeft()
    {
-      CopyTransProcessHandle handle = copyTransManager.getCopyTransProcessHandle(getProjectIteration());
-      return formatTimePeriod(handle.getEstimatedTimeRemaining());
+      CopyTransTaskHandle handle = copyTransManager.getCopyTransProcessHandle(getProjectIteration());
+      Optional<Long> estimatedTimeRemaining = handle.getEstimatedTimeRemaining();
+      if(estimatedTimeRemaining.isPresent())
+      {
+         return formatTimePeriod(estimatedTimeRemaining.get());
+      }
+      else
+      {
+         return "";
+      }
    }
 
    // FIXME this is not localizable
@@ -396,7 +401,7 @@ public class ViewAllStatusAction implements Serializable
    {
       if (!isCopyTransRunning())
       {
-         CopyTransProcessHandle recentProcessHandle = copyTransManager.getMostRecentlyFinished(getProjectIteration());
+         CopyTransTaskHandle recentProcessHandle = copyTransManager.getCopyTransProcessHandle(getProjectIteration());
          StringBuilder message = new StringBuilder("Last Translation copy ");
 
          if (recentProcessHandle == null)
@@ -450,7 +455,7 @@ public class ViewAllStatusAction implements Serializable
       return null;
    }
 
-   public CopyTransProcessHandle getCopyTransProcessHandle()
+   public CopyTransTaskHandle getCopyTransProcessHandle()
    {
       return copyTransManager.getCopyTransProcessHandle(getProjectIteration());
    }
@@ -458,7 +463,7 @@ public class ViewAllStatusAction implements Serializable
    private String formatTimePeriod(long durationInMillis)
    {
       PeriodFormatter formatter = PERIOD_FORMATTER_BUILDER.toFormatter();
-      CopyTransProcessHandle handle = copyTransManager.getCopyTransProcessHandle(getProjectIteration());
+      CopyTransTaskHandle handle = copyTransManager.getCopyTransProcessHandle(getProjectIteration());
       Period period = new Period(durationInMillis);
 
       if (period.toStandardMinutes().getMinutes() <= 0)

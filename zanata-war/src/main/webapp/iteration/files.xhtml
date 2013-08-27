@@ -205,13 +205,13 @@
                                   label="#{messages['jsf.generatezip.ProgressLabel']}"
                                   minValue="-1"
                                   maxValue="#{projectIterationZipFileAction.zipFilePrepHandle.maxProgress - 1}"
-                                  enabled="#{projectIterationZipFileAction.zipFilePrepHandle.inProgress}"
+                                  enabled="#{not projectIterationZipFileAction.zipFilePrepHandle.done}"
                                   ignoreDupResponses="true"
                                   reRenderAfterComplete="downloadProgressBar">
                     <f:facet name="finish">
                         <script type="text/javascript">
                             #{rich:component('downloadProgressPanel')}.hide();
-                            window.location = "#{facesContext.externalContext.requestContextPath}/rest/file/download/#{projectIterationZipFileAction.zipFilePrepHandle.downloadId}";
+                            window.location = "#{facesContext.externalContext.requestContextPath}/rest/file/download/#{projectIterationZipFileAction.zipFilePrepHandle.get()}";
                         </script>
                     </f:facet>
                 </rich:progressBar>

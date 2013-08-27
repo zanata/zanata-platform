@@ -27,6 +27,7 @@ import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;
 import org.hibernate.criterion.Projections;
 import org.hibernate.search.FullTextSession;
+import org.zanata.async.AsyncTaskHandle;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
@@ -38,10 +39,10 @@ public class ClassIndexer<T>
 
    private final AbstractIndexingStrategy<T> indexingStrategy;
    private FullTextSession session;
-   private IndexerProcessHandle handle;
+   private AsyncTaskHandle handle;
    private Class<?> entityType;
 
-   public ClassIndexer(FullTextSession session, IndexerProcessHandle handle,
+   public ClassIndexer(FullTextSession session, AsyncTaskHandle handle,
          Class<?> entityType, AbstractIndexingStrategy<T> indexingStrategy)
    {
       this.session = session;
@@ -61,22 +62,14 @@ public class ClassIndexer<T>
       return result.intValue();
    }
 
-   public void index()
+   public void index() throws Exception
    {
       log.info("Setting manual-flush and ignore-cache for {}", entityType);
       session.setFlushMode(FlushMode.MANUAL);
       session.setCacheMode(CacheMode.IGNORE);
-      try
-      {
-         indexingStrategy.invoke(handle);
-         session.flushToIndexes(); // apply changes to indexes
-         session.clear(); // clear since the queue is processed
-      }
-      catch (Exception e)
-      {
-         log.warn("Unable to index objects of type {}", e, entityType.getName());
-         handle.setHasError(true);
-      }
+      indexingStrategy.invoke(handle);
+      session.flushToIndexes(); // apply changes to indexes
+      session.clear(); // clear since the queue is processed
    }
 
 }

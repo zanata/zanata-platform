@@ -24,6 +24,7 @@ import static org.jboss.seam.international.StatusMessage.Severity.ERROR;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.faces.event.ValueChangeEvent;
 
@@ -40,14 +41,16 @@ import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.framework.EntityHome;
+import org.zanata.async.AsyncTaskHandle;
+import org.zanata.async.SimpleAsyncTask;
 import org.zanata.dao.TransMemoryDAO;
 import org.zanata.exception.EntityMissingException;
 import org.zanata.model.tm.TransMemory;
-import org.zanata.process.ProcessHandle;
-import org.zanata.process.RunnableProcess;
+import org.zanata.service.AsyncTaskManagerService;
 import org.zanata.rest.service.TranslationMemoryResourceService;
-import org.zanata.service.ProcessManagerService;
 import org.zanata.service.SlugEntityService;
+
+import com.google.common.base.Optional;
 
 /**
  * Controller class for the Translation Memory UI.
@@ -69,7 +72,7 @@ public class TranslationMemoryAction extends EntityHome<TransMemory>
    private SlugEntityService slugEntityServiceImpl;
 
    @In
-   private ProcessManagerService processManagerServiceImpl;
+   private AsyncTaskManagerService asyncTaskManagerServiceImpl;
 
    private List<TransMemory> transMemoryList;
 
@@ -78,7 +81,7 @@ public class TranslationMemoryAction extends EntityHome<TransMemory>
     */
    @In(scope=ScopeType.PAGE, required=false)
    @Out(scope=ScopeType.PAGE, required=false)
-   private ProcessHandle myProcessHandle;
+   private AsyncTaskHandle myTaskHandle;
 
    /**
     * Stores the last process error, but only for the duration of the event.
@@ -112,19 +115,17 @@ public class TranslationMemoryAction extends EntityHome<TransMemory>
 
    public void clearTransMemory(final String transMemorySlug)
    {
-      this.myProcessHandle = new ProcessHandle();
-      processManagerServiceImpl.startProcess(
-            new RunnableProcess<ProcessHandle>()
+      asyncTaskManagerServiceImpl.startTask(
+            new SimpleAsyncTask<Void>()
             {
                @Override
-               protected void run(ProcessHandle handle) throws Throwable
+               public Void call() throws Exception
                {
                   TranslationMemoryResourceService tmResource = (TranslationMemoryResourceService) Component.getInstance("translationMemoryResource");
                   String msg = tmResource.deleteTranslationUnitsUnguarded(transMemorySlug).toString();
-                  log.info(msg);
+                  return null;
                }
             },
-            myProcessHandle,
             new ClearTransMemoryProcessKey(transMemorySlug)
       );
 
@@ -133,7 +134,7 @@ public class TranslationMemoryAction extends EntityHome<TransMemory>
 
    private boolean isProcessing()
    {
-      return myProcessHandle != null;
+      return myTaskHandle != null;
    }
 
    public boolean isProcessErrorPollEnabled()
@@ -150,13 +151,22 @@ public class TranslationMemoryAction extends EntityHome<TransMemory>
    public String getProcessError()
    {
       if (myProcessError != null) return myProcessError;
-      if (myProcessHandle != null && myProcessHandle.isFinished())
+      if (myTaskHandle != null && myTaskHandle.isDone())
       {
-         processManagerServiceImpl.removeIfInactive(myProcessHandle);
-         Throwable error = myProcessHandle.getError();
-         // remember the result, just until this event finishes
-         this.myProcessError = error != null ? error.getMessage() : "";
-         this.myProcessHandle = null;
+         try
+         {
+            myTaskHandle.get();
+         }
+         catch (InterruptedException e)
+         {
+            // no error, just interrupted
+         }
+         catch (ExecutionException e)
+         {
+            // remember the result, just until this event finishes
+            this.myProcessError = e.getCause() != null ? e.getCause().getMessage() : "";
+         }
+         myTaskHandle = null;
          return myProcessError;
       }
       return "";
@@ -178,8 +188,9 @@ public class TranslationMemoryAction extends EntityHome<TransMemory>
 
    public boolean isTransMemoryBeingCleared(String transMemorySlug)
    {
-      ProcessHandle handle = processManagerServiceImpl.getProcessHandle( new ClearTransMemoryProcessKey(transMemorySlug) );
-      return handle != null && !handle.isFinished();
+      AsyncTaskHandle<Void> handle =
+            asyncTaskManagerServiceImpl.getHandleByKey(new ClearTransMemoryProcessKey(transMemorySlug));
+      return handle != null && !handle.isDone();
    }
 
    public boolean deleteTransMemoryDisabled(String transMemorySlug)

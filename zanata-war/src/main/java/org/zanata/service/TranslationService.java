@@ -84,7 +84,7 @@ public interface TranslationService
     *             and locale.
     * @see TranslationService#translateAllInDoc(String, String, String, org.zanata.common.LocaleId, org.zanata.rest.dto.resource.TranslationsResource, java.util.Set, org.zanata.common.MergeType)
     */
-   public void translateAllInDoc(String projectSlug, String iterationSlug, String docId, LocaleId locale,
+   public List<String> translateAllInDoc(String projectSlug, String iterationSlug, String docId, LocaleId locale,
                                          TranslationsResource translations, Set<String> extensions, MergeType mergeType,
                                          boolean lock);
 

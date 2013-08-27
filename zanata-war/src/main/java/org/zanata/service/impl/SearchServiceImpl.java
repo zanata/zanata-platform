@@ -51,7 +51,7 @@ public class SearchServiceImpl implements SearchService
       reindexAsync.setOptions(purgeAll, indexAll, optimizeAll);
       boolean startedReindex = false;
 
-      if( !reindexAsync.getProcessHandle().isInProgress() )
+      if( reindexAsync.getProcessHandle().isDone() )
       {
          startedReindex = true;
          reindexAsync.startProcess();
@@ -65,7 +65,7 @@ public class SearchServiceImpl implements SearchService
    @Override
    public ReindexStatus getReindexStatus()
    {
-      if( !reindexAsync.getProcessHandle().isInProgress() )
+      if( reindexAsync.getProcessHandle().isDone() )
       {
          throw new ZanataServiceException("Reindexing not in currently in progress", 404);
       }
@@ -74,8 +74,10 @@ public class SearchServiceImpl implements SearchService
       status.setCurrentElementType(reindexAsync.getCurrentClassName());
       status.setIndexedElements(reindexAsync.getProcessHandle().getCurrentProgress());
       status.setTotalElements(reindexAsync.getProcessHandle().getMaxProgress());
-      status.setTimeElapsed(reindexAsync.getProcessHandle().getElapsedTime());
-      status.setTimeRemaining(reindexAsync.getProcessHandle().getEstimatedTimeRemaining());
+      // TODO This service is currently not being used
+      // To re-add these properties, just implement TimedAsyncHandle
+      //status.setTimeElapsed(reindexAsync.getProcessHandle().getElapsedTime());
+      //status.setTimeRemaining(reindexAsync.getProcessHandle().getEstimatedTimeRemaining());
 
       return status;
    }
