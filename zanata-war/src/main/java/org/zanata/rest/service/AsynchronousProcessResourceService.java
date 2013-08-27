@@ -102,8 +102,6 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
                                                final @QueryParam("ext") Set<String> extensions,
                                                final @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans)
    {
-      String errorMessage = null;
-
       HProjectIteration hProjectIteration = retrieveAndCheckIteration(projectSlug, iterationSlug, true);
 
       resourceUtils.validateExtensions(extensions); //gettext, comment
@@ -116,37 +114,30 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
          if (!document.isObsolete())
          {
             // updates must happen through PUT on the actual resource
-           errorMessage = "A document with name " + resource.getName() + " already exists.";
+            ProcessStatus status = new ProcessStatus();
+            status.setStatusCode(ProcessStatusCode.Failed);
+            status.getMessages().add("A document with name " + resource.getName() + " already exists.");
+            return status;
          }
       }
 
-      if( errorMessage == null )
-      {
-         SimpleAsyncTask<Void> task =
-               new SimpleAsyncTask<Void>()
+      SimpleAsyncTask<Void> task =
+            new SimpleAsyncTask<Void>()
+            {
+               @Override
+               public Void call() throws Exception
                {
-                  @Override
-                  public Void call() throws Exception
-                  {
-                     DocumentService documentServiceImpl =
-                           (DocumentService)Component.getInstance(DocumentServiceImpl.class);
-                     documentServiceImpl.saveDocument(
-                           projectSlug, iterationSlug, resource, extensions, copytrans, true);
-                     getHandle().setCurrentProgress(getHandle().getMaxProgress()); // TODO This should update with real progress
-                     return null;
-                  }
-               };
+                  DocumentService documentServiceImpl =
+                        (DocumentService)Component.getInstance(DocumentServiceImpl.class);
+                  documentServiceImpl.saveDocument(
+                        projectSlug, iterationSlug, resource, extensions, copytrans, true);
+                  getHandle().setCurrentProgress(getHandle().getMaxProgress()); // TODO This should update with real progress
+                  return null;
+               }
+            };
 
-         String taskId = asyncTaskManagerServiceImpl.startTask(task);
-         return getProcessStatus(taskId); // TODO Change to return 202 Accepted, with a url to get the progress
-      }
-      else
-      {
-         ProcessStatus status = new ProcessStatus();
-         status.setStatusCode(ProcessStatusCode.Failed);
-         status.getMessages().add(errorMessage);
-         return status;
-      }
+      String taskId = asyncTaskManagerServiceImpl.startTask(task);
+      return getProcessStatus(taskId); // TODO Change to return 202 Accepted, with a url to get the progress
    }
 
    @Override
@@ -194,49 +185,41 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
       identity.checkPermission("modify-translation", this.localeServiceImpl.getByLocaleId(locale),
             this.getSecuredIteration(projectSlug, iterationSlug).getProject());
 
-      String errorMessage = null;
-      MergeType mergeType = null;
+      MergeType mergeType;
       try
       {
          mergeType = MergeType.valueOf(merge.toUpperCase());
       }
       catch (Exception e)
       {
-         errorMessage = "bad merge type " + merge;
+         ProcessStatus status = new ProcessStatus();
+         status.setStatusCode(ProcessStatusCode.Failed);
+         status.getMessages().add("bad merge type " + merge);
+         return status;
       }
 
       final String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       final MergeType finalMergeType = mergeType;
 
-      if( errorMessage == null )
+      SimpleAsyncTask<List<String>> task = new SimpleAsyncTask<List<String>>()
       {
-         SimpleAsyncTask<List<String>> task = new SimpleAsyncTask<List<String>>()
+         @Override
+         public List<String> call() throws Exception
          {
-            @Override
-            public List<String> call() throws Exception
-            {
-               TranslationService translationServiceImpl =
-                     (TranslationService)Component.getInstance(TranslationServiceImpl.class);
+            TranslationService translationServiceImpl =
+                  (TranslationService)Component.getInstance(TranslationServiceImpl.class);
 
-               // Translate
-               List<String> messages =
-                  translationServiceImpl.translateAllInDoc(projectSlug, iterationSlug, id, locale, translatedDoc,
-                     extensions, finalMergeType, true);
+            // Translate
+            List<String> messages =
+               translationServiceImpl.translateAllInDoc(projectSlug, iterationSlug, id, locale, translatedDoc,
+                  extensions, finalMergeType, true);
 
-               return messages;
-            }
-         };
+            return messages;
+         }
+      };
 
-         String taskId = asyncTaskManagerServiceImpl.startTask(task);
-         return this.getProcessStatus(taskId);
-      }
-      else
-      {
-         ProcessStatus status = new ProcessStatus();
-         status.setStatusCode(ProcessStatusCode.Failed);
-         status.getMessages().add(errorMessage);
-         return status;
-      }
+      String taskId = asyncTaskManagerServiceImpl.startTask(task);
+      return this.getProcessStatus(taskId);
    }
 
    @Override
