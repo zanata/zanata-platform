@@ -58,4 +58,11 @@ public interface ConfigurableOptions extends BasicOptions
    public void setLogHttp(boolean traceLogging);
 
 
+   /**
+    * Disable SSL certificate verification when connecting to Zanata host by https.
+    */
+   boolean isDisableSSLCert();
+
+   @Option(name = "--disable-ssl-cert", usage = "Whether verification of SSL certificates should be disabled")
+   public void setDisableSSLCert(boolean disableSSLCert);
 }

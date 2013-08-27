@@ -60,6 +60,7 @@ public abstract class ConfigurableOptionsImpl extends BasicOptionsImpl implement
     * Enable HTTP message logging.
     */
    private boolean logHttp;
+   private boolean disableSSLCert;
 
    public ConfigurableOptionsImpl()
    {
@@ -127,6 +128,20 @@ public abstract class ConfigurableOptionsImpl extends BasicOptionsImpl implement
    public void setLogHttp(boolean logHttp)
    {
       this.logHttp = logHttp;
+   }
+
+
+   @Override
+   public boolean isDisableSSLCert()
+   {
+      return disableSSLCert;
+   }
+
+   @Override
+   @Option(name = "--disable-ssl-cert", usage = "Whether verification of SSL certificates should be disabled")
+   public void setDisableSSLCert(boolean disableSSLCert)
+   {
+      this.disableSSLCert = disableSSLCert;
    }
 
 }

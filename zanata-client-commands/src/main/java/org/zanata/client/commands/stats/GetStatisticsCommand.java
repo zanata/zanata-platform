@@ -50,6 +50,7 @@ public class GetStatisticsCommand extends ConfigurableCommand<GetStatisticsOptio
    @Override
    public void run() throws Exception
    {
+
       String[] localeListArg = null;
 
       if( getOpts().getLocaleMapList() != null )
