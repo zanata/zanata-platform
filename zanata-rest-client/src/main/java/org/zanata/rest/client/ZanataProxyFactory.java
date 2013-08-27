@@ -59,11 +59,8 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
     */
    public ZanataProxyFactory(URI base, String username, String apiKey, VersionInfo clientApiVersion, boolean logHttp, boolean sslCertDisabled)
    {
-      ClientExecutor clientExecutor = null;
-      if (sslCertDisabled)
-      {
-         clientExecutor = createClientExecutor();
-      }
+      ClientExecutor clientExecutor = sslCertDisabled ? createClientExecutor() : null;
+
       crf = new ClientRequestFactory(clientExecutor, null, fixBase(base));
       registerPrefixInterceptor(new TraceDebugInterceptor(logHttp));
       registerPrefixInterceptor(new ApiKeyHeaderDecorator(username, apiKey, clientApiVersion.getVersionNo()));
@@ -96,7 +93,7 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
       }
    }
 
-   protected ClientExecutor createClientExecutor()
+   private ClientExecutor createClientExecutor()
    {
       try
       {
