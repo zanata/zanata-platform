@@ -160,10 +160,10 @@ public class OptionsUtil
          }
          if (opts.isDisableSSLCert())
          {
-            log.warn("SSL certificate verification for [{}] will be disabled.", opts.getUrl());
-            log.warn("You should consider adding the certificate instead of disabling it.");
+            log.warn("SSL certificate verification will be disabled. You should consider adding the certificate instead of disabling it.");
          }
-         return new ZanataProxyFactory(opts.getUrl().toURI(), opts.getUsername(), opts.getKey(), VersionUtility.getAPIVersionInfo(), opts.getLogHttp(), opts.isDisableSSLCert());
+         return new ZanataProxyFactory(opts.getUrl().toURI(), opts.getUsername(), opts.getKey(),
+               VersionUtility.getAPIVersionInfo(), opts.getLogHttp(), opts.isDisableSSLCert());
       }
       catch (URISyntaxException e)
       {

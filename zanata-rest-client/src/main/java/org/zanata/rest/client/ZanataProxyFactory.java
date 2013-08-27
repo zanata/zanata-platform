@@ -93,7 +93,7 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory
       }
    }
 
-   private ClientExecutor createClientExecutor()
+   private static ClientExecutor createClientExecutor()
    {
       try
       {
