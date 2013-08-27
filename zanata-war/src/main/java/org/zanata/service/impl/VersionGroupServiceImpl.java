@@ -23,7 +23,6 @@ package org.zanata.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -157,8 +156,9 @@ public class VersionGroupServiceImpl implements VersionGroupService
    }
 
    @Override
-   public boolean isVersionInGroup(HIterationGroup group, Long projectIterationId)
+   public boolean isVersionInGroup(String groupSlug, Long projectIterationId)
    {
+      HIterationGroup group = getBySlug(groupSlug);
       if (group != null && projectIterationId != null)
       {
          for (HProjectIteration iteration : group.getProjectIterations())

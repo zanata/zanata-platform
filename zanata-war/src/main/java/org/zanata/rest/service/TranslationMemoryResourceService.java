@@ -41,6 +41,8 @@ import org.zanata.dao.TextFlowStreamingDAO;
 import org.zanata.dao.TransMemoryDAO;
 import org.zanata.dao.TransMemoryStreamingDAO;
 import org.zanata.exception.EntityMissingException;
+import org.zanata.exception.ZanataServiceException;
+import org.zanata.lock.Lock;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
@@ -48,11 +50,12 @@ import org.zanata.model.ITextFlow;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.service.LocaleService;
+import org.zanata.service.LockManagerService;
 import org.zanata.tmx.TMXParser;
 import org.zanata.util.CloseableIterator;
 
 import com.google.common.base.Optional;
-@Name("translationMemoryResourceService")
+@Name("translationMemoryResource")
 @Path("/tm")
 @Transactional(TransactionPropagationType.SUPPORTS)
 @Slf4j
@@ -63,6 +66,8 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
 
    @In
    private LocaleService localeServiceImpl;
+   @In
+   private LockManagerService lockManagerServiceImpl;
    @In
    private RestSlugValidator restSlugValidator;
    @In
@@ -135,26 +140,87 @@ public class TranslationMemoryResourceService implements TranslationMemoryResour
    @Restrict("#{s:hasRole('admin')}")
    public Response updateTranslationMemory(String slug, InputStream input) throws Exception
    {
-      Optional<TransMemory> tm = transMemoryDAO.getBySlug(slug);
-      tmxParser.parseAndSaveTMX(input, getTM(tm, slug));
-      return Response.ok().build();
+      Lock tmLock = lockTM(slug);
+      try
+      {
+         Optional<TransMemory> tm = transMemoryDAO.getBySlug(slug);
+         tmxParser.parseAndSaveTMX(input, getTM(tm, slug));
+         return Response.ok().build();
+      }
+      finally
+      {
+         lockManagerServiceImpl.release(tmLock);
+      }
    }
 
    private TransMemory getTM(Optional<TransMemory> tm, String slug)
    {
       if (!tm.isPresent())
       {
-         throw new EntityMissingException("Translation memory " + slug + " was not found.");
+         throw new EntityMissingException("Translation memory '" + slug + "' was not found.");
       }
       return tm.get();
    }
 
+   @Restrict("#{s:hasRole('admin')}")
+   public Object deleteTranslationMemory(String slug) throws EntityMissingException
+   {
+      Lock tmLock = lockTM(slug);
+      try
+      {
+         Optional<TransMemory> transMemory = transMemoryDAO.getBySlug(slug);
+         if (transMemory.isPresent())
+         {
+            transMemoryDAO.makeTransient(transMemory.get());
+            return "Translation memory '"+slug+"' deleted";
+         }
+         else
+         {
+            throw new EntityMissingException(slug);
+         }
+      }
+      finally
+      {
+         lockManagerServiceImpl.release(tmLock);
+      }
+   }
+
    @Override
    @Restrict("#{s:hasRole('admin')}")
-   public Response deleteTranslationUnits(String slug)
+   public Object deleteTranslationUnits(String slug)
    {
-      transMemoryDAO.deleteTransMemoryContents(slug);
-      return Response.ok().build();
+      return deleteTranslationUnitsUnguarded(slug);
+   }
+
+   /**
+    * Deletes without checking security permissions (useful for background
+    * processes which do the check ahead of time).
+    * @param slug
+    * @return
+    */
+   public Object deleteTranslationUnitsUnguarded(String slug)
+   {
+      Lock tmLock = lockTM(slug);
+      try
+      {
+         int numDeleted = transMemoryDAO.deleteTransMemoryContents(slug);
+         return numDeleted + " translation units deleted";
+      }
+      finally
+      {
+         lockManagerServiceImpl.release(tmLock);
+      }
+   }
+
+   private Lock lockTM(String slug)
+   {
+      Lock tmLock = new Lock("tm", slug);
+      String owner = lockManagerServiceImpl.attainLockOrReturnOwner(tmLock);
+      if (owner != null)
+      {
+         throw new ZanataServiceException("Translation Memory '"+slug+"' is locked by user: "+owner, 503);
+      }
+      return tmLock;
    }
 
    private Response buildTMX(

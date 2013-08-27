@@ -30,16 +30,21 @@ import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
+import org.zanata.model.HProject;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetReviewComment;
+import org.zanata.security.ZanataIdentity;
+import org.zanata.service.LocaleService;
 import org.zanata.service.SecurityService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.server.TranslationWorkspace;
+import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.shared.model.ReviewComment;
 import org.zanata.webtrans.shared.model.ReviewCommentId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
+import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentAction;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentResult;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
@@ -71,25 +76,40 @@ public class AddReviewCommentHandler extends AbstractActionHandler<AddReviewComm
    @In
    TransUnitTransformer transUnitTransformer;
 
+   @In
+   private LocaleService localeServiceImpl;
+
+   @In
+   private TranslationWorkspaceManager translationWorkspaceManager;
+
+   @In
+   private ZanataIdentity identity;
+
    @Override
    public AddReviewCommentResult execute(AddReviewCommentAction action, ExecutionContext context) throws ActionException
    {
       throwExceptionIfCommentIsInvalid(action);
 
-      SecurityService.SecurityCheckResult securityCheckResult = securityServiceImpl.checkPermission(action, SecurityService.TranslationAction.MODIFY);
-      HLocale hLocale = securityCheckResult.getLocale();
-      TranslationWorkspace workspace = securityCheckResult.getWorkspace();
+      WorkspaceId workspaceId = action.getWorkspaceId();
+      HProject project = securityServiceImpl.checkWorkspaceStatus(workspaceId);
 
-      HTextFlowTarget hTextFlowTarget = textFlowTargetDAO.getTextFlowTarget(action.getTransUnitId().getValue(), hLocale.getLocaleId());
+      HTextFlowTarget hTextFlowTarget = textFlowTargetDAO.getTextFlowTarget(action.getTransUnitId().getValue(), workspaceId.getLocaleId());
       if (hTextFlowTarget == null || hTextFlowTarget.getState().isUntranslated())
       {
          throw new ActionException("comment on untranslated message is pointless!");
       }
+
+      HLocale locale = localeServiceImpl.getByLocaleId(workspaceId.getLocaleId());
+
+      identity.checkPermission("review-comment", locale, project);
+
+      TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(workspaceId);
+
       HTextFlowTargetReviewComment hComment = hTextFlowTarget.addReviewComment(action.getContent(), authenticatedAccount.getPerson());
       textFlowTargetDAO.makePersistent(hTextFlowTarget);
       textFlowTargetDAO.flush();
 
-      publishTransUnitUpdatedEvent(action, hLocale, hTextFlowTarget, workspace);
+      publishTransUnitUpdatedEvent(action, locale, hTextFlowTarget, workspace);
 
       return new AddReviewCommentResult(toDTO(hComment));
    }

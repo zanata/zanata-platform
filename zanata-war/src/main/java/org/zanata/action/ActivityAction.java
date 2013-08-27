@@ -28,6 +28,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.annotation.CachedMethodResult;
 import org.zanata.common.ActivityType;
@@ -49,6 +50,7 @@ import org.zanata.util.ZanataMessages;
  */
 @Name("activityAction")
 @Scope(ScopeType.PAGE)
+@Restrict("#{identity.loggedIn}")
 public class ActivityAction implements Serializable
 {
    private static final long serialVersionUID = 1L;
@@ -128,20 +130,6 @@ public class ActivityAction implements Serializable
       {
          HTextFlowTarget tft = (HTextFlowTarget) lastTarget;
          content = tft.getTextFlow().getContents().get(0);
-      }
-      else if (activity.getActivityType() == ActivityType.UPLOAD_SOURCE_DOCUMENT)
-      {
-         //not supported for upload source action
-      }
-      else if (activity.getActivityType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT)
-      {
-         HDocument document = (HDocument) lastTarget;
-         HTextFlowTarget tft = documentDAO.getLastTranslatedTargetOrNull(document.getId());
-         
-         if (tft != null)
-         {
-            content = tft.getTextFlow().getContents().get(0);
-         }
       }
 
       return ShortString.shorten(content);

@@ -19,7 +19,7 @@
         }
 
         .untranslated {
-            background: #a2b4c3;
+            background: #c6d2db;
             z-index: 0;
         }
 

@@ -42,6 +42,7 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.DocumentService;
 import org.zanata.service.LocaleService;
+import org.zanata.service.LockManagerService;
 
 /**
  * Default implementation of the {@link DocumentService} business service interface.
@@ -68,7 +69,7 @@ public class DocumentServiceImpl implements DocumentService
    private CopyTransService copyTransServiceImpl;
 
    @In
-   private LockManagerServiceImpl lockManagerServiceImpl;
+   private LockManagerService lockManagerServiceImpl;
 
    @In
    private ResourceUtils resourceUtils;

@@ -78,16 +78,18 @@ public class TransMemoryDAO extends AbstractDAOImpl<TransMemory, Long>
     * this process is broken into multiple transactions and could take a long time.
     *
     * @param slug Translation memory identifier to clear.
+    * @return the number of trans units deleted (not including variants)
     */
-   public void deleteTransMemoryContents(@Nonnull String slug)
+   public int deleteTransMemoryContents(@Nonnull String slug)
    {
+      int totalDeleted = 0;
       Optional<TransMemory> tm = getBySlug(slug);
       if (!tm.isPresent())
       {
          throw new EntityMissingException("Translation memory " + slug + " was not found.");
       }
 
-      final int batchSize = 1000;
+      final int batchSize = 100;
       int deleted;
       do
       {
@@ -104,7 +106,7 @@ public class TransMemoryDAO extends AbstractDAOImpl<TransMemory, Long>
             session.createQuery("from TransMemoryUnit tu where tu.translationMemory = :tm")
                   .setParameter("tm", tm.get())
                   .setFirstResult(0)
-                  .setFetchSize(batchSize)
+                  .setMaxResults(batchSize)
                   .list();
 
          // Remove each batch (Takes advantage of CASCADE deletes on the db)
@@ -118,6 +120,7 @@ public class TransMemoryDAO extends AbstractDAOImpl<TransMemory, Long>
             deleted = session.createQuery("delete TransMemoryUnit tu where tu in :tus")
                         .setParameterList("tus", toRemove)
                         .executeUpdate();
+            totalDeleted += deleted;
          }
          else
          {
@@ -134,6 +137,7 @@ public class TransMemoryDAO extends AbstractDAOImpl<TransMemory, Long>
          }
       }
       while(deleted == batchSize);
+      return totalDeleted;
    }
 
    public @Nullable TransMemoryUnit findTranslationUnit(

@@ -19,6 +19,7 @@ import function org.zanata.security.SecurityFunctions.isUserAllowedAccess;
 import function org.zanata.security.SecurityFunctions.isUserTranslatorOfLanguage;
 import function org.zanata.security.SecurityFunctions.isUserReviewerOfLanguage;
 import function org.zanata.security.SecurityFunctions.isUserCoordinatorOfLanguage;
+import function org.zanata.security.SecurityFunctions.isLanguageTeamMember;
 
 /* admin can do anything */
 rule AdminAnything
@@ -509,6 +510,42 @@ when
   eval(authenticatedPerson != null)
   $project: HProject(
     eval( authenticatedPerson.isMaintainer($project) )
+  )
+then
+  check.grant();
+end
+
+/*****************************************************************************************
+
+  Review comment rules
+
+******************************************************************************************/
+rule LanguageTeamMemberReviewerComment
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(action == "review-comment", granted == false)
+  authenticatedPerson: HPerson()
+  eval(authenticatedPerson != null)
+  $project: HProject(
+    eval( isUserAllowedAccess($project) )
+  )
+  $locale: HLocale(
+    eval( isLanguageTeamMember($locale))
+  )
+then
+  check.grant();
+end
+
+rule ProjectMaintainerReviewerComment
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(action == "review-comment", granted == false)
+  authenticatedPerson: HPerson()
+  eval(authenticatedPerson != null)
+  $project: HProject(
+    eval(authenticatedPerson.isMaintainer($project))
   )
 then
   check.grant();
