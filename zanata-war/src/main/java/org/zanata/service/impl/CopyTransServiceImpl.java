@@ -323,9 +323,6 @@ public class CopyTransServiceImpl implements CopyTransService
    @Override
    public void copyTransForDocument(HDocument document, HCopyTransOptions copyTransOpts)
    {
-      Optional<CopyTransTaskHandle> asynchronousProcessHandle =
-            AsyncUtils.getEventAsyncHandle(CopyTransTaskHandle.class);
-
       // use project level options
       if( copyTransOpts == null )
       {
