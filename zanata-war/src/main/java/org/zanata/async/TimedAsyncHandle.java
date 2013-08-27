@@ -20,6 +20,8 @@
  */
 package org.zanata.async;
 
+import com.google.common.base.Optional;
+
 import lombok.Getter;
 
 /**
@@ -46,10 +48,10 @@ public class TimedAsyncHandle<V> extends AsyncTaskHandle<V>
    }
 
    /**
-    * @return The estimated time (in milliseconds) remaining for completion of the process.
-    * If the system is not able to provide an estimate, this method returns -1.
+    * @return An optional container with the estimated time remaining for the process to finish, or an
+    * empty container if the time cannot be estimated.
     */
-   public long getEstimatedTimeRemaining()
+   public Optional<Long> getEstimatedTimeRemaining()
    {
       if( this.startTime > 0 && currentProgress > 0 )
       {
@@ -57,11 +59,11 @@ public class TimedAsyncHandle<V> extends AsyncTaskHandle<V>
          long timeElapsed = currentTime - this.startTime;
          long averageTimePerProgressUnit = timeElapsed / this.currentProgress;
 
-         return averageTimePerProgressUnit * (this.maxProgress - this.currentProgress);
+         return Optional.of(averageTimePerProgressUnit * (this.maxProgress - this.currentProgress));
       }
       else
       {
-         return -1;
+         return Optional.absent();
       }
    }
 

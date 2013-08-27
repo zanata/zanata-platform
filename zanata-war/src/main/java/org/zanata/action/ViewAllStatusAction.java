@@ -63,6 +63,8 @@ import org.zanata.service.LocaleService;
 import org.zanata.service.VersionGroupService;
 import org.zanata.util.DateUtil;
 
+import com.google.common.base.Optional;
+
 import static org.zanata.async.tasks.CopyTransTask.CopyTransTaskHandle;
 import static org.zanata.rest.dto.stats.TranslationStatistics.StatUnit.WORD;
 
@@ -407,7 +409,15 @@ public class ViewAllStatusAction implements Serializable
    public String getCopyTransEstimatedTimeLeft()
    {
       CopyTransTaskHandle handle = copyTransManager.getCopyTransProcessHandle(getProjectIteration());
-      return formatTimePeriod(handle.getEstimatedTimeRemaining());
+      Optional<Long> estimatedTimeRemaining = handle.getEstimatedTimeRemaining();
+      if(estimatedTimeRemaining.isPresent())
+      {
+         return formatTimePeriod(estimatedTimeRemaining.get());
+      }
+      else
+      {
+         return "";
+      }
    }
 
    // FIXME this is not localizable
