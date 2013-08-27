@@ -50,10 +50,6 @@ public class GetStatisticsCommand extends ConfigurableCommand<GetStatisticsOptio
    @Override
    public void run() throws Exception
    {
-      if (getOpts().isSSLCertDisabled())
-      {
-
-      }
 
       String[] localeListArg = null;
 
