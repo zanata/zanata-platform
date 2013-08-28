@@ -29,7 +29,6 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.async.Asynchronous;
-import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.RunAsOperation;
 
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +48,8 @@ import lombok.extern.slf4j.Slf4j;
 public class AsynchronousTaskExecutor
 {
    @Asynchronous
-   public <V, H extends AsyncTaskHandle<V>> void runAsynchronously(final AsyncTask<V, H> task, final Identity runAs)
+   public <V, H extends AsyncTaskHandle<V>> void runAsynchronously(final AsyncTask<V, H> task, final Principal runAsPpal,
+                                                                   final Subject runAsSubject)
    {
       AsyncUtils.outject(task.getHandle(), ScopeType.EVENT);
 
@@ -73,13 +73,13 @@ public class AsynchronousTaskExecutor
          @Override
          public Principal getPrincipal()
          {
-            return runAs.getPrincipal();
+            return runAsPpal;
          }
 
          @Override
          public Subject getSubject()
          {
-            return runAs.getSubject();
+            return runAsSubject;
          }
       };
 
