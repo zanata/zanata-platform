@@ -57,7 +57,8 @@ public class TaskExecutor
          throw new RuntimeException("An Asynchronous task should always return a non-null handle");
       }
 
-      asynchronousTaskExecutor.runAsynchronously(task, Identity.instance());
+      Identity identity = Identity.instance();
+      asynchronousTaskExecutor.runAsynchronously(task, identity.getPrincipal(), identity.getSubject());
       return handle;
    }
 

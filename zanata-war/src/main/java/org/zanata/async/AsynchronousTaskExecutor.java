@@ -29,8 +29,9 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.async.Asynchronous;
-import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.RunAsOperation;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * This class executes a Runnable Process asynchronously. Do not use this class directly.
@@ -43,10 +44,12 @@ import org.jboss.seam.security.RunAsOperation;
 @Name("asynchronousTaskExecutor")
 @Scope(ScopeType.STATELESS)
 @AutoCreate
+@Slf4j
 public class AsynchronousTaskExecutor
 {
    @Asynchronous
-   public <V, H extends AsyncTaskHandle<V>> void runAsynchronously(final AsyncTask<V, H> task, final Identity runAs)
+   public <V, H extends AsyncTaskHandle<V>> void runAsynchronously(final AsyncTask<V, H> task, final Principal runAsPpal,
+                                                                   final Subject runAsSubject)
    {
       AsyncUtils.outject(task.getHandle(), ScopeType.EVENT);
 
@@ -63,19 +66,20 @@ public class AsynchronousTaskExecutor
             catch (Exception t)
             {
                task.getHandle().setException(t);
+               AsynchronousTaskExecutor.log.error("Exception when executing an asynchronous task.", t);
             }
          }
 
          @Override
          public Principal getPrincipal()
          {
-            return runAs.getPrincipal();
+            return runAsPpal;
          }
 
          @Override
          public Subject getSubject()
          {
-            return runAs.getSubject();
+            return runAsSubject;
          }
       };
 
