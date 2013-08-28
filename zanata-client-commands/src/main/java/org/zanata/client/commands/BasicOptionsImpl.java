@@ -116,7 +116,7 @@ public abstract class BasicOptionsImpl implements BasicOptions
       this.interactiveMode = interactiveMode;
    }
 
-   @Option(name = "-B", usage = "Batch mode - no interactive prompt for confirmation")
+   @Option(name = "--batch-mode", aliases = "-B", usage = "Run in non-interactive (batch) mode")
    public void setBatchMode(boolean batchMode)
    {
       setInteractiveMode(!batchMode);
