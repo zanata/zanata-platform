@@ -32,6 +32,8 @@ import org.jboss.seam.annotations.async.Asynchronous;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.RunAsOperation;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * This class executes a Runnable Process asynchronously. Do not use this class directly.
  * Use {@link org.zanata.async.TaskExecutor} instead as this is just a wrapper to make sure
@@ -43,6 +45,7 @@ import org.jboss.seam.security.RunAsOperation;
 @Name("asynchronousTaskExecutor")
 @Scope(ScopeType.STATELESS)
 @AutoCreate
+@Slf4j
 public class AsynchronousTaskExecutor
 {
    @Asynchronous
@@ -63,6 +66,7 @@ public class AsynchronousTaskExecutor
             catch (Exception t)
             {
                task.getHandle().setException(t);
+               AsynchronousTaskExecutor.log.error("Exception when executing an asynchronous task.", t);
             }
          }
 

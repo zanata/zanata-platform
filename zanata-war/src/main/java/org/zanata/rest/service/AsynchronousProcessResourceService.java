@@ -252,11 +252,13 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
          catch (InterruptedException e)
          {
             // The process was forcefully cancelled
+            status.setStatusCode(ProcessStatusCode.Failed);
             status.setMessages(Lists.newArrayList(e.getMessage()));
          }
          catch (ExecutionException e)
          {
             // Exception thrown while running the task
+            status.setStatusCode(ProcessStatusCode.Failed);
             status.setMessages(Lists.newArrayList(e.getCause().getMessage()));
          }
 
