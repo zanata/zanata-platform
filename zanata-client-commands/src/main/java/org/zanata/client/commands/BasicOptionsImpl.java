@@ -84,7 +84,7 @@ public abstract class BasicOptionsImpl implements BasicOptions
    }
 
    @Override
-   @Option(name = "--help", aliases = { "-h", "-help" }, usage = "Display this help and exit")
+   @Option(name = "--help", aliases = { "-h" }, usage = "Display this help and exit")
    public void setHelp(boolean help)
    {
       this.help = help;

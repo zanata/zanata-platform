@@ -124,7 +124,7 @@ public class ZanataClient extends BasicOptionsImpl
    {
       try
       {
-         if (args.length == 2 && OPTIONS.containsKey(args[0]) && args[1].equals("--help"))
+         if (args.length == 2 && OPTIONS.containsKey(args[0]) && (args[1].equals("--help") || args[1].equals("-h")))
          {
             String cmdName = args[0];
             BasicOptions opts = OPTIONS.get(cmdName).newInstance();
@@ -199,7 +199,10 @@ public class ZanataClient extends BasicOptionsImpl
 
    private void printHelp(PrintStream out)
    {
-      out.println("Usage: " + getCommandName() + " [OPTION]... <command> [COMMANDOPTION]...");
+      out.print("Usage: " + getCommandName());
+      parser.printSingleLineUsage(out);
+      out.println();
+      out.println();
       out.println(getCommandDescription());
       out.println();
       parser.printUsage(out);

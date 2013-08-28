@@ -111,7 +111,10 @@ public class ArgsUtil
 
    public void printHelp(PrintStream output, String clientName)
    {
-      output.println("Usage: " + clientName + " " + opts.getCommandName() + " [options]");
+      output.print("Usage: " + clientName + " " + opts.getCommandName());
+      parser.printSingleLineUsage(output);
+      output.println();
+      output.println();
       output.println(opts.getCommandDescription());
       output.println();
       parser.printUsage(output);
