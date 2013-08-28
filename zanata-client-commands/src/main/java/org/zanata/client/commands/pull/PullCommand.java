@@ -303,7 +303,7 @@ public class PullCommand extends PushPullCommand<PullOptions>
                   }
                   if (targetDoc != null || createSkeletons)
                   {
-                     writeTargetDoc(strat, localDocName, locMapping, doc, targetDoc, transResponse.getHeaders().getFirst(HttpHeaders.ETAG));
+                     writeTargetDoc(strat, localDocName, locMapping, doc, targetDoc, transResponse.getResponseHeaders().getFirst(HttpHeaders.ETAG));
                   }
                }
 
