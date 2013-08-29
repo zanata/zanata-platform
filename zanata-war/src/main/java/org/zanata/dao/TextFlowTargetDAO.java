@@ -15,6 +15,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.ContentState;
+import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
@@ -184,9 +185,8 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
    public ScrollableResults findMatchingTranslations(HDocument document, HLocale locale, boolean checkContext, boolean checkDocument, boolean checkProject, boolean requireTranslationReview)
    {
       StringBuilder queryStr = new StringBuilder(
-"select textFlow, max(match.id) " +
+            "select textFlow, max(match.id) " +
             "from HTextFlowTarget match, HTextFlow textFlow " +
-      // "join fetch match.textFlow " +
             "where " +
             "textFlow.document = :document " +
             "and textFlow.contentHash = match.textFlow.contentHash " +
@@ -197,7 +197,11 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
             "and (match.locale not in indices(textFlow.targets) " +
                "or :finalState != (select t.state from HTextFlowTarget t where t.textFlow = textFlow and t.locale = :locale) ) " +
             // Do not reuse its own translations
-            "and match.textFlow != textFlow "
+            "and match.textFlow != textFlow " +
+            // Do not reuse matches from obsolete entities (document, iteration, project)
+            "and match.textFlow.document.obsolete = false " +
+            "and match.textFlow.document.projectIteration.status != :obsoleteEntityStatus " +
+            "and match.textFlow.document.projectIteration.project.status != :obsoleteEntityStatus "
       );
       if( checkContext )
       {
@@ -218,7 +222,8 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
       q.setParameter("document", document)
        .setParameter("locale", locale)
        .setParameter("approvedState", ContentState.Approved)
-       .setParameter("translatedState", ContentState.Translated);
+       .setParameter("translatedState", ContentState.Translated)
+       .setParameter("obsoleteEntityStatus", EntityStatus.OBSOLETE);
       if (requireTranslationReview)
       {
          q.setParameter("finalState", ContentState.Approved);
