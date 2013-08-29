@@ -7,16 +7,32 @@
    <application>
       <locale-config>
          <default-locale>en</default-locale>
-         <supported-locale>bg</supported-locale>
-         <supported-locale>de</supported-locale>
+         <!-- English -->
          <supported-locale>en</supported-locale>
-         <supported-locale>ja</supported-locale>
-         <supported-locale>fr</supported-locale>
-         <supported-locale>it</supported-locale>
-         <supported-locale>tr</supported-locale>
-         <supported-locale>zh-TW-Hant</supported-locale>
+         <!-- Ukranian -->
          <supported-locale>uk</supported-locale>
+         <!-- Traditional Chinese -->
+         <supported-locale>zh-TW-Hant</supported-locale>
+         <!-- Japanese -->
+         <supported-locale>ja</supported-locale>
+
+         <!--
+         These languages are yet to translated to an acceptable coverage
+         See https://translate.zanata.org/zanata/iteration/view/zanata-server/master
+
+         Bulgarian
+         <supported-locale>bg</supported-locale>
+         Deutsch
+         <supported-locale>de</supported-locale>
+         Francais
+         <supported-locale>fr</supported-locale>
+         Italian
+         <supported-locale>it</supported-locale>
+         Turkish
+         <supported-locale>tr</supported-locale>
+         Pseudo - not to be enabled for release
          <supported-locale>qc</supported-locale>
+         -->
       </locale-config>
 
       <!-- Workaround for RichFaces 3.3.3 bug.
