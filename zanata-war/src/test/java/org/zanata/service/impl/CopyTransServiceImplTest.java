@@ -33,12 +33,16 @@ import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
+import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
+import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
+import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HDocument;
+import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
@@ -54,7 +58,9 @@ import lombok.ToString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.zanata.common.ContentState.*;
+import static org.zanata.common.ContentState.Approved;
+import static org.zanata.common.ContentState.NeedReview;
+import static org.zanata.common.ContentState.Translated;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.IGNORE;
@@ -246,6 +252,58 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
                   ", but got " + Arrays.toString( target.getContents().toArray() ));
          }
       }
+   }
+
+   @Test
+   public void ignoreTranslationsFromObsoleteProjectAndVersion() throws Exception
+   {
+      ProjectIterationDAO projectIterationDAO = seam.autowire(ProjectIterationDAO.class);
+      ProjectDAO projectDAO = seam.autowire(ProjectDAO.class);
+
+      // Make versions and projects obsolete
+      HProjectIteration version = projectIterationDAO.getBySlug("same-project", "same-version");
+      version.setStatus(EntityStatus.OBSOLETE);
+      projectIterationDAO.makePersistent(version);
+
+      HProject project = projectDAO.getBySlug("different-project");
+      project.setStatus(EntityStatus.OBSOLETE);
+      projectDAO.makePersistent(project);
+
+      // Run the copy trans scenario (very liberal, but nothing should be translated)
+      CopyTransExecution execution = new CopyTransExecution(IGNORE, IGNORE, IGNORE, true, true, true, true)
+                                         .expectUntranslated();
+      testCopyTrans(execution);
+   }
+
+   @Test
+   public void ignoreTranslationsFromObsoleteDocuments() throws Exception
+   {
+      ProjectIterationDAO projectIterationDAO = seam.autowire(ProjectIterationDAO.class);
+      DocumentDAO documentDAO = seam.autowire(DocumentDAO.class);
+
+      // Make all documents obsolete
+      HProjectIteration version = projectIterationDAO.getBySlug("same-project", "same-version");
+      for( HDocument doc : version.getDocuments().values() )
+      {
+         doc.setObsolete(true);
+         documentDAO.makePersistent(doc);
+      }
+
+      ProjectDAO projectDAO = seam.autowire(ProjectDAO.class);
+      HProject project = projectDAO.getBySlug("different-project");
+      for( HProjectIteration it : project.getProjectIterations() )
+      {
+         for( HDocument doc : it.getDocuments().values() )
+         {
+            doc.setObsolete(true);
+            documentDAO.makePersistent(doc);
+         }
+      }
+
+      // Run the copy trans scenario (very liberal, but nothing should be translated)
+      CopyTransExecution execution = new CopyTransExecution(IGNORE, IGNORE, IGNORE, true, true, true, true)
+            .expectUntranslated();
+      testCopyTrans(execution);
    }
 
    private ContentState getExpectedContentState( CopyTransExecution execution )
