@@ -27,6 +27,7 @@ import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.REJECT;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
 import javax.persistence.EntityManager;
 
 import org.hibernate.HibernateException;
@@ -279,13 +280,33 @@ public class CopyTransServiceImpl implements CopyTransService
       return copyCount;
    }
 
-   private ContentState determineContentState(boolean contextMatches, boolean projectMatches, boolean docIdMatches,
-                                              HCopyTransOptions options, boolean requireTranslationReview, ContentState matchingTargetState)
+   /**
+    * Determines the content state a copied translation should have.
+    *
+    * @param contextMatches Whether the copied TextFlow's context matches the target TextFlow's context or not.
+    * @param projectMatches Whether the copied TextFlow's project matches the target TextFlow's context or not.
+    * @param docIdMatches Whether the copied TextFlow's docId matches the target TextFlow's context or not.
+    * @param options The copy trans options being used.
+    * @param requireTranslationReview Whether the project being copied to requires review or not.
+    * @param matchingTargetState The state of the match found by copy trans.
+    * @return The content state that the copied translation should have. May return null if the translation should not
+    * be copied at all.
+    */
+   private @Nullable
+   ContentState determineContentState(boolean contextMatches, boolean projectMatches, boolean docIdMatches,
+                                      HCopyTransOptions options, boolean requireTranslationReview, ContentState matchingTargetState)
    {
+      // Everything matches, and requires approval
       if (requireTranslationReview && matchingTargetState.isApproved() && projectMatches && contextMatches && docIdMatches)
       {
          return Approved;
       }
+      // Everything matches, and does not require approval
+      else if( matchingTargetState.isApproved() && projectMatches && contextMatches && docIdMatches )
+      {
+         return Translated;
+      }
+      // Everything else
       ContentState state = Translated;
       state = getExpectedContentState(contextMatches, options.getContextMismatchAction(), state);
       state = getExpectedContentState(projectMatches, options.getProjectMismatchAction(), state);
@@ -293,8 +314,19 @@ public class CopyTransServiceImpl implements CopyTransService
       return state;
    }
 
-   public ContentState getExpectedContentState( boolean match, HCopyTransOptions.ConditionRuleAction action,
-                                                 ContentState currentState )
+   /**
+    * Gets the content state that is expected for a translation when evaluated against a single copy trans
+    * condition.
+    * Copy Trans conditions are of the form: Is it the same project? Is it the same documentId? ... etc.
+    *
+    * @param match Whether the condition holds or not (is there a match?)
+    * @param action The action to take when the condition matches.
+    * @param currentState The current state of the translation.
+    * @return The content state that is expected the copied translation to have.
+    */
+   public @Nullable
+   ContentState getExpectedContentState( boolean match, HCopyTransOptions.ConditionRuleAction action,
+                                         ContentState currentState )
    {
       if( currentState == null )
       {
@@ -378,7 +410,11 @@ public class CopyTransServiceImpl implements CopyTransService
     */
    private static boolean shouldOverwrite(HTextFlowTarget currentlyStored, ContentState matchState)
    {
-      if( currentlyStored != null )
+      if( matchState == null )
+      {
+         return false;
+      }
+      else if( currentlyStored != null )
       {
          if( currentlyStored.getState().isRejectedOrFuzzy() && matchState.isTranslated())
          {
