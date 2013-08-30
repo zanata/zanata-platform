@@ -369,7 +369,7 @@ public class PoWriter2
       {
          if (tfContents.size() > 1)
          {
-            throw new RuntimeException("textflow has no plural flag but multiple plural forms: resId=" + textFlow.getId());
+            log.warn("textflow has no plural flag but has multiple plural forms: restId={}", textFlow.getId());
          }
       }
 
@@ -413,7 +413,7 @@ public class PoWriter2
          }
          if (tftContents.size() > nPlurals)
          {
-            log.warn("too many plural forms for text flow: resId=" + textFlow.getId());
+            log.warn("too many plural forms for text flow: resId={}", textFlow.getId());
          }
       }
       else
@@ -427,7 +427,7 @@ public class PoWriter2
             message.setMsgstr(tftContents.get(0));
             if (tftContents.size() > 1)
             {
-               throw new RuntimeException("plural forms not enabled for this text flow: resId=" + textFlow.getId());
+               log.warn("extra translation found and will be ignored in this text flow: resId={}", textFlow.getId());
             }
          }
       }
