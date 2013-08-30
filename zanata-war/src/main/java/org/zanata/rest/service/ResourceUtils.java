@@ -50,7 +50,6 @@ import org.zanata.model.HPerson;
 import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.HasSimpleComment;
 import org.zanata.model.po.HPoHeader;
 import org.zanata.model.po.HPoTargetHeader;
 import org.zanata.model.po.HPotEntryData;
@@ -1149,7 +1148,14 @@ public class ResourceUtils
 
    public void transferToTextFlow(HTextFlow from, TextFlow to)
    {
-      to.setContents(from.getContents());
+      if (from.isPlural())
+      {
+         to.setContents(from.getContents());
+      }
+      else
+      {
+         to.setContents(from.getContents().get(0));
+      }
       to.setRevision(from.getRevision());
       to.setPlural(from.isPlural());
 
@@ -1311,9 +1317,16 @@ public class ResourceUtils
     * @param apiVersion
     * @todo merge with {@link #transferToTextFlowTargetExtensions}
     */
-   public void transferToTextFlowTarget(HTextFlowTarget from, TextFlowTarget to, Optional<String> apiVersion)
+   public void transferToTextFlowTarget(HTextFlowTarget from, TextFlowTarget to, boolean isPlural, Optional<String> apiVersion)
    {
-      to.setContents(from.getContents());
+      if (isPlural)
+      {
+         to.setContents(from.getContents());
+      }
+      else if (!from.getContents().isEmpty())
+      {
+         to.setContents(from.getContents().get(0));
+      }
       // TODO rhbz953734 - at the moment we will map review state into old state for compatibility
       to.setState(mapContentState(apiVersion, from.getState()));
       to.setRevision(from.getVersionNum());
@@ -1386,7 +1399,7 @@ public class ResourceUtils
          found = true;
          TextFlowTarget target = new TextFlowTarget();
          target.setResId(hTarget.getTextFlow().getResId());
-         this.transferToTextFlowTarget(hTarget, target, apiVersion);
+         this.transferToTextFlowTarget(hTarget, target, hTarget.getTextFlow().isPlural(), apiVersion);
          this.transferToTextFlowTargetExtensions(hTarget, target.getExtensions(true), enabledExtensions);
          transRes.getTextFlowTargets().add(target);
       }

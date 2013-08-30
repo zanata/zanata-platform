@@ -20,6 +20,7 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
 import org.zanata.model.HTextFlowTargetReviewComment;
+import org.zanata.rest.service.ResourceUtils;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.webtrans.server.ActionHandlerFor;
@@ -55,6 +56,9 @@ public class GetTranslationHistoryHandler extends AbstractActionHandler<GetTrans
    @In
    private TextFlowTargetReviewCommentsDAO textFlowTargetReviewCommentsDAO;
 
+   @In
+   private ResourceUtils resourceUtils;
+
    @Override
    public GetTranslationHistoryResult execute(GetTranslationHistoryAction action, ExecutionContext context) throws ActionException
    {
@@ -79,7 +83,9 @@ public class GetTranslationHistoryHandler extends AbstractActionHandler<GetTrans
       if (hTextFlowTarget != null)
       {
          String lastModifiedBy = nameOrEmptyString(hTextFlowTarget.getLastModifiedBy());
-         latest = new TransHistoryItem(hTextFlowTarget.getVersionNum().toString(), hTextFlowTarget.getContents(),
+         int nPlurals = resourceUtils.getNumPlurals(hTextFlow.getDocument(), hLocale);
+
+         latest = new TransHistoryItem(hTextFlowTarget.getVersionNum().toString(), GwtRpcUtil.getTargetContentsWithPadding(hTextFlow, hTextFlowTarget, nPlurals),
                hTextFlowTarget.getState(), lastModifiedBy, hTextFlowTarget.getLastChanged());
          // history translation
          history = hTextFlowTarget.getHistory();
