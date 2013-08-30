@@ -21,6 +21,7 @@
 package org.zanata.feature.security;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +62,7 @@ public class SecurityFullTest
    public void signInSuccessful()
    {
       DashboardPage dashboardPage = new LoginWorkFlow().signIn("admin", "admin");
-      assertThat("User is logged in", dashboardPage.loggedInAs(), Matchers.equalTo("admin"));
+      assertThat("User is logged in", dashboardPage.loggedInAs(), equalTo("admin"));
    }
 
    @Test
@@ -69,7 +70,7 @@ public class SecurityFullTest
    {
       SignInPage signInPage = new BasicWorkFlow().goToHome().clickSignInLink();
       signInPage = signInPage.signInFailure("nosuchuser", "password");
-      assertThat("Error message is shown", signInPage.getNotificationMessage(), Matchers.equalTo("Login failed"));
+      assertThat("Error message is shown", signInPage.getNotificationMessage(), equalTo("Login failed"));
       assertThat("User has failed to log in", !signInPage.hasLoggedIn());
    }
 
@@ -92,28 +93,23 @@ public class SecurityFullTest
       resetPasswordPage = resetPasswordPage.enterUserName("nosuchuser").enterEmail("nosuchuser@nosuchdomain.com");
       resetPasswordPage = resetPasswordPage.resetFailure();
       assertThat("A no such account message is displayed", resetPasswordPage.getNotificationMessage(),
-            Matchers.equalTo("No such account found"));
+            equalTo("No such account found"));
    }
 
    @Test
    public void invalidResetPasswordFieldEntries()
    {
-      // Both are valid, but show seemingly at random
-      List<String> invalidUsernameErrors = new ArrayList<String>();
-      invalidUsernameErrors.add("size must be between 3 and 20");
-      invalidUsernameErrors.add("must match ^[a-z\\d_]{3,20}$");
-
-      String invalidEmailError = "not a well-formed email address";
       SignInPage signInPage = new BasicWorkFlow().goToHome().clickSignInLink();
       ResetPasswordPage resetPasswordPage = signInPage.gotToResetPassword();
       resetPasswordPage = resetPasswordPage.enterUserName("b").enterEmail("b");
       resetPasswordPage = resetPasswordPage.resetFailure();
 
       assertThat("Invalid email error is displayed", resetPasswordPage.waitForErrors(),
-            Matchers.hasItem(invalidEmailError));
+            hasItem("not a well-formed email address"));
 
-      assertThat("(One of the) Username error shows",
-            invalidUsernameErrors.contains(resetPasswordPage.getErrors().get(0)));
+      // Both are valid, but show seemingly at random
+      assertThat(resetPasswordPage.getErrors().get(0),
+            either(equalTo("size must be between 3 and 20")).or(equalTo("must match ^[a-z\\d_]{3,20}$")));
 
    }
 
@@ -124,7 +120,6 @@ public class SecurityFullTest
       List<String> emptyUsernameErrors = new ArrayList<String>();
       emptyUsernameErrors.add("size must be between 3 and 20");
       emptyUsernameErrors.add("must match ^[a-z\\d_]{3,20}$");
-      String emptyEmailError = "may not be empty";
 
       SignInPage signInPage = new BasicWorkFlow().goToHome().clickSignInLink();
       ResetPasswordPage resetPasswordPage = signInPage.gotToResetPassword();
@@ -132,10 +127,11 @@ public class SecurityFullTest
       resetPasswordPage = resetPasswordPage.resetFailure();
 
       assertThat("Empty email error is displayed", resetPasswordPage.waitForErrors(),
-            Matchers.hasItem(emptyEmailError));
+            hasItem("may not be empty"));
 
-      assertThat("(One of the) Username error shows",
-            emptyUsernameErrors.contains(resetPasswordPage.getErrors().get(0)));
+
+      assertThat(resetPasswordPage.getErrors().get(0), equalTo("may not be empty"));
+
    }
 
 }
