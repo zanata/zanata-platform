@@ -1317,9 +1317,9 @@ public class ResourceUtils
     * @param apiVersion
     * @todo merge with {@link #transferToTextFlowTargetExtensions}
     */
-   public void transferToTextFlowTarget(HTextFlowTarget from, TextFlowTarget to, boolean isPlural, Optional<String> apiVersion)
+   public void transferToTextFlowTarget(HTextFlowTarget from, TextFlowTarget to, Optional<String> apiVersion)
    {
-      if (isPlural)
+      if (from.getTextFlow().isPlural())
       {
          to.setContents(from.getContents());
       }
@@ -1399,7 +1399,7 @@ public class ResourceUtils
          found = true;
          TextFlowTarget target = new TextFlowTarget();
          target.setResId(hTarget.getTextFlow().getResId());
-         this.transferToTextFlowTarget(hTarget, target, hTarget.getTextFlow().isPlural(), apiVersion);
+         this.transferToTextFlowTarget(hTarget, target, apiVersion);
          this.transferToTextFlowTargetExtensions(hTarget, target.getExtensions(true), enabledExtensions);
          transRes.getTextFlowTargets().add(target);
       }
