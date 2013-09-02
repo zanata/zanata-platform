@@ -34,7 +34,7 @@ public class OfflinePoStrategy extends GettextDirStrategy
    public OfflinePoStrategy(PullOptions opts)
    {
       super(opts);
-      poWriter = new PoWriter2(opts.getEncodeTabs(), true);
+      poWriter = new PoWriter2(opts.getEncodeTabs(), true, opts.isContinueAfterError());
    }
 
    @Override

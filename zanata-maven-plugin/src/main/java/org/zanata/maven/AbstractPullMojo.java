@@ -89,6 +89,15 @@ public abstract class AbstractPullMojo extends AbstractPushPullMojo<PullOptions>
     */
    private boolean encodeTabs = true;
 
+
+   /**
+    * When there is an error, whether try to workaround it and continue to next text flow or fail the process.
+    * i.e. when encounter a mismatch plural form, it will try to use singular form.
+    * Note: This option may not work on all circumstances.
+    * @parameter expression="${zanata.continueAfterError}" default-value="false"
+    */
+   private boolean continueAfterError = false;
+
    /**
     * 
     */
@@ -137,6 +146,12 @@ public abstract class AbstractPullMojo extends AbstractPushPullMojo<PullOptions>
    public boolean getUseCache()
    {
       return useCache;
+   }
+
+   @Override
+   public boolean isContinueAfterError()
+   {
+      return continueAfterError;
    }
 
    @Override

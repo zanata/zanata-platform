@@ -41,7 +41,7 @@ public abstract class AbstractGettextPullStrategy extends AbstractPullStrategy
    protected AbstractGettextPullStrategy(PullOptions opts)
    {
       super(opts);
-      poWriter = new PoWriter2(opts.getEncodeTabs());
+      poWriter = new PoWriter2(opts.getEncodeTabs(), false, opts.isContinueAfterError());
    }
 
    protected PoWriter2 getPoWriter()

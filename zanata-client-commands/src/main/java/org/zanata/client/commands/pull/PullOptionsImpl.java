@@ -39,6 +39,7 @@ public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions> im
    private static final boolean DEFAULT_INCLUDE_FUZZY = false;
    private static final boolean DEFAULT_USE_CACHE = true;
    private static final boolean DEFAULT_PURGE_CACHE = false;
+   private static final boolean DEFAULT_CONTINUE_AFTER_ERROR = false;
 
    private String pullType = DEFAULT_PULL_TYPE;
 
@@ -47,6 +48,7 @@ public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions> im
    private boolean includeFuzzy = DEFAULT_INCLUDE_FUZZY;
    private boolean useCache = DEFAULT_USE_CACHE;
    private boolean purgeCache = DEFAULT_PURGE_CACHE;
+   private boolean continueAfterError = DEFAULT_CONTINUE_AFTER_ERROR;
 
    @Override
    public ZanataCommand initCommand()
@@ -146,5 +148,20 @@ public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions> im
    public boolean getUseCache()
    {
       return useCache;
+   }
+
+   @Option(name = "--continue-after-error", aliases = "-c",
+         usage = "When there is an error, whether try to workaround it and continue to next text flow or fail the process." +
+               "i.e. when encounter a mismatch plural form, it will try to use singular form.\n" +
+               "Note: This option may not work on all circumstances.")
+   public void setContinueAfterError(boolean continueAfterError)
+   {
+      this.continueAfterError = continueAfterError;
+   }
+
+   @Override
+   public boolean isContinueAfterError()
+   {
+      return continueAfterError;
    }
 }

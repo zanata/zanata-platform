@@ -36,4 +36,6 @@ public interface PullOptions extends PushPullOptions
    boolean getIncludeFuzzy();
    boolean getPurgeCache();
    boolean getUseCache();
+
+   boolean isContinueAfterError();
 }
