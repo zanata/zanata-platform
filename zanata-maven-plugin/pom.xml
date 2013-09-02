@@ -67,14 +67,6 @@
        <version>1.5.7</version>
        <scope>test</scope>
     </dependency>
-
-      <!-- We do not need slf4j-api in this module. But parent module defines it.-->
-      <dependency>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-api</artifactId>
-          <scope>provided</scope>
-      </dependency>
-
     <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-log4j12</artifactId>
@@ -142,9 +134,6 @@
                     <configuration>
                         <failOnWarning>true</failOnWarning>
                         <usedDependencies>
-                            <usedDependency>org.slf4j:slf4j-api</usedDependency>
-                            <usedDependency>org.slf4j:slf4j-log4j12</usedDependency>
-                            <usedDependency>org.zanata:zanata-common-api</usedDependency>
                             <usedDependency>org.codehaus.plexus:plexus-utils</usedDependency>
                         </usedDependencies>
                     </configuration>

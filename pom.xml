@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>zanata-parent</artifactId>
-    <version>13</version>
+    <version>14-SNAPSHOT</version>
     <relativePath>../parent</relativePath>
   </parent>
 
@@ -19,8 +19,8 @@
 	</scm>
 
     <properties>
-      <zanata.api.version>3.0.1</zanata.api.version>
-      <zanata.common.version>3.0.2-SNAPSHOT</zanata.common.version>
+      <zanata.api.version>3.1-SNAPSHOT</zanata.api.version>
+      <zanata.common.version>3.1-SNAPSHOT</zanata.common.version>
       <powermock.version>1.4.12</powermock.version>
        <httpclient.version>4.1.2</httpclient.version>
        <resteasy.version>3.0.1.Final</resteasy.version>
@@ -42,6 +42,12 @@
 			<groupId>org.zanata</groupId>
 			<artifactId>zanata-common-api</artifactId>
 			<version>${zanata.api.version}</version>
+            <exclusions>
+              <exclusion>
+                  <artifactId>commons-logging</artifactId>
+                  <groupId>commons-logging</groupId>
+              </exclusion>
+            </exclusions>
 		</dependency>
       <dependency>
          <groupId>org.zanata</groupId>
@@ -102,6 +108,10 @@
                       <artifactId>commons-codec</artifactId>
                   </exclusion>
                   <exclusion>
+                      <groupId>commons-logging</groupId>
+                      <artifactId>commons-logging</artifactId>
+                  </exclusion>
+                  <exclusion>
                       <groupId>com.sun.xml.bind</groupId>
                       <artifactId>jaxb-impl</artifactId>
                   </exclusion>
@@ -123,10 +133,6 @@
                   </exclusion>
                   <exclusion>
                       <groupId>org.slf4j</groupId>
-                      <artifactId>slf4j-api</artifactId>
-                  </exclusion>
-                  <exclusion>
-                      <groupId>org.slf4j</groupId>
                       <artifactId>slf4j-simple</artifactId>
                   </exclusion>
                   <exclusion>
@@ -143,6 +149,12 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>${httpclient.version}</version>
+            <exclusions>
+              <exclusion>
+                  <artifactId>commons-logging</artifactId>
+                  <groupId>commons-logging</groupId>
+              </exclusion>
+            </exclusions>
          </dependency>
           <dependency>
             <groupId>org.powermock</groupId>
@@ -172,19 +184,9 @@
    </dependencyManagement>
 
    <dependencies>
-       <dependency>
-           <groupId>org.slf4j</groupId>
-           <artifactId>slf4j-api</artifactId>
-       </dependency>
       <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <scope>test</scope>
-      </dependency>
-      <dependency>
-            <groupId>org.zanata</groupId>
-            <artifactId>zanata-common-api</artifactId>
-            <type>test-jar</type>
             <scope>test</scope>
       </dependency>
    </dependencies>
@@ -205,7 +207,6 @@
                             <failOnWarning>true</failOnWarning>
                             <usedDependencies>
                                 <usedDependency>org.slf4j:slf4j-log4j12</usedDependency>
-                                <usedDependency>org.zanata:zanata-common-api</usedDependency>
                             </usedDependencies>
                         </configuration>
                     </execution>
