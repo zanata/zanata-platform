@@ -59,9 +59,11 @@ import org.zanata.util.PathUtil;
 public class PoWriter2
 {
    private static final Logger log = LoggerFactory.getLogger(PoWriter2.class);
+   private static final int DEFAULT_NPLURALS = 1;
+   private static final String CONTINUE_ERROR_MESSAGE_FMT = "%s. %s, please use --continue-after-error option.";
    private final PoWriter poWriter;
    private boolean mapIdToMsgctxt;
-   private static final int DEFAULT_NPLURALS = 1;
+   private boolean continueAfterError;
 
    // TODO Expose and use the one in org.fedorahosted.tennera.jgettext.HeaderFields
    // Modified version to extract the nplurals value
@@ -76,16 +78,23 @@ public class PoWriter2
     *           text flows that are not originally from po documents. This
     *           should be false if the documents to be written were originally
     *           in po files.
+    * @param continueAfterError true to try to workaround an error and continue
     */
-   public PoWriter2(boolean encodeTabs, boolean mapIdToMsgctxt)
+   public PoWriter2(boolean encodeTabs, boolean mapIdToMsgctxt, boolean continueAfterError)
    {
+      this.continueAfterError = continueAfterError;
       this.poWriter = new PoWriter(encodeTabs);
       this.mapIdToMsgctxt = mapIdToMsgctxt;
    }
 
+   public PoWriter2(boolean encodeTabs, boolean mapIdToMsgctxt)
+   {
+      this(encodeTabs, mapIdToMsgctxt, false);
+   }
+
    public PoWriter2(boolean encodeTabs)
    {
-      this(encodeTabs, false);
+      this(encodeTabs, false, false);
    }
 
    public PoWriter2()
@@ -369,7 +378,16 @@ public class PoWriter2
       {
          if (tfContents.size() > 1)
          {
-            log.warn("textflow has no plural flag but has multiple plural forms: restId={}", textFlow.getId());
+            if (continueAfterError)
+            {
+               log.warn("textflow has no plural flag but has multiple plural forms: restId={}", textFlow.getId());
+            }
+            else
+            {
+               throwContinueableException("textflow has no plural flag but multiple plural forms: [resId="
+                     + textFlow.getId() + "]. This is likely caused by changed plural forms",
+                     "To write content as singular form and continue");
+            }
          }
       }
 
@@ -377,6 +395,16 @@ public class PoWriter2
       {
          throw new RuntimeException("POT format only supports 2 plural forms: resId=" + textFlow.getId());
       }
+   }
+
+   /**
+    * @see org.zanata.adapter.po.PoWriter2#CONTINUE_ERROR_MESSAGE_FMT
+    * @param specificErrorMessage
+    * @param specificRemedy
+    */
+   private static void throwContinueableException(String specificErrorMessage, String specificRemedy)
+   {
+      throw new RuntimeException(String.format(CONTINUE_ERROR_MESSAGE_FMT, specificErrorMessage, specificRemedy));
    }
 
    private void copyCommentsToMessage(TextFlowTarget tfTarget, Message message)
@@ -427,7 +455,17 @@ public class PoWriter2
             message.setMsgstr(tftContents.get(0));
             if (tftContents.size() > 1)
             {
-               log.warn("extra translation found and will be ignored in this text flow: resId={}", textFlow.getId());
+               if (continueAfterError)
+               {
+                  log.warn("extra translation found and will be ignored in this text flow: resId={}", textFlow.getId());
+               }
+               else
+               {
+                  throwContinueableException("textflow has no plural flag but multiple plural forms: [resId="
+                        + textFlow.getId() + "]. This is likely caused by changed plural forms",
+                        "To write content as singular form and continue");
+               }
+
             }
          }
       }
