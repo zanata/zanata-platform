@@ -1327,6 +1327,10 @@ public class ResourceUtils
       {
          to.setContents(from.getContents().get(0));
       }
+      else
+      {
+         to.setContents(Collections.<String>emptyList());
+      }
       // TODO rhbz953734 - at the moment we will map review state into old state for compatibility
       to.setState(mapContentState(apiVersion, from.getState()));
       to.setRevision(from.getVersionNum());
