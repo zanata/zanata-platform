@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>client</artifactId>
-  <version>3.1.2-SNAPSHOT</version>
+  <version>3.1.2</version>
   <name>Zanata client modules</name>
   <packaging>pom</packaging>
   <parent>
@@ -57,27 +57,27 @@
         <dependency>
             <groupId>org.zanata</groupId>
             <artifactId>zanata-adapter-glossary</artifactId>
-            <version>${zanata.common.version}</version>
+            <version>3.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.zanata</groupId>
             <artifactId>zanata-adapter-po</artifactId>
-            <version>${zanata.common.version}</version>
+            <version>3.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.zanata</groupId>
             <artifactId>zanata-adapter-properties</artifactId>
-            <version>${zanata.common.version}</version>
+            <version>3.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.zanata</groupId>
             <artifactId>zanata-adapter-xliff</artifactId>
-            <version>${zanata.common.version}</version>
+            <version>3.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.zanata</groupId>
             <artifactId>zanata-common-util</artifactId>
-            <version>${zanata.common.version}</version>
+            <version>3.0.2</version>
         </dependency>
 
         <dependency>
