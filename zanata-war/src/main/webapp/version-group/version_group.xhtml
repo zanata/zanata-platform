@@ -36,14 +36,15 @@
                         var="_iteration">
             <rich:column sortBy="#{_iteration.project.slug}">
                 <f:facet name="header">#{messages['jsf.ProjectName']}</f:facet>
-                <s:link view="/project/view/#{_iteration.project.slug}" styleClass="table_link">
-                    #{_iteration.project.name}
+                <s:link view="/project/project.xhtml" value="#{_iteration.project.name}" styleClass="table_link">
+                    <f:param name="slug" value="#{_iteration.project.slug}"/>
                 </s:link>
             </rich:column>
             <rich:column sortBy="#{_iteration.slug}">
                 <f:facet name="header">#{messages['jsf.Version']}</f:facet>
-                <s:link view="/iteration/view/#{_iteration.project.slug}/#{_iteration.slug}" styleClass="table_link">
-                    #{_iteration.slug}
+                <s:link view="/iteration/view.xhtml" styleClass="table_link" value="#{_iteration.slug}">
+                    <f:param name="projectSlug" value="#{_iteration.project.slug}"/>
+                    <f:param name="iterationSlug" value="#{_iteration.slug}"/>
                 </s:link>
             </rich:column>
             <rich:column rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}" styleClass="centered">

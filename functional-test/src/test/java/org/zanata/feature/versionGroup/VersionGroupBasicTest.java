@@ -32,14 +32,19 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.zanata.concordion.CustomResourceExtension;
 import org.zanata.feature.ConcordionTest;
 import org.zanata.page.groups.CreateVersionGroupPage;
 import org.zanata.page.groups.VersionGroupPage;
 import org.zanata.page.groups.VersionGroupsPage;
 import org.zanata.page.projects.ProjectPage;
+import org.zanata.page.projects.ProjectVersionPage;
 import org.zanata.page.utility.DashboardPage;
 import org.zanata.util.ResetDatabaseRule;
+import org.zanata.util.TableRow;
+import org.zanata.util.WebElementUtil;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
 
@@ -136,5 +141,40 @@ public class VersionGroupBasicTest
    public void clickGroupName(VersionGroupsPage groupsPage, String groupName)
    {
       versionGroupPage = groupsPage.goToGroup(groupName);
+   }
+
+   public ProjectPage clickProjectLinkOnRow(int row)
+   {
+      return versionGroupPage.clickOnProjectLinkOnRow(row);
+   }
+
+   public ProjectVersionPage clickVersionLinkOnRow(int row)
+   {
+      return versionGroupPage.clickOnProjectVersionLinkOnRow(row);
+   }
+
+   public String getProjectName(int row)
+   {
+      return versionGroupPage.getProjectName(row);
+   }
+
+   public String getProjectVersionName(int row)
+   {
+      return versionGroupPage.getProjectVersionName(row);
+   }
+   
+   public String getProjectNameFromPage(ProjectPage projectPage)
+   {
+      return projectPage.getProjectName();
+   }
+   
+   public boolean checkIfEquals(ProjectPage projectPage, String projectName)
+   {
+      return projectPage.getProjectName().trim().equals(projectName.trim());
+   }
+   
+   public boolean checkIfEquals(ProjectVersionPage versionPage, String versionId)
+   {
+      return versionPage.getVersionId().trim().equals(versionId.trim());
    }
 }

@@ -58,7 +58,6 @@ public class ProjectPage extends BasePage
       return getLastBreadCrumbText();
    }
 
-   @SuppressWarnings("unused")
    public String getProjectName()
    {
       return getTitle().replaceAll("Zanata:", "");
