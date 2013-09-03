@@ -4,13 +4,11 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetPresenter;
-
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.ReviewCommentEvent;
 import org.zanata.webtrans.client.events.ReviewCommentEventHandler;
+import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.AbstractAsyncCallback;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -24,13 +22,15 @@ import org.zanata.webtrans.shared.rpc.AddReviewCommentAction;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentResult;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryAction;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryResult;
-
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+
+import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -44,12 +44,13 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
    private final CachingDispatchAsync dispatcher;
    private final WebTransMessages messages;
    private final GetTransUnitActionContextHolder contextHolder;
+   private final KeyShortcutPresenter keyShortcutPresenter;
    private TargetContentsPresenter targetContentsPresenter;
    private TransUnitId transUnitId;
    private ComparingPair comparingPair = ComparingPair.empty();
 
    @Inject
-   public TranslationHistoryPresenter(TranslationHistoryDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, WebTransMessages messages, GetTransUnitActionContextHolder contextHolder)
+   public TranslationHistoryPresenter(TranslationHistoryDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, WebTransMessages messages, GetTransUnitActionContextHolder contextHolder, KeyShortcutPresenter keyShortcutPresenter)
    {
       super(display, eventBus);
       this.display = display;
@@ -57,6 +58,7 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
       this.dispatcher = dispatcher;
       this.messages = messages;
       this.contextHolder = contextHolder;
+      this.keyShortcutPresenter = keyShortcutPresenter;
 
       display.setListener(this);
       eventBus.addHandler(ReviewCommentEvent.TYPE, this);
@@ -80,6 +82,7 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
             Log.error("failure getting translation history", caught);
             eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, caught.getMessage()));
             display.hide();
+            disableShortcut();
          }
 
          @Override
@@ -97,6 +100,7 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
       display.setTitle(title);
       display.resetView();
       display.center();
+      enableShortcut();
    }
 
    protected void displayEntries(TransHistoryItem latest, List<TransHistoryItem> otherEntries, List<ReviewComment> reviewComments)
@@ -152,6 +156,19 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
       {
          display.disableComparison();
       }
+   }
+
+   private void enableShortcut()
+   {
+      keyShortcutPresenter.setContextActive(ShortcutContext.Edit, false);
+      keyShortcutPresenter.setContextActive(ShortcutContext.Popup, true);
+   }
+
+   @Override
+   public void disableShortcut()
+   {
+      keyShortcutPresenter.setContextActive(ShortcutContext.Edit, true);
+      keyShortcutPresenter.setContextActive(ShortcutContext.Popup, false);
    }
 
    @Override

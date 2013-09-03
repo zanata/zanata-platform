@@ -8,12 +8,9 @@ import org.zanata.webtrans.shared.model.ReviewComment;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
@@ -67,6 +64,13 @@ public class TranslationHistoryView extends DialogBox implements TranslationHist
       this.items = items;
       commentInput.setEnabled(!items.isEmpty());
       redrawList();
+   }
+
+   @Override
+   public void hide()
+   {
+      super.hide();
+      listener.disableShortcut();
    }
 
    private void redrawList()

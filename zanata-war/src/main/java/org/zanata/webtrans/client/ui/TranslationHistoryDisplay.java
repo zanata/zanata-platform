@@ -42,5 +42,7 @@ public interface TranslationHistoryDisplay extends WidgetDisplay
       void compareClicked(TransHistoryItem item);
 
       boolean isItemInComparison(TransHistoryItem item);
+
+      void disableShortcut();
    }
 }
