@@ -140,5 +140,29 @@
     </table>
     <span ext:screenshot="" />
     </p>
+    
+   <p>
+       Check on project url in version group: 
+	   <ol>
+	       <li>Click <span c:execute="#groupsPage = groups()">Groups</span></li>
+	       <li>Click on <span c:execute="clickGroupName(#groupsPage, #groupName)"><span c:set="#groupName">group one</span></span></li>
+	       <li>Navigate to project link on row <span c:set="#row">0</span> with project name <span c:execute="#projectName = getProjectName(#row)"><span c:echo="#projectName"></span></span></li>
+	       <li>Click on project link <span c:execute="#projectPage = clickProjectLinkOnRow(#row)"></span></li>
+	       <li>I should be redirect to project page <span c:assertTrue="checkIfEquals(#projectPage, #projectName)"><span c:echo="#projectName"></span></span></li>
+	   </ol>
+	   <span ext:screenshot="" />
+   </p>
+   
+   <p>
+       Check on version url in version group: 
+       <ol>
+           <li>Click <span c:execute="#groupsPage = groups()">Groups</span></li>
+           <li>Click on <span c:execute="clickGroupName(#groupsPage, #groupName)"><span c:set="#groupName">group one</span></span></li>
+           <li>Navigate to version link on row <span c:set="#row">0</span> with version name <span c:execute="#versionId = getProjectVersionName(#row)"><span c:echo="#versionId"></span></span></li>
+           <li>Click on version link <span c:execute="#versionPage = clickVersionLinkOnRow(#row)"></span></li>
+           <li>I should be redirect to project version page <span c:assertTrue="checkIfEquals(#versionPage, #versionId)"><span c:echo="#versionId"></span></span></li>
+       </ol>
+       <span ext:screenshot="" />
+   </p>
 </body>
 </html>
