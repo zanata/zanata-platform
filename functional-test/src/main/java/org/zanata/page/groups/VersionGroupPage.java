@@ -2,16 +2,21 @@ package org.zanata.page.groups;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
+import org.zanata.page.projects.ProjectPage;
+import org.zanata.page.projects.ProjectVersionPage;
 import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
 
 import javax.annotation.Nullable;
+
 import java.util.List;
 
 /**
@@ -28,6 +33,7 @@ public class VersionGroupPage extends BasePage
 
    @FindBy(id = "iterationGroupForm:iterationsDataTable")
    private WebElement groupDataTable;
+   
    private By versionsInGroupTableBy = By.id("iterationGroupForm:iterationsDataTable");
 
    public VersionGroupPage(final WebDriver driver)
@@ -121,5 +127,36 @@ public class VersionGroupPage extends BasePage
    public List<List<String>> getProjectVersionsInGroup()
    {
       return WebElementUtil.getTwoDimensionList(getDriver(), versionsInGroupTableBy);
+   }
+   
+   public String getProjectName(int row)
+   {
+      List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(), versionsInGroupTableBy);
+      WebElement projectLink = tableRows.get(row).getCells().get(0).findElement(By.tagName("a"));
+      return projectLink.getText();
+   }
+   
+   public String getProjectVersionName(int row)
+   {
+      List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(), versionsInGroupTableBy);
+      WebElement versionLink = tableRows.get(row).getCells().get(1).findElement(By.tagName("a"));
+      return versionLink.getText();
+   }
+   
+   
+   public ProjectPage clickOnProjectLinkOnRow(int row)
+   {
+      List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(), versionsInGroupTableBy);
+      WebElement projectLink = tableRows.get(row).getCells().get(0).findElement(By.tagName("a"));
+      projectLink.click();
+      return new ProjectPage(getDriver());
+   }
+
+   public ProjectVersionPage clickOnProjectVersionLinkOnRow(int row)
+   {
+      List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(), versionsInGroupTableBy);
+      WebElement versionLink = tableRows.get(row).getCells().get(1).findElement(By.tagName("a"));
+      versionLink.click();
+      return new ProjectVersionPage(getDriver());
    }
 }
