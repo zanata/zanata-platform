@@ -28,9 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetPresenter;
-
 import org.zanata.webtrans.client.events.AttentionModeActivationEvent;
 import org.zanata.webtrans.client.events.KeyShortcutEvent;
 import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
@@ -46,8 +43,8 @@ import org.zanata.webtrans.client.keys.Timer;
 import org.zanata.webtrans.client.keys.TimerFactory;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.view.KeyShortcutDisplay;
-
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -56,6 +53,9 @@ import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.inject.Inject;
+
+import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 /**
  * Detects shortcut key combinations such as Alt+KEY and Shift+Alt+KEY and
@@ -324,14 +324,9 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay>
       {
          if (context == ShortcutContext.Application)
          {
-            // TODO throw exception? Remove this check? Just warn but still
-            // remove context?
-            Log.warn("Tried to set global shortcut context inactive. Ignoring.");
+            Log.warn("set global shortcut context inactive.");
          }
-         else
-         {
-            ensureActiveContexts().remove(context);
-         }
+         ensureActiveContexts().remove(context);
       }
    }
 
@@ -469,6 +464,11 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay>
          Collections.sort(dataProvider.getList());
       }
       display.showPanel();
+   }
+
+   public Set<ShortcutContext> getActiveContexts()
+   {
+      return ImmutableSet.copyOf(activeContexts);
    }
 
    private class KeyShortcutHandlerRegistration implements HandlerRegistration

@@ -96,7 +96,6 @@ public class ForceReviewCommentPresenter extends WidgetPresenter<ForceReviewComm
    {
       saveEvent = event.getSaveEvent();
       display.center();
-      enableShortcut();
    }
 
    @Override
@@ -115,19 +114,6 @@ public class ForceReviewCommentPresenter extends WidgetPresenter<ForceReviewComm
             display.hide();
          }
       });
-      disableShortcut();
-   }
-
-   private void enableShortcut()
-   {
-      keyShortcutPresenter.setContextActive(ShortcutContext.Edit, false);
-      keyShortcutPresenter.setContextActive(ShortcutContext.Popup, true);
-   }
-
-   private void disableShortcut()
-   {
-      keyShortcutPresenter.setContextActive(ShortcutContext.Edit, true);
-      keyShortcutPresenter.setContextActive(ShortcutContext.Popup, false);
    }
 
    @Override

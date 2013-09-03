@@ -26,7 +26,6 @@ import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -43,12 +42,12 @@ import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ReviewComment;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentAction;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentResult;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import net.customware.gwt.presenter.client.EventBus;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -97,8 +96,6 @@ public class ForceReviewCommentPresenterTest
       presenter.onCommentBeforeSave(commentBeforeSaveEvent);
 
       verify(display).center();
-      verify(keyShortcutPresenter).setContextActive(ShortcutContext.Edit, false);
-      verify(keyShortcutPresenter).setContextActive(ShortcutContext.Popup, true);
    }
 
    @Test
@@ -124,7 +121,5 @@ public class ForceReviewCommentPresenterTest
       verify(eventBus).fireEvent(saveEvent);
       verify(eventBus).fireEvent(NavTransUnitEvent.NEXT_ENTRY_EVENT);
       verify(display).hide();
-      verify(keyShortcutPresenter).setContextActive(ShortcutContext.Edit, true);
-      verify(keyShortcutPresenter).setContextActive(ShortcutContext.Popup, false);
    }
 }

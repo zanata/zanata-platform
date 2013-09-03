@@ -15,7 +15,6 @@ import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.ReviewCommentEvent;
-import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.GetTransUnitActionContextHolder;
@@ -70,14 +69,12 @@ public class TranslationHistoryPresenterTest
    private final TransUnitId transUnitId = new TransUnitId(1L);
    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
    private GetTransUnitActionContextHolder contextHolder;
-   @Mock
-   private KeyShortcutPresenter keyShortcutPresenter;
 
    @BeforeMethod
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new TranslationHistoryPresenter(display, eventBus, dispatcher, messages, contextHolder, keyShortcutPresenter);
+      presenter = new TranslationHistoryPresenter(display, eventBus, dispatcher, messages, contextHolder);
       presenter.setCurrentValueHolder(targetContentsPresenter);
       
       doNothing().when(dispatcher).execute(actionCaptor.capture(), resultCaptor.capture());
@@ -110,8 +107,6 @@ public class TranslationHistoryPresenterTest
 
       verify(eventBus).fireEvent(isA(NotificationEvent.class));
       verify(display).hide();
-      verify(keyShortcutPresenter).setContextActive(ShortcutContext.Edit, true);
-      verify(keyShortcutPresenter).setContextActive(ShortcutContext.Popup, false);
    }
 
    @Test
@@ -136,8 +131,6 @@ public class TranslationHistoryPresenterTest
       AsyncCallback<GetTranslationHistoryResult> result = resultCaptor.getValue();
       result.onSuccess(createTranslationHistory(latest, historyItem));
       verify(display).setData(Lists.<ComparableByDate>newArrayList(latest, historyItem));
-      verify(keyShortcutPresenter).setContextActive(ShortcutContext.Edit, false);
-      verify(keyShortcutPresenter).setContextActive(ShortcutContext.Popup, true);
    }
 
    @Test

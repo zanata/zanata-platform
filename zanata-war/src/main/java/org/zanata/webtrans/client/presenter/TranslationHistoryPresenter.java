@@ -44,13 +44,12 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
    private final CachingDispatchAsync dispatcher;
    private final WebTransMessages messages;
    private final GetTransUnitActionContextHolder contextHolder;
-   private final KeyShortcutPresenter keyShortcutPresenter;
    private TargetContentsPresenter targetContentsPresenter;
    private TransUnitId transUnitId;
    private ComparingPair comparingPair = ComparingPair.empty();
 
    @Inject
-   public TranslationHistoryPresenter(TranslationHistoryDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, WebTransMessages messages, GetTransUnitActionContextHolder contextHolder, KeyShortcutPresenter keyShortcutPresenter)
+   public TranslationHistoryPresenter(TranslationHistoryDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, WebTransMessages messages, GetTransUnitActionContextHolder contextHolder)
    {
       super(display, eventBus);
       this.display = display;
@@ -58,7 +57,6 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
       this.dispatcher = dispatcher;
       this.messages = messages;
       this.contextHolder = contextHolder;
-      this.keyShortcutPresenter = keyShortcutPresenter;
 
       display.setListener(this);
       eventBus.addHandler(ReviewCommentEvent.TYPE, this);
@@ -82,7 +80,6 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
             Log.error("failure getting translation history", caught);
             eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, caught.getMessage()));
             display.hide();
-            disableShortcut();
          }
 
          @Override
@@ -100,7 +97,6 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
       display.setTitle(title);
       display.resetView();
       display.center();
-      enableShortcut();
    }
 
    protected void displayEntries(TransHistoryItem latest, List<TransHistoryItem> otherEntries, List<ReviewComment> reviewComments)
@@ -156,19 +152,6 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
       {
          display.disableComparison();
       }
-   }
-
-   private void enableShortcut()
-   {
-      keyShortcutPresenter.setContextActive(ShortcutContext.Edit, false);
-      keyShortcutPresenter.setContextActive(ShortcutContext.Popup, true);
-   }
-
-   @Override
-   public void disableShortcut()
-   {
-      keyShortcutPresenter.setContextActive(ShortcutContext.Edit, true);
-      keyShortcutPresenter.setContextActive(ShortcutContext.Popup, false);
    }
 
    @Override
