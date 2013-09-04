@@ -77,7 +77,6 @@ import static org.zanata.service.impl.CopyTransServiceImpl.shouldReject;
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Test(groups = { "business-tests" })
-@SlowTest
 public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
 {
    private SeamAutowire seam = SeamAutowire.instance();
@@ -294,6 +293,7 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
    }
 
    @Test(dataProvider = "CopyTrans")
+   @SlowTest
    public void testCopyTrans(CopyTransExecution execution)
    {
       // Prepare Execution
