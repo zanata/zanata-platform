@@ -31,6 +31,7 @@ import org.jboss.seam.security.management.JpaIdentityStore;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import org.zanata.SlowTest;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
@@ -76,6 +77,7 @@ import static org.zanata.service.impl.CopyTransServiceImpl.shouldReject;
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Test(groups = { "business-tests" })
+@SlowTest
 public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
 {
    private SeamAutowire seam = SeamAutowire.instance();
