@@ -125,20 +125,12 @@
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-dependency-plugin</artifactId>
-            <executions>
-                <execution>
-                    <id>analyze</id>
-                    <goals>
-                        <goal>analyze-only</goal>
-                    </goals>
-                    <configuration>
-                        <failOnWarning>true</failOnWarning>
-                        <usedDependencies>
-                            <usedDependency>org.codehaus.plexus:plexus-utils</usedDependency>
-                        </usedDependencies>
-                    </configuration>
-                </execution>
-            </executions>
+            <configuration>
+                <failOnWarning>true</failOnWarning>
+                <usedDependencies>
+                    <usedDependency>org.codehaus.plexus:plexus-utils</usedDependency>
+                </usedDependencies>
+            </configuration>
         </plugin>
 
     </plugins>
