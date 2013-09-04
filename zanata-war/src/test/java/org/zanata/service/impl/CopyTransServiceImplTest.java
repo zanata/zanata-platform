@@ -20,7 +20,6 @@
  */
 package org.zanata.service.impl;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -28,8 +27,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -67,13 +64,11 @@ import static org.hamcrest.Matchers.is;
 import static org.zanata.common.ContentState.Approved;
 import static org.zanata.common.ContentState.NeedReview;
 import static org.zanata.common.ContentState.New;
-import static org.zanata.common.ContentState.Rejected;
 import static org.zanata.common.ContentState.Translated;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.IGNORE;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.REJECT;
-import static org.zanata.service.impl.CopyTransServiceImpl.ResultActionPair;
 import static org.zanata.service.impl.CopyTransServiceImpl.shouldDowngradeToFuzzy;
 import static org.zanata.service.impl.CopyTransServiceImpl.shouldReject;
 
@@ -138,10 +133,10 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
       for( ContentState state : validTranslatedStates)
       {
          assertThat(
-               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.<ResultActionPair>newArrayList(), true, state),
+               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.<CopyTransServiceImpl.MatchRulePair>newArrayList(), true, state),
                is(state));
          assertThat(
-               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.<ResultActionPair>newArrayList(), false, state),
+               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.<CopyTransServiceImpl.MatchRulePair>newArrayList(), false, state),
                is(Translated));
       }
    }
@@ -153,16 +148,16 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
       for( ContentState state : validTranslatedStates )
       {
          assertThat(
-               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new ResultActionPair(true, IGNORE) ), true, state),
+               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new CopyTransServiceImpl.MatchRulePair(true, IGNORE) ), true, state),
                is(state));
          assertThat(
-               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new ResultActionPair(false, IGNORE) ), true, state),
+               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new CopyTransServiceImpl.MatchRulePair(false, IGNORE) ), true, state),
                is(state));
          assertThat(
-               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new ResultActionPair(true, IGNORE) ), false, state),
+               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new CopyTransServiceImpl.MatchRulePair(true, IGNORE) ), false, state),
                is(Translated));
          assertThat(
-               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new ResultActionPair(false, IGNORE) ), false, state),
+               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new CopyTransServiceImpl.MatchRulePair(false, IGNORE) ), false, state),
                is(Translated));
       }
    }
@@ -174,16 +169,16 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
       for( ContentState state : validTranslatedStates )
       {
          assertThat(
-               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new ResultActionPair(true, REJECT) ), true, state),
+               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new CopyTransServiceImpl.MatchRulePair(true, REJECT) ), true, state),
                is(state));
          assertThat(
-               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new ResultActionPair(false, REJECT) ), true, state),
+               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new CopyTransServiceImpl.MatchRulePair(false, REJECT) ), true, state),
                is(New));
          assertThat(
-               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new ResultActionPair(true, REJECT) ), false, state),
+               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new CopyTransServiceImpl.MatchRulePair(true, REJECT) ), false, state),
                is(Translated));
          assertThat(
-               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new ResultActionPair(false, REJECT) ), false, state),
+               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new CopyTransServiceImpl.MatchRulePair(false, REJECT) ), false, state),
                is(New));
       }
    }
@@ -195,16 +190,16 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
       for( ContentState state : validTranslatedStates)
       {
          assertThat(
-               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new ResultActionPair(true, DOWNGRADE_TO_FUZZY) ), true, state),
+               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new CopyTransServiceImpl.MatchRulePair(true, DOWNGRADE_TO_FUZZY) ), true, state),
                is(state));
          assertThat(
-               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new ResultActionPair(false, DOWNGRADE_TO_FUZZY) ), true, state),
+               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new CopyTransServiceImpl.MatchRulePair(false, DOWNGRADE_TO_FUZZY) ), true, state),
                is(NeedReview));
          assertThat(
-               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new ResultActionPair(true, DOWNGRADE_TO_FUZZY) ), false, state),
+               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new CopyTransServiceImpl.MatchRulePair(true, DOWNGRADE_TO_FUZZY) ), false, state),
                is(Translated));
          assertThat(
-               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new ResultActionPair(false, DOWNGRADE_TO_FUZZY) ), false, state),
+               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new CopyTransServiceImpl.MatchRulePair(false, DOWNGRADE_TO_FUZZY) ), false, state),
                is(NeedReview));
       }
    }
@@ -216,30 +211,30 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
       assertThat(
             CopyTransServiceImpl.determineContentStateFromRuleList(
                   Lists.newArrayList(
-                        new ResultActionPair(false, DOWNGRADE_TO_FUZZY),
-                        new ResultActionPair(false, REJECT)),
+                        new CopyTransServiceImpl.MatchRulePair(false, DOWNGRADE_TO_FUZZY),
+                        new CopyTransServiceImpl.MatchRulePair(false, REJECT)),
                   true, Translated),
             is(New));
       assertThat(
             CopyTransServiceImpl.determineContentStateFromRuleList(
                   Lists.newArrayList(
-                        new ResultActionPair(true, IGNORE),
-                        new ResultActionPair(false, REJECT)),
+                        new CopyTransServiceImpl.MatchRulePair(true, IGNORE),
+                        new CopyTransServiceImpl.MatchRulePair(false, REJECT)),
                   false, Translated),
             is(New));
 
       assertThat(
             CopyTransServiceImpl.determineContentStateFromRuleList(
                   Lists.newArrayList(
-                        new ResultActionPair(false, REJECT),
-                        new ResultActionPair(false, DOWNGRADE_TO_FUZZY)),
+                        new CopyTransServiceImpl.MatchRulePair(false, REJECT),
+                        new CopyTransServiceImpl.MatchRulePair(false, DOWNGRADE_TO_FUZZY)),
                   true, Translated),
             is(New));
       assertThat(
             CopyTransServiceImpl.determineContentStateFromRuleList(
                   Lists.newArrayList(
-                        new ResultActionPair(false, REJECT),
-                        new ResultActionPair(true, IGNORE)),
+                        new CopyTransServiceImpl.MatchRulePair(false, REJECT),
+                        new CopyTransServiceImpl.MatchRulePair(true, IGNORE)),
                   false, Translated),
             is(New));
    }
@@ -251,29 +246,29 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
       assertThat(
             CopyTransServiceImpl.determineContentStateFromRuleList(
                   Lists.newArrayList(
-                        new ResultActionPair(false, DOWNGRADE_TO_FUZZY),
-                        new ResultActionPair(true, REJECT)),
+                        new CopyTransServiceImpl.MatchRulePair(false, DOWNGRADE_TO_FUZZY),
+                        new CopyTransServiceImpl.MatchRulePair(true, REJECT)),
                   true, Translated),
             is(NeedReview));
       assertThat(
             CopyTransServiceImpl.determineContentStateFromRuleList(
                   Lists.newArrayList(
-                        new ResultActionPair(false, DOWNGRADE_TO_FUZZY),
-                        new ResultActionPair(true, REJECT)),
+                        new CopyTransServiceImpl.MatchRulePair(false, DOWNGRADE_TO_FUZZY),
+                        new CopyTransServiceImpl.MatchRulePair(true, REJECT)),
                   false, Translated),
             is(NeedReview));
       assertThat(
             CopyTransServiceImpl.determineContentStateFromRuleList(
                   Lists.newArrayList(
-                        new ResultActionPair(false, DOWNGRADE_TO_FUZZY),
-                        new ResultActionPair(false, IGNORE)),
+                        new CopyTransServiceImpl.MatchRulePair(false, DOWNGRADE_TO_FUZZY),
+                        new CopyTransServiceImpl.MatchRulePair(false, IGNORE)),
                   true, Approved),
             is(NeedReview));
       assertThat(
             CopyTransServiceImpl.determineContentStateFromRuleList(
                   Lists.newArrayList(
-                        new ResultActionPair(false, DOWNGRADE_TO_FUZZY),
-                        new ResultActionPair(false, IGNORE)),
+                        new CopyTransServiceImpl.MatchRulePair(false, DOWNGRADE_TO_FUZZY),
+                        new CopyTransServiceImpl.MatchRulePair(false, IGNORE)),
                   true, Approved),
             is(NeedReview));
    }
@@ -283,16 +278,16 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
    {
       // Tests the expected content state when approval is/is not required, and NO rules are evaluated
       assertThat(
-            CopyTransServiceImpl.determineContentStateFromRuleList( Lists.<ResultActionPair>newArrayList(), true, Translated),
+            CopyTransServiceImpl.determineContentStateFromRuleList( Lists.<CopyTransServiceImpl.MatchRulePair>newArrayList(), true, Translated),
             is(Translated) );
       assertThat(
-            CopyTransServiceImpl.determineContentStateFromRuleList( Lists.<ResultActionPair>newArrayList(), false, Translated),
+            CopyTransServiceImpl.determineContentStateFromRuleList( Lists.<CopyTransServiceImpl.MatchRulePair>newArrayList(), false, Translated),
             is(Translated) );
       assertThat(
-            CopyTransServiceImpl.determineContentStateFromRuleList( Lists.<ResultActionPair>newArrayList(), true, Approved),
+            CopyTransServiceImpl.determineContentStateFromRuleList( Lists.<CopyTransServiceImpl.MatchRulePair>newArrayList(), true, Approved),
             is(Approved) );
       assertThat(
-            CopyTransServiceImpl.determineContentStateFromRuleList( Lists.<ResultActionPair>newArrayList(), false, Approved),
+            CopyTransServiceImpl.determineContentStateFromRuleList( Lists.<CopyTransServiceImpl.MatchRulePair>newArrayList(), false, Approved),
             is(Translated) );
    }
 

@@ -297,20 +297,20 @@ public class CopyTransServiceImpl implements CopyTransService
     * Determines the content state for a translation given a list of rules and their evaluation result, and
     * the initial state that it was copied as.
     *
-    * @param pairs List of evaluated rules and their result.
+    * @param pairs List of evaluated rules and the match result.
     * @param initialState The initial content state of the translation that the content was copied from.
     * @return The content state that the copied translation should have. 'New' indicates that the translation
     * should not copied.
     */
    private static
-   ContentState determineContentStateFromMatchRules(List<ResultActionPair> pairs, ContentState initialState)
+   ContentState determineContentStateFromMatchRules(List<MatchRulePair> pairs, ContentState initialState)
    {
       if( pairs.isEmpty() )
       {
          return initialState;
       }
 
-      ResultActionPair p = pairs.get(0);
+      MatchRulePair p = pairs.get(0);
       if( shouldReject(p.getMatchResult(), p.getRuleAction()) )
       {
          return New;
@@ -335,7 +335,7 @@ public class CopyTransServiceImpl implements CopyTransService
     * should not copied.
     */
    static
-   ContentState determineContentStateFromRuleList(List<ResultActionPair> pairs,
+   ContentState determineContentStateFromRuleList(List<MatchRulePair> pairs,
                                                   boolean requireTranslationReview, ContentState matchingTargetState)
    {
       assert matchingTargetState == Translated || matchingTargetState == Approved;
@@ -359,9 +359,9 @@ public class CopyTransServiceImpl implements CopyTransService
                                       HCopyTransOptions options, boolean requireTranslationReview, ContentState matchingTargetState)
    {
       List rules =
-            ImmutableList.of(new ResultActionPair(contextMatches, options.getContextMismatchAction()),
-                  new ResultActionPair(projectMatches, options.getProjectMismatchAction()),
-                  new ResultActionPair(docIdMatches, options.getDocIdMismatchAction()));
+            ImmutableList.of(new MatchRulePair(contextMatches, options.getContextMismatchAction()),
+                  new MatchRulePair(projectMatches, options.getProjectMismatchAction()),
+                  new MatchRulePair(docIdMatches, options.getDocIdMismatchAction()));
 
       return determineContentStateFromRuleList(rules, requireTranslationReview, matchingTargetState);
    }
@@ -476,7 +476,7 @@ public class CopyTransServiceImpl implements CopyTransService
 
       if( processHandle != null )
       {
-         processHandle.setDocumentsProcessed( processHandle.getDocumentsProcessed() + 1 );
+         processHandle.setDocumentsProcessed(processHandle.getDocumentsProcessed() + 1);
       }
       log.info("copyTrans finished: document \"{0}\"", document.getDocId());
    }
@@ -542,9 +542,9 @@ public class CopyTransServiceImpl implements CopyTransService
     * Holds the result of a rule evaluation in the form of a boolean, and the corresponding action
     * to be taken for the result.
     */
-   static final class ResultActionPair extends Pair<Boolean, HCopyTransOptions.ConditionRuleAction>
+   static final class MatchRulePair extends Pair<Boolean, HCopyTransOptions.ConditionRuleAction>
    {
-      public ResultActionPair(Boolean result, HCopyTransOptions.ConditionRuleAction action)
+      public MatchRulePair(Boolean result, HCopyTransOptions.ConditionRuleAction action)
       {
          super(result, action);
       }
