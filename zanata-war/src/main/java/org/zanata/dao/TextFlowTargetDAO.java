@@ -198,8 +198,8 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
                "or :finalState != (select t.state from HTextFlowTarget t where t.textFlow = textFlow and t.locale = :locale) ) " +
             // Do not reuse its own translations
             "and match.textFlow != textFlow " +
-            // Do not reuse matches from obsolete entities (document, iteration, project)
-            "and match.textFlow.document.obsolete = false " +
+            // Do not reuse matches from obsolete entities (iteration, project)
+            // Obsolete document translations ARE reused
             "and match.textFlow.document.projectIteration.status != :obsoleteEntityStatus " +
             "and match.textFlow.document.projectIteration.project.status != :obsoleteEntityStatus "
       );

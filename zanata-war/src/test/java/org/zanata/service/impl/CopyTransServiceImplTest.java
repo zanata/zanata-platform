@@ -23,6 +23,7 @@ package org.zanata.service.impl;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.dbunit.operation.DatabaseOperation;
@@ -30,6 +31,7 @@ import org.jboss.seam.security.management.JpaIdentityStore;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import org.zanata.SlowTest;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
@@ -50,6 +52,9 @@ import org.zanata.process.CopyTransProcessHandle;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.service.CopyTransService;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -57,14 +62,16 @@ import lombok.ToString;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
 import static org.zanata.common.ContentState.Approved;
 import static org.zanata.common.ContentState.NeedReview;
+import static org.zanata.common.ContentState.New;
 import static org.zanata.common.ContentState.Translated;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.IGNORE;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.REJECT;
+import static org.zanata.service.impl.CopyTransServiceImpl.shouldDowngradeToFuzzy;
+import static org.zanata.service.impl.CopyTransServiceImpl.shouldReject;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -73,6 +80,7 @@ import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.REJECT;
 public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
 {
    private SeamAutowire seam = SeamAutowire.instance();
+   private final List<ContentState> validTranslatedStates = ImmutableList.of(Translated, Approved);
 
    @Override
    protected void prepareDBUnitOperations()
@@ -100,7 +108,8 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
    @Test(enabled = false)
    public void individualTest()
    {
-      this.testCopyTrans(new CopyTransExecution(REJECT, IGNORE, DOWNGRADE_TO_FUZZY, true, true, true, true).expectTransState(Approved));
+
+      this.testCopyTrans(new CopyTransExecution(REJECT, IGNORE, DOWNGRADE_TO_FUZZY, false, true, false, false, Approved).expectTransState(NeedReview));
    }
 
    @DataProvider(name = "CopyTrans")
@@ -119,36 +128,172 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
    }
 
    @Test
-   public void testExpectedState()
+   public void basicDetermineContentState()
    {
-      CopyTransServiceImpl copyTransService = seam.autowire(CopyTransServiceImpl.class);
-
-      // When the current context (last argument) is null, it should always return null
-      assertThat(copyTransService.getExpectedContentState(true, DOWNGRADE_TO_FUZZY, null), nullValue());
-
-      assertThat(copyTransService.getExpectedContentState(true, REJECT, Approved), is(Approved));
-      assertThat(copyTransService.getExpectedContentState(false, REJECT, Approved), nullValue());
-      assertThat(copyTransService.getExpectedContentState(true, DOWNGRADE_TO_FUZZY, Approved), is(Approved));
-      assertThat(copyTransService.getExpectedContentState(false, DOWNGRADE_TO_FUZZY, Approved), is(NeedReview));
-      assertThat(copyTransService.getExpectedContentState(true, IGNORE, Approved), is(Approved));
-      assertThat(copyTransService.getExpectedContentState(false, IGNORE, Approved), is(Approved));
-
-      assertThat(copyTransService.getExpectedContentState(true, REJECT, NeedReview), is(NeedReview));
-      assertThat(copyTransService.getExpectedContentState(false, REJECT, NeedReview), nullValue());
-      assertThat(copyTransService.getExpectedContentState(true, DOWNGRADE_TO_FUZZY, NeedReview), is(NeedReview));
-      assertThat(copyTransService.getExpectedContentState(false, DOWNGRADE_TO_FUZZY, NeedReview), is(NeedReview));
-      assertThat(copyTransService.getExpectedContentState(true, IGNORE, NeedReview), is(NeedReview));
-      assertThat(copyTransService.getExpectedContentState(false, IGNORE, NeedReview), is(NeedReview));
-
-      assertThat(copyTransService.getExpectedContentState(true, REJECT, Translated), is(Translated));
-      assertThat(copyTransService.getExpectedContentState(false, REJECT, Translated), nullValue());
-      assertThat(copyTransService.getExpectedContentState(true, DOWNGRADE_TO_FUZZY, Translated), is(Translated));
-      assertThat(copyTransService.getExpectedContentState(false, DOWNGRADE_TO_FUZZY, Translated), is(NeedReview));
-      assertThat(copyTransService.getExpectedContentState(true, IGNORE, Translated), is(Translated));
-      assertThat(copyTransService.getExpectedContentState(false, IGNORE, Translated), is(Translated));
+      // An empty rule list should not change the state
+      for( ContentState state : validTranslatedStates)
+      {
+         assertThat(
+               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.<CopyTransServiceImpl.MatchRulePair>newArrayList(), true, state),
+               is(state));
+         assertThat(
+               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.<CopyTransServiceImpl.MatchRulePair>newArrayList(), false, state),
+               is(Translated));
+      }
    }
 
-   @Test(dataProvider = "CopyTrans", dependsOnMethods = "testExpectedState")
+   @Test
+   public void contentStateWithIgnoreRule()
+   {
+      // If the rule is IGNORE, the state should not change no matter what the result is
+      for( ContentState state : validTranslatedStates )
+      {
+         assertThat(
+               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new CopyTransServiceImpl.MatchRulePair(true, IGNORE) ), true, state),
+               is(state));
+         assertThat(
+               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new CopyTransServiceImpl.MatchRulePair(false, IGNORE) ), true, state),
+               is(state));
+         assertThat(
+               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new CopyTransServiceImpl.MatchRulePair(true, IGNORE) ), false, state),
+               is(Translated));
+         assertThat(
+               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new CopyTransServiceImpl.MatchRulePair(false, IGNORE) ), false, state),
+               is(Translated));
+      }
+   }
+
+   @Test
+   public void contentStateWithRejectRule()
+   {
+      // If the rule is Reject, then the match should be rejected only when the evaluation fails
+      for( ContentState state : validTranslatedStates )
+      {
+         assertThat(
+               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new CopyTransServiceImpl.MatchRulePair(true, REJECT) ), true, state),
+               is(state));
+         assertThat(
+               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new CopyTransServiceImpl.MatchRulePair(false, REJECT) ), true, state),
+               is(New));
+         assertThat(
+               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new CopyTransServiceImpl.MatchRulePair(true, REJECT) ), false, state),
+               is(Translated));
+         assertThat(
+               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new CopyTransServiceImpl.MatchRulePair(false, REJECT) ), false, state),
+               is(New));
+      }
+   }
+
+   @Test
+   public void contentStateWithDowngradeRule()
+   {
+      // If the rule is downgrade, then the match should be downgraded when the evaluation fails
+      for( ContentState state : validTranslatedStates)
+      {
+         assertThat(
+               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new CopyTransServiceImpl.MatchRulePair(true, DOWNGRADE_TO_FUZZY) ), true, state),
+               is(state));
+         assertThat(
+               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new CopyTransServiceImpl.MatchRulePair(false, DOWNGRADE_TO_FUZZY) ), true, state),
+               is(NeedReview));
+         assertThat(
+               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new CopyTransServiceImpl.MatchRulePair(true, DOWNGRADE_TO_FUZZY) ), false, state),
+               is(Translated));
+         assertThat(
+               CopyTransServiceImpl.determineContentStateFromRuleList(Lists.newArrayList( new CopyTransServiceImpl.MatchRulePair(false, DOWNGRADE_TO_FUZZY) ), false, state),
+               is(NeedReview));
+      }
+   }
+
+   @Test
+   public void failedRejectionRule()
+   {
+      // A single rejection should reject the whole translation no matter what the other rules say
+      assertThat(
+            CopyTransServiceImpl.determineContentStateFromRuleList(
+                  Lists.newArrayList(
+                        new CopyTransServiceImpl.MatchRulePair(false, DOWNGRADE_TO_FUZZY),
+                        new CopyTransServiceImpl.MatchRulePair(false, REJECT)),
+                  true, Translated),
+            is(New));
+      assertThat(
+            CopyTransServiceImpl.determineContentStateFromRuleList(
+                  Lists.newArrayList(
+                        new CopyTransServiceImpl.MatchRulePair(true, IGNORE),
+                        new CopyTransServiceImpl.MatchRulePair(false, REJECT)),
+                  false, Translated),
+            is(New));
+
+      assertThat(
+            CopyTransServiceImpl.determineContentStateFromRuleList(
+                  Lists.newArrayList(
+                        new CopyTransServiceImpl.MatchRulePair(false, REJECT),
+                        new CopyTransServiceImpl.MatchRulePair(false, DOWNGRADE_TO_FUZZY)),
+                  true, Translated),
+            is(New));
+      assertThat(
+            CopyTransServiceImpl.determineContentStateFromRuleList(
+                  Lists.newArrayList(
+                        new CopyTransServiceImpl.MatchRulePair(false, REJECT),
+                        new CopyTransServiceImpl.MatchRulePair(true, IGNORE)),
+                  false, Translated),
+            is(New));
+   }
+
+   @Test
+   public void failedDowngradeRule()
+   {
+      // A failed Downgrade rule should cause the content state to be fuzzy in all cases, except if a rejection is encountered
+      assertThat(
+            CopyTransServiceImpl.determineContentStateFromRuleList(
+                  Lists.newArrayList(
+                        new CopyTransServiceImpl.MatchRulePair(false, DOWNGRADE_TO_FUZZY),
+                        new CopyTransServiceImpl.MatchRulePair(true, REJECT)),
+                  true, Translated),
+            is(NeedReview));
+      assertThat(
+            CopyTransServiceImpl.determineContentStateFromRuleList(
+                  Lists.newArrayList(
+                        new CopyTransServiceImpl.MatchRulePair(false, DOWNGRADE_TO_FUZZY),
+                        new CopyTransServiceImpl.MatchRulePair(true, REJECT)),
+                  false, Translated),
+            is(NeedReview));
+      assertThat(
+            CopyTransServiceImpl.determineContentStateFromRuleList(
+                  Lists.newArrayList(
+                        new CopyTransServiceImpl.MatchRulePair(false, DOWNGRADE_TO_FUZZY),
+                        new CopyTransServiceImpl.MatchRulePair(false, IGNORE)),
+                  true, Approved),
+            is(NeedReview));
+      assertThat(
+            CopyTransServiceImpl.determineContentStateFromRuleList(
+                  Lists.newArrayList(
+                        new CopyTransServiceImpl.MatchRulePair(false, DOWNGRADE_TO_FUZZY),
+                        new CopyTransServiceImpl.MatchRulePair(false, IGNORE)),
+                  true, Approved),
+            is(NeedReview));
+   }
+
+   @Test
+   public void determineContentStateFromRuleListBasics()
+   {
+      // Tests the expected content state when approval is/is not required, and NO rules are evaluated
+      assertThat(
+            CopyTransServiceImpl.determineContentStateFromRuleList( Lists.<CopyTransServiceImpl.MatchRulePair>newArrayList(), true, Translated),
+            is(Translated) );
+      assertThat(
+            CopyTransServiceImpl.determineContentStateFromRuleList( Lists.<CopyTransServiceImpl.MatchRulePair>newArrayList(), false, Translated),
+            is(Translated) );
+      assertThat(
+            CopyTransServiceImpl.determineContentStateFromRuleList( Lists.<CopyTransServiceImpl.MatchRulePair>newArrayList(), true, Approved),
+            is(Approved) );
+      assertThat(
+            CopyTransServiceImpl.determineContentStateFromRuleList( Lists.<CopyTransServiceImpl.MatchRulePair>newArrayList(), false, Approved),
+            is(Translated) );
+   }
+
+   @Test(dataProvider = "CopyTrans")
+   @SlowTest
    public void testCopyTrans(CopyTransExecution execution)
    {
       // Prepare Execution
@@ -168,6 +313,18 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
 
       // Set require translation review
       projectIteration.setRequireTranslationReview(execution.requireTranslationReview);
+
+      // Change all targets to have the execution's match state
+      for( HDocument doc : projectIteration.getDocuments().values() )
+      {
+         for( HTextFlow tf : doc.getAllTextFlows().values() )
+         {
+            for( HTextFlowTarget tft : tf.getTargets().values() )
+            {
+               tft.setState( execution.matchState );
+            }
+         }
+      }
 
       // Create the document
       HDocument doc = new HDocument();
@@ -227,7 +384,7 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
             throw new AssertionError("Expected untranslated text flow but got state " + target.getState());
          }
       }
-      else if( execution.getExpectedTranslationState() != null )
+      else if( execution.getExpectedTranslationState() != New )
       {
          if( target == null )
          {
@@ -270,13 +427,13 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
       projectDAO.makePersistent(project);
 
       // Run the copy trans scenario (very liberal, but nothing should be translated)
-      CopyTransExecution execution = new CopyTransExecution(IGNORE, IGNORE, IGNORE, true, true, true, true)
+      CopyTransExecution execution = new CopyTransExecution(IGNORE, IGNORE, IGNORE, true, true, true, true, Approved)
                                          .expectUntranslated();
       testCopyTrans(execution);
    }
 
    @Test
-   public void ignoreTranslationsFromObsoleteDocuments() throws Exception
+   public void reuseTranslationsFromObsoleteDocuments() throws Exception
    {
       ProjectIterationDAO projectIterationDAO = seam.autowire(ProjectIterationDAO.class);
       DocumentDAO documentDAO = seam.autowire(DocumentDAO.class);
@@ -301,19 +458,14 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
       }
 
       // Run the copy trans scenario (very liberal, but nothing should be translated)
-      CopyTransExecution execution = new CopyTransExecution(IGNORE, IGNORE, IGNORE, true, true, true, true)
-            .expectUntranslated();
+      CopyTransExecution execution = new CopyTransExecution(IGNORE, IGNORE, IGNORE, true, true, true, true, Approved)
+            .expectTransState(Approved);
       testCopyTrans(execution);
    }
 
    private ContentState getExpectedContentState( CopyTransExecution execution )
    {
-      ContentState expectedContentState = Translated;
-      // our test data has content state Approved
-      if (execution.getRequireTranslationReview() && execution.getContextMatches() && execution.getDocumentMatches() && execution.getProjectMatches())
-      {
-         expectedContentState = Approved;
-      }
+      ContentState expectedContentState = execution.getRequireTranslationReview() ? Approved : Translated;
 
       expectedContentState = getExpectedContentState(execution.getContextMatches(), execution.getContextMismatchAction(), expectedContentState);
       expectedContentState = getExpectedContentState(execution.getProjectMatches(), execution.getProjectMismatchAction(), expectedContentState);
@@ -321,24 +473,26 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
       return expectedContentState;
    }
 
-   private ContentState getExpectedContentState( boolean match, ConditionRuleAction action, ContentState currentState )
+   public static
+   ContentState getExpectedContentState( boolean match, HCopyTransOptions.ConditionRuleAction action,
+                                         ContentState currentState )
    {
-      if( currentState == null )
+      if( currentState == New )
       {
-         return null;
+         return currentState;
       }
-      else if( !match )
+      else if( shouldReject(match, action) )
       {
-         if( action == DOWNGRADE_TO_FUZZY )
-         {
-            return ContentState.NeedReview;
-         }
-         else if( action == REJECT )
-         {
-            return null;
-         }
+         return New;
       }
-      return currentState;
+      else if (shouldDowngradeToFuzzy(match, action))
+      {
+         return NeedReview;
+      }
+      else
+      {
+         return currentState;
+      }
    }
 
    private Set<CopyTransExecution> generateAllExecutions()
@@ -350,16 +504,17 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
                                                  Arrays.asList(true, false),
                                                  Arrays.asList(true, false),
                                                  Arrays.asList(true, false),
-                                                 Arrays.asList(true, false));
+                                                 Arrays.asList(true, false),
+                                                 Arrays.asList(Translated, Approved));
 
       for( Object[] params : paramsSet )
       {
          CopyTransExecution exec = new CopyTransExecution(
                (ConditionRuleAction)params[0], (ConditionRuleAction)params[1], (ConditionRuleAction)params[2],
-               (Boolean)params[3], (Boolean)params[4], (Boolean)params[5], (Boolean)params[6]);
+               (Boolean)params[3], (Boolean)params[4], (Boolean)params[5], (Boolean)params[6], (ContentState)params[7]);
 
          ContentState expectedContentState = this.getExpectedContentState(exec);
-         if( expectedContentState == null )
+         if( expectedContentState == New )
          {
             exec.expectUntranslated();
          }
@@ -412,8 +567,7 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
 
    @Getter
    @Setter
-   @EqualsAndHashCode(of = {"contextMismatchAction", "projectMismatchAction", "documentMismatchAction",
-                            "contextMatches", "projectMatches", "documentMatches"})
+   @EqualsAndHashCode
    @ToString
    private static class CopyTransExecution implements Cloneable
    {
@@ -427,10 +581,11 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
       private ContentState expectedTranslationState;
       private boolean expectUntranslated;
       private String[] expectedContents;
+      public ContentState matchState;
 
       private CopyTransExecution(ConditionRuleAction contextMismatchAction, ConditionRuleAction projectMismatchAction,
                                  ConditionRuleAction documentMismatchAction, Boolean contextMatches, Boolean projectMatches,
-                                 Boolean documentMatches, Boolean requireTranslationReview)
+                                 Boolean documentMatches, Boolean requireTranslationReview, ContentState matchState)
       {
          this.contextMismatchAction = contextMismatchAction;
          this.projectMismatchAction = projectMismatchAction;
@@ -439,6 +594,7 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
          this.projectMatches = projectMatches;
          this.documentMatches = documentMatches;
          this.requireTranslationReview = requireTranslationReview;
+         this.matchState = matchState;
       }
 
       @Override
@@ -450,13 +606,13 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
       public CopyTransExecution expectTransState( ContentState state )
       {
          this.expectedTranslationState = state;
-         this.expectUntranslated = false;
+         this.expectUntranslated = state == New;
          return this;
       }
 
       public CopyTransExecution expectUntranslated()
       {
-         this.expectedTranslationState = null;
+         this.expectedTranslationState = New;
          this.expectUntranslated = true;
          return this;
       }
