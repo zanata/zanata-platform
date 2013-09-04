@@ -375,11 +375,7 @@ public class CopyTransServiceImpl implements CopyTransService
     */
    static boolean shouldReject(boolean match, HCopyTransOptions.ConditionRuleAction action )
    {
-      if( !match && action == REJECT )
-      {
-         return true;
-      }
-      return false;
+      return !match && action == REJECT;
    }
 
    /**
@@ -499,7 +495,7 @@ public class CopyTransServiceImpl implements CopyTransService
     */
    private static boolean shouldOverwrite(HTextFlowTarget currentlyStored, ContentState matchState)
    {
-      if( matchState == null || matchState == New )
+      if( matchState == New )
       {
          return false;
       }
