@@ -116,11 +116,6 @@ public class SecurityFullTest
    @Test
    public void emptyResetPasswordFieldEntries()
    {
-      // Both are valid, but show seemingly at random
-      List<String> emptyUsernameErrors = new ArrayList<String>();
-      emptyUsernameErrors.add("size must be between 3 and 20");
-      emptyUsernameErrors.add("must match ^[a-z\\d_]{3,20}$");
-
       SignInPage signInPage = new BasicWorkFlow().goToHome().clickSignInLink();
       ResetPasswordPage resetPasswordPage = signInPage.gotToResetPassword();
       resetPasswordPage = resetPasswordPage.clearFields();
@@ -129,8 +124,11 @@ public class SecurityFullTest
       assertThat("Empty email error is displayed", resetPasswordPage.waitForErrors(),
             hasItem("may not be empty"));
 
-
-      assertThat(resetPasswordPage.getErrors().get(0), equalTo("may not be empty"));
+      // All are valid, but may show at random
+      assertThat(resetPasswordPage.getErrors().get(0),
+            either(equalTo("size must be between 3 and 20"))
+                  .or(equalTo("may not be empty"))
+                  .or(equalTo("must match ^[a-z\\d_]{3,20}$")));
 
    }
 
