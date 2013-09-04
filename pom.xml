@@ -213,6 +213,10 @@
          <plugin>
             <artifactId>maven-dependency-plugin</artifactId>
             <executions>
+                <!--
+                  Check for misused dependencies during the build
+                  http://maven.apache.org/plugins/maven-dependency-plugin/examples/failing-the-build-on-dependency-analysis-warnings.html
+                -->
                 <execution>
                     <id>analyze</id>
                     <goals>
@@ -222,7 +226,9 @@
             </executions>
             <configuration>
                 <failOnWarning>true</failOnWarning>
+                <outputXML>true</outputXML>
                 <usedDependencies combine.children="append">
+                  <!-- runtime-only dependencies which maven-dependency-analyzer misses  -->
                   <usedDependency>org.slf4j:slf4j-log4j12</usedDependency>
                   <usedDependency>org.slf4j:jcl-over-slf4j</usedDependency>
                 </usedDependencies>
