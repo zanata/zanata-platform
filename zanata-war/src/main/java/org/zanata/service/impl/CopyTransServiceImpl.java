@@ -522,37 +522,14 @@ public class CopyTransServiceImpl implements CopyTransService
    }
 
    /**
-    * Internal pair implementation.
-    * TODO: Apache commons collections has a Pair class which could be used here
-    */
-   @Getter
-   @AllArgsConstructor
-   private static class Pair<T1, T2>
-   {
-      final private T1 left;
-      final private T2 right;
-   }
-
-   /**
-    * Internal concrete pair implementation.
-    * Holds the result of a rule evaluation in the form of a boolean, and the corresponding action
+    * Holds the result of a match evaluation in the form of a boolean, and the corresponding action
     * to be taken for the result.
     */
-   static final class MatchRulePair extends Pair<Boolean, HCopyTransOptions.ConditionRuleAction>
+   @AllArgsConstructor
+   @Getter
+   static final class MatchRulePair
    {
-      public MatchRulePair(Boolean result, HCopyTransOptions.ConditionRuleAction action)
-      {
-         super(result, action);
-      }
-
-      public boolean getMatchResult()
-      {
-         return super.getLeft();
-      }
-
-      public HCopyTransOptions.ConditionRuleAction getRuleAction()
-      {
-         return super.getRight();
-      }
+      private final Boolean matchResult;
+      private final HCopyTransOptions.ConditionRuleAction ruleAction;
    }
 }
