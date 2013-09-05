@@ -258,7 +258,7 @@
                     </bannedDependencies>
                     <banDuplicateClasses>
                        <findAllDuplicates>true</findAllDuplicates>
-                       <message>
+                       <message xml:space="preserve">
 Warning: found duplicate classes on classpath.  Please remove unnecessary
 dependencies if possible, and consider adding them to bannedDependencies.
 If that is not possible, please add an ignoreClass for the class or entire
@@ -266,7 +266,7 @@ package.
                        </message>
                     </banDuplicateClasses>
 				        <requireNoRepositories>
-				          <message>Repositories in pom.xml are not allowed by Maven Central</message>
+				          <message xml:space="preserve">Repositories in pom.xml are not allowed by Maven Central</message>
 				          <banRepositories>true</banRepositories>
 				          <banPluginRepositories>true</banPluginRepositories>
 				          <allowedRepositories combine.children="append">
