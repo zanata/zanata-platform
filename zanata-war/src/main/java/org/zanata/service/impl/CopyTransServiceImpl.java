@@ -27,7 +27,6 @@ import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.REJECT;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
 import javax.persistence.EntityManager;
 
 import org.hibernate.HibernateException;
@@ -56,7 +55,11 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.service.TranslatedDocResourceService;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
+import com.google.common.collect.ImmutableList;
 import com.google.common.base.Optional;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 //TODO unit test suite for this class
 
@@ -281,69 +284,100 @@ public class CopyTransServiceImpl implements CopyTransService
    }
 
    /**
-    * Determines the content state a copied translation should have.
+    * Determines the content state for a translation given a list of rules and their evaluation result, and
+    * the initial state that it was copied as.
     *
-    * @param contextMatches Whether the copied TextFlow's context matches the target TextFlow's context or not.
-    * @param projectMatches Whether the copied TextFlow's project matches the target TextFlow's context or not.
-    * @param docIdMatches Whether the copied TextFlow's docId matches the target TextFlow's context or not.
-    * @param options The copy trans options being used.
-    * @param requireTranslationReview Whether the project being copied to requires review or not.
-    * @param matchingTargetState The state of the match found by copy trans.
-    * @return The content state that the copied translation should have. May return null if the translation should not
-    * be copied at all.
+    * @param pairs List of evaluated rules and the match result.
+    * @param initialState The initial content state of the translation that the content was copied from.
+    * @return The content state that the copied translation should have. 'New' indicates that the translation
+    * should not copied.
     */
-   private @Nullable
-   ContentState determineContentState(boolean contextMatches, boolean projectMatches, boolean docIdMatches,
-                                      HCopyTransOptions options, boolean requireTranslationReview, ContentState matchingTargetState)
+   private static
+   ContentState determineContentStateFromMatchRules(List<MatchRulePair> pairs, ContentState initialState)
    {
-      // Everything matches, and requires approval
-      if (requireTranslationReview && matchingTargetState.isApproved() && projectMatches && contextMatches && docIdMatches)
+      if( pairs.isEmpty() )
       {
-         return Approved;
+         return initialState;
       }
-      // Everything matches, and does not require approval
-      else if( matchingTargetState.isApproved() && projectMatches && contextMatches && docIdMatches )
+
+      MatchRulePair p = pairs.get(0);
+      if( shouldReject(p.getMatchResult(), p.getRuleAction()) )
       {
-         return Translated;
+         return New;
       }
-      // Everything else
-      ContentState state = Translated;
-      state = getExpectedContentState(contextMatches, options.getContextMismatchAction(), state);
-      state = getExpectedContentState(projectMatches, options.getProjectMismatchAction(), state);
-      state = getExpectedContentState(docIdMatches, options.getDocIdMismatchAction(), state);
-      return state;
+      else if( shouldDowngradeToFuzzy(p.getMatchResult(), p.getRuleAction()) )
+      {
+         return determineContentStateFromMatchRules(pairs.subList(1, pairs.size()), NeedReview);
+      }
+      else
+      {
+         return determineContentStateFromMatchRules(pairs.subList(1, pairs.size()), initialState);
+      }
    }
 
    /**
-    * Gets the content state that is expected for a translation when evaluated against a single copy trans
-    * condition.
-    * Copy Trans conditions are of the form: Is it the same project? Is it the same documentId? ... etc.
+    * Determines the content state for a translation given a list of rules and their evaluation result.
     *
-    * @param match Whether the condition holds or not (is there a match?)
-    * @param action The action to take when the condition matches.
-    * @param currentState The current state of the translation.
-    * @return The content state that is expected the copied translation to have.
+    * @param pairs List of evaluated rules and their result.
+    * @param requireTranslationReview Whether the project to copy the translation to requires translations to be reviewed.
+    * @param matchingTargetState The initial state of the matching translation (the translation that will be copied over).
+    * @return The content state that the copied translation should have. 'New' indicates that the translation
+    * should not copied.
     */
-   public @Nullable
-   ContentState getExpectedContentState( boolean match, HCopyTransOptions.ConditionRuleAction action,
-                                         ContentState currentState )
+   static
+   ContentState determineContentStateFromRuleList(List<MatchRulePair> pairs,
+                                                  boolean requireTranslationReview, ContentState matchingTargetState)
    {
-      if( currentState == null )
-      {
-         return null;
-      }
-      else if( !match )
-      {
-         if( action == DOWNGRADE_TO_FUZZY )
-         {
-            return NeedReview;
-         }
-         else if( action == REJECT )
-         {
-            return null;
-         }
-      }
-      return currentState;
+      assert matchingTargetState == Translated || matchingTargetState == Approved;
+      return determineContentStateFromMatchRules(pairs, requireTranslationReview ? matchingTargetState : Translated);
+   }
+
+   /**
+    * Determines the content state that a copied translation should have.
+    *
+    * @param contextMatches Indicates if there is a context match between the match and copy-target text flows.
+    * @param projectMatches Indicates if there is a project match between the match and copy-target text flows.
+    * @param docIdMatches Indicates if there is a doc Id match between the match and copy-target text flows.
+    * @param options The copy trans options that are effective.
+    * @param requireTranslationReview Whether the project to copy the translation to requires translations to be reviewed.
+    * @param matchingTargetState he initial state of the matching translation (the translation that will be copied over).
+    * @return The content state that the copied translation should have. 'New' indicates that the translation
+    * should not copied.
+    */
+   static
+   ContentState determineContentState(boolean contextMatches, boolean projectMatches, boolean docIdMatches,
+                                      HCopyTransOptions options, boolean requireTranslationReview, ContentState matchingTargetState)
+   {
+      List rules =
+            ImmutableList.of(new MatchRulePair(contextMatches, options.getContextMismatchAction()),
+                  new MatchRulePair(projectMatches, options.getProjectMismatchAction()),
+                  new MatchRulePair(docIdMatches, options.getDocIdMismatchAction()));
+
+      return determineContentStateFromRuleList(rules, requireTranslationReview, matchingTargetState);
+   }
+
+   /**
+    * Indicates if a copied translation should be rejected.
+    *
+    * @param match The result of a match evaluating condition.
+    * @param action The selected action to take based on the result of the condition evaluation.
+    * @return True, if the translation should be outright rejected based on the evaluated condition.
+    */
+   static boolean shouldReject(boolean match, HCopyTransOptions.ConditionRuleAction action )
+   {
+      return !match && action == REJECT;
+   }
+
+   /**
+    * Indicates if a copied translation should be downgraded to fuzzy/
+    *
+    * @param match The result of a match evaluating condition.
+    * @param action The selected action to take based on the result of the condition evaluation.
+    * @return True, if the translation should be downgraded to fuzzy based on the evaluated condition.
+    */
+   static boolean shouldDowngradeToFuzzy(boolean match, HCopyTransOptions.ConditionRuleAction action)
+   {
+      return !match && action == DOWNGRADE_TO_FUZZY;
    }
 
    @Override
@@ -410,7 +444,7 @@ public class CopyTransServiceImpl implements CopyTransService
     */
    private static boolean shouldOverwrite(HTextFlowTarget currentlyStored, ContentState matchState)
    {
-      if( matchState == null )
+      if( matchState == New )
       {
          return false;
       }
@@ -434,5 +468,17 @@ public class CopyTransServiceImpl implements CopyTransService
          }
       }
       return true;
+   }
+
+   /**
+    * Holds the result of a match evaluation in the form of a boolean, and the corresponding action
+    * to be taken for the result.
+    */
+   @AllArgsConstructor
+   @Getter
+   static final class MatchRulePair
+   {
+      private final Boolean matchResult;
+      private final HCopyTransOptions.ConditionRuleAction ruleAction;
    }
 }
