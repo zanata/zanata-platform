@@ -116,6 +116,23 @@
             </plugin>
          <plugin>
             <artifactId>maven-enforcer-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>enforce-arquillian-jboss-home</id>
+                <goals>
+                  <goal>enforce</goal>
+                </goals>
+                <phase>pre-integration-test</phase>
+                <configuration>
+                  <rules combine.self="override">
+                    <requireProperty>
+                      <property>arquillian.jboss.home</property>
+                      <message>You must set the arquillian.jboss.home property to run integration tests</message>
+                    </requireProperty>
+                  </rules>
+                </configuration>
+              </execution>
+            </executions>
             <configuration>
                 <rules>
                     <banDuplicateClasses>
@@ -161,10 +178,6 @@
                           <ignoreClass>sun.*</ignoreClass>
                        </ignoreClasses>
                     </banDuplicateClasses>
-                    <requireProperty>
-                       <property>arquillian.jboss.home</property>
-                       <message>You must set the arquillian.jboss.home property to run integration tests</message>
-                    </requireProperty>
                 </rules>
             </configuration>
          </plugin>
@@ -803,18 +816,28 @@
             </plugins>
          </build>
       </profile>
-		
-		<profile>
-			<id>nogwt</id>
-			<properties>
-				<gwt.compiler.skip>true</gwt.compiler.skip>
-			</properties>
-		</profile>
+
+      <profile>
+        <id>nogwt</id>
+        <activation>
+          <property>
+            <name>nogwt</name>
+          </property>
+        </activation>
+        <properties>
+          <gwt.compiler.skip>true</gwt.compiler.skip>
+        </properties>
+      </profile>
 
 		<profile>
 			<!-- This profile tells GWT to use an alternative GWT module which has 
 				only one permutation, and to compile in draft mode -->
 			<id>chrome</id>
+			<activation>
+				<property>
+					<name>chrome</name>
+				</property>
+			</activation>
 			<properties>
 				<zanata.gwt.module>org.zanata.webtrans.ApplicationSafari</zanata.gwt.module>
 			</properties>
@@ -836,6 +859,11 @@
 			<!-- This profile tells GWT to use an alternative GWT module which has 
 				only one permutation, and to compile in draft mode -->
 			<id>firefox</id>
+			<activation>
+				<property>
+					<name>firefox</name>
+				</property>
+			</activation>
 			<properties>
 				<zanata.gwt.module>org.zanata.webtrans.ApplicationGecko18</zanata.gwt.module>
 			</properties>
@@ -857,6 +885,11 @@
             <!-- This profile tells GWT to use an alternative GWT module which has
                     only two permutations, and to compile in draft mode -->
             <id>chromefirefox</id>
+            <activation>
+              <property>
+                <name>chromefirefox</name>
+              </property>
+            </activation>
             <properties>
                 <zanata.gwt.module>org.zanata.webtrans.ApplicationChromeFirefox</zanata.gwt.module>
             </properties>
