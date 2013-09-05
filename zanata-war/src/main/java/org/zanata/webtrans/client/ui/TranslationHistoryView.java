@@ -2,6 +2,7 @@ package org.zanata.webtrans.client.ui;
 
 import java.util.List;
 
+import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.shared.model.ComparableByDate;
@@ -46,7 +47,7 @@ public class TranslationHistoryView extends ShortcutContextAwareDialogBox implem
    @Inject
    public TranslationHistoryView(ContentStateRenderer stateRenderer, KeyShortcutPresenter keyShortcutPresenter)
    {
-      super(true, true, keyShortcutPresenter);
+      super(true, true, ShortcutContext.TransHistoryPopup, keyShortcutPresenter);
       this.stateRenderer = stateRenderer;
       closeButton = new DialogBoxCloseButton(this);
       HTMLPanel container = uiBinder.createAndBindUi(this);
@@ -92,6 +93,12 @@ public class TranslationHistoryView extends ShortcutContextAwareDialogBox implem
    public void clearInput()
    {
       commentInput.setText("");
+   }
+
+   @Override
+   public String getComment()
+   {
+      return commentInput.getText();
    }
 
    @Override

@@ -69,8 +69,13 @@ public enum ShortcutContext
    Chat,
 
    /**
-    * Used by all popup
+    * Used by {@link org.zanata.webtrans.client.presenter.TranslationHistoryPresenter}
     */
-   Popup
+   TransHistoryPopup,
+
+   /**
+    * Used by {@link org.zanata.webtrans.client.presenter.ForceReviewCommentPresenter}
+    */
+   RejectConfirmationPopup
 
 }

@@ -21,6 +21,7 @@
 
 package org.zanata.webtrans.client.view;
 
+import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.DialogBoxCloseButton;
@@ -41,7 +42,7 @@ public class ForceReviewCommentWidget extends ShortcutContextAwareDialogBox impl
    @Inject
    public ForceReviewCommentWidget(WebTransMessages messages, KeyShortcutPresenter keyShortcutPresenter)
    {
-      super(false, true, keyShortcutPresenter);
+      super(false, true, ShortcutContext.RejectConfirmationPopup, keyShortcutPresenter);
       setGlassEnabled(true);
 
       setText(messages.rejectCommentTitle());

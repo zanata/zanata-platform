@@ -34,7 +34,6 @@ import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.ShortcutContext;
-import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.GetTransUnitActionContextHolder;
 import org.zanata.webtrans.client.view.ForceReviewCommentDisplay;
@@ -70,8 +69,6 @@ public class ForceReviewCommentPresenterTest
    private TransUnitSaveEvent saveEvent;
    @Mock
    private KeyShortcutPresenter keyShortcutPresenter;
-   @Mock
-   private WebTransMessages messages;
    @Captor
    private ArgumentCaptor<KeyShortcut> shortcutCapture;
 
@@ -80,14 +77,14 @@ public class ForceReviewCommentPresenterTest
    {
       MockitoAnnotations.initMocks(this);
 
-      presenter = new ForceReviewCommentPresenter(display, eventBus, dispatcher, contextHolder, keyShortcutPresenter, messages);
+      presenter = new ForceReviewCommentPresenter(display, eventBus, dispatcher, contextHolder, keyShortcutPresenter);
 
       verify(display).setListener(presenter);
       verify(eventBus).addHandler(CommentBeforeSaveEvent.TYPE, presenter);
       verify(keyShortcutPresenter).register(shortcutCapture.capture());
 
       KeyShortcut keyShortcut = shortcutCapture.getValue();
-      assertThat(keyShortcut.getContext(), Matchers.equalTo(ShortcutContext.Popup));
+      assertThat(keyShortcut.getContext(), Matchers.equalTo(ShortcutContext.RejectConfirmationPopup));
    }
 
    @Test

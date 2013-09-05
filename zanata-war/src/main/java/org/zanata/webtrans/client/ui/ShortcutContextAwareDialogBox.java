@@ -12,36 +12,14 @@ import com.google.gwt.user.client.ui.DialogBox;
  */
 public class ShortcutContextAwareDialogBox extends DialogBox
 {
+   private final ShortcutContext shortcutContext;
    private final KeyShortcutPresenter keyShortcutPresenter;
    private Set<ShortcutContext> activeContext = Collections.emptySet();
 
-   public ShortcutContextAwareDialogBox(KeyShortcutPresenter keyShortcutPresenter)
-   {
-      super();
-      this.keyShortcutPresenter = keyShortcutPresenter;
-   }
-
-   public ShortcutContextAwareDialogBox(boolean autoHide, KeyShortcutPresenter keyShortcutPresenter)
-   {
-      super(autoHide);
-      this.keyShortcutPresenter = keyShortcutPresenter;
-   }
-
-   public ShortcutContextAwareDialogBox(Caption captionWidget, KeyShortcutPresenter keyShortcutPresenter)
-   {
-      super(captionWidget);
-      this.keyShortcutPresenter = keyShortcutPresenter;
-   }
-
-   public ShortcutContextAwareDialogBox(boolean autoHide, boolean modal, KeyShortcutPresenter keyShortcutPresenter)
+   public ShortcutContextAwareDialogBox(boolean autoHide, boolean modal, ShortcutContext shortcutContext, KeyShortcutPresenter keyShortcutPresenter)
    {
       super(autoHide, modal);
-      this.keyShortcutPresenter = keyShortcutPresenter;
-   }
-
-   public ShortcutContextAwareDialogBox(boolean autoHide, boolean modal, Caption captionWidget, KeyShortcutPresenter keyShortcutPresenter)
-   {
-      super(autoHide, modal, captionWidget);
+      this.shortcutContext = shortcutContext;
       this.keyShortcutPresenter = keyShortcutPresenter;
    }
 
@@ -49,11 +27,11 @@ public class ShortcutContextAwareDialogBox extends DialogBox
    public void hide()
    {
       super.hide();
-      keyShortcutPresenter.setContextActive(ShortcutContext.Popup, false);
       for (ShortcutContext shortcutContext : activeContext)
       {
          keyShortcutPresenter.setContextActive(shortcutContext, true);
       }
+      keyShortcutPresenter.setContextActive(shortcutContext, false);
    }
 
    @Override
@@ -65,6 +43,6 @@ public class ShortcutContextAwareDialogBox extends DialogBox
       {
          keyShortcutPresenter.setContextActive(shortcutContext, false);
       }
-      keyShortcutPresenter.setContextActive(ShortcutContext.Popup, true);
+      keyShortcutPresenter.setContextActive(shortcutContext, true);
    }
 }

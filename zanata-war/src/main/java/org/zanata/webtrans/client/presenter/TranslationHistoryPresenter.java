@@ -5,9 +5,13 @@ import java.util.Date;
 import java.util.List;
 
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
+import org.zanata.webtrans.client.events.KeyShortcutEvent;
+import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.ReviewCommentEvent;
 import org.zanata.webtrans.client.events.ReviewCommentEventHandler;
+import org.zanata.webtrans.client.keys.KeyShortcut;
+import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.AbstractAsyncCallback;
@@ -25,6 +29,7 @@ import org.zanata.webtrans.shared.rpc.GetTranslationHistoryResult;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -44,12 +49,13 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
    private final CachingDispatchAsync dispatcher;
    private final WebTransMessages messages;
    private final GetTransUnitActionContextHolder contextHolder;
+   private final KeyShortcutPresenter keyShortcutPresenter;
    private TargetContentsPresenter targetContentsPresenter;
    private TransUnitId transUnitId;
    private ComparingPair comparingPair = ComparingPair.empty();
 
    @Inject
-   public TranslationHistoryPresenter(TranslationHistoryDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, WebTransMessages messages, GetTransUnitActionContextHolder contextHolder)
+   public TranslationHistoryPresenter(TranslationHistoryDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, WebTransMessages messages, GetTransUnitActionContextHolder contextHolder, KeyShortcutPresenter keyShortcutPresenter)
    {
       super(display, eventBus);
       this.display = display;
@@ -57,9 +63,28 @@ public class TranslationHistoryPresenter extends WidgetPresenter<TranslationHist
       this.dispatcher = dispatcher;
       this.messages = messages;
       this.contextHolder = contextHolder;
+      this.keyShortcutPresenter = keyShortcutPresenter;
 
       display.setListener(this);
       eventBus.addHandler(ReviewCommentEvent.TYPE, this);
+      registerKeyShortcut();
+   }
+
+   private void registerKeyShortcut()
+   {
+      KeyShortcut confirmShortcut = KeyShortcut.Builder.builder()
+            .addKey(new Keys(Keys.CTRL_KEY, KeyCodes.KEY_ENTER))
+            .setContext(ShortcutContext.TransHistoryPopup)
+            .setHandler(new KeyShortcutEventHandler()
+            {
+               @Override
+               public void onKeyShortcut(KeyShortcutEvent event)
+               {
+                  addComment(display.getComment());
+               }
+            })
+            .build();
+      keyShortcutPresenter.register(confirmShortcut);
    }
 
    @Override

@@ -59,8 +59,7 @@ public class ForceReviewCommentPresenter extends WidgetPresenter<ForceReviewComm
 
    @Inject
    public ForceReviewCommentPresenter(ForceReviewCommentDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher,
-                                      GetTransUnitActionContextHolder contextHolder, KeyShortcutPresenter keyShortcutPresenter,
-                                      WebTransMessages messages)
+                                      GetTransUnitActionContextHolder contextHolder, KeyShortcutPresenter keyShortcutPresenter)
    {
       super(display, eventBus);
       this.display = display;
@@ -71,14 +70,14 @@ public class ForceReviewCommentPresenter extends WidgetPresenter<ForceReviewComm
 
       eventBus.addHandler(CommentBeforeSaveEvent.TYPE, this);
 
-      registerKeyShortcut(display, messages);
+      registerKeyShortcut();
    }
 
-   private void registerKeyShortcut(final ForceReviewCommentDisplay display, WebTransMessages messages)
+   private void registerKeyShortcut()
    {
       KeyShortcut confirmShortcut = KeyShortcut.Builder.builder()
             .addKey(new Keys(Keys.CTRL_KEY, KeyCodes.KEY_ENTER))
-            .setContext(ShortcutContext.Popup).setDescription(messages.confirmRejection())
+            .setContext(ShortcutContext.RejectConfirmationPopup)
             .setHandler(new KeyShortcutEventHandler()
             {
                @Override

@@ -468,7 +468,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay>
 
    public Set<ShortcutContext> getActiveContexts()
    {
-      return ImmutableSet.copyOf(activeContexts);
+      return ImmutableSet.copyOf(ensureActiveContexts());
    }
 
    private class KeyShortcutHandlerRegistration implements HandlerRegistration

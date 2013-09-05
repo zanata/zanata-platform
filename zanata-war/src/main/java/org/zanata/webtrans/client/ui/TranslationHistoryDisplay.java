@@ -34,6 +34,8 @@ public interface TranslationHistoryDisplay extends WidgetDisplay
 
    void clearInput();
 
+   String getComment();
+
    interface Listener extends ForceReviewCommentDisplay.Listener
    {
 
