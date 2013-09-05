@@ -112,7 +112,7 @@ public class VersionGroupPage extends BasePage
       return refreshPageUntil(this, new Predicate<WebDriver>()
       {
          @Override
-         public boolean apply(WebDriver input)
+         public boolean apply(@javax.annotation.Nullable WebDriver input)
          {
             List<TableRow> tableRows = WebElementUtil.getTableRows(input, versionsInGroupTableBy);
             int size = tableRows.size();
