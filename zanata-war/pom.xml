@@ -127,7 +127,7 @@
                   <rules combine.self="override">
                     <requireProperty>
                       <property>arquillian.jboss.home</property>
-                      <message>You must set the arquillian.jboss.home property to run integration tests</message>
+                      <message xml:space="preserve">You must set the arquillian.jboss.home property to run integration tests</message>
                     </requireProperty>
                   </rules>
                 </configuration>
