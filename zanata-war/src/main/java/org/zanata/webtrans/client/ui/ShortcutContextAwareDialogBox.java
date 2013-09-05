@@ -12,14 +12,13 @@ import com.google.gwt.user.client.ui.DialogBox;
  */
 public class ShortcutContextAwareDialogBox extends DialogBox
 {
-   private final ShortcutContext shortcutContext;
+   private final ShortcutContext modalContext;
    private final KeyShortcutPresenter keyShortcutPresenter;
-   private Set<ShortcutContext> activeContext = Collections.emptySet();
 
-   public ShortcutContextAwareDialogBox(boolean autoHide, boolean modal, ShortcutContext shortcutContext, KeyShortcutPresenter keyShortcutPresenter)
+   public ShortcutContextAwareDialogBox(boolean autoHide, boolean modal, ShortcutContext modalContext, KeyShortcutPresenter keyShortcutPresenter)
    {
       super(autoHide, modal);
-      this.shortcutContext = shortcutContext;
+      this.modalContext = modalContext;
       this.keyShortcutPresenter = keyShortcutPresenter;
    }
 
@@ -27,22 +26,14 @@ public class ShortcutContextAwareDialogBox extends DialogBox
    public void hide()
    {
       super.hide();
-      for (ShortcutContext shortcutContext : activeContext)
-      {
-         keyShortcutPresenter.setContextActive(shortcutContext, true);
-      }
-      keyShortcutPresenter.setContextActive(shortcutContext, false);
+      keyShortcutPresenter.deactivateModalContext();
+
    }
 
    @Override
    public void show()
    {
       super.show();
-      activeContext = keyShortcutPresenter.getActiveContexts();
-      for (ShortcutContext shortcutContext : activeContext)
-      {
-         keyShortcutPresenter.setContextActive(shortcutContext, false);
-      }
-      keyShortcutPresenter.setContextActive(shortcutContext, true);
+      keyShortcutPresenter.activateModalContext(modalContext);
    }
 }

@@ -87,6 +87,8 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay>
 
    // TODO unregister when user changes attention shortcut
    private HandlerRegistration attentionShortcutHandle;
+   private transient ShortcutContext modalContext;
+   private transient Set<ShortcutContext> copyOfCurrentContexts =Collections.emptySet();
 
    @Inject
    public KeyShortcutPresenter(KeyShortcutDisplay display,
@@ -466,9 +468,24 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay>
       display.showPanel();
    }
 
-   public Set<ShortcutContext> getActiveContexts()
+   public void deactivateModalContext()
    {
-      return ImmutableSet.copyOf(ensureActiveContexts());
+      setContextActive(modalContext, false);
+      for (ShortcutContext context : copyOfCurrentContexts)
+      {
+         setContextActive(context, true);
+      }
+   }
+
+   public void activateModalContext(ShortcutContext modalContext)
+   {
+      this.modalContext = modalContext;
+      copyOfCurrentContexts = ImmutableSet.copyOf(ensureActiveContexts());
+      for (ShortcutContext context : copyOfCurrentContexts)
+      {
+         setContextActive(context, false);
+      }
+      setContextActive(modalContext, true);
    }
 
    private class KeyShortcutHandlerRegistration implements HandlerRegistration
