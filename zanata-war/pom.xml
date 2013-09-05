@@ -116,6 +116,23 @@
             </plugin>
          <plugin>
             <artifactId>maven-enforcer-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>enforce-arquillian-jboss-home</id>
+                <goals>
+                  <goal>enforce</goal>
+                </goals>
+                <phase>pre-integration-test</phase>
+                <configuration>
+                  <rules combine.self="override">
+                    <requireProperty>
+                      <property>arquillian.jboss.home</property>
+                      <message>You must set the arquillian.jboss.home property to run integration tests</message>
+                    </requireProperty>
+                  </rules>
+                </configuration>
+              </execution>
+            </executions>
             <configuration>
                 <rules>
                     <banDuplicateClasses>
@@ -161,10 +178,6 @@
                           <ignoreClass>sun.*</ignoreClass>
                        </ignoreClasses>
                     </banDuplicateClasses>
-                    <requireProperty>
-                       <property>arquillian.jboss.home</property>
-                       <message>You must set the arquillian.jboss.home property to run integration tests</message>
-                    </requireProperty>
                 </rules>
             </configuration>
          </plugin>
