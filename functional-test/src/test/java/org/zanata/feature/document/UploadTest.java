@@ -26,6 +26,7 @@ package org.zanata.feature.document;
  import org.junit.Rule;
  import org.junit.Test;
  import org.junit.experimental.categories.Category;
+ import org.zanata.feature.BasicAcceptanceTest;
  import org.zanata.feature.DetailedTest;
  import org.zanata.page.projects.ProjectSourceDocumentsPage;
  import org.zanata.util.PropertiesHolder;
@@ -37,36 +38,38 @@ package org.zanata.feature.document;
  import java.io.File;
 
  import static org.hamcrest.MatcherAssert.assertThat;
+ import static org.zanata.util.FunctionalTestHelper.*;
 
-/**
+ /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Category(DetailedTest.class)
+ @Category(DetailedTest.class)
 public class UploadTest
 {
    @Rule
    public ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule(ResetDatabaseRule.Config.WithData);
    private TestFileGenerator testFileGenerator = new TestFileGenerator();
+   private String documentStorageDirectory;
 
    @Before
    public void before()
    {
       new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
+      documentStorageDirectory = PropertiesHolder.getProperty("document.storage.directory")
+            .concat(File.separator)
+            .concat("documents")
+            .concat(File.separator);
+      assumeFalse("", new File(documentStorageDirectory).exists());
    }
 
    @Test
+   @Category(BasicAcceptanceTest.class)
    public void uploadedDocumentIsInFilesystem()
    {
       File originalFile = testFileGenerator.generateTestFileWithContent(
             "uploadedDocumentIsInFilesystem", ".txt", "This is a test file");
-      String newFilePath = PropertiesHolder.getProperty("document.storage.directory")
-            .concat(File.separator).concat("documents").concat(File.separator);
       String testFileName = originalFile.getName();
       String successfullyUploaded = "Document file " +testFileName+ " uploaded.";
-
-      assertThat("Data file " + testFileName + " exists", originalFile.exists());
-      // We should be able to assume the target dir is non-existent
-      assertThat("Target directory does not exist", !(new File(newFilePath).exists()));
 
       ProjectSourceDocumentsPage projectSourceDocumentsPage = new LoginWorkFlow().signIn("admin", "admin")
             .goToProjects()
@@ -78,11 +81,11 @@ public class UploadTest
             .submitUpload();
 
       // We should be able to assume the new file is the only file
-      assertThat("There is only one uploaded source file", new File(newFilePath).list().length,
+      assertThat("There is only one uploaded source file", new File(documentStorageDirectory).list().length,
             Matchers.equalTo(1));
 
-      File newlyCreatedFile = new File(newFilePath,
-            testFileGenerator.getFirstFileNameInDirectory(newFilePath));
+      File newlyCreatedFile = new File(documentStorageDirectory,
+            testFileGenerator.getFirstFileNameInDirectory(documentStorageDirectory));
 
       assertThat("The contents of the file were also uploaded",
             testFileGenerator.getTestFileContent(newlyCreatedFile),
@@ -99,7 +102,6 @@ public class UploadTest
    {
       File cancelUploadFile = testFileGenerator.generateTestFileWithContent(
             "cancelFileUpload", ".txt", "Cancel File Upload Test");
-      assertThat("Data file cancelFileUpload.txt exists", cancelUploadFile.exists());
 
       ProjectSourceDocumentsPage projectSourceDocumentsPage = new LoginWorkFlow().signIn("admin", "admin")
             .goToProjects()
@@ -135,8 +137,7 @@ public class UploadTest
       long fileSizeInMB = (1024 * 1024) * 500;
       testFileGenerator.forceFileSize(bigFile, fileSizeInMB);
 
-      assertThat("Data file " + bigFile + " exists", bigFile.exists());
-      assertThat("Data file "+bigFile+" is big", bigFile.length(), Matchers.equalTo(fileSizeInMB));
+      assumeTrue("Data file " + bigFile + " is big", bigFile.length() == fileSizeInMB);
 
       ProjectSourceDocumentsPage projectSourceDocumentsPage = new LoginWorkFlow().signIn("admin", "admin")
             .goToProjects()
@@ -157,7 +158,6 @@ public class UploadTest
    {
       File noFile = testFileGenerator.generateTestFileWithContent(
             "thereIsNoSpoon", ".txt", "This file will be deleted");
-      assertThat("Data file "+noFile.getName()+" exists", noFile.exists());
       String successfullyUploaded = "Document file " + noFile.getName()+ " uploaded.";
 
       ProjectSourceDocumentsPage projectSourceDocumentsPage = new LoginWorkFlow().signIn("admin", "admin")
@@ -168,8 +168,8 @@ public class UploadTest
             .pressUploadFileButton()
             .enterFilePath(noFile.getAbsolutePath());
 
-      noFile.delete();
-      assertThat("Data file " + noFile.getName() + " does not exists", !noFile.exists());
+      assertThat("Data file " + noFile.getName() + " does not exists",
+            noFile.delete() && !noFile.exists());
 
       projectSourceDocumentsPage = projectSourceDocumentsPage.submitUpload();
       projectSourceDocumentsPage.assertNoCriticalErrors();
@@ -183,8 +183,6 @@ public class UploadTest
       File longFile = testFileGenerator.generateTestFileWithContent(
             testFileGenerator.longFileName(), ".txt", "This filename is long");
       String successfullyUploaded = "Document file "+longFile.getName()+" uploaded.";
-
-      assertThat("Data file "+longFile.getName()+" exists", longFile.exists());
 
       ProjectSourceDocumentsPage projectSourceDocumentsPage = new LoginWorkFlow().signIn("admin", "admin")
             .goToProjects()
@@ -206,8 +204,7 @@ public class UploadTest
       File emptyFile = testFileGenerator.generateTestFileWithContent("emptyFile", ".txt", "");
       String successfullyUploaded = "Document file "+emptyFile.getName()+" uploaded.";
 
-      assertThat("Data file emptyFile.txt exists", emptyFile.exists());
-      assertThat("File is empty", (int)emptyFile.length(), Matchers.equalTo(0));
+      assumeTrue("File is empty", emptyFile.length() == 0);
 
       ProjectSourceDocumentsPage projectSourceDocumentsPage = new LoginWorkFlow().signIn("admin", "admin")
             .goToProjects()
@@ -217,6 +214,7 @@ public class UploadTest
             .pressUploadFileButton()
             .enterFilePath(emptyFile.getAbsolutePath())
             .submitUpload();
+
       assertThat("Data file emptyFile.txt still exists", emptyFile.exists());
       assertThat("Document uploaded notification shows",
             projectSourceDocumentsPage.getNotificationMessage(), Matchers.equalTo(successfullyUploaded));

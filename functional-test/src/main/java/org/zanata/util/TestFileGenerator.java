@@ -22,7 +22,6 @@ package org.zanata.util;
 
 
  import org.apache.commons.io.FileUtils;
-
  import java.io.*;
 
  /**
@@ -52,12 +51,12 @@ public class TestFileGenerator
 
    /**
     * Create a test file in temporary storage with content.
-    * Note that the file will contain random characters from the temporary file create process.
+    * Note that the file will contain random characters from the temporary file creation process.
     *
     * @param fileName Prefix of file eg. "myTest"
     * @param suffix Suffix of file, eg. ".txt"
     * @param content Contents of the file, eg. "This is a test file"
-    * @return File
+    * @return File object for created file
     */
    public File generateTestFileWithContent(String fileName, String suffix, String content)
    {
@@ -101,6 +100,7 @@ public class TestFileGenerator
     *
     * @param tempFile File to alter
     * @param fileSize Intended file size of resulting file
+    * @throws RuntimeException if the file cannot be altered
     */
    public void forceFileSize(File tempFile, long fileSize)
    {
@@ -118,7 +118,8 @@ public class TestFileGenerator
     * Get the contents of the given file.
     *
     * @param testFile File to read contents from
-    * @return String
+    * @return contents of the target file
+    * @throws RuntimeException if the file cannot be read
     */
    public String getTestFileContent(File testFile)
    {
@@ -137,10 +138,10 @@ public class TestFileGenerator
    /**
     * Gives the name of the first listed file in a directory. Intended for validating testing
     * upload of files to an empty directory.
-    * Will throw an exception if no files are found.
     *
     * @param directory Storage directory of desired file.
-    * @return String
+    * @return name of first listed file in target directory
+    * @throws RuntimeException if no files are found
     */
    public String getFirstFileNameInDirectory(String directory)
    {

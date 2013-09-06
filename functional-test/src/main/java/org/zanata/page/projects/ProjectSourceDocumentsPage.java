@@ -62,11 +62,6 @@ public class ProjectSourceDocumentsPage extends BasePage
       return new ProjectSourceDocumentsPage(getDriver());
    }
 
-   private List<WebElement> getDocumentTableRows()
-   {
-      return documentTableTBody.findElements(By.tagName("tr"));
-   }
-
    public boolean sourceDocumentsContains(String document)
    {
       List<WebElement> documentTableRows = getDocumentTableRows();
@@ -78,6 +73,11 @@ public class ProjectSourceDocumentsPage extends BasePage
          }
       }
       return false;
+   }
+
+   private List<WebElement> getDocumentTableRows()
+   {
+      return documentTableTBody.findElements(By.tagName("tr"));
    }
 
    public boolean canSubmitDocument()
