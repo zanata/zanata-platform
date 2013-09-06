@@ -286,18 +286,10 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
    {
       if (!newContents.equals(this.getContents()))
       {
-         int newContentSize = newContents.size();
-         for (int i = 0; i < newContentSize; i++)
+         for (int i = 0; i < MAX_PLURALS; i++)
          {
-            this.setContent(i, newContents.get(i));
-         }
-         int difference = getContents().size() - newContentSize;
-         if (difference > 0)
-         {
-            for (int i = newContentSize; i < newContentSize + difference; i++)
-            {
-               setContent(i, null);
-            }
+            String value = i < newContents.size() ? newContents.get(i) : null;
+            this.setContent(i, value);
          }
          updateContentHash();
          updateWordCount();
