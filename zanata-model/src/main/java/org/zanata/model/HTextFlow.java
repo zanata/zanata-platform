@@ -282,13 +282,22 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
       return contents;
    }
 
-   public void setContents(List<String> contents)
+   public void setContents(List<String> newContents)
    {
-      if(!Objects.equal(contents, this.getContents()))
+      if (!newContents.equals(this.getContents()))
       {
-         for( int i=0; i<contents.size(); i++ )
+         int newContentSize = newContents.size();
+         for (int i = 0; i < newContentSize; i++)
          {
-            this.setContent(i, contents.get(i));
+            this.setContent(i, newContents.get(i));
+         }
+         int difference = getContents().size() - newContentSize;
+         if (difference > 0)
+         {
+            for (int i = newContentSize; i < newContentSize + difference; i++)
+            {
+               setContent(i, null);
+            }
          }
          updateContentHash();
          updateWordCount();
@@ -510,12 +519,7 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
          if (!isPlural())
          {
             // if plural form has changed, we need to clear out obsolete contents
-            List<String> newContents = Lists.newArrayList(content0);
-            for (int i = 1; i < MAX_PLURALS; i++)
-            {
-               newContents.add(null);
-            }
-            setContents(newContents);
+            setContents(content0);
          }
       }
    }
