@@ -24,14 +24,16 @@ package org.zanata.webtrans.client.presenter;
 import org.hamcrest.Matchers;
 import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.CommentBeforeSaveEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
+import org.zanata.webtrans.client.keys.KeyShortcut;
+import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.GetTransUnitActionContextHolder;
 import org.zanata.webtrans.client.view.ForceReviewCommentDisplay;
@@ -39,12 +41,12 @@ import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ReviewComment;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentAction;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentResult;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import net.customware.gwt.presenter.client.EventBus;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -65,16 +67,24 @@ public class ForceReviewCommentPresenterTest
    private CommentBeforeSaveEvent commentBeforeSaveEvent;
    @Mock
    private TransUnitSaveEvent saveEvent;
+   @Mock
+   private KeyShortcutPresenter keyShortcutPresenter;
+   @Captor
+   private ArgumentCaptor<KeyShortcut> shortcutCapture;
 
    @BeforeMethod
    public void setUp() throws Exception
    {
       MockitoAnnotations.initMocks(this);
 
-      presenter = new ForceReviewCommentPresenter(display, eventBus, dispatcher, contextHolder);
+      presenter = new ForceReviewCommentPresenter(display, eventBus, dispatcher, contextHolder, keyShortcutPresenter);
 
       verify(display).setListener(presenter);
       verify(eventBus).addHandler(CommentBeforeSaveEvent.TYPE, presenter);
+      verify(keyShortcutPresenter).register(shortcutCapture.capture());
+
+      KeyShortcut keyShortcut = shortcutCapture.getValue();
+      assertThat(keyShortcut.getContext(), Matchers.equalTo(ShortcutContext.RejectConfirmationPopup));
    }
 
    @Test

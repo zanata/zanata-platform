@@ -7,10 +7,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
-
-import javax.annotation.Nullable;
 
 import org.concordion.api.Resource;
 import org.concordion.internal.ClassPathSource;
@@ -20,7 +17,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;

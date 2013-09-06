@@ -21,10 +21,12 @@
 
 package org.zanata.webtrans.client.view;
 
+import org.zanata.webtrans.client.keys.ShortcutContext;
+import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.DialogBoxCloseButton;
 import org.zanata.webtrans.client.ui.ReviewCommentInputWidget;
-import com.google.gwt.user.client.ui.DialogBox;
+import org.zanata.webtrans.client.ui.ShortcutContextAwareDialogBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -33,14 +35,14 @@ import com.google.inject.Singleton;
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class ForceReviewCommentWidget extends DialogBox implements ForceReviewCommentDisplay
+public class ForceReviewCommentWidget extends ShortcutContextAwareDialogBox implements ForceReviewCommentDisplay
 {
    private final ReviewCommentInputWidget inputWidget;
 
    @Inject
-   public ForceReviewCommentWidget(WebTransMessages messages)
+   public ForceReviewCommentWidget(WebTransMessages messages, KeyShortcutPresenter keyShortcutPresenter)
    {
-      super(false, true);
+      super(false, true, ShortcutContext.RejectConfirmationPopup, keyShortcutPresenter);
       setGlassEnabled(true);
 
       setText(messages.rejectCommentTitle());
@@ -66,6 +68,12 @@ public class ForceReviewCommentWidget extends DialogBox implements ForceReviewCo
    @Override
    public void clearInput()
    {
-      inputWidget.clearInput();
+      inputWidget.setText("");
+   }
+
+   @Override
+   public String getComment()
+   {
+      return inputWidget.getText();
    }
 }

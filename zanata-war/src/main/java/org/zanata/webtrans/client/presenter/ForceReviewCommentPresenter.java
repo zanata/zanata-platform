@@ -23,14 +23,21 @@ package org.zanata.webtrans.client.presenter;
 
 import org.zanata.webtrans.client.events.CommentBeforeSaveEvent;
 import org.zanata.webtrans.client.events.CommentBeforeSaveEventHandler;
+import org.zanata.webtrans.client.events.KeyShortcutEvent;
+import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
+import org.zanata.webtrans.client.keys.KeyShortcut;
+import org.zanata.webtrans.client.keys.Keys;
+import org.zanata.webtrans.client.keys.ShortcutContext;
+import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.AbstractAsyncCallback;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.GetTransUnitActionContextHolder;
 import org.zanata.webtrans.client.view.ForceReviewCommentDisplay;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentAction;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentResult;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.inject.Inject;
 
 import net.customware.gwt.presenter.client.EventBus;
@@ -43,20 +50,44 @@ public class ForceReviewCommentPresenter extends WidgetPresenter<ForceReviewComm
       implements ForceReviewCommentDisplay.Listener, CommentBeforeSaveEventHandler
 {
 
+   private final ForceReviewCommentDisplay display;
    private final CachingDispatchAsync dispatcher;
    private final GetTransUnitActionContextHolder contextHolder;
+   private final KeyShortcutPresenter keyShortcutPresenter;
 
    private TransUnitSaveEvent saveEvent;
 
    @Inject
-   public ForceReviewCommentPresenter(ForceReviewCommentDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, GetTransUnitActionContextHolder contextHolder)
+   public ForceReviewCommentPresenter(ForceReviewCommentDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher,
+                                      GetTransUnitActionContextHolder contextHolder, KeyShortcutPresenter keyShortcutPresenter)
    {
       super(display, eventBus);
+      this.display = display;
       this.dispatcher = dispatcher;
       this.contextHolder = contextHolder;
+      this.keyShortcutPresenter = keyShortcutPresenter;
       display.setListener(this);
 
       eventBus.addHandler(CommentBeforeSaveEvent.TYPE, this);
+
+      registerKeyShortcut();
+   }
+
+   private void registerKeyShortcut()
+   {
+      KeyShortcut confirmShortcut = KeyShortcut.Builder.builder()
+            .addKey(new Keys(Keys.CTRL_KEY, KeyCodes.KEY_ENTER))
+            .setContext(ShortcutContext.RejectConfirmationPopup)
+            .setHandler(new KeyShortcutEventHandler()
+            {
+               @Override
+               public void onKeyShortcut(KeyShortcutEvent event)
+               {
+                  addComment(display.getComment());
+               }
+            })
+            .build();
+      keyShortcutPresenter.register(confirmShortcut);
    }
 
    @Override
@@ -82,7 +113,6 @@ public class ForceReviewCommentPresenter extends WidgetPresenter<ForceReviewComm
             display.hide();
          }
       });
-
    }
 
    @Override

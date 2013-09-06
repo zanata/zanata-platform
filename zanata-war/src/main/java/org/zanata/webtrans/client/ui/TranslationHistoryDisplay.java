@@ -34,6 +34,8 @@ public interface TranslationHistoryDisplay extends WidgetDisplay
 
    void clearInput();
 
+   String getComment();
+
    interface Listener extends ForceReviewCommentDisplay.Listener
    {
 
@@ -42,5 +44,6 @@ public interface TranslationHistoryDisplay extends WidgetDisplay
       void compareClicked(TransHistoryItem item);
 
       boolean isItemInComparison(TransHistoryItem item);
+
    }
 }

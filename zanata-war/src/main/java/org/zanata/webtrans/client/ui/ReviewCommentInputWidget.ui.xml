@@ -29,7 +29,7 @@
          <g:TextArea name="comment" styleName="basic-input" ui:field="commentTextArea" />
       </div>
       <div class="w--2-12 g__item">
-         <g:Button addStyleNames="button--full" text="Add Comment" ui:field="addCommentButton" />
+         <g:Button addStyleNames="button--full" text="Add Comment" title="Ctrl + Enter" ui:field="addCommentButton" />
       </div>
    </g:HTMLPanel>
 </ui:UiBinder>

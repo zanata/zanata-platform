@@ -1,29 +1,24 @@
 package org.zanata.webtrans.client.presenter;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.util.Date;
 import java.util.List;
-
-import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
 import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
+import org.zanata.webtrans.client.events.KeyShortcutEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.ReviewCommentEvent;
+import org.zanata.webtrans.client.keys.KeyShortcut;
+import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.GetTransUnitActionContextHolder;
@@ -38,11 +33,19 @@ import org.zanata.webtrans.shared.rpc.AddReviewCommentAction;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentResult;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryAction;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryResult;
-
 import com.google.common.collect.Lists;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.cellview.client.ColumnSortEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.view.client.SelectionChangeEvent;
+
+import net.customware.gwt.presenter.client.EventBus;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -72,16 +75,22 @@ public class TranslationHistoryPresenterTest
    private final TransUnitId transUnitId = new TransUnitId(1L);
    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
    private GetTransUnitActionContextHolder contextHolder;
+   @Mock
+   private KeyShortcutPresenter keyShortcutPresenter;
+   @Captor
+   private ArgumentCaptor<KeyShortcut> keyShortcutCapture;
 
    @BeforeMethod
    public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new TranslationHistoryPresenter(display, eventBus, dispatcher, messages, contextHolder);
+      presenter = new TranslationHistoryPresenter(display, eventBus, dispatcher, messages, contextHolder, keyShortcutPresenter);
       presenter.setCurrentValueHolder(targetContentsPresenter);
       
       doNothing().when(dispatcher).execute(actionCaptor.capture(), resultCaptor.capture());
       verify(eventBus).addHandler(ReviewCommentEvent.TYPE, presenter);
+
+      verify(keyShortcutPresenter).register(keyShortcutCapture.capture());
    }
 
    private static TransHistoryItem historyItem(String versionNum)
@@ -242,4 +251,16 @@ public class TranslationHistoryPresenterTest
 
    }
 
+   @Test
+   public void testKeyShortcutForAddComment()
+   {
+      when(display.getComment()).thenReturn("blah");
+      KeyShortcut keyShortcut = keyShortcutCapture.getValue();
+
+      assertThat(keyShortcut.getAllKeys().iterator().next(), Matchers.equalTo(new Keys(Keys.CTRL_KEY, KeyCodes.KEY_ENTER)));
+      keyShortcut.getHandler().onKeyShortcut(mock(KeyShortcutEvent.class));
+
+      verify(display).getComment();
+      verify(dispatcher).execute(Mockito.isA(AddReviewCommentAction.class), Mockito.isA(AsyncCallback.class));
+   }
 }

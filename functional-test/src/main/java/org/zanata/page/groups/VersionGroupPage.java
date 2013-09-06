@@ -15,7 +15,6 @@ import org.zanata.page.projects.ProjectVersionPage;
 import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
 
-import javax.annotation.Nullable;
 
 import java.util.List;
 
@@ -113,7 +112,7 @@ public class VersionGroupPage extends BasePage
       return refreshPageUntil(this, new Predicate<WebDriver>()
       {
          @Override
-         public boolean apply(@Nullable WebDriver input)
+         public boolean apply(@javax.annotation.Nullable WebDriver input)
          {
             List<TableRow> tableRows = WebElementUtil.getTableRows(input, versionsInGroupTableBy);
             int size = tableRows.size();

@@ -30,9 +30,10 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.TextArea;
 
-public class ReviewCommentInputWidget extends Composite
+public class ReviewCommentInputWidget extends Composite implements HasText
 {
    private static ReviewCommentInputWidgetUiBinder ourUiBinder = GWT.create(ReviewCommentInputWidgetUiBinder.class);
    @UiField
@@ -67,14 +68,21 @@ public class ReviewCommentInputWidget extends Composite
       addCommentButton.setEnabled(enabled);
    }
 
-   public void clearInput()
-   {
-      commentTextArea.setValue("");
-   }
-
    public void setButtonText(String buttonText)
    {
       addCommentButton.setText(buttonText);
+   }
+
+   @Override
+   public String getText()
+   {
+      return commentTextArea.getText();
+   }
+
+   @Override
+   public void setText(String text)
+   {
+      commentTextArea.setText(text);
    }
 
    interface ReviewCommentInputWidgetUiBinder extends UiBinder<HTMLPanel, ReviewCommentInputWidget>

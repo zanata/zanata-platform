@@ -39,32 +39,43 @@ public enum ShortcutContext
    Application,
 
    /**
-    * Used by {@link SearchResultsPresenter}
+    * Used by {@link org.zanata.webtrans.client.presenter.SearchResultsPresenter}
     */
    ProjectWideSearch,
 
    /**
-    * Used by {@link TableEditorPresenter}
+    * Used by {@link org.zanata.webtrans.client.presenter.TranslationPresenter}
     */
    Navigation,
 
    /**
-    * Used by {@link InlineTargetCellEditor}
+    * Used by {@link org.zanata.webtrans.client.presenter.TargetContentsPresenter}
     */
    Edit,
    
    /**
-    * Used by {@link TransMemoryPresenter}
+    * Used by {@link org.zanata.webtrans.client.presenter.TransMemoryPresenter}
     */
    TM,
    
    /**
-    * Used by {@link GlossaryPresenter}
+    * Used by {@link org.zanata.webtrans.client.presenter.GlossaryPresenter}
     */
    Glossary,
    
    /**
-    * Used by {@link WorkspaceUsersPresenter}
+    * Used by {@link org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter}
     */
-   Chat;
+   Chat,
+
+   /**
+    * Used by {@link org.zanata.webtrans.client.presenter.TranslationHistoryPresenter}
+    */
+   TransHistoryPopup,
+
+   /**
+    * Used by {@link org.zanata.webtrans.client.presenter.ForceReviewCommentPresenter}
+    */
+   RejectConfirmationPopup
+
 }
