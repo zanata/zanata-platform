@@ -23,6 +23,7 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
 import org.zanata.model.HTextFlowTargetReviewComment;
 import org.zanata.model.TestFixture;
+import org.zanata.rest.service.ResourceUtils;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
@@ -66,6 +67,8 @@ public class GetTranslationHistoryHandlerTest
    private LocaleId localeId = new LocaleId("en-US");
    @Mock
    private TextFlowTargetReviewCommentsDAO reviewCommentsDAO;
+   @Mock
+   private ResourceUtils resourceUtils;
 
    @BeforeMethod
    public void beforeMethod()
@@ -77,6 +80,7 @@ public class GetTranslationHistoryHandlerTest
             .use("localeServiceImpl", localeService)
             .use("textFlowDAO", textFlowDAO)
             .use("textFlowTargetReviewCommentsDAO", reviewCommentsDAO)
+            .use("resourceUtils", resourceUtils)
             .autowire(GetTranslationHistoryHandler.class);
       // @formatter:on
       action = new GetTranslationHistoryAction(transUnitId);
@@ -130,6 +134,7 @@ public class GetTranslationHistoryHandlerTest
       HTextFlowTarget currentTranslation = createTarget(new Date(), "admin", 2, history);
       hTextFlow.getTargets().put(hLocale.getId(), currentTranslation);
 
+      when(resourceUtils.getNumPlurals(hTextFlow.getDocument(), hLocale)).thenReturn(2);
       when(textFlowDAO.findById(transUnitId.getId(), false)).thenReturn(hTextFlow);
 
       // When:
@@ -154,6 +159,7 @@ public class GetTranslationHistoryHandlerTest
       currentTranslation.setLastModifiedBy(null);
       hTextFlow.getTargets().put(hLocale.getId(), currentTranslation);
 
+      when(resourceUtils.getNumPlurals(hTextFlow.getDocument(), hLocale)).thenReturn(2);
       when(textFlowDAO.findById(transUnitId.getId(), false)).thenReturn(hTextFlow);
 
       // When:
@@ -166,11 +172,37 @@ public class GetTranslationHistoryHandlerTest
       assertThat(result.getLatest().getModifiedBy(), Matchers.equalTo(""));
    }
 
+   @Test
+   public void canStripObsoleteTargetContentBasedOnCurrentNPlural() throws ActionException
+   {
+      // Given: text flow has no history translation
+      action.setWorkspaceId(new WorkspaceId(new ProjectIterationId("rhel", "7.0", ProjectType.Podir), localeId));
+      when(localeService.validateLocaleByProjectIteration(localeId, "rhel", "7.0")).thenReturn(hLocale);
+      when(hLocale.getId()).thenReturn(2L);
+      HTextFlow hTextFlow = createHTextFlow();
+      HTextFlowTarget currentTranslation = createTarget(new Date(), null, 0, null);
+      currentTranslation.setLastModifiedBy(null);
+      hTextFlow.getTargets().put(hLocale.getId(), currentTranslation);
+
+      when(textFlowDAO.findById(transUnitId.getId(), false)).thenReturn(hTextFlow);
+
+      // When: number of plurals has changed to 1
+      when(resourceUtils.getNumPlurals(hTextFlow.getDocument(), hLocale)).thenReturn(1);
+      GetTranslationHistoryResult result = handler.execute(action, executionContext);
+
+      // Then: the contents we get back is consistent against number of plural
+      assertThat(result.getHistoryItems(), Matchers.<TransHistoryItem>emptyIterable());
+      assertThat(result.getLatest().getVersionNum(), Matchers.equalTo(currentTranslation.getVersionNum().toString()));
+      assertThat(result.getLatest().getContents(), Matchers.contains(currentTranslation.getContents().get(0)));
+      assertThat(result.getLatest().getModifiedBy(), Matchers.equalTo(""));
+   }
+
    private static HTextFlow createHTextFlow()
    {
       HTextFlow hTextFlow = new HTextFlow();
       HashMap<Long, HTextFlowTarget> targetMap = Maps.newHashMap();
       hTextFlow.setTargets(targetMap);
+      hTextFlow.setPlural(true);
       return hTextFlow;
    }
 

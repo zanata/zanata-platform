@@ -73,6 +73,7 @@ import org.zanata.util.StringUtil;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
 /**
  * Represents a flow of source text that should be processed as a stand-alone
@@ -281,13 +282,14 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
       return contents;
    }
 
-   public void setContents(List<String> contents)
+   public void setContents(List<String> newContents)
    {
-      if(!Objects.equal(contents, this.getContents()))
+      if (!newContents.equals(this.getContents()))
       {
-         for( int i=0; i<contents.size(); i++ )
+         for (int i = 0; i < MAX_PLURALS; i++)
          {
-            this.setContent(i, contents.get(i));
+            String value = i < newContents.size() ? newContents.get(i) : null;
+            this.setContent(i, value);
          }
          updateContentHash();
          updateWordCount();
@@ -505,6 +507,11 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
          if( this.initialState != null )
          {
             this.getHistory().put(this.oldRevision, this.initialState);
+         }
+         if (!isPlural())
+         {
+            // if plural form has changed, we need to clear out obsolete contents
+            setContents(content0);
          }
       }
    }

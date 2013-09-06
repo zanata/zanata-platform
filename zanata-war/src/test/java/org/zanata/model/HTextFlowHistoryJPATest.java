@@ -84,6 +84,7 @@ public class HTextFlowHistoryJPATest extends ZanataDbunitJpaTest
       session.flush();
 
       HTextFlow tf = new HTextFlow(d, "mytf", "hello world");
+      tf.setPlural(false);
       d.getTextFlows().add(tf);
 
       session.flush();
@@ -93,6 +94,7 @@ public class HTextFlowHistoryJPATest extends ZanataDbunitJpaTest
       assertThat("Incorrect History size on persist", historyElems.size(), is(0));
 
       d.incrementRevision();
+      tf.setPlural(true);
       tf.setContents("hello world 1", "hello world 2");
       tf.setRevision(d.getRevision());
       session.flush();
