@@ -35,9 +35,10 @@
         <!--this will get set by maven dependency:properties goal and be used in gwt-maven-plugin-->
         <lombok.lib>${org.projectlombok:lombok:jar}</lombok.lib>
 
-        <!-- Groovy and Gmaven properties -->
-        <gmavenProviderSelection>2.0</gmavenProviderSelection>
-        <groovyVersion>2.0.7</groovyVersion>
+        <!-- Groovy properties -->
+        <groovy.version>2.1.5</groovy.version>
+        <groovy.eclipse.batch.version>2.1.5-03</groovy.eclipse.batch.version>
+        <groovy.eclipse.compiler.version>2.7.0-01</groovy.eclipse.compiler.version>
 
       <zanata.web.assets.version>1</zanata.web.assets.version>
     </properties>
@@ -53,6 +54,41 @@
 		</resources>
 
 		<plugins>
+
+            <plugin>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <!-- groovy-eclipse-compiler 2.8.0-01 and later require maven-compiler-plugin 3.0 or higher -->
+              <version>3.0</version>
+              <configuration>
+                <compilerId>groovy-eclipse-compiler</compilerId>
+                <!-- set verbose to be true if you want lots of uninteresting messages -->
+                <!-- <verbose>true</verbose> -->
+                <!-- enable Lombok-Groovy support -->
+                <compilerArguments>
+                  <javaAgentClass>lombok.core.Agent</javaAgentClass>
+                </compilerArguments>
+                <fork>true</fork>
+              </configuration>
+              <dependencies>
+                <dependency>
+                  <groupId>org.codehaus.groovy</groupId>
+                  <artifactId>groovy-eclipse-compiler</artifactId>
+                  <version>${groovy.eclipse.compiler.version}</version>
+                </dependency>
+                <!-- groovy-eclipse-compiler 2.8.0-01 and later need an explicit dependency on groovy-eclipse-batch -->
+                <dependency>
+                  <groupId>org.codehaus.groovy</groupId>
+                  <artifactId>groovy-eclipse-batch</artifactId>
+                  <version>${groovy.eclipse.batch.version}</version>
+                </dependency>
+                <dependency>
+                  <groupId>org.projectlombok</groupId>
+                  <artifactId>lombok</artifactId>
+                  <version>${lombok.version}</version>
+                </dependency>
+              </dependencies>
+            </plugin>
+
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
@@ -534,45 +570,6 @@
 					</replacements>
 				</configuration>
 			</plugin>
-
-            <plugin>
-                <groupId>org.codehaus.gmaven</groupId>
-                <artifactId>gmaven-plugin</artifactId>
-                <version>1.4</version>
-                <configuration>
-                    <providerSelection>${gmavenProviderSelection}</providerSelection>
-                    <sourceEncoding>UTF-8</sourceEncoding>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <!-- Uncomment to enable groovy in the main source -->
-                            <!--<goal>generateStubs</goal>-->
-                            <!--<goal>compile</goal>-->
-                            <goal>generateTestStubs</goal>
-                            <goal>testCompile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <dependencies>
-			      <dependency>
-			          <groupId>org.codehaus.gmaven.runtime</groupId>
-			          <artifactId>gmaven-runtime-2.0</artifactId>
-			          <version>1.4</version>
-			          <exclusions>
-			            <exclusion>
-			              <groupId>org.codehaus.groovy</groupId>
-			              <artifactId>groovy-all</artifactId>
-			            </exclusion>
-			          </exclusions>
-			        </dependency>
-                    <dependency>
-                        <groupId>org.codehaus.groovy</groupId>
-                        <artifactId>groovy-all</artifactId>
-                        <version>${groovyVersion}</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
 
 		</plugins>
 
@@ -1718,12 +1715,10 @@
 			<!-- We use testng in DBUnitImporter so can't use test scope here -->
 		</dependency>
 
-        <!-- GMaven and Groovy (for groovy tests) -->
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
-            <version>${groovyVersion}</version>
-            <scope>test</scope>
+            <version>${groovy.version}</version>
         </dependency>
 
 		<!-- GWT related dependencies -->
