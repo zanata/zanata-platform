@@ -36,7 +36,7 @@
         <lombok.lib>${org.projectlombok:lombok:jar}</lombok.lib>
 
         <!-- Groovy properties -->
-        <groovyVersion>2.1.5</groovyVersion>
+        <groovy.version>2.1.5</groovy.version>
         <groovy.eclipse.batch.version>2.1.5-03</groovy.eclipse.batch.version>
         <groovy.eclipse.compiler.version>2.7.0-01</groovy.eclipse.compiler.version>
 
@@ -1715,12 +1715,10 @@
 			<!-- We use testng in DBUnitImporter so can't use test scope here -->
 		</dependency>
 
-        <!-- GMaven and Groovy (for groovy tests) -->
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
-            <version>${groovyVersion}</version>
-            <scope>test</scope>
+            <version>${groovy.version}</version>
         </dependency>
 
 		<!-- GWT related dependencies -->
