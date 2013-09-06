@@ -41,9 +41,8 @@
       -->
       <!--<view-handler>org.ajax4jsf.application.AjaxViewHandler</view-handler>-->
 
-      <lifecycle>
-    	<phase-listener>org.zanata.security.FedoraOpenIdPhaseListener</phase-listener>
-	  </lifecycle>
    </application>
-
+   <lifecycle>
+     <phase-listener>org.zanata.security.FedoraOpenIdPhaseListener</phase-listener>
+   </lifecycle>
 </faces-config>
