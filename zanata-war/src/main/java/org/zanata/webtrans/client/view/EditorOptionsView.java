@@ -20,6 +20,7 @@
  */
 package org.zanata.webtrans.client.view;
 
+
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.resources.WebTransMessages;
@@ -225,9 +226,12 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
    @UiHandler({"diffModeDiff", "diffModeHighlight"})
    public void onDiffModeOptionChange(ValueChangeEvent<Boolean> event)
    {
-      if (diffModeDiff.getValue()) {
+      if (diffModeDiff.getValue())
+      {
          listener.onTransMemoryDisplayModeChanged(DiffMode.NORMAL);
-      } else {
+      }
+      else
+      {
          listener.onTransMemoryDisplayModeChanged(DiffMode.HIGHLIGHT);
       }
    }
@@ -269,9 +273,12 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       showSaveApprovedWarningChk.setValue(state.isShowSaveApprovedWarning());
       spellCheckChk.setValue(state.isSpellCheckEnabled());
 
-      if (state.getTransMemoryDisplayMode() == DiffMode.NORMAL) {
+      if (state.getTransMemoryDisplayMode() == DiffMode.NORMAL)
+      {
          diffModeDiff.setValue(true);
-      } else {
+      }
+      else
+      {
          diffModeHighlight.setValue(true);
       }
 
@@ -283,13 +290,20 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
 
    private void selectPageSize(int pageSize)
    {
-      if (pageSize == 5) {
+      if (pageSize == 5)
+      {
          selectFive();
-      } else if (pageSize == 10) {
+      }
+      else if (pageSize == 10)
+      {
          selectTen();
-      } else if (pageSize == 25) {
+      }
+      else if (pageSize == 25)
+      {
          selectTwentyFive();
-      } else if (pageSize == 50) {
+      }
+      else if (pageSize ==50)
+      {
          selectFifty();
       }
    }

@@ -8,7 +8,7 @@ import org.zanata.webtrans.shared.model.DiffMode;
 import org.zanata.webtrans.shared.rpc.NavOption;
 
 /**
- * @author Patrick Huang <ahref="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public interface EditorOptionsDisplay extends WidgetDisplay
 {

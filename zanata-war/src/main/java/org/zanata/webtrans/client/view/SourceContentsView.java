@@ -48,6 +48,7 @@ import org.zanata.webtrans.shared.model.TextFlowTarget;
 
 public class SourceContentsView extends Composite implements SourceContentsDisplay
 {
+   
    public static final int COLUMNS = 1;
    public static final int DEFAULT_ROWS = 1;
    private final Grid sourcePanelContainer;
@@ -132,7 +133,8 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
 
       int rowIndex = 0;
       boolean useCodeMirrorEditor = configHolder.getState().isUseCodeMirrorEditor();
-      for (String source : value.getSources()) {
+      for (String source : value.getSources())
+      {
          SourcePanel sourcePanel = new SourcePanel(transUnit.getId(), useCodeMirrorEditor);
          sourcePanel.setValue(source, value.getSourceComment(), value.isPlural());
          sourcePanelContainer.setWidget(rowIndex, 0, sourcePanel);
@@ -145,7 +147,8 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
    @Override
    public void highlightSearch(String search)
    {
-      for (Widget sourceLabel : sourcePanelContainer) {
+      for (Widget sourceLabel : sourcePanelContainer)
+      {
          ((SourcePanel) sourceLabel).highlightSearch(search);
       }
    }
@@ -154,7 +157,8 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
    public void setSourceSelectionHandler(ClickHandler clickHandler)
    {
       Preconditions.checkState(!sourcePanelList.isEmpty(), "empty source panel list. Did you forget to call setValue() before this?");
-      for (HasSelectableSource hasSelectableSource : sourcePanelList) {
+      for (HasSelectableSource hasSelectableSource : sourcePanelList)
+      {
          hasSelectableSource.addClickHandler(clickHandler);
       }
    }
@@ -162,7 +166,8 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
    @Override
    public void refresh()
    {
-      for (HasSelectableSource hasSelectableSource : sourcePanelList) {
+      for (HasSelectableSource hasSelectableSource : sourcePanelList)
+      {
          hasSelectableSource.refresh();
       }
    }
@@ -170,9 +175,12 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
    @Override
    public void toggleTransUnitDetails(boolean showTransUnitDetails)
    {
-      if (transUnitDetailsPanel.hasNoMetaInfo() && !showTransUnitDetails) {
+      if (transUnitDetailsPanel.hasNoMetaInfo() && !showTransUnitDetails)
+      {
          transUnitDetailsPanel.setVisible(false);
-      } else {
+      }
+      else
+      {
          transUnitDetailsPanel.setVisible(true);
       }
    }

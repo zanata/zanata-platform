@@ -32,7 +32,7 @@ import org.junit.Assert.*;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 
 /**
- * @author Patrick Huang <ahref="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Test(groups = "unit-tests")
 public class SourceContentsPresenterTest
@@ -66,7 +66,7 @@ public class SourceContentsPresenterTest
       verify(eventBus).addHandler(UserConfigChangeEvent.TYPE, presenter);
    }
 
-    @Test
+   @Test
    public void testShowData() throws Exception
    {
       // Given: 2 trans units
