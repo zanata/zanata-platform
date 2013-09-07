@@ -224,7 +224,7 @@ public class SourceContentsPresenter implements ClickHandler, UserConfigChangeHa
    public void onShowHideReference(ReferenceVisibleEvent event)
    {
 
-      if (event.isDisplay()) {
+      if (event.isVisible()) {
          isReferenceShowing = true;
          selectedReferenceLocale = event.getSelectedLocale();
          showReference();
