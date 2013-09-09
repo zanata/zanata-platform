@@ -146,9 +146,10 @@ public class SourceContentsPresenter implements ClickHandler, UserConfigChangeHa
          builder.add(display);
       }
       displayList = builder.build();
-       if(isReferenceShowing){
-            showReference();
-        }
+      if (isReferenceShowing)
+      {
+         showReference();
+      }
    }
 
    public List<SourceContentsDisplay> getDisplays()
@@ -223,19 +224,22 @@ public class SourceContentsPresenter implements ClickHandler, UserConfigChangeHa
    @Override
    public void onShowHideReference(ReferenceVisibleEvent event)
    {
-
-      if (event.isVisible()) {
+      if (event.isVisible())
+      {
          isReferenceShowing = true;
          selectedReferenceLocale = event.getSelectedLocale();
          showReference();
-      } else {
+      }
+      else
+      {
          hideReference();
       }
    }
 
    private void showReference()
    {
-      for (final SourceContentsDisplay display : displayList) {
+      for (final SourceContentsDisplay display : displayList)
+      {
          GetTargetForLocale action = new GetTargetForLocale(display.getId(), selectedReferenceLocale);
          dispatcher.execute(action, new AsyncCallback<GetTargetForLocaleResult>()
          {
@@ -256,18 +260,20 @@ public class SourceContentsPresenter implements ClickHandler, UserConfigChangeHa
 
    public void hideReference()
    {
-      for (SourceContentsDisplay display : displayList) {
+      for (SourceContentsDisplay display : displayList)
+      {
          display.hideReference();
       }
       isReferenceShowing = false;
    }
-   
+
    @Override
    public void onRefreshPage(RefreshPageEvent event)
    {
-       if(isReferenceShowing){
-           showReference();
-       }
+      if (isReferenceShowing)
+      {
+         showReference();
+      }
    }
 
    /**

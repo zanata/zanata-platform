@@ -200,9 +200,12 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
    @Override
    public void showReference(TextFlowTarget reference)
    {
-      if (reference == null) {
+      if (reference == null)
+      {
          referenceLabel.setText(messages.noReferenceFoundText());
-      } else {
+      }
+      else
+      {
          referenceLabel.setText(messages.inLocale() + " " + reference.getDisplayName() + ": " + reference.getContent());
       }
       referenceLabel.setVisible(true);
