@@ -51,7 +51,7 @@
 	        <redirect view-id="/account/inactive_account.xhtml"/>
 	      </rule>
 	      <rule if="#{!identity.loggedIn}">
-	        <redirect view-id="/account/login_input.xhtml" />
+	        <redirect view-id="/account/login.xhtml" />
 	      </rule>
 	      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.redirectToHome}">
 	        <redirect view-id="/dashboard/home.xhtml" />
@@ -70,7 +70,7 @@
     <action execute="#{authenticationManager.kerberosLogin}"/>
     <navigation evaluate="#{authenticationManager.authenticationRedirect}">
       <rule if-outcome="login">
-        <redirect view-id="/account/login_input.xhtml" />
+        <redirect view-id="/account/login.xhtml" />
       </rule>
       <rule if-outcome="edit">
         <redirect view-id="/profile/edit.xhtml" />
@@ -92,7 +92,7 @@
   </page>
 
    <!-- Landing page for Internal and JAAS authentication -->
-   <page view-id="/account/login_input.xhtml">
+   <page view-id="/account/login.xhtml">
     <header name="Cache-Control" value="no-cache, no-store, max-age=0, must-revalidate" />
     <param name="continue" value="#{userRedirect.encodedUrl}" />
     <action execute="#{breadcrumbs.clear}"/>
@@ -978,14 +978,14 @@
 
   <exception class="org.jboss.seam.security.NotLoggedInException"
     log-level="debug">
-    <redirect view-id="/account/login_input.xhtml">
+    <redirect view-id="/account/login.xhtml">
       <message severity="warn">#{messages['org.jboss.seam.NotLoggedIn']}</message>
     </redirect>
   </exception>
 
   <exception class="javax.security.auth.login.LoginException"
     log-level="debug">
-    <redirect view-id="/account/login_input.xhtml">
+    <redirect view-id="/account/login.xhtml">
       <message severity="warn">#{messages['org.jboss.seam.NotLoggedIn']}</message>
     </redirect>
   </exception>

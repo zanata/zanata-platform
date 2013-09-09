@@ -135,7 +135,7 @@
 
   <rule>
     <from casesensitive="true">^/account/sign_in(.+)?$</from>
-    <to last="true">/account/login_input.seam$1</to>
+    <to last="true">/account/login.seam$1</to>
   </rule>
 
   <rule>

@@ -177,23 +177,8 @@ public class AuthenticationManager
     */
    public String openIdLogin()
    {
-      // Federated OpenId providers
-      if (zanataOpenId.isFederatedProvider())
-      {
-         // NB: Credentials' user name must be set to something or else login
-         // will fail. The real user name will be asked
-         // by the provider
-         credentials.setUsername("zanata");
-      }
-
+      zanataOpenId.setProvider(credentials.getOpenIdProviderType());
       String loginResult = identity.login(AuthenticationType.OPENID);
-
-      if (zanataOpenId.isFederatedProvider())
-      {
-         // Clear out the credentials again
-         credentials.setUsername("");
-      }
-
       return loginResult;
    }
 

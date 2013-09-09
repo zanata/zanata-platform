@@ -377,9 +377,4 @@ public class ZanataOpenId implements OpenIdAuthCallback
          }
       }
    }
-
-   public boolean isFederatedProvider()
-   {
-      return this.openIdProvider instanceof GoogleOpenIdProvider;
-   }
 }

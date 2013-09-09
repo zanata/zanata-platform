@@ -167,4 +167,10 @@ public class LoginAction implements Serializable
 
       return loginResult;
    }
+
+   public String login( String authProvider )
+   {
+      this.authProvider = authProvider;
+      return login();
+   }
 }

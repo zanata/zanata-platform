@@ -270,6 +270,11 @@ public class ApplicationConfiguration implements Serializable
       return this.loginModuleNames.containsKey(AuthenticationType.JAAS);
    }
 
+   public boolean isMultiAuth()
+   {
+      return loginModuleNames.size() > 1;
+   }
+
    public String getLoginModuleName(AuthenticationType authType)
    {
       return this.loginModuleNames.get(authType);

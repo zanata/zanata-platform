@@ -40,7 +40,7 @@
         <groovy.eclipse.batch.version>2.1.5-03</groovy.eclipse.batch.version>
         <groovy.eclipse.compiler.version>2.7.0-01</groovy.eclipse.compiler.version>
 
-      <zanata.web.assets.version>1</zanata.web.assets.version>
+      <zanata.web.assets.version>2</zanata.web.assets.version>
     </properties>
 
 	<build>
