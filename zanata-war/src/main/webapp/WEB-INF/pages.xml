@@ -53,12 +53,9 @@
 	      <rule if="#{!identity.loggedIn}">
 	        <redirect view-id="/account/login_input.xhtml" />
 	      </rule>
-	      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.redirectToHome}">
+	      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.userRedirect.shouldRedirectToDashboard()}}">
 	        <redirect view-id="/dashboard/home.xhtml" />
 	      </rule>
-	      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.redirectToRegister}">
-            <redirect view-id="/dashboard/home.xhtml" />
-          </rule>
 	      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.redirect}">
 	        <redirect url="#{userRedirect.url}" />
 	      </rule>
@@ -108,10 +105,7 @@
         <begin-conversation/>
         <redirect view-id="/account/inactive_account.xhtml"/>
       </rule>
-      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.redirectToHome}">
-        <redirect view-id="/dashboard/home.xhtml" />
-      </rule>
-      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.redirectToRegister}">
+      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.shouldRedirectToDashboard()}">
         <redirect view-id="/dashboard/home.xhtml" />
       </rule>
       <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.redirect}">
