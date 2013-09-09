@@ -53,10 +53,6 @@ import com.google.common.base.Objects;
 @Transactional
 public class ProjectService implements ProjectResource
 {
-
-   public static final String PROJECT_SLUG_TEMPLATE = "{projectSlug:" + SlugValidator.PATTERN + "}";
-   public static final String SERVICE_PATH = "/projects/p/" + PROJECT_SLUG_TEMPLATE;
-
    /** Project Identifier. */
    @PathParam("projectSlug")
    String projectSlug;

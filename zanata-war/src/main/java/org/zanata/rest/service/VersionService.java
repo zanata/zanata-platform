@@ -14,10 +14,9 @@ import org.zanata.util.VersionUtility;
 
 
 @Name("versionService")
-@Path(VersionService.SERVICE_PATH)
+@Path(VersionResource.SERVICE_PATH)
 public class VersionService implements VersionResource
 {
-   public static final String SERVICE_PATH = "/version";
    
    private final VersionInfo version;
 

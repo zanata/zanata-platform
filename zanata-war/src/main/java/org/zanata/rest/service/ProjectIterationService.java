@@ -66,10 +66,6 @@ import com.google.common.base.Objects;
 @Transactional
 public class ProjectIterationService implements ProjectIterationResource
 {
-
-   public static final String ITERATION_SLUG_TEMPLATE = "{iterationSlug:" + SlugValidator.PATTERN + "}";
-   public static final String SERVICE_PATH = ProjectService.SERVICE_PATH + "/iterations/i/" + ITERATION_SLUG_TEMPLATE;
-
    /** Project Identifier. */
    @PathParam("projectSlug")
    private String projectSlug;

@@ -36,7 +36,7 @@ import org.zanata.model.HPerson;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Account;
 
-@Name("accountService")
+@Name(AccountResource.SERVICE_PATH)
 @Path("/accounts/u/{username:[a-z\\d_]{3,20}}")
 @Transactional
 public class AccountService implements AccountResource

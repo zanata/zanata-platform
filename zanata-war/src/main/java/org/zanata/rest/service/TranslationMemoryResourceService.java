@@ -56,7 +56,7 @@ import org.zanata.util.CloseableIterator;
 
 import com.google.common.base.Optional;
 @Name("translationMemoryResource")
-@Path("/tm")
+@Path(TranslationMemoryResource.SERVICE_PATH)
 @Transactional(TransactionPropagationType.SUPPORTS)
 @Slf4j
 @ParametersAreNonnullByDefault

@@ -56,7 +56,7 @@ import org.zanata.rest.dto.Project;
 import com.google.common.base.Objects;
 
 @Name("projectsService")
-@Path("/projects")
+@Path(ProjectsResource.SERVICE_PATH)
 @Transactional
 public class ProjectsService implements ProjectsResource
 {

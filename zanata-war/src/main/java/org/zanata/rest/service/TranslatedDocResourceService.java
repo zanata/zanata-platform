@@ -86,8 +86,6 @@ public class TranslatedDocResourceService implements TranslatedDocResource
 //   private static final String ACTION_IMPORT_TEMPLATE = "import-template";
 //   private static final String ACTION_IMPORT_TRANSLATION = "import-translation";
 
-   public static final String SERVICE_PATH = ProjectIterationService.SERVICE_PATH + "/r";
-
    public static final String EVENT_COPY_TRANS = "org.zanata.rest.service.copyTrans";
 
    /** Project Identifier. */

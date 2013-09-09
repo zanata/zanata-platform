@@ -85,7 +85,6 @@ import java.util.regex.Pattern;
 @Transactional
 public class SourceDocResourceService implements SourceDocResource
 {
-   public static final String SERVICE_PATH = ProjectIterationService.SERVICE_PATH + "/r";
 
    @Logger
    private Log log;

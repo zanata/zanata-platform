@@ -38,7 +38,7 @@ import org.zanata.security.ZanataIdentity;
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Name("copyTransResourceService")
-@Path("/copytrans")
+@Path(CopyTransResource.SERVICE_PATH)
 public class CopyTransResourceService implements CopyTransResource
 {
    @In
