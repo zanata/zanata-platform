@@ -36,7 +36,8 @@
             </ui:remove>
             <s:decorate id="usernameField" template="../WEB-INF/layout/edit.xhtml" rendered="#{profileAction.newUser}" enclose="true">
               <ui:define name="label">#{messages['jsf.Username']}</ui:define>
-              <h:inputText id="username" value="#{profileAction.username}" required="true" >
+              <h:inputText id="username" value="#{profileAction.username}" required="true"
+                           valueChangeListener="#{profileAction.verifyUsernameAvailable}" onchange="submit()" >
                   <a4j:ajax event="blur" render="usernameField" execute="@this"/>
               </h:inputText>
 
