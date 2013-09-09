@@ -22,6 +22,7 @@ package org.zanata.action;
 
 import java.io.Serializable;
 
+import javax.faces.event.ValueChangeEvent;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -63,10 +64,11 @@ public class ProfileAction implements Serializable
    private String username;
    private String activationKey;
    private boolean valid;
+   private boolean newUser;
 
    @In
    ApplicationConfiguration applicationConfiguration;
-   
+
    @Logger
    Log log;
 
@@ -93,14 +95,14 @@ public class ProfileAction implements Serializable
 
    @In
    RegisterService registerServiceImpl;
-   
+
    @In
    EmailChangeService emailChangeService;
 
    private void validateEmail(String email)
    {
       HPerson person = personDAO.findByEmail(email);
-      
+
       if( person != null && !person.getAccount().equals( authenticatedAccount ) )
       {
          valid = false;
@@ -108,9 +110,9 @@ public class ProfileAction implements Serializable
       }
    }
 
-   private void validateUsername()
+   private void validateUsername(String username)
    {
-      HAccount account = accountDAO.getByUsername(this.username);
+      HAccount account = accountDAO.getByUsername(username);
 
       if( account != null && !account.equals( authenticatedAccount ) )
       {
@@ -119,11 +121,18 @@ public class ProfileAction implements Serializable
       }
    }
 
+   public void verifyUsernameAvailable(ValueChangeEvent e)
+   {
+      String username = (String) e.getNewValue();
+      validateUsername(username);
+   }
+
    @Create
    public void onCreate()
    {
       username = identity.getCredentials().getUsername();
-      if (identityStore.isNewUser(username))
+      newUser = identityStore.isNewUser(username);
+      if (newUser)
       {
          name = identity.getCredentials().getUsername();
          String domain = applicationConfiguration.getDomainName();
@@ -131,7 +140,7 @@ public class ProfileAction implements Serializable
          {
             email = "";
          }
-         else 
+         else
          {
             if( applicationConfiguration.isOpenIdAuth() )
             {
@@ -188,7 +197,7 @@ public class ProfileAction implements Serializable
    public void setUsername(String username)
    {
       this.username = username;
-      validateUsername();
+      validateUsername(username);
    }
 
    public String getActivationKey()
@@ -206,7 +215,7 @@ public class ProfileAction implements Serializable
    {
       this.valid = true;
       validateEmail(this.email);
-      validateUsername();
+      validateUsername(username);
 
       if( !this.isValid() )
       {
@@ -267,7 +276,8 @@ public class ProfileAction implements Serializable
 
    public boolean isNewUser()
    {
-      return identityStore.isNewUser(username);
+      // in case someone else has registered in the middle
+      return newUser || identityStore.isNewUser(username);
    }
 
 }

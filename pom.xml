@@ -36,7 +36,7 @@
       <!-- This should always be the previous version of the used api version above (but only 3.0.1 or later will work) -->
       <zanata.api.compat.version>3.0.1</zanata.api.compat.version>
       <zanata.client.version>3.0.1</zanata.client.version>
-      <zanata.common.version>3.0.2-SNAPSHOT</zanata.common.version>
+      <zanata.common.version>3.0.2</zanata.common.version>
 
       <richfaces.version>4.3.2.Final</richfaces.version>
 
