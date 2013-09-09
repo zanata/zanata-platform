@@ -56,6 +56,9 @@
 	      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.redirectToHome}">
 	        <redirect view-id="/dashboard/home.xhtml" />
 	      </rule>
+	      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.redirectToRegister}">
+            <redirect view-id="/dashboard/home.xhtml" />
+          </rule>
 	      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.redirect}">
 	        <redirect url="#{userRedirect.url}" />
 	      </rule>
@@ -106,6 +109,9 @@
         <redirect view-id="/account/inactive_account.xhtml"/>
       </rule>
       <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.redirectToHome}">
+        <redirect view-id="/dashboard/home.xhtml" />
+      </rule>
+      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.redirectToRegister}">
         <redirect view-id="/dashboard/home.xhtml" />
       </rule>
       <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.redirect}">
