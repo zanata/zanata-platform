@@ -30,9 +30,12 @@ import org.zanata.rest.dto.CopyTransStatus;
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Path("/copytrans")
+@Path(CopyTransResource.SERVICE_PATH)
+@org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle
 public interface CopyTransResource
 {
+   public static final String SERVICE_PATH = "/copytrans";
+
    @POST
    @Path("/proj/{projectSlug}/iter/{iterationSlug}/doc/{docId:.+}")
    // /copytrans/proj/{projectSlug}/iter/{iterationSlug}/doc/{docId}

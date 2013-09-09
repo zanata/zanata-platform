@@ -22,6 +22,7 @@
 package org.zanata.rest.service;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -34,8 +35,11 @@ import org.zanata.rest.MediaTypes;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
+@Path(ProjectsResource.SERVICE_PATH)
+@org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle
 public interface ProjectsResource
 {
+   public static final String SERVICE_PATH = "/projects";
 
    @GET
    @Produces({ MediaTypes.APPLICATION_ZANATA_PROJECTS_XML, MediaTypes.APPLICATION_ZANATA_PROJECTS_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })

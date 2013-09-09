@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors
+ * Copyright 2013, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -21,33 +21,12 @@
 
 package org.zanata.rest.service;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Response;
-
-import org.zanata.rest.MediaTypes;
-import org.zanata.rest.dto.Account;
-
-
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-@Path(AccountResource.SERVICE_PATH)
-@org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle
-public interface AccountResource
+public interface RestConstants
 {
-   public static final String SERVICE_PATH = "/accounts/u/{username:[a-z\\d_]{3,20}}";
-
-   @GET
-   @Produces({ MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML, MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON })
-   public Response get();
-
-   @PUT
-   @Consumes({ MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML, MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON })
-   public Response put(Account account);
+   public static final String SLUG_PATTERN = "[a-zA-Z0-9]+([a-zA-Z0-9_\\-{.}]*[a-zA-Z0-9]+)?";
 
 }

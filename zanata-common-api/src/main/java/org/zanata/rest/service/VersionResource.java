@@ -21,14 +21,18 @@
 package org.zanata.rest.service;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 import org.zanata.rest.MediaTypes;
 
 
+@org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle
+@Path(VersionResource.SERVICE_PATH)
 public interface VersionResource
 {
+   public static final String SERVICE_PATH = "/version";
 
    /**
     * Retrieve VersionInfo

@@ -22,6 +22,7 @@
 package org.zanata.rest.service;
 
 import java.io.InputStream;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ws.rs.Consumes;
@@ -43,8 +44,12 @@ import org.zanata.common.LocaleId;
  */
 @Produces( { MediaType.APPLICATION_XML /*, "application/x-tmx"*/ })
 @Consumes( { MediaType.APPLICATION_XML /*, "application/x-tmx"*/ })
+@Path(TranslationMemoryResource.SERVICE_PATH)
+@org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle
 public interface TranslationMemoryResource
 {
+   public static final String SERVICE_PATH = "/tm";
+
    public static final String PREFERRED_MEDIA_TYPE = MediaType.APPLICATION_XML;
 
    @GET

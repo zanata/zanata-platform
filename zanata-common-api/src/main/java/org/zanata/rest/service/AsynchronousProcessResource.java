@@ -21,6 +21,7 @@
 package org.zanata.rest.service;
 
 import java.util.Set;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -42,10 +43,12 @@ import org.zanata.rest.dto.resource.TranslationsResource;
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Path("/async")
+@Path(AsynchronousProcessResource.SERVICE_PATH)
 @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+@org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle
 public interface AsynchronousProcessResource
 {
+   public static final String SERVICE_PATH = "/async";
 
    /**
     * Attempts to start the creation of a source document.

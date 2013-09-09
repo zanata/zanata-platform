@@ -36,6 +36,8 @@ import org.zanata.rest.DocumentFileUploadForm;
 /**
  * Interface for file upload and download REST methods.
  */
+@Path(FileResource.FILE_RESOURCE)
+@org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle
 public interface FileResource
 {
 

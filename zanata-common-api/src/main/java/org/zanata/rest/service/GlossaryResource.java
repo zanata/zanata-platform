@@ -37,6 +37,8 @@ import org.zanata.rest.dto.Glossary;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
+@Path(GlossaryResource.SERVICE_PATH)
+@org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle
 public interface GlossaryResource
 {
    public static final String SERVICE_PATH = "/glossary";

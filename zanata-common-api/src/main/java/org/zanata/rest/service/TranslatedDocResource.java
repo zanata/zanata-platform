@@ -42,9 +42,12 @@ import static org.zanata.rest.service.SourceDocResource.RESOURCE_SLUG_TEMPLATE;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-//@Path(TranslatedDocResourceService.SERVICE_PATH)
+@Path(TranslatedDocResource.SERVICE_PATH)
+@org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle
 public interface TranslatedDocResource
 {
+   public static final String SERVICE_PATH = ProjectIterationResource.SERVICE_PATH + "/r";
+
    @GET
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
    // /r/{id}/translations/{locale}

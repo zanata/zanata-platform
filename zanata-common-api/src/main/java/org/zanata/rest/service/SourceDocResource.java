@@ -35,13 +35,17 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
+
 import java.util.Set;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@Path(SourceDocResource.SERVICE_PATH)
+@org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle
 public interface SourceDocResource
 {
+   public static final String SERVICE_PATH = ProjectIterationResource.SERVICE_PATH + "/r";
    public static final String RESOURCE_SLUG_REGEX = "[a-zA-Z0-9]+([a-zA-Z0-9_\\-,{.}]*[a-zA-Z0-9]+)?";
    public static final String RESOURCE_NAME_REGEX = "[a-zA-Z0-9]+([/a-zA-Z0-9_\\-,{.}]*[a-zA-Z0-9]+)?"; // as above, plus the '/'
    public static final String RESOURCE_SLUG_TEMPLATE = "/{id:" + RESOURCE_SLUG_REGEX + "}";

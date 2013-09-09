@@ -32,6 +32,7 @@ import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Path("/stats")
+@org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle
 public interface StatisticsResource
 {
 

@@ -25,6 +25,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
 import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -37,8 +38,12 @@ import org.zanata.rest.dto.Project;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
+@Path(ProjectResource.SERVICE_PATH)
+@org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle
 public interface ProjectResource
 {
+   public static final String PROJECT_SLUG_TEMPLATE = "{projectSlug:" + RestConstants.SLUG_PATTERN + "}";
+   public static final String SERVICE_PATH = "/projects/p/" + PROJECT_SLUG_TEMPLATE;
 
    @HEAD
    @Produces({ MediaTypes.APPLICATION_ZANATA_PROJECT_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
