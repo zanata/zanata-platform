@@ -36,22 +36,16 @@
 
 		<plugins>
 
+         <!--
+            This config is used when running mvn enunciate:docs.
+            Docs will be generated in target/enunciate/build/docs/rest-api-docs.
+            See also the reporting configuration.
+          -->
          <plugin>
             <groupId>org.codehaus.enunciate</groupId>
             <artifactId>maven-enunciate-plugin</artifactId>
             <configuration>
                <configFile>etc/enunciate/enunciate.xml</configFile>
-
-               <!--
-               These two enunciate options are undocumented, but
-               their absence causes an error during site generation.
-                -->
-               <enunciateArtifactId>unused</enunciateArtifactId>
-               <moduleName>unused</moduleName>
-
-               <!-- The subdirectory of the site where the documentation will be put. -->
-               <!-- Note that if this isn't set, the documentation will overwrite the site. -->
-               <docsSubdir>wsdocs</docsSubdir>
             </configuration>
          </plugin>
 
@@ -192,6 +186,11 @@
 
     <reporting>
       <plugins>
+         <!--
+            This config is used when running mvn site.
+            Docs will be generated in target/site/rest-api-docs.
+            See also the plugin configuration.
+          -->
          <plugin>
             <groupId>org.codehaus.enunciate</groupId>
             <artifactId>maven-enunciate-plugin</artifactId>
@@ -207,9 +206,7 @@
                <enunciateArtifactId>unused</enunciateArtifactId>
                <moduleName>unused</moduleName>
 
-               <!-- The subdirectory of the site where the documentation will be put. -->
-               <!-- Note that if this isn't set, the documentation will overwrite the site. -->
-               <!-- <docsSubdir>restdocs</docsSubdir> -->
+               <docsSubdir>rest-api-docs</docsSubdir>
             </configuration>
          </plugin>
       </plugins>
