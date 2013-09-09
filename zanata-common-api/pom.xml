@@ -35,6 +35,26 @@
 		</resources>
 
 		<plugins>
+
+         <plugin>
+            <groupId>org.codehaus.enunciate</groupId>
+            <artifactId>maven-enunciate-plugin</artifactId>
+            <configuration>
+               <configFile>etc/enunciate/enunciate.xml</configFile>
+
+               <!--
+               These two enunciate options are undocumented, but
+               their absence causes an error during site generation.
+                -->
+               <enunciateArtifactId>unused</enunciateArtifactId>
+               <moduleName>unused</moduleName>
+
+               <!-- The subdirectory of the site where the documentation will be put. -->
+               <!-- Note that if this isn't set, the documentation will overwrite the site. -->
+               <docsSubdir>wsdocs</docsSubdir>
+            </configuration>
+         </plugin>
+
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jaxb2-maven-plugin</artifactId>
@@ -170,7 +190,41 @@
 		</pluginManagement>
 	</build>
 
+    <reporting>
+      <plugins>
+         <plugin>
+            <groupId>org.codehaus.enunciate</groupId>
+            <artifactId>maven-enunciate-plugin</artifactId>
+            <!-- apparently pluginManagement is ignored in reporting -->
+            <version>${enunciate.version}</version>
+            <configuration>
+               <configFile>etc/enunciate/enunciate.xml</configFile>
+
+               <!--
+               These two enunciate options are undocumented, but
+               their absence causes an error during site generation.
+                -->
+               <enunciateArtifactId>unused</enunciateArtifactId>
+               <moduleName>unused</moduleName>
+
+               <!-- The subdirectory of the site where the documentation will be put. -->
+               <!-- Note that if this isn't set, the documentation will overwrite the site. -->
+               <!-- <docsSubdir>restdocs</docsSubdir> -->
+            </configuration>
+         </plugin>
+      </plugins>
+    </reporting>
+
 	<dependencies>
+        <dependency>
+            <groupId>org.codehaus.enunciate</groupId>
+            <artifactId>enunciate-core-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.enunciate</groupId>
+            <artifactId>enunciate-jersey-rt</artifactId>
+        </dependency>
+
 		<dependency>
 			<groupId>com.google.code.findbugs</groupId>
 			<artifactId>jsr305</artifactId>
