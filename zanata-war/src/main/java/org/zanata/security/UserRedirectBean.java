@@ -189,7 +189,7 @@ public class UserRedirectBean implements Serializable
    {
       if (isRedirect())
       {
-         String url = getUrl();
+         String redirectUrl = getUrl();
          int qsIndex = url.indexOf('?');
          if (qsIndex > 0)
          {
