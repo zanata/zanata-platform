@@ -181,6 +181,8 @@
 		<checkstyle.suppressionsLocation />
 		<checkstyle.suppressionsFileExpression />
 
+        <enunciate.version>1.27</enunciate.version>
+
 		<reports-plugin.dependencyDetailsEnabled>false</reports-plugin.dependencyDetailsEnabled>
 		<reports-plugin.dependencyLocationsEnabled>false</reports-plugin.dependencyLocationsEnabled>
 
@@ -254,6 +256,10 @@
                         <!-- use org.mockito:mockito-core -->
                         <exclude>org.mockito:mockito-all</exclude>
                         <exclude>org.slf4j:slf4j-jcl</exclude>
+
+                        <!-- use resteasy-jaxrs instead of these: -->
+                        <exclude>javax.ws.rs:jsr311-api</exclude>
+                        <exclude>com.sun.jersey:jersey-core</exclude>
                       </excludes>
                       <searchTransitive>true</searchTransitive>
                     </bannedDependencies>
@@ -487,6 +493,11 @@ package.
 						</lifecycleMappingMetadata>
 					</configuration>
 				</plugin>
+                <plugin>
+                  <groupId>org.codehaus.enunciate</groupId>
+                  <artifactId>maven-enunciate-plugin</artifactId>
+                  <version>${enunciate.version}</version>
+                </plugin>
             </plugins>
 		</pluginManagement>
 		<extensions>
@@ -928,7 +939,26 @@ package.
 			        </exclusion>
 			    </exclusions>
 			</dependency>
-
+            <dependency>
+                <groupId>org.codehaus.enunciate</groupId>
+                <artifactId>enunciate-core-annotations</artifactId>
+                <version>${enunciate.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.enunciate</groupId>
+                <artifactId>enunciate-jersey-rt</artifactId>
+                <version>${enunciate.version}</version>
+                <exclusions>
+                  <exclusion>
+                    <groupId>javax.ws.rs</groupId>
+                    <artifactId>jsr311-api</artifactId>
+                  </exclusion>
+                  <exclusion>
+                    <groupId>com.sun.jersey</groupId>
+                    <artifactId>jersey-server</artifactId>
+                  </exclusion>
+                </exclusions>
+            </dependency>
 		</dependencies>
 	</dependencyManagement>
 	<dependencies>
