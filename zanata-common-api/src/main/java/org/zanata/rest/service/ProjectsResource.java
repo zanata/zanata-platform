@@ -27,9 +27,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
 import org.zanata.common.Namespaces;
 import org.zanata.rest.MediaTypes;
+import org.zanata.rest.dto.Project;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
@@ -41,9 +43,18 @@ public interface ProjectsResource
 {
    public static final String SERVICE_PATH = "/projects";
 
+   /**
+    * Retrieves a full list of projects in the system.
+    *
+    * @return The following response status codes will be returned from this operation:<br>
+    * OK(200) - Response containing a full list of projects. The list will be wrapped around a 'projects' element, and
+    * all it's child elements will be projects.<br>
+    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
+    */
    @GET
    @Produces({ MediaTypes.APPLICATION_ZANATA_PROJECTS_XML, MediaTypes.APPLICATION_ZANATA_PROJECTS_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
    @Wrapped(element = "projects", namespace = Namespaces.ZANATA_API)
+   @TypeHint(Project[].class)
    public Response get();
 
 }

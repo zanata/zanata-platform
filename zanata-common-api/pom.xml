@@ -215,6 +215,10 @@
 	<dependencies>
         <dependency>
             <groupId>org.codehaus.enunciate</groupId>
+            <artifactId>enunciate-core-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.enunciate</groupId>
             <artifactId>enunciate-jersey-rt</artifactId>
         </dependency>
 
