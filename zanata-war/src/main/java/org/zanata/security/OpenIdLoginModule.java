@@ -33,7 +33,6 @@ import javax.security.auth.spi.LoginModule;
 
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
-import org.zanata.security.openid.OpenIdProviderType;
 
 public class OpenIdLoginModule implements LoginModule
 {

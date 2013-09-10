@@ -25,7 +25,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.sql.Connection;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;

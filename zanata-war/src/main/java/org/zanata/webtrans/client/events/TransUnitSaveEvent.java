@@ -23,15 +23,10 @@ package org.zanata.webtrans.client.events;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import org.zanata.common.ContentState;
 import org.zanata.common.util.ContentStateUtil;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import com.google.common.base.Objects;
-import com.google.common.base.Predicate;
-import com.google.common.base.Strings;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.gwt.event.shared.GwtEvent;
 

@@ -20,7 +20,6 @@
  */
 package org.zanata.seam;
 
-import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.jboss.seam.Component;
 import org.testng.annotations.BeforeTest;
@@ -29,7 +28,6 @@ import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.seam.test.CyclicParentComponent;
 import org.zanata.seam.test.TestComponent;
-import org.zanata.seam.test.UnbuildableTestComponent;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.impl.CopyTransServiceImpl;
 

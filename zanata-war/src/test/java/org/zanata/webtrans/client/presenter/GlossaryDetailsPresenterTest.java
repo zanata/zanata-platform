@@ -20,7 +20,6 @@
  */
 package org.zanata.webtrans.client.presenter;
 
-import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.*;
@@ -37,7 +36,6 @@ import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

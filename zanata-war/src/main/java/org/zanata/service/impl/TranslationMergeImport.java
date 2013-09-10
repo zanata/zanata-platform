@@ -3,7 +3,6 @@ package org.zanata.service.impl;
 import java.util.Set;
 
 import org.zanata.common.ContentState;
-import org.zanata.dao.TextFlowTargetHistoryDAO;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.service.TranslationMergeService;

@@ -35,7 +35,6 @@ import org.zanata.seam.SeamAutowire;
 import org.zanata.service.UserAccountService;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.not;
 

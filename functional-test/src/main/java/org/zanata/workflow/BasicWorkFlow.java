@@ -2,8 +2,6 @@ package org.zanata.workflow;
 
 import org.openqa.selenium.support.PageFactory;
 import org.zanata.page.AbstractPage;
-import org.zanata.page.utility.DashboardPage;
-import org.zanata.page.utility.HomePage;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>

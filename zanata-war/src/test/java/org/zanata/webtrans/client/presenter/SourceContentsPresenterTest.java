@@ -27,7 +27,6 @@ import com.google.gwt.event.shared.GwtEvent;
 import net.customware.gwt.presenter.client.EventBus;
 import static org.hamcrest.MatcherAssert.*;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.when;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>

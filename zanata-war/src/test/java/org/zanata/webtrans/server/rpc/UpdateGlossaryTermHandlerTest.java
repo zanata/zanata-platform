@@ -4,7 +4,6 @@ import java.util.Date;
 
 import org.hamcrest.Matchers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -24,7 +23,6 @@ import com.google.common.collect.Lists;
 
 import net.customware.gwt.dispatch.shared.ActionException;
 import static org.hamcrest.MatcherAssert.*;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 

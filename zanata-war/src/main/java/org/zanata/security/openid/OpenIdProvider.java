@@ -20,8 +20,6 @@
  */
 package org.zanata.security.openid;
 
-import java.util.Map;
-
 import org.openid4java.message.ParameterList;
 import org.openid4java.message.ax.FetchRequest;
 

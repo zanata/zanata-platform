@@ -73,7 +73,6 @@ import org.zanata.util.StringUtil;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 
 /**
  * Represents a flow of source text that should be processed as a stand-alone

@@ -40,7 +40,6 @@ import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.cache.CacheWrapper;
 import org.zanata.cache.EhcacheWrapper;
-import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.TextFlowDAO;

@@ -11,7 +11,6 @@ import org.testng.annotations.Test;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.when;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>

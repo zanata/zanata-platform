@@ -30,7 +30,6 @@ import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 import org.zanata.page.utility.HomePage;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 

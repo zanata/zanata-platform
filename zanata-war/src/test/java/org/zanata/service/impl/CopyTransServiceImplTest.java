@@ -33,7 +33,6 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.zanata.SlowTest;
 import org.zanata.ZanataDbunitJpaTest;
-import org.zanata.async.tasks.CopyTransTask;
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.EntityStatus;

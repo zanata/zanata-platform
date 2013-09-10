@@ -26,7 +26,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 
 import org.jboss.arquillian.seam2.ReflectionHelper;

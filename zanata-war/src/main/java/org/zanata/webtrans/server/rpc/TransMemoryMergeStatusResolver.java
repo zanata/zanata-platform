@@ -24,7 +24,6 @@ package org.zanata.webtrans.server.rpc;
 import org.zanata.common.ContentState;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.rpc.MergeRule;

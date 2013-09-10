@@ -25,7 +25,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
@@ -34,20 +33,9 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependency;
-import org.jboss.shrinkwrap.resolver.api.maven.filter.MavenResolutionFilter;
-import org.jboss.shrinkwrap.resolver.api.maven.filter.RejectDependenciesFilter;
-import org.jboss.shrinkwrap.resolver.api.maven.strategy.DefaultTransitiveExclusionPolicy;
-import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.RejectDependenciesStrategy;
-import org.jboss.shrinkwrap.resolver.api.maven.strategy.TransitiveExclusionPolicy;
-import org.jboss.shrinkwrap.resolver.api.maven.strategy.TransitiveStrategy;
-import org.openxri.resolve.ResolveChain;
-
-import com.google.common.collect.ImmutableList;
 
 /**
  * Contains Suite-wide deployments to avoid having to deploy the same package for

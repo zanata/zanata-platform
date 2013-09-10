@@ -20,7 +20,6 @@
  */
 package org.zanata.model.po;
 
-import java.nio.ByteBuffer;
 import javax.persistence.CascadeType;
 import javax.persistence.JoinColumn;
 import javax.persistence.MappedSuperclass;

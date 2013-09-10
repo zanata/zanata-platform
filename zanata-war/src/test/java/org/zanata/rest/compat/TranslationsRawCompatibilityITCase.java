@@ -32,7 +32,6 @@ import org.junit.Test;
 import org.zanata.RestTest;
 import org.zanata.apicompat.rest.client.ISourceDocResource;
 import org.zanata.apicompat.rest.client.ITranslatedDocResource;
-import org.zanata.provider.DBUnitProvider;
 import org.zanata.rest.ResourceRequest;
 import org.zanata.apicompat.common.ContentState;
 import org.zanata.apicompat.common.ContentType;

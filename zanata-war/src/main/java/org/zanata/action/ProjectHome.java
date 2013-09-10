@@ -32,7 +32,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;

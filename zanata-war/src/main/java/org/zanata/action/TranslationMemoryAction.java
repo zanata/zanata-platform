@@ -50,8 +50,6 @@ import org.zanata.service.AsyncTaskManagerService;
 import org.zanata.rest.service.TranslationMemoryResourceService;
 import org.zanata.service.SlugEntityService;
 
-import com.google.common.base.Optional;
-
 /**
  * Controller class for the Translation Memory UI.
  *

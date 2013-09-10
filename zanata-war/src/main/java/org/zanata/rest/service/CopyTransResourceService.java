@@ -25,7 +25,6 @@ import javax.ws.rs.PathParam;
 
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.security.Restrict;
 import org.zanata.action.CopyTransManager;
 import org.zanata.async.tasks.CopyTransTask;
 import org.zanata.dao.DocumentDAO;

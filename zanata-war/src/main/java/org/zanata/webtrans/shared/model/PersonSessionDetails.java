@@ -1,6 +1,5 @@
 package org.zanata.webtrans.shared.model;
 
-import com.google.common.base.Objects;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class PersonSessionDetails implements IsSerializable

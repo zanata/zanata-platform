@@ -34,8 +34,6 @@ import org.zanata.feature.ConcordionTest;
 import org.zanata.workflow.ClientPushWorkFlow;
 import com.google.common.base.Joiner;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * @see <a href="https://tcms.engineering.redhat.com/case/169230/">TCMS case</a>
  *

@@ -20,7 +20,6 @@
  */
 package org.zanata.webtrans.shared.rpc;
 
-import java.util.Collections;
 import java.util.List;
 
 

@@ -1,8 +1,5 @@
 package org.zanata.webtrans.client.ui;
 
-import java.util.Collections;
-import java.util.Set;
-
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
 import com.google.gwt.user.client.ui.DialogBox;

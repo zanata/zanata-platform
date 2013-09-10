@@ -30,7 +30,6 @@ import org.junit.Test;
 import org.zanata.RestTest;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.ProjectType;
-import org.zanata.provider.DBUnitProvider;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.ResourceRequest;
 import org.zanata.rest.dto.Project;

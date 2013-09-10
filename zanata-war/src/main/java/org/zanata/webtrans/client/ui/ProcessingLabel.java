@@ -2,10 +2,7 @@ package org.zanata.webtrans.client.ui;
 
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.animation.client.Animation;
-import com.google.gwt.animation.client.AnimationScheduler;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Label;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

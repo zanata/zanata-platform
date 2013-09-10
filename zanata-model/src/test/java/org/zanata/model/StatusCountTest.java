@@ -20,8 +20,6 @@
  */
 package org.zanata.model;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 
