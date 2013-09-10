@@ -505,6 +505,12 @@ public interface WebTransMessages extends Messages
 
    @DefaultMessage("Only display Translation Unit Details when there is meta data otherwise hide it")
    String showTransUnitDetailsTooltip();
+   
+   @DefaultMessage("Enable Reference for Source Language")
+   String enableReferenceForSourceLang();
+
+   @DefaultMessage("Enable the drop-down list where a reference in another language can be selected")
+   String enableReferenceForSourceLangTooltip();
 
    @DefaultMessage("Download All Files")
    String downloadAllFiles();

@@ -49,13 +49,13 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
 {
    private static EditorOptionsUiBinder uiBinder = GWT.create(EditorOptionsUiBinder.class);
    private final EnumRadioButtonGroup<NavOption> navOptionGroup;
-
+   
    @UiField
    CheckBox enterChk, editorButtonsChk;
-
+   
    @UiField
    Label navOptionHeader, editorOptionHeader;
-
+   
    @UiField
    VerticalPanel optionsContainer;
    @UiField
@@ -90,7 +90,10 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
    CheckBox showGlossaryChk;
    @UiField
    CheckBox showOptionalTransUnitDetailsChk;
-
+   
+   @UiField
+   CheckBox enableReferenceForSourceLang;
+   
    private Listener listener;
 
    @Inject
@@ -120,6 +123,8 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       showGlossaryChk.setText(messages.showGlossaryPanel());
       showOptionalTransUnitDetailsChk.setText(messages.showTransUnitDetails());
       showOptionalTransUnitDetailsChk.setTitle(messages.showTransUnitDetailsTooltip());
+      enableReferenceForSourceLang.setText(messages.enableReferenceForSourceLang());
+      enableReferenceForSourceLang.setTitle(messages.enableReferenceForSourceLangTooltip());
    }
 
    @Override
@@ -205,7 +210,7 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
    {
       listener.onUseCodeMirrorOptionChanged(useCodeMirrorChk.getValue());
    }
-   
+
    @UiHandler("showSaveApprovedWarningChk")
    public void onShowSaveApprovedWarningChanged(ValueChangeEvent<Boolean> event)
    {
@@ -243,6 +248,12 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       listener.onDisplayTransUnitDetailsOptionChanged(showOptionalTransUnitDetailsChk.getValue());
    }
 
+   @UiHandler("enableReferenceForSourceLang")
+   public void onEnableReferenceForSourceLangOptionChanged(ValueChangeEvent<Boolean> event)
+   {
+      listener.onEnableReferenceForSourceLangOptionChanged(enableReferenceForSourceLang.getValue());
+   }
+
    @Override
    public void setListener(Listener listener)
    {
@@ -274,6 +285,7 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       showTMChk.setValue(state.isShowTMPanel());
       showGlossaryChk.setValue(state.isShowGlossaryPanel());
       showOptionalTransUnitDetailsChk.setValue(state.isShowOptionalTransUnitDetails());
+      enableReferenceForSourceLang.setValue(state.isEnabledReferenceForSourceLang());
    }
 
    private void selectPageSize(int pageSize)

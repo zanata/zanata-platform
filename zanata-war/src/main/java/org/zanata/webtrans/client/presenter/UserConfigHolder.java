@@ -101,6 +101,7 @@ public class UserConfigHolder
       state.showTMPanel = DEFAULT_SHOW_PANEL;
       state.showGlossaryPanel = DEFAULT_SHOW_PANEL;
       state.showOptionalTransUnitDetails = DEFAULT_SHOW_PANEL;
+      state.enableReferenceForSourceLang = DEFAULT_SHOW_PANEL;
       state.displayTheme = ThemesOption.THEMES_DEFAULT;
       state.enabledValidationIds = new ArrayList<ValidationId>();
    }
@@ -255,6 +256,12 @@ public class UserConfigHolder
       state = new ConfigurationState(state);
       state.showOptionalTransUnitDetails = show;
    }
+   
+   public void setEnableReferenceForSourceLang(boolean show)
+   {
+      state = new ConfigurationState(state);
+      state.enableReferenceForSourceLang = show;
+   }
 
    public void setEnabledValidationIds(List<ValidationId> enabledValidationIds)
    {
@@ -299,6 +306,7 @@ public class UserConfigHolder
       private boolean showTMPanel;
       private boolean showGlossaryPanel;
       private boolean showOptionalTransUnitDetails;
+      private boolean enableReferenceForSourceLang;
 
       private List<ValidationId> enabledValidationIds;
 
@@ -330,6 +338,7 @@ public class UserConfigHolder
          this.showGlossaryPanel = old.isShowGlossaryPanel();
          this.showOptionalTransUnitDetails = old.isShowOptionalTransUnitDetails();
          this.enabledValidationIds = old.getEnabledValidationIds();
+         this.enableReferenceForSourceLang = old.isEnabledReferenceForSourceLang();
       }
 
       public boolean isEnterSavesApproved()
@@ -430,6 +439,11 @@ public class UserConfigHolder
       public boolean isShowOptionalTransUnitDetails()
       {
          return showOptionalTransUnitDetails;
+      }
+      
+      public boolean isEnabledReferenceForSourceLang()
+      {
+         return enableReferenceForSourceLang;
       }
 
       public List<ValidationId> getEnabledValidationIds()

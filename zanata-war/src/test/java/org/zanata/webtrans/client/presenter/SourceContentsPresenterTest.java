@@ -28,6 +28,8 @@ import net.customware.gwt.presenter.client.EventBus;
 import static org.hamcrest.MatcherAssert.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.when;
+import org.junit.Assert.*;
+import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -38,6 +40,8 @@ public class SourceContentsPresenterTest
    private SourceContentsPresenter presenter;
    @Mock
    private EventBus eventBus;
+   @Mock
+   private CachingDispatchAsync dispatcher;
    @Mock
    private Provider<SourceContentsDisplay> displayProvider;
    @Mock
@@ -57,7 +61,7 @@ public class SourceContentsPresenterTest
    {
       MockitoAnnotations.initMocks(this);
       configHolder = new UserConfigHolder();
-      presenter = new SourceContentsPresenter(eventBus, displayProvider, configHolder);
+      presenter = new SourceContentsPresenter(eventBus, displayProvider, dispatcher, configHolder);
 
       verify(eventBus).addHandler(UserConfigChangeEvent.TYPE, presenter);
    }

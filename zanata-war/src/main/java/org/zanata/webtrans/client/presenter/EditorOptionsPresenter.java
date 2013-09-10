@@ -187,6 +187,16 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
       boolean displaySouthPanel = showTMChkValue || showGlossaryChkValue;
       eventBus.fireEvent(new DisplaySouthPanelEvent(displaySouthPanel));
    }
+   
+   @Override
+   public void onEnableReferenceForSourceLangOptionChanged(Boolean displayReference)
+   {
+      if (userOptionsService.getConfigHolder().getState().isEnabledReferenceForSourceLang() != displayReference)
+      {
+         userOptionsService.getConfigHolder().setEnableReferenceForSourceLang(displayReference);
+      }
+      eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+   }
 
    @Override
    public void onDisplayTransUnitDetailsOptionChanged(Boolean showTransUnitDetailsChkValue)

@@ -283,4 +283,15 @@ public class EditorOptionsPresenterTest
       callback.onFailure(null);
       verify(eventBus, times(2)).fireEvent(isA(NotificationEvent.class));
    }
+   
+   @Test
+   public void onEnableReferenceForSourceLangOptionChanged()
+   {
+      configHolder.setEnableReferenceForSourceLang(false);
+
+      presenter.onEnableReferenceForSourceLangOptionChanged(true);
+
+      assertThat(configHolder.getState().isEnabledReferenceForSourceLang(), Matchers.equalTo(true));
+      verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+   }
 }

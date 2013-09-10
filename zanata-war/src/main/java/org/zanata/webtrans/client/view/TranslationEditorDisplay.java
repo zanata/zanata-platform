@@ -18,6 +18,8 @@ public interface TranslationEditorDisplay extends WidgetDisplay
    void setTransUnitNavigation(IsWidget widget);
 
    void setFilterView(IsWidget filterView);
+   
+   void setSourceLangView(IsWidget filterView);
 
    HasPager getPageNavigation();
 

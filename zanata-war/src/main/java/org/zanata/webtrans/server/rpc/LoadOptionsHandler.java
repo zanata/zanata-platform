@@ -140,6 +140,11 @@ public class LoadOptionsHandler extends AbstractActionHandler<LoadOptionsAction,
       {
          configHolder.setShowGlossaryPanel(filteredOptions.get(UserOptions.DisplayGlossary.getPersistentName()).getValueAsBoolean());
       }
+      
+      if (filteredOptions.containsKey(UserOptions.EnableReferenceLang.getPersistentName()))
+      {
+         configHolder.setEnableReferenceForSourceLang(filteredOptions.get(UserOptions.EnableReferenceLang.getPersistentName()).getValueAsBoolean());
+      }
 
       if (filteredOptions.containsKey(UserOptions.ShowOptionalTransUnitDetails.getPersistentName()))
       {

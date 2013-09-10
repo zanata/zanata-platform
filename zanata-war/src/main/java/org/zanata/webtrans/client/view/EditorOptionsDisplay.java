@@ -35,5 +35,7 @@ public interface EditorOptionsDisplay extends WidgetDisplay
       void onTMOrGlossaryDisplayOptionsChanged(Boolean showTMChkValue, Boolean showGlossaryChkValue);
 
       void onDisplayTransUnitDetailsOptionChanged(Boolean showTransUnitDetailsChkValue);
+
+      void onEnableReferenceForSourceLangOptionChanged(Boolean value);
    }
 }

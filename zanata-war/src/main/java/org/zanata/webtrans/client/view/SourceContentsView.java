@@ -32,7 +32,6 @@ import org.zanata.webtrans.client.ui.TransUnitDetailsPanel;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Preconditions;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -40,28 +39,34 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import org.zanata.webtrans.client.resources.UiMessages;
+import org.zanata.webtrans.shared.model.TextFlowTarget;
 
 public class SourceContentsView extends Composite implements SourceContentsDisplay
 {
-
+   
    public static final int COLUMNS = 1;
    public static final int DEFAULT_ROWS = 1;
    private final Grid sourcePanelContainer;
    private List<HasSelectableSource> sourcePanelList;
    private final TransUnitDetailsPanel transUnitDetailsPanel;
-
-   private TransUnitId transUnitId;
+   
+   private TransUnit transUnit;
    private final UserConfigHolder configHolder;
    private final History history;
+   private Label referenceLabel; 
+   private UiMessages messages;
 
    @Inject
-   public SourceContentsView(Provider<TransUnitDetailsPanel> transUnitDetailsPanelProvider, UserConfigHolder configHolder, History history)
+   public SourceContentsView(Provider<TransUnitDetailsPanel> transUnitDetailsPanelProvider, UserConfigHolder configHolder, History history, final UiMessages messages)
    {
       this.configHolder = configHolder;
       this.history = history;
+      this.messages = messages;
       sourcePanelList = new ArrayList<HasSelectableSource>();
       FlowPanel root = new FlowPanel();
       root.setSize("100%", "100%");
@@ -74,6 +79,11 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
 
       container.add(sourcePanelContainer);
       root.add(container);
+
+      referenceLabel = new Label(messages.noReferenceFoundText());
+      referenceLabel.addStyleName("referenceLabel");
+      root.add(referenceLabel);
+      hideReference(); //Reference is hidden by default
 
       InlineLabel bookmarkIcon = createBookmarkIcon();
       root.add(bookmarkIcon);
@@ -94,7 +104,7 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
          public void onClick(ClickEvent event)
          {
             HistoryToken historyToken = history.getHistoryToken();
-            historyToken.setTextFlowId(transUnitId.toString());
+            historyToken.setTextFlowId(transUnit.getId().toString());
             history.newItem(historyToken);
          }
       });
@@ -116,7 +126,7 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
    @Override
    public void setValue(TransUnit value, boolean fireEvents)
    {
-      transUnitId = value.getId();
+      transUnit = value;
       transUnitDetailsPanel.setDetails(value);
       sourcePanelContainer.resizeRows(value.getSources().size());
       sourcePanelList.clear();
@@ -125,7 +135,7 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
       boolean useCodeMirrorEditor = configHolder.getState().isUseCodeMirrorEditor();
       for (String source : value.getSources())
       {
-         SourcePanel sourcePanel = new SourcePanel(transUnitId, useCodeMirrorEditor);
+         SourcePanel sourcePanel = new SourcePanel(transUnit.getId(), useCodeMirrorEditor);
          sourcePanel.setValue(source, value.getSourceComment(), value.isPlural());
          sourcePanelContainer.setWidget(rowIndex, 0, sourcePanel);
          sourcePanelList.add(sourcePanel);
@@ -184,6 +194,26 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
    @Override
    public TransUnitId getId()
    {
-      return transUnitId;
+      return transUnit.getId();
+   }
+
+   @Override
+   public void showReference(TextFlowTarget reference)
+   {
+      if (reference == null)
+      {
+         referenceLabel.setText(messages.noReferenceFoundText());
+      }
+      else
+      {
+         referenceLabel.setText(messages.inLocale() + " " + reference.getDisplayName() + ": " + reference.getContent());
+      }
+      referenceLabel.setVisible(true);
+   }
+
+   @Override
+   public void hideReference()
+   {
+      referenceLabel.setVisible(false);
    }
 }
