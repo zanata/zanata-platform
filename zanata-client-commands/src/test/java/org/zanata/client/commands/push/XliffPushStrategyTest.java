@@ -114,10 +114,21 @@ public class XliffPushStrategyTest
    }
 
    @Test
-   public void loadSrcDocTestWithCaseSensitive() throws IOException
+   public void loadSrcDocTestWithCaseSensitiveMatch() throws IOException
    {
       include.add("StringResource_en*");
+      checkForCaseSensitiveMatches(5);
+   }
 
+   @Test
+   public void loadSrcDocTestWithCaseSensitiveMismatch() throws IOException
+   {
+      include.add("stringresource_en*");
+      checkForCaseSensitiveMatches(0);
+   }
+
+   private void checkForCaseSensitiveMatches(int matches) throws IOException
+   {
       when(mockPushOption.getSourceLang()).thenReturn(sourceLocale);
       when(mockPushOption.getLocaleMapList()).thenReturn(locales);
       when(mockPushOption.getCaseSensitive()).thenReturn(true);
@@ -127,7 +138,7 @@ public class XliffPushStrategyTest
 
       xliffStrategy.setPushOptions(mockPushOption);
       Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir2, include, exclude, mockPushOption.getDefaultExcludes(), mockPushOption.getCaseSensitive(), mockPushOption.getExcludeLocaleFilenames());
-      Assert.assertEquals(5, localDocNames.size());
+      Assert.assertEquals(matches, localDocNames.size());
    }
 
    @Test
@@ -144,7 +155,7 @@ public class XliffPushStrategyTest
 
       xliffStrategy.setPushOptions(mockPushOption);
       Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir2, include, exclude, mockPushOption.getDefaultExcludes(), mockPushOption.getCaseSensitive(), mockPushOption.getExcludeLocaleFilenames());
-      Assert.assertEquals(6, localDocNames.size());
+      Assert.assertEquals(5, localDocNames.size());
    }
 
    @Test
