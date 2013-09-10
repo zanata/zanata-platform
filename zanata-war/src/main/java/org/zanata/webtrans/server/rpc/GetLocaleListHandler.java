@@ -55,7 +55,8 @@ public class GetLocaleListHandler extends AbstractActionHandler<GetLocaleList, G
 
       List<HLocale> hLocales = getLocaleList();
 
-      for (HLocale hLocale : hLocales) {
+      for (HLocale hLocale : hLocales)
+      {
          Locale locale = new Locale(new IdForLocale(hLocale.getId(), hLocale.getLocaleId()), hLocale.retrieveDisplayName());
          locales.add(locale);
       }
@@ -74,7 +75,8 @@ public class GetLocaleListHandler extends AbstractActionHandler<GetLocaleList, G
    private List<HLocale> getLocaleList()
    {
       HProjectIteration iteration = projectIterationDAO.getBySlug(projectSlug, iterationId.getIterationSlug());
-      if (iteration.getOverrideLocales()) {
+      if (iteration.getOverrideLocales())
+      {
          return new ArrayList<HLocale>(iteration.getCustomizedLocales());
       }
       return getSupportedLanguageByProject(projectSlug);
@@ -83,7 +85,8 @@ public class GetLocaleListHandler extends AbstractActionHandler<GetLocaleList, G
    private List<HLocale> getSupportedLanguageByProject(@Nonnull String project)
    {
       HProject proj = projectDAO.getBySlug(project);
-      if (proj.getOverrideLocales()) {
+      if (proj.getOverrideLocales())
+      {
          return new ArrayList<HLocale>(proj.getCustomizedLocales());
       }
       return localeDAO.findAllActiveAndEnabledByDefault();

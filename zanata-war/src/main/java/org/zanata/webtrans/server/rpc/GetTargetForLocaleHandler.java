@@ -32,19 +32,25 @@ public class GetTargetForLocaleHandler extends AbstractActionHandler<GetTargetFo
    @Override
    public GetTargetForLocaleResult execute(GetTargetForLocale action, ExecutionContext context) throws ActionException
    {
-      try {
+      try
+      {
          identity.checkLoggedIn();
 
          HTextFlowTarget hTextFlowTarget = textFlowTargetDAO.getTextFlowTarget(action.getSourceTransUnitId().getId(), action.getLocale().getId().getLocaleId());
 
-         if (hTextFlowTarget == null) {
+         if (hTextFlowTarget == null)
+         {
             return new GetTargetForLocaleResult(null);
-         } else {
+         }
+         else
+         {
             String displayName = retrieveDisplayName(hTextFlowTarget.getLocale());
             TextFlowTarget textFlowTarget = new TextFlowTarget(new TextFlowTargetId(hTextFlowTarget.getId()), action.getLocale(), hTextFlowTarget.getContents().get(0), displayName);
             return new GetTargetForLocaleResult(textFlowTarget);
          }
-      } catch (Exception e) {
+      }
+      catch (Exception e)
+      {
          log.error("Exception when fetching target: ", e);
          return new GetTargetForLocaleResult(null);
       }

@@ -169,7 +169,7 @@ public class WebTransClientModule extends AbstractPresenterModule
       bindPresenter(TransUnitsTablePresenter.class, TransUnitsTableDisplay.class, TransUnitsTableView.class);
       bindPresenter(SideMenuPresenter.class, SideMenuDisplay.class, SideMenuView.class);
       bind(ForceReviewCommentPresenter.class).asEagerSingleton();
-	  bindPresenter(TransUnitChangeSourceLangPresenter.class, TransUnitChangeSourceLangDisplay.class, TransUnitChangeSourceLangView.class);
+      bindPresenter(TransUnitChangeSourceLangPresenter.class, TransUnitChangeSourceLangDisplay.class, TransUnitChangeSourceLangView.class);
 
       bind(SourceContentsPresenter.class).in(Singleton.class);
       bind(TargetContentsDisplay.class).to(TargetContentsView.class);

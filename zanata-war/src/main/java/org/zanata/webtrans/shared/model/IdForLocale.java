@@ -8,10 +8,9 @@ import org.zanata.common.LocaleId;
 //@Immutable
 public class IdForLocale implements Identifier<Long>, IsSerializable, Serializable
 {
-   private static final long serialVersionUID = 1L;   
-   private Long id;   
+   private static final long serialVersionUID = 1L;
+   private Long id;
    private LocaleId localeId;
-   
 
    // for GWT
    @SuppressWarnings("unused")
@@ -56,10 +55,12 @@ public class IdForLocale implements Identifier<Long>, IsSerializable, Serializab
    @Override
    public boolean equals(Object obj)
    {
-      if (obj == this) {
+      if (obj == this)
+      {
          return true;
       }
-      if (obj == null) {
+      if (obj == null)
+      {
          return false;
       }
       return obj instanceof IdForLocale && ((IdForLocale) obj).id.equals(id);
