@@ -20,7 +20,6 @@
  */
 package org.zanata.client.etag;
 
-import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import javax.xml.bind.JAXBContext;

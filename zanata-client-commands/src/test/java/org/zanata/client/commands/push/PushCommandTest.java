@@ -15,7 +15,6 @@ import java.util.List;
 import javax.ws.rs.core.Response.Status;
 
 import org.jboss.resteasy.client.ClientResponse;
-import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.zanata.client.commands.DummyResponse;

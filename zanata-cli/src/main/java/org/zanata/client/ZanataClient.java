@@ -14,7 +14,6 @@ import org.zanata.client.commands.AppAbortStrategy;
 import org.zanata.client.commands.ArgsUtil;
 import org.zanata.client.commands.BasicOptions;
 import org.zanata.client.commands.BasicOptionsImpl;
-import org.zanata.client.commands.ListLocalOptionsImpl;
 import org.zanata.client.commands.ListRemoteOptionsImpl;
 import org.zanata.client.commands.PutProjectOptionsImpl;
 import org.zanata.client.commands.PutUserOptionsImpl;

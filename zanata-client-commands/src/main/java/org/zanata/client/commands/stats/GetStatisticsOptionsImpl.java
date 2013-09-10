@@ -20,12 +20,9 @@
  */
 package org.zanata.client.commands.stats;
 
-import java.io.File;
-
 import org.kohsuke.args4j.Option;
 import org.zanata.client.commands.ConfigurableProjectOptionsImpl;
 import org.zanata.client.commands.ZanataCommand;
-import org.zanata.client.config.LocaleList;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>

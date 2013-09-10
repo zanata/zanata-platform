@@ -26,7 +26,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.spi.interception.ClientExecutionContext;
-import org.junit.Assert;
 import org.junit.Test;
 import org.zanata.rest.RestConstant;
 
