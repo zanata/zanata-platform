@@ -21,7 +21,6 @@
 package org.zanata.common.io;
 
 import java.io.File;
-import java.util.Date;
 
 /**
  * Represents a common set of File details.
