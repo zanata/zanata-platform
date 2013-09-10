@@ -9,9 +9,9 @@
       <rule if-outcome="home">
         <redirect view-id="/home.xhtml" />
       </rule>
-      <rule from-action="#{projectSearch.search}">
+    </navigation>
+    <navigation from-action="#{projectSearch.search}">
         <redirect view-id="/search.xhtml"/>
-      </rule>
     </navigation>
   </page>
 
