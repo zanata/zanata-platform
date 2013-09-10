@@ -1,6 +1,5 @@
 package org.zanata.rest.dto;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
