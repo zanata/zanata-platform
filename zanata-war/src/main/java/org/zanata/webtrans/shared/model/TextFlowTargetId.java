@@ -48,13 +48,16 @@ public class TextFlowTargetId implements IsSerializable, Identifier<Long>
    @Override
    public boolean equals(Object obj)
    {
-      if (obj == this) {
+      if (obj == this)
+      {
          return true;
       }
-      if (obj == null) {
+      if (obj == null)
+      {
          return false;
       }
-      if (obj instanceof TextFlowTargetId) {
+      if (obj instanceof TextFlowTargetId)
+      {
          return ((TextFlowTargetId) obj).id == id;
       }
       return false;

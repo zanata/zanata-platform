@@ -73,7 +73,8 @@ public class TransUnitChangeSourceLangView extends Composite implements TransUni
    {
       sourceLangListBox.clear();
       sourceLangListBox.addItem(messages.chooseRefLang(), Locale.notChosenLocale);
-      for (Locale locale : locales) {
+      for (Locale locale : locales)
+      {
          sourceLangListBox.addItem(locale);
       }
       sourceLangListBox.setSelectedIndex(0);
@@ -94,9 +95,12 @@ public class TransUnitChangeSourceLangView extends Composite implements TransUni
    @Override
    public void onChange(ChangeEvent event)
    {
-      if (sourceLangListBox.getLocaleAtSelectedIndex() == Locale.notChosenLocale) {
+      if (sourceLangListBox.getLocaleAtSelectedIndex() == Locale.notChosenLocale)
+      {
          listener.onHideReference();
-      } else {
+      }
+      else
+      {
          listener.onShowReference(sourceLangListBox.getLocaleAtSelectedIndex());
       }
    }
