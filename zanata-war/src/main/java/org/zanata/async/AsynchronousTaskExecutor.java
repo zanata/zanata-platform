@@ -66,7 +66,7 @@ public class AsynchronousTaskExecutor
             catch (Exception t)
             {
                task.getHandle().setException(t);
-               AsynchronousTaskExecutor.log.error("Exception when executing an asynchronous task.", t);
+               AsynchronousTaskExecutor.log.debug("Exception when executing an asynchronous task.", t);
             }
          }
 

@@ -76,7 +76,8 @@ public class EventProcessorTest
       callback.onSuccess(null);
       verify(startCallback).onSuccess("connectionId");
 
-      RuntimeException caught = new RuntimeException();
+      Log.setCurrentLogLevel(Log.LOG_LEVEL_OFF);
+      RuntimeException caught = new RuntimeException("Test exception");
       callback.onFailure(caught);
       verify(startCallback).onFailure(caught);
 

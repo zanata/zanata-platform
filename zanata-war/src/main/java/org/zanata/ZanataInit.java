@@ -60,6 +60,13 @@ import com.beust.jcommander.internal.Lists;
 @Slf4j
 public class ZanataInit
 {
+   static
+   {
+      // Prevent AS 7 from warning about gwt-servlet's
+      // org.hibernate.validator.ValidationMessages
+      java.util.logging.Logger.getLogger("org.jboss.modules").
+         setLevel(java.util.logging.Level.SEVERE);
+   }
 
    public static final String EVENT_Zanata_Startup = "Zanata.startup";
    public static final String UNKNOWN_VERSION = "UNKNOWN";
