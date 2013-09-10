@@ -9,9 +9,12 @@
       <rule if-outcome="home">
         <redirect view-id="/home.xhtml" />
       </rule>
+      <rule from-action="#{projectSearch.search}">
+        <redirect view-id="/search.xhtml"/>
+      </rule>
     </navigation>
   </page>
-  
+
   <page view-id="/dashboard/*" login-required="true">
   	<restrict>#{identity.loggedIn}</restrict>
   </page>
@@ -33,12 +36,6 @@
   <page view-id="/search.xhtml">
   	<action execute="#{breadcrumbs.clear}"/>
   	<action execute="#{breadcrumbs.addLocation('', messages['jsf.SearchProjects'])}"/>
-  </page>
-  
-  <page view-id="*">
-  	<navigation from-action="#{projectSearch.search}">
-  		<redirect view-id="/search.xhtml"/>
-  	</navigation>
   </page>
   
   <!-- Landing page for open id authentication -->
