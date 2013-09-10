@@ -16,7 +16,6 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.hibernate.Session;
 import org.jboss.resteasy.spi.NoLogWebApplicationException;
 import org.jboss.seam.annotations.In;
@@ -69,19 +68,10 @@ public class AccountService implements AccountResource
    @In
    private Session session;
 
-
-   /**
-    * Retrieves a user account.
-    * 
-    * @return The following response status codes will be returned from this operation:<br>
-    * OK(200) - Response containing information for the user account.<br>
-    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
-    */
    @Override
    @GET
    @Produces(
    {MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML, MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON})
-   @TypeHint(Account.class)
    public Response get()
    {
       log.debug("HTTP GET {0}", request.getRequestURL());
@@ -97,18 +87,6 @@ public class AccountService implements AccountResource
       return Response.ok(result).build();
    }
 
-   /**
-    * Creates or updates a user account. If an account with the given user name already exists,
-    * said account will be overwritten with the provided data. Otherwise, a new account will 
-    * be created.
-    * 
-    * @param account The account information to create/update.
-    * @return The following response status codes will be returned from this operation:<br>
-    * OK(200) - If a new account was created.<br>
-    * CREATED(201) - If an existing account was modified.<br>
-    * UNAUTHORIZED(401) - If the user does not have the proper permissions to perform this operation.<br>
-    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation. 
-    */
    @Override
    @PUT
    @Consumes(

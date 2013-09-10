@@ -25,7 +25,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
-import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -88,17 +87,6 @@ public class ProjectService implements ProjectResource
       return projectSlug;
    }
 
-   /**
-    * Returns header information for a project.
-    * 
-    * @return The following response status codes will be returned from this
-    *         operation:<br>
-    *         OK(200) - An "Etag" header for the requested project. <br>
-    *         NOT FOUND(404) - If a project could not be found for the given
-    *         parameters.<br>
-    *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-    *         the server while performing this operation.
-    */
    @Override
    @HEAD
    @Produces({ MediaTypes.APPLICATION_ZANATA_PROJECT_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -113,21 +101,9 @@ public class ProjectService implements ProjectResource
       return Response.ok().tag(etag).build();
    }
 
-   /**
-    * Returns data for a single Project.
-    * 
-    * @return The following response status codes will be returned from this
-    *         operation:<br>
-    *         OK(200) - Containing the Project data.<br>
-    *         NOT FOUND(404) - If a Project could not be found for the given
-    *         parameters.<br>
-    *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-    *         the server while performing this operation.
-    */
    @Override
    @GET
    @Produces({ MediaTypes.APPLICATION_ZANATA_PROJECT_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-   @TypeHint(Project.class)
    public Response get()
    {
       try
@@ -150,23 +126,6 @@ public class ProjectService implements ProjectResource
       }
    }
 
-   /**
-    * Creates or modifies a Project.
-    * 
-    * @param project The project's information.
-    * @return The following response status codes will be returned from this
-    *         method:<br>
-    *         OK(200) - If an already existing project was updated as a result
-    *         of this operation.<br>
-    *         CREATED(201) - If a new project was added.<br>
-    *         FORBIDDEN(403) - If the user was not allowed to create/modify the
-    *         project. In this case an error message is contained in the
-    *         response.<br>
-    *         UNAUTHORIZED(401) - If the user does not have the proper
-    *         permissions to perform this operation.<br>
-    *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-    *         the server while performing this operation.
-    */
    @Override
    @PUT
    @Consumes({ MediaTypes.APPLICATION_ZANATA_PROJECT_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })

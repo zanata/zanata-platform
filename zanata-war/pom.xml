@@ -1337,11 +1337,6 @@
 			<artifactId>openprops</artifactId>
 		</dependency>
 		
-		<dependency>
-			<groupId>org.codehaus.enunciate</groupId>
-			<artifactId>enunciate-core-annotations</artifactId>
-		</dependency>
-		
 		<!-- Quartz -->
 		
 		<dependency>

@@ -152,18 +152,6 @@ public class FileService implements FileResource
       return translationUploader.tryUploadTranslationFile(id, localeId, merge, uploadForm);
    }
 
-   /**
-    * Downloads a single source file.
-    * 
-    * @param projectSlug
-    * @param iterationSlug
-    * @param fileType use 'raw' for original source if available, or 'pot' to
-    *           generate pot from source strings
-    * @param docId
-    * @return response with status code 404 if the document is not found, 415 if
-    *         fileType is not valid for the document, otherwise 200 with
-    *         attached document.
-    */
    @Override
    @GET
    @Path(SOURCE_DOWNLOAD_TEMPLATE)
@@ -220,29 +208,6 @@ public class FileService implements FileResource
       }
    }
 
-   /**
-    * Downloads a single translation file.
-    * 
-    * To download a preview-document or translated document where a raw source
-    * document is available, use fileType 'half_baked' and 'baked' respectively.
-    * 
-    * @param projectSlug Project identifier.
-    * @param iterationSlug Project iteration identifier.
-    * @param locale Translations for this locale will be contained in the
-    *           downloaded document.
-    * @param fileType File type to be downloaded. (Options: 'po', 'half_baked',
-    *           'baked')
-    * @param docId Document identifier to fetch translations for.
-    * @return The following response status codes will be returned from this
-    *         operation:<br>
-    *         OK(200) - A translation file in the requested format with
-    *         translations for the requested document in a project, iteration
-    *         and locale. <br>
-    *         NOT FOUND(404) - If a document is not found with the given
-    *         parameters.<br>
-    *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-    *         the server while performing this operation.
-    */
    @Override
    @GET
    @Path(FILE_DOWNLOAD_TEMPLATE)
@@ -339,17 +304,6 @@ public class FileService implements FileResource
       return response;
    }
 
-   /**
-    * Downloads a previously generated file.
-    * 
-    * @param downloadId The Zanata generated download id.
-    * @return The following response status codes will be returned from this operation:<br>
-    * OK(200) - A translation file in the requested format with translations for the requested document in a
-    * project, iteration and locale. <br>
-    * NOT FOUND(404) - If a downloadable file is not found for the given id, or is not yet ready for download 
-    * (i.e. the system is still preparing it).<br>
-    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
-    */
    @Override
    @GET
    @Path(DOWNLOAD_TEMPLATE)

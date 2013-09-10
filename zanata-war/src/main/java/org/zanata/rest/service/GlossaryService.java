@@ -18,7 +18,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
 
-import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
@@ -62,19 +61,9 @@ public class GlossaryService implements GlossaryResource
 
    Log log = Logging.getLog(GlossaryService.class);
 
-   /**
-    * Returns all Glossary entries.
-    * 
-    * @return The following response status codes will be returned from this
-    *         operation:<br>
-    *         OK(200) - Response containing all Glossary entries in the system.
-    *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-    *         the server while performing this operation.
-    */
    @Override
    @GET
    @Produces({ MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML, MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-   @TypeHint(Glossary.class)
    public Response getEntries()
    {
       ResponseBuilder response = request.evaluatePreconditions();
@@ -91,21 +80,10 @@ public class GlossaryService implements GlossaryResource
       return Response.ok(glossary).build();
    }
 
-   /**
-    * Returns Glossary entries for a single locale.
-    * 
-    * @param locale Locale for which to retrieve entries.
-    * @return The following response status codes will be returned from this
-    *         operation:<br>
-    *         OK(200) - Response containing all Glossary entries for the given
-    *         locale. INTERNAL SERVER ERROR(500) - If there is an unexpected
-    *         error in the server while performing this operation.
-    */
    @Override
    @GET
    @Path("/{locale}")
    @Produces({ MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML, MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-   @TypeHint(Glossary.class)
    public Response get(@PathParam("locale")
    LocaleId locale)
    {
@@ -123,18 +101,6 @@ public class GlossaryService implements GlossaryResource
       return Response.ok(glossary).build();
    }
 
-   /**
-    * Adds glossary entries.
-    * 
-    * @param glossary The Glossary entries to add.
-    * @return The following response status codes will be returned from this
-    *         operation:<br>
-    *         CREATED(201) - If the glossary entries were successfully created.
-    *         UNAUTHORIZED(401) - If the user does not have the proper
-    *         permissions to perform this operation.<br>
-    *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-    *         the server while performing this operation.
-    */
    @Override
    @PUT
    @Consumes({ MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML, MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -156,18 +122,6 @@ public class GlossaryService implements GlossaryResource
       return response.build();
    }
 
-   /**
-    * Delete all glossary terms with the specified locale.
-    * 
-    * @param targetLocale The target locale to delete glossary entries from.
-    * @return The following response status codes will be returned from this
-    *         operation:<br>
-    *         OK(200) - If the glossary entries were successfully deleted.
-    *         UNAUTHORIZED(401) - If the user does not have the proper
-    *         permissions to perform this operation.<br>
-    *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-    *         the server while performing this operation.
-    */
    @Override
    @DELETE
    @Path("/{locale}")
@@ -186,17 +140,6 @@ public class GlossaryService implements GlossaryResource
       return Response.ok().build();
    }
 
-   /**
-    * Delete all glossary terms.
-    * 
-    * @return The following response status codes will be returned from this
-    *         operation:<br>
-    *         OK(200) - If the glossary entries were successfully deleted.
-    *         UNAUTHORIZED(401) - If the user does not have the proper
-    *         permissions to perform this operation.<br>
-    *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-    *         the server while performing this operation.
-    */
    @Override
    @DELETE
    @Restrict("#{s:hasPermission('', 'glossary-delete')}")
