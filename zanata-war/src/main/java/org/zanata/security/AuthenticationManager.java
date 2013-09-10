@@ -231,7 +231,7 @@ public class AuthenticationManager
          {
             if (userRedirect != null)
             {
-               if(userRedirect.isRedirect() && !userRedirect.isRedirectToHome())
+               if(userRedirect.isRedirect() && !userRedirect.isRedirectToHome() && !userRedirect.isRedirectToRegister())
                {
                   return "redirect";
                }

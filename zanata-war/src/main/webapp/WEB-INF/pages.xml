@@ -10,8 +10,11 @@
         <redirect view-id="/home.xhtml" />
       </rule>
     </navigation>
+    <navigation from-action="#{projectSearch.search}">
+        <redirect view-id="/search.xhtml"/>
+    </navigation>
   </page>
-  
+
   <page view-id="/dashboard/*" login-required="true">
   	<restrict>#{identity.loggedIn}</restrict>
   </page>
@@ -35,12 +38,6 @@
   	<action execute="#{breadcrumbs.addLocation('', messages['jsf.SearchProjects'])}"/>
   </page>
   
-  <page view-id="*">
-  	<navigation from-action="#{projectSearch.search}">
-  		<redirect view-id="/search.xhtml"/>
-  	</navigation>
-  </page>
-  
   <!-- Landing page for open id authentication -->
   <page view-id="/openid.xhtml">
 	 <navigation>
@@ -53,7 +50,7 @@
 	      <rule if="#{!identity.loggedIn}">
 	        <redirect view-id="/account/login.xhtml" />
 	      </rule>
-	      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.redirectToHome}">
+	      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.userRedirect.shouldRedirectToDashboard()}}">
 	        <redirect view-id="/dashboard/home.xhtml" />
 	      </rule>
 	      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.redirect}">
@@ -105,7 +102,7 @@
         <begin-conversation/>
         <redirect view-id="/account/inactive_account.xhtml"/>
       </rule>
-      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.redirectToHome}">
+      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.shouldRedirectToDashboard()}">
         <redirect view-id="/dashboard/home.xhtml" />
       </rule>
       <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.redirect}">
