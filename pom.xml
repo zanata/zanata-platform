@@ -941,6 +941,21 @@ package.
 			</dependency>
             <dependency>
                 <groupId>org.codehaus.enunciate</groupId>
+                <artifactId>enunciate-core</artifactId>
+                <version>${enunciate.version}</version>
+                <exclusions>
+                  <exclusion>
+                    <groupId>javax.ws.rs</groupId>
+                    <artifactId>jsr311-api</artifactId>
+                  </exclusion>
+                  <exclusion>
+                    <groupId>com.sun.jersey</groupId>
+                    <artifactId>jersey-server</artifactId>
+                  </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.enunciate</groupId>
                 <artifactId>enunciate-core-annotations</artifactId>
                 <version>${enunciate.version}</version>
             </dependency>
