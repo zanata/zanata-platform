@@ -100,7 +100,7 @@ public class AccountMergeAction implements Serializable
 
    public void loginToMergingAccount()
    {
-      authenticationManager.openIdAuthenticate(this.providerType, this.username, new AccountMergeAuthCallback());
+      authenticationManager.openIdAuthenticate(this.providerType, new AccountMergeAuthCallback());
    }
 
    public boolean isAccountSelected()

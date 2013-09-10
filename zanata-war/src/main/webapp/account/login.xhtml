@@ -46,7 +46,8 @@
                 </div>
               </h:form>
             </s:div>
-            <s:div styleClass="l--push-top-half g__item w--5-12 w--1-m" rendered="#{applicationConfiguration.openIdAuth}">
+            <s:div styleClass="l--push-top-half g__item #{applicationConfiguration.multiAuth ? 'w--5-12 w--1-m' : ''}"
+                   rendered="#{applicationConfiguration.openIdAuth}">
               <h:form>
                 <s:fragment rendered="#{applicationConfiguration.multiAuth}">
                   <h2 class="gamma heading--sub">or</h2>

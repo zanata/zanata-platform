@@ -76,10 +76,6 @@ public class CredentialsAction implements Serializable
    @DataModelSelection
    private HCredentials selectedCredentials;
 
-   private String credentialsUsername;
-
-   private OpenIdProviderType providerType;
-
 
    public void loadUserCredentials()
    {
@@ -88,36 +84,9 @@ public class CredentialsAction implements Serializable
       userCredentials = new ArrayList<HCredentials>( account.getCredentials() );
    }
 
-   public String getProviderType()
-   {
-      return providerType != null ? providerType.toString() : "";
-   }
-
-   public void setProviderType(String providerType)
-   {
-      try
-      {
-         this.providerType = OpenIdProviderType.valueOf(providerType);
-      }
-      catch (IllegalArgumentException e)
-      {
-         this.providerType = OpenIdProviderType.Generic;
-      }
-   }
-
    public List<HCredentials> getUserCredentials()
    {
       return userCredentials;
-   }
-
-   public void setCredentialsUsername(String credentialsUsername)
-   {
-      this.credentialsUsername = credentialsUsername;
-   }
-
-   public String getCredentialsUsername()
-   {
-      return credentialsUsername;
    }
 
    public void remove()
@@ -133,13 +102,14 @@ public class CredentialsAction implements Serializable
       // See pages.xml
    }
 
-   public void verifyCredentials()
+   public void verifyCredentials(String providerTypeStr)
    {
+      OpenIdProviderType providerType = OpenIdProviderType.valueOf(providerTypeStr);
       HOpenIdCredentials newCreds = new HOpenIdCredentials();
       newCreds.setAccount(authenticatedAccount);
 
       authenticationManager.openIdAuthenticate(
-            this.providerType, this.credentialsUsername, new CredentialsCreationCallback(newCreds) );
+            providerType, new CredentialsCreationCallback(newCreds) );
    }
 
    public boolean isGoogleOpenId( String openId )

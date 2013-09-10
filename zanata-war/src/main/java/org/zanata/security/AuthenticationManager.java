@@ -189,17 +189,14 @@ public class AuthenticationManager
     * authentication attempt is finished.
     * 
     * @param openIdProviderType Open Id provider to use for authentication
-    * @param username User name. The provider will use this username to
-    *           construct an Open Id.
     * @param callback Contains the logic to execute after the authentication
     *           attempt.
     */
-   public void openIdAuthenticate(OpenIdProviderType openIdProviderType, String username, OpenIdAuthCallback callback)
+   public void openIdAuthenticate(OpenIdProviderType openIdProviderType, OpenIdAuthCallback callback)
    {
       ZanataCredentials volatileCreds = new ZanataCredentials();
       volatileCreds.setAuthType(AuthenticationType.OPENID);
       volatileCreds.setOpenIdProviderType(openIdProviderType);
-      volatileCreds.setUsername(username);
       zanataOpenId.login(volatileCreds, callback);
    }
 
