@@ -42,10 +42,8 @@ import org.zanata.model.TestFixture;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
-import org.zanata.service.SecurityService;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
-import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ReviewCommentId;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -56,7 +54,6 @@ import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import net.customware.gwt.dispatch.shared.ActionException;
 import static org.hamcrest.MatcherAssert.*;
 import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**

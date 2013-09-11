@@ -16,7 +16,6 @@ import nu.xom.Element;
 
 import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
-import org.zanata.model.tm.TMMetadataType;
 import org.zanata.model.tm.TMXMetadataHelper;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemory;

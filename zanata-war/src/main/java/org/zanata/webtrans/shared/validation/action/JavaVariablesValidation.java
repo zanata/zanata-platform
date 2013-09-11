@@ -22,7 +22,6 @@ package org.zanata.webtrans.shared.validation.action;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map.Entry;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;

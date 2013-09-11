@@ -23,9 +23,7 @@ package org.zanata.security.openid;
 import java.text.MessageFormat;
 import java.util.regex.Pattern;
 
-import org.openid4java.message.MessageException;
 import org.openid4java.message.ParameterList;
-import org.openid4java.message.ax.FetchRequest;
 
 /**
  * Provider implementation for MyOpenID

@@ -23,11 +23,9 @@ package org.zanata.model;
 import javax.persistence.MappedSuperclass;
 
 import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Field;
 import javax.validation.constraints.Size;
 import javax.validation.constraints.NotNull;
-import org.zanata.common.EntityStatus;
 import org.zanata.model.validator.Slug;
 
 import lombok.AllArgsConstructor;

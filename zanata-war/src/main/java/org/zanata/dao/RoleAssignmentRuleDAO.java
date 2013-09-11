@@ -20,12 +20,8 @@
  */
 package org.zanata.dao;
 
-import java.util.List;
-import javax.persistence.EntityManager;
-
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.model.HRoleAssignmentRule;

@@ -23,14 +23,12 @@ package org.zanata.util;
 import java.util.List;
 import javax.annotation.Nullable;
 
-import org.hibernate.criterion.Criterion;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
-import lombok.Getter;
 import lombok.Setter;
 
 /**

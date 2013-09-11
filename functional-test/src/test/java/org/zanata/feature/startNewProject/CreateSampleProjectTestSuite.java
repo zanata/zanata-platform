@@ -26,7 +26,6 @@ import org.junit.runners.Suite;
 import org.zanata.util.ResetDatabaseRule;
 
 import lombok.extern.slf4j.Slf4j;
-import static org.zanata.util.ResetDatabaseRule.Config.*;
 
 @Slf4j
 @RunWith(Suite.class)

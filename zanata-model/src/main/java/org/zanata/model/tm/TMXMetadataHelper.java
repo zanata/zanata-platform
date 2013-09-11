@@ -38,7 +38,6 @@ import nu.xom.Elements;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.zanata.common.LocaleId;
 import org.zanata.util.TMXConstants;
 import org.zanata.util.TMXParseException;
 

@@ -6,7 +6,6 @@ import org.concordion.ext.TimestampFormatterExtension;
 import org.concordion.integration.junit4.ConcordionRunner;
 import org.junit.runner.RunWith;
 import org.zanata.concordion.IndexPageBuilderExtension;
-import org.zanata.feature.startNewProject.CreateSampleProjectTestSuite;
 
 /**
  * 

@@ -1,7 +1,5 @@
 package org.zanata.webtrans.shared.model;
 
-import java.util.ArrayList;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public abstract class SearchResultItem implements IsSerializable

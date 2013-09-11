@@ -23,7 +23,6 @@ package org.zanata.security.openid;
 import java.io.Serializable;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**

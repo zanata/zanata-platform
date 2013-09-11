@@ -27,8 +27,6 @@ import javax.faces.component.FacesComponent;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UINamingContainer;
 
-import org.jboss.seam.Component;
-import org.richfaces.component.SortOrder;
 import org.richfaces.component.UIColumn;
 import org.richfaces.component.UIDataTable;
 

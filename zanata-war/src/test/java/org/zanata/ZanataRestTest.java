@@ -14,7 +14,6 @@ import org.jboss.resteasy.client.core.executors.InMemoryClientExecutor;
 import org.jboss.resteasy.core.Dispatcher;
 import org.jboss.resteasy.mock.MockDispatcherFactory;
 import org.jboss.resteasy.spi.ResourceFactory;
-import org.jboss.seam.annotations.In;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.zanata.rest.AuthorizationExceptionMapper;

@@ -26,9 +26,6 @@ import org.zanata.service.impl.LocaleServiceImpl;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
 
 public class GlossaryRestTest extends ZanataRestTest
 {

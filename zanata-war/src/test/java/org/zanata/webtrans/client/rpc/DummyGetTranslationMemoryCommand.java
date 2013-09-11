@@ -2,7 +2,6 @@ package org.zanata.webtrans.client.rpc;
 
 import java.util.ArrayList;
 
-import org.zanata.common.ContentState;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemory;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;

@@ -20,7 +20,6 @@
  */
 package org.zanata;
 
-import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -29,7 +28,6 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.io.FileUtils;
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
@@ -38,17 +36,13 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.client.ProxyFactory;
 import org.jboss.seam.util.Naming;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.zanata.arquillian.RemoteAfter;
 import org.zanata.arquillian.RemoteBefore;
 import org.zanata.provider.DBUnitProvider;
-import org.zanata.provider.JPAProvider;
 import org.zanata.rest.ResourceRequestEnvironment;
-import org.zanata.rest.client.TestProxyFactory;
 import org.zanata.rest.client.ZanataProxyFactory;
 import org.zanata.rest.dto.VersionInfo;
 import org.zanata.rest.helper.RemoteTestSignaler;

@@ -61,8 +61,6 @@ import com.google.common.collect.Lists;
 import net.customware.gwt.dispatch.shared.ActionException;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.verify;

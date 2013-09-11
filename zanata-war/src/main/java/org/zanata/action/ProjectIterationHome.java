@@ -25,9 +25,6 @@ import java.util.Set;
 
 import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityNotFoundException;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-
 import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.criterion.NaturalIdentifier;

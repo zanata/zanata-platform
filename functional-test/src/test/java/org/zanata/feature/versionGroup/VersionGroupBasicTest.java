@@ -32,8 +32,6 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.zanata.concordion.CustomResourceExtension;
 import org.zanata.feature.ConcordionTest;
 import org.zanata.page.groups.CreateVersionGroupPage;
@@ -43,8 +41,6 @@ import org.zanata.page.projects.ProjectPage;
 import org.zanata.page.projects.ProjectVersionPage;
 import org.zanata.page.utility.DashboardPage;
 import org.zanata.util.ResetDatabaseRule;
-import org.zanata.util.TableRow;
-import org.zanata.util.WebElementUtil;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
 

@@ -3,10 +3,6 @@ package org.zanata.webtrans.client.view;
 import org.zanata.webtrans.client.ui.HasManageUserPanel;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceChatData;
-import com.google.gwt.event.dom.client.HasAllFocusHandlers;
-import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.user.client.ui.HasText;
-
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 /**

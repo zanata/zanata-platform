@@ -24,7 +24,6 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.hibernate.search.bridge.FieldBridge;
 import org.hibernate.search.bridge.LuceneOptions;
-import org.zanata.common.LocaleId;
 import org.zanata.model.tm.TransMemoryUnitVariant;
 
 /**

@@ -26,8 +26,6 @@ import org.zanata.page.projects.CreateVersionPage;
 import org.zanata.page.projects.ProjectPage;
 import org.zanata.page.projects.ProjectVersionPage;
 import org.zanata.page.projects.ProjectsPage;
-import org.zanata.util.Constants;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

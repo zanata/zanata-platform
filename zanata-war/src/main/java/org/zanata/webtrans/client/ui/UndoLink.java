@@ -21,9 +21,6 @@
 
 package org.zanata.webtrans.client.ui;
 
-import java.util.List;
-
-import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
 import com.google.gwt.user.client.ui.HasText;

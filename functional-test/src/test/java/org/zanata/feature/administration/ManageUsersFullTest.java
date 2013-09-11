@@ -24,7 +24,6 @@ import org.junit.*;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
 import org.zanata.page.utility.DashboardPage;
-import org.zanata.page.utility.HomePage;
 import org.zanata.page.administration.ManageUserPage;
 import org.zanata.page.administration.ManageUserAccountPage;
 import org.zanata.util.ResetDatabaseRule;

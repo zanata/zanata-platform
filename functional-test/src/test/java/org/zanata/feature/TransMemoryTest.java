@@ -21,16 +21,12 @@
 
 package org.zanata.feature;
 
-import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.zanata.page.projects.ProjectPage;
 import org.zanata.util.Constants;
-import org.zanata.workflow.ClientPushWorkFlow;
 import org.zanata.workflow.LanguageWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
-
-import static org.hamcrest.MatcherAssert.*;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>

@@ -29,7 +29,6 @@ import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
-import org.jboss.seam.Component;
 import org.zanata.config.JndiBackedConfig;
 
 
