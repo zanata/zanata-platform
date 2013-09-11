@@ -27,17 +27,17 @@
                 <div class="l--clearfix">
                   <label for="username" class="l--float-left">Username</label>
                 </div>
-                <h:inputText id="username" value="#{loginAction.username}"/>
+                <h:inputText id="username" value="#{loginAction.username}" tabindex="1"/>
 
                 <div class="l--push-top-half l--clearfix">
                   <label for="password" class="l--float-left">Password</label>
                   <span class="txt--meta l--float-right">
-                    <s:link view="/account/password_reset_request.xhtml" propagation="none">
+                    <s:link view="/account/password_reset_request.xhtml" propagation="none" tabindex="3">
                       #{messages['jsf.ForgotYourPassword']}
                     </s:link>
                   </span>
                 </div>
-                <h:inputSecret id="password" value="#{loginAction.password}"/>
+                <h:inputSecret id="password" value="#{loginAction.password}" tabindex="2"/>
 
                 <div class="l--push-top-half">
                   <h:commandButton action="#{loginAction.login}" value="Log In" styleClass="button--primary"/>
