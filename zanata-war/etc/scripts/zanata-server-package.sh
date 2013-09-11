@@ -13,6 +13,14 @@
 # Pre-requisites:
 # 1. Apache maven in the path
 
+if [ $# -lt 2 ]; then
+   echo "Usage:"
+   echo "zanata-server-package.sh JBOSS_LOCATION ZANATA_WAR_LOCATION"
+   echo ""
+   echo "This must be done with a jboss AS 7.2.0 zip file with Hibernate 4.2.0.Final"
+   exit 1
+fi
+
 # Mysql Driver version to be used
 MYSQL_DRV_VERSION=5.1.18
 
