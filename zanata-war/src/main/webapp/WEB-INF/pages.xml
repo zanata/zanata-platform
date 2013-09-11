@@ -50,7 +50,7 @@
 	      <rule if="#{!identity.loggedIn}">
 	        <redirect view-id="/account/login.xhtml" />
 	      </rule>
-	      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.userRedirect.shouldRedirectToDashboard()}}">
+	      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.shouldRedirectToDashboard()}}">
 	        <redirect view-id="/dashboard/home.xhtml" />
 	      </rule>
 	      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.redirect}">
