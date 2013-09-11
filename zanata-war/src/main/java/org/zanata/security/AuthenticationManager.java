@@ -177,23 +177,8 @@ public class AuthenticationManager
     */
    public String openIdLogin()
    {
-      // Federated OpenId providers
-      if (zanataOpenId.isFederatedProvider())
-      {
-         // NB: Credentials' user name must be set to something or else login
-         // will fail. The real user name will be asked
-         // by the provider
-         credentials.setUsername("zanata");
-      }
-
+      zanataOpenId.setProvider(credentials.getOpenIdProviderType());
       String loginResult = identity.login(AuthenticationType.OPENID);
-
-      if (zanataOpenId.isFederatedProvider())
-      {
-         // Clear out the credentials again
-         credentials.setUsername("");
-      }
-
       return loginResult;
    }
 
@@ -204,17 +189,14 @@ public class AuthenticationManager
     * authentication attempt is finished.
     * 
     * @param openIdProviderType Open Id provider to use for authentication
-    * @param username User name. The provider will use this username to
-    *           construct an Open Id.
     * @param callback Contains the logic to execute after the authentication
     *           attempt.
     */
-   public void openIdAuthenticate(OpenIdProviderType openIdProviderType, String username, OpenIdAuthCallback callback)
+   public void openIdAuthenticate(OpenIdProviderType openIdProviderType, OpenIdAuthCallback callback)
    {
       ZanataCredentials volatileCreds = new ZanataCredentials();
       volatileCreds.setAuthType(AuthenticationType.OPENID);
       volatileCreds.setOpenIdProviderType(openIdProviderType);
-      volatileCreds.setUsername(username);
       zanataOpenId.login(volatileCreds, callback);
    }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  * 
@@ -18,29 +18,34 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.security.openid;
+package org.zanata.security;
 
-import java.text.MessageFormat;
-import java.util.regex.Pattern;
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Install;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.Startup;
+import org.jboss.seam.annotations.intercept.BypassInterceptors;
+import org.jboss.seam.international.StatusMessage;
+
+import static org.jboss.seam.annotations.Install.APPLICATION;
 
 /**
- * Fedora Open Id provider.
+ * Override the {@link org.jboss.seam.security.FacesSecurityEvents} component to
+ * alter default values.
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class FedoraOpenIdProvider extends GenericOpenIdProvider
+@Name("org.jboss.seam.security.facesSecurityEvents")
+@Scope(ScopeType.APPLICATION)
+@Install(precedence = APPLICATION, classDependencies = "javax.faces.context.FacesContext")
+@BypassInterceptors
+@Startup
+public class FacesSecurityEvents extends org.jboss.seam.security.FacesSecurityEvents
 {
-   private static final Pattern FEDORA_OPENID_PATTERN = Pattern.compile("http://((.+).)?id.fedoraproject.org/");
-
    @Override
-   public String getOpenId(String username)
+   public StatusMessage.Severity getLoginFailedMessageSeverity()
    {
-      return "http://id.fedoraproject.org/";
-   }
-
-   @Override
-   public boolean accepts(String openId)
-   {
-      return FEDORA_OPENID_PATTERN.matcher( openId ).matches();
+      return StatusMessage.Severity.ERROR;
    }
 }

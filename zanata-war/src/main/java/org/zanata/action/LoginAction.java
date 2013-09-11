@@ -33,6 +33,9 @@ import org.zanata.security.AuthenticationType;
 import org.zanata.security.ZanataCredentials;
 import org.zanata.security.openid.OpenIdProviderType;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * This action takes care of logging a user into the system. It contains logic
  * to handle the different authentication mechanisms offered by the system.
@@ -55,116 +58,63 @@ public class LoginAction implements Serializable
    @In
    private ApplicationConfiguration applicationConfiguration;
 
-   @In
-   private AccountDAO accountDAO;
-   
-   @In(create = true)
-   private InactiveAccountAction inactiveAccountAction;
-
+   @Getter @Setter
    private String username;
 
+   @Getter @Setter
    private String password;
 
-   private String authProvider;
-
-
-   public String getUsername()
-   {
-      return username;
-   }
-
-   public void setUsername(String username)
-   {
-      this.username = username;
-   }
-
-   public String getPassword()
-   {
-      return password;
-   }
-
-   public void setPassword(String password)
-   {
-      this.password = password;
-   }
-
-   public String getAuthProvider()
-   {
-      return authProvider;
-   }
-
-   public void setAuthProvider(String authProvider)
-   {
-      this.authProvider = authProvider;
-   }
-
-   /**
-    * Prepares authentication credentials based on the passed parameters.
-    */
-   private void prepareCredentials()
-   {
-      AuthenticationType authType = null;
-      OpenIdProviderType openIdProviderType = null;
-
-      credentials.setUsername( username );
-      credentials.setPassword( password );
-
-      // All others
-      if (authProvider == null)
-      {
-         if (applicationConfiguration.isInternalAuth())
-         {
-            authType = AuthenticationType.INTERNAL;
-         }
-         else if (applicationConfiguration.isJaasAuth())
-         {
-            authType = AuthenticationType.JAAS;
-         }
-         else if (applicationConfiguration.isKerberosAuth())
-         {
-            authType = AuthenticationType.KERBEROS;
-         }
-      }
-      // Open Id / internal auth
-      else
-      {
-         try
-         {
-            // If it is open Id
-            openIdProviderType = OpenIdProviderType.valueOf(authProvider);
-            authType = AuthenticationType.OPENID;
-         }
-         catch (Exception e)
-         {
-            // If it's not open id, it might be another authentication type
-            openIdProviderType = null;
-            authType = AuthenticationType.valueOf(authProvider);
-         }
-      }
-
-      credentials.setAuthType( authType );
-      credentials.setOpenIdProviderType( openIdProviderType );
-   }
+   @Getter @Setter
+   private String openId = "http://";
 
    public String login()
    {
-      this.prepareCredentials();
-      String loginResult = null;
+      credentials.setUsername(username);
+      credentials.setPassword(password);
+      if (applicationConfiguration.isInternalAuth())
+      {
+         credentials.setAuthType(AuthenticationType.INTERNAL);
+      }
+      else if (applicationConfiguration.isJaasAuth())
+      {
+         credentials.setAuthType(AuthenticationType.JAAS);
+      }
+
+      String loginResult;
 
       switch (credentials.getAuthType())
       {
-      case OPENID:
-         loginResult = authenticationManager.openIdLogin();
-         break;
       case INTERNAL:
+         credentials.setAuthType(AuthenticationType.INTERNAL);
          loginResult = authenticationManager.internalLogin();
          break;
       case JAAS:
+         credentials.setAuthType(AuthenticationType.JAAS);
          loginResult = authenticationManager.jaasLogin();
          break;
       // Kerberos auth happens on its own
+      default:
+         throw new RuntimeException("login() only supports internal or jaas authentication");
       }
 
       return loginResult;
+   }
+
+   /**
+    * Only for open id.
+    * @param authProvider Open Id authentication provider.
+    */
+   public String openIdLogin(String authProvider)
+   {
+      OpenIdProviderType providerType = OpenIdProviderType.valueOf(authProvider);
+
+      if( providerType == OpenIdProviderType.Generic )
+      {
+         credentials.setUsername(openId);
+      }
+
+      credentials.setAuthType(AuthenticationType.OPENID);
+      credentials.setOpenIdProviderType(providerType);
+      return authenticationManager.openIdLogin();
    }
 }
