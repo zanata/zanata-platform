@@ -8,6 +8,7 @@
 #
 # Parameters:
 # 1. JBoss 7 zip distribution location.
+# 2. Zanata war location.
 #
 # Pre-requisites:
 # 1. Apache maven in the path
@@ -18,6 +19,10 @@ MYSQL_DRV_VERSION=5.1.18
 # Get the JBoss 7 zip location from parameters
 JBOSS_ZIP_LOC=$1
 JBOSS_ZIP_PARENT=${JBOSS_ZIP_LOC%/*}
+
+# Get the Zanata war location from parameters
+ZANATA_WAR=$2
+
 
 # Zanata War project Dir
 ZANATA_WAR_HOME=../..
@@ -41,7 +46,7 @@ rm -rf $JBOSS_TMP_DIR/bin/client
 rm -rf $JBOSS_TMP_DIR/docs
 
 # Add Zanata specific files
-cp $ZANATA_WAR_HOME/target/zanata-*.war $JBOSS_TMP_DIR/standalone/deployments/zanata.war
+cp $ZANATA_WAR $JBOSS_TMP_DIR/standalone/deployments/zanata.war
 cp $ZANATA_WAR_HOME/src/etc/zanata-ds.xml $JBOSS_TMP_DIR/standalone/deployments
 patch -p1 --verbose -d $JBOSS_TMP_DIR/ < $ZANATA_WAR_HOME/etc/public-package/patches/as7.patch
 
