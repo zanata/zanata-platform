@@ -6,6 +6,9 @@
 
 *~
 *.patch
+# Include patches used for the publick package
+!/zanata-war/etc/public-package/patches/**/*.patch
+
 *.sedbak
 zanatasearchindex/
 test-output/
