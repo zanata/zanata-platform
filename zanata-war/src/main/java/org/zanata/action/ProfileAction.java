@@ -124,11 +124,14 @@ public class ProfileAction implements Serializable
    @Create
    public void onCreate()
    {
-      username = identity.getCredentials().getUsername();
+      if( identity.getCredentials().getAuthType() != AuthenticationType.OPENID )
+      {
+         // Open id user names are url's so they don't make good defaults
+         username = identity.getCredentials().getUsername();
+      }
       newUser = identityStore.isNewUser(username);
       if (newUser)
       {
-         name = identity.getCredentials().getUsername();
          String domain = applicationConfiguration.getDomainName();
          if( domain == null )
          {
