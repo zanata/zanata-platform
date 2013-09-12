@@ -1823,19 +1823,19 @@
 	    </dependency>
 
       <dependency>
-         <groupId>org.openid4java</groupId>
-         <artifactId>openid4java-nodeps</artifactId>
-         <version>0.9.5</version>
-         <exclusions>
-            <exclusion>
-               <artifactId>
-                  commons-logging
-               </artifactId>
-               <groupId>
-                  commons-logging
-               </groupId>
-            </exclusion>
-         </exclusions>
+          <groupId>org.openid4java</groupId>
+          <artifactId>openid4java</artifactId>
+          <version>0.9.8</version>
+          <exclusions>
+              <exclusion>
+                  <groupId>xml-apis</groupId>
+                  <artifactId>xml-apis</artifactId>
+              </exclusion>
+              <exclusion>
+                  <artifactId>commons-logging</artifactId>
+                  <groupId>commons-logging</groupId>
+              </exclusion>
+          </exclusions>
       </dependency>
 
 		<dependency>
