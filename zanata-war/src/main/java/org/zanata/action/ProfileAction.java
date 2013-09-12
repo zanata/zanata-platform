@@ -121,12 +121,6 @@ public class ProfileAction implements Serializable
       }
    }
 
-   public void verifyUsernameAvailable(ValueChangeEvent e)
-   {
-      String username = (String) e.getNewValue();
-      validateUsername(username);
-   }
-
    @Create
    public void onCreate()
    {
