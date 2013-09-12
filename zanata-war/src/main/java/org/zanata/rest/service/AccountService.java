@@ -36,8 +36,8 @@ import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Account;
 import org.zanata.seam.resteasy.IgnoreInterfacePath;
 
-@Name(AccountResource.SERVICE_PATH)
-@Path("/accounts/u/{username:[a-z\\d_]{3,20}}")
+@Name("accountService")
+@Path(AccountResource.SERVICE_PATH)
 @Transactional
 @IgnoreInterfacePath
 public class AccountService implements AccountResource
