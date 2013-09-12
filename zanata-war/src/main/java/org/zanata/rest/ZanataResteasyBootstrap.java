@@ -105,7 +105,8 @@ public class ZanataResteasyBootstrap extends ResteasyBootstrap
                                          Component seamComponent)
    {
       if (annotation == javax.ws.rs.Path.class &&
-         hasAnnotation(seamComponent.getBeanClass(), IgnoreInterfacePath.class))
+         seamComponent.getBeanClass().isAnnotationPresent(
+            IgnoreInterfacePath.class))
       {
          return null;
       }
@@ -115,16 +116,4 @@ public class ZanataResteasyBootstrap extends ResteasyBootstrap
       }
    }
 
-   private static boolean hasAnnotation(Class clazz,
-                                        Class<? extends Annotation> type)
-   {
-      for (Annotation annotation : clazz.getAnnotations())
-      {
-         if (annotation.annotationType() == type)
-         {
-            return true;
-         }
-      }
-      return false;
-   }
 }
