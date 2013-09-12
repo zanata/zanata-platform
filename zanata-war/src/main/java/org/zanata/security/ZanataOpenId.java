@@ -238,17 +238,10 @@ public class ZanataOpenId implements OpenIdAuthCallback
    @Create
    public void init()
    {
-      try
-      {
-         manager = new ConsumerManager();
-         discovered = null;
-         id = null;
-         authResult = new OpenIdAuthenticationResult();
-      }
-      catch (ConsumerException e)
-      {
-         throw new RuntimeException(e);
-      }
+      manager = new ConsumerManager();
+      discovered = null;
+      id = null;
+      authResult = new OpenIdAuthenticationResult();
       identity = (ZanataIdentity) Component.getInstance(ZanataIdentity.class, ScopeType.SESSION);
       applicationConfiguration = (ApplicationConfiguration) Component.getInstance(ApplicationConfiguration.class, ScopeType.APPLICATION);
    }
