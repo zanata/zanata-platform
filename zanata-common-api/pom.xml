@@ -220,6 +220,7 @@
         <dependency>
             <groupId>org.codehaus.enunciate</groupId>
             <artifactId>enunciate-jersey-rt</artifactId>
+            <scope>provided</scope>
         </dependency>
 
 		<dependency>
