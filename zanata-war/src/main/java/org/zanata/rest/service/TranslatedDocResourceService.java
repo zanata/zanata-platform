@@ -65,20 +65,23 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.seam.resteasy.IgnoreInterfacePath;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationService;
+
 import com.google.common.base.Optional;
 
+/**
+ * This service allows clients to push and pull both source documents and translations.
+ */
 @Name("translatedDocResourceService")
 @Path(TranslatedDocResourceService.SERVICE_PATH)
 @Produces( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 @Consumes( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 @Transactional
-/**
- * This service allows clients to push and pull both source documents and translations.
- */
+@IgnoreInterfacePath
 public class TranslatedDocResourceService implements TranslatedDocResource
 {
 

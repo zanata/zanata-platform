@@ -45,6 +45,7 @@ import org.zanata.rest.ReadOnlyEntityException;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TextFlow;
+import org.zanata.seam.resteasy.IgnoreInterfacePath;
 import org.zanata.service.DocumentService;
 import org.zanata.service.LocaleService;
 
@@ -67,6 +68,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.ArrayList;
@@ -83,6 +85,7 @@ import java.util.regex.Pattern;
 @Produces( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 @Consumes( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 @Transactional
+@IgnoreInterfacePath
 public class SourceDocResourceService implements SourceDocResource
 {
    public static final String SERVICE_PATH = ProjectIterationService.SERVICE_PATH + "/r";
