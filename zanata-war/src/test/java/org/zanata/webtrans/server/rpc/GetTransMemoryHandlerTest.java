@@ -140,7 +140,7 @@ public class GetTransMemoryHandlerTest extends ZanataDbunitJpaTest
    public void whenThereAreParseException() throws Exception
    {
       // Given: hibernate search can not parse query
-      TransMemoryQuery query = new TransMemoryQuery(Lists.newArrayList("file removed"), HasSearchType.SearchType.FUZZY_PLURAL);
+      TransMemoryQuery query = new TransMemoryQuery("file removed", HasSearchType.SearchType.RAW);
       doThrow(new ParseException("bad token")).when(translationMemoryQueryService).getSearchResult(eq(query), eq(sourceLocaleId), eq(targetLocaleId), eq(EXPECTED_MAX_RESULTS));
       GetTranslationMemory action = new GetTranslationMemory(query, targetLocaleId, sourceLocaleId);
 

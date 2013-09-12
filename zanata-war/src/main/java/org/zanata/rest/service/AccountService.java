@@ -43,6 +43,7 @@ import org.zanata.seam.resteasy.IgnoreInterfacePath;
 @IgnoreInterfacePath
 public class AccountService implements AccountResource
 {
+   private static final Log log = Logging.getLog(AccountService.class);
 
    /** User name that identifies an account. */
    @PathParam("username")
@@ -53,8 +54,6 @@ public class AccountService implements AccountResource
 
    @Context
    private UriInfo uri;
-
-   Log log = Logging.getLog(AccountService.class);
 
    @In
    private AccountDAO accountDAO;
