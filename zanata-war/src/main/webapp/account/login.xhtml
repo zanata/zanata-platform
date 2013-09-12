@@ -23,7 +23,7 @@
                 <h2 class="gamma heading--sub">with Zanata</h2>
               </s:fragment>
 
-              <h:form styleClass="l--push-top-half l--pad-all-1 bg--pop-higher">
+              <h:form id="loginForm" styleClass="l--push-top-half l--pad-all-1 bg--pop-higher">
                 <div class="l--clearfix">
                   <label for="username" class="l--float-left">Username</label>
                 </div>
@@ -40,7 +40,7 @@
                 <h:inputSecret id="password" value="#{loginAction.password}" tabindex="2"/>
 
                 <div class="l--push-top-half">
-                  <h:commandButton action="#{loginAction.login}" value="Log In" styleClass="button--primary"/>
+                  <h:commandButton id="loginButton" action="#{loginAction.login}" value="Log In" styleClass="button--primary"/>
                   <span class="l--push-h-quarter">or</span>
                   <s:link view="/account/register.xhtml" value="Sign Up"/>
                 </div>

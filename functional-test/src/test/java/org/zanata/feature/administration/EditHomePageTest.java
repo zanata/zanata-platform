@@ -58,6 +58,7 @@ public class EditHomePageTest
       editHomeContentPage.cancelUpdate();
    }
 
+   @Test
    public void goToEditPageCode()
    {
       DashboardPage dashboard = new LoginWorkFlow().signIn("admin", "admin");
