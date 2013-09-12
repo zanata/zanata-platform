@@ -25,13 +25,13 @@ import javax.ws.rs.PathParam;
 
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.security.Restrict;
 import org.zanata.action.CopyTransManager;
 import org.zanata.async.tasks.CopyTransTask;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.model.HDocument;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.dto.CopyTransStatus;
+import org.zanata.seam.resteasy.IgnoreInterfacePath;
 import org.zanata.security.ZanataIdentity;
 
 /**
@@ -39,6 +39,7 @@ import org.zanata.security.ZanataIdentity;
  */
 @Name("copyTransResourceService")
 @Path(CopyTransResource.SERVICE_PATH)
+@IgnoreInterfacePath
 public class CopyTransResourceService implements CopyTransResource
 {
    @In

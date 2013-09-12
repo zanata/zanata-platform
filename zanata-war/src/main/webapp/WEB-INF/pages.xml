@@ -9,11 +9,14 @@
       <rule if-outcome="home">
         <redirect view-id="/home.xhtml" />
       </rule>
+      <rule from-action="#{projectSearch.search}">
+        <redirect view-id="/search.xhtml"/>
+      </rule>
     </navigation>
   </page>
-  
+
   <page view-id="/dashboard/*" login-required="true">
-  	<restrict>#{identity.loggedIn}</restrict>
+	<restrict>#{identity.loggedIn}</restrict>
   </page>
   
   <page view-id="/edit_home_content.xhtml">
@@ -32,15 +35,9 @@
   <!-- TODO this rule is a duplicate, should be combined with first * rule -->
   <page view-id="/search.xhtml">
   	<action execute="#{breadcrumbs.clear}"/>
-  	<action execute="#{breadcrumbs.addLocation('', messages['jsf.SearchProjects'])}"/>
+	<action execute="#{breadcrumbs.addLocation('', messages['jsf.SearchProjects'])}"/>
   </page>
-  
-  <page view-id="*">
-  	<navigation from-action="#{projectSearch.search}">
-  		<redirect view-id="/search.xhtml"/>
-  	</navigation>
-  </page>
-  
+
   <!-- Landing page for open id authentication -->
   <page view-id="/openid.xhtml">
 	 <navigation>
@@ -53,7 +50,7 @@
 	      <rule if="#{!identity.loggedIn}">
 	        <redirect view-id="/account/login_input.xhtml" />
 	      </rule>
-	      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.redirectToHome}">
+	      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.userRedirect.shouldRedirectToDashboard()}}">
 	        <redirect view-id="/dashboard/home.xhtml" />
 	      </rule>
 	      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.redirect}">
@@ -105,7 +102,7 @@
         <begin-conversation/>
         <redirect view-id="/account/inactive_account.xhtml"/>
       </rule>
-      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.redirectToHome}">
+      <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.shouldRedirectToDashboard()}">
         <redirect view-id="/dashboard/home.xhtml" />
       </rule>
       <rule if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.redirect}">

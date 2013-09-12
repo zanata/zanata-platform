@@ -51,12 +51,14 @@ import org.zanata.model.HProject;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Link;
 import org.zanata.rest.dto.Project;
+import org.zanata.seam.resteasy.IgnoreInterfacePath;
 
 import com.google.common.base.Objects;
 
 @Name("projectsService")
 @Path(ProjectsResource.SERVICE_PATH)
 @Transactional
+@IgnoreInterfacePath
 public class ProjectsService implements ProjectsResource
 {
 

@@ -29,8 +29,6 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.faces.Redirect;
-import org.jboss.seam.security.Identity;
 import org.jboss.seam.web.ServletContexts;
 
 /**
@@ -51,6 +49,7 @@ import org.jboss.seam.web.ServletContexts;
 public class UserRedirectBean implements Serializable
 {
    private static final String HOME_URL = "/";
+   private static final String REGISTER_URL = "/register";
    private static final String ERROR_URL = "/error";
 
    /**
@@ -178,16 +177,32 @@ public class UserRedirectBean implements Serializable
 
    public boolean isRedirectToHome()
    {
+      return isRedirectTo(HOME_URL);
+   }
+
+   public boolean isRedirectToRegister()
+   {
+      return isRedirectTo(REGISTER_URL);
+   }
+
+   // provided user is logged in, they should be redirect to dashboard
+   public boolean shouldRedirectToDashboard()
+   {
+      return isRedirectToHome() || isRedirectToRegister();
+   }
+
+   private boolean isRedirectTo(String url)
+   {
       if (isRedirect())
       {
-         String url = getUrl();
-         int qsIndex = url.indexOf('?');
+         String redirectingUrl = getUrl();
+         int qsIndex = redirectingUrl.indexOf('?');
          if (qsIndex > 0)
          {
-            url = url.substring(0, qsIndex);
+            redirectingUrl = redirectingUrl.substring(0, qsIndex);
          }
          
-         if (url.endsWith(HOME_URL))
+         if (redirectingUrl.endsWith(url))
          {
             return true;
          }

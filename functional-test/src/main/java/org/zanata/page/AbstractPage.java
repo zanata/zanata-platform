@@ -82,11 +82,14 @@ public class AbstractPage
    protected void clickAndExpectErrors(WebElement button)
    {
       button.click();
-      List<String> errors = getErrors();
-      if (errors.isEmpty())
+      refreshPageUntil(this, new Predicate<WebDriver>()
       {
-         throw new RuntimeException("Errors expected, none found.");
-      }
+         @Override
+         public boolean apply(WebDriver input)
+         {
+            return getErrors().size() > 0;
+         }
+      });
    }
 
    public List<String> getErrors()

@@ -34,10 +34,12 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Account;
+import org.zanata.seam.resteasy.IgnoreInterfacePath;
 
 @Name(AccountResource.SERVICE_PATH)
 @Path("/accounts/u/{username:[a-z\\d_]{3,20}}")
 @Transactional
+@IgnoreInterfacePath
 public class AccountService implements AccountResource
 {
 

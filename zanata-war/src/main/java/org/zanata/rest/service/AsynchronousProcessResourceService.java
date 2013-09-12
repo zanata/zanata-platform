@@ -51,6 +51,7 @@ import org.zanata.rest.ReadOnlyEntityException;
 import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.seam.resteasy.IgnoreInterfacePath;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.AsyncTaskManagerService;
 import org.zanata.service.DocumentService;
@@ -74,6 +75,7 @@ import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode;
 @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 @Transactional
 @Slf4j
+@IgnoreInterfacePath
 public class AsynchronousProcessResourceService implements AsynchronousProcessResource
 {
    @In
