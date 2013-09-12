@@ -1,6 +1,7 @@
 package org.zanata.rest;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.util.Collection;
 
 import javax.ws.rs.core.Response.Status;
@@ -24,6 +25,7 @@ import org.jboss.seam.deployment.HotDeploymentStrategy;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.resteasy.ResteasyBootstrap;
 import org.jboss.seam.resteasy.SeamResteasyProviderFactory;
+import org.zanata.seam.resteasy.IgnoreInterfacePath;
 
 @Name("org.jboss.seam.resteasy.bootstrap")
 @Scope(ScopeType.APPLICATION)
@@ -87,5 +89,42 @@ public class ZanataResteasyBootstrap extends ResteasyBootstrap
             }
          }
       };
+   }
+
+   /**
+    * If the seam bean is annotated with @IgnoreInterfacePath, any @Path
+    * annotation on the bean's interfaces will be ignored when deciding whether
+    * to inject @Context variables based on the interface class or the bean
+    * class.
+    * @param annotation
+    * @param seamComponent
+    * @return
+    */
+   @Override
+   protected Class getAnnotatedInterface(Class<? extends Annotation> annotation,
+                                         Component seamComponent)
+   {
+      if (annotation == javax.ws.rs.Path.class &&
+         hasAnnotation(seamComponent.getBeanClass(), IgnoreInterfacePath.class))
+      {
+         return null;
+      }
+      else
+      {
+         return super.getAnnotatedInterface(annotation, seamComponent);
+      }
+   }
+
+   private static boolean hasAnnotation(Class clazz,
+                                        Class<? extends Annotation> type)
+   {
+      for (Annotation annotation : clazz.getAnnotations())
+      {
+         if (annotation.annotationType() == type)
+         {
+            return true;
+         }
+      }
+      return false;
    }
 }

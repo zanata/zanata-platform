@@ -10,11 +10,13 @@ import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.jboss.seam.annotations.Name;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.VersionInfo;
+import org.zanata.seam.resteasy.IgnoreInterfacePath;
 import org.zanata.util.VersionUtility;
 
 
 @Name("versionService")
 @Path(VersionService.SERVICE_PATH)
+@IgnoreInterfacePath
 public class VersionService implements VersionResource
 {
    public static final String SERVICE_PATH = "/version";

@@ -23,6 +23,7 @@ package org.zanata.rest.service;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
+
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -50,6 +51,7 @@ import org.zanata.rest.ReadOnlyEntityException;
 import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.seam.resteasy.IgnoreInterfacePath;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.AsyncTaskManagerService;
 import org.zanata.service.DocumentService;
@@ -57,10 +59,10 @@ import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationService;
 import org.zanata.service.impl.DocumentServiceImpl;
 import org.zanata.service.impl.TranslationServiceImpl;
+
 import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
-
 import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode;
 
 /**
@@ -73,6 +75,7 @@ import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode;
 @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 @Transactional
 @Slf4j
+@IgnoreInterfacePath
 public class AsynchronousProcessResourceService implements AsynchronousProcessResource
 {
    @In

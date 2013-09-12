@@ -45,12 +45,14 @@ import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.dto.Link;
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.dto.ProjectIteration;
+import org.zanata.seam.resteasy.IgnoreInterfacePath;
 
 import com.google.common.base.Objects;
 
 @Name("projectService")
 @Path(ProjectService.SERVICE_PATH)
 @Transactional
+@IgnoreInterfacePath
 public class ProjectService implements ProjectResource
 {
 
