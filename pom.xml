@@ -194,6 +194,7 @@
 
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
+                <version>3.0</version>
 				<configuration>
 					<encoding>UTF-8</encoding>
 					<source>1.6</source>
@@ -543,9 +544,30 @@ package.
 
 		<profile>
 			<!-- This profile lets us skip unit tests (but not integration tests) 
-				with a) -PskipUnitTests, or b) -Dit.test=<integration-test-name> The option 
+				with -DskipUnitTests . The option
 				-DskipTests can still be used to skip all tests (unit and integration). -->
 			<id>skipUnitTests</id>
+			<activation>
+				<property>
+					<name>skipUnitTests</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<configuration>
+							<skipTests>true</skipTests>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<!-- This profile runs a single integration test with
+				-Dit.test=<integration-test-name>, skipping unit tests. -->
+			<id>it.test</id>
 			<activation>
 				<property>
 					<name>it.test</name>
