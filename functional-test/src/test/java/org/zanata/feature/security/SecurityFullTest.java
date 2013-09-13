@@ -64,8 +64,7 @@ public class SecurityFullTest
    @Test
    public void signInFailure()
    {
-      SignInPage signInPage = new BasicWorkFlow().goToHome().clickSignInLink();
-      signInPage = signInPage.signInFailure("nosuchuser", "password");
+      SignInPage signInPage = new LoginWorkFlow().signInFailure("nosuchuser", "password");
       assertThat("Error message is shown", signInPage.getNotificationMessage(), equalTo("Login failed"));
       assertThat("User has failed to log in", !signInPage.hasLoggedIn());
    }

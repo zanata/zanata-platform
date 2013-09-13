@@ -20,8 +20,10 @@
  */
 package org.zanata.page;
 
-import java.util.List;
-
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.base.Predicate;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -29,11 +31,8 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.zanata.util.WebElementUtil;
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
-import com.google.common.base.Predicate;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
 
 @Slf4j
 public class AbstractPage
@@ -44,6 +43,10 @@ public class AbstractPage
    public void deleteCookiesAndRefresh()
    {
       getDriver().manage().deleteAllCookies();
+      if (getDriver().manage().getCookies().size() > 0)
+      {
+         log.warn("Failed to delete cookies: "+getDriver().manage().getCookies());
+      }
       getDriver().navigate().refresh();
    }
 

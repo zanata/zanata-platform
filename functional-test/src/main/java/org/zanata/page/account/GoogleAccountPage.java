@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -20,63 +20,52 @@
  */
 package org.zanata.page.account;
 
-import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.zanata.page.BasePage;
-import org.zanata.page.utility.DashboardPage;
+import org.zanata.page.AbstractPage;
 
-@Slf4j
-public class SignInPage extends BasePage
+/**
+ * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ */
+public class GoogleAccountPage extends AbstractPage
 {
-   @FindBy(id = "loginForm:username")
-   private WebElement usernameField;
+   @FindBy(id = "Email")
+   private WebElement emailField;
 
-   @FindBy(id = "loginForm:password")
+   @FindBy(id = "Passwd")
    private WebElement passwordField;
 
-   @FindBy(id = "loginForm:loginButton")
+   @FindBy(id = "signIn")
    private WebElement signInButton;
 
-   @FindBy(linkText = "Forgot your password?")
-   private WebElement forgotPasswordLink;
-
-   public SignInPage(final WebDriver driver)
+   public GoogleAccountPage(WebDriver driver)
    {
       super(driver);
    }
 
-   public SignInPage enterUsername(String username)
+   public GoogleAccountPage enterGoogleEmail(String email)
    {
-      usernameField.sendKeys(username);
-      return new SignInPage(getDriver());
-   }
-
-   public SignInPage enterPassword(String password)
-   {
-      passwordField.sendKeys(password);
-      return new SignInPage(getDriver());
-   }
-
-   public DashboardPage clickSignIn()
-   {
-      signInButton.click();
-      return new DashboardPage(getDriver());
-   }
-
-   public GoogleAccountPage selectGoogleOpenID()
-   {
-      getDriver().findElement(By.linkText("Google")).click();
+      emailField.sendKeys(email);
       return new GoogleAccountPage(getDriver());
    }
 
-   public ResetPasswordPage gotToResetPassword()
+   public GoogleAccountPage enterGooglePassword(String password)
    {
-      forgotPasswordLink.click();
-      return new ResetPasswordPage(getDriver());
+      passwordField.sendKeys(password);
+      return new GoogleAccountPage(getDriver());
    }
 
+   public EditProfilePage clickSignIn()
+   {
+      signInButton.click();
 
+      // May return a Permissions request page, if this is the first run
+      if(!getDriver().getTitle().contains("Edit Profile"))
+      {
+         GooglePermissionsPage googlePermissionsPage = new GooglePermissionsPage(getDriver());
+         googlePermissionsPage.acceptPermissions();
+      }
+      return new EditProfilePage(getDriver());
+   }
 }

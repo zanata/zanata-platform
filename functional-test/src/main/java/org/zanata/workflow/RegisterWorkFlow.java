@@ -18,23 +18,32 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.feature.account;
+package org.zanata.workflow;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.zanata.page.account.EditProfilePage;
+import org.zanata.page.account.GoogleAccountPage;
+import org.zanata.page.utility.HomePage;
 
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-      ChangePasswordTest.class,
-      RegisterTest.class,
-      UsernameValidationTest.class,
-      ValidEmailAddressTest.class,
-      InvalidEmailAddressTest.class,
-      OpenIDTest.class
-})
-public class AccountTestSuite
+public class RegisterWorkFlow extends AbstractWebWorkFlow
 {
+
+   public HomePage registerGoogleOpenID(String name, String username, String password, String email)
+   {
+      GoogleAccountPage googleAccountPage = new BasicWorkFlow()
+            .goToHome()
+            .clickSignInLink()
+            .selectGoogleOpenID();
+      EditProfilePage editProfilePage = googleAccountPage
+            .enterGoogleEmail(email)
+            .enterGooglePassword(password)
+            .clickSignIn();
+      return editProfilePage
+            .enterName(name)
+            .enterUserName(username)
+            .enterEmail(email)
+            .clickSave();
+   }
 }
