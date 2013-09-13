@@ -70,7 +70,7 @@
 
     <ui:define name="page_title">#{projectIterationFilesAction.projectSlug}:#{projectIterationFilesAction.iterationSlug} - #{messages['jsf.SourceDocuments']}</ui:define>
     <ui:define name="center_content">
-        <h:form onkeydown="if(event.keyCode==13) { return false;}">
+        <h:form id="iterationDocumentsForm" onkeydown="if(event.keyCode==13) { return false;}">
             <s:token allowMultiplePosts="true"/>
             <s:div style="text-align:center">
                 <rich:dataScroller id="data_table_scroller" for="data_table"
@@ -236,9 +236,10 @@
 
         <rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
             <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-            <h:form>
+            <h:form id="uploadSidebar">
 
-                <a4j:commandLink styleClass="action_link"
+                <a4j:commandLink id="uploadDocumentButton"
+                                 styleClass="action_link"
                                  rendered="#{projectIterationFilesAction.documentUploadAllowed}"
                                  value="#{messages['jsf.iteration.files.UploadDocument']}"
                                  title="#{messages['jsf.SupportedUploadFormats']}"
@@ -349,7 +350,8 @@
                     <h:commandButton id="generalDocSubmitUploadButton"
                                      value="#{messages['jsf.Upload']}"
                                      action="#{projectIterationFilesAction.uploadDocumentFile}"/>
-                    <h:commandButton value="#{messages['jsf.Cancel']}"
+                    <h:commandButton id="generalDocCancelUploadButton"
+                                     value="#{messages['jsf.Cancel']}"
                                      onclick="return hideDocUploadPanel();"/>
                 </div>
             </h:form>

@@ -1,5 +1,13 @@
 package org.zanata.util;
 
+import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
+import com.google.common.io.Files;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
+import org.hamcrest.Matchers;
+import org.openqa.selenium.support.ui.FluentWait;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -13,13 +21,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.hamcrest.Matchers;
-import org.openqa.selenium.support.ui.FluentWait;
-import com.google.common.base.Predicate;
-import com.google.common.base.Strings;
-import com.google.common.io.Files;
-
-import lombok.extern.slf4j.Slf4j;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
@@ -36,6 +37,7 @@ public class DatabaseHelper
    private static Statement statement;
    private static DatabaseHelper DB;
    private String backupPath;
+   private static int CURRENT_TABLE_COUNT = 81;
    private FluentWait<Statement> wait;
 
    private DatabaseHelper()
@@ -180,6 +182,7 @@ public class DatabaseHelper
    {
       String path = getFileFromClasspath("org/zanata/feature/zanata_with_data.sql").getAbsolutePath();
       executeQuery("RUNSCRIPT FROM '" + path + "' CHARSET 'UTF-8'");
+      waitUntil("select count(*) from INFORMATION_SCHEMA.tables", CURRENT_TABLE_COUNT);
       waitUntil("select count(*) from HProjectIteration", 1);
    }
 
@@ -187,6 +190,28 @@ public class DatabaseHelper
    {
       executeQuery("RUNSCRIPT FROM '" + backupPath + "' CHARSET 'UTF-8'");
       waitUntil("select count(*) from HProjectIteration", 0);
+      waitUntil("select count(*) from INFORMATION_SCHEMA.tables", CURRENT_TABLE_COUNT);
+   }
+
+   public void obliterateDatabase()
+   {
+      executeQuery("DROP ALL OBJECTS");
+      waitUntil("select count(*) from INFORMATION_SCHEMA.SEQUENCES", 0);
+   }
+
+   public void resetFileData()
+   {
+      File path = new File(PropertiesHolder.getProperty("document.storage.directory"));
+      if(path.exists())
+      {
+         try {
+            FileUtils.deleteDirectory(path);
+         }catch (IOException e)
+         {
+            log.error("Failed to delete", path, e);
+            throw new RuntimeException("error");
+         }
+      }
    }
 
    private void waitUntil(final String sql, final int expectedResultCount)
