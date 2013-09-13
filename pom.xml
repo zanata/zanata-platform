@@ -167,7 +167,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <hamcrest.version>1.3</hamcrest.version>
-        <lombok.version>0.11.0</lombok.version>
+        <lombok.version>0.12.0</lombok.version>
 		<resteasy.version>2.3.3.Final</resteasy.version>
 		<findbugs.version>1.3.9</findbugs.version>
 		<guava.version>12.0.1</guava.version>
