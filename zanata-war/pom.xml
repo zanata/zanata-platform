@@ -58,7 +58,6 @@
             <plugin>
               <artifactId>maven-compiler-plugin</artifactId>
               <!-- groovy-eclipse-compiler 2.8.0-01 and later require maven-compiler-plugin 3.0 or higher -->
-              <version>3.0</version>
               <configuration>
                 <compilerId>groovy-eclipse-compiler</compilerId>
                 <!-- set verbose to be true if you want lots of uninteresting messages -->
@@ -704,6 +703,7 @@
 						</lifecycleMappingMetadata>
 					</configuration>
 				</plugin>
+
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -1012,7 +1012,66 @@
                 </plugins>
             </reporting>
         </profile>
-	</profiles>
+
+        <!-- Profile to use latest groovy-eclipse-compiler for better error
+         reporting.  Please remove after upgrading to groovy-eclipse-compiler
+         2.9.0-01.
+        -->
+        <profile>
+            <id>newCompiler</id>
+            <activation>
+                <property>
+                    <name>newCompiler</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.codehaus.groovy</groupId>
+                                <artifactId>groovy-eclipse-compiler</artifactId>
+                                <version>2.9.0-01-SNAPSHOT</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+
+                    <plugin>
+                        <artifactId>maven-enforcer-plugin</artifactId>
+                        <configuration>
+                            <rules>
+                                <requireNoRepositories>
+                                    <allowedPluginRepositories combine.children="append">
+                                        <allowedPluginRepository>codehaus-snapshots</allowedPluginRepository>
+                                    </allowedPluginRepositories>
+                                </requireNoRepositories>
+                            </rules>
+                        </configuration>
+                    </plugin>
+
+                </plugins>
+
+            </build>
+
+        <pluginRepositories>
+            <pluginRepository>
+                <id>codehaus-snapshots</id>
+                <name>Codehaus Snapshots</name>
+                <url>http://nexus.codehaus.org/snapshots/</url>
+                <releases>
+                    <enabled>false</enabled>
+                </releases>
+                <snapshots>
+                    <enabled>true</enabled>
+                </snapshots>
+            </pluginRepository>
+
+        </pluginRepositories>
+
+        </profile>
+
+    </profiles>
 
 	<dependencies>
 
