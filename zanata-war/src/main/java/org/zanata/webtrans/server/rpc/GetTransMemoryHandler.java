@@ -189,6 +189,10 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
       {
          return false;
       }
+      else if (!textFlowTarget.getState().isTranslated())
+      {
+         return false;
+      }
       else
       {
          HProjectIteration projectIteration = textFlowTarget.getTextFlow().getDocument().getProjectIteration();
