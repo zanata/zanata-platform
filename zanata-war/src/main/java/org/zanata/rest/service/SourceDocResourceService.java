@@ -48,22 +48,12 @@ import org.zanata.seam.resteasy.IgnoreInterfacePath;
 import org.zanata.service.DocumentService;
 import org.zanata.service.LocaleService;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.HEAD;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -80,7 +70,7 @@ import java.util.regex.Pattern;
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Name("sourceDocResourceService")
-@Path(SourceDocResourceService.SERVICE_PATH)
+@Path(SourceDocResource.SERVICE_PATH)
 @Transactional
 @IgnoreInterfacePath
 public class SourceDocResourceService implements SourceDocResource
@@ -136,7 +126,7 @@ public class SourceDocResourceService implements SourceDocResource
    }
 
    @Override
-   public Response get(@QueryParam("ext") Set<String> extensions)
+   public Response get(Set<String> extensions)
    {
       HProjectIteration hProjectIteration = retrieveAndCheckIteration(false);
 
@@ -171,7 +161,7 @@ public class SourceDocResourceService implements SourceDocResource
 
    @Override
    @Restrict("#{s:hasPermission(sourceDocResourceService.securedIteration, 'import-template')}")
-   public Response post(Resource resource, @QueryParam("ext") Set<String> extensions, @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans)
+   public Response post(Resource resource, Set<String> extensions, boolean copytrans)
    {
       HProjectIteration hProjectIteration = retrieveAndCheckIteration(true);
 
@@ -207,7 +197,7 @@ public class SourceDocResourceService implements SourceDocResource
    }
 
    @Override
-   public Response getResource(@PathParam("id") String idNoSlash, @QueryParam("ext") Set<String> extensions)
+   public Response getResource(String idNoSlash, Set<String> extensions)
    {
       log.debug("start get resource");
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
@@ -251,7 +241,7 @@ public class SourceDocResourceService implements SourceDocResource
 
    @Override
    @Restrict("#{s:hasPermission(sourceDocResourceService.securedIteration, 'import-template')}")
-   public Response putResource(@PathParam("id") String idNoSlash, Resource resource, @QueryParam("ext") Set<String> extensions, @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans)
+   public Response putResource(String idNoSlash, Resource resource, Set<String> extensions, boolean copytrans)
    {
       log.debug("start put resource");
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
@@ -281,7 +271,7 @@ public class SourceDocResourceService implements SourceDocResource
 
    @Override
    @Restrict("#{s:hasPermission(sourceDocResourceService.securedIteration, 'import-template')}")
-   public Response deleteResource(@PathParam("id") String idNoSlash)
+   public Response deleteResource(String idNoSlash)
    {
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       HProjectIteration hProjectIteration = retrieveAndCheckIteration(true);
@@ -300,7 +290,7 @@ public class SourceDocResourceService implements SourceDocResource
    }
 
    @Override
-   public Response getResourceMeta(@PathParam("id") String idNoSlash, @QueryParam("ext") Set<String> extensions)
+   public Response getResourceMeta(String idNoSlash, Set<String> extensions)
    {
       log.debug("start to get resource meta");
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
@@ -333,7 +323,7 @@ public class SourceDocResourceService implements SourceDocResource
 
    @Override
    @Restrict("#{s:hasPermission(sourceDocResourceService.securedIteration, 'import-template')}")
-   public Response putResourceMeta(@PathParam("id") String idNoSlash, ResourceMeta messageBody, @QueryParam("ext") Set<String> extensions)
+   public Response putResourceMeta(String idNoSlash, ResourceMeta messageBody, Set<String> extensions)
    {
       log.debug("start to put resource meta");
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);

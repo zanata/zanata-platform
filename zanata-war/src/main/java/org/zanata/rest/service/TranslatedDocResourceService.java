@@ -20,22 +20,13 @@
  */
 package org.zanata.rest.service;
 
-import static org.zanata.rest.service.SourceDocResource.RESOURCE_SLUG_TEMPLATE;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.HttpHeaders;
@@ -149,11 +140,11 @@ public class TranslatedDocResourceService implements TranslatedDocResource
 
    @Override
    public Response getTranslations(
-         @PathParam("id") String idNoSlash,
-         @PathParam("locale") LocaleId locale,
-         @QueryParam("ext") Set<String> extensions,
-         @QueryParam("skeletons") @DefaultValue("false") boolean skeletons,
-         @HeaderParam(HttpHeaders.IF_NONE_MATCH) String eTag
+         String idNoSlash,
+         LocaleId locale,
+         Set<String> extensions,
+         boolean skeletons,
+         /*@HeaderParam(HttpHeaders.IF_NONE_MATCH)*/ String eTag
          )
    {
       log.debug("start to get translation");
@@ -203,7 +194,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource
 
    @Override
    @Restrict("#{s:hasPermission(translatedDocResourceService.securedIteration.project, 'modify-translation')}")
-   public Response deleteTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale)
+   public Response deleteTranslations(String idNoSlash, LocaleId locale)
    {
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       HProjectIteration hProjectIteration = restSlugValidator.retrieveAndCheckIteration(projectSlug, iterationSlug, true);
@@ -239,7 +230,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource
    }
 
    @Override
-   public Response putTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, TranslationsResource messageBody, @QueryParam("ext") Set<String> extensions, @QueryParam("merge") @DefaultValue("auto") String merge)
+   public Response putTranslations(String idNoSlash, LocaleId locale, TranslationsResource messageBody, Set<String> extensions, String merge)
    {
       // check security (cannot be on @Restrict as it refers to method parameters)
       identity.checkPermission("modify-translation", this.localeServiceImpl.getByLocaleId(locale),

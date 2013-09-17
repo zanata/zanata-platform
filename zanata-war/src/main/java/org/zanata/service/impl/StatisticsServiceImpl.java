@@ -25,10 +25,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-
 import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -63,7 +59,7 @@ import org.zanata.webtrans.shared.model.DocumentStatus;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Path("/stats")
+//@Path("/stats")
 @Name("statisticsServiceImpl")
 @Scope(ScopeType.STATELESS)
 public class StatisticsServiceImpl implements StatisticsResource

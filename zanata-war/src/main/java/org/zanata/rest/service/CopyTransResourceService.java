@@ -20,9 +20,6 @@
  */
 package org.zanata.rest.service;
 
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.zanata.action.CopyTransManager;
@@ -38,7 +35,7 @@ import org.zanata.security.ZanataIdentity;
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Name("copyTransResourceService")
-@Path(CopyTransResource.SERVICE_PATH)
+//@Path(CopyTransResource.SERVICE_PATH)
 @IgnoreInterfacePath
 public class CopyTransResourceService implements CopyTransResource
 {
@@ -52,9 +49,9 @@ public class CopyTransResourceService implements CopyTransResource
    private DocumentDAO documentDAO;
 
    @Override
-   public CopyTransStatus startCopyTrans(@PathParam("projectSlug") String projectSlug,
-                              @PathParam("iterationSlug") String iterationSlug,
-                              @PathParam("docId") String docId)
+   public CopyTransStatus startCopyTrans(String projectSlug,
+                              String iterationSlug,
+                              String docId)
    {
       HDocument document = documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId);
       if( document == null )
@@ -69,9 +66,9 @@ public class CopyTransResourceService implements CopyTransResource
    }
 
    @Override
-   public CopyTransStatus getCopyTransStatus(@PathParam("projectSlug") String projectSlug,
-                                             @PathParam("iterationSlug") String iterationSlug,
-                                             @PathParam("docId") String docId)
+   public CopyTransStatus getCopyTransStatus(String projectSlug,
+                                             String iterationSlug,
+                                             String docId)
    {
 
       HDocument document = documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId);

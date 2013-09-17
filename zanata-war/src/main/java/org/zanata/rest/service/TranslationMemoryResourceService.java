@@ -25,7 +25,6 @@ import java.io.InputStream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
@@ -57,7 +56,7 @@ import org.zanata.util.CloseableIterator;
 
 import com.google.common.base.Optional;
 @Name("translationMemoryResource")
-@Path(TranslationMemoryResource.SERVICE_PATH)
+//@Path(TranslationMemoryResource.SERVICE_PATH)
 @Transactional(TransactionPropagationType.SUPPORTS)
 @Slf4j
 @ParametersAreNonnullByDefault

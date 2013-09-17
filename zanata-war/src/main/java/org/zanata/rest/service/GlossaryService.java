@@ -2,14 +2,7 @@ package org.zanata.rest.service;
 
 import java.util.List;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -37,7 +30,7 @@ import org.zanata.seam.resteasy.IgnoreInterfacePath;
 import org.zanata.service.GlossaryFileService;
 
 @Name("glossaryService")
-@Path(GlossaryService.SERVICE_PATH)
+//@Path(GlossaryService.SERVICE_PATH)
 @Transactional
 @IgnoreInterfacePath
 public class GlossaryService implements GlossaryResource
@@ -81,8 +74,7 @@ public class GlossaryService implements GlossaryResource
    }
 
    @Override
-   public Response get(@PathParam("locale")
-   LocaleId locale)
+   public Response get(LocaleId locale)
    {
       ResponseBuilder response = request.evaluatePreconditions();
       if (response != null)
@@ -119,7 +111,7 @@ public class GlossaryService implements GlossaryResource
 
    @Override
    @Restrict("#{s:hasPermission('', 'glossary-delete')}")
-   public Response deleteGlossary(@PathParam("locale") LocaleId targetLocale)
+   public Response deleteGlossary(LocaleId targetLocale)
    {
       ResponseBuilder response = request.evaluatePreconditions();
       if (response != null)

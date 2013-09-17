@@ -34,20 +34,12 @@ import java.util.Properties;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 
-import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.zanata.adapter.FileFormatAdapter;
@@ -76,7 +68,7 @@ import com.google.common.base.Strings;
 import com.google.common.io.ByteStreams;
 
 @Name("fileService")
-@Path(FileResource.FILE_RESOURCE)
+//@Path(FileResource.FILE_RESOURCE)
 @IgnoreInterfacePath
 public class FileService implements FileResource
 {
@@ -119,32 +111,32 @@ public class FileService implements FileResource
    }
 
    @Override
-   public Response uploadSourceFile( @PathParam("projectSlug") String projectSlug,
-                                     @PathParam("iterationSlug") String iterationSlug,
-                                     @QueryParam("docId") String docId,
-                                     @MultipartForm DocumentFileUploadForm uploadForm )
+   public Response uploadSourceFile(String projectSlug,
+                                    String iterationSlug,
+                                    String docId,
+                                    /*@MultipartForm*/ DocumentFileUploadForm uploadForm )
    {
       GlobalDocumentId id = new GlobalDocumentId(projectSlug, iterationSlug, docId);
       return sourceUploader.tryUploadSourceFile(id, uploadForm);
    }
 
    @Override
-   public Response uploadTranslationFile( @PathParam("projectSlug") String projectSlug,
-                                          @PathParam("iterationSlug") String iterationSlug,
-                                          @PathParam("locale") String localeId,
-                                          @QueryParam("docId") String docId,
-                                          @QueryParam("merge") String merge,
-                                          @MultipartForm DocumentFileUploadForm uploadForm )
+   public Response uploadTranslationFile(String projectSlug,
+                                         String iterationSlug,
+                                         String localeId,
+                                         String docId,
+                                         String merge,
+                                         /*@MultipartForm*/ DocumentFileUploadForm uploadForm )
    {
       GlobalDocumentId id = new GlobalDocumentId(projectSlug, iterationSlug, docId);
       return translationUploader.tryUploadTranslationFile(id, localeId, merge, uploadForm);
    }
 
    @Override
-   public Response downloadSourceFile( @PathParam("projectSlug") String projectSlug,
-                                       @PathParam("iterationSlug") String iterationSlug,
-                                       @PathParam("fileType") String fileType,
-                                       @QueryParam("docId") String docId)
+   public Response downloadSourceFile(String projectSlug,
+                                      String iterationSlug,
+                                      String fileType,
+                                      String docId)
    {
       // TODO scan (again) for virus
       HDocument document = documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId);
@@ -194,11 +186,11 @@ public class FileService implements FileResource
    }
 
    @Override
-   public Response downloadTranslationFile( @PathParam("projectSlug") String projectSlug,
-                                            @PathParam("iterationSlug") String iterationSlug,
-                                            @PathParam("locale") String locale,
-                                            @PathParam("fileType") String fileType,
-                                            @QueryParam("docId") String docId )
+   public Response downloadTranslationFile(String projectSlug,
+                                           String iterationSlug,
+                                           String locale,
+                                           String fileType,
+                                           String docId )
    {
       GlobalDocumentId id = new GlobalDocumentId(projectSlug, iterationSlug, docId);
       // TODO scan (again) for virus
@@ -287,7 +279,7 @@ public class FileService implements FileResource
    }
 
    @Override
-   public Response download( @PathParam("downloadId") String downloadId )
+   public Response download(String downloadId)
    {
       // TODO scan (again) for virus
       try
