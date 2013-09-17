@@ -75,9 +75,6 @@ public class ProjectsService implements ProjectsResource
    MediaType accept;
 
    @Override
-   @GET
-   @Produces( { MediaTypes.APPLICATION_ZANATA_PROJECTS_XML, MediaTypes.APPLICATION_ZANATA_PROJECTS_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-   @Wrapped(element = "projects", namespace = Namespaces.ZANATA_API)
    public Response get()
    {
       Query query = session.createQuery("from HProject p");

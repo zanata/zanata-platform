@@ -64,7 +64,6 @@ import org.zanata.webtrans.shared.model.DocumentStatus;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Path("/stats")
-@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 @Name("statisticsServiceImpl")
 @Scope(ScopeType.STATELESS)
 public class StatisticsServiceImpl implements StatisticsResource

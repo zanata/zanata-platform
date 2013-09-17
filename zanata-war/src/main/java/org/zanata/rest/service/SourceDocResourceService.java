@@ -81,8 +81,6 @@ import java.util.regex.Pattern;
  */
 @Name("sourceDocResourceService")
 @Path(SourceDocResourceService.SERVICE_PATH)
-@Produces( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-@Consumes( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 @Transactional
 @IgnoreInterfacePath
 public class SourceDocResourceService implements SourceDocResource
@@ -125,7 +123,6 @@ public class SourceDocResourceService implements SourceDocResource
 
 
    @Override
-   @HEAD
    public Response head()
    {
       HProjectIteration hProjectIteration = retrieveAndCheckIteration(false);
@@ -139,8 +136,6 @@ public class SourceDocResourceService implements SourceDocResource
    }
 
    @Override
-   @GET
-   @Wrapped(element = "resources", namespace = Namespaces.ZANATA_API)
    public Response get(@QueryParam("ext") Set<String> extensions)
    {
       HProjectIteration hProjectIteration = retrieveAndCheckIteration(false);
@@ -175,7 +170,6 @@ public class SourceDocResourceService implements SourceDocResource
 
 
    @Override
-   @POST
    @Restrict("#{s:hasPermission(sourceDocResourceService.securedIteration, 'import-template')}")
    public Response post(Resource resource, @QueryParam("ext") Set<String> extensions, @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans)
    {
@@ -213,9 +207,6 @@ public class SourceDocResourceService implements SourceDocResource
    }
 
    @Override
-   @GET
-   @Path(RESOURCE_SLUG_TEMPLATE)
-   // /r/{id}
    public Response getResource(@PathParam("id") String idNoSlash, @QueryParam("ext") Set<String> extensions)
    {
       log.debug("start get resource");
@@ -259,10 +250,7 @@ public class SourceDocResourceService implements SourceDocResource
    }
 
    @Override
-   @PUT
-   @Path(RESOURCE_SLUG_TEMPLATE)
    @Restrict("#{s:hasPermission(sourceDocResourceService.securedIteration, 'import-template')}")
-   // /r/{id}
    public Response putResource(@PathParam("id") String idNoSlash, Resource resource, @QueryParam("ext") Set<String> extensions, @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans)
    {
       log.debug("start put resource");
@@ -292,10 +280,7 @@ public class SourceDocResourceService implements SourceDocResource
    }
 
    @Override
-   @DELETE
-   @Path(RESOURCE_SLUG_TEMPLATE)
    @Restrict("#{s:hasPermission(sourceDocResourceService.securedIteration, 'import-template')}")
-   // /r/{id}
    public Response deleteResource(@PathParam("id") String idNoSlash)
    {
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
@@ -315,9 +300,6 @@ public class SourceDocResourceService implements SourceDocResource
    }
 
    @Override
-   @GET
-   @Path(RESOURCE_SLUG_TEMPLATE + "/meta")
-   // /r/{id}/meta
    public Response getResourceMeta(@PathParam("id") String idNoSlash, @QueryParam("ext") Set<String> extensions)
    {
       log.debug("start to get resource meta");
@@ -350,10 +332,7 @@ public class SourceDocResourceService implements SourceDocResource
    }
 
    @Override
-   @PUT
-   @Path(RESOURCE_SLUG_TEMPLATE + "/meta")
    @Restrict("#{s:hasPermission(sourceDocResourceService.securedIteration, 'import-template')}")
-   // /r/{id}/meta
    public Response putResourceMeta(@PathParam("id") String idNoSlash, ResourceMeta messageBody, @QueryParam("ext") Set<String> extensions)
    {
       log.debug("start to put resource meta");

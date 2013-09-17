@@ -72,7 +72,6 @@ import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode;
  */
 @Name("asynchronousProcessResourceService")
 @Path(AsynchronousProcessResource.SERVICE_PATH)
-@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 @Transactional
 @Slf4j
 @IgnoreInterfacePath

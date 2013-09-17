@@ -64,8 +64,6 @@ public class GlossaryService implements GlossaryResource
    Log log = Logging.getLog(GlossaryService.class);
 
    @Override
-   @GET
-   @Produces({ MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML, MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
    public Response getEntries()
    {
       ResponseBuilder response = request.evaluatePreconditions();
@@ -83,9 +81,6 @@ public class GlossaryService implements GlossaryResource
    }
 
    @Override
-   @GET
-   @Path("/{locale}")
-   @Produces({ MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML, MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
    public Response get(@PathParam("locale")
    LocaleId locale)
    {
@@ -104,8 +99,6 @@ public class GlossaryService implements GlossaryResource
    }
 
    @Override
-   @PUT
-   @Consumes({ MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML, MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
    @Restrict("#{s:hasPermission('', 'glossary-insert')}")
    public Response put(Glossary glossary)
    {
@@ -125,8 +118,6 @@ public class GlossaryService implements GlossaryResource
    }
 
    @Override
-   @DELETE
-   @Path("/{locale}")
    @Restrict("#{s:hasPermission('', 'glossary-delete')}")
    public Response deleteGlossary(@PathParam("locale") LocaleId targetLocale)
    {
@@ -143,7 +134,6 @@ public class GlossaryService implements GlossaryResource
    }
 
    @Override
-   @DELETE
    @Restrict("#{s:hasPermission('', 'glossary-delete')}")
    public Response deleteGlossaries()
    {

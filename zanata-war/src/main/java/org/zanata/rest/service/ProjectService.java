@@ -90,8 +90,6 @@ public class ProjectService implements ProjectResource
    }
 
    @Override
-   @HEAD
-   @Produces({ MediaTypes.APPLICATION_ZANATA_PROJECT_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
    public Response head()
    {
       EntityTag etag = eTagUtils.generateTagForProject(projectSlug);
@@ -104,8 +102,6 @@ public class ProjectService implements ProjectResource
    }
 
    @Override
-   @GET
-   @Produces({ MediaTypes.APPLICATION_ZANATA_PROJECT_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
    public Response get()
    {
       try
@@ -129,8 +125,6 @@ public class ProjectService implements ProjectResource
    }
 
    @Override
-   @PUT
-   @Consumes({ MediaTypes.APPLICATION_ZANATA_PROJECT_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
    public Response put(Project project)
    {
       ResponseBuilder response;

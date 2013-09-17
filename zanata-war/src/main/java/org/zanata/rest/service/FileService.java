@@ -77,8 +77,6 @@ import com.google.common.io.ByteStreams;
 
 @Name("fileService")
 @Path(FileResource.FILE_RESOURCE)
-@Produces( { MediaType.APPLICATION_OCTET_STREAM })
-@Consumes( { MediaType.APPLICATION_OCTET_STREAM })
 @IgnoreInterfacePath
 public class FileService implements FileResource
 {
@@ -113,10 +111,6 @@ public class FileService implements FileResource
    private FilePersistService filePersistService;
 
    @Override
-   @GET
-   @Path(ACCEPTED_TYPES_RESOURCE)
-   @Produces( MediaType.TEXT_PLAIN )
-   // /file/accepted_types
    public Response acceptedFileTypes()
    {
       StringSet acceptedTypes = new StringSet("");
@@ -125,10 +119,6 @@ public class FileService implements FileResource
    }
 
    @Override
-   @POST
-   @Path(SOURCE_UPLOAD_TEMPLATE)
-   @Consumes( MediaType.MULTIPART_FORM_DATA)
-   @Produces( MediaType.APPLICATION_XML)
    public Response uploadSourceFile( @PathParam("projectSlug") String projectSlug,
                                      @PathParam("iterationSlug") String iterationSlug,
                                      @QueryParam("docId") String docId,
@@ -139,10 +129,6 @@ public class FileService implements FileResource
    }
 
    @Override
-   @POST
-   @Path(TRANSLATION_UPLOAD_TEMPLATE)
-   @Consumes( MediaType.MULTIPART_FORM_DATA)
-   @Produces( MediaType.APPLICATION_XML)
    public Response uploadTranslationFile( @PathParam("projectSlug") String projectSlug,
                                           @PathParam("iterationSlug") String iterationSlug,
                                           @PathParam("locale") String localeId,
@@ -155,9 +141,6 @@ public class FileService implements FileResource
    }
 
    @Override
-   @GET
-   @Path(SOURCE_DOWNLOAD_TEMPLATE)
-   // /file/source/{projectSlug}/{iterationSlug}/{fileType}?docId={docId}
    public Response downloadSourceFile( @PathParam("projectSlug") String projectSlug,
                                        @PathParam("iterationSlug") String iterationSlug,
                                        @PathParam("fileType") String fileType,
@@ -211,9 +194,6 @@ public class FileService implements FileResource
    }
 
    @Override
-   @GET
-   @Path(FILE_DOWNLOAD_TEMPLATE)
-   // /file/translation/{projectSlug}/{iterationSlug}/{locale}/{fileType}?docId={docId}
    public Response downloadTranslationFile( @PathParam("projectSlug") String projectSlug,
                                             @PathParam("iterationSlug") String iterationSlug,
                                             @PathParam("locale") String locale,
@@ -307,9 +287,6 @@ public class FileService implements FileResource
    }
 
    @Override
-   @GET
-   @Path(DOWNLOAD_TEMPLATE)
-   // /file/download/{downloadId}
    public Response download( @PathParam("downloadId") String downloadId )
    {
       // TODO scan (again) for virus

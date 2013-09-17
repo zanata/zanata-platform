@@ -76,9 +76,7 @@ import com.google.common.base.Optional;
  * This service allows clients to push and pull both source documents and translations.
  */
 @Name("translatedDocResourceService")
-@Path(TranslatedDocResourceService.SERVICE_PATH)
-@Produces( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-@Consumes( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+@Path(TranslatedDocResource.SERVICE_PATH)
 @Transactional
 @IgnoreInterfacePath
 public class TranslatedDocResourceService implements TranslatedDocResource
@@ -150,9 +148,6 @@ public class TranslatedDocResourceService implements TranslatedDocResource
    private LocaleService localeServiceImpl;
 
    @Override
-   @GET
-   @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
-   // /r/{id}/translations/{locale}
    public Response getTranslations(
          @PathParam("id") String idNoSlash,
          @PathParam("locale") LocaleId locale,
@@ -207,10 +202,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource
    }
 
    @Override
-   @DELETE
-   @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
    @Restrict("#{s:hasPermission(translatedDocResourceService.securedIteration.project, 'modify-translation')}")
-   // /r/{id}/translations/{locale}
    public Response deleteTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale)
    {
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
@@ -247,9 +239,6 @@ public class TranslatedDocResourceService implements TranslatedDocResource
    }
 
    @Override
-   @PUT
-   @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
-   // /r/{id}/translations/{locale}
    public Response putTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, TranslationsResource messageBody, @QueryParam("ext") Set<String> extensions, @QueryParam("merge") @DefaultValue("auto") String merge)
    {
       // check security (cannot be on @Restrict as it refers to method parameters)

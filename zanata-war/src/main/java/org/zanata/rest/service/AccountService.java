@@ -71,9 +71,6 @@ public class AccountService implements AccountResource
    private Session session;
 
    @Override
-   @GET
-   @Produces(
-   {MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML, MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON})
    public Response get()
    {
       log.debug("HTTP GET {0}", request.getRequestURL());
@@ -90,9 +87,6 @@ public class AccountService implements AccountResource
    }
 
    @Override
-   @PUT
-   @Consumes(
-   {MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML, MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON})
    public Response put(Account account)
    {
       log.debug("HTTP PUT {0} : \n{1}", request.getRequestURL(), account);

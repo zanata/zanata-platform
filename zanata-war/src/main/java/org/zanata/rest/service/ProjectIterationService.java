@@ -120,8 +120,6 @@ public class ProjectIterationService implements ProjectIterationResource
    }
 
    @Override
-   @HEAD
-   @Produces( { MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
    public Response head()
    {
       EntityTag etag = eTagUtils.generateETagForIteration(projectSlug, iterationSlug);
@@ -136,8 +134,6 @@ public class ProjectIterationService implements ProjectIterationResource
    }
 
    @Override
-   @GET
-   @Produces( { MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
    public Response get()
    {
 
@@ -158,8 +154,6 @@ public class ProjectIterationService implements ProjectIterationResource
    }
 
    @Override
-   @PUT
-   @Consumes( { MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
    public Response put(ProjectIteration projectIteration)
    {
 
