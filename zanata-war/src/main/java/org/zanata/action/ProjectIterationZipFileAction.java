@@ -10,7 +10,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.security.Identity;
-import org.zanata.ApplicationConfiguration;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.tasks.ZipFileBuildTask;
 import org.zanata.dao.ProjectIterationDAO;
@@ -29,9 +28,6 @@ public class ProjectIterationZipFileAction implements Serializable
    @In
    AsyncTaskManagerService asyncTaskManagerServiceImpl;
 
-   @In
-   private ApplicationConfiguration applicationConfiguration;
-
    private String projectSlug;
 
    private String iterationSlug;
@@ -42,7 +38,7 @@ public class ProjectIterationZipFileAction implements Serializable
 
    @Begin(join = true)
    @Restrict("#{s:hasPermission(projectIterationZipFileAction.projectIteration, 'download-all')}")
-   public void prepareIterationZipFile(boolean offlinePo)
+   public void prepareIterationZipFile(boolean isPoProject)
    {
       if( this.zipFilePrepHandle != null && !this.zipFilePrepHandle.isDone() )
       {
@@ -51,8 +47,8 @@ public class ProjectIterationZipFileAction implements Serializable
       }
 
       // Start a zip file task
-      ZipFileBuildTask task = new ZipFileBuildTask(this.projectSlug, this.iterationSlug, this.localeId,
-            Identity.instance().getCredentials().getUsername(), offlinePo);
+      ZipFileBuildTask task = new ZipFileBuildTask(projectSlug, iterationSlug, localeId,
+            Identity.instance().getCredentials().getUsername(), isPoProject);
 
       String taskId = asyncTaskManagerServiceImpl.startTask(task);
       zipFilePrepHandle = asyncTaskManagerServiceImpl.getHandle(taskId);

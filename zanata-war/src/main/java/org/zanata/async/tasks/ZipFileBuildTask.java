@@ -20,12 +20,18 @@
  */
 package org.zanata.async.tasks;
 
-import com.google.common.base.Optional;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
 import org.jboss.seam.Component;
-import org.zanata.ApplicationConfiguration;
 import org.zanata.adapter.po.PoWriter2;
-import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTask;
+import org.zanata.async.AsyncTaskHandle;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
@@ -41,13 +47,7 @@ import org.zanata.service.FileSystemService;
 import org.zanata.service.impl.ConfigurationServiceImpl;
 import org.zanata.service.impl.FileSystemServiceImpl;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+import com.google.common.base.Optional;
 
 /**
  * This is an asynchronous task to build a zip file containing all files for a Project
@@ -63,17 +63,17 @@ public class ZipFileBuildTask implements AsyncTask<String, AsyncTaskHandle<Strin
    private final String iterationSlug;
    private final String localeId;
    private final String userName;
-   private final boolean isOfflinePo;
+   private final boolean isPoProject;
 
    private AsyncTaskHandle<String> handle;
 
-   public ZipFileBuildTask(String projectSlug, String iterationSlug, String localeId, String userName, boolean offlinePo)
+   public ZipFileBuildTask(String projectSlug, String iterationSlug, String localeId, String userName, boolean isPoProject)
    {
       this.projectSlug = projectSlug;
       this.iterationSlug = iterationSlug;
       this.localeId = localeId;
       this.userName = userName;
-      isOfflinePo = offlinePo;
+      this.isPoProject = isPoProject;
    }
 
    @Override
@@ -108,7 +108,6 @@ public class ZipFileBuildTask implements AsyncTask<String, AsyncTaskHandle<Strin
       TextFlowTargetDAO textFlowTargetDAO = (TextFlowTargetDAO)Component.getInstance(TextFlowTargetDAO.class);
       FileSystemService fileSystemService = (FileSystemService) Component.getInstance(FileSystemServiceImpl.class);
       ConfigurationService configurationService = (ConfigurationService)Component.getInstance(ConfigurationServiceImpl.class);
-      ApplicationConfiguration applicationConfiguration = (ApplicationConfiguration)Component.getInstance(ApplicationConfiguration.class);
 
       final String projectDirectory = projectSlug + "-" + iterationSlug + "/";
       final HLocale hLocale = localeDAO.findByLocaleId(new LocaleId(localeId));
@@ -119,7 +118,7 @@ public class ZipFileBuildTask implements AsyncTask<String, AsyncTaskHandle<Strin
       final FileOutputStream output = new FileOutputStream( downloadFile );
       final ZipOutputStream zipOutput = new ZipOutputStream(output);
       zipOutput.setMethod(ZipOutputStream.DEFLATED);
-      final PoWriter2 poWriter = new PoWriter2(false, isOfflinePo);
+      final PoWriter2 poWriter = new PoWriter2(false, !isPoProject);
       final Set<String> extensions = new HashSet<String>();
 
       extensions.add("gettext");
@@ -133,9 +132,8 @@ public class ZipFileBuildTask implements AsyncTask<String, AsyncTaskHandle<Strin
       // Add the config file at the root of the project directory
       String configFilename = projectDirectory + configurationService.getConfigurationFileName();
       zipOutput.putNextEntry(new ZipEntry(configFilename));
-      zipOutput.write(configurationService.getConfigurationFileContents(
-            projectSlug, iterationSlug, hLocale, isOfflinePo, applicationConfiguration.getServerPath())
-            .getBytes());
+      zipOutput.write(configurationService.getConfigForOfflineTranslation(
+            projectSlug, iterationSlug, hLocale).getBytes());
       zipOutput.closeEntry();
       getHandle().increaseProgress(1);
 

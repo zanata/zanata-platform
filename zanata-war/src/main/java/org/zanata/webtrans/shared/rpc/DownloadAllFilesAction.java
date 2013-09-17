@@ -31,19 +31,19 @@ public class DownloadAllFilesAction implements DispatchAction<DownloadAllFilesRe
 
    private String projectSlug, versionSlug, localeId;
 
-   private boolean offlinePo;
+   private boolean isPoProject;
 
    @SuppressWarnings("unused")
    private DownloadAllFilesAction()
    {
    }
 
-   public DownloadAllFilesAction(String projectSlug, String versionSlug, String localeId, boolean offlinePo)
+   public DownloadAllFilesAction(String projectSlug, String versionSlug, String localeId, boolean isPoProject)
    {
       this.projectSlug = projectSlug;
       this.versionSlug = versionSlug;
       this.localeId = localeId;
-      this.offlinePo = offlinePo;
+      this.isPoProject = isPoProject;
    }
 
    public String getProjectSlug()
@@ -61,9 +61,9 @@ public class DownloadAllFilesAction implements DispatchAction<DownloadAllFilesRe
       return localeId;
    }
 
-   public boolean isOfflinePo()
+   public boolean isPoProject()
    {
-      return offlinePo;
+      return isPoProject;
    }
 
 }
