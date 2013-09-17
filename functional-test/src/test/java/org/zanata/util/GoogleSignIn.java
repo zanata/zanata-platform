@@ -64,17 +64,8 @@ public class GoogleSignIn
    public static String getSignIn(String username)
    {
       String googlePass;
-      String empty = new String("");
-      try
-      {
-         googlePass = System.getenv("GOOGLEID");
-      }
-      catch (NullPointerException npe)
-      {
-         log.warn("Cannot find environment variable");
-         return empty;
-      }
-
+      String empty = "";
+      googlePass = System.getenv("GOOGLEID");
       if (googlePass == null || googlePass.isEmpty())
       {
          return empty;

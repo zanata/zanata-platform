@@ -72,7 +72,7 @@ public class SignInPage extends BasePage
       return new GoogleAccountPage(getDriver());
    }
 
-   public ResetPasswordPage gotToResetPassword()
+   public ResetPasswordPage goToResetPassword()
    {
       forgotPasswordLink.click();
       return new ResetPasswordPage(getDriver());
