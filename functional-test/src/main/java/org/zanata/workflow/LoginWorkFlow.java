@@ -85,7 +85,9 @@ public class LoginWorkFlow extends AbstractWebWorkFlow
 
    private void doSignIn(String username, String password)
    {
-      SignInPage signInPage = new BasePage(driver).clickSignInLink();
+      BasePage basePage = new BasePage(driver);
+      basePage.deleteCookiesAndRefresh();
+      SignInPage signInPage = basePage.clickSignInLink();
       log.info("log in as username: {}", username);
       signInPage.enterUsername(username);
       signInPage.enterPassword(password);

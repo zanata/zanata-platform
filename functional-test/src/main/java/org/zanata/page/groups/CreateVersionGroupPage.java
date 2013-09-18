@@ -52,13 +52,13 @@ public class CreateVersionGroupPage extends BasePage
    public CreateVersionGroupPage inputGroupId(String groupId)
    {
       groupSlugField.sendKeys(groupId);
-      return this;
+      return new CreateVersionGroupPage(getDriver());
    }
 
    public CreateVersionGroupPage inputGroupName(String groupName)
    {
       groupNameField.sendKeys(groupName);
-      return this;
+      return new CreateVersionGroupPage(getDriver());
    }
 
    public CreateVersionGroupPage inputGroupDescription(String desc)
@@ -82,7 +82,7 @@ public class CreateVersionGroupPage extends BasePage
    public CreateVersionGroupPage saveGroupFailure()
    {
       clickAndExpectErrors(saveButton);
-      return this;
+      return new CreateVersionGroupPage(getDriver());
    }
 
    public CreateVersionGroupPage clearFields()

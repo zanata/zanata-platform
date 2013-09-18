@@ -22,6 +22,7 @@ package org.zanata.action;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nullable;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 
@@ -39,6 +40,10 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HIterationGroup;
 import org.zanata.model.HProjectIteration;
 import org.zanata.service.SlugEntityService;
+import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -60,6 +65,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
 
    @Logger
    Log log;
+   private List<SelectItem> statusList;
 
    @Override
    protected HIterationGroup loadInstance()
@@ -158,15 +164,21 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
    @Override
    public List<SelectItem> getStatusList()
    {
-      List<SelectItem> statusList = super.getStatusList();
+      return getAvailableStatus();
+   }
 
-      for (SelectItem option : statusList)
+   private List<SelectItem> getAvailableStatus()
+   {
+      if (statusList == null)
       {
-         if (option.getValue().equals(EntityStatus.READONLY))
+         statusList = ImmutableList.copyOf(Iterables.filter(super.getStatusList(), new Predicate<SelectItem>()
          {
-            statusList.remove(option);
-            break;
-         }
+            @Override
+            public boolean apply(SelectItem input)
+            {
+               return !input.getValue().equals(EntityStatus.READONLY);
+            }
+         }));
       }
       return statusList;
    }

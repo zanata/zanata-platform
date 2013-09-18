@@ -31,6 +31,7 @@ public class ExperimentTest
 {
    @ClassRule
    public static ResetDatabaseRule rule = new ResetDatabaseRule(ResetDatabaseRule.Config.NoResetAfter, ResetDatabaseRule.Config.WithData);
+//   public static ResetDatabaseRule rule = new ResetDatabaseRule(ResetDatabaseRule.Config.NoResetAfter);
 
    @Test
    public void canFindText() {
