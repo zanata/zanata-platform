@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.zanata.feature.account.AccountTestSuite;
 import org.zanata.feature.administration.AdministrationTestSuite;
+import org.zanata.feature.document.DocumentTestSuite;
 import org.zanata.feature.glossary.GlossaryTestSuite;
 import org.zanata.feature.security.SecurityTestSuite;
 import org.zanata.feature.startNewProject.CreateSampleProjectTestSuite;
@@ -36,7 +37,8 @@ import org.zanata.feature.versionGroup.VersionGroupTestSuite;
       GlossaryTestSuite.class,
       SecurityTestSuite.class,
       CreateSampleProjectTestSuite.class,
-      VersionGroupTestSuite.class
+      VersionGroupTestSuite.class,
+      DocumentTestSuite.class
 })
 public class AggregateTestSuite {
 }

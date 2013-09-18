@@ -64,8 +64,7 @@ public class SecurityFullTest
    @Test
    public void signInFailure()
    {
-      SignInPage signInPage = new BasicWorkFlow().goToHome().clickSignInLink();
-      signInPage = signInPage.signInFailure("nosuchuser", "password");
+      SignInPage signInPage = new LoginWorkFlow().signInFailure("nosuchuser", "password");
       assertThat("Error message is shown", signInPage.getNotificationMessage(), equalTo("Login failed"));
       assertThat("User has failed to log in", !signInPage.hasLoggedIn());
    }
@@ -75,7 +74,7 @@ public class SecurityFullTest
    public void resetPasswordSuccessful()
    {
       SignInPage signInPage = new BasicWorkFlow().goToHome().clickSignInLink();
-      ResetPasswordPage resetPasswordPage = signInPage.gotToResetPassword();
+      ResetPasswordPage resetPasswordPage = signInPage.goToResetPassword();
       resetPasswordPage = resetPasswordPage.enterUserName("nosuchuser").enterEmail("nosuchuser@nosuchdomain.com");
       resetPasswordPage = resetPasswordPage.resetPassword();
       //TODO: Reset Success page
@@ -85,7 +84,7 @@ public class SecurityFullTest
    public void resetPasswordFailureForInvalidAccount()
    {
       SignInPage signInPage = new BasicWorkFlow().goToHome().clickSignInLink();
-      ResetPasswordPage resetPasswordPage = signInPage.gotToResetPassword();
+      ResetPasswordPage resetPasswordPage = signInPage.goToResetPassword();
       resetPasswordPage = resetPasswordPage.enterUserName("nosuchuser").enterEmail("nosuchuser@nosuchdomain.com");
       resetPasswordPage = resetPasswordPage.resetFailure();
       assertThat("A no such account message is displayed", resetPasswordPage.getNotificationMessage(),
@@ -96,7 +95,7 @@ public class SecurityFullTest
    public void invalidResetPasswordFieldEntries()
    {
       SignInPage signInPage = new BasicWorkFlow().goToHome().clickSignInLink();
-      ResetPasswordPage resetPasswordPage = signInPage.gotToResetPassword();
+      ResetPasswordPage resetPasswordPage = signInPage.goToResetPassword();
       resetPasswordPage = resetPasswordPage.enterUserName("b").enterEmail("b");
       resetPasswordPage = resetPasswordPage.resetFailure();
 
@@ -113,7 +112,7 @@ public class SecurityFullTest
    public void emptyResetPasswordFieldEntries()
    {
       SignInPage signInPage = new BasicWorkFlow().goToHome().clickSignInLink();
-      ResetPasswordPage resetPasswordPage = signInPage.gotToResetPassword();
+      ResetPasswordPage resetPasswordPage = signInPage.goToResetPassword();
       resetPasswordPage = resetPasswordPage.clearFields();
       resetPasswordPage = resetPasswordPage.resetFailure();
 
