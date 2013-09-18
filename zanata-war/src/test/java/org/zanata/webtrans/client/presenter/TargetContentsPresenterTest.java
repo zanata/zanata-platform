@@ -533,8 +533,10 @@ public class TargetContentsPresenterTest
 
       presenter.updateRow(updatedTransUnit);
 
-      verify(display).setValueAndCreateNewEditors(updatedTransUnit);
-      verify(display).refresh();
+      InOrder inOrder = Mockito.inOrder(display);
+      inOrder.verify(display).setValueAndCreateNewEditors(updatedTransUnit);
+      inOrder.verify(display).setState(TargetContentsDisplay.EditingState.SAVED);
+      inOrder.verify(display).refresh();
    }
 
    @Test
