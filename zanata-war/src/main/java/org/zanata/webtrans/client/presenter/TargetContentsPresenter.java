@@ -540,8 +540,8 @@ public class TargetContentsPresenter implements
       if (contentsDisplayOptional.isPresent())
       {
          TargetContentsDisplay contentsDisplay = contentsDisplayOptional.get();
-         contentsDisplay.setState(TargetContentsDisplay.EditingState.SAVED);
          contentsDisplay.setValueAndCreateNewEditors(updatedTransUnit);
+         contentsDisplay.setState(TargetContentsDisplay.EditingState.SAVED);
          contentsDisplay.refresh();
          if (equal(updatedTransUnit.getId(), currentTransUnitId))
          {
