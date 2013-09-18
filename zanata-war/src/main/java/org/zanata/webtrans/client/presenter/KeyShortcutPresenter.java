@@ -200,7 +200,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay>
             .addKey(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ESCAPE))
             .setContext(ShortcutContext.Application)
             .setDescription(messages.closeShortcutView())
-            .setKeyEvent(KeyEvent.KEY_UP)
+            .setKeyEvent(KeyEvent.KEY_DOWN)
             .setPreventDefault(true)
             .setStopPropagation(true)
             .setHandler(new KeyShortcutEventHandler()
