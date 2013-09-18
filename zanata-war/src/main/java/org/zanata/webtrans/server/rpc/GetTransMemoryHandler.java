@@ -185,7 +185,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
 
    private static boolean isValidResult(HTextFlowTarget textFlowTarget)
    {
-      if (textFlowTarget == null)
+      if (textFlowTarget == null || !textFlowTarget.getState().isTranslated())
       {
          return false;
       }
