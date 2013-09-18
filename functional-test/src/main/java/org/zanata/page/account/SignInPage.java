@@ -20,27 +20,29 @@
  */
 package org.zanata.page.account;
 
-import java.util.List;
-
+import com.google.common.base.Predicate;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import com.google.common.base.Predicate;
-
-import lombok.extern.slf4j.Slf4j;
 import org.zanata.page.AbstractPage;
 import org.zanata.page.BasePage;
+
+import java.util.List;
 
 @Slf4j
 public class SignInPage extends BasePage
 {
-   @FindBy(id = "login:usernameField:username")
+   @FindBy(id = "login:internal_signin")
+   private WebElement internalSignIn;
+
+   @FindBy(id = "login:providerUsernameField:username")
    private WebElement usernameField;
 
-   @FindBy(id = "login:passwordField:password")
+   @FindBy(id = "login:providerPasswordField:password")
    private WebElement passwordField;
 
    @FindBy(id = "login:Sign_in")
@@ -52,6 +54,12 @@ public class SignInPage extends BasePage
    public SignInPage(final WebDriver driver)
    {
       super(driver);
+   }
+
+   public SignInPage selectInternalSignin()
+   {
+      internalSignIn.click();
+      return new SignInPage(getDriver());
    }
 
    public <P extends AbstractPage> P signInAndGoToPage(String username, String password, Class<P> pageClass)
@@ -106,8 +114,9 @@ public class SignInPage extends BasePage
 
    private void doSignIn(String username, String password)
    {
-      SignInPage.log.info("log in as username: {}", username);
+      SignInPage.log.info("Internal log in as username: {}", username);
       usernameField.clear();
+      passwordField.clear();
       usernameField.sendKeys(username);
       passwordField.sendKeys(password);
       signInButton.click();
@@ -126,4 +135,5 @@ public class SignInPage extends BasePage
          }
       });
    }
+
 }

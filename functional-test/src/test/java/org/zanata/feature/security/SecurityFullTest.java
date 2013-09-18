@@ -67,7 +67,7 @@ public class SecurityFullTest
    @Test
    public void signInFailure()
    {
-      SignInPage signInPage = new BasicWorkFlow().goToHome().clickSignInLink();
+      SignInPage signInPage = new BasicWorkFlow().goToHome().clickSignInLink().selectInternalSignin();
       signInPage = signInPage.signInFailure("nosuchuser", "password");
       assertThat("Error message is shown", signInPage.getNotificationMessage(), Matchers.equalTo("Login failed"));
       assertThat("User has failed to log in", !signInPage.hasLoggedIn());
@@ -77,7 +77,7 @@ public class SecurityFullTest
    @Ignore("RHBZ-987707 | Cannot intercept email yet")
    public void resetPasswordSuccessful()
    {
-      SignInPage signInPage = new BasicWorkFlow().goToHome().clickSignInLink();
+      SignInPage signInPage = new BasicWorkFlow().goToHome().clickSignInLink().selectInternalSignin();
       ResetPasswordPage resetPasswordPage = signInPage.gotToResetPassword();
       resetPasswordPage = resetPasswordPage.enterUserName("nosuchuser").enterEmail("nosuchuser@nosuchdomain.com");
       resetPasswordPage = resetPasswordPage.resetPassword();

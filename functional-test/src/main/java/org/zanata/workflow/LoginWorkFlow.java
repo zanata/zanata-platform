@@ -44,7 +44,7 @@ public class LoginWorkFlow extends AbstractWebWorkFlow
          dashboardPage.logout();
       }
 
-      SignInPage signInPage = dashboardPage.clickSignInLink();
+      SignInPage signInPage = dashboardPage.clickSignInLink().selectInternalSignin();
       return signInPage.signInAndGoToPage(username, password, DashboardPage.class);
    }
 
