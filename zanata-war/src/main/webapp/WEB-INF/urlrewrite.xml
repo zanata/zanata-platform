@@ -380,10 +380,17 @@
     <from>^(/.+)?/project/home.seam(.+)?$</from>
     <to>$1/project/list$2</to>
   </outbound-rule>
+
+  <!-- repeated to handle either param order (there should be a better way to do this) -->
   <outbound-rule>
     <from>^(/.+)?/iteration/view.seam\?projectSlug=([^&amp;]+)&amp;iterationSlug=([^&amp;]+)(&amp;(.+))?$</from>
     <to>$1/iteration/view/$2/$3?$5</to>
   </outbound-rule>
+  <outbound-rule>
+    <from>^(/.+)?/iteration/view.seam\?iterationSlug=([^&amp;]+)&amp;projectSlug=([^&amp;]+)(&amp;(.+))?$</from>
+    <to>$1/iteration/view/$3/$2?$5</to>
+  </outbound-rule>
+
   <outbound-rule>
     <from>^(/.+)?/iteration/source_files.seam\?project=([^&amp;]+)&amp;iteration=([^&amp;]+)(&amp;(.+))?$</from>
     <to>$1/iteration/source_files/$2/$3?$5</to>
