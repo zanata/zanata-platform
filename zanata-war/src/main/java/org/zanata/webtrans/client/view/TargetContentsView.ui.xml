@@ -26,10 +26,10 @@
         .saving {
             position: absolute;
             top: 8px;
-            left: 30px;
+            left: 32px;
             font-size: smaller;
             color: #ffffff;
-            z-index: 1;
+            z-index: 5;
             background-color: #416988;
         }
 
