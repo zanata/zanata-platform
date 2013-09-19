@@ -1,5 +1,6 @@
 package org.zanata.webtrans.client.ui;
 
+import com.allen_sauer.gwt.log.client.*;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -42,7 +43,7 @@ public class CodeMirrorEditor extends Composite implements TextAreaWrapper
    }
 
    // see http://codemirror.net/doc/manual.html#usage
-   private native JavaScriptObject initCodeMirror(Element element) /*-{
+   private native JavaScriptObject initCodeMirror(TextAreaElement element) /*-{
       var self = this;
 
       var codeMirrorEditor = $wnd.CodeMirror.fromTextArea(element, {
@@ -50,19 +51,19 @@ public class CodeMirrorEditor extends Composite implements TextAreaWrapper
          lineWrapping: true,
          disableSpellcheck: false,
          mode: "visibleSpace",
-         value: element.value,
-         onFocus: function() {
-            self.@org.zanata.webtrans.client.ui.CodeMirrorEditor::onFocus()();
-         },
-         onBlur: function() {
-            self.@org.zanata.webtrans.client.ui.CodeMirrorEditor::onBlur()();
-         },
-         onChange: function() {
-            self.@org.zanata.webtrans.client.ui.CodeMirrorEditor::onChange()();
-         }
-
+         value: element.value
+      });
+      codeMirrorEditor.on("focus", function() {
+           self.@org.zanata.webtrans.client.ui.CodeMirrorEditor::onFocus()();
       });
 
+      codeMirrorEditor.on("blur", function() {
+           self.@org.zanata.webtrans.client.ui.CodeMirrorEditor::onBlur()();
+      });
+
+      codeMirrorEditor.on("change", function() {
+           self.@org.zanata.webtrans.client.ui.CodeMirrorEditor::onChange()();
+      });
       return codeMirrorEditor;
 
    }-*/;
@@ -73,7 +74,7 @@ public class CodeMirrorEditor extends Composite implements TextAreaWrapper
       if (codeMirror == null)
       {
          textArea.setValue(text);
-         codeMirror = initCodeMirror(getElement());
+         codeMirror = initCodeMirror(textArea);
       }
       setCodeMirrorContent(text);
    }
@@ -90,7 +91,7 @@ public class CodeMirrorEditor extends Composite implements TextAreaWrapper
       super.onLoad();
       if (codeMirror == null)
       {
-         codeMirror = initCodeMirror(getElement());
+         codeMirror = initCodeMirror(textArea);
       }
    }
 
