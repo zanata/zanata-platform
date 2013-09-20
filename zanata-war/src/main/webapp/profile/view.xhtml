@@ -38,14 +38,15 @@
         <h3>#{personHome.instance.account.username}</h3>
         <br/>
 
-        <h:form>
+        <h:form id="userConfig">
           <s:token allowMultiplePosts="true" />
 
           <rich:panel>
           	  <table>
           	  	<tr>
           	  		<td><h2>#{messages['jsf.ApiKey']}</h2></td>
-          	  		<td style="padding-left:15px"><h:commandButton action="#{personHome.regenerateApiKey}"
+          	  		<td style="padding-left:15px">
+                        <h:commandButton id="generateApiButton" action="#{personHome.regenerateApiKey}"
                   value="Generate API Key" render="api_key,no_api_key"
                   onclick="if (!confirm('#{messages['jsf.apikey.ConfirmGenerate']}')) return false" /></td>
           	  	</tr>
@@ -53,14 +54,14 @@
               <s:span id="no_api_key" rendered="#{personHome.instance.account.apiKey == null}">#{messages['jsf.NotGenerated']}</s:span>
               <s:fragment id="api_key" rendered="#{personHome.instance.account.apiKey != null}">
                 <p>#{messages['jsf.YourCurrentApiKeyIs']}
-                  <input type="text" class="code api_key" value="#{personHome.instance.account.apiKey}" readonly="true" size="30"/>
+                  <input id="apiKeyLabel" type="text" class="code api_key" value="#{personHome.instance.account.apiKey}" readonly="true" size="30"/>
                 </p>
               </s:fragment>
           </rich:panel>
 
           <rich:panel>
               <h2>#{messages['jsf.ConfigurationForZanataini']}</h2>
-              <textarea rows="5" readonly="true" class="code configTextArea">
+              <textarea id="configurationTextArea" rows="5" readonly="true" class="code configTextArea">
 [servers]
 #{personHome.urlKeyLabel}#{applicationConfiguration.serverPath}/
 #{personHome.usernameKeyLabel}#{personHome.instance.account.username}
@@ -72,7 +73,7 @@
         <rich:tabPanel switchType="client"
                        inactiveTabClass="inactive_tab">
             <rich:tab header="#{messages['jsf.MaintainedProjects']} (#{personHome.instance.maintainerProjects.size})">
-                <h:form>
+                <h:form id="maintainerProjectsForm">
                     <rich:dataGrid value="#{personHome.instance.maintainerProjects.toArray()}" var="project" columns="2" styleClass="noBorderDataGrid" style="border:0px">
                         <s:link id="project" styleClass="table_link" value="#{project.name} " propagation="none"
                                 view="/project/project.xhtml">
@@ -83,7 +84,7 @@
             </rich:tab>
             <rich:tab header="#{messages['jsf.LanguageTeams']} (#{personHome.instance.languageMemberships.size})">
                 <h:outputText value="None Available" rendered="#{empty personHome.instance.languageMemberships}"/>
-                <h:form>
+                <h:form id="languageMembershipsForm">
                     <rich:dataGrid value="#{personHome.instance.languageMemberships.toArray()}" var="language" columns="6" styleClass="noBorderDataGrid" style="border:0px">
                         <s:link view="/language/language.xhtml" propagation="none" value="#{language.localeId.id}" styleClass="table_link">
                             <f:param name="id" value="#{language.localeId.id}" />
@@ -93,7 +94,7 @@
             </rich:tab>
             <rich:tab header="#{messages['jsf.MaintainedGroups']} (#{personHome.instance.maintainerVersionGroups.size})">
                 <h:outputText value="None Available" rendered="#{empty personHome.instance.maintainerVersionGroups}"/>
-                <h:form>
+                <h:form id="maintainerGroupsForm">
                     <rich:dataGrid value="#{personHome.instance.maintainerVersionGroups.toArray()}" var="group" columns="3" styleClass="noBorderDataGrid" style="border:0px">
                         <s:link view="/version-group/version_group.xhtml" propagation="none" value="#{group.name}" styleClass="table_link">
                             <f:param name="versionGroupSlug" value="#{group.slug}" />
