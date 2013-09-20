@@ -21,6 +21,7 @@
 package org.zanata.page.account;
 
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -31,6 +32,15 @@ import org.zanata.page.BasePage;
  */
 public class MyAccountPage extends BasePage
 {
+
+   @FindBy(id = "userConfig:generateApiButton")
+   private WebElement generateApiKeyButton;
+
+   @FindBy(id = "apiKeyLabel")
+   private WebElement apiKeyLabel;
+
+   @FindBy(id = "configurationTextArea")
+   private WebElement configurationTextArea;
 
    @FindBy(linkText = "Edit Profile")
    private WebElement editProfileButton;
@@ -48,4 +58,32 @@ public class MyAccountPage extends BasePage
       changePasswordButton.click();
       return new ChangePasswordPage(getDriver());
    }
+
+   public String getFullName()
+   {
+      return getDriver().findElement(By.id("main_body_content")).findElement(By.tagName("h1")).getText();
+   }
+
+   public String getUsername()
+   {
+      return getDriver().findElement(By.id("main_body_content")).findElement(By.tagName("h3")).getText();
+   }
+
+   public MyAccountPage pressApiKeyGenerateButton()
+   {
+      generateApiKeyButton.click();
+      getDriver().switchTo().alert().accept();
+      return new MyAccountPage(getDriver());
+   }
+
+   public String getApiKey()
+   {
+      return apiKeyLabel.getAttribute("value");
+   }
+
+   public String getConfigurationDetails()
+   {
+      return configurationTextArea.getText();
+   }
+
 }
