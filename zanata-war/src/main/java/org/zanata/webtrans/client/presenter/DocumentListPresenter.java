@@ -518,7 +518,11 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
    public void downloadAllFiles()
    {
       WorkspaceId workspaceId = userWorkspaceContext.getWorkspaceContext().getWorkspaceId();
-      dispatcher.execute(new DownloadAllFilesAction(workspaceId.getProjectIterationId().getProjectSlug(), workspaceId.getProjectIterationId().getIterationSlug(), workspaceId.getLocaleId().getId(), !isPoProject(getProjectType())), new AsyncCallback<DownloadAllFilesResult>()
+      dispatcher.execute(
+            new DownloadAllFilesAction(workspaceId.getProjectIterationId().getProjectSlug(),
+                  workspaceId.getProjectIterationId().getIterationSlug(),
+                  workspaceId.getLocaleId().getId(), isPoProject(getProjectType())),
+                  new AsyncCallback<DownloadAllFilesResult>()
       {
          @Override
          public void onFailure(Throwable caught)

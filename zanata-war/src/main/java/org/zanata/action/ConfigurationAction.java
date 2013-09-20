@@ -51,48 +51,27 @@ public class ConfigurationAction implements Serializable
    @In
    private ConfigurationService configurationServiceImpl;
 
-   public void getData()
+   public void downloadGeneralConfig()
    {
-      getData(false, null);
+      respondWithFile(configurationServiceImpl.getGeneralConfig(projectSlug, iterationSlug));
    }
 
-   public void getData(HLocale locale)
+   public void downloadOfflineTranslationConfig(HLocale locale)
    {
-      getData(false, locale);
+      respondWithFile(configurationServiceImpl.getConfigForOfflineTranslation(projectSlug, iterationSlug, locale));
    }
 
-   public void getOfflinePoConfigData()
-   {
-      getOfflinePoConfigData(null);
-   }
-
-   public void getOfflinePoConfigData(HLocale locale)
-   {
-      getData(true, locale);
-   }
-
-
-   private void getData(boolean useOfflinePo, HLocale locale)
+   private void respondWithFile(String configFileContents)
    {
       HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
       response.setContentType("application/xml");
       response.addHeader("Content-disposition", "attachment; filename=\"" 
-                                    + this.configurationServiceImpl.getConfigurationFileName() + "\"");
+                                    + configurationServiceImpl.getConfigurationFileName() + "\"");
       response.setCharacterEncoding("UTF-8");
       try
       {
          ServletOutputStream os = response.getOutputStream();
-
-         if (locale == null)
-         {
-            os.write(configurationServiceImpl.getConfigurationFileContents(projectSlug,
-                  iterationSlug, useOfflinePo).getBytes());
-         }
-         else
-         {
-            os.write(configurationServiceImpl.getConfigurationFileContents(projectSlug,
-                  iterationSlug, locale, useOfflinePo).getBytes());
-         }
+         os.write(configFileContents.getBytes());
          os.flush();
          os.close();
          FacesContext.getCurrentInstance().responseComplete();
