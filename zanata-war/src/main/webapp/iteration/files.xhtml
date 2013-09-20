@@ -286,7 +286,7 @@
                         rendered="#{projectIterationFilesAction.poProject}"
                         value="#{messages['jsf.ConfigFileForOfflineTranslation']}"
                         title="#{messages['jsf.GenerateProjectConfigSingleLocale']}"
-                        action="#{configurationAction.getData(projectIterationFilesAction.locale)}">
+                        action="#{configurationAction.downloadOfflineTranslationConfig(projectIterationFilesAction.locale)}">
                     <f:param name="projectSlug" value="#{projectIterationFilesAction.projectSlug}" />
                     <f:param name="iterationSlug" value="#{projectIterationFilesAction.iterationSlug}" />
                 </s:link>
@@ -295,7 +295,7 @@
                         rendered="#{projectIterationFilesAction.knownProjectType and !projectIterationFilesAction.poProject}"
                         value="#{messages['jsf.ConfigFileForOfflineTranslation']}"
                         title="#{messages['jsf.GenerateProjectConfigForOfflineTranslation']}"
-                        action="#{configurationAction.getOfflinePoConfigData(projectIterationFilesAction.locale)}">
+                        action="#{configurationAction.downloadOfflineTranslationConfig(projectIterationFilesAction.locale)}">
                     <f:param name="projectSlug" value="#{projectIterationFilesAction.projectSlug}" />
                     <f:param name="iterationSlug" value="#{projectIterationFilesAction.iterationSlug}" />
                 </s:link>
@@ -308,7 +308,7 @@
                 </s:link>
 
                 <ui:param name="downloadAllAllowed" value="#{projectIterationFilesAction.zipFileDownloadAllowed}" />
-                
+
                 <a4j:commandLink styleClass="action_link #{downloadAllAllowed ? '' : 'disabled'}"
                                  rendered="#{projectIterationFilesAction.poProject or not downloadAllAllowed}"
                                  value="#{messages['jsf.iteration.files.DownloadAllFiles']}"
@@ -317,7 +317,7 @@
                                  render="downloadProgressBar"
                                  disabled="#{not downloadAllAllowed}"
                                  title="#{projectIterationFilesAction.zipFileDownloadTitle}"/>
-                                 
+
                 <a4j:commandLink styleClass="action_link #{downloadAllAllowed ? '' : 'disabled'}"
                                  rendered="#{downloadAllAllowed and !projectIterationFilesAction.poProject}"
                                  value="#{messages['jsf.iteration.files.DownloadAllFilesOfflinePo']}"
