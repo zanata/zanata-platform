@@ -76,6 +76,11 @@ public enum ShortcutContext
    /**
     * Used by {@link org.zanata.webtrans.client.presenter.ForceReviewCommentPresenter}
     */
-   RejectConfirmationPopup
+   RejectConfirmationPopup,
+   
+   /**
+    * Used by {@link org.zanata.webtrans.client.presenter.TargetContentsPresenter}
+    */
+   ValidationWarningPopup
 
 }

@@ -21,10 +21,10 @@
 
 package org.zanata.webtrans.shared.model;
 
-import org.zanata.common.ContentState;
+import org.zanata.common.*;
 
-import com.google.common.base.Objects;
-import com.google.gwt.user.client.rpc.IsSerializable;
+import com.google.common.base.*;
+import com.google.gwt.user.client.rpc.*;
 
 /**
  * Represents information about an attempted update of a {@link TransUnit}.
@@ -41,6 +41,7 @@ public class TransUnitUpdateInfo implements IsSerializable
    private int sourceWordCount;
    private int previousVersionNum;
    private ContentState previousState;
+   private String errorMessage;
 
    // required for GWT rpc serialization
    @SuppressWarnings("unused")
@@ -48,7 +49,8 @@ public class TransUnitUpdateInfo implements IsSerializable
    {
    }
 
-   public TransUnitUpdateInfo(boolean success, boolean targetChanged, DocumentId documentId, TransUnit transUnit, int sourceWordCount, int previousVersionNum, ContentState previousState)
+   public TransUnitUpdateInfo(boolean success, boolean targetChanged, DocumentId documentId, TransUnit transUnit,
+         int sourceWordCount, int previousVersionNum, ContentState previousState, String errorMessage)
    {
       this.success = success;
       this.targetChanged = targetChanged;
@@ -57,12 +59,19 @@ public class TransUnitUpdateInfo implements IsSerializable
       this.sourceWordCount = sourceWordCount;
       this.previousVersionNum = previousVersionNum;
       this.previousState = previousState;
+      this.errorMessage = errorMessage;
+   }
+
+   public TransUnitUpdateInfo(boolean success, boolean targetChanged, DocumentId documentId, TransUnit transUnit,
+         int sourceWordCount, int previousVersionNum, ContentState previousState)
+   {
+      this(success, targetChanged, documentId, transUnit, sourceWordCount, previousVersionNum, previousState, null);
    }
 
    public boolean isSuccess()
    {
       // TODO could do this
-//      return transUnit.getVerNum() > previousVersionNum;
+      //      return transUnit.getVerNum() > previousVersionNum;
       return success;
    }
 
@@ -96,6 +105,11 @@ public class TransUnitUpdateInfo implements IsSerializable
       return sourceWordCount;
    }
 
+   public String getErrorMessage()
+   {
+      return errorMessage;
+   }
+
    @Override
    public String toString()
    {
@@ -107,6 +121,7 @@ public class TransUnitUpdateInfo implements IsSerializable
             add("sourceWordCount", sourceWordCount).
             add("previousVersionNum", previousVersionNum).
             add("previousState", previousState).
+            add("errorMessage", errorMessage).
             toString();
       // @formatter:on
    }

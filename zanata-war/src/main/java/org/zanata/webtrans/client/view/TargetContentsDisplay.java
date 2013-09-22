@@ -22,19 +22,21 @@ package org.zanata.webtrans.client.view;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
-import org.zanata.webtrans.client.ui.HasUpdateValidationWarning;
+import org.zanata.webtrans.client.ui.HasUpdateValidationMessage;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.shared.model.HasTransUnitId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.model.ValidationAction;
 
-public interface TargetContentsDisplay extends WidgetDisplay, HasTransUnitId, HasUpdateValidationWarning, NeedsRefresh
+public interface TargetContentsDisplay extends WidgetDisplay, HasTransUnitId, HasUpdateValidationMessage, NeedsRefresh
 {
    void showButtons(boolean displayButtons);
 
@@ -106,10 +108,15 @@ public interface TargetContentsDisplay extends WidgetDisplay, HasTransUnitId, Ha
 
       void rejectTranslation(TransUnitId id);
 
+      void setFocus();
    }
 
    enum EditingState
    {
       SAVING, UNSAVED, SAVED
    }
+
+   Map<ValidationAction, List<String>> getErrorMessages();
+   
+   
 }

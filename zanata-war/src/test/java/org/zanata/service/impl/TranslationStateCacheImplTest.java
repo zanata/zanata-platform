@@ -106,7 +106,7 @@ public class TranslationStateCacheImplTest
       when(targetValidationLoader.load(targetId)).thenReturn(map);
 
       // Run:
-      Boolean result = tsCache.textFlowTargetHasError(targetId, validationId);
+      Boolean result = tsCache.textFlowTargetHasWarningOrError(targetId, validationId);
 
       // Then:
       verify(targetValidationLoader).load(targetId); // only load the value once
@@ -125,7 +125,7 @@ public class TranslationStateCacheImplTest
       when(targetValidationLoader.load(targetId)).thenReturn(map);
 
       // Run:
-      Boolean result = tsCache.textFlowTargetHasError(targetId, validationId);
+      Boolean result = tsCache.textFlowTargetHasWarningOrError(targetId, validationId);
 
       // Then:
       verify(targetValidationLoader).load(targetId); // only load the value once

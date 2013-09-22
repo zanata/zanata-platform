@@ -3,8 +3,8 @@ package org.zanata.webtrans.shared.rpc;
 import java.util.Map;
 
 import org.zanata.common.ProjectType;
+import org.zanata.webtrans.shared.model.ValidationAction.State;
 import org.zanata.webtrans.shared.model.ValidationId;
-import org.zanata.webtrans.shared.model.ValidationInfo;
 
 
 public class WorkspaceContextUpdate implements SessionEventData, HasWorkspaceContextUpdateData
@@ -14,18 +14,18 @@ public class WorkspaceContextUpdate implements SessionEventData, HasWorkspaceCon
 
    private boolean isProjectActive;
    private ProjectType projectType;
-   private Map<ValidationId, ValidationInfo> validationInfoList;
+   private Map<ValidationId, State> validationStates;
 
    @SuppressWarnings("unused")
    private WorkspaceContextUpdate()
    {
    }
 
-   public WorkspaceContextUpdate(boolean isProjectActive, ProjectType projectType, Map<ValidationId, ValidationInfo> validationInfoList)
+   public WorkspaceContextUpdate(boolean isProjectActive, ProjectType projectType, Map<ValidationId, State> validationStates)
    {
       this.isProjectActive = isProjectActive;
       this.projectType = projectType;
-      this.validationInfoList = validationInfoList;
+      this.validationStates = validationStates;
    }
 
    @Override
@@ -41,9 +41,9 @@ public class WorkspaceContextUpdate implements SessionEventData, HasWorkspaceCon
    }
 
    @Override
-   public Map<ValidationId, ValidationInfo> getValidationInfoList()
+   public Map<ValidationId, State> getValidationStates()
    {
-      return validationInfoList;
+      return validationStates;
    }
 
 }

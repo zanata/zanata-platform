@@ -20,23 +20,18 @@
  */
 package org.zanata.webtrans.server.rpc;
 
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.*;
 
-import net.customware.gwt.dispatch.server.ExecutionContext;
-import net.customware.gwt.dispatch.shared.ActionException;
+import net.customware.gwt.dispatch.server.*;
+import net.customware.gwt.dispatch.shared.*;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.zanata.service.ValidationService;
-import org.zanata.webtrans.server.ActionHandlerFor;
-import org.zanata.webtrans.shared.model.ValidationAction;
-import org.zanata.webtrans.shared.model.ValidationId;
-import org.zanata.webtrans.shared.model.ValidationInfo;
-import org.zanata.webtrans.shared.rpc.GetValidationRulesAction;
-import org.zanata.webtrans.shared.rpc.GetValidationRulesResult;
+import org.jboss.seam.*;
+import org.jboss.seam.annotations.*;
+import org.zanata.service.*;
+import org.zanata.webtrans.server.*;
+import org.zanata.webtrans.shared.model.*;
+import org.zanata.webtrans.shared.model.ValidationAction.*;
+import org.zanata.webtrans.shared.rpc.*;
 
 /**
  * 
@@ -48,26 +43,30 @@ import org.zanata.webtrans.shared.rpc.GetValidationRulesResult;
 @Scope(ScopeType.STATELESS)
 public class GetValidationRulesHandler extends AbstractActionHandler<GetValidationRulesAction, GetValidationRulesResult>
 {
-
    @In
    private ValidationService validationServiceImpl;
 
    @Override
-   public GetValidationRulesResult execute(GetValidationRulesAction action, ExecutionContext context) throws ActionException
+   public GetValidationRulesResult execute(GetValidationRulesAction action, ExecutionContext context)
+         throws ActionException
    {
-      Collection<ValidationAction> validationActionList = validationServiceImpl.getValidationAction(action.getWorkspaceId().getProjectIterationId().getProjectSlug(), action.getWorkspaceId().getProjectIterationId().getIterationSlug());
-      HashMap<ValidationId, ValidationInfo> result = new HashMap<ValidationId, ValidationInfo>();
+      ProjectIterationId version = action.getWorkspaceId().getProjectIterationId();
+      Collection<ValidationAction> validationActionList = validationServiceImpl.getValidationActions(version.getProjectSlug(),
+              version.getIterationSlug());
+
+      HashMap<ValidationId, State> result = new HashMap<ValidationId, State>();
 
       for (ValidationAction validationAction : validationActionList)
       {
-         result.put(validationAction.getId(), validationAction.getValidationInfo());
+         result.put(validationAction.getId(), validationAction.getState());
       }
 
       return new GetValidationRulesResult(result);
    }
 
    @Override
-   public void rollback(GetValidationRulesAction action, GetValidationRulesResult result, ExecutionContext context) throws ActionException
+   public void rollback(GetValidationRulesAction action, GetValidationRulesResult result, ExecutionContext context)
+         throws ActionException
    {
    }
 }

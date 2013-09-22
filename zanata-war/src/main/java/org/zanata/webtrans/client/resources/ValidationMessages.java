@@ -15,10 +15,13 @@ import com.google.gwt.i18n.client.Messages;
 @Generate(format = "com.google.gwt.i18n.rebind.format.PropertiesFormat")
 public interface ValidationMessages extends Messages
 {
+   @DefaultMessage("Validation error - See validation message")
+   String notifyValidationError();
+
    // Newline validator
    @DefaultMessage("Check for consistent leading and trailing newline (\\n)")
    String newLineValidatorDesc();
-   
+
    @DefaultMessage("Leading newline (\\n) is missing")
    String leadingNewlineMissing();
 
@@ -30,7 +33,6 @@ public interface ValidationMessages extends Messages
 
    @DefaultMessage("Unexpected trailing newline (\\n)")
    String trailingNewlineAdded();
-
 
    // Tab validator
    @DefaultMessage("Check whether source and target have the same number of tabs")
@@ -48,7 +50,6 @@ public interface ValidationMessages extends Messages
    @DefaultMessage("Not enough lines in translation (expected {0}, found {1})")
    String linesRemoved(int expected, int actual);
 
-
    // Printf variables validator
    @DefaultMessage("Check that printf style (%x) variables are consistent")
    String printfVariablesValidatorDesc();
@@ -62,11 +63,10 @@ public interface ValidationMessages extends Messages
    @DefaultMessage("Variables have same position: {0,collection,string}")
    String varPositionDuplicated(Collection<String> vars);
 
-
    // Java variables validator
    @DefaultMessage("Check that java style ('{x}') variables are consistent")
    String javaVariablesValidatorDesc();
-         
+
    @Description("Lists variables that appear a different number of times between source and target strings")
    @DefaultMessage("Inconsistent count for variables: {0,list,string}")
    @AlternateMessage({ "one", "Inconsistent count for variable: {0,list,string}" })
@@ -76,15 +76,14 @@ public interface ValidationMessages extends Messages
    String differentApostropheCount();
 
    @DefaultMessage("Quoted characters found in translation but not in source text. " +
-   "Apostrophe character ('') must be doubled ('''') to prevent quoting " +
-   "when it is used in Java MessageFormat strings.")
+         "Apostrophe character ('') must be doubled ('''') to prevent quoting " +
+         "when it is used in Java MessageFormat strings.")
    String quotedCharsAdded();
-
 
    // Shared variables validator messages
    @DefaultMessage("Check that positional printf style (%n$x) variables are consistent")
    String printfXSIExtensionValidationDesc();
-   
+
    @Description("Lists the variables that are in the original string but have not been included in the target")
    @DefaultMessage("Missing variables: {0,list,string}")
    @AlternateMessage({ "one", "Missing variable: {0,list,string}" })
@@ -105,11 +104,10 @@ public interface ValidationMessages extends Messages
    @AlternateMessage({ "one", "Variable not quoted: {0,list,string}" })
    String varsAddedQuoted(@PluralCount List<String> vars);
 
-
    // XHM/HTML tag validator
    @DefaultMessage("Check that XML/HTML tags are consistent")
    String xmlHtmlValidatorDesc();
-         
+
    @Description("Lists the xml or html tags that are in the target but are not in the original string")
    @DefaultMessage("Unexpected tags: {0,list,string}")
    @AlternateMessage({ "one", "Unexpected tag: {0,list,string}" })
@@ -123,7 +121,6 @@ public interface ValidationMessages extends Messages
    @DefaultMessage("Tags in unexpected position: {0,list,string}")
    @AlternateMessage({ "one", "Tag in unexpected position: {0,list,string}" })
    String tagsWrongOrder(@PluralCount List<String> tags);
-
 
    //XML Entity validator
    @DefaultMessage("Check that XML entity are complete")

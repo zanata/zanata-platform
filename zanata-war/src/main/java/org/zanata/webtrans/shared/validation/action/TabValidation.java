@@ -21,10 +21,10 @@
 package org.zanata.webtrans.shared.validation.action;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationId;
-import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.validation.AbstractValidationAction;
 
 import com.google.common.base.CharMatcher;
@@ -33,29 +33,28 @@ public class TabValidation extends AbstractValidationAction
 {
    public TabValidation(ValidationId id, ValidationMessages messages)
    {
-      super(id, messages.tabValidatorDesc(), new ValidationInfo(true), messages);
-   }
-
-   public TabValidation(ValidationId id)
-   {
-      super(id, null, new ValidationInfo(true), null);
+      super(id, messages.tabValidatorDesc(), messages);
    }
 
    @Override
-   public void doValidate(ArrayList<String> errorList, String source, String target)
+   public List<String> doValidate(String source, String target)
    {
+      ArrayList<String> errors = new ArrayList<String>();
+
       @edu.umd.cs.findbugs.annotations.SuppressWarnings("GBU_GUAVA_BETA_CLASS_USAGE")
       CharMatcher tabs = CharMatcher.is('\t');
       int sourceTabs = tabs.countIn(source);
       int targetTabs = tabs.countIn(target);
       if (sourceTabs > targetTabs)
       {
-         errorList.add(getMessages().targetHasFewerTabs(sourceTabs, targetTabs));
+         errors.add(getMessages().targetHasFewerTabs(sourceTabs, targetTabs));
       }
       else if (targetTabs > sourceTabs)
       {
-         errorList.add(getMessages().targetHasMoreTabs(sourceTabs, targetTabs));
+         errors.add(getMessages().targetHasMoreTabs(sourceTabs, targetTabs));
       }
+
+      return errors;
    }
 
 }

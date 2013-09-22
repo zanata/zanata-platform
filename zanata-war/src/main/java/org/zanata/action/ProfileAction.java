@@ -103,7 +103,7 @@ public class ProfileAction implements Serializable
    {
       HPerson person = personDAO.findByEmail(email);
 
-      if( person != null && !person.getAccount().equals( authenticatedAccount ) )
+      if (person != null && !person.getAccount().equals(authenticatedAccount))
       {
          valid = false;
          FacesMessages.instance().addToControl("email", "This email address is already taken");
@@ -114,7 +114,7 @@ public class ProfileAction implements Serializable
    {
       HAccount account = accountDAO.getByUsername(username);
 
-      if( account != null && !account.equals( authenticatedAccount ) )
+      if (account != null && !account.equals(authenticatedAccount))
       {
          valid = false;
          FacesMessages.instance().addToControl("username", "This username is already taken");
@@ -133,13 +133,13 @@ public class ProfileAction implements Serializable
       if (newUser)
       {
          String domain = applicationConfiguration.getDomainName();
-         if( domain == null )
+         if (domain == null)
          {
             email = "";
          }
          else
          {
-            if( applicationConfiguration.isOpenIdAuth() )
+            if (applicationConfiguration.isOpenIdAuth())
             {
                email = zanataOpenId.getAuthResult().getEmail();
             }
@@ -214,7 +214,7 @@ public class ProfileAction implements Serializable
       validateEmail(this.email);
       validateUsername(username);
 
-      if( !this.isValid() )
+      if (!this.isValid())
       {
          return null;
       }
@@ -240,7 +240,8 @@ public class ProfileAction implements Serializable
       {
 
          String key;
-         if (identity.getCredentials().getAuthType() == AuthenticationType.KERBEROS || identity.getCredentials().getAuthType() == AuthenticationType.JAAS)
+         if (identity.getCredentials().getAuthType() == AuthenticationType.KERBEROS
+               || identity.getCredentials().getAuthType() == AuthenticationType.JAAS)
          {
             key = registerServiceImpl.register(this.username, this.username, this.email);
          }

@@ -39,8 +39,8 @@ import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.ValidationAction;
+import org.zanata.webtrans.shared.model.ValidationAction.State;
 import org.zanata.webtrans.shared.model.ValidationId;
-import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.ExitWorkspace;
@@ -48,6 +48,7 @@ import org.zanata.webtrans.shared.rpc.WorkspaceContextUpdate;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.ibm.icu.util.ULocale;
@@ -165,11 +166,11 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
    @Observer(ProjectIterationHome.PROJECT_ITERATION_UPDATE)
    public void projectIterationUpdate(HProjectIteration projectIteration)
    {
-      HashMap<ValidationId, ValidationInfo> validationInfoList = new HashMap<ValidationId, ValidationInfo>();
+      HashMap<ValidationId, State> validationStates = Maps.newHashMap();
 
-      for (ValidationAction validationAction : validationServiceImpl.getValidationObject(projectIteration))
+      for (ValidationAction validationAction : validationServiceImpl.getValidationActions(projectIteration.getProject().getSlug(), projectIteration.getSlug()))
       {
-         validationInfoList.put(validationAction.getId(), validationAction.getValidationInfo());
+         validationStates.put(validationAction.getId(), validationAction.getState());
       }
 
       String projectSlug = projectIteration.getProject().getSlug();
@@ -182,7 +183,7 @@ public class TranslationWorkspaceManagerImpl implements TranslationWorkspaceMana
       ProjectIterationId iterId = new ProjectIterationId(projectSlug, iterSlug, projectIteration.getProjectType());
       for (TranslationWorkspace workspace : projIterWorkspaceMap.get(iterId))
       {
-         WorkspaceContextUpdate event = new WorkspaceContextUpdate(isProjectActive, projectType, validationInfoList);
+         WorkspaceContextUpdate event = new WorkspaceContextUpdate(isProjectActive, projectType, validationStates);
          workspace.publish(event);
       }
    }

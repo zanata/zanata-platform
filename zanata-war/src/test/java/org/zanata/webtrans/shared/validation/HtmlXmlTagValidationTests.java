@@ -56,7 +56,7 @@ public class HtmlXmlTagValidationTests
       messages = Gwti18nReader.create(ValidationMessages.class);
 
       htmlXmlTagValidation = new HtmlXmlTagValidation(ValidationId.HTML_XML, messages);
-      htmlXmlTagValidation.getValidationInfo().setEnabled(true);
+      htmlXmlTagValidation.getRules().setEnabled(true);
    }
 
    @Test

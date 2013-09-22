@@ -18,7 +18,6 @@
 		
 		.runValidationButton
 		{
-			color:#000000;
 			border-radius: 3px;
 			width:85px;
 			margin-top:10px;

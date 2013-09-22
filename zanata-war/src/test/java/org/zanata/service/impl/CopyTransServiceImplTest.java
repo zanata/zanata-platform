@@ -98,6 +98,7 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest
             .use("session", getSession())
             .use(JpaIdentityStore.AUTHENTICATED_USER, seam.autowire(AccountDAO.class).getByUsername("demo"))
             .useImpl(LocaleServiceImpl.class)
+            .useImpl(ValidationServiceImpl.class)
             .ignoreNonResolvable();
    }
 

@@ -21,13 +21,19 @@
 package org.zanata.service.impl;
 
 import static org.zanata.async.tasks.CopyTransTask.CopyTransTaskHandle;
-import static org.zanata.common.ContentState.*;
+import static org.zanata.common.ContentState.Approved;
+import static org.zanata.common.ContentState.NeedReview;
+import static org.zanata.common.ContentState.New;
+import static org.zanata.common.ContentState.Translated;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.REJECT;
 
 import java.util.List;
 
 import javax.persistence.EntityManager;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import org.hibernate.HibernateException;
 import org.hibernate.ScrollableResults;
@@ -55,11 +61,11 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.service.TranslatedDocResourceService;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
-import com.google.common.collect.ImmutableList;
-import com.google.common.base.Optional;
+import org.zanata.service.ValidationService;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
+import org.zanata.webtrans.shared.model.ValidationAction;
 
 //TODO unit test suite for this class
 
@@ -72,7 +78,7 @@ public class CopyTransServiceImpl implements CopyTransService
 
    @In
    private LocaleService localeServiceImpl;
-   
+
    @In
    private TextFlowTargetDAO textFlowTargetDAO;
 
@@ -81,7 +87,10 @@ public class CopyTransServiceImpl implements CopyTransService
 
    @In
    private ProjectDAO projectDAO;
-   
+
+   @In
+   private ValidationService validationServiceImpl;
+
    @Logger
    Log log;
 
@@ -130,23 +139,22 @@ public class CopyTransServiceImpl implements CopyTransService
    {
       try
       {
-         new Work<Void>() {
+         new Work<Void>()
+         {
             @Override
             protected Void work() throws Exception
             {
                int copyCount = 0;
 
                // Determine the state of the copies for each pass
-               boolean checkContext = true,
-                       checkProject = true,
-                       checkDocument = true;
+               boolean checkContext = true, checkProject = true, checkDocument = true;
 
                // First pass, very conservative
                // Every result will match context, document, and project
                copyCount += copyTransPass(document, locale, checkContext, checkProject, checkDocument, options);
 
                // Next passes, more relaxed and only needed when the options call for it
-               if( options.getDocIdMismatchAction() != REJECT )
+               if (options.getDocIdMismatchAction() != REJECT)
                {
                   // Relax doc Id restriction
                   checkDocument = false;
@@ -154,7 +162,7 @@ public class CopyTransServiceImpl implements CopyTransService
                   // Assuming Phase 1 ran, results will have non-matching doc Ids
                   copyCount += copyTransPass(document, locale, checkContext, checkProject, checkDocument, options);
                }
-               if( options.getProjectMismatchAction() != REJECT )
+               if (options.getProjectMismatchAction() != REJECT)
                {
                   // Relax project restriction
                   checkProject = false;
@@ -163,7 +171,7 @@ public class CopyTransServiceImpl implements CopyTransService
                   // Assuming above phase: either doc Id didn't match, or the user explicitly rejected non-matching documents
                   copyCount += copyTransPass(document, locale, checkContext, checkProject, checkDocument, options);
                }
-               if( options.getContextMismatchAction() != REJECT )
+               if (options.getContextMismatchAction() != REJECT)
                {
                   // Relax context restriction
                   checkContext = false;
@@ -173,7 +181,7 @@ public class CopyTransServiceImpl implements CopyTransService
                   // and either Project didn't match, or the user explicitly rejected non-matching projects
                   copyCount += copyTransPass(document, locale, checkContext, checkProject, checkDocument, options);
                }
-               if( options.getContextMismatchAction() != REJECT )
+               if (options.getContextMismatchAction() != REJECT)
                {
                   // Relax context restriction
                   checkContext = false;
@@ -192,7 +200,7 @@ public class CopyTransServiceImpl implements CopyTransService
 
          // Advance the task handler if there is one
          Optional<CopyTransTaskHandle> taskHandle = AsyncUtils.getEventAsyncHandle(CopyTransTaskHandle.class);
-         if( taskHandle.isPresent() )
+         if (taskHandle.isPresent())
          {
             taskHandle.get().increaseProgress(1);
          }
@@ -221,17 +229,23 @@ public class CopyTransServiceImpl implements CopyTransService
             HTextFlowTarget matchingTarget = textFlowTargetDAO.findById((Long) results.get(1), false);
 
             HTextFlow originalTf = (HTextFlow) results.get(0);
-            HTextFlowTarget hTarget = textFlowTargetDAO.getOrCreateTarget(originalTf, locale);
             HProjectIteration matchingTargetProjectIteration = matchingTarget.getTextFlow().getDocument().getProjectIteration();
             ContentState copyState = determineContentState(
-                  originalTf.getResId().equals(matchingTarget.getTextFlow().getResId()),
-                  originalTf.getDocument().getProjectIteration().getProject().getId().equals(matchingTargetProjectIteration.getProject().getId()),
-                  originalTf.getDocument().getDocId().equals( matchingTarget.getTextFlow().getDocument().getDocId() ),
-                  options, requireTranslationReview, matchingTarget.getState());
-            
-            if( shouldOverwrite(hTarget, copyState) )
-            {
+                    originalTf.getResId().equals(matchingTarget.getTextFlow().getResId()),
+                    originalTf.getDocument().getProjectIteration().getProject().getId().equals(matchingTargetProjectIteration.getProject().getId()),
+                    originalTf.getDocument().getDocId().equals( matchingTarget.getTextFlow().getDocument().getDocId() ),
+                    options, requireTranslationReview, matchingTarget.getState());
 
+            boolean hasValidationError = validationTranslations(copyState, matchingTargetProjectIteration, originalTf.getContents(), matchingTarget.getContents());
+
+            if(hasValidationError)
+            {
+               continue;
+            }
+
+            HTextFlowTarget hTarget = textFlowTargetDAO.getOrCreateTarget(originalTf, locale);
+            if( shouldOverwrite(hTarget, copyState))
+            {
                // NB we don't touch creationDate
                hTarget.setTextFlowRevision(originalTf.getRevision());
                hTarget.setLastChanged(matchingTarget.getLastChanged());
@@ -292,20 +306,19 @@ public class CopyTransServiceImpl implements CopyTransService
     * @return The content state that the copied translation should have. 'New' indicates that the translation
     * should not copied.
     */
-   private static
-   ContentState determineContentStateFromMatchRules(List<MatchRulePair> pairs, ContentState initialState)
+   private static ContentState determineContentStateFromMatchRules(List<MatchRulePair> pairs, ContentState initialState)
    {
-      if( pairs.isEmpty() )
+      if (pairs.isEmpty())
       {
          return initialState;
       }
 
       MatchRulePair p = pairs.get(0);
-      if( shouldReject(p.getMatchResult(), p.getRuleAction()) )
+      if (shouldReject(p.getMatchResult(), p.getRuleAction()))
       {
          return New;
       }
-      else if( shouldDowngradeToFuzzy(p.getMatchResult(), p.getRuleAction()) )
+      else if (shouldDowngradeToFuzzy(p.getMatchResult(), p.getRuleAction()))
       {
          return determineContentStateFromMatchRules(pairs.subList(1, pairs.size()), NeedReview);
       }
@@ -324,9 +337,8 @@ public class CopyTransServiceImpl implements CopyTransService
     * @return The content state that the copied translation should have. 'New' indicates that the translation
     * should not copied.
     */
-   static
-   ContentState determineContentStateFromRuleList(List<MatchRulePair> pairs,
-                                                  boolean requireTranslationReview, ContentState matchingTargetState)
+   static ContentState determineContentStateFromRuleList(List<MatchRulePair> pairs,
+         boolean requireTranslationReview, ContentState matchingTargetState)
    {
       assert matchingTargetState == Translated || matchingTargetState == Approved;
       return determineContentStateFromMatchRules(pairs, requireTranslationReview ? matchingTargetState : Translated);
@@ -344,9 +356,8 @@ public class CopyTransServiceImpl implements CopyTransService
     * @return The content state that the copied translation should have. 'New' indicates that the translation
     * should not copied.
     */
-   static
-   ContentState determineContentState(boolean contextMatches, boolean projectMatches, boolean docIdMatches,
-                                      HCopyTransOptions options, boolean requireTranslationReview, ContentState matchingTargetState)
+   static ContentState determineContentState(boolean contextMatches, boolean projectMatches, boolean docIdMatches,
+         HCopyTransOptions options, boolean requireTranslationReview, ContentState matchingTargetState)
    {
       List rules =
             ImmutableList.of(new MatchRulePair(contextMatches, options.getContextMismatchAction()),
@@ -363,7 +374,7 @@ public class CopyTransServiceImpl implements CopyTransService
     * @param action The selected action to take based on the result of the condition evaluation.
     * @return True, if the translation should be outright rejected based on the evaluated condition.
     */
-   static boolean shouldReject(boolean match, HCopyTransOptions.ConditionRuleAction action )
+   static boolean shouldReject(boolean match, HCopyTransOptions.ConditionRuleAction action)
    {
       return !match && action == REJECT;
    }
@@ -390,14 +401,14 @@ public class CopyTransServiceImpl implements CopyTransService
    public void copyTransForDocument(HDocument document, HCopyTransOptions copyTransOpts)
    {
       // use project level options
-      if( copyTransOpts == null )
+      if (copyTransOpts == null)
       {
          // NB: Need to reload the options from the db
-         copyTransOpts = projectDAO.findById( document.getProjectIteration().getProject().getId(), false )
-                                   .getDefaultCopyTransOpts();
+         copyTransOpts = projectDAO.findById(document.getProjectIteration().getProject().getId(), false)
+               .getDefaultCopyTransOpts();
       }
       // use the global default options
-      if( copyTransOpts == null )
+      if (copyTransOpts == null)
       {
          copyTransOpts = new HCopyTransOptions();
       }
@@ -410,14 +421,14 @@ public class CopyTransServiceImpl implements CopyTransService
 
       for (HLocale locale : localeList)
       {
-         if( taskHandleOpt.isPresent() && taskHandleOpt.get().isCancelled() )
+         if (taskHandleOpt.isPresent() && taskHandleOpt.get().isCancelled())
          {
             return;
          }
          copyTransForLocale(document, locale, copyTransOpts);
       }
 
-      if( taskHandleOpt.isPresent() )
+      if (taskHandleOpt.isPresent())
       {
          taskHandleOpt.get().incrementDocumentsProcessed();
       }
@@ -429,9 +440,9 @@ public class CopyTransServiceImpl implements CopyTransService
    {
       Optional<CopyTransTaskHandle> taskHandleOpt = AsyncUtils.getEventAsyncHandle(CopyTransTaskHandle.class);
 
-      for( HDocument doc : iteration.getDocuments().values() )
+      for (HDocument doc : iteration.getDocuments().values())
       {
-         if( taskHandleOpt.isPresent() && taskHandleOpt.get().isCancelled() )
+         if (taskHandleOpt.isPresent() && taskHandleOpt.get().isCancelled())
          {
             return;
          }
@@ -444,13 +455,13 @@ public class CopyTransServiceImpl implements CopyTransService
     */
    private static boolean shouldOverwrite(HTextFlowTarget currentlyStored, ContentState matchState)
    {
-      if( matchState == New )
+      if (matchState == New)
       {
          return false;
       }
-      else if( currentlyStored != null )
+      else if (currentlyStored != null)
       {
-         if( currentlyStored.getState().isRejectedOrFuzzy() && matchState.isTranslated())
+         if (currentlyStored.getState().isRejectedOrFuzzy() && matchState.isTranslated())
          {
             return true; // If it's fuzzy, replace only with approved ones
          }
@@ -458,7 +469,7 @@ public class CopyTransServiceImpl implements CopyTransService
          {
             return true; // If it's Translated and found an Approved one
          }
-         else if( currentlyStored.getState() == New )
+         else if (currentlyStored.getState() == New)
          {
             return true; // If it's new, replace always
          }
@@ -468,6 +479,31 @@ public class CopyTransServiceImpl implements CopyTransService
          }
       }
       return true;
+   }
+
+   /**
+    * Run enforced validation check(Error) if translation is saving as 'Translated'.
+    *
+    * @param newState
+    * @param projectVersion
+    * @param sources
+    * @param translations
+    * @return if translation has validation error
+    */
+   private boolean validationTranslations(ContentState newState, HProjectIteration projectVersion, List<String> sources, List<String> translations)
+   {
+      if (newState.isTranslated())
+      {
+         List<String> validationMessages = validationServiceImpl.validateWithServerRules(
+                 projectVersion, sources, translations, ValidationAction.State.Error);
+
+         if (!validationMessages.isEmpty())
+         {
+            log.warn(validationMessages);
+            return true;
+         }
+      }
+      return false;
    }
 
    /**

@@ -1,18 +1,20 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:s="http://jboss.org/schema/seam/taglib"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:rich="http://richfaces.org/rich"
-    template="../WEB-INF/template/template_2x.xhtml">
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                template="../WEB-INF/template/template_2x.xhtml">
 
-<ui:define name="page_title">#{projectHome.instance.name} - Edit</ui:define>
-<ui:define name="center_content">
+    <ui:define name="page_title">#{projectHome.instance.name} - Edit</ui:define>
+    <ui:define name="center_content">
+        <ui:include src="../WEB-INF/layout/project_edit_form.xhtml"/>
+    </ui:define>
 
-    <ui:include src="../WEB-INF/layout/project_edit_form.xhtml" />
-
-</ui:define>
+    <ui:define name="right_content">
+        <ui:include src="../WEB-INF/layout/validation_options_legend.xhtml"/>
+    </ui:define>
 
 </ui:composition>

@@ -21,12 +21,14 @@
 package org.zanata.webtrans.client.presenter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.events.DocValidationResultEvent;
 import org.zanata.webtrans.client.events.DocValidationResultHandler;
+import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.RunDocValidationEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
@@ -34,7 +36,8 @@ import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.service.ValidationService;
 import org.zanata.webtrans.client.view.ValidationOptionsDisplay;
 import org.zanata.webtrans.shared.model.ValidationAction;
-import org.zanata.webtrans.shared.model.ValidationInfo;
+import org.zanata.webtrans.shared.model.ValidationDisplayRules;
+import org.zanata.webtrans.shared.validation.ValidationFactory;
 
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -47,18 +50,18 @@ import com.google.inject.Inject;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  * 
  **/
-public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOptionsDisplay> implements ValidationOptionsDisplay.Listener, WorkspaceContextUpdateEventHandler, DocValidationResultHandler
+public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOptionsDisplay> implements
+      ValidationOptionsDisplay.Listener, WorkspaceContextUpdateEventHandler, DocValidationResultHandler
 {
    private final ValidationService validationService;
-   private final WebTransMessages messages;
    private MainView currentView;
 
    @Inject
-   public ValidationOptionsPresenter(ValidationOptionsDisplay display, EventBus eventBus, final ValidationService validationService, final WebTransMessages messages)
+   public ValidationOptionsPresenter(ValidationOptionsDisplay display, EventBus eventBus,
+         final ValidationService validationService, final WebTransMessages messages)
    {
       super(display, eventBus);
       this.validationService = validationService;
-      this.messages = messages;
    }
 
    @Override
@@ -76,12 +79,18 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
    public void initDisplay()
    {
       display.clearValidationSelector();
-      ArrayList<ValidationAction> validationActions = new ArrayList<ValidationAction>(validationService.getValidationMap().values());
+      ArrayList<ValidationAction> validationActions = new ArrayList<ValidationAction>(validationService
+            .getValidationMap().values());
+      
+      Collections.sort(validationActions, ValidationFactory.ValidationActionComparator);
+      
       for (final ValidationAction validationAction : validationActions)
       {
-         ValidationInfo validationInfo = validationAction.getValidationInfo();
+         ValidationDisplayRules validationInfo = validationAction.getRules();
 
-         HasValueChangeHandlers<Boolean> changeHandler = display.addValidationSelector(validationAction.getId().getDisplayName(), validationAction.getDescription(), validationInfo.isEnabled(), validationInfo.isLocked());
+         HasValueChangeHandlers<Boolean> changeHandler = display.addValidationSelector(validationAction.getId()
+               .getDisplayName(), validationAction.getDescription(), validationInfo.isEnabled(), validationInfo
+               .isLocked());
          changeHandler.addValueChangeHandler(new ValidationOptionValueChangeHandler(validationAction));
       }
    }
@@ -125,9 +134,13 @@ public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOption
    @Override
    public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
    {
-      validationService.setValidationRules(event.getValidationInfoList());
+      validationService.setValidationRules(event.getValidationStates());
 
       initDisplay();
+      if(currentView == MainView.Editor)
+      {
+         eventBus.fireEvent(RequestValidationEvent.EVENT);
+      }
    }
 
    public void setCurrentView(MainView view)

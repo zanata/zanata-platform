@@ -1,10 +1,7 @@
 package org.zanata.webtrans.client.events;
 
-import java.util.List;
-
 import org.zanata.webtrans.client.service.GetTransUnitActionContext;
 import org.zanata.webtrans.client.service.NavigationService;
-import org.zanata.webtrans.shared.model.ValidationId;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
@@ -16,7 +13,7 @@ public class FilterViewEvent extends GwtEvent<FilterViewEventHandler> implements
     * Handler type.
     */
    private static Type<FilterViewEventHandler> TYPE;
-   public static final FilterViewEvent DEFAULT = new FilterViewEvent(false, false, false, false, false, false, false, null);
+   public static final FilterViewEvent DEFAULT = new FilterViewEvent(false, false, false, false, false, false, false);
 
    /**
     * Gets the type associated with this event.
@@ -34,9 +31,8 @@ public class FilterViewEvent extends GwtEvent<FilterViewEventHandler> implements
 
    private boolean filterTranslated, filterFuzzy, filterUntranslated, filterApproved, filterRejected, filterHasError;
    private boolean cancelFilter;
-   private List<ValidationId> enabledValidationIds;
 
-   public FilterViewEvent(boolean filterTranslated, boolean filterFuzzy, boolean filterUntranslated, boolean filterApproved, boolean filterRejected, boolean filterHasError, boolean cancelFilter, List<ValidationId> enabledValidationIds)
+   public FilterViewEvent(boolean filterTranslated, boolean filterFuzzy, boolean filterUntranslated, boolean filterApproved, boolean filterRejected, boolean filterHasError, boolean cancelFilter)
    {
       this.filterTranslated = filterTranslated;
       this.filterFuzzy = filterFuzzy;
@@ -45,8 +41,6 @@ public class FilterViewEvent extends GwtEvent<FilterViewEventHandler> implements
       this.filterRejected = filterRejected;
       this.filterHasError = filterHasError;
       this.cancelFilter = cancelFilter;
-      this.enabledValidationIds = enabledValidationIds;
-
    }
 
    @Override
@@ -96,11 +90,6 @@ public class FilterViewEvent extends GwtEvent<FilterViewEventHandler> implements
       return filterHasError;
    }
 
-   public List<ValidationId> getEnabledValidationIds()
-   {
-      return enabledValidationIds;
-   }
-
    @Override
    public GetTransUnitActionContext updateContext(GetTransUnitActionContext currentContext)
    {
@@ -110,8 +99,7 @@ public class FilterViewEvent extends GwtEvent<FilterViewEventHandler> implements
             .changeFilterUntranslated(filterUntranslated)
             .changeFilterApproved(filterApproved)
             .changeFilterRejected(filterRejected)
-            .changeFilterHasError(filterHasError)
-            .changeValidationIds(enabledValidationIds);
+            .changeFilterHasError(filterHasError);
    }
 
    @Override

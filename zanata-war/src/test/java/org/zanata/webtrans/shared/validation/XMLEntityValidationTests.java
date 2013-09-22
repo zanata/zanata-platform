@@ -55,7 +55,7 @@ public class XMLEntityValidationTests
       messages = Gwti18nReader.create(ValidationMessages.class);
 
       xmlEntityValidation = new XmlEntityValidation(ValidationId.XML_ENTITY, messages);
-      xmlEntityValidation.getValidationInfo().setEnabled(true);
+      xmlEntityValidation.getRules().setEnabled(true);
    }
 
    @Test

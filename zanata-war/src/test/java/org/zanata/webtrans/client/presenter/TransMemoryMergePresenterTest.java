@@ -32,6 +32,7 @@ import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
+import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.resources.WebTransMessages;
@@ -40,9 +41,7 @@ import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.client.ui.InlineLink;
 import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelDisplay;
 import org.zanata.webtrans.client.ui.UndoLink;
-import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
-import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
+import org.zanata.webtrans.shared.model.*;
 import org.zanata.webtrans.shared.rpc.MergeRule;
 import org.zanata.webtrans.shared.rpc.MergeOptions;
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
@@ -55,6 +54,7 @@ import com.google.inject.Provider;
 
 import net.customware.gwt.presenter.client.EventBus;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -223,6 +223,7 @@ public class TransMemoryMergePresenterTest
             makeTransUnit(4, ContentState.NeedReview));
       mockCurrentPageToReturn(currentPageRows);
       UndoLink undoLink = mock(UndoLink.class);
+      DocumentId documentId = new DocumentId(new Long(0), "");
       when(undoLinkProvider.get()).thenReturn(undoLink);
 
       // When:
@@ -235,11 +236,11 @@ public class TransMemoryMergePresenterTest
       AsyncCallback<UpdateTransUnitResult> callback = callbackCaptor.getValue();
       // rpc call success and result has some updated info
       UpdateTransUnitResult result = new UpdateTransUnitResult();
-      result.addUpdateResult(new TransUnitUpdateInfo(true, true, null, currentPageRows.get(0), 0, 0, ContentState.Approved));
+      result.addUpdateResult(new TransUnitUpdateInfo(true, true, documentId, currentPageRows.get(0), 0, 0, ContentState.Approved));
       // add an unsuccessful result
-      result.addUpdateResult(new TransUnitUpdateInfo(false, true, null, currentPageRows.get(1), 0, 0, ContentState.Approved));
-      result.addUpdateResult(new TransUnitUpdateInfo(true, true, null, currentPageRows.get(2), 0, 0, ContentState.Approved));
-      result.addUpdateResult(new TransUnitUpdateInfo(true, true, null, currentPageRows.get(3), 0, 0, ContentState.Approved));
+      result.addUpdateResult(new TransUnitUpdateInfo(false, true, documentId, currentPageRows.get(1), 0, 0, ContentState.Approved));
+      result.addUpdateResult(new TransUnitUpdateInfo(true, true, documentId, currentPageRows.get(2), 0, 0, ContentState.Approved));
+      result.addUpdateResult(new TransUnitUpdateInfo(true, true, documentId, currentPageRows.get(3), 0, 0, ContentState.Approved));
       callback.onSuccess(result);
 
       // Then:

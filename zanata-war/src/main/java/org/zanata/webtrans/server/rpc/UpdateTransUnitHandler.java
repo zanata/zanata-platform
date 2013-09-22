@@ -20,55 +20,43 @@
  */
 package org.zanata.webtrans.server.rpc;
 
-import java.util.List;
+import java.util.*;
 
-import net.customware.gwt.dispatch.server.ExecutionContext;
-import net.customware.gwt.dispatch.shared.ActionException;
+import org.jboss.seam.*;
+import org.jboss.seam.annotations.*;
+import org.zanata.common.*;
+import org.zanata.model.*;
+import org.zanata.service.*;
+import org.zanata.service.TranslationService.*;
+import org.zanata.webtrans.server.*;
+import org.zanata.webtrans.shared.auth.*;
+import org.zanata.webtrans.shared.model.*;
+import org.zanata.webtrans.shared.rpc.*;
+import org.zanata.webtrans.shared.rpc.TransUnitUpdated.*;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.zanata.common.LocaleId;
-import org.zanata.model.HLocale;
-import org.zanata.model.HTextFlow;
-import org.zanata.model.HTextFlowTarget;
-import org.zanata.service.SecurityService;
-import org.zanata.service.TranslationService;
-import org.zanata.service.TranslationService.TranslationResult;
-import org.zanata.webtrans.server.ActionHandlerFor;
-import org.zanata.webtrans.server.TranslationWorkspace;
-import org.zanata.webtrans.shared.auth.EditorClientId;
-import org.zanata.webtrans.shared.model.DocumentId;
-import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
-import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
-import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
-import org.zanata.webtrans.shared.rpc.TransUnitUpdated.UpdateType;
-import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
-import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
-
+import net.customware.gwt.dispatch.server.*;
+import net.customware.gwt.dispatch.shared.*;
 
 @Name("webtrans.gwt.UpdateTransUnitHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(UpdateTransUnit.class)
 public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUnit, UpdateTransUnitResult>
 {
-   @In
-   TransUnitTransformer transUnitTransformer;
+   @In(value = "webtrans.gwt.TransUnitUpdateHelper", create = true)
+   private TransUnitUpdateHelper transUnitUpdateHelper;
 
    @In
-   TranslationService translationServiceImpl;
+   private TranslationService translationServiceImpl;
 
    @In
-   SecurityService securityServiceImpl;
+   private SecurityService securityServiceImpl;
 
    @Override
    public UpdateTransUnitResult execute(UpdateTransUnit action, ExecutionContext context) throws ActionException
    {
       SecurityService.SecurityCheckResult securityCheckResult;
 
-      if(action.getUpdateType() == UpdateType.WebEditorSaveReview)
+      if (action.getUpdateType() == UpdateType.WebEditorSaveReview)
       {
          securityCheckResult = securityServiceImpl.checkPermission(action, SecurityService.TranslationAction.REVIEW);
       }
@@ -80,30 +68,21 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       HLocale hLocale = securityCheckResult.getLocale();
       TranslationWorkspace workspace = securityCheckResult.getWorkspace();
 
-      return doTranslation(hLocale.getLocaleId(), workspace, action.getUpdateRequests(), action.getEditorClientId(), action.getUpdateType());
+      return doTranslation(hLocale.getLocaleId(), workspace, action.getUpdateRequests(), action.getEditorClientId(),
+            action.getUpdateType());
    }
 
-   protected UpdateTransUnitResult doTranslation(LocaleId localeId, TranslationWorkspace workspace, List<TransUnitUpdateRequest> updateRequests, EditorClientId editorClientId, TransUnitUpdated.UpdateType updateType)
+   protected UpdateTransUnitResult doTranslation(LocaleId localeId, TranslationWorkspace workspace,
+         List<TransUnitUpdateRequest> updateRequests, EditorClientId editorClientId,
+         TransUnitUpdated.UpdateType updateType)
    {
-      UpdateTransUnitResult result = new UpdateTransUnitResult();
       List<TranslationResult> translationResults = translationServiceImpl.translate(localeId, updateRequests);
-      for (TranslationResult translationResult : translationResults)
-      {
-         HTextFlowTarget newTarget = translationResult.getTranslatedTextFlowTarget();
-         HTextFlow hTextFlow = newTarget.getTextFlow();
-         int wordCount = hTextFlow.getWordCount().intValue();
-         TransUnit tu = transUnitTransformer.transform(hTextFlow, newTarget.getLocale());
-         TransUnitUpdateInfo updateInfo = new TransUnitUpdateInfo(translationResult.isTranslationSuccessful(), translationResult.isTargetChanged(), new DocumentId(hTextFlow.getDocument().getId(), hTextFlow.getDocument().getDocId()), tu, wordCount, translationResult.getBaseVersionNum(), translationResult.getBaseContentState());
-         workspace.publish(new TransUnitUpdated(updateInfo, editorClientId, updateType));
-
-         result.addUpdateResult(updateInfo);
-      }
-
-      return result;
+      return transUnitUpdateHelper.generateUpdateTransUnitResult(translationResults, editorClientId, updateType, workspace);
    }
 
    @Override
-   public void rollback(UpdateTransUnit action, UpdateTransUnitResult result, ExecutionContext context) throws ActionException
+   public void rollback(UpdateTransUnit action, UpdateTransUnitResult result, ExecutionContext context)
+         throws ActionException
    {
       // TODO implement rollback by checking result for success
       // if success, looking up base revision from action and set values back to that
@@ -113,5 +92,4 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       // this should just use calls to a service to replace with previous version
       // by version num (fail if previousVersion != latestVersion-1)
    }
-
 }

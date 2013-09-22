@@ -15,10 +15,7 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.service.impl.CopyTransServiceImpl;
-import org.zanata.service.impl.DocumentServiceImpl;
-import org.zanata.service.impl.LocaleServiceImpl;
-import org.zanata.service.impl.TranslationServiceImpl;
+import org.zanata.service.impl.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -57,7 +54,8 @@ public class TranslationServiceRestTest extends ResourceTranslationServiceRestTe
             .useImpl(LocaleServiceImpl.class)
             .useImpl(CopyTransServiceImpl.class)
             .useImpl(DocumentServiceImpl.class)
-            .useImpl(TranslationServiceImpl.class);
+            .useImpl(TranslationServiceImpl.class)
+            .useImpl(ValidationServiceImpl.class);
 
       SourceDocResourceService sourceDocResourceService = seamAutowire.autowire(SourceDocResourceService.class);
       TranslatedDocResourceService translatedDocResourceService = seamAutowire.autowire(TranslatedDocResourceService.class);

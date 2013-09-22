@@ -4,7 +4,7 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.IsWidget;
 
-public interface ToggleEditor extends IsWidget, HasText, HasUpdateValidationWarning
+public interface ToggleEditor extends IsWidget, HasText, HasUpdateValidationMessage
 {
 
    ViewMode getViewMode();

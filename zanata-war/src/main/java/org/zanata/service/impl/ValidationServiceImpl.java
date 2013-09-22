@@ -3,39 +3,22 @@
  */
 package org.zanata.service.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-import org.apache.commons.lang.StringUtils;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.log.Log;
-import org.zanata.common.LocaleId;
-import org.zanata.dao.DocumentDAO;
-import org.zanata.dao.ProjectDAO;
-import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.dao.TextFlowTargetDAO;
-import org.zanata.model.HDocument;
-import org.zanata.model.HProject;
-import org.zanata.model.HProjectIteration;
-import org.zanata.model.HTextFlow;
-import org.zanata.model.HTextFlowTarget;
-import org.zanata.service.TranslationStateCache;
-import org.zanata.service.ValidationFactoryProvider;
-import org.zanata.service.ValidationService;
-import org.zanata.webtrans.server.rpc.TransUnitTransformer;
-import org.zanata.webtrans.shared.model.DocumentStatus;
-import org.zanata.webtrans.shared.model.ValidationAction;
-import org.zanata.webtrans.shared.model.ValidationId;
-import org.zanata.webtrans.shared.validation.ValidationFactory;
+import org.apache.commons.lang.*;
+import org.jboss.seam.*;
+import org.jboss.seam.annotations.*;
+import org.jboss.seam.log.*;
+import org.zanata.common.*;
+import org.zanata.dao.*;
+import org.zanata.model.*;
+import org.zanata.service.*;
+import org.zanata.webtrans.shared.model.*;
+import org.zanata.webtrans.shared.model.ValidationAction.*;
+import org.zanata.webtrans.shared.validation.*;
 
-import com.google.common.base.Stopwatch;
+import com.google.common.base.*;
+import com.google.common.collect.*;
 
 /**
  * 
@@ -51,9 +34,6 @@ public class ValidationServiceImpl implements ValidationService
 
    @In
    private ProjectDAO projectDAO;
-
-   @In
-   private TransUnitTransformer transUnitTransformer;
 
    @In
    private ProjectIterationDAO projectIterationDAO;
@@ -79,99 +59,114 @@ public class ValidationServiceImpl implements ValidationService
    }
 
    @Override
-   public Collection<ValidationAction> getValidationAction(String projectSlug)
+   public Collection<ValidationAction> getValidationActions(String projectSlug)
    {
-      Collection<ValidationAction> validationList = getValidationFactory().getAllValidationActions().values();
-      Set<String> enabledValidations = new HashSet<String>();
-
       if (!StringUtils.isEmpty(projectSlug))
       {
          HProject project = projectDAO.getBySlug(projectSlug);
-         enabledValidations = project.getCustomizedValidations();
+         return getValidationActions(project);
       }
+      return getValidationFactory().getAllValidationActions().values();
+   }
 
-      for (ValidationAction valAction : validationList)
-      {
-         if (enabledValidations.contains(valAction.getId().name()))
-         {
-            valAction.getValidationInfo().setEnabled(true);
-         }
-      }
+   private Collection<ValidationAction> getValidationActions(HProject project, State... includeStates)
+   {
+      Map<String, String> customizedValidations = project.getCustomizedValidations();
+      Collection<ValidationAction> mergedList = mergeCustomisedStateToAllValidations(customizedValidations);
 
-      return validationList;
+      return filterList(mergedList, includeStates);
    }
 
    @Override
-   public Collection<ValidationAction> getValidationAction(String projectSlug, String versionSlug)
+   public Collection<ValidationAction> getValidationActions(String projectSlug, String versionSlug)
    {
-      Collection<ValidationAction> validationList = null;
-
-      if (!StringUtils.isEmpty(projectSlug))
+      if (!StringUtils.isEmpty(projectSlug) && !StringUtils.isEmpty(versionSlug))
       {
          HProjectIteration version = projectIterationDAO.getBySlug(projectSlug, versionSlug);
-
-         validationList = getValidationObject(version);
+         return getValidationActions(version);
       }
-
-      return validationList;
+      else if (!StringUtils.isEmpty(projectSlug))
+      {
+         return getValidationActions(projectSlug);
+      }
+      return getValidationFactory().getAllValidationActions().values();
    }
 
-   @Override
-   public Collection<ValidationAction> getValidationObject(HProjectIteration version)
+   private Collection<ValidationAction> getValidationActions(HProjectIteration projectVersion, State... includeStates)
    {
-      Collection<ValidationAction> validationList = getValidationFactory().getAllValidationActions().values();
+      Map<String, String> customizedValidations = projectVersion.getCustomizedValidations();
 
-      Set<String> enabledValidations = new HashSet<String>();
+      /**
+       * Inherits validations from project if version has no defined validations
+       */
+      if (customizedValidations.isEmpty())
+      {
+         return getValidationActions(projectVersion.getProject(), includeStates);
+      }
+
+      Collection<ValidationAction> mergedList = mergeCustomisedStateToAllValidations(customizedValidations);
+
+      return filterList(mergedList, includeStates);
+   }
+
+   private Collection<ValidationAction> filterList(Collection<ValidationAction> list, State... includeStates)
+   {
+      if (includeStates == null || includeStates.length == 0)
+      {
+         return list;
+      }
+
+      List<State> includeStateList = Arrays.asList(includeStates);
+
+      Collection<ValidationAction> filteredList = Lists.newArrayList();
+      for (ValidationAction action : list)
+      {
+         if (includeStateList.contains(action.getState()))
+         {
+            filteredList.add(action);
+         }
+      }
+      return filteredList;
+   }
+
+   private Collection<ValidationAction> mergeCustomisedStateToAllValidations(Map<String, String> customizedValidations)
+   {
+      Collection<ValidationAction> allValidations = getValidationFactory().getAllValidationActions().values();
+
+      for (ValidationAction valAction : allValidations)
+      {
+         String name = valAction.getId().name();
+         if (customizedValidations.containsKey(name))
+         {
+            State persistedState = State.valueOf(customizedValidations.get(name));
+            valAction.setState(persistedState);
+         }
+      }
+      return allValidations;
+   }
+
+   /**
+    * Get validation id of the HProjectIteration with includeStates. Leave includeStates empty to get all states
+    * @param version
+    * @param includeStates
+    * @return list of validation ids for that version
+    */
+   private List<ValidationId> getValidationIds(HProjectIteration version, State... includeStates)
+   {
+      List<ValidationId> validationIds = Lists.newArrayList();
+
+      Collection<ValidationAction> mergedList = Lists.newArrayList();
 
       if (version != null)
       {
-         enabledValidations = version.getCustomizedValidations();
-
-         // Inherits validations from project if version has no defined
-         // validations
-         if (enabledValidations.isEmpty())
-         {
-            enabledValidations = version.getProject().getCustomizedValidations();
-         }
+         mergedList = getValidationActions(version, includeStates);
       }
 
-      for (ValidationAction valAction : validationList)
+      for (ValidationAction action : mergedList)
       {
-         if (enabledValidations.contains(valAction.getId().name()))
-         {
-            valAction.getValidationInfo().setEnabled(true);
-            valAction.getValidationInfo().setLocked(true);
-         }
+         validationIds.add(action.getId());
       }
-      return validationList;
-   }
-
-   private List<ValidationId> getEnabledValidationIds(HProjectIteration version)
-   {
-      Collection<ValidationAction> validationList = getValidationFactory().getAllValidationActions().values();
-      Set<String> enabledValidations = new HashSet<String>();
-      List<ValidationId> enabledValidationIds = new ArrayList<ValidationId>();
-
-      if (version != null)
-      {
-         enabledValidations = version.getCustomizedValidations();
-
-         // Inherits validations from project if version has no defined
-         // validations
-         if (enabledValidations.isEmpty())
-         {
-            enabledValidations = version.getProject().getCustomizedValidations();
-         }
-      }
-
-      for (ValidationAction valAction : validationList)
-      {
-         if (enabledValidations.contains(valAction.getId().name()))
-         {
-            enabledValidationIds.add(valAction.getId());
-         }
-      }
-      return enabledValidationIds;
+      return validationIds;
    }
 
    /**
@@ -198,7 +193,7 @@ public class ValidationServiceImpl implements ValidationService
       else
       {
          HDocument hDoc = documentDAO.findById(hDocId, false);
-         result = documentHasError(hDoc, validationIds, localeId);
+         result = documentHasWarningOrError(hDoc, validationIds, localeId);
       }
 
       log.debug("Finished runDocValidations in " + stopwatch);
@@ -211,19 +206,19 @@ public class ValidationServiceImpl implements ValidationService
       log.debug("Start runDocValidationsWithServerRules {0}", hDoc.getId());
       Stopwatch stopwatch = new Stopwatch().start();
 
-      List<ValidationId> validationIds = getEnabledValidationIds(hDoc.getProjectIteration());
+      List<ValidationId> validationIds = getValidationIds(hDoc.getProjectIteration(), State.Warning, State.Error);
 
-      boolean hasError = documentHasError(hDoc, validationIds, localeId);
+      boolean hasError = documentHasWarningOrError(hDoc, validationIds, localeId);
 
       log.debug("Finished runDocValidationsWithServerRules in " + stopwatch);
       return hasError;
    }
 
-   private boolean documentHasError(HDocument hDoc, List<ValidationId> validationIds, LocaleId localeId)
+   private boolean documentHasWarningOrError(HDocument hDoc, List<ValidationId> validationIds, LocaleId localeId)
    {
       for (HTextFlow textFlow : hDoc.getTextFlows())
       {
-         boolean hasError = textFlowTargetHasError(textFlow.getId(), validationIds, localeId);
+         boolean hasError = textFlowTargetHasWarningOrError(textFlow.getId(), validationIds, localeId);
          if (hasError)
          {
             // return true if error found, else continue
@@ -234,7 +229,8 @@ public class ValidationServiceImpl implements ValidationService
    }
 
    @Override
-   public List<HTextFlow> filterHasErrorTexFlow(List<HTextFlow> textFlows, List<ValidationId> validationIds, LocaleId localeId, int startIndex, int maxSize)
+   public List<HTextFlow> filterHasWarningOrErrorTextFlow(List<HTextFlow> textFlows, List<ValidationId> validationIds,
+         LocaleId localeId, int startIndex, int maxSize)
    {
       log.debug("Start filter {0} textFlows", textFlows.size());
       Stopwatch stopwatch = new Stopwatch().start();
@@ -243,8 +239,8 @@ public class ValidationServiceImpl implements ValidationService
 
       for (HTextFlow textFlow : textFlows)
       {
-         boolean hasError = textFlowTargetHasError(textFlow.getId(), validationIds, localeId);
-         if (hasError)
+         boolean hasWarningOrError = textFlowTargetHasWarningOrError(textFlow.getId(), validationIds, localeId);
+         if (hasWarningOrError)
          {
             result.add(textFlow);
          }
@@ -257,7 +253,7 @@ public class ValidationServiceImpl implements ValidationService
       }
 
       int toIndex = startIndex + maxSize;
-      
+
       toIndex = toIndex > result.size() ? result.size() : toIndex;
       startIndex = startIndex > toIndex ? toIndex - maxSize : startIndex;
       startIndex = startIndex < 0 ? 0 : startIndex;
@@ -265,14 +261,14 @@ public class ValidationServiceImpl implements ValidationService
       return result.subList(startIndex, toIndex);
    }
 
-   private boolean textFlowTargetHasError(Long textFlowId, List<ValidationId> validationIds, LocaleId localeId)
+   private boolean textFlowTargetHasWarningOrError(Long textFlowId, List<ValidationId> validationIds, LocaleId localeId)
    {
       HTextFlowTarget target = textFlowTargetDAO.getTextFlowTarget(textFlowId, localeId);
       if (target != null)
       {
          for (ValidationId validationId : validationIds)
          {
-            Boolean value = translationStateCacheImpl.textFlowTargetHasError(target.getId(), validationId);
+            Boolean value = translationStateCacheImpl.textFlowTargetHasWarningOrError(target.getId(), validationId);
             if (value != null && value.booleanValue())
             {
                return value.booleanValue();
@@ -280,5 +276,23 @@ public class ValidationServiceImpl implements ValidationService
          }
       }
       return false;
+   }
+
+   @Override
+   public List<String> validateWithServerRules(HProjectIteration projectVersion,
+         List<String> sources, List<String> translations, State... actionStates)
+   {
+      Collection<ValidationAction> validationActions = getValidationActions(projectVersion, actionStates);
+      List<String> errorList = Lists.newArrayList();
+
+      String tf_content0 = sources.get(0);
+      String tft_content0 = translations.get(0);
+
+      for (ValidationAction action : validationActions)
+      {
+         errorList.addAll(action.validate(tf_content0, tft_content0));
+      }
+
+      return errorList;
    }
 }

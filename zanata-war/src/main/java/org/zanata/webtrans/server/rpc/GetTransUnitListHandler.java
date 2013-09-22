@@ -137,7 +137,7 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
             // TODO debt: this is not scalable. But we may not have other choice
             // for validation filter. Maybe use scrollable result will help?
             textFlows = textFlowDAO.getAllTextFlowsByDocumentId(action.getDocumentId());
-            textFlows = validationServiceImpl.filterHasErrorTexFlow(textFlows, action.getValidationIds(), hLocale.getLocaleId(), offset, action.getCount());
+            textFlows = validationServiceImpl.filterHasWarningOrErrorTextFlow(textFlows, action.getValidationIds(), hLocale.getLocaleId(), offset, action.getCount());
          }
       }
       // has status and phrase filter
@@ -159,7 +159,7 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
          else
          {
             textFlows = textFlowDAO.getAllTextFlowByDocumentIdWithConstraints(action.getDocumentId(), hLocale, constraints);
-            textFlows = validationServiceImpl.filterHasErrorTexFlow(textFlows, action.getValidationIds(), hLocale.getLocaleId(), offset, action.getCount());
+            textFlows = validationServiceImpl.filterHasWarningOrErrorTextFlow(textFlows, action.getValidationIds(), hLocale.getLocaleId(), offset, action.getCount());
          }
       }
       return textFlows;

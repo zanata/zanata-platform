@@ -20,42 +20,26 @@
  */
 package org.zanata.webtrans.client.presenter;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.zanata.webtrans.client.events.AttentionModeActivationEvent;
-import org.zanata.webtrans.client.events.KeyShortcutEvent;
-import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
-import org.zanata.webtrans.client.keys.EventWrapper;
-import org.zanata.webtrans.client.keys.KeyShortcut;
-import org.zanata.webtrans.client.keys.KeyShortcut.KeyEvent;
-import org.zanata.webtrans.client.keys.KeyShortcutManager;
-import org.zanata.webtrans.client.keys.Keys;
-import org.zanata.webtrans.client.keys.ShortcutContext;
-import org.zanata.webtrans.client.keys.SurplusKeyListener;
-import org.zanata.webtrans.client.keys.TimedAction;
-import org.zanata.webtrans.client.keys.Timer;
-import org.zanata.webtrans.client.keys.TimerFactory;
-import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.client.view.KeyShortcutDisplay;
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Event.NativePreviewEvent;
-import com.google.gwt.user.client.Event.NativePreviewHandler;
-import com.google.gwt.view.client.ListDataProvider;
-import com.google.inject.Inject;
+import java.util.*;
 
 import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetPresenter;
+import net.customware.gwt.presenter.client.widget.*;
+
+import org.zanata.webtrans.client.events.*;
+import org.zanata.webtrans.client.keys.*;
+import org.zanata.webtrans.client.keys.KeyShortcut.KeyEvent;
+import org.zanata.webtrans.client.keys.Timer;
+import org.zanata.webtrans.client.resources.*;
+import org.zanata.webtrans.client.view.*;
+
+import com.allen_sauer.gwt.log.client.*;
+import com.google.common.collect.*;
+import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.dom.client.*;
+import com.google.gwt.event.shared.*;
+import com.google.gwt.user.client.Event.*;
+import com.google.gwt.view.client.*;
+import com.google.inject.*;
 
 /**
  * Detects shortcut key combinations such as Alt+KEY and Shift+Alt+KEY and
@@ -88,14 +72,14 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay>
    // TODO unregister when user changes attention shortcut
    private HandlerRegistration attentionShortcutHandle;
    private transient ShortcutContext modalContext;
-   private transient Set<ShortcutContext> copyOfCurrentContexts =Collections.emptySet();
+   private transient Set<ShortcutContext> copyOfCurrentContexts = Collections.emptySet();
 
    @Inject
    public KeyShortcutPresenter(KeyShortcutDisplay display,
-                               EventBus eventBus,
-                               final WebTransMessages webTransMessages,
-                               final EventWrapper event,
-                               final TimerFactory timer)
+         EventBus eventBus,
+         final WebTransMessages webTransMessages,
+         final EventWrapper event,
+         final TimerFactory timer)
    {
       super(display, eventBus);
       this.messages = webTransMessages;
@@ -266,7 +250,8 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay>
       // @formatter:on
 
       Log.info("creating attention timer");
-      attentionTimer = timers.create(new TimedAction() {
+      attentionTimer = timers.create(new TimedAction()
+      {
          @Override
          public void run()
          {
@@ -301,7 +286,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay>
       {
          isAttentionMode = active;
          AttentionModeActivationEvent attentionEvent = new AttentionModeActivationEvent(active);
-//         attentionEvent.setShortcuts(listAttentionShortcuts());
+         //         attentionEvent.setShortcuts(listAttentionShortcuts());
          eventBus.fireEvent(attentionEvent);
       }
    }
@@ -479,13 +464,17 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay>
 
    public void activateModalContext(ShortcutContext modalContext)
    {
-      this.modalContext = modalContext;
-      copyOfCurrentContexts = ImmutableSet.copyOf(ensureActiveContexts());
-      for (ShortcutContext context : copyOfCurrentContexts)
+      //check if modal context is already activate
+      if (!ensureActiveContexts().contains(modalContext))
       {
-         setContextActive(context, false);
+         this.modalContext = modalContext;
+         copyOfCurrentContexts = ImmutableSet.copyOf(ensureActiveContexts());
+         for (ShortcutContext context : copyOfCurrentContexts)
+         {
+            setContextActive(context, false);
+         }
+         setContextActive(modalContext, true);
       }
-      setContextActive(modalContext, true);
    }
 
    private class KeyShortcutHandlerRegistration implements HandlerRegistration

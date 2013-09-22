@@ -20,9 +20,10 @@
  */
 package org.zanata.model;
 
-import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -30,6 +31,7 @@ import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import lombok.Getter;
 import lombok.Setter;
 
 import org.hibernate.annotations.Type;
@@ -37,50 +39,40 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.common.EntityStatus;
 
+import com.google.common.collect.Sets;
+
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Entity
 @Setter
-// @EqualsAndHashCode(callSuper = true)
+@Getter
+@Access(AccessType.FIELD)
 public class HIterationGroup extends SlugEntityBase implements HasEntityStatus
 {
    private static final long serialVersionUID = 5682522115222479842L;
-   private String name;
-
-   private String description;
-
-   private Set<HPerson> maintainers;
-
-   private Set<HProjectIteration> projectIterations;
-
-   private EntityStatus status = EntityStatus.ACTIVE;
 
    @Size(max = 80)
    @NotEmpty
    @Field()
-   public String getName()
-   {
-      return name;
-   }
+   private String name;
 
    @Size(max = 100)
    @Field()
-   public String getDescription()
-   {
-      return description;
-   }
+   private String description;
 
    @ManyToMany
-   @JoinTable(name = "HIterationGroup_Maintainer", joinColumns = @JoinColumn(name = "iterationGroupId"), inverseJoinColumns = @JoinColumn(name = "personId"))
-   public Set<HPerson> getMaintainers()
-   {
-      if (maintainers == null)
-      {
-         maintainers = new HashSet<HPerson>();
-      }
-      return maintainers;
-   }
+   @JoinTable(name = "HIterationGroup_Maintainer", joinColumns = @JoinColumn(name = "iterationGroupId"),
+         inverseJoinColumns = @JoinColumn(name = "personId"))
+   private Set<HPerson> maintainers = Sets.newHashSet();
+
+   @ManyToMany
+   @JoinTable(name = "HIterationGroup_ProjectIteration", joinColumns = @JoinColumn(name = "iterationGroupId"), inverseJoinColumns = @JoinColumn(name = "projectIterationId"))
+   private Set<HProjectIteration> projectIterations = Sets.newHashSet();
+
+   @Type(type = "entityStatus")
+   @NotNull
+   private EntityStatus status = EntityStatus.ACTIVE;
 
    public void addMaintainer(HPerson maintainer)
    {
@@ -88,28 +80,8 @@ public class HIterationGroup extends SlugEntityBase implements HasEntityStatus
       maintainer.getMaintainerVersionGroups().add(this);
    }
 
-   @ManyToMany
-   @JoinTable(name = "HIterationGroup_ProjectIteration", joinColumns = @JoinColumn(name = "iterationGroupId"), inverseJoinColumns = @JoinColumn(name = "projectIterationId"))
-   public Set<HProjectIteration> getProjectIterations()
-   {
-      if (projectIterations == null)
-      {
-         projectIterations = new HashSet<HProjectIteration>();
-      }
-      return projectIterations;
-   }
-
    public void addProjectIteration(HProjectIteration iteration)
    {
       this.getProjectIterations().add(iteration);
    }
-
-   @Type(type = "entityStatus")
-   @NotNull
-   @Override
-   public EntityStatus getStatus()
-   {
-      return status;
-   }
-
 }
