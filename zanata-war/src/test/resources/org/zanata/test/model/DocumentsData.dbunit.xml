@@ -10,7 +10,6 @@
 		homeContent=""
 		name="Sample Project"
  	    overrideLocales="FALSE"
- 	    overrideValidations="FALSE"
         restrictedByRoles="FALSE"
  	    status="A"
 	/>

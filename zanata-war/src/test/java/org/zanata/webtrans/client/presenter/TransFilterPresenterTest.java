@@ -102,7 +102,7 @@ public class TransFilterPresenterTest
    @Test
    public void willSetOptionsBackOnFilterViewCancelEvent()
    {
-      FilterViewEvent event = new FilterViewEvent(true, true, true, true, true, false, true, null);
+      FilterViewEvent event = new FilterViewEvent(true, true, true, true, true, false, true);
       HistoryToken historyToken = new HistoryToken();
       when(history.getHistoryToken()).thenReturn(historyToken);
 
@@ -125,7 +125,7 @@ public class TransFilterPresenterTest
    @Test
    public void willDoNothingIfItsNotCancelEvent()
    {
-      FilterViewEvent cancelEvent = new FilterViewEvent(true, true, true, true, true, false, false, null);
+      FilterViewEvent cancelEvent = new FilterViewEvent(true, true, true, true, true, false, false);
 
       presenter.onFilterView(cancelEvent);
 

@@ -258,7 +258,7 @@ public class LocaleServiceImpl implements LocaleService
    public List<HLocale> getSupportedLangugeByProjectIteration(@Nonnull String project, @Nonnull String iterationSlug)
    {
       HProjectIteration iteration = projectIterationDAO.getBySlug(project, iterationSlug);
-      if (iteration.getOverrideLocales())
+      if (iteration.isOverrideLocales())
       {
          return new ArrayList<HLocale>(iteration.getCustomizedLocales());
       }
@@ -269,7 +269,7 @@ public class LocaleServiceImpl implements LocaleService
    public List<HLocale> getSupportedLanguageByProject(@Nonnull String project)
    {
       HProject proj = projectDAO.getBySlug(project);
-      if (proj.getOverrideLocales())
+      if (proj.isOverrideLocales())
       {
          return new ArrayList<HLocale>(proj.getCustomizedLocales());
       }
@@ -309,7 +309,7 @@ public class LocaleServiceImpl implements LocaleService
    {
       log.info("start getIterationGlobalLocaleItems for:" + projectSlug);
       HProject project = projectDAO.getBySlug(projectSlug);
-      return project.getOverrideLocales() ? getCustomizedLocalesItems(projectSlug) : getGlobalLocaleItems();
+      return project.isOverrideLocales() ? getCustomizedLocalesItems(projectSlug) : getGlobalLocaleItems();
    }
 
    @Override
@@ -317,7 +317,7 @@ public class LocaleServiceImpl implements LocaleService
    {
       Map<String, String> customizedItems = new TreeMap<String, String>();
       HProject project = projectDAO.getBySlug(projectSlug);
-      if (project != null && project.getOverrideLocales())
+      if (project != null && project.isOverrideLocales())
       {
          Set<HLocale> locales = project.getCustomizedLocales();
          for (HLocale op : locales)
@@ -351,7 +351,7 @@ public class LocaleServiceImpl implements LocaleService
    {
       Map<String, String> customizedItems = new TreeMap<String, String>();
       HProjectIteration iteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-      if (iteration != null && iteration.getOverrideLocales())
+      if (iteration != null && iteration.isOverrideLocales())
       {
          Set<HLocale> locales = iteration.getCustomizedLocales();
          for (HLocale op : locales)

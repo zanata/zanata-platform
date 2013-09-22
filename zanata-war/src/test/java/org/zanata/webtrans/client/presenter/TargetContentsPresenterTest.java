@@ -20,9 +20,31 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
+import static org.zanata.model.TestFixture.extractFromEvents;
+import static org.zanata.model.TestFixture.makeTransUnit;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+
+import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -49,49 +71,37 @@ import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
+import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.client.service.UserOptionsService;
-import org.zanata.webtrans.client.ui.HasUpdateValidationWarning;
+import org.zanata.webtrans.client.ui.HasUpdateValidationMessage;
 import org.zanata.webtrans.client.ui.SaveAsApprovedConfirmationDisplay;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.UndoLink;
+import org.zanata.webtrans.client.ui.ValidationWarningDisplay;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
+import org.zanata.webtrans.server.locale.Gwti18nReader;
+import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.model.ValidationAction;
+import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.validation.action.HtmlXmlTagValidation;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.thirdparty.guava.common.collect.Maps;
 import com.google.inject.Provider;
-
-import net.customware.gwt.presenter.client.EventBus;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
-import static org.zanata.model.TestFixture.extractFromEvents;
-import static org.zanata.model.TestFixture.makeTransUnit;
 
 @Test(groups = { "unit-tests" })
 public class TargetContentsPresenterTest
 {
    private TargetContentsPresenter presenter;
 
-   private static final List<String> NEW_TARGETS = ImmutableList.<String>builder().add("a").build();
-   private static final List<String> CACHED_TARGETS = ImmutableList.<String>builder().add("b").build();
+   private static final List<String> NEW_TARGETS = ImmutableList.<String> builder().add("a").build();
+   private static final List<String> CACHED_TARGETS = ImmutableList.<String> builder().add("b").build();
    // @formatter:off
    List<TransUnit> currentPageRows = ImmutableList.<TransUnit>builder()
          .add(makeTransUnit(2))
@@ -100,17 +110,22 @@ public class TargetContentsPresenterTest
          .build();
    // @formatter:on
 
-   @Mock private EventBus eventBus;
-   @Mock private TableEditorMessages tableEditorMessages;
-   @Mock private SourceContentsPresenter sourceContentPresenter;
+   @Mock
+   private EventBus eventBus;
+   @Mock
+   private TableEditorMessages tableEditorMessages;
+   @Mock
+   private SourceContentsPresenter sourceContentPresenter;
    private UserWorkspaceContext userWorkspaceContext;
-   @Mock private TargetContentsDisplay display;
+   @Mock
+   private TargetContentsDisplay display;
    @Mock
    private ToggleEditor editor, editor2;
    private TransUnit selectedTU;
 
    // all event extends GwtEvent therefore captor will capture them all
-   @Captor private ArgumentCaptor<GwtEvent> eventCaptor;
+   @Captor
+   private ArgumentCaptor<GwtEvent> eventCaptor;
 
    @Mock
    private Provider<TargetContentsDisplay> displayProvider;
@@ -126,6 +141,8 @@ public class TargetContentsPresenterTest
    private UserOptionsService userOptionsService;
    @Mock
    private SaveAsApprovedConfirmationDisplay saveAsApprovedConfirmation;
+   @Mock
+   private ValidationWarningDisplay validationWarning;
 
    @BeforeMethod
    public void beforeMethod()
@@ -138,7 +155,7 @@ public class TargetContentsPresenterTest
       userWorkspaceContext = TestFixture.userWorkspaceContext();
       presenter = new TargetContentsPresenter(displayProvider, editorTranslators, eventBus,
             tableEditorMessages, sourceContentPresenter, userWorkspaceContext, editorKeyShortcuts,
-            historyPresenter, userOptionsService, saveAsApprovedConfirmation);
+            historyPresenter, userOptionsService, saveAsApprovedConfirmation, validationWarning);
 
       verify(eventBus).addHandler(UserConfigChangeEvent.TYPE, presenter);
       verify(eventBus).addHandler(RequestValidationEvent.getType(), presenter);
@@ -148,6 +165,7 @@ public class TargetContentsPresenterTest
       verify(eventBus).addHandler(TransUnitEditEvent.getType(), presenter);
       verify(eventBus).addHandler(WorkspaceContextUpdateEvent.getType(), presenter);
       verify(saveAsApprovedConfirmation).setListener(presenter);
+      verify(validationWarning).setListener(presenter);
 
       when(displayProvider.get()).thenReturn(display);
       presenter.showData(currentPageRows);
@@ -171,7 +189,7 @@ public class TargetContentsPresenterTest
       assertThat(event.getSourceContent(), equalTo("source"));
       assertThat(event.getTarget(), equalTo("target"));
       assertThat(event.isFireNotification(), equalTo(false));
-      assertThat(event.getWidgetList(), Matchers.<HasUpdateValidationWarning>containsInAnyOrder(editor, display));
+      assertThat(event.getWidgetList(), Matchers.<HasUpdateValidationMessage> containsInAnyOrder(editor, display));
    }
 
    @Test
@@ -213,7 +231,6 @@ public class TargetContentsPresenterTest
       verify(editor).setFocus();
       verify(eventBus).fireEvent(isA(NotificationEvent.class));
    }
-
 
    @Test
    public void canGetNewTargets()
@@ -299,10 +316,12 @@ public class TargetContentsPresenterTest
       verify(editor).insertTextInCursorPosition("suggestion");
 
       verify(eventBus, atLeastOnce()).fireEvent(eventCaptor.capture());
-      NotificationEvent notificationEvent = TestFixture.extractFromEvents(eventCaptor.getAllValues(), NotificationEvent.class);
+      NotificationEvent notificationEvent = TestFixture.extractFromEvents(eventCaptor.getAllValues(),
+            NotificationEvent.class);
       MatcherAssert.assertThat(notificationEvent.getMessage(), Matchers.equalTo("copied"));
 
-      RunValidationEvent runValidationEvent = TestFixture.extractFromEvents(eventCaptor.getAllValues(), RunValidationEvent.class);
+      RunValidationEvent runValidationEvent = TestFixture.extractFromEvents(eventCaptor.getAllValues(),
+            RunValidationEvent.class);
       assertThat(runValidationEvent.getSourceContent(), equalTo("source content"));
    }
 
@@ -319,8 +338,33 @@ public class TargetContentsPresenterTest
 
       verify(editor).setTextAndValidate("target");
       verify(eventBus, atLeastOnce()).fireEvent(eventCaptor.capture());
-      NotificationEvent notificationEvent = TestFixture.extractFromEvents(eventCaptor.getAllValues(), NotificationEvent.class);
+      NotificationEvent notificationEvent = TestFixture.extractFromEvents(eventCaptor.getAllValues(),
+            NotificationEvent.class);
       MatcherAssert.assertThat(notificationEvent.getMessage(), Matchers.equalTo("copied"));
+   }
+
+   @Test
+   public void willNotMoveToNextEntryIfTranslationHasError()
+   {
+      // Given: selected display and focus on first entry
+      ValidationMessages messages = mock(ValidationMessages.class);
+      
+      Map<ValidationAction, List<String>> errorMessage = Maps.newHashMap();
+      errorMessage.put(new HtmlXmlTagValidation(ValidationId.HTML_XML, messages), new ArrayList<String>());
+      
+      selectedTU = currentPageRows.get(0);
+      when(display.getNewTargets()).thenReturn(NEW_TARGETS);
+      when(display.getCachedTargets()).thenReturn(CACHED_TARGETS);
+      when(display.getId()).thenReturn(selectedTU.getId());
+      when(display.getEditors()).thenReturn(Lists.newArrayList(editor));
+      when(display.getErrorMessages()).thenReturn(errorMessage);
+      presenter.setStatesForTesting(selectedTU.getId(), 0, display);
+
+      // When:
+      presenter.saveAsApprovedAndMoveNext(selectedTU.getId());
+
+      // Then:
+      verify(validationWarning).center(selectedTU.getId(), NEW_TARGETS, errorMessage);
    }
 
    @Test
@@ -356,7 +400,8 @@ public class TargetContentsPresenterTest
       // Then:
       verify(eventBus, atLeastOnce()).fireEvent(eventCaptor.capture());
 
-      TransUnitSaveEvent saveEvent = TestFixture.extractFromEvents(eventCaptor.getAllValues(), TransUnitSaveEvent.class);
+      TransUnitSaveEvent saveEvent = TestFixture
+            .extractFromEvents(eventCaptor.getAllValues(), TransUnitSaveEvent.class);
       assertThat(saveEvent.getTransUnitId(), equalTo(selectedTU.getId()));
       assertThat(saveEvent.getTargets(), Matchers.equalTo(NEW_TARGETS));
       assertThat(saveEvent.getStatus(), equalTo(ContentState.Translated));
@@ -394,7 +439,8 @@ public class TargetContentsPresenterTest
       presenter.savePendingChangesIfApplicable();
 
       // Then:
-      verify(eventBus).fireEvent(new TransUnitSaveEvent(NEW_TARGETS, ContentState.Approved, selectedTU.getId(), 99, CACHED_TARGETS));
+      verify(eventBus).fireEvent(
+            new TransUnitSaveEvent(NEW_TARGETS, ContentState.Approved, selectedTU.getId(), 99, CACHED_TARGETS));
    }
 
    @Test
@@ -445,7 +491,7 @@ public class TargetContentsPresenterTest
    {
       userWorkspaceContext.setHasEditTranslationAccess(false);
       userWorkspaceContext.setHasReviewAccess(false);
-      
+
       boolean displayButtons = presenter.isDisplayButtons();
 
       assertThat(displayButtons, Matchers.is(false));
@@ -461,7 +507,8 @@ public class TargetContentsPresenterTest
       presenter.onEditorClicked(selectedTU.getId(), 1);
 
       verify(eventBus).fireEvent(eventCaptor.capture());
-      TableRowSelectedEvent tableRowSelectedEvent = TestFixture.extractFromEvents(eventCaptor.getAllValues(), TableRowSelectedEvent.class);
+      TableRowSelectedEvent tableRowSelectedEvent = TestFixture.extractFromEvents(eventCaptor.getAllValues(),
+            TableRowSelectedEvent.class);
       assertThat(tableRowSelectedEvent.getSelectedId(), Matchers.equalTo(selectedTU.getId()));
    }
 
@@ -488,7 +535,8 @@ public class TargetContentsPresenterTest
 
       // Then:
       verify(display, times(3)).showButtons(false);
-      verify(saveAsApprovedConfirmation).setShowSaveApprovedWarning(userOptionsService.getConfigHolder().getState().isShowSaveApprovedWarning());
+      verify(saveAsApprovedConfirmation).setShowSaveApprovedWarning(
+            userOptionsService.getConfigHolder().getState().isShowSaveApprovedWarning());
       verify(display, times(3)).setEnableSpellCheck(false);
    }
 
@@ -574,7 +622,7 @@ public class TargetContentsPresenterTest
       WorkspaceContextUpdateEvent event = mock(WorkspaceContextUpdateEvent.class);
       when(event.isProjectActive()).thenReturn(false);
       userWorkspaceContext.setHasEditTranslationAccess(false);
-      
+
       // When:
       presenter.onWorkspaceContextUpdated(event);
 
@@ -771,7 +819,8 @@ public class TargetContentsPresenterTest
 
       presenter.confirmSaved(selectedTU);
 
-      verify(display).updateCachedTargetsAndVersion(selectedTU.getTargets(), selectedTU.getVerNum(), selectedTU.getStatus());
+      verify(display).updateCachedTargetsAndVersion(selectedTU.getTargets(), selectedTU.getVerNum(),
+            selectedTU.getStatus());
       verify(display).setState(TargetContentsDisplay.EditingState.SAVED);
    }
 
@@ -840,7 +889,8 @@ public class TargetContentsPresenterTest
       presenter.rejectTranslation(selectedTU.getId());
 
       verify(eventBus).fireEvent(eventCaptor.capture());
-      CommentBeforeSaveEvent commentBeforeSaveEvent = extractFromEvents(eventCaptor.getAllValues(), CommentBeforeSaveEvent.class);
+      CommentBeforeSaveEvent commentBeforeSaveEvent = extractFromEvents(eventCaptor.getAllValues(),
+            CommentBeforeSaveEvent.class);
       assertThat(commentBeforeSaveEvent.getSaveEvent().getStatus(), Matchers.equalTo(ContentState.Rejected));
    }
 }

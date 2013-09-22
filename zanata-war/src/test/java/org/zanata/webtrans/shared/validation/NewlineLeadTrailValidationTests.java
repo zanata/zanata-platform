@@ -53,7 +53,7 @@ public class NewlineLeadTrailValidationTests
       messages = Gwti18nReader.create(ValidationMessages.class);
 
       newlineLeadTrailValidation = new NewlineLeadTrailValidation(ValidationId.NEW_LINE, messages);
-      newlineLeadTrailValidation.getValidationInfo().setEnabled(true);
+      newlineLeadTrailValidation.getRules().setEnabled(true);
    }
 
    @Test

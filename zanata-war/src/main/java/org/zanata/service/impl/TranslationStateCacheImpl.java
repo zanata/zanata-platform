@@ -150,7 +150,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache
    }
 
    @Override
-   public Boolean textFlowTargetHasError(Long targetId, ValidationId validationId)
+   public Boolean textFlowTargetHasWarningOrError(Long targetId, ValidationId validationId)
    {
       Map<ValidationId, Boolean> cacheEntry = targetValidationCache.getWithLoader(targetId);
       if (!cacheEntry.containsKey(validationId))

@@ -15,8 +15,8 @@ public interface TableEditorMessages extends Messages
    @DefaultMessage("Failed to load data from server")
    String notifyLoadFailed();
 
-   @DefaultMessage("Save FAILED: {0}")
-   String notifyUpdateFailed(String errorMessage);
+   @DefaultMessage("Save FAILED: {0}, messages: {1}")
+   String notifyUpdateFailed(String id, String errorMessage);
 
    @DefaultMessage("Row {0} (Id {1}) Saved")
    String notifyUpdateSaved(int rowIndex, String id);
@@ -25,11 +25,15 @@ public interface TableEditorMessages extends Messages
    String notifyValidationError();
 
    // @formatter:off
-   @DefaultMessage("Validation Warnings: {0}")
+   @DefaultMessage("Warnings: {0}, Errors: {1}")
    @AlternateMessage({
-      "one", "Validation Warnings: 1",
-      "=0", "Validation Warnings: none" })
-   String validationWarningsHeading(@PluralCount int warningCount);
+      "one|one", "Warning: 1, Error: 1",
+      "one|other", "Warning: 1, Errors: {1}",
+      "other|one", "Warnings: {0}, Error: 1",
+      "=0|=0", "Warning: none, Error: none",
+      "=0|other", "Warning: none, Errors: {1}",
+      "other|=0", "Warnings: {0}, Error: none"})
+   String validationNotificationHeading(@PluralCount int warningCount, @PluralCount int errorCount);
    // @formatter:on
 
    @DefaultMessage("Copy from translation memory match result no.{0}")
@@ -40,7 +44,7 @@ public interface TableEditorMessages extends Messages
 
    @DefaultMessage("Move to previous row")
    String moveToPreviousRow();
-   
+
    @DefaultMessage("Move to next Fuzzy or Rejected")
    String nextDraft();
 
@@ -88,12 +92,15 @@ public interface TableEditorMessages extends Messages
 
    @DefaultMessage("Cancel changes")
    String cancelChanges();
+   
+   @DefaultMessage("Return to editor")
+   String returnToEditor();
 
    @DefaultMessage("Cancel")
    String cancel();
 
    @DefaultMessage("Don''t show this warning again.")
-   String saveAsApprovedDialogRememberDecision();
+   String dontShowThisAgain();
 
    @DefaultMessage("Warning! Saving a ''Fuzzy'' translation as ''Translated'' without changes.")
    String saveAsTranslatedDialogWarning1();
@@ -115,13 +122,22 @@ public interface TableEditorMessages extends Messages
 
    @DefaultMessage("Comment")
    String comment();
-   
+
    @DefaultMessage("Discard Changes")
    String discardChanges();
-      
+
    @DefaultMessage("Cancel filter")
    String cancelFilter();
-      
+
    @DefaultMessage("Save changes before filtering view?")
    String saveChangesConfirmationMessage();
+   
+   @DefaultMessage("You''re trying to save translation that contains validation error")
+   String validationErrorMessage();
+   
+   @DefaultMessage("Translation")
+   String translation();
+   
+   @DefaultMessage("Error message")
+   String errorMessage();
 }

@@ -103,7 +103,6 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    private TransUnitId selectedId;
    private String findMessage;
 
-
    @Inject
    // @formatter:off
    public TransUnitsTablePresenter(TransUnitsTableDisplay display, EventBus eventBus, NavigationService navigationService,
@@ -215,7 +214,7 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
       {
          return;
       }
-      targetContentsPresenter.saveCurrent(status);
+      targetContentsPresenter.saveCurrentIfValid(status);
       hideFilterConfirmationAndDoFiltering();
    }
 
@@ -229,7 +228,9 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    @Override
    public void cancelFilter()
    {
-      eventBus.fireEvent(new FilterViewEvent(previousFilterOptions.isFilterTranslated(), previousFilterOptions.isFilterFuzzy(), previousFilterOptions.isFilterUntranslated(), previousFilterOptions.isFilterApproved(), previousFilterOptions.isFilterRejected(), previousFilterOptions.isFilterHasError(), true, previousFilterOptions.getEnabledValidationIds()));
+      eventBus.fireEvent(new FilterViewEvent(previousFilterOptions.isFilterTranslated(), previousFilterOptions
+            .isFilterFuzzy(), previousFilterOptions.isFilterUntranslated(), previousFilterOptions.isFilterApproved(),
+            previousFilterOptions.isFilterRejected(), previousFilterOptions.isFilterHasError(), true));
       display.hideFilterConfirmation();
    }
 
@@ -270,7 +271,8 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
    }
 
    @Override
-   public void refreshRow(TransUnit updatedTransUnit, EditorClientId editorClientId, TransUnitUpdated.UpdateType updateType)
+   public void refreshRow(TransUnit updatedTransUnit, EditorClientId editorClientId,
+         TransUnitUpdated.UpdateType updateType)
    {
 
       if (updateFromCurrentUsersEditorSave(editorClientId, updateType))
@@ -285,15 +287,19 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
          return;
       }
 
-      if (Objects.equal(selectedId, updatedTransUnit.getId()) && !Objects.equal(editorClientId, translatorService.getCurrentEditorClientId()))
+      if (Objects.equal(selectedId, updatedTransUnit.getId())
+            && !Objects.equal(editorClientId, translatorService.getCurrentEditorClientId()))
       {
          // updatedTU is our active row but done by another user
          eventBus.fireEvent(new NotificationEvent(Error, messages.concurrentEdit()));
          if (targetContentsPresenter.currentEditorContentHasChanged())
          {
             translationHistoryPresenter.popupAndShowLoading(messages.concurrentEditTitle());
-            TransHistoryItem latest = new TransHistoryItem(updatedTransUnit.getVerNum().toString(), updatedTransUnit.getTargets(), updatedTransUnit.getStatus(), updatedTransUnit.getLastModifiedBy(), updatedTransUnit.getLastModifiedTime());
-            translationHistoryPresenter.displayEntries(latest, Collections.<TransHistoryItem> emptyList(), Collections.<ReviewComment>emptyList());
+            TransHistoryItem latest = new TransHistoryItem(updatedTransUnit.getVerNum().toString(),
+                  updatedTransUnit.getTargets(), updatedTransUnit.getStatus(), updatedTransUnit.getLastModifiedBy(),
+                  updatedTransUnit.getLastModifiedTime());
+            translationHistoryPresenter.displayEntries(latest, Collections.<TransHistoryItem> emptyList(),
+                  Collections.<ReviewComment> emptyList());
          }
       }
       targetContentsPresenter.updateRow(updatedTransUnit);
@@ -301,9 +307,11 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
 
    // update type is web editor save or web editor save fuzzy and coming from
    // current user
-   private boolean updateFromCurrentUsersEditorSave(EditorClientId editorClientId, TransUnitUpdated.UpdateType updateType)
+   private boolean updateFromCurrentUsersEditorSave(EditorClientId editorClientId,
+         TransUnitUpdated.UpdateType updateType)
    {
-      return Objects.equal(editorClientId, translatorService.getCurrentEditorClientId()) && (updateType == TransUnitUpdated.UpdateType.WebEditorSave || updateType == TransUnitUpdated.UpdateType.WebEditorSaveFuzzy);
+      return Objects.equal(editorClientId, translatorService.getCurrentEditorClientId())
+            && (updateType == TransUnitUpdated.UpdateType.WebEditorSave || updateType == TransUnitUpdated.UpdateType.WebEditorSaveFuzzy);
    }
 
    @Override

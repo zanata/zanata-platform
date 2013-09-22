@@ -15,8 +15,8 @@ import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.ValidationAction;
+import org.zanata.webtrans.shared.model.ValidationAction.State;
 import org.zanata.webtrans.shared.model.ValidationId;
-import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceRestrictions;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceAction;
@@ -52,14 +52,14 @@ public class DummyActivateWorkspaceCommand implements Command
 
       ValidationFactory validationFactory = new ValidationFactory(null);
       Map<ValidationId, ValidationAction> validationMap = validationFactory.getAllValidationActions();
-      Map<ValidationId, ValidationInfo> validationInfoList = new HashMap<ValidationId, ValidationInfo>();
+      Map<ValidationId, State> validationStates = new HashMap<ValidationId, State>();
 
       for (ValidationAction action : validationMap.values())
       {
-         validationInfoList.put(action.getId(), action.getValidationInfo());
+         validationStates.put(action.getId(), action.getState());
       }
 
-      callback.onSuccess(new ActivateWorkspaceResult(userWorkspaceContext, identity, new UserConfigHolder().getState(), validationInfoList));
+      callback.onSuccess(new ActivateWorkspaceResult(userWorkspaceContext, identity, new UserConfigHolder().getState(), validationStates));
       Log.info("EXIT DummyActivateWorkspaceCommand.execute()");
    }
 }

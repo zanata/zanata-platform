@@ -129,12 +129,12 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
 
       LoadOptionsResult loadOptsRes = loadOptionsHandler.execute(new LoadOptionsAction(null), context);
 
-      GetValidationRulesResult validationResult = getValidationRulesHandler.execute(new GetValidationRulesAction(workspaceId), context);
+      GetValidationRulesResult validationRulesResult = getValidationRulesHandler.execute(new GetValidationRulesAction(workspaceId), context);
 
       Identity identity = new Identity(editorClientId, person);
       workspace.getWorkspaceContext().getWorkspaceId().getProjectIterationId().setProjectType(projectIteration.getProjectType());
       UserWorkspaceContext userWorkspaceContext = new UserWorkspaceContext(workspace.getWorkspaceContext(), workspaceRestrictions);
-      return new ActivateWorkspaceResult(userWorkspaceContext, identity, loadOptsRes.getConfiguration(), validationResult.getValidations());
+      return new ActivateWorkspaceResult(userWorkspaceContext, identity, loadOptsRes.getConfiguration(), validationRulesResult.getValidationRules());
    }
 
    protected String getHttpSessionId()

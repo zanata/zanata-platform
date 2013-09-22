@@ -13,7 +13,6 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 @ImplementedBy(TranslationHistoryView.class)
 public interface TranslationHistoryDisplay extends WidgetDisplay
 {
-
    void center();
 
    void hide();

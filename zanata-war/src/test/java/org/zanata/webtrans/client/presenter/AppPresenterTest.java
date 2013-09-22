@@ -1,9 +1,23 @@
 package org.zanata.webtrans.client.presenter;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.PresenterRevealedEvent;
 
 import org.hamcrest.Matchers;
 import org.mockito.ArgumentCaptor;
@@ -36,17 +50,10 @@ import org.zanata.webtrans.shared.model.AuditInfo;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.model.ValidationAction.State;
 import org.zanata.webtrans.shared.model.ValidationId;
-import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceContextUpdateData;
-
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.PresenterRevealedEvent;
-import static org.hamcrest.MatcherAssert.*;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.*;
 
 @Test(groups = { "unit-tests" })
 public class AppPresenterTest
@@ -530,7 +537,7 @@ public class AppPresenterTest
          }
 
          @Override
-         public Map<ValidationId, ValidationInfo> getValidationInfoList()
+         public Map<ValidationId, State> getValidationStates()
          {
             return null;
          }

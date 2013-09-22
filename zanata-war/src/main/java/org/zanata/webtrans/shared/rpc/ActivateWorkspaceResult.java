@@ -5,8 +5,8 @@ import java.util.Map;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.model.ValidationAction.State;
 import org.zanata.webtrans.shared.model.ValidationId;
-import org.zanata.webtrans.shared.model.ValidationInfo;
 
 
 public class ActivateWorkspaceResult implements DispatchResult
@@ -17,7 +17,7 @@ public class ActivateWorkspaceResult implements DispatchResult
    private UserWorkspaceContext userWorkspaceContext;
    private Identity identity;
    private UserConfigHolder.ConfigurationState storedUserConfiguration;
-   private Map<ValidationId, ValidationInfo> validations;
+   private Map<ValidationId, State> validationStates;
 
    @SuppressWarnings("unused")
    private ActivateWorkspaceResult()
@@ -26,12 +26,12 @@ public class ActivateWorkspaceResult implements DispatchResult
 
    public ActivateWorkspaceResult(UserWorkspaceContext userWorkspaceContext,
                                   Identity identity,
- UserConfigHolder.ConfigurationState storedUserConfiguration, Map<ValidationId, ValidationInfo> validations)
+ UserConfigHolder.ConfigurationState storedUserConfiguration, Map<ValidationId, State> validationStates)
    {
       this.userWorkspaceContext = userWorkspaceContext;
       this.identity = identity;
       this.storedUserConfiguration = storedUserConfiguration;
-      this.validations = validations;
+      this.validationStates = validationStates;
    }
 
    public UserWorkspaceContext getUserWorkspaceContext()
@@ -49,8 +49,8 @@ public class ActivateWorkspaceResult implements DispatchResult
       return storedUserConfiguration;
    }
 
-   public Map<ValidationId, ValidationInfo> getValidations()
+   public Map<ValidationId, State> getValidationStates()
    {
-      return validations;
+      return validationStates;
    }
 }

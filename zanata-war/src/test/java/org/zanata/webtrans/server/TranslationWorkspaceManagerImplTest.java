@@ -180,7 +180,7 @@ public class TranslationWorkspaceManagerImplTest
       hLocale.setActive(true);
       when(localeServiceImpl.getByLocaleId(workspaceId.getLocaleId())).thenReturn(hLocale);
 
-      when(validationServiceImpl.getValidationObject(projectIteration)).thenReturn(new ArrayList<ValidationAction>());
+      when(validationServiceImpl.getValidationActions(projectIteration.getProject().getSlug(), projectIteration.getSlug())).thenReturn(new ArrayList<ValidationAction>());
 
       TranslationWorkspaceManagerImpl spy = spy(manager);
       doReturn(mockWorkspace).when(spy).createWorkspace(workspaceId);

@@ -21,10 +21,10 @@
 package org.zanata.webtrans.shared.validation.action;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationId;
-import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.validation.AbstractValidationAction;
 
 import com.google.gwt.regexp.shared.MatchResult;
@@ -39,42 +39,41 @@ public class HtmlXmlTagValidation extends AbstractValidationAction
 {
    public HtmlXmlTagValidation(ValidationId id, ValidationMessages messages)
    {
-      super(id, messages.xmlHtmlValidatorDesc(), new ValidationInfo(true), messages);
-   }
-   
-   public HtmlXmlTagValidation(ValidationId id)
-   {
-      super(id, null, new ValidationInfo(true), null);
+      super(id, messages.xmlHtmlValidatorDesc(), messages);
    }
 
    private final static String tagRegex = "<[^>]+>";
 
    @Override
-   public void doValidate(ArrayList<String> errorList, String source, String target)
+   public List<String> doValidate(String source, String target)
    {
-      ArrayList<String> error = listMissing(source, target);
-      if (!error.isEmpty())
+      ArrayList<String> errors = new ArrayList<String>();
+      
+      List<String> foundErrors = listMissing(source, target);
+      if (!foundErrors.isEmpty())
       {
-         errorList.add(getMessages().tagsMissing(error));
+         errors.add(getMessages().tagsMissing(foundErrors));
+      }
+      foundErrors = listMissing(target, source);
+      if (!foundErrors.isEmpty())
+      {
+         errors.add(getMessages().tagsAdded(foundErrors));
       }
 
-      error = listMissing(target, source);
-      if (!error.isEmpty())
-      {
-         errorList.add(getMessages().tagsAdded(error));
-      }
-
-      if (errorList.isEmpty())
+      if (errors.isEmpty())
       {
          ArrayList<String> sourceTags = getTagList(source);
          ArrayList<String> targetTags = getTagList(target);
 
-         orderValidation(sourceTags, targetTags, errorList);
+         errors.addAll(orderValidation(sourceTags, targetTags));
       }
+      return errors;
    }
 
-   private void orderValidation(ArrayList<String> srcTags, ArrayList<String> trgTags, ArrayList<String> errorList)
+   private List<String> orderValidation(ArrayList<String> srcTags, ArrayList<String> trgTags)
    {
+      ArrayList<String> errors = new ArrayList<String>();
+      
       ArrayList<String> longestRun = null;
       ArrayList<String> currentRun;
 
@@ -108,7 +107,7 @@ public class HtmlXmlTagValidation extends AbstractValidationAction
             if (currentRun.size() == srcTags.size())
             {
                // must all match
-               return;
+               return errors;
             }
 
             if (longestRun == null || longestRun.size() < currentRun.size())
@@ -131,9 +130,11 @@ public class HtmlXmlTagValidation extends AbstractValidationAction
          }
          if (!outOfOrder.isEmpty())
          {
-            errorList.add(getMessages().tagsWrongOrder(outOfOrder));
+            errors.add(getMessages().tagsWrongOrder(outOfOrder));
          }
       }
+      
+      return errors;
    }
 
    private int findInTail(String toFind, String[] findIn, int startIndex)
@@ -163,7 +164,7 @@ public class HtmlXmlTagValidation extends AbstractValidationAction
       return list;
    }
 
-   private ArrayList<String> listMissing(String compareFrom, String compareTo)
+   private List<String> listMissing(String compareFrom, String compareTo)
    {
       final RegExp regExp = RegExp.compile(tagRegex, "g");
 

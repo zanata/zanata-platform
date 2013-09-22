@@ -21,9 +21,21 @@
 
 package org.zanata.webtrans.server.rpc;
 
+import static com.google.common.collect.Lists.newArrayList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.same;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
+import static org.zanata.webtrans.shared.model.TransMemoryResultItem.MatchType;
+import static org.zanata.webtrans.shared.rpc.HasSearchType.SearchType.FUZZY_PLURAL;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import net.customware.gwt.dispatch.shared.ActionException;
 
 import org.hamcrest.Matchers;
 import org.mockito.ArgumentCaptor;
@@ -50,24 +62,13 @@ import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
-import org.zanata.webtrans.shared.rpc.MergeRule;
 import org.zanata.webtrans.shared.rpc.MergeOptions;
+import org.zanata.webtrans.shared.rpc.MergeRule;
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
 import com.google.common.collect.Lists;
-
-import net.customware.gwt.dispatch.shared.ActionException;
-import static com.google.common.collect.Lists.newArrayList;
-import static org.hamcrest.MatcherAssert.*;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.same;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
-import static org.zanata.webtrans.shared.model.TransMemoryResultItem.MatchType;
-import static org.zanata.webtrans.shared.rpc.HasSearchType.SearchType.FUZZY_PLURAL;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -102,7 +103,7 @@ public class TransMemoryMergeHandlerTest
    private static ArrayList<String> tmTarget = newArrayList("tm target");
 
    @BeforeMethod
-   public void beforeMethod() 
+   public void beforeMethod()
    {
       MockitoAnnotations.initMocks(this);
       // @formatter:off
@@ -120,7 +121,7 @@ public class TransMemoryMergeHandlerTest
 
    private TransMemoryMerge prepareActionAndMockSecurityService(int threshold, long... tranUnitIds) throws NoSuchWorkspaceException
    {
-      return  prepareActionAndMockSecurityService(threshold, true, tranUnitIds);
+      return prepareActionAndMockSecurityService(threshold, true, tranUnitIds);
    }
 
    private TransMemoryMerge prepareActionAndMockSecurityService(int threshold, boolean acceptImportedTMResults, long... tranUnitIds)
@@ -165,7 +166,6 @@ public class TransMemoryMergeHandlerTest
    {
       return new TransMemoryDetails("", "", "project a", "master", "pot/msg.pot", "resId", null, null, null, null);
    }
-
 
    @Test
    public void canAutoTranslateIfHasTMAboveThreshold() throws ActionException
@@ -240,14 +240,14 @@ public class TransMemoryMergeHandlerTest
       // Given: there is no TM results returned for text flow id 1
       TransMemoryQuery tmQuery = new TransMemoryQuery(hTextFlow.getContents(), FUZZY_PLURAL);
       when(getTransMemoryHandler.searchTransMemory(hLocale, tmQuery, sourceLocale.getLocaleId()))
-            .thenReturn(Lists.<TransMemoryResultItem>newArrayList());
+            .thenReturn(Lists.<TransMemoryResultItem> newArrayList());
 
       // When: execute the action
       UpdateTransUnitResult result = handler.execute(action, null);
 
       // Then: we should have EMPTY trans unit update request
       verifyZeroInteractions(updateTransUnitHandler);
-      assertThat(result.getUpdateInfoList(), Matchers.<TransUnitUpdateInfo>empty());
+      assertThat(result.getUpdateInfoList(), Matchers.<TransUnitUpdateInfo> empty());
    }
 
    @Test
@@ -269,13 +269,13 @@ public class TransMemoryMergeHandlerTest
 
       // Then: we should have EMPTY trans unit update request
       verifyZeroInteractions(updateTransUnitHandler);
-      assertThat(result.getUpdateInfoList(), Matchers.<TransUnitUpdateInfo>empty());
+      assertThat(result.getUpdateInfoList(), Matchers.<TransUnitUpdateInfo> empty());
    }
 
    @Test
    public void willIgnoreApprovedTextFlows() throws ActionException
    {
-       // Given: text flow id 1 is not untranslated
+      // Given: text flow id 1 is not untranslated
       final long transUnitId = 1L;
       TransMemoryMerge action = prepareActionAndMockSecurityService(80, transUnitId);
 
@@ -287,7 +287,7 @@ public class TransMemoryMergeHandlerTest
 
       // Then: we should have EMPTY trans unit update request
       verifyZeroInteractions(getTransMemoryHandler, getTransMemoryDetailsHandler, updateTransUnitHandler);
-      assertThat(result.getUpdateInfoList(), Matchers.<TransUnitUpdateInfo>empty());
+      assertThat(result.getUpdateInfoList(), Matchers.<TransUnitUpdateInfo> empty());
    }
 
    @Test
@@ -319,7 +319,7 @@ public class TransMemoryMergeHandlerTest
 
       // Then: we should have EMPTY trans unit update request
       verifyZeroInteractions(updateTransUnitHandler);
-      assertThat(result.getUpdateInfoList(), Matchers.<TransUnitUpdateInfo>empty());
+      assertThat(result.getUpdateInfoList(), Matchers.<TransUnitUpdateInfo> empty());
    }
 
    @Test
@@ -348,8 +348,7 @@ public class TransMemoryMergeHandlerTest
       when(getTransMemoryHandler.searchTransMemory(hLocale, new TransMemoryQuery(textFlow100TM.getContents(), FUZZY_PLURAL), sourceLocale.getLocaleId())).thenReturn(newArrayList(tm100));
       when(getTransMemoryHandler.searchTransMemory(hLocale, new TransMemoryQuery(textFLow90TM.getContents(), FUZZY_PLURAL), sourceLocale.getLocaleId())).thenReturn(newArrayList(tm90));
       when(getTransMemoryHandler.searchTransMemory(hLocale, new TransMemoryQuery(textFlow80TM.getContents(), FUZZY_PLURAL), sourceLocale.getLocaleId())).thenReturn(newArrayList(tm80));
-      when(getTransMemoryHandler.searchTransMemory(hLocale, new TransMemoryQuery(textFlowNoTM.getContents(), FUZZY_PLURAL), sourceLocale.getLocaleId())).thenReturn(Lists.<TransMemoryResultItem>newArrayList());
-
+      when(getTransMemoryHandler.searchTransMemory(hLocale, new TransMemoryQuery(textFlowNoTM.getContents(), FUZZY_PLURAL), sourceLocale.getLocaleId())).thenReturn(Lists.<TransMemoryResultItem> newArrayList());
 
       when(textFlowDAO.findById(tmResultSource.getId(), false)).thenReturn(tmResultSource);
       // Given: tm detail of text flow id 11
@@ -372,7 +371,7 @@ public class TransMemoryMergeHandlerTest
       double oneHundred = 100.00000001D;
 
       assertThat(oneHundred <= 100, Matchers.is(false));
-      assertThat((int)oneHundred <= 100, Matchers.is(true));
+      assertThat((int) oneHundred <= 100, Matchers.is(true));
 
    }
 
@@ -448,6 +447,6 @@ public class TransMemoryMergeHandlerTest
       // Then: We should not have anything auto-translated
       // Then: we should have EMPTY trans unit update request
       verifyZeroInteractions(updateTransUnitHandler);
-      assertThat(result.getUpdateInfoList(), Matchers.<TransUnitUpdateInfo>empty());
+      assertThat(result.getUpdateInfoList(), Matchers.<TransUnitUpdateInfo> empty());
    }
 }

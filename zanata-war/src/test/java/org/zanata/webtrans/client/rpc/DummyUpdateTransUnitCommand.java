@@ -3,6 +3,8 @@
  */
 package org.zanata.webtrans.client.rpc;
 
+import java.util.ArrayList;
+
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.webtrans.shared.model.DocumentId;

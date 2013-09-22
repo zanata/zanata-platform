@@ -3,9 +3,11 @@ package org.zanata.webtrans.client.ui;
 import static org.zanata.webtrans.client.view.TargetContentsDisplay.EditingState.UNSAVED;
 
 import java.util.List;
+import java.util.Map;
 
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.model.ValidationAction;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
@@ -246,15 +248,15 @@ public class Editor extends Composite implements ToggleEditor
    }
 
    @Override
-   public void updateValidationWarning(List<String> errors)
+   public void updateValidationMessages(Map<ValidationAction, List<String>> messages)
    {
-      if (errors.isEmpty())
+      if (messages.isEmpty())
       {
          targetWrapper.removeStyleName(style.hasValidationError());
       }
       else
       {
-         Log.info(id + " id has error: " + errors);
+         Log.info(id + " id has error: " + messages.values());
          targetWrapper.addStyleName(style.hasValidationError());
       }
    }

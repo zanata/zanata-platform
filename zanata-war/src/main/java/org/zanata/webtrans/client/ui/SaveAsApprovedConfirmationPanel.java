@@ -59,7 +59,7 @@ public class SaveAsApprovedConfirmationPanel extends PopupPanel implements SaveA
       
       saveAsApproved = new Button(messages.saveAsTranslated());
       cancel = new Button(messages.cancel());
-      rememberDecision = new CheckBox(messages.saveAsApprovedDialogRememberDecision());
+      rememberDecision = new CheckBox(messages.dontShowThisAgain());
 
       Label message = new Label(messages.saveAsTranslatedDialogWarning1());
       message.addStyleName("message");

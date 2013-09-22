@@ -55,11 +55,7 @@ import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.service.impl.CopyTransServiceImpl;
-import org.zanata.service.impl.DocumentServiceImpl;
-import org.zanata.service.impl.LocaleServiceImpl;
-import org.zanata.service.impl.SecurityServiceImpl;
-import org.zanata.service.impl.TranslationServiceImpl;
+import org.zanata.service.impl.*;
 import org.zanata.util.HashUtil;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
@@ -147,7 +143,9 @@ public class TranslationResourceRestTest extends ZanataRestTest
           .useImpl(LocaleServiceImpl.class)
           .useImpl(DocumentServiceImpl.class)
           .useImpl(ResourceUtils.class)
-          .useImpl(SecurityServiceImpl.class);
+          .useImpl(SecurityServiceImpl.class)
+          .useImpl(ValidationServiceImpl.class);
+
 
       TranslatedDocResourceService translatedDocResourceService = seamAutowire.autowire(TranslatedDocResourceService.class);
       SourceDocResourceService sourceDocResourceService = seamAutowire.autowire(SourceDocResourceService.class);

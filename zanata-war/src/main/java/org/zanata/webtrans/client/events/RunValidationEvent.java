@@ -22,7 +22,7 @@ package org.zanata.webtrans.client.events;
 
 import java.util.ArrayList;
 
-import org.zanata.webtrans.client.ui.HasUpdateValidationWarning;
+import org.zanata.webtrans.client.ui.HasUpdateValidationMessage;
 
 import com.google.gwt.event.shared.GwtEvent;
 
@@ -50,7 +50,7 @@ public class RunValidationEvent extends GwtEvent<RunValidationEventHandler>
 
    private String source, target;
    private boolean fireNotification = true;
-   private ArrayList<HasUpdateValidationWarning> widgetList = new ArrayList<HasUpdateValidationWarning>();
+   private ArrayList<HasUpdateValidationMessage> widgetList = new ArrayList<HasUpdateValidationMessage>();
 
    public RunValidationEvent(String source, String target, boolean fireNotification)
    {
@@ -87,12 +87,12 @@ public class RunValidationEvent extends GwtEvent<RunValidationEventHandler>
       return fireNotification;
    }
 
-   public void addWidget(HasUpdateValidationWarning validationMessagePanel)
+   public void addWidget(HasUpdateValidationMessage validationMessagePanel)
    {
       widgetList.add(validationMessagePanel);
    }
 
-   public ArrayList<HasUpdateValidationWarning> getWidgetList()
+   public ArrayList<HasUpdateValidationMessage> getWidgetList()
    {
       return widgetList;
    }
