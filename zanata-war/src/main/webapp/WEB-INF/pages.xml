@@ -912,7 +912,9 @@
     <action execute="#{breadcrumbs.addLocation('/tm/home.xhtml', messages['jsf.transmemory.Title'])}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.transmemory.title.New'])}"/>
     <navigation from-action="#{translationMemoryAction.persist}">
-      <redirect view-id="/tm/home.xhtml"/>
+      <rule if="#{translationMemoryAction.managed}">
+        <redirect view-id="/tm/home.xhtml"/>
+      </rule>
     </navigation>
     <navigation from-action="#{translationMemoryAction.cancel}">
       <redirect view-id="/tm/home.xhtml" />

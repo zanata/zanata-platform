@@ -46,8 +46,8 @@ import org.zanata.async.SimpleAsyncTask;
 import org.zanata.dao.TransMemoryDAO;
 import org.zanata.exception.EntityMissingException;
 import org.zanata.model.tm.TransMemory;
-import org.zanata.service.AsyncTaskManagerService;
 import org.zanata.rest.service.TranslationMemoryResourceService;
+import org.zanata.service.AsyncTaskManagerService;
 import org.zanata.service.SlugEntityService;
 
 /**
@@ -77,8 +77,8 @@ public class TranslationMemoryAction extends EntityHome<TransMemory>
    /**
     * Stores the last process handle, in page scope (ie for this user).
     */
-   @In(scope=ScopeType.PAGE, required=false)
-   @Out(scope=ScopeType.PAGE, required=false)
+   @In(scope = ScopeType.PAGE, required = false)
+   @Out(scope = ScopeType.PAGE, required = false)
    private AsyncTaskHandle myTaskHandle;
 
    /**
@@ -88,7 +88,7 @@ public class TranslationMemoryAction extends EntityHome<TransMemory>
 
    public List<TransMemory> getAllTranslationMemories()
    {
-      if( transMemoryList == null )
+      if (transMemoryList == null)
       {
          transMemoryList = transMemoryDAO.findAll();
       }
@@ -125,7 +125,7 @@ public class TranslationMemoryAction extends EntityHome<TransMemory>
                }
             },
             new ClearTransMemoryProcessKey(transMemorySlug)
-      );
+            );
 
       transMemoryList = null; // Force refresh next time list is requested
    }
@@ -148,7 +148,8 @@ public class TranslationMemoryAction extends EntityHome<TransMemory>
     */
    public String getProcessError()
    {
-      if (myProcessError != null) return myProcessError;
+      if (myProcessError != null)
+         return myProcessError;
       if (myTaskHandle != null && myTaskHandle.isDone())
       {
          try
@@ -200,9 +201,9 @@ public class TranslationMemoryAction extends EntityHome<TransMemory>
    public boolean isTablePollEnabled()
    {
       // Poll is enabled only when there is something being cleared
-      for( TransMemory tm : transMemoryList )
+      for (TransMemory tm : transMemoryList)
       {
-         if( isTransMemoryBeingCleared(tm.getSlug()) )
+         if (isTransMemoryBeingCleared(tm.getSlug()))
          {
             return true;
          }
@@ -219,6 +220,18 @@ public class TranslationMemoryAction extends EntityHome<TransMemory>
    {
       // Navigation logic in pages.xml
       return "cancel";
+   }
+
+   @Override
+   @Transactional
+   public String persist()
+   {
+      if (!validateSlug(getInstance().getSlug(), "slug"))
+      {
+         return null;
+      }
+
+      return super.persist();
    }
 
    /**
