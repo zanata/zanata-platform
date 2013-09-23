@@ -259,3 +259,39 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
     visibility: hidden;
   }
 }
+
+/* show visible tab */
+.cm-tab:after {
+    content: "\21e5";
+    display: inline-block;
+    width: 1em;
+    position: relative;
+    overflow: visible;
+    color: #aaa;
+}
+
+/* visible space */
+.cm-space
+{
+    border-bottom: #dcecf7 solid 2px;
+}
+
+/* visible line break*/
+.CodeMirror-code .CodeMirror-cursor:after
+{
+    content: '';
+}
+.CodeMirror-code pre:after
+{
+    content: '\00b6';
+    color: #aaaaaa;
+}
+.CodeMirror-code div:last-child pre:after {
+    content: '';
+}
+
+/* for highlighting label (runs code mirror runmode) */
+.newline:after {
+    content: '\00b6';
+    color: #aaaaaa;
+}
