@@ -150,7 +150,7 @@ public class ProjectIterationLocaleAction implements Serializable
          }
          else
          {
-            setting = projectIterationHome.getInstance().getOverrideLocales();
+            setting = projectIterationHome.getInstance().isOverrideLocales();
          }
          iterationOverrideLocales = setting;
       }

@@ -3,8 +3,8 @@ package org.zanata.webtrans.client.events;
 import java.util.Map;
 
 import org.zanata.common.ProjectType;
+import org.zanata.webtrans.shared.model.ValidationAction.State;
 import org.zanata.webtrans.shared.model.ValidationId;
-import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceContextUpdateData;
 
 import com.google.gwt.event.shared.GwtEvent;
@@ -13,13 +13,13 @@ public class WorkspaceContextUpdateEvent extends GwtEvent<WorkspaceContextUpdate
 {
    private final boolean isProjectActive;
    private final ProjectType projectType;
-   private final Map<ValidationId, ValidationInfo> validationInfoList;
+   private final Map<ValidationId, State> validationStates;
 
    public WorkspaceContextUpdateEvent(HasWorkspaceContextUpdateData data)
    {
       this.isProjectActive = data.isProjectActive();
       this.projectType = data.getProjectType();
-      this.validationInfoList = data.getValidationInfoList();
+      this.validationStates = data.getValidationStates();
    }
 
    /**
@@ -63,8 +63,8 @@ public class WorkspaceContextUpdateEvent extends GwtEvent<WorkspaceContextUpdate
       return projectType;
    }
 
-   public Map<ValidationId, ValidationInfo> getValidationInfoList()
+   public Map<ValidationId, State> getValidationStates()
    {
-      return validationInfoList;
+      return validationStates;
    }
 }

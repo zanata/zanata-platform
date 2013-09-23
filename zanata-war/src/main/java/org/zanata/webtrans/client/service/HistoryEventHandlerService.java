@@ -1,5 +1,8 @@
 package org.zanata.webtrans.client.service;
 
+import static com.google.common.base.Objects.equal;
+import net.customware.gwt.presenter.client.EventBus;
+
 import org.zanata.webtrans.client.events.BookmarkedTextFlowEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.FilterViewEvent;
@@ -14,14 +17,12 @@ import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnitId;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-
-import net.customware.gwt.presenter.client.EventBus;
-import static com.google.common.base.Objects.*;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -164,7 +165,7 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String>
          Log.info("[gwt-history] message filter option has changed");
 
          eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
-         eventBus.fireEvent(new FilterViewEvent(token.isFilterTranslated(), token.isFilterFuzzy(), token.isFilterUntranslated(), token.isFilterApproved(), token.isFilterRejected(), token.isFilterHasError(), false, configHolder.getState().getEnabledValidationIds()));
+         eventBus.fireEvent(new FilterViewEvent(token.isFilterTranslated(), token.isFilterFuzzy(), token.isFilterUntranslated(), token.isFilterApproved(), token.isFilterRejected(), token.isFilterHasError(), false));
       }
    }
 

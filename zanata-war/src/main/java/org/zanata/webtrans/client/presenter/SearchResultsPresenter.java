@@ -1057,7 +1057,10 @@ public class SearchResultsPresenter extends WidgetPresenter<SearchResultsPresent
                refreshInfoDisplay(replaceInfo);
             }
          }
-         // individual failure behaviour not yet defined
+         else
+         {
+            eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.replaceTextFailureWithMessage(updateInfo.getTransUnit().getId().toString(), updateInfo.getErrorMessage())));
+         }
       }
       return successfulReplacements;
    }

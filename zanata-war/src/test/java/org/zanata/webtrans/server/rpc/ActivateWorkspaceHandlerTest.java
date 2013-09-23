@@ -45,8 +45,8 @@ import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.ValidationAction;
+import org.zanata.webtrans.shared.model.ValidationAction.State;
 import org.zanata.webtrans.shared.model.ValidationId;
-import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceAction;
@@ -146,13 +146,13 @@ public class ActivateWorkspaceHandlerTest
       when(workspaceContext.getWorkspaceId()).thenReturn(workspaceId);
 
       Collection<ValidationAction> validationList = validationFactory.getAllValidationActions().values();
-      Map<ValidationId, ValidationInfo> validationInfoList = new HashMap<ValidationId, ValidationInfo>();
+      Map<ValidationId, State> validationStates = new HashMap<ValidationId, State>();
       for (ValidationAction valAction : validationList)
       {
-         validationInfoList.put(valAction.getId(), valAction.getValidationInfo());
+         validationStates.put(valAction.getId(), valAction.getState());
       }
       
-      GetValidationRulesResult validationResult = new GetValidationRulesResult(validationInfoList);
+      GetValidationRulesResult validationResult = new GetValidationRulesResult(validationStates);
       when(getValidationRulesHandler.execute(isA(GetValidationRulesAction.class), any(ExecutionContext.class))).thenReturn(validationResult);
 
       ActivateWorkspaceResult result = handler.execute(action, null);

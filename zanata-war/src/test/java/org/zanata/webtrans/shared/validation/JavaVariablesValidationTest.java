@@ -56,7 +56,7 @@ public class JavaVariablesValidationTest
       messages = Gwti18nReader.create(ValidationMessages.class);
 
       javaVariablesValidation = new JavaVariablesValidation(ValidationId.JAVA_VARIABLES, messages);
-      javaVariablesValidation.getValidationInfo().setEnabled(true);
+      javaVariablesValidation.getRules().setEnabled(true);
    }
 
    @Test

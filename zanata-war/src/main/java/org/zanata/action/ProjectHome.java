@@ -21,6 +21,7 @@
 package org.zanata.action;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -30,6 +31,9 @@ import java.util.Set;
 import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
+
+import lombok.Getter;
+import lombok.Setter;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
@@ -57,6 +61,7 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SlugEntityService;
 import org.zanata.service.ValidationService;
+import org.zanata.webtrans.shared.model.ValidationAction;
 
 @Name("projectHome")
 public class ProjectHome extends SlugHome<HProject>
@@ -65,6 +70,8 @@ public class ProjectHome extends SlugHome<HProject>
 
    public static final String PROJECT_UPDATE = "project.update";
 
+   @Getter
+   @Setter
    private String slug;
 
    @In
@@ -101,13 +108,9 @@ public class ProjectHome extends SlugHome<HProject>
    @In(required = false)
    private Boolean restrictByRoles;
 
-   /* Outjected from ProjectValidationOptionsAction */
+   /* Outjected from ValidationOptionsAction */
    @In(required = false)
-   private Boolean overrideValidations;
-
-   /* Outjected from ProjectValidationOptionsAction */
-   @In(required = false)
-   private Set<String> customizedValidations;
+   private Collection<ValidationAction> customizedValidations;
 
    @In
    private LocaleService localeServiceImpl;
@@ -128,7 +131,7 @@ public class ProjectHome extends SlugHome<HProject>
    protected HProject loadInstance()
    {
       Session session = (Session) getEntityManager().getDelegate();
-      return (HProject)session.byNaturalId(HProject.class).using("slug", getSlug()).load();
+      return (HProject) session.byNaturalId(HProject.class).using("slug", getSlug()).load();
    }
 
    public void validateSuppliedId()
@@ -270,16 +273,6 @@ public class ProjectHome extends SlugHome<HProject>
       return "cancel";
    }
 
-   public String getSlug()
-   {
-      return slug;
-   }
-
-   public void setSlug(String slug)
-   {
-      this.slug = slug;
-   }
-
    @Override
    public boolean isIdDefined()
    {
@@ -355,21 +348,10 @@ public class ProjectHome extends SlugHome<HProject>
 
    private void updateOverrideValidations()
    {
-      if (overrideValidations != null)
+      getInstance().getCustomizedValidations().clear();
+      for (ValidationAction action : customizedValidations)
       {
-         getInstance().setOverrideValidations(overrideValidations);
-         getInstance().getCustomizedValidations().clear();
-
-         if (overrideValidations)
-         {
-            getInstance().getCustomizedValidations().clear();
-            getInstance().getCustomizedValidations().addAll(customizedValidations);
-         }
-
-         if (customizedValidations.isEmpty())
-         {
-            getInstance().setOverrideValidations(false);
-         }
+         getInstance().getCustomizedValidations().put(action.getId().name(), action.getState().name());
       }
    }
 
@@ -399,10 +381,10 @@ public class ProjectHome extends SlugHome<HProject>
 
    public boolean isUserAllowedToTranslateOrReview(String versionSlug, HLocale localeId)
    {
-      return !StringUtils.isEmpty(versionSlug) 
-            && localeId != null 
-            && isIterationActive(versionSlug) 
-            && identity != null 
+      return !StringUtils.isEmpty(versionSlug)
+            && localeId != null
+            && isIterationActive(versionSlug)
+            && identity != null
             && (identity.hasPermission("add-translation", getInstance(), localeId) || identity.hasPermission("translation-review", getInstance(), localeId));
    }
 

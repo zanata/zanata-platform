@@ -21,10 +21,10 @@
 package org.zanata.webtrans.shared.validation.action;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationId;
-import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.validation.AbstractValidationAction;
 
 import com.google.common.base.Splitter;
@@ -54,22 +54,19 @@ public class XmlEntityValidation extends AbstractValidationAction
 
    public XmlEntityValidation(ValidationId id, ValidationMessages messages)
    {
-      super(id, messages.xmlEntityValidatorDesc(), new ValidationInfo(true), messages);
-   }
-
-   public XmlEntityValidation(ValidationId id)
-   {
-      super(id, null, new ValidationInfo(true), null);
+      super(id, messages.xmlEntityValidatorDesc(), messages);
    }
 
    @Override
-   public void doValidate(ArrayList<String> errorList, String source, String target)
+   public List<String> doValidate(String source, String target)
    {
-      validateIncompleteEntity(errorList, target);
+      return validateIncompleteEntity(target);
    }
 
-   private void validateIncompleteEntity(ArrayList<String> errorList, String target)
+   private List<String> validateIncompleteEntity(String target)
    {
+      ArrayList<String> errors = new ArrayList<String>();
+
       Iterable<String> words = Splitter.on(" ").trimResults().omitEmptyStrings().split(target);
 
       for (String word : words)
@@ -83,11 +80,12 @@ public class XmlEntityValidation extends AbstractValidationAction
             if (word.contains(ENTITY_START_CHAR))
             {
                //remove any string that occurs in front
-               word = word.substring(word.indexOf(ENTITY_START_CHAR)); 
-               errorList.add(getMessages().invalidXMLEntity(word));
+               word = word.substring(word.indexOf(ENTITY_START_CHAR));
+               errors.add(getMessages().invalidXMLEntity(word));
             }
          }
       }
+      return errors;
    }
 
    /**
@@ -103,7 +101,7 @@ public class XmlEntityValidation extends AbstractValidationAction
       while (result != null)
       {
          // replace match entity with empty string
-         text = text.replace(result.getGroup(0), ""); 
+         text = text.replace(result.getGroup(0), "");
          result = regex.exec(text);
       }
       return text;

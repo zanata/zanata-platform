@@ -22,11 +22,11 @@ package org.zanata.webtrans.shared.validation.action;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationId;
-import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.validation.AbstractValidationAction;
 
 /**
@@ -43,21 +43,19 @@ public class JavaVariablesValidation extends AbstractValidationAction
 {
    public JavaVariablesValidation(ValidationId id, ValidationMessages messages)
    {
-      super(id, messages.javaVariablesValidatorDesc(), new ValidationInfo(true), messages);
+      super(id, messages.javaVariablesValidatorDesc(), messages);
    }
-
-   public JavaVariablesValidation(ValidationId id)
-   {
-      super(id, null, new ValidationInfo(true), null);
-   }
-
+  
    @Override
-   public void doValidate(ArrayList<String> errorList, String source, String target)
+   public List<String> doValidate(String source, String target)
    {
+      ArrayList<String> errors = new ArrayList<String>();
+      
       StringInfo sourceInfo = analyseString(source);
       StringInfo targetInfo = analyseString(target);
 
       //check if any indices are added/missing
+      
       ArrayList<String> missing = new ArrayList<String>();
       ArrayList<String> missingQuoted = new ArrayList<String>();
       ArrayList<String> added = new ArrayList<String>();
@@ -109,39 +107,40 @@ public class JavaVariablesValidation extends AbstractValidationAction
 
       if (!missing.isEmpty())
       {
-         errorList.add(getMessages().varsMissing(missing));
+         errors.add(getMessages().varsMissing(missing));
       }
 
       if (looksLikeMessageFormatString && sourceInfo.singleApostrophes != targetInfo.singleApostrophes)
       {
          // different number of apos.
-         errorList.add(getMessages().differentApostropheCount());
+         errors.add(getMessages().differentApostropheCount());
       }
       if (looksLikeMessageFormatString && sourceInfo.quotedChars == 0 && targetInfo.quotedChars > 0)
       {
          // quoted chars in target but not source
-         errorList.add(getMessages().quotedCharsAdded());
+         errors.add(getMessages().quotedCharsAdded());
       }
       if (!missingQuoted.isEmpty())
       {
-         errorList.add(getMessages().varsMissingQuoted(missingQuoted));
+         errors.add(getMessages().varsMissingQuoted(missingQuoted));
       }
       if (!added.isEmpty())
       {
-         errorList.add(getMessages().varsAdded(added));
+         errors.add(getMessages().varsAdded(added));
       }
       if (!addedQuoted.isEmpty())
       {
-         errorList.add(getMessages().varsAddedQuoted(addedQuoted));
+         errors.add(getMessages().varsAddedQuoted(addedQuoted));
       }
       if (!different.isEmpty())
       {
-         errorList.add(getMessages().differentVarCount(different));
+         errors.add(getMessages().differentVarCount(different));
       }
-
 
       //TODO check if indices are used with the same format types
       //e.g. "You owe me {0, currency}" --> "Du schuldest mir {0, percent}" is not correct
+      
+      return errors;
    }
 
    private HashMap<String, Integer> countIndices(ArrayList<String> fullVars)
@@ -177,7 +176,7 @@ public class JavaVariablesValidation extends AbstractValidationAction
       int quotedLength = 0;
 
       //scan for opening brace
-      for (int i = 0; i<inString.length(); i++)
+      for (int i = 0; i < inString.length(); i++)
       {
          // escaping skips a single character
          if (isEscaped)
@@ -224,7 +223,7 @@ public class JavaVariablesValidation extends AbstractValidationAction
             }
             else if (c == '}' && quotedOpenings.size() > 0)
             {
-               String variable = inString.substring(quotedOpenings.remove(quotedOpenings.size() -1), i + 1);
+               String variable = inString.substring(quotedOpenings.remove(quotedOpenings.size() - 1), i + 1);
                descriptor.quotedVars.add(variable);
             }
 
@@ -245,7 +244,7 @@ public class JavaVariablesValidation extends AbstractValidationAction
          }
          else if (c == '}' && openings.size() > 0)
          {
-            String variable = inString.substring(openings.remove(openings.size() -1), i + 1);
+            String variable = inString.substring(openings.remove(openings.size() - 1), i + 1);
             descriptor.vars.add(variable);
          }
       }

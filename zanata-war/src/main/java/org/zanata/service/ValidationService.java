@@ -14,7 +14,6 @@ import org.zanata.model.HTextFlow;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 
-
 /**
  * 
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -23,15 +22,14 @@ import org.zanata.webtrans.shared.model.ValidationId;
 public interface ValidationService
 {
    /**
-    * Return all ValidationActions with enabled=true on those which are defined
+    * Return all ValidationActions on those which are customized
     * to the project
     * 
     * @param projectSlug
     * @return
     * @throws IOException
     */
-   Collection<ValidationAction> getValidationAction(String projectSlug);
-   
+   Collection<ValidationAction> getValidationActions(String projectSlug);
 
    /**
     * Return all ValidationActions on those which are customized to the version
@@ -40,17 +38,7 @@ public interface ValidationService
     * @param versionSlug
     * @return
     */
-   Collection<ValidationAction> getValidationAction(String projectSlug, String versionSlug);
-
-   /**
-    * Return all ValidationActions with enabled=true on those which are
-    * customized to the version
-    * 
-    * @param HProjectIteration
-    * @return
-    * @throws IOException
-    */
-   Collection<ValidationAction> getValidationObject(HProjectIteration version);
+   Collection<ValidationAction> getValidationActions(String projectSlug, String versionSlug);
 
    /**
     * Run validation check on HTextFlow and HTextFlowTarget with specific locale
@@ -74,8 +62,8 @@ public interface ValidationService
     * @param maxSize
     * @throws IOException
     */
-   List<HTextFlow> filterHasErrorTexFlow(List<HTextFlow> textFlows, List<ValidationId> validationIds, LocaleId localeId, int startIndex, int maxSize);
-
+   List<HTextFlow> filterHasWarningOrErrorTextFlow(List<HTextFlow> textFlows, List<ValidationId> validationIds,
+         LocaleId localeId, int startIndex, int maxSize);
 
    /**
     * Run validation check on HTextFlow and HTextFlowTarget with specific locale
@@ -88,4 +76,15 @@ public interface ValidationService
     * @param localeId
     */
    boolean runDocValidationsWithServerRules(HDocument hDoc, LocaleId localeId);
+
+   /**
+    * Run 'Error' state validations check against sources and translations
+    * @param projectVersion 
+    * @param sources
+    * @param translations
+    * @param actionStates
+    * @return list of error message
+    */
+   List<String> validateWithServerRules(HProjectIteration projectVersion, List<String> sources,
+                                        List<String> translations, ValidationAction.State... actionStates);
 }

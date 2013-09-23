@@ -57,7 +57,7 @@ public class PrintfVariablesValidationTest
       messages = Gwti18nReader.create(ValidationMessages.class);
 
       printfVariablesValidation = new PrintfVariablesValidation(ValidationId.PRINTF_VARIABLES, messages);
-      printfVariablesValidation.getValidationInfo().setEnabled(true);
+      printfVariablesValidation.getRules().setEnabled(true);
    }
 
    @Test

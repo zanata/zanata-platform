@@ -6,6 +6,11 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
                   http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
+    <!--
+    This changelog file (despite the filename) is actually part 2 of the changes for Zanata 3.0.
+    Please start a new file (eg db.changelog-3.1a.xml) for the 3.1 dev cycle.
+     -->
+     
     <changeSet id="1" author="camunoz@redhat.com">
         <comment>Create the Translation Memory table.</comment>
 

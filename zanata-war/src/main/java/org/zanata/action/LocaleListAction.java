@@ -168,7 +168,7 @@ public class LocaleListAction implements Serializable
          else
          {
             HProject project = projectDAO.getBySlug(slug);
-            setting = project.getOverrideLocales();
+            setting = project.isOverrideLocales();
          }
          overrideLocales = new Boolean(setting);
       }

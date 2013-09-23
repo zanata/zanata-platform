@@ -124,10 +124,6 @@
    -->
   <component name="zanataJobScheduler" class="org.zanata.job.ZanataJobScheduler"/>
 
-  <!-- Mailserver for notification messages -->
-  <!-- From 2.0, email configuration is on zanata.properties -->
-  <!--<mail:mail-session host="localhost" port="25" ssl="false" tls="false"/>-->
-
   <!-- Maximum size of file uploads 
       If you are using MySQL, don't forget their magic stuff:
       http://dev.mysql.com/doc/refman/5.0/en/packet-too-large.html

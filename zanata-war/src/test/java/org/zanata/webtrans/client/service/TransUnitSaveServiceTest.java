@@ -9,6 +9,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
+
+import java.util.List;
+
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
@@ -183,7 +186,7 @@ public class TransUnitSaveServiceTest
 
       AsyncCallback<UpdateTransUnitResult> callback = resultCaptor.getValue();
       TransUnit updatedTU = TestFixture.makeTransUnit(TRANS_UNIT_ID.getId(), ContentState.NeedReview, "new content");
-      UpdateTransUnitResult result = result(true, updatedTU, ContentState.NeedReview);
+      UpdateTransUnitResult result = result(true, updatedTU, ContentState.NeedReview, null);
 
       // When:
       callback.onSuccess(result);
@@ -224,7 +227,7 @@ public class TransUnitSaveServiceTest
 
       AsyncCallback<UpdateTransUnitResult> callback = resultCaptor.getValue();
       TransUnit updatedTU = TestFixture.makeTransUnit(TRANS_UNIT_ID.getId(), ContentState.NeedReview, "new content");
-      UpdateTransUnitResult result = result(true, updatedTU, ContentState.NeedReview);
+      UpdateTransUnitResult result = result(true, updatedTU, ContentState.NeedReview, null);
 
       // When:
       callback.onSuccess(result);
@@ -240,6 +243,7 @@ public class TransUnitSaveServiceTest
    public void onPRCSuccessButSaveUnsuccessfulInResult()
    {
       // Given:
+      String errorMessage = "unsuccessful save";
       TransUnit old = TestFixture.makeTransUnit(TRANS_UNIT_ID.getId(), ContentState.NeedReview, "old content");
       when(navigationService.getByIdOrNull(TRANS_UNIT_ID)).thenReturn(old);
 
@@ -251,11 +255,11 @@ public class TransUnitSaveServiceTest
 
       // on save success
       // Given: result comes back but saving operation failed
-      when(messages.notifyUpdateFailed("id " + TRANS_UNIT_ID)).thenReturn("update failed");
+      when(messages.notifyUpdateFailed("id " + TRANS_UNIT_ID, errorMessage)).thenReturn("update failed");
 
       AsyncCallback<UpdateTransUnitResult> callback = resultCaptor.getValue();
       TransUnit updatedTU = TestFixture.makeTransUnit(TRANS_UNIT_ID.getId(), ContentState.NeedReview, "new content");
-      UpdateTransUnitResult result = result(false, updatedTU, ContentState.NeedReview);
+      UpdateTransUnitResult result = result(false, updatedTU, ContentState.NeedReview, errorMessage);
 
       // When:
       callback.onSuccess(result);
@@ -275,8 +279,10 @@ public class TransUnitSaveServiceTest
    public void onPRCFailure()
    {
       // Given:
+      String errorMessage = "doh";
       TransUnit old = TestFixture.makeTransUnit(TRANS_UNIT_ID.getId(), ContentState.NeedReview, "old content");
       when(navigationService.getByIdOrNull(TRANS_UNIT_ID)).thenReturn(old);
+      
 
       // When: save as fuzzy
       TransUnitSaveEvent saveEvent = event("new content", ContentState.NeedReview, TRANS_UNIT_ID, VER_NUM, "old content");
@@ -286,8 +292,8 @@ public class TransUnitSaveServiceTest
 
       // Then: will reset value back
       AsyncCallback<UpdateTransUnitResult> callback = resultCaptor.getValue();
-      when(messages.notifyUpdateFailed("id " + TRANS_UNIT_ID)).thenReturn("update failed");
-      callback.onFailure(new RuntimeException("doh"));
+      when(messages.notifyUpdateFailed("id " + TRANS_UNIT_ID, errorMessage)).thenReturn("update failed");
+      callback.onFailure(new RuntimeException(errorMessage));
       verify(targetContentsPresenter).setEditingState(saveEvent.getTransUnitId(), TargetContentsDisplay.EditingState.UNSAVED);
       ArgumentCaptor<NotificationEvent> notificationEventCaptor = ArgumentCaptor.forClass(NotificationEvent.class);
       verify(targetContentsPresenter).setEditingState(TRANS_UNIT_ID, TargetContentsDisplay.EditingState.UNSAVED);
@@ -298,8 +304,8 @@ public class TransUnitSaveServiceTest
       assertThat(event.getInlineLink(), Matchers.<InlineLink>sameInstance(goToLink));
    }
 
-   private static UpdateTransUnitResult result(boolean success, TransUnit transUnit, ContentState previousState)
+   private static UpdateTransUnitResult result(boolean success, TransUnit transUnit, ContentState previousState, String errorMessage)
    {
-      return new UpdateTransUnitResult(new TransUnitUpdateInfo(success, true, new DocumentId(new Long(1), ""), transUnit, 9, VER_NUM, previousState));
+      return new UpdateTransUnitResult(new TransUnitUpdateInfo(success, true, new DocumentId(new Long(1), ""), transUnit, 9, VER_NUM, previousState, errorMessage));
    }
 }

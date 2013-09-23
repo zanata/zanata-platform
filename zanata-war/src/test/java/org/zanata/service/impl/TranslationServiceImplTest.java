@@ -80,6 +80,7 @@ public class TranslationServiceImplTest extends ZanataDbunitJpaTest
           .use(JpaIdentityStore.AUTHENTICATED_USER, seam.autowire(AccountDAO.class).getByUsername("demo"))
           .use("identity", identity)
           .useImpl(LocaleServiceImpl.class)
+          .useImpl(ValidationServiceImpl.class)
           .ignoreNonResolvable();
    }
 

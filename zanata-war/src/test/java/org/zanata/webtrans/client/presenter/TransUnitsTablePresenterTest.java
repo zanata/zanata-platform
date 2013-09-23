@@ -129,7 +129,15 @@ public class TransUnitsTablePresenterTest
    @Test
    public void onFilterViewEventDoNothingIfItsCancel()
    {
-      presenter.onFilterView(new FilterViewEvent(true, true, true, true, true, false, true, null));
+      boolean viewTranslated = true;
+      boolean viewFuzzy = true;
+      boolean viewUntranslated = true;
+      boolean viewApproved = true;
+      boolean viewRejected = true;
+      boolean viewHasError = false;
+      boolean cancelFilter = true;
+
+      presenter.onFilterView(new FilterViewEvent(viewTranslated, viewFuzzy, viewUntranslated, viewApproved, viewRejected, viewHasError, cancelFilter));
 
       verifyNoMoreInteractions(eventBus, display, targetContentsPresenter);
    }
@@ -141,7 +149,7 @@ public class TransUnitsTablePresenterTest
       when(targetContentsPresenter.currentEditorContentHasChanged()).thenReturn(true);
 
       // When: not a cancel event
-      presenter.onFilterView(new FilterViewEvent(true, false, true, false, false, false, false, null));
+      presenter.onFilterView(new FilterViewEvent(true, false, true, false, false, false, false));
 
       // Then:
       verify(display).showFilterConfirmation();
@@ -152,7 +160,7 @@ public class TransUnitsTablePresenterTest
    {
       // Given: current edtior hasn't changed
       when(targetContentsPresenter.currentEditorContentHasChanged()).thenReturn(false);
-      FilterViewEvent event = new FilterViewEvent(true, false, true, false, false, false, false, null);
+      FilterViewEvent event = new FilterViewEvent(true, false, true, false, false, false, false);
 
       // When:
       presenter.onFilterView(event);
@@ -169,7 +177,7 @@ public class TransUnitsTablePresenterTest
 
       presenter.saveAsTranslatedAndFilter();
 
-      verify(targetContentsPresenter).saveCurrent(ContentState.Translated);
+      verify(targetContentsPresenter).saveCurrentIfValid(ContentState.Translated);
       verify(display).hideFilterConfirmation();
       verify(navigationService).execute(Mockito.isA(FilterViewEvent.class));
    }
@@ -181,7 +189,7 @@ public class TransUnitsTablePresenterTest
 
       presenter.saveAsFuzzyAndFilter();
 
-      verify(targetContentsPresenter).saveCurrent(ContentState.NeedReview);
+      verify(targetContentsPresenter).saveCurrentIfValid(ContentState.NeedReview);
       verify(display).hideFilterConfirmation();
       verify(navigationService).execute(Mockito.isA(FilterViewEvent.class));
    }

@@ -48,7 +48,6 @@ public interface TranslationService
     */
    List<TranslationResult> translate(LocaleId localeId, List<TransUnitUpdateRequest> translationRequests);
 
-
    /**
     * Attempts to revert a list of updates by adding a new translation that is
     * identical to the previous one.
@@ -112,5 +111,6 @@ public interface TranslationService
       HTextFlowTarget getTranslatedTextFlowTarget();
       int getBaseVersionNum();
       ContentState getBaseContentState();
+      String getErrorMessage();
    }
 }

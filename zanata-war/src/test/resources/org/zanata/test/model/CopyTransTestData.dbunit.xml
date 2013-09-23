@@ -11,7 +11,6 @@
               homeContent=""
               name="Original Project"
               overrideLocales="FALSE"
-              overrideValidations="FALSE"
               restrictedByRoles="FALSE"
               status="A"
             />
@@ -22,7 +21,6 @@
                        slug="same-version"
                        parentId="[NULL]"
                        project_id="100"
-                       overrideValidations="FALSE"
                        overrideLocales="FALSE"
                        status="A"
             />
@@ -85,7 +83,6 @@
                        slug="different-version"
                        parentId="[NULL]"
                        project_id="100"
-                       overrideValidations="FALSE"
                        overrideLocales="TRUE"
                        status="A"
             />
@@ -105,7 +102,6 @@
               homeContent=""
               name="Different Project"
               overrideLocales="FALSE"
-              overrideValidations="FALSE"
               restrictedByRoles="FALSE"
               status="A"
             />
@@ -116,7 +112,6 @@
                        slug="different-version"
                        parentId="[NULL]"
                        project_id="1000"
-                       overrideValidations="FALSE"
                        overrideLocales="TRUE"
                        status="A"
             />

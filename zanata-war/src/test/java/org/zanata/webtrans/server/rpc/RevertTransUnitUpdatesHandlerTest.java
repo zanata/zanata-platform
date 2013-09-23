@@ -57,7 +57,8 @@ public class RevertTransUnitUpdatesHandlerTest
    public void setUp() throws Exception
    {
       MockitoAnnotations.initMocks(this);
-      TransUnitTransformer transUnitTransformer = SeamAutowire.instance().use("resourceUtils", new ResourceUtils()).autowire(TransUnitTransformer.class);
+      TransUnitTransformer transUnitTransformer = SeamAutowire.instance().use("resourceUtils", new ResourceUtils())
+            .autowire(TransUnitTransformer.class);
       // @formatter:off
       handler = SeamAutowire.instance()
             .use("translationServiceImpl", translationServiceImpl)
@@ -71,13 +72,16 @@ public class RevertTransUnitUpdatesHandlerTest
    @Test
    public void testExecute() throws Exception
    {
-      List<TransUnitUpdateInfo> updatesToRevert = Lists.newArrayList(new TransUnitUpdateInfo(true, true, new DocumentId(new Long(1), ""), TestFixture.makeTransUnit(1), 0, 0, ContentState.Approved));
+      List<TransUnitUpdateInfo> updatesToRevert = Lists.newArrayList(new TransUnitUpdateInfo(true, true,
+            new DocumentId(new Long(1), ""), TestFixture.makeTransUnit(1), 0, 0, ContentState.Approved));
       RevertTransUnitUpdates action = new RevertTransUnitUpdates(updatesToRevert);
-      when(securityServiceImpl.checkPermission(action, SecurityService.TranslationAction.MODIFY)).thenReturn(checkResult);
+      when(securityServiceImpl.checkPermission(action, SecurityService.TranslationAction.MODIFY)).thenReturn(
+            checkResult);
       when(checkResult.getLocale()).thenReturn(new HLocale(LocaleId.EN_US));
       when(checkResult.getWorkspace()).thenReturn(translationWorkspace);
       TranslationService.TranslationResult translationResult = mockTranslationResult(ContentState.NeedReview, 0);
-      when(translationServiceImpl.revertTranslations(LocaleId.EN_US, action.getUpdatesToRevert())).thenReturn(Lists.newArrayList(translationResult));
+      when(translationServiceImpl.revertTranslations(LocaleId.EN_US, action.getUpdatesToRevert())).thenReturn(
+            Lists.newArrayList(translationResult));
 
       UpdateTransUnitResult result = handler.execute(action, null);
 
@@ -91,7 +95,8 @@ public class RevertTransUnitUpdatesHandlerTest
       assertThat(transUnitUpdated.getUpdateType(), Matchers.equalTo(TransUnitUpdated.UpdateType.Revert));
    }
 
-   private static TranslationService.TranslationResult mockTranslationResult(ContentState baseContentState, int baseVersionNum)
+   private static TranslationService.TranslationResult mockTranslationResult(ContentState baseContentState,
+         int baseVersionNum)
    {
       TranslationService.TranslationResult translationResult = mock(TranslationService.TranslationResult.class);
       when(translationResult.isTargetChanged()).thenReturn(true);
@@ -102,7 +107,8 @@ public class RevertTransUnitUpdatesHandlerTest
       HDocument spy = spy(new HDocument());
       when(spy.getId()).thenReturn(1L);
       hTextFlow.setDocument(spy);
-      when(translationResult.getTranslatedTextFlowTarget()).thenReturn(new HTextFlowTarget(hTextFlow, new HLocale(LocaleId.DE)));
+      when(translationResult.getTranslatedTextFlowTarget()).thenReturn(
+            new HTextFlowTarget(hTextFlow, new HLocale(LocaleId.DE)));
 
       return translationResult;
    }

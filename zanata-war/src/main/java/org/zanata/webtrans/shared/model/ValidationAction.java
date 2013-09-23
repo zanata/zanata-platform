@@ -38,11 +38,18 @@ public interface ValidationAction
 
    void mutuallyExclusive(ValidationAction[] exclusiveValidations);
 
-   ValidationInfo getValidationInfo();
-
-   void setValidationInfo(ValidationInfo actionInfo);
+   ValidationDisplayRules getRules();
 
    ValidationId getId();
 
    String getDescription();
+
+   State getState();
+
+   void setState(State state);
+
+   public static enum State
+   {
+      Off, Warning, Error;
+   }
 }

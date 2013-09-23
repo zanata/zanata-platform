@@ -35,7 +35,7 @@ public class PrintfXSIExtensionValidationTest
       messages = Gwti18nReader.create(ValidationMessages.class);
 
       printfVariablesValidation = new PrintfXSIExtensionValidation(ValidationId.PRINTF_XSI_EXTENSION, messages);
-      printfVariablesValidation.getValidationInfo().setEnabled(true);
+      printfVariablesValidation.getRules().setEnabled(true);
    }
 
    @Test

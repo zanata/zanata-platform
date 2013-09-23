@@ -2,11 +2,13 @@ package org.zanata.webtrans.shared.validation.action;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationId;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
@@ -23,30 +25,35 @@ public class PrintfXSIExtensionValidation extends PrintfVariablesValidation
 
    public PrintfXSIExtensionValidation(ValidationId id, ValidationMessages messages)
    {
-      super(id, messages.printfXSIExtensionValidationDesc(), messages, false);
-   }
-
-   public PrintfXSIExtensionValidation(ValidationId id)
-   {
-      super(id);
+      super(id, messages.printfXSIExtensionValidationDesc(), messages);
    }
 
    @Override
-   public void doValidate(ArrayList<String> errorList, String source, String target)
+   public List<String> doValidate(String source, String target)
    {
+      ArrayList<String> errors = new ArrayList<String>();
+
       ArrayList<String> sourceVars = findVars(source);
       ArrayList<String> targetVars = findVars(target);
-
 
       if (PrintfXSIExtensionValidation.hasPosition(targetVars))
       {
          sourceVars = PrintfXSIExtensionValidation.appendPosition(sourceVars);
-         checkPosition(errorList, targetVars, sourceVars.size());
+         errors.addAll(checkPosition(targetVars, sourceVars.size()));
       }
 
-
-      findMissingVariables(errorList, sourceVars, targetVars);
-      findAddedVariables(errorList, sourceVars, targetVars);
+      
+      String message = findMissingVariables(sourceVars, targetVars);
+      if (!Strings.isNullOrEmpty(message))
+      {
+         errors.add(message);
+      }
+      message = findAddedVariables(sourceVars, targetVars);
+      if (!Strings.isNullOrEmpty(message))
+      {
+         errors.add(message);
+      }
+      return errors;
    }
 
    private static boolean hasPosition(ArrayList<String> variables)
@@ -74,10 +81,11 @@ public class PrintfXSIExtensionValidation extends PrintfVariablesValidation
       return result;
    }
 
-   private void checkPosition(ArrayList<String> errorList, ArrayList<String> variables, int size)
+   private List<String> checkPosition(ArrayList<String> variables, int size)
    {
-      Multimap<Integer, String> posToVars = ArrayListMultimap.create();
+      ArrayList<String> errors = new ArrayList<String>();
 
+      Multimap<Integer, String> posToVars = ArrayListMultimap.create();
       for (String testVar : variables)
       {
          MatchResult result = PrintfXSIExtensionValidation.POSITIONAL_REG_EXP.exec(testVar);
@@ -91,12 +99,12 @@ public class PrintfXSIExtensionValidation extends PrintfVariablesValidation
             }
             else
             {
-               errorList.add(getMessages().varPositionOutOfRange(testVar));
+               errors.add(getMessages().varPositionOutOfRange(testVar));
             }
          }
          else
          {
-            errorList.add(getMessages().mixVarFormats());
+            errors.add(getMessages().mixVarFormats());
          }
       }
       if (posToVars.keySet().size() != variables.size())
@@ -106,10 +114,12 @@ public class PrintfXSIExtensionValidation extends PrintfVariablesValidation
          {
             if (entry.getValue().size() > 1)
             {
-               errorList.add(getMessages().varPositionDuplicated(entry.getValue()));
+               errors.add(getMessages().varPositionDuplicated(entry.getValue()));
             }
          }
       }
+
+      return errors;
    }
 
    private static int extractPositionIndex(String positionAndDollar)

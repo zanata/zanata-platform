@@ -567,7 +567,7 @@
   <page view-id="/project/edit.xhtml" login-required="true">
     <param name="slug" value="#{projectHome.slug}" />
     <param name="slug" value="#{localeListAction.slug}" />
-    <param name="slug" value="#{projectValidationOptionsAction.projectSlug}" />
+    <param name="slug" value="#{validationOptionsAction.projectSlug}" />
 
     <!-- we can't use <restrict> on projectHome.instance because it creates
          a brand-new HProject instead of loading the existing one
@@ -639,7 +639,7 @@
 
   <page view-id="/project/add_iteration.xhtml">
     <param name="projectSlug" value="#{projectIterationHome.projectSlug}" />
-    <param name="projectSlug" value="#{versionValidationOptionsAction.projectSlug}" />
+    <param name="projectSlug" value="#{validationOptionsAction.projectSlug}" />
     
     <action execute="#{projectIterationHome.validateProjectSlug}" />
     <!-- can't use <restrict> here either --> 
@@ -738,8 +738,8 @@
   <page view-id="/iteration/edit.xhtml">
     <param name="slug" value="#{projectIterationHome.slug}" />
     <param name="projectSlug" value="#{projectIterationHome.projectSlug}" />
-    <param name="slug" value="#{versionValidationOptionsAction.versionSlug}" />
-    <param name="projectSlug" value="#{versionValidationOptionsAction.projectSlug}" />
+    <param name="slug" value="#{validationOptionsAction.versionSlug}" />
+    <param name="projectSlug" value="#{validationOptionsAction.projectSlug}" />
    
     <action execute="#{projectIterationHome.validateSuppliedId}" />
     <!-- can't use <restrict> here either -->

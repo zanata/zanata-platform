@@ -21,6 +21,8 @@
 
 package org.zanata.webtrans.client.service;
 
+import java.util.List;
+
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.common.ContentState;
@@ -47,6 +49,7 @@ import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -69,7 +72,10 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler, CheckSta
    private final SaveEventQueue queue;
 
    @Inject
-   public TransUnitSaveService(EventBus eventBus, CachingDispatchAsync dispatcher, Provider<UndoLink> undoLinkProvider, DocumentListPresenter documentListPresenter, TargetContentsPresenter targetContentsPresenter, TableEditorMessages messages, NavigationService navigationService, Provider<GoToRowLink> goToRowLinkProvider, SaveEventQueue queue)
+   public TransUnitSaveService(EventBus eventBus, CachingDispatchAsync dispatcher, Provider<UndoLink> undoLinkProvider,
+         DocumentListPresenter documentListPresenter, TargetContentsPresenter targetContentsPresenter,
+         TableEditorMessages messages, NavigationService navigationService, Provider<GoToRowLink> goToRowLinkProvider,
+         SaveEventQueue queue)
    {
       this.messages = messages;
       this.eventBus = eventBus;
@@ -121,9 +127,11 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler, CheckSta
       targetContentsPresenter.setEditingState(idToSave, TargetContentsDisplay.EditingState.SAVING);
       TransUnitUpdated.UpdateType updateType = workoutUpdateType(forSaving.getStatus());
 
-      UpdateTransUnit updateTransUnit = new UpdateTransUnit(new TransUnitUpdateRequest(idToSave, forSaving.getTargets(), forSaving.getAdjustedStatus(), forSaving.getVerNum()), updateType);
+      UpdateTransUnit updateTransUnit = new UpdateTransUnit(new TransUnitUpdateRequest(idToSave,
+            forSaving.getTargets(), forSaving.getAdjustedStatus(), forSaving.getVerNum()), updateType);
       Log.info("about to save translation: " + updateTransUnit);
-      dispatcher.execute(updateTransUnit, new UpdateTransUnitCallback(forSaving, documentListPresenter.getCurrentDocument(), idToSave));
+      dispatcher.execute(updateTransUnit,
+            new UpdateTransUnitCallback(forSaving, documentListPresenter.getCurrentDocument(), idToSave));
    }
 
    /**
@@ -140,7 +148,8 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler, CheckSta
       }
 
       boolean targetChanged = !Objects.equal(transUnit.getTargets(), event.getTargets());
-      boolean targetUnchangedButCanSaveAsApproved = (event.getAdjustedState() == ContentState.Translated) && !Objects.equal(transUnit.getStatus(), event.getAdjustedState());
+      boolean targetUnchangedButCanSaveAsApproved = (event.getAdjustedState() == ContentState.Translated)
+            && !Objects.equal(transUnit.getStatus(), event.getAdjustedState());
 
       if (targetChanged)
       {
@@ -155,7 +164,7 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler, CheckSta
          eventBus.fireEvent(NavTransUnitEvent.NEXT_ENTRY_EVENT);
       }
    }
-   
+
    private boolean stateHasNotChanged(TransUnitSaveEvent event)
    {
       TransUnit transUnit = navigationService.getByIdOrNull(event.getTransUnitId());
@@ -163,17 +172,19 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler, CheckSta
       {
          return false;
       }
-      Log.info("id:" + transUnit.getId() + " old contents: " + transUnit.getTargets() + " state: " + transUnit.getStatus());
-      return Objects.equal(transUnit.getStatus(), event.getAdjustedStatus()) && Objects.equal(transUnit.getTargets(), event.getTargets());
+      Log.info("id:" + transUnit.getId() + " old contents: " + transUnit.getTargets() + " state: "
+            + transUnit.getStatus());
+      return Objects.equal(transUnit.getStatus(), event.getAdjustedStatus())
+            && Objects.equal(transUnit.getTargets(), event.getTargets());
    }
 
    private TransUnitUpdated.UpdateType workoutUpdateType(ContentState status)
    {
-      if(status == ContentState.Approved || status == ContentState.Rejected)
+      if (status == ContentState.Approved || status == ContentState.Rejected)
       {
          return TransUnitUpdated.UpdateType.WebEditorSaveReview;
       }
-      else if(status == ContentState.NeedReview)
+      else if (status == ContentState.NeedReview)
       {
          return TransUnitUpdated.UpdateType.WebEditorSaveFuzzy;
       }
@@ -201,7 +212,7 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler, CheckSta
       public void onFailure(Throwable e)
       {
          Log.error("UpdateTransUnit failure ", e);
-         saveFailure();
+         saveFailure(e.getMessage());
       }
 
       @Override
@@ -211,7 +222,8 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler, CheckSta
          Log.debug("save resulted TU: " + updatedTU.debugString());
          if (result.isSingleSuccess())
          {
-            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifyUpdateSaved(updatedTU.getRowIndex(), updatedTU.getId().toString()), goToRowLink));
+            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, messages.notifyUpdateSaved(
+                  updatedTU.getRowIndex(), updatedTU.getId().toString()), goToRowLink));
             int rowIndexOnPage = navigationService.findRowIndexById(updatedTU.getId());
             if (rowIndexOnPage != NavigationService.UNDEFINED)
             {
@@ -226,7 +238,7 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler, CheckSta
          }
          else
          {
-            saveFailure();
+            saveFailure(result.getUpdateInfoList().get(0).getErrorMessage());
          }
          if (queue.hasPending())
          {
@@ -234,11 +246,12 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler, CheckSta
          }
       }
 
-      private void saveFailure()
+      private void saveFailure(String errorMessage)
       {
          queue.removeAllPending(event.getTransUnitId());
          targetContentsPresenter.setEditingState(event.getTransUnitId(), TargetContentsDisplay.EditingState.UNSAVED);
-         eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, messages.notifyUpdateFailed("id " + id), goToRowLink));
+         eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, messages.notifyUpdateFailed("id "
+               + id, errorMessage), goToRowLink));
       }
    }
 }

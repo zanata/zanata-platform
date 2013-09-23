@@ -10,8 +10,8 @@ MIME-Version=1.0
 Content-Type=text/plain; charset\=utf-8
 Content-Transfer-Encoding=8bit
 " comment_id="1"/>
-  <HProject defaultProjectType="Gettext" id="1" creationDate="2012-04-03 15:16:08.0" lastChanged="2012-06-05 11:58:56.0" versionNum="2" slug="plurals" description="" homeContent="" name="plurals" overrideLocales="false" overrideValidations="false" status="A" restrictedByRoles="false"/>
-  <HProjectIteration id="1" creationDate="2012-04-03 15:16:18.0" lastChanged="2012-08-23 13:36:51.0" versionNum="13" slug="master" project_id="1" overrideLocales="false" overrideValidations="FALSE" status="A" requireTranslationReview="FALSE"/>
+  <HProject defaultProjectType="Gettext" id="1" creationDate="2012-04-03 15:16:08.0" lastChanged="2012-06-05 11:58:56.0" versionNum="2" slug="plurals" description="" homeContent="" name="plurals" overrideLocales="false" status="A" restrictedByRoles="false"/>
+  <HProjectIteration id="1" creationDate="2012-04-03 15:16:18.0" lastChanged="2012-08-23 13:36:51.0" versionNum="13" slug="master" project_id="1" overrideLocales="false" status="A" requireTranslationReview="FALSE"/>
   <HDocument id="1" creationDate="2012-04-03 15:26:57.0" lastChanged="2012-04-03 15:26:57.0" versionNum="1" contentType="application/x-gettext" docId="test" name="test" obsolete="false" path="" revision="1" last_modified_by_id="1" locale="5" poHeader_id="1" project_iteration_id="1"/>
   <HSimpleComment id="2" comment=""/>
   <HSimpleComment id="3" comment=""/>

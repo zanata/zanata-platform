@@ -62,5 +62,5 @@ public interface TranslationStateCache
     * @param validationId
     * @return
     */
-   Boolean textFlowTargetHasError(Long textFlowTargetId, ValidationId validationId);
+   Boolean textFlowTargetHasWarningOrError(Long textFlowTargetId, ValidationId validationId);
 }

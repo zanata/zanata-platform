@@ -47,7 +47,7 @@ public class TabValidationTest
    {
       messages = Gwti18nReader.create(ValidationMessages.class);
       validation = new TabValidation(ValidationId.TAB, messages);
-      validation.getValidationInfo().setEnabled(true);
+      validation.getRules().setEnabled(true);
    }
 
    @Test
