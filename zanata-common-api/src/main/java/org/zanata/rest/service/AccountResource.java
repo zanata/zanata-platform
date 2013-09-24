@@ -63,8 +63,8 @@ public interface AccountResource
     *
     * @param account The account information to create/update.
     * @return The following response status codes will be returned from this operation:<br>
-    * OK(200) - If a new account was created.<br>
-    * CREATED(201) - If an existing account was modified.<br>
+    * OK(200) - If an existing account was modified.<br>
+    * CREATED(201) - If a new account was created.<br>
     * UNAUTHORIZED(401) - If the user does not have the proper permissions to perform this operation.<br>
     * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
     */
