@@ -124,11 +124,11 @@ public abstract class AbstractResourceMeta implements Serializable, Extensible<A
       this.revision = revision;
    }
 
-   @Override
-   public String toString()
-   {
-      return DTOUtil.toXML(this);
-   }
+//   @Override
+//   public String toString()
+//   {
+//      return DTOUtil.toXML(this);
+//   }
 
    /**
     * Helper method for equals in subclasses.This abstract class does not

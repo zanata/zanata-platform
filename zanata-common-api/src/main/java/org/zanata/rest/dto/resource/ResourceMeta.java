@@ -57,11 +57,11 @@ public class ResourceMeta extends AbstractResourceMeta implements HasCollectionS
       return elems;
    }
 
-   @Override
-   public String toString()
-   {
-      return DTOUtil.toXML(this);
-   }
+//   @Override
+//   public String toString()
+//   {
+//      return DTOUtil.toXML(this);
+//   }
 
    @Override
    public int hashCode()

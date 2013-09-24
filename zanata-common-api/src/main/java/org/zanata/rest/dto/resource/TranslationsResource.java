@@ -105,11 +105,11 @@ public class TranslationsResource implements Serializable, HasSample<Translation
       return new TranslationsResource();
    }
 
-   @Override
-   public String toString()
-   {
-      return DTOUtil.toXML(this);
-   }
+//   @Override
+//   public String toString()
+//   {
+//      return DTOUtil.toXML(this);
+//   }
 
    @Override
    public int hashCode()

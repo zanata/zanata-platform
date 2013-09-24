@@ -45,11 +45,11 @@ public class Resource extends AbstractResourceMeta
       return textFlows;
    }
 
-   @Override
-   public String toString()
-   {
-      return DTOUtil.toXML(this);
-   }
+//   @Override
+//   public String toString()
+//   {
+//      return DTOUtil.toXML(this);
+//   }
 
    @Override
    public int hashCode()
