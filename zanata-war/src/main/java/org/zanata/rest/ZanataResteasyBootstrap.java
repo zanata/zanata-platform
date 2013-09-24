@@ -91,29 +91,4 @@ public class ZanataResteasyBootstrap extends ResteasyBootstrap
       };
    }
 
-   /**
-    * If the seam bean is annotated with @IgnoreInterfacePath, any @Path
-    * annotation on the bean's interfaces will be ignored when deciding whether
-    * to inject @Context variables based on the interface class or the bean
-    * class.
-    * @param annotation
-    * @param seamComponent
-    * @return
-    */
-   @Override
-   protected Class getAnnotatedInterface(Class<? extends Annotation> annotation,
-                                         Component seamComponent)
-   {
-      if (annotation == javax.ws.rs.Path.class &&
-         seamComponent.getBeanClass().isAnnotationPresent(
-            IgnoreInterfacePath.class))
-      {
-         return null;
-      }
-      else
-      {
-         return super.getAnnotatedInterface(annotation, seamComponent);
-      }
-   }
-
 }
