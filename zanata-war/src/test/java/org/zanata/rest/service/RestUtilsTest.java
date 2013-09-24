@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import org.zanata.rest.dto.DTOUtil;
 import org.zanata.rest.dto.VersionInfo;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
@@ -50,27 +51,42 @@ public class RestUtilsTest
    @DataProvider(name = "ResourceTestData")
    public Object[][] getResourceTestData()
    {
-      return new Object[][] { new Object[] { resourceTestFactory.getPoHeaderTest() }, new Object[] { resourceTestFactory.getPotEntryHeaderTest() }, new Object[] { resourceTestFactory.getTextFlowCommentTest() }
-, new Object[] { resourceTestFactory.getTextFlowTest2() }
+      // @formatter:off
+      return new Object[][] {
+         new Object[] { "getPoHeaderTest", resourceTestFactory.getPoHeaderTest() },
+         new Object[] { "getPotEntryHeaderTest", resourceTestFactory.getPotEntryHeaderTest() },
+         new Object[] { "getTextFlowCommentTest", resourceTestFactory.getTextFlowCommentTest() },
+         new Object[] { "getTextFlowTest2", resourceTestFactory.getTextFlowTest2() }
       };
+      // @formatter:on
    }
 
    @DataProvider(name = "ResourceMetaTestData")
    public Object[][] getResourceMetaTestData()
    {
-      return new Object[][] { new Object[] { resourceTestFactory.getResourceMeta() }, new Object[] { resourceTestFactory.getPoHeaderResourceMeta() }
+      // @formatter:off
+      return new Object[][] {
+         new Object[] { "getResourceMeta", resourceTestFactory.getResourceMeta() },
+         new Object[] { "getPoHeaderResourceMeta", resourceTestFactory.getPoHeaderResourceMeta() }
       };
+      // @formatter:on
    }
 
    @DataProvider(name = "TranslationTestData")
    public Object[][] getTranslationTestData()
    {
-      return new Object[][] { new Object[] { transTestFactory.getPoTargetHeaderTextFlowTargetTest() }, new Object[] { transTestFactory.getTestObject() }, new Object[] { transTestFactory.getTestObject2() }, new Object[] { transTestFactory.getTextFlowTargetCommentTest() }
+      // @formatter:off
+      return new Object[][] {
+         new Object[] { "getPoTargetHeaderTextFlowTargetTest", transTestFactory.getPoTargetHeaderTextFlowTargetTest() },
+         new Object[] { "getTestObject", transTestFactory.getTestObject() },
+         new Object[] { "getTestObject2", transTestFactory.getTestObject2() },
+         new Object[] { "getTextFlowTargetCommentTest", transTestFactory.getTextFlowTargetCommentTest() }
       };
+      // @formatter:on
    }
 
    @Test(dataProvider = "ResourceTestData")
-   public void testUnmarshallResource(Resource res) throws UnsupportedEncodingException
+   public void testUnmarshallResource(String desc, Resource res) throws UnsupportedEncodingException
    {
       // SeamMockClientExecutor test = new SeamMockClientExecutor();
       // ClientRequest client = test.createRequest("http://example.com/");
@@ -83,13 +99,13 @@ public class RestUtilsTest
       InputStream messageBody = null;
       try
       {
-         String testStr = entity.toString();
+         String testStr = DTOUtil.toXML(entity);
          log.info("expect:" + testStr);
 
          messageBody = new ByteArrayInputStream(testStr.getBytes("UTF-8"));
          T unmarshall = restUtils.unmarshall(type, messageBody, MediaType.APPLICATION_XML_TYPE, new Headers<String>());
-         Log.info("got:" + unmarshall.toString());
-         assertThat(entity.toString(), is(testStr));
+         Log.info("got:" + DTOUtil.toXML(unmarshall));
+         assertThat(DTOUtil.toXML(entity), is(testStr));
       }
       finally
       {
@@ -142,13 +158,13 @@ public class RestUtilsTest
 
 
    @Test(dataProvider = "TranslationTestData")
-   public void testUnmarshallTranslation(TranslationsResource res) throws UnsupportedEncodingException
+   public void testUnmarshallTranslation(String desc, TranslationsResource res) throws UnsupportedEncodingException
    {
       testRestUtilUnmarshall(res, TranslationsResource.class);
    }
 
    @Test(dataProvider = "ResourceMetaTestData")
-   public void testUnmarshallResourceMeta(ResourceMeta res) throws UnsupportedEncodingException
+   public void testUnmarshallResourceMeta(String desc, ResourceMeta res) throws UnsupportedEncodingException
    {
       testRestUtilUnmarshall(res, ResourceMeta.class);
    }
