@@ -242,7 +242,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource
       {
          mergeType = MergeType.valueOf(merge.toUpperCase());
       }
-      catch (Exception e)
+      catch (IllegalArgumentException e)
       {
          return Response.status(Status.BAD_REQUEST).entity("bad merge type "+merge).build();
       }
