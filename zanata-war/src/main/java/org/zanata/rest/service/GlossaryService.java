@@ -3,6 +3,7 @@ package org.zanata.rest.service;
 import java.util.List;
 
 import javax.ws.rs.HeaderParam;
+import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -30,7 +31,7 @@ import org.zanata.seam.resteasy.IgnoreInterfacePath;
 import org.zanata.service.GlossaryFileService;
 
 @Name("glossaryService")
-//@Path(GlossaryService.SERVICE_PATH)
+@Path(GlossaryService.SERVICE_PATH)
 @Transactional
 @IgnoreInterfacePath
 public class GlossaryService implements GlossaryResource

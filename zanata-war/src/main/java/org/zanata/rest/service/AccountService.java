@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -32,7 +33,7 @@ import org.zanata.rest.dto.Account;
 import org.zanata.seam.resteasy.IgnoreInterfacePath;
 
 @Name("accountService")
-//@Path(AccountResource.SERVICE_PATH)
+@Path(AccountResource.SERVICE_PATH)
 @Transactional
 @IgnoreInterfacePath
 public class AccountService implements AccountResource

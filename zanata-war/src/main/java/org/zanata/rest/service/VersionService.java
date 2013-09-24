@@ -1,6 +1,7 @@
 package org.zanata.rest.service;
 
 
+import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
 import org.jboss.seam.annotations.Name;
@@ -11,7 +12,7 @@ import org.zanata.util.VersionUtility;
 
 
 @Name("versionService")
-//@Path(VersionResource.SERVICE_PATH)
+@Path(VersionResource.SERVICE_PATH)
 @IgnoreInterfacePath
 public class VersionService implements VersionResource
 {

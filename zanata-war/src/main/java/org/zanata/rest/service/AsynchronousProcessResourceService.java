@@ -56,6 +56,9 @@ import org.zanata.service.impl.TranslationServiceImpl;
 import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
+
+import javax.ws.rs.Path;
+
 import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode;
 
 /**
@@ -64,7 +67,7 @@ import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode;
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Name("asynchronousProcessResourceService")
-//@Path(AsynchronousProcessResource.SERVICE_PATH)
+@Path(AsynchronousProcessResource.SERVICE_PATH)
 @Transactional
 @Slf4j
 @IgnoreInterfacePath

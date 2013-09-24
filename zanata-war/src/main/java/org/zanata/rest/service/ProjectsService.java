@@ -29,6 +29,7 @@ import java.util.List;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.HeaderParam;
+import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
@@ -53,7 +54,7 @@ import org.zanata.seam.resteasy.IgnoreInterfacePath;
 import com.google.common.base.Objects;
 
 @Name("projectsService")
-//@Path(ProjectsResource.SERVICE_PATH)
+@Path(ProjectsResource.SERVICE_PATH)
 @Transactional
 @IgnoreInterfacePath
 public class ProjectsService implements ProjectsResource

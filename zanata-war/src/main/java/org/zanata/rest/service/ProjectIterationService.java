@@ -26,6 +26,7 @@ import static org.zanata.common.EntityStatus.READONLY;
 import javax.annotation.Nonnull;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.HeaderParam;
+import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.EntityTag;
@@ -56,7 +57,7 @@ import org.zanata.seam.resteasy.IgnoreInterfacePath;
 import com.google.common.base.Objects;
 
 @Name("projectIterationService")
-//@Path(ProjectIterationService.SERVICE_PATH)
+@Path(ProjectIterationService.SERVICE_PATH)
 @Transactional
 @IgnoreInterfacePath
 public class ProjectIterationService implements ProjectIterationResource

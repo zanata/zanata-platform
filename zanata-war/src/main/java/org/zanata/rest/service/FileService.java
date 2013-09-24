@@ -34,6 +34,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -68,7 +69,7 @@ import com.google.common.base.Strings;
 import com.google.common.io.ByteStreams;
 
 @Name("fileService")
-//@Path(FileResource.FILE_RESOURCE)
+@Path(FileResource.FILE_RESOURCE)
 @IgnoreInterfacePath
 public class FileService implements FileResource
 {
