@@ -21,6 +21,7 @@
 
 package org.zanata.rest.service;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -37,23 +38,26 @@ import org.zanata.rest.dto.Project;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-@Path(ProjectsResource.SERVICE_PATH)
-@org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle
+@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public interface ProjectsResource
 {
    public static final String SERVICE_PATH = "/projects";
 
    /**
-    * Retrieves a full list of projects in the system.
+    * Retrieves a full list of projects in the system.  The result is
     *
     * @return The following response status codes will be returned from this operation:<br>
-    * OK(200) - Response containing a full list of projects. The list will be wrapped around a 'projects' element, and
-    * all it's child elements will be projects.<br>
+    * OK(200) - Response containing a full list of projects. The list will be wrapped in a "projects" element, and
+    * all its child elements will be "project"s.<br>
     * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
     */
    @GET
    @Produces({ MediaTypes.APPLICATION_ZANATA_PROJECTS_XML, MediaTypes.APPLICATION_ZANATA_PROJECTS_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
    @Wrapped(element = "projects", namespace = Namespaces.ZANATA_API)
+   // TODO Enunciate doesn't handle arrays/Collections
+   // Ugly workaround: http://docs.codehaus.org/display/ENUNCIATE/Lists+and+JAX-RS
+   // Eventual solution: https://jira.codehaus.org/browse/ENUNCIATE-429
    @TypeHint(Project[].class)
    public Response get();
 

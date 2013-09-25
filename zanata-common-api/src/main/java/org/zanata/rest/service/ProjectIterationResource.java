@@ -25,7 +25,6 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
 import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -41,8 +40,8 @@ import org.zanata.rest.dto.ProjectIteration;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-@Path(ProjectIterationResource.SERVICE_PATH)
-@org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle
+@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public interface ProjectIterationResource
 {
    public static final String ITERATION_SLUG_TEMPLATE = "{iterationSlug:" + RestConstants.SLUG_PATTERN + "}";

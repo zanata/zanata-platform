@@ -20,26 +20,27 @@
  */
 package org.zanata.rest.client;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-
 import org.jboss.resteasy.client.ClientResponse;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.service.ProjectsResource;
 
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
 /**
  * Rest client interface for project lists.
  *
  */
-@Path("/projects")
+@Path(ProjectsResource.SERVICE_PATH)
 public interface IProjectsResource extends ProjectsResource
 {
 
    @Override
    @GET
-   @Produces( { MediaTypes.APPLICATION_ZANATA_PROJECTS_XML, MediaTypes.APPLICATION_ZANATA_PROJECTS_JSON })
+   @Produces({ MediaTypes.APPLICATION_ZANATA_PROJECTS_XML, MediaTypes.APPLICATION_ZANATA_PROJECTS_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
    public ClientResponse<Project[]> get();
 
 }

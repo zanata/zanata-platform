@@ -26,6 +26,7 @@ import org.zanata.common.Namespaces;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -34,7 +35,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import java.util.Set;
@@ -44,8 +47,8 @@ import java.util.Set;
  * iterationSlug: Project Iteration identifier.
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Path(SourceDocResource.SERVICE_PATH)
-@org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle
+@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public interface SourceDocResource
 {
    public static final String SERVICE_PATH = ProjectIterationResource.SERVICE_PATH + "/r";
@@ -70,13 +73,17 @@ public interface SourceDocResource
     * @param extensions The document extensions to fetch along with the documents (e.g. "gettext", "comment"). This parameter
     * allows multiple values e.g. "ext=gettext&ext=comment".
     * @return  The following response status codes will be returned from this operation:<br>
-    * OK(200) - Response with a list of documents wrapped around a "resources" tag. <br>
+    * OK(200) - Response with a list of documents wrapped in a "resources" element.
+    * Each child element will be a "resource-meta". <br>
     * NOT FOUND(404) - If a Project iteration could not be found with the given parameters.<br>
     * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
     */
    @GET
    @Wrapped(element = "resources", namespace = Namespaces.ZANATA_API)
-   @TypeHint(ResourceMeta.class)
+   // TODO Enunciate doesn't handle arrays/Collections
+   // Ugly workaround: http://docs.codehaus.org/display/ENUNCIATE/Lists+and+JAX-RS
+   // Eventual solution: https://jira.codehaus.org/browse/ENUNCIATE-429
+   @TypeHint(ResourceMeta[].class)
    public Response get(@QueryParam("ext") Set<String> extensions);
 
    /**

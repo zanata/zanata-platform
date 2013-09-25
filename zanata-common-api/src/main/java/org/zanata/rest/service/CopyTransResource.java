@@ -20,18 +20,23 @@
  */
 package org.zanata.rest.service;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
+import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.zanata.rest.dto.CopyTransStatus;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Path(CopyTransResource.SERVICE_PATH)
-@org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle
+@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public interface CopyTransResource
 {
    public static final String SERVICE_PATH = "/copytrans";
@@ -55,6 +60,7 @@ public interface CopyTransResource
    @POST
    @Path("/proj/{projectSlug}/iter/{iterationSlug}/doc/{docId:.+}")
    // /copytrans/proj/{projectSlug}/iter/{iterationSlug}/doc/{docId}
+   @TypeHint(CopyTransStatus.class)
    public CopyTransStatus startCopyTrans( @PathParam("projectSlug") String projectSlug,
                                @PathParam("iterationSlug") String iterationSlug,
                                @PathParam("docId") String docId );
@@ -77,6 +83,7 @@ public interface CopyTransResource
    @GET
    @Path("/proj/{projectSlug}/iter/{iterationSlug}/doc/{docId:.+}")
    // /copytrans/proj/{projectSlug}/iter/{iterationSlug}/doc/{docId}
+   @TypeHint(CopyTransStatus.class)
    public CopyTransStatus getCopyTransStatus( @PathParam("projectSlug") String projectSlug,
                                               @PathParam("iterationSlug") String iterationSlug,
                                               @PathParam("docId") String docId );

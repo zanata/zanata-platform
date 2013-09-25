@@ -4,7 +4,7 @@
       <namespace id="zanata" uri="http://www.zanata.org"/>
    </namespaces>
    <api-classes>
-      <include pattern="org.zanata.rest.service.*"/>
+      <include pattern="org.zanata.rest.enunciate.*"/>
    </api-classes>
    <modules>
       <docs docsDir="rest-api-docs" title="Zanata REST API"

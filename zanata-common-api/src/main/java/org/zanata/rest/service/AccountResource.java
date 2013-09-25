@@ -24,7 +24,6 @@ package org.zanata.rest.service;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
@@ -38,8 +37,6 @@ import org.zanata.rest.dto.Account;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-@Path(AccountResource.SERVICE_PATH)
-@org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle
 public interface AccountResource
 {
    public static final String SERVICE_PATH = "/accounts/u/{username:[a-z\\d_]{3,20}}";

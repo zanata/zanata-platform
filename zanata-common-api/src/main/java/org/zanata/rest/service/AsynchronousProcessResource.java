@@ -29,9 +29,11 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.resource.Resource;
@@ -43,9 +45,8 @@ import org.zanata.rest.dto.resource.TranslationsResource;
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Path(AsynchronousProcessResource.SERVICE_PATH)
-@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-@org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle
+@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public interface AsynchronousProcessResource
 {
    public static final String SERVICE_PATH = "/async";
@@ -72,6 +73,7 @@ public interface AsynchronousProcessResource
    @POST
    @Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r")
    /* Same as SourceDocResourceService.SERVICE_PATH */
+   @TypeHint(ProcessStatus.class)
    public ProcessStatus startSourceDocCreation(@PathParam("id") String idNoSlash,
                                                @PathParam("projectSlug") String projectSlug,
                                                @PathParam("iterationSlug") String iterationSlug,
@@ -101,6 +103,7 @@ public interface AsynchronousProcessResource
    @PUT
    @Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r" + SourceDocResource.RESOURCE_SLUG_TEMPLATE)
    /* Same as SourceDocResourceService.SERVICE_PATH */
+   @TypeHint(ProcessStatus.class)
    public ProcessStatus startSourceDocCreationOrUpdate(@PathParam("id") String idNoSlash,
                                                        @PathParam("projectSlug") String projectSlug,
                                                        @PathParam("iterationSlug") String iterationSlug,
@@ -132,6 +135,7 @@ public interface AsynchronousProcessResource
    @PUT
    @Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id}/translations/{locale}")
    /* Same as TranslatedDocResource.putTranslations */
+   @TypeHint(ProcessStatus.class)
    public ProcessStatus startTranslatedDocCreationOrUpdate(@PathParam("id") String idNoSlash,
                                                            @PathParam("projectSlug") String projectSlug,
                                                            @PathParam("iterationSlug") String iterationSlug,
@@ -152,6 +156,7 @@ public interface AsynchronousProcessResource
     */
    @GET
    @Path("/{processId}")
+   @TypeHint(ProcessStatus.class)
    public ProcessStatus getProcessStatus( @PathParam("processId") String processId );
 
 }

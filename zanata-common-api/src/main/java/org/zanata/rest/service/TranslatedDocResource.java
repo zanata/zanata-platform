@@ -23,18 +23,23 @@ package org.zanata.rest.service;
 
 import java.util.Set;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import org.zanata.common.LocaleId;
+import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 import static org.zanata.rest.service.SourceDocResource.RESOURCE_SLUG_TEMPLATE;
@@ -45,8 +50,8 @@ import static org.zanata.rest.service.SourceDocResource.RESOURCE_SLUG_TEMPLATE;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-@Path(TranslatedDocResource.SERVICE_PATH)
-@org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle
+@Produces( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+@Consumes( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 public interface TranslatedDocResource
 {
    public static final String SERVICE_PATH = ProjectIterationResource.SERVICE_PATH + "/r";
@@ -79,7 +84,7 @@ public interface TranslatedDocResource
          @PathParam("id") String idNoSlash,
          @PathParam("locale") LocaleId locale,
          @QueryParam("ext") Set<String> extensions,
-         @QueryParam("skel") boolean createSkeletons,
+         @QueryParam("skeletons") boolean createSkeletons,
          @HeaderParam(HttpHeaderNames.IF_NONE_MATCH) String eTag
          );
 
@@ -126,6 +131,6 @@ public interface TranslatedDocResource
    @PUT
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
    // /r/{id}/translations/{locale}
-   public Response putTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, TranslationsResource messageBody, @QueryParam("ext") Set<String> extensions, @QueryParam("merge") String merge);
+   public Response putTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, TranslationsResource messageBody, @QueryParam("ext") Set<String> extensions, @QueryParam("merge") @DefaultValue("auto") String merge);
 
 }

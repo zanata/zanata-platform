@@ -44,8 +44,6 @@ import org.zanata.common.LocaleId;
  */
 @Produces( { MediaType.APPLICATION_XML /*, "application/x-tmx"*/ })
 @Consumes( { MediaType.APPLICATION_XML /*, "application/x-tmx"*/ })
-@Path(TranslationMemoryResource.SERVICE_PATH)
-@org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle
 public interface TranslationMemoryResource
 {
    public static final String SERVICE_PATH = "/tm";

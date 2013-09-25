@@ -20,7 +20,9 @@
  */
 package org.zanata.rest.client;
 
+import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
 import org.jboss.resteasy.client.ClientResponse;
+import org.zanata.common.Namespaces;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.service.SourceDocResource;
@@ -50,6 +52,7 @@ public interface ISourceDocResource extends SourceDocResource
 {
    @Override
    @GET
+   @Wrapped(element = "resources", namespace = Namespaces.ZANATA_API)
    public ClientResponse<List<ResourceMeta>> get(@QueryParam("ext") Set<String> extensions);
 
    @Override
@@ -58,31 +61,32 @@ public interface ISourceDocResource extends SourceDocResource
 
    @Override
    @GET
-   @Path("{id}")
+   @Path(RESOURCE_SLUG_TEMPLATE)
    public ClientResponse<Resource> getResource(@PathParam("id") String idNoSlash, @QueryParam("ext") Set<String> extensions);
 
    @Override
    @PUT
-   @Path("{id}")
+   @Path(RESOURCE_SLUG_TEMPLATE)
    public ClientResponse<String> putResource(@PathParam("id") String idNoSlash, Resource resource, @QueryParam("ext") Set<String> extensions, @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans);
 
    @PUT
-   @Path("{id}")
+   @Path(RESOURCE_SLUG_TEMPLATE)
+   @Deprecated
    public ClientResponse<String> putResource(@PathParam("id") String idNoSlash, Resource resource, @QueryParam("ext") Set<String> extensions);
 
    @Override
    @DELETE
-   @Path("{id}")
+   @Path(RESOURCE_SLUG_TEMPLATE)
    public ClientResponse<String> deleteResource(@PathParam("id") String idNoSlash);
 
    @Override
    @GET
-   @Path("{id}/meta")
+   @Path(RESOURCE_SLUG_TEMPLATE + "/meta")
    public ClientResponse<ResourceMeta> getResourceMeta(@PathParam("id") String idNoSlash, @QueryParam("ext") Set<String> extensions);
 
    @Override
    @PUT
-   @Path("{id}/meta")
+   @Path(RESOURCE_SLUG_TEMPLATE + "/meta")
    public ClientResponse<String> putResourceMeta(@PathParam("id") String idNoSlash, ResourceMeta messageBody, @QueryParam("ext") Set<String> extensions);
 
 }

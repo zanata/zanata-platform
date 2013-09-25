@@ -20,6 +20,12 @@
  */
 package org.zanata.rest.client;
 
+import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
+import org.jboss.resteasy.client.ClientResponse;
+import org.zanata.rest.DocumentFileUploadForm;
+import org.zanata.rest.dto.ChunkUploadResponse;
+import org.zanata.rest.service.FileResource;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -28,12 +34,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-
-import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
-import org.jboss.resteasy.client.ClientResponse;
-import org.zanata.rest.DocumentFileUploadForm;
-import org.zanata.rest.dto.ChunkUploadResponse;
-import org.zanata.rest.service.FileResource;
 
 /**
  * REST client interface for file upload and download.
@@ -56,6 +56,7 @@ public interface IFileResource extends FileResource
    @POST
    @Path(SOURCE_UPLOAD_TEMPLATE)
    @Consumes( MediaType.MULTIPART_FORM_DATA)
+   @Produces( MediaType.APPLICATION_XML)
    public ClientResponse<ChunkUploadResponse> uploadSourceFile( @PathParam("projectSlug") String projectSlug,
                                                    @PathParam("iterationSlug") String iterationSlug,
                                                    @QueryParam("docId")  String docId,
@@ -65,6 +66,7 @@ public interface IFileResource extends FileResource
    @POST
    @Path(TRANSLATION_UPLOAD_TEMPLATE)
    @Consumes( MediaType.MULTIPART_FORM_DATA)
+   @Produces( MediaType.APPLICATION_XML)
    public ClientResponse<ChunkUploadResponse> uploadTranslationFile( @PathParam("projectSlug") String projectSlug,
                                                         @PathParam("iterationSlug") String iterationSlug,
                                                         @PathParam("locale") String localeId,

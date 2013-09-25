@@ -21,13 +21,13 @@
 package org.zanata.rest.client;
 
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Produces;
-
 import org.jboss.resteasy.client.ClientResponse;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.VersionInfo;
 import org.zanata.rest.service.VersionResource;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Produces;
 
 
 /**
@@ -38,7 +38,7 @@ public interface IVersionResource extends VersionResource
 {
    @Override
    @GET
-   @Produces({ MediaTypes.APPLICATION_ZANATA_VERSION_XML })
+   @Produces({ MediaTypes.APPLICATION_ZANATA_VERSION_JSON, MediaTypes.APPLICATION_ZANATA_VERSION_XML })
    public ClientResponse<VersionInfo> get();
 
 }

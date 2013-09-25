@@ -30,18 +30,21 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.zanata.rest.DocumentFileUploadForm;
+import org.zanata.rest.dto.ChunkUploadResponse;
 
 /**
  * Interface for file upload and download REST methods.
  */
-@Path(FileResource.FILE_RESOURCE)
-@org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle
+@Produces( { MediaType.APPLICATION_OCTET_STREAM })
+@Consumes( { MediaType.APPLICATION_OCTET_STREAM })
 public interface FileResource
 {
-
-   public static final String FILE_RESOURCE = "/file";
+   public static final String SERVICE_PATH = "/file";
+   @Deprecated
+   public static final String FILE_RESOURCE = SERVICE_PATH;
    public static final String ACCEPTED_TYPES_RESOURCE = "/accepted_types";
    public static final String DOWNLOAD_TEMPLATE = "/download/{downloadId}";
    public static final String FILE_DOWNLOAD_TEMPLATE = "/translation/{projectSlug}/{iterationSlug}/{locale}/{fileType}" ;
@@ -77,7 +80,9 @@ public interface FileResource
    @POST
    @Path(SOURCE_UPLOAD_TEMPLATE)
    @Consumes( MediaType.MULTIPART_FORM_DATA)
+   @Produces( MediaType.APPLICATION_XML)
    // /file/source/{projectSlug}/{iterationSlug}?docId={docId}
+   @TypeHint(ChunkUploadResponse.class)
    public Response uploadSourceFile( @PathParam("projectSlug") String projectSlug,
                                      @PathParam("iterationSlug") String iterationSlug,
                                      @QueryParam("docId") String docId,
@@ -86,7 +91,9 @@ public interface FileResource
    @POST
    @Path(TRANSLATION_UPLOAD_TEMPLATE)
    @Consumes( MediaType.MULTIPART_FORM_DATA)
+   @Produces( MediaType.APPLICATION_XML)
    // /file/translation/{projectSlug}/{iterationSlug}/{locale}?docId={docId}&merge={merge}
+   @TypeHint(ChunkUploadResponse.class)
    public Response uploadTranslationFile( @PathParam("projectSlug") String projectSlug,
                                           @PathParam("iterationSlug") String iterationSlug,
                                           @PathParam("locale") String localeId,

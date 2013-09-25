@@ -20,21 +20,27 @@
  */
 package org.zanata.rest.service;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 
+import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Path("/stats")
-@org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle
+@Path(StatisticsResource.SERVICE_PATH)
+@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public interface StatisticsResource
 {
+   public static final String SERVICE_PATH = "/stats";
 
    /**
     * Get translation statistics for a Project iteration and (optionally) it's underlying documents.
@@ -52,6 +58,7 @@ public interface StatisticsResource
     */
    @GET
    @Path("/proj/{projectSlug}/iter/{iterationSlug}")
+   @TypeHint(ContainerTranslationStatistics.class)
    public ContainerTranslationStatistics getStatistics(@PathParam("projectSlug") String projectSlug,
                                  @PathParam("iterationSlug") String iterationSlug,
                                  @QueryParam("detail") @DefaultValue("false") boolean includeDetails,
@@ -74,6 +81,7 @@ public interface StatisticsResource
     */
    @GET
    @Path("/proj/{projectSlug}/iter/{iterationSlug}/doc/{docId:.*}")
+   @TypeHint(ContainerTranslationStatistics.class)
    public ContainerTranslationStatistics getStatistics(@PathParam("projectSlug") String projectSlug,
                                  @PathParam("iterationSlug") String iterationSlug,
                                  @PathParam("docId") String docId,

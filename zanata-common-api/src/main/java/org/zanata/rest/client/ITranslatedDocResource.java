@@ -20,10 +20,14 @@
  */
 package org.zanata.rest.client;
 
-import java.util.Set;
+import org.jboss.resteasy.client.ClientResponse;
+import org.zanata.common.LocaleId;
+import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.rest.service.TranslatedDocResource;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PUT;
@@ -33,11 +37,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import java.util.Set;
 
-import org.jboss.resteasy.client.ClientResponse;
-import org.zanata.common.LocaleId;
-import org.zanata.rest.dto.resource.TranslationsResource;
-import org.zanata.rest.service.TranslatedDocResource;
+import static org.zanata.rest.service.SourceDocResource.RESOURCE_SLUG_TEMPLATE;
 
 /**
  * Client Interface for the Translation Resources service. 
@@ -47,12 +49,13 @@ import org.zanata.rest.service.TranslatedDocResource;
 public interface ITranslatedDocResource extends TranslatedDocResource
 {
    @GET
-   @Path("{id}/translations/{locale}")
+   @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
+   @Deprecated
    public ClientResponse<TranslationsResource> getTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, @QueryParam("ext") Set<String> extensions);
 
    @Override
    @GET
-   @Path("{id}/translations/{locale}")
+   @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
    public ClientResponse<TranslationsResource> getTranslations(
          @PathParam("id") String idNoSlash,
          @PathParam("locale") LocaleId locale,
@@ -62,15 +65,16 @@ public interface ITranslatedDocResource extends TranslatedDocResource
 
    @Override
    @DELETE
-   @Path("{id}/translations/{locale}")
+   @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
    public ClientResponse<String> deleteTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale);
 
    @Override
    @PUT
-   @Path("{id}/translations/{locale}")
-   public ClientResponse<String> putTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, TranslationsResource messageBody, @QueryParam("ext") Set<String> extensions, @QueryParam("merge") String merge);
+   @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
+   public ClientResponse<String> putTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, TranslationsResource messageBody, @QueryParam("ext") Set<String> extensions, @QueryParam("merge") @DefaultValue("auto") String merge);
    
    @PUT
-   @Path("{id}/translations/{locale}")
+   @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
+   @Deprecated
    public ClientResponse<String> putTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, TranslationsResource messageBody, @QueryParam("ext") Set<String> extensions);
 }
