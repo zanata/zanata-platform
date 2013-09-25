@@ -142,7 +142,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource
          LocaleId locale,
          Set<String> extensions,
          boolean skeletons,
-         /*@HeaderParam(HttpHeaders.IF_NONE_MATCH)*/ String eTag
+         String eTag
          )
    {
       log.debug("start to get translation");

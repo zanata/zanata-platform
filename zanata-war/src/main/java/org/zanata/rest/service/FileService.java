@@ -113,7 +113,7 @@ public class FileService implements FileResource
    public Response uploadSourceFile(String projectSlug,
                                     String iterationSlug,
                                     String docId,
-                                    /*@MultipartForm*/ DocumentFileUploadForm uploadForm )
+                                    DocumentFileUploadForm uploadForm )
    {
       GlobalDocumentId id = new GlobalDocumentId(projectSlug, iterationSlug, docId);
       return sourceUploader.tryUploadSourceFile(id, uploadForm);
@@ -125,7 +125,7 @@ public class FileService implements FileResource
                                          String localeId,
                                          String docId,
                                          String merge,
-                                         /*@MultipartForm*/ DocumentFileUploadForm uploadForm )
+                                         DocumentFileUploadForm uploadForm )
    {
       GlobalDocumentId id = new GlobalDocumentId(projectSlug, iterationSlug, docId);
       return translationUploader.tryUploadTranslationFile(id, localeId, merge, uploadForm);

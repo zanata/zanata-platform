@@ -59,7 +59,6 @@ import org.zanata.webtrans.shared.model.DocumentStatus;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-//@Path("/stats")
 @Name("statisticsServiceImpl")
 @Scope(ScopeType.STATELESS)
 public class StatisticsServiceImpl implements StatisticsResource
