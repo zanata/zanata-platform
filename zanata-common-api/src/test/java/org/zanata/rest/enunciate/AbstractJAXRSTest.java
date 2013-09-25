@@ -43,35 +43,31 @@ public class AbstractJAXRSTest
    private static final Joiner JOINER = Joiner.on(", ");
 
    /**
-    * For each class:
-    *   if class has @Path, should match @Path in resource and/or enunciate;
-    *   for each method in class, if method has jaxrs annotations, they should
-    *   match resource method (and enunciate, if any - not implemented).
+    * if clazz has @Path, should match @Path in resource and/or enunciate;
+    * for each method in clazz, if method has jaxrs annotations, they should
+    * match resource method (and enunciate, if any - not implemented).
     */
-   protected void checkAnnotations(Class[] classes, boolean expectPath) throws ClassNotFoundException
+   protected void checkAnnotations(Class clazz, boolean expectPath) throws ClassNotFoundException
    {
-      for (Class<?> clazz : classes)
-      {
-         checkClassAnnotations(clazz, expectPath);
-         Class<?> resourceInterface = getResourceInterfaceFor(clazz);
-         Map<String, List<List<Annotation>>> annotationsForResourceMethods = getAnnotationMapFor(resourceInterface);
+      checkClassAnnotations(clazz, expectPath);
+      Class<?> resourceInterface = getResourceInterfaceFor(clazz);
+      Map<String, List<List<Annotation>>> annotationsForResourceMethods = getAnnotationMapFor(resourceInterface);
 
-         // Use getDeclaredMethods (not getMethods) to avoid methods
-         // from resource interface.
-         for (Method clientMethod : clazz.getDeclaredMethods())
+      // Use getDeclaredMethods (not getMethods) to avoid methods
+      // from resource interface.
+      for (Method clientMethod : clazz.getDeclaredMethods())
+      {
+         if (!clientMethod.isAnnotationPresent(Deprecated.class))
          {
-            if (!clientMethod.isAnnotationPresent(Deprecated.class))
-            {
-               // don't bother checking deprecated method overloads (which
-               // probably don't exist in the resource interface)
-               checkMethodAnnotations(clientMethod, annotationsForResourceMethods);
-            }
+            // don't bother checking deprecated method overloads (which
+            // probably don't exist in the resource interface)
+            checkMethodAnnotations(clientMethod, annotationsForResourceMethods);
          }
       }
    }
 
    /** Checks class-level @Path annotation against other classes. */
-   private void checkClassAnnotations(Class<?> clazz, boolean expectPath) throws ClassNotFoundException
+   private void checkClassAnnotations(Class<?> clazz, boolean expectPathOnClazz) throws ClassNotFoundException
    {
       String name = clazz.getSimpleName();
       List<String> typePaths = Lists.newArrayList();
@@ -83,7 +79,7 @@ public class AbstractJAXRSTest
       addPathIfAny(typePaths, enunciateInterface);
 
       String path = addPathIfAny(typePaths, clazz);
-      if (expectPath)
+      if (expectPathOnClazz)
       {
          assertThat(name+": @Path is required", path != null);
       }

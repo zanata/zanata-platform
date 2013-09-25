@@ -20,6 +20,7 @@
  */
 package org.zanata.rest.service;
 
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.zanata.rest.client.IAccountResource;
 import org.zanata.rest.client.IAsynchronousProcessResource;
@@ -39,27 +40,31 @@ import org.zanata.rest.enunciate.AbstractJAXRSTest;
 @Test(groups = { "unit-tests" })
 public class ClientJAXRSTest extends AbstractJAXRSTest
 {
-   private final Class[] clientInterfaces =
+   @DataProvider(name = "clientInterfaces", parallel = true)
+   private final Object[][] clientInterfaces()
    {
-       IAccountResource.class,
-       IAsynchronousProcessResource.class,
-       ICopyTransResource.class,
-       IFileResource.class,
-       IGlossaryResource.class,
-       IProjectIterationResource.class,
-       IProjectResource.class,
-       IProjectsResource.class,
-       ISourceDocResource.class,
-       IStatisticsResource.class,
-       ITranslatedDocResource.class,
-       ITranslationMemoryResource.class,
-       IVersionResource.class
-   };
+      return new Object[][]
+         {
+            {IAccountResource.class},
+            {IAsynchronousProcessResource.class},
+            {ICopyTransResource.class},
+            {IFileResource.class},
+            {IGlossaryResource.class},
+            {IProjectIterationResource.class},
+            {IProjectResource.class},
+            {IProjectsResource.class},
+            {ISourceDocResource.class},
+            {IStatisticsResource.class},
+            {ITranslatedDocResource.class},
+            {ITranslationMemoryResource.class},
+            {IVersionResource.class}
+         };
+   }
 
-   @Test
-   public void testAnnotations() throws Exception
+   @Test(dataProvider = "clientInterfaces")
+   public void testAnnotations(Class clientInterface) throws Exception
    {
-      checkAnnotations(clientInterfaces, false);
+      checkAnnotations(clientInterface, false);
    }
 
 }
