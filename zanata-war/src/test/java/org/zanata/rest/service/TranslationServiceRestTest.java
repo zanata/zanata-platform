@@ -1,6 +1,7 @@
 package org.zanata.rest.service;
 
 import javax.ws.rs.core.Response.Status;
+import javax.xml.bind.JAXBException;
 
 import org.jboss.resteasy.client.ClientResponse;
 import org.mockito.Mockito;
@@ -11,6 +12,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.StringSet;
+import org.zanata.rest.dto.DTOUtil;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.seam.SeamAutowire;
@@ -33,12 +35,12 @@ public class TranslationServiceRestTest extends ResourceTranslationServiceRestTe
    {
       // @formatter:off
       return new Object[][]
-            {
-               new Object[] { transTestFactory.getTestObject() },
-               new Object[] { transTestFactory.getPoTargetHeaderTextFlowTargetTest() },
-               new Object[] { transTestFactory.getTextFlowTargetCommentTest() },
-               new Object[] { transTestFactory.getAllExtension() }
-            };
+         {
+            new Object[] { "getTestObject", transTestFactory.getTestObject() },
+            new Object[] { "getPoTargetHeaderTextFlowTargetTest", transTestFactory.getPoTargetHeaderTextFlowTargetTest() },
+            new Object[] { "getTextFlowTargetCommentTest", transTestFactory.getTextFlowTargetCommentTest() },
+            new Object[] { "getAllExtension", transTestFactory.getAllExtension() }
+         };
       // @formatter:on
    }
 
@@ -79,8 +81,9 @@ public class TranslationServiceRestTest extends ResourceTranslationServiceRestTe
    }
 
    @Test(dataProvider = "TranslationTestData")
-   public void testPutGetTranslation(TranslationsResource sr)
+   public void testPutGetTranslation(String desc, TranslationsResource sr)
    {
+      sr = cloneDTO(sr);
       Resource res = resourceTestFactory.getTextFlowTest();
       sourceDocResource.putResource(res.getName(), res, new StringSet("gettext;comment"));
       log.debug("successful put resource:" + res.getName());
@@ -95,8 +98,9 @@ public class TranslationServiceRestTest extends ResourceTranslationServiceRestTe
    }
 
    @Test(dataProvider = "TranslationTestData")
-   public void testPutGetTranslationNoExtension(TranslationsResource sr)
+   public void testPutGetTranslationNoExtension(String desc, TranslationsResource sr)
    {
+      sr = cloneDTO(sr);
       Resource res = resourceTestFactory.getTextFlowTest();
       sourceDocResource.putResource(res.getName(), res, new StringSet("gettext;comment"));
       log.debug("successful put resource:" + res.getName());
@@ -111,9 +115,10 @@ public class TranslationServiceRestTest extends ResourceTranslationServiceRestTe
       assertThat(base.toString(), is(get.toString()));
    }
 
-   @Test(dataProvider = "TranslationTestData")
-   public void testPutNoExtensionGetTranslation(TranslationsResource sr)
+   @Test(dataProvider = "TranslationTestData", dependsOnMethods = { "testPutGetTranslation" })
+   public void testPutNoExtensionGetTranslation(String desc, TranslationsResource sr)
    {
+      sr = cloneDTO(sr);
       Resource res = resourceTestFactory.getTextFlowTest();
       sourceDocResource.putResource(res.getName(), res, new StringSet("gettext;comment"));
       log.debug("successful put resource:" + res.getName());
@@ -129,8 +134,9 @@ public class TranslationServiceRestTest extends ResourceTranslationServiceRestTe
    }
 
    @Test(dataProvider = "TranslationTestData")
-   public void testPutGetNoExtensionTranslation(TranslationsResource sr)
+   public void testPutGetNoExtensionTranslation(String desc, TranslationsResource sr)
    {
+      sr = cloneDTO(sr);
       Resource res = resourceTestFactory.getTextFlowTest();
       sourceDocResource.putResource(res.getName(), res, new StringSet("gettext;comment"));
       log.debug("successful put resource:" + res.getName());
@@ -143,6 +149,18 @@ public class TranslationServiceRestTest extends ResourceTranslationServiceRestTe
       log.debug("actual:" + get.toString());
       ResourceTestUtil.clearPoTargetHeaders(base, get);
       assertThat(base.toString(), is(get.toString()));
+   }
+
+   private <T> T cloneDTO(T dto)
+   {
+      try
+      {
+         return (T) DTOUtil.toObject(DTOUtil.toXML(dto), dto.getClass());
+      }
+      catch (JAXBException e)
+      {
+         throw new RuntimeException(e);
+      }
    }
 
 }

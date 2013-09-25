@@ -110,6 +110,9 @@
                      <usedDependency>quartz:quartz</usedDependency>
                      <!-- Used indirectly by org.zanata.arquillian.Deployments -->
                      <usedDependency>org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api</usedDependency>
+                     <!-- used by REST API interfaces -->
+                     <usedDependency>org.jboss.resteasy:resteasy-jaxb-provider</usedDependency>
+                     <usedDependency>org.jboss.resteasy:resteasy-multipart-provider</usedDependency>
 
                      <!-- Grandfathered entries: -->
                      <!-- TODO validate or remove each of these -->
@@ -602,23 +605,6 @@
 									</action>
 								</pluginExecution>
 								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											org.codehaus.enunciate
-										</groupId>
-										<artifactId>
-											maven-enunciate-plugin
-										</artifactId>
-										<versionRange>[1.9-RC1,)</versionRange>
-										<goals>
-											<goal>assemble</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
-								</pluginExecution>
-								<pluginExecution>
 								    <pluginExecutionFilter>
 								        <groupId>
 								            org.codehaus.mojo
@@ -707,31 +693,6 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-
-   <reporting>
-      <plugins>
-         <plugin>
-            <groupId>org.codehaus.enunciate</groupId>
-            <artifactId>maven-enunciate-plugin</artifactId>
-            <!-- apparently pluginManagement is ignored in reporting -->
-            <version>${enunciate.version}</version>
-            <configuration>
-               <configFile>etc/enunciate/enunciate.xml</configFile>
-
-               <!--
-               These two enunciate options are undocumented, but
-               their absence causes an error during site generation.
-                -->
-               <enunciateArtifactId>unused</enunciateArtifactId>
-               <moduleName>unused</moduleName>
-
-               <!-- The subdirectory of the site where the documentation will be put. -->
-               <!-- Note that if this isn't set, the documentation will overwrite the site. -->
-               <docsSubdir>apidocs</docsSubdir>
-            </configuration>
-         </plugin>
-      </plugins>
-   </reporting>
 
 	<profiles>
 		<profile>
@@ -1436,12 +1397,6 @@
 		<dependency>
 			<groupId>org.fedorahosted.openprops</groupId>
 			<artifactId>openprops</artifactId>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.codehaus.enunciate</groupId>
-			<artifactId>enunciate-core-annotations</artifactId>
-			<version>${enunciate.version}</version>
 		</dependency>
 		
 		<!-- Quartz -->

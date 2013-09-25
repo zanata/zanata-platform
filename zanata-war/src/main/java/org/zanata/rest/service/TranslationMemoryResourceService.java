@@ -49,7 +49,6 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.ITextFlow;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.model.tm.TransMemoryUnit;
-import org.zanata.seam.resteasy.IgnoreInterfacePath;
 import org.zanata.service.LocaleService;
 import org.zanata.service.LockManagerService;
 import org.zanata.tmx.TMXParser;
@@ -57,11 +56,10 @@ import org.zanata.util.CloseableIterator;
 
 import com.google.common.base.Optional;
 @Name("translationMemoryResource")
-@Path("/tm")
+@Path(TranslationMemoryResource.SERVICE_PATH)
 @Transactional(TransactionPropagationType.SUPPORTS)
 @Slf4j
 @ParametersAreNonnullByDefault
-@IgnoreInterfacePath
 // TODO options to export obsolete docs and textflows to TMX?
 public class TranslationMemoryResourceService implements TranslationMemoryResource
 {

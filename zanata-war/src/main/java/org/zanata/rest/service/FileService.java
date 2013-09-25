@@ -34,20 +34,13 @@ import java.util.Properties;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 
-import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.zanata.adapter.FileFormatAdapter;
@@ -66,7 +59,6 @@ import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
-import org.zanata.seam.resteasy.IgnoreInterfacePath;
 import org.zanata.service.FileSystemService;
 import org.zanata.service.FileSystemService.DownloadDescriptorProperties;
 import org.zanata.service.TranslationFileService;
@@ -77,9 +69,6 @@ import com.google.common.io.ByteStreams;
 
 @Name("fileService")
 @Path(FileResource.FILE_RESOURCE)
-@Produces( { MediaType.APPLICATION_OCTET_STREAM })
-@Consumes( { MediaType.APPLICATION_OCTET_STREAM })
-@IgnoreInterfacePath
 public class FileService implements FileResource
 {
    private static final String FILE_TYPE_OFFLINE_PO = "offlinepo";
@@ -113,10 +102,6 @@ public class FileService implements FileResource
    private FilePersistService filePersistService;
 
    @Override
-   @GET
-   @Path(ACCEPTED_TYPES_RESOURCE)
-   @Produces( MediaType.TEXT_PLAIN )
-   // /file/accepted_types
    public Response acceptedFileTypes()
    {
       StringSet acceptedTypes = new StringSet("");
@@ -125,55 +110,32 @@ public class FileService implements FileResource
    }
 
    @Override
-   @POST
-   @Path(SOURCE_UPLOAD_TEMPLATE)
-   @Consumes( MediaType.MULTIPART_FORM_DATA)
-   @Produces( MediaType.APPLICATION_XML)
-   public Response uploadSourceFile( @PathParam("projectSlug") String projectSlug,
-                                     @PathParam("iterationSlug") String iterationSlug,
-                                     @QueryParam("docId") String docId,
-                                     @MultipartForm DocumentFileUploadForm uploadForm )
+   public Response uploadSourceFile(String projectSlug,
+                                    String iterationSlug,
+                                    String docId,
+                                    DocumentFileUploadForm uploadForm )
    {
       GlobalDocumentId id = new GlobalDocumentId(projectSlug, iterationSlug, docId);
       return sourceUploader.tryUploadSourceFile(id, uploadForm);
    }
 
    @Override
-   @POST
-   @Path(TRANSLATION_UPLOAD_TEMPLATE)
-   @Consumes( MediaType.MULTIPART_FORM_DATA)
-   @Produces( MediaType.APPLICATION_XML)
-   public Response uploadTranslationFile( @PathParam("projectSlug") String projectSlug,
-                                          @PathParam("iterationSlug") String iterationSlug,
-                                          @PathParam("locale") String localeId,
-                                          @QueryParam("docId") String docId,
-                                          @QueryParam("merge") String merge,
-                                          @MultipartForm DocumentFileUploadForm uploadForm )
+   public Response uploadTranslationFile(String projectSlug,
+                                         String iterationSlug,
+                                         String localeId,
+                                         String docId,
+                                         String merge,
+                                         DocumentFileUploadForm uploadForm )
    {
       GlobalDocumentId id = new GlobalDocumentId(projectSlug, iterationSlug, docId);
       return translationUploader.tryUploadTranslationFile(id, localeId, merge, uploadForm);
    }
 
-   /**
-    * Downloads a single source file.
-    * 
-    * @param projectSlug
-    * @param iterationSlug
-    * @param fileType use 'raw' for original source if available, or 'pot' to
-    *           generate pot from source strings
-    * @param docId
-    * @return response with status code 404 if the document is not found, 415 if
-    *         fileType is not valid for the document, otherwise 200 with
-    *         attached document.
-    */
    @Override
-   @GET
-   @Path(SOURCE_DOWNLOAD_TEMPLATE)
-   // /file/source/{projectSlug}/{iterationSlug}/{fileType}?docId={docId}
-   public Response downloadSourceFile( @PathParam("projectSlug") String projectSlug,
-                                       @PathParam("iterationSlug") String iterationSlug,
-                                       @PathParam("fileType") String fileType,
-                                       @QueryParam("docId") String docId)
+   public Response downloadSourceFile(String projectSlug,
+                                      String iterationSlug,
+                                      String fileType,
+                                      String docId)
    {
       // TODO scan (again) for virus
       HDocument document = documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId);
@@ -222,38 +184,12 @@ public class FileService implements FileResource
       }
    }
 
-   /**
-    * Downloads a single translation file.
-    * 
-    * To download a preview-document or translated document where a raw source
-    * document is available, use fileType 'half_baked' and 'baked' respectively.
-    * 
-    * @param projectSlug Project identifier.
-    * @param iterationSlug Project iteration identifier.
-    * @param locale Translations for this locale will be contained in the
-    *           downloaded document.
-    * @param fileType File type to be downloaded. (Options: 'po', 'half_baked',
-    *           'baked')
-    * @param docId Document identifier to fetch translations for.
-    * @return The following response status codes will be returned from this
-    *         operation:<br>
-    *         OK(200) - A translation file in the requested format with
-    *         translations for the requested document in a project, iteration
-    *         and locale. <br>
-    *         NOT FOUND(404) - If a document is not found with the given
-    *         parameters.<br>
-    *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-    *         the server while performing this operation.
-    */
    @Override
-   @GET
-   @Path(FILE_DOWNLOAD_TEMPLATE)
-   // /file/translation/{projectSlug}/{iterationSlug}/{locale}/{fileType}?docId={docId}
-   public Response downloadTranslationFile( @PathParam("projectSlug") String projectSlug,
-                                            @PathParam("iterationSlug") String iterationSlug,
-                                            @PathParam("locale") String locale,
-                                            @PathParam("fileType") String fileType,
-                                            @QueryParam("docId") String docId )
+   public Response downloadTranslationFile(String projectSlug,
+                                           String iterationSlug,
+                                           String locale,
+                                           String fileType,
+                                           String docId )
    {
       GlobalDocumentId id = new GlobalDocumentId(projectSlug, iterationSlug, docId);
       // TODO scan (again) for virus
@@ -341,22 +277,8 @@ public class FileService implements FileResource
       return response;
    }
 
-   /**
-    * Downloads a previously generated file.
-    * 
-    * @param downloadId The Zanata generated download id.
-    * @return The following response status codes will be returned from this operation:<br>
-    * OK(200) - A translation file in the requested format with translations for the requested document in a
-    * project, iteration and locale. <br>
-    * NOT FOUND(404) - If a downloadable file is not found for the given id, or is not yet ready for download 
-    * (i.e. the system is still preparing it).<br>
-    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
-    */
    @Override
-   @GET
-   @Path(DOWNLOAD_TEMPLATE)
-   // /file/download/{downloadId}
-   public Response download( @PathParam("downloadId") String downloadId )
+   public Response download(String downloadId)
    {
       // TODO scan (again) for virus
       try

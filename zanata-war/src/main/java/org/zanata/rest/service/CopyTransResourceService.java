@@ -20,9 +20,6 @@
  */
 package org.zanata.rest.service;
 
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.zanata.action.CopyTransManager;
@@ -31,15 +28,13 @@ import org.zanata.dao.DocumentDAO;
 import org.zanata.model.HDocument;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.dto.CopyTransStatus;
-import org.zanata.seam.resteasy.IgnoreInterfacePath;
 import org.zanata.security.ZanataIdentity;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Name("copyTransResourceService")
-@Path("/copytrans")
-@IgnoreInterfacePath
+//@Path(CopyTransResource.SERVICE_PATH)
 public class CopyTransResourceService implements CopyTransResource
 {
    @In
@@ -51,26 +46,10 @@ public class CopyTransResourceService implements CopyTransResource
    @In
    private DocumentDAO documentDAO;
 
-   /**
-    * Starts a Translation copy for an individual document.
-    *
-    * @param projectSlug Project identifier
-    * @param iterationSlug Project version identifier
-    * @param docId Document Id to copy translations into.
-    * @return The following response status codes will be returned from this
-    *         operation:<br>
-    *         OK(200) - Translation copy was started for the given document. The status of the
-    *         process is also returned in the response contents.<br>
-    *         UNAUTHORIZED(401) - If the user does not have the proper
-    *         permissions to perform this operation.<br>
-    *         INTERNAL SERVER ERROR(500) - If there is an unexpected
-    *         error in the server while performing this operation. Translation copy will
-    *         not start in this case.
-    */
    @Override
-   public CopyTransStatus startCopyTrans(@PathParam("projectSlug") String projectSlug,
-                              @PathParam("iterationSlug") String iterationSlug,
-                              @PathParam("docId") String docId)
+   public CopyTransStatus startCopyTrans(String projectSlug,
+                              String iterationSlug,
+                              String docId)
    {
       HDocument document = documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId);
       if( document == null )
@@ -84,25 +63,10 @@ public class CopyTransResourceService implements CopyTransResource
       return this.getCopyTransStatus(projectSlug, iterationSlug, docId);
    }
 
-   /**
-    * Retrieves the status for a Translation copy process for a document.
-    *
-    * @param projectSlug Project identifier
-    * @param iterationSlug Project version identifier
-    * @param docId Document Id
-    * @return The following response status codes will be returned from this
-    *         operation:<br>
-    *         OK(200) - A Translation copy process was found, and its status will be returned
-    *         in the body of the response.<br>
-    *         NOT_FOUND(404) - If there is no record of a recent translation copy process for
-    *         the specified document.
-    *         INTERNAL SERVER ERROR(500) - If there is an unexpected
-    *         error in the server while performing this operation.
-    */
    @Override
-   public CopyTransStatus getCopyTransStatus(@PathParam("projectSlug") String projectSlug,
-                                             @PathParam("iterationSlug") String iterationSlug,
-                                             @PathParam("docId") String docId)
+   public CopyTransStatus getCopyTransStatus(String projectSlug,
+                                             String iterationSlug,
+                                             String docId)
    {
 
       HDocument document = documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId);

@@ -54,7 +54,7 @@ public class ZPathService
     * Public ZPaths.
     * Used for rest resource path declaration.
     */
-   public static final String PROJECT_ZPATH = "/proj/" + SlugValidator.PATTERN;
+   public static final String PROJECT_ZPATH = "/proj/" + RestConstants.SLUG_PATTERN;
 
    /*
     * Private ZPaths.

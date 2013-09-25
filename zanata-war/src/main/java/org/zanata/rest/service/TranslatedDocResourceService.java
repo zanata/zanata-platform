@@ -20,22 +20,13 @@
  */
 package org.zanata.rest.service;
 
-import static org.zanata.rest.service.SourceDocResource.RESOURCE_SLUG_TEMPLATE;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.HttpHeaders;
@@ -46,7 +37,6 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
@@ -65,7 +55,6 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
-import org.zanata.seam.resteasy.IgnoreInterfacePath;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
@@ -77,19 +66,14 @@ import com.google.common.base.Optional;
  * This service allows clients to push and pull both source documents and translations.
  */
 @Name("translatedDocResourceService")
-@Path(TranslatedDocResourceService.SERVICE_PATH)
-@Produces( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-@Consumes( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+@Path(TranslatedDocResource.SERVICE_PATH)
 @Transactional
-@IgnoreInterfacePath
 public class TranslatedDocResourceService implements TranslatedDocResource
 {
 
    // security actions
 //   private static final String ACTION_IMPORT_TEMPLATE = "import-template";
 //   private static final String ACTION_IMPORT_TRANSLATION = "import-translation";
-
-   public static final String SERVICE_PATH = ProjectIterationService.SERVICE_PATH + "/r";
 
    public static final String EVENT_COPY_TRANS = "org.zanata.rest.service.copyTrans";
 
@@ -152,37 +136,13 @@ public class TranslatedDocResourceService implements TranslatedDocResource
    @In
    private LocaleService localeServiceImpl;
 
-   /**
-    * Retrieves a set of translations for a given locale.
-    * 
-    * @param idNoSlash The document identifier. Some document ids could have forward slashes ('/') in them which would
-    * cause conflicts with the browser's own url interpreter. For this reason, the supplied id must have all its '/' 
-    * characters replaced with commas (',').
-    * @param locale The locale for which to get translations.
-    * @param extensions The translation extensions to retrieve (e.g. "comment"). This parameter
-    * allows multiple values.
-    * @param skeletons Indicates whether to generate untranslated entries or not.
-    * @param eTag An Entity tag identifier. Based on this identifier (if provided), the server will decide if it needs
-    *             to send a response to the client or not (See return section).
-    * @return The following response status codes will be returned from this operation:<br>
-    * OK(200) - Successfully retrieved translations. The data will be contained in the response.<br>
-    * NOT FOUND(404) - If a project, project iteration or document could not be found with the given parameters. Also
-    *                  if no translations are found for the given document and locale.<br>
-    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.<br/>
-    * NOT_MODIFIED(304) - If the provided ETag matches the server's stored ETag, it will reply with this code, indicating
-    *                     that the last received response is still valid and should be reused.
-    */
    @Override
-   @GET
-   @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
-   @TypeHint(TranslationsResource.class)
-   // /r/{id}/translations/{locale}
    public Response getTranslations(
-         @PathParam("id") String idNoSlash,
-         @PathParam("locale") LocaleId locale,
-         @QueryParam("ext") Set<String> extensions,
-         @QueryParam("skeletons") @DefaultValue("false") boolean skeletons,
-         @HeaderParam(HttpHeaders.IF_NONE_MATCH) String eTag
+         String idNoSlash,
+         LocaleId locale,
+         Set<String> extensions,
+         boolean skeletons,
+         String eTag
          )
    {
       log.debug("start to get translation");
@@ -230,26 +190,9 @@ public class TranslatedDocResourceService implements TranslatedDocResource
       return Response.ok().entity(translationResource).tag(generatedEtag).build();
    }
 
-   /**
-    * Deletes a set of translations for a given locale. Also deletes any extensions recorded for the translations in
-    * question. The system will keep history of the translations.
-    * 
-    * @param idNoSlash The document identifier. Some document ids could have forward slashes ('/') in them which would
-    * cause conflicts with the browser's own url interpreter. For this reason, the supplied id must have all its '/' 
-    * characters replaced with commas (',').
-    * @param locale The locale for which to get translations.
-    * @return The following response status codes will be returned from this operation:<br>
-    * OK(200) - Successfully deleted the translations.<br>
-    * NOT FOUND(404) - If a project, project iteration or document could not be found with the given parameters.
-    * UNAUTHORIZED(401) - If the user does not have the proper permissions to perform this operation.<br>
-    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
-    */
    @Override
-   @DELETE
-   @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
    @Restrict("#{s:hasPermission(translatedDocResourceService.securedIteration.project, 'modify-translation')}")
-   // /r/{id}/translations/{locale}
-   public Response deleteTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale)
+   public Response deleteTranslations(String idNoSlash, LocaleId locale)
    {
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       HProjectIteration hProjectIteration = restSlugValidator.retrieveAndCheckIteration(projectSlug, iterationSlug, true);
@@ -284,32 +227,8 @@ public class TranslatedDocResourceService implements TranslatedDocResource
 
    }
 
-   /**
-    * Updates the translations for a document and a locale.
-    * 
-    * @param idNoSlash The document identifier. Some document ids could have forward slashes ('/') in them which would
-    * cause conflicts with the browser's own url interpreter. For this reason, the supplied id must have all its '/' 
-    * characters replaced with commas (',').
-    * @param locale The locale for which to get translations.
-    * @param messageBody The translations to modify.
-    * @param extensions The translation extension types to modify (e.g. "comment"). This parameter
-    * allows multiple values.
-    * @param merge Indicates how to deal with existing translations (valid options: 'auto', 'import'). Import will 
-    * overwrite all current values with the values being pushed (even empty ones), while Auto will check the history 
-    * of your translations and will not overwrite any translations for which it detects a previous value is being pushed.
-    * @return The following response status codes will be returned from this operation:<br>
-    * OK(200) - Translations were successfully updated.<br>
-    * NOT FOUND(404) - If a project, project iteration or document could not be found with the given parameters.<br>
-    * UNAUTHORIZED(401) - If the user does not have the proper permissions to perform this operation.<br>
-    * BAD REQUEST(400) - If there are problems with the parameters passed. i.e. Merge type is not one of the accepted 
-    * types. This response should have a content message indicating a reason.<br>
-    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
-    */
    @Override
-   @PUT
-   @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
-   // /r/{id}/translations/{locale}
-   public Response putTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, TranslationsResource messageBody, @QueryParam("ext") Set<String> extensions, @QueryParam("merge") @DefaultValue("auto") String merge)
+   public Response putTranslations(String idNoSlash, LocaleId locale, TranslationsResource messageBody, Set<String> extensions, String merge)
    {
       // check security (cannot be on @Restrict as it refers to method parameters)
       identity.checkPermission("modify-translation", this.localeServiceImpl.getByLocaleId(locale),
@@ -321,7 +240,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource
       {
          mergeType = MergeType.valueOf(merge.toUpperCase());
       }
-      catch (Exception e)
+      catch (IllegalArgumentException e)
       {
          return Response.status(Status.BAD_REQUEST).entity("bad merge type "+merge).build();
       }

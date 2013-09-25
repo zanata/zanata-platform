@@ -24,13 +24,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-
 import org.jboss.resteasy.spi.NotFoundException;
 import org.jboss.seam.Component;
 import org.jboss.seam.annotations.In;
@@ -51,7 +44,6 @@ import org.zanata.rest.ReadOnlyEntityException;
 import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
-import org.zanata.seam.resteasy.IgnoreInterfacePath;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.AsyncTaskManagerService;
 import org.zanata.service.DocumentService;
@@ -63,6 +55,9 @@ import org.zanata.service.impl.TranslationServiceImpl;
 import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
+
+import javax.ws.rs.Path;
+
 import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode;
 
 /**
@@ -71,11 +66,9 @@ import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode;
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Name("asynchronousProcessResourceService")
-@Path("/async")
-@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+@Path(AsynchronousProcessResource.SERVICE_PATH)
 @Transactional
 @Slf4j
-@IgnoreInterfacePath
 public class AsynchronousProcessResourceService implements AsynchronousProcessResource
 {
    @In
@@ -98,12 +91,12 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
 
 
    @Override
-   public ProcessStatus startSourceDocCreation(final @PathParam("id") String idNoSlash,
-                                               final @PathParam("projectSlug") String projectSlug,
-                                               final @PathParam("iterationSlug") String iterationSlug,
+   public ProcessStatus startSourceDocCreation(final String idNoSlash,
+                                               final String projectSlug,
+                                               final String iterationSlug,
                                                final Resource resource,
-                                               final @QueryParam("ext") Set<String> extensions,
-                                               final @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans)
+                                               final Set<String> extensions,
+                                               final boolean copytrans)
    {
       HProjectIteration hProjectIteration = retrieveAndCheckIteration(projectSlug, iterationSlug, true);
 
@@ -144,12 +137,12 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
    }
 
    @Override
-   public ProcessStatus startSourceDocCreationOrUpdate(final @PathParam("id") String idNoSlash,
-                                                       final @PathParam("projectSlug") String projectSlug,
-                                                       final @PathParam("iterationSlug") String iterationSlug,
+   public ProcessStatus startSourceDocCreationOrUpdate(final String idNoSlash,
+                                                       final String projectSlug,
+                                                       final String iterationSlug,
                                                        final Resource resource,
-                                                       final @QueryParam("ext") Set<String> extensions,
-                                                       final @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans)
+                                                       final Set<String> extensions,
+                                                       final boolean copytrans)
    {
 
       HProjectIteration hProjectIteration = retrieveAndCheckIteration(projectSlug, iterationSlug, true);
@@ -176,13 +169,13 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
    }
 
    @Override
-   public ProcessStatus startTranslatedDocCreationOrUpdate(final @PathParam("id") String idNoSlash,
-                                                           final @PathParam("projectSlug") String projectSlug,
-                                                           final @PathParam("iterationSlug") String iterationSlug,
-                                                           final @PathParam("locale") LocaleId locale,
+   public ProcessStatus startTranslatedDocCreationOrUpdate(final String idNoSlash,
+                                                           final String projectSlug,
+                                                           final String iterationSlug,
+                                                           final LocaleId locale,
                                                            final TranslationsResource translatedDoc,
-                                                           final @QueryParam("ext") Set<String> extensions,
-                                                           final @QueryParam("merge") String merge)
+                                                           final Set<String> extensions,
+                                                           final String merge)
    {
       // check security (cannot be on @Restrict as it refers to method parameters)
       identity.checkPermission("modify-translation", this.localeServiceImpl.getByLocaleId(locale),
@@ -226,7 +219,7 @@ public class AsynchronousProcessResourceService implements AsynchronousProcessRe
    }
 
    @Override
-   public ProcessStatus getProcessStatus(@PathParam("processId") String processId)
+   public ProcessStatus getProcessStatus(String processId)
    {
       AsyncTaskHandle handle = asyncTaskManagerServiceImpl.getHandle(processId);
 

@@ -6,15 +6,10 @@ import static org.zanata.common.EntityStatus.READONLY;
 import java.net.URI;
 
 import javax.annotation.Nonnull;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.HEAD;
 import javax.ws.rs.HeaderParam;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.MediaType;
@@ -25,7 +20,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
-import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -39,26 +33,19 @@ import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
-import org.zanata.model.validator.SlugValidator;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.dto.Link;
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.dto.ProjectIteration;
-import org.zanata.seam.resteasy.IgnoreInterfacePath;
 
 import com.google.common.base.Objects;
 
 @Name("projectService")
 @Path(ProjectService.SERVICE_PATH)
 @Transactional
-@IgnoreInterfacePath
 public class ProjectService implements ProjectResource
 {
-
-   public static final String PROJECT_SLUG_TEMPLATE = "{projectSlug:" + SlugValidator.PATTERN + "}";
-   public static final String SERVICE_PATH = "/projects/p/" + PROJECT_SLUG_TEMPLATE;
-
    /** Project Identifier. */
    @PathParam("projectSlug")
    String projectSlug;
@@ -94,20 +81,7 @@ public class ProjectService implements ProjectResource
       return projectSlug;
    }
 
-   /**
-    * Returns header information for a project.
-    * 
-    * @return The following response status codes will be returned from this
-    *         operation:<br>
-    *         OK(200) - An "Etag" header for the requested project. <br>
-    *         NOT FOUND(404) - If a project could not be found for the given
-    *         parameters.<br>
-    *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-    *         the server while performing this operation.
-    */
    @Override
-   @HEAD
-   @Produces({ MediaTypes.APPLICATION_ZANATA_PROJECT_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
    public Response head()
    {
       EntityTag etag = eTagUtils.generateTagForProject(projectSlug);
@@ -119,21 +93,7 @@ public class ProjectService implements ProjectResource
       return Response.ok().tag(etag).build();
    }
 
-   /**
-    * Returns data for a single Project.
-    * 
-    * @return The following response status codes will be returned from this
-    *         operation:<br>
-    *         OK(200) - Containing the Project data.<br>
-    *         NOT FOUND(404) - If a Project could not be found for the given
-    *         parameters.<br>
-    *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-    *         the server while performing this operation.
-    */
    @Override
-   @GET
-   @Produces({ MediaTypes.APPLICATION_ZANATA_PROJECT_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-   @TypeHint(Project.class)
    public Response get()
    {
       try
@@ -156,26 +116,7 @@ public class ProjectService implements ProjectResource
       }
    }
 
-   /**
-    * Creates or modifies a Project.
-    * 
-    * @param project The project's information.
-    * @return The following response status codes will be returned from this
-    *         method:<br>
-    *         OK(200) - If an already existing project was updated as a result
-    *         of this operation.<br>
-    *         CREATED(201) - If a new project was added.<br>
-    *         FORBIDDEN(403) - If the user was not allowed to create/modify the
-    *         project. In this case an error message is contained in the
-    *         response.<br>
-    *         UNAUTHORIZED(401) - If the user does not have the proper
-    *         permissions to perform this operation.<br>
-    *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-    *         the server while performing this operation.
-    */
    @Override
-   @PUT
-   @Consumes({ MediaTypes.APPLICATION_ZANATA_PROJECT_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
    public Response put(Project project)
    {
       ResponseBuilder response;

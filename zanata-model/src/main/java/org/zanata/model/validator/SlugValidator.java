@@ -25,11 +25,12 @@ import java.io.Serializable;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import org.zanata.rest.service.RestConstants;
+
 public class SlugValidator implements ConstraintValidator<Slug, String>, Serializable
 {
 
    private static final long serialVersionUID = 1L;
-   public static final String PATTERN = "[a-zA-Z0-9]+([a-zA-Z0-9_\\-{.}]*[a-zA-Z0-9]+)?";
 
    @Override
    public void initialize(Slug parameters)
@@ -43,7 +44,7 @@ public class SlugValidator implements ConstraintValidator<Slug, String>, Seriali
       {
          return true;
       }
-      return string.isEmpty() || string.matches(PATTERN);
+      return string.isEmpty() || string.matches(RestConstants.SLUG_PATTERN);
    }
 
 }

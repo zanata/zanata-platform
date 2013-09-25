@@ -2,14 +2,8 @@ package org.zanata.rest.service;
 
 import java.util.List;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -18,7 +12,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
 
-import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
@@ -30,17 +23,14 @@ import org.zanata.dao.GlossaryDAO;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
 import org.zanata.model.HTermComment;
-import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Glossary;
 import org.zanata.rest.dto.GlossaryEntry;
 import org.zanata.rest.dto.GlossaryTerm;
-import org.zanata.seam.resteasy.IgnoreInterfacePath;
 import org.zanata.service.GlossaryFileService;
 
 @Name("glossaryService")
 @Path(GlossaryService.SERVICE_PATH)
 @Transactional
-@IgnoreInterfacePath
 public class GlossaryService implements GlossaryResource
 {
    @Context
@@ -64,19 +54,7 @@ public class GlossaryService implements GlossaryResource
 
    Log log = Logging.getLog(GlossaryService.class);
 
-   /**
-    * Returns all Glossary entries.
-    * 
-    * @return The following response status codes will be returned from this
-    *         operation:<br>
-    *         OK(200) - Response containing all Glossary entries in the system.
-    *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-    *         the server while performing this operation.
-    */
    @Override
-   @GET
-   @Produces({ MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML, MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-   @TypeHint(Glossary.class)
    public Response getEntries()
    {
       ResponseBuilder response = request.evaluatePreconditions();
@@ -93,23 +71,8 @@ public class GlossaryService implements GlossaryResource
       return Response.ok(glossary).build();
    }
 
-   /**
-    * Returns Glossary entries for a single locale.
-    * 
-    * @param locale Locale for which to retrieve entries.
-    * @return The following response status codes will be returned from this
-    *         operation:<br>
-    *         OK(200) - Response containing all Glossary entries for the given
-    *         locale. INTERNAL SERVER ERROR(500) - If there is an unexpected
-    *         error in the server while performing this operation.
-    */
    @Override
-   @GET
-   @Path("/{locale}")
-   @Produces({ MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML, MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-   @TypeHint(Glossary.class)
-   public Response get(@PathParam("locale")
-   LocaleId locale)
+   public Response get(LocaleId locale)
    {
       ResponseBuilder response = request.evaluatePreconditions();
       if (response != null)
@@ -125,21 +88,7 @@ public class GlossaryService implements GlossaryResource
       return Response.ok(glossary).build();
    }
 
-   /**
-    * Adds glossary entries.
-    * 
-    * @param glossary The Glossary entries to add.
-    * @return The following response status codes will be returned from this
-    *         operation:<br>
-    *         CREATED(201) - If the glossary entries were successfully created.
-    *         UNAUTHORIZED(401) - If the user does not have the proper
-    *         permissions to perform this operation.<br>
-    *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-    *         the server while performing this operation.
-    */
    @Override
-   @PUT
-   @Consumes({ MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML, MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
    @Restrict("#{s:hasPermission('', 'glossary-insert')}")
    public Response put(Glossary glossary)
    {
@@ -158,23 +107,9 @@ public class GlossaryService implements GlossaryResource
       return response.build();
    }
 
-   /**
-    * Delete all glossary terms with the specified locale.
-    * 
-    * @param targetLocale The target locale to delete glossary entries from.
-    * @return The following response status codes will be returned from this
-    *         operation:<br>
-    *         OK(200) - If the glossary entries were successfully deleted.
-    *         UNAUTHORIZED(401) - If the user does not have the proper
-    *         permissions to perform this operation.<br>
-    *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-    *         the server while performing this operation.
-    */
    @Override
-   @DELETE
-   @Path("/{locale}")
    @Restrict("#{s:hasPermission('', 'glossary-delete')}")
-   public Response deleteGlossary(@PathParam("locale") LocaleId targetLocale)
+   public Response deleteGlossary(LocaleId targetLocale)
    {
       ResponseBuilder response = request.evaluatePreconditions();
       if (response != null)
@@ -188,19 +123,7 @@ public class GlossaryService implements GlossaryResource
       return Response.ok().build();
    }
 
-   /**
-    * Delete all glossary terms.
-    * 
-    * @return The following response status codes will be returned from this
-    *         operation:<br>
-    *         OK(200) - If the glossary entries were successfully deleted.
-    *         UNAUTHORIZED(401) - If the user does not have the proper
-    *         permissions to perform this operation.<br>
-    *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-    *         the server while performing this operation.
-    */
    @Override
-   @DELETE
    @Restrict("#{s:hasPermission('', 'glossary-delete')}")
    public Response deleteGlossaries()
    {
