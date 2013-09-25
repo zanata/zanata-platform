@@ -111,6 +111,9 @@
                      <usedDependency>quartz:quartz</usedDependency>
                      <!-- Used indirectly by org.zanata.arquillian.Deployments -->
                      <usedDependency>org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api</usedDependency>
+                     <!-- used by REST API interfaces -->
+                     <usedDependency>org.jboss.resteasy:resteasy-jaxb-provider</usedDependency>
+                     <usedDependency>org.jboss.resteasy:resteasy-multipart-provider</usedDependency>
 
                      <!-- Grandfathered entries: -->
                      <!-- TODO validate or remove each of these -->
