@@ -18,29 +18,18 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.feature;
+package org.zanata.feature.dashboard;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.zanata.feature.account.AccountTestSuite;
-import org.zanata.feature.administration.AdministrationTestSuite;
-import org.zanata.feature.dashboard.DashboardTestSuite;
-import org.zanata.feature.document.DocumentTestSuite;
-import org.zanata.feature.glossary.GlossaryTestSuite;
-import org.zanata.feature.security.SecurityTestSuite;
-import org.zanata.feature.startNewProject.CreateSampleProjectTestSuite;
-import org.zanata.feature.versionGroup.VersionGroupTestSuite;
 
+/**
+ * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-      AccountTestSuite.class,
-      AdministrationTestSuite.class,
-      GlossaryTestSuite.class,
-      SecurityTestSuite.class,
-      CreateSampleProjectTestSuite.class,
-      VersionGroupTestSuite.class,
-      DocumentTestSuite.class,
-      DashboardTestSuite.class
+      DashboardTest.class
 })
-public class AggregateTestSuite {
+public class DashboardTestSuite
+{
 }
