@@ -28,7 +28,6 @@ import org.zanata.dao.DocumentDAO;
 import org.zanata.model.HDocument;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.dto.CopyTransStatus;
-import org.zanata.seam.resteasy.IgnoreInterfacePath;
 import org.zanata.security.ZanataIdentity;
 
 /**
@@ -36,7 +35,6 @@ import org.zanata.security.ZanataIdentity;
  */
 @Name("copyTransResourceService")
 //@Path(CopyTransResource.SERVICE_PATH)
-@IgnoreInterfacePath
 public class CopyTransResourceService implements CopyTransResource
 {
    @In

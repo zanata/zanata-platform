@@ -23,17 +23,14 @@ import org.zanata.dao.GlossaryDAO;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
 import org.zanata.model.HTermComment;
-import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Glossary;
 import org.zanata.rest.dto.GlossaryEntry;
 import org.zanata.rest.dto.GlossaryTerm;
-import org.zanata.seam.resteasy.IgnoreInterfacePath;
 import org.zanata.service.GlossaryFileService;
 
 @Name("glossaryService")
 @Path(GlossaryService.SERVICE_PATH)
 @Transactional
-@IgnoreInterfacePath
 public class GlossaryService implements GlossaryResource
 {
    @Context

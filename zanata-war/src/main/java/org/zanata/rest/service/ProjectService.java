@@ -33,20 +33,17 @@ import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
-import org.zanata.model.validator.SlugValidator;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.dto.Link;
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.dto.ProjectIteration;
-import org.zanata.seam.resteasy.IgnoreInterfacePath;
 
 import com.google.common.base.Objects;
 
 @Name("projectService")
 @Path(ProjectService.SERVICE_PATH)
 @Transactional
-@IgnoreInterfacePath
 public class ProjectService implements ProjectResource
 {
    /** Project Identifier. */

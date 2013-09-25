@@ -49,17 +49,13 @@ import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
-import org.zanata.model.validator.SlugValidator;
-import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.ProjectIteration;
-import org.zanata.seam.resteasy.IgnoreInterfacePath;
 
 import com.google.common.base.Objects;
 
 @Name("projectIterationService")
 @Path(ProjectIterationService.SERVICE_PATH)
 @Transactional
-@IgnoreInterfacePath
 public class ProjectIterationService implements ProjectIterationResource
 {
    /** Project Identifier. */

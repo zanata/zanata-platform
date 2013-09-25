@@ -37,26 +37,22 @@ import javax.ws.rs.core.Response;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
 import org.jboss.resteasy.util.GenericType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.log.Log;
-import org.zanata.common.Namespaces;
 import org.zanata.model.HProject;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Link;
 import org.zanata.rest.dto.Project;
-import org.zanata.seam.resteasy.IgnoreInterfacePath;
 
 import com.google.common.base.Objects;
 
 @Name("projectsService")
 @Path(ProjectsResource.SERVICE_PATH)
 @Transactional
-@IgnoreInterfacePath
 public class ProjectsService implements ProjectsResource
 {
 

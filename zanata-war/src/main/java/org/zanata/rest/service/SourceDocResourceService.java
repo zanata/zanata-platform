@@ -20,7 +20,6 @@
  */
 package org.zanata.rest.service;
 
-import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
 import org.jboss.resteasy.util.GenericType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -30,7 +29,6 @@ import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.log.Log;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
-import org.zanata.common.Namespaces;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.exception.ZanataServiceException;
@@ -44,19 +42,15 @@ import org.zanata.rest.ReadOnlyEntityException;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TextFlow;
-import org.zanata.seam.resteasy.IgnoreInterfacePath;
 import org.zanata.service.DocumentService;
 import org.zanata.service.LocaleService;
 
-import javax.ws.rs.Consumes;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -75,7 +69,6 @@ import java.util.regex.Pattern;
 @Name("sourceDocResourceService")
 @Path(SourceDocResource.SERVICE_PATH)
 @Transactional
-@IgnoreInterfacePath
 public class SourceDocResourceService implements SourceDocResource
 {
 

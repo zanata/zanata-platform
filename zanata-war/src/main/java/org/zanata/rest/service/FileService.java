@@ -59,7 +59,6 @@ import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
-import org.zanata.seam.resteasy.IgnoreInterfacePath;
 import org.zanata.service.FileSystemService;
 import org.zanata.service.FileSystemService.DownloadDescriptorProperties;
 import org.zanata.service.TranslationFileService;
@@ -70,7 +69,6 @@ import com.google.common.io.ByteStreams;
 
 @Name("fileService")
 @Path(FileResource.FILE_RESOURCE)
-@IgnoreInterfacePath
 public class FileService implements FileResource
 {
    private static final String FILE_TYPE_OFFLINE_PO = "offlinepo";

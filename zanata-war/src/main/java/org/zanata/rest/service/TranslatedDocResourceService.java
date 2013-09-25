@@ -55,7 +55,6 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
-import org.zanata.seam.resteasy.IgnoreInterfacePath;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
@@ -69,7 +68,6 @@ import com.google.common.base.Optional;
 @Name("translatedDocResourceService")
 @Path(TranslatedDocResource.SERVICE_PATH)
 @Transactional
-@IgnoreInterfacePath
 public class TranslatedDocResourceService implements TranslatedDocResource
 {
 

@@ -1,7 +1,6 @@
 package org.zanata.rest;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.util.Collection;
 
 import javax.ws.rs.core.Response.Status;
@@ -25,7 +24,6 @@ import org.jboss.seam.deployment.HotDeploymentStrategy;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.resteasy.ResteasyBootstrap;
 import org.jboss.seam.resteasy.SeamResteasyProviderFactory;
-import org.zanata.seam.resteasy.IgnoreInterfacePath;
 
 @Name("org.jboss.seam.resteasy.bootstrap")
 @Scope(ScopeType.APPLICATION)

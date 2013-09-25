@@ -28,14 +28,11 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
-import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Account;
-import org.zanata.seam.resteasy.IgnoreInterfacePath;
 
 @Name("accountService")
 @Path(AccountResource.SERVICE_PATH)
 @Transactional
-@IgnoreInterfacePath
 public class AccountService implements AccountResource
 {
 
