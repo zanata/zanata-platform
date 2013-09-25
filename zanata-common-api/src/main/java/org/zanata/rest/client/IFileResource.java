@@ -42,6 +42,8 @@ import javax.ws.rs.core.MediaType;
  * @see DocumentFileUploadForm
  * @see FileResource
  */
+@Produces( { MediaType.APPLICATION_OCTET_STREAM })
+@Consumes( { MediaType.APPLICATION_OCTET_STREAM })
 public interface IFileResource extends FileResource
 {
 

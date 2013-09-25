@@ -46,8 +46,8 @@ import java.util.Set;
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Produces({ MediaType.APPLICATION_XML })
-@Consumes({ MediaType.APPLICATION_XML })
+@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public interface ISourceDocResource extends SourceDocResource
 {
    @Override

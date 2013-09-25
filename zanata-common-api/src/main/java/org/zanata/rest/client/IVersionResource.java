@@ -26,14 +26,18 @@ import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.VersionInfo;
 import org.zanata.rest.service.VersionResource;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 
 /**
  * Rest service client interface for application version.
  *
  */
+@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public interface IVersionResource extends VersionResource
 {
    @Override

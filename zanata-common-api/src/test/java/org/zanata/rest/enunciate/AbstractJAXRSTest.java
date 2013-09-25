@@ -26,7 +26,10 @@ import com.google.common.collect.Maps;
 
 import javax.ws.rs.Path;
 import java.lang.annotation.Annotation;
+import java.lang.annotation.Inherited;
 import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -69,24 +72,38 @@ public class AbstractJAXRSTest
    /** Checks class-level @Path annotation against other classes. */
    private void checkClassAnnotations(Class<?> clazz, boolean expectPathOnClazz) throws ClassNotFoundException
    {
-      String name = clazz.getSimpleName();
-      List<String> typePaths = Lists.newArrayList();
-
       Class<?> resourceInterface = getResourceInterfaceFor(clazz);
-      addPathIfAny(typePaths, resourceInterface);
       Class<?> enunciateInterface = getEnunciateInterfaceFor(resourceInterface);
       assertThat("enunciate interface is needed for docs", enunciateInterface != null);
-      addPathIfAny(typePaths, enunciateInterface);
 
+      String name = clazz.getSimpleName();
+      checkPath(name, clazz, resourceInterface, enunciateInterface, expectPathOnClazz);
+      checkOtherAnnos(name, clazz, resourceInterface, enunciateInterface);
+   }
+
+   private void checkPath(String name, Class<?> clazz, Class<?> resourceInterface, Class<?> enunciateInterface, boolean expectPathOnClazz)
+   {
+      List<String> typePaths = Lists.newArrayList();
       String path = addPathIfAny(typePaths, clazz);
       if (expectPathOnClazz)
       {
-         assertThat(name+": @Path is required", path != null);
+         assertThat(name + ": @Path is required", path != null);
       }
+      addPathIfAny(typePaths, resourceInterface);
+      addPathIfAny(typePaths, enunciateInterface);
       assertThat(name+": @Path must match, if present", allEqual(typePaths));
 
-      assertThat(name+": resource and/or enunciate should have @Path (for Enunciate docs)", !typePaths.isEmpty());
-      assertThat(name+": resource/enunciate @Path must match, if both are present", allEqual(typePaths));
+      assertThat(name + ": resource and/or enunciate should have @Path (for Enunciate docs)", !typePaths.isEmpty());
+      assertThat(name + ": resource/enunciate @Path must match, if both are present", allEqual(typePaths));
+   }
+
+   private void checkOtherAnnos(String name, Class<?> clazz, Class<?> resourceInterface, Class<?> enunciateInterface)
+   {
+      List<Annotation> clazzAnnos = withoutPath(withJaxrsOnly(clazz.getDeclaredAnnotations()));
+      List<Annotation> resourceAnnos = withoutPath(withJaxrsOnly(resourceInterface.getDeclaredAnnotations()));
+      List<Annotation> enunciateAnnos = withoutPath(withJaxrsOnly(enunciateInterface.getDeclaredAnnotations()));
+      assertThat(name+": clazz annotations should match resource", clazzAnnos, equalTo(resourceAnnos));
+      assertThat(name+": enunciate annotations should match resource", enunciateAnnos, equalTo(resourceAnnos));
    }
 
    /** Check client method against corresponding resource method. */
@@ -163,18 +180,18 @@ public class AbstractJAXRSTest
       List<List<Annotation>> jaxrsAnns = Lists.newArrayList();
 
       Annotation[] methodAnnotations = method.getDeclaredAnnotations();
-      List<Annotation> jaxrsMethodAnns = getJaxrsAnnotations(methodAnnotations);
+      List<Annotation> jaxrsMethodAnns = withJaxrsOnly(methodAnnotations);
       jaxrsAnns.add(jaxrsMethodAnns);
 
       for (Annotation[] paramAnns : method.getParameterAnnotations())
       {
-         List<Annotation> jaxParamAnns = getJaxrsAnnotations(paramAnns);
+         List<Annotation> jaxParamAnns = withJaxrsOnly(paramAnns);
          jaxrsAnns.add(jaxParamAnns);
       }
       return jaxrsAnns;
    }
 
-   private List<Annotation> getJaxrsAnnotations(Annotation[] annotations)
+   private List<Annotation> withJaxrsOnly(Annotation[] annotations)
    {
       List<Annotation> jaxrsAnns = Lists.newArrayList();
       for (Annotation ann : annotations)
@@ -184,7 +201,28 @@ public class AbstractJAXRSTest
             jaxrsAnns.add(ann);
          }
       }
+      Collections.sort(jaxrsAnns, new Comparator<Annotation>()
+      {
+         @Override
+         public int compare(Annotation o1, Annotation o2)
+         {
+            return o1.toString().compareTo(o2.toString());
+         }
+      });
       return jaxrsAnns;
+   }
+
+   private List<Annotation> withoutPath(List<Annotation> annotations)
+   {
+      List<Annotation> result = Lists.newArrayList();
+      for (Annotation ann : annotations)
+      {
+         if (ann.annotationType() != Path.class)
+         {
+            result.add(ann);
+         }
+      }
+      return result;
    }
 
    private String getSignature(Method cMethod)
