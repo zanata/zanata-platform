@@ -115,7 +115,7 @@
                         #{translationMemoryAction.processError}
                     </s:div>
                     <s:div id="tmList">
-                      <rich:dataTable value="#{translationMemoryAction.allTranslationMemories}" var="tm">
+                      <rich:dataTable id="tmTable" value="#{translationMemoryAction.allTranslationMemories}" var="tm">
                         <rich:column>
                             <f:facet name="header">#{messages['jsf.transmemory.Id']}
                                 <richext:columnSorter />
