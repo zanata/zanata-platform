@@ -214,6 +214,10 @@ public class GetTranslationHistoryHandlerTest
       person.setName(lastModifiedPerson);
       target.setLastModifiedBy(person);
       target.setVersionNum(versionNum);
+      if(historyMap == null)
+      {
+         historyMap = Maps.newHashMap();
+      }
       target.setHistory(historyMap);
       target.setContents("a", "b");
       return target;
