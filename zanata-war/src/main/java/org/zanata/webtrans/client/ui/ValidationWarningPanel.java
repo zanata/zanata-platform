@@ -110,7 +110,7 @@ public class ValidationWarningPanel extends ShortcutContextAwareDialogBox implem
          public void onClick(ClickEvent event)
          {
             hide();
-            listener.setFocus();
+            listener.setSelected(transUnitId);
          }
       });
    }
