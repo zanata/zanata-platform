@@ -56,6 +56,8 @@ public class ValidationWarningPanel extends ShortcutContextAwareDialogBox implem
 
    private TransUnitId transUnitId;
 
+   private int editorIndex;
+
    private TargetContentsDisplay.Listener listener;
 
    @UiField
@@ -110,15 +112,16 @@ public class ValidationWarningPanel extends ShortcutContextAwareDialogBox implem
          public void onClick(ClickEvent event)
          {
             hide();
-            listener.setSelected(transUnitId);
+            listener.onEditorClicked(transUnitId, editorIndex);
          }
       });
    }
 
    @Override
-   public void center(TransUnitId transUnitId, List<String> targets, Map<ValidationAction, List<String>> errorMessages)
+   public void center(TransUnitId transUnitId, int editorIndex, List<String> targets, Map<ValidationAction, List<String>> errorMessages)
    {
       this.transUnitId = transUnitId;
+      this.editorIndex = editorIndex;
       refreshView(targets, errorMessages);
       center();
    }

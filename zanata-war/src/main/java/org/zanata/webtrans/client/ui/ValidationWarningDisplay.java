@@ -38,7 +38,7 @@ import com.google.inject.ImplementedBy;
 @ImplementedBy(ValidationWarningPanel.class)
 public interface ValidationWarningDisplay
 {
-   void center(TransUnitId transUnitId, List<String> translations, Map<ValidationAction, List<String>> errorMessages);
+   void center(TransUnitId transUnitId, int editorIndex, List<String> translations, Map<ValidationAction, List<String>> errorMessages);
 
    void hide();
 
