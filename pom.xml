@@ -176,7 +176,8 @@
 		<javadoc.skip>true</javadoc.skip>
 
 		<checkstyle.skip>false</checkstyle.skip>
-		<checkstyle.configLocation />
+		<!-- When testing checkstyle changes, use -Dcheckstyle.config.location to point to a local file: -->
+		<checkstyle.config.location>https://raw.github.com/zanata/zanata-parent/master/checkstyle.xml</checkstyle.config.location>
 		<checkstyle.propertiesLocation />
 		<checkstyle.suppressionsLocation />
 		<checkstyle.suppressionsFileExpression />
@@ -186,11 +187,65 @@
 		<reports-plugin.dependencyDetailsEnabled>false</reports-plugin.dependencyDetailsEnabled>
 		<reports-plugin.dependencyLocationsEnabled>false</reports-plugin.dependencyLocationsEnabled>
 
-
 	</properties>
 
 	<build>
 		<plugins>
+
+      <!--
+        This plugin sorts and reformats the pom.xml.
+        NB: Do not sort dependencies because:
+        1. Classpath order matters.
+        2. So does the order of bom imports.
+        See also https://code.google.com/p/sortpom/wiki/SortDependenciesVarning
+        and https://code.google.com/p/sortpom/wiki/SortPluginsVarning
+      -->
+      <plugin>
+        <groupId>com.google.code.sortpom</groupId>
+        <artifactId>maven-sortpom-plugin</artifactId>
+        <version>2.2</version>
+        <configuration>
+          <encoding>${project.build.sourceEncoding}</encoding>
+          <keepBlankLines>true</keepBlankLines>
+          <nrOfIndentSpace>2</nrOfIndentSpace>
+          <predefinedSortOrder>custom_1</predefinedSortOrder>
+          <sortProperties>true</sortProperties>
+        </configuration>
+<!--
+        <executions>
+          <execution>
+            <goals>
+              <goal>sort</goal>
+            </goals>
+            <phase>verify</phase>
+          </execution>
+        </executions>
+-->
+      </plugin>
+
+      <!-- Allow whitespace checking with "mvn checkstyle:check" -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>2.10</version>
+        <configuration>
+          <configLocation>${checkstyle.config.location}</configLocation>
+          <!-- report violations to stdout (not console!) -->
+          <consoleOutput>true</consoleOutput>
+          <includes>*.xml,*.txt,*.md,etc/**,src/**</includes>
+          <sourceDirectory>${project.basedir}</sourceDirectory>
+        </configuration>
+<!--
+        <executions>
+          <execution>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <phase>verify</phase>
+          </execution>
+        </executions>
+-->
+      </plugin>
 
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -415,7 +470,7 @@ package.
                 </plugin>
                 <plugin>
                     <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>2.6</version>
+                    <version>2.10</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-clean-plugin</artifactId>
@@ -628,9 +683,9 @@ package.
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-checkstyle-plugin</artifactId>
-						<version>2.6</version>
+						<version>2.10</version>
 						<configuration>
-							<configLocation>${checkstyle.configLocation}</configLocation>
+							<configLocation>${checkstyle.config.location}</configLocation>
 							<propertiesLocation>${checkstyle.propertiesLocation}</propertiesLocation>
 							<suppressionsLocation>${checkstyle.suppressionsLocation}</suppressionsLocation>
 							<suppressionsFileExpression>${checkstyle.suppressionsFileExpression}</suppressionsFileExpression>
