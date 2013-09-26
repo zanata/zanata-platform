@@ -23,6 +23,8 @@ package org.zanata.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -40,7 +42,10 @@ import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Indexed;
 import org.zanata.hibernate.search.LocaleIdBridge;
 
+import com.google.common.collect.Maps;
+
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -53,43 +58,27 @@ import lombok.ToString;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Indexed
 @Setter
+@Getter
+@Access(AccessType.FIELD)
 @EqualsAndHashCode(callSuper = true, doNotUseGetters = true, exclude = "glossaryTerms")
 @ToString(of = {"sourceRef", "srcLocale"})
 public class HGlossaryEntry extends ModelEntityBase
 {
    private static final long serialVersionUID = -4200183325180630061L;
 
-   private Map<HLocale, HGlossaryTerm> glossaryTerms;
-   private String sourceRef;
-   private HLocale srcLocale;
-
    @OneToMany(cascade = CascadeType.ALL, mappedBy = "glossaryEntry")
    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
    @MapKey(name = "locale")
-   public Map<HLocale, HGlossaryTerm> getGlossaryTerms()
-   {
-      if (glossaryTerms == null)
-      {
-         glossaryTerms = new HashMap<HLocale, HGlossaryTerm>();
-      }
-      return glossaryTerms;
-   }
+   private Map<HLocale, HGlossaryTerm> glossaryTerms = Maps.newHashMap();
 
    @Type(type = "text")
-   public String getSourceRef()
-   {
-      return sourceRef;
-   }
+   private String sourceRef;
 
    @OneToOne
    @JoinColumn(name = "srcLocaleId", nullable = false)
    @Field(analyze = Analyze.NO)
    @FieldBridge(impl = LocaleIdBridge.class)
-   public HLocale getSrcLocale()
-   {
-      return srcLocale;
-   }
-
+   private HLocale srcLocale;
 }
 
 

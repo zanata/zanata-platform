@@ -23,6 +23,8 @@ package org.zanata.model;
 import java.io.Serializable;
 import java.util.Set;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -38,57 +40,39 @@ import org.jboss.seam.annotations.security.management.RoleGroups;
 import org.jboss.seam.annotations.security.management.RoleName;
 import org.zanata.model.type.RoleTypeType;
 
+import com.google.common.collect.Sets;
+
+import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Setter
+@Getter
+@Access(AccessType.FIELD)
 @TypeDef(name = "roleType", typeClass = RoleTypeType.class)
 public class HAccountRole implements Serializable
 {
    private static final long serialVersionUID = 9177366120789064801L;
 
-   private Integer id;
-   private String name;
-   private boolean conditional;
-   private RoleType roleType = RoleType.MANUAL;
-
-   private Set<HAccountRole> groups;
-
    @Id
    @GeneratedValue
-   public Integer getId()
-   {
-      return id;
-   }
+   private Integer id;
 
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @RoleName
-   public String getName()
-   {
-      return name;
-   }
+   private String name;
+
+   @RoleConditional
+   private boolean conditional;
+
+   @Type(type = "roleType")
+   @NotNull
+   private RoleType roleType = RoleType.MANUAL;
 
    @RoleGroups
    @ManyToMany(targetEntity = HAccountRole.class)
    @JoinTable(name = "HAccountRoleGroup", joinColumns = @JoinColumn(name = "roleId"), inverseJoinColumns = @JoinColumn(name = "memberOf"))
-   public Set<HAccountRole> getGroups()
-   {
-      return groups;
-   }
-
-   @RoleConditional
-   public boolean isConditional()
-   {
-      return conditional;
-   }
-
-   @Type(type = "roleType")
-   @NotNull
-   public RoleType getRoleType()
-   {
-      return roleType;
-   }
-
+   private Set<HAccountRole> groups = Sets.newHashSet();
 
    public enum RoleType
    {

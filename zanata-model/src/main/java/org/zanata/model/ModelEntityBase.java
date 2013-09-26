@@ -24,6 +24,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -39,64 +41,36 @@ import javax.persistence.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+
 @MappedSuperclass
+@Access(AccessType.FIELD)
+@EqualsAndHashCode(exclude = "versionNum")
+@Getter
+@Setter
 public class ModelEntityBase implements Serializable, HashableState
 {
-
    private static final long serialVersionUID = -6139220551322868743L;
-   protected Long id;
-   protected Date creationDate;
-   protected Date lastChanged;
-
-   protected Integer versionNum;
 
    @Id
    @GeneratedValue
-   public Long getId()
-   {
-      return id;
-   }
+   @Setter(AccessLevel.PROTECTED)
+   protected Long id;
 
-   protected void setId(Long id)
-   {
-      this.id = id;
-   }
+   @Temporal(TemporalType.TIMESTAMP)
+   @Column(nullable = false)
+   protected Date creationDate;
+
+   @Temporal(TemporalType.TIMESTAMP)
+   @Column(nullable = false)
+   protected Date lastChanged;
 
    @Version
    @Column(nullable = false)
-   public Integer getVersionNum()
-   {
-      return versionNum;
-   }
-
-   public void setVersionNum(Integer versionNum)
-   {
-      this.versionNum = versionNum;
-   }
-
-   @Temporal(TemporalType.TIMESTAMP)
-   @Column(nullable = false)
-   public Date getCreationDate()
-   {
-      return creationDate;
-   }
-
-   public void setCreationDate(Date creationDate)
-   {
-      this.creationDate = creationDate;
-   }
-
-   @Temporal(TemporalType.TIMESTAMP)
-   @Column(nullable = false)
-   public Date getLastChanged()
-   {
-      return lastChanged;
-   }
-
-   public void setLastChanged(Date lastChanged)
-   {
-      this.lastChanged = lastChanged;
-   }
+   protected Integer versionNum;
 
    @SuppressWarnings("unused")
    @PrePersist
@@ -140,51 +114,6 @@ public class ModelEntityBase implements Serializable, HashableState
          Logger log = LoggerFactory.getLogger(getClass());
          log.info("remove entity: {}", this);
       }
-   }
-
-   @Override
-   public int hashCode()
-   {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + ((creationDate == null) ? 0 : creationDate.hashCode());
-      result = prime * result + ((id == null) ? 0 : id.hashCode());
-      result = prime * result + ((lastChanged == null) ? 0 : lastChanged.hashCode());
-      return result;
-   }
-
-   @Override
-   public boolean equals(Object obj)
-   {
-      if (this == obj)
-         return true;
-      if (obj == null)
-         return false;
-      if (getClass() != obj.getClass())
-         return false;
-      ModelEntityBase other = (ModelEntityBase) obj;
-      if (creationDate == null)
-      {
-         if (other.creationDate != null)
-            return false;
-      }
-      else if (!creationDate.equals(other.creationDate))
-         return false;
-      if (id == null)
-      {
-         if (other.id != null)
-            return false;
-      }
-      else if (!id.equals(other.id))
-         return false;
-      if (lastChanged == null)
-      {
-         if (other.lastChanged != null)
-            return false;
-      }
-      else if (!lastChanged.equals(other.lastChanged))
-         return false;
-      return true;
    }
 
    @Override

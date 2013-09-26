@@ -20,6 +20,8 @@
  */
 package org.zanata.model.po;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
 import javax.persistence.JoinColumn;
 import javax.persistence.MappedSuperclass;
@@ -31,6 +33,7 @@ import org.zanata.model.HSimpleComment;
 import org.zanata.model.HashableState;
 import org.zanata.model.ModelEntityBase;
 
+import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -42,29 +45,23 @@ import lombok.ToString;
  */
 @MappedSuperclass
 @Setter
+@Getter
+@Access(AccessType.FIELD)
 @ToString
 public abstract class PoHeaderBase extends ModelEntityBase implements HashableState
 {
 
    private static final long serialVersionUID = 4675225923343857779L;
-   private HSimpleComment comment;
-   // stored in the format used by java.util.Properties.store(Writer)
-   // see PoUtility.headerEntriesToString
-   private String entries;
 
    // TODO use orphanRemoval=true: requires JPA 2.0
    @OneToOne(optional = true, cascade = CascadeType.ALL)
    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
    @JoinColumn(name = "comment_id")
-   public HSimpleComment getComment()
-   {
-      return comment;
-   }
+   private HSimpleComment comment;
 
    // see PoUtility.stringToHeaderEntries
    @Type(type = "text")
-   public String getEntries()
-   {
-      return entries;
-   }
+   // stored in the format used by java.util.Properties.store(Writer)
+   // see PoUtility.headerEntriesToString
+   private String entries;
 }

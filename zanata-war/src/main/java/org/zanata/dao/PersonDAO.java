@@ -146,15 +146,15 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long>
 
       if(isTranslator != null)
       {
-         sb.append("and translator = :isTranslator ");
+         sb.append("and isTranslator = :isTranslator ");
       }
       if(isReviewer != null)
       {
-         sb.append("and reviewer = :isReviewer ");
+         sb.append("and isReviewer = :isReviewer ");
       }
       if(isCoordinator != null)
       {
-         sb.append("and coordinator = :isCoordinator ");
+         sb.append("and isCoordinator = :isCoordinator ");
       }
 
       Query q = getSession().createQuery(sb.toString().trim())

@@ -20,6 +20,8 @@
  */
 package org.zanata.model;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -27,29 +29,23 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.Size;
 
+import lombok.Getter;
 import lombok.Setter;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
 @MappedSuperclass
 @Setter
+@Getter
+@Access(AccessType.FIELD)
 public class AccountKeyBase
 {
-   private String keyHash;
-   private HAccount account;
-
    @NotEmpty
    @Size(min = 32, max = 32)
    @Id
-   public String getKeyHash()
-   {
-      return keyHash;
-   }
+   private String keyHash;
 
    @OneToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "accountId")
-   public HAccount getAccount()
-   {
-      return account;
-   }
+   private HAccount account;
 }

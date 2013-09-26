@@ -25,6 +25,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -41,9 +43,11 @@ import javax.validation.constraints.NotNull;
 import org.zanata.common.LocaleId;
 import org.zanata.model.type.LocaleIdType;
 
+import com.google.common.collect.Sets;
 import com.ibm.icu.util.ULocale;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
@@ -52,76 +56,41 @@ import lombok.ToString;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @TypeDef(name = "localeId", typeClass = LocaleIdType.class)
 @Setter
+@Getter
+@Access(AccessType.FIELD)
 @NoArgsConstructor
 @ToString(of = {"localeId"}, doNotUseGetters = true)
 @EqualsAndHashCode(callSuper = false, of = {"localeId"}, doNotUseGetters = true)
 public class HLocale extends ModelEntityBase implements Serializable
 {
    private static final long serialVersionUID = 1L;
-   private @Nonnull LocaleId localeId;
-   private boolean active;
-   private boolean enabledByDefault;
-   private Set<HProject> supportedProjects;
-   private Set<HProjectIteration> supportedIterations;
-   private Set<HLocaleMember> members;
-
-   public HLocale(@Nonnull LocaleId localeId)
-   {
-      this.localeId = localeId;
-   }
 
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @SuppressWarnings("null")
    @NaturalId
    @NotNull
    @Type(type = "localeId")
-   public @Nonnull LocaleId getLocaleId()
-   {
-      return localeId;
-   }
+   private @Nonnull LocaleId localeId;
 
-   public boolean isActive()
-   {
-      return active;
-   }
+   private boolean active;
 
-   public boolean isEnabledByDefault()
-   {
-      return enabledByDefault;
-   }
-
-   public void setEnabledByDefault( boolean enabledByDefault )
-   {
-      this.enabledByDefault = enabledByDefault;
-   }
-
-   @OneToMany(cascade=CascadeType.ALL, mappedBy="id.supportedLanguage")
-   @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-   public Set<HLocaleMember> getMembers()
-   {
-      if( this.members == null )
-      {
-         this.members = new HashSet<HLocaleMember>();
-      }
-      return this.members;
-   }
+   private boolean enabledByDefault;
 
    @ManyToMany
    @JoinTable(name = "HProject_Locale", joinColumns = @JoinColumn(name = "localeId"), inverseJoinColumns = @JoinColumn(name = "projectId"))
-   public Set<HProject> getSupportedProjects()
-   {
-      if (supportedProjects == null)
-         supportedProjects = new HashSet<HProject>();
-      return supportedProjects;
-   }
+   private Set<HProject> supportedProjects = Sets.newHashSet();
 
    @ManyToMany
    @JoinTable(name = "HProjectIteration_Locale", joinColumns = @JoinColumn(name = "localeId"), inverseJoinColumns = @JoinColumn(name = "projectIterationId"))
-   public Set<HProjectIteration> getSupportedIterations()
+   private Set<HProjectIteration> supportedIterations = Sets.newHashSet();
+
+   @OneToMany(cascade=CascadeType.ALL, mappedBy="id.supportedLanguage")
+   @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+   private Set<HLocaleMember> members = Sets.newHashSet();
+
+   public HLocale(@Nonnull LocaleId localeId)
    {
-      if (supportedIterations == null)
-         supportedIterations = new HashSet<HProjectIteration>();
-      return supportedIterations;
+      this.localeId = localeId;
    }
 
    public String retrieveNativeName()

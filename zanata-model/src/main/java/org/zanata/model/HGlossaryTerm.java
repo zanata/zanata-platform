@@ -23,6 +23,8 @@ package org.zanata.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -48,7 +50,10 @@ import javax.validation.constraints.NotNull;
 import org.zanata.hibernate.search.LocaleFilterFactory;
 import org.zanata.hibernate.search.LocaleIdBridge;
 
+import com.google.common.collect.Lists;
+
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
@@ -63,51 +68,31 @@ import lombok.ToString;
 @Indexed
 @FullTextFilterDef(name = "glossaryLocaleFilter", impl = LocaleFilterFactory.class, cache = FilterCacheModeType.INSTANCE_ONLY)
 @Setter
+@Getter
+@Access(AccessType.FIELD)
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true, doNotUseGetters = true, exclude = "glossaryEntry")
 @ToString(doNotUseGetters = true)
 public class HGlossaryTerm extends ModelEntityBase
 {
    private static final long serialVersionUID = 1854278563597070432L;
-   private String content;
-   private List<HTermComment> comments;
-   private HGlossaryEntry glossaryEntry;
-   private HLocale locale;
-
-   public HGlossaryTerm(String content)
-   {
-      setContent(content);
-   }
 
    @NotNull
    @Type(type = "text")
    @Field(analyzer = @Analyzer(impl = StandardAnalyzer.class))
-   public String getContent()
-   {
-      return content;
-   }
+   private String content;
 
    @OneToMany(cascade = CascadeType.ALL)
    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
    @IndexColumn(name = "pos", base = 0, nullable = false)
    @JoinColumn(name = "glossaryTermId", nullable = false)
-   public List<HTermComment> getComments()
-   {
-      if (comments == null)
-      {
-         comments = new ArrayList<HTermComment>();
-      }
-      return comments;
-   }
+   private List<HTermComment> comments = Lists.newArrayList();
 
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
    @ManyToOne
    @JoinColumn(name = "glossaryEntryId", nullable = false)
-   public HGlossaryEntry getGlossaryEntry()
-   {
-      return glossaryEntry;
-   }
+   private HGlossaryEntry glossaryEntry;
 
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId
@@ -115,8 +100,10 @@ public class HGlossaryTerm extends ModelEntityBase
    @JoinColumn(name = "localeId", nullable = false)
    @Field(analyze = Analyze.NO)
    @FieldBridge(impl = LocaleIdBridge.class)
-   public HLocale getLocale()
+   private HLocale locale;
+
+   public HGlossaryTerm(String content)
    {
-      return locale;
+      setContent(content);
    }
 }

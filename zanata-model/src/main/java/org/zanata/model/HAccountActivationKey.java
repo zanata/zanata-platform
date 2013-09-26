@@ -23,32 +23,32 @@ package org.zanata.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 @Entity
 @Setter
+@Getter
+@Access(AccessType.FIELD)
 @ToString
 @NoArgsConstructor
 public class HAccountActivationKey extends AccountKeyBase implements Serializable
 {
    private static final long serialVersionUID = 1L;
 
-   private Date creationDate;
-
    @Temporal(TemporalType.TIMESTAMP)
    @Column(nullable = false)
-   public Date getCreationDate()
-   {
-      return creationDate;
-   }
+   private Date creationDate;
 
    @SuppressWarnings("unused")
    @PrePersist

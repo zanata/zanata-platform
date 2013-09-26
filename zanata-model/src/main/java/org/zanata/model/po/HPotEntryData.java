@@ -22,6 +22,8 @@ package org.zanata.model.po;
 
 import java.io.Serializable;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -38,6 +40,8 @@ import org.hibernate.annotations.Type;
 import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.Setter;
 
 /**
@@ -50,90 +54,38 @@ import lombok.Setter;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @BatchSize(size = 20)
 @Setter
+@Getter
+@Access(AccessType.FIELD)
 public class HPotEntryData implements Serializable
 {
-
    private static final long serialVersionUID = 1L;
-
-   private Long id;
-   private HTextFlow textFlow;
-   private String context;
-   @Deprecated // use HTextFlow.comment
-   private HSimpleComment extractedComment;
-   private String flags;
-   private String references;
 
    @Id
    @GeneratedValue
-   public Long getId()
-   {
-      return id;
-   }
-
-   protected void setId(Long id)
-   {
-      this.id = id;
-   }
+   @Setter(AccessLevel.PROTECTED)
+   private Long id;
 
    @OneToOne
    @JoinColumn(name = "tf_id", /* nullable=false, */unique = true)
    @NaturalId
-   public HTextFlow getTextFlow()
-   {
-      return textFlow;
-   }
+   private HTextFlow textFlow;
 
-   public String getContext()
-   {
-      return context;
-   }
+   private String context;
 
    @Deprecated // use HTextFlow.comment
-   public void setExtractedComment(HSimpleComment extractedComment)
-   {
-      this.extractedComment = extractedComment;
-   }
-
    @OneToOne(optional = true, cascade = CascadeType.ALL)
    @JoinColumn(name = "comment_id")
-   @Deprecated // use HTextFlow.comment
-   public HSimpleComment getExtractedComment()
-   {
-      return extractedComment;
-   }
+   private HSimpleComment extractedComment;
 
    /**
     * Gettext message flags, delimited by ',' (comma)
     */
-   public void setFlags(String flags)
-   {
-      this.flags = flags;
-   }
-
-   /**
-    * Gettext message flags, delimited by ',' (comma)
-    */
-   public String getFlags()
-   {
-      return flags;
-   }
-
-   /**
-    * Gettext message references, delimited by ',' (comma)
-    */
-   public void setReferences(String references)
-   {
-      this.references = references;
-   }
+   private String flags;
 
    /**
     * Gettext message references, delimited by ',' (comma)
     */
    @Column(name = "refs")
    @Type(type = "text")
-   public String getReferences()
-   {
-      return references;
-   }
-
+   private String references;
 }

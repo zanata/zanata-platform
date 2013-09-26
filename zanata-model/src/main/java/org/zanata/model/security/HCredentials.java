@@ -20,6 +20,8 @@
  */
 package org.zanata.model.security;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
@@ -33,6 +35,7 @@ import org.zanata.model.HAccount;
 import org.zanata.model.ModelEntityBase;
 import org.zanata.model.validator.Unique;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
@@ -46,33 +49,17 @@ import lombok.Setter;
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 @NoArgsConstructor
 @Unique(properties = {"user"})
+@Setter
+@Getter
+@Access(AccessType.FIELD)
 public abstract class HCredentials extends ModelEntityBase
 {
-   @Setter
-   private HAccount account;
-
-   @Setter
-   private String user;
-
-   @Setter
-   private String email;
-
-
    @ManyToOne(optional = false)
    @JoinColumn(name = "account_id")
-   public HAccount getAccount()
-   {
-      return account;
-   }
+   private HAccount account;
 
    @Column(unique = true, nullable = false)
-   public String getUser()
-   {
-      return user;
-   }
+   private String user;
 
-   public String getEmail()
-   {
-      return email;
-   }
+   private String email;
 }

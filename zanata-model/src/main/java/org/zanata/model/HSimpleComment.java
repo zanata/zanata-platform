@@ -23,6 +23,8 @@ package org.zanata.model;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -33,6 +35,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 import javax.validation.constraints.NotNull;
 
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
@@ -44,36 +48,25 @@ import lombok.Setter;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @BatchSize(size = 20)
 @Setter
+@Getter
+@Access(AccessType.FIELD)
 @NoArgsConstructor
 public class HSimpleComment implements HashableState, Serializable
 {
    private static final long serialVersionUID = 5684831285769022524L;
+
+   @Id
+   @GeneratedValue
+   @Setter(AccessLevel.PROTECTED)
    private Long id;
 
+   @NotNull
+   @Type(type = "text")
    private String comment;
 
    public HSimpleComment(String comment)
    {
       this.comment = comment;
-   }
-
-   @Id
-   @GeneratedValue
-   public Long getId()
-   {
-      return id;
-   }
-
-   protected void setId(Long id)
-   {
-      this.id = id;
-   }
-
-   @NotNull
-   @Type(type = "text")
-   public String getComment()
-   {
-      return comment;
    }
 
    public static String toString(HSimpleComment comment)

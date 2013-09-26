@@ -20,6 +20,8 @@
  */
 package org.zanata.model;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -28,6 +30,7 @@ import javax.persistence.ManyToOne;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -39,32 +42,17 @@ import lombok.ToString;
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Setter
+@Getter
+@Access(AccessType.FIELD)
 @ToString(callSuper = true)
 public class HRoleAssignmentRule extends ModelEntityBase
 {
-
+   @Column(length = 100)
    private String policyName;
 
    private String identityRegExp;
 
-   private HAccountRole roleToAssign;
-
-
-   @Column(length = 100)
-   public String getPolicyName()
-   {
-      return policyName;
-   }
-
-   public String getIdentityRegExp()
-   {
-      return identityRegExp;
-   }
-
    @ManyToOne(optional = false)
    @JoinColumn(name = "role_to_assign_id", nullable = false)
-   public HAccountRole getRoleToAssign()
-   {
-      return roleToAssign;
-   }
+   private HAccountRole roleToAssign;
 }
