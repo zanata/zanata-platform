@@ -584,6 +584,26 @@ package.
 			</build>
 		</profile>
 
+        <profile>
+            <!-- Used for MEAD builds -->
+            <id>mead</id>
+            <activation>
+                <property>
+                    <name>mead</name>
+                </property>
+            </activation>
+            <properties>
+                <allow.deploy.skip>false</allow.deploy.skip>
+                <checkstyle.skip>true</checkstyle.skip>
+                <findbugs.skip>true</findbugs.skip>
+                <mavensign.expand.skip>*</mavensign.expand.skip>
+                <mavensign.sign.skip>*</mavensign.sign.skip>
+                <skipTests>true</skipTests>
+            </properties>
+        </profile>
+
+
+
 		<profile>
 			<id>allReports</id>
 			<properties>
