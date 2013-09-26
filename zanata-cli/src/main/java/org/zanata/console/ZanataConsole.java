@@ -36,6 +36,7 @@ import org.jboss.aesh.console.settings.SettingsBuilder;
 import org.jboss.aesh.terminal.CharacterType;
 import org.jboss.aesh.terminal.Color;
 import org.jboss.aesh.terminal.TerminalCharacter;
+import org.zanata.client.console.GetStatisticsConsoleCmd;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,15 +52,13 @@ public class ZanataConsole
    {
       List<TerminalCharacter> terminalChars =
          Lists.newArrayList(
-               new TerminalCharacter('[', Color.DEFAULT_BG, Color.BLUE_TEXT, CharacterType.BOLD ),
                new TerminalCharacter('z', Color.DEFAULT_BG, Color.BLUE_TEXT, CharacterType.BOLD ),
                new TerminalCharacter('a', Color.DEFAULT_BG, Color.BLUE_TEXT, CharacterType.BOLD ),
                new TerminalCharacter('n', Color.DEFAULT_BG, Color.BLUE_TEXT, CharacterType.BOLD ),
                new TerminalCharacter('a', Color.DEFAULT_BG, Color.BLUE_TEXT, CharacterType.BOLD ),
                new TerminalCharacter('t', Color.DEFAULT_BG, Color.BLUE_TEXT, CharacterType.BOLD ),
                new TerminalCharacter('a', Color.DEFAULT_BG, Color.BLUE_TEXT, CharacterType.BOLD ),
-               new TerminalCharacter(']', Color.DEFAULT_BG, Color.BLUE_TEXT, CharacterType.BOLD ),
-               new TerminalCharacter('$', Color.DEFAULT_BG, Color.YELLOW_TEXT, CharacterType.BOLD ),
+               new TerminalCharacter('>', Color.DEFAULT_BG, Color.YELLOW_TEXT, CharacterType.BOLD ),
                new TerminalCharacter(' ', Color.DEFAULT_BG, Color.DEFAULT_BG, CharacterType.NORMAL )
                );
       Prompt prompt = new Prompt(terminalChars);
@@ -69,6 +68,7 @@ public class ZanataConsole
             .prompt(prompt)
             .commandRegistry(
                   new AeshCommandRegistryBuilder()
+                        .command(GetStatisticsConsoleCmd.class)
                         .command(ExitCommand.class)
                         .command(LsCommand.class)
                         .command(SampleCommand.class)
@@ -105,7 +105,7 @@ public class ZanataConsole
          if (files != null)
          {
             for (File f : files)
-               console.out().print(f.toString());
+               console.out().println(f.toString());
          }
          return CommandResult.SUCCESS;
       }
