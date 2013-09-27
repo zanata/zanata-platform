@@ -57,6 +57,7 @@
 
             <plugin>
               <artifactId>maven-compiler-plugin</artifactId>
+              <version>3.1</version>
               <!-- groovy-eclipse-compiler 2.8.0-01 and later require maven-compiler-plugin 3.0 or higher -->
               <configuration>
                 <compilerId>groovy-eclipse-compiler</compilerId>
@@ -985,18 +986,11 @@
                     <name>newCompiler</name>
                 </property>
             </activation>
+            <properties>
+              <groovy.eclipse.compiler.version>2.9.0-01-20130710.222406-4</groovy.eclipse.compiler.version>
+            </properties>
             <build>
                 <plugins>
-                    <plugin>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <dependencies>
-                            <dependency>
-                                <groupId>org.codehaus.groovy</groupId>
-                                <artifactId>groovy-eclipse-compiler</artifactId>
-                                <version>2.9.0-01-SNAPSHOT</version>
-                            </dependency>
-                        </dependencies>
-                    </plugin>
 
                     <plugin>
                         <artifactId>maven-enforcer-plugin</artifactId>

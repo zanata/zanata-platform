@@ -12,7 +12,7 @@
   <ui:define name="page_title">#{messages['jsf.Login']}</ui:define>
   <ui:define name="center_content">
     <div class="g--centered">
-      <div class="g__item w--1-2 #{applicationConfiguration.multiAuth ? 'w--3-4-l w--2-3-m' : 'w--2-5-l w--1-4-h'}">
+      <div class="g__item w--7-12 #{applicationConfiguration.multiAuth ? 'w--3-4-l w--2-3-m' : 'w--2-5-l w--1-4-h'}">
         <div class="l--push-v-2">
           <h1 class="l--push-all-0 beta">Log In</h1>
 
@@ -66,10 +66,10 @@
                     <label for="openid">Open ID</label>
 
                     <div class="g--tighter">
-                      <div class="g__item w--2-3">
+                      <div class="g__item w--3-4">
                         <h:inputText id="openid" value="#{loginAction.openId}" />
                       </div>
-                      <div class="g__item w--1-3">
+                      <div class="g__item w--1-4">
                         <h:commandButton action="#{loginAction.openIdLogin('Generic')}" styleClass="button--full" value="Go" />
                       </div>
                     </div>

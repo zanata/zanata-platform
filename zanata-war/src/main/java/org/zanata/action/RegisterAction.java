@@ -67,21 +67,14 @@ public class RegisterAction implements Serializable
    @In
    EmailService emailServiceImpl;
 
-   @In(create = true)
-   private Renderer renderer;
-
    private String username;
    private String email;
    private String password;
-   private String passwordConfirm;
-
-   private boolean agreedToTermsOfUse;
+   private String humanField;
 
    private boolean valid;
 
    private HPerson person;
-
-   private String activationKey;
 
    @Begin(join = true)
    public HPerson getPerson()
@@ -132,25 +125,15 @@ public class RegisterAction implements Serializable
       return password;
    }
 
-   public void setPasswordConfirm(String passwordConfirm)
+   @Size(min = 0, max = 0)
+   public String getHumanField()
    {
-      validatePasswords(getPassword(), passwordConfirm);
-      this.passwordConfirm = passwordConfirm;
+      return humanField;
    }
 
-   public String getPasswordConfirm()
+   public void setHumanField(String humanField)
    {
-      return passwordConfirm;
-   }
-
-   public boolean isAgreedToTermsOfUse()
-   {
-      return agreedToTermsOfUse;
-   }
-
-   public void setAgreedToTermsOfUse(boolean agreedToTermsOfUse)
-   {
-      this.agreedToTermsOfUse = agreedToTermsOfUse;
+      this.humanField = humanField;
    }
 
    public void validateUsername(String username)
@@ -167,24 +150,14 @@ public class RegisterAction implements Serializable
       }
    }
 
-   public void validatePasswords(String p1, String p2)
+   public void validateHumanField()
    {
-
-      if (p1 == null || !p1.equals(p2))
+      if (humanField != null && humanField.length() > 0)
       {
          valid = false;
-         FacesMessages.instance().addToControl("passwordConfirm", "Passwords do not match");
+         FacesMessages.instance().addToControl("human", "You are not a human being!");
       }
 
-   }
-
-   public void validateTermsOfUse()
-   {
-      if (!isAgreedToTermsOfUse())
-      {
-         valid = false;
-         FacesMessages.instance().addToControl("agreedToTerms", "You must accept the Terms of Use");
-      }
    }
 
    @End
@@ -192,8 +165,7 @@ public class RegisterAction implements Serializable
    {
       valid = true;
       validateUsername(getUsername());
-      validatePasswords(getPassword(), getPasswordConfirm());
-      validateTermsOfUse();
+      validateHumanField();
 
       if (!isValid())
       {
@@ -209,12 +181,6 @@ public class RegisterAction implements Serializable
       FacesMessages.instance().add(message);
       
       return "/home.xhtml";
-   }
-
-   @Begin(join = true)
-   public void setActivationKey(String activationKey)
-   {
-      this.activationKey = activationKey;
    }
 
    public boolean isValid()
