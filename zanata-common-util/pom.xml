@@ -1,76 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<artifactId>zanata-common-util</artifactId>
-	<name>Zanata Common Utility Code</name>
-	<parent>
-		<groupId>org.zanata</groupId>
-      <artifactId>common</artifactId>
-		<version>3.1-SNAPSHOT</version>
-	</parent>
-	<packaging>jar</packaging>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>zanata-common-util</artifactId>
+  <name>Zanata Common Utility Code</name>
+  <parent>
+    <groupId>org.zanata</groupId>
+    <artifactId>common</artifactId>
+    <version>3.1-SNAPSHOT</version>
+  </parent>
+  <packaging>jar</packaging>
 
-   <!-- Should be the same as zanata-common/pom.xml -->
-   <scm>
-      <connection>scm:git:git://github.com/zanata/zanata-common.git</connection>
-      <developerConnection>scm:git:git@github.com:zanata/zanata-common.git</developerConnection>
-      <url>https://github.com/zanata/zanata-common</url>
-   </scm>
+  <!-- Should be the same as zanata-common/pom.xml -->
+  <scm>
+    <connection>scm:git:git://github.com/zanata/zanata-common.git</connection>
+    <developerConnection>scm:git:git@github.com:zanata/zanata-common.git</developerConnection>
+    <url>https://github.com/zanata/zanata-common</url>
+  </scm>
 
-	<build>
-		<resources>
-			<resource>
-				<directory>src/main/java</directory>
-				<includes>
-					<include>**/*.java</include>
-					<include>**/*.gwt.xml</include>
-				</includes>
-			</resource>
-         <resource>
-            <directory>src/main/resources</directory>
-         </resource>
-		</resources>
-	</build>
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/java</directory>
+        <includes>
+          <include>**/*.java</include>
+          <include>**/*.gwt.xml</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+    </resources>
+  </build>
 
-	<dependencies>
+  <dependencies>
 
 
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
 
-		<dependency>
-		  <groupId>commons-io</groupId>
-		  <artifactId>commons-io</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+    </dependency>
 
-      <dependency>
-         <groupId>com.google.code.findbugs</groupId>
-         <artifactId>jsr305</artifactId>
-      </dependency>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+    </dependency>
 
-      <dependency>
-          <groupId>com.google.guava</groupId>
-          <artifactId>guava</artifactId>
-      </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
 
-      <dependency>
-          <groupId>javax.xml.stream</groupId>
-          <artifactId>stax-api</artifactId>
-      </dependency>
+    <dependency>
+      <groupId>javax.xml.stream</groupId>
+      <artifactId>stax-api</artifactId>
+    </dependency>
 
-      <dependency>
-         <groupId>xom</groupId>
-         <artifactId>xom</artifactId>
-      </dependency>
-	</dependencies>
+    <dependency>
+      <groupId>xom</groupId>
+      <artifactId>xom</artifactId>
+    </dependency>
+  </dependencies>
 
 
 </project>

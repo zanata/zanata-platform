@@ -4,7 +4,8 @@
   xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.1
 http://www.oasis-open.org/committees/xliff/documents/xliff-core-1.1.xsd"
   version="1.1">
-  <file source-language="en" datatype="plaintext" original="" target-language="de">
+  <file source-language="en" datatype="plaintext" original=""
+    target-language="de">
     <body>
       <trans-unit id="transunit1">
         <source>Translation Unit 1</source>
@@ -33,8 +34,8 @@ http://www.oasis-open.org/committees/xliff/documents/xliff-core-1.1.xsd"
           <target>Translation 4 (4 &lt; 5 &amp; 4 &gt; 3)</target>
         </trans-unit>
         <trans-unit id="transunit5">
-          <source> Translation Unit 5 (4 &lt; 5 &amp; 4 &gt; 3) </source>
-          <target> Leading and trailing white space </target>
+          <source>Translation Unit 5 (4 &lt; 5 &amp; 4 &gt; 3)</source>
+          <target>Leading and trailing white space</target>
         </trans-unit>
       </group>
     </body>

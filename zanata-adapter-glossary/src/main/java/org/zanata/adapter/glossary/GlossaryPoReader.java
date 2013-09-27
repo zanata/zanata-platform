@@ -40,180 +40,162 @@ import org.zanata.rest.dto.GlossaryEntry;
 import org.zanata.rest.dto.GlossaryTerm;
 
 /**
- * 
- * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.GlossaryPoReadercom</a>
- * 
+ *
+ * @author Alex Eng <a
+ *         href="mailto:aeng@redhat.com">aeng@redhat.GlossaryPoReadercom</a>
+ *
  **/
-public class GlossaryPoReader extends AbstractGlossaryPushReader
-{
-   private static final Logger log = LoggerFactory.getLogger(GlossaryPoReader.class);
-   
-   private final LocaleId srcLang;
-   private final LocaleId transLang;
-   private final int batchSize;
-   private final boolean treatSourceCommentsAsTarget;
+public class GlossaryPoReader extends AbstractGlossaryPushReader {
+    private static final Logger log = LoggerFactory
+            .getLogger(GlossaryPoReader.class);
 
-   /**
-    * This class will close the reader
-    * 
-    * @param srcLang
-    * @param transLang
-    * @param treatSourceCommentsAsTarget
-    * @param batchSize
-    */
-   public GlossaryPoReader(LocaleId srcLang, LocaleId transLang, boolean treatSourceCommentsAsTarget, int batchSize)
-   {
-      this.srcLang = srcLang;
-      this.transLang = transLang;
-      this.batchSize = batchSize;
-      this.treatSourceCommentsAsTarget = treatSourceCommentsAsTarget;
-   }
+    private final LocaleId srcLang;
+    private final LocaleId transLang;
+    private final int batchSize;
+    private final boolean treatSourceCommentsAsTarget;
 
-   @Override
-   public List<Glossary> extractGlossary(Reader reader) throws IOException
-   {
-      ReaderInputStream ris = new ReaderInputStream(reader);
-      try
-      {
-         InputSource potInputSource = new InputSource(ris);
-         potInputSource.setEncoding("utf8");
-         return extractTemplate(potInputSource);
-      }
-      finally
-      {
-         ris.close();
-      }
-   }
+    /**
+     * This class will close the reader
+     *
+     * @param srcLang
+     * @param transLang
+     * @param treatSourceCommentsAsTarget
+     * @param batchSize
+     */
+    public GlossaryPoReader(LocaleId srcLang, LocaleId transLang,
+            boolean treatSourceCommentsAsTarget, int batchSize) {
+        this.srcLang = srcLang;
+        this.transLang = transLang;
+        this.batchSize = batchSize;
+        this.treatSourceCommentsAsTarget = treatSourceCommentsAsTarget;
+    }
 
-   private List<Glossary> extractTemplate(InputSource potInputSource)
-   {
-      int entryCount = 0;
-      MessageStreamParser messageParser = createParser(potInputSource);
-      List<Glossary> glossaries = new ArrayList<Glossary>();
+    @Override
+    public List<Glossary> extractGlossary(Reader reader) throws IOException {
+        ReaderInputStream ris = new ReaderInputStream(reader);
+        try {
+            InputSource potInputSource = new InputSource(ris);
+            potInputSource.setEncoding("utf8");
+            return extractTemplate(potInputSource);
+        } finally {
+            ris.close();
+        }
+    }
 
-      Glossary glossary = new Glossary();
+    private List<Glossary> extractTemplate(InputSource potInputSource) {
+        int entryCount = 0;
+        MessageStreamParser messageParser = createParser(potInputSource);
+        List<Glossary> glossaries = new ArrayList<Glossary>();
 
-      while (messageParser.hasNext())
-      {
-         Message message = messageParser.next();
+        Glossary glossary = new Glossary();
 
-         if (message.isHeader())
-         {
-            // log.warn("term: [{}] is ignored - message is header",
-            // message.getMsgid());
-         }
-         else if (message.isObsolete())
-         {
-            // log.warn("term: [{}] is ignored - message obsolete",
-            // message.getMsgid());
-         }
-         else if (message.isPlural())
-         {
-            // log.warn("term: [{}] is ignored - message is plural",
-            // message.getMsgid());
-         }
-         else if (message.isFuzzy())
-         {
-            log.warn("term: [{}] is ignored - state fuzzy", message.getMsgid());
-         }
-         else
-         {
-            GlossaryEntry entry = new GlossaryEntry();
-            entry.setSrcLang(srcLang);
+        while (messageParser.hasNext()) {
+            Message message = messageParser.next();
 
-            GlossaryTerm srcTerm = new GlossaryTerm();
-            srcTerm.setLocale(srcLang);
-            srcTerm.setContent(message.getMsgid());
+            if (message.isHeader()) {
+                // log.warn("term: [{}] is ignored - message is header",
+                // message.getMsgid());
+            } else if (message.isObsolete()) {
+                // log.warn("term: [{}] is ignored - message obsolete",
+                // message.getMsgid());
+            } else if (message.isPlural()) {
+                // log.warn("term: [{}] is ignored - message is plural",
+                // message.getMsgid());
+            } else if (message.isFuzzy()) {
+                log.warn("term: [{}] is ignored - state fuzzy",
+                        message.getMsgid());
+            } else {
+                GlossaryEntry entry = new GlossaryEntry();
+                entry.setSrcLang(srcLang);
 
-            GlossaryTerm targetTerm = new GlossaryTerm();
-            targetTerm.setLocale(transLang);
-            targetTerm.setContent(message.getMsgstr());
+                GlossaryTerm srcTerm = new GlossaryTerm();
+                srcTerm.setLocale(srcLang);
+                srcTerm.setContent(message.getMsgid());
 
-            // Treat all comments and source reference as translation comment
-            if (treatSourceCommentsAsTarget)
-            {
-               for (String srcRef : message.getSourceReferences())
-               {
-                  targetTerm.getComments().add(srcRef);
-               }
+                GlossaryTerm targetTerm = new GlossaryTerm();
+                targetTerm.setLocale(transLang);
+                targetTerm.setContent(message.getMsgstr());
 
-               for (String comment : message.getExtractedComments())
-               {
-                  targetTerm.getComments().add(comment);
-               }
-            }
-            else
-            {
-               StringBuilder sb = new StringBuilder();
-               if (!StringUtils.isEmpty(entry.getSourcereference()))
-               {
-                  sb.append(entry.getSourcereference());
-               }
-               if (!StringUtils.isEmpty(StringUtils.join(message.getSourceReferences(), "\n")))
-               {
-                  sb.append(StringUtils.join(message.getSourceReferences(), "\n"));
-               }
+                // Treat all comments and source reference as translation
+                // comment
+                if (treatSourceCommentsAsTarget) {
+                    for (String srcRef : message.getSourceReferences()) {
+                        targetTerm.getComments().add(srcRef);
+                    }
 
-               entry.setSourcereference(sb.toString());
+                    for (String comment : message.getExtractedComments()) {
+                        targetTerm.getComments().add(comment);
+                    }
+                } else {
+                    StringBuilder sb = new StringBuilder();
+                    if (!StringUtils.isEmpty(entry.getSourcereference())) {
+                        sb.append(entry.getSourcereference());
+                    }
+                    if (!StringUtils.isEmpty(StringUtils.join(
+                            message.getSourceReferences(), "\n"))) {
+                        sb.append(StringUtils.join(
+                                message.getSourceReferences(), "\n"));
+                    }
 
-               for (String comment : message.getExtractedComments())
-               {
-                  srcTerm.getComments().add(comment);
-               }
-            }
-            for (String comment : message.getComments())
-            {
-               targetTerm.getComments().add(comment);
+                    entry.setSourcereference(sb.toString());
+
+                    for (String comment : message.getExtractedComments()) {
+                        srcTerm.getComments().add(comment);
+                    }
+                }
+                for (String comment : message.getComments()) {
+                    targetTerm.getComments().add(comment);
+                }
+
+                entry.getGlossaryTerms().add(srcTerm);
+                entry.getGlossaryTerms().add(targetTerm);
+
+                glossary.getGlossaryEntries().add(entry);
+                entryCount++;
             }
 
-            entry.getGlossaryTerms().add(srcTerm);
-            entry.getGlossaryTerms().add(targetTerm);
+            if (entryCount == batchSize || !messageParser.hasNext()) {
+                glossaries.add(glossary);
+                entryCount = 0;
+                glossary = new Glossary();
+            }
+        }
+        return glossaries;
+    }
 
-            glossary.getGlossaryEntries().add(entry);
-            entryCount++;
-         }
-
-         if (entryCount == batchSize || !messageParser.hasNext())
-         {
-            glossaries.add(glossary);
-            entryCount = 0;
-            glossary = new Glossary();
-         }
-      }
-      return glossaries;
-   }
-
-   static MessageStreamParser createParser(InputSource inputSource)
-   {
-      MessageStreamParser messageParser;
-      if (inputSource.getCharacterStream() != null)
-         messageParser = new MessageStreamParser(inputSource.getCharacterStream());
-      else if (inputSource.getByteStream() != null)
-      {
-         if (inputSource.getEncoding() != null)
-            messageParser = new MessageStreamParser(inputSource.getByteStream(), Charset.forName(inputSource.getEncoding()));
-         else
-            messageParser = new MessageStreamParser(inputSource.getByteStream(), Charset.forName("UTF-8"));
-      }
-      else if (inputSource.getSystemId() != null)
-      {
-         try
-         {
-            URL url = new URL(inputSource.getSystemId());
-
+    static MessageStreamParser createParser(InputSource inputSource) {
+        MessageStreamParser messageParser;
+        if (inputSource.getCharacterStream() != null)
+            messageParser =
+                    new MessageStreamParser(inputSource.getCharacterStream());
+        else if (inputSource.getByteStream() != null) {
             if (inputSource.getEncoding() != null)
-               messageParser = new MessageStreamParser(url.openStream(), Charset.forName(inputSource.getEncoding()));
+                messageParser =
+                        new MessageStreamParser(inputSource.getByteStream(),
+                                Charset.forName(inputSource.getEncoding()));
             else
-               messageParser = new MessageStreamParser(url.openStream(), Charset.forName("UTF-8"));
-         }
-         catch (IOException e)
-         {
-            throw new RuntimeException("failed to get input from url in inputSource", e);
-         }
-      }
-      else
-         throw new RuntimeException("not a valid inputSource");
+                messageParser =
+                        new MessageStreamParser(inputSource.getByteStream(),
+                                Charset.forName("UTF-8"));
+        } else if (inputSource.getSystemId() != null) {
+            try {
+                URL url = new URL(inputSource.getSystemId());
 
-      return messageParser;
-   }
+                if (inputSource.getEncoding() != null)
+                    messageParser =
+                            new MessageStreamParser(url.openStream(),
+                                    Charset.forName(inputSource.getEncoding()));
+                else
+                    messageParser =
+                            new MessageStreamParser(url.openStream(),
+                                    Charset.forName("UTF-8"));
+            } catch (IOException e) {
+                throw new RuntimeException(
+                        "failed to get input from url in inputSource", e);
+            }
+        } else
+            throw new RuntimeException("not a valid inputSource");
+
+        return messageParser;
+    }
 }

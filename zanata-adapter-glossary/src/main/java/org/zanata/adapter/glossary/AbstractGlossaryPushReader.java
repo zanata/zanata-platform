@@ -27,34 +27,34 @@ import java.util.List;
 import org.zanata.rest.dto.Glossary;
 
 /**
- * 
+ *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- * 
+ *
  **/
-public abstract class AbstractGlossaryPushReader
-{
-   private String fileExtension;
+public abstract class AbstractGlossaryPushReader {
+    private String fileExtension;
 
-   public abstract List<Glossary> extractGlossary(Reader reader) throws IOException;
+    public abstract List<Glossary> extractGlossary(Reader reader)
+            throws IOException;
 
-//   protected LocaleId getLocaleFromMap(String localLocale)
-//   {
-//      if (getOpts() != null && getOpts().getLocaleMapList() != null && !getOpts().getLocaleMapList().isEmpty())
-//      {
-//         for (LocaleMapping loc : getOpts().getLocaleMapList())
-//         {
-//            if (loc.getLocalLocale().equals(localLocale))
-//            {
-//               return new LocaleId(loc.getLocale());
-//            }
-//         }
-//      }
-//      return new LocaleId(localLocale);
-//   }
+    // protected LocaleId getLocaleFromMap(String localLocale)
+    // {
+    // if (getOpts() != null && getOpts().getLocaleMapList() != null &&
+    // !getOpts().getLocaleMapList().isEmpty())
+    // {
+    // for (LocaleMapping loc : getOpts().getLocaleMapList())
+    // {
+    // if (loc.getLocalLocale().equals(localLocale))
+    // {
+    // return new LocaleId(loc.getLocale());
+    // }
+    // }
+    // }
+    // return new LocaleId(localLocale);
+    // }
 
-   public String getFileExtension()
-   {
-      return fileExtension;
-   }
+    public String getFileExtension() {
+        return fileExtension;
+    }
 
 }

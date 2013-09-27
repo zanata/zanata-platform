@@ -1,8 +1,8 @@
 <module>
-    <inherits name="com.google.gwt.user.User"/>
-    <source path="common/util"/>
-    <source path="util">
-        <include name="StringUtil.java"/>
-    </source>
+  <inherits name="com.google.gwt.user.User" />
+  <source path="common/util" />
+  <source path="util">
+    <include name="StringUtil.java" />
+  </source>
 
 </module>

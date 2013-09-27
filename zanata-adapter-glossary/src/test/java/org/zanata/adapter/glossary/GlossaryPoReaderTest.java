@@ -36,52 +36,65 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
 /**
- * 
+ *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- * 
+ *
  **/
 @Test(groups = "unit-tests")
-public class GlossaryPoReaderTest
-{
-   private final File sourceFile = new File("src/test/resources/glossary/fuel_hi.po"); // 578
-                                                                                       // glossary
-                                                                                       // entries
-   private final File sourceFile2 = new File("src/test/resources/glossary/compendium-zh_TW.po"); // 2645
-                                                                                                 // glossary
-                                                                                                 // entries
+public class GlossaryPoReaderTest {
+    private final File sourceFile = new File(
+            "src/test/resources/glossary/fuel_hi.po"); // 578
+                                                       // glossary
+                                                       // entries
+    private final File sourceFile2 = new File(
+            "src/test/resources/glossary/compendium-zh_TW.po"); // 2645
+                                                                // glossary
+                                                                // entries
 
-   private final int sourceSize1 = 578;
-   private final int sourceSize2 = 2645;
+    private final int sourceSize1 = 578;
+    private final int sourceSize2 = 2645;
 
-   private final int BATCH_SIZE = 50;
+    private final int BATCH_SIZE = 50;
 
-   @Test
-   public void extractGlossaryTest() throws IOException
-   {
-      GlossaryPoReader reader = new GlossaryPoReader(LocaleId.EN_US, new LocaleId("hi"), false, BATCH_SIZE);
+    @Test
+    public void extractGlossaryTest() throws IOException {
+        GlossaryPoReader reader =
+                new GlossaryPoReader(LocaleId.EN_US, new LocaleId("hi"), false,
+                        BATCH_SIZE);
 
-      Reader inputStreamReader = new InputStreamReader(new FileInputStream(sourceFile), "UTF-8");
-      BufferedReader br = new BufferedReader(inputStreamReader);
+        Reader inputStreamReader =
+                new InputStreamReader(new FileInputStream(sourceFile), "UTF-8");
+        BufferedReader br = new BufferedReader(inputStreamReader);
 
-      List<Glossary> glossaries = reader.extractGlossary(br);
-      assertThat(glossaries.size(), equalTo((int) Math.ceil(sourceSize1 * 1F / BATCH_SIZE)));
-      assertThat(glossaries.get(0).getGlossaryEntries().size(), equalTo(BATCH_SIZE));
-      assertThat(glossaries.get(1).getGlossaryEntries().size(), equalTo(BATCH_SIZE));
+        List<Glossary> glossaries = reader.extractGlossary(br);
+        assertThat(glossaries.size(),
+                equalTo((int) Math.ceil(sourceSize1 * 1F / BATCH_SIZE)));
+        assertThat(glossaries.get(0).getGlossaryEntries().size(),
+                equalTo(BATCH_SIZE));
+        assertThat(glossaries.get(1).getGlossaryEntries().size(),
+                equalTo(BATCH_SIZE));
 
-      assertThat(glossaries.get(glossaries.size() - 1).getGlossaryEntries().size(), equalTo(sourceSize1 % BATCH_SIZE));
-   }
+        assertThat(glossaries.get(glossaries.size() - 1).getGlossaryEntries()
+                .size(), equalTo(sourceSize1 % BATCH_SIZE));
+    }
 
-   @Test
-   public void glossaryBatchTest() throws IOException
-   {
-      GlossaryPoReader reader = new GlossaryPoReader(LocaleId.EN_US, new LocaleId("zh-Hants"), false, BATCH_SIZE);
-      Reader inputStreamReader = new InputStreamReader(new FileInputStream(sourceFile2), "UTF-8");
-      BufferedReader br = new BufferedReader(inputStreamReader);
+    @Test
+    public void glossaryBatchTest() throws IOException {
+        GlossaryPoReader reader =
+                new GlossaryPoReader(LocaleId.EN_US, new LocaleId("zh-Hants"),
+                        false, BATCH_SIZE);
+        Reader inputStreamReader =
+                new InputStreamReader(new FileInputStream(sourceFile2), "UTF-8");
+        BufferedReader br = new BufferedReader(inputStreamReader);
 
-      List<Glossary> glossaries = reader.extractGlossary(br);
-      assertThat(glossaries.size(), equalTo((int) Math.ceil(sourceSize2 * 1F / BATCH_SIZE)));
-      assertThat(glossaries.get(0).getGlossaryEntries().size(), equalTo(BATCH_SIZE));
-      assertThat(glossaries.get(1).getGlossaryEntries().size(), equalTo(BATCH_SIZE));
-      assertThat(glossaries.get(glossaries.size() - 1).getGlossaryEntries().size(), equalTo(sourceSize2 % BATCH_SIZE));
-   }
+        List<Glossary> glossaries = reader.extractGlossary(br);
+        assertThat(glossaries.size(),
+                equalTo((int) Math.ceil(sourceSize2 * 1F / BATCH_SIZE)));
+        assertThat(glossaries.get(0).getGlossaryEntries().size(),
+                equalTo(BATCH_SIZE));
+        assertThat(glossaries.get(1).getGlossaryEntries().size(),
+                equalTo(BATCH_SIZE));
+        assertThat(glossaries.get(glossaries.size() - 1).getGlossaryEntries()
+                .size(), equalTo(sourceSize2 % BATCH_SIZE));
+    }
 }

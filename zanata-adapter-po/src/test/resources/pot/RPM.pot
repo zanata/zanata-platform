@@ -1,4 +1,4 @@
-# 
+#
 # AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
@@ -696,4 +696,3 @@ msgstr ""
 #, no-c-format
 msgid "The <citetitle>Red Hat RPM Guide</citetitle> by Eric Foster-Johnson is an excellent resource on all details of the RPM package format and the RPM package management utility."
 msgstr ""
-

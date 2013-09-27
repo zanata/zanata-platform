@@ -42,64 +42,62 @@ import static org.hamcrest.MatcherAssert.assertThat;
  *
  **/
 @Test(groups = "unit-tests")
-public class GlossaryCSVReaderTest
-{
+public class GlossaryCSVReaderTest {
 
-   @Test
-   public void extractGlossaryTest1() throws IOException
-   {
-      List<String> commentHeaders = new ArrayList<String>();
-      commentHeaders.add("pos");
-      commentHeaders.add("description");
-      
-      GlossaryCSVReader reader = new GlossaryCSVReader(commentHeaders, 300);
-      
-      File sourceFile = new File("src/test/resources/glossary/translate1.csv");
-      
-      Reader inputStreamReader = new InputStreamReader(new FileInputStream(sourceFile), "UTF-8");
-      BufferedReader br = new BufferedReader(inputStreamReader);
+    @Test
+    public void extractGlossaryTest1() throws IOException {
+        List<String> commentHeaders = new ArrayList<String>();
+        commentHeaders.add("pos");
+        commentHeaders.add("description");
 
-      List<Glossary> glossaries = reader.extractGlossary(br);
-      // System.out.println(glossary);
-      assertThat(glossaries.size(), Matchers.equalTo(1));
+        GlossaryCSVReader reader = new GlossaryCSVReader(commentHeaders, 300);
 
-      assertThat(glossaries.get(0).getGlossaryEntries().size(), Matchers.equalTo(2));
+        File sourceFile =
+                new File("src/test/resources/glossary/translate1.csv");
 
-      for (GlossaryEntry entry : glossaries.get(0).getGlossaryEntries())
-      {
-         assertThat(entry.getGlossaryTerms().size(), Matchers.equalTo(3));
-      }
+        Reader inputStreamReader =
+                new InputStreamReader(new FileInputStream(sourceFile), "UTF-8");
+        BufferedReader br = new BufferedReader(inputStreamReader);
 
-   }
-   
-   @Test
-   public void extractGlossaryTest2() throws IOException
-   {
-      List<String> commentHeaders = new ArrayList<String>();
-      commentHeaders.add("description1");
-      commentHeaders.add("description2");
-      commentHeaders.add("description3"); // this will be ignored
-      
-      GlossaryCSVReader reader = new GlossaryCSVReader(commentHeaders, 300);
-      
-      File sourceFile = new File("src/test/resources/glossary/translate2.csv");
-      
-      Reader inputStreamReader = new InputStreamReader(new FileInputStream(sourceFile), "UTF-8");
-      BufferedReader br = new BufferedReader(inputStreamReader);
+        List<Glossary> glossaries = reader.extractGlossary(br);
+        // System.out.println(glossary);
+        assertThat(glossaries.size(), Matchers.equalTo(1));
 
-      List<Glossary> glossaries = reader.extractGlossary(br);
-      // System.out.println(glossary);
-      assertThat(glossaries.size(), Matchers.equalTo(1));
+        assertThat(glossaries.get(0).getGlossaryEntries().size(),
+                Matchers.equalTo(2));
 
-      assertThat(glossaries.get(0).getGlossaryEntries().size(), Matchers.equalTo(2));
+        for (GlossaryEntry entry : glossaries.get(0).getGlossaryEntries()) {
+            assertThat(entry.getGlossaryTerms().size(), Matchers.equalTo(3));
+        }
 
-      for (GlossaryEntry entry : glossaries.get(0).getGlossaryEntries())
-      {
-         assertThat(entry.getGlossaryTerms().size(), Matchers.equalTo(3));
-      }
+    }
 
-   }
+    @Test
+    public void extractGlossaryTest2() throws IOException {
+        List<String> commentHeaders = new ArrayList<String>();
+        commentHeaders.add("description1");
+        commentHeaders.add("description2");
+        commentHeaders.add("description3"); // this will be ignored
+
+        GlossaryCSVReader reader = new GlossaryCSVReader(commentHeaders, 300);
+
+        File sourceFile =
+                new File("src/test/resources/glossary/translate2.csv");
+
+        Reader inputStreamReader =
+                new InputStreamReader(new FileInputStream(sourceFile), "UTF-8");
+        BufferedReader br = new BufferedReader(inputStreamReader);
+
+        List<Glossary> glossaries = reader.extractGlossary(br);
+        // System.out.println(glossary);
+        assertThat(glossaries.size(), Matchers.equalTo(1));
+
+        assertThat(glossaries.get(0).getGlossaryEntries().size(),
+                Matchers.equalTo(2));
+
+        for (GlossaryEntry entry : glossaries.get(0).getGlossaryEntries()) {
+            assertThat(entry.getGlossaryTerms().size(), Matchers.equalTo(3));
+        }
+
+    }
 }
-
-
- 

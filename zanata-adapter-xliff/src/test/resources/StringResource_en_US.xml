@@ -25,17 +25,17 @@ http://www.oasis-open.org/committees/xliff/documents/xliff-core-1.1.xsd"
         <trans-unit id="transunit3">
           <source>Translation Unit 3</source>
         </trans-unit>
-	      <trans-unit id="3a">
-	        <source>system&#8217;s channels</source>
-	      </trans-unit>
+        <trans-unit id="3a">
+          <source>system&#8217;s channels</source>
+        </trans-unit>
         <trans-unit id="transunit3a">
-          <source> Translation Unit 6 (4 &lt;br/4 &gt; 3) </source>
+          <source>Translation Unit 6 (4 &lt;br/4 &gt; 3)</source>
         </trans-unit>
         <trans-unit id="transunit4">
           <source>Translation Unit 4 (4 &lt; 5 &amp; 4 &gt; 3)</source>
         </trans-unit>
         <trans-unit id="transunit5">
-          <source> Translation Unit 5 (4 &lt; 5 &amp; 4 &gt; 3) </source>
+          <source>Translation Unit 5 (4 &lt; 5 &amp; 4 &gt; 3)</source>
         </trans-unit>
       </group>
     </body>

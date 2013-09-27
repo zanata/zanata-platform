@@ -20,7 +20,6 @@
  */
 package org.zanata.common.util;
 
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,46 +30,44 @@ import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 
 @Test(groups = { "unit-tests" })
-public class ContentStateUtilTest
-{
-   public void testAll()
-   {
-      test(New, list(""), New);
-      test(New, list("", ""), New);
-      test(New, list("a", ""), New);
-      test(New, list("", "a"), New);
-      test(New, list("a"), NeedReview);
-      test(New, list("a", "b"), NeedReview);
+public class ContentStateUtilTest {
+    public void testAll() {
+        test(New, list(""), New);
+        test(New, list("", ""), New);
+        test(New, list("a", ""), New);
+        test(New, list("", "a"), New);
+        test(New, list("a"), NeedReview);
+        test(New, list("a", "b"), NeedReview);
 
-      test(NeedReview, list(""), New);
-      test(NeedReview, list("", ""), New);
-      test(NeedReview, list("a", ""), NeedReview);
-      test(NeedReview, list("", "a"), NeedReview);
-      test(NeedReview, list("a"), NeedReview);
-      test(NeedReview, list("a", "b"), NeedReview);
+        test(NeedReview, list(""), New);
+        test(NeedReview, list("", ""), New);
+        test(NeedReview, list("a", ""), NeedReview);
+        test(NeedReview, list("", "a"), NeedReview);
+        test(NeedReview, list("a"), NeedReview);
+        test(NeedReview, list("a", "b"), NeedReview);
 
-      test(Approved, list(""), New);
-      test(Approved, list("", ""), New);
-      test(Approved, list("a", ""), New);
-      test(Approved, list("", "a"), New);
-      test(Approved, list("a"), Approved);
-      test(Approved, list("a", "b"), Approved);
-   }
+        test(Approved, list(""), New);
+        test(Approved, list("", ""), New);
+        test(Approved, list("a", ""), New);
+        test(Approved, list("", "a"), New);
+        test(Approved, list("a"), Approved);
+        test(Approved, list("a", "b"), Approved);
+    }
 
-   private void test(ContentState requestedState, List<String> contents, ContentState expectedState)
-   {
-      List<String> warnings = new ArrayList<String>();
-      ContentState actualState = ContentStateUtil.determineState(requestedState, contents, "resId", warnings);
-      if (requestedState != expectedState)
-      {
-         assertFalse(warnings.isEmpty());
-      }
-      assertEquals(actualState, expectedState);
-   }
+    private void test(ContentState requestedState, List<String> contents,
+            ContentState expectedState) {
+        List<String> warnings = new ArrayList<String>();
+        ContentState actualState =
+                ContentStateUtil.determineState(requestedState, contents,
+                        "resId", warnings);
+        if (requestedState != expectedState) {
+            assertFalse(warnings.isEmpty());
+        }
+        assertEquals(actualState, expectedState);
+    }
 
-   private static List<String> list(String... s)
-   {
-      return Arrays.asList(s);
-   }
+    private static List<String> list(String... s) {
+        return Arrays.asList(s);
+    }
 
 }

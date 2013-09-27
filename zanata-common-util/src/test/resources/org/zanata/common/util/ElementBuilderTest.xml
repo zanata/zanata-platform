@@ -1,10 +1,18 @@
 <tmx>
-	<tu tuid="1">
-	  <tuv xml:lang="en"><seg>segment1</seg></tuv>
-	  <tuv xml:lang="de"><seg>1segment</seg></tuv>
-	</tu>
-   <tu tuid="2">
-     <tuv xml:lang="en"><seg>segment2</seg></tuv>
-     <tuv xml:lang="de"><seg>2segment</seg></tuv>
-   </tu>
+  <tu tuid="1">
+    <tuv xml:lang="en">
+      <seg>segment1</seg>
+    </tuv>
+    <tuv xml:lang="de">
+      <seg>1segment</seg>
+    </tuv>
+  </tu>
+  <tu tuid="2">
+    <tuv xml:lang="en">
+      <seg>segment2</seg>
+    </tuv>
+    <tuv xml:lang="de">
+      <seg>2segment</seg>
+    </tuv>
+  </tu>
 </tmx>

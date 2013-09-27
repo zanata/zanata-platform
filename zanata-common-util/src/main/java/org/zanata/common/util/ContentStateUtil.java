@@ -32,80 +32,91 @@ import javax.annotation.Nonnull;
 import org.zanata.common.ContentState;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class ContentStateUtil
-{
+public class ContentStateUtil {
 
-   /**
-    * Canonicalises requested state against contents - eg if state is Approved but some contents are empty, state will be changed to New.
-    * Pre-condition: size of contents must match nPlurals (unless message is singular, in which case it should equal 1).
-    * @param requestedState desired ContentState
-    * @param contents message contents which will be checked for emptiness to determine the ContentState.  Must have at least one element.
-    * @param resId used to identify the TextFlowTarget in warning messages
-    * @param warnings a warning string will be added if state is adjusted
-    * @return actual legal ContentState
-    */
-   public static ContentState determineState(ContentState requestedState, List<String> contents, String resId, @Nonnull List<String> warnings)
-   {
-      // NB make sure this stays consistent with PoReader2.getContentState
-      // TODO rhbz953734 - PoReader2.getContentState
-      switch (requestedState)
-      {
-      case NeedReview:
-         if (allEmpty(contents))
-         {
-            warnings.add("Invalid ContentState; changed from NeedReview to New: TextFlowTarget "+resId+" with no contents");
-            return ContentState.New;
-         }
-         break;
-      case New:
-         if (allNonEmpty(contents))
-         {
-            warnings.add("Invalid ContentState (non-empty contents); changed from New to NeedReview: TextFlowTarget "+resId+" with contents: " + contents);
-            return ContentState.NeedReview;
-         }
-         break;
-      case Approved:
-         if (!allNonEmpty(contents))
-         {
-            // TODO rhbz953734 this should throw exception if it's require review project
-            warnings.add("Invalid ContentState (some empty contents); changed from Approved to New: TextFlowTarget "+resId+" with contents: " + contents);
-            return ContentState.New;
-         }
-         break;
-      case Translated:
-         if (!allNonEmpty(contents))
-         {
-            warnings.add("Invalid ContentState (some empty contents); changed from Translated to New: TextFlowTarget "+resId+" with contents: " + contents);
-            return ContentState.New;
-         }
-         break;
-      case Rejected:
-         if (!allNonEmpty(contents))
-         {
-            warnings.add("Invalid ContentState (some empty contents); changed from Rejected to New: TextFlowTarget "+resId+" with contents: " + contents);
-            return ContentState.New;
-         }
-         break;
-      default:
-         throw new RuntimeException("unknown ContentState " + requestedState);
-      }
-      return requestedState;
-   }
+    /**
+     * Canonicalises requested state against contents - eg if state is Approved
+     * but some contents are empty, state will be changed to New. Pre-condition:
+     * size of contents must match nPlurals (unless message is singular, in
+     * which case it should equal 1).
+     *
+     * @param requestedState
+     *            desired ContentState
+     * @param contents
+     *            message contents which will be checked for emptiness to
+     *            determine the ContentState. Must have at least one element.
+     * @param resId
+     *            used to identify the TextFlowTarget in warning messages
+     * @param warnings
+     *            a warning string will be added if state is adjusted
+     * @return actual legal ContentState
+     */
+    public static ContentState
+            determineState(ContentState requestedState, List<String> contents,
+                    String resId, @Nonnull List<String> warnings) {
+        // NB make sure this stays consistent with PoReader2.getContentState
+        // TODO rhbz953734 - PoReader2.getContentState
+        switch (requestedState) {
+        case NeedReview:
+            if (allEmpty(contents)) {
+                warnings.add("Invalid ContentState; changed from NeedReview to New: TextFlowTarget "
+                        + resId + " with no contents");
+                return ContentState.New;
+            }
+            break;
+        case New:
+            if (allNonEmpty(contents)) {
+                warnings.add("Invalid ContentState (non-empty contents); changed from New to NeedReview: TextFlowTarget "
+                        + resId + " with contents: " + contents);
+                return ContentState.NeedReview;
+            }
+            break;
+        case Approved:
+            if (!allNonEmpty(contents)) {
+                // TODO rhbz953734 this should throw exception if it's require
+                // review project
+                warnings.add("Invalid ContentState (some empty contents); changed from Approved to New: TextFlowTarget "
+                        + resId + " with contents: " + contents);
+                return ContentState.New;
+            }
+            break;
+        case Translated:
+            if (!allNonEmpty(contents)) {
+                warnings.add("Invalid ContentState (some empty contents); changed from Translated to New: TextFlowTarget "
+                        + resId + " with contents: " + contents);
+                return ContentState.New;
+            }
+            break;
+        case Rejected:
+            if (!allNonEmpty(contents)) {
+                warnings.add("Invalid ContentState (some empty contents); changed from Rejected to New: TextFlowTarget "
+                        + resId + " with contents: " + contents);
+                return ContentState.New;
+            }
+            break;
+        default:
+            throw new RuntimeException("unknown ContentState " + requestedState);
+        }
+        return requestedState;
+    }
 
-   /**
-    * Canonicalises requested state against contents.
-    * Convenience method for when warnings are not needed.
-    * @param requestedState
-    * @param contents
-    * @return
-    * @see #determineState(ContentState, List, String, List)
-    */
-   public static ContentState determineState(ContentState requestedState, List<String> contents)
-   {
-      return determineState(requestedState, contents, "", new ArrayList<String>(1));
-   }
+    /**
+     * Canonicalises requested state against contents. Convenience method for
+     * when warnings are not needed.
+     *
+     * @param requestedState
+     * @param contents
+     * @return
+     * @see #determineState(ContentState, List, String, List)
+     */
+    public static ContentState determineState(ContentState requestedState,
+            List<String> contents) {
+        return determineState(requestedState, contents, "",
+                new ArrayList<String>(1));
+    }
 
 }
