@@ -24,28 +24,27 @@ import org.zanata.adapter.po.PoWriter2;
 
 /**
  * Similar to {@link GettextDirStrategy} but uses msgctxt to map text flow id.
- * 
- * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
+ *
+ * @author David Mason, <a
+ *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  */
-public class OfflinePoStrategy extends GettextDirStrategy
-{
-   private PoWriter2 poWriter;
+public class OfflinePoStrategy extends GettextDirStrategy {
+    private PoWriter2 poWriter;
 
-   public OfflinePoStrategy(PullOptions opts)
-   {
-      super(opts);
-      poWriter = new PoWriter2(opts.getEncodeTabs(), true, opts.isContinueAfterError());
-   }
+    public OfflinePoStrategy(PullOptions opts) {
+        super(opts);
+        poWriter =
+                new PoWriter2(opts.getEncodeTabs(), true,
+                        opts.isContinueAfterError());
+    }
 
-   @Override
-   protected PoWriter2 getPoWriter()
-   {
-      return poWriter;
-   }
+    @Override
+    protected PoWriter2 getPoWriter() {
+        return poWriter;
+    }
 
-   @Override
-   public boolean isTransOnly()
-   {
-      return true;
-   }
+    @Override
+    public boolean isTransOnly() {
+        return true;
+    }
 }

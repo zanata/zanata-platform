@@ -19,77 +19,71 @@ import org.zanata.client.config.LocaleMapping;
 import org.zanata.util.PathUtil;
 
 /**
- * 
+ *
  * @author Sean Flanigan &lt;<a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>&gt;
- * 
+ *
  */
-public class PublicanUtil
-{
-   private static final Logger log = LoggerFactory.getLogger(PublicanUtil.class);
+public class PublicanUtil {
+    private static final Logger log = LoggerFactory
+            .getLogger(PublicanUtil.class);
 
-   private PublicanUtil()
-   {
-   }
+    private PublicanUtil() {
+    }
 
-   public static String[] findPotFiles(File potDir, AndFileFilter fileFilter) throws IOException
-   {
-      SuffixFileFilter extensionFilter = new SuffixFileFilter(".pot");
-      fileFilter.addFileFilter(extensionFilter);
+    public static String[] findPotFiles(File potDir, AndFileFilter fileFilter)
+            throws IOException {
+        SuffixFileFilter extensionFilter = new SuffixFileFilter(".pot");
+        fileFilter.addFileFilter(extensionFilter);
 
-      Collection<File> files = FileUtils.listFiles(potDir, fileFilter, TrueFileFilter.TRUE);
+        Collection<File> files =
+                FileUtils.listFiles(potDir, fileFilter, TrueFileFilter.TRUE);
 
+        String[] potFiles = new String[files.size()];
+        Iterator<File> iter = files.iterator();
 
-      String[] potFiles = new String[files.size()];
-      Iterator<File> iter = files.iterator();
+        for (int i = 0; i < potFiles.length; i++) {
+            File potFile = iter.next();
+            String relativePath = PathUtil.getSubPath(potFile, potDir);
+            potFiles[i] = relativePath;
+        }
+        return potFiles;
+    }
 
-      for (int i = 0; i < potFiles.length; i++)
-      {
-         File potFile = iter.next();
-         String relativePath = PathUtil.getSubPath(potFile, potDir);
-         potFiles[i] = relativePath;
-      }
-      return potFiles;
-   }
+    public static File[] findLocaleDirs(File srcDir) {
+        File[] localeDirs;
+        localeDirs = srcDir.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                return f.isDirectory() && !f.getName().equals("pot");
+            }
+        });
+        return localeDirs;
+    }
 
-   public static File[] findLocaleDirs(File srcDir)
-   {
-      File[] localeDirs;
-      localeDirs = srcDir.listFiles(new FileFilter()
-      {
-         @Override
-         public boolean accept(File f)
-         {
-            return f.isDirectory() && !f.getName().equals("pot");
-         }
-      });
-      return localeDirs;
-   }
+    public static List<LocaleMapping> findLocales(File srcDir) {
+        File[] localeDirs = findLocaleDirs(srcDir);
+        List<LocaleMapping> locales = new ArrayList<LocaleMapping>();
+        for (File dir : localeDirs) {
+            locales.add(new LocaleMapping(dir.getName()));
+        }
+        return locales;
+    }
 
-   public static List<LocaleMapping> findLocales(File srcDir)
-   {
-      File[] localeDirs = findLocaleDirs(srcDir);
-      List<LocaleMapping> locales = new ArrayList<LocaleMapping>();
-      for (File dir : localeDirs)
-      {
-         locales.add(new LocaleMapping(dir.getName()));
-      }
-      return locales;
-   }
+    public static List<LocaleMapping> findLocales(File srcDir,
+            LocaleList locales) {
+        List<LocaleMapping> localeDirs = new ArrayList<LocaleMapping>();
 
-   public static List<LocaleMapping> findLocales(File srcDir, LocaleList locales)
-   {
-      List<LocaleMapping> localeDirs = new ArrayList<LocaleMapping>();
+        for (LocaleMapping loc : locales) {
+            File localeDir = new File(srcDir, loc.getLocalLocale());
+            if (localeDir.isDirectory())
+                localeDirs.add(loc);
+            else
+                log.warn(
+                        "configured locale {} not found; directory {} does not exist",
+                        loc.getLocale(), loc.getLocalLocale());
+        }
 
-      for (LocaleMapping loc : locales)
-      {
-         File localeDir = new File(srcDir, loc.getLocalLocale());
-         if (localeDir.isDirectory())
-            localeDirs.add(loc);
-         else
-            log.warn("configured locale {} not found; directory {} does not exist", loc.getLocale(), loc.getLocalLocale());
-      }
-
-      return localeDirs;
-   }
+        return localeDirs;
+    }
 }

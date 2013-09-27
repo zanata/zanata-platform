@@ -30,56 +30,55 @@ import org.zanata.client.config.LocaleMapping;
 
 /**
  * Strategy for uploading documents using the document file upload API methods.
- * 
- * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
+ *
+ * @author David Mason, <a
+ *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  *
  */
-public class RawPushStrategy extends AbstractCommonPushStrategy<PushOptions>
-{
+public class RawPushStrategy extends AbstractCommonPushStrategy<PushOptions> {
 
-   private static final Logger log = LoggerFactory.getLogger(RawPushStrategy.class);
+    private static final Logger log = LoggerFactory
+            .getLogger(RawPushStrategy.class);
 
-   public static interface TranslationFilesVisitor
-   {
-      void visit(LocaleMapping locale, File translatedDoc);
-   }
+    public static interface TranslationFilesVisitor {
+        void visit(LocaleMapping locale, File translatedDoc);
+    }
 
-   /**
-    * This implementation assumes that translated documents are named
-    * identically to source documents, and reside in directories named with a
-    * locale identifier that are siblings of the source directory.
-    * 
-    * @param sourceDocument local path and name of source document for which to find translations
-    * @param visitor
-    */
-   public void visitTranslationFiles(String sourceDocument, TranslationFilesVisitor visitor)
-   {
-      List<File> translationFiles = new ArrayList<File>();
-      if (getOpts().getLocaleMapList() == null)
-      {
-         log.error("Locale mapping list not found, unable to push translations. Check mapping in zanata.xml");
-         return;
-      }
-      for (LocaleMapping localeMapping : getOpts().getLocaleMapList())
-      {
-         String locale = localeMapping.getLocalLocale();
-         File localeDir = new File(getOpts().getTransDir(), locale);
-         File translationFile = new File(localeDir, sourceDocument);
-         if (translationFile.canRead())
-         {
-            visitor.visit(localeMapping, translationFile);
-            translationFiles.add(translationFile);
-         }
-         else
-         {
-            Object[] args = new Object[3];
-            args[0] = localeMapping.getLocale();
-            args[1] = localeMapping.getMapFrom();
-            args[2] = translationFile.getAbsolutePath();
-            log.warn("No translation file found for locale {} mapped by {}. Expected at {}", args);
-         }
-      }
+    /**
+     * This implementation assumes that translated documents are named
+     * identically to source documents, and reside in directories named with a
+     * locale identifier that are siblings of the source directory.
+     *
+     * @param sourceDocument
+     *            local path and name of source document for which to find
+     *            translations
+     * @param visitor
+     */
+    public void visitTranslationFiles(String sourceDocument,
+            TranslationFilesVisitor visitor) {
+        List<File> translationFiles = new ArrayList<File>();
+        if (getOpts().getLocaleMapList() == null) {
+            log.error("Locale mapping list not found, unable to push translations. Check mapping in zanata.xml");
+            return;
+        }
+        for (LocaleMapping localeMapping : getOpts().getLocaleMapList()) {
+            String locale = localeMapping.getLocalLocale();
+            File localeDir = new File(getOpts().getTransDir(), locale);
+            File translationFile = new File(localeDir, sourceDocument);
+            if (translationFile.canRead()) {
+                visitor.visit(localeMapping, translationFile);
+                translationFiles.add(translationFile);
+            } else {
+                Object[] args = new Object[3];
+                args[0] = localeMapping.getLocale();
+                args[1] = localeMapping.getMapFrom();
+                args[2] = translationFile.getAbsolutePath();
+                log.warn(
+                        "No translation file found for locale {} mapped by {}. Expected at {}",
+                        args);
+            }
+        }
 
-   }
+    }
 
 }

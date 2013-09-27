@@ -1,4 +1,4 @@
-# translation of RPM.po to 
+# translation of RPM.po to
 msgid ""
 msgstr ""
 "Project-Id-Version: RPM\n"
@@ -14,4 +14,3 @@ msgstr ""
 #, no-c-format
 msgid "RPM"
 msgstr "__rpm__"
-

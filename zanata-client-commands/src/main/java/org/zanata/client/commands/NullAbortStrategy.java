@@ -22,20 +22,18 @@
 package org.zanata.client.commands;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class NullAbortStrategy implements AppAbortStrategy
-{
+public class NullAbortStrategy implements AppAbortStrategy {
 
-   @Override
-   public void abort(String msg)
-   {
-   }
+    @Override
+    public void abort(String msg) {
+    }
 
-   @Override
-   public void abort(Throwable e)
-   {
-   }
+    @Override
+    public void abort(Throwable e) {
+    }
 
 }

@@ -36,89 +36,77 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.PathUtil;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class XmlStrategy extends AbstractPullStrategy
-{
-   private JAXBContext jaxbContext;
-   private Marshaller marshaller;
-   StringSet extensions = new StringSet("comment;gettext");
+public class XmlStrategy extends AbstractPullStrategy {
+    private JAXBContext jaxbContext;
+    private Marshaller marshaller;
+    StringSet extensions = new StringSet("comment;gettext");
 
-   protected XmlStrategy(PullOptions opts)
-   {
-      super(opts);
-      try
-      {
-         jaxbContext = JAXBContext.newInstance(Resource.class, TranslationsResource.class);
-         marshaller = jaxbContext.createMarshaller();
-         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-      }
-      catch (JAXBException e)
-      {
-         throw new RuntimeException(e);
-      }
-   }
+    protected XmlStrategy(PullOptions opts) {
+        super(opts);
+        try {
+            jaxbContext =
+                    JAXBContext.newInstance(Resource.class,
+                            TranslationsResource.class);
+            marshaller = jaxbContext.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        } catch (JAXBException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-   @Override
-   public boolean needsDocToWriteTrans()
-   {
-      return false;
-   }
+    @Override
+    public boolean needsDocToWriteTrans() {
+        return false;
+    }
 
-   private String docNameToFilename(String docName)
-   {
-      return docName + ".xml";
-   }
+    private String docNameToFilename(String docName) {
+        return docName + ".xml";
+    }
 
-   private String docNameToFilename(String docName, LocaleMapping locale)
-   {
-      return docName + "_" + locale.getJavaLocale() + ".xml";
-   }
+    private String docNameToFilename(String docName, LocaleMapping locale) {
+        return docName + "_" + locale.getJavaLocale() + ".xml";
+    }
 
-   @Override
-   public void writeSrcFile(Resource doc) throws IOException
-   {
-      try
-      {
-         String filename = docNameToFilename(doc.getName());
-         File srcFile = new File(getOpts().getSrcDir(), filename);
-         PathUtil.makeParents(srcFile);
-         marshaller.marshal(doc, srcFile);
-      }
-      catch (JAXBException e)
-      {
-         throw new IOException(e);
-      }
-   }
+    @Override
+    public void writeSrcFile(Resource doc) throws IOException {
+        try {
+            String filename = docNameToFilename(doc.getName());
+            File srcFile = new File(getOpts().getSrcDir(), filename);
+            PathUtil.makeParents(srcFile);
+            marshaller.marshal(doc, srcFile);
+        } catch (JAXBException e) {
+            throw new IOException(e);
+        }
+    }
 
-   @Override
-   public File getTransFileToWrite(String docName, LocaleMapping localeMapping)
-   {
-      String filename = docNameToFilename(docName, localeMapping);
-      File transFile = new File(getOpts().getTransDir(), filename);
-      return transFile;
-   }
+    @Override
+    public File
+            getTransFileToWrite(String docName, LocaleMapping localeMapping) {
+        String filename = docNameToFilename(docName, localeMapping);
+        File transFile = new File(getOpts().getTransDir(), filename);
+        return transFile;
+    }
 
-   @Override
-   public FileDetails writeTransFile(Resource doc, String docName, LocaleMapping locale, TranslationsResource targetDoc) throws IOException
-   {
-      try
-      {
-         File transFile = getTransFileToWrite(docName, locale);
-         PathUtil.makeParents(transFile);
-         marshaller.marshal(targetDoc, transFile);
-         return null;
-      }
-      catch (JAXBException e)
-      {
-         throw new IOException(e);
-      }
-   }
+    @Override
+    public FileDetails writeTransFile(Resource doc, String docName,
+            LocaleMapping locale, TranslationsResource targetDoc)
+            throws IOException {
+        try {
+            File transFile = getTransFileToWrite(docName, locale);
+            PathUtil.makeParents(transFile);
+            marshaller.marshal(targetDoc, transFile);
+            return null;
+        } catch (JAXBException e) {
+            throw new IOException(e);
+        }
+    }
 
-   @Override
-   public StringSet getExtensions()
-   {
-      return extensions;
-   }
+    @Override
+    public StringSet getExtensions() {
+        return extensions;
+    }
 }

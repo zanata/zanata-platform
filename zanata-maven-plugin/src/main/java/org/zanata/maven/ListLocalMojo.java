@@ -7,26 +7,23 @@ import org.zanata.client.commands.ListLocalCommand;
  * [NOT YET IMPLEMENTED] Lists all local files in the project which are
  * considered to be Zanata documents. These are the files which will be sent to
  * Zanata when using the 'push' goal.
- * 
+ *
  * @goal list-local
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
-public class ListLocalMojo extends ConfigurableProjectMojo<ConfigurableProjectOptions>
-{
+public class ListLocalMojo extends
+        ConfigurableProjectMojo<ConfigurableProjectOptions> {
 
-   public ListLocalMojo() throws Exception
-   {
-      super();
-   }
+    public ListLocalMojo() throws Exception {
+        super();
+    }
 
-   public ListLocalCommand initCommand()
-   {
-      return new ListLocalCommand(this);
-   }
+    public ListLocalCommand initCommand() {
+        return new ListLocalCommand(this);
+    }
 
-   @Override
-   public String getCommandName()
-   {
-      return "list-local";
-   }
+    @Override
+    public String getCommandName() {
+        return "list-local";
+    }
 }

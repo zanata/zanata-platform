@@ -1,4 +1,4 @@
-# 
+#
 # AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
@@ -15,4 +15,3 @@ msgstr ""
 #, no-c-format
 msgid "RPM"
 msgstr ""
-

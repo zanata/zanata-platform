@@ -5,17 +5,16 @@ import java.util.List;
 
 import org.zanata.client.commands.ConfigurableProjectOptions;
 
-public interface GlossaryPushOptions extends ConfigurableProjectOptions
-{
-   public File getGlossaryFile();
+public interface GlossaryPushOptions extends ConfigurableProjectOptions {
+    public File getGlossaryFile();
 
-   public String getSourceLang();
+    public String getSourceLang();
 
-   public String getTransLang();
+    public String getTransLang();
 
-   public int getBatchSize();
+    public int getBatchSize();
 
-   public boolean getTreatSourceCommentsAsTarget();
+    public boolean getTreatSourceCommentsAsTarget();
 
-   public List<String> getCommentCols();
+    public List<String> getCommentCols();
 }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <etag-cache>
-    <entry localFileName="xyz_abc_1.properties" lang="en"
-           localFileTime="1234" localFileMD5="1234" serverETag="ABCDE" />
-    <entry localFileName="xyz_abc_2.properties" lang="en"
-           localFileTime="1234" localFileMD5="1234" serverETag="ABCDE" />
-    <entry localFileName="xyz_abc_3.properties" lang="en"
-           localFileTime="1234" localFileMD5="1234" serverETag="ABCDE" />
+  <entry localFileName="xyz_abc_1.properties" lang="en"
+    localFileTime="1234" localFileMD5="1234" serverETag="ABCDE" />
+  <entry localFileName="xyz_abc_2.properties" lang="en"
+    localFileTime="1234" localFileMD5="1234" serverETag="ABCDE" />
+  <entry localFileName="xyz_abc_3.properties" lang="en"
+    localFileTime="1234" localFileMD5="1234" serverETag="ABCDE" />
 </etag-cache>

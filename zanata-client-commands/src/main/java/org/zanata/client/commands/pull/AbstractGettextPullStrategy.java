@@ -21,7 +21,6 @@
 
 package org.zanata.client.commands.pull;
 
-
 import java.io.File;
 import java.io.IOException;
 
@@ -30,44 +29,41 @@ import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public abstract class AbstractGettextPullStrategy extends AbstractPullStrategy
-{
-   private final PoWriter2 poWriter;
-   private StringSet extensions = new StringSet("gettext;comment");
+public abstract class AbstractGettextPullStrategy extends AbstractPullStrategy {
+    private final PoWriter2 poWriter;
+    private StringSet extensions = new StringSet("gettext;comment");
 
-   protected AbstractGettextPullStrategy(PullOptions opts)
-   {
-      super(opts);
-      poWriter = new PoWriter2(opts.getEncodeTabs(), false, opts.isContinueAfterError());
-   }
+    protected AbstractGettextPullStrategy(PullOptions opts) {
+        super(opts);
+        poWriter =
+                new PoWriter2(opts.getEncodeTabs(), false,
+                        opts.isContinueAfterError());
+    }
 
-   protected PoWriter2 getPoWriter()
-   {
-      return poWriter;
-   }
+    protected PoWriter2 getPoWriter() {
+        return poWriter;
+    }
 
-   @Override
-   public StringSet getExtensions()
-   {
-      return extensions;
-   }
+    @Override
+    public StringSet getExtensions() {
+        return extensions;
+    }
 
-   @Override
-   public boolean needsDocToWriteTrans()
-   {
-      return true;
-   }
+    @Override
+    public boolean needsDocToWriteTrans() {
+        return true;
+    }
 
-   @Override
-   public void writeSrcFile(Resource doc) throws IOException
-   {
-      File potDir = getOpts().getSrcDir();
-      // write the POT file to $potDir/$name.pot
-      File potFile = new File(potDir, doc.getName() + ".pot");
-      getPoWriter().writePotToFile(potFile, doc);
-   }
+    @Override
+    public void writeSrcFile(Resource doc) throws IOException {
+        File potDir = getOpts().getSrcDir();
+        // write the POT file to $potDir/$name.pot
+        File potFile = new File(potDir, doc.getName() + ".pot");
+        getPoWriter().writePotToFile(potFile, doc);
+    }
 
 }

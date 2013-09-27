@@ -41,83 +41,79 @@ import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
-public abstract class AbstractGettextPushStrategy extends AbstractPushStrategy
-{
-   private PoReader2 poReader;
+public abstract class AbstractGettextPushStrategy extends AbstractPushStrategy {
+    private PoReader2 poReader;
 
-   public AbstractGettextPushStrategy()
-   {
-      super(new StringSet("comment;gettext"), ".pot");
-   }
+    public AbstractGettextPushStrategy() {
+        super(new StringSet("comment;gettext"), ".pot");
+    }
 
-   public Set<String> findDocNames(File srcDir, List<String> includes, List<String> excludes, boolean useDefaultExclude, boolean caseSensitive, boolean excludeLocaleFilenames) throws IOException
-   {
-      Set<String> localDocNames = new HashSet<String>();
+    public Set<String> findDocNames(File srcDir, List<String> includes,
+            List<String> excludes, boolean useDefaultExclude,
+            boolean caseSensitive, boolean excludeLocaleFilenames)
+            throws IOException {
+        Set<String> localDocNames = new HashSet<String>();
 
-      // populate localDocNames by looking in pot directory, ignore
-      // excludeLocale option
-      String[] srcFiles = getSrcFiles(srcDir, includes, excludes, false, useDefaultExclude, caseSensitive);
+        // populate localDocNames by looking in pot directory, ignore
+        // excludeLocale option
+        String[] srcFiles =
+                getSrcFiles(srcDir, includes, excludes, false,
+                        useDefaultExclude, caseSensitive);
 
-      for (String potName : srcFiles)
-      {
-         String docName = removeExtension(potName);
-         localDocNames.add(docName);
-      }
-      return localDocNames;
-   }
+        for (String potName : srcFiles) {
+            String docName = removeExtension(potName);
+            localDocNames.add(docName);
+        }
+        return localDocNames;
+    }
 
-   abstract Collection<LocaleMapping> findLocales();
-   abstract File getTransFile(LocaleMapping locale, String docName);
+    abstract Collection<LocaleMapping> findLocales();
 
-   @Override
-   public Resource loadSrcDoc(File sourceDir, String docName) throws IOException
-   {
-      File srcFile = new File(sourceDir, docName + getFileExtension());
-      BufferedInputStream bis = new BufferedInputStream(new FileInputStream(srcFile));
-      try
-      {
-         InputSource potInputSource = new InputSource(bis);
-         potInputSource.setEncoding("utf8");
-         // load 'srcDoc' from pot/${docID}.pot
-         return getPoReader().extractTemplate(potInputSource, new LocaleId(getOpts().getSourceLang()), docName);
-      }
-      finally
-      {
-         bis.close();
-      }
-   }
+    abstract File getTransFile(LocaleMapping locale, String docName);
 
-   @Override
-   public void visitTranslationResources(String docName, Resource srcDoc, TranslationResourcesVisitor callback) throws IOException
-   {
-      for (LocaleMapping locale : findLocales())
-      {
-         File transFile = getTransFile(locale, docName);
-         if (transFile.canRead())
-         {
-            BufferedInputStream bis = new BufferedInputStream(new FileInputStream(transFile));
-            try
-            {
-               InputSource inputSource = new InputSource(bis);
-               inputSource.setEncoding("utf8");
-               TranslationsResource targetDoc = getPoReader().extractTarget(inputSource);
-               callback.visit(locale, targetDoc);
+    @Override
+    public Resource loadSrcDoc(File sourceDir, String docName)
+            throws IOException {
+        File srcFile = new File(sourceDir, docName + getFileExtension());
+        BufferedInputStream bis =
+                new BufferedInputStream(new FileInputStream(srcFile));
+        try {
+            InputSource potInputSource = new InputSource(bis);
+            potInputSource.setEncoding("utf8");
+            // load 'srcDoc' from pot/${docID}.pot
+            return getPoReader().extractTemplate(potInputSource,
+                    new LocaleId(getOpts().getSourceLang()), docName);
+        } finally {
+            bis.close();
+        }
+    }
+
+    @Override
+    public void visitTranslationResources(String docName, Resource srcDoc,
+            TranslationResourcesVisitor callback) throws IOException {
+        for (LocaleMapping locale : findLocales()) {
+            File transFile = getTransFile(locale, docName);
+            if (transFile.canRead()) {
+                BufferedInputStream bis =
+                        new BufferedInputStream(new FileInputStream(transFile));
+                try {
+                    InputSource inputSource = new InputSource(bis);
+                    inputSource.setEncoding("utf8");
+                    TranslationsResource targetDoc =
+                            getPoReader().extractTarget(inputSource);
+                    callback.visit(locale, targetDoc);
+                } finally {
+                    bis.close();
+                }
             }
-            finally
-            {
-               bis.close();
-            }
-         }
-      }
-   }
+        }
+    }
 
-   protected PoReader2 getPoReader()
-   {
-      if (poReader == null)
-      {
-         poReader = new PoReader2();
-      }
-      return poReader;
-   }
+    protected PoReader2 getPoReader() {
+        if (poReader == null) {
+            poReader = new PoReader2();
+        }
+        return poReader;
+    }
 
 }

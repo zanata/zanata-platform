@@ -26,107 +26,109 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 /**
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
- * 
+ *
  * @deprecated
  * @see org.zanata.client.commands.pull.PullCommand
  */
-public class PublicanPullCommand extends ConfigurableProjectCommand<PublicanPullOptions>
-{
-   private static final Logger log = LoggerFactory.getLogger(PublicanPullCommand.class);
+public class PublicanPullCommand extends
+        ConfigurableProjectCommand<PublicanPullOptions> {
+    private static final Logger log = LoggerFactory
+            .getLogger(PublicanPullCommand.class);
 
-   private final ISourceDocResource sourceDocResource;
-   private final ITranslatedDocResource translationResources;
-   private final URI uri;
+    private final ISourceDocResource sourceDocResource;
+    private final ITranslatedDocResource translationResources;
+    private final URI uri;
 
-   public PublicanPullCommand(PublicanPullOptions opts, ZanataProxyFactory factory, ISourceDocResource sourceDocResource, ITranslatedDocResource translationResources, URI uri)
-   {
-      super(opts, factory);
-      this.sourceDocResource = sourceDocResource;
-      this.translationResources = translationResources;
-      this.uri = uri;
-      deprecate("please use \"pull\" with project type \"" + PROJECT_TYPE_PUBLICAN + "\"");
-   }
+    public PublicanPullCommand(PublicanPullOptions opts,
+            ZanataProxyFactory factory, ISourceDocResource sourceDocResource,
+            ITranslatedDocResource translationResources, URI uri) {
+        super(opts, factory);
+        this.sourceDocResource = sourceDocResource;
+        this.translationResources = translationResources;
+        this.uri = uri;
+        deprecate("please use \"pull\" with project type \""
+                + PROJECT_TYPE_PUBLICAN + "\"");
+    }
 
-   private PublicanPullCommand(PublicanPullOptions opts, ZanataProxyFactory factory)
-   {
-      this(opts, factory,
-            factory.getSourceDocResource(opts.getProj(), opts.getProjectVersion()),
-            factory.getTranslatedDocResource(opts.getProj(), opts.getProjectVersion()),
-            factory.getResourceURI(opts.getProj(), opts.getProjectVersion()));
-   }
+    private PublicanPullCommand(PublicanPullOptions opts,
+            ZanataProxyFactory factory) {
+        this(opts, factory, factory.getSourceDocResource(opts.getProj(),
+                opts.getProjectVersion()), factory.getTranslatedDocResource(
+                opts.getProj(), opts.getProjectVersion()), factory
+                .getResourceURI(opts.getProj(), opts.getProjectVersion()));
+    }
 
-   public PublicanPullCommand(PublicanPullOptions opts)
-   {
-      this(opts, OptionsUtil.createRequestFactory(opts));
-   }
+    public PublicanPullCommand(PublicanPullOptions opts) {
+        this(opts, OptionsUtil.createRequestFactory(opts));
+    }
 
-   @Override
-   protected String getProjectType()
-   {
-      return PROJECT_TYPE_PUBLICAN;
-   }
+    @Override
+    protected String getProjectType() {
+        return PROJECT_TYPE_PUBLICAN;
+    }
 
-   @Override
-   public void run() throws Exception
-   {
-      log.info("Server: {}", getOpts().getUrl());
-      log.info("Project: {}", getOpts().getProj());
-      log.info("Version: {}", getOpts().getProjectVersion());
-      log.info("Username: {}", getOpts().getUsername());
-      if (getOpts().getExportPot())
-      {
-         log.info("Exporting source and target (translation) documents");
-         log.info("POT directory (originals): {}", getOpts().getDstDirPot());
-      }
-      else
-      {
-         log.info("Exporting target documents (translations) only");
-      }
-      log.info("PO base directory (translations): {}", getOpts().getDstDir());
+    @Override
+    public void run() throws Exception {
+        log.info("Server: {}", getOpts().getUrl());
+        log.info("Project: {}", getOpts().getProj());
+        log.info("Version: {}", getOpts().getProjectVersion());
+        log.info("Username: {}", getOpts().getUsername());
+        if (getOpts().getExportPot()) {
+            log.info("Exporting source and target (translation) documents");
+            log.info("POT directory (originals): {}", getOpts().getDstDirPot());
+        } else {
+            log.info("Exporting target documents (translations) only");
+        }
+        log.info("PO base directory (translations): {}", getOpts().getDstDir());
 
-      LocaleList locales = getOpts().getLocaleMapList();
-      if (locales == null)
-         throw new ConfigException("no locales specified");
-      PoWriter2 poWriter = new PoWriter2();
-      StringSet extensions = new StringSet("gettext;comment");
+        LocaleList locales = getOpts().getLocaleMapList();
+        if (locales == null)
+            throw new ConfigException("no locales specified");
+        PoWriter2 poWriter = new PoWriter2();
+        StringSet extensions = new StringSet("gettext;comment");
 
-      ClientResponse<List<ResourceMeta>> listResponse = sourceDocResource.get(null);
-      ClientUtility.checkResult(listResponse, uri);
-      List<ResourceMeta> resourceMetaList = listResponse.getEntity();
-      for (ResourceMeta resourceMeta : resourceMetaList)
-      {
-         String docName = resourceMeta.getName();
-         // TODO follow a Link
-         String docUri = RestUtil.convertToDocumentURIId(docName);
-         ClientResponse<Resource> resourceResponse = sourceDocResource.getResource(docUri, extensions);
-         ClientUtility.checkResult(resourceResponse, uri);
-         Resource doc = resourceResponse.getEntity();
-         if (getOpts().getExportPot())
-         {
-            log.info("writing POT for document {}", docName);
-            poWriter.writePotToDir(getOpts().getDstDirPot(), doc);
-         }
-
-         for (LocaleMapping locMapping : locales)
-         {
-            LocaleId locale = new LocaleId(locMapping.getLocale());
-
-            ClientResponse<TranslationsResource> transResponse = translationResources.getTranslations(docUri, locale, extensions);
-            // ignore 404 (no translation yet for specified document)
-            if (transResponse.getResponseStatus() == Response.Status.NOT_FOUND)
-            {
-               log.info("no translations found in locale {} for document {}", locale, docName);
-               continue;
+        ClientResponse<List<ResourceMeta>> listResponse =
+                sourceDocResource.get(null);
+        ClientUtility.checkResult(listResponse, uri);
+        List<ResourceMeta> resourceMetaList = listResponse.getEntity();
+        for (ResourceMeta resourceMeta : resourceMetaList) {
+            String docName = resourceMeta.getName();
+            // TODO follow a Link
+            String docUri = RestUtil.convertToDocumentURIId(docName);
+            ClientResponse<Resource> resourceResponse =
+                    sourceDocResource.getResource(docUri, extensions);
+            ClientUtility.checkResult(resourceResponse, uri);
+            Resource doc = resourceResponse.getEntity();
+            if (getOpts().getExportPot()) {
+                log.info("writing POT for document {}", docName);
+                poWriter.writePotToDir(getOpts().getDstDirPot(), doc);
             }
-            ClientUtility.checkResult(transResponse, uri);
-            TranslationsResource targetDoc = transResponse.getEntity();
 
-            String localeDir = locMapping.getLocalLocale();
-            log.info("writing PO translations in locale {} for document {}", locale, docName);
-            poWriter.writePo(getOpts().getDstDir(), doc, localeDir, targetDoc);
-         }
-      }
+            for (LocaleMapping locMapping : locales) {
+                LocaleId locale = new LocaleId(locMapping.getLocale());
 
-   }
+                ClientResponse<TranslationsResource> transResponse =
+                        translationResources.getTranslations(docUri, locale,
+                                extensions);
+                // ignore 404 (no translation yet for specified document)
+                if (transResponse.getResponseStatus() == Response.Status.NOT_FOUND) {
+                    log.info(
+                            "no translations found in locale {} for document {}",
+                            locale, docName);
+                    continue;
+                }
+                ClientUtility.checkResult(transResponse, uri);
+                TranslationsResource targetDoc = transResponse.getEntity();
+
+                String localeDir = locMapping.getLocalLocale();
+                log.info(
+                        "writing PO translations in locale {} for document {}",
+                        locale, docName);
+                poWriter.writePo(getOpts().getDstDir(), doc, localeDir,
+                        targetDoc);
+            }
+        }
+
+    }
 
 }

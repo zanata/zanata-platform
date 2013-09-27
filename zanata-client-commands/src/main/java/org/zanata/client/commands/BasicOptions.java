@@ -1,65 +1,67 @@
 package org.zanata.client.commands;
 
-public interface BasicOptions
-{
-   ZanataCommand initCommand();
+public interface BasicOptions {
+    ZanataCommand initCommand();
 
-   /**
-    * Whether to enable debug mode. Defaults to the value in zanata.ini. This
-    * value is used by command line clients, but not by Maven (which uses its
-    * own --debug/-X flag).
-    */
-   boolean getDebug();
+    /**
+     * Whether to enable debug mode. Defaults to the value in zanata.ini. This
+     * value is used by command line clients, but not by Maven (which uses its
+     * own --debug/-X flag).
+     */
+    boolean getDebug();
 
-   void setDebug(boolean debug);
+    void setDebug(boolean debug);
 
-   boolean isDebugSet();
+    boolean isDebugSet();
 
-   /**
-    * Whether to display full information about errors (ie exception stack
-    * traces). Defaults to the value in zanata.ini. This value is used by command
-    * line clients, but not by Maven (which uses its own --errors/-e flag).
-    */
-   boolean getErrors();
+    /**
+     * Whether to display full information about errors (ie exception stack
+     * traces). Defaults to the value in zanata.ini. This value is used by
+     * command line clients, but not by Maven (which uses its own --errors/-e
+     * flag).
+     */
+    boolean getErrors();
 
-   void setErrors(boolean errors);
+    void setErrors(boolean errors);
 
-   boolean isErrorsSet();
+    boolean isErrorsSet();
 
-   /**
-    * Whether to display the command's usage help. Maven uses the auto-generated
-    * HelpMojo instead.
-    */
-   boolean getHelp();
+    /**
+     * Whether to display the command's usage help. Maven uses the
+     * auto-generated HelpMojo instead.
+     */
+    boolean getHelp();
 
-   void setHelp(boolean help);
+    void setHelp(boolean help);
 
-   /**
-    * Enable quiet mode - error messages only
-    */
-   boolean getQuiet();
-   void setQuiet(boolean quiet);
-   boolean isQuietSet();
+    /**
+     * Enable quiet mode - error messages only
+     */
+    boolean getQuiet();
 
-   public boolean isInteractiveMode();
+    void setQuiet(boolean quiet);
 
-   public void setInteractiveMode(boolean interactiveMode);
+    boolean isQuietSet();
 
-   /**
-    * Used to generate the command line interface and its usage help. This name
-    * should match the Maven Mojo's 'goal' annotation and must match the @SubCommand
-    * name in ZanataClient.
-    *
-    * @return
-    */
-   public String getCommandName();
+    public boolean isInteractiveMode();
 
-   /**
-    * Used to generate CLI usage help. This description should preferably match
-    * the Maven Mojo's Javadoc description.
-    * 
-    * @return
-    */
-   public String getCommandDescription();
+    public void setInteractiveMode(boolean interactiveMode);
+
+    /**
+     * Used to generate the command line interface and its usage help. This name
+     * should match the Maven Mojo's 'goal' annotation and must match the @SubCommand
+     * name in ZanataClient.
+     *
+     * @return
+     */
+    public String getCommandName();
+
+    /**
+     * Used to generate CLI usage help. This description should preferably match
+     * the Maven Mojo's Javadoc description.
+     *
+     * @return
+     */
+    public String getCommandDescription();
 
 }

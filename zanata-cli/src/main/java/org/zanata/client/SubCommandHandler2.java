@@ -28,44 +28,45 @@ import org.kohsuke.args4j.spi.SubCommand;
 import org.kohsuke.args4j.spi.SubCommandHandler;
 
 /**
- * Just like Args4j's SubCommandHandler, but designed so that SubCommand instantiation is mockable.
+ * Just like Args4j's SubCommandHandler, but designed so that SubCommand
+ * instantiation is mockable.
  * <p>
- * Args4j constructs OptionHandlers directly from class literals, so we
- * can only mock static methods.  This class extends SubCommandHandler
- * so that we can intercept the instantiate method using PowerMock.
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * Args4j constructs OptionHandlers directly from class literals, so we can only
+ * mock static methods. This class extends SubCommandHandler so that we can
+ * intercept the instantiate method using PowerMock.
+ *
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class SubCommandHandler2 extends SubCommandHandler
-{
-   public SubCommandHandler2(CmdLineParser parser, OptionDef option, Setter<Object> setter)
-   {
-      super(parser, option, setter);
-   }
+public class SubCommandHandler2 extends SubCommandHandler {
+    public SubCommandHandler2(CmdLineParser parser, OptionDef option,
+            Setter<Object> setter) {
+        super(parser, option, setter);
+    }
 
-   private Object superInstantiate(SubCommand c)
-   {
-      return super.instantiate(c);
-   }
+    private Object superInstantiate(SubCommand c) {
+        return super.instantiate(c);
+    }
 
-   /**
-    * PowerMockable version of instantiate method.
-    * @param self
-    * @param c
-    * @return
-    */
-   static Object instantiate(SubCommandHandler2 self, SubCommand c)
-   {
-      return self.superInstantiate(c);
-   }
+    /**
+     * PowerMockable version of instantiate method.
+     *
+     * @param self
+     * @param c
+     * @return
+     */
+    static Object instantiate(SubCommandHandler2 self, SubCommand c) {
+        return self.superInstantiate(c);
+    }
 
-   /**
-    * Overrides SubCommandHandler so that we can call the mockable static method.
-    */
-   @Override
-   protected Object instantiate(SubCommand c)
-   {
-      return instantiate(this, c);
-   }
+    /**
+     * Overrides SubCommandHandler so that we can call the mockable static
+     * method.
+     */
+    @Override
+    protected Object instantiate(SubCommand c) {
+        return instantiate(this, c);
+    }
 
 }

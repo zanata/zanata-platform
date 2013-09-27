@@ -9,9 +9,9 @@ mvn org.zanata:zanata-maven-plugin:help -Ddetail=true
 
 Installation:
 
-To use this plugin, make sure Zanata is in your pluginRepositories.  
-(One way of doing this is to compile Zanata from source and run mvn 
-install - this will put the  maven plugin into your local repo.) 
+To use this plugin, make sure Zanata is in your pluginRepositories.
+(One way of doing this is to compile Zanata from source and run mvn
+install - this will put the  maven plugin into your local repo.)
 
 Then you can use the plugin this way:
   mvn org.zanata:zanata-maven-plugin:listlocal
@@ -46,4 +46,3 @@ Alternatively, for a global setting you can edit ~/.m2/settings.xml to include:
   </pluginGroups>
   ...
 </settings>
-

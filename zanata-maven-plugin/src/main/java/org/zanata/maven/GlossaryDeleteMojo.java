@@ -25,55 +25,47 @@ import org.zanata.client.commands.glossary.delete.GlossaryDeleteOptions;
 
 /**
  * Delete glossary entry from Zanata.
- * 
+ *
  * @goal glossary-delete
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- * 
+ *
  **/
-public class GlossaryDeleteMojo extends ConfigurableProjectMojo<GlossaryDeleteOptions> implements GlossaryDeleteOptions
-{
+public class GlossaryDeleteMojo extends
+        ConfigurableProjectMojo<GlossaryDeleteOptions> implements
+        GlossaryDeleteOptions {
 
-   /**
-    * Locale of glossary to delete
-    * 
-    * @parameter expression="${zanata.lang}"
-    */
-   private String lang;
+    /**
+     * Locale of glossary to delete
+     *
+     * @parameter expression="${zanata.lang}"
+     */
+    private String lang;
 
-   /**
-    * Delete entire glossaries
-    * 
-    * @parameter expression="${zanata.allGlossary}" default-value="false"
-    */
-   private boolean allGlossary = false;
+    /**
+     * Delete entire glossaries
+     *
+     * @parameter expression="${zanata.allGlossary}" default-value="false"
+     */
+    private boolean allGlossary = false;
 
+    @Override
+    public String getlang() {
+        return lang;
+    }
 
-   @Override
-   public String getlang()
-   {
-      return lang;
-   }
+    @Override
+    public boolean getAllGlossary() {
+        return allGlossary;
+    }
 
-   @Override
-   public boolean getAllGlossary()
-   {
-      return allGlossary;
-   }
+    @Override
+    public GlossaryDeleteCommand initCommand() {
+        return new GlossaryDeleteCommand(this);
+    }
 
-
-   @Override
-   public GlossaryDeleteCommand initCommand()
-   {
-      return new GlossaryDeleteCommand(this);
-   }
-
-   @Override
-   public String getCommandName()
-   {
-      return "glossary-delete";
-   }
+    @Override
+    public String getCommandName() {
+        return "glossary-delete";
+    }
 
 }
-
-
- 

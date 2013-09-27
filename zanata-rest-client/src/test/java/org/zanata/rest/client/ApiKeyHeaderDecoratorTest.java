@@ -31,42 +31,39 @@ import org.zanata.rest.RestConstant;
 
 import static org.junit.Assert.assertEquals;
 
-
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class ApiKeyHeaderDecoratorTest
-{
-   @Test
-   public void testHeaders() throws Exception
-   {
-      String username = "username";
-      String apiKey = "apiKey";
-      String ver = "ver";
-      ApiKeyHeaderDecorator decorator = new ApiKeyHeaderDecorator(username, apiKey, ver);
+public class ApiKeyHeaderDecoratorTest {
+    @Test
+    public void testHeaders() throws Exception {
+        String username = "username";
+        String apiKey = "apiKey";
+        String ver = "ver";
+        ApiKeyHeaderDecorator decorator =
+                new ApiKeyHeaderDecorator(username, apiKey, ver);
 
-      final ClientRequest mockRequest = new ClientRequest("http://uri.example.com/");
-      ClientExecutionContext mockCtx = new ClientExecutionContext()
-      {
+        final ClientRequest mockRequest =
+                new ClientRequest("http://uri.example.com/");
+        ClientExecutionContext mockCtx = new ClientExecutionContext() {
 
-         @SuppressWarnings("rawtypes")
-         @Override
-         public ClientResponse proceed() throws Exception
-         {
-            return null;
-         }
+            @SuppressWarnings("rawtypes")
+            @Override
+            public ClientResponse proceed() throws Exception {
+                return null;
+            }
 
-         @Override
-         public ClientRequest getRequest()
-         {
-            return mockRequest;
-         }
-      };
-      decorator.execute(mockCtx);
-      MultivaluedMap<String, String> headers = mockRequest.getHeaders();
-      assertEquals(username, headers.getFirst(RestConstant.HEADER_USERNAME));
-      assertEquals(apiKey, headers.getFirst(RestConstant.HEADER_API_KEY));
-      assertEquals(ver, headers.getFirst(RestConstant.HEADER_VERSION_NO));
-   }
+            @Override
+            public ClientRequest getRequest() {
+                return mockRequest;
+            }
+        };
+        decorator.execute(mockCtx);
+        MultivaluedMap<String, String> headers = mockRequest.getHeaders();
+        assertEquals(username, headers.getFirst(RestConstant.HEADER_USERNAME));
+        assertEquals(apiKey, headers.getFirst(RestConstant.HEADER_API_KEY));
+        assertEquals(ver, headers.getFirst(RestConstant.HEADER_VERSION_NO));
+    }
 }

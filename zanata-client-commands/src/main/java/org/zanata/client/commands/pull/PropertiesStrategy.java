@@ -32,53 +32,53 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class PropertiesStrategy extends AbstractPullStrategy
-{
-   StringSet extensions = new StringSet("comment");
+public class PropertiesStrategy extends AbstractPullStrategy {
+    StringSet extensions = new StringSet("comment");
 
-   protected PropertiesStrategy(PullOptions opts)
-   {
-      super(opts);
-   }
+    protected PropertiesStrategy(PullOptions opts) {
+        super(opts);
+    }
 
-   @Override
-   public StringSet getExtensions()
-   {
-      return extensions;
-   }
+    @Override
+    public StringSet getExtensions() {
+        return extensions;
+    }
 
-   @Override
-   public boolean needsDocToWriteTrans()
-   {
-      return false;
-   }
+    @Override
+    public boolean needsDocToWriteTrans() {
+        return false;
+    }
 
-   @Override
-   public void writeSrcFile(Resource doc) throws IOException
-   {
-      PropWriter.write(doc, getOpts().getSrcDir());
-   }
+    @Override
+    public void writeSrcFile(Resource doc) throws IOException {
+        PropWriter.write(doc, getOpts().getSrcDir());
+    }
 
-   @Override
-   public File getTransFileToWrite(String docName, LocaleMapping localeMapping)
-   {
-      // TODO This is the same as PropWriter's file, but code is duplicated
-      return new File(getOpts().getTransDir(), docName + "_" + localeMapping.getJavaLocale() + ".properties");
-   }
+    @Override
+    public File
+            getTransFileToWrite(String docName, LocaleMapping localeMapping) {
+        // TODO This is the same as PropWriter's file, but code is duplicated
+        return new File(getOpts().getTransDir(), docName + "_"
+                + localeMapping.getJavaLocale() + ".properties");
+    }
 
-   @Override
-   public FileDetails writeTransFile(Resource doc, String docName, LocaleMapping localeMapping, TranslationsResource targetDoc) throws IOException
-   {
-      boolean createSkeletons = getOpts().getCreateSkeletons();
-      if (createSkeletons)
-         PropWriter.write(doc, targetDoc, getOpts().getTransDir(), docName, localeMapping.getJavaLocale(), createSkeletons);
-      else
-         PropWriter.write(null, targetDoc, getOpts().getTransDir(), docName, localeMapping.getJavaLocale(), createSkeletons);
+    @Override
+    public FileDetails writeTransFile(Resource doc, String docName,
+            LocaleMapping localeMapping, TranslationsResource targetDoc)
+            throws IOException {
+        boolean createSkeletons = getOpts().getCreateSkeletons();
+        if (createSkeletons)
+            PropWriter.write(doc, targetDoc, getOpts().getTransDir(), docName,
+                    localeMapping.getJavaLocale(), createSkeletons);
+        else
+            PropWriter.write(null, targetDoc, getOpts().getTransDir(), docName,
+                    localeMapping.getJavaLocale(), createSkeletons);
 
-      return null;
-   }
+        return null;
+    }
 
 }

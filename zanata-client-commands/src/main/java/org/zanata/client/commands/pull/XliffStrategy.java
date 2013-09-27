@@ -32,48 +32,48 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class XliffStrategy extends AbstractPullStrategy
-{
-   StringSet extensions = new StringSet("comment");
+public class XliffStrategy extends AbstractPullStrategy {
+    StringSet extensions = new StringSet("comment");
 
-   protected XliffStrategy(PullOptions opts)
-   {
-      super(opts);
-   }
+    protected XliffStrategy(PullOptions opts) {
+        super(opts);
+    }
 
-   @Override
-   public StringSet getExtensions()
-   {
-      return extensions;
-   }
+    @Override
+    public StringSet getExtensions() {
+        return extensions;
+    }
 
-   @Override
-   public boolean needsDocToWriteTrans()
-   {
-      return true;
-   }
+    @Override
+    public boolean needsDocToWriteTrans() {
+        return true;
+    }
 
-   @Override
-   public void writeSrcFile(Resource doc) throws IOException
-   {
-      XliffWriter.write(getOpts().getSrcDir(), doc, "en-US");
-   }
+    @Override
+    public void writeSrcFile(Resource doc) throws IOException {
+        XliffWriter.write(getOpts().getSrcDir(), doc, "en-US");
+    }
 
-   @Override
-   public File getTransFileToWrite(String docName, LocaleMapping localeMapping)
-   {
-      // TODO This is the same as XliffWriter's used file, but code is duplicated
-      return new File(getOpts().getTransDir(), docName + "_" + localeMapping.getLocalLocale().replace('-', '_') + ".xml");
-   }
+    @Override
+    public File
+            getTransFileToWrite(String docName, LocaleMapping localeMapping) {
+        // TODO This is the same as XliffWriter's used file, but code is
+        // duplicated
+        return new File(getOpts().getTransDir(), docName + "_"
+                + localeMapping.getLocalLocale().replace('-', '_') + ".xml");
+    }
 
-   @Override
-   public FileDetails writeTransFile(Resource doc, String docName, LocaleMapping localeMapping, TranslationsResource targetDoc) throws IOException
-   {
-      XliffWriter.write(getOpts().getTransDir(), doc, localeMapping.getLocalLocale(), targetDoc, getOpts().getCreateSkeletons());
-      return null;
-   }
+    @Override
+    public FileDetails writeTransFile(Resource doc, String docName,
+            LocaleMapping localeMapping, TranslationsResource targetDoc)
+            throws IOException {
+        XliffWriter.write(getOpts().getTransDir(), doc, localeMapping
+                .getLocalLocale(), targetDoc, getOpts().getCreateSkeletons());
+        return null;
+    }
 
 }

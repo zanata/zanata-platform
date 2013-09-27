@@ -30,33 +30,34 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class UTF8PropertiesStrategy extends PropertiesStrategy
-{
+public class UTF8PropertiesStrategy extends PropertiesStrategy {
 
-   protected UTF8PropertiesStrategy(PullOptions opts)
-   {
-      super(opts);
-   }
+    protected UTF8PropertiesStrategy(PullOptions opts) {
+        super(opts);
+    }
 
-   @Override
-   public void writeSrcFile(Resource doc) throws IOException
-   {
-      PropWriter.writeUTF8(doc, getOpts().getSrcDir());
-   }
+    @Override
+    public void writeSrcFile(Resource doc) throws IOException {
+        PropWriter.writeUTF8(doc, getOpts().getSrcDir());
+    }
 
-   @Override
-   public FileDetails writeTransFile(Resource doc, String docName, LocaleMapping localeMapping, TranslationsResource targetDoc) throws IOException
-   {
-      boolean createSkeletons = getOpts().getCreateSkeletons();
-      if (createSkeletons)
-         PropWriter.writeUTF8(doc, targetDoc, getOpts().getTransDir(), docName, localeMapping.getJavaLocale(), createSkeletons);
-      else
-         PropWriter.writeUTF8(null, targetDoc, getOpts().getTransDir(), docName, localeMapping.getJavaLocale(), createSkeletons);
+    @Override
+    public FileDetails writeTransFile(Resource doc, String docName,
+            LocaleMapping localeMapping, TranslationsResource targetDoc)
+            throws IOException {
+        boolean createSkeletons = getOpts().getCreateSkeletons();
+        if (createSkeletons)
+            PropWriter.writeUTF8(doc, targetDoc, getOpts().getTransDir(),
+                    docName, localeMapping.getJavaLocale(), createSkeletons);
+        else
+            PropWriter.writeUTF8(null, targetDoc, getOpts().getTransDir(),
+                    docName, localeMapping.getJavaLocale(), createSkeletons);
 
-      return null;
-   }
+        return null;
+    }
 
 }

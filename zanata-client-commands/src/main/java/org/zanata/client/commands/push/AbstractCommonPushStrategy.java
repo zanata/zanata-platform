@@ -27,61 +27,57 @@ import org.apache.tools.ant.DirectoryScanner;
 
 /**
  * Strategy that provides basic directory scanning for source files.
- * 
- * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
+ *
+ * @author David Mason, <a
+ *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  */
-public abstract class AbstractCommonPushStrategy<O extends PushOptions>
-{
+public abstract class AbstractCommonPushStrategy<O extends PushOptions> {
 
-   private O opts;
+    private O opts;
 
-   /**
-    * @return the Options object associated with this strategy.
-    */
-   public O getOpts()
-   {
-      return opts;
-   }
+    /**
+     * @return the Options object associated with this strategy.
+     */
+    public O getOpts() {
+        return opts;
+    }
 
-   public void setPushOptions(O opts)
-   {
-      this.opts = opts;
-   }
+    public void setPushOptions(O opts) {
+        this.opts = opts;
+    }
 
-   /**
-    * excludes should already contain paths for translation files that are to be excluded.
-    */
-   public String[] getSrcFiles(File srcDir, List<String> includes, List<String> excludes, List<String> fileExtensions, boolean useDefaultExcludes, boolean isCaseSensitive)
-   {
-      if (includes.isEmpty())
-      {
-         for (String fileExtension : fileExtensions)
-         {
-            includes.add("**/*" + fileExtension);
-         }
-      }
+    /**
+     * excludes should already contain paths for translation files that are to
+     * be excluded.
+     */
+    public String[] getSrcFiles(File srcDir, List<String> includes,
+            List<String> excludes, List<String> fileExtensions,
+            boolean useDefaultExcludes, boolean isCaseSensitive) {
+        if (includes.isEmpty()) {
+            for (String fileExtension : fileExtensions) {
+                includes.add("**/*" + fileExtension);
+            }
+        }
 
-      DirectoryScanner dirScanner = new DirectoryScanner();
+        DirectoryScanner dirScanner = new DirectoryScanner();
 
-      if (useDefaultExcludes)
-      {
-         dirScanner.addDefaultExcludes();
-      }
+        if (useDefaultExcludes) {
+            dirScanner.addDefaultExcludes();
+        }
 
-      dirScanner.setBasedir(srcDir);
+        dirScanner.setBasedir(srcDir);
 
-      dirScanner.setCaseSensitive(isCaseSensitive);
+        dirScanner.setCaseSensitive(isCaseSensitive);
 
-      dirScanner.setExcludes(excludes.toArray(new String[excludes.size()]));
-      dirScanner.setIncludes(includes.toArray(new String[includes.size()]));
-      dirScanner.scan();
-      String[] includedFiles = dirScanner.getIncludedFiles();
-      for (int i = 0; i < includedFiles.length; i++)
-      {
-         // canonicalise file separator (to handle backslash on Windows)
-         includedFiles[i] = includedFiles[i].replace(File.separator, "/");
-      }
-      return includedFiles;
-   }
+        dirScanner.setExcludes(excludes.toArray(new String[excludes.size()]));
+        dirScanner.setIncludes(includes.toArray(new String[includes.size()]));
+        dirScanner.scan();
+        String[] includedFiles = dirScanner.getIncludedFiles();
+        for (int i = 0; i < includedFiles.length; i++) {
+            // canonicalise file separator (to handle backslash on Windows)
+            includedFiles[i] = includedFiles[i].replace(File.separator, "/");
+        }
+        return includedFiles;
+    }
 
 }

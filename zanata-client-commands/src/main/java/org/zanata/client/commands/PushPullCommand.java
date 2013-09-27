@@ -53,236 +53,216 @@ import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public abstract class PushPullCommand<O extends PushPullOptions> extends ConfigurableProjectCommand<O>
-{
-   private static final Logger log = LoggerFactory.getLogger(PushPullCommand.class);
+public abstract class PushPullCommand<O extends PushPullOptions> extends
+        ConfigurableProjectCommand<O> {
+    private static final Logger log = LoggerFactory
+            .getLogger(PushPullCommand.class);
 
-   protected static final String PROJECT_TYPE_OFFLINE_PO = "offlinepo";
+    protected static final String PROJECT_TYPE_OFFLINE_PO = "offlinepo";
 
-   protected final ISourceDocResource sourceDocResource;
-   protected final ITranslatedDocResource translationResources;
-   protected URI uri;
-   protected ETagCache eTagCache;
-   private Marshaller marshaller;
-   private String modulePrefix;
+    protected final ISourceDocResource sourceDocResource;
+    protected final ITranslatedDocResource translationResources;
+    protected URI uri;
+    protected ETagCache eTagCache;
+    private Marshaller marshaller;
+    private String modulePrefix;
 
-   public PushPullCommand(O opts, ZanataProxyFactory factory, ISourceDocResource sourceDocResource, ITranslatedDocResource translationResources, URI uri)
-   {
-      super(opts, factory);
-      this.sourceDocResource = sourceDocResource;
-      this.translationResources = translationResources;
-      this.uri = uri;
-      this.modulePrefix = opts.getEnableModules() ? getOpts().getCurrentModule() + opts.getModuleSuffix() : "";
-      this.loadETagCache();
-   }
+    public PushPullCommand(O opts, ZanataProxyFactory factory,
+            ISourceDocResource sourceDocResource,
+            ITranslatedDocResource translationResources, URI uri) {
+        super(opts, factory);
+        this.sourceDocResource = sourceDocResource;
+        this.translationResources = translationResources;
+        this.uri = uri;
+        this.modulePrefix =
+                opts.getEnableModules() ? getOpts().getCurrentModule()
+                        + opts.getModuleSuffix() : "";
+        this.loadETagCache();
+    }
 
-   private PushPullCommand(O opts, ZanataProxyFactory factory)
-   {
-      this(opts, factory,
-            factory.getSourceDocResource(opts.getProj(), opts.getProjectVersion()),
-            factory.getTranslatedDocResource(opts.getProj(), opts.getProjectVersion()),
-            factory.getResourceURI(opts.getProj(), opts.getProjectVersion()));
-   }
+    private PushPullCommand(O opts, ZanataProxyFactory factory) {
+        this(opts, factory, factory.getSourceDocResource(opts.getProj(),
+                opts.getProjectVersion()), factory.getTranslatedDocResource(
+                opts.getProj(), opts.getProjectVersion()), factory
+                .getResourceURI(opts.getProj(), opts.getProjectVersion()));
+    }
 
-   public PushPullCommand(O opts)
-   {
-      this(opts, OptionsUtil.createRequestFactory(opts));
-   }
+    public PushPullCommand(O opts) {
+        this(opts, OptionsUtil.createRequestFactory(opts));
+    }
 
-   protected void confirmWithUser(String message) throws IOException
-   {
-      if (getOpts().isInteractiveMode())
-      {
-         Console console = System.console();
-         if (console == null)
-         {
-            throw new RuntimeException("console not available: please run Maven from a console, or use batch mode option (-B)");
-         }
-         console.printf(message + "\nAre you sure (y/n)? ");
-         expectYes(console);
-      }
-   }
-
-   protected static void expectYes(Console console) throws IOException
-   {
-      String line = console.readLine();
-      if (line == null)
-      {
-         throw new IOException("console stream closed");
-      }
-      if (!line.toLowerCase().equals("y") && !line.toLowerCase().equals("yes"))
-      {
-         throw new RuntimeException("operation aborted by user");
-      }
-   }
-
-   protected void debug(Object jaxbElement)
-   {
-      try
-      {
-         if (getOpts().isDebugSet())
-         {
-            StringWriter writer = new StringWriter();
-            getMarshaller().marshal(jaxbElement, writer);
-            log.debug("{}", writer);
-         }
-      }
-      catch (JAXBException e)
-      {
-         log.debug(e.toString(), e);
-      }
-   }
-
-   /**
-    * @return
-    * @throws JAXBException 
-    */
-   private Marshaller getMarshaller() throws JAXBException
-   {
-      if (marshaller == null)
-      {
-         JAXBContext jc = JAXBContext.newInstance(Resource.class, TranslationsResource.class);
-         marshaller = jc.createMarshaller();
-         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-      }
-      return marshaller;
-   }
-
-   protected String qualifiedDocName(String localDocName)
-   {
-      String qualifiedDocName = modulePrefix + localDocName;
-      return qualifiedDocName;
-   }
-
-   protected String unqualifiedDocName(String qualifiedDocName)
-   {
-      assert qualifiedDocName.startsWith(modulePrefix);
-      return qualifiedDocName.substring(modulePrefix.length());
-   }
-
-   protected boolean belongsToCurrentModule(String qualifiedDocName)
-   {
-      return qualifiedDocName.startsWith(modulePrefix);
-   }
-
-   protected List<String> getQualifiedDocNamesForCurrentModuleFromServer()
-   {
-      List<ResourceMeta> remoteDocList = getDocListForProjectIterationFromServer();
-      List<String> docNames = new ArrayList<String>();
-      for (ResourceMeta doc : remoteDocList)
-      {
-         // NB ResourceMeta.name = HDocument.docId
-         String qualifiedDocName = doc.getName();
-         if (getOpts().getEnableModules())
-         {
-            if (belongsToCurrentModule(qualifiedDocName))
-            {
-               docNames.add(qualifiedDocName);
+    protected void confirmWithUser(String message) throws IOException {
+        if (getOpts().isInteractiveMode()) {
+            Console console = System.console();
+            if (console == null) {
+                throw new RuntimeException(
+                        "console not available: please run Maven from a console, or use batch mode option (-B)");
             }
-            else
-            {
-               log.debug("found extra-modular document: {}", qualifiedDocName);
+            console.printf(message + "\nAre you sure (y/n)? ");
+            expectYes(console);
+        }
+    }
+
+    protected static void expectYes(Console console) throws IOException {
+        String line = console.readLine();
+        if (line == null) {
+            throw new IOException("console stream closed");
+        }
+        if (!line.toLowerCase().equals("y")
+                && !line.toLowerCase().equals("yes")) {
+            throw new RuntimeException("operation aborted by user");
+        }
+    }
+
+    protected void debug(Object jaxbElement) {
+        try {
+            if (getOpts().isDebugSet()) {
+                StringWriter writer = new StringWriter();
+                getMarshaller().marshal(jaxbElement, writer);
+                log.debug("{}", writer);
             }
-         }
-         else
-         {
-            docNames.add(qualifiedDocName);
-         }
-      }
-      return docNames;
-   }
+        } catch (JAXBException e) {
+            log.debug(e.toString(), e);
+        }
+    }
 
-   // TODO use a cache which will be accessible to all invocations
-   protected List<ResourceMeta> getDocListForProjectIterationFromServer()
-   {
-      ClientResponse<List<ResourceMeta>> getResponse = sourceDocResource.get(null);
-      ClientUtility.checkResult(getResponse, uri);
-      List<ResourceMeta> remoteDocList = getResponse.getEntity();
-      return remoteDocList;
-   }
+    /**
+     * @return
+     * @throws JAXBException
+     */
+    private Marshaller getMarshaller() throws JAXBException {
+        if (marshaller == null) {
+            JAXBContext jc =
+                    JAXBContext.newInstance(Resource.class,
+                            TranslationsResource.class);
+            marshaller = jc.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        }
+        return marshaller;
+    }
 
-   /**
-    * Filters the project's list of locales
-    * @param projectLocales locales defined by the project's zanata.xml
-    * @param locales locales requested by the user (eg Maven param, command line option)
-    * @return the filtered list of locales
-    * @throws ConfigException if one of the locales was not found in zanata.xml
-    */
-   public static LocaleList getLocaleMapList(LocaleList projectLocales, String[] locales)
-   {
-      if(locales == null || locales.length <= 0)
-      {
-         return projectLocales;
-      }
-      else
-      {
-         // filter the locales that are specified in both the global config and the parameter list
-         LocaleList effectiveLocales = new LocaleList();
-         for( String locale : locales )
-         {
-            boolean foundLocale = false;
-            for(LocaleMapping lm : projectLocales)
-            {
-               if( lm.getLocale().equals(locale) ||
-                     (lm.getMapFrom() != null && lm.getMapFrom().equals( locale )) )
-               {
-                  effectiveLocales.add(lm);
-                  foundLocale = true;
-                  break;
-               }
+    protected String qualifiedDocName(String localDocName) {
+        String qualifiedDocName = modulePrefix + localDocName;
+        return qualifiedDocName;
+    }
+
+    protected String unqualifiedDocName(String qualifiedDocName) {
+        assert qualifiedDocName.startsWith(modulePrefix);
+        return qualifiedDocName.substring(modulePrefix.length());
+    }
+
+    protected boolean belongsToCurrentModule(String qualifiedDocName) {
+        return qualifiedDocName.startsWith(modulePrefix);
+    }
+
+    protected List<String> getQualifiedDocNamesForCurrentModuleFromServer() {
+        List<ResourceMeta> remoteDocList =
+                getDocListForProjectIterationFromServer();
+        List<String> docNames = new ArrayList<String>();
+        for (ResourceMeta doc : remoteDocList) {
+            // NB ResourceMeta.name = HDocument.docId
+            String qualifiedDocName = doc.getName();
+            if (getOpts().getEnableModules()) {
+                if (belongsToCurrentModule(qualifiedDocName)) {
+                    docNames.add(qualifiedDocName);
+                } else {
+                    log.debug("found extra-modular document: {}",
+                            qualifiedDocName);
+                }
+            } else {
+                docNames.add(qualifiedDocName);
+            }
+        }
+        return docNames;
+    }
+
+    // TODO use a cache which will be accessible to all invocations
+    protected List<ResourceMeta> getDocListForProjectIterationFromServer() {
+        ClientResponse<List<ResourceMeta>> getResponse =
+                sourceDocResource.get(null);
+        ClientUtility.checkResult(getResponse, uri);
+        List<ResourceMeta> remoteDocList = getResponse.getEntity();
+        return remoteDocList;
+    }
+
+    /**
+     * Filters the project's list of locales
+     *
+     * @param projectLocales
+     *            locales defined by the project's zanata.xml
+     * @param locales
+     *            locales requested by the user (eg Maven param, command line
+     *            option)
+     * @return the filtered list of locales
+     * @throws ConfigException
+     *             if one of the locales was not found in zanata.xml
+     */
+    public static LocaleList getLocaleMapList(LocaleList projectLocales,
+            String[] locales) {
+        if (locales == null || locales.length <= 0) {
+            return projectLocales;
+        } else {
+            // filter the locales that are specified in both the global config
+            // and the parameter list
+            LocaleList effectiveLocales = new LocaleList();
+            for (String locale : locales) {
+                boolean foundLocale = false;
+                for (LocaleMapping lm : projectLocales) {
+                    if (lm.getLocale().equals(locale)
+                            || (lm.getMapFrom() != null && lm.getMapFrom()
+                                    .equals(locale))) {
+                        effectiveLocales.add(lm);
+                        foundLocale = true;
+                        break;
+                    }
+                }
+
+                if (!foundLocale) {
+                    throw new ConfigException("Specified locale '" + locale
+                            + "' was not found in zanata.xml!");
+                }
+            }
+            return effectiveLocales;
+        }
+    }
+
+    protected void loadETagCache() {
+        try {
+            String location =
+                    ".zanata-cache" + File.separator + "etag-cache.xml";
+            if (modulePrefix != null && !modulePrefix.trim().isEmpty()) {
+                location = modulePrefix + File.separator + location;
+            }
+            eTagCache =
+                    ETagCacheReaderWriter.readCache(new FileInputStream(
+                            location));
+        } catch (Exception e) {
+            // could not read for some reason, use a new one
+            eTagCache = new ETagCache();
+        }
+    }
+
+    protected void storeETagCache() {
+        try {
+            String location =
+                    ".zanata-cache" + File.separator + "etag-cache.xml";
+            if (modulePrefix != null && !modulePrefix.trim().isEmpty()) {
+                location = modulePrefix + File.separator + location;
             }
 
-            if(!foundLocale)
-            {
-               throw new ConfigException("Specified locale '" + locale + "' was not found in zanata.xml!" );
+            File targetFile = new File(location);
+            if (!targetFile.exists()) {
+                targetFile.getParentFile().mkdirs();
             }
-         }
-         return effectiveLocales;
-      }
-   }
-
-   protected void loadETagCache()
-   {
-      try
-      {
-         String location = ".zanata-cache" + File.separator + "etag-cache.xml";
-         if( modulePrefix != null && !modulePrefix.trim().isEmpty() )
-         {
-            location = modulePrefix + File.separator + location;
-         }
-         eTagCache = ETagCacheReaderWriter.readCache( new FileInputStream(location));
-      }
-      catch (Exception e)
-      {
-         // could not read for some reason, use a new one
-         eTagCache = new ETagCache();
-      }
-   }
-
-   protected void storeETagCache()
-   {
-      try
-      {
-         String location = ".zanata-cache" + File.separator + "etag-cache.xml";
-         if( modulePrefix != null && !modulePrefix.trim().isEmpty() )
-         {
-            location = modulePrefix + File.separator + location;
-         }
-
-         File targetFile = new File(location);
-         if( !targetFile.exists() )
-         {
-            targetFile.getParentFile().mkdirs();
-         }
-         ETagCacheReaderWriter.writeCache(this.eTagCache, new FileOutputStream(location));
-      }
-      catch (FileNotFoundException e)
-      {
-         log.warn("Could not create Zanata ETag cache file. Will proceed without it.");
-      }
-   }
+            ETagCacheReaderWriter.writeCache(this.eTagCache,
+                    new FileOutputStream(location));
+        } catch (FileNotFoundException e) {
+            log.warn("Could not create Zanata ETag cache file. Will proceed without it.");
+        }
+    }
 
 }

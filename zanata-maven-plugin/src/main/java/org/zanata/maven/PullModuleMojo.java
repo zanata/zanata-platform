@@ -23,17 +23,15 @@ package org.zanata.maven;
 
 /**
  * Pulls translated text from Zanata.
- * 
+ *
  * @goal pull-module
  * @requiresProject true
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
-public class PullModuleMojo extends AbstractPullMojo
-{
-   @Override
-   public boolean getEnableModules()
-   {
-      return true;
-   }
+public class PullModuleMojo extends AbstractPullMojo {
+    @Override
+    public boolean getEnableModules() {
+        return true;
+    }
 
 }

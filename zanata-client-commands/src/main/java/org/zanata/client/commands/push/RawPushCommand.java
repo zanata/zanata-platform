@@ -57,473 +57,453 @@ import org.zanata.rest.dto.ChunkUploadResponse;
 
 /**
  * Command to send files directly to the server without parsing on the client.
- * 
- * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
+ *
+ * @author David Mason, <a
+ *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  *
  */
-public class RawPushCommand extends PushPullCommand<PushOptions>
-{
-   private static final Logger log = LoggerFactory.getLogger(PushCommand.class);
+public class RawPushCommand extends PushPullCommand<PushOptions> {
+    private static final Logger log = LoggerFactory
+            .getLogger(PushCommand.class);
 
-   protected final IFileResource fileResource;
+    protected final IFileResource fileResource;
 
-   public RawPushCommand(PushOptions opts)
-   {
-      super(opts);
-      this.fileResource = getRequestFactory().getFileResource();
-   }
+    public RawPushCommand(PushOptions opts) {
+        super(opts);
+        this.fileResource = getRequestFactory().getFileResource();
+    }
 
-   public RawPushCommand(PushOptions opts, ZanataProxyFactory factory, ISourceDocResource sourceDocResource, ITranslatedDocResource translationResources, URI uri)
-   {
-      super(opts, factory, sourceDocResource, translationResources, uri);
-      this.fileResource = factory.getFileResource();
-   }
+    public RawPushCommand(PushOptions opts, ZanataProxyFactory factory,
+            ISourceDocResource sourceDocResource,
+            ITranslatedDocResource translationResources, URI uri) {
+        super(opts, factory, sourceDocResource, translationResources, uri);
+        this.fileResource = factory.getFileResource();
+    }
 
-   @Override
-   public void run() throws Exception
-   {
-      PushCommand.logOptions(log, getOpts());
-      log.warn("Using EXPERIMENTAL project type 'file'.");
+    @Override
+    public void run() throws Exception {
+        PushCommand.logOptions(log, getOpts());
+        log.warn("Using EXPERIMENTAL project type 'file'.");
 
-      // only supporting single module for now
+        // only supporting single module for now
 
-      File sourceDir = getOpts().getSrcDir();
-      if (!sourceDir.exists())
-      {
-         boolean enableModules = getOpts().getEnableModules();
-         // TODO remove when modules implemented
-         if (enableModules)
-         {
-            log.warn("enableModules=true but multi-modules not yet supported for this command. Using single module push.");
-            enableModules = false;
-         }
+        File sourceDir = getOpts().getSrcDir();
+        if (!sourceDir.exists()) {
+            boolean enableModules = getOpts().getEnableModules();
+            // TODO remove when modules implemented
+            if (enableModules) {
+                log.warn("enableModules=true but multi-modules not yet supported for this command. Using single module push.");
+                enableModules = false;
+            }
 
-         if (enableModules)
-         {
-            log.info("source directory '" + sourceDir + "' not found; skipping docs push for module " + getOpts().getCurrentModule());
+            if (enableModules) {
+                log.info("source directory '" + sourceDir
+                        + "' not found; skipping docs push for module "
+                        + getOpts().getCurrentModule());
+                return;
+            } else {
+                throw new RuntimeException("directory '" + sourceDir
+                        + "' does not exist - check "
+                        + getOpts().getSrcDirParameterName() + " option");
+            }
+        }
+
+        RawPushStrategy strat = new RawPushStrategy();
+        strat.setPushOptions(getOpts());
+
+        List<String> types = new ArrayList<String>();
+
+        ClientResponse<String> response = fileResource.acceptedFileTypes();
+        StringSet serverAcceptedTypes = new StringSet(response.getEntity());
+        if (getOpts().getFileTypes() != null) {
+            for (String type : getOpts().getFileTypes()) {
+                if (serverAcceptedTypes.contains(type)) {
+                    types.add(type);
+                } else {
+                    log.warn(
+                            "Requested type '{}' is not supported by the target server and will be ignored.",
+                            type);
+                }
+            }
+        }
+
+        if (types.isEmpty()) {
+            log.info("no valid types specified; nothing to do");
             return;
-         }
-         else
-         {
-            throw new RuntimeException("directory '" + sourceDir + "' does not exist - check " + getOpts().getSrcDirParameterName() + " option");
-         }
-      }
+        }
 
-      RawPushStrategy strat = new RawPushStrategy();
-      strat.setPushOptions(getOpts());
+        String[] srcFiles =
+                strat.getSrcFiles(sourceDir, getOpts().getIncludes(), getOpts()
+                        .getExcludes(), types, true, getOpts()
+                        .getCaseSensitive());
 
-      List<String> types = new ArrayList<String>();
+        SortedSet<String> localDocNames =
+                new TreeSet<String>(Arrays.asList(srcFiles));
 
-      ClientResponse<String> response = fileResource.acceptedFileTypes();
-      StringSet serverAcceptedTypes = new StringSet(response.getEntity());
-      if (getOpts().getFileTypes() != null)
-      {
-         for (String type : getOpts().getFileTypes())
-         {
-            if (serverAcceptedTypes.contains(type))
-            {
-               types.add(type);
+        // TODO handle obsolete document deletion
+        log.warn("Obsolete document removal is not yet implemented, no documents will be removed from the server.");
+
+        SortedSet<String> docsToPush = localDocNames;
+        if (getOpts().getFromDoc() != null) {
+            if (!localDocNames.contains(getOpts().getFromDoc())) {
+                log.error(
+                        "Document with id {} not found, unable to start push from unknown document. Aborting.",
+                        getOpts().getFromDoc());
+                // FIXME should this be throwing an exception to properly abort?
+                // need to see behaviour with modules
+                return;
             }
-            else
-            {
-               log.warn("Requested type '{}' is not supported by the target server and will be ignored.", type);
-            }
-         }
-      }
+            docsToPush = localDocNames.tailSet(getOpts().getFromDoc());
+            int numSkippedDocs = localDocNames.size() - docsToPush.size();
+            log.info("Skipping {} document(s) before {}.", numSkippedDocs,
+                    getOpts().getFromDoc());
+        }
 
-      if (types.isEmpty())
-      {
-         log.info("no valid types specified; nothing to do");
-         return;
-      }
-
-      String[] srcFiles = strat.getSrcFiles(sourceDir, getOpts().getIncludes(), getOpts().getExcludes(), types, true, getOpts().getCaseSensitive());
-
-      SortedSet<String> localDocNames = new TreeSet<String>(Arrays.asList(srcFiles));
-
-      // TODO handle obsolete document deletion
-      log.warn("Obsolete document removal is not yet implemented, no documents will be removed from the server.");
-
-      SortedSet<String> docsToPush = localDocNames;
-      if (getOpts().getFromDoc() != null)
-      {
-         if (!localDocNames.contains(getOpts().getFromDoc()))
-         {
-            log.error("Document with id {} not found, unable to start push from unknown document. Aborting.", getOpts().getFromDoc());
-            // FIXME should this be throwing an exception to properly abort?
-            // need to see behaviour with modules
+        if (docsToPush.isEmpty()) {
+            log.info("no documents in module: {}; nothing to do", getOpts()
+                    .getCurrentModule());
             return;
-         }
-         docsToPush = localDocNames.tailSet(getOpts().getFromDoc());
-         int numSkippedDocs = localDocNames.size() - docsToPush.size();
-         log.info("Skipping {} document(s) before {}.", numSkippedDocs, getOpts().getFromDoc());
-      }
-
-      if (docsToPush.isEmpty())
-      {
-         log.info("no documents in module: {}; nothing to do", getOpts().getCurrentModule());
-         return;
-      }
-      else
-      {
-         log.info("Found source documents:");
-         for (String docName : localDocNames)
-         {
-            if (docsToPush.contains(docName))
-            {
-               log.info("           {}", docName);
+        } else {
+            log.info("Found source documents:");
+            for (String docName : localDocNames) {
+                if (docsToPush.contains(docName)) {
+                    log.info("           {}", docName);
+                } else {
+                    log.info("(to skip)  {}", docName);
+                }
             }
-            else
-            {
-               log.info("(to skip)  {}", docName);
+        }
+
+        if (getOpts().getPushType() == PushPullType.Trans
+                || getOpts().getPushType() == PushPullType.Both) {
+            if (getOpts().getLocaleMapList() == null)
+                throw new ConfigException("pushType set to '"
+                        + getOpts().getPushType()
+                        + "', but zanata.xml contains no <locales>");
+            log.warn("pushType set to '"
+                    + getOpts().getPushType()
+                    + "': existing translations on server may be overwritten/deleted");
+
+            if (getOpts().getPushType() == PushPullType.Both) {
+                confirmWithUser("This will overwrite existing documents AND TRANSLATIONS on the server.\n"); // ,
+                                                                                                             // and
+                                                                                                             // delete
+                                                                                                             // obsolete
+                                                                                                             // documents.\n");
+            } else if (getOpts().getPushType() == PushPullType.Trans) {
+                confirmWithUser("This will overwrite existing TRANSLATIONS on the server.\n");
             }
-         }
-      }
+        } else {
+            // confirmWithUser("This will overwrite existing documents on the server, and delete obsolete documents.\n");
+            confirmWithUser("This will overwrite existing documents on the server.\n");
+        }
 
-      if (getOpts().getPushType() == PushPullType.Trans || getOpts().getPushType() == PushPullType.Both)
-      {
-         if (getOpts().getLocaleMapList() == null)
-            throw new ConfigException("pushType set to '" + getOpts().getPushType() + "', but zanata.xml contains no <locales>");
-         log.warn("pushType set to '" + getOpts().getPushType() + "': existing translations on server may be overwritten/deleted");
+        boolean hasErrors = false;
 
-         if (getOpts().getPushType() == PushPullType.Both)
-         {
-            confirmWithUser("This will overwrite existing documents AND TRANSLATIONS on the server.\n"); //, and delete obsolete documents.\n");
-         }
-         else if (getOpts().getPushType() == PushPullType.Trans)
-         {
-            confirmWithUser("This will overwrite existing TRANSLATIONS on the server.\n");
-         }
-      }
-      else
-      {
-//         confirmWithUser("This will overwrite existing documents on the server, and delete obsolete documents.\n");
-         confirmWithUser("This will overwrite existing documents on the server.\n");
-      }
+        for (final String localDocName : docsToPush) {
+            try {
+                final String fileType = getExtensionFor(localDocName);
+                final String qualifiedDocName = qualifiedDocName(localDocName);
+                boolean sourcePushed = false;
+                if (getOpts().getPushType() == PushPullType.Source
+                        || getOpts().getPushType() == PushPullType.Both) {
+                    if (!getOpts().isDryRun()) {
+                        sourcePushed =
+                                pushSourceDocumentToServer(sourceDir,
+                                        localDocName, qualifiedDocName,
+                                        fileType);
+                        // ClientUtility.checkResult(putResponse, uri);
+                        if (!sourcePushed) {
+                            hasErrors = true;
+                        }
+                    } else {
+                        log.info(
+                                "pushing source doc [qualifiedname={}] to server (skipped due to dry run)",
+                                qualifiedDocName);
+                    }
+                }
 
-      boolean hasErrors = false;
+                if (getOpts().getPushType() == PushPullType.Trans
+                        || getOpts().getPushType() == PushPullType.Both) {
+                    strat.visitTranslationFiles(localDocName,
+                            new TranslationFilesVisitor() {
 
-      for (final String localDocName : docsToPush)
-      {
-         try
-         {
-            final String fileType = getExtensionFor(localDocName);
-            final String qualifiedDocName = qualifiedDocName(localDocName);
-            boolean sourcePushed = false;
-            if (getOpts().getPushType() == PushPullType.Source || getOpts().getPushType() == PushPullType.Both)
-            {
-               if (!getOpts().isDryRun())
-               {
-                  sourcePushed = pushSourceDocumentToServer(sourceDir, localDocName, qualifiedDocName, fileType);
-//               ClientUtility.checkResult(putResponse, uri);
-                  if (!sourcePushed)
-                  {
-                     hasErrors = true;
-                  }
-               }
-               else
-               {
-                  log.info("pushing source doc [qualifiedname={}] to server (skipped due to dry run)", qualifiedDocName);
-               }
+                                @Override
+                                public void visit(LocaleMapping locale,
+                                        File translatedDoc) {
+                                    log.info("pushing {} translation of {}",
+                                            locale.getLocale(),
+                                            qualifiedDocName);
+                                    pushDocumentToServer(qualifiedDocName,
+                                            fileType, locale.getLocale(),
+                                            translatedDoc);
+                                }
+                            });
+                }
+            } catch (RuntimeException e) {
+                log.error(
+                        "Operation failed.\n\n    To retry from the last document, please add the option: {}\n",
+                        getOpts().buildFromDocArgument(localDocName));
+                throw e;
             }
+        }
 
-            if (getOpts().getPushType() == PushPullType.Trans || getOpts().getPushType() == PushPullType.Both)
-            {
-               strat.visitTranslationFiles(localDocName, new TranslationFilesVisitor()
-               {
+        if (hasErrors) {
+            throw new Exception(
+                    "Push completed with errors, see log for details.");
+        }
 
-                  @Override
-                  public void visit(LocaleMapping locale, File translatedDoc)
-                  {
-                     log.info("pushing {} translation of {}", locale.getLocale(), qualifiedDocName);
-                     pushDocumentToServer(qualifiedDocName, fileType, locale.getLocale(), translatedDoc);
-                  }
-               });
+    }
+
+    /**
+     * @param localDocName
+     * @return extension of document (all characters after final '.'), or null
+     *         if no characters after a final . are found.
+     */
+    private String getExtensionFor(final String localDocName) {
+        if (localDocName == null || localDocName.length() == 0
+                || localDocName.endsWith(".") || !localDocName.contains(".")) {
+            return null;
+        }
+        return localDocName.substring(localDocName.lastIndexOf('.') + 1);
+    }
+
+    /**
+     *
+     * @param sourceDir
+     * @param localDocName
+     * @param qualifiedDocName
+     *            docName with added module prefix
+     * @return true if the push was successful
+     * @throws FileNotFoundException
+     * @throws NoSuchAlgorithmException
+     * @throws IOException
+     */
+    private boolean pushSourceDocumentToServer(File sourceDir,
+            String localDocName, String qualifiedDocName, String fileType)
+            throws FileNotFoundException, NoSuchAlgorithmException, IOException {
+        log.info("pushing source document [{}] to server", qualifiedDocName);
+
+        String locale = null;
+
+        File srcFile = new File(sourceDir, localDocName);
+
+        pushDocumentToServer(qualifiedDocName, fileType, locale, srcFile);
+        return true;
+    }
+
+    /**
+     * @param docId
+     * @param fileType
+     * @param locale
+     * @param docFile
+     */
+    private void pushDocumentToServer(String docId, String fileType,
+            String locale, File docFile) {
+        String md5hash = calculateFileHash(docFile);
+        if (docFile.length() <= getOpts().getChunkSize()) {
+            log.info("    transmitting file [{}] as single chunk",
+                    docFile.getAbsolutePath());
+            InputStream fileStream;
+            try {
+                fileStream = new FileInputStream(docFile);
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
             }
-         }
-         catch (RuntimeException e)
-         {
-            log.error("Operation failed.\n\n    To retry from the last document, please add the option: {}\n", getOpts().buildFromDocArgument(localDocName));
-            throw e;
-         }
-      }
+            DocumentFileUploadForm uploadForm =
+                    generateUploadForm(true, true, fileType, md5hash,
+                            docFile.length(), fileStream);
+            ClientResponse<ChunkUploadResponse> response =
+                    uploadDocumentPart(docId, locale, uploadForm);
+            checkChunkUploadStatus(response);
+        } else {
+            StreamChunker chunker;
+            try {
+                chunker = new StreamChunker(docFile, getOpts().getChunkSize());
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+            log.info("    transmitting file [{}] as {} chunks",
+                    docFile.getAbsolutePath(), chunker.totalChunks());
+            ClientResponse<ChunkUploadResponse> uploadResponse;
+            DocumentFileUploadForm uploadForm;
+            Long uploadId = null;
 
-      if (hasErrors)
-      {
-         throw new Exception("Push completed with errors, see log for details.");
-      }
+            for (InputStream chunkStream : chunker) {
+                log.info("        pushing chunk {} of {}",
+                        chunker.currentChunkNumber(), chunker.totalChunks());
+                boolean isFirst = chunker.currentChunkNumber() == 1;
+                boolean isLast = chunker.getRemainingChunks() == 0;
+                long chunkSize = chunker.currentChunkSize();
+                uploadForm =
+                        generateUploadForm(isFirst, isLast, fileType, md5hash,
+                                chunkSize, chunkStream);
+                if (!isFirst) {
+                    uploadForm.setUploadId(uploadId);
+                }
+                uploadResponse = uploadDocumentPart(docId, locale, uploadForm);
+                checkChunkUploadStatus(uploadResponse);
+                if (isFirst) {
+                    uploadId = uploadResponse.getEntity().getUploadId();
+                    if (uploadId == null) {
+                        throw new RuntimeException(
+                                "server did not return upload id");
+                    }
+                }
+            }
+        }
+    }
 
-   }
+    private void checkChunkUploadStatus(
+            ClientResponse<ChunkUploadResponse> uploadResponse) {
+        if (uploadResponse.getStatus() >= 300) {
+            throw new RuntimeException("Server returned error status: "
+                    + uploadResponse.getStatus() + ". Error message: "
+                    + uploadResponse.getEntity().getErrorMessage());
+        }
+    }
 
-   /**
-    * @param localDocName
-    * @return extension of document (all characters after final '.'), or null if no characters after
-    *         a final . are found.
-    */
-   private String getExtensionFor(final String localDocName)
-   {
-      if (localDocName == null || localDocName.length() == 0 || localDocName.endsWith(".") || !localDocName.contains("."))
-      {
-         return null;
-      }
-      return localDocName.substring(localDocName.lastIndexOf('.') + 1);
-   }
+    private DocumentFileUploadForm generateUploadForm(boolean isFirst,
+            boolean isLast, String fileType, String md5hash, long streamSize,
+            InputStream fileStream) {
+        DocumentFileUploadForm uploadForm = new DocumentFileUploadForm();
+        uploadForm.setFirst(isFirst);
+        uploadForm.setLast(isLast);
+        uploadForm.setFileType(fileType);
+        uploadForm.setHash(md5hash);
+        uploadForm.setSize(streamSize);
+        uploadForm.setFileStream(fileStream);
+        return uploadForm;
+    }
 
-   /**
-    * 
-    * @param sourceDir
-    * @param localDocName
-    * @param qualifiedDocName docName with added module prefix
-    * @return true if the push was successful
-    * @throws FileNotFoundException
-    * @throws NoSuchAlgorithmException
-    * @throws IOException
-    */
-   private boolean pushSourceDocumentToServer(File sourceDir, String localDocName, String qualifiedDocName, String fileType) throws FileNotFoundException, NoSuchAlgorithmException, IOException
-   {
-      log.info("pushing source document [{}] to server", qualifiedDocName);
+    private ClientResponse<ChunkUploadResponse> uploadDocumentPart(
+            String docName, String locale, DocumentFileUploadForm uploadForm) {
+        ConsoleUtils.startProgressFeedback();
+        ClientResponse<ChunkUploadResponse> response;
+        if (locale == null) {
+            response =
+                    fileResource.uploadSourceFile(getOpts().getProj(),
+                            getOpts().getProjectVersion(), docName, uploadForm);
+        } else {
+            response =
+                    fileResource.uploadTranslationFile(getOpts().getProj(),
+                            getOpts().getProjectVersion(), locale, docName,
+                            getOpts().getMergeType(), uploadForm);
+        }
+        log.debug("response from server: {}", response.getEntity());
+        ConsoleUtils.endProgressFeedback();
+        return response;
+    }
 
-      String locale = null;
-
-      File srcFile = new File(sourceDir, localDocName);
-
-      pushDocumentToServer(qualifiedDocName, fileType, locale, srcFile);
-      return true;
-   }
-
-   /**
-    * @param docId
-    * @param fileType
-    * @param locale
-    * @param docFile
-    */
-   private void pushDocumentToServer(String docId, String fileType, String locale, File docFile)
-   {
-      String md5hash = calculateFileHash(docFile);
-      if (docFile.length() <= getOpts().getChunkSize())
-      {
-         log.info("    transmitting file [{}] as single chunk", docFile.getAbsolutePath());
-         InputStream fileStream;
-         try
-         {
-            fileStream = new FileInputStream(docFile);
-         }
-         catch (FileNotFoundException e)
-         {
+    private String calculateFileHash(File srcFile) {
+        InputStream fileStream;
+        try {
+            fileStream = new FileInputStream(srcFile);
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            fileStream = new DigestInputStream(fileStream, md);
+            byte[] buffer = new byte[256];
+            while (fileStream.read(buffer) > 0) {
+                // continue
+            }
+            fileStream.close();
+            String md5hash = new String(Hex.encodeHex(md.digest()));
+            return md5hash;
+        } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
-         }
-         DocumentFileUploadForm uploadForm = generateUploadForm(true, true, fileType, md5hash, docFile.length(), fileStream);
-         ClientResponse<ChunkUploadResponse> response = uploadDocumentPart(docId, locale, uploadForm);
-         checkChunkUploadStatus(response);
-      }
-      else
-      {
-         StreamChunker chunker;
-         try
-         {
-            chunker = new StreamChunker(docFile, getOpts().getChunkSize());
-         }
-         catch (FileNotFoundException e)
-         {
+        } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
-         }
-         log.info("    transmitting file [{}] as {} chunks", docFile.getAbsolutePath(), chunker.totalChunks());
-         ClientResponse<ChunkUploadResponse> uploadResponse;
-         DocumentFileUploadForm uploadForm;
-         Long uploadId = null;
-
-         for (InputStream chunkStream : chunker)
-         {
-            log.info("        pushing chunk {} of {}", chunker.currentChunkNumber(), chunker.totalChunks());
-            boolean isFirst = chunker.currentChunkNumber() == 1;
-            boolean isLast = chunker.getRemainingChunks() == 0;
-            long chunkSize = chunker.currentChunkSize();
-            uploadForm = generateUploadForm(isFirst, isLast, fileType, md5hash, chunkSize, chunkStream);
-            if (!isFirst)
-            {
-               uploadForm.setUploadId(uploadId);
-            }
-            uploadResponse = uploadDocumentPart(docId, locale, uploadForm);
-            checkChunkUploadStatus(uploadResponse);
-            if (isFirst)
-            {
-               uploadId = uploadResponse.getEntity().getUploadId();
-               if (uploadId == null)
-               {
-                  throw new RuntimeException("server did not return upload id");
-               }
-            }
-         }
-      }
-   }
-
-   private void checkChunkUploadStatus(ClientResponse<ChunkUploadResponse> uploadResponse)
-   {
-      if (uploadResponse.getStatus() >= 300) {
-         throw new RuntimeException("Server returned error status: " + uploadResponse.getStatus()
-               + ". Error message: " + uploadResponse.getEntity().getErrorMessage());
-      }
-   }
-
-   private DocumentFileUploadForm generateUploadForm(boolean isFirst, boolean isLast, String fileType, String md5hash, long streamSize, InputStream fileStream)
-   {
-      DocumentFileUploadForm uploadForm = new DocumentFileUploadForm();
-      uploadForm.setFirst(isFirst);
-      uploadForm.setLast(isLast);
-      uploadForm.setFileType(fileType);
-      uploadForm.setHash(md5hash);
-      uploadForm.setSize(streamSize);
-      uploadForm.setFileStream(fileStream);
-      return uploadForm;
-   }
-
-   private ClientResponse<ChunkUploadResponse> uploadDocumentPart(String docName, String locale, DocumentFileUploadForm uploadForm)
-   {
-      ConsoleUtils.startProgressFeedback();
-      ClientResponse<ChunkUploadResponse> response;
-      if (locale == null)
-      {
-         response = fileResource.uploadSourceFile(getOpts().getProj(), getOpts().getProjectVersion(), docName, uploadForm);
-      }
-      else
-      {
-         response = fileResource.uploadTranslationFile(getOpts().getProj(), getOpts().getProjectVersion(), locale, docName, getOpts().getMergeType(), uploadForm);
-      }
-      log.debug("response from server: {}", response.getEntity());
-      ConsoleUtils.endProgressFeedback();
-      return response;
-   }
-
-   private String calculateFileHash(File srcFile)
-   {
-      InputStream fileStream;
-      try
-      {
-         fileStream = new FileInputStream(srcFile);
-         MessageDigest md = MessageDigest.getInstance("MD5");
-         fileStream = new DigestInputStream(fileStream, md);
-         byte[] buffer = new byte[256];
-         while (fileStream.read(buffer) > 0)
-         {
-            // continue
-         }
-         fileStream.close();
-         String md5hash = new String(Hex.encodeHex(md.digest()));
-         return md5hash;
-      }
-      catch (FileNotFoundException e)
-      {
-         throw new RuntimeException(e);
-      }
-      catch (NoSuchAlgorithmException e)
-      {
-         throw new RuntimeException(e);
-      }
-      catch (IOException e)
-      {
-         throw new RuntimeException(e);
-      }
-   }
-
-   private static class StreamChunker implements Iterable<InputStream> {
-
-      private int totalChunkCount;
-      private int chunksRetrieved;
-
-      private File file;
-      private byte[] buffer;
-      private InputStream fileStream;
-      private int actualChunkSize;
-
-      public StreamChunker(File file, int chunkSize) throws FileNotFoundException
-      {
-         this.file = file;
-         fileStream = new FileInputStream(file);
-         buffer = new byte[chunkSize];
-         chunksRetrieved = 0;
-         totalChunkCount = (int) (file.length() / chunkSize + (file.length() % chunkSize == 0 ? 0 : 1));
-      }
-
-      public int totalChunks()
-      {
-         return totalChunkCount;
-      }
-
-      public int currentChunkNumber()
-      {
-         return chunksRetrieved;
-      }
-
-      /**
-       * Value is only valid after calling getNextChunk or Iterator.next().
-       * 
-       * @return the size in bytes of the most recently returned chunk.
-       */
-      public int currentChunkSize()
-      {
-         return actualChunkSize;
-      }
-
-      public int getRemainingChunks()
-      {
-         return totalChunkCount - chunksRetrieved;
-      }
-
-      private InputStream getNextChunk()
-      {
-         if (chunksRetrieved == totalChunkCount)
-         {
-            throw new IllegalStateException("getNextChunk() must not be called after all chunks have been retrieved");
-         }
-
-         try
-         {
-            actualChunkSize = fileStream.read(buffer);
-         }
-         catch (IOException e)
-         {
+        } catch (IOException e) {
             throw new RuntimeException(e);
-         }
+        }
+    }
 
-         chunksRetrieved++;
-         if (chunksRetrieved == totalChunkCount)
-         {
-            try
-            {
-               fileStream.close();
-            }
-            catch (IOException e)
-            {
-               log.error("failed to close input stream for file " + file.getAbsolutePath(), e);
-            }
-            fileStream = null;
-         }
-         return new ByteArrayInputStream(buffer, 0, actualChunkSize);
-      }
+    private static class StreamChunker implements Iterable<InputStream> {
 
-      @Override
-      public Iterator<InputStream> iterator()
-      {
-         return new Iterator<InputStream>() {
+        private int totalChunkCount;
+        private int chunksRetrieved;
 
-            @Override
-            public boolean hasNext()
-            {
-               return chunksRetrieved < totalChunkCount;
+        private File file;
+        private byte[] buffer;
+        private InputStream fileStream;
+        private int actualChunkSize;
+
+        public StreamChunker(File file, int chunkSize)
+                throws FileNotFoundException {
+            this.file = file;
+            fileStream = new FileInputStream(file);
+            buffer = new byte[chunkSize];
+            chunksRetrieved = 0;
+            totalChunkCount =
+                    (int) (file.length() / chunkSize + (file.length()
+                            % chunkSize == 0 ? 0 : 1));
+        }
+
+        public int totalChunks() {
+            return totalChunkCount;
+        }
+
+        public int currentChunkNumber() {
+            return chunksRetrieved;
+        }
+
+        /**
+         * Value is only valid after calling getNextChunk or Iterator.next().
+         *
+         * @return the size in bytes of the most recently returned chunk.
+         */
+        public int currentChunkSize() {
+            return actualChunkSize;
+        }
+
+        public int getRemainingChunks() {
+            return totalChunkCount - chunksRetrieved;
+        }
+
+        private InputStream getNextChunk() {
+            if (chunksRetrieved == totalChunkCount) {
+                throw new IllegalStateException(
+                        "getNextChunk() must not be called after all chunks have been retrieved");
             }
 
-            @Override
-            public InputStream next()
-            {
-               return getNextChunk();
+            try {
+                actualChunkSize = fileStream.read(buffer);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
 
-            @Override
-            public void remove()
-            {
-               throw new UnsupportedOperationException();
+            chunksRetrieved++;
+            if (chunksRetrieved == totalChunkCount) {
+                try {
+                    fileStream.close();
+                } catch (IOException e) {
+                    log.error(
+                            "failed to close input stream for file "
+                                    + file.getAbsolutePath(), e);
+                }
+                fileStream = null;
             }
-         };
-      }
-   }
+            return new ByteArrayInputStream(buffer, 0, actualChunkSize);
+        }
+
+        @Override
+        public Iterator<InputStream> iterator() {
+            return new Iterator<InputStream>() {
+
+                @Override
+                public boolean hasNext() {
+                    return chunksRetrieved < totalChunkCount;
+                }
+
+                @Override
+                public InputStream next() {
+                    return getNextChunk();
+                }
+
+                @Override
+                public void remove() {
+                    throw new UnsupportedOperationException();
+                }
+            };
+        }
+    }
 }

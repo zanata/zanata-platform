@@ -3,7 +3,7 @@
   <groupId>null</groupId>
   <artifactId>null</artifactId>
   <version>0</version>
- 
+
   <build>
     <plugins>
       <plugin>
@@ -11,8 +11,8 @@
         <artifactId>zanata-maven-plugin</artifactId>
         <version>1.5-SNAPSHOT</version>
         <configuration>
-           <glossaryFile>fr.po</glossaryFile>
-           <transLang>pl</transLang>
+          <glossaryFile>fr.po</glossaryFile>
+          <transLang>pl</transLang>
         </configuration>
       </plugin>
     </plugins>

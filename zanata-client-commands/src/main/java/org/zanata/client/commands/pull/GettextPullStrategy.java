@@ -30,33 +30,33 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class GettextPullStrategy extends AbstractGettextPullStrategy
-{
+public class GettextPullStrategy extends AbstractGettextPullStrategy {
 
-   public GettextPullStrategy(PullOptions opts)
-   {
-      super(opts);
-   }
+    public GettextPullStrategy(PullOptions opts) {
+        super(opts);
+    }
 
-   @Override
-   public File getTransFileToWrite(String docName, LocaleMapping localeMapping)
-   {
-      String localLocale = localeMapping.getLocalLocale();
-      // write the PO file to $docdirname/$locale.po
-      File transDir = getOpts().getTransDir();
-      File docDir = new File(transDir, docName).getParentFile();
-      File transFile = new File(docDir, localLocale + ".po");
-      return transFile;
-   }
+    @Override
+    public File
+            getTransFileToWrite(String docName, LocaleMapping localeMapping) {
+        String localLocale = localeMapping.getLocalLocale();
+        // write the PO file to $docdirname/$locale.po
+        File transDir = getOpts().getTransDir();
+        File docDir = new File(transDir, docName).getParentFile();
+        File transFile = new File(docDir, localLocale + ".po");
+        return transFile;
+    }
 
-   @Override
-   public FileDetails writeTransFile(Resource doc, String docName, LocaleMapping locMapping, TranslationsResource targetDoc) throws IOException
-   {
-      File transFile = getTransFileToWrite(docName, locMapping);
-      return getPoWriter().writePoToFile(transFile, doc, targetDoc);
-   }
+    @Override
+    public FileDetails writeTransFile(Resource doc, String docName,
+            LocaleMapping locMapping, TranslationsResource targetDoc)
+            throws IOException {
+        File transFile = getTransFileToWrite(docName, locMapping);
+        return getPoWriter().writePoToFile(transFile, doc, targetDoc);
+    }
 
 }
