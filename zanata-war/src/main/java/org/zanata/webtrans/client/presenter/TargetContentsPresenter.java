@@ -142,7 +142,7 @@ public class TargetContentsPresenter implements
 
       if (status.isTranslated() && !errorMessages.isEmpty())
       {
-         validationWarning.center(display.getId(), getNewTargets(), errorMessages);
+         validationWarning.center(display.getId(), currentEditorIndex, getNewTargets(), errorMessages);
          return false;
       }
       else
