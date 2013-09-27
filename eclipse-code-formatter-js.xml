@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <profiles version="11">
-<profile kind="CodeFormatterProfile" name="JavaScript Conventions [2 spaces]" version="11">
+<profile kind="CodeFormatterProfile" name="JavaScript Conventions [Zanata]" version="11">
 <setting id="org.eclipse.wst.jsdt.core.compiler.codegen.targetPlatform" value="1.5"/>
 <setting id="org.eclipse.wst.jsdt.core.compiler.compliance" value="1.5"/>
 <setting id="org.eclipse.wst.jsdt.core.compiler.problem.assertIdentifier" value="error"/>
