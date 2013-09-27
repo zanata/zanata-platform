@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <profiles version="12">
 <profile kind="CodeFormatterProfile" name="Java Conventions [spaces]" version="12">
-</profile>
 <setting id="org.eclipse.jdt.core.compiler.codegen.inlineJsrBytecode" value="enabled"/>
 <setting id="org.eclipse.jdt.core.compiler.codegen.targetPlatform" value="1.7"/>
 <setting id="org.eclipse.jdt.core.compiler.compliance" value="1.7"/>
@@ -288,4 +287,5 @@
 <setting id="org.eclipse.jdt.core.formatter.wrap_before_binary_operator" value="true"/>
 <setting id="org.eclipse.jdt.core.formatter.wrap_before_or_operator_multicatch" value="true"/>
 <setting id="org.eclipse.jdt.core.formatter.wrap_outer_expressions_when_nested" value="true"/>
+</profile>
 </profiles>
