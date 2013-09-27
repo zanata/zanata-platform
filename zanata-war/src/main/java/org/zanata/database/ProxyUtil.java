@@ -28,19 +28,18 @@ import java.util.List;
 import org.apache.commons.lang.ClassUtils;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-class ProxyUtil
-{
+class ProxyUtil {
 
-   public static <T> T newProxy(T object, InvocationHandler handler)
-   {
-      Class<?> clazz = object.getClass();
-      ClassLoader cl = clazz.getClassLoader();
-      List<Class<?>> allInterfaces = ClassUtils.getAllInterfaces(clazz);
-      Class<?>[] interfaces = allInterfaces.toArray(new Class<?>[0]);
-      return (T) Proxy.newProxyInstance(cl, interfaces, handler);
-   }
+    public static <T> T newProxy(T object, InvocationHandler handler) {
+        Class<?> clazz = object.getClass();
+        ClassLoader cl = clazz.getClassLoader();
+        List<Class<?>> allInterfaces = ClassUtils.getAllInterfaces(clazz);
+        Class<?>[] interfaces = allInterfaces.toArray(new Class<?>[0]);
+        return (T) Proxy.newProxyInstance(cl, interfaces, handler);
+    }
 
 }

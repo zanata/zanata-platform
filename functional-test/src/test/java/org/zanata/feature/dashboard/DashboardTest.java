@@ -35,59 +35,51 @@ import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
 @RunWith(ConcordionRunner.class)
-@Extensions({ ScreenshotExtension.class, TimestampFormatterExtension.class, CustomResourceExtension.class })
+@Extensions({ ScreenshotExtension.class, TimestampFormatterExtension.class,
+        CustomResourceExtension.class })
 @Category(ConcordionTest.class)
-public class DashboardTest
-{
-   @ClassRule
-   public static ResetDatabaseRule rule = new ResetDatabaseRule(ResetDatabaseRule.Config.WithData);
+public class DashboardTest {
+    @ClassRule
+    public static ResetDatabaseRule rule = new ResetDatabaseRule(
+            ResetDatabaseRule.Config.WithData);
 
-   private DashboardPage dashboardPage;
+    private DashboardPage dashboardPage;
 
-   public boolean signInAs(String username, String password)
-   {
-      dashboardPage = new LoginWorkFlow().signIn(username, password);
+    public boolean signInAs(String username, String password) {
+        dashboardPage = new LoginWorkFlow().signIn(username, password);
 
-      return dashboardPage.hasLoggedIn();
-   }
+        return dashboardPage.hasLoggedIn();
+    }
 
-   public boolean hasMyActivitiesSection()
-   {
-      return dashboardPage.containActivityListSection();
-   }
+    public boolean hasMyActivitiesSection() {
+        return dashboardPage.containActivityListSection();
+    }
 
-   public boolean hasMaintainedProjectsSection()
-   {
-      return dashboardPage.containMyMaintainedProjectsSection();
-   }
+    public boolean hasMaintainedProjectsSection() {
+        return dashboardPage.containMyMaintainedProjectsSection();
+    }
 
-   public void gotoDashboard()
-   {
-      dashboardPage = new BasicWorkFlow().goToDashboard();
-   }
+    public void gotoDashboard() {
+        dashboardPage = new BasicWorkFlow().goToDashboard();
+    }
 
-   public boolean myActivitiesListNotEmpty()
-   {
-      return !dashboardPage.getMyActivityList().isEmpty();
-   }
-   
-   public int myActivitiesCount()
-   {
-      return dashboardPage.getMyActivityList().size();
-   }
-   
-   public boolean myActivitiesCountIsMoreThan(int compareTo)
-   {
-      return dashboardPage.getMyActivityList().size() > compareTo;
-   }
+    public boolean myActivitiesListNotEmpty() {
+        return !dashboardPage.getMyActivityList().isEmpty();
+    }
 
-   public boolean maintainedProjectNotEmpty()
-   {
-      return !dashboardPage.getMyMaintainedProject().isEmpty();
-   }
-   
-   public void clickMoreActivity()
-   {
-      dashboardPage.clickMoreActivity();
-   }
+    public int myActivitiesCount() {
+        return dashboardPage.getMyActivityList().size();
+    }
+
+    public boolean myActivitiesCountIsMoreThan(int compareTo) {
+        return dashboardPage.getMyActivityList().size() > compareTo;
+    }
+
+    public boolean maintainedProjectNotEmpty() {
+        return !dashboardPage.getMyMaintainedProject().isEmpty();
+    }
+
+    public void clickMoreActivity() {
+        dashboardPage.clickMoreActivity();
+    }
 }

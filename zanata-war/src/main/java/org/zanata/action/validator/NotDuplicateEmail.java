@@ -30,12 +30,13 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-@Constraint(validatedBy = {DuplicateEmailValidator.class})
+@Constraint(validatedBy = { DuplicateEmailValidator.class })
 @Target({ METHOD, FIELD })
 @Retention(RUNTIME)
-public @interface NotDuplicateEmail
-{
-   Class<?>[] groups() default {};
-   String message() default "{javax.validation.constraints.NotDuplicateEmail.messag}";
-   Class<? extends Payload>[] payload() default {};
+public @interface NotDuplicateEmail {
+    Class<?>[] groups() default {};
+
+    String message() default "{javax.validation.constraints.NotDuplicateEmail.messag}";
+
+    Class<? extends Payload>[] payload() default {};
 }

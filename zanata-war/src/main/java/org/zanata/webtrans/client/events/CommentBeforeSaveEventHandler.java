@@ -23,7 +23,6 @@ package org.zanata.webtrans.client.events;
 
 import com.google.gwt.event.shared.EventHandler;
 
-public interface CommentBeforeSaveEventHandler extends EventHandler
-{
-   void onCommentBeforeSave(CommentBeforeSaveEvent event);
+public interface CommentBeforeSaveEventHandler extends EventHandler {
+    void onCommentBeforeSave(CommentBeforeSaveEvent event);
 }

@@ -53,58 +53,57 @@ import com.google.common.base.Objects;
 @Name("projectsService")
 @Path(ProjectsResource.SERVICE_PATH)
 @Transactional
-public class ProjectsService implements ProjectsResource
-{
+public class ProjectsService implements ProjectsResource {
 
-   @In
-   private Session session;
+    @In
+    private Session session;
 
-   @Logger
-   private Log log;
+    @Logger
+    private Log log;
 
-   /** Type of media requested. */
-   @HeaderParam("Accept")
-   @DefaultValue(MediaType.APPLICATION_XML)
-   @Context
-   MediaType accept;
+    /** Type of media requested. */
+    @HeaderParam("Accept")
+    @DefaultValue(MediaType.APPLICATION_XML)
+    @Context
+    MediaType accept;
 
-   @Override
-   public Response get()
-   {
-      Query query = session.createQuery("from HProject p");
-      query.setComment("ProjectsService.get");
-      @SuppressWarnings("unchecked")
-      List<HProject> projects = query.list();
+    @Override
+    public Response get() {
+        Query query = session.createQuery("from HProject p");
+        query.setComment("ProjectsService.get");
+        @SuppressWarnings("unchecked")
+        List<HProject> projects = query.list();
 
-      List<Project> projectRefs = new ArrayList<Project>(projects.size());
+        List<Project> projectRefs = new ArrayList<Project>(projects.size());
 
-      for (HProject hProject : projects)
-      {
-         // Ignore Obsolete projects
-         if( !Objects.equal(hProject.getStatus(), OBSOLETE))
-         {
-            String projectType;
-            if (hProject.getDefaultProjectType() == null)
-            {
-               projectType = "";
+        for (HProject hProject : projects) {
+            // Ignore Obsolete projects
+            if (!Objects.equal(hProject.getStatus(), OBSOLETE)) {
+                String projectType;
+                if (hProject.getDefaultProjectType() == null) {
+                    projectType = "";
+                } else {
+                    projectType = hProject.getDefaultProjectType().toString();
+                }
+                Project project =
+                        new Project(hProject.getSlug(), hProject.getName(),
+                                projectType);
+                project.setStatus(hProject.getStatus());
+                project.getLinks(true).add(
+                        new Link(URI.create("p/" + hProject.getSlug()), "self",
+                                MediaTypes.createFormatSpecificType(
+                                        MediaTypes.APPLICATION_ZANATA_PROJECT,
+                                        accept)));
+                projectRefs.add(project);
             }
-            else
-            {
-               projectType = hProject.getDefaultProjectType().toString();
-            }
-            Project project = new Project(hProject.getSlug(), hProject.getName(), projectType);
-            project.setStatus( hProject.getStatus() );
-            project.getLinks(true).add(new Link(URI.create("p/" + hProject.getSlug()), "self", MediaTypes.createFormatSpecificType(MediaTypes.APPLICATION_ZANATA_PROJECT, accept)));
-            projectRefs.add(project);
-         }
-      }
+        }
 
-      Type genericType = new GenericType<List<Project>>()
-      {
-      }.getGenericType();
-      Object entity = new GenericEntity<List<Project>>(projectRefs, genericType);
-      
-      return Response.ok(entity).build();
-   }
+        Type genericType = new GenericType<List<Project>>() {
+        }.getGenericType();
+        Object entity =
+                new GenericEntity<List<Project>>(projectRefs, genericType);
+
+        return Response.ok(entity).build();
+    }
 
 }

@@ -35,77 +35,68 @@ import org.zanata.page.utility.DashboardPage;
 import java.util.List;
 
 @Slf4j
-public class LoginWorkFlow extends AbstractWebWorkFlow
-{
-   public LoginWorkFlow()
-   {
-   }
+public class LoginWorkFlow extends AbstractWebWorkFlow {
+    public LoginWorkFlow() {
+    }
 
-   public <P extends AbstractPage> P signInAndGoToPage(String username, String password, Class<P> pageClass)
-   {
-      try
-      {
-         doSignIn(username, password);
-      }
-      catch (IllegalAccessError iae)
-      {
-         log.warn("Login failed. May due to some weird issue. Will Try again.");
-         doSignIn(username, password);
-      }
-      catch (TimeoutException e)
-      {
-         log.error("timeout on login. If you are running tests manually with cargo.wait, you probably forget to create the user admin/admin. See ManualRunHelper.");
-         throw e;
-      }
-      return PageFactory.initElements(driver, pageClass);
-   }
+    public <P extends AbstractPage> P signInAndGoToPage(String username,
+            String password, Class<P> pageClass) {
+        try {
+            doSignIn(username, password);
+        } catch (IllegalAccessError iae) {
+            log.warn("Login failed. May due to some weird issue. Will Try again.");
+            doSignIn(username, password);
+        } catch (TimeoutException e) {
+            log.error("timeout on login. If you are running tests manually with cargo.wait, you probably forget to create the user admin/admin. See ManualRunHelper.");
+            throw e;
+        }
+        return PageFactory.initElements(driver, pageClass);
+    }
 
-   public DashboardPage signIn(String username, String password)
-   {
-      log.info("accessing zanata at: {}", hostUrl);
-      return signInAndGoToPage(username, password, DashboardPage.class);
-   }
+    public DashboardPage signIn(String username, String password) {
+        log.info("accessing zanata at: {}", hostUrl);
+        return signInAndGoToPage(username, password, DashboardPage.class);
+    }
 
-   public SignInPage signInFailure(String username, String password)
-   {
-      SignInPage signInPage = new BasePage(driver).clickSignInLink();
-      log.info("log in as username: {}", username);
-      signInPage.enterUsername(username);
-      signInPage.enterPassword(password);
-      signInPage.clickSignIn();
-      signInPage.waitForTenSec().until(new Predicate<WebDriver>() {
-         @Override
-         public boolean apply(WebDriver driver) {
-            List<WebElement> messages = driver.findElements(By.id("messages"));
-            return messages.size() > 0 && messages.get(0).getText().contains("Login failed");
-         }
-      });
-      return new SignInPage(driver);
-   }
-
-   private void doSignIn(String username, String password)
-   {
-      BasePage basePage = new BasePage(driver);
-      basePage.deleteCookiesAndRefresh();
-      SignInPage signInPage = basePage.clickSignInLink();
-      log.info("log in as username: {}", username);
-      signInPage.enterUsername(username);
-      signInPage.enterPassword(password);
-      signInPage.clickSignIn();
-      signInPage.waitForTenSec().until(new Predicate<WebDriver>()
-      {
-         @Override
-         public boolean apply(WebDriver driver)
-         {
-            List<WebElement> messages = driver.findElements(By.id("messages"));
-            if (messages.size() > 0 && messages.get(0).getText().contains("Login failed"))
-            {
-               throw new IllegalAccessError("Login failed");
+    public SignInPage signInFailure(String username, String password) {
+        SignInPage signInPage = new BasePage(driver).clickSignInLink();
+        log.info("log in as username: {}", username);
+        signInPage.enterUsername(username);
+        signInPage.enterPassword(password);
+        signInPage.clickSignIn();
+        signInPage.waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver driver) {
+                List<WebElement> messages =
+                        driver.findElements(By.id("messages"));
+                return messages.size() > 0
+                        && messages.get(0).getText().contains("Login failed");
             }
-            List<WebElement> signIn = driver.findElements(By.id("Sign_in"));
-            return signIn.size() == 0;
-         }
-      });
-   }
+        });
+        return new SignInPage(driver);
+    }
+
+    private void doSignIn(String username, String password) {
+        BasePage basePage = new BasePage(driver);
+        basePage.deleteCookiesAndRefresh();
+        SignInPage signInPage = basePage.clickSignInLink();
+        log.info("log in as username: {}", username);
+        signInPage.enterUsername(username);
+        signInPage.enterPassword(password);
+        signInPage.clickSignIn();
+        signInPage.waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver driver) {
+                List<WebElement> messages =
+                        driver.findElements(By.id("messages"));
+                if (messages.size() > 0
+                        && messages.get(0).getText().contains("Login failed")) {
+                    throw new IllegalAccessError("Login failed");
+                }
+                List<WebElement> signIn = driver.findElements(By.id("Sign_in"));
+                return signIn.size() == 0;
+            }
+        });
+    }
 
 }

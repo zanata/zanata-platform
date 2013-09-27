@@ -1,64 +1,147 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
-  <HAccount id="1" creationDate="2012-04-03 15:06:28.0" lastChanged="2012-04-03 15:06:28.0" versionNum="1" apiKey="b6d7044e9ee3b2447c28fb7c50d86d98" enabled="true" passwordHash="Eyox7xbNQ09MkIfRyH+rjg==" username="admin"/>
-  <HPerson id="1" creationDate="2012-04-03 15:06:28.0" lastChanged="2012-04-03 15:06:28.0" versionNum="0" email="pahuang@redhat.com" name="Administrator" accountId="1"/>
-  <HLocale id="3" creationDate="2012-04-03 15:17:16.0" lastChanged="2012-04-03 15:17:16.0" versionNum="0" active="true" localeId="ja" enabledByDefault="true"/>
-  <HLocale id="5" creationDate="2012-04-03 15:26:34.0" lastChanged="2012-04-03 15:26:34.0" versionNum="0" active="true" localeId="en-US" enabledByDefault="true"/>
-  <HPoHeader id="1" creationDate="2012-04-03 15:26:57.0" lastChanged="2012-04-03 15:26:57.0" versionNum="0" entries="Project-Id-Version=Pathauto 6.x-1.1
+  <HAccount id="1" creationDate="2012-04-03 15:06:28.0"
+    lastChanged="2012-04-03 15:06:28.0" versionNum="1"
+    apiKey="b6d7044e9ee3b2447c28fb7c50d86d98" enabled="true"
+    passwordHash="Eyox7xbNQ09MkIfRyH+rjg==" username="admin" />
+  <HPerson id="1" creationDate="2012-04-03 15:06:28.0"
+    lastChanged="2012-04-03 15:06:28.0" versionNum="0"
+    email="pahuang@redhat.com" name="Administrator" accountId="1" />
+  <HLocale id="3" creationDate="2012-04-03 15:17:16.0"
+    lastChanged="2012-04-03 15:17:16.0" versionNum="0" active="true"
+    localeId="ja" enabledByDefault="true" />
+  <HLocale id="5" creationDate="2012-04-03 15:26:34.0"
+    lastChanged="2012-04-03 15:26:34.0" versionNum="0" active="true"
+    localeId="en-US" enabledByDefault="true" />
+  <HPoHeader id="1" creationDate="2012-04-03 15:26:57.0"
+    lastChanged="2012-04-03 15:26:57.0" versionNum="0" entries="Project-Id-Version=Pathauto 6.x-1.1
 POT-Creation-Date=2008-11-28 05\:17-0600
 MIME-Version=1.0
 Content-Type=text/plain; charset\=utf-8
 Content-Transfer-Encoding=8bit
-" comment_id="1"/>
-  <HProject defaultProjectType="Gettext" id="1" creationDate="2012-04-03 15:16:08.0" lastChanged="2012-06-05 11:58:56.0" versionNum="2" slug="plurals" description="" homeContent="" name="plurals" overrideLocales="false" status="A" restrictedByRoles="false"/>
-  <HProjectIteration id="1" creationDate="2012-04-03 15:16:18.0" lastChanged="2012-08-23 13:36:51.0" versionNum="13" slug="master" project_id="1" overrideLocales="false" status="A" requireTranslationReview="FALSE"/>
-  <HDocument id="1" creationDate="2012-04-03 15:26:57.0" lastChanged="2012-04-03 15:26:57.0" versionNum="1" contentType="application/x-gettext" docId="test" name="test" obsolete="false" path="" revision="1" last_modified_by_id="1" locale="5" poHeader_id="1" project_iteration_id="1"/>
-  <HSimpleComment id="2" comment=""/>
-  <HSimpleComment id="3" comment=""/>
-  <HSimpleComment id="4" comment=""/>
-  <HSimpleComment id="5" comment=""/>
-  <HSimpleComment id="6" comment=""/>
-  <HSimpleComment id="7" comment=""/>
-  <HSimpleComment id="8" comment=""/>
-  <HSimpleComment id="9" comment=""/>
-  <HSimpleComment id="10" comment=""/>
-  <HSimpleComment id="11" comment=""/>
-  <HSimpleComment id="12" comment=""/>
-  <HSimpleComment id="3947" comment="auto translated by TM merge"/>
-  <HSimpleComment id="3948" comment="auto translated by TM merge"/>
-  <HSimpleComment id="3949" comment="auto translated by TM merge"/>
-  <HPotEntryData id="1" flags="c-format"/>
-  <HPotEntryData id="2" flags="c-format"/>
-  <HPotEntryData id="3" flags="c-format"/>
-  <HPotEntryData id="4" flags="c-format"/>
-  <HPotEntryData id="5" flags="c-format"/>
-  <HPotEntryData id="6" flags="c-format"/>
-  <HPotEntryData id="7" flags="c-format"/>
-  <HPotEntryData id="8" flags="c-format"/>
-  <HPotEntryData id="9" flags="c-format"/>
-  <HPotEntryData id="10" flags="c-format"/>
-  <HPotEntryData id="11" flags="c-format"/>
-  <HTextFlow id="1" obsolete="false" pos="0" resId="bbb5da9ad2bd9d24df29caead537b840" revision="1" comment_id="2" document_id="1" potEntryData_id="1" wordCount="6" contentHash="57a7945966a33a90dc5be48032d76be4" plural="true" content0="One file removed" content1="%d files removed"/>
-  <HTextFlow id="2" obsolete="false" pos="1" resId="991c3bb02eed7e0bc4fafee332c8dd8a" revision="1" comment_id="3" document_id="1" potEntryData_id="2" wordCount="7" contentHash="85bba7013cdc879531579c964833dfbe" plural="true" content0="One other file removed" content1="%d files removed"/>
-  <HTextFlow id="3" obsolete="false" pos="2" resId="2f41b1729c9cafa6cc77339a1e2f1548" revision="1" comment_id="4" document_id="1" potEntryData_id="3" wordCount="7" contentHash="6bd3ba9a918f90c253a6221aab87edf6" plural="true" content0="One file removed_" content1="%d more files removed"/>
-  <HTextFlow id="4" obsolete="false" pos="3" resId="70bb21ae1ac3541d171f91f83e19892e" revision="1" comment_id="5" document_id="1" potEntryData_id="4" wordCount="5" contentHash="7f1dd7bb266621cdd63a2466b7b0675e" plural="true" content0="File removed" content1="%d files removed"/>
-  <HTextFlow id="5" obsolete="false" pos="4" resId="4f31017425b665ac21b4cbee02145c96" revision="1" comment_id="6" document_id="1" potEntryData_id="5" wordCount="7" contentHash="d5e61b01244f4dd1c9fb22c46b609eab" plural="true" content0="Yet Another File removed" content1="%d files removed"/>
-  <HTextFlow id="6" obsolete="false" pos="5" resId="15a5b15799e3dc7b7e57fad2b9c1663d" revision="1" comment_id="7" document_id="1" potEntryData_id="6" wordCount="7" contentHash="976526bf633a187721c4d31e05b5367f" plural="true" content0="2 Another File removed" content1="%d files removed"/>
-  <HTextFlow id="7" obsolete="false" pos="6" resId="f1980b66e0a43405f3199d92774695cf" revision="1" comment_id="8" document_id="1" potEntryData_id="7" wordCount="1" contentHash="f1980b66e0a43405f3199d92774695cf" plural="false" content0="msgid"/>
-  <HTextFlow id="8" obsolete="false" pos="7" resId="621017d44c2bbb8ae4583aa855c5cf3a" revision="1" comment_id="9" document_id="1" potEntryData_id="8" wordCount="6" contentHash="cb5859c717f73e94c8951fe31444dad4" plural="true" content0="%d files removed" content1="One file removed"/>
-  <HTextFlow id="9" obsolete="false" pos="8" resId="45e4812014d83dde5666ebdf5a8ed1ed" revision="1" comment_id="10" document_id="1" potEntryData_id="9" wordCount="2" contentHash="370211fa34b356c2741f907171280edf" plural="true" content0="aaaaaaaaaaaa" content1="bbbbbbbbbbb"/>
-  <HTextFlow id="10" obsolete="false" pos="9" resId="050641dae3041cdbbd37cc508e98e6ef" revision="1" comment_id="11" document_id="1" potEntryData_id="10" wordCount="2" contentHash="92267c4857016887b82da67e63a4bc4e" plural="true" content0="bbbbbbbbbbb" content1="aaaaaaaaaaaa"/>
-  <HTextFlow id="11" obsolete="true" pos="10" resId="050641dae3041cdbbd37cc508e98e6ee" revision="1" comment_id="12" document_id="1" potEntryData_id="11" wordCount="2" contentHash="92267c4857016887b82da67e63a4bc4e" plural="true" content0="bbbbbbbbbbb" content1="aaaaaaaaaaaa"/>
-  <HTextFlowTarget id="59" creationDate="2012-07-09 09:42:40.0" lastChanged="2012-09-28 13:58:57.0" versionNum="20" state="2" tf_revision="1" last_modified_by_id="1" locale="3" tf_id="1" content0="%d files removed huang
+" comment_id="1" />
+  <HProject defaultProjectType="Gettext" id="1"
+    creationDate="2012-04-03 15:16:08.0" lastChanged="2012-06-05 11:58:56.0"
+    versionNum="2" slug="plurals" description="" homeContent="" name="plurals"
+    overrideLocales="false" status="A" restrictedByRoles="false" />
+  <HProjectIteration id="1" creationDate="2012-04-03 15:16:18.0"
+    lastChanged="2012-08-23 13:36:51.0" versionNum="13" slug="master"
+    project_id="1" overrideLocales="false" status="A"
+    requireTranslationReview="FALSE" />
+  <HDocument id="1" creationDate="2012-04-03 15:26:57.0"
+    lastChanged="2012-04-03 15:26:57.0" versionNum="1"
+    contentType="application/x-gettext" docId="test" name="test"
+    obsolete="false" path="" revision="1" last_modified_by_id="1" locale="5"
+    poHeader_id="1" project_iteration_id="1" />
+  <HSimpleComment id="2" comment="" />
+  <HSimpleComment id="3" comment="" />
+  <HSimpleComment id="4" comment="" />
+  <HSimpleComment id="5" comment="" />
+  <HSimpleComment id="6" comment="" />
+  <HSimpleComment id="7" comment="" />
+  <HSimpleComment id="8" comment="" />
+  <HSimpleComment id="9" comment="" />
+  <HSimpleComment id="10" comment="" />
+  <HSimpleComment id="11" comment="" />
+  <HSimpleComment id="12" comment="" />
+  <HSimpleComment id="3947" comment="auto translated by TM merge" />
+  <HSimpleComment id="3948" comment="auto translated by TM merge" />
+  <HSimpleComment id="3949" comment="auto translated by TM merge" />
+  <HPotEntryData id="1" flags="c-format" />
+  <HPotEntryData id="2" flags="c-format" />
+  <HPotEntryData id="3" flags="c-format" />
+  <HPotEntryData id="4" flags="c-format" />
+  <HPotEntryData id="5" flags="c-format" />
+  <HPotEntryData id="6" flags="c-format" />
+  <HPotEntryData id="7" flags="c-format" />
+  <HPotEntryData id="8" flags="c-format" />
+  <HPotEntryData id="9" flags="c-format" />
+  <HPotEntryData id="10" flags="c-format" />
+  <HPotEntryData id="11" flags="c-format" />
+  <HTextFlow id="1" obsolete="false" pos="0"
+    resId="bbb5da9ad2bd9d24df29caead537b840" revision="1" comment_id="2"
+    document_id="1" potEntryData_id="1" wordCount="6"
+    contentHash="57a7945966a33a90dc5be48032d76be4" plural="true"
+    content0="One file removed" content1="%d files removed" />
+  <HTextFlow id="2" obsolete="false" pos="1"
+    resId="991c3bb02eed7e0bc4fafee332c8dd8a" revision="1" comment_id="3"
+    document_id="1" potEntryData_id="2" wordCount="7"
+    contentHash="85bba7013cdc879531579c964833dfbe" plural="true"
+    content0="One other file removed" content1="%d files removed" />
+  <HTextFlow id="3" obsolete="false" pos="2"
+    resId="2f41b1729c9cafa6cc77339a1e2f1548" revision="1" comment_id="4"
+    document_id="1" potEntryData_id="3" wordCount="7"
+    contentHash="6bd3ba9a918f90c253a6221aab87edf6" plural="true"
+    content0="One file removed_" content1="%d more files removed" />
+  <HTextFlow id="4" obsolete="false" pos="3"
+    resId="70bb21ae1ac3541d171f91f83e19892e" revision="1" comment_id="5"
+    document_id="1" potEntryData_id="4" wordCount="5"
+    contentHash="7f1dd7bb266621cdd63a2466b7b0675e" plural="true"
+    content0="File removed" content1="%d files removed" />
+  <HTextFlow id="5" obsolete="false" pos="4"
+    resId="4f31017425b665ac21b4cbee02145c96" revision="1" comment_id="6"
+    document_id="1" potEntryData_id="5" wordCount="7"
+    contentHash="d5e61b01244f4dd1c9fb22c46b609eab" plural="true"
+    content0="Yet Another File removed" content1="%d files removed" />
+  <HTextFlow id="6" obsolete="false" pos="5"
+    resId="15a5b15799e3dc7b7e57fad2b9c1663d" revision="1" comment_id="7"
+    document_id="1" potEntryData_id="6" wordCount="7"
+    contentHash="976526bf633a187721c4d31e05b5367f" plural="true"
+    content0="2 Another File removed" content1="%d files removed" />
+  <HTextFlow id="7" obsolete="false" pos="6"
+    resId="f1980b66e0a43405f3199d92774695cf" revision="1" comment_id="8"
+    document_id="1" potEntryData_id="7" wordCount="1"
+    contentHash="f1980b66e0a43405f3199d92774695cf" plural="false"
+    content0="msgid" />
+  <HTextFlow id="8" obsolete="false" pos="7"
+    resId="621017d44c2bbb8ae4583aa855c5cf3a" revision="1" comment_id="9"
+    document_id="1" potEntryData_id="8" wordCount="6"
+    contentHash="cb5859c717f73e94c8951fe31444dad4" plural="true"
+    content0="%d files removed" content1="One file removed" />
+  <HTextFlow id="9" obsolete="false" pos="8"
+    resId="45e4812014d83dde5666ebdf5a8ed1ed" revision="1" comment_id="10"
+    document_id="1" potEntryData_id="9" wordCount="2"
+    contentHash="370211fa34b356c2741f907171280edf" plural="true"
+    content0="aaaaaaaaaaaa" content1="bbbbbbbbbbb" />
+  <HTextFlow id="10" obsolete="false" pos="9"
+    resId="050641dae3041cdbbd37cc508e98e6ef" revision="1" comment_id="11"
+    document_id="1" potEntryData_id="10" wordCount="2"
+    contentHash="92267c4857016887b82da67e63a4bc4e" plural="true"
+    content0="bbbbbbbbbbb" content1="aaaaaaaaaaaa" />
+  <HTextFlow id="11" obsolete="true" pos="10"
+    resId="050641dae3041cdbbd37cc508e98e6ee" revision="1" comment_id="12"
+    document_id="1" potEntryData_id="11" wordCount="2"
+    contentHash="92267c4857016887b82da67e63a4bc4e" plural="true"
+    content0="bbbbbbbbbbb" content1="aaaaaaaaaaaa" />
+  <HTextFlowTarget id="59" creationDate="2012-07-09 09:42:40.0"
+    lastChanged="2012-09-28 13:58:57.0" versionNum="20" state="2"
+    tf_revision="1" last_modified_by_id="1" locale="3" tf_id="1" content0="%d files removed huang
 
 sdf adf
-"/>
-  <HTextFlowTarget id="60" creationDate="2012-07-09 09:42:41.0" lastChanged="2012-08-08 12:21:57.0" versionNum="8" state="2" tf_revision="1" last_modified_by_id="1" locale="3" tf_id="2" content0="%d files removed"/>
-  <HTextFlowTarget id="61" creationDate="2012-07-09 09:42:43.0" lastChanged="2012-07-09 11:11:21.0" versionNum="5" state="1" tf_revision="1" comment_id="3947" last_modified_by_id="1" locale="3" tf_id="3" content0="fhjhj"/>
-  <HTextFlowTarget id="62" creationDate="2012-07-09 09:42:46.0" lastChanged="2012-07-09 11:10:15.0" versionNum="3" state="2" tf_revision="1" last_modified_by_id="1" locale="3" tf_id="4" content0="adsf"/>
-  <HTextFlowTarget id="63" creationDate="2012-07-09 11:11:21.0" lastChanged="2012-07-09 11:11:21.0" versionNum="1" state="1" tf_revision="1" comment_id="3948" last_modified_by_id="1" locale="3" tf_id="5" content0="ZXc"/>
-  <HTextFlowTarget id="64" creationDate="2012-07-09 11:11:21.0" lastChanged="2012-07-09 11:11:21.0" versionNum="1" state="1" tf_revision="1" comment_id="3949" last_modified_by_id="1" locale="3" tf_id="6" content0="ZXc"/>
+" />
+  <HTextFlowTarget id="60" creationDate="2012-07-09 09:42:41.0"
+    lastChanged="2012-08-08 12:21:57.0" versionNum="8" state="2" tf_revision="1"
+    last_modified_by_id="1" locale="3" tf_id="2" content0="%d files removed" />
+  <HTextFlowTarget id="61" creationDate="2012-07-09 09:42:43.0"
+    lastChanged="2012-07-09 11:11:21.0" versionNum="5" state="1" tf_revision="1"
+    comment_id="3947" last_modified_by_id="1" locale="3" tf_id="3"
+    content0="fhjhj" />
+  <HTextFlowTarget id="62" creationDate="2012-07-09 09:42:46.0"
+    lastChanged="2012-07-09 11:10:15.0" versionNum="3" state="2" tf_revision="1"
+    last_modified_by_id="1" locale="3" tf_id="4" content0="adsf" />
+  <HTextFlowTarget id="63" creationDate="2012-07-09 11:11:21.0"
+    lastChanged="2012-07-09 11:11:21.0" versionNum="1" state="1" tf_revision="1"
+    comment_id="3948" last_modified_by_id="1" locale="3" tf_id="5"
+    content0="ZXc" />
+  <HTextFlowTarget id="64" creationDate="2012-07-09 11:11:21.0"
+    lastChanged="2012-07-09 11:11:21.0" versionNum="1" state="1" tf_revision="1"
+    comment_id="3949" last_modified_by_id="1" locale="3" tf_id="6"
+    content0="ZXc" />
 
-    <HTextFlowTargetReviewComment creationDate="2012-07-09 09:42:40.0" lastChanged="2012-08-08 12:21:57.0" targetVersion="8" target_id="60" comment="a comment" commenter_id="1" versionNum="0"/>
-    <HTextFlowTargetReviewComment creationDate="2012-07-09 09:42:40.0" lastChanged="2012-08-08 12:21:57.0" targetVersion="8" target_id="60" comment="another comment" commenter_id="1" versionNum="0" />
+  <HTextFlowTargetReviewComment creationDate="2012-07-09 09:42:40.0"
+    lastChanged="2012-08-08 12:21:57.0" targetVersion="8" target_id="60"
+    comment="a comment" commenter_id="1" versionNum="0" />
+  <HTextFlowTargetReviewComment creationDate="2012-07-09 09:42:40.0"
+    lastChanged="2012-08-08 12:21:57.0" targetVersion="8" target_id="60"
+    comment="another comment" commenter_id="1" versionNum="0" />
 </dataset>

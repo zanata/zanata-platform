@@ -37,44 +37,47 @@ import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @RunWith(ConcordionRunner.class)
-@Extensions({ ScreenshotExtension.class, TimestampFormatterExtension.class, CustomResourceExtension.class })
+@Extensions({ ScreenshotExtension.class, TimestampFormatterExtension.class,
+        CustomResourceExtension.class })
 @Category(ConcordionTest.class)
-public class DocumentListInWebTransTest
-{
+public class DocumentListInWebTransTest {
 
-   private ProjectVersionPage projectVersionPage;
+    private ProjectVersionPage projectVersionPage;
 
-   public boolean signInAs(String username, String password)
-   {
-      DashboardPage dashboardPage = new LoginWorkFlow().signIn(username, password);
+    public boolean signInAs(String username, String password) {
+        DashboardPage dashboardPage =
+                new LoginWorkFlow().signIn(username, password);
 
-      return dashboardPage.hasLoggedIn();
-   }
+        return dashboardPage.hasLoggedIn();
+    }
 
-   public ProjectVersionPage goToProjectVersion(String projectName, String versionSlug)
-   {
-      projectVersionPage = new BasicWorkFlow().goToPage(String.format("iteration/view/plurals/%s", versionSlug),
-            ProjectVersionPage.class);
-      //      ProjectPage projectPage = homePage.goToProjects().goToProject(projectName);
-      //      projectVersionPage = projectPage.goToVersion(versionSlug);
-      return projectVersionPage;
-   }
+    public ProjectVersionPage goToProjectVersion(String projectName,
+            String versionSlug) {
+        projectVersionPage =
+                new BasicWorkFlow()
+                        .goToPage(String.format("iteration/view/plurals/%s",
+                                versionSlug), ProjectVersionPage.class);
+        // ProjectPage projectPage =
+        // homePage.goToProjects().goToProject(projectName);
+        // projectVersionPage = projectPage.goToVersion(versionSlug);
+        return projectVersionPage;
+    }
 
-   public DocumentsViewPage translate(String locale)
-   {
-      return projectVersionPage.translate(locale);
-   }
+    public DocumentsViewPage translate(String locale) {
+        return projectVersionPage.translate(locale);
+    }
 
-   public List<List<String>> getDocumentListTableContents(DocumentsViewPage documentsViewPage)
-   {
-      return documentsViewPage.getDocumentListTableContent();
-   }
+    public List<List<String>> getDocumentListTableContents(
+            DocumentsViewPage documentsViewPage) {
+        return documentsViewPage.getDocumentListTableContent();
+    }
 
-   public String getTableCellValue(List<List<String>> table, int row, int column)
-   {
-      return table.get(row - 1).get(column - 1);
-   }
+    public String getTableCellValue(List<List<String>> table, int row,
+            int column) {
+        return table.get(row - 1).get(column - 1);
+    }
 }

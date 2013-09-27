@@ -27,47 +27,56 @@ import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
 @Name("webtrans.gwt.GetTranslatorListHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(GetTranslatorList.class)
-public class GetTranslatorListHandler extends AbstractActionHandler<GetTranslatorList, GetTranslatorListResult>
-{
-   @In
-   private ZanataIdentity identity;
+public class GetTranslatorListHandler extends
+        AbstractActionHandler<GetTranslatorList, GetTranslatorListResult> {
+    @In
+    private ZanataIdentity identity;
 
-   @In
-   private TranslationWorkspaceManager translationWorkspaceManager;
+    @In
+    private TranslationWorkspaceManager translationWorkspaceManager;
 
-   @In
-   private AccountDAO accountDAO;
+    @In
+    private AccountDAO accountDAO;
 
-   @In
-   private GravatarService gravatarServiceImpl;
+    @In
+    private GravatarService gravatarServiceImpl;
 
-   @Override
-   public GetTranslatorListResult execute(GetTranslatorList action, ExecutionContext context) throws ActionException
-   {
-      identity.checkLoggedIn();
+    @Override
+    public GetTranslatorListResult execute(GetTranslatorList action,
+            ExecutionContext context) throws ActionException {
+        identity.checkLoggedIn();
 
-      TranslationWorkspace translationWorkspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
+        TranslationWorkspace translationWorkspace =
+                translationWorkspaceManager.getOrRegisterWorkspace(action
+                        .getWorkspaceId());
 
-      Map<EditorClientId, PersonSessionDetails> result = translationWorkspace.getUsers();
+        Map<EditorClientId, PersonSessionDetails> result =
+                translationWorkspace.getUsers();
 
-      // Use AccountDAO to convert the PersonId to Person
-      Map<EditorClientId, PersonSessionDetails> translators = new HashMap<EditorClientId, PersonSessionDetails>();
-      for (Map.Entry<EditorClientId, PersonSessionDetails> entry : result.entrySet())
-      {
-         PersonId personId = entry.getValue().getPerson().getId();
+        // Use AccountDAO to convert the PersonId to Person
+        Map<EditorClientId, PersonSessionDetails> translators =
+                new HashMap<EditorClientId, PersonSessionDetails>();
+        for (Map.Entry<EditorClientId, PersonSessionDetails> entry : result
+                .entrySet()) {
+            PersonId personId = entry.getValue().getPerson().getId();
 
-         HPerson person = accountDAO.getByUsername(personId.toString()).getPerson();
+            HPerson person =
+                    accountDAO.getByUsername(personId.toString()).getPerson();
 
-         Person translator = new Person(personId, person.getName(), gravatarServiceImpl.getUserImageUrl(16, person.getEmail()));
-         entry.getValue().setPerson(translator);
-         translators.put(entry.getKey(), entry.getValue());
-      }
+            Person translator =
+                    new Person(personId, person.getName(),
+                            gravatarServiceImpl.getUserImageUrl(16,
+                                    person.getEmail()));
+            entry.getValue().setPerson(translator);
+            translators.put(entry.getKey(), entry.getValue());
+        }
 
-      return new GetTranslatorListResult(translators, result.size());
-   }
+        return new GetTranslatorListResult(translators, result.size());
+    }
 
-   @Override
-   public void rollback(GetTranslatorList action, GetTranslatorListResult result, ExecutionContext context) throws ActionException
-   {
-   }
+    @Override
+    public void rollback(GetTranslatorList action,
+            GetTranslatorListResult result, ExecutionContext context)
+            throws ActionException {
+    }
 }

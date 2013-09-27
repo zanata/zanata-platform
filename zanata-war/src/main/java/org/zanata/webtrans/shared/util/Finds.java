@@ -6,16 +6,16 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class Finds
-{
-   private Finds()
-   {
-   }
+public class Finds {
+    private Finds() {
+    }
 
-   public static <D extends HasTransUnitId> Optional<D> findDisplayById(Iterable<D> displayList, TransUnitId currentTransUnitId)
-   {
-      return Iterables.tryFind(displayList, new FindByTransUnitIdPredicate(currentTransUnitId));
-   }
+    public static <D extends HasTransUnitId> Optional<D> findDisplayById(
+            Iterable<D> displayList, TransUnitId currentTransUnitId) {
+        return Iterables.tryFind(displayList, new FindByTransUnitIdPredicate(
+                currentTransUnitId));
+    }
 }

@@ -1,57 +1,58 @@
 /* ====================== Rich Data Table ==========================*/
 
 table.rf-dt {
-    width: 100%;
-    empty-cells: show;
-    border:0;
-    background-color:#EEEEEE;
+  width: 100%;
+  empty-cells: show;
+  border: 0;
+  background-color: #EEEEEE;
 }
 
 .rf-dt-shdr th:first-child {
-    border-top-left-radius: 5px;
+  border-top-left-radius: 5px;
 }
 
 .rf-dt-shdr th:last-child {
-    border-top-right-radius: 5px;
-    border-right:0;
+  border-top-right-radius: 5px;
+  border-right: 0;
 }
+
 /* Header cell */
 th.rf-dt-shdr-c {
-    padding: 15px 8px 15px 8px;
-    text-align: center;
-    font-size: 13px;
-    color: #ffffff;
-    font-family: Arial, Verdana, sans-serif;
-    white-space: nowrap;
-    background-color:#461446;
-    background-image: none;
+  padding: 15px 8px 15px 8px;
+  text-align: center;
+  font-size: 13px;
+  color: #ffffff;
+  font-family: Arial, Verdana, sans-serif;
+  white-space: nowrap;
+  background-color: #461446;
+  background-image: none;
 }
 
 .rf-dt tbody tr:hover {
-    background-color: #FFFFFF;
+  background-color: #FFFFFF;
 }
 
 /* Table cell */
 td.rf-dt-c {
-    padding: 14px;
-    font-size: 12px;
-    color: #595959;
-    font-family: Arial, Verdana, sans-serif;
-    border-left:0;
-    border-right:0;
+  padding: 14px;
+  font-size: 12px;
+  color: #595959;
+  font-family: Arial, Verdana, sans-serif;
+  border-left: 0;
+  border-right: 0;
 }
 
 .noBorderTable {
-    border-width: 0px;
-    background:none;
+  border-width: 0px;
+  background: none;
 }
 
 .noBorderTable .rich-table-headercell {
-    border-width: 0px;
+  border-width: 0px;
 }
 
 .noBorderTable .rich-table-cell {
-    border-width: 0px;
+  border-width: 0px;
 }
 
 /* ====================== End Rich Data Table ========================== */
@@ -63,71 +64,71 @@ span.rf-ds {
 
 /* Enabled Buttons */
 a.rf-ds-btn {
-    background-image: none;
-    border-radius: 2px;
-    background-color: transparent;
+  background-image: none;
+  border-radius: 2px;
+  background-color: transparent;
 }
 
 a.rf-ds-btn:hover {
-    color: #000000;
-    background-color: #dcdcdc;
+  color: #000000;
+  background-color: #dcdcdc;
 }
 
 /* Disabled Buttons */
 span.rf-ds-dis {
-    background-color: transparent;
-    background-image: none;
-    border-radius: 2px;
+  background-color: transparent;
+  background-image: none;
+  border-radius: 2px;
 }
 
 /* Number button */
 a.rf-ds-nmb-btn {
-    border-top-color: transparent;
-    background-image: none;
+  border-top-color: transparent;
+  background-image: none;
 }
 
 a.rf-ds-nmb-btn:hover {
-    border-color: transparent;
-    background-color: transparent;
-    background-image: none;
+  border-color: transparent;
+  background-color: transparent;
+  background-image: none;
 }
 
 /* ====================== End Rich Data Scroller =========================== */
 
 /* ====================== Rich Panel =========================== */
 div.rf-p {
-    border-radius: 3px;
-    margin-bottom: 10px;
-    border-width: 1px;
-    border-style: solid;
-    padding: 1px;
-    background-color: #EEE;
-    border-color: #EEEEEE;
+  border-radius: 3px;
+  margin-bottom: 10px;
+  border-width: 1px;
+  border-style: solid;
+  padding: 1px;
+  background-color: #EEE;
+  border-color: #EEEEEE;
 }
 
 /* Header */
 .rf-p .rf-p-hdr {
-    background-image: none;
-    padding: 6px;
-    font-size:12px;
-    border-radius: 3px;
-    text-align: center;
-    border-style: solid;
-    border-color: #461446;
-    background-color: #461446;
-    color: white;
-    font-weight: bold;
-    font-family: Arial, Verdana, sans-serif;
+  background-image: none;
+  padding: 6px;
+  font-size: 12px;
+  border-radius: 3px;
+  text-align: center;
+  border-style: solid;
+  border-color: #461446;
+  background-color: #461446;
+  color: white;
+  font-weight: bold;
+  font-family: Arial, Verdana, sans-serif;
 }
 
 /* Body */
 .rf-p .rf-p-b {
-    padding: 10px;
-    font-size: 11px;
-    color: black;
-    font-family: Arial, Verdana, sans-serif;
-    border: 1px solid;
-    border-color: #EEEEEE;
+  padding: 10px;
+  font-size: 11px;
+  color: black;
+  font-family: Arial, Verdana, sans-serif;
+  border: 1px solid;
+  border-color: #EEEEEE;
 }
 
 /* ====================== Rich Data Panel =========================== */
@@ -136,51 +137,51 @@ div.rf-p {
 
 /* Header (where the tabs go) */
 div.rf-tab-hdr-tabline-vis.rf-tab-hdr-tabline-top {
-    background: none;
-    border: none;
+  background: none;
+  border: none;
 }
 
 /* Header seaparator from content */
 div.rf-tab-hdr-brd {
-    border: none;
-    background-color: transparent;
+  border: none;
+  background-color: transparent;
 }
 
 /* Tab (common) */
 td.rf-tab-hdr-act.rf-tab-hdr-top {
-    background-image: none;
-    border: 1px solid #461446;
-    border-top-right-radius: 5px;
-    border-top-left-radius: 5px;
-    padding: 5px 20px 0 20px;
+  background-image: none;
+  border: 1px solid #461446;
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+  padding: 5px 20px 0 20px;
 }
 
 /* Inactive Tab */
 td.rf-tab-hdr-inact.rf-tab-hdr-top {
-    color: #461446;
-    background-color: #eeeeee;
-    background-image: none;
-    border: 1px solid #461446;
-    border-top-right-radius: 5px;
-    border-top-left-radius: 5px;
-    padding: 5px 20px 0 20px;
+  color: #461446;
+  background-color: #eeeeee;
+  background-image: none;
+  border: 1px solid #461446;
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+  padding: 5px 20px 0 20px;
 }
 
 /* Active Tab */
 td.rf-tab-hdr-act.rf-tab-hdr-top {
-    color: #ffffff;
-    background-color: #461446;
+  color: #ffffff;
+  background-color: #461446;
 }
 
 /* Tab contents */
 div.rf-tab-cnt {
-    border: none;
-    border-radius: 5px;
-    background-color: #eeeeee;
+  border: none;
+  border-radius: 5px;
+  background-color: #eeeeee;
 }
 
 div.rf-tab-hdr-brd {
-    height: 0px;
+  height: 0px;
 }
 
 /* ====================== End Rich Tab Panel & Tabs =========================== */
@@ -189,28 +190,28 @@ div.rf-tab-hdr-brd {
 
 /* Dialog content */
 div.rf-pp-cntr {
-    border-radius: 5px;
-    border-color: transparent;
+  border-radius: 5px;
+  border-color: transparent;
 }
 
 /* Dialog Shadow */
 div.rf-pp-shdw {
-    border-radius: 5px;
+  border-radius: 5px;
 }
 
 /* Header */
 div.rf-pp-hdr {
-    background-image: none;
-    background-color: #461446;
-    border-top-right-radius: 5px;
-    border-top-left-radius: 5px;
-    padding: 7px;
+  background-image: none;
+  background-color: #461446;
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+  padding: 7px;
 }
 
 /* Body */
 div.rf-pp-cnt {
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 
 /* ====================== End Rich Dialogs =========================== */
@@ -218,22 +219,22 @@ div.rf-pp-cnt {
 /* ====================== Collapsible panel =========================== */
 
 div.rf-cp-hdr {
-    background-image: none;
-    background-color: #461446;
-    border-top-left-radius: 5px;
-    order-top-right-radius: 5px;
+  background-image: none;
+  background-color: #461446;
+  border-top-left-radius: 5px;
+  order-top-right-radius: 5px;
 }
 
 div.rf-cp-lbl-colps, div.rf-cp-lbl-exp {
-    color: #FFFFFF;
-    font-size:11px;
-    font-weight: bold;
+  color: #FFFFFF;
+  font-size: 11px;
+  font-weight: bold;
 }
 
 div.rf-cp {
-    padding:0;
-    border-radius: 5px;
-    margin-top:5px;
+  padding: 0;
+  border-radius: 5px;
+  margin-top: 5px;
 }
 
 /* ====================== End Collapsible panel =========================== */

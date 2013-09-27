@@ -38,32 +38,31 @@ import static org.mockito.Mockito.when;
 import static org.zanata.model.TestFixture.makeHTextFlow;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Test(groups = "unit-tests")
 @Slf4j
-public class GetProjectTransUnitListsHandlerTest
-{
-   public static final long DOC_ID = 1L;
-   private GetProjectTransUnitListsHandler handler;
-   @Mock
-   private ZanataIdentity identity;
-   @Mock
-   private LocaleService localeService;
-   @Mock
-   private TextFlowSearchService textFlowSearchServiceImpl;
-   private List<HTextFlow> textFlows;
-   private HLocale hLocale;
-   @Captor
-   private ArgumentCaptor<FilterConstraints> constraintCaptor;
-   private LocaleId localeId = LocaleId.DE;
-   private WorkspaceId workspaceId;
+public class GetProjectTransUnitListsHandlerTest {
+    public static final long DOC_ID = 1L;
+    private GetProjectTransUnitListsHandler handler;
+    @Mock
+    private ZanataIdentity identity;
+    @Mock
+    private LocaleService localeService;
+    @Mock
+    private TextFlowSearchService textFlowSearchServiceImpl;
+    private List<HTextFlow> textFlows;
+    private HLocale hLocale;
+    @Captor
+    private ArgumentCaptor<FilterConstraints> constraintCaptor;
+    private LocaleId localeId = LocaleId.DE;
+    private WorkspaceId workspaceId;
 
-   @BeforeClass
-   public void setUpData()
-   {
-      hLocale = TestFixture.setId(3L, new HLocale(LocaleId.DE));
-      // @formatter:off
+    @BeforeClass
+    public void setUpData() {
+        hLocale = TestFixture.setId(3L, new HLocale(LocaleId.DE));
+        // @formatter:off
       textFlows = Lists.newArrayList(
             textFlow(1L, "File is removed", ""),
             textFlow(2L, "file", "open file"),
@@ -71,18 +70,19 @@ public class GetProjectTransUnitListsHandlerTest
             textFlow(4L, " File", "FILE   ")
       );
       // @formatter:on
-      workspaceId = TestFixture.workspaceId(localeId);
-   }
+        workspaceId = TestFixture.workspaceId(localeId);
+    }
 
-   @BeforeMethod
-   @SuppressWarnings("unchecked")
-   public void beforeMethod()
-   {
-      MockitoAnnotations.initMocks(this);
-      ResourceUtils resourceUtils = new ResourceUtils();
-      resourceUtils.create(); //postConstruct
-      TransUnitTransformer transUnitTransformer = SeamAutowire.instance().use("resourceUtils", resourceUtils).autowire(TransUnitTransformer.class);
-      // @formatter:off
+    @BeforeMethod
+    @SuppressWarnings("unchecked")
+    public void beforeMethod() {
+        MockitoAnnotations.initMocks(this);
+        ResourceUtils resourceUtils = new ResourceUtils();
+        resourceUtils.create(); // postConstruct
+        TransUnitTransformer transUnitTransformer =
+                SeamAutowire.instance().use("resourceUtils", resourceUtils)
+                        .autowire(TransUnitTransformer.class);
+        // @formatter:off
       handler = SeamAutowire.instance()
             .use("identity", identity)
             .use("localeServiceImpl", localeService)
@@ -91,105 +91,129 @@ public class GetProjectTransUnitListsHandlerTest
             .ignoreNonResolvable()
             .autowire(GetProjectTransUnitListsHandler.class);
       // @formatter:on
-      when(localeService.validateLocaleByProjectIteration(localeId, workspaceId.getProjectIterationId().getProjectSlug(), workspaceId.getProjectIterationId().getIterationSlug())).thenReturn(hLocale);
-   }
+        when(
+                localeService.validateLocaleByProjectIteration(localeId,
+                        workspaceId.getProjectIterationId().getProjectSlug(),
+                        workspaceId.getProjectIterationId().getIterationSlug()))
+                .thenReturn(hLocale);
+    }
 
-   private HTextFlow textFlow(long id, String sourceContent, String targetContent)
-   {
-      HTextFlow hTextFlow = makeHTextFlow(id, hLocale, ContentState.NeedReview);
-      TestFixture.setId(DOC_ID, hTextFlow.getDocument());
-      hTextFlow.setContent0(sourceContent);
-      if (targetContent != null)
-      {
-         hTextFlow.getTargets().get(hLocale.getId()).setContent0(targetContent);
-      }
-      log.debug("text flow - id: {}, source : [{}], target: [{}]", new Object[] {id, sourceContent, targetContent});
-      return hTextFlow;
-   }
+    private HTextFlow textFlow(long id, String sourceContent,
+            String targetContent) {
+        HTextFlow hTextFlow =
+                makeHTextFlow(id, hLocale, ContentState.NeedReview);
+        TestFixture.setId(DOC_ID, hTextFlow.getDocument());
+        hTextFlow.setContent0(sourceContent);
+        if (targetContent != null) {
+            hTextFlow.getTargets().get(hLocale.getId())
+                    .setContent0(targetContent);
+        }
+        log.debug("text flow - id: {}, source : [{}], target: [{}]",
+                new Object[] { id, sourceContent, targetContent });
+        return hTextFlow;
+    }
 
-   @Test(expectedExceptions = ActionException.class)
-   public void exceptionIfLocaleIsInvalid() throws Exception
-   {
-      GetProjectTransUnitLists action = new GetProjectTransUnitLists("a", true, true, false);
-      action.setWorkspaceId(workspaceId);
-      when(localeService.validateLocaleByProjectIteration(localeId, workspaceId.getProjectIterationId().getProjectSlug(), workspaceId.getProjectIterationId().getIterationSlug())).thenThrow(new ZanataServiceException("bad"));
+    @Test(expectedExceptions = ActionException.class)
+    public void exceptionIfLocaleIsInvalid() throws Exception {
+        GetProjectTransUnitLists action =
+                new GetProjectTransUnitLists("a", true, true, false);
+        action.setWorkspaceId(workspaceId);
+        when(
+                localeService.validateLocaleByProjectIteration(localeId,
+                        workspaceId.getProjectIterationId().getProjectSlug(),
+                        workspaceId.getProjectIterationId().getIterationSlug()))
+                .thenThrow(new ZanataServiceException("bad"));
 
-      GetProjectTransUnitListsResult result = handler.execute(action, null);
-   }
+        GetProjectTransUnitListsResult result = handler.execute(action, null);
+    }
 
-   @Test
-   public void emptySearchTermWillReturnEmpty() throws Exception
-   {
-      GetProjectTransUnitLists action = new GetProjectTransUnitLists("", true, true, false);
-      action.setWorkspaceId(workspaceId);
+    @Test
+    public void emptySearchTermWillReturnEmpty() throws Exception {
+        GetProjectTransUnitLists action =
+                new GetProjectTransUnitLists("", true, true, false);
+        action.setWorkspaceId(workspaceId);
 
-      GetProjectTransUnitListsResult result = handler.execute(action, null);
+        GetProjectTransUnitListsResult result = handler.execute(action, null);
 
-      verify(identity).checkLoggedIn();
-      assertThat(result.getDocumentIds(), Matchers.<Long>emptyIterable());
-      verifyZeroInteractions(textFlowSearchServiceImpl);
-   }
+        verify(identity).checkLoggedIn();
+        assertThat(result.getDocumentIds(), Matchers.<Long> emptyIterable());
+        verifyZeroInteractions(textFlowSearchServiceImpl);
+    }
 
-   @Test
-   public void searchWithNoLeadingAndTrailingWhiteSpace() throws Exception
-   {
-      GetProjectTransUnitLists action = new GetProjectTransUnitLists("file", true, true, true);
-      action.setWorkspaceId(workspaceId);
-      when(textFlowSearchServiceImpl.findTextFlows(eq(action.getWorkspaceId()), eq(action.getDocumentPaths()), constraintCaptor.capture())).thenReturn(textFlows);
+    @Test
+    public void searchWithNoLeadingAndTrailingWhiteSpace() throws Exception {
+        GetProjectTransUnitLists action =
+                new GetProjectTransUnitLists("file", true, true, true);
+        action.setWorkspaceId(workspaceId);
+        when(
+                textFlowSearchServiceImpl.findTextFlows(
+                        eq(action.getWorkspaceId()),
+                        eq(action.getDocumentPaths()),
+                        constraintCaptor.capture())).thenReturn(textFlows);
 
-      // When: search in target only and case sensitive
-      GetProjectTransUnitListsResult result = handler.execute(action, null);
+        // When: search in target only and case sensitive
+        GetProjectTransUnitListsResult result = handler.execute(action, null);
 
-      verify(identity).checkLoggedIn();
-      FilterConstraints constraints = constraintCaptor.getValue();
-      assertThat(constraints.isSearchInSource(), Matchers.equalTo(true));
-      assertThat(constraints.isSearchInTarget(), Matchers.equalTo(true));
-      assertThat(constraints.isCaseSensitive(), Matchers.equalTo(true));
-      assertThat(result.getDocumentIds(), Matchers.contains(DOC_ID));
-      assertThat(TestFixture.asIds(result.getUnits(DOC_ID)), Matchers.contains(1, 2, 3, 4));
-   }
+        verify(identity).checkLoggedIn();
+        FilterConstraints constraints = constraintCaptor.getValue();
+        assertThat(constraints.isSearchInSource(), Matchers.equalTo(true));
+        assertThat(constraints.isSearchInTarget(), Matchers.equalTo(true));
+        assertThat(constraints.isCaseSensitive(), Matchers.equalTo(true));
+        assertThat(result.getDocumentIds(), Matchers.contains(DOC_ID));
+        assertThat(TestFixture.asIds(result.getUnits(DOC_ID)),
+                Matchers.contains(1, 2, 3, 4));
+    }
 
-   @Test
-   public void searchWithLeadingWhiteSpace() throws Exception
-   {
-      GetProjectTransUnitLists action = new GetProjectTransUnitLists(" file", true, true, true);
-      action.setWorkspaceId(workspaceId);
-      when(textFlowSearchServiceImpl.findTextFlows(eq(action.getWorkspaceId()), eq(action.getDocumentPaths()), constraintCaptor.capture())).thenReturn(textFlows);
+    @Test
+    public void searchWithLeadingWhiteSpace() throws Exception {
+        GetProjectTransUnitLists action =
+                new GetProjectTransUnitLists(" file", true, true, true);
+        action.setWorkspaceId(workspaceId);
+        when(
+                textFlowSearchServiceImpl.findTextFlows(
+                        eq(action.getWorkspaceId()),
+                        eq(action.getDocumentPaths()),
+                        constraintCaptor.capture())).thenReturn(textFlows);
 
-      // When: search in source and target and case sensitive
-      GetProjectTransUnitListsResult result = handler.execute(action, null);
+        // When: search in source and target and case sensitive
+        GetProjectTransUnitListsResult result = handler.execute(action, null);
 
-      verify(identity).checkLoggedIn();
-      FilterConstraints constraints = constraintCaptor.getValue();
-      assertThat(constraints.isSearchInSource(), Matchers.equalTo(true));
-      assertThat(constraints.isSearchInTarget(), Matchers.equalTo(true));
-      assertThat(constraints.isCaseSensitive(), Matchers.equalTo(true));
-      assertThat(result.getDocumentIds(), Matchers.contains(DOC_ID));
-      assertThat(TestFixture.asIds(result.getUnits(DOC_ID)), Matchers.contains(2, 3));
-   }
+        verify(identity).checkLoggedIn();
+        FilterConstraints constraints = constraintCaptor.getValue();
+        assertThat(constraints.isSearchInSource(), Matchers.equalTo(true));
+        assertThat(constraints.isSearchInTarget(), Matchers.equalTo(true));
+        assertThat(constraints.isCaseSensitive(), Matchers.equalTo(true));
+        assertThat(result.getDocumentIds(), Matchers.contains(DOC_ID));
+        assertThat(TestFixture.asIds(result.getUnits(DOC_ID)),
+                Matchers.contains(2, 3));
+    }
 
-   @Test
-   public void searchWithTrailingWhiteSpace() throws Exception
-   {
-      GetProjectTransUnitLists action = new GetProjectTransUnitLists("file ", true, false, false);
-      action.setWorkspaceId(workspaceId);
-      when(textFlowSearchServiceImpl.findTextFlows(eq(action.getWorkspaceId()), eq(action.getDocumentPaths()), constraintCaptor.capture())).thenReturn(textFlows);
+    @Test
+    public void searchWithTrailingWhiteSpace() throws Exception {
+        GetProjectTransUnitLists action =
+                new GetProjectTransUnitLists("file ", true, false, false);
+        action.setWorkspaceId(workspaceId);
+        when(
+                textFlowSearchServiceImpl.findTextFlows(
+                        eq(action.getWorkspaceId()),
+                        eq(action.getDocumentPaths()),
+                        constraintCaptor.capture())).thenReturn(textFlows);
 
-      // When: search in source only and case insensitive
-      GetProjectTransUnitListsResult result = handler.execute(action, null);
+        // When: search in source only and case insensitive
+        GetProjectTransUnitListsResult result = handler.execute(action, null);
 
-      verify(identity).checkLoggedIn();
-      FilterConstraints constraints = constraintCaptor.getValue();
-      assertThat(constraints.isSearchInSource(), Matchers.equalTo(true));
-      assertThat(constraints.isSearchInTarget(), Matchers.equalTo(false));
-      assertThat(constraints.isCaseSensitive(), Matchers.equalTo(false));
-      assertThat(result.getDocumentIds(), Matchers.contains(DOC_ID));
-      assertThat(TestFixture.asIds(result.getUnits(DOC_ID)), Matchers.contains(1, 3));
-   }
+        verify(identity).checkLoggedIn();
+        FilterConstraints constraints = constraintCaptor.getValue();
+        assertThat(constraints.isSearchInSource(), Matchers.equalTo(true));
+        assertThat(constraints.isSearchInTarget(), Matchers.equalTo(false));
+        assertThat(constraints.isCaseSensitive(), Matchers.equalTo(false));
+        assertThat(result.getDocumentIds(), Matchers.contains(DOC_ID));
+        assertThat(TestFixture.asIds(result.getUnits(DOC_ID)),
+                Matchers.contains(1, 3));
+    }
 
-   @Test
-   public void testRollback() throws Exception
-   {
-      handler.rollback(null, null, null);
-   }
+    @Test
+    public void testRollback() throws Exception {
+        handler.rollback(null, null, null);
+    }
 }

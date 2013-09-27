@@ -16,112 +16,108 @@ import org.zanata.webtrans.shared.rpc.TransMemoryDetailsList;
 import com.google.gwt.core.client.GWT;
 import com.google.inject.Inject;
 
-public class TransMemoryDetailsPresenter extends WidgetPresenter<TransMemoryDetailsDisplay> implements TransMemoryDetailsDisplay.Listener
-{
-   private final CachingDispatchAsync dispatcher;
-   
-   private TransMemoryDetailsList tmDetails;
+public class TransMemoryDetailsPresenter extends
+        WidgetPresenter<TransMemoryDetailsDisplay> implements
+        TransMemoryDetailsDisplay.Listener {
+    private final CachingDispatchAsync dispatcher;
 
-   @Inject
-   public TransMemoryDetailsPresenter(TransMemoryDetailsDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher)
-   {
-      super(display, eventBus);
-      this.dispatcher = dispatcher;
-      display.setListener(this);
-   }
+    private TransMemoryDetailsList tmDetails;
 
-   @Override
-   protected void onBind()
-   {
-   }
+    @Inject
+    public TransMemoryDetailsPresenter(TransMemoryDetailsDisplay display,
+            EventBus eventBus, CachingDispatchAsync dispatcher) {
+        super(display, eventBus);
+        this.dispatcher = dispatcher;
+        display.setListener(this);
+    }
 
-   @Override
-   protected void onUnbind()
-   {
-   }
+    @Override
+    protected void onBind() {
+    }
 
-   public void show(final TransMemoryResultItem item)
-   {
-      // request TM details from the server
-      dispatcher.execute(new GetTransMemoryDetailsAction(item.getSourceIdList()), new AbstractAsyncCallback<TransMemoryDetailsList>()
-      {
-         @Override
-         public void onSuccess(TransMemoryDetailsList result)
-         {
-            tmDetails = result;
-            display.clearSourceAndTarget();
-            display.setSource(item.getSourceContents());
-            display.setTarget(item.getTargetContents());
-            display.clearDocs();
-            for (TransMemoryDetails detailsItem : tmDetails.getItems())
-            {
-               String docText = detailsItem.getProjectName() + '/' + detailsItem.getIterationName() + '/' + detailsItem.getDocId();
-               display.addDoc(docText);
-            }
-            selectDoc(0);
+    @Override
+    protected void onUnbind() {
+    }
 
-            display.show();
-         }
-      });
-   }
+    public void show(final TransMemoryResultItem item) {
+        // request TM details from the server
+        dispatcher.execute(
+                new GetTransMemoryDetailsAction(item.getSourceIdList()),
+                new AbstractAsyncCallback<TransMemoryDetailsList>() {
+                    @Override
+                    public void onSuccess(TransMemoryDetailsList result) {
+                        tmDetails = result;
+                        display.clearSourceAndTarget();
+                        display.setSource(item.getSourceContents());
+                        display.setTarget(item.getTargetContents());
+                        display.clearDocs();
+                        for (TransMemoryDetails detailsItem : tmDetails
+                                .getItems()) {
+                            String docText =
+                                    detailsItem.getProjectName() + '/'
+                                            + detailsItem.getIterationName()
+                                            + '/' + detailsItem.getDocId();
+                            display.addDoc(docText);
+                        }
+                        selectDoc(0);
 
-   @Override
-   public void onRevealDisplay()
-   {
-   }
+                        display.show();
+                    }
+                });
+    }
 
-   @Override
-   public void dismissTransMemoryDetails()
-   {
-      display.hide();
-   }
+    @Override
+    public void onRevealDisplay() {
+    }
 
-   @Override
-   public void onDocumentListBoxChanged()
-   {
-      selectDoc(display.getSelectedDocumentIndex());
-   }
+    @Override
+    public void dismissTransMemoryDetails() {
+        display.hide();
+    }
 
-   protected void selectDoc(int selected)
-   {
-      String sourceComment = "";
-      String targetComment = "";
-      String project = "";
-      String iteration = "";
-      String doc = "";
-      String lastModifiedBy = "";
-      Date lastModifiedDate = null;
+    @Override
+    public void onDocumentListBoxChanged() {
+        selectDoc(display.getSelectedDocumentIndex());
+    }
 
-      if (selected >= 0)
-      {
-         TransMemoryDetails item = tmDetails.getItems().get(selected);
-         sourceComment = item.getSourceComment();
-         targetComment = item.getTargetComment();
-         project = item.getProjectName();
-         iteration = item.getIterationName();
-         doc = item.getDocId();
-         lastModifiedBy = item.getLastModifiedBy();
-         lastModifiedDate = item.getLastModifiedDate();
-         display.setState(item.getState());
-      }
+    protected void selectDoc(int selected) {
+        String sourceComment = "";
+        String targetComment = "";
+        String project = "";
+        String iteration = "";
+        String doc = "";
+        String lastModifiedBy = "";
+        Date lastModifiedDate = null;
 
-      display.setSourceComment(sourceComment);
-      display.setTargetComment(targetComment);
-      display.setProjectIterationName(project + " / " + iteration);
-      display.setDocumentName(doc);
+        if (selected >= 0) {
+            TransMemoryDetails item = tmDetails.getItems().get(selected);
+            sourceComment = item.getSourceComment();
+            targetComment = item.getTargetComment();
+            project = item.getProjectName();
+            iteration = item.getIterationName();
+            doc = item.getDocId();
+            lastModifiedBy = item.getLastModifiedBy();
+            lastModifiedDate = item.getLastModifiedDate();
+            display.setState(item.getState());
+        }
 
-      display.setLastModified(lastModifiedBy, lastModifiedDate);
-   }
+        display.setSourceComment(sourceComment);
+        display.setTargetComment(targetComment);
+        display.setProjectIterationName(project + " / " + iteration);
+        display.setDocumentName(doc);
 
-   /**
-    * For testing only
-    * @param details transMemoryDetailsList
-    */
-   protected void setStatForTesting(TransMemoryDetailsList details)
-   {
-      if (!GWT.isClient())
-      {
-         tmDetails = details;
-      }
-   }
+        display.setLastModified(lastModifiedBy, lastModifiedDate);
+    }
+
+    /**
+     * For testing only
+     *
+     * @param details
+     *            transMemoryDetailsList
+     */
+    protected void setStatForTesting(TransMemoryDetailsList details) {
+        if (!GWT.isClient()) {
+            tmDetails = details;
+        }
+    }
 }

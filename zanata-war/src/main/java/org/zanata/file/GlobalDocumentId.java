@@ -8,15 +8,16 @@ import lombok.NonNull;
 @Getter
 @AllArgsConstructor
 @EqualsAndHashCode
-public class GlobalDocumentId
-{
-   @NonNull private final String projectSlug;
-   @NonNull private final String versionSlug;
-   @NonNull private final String docId;
+public class GlobalDocumentId {
+    @NonNull
+    private final String projectSlug;
+    @NonNull
+    private final String versionSlug;
+    @NonNull
+    private final String docId;
 
-   @Override
-   public String toString()
-   {
-      return projectSlug + ":" + versionSlug + ":" + docId;
-   }
+    @Override
+    public String toString() {
+        return projectSlug + ":" + versionSlug + ":" + docId;
+    }
 }

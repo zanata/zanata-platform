@@ -5,33 +5,28 @@ import java.util.Map;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.PersonSessionDetails;
 
+public class GetTranslatorListResult implements DispatchResult {
 
-public class GetTranslatorListResult implements DispatchResult
-{
+    private static final long serialVersionUID = 1L;
 
-   private static final long serialVersionUID = 1L;
+    private Map<EditorClientId, PersonSessionDetails> translatorlist;
+    private int size;
 
-   private Map<EditorClientId, PersonSessionDetails> translatorlist;
-   private int size;
+    @SuppressWarnings("unused")
+    private GetTranslatorListResult() {
+    }
 
-   @SuppressWarnings("unused")
-   private GetTranslatorListResult()
-   {
-   }
+    public GetTranslatorListResult(
+            Map<EditorClientId, PersonSessionDetails> translatorlist, int size) {
+        this.translatorlist = translatorlist;
+        this.size = size;
+    }
 
-   public GetTranslatorListResult(Map<EditorClientId, PersonSessionDetails> translatorlist, int size)
-   {
-      this.translatorlist = translatorlist;
-      this.size = size;
-   }
+    public Map<EditorClientId, PersonSessionDetails> getTranslatorList() {
+        return translatorlist;
+    }
 
-   public Map<EditorClientId, PersonSessionDetails> getTranslatorList()
-   {
-      return translatorlist;
-   }
-
-   public int getSize()
-   {
-      return size;
-   }
+    public int getSize() {
+        return size;
+    }
 }

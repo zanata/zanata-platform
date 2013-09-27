@@ -29,35 +29,35 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class SlugEntityBaseTest
-{
-   @NoArgsConstructor
-   static class SlugClass extends SlugEntityBase
-   {
-      public SlugClass(String slug)
-      {
-         super(slug);
-      }
-   }
-   @Test
-   public void lombokToStringAndEqualsTest() {
-      SlugEntityBase entity = new SlugClass();
+public class SlugEntityBaseTest {
+    @NoArgsConstructor
+    static class SlugClass extends SlugEntityBase {
+        public SlugClass(String slug) {
+            super(slug);
+        }
+    }
 
-      entity.setSlug("abc");
-      entity.setId(1L);
-      entity.setVersionNum(2);
-      assertThat(entity.toString(), containsString("[id=1,versionNum=2], slug=abc)"));
+    @Test
+    public void lombokToStringAndEqualsTest() {
+        SlugEntityBase entity = new SlugClass();
 
-      SlugEntityBase other = new SlugClass("abc");
-      assertThat(entity.equals(other), equalTo(false));
+        entity.setSlug("abc");
+        entity.setId(1L);
+        entity.setVersionNum(2);
+        assertThat(entity.toString(),
+                containsString("[id=1,versionNum=2], slug=abc)"));
 
-      other.setId(entity.getId());
-      other.setVersionNum(entity.getVersionNum());
-      assertThat(entity, equalTo(other));
+        SlugEntityBase other = new SlugClass("abc");
+        assertThat(entity.equals(other), equalTo(false));
 
-      assertThat(entity.hashCode(), equalTo(other.hashCode()));
+        other.setId(entity.getId());
+        other.setVersionNum(entity.getVersionNum());
+        assertThat(entity, equalTo(other));
 
-   }
+        assertThat(entity.hashCode(), equalTo(other.hashCode()));
+
+    }
 }

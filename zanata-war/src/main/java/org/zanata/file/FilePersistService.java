@@ -25,19 +25,23 @@ import java.io.InputStream;
 
 import org.zanata.model.HRawDocument;
 
-public interface FilePersistService
-{
-   // TODO damason: add persistRawDocumentContentFromStream(HRawDocument, InputStream)
+public interface FilePersistService {
+    // TODO damason: add persistRawDocumentContentFromStream(HRawDocument,
+    // InputStream)
 
-   public void persistRawDocumentContentFromFile(HRawDocument rawDocument, File rawFile);
+    public void persistRawDocumentContentFromFile(HRawDocument rawDocument,
+            File rawFile);
 
-   // TODO damason: parsing code only needs a file URI for this. Change to return
-   //               uri when files are persisted to server.
-   // Other implementations may need a way to specify that they are finished with the
-   // document resource and cleanup is possible, in case temp files were generated.
-   public InputStream getRawDocumentContentAsStream(HRawDocument document)
-         throws RawDocumentContentAccessException;
+    // TODO damason: parsing code only needs a file URI for this. Change to
+    // return
+    // uri when files are persisted to server.
+    // Other implementations may need a way to specify that they are finished
+    // with the
+    // document resource and cleanup is possible, in case temp files were
+    // generated.
+    public InputStream getRawDocumentContentAsStream(HRawDocument document)
+            throws RawDocumentContentAccessException;
 
-   boolean hasPersistedDocument(GlobalDocumentId id);
+    boolean hasPersistedDocument(GlobalDocumentId id);
 
 }

@@ -7,15 +7,15 @@ Using this datasource:
 See http://jaitechwriteups.blogspot.com/2012/02/jboss-as-710final-thunder-released-java.html
 -->
 <datasources>
-    <datasource jndi-name="java:jboss/datasources/zanataDatasource"
-                enabled="true" use-java-context="true" pool-name="zanataDatasource">
-        <connection-url>jdbc:mysql://localhost:3306/zanata?characterEncoding=UTF-8</connection-url>
-        <driver>mysql-connector-java.jar</driver>
-        <security>
-            <user-name>root</user-name>
-            <!--
-            <password></password>
-            -->
-        </security>
-    </datasource>
+  <datasource jndi-name="java:jboss/datasources/zanataDatasource"
+    enabled="true" use-java-context="true" pool-name="zanataDatasource">
+    <connection-url>jdbc:mysql://localhost:3306/zanata?characterEncoding=UTF-8</connection-url>
+    <driver>mysql-connector-java.jar</driver>
+    <security>
+      <user-name>root</user-name>
+      <!--
+      <password></password>
+      -->
+    </security>
+  </datasource>
 </datasources>

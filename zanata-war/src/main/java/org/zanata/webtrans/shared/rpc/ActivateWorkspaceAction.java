@@ -2,26 +2,22 @@ package org.zanata.webtrans.shared.rpc;
 
 import org.zanata.webtrans.shared.model.WorkspaceId;
 
+public class ActivateWorkspaceAction implements
+        DispatchAction<ActivateWorkspaceResult> {
 
-public class ActivateWorkspaceAction implements DispatchAction<ActivateWorkspaceResult>
-{
+    private static final long serialVersionUID = 1L;
 
-   private static final long serialVersionUID = 1L;
+    private WorkspaceId workspaceId;
 
-   private WorkspaceId workspaceId;
+    @SuppressWarnings("unused")
+    private ActivateWorkspaceAction() {
+    }
 
-   @SuppressWarnings("unused")
-   private ActivateWorkspaceAction()
-   {
-   }
+    public ActivateWorkspaceAction(WorkspaceId workspaceId) {
+        this.workspaceId = workspaceId;
+    }
 
-   public ActivateWorkspaceAction(WorkspaceId workspaceId)
-   {
-      this.workspaceId = workspaceId;
-   }
-
-   public WorkspaceId getWorkspaceId()
-   {
-      return workspaceId;
-   }
+    public WorkspaceId getWorkspaceId() {
+        return workspaceId;
+    }
 }

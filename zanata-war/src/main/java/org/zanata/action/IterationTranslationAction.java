@@ -44,37 +44,36 @@ import org.zanata.service.LocaleService;
 @Name("iterationTranslationAction")
 @Scope(ScopeType.PAGE)
 @CachedMethods
-public class IterationTranslationAction implements Serializable
-{
-   private static final long serialVersionUID = 1L;
+public class IterationTranslationAction implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-   @In
-   LocaleService localeServiceImpl;
-   @Logger
-   Log log;
+    @In
+    LocaleService localeServiceImpl;
+    @Logger
+    Log log;
 
-   @In
-   Identity identity;
-   
-   @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
-   HAccount authenticatedAccount;
-   
-   @In
-   ProjectIterationDAO projectIterationDAO;
+    @In
+    Identity identity;
 
+    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
+    HAccount authenticatedAccount;
 
-   public List<HLocale> getTranslationLocale(String projectSlug, String iterationSlug)
-   {
-      if (authenticatedAccount == null)
-      {
-         return Collections.emptyList();
-      }
-      return localeServiceImpl.getTranslation(projectSlug, iterationSlug, authenticatedAccount.getUsername());
-   }
-   
-   @CachedMethodResult(ScopeType.PAGE)
-   public TransUnitWords getWordStatsForContainer(Long iterationId, LocaleId localeId)
-   {
-      return projectIterationDAO.getWordStatsForContainer(iterationId, localeId);
-   }
+    @In
+    ProjectIterationDAO projectIterationDAO;
+
+    public List<HLocale> getTranslationLocale(String projectSlug,
+            String iterationSlug) {
+        if (authenticatedAccount == null) {
+            return Collections.emptyList();
+        }
+        return localeServiceImpl.getTranslation(projectSlug, iterationSlug,
+                authenticatedAccount.getUsername());
+    }
+
+    @CachedMethodResult(ScopeType.PAGE)
+    public TransUnitWords getWordStatsForContainer(Long iterationId,
+            LocaleId localeId) {
+        return projectIterationDAO.getWordStatsForContainer(iterationId,
+                localeId);
+    }
 }

@@ -26,7 +26,7 @@ Usually, `apache` already has necessary settings, but `nginx` and other
 webservers should be tuned. Here is list of mime types for our file extentions:
 
 - `application/vnd.ms-fontobject` - eot
-- `application/x-font-woff`	- woff
+- `application/x-font-woff` - woff
 - `application/x-font-ttf` - ttf
 - `image/svg+xml` - svg
 
@@ -36,7 +36,7 @@ Comments on archive content
 
 - /font/* - fonts in different formats
 
-- /css/*  - different kinds of css, for all situations. Should be ok with 
+- /css/*  - different kinds of css, for all situations. Should be ok with
   twitter bootstrap. Also, you can skip <i> style and assign icon classes
   directly to text elements
 

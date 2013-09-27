@@ -2,17 +2,17 @@
  * Copyright 2012, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
- * 
+ *
  * This is free software; you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
@@ -43,24 +43,25 @@ import com.google.inject.Inject;
 
 /**
  * @author aeng
- * 
+ *
  */
-public class SideMenuPresenter extends WidgetPresenter<SideMenuDisplay> implements NotificationLabelListener, SideMenuDisplay.Listener, PublishWorkspaceChatEventHandler, WorkspaceContextUpdateEventHandler
-{
-   private final OptionsPresenter optionsPresenter;
-   private final ValidationOptionsPresenter validationOptionsPresenter;
-   private final WorkspaceUsersPresenter workspaceUsersPresenter;
-   private final NotificationPresenter notificationPresenter;
+public class SideMenuPresenter extends WidgetPresenter<SideMenuDisplay>
+        implements NotificationLabelListener, SideMenuDisplay.Listener,
+        PublishWorkspaceChatEventHandler, WorkspaceContextUpdateEventHandler {
+    private final OptionsPresenter optionsPresenter;
+    private final ValidationOptionsPresenter validationOptionsPresenter;
+    private final WorkspaceUsersPresenter workspaceUsersPresenter;
+    private final NotificationPresenter notificationPresenter;
 
-   private final UserSessionService sessionService;
-   private final UserWorkspaceContext userWorkspaceContext;
+    private final UserSessionService sessionService;
+    private final UserWorkspaceContext userWorkspaceContext;
 
-   private final DispatchAsync dispatcher;
+    private final DispatchAsync dispatcher;
 
-   private boolean isExpended = false;
+    private boolean isExpended = false;
 
-   @Inject
-   // @formatter:off
+    @Inject
+    // @formatter:off
    public SideMenuPresenter(SideMenuDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher,
          OptionsPresenter optionsPresenter,
                             ValidationOptionsPresenter validationOptionsPresenter,
@@ -69,190 +70,163 @@ public class SideMenuPresenter extends WidgetPresenter<SideMenuDisplay> implemen
                             UserSessionService sessionService,
                             UserWorkspaceContext userWorkspaceContext)
    // @formatter:on
-   {
-      super(display, eventBus);
-      this.optionsPresenter = optionsPresenter;
-      this.validationOptionsPresenter = validationOptionsPresenter;
-      this.workspaceUsersPresenter = workspaceUsersPresenter;
-      this.notificationPresenter = notificationPresenter;
-      this.sessionService = sessionService;
+    {
+        super(display, eventBus);
+        this.optionsPresenter = optionsPresenter;
+        this.validationOptionsPresenter = validationOptionsPresenter;
+        this.workspaceUsersPresenter = workspaceUsersPresenter;
+        this.notificationPresenter = notificationPresenter;
+        this.sessionService = sessionService;
 
-      this.userWorkspaceContext = userWorkspaceContext;
-      this.dispatcher = dispatcher;
-      display.setListener(this);
-   }
+        this.userWorkspaceContext = userWorkspaceContext;
+        this.dispatcher = dispatcher;
+        display.setListener(this);
+    }
 
-   @Override
-   protected void onBind()
-   {
-      optionsPresenter.bind();
-      validationOptionsPresenter.bind();
-      workspaceUsersPresenter.bind();
-      notificationPresenter.bind();
+    @Override
+    protected void onBind() {
+        optionsPresenter.bind();
+        validationOptionsPresenter.bind();
+        workspaceUsersPresenter.bind();
+        notificationPresenter.bind();
 
-      setReadOnly(userWorkspaceContext.hasReadOnlyAccess());
+        setReadOnly(userWorkspaceContext.hasReadOnlyAccess());
 
-      notificationPresenter.setNotificationListener(this);
+        notificationPresenter.setNotificationListener(this);
 
-      registerHandler(eventBus.addHandler(PublishWorkspaceChatEvent.getType(), this));
-      registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this));
+        registerHandler(eventBus.addHandler(
+                PublishWorkspaceChatEvent.getType(), this));
+        registerHandler(eventBus.addHandler(
+                WorkspaceContextUpdateEvent.getType(), this));
 
-      // We won't receive the EnterWorkspaceEvent generated by our own login,
-      // because this presenter is not bound until we get the callback from
-      // EventProcessor.
-      // Thus we load the translator list here.
-      loadTranslatorList();
+        // We won't receive the EnterWorkspaceEvent generated by our own login,
+        // because this presenter is not bound until we get the callback from
+        // EventProcessor.
+        // Thus we load the translator list here.
+        loadTranslatorList();
 
-      display.setSelectedTab(SideMenuDisplay.NOTIFICATION_VIEW);
-   }
+        display.setSelectedTab(SideMenuDisplay.NOTIFICATION_VIEW);
+    }
 
-   private void loadTranslatorList()
-   {
-      dispatcher.execute(GetTranslatorList.ACTION, new AsyncCallback<GetTranslatorListResult>()
-      {
-         @Override
-         public void onFailure(Throwable caught)
-         {
-            Log.error("error fetching translators list: " + caught.getMessage());
-         }
+    private void loadTranslatorList() {
+        dispatcher.execute(GetTranslatorList.ACTION,
+                new AsyncCallback<GetTranslatorListResult>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        Log.error("error fetching translators list: "
+                                + caught.getMessage());
+                    }
 
-         @Override
-         public void onSuccess(GetTranslatorListResult result)
-         {
-            sessionService.initUserList(result.getTranslatorList());
-         }
-      });
-   }
+                    @Override
+                    public void onSuccess(GetTranslatorListResult result) {
+                        sessionService.initUserList(result.getTranslatorList());
+                    }
+                });
+    }
 
-   @Override
-   public void onPublishWorkspaceChat(PublishWorkspaceChatEvent event)
-   {
-      if (display.getCurrentTab() != SideMenuDisplay.WORKSPACEUSER_VIEW)
-      {
-         display.setChatTabAlert(true);
-      }
-   }
+    @Override
+    public void onPublishWorkspaceChat(PublishWorkspaceChatEvent event) {
+        if (display.getCurrentTab() != SideMenuDisplay.WORKSPACEUSER_VIEW) {
+            display.setChatTabAlert(true);
+        }
+    }
 
-   // Disable Chat, Editor options, and validation options if readonly
-   private void setReadOnly(boolean isReadOnly)
-   {
-      display.setChatTabVisible(!isReadOnly);
-      display.setOptionsTabVisible(!isReadOnly);
-      display.setValidationOptionsTabVisible(!isReadOnly);
-      if (isReadOnly)
-      {
-         display.setSelectedTab(SideMenuDisplay.NOTIFICATION_VIEW);
-      }
-   }
+    // Disable Chat, Editor options, and validation options if readonly
+    private void setReadOnly(boolean isReadOnly) {
+        display.setChatTabVisible(!isReadOnly);
+        display.setOptionsTabVisible(!isReadOnly);
+        display.setValidationOptionsTabVisible(!isReadOnly);
+        if (isReadOnly) {
+            display.setSelectedTab(SideMenuDisplay.NOTIFICATION_VIEW);
+        }
+    }
 
-   @Override
-   protected void onUnbind()
-   {
-      optionsPresenter.unbind();
-      validationOptionsPresenter.unbind();
-      workspaceUsersPresenter.unbind();
-      notificationPresenter.unbind();
-   }
+    @Override
+    protected void onUnbind() {
+        optionsPresenter.unbind();
+        validationOptionsPresenter.unbind();
+        workspaceUsersPresenter.unbind();
+        notificationPresenter.unbind();
+    }
 
-   @Override
-   protected void onRevealDisplay()
-   {
-   }
+    @Override
+    protected void onRevealDisplay() {
+    }
 
-   public void setOptionMenu(MainView view)
-   {
-      if (!userWorkspaceContext.hasReadOnlyAccess())
-      {
-         optionsPresenter.setOptionsView(view);
-      }
-      validationOptionsPresenter.setCurrentView(view);
-   }
+    public void setOptionMenu(MainView view) {
+        if (!userWorkspaceContext.hasReadOnlyAccess()) {
+            optionsPresenter.setOptionsView(view);
+        }
+        validationOptionsPresenter.setCurrentView(view);
+    }
 
-   public void showValidationOptions(boolean showValidationMenu)
-   {
-      display.setValidationOptionsTabVisible(showValidationMenu);
-      if (!showValidationMenu && (display.getCurrentTab() == SideMenuDisplay.VALIDATION_OPTION_VIEW))
-      {
-         display.setSelectedTab(SideMenuDisplay.NOTIFICATION_VIEW);
-      }
-   }
+    public void showValidationOptions(boolean showValidationMenu) {
+        display.setValidationOptionsTabVisible(showValidationMenu);
+        if (!showValidationMenu
+                && (display.getCurrentTab() == SideMenuDisplay.VALIDATION_OPTION_VIEW)) {
+            display.setSelectedTab(SideMenuDisplay.NOTIFICATION_VIEW);
+        }
+    }
 
-   @Override
-   public void onOptionsClick()
-   {
-      showAndExpandOrCollapseTab(SideMenuDisplay.OPTION_VIEW);
-   }
+    @Override
+    public void onOptionsClick() {
+        showAndExpandOrCollapseTab(SideMenuDisplay.OPTION_VIEW);
+    }
 
-   @Override
-   public void onNotificationClick()
-   {
-      showAndExpandOrCollapseTab(SideMenuDisplay.NOTIFICATION_VIEW);
-   }
+    @Override
+    public void onNotificationClick() {
+        showAndExpandOrCollapseTab(SideMenuDisplay.NOTIFICATION_VIEW);
+    }
 
-   @Override
-   public void onValidationOptionsClick()
-   {
-      showAndExpandOrCollapseTab(SideMenuDisplay.VALIDATION_OPTION_VIEW);
-   }
+    @Override
+    public void onValidationOptionsClick() {
+        showAndExpandOrCollapseTab(SideMenuDisplay.VALIDATION_OPTION_VIEW);
+    }
 
-   @Override
-   public void onChatClick()
-   {
-      showAndExpandOrCollapseTab(SideMenuDisplay.WORKSPACEUSER_VIEW);
-   }
+    @Override
+    public void onChatClick() {
+        showAndExpandOrCollapseTab(SideMenuDisplay.WORKSPACEUSER_VIEW);
+    }
 
-   protected void showAndExpandOrCollapseTab(int tabView)
-   {
-      if (!userWorkspaceContext.hasReadOnlyAccess())
-      {
-         if (!isExpended)
-         {
+    protected void showAndExpandOrCollapseTab(int tabView) {
+        if (!userWorkspaceContext.hasReadOnlyAccess()) {
+            if (!isExpended) {
+                expendSideMenu(true);
+                display.setSelectedTab(tabView);
+            } else if (display.getCurrentTab() != tabView) {
+                display.setSelectedTab(tabView);
+            } else {
+                expendSideMenu(false);
+            }
+        }
+    }
+
+    protected void expendSideMenu(boolean isExpend) {
+        isExpended = isExpend;
+        eventBus.fireEvent(new ShowSideMenuEvent(isExpended));
+    }
+
+    @Override
+    public void setNotificationLabel(int count, Severity severity) {
+        display.setNotificationText(count, severity);
+    }
+
+    @Override
+    public void showNotification() {
+        if (!isExpended) {
             expendSideMenu(true);
-            display.setSelectedTab(tabView);
-         }
-         else if (display.getCurrentTab() != tabView)
-         {
-            display.setSelectedTab(tabView);
-         }
-         else
-         {
-            expendSideMenu(false);
-         }
-      }
-   }
+            display.setSelectedTab(SideMenuDisplay.NOTIFICATION_VIEW);
+        } else if (display.getCurrentTab() != SideMenuDisplay.NOTIFICATION_VIEW) {
+            display.setSelectedTab(SideMenuDisplay.NOTIFICATION_VIEW);
+        }
+    }
 
-   protected void expendSideMenu(boolean isExpend)
-   {
-      isExpended = isExpend;
-      eventBus.fireEvent(new ShowSideMenuEvent(isExpended));
-   }
+    @Override
+    public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event) {
+        userWorkspaceContext.setProjectActive(event.isProjectActive());
+        userWorkspaceContext.getWorkspaceContext().getWorkspaceId()
+                .getProjectIterationId().setProjectType(event.getProjectType());
 
-   @Override
-   public void setNotificationLabel(int count, Severity severity)
-   {
-      display.setNotificationText(count, severity);
-   }
-
-   @Override
-   public void showNotification()
-   {
-      if (!isExpended)
-      {
-         expendSideMenu(true);
-         display.setSelectedTab(SideMenuDisplay.NOTIFICATION_VIEW);
-      }
-      else if (display.getCurrentTab() != SideMenuDisplay.NOTIFICATION_VIEW)
-      {
-         display.setSelectedTab(SideMenuDisplay.NOTIFICATION_VIEW);
-      }
-   }
-
-   @Override
-   public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
-   {
-      userWorkspaceContext.setProjectActive(event.isProjectActive());
-      userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().setProjectType(event.getProjectType());
-
-      setReadOnly(userWorkspaceContext.hasReadOnlyAccess());
-   }
+        setReadOnly(userWorkspaceContext.hasReadOnlyAccess());
+    }
 }

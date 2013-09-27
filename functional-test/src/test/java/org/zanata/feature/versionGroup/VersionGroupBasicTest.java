@@ -45,132 +45,129 @@ import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @RunWith(ConcordionRunner.class)
-@Extensions({ ScreenshotExtension.class, TimestampFormatterExtension.class, CustomResourceExtension.class })
+@Extensions({ ScreenshotExtension.class, TimestampFormatterExtension.class,
+        CustomResourceExtension.class })
 @Category(ConcordionTest.class)
-public class VersionGroupBasicTest
-{
+public class VersionGroupBasicTest {
 
-   @ClassRule
-   public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
-   private final ProjectWorkFlow projectWorkFlow = new ProjectWorkFlow();
-   private DashboardPage dashboardPage;
-   private VersionGroupPage versionGroupPage;
+    @ClassRule
+    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
+    private final ProjectWorkFlow projectWorkFlow = new ProjectWorkFlow();
+    private DashboardPage dashboardPage;
+    private VersionGroupPage versionGroupPage;
 
-   @Before
-   public void before()
-   {
-      dashboardPage = new LoginWorkFlow().signIn("admin", "admin");
-   }
+    @Before
+    public void before() {
+        dashboardPage = new LoginWorkFlow().signIn("admin", "admin");
+    }
 
-   public VersionGroupsPage createNewVersionGroup(String groupId, String groupName, String groupDesc, String groupStatus)
-   {
-      VersionGroupsPage versionGroupsPage = dashboardPage.goToGroups();
-      return versionGroupsPage.createNewGroup().inputGroupId(groupId).inputGroupName(groupName)
-            .inputGroupDescription(groupDesc).selectStatus(groupStatus).saveGroup();
-   }
+    public VersionGroupsPage createNewVersionGroup(String groupId,
+            String groupName, String groupDesc, String groupStatus) {
+        VersionGroupsPage versionGroupsPage = dashboardPage.goToGroups();
+        return versionGroupsPage.createNewGroup().inputGroupId(groupId)
+                .inputGroupName(groupName).inputGroupDescription(groupDesc)
+                .selectStatus(groupStatus).saveGroup();
+    }
 
-   public CreateVersionGroupPage groupIDAlreadyExists(String groupId, String groupName, String groupDesc,
-         String groupStatus)
-   {
-      VersionGroupsPage versionGroupsPage = dashboardPage.goToGroups();
-      List<String> groupNames = versionGroupsPage.getGroupNames();
-      assertThat("Group does not exist, preconditions not met", groupNames.contains(groupName));
-      return versionGroupsPage.createNewGroup().inputGroupId(groupId).inputGroupName(groupName)
-            .inputGroupDescription(groupDesc).selectStatus(groupStatus).saveGroupFailure();
-   }
+    public CreateVersionGroupPage groupIDAlreadyExists(String groupId,
+            String groupName, String groupDesc, String groupStatus) {
+        VersionGroupsPage versionGroupsPage = dashboardPage.goToGroups();
+        List<String> groupNames = versionGroupsPage.getGroupNames();
+        assertThat("Group does not exist, preconditions not met",
+                groupNames.contains(groupName));
+        return versionGroupsPage.createNewGroup().inputGroupId(groupId)
+                .inputGroupName(groupName).inputGroupDescription(groupDesc)
+                .selectStatus(groupStatus).saveGroupFailure();
+    }
 
-   public CreateVersionGroupPage invalidCharacters(String groupId)
-   {
-      VersionGroupsPage versionGroupsPage = dashboardPage.goToGroups();
-      // we toggle the status here to trigger and wait for the validation of group id to happen
-      return versionGroupsPage.createNewGroup().inputGroupId(groupId).selectStatus("OBSOLETE").selectStatus("ACTIVE");
-   }
+    public CreateVersionGroupPage invalidCharacters(String groupId) {
+        VersionGroupsPage versionGroupsPage = dashboardPage.goToGroups();
+        // we toggle the status here to trigger and wait for the validation of
+        // group id to happen
+        return versionGroupsPage.createNewGroup().inputGroupId(groupId)
+                .selectStatus("OBSOLETE").selectStatus("ACTIVE");
+    }
 
-   public boolean groupNamesContain(VersionGroupsPage versionGroupsPage, String groupName)
-   {
-      return versionGroupsPage.getGroupNames().contains(groupName);
-   }
+    public boolean groupNamesContain(VersionGroupsPage versionGroupsPage,
+            String groupName) {
+        return versionGroupsPage.getGroupNames().contains(groupName);
+    }
 
-   /**
-    * This assumes there will be ONE error on screen.
-    *
-    * @param createVersionGroupPage page
-    * @return the error
-    */
-   public String getFirstGroupsError(CreateVersionGroupPage createVersionGroupPage)
-   {
-      return createVersionGroupPage.getErrors(1).get(0);
-   }
+    /**
+     * This assumes there will be ONE error on screen.
+     *
+     * @param createVersionGroupPage
+     *            page
+     * @return the error
+     */
+    public String getFirstGroupsError(
+            CreateVersionGroupPage createVersionGroupPage) {
+        return createVersionGroupPage.getErrors(1).get(0);
+    }
 
-   public VersionGroupsPage toggleObsolete(VersionGroupsPage versionGroupsPage)
-   {
-      return versionGroupsPage.toggleObsolete(true);
-   }
+    public VersionGroupsPage
+            toggleObsolete(VersionGroupsPage versionGroupsPage) {
+        return versionGroupsPage.toggleObsolete(true);
+    }
 
-   public VersionGroupsPage groups()
-   {
-      VersionGroupsPage versionGroupsPage = projectWorkFlow.goToHome().goToGroups();
-      return versionGroupsPage;
-   }
+    public VersionGroupsPage groups() {
+        VersionGroupsPage versionGroupsPage =
+                projectWorkFlow.goToHome().goToGroups();
+        return versionGroupsPage;
+    }
 
-   public void createProjectAndVersion(String projectId, String projectName, String version)
-   {
-      ProjectPage projectPage = projectWorkFlow.createNewProject(projectId, projectName);
-      projectPage.clickCreateVersionLink().inputVersionId(version).selectStatus("READONLY").selectStatus("ACTIVE")
-            .saveVersion();
-   }
+    public void createProjectAndVersion(String projectId, String projectName,
+            String version) {
+        ProjectPage projectPage =
+                projectWorkFlow.createNewProject(projectId, projectName);
+        projectPage.clickCreateVersionLink().inputVersionId(version)
+                .selectStatus("READONLY").selectStatus("ACTIVE").saveVersion();
+    }
 
-   public List<List<String>> searchProjectToAddToVersionGroup(String searchTerm)
-   {
-      versionGroupPage = versionGroupPage.addProjectVersion();
-      return versionGroupPage.searchProject(searchTerm, 2);
-   }
+    public List<List<String>>
+            searchProjectToAddToVersionGroup(String searchTerm) {
+        versionGroupPage = versionGroupPage.addProjectVersion();
+        return versionGroupPage.searchProject(searchTerm, 2);
+    }
 
-   public VersionGroupPage addProjectToVersionGroup(int row)
-   {
-      return versionGroupPage.addToGroup(row - 1).closeSearchResult(1);
-   }
+    public VersionGroupPage addProjectToVersionGroup(int row) {
+        return versionGroupPage.addToGroup(row - 1).closeSearchResult(1);
+    }
 
-   public void clickGroupName(VersionGroupsPage groupsPage, String groupName)
-   {
-      versionGroupPage = groupsPage.goToGroup(groupName);
-   }
+    public void clickGroupName(VersionGroupsPage groupsPage, String groupName) {
+        versionGroupPage = groupsPage.goToGroup(groupName);
+    }
 
-   public ProjectPage clickProjectLinkOnRow(int row)
-   {
-      return versionGroupPage.clickOnProjectLinkOnRow(row);
-   }
+    public ProjectPage clickProjectLinkOnRow(int row) {
+        return versionGroupPage.clickOnProjectLinkOnRow(row);
+    }
 
-   public ProjectVersionPage clickVersionLinkOnRow(int row)
-   {
-      return versionGroupPage.clickOnProjectVersionLinkOnRow(row);
-   }
+    public ProjectVersionPage clickVersionLinkOnRow(int row) {
+        return versionGroupPage.clickOnProjectVersionLinkOnRow(row);
+    }
 
-   public String getProjectName(int row)
-   {
-      return versionGroupPage.getProjectName(row);
-   }
+    public String getProjectName(int row) {
+        return versionGroupPage.getProjectName(row);
+    }
 
-   public String getProjectVersionName(int row)
-   {
-      return versionGroupPage.getProjectVersionName(row);
-   }
-   
-   public String getProjectNameFromPage(ProjectPage projectPage)
-   {
-      return projectPage.getProjectName();
-   }
-   
-   public boolean checkIfEquals(ProjectPage projectPage, String projectName)
-   {
-      return projectPage.getProjectName().trim().equals(projectName.trim());
-   }
-   
-   public boolean checkIfEquals(ProjectVersionPage versionPage, String versionId)
-   {
-      return versionPage.getVersionId().trim().equals(versionId.trim());
-   }
+    public String getProjectVersionName(int row) {
+        return versionGroupPage.getProjectVersionName(row);
+    }
+
+    public String getProjectNameFromPage(ProjectPage projectPage) {
+        return projectPage.getProjectName();
+    }
+
+    public boolean checkIfEquals(ProjectPage projectPage, String projectName) {
+        return projectPage.getProjectName().trim().equals(projectName.trim());
+    }
+
+    public boolean checkIfEquals(ProjectVersionPage versionPage,
+            String versionId) {
+        return versionPage.getVersionId().trim().equals(versionId.trim());
+    }
 }

@@ -45,36 +45,35 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Test(groups = "unit-tests")
-public class GetTranslationHistoryHandlerTest
-{
-   private GetTranslationHistoryHandler handler;
-   @Mock
-   private ZanataIdentity identity;
-   @Mock
-   private LocaleService localeService;
-   @Mock
-   private TextFlowDAO textFlowDAO;
-   @Mock
-   private ExecutionContext executionContext;
+public class GetTranslationHistoryHandlerTest {
+    private GetTranslationHistoryHandler handler;
+    @Mock
+    private ZanataIdentity identity;
+    @Mock
+    private LocaleService localeService;
+    @Mock
+    private TextFlowDAO textFlowDAO;
+    @Mock
+    private ExecutionContext executionContext;
 
-   private GetTranslationHistoryAction action;
-   private TransUnitId transUnitId = new TransUnitId(1L);
-   @Mock 
-   private HLocale hLocale;
-   private LocaleId localeId = new LocaleId("en-US");
-   @Mock
-   private TextFlowTargetReviewCommentsDAO reviewCommentsDAO;
-   @Mock
-   private ResourceUtils resourceUtils;
+    private GetTranslationHistoryAction action;
+    private TransUnitId transUnitId = new TransUnitId(1L);
+    @Mock
+    private HLocale hLocale;
+    private LocaleId localeId = new LocaleId("en-US");
+    @Mock
+    private TextFlowTargetReviewCommentsDAO reviewCommentsDAO;
+    @Mock
+    private ResourceUtils resourceUtils;
 
-   @BeforeMethod
-   public void beforeMethod()
-   {
-      MockitoAnnotations.initMocks(this);
-      // @formatter:off
+    @BeforeMethod
+    public void beforeMethod() {
+        MockitoAnnotations.initMocks(this);
+        // @formatter:off
       handler = SeamAutowire.instance()
             .use("identity", identity)
             .use("localeServiceImpl", localeService)
@@ -83,176 +82,223 @@ public class GetTranslationHistoryHandlerTest
             .use("resourceUtils", resourceUtils)
             .autowire(GetTranslationHistoryHandler.class);
       // @formatter:on
-      action = new GetTranslationHistoryAction(transUnitId);
-   }
-   @Test(expectedExceptions = ActionException.class)
-   public void invalidLocaleWillThrowException() throws ActionException
-   {
-      // Given:
-      String projectSlug = "rhel";
-      String iterationSlug = "7.0";
-      action.setWorkspaceId(new WorkspaceId(new ProjectIterationId(projectSlug, iterationSlug, ProjectType.Podir), localeId));
-      when(localeService.validateLocaleByProjectIteration(localeId, projectSlug, iterationSlug)).thenThrow(new ZanataServiceException("BANG!"));
+        action = new GetTranslationHistoryAction(transUnitId);
+    }
 
-      // When:
-      handler.execute(action, executionContext);
+    @Test(expectedExceptions = ActionException.class)
+    public void invalidLocaleWillThrowException() throws ActionException {
+        // Given:
+        String projectSlug = "rhel";
+        String iterationSlug = "7.0";
+        action.setWorkspaceId(new WorkspaceId(new ProjectIterationId(
+                projectSlug, iterationSlug, ProjectType.Podir), localeId));
+        when(
+                localeService.validateLocaleByProjectIteration(localeId,
+                        projectSlug, iterationSlug)).thenThrow(
+                new ZanataServiceException("BANG!"));
 
-      // Then:
-      verify(identity).checkLoggedIn();
-   }
-   
-   @Test
-   public void canGetEmptyHistoryForTextFlowWithNoTranslation() throws ActionException
-   {
-      // Given: text flow has empty targets
-      action.setWorkspaceId(new WorkspaceId(new ProjectIterationId("rhel", "7.0", ProjectType.Podir), localeId));
-      when(localeService.validateLocaleByProjectIteration(localeId, "rhel", "7.0")).thenReturn(hLocale);
-      HTextFlow hTextFlow = createHTextFlow();
-      when(textFlowDAO.findById(transUnitId.getId(), false)).thenReturn(hTextFlow);
-      assertThat(hTextFlow.getTargets().values(), Matchers.<HTextFlowTarget>emptyIterable());
+        // When:
+        handler.execute(action, executionContext);
 
-      // When:
-      GetTranslationHistoryResult result = handler.execute(action, executionContext);
+        // Then:
+        verify(identity).checkLoggedIn();
+    }
 
-      // Then:
-      assertThat(result.getHistoryItems(), Matchers.<TransHistoryItem>empty());
-      assertThat(result.getLatest(), Matchers.nullValue());
-   }
+    @Test
+    public void canGetEmptyHistoryForTextFlowWithNoTranslation()
+            throws ActionException {
+        // Given: text flow has empty targets
+        action.setWorkspaceId(new WorkspaceId(new ProjectIterationId("rhel",
+                "7.0", ProjectType.Podir), localeId));
+        when(
+                localeService.validateLocaleByProjectIteration(localeId,
+                        "rhel", "7.0")).thenReturn(hLocale);
+        HTextFlow hTextFlow = createHTextFlow();
+        when(textFlowDAO.findById(transUnitId.getId(), false)).thenReturn(
+                hTextFlow);
+        assertThat(hTextFlow.getTargets().values(),
+                Matchers.<HTextFlowTarget> emptyIterable());
 
-   @Test
-   public void canGetHistoryAndCurrentTranslation() throws ActionException
-   {
-      // Given: text flow has 2 history translation
-      action.setWorkspaceId(new WorkspaceId(new ProjectIterationId("rhel", "7.0", ProjectType.Podir), localeId));
-      when(localeService.validateLocaleByProjectIteration(localeId, "rhel", "7.0")).thenReturn(hLocale);
-      when(hLocale.getId()).thenReturn(2L);
-      HTextFlow hTextFlow = createHTextFlow();
-      // two history items
-      HashMap<Integer, HTextFlowTargetHistory> history = Maps.newHashMap();
-      history.put(0, createHistory(createTarget(new Date(), "smith", 0, null)));
-      history.put(1, createHistory(createTarget(new Date(), "john", 1, null)));
-      HTextFlowTarget currentTranslation = createTarget(new Date(), "admin", 2, history);
-      hTextFlow.getTargets().put(hLocale.getId(), currentTranslation);
+        // When:
+        GetTranslationHistoryResult result =
+                handler.execute(action, executionContext);
 
-      when(resourceUtils.getNumPlurals(hTextFlow.getDocument(), hLocale)).thenReturn(2);
-      when(textFlowDAO.findById(transUnitId.getId(), false)).thenReturn(hTextFlow);
+        // Then:
+        assertThat(result.getHistoryItems(),
+                Matchers.<TransHistoryItem> empty());
+        assertThat(result.getLatest(), Matchers.nullValue());
+    }
 
-      // When:
-      GetTranslationHistoryResult result = handler.execute(action, executionContext);
+    @Test
+    public void canGetHistoryAndCurrentTranslation() throws ActionException {
+        // Given: text flow has 2 history translation
+        action.setWorkspaceId(new WorkspaceId(new ProjectIterationId("rhel",
+                "7.0", ProjectType.Podir), localeId));
+        when(
+                localeService.validateLocaleByProjectIteration(localeId,
+                        "rhel", "7.0")).thenReturn(hLocale);
+        when(hLocale.getId()).thenReturn(2L);
+        HTextFlow hTextFlow = createHTextFlow();
+        // two history items
+        HashMap<Integer, HTextFlowTargetHistory> history = Maps.newHashMap();
+        history.put(0,
+                createHistory(createTarget(new Date(), "smith", 0, null)));
+        history.put(1, createHistory(createTarget(new Date(), "john", 1, null)));
+        HTextFlowTarget currentTranslation =
+                createTarget(new Date(), "admin", 2, history);
+        hTextFlow.getTargets().put(hLocale.getId(), currentTranslation);
 
-      // Then:
-      assertThat(result.getHistoryItems(), Matchers.hasSize(2));
-      assertThat(result.getLatest().getVersionNum(), Matchers.equalTo(currentTranslation.getVersionNum().toString()));
-      assertThat(result.getLatest().getContents(), Matchers.equalTo(currentTranslation.getContents()));
-      assertThat(result.getLatest().getModifiedBy(), Matchers.equalTo("admin"));
-   }
+        when(resourceUtils.getNumPlurals(hTextFlow.getDocument(), hLocale))
+                .thenReturn(2);
+        when(textFlowDAO.findById(transUnitId.getId(), false)).thenReturn(
+                hTextFlow);
 
-   @Test
-   public void canGetCurrentTranslationWithoutLastModifiedBy() throws ActionException
-   {
-      // Given: text flow has no history translation and only current translation which has no last modified by person
-      action.setWorkspaceId(new WorkspaceId(new ProjectIterationId("rhel", "7.0", ProjectType.Podir), localeId));
-      when(localeService.validateLocaleByProjectIteration(localeId, "rhel", "7.0")).thenReturn(hLocale);
-      when(hLocale.getId()).thenReturn(2L);
-      HTextFlow hTextFlow = createHTextFlow();
-      HTextFlowTarget currentTranslation = createTarget(new Date(), null, 0, null);
-      currentTranslation.setLastModifiedBy(null);
-      hTextFlow.getTargets().put(hLocale.getId(), currentTranslation);
+        // When:
+        GetTranslationHistoryResult result =
+                handler.execute(action, executionContext);
 
-      when(resourceUtils.getNumPlurals(hTextFlow.getDocument(), hLocale)).thenReturn(2);
-      when(textFlowDAO.findById(transUnitId.getId(), false)).thenReturn(hTextFlow);
+        // Then:
+        assertThat(result.getHistoryItems(), Matchers.hasSize(2));
+        assertThat(result.getLatest().getVersionNum(),
+                Matchers.equalTo(currentTranslation.getVersionNum().toString()));
+        assertThat(result.getLatest().getContents(),
+                Matchers.equalTo(currentTranslation.getContents()));
+        assertThat(result.getLatest().getModifiedBy(),
+                Matchers.equalTo("admin"));
+    }
 
-      // When:
-      GetTranslationHistoryResult result = handler.execute(action, executionContext);
+    @Test
+    public void canGetCurrentTranslationWithoutLastModifiedBy()
+            throws ActionException {
+        // Given: text flow has no history translation and only current
+        // translation which has no last modified by person
+        action.setWorkspaceId(new WorkspaceId(new ProjectIterationId("rhel",
+                "7.0", ProjectType.Podir), localeId));
+        when(
+                localeService.validateLocaleByProjectIteration(localeId,
+                        "rhel", "7.0")).thenReturn(hLocale);
+        when(hLocale.getId()).thenReturn(2L);
+        HTextFlow hTextFlow = createHTextFlow();
+        HTextFlowTarget currentTranslation =
+                createTarget(new Date(), null, 0, null);
+        currentTranslation.setLastModifiedBy(null);
+        hTextFlow.getTargets().put(hLocale.getId(), currentTranslation);
 
-      // Then:
-      assertThat(result.getHistoryItems(), Matchers.<TransHistoryItem>emptyIterable());
-      assertThat(result.getLatest().getVersionNum(), Matchers.equalTo(currentTranslation.getVersionNum().toString()));
-      assertThat(result.getLatest().getContents(), Matchers.equalTo(currentTranslation.getContents()));
-      assertThat(result.getLatest().getModifiedBy(), Matchers.equalTo(""));
-   }
+        when(resourceUtils.getNumPlurals(hTextFlow.getDocument(), hLocale))
+                .thenReturn(2);
+        when(textFlowDAO.findById(transUnitId.getId(), false)).thenReturn(
+                hTextFlow);
 
-   @Test
-   public void canStripObsoleteTargetContentBasedOnCurrentNPlural() throws ActionException
-   {
-      // Given: text flow has no history translation
-      action.setWorkspaceId(new WorkspaceId(new ProjectIterationId("rhel", "7.0", ProjectType.Podir), localeId));
-      when(localeService.validateLocaleByProjectIteration(localeId, "rhel", "7.0")).thenReturn(hLocale);
-      when(hLocale.getId()).thenReturn(2L);
-      HTextFlow hTextFlow = createHTextFlow();
-      HTextFlowTarget currentTranslation = createTarget(new Date(), null, 0, null);
-      currentTranslation.setLastModifiedBy(null);
-      hTextFlow.getTargets().put(hLocale.getId(), currentTranslation);
+        // When:
+        GetTranslationHistoryResult result =
+                handler.execute(action, executionContext);
 
-      when(textFlowDAO.findById(transUnitId.getId(), false)).thenReturn(hTextFlow);
+        // Then:
+        assertThat(result.getHistoryItems(),
+                Matchers.<TransHistoryItem> emptyIterable());
+        assertThat(result.getLatest().getVersionNum(),
+                Matchers.equalTo(currentTranslation.getVersionNum().toString()));
+        assertThat(result.getLatest().getContents(),
+                Matchers.equalTo(currentTranslation.getContents()));
+        assertThat(result.getLatest().getModifiedBy(), Matchers.equalTo(""));
+    }
 
-      // When: number of plurals has changed to 1
-      when(resourceUtils.getNumPlurals(hTextFlow.getDocument(), hLocale)).thenReturn(1);
-      GetTranslationHistoryResult result = handler.execute(action, executionContext);
+    @Test
+    public void canStripObsoleteTargetContentBasedOnCurrentNPlural()
+            throws ActionException {
+        // Given: text flow has no history translation
+        action.setWorkspaceId(new WorkspaceId(new ProjectIterationId("rhel",
+                "7.0", ProjectType.Podir), localeId));
+        when(
+                localeService.validateLocaleByProjectIteration(localeId,
+                        "rhel", "7.0")).thenReturn(hLocale);
+        when(hLocale.getId()).thenReturn(2L);
+        HTextFlow hTextFlow = createHTextFlow();
+        HTextFlowTarget currentTranslation =
+                createTarget(new Date(), null, 0, null);
+        currentTranslation.setLastModifiedBy(null);
+        hTextFlow.getTargets().put(hLocale.getId(), currentTranslation);
 
-      // Then: the contents we get back is consistent against number of plural
-      assertThat(result.getHistoryItems(), Matchers.<TransHistoryItem>emptyIterable());
-      assertThat(result.getLatest().getVersionNum(), Matchers.equalTo(currentTranslation.getVersionNum().toString()));
-      assertThat(result.getLatest().getContents(), Matchers.contains(currentTranslation.getContents().get(0)));
-      assertThat(result.getLatest().getModifiedBy(), Matchers.equalTo(""));
-   }
+        when(textFlowDAO.findById(transUnitId.getId(), false)).thenReturn(
+                hTextFlow);
 
-   private static HTextFlow createHTextFlow()
-   {
-      HTextFlow hTextFlow = new HTextFlow();
-      HashMap<Long, HTextFlowTarget> targetMap = Maps.newHashMap();
-      hTextFlow.setTargets(targetMap);
-      hTextFlow.setPlural(true);
-      return hTextFlow;
-   }
+        // When: number of plurals has changed to 1
+        when(resourceUtils.getNumPlurals(hTextFlow.getDocument(), hLocale))
+                .thenReturn(1);
+        GetTranslationHistoryResult result =
+                handler.execute(action, executionContext);
 
-   private static HTextFlowTarget createTarget(Date lastChanged, String lastModifiedPerson, Integer versionNum, Map<Integer, HTextFlowTargetHistory> historyMap)
-   {
-      HTextFlowTarget target = new HTextFlowTarget();
-      target.setLastChanged(lastChanged);
-      HPerson person = new HPerson();
-      person.setName(lastModifiedPerson);
-      target.setLastModifiedBy(person);
-      target.setVersionNum(versionNum);
-      target.setHistory(historyMap);
-      target.setContents("a", "b");
-      return target;
-   }
+        // Then: the contents we get back is consistent against number of plural
+        assertThat(result.getHistoryItems(),
+                Matchers.<TransHistoryItem> emptyIterable());
+        assertThat(result.getLatest().getVersionNum(),
+                Matchers.equalTo(currentTranslation.getVersionNum().toString()));
+        assertThat(result.getLatest().getContents(),
+                Matchers.contains(currentTranslation.getContents().get(0)));
+        assertThat(result.getLatest().getModifiedBy(), Matchers.equalTo(""));
+    }
 
-   private static HTextFlowTargetHistory createHistory(HTextFlowTarget target)
-   {
-      HTextFlowTargetHistory targetHistory = new HTextFlowTargetHistory(target);
-      targetHistory.setContents(target.getContents());
-      return targetHistory;
-   }
+    private static HTextFlow createHTextFlow() {
+        HTextFlow hTextFlow = new HTextFlow();
+        HashMap<Long, HTextFlowTarget> targetMap = Maps.newHashMap();
+        hTextFlow.setTargets(targetMap);
+        hTextFlow.setPlural(true);
+        return hTextFlow;
+    }
 
-   @Test
-   public void canGetReviewComments()
-   {
-      GetTranslationHistoryAction action = new GetTranslationHistoryAction(new TransUnitId(1L));
-      action.setWorkspaceId(TestFixture.workspaceId());
-      LocaleId localeId = action.getWorkspaceId().getLocaleId();
-      when(reviewCommentsDAO.getReviewComments(action.getTransUnitId(), localeId))
-            .thenReturn(Lists.newArrayList(
-                  makeCommentEntity(localeId, "a comment"), makeCommentEntity(localeId, "another comment")));
+    private static HTextFlowTarget createTarget(Date lastChanged,
+            String lastModifiedPerson, Integer versionNum,
+            Map<Integer, HTextFlowTargetHistory> historyMap) {
+        HTextFlowTarget target = new HTextFlowTarget();
+        target.setLastChanged(lastChanged);
+        HPerson person = new HPerson();
+        person.setName(lastModifiedPerson);
+        target.setLastModifiedBy(person);
+        target.setVersionNum(versionNum);
+        target.setHistory(historyMap);
+        target.setContents("a", "b");
+        return target;
+    }
 
-      List<ReviewComment> result = handler.getReviewComments(action);
+    private static HTextFlowTargetHistory createHistory(HTextFlowTarget target) {
+        HTextFlowTargetHistory targetHistory =
+                new HTextFlowTargetHistory(target);
+        targetHistory.setContents(target.getContents());
+        return targetHistory;
+    }
 
-      assertThat(result, Matchers.hasSize(2));
-      assertThat(result.get(0).getComment(), Matchers.equalTo("a comment"));
-      assertThat(result.get(1).getComment(), Matchers.equalTo("another comment"));
-   }
+    @Test
+    public void canGetReviewComments() {
+        GetTranslationHistoryAction action =
+                new GetTranslationHistoryAction(new TransUnitId(1L));
+        action.setWorkspaceId(TestFixture.workspaceId());
+        LocaleId localeId = action.getWorkspaceId().getLocaleId();
+        when(
+                reviewCommentsDAO.getReviewComments(action.getTransUnitId(),
+                        localeId)).thenReturn(
+                Lists.newArrayList(makeCommentEntity(localeId, "a comment"),
+                        makeCommentEntity(localeId, "another comment")));
 
-   private static HTextFlowTargetReviewComment makeCommentEntity(LocaleId localeId, String comment)
-   {
-      HLocale hLocale = new HLocale(localeId);
-      TestFixture.setId(2L, hLocale);
+        List<ReviewComment> result = handler.getReviewComments(action);
 
-      HTextFlow textFlow = TestFixture.makeHTextFlow(1L, hLocale, ContentState.Rejected);
+        assertThat(result, Matchers.hasSize(2));
+        assertThat(result.get(0).getComment(), Matchers.equalTo("a comment"));
+        assertThat(result.get(1).getComment(),
+                Matchers.equalTo("another comment"));
+    }
 
-      HPerson commenter = new HPerson();
-      TestFixture.setId(3L, commenter);
+    private static HTextFlowTargetReviewComment makeCommentEntity(
+            LocaleId localeId, String comment) {
+        HLocale hLocale = new HLocale(localeId);
+        TestFixture.setId(2L, hLocale);
 
-      return new HTextFlowTargetReviewComment(textFlow.getTargets().get(hLocale.getId()), comment, commenter);
-   }
+        HTextFlow textFlow =
+                TestFixture.makeHTextFlow(1L, hLocale, ContentState.Rejected);
+
+        HPerson commenter = new HPerson();
+        TestFixture.setId(3L, commenter);
+
+        return new HTextFlowTargetReviewComment(textFlow.getTargets().get(
+                hLocale.getId()), comment, commenter);
+    }
 }

@@ -27,37 +27,29 @@ import com.google.gwt.event.shared.GwtEvent;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-public class DisplaySouthPanelEvent extends GwtEvent<DisplaySouthPanelEventHandler>
-{
-   public static Type<DisplaySouthPanelEventHandler> TYPE = new Type<DisplaySouthPanelEventHandler>();
+public class DisplaySouthPanelEvent extends
+        GwtEvent<DisplaySouthPanelEventHandler> {
+    public static Type<DisplaySouthPanelEventHandler> TYPE =
+            new Type<DisplaySouthPanelEventHandler>();
 
+    private boolean display;
 
-   private boolean display;
+    public DisplaySouthPanelEvent(boolean display) {
+        this.display = display;
+    }
 
-   public DisplaySouthPanelEvent(boolean display)
-   {
-      this.display = display;
-   }
+    @Override
+    public Type<DisplaySouthPanelEventHandler> getAssociatedType() {
+        return TYPE;
+    }
 
-   @Override
-   public Type<DisplaySouthPanelEventHandler> getAssociatedType()
-   {
-      return TYPE;
-   }
+    @Override
+    protected void dispatch(DisplaySouthPanelEventHandler handler) {
+        handler.onDisplaySouthPanel(this);
+    }
 
-   @Override
-   protected void dispatch(DisplaySouthPanelEventHandler handler)
-   {
-      handler.onDisplaySouthPanel(this);
-   }
-
-   public boolean isDisplay()
-   {
-      return display;
-   }
-
+    public boolean isDisplay() {
+        return display;
+    }
 
 }
-
-
- 

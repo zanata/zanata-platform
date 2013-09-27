@@ -31,85 +31,70 @@ import net.sf.ehcache.Status;
 import com.google.common.cache.CacheLoader;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
 
 @SuppressWarnings("rawtypes")
-public class EhcacheLoader<K, V> implements net.sf.ehcache.loader.CacheLoader
-{
+public class EhcacheLoader<K, V> implements net.sf.ehcache.loader.CacheLoader {
 
-   private CacheLoader<K, V> loader;
+    private CacheLoader<K, V> loader;
 
-   public EhcacheLoader(CacheLoader<K, V> loader)
-   {
-      this.loader = loader;
-   }
+    public EhcacheLoader(CacheLoader<K, V> loader) {
+        this.loader = loader;
+    }
 
-   @Override
-   public V load(Object key) throws CacheException
-   {
-      try
-      {
-         return loader.load((K) key);
-      }
-      catch (Exception e)
-      {
-         throw new CacheException(e);
-      }
-   }
+    @Override
+    public V load(Object key) throws CacheException {
+        try {
+            return loader.load((K) key);
+        } catch (Exception e) {
+            throw new CacheException(e);
+        }
+    }
 
-   @Override
-   public Map<K, V> loadAll(Collection keys)
-   {
-      try
-      {
-         return loader.loadAll(keys);
-      }
-      catch (Exception e)
-      {
-         throw new CacheException(e);
-      }
-   }
+    @Override
+    public Map<K, V> loadAll(Collection keys) {
+        try {
+            return loader.loadAll(keys);
+        } catch (Exception e) {
+            throw new CacheException(e);
+        }
+    }
 
-   @Override
-   public Object load(Object key, Object argument)
-   {
-      return load(key);
-   }
+    @Override
+    public Object load(Object key, Object argument) {
+        return load(key);
+    }
 
-   @Override
-   public Map<K, V> loadAll(Collection keys, Object argument)
-   {
-      return loadAll(keys);
-   }
+    @Override
+    public Map<K, V> loadAll(Collection keys, Object argument) {
+        return loadAll(keys);
+    }
 
-   @Override
-   public String getName()
-   {
-      return getClass().getName()+":"+loader.getClass().getName();
-   }
+    @Override
+    public String getName() {
+        return getClass().getName() + ":" + loader.getClass().getName();
+    }
 
-   @Override
-   public net.sf.ehcache.loader.CacheLoader clone(Ehcache cache) throws CloneNotSupportedException
-   {
-      throw new CloneNotSupportedException();
-   }
+    @Override
+    public net.sf.ehcache.loader.CacheLoader clone(Ehcache cache)
+            throws CloneNotSupportedException {
+        throw new CloneNotSupportedException();
+    }
 
-   @Override
-   public void init()
-   {
-   }
+    @Override
+    public void init() {
+    }
 
-   @Override
-   public void dispose() throws CacheException
-   {
-   }
+    @Override
+    public void dispose() throws CacheException {
+    }
 
-   @Override
-   public Status getStatus()
-   {
-      return Status.STATUS_ALIVE;
-   }
+    @Override
+    public Status getStatus() {
+        return Status.STATUS_ALIVE;
+    }
 
 }

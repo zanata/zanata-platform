@@ -7,25 +7,23 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class DummyDownloadAllFilesCommand implements Command
-{
+public class DummyDownloadAllFilesCommand implements Command {
 
-   private final DownloadAllFilesAction action;
-   private final AsyncCallback<DownloadAllFilesResult> callback;
+    private final DownloadAllFilesAction action;
+    private final AsyncCallback<DownloadAllFilesResult> callback;
 
-   public DummyDownloadAllFilesCommand(DownloadAllFilesAction gwcAction, AsyncCallback<DownloadAllFilesResult> gwcCallback)
-   {
-      this.action = gwcAction;
-      this.callback = gwcCallback;
-   }
+    public DummyDownloadAllFilesCommand(DownloadAllFilesAction gwcAction,
+            AsyncCallback<DownloadAllFilesResult> gwcCallback) {
+        this.action = gwcAction;
+        this.callback = gwcCallback;
+    }
 
-   @Override
-   public void execute()
-   {
-      Log.info("ENTER DummyDownloadAllFilesCommand.execute()");
+    @Override
+    public void execute() {
+        Log.info("ENTER DummyDownloadAllFilesCommand.execute()");
 
-      callback.onSuccess(new DownloadAllFilesResult(true, "dummyId"));
-      Log.info("EXIT DummyDownloadAllFilesCommand.execute()");
-   }
+        callback.onSuccess(new DownloadAllFilesResult(true, "dummyId"));
+        Log.info("EXIT DummyDownloadAllFilesCommand.execute()");
+    }
 
 }

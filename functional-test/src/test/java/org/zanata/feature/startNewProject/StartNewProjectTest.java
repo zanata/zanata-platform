@@ -33,12 +33,14 @@ import org.zanata.feature.ConcordionTest;
  * @see CreateSampleProjectTestSuite
  * @see IndexPageBuilderExtension
  *
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @RunWith(ConcordionRunner.class)
 @Category(ConcordionTest.class)
-public class StartNewProjectTest
-{
-   @Extension
-   public IndexPageBuilderExtension extension = new IndexPageBuilderExtension(CreateSampleProjectTestSuite.class, "Example steps to start using Zanata for translating a sample project");
+public class StartNewProjectTest {
+    @Extension
+    public IndexPageBuilderExtension extension =
+            new IndexPageBuilderExtension(CreateSampleProjectTestSuite.class,
+                    "Example steps to start using Zanata for translating a sample project");
 }

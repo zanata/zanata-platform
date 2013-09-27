@@ -33,171 +33,152 @@ import org.zanata.util.WebElementUtil;
 import java.util.List;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-public class TranslationMemoryPage extends BasePage
-{
-   private static final int ID_COLUMN = 0;
-   private static final int DESCRIPTION_COLUMN = 1;
-   private static final int ENTRIES_COLUMN = 2;
-   private static final int IMPORT_COLUMN = 4;
-   private static final int EXPORT_COLUMN = 5;
-   private static final int ACTIONS_COLUMN = 6;
+public class TranslationMemoryPage extends BasePage {
+    private static final int ID_COLUMN = 0;
+    private static final int DESCRIPTION_COLUMN = 1;
+    private static final int ENTRIES_COLUMN = 2;
+    private static final int IMPORT_COLUMN = 4;
+    private static final int EXPORT_COLUMN = 5;
+    private static final int ACTIONS_COLUMN = 6;
 
-   @FindBy(id = "createTmLink")
-   private WebElement createTmLink;
+    @FindBy(id = "createTmLink")
+    private WebElement createTmLink;
 
-   @FindBy(id = "main_content:form:tmTable")
-   private WebElement tmList;
+    @FindBy(id = "main_content:form:tmTable")
+    private WebElement tmList;
 
-   private By tmListBy = By.id("main_content:form:tmTable");
+    private By tmListBy = By.id("main_content:form:tmTable");
 
-   public TranslationMemoryPage(WebDriver driver)
-   {
-      super(driver);
-   }
+    public TranslationMemoryPage(WebDriver driver) {
+        super(driver);
+    }
 
-   public TranslationMemoryEditPage clickCreateNew()
-   {
-      createTmLink.click();
-      return new TranslationMemoryEditPage(getDriver());
-   }
+    public TranslationMemoryEditPage clickCreateNew() {
+        createTmLink.click();
+        return new TranslationMemoryEditPage(getDriver());
+    }
 
-   public TranslationMemoryPage clickImport(String tmName)
-   {
-      WebElement importButton = findRowByTMName(tmName)
-            .getCells()
-            .get(IMPORT_COLUMN)
-            .findElement(By.tagName("a"));
-      importButton.click();
-      return new TranslationMemoryPage(getDriver());
-   }
+    public TranslationMemoryPage clickImport(String tmName) {
+        WebElement importButton =
+                findRowByTMName(tmName).getCells().get(IMPORT_COLUMN)
+                        .findElement(By.tagName("a"));
+        importButton.click();
+        return new TranslationMemoryPage(getDriver());
+    }
 
-   public TranslationMemoryPage enterImportFileName(String importFileName)
-   {
-      getDriver().findElement(By.name("uploadedFile")).sendKeys(importFileName);
-      return new TranslationMemoryPage(getDriver());
-   }
+    public TranslationMemoryPage enterImportFileName(String importFileName) {
+        getDriver().findElement(By.name("uploadedFile")).sendKeys(
+                importFileName);
+        return new TranslationMemoryPage(getDriver());
+    }
 
-   public TranslationMemoryPage clickUploadButtonAndAcknowledge()
-   {
-      getDriver().findElement(By.name("uploadBtn")).click();
-      switchToAlert().accept();
-      return new TranslationMemoryPage(getDriver());
-   }
+    public TranslationMemoryPage clickUploadButtonAndAcknowledge() {
+        getDriver().findElement(By.name("uploadBtn")).click();
+        switchToAlert().accept();
+        return new TranslationMemoryPage(getDriver());
+    }
 
-   public Alert expectFailedUpload()
-   {
-      getDriver().findElement(By.name("uploadBtn")).click();
-      return switchToAlert();
-   }
+    public Alert expectFailedUpload() {
+        getDriver().findElement(By.name("uploadBtn")).click();
+        return switchToAlert();
+    }
 
-   public TranslationMemoryPage clickClearTMAndAccept(String tmName)
-   {
-      clickTMAction(tmName, 0).accept();
-      return new TranslationMemoryPage(getDriver());
-   }
+    public TranslationMemoryPage clickClearTMAndAccept(String tmName) {
+        clickTMAction(tmName, 0).accept();
+        return new TranslationMemoryPage(getDriver());
+    }
 
-   public TranslationMemoryPage clickClearTMAndCancel(String tmName)
-   {
-      clickTMAction(tmName, 0).dismiss();
-      return new TranslationMemoryPage(getDriver());
-   }
+    public TranslationMemoryPage clickClearTMAndCancel(String tmName) {
+        clickTMAction(tmName, 0).dismiss();
+        return new TranslationMemoryPage(getDriver());
+    }
 
-   public TranslationMemoryPage clickDeleteTmAndAccept(String tmName)
-   {
-      clickTMAction(tmName, 1).accept();
-      return new TranslationMemoryPage(getDriver());
-   }
+    public TranslationMemoryPage clickDeleteTmAndAccept(String tmName) {
+        clickTMAction(tmName, 1).accept();
+        return new TranslationMemoryPage(getDriver());
+    }
 
-   public TranslationMemoryPage clickDeleteTmAndCancel(String tmName)
-   {
-      clickTMAction(tmName, 1).dismiss();
-      return new TranslationMemoryPage(getDriver());
-   }
+    public TranslationMemoryPage clickDeleteTmAndCancel(String tmName) {
+        clickTMAction(tmName, 1).dismiss();
+        return new TranslationMemoryPage(getDriver());
+    }
 
-   public TranslationMemoryPage dismissError()
-   {
-      switchToAlert().accept();
-      return new TranslationMemoryPage(getDriver());
-   }
+    public TranslationMemoryPage dismissError() {
+        switchToAlert().accept();
+        return new TranslationMemoryPage(getDriver());
+    }
 
-   public List<String> getListedTranslationMemorys()
-   {
-      return WebElementUtil.getColumnContents(getDriver(), tmListBy, ID_COLUMN);
-   }
+    public List<String> getListedTranslationMemorys() {
+        return WebElementUtil.getColumnContents(getDriver(), tmListBy,
+                ID_COLUMN);
+    }
 
-   public String getDescription(String tmName)
-   {
-      return findRowByTMName(tmName)
-            .getCells()
-            .get(DESCRIPTION_COLUMN)
-            .getText();
-   }
+    public String getDescription(String tmName) {
+        return findRowByTMName(tmName).getCells().get(DESCRIPTION_COLUMN)
+                .getText();
+    }
 
-   public String getNumberOfEntries(String tmName)
-   {
-      return findRowByTMName(tmName)
-            .getCells()
-            .get(ENTRIES_COLUMN)
-            .getText();
-   }
+    public String getNumberOfEntries(String tmName) {
+        return findRowByTMName(tmName).getCells().get(ENTRIES_COLUMN).getText();
+    }
 
-   public String waitForExpectedNumberOfEntries(final String tmName, final String expected)
-   {
-      return waitForTenSec().until(new Function<WebDriver, String>() {
+    public String waitForExpectedNumberOfEntries(final String tmName,
+            final String expected) {
+        return waitForTenSec().until(new Function<WebDriver, String>() {
             @Override
             public String apply(WebDriver driver) {
-               return expected.equals(getNumberOfEntries(tmName)) ? getNumberOfEntries(tmName) : null;
+                return expected.equals(getNumberOfEntries(tmName)) ? getNumberOfEntries(tmName)
+                        : null;
             }
-         });
-   }
+        });
+    }
 
-   public boolean canDelete(String tmName)
-   {
-      return findRowByTMName(tmName)
-            .getCells()
-            .get(ACTIONS_COLUMN)
-            .findElements(By.tagName("input"))
-            .get(1)
-            .isEnabled();
-   }
+    public boolean canDelete(String tmName) {
+        return findRowByTMName(tmName).getCells().get(ACTIONS_COLUMN)
+                .findElements(By.tagName("input")).get(1).isEnabled();
+    }
 
-   /*
-    * Get a row from the TM table that corresponds with tmName
-    */
-   private TableRow findRowByTMName(final String tmName)
-   {
-      TableRow matchedRow = waitForTenSec().until(new Function<WebDriver, TableRow>()
-      {
-         @Override
-         public TableRow apply(WebDriver driver)
-         {
-            List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(), tmList);
-            Optional<TableRow> matchedRow = Iterables.tryFind(tableRows, new Predicate<TableRow>() {
-               @Override
-               public boolean apply(TableRow input) {
-                  List<String> cellContents = input.getCellContents();
-                  String localeCell = cellContents.get(ID_COLUMN).trim();
-                  return localeCell.equalsIgnoreCase(tmName);
-               }
-            });
+    /*
+     * Get a row from the TM table that corresponds with tmName
+     */
+    private TableRow findRowByTMName(final String tmName) {
+        TableRow matchedRow =
+                waitForTenSec().until(new Function<WebDriver, TableRow>() {
+                    @Override
+                    public TableRow apply(WebDriver driver) {
+                        List<TableRow> tableRows =
+                                WebElementUtil
+                                        .getTableRows(getDriver(), tmList);
+                        Optional<TableRow> matchedRow =
+                                Iterables.tryFind(tableRows,
+                                        new Predicate<TableRow>() {
+                                            @Override
+                                            public boolean
+                                                    apply(TableRow input) {
+                                                List<String> cellContents =
+                                                        input.getCellContents();
+                                                String localeCell =
+                                                        cellContents.get(
+                                                                ID_COLUMN)
+                                                                .trim();
+                                                return localeCell
+                                                        .equalsIgnoreCase(tmName);
+                                            }
+                                        });
 
-            // Keep looking for the TM entry until timeout
-            return matchedRow.isPresent() ? matchedRow.get() : null;
-         }
-      });
-      return matchedRow;
-   }
+                        // Keep looking for the TM entry until timeout
+                        return matchedRow.isPresent() ? matchedRow.get() : null;
+                    }
+                });
+        return matchedRow;
+    }
 
-   private Alert clickTMAction(String tmName, int position)
-   {
-      findRowByTMName(tmName)
-            .getCells()
-            .get(ACTIONS_COLUMN)
-            .findElements(By.tagName("input"))
-            .get(position)
-            .click();
-      return switchToAlert();
-   }
+    private Alert clickTMAction(String tmName, int position) {
+        findRowByTMName(tmName).getCells().get(ACTIONS_COLUMN)
+                .findElements(By.tagName("input")).get(position).click();
+        return switchToAlert();
+    }
 }

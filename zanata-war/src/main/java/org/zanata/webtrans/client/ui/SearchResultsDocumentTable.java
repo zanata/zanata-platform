@@ -65,512 +65,512 @@ import com.google.gwt.view.client.SelectionModel;
 
 /**
  * Displays search results for a single document.
- * 
- * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
+ *
+ * @author David Mason, <a
+ *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  *
  */
-public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo>
-{
-   private static final int CHECKBOX_COLUMN_INDEX = 0;
+public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo> {
+    private static final int CHECKBOX_COLUMN_INDEX = 0;
 
-   private static CellTableResources cellTableResources;
-   private WebTransMessages messages;
-   private static SafeHtml spinner;
+    private static CellTableResources cellTableResources;
+    private WebTransMessages messages;
+    private static SafeHtml spinner;
 
-   private static DefaultSelectionEventManager<TransUnitReplaceInfo> selectionManager = null;
+    private static DefaultSelectionEventManager<TransUnitReplaceInfo> selectionManager =
+            null;
 
-   private static String highlightString = null;
-   private static boolean requirePreview = true;
+    private static String highlightString = null;
+    private static boolean requirePreview = true;
 
-   private CheckboxHeader checkboxColumnHeader;
+    private CheckboxHeader checkboxColumnHeader;
 
+    public static void setHighlightString(String highlightString) {
+        SearchResultsDocumentTable.highlightString = highlightString;
+    }
 
-   public static void setHighlightString(String highlightString)
-   {
-      SearchResultsDocumentTable.highlightString = highlightString;
-   }
+    public static void setRequirePreview(boolean required) {
+        requirePreview = required;
+    }
 
-   public static void setRequirePreview(boolean required)
-   {
-      requirePreview = required;
-   }
+    /**
+     * Create a standard result document table with no action buttons.
+     *
+     * Clicks on any cells will toggle selection.
+     *
+     * @param selectionModel
+     * @param selectAllHandler
+     *            handler for events for the selection column header checkbox
+     * @param messages
+     * @param goToEditorDelegate
+     */
+    public SearchResultsDocumentTable(
+            final SelectionModel<TransUnitReplaceInfo> selectionModel,
+            ValueChangeHandler<Boolean> selectAllHandler,
+            final WebTransMessages messages,
+            Delegate<TransUnitReplaceInfo> goToEditorDelegate) {
+        super(15, getCellTableResources());
 
-   /**
-    * Create a standard result document table with no action buttons.
-    * 
-    * Clicks on any cells will toggle selection.
-    *
-    * @param selectionModel
-    * @param selectAllHandler handler for events for the selection column header
-    *           checkbox
-    * @param messages
-    * @param goToEditorDelegate
-    */
-   public SearchResultsDocumentTable(final SelectionModel<TransUnitReplaceInfo> selectionModel,
-                                     ValueChangeHandler<Boolean> selectAllHandler,
-                                     final WebTransMessages messages, Delegate<TransUnitReplaceInfo> goToEditorDelegate)
-   {
-      super(15, getCellTableResources());
+        this.messages = messages;
 
-      this.messages = messages;
+        setWidth("100%", true);
+        setSelectionModel(selectionModel, getSelectionManager());
+        addStyleName("projectWideSearchResultsDocumentBody");
 
-      setWidth("100%", true);
-      setSelectionModel(selectionModel, getSelectionManager());
-      addStyleName("projectWideSearchResultsDocumentBody");
+        CheckColumn checkboxColumn = new CheckColumn(selectionModel);
+        checkboxColumnHeader = new CheckboxHeader();
+        checkboxColumnHeader.addValueChangeHandler(selectAllHandler);
+        TextColumn<TransUnitReplaceInfo> rowIndexColumn = buildRowIndexColumn();
+        Column<TransUnitReplaceInfo, List<String>> sourceColumn =
+                buildSourceColumn();
+        Column<TransUnitReplaceInfo, TransUnitReplaceInfo> targetColumn =
+                buildTargetColumn();
+        final SafeHtml goToIcon =
+                new SafeHtmlBuilder().appendHtmlConstant(
+                        "<span class='icon-edit pointer' />").toSafeHtml();
+        ActionColumn goToEditorColumn =
+                new ActionColumn(new ActionCell<TransUnitReplaceInfo>(goToIcon,
+                        goToEditorDelegate) {
+                    @Override
+                    public void render(Context context,
+                            TransUnitReplaceInfo value, SafeHtmlBuilder sb) {
 
-      CheckColumn checkboxColumn = new CheckColumn(selectionModel);
-      checkboxColumnHeader = new CheckboxHeader();
-      checkboxColumnHeader.addValueChangeHandler(selectAllHandler);
-      TextColumn<TransUnitReplaceInfo> rowIndexColumn = buildRowIndexColumn();
-      Column<TransUnitReplaceInfo, List<String>> sourceColumn = buildSourceColumn();
-      Column<TransUnitReplaceInfo, TransUnitReplaceInfo> targetColumn = buildTargetColumn();
-      final SafeHtml goToIcon = new SafeHtmlBuilder().appendHtmlConstant("<span class='icon-edit pointer' />").toSafeHtml();
-      ActionColumn goToEditorColumn = new ActionColumn(new ActionCell<TransUnitReplaceInfo>(goToIcon, goToEditorDelegate)
-      {
-         @Override
-         public void render(Context context, TransUnitReplaceInfo value, SafeHtmlBuilder sb)
-         {
+                        sb.append(goToIcon);
+                    }
+                });
 
-            sb.append(goToIcon);
-         }
-      });
+        addColumn(checkboxColumn, checkboxColumnHeader);
+        addColumn(rowIndexColumn, messages.rowIndex());
+        addColumn(sourceColumn, messages.source());
+        addColumn(targetColumn, messages.target());
+        addColumn(goToEditorColumn);
 
-      addColumn(checkboxColumn, checkboxColumnHeader);
-      addColumn(rowIndexColumn, messages.rowIndex());
-      addColumn(sourceColumn, messages.source());
-      addColumn(targetColumn, messages.target());
-      addColumn(goToEditorColumn);
+        setColumnWidth(checkboxColumn, 50.0, Unit.PX);
+        setColumnWidth(rowIndexColumn, 70.0, Unit.PX);
+        setColumnWidth(sourceColumn, 50.0, Unit.PCT);
+        setColumnWidth(targetColumn, 50.0, Unit.PCT);
+        setColumnWidth(goToEditorColumn, 50.0, Unit.PX);
 
-      setColumnWidth(checkboxColumn, 50.0, Unit.PX);
-      setColumnWidth(rowIndexColumn, 70.0, Unit.PX);
-      setColumnWidth(sourceColumn, 50.0, Unit.PCT);
-      setColumnWidth(targetColumn, 50.0, Unit.PCT);
-      setColumnWidth(goToEditorColumn, 50.0, Unit.PX);
+        sourceColumn.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
+        targetColumn.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
+    }
 
-      sourceColumn.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
-      targetColumn.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
-   }
+    /**
+     * Create a result document table with action buttons for each row.
+     *
+     * Action button display is based on
+     * {@link TransUnitReplaceInfo#getPreviewState()} and
+     * {@link TransUnitReplaceInfo#getReplaceState()}, but Click and Enter-Key
+     * events will be generated regardless of display, so delegates must check
+     * for appropriate states.
+     *
+     * Clicks on action button cells will not change selection. Clicks on other
+     * cells will toggle selection.
+     *
+     * @param previewDelegate
+     *            handles clicks of 'preview' button
+     * @param replaceDelegate
+     *            handles clicks of 'replace' button
+     * @param undoDelegate
+     *            handles clicks of 'undo' button
+     * @param selectionModel
+     * @param selectAllHandler
+     *            handles events for the selection column header checkbox
+     * @param messages
+     * @param resources
+     *
+     * @see
+     *      #SearchResultsDocumentTable(com.google.gwt.view.client.SelectionModel
+     */
+    public SearchResultsDocumentTable(
+            Delegate<TransUnitReplaceInfo> previewDelegate,
+            Delegate<TransUnitReplaceInfo> replaceDelegate,
+            Delegate<TransUnitReplaceInfo> undoDelegate,
+            Delegate<TransUnitReplaceInfo> goToEditorDelegate,
+            final SelectionModel<TransUnitReplaceInfo> selectionModel,
+            ValueChangeHandler<Boolean> selectAllHandler,
+            final WebTransMessages messages,
+            org.zanata.webtrans.client.resources.Resources resources) {
+        this(selectionModel, selectAllHandler, messages, goToEditorDelegate);
 
-   /**
-    * Create a result document table with action buttons for each row.
-    * 
-    * Action button display is based on
-    * {@link TransUnitReplaceInfo#getPreviewState()} and
-    * {@link TransUnitReplaceInfo#getReplaceState()}, but Click and Enter-Key
-    * events will be generated regardless of display, so delegates must check
-    * for appropriate states.
-    * 
-    * Clicks on action button cells will not change selection. Clicks on other
-    * cells will toggle selection.
-    * 
-    * @param previewDelegate handles clicks of 'preview' button
-    * @param replaceDelegate handles clicks of 'replace' button
-    * @param undoDelegate handles clicks of 'undo' button
-    * @param selectionModel
-    * @param selectAllHandler handles events for the selection column header
-    *           checkbox
-    * @param messages
-    * @param resources
-    * 
-    * @see #SearchResultsDocumentTable(com.google.gwt.view.client.SelectionModel
-    */
-   public SearchResultsDocumentTable(Delegate<TransUnitReplaceInfo> previewDelegate,
-         Delegate<TransUnitReplaceInfo> replaceDelegate,
-         Delegate<TransUnitReplaceInfo> undoDelegate,
-         Delegate<TransUnitReplaceInfo> goToEditorDelegate,
-         final SelectionModel<TransUnitReplaceInfo> selectionModel,
-         ValueChangeHandler<Boolean> selectAllHandler,
-         final WebTransMessages messages,
-         org.zanata.webtrans.client.resources.Resources resources)
-   {
-      this(selectionModel, selectAllHandler, messages, goToEditorDelegate);
+        if (spinner == null) {
+            spinner = new ImageResourceRenderer().render(resources.spinner());
+        }
 
-      if (spinner == null)
-      {
-         spinner = new ImageResourceRenderer().render(resources.spinner());
-      }
+        ActionColumn previewButtonColumn =
+                new ActionColumn(new PreviewActionCell(previewDelegate));
+        ActionColumn replaceButtonColumn =
+                new ActionColumn(new ReplaceActionCell(replaceDelegate,
+                        undoDelegate));
 
-      ActionColumn previewButtonColumn = new ActionColumn(new PreviewActionCell(previewDelegate));
-      ActionColumn replaceButtonColumn = new ActionColumn(new ReplaceActionCell(replaceDelegate, undoDelegate));
+        // preview header refers to both these columns
+        addColumn(previewButtonColumn, messages.actions());
+        addColumn(replaceButtonColumn);
 
-      // preview header refers to both these columns
-      addColumn(previewButtonColumn, messages.actions());
-      addColumn(replaceButtonColumn);
+        setColumnWidth(previewButtonColumn, 85.0, Unit.PX);
+        setColumnWidth(replaceButtonColumn, 85.0, Unit.PX);
+    }
 
-      setColumnWidth(previewButtonColumn, 85.0, Unit.PX);
-      setColumnWidth(replaceButtonColumn, 85.0, Unit.PX);
-   }
+    // TODO add focus tracking field to allow current-document type interactions
+    // listeners may need to be attached in view
 
-   // TODO add focus tracking field to allow current-document type interactions
-   // listeners may need to be attached in view
-
-   /**
-    * @return a column that displays the 1-based index of the text flow
-    */
-   private static TextColumn<TransUnitReplaceInfo> buildRowIndexColumn()
-   {
-      return new TextColumn<TransUnitReplaceInfo>()
-      {
-         @Override
-         public String getValue(TransUnitReplaceInfo tu)
-         {
-            return Integer.toString(tu.getTransUnit().getRowIndex() + 1);
-         }
-      };
-   }
-
-
-   /**
-    * @return a column that displays the source contents for the text flow
-    */
-   private static Column<TransUnitReplaceInfo, List<String>> buildSourceColumn()
-   {
-      return new Column<TransUnitReplaceInfo, List<String>>(new AbstractCell<List<String>>()
-      {
-         @Override
-         public void render(Context context, List<String> contents, SafeHtmlBuilder sb)
-         {
-            Iterable<String> notEmptyContents = Iterables.filter(contents, StringNotEmptyPredicate.INSTANCE);
-            SafeHtml safeHtml = TextContentsDisplay.asSyntaxHighlightAndSearch(notEmptyContents, highlightString).toSafeHtml();
-            sb.appendHtmlConstant(safeHtml.asString());
-         }
-      })
-      {
-         @Override
-         public List<String> getValue(TransUnitReplaceInfo info)
-         {
-            return info.getTransUnit().getSources();
-         }
-      };
-   }
-
-   /**
-    * @return a column that displays the target contents for the text flow
-    */
-   private static Column<TransUnitReplaceInfo, TransUnitReplaceInfo> buildTargetColumn()
-   {
-      return new Column<TransUnitReplaceInfo, TransUnitReplaceInfo>(new AbstractCell<TransUnitReplaceInfo>()
-      {
-         @Override
-         public void render(Context context, TransUnitReplaceInfo info, SafeHtmlBuilder sb)
-         {
-            List<String> contents = info.getTransUnit().getTargets();
-            if (info.getPreviewState() == PreviewState.Show)
-            {
-               SafeHtml safeHtml = TextContentsDisplay.asDiff(contents, info.getPreview().getContents()).toSafeHtml();
-               sb.appendHtmlConstant(safeHtml.asString());
+    /**
+     * @return a column that displays the 1-based index of the text flow
+     */
+    private static TextColumn<TransUnitReplaceInfo> buildRowIndexColumn() {
+        return new TextColumn<TransUnitReplaceInfo>() {
+            @Override
+            public String getValue(TransUnitReplaceInfo tu) {
+                return Integer.toString(tu.getTransUnit().getRowIndex() + 1);
             }
-            else
-            {
-               SafeHtml safeHtml = TextContentsDisplay.asSyntaxHighlightAndSearch(contents, highlightString).toSafeHtml();
-               sb.appendHtmlConstant(safeHtml.asString());
-            }
-         }
-      })
-      {
+        };
+    }
 
-         @Override
-         public TransUnitReplaceInfo getValue(TransUnitReplaceInfo info)
-         {
+    /**
+     * @return a column that displays the source contents for the text flow
+     */
+    private static Column<TransUnitReplaceInfo, List<String>>
+            buildSourceColumn() {
+        return new Column<TransUnitReplaceInfo, List<String>>(
+                new AbstractCell<List<String>>() {
+                    @Override
+                    public void render(Context context, List<String> contents,
+                            SafeHtmlBuilder sb) {
+                        Iterable<String> notEmptyContents =
+                                Iterables.filter(contents,
+                                        StringNotEmptyPredicate.INSTANCE);
+                        SafeHtml safeHtml =
+                                TextContentsDisplay.asSyntaxHighlightAndSearch(
+                                        notEmptyContents, highlightString)
+                                        .toSafeHtml();
+                        sb.appendHtmlConstant(safeHtml.asString());
+                    }
+                }) {
+            @Override
+            public List<String> getValue(TransUnitReplaceInfo info) {
+                return info.getTransUnit().getSources();
+            }
+        };
+    }
+
+    /**
+     * @return a column that displays the target contents for the text flow
+     */
+    private static Column<TransUnitReplaceInfo, TransUnitReplaceInfo>
+            buildTargetColumn() {
+        return new Column<TransUnitReplaceInfo, TransUnitReplaceInfo>(
+                new AbstractCell<TransUnitReplaceInfo>() {
+                    @Override
+                    public void render(Context context,
+                            TransUnitReplaceInfo info, SafeHtmlBuilder sb) {
+                        List<String> contents =
+                                info.getTransUnit().getTargets();
+                        if (info.getPreviewState() == PreviewState.Show) {
+                            SafeHtml safeHtml =
+                                    TextContentsDisplay.asDiff(contents,
+                                            info.getPreview().getContents())
+                                            .toSafeHtml();
+                            sb.appendHtmlConstant(safeHtml.asString());
+                        } else {
+                            SafeHtml safeHtml =
+                                    TextContentsDisplay
+                                            .asSyntaxHighlightAndSearch(
+                                                    contents, highlightString)
+                                            .toSafeHtml();
+                            sb.appendHtmlConstant(safeHtml.asString());
+                        }
+                    }
+                }) {
+
+            @Override
+            public TransUnitReplaceInfo getValue(TransUnitReplaceInfo info) {
+                return info;
+            }
+
+            @Override
+            public String getCellStyleNames(Context context,
+                    TransUnitReplaceInfo info) {
+                String styleNames =
+                        Strings.nullToEmpty(super.getCellStyleNames(context,
+                                info));
+                return ContentStateToStyleUtil.stateToStyle(info.getTransUnit()
+                        .getStatus(), styleNames);
+            }
+        };
+    }
+
+    private class CheckColumn extends Column<TransUnitReplaceInfo, Boolean> {
+
+        private SelectionModel<TransUnitReplaceInfo> selectionModel;
+
+        public CheckColumn(SelectionModel<TransUnitReplaceInfo> selectionModel) {
+            super(new CheckboxCell(true, false));
+            this.selectionModel = selectionModel;
+        }
+
+        @Override
+        public Boolean getValue(TransUnitReplaceInfo info) {
+            return selectionModel.isSelected(info);
+        }
+
+    }
+
+    private class CheckboxHeader extends Header<Boolean> implements
+            HasValue<Boolean> {
+
+        private boolean checked;
+        private HandlerManager handlerManager;
+
+        public CheckboxHeader() {
+            super(new CheckboxCell());
+            checked = false;
+        }
+
+        // This method is invoked to pass the value to the CheckboxCell's render
+        // method
+        @Override
+        public Boolean getValue() {
+            return checked;
+        }
+
+        @Override
+        public void onBrowserEvent(Context context, Element elem,
+                NativeEvent nativeEvent) {
+            int eventType = Event.as(nativeEvent).getTypeInt();
+            if (eventType == Event.ONCHANGE) {
+                nativeEvent.preventDefault();
+                // use value setter to easily fire change event to handlers
+                setValue(!checked, true);
+            }
+        }
+
+        @Override
+        public HandlerRegistration addValueChangeHandler(
+                ValueChangeHandler<Boolean> handler) {
+            return ensureHandlerManager().addHandler(
+                    ValueChangeEvent.getType(), handler);
+        }
+
+        @Override
+        public void fireEvent(GwtEvent<?> event) {
+            ensureHandlerManager().fireEvent(event);
+        }
+
+        @Override
+        public void setValue(Boolean value) {
+            checked = value;
+        }
+
+        @Override
+        public void setValue(Boolean value, boolean fireEvents) {
+            checked = value;
+            if (fireEvents) {
+                ValueChangeEvent.fire(this, value);
+            }
+        }
+
+        private HandlerManager ensureHandlerManager() {
+            if (handlerManager == null) {
+                handlerManager = new HandlerManager(this);
+            }
+            return handlerManager;
+        }
+    }
+
+    private class ActionColumn extends
+            Column<TransUnitReplaceInfo, TransUnitReplaceInfo> {
+
+        public ActionColumn(ActionCell<TransUnitReplaceInfo> actionCell) {
+            super(actionCell);
+            this.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+            this.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+            this.setCellStyleNames("projectWideSearchResultsActionColumn");
+        }
+
+        @Override
+        public TransUnitReplaceInfo getValue(TransUnitReplaceInfo info) {
             return info;
-         }
+        }
 
-         @Override
-         public String getCellStyleNames(Context context, TransUnitReplaceInfo info)
-         {
-            String styleNames = Strings.nullToEmpty(super.getCellStyleNames(context, info));
-            return ContentStateToStyleUtil.stateToStyle(info.getTransUnit().getStatus(), styleNames);
-         }
-      };
-   }
+    }
 
-   private class CheckColumn extends Column<TransUnitReplaceInfo, Boolean>
-   {
+    private class ReplaceActionCell extends ActionCell<TransUnitReplaceInfo> {
 
-      private SelectionModel<TransUnitReplaceInfo> selectionModel;
+        private Delegate<TransUnitReplaceInfo> undoDelegate;
 
-      public CheckColumn(SelectionModel<TransUnitReplaceInfo> selectionModel)
-      {
-         super(new CheckboxCell(true, false));
-         this.selectionModel = selectionModel;
-      }
+        private final SafeHtml disabledReplaceHtml;
+        private final SafeHtml replacingHtml;
+        private final SafeHtml undoHtml;
+        private final SafeHtml undoingHtml;
 
-      @Override
-      public Boolean getValue(TransUnitReplaceInfo info)
-      {
-         return selectionModel.isSelected(info);
-      }
+        public ReplaceActionCell(
+                Delegate<TransUnitReplaceInfo> replaceDelegate,
+                Delegate<TransUnitReplaceInfo> undoDelegate) {
+            super(SafeHtmlUtils.fromString(messages.replace()), replaceDelegate);
+            this.undoDelegate = undoDelegate;
+            disabledReplaceHtml =
+                    buildButtonHtml("", messages.replace(),
+                            messages.previewRequiredBeforeReplace(), false);
+            replacingHtml = buildProcessingIndicator(messages.replacing());
+            undoingHtml = buildProcessingIndicator(messages.undoInProgress());
+            undoHtml = buildButtonHtml(messages.replaced(), messages.undo());
+        }
 
-   }
-
-   private class CheckboxHeader extends Header<Boolean> implements HasValue<Boolean> {
-
-      private boolean checked;
-      private HandlerManager handlerManager;
-
-      public CheckboxHeader()
-      {
-         super(new CheckboxCell());
-         checked = false;
-      }
-
-      // This method is invoked to pass the value to the CheckboxCell's render method
-      @Override
-      public Boolean getValue()
-      {
-         return checked;
-      }
-
-      @Override
-      public void onBrowserEvent(Context context, Element elem, NativeEvent nativeEvent)
-      {
-         int eventType = Event.as(nativeEvent).getTypeInt();
-         if (eventType == Event.ONCHANGE)
-         {
-            nativeEvent.preventDefault();
-            //use value setter to easily fire change event to handlers
-            setValue(!checked, true);
-         }
-      }
-
-      @Override
-      public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Boolean> handler)
-      {
-         return ensureHandlerManager().addHandler(ValueChangeEvent.getType(), handler);
-      }
-
-      @Override
-      public void fireEvent(GwtEvent<?> event)
-      {
-         ensureHandlerManager().fireEvent(event);
-      }
-
-      @Override
-      public void setValue(Boolean value)
-      {
-         checked = value;
-      }
-
-      @Override
-      public void setValue(Boolean value, boolean fireEvents)
-      {
-         checked = value;
-         if (fireEvents)
-         {
-            ValueChangeEvent.fire(this, value);
-         }
-      }
-
-      private HandlerManager ensureHandlerManager()
-      {
-         if (handlerManager == null)
-         {
-            handlerManager = new HandlerManager(this);
-         }
-         return handlerManager;
-      }
-   }
-
-   private class ActionColumn extends Column<TransUnitReplaceInfo, TransUnitReplaceInfo>
-   {
-
-      public ActionColumn(ActionCell<TransUnitReplaceInfo> actionCell)
-      {
-         super(actionCell);
-         this.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-         this.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-         this.setCellStyleNames("projectWideSearchResultsActionColumn");
-      }
-
-      @Override
-      public TransUnitReplaceInfo getValue(TransUnitReplaceInfo info)
-      {
-         return info;
-      }
-
-   }
-
-   private class ReplaceActionCell extends ActionCell<TransUnitReplaceInfo>
-   {
-
-      private Delegate<TransUnitReplaceInfo> undoDelegate;
-
-      private final SafeHtml disabledReplaceHtml;
-      private final SafeHtml replacingHtml;
-      private final SafeHtml undoHtml;
-      private final SafeHtml undoingHtml;
-
-      public ReplaceActionCell(Delegate<TransUnitReplaceInfo> replaceDelegate, Delegate<TransUnitReplaceInfo> undoDelegate) {
-         super(SafeHtmlUtils.fromString(messages.replace()), replaceDelegate);
-         this.undoDelegate = undoDelegate;
-         disabledReplaceHtml = buildButtonHtml("", messages.replace(), messages.previewRequiredBeforeReplace(), false);
-         replacingHtml = buildProcessingIndicator(messages.replacing());
-         undoingHtml = buildProcessingIndicator(messages.undoInProgress());
-         undoHtml = buildButtonHtml(messages.replaced(), messages.undo());
-      }
-
-      @Override
-      public void render(com.google.gwt.cell.client.Cell.Context context, TransUnitReplaceInfo value, SafeHtmlBuilder sb)
-      {
-         switch (value.getReplaceState())
-         {
-         case NotReplaced:
-            if (!requirePreview || value.getPreviewState() == PreviewState.Show || value.getPreviewState() == PreviewState.Hide)
-            {
-               super.render(context, value, sb);
+        @Override
+        public void render(com.google.gwt.cell.client.Cell.Context context,
+                TransUnitReplaceInfo value, SafeHtmlBuilder sb) {
+            switch (value.getReplaceState()) {
+            case NotReplaced:
+                if (!requirePreview
+                        || value.getPreviewState() == PreviewState.Show
+                        || value.getPreviewState() == PreviewState.Hide) {
+                    super.render(context, value, sb);
+                } else {
+                    sb.append(disabledReplaceHtml);
+                }
+                break;
+            case Replacing:
+                sb.append(replacingHtml);
+                break;
+            case Replaced:
+                sb.append(undoHtml);
+                break;
+            case Undoing:
+                sb.append(undoingHtml);
+                break;
             }
-            else
-            {
-               sb.append(disabledReplaceHtml);
+        }
+
+        @Override
+        protected void onEnterKeyDown(Context context, Element parent,
+                TransUnitReplaceInfo value, NativeEvent event,
+                ValueUpdater<TransUnitReplaceInfo> valueUpdater) {
+            switch (value.getReplaceState()) {
+            case NotReplaced:
+                if (!requirePreview
+                        || value.getPreviewState() == PreviewState.Show
+                        || value.getPreviewState() == PreviewState.Hide) {
+                    super.onEnterKeyDown(context, parent, value, event,
+                            valueUpdater);
+                }
+                break;
+            case Replaced:
+                undoDelegate.execute(value);
+                break;
             }
-            break;
-         case Replacing:
-            sb.append(replacingHtml);
-            break;
-         case Replaced:
-            sb.append(undoHtml);
-            break;
-         case Undoing:
-            sb.append(undoingHtml);
-            break;
-         }
-      }
+            // else ignore (is processing)
+        }
+    }
 
-      @Override
-      protected void onEnterKeyDown(Context context, Element parent, TransUnitReplaceInfo value, NativeEvent event, ValueUpdater<TransUnitReplaceInfo> valueUpdater)
-      {
-         switch (value.getReplaceState())
-         {
-         case NotReplaced:
-            if (!requirePreview || value.getPreviewState() == PreviewState.Show || value.getPreviewState() == PreviewState.Hide)
-            {
-               super.onEnterKeyDown(context, parent, value, event, valueUpdater);
+    private class PreviewActionCell extends ActionCell<TransUnitReplaceInfo> {
+        private Delegate<TransUnitReplaceInfo> previewDelegate;
+
+        private final SafeHtml fetchingPreviewHtml;
+        private final SafeHtml hidePreviewHtml;
+
+        public PreviewActionCell(Delegate<TransUnitReplaceInfo> previewDelegate) {
+            super(SafeHtmlUtils.fromString(messages.fetchPreview()),
+                    previewDelegate);
+            this.previewDelegate = previewDelegate;
+            fetchingPreviewHtml =
+                    buildProcessingIndicator(messages.fetchingPreview());
+            hidePreviewHtml = buildButtonHtml("", messages.hidePreview());
+        }
+
+        @Override
+        public void render(com.google.gwt.cell.client.Cell.Context context,
+                TransUnitReplaceInfo value, SafeHtmlBuilder sb) {
+
+            switch (value.getPreviewState()) {
+            case NotFetched:
+            case Hide:
+                super.render(context, value, sb);
+                break;
+            case Fetching:
+                sb.append(fetchingPreviewHtml);
+                break;
+            case Show:
+                sb.append(hidePreviewHtml);
+                break;
+            case NotAllowed:
+                // empty cell
+                break;
             }
-            break;
-         case Replaced:
-            undoDelegate.execute(value);
-            break;
-         }
-         // else ignore (is processing)
-      }
-   }
+        }
 
-   private class PreviewActionCell extends ActionCell<TransUnitReplaceInfo>
-   {
-      private Delegate<TransUnitReplaceInfo> previewDelegate;
+        @Override
+        protected void onEnterKeyDown(Context context, Element parent,
+                TransUnitReplaceInfo value, NativeEvent event,
+                ValueUpdater<TransUnitReplaceInfo> valueUpdater) {
+            // delegate is responsible for taking appropriate action
+            previewDelegate.execute(value);
+        }
+    }
 
-      private final SafeHtml fetchingPreviewHtml;
-      private final SafeHtml hidePreviewHtml;
+    private static SafeHtml buildButtonHtml(String message, String buttonLabel) {
+        return buildButtonHtml(message, buttonLabel, "", true);
+    }
 
-      public PreviewActionCell(Delegate<TransUnitReplaceInfo> previewDelegate) {
-         super(SafeHtmlUtils.fromString(messages.fetchPreview()), previewDelegate);
-         this.previewDelegate = previewDelegate;
-         fetchingPreviewHtml = buildProcessingIndicator(messages.fetchingPreview());
-         hidePreviewHtml = buildButtonHtml("", messages.hidePreview());
-      }
+    private static SafeHtml buildButtonHtml(String message, String buttonLabel,
+            String title, boolean enabled) {
+        SafeHtmlBuilder sb =
+                new SafeHtmlBuilder().appendHtmlConstant(message)
+                        .appendHtmlConstant(
+                                "<button type=\"button\" tabindex=\"-1\"");
+        if (!enabled) {
+            sb.appendHtmlConstant(" title=\"").appendEscaped(title)
+                    .appendHtmlConstant("\" disabled=\"disabled\"");
+        }
+        return sb.appendHtmlConstant(">").appendEscaped(buttonLabel)
+                .appendHtmlConstant("</button>").toSafeHtml();
+    }
 
-      @Override
-      public void render(com.google.gwt.cell.client.Cell.Context context, TransUnitReplaceInfo value, SafeHtmlBuilder sb)
-      {
+    private static SafeHtml buildProcessingIndicator(String message) {
+        return new SafeHtmlBuilder().append(spinner)
+                .appendHtmlConstant("<br/>").appendHtmlConstant(message)
+                .toSafeHtml();
+    }
 
-         switch (value.getPreviewState())
-         {
-         case NotFetched:
-         case Hide:
-            super.render(context, value, sb);
-            break;
-         case Fetching:
-            sb.append(fetchingPreviewHtml);
-            break;
-         case Show:
-            sb.append(hidePreviewHtml);
-            break;
-         case NotAllowed:
-            // empty cell
-            break;
-         }
-      }
+    private static DefaultSelectionEventManager<TransUnitReplaceInfo>
+            getSelectionManager() {
+        if (selectionManager == null) {
+            selectionManager = buildSelectionManager();
+        }
+        return selectionManager;
+    }
 
-      @Override
-      protected void onEnterKeyDown(Context context, Element parent, TransUnitReplaceInfo value, NativeEvent event, ValueUpdater<TransUnitReplaceInfo> valueUpdater) {
-         // delegate is responsible for taking appropriate action
-         previewDelegate.execute(value);
-      }
-   }
+    /**
+     * build a selection manager that toggles selection when the row is clicked,
+     * but suppresses selection when clicks are in the action button column to
+     * prevent undesired selections when using action buttons
+     *
+     * @return the selection manager
+     */
+    private static DefaultSelectionEventManager<TransUnitReplaceInfo>
+            buildSelectionManager() {
+        WhitelistEventTranslator<TransUnitReplaceInfo> selectionEventTranslator =
+                new WhitelistEventTranslator<TransUnitReplaceInfo>() {
+                    @Override
+                    public SelectAction translateSelectionEvent(
+                            CellPreviewEvent<TransUnitReplaceInfo> event) {
+                        return isColumnWhitelisted(event.getColumn()) ? SelectAction.TOGGLE
+                                : SelectAction.IGNORE;
+                    }
+                };
+        selectionEventTranslator.setColumnWhitelisted(CHECKBOX_COLUMN_INDEX,
+                true);
+        return DefaultSelectionEventManager
+                .<TransUnitReplaceInfo> createCustomManager(selectionEventTranslator);
+    }
 
-   private static SafeHtml buildButtonHtml(String message, String buttonLabel)
-   {
-      return buildButtonHtml(message, buttonLabel, "", true);
-   }
+    private static CellTableResources getCellTableResources() {
+        if (cellTableResources == null) {
+            cellTableResources = GWT.create(CellTableResources.class);
+        }
+        return cellTableResources;
+    }
 
-   private static SafeHtml buildButtonHtml(String message, String buttonLabel, String title, boolean enabled)
-   {
-      SafeHtmlBuilder sb = new  SafeHtmlBuilder()
-            .appendHtmlConstant(message)
-            .appendHtmlConstant("<button type=\"button\" tabindex=\"-1\"");
-      if (!enabled)
-      {
-         sb.appendHtmlConstant(" title=\"")
-            .appendEscaped(title)
-            .appendHtmlConstant("\" disabled=\"disabled\"");
-      }
-      return sb
-            .appendHtmlConstant(">")
-            .appendEscaped(buttonLabel)
-            .appendHtmlConstant("</button>")
-            .toSafeHtml();
-   }
-
-   private static SafeHtml buildProcessingIndicator(String message)
-   {
-      return new SafeHtmlBuilder()
-            .append(spinner)
-            .appendHtmlConstant("<br/>")
-            .appendHtmlConstant(message)
-            .toSafeHtml();
-   }
-
-   private static DefaultSelectionEventManager<TransUnitReplaceInfo> getSelectionManager()
-   {
-      if (selectionManager == null)
-      {
-         selectionManager = buildSelectionManager();
-      }
-      return selectionManager;
-   }
-
-   /**
-    * build a selection manager that toggles selection when the row is clicked,
-    * but suppresses selection when clicks are in the action button column to
-    * prevent undesired selections when using action buttons
-    * 
-    * @return the selection manager
-    */
-   private static DefaultSelectionEventManager<TransUnitReplaceInfo> buildSelectionManager()
-   {
-      WhitelistEventTranslator<TransUnitReplaceInfo> selectionEventTranslator = new WhitelistEventTranslator<TransUnitReplaceInfo>()
-      {
-         @Override
-         public SelectAction translateSelectionEvent(CellPreviewEvent<TransUnitReplaceInfo> event)
-         {
-            return isColumnWhitelisted(event.getColumn()) ? SelectAction.TOGGLE : SelectAction.IGNORE;
-         }
-      };
-      selectionEventTranslator.setColumnWhitelisted(CHECKBOX_COLUMN_INDEX, true);
-      return DefaultSelectionEventManager.<TransUnitReplaceInfo> createCustomManager(selectionEventTranslator);
-   }
-
-   private static CellTableResources getCellTableResources()
-   {
-      if (cellTableResources == null)
-      {
-         cellTableResources = GWT.create(CellTableResources.class);
-      }
-      return cellTableResources;
-   }
-
-   public HasValue<Boolean> getCheckbox()
-   {
-      return checkboxColumnHeader;
-   }
+    public HasValue<Boolean> getCheckbox() {
+        return checkboxColumnHeader;
+    }
 }

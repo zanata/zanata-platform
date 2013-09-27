@@ -5,30 +5,26 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class TransUnitValidationResult implements IsSerializable
-{
-   private TransUnit transUnit;
-   private List<String> errorMessages = new ArrayList<String>();
+public class TransUnitValidationResult implements IsSerializable {
+    private TransUnit transUnit;
+    private List<String> errorMessages = new ArrayList<String>();
 
-   // for GWT
-   @SuppressWarnings("unused")
-   private TransUnitValidationResult()
-   {
-   }
-   
-   public TransUnitValidationResult(TransUnit transUnit, List<String> errorMessages)
-   {
-      this.transUnit = transUnit;
-      this.errorMessages = errorMessages;
-   }
+    // for GWT
+    @SuppressWarnings("unused")
+    private TransUnitValidationResult() {
+    }
 
-   public TransUnit getTransUnit()
-   {
-      return transUnit;
-   }
+    public TransUnitValidationResult(TransUnit transUnit,
+            List<String> errorMessages) {
+        this.transUnit = transUnit;
+        this.errorMessages = errorMessages;
+    }
 
-   public List<String> getErrorMessages()
-   {
-      return errorMessages;
-   }
+    public TransUnit getTransUnit() {
+        return transUnit;
+    }
+
+    public List<String> getErrorMessages() {
+        return errorMessages;
+    }
 }

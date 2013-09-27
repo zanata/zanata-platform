@@ -2,17 +2,17 @@
  * Copyright 2012, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
- * 
+ *
  * This is free software; you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
@@ -39,64 +39,57 @@ import com.google.common.base.Objects;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor // is this necessary?
-public class HRawDocument extends ModelEntityBase implements Serializable
-{
+@NoArgsConstructor
+// is this necessary?
+public class HRawDocument extends ModelEntityBase implements Serializable {
 
-   private static final long serialVersionUID = 5129552589912687504L;
+    private static final long serialVersionUID = 5129552589912687504L;
 
-   // TODO ensure any document deletion cascades to remove associated HRawDocument
-   private HDocument document;
+    // TODO ensure any document deletion cascades to remove associated
+    // HRawDocument
+    private HDocument document;
 
-   // TODO none of these should allow null
-   private String contentHash;
-   private String fileId;
-   private DocumentType type;
-   private String uploadedBy;
+    // TODO none of these should allow null
+    private String contentHash;
+    private String fileId;
+    private DocumentType type;
+    private String uploadedBy;
 
-   private String adapterParameters;
+    private String adapterParameters;
 
+    @OneToOne(mappedBy = "rawDocument")
+    public HDocument getDocument() {
+        return document;
+    }
 
-   @OneToOne(mappedBy = "rawDocument")
-   public HDocument getDocument()
-   {
-      return document;
-   }
+    public void setDocument(HDocument document) {
+        if (!Objects.equal(this.document, document)) {
+            this.document = document;
+        }
+    }
 
-   public void setDocument(HDocument document)
-   {
-      if (!Objects.equal(this.document, document))
-      {
-         this.document = document;
-      }
-   }
+    @NotEmpty
+    public String getContentHash() {
+        return contentHash;
+    }
 
-   @NotEmpty
-   public String getContentHash()
-   {
-      return contentHash;
-   }
+    @Enumerated(EnumType.STRING)
+    public DocumentType getType() {
+        return type;
+    }
 
-   @Enumerated(EnumType.STRING)
-   public DocumentType getType()
-   {
-      return type;
-   }
+    public String getUploadedBy() {
+        return uploadedBy;
+    }
 
-   public String getUploadedBy()
-   {
-      return uploadedBy;
-   }
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@"
+                + Integer.toHexString(hashCode()) + "[id=" + id
+                + ",versionNum=" + versionNum + ",contentHash=" + contentHash
+                + "]";
+    }
 
-
-   @Override
-   public String toString()
-   {
-      return getClass().getSimpleName() + "@" + Integer.toHexString(hashCode())
-            + "[id=" + id + ",versionNum=" + versionNum
-            + ",contentHash=" + contentHash + "]";
-   }
-
-   // TODO override equals to use contentHash, type, parameters, etc.
+    // TODO override equals to use contentHash, type, parameters, etc.
 
 }

@@ -20,7 +20,6 @@
  */
 package org.zanata.security;
 
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.faces.context.ExternalContext;
@@ -35,63 +34,59 @@ import org.jboss.seam.navigation.Pages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FedoraOpenIdPhaseListener implements PhaseListener
-{
-   private static final Logger LOGGER = LoggerFactory.getLogger(FedoraOpenIdPhaseListener.class);
-   private static final long serialVersionUID = 1L;
+public class FedoraOpenIdPhaseListener implements PhaseListener {
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(FedoraOpenIdPhaseListener.class);
+    private static final long serialVersionUID = 1L;
 
-   public void beforePhase(PhaseEvent event)
-   {
-      String viewId = Pages.getCurrentViewId();
-      event.getFacesContext().getExternalContext().getRequestParameterMap();
+    public void beforePhase(PhaseEvent event) {
+        String viewId = Pages.getCurrentViewId();
+        event.getFacesContext().getExternalContext().getRequestParameterMap();
 
-      if (viewId == null || !viewId.startsWith("/openid."))
-      {
-         return;
-      }
+        if (viewId == null || !viewId.startsWith("/openid.")) {
+            return;
+        }
 
-      ZanataOpenId openid = (ZanataOpenId) Component.getInstance(ZanataOpenId.class);
-      if (openid.getId() == null)
-      {
-         try
-         {
-            sendXRDS();
-         }
-         catch (IOException e)
-         {
-            LOGGER.warn("exception", e);
-         }
-         return;
-      }
+        ZanataOpenId openid =
+                (ZanataOpenId) Component.getInstance(ZanataOpenId.class);
+        if (openid.getId() == null) {
+            try {
+                sendXRDS();
+            } catch (IOException e) {
+                LOGGER.warn("exception", e);
+            }
+            return;
+        }
 
-      openid.verify();
+        openid.verify();
 
-      Pages.handleOutcome(event.getFacesContext(), null, "/openid.xhtml");
-   }
+        Pages.handleOutcome(event.getFacesContext(), null, "/openid.xhtml");
+    }
 
-   private void sendXRDS() throws IOException
-   {
-      FacesContext context = FacesContext.getCurrentInstance();
-      ExternalContext extContext = context.getExternalContext();
-      HttpServletResponse response = (HttpServletResponse) extContext.getResponse();
+    private void sendXRDS() throws IOException {
+        FacesContext context = FacesContext.getCurrentInstance();
+        ExternalContext extContext = context.getExternalContext();
+        HttpServletResponse response =
+                (HttpServletResponse) extContext.getResponse();
 
-      response.setContentType("application/xrds+xml");
-      PrintWriter out = response.getWriter();
+        response.setContentType("application/xrds+xml");
+        PrintWriter out = response.getWriter();
 
-      // XXX ENCODE THE URL!
-      ZanataOpenId open = (ZanataOpenId) Component.getInstance(ZanataOpenId.class);
+        // XXX ENCODE THE URL!
+        ZanataOpenId open =
+                (ZanataOpenId) Component.getInstance(ZanataOpenId.class);
 
-      out.println("<XRDS xmlns=\"xri://$xrd*($v*2.0)\"><XRD><Service>" + "<Type>http://specs.openid.net/auth/2.0/return_to</Type><URI>" + open.returnToUrl() + "</URI></Service></XRD></XRDS>");
+        out.println("<XRDS xmlns=\"xri://$xrd*($v*2.0)\"><XRD><Service>"
+                + "<Type>http://specs.openid.net/auth/2.0/return_to</Type><URI>"
+                + open.returnToUrl() + "</URI></Service></XRD></XRDS>");
 
-      context.responseComplete();
-   }
+        context.responseComplete();
+    }
 
-   public void afterPhase(PhaseEvent event)
-   {
-   }
+    public void afterPhase(PhaseEvent event) {
+    }
 
-   public PhaseId getPhaseId()
-   {
-      return PhaseId.RENDER_RESPONSE;
-   }
+    public PhaseId getPhaseId() {
+        return PhaseId.RENDER_RESPONSE;
+    }
 }

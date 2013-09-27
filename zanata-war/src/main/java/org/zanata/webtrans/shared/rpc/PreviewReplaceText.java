@@ -22,30 +22,27 @@ package org.zanata.webtrans.shared.rpc;
 
 /**
  * Fetch preview content showing the result of a {@link ReplaceText} action.
- * 
+ *
  * @author David Mason, damason@redhat.com
  *
  */
-public class PreviewReplaceText extends AbstractWorkspaceAction<PreviewReplaceTextResult>
-{
+public class PreviewReplaceText extends
+        AbstractWorkspaceAction<PreviewReplaceTextResult> {
 
-   private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-   private ReplaceText actionToPreview;
+    private ReplaceText actionToPreview;
 
-   @SuppressWarnings("unused")
-   private PreviewReplaceText()
-   {
-   }
+    @SuppressWarnings("unused")
+    private PreviewReplaceText() {
+    }
 
-   public PreviewReplaceText(ReplaceText actionToPreview)
-   {
-      this.actionToPreview = actionToPreview;
-   }
+    public PreviewReplaceText(ReplaceText actionToPreview) {
+        this.actionToPreview = actionToPreview;
+    }
 
-   public ReplaceText getAction()
-   {
-      return actionToPreview;
-   }
+    public ReplaceText getAction() {
+        return actionToPreview;
+    }
 
 }

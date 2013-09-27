@@ -2,17 +2,17 @@
  * Copyright 2012, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
- * 
+ *
  * This is free software; you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
@@ -41,152 +41,133 @@ import org.zanata.service.VersionGroupService;
  */
 @Name("versionGroupServiceImpl")
 @Scope(ScopeType.STATELESS)
-public class VersionGroupServiceImpl implements VersionGroupService
-{
-   @In
-   private VersionGroupDAO versionGroupDAO;
+public class VersionGroupServiceImpl implements VersionGroupService {
+    @In
+    private VersionGroupDAO versionGroupDAO;
 
-   @In
-   private ProjectIterationDAO projectIterationDAO;
+    @In
+    private ProjectIterationDAO projectIterationDAO;
 
-   @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
-   private HAccount authenticatedAccount;
+    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
+    private HAccount authenticatedAccount;
 
-   @Override
-   public List<HIterationGroup> getAllActiveVersionGroupsOrIsMaintainer()
-   {
-      List<HIterationGroup> activeVersions = versionGroupDAO.getAllActiveVersionGroups();
-      List<HIterationGroup> obsoleteVersions = versionGroupDAO.getAllObsoleteVersionGroups();
+    @Override
+    public List<HIterationGroup> getAllActiveVersionGroupsOrIsMaintainer() {
+        List<HIterationGroup> activeVersions =
+                versionGroupDAO.getAllActiveVersionGroups();
+        List<HIterationGroup> obsoleteVersions =
+                versionGroupDAO.getAllObsoleteVersionGroups();
 
-      List<HIterationGroup> filteredList = new ArrayList<HIterationGroup>();
-      for (HIterationGroup obsoleteGroup : obsoleteVersions)
-      {
-         if (authenticatedAccount != null)
-         {
-            if (authenticatedAccount.getPerson().isMaintainer(obsoleteGroup))
-            {
-               filteredList.add(obsoleteGroup);
+        List<HIterationGroup> filteredList = new ArrayList<HIterationGroup>();
+        for (HIterationGroup obsoleteGroup : obsoleteVersions) {
+            if (authenticatedAccount != null) {
+                if (authenticatedAccount.getPerson()
+                        .isMaintainer(obsoleteGroup)) {
+                    filteredList.add(obsoleteGroup);
+                }
             }
-         }
-      }
+        }
 
-      activeVersions.addAll(filteredList);
+        activeVersions.addAll(filteredList);
 
-      return activeVersions;
-   }
+        return activeVersions;
+    }
 
-   @Override
-   public HProjectIteration getProjectIterationBySlug(String projectSlug, String iterationSlug)
-   {
-      return projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-   }
+    @Override
+    public HProjectIteration getProjectIterationBySlug(String projectSlug,
+            String iterationSlug) {
+        return projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+    }
 
-   @Override
-   public HIterationGroup getBySlug(String slug)
-   {
-      return versionGroupDAO.getBySlug(slug);
-   }
+    @Override
+    public HIterationGroup getBySlug(String slug) {
+        return versionGroupDAO.getBySlug(slug);
+    }
 
-   @Override
-   public List<HProjectIteration> searchLikeSlugOrProjectSlug(String searchTerm)
-   {
-      return projectIterationDAO.searchLikeSlugOrProjectSlug(searchTerm);
-   }
+    @Override
+    public List<HProjectIteration>
+            searchLikeSlugOrProjectSlug(String searchTerm) {
+        return projectIterationDAO.searchLikeSlugOrProjectSlug(searchTerm);
+    }
 
-   @Override
-   public List<HIterationGroup> searchLikeSlugAndName(String searchTerm)
-   {
-      return versionGroupDAO.searchLikeSlugAndName(searchTerm);
-   }
+    @Override
+    public List<HIterationGroup> searchLikeSlugAndName(String searchTerm) {
+        return versionGroupDAO.searchLikeSlugAndName(searchTerm);
+    }
 
-   @Override
-   public List<HPerson> getMaintainerBySlug(String slug)
-   {
-      return versionGroupDAO.getMaintainerBySlug(slug);
-   }
+    @Override
+    public List<HPerson> getMaintainerBySlug(String slug) {
+        return versionGroupDAO.getMaintainerBySlug(slug);
+    }
 
-   @Override
-   public void makePersistent(HIterationGroup iterationGroup)
-   {
-      versionGroupDAO.makePersistent(iterationGroup);
-   }
+    @Override
+    public void makePersistent(HIterationGroup iterationGroup) {
+        versionGroupDAO.makePersistent(iterationGroup);
+    }
 
-   @Override
-   public void flush()
-   {
-      versionGroupDAO.flush();
-   }
+    @Override
+    public void flush() {
+        versionGroupDAO.flush();
+    }
 
-   @Override
-   public boolean joinVersionGroup(String slug, Long projectIterationId)
-   {
-      HProjectIteration projectIteration = projectIterationDAO.findById(projectIterationId, false);
-      HIterationGroup group = getBySlug(slug);
-      if (group != null && projectIteration != null)
-      {
-         if (!group.getProjectIterations().contains(projectIteration))
-         {
-            group.addProjectIteration(projectIteration);
-            versionGroupDAO.makePersistent(group);
-            flush();
-            return true;
-         }
-      }
-      return false;
-
-   }
-
-   @Override
-   public boolean leaveVersionGroup(String slug, Long projectIterationId)
-   {
-      HProjectIteration projectIteration = projectIterationDAO.findById(projectIterationId, false);
-      HIterationGroup group = getBySlug(slug);
-
-      if (group != null && projectIteration != null)
-      {
-         if (group.getProjectIterations().contains(projectIteration))
-         {
-            group.getProjectIterations().remove(projectIteration);
-            versionGroupDAO.makePersistent(group);
-            flush();
-            return true;
-         }
-      }
-      return false;
-   }
-
-   @Override
-   public boolean isVersionInGroup(String groupSlug, Long projectIterationId)
-   {
-      HIterationGroup group = getBySlug(groupSlug);
-      if (group != null && projectIterationId != null)
-      {
-         for (HProjectIteration iteration : group.getProjectIterations())
-         {
-            if (iteration.getId().equals(projectIterationId))
-            {
-               return true;
+    @Override
+    public boolean joinVersionGroup(String slug, Long projectIterationId) {
+        HProjectIteration projectIteration =
+                projectIterationDAO.findById(projectIterationId, false);
+        HIterationGroup group = getBySlug(slug);
+        if (group != null && projectIteration != null) {
+            if (!group.getProjectIterations().contains(projectIteration)) {
+                group.addProjectIteration(projectIteration);
+                versionGroupDAO.makePersistent(group);
+                flush();
+                return true;
             }
-         }
-      }
-      return false;
-   }
+        }
+        return false;
 
-   @Override
-   public boolean isGroupInVersion(String groupSlug, Long projectIterationId)
-   {
-      HIterationGroup group = versionGroupDAO.getBySlug(groupSlug);
-      if (group != null)
-      {
-         for (HProjectIteration iteration : group.getProjectIterations())
-         {
-            if (iteration.getId().equals(projectIterationId))
-            {
-               return true;
+    }
+
+    @Override
+    public boolean leaveVersionGroup(String slug, Long projectIterationId) {
+        HProjectIteration projectIteration =
+                projectIterationDAO.findById(projectIterationId, false);
+        HIterationGroup group = getBySlug(slug);
+
+        if (group != null && projectIteration != null) {
+            if (group.getProjectIterations().contains(projectIteration)) {
+                group.getProjectIterations().remove(projectIteration);
+                versionGroupDAO.makePersistent(group);
+                flush();
+                return true;
             }
-         }
-      }
-      return false;
-   }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isVersionInGroup(String groupSlug, Long projectIterationId) {
+        HIterationGroup group = getBySlug(groupSlug);
+        if (group != null && projectIterationId != null) {
+            for (HProjectIteration iteration : group.getProjectIterations()) {
+                if (iteration.getId().equals(projectIterationId)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isGroupInVersion(String groupSlug, Long projectIterationId) {
+        HIterationGroup group = versionGroupDAO.getBySlug(groupSlug);
+        if (group != null) {
+            for (HProjectIteration iteration : group.getProjectIterations()) {
+                if (iteration.getId().equals(projectIterationId)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
 }

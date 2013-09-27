@@ -28,129 +28,119 @@ import org.zanata.model.HLocale;
 /**
  * Ensures that roles 'user', 'admin' and 'translator' exist, and that there is
  * at least one admin user.
- * 
+ *
  * @author Sean Flanigan
  */
 @Name("essentialDataCreator")
 @Scope(ScopeType.APPLICATION)
 @Install(false)
-public class EssentialDataCreator
-{
+public class EssentialDataCreator {
 
-   // You can listen to this event during startup
-   public static final String ESSENTIAL_DATA_CREATED_EVENT = "EssentialDataCreator.complete";
+    // You can listen to this event during startup
+    public static final String ESSENTIAL_DATA_CREATED_EVENT =
+            "EssentialDataCreator.complete";
 
-   @Logger
-   private static Log log;
+    @Logger
+    private static Log log;
 
-   @In
-   private EntityManager entityManager;
-   
-   @In
-   private ApplicationConfiguration applicationConfiguration;
+    @In
+    private EntityManager entityManager;
 
-   private boolean prepared;
+    @In
+    private ApplicationConfiguration applicationConfiguration;
 
-   public String username;
-   public String password;
-   public String email;
-   public String name;
-   public String apiKey;
+    private boolean prepared;
 
-   @In
-   AccountDAO accountDAO;
+    public String username;
+    public String password;
+    public String email;
+    public String name;
+    public String apiKey;
 
-   @In
-   AccountRoleDAO accountRoleDAO;
+    @In
+    AccountDAO accountDAO;
 
-   @In
-   LocaleDAO localeDAO;
+    @In
+    AccountRoleDAO accountRoleDAO;
 
-   // Do it when the application starts (but after everything else has been
-   // loaded)
-   @Observer("org.jboss.seam.postInitialization")
-   @Transactional
-   public void prepare()
-   {
-      if (!prepared)
-      {
-         boolean adminExists;
-         if (!accountRoleDAO.roleExists("user"))
-         {
-            log.info("Creating 'user' role");
-            if (accountRoleDAO.create("user", MANUAL) == null)
-            {
-               throw new RuntimeException("Couldn't create 'user' role");
+    @In
+    LocaleDAO localeDAO;
+
+    // Do it when the application starts (but after everything else has been
+    // loaded)
+    @Observer("org.jboss.seam.postInitialization")
+    @Transactional
+    public void prepare() {
+        if (!prepared) {
+            boolean adminExists;
+            if (!accountRoleDAO.roleExists("user")) {
+                log.info("Creating 'user' role");
+                if (accountRoleDAO.create("user", MANUAL) == null) {
+                    throw new RuntimeException("Couldn't create 'user' role");
+                }
             }
-         }
 
-         if (!accountRoleDAO.roleExists("glossarist"))
-         {
-            log.info("Creating 'glossarist' role");
-            if (accountRoleDAO.create("glossarist", MANUAL) == null)
-            {
-               throw new RuntimeException("Couldn't create 'glossarist' role");
+            if (!accountRoleDAO.roleExists("glossarist")) {
+                log.info("Creating 'glossarist' role");
+                if (accountRoleDAO.create("glossarist", MANUAL) == null) {
+                    throw new RuntimeException(
+                            "Couldn't create 'glossarist' role");
+                }
             }
-         }
-         if (!accountRoleDAO.roleExists("glossary-admin"))
-         {
-            log.info("Creating 'glossary-admin' role");
-            if (accountRoleDAO.create("glossary-admin", MANUAL, "glossarist") == null)
-            {
-               throw new RuntimeException("Couldn't create 'glossary-admin' role");
+            if (!accountRoleDAO.roleExists("glossary-admin")) {
+                log.info("Creating 'glossary-admin' role");
+                if (accountRoleDAO.create("glossary-admin", MANUAL,
+                        "glossarist") == null) {
+                    throw new RuntimeException(
+                            "Couldn't create 'glossary-admin' role");
+                }
             }
-         }
 
-         if (accountRoleDAO.roleExists("admin"))
-         {
-            List<?> adminUsers = accountRoleDAO.listMembers("admin");
-            adminExists = !adminUsers.isEmpty();
-         }
-         else
-         {
-            log.info("Creating 'admin' role");
-            if (accountRoleDAO.create("admin", MANUAL, "user", "glossary-admin") == null)
-            {
-               throw new RuntimeException("Couldn't create 'admin' role");
+            if (accountRoleDAO.roleExists("admin")) {
+                List<?> adminUsers = accountRoleDAO.listMembers("admin");
+                adminExists = !adminUsers.isEmpty();
+            } else {
+                log.info("Creating 'admin' role");
+                if (accountRoleDAO.create("admin", MANUAL, "user",
+                        "glossary-admin") == null) {
+                    throw new RuntimeException("Couldn't create 'admin' role");
+                }
+                adminExists = false;
             }
-            adminExists = false;
-         }
 
-         for( String adminUsername : applicationConfiguration.getAdminUsers() )
-         {
-            HAccount adminAccount = accountDAO.getByUsername( adminUsername );
-            HAccountRole adminRole = accountRoleDAO.findByName("admin");
-            if( adminAccount != null && !adminAccount.getRoles().contains( adminRole ) )
-            {
-               log.info("Making user " + adminAccount.getUsername() + " a system admin.");
-               adminAccount.getRoles().add( adminRole );
-               accountDAO.makePersistent(adminAccount);
-               accountDAO.flush();
-               adminExists = true;
+            for (String adminUsername : applicationConfiguration
+                    .getAdminUsers()) {
+                HAccount adminAccount = accountDAO.getByUsername(adminUsername);
+                HAccountRole adminRole = accountRoleDAO.findByName("admin");
+                if (adminAccount != null
+                        && !adminAccount.getRoles().contains(adminRole)) {
+                    log.info("Making user " + adminAccount.getUsername()
+                            + " a system admin.");
+                    adminAccount.getRoles().add(adminRole);
+                    accountDAO.makePersistent(adminAccount);
+                    accountDAO.flush();
+                    adminExists = true;
+                }
             }
-         }
 
-         if (!adminExists)
-         {
-            log.warn("No admin users found. Admin users can be enabled in zanata.properties");
-         }
-
-         // Enable en-US by default
-         LocaleId localeId = new LocaleId("en-US");
-         if( localeDAO.findByLocaleId( localeId ) == null )
-         {
-            HLocale en_US = new HLocale(localeId);
-            en_US.setActive(true);
-            en_US.setEnabledByDefault(false);
-            if (localeDAO.makePersistent(en_US) == null)
-            {
-               throw new RuntimeException("Couldn't create 'en-US' locale");
+            if (!adminExists) {
+                log.warn("No admin users found. Admin users can be enabled in zanata.properties");
             }
-         }
 
-         prepared = true;
-      }
-      Events.instance().raiseEvent(ESSENTIAL_DATA_CREATED_EVENT);
-   }
+            // Enable en-US by default
+            LocaleId localeId = new LocaleId("en-US");
+            if (localeDAO.findByLocaleId(localeId) == null) {
+                HLocale en_US = new HLocale(localeId);
+                en_US.setActive(true);
+                en_US.setEnabledByDefault(false);
+                if (localeDAO.makePersistent(en_US) == null) {
+                    throw new RuntimeException("Couldn't create 'en-US' locale");
+                }
+            }
+
+            prepared = true;
+        }
+        Events.instance().raiseEvent(ESSENTIAL_DATA_CREATED_EVENT);
+    }
 
 }

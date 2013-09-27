@@ -22,7 +22,6 @@ package org.zanata.webtrans.client.events;
 
 import com.google.gwt.event.shared.EventHandler;
 
-public interface DocValidationResultHandler extends EventHandler
-{
-   void onCompleteRunDocValidation(DocValidationResultEvent event);
+public interface DocValidationResultHandler extends EventHandler {
+    void onCompleteRunDocValidation(DocValidationResultEvent event);
 }

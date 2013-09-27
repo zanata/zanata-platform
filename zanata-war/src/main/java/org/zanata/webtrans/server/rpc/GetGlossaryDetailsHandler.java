@@ -30,65 +30,70 @@ import net.customware.gwt.dispatch.shared.ActionException;
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(GetGlossaryDetailsAction.class)
 @Slf4j
-public class GetGlossaryDetailsHandler extends AbstractActionHandler<GetGlossaryDetailsAction, GetGlossaryDetailsResult>
-{
-   @In
-   private ZanataIdentity identity;
+public class GetGlossaryDetailsHandler
+        extends
+        AbstractActionHandler<GetGlossaryDetailsAction, GetGlossaryDetailsResult> {
+    @In
+    private ZanataIdentity identity;
 
-   @In
-   private GlossaryDAO glossaryDAO;
+    @In
+    private GlossaryDAO glossaryDAO;
 
-   @In
-   private LocaleService localeServiceImpl;
+    @In
+    private LocaleService localeServiceImpl;
 
-   @Override
-   public GetGlossaryDetailsResult execute(GetGlossaryDetailsAction action, ExecutionContext context) throws ActionException
-   {
-      identity.checkLoggedIn();
-      LocaleId locale = action.getWorkspaceId().getLocaleId();
-      HLocale hLocale;
-      try
-      {
-         ProjectIterationId projectIterationId = action.getWorkspaceId().getProjectIterationId();
-         hLocale = localeServiceImpl.validateLocaleByProjectIteration(locale, projectIterationId.getProjectSlug(), projectIterationId.getIterationSlug());
-      }
-      catch (ZanataServiceException e)
-      {
-         throw new ActionException(e);
-      }
-      List<Long> sourceIds = action.getSourceIdList();
-      
-      
-      log.info("Fetching glossary details for entry{} in locale {}", sourceIds, hLocale);
-      List<HGlossaryTerm> srcTerms = glossaryDAO.findByIdList(sourceIds);
-      ArrayList<GlossaryDetails> items = new ArrayList<GlossaryDetails>(srcTerms.size());
-      
-      for(HGlossaryTerm srcTerm: srcTerms)
-      {
-         HGlossaryEntry entry = srcTerm.getGlossaryEntry();
-         List<String> srcComments = new ArrayList<String>();
-         List<String> targetComments = new ArrayList<String>();
+    @Override
+    public GetGlossaryDetailsResult execute(GetGlossaryDetailsAction action,
+            ExecutionContext context) throws ActionException {
+        identity.checkLoggedIn();
+        LocaleId locale = action.getWorkspaceId().getLocaleId();
+        HLocale hLocale;
+        try {
+            ProjectIterationId projectIterationId =
+                    action.getWorkspaceId().getProjectIterationId();
+            hLocale =
+                    localeServiceImpl.validateLocaleByProjectIteration(locale,
+                            projectIterationId.getProjectSlug(),
+                            projectIterationId.getIterationSlug());
+        } catch (ZanataServiceException e) {
+            throw new ActionException(e);
+        }
+        List<Long> sourceIds = action.getSourceIdList();
 
-         HGlossaryTerm hGlossaryTerm = entry.getGlossaryTerms().get(hLocale);
-         for(HTermComment termComment: srcTerm.getComments())
-         {
-            srcComments.add(termComment.getComment());
-         }
+        log.info("Fetching glossary details for entry{} in locale {}",
+                sourceIds, hLocale);
+        List<HGlossaryTerm> srcTerms = glossaryDAO.findByIdList(sourceIds);
+        ArrayList<GlossaryDetails> items =
+                new ArrayList<GlossaryDetails>(srcTerms.size());
 
-         for(HTermComment termComment: hGlossaryTerm.getComments())
-         {
-            targetComments.add(termComment.getComment());
-         }
-         
-         items.add(new GlossaryDetails(srcTerm.getContent(), hGlossaryTerm.getContent(), srcComments, targetComments, entry.getSourceRef(), entry.getSrcLocale().getLocaleId(), hLocale.getLocaleId(), hGlossaryTerm.getVersionNum(), hGlossaryTerm.getLastChanged()));
-      }
+        for (HGlossaryTerm srcTerm : srcTerms) {
+            HGlossaryEntry entry = srcTerm.getGlossaryEntry();
+            List<String> srcComments = new ArrayList<String>();
+            List<String> targetComments = new ArrayList<String>();
 
-      return new GetGlossaryDetailsResult(items);
-   }
+            HGlossaryTerm hGlossaryTerm = entry.getGlossaryTerms().get(hLocale);
+            for (HTermComment termComment : srcTerm.getComments()) {
+                srcComments.add(termComment.getComment());
+            }
 
-   @Override
-   public void rollback(GetGlossaryDetailsAction action, GetGlossaryDetailsResult result, ExecutionContext context) throws ActionException
-   {
-   }
+            for (HTermComment termComment : hGlossaryTerm.getComments()) {
+                targetComments.add(termComment.getComment());
+            }
+
+            items.add(new GlossaryDetails(srcTerm.getContent(), hGlossaryTerm
+                    .getContent(), srcComments, targetComments, entry
+                    .getSourceRef(), entry.getSrcLocale().getLocaleId(),
+                    hLocale.getLocaleId(), hGlossaryTerm.getVersionNum(),
+                    hGlossaryTerm.getLastChanged()));
+        }
+
+        return new GetGlossaryDetailsResult(items);
+    }
+
+    @Override
+    public void rollback(GetGlossaryDetailsAction action,
+            GetGlossaryDetailsResult result, ExecutionContext context)
+            throws ActionException {
+    }
 
 }

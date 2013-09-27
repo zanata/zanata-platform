@@ -21,20 +21,16 @@
 package org.zanata.file;
 
 @SuppressWarnings("serial")
-public class RawDocumentContentAccessException extends RuntimeException
-{
-   public RawDocumentContentAccessException(String message)
-   {
-      super(message);
-   }
+public class RawDocumentContentAccessException extends RuntimeException {
+    public RawDocumentContentAccessException(String message) {
+        super(message);
+    }
 
-   public RawDocumentContentAccessException(Throwable cause)
-   {
-      super(cause);
-   }
+    public RawDocumentContentAccessException(Throwable cause) {
+        super(cause);
+    }
 
-   public RawDocumentContentAccessException(String message, Throwable cause)
-   {
-      super(message, cause);
-   }
+    public RawDocumentContentAccessException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

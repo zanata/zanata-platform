@@ -27,59 +27,57 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Slf4j
-public class GoogleSignIn
-{
-   /**
-    * Initiate a basic connection and confirm a HTTP_OK (200) response
-    * @return boolean - response was/not successful
-    */
-   public static boolean googleIsReachable()
-   {
-      try
-      {
-         URL url = new URL("http://www.google.com");
-         HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
-         httpURLConnection.connect();
-         return HttpURLConnection.HTTP_OK == httpURLConnection.getResponseCode();
-      }
-      catch (IOException ioe)
-      {
-         log.warn("Unable to initiate Google connection test: "+ioe.getMessage());
-         return false;
-      }
-   }
+public class GoogleSignIn {
+    /**
+     * Initiate a basic connection and confirm a HTTP_OK (200) response
+     *
+     * @return boolean - response was/not successful
+     */
+    public static boolean googleIsReachable() {
+        try {
+            URL url = new URL("http://www.google.com");
+            HttpURLConnection httpURLConnection =
+                    (HttpURLConnection) url.openConnection();
+            httpURLConnection.connect();
+            return HttpURLConnection.HTTP_OK == httpURLConnection
+                    .getResponseCode();
+        } catch (IOException ioe) {
+            log.warn("Unable to initiate Google connection test: "
+                    + ioe.getMessage());
+            return false;
+        }
+    }
 
-   /**
-    * Query the environment for a GOOGLEID variable and return the stated password that
-    * corresponds to the indicated username.
-    * Expects the variable to be in the form:
-    * GOOGLEID=username1:password1;username2:password2;...
-    *
-    * @param username Username of username:password pair query
-    * @return password for indicated username, or empty string for a query/match failure
-    */
-   public static String getSignIn(String username)
-   {
-      String googlePass;
-      String empty = "";
-      googlePass = System.getenv("GOOGLEID");
-      if (googlePass == null || googlePass.isEmpty())
-      {
-         return empty;
-      }
+    /**
+     * Query the environment for a GOOGLEID variable and return the stated
+     * password that corresponds to the indicated username. Expects the variable
+     * to be in the form: GOOGLEID=username1:password1;username2:password2;...
+     *
+     * @param username
+     *            Username of username:password pair query
+     * @return password for indicated username, or empty string for a
+     *         query/match failure
+     */
+    public static String getSignIn(String username) {
+        String googlePass;
+        String empty = "";
+        googlePass = System.getenv("GOOGLEID");
+        if (googlePass == null || googlePass.isEmpty()) {
+            return empty;
+        }
 
-      for (String signIn : googlePass.split(";"))
-      {
-         String[] usernamePasswordPair = signIn.split(":");
-         if (usernamePasswordPair.length > 0 && usernamePasswordPair[0].equals(username))
-         {
-            return usernamePasswordPair[1];
-         }
-      }
-      log.warn("Cannot find user/password combination for "+username);
-      return empty;
-   }
+        for (String signIn : googlePass.split(";")) {
+            String[] usernamePasswordPair = signIn.split(":");
+            if (usernamePasswordPair.length > 0
+                    && usernamePasswordPair[0].equals(username)) {
+                return usernamePasswordPair[1];
+            }
+        }
+        log.warn("Cannot find user/password combination for " + username);
+        return empty;
+    }
 }

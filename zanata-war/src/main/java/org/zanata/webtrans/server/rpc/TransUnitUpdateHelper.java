@@ -39,39 +39,46 @@ import org.zanata.webtrans.shared.rpc.*;
  */
 @Name("webtrans.gwt.TransUnitUpdateHelper")
 @Scope(ScopeType.STATELESS)
-public class TransUnitUpdateHelper
-{
-   @In
-   private TransUnitTransformer transUnitTransformer;
+public class TransUnitUpdateHelper {
+    @In
+    private TransUnitTransformer transUnitTransformer;
 
-   public UpdateTransUnitResult generateUpdateTransUnitResult(List<TranslationService.TranslationResult> translationResults,
-         EditorClientId editorClientId,
-         TransUnitUpdated.UpdateType updateType, TranslationWorkspace workspace)
-   {
-      UpdateTransUnitResult result = new UpdateTransUnitResult();
+    public UpdateTransUnitResult generateUpdateTransUnitResult(
+            List<TranslationService.TranslationResult> translationResults,
+            EditorClientId editorClientId,
+            TransUnitUpdated.UpdateType updateType,
+            TranslationWorkspace workspace) {
+        UpdateTransUnitResult result = new UpdateTransUnitResult();
 
-      for (TranslationService.TranslationResult translationResult : translationResults)
-      {
-         HTextFlowTarget newTarget = translationResult.getTranslatedTextFlowTarget();
-         HTextFlow hTextFlow = newTarget.getTextFlow();
-         int wordCount = hTextFlow.getWordCount().intValue();
-         TransUnit tu = transUnitTransformer.transform(hTextFlow, newTarget.getLocale());
-         TransUnitUpdateInfo updateInfo = build(translationResult, new DocumentId(hTextFlow.getDocument().getId(), hTextFlow
-               .getDocument().getDocId()), tu, wordCount);
+        for (TranslationService.TranslationResult translationResult : translationResults) {
+            HTextFlowTarget newTarget =
+                    translationResult.getTranslatedTextFlowTarget();
+            HTextFlow hTextFlow = newTarget.getTextFlow();
+            int wordCount = hTextFlow.getWordCount().intValue();
+            TransUnit tu =
+                    transUnitTransformer.transform(hTextFlow,
+                            newTarget.getLocale());
+            TransUnitUpdateInfo updateInfo =
+                    build(translationResult, new DocumentId(hTextFlow
+                            .getDocument().getId(), hTextFlow.getDocument()
+                            .getDocId()), tu, wordCount);
 
-         workspace.publish(new TransUnitUpdated(updateInfo, editorClientId, updateType));
+            workspace.publish(new TransUnitUpdated(updateInfo, editorClientId,
+                    updateType));
 
-         result.addUpdateResult(updateInfo);
-      }
-      return result;
-   }
+            result.addUpdateResult(updateInfo);
+        }
+        return result;
+    }
 
-   private TransUnitUpdateInfo build(TranslationService.TranslationResult translationResult, DocumentId documentId,
-                                           TransUnit transUnit,
-                                           int wordCount)
-   {
-      return new TransUnitUpdateInfo(translationResult.isTranslationSuccessful(),
-              translationResult.isTargetChanged(), documentId, transUnit, wordCount, translationResult.getBaseVersionNum(),
-              translationResult.getBaseContentState(), translationResult.getErrorMessage());
-   }
+    private TransUnitUpdateInfo build(
+            TranslationService.TranslationResult translationResult,
+            DocumentId documentId, TransUnit transUnit, int wordCount) {
+        return new TransUnitUpdateInfo(
+                translationResult.isTranslationSuccessful(),
+                translationResult.isTargetChanged(), documentId, transUnit,
+                wordCount, translationResult.getBaseVersionNum(),
+                translationResult.getBaseContentState(),
+                translationResult.getErrorMessage());
+    }
 }

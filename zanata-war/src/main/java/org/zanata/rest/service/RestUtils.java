@@ -19,74 +19,77 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Name("restUtils")
-public class RestUtils
-{
-   private static final Logger log = LoggerFactory.getLogger(RestUtils.class);
+public class RestUtils {
+    private static final Logger log = LoggerFactory.getLogger(RestUtils.class);
 
-   @In
-   Validator validator;
+    @In
+    Validator validator;
 
-   /**
-    * Validate Hibernate Validator based constraints.
-    * 
-    * If validation fails a WebApplicationException with status BAD_REQUEST is
-    * thrown, with a message describing the validation errors.
-    * 
-    * @param <T> class of entity to validate
-    * @param entity Hibernate-validator annotated entity
-    */
-   @SuppressWarnings("unchecked")
-   public <T> void validateEntity(T entity)
-   {
-      validator.getConstraintsForClass(entity.getClass());
-      Set<ConstraintViolation<T>> violations = validator.validate(entity);
-      if (!violations.isEmpty())
-      {
-         StringBuilder message = new StringBuilder();
-         message.append("Request body contains invalid values:\n");
-         for (ConstraintViolation<T> violation : violations)
-         {
-            message.append(violation.getPropertyPath());
-            message.append(": ");
-            message.append(violation.getMessage());
-            message.append("\n");
-         }
-         log.debug("Bad Request: {}", message);
-         throw new NoLogWebApplicationException(Response.status(Status.BAD_REQUEST).entity(message.toString()).build());
-      }
-   }
+    /**
+     * Validate Hibernate Validator based constraints.
+     *
+     * If validation fails a WebApplicationException with status BAD_REQUEST is
+     * thrown, with a message describing the validation errors.
+     *
+     * @param <T>
+     *            class of entity to validate
+     * @param entity
+     *            Hibernate-validator annotated entity
+     */
+    @SuppressWarnings("unchecked")
+    public <T> void validateEntity(T entity) {
+        validator.getConstraintsForClass(entity.getClass());
+        Set<ConstraintViolation<T>> violations = validator.validate(entity);
+        if (!violations.isEmpty()) {
+            StringBuilder message = new StringBuilder();
+            message.append("Request body contains invalid values:\n");
+            for (ConstraintViolation<T> violation : violations) {
+                message.append(violation.getPropertyPath());
+                message.append(": ");
+                message.append(violation.getMessage());
+                message.append("\n");
+            }
+            log.debug("Bad Request: {}", message);
+            throw new NoLogWebApplicationException(Response
+                    .status(Status.BAD_REQUEST).entity(message.toString())
+                    .build());
+        }
+    }
 
-   public <T> T unmarshall(Class<T> entityClass, InputStream is, MediaType requestContentType, MultivaluedMap<String, String> requestHeaders)
-   {
-      MessageBodyReader<T> reader = SeamResteasyProviderFactory.getInstance().getMessageBodyReader(entityClass, entityClass, entityClass.getAnnotations(), requestContentType);
-      if (reader == null)
-      {
-         throw new RuntimeException("Unable to find MessageBodyReader for content type " + requestContentType);
-      }
-      T entity;
-      try
-      {
-         entity = reader.readFrom(entityClass, entityClass, entityClass.getAnnotations(), requestContentType, requestHeaders, is);
-      }
-      catch (Exception e)
-      {
-         log.debug("Bad Request: Unable to read request body:", e);
-         throw new NoLogWebApplicationException(Response.status(Status.BAD_REQUEST).entity("Unable to read request body: " + e.getMessage()).build());
-      }
-      finally
-      {
-         try
-         {
-            is.close();
-         }
-         catch (IOException e)
-         {
-         }
-      }
+    public <T> T unmarshall(Class<T> entityClass, InputStream is,
+            MediaType requestContentType,
+            MultivaluedMap<String, String> requestHeaders) {
+        MessageBodyReader<T> reader =
+                SeamResteasyProviderFactory.getInstance().getMessageBodyReader(
+                        entityClass, entityClass, entityClass.getAnnotations(),
+                        requestContentType);
+        if (reader == null) {
+            throw new RuntimeException(
+                    "Unable to find MessageBodyReader for content type "
+                            + requestContentType);
+        }
+        T entity;
+        try {
+            entity =
+                    reader.readFrom(entityClass, entityClass,
+                            entityClass.getAnnotations(), requestContentType,
+                            requestHeaders, is);
+        } catch (Exception e) {
+            log.debug("Bad Request: Unable to read request body:", e);
+            throw new NoLogWebApplicationException(Response
+                    .status(Status.BAD_REQUEST)
+                    .entity("Unable to read request body: " + e.getMessage())
+                    .build());
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+            }
+        }
 
-      validateEntity(entity);
+        validateEntity(entity);
 
-      return entity;
-   }
+        return entity;
+    }
 
 }

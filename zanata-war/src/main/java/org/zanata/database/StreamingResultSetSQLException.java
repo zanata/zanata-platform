@@ -24,49 +24,44 @@ package org.zanata.database;
 import java.sql.SQLException;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class StreamingResultSetSQLException extends SQLException
-{
+public class StreamingResultSetSQLException extends SQLException {
 
-   public StreamingResultSetSQLException()
-   {
-   }
+    public StreamingResultSetSQLException() {
+    }
 
-   public StreamingResultSetSQLException(String reason)
-   {
-      super(reason);
-   }
+    public StreamingResultSetSQLException(String reason) {
+        super(reason);
+    }
 
-   public StreamingResultSetSQLException(Throwable cause)
-   {
-      super(cause);
-   }
+    public StreamingResultSetSQLException(Throwable cause) {
+        super(cause);
+    }
 
-   public StreamingResultSetSQLException(String reason, String SQLState)
-   {
-      super(reason, SQLState);
-   }
+    public StreamingResultSetSQLException(String reason, String SQLState) {
+        super(reason, SQLState);
+    }
 
-   public StreamingResultSetSQLException(String reason, Throwable cause)
-   {
-      super(reason, cause);
-   }
+    public StreamingResultSetSQLException(String reason, Throwable cause) {
+        super(reason, cause);
+    }
 
-   public StreamingResultSetSQLException(String reason, String SQLState, int vendorCode)
-   {
-      super(reason, SQLState, vendorCode);
-   }
+    public StreamingResultSetSQLException(String reason, String SQLState,
+            int vendorCode) {
+        super(reason, SQLState, vendorCode);
+    }
 
-   public StreamingResultSetSQLException(String reason, String sqlState, Throwable cause)
-   {
-      super(reason, sqlState, cause);
-   }
+    public StreamingResultSetSQLException(String reason, String sqlState,
+            Throwable cause) {
+        super(reason, sqlState, cause);
+    }
 
-   public StreamingResultSetSQLException(String reason, String sqlState, int vendorCode, Throwable cause)
-   {
-      super(reason, sqlState, vendorCode, cause);
-   }
+    public StreamingResultSetSQLException(String reason, String sqlState,
+            int vendorCode, Throwable cause) {
+        super(reason, sqlState, vendorCode, cause);
+    }
 
 }

@@ -28,33 +28,29 @@ import org.zanata.page.administration.ManageLanguageTeamMemberPage;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class LanguageWorkFlow extends AbstractWebWorkFlow
-{
+public class LanguageWorkFlow extends AbstractWebWorkFlow {
 
-   public void addLanguageAndJoin(String localeId)
-   {
-      ManageLanguagePage manageLanguagePage = addLanguage(localeId);
-      ManageLanguageTeamMemberPage teamMemberPage = manageLanguagePage.manageTeamMembersFor(localeId);
-      if (!teamMemberPage.getMemberUsernames().contains("admin"))
-      {
-         teamMemberPage.joinLanguageTeam();
-      }
-      else
-      {
-         log.warn("admin has already joined the language [{}]", localeId);
-      }
-   }
+    public void addLanguageAndJoin(String localeId) {
+        ManageLanguagePage manageLanguagePage = addLanguage(localeId);
+        ManageLanguageTeamMemberPage teamMemberPage =
+                manageLanguagePage.manageTeamMembersFor(localeId);
+        if (!teamMemberPage.getMemberUsernames().contains("admin")) {
+            teamMemberPage.joinLanguageTeam();
+        } else {
+            log.warn("admin has already joined the language [{}]", localeId);
+        }
+    }
 
-   public ManageLanguagePage addLanguage(String localeId)
-   {
-      ManageLanguagePage manageLanguagePage = goToHome().goToAdministration().goToManageLanguagePage();
-      List<String> locales = manageLanguagePage.getLanguageLocales();
-      if (locales.contains(localeId))
-      {
-         log.warn("{} has already been added, enabling by default", localeId);
-         return manageLanguagePage.enableLanguageByDefault(localeId);
-      }
-      //continue to add the new language
-      return manageLanguagePage.addNewLanguage().enableLanguageByDefault().inputLanguage(localeId).saveLanguage();
-   }
+    public ManageLanguagePage addLanguage(String localeId) {
+        ManageLanguagePage manageLanguagePage =
+                goToHome().goToAdministration().goToManageLanguagePage();
+        List<String> locales = manageLanguagePage.getLanguageLocales();
+        if (locales.contains(localeId)) {
+            log.warn("{} has already been added, enabling by default", localeId);
+            return manageLanguagePage.enableLanguageByDefault(localeId);
+        }
+        // continue to add the new language
+        return manageLanguagePage.addNewLanguage().enableLanguageByDefault()
+                .inputLanguage(localeId).saveLanguage();
+    }
 }

@@ -1,90 +1,101 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:s="http://jboss.org/schema/seam/taglib"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:rich="http://richfaces.org/rich"
-    xmlns:a4j="http://richfaces.org/a4j"
-    xmlns:richext="http://java.sun.com/jsf/composite/richext"
-    template="../WEB-INF/template/template_2x.xhtml">
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:richext="http://java.sun.com/jsf/composite/richext"
+  template="../WEB-INF/template/template_2x.xhtml">
 
   <ui:define name="page_title">#{messages['jsf.Register']}</ui:define>
   <ui:define name="center_content">
-    <h:form id="registerForm" rendered="#{applicationConfiguration.internalAuth}">
-      <s:token allowMultiplePosts="true" />
+    <h:form id="registerForm"
+      rendered="#{applicationConfiguration.internalAuth}">
+      <s:token allowMultiplePosts="true"/>
       <rich:panel>
         <f:facet name="header">#{messages['jsf.SignUp']}</f:facet>
 
-        <s:decorate id="nameField" template="../WEB-INF/layout/edit.xhtml" enclose="true">
-            <ui:define name="label">#{messages['jsf.Name']}</ui:define>
-            <h:inputText id="name" required="true"
-                      value="#{register.person.name}">
-               <a4j:ajax event="blur" render="nameField" />
-            </h:inputText>
-            <s:span styleClass="icon-info-circle-2 input_help" id="nameHelp">
-            	<rich:tooltip>
-                	#{messages['jsf.NameToolTip']}
-                </rich:tooltip>
-            </s:span>
+        <s:decorate id="nameField" template="../WEB-INF/layout/edit.xhtml"
+          enclose="true">
+          <ui:define name="label">#{messages['jsf.Name']}</ui:define>
+          <h:inputText id="name" required="true"
+            value="#{register.person.name}">
+            <a4j:ajax event="blur" render="nameField"/>
+          </h:inputText>
+          <s:span styleClass="icon-info-circle-2 input_help" id="nameHelp">
+            <rich:tooltip>
+              #{messages['jsf.NameToolTip']}
+            </rich:tooltip>
+          </s:span>
         </s:decorate>
 
-        <s:decorate id="emailField" template="../WEB-INF/layout/edit.xhtml" enclose="true">
-            <ui:define name="label">#{messages['jsf.Email']}</ui:define>
-            <h:inputText id="email" required="true"
-                      value="#{register.email}">
-               <a4j:ajax event="blur" render="emailField" />
-            </h:inputText>
-            <s:span styleClass="icon-info-circle-2 input_help" id="emailHelp">
-            	<rich:tooltip>
-                	#{messages['jsf.EmailToolTip']}
-                </rich:tooltip>
-            </s:span>
+        <s:decorate id="emailField" template="../WEB-INF/layout/edit.xhtml"
+          enclose="true">
+          <ui:define name="label">#{messages['jsf.Email']}</ui:define>
+          <h:inputText id="email" required="true"
+            value="#{register.email}">
+            <a4j:ajax event="blur" render="emailField"/>
+          </h:inputText>
+          <s:span styleClass="icon-info-circle-2 input_help" id="emailHelp">
+            <rich:tooltip>
+              #{messages['jsf.EmailToolTip']}
+            </rich:tooltip>
+          </s:span>
         </s:decorate>
 
-        <s:decorate id="usernameField" template="../WEB-INF/layout/edit.xhtml" enclose="true">
-            <ui:define name="label">Username</ui:define>
-            <h:inputText id="username" required="true"
-                      value="#{register.username}">
-               <a4j:ajax event="blur" render="usernameField" execute="@this"/>
-            </h:inputText>
-            <s:span styleClass="icon-info-circle-2 input_help" id="usernameHelp">
-            	<rich:tooltip>
-                	#{messages['jsf.UsernameToolTip']}
-                </rich:tooltip>
-            </s:span>
+        <s:decorate id="usernameField" template="../WEB-INF/layout/edit.xhtml"
+          enclose="true">
+          <ui:define name="label">Username</ui:define>
+          <h:inputText id="username" required="true"
+            value="#{register.username}">
+            <a4j:ajax event="blur" render="usernameField" execute="@this"/>
+          </h:inputText>
+          <s:span styleClass="icon-info-circle-2 input_help" id="usernameHelp">
+            <rich:tooltip>
+              #{messages['jsf.UsernameToolTip']}
+            </rich:tooltip>
+          </s:span>
         </s:decorate>
 
-        <s:decorate id="passwordField" template="../WEB-INF/layout/edit.xhtml" enclose="true">
-            <ui:define name="label">#{messages['jsf.Password']}</ui:define>
-            <h:inputSecret id="password" redisplay="true" required="true"
-                        value="#{register.password}">
-              <a4j:ajax event="blur" render="passwordField" />
-            </h:inputSecret>
+        <s:decorate id="passwordField" template="../WEB-INF/layout/edit.xhtml"
+          enclose="true">
+          <ui:define name="label">#{messages['jsf.Password']}</ui:define>
+          <h:inputSecret id="password" redisplay="true" required="true"
+            value="#{register.password}">
+            <a4j:ajax event="blur" render="passwordField"/>
+          </h:inputSecret>
         </s:decorate>
 
-        <s:decorate id="passwordConfirmField" template="../WEB-INF/layout/edit.xhtml" enclose="true">
-            <ui:define name="label">#{messages['jsf.ConfirmPassword']}</ui:define>
-            <h:inputSecret id="passwordConfirm" redisplay="true" required="true"
-                        value="#{register.passwordConfirm}">
-              <a4j:ajax event="blur" render="passwordConfirmField" />
-            </h:inputSecret>
+        <s:decorate id="passwordConfirmField"
+          template="../WEB-INF/layout/edit.xhtml" enclose="true">
+          <ui:define name="label">#{messages['jsf.ConfirmPassword']}</ui:define>
+          <h:inputSecret id="passwordConfirm" redisplay="true" required="true"
+            value="#{register.passwordConfirm}">
+            <a4j:ajax event="blur" render="passwordConfirmField"/>
+          </h:inputSecret>
         </s:decorate>
 
-        <s:decorate id="captcha" template="../WEB-INF/layout/edit.xhtml" enclose="true">
-            <ui:define name="label"><h:graphicImage value="/seam/resource/captcha"/></ui:define>
-            <h:inputText id="verifyCaptcha" value="#{captcha.captchaResponse}" required="true"/>
+        <s:decorate id="captcha" template="../WEB-INF/layout/edit.xhtml"
+          enclose="true">
+          <ui:define name="label"><h:graphicImage
+            value="/seam/resource/captcha"/></ui:define>
+          <h:inputText id="verifyCaptcha" value="#{captcha.captchaResponse}"
+            required="true"/>
         </s:decorate>
 
         <ui:remove>
           <!-- FIXME string concatenation not good for l10n -->
         </ui:remove>
         <s:decorate id="agreedToTerms" template="../WEB-INF/layout/edit.xhtml">
-          <h:selectBooleanCheckbox id="agreedToTerms" value="#{register.agreedToTermsOfUse}"/>
+          <h:selectBooleanCheckbox id="agreedToTerms"
+            value="#{register.agreedToTermsOfUse}"/>
           <label for="agreedToTerms">
             #{messages['jsf.IAgreeToThe']}
-            <h:outputLink value="#" id="termsOfUseLink" onclick="#{rich:component('termsOfUse')}.show()">
+            <h:outputLink value="#" id="termsOfUseLink"
+              onclick="#{rich:component('termsOfUse')}.show()">
               <h:outputText value=" #{messages['jsf.TermsOfUse']}"/>
             </h:outputLink>
           </label>
@@ -92,15 +103,19 @@
 
         <div style="clear:both"/>
         <s:div rendered="#{applicationConfiguration.openIdAuth}">
-          <h:outputText value="#{messages['jsf.register.LoginUsingOpenId']}" escape="false"/>
+          <h:outputText value="#{messages['jsf.register.LoginUsingOpenId']}"
+            escape="false"/>
         </s:div>
+
         <div class="actionButtons">
-            <h:commandButton id="registerButton" value="#{messages['jsf.Register']}" action="#{register.register}"/>
+          <h:commandButton id="registerButton"
+            value="#{messages['jsf.Register']}" action="#{register.register}"/>
         </div>
       </rich:panel>
     </h:form>
 
-    <rich:popupPanel id="termsOfUse" width="640" height="480" rendered="#{not identity.loggedIn and applicationConfiguration.internalAuth}" >
+    <rich:popupPanel id="termsOfUse" width="640" height="480"
+      rendered="#{not identity.loggedIn and applicationConfiguration.internalAuth}">
       <f:facet name="header">
         <h:panelGroup>
           <h:outputText value="#{messages['jsf.TermsOfUse']}"/>
@@ -108,8 +123,10 @@
       </f:facet>
       <f:facet name="controls">
         <h:panelGroup>
-          <h:graphicImage value="../images/close.gif" styleClass="hidelink" id="hideTermsLink">
-            <rich:componentControl operation="hide" event="click" target="hideTermsLink"/>
+          <h:graphicImage value="../images/close.gif" styleClass="hidelink"
+            id="hideTermsLink">
+            <rich:componentControl operation="hide" event="click"
+              target="hideTermsLink"/>
           </h:graphicImage>
         </h:panelGroup>
       </f:facet>
@@ -117,13 +134,15 @@
       <h:panelGroup style="width: 600px; text-align: center;">
         <h:form>
           <richext:spacer height="40"/>
-          <a4j:commandButton value="#{messages['jsf.Close']}" onclick="#{rich:component('termsOfUse')}.hide()"/>
+          <a4j:commandButton value="#{messages['jsf.Close']}"
+            onclick="#{rich:component('termsOfUse')}.hide()"/>
         </h:form>
       </h:panelGroup>
     </rich:popupPanel>
 
     <rich:panel rendered="#{not applicationConfiguration.internalAuth}">
-          <h:outputText value="#{messages['jsf.PleaseContactAdministrationToGetRegistrationLink']}"/>
+      <h:outputText
+        value="#{messages['jsf.PleaseContactAdministrationToGetRegistrationLink']}"/>
     </rich:panel>
 
   </ui:define>

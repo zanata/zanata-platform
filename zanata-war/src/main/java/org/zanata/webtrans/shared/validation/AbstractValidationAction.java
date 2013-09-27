@@ -50,88 +50,74 @@ import com.google.common.collect.Lists;
  * @see TabValidation
  * @see XmlEntityValidation
  **/
-public abstract class AbstractValidationAction implements ValidationAction
-{
-   private ValidationId id;
-   private String description;
+public abstract class AbstractValidationAction implements ValidationAction {
+    private ValidationId id;
+    private String description;
 
-   private ValidationDisplayRules displayRules;
+    private ValidationDisplayRules displayRules;
 
-   private ArrayList<ValidationAction> exclusiveValidations = Lists.newArrayList();
+    private ArrayList<ValidationAction> exclusiveValidations = Lists
+            .newArrayList();
 
-   private ValidationMessages validationMessages;
-   
-   private State state = State.Warning;
+    private ValidationMessages validationMessages;
 
-   public AbstractValidationAction(ValidationId id, String description, ValidationMessages validationMessages)
-   {
-      this.id = id;
-      this.description = description;
-      this.displayRules = new ValidationDisplayRules(state);
-      this.validationMessages = validationMessages;
-   }
+    private State state = State.Warning;
 
-   @Override
-   public List<String> validate(String source, String target)
-   {
-      if (!Strings.isNullOrEmpty(target) && !Strings.isNullOrEmpty(source))
-      {
-        return doValidate(source, target);
-      }
-      return Lists.newArrayList();
-   }
+    public AbstractValidationAction(ValidationId id, String description,
+            ValidationMessages validationMessages) {
+        this.id = id;
+        this.description = description;
+        this.displayRules = new ValidationDisplayRules(state);
+        this.validationMessages = validationMessages;
+    }
 
-   protected abstract List<String> doValidate(String source, String target);
+    @Override
+    public List<String> validate(String source, String target) {
+        if (!Strings.isNullOrEmpty(target) && !Strings.isNullOrEmpty(source)) {
+            return doValidate(source, target);
+        }
+        return Lists.newArrayList();
+    }
 
+    protected abstract List<String> doValidate(String source, String target);
 
-   @Override
-   public List<ValidationAction> getExclusiveValidations()
-   {
-      return exclusiveValidations;
-   }
-   
-   @Override
-   public void mutuallyExclusive(ValidationAction... exclusiveValidations)
-   {
-      this.exclusiveValidations = Lists.newArrayList(exclusiveValidations);
-   }
-   
-   protected ValidationMessages getMessages()
-   {
-      return validationMessages;
-   }
-   
-   @Override
-   public ValidationDisplayRules getRules()
-   {
-      return displayRules;
-   }
+    @Override
+    public List<ValidationAction> getExclusiveValidations() {
+        return exclusiveValidations;
+    }
 
-   @Override
-   public ValidationId getId()
-   {
-      return id;
-   }
+    @Override
+    public void mutuallyExclusive(ValidationAction... exclusiveValidations) {
+        this.exclusiveValidations = Lists.newArrayList(exclusiveValidations);
+    }
 
-   @Override
-   public String getDescription()
-   {
-      return description;
-   }
-   
-   @Override
-   public State getState()
-   {
-      return state;
-   }
-   
-   @Override
-   public void setState(State state)
-   {
-      this.state = state;
-      displayRules.updateRules(state);
-   }
+    protected ValidationMessages getMessages() {
+        return validationMessages;
+    }
+
+    @Override
+    public ValidationDisplayRules getRules() {
+        return displayRules;
+    }
+
+    @Override
+    public ValidationId getId() {
+        return id;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    @Override
+    public State getState() {
+        return state;
+    }
+
+    @Override
+    public void setState(State state) {
+        this.state = state;
+        displayRules.updateRules(state);
+    }
 }
-
-
- 

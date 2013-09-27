@@ -21,13 +21,13 @@
 package org.zanata.webtrans.client.keys;
 
 /**
- * Factory for wrapped {@link com.google.gwt.user.client.Timer} to allow
- * mocking for testing.
- * 
- * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
+ * Factory for wrapped {@link com.google.gwt.user.client.Timer} to allow mocking
+ * for testing.
+ *
+ * @author David Mason, <a
+ *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  *
  */
-public interface TimerFactory
-{
-   Timer create(TimedAction timedAction);
+public interface TimerFactory {
+    Timer create(TimedAction timedAction);
 }

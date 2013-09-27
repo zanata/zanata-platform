@@ -22,32 +22,34 @@ package org.zanata.service;
 
 import org.zanata.model.HLocale;
 
-public interface ConfigurationService
-{
-   /**
-    * Get a standard config file for a project-version.
-    * 
-    * @return contents of the config file
-    */
-   String getGeneralConfig(String projectSlug, String iterationSlug);
+public interface ConfigurationService {
+    /**
+     * Get a standard config file for a project-version.
+     *
+     * @return contents of the config file
+     */
+    String getGeneralConfig(String projectSlug, String iterationSlug);
 
-   /**
-    * Get a standard config file for dealing with a single locale for a project-version.
-    * 
-    * @return contents of the config file
-    */
-   String getSingleLocaleConfig(String projectSlug, String versionSlug, HLocale locale);
+    /**
+     * Get a standard config file for dealing with a single locale for a
+     * project-version.
+     *
+     * @return contents of the config file
+     */
+    String getSingleLocaleConfig(String projectSlug, String versionSlug,
+            HLocale locale);
 
-   /**
-    * Get a config file for a single locale, with project type adjusted to be appropriate for
-    * offline translation.
-    * 
-    * @return contents of the config file
-    */
-   String getConfigForOfflineTranslation(String projectSlug, String versionSlug, HLocale locale);
+    /**
+     * Get a config file for a single locale, with project type adjusted to be
+     * appropriate for offline translation.
+     *
+     * @return contents of the config file
+     */
+    String getConfigForOfflineTranslation(String projectSlug,
+            String versionSlug, HLocale locale);
 
-   /**
-    * Returns the default configuration file Name.
-    */
-   String getConfigurationFileName();
+    /**
+     * Returns the default configuration file Name.
+     */
+    String getConfigurationFileName();
 }

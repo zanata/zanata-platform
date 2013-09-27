@@ -45,70 +45,61 @@ import org.zanata.service.LocaleService;
 @Name("versionDetailsAction")
 @Scope(ScopeType.PAGE)
 @CachedMethods
-public class VersionDetailsAction implements Serializable
-{
-   private static final long serialVersionUID = 1L;
+public class VersionDetailsAction implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-   @In
-   private LocaleService localeServiceImpl;
+    @In
+    private LocaleService localeServiceImpl;
 
-   @In
-   private PersonDAO personDAO;
+    @In
+    private PersonDAO personDAO;
 
-   @In
-   private ZanataIdentity identity;
+    @In
+    private ZanataIdentity identity;
 
-   private String projectSlug;
+    private String projectSlug;
 
-   @CachedMethodResult
-   public List<HLocale> getSupportedLocaleList(String versionSlug)
-   {
-      List<HLocale> result = new ArrayList<HLocale>();
-      List<HLocale> localeList = localeServiceImpl.getSupportedLangugeByProjectIteration(projectSlug, versionSlug);
-      HPerson person = personDAO.findByUsername(identity.getCredentials().getUsername());
-      for (HLocale locale : localeList)
-      {
-         if (isPersonInTeam(locale, person.getId()))
-         {
-            result.add(locale);
-         }
-      }
-      return result;
-   }
+    @CachedMethodResult
+    public List<HLocale> getSupportedLocaleList(String versionSlug) {
+        List<HLocale> result = new ArrayList<HLocale>();
+        List<HLocale> localeList =
+                localeServiceImpl.getSupportedLangugeByProjectIteration(
+                        projectSlug, versionSlug);
+        HPerson person =
+                personDAO.findByUsername(identity.getCredentials()
+                        .getUsername());
+        for (HLocale locale : localeList) {
+            if (isPersonInTeam(locale, person.getId())) {
+                result.add(locale);
+            }
+        }
+        return result;
+    }
 
+    private boolean isPersonInTeam(HLocale locale, final Long personId) {
+        for (HLocaleMember lm : locale.getMembers()) {
+            if (lm.getPerson().getId().equals(personId)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-   private boolean isPersonInTeam(HLocale locale, final Long personId)
-   {
-      for (HLocaleMember lm : locale.getMembers())
-      {
-         if (lm.getPerson().getId().equals(personId))
-         {
-            return true;
-         }
-      }
-      return false;
-   }
+    public String getProjectSlug() {
+        return projectSlug;
+    }
 
+    public void setProjectSlug(String projectSlug) {
+        this.projectSlug = projectSlug;
+    }
 
-   public String getProjectSlug()
-   {
-      return projectSlug;
-   }
+    public String editVersion(String versionSlug) {
+        // TODO Avoid this type of redirection
+        return "";
+    }
 
-   public void setProjectSlug(String projectSlug)
-   {
-      this.projectSlug = projectSlug;
-   }
-
-   public String editVersion(String versionSlug)
-   {
-      // TODO Avoid this type of redirection
-      return "";
-   }
-
-   public String sourceDocs(String versionSlug)
-   {
-      // TODO Avoid this type of redirection
-      return "";
-   }
+    public String sourceDocs(String versionSlug) {
+        // TODO Avoid this type of redirection
+        return "";
+    }
 }

@@ -29,33 +29,30 @@ import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SimpleKeyProvider;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class EnumListBox<E extends Enum<?>> extends ValueListBox<E>
-{
+public class EnumListBox<E extends Enum<?>> extends ValueListBox<E> {
 
-   public EnumListBox(Class<E> clazz, Renderer<E> renderer)
-   {
-      this(clazz.getEnumConstants(), renderer);
-   }
+    public EnumListBox(Class<E> clazz, Renderer<E> renderer) {
+        this(clazz.getEnumConstants(), renderer);
+    }
 
-   public EnumListBox(E[] values, Renderer<E> renderer)
-   {
-      this(values, renderer, new SimpleKeyProvider<E>());
-   }
+    public EnumListBox(E[] values, Renderer<E> renderer) {
+        this(values, renderer, new SimpleKeyProvider<E>());
+    }
 
-   public EnumListBox(E[] values, Renderer<E> renderer, ProvidesKey<E> keyProvider)
-   {
-      super(renderer, keyProvider);
-      init(values);
-   }
+    public EnumListBox(E[] values, Renderer<E> renderer,
+            ProvidesKey<E> keyProvider) {
+        super(renderer, keyProvider);
+        init(values);
+    }
 
-   private void init(E[] values)
-   {
-      // this avoids the automatic null entry in the acceptableValues array
-      setValue(values[0]);
-      setAcceptableValues(Arrays.asList(values));
-   }
+    private void init(E[] values) {
+        // this avoids the automatic null entry in the acceptableValues array
+        setValue(values[0]);
+        setAcceptableValues(Arrays.asList(values));
+    }
 
 }

@@ -29,24 +29,21 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * This is the widget to create a &lt;li&gt;.
  *
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class ListItemWidget extends SimplePanel
-{
-   public ListItemWidget()
-   {
-      super((Element) Document.get().createLIElement().cast());
-   }
+public class ListItemWidget extends SimplePanel {
+    public ListItemWidget() {
+        super((Element) Document.get().createLIElement().cast());
+    }
 
-   public ListItemWidget(String text)
-   {
-      this();
-      getElement().setInnerText(text);
-   }
+    public ListItemWidget(String text) {
+        this();
+        getElement().setInnerText(text);
+    }
 
-   public ListItemWidget(Widget widget)
-   {
-      this();
-      add(widget);
-   }
+    public ListItemWidget(Widget widget) {
+        this();
+        add(widget);
+    }
 }

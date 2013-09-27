@@ -30,12 +30,13 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-@Constraint(validatedBy = {EmailListValidator.class})
+@Constraint(validatedBy = { EmailListValidator.class })
 @Target({ METHOD, FIELD })
 @Retention(RUNTIME)
-public @interface EmailList
-{
-   Class<?>[] groups() default {};
-   String message() default "{javax.validation.constraints.EmailList.message}";
-   Class<? extends Payload>[] payload() default {};
+public @interface EmailList {
+    Class<?>[] groups() default {};
+
+    String message() default "{javax.validation.constraints.EmailList.message}";
+
+    Class<? extends Payload>[] payload() default {};
 }

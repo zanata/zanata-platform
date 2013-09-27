@@ -1,128 +1,150 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:s="http://jboss.org/schema/seam/taglib"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:rich="http://richfaces.org/rich"
-                template="../WEB-INF/template/template_2x.xhtml">
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:rich="http://richfaces.org/rich"
+  template="../WEB-INF/template/template_2x.xhtml">
 
-    <ui:define name="page_title">#{messages['jsf.Administration']}</ui:define>
-    <ui:define name="center_content">
-        <h:panelGrid columns="7" border="0">
-            <s:link id="Admin_Server_configuration_home" view="/admin/server_configuration.xhtml" propagation="none" styleClass="admin_link">
-                <div class="admin_link_div">
-                    <div class="admin_link_img">
-                        <h:graphicImage value="../images/crystal_project/_48x48/apps/Service%20Manager.png"/>
-                    </div>
-                    <div class="admin_link_title">
-                        #{messages['jsf.ServerConfiguration']}
-                    </div>
-                </div>
-            </s:link>
+  <ui:define name="page_title">#{messages['jsf.Administration']}</ui:define>
+  <ui:define name="center_content">
+    <h:panelGrid columns="7" border="0">
+      <s:link id="Admin_Server_configuration_home"
+        view="/admin/server_configuration.xhtml" propagation="none"
+        styleClass="admin_link">
+        <div class="admin_link_div">
+          <div class="admin_link_img">
+            <h:graphicImage
+              value="../images/crystal_project/_48x48/apps/Service%20Manager.png"/>
+          </div>
+          <div class="admin_link_title">
+            #{messages['jsf.ServerConfiguration']}
+          </div>
+        </div>
+      </s:link>
 
-            <s:link id="Admin_Manage_users_home" view="/admin/usermanager.xhtml" propagation="none" styleClass="admin_link">
-                <div class="admin_link_div">
-                    <div class="admin_link_img">
-                        <h:graphicImage value="../images/crystal_project/_48x48/apps/Login%20Manager.png"/>
-                    </div>
-                    <div class="admin_link_title">
-                        #{messages['jsf.ManageUsers']}
-                    </div>
-                </div>
-            </s:link>
+      <s:link id="Admin_Manage_users_home" view="/admin/usermanager.xhtml"
+        propagation="none" styleClass="admin_link">
+        <div class="admin_link_div">
+          <div class="admin_link_img">
+            <h:graphicImage
+              value="../images/crystal_project/_48x48/apps/Login%20Manager.png"/>
+          </div>
+          <div class="admin_link_title">
+            #{messages['jsf.ManageUsers']}
+          </div>
+        </div>
+      </s:link>
 
-            <s:link id="Admin_Manage_roles_home" view="/admin/rolemanager.xhtml" propagation="none" styleClass="admin_link">
-                <div class="admin_link_div">
-                    <div class="admin_link_img">
-                        <h:graphicImage value="../images/crystal_project/_48x48/apps/personal.png"/>
-                    </div>
-                    <div class="admin_link_title">
-                        #{messages['jsf.ManageRoles']}
-                    </div>
-                </div>
-            </s:link>
+      <s:link id="Admin_Manage_roles_home" view="/admin/rolemanager.xhtml"
+        propagation="none" styleClass="admin_link">
+        <div class="admin_link_div">
+          <div class="admin_link_img">
+            <h:graphicImage
+              value="../images/crystal_project/_48x48/apps/personal.png"/>
+          </div>
+          <div class="admin_link_title">
+            #{messages['jsf.ManageRoles']}
+          </div>
+        </div>
+      </s:link>
 
-            <s:link id="Admin_Manage_languages_home" view="/admin/languagemanager.xhtml" propagation="none" styleClass="admin_link">
-                <div class="admin_link_div">
-                    <div class="admin_link_img">
-                        <h:graphicImage value="../images/crystal_project/_48x48/apps/locale.png"/>
-                    </div>
-                    <div class="admin_link_title">
-                        #{messages['jsf.ManageLanguage']}
-                    </div>
-                </div>
-            </s:link>
+      <s:link id="Admin_Manage_languages_home"
+        view="/admin/languagemanager.xhtml" propagation="none"
+        styleClass="admin_link">
+        <div class="admin_link_div">
+          <div class="admin_link_img">
+            <h:graphicImage
+              value="../images/crystal_project/_48x48/apps/locale.png"/>
+          </div>
+          <div class="admin_link_title">
+            #{messages['jsf.ManageLanguage']}
+          </div>
+        </div>
+      </s:link>
 
 
-            <s:link id="Admin_Manage_search_home" view="/admin/search.xhtml" propagation="none" styleClass="admin_link">
-                <div class="admin_link_div">
-                    <div class="admin_link_img">
-                        <h:graphicImage value="../images/crystal_project/_48x48/apps/kappfinder.png"/>
-                    </div>
-                    <div class="admin_link_title">
-                        #{messages['jsf.ManageSearch']}
-                    </div>
-                </div>
-            </s:link>
+      <s:link id="Admin_Manage_search_home" view="/admin/search.xhtml"
+        propagation="none" styleClass="admin_link">
+        <div class="admin_link_div">
+          <div class="admin_link_img">
+            <h:graphicImage
+              value="../images/crystal_project/_48x48/apps/kappfinder.png"/>
+          </div>
+          <div class="admin_link_title">
+            #{messages['jsf.ManageSearch']}
+          </div>
+        </div>
+      </s:link>
 
-            <s:link id="Admin_Manage_stats_home" view="/admin/stats.xhtml" propagation="none" styleClass="admin_link">
-                <div class="admin_link_div">
-                    <div class="admin_link_img">
-                        <h:graphicImage value="../images/crystal_project/_48x48/apps/kchart.png"/>
-                    </div>
-                    <div class="admin_link_title">
-                        #{messages['jsf.OverallStatistics']}
-                    </div>
-                </div>
-            </s:link>
+      <s:link id="Admin_Manage_stats_home" view="/admin/stats.xhtml"
+        propagation="none" styleClass="admin_link">
+        <div class="admin_link_div">
+          <div class="admin_link_img">
+            <h:graphicImage
+              value="../images/crystal_project/_48x48/apps/kchart.png"/>
+          </div>
+          <div class="admin_link_title">
+            #{messages['jsf.OverallStatistics']}
+          </div>
+        </div>
+      </s:link>
 
-            <s:link id="Admin_Role_Assignment_Rules_home" view="/admin/rolerules.xhtml" propagation="none" styleClass="admin_link">
-                <div class="admin_link_div">
-                    <div class="admin_link_img">
-                        <h:graphicImage value="../images/crystal_project/_48x48/filesystems/folder_public.png"/>
-                    </div>
-                    <div class="admin_link_title">
-                        #{messages['jsf.RoleAssignmentRules']}
-                    </div>
-                </div>
-            </s:link>
+      <s:link id="Admin_Role_Assignment_Rules_home"
+        view="/admin/rolerules.xhtml" propagation="none"
+        styleClass="admin_link">
+        <div class="admin_link_div">
+          <div class="admin_link_img">
+            <h:graphicImage
+              value="../images/crystal_project/_48x48/filesystems/folder_public.png"/>
+          </div>
+          <div class="admin_link_title">
+            #{messages['jsf.RoleAssignmentRules']}
+          </div>
+        </div>
+      </s:link>
 
-            <s:link id="Admin_Monitoring_home" view="/admin/monitoring" propagation="none" styleClass="admin_link">
-                <div class="admin_link_div">
-                    <div class="admin_link_img">
-                        <h:graphicImage value="../images/javamelody.png"/>
-                    </div>
-                    <div class="admin_link_title">
-                        #{messages['jsf.ServerMonitoring']}
-                    </div>
-                </div>
-            </s:link>
+      <s:link id="Admin_Monitoring_home" view="/admin/monitoring"
+        propagation="none" styleClass="admin_link">
+        <div class="admin_link_div">
+          <div class="admin_link_img">
+            <h:graphicImage value="../images/javamelody.png"/>
+          </div>
+          <div class="admin_link_title">
+            #{messages['jsf.ServerMonitoring']}
+          </div>
+        </div>
+      </s:link>
 
-            <s:link id="Process_Management_home" view="/admin/processmanager.xhtml" propagation="none" styleClass="admin_link">
-                <div class="admin_link_div">
-                    <div class="admin_link_img">
-                        <h:graphicImage value="../images/crystal_project/_48x48/apps/ksysv.png"/>
-                    </div>
-                    <div class="admin_link_title">
-                        #{messages['jsf.ProcessManager']}
-                    </div>
-                </div>
-            </s:link>
+      <s:link id="Process_Management_home" view="/admin/processmanager.xhtml"
+        propagation="none" styleClass="admin_link">
+        <div class="admin_link_div">
+          <div class="admin_link_img">
+            <h:graphicImage
+              value="../images/crystal_project/_48x48/apps/ksysv.png"/>
+          </div>
+          <div class="admin_link_title">
+            #{messages['jsf.ProcessManager']}
+          </div>
+        </div>
+      </s:link>
 
-            <s:link id="Translation_Memory_home" view="/tm/home.xhtml" propagation="none" styleClass="admin_link">
-                <div class="admin_link_div">
-                    <div class="admin_link_img">
-                        <h:graphicImage value="../images/crystal_project/_48x48/apps/kcmmemory.png"/>
-                    </div>
-                    <div class="admin_link_title">
-                        #{messages['jsf.transmemory.Title']}
-                    </div>
-                </div>
-            </s:link>
+      <s:link id="Translation_Memory_home" view="/tm/home.xhtml"
+        propagation="none" styleClass="admin_link">
+        <div class="admin_link_div">
+          <div class="admin_link_img">
+            <h:graphicImage
+              value="../images/crystal_project/_48x48/apps/kcmmemory.png"/>
+          </div>
+          <div class="admin_link_title">
+            #{messages['jsf.transmemory.Title']}
+          </div>
+        </div>
+      </s:link>
 
-        </h:panelGrid>
+    </h:panelGrid>
 
-    </ui:define>
+  </ui:define>
 </ui:composition>

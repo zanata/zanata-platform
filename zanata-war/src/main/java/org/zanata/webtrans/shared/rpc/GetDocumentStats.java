@@ -4,23 +4,20 @@ import java.util.List;
 
 import org.zanata.webtrans.shared.model.DocumentId;
 
-public class GetDocumentStats extends AbstractWorkspaceAction<GetDocumentStatsResult>
-{
-   private static final long serialVersionUID = 1L;
-   
-   private List<DocumentId> docIds;
+public class GetDocumentStats extends
+        AbstractWorkspaceAction<GetDocumentStatsResult> {
+    private static final long serialVersionUID = 1L;
 
-   private GetDocumentStats()
-   {
-   }
+    private List<DocumentId> docIds;
 
-   public GetDocumentStats(List<DocumentId> docIds)
-   {
-      this.docIds = docIds;
-   }
+    private GetDocumentStats() {
+    }
 
-   public List<DocumentId> getDocIds()
-   {
-      return docIds;
-   }
+    public GetDocumentStats(List<DocumentId> docIds) {
+        this.docIds = docIds;
+    }
+
+    public List<DocumentId> getDocIds() {
+        return docIds;
+    }
 }

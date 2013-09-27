@@ -38,104 +38,135 @@ import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.ProjectIterationDAO;
 
 @Test(groups = { "jpa-tests" })
-public class HTextFlowJPATest extends ZanataDbunitJpaTest
-{
+public class HTextFlowJPATest extends ZanataDbunitJpaTest {
 
-   private LocaleDAO localeDAO;
-   
-   private ProjectIterationDAO projectIterationDAO;
-   
-   private HLocale en_US;
+    private LocaleDAO localeDAO;
 
-   @Override
-   protected void prepareDBUnitOperations()
-   {
-      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
-      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/LocalesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
-      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/DocumentsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
-      afterTestOperations.add(new DataSetOperation("org/zanata/test/model/ProjectsData.dbunit.xml", DatabaseOperation.DELETE_ALL));
-      afterTestOperations.add(new DataSetOperation("org/zanata/test/model/LocalesData.dbunit.xml", DatabaseOperation.DELETE_ALL));
-      afterTestOperations.add(new DataSetOperation("org/zanata/test/model/DocumentsData.dbunit.xml", DatabaseOperation.DELETE_ALL));
-   }
-   
-   @BeforeMethod(firstTimeOnly = true)
-   public void beforeMethod()
-   {
-      localeDAO = new LocaleDAO((Session) em.getDelegate());
-      projectIterationDAO = new ProjectIterationDAO((Session) em.getDelegate());
-      en_US = localeDAO.findByLocaleId(LocaleId.EN_US);
-   }
-   
-   @Test
-   public void textFlowWithSingleContent()
-   {
-      HDocument hdoc = new HDocument("fullpath", ContentType.TextPlain, en_US);
-      hdoc.setProjectIteration( projectIterationDAO.findById(1L, false) ); // Taken from ProjectsData.dbunit.xml
-      
-      HTextFlow tf = new HTextFlow(hdoc, "hello world res id", "hello world");
-      
-      hdoc.getTextFlows().add(tf);
-      
-      em.persist(hdoc);
-      em.flush();
+    private ProjectIterationDAO projectIterationDAO;
 
-      // reload the doc
-      em.refresh(hdoc);
-      
-      assertThat("Expected document to contain at least one text flow", hdoc.getTextFlows().size(), greaterThan(0));
-      assertThat("Expected Text flow to contain single content", hdoc.getTextFlows().get(0).getContents().size(), is(1));
-      assertThat("Expected deprecated method to still work", hdoc.getTextFlows().get(0).getContents().get(0), is("hello world"));
-   }
-   
-   @Test
-   public void textFlowWithPlurals()
-   {
-      HDocument hdoc = new HDocument("fullpath", ContentType.TextPlain, en_US);
-      hdoc.setProjectIteration( projectIterationDAO.findById(1L, false) ); // Taken from ProjectsData.dbunit.xml
-      
-      HTextFlow tf = new HTextFlow(hdoc, "hello world res id 1", "hello world");
-      
-      List<String> contents = tf.getContents();
-      contents.add("hello worlds");
-      contents.add("hellos worlds");
-      tf.setContents(contents);
-      
-      hdoc.getTextFlows().add(tf);
-      
-      em.persist(hdoc);
-      em.flush();
+    private HLocale en_US;
 
-      // reload the doc
-      em.refresh(hdoc);
-      
-      assertThat("Expected document to contain at least one text flow", hdoc.getTextFlows().size(), greaterThan(0));
-      assertThat("Expected Text flow to contain 3 content strings", hdoc.getTextFlows().get(0).getContents().size(), is(3));
-      assertThat("Expected contents to be preserved", hdoc.getTextFlows().get(0).getContents(), is( Arrays.asList("hello world", "hello worlds", "hellos worlds") ));
-      assertThat("Expected deprecated method to still work", hdoc.getTextFlows().get(0).getContents().get(0), is("hello world"));
-   }
+    @Override
+    protected void prepareDBUnitOperations() {
+        beforeTestOperations.add(new DataSetOperation(
+                "org/zanata/test/model/ProjectsData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
+        beforeTestOperations.add(new DataSetOperation(
+                "org/zanata/test/model/LocalesData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
+        beforeTestOperations.add(new DataSetOperation(
+                "org/zanata/test/model/DocumentsData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
+        afterTestOperations.add(new DataSetOperation(
+                "org/zanata/test/model/ProjectsData.dbunit.xml",
+                DatabaseOperation.DELETE_ALL));
+        afterTestOperations.add(new DataSetOperation(
+                "org/zanata/test/model/LocalesData.dbunit.xml",
+                DatabaseOperation.DELETE_ALL));
+        afterTestOperations.add(new DataSetOperation(
+                "org/zanata/test/model/DocumentsData.dbunit.xml",
+                DatabaseOperation.DELETE_ALL));
+    }
 
-   @Test
-   public void textFlowWithPluralsAndSomeEmptyContents()
-   {
-      HDocument hdoc = new HDocument("fullpath", ContentType.TextPlain, en_US);
-      hdoc.setProjectIteration( projectIterationDAO.findById(1L, false) ); // Taken from ProjectsData.dbunit.xml
+    @BeforeMethod(firstTimeOnly = true)
+    public void beforeMethod() {
+        localeDAO = new LocaleDAO((Session) em.getDelegate());
+        projectIterationDAO =
+                new ProjectIterationDAO((Session) em.getDelegate());
+        en_US = localeDAO.findByLocaleId(LocaleId.EN_US);
+    }
 
-      HTextFlow tf = new HTextFlow(hdoc, "hello world res id 1", "hello world");
-      tf.setContents("hello world 1", "hello world 2", null, "hello world 4");
+    @Test
+    public void textFlowWithSingleContent() {
+        HDocument hdoc =
+                new HDocument("fullpath", ContentType.TextPlain, en_US);
+        hdoc.setProjectIteration(projectIterationDAO.findById(1L, false)); // Taken
+                                                                           // from
+                                                                           // ProjectsData.dbunit.xml
 
-      hdoc.getTextFlows().add(tf);
+        HTextFlow tf = new HTextFlow(hdoc, "hello world res id", "hello world");
 
-      em.persist(hdoc);
-      em.flush();
+        hdoc.getTextFlows().add(tf);
 
-      // reload the doc
-      em.refresh(hdoc);
+        em.persist(hdoc);
+        em.flush();
 
-      assertThat("Expected document to contain at least one text flow", hdoc.getTextFlows().size(), greaterThan(0));
-      assertThat("Expected Text flow to contain 4 content strings", hdoc.getTextFlows().get(0).getContents().size(), is(4));
-      assertThat("Expected contents to be preserved", hdoc.getTextFlows().get(0).getContents(),
-            is( Arrays.asList("hello world 1", "hello world 2", null, "hello world 4") ));
-      assertThat("Expected deprecated method to still work", hdoc.getTextFlows().get(0).getContents().get(0), is("hello world 1"));
-   }
-   
+        // reload the doc
+        em.refresh(hdoc);
+
+        assertThat("Expected document to contain at least one text flow", hdoc
+                .getTextFlows().size(), greaterThan(0));
+        assertThat("Expected Text flow to contain single content", hdoc
+                .getTextFlows().get(0).getContents().size(), is(1));
+        assertThat("Expected deprecated method to still work", hdoc
+                .getTextFlows().get(0).getContents().get(0), is("hello world"));
+    }
+
+    @Test
+    public void textFlowWithPlurals() {
+        HDocument hdoc =
+                new HDocument("fullpath", ContentType.TextPlain, en_US);
+        hdoc.setProjectIteration(projectIterationDAO.findById(1L, false)); // Taken
+                                                                           // from
+                                                                           // ProjectsData.dbunit.xml
+
+        HTextFlow tf =
+                new HTextFlow(hdoc, "hello world res id 1", "hello world");
+
+        List<String> contents = tf.getContents();
+        contents.add("hello worlds");
+        contents.add("hellos worlds");
+        tf.setContents(contents);
+
+        hdoc.getTextFlows().add(tf);
+
+        em.persist(hdoc);
+        em.flush();
+
+        // reload the doc
+        em.refresh(hdoc);
+
+        assertThat("Expected document to contain at least one text flow", hdoc
+                .getTextFlows().size(), greaterThan(0));
+        assertThat("Expected Text flow to contain 3 content strings", hdoc
+                .getTextFlows().get(0).getContents().size(), is(3));
+        assertThat("Expected contents to be preserved", hdoc.getTextFlows()
+                .get(0).getContents(), is(Arrays.asList("hello world",
+                "hello worlds", "hellos worlds")));
+        assertThat("Expected deprecated method to still work", hdoc
+                .getTextFlows().get(0).getContents().get(0), is("hello world"));
+    }
+
+    @Test
+    public void textFlowWithPluralsAndSomeEmptyContents() {
+        HDocument hdoc =
+                new HDocument("fullpath", ContentType.TextPlain, en_US);
+        hdoc.setProjectIteration(projectIterationDAO.findById(1L, false)); // Taken
+                                                                           // from
+                                                                           // ProjectsData.dbunit.xml
+
+        HTextFlow tf =
+                new HTextFlow(hdoc, "hello world res id 1", "hello world");
+        tf.setContents("hello world 1", "hello world 2", null, "hello world 4");
+
+        hdoc.getTextFlows().add(tf);
+
+        em.persist(hdoc);
+        em.flush();
+
+        // reload the doc
+        em.refresh(hdoc);
+
+        assertThat("Expected document to contain at least one text flow", hdoc
+                .getTextFlows().size(), greaterThan(0));
+        assertThat("Expected Text flow to contain 4 content strings", hdoc
+                .getTextFlows().get(0).getContents().size(), is(4));
+        assertThat("Expected contents to be preserved", hdoc.getTextFlows()
+                .get(0).getContents(), is(Arrays.asList("hello world 1",
+                "hello world 2", null, "hello world 4")));
+        assertThat("Expected deprecated method to still work", hdoc
+                .getTextFlows().get(0).getContents().get(0),
+                is("hello world 1"));
+    }
+
 }

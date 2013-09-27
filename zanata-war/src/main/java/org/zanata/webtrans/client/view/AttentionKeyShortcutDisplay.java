@@ -24,15 +24,15 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 /**
  * Displays information about shortcut keys in Attention mode.
- * 
- * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
+ *
+ * @author David Mason, <a
+ *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  *
  */
-public interface AttentionKeyShortcutDisplay extends WidgetDisplay
-{
+public interface AttentionKeyShortcutDisplay extends WidgetDisplay {
 
-   void showOrHide(boolean show);
+    void showOrHide(boolean show);
 
-   void clearShortcuts();
+    void clearShortcuts();
 
 }

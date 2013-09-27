@@ -2,17 +2,17 @@
  * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
- * 
+ *
  * This is free software; you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
@@ -41,87 +41,72 @@ import org.zanata.model.HProject;
 /**
  * This Action bean holds information about project restrictions by Role.
  *
- * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz <a
+ *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  * @see {@link ProjectHome}
  * @see {@link LocaleListAction}
  */
 @Name("projectRoleRestrictionAction")
 @Scope(ScopeType.PAGE)
-public class ProjectRoleRestrictionAction implements Serializable
-{
-   private static final long serialVersionUID = 1L;
+public class ProjectRoleRestrictionAction implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-   @In
-   private AccountRoleDAO accountRoleDAO;
+    @In
+    private AccountRoleDAO accountRoleDAO;
 
-   @In(required = false)
-   private ProjectHome projectHome;
+    @In(required = false)
+    private ProjectHome projectHome;
 
-   private Map<String, Boolean> roleRestrictions;
+    private Map<String, Boolean> roleRestrictions;
 
-   private Boolean restrictByRoles;
+    private Boolean restrictByRoles;
 
+    @Out(required = false)
+    public boolean getRestrictByRoles() {
+        if (restrictByRoles == null) {
+            restrictByRoles = projectHome.getInstance().isRestrictedByRoles();
+        }
+        return restrictByRoles;
+    }
 
-   @Out(required = false)
-   public boolean getRestrictByRoles()
-   {
-      if( restrictByRoles == null )
-      {
-         restrictByRoles = projectHome.getInstance().isRestrictedByRoles();
-      }
-      return restrictByRoles;
-   }
+    public void setRestrictByRoles(boolean restrictByRoles) {
+        this.restrictByRoles = restrictByRoles;
+    }
 
-   public void setRestrictByRoles(boolean restrictByRoles)
-   {
-      this.restrictByRoles = restrictByRoles;
-   }
+    public Map<String, Boolean> getRoleRestrictions() {
+        if (roleRestrictions == null) {
+            roleRestrictions = new HashMap<String, Boolean>();
+            HProject project = projectHome.getInstance();
 
-   public Map<String, Boolean> getRoleRestrictions()
-   {
-      if( roleRestrictions == null )
-      {
-         roleRestrictions = new HashMap<String, Boolean>();
-         HProject project = projectHome.getInstance();
+            for (HAccountRole role : project.getAllowedRoles()) {
+                roleRestrictions.put(role.getName(), true);
+            }
+        }
+        return roleRestrictions;
+    }
 
-         for( HAccountRole role : project.getAllowedRoles() )
-         {
-            roleRestrictions.put( role.getName(), true );
-         }
-      }
-      return roleRestrictions;
-   }
+    public List<HAccountRole> getAvailableRoles() {
+        List<HAccountRole> allRoles = accountRoleDAO.findAll();
 
-   public List<HAccountRole> getAvailableRoles()
-   {
-      List<HAccountRole> allRoles = accountRoleDAO.findAll();
+        Collections.sort(allRoles, new Comparator<HAccountRole>() {
+            @Override
+            public int compare(HAccountRole o1, HAccountRole o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
 
-      Collections.sort( allRoles,
-            new Comparator<HAccountRole>()
-            {
-               @Override
-               public int compare(HAccountRole o1, HAccountRole o2)
-               {
-                  return o1.getName().compareTo( o2.getName() );
-               }
-            });
+        return allRoles;
+    }
 
-      return allRoles;
-   }
-
-   @Out(required = false)
-   public Set<HAccountRole> getCustomizedProjectRoleRestrictions()
-   {
-      Set<HAccountRole> customizedRoleSet = new HashSet<HAccountRole>();
-      for( String roleName : this.getRoleRestrictions().keySet() )
-      {
-         if( this.getRoleRestrictions().get( roleName ) )
-         {
-            customizedRoleSet.add( accountRoleDAO.findByName(roleName) );
-         }
-      }
-      return customizedRoleSet;
-   }
-
+    @Out(required = false)
+    public Set<HAccountRole> getCustomizedProjectRoleRestrictions() {
+        Set<HAccountRole> customizedRoleSet = new HashSet<HAccountRole>();
+        for (String roleName : this.getRoleRestrictions().keySet()) {
+            if (this.getRoleRestrictions().get(roleName)) {
+                customizedRoleSet.add(accountRoleDAO.findByName(roleName));
+            }
+        }
+        return customizedRoleSet;
+    }
 
 }

@@ -1,377 +1,419 @@
 <html xmlns:c="http://www.concordion.org/2007/concordion">
 <head>
-    <title>Translation Merge Test (serve has NOT null translation)</title>
+  <title>Translation Merge Test (serve has NOT null translation)</title>
 </head>
 <body>
 
 <p>As a translator</p>
-<p c:execute="given(#mergeType)">Given: merge type set to <span c:set="#mergeType">AUTO</span>
+
+<p c:execute="given(#mergeType)">Given: merge type set to <span
+  c:set="#mergeType">AUTO</span>
 </p>
-<p>When: I push translation from client to server and server previously has translation entered,(for simplicity, no plural is used here)</p>
+
+<p>When: I push translation from client to server and server previously has
+  translation entered,(for simplicity, no plural is used here)</p>
 
 <p>Then:</p>
 <table>
-    <tr>
-        <th>Client content</th>
-        <th>Client state</th>
-        <th>Server content</th>
-        <th>Server state</th>
-        <th>Client content found in history</th>
-        <th>result content</th>
-        <th>result state</th>
-        <th>Server changed</th>
-    </tr>
-    <!-- client untranslated-->
-    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
-        <td c:set="#clientContent"></td>
-        <td c:set="#clientState">New</td>
-        <td c:set="#serverContent"></td>
-        <td c:set="#serverState">New</td>
-        <td c:set="#contentInHistory">false</td>
-        <td c:assertEquals="#result.endContent"></td>
-        <td c:assertEquals="#result.endState">New</td>
-        <td c:assertEquals="#result.changed">false</td>
-    </tr>
-    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
-        <td c:set="#clientContent"></td>
-        <td c:set="#clientState">New</td>
-        <td c:set="#serverContent">abc</td>
-        <td c:set="#serverState">NeedReview</td>
-        <td c:set="#contentInHistory">false</td>
-        <td c:assertEquals="#result.endContent">abc</td>
-        <td c:assertEquals="#result.endState">NeedReview</td>
-        <td c:assertEquals="#result.changed">false</td>
-    </tr>
-    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
-        <td c:set="#clientContent"></td>
-        <td c:set="#clientState">New</td>
-        <td c:set="#serverContent">abc</td>
-        <td c:set="#serverState">Rejected</td>
-        <td c:set="#contentInHistory">false</td>
-        <td c:assertEquals="#result.endContent">abc</td>
-        <td c:assertEquals="#result.endState">Rejected</td>
-        <td c:assertEquals="#result.changed">false</td>
-    </tr>
-    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
-        <td c:set="#clientContent"></td>
-        <td c:set="#clientState">New</td>
-        <td c:set="#serverContent">abc</td>
-        <td c:set="#serverState">Translated</td>
-        <td c:set="#contentInHistory">false</td>
-        <td c:assertEquals="#result.endContent">abc</td>
-        <td c:assertEquals="#result.endState">Translated</td>
-        <td c:assertEquals="#result.changed">false</td>
-    </tr>
-    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
-        <td c:set="#clientContent"></td>
-        <td c:set="#clientState">New</td>
-        <td c:set="#serverContent">abc</td>
-        <td c:set="#serverState">Approved</td>
-        <td c:set="#contentInHistory">false</td>
-        <td c:assertEquals="#result.endContent">abc</td>
-        <td c:assertEquals="#result.endState">Approved</td>
-        <td c:assertEquals="#result.changed">false</td>
-    </tr>
-    <!-- client fuzzy -->
-    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
-        <td c:set="#clientContent">client content</td>
-        <td c:set="#clientState">NeedReview</td>
-        <td c:set="#serverContent"></td>
-        <td c:set="#serverState">New</td>
-        <td c:set="#contentInHistory">false</td>
-        <td c:assertEquals="#result.endContent">client content</td>
-        <td c:assertEquals="#result.endState">NeedReview</td>
-        <td c:assertEquals="#result.changed">true</td>
-    </tr>
-    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
-        <td c:set="#clientContent">client content</td>
-        <td c:set="#clientState">NeedReview</td>
-        <td c:set="#serverContent">server content</td>
-        <td c:set="#serverState">NeedReview</td>
-        <td c:set="#contentInHistory">true</td>
-        <td c:assertEquals="#result.endContent">server content</td>
-        <td c:assertEquals="#result.endState">NeedReview</td>
-        <td c:assertEquals="#result.changed">false</td>
-    </tr>
-    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
-        <td c:set="#clientContent">client content</td>
-        <td c:set="#clientState">NeedReview</td>
-        <td c:set="#serverContent">server content</td>
-        <td c:set="#serverState">NeedReview</td>
-        <td c:set="#contentInHistory">false</td>
-        <td c:assertEquals="#result.endContent">client content</td>
-        <td c:assertEquals="#result.endState">NeedReview</td>
-        <td c:assertEquals="#result.changed">true</td>
-    </tr>
-    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
-        <td c:set="#clientContent">client content</td>
-        <td c:set="#clientState">NeedReview</td>
-        <td c:set="#serverContent">server content</td>
-        <td c:set="#serverState">Rejected</td>
-        <td c:set="#contentInHistory">false</td>
-        <td c:assertEquals="#result.endContent">server content</td>
-        <td c:assertEquals="#result.endState">Rejected</td>
-        <td c:assertEquals="#result.changed">false</td>
-    </tr>
-    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
-        <td c:set="#clientContent">client content</td>
-        <td c:set="#clientState">NeedReview</td>
-        <td c:set="#serverContent">server content</td>
-        <td c:set="#serverState">Translated</td>
-        <td c:set="#contentInHistory">false</td>
-        <td c:assertEquals="#result.endContent">server content</td>
-        <td c:assertEquals="#result.endState">Translated</td>
-        <td c:assertEquals="#result.changed">false</td>
-    </tr>
-    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
-        <td c:set="#clientContent">client content</td>
-        <td c:set="#clientState">NeedReview</td>
-        <td c:set="#serverContent">server content</td>
-        <td c:set="#serverState">Approved</td>
-        <td c:set="#contentInHistory">false</td>
-        <td c:assertEquals="#result.endContent">server content</td>
-        <td c:assertEquals="#result.endState">Approved</td>
-        <td c:assertEquals="#result.changed">false</td>
-    </tr>
-    <!-- client translated -->
-    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
-        <td c:set="#clientContent">client content</td>
-        <td c:set="#clientState">Translated</td>
-        <td c:set="#serverContent"></td>
-        <td c:set="#serverState">New</td>
-        <td c:set="#contentInHistory">false</td>
-        <td c:assertEquals="#result.endContent">client content</td>
-        <td c:assertEquals="#result.endState">Translated</td>
-        <td c:assertEquals="#result.changed">true</td>
-    </tr>
-    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
-        <td c:set="#clientContent">client content</td>
-        <td c:set="#clientState">Translated</td>
-        <td c:set="#serverContent">server content</td>
-        <td c:set="#serverState">NeedReview</td>
-        <td c:set="#contentInHistory">false</td>
-        <td c:assertEquals="#result.endContent">client content</td>
-        <td c:assertEquals="#result.endState">Translated</td>
-        <td c:assertEquals="#result.changed">true</td>
-    </tr>
-    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
-        <td c:set="#clientContent">client content</td>
-        <td c:set="#clientState">Translated</td>
-        <td c:set="#serverContent">server content</td>
-        <td c:set="#serverState">Rejected</td>
-        <td c:set="#contentInHistory">true</td>
-        <td c:assertEquals="#result.endContent">server content</td>
-        <td c:assertEquals="#result.endState">Rejected</td>
-        <td c:assertEquals="#result.changed">false</td>
-    </tr>
-    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
-        <td c:set="#clientContent">client content</td>
-        <td c:set="#clientState">Translated</td>
-        <td c:set="#serverContent">server content</td>
-        <td c:set="#serverState">Rejected</td>
-        <td c:set="#contentInHistory">false</td>
-        <td c:assertEquals="#result.endContent">client content</td>
-        <td c:assertEquals="#result.endState">Translated</td>
-        <td c:assertEquals="#result.changed">true</td>
-    </tr>
-    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
-        <td c:set="#clientContent">client content</td>
-        <td c:set="#clientState">Translated</td>
-        <td c:set="#serverContent">server content</td>
-        <td c:set="#serverState">Translated</td>
-        <td c:set="#contentInHistory">true</td>
-        <td c:assertEquals="#result.endContent">server content</td>
-        <td c:assertEquals="#result.endState">Translated</td>
-        <td c:assertEquals="#result.changed">false</td>
-    </tr>
-    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
-        <td c:set="#clientContent">client content</td>
-        <td c:set="#clientState">Translated</td>
-        <td c:set="#serverContent">server content</td>
-        <td c:set="#serverState">Translated</td>
-        <td c:set="#contentInHistory">false</td>
-        <td c:assertEquals="#result.endContent">client content</td>
-        <td c:assertEquals="#result.endState">Translated</td>
-        <td c:assertEquals="#result.changed">true</td>
-    </tr>
-    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
-        <td c:set="#clientContent">client content</td>
-        <td c:set="#clientState">Translated</td>
-        <td c:set="#serverContent">server content</td>
-        <td c:set="#serverState">Approved</td>
-        <td c:set="#contentInHistory">true</td>
-        <td c:assertEquals="#result.endContent">server content</td>
-        <td c:assertEquals="#result.endState">Approved</td>
-        <td c:assertEquals="#result.changed">false</td>
-    </tr>
-    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
-        <td c:set="#clientContent">client content</td>
-        <td c:set="#clientState">Translated</td>
-        <td c:set="#serverContent">server content</td>
-        <td c:set="#serverState">Approved</td>
-        <td c:set="#contentInHistory">false</td>
-        <td c:assertEquals="#result.endContent">client content</td>
-        <td c:assertEquals="#result.endState">Translated</td>
-        <td c:assertEquals="#result.changed">true</td>
-    </tr>
+<tr>
+  <th>Client content</th>
+  <th>Client state</th>
+  <th>Server content</th>
+  <th>Server state</th>
+  <th>Client content found in history</th>
+  <th>result content</th>
+  <th>result state</th>
+  <th>Server changed</th>
+</tr>
+<!-- client untranslated-->
+<tr
+  c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
+  <td c:set="#clientContent"></td>
+  <td c:set="#clientState">New</td>
+  <td c:set="#serverContent"></td>
+  <td c:set="#serverState">New</td>
+  <td c:set="#contentInHistory">false</td>
+  <td c:assertEquals="#result.endContent"></td>
+  <td c:assertEquals="#result.endState">New</td>
+  <td c:assertEquals="#result.changed">false</td>
+</tr>
+<tr
+  c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
+  <td c:set="#clientContent"></td>
+  <td c:set="#clientState">New</td>
+  <td c:set="#serverContent">abc</td>
+  <td c:set="#serverState">NeedReview</td>
+  <td c:set="#contentInHistory">false</td>
+  <td c:assertEquals="#result.endContent">abc</td>
+  <td c:assertEquals="#result.endState">NeedReview</td>
+  <td c:assertEquals="#result.changed">false</td>
+</tr>
+<tr
+  c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
+  <td c:set="#clientContent"></td>
+  <td c:set="#clientState">New</td>
+  <td c:set="#serverContent">abc</td>
+  <td c:set="#serverState">Rejected</td>
+  <td c:set="#contentInHistory">false</td>
+  <td c:assertEquals="#result.endContent">abc</td>
+  <td c:assertEquals="#result.endState">Rejected</td>
+  <td c:assertEquals="#result.changed">false</td>
+</tr>
+<tr
+  c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
+  <td c:set="#clientContent"></td>
+  <td c:set="#clientState">New</td>
+  <td c:set="#serverContent">abc</td>
+  <td c:set="#serverState">Translated</td>
+  <td c:set="#contentInHistory">false</td>
+  <td c:assertEquals="#result.endContent">abc</td>
+  <td c:assertEquals="#result.endState">Translated</td>
+  <td c:assertEquals="#result.changed">false</td>
+</tr>
+<tr
+  c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
+  <td c:set="#clientContent"></td>
+  <td c:set="#clientState">New</td>
+  <td c:set="#serverContent">abc</td>
+  <td c:set="#serverState">Approved</td>
+  <td c:set="#contentInHistory">false</td>
+  <td c:assertEquals="#result.endContent">abc</td>
+  <td c:assertEquals="#result.endState">Approved</td>
+  <td c:assertEquals="#result.changed">false</td>
+</tr>
+<!-- client fuzzy -->
+<tr
+  c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
+  <td c:set="#clientContent">client content</td>
+  <td c:set="#clientState">NeedReview</td>
+  <td c:set="#serverContent"></td>
+  <td c:set="#serverState">New</td>
+  <td c:set="#contentInHistory">false</td>
+  <td c:assertEquals="#result.endContent">client content</td>
+  <td c:assertEquals="#result.endState">NeedReview</td>
+  <td c:assertEquals="#result.changed">true</td>
+</tr>
+<tr
+  c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
+  <td c:set="#clientContent">client content</td>
+  <td c:set="#clientState">NeedReview</td>
+  <td c:set="#serverContent">server content</td>
+  <td c:set="#serverState">NeedReview</td>
+  <td c:set="#contentInHistory">true</td>
+  <td c:assertEquals="#result.endContent">server content</td>
+  <td c:assertEquals="#result.endState">NeedReview</td>
+  <td c:assertEquals="#result.changed">false</td>
+</tr>
+<tr
+  c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
+  <td c:set="#clientContent">client content</td>
+  <td c:set="#clientState">NeedReview</td>
+  <td c:set="#serverContent">server content</td>
+  <td c:set="#serverState">NeedReview</td>
+  <td c:set="#contentInHistory">false</td>
+  <td c:assertEquals="#result.endContent">client content</td>
+  <td c:assertEquals="#result.endState">NeedReview</td>
+  <td c:assertEquals="#result.changed">true</td>
+</tr>
+<tr
+  c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
+  <td c:set="#clientContent">client content</td>
+  <td c:set="#clientState">NeedReview</td>
+  <td c:set="#serverContent">server content</td>
+  <td c:set="#serverState">Rejected</td>
+  <td c:set="#contentInHistory">false</td>
+  <td c:assertEquals="#result.endContent">server content</td>
+  <td c:assertEquals="#result.endState">Rejected</td>
+  <td c:assertEquals="#result.changed">false</td>
+</tr>
+<tr
+  c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
+  <td c:set="#clientContent">client content</td>
+  <td c:set="#clientState">NeedReview</td>
+  <td c:set="#serverContent">server content</td>
+  <td c:set="#serverState">Translated</td>
+  <td c:set="#contentInHistory">false</td>
+  <td c:assertEquals="#result.endContent">server content</td>
+  <td c:assertEquals="#result.endState">Translated</td>
+  <td c:assertEquals="#result.changed">false</td>
+</tr>
+<tr
+  c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
+  <td c:set="#clientContent">client content</td>
+  <td c:set="#clientState">NeedReview</td>
+  <td c:set="#serverContent">server content</td>
+  <td c:set="#serverState">Approved</td>
+  <td c:set="#contentInHistory">false</td>
+  <td c:assertEquals="#result.endContent">server content</td>
+  <td c:assertEquals="#result.endState">Approved</td>
+  <td c:assertEquals="#result.changed">false</td>
+</tr>
+<!-- client translated -->
+<tr
+  c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
+  <td c:set="#clientContent">client content</td>
+  <td c:set="#clientState">Translated</td>
+  <td c:set="#serverContent"></td>
+  <td c:set="#serverState">New</td>
+  <td c:set="#contentInHistory">false</td>
+  <td c:assertEquals="#result.endContent">client content</td>
+  <td c:assertEquals="#result.endState">Translated</td>
+  <td c:assertEquals="#result.changed">true</td>
+</tr>
+<tr
+  c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
+  <td c:set="#clientContent">client content</td>
+  <td c:set="#clientState">Translated</td>
+  <td c:set="#serverContent">server content</td>
+  <td c:set="#serverState">NeedReview</td>
+  <td c:set="#contentInHistory">false</td>
+  <td c:assertEquals="#result.endContent">client content</td>
+  <td c:assertEquals="#result.endState">Translated</td>
+  <td c:assertEquals="#result.changed">true</td>
+</tr>
+<tr
+  c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
+  <td c:set="#clientContent">client content</td>
+  <td c:set="#clientState">Translated</td>
+  <td c:set="#serverContent">server content</td>
+  <td c:set="#serverState">Rejected</td>
+  <td c:set="#contentInHistory">true</td>
+  <td c:assertEquals="#result.endContent">server content</td>
+  <td c:assertEquals="#result.endState">Rejected</td>
+  <td c:assertEquals="#result.changed">false</td>
+</tr>
+<tr
+  c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
+  <td c:set="#clientContent">client content</td>
+  <td c:set="#clientState">Translated</td>
+  <td c:set="#serverContent">server content</td>
+  <td c:set="#serverState">Rejected</td>
+  <td c:set="#contentInHistory">false</td>
+  <td c:assertEquals="#result.endContent">client content</td>
+  <td c:assertEquals="#result.endState">Translated</td>
+  <td c:assertEquals="#result.changed">true</td>
+</tr>
+<tr
+  c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
+  <td c:set="#clientContent">client content</td>
+  <td c:set="#clientState">Translated</td>
+  <td c:set="#serverContent">server content</td>
+  <td c:set="#serverState">Translated</td>
+  <td c:set="#contentInHistory">true</td>
+  <td c:assertEquals="#result.endContent">server content</td>
+  <td c:assertEquals="#result.endState">Translated</td>
+  <td c:assertEquals="#result.changed">false</td>
+</tr>
+<tr
+  c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
+  <td c:set="#clientContent">client content</td>
+  <td c:set="#clientState">Translated</td>
+  <td c:set="#serverContent">server content</td>
+  <td c:set="#serverState">Translated</td>
+  <td c:set="#contentInHistory">false</td>
+  <td c:assertEquals="#result.endContent">client content</td>
+  <td c:assertEquals="#result.endState">Translated</td>
+  <td c:assertEquals="#result.changed">true</td>
+</tr>
+<tr
+  c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
+  <td c:set="#clientContent">client content</td>
+  <td c:set="#clientState">Translated</td>
+  <td c:set="#serverContent">server content</td>
+  <td c:set="#serverState">Approved</td>
+  <td c:set="#contentInHistory">true</td>
+  <td c:assertEquals="#result.endContent">server content</td>
+  <td c:assertEquals="#result.endState">Approved</td>
+  <td c:assertEquals="#result.changed">false</td>
+</tr>
+<tr
+  c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState, #contentInHistory)">
+  <td c:set="#clientContent">client content</td>
+  <td c:set="#clientState">Translated</td>
+  <td c:set="#serverContent">server content</td>
+  <td c:set="#serverState">Approved</td>
+  <td c:set="#contentInHistory">false</td>
+  <td c:assertEquals="#result.endContent">client content</td>
+  <td c:assertEquals="#result.endState">Translated</td>
+  <td c:assertEquals="#result.changed">true</td>
+</tr>
 </table>
 
 <hr></hr>
 
 <p>As a project maintainer</p>
-<p c:execute="given(#mergeType)">Given: merge type set to <span c:set="#mergeType">IMPORT</span>
+
+<p c:execute="given(#mergeType)">Given: merge type set to <span
+  c:set="#mergeType">IMPORT</span>
 </p>
-<p>When: I push translation from client to server and server previously has translation entered (for simplicity, no plural is used here)</p>
+
+<p>When: I push translation from client to server and server previously has
+  translation entered (for simplicity, no plural is used here)</p>
 
 <p>Then:</p>
 <table>
-    <tr>
-        <th>Client content</th>
-        <th>Client state</th>
-        <th>Server content</th>
-        <th>Server state</th>
-        <th>result content</th>
-        <th>result state</th>
-        <th>Server changed</th>
-    </tr>
-    <!-- client is untranslated -->
-    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState)">
-        <td c:set="#clientContent"></td>
-        <td c:set="#clientState">New</td>
-        <td c:set="#serverContent"></td>
-        <td c:set="#serverState">New</td>
-        <td c:assertEquals="#result.endContent"></td>
-        <td c:assertEquals="#result.endState">New</td>
-        <td c:assertEquals="#result.changed">false</td>
-    </tr>
-    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState)">
-        <td c:set="#clientContent"></td>
-        <td c:set="#clientState">New</td>
-        <td c:set="#serverContent">abc</td>
-        <td c:set="#serverState">NeedReview</td>
-        <td c:assertEquals="#result.endContent"></td>
-        <td c:assertEquals="#result.endState">New</td>
-        <td c:assertEquals="#result.changed">true</td>
-    </tr>
-    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState)">
-        <td c:set="#clientContent"></td>
-        <td c:set="#clientState">New</td>
-        <td c:set="#serverContent">abc</td>
-        <td c:set="#serverState">Translated</td>
-        <td c:assertEquals="#result.endContent"></td>
-        <td c:assertEquals="#result.endState">New</td>
-        <td c:assertEquals="#result.changed">true</td>
-    </tr>
-    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState)">
-        <td c:set="#clientContent"></td>
-        <td c:set="#clientState">New</td>
-        <td c:set="#serverContent">abc</td>
-        <td c:set="#serverState">Approved</td>
-        <td c:assertEquals="#result.endContent"></td>
-        <td c:assertEquals="#result.endState">New</td>
-        <td c:assertEquals="#result.changed">true</td>
-    </tr>
-    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState)">
-        <td c:set="#clientContent"></td>
-        <td c:set="#clientState">New</td>
-        <td c:set="#serverContent">abc</td>
-        <td c:set="#serverState">Rejected</td>
-        <td c:assertEquals="#result.endContent"></td>
-        <td c:assertEquals="#result.endState">New</td>
-        <td c:assertEquals="#result.changed">true</td>
-    </tr>
-    <!-- client is fuzzy -->
-    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState)">
-        <td c:set="#clientContent">client content</td>
-        <td c:set="#clientState">NeedReview</td>
-        <td c:set="#serverContent"></td>
-        <td c:set="#serverState">New</td>
-        <td c:assertEquals="#result.endContent">client content</td>
-        <td c:assertEquals="#result.endState">NeedReview</td>
-        <td c:assertEquals="#result.changed">true</td>
-    </tr>
-    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState)">
-        <td c:set="#clientContent">client content</td>
-        <td c:set="#clientState">NeedReview</td>
-        <td c:set="#serverContent">server content</td>
-        <td c:set="#serverState">NeedReview</td>
-        <td c:assertEquals="#result.endContent">client content</td>
-        <td c:assertEquals="#result.endState">NeedReview</td>
-        <td c:assertEquals="#result.changed">true</td>
-    </tr>
-    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState)">
-        <td c:set="#clientContent">client content</td>
-        <td c:set="#clientState">NeedReview</td>
-        <td c:set="#serverContent">server content</td>
-        <td c:set="#serverState">Translated</td>
-        <td c:assertEquals="#result.endContent">client content</td>
-        <td c:assertEquals="#result.endState">NeedReview</td>
-        <td c:assertEquals="#result.changed">true</td>
-    </tr>
-    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState)">
-        <td c:set="#clientContent">client content</td>
-        <td c:set="#clientState">NeedReview</td>
-        <td c:set="#serverContent">server content</td>
-        <td c:set="#serverState">Approved</td>
-        <td c:assertEquals="#result.endContent">client content</td>
-        <td c:assertEquals="#result.endState">NeedReview</td>
-        <td c:assertEquals="#result.changed">true</td>
-    </tr>
-    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState)">
-        <td c:set="#clientContent">client content</td>
-        <td c:set="#clientState">NeedReview</td>
-        <td c:set="#serverContent">server content</td>
-        <td c:set="#serverState">Rejected</td>
-        <td c:assertEquals="#result.endContent">client content</td>
-        <td c:assertEquals="#result.endState">NeedReview</td>
-        <td c:assertEquals="#result.changed">true</td>
-    </tr>
-    <!-- client is Translated -->
-    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState)">
-        <td c:set="#clientContent">client content</td>
-        <td c:set="#clientState">Translated</td>
-        <td c:set="#serverContent"></td>
-        <td c:set="#serverState">New</td>
-        <td c:assertEquals="#result.endContent">client content</td>
-        <td c:assertEquals="#result.endState">Translated</td>
-        <td c:assertEquals="#result.changed">true</td>
-    </tr>
-    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState)">
-        <td c:set="#clientContent">client content</td>
-        <td c:set="#clientState">Translated</td>
-        <td c:set="#serverContent">server content</td>
-        <td c:set="#serverState">NeedReview</td>
-        <td c:assertEquals="#result.endContent">client content</td>
-        <td c:assertEquals="#result.endState">Translated</td>
-        <td c:assertEquals="#result.changed">true</td>
-    </tr>
-    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState)">
-        <td c:set="#clientContent">client content</td>
-        <td c:set="#clientState">Translated</td>
-        <td c:set="#serverContent">server content</td>
-        <td c:set="#serverState">Translated</td>
-        <td c:assertEquals="#result.endContent">client content</td>
-        <td c:assertEquals="#result.endState">Translated</td>
-        <td c:assertEquals="#result.changed">true</td>
-    </tr>
-    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState)">
-        <td c:set="#clientContent">client content</td>
-        <td c:set="#clientState">Translated</td>
-        <td c:set="#serverContent">server content</td>
-        <td c:set="#serverState">Approved</td>
-        <td c:assertEquals="#result.endContent">client content</td>
-        <td c:assertEquals="#result.endState">Translated</td>
-        <td c:assertEquals="#result.changed">true</td>
-    </tr>
-    <tr c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState)">
-        <td c:set="#clientContent">client content</td>
-        <td c:set="#clientState">Translated</td>
-        <td c:set="#serverContent">server content</td>
-        <td c:set="#serverState">Rejected</td>
-        <td c:assertEquals="#result.endContent">client content</td>
-        <td c:assertEquals="#result.endState">Translated</td>
-        <td c:assertEquals="#result.changed">true</td>
-    </tr>
+  <tr>
+    <th>Client content</th>
+    <th>Client state</th>
+    <th>Server content</th>
+    <th>Server state</th>
+    <th>result content</th>
+    <th>result state</th>
+    <th>Server changed</th>
+  </tr>
+  <!-- client is untranslated -->
+  <tr
+    c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState)">
+    <td c:set="#clientContent"></td>
+    <td c:set="#clientState">New</td>
+    <td c:set="#serverContent"></td>
+    <td c:set="#serverState">New</td>
+    <td c:assertEquals="#result.endContent"></td>
+    <td c:assertEquals="#result.endState">New</td>
+    <td c:assertEquals="#result.changed">false</td>
+  </tr>
+  <tr
+    c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState)">
+    <td c:set="#clientContent"></td>
+    <td c:set="#clientState">New</td>
+    <td c:set="#serverContent">abc</td>
+    <td c:set="#serverState">NeedReview</td>
+    <td c:assertEquals="#result.endContent"></td>
+    <td c:assertEquals="#result.endState">New</td>
+    <td c:assertEquals="#result.changed">true</td>
+  </tr>
+  <tr
+    c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState)">
+    <td c:set="#clientContent"></td>
+    <td c:set="#clientState">New</td>
+    <td c:set="#serverContent">abc</td>
+    <td c:set="#serverState">Translated</td>
+    <td c:assertEquals="#result.endContent"></td>
+    <td c:assertEquals="#result.endState">New</td>
+    <td c:assertEquals="#result.changed">true</td>
+  </tr>
+  <tr
+    c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState)">
+    <td c:set="#clientContent"></td>
+    <td c:set="#clientState">New</td>
+    <td c:set="#serverContent">abc</td>
+    <td c:set="#serverState">Approved</td>
+    <td c:assertEquals="#result.endContent"></td>
+    <td c:assertEquals="#result.endState">New</td>
+    <td c:assertEquals="#result.changed">true</td>
+  </tr>
+  <tr
+    c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState)">
+    <td c:set="#clientContent"></td>
+    <td c:set="#clientState">New</td>
+    <td c:set="#serverContent">abc</td>
+    <td c:set="#serverState">Rejected</td>
+    <td c:assertEquals="#result.endContent"></td>
+    <td c:assertEquals="#result.endState">New</td>
+    <td c:assertEquals="#result.changed">true</td>
+  </tr>
+  <!-- client is fuzzy -->
+  <tr
+    c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState)">
+    <td c:set="#clientContent">client content</td>
+    <td c:set="#clientState">NeedReview</td>
+    <td c:set="#serverContent"></td>
+    <td c:set="#serverState">New</td>
+    <td c:assertEquals="#result.endContent">client content</td>
+    <td c:assertEquals="#result.endState">NeedReview</td>
+    <td c:assertEquals="#result.changed">true</td>
+  </tr>
+  <tr
+    c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState)">
+    <td c:set="#clientContent">client content</td>
+    <td c:set="#clientState">NeedReview</td>
+    <td c:set="#serverContent">server content</td>
+    <td c:set="#serverState">NeedReview</td>
+    <td c:assertEquals="#result.endContent">client content</td>
+    <td c:assertEquals="#result.endState">NeedReview</td>
+    <td c:assertEquals="#result.changed">true</td>
+  </tr>
+  <tr
+    c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState)">
+    <td c:set="#clientContent">client content</td>
+    <td c:set="#clientState">NeedReview</td>
+    <td c:set="#serverContent">server content</td>
+    <td c:set="#serverState">Translated</td>
+    <td c:assertEquals="#result.endContent">client content</td>
+    <td c:assertEquals="#result.endState">NeedReview</td>
+    <td c:assertEquals="#result.changed">true</td>
+  </tr>
+  <tr
+    c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState)">
+    <td c:set="#clientContent">client content</td>
+    <td c:set="#clientState">NeedReview</td>
+    <td c:set="#serverContent">server content</td>
+    <td c:set="#serverState">Approved</td>
+    <td c:assertEquals="#result.endContent">client content</td>
+    <td c:assertEquals="#result.endState">NeedReview</td>
+    <td c:assertEquals="#result.changed">true</td>
+  </tr>
+  <tr
+    c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState)">
+    <td c:set="#clientContent">client content</td>
+    <td c:set="#clientState">NeedReview</td>
+    <td c:set="#serverContent">server content</td>
+    <td c:set="#serverState">Rejected</td>
+    <td c:assertEquals="#result.endContent">client content</td>
+    <td c:assertEquals="#result.endState">NeedReview</td>
+    <td c:assertEquals="#result.changed">true</td>
+  </tr>
+  <!-- client is Translated -->
+  <tr
+    c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState)">
+    <td c:set="#clientContent">client content</td>
+    <td c:set="#clientState">Translated</td>
+    <td c:set="#serverContent"></td>
+    <td c:set="#serverState">New</td>
+    <td c:assertEquals="#result.endContent">client content</td>
+    <td c:assertEquals="#result.endState">Translated</td>
+    <td c:assertEquals="#result.changed">true</td>
+  </tr>
+  <tr
+    c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState)">
+    <td c:set="#clientContent">client content</td>
+    <td c:set="#clientState">Translated</td>
+    <td c:set="#serverContent">server content</td>
+    <td c:set="#serverState">NeedReview</td>
+    <td c:assertEquals="#result.endContent">client content</td>
+    <td c:assertEquals="#result.endState">Translated</td>
+    <td c:assertEquals="#result.changed">true</td>
+  </tr>
+  <tr
+    c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState)">
+    <td c:set="#clientContent">client content</td>
+    <td c:set="#clientState">Translated</td>
+    <td c:set="#serverContent">server content</td>
+    <td c:set="#serverState">Translated</td>
+    <td c:assertEquals="#result.endContent">client content</td>
+    <td c:assertEquals="#result.endState">Translated</td>
+    <td c:assertEquals="#result.changed">true</td>
+  </tr>
+  <tr
+    c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState)">
+    <td c:set="#clientContent">client content</td>
+    <td c:set="#clientState">Translated</td>
+    <td c:set="#serverContent">server content</td>
+    <td c:set="#serverState">Approved</td>
+    <td c:assertEquals="#result.endContent">client content</td>
+    <td c:assertEquals="#result.endState">Translated</td>
+    <td c:assertEquals="#result.changed">true</td>
+  </tr>
+  <tr
+    c:execute="#result = merge(#clientContent, #clientState, #serverContent, #serverState)">
+    <td c:set="#clientContent">client content</td>
+    <td c:set="#clientState">Translated</td>
+    <td c:set="#serverContent">server content</td>
+    <td c:set="#serverState">Rejected</td>
+    <td c:assertEquals="#result.endContent">client content</td>
+    <td c:assertEquals="#result.endState">Translated</td>
+    <td c:assertEquals="#result.changed">true</td>
+  </tr>
 </table>
 </body>
 </html>

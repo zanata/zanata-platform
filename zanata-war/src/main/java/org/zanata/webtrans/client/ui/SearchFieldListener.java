@@ -1,14 +1,13 @@
 package org.zanata.webtrans.client.ui;
 
-public interface SearchFieldListener
-{
-   void onSearchFieldValueChange(String value);
+public interface SearchFieldListener {
+    void onSearchFieldValueChange(String value);
 
-   void onSearchFieldBlur();
+    void onSearchFieldBlur();
 
-   void onSearchFieldFocus();
+    void onSearchFieldFocus();
 
-   void onSearchFieldClick();
+    void onSearchFieldClick();
 
-   void onSearchFieldCancel();
+    void onSearchFieldCancel();
 }

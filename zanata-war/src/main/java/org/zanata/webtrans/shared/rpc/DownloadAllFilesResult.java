@@ -1,34 +1,27 @@
 package org.zanata.webtrans.shared.rpc;
 
+public class DownloadAllFilesResult implements DispatchResult {
 
+    private static final long serialVersionUID = 1L;
 
-public class DownloadAllFilesResult implements DispatchResult
-{
+    private boolean prepared;
+    private String processId;
 
-   private static final long serialVersionUID = 1L;
+    @SuppressWarnings("unused")
+    private DownloadAllFilesResult() {
+    }
 
-   private boolean prepared;
-   private String processId;
+    public DownloadAllFilesResult(boolean prepared, String processId) {
+        this.prepared = prepared;
+        this.processId = processId;
+    }
 
-   @SuppressWarnings("unused")
-   private DownloadAllFilesResult()
-   {
-   }
+    public boolean isPrepared() {
+        return prepared;
+    }
 
-   public DownloadAllFilesResult(boolean prepared, String processId)
-   {
-      this.prepared = prepared;
-      this.processId = processId;
-   }
-
-   public boolean isPrepared()
-   {
-      return prepared;
-   }
-
-   public String getProcessId()
-   {
-      return processId;
-   }
+    public String getProcessId() {
+        return processId;
+    }
 
 }

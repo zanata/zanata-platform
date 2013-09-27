@@ -11,15 +11,14 @@ import net.customware.gwt.dispatch.shared.Action;
 
 /**
  * Specifies the Action for the given action handler
- * 
+ *
  */
 @Target(TYPE)
 @Retention(RUNTIME)
 @Documented
-public @interface ActionHandlerFor
-{
-   /**
-    * @return the component name
-    */
-   Class<? extends Action<?>> value();
+public @interface ActionHandlerFor {
+    /**
+     * @return the component name
+     */
+    Class<? extends Action<?>> value();
 }

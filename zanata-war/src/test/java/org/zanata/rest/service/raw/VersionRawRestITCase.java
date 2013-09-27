@@ -36,54 +36,46 @@ import org.zanata.rest.MediaTypes;
 import org.zanata.rest.ResourceRequest;
 import org.zanata.rest.dto.VersionInfo;
 
-public class VersionRawRestITCase extends RestTest
-{
+public class VersionRawRestITCase extends RestTest {
 
-   @Override
-   protected void prepareDBUnitOperations()
-   {
-   }
+    @Override
+    protected void prepareDBUnitOperations() {
+    }
 
-   @Test
-   @RunAsClient
-   public void getJson() throws Exception
-   {
-      new ResourceRequest(getRestEndpointUrl("/version"), "GET")
-      {
-         @Override
-         protected void prepareRequest(ClientRequest request)
-         {
-            request.header(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_VERSION_JSON);
-         }
+    @Test
+    @RunAsClient
+    public void getJson() throws Exception {
+        new ResourceRequest(getRestEndpointUrl("/version"), "GET") {
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+                request.header(HttpHeaders.ACCEPT,
+                        MediaTypes.APPLICATION_ZANATA_VERSION_JSON);
+            }
 
-         @Override
-         protected void onResponse(ClientResponse response)
-         {
-            assertThat(response.getStatus(), is(200)); // Ok
-            assertJsonUnmarshal(response, VersionInfo.class);
-         }
-      }.run();
-   }
-   
-   @Test
-   @RunAsClient
-   public void getXml() throws Exception
-   {
-      new ResourceRequest(getRestEndpointUrl("/version"), "GET")
-      {
-         @Override
-         protected void prepareRequest(ClientRequest request)
-         {
-            request.header(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_VERSION_XML);
-         }
+            @Override
+            protected void onResponse(ClientResponse response) {
+                assertThat(response.getStatus(), is(200)); // Ok
+                assertJsonUnmarshal(response, VersionInfo.class);
+            }
+        }.run();
+    }
 
-         @Override
-         protected void onResponse(ClientResponse response)
-         {
-            assertThat(response.getStatus(), is(200)); // Ok
-            assertJaxbUnmarshal(response, VersionInfo.class);
-         }
-      }.run();
-   }
+    @Test
+    @RunAsClient
+    public void getXml() throws Exception {
+        new ResourceRequest(getRestEndpointUrl("/version"), "GET") {
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+                request.header(HttpHeaders.ACCEPT,
+                        MediaTypes.APPLICATION_ZANATA_VERSION_XML);
+            }
+
+            @Override
+            protected void onResponse(ClientResponse response) {
+                assertThat(response.getStatus(), is(200)); // Ok
+                assertJaxbUnmarshal(response, VersionInfo.class);
+            }
+        }.run();
+    }
 
 }

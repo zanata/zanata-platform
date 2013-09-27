@@ -32,48 +32,48 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
 
 /**
- * 
+ *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- * 
+ *
  */
-public interface TranslationMemoryDisplay extends WidgetDisplay
-{
-   HasValue<SearchType> getSearchType();
+public interface TranslationMemoryDisplay extends WidgetDisplay {
+    HasValue<SearchType> getSearchType();
 
-   HasText getTmTextBox();
+    HasText getTmTextBox();
 
-   void startProcessing();
+    void startProcessing();
 
-   void renderTable(List<TransMemoryResultItem> memories, List<String> queries);
+    void
+            renderTable(List<TransMemoryResultItem> memories,
+                    List<String> queries);
 
-   void setListener(Listener listener);
+    void setListener(Listener listener);
 
-   void stopProcessing(boolean showResult);
+    void stopProcessing(boolean showResult);
 
-   void clearTableContent();
+    void clearTableContent();
 
-   void showDiffLegend(boolean show);
+    void showDiffLegend(boolean show);
 
-   void redrawTable(List<TransMemoryResultItem> currentResult);
+    void redrawTable(List<TransMemoryResultItem> currentResult);
 
-   void setDisplayMode(DiffMode displayMode);
+    void setDisplayMode(DiffMode displayMode);
 
-   interface Listener
-   {
-      void showTMDetails(TransMemoryResultItem object);
+    interface Listener {
+        void showTMDetails(TransMemoryResultItem object);
 
-      void fireCopyEvent(TransMemoryResultItem object);
+        void fireCopyEvent(TransMemoryResultItem object);
 
-      void fireSearchEvent();
+        void fireSearchEvent();
 
-      void clearContent();
+        void clearContent();
 
-      void onFocus(boolean isFocused);
+        void onFocus(boolean isFocused);
 
-      void showDiffLegend(boolean show);
+        void showDiffLegend(boolean show);
 
-      void onTMMergeClick();
+        void onTMMergeClick();
 
-      void onDiffModeChanged();
-   }
+        void onDiffModeChanged();
+    }
 }

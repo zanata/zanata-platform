@@ -38,91 +38,77 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  */
-public class SearchField extends Composite
-{
-   interface SearchFieldUiBinder extends UiBinder<Widget, SearchField>
-   {
-   }
+public class SearchField extends Composite {
+    interface SearchFieldUiBinder extends UiBinder<Widget, SearchField> {
+    }
 
-   private static SearchFieldUiBinder uiBinder = GWT.create(SearchFieldUiBinder.class);
+    private static SearchFieldUiBinder uiBinder = GWT
+            .create(SearchFieldUiBinder.class);
 
-   @UiField
-   TextBox filterTextBox;
+    @UiField
+    TextBox filterTextBox;
 
-   @UiField
-   InlineLabel cancelBtn;
+    @UiField
+    InlineLabel cancelBtn;
 
-   private SearchFieldListener listener;
+    private SearchFieldListener listener;
 
-   public SearchField(SearchFieldListener listener)
-   {
-      this.listener = listener;
-      initWidget(uiBinder.createAndBindUi(this));
-   }
+    public SearchField(SearchFieldListener listener) {
+        this.listener = listener;
+        initWidget(uiBinder.createAndBindUi(this));
+    }
 
-   @UiHandler("filterTextBox")
-   public void onFilterTextBoxValueChange(ValueChangeEvent<String> event)
-   {
-      listener.onSearchFieldValueChange(event.getValue());
-   }
+    @UiHandler("filterTextBox")
+    public void onFilterTextBoxValueChange(ValueChangeEvent<String> event) {
+        listener.onSearchFieldValueChange(event.getValue());
+    }
 
-   @UiHandler("filterTextBox")
-   public void onFilterTextBoxClick(ClickEvent event)
-   {
-      listener.onSearchFieldClick();
-   }
+    @UiHandler("filterTextBox")
+    public void onFilterTextBoxClick(ClickEvent event) {
+        listener.onSearchFieldClick();
+    }
 
-   @UiHandler("filterTextBox")
-   public void onFilterTextBoxBlur(BlurEvent event)
-   {
-      listener.onSearchFieldBlur();
-   }
+    @UiHandler("filterTextBox")
+    public void onFilterTextBoxBlur(BlurEvent event) {
+        listener.onSearchFieldBlur();
+    }
 
-   @UiHandler("filterTextBox")
-   public void onFilterTextBoxFocus(FocusEvent event)
-   {
-      listener.onSearchFieldFocus();
-   }
+    @UiHandler("filterTextBox")
+    public void onFilterTextBoxFocus(FocusEvent event) {
+        listener.onSearchFieldFocus();
+    }
 
-   @UiHandler("cancelBtn")
-   public void onCancel(ClickEvent event)
-   {
-      listener.onSearchFieldCancel();
-   }
+    @UiHandler("cancelBtn")
+    public void onCancel(ClickEvent event) {
+        listener.onSearchFieldCancel();
+    }
 
-   public void setText(String text)
-   {
-      filterTextBox.setText(text);
-   }
+    public void setText(String text) {
+        filterTextBox.setText(text);
+    }
 
-   // fire filterTextBox#ValueChangeEvent
-   public void setValue(String text)
-   {
-      filterTextBox.setValue(text, true);
-   }
+    // fire filterTextBox#ValueChangeEvent
+    public void setValue(String text) {
+        filterTextBox.setValue(text, true);
+    }
 
-   public boolean containStyleName(String styleName)
-   {
-      return filterTextBox.getStyleName().contains(styleName);
-   }
+    public boolean containStyleName(String styleName) {
+        return filterTextBox.getStyleName().contains(styleName);
+    }
 
-   public void addStyleName(String styleName)
-   {
-      filterTextBox.addStyleName(styleName);
-   }
+    public void addStyleName(String styleName) {
+        filterTextBox.addStyleName(styleName);
+    }
 
-   public void removeStyleName(String styleName)
-   {
-      filterTextBox.removeStyleName(styleName);
-   }
+    public void removeStyleName(String styleName) {
+        filterTextBox.removeStyleName(styleName);
+    }
 
-   public String getText()
-   {
-      return filterTextBox.getText();
-   }
+    public String getText() {
+        return filterTextBox.getText();
+    }
 
-   public void setTextBoxTitle(String title)
-   {
-      filterTextBox.setTitle(title);
-   }
+    public void setTextBoxTitle(String title) {
+        filterTextBox.setTitle(title);
+    }
 }

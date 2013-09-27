@@ -28,34 +28,34 @@ import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.when;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Slf4j
-public class MockHandlerFactory
-{
+public class MockHandlerFactory {
 
-   //used by GetTransUnitListHandler
-   @Mock
-   private TextFlowDAO textFlowDAO;
-   @Mock
-   private LocaleService localeServiceImpl;
-   @Mock
-   private ResourceUtils resourceUtils;
-   @Mock
-   private ZanataIdentity identity;
-   @Mock
-   private TextFlowSearchService textFlowSearchServiceImpl;
-   @Mock
-   private ValidationService validationServiceImpl;
+    // used by GetTransUnitListHandler
+    @Mock
+    private TextFlowDAO textFlowDAO;
+    @Mock
+    private LocaleService localeServiceImpl;
+    @Mock
+    private ResourceUtils resourceUtils;
+    @Mock
+    private ZanataIdentity identity;
+    @Mock
+    private TextFlowSearchService textFlowSearchServiceImpl;
+    @Mock
+    private ValidationService validationServiceImpl;
 
-   public MockHandlerFactory()
-   {
-      MockitoAnnotations.initMocks(this);
-   }
+    public MockHandlerFactory() {
+        MockitoAnnotations.initMocks(this);
+    }
 
-   public GetTransUnitListHandler createGetTransUnitListHandlerWithBehavior(DocumentId documentId, List<HTextFlow> hTextFlows, HLocale hLocale, int startIndex, int count)
-   {
-      // @formatter:off
+    public GetTransUnitListHandler createGetTransUnitListHandlerWithBehavior(
+            DocumentId documentId, List<HTextFlow> hTextFlows, HLocale hLocale,
+            int startIndex, int count) {
+        // @formatter:off
       GetTransUnitListHandler handler = SeamAutowire.instance().reset()
             .use("identity", identity)
             .use("textFlowDAO", textFlowDAO)
@@ -66,13 +66,24 @@ public class MockHandlerFactory
             .autowire(GetTransUnitListHandler.class);
       // @formatter:on
 
-      int maxSize = Math.min(startIndex + count, hTextFlows.size());
-      when(textFlowDAO.getTextFlowsByDocumentId(documentId, startIndex, count)).thenReturn(hTextFlows.subList(startIndex, maxSize));
-      when(localeServiceImpl.validateLocaleByProjectIteration(any(LocaleId.class), anyString(), anyString())).thenReturn(hLocale);
-      when(resourceUtils.getNumPlurals(any(HDocument.class), any(HLocale.class))).thenReturn(1);
+        int maxSize = Math.min(startIndex + count, hTextFlows.size());
+        when(
+                textFlowDAO.getTextFlowsByDocumentId(documentId, startIndex,
+                        count)).thenReturn(
+                hTextFlows.subList(startIndex, maxSize));
+        when(
+                localeServiceImpl.validateLocaleByProjectIteration(
+                        any(LocaleId.class), anyString(), anyString()))
+                .thenReturn(hLocale);
+        when(
+                resourceUtils.getNumPlurals(any(HDocument.class),
+                        any(HLocale.class))).thenReturn(1);
 
-      // trans unit navigation index handler
-      when(textFlowDAO.getNavigationByDocumentId(eq(documentId.getId()), eq(hLocale), isA(ResultTransformer.class), isA(FilterConstraints.class))).thenReturn(hTextFlows);
-      return handler;
-   }
+        // trans unit navigation index handler
+        when(
+                textFlowDAO.getNavigationByDocumentId(eq(documentId.getId()),
+                        eq(hLocale), isA(ResultTransformer.class),
+                        isA(FilterConstraints.class))).thenReturn(hTextFlows);
+        return handler;
+    }
 }

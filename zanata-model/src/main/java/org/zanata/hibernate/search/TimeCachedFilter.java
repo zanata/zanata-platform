@@ -31,56 +31,51 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Parent class for Filters which cache docid sets for a time
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ *
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
 @Slf4j
-public abstract class TimeCachedFilter extends Filter
-{
-   private static final long serialVersionUID = 1L;
+public abstract class TimeCachedFilter extends Filter {
+    private static final long serialVersionUID = 1L;
 
-   /**
-    * Cached DocIdSet
-    */
-   //TODO use a soft reference to save RAM?
-   private DocIdSet docIdSet;
-   /**
-    * Expiry time for docIdSet as a Java timestamp (ms)
-    */
-   private long expiryTime = Long.MIN_VALUE; // force fetch on first use
-   private final long validityPeriodInMs;
-   
-   public TimeCachedFilter(long validityPeriodInMs)
-   {
-      this.validityPeriodInMs = validityPeriodInMs;
-   }
+    /**
+     * Cached DocIdSet
+     */
+    // TODO use a soft reference to save RAM?
+    private DocIdSet docIdSet;
+    /**
+     * Expiry time for docIdSet as a Java timestamp (ms)
+     */
+    private long expiryTime = Long.MIN_VALUE; // force fetch on first use
+    private final long validityPeriodInMs;
 
-   private void updateExpiry()
-   {
-      expiryTime = System.currentTimeMillis() + validityPeriodInMs;
-   }
+    public TimeCachedFilter(long validityPeriodInMs) {
+        this.validityPeriodInMs = validityPeriodInMs;
+    }
 
-   private boolean stillFresh()
-   {
-      return System.currentTimeMillis() < expiryTime;
-   }
+    private void updateExpiry() {
+        expiryTime = System.currentTimeMillis() + validityPeriodInMs;
+    }
 
-   protected abstract DocIdSet fetchDocIdSet(IndexReader reader) throws IOException;
+    private boolean stillFresh() {
+        return System.currentTimeMillis() < expiryTime;
+    }
 
-   @Override
-   public DocIdSet getDocIdSet(IndexReader reader) throws IOException
-   {
-      if (!stillFresh())
-      {
-         log.debug("cache entry too old in {}", this);
-         docIdSet = fetchDocIdSet(reader);
-         updateExpiry();
-      }
-      else
-      {
-         log.debug("cache hit in {}", this);
-      }
-      return docIdSet;
-   }
-   
+    protected abstract DocIdSet fetchDocIdSet(IndexReader reader)
+            throws IOException;
+
+    @Override
+    public DocIdSet getDocIdSet(IndexReader reader) throws IOException {
+        if (!stillFresh()) {
+            log.debug("cache entry too old in {}", this);
+            docIdSet = fetchDocIdSet(reader);
+            updateExpiry();
+        } else {
+            log.debug("cache hit in {}", this);
+        }
+        return docIdSet;
+    }
+
 }

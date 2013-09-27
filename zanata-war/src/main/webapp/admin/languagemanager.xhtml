@@ -1,108 +1,107 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:s="http://jboss.org/schema/seam/taglib"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:rich="http://richfaces.org/rich"
-	xmlns:a4j="http://richfaces.org/a4j"
-    xmlns:richext="http://java.sun.com/jsf/composite/richext"
-	template="../WEB-INF/template/template_2x.xhtml">
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:richext="http://java.sun.com/jsf/composite/richext"
+  template="../WEB-INF/template/template_2x.xhtml">
 
-   <ui:define name="page_title">#{messages['jsf.ManageLanguage']}</ui:define>
-	<ui:define name="right_content">
-	  <rich:panel>
-      	<f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-      	<s:link styleClass="action_link" view="/admin/supportedlanguagedetail.xhtml"
-			value="#{messages['jsf.CreateSupportedLanguage']}" />
-    	</rich:panel>
-	</ui:define>
+  <ui:define name="page_title">#{messages['jsf.ManageLanguage']}</ui:define>
+  <ui:define name="right_content">
+    <rich:panel>
+      <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+      <s:link styleClass="action_link"
+        view="/admin/supportedlanguagedetail.xhtml"
+        value="#{messages['jsf.CreateSupportedLanguage']}"/>
+    </rich:panel>
+  </ui:define>
 
-	<ui:define name="center_content">
-		<script type="text/javascript">
-        function confirmDelete()
-        {
-          return confirm("#{messages['jsf.AreYouSureYouWishToDeleteThisLanguageThisActionCannotBeUndone']}");
+  <ui:define name="center_content">
+    <script type="text/javascript">
+      function confirmDelete() {
+        return confirm("#{messages['jsf.AreYouSureYouWishToDeleteThisLanguageThisActionCannotBeUndone']}");
+      }
+      function confirmEnabledChange(checkbox) {
+        var mssg = "#{messages['jsf.AreYouSureYouWishToDisableThisLanguage']}"
+        if (checkbox.checked) {
+          mssg = "#{messages['jsf.AreYouSureYouWishToEnableThisLanguage']}"
         }
-        function confirmEnabledChange(checkbox)
-        {
-            var mssg = "#{messages['jsf.AreYouSureYouWishToDisableThisLanguage']}"
-            if( checkbox.checked )
-            {
-                mssg = "#{messages['jsf.AreYouSureYouWishToEnableThisLanguage']}"
-            }
 
-            confirmed = confirm(mssg)
-            if( !confirmed )
-            {
-                checkbox.checked = !checkbox.checked
-            }
-            return confirmed
+        confirmed = confirm(mssg)
+        if (!confirmed) {
+          checkbox.checked = !checkbox.checked
         }
-        function confirmEnabledByDefaultChange(checkbox)
-        {
-            var mssg = "#{messages['jsf.language.manager.DisableByDefaultConfirmation']}"
-            if( checkbox.checked )
-            {
-                mssg = "#{messages['jsf.language.manager.EnableByDefaultConfirmation']}"
-            }
-
-            confirmed = confirm(mssg)
-            if( !confirmed )
-            {
-                checkbox.checked = !checkbox.checked
-            }
-            return confirmed
+        return confirmed
+      }
+      function confirmEnabledByDefaultChange(checkbox) {
+        var mssg = "#{messages['jsf.language.manager.DisableByDefaultConfirmation']}"
+        if (checkbox.checked) {
+          mssg =
+            "#{messages['jsf.language.manager.EnableByDefaultConfirmation']}"
         }
-      </script>
-			<h:form id="languageForm">
-				<s:token allowMultiplePosts="true" />
-				<rich:dataTable id="threads" value="#{allLanguages}"
-					var="language">
 
-					<rich:column sortBy="#{language.localeId.id}"
-                                 styleClass="#{!language.active ? 'disabled_lang_row' : ''}">
-						<f:facet name="header">#{messages['jsf.Language']}<richext:columnSorter/></f:facet>
-	            		#{language.localeId.id}
-	        		</rich:column>
-					<rich:column sortBy="#{language.retrieveDisplayName()}"
-                                 styleClass="#{!language.active ? 'disabled_lang_row' : ''}">
-						<f:facet name="header">#{messages['jsf.Name']}<richext:columnSorter/></f:facet>
-	            		#{language.retrieveDisplayName()}
-	        		</rich:column>
-					<rich:column styleClass="#{!language.active ? 'disabled_lang_row' : ''}">
-						<f:facet name="header">#{messages['jsf.NativeName']}</f:facet>
-	            		#{language.retrieveNativeName()}
-	        		</rich:column>
-                    <rich:column width="50"
-                                 styleClass="centered #{!language.active ? 'disabled_lang_row' : ''}">
-                        <f:facet name="header">#{messages['jsf.EnabledByDefault']}</f:facet>
-                        <h:selectBooleanCheckbox value="#{language.enabledByDefault}">
-                            <a4j:ajax event="click"
-                                         onbeforesubmit="if(!confirmEnabledByDefaultChange(this)){ return false; }"
-                                         render="threads"
-                                         listener="#{languageSearchAction.selectedLocaleChanged}"/>
-                        </h:selectBooleanCheckbox>
-                    </rich:column>
-                    <rich:column styleClass="centered #{!language.active ? 'disabled_lang_row' : ''}">
-                        <f:facet name="header">#{messages['jsf.Active']}</f:facet>
-                        <h:selectBooleanCheckbox value="#{language.active}">
-                            <a4j:ajax event="click"
-                                         onbeforesubmit="if(!confirmEnabledChange(this)){ return false; }"
-                                         render="threads"
-                                         listener="#{languageSearchAction.selectedLocaleActivatedOrDeactivated}"/>
-                        </h:selectBooleanCheckbox>
-                    </rich:column>
-					<rich:column styleClass="#{!language.active ? 'disabled_lang_row' : ''}">
-						<f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-                        <h:commandButton value="#{messages['jsf.TeamMembers']}"
-							action="#{languageSearchAction.manageMembers(language.localeId.id)}">
-							<f:param name="id" value="#{language.localeId.id}" />
-						</h:commandButton>
-					</rich:column>
-				</rich:dataTable>
-			</h:form>
-	</ui:define>
+        confirmed = confirm(mssg)
+        if (!confirmed) {
+          checkbox.checked = !checkbox.checked
+        }
+        return confirmed
+      }
+    </script>
+    <h:form id="languageForm">
+      <s:token allowMultiplePosts="true"/>
+      <rich:dataTable id="threads" value="#{allLanguages}"
+        var="language">
+
+        <rich:column sortBy="#{language.localeId.id}"
+          styleClass="#{!language.active ? 'disabled_lang_row' : ''}">
+          <f:facet name="header">#{messages['jsf.Language']}
+            <richext:columnSorter/></f:facet>
+          #{language.localeId.id}
+        </rich:column>
+        <rich:column sortBy="#{language.retrieveDisplayName()}"
+          styleClass="#{!language.active ? 'disabled_lang_row' : ''}">
+          <f:facet name="header">#{messages['jsf.Name']}<richext:columnSorter/></f:facet>
+          #{language.retrieveDisplayName()}
+        </rich:column>
+        <rich:column
+          styleClass="#{!language.active ? 'disabled_lang_row' : ''}">
+          <f:facet name="header">#{messages['jsf.NativeName']}</f:facet>
+          #{language.retrieveNativeName()}
+        </rich:column>
+        <rich:column width="50"
+          styleClass="centered #{!language.active ? 'disabled_lang_row' : ''}">
+          <f:facet name="header">#{messages['jsf.EnabledByDefault']}</f:facet>
+          <h:selectBooleanCheckbox value="#{language.enabledByDefault}">
+            <a4j:ajax event="click"
+              onbeforesubmit="if(!confirmEnabledByDefaultChange(this)){ return false; }"
+              render="threads"
+              listener="#{languageSearchAction.selectedLocaleChanged}"/>
+          </h:selectBooleanCheckbox>
+        </rich:column>
+        <rich:column
+          styleClass="centered #{!language.active ? 'disabled_lang_row' : ''}">
+          <f:facet name="header">#{messages['jsf.Active']}</f:facet>
+          <h:selectBooleanCheckbox value="#{language.active}">
+            <a4j:ajax event="click"
+              onbeforesubmit="if(!confirmEnabledChange(this)){ return false; }"
+              render="threads"
+              listener="#{languageSearchAction.selectedLocaleActivatedOrDeactivated}"/>
+          </h:selectBooleanCheckbox>
+        </rich:column>
+        <rich:column
+          styleClass="#{!language.active ? 'disabled_lang_row' : ''}">
+          <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+          <h:commandButton value="#{messages['jsf.TeamMembers']}"
+            action="#{languageSearchAction.manageMembers(language.localeId.id)}">
+            <f:param name="id" value="#{language.localeId.id}"/>
+          </h:commandButton>
+        </rich:column>
+      </rich:dataTable>
+    </h:form>
+  </ui:define>
 
 </ui:composition>

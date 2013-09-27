@@ -22,57 +22,62 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.verify;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Test(groups = "unit-tests")
-public class TranslatorInteractionServiceTest
-{
-   private TranslatorInteractionService service;
-   @Mock
-   private CachingDispatchAsync dispatcher;
-   private Identity identity;
-   @Captor
-   private ArgumentCaptor<TransUnitEditAction> actionCaptor;
+public class TranslatorInteractionServiceTest {
+    private TranslatorInteractionService service;
+    @Mock
+    private CachingDispatchAsync dispatcher;
+    private Identity identity;
+    @Captor
+    private ArgumentCaptor<TransUnitEditAction> actionCaptor;
 
-   @BeforeMethod
-   public void beforeMethod()
-   {
-      MockitoAnnotations.initMocks(this);
-      identity = new Identity(new EditorClientId("sessionId", 1), new Person(new PersonId("pid"), "name", "url"));
-      service = new TranslatorInteractionService(identity, dispatcher);
-   }
+    @BeforeMethod
+    public void beforeMethod() {
+        MockitoAnnotations.initMocks(this);
+        identity =
+                new Identity(new EditorClientId("sessionId", 1), new Person(
+                        new PersonId("pid"), "name", "url"));
+        service = new TranslatorInteractionService(identity, dispatcher);
+    }
 
-   @Test
-   public void canGetEditorClientId()
-   {
-      EditorClientId currentEditorClientId = service.getCurrentEditorClientId();
+    @Test
+    public void canGetEditorClientId() {
+        EditorClientId currentEditorClientId =
+                service.getCurrentEditorClientId();
 
-      assertThat(currentEditorClientId, Matchers.equalTo(identity.getEditorClientId()));
-   }
+        assertThat(currentEditorClientId,
+                Matchers.equalTo(identity.getEditorClientId()));
+    }
 
-   @Test
-   public void canCallServerOnSelection()
-   {
-      TransUnit selectedTransUnit = TestFixture.makeTransUnit(1);
-      service.transUnitSelected(selectedTransUnit);
+    @Test
+    public void canCallServerOnSelection() {
+        TransUnit selectedTransUnit = TestFixture.makeTransUnit(1);
+        service.transUnitSelected(selectedTransUnit);
 
-      verify(dispatcher).execute(actionCaptor.capture(), Mockito.isA(NoOpAsyncCallback.class));
-      TransUnitEditAction action = actionCaptor.getValue();
-      assertThat(action.getPerson(), Matchers.sameInstance(identity.getPerson()));
-      assertThat(action.getSelectedTransUnitId(), Matchers.sameInstance(selectedTransUnit.getId()));
-   }
+        verify(dispatcher).execute(actionCaptor.capture(),
+                Mockito.isA(NoOpAsyncCallback.class));
+        TransUnitEditAction action = actionCaptor.getValue();
+        assertThat(action.getPerson(),
+                Matchers.sameInstance(identity.getPerson()));
+        assertThat(action.getSelectedTransUnitId(),
+                Matchers.sameInstance(selectedTransUnit.getId()));
+    }
 
-   @Test
-   public void onPersonExit()
-   {
-      TransUnit selectedTransUnit = TestFixture.makeTransUnit(1);
-      Person person = TestFixture.person();
+    @Test
+    public void onPersonExit() {
+        TransUnit selectedTransUnit = TestFixture.makeTransUnit(1);
+        Person person = TestFixture.person();
 
-      service.personExit(person, selectedTransUnit.getId());
+        service.personExit(person, selectedTransUnit.getId());
 
-      verify(dispatcher).execute(actionCaptor.capture(), Mockito.isA(NoOpAsyncCallback.class));
-      TransUnitEditAction action = actionCaptor.getValue();
-      assertThat(action.getPerson(), Matchers.sameInstance(person));
-      assertThat(action.getSelectedTransUnitId(), Matchers.sameInstance(selectedTransUnit.getId()));
-   }
+        verify(dispatcher).execute(actionCaptor.capture(),
+                Mockito.isA(NoOpAsyncCallback.class));
+        TransUnitEditAction action = actionCaptor.getValue();
+        assertThat(action.getPerson(), Matchers.sameInstance(person));
+        assertThat(action.getSelectedTransUnitId(),
+                Matchers.sameInstance(selectedTransUnit.getId()));
+    }
 }

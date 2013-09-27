@@ -1,115 +1,120 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
-                  http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-    <changeSet id="1" author="alex.eng@redhat.com">
-        <comment>Add projectType column to HProject</comment>
-        <addColumn tableName="HProject">
-            <column name="defaultProjectType" type="varchar(255)"/>
-        </addColumn>
-    </changeSet>
-    
-    <changeSet id="2" author="alex.eng@redhat.com">
-        <comment>drop projecttype column in HProject</comment>
-        <dropColumn tableName="HProject" columnName="projecttype"/>
-    </changeSet>
-    
-    <changeSet id="3" author="alex.eng@redhat.com">
-        <comment>Add projectType column to HProjectIteration</comment>
-        <addColumn tableName="HProjectIteration">
-            <column name="projectType" type="varchar(255)"/>
-        </addColumn>
-    </changeSet>
+  <changeSet id="1" author="alex.eng@redhat.com">
+    <comment>Add projectType column to HProject</comment>
+    <addColumn tableName="HProject">
+      <column name="defaultProjectType" type="varchar(255)" />
+    </addColumn>
+  </changeSet>
 
-    <changeSet id="1" author="damason@redhat.com">
-        <comment>Add source control URL column to HProject.</comment>
-        <addColumn tableName="HProject">
-            <column name="sourceViewURL" type="longtext">
-                <constraints nullable="true" />
-            </column>
-        </addColumn>
-    </changeSet>
+  <changeSet id="2" author="alex.eng@redhat.com">
+    <comment>drop projecttype column in HProject</comment>
+    <dropColumn tableName="HProject" columnName="projecttype" />
+  </changeSet>
 
-    <changeSet id="2" author="damason@redhat.com">
-        <comment>Add machine-readable source control URL column to HProject.</comment>
-        <addColumn tableName="HProject">
-            <column name="sourceCheckoutURL" type="longtext">
-                <constraints nullable="true" />
-            </column>
-        </addColumn>
-    </changeSet>
+  <changeSet id="3" author="alex.eng@redhat.com">
+    <comment>Add projectType column to HProjectIteration</comment>
+    <addColumn tableName="HProjectIteration">
+      <column name="projectType" type="varchar(255)" />
+    </addColumn>
+  </changeSet>
 
-    <changeSet id="4" author="alex.eng@redhat.com">
-        <comment>Add HProject_Validation table.</comment>
-        <createTable tableName="HProject_Validation">
-            <column name="projectId" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="validation" type="varchar(100)">
-                <constraints nullable="false" />
-            </column>
-        </createTable>
-        <addPrimaryKey tableName = "HProject_Validation" 
-			columnNames = "projectId, validation"/>
-        <addForeignKeyConstraint constraintName="FK_HProject_Validation_HProject" 
-			referencedTableName="HProject" referencedColumnNames="id"
-			baseTableName="HProject_Validation" baseColumnNames="projectId"/>
-    </changeSet>
+  <changeSet id="1" author="damason@redhat.com">
+    <comment>Add source control URL column to HProject.</comment>
+    <addColumn tableName="HProject">
+      <column name="sourceViewURL" type="longtext">
+        <constraints nullable="true" />
+      </column>
+    </addColumn>
+  </changeSet>
 
-    <changeSet id="5" author="alex.eng@redhat.com">
-        <comment>Add overrideValidations column to HProject</comment>
-        <addColumn tableName="HProject">
-            <column name="overrideValidations" type="boolean" defaultValueBoolean="false"/>
-        </addColumn>
-    </changeSet>
-    
-    <changeSet id="6" author="alex.eng@redhat.com">
-        <comment>Add HProjectIteration_Validation table.</comment>
-        <createTable tableName="HProjectIteration_Validation">
-            <column name="projectIterationId" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="validation" type="varchar(100)">
-                <constraints nullable="false" />
-            </column>
-        </createTable>
-        <addPrimaryKey tableName = "HProjectIteration_Validation" 
-			columnNames = "projectIterationId, validation"/>
-        <addForeignKeyConstraint constraintName="FK_HProjectIteration_Validation_HProjectIteration" 
-			referencedTableName="HProjectIteration" referencedColumnNames="id"
-			baseTableName="HProjectIteration_Validation" baseColumnNames="projectIterationId"/>
-    </changeSet>
-    
-    <changeSet id="7" author="alex.eng@redhat.com">
-        <comment>Add overrideValidations column to HProjectIteration</comment>
-        <addColumn tableName="HProjectIteration">
-            <column name="overrideValidations" type="boolean" defaultValueBoolean="false"/>
-        </addColumn>
-    </changeSet>
-    
-    <changeSet id="8" author="alex.eng@redhat.com">
-        <comment>Add creationDate column to HAccountActivationKey</comment>
-        <addColumn tableName="HAccountActivationKey">
-            <column name="creationDate" type="datetime" defaultValueDate="0000-00-00 00:00:01">
-                <constraints nullable="false"/>
-            </column>
-        </addColumn>
-    </changeSet>
+  <changeSet id="2" author="damason@redhat.com">
+    <comment>Add machine-readable source control URL column to HProject.</comment>
+    <addColumn tableName="HProject">
+      <column name="sourceCheckoutURL" type="longtext">
+        <constraints nullable="true" />
+      </column>
+    </addColumn>
+  </changeSet>
 
-    <changeSet id="3" author="damason@redhat.com">
-        <comment>Change project type from Raw to File in HProject and HProjectIteration.</comment>
-        <update tableName="HProject" >
-            <column name="defaultProjectType" value="File"/>
-            <where>defaultProjectType = 'Raw'</where>
-        </update>
-        <update tableName="HProjectIteration" >
-            <column name="projectType" value="File"/>
-            <where>projectType = 'Raw'</where>
-        </update>
-    </changeSet>
+  <changeSet id="4" author="alex.eng@redhat.com">
+    <comment>Add HProject_Validation table.</comment>
+    <createTable tableName="HProject_Validation">
+      <column name="projectId" type="bigint">
+        <constraints nullable="false" />
+      </column>
+      <column name="validation" type="varchar(100)">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+    <addPrimaryKey tableName="HProject_Validation"
+      columnNames="projectId, validation" />
+    <addForeignKeyConstraint constraintName="FK_HProject_Validation_HProject"
+      referencedTableName="HProject" referencedColumnNames="id"
+      baseTableName="HProject_Validation" baseColumnNames="projectId" />
+  </changeSet>
+
+  <changeSet id="5" author="alex.eng@redhat.com">
+    <comment>Add overrideValidations column to HProject</comment>
+    <addColumn tableName="HProject">
+      <column name="overrideValidations" type="boolean"
+        defaultValueBoolean="false" />
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="6" author="alex.eng@redhat.com">
+    <comment>Add HProjectIteration_Validation table.</comment>
+    <createTable tableName="HProjectIteration_Validation">
+      <column name="projectIterationId" type="bigint">
+        <constraints nullable="false" />
+      </column>
+      <column name="validation" type="varchar(100)">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+    <addPrimaryKey tableName="HProjectIteration_Validation"
+      columnNames="projectIterationId, validation" />
+    <addForeignKeyConstraint
+      constraintName="FK_HProjectIteration_Validation_HProjectIteration"
+      referencedTableName="HProjectIteration" referencedColumnNames="id"
+      baseTableName="HProjectIteration_Validation"
+      baseColumnNames="projectIterationId" />
+  </changeSet>
+
+  <changeSet id="7" author="alex.eng@redhat.com">
+    <comment>Add overrideValidations column to HProjectIteration</comment>
+    <addColumn tableName="HProjectIteration">
+      <column name="overrideValidations" type="boolean"
+        defaultValueBoolean="false" />
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="8" author="alex.eng@redhat.com">
+    <comment>Add creationDate column to HAccountActivationKey</comment>
+    <addColumn tableName="HAccountActivationKey">
+      <column name="creationDate" type="datetime"
+        defaultValueDate="0000-00-00 00:00:01">
+        <constraints nullable="false" />
+      </column>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="3" author="damason@redhat.com">
+    <comment>Change project type from Raw to File in HProject and HProjectIteration.</comment>
+    <update tableName="HProject">
+      <column name="defaultProjectType" value="File" />
+      <where>defaultProjectType = 'Raw'</where>
+    </update>
+    <update tableName="HProjectIteration">
+      <column name="projectType" value="File" />
+      <where>projectType = 'Raw'</where>
+    </update>
+  </changeSet>
 
 </databaseChangeLog>

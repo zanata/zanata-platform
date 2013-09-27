@@ -26,46 +26,42 @@ import org.openqa.selenium.support.FindBy;
 import org.zanata.page.AbstractPage;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-public class GoogleAccountPage extends AbstractPage
-{
-   @FindBy(id = "Email")
-   private WebElement emailField;
+public class GoogleAccountPage extends AbstractPage {
+    @FindBy(id = "Email")
+    private WebElement emailField;
 
-   @FindBy(id = "Passwd")
-   private WebElement passwordField;
+    @FindBy(id = "Passwd")
+    private WebElement passwordField;
 
-   @FindBy(id = "signIn")
-   private WebElement signInButton;
+    @FindBy(id = "signIn")
+    private WebElement signInButton;
 
-   public GoogleAccountPage(WebDriver driver)
-   {
-      super(driver);
-   }
+    public GoogleAccountPage(WebDriver driver) {
+        super(driver);
+    }
 
-   public GoogleAccountPage enterGoogleEmail(String email)
-   {
-      emailField.sendKeys(email);
-      return new GoogleAccountPage(getDriver());
-   }
+    public GoogleAccountPage enterGoogleEmail(String email) {
+        emailField.sendKeys(email);
+        return new GoogleAccountPage(getDriver());
+    }
 
-   public GoogleAccountPage enterGooglePassword(String password)
-   {
-      passwordField.sendKeys(password);
-      return new GoogleAccountPage(getDriver());
-   }
+    public GoogleAccountPage enterGooglePassword(String password) {
+        passwordField.sendKeys(password);
+        return new GoogleAccountPage(getDriver());
+    }
 
-   public EditProfilePage clickSignIn()
-   {
-      signInButton.click();
+    public EditProfilePage clickSignIn() {
+        signInButton.click();
 
-      // May return a Permissions request page, if this is the first run
-      if(!getDriver().getTitle().contains("Edit Profile"))
-      {
-         GooglePermissionsPage googlePermissionsPage = new GooglePermissionsPage(getDriver());
-         googlePermissionsPage.acceptPermissions();
-      }
-      return new EditProfilePage(getDriver());
-   }
+        // May return a Permissions request page, if this is the first run
+        if (!getDriver().getTitle().contains("Edit Profile")) {
+            GooglePermissionsPage googlePermissionsPage =
+                    new GooglePermissionsPage(getDriver());
+            googlePermissionsPage.acceptPermissions();
+        }
+        return new EditProfilePage(getDriver());
+    }
 }

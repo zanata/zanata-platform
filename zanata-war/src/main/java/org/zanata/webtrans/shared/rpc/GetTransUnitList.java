@@ -10,130 +10,111 @@ import org.zanata.webtrans.shared.model.ValidationId;
 
 import com.google.common.base.Objects;
 
-public class GetTransUnitList extends AbstractWorkspaceAction<GetTransUnitListResult>
-{
-   private static final long serialVersionUID = 1L;
-   private int offset;
-   private int count;
-   private DocumentId documentId;
-   private String phrase;
-   private ContentStateGroup filterStates;
-   private boolean filterHasError;
-   private List<ValidationId> validationIds;
-   private TransUnitId targetTransUnitId;
-   private boolean needReloadIndex = false;
+public class GetTransUnitList extends
+        AbstractWorkspaceAction<GetTransUnitListResult> {
+    private static final long serialVersionUID = 1L;
+    private int offset;
+    private int count;
+    private DocumentId documentId;
+    private String phrase;
+    private ContentStateGroup filterStates;
+    private boolean filterHasError;
+    private List<ValidationId> validationIds;
+    private TransUnitId targetTransUnitId;
+    private boolean needReloadIndex = false;
 
-   private GetTransUnitList()
-   {
-   }
+    private GetTransUnitList() {
+    }
 
-   private GetTransUnitList(GetTransUnitActionContext context)
-   {
-      documentId = context.getDocument().getId();
-      offset = context.getOffset();
-      count = context.getCount();
-      phrase = context.getFindMessage();
-      setIncludeStates(context.getCurrentFilterStates());
-      filterHasError = context.isFilterHasError();
-      targetTransUnitId = context.getTargetTransUnitId();
-      validationIds = context.getValidationIds();
-   }
+    private GetTransUnitList(GetTransUnitActionContext context) {
+        documentId = context.getDocument().getId();
+        offset = context.getOffset();
+        count = context.getCount();
+        phrase = context.getFindMessage();
+        setIncludeStates(context.getCurrentFilterStates());
+        filterHasError = context.isFilterHasError();
+        targetTransUnitId = context.getTargetTransUnitId();
+        validationIds = context.getValidationIds();
+    }
 
-   private void setIncludeStates(ContentStateGroup contentStateGroup)
-   {
-      filterStates = ContentStateGroup.builder().fromStates(contentStateGroup).build();
-   }
+    private void setIncludeStates(ContentStateGroup contentStateGroup) {
+        filterStates =
+                ContentStateGroup.builder().fromStates(contentStateGroup)
+                        .build();
+    }
 
-   public static GetTransUnitList newAction(GetTransUnitActionContext context)
-   {
-      return new GetTransUnitList(context);
-   }
+    public static GetTransUnitList newAction(GetTransUnitActionContext context) {
+        return new GetTransUnitList(context);
+    }
 
-   public boolean isNeedReloadIndex()
-   {
-      return needReloadIndex;
-   }
+    public boolean isNeedReloadIndex() {
+        return needReloadIndex;
+    }
 
-   public GetTransUnitList setNeedReloadIndex(boolean needReloadIndex)
-   {
-      this.needReloadIndex = needReloadIndex;
-      return this;
-   }
+    public GetTransUnitList setNeedReloadIndex(boolean needReloadIndex) {
+        this.needReloadIndex = needReloadIndex;
+        return this;
+    }
 
-   public int getOffset()
-   {
-      return offset;
-   }
+    public int getOffset() {
+        return offset;
+    }
 
-   public int getCount()
-   {
-      return count;
-   }
+    public int getCount() {
+        return count;
+    }
 
-   public DocumentId getDocumentId()
-   {
-      return documentId;
-   }
+    public DocumentId getDocumentId() {
+        return documentId;
+    }
 
-   public String getPhrase()
-   {
-      return this.phrase;
-   }
+    public String getPhrase() {
+        return this.phrase;
+    }
 
-   public ContentStateGroup getFilterStates()
-   {
-      return filterStates;
-   }
+    public ContentStateGroup getFilterStates() {
+        return filterStates;
+    }
 
-   public boolean isFilterTranslated()
-   {
-      return filterStates.hasTranslated();
-   }
+    public boolean isFilterTranslated() {
+        return filterStates.hasTranslated();
+    }
 
-   public boolean isFilterFuzzy()
-   {
-      return filterStates.hasFuzzy();
-   }
+    public boolean isFilterFuzzy() {
+        return filterStates.hasFuzzy();
+    }
 
-   public boolean isFilterUntranslated()
-   {
-      return filterStates.hasNew();
-   }
-   
-   public boolean isFilterApproved()
-   {
-      return filterStates.hasApproved();
-   }
-   
-   public boolean isFilterRejected()
-   {
-      return filterStates.hasRejected();
-   }
+    public boolean isFilterUntranslated() {
+        return filterStates.hasNew();
+    }
 
-   public boolean isFilterHasError()
-   {
-      return filterHasError;
-   }
+    public boolean isFilterApproved() {
+        return filterStates.hasApproved();
+    }
 
-   public TransUnitId getTargetTransUnitId()
-   {
-      return targetTransUnitId;
-   }
+    public boolean isFilterRejected() {
+        return filterStates.hasRejected();
+    }
 
-   public List<ValidationId> getValidationIds()
-   {
-      return validationIds;
-   }
+    public boolean isFilterHasError() {
+        return filterHasError;
+    }
 
-   public boolean isAcceptAllStatus()
-   {
-      return filterStates.hasAllStates() && !filterHasError;
-   }
+    public TransUnitId getTargetTransUnitId() {
+        return targetTransUnitId;
+    }
 
-   @Override
-   public String toString()
-   {
-      // @formatter:off
+    public List<ValidationId> getValidationIds() {
+        return validationIds;
+    }
+
+    public boolean isAcceptAllStatus() {
+        return filterStates.hasAllStates() && !filterHasError;
+    }
+
+    @Override
+    public String toString() {
+        // @formatter:off
       return Objects.toStringHelper(this).
             add("offset", offset).
             add("count", count).
@@ -145,5 +126,5 @@ public class GetTransUnitList extends AbstractWorkspaceAction<GetTransUnitListRe
             add("needReloadIndex", needReloadIndex).
             toString();
       // @formatter:on
-   }
+    }
 }

@@ -25,11 +25,10 @@ import com.google.gwt.user.cellview.client.CellTable.Style;
 
 /**
  * Defines zanata-specific styling for CellTable implementations.
- * 
+ *
  * @author David Mason, damason@redhat.com
  */
-public interface CellTableResources extends Resources
-{
-   @Source({Style.DEFAULT_CSS, "CellTableResources.css"})
-   Style cellTableStyle();
+public interface CellTableResources extends Resources {
+    @Source({ Style.DEFAULT_CSS, "CellTableResources.css" })
+    Style cellTableStyle();
 }

@@ -20,7 +20,6 @@
  */
 package org.zanata.webtrans.client.presenter;
 
-
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
@@ -31,61 +30,59 @@ import org.zanata.webtrans.client.view.AttentionKeyShortcutDisplay;
 import com.google.inject.Inject;
 
 /**
- * Responsible for getting the necessary model data to show when attention mode is
- * active in response to relevant events.
- * 
- * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
+ * Responsible for getting the necessary model data to show when attention mode
+ * is active in response to relevant events.
+ *
+ * @author David Mason, <a
+ *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  *
  */
-public class AttentionKeyShortcutPresenter extends WidgetPresenter<AttentionKeyShortcutDisplay>
-{
+public class AttentionKeyShortcutPresenter extends
+        WidgetPresenter<AttentionKeyShortcutDisplay> {
 
-   @Inject
-   public AttentionKeyShortcutPresenter(AttentionKeyShortcutDisplay display, EventBus eventBus)
-   {
-      super(display, eventBus);
-   }
+    @Inject
+    public AttentionKeyShortcutPresenter(AttentionKeyShortcutDisplay display,
+            EventBus eventBus) {
+        super(display, eventBus);
+    }
 
-   @Override
-   protected void onBind()
-   {
-      registerHandler(eventBus.addHandler(AttentionModeActivationEvent.getType(),
-                                          new AttentionModeActivationEventHandler()
-      {
-         @Override
-         public void onAttentionModeActivationChanged(AttentionModeActivationEvent event)
-         {
-            respondToAttentionModeEvent(event);
-         }
-      }));
-   }
+    @Override
+    protected void onBind() {
+        registerHandler(eventBus.addHandler(
+                AttentionModeActivationEvent.getType(),
+                new AttentionModeActivationEventHandler() {
+                    @Override
+                    public void onAttentionModeActivationChanged(
+                            AttentionModeActivationEvent event) {
+                        respondToAttentionModeEvent(event);
+                    }
+                }));
+    }
 
-   @Override
-   protected void onUnbind()
-   {
-      // TODO Auto-generated method stub
+    @Override
+    protected void onUnbind() {
+        // TODO Auto-generated method stub
 
-   }
+    }
 
-   @Override
-   protected void onRevealDisplay()
-   {
-      // TODO Auto-generated method stub
+    @Override
+    protected void onRevealDisplay() {
+        // TODO Auto-generated method stub
 
-   }
+    }
 
-   private void respondToAttentionModeEvent(AttentionModeActivationEvent event)
-   {
-//      if (event.isActive())
-//      {
-//         display.clearShortcuts();
-//         for (KeyShortcut sc : event.getShortcuts())
-//         {
-//            Keys firstKeys = sc.getAllAttentionKeys().iterator().next();
-//            addShortcutToView(firstKeys, sc.getDescription());
-//         }
-//      }
-      display.showOrHide(event.isActive());
-   }
+    private void
+            respondToAttentionModeEvent(AttentionModeActivationEvent event) {
+        // if (event.isActive())
+        // {
+        // display.clearShortcuts();
+        // for (KeyShortcut sc : event.getShortcuts())
+        // {
+        // Keys firstKeys = sc.getAllAttentionKeys().iterator().next();
+        // addShortcutToView(firstKeys, sc.getDescription());
+        // }
+        // }
+        display.showOrHide(event.isActive());
+    }
 
 }

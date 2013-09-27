@@ -28,30 +28,30 @@ import org.hamcrest.Matchers;
 import org.testng.annotations.Test;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Test(groups = "unit-tests")
-public class HTextFlowTest
-{
-   @Test
-   public void testSetContents() throws Exception
-   {
-      HTextFlow textFlow = new HTextFlow();
+public class HTextFlowTest {
+    @Test
+    public void testSetContents() throws Exception {
+        HTextFlow textFlow = new HTextFlow();
 
-      textFlow.setContents("a", "b");
-      assertThat(textFlow.getContents(), contains("a", "b"));
+        textFlow.setContents("a", "b");
+        assertThat(textFlow.getContents(), contains("a", "b"));
 
-      textFlow.setContents("a");
-      assertThat(textFlow.getContents(), contains("a"));
-      // check that content1 is nulled out (after having been non-null earlier)
-      assertThat(textFlow.getContent1(), Matchers.nullValue());
+        textFlow.setContents("a");
+        assertThat(textFlow.getContents(), contains("a"));
+        // check that content1 is nulled out (after having been non-null
+        // earlier)
+        assertThat(textFlow.getContent1(), Matchers.nullValue());
 
-      // set original value
-      textFlow.setContents("a", "b");
-      assertThat(textFlow.getContents(), contains("a", "b"));
+        // set original value
+        textFlow.setContents("a", "b");
+        assertThat(textFlow.getContents(), contains("a", "b"));
 
-      // set same value
-      textFlow.setContents("a", "b");
-      assertThat(textFlow.getContents(), contains("a", "b"));
-   }
+        // set same value
+        textFlow.setContents("a", "b");
+        assertThat(textFlow.getContents(), contains("a", "b"));
+    }
 }

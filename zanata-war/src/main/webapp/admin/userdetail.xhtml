@@ -1,68 +1,82 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:rich="http://richfaces.org/rich"
-    xmlns:a4j="http://richfaces.org/a4j"
-    xmlns:s="http://jboss.org/schema/seam/taglib">
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:s="http://jboss.org/schema/seam/taglib">
 
-  <ui:composition template="../WEB-INF/template/template_2x.xhtml">
+<ui:composition template="../WEB-INF/template/template_2x.xhtml">
 
-    <ui:define name="page_title">#{userAction.username} - #{messages['jsf.AccountDetails']}</ui:define>
-    <ui:define name="center_content">
-      <h:form id="userdetailForm" rendered="#{identityManager.userExists(userAction.username)}">
-        <s:token allowMultiplePosts="true" />
-        <rich:panel>
-          <f:facet name="header">#{messages['jsf.AccountDetails']}</f:facet>
+  <ui:define
+    name="page_title">#{userAction.username} - #{messages['jsf.AccountDetails']}</ui:define>
+  <ui:define name="center_content">
+    <h:form id="userdetailForm"
+      rendered="#{identityManager.userExists(userAction.username)}">
+      <s:token allowMultiplePosts="true"/>
+      <rich:panel>
+        <f:facet name="header">#{messages['jsf.AccountDetails']}</f:facet>
 
-          <s:decorate id="usernameField" template="../WEB-INF/layout/edit.xhtml" enclose="true">
-            <ui:define name="label">#{messages['jsf.Username']}</ui:define>
-            <h:inputText id="username" value="#{userAction.username}" readonly="#{not s:hasRole('admin')}" required="true">
-                <a4j:ajax event="blur" render="usernameField" />
-            </h:inputText>
-          </s:decorate>
-          <s:decorate id="emailField" template="../WEB-INF/layout/edit.xhtml">
-            <ui:define name="label">#{messages['jsf.Email']}</ui:define>
-            <s:label value="#{userAction.getEmail(userAction.username)}" styleClass="readOnlyLabel"/>
-          </s:decorate>
-	      <s:fragment rendered="#{applicationConfiguration.internalAuth}">
-	          <s:decorate id="passwordField" template="../WEB-INF/layout/edit.xhtml" >
-	            <ui:define name="label">#{messages['jsf.Password']}</ui:define>
-	            <h:inputSecret id="password" value="#{userAction.password}"/>
-	          </s:decorate>
-
-	          <s:decorate id="passwordConfirmField" template="../WEB-INF/layout/edit.xhtml">
-	            <ui:define name="label">#{messages['jsf.ConfirmPassword']}</ui:define>
-	            <h:inputSecret id="confirm" value="#{userAction.confirm}"/>
-	          </s:decorate>
-          </s:fragment>
-
-          <s:decorate id="rolesField" template="../WEB-INF/layout/edit.xhtml">
-            <ui:define name="label">#{messages['jsf.MemberOf']}</ui:define>
-            <div class="selectMany">
-              <h:selectManyCheckbox id="roles" value="#{userAction.roles}" layout="pageDirection">
-                <s:selectItems value="#{identityManager.listGrantableRoles()}" var="role" label="#{role}"/>
-              </h:selectManyCheckbox>
-            </div>
+        <s:decorate id="usernameField" template="../WEB-INF/layout/edit.xhtml"
+          enclose="true">
+          <ui:define name="label">#{messages['jsf.Username']}</ui:define>
+          <h:inputText id="username" value="#{userAction.username}"
+            readonly="#{not s:hasRole('admin')}" required="true">
+            <a4j:ajax event="blur" render="usernameField"/>
+          </h:inputText>
+        </s:decorate>
+        <s:decorate id="emailField" template="../WEB-INF/layout/edit.xhtml">
+          <ui:define name="label">#{messages['jsf.Email']}</ui:define>
+          <s:label value="#{userAction.getEmail(userAction.username)}"
+            styleClass="readOnlyLabel"/>
+        </s:decorate>
+        <s:fragment rendered="#{applicationConfiguration.internalAuth}">
+          <s:decorate id="passwordField"
+            template="../WEB-INF/layout/edit.xhtml">
+            <ui:define name="label">#{messages['jsf.Password']}</ui:define>
+            <h:inputSecret id="password" value="#{userAction.password}"/>
           </s:decorate>
 
-          <s:decorate id="enabledField" template="../WEB-INF/layout/edit.xhtml">
-            <ui:define name="label">#{messages['jsf.AccountEnabled']}</ui:define>
-            <h:selectBooleanCheckbox id="enabled" value="#{userAction.enabled}"/>
+          <s:decorate id="passwordConfirmField"
+            template="../WEB-INF/layout/edit.xhtml">
+            <ui:define
+              name="label">#{messages['jsf.ConfirmPassword']}</ui:define>
+            <h:inputSecret id="confirm" value="#{userAction.confirm}"/>
           </s:decorate>
+        </s:fragment>
 
-          <div style="clear:both"/>
+        <s:decorate id="rolesField" template="../WEB-INF/layout/edit.xhtml">
+          <ui:define name="label">#{messages['jsf.MemberOf']}</ui:define>
 
-          <div class="actionButtons">
-            <h:commandButton id="userdetailSave" value="#{messages['jsf.Save']}" action="#{userAction.save}"/>
-            <s:button id="userdetailCancel" view="/admin/usermanager.xhtml" value="#{messages['jsf.Cancel']}" propagation="end"/>
+          <div class="selectMany">
+            <h:selectManyCheckbox id="roles" value="#{userAction.roles}"
+              layout="pageDirection">
+              <s:selectItems value="#{identityManager.listGrantableRoles()}"
+                var="role" label="#{role}"/>
+            </h:selectManyCheckbox>
           </div>
+        </s:decorate>
 
-        </rich:panel>
-      </h:form>
+        <s:decorate id="enabledField" template="../WEB-INF/layout/edit.xhtml">
+          <ui:define name="label">#{messages['jsf.AccountEnabled']}</ui:define>
+          <h:selectBooleanCheckbox id="enabled" value="#{userAction.enabled}"/>
+        </s:decorate>
 
-    </ui:define>
+        <div style="clear:both"/>
 
-  </ui:composition>
+        <div class="actionButtons">
+          <h:commandButton id="userdetailSave" value="#{messages['jsf.Save']}"
+            action="#{userAction.save}"/>
+          <s:button id="userdetailCancel" view="/admin/usermanager.xhtml"
+            value="#{messages['jsf.Cancel']}" propagation="end"/>
+        </div>
+
+      </rich:panel>
+    </h:form>
+
+  </ui:define>
+
+</ui:composition>
 </html>

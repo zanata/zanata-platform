@@ -20,60 +20,53 @@
  */
 package org.zanata.page.account;
 
-
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-public class ResetPasswordPage extends BasePage
-{
+public class ResetPasswordPage extends BasePage {
 
-   @FindBy(id = "passwordResetRequestForm:usernameField:username")
-   private WebElement usernameField;
+    @FindBy(id = "passwordResetRequestForm:usernameField:username")
+    private WebElement usernameField;
 
-   @FindBy(id = "passwordResetRequestForm:emailField:email")
-   private WebElement emailField;
+    @FindBy(id = "passwordResetRequestForm:emailField:email")
+    private WebElement emailField;
 
-   @FindBy(id = "passwordResetRequestForm:submitRequest")
-   private WebElement submitButton;
+    @FindBy(id = "passwordResetRequestForm:submitRequest")
+    private WebElement submitButton;
 
-   public ResetPasswordPage(WebDriver driver)
-   {
-      super(driver);
-   }
+    public ResetPasswordPage(WebDriver driver) {
+        super(driver);
+    }
 
-   public ResetPasswordPage enterUserName(String username)
-   {
-      usernameField.sendKeys(username);
-      return new ResetPasswordPage(getDriver());
-   }
+    public ResetPasswordPage enterUserName(String username) {
+        usernameField.sendKeys(username);
+        return new ResetPasswordPage(getDriver());
+    }
 
-   public ResetPasswordPage enterEmail(String email)
-   {
-      emailField.sendKeys(email);
-      return new ResetPasswordPage(getDriver());
-   }
+    public ResetPasswordPage enterEmail(String email) {
+        emailField.sendKeys(email);
+        return new ResetPasswordPage(getDriver());
+    }
 
-   public ResetPasswordPage clearFields()
-   {
-      emailField.clear();
-      usernameField.clear();
-      return new ResetPasswordPage(getDriver());
-   }
+    public ResetPasswordPage clearFields() {
+        emailField.clear();
+        usernameField.clear();
+        return new ResetPasswordPage(getDriver());
+    }
 
-   public ResetPasswordPage resetPassword()
-   {
-      submitButton.click();
-      return new ResetPasswordPage(getDriver());
-   }
+    public ResetPasswordPage resetPassword() {
+        submitButton.click();
+        return new ResetPasswordPage(getDriver());
+    }
 
-   public ResetPasswordPage resetFailure()
-   {
-      submitButton.click();
-      return new ResetPasswordPage(getDriver());
-   }
+    public ResetPasswordPage resetFailure() {
+        submitButton.click();
+        return new ResetPasswordPage(getDriver());
+    }
 }

@@ -25,12 +25,13 @@ import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public interface TranslationWorkspaceManager
-{
+public interface TranslationWorkspaceManager {
 
-   public TranslationWorkspace getOrRegisterWorkspace(WorkspaceId workspaceId) throws NoSuchWorkspaceException;
+    public TranslationWorkspace getOrRegisterWorkspace(WorkspaceId workspaceId)
+            throws NoSuchWorkspaceException;
 
 }

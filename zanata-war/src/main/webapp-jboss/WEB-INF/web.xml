@@ -1,287 +1,287 @@
 <?xml version="1.0" ?>
 <web-app xmlns="http://java.sun.com/xml/ns/javaee"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
-    version="3.0">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+  version="3.0">
 
-	<!-- sso security -->
+  <!-- sso security -->
 
-	<!-- Kerberos only (also configurable on JBOSS_HOME/server/<config>/deployers/jbossweb.deployer/web.xml)-->
-	
-	<security-constraint>
-	    <web-resource-collection>
-	         <web-resource-name>sign in</web-resource-name>
-	         <url-pattern>/account/klogin.seam</url-pattern>
-	    </web-resource-collection>
-		<auth-constraint>
-			<role-name>*</role-name>
-		</auth-constraint>
-	</security-constraint>
-	<login-config>
-	    <auth-method>SPNEGO</auth-method>
-	</login-config>
-    <security-role>
-        <role-name>*</role-name>
-    </security-role>
+  <!-- Kerberos only (also configurable on JBOSS_HOME/server/<config>/deployers/jbossweb.deployer/web.xml)-->
 
-
-	<!-- RichFaces -->
-	<context-param>
-		<param-name>org.richfaces.skin</param-name>
-		<param-value>classic</param-value>
-	</context-param>
-
-	<!-- Suppress spurious stylesheets -->
-
-	<context-param>
-		<param-name>org.richfaces.enableControlSkinning</param-name>
-		<param-value>false</param-value>
-	</context-param>
-
-	<context-param>
-		<param-name>org.richfaces.enableControlSkinningClasses</param-name>
-		<param-value>false</param-value>
-	</context-param>
-
-	<!--
-		Change load strategy to DEFAULT to disable sending scripts/styles as
-		packs
-	-->
-
-	<context-param>
-		<param-name>org.richfaces.resourceOptimization.enabled</param-name>
-		<!--
-			TODO: When this is set to all, css from custom Richfaces components
-			such as zanata-richfaces-ui components are not loaded.
-		-->
-		<param-value>false</param-value>
-	</context-param>
-
-	<!--<context-param>
-		<param-name>org.richfaces.LoadScriptStrategy</param-name>
-		<param-value>DEFAULT</param-value>
-	</context-param>-->
-	
-	<context-param>
-      <param-name>org.jboss.jbossfaces.WAR_BUNDLES_JSF_IMPL</param-name>
-      <param-value>${war_bundles_jsf_impl}</param-value>
-	</context-param>
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>sign in</web-resource-name>
+      <url-pattern>/account/klogin.seam</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>*</role-name>
+    </auth-constraint>
+  </security-constraint>
+  <login-config>
+    <auth-method>SPNEGO</auth-method>
+  </login-config>
+  <security-role>
+    <role-name>*</role-name>
+  </security-role>
 
 
-	<!-- 
-	Make sure Liquibase is the first listener, so that it can update the database schema before
-	anyone uses the database.
-	 -->
+  <!-- RichFaces -->
+  <context-param>
+    <param-name>org.richfaces.skin</param-name>
+    <param-value>classic</param-value>
+  </context-param>
 
-	<context-param>
-	    <param-name>liquibase.changelog</param-name>
-	    <param-value>db/db.changelog.xml</param-value>
-	</context-param>
+  <!-- Suppress spurious stylesheets -->
 
-	<context-param>
-	    <param-name>liquibase.datasource</param-name>
-	    <param-value>java:jboss/datasources/${ds.jndi.name}</param-value>
-	</context-param>
-	<!-- 
-	<context-param>
-	    <param-name>liquibase.host.excludes</param-name>
-	    <param-value>production1.example.com, production2.example.com</param-value>
-	</context-param>
-	 -->
-	 
-	<context-param>
-	    <param-name>liquibase.onerror.fail</param-name>
-	    <param-value>true</param-value>
-	</context-param>
-	
-	<!-- 
-	<context-param>
-	    <param-name>liquibase.contexts</param-name>
-	    <param-value>production</param-value>
-	</context-param>
-	 --> 
+  <context-param>
+    <param-name>org.richfaces.enableControlSkinning</param-name>
+    <param-value>false</param-value>
+  </context-param>
 
+  <context-param>
+    <param-name>org.richfaces.enableControlSkinningClasses</param-name>
+    <param-value>false</param-value>
+  </context-param>
+
+  <!--
+    Change load strategy to DEFAULT to disable sending scripts/styles as
+    packs
+  -->
+
+  <context-param>
+    <param-name>org.richfaces.resourceOptimization.enabled</param-name>
+    <!--
+      TODO: When this is set to all, css from custom Richfaces components
+      such as zanata-richfaces-ui components are not loaded.
+    -->
+    <param-value>false</param-value>
+  </context-param>
+
+  <!--<context-param>
+    <param-name>org.richfaces.LoadScriptStrategy</param-name>
+    <param-value>DEFAULT</param-value>
+  </context-param>-->
+
+  <context-param>
+    <param-name>org.jboss.jbossfaces.WAR_BUNDLES_JSF_IMPL</param-name>
+    <param-value>${war_bundles_jsf_impl}</param-value>
+  </context-param>
+
+
+  <!--
+  Make sure Liquibase is the first listener, so that it can update the database schema before
+  anyone uses the database.
+   -->
+
+  <context-param>
+    <param-name>liquibase.changelog</param-name>
+    <param-value>db/db.changelog.xml</param-value>
+  </context-param>
+
+  <context-param>
+    <param-name>liquibase.datasource</param-name>
+    <param-value>java:jboss/datasources/${ds.jndi.name}</param-value>
+  </context-param>
+  <!--
+  <context-param>
+      <param-name>liquibase.host.excludes</param-name>
+      <param-value>production1.example.com, production2.example.com</param-value>
+  </context-param>
+   -->
+
+  <context-param>
+    <param-name>liquibase.onerror.fail</param-name>
+    <param-value>true</param-value>
+  </context-param>
+
+  <!--
+  <context-param>
+      <param-name>liquibase.contexts</param-name>
+      <param-value>production</param-value>
+  </context-param>
+   -->
+
+  <context-param>
+    <param-name>javamelody.datasources</param-name>
+    <param-value>java:jboss/datasources/${ds.jndi.name}</param-value>
+  </context-param>
+
+  <listener>
+    <listener-class>liquibase.integration.servlet.LiquibaseServletListener</listener-class>
+  </listener>
+
+
+  <listener>
+    <listener-class>net.bull.javamelody.SessionListener</listener-class>
+  </listener>
+
+  <!-- Seam -->
+
+  <listener>
+    <listener-class>org.jboss.seam.servlet.SeamListener</listener-class>
+  </listener>
+
+  <filter>
+    <filter-name>gwtCacheControlFilter</filter-name>
+    <filter-class>org.zanata.servlet.GWTCacheControlFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>gwtCacheControlFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <!--java melody for monitoring stats-->
+  <filter>
+    <filter-name>monitoring</filter-name>
+    <filter-class>org.zanata.seam.interceptor.MonitoringWrapper</filter-class>
+    <init-param>
+      <param-name>monitoring-path</param-name>
+      <param-value>/admin/monitoring</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>monitoring</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <filter>
+    <filter-name>Seam Filter</filter-name>
+    <filter-class>org.jboss.seam.servlet.SeamFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>Seam Filter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <filter>
+    <filter-name>UrlRewriteFilter</filter-name>
+    <filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
+    <init-param>
+      <param-name>logLevel</param-name>
+      <param-value>INFO</param-value>
+    </init-param>
+    <init-param>
+      <param-name>statusPath</param-name>
+      <param-value>/rwstatus</param-value>
+    </init-param>
+
+    <init-param>
+      <param-name>statusEnabled</param-name>
+      <param-value>true</param-value>
+    </init-param>
+
+  </filter>
+
+  <filter-mapping>
+    <filter-name>UrlRewriteFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <!-- <servlet-mapping> -->
+  <!--    <servlet-name>javax.ws.rs.core.Application</servlet-name> -->
+  <!--    <url-pattern>/seam/resource/restv1/*</url-pattern> -->
+  <!-- </servlet-mapping> -->
+
+  <servlet>
+    <servlet-name>Seam Resource Servlet</servlet-name>
+    <servlet-class>org.jboss.seam.servlet.SeamResourceServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>Seam Resource Servlet</servlet-name>
+    <url-pattern>/seam/resource/*</url-pattern>
+  </servlet-mapping>
+
+  <!-- Facelets development mode (disable in production)
+  To use it, add the following to $JBOSS_HOME/server/$profile/deployers/jbossweb.deployer/web.xml :-->
+
+  <context-param>
+    <param-name>facelets.DEVELOPMENT</param-name>
+    <param-value>true</param-value>
+  </context-param>
+
+  <!-- JSF -->
+
+  <context-param>
+    <param-name>javax.faces.DEFAULT_SUFFIX</param-name>
+    <param-value>.xhtml</param-value>
+  </context-param>
+
+  <context-param>
+    <param-name>javax.faces.FACELETS_VIEW_MAPPINGS</param-name>
+    <param-value>*.xhtml</param-value>
+  </context-param>
+
+  <!-- This would eliminate ViewExpiredException when sessions expire, but may hurt performance:
     <context-param>
-        <param-name>javamelody.datasources</param-name>
-        <param-value>java:jboss/datasources/${ds.jndi.name}</param-value>
+        <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+        <param-value>client</param-value>
     </context-param>
+  -->
 
-	<listener>
-	    <listener-class>liquibase.integration.servlet.LiquibaseServletListener</listener-class>
-	</listener>
+  <servlet>
+    <servlet-name>Faces Servlet</servlet-name>
+    <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+    <!-- Seam must start after ZanataBlockingServlet/Errai -->
+    <load-on-startup>2</load-on-startup>
+  </servlet>
 
+  <servlet-mapping>
+    <servlet-name>Faces Servlet</servlet-name>
+    <url-pattern>*.seam</url-pattern>
+  </servlet-mapping>
 
-    <listener>
-        <listener-class>net.bull.javamelody.SessionListener</listener-class>
-    </listener>
+  <!-- GWTEventService -->
 
-	<!-- Seam -->
+  <servlet>
+    <servlet-name>EventService</servlet-name>
+    <servlet-class>de.novanic.eventservice.service.EventServiceImpl</servlet-class>
+  </servlet>
 
-	<listener>
-		<listener-class>org.jboss.seam.servlet.SeamListener</listener-class>
-	</listener>
+  <servlet-mapping>
+    <servlet-name>EventService</servlet-name>
+    <url-pattern>/webtrans/gwteventservice</url-pattern>
+  </servlet-mapping>
 
-    <filter>
-         <filter-name>gwtCacheControlFilter</filter-name>
-         <filter-class>org.zanata.servlet.GWTCacheControlFilter</filter-class>
-    </filter>
+  <!--  GWT File upload service -->
+  <servlet>
+    <servlet-name>uploadServlet</servlet-name>
+    <servlet-class>org.zanata.servlet.FileUploadServlet</servlet-class>
+  </servlet>
 
-    <filter-mapping>
-         <filter-name>gwtCacheControlFilter</filter-name>
-         <url-pattern>/*</url-pattern>
-    </filter-mapping>
+  <servlet-mapping>
+    <servlet-name>uploadServlet</servlet-name>
+    <url-pattern>/webtrans/files/upload</url-pattern>
+  </servlet-mapping>
 
-    <!--java melody for monitoring stats-->
-    <filter>
-        <filter-name>monitoring</filter-name>
-        <filter-class>org.zanata.seam.interceptor.MonitoringWrapper</filter-class>
-        <init-param>
-            <param-name>monitoring-path</param-name>
-            <param-value>/admin/monitoring</param-value>
-        </init-param>
-    </filter>
-    <filter-mapping>
-        <filter-name>monitoring</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
+  <!-- Uncomment this to enable the H2Console
 
-	<filter>
-		<filter-name>Seam Filter</filter-name>
-		<filter-class>org.jboss.seam.servlet.SeamFilter</filter-class>
-	</filter>
+  <servlet>
+    <servlet-name>H2Console</servlet-name>
+    <servlet-class>org.h2.server.web.WebServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>H2Console</servlet-name>
+    <url-pattern>/console/*</url-pattern>
+  </servlet-mapping>
 
-	<filter-mapping>
-		<filter-name>Seam Filter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
+  -->
 
-	<filter>
-		<filter-name>UrlRewriteFilter</filter-name>
-		<filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
-		<init-param>
-			<param-name>logLevel</param-name>
-			<param-value>INFO</param-value>
-		</init-param>
-		<init-param>
-			<param-name>statusPath</param-name>
-			<param-value>/rwstatus</param-value>
-		</init-param>
+  <security-constraint>
+    <display-name>Restrict raw XHTML Documents</display-name>
+    <web-resource-collection>
+      <web-resource-name>XHTML</web-resource-name>
+      <url-pattern>*.xhtml</url-pattern>
+    </web-resource-collection>
+    <auth-constraint />
+  </security-constraint>
 
-		<init-param>
-			<param-name>statusEnabled</param-name>
-			<param-value>true</param-value>
-		</init-param>
+  <mime-mapping>
+    <extension>xrd</extension>
+    <mime-type>application/xrd+xml</mime-type>
+  </mime-mapping>
 
-	</filter>
-
-	<filter-mapping>
-		<filter-name>UrlRewriteFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-
-<!-- 	<servlet-mapping> -->
-<!-- 	   <servlet-name>javax.ws.rs.core.Application</servlet-name> -->
-<!-- 	   <url-pattern>/seam/resource/restv1/*</url-pattern> -->
-<!-- 	</servlet-mapping> -->
-
-	<servlet>
-		<servlet-name>Seam Resource Servlet</servlet-name>
-		<servlet-class>org.jboss.seam.servlet.SeamResourceServlet</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>Seam Resource Servlet</servlet-name>
-		<url-pattern>/seam/resource/*</url-pattern>
-	</servlet-mapping>
-
-	<!-- Facelets development mode (disable in production)
-	To use it, add the following to $JBOSS_HOME/server/$profile/deployers/jbossweb.deployer/web.xml :-->
-
-	<context-param>
-		<param-name>facelets.DEVELOPMENT</param-name>
-		<param-value>true</param-value>
-	</context-param>
-
-	<!-- JSF -->
-
-	<context-param>
-		<param-name>javax.faces.DEFAULT_SUFFIX</param-name>
-		<param-value>.xhtml</param-value>
-	</context-param>
-
-    <context-param>
-        <param-name>javax.faces.FACELETS_VIEW_MAPPINGS</param-name>
-        <param-value>*.xhtml</param-value>
-    </context-param>
-
-<!-- This would eliminate ViewExpiredException when sessions expire, but may hurt performance:
-	<context-param>
-	    <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
-	    <param-value>client</param-value>
-	</context-param>
--->
-
-	<servlet>
-		<servlet-name>Faces Servlet</servlet-name>
-		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
-		<!-- Seam must start after ZanataBlockingServlet/Errai -->
-		<load-on-startup>2</load-on-startup>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>Faces Servlet</servlet-name>
-		<url-pattern>*.seam</url-pattern>
-	</servlet-mapping>
-
-	<!-- GWTEventService -->
-
-	<servlet>
-		<servlet-name>EventService</servlet-name>
-		<servlet-class>de.novanic.eventservice.service.EventServiceImpl</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>EventService</servlet-name>
-		<url-pattern>/webtrans/gwteventservice</url-pattern>
-	</servlet-mapping>
-	
-	<!--  GWT File upload service -->
-	<servlet>
-    	<servlet-name>uploadServlet</servlet-name>
-    	<servlet-class>org.zanata.servlet.FileUploadServlet</servlet-class>
-  	</servlet>
-  
-  	<servlet-mapping>
-    	<servlet-name>uploadServlet</servlet-name>
-    	<url-pattern>/webtrans/files/upload</url-pattern>
-  	</servlet-mapping>
-  	
-	<!-- Uncomment this to enable the H2Console
-	
-	<servlet>
-		<servlet-name>H2Console</servlet-name>
-		<servlet-class>org.h2.server.web.WebServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>H2Console</servlet-name>
-		<url-pattern>/console/*</url-pattern>
-	</servlet-mapping>
-	
-	-->
-
-	<security-constraint>
-		<display-name>Restrict raw XHTML Documents</display-name>
-		<web-resource-collection>
-			<web-resource-name>XHTML</web-resource-name>
-			<url-pattern>*.xhtml</url-pattern>
-		</web-resource-collection>
-		<auth-constraint />
-	</security-constraint>
-
-    <mime-mapping>
-        <extension>xrd</extension>
-        <mime-type>application/xrd+xml</mime-type>
-    </mime-mapping>
-    
 </web-app>

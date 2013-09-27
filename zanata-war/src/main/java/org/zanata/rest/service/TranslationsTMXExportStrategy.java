@@ -43,148 +43,141 @@ import com.google.common.collect.Sets;
 
 /**
  * Writes translations for Zanata Projects/TextFlows as TMX.
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ *
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
 @ParametersAreNonnullByDefault
 @Slf4j
-public class TranslationsTMXExportStrategy implements TMXExportStrategy<ITextFlow>
-{
-   private static class InvalidContentsException extends Exception
-   {
-      private static final long serialVersionUID = 1L;
-      public InvalidContentsException(String msg)
-      {
-         super(msg);
-      }
-   }
+public class TranslationsTMXExportStrategy implements
+        TMXExportStrategy<ITextFlow> {
+    private static class InvalidContentsException extends Exception {
+        private static final long serialVersionUID = 1L;
 
-   private static final String creationTool = "Zanata " + TranslationsTMXExportStrategy.class.getSimpleName();
-   private static final String creationToolVersion =
-         VersionUtility.getVersionInfo(TranslationsTMXExportStrategy.class).getVersionNo();
+        public InvalidContentsException(String msg) {
+            super(msg);
+        }
+    }
 
-   private final @Nullable LocaleId localeId;
+    private static final String creationTool = "Zanata "
+            + TranslationsTMXExportStrategy.class.getSimpleName();
+    private static final String creationToolVersion = VersionUtility
+            .getVersionInfo(TranslationsTMXExportStrategy.class).getVersionNo();
 
-   /**
-    * Exports one or all locales.
-    * @param localeId locale to export, or null for all locales
-    */
-   public TranslationsTMXExportStrategy(@Nullable LocaleId localeId)
-   {
-      super();
-      this.localeId = localeId;
-   }
+    private final @Nullable
+    LocaleId localeId;
 
-   @Override
-   public Element buildHeader() throws IOException
-   {
-      Element header = new Element("header");
-      header.addAttribute(new Attribute("creationtool", creationTool));
-      header.addAttribute(new Attribute("creationtoolversion", creationToolVersion));
-      header.addAttribute(new Attribute("segtype", "block"));
-      header.addAttribute(new Attribute("o-tmf", "unknown"));
-      header.addAttribute(new Attribute("adminlang", "en"));
-      header.addAttribute(new Attribute("srclang", TMXConstants.ALL_LOCALE));
-      header.addAttribute(new Attribute("datatype", "unknown"));
-      return header;
-   }
+    /**
+     * Exports one or all locales.
+     *
+     * @param localeId
+     *            locale to export, or null for all locales
+     */
+    public TranslationsTMXExportStrategy(@Nullable LocaleId localeId) {
+        super();
+        this.localeId = localeId;
+    }
 
-   public Optional<Element> buildTU(ITextFlow tf) throws IOException
-   {
-      try
-      {
-         Element tu = new Element("tu");
-         setAttributes(tu, tf);
-         for (Element tuv : buildTUVs(tf))
-         {
-            tu.appendChild(tuv);
-         }
-         return Optional.of(tu);
-      }
-      catch (InvalidContentsException e)
-      {
-         log.warn(e.getMessage());
-         return Optional.absent();
-      }
-   }
+    @Override
+    public Element buildHeader() throws IOException {
+        Element header = new Element("header");
+        header.addAttribute(new Attribute("creationtool", creationTool));
+        header.addAttribute(new Attribute("creationtoolversion",
+                creationToolVersion));
+        header.addAttribute(new Attribute("segtype", "block"));
+        header.addAttribute(new Attribute("o-tmf", "unknown"));
+        header.addAttribute(new Attribute("adminlang", "en"));
+        header.addAttribute(new Attribute("srclang", TMXConstants.ALL_LOCALE));
+        header.addAttribute(new Attribute("datatype", "unknown"));
+        return header;
+    }
 
-   private void setAttributes(Element tu, ITextFlow tf)
-   {
-      LocaleId sourceLocaleId = tf.getLocale();
-      String tuid = tf.getQualifiedId();
-      String srcLang = sourceLocaleId.getId();
-      tu.addAttribute(new Attribute(TMXConstants.SRCLANG, srcLang));
-      tu.addAttribute(new Attribute("tuid", tuid));
-   }
-
-   private Set<Element> buildTUVs(ITextFlow tf) throws InvalidContentsException
-   {
-      Set<Element> tuvSet = Sets.newLinkedHashSet();
-      tuvSet.add(buildSourceTUV(tf));
-      if (exportAllLocales())
-      {
-         Iterable<ITextFlowTarget> allTargets = tf.getAllTargetContents();
-         for (ITextFlowTarget target : allTargets)
-         {
-            Optional<Element> tuv = buildTargetTUV(target);
-            tuvSet.addAll(tuv.asSet());
-         }
-      }
-      else
-      {
-         ITextFlowTarget target = tf.getTargetContents(this.localeId);
-         if (target != null)
-         {
-            Optional<Element> tuv = buildTargetTUV(target);
-            tuvSet.addAll(tuv.asSet());
-         }
-      }
-      return tuvSet;
-   }
-
-   private boolean exportAllLocales()
-   {
-      return this.localeId == null;
-   }
-
-   private Element buildSourceTUV(ITextFlow tf) throws InvalidContentsException
-   {
-      Element sourceTuv = new Element("tuv");
-      sourceTuv.addAttribute(new Attribute("xml:lang", XMLConstants.XML_NS_URI, tf.getLocale().getId()));
-      Element seg = new Element("seg");
-      String srcContent = tf.getContents().get(0);
-      if (srcContent.contains("\0"))
-      {
-         // this should be very rare, so we can afford to use an exception
-         String msg = "illegal null character; discarding SourceContents with id="+tf.getQualifiedId();
-         throw new InvalidContentsException(msg);
-      }
-      seg.appendChild(srcContent);
-      sourceTuv.appendChild(seg);
-      return sourceTuv;
-   }
-
-   private Optional<Element> buildTargetTUV(ITextFlowTarget target)
-   {
-      if (target.getState().isTranslated())
-      {
-         LocaleId locId = target.getLocaleId();
-         String trgContent = target.getContents().get(0);
-         if (trgContent.contains("\0"))
-         {
-            String msg = "illegal null character; discarding TargetContents with locale="+
-                  locId+", contents="+trgContent;
-            log.warn(msg);
+    public Optional<Element> buildTU(ITextFlow tf) throws IOException {
+        try {
+            Element tu = new Element("tu");
+            setAttributes(tu, tf);
+            for (Element tuv : buildTUVs(tf)) {
+                tu.appendChild(tuv);
+            }
+            return Optional.of(tu);
+        } catch (InvalidContentsException e) {
+            log.warn(e.getMessage());
             return Optional.absent();
-         }
-         Element tuv = new Element("tuv");
-         tuv.addAttribute(new Attribute("xml:lang", XMLConstants.XML_NS_URI, locId.getId()));
-         Element seg = new Element("seg");
-         seg.appendChild(trgContent);
-         tuv.appendChild(seg);
-         return Optional.of(tuv);
-      }
-      return Optional.absent();
-   }
+        }
+    }
+
+    private void setAttributes(Element tu, ITextFlow tf) {
+        LocaleId sourceLocaleId = tf.getLocale();
+        String tuid = tf.getQualifiedId();
+        String srcLang = sourceLocaleId.getId();
+        tu.addAttribute(new Attribute(TMXConstants.SRCLANG, srcLang));
+        tu.addAttribute(new Attribute("tuid", tuid));
+    }
+
+    private Set<Element> buildTUVs(ITextFlow tf)
+            throws InvalidContentsException {
+        Set<Element> tuvSet = Sets.newLinkedHashSet();
+        tuvSet.add(buildSourceTUV(tf));
+        if (exportAllLocales()) {
+            Iterable<ITextFlowTarget> allTargets = tf.getAllTargetContents();
+            for (ITextFlowTarget target : allTargets) {
+                Optional<Element> tuv = buildTargetTUV(target);
+                tuvSet.addAll(tuv.asSet());
+            }
+        } else {
+            ITextFlowTarget target = tf.getTargetContents(this.localeId);
+            if (target != null) {
+                Optional<Element> tuv = buildTargetTUV(target);
+                tuvSet.addAll(tuv.asSet());
+            }
+        }
+        return tuvSet;
+    }
+
+    private boolean exportAllLocales() {
+        return this.localeId == null;
+    }
+
+    private Element buildSourceTUV(ITextFlow tf)
+            throws InvalidContentsException {
+        Element sourceTuv = new Element("tuv");
+        sourceTuv.addAttribute(new Attribute("xml:lang",
+                XMLConstants.XML_NS_URI, tf.getLocale().getId()));
+        Element seg = new Element("seg");
+        String srcContent = tf.getContents().get(0);
+        if (srcContent.contains("\0")) {
+            // this should be very rare, so we can afford to use an exception
+            String msg =
+                    "illegal null character; discarding SourceContents with id="
+                            + tf.getQualifiedId();
+            throw new InvalidContentsException(msg);
+        }
+        seg.appendChild(srcContent);
+        sourceTuv.appendChild(seg);
+        return sourceTuv;
+    }
+
+    private Optional<Element> buildTargetTUV(ITextFlowTarget target) {
+        if (target.getState().isTranslated()) {
+            LocaleId locId = target.getLocaleId();
+            String trgContent = target.getContents().get(0);
+            if (trgContent.contains("\0")) {
+                String msg =
+                        "illegal null character; discarding TargetContents with locale="
+                                + locId + ", contents=" + trgContent;
+                log.warn(msg);
+                return Optional.absent();
+            }
+            Element tuv = new Element("tuv");
+            tuv.addAttribute(new Attribute("xml:lang", XMLConstants.XML_NS_URI,
+                    locId.getId()));
+            Element seg = new Element("seg");
+            seg.appendChild(trgContent);
+            tuv.appendChild(seg);
+            return Optional.of(tuv);
+        }
+        return Optional.absent();
+    }
 
 }

@@ -36,85 +36,88 @@ import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.action.XmlEntityValidation;
 
 /**
- * 
+ *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- * 
+ *
  **/
 @Test(groups = { "unit-tests" })
-public class XMLEntityValidationTests
-{
-   private XmlEntityValidation xmlEntityValidation;
+public class XMLEntityValidationTests {
+    private XmlEntityValidation xmlEntityValidation;
 
-   private ValidationMessages messages;
+    private ValidationMessages messages;
 
-   @BeforeMethod
-   public void beforeMethod() throws IOException
-   {
-      MockitoAnnotations.initMocks(this);
+    @BeforeMethod
+    public void beforeMethod() throws IOException {
+        MockitoAnnotations.initMocks(this);
 
-      messages = Gwti18nReader.create(ValidationMessages.class);
+        messages = Gwti18nReader.create(ValidationMessages.class);
 
-      xmlEntityValidation = new XmlEntityValidation(ValidationId.XML_ENTITY, messages);
-      xmlEntityValidation.getRules().setEnabled(true);
-   }
+        xmlEntityValidation =
+                new XmlEntityValidation(ValidationId.XML_ENTITY, messages);
+        xmlEntityValidation.getRules().setEnabled(true);
+    }
 
-   @Test
-   public void idIsSet()
-   {
-      assertThat(xmlEntityValidation.getId(), Matchers.equalTo(ValidationId.XML_ENTITY));
-   }
+    @Test
+    public void idIsSet() {
+        assertThat(xmlEntityValidation.getId(),
+                Matchers.equalTo(ValidationId.XML_ENTITY));
+    }
 
-   @Test
-   public void testNoEntity()
-   {
-      String source = "Source string without xml entity";
-      String target = "Target string without xml entity";
-      List<String> errorList = xmlEntityValidation.validate(source, target);
+    @Test
+    public void testNoEntity() {
+        String source = "Source string without xml entity";
+        String target = "Target string without xml entity";
+        List<String> errorList = xmlEntityValidation.validate(source, target);
 
-      assertThat(errorList.size(), Matchers.equalTo(0));
-   }
+        assertThat(errorList.size(), Matchers.equalTo(0));
+    }
 
-   @Test
-   public void testWithCompleteEntity()
-   {
-      String source = "Source string";
-      String target = "Target string: &mash; bla bla &test;";
-      List<String> errorList = xmlEntityValidation.validate(source, target);
+    @Test
+    public void testWithCompleteEntity() {
+        String source = "Source string";
+        String target = "Target string: &mash; bla bla &test;";
+        List<String> errorList = xmlEntityValidation.validate(source, target);
 
-      assertThat(errorList.size(), Matchers.equalTo(0));
-   }
+        assertThat(errorList.size(), Matchers.equalTo(0));
+    }
 
-   @Test
-   public void testWithIncompleteEntityCharRef()
-   {
-      String source = "Source string";
-      String target = "Target string: &mash bla bla &test";
-      List<String> errorList = xmlEntityValidation.validate(source, target);
+    @Test
+    public void testWithIncompleteEntityCharRef() {
+        String source = "Source string";
+        String target = "Target string: &mash bla bla &test";
+        List<String> errorList = xmlEntityValidation.validate(source, target);
 
-      assertThat(errorList.size(), Matchers.equalTo(2));
-      assertThat(errorList, contains(messages.invalidXMLEntity("&mash"), messages.invalidXMLEntity("&test")));
-   }
-   
-   @Test
-   public void testWithIncompleteEntityDecimalRef()
-   {
-      String source = "Source string";
-      String target = "Target string: &#1234 bla bla &#BC;";
-      List<String> errorList = xmlEntityValidation.validate(source, target);
+        assertThat(errorList.size(), Matchers.equalTo(2));
+        assertThat(
+                errorList,
+                contains(messages.invalidXMLEntity("&mash"),
+                        messages.invalidXMLEntity("&test")));
+    }
 
-      assertThat(errorList.size(), Matchers.equalTo(2));
-      assertThat(errorList, contains(messages.invalidXMLEntity("&#1234"), messages.invalidXMLEntity("&#BC;")));
-   }
+    @Test
+    public void testWithIncompleteEntityDecimalRef() {
+        String source = "Source string";
+        String target = "Target string: &#1234 bla bla &#BC;";
+        List<String> errorList = xmlEntityValidation.validate(source, target);
 
-   @Test
-   public void testWithIncompleteEntityHexadecimalRef()
-   {
-      String source = "Source string";
-      String target = "Target string: &#x1234 bla bla &#x09Z";
-      List<String> errorList = xmlEntityValidation.validate(source, target);
+        assertThat(errorList.size(), Matchers.equalTo(2));
+        assertThat(
+                errorList,
+                contains(messages.invalidXMLEntity("&#1234"),
+                        messages.invalidXMLEntity("&#BC;")));
+    }
 
-      assertThat(errorList.size(), Matchers.equalTo(2));
-      assertThat(errorList, contains(messages.invalidXMLEntity("&#x1234"), messages.invalidXMLEntity("&#x09Z")));
-   }
+    @Test
+    public void testWithIncompleteEntityHexadecimalRef() {
+        String source = "Source string";
+        String target = "Target string: &#x1234 bla bla &#x09Z";
+        List<String> errorList = xmlEntityValidation.validate(source, target);
+
+        assertThat(errorList.size(), Matchers.equalTo(2));
+        assertThat(
+                errorList,
+                contains(messages.invalidXMLEntity("&#x1234"),
+                        messages.invalidXMLEntity("&#x09Z")));
+    }
 
 }

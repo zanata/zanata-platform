@@ -30,294 +30,266 @@ import com.google.common.collect.Sets;
 
 /**
  * Represents a key shortcut for registration with {@link KeyShortcutPresenter}.
- * 
+ *
  * @author David Mason, <a
  *         href="mailto:damason@redhat.com">damason@redhat.com</a>
- * 
+ *
  */
-public class KeyShortcut implements Comparable<KeyShortcut>
-{
-   public enum KeyEvent {
-      KEY_UP ("keyup"),
-      KEY_DOWN ("keydown"),
-      KEY_PRESS ("keypress");
+public class KeyShortcut implements Comparable<KeyShortcut> {
+    public enum KeyEvent {
+        KEY_UP("keyup"), KEY_DOWN("keydown"), KEY_PRESS("keypress");
 
-      public final String nativeEventType;
+        public final String nativeEventType;
 
-      KeyEvent(String nativeType)
-      {
-         this.nativeEventType = nativeType;
-      }
-   }
+        KeyEvent(String nativeType) {
+            this.nativeEventType = nativeType;
+        }
+    }
 
-   public static final String DO_NOT_DISPLAY_DESCRIPTION = "";
+    public static final String DO_NOT_DISPLAY_DESCRIPTION = "";
 
-   private final Set<Keys> keys;
-   private final Set<Keys> attentionKeys;
+    private final Set<Keys> keys;
+    private final Set<Keys> attentionKeys;
 
+    private final ShortcutContext context;
+    private String description;
+    private final KeyShortcutEventHandler handler;
+    private final KeyEvent keyEvent;
 
-   private final ShortcutContext context;
-   private String description;
-   private final KeyShortcutEventHandler handler;
-   private final KeyEvent keyEvent;
+    private final boolean stopPropagation;
+    private final boolean preventDefault;
 
-   private final boolean stopPropagation;
-   private final boolean preventDefault;
+    /**
+     * Construct a KeyShortcut.
+     *
+     * @param builder
+     *            key shortcut builder
+     */
+    public KeyShortcut(Builder builder) {
+        this.keys = builder.keys;
+        this.attentionKeys = builder.attentionKeys;
+        this.context = builder.context;
+        this.description = builder.description;
+        this.handler = builder.handler;
+        this.keyEvent = builder.keyEvent;
+        this.stopPropagation = builder.stopPropagation;
+        this.preventDefault = builder.preventDefault;
+    }
 
-   /**
-    * Construct a KeyShortcut.
-    *
-    * @param builder key shortcut builder
-    */
-   public KeyShortcut(Builder builder)
-   {
-      this.keys = builder.keys;
-      this.attentionKeys = builder.attentionKeys;
-      this.context = builder.context;
-      this.description = builder.description;
-      this.handler = builder.handler;
-      this.keyEvent = builder.keyEvent;
-      this.stopPropagation = builder.stopPropagation;
-      this.preventDefault = builder.preventDefault;
-   }
+    public Set<Keys> getAllKeys() {
+        return keys;
+    }
 
-   public Set<Keys> getAllKeys()
-   {
-      return keys;
-   }
+    public Set<Keys> getAllAttentionKeys() {
+        return attentionKeys;
+    }
 
-   public Set<Keys> getAllAttentionKeys()
-   {
-      return attentionKeys;
-   }
+    public ShortcutContext getContext() {
+        return context;
+    }
 
-   public ShortcutContext getContext()
-   {
-      return context;
-   }
+    public String getDescription() {
+        return description;
+    }
 
-   public String getDescription()
-   {
-      return description;
-   }
+    public KeyShortcutEventHandler getHandler() {
+        return handler;
+    }
 
-   public KeyShortcutEventHandler getHandler()
-   {
-      return handler;
-   }
+    public KeyEvent getKeyEvent() {
+        return keyEvent;
+    }
 
-   public KeyEvent getKeyEvent()
-   {
-      return keyEvent;
-   }
+    public boolean isDisplayInView() {
+        return !DO_NOT_DISPLAY_DESCRIPTION.equals(description);
+    }
 
-   public boolean isDisplayInView()
-   {
-      return !DO_NOT_DISPLAY_DESCRIPTION.equals(description);
-   }
+    public boolean isStopPropagation() {
+        return stopPropagation;
+    }
 
-   public boolean isStopPropagation()
-   {
-      return stopPropagation;
-   }
+    public boolean isPreventDefault() {
+        return preventDefault;
+    }
 
-   public boolean isPreventDefault()
-   {
-      return preventDefault;
-   }
+    @Override
+    public int hashCode() {
+        int hash = context.ordinal();
+        for (Keys singleKey : keys) {
+            hash *= 2048;
+            hash += singleKey.hashCode();
+        }
+        for (Keys singleKey : attentionKeys) {
+            hash *= 2048;
+            hash += singleKey.hashCode();
+        }
+        return hash;
+    }
 
-   @Override
-   public int hashCode()
-   {
-      int hash = context.ordinal();
-      for (Keys singleKey : keys)
-      {
-         hash *= 2048;
-         hash += singleKey.hashCode();
-      }
-      for (Keys singleKey : attentionKeys)
-      {
-         hash *= 2048;
-         hash += singleKey.hashCode();
-      }
-      return hash;
-   }
+    /**
+     * Two {@link KeyShortcut} objects are equal if they have the same key
+     * combinations and context.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof KeyShortcut)) {
+            return false;
+        }
+        KeyShortcut other = (KeyShortcut) obj;
+        return keys.equals(other.keys)
+                && attentionKeys.equals(other.attentionKeys)
+                && context == other.context;
+    }
 
-   /**
-    * Two {@link KeyShortcut} objects are equal if they have the same key combinations and context.
-    */
-   @Override
-   public boolean equals(Object obj)
-   {
-      if (obj == null)
-      {
-         return false;
-      }
-      if (!(obj instanceof KeyShortcut))
-      {
-         return false;
-      }
-      KeyShortcut other = (KeyShortcut) obj;
-      return keys.equals(other.keys) && attentionKeys.equals(other.attentionKeys)
-            && context == other.context;
-   }
+    /**
+     * Used for sorting shortcuts in summary in UI
+     *
+     * The decision to sort regular keys before attention keys is arbitrary
+     */
+    @Override
+    public int compareTo(KeyShortcut o) {
+        // assertion: keys and attentionKeys cannot both be empty
+        if (context.ordinal() != o.context.ordinal()) {
+            return context.ordinal() - o.context.ordinal();
+        }
 
-   /**
-    * Used for sorting shortcuts in summary in UI
-    * 
-    * The decision to sort regular keys before attention keys is arbitrary
-    */
-   @Override
-   public int compareTo(KeyShortcut o)
-   {
-      // assertion: keys and attentionKeys cannot both be empty
-      if (context.ordinal() != o.context.ordinal())
-      {
-         return context.ordinal() - o.context.ordinal();
-      }
+        if (keys.isEmpty()) {
+            if (o.keys.isEmpty()) {
+                return attentionKeys.iterator().next()
+                        .compareTo(o.attentionKeys.iterator().next());
+            }
+            return 1;
+        } else {
+            if (o.keys.isEmpty()) {
+                return -1;
+            }
+            return keys.iterator().next().compareTo(o.keys.iterator().next());
+        }
+    }
 
-      if (keys.isEmpty())
-      {
-         if (o.keys.isEmpty())
-         {
-            return attentionKeys.iterator().next().compareTo(o.attentionKeys.iterator().next());
-         }
-         return 1;
-      }
-      else
-      {
-         if (o.keys.isEmpty())
-         {
-            return -1;
-         }
-         return keys.iterator().next().compareTo(o.keys.iterator().next());
-      }
-   }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-   public void setDescription(String description)
-   {
-      this.description = description;
-   }
+    public static class Builder {
+        private Set<Keys> keys = Sets.newHashSet();
+        private Set<Keys> attentionKeys = Sets.newHashSet();
+        private ShortcutContext context;
+        private String description;
+        private KeyShortcutEventHandler handler;
+        private KeyEvent keyEvent = KeyEvent.KEY_DOWN;
+        private boolean stopPropagation = false;
+        private boolean preventDefault = false;
 
-   public static class Builder
-   {
-      private Set<Keys> keys = Sets.newHashSet();
-      private Set<Keys> attentionKeys = Sets.newHashSet();
-      private ShortcutContext context;
-      private String description;
-      private KeyShortcutEventHandler handler;
-      private KeyEvent keyEvent = KeyEvent.KEY_DOWN;
-      private boolean stopPropagation = false;
-      private boolean preventDefault = false;
+        private Builder(KeyShortcut shortcut) {
+            this.keys = shortcut.getAllKeys();
+            this.attentionKeys = shortcut.getAllAttentionKeys();
+            this.context = shortcut.getContext();
+            this.description = shortcut.getDescription();
+            this.handler = shortcut.getHandler();
+            this.keyEvent = shortcut.getKeyEvent();
+            this.stopPropagation = shortcut.isStopPropagation();
+            this.preventDefault = shortcut.isPreventDefault();
+        }
 
-      private Builder(KeyShortcut shortcut)
-      {
-         this.keys = shortcut.getAllKeys();
-         this.attentionKeys = shortcut.getAllAttentionKeys();
-         this.context = shortcut.getContext();
-         this.description = shortcut.getDescription();
-         this.handler = shortcut.getHandler();
-         this.keyEvent = shortcut.getKeyEvent();
-         this.stopPropagation = shortcut.isStopPropagation();
-         this.preventDefault = shortcut.isPreventDefault();
-      }
+        private Builder() {
+        }
 
-      private Builder()
-      {
-      }
+        public static Builder builder() {
+            return new Builder();
+        }
 
-      public static Builder builder()
-      {
-         return new Builder();
-      }
+        public KeyShortcut build() {
+            Preconditions.checkNotNull(keys);
+            Preconditions.checkNotNull(attentionKeys);
+            if (keys.isEmpty() && attentionKeys.isEmpty()) {
+                throw new IllegalStateException(
+                        "At least one key combination must be specified, none registered");
+            }
+            Preconditions.checkNotNull(context);
+            Preconditions.checkNotNull(handler);
+            Preconditions.checkNotNull(keyEvent);
+            return new KeyShortcut(this);
+        }
 
-      public KeyShortcut build()
-      {
-         Preconditions.checkNotNull(keys);
-         Preconditions.checkNotNull(attentionKeys);
-         if (keys.isEmpty() && attentionKeys.isEmpty())
-         {
-            throw new IllegalStateException("At least one key combination must be specified, none registered");
-         }
-         Preconditions.checkNotNull(context);
-         Preconditions.checkNotNull(handler);
-         Preconditions.checkNotNull(keyEvent);
-         return new KeyShortcut(this);
-      }
+        public Builder addKey(Keys key) {
+            keys.add(key);
+            return this;
+        }
 
-      public Builder addKey(Keys key)
-      {
-         keys.add(key);
-         return this;
-      }
+        public Builder addAttentionKey(Keys key) {
+            attentionKeys.add(key);
+            return this;
+        }
 
-      public Builder addAttentionKey(Keys key)
-      {
-         attentionKeys.add(key);
-         return this;
-      }
+        /**
+         * @param context
+         *            see
+         *            {@link KeyShortcutPresenter#setContextActive(ShortcutContext, boolean)}
+         * @return builder itself
+         */
+        public Builder setContext(ShortcutContext context) {
+            this.context = context;
+            return this;
+        }
 
-      /**
-       * @param context see {@link KeyShortcutPresenter#setContextActive(ShortcutContext, boolean)}
-       * @return builder itself
-       */
-      public Builder setContext(ShortcutContext context)
-      {
-         this.context = context;
-         return this;
-      }
+        /**
+         * @param description
+         *            shown to the user in the key shortcut summary pane. Use
+         *            {@link #DO_NOT_DISPLAY_DESCRIPTION} to prevent shortcut
+         *            being
+         * @return builder itself
+         */
+        public Builder setDescription(String description) {
+            this.description = description;
+            return this;
+        }
 
-      /**
-       * @param description shown to the user in the key shortcut summary pane.
-       *        Use {@link #DO_NOT_DISPLAY_DESCRIPTION} to prevent shortcut being
-       * @return builder itself
-       */
-      public Builder setDescription(String description)
-      {
-         this.description = description;
-         return this;
-      }
+        /**
+         * @param handler
+         *            activated for a registered {@link KeyShortcut} when
+         *            context is active and a user inputs the correct key
+         *            combination
+         * @return builder itself
+         */
+        public Builder setHandler(KeyShortcutEventHandler handler) {
+            this.handler = handler;
+            return this;
+        }
 
-      /**
-       * @param handler activated for a registered {@link KeyShortcut} when context is active and a
-       * user inputs the correct key combination
-       * @return builder itself
-       */
-      public Builder setHandler(KeyShortcutEventHandler handler)
-      {
-         this.handler = handler;
-         return this;
-      }
+        /**
+         * @param keyEvent
+         *            determines which type of key event will trigger this
+         *            shortcut.
+         * @return builder itself
+         */
+        public Builder setKeyEvent(KeyEvent keyEvent) {
+            this.keyEvent = keyEvent;
+            return this;
+        }
 
-      /**
-       * @param keyEvent determines which type of key event will trigger this shortcut.
-       * @return builder itself
-       */
-      public Builder setKeyEvent(KeyEvent keyEvent)
-      {
-         this.keyEvent = keyEvent;
-         return this;
-      }
+        /**
+         * @param stopPropagation
+         *            {@see NativeEvent#stopPropagation()}
+         * @return builder itself
+         */
+        public Builder setStopPropagation(boolean stopPropagation) {
+            this.stopPropagation = stopPropagation;
+            return this;
+        }
 
-      /**
-       * @param stopPropagation {@see NativeEvent#stopPropagation()}
-       * @return builder itself
-       */
-      public Builder setStopPropagation(boolean stopPropagation)
-      {
-         this.stopPropagation = stopPropagation;
-         return this;
-      }
-
-      /**
-       * @param preventDefault {@see NativeEvent#preventDefault()}
-       * @return builder itself
-       */
-      public Builder setPreventDefault(boolean preventDefault)
-      {
-         this.preventDefault = preventDefault;
-         return this;
-      }
-   }
+        /**
+         * @param preventDefault
+         *            {@see NativeEvent#preventDefault()}
+         * @return builder itself
+         */
+        public Builder setPreventDefault(boolean preventDefault) {
+            this.preventDefault = preventDefault;
+            return this;
+        }
+    }
 
 }

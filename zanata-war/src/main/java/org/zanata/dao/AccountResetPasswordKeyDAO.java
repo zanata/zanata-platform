@@ -20,7 +20,6 @@
  */
 package org.zanata.dao;
 
-
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -31,17 +30,15 @@ import org.zanata.model.HAccountResetPasswordKey;
 @Name("accountResetPasswordKeyDAO")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
-public class AccountResetPasswordKeyDAO extends AbstractDAOImpl<HAccountResetPasswordKey, String>
-{
+public class AccountResetPasswordKeyDAO extends
+        AbstractDAOImpl<HAccountResetPasswordKey, String> {
 
-   public AccountResetPasswordKeyDAO()
-   {
-      super(HAccountResetPasswordKey.class);
-   }
+    public AccountResetPasswordKeyDAO() {
+        super(HAccountResetPasswordKey.class);
+    }
 
-   public AccountResetPasswordKeyDAO(Session session)
-   {
-      super(HAccountResetPasswordKey.class, session);
-   }
+    public AccountResetPasswordKeyDAO(Session session) {
+        super(HAccountResetPasswordKey.class, session);
+    }
 
 }

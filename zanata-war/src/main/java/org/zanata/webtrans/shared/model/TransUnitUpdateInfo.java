@@ -28,92 +28,83 @@ import com.google.gwt.user.client.rpc.*;
 
 /**
  * Represents information about an attempted update of a {@link TransUnit}.
- * 
+ *
  * @author David Mason, damason@redhat.com
- * 
+ *
  */
-public class TransUnitUpdateInfo implements IsSerializable
-{
-   private boolean success;
-   private boolean targetChanged;
-   private DocumentId documentId;
-   private TransUnit transUnit;
-   private int sourceWordCount;
-   private int previousVersionNum;
-   private ContentState previousState;
-   private String errorMessage;
+public class TransUnitUpdateInfo implements IsSerializable {
+    private boolean success;
+    private boolean targetChanged;
+    private DocumentId documentId;
+    private TransUnit transUnit;
+    private int sourceWordCount;
+    private int previousVersionNum;
+    private ContentState previousState;
+    private String errorMessage;
 
-   // required for GWT rpc serialization
-   @SuppressWarnings("unused")
-   private TransUnitUpdateInfo()
-   {
-   }
+    // required for GWT rpc serialization
+    @SuppressWarnings("unused")
+    private TransUnitUpdateInfo() {
+    }
 
-   public TransUnitUpdateInfo(boolean success, boolean targetChanged, DocumentId documentId, TransUnit transUnit,
-         int sourceWordCount, int previousVersionNum, ContentState previousState, String errorMessage)
-   {
-      this.success = success;
-      this.targetChanged = targetChanged;
-      this.documentId = documentId;
-      this.transUnit = transUnit;
-      this.sourceWordCount = sourceWordCount;
-      this.previousVersionNum = previousVersionNum;
-      this.previousState = previousState;
-      this.errorMessage = errorMessage;
-   }
+    public TransUnitUpdateInfo(boolean success, boolean targetChanged,
+            DocumentId documentId, TransUnit transUnit, int sourceWordCount,
+            int previousVersionNum, ContentState previousState,
+            String errorMessage) {
+        this.success = success;
+        this.targetChanged = targetChanged;
+        this.documentId = documentId;
+        this.transUnit = transUnit;
+        this.sourceWordCount = sourceWordCount;
+        this.previousVersionNum = previousVersionNum;
+        this.previousState = previousState;
+        this.errorMessage = errorMessage;
+    }
 
-   public TransUnitUpdateInfo(boolean success, boolean targetChanged, DocumentId documentId, TransUnit transUnit,
-         int sourceWordCount, int previousVersionNum, ContentState previousState)
-   {
-      this(success, targetChanged, documentId, transUnit, sourceWordCount, previousVersionNum, previousState, null);
-   }
+    public TransUnitUpdateInfo(boolean success, boolean targetChanged,
+            DocumentId documentId, TransUnit transUnit, int sourceWordCount,
+            int previousVersionNum, ContentState previousState) {
+        this(success, targetChanged, documentId, transUnit, sourceWordCount,
+                previousVersionNum, previousState, null);
+    }
 
-   public boolean isSuccess()
-   {
-      // TODO could do this
-      //      return transUnit.getVerNum() > previousVersionNum;
-      return success;
-   }
+    public boolean isSuccess() {
+        // TODO could do this
+        // return transUnit.getVerNum() > previousVersionNum;
+        return success;
+    }
 
-   public boolean isTargetChanged()
-   {
-      return targetChanged;
-   }
+    public boolean isTargetChanged() {
+        return targetChanged;
+    }
 
-   public DocumentId getDocumentId()
-   {
-      return documentId;
-   }
+    public DocumentId getDocumentId() {
+        return documentId;
+    }
 
-   public TransUnit getTransUnit()
-   {
-      return transUnit;
-   }
+    public TransUnit getTransUnit() {
+        return transUnit;
+    }
 
-   public int getPreviousVersionNum()
-   {
-      return previousVersionNum;
-   }
+    public int getPreviousVersionNum() {
+        return previousVersionNum;
+    }
 
-   public ContentState getPreviousState()
-   {
-      return previousState;
-   }
+    public ContentState getPreviousState() {
+        return previousState;
+    }
 
-   public int getSourceWordCount()
-   {
-      return sourceWordCount;
-   }
+    public int getSourceWordCount() {
+        return sourceWordCount;
+    }
 
-   public String getErrorMessage()
-   {
-      return errorMessage;
-   }
+    public String getErrorMessage() {
+        return errorMessage;
+    }
 
-   @Override
-   public String toString()
-   {
-      // @formatter:off
+    @Override
+    public String toString() {
+        // @formatter:off
       return Objects.toStringHelper(this).
             add("success", success).
             add("documentId", documentId).
@@ -124,5 +115,5 @@ public class TransUnitUpdateInfo implements IsSerializable
             add("errorMessage", errorMessage).
             toString();
       // @formatter:on
-   }
+    }
 }

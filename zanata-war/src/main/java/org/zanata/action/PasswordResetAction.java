@@ -24,134 +24,126 @@ import org.zanata.model.HAccountResetPasswordKey;
 
 @Name("passwordReset")
 @Scope(ScopeType.CONVERSATION)
-public class PasswordResetAction implements Serializable
-{
+public class PasswordResetAction implements Serializable {
 
-   private static final long serialVersionUID = -3966625589007754411L;
+    private static final long serialVersionUID = -3966625589007754411L;
 
-   @Logger
-   Log log;
+    @Logger
+    Log log;
 
-   @In
-   private EntityManager entityManager;
+    @In
+    private EntityManager entityManager;
 
-   @In
-   private IdentityManager identityManager;
+    @In
+    private IdentityManager identityManager;
 
-   private String activationKey;
+    private String activationKey;
 
-   private String password;
-   private String passwordConfirm;
+    private String password;
+    private String passwordConfirm;
 
-   private HAccountResetPasswordKey key;
+    private HAccountResetPasswordKey key;
 
-   public void setPassword(String password)
-   {
-      this.password = password;
-   }
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-   @NotEmpty
-   @Size(min = 6, max = 20)
-   // @Pattern(regex="(?=^.{6,}$)((?=.*\\d)|(?=.*\\W+))(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$",
-   // message="Password is not secure enough!")
-   public String getPassword()
-   {
-      return password;
-   }
+    @NotEmpty
+    @Size(min = 6, max = 20)
+    // @Pattern(regex="(?=^.{6,}$)((?=.*\\d)|(?=.*\\W+))(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$",
+    // message="Password is not secure enough!")
+            public
+            String getPassword() {
+        return password;
+    }
 
-   public void setPasswordConfirm(String passwordConfirm)
-   {
-      this.passwordConfirm = passwordConfirm;
-      validatePasswordsMatch();
-   }
+    public void setPasswordConfirm(String passwordConfirm) {
+        this.passwordConfirm = passwordConfirm;
+        validatePasswordsMatch();
+    }
 
-   public String getPasswordConfirm()
-   {
-      return passwordConfirm;
-   }
+    public String getPasswordConfirm() {
+        return passwordConfirm;
+    }
 
-   public boolean validatePasswordsMatch()
-   {
-      if (password == null || !password.equals(passwordConfirm))
-      {
-         FacesMessages.instance().addToControl("passwordConfirm", "Passwords do not match");
-         return false;
-      }
-      return true;
-   }
+    public boolean validatePasswordsMatch() {
+        if (password == null || !password.equals(passwordConfirm)) {
+            FacesMessages.instance().addToControl("passwordConfirm",
+                    "Passwords do not match");
+            return false;
+        }
+        return true;
+    }
 
-   public String getActivationKey()
-   {
-      return activationKey;
-   }
+    public String getActivationKey() {
+        return activationKey;
+    }
 
-   public void setActivationKey(String activationKey)
-   {
-      this.activationKey = activationKey;
-      key = entityManager.find(HAccountResetPasswordKey.class, getActivationKey());
-   }
+    public void setActivationKey(String activationKey) {
+        this.activationKey = activationKey;
+        key =
+                entityManager.find(HAccountResetPasswordKey.class,
+                        getActivationKey());
+    }
 
-   private HAccountResetPasswordKey getKey()
-   {
-      return key;
-   }
+    private HAccountResetPasswordKey getKey() {
+        return key;
+    }
 
-   @Begin(join = true)
-   public void validateActivationKey()
-   {
+    @Begin(join = true)
+    public void validateActivationKey() {
 
-      if (getActivationKey() == null)
-         throw new KeyNotFoundException();
+        if (getActivationKey() == null)
+            throw new KeyNotFoundException();
 
-      key = entityManager.find(HAccountResetPasswordKey.class, getActivationKey());
+        key =
+                entityManager.find(HAccountResetPasswordKey.class,
+                        getActivationKey());
 
-      if (key == null)
-         throw new KeyNotFoundException();
-   }
+        if (key == null)
+            throw new KeyNotFoundException();
+    }
 
-   private boolean passwordChanged;
+    private boolean passwordChanged;
 
-   @End
-   public String changePassword()
-   {
+    @End
+    public String changePassword() {
 
-      if (!validatePasswordsMatch())
-         return null;
+        if (!validatePasswordsMatch())
+            return null;
 
-      new RunAsOperation()
-      {
-         public void execute()
-         {
-            try
-            {
-               passwordChanged = identityManager.changePassword(getKey().getAccount().getUsername(), getPassword());
+        new RunAsOperation() {
+            public void execute() {
+                try {
+                    passwordChanged =
+                            identityManager.changePassword(getKey()
+                                    .getAccount().getUsername(), getPassword());
+                } catch (AuthorizationException e) {
+                    passwordChanged = false;
+                    FacesMessages.instance().add(
+                            "Error changing password: " + e.getMessage());
+                } catch (NotLoggedInException ex) {
+                    passwordChanged = false;
+                    FacesMessages.instance().add(
+                            "Error changing password: " + ex.getMessage());
+                }
             }
-            catch (AuthorizationException e)
-            {
-               passwordChanged = false;
-               FacesMessages.instance().add("Error changing password: " + e.getMessage());
-            }
-            catch (NotLoggedInException ex)
-            {
-               passwordChanged = false;
-               FacesMessages.instance().add("Error changing password: " + ex.getMessage());
-            }
-         }
-      }.addRole("admin").run();
+        }.addRole("admin").run();
 
-      entityManager.remove(getKey());
+        entityManager.remove(getKey());
 
-      if (passwordChanged)
-      {
-         FacesMessages.instance().add("Your password has been successfully changed. Please sign in with your new password.");
-         return "/account/login.xhtml";
-      }
-      else
-      {
-         FacesMessages.instance().add("There was a problem changing the password. Please try again.");
-         return null;
-      }
+        if (passwordChanged) {
+            FacesMessages
+                    .instance()
+                    .add("Your password has been successfully changed. Please sign in with your new password.");
+            return "/account/login.xhtml";
+        } else {
+            FacesMessages
+                    .instance()
+                    .add("There was a problem changing the password. Please try again.");
+            return null;
+        }
 
-   }
+    }
 
 }

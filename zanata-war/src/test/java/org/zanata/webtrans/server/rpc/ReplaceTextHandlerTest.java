@@ -20,7 +20,6 @@
  */
 package org.zanata.webtrans.server.rpc;
 
-
 import java.util.List;
 
 import org.hamcrest.MatcherAssert;
@@ -42,68 +41,79 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 
 @Test(groups = "unit-tests")
-public class ReplaceTextHandlerTest
-{
-   public static final boolean CASE_INSENSITIVE = false;
-   public static final boolean CASE_SENSITIVE = true;
-   private ReplaceTextHandler handler;
-   @Mock private UpdateTransUnitHandler mockUpdateTransUnitHandler;
-   @Mock private ExecutionContext context;
-   private TransUnit.Builder transUnitBuilder;
-   @Mock private SecurityService mockSecurityService;
+public class ReplaceTextHandlerTest {
+    public static final boolean CASE_INSENSITIVE = false;
+    public static final boolean CASE_SENSITIVE = true;
+    private ReplaceTextHandler handler;
+    @Mock
+    private UpdateTransUnitHandler mockUpdateTransUnitHandler;
+    @Mock
+    private ExecutionContext context;
+    private TransUnit.Builder transUnitBuilder;
+    @Mock
+    private SecurityService mockSecurityService;
 
-   @BeforeMethod
-   public void beforeMethod()
-   {
-      MockitoAnnotations.initMocks(this);
-      handler = new ReplaceTextHandler();
-      handler.updateTransUnitHandler = mockUpdateTransUnitHandler;
-      handler.securityServiceImpl = mockSecurityService;
-      transUnitBuilder = TransUnit.Builder.newTransUnitBuilder()
-            .setId(1).setResId("").setLocaleId("en-US").setVerNum(1).addSource("abc").setVerNum(0).setRowIndex(0);
-   }
+    @BeforeMethod
+    public void beforeMethod() {
+        MockitoAnnotations.initMocks(this);
+        handler = new ReplaceTextHandler();
+        handler.updateTransUnitHandler = mockUpdateTransUnitHandler;
+        handler.securityServiceImpl = mockSecurityService;
+        transUnitBuilder =
+                TransUnit.Builder.newTransUnitBuilder().setId(1).setResId("")
+                        .setLocaleId("en-US").setVerNum(1).addSource("abc")
+                        .setVerNum(0).setRowIndex(0);
+    }
 
-   @Test
-   public void canReplaceTextCaseInsensitively() throws ActionException
-   {
-      TransUnit transUnit = transUnitBuilder.addTargets("abc", "AbC", "ABC").build();
-      ReplaceText action = new ReplaceText(transUnit, "abc", "123", CASE_INSENSITIVE);
+    @Test
+    public void canReplaceTextCaseInsensitively() throws ActionException {
+        TransUnit transUnit =
+                transUnitBuilder.addTargets("abc", "AbC", "ABC").build();
+        ReplaceText action =
+                new ReplaceText(transUnit, "abc", "123", CASE_INSENSITIVE);
 
-      handler.execute(action, context);
+        handler.execute(action, context);
 
-      ArgumentCaptor<UpdateTransUnit> captor = ArgumentCaptor.forClass(UpdateTransUnit.class);
-      verify(mockUpdateTransUnitHandler).execute(captor.capture(), eq(context));
-      List<String> expectedList = Lists.newArrayList("123", "123", "123");
-      MatcherAssert.assertThat(captor.getValue().getUpdateRequests().get(0).getNewContents(), Matchers.equalTo(expectedList));
-   }
+        ArgumentCaptor<UpdateTransUnit> captor =
+                ArgumentCaptor.forClass(UpdateTransUnit.class);
+        verify(mockUpdateTransUnitHandler).execute(captor.capture(),
+                eq(context));
+        List<String> expectedList = Lists.newArrayList("123", "123", "123");
+        MatcherAssert.assertThat(captor.getValue().getUpdateRequests().get(0)
+                .getNewContents(), Matchers.equalTo(expectedList));
+    }
 
-   @Test
-   public void canReplaceTextCaseSensitively() throws ActionException
-   {
-      TransUnit transUnit = transUnitBuilder.addTargets("abc", "AbC", "ABC").build();
-      ReplaceText action = new ReplaceText(transUnit, "abc", "123", CASE_SENSITIVE);
+    @Test
+    public void canReplaceTextCaseSensitively() throws ActionException {
+        TransUnit transUnit =
+                transUnitBuilder.addTargets("abc", "AbC", "ABC").build();
+        ReplaceText action =
+                new ReplaceText(transUnit, "abc", "123", CASE_SENSITIVE);
 
-      handler.execute(action, context);
+        handler.execute(action, context);
 
-      ArgumentCaptor<UpdateTransUnit> captor = ArgumentCaptor.forClass(UpdateTransUnit.class);
-      verify(mockUpdateTransUnitHandler).execute(captor.capture(), eq(context));
-      List<String> expectedList = Lists.newArrayList("123", "AbC", "ABC");
-      MatcherAssert.assertThat(captor.getValue().getUpdateRequests().get(0).getNewContents(), Matchers.equalTo(expectedList));
-   }
+        ArgumentCaptor<UpdateTransUnit> captor =
+                ArgumentCaptor.forClass(UpdateTransUnit.class);
+        verify(mockUpdateTransUnitHandler).execute(captor.capture(),
+                eq(context));
+        List<String> expectedList = Lists.newArrayList("123", "AbC", "ABC");
+        MatcherAssert.assertThat(captor.getValue().getUpdateRequests().get(0)
+                .getNewContents(), Matchers.equalTo(expectedList));
+    }
 
-   @Test(expectedExceptions = {ActionException.class})
-   public void willThrowExceptionIfSearchTextIsEmpty() throws ActionException
-   {
-      TransUnit transUnit = transUnitBuilder.build();
-      ReplaceText action = new ReplaceText(transUnit, "", "123", CASE_SENSITIVE);
-      handler.execute(action, context);
-   }
+    @Test(expectedExceptions = { ActionException.class })
+    public void willThrowExceptionIfSearchTextIsEmpty() throws ActionException {
+        TransUnit transUnit = transUnitBuilder.build();
+        ReplaceText action =
+                new ReplaceText(transUnit, "", "123", CASE_SENSITIVE);
+        handler.execute(action, context);
+    }
 
-   @Test(expectedExceptions = {ActionException.class})
-   public void willThrowExceptionIfReplaceTextIsEmpty() throws ActionException
-   {
-      TransUnit transUnit = transUnitBuilder.build();
-      ReplaceText action = new ReplaceText(transUnit, "abc", null, CASE_SENSITIVE);
-      handler.execute(action, context);
-   }
+    @Test(expectedExceptions = { ActionException.class })
+    public void willThrowExceptionIfReplaceTextIsEmpty() throws ActionException {
+        TransUnit transUnit = transUnitBuilder.build();
+        ReplaceText action =
+                new ReplaceText(transUnit, "abc", null, CASE_SENSITIVE);
+        handler.execute(action, context);
+    }
 }

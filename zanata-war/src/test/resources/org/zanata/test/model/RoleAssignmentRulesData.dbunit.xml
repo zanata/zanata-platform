@@ -1,22 +1,22 @@
 <?xml version="1.0"?>
 <dataset>
-    <HRoleAssignmentRule
-            id="1"
-            policyName="zanata"
-            identityRegExp=".*"
-            role_to_assign_id="1"
-            creationDate="2009-09-01 20:30:16"
-            lastChanged="2009-09-01 20:30:16"
-            versionNum="1"
-            />
+  <HRoleAssignmentRule
+    id="1"
+    policyName="zanata"
+    identityRegExp=".*"
+    role_to_assign_id="1"
+    creationDate="2009-09-01 20:30:16"
+    lastChanged="2009-09-01 20:30:16"
+    versionNum="1"
+    />
 
-    <HRoleAssignmentRule
-            id="2"
-            policyName="fedora"
-            identityRegExp="^http://.*.id.fedoraproject.org/$"
-            role_to_assign_id="3"
-            creationDate="2009-09-01 20:30:16"
-            lastChanged="2009-09-01 20:30:16"
-            versionNum="1"
-            />
+  <HRoleAssignmentRule
+    id="2"
+    policyName="fedora"
+    identityRegExp="^http://.*.id.fedoraproject.org/$"
+    role_to_assign_id="3"
+    creationDate="2009-09-01 20:30:16"
+    lastChanged="2009-09-01 20:30:16"
+    versionNum="1"
+    />
 </dataset>

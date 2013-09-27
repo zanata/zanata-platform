@@ -25,46 +25,38 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.UnexpectedTagNameException;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class Checkbox
-{
-   private final WebElement chkElement;
+public class Checkbox {
+    private final WebElement chkElement;
 
-   private Checkbox(WebElement element)
-   {
-      String tagName = element.getTagName();
-      if (null == tagName || !"input".equals(tagName.toLowerCase()))
-      {
-         throw new UnexpectedTagNameException("input", tagName);
-      }
+    private Checkbox(WebElement element) {
+        String tagName = element.getTagName();
+        if (null == tagName || !"input".equals(tagName.toLowerCase())) {
+            throw new UnexpectedTagNameException("input", tagName);
+        }
 
-      String type = element.getAttribute("type");
-      if (type == null || !"checkbox".equals(type.toLowerCase()))
-      {
-         throw new IllegalArgumentException("element is not a checkbox");
-      }
-      this.chkElement = element;
-   }
+        String type = element.getAttribute("type");
+        if (type == null || !"checkbox".equals(type.toLowerCase())) {
+            throw new IllegalArgumentException("element is not a checkbox");
+        }
+        this.chkElement = element;
+    }
 
-   public static Checkbox of(WebElement webElement)
-   {
-      return new Checkbox(webElement);
-   }
+    public static Checkbox of(WebElement webElement) {
+        return new Checkbox(webElement);
+    }
 
-   public void check()
-   {
-      if (!chkElement.isSelected())
-      {
-         chkElement.click();
-      }
-   }
+    public void check() {
+        if (!chkElement.isSelected()) {
+            chkElement.click();
+        }
+    }
 
-   public void uncheck()
-   {
-      if (chkElement.isSelected())
-      {
-         chkElement.click();
-      }
-   }
+    public void uncheck() {
+        if (chkElement.isSelected()) {
+            chkElement.click();
+        }
+    }
 }

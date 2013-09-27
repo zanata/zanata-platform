@@ -10,13 +10,13 @@ import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public interface CachingDispatchAsync extends DispatchAsync
-{
-   void setUserWorkspaceContext(UserWorkspaceContext userWorkspaceContext);
-   
-   void setIdentity(Identity identity);
+public interface CachingDispatchAsync extends DispatchAsync {
+    void setUserWorkspaceContext(UserWorkspaceContext userWorkspaceContext);
 
-   <A extends Action<R>, R extends Result> void rollback(A action, R result, AsyncCallback<Void> callback);
+    void setIdentity(Identity identity);
 
-   void setEventBus(EventBus eventBus);
+    <A extends Action<R>, R extends Result> void rollback(A action, R result,
+            AsyncCallback<Void> callback);
+
+    void setEventBus(EventBus eventBus);
 }

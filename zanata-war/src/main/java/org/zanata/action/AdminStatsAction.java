@@ -42,139 +42,114 @@ import org.zanata.dao.TextFlowTargetDAO;
  **/
 @Name("adminStatsAction")
 @Scope(ScopeType.PAGE)
-public class AdminStatsAction implements Serializable
-{
-   /**
-    * 
+public class AdminStatsAction implements Serializable {
+    /**
+    *
     */
-   private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-   @Logger
-   Log log;
+    @Logger
+    Log log;
 
-   @In
-   ProjectDAO projectDAO;
+    @In
+    ProjectDAO projectDAO;
 
-   @In
-   ProjectIterationDAO projectIterationDAO;
+    @In
+    ProjectIterationDAO projectIterationDAO;
 
-   @In
-   PersonDAO personDAO;
+    @In
+    PersonDAO personDAO;
 
-   @In
-   TextFlowDAO textFlowDAO;
+    @In
+    TextFlowDAO textFlowDAO;
 
-   @In
-   TextFlowTargetDAO textFlowTargetDAO;
+    @In
+    TextFlowTargetDAO textFlowTargetDAO;
 
-   @In
-   DocumentDAO documentDAO;
+    @In
+    DocumentDAO documentDAO;
 
-   public int getTotalProjectCount()
-   {
-      return projectDAO.getTotalProjectCount();
-   }
+    public int getTotalProjectCount() {
+        return projectDAO.getTotalProjectCount();
+    }
 
-   public int getTotalActiveProjectCount()
-   {
-      return projectDAO.getTotalActiveProjectCount();
-   }
+    public int getTotalActiveProjectCount() {
+        return projectDAO.getTotalActiveProjectCount();
+    }
 
-   public int getTotalReadOnlyProjectCount()
-   {
-      return projectDAO.getTotalReadOnlyProjectCount();
-   }
+    public int getTotalReadOnlyProjectCount() {
+        return projectDAO.getTotalReadOnlyProjectCount();
+    }
 
-   public int getTotalObsoleteProjectCount()
-   {
-      return projectDAO.getTotalObsoleteProjectCount();
-   }
+    public int getTotalObsoleteProjectCount() {
+        return projectDAO.getTotalObsoleteProjectCount();
+    }
 
-   public int getTotalProjectIterCount()
-   {
-      return projectIterationDAO.getTotalProjectIterCount();
-   }
+    public int getTotalProjectIterCount() {
+        return projectIterationDAO.getTotalProjectIterCount();
+    }
 
-   public int getTotalActiveProjectIterCount()
-   {
-      return projectIterationDAO.getTotalActiveProjectIterCount();
-   }
+    public int getTotalActiveProjectIterCount() {
+        return projectIterationDAO.getTotalActiveProjectIterCount();
+    }
 
-   public int getTotalReadOnlyProjectIterCount()
-   {
-      return projectIterationDAO.getTotalReadOnlyProjectIterCount();
-   }
+    public int getTotalReadOnlyProjectIterCount() {
+        return projectIterationDAO.getTotalReadOnlyProjectIterCount();
+    }
 
-   public int getTotalObsoleteProjectIterCount()
-   {
-      return projectIterationDAO.getTotalObsoleteProjectIterCount();
-   }
+    public int getTotalObsoleteProjectIterCount() {
+        return projectIterationDAO.getTotalObsoleteProjectIterCount();
+    }
 
-   public int getTotalTranslator()
-   {
-      return personDAO.getTotalTranslator();
-   }
+    public int getTotalTranslator() {
+        return personDAO.getTotalTranslator();
+    }
 
-   public int getTotalDocuments()
-   {
-      return documentDAO.getTotalDocument();
-   }
+    public int getTotalDocuments() {
+        return documentDAO.getTotalDocument();
+    }
 
-   public int getTotalActiveDocuments()
-   {
-      return documentDAO.getTotalActiveDocument();
-   }
+    public int getTotalActiveDocuments() {
+        return documentDAO.getTotalActiveDocument();
+    }
 
-   public int getTotalObsoleteDocuments()
-   {
-      return documentDAO.getTotalObsoleteDocument();
-   }
+    public int getTotalObsoleteDocuments() {
+        return documentDAO.getTotalObsoleteDocument();
+    }
 
-   public int getTotalTextFlows()
-   {
-      return textFlowDAO.getTotalTextFlows();
-   }
+    public int getTotalTextFlows() {
+        return textFlowDAO.getTotalTextFlows();
+    }
 
-   public int getTotalActiveTextFlows()
-   {
-      return textFlowDAO.getTotalActiveTextFlows();
-   }
+    public int getTotalActiveTextFlows() {
+        return textFlowDAO.getTotalActiveTextFlows();
+    }
 
-   public int getTotalObsoleteTextFlows()
-   {
-      return textFlowDAO.getTotalObsoleteTextFlows();
-   }
+    public int getTotalObsoleteTextFlows() {
+        return textFlowDAO.getTotalObsoleteTextFlows();
+    }
 
-   public int getTotalTextFlowTargets()
-   {
-      return textFlowTargetDAO.getTotalTextFlowTargets();
-   }
+    public int getTotalTextFlowTargets() {
+        return textFlowTargetDAO.getTotalTextFlowTargets();
+    }
 
-   public int getTotalActiveTextFlowTargets()
-   {
-      return textFlowTargetDAO.getTotalActiveTextFlowTargets();
-   }
+    public int getTotalActiveTextFlowTargets() {
+        return textFlowTargetDAO.getTotalActiveTextFlowTargets();
+    }
 
-   public int getTotalObsoleteTextFlowTargets()
-   {
-      return textFlowTargetDAO.getTotalObsoleteTextFlowTargets();
-   }
+    public int getTotalObsoleteTextFlowTargets() {
+        return textFlowTargetDAO.getTotalObsoleteTextFlowTargets();
+    }
 
-   public int getTotalApprovedTextFlowTargets()
-   {
-      return textFlowTargetDAO.getTotalTranslatedTextFlowTargets();
-   }
+    public int getTotalApprovedTextFlowTargets() {
+        return textFlowTargetDAO.getTotalTranslatedTextFlowTargets();
+    }
 
-   public int getTotalRejectedOrFuzzyTextFlowTargets()
-   {
-      return textFlowTargetDAO.getTotalRejectedOrFuzzyTextFlowTargets();
-   }
+    public int getTotalRejectedOrFuzzyTextFlowTargets() {
+        return textFlowTargetDAO.getTotalRejectedOrFuzzyTextFlowTargets();
+    }
 
-   public int getTotalUntranslatedTextFlowTargets()
-   {
-      return textFlowTargetDAO.getTotalNewTextFlowTargets();
-   }
+    public int getTotalUntranslatedTextFlowTargets() {
+        return textFlowTargetDAO.getTotalNewTextFlowTargets();
+    }
 }
-
-
- 

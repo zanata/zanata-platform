@@ -36,104 +36,133 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Name("webtrans.gwt.GetTranslationHistoryHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(GetTranslationHistoryAction.class)
 @Slf4j
-public class GetTranslationHistoryHandler extends AbstractActionHandler<GetTranslationHistoryAction, GetTranslationHistoryResult>
-{
-   @In
-   private ZanataIdentity identity;
+public class GetTranslationHistoryHandler
+        extends
+        AbstractActionHandler<GetTranslationHistoryAction, GetTranslationHistoryResult> {
+    @In
+    private ZanataIdentity identity;
 
-   @In
-   private LocaleService localeServiceImpl;
+    @In
+    private LocaleService localeServiceImpl;
 
-   @In
-   private TextFlowDAO textFlowDAO;
+    @In
+    private TextFlowDAO textFlowDAO;
 
-   @In
-   private TextFlowTargetReviewCommentsDAO textFlowTargetReviewCommentsDAO;
+    @In
+    private TextFlowTargetReviewCommentsDAO textFlowTargetReviewCommentsDAO;
 
-   @In
-   private ResourceUtils resourceUtils;
+    @In
+    private ResourceUtils resourceUtils;
 
-   @Override
-   public GetTranslationHistoryResult execute(GetTranslationHistoryAction action, ExecutionContext context) throws ActionException
-   {
-      identity.checkLoggedIn();
-      log.debug("get translation history for text flow id {}", action.getTransUnitId());
+    @Override
+    public GetTranslationHistoryResult execute(
+            GetTranslationHistoryAction action, ExecutionContext context)
+            throws ActionException {
+        identity.checkLoggedIn();
+        log.debug("get translation history for text flow id {}",
+                action.getTransUnitId());
 
-      HLocale hLocale;
-      try
-      {
-         hLocale = localeServiceImpl.validateLocaleByProjectIteration(action.getWorkspaceId().getLocaleId(), action.getWorkspaceId().getProjectIterationId().getProjectSlug(), action.getWorkspaceId().getProjectIterationId().getIterationSlug());
-      }
-      catch (ZanataServiceException e)
-      {
-         throw new ActionException(e);
-      }
+        HLocale hLocale;
+        try {
+            hLocale =
+                    localeServiceImpl.validateLocaleByProjectIteration(action
+                            .getWorkspaceId().getLocaleId(), action
+                            .getWorkspaceId().getProjectIterationId()
+                            .getProjectSlug(), action.getWorkspaceId()
+                            .getProjectIterationId().getIterationSlug());
+        } catch (ZanataServiceException e) {
+            throw new ActionException(e);
+        }
 
-      HTextFlow hTextFlow = textFlowDAO.findById(action.getTransUnitId().getId(), false);
+        HTextFlow hTextFlow =
+                textFlowDAO.findById(action.getTransUnitId().getId(), false);
 
-      HTextFlowTarget hTextFlowTarget = hTextFlow.getTargets().get(hLocale.getId());
-      Map<Integer,HTextFlowTargetHistory> history = Maps.newHashMap();
-      TransHistoryItem latest = null;
-      if (hTextFlowTarget != null)
-      {
-         String lastModifiedBy = nameOrEmptyString(hTextFlowTarget.getLastModifiedBy());
-         int nPlurals = resourceUtils.getNumPlurals(hTextFlow.getDocument(), hLocale);
+        HTextFlowTarget hTextFlowTarget =
+                hTextFlow.getTargets().get(hLocale.getId());
+        Map<Integer, HTextFlowTargetHistory> history = Maps.newHashMap();
+        TransHistoryItem latest = null;
+        if (hTextFlowTarget != null) {
+            String lastModifiedBy =
+                    nameOrEmptyString(hTextFlowTarget.getLastModifiedBy());
+            int nPlurals =
+                    resourceUtils.getNumPlurals(hTextFlow.getDocument(),
+                            hLocale);
 
-         latest = new TransHistoryItem(hTextFlowTarget.getVersionNum().toString(), GwtRpcUtil.getTargetContentsWithPadding(hTextFlow, hTextFlowTarget, nPlurals),
-               hTextFlowTarget.getState(), lastModifiedBy, hTextFlowTarget.getLastChanged());
-         // history translation
-         history = hTextFlowTarget.getHistory();
-      }
+            latest =
+                    new TransHistoryItem(hTextFlowTarget.getVersionNum()
+                            .toString(),
+                            GwtRpcUtil.getTargetContentsWithPadding(hTextFlow,
+                                    hTextFlowTarget, nPlurals),
+                            hTextFlowTarget.getState(), lastModifiedBy,
+                            hTextFlowTarget.getLastChanged());
+            // history translation
+            history = hTextFlowTarget.getHistory();
+        }
 
-      Iterable<TransHistoryItem> historyItems = Iterables.transform(history.values(), new TargetHistoryToTransHistoryItemFunction());
+        Iterable<TransHistoryItem> historyItems =
+                Iterables.transform(history.values(),
+                        new TargetHistoryToTransHistoryItemFunction());
 
-      log.debug("found {} history for text flow id {}", Iterables.size(historyItems), action.getTransUnitId());
+        log.debug("found {} history for text flow id {}",
+                Iterables.size(historyItems), action.getTransUnitId());
 
-      List<ReviewComment> reviewComments = getReviewComments(action);
-      log. debug("found {} review comments for text flow id {}", reviewComments.size(), action.getTransUnitId());
+        List<ReviewComment> reviewComments = getReviewComments(action);
+        log.debug("found {} review comments for text flow id {}",
+                reviewComments.size(), action.getTransUnitId());
 
-      // we re-wrap the list because gwt rpc doesn't like other list implementation
-      return new GetTranslationHistoryResult(Lists.newArrayList(historyItems), latest, Lists.newArrayList(reviewComments));
-   }
+        // we re-wrap the list because gwt rpc doesn't like other list
+        // implementation
+        return new GetTranslationHistoryResult(
+                Lists.newArrayList(historyItems), latest,
+                Lists.newArrayList(reviewComments));
+    }
 
-   private static String nameOrEmptyString(HPerson lastModifiedBy)
-   {
-      return lastModifiedBy != null ? lastModifiedBy.getName() : "";
-   }
+    private static String nameOrEmptyString(HPerson lastModifiedBy) {
+        return lastModifiedBy != null ? lastModifiedBy.getName() : "";
+    }
 
-   protected List<ReviewComment> getReviewComments(GetTranslationHistoryAction action)
-   {
-      List<HTextFlowTargetReviewComment> hComments = textFlowTargetReviewCommentsDAO.getReviewComments(action.getTransUnitId(), action.getWorkspaceId().getLocaleId());
+    protected List<ReviewComment> getReviewComments(
+            GetTranslationHistoryAction action) {
+        List<HTextFlowTargetReviewComment> hComments =
+                textFlowTargetReviewCommentsDAO.getReviewComments(action
+                        .getTransUnitId(), action.getWorkspaceId()
+                        .getLocaleId());
 
-      return Lists.transform(hComments, new Function<HTextFlowTargetReviewComment, ReviewComment>()
-      {
-         @Override
-         public ReviewComment apply(HTextFlowTargetReviewComment input)
-         {
-            return new ReviewComment(new ReviewCommentId(input.getId()), input.getComment(), input.getCommenterName(), input.getCreationDate(), input.getTargetVersion());
-         }
-      });
-   }
+        return Lists.transform(hComments,
+                new Function<HTextFlowTargetReviewComment, ReviewComment>() {
+                    @Override
+                    public ReviewComment apply(
+                            HTextFlowTargetReviewComment input) {
+                        return new ReviewComment(new ReviewCommentId(input
+                                .getId()), input.getComment(), input
+                                .getCommenterName(), input.getCreationDate(),
+                                input.getTargetVersion());
+                    }
+                });
+    }
 
-   @Override
-   public void rollback(GetTranslationHistoryAction action, GetTranslationHistoryResult result, ExecutionContext context) throws ActionException
-   {
-   }
+    @Override
+    public void rollback(GetTranslationHistoryAction action,
+            GetTranslationHistoryResult result, ExecutionContext context)
+            throws ActionException {
+    }
 
-   private static class TargetHistoryToTransHistoryItemFunction implements Function<HTextFlowTargetHistory, TransHistoryItem>
-   {
-      @Override
-      public TransHistoryItem apply(HTextFlowTargetHistory targetHistory)
-      {
-         return new TransHistoryItem(targetHistory.getVersionNum().toString(), targetHistory.getContents(),
-               targetHistory.getState(), nameOrEmptyString(targetHistory.getLastModifiedBy()),
-               targetHistory.getLastChanged());
-      }
-   }
+    private static class TargetHistoryToTransHistoryItemFunction implements
+            Function<HTextFlowTargetHistory, TransHistoryItem> {
+        @Override
+        public TransHistoryItem apply(HTextFlowTargetHistory targetHistory) {
+            return new TransHistoryItem(targetHistory.getVersionNum()
+                    .toString(), targetHistory.getContents(),
+                    targetHistory.getState(),
+                    nameOrEmptyString(targetHistory.getLastModifiedBy()),
+                    targetHistory.getLastChanged());
+        }
+    }
 }

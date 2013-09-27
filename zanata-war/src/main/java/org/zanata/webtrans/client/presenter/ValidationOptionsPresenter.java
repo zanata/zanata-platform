@@ -45,128 +45,125 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.inject.Inject;
 
 /**
- * 
- * 
+ *
+ *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- * 
+ *
  **/
-public class ValidationOptionsPresenter extends WidgetPresenter<ValidationOptionsDisplay> implements
-      ValidationOptionsDisplay.Listener, WorkspaceContextUpdateEventHandler, DocValidationResultHandler
-{
-   private final ValidationService validationService;
-   private MainView currentView;
+public class ValidationOptionsPresenter extends
+        WidgetPresenter<ValidationOptionsDisplay> implements
+        ValidationOptionsDisplay.Listener, WorkspaceContextUpdateEventHandler,
+        DocValidationResultHandler {
+    private final ValidationService validationService;
+    private MainView currentView;
 
-   @Inject
-   public ValidationOptionsPresenter(ValidationOptionsDisplay display, EventBus eventBus,
-         final ValidationService validationService, final WebTransMessages messages)
-   {
-      super(display, eventBus);
-      this.validationService = validationService;
-   }
+    @Inject
+    public ValidationOptionsPresenter(ValidationOptionsDisplay display,
+            EventBus eventBus, final ValidationService validationService,
+            final WebTransMessages messages) {
+        super(display, eventBus);
+        this.validationService = validationService;
+    }
 
-   @Override
-   protected void onBind()
-   {
-      registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this));
-      registerHandler(eventBus.addHandler(DocValidationResultEvent.getType(), this));
-      initDisplay();
+    @Override
+    protected void onBind() {
+        registerHandler(eventBus.addHandler(
+                WorkspaceContextUpdateEvent.getType(), this));
+        registerHandler(eventBus.addHandler(DocValidationResultEvent.getType(),
+                this));
+        initDisplay();
 
-      display.updateValidationResult(null);
+        display.updateValidationResult(null);
 
-      display.setListener(this);
-   }
+        display.setListener(this);
+    }
 
-   public void initDisplay()
-   {
-      display.clearValidationSelector();
-      ArrayList<ValidationAction> validationActions = new ArrayList<ValidationAction>(validationService
-            .getValidationMap().values());
-      
-      Collections.sort(validationActions, ValidationFactory.ValidationActionComparator);
-      
-      for (final ValidationAction validationAction : validationActions)
-      {
-         ValidationDisplayRules validationInfo = validationAction.getRules();
+    public void initDisplay() {
+        display.clearValidationSelector();
+        ArrayList<ValidationAction> validationActions =
+                new ArrayList<ValidationAction>(validationService
+                        .getValidationMap().values());
 
-         HasValueChangeHandlers<Boolean> changeHandler = display.addValidationSelector(validationAction.getId()
-               .getDisplayName(), validationAction.getDescription(), validationInfo.isEnabled(), validationInfo
-               .isLocked());
-         changeHandler.addValueChangeHandler(new ValidationOptionValueChangeHandler(validationAction));
-      }
-   }
+        Collections.sort(validationActions,
+                ValidationFactory.ValidationActionComparator);
 
-   @Override
-   protected void onUnbind()
-   {
-   }
+        for (final ValidationAction validationAction : validationActions) {
+            ValidationDisplayRules validationInfo = validationAction.getRules();
 
-   @Override
-   protected void onRevealDisplay()
-   {
-   }
+            HasValueChangeHandlers<Boolean> changeHandler =
+                    display.addValidationSelector(validationAction.getId()
+                            .getDisplayName(), validationAction
+                            .getDescription(), validationInfo.isEnabled(),
+                            validationInfo.isLocked());
+            changeHandler
+                    .addValueChangeHandler(new ValidationOptionValueChangeHandler(
+                            validationAction));
+        }
+    }
 
-   class ValidationOptionValueChangeHandler implements ValueChangeHandler<Boolean>
-   {
-      private final ValidationAction validationAction;
+    @Override
+    protected void onUnbind() {
+    }
 
-      public ValidationOptionValueChangeHandler(ValidationAction validationAction)
-      {
-         this.validationAction = validationAction;
-      }
+    @Override
+    protected void onRevealDisplay() {
+    }
 
-      @Override
-      public void onValueChange(ValueChangeEvent<Boolean> event)
-      {
-         boolean fireEvent = currentView == MainView.Editor;
+    class ValidationOptionValueChangeHandler implements
+            ValueChangeHandler<Boolean> {
+        private final ValidationAction validationAction;
 
-         validationService.updateStatus(validationAction.getId(), event.getValue(), fireEvent);
-         if (event.getValue())
-         {
-            for (ValidationAction excluded : validationAction.getExclusiveValidations())
-            {
-               validationService.updateStatus(excluded.getId(), false, fireEvent);
-               display.changeValidationSelectorValue(excluded.getId().getDisplayName(), false);
+        public ValidationOptionValueChangeHandler(
+                ValidationAction validationAction) {
+            this.validationAction = validationAction;
+        }
+
+        @Override
+        public void onValueChange(ValueChangeEvent<Boolean> event) {
+            boolean fireEvent = currentView == MainView.Editor;
+
+            validationService.updateStatus(validationAction.getId(),
+                    event.getValue(), fireEvent);
+            if (event.getValue()) {
+                for (ValidationAction excluded : validationAction
+                        .getExclusiveValidations()) {
+                    validationService.updateStatus(excluded.getId(), false,
+                            fireEvent);
+                    display.changeValidationSelectorValue(excluded.getId()
+                            .getDisplayName(), false);
+                }
             }
-         }
-      }
-   }
+        }
+    }
 
-   @Override
-   public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
-   {
-      validationService.setValidationRules(event.getValidationStates());
+    @Override
+    public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event) {
+        validationService.setValidationRules(event.getValidationStates());
 
-      initDisplay();
-      if(currentView == MainView.Editor)
-      {
-         eventBus.fireEvent(RequestValidationEvent.EVENT);
-      }
-   }
+        initDisplay();
+        if (currentView == MainView.Editor) {
+            eventBus.fireEvent(RequestValidationEvent.EVENT);
+        }
+    }
 
-   public void setCurrentView(MainView view)
-   {
-      currentView = view;
-      if (view == MainView.Documents)
-      {
-         display.setRunValidationVisible(true);
-      }
-      else
-      {
-         display.setRunValidationVisible(false);
-      }
-   }
+    public void setCurrentView(MainView view) {
+        currentView = view;
+        if (view == MainView.Documents) {
+            display.setRunValidationVisible(true);
+        } else {
+            display.setRunValidationVisible(false);
+        }
+    }
 
-   @Override
-   public void onRunValidation()
-   {
-      display.enabledRunValidation(false);
-      eventBus.fireEvent(new RunDocValidationEvent(currentView));
-   }
+    @Override
+    public void onRunValidation() {
+        display.enabledRunValidation(false);
+        eventBus.fireEvent(new RunDocValidationEvent(currentView));
+    }
 
-   @Override
-   public void onCompleteRunDocValidation(DocValidationResultEvent event)
-   {
-      display.updateValidationResult(event.getEndTime());
-      display.enabledRunValidation(true);
-   }
+    @Override
+    public void onCompleteRunDocValidation(DocValidationResultEvent event) {
+        display.updateValidationResult(event.getEndTime());
+        display.enabledRunValidation(true);
+    }
 }

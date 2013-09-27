@@ -35,33 +35,34 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 
 /**
  *
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Name("textFlowTargetReviewCommentsDAO")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
-public class TextFlowTargetReviewCommentsDAO extends AbstractDAOImpl<HTextFlowTargetReviewComment, Long>
-{
-   @SuppressWarnings("unused")
-   public TextFlowTargetReviewCommentsDAO()
-   {
-      super(HTextFlowTargetReviewComment.class);
-   }
+public class TextFlowTargetReviewCommentsDAO extends
+        AbstractDAOImpl<HTextFlowTargetReviewComment, Long> {
+    @SuppressWarnings("unused")
+    public TextFlowTargetReviewCommentsDAO() {
+        super(HTextFlowTargetReviewComment.class);
+    }
 
-   @SuppressWarnings("unused")
-   public TextFlowTargetReviewCommentsDAO(Session session)
-   {
-      super(HTextFlowTargetReviewComment.class, session);
-   }
+    @SuppressWarnings("unused")
+    public TextFlowTargetReviewCommentsDAO(Session session) {
+        super(HTextFlowTargetReviewComment.class, session);
+    }
 
-
-   public List<HTextFlowTargetReviewComment> getReviewComments(TransUnitId textFlowId, LocaleId localeId)
-   {
-      Query query = getSession().createQuery("select c from HTextFlowTargetReviewComment c join fetch c.commenter where c.textFlowTarget.textFlow.id = :textFlowId and c.textFlowTarget.locale.localeId = :localeId");
-      query.setParameter("textFlowId", textFlowId.getValue());
-      query.setParameter("localeId", localeId);
-      query.setComment("TextFlowTargetReviewCommentsDAO.getReviewComments");
-      query.setCacheable(true);
-      return query.list();
-   }
+    public List<HTextFlowTargetReviewComment> getReviewComments(
+            TransUnitId textFlowId, LocaleId localeId) {
+        Query query =
+                getSession()
+                        .createQuery(
+                                "select c from HTextFlowTargetReviewComment c join fetch c.commenter where c.textFlowTarget.textFlow.id = :textFlowId and c.textFlowTarget.locale.localeId = :localeId");
+        query.setParameter("textFlowId", textFlowId.getValue());
+        query.setParameter("localeId", localeId);
+        query.setComment("TextFlowTargetReviewCommentsDAO.getReviewComments");
+        query.setCacheable(true);
+        return query.list();
+    }
 }

@@ -39,34 +39,38 @@ import org.zanata.webtrans.shared.rpc.TransUnitEditAction;
 @Name("webtrans.gwt.TransUnitEditHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(TransUnitEditAction.class)
-public class TransUnitEditHandler extends AbstractActionHandler<TransUnitEditAction, NoOpResult>
-{
-   @In
-   private ZanataIdentity identity;
+public class TransUnitEditHandler extends
+        AbstractActionHandler<TransUnitEditAction, NoOpResult> {
+    @In
+    private ZanataIdentity identity;
 
-   @In
-   private TranslationWorkspaceManager translationWorkspaceManager;
+    @In
+    private TranslationWorkspaceManager translationWorkspaceManager;
 
-   @Override
-   public NoOpResult execute(TransUnitEditAction action, ExecutionContext context) throws ActionException
-   {
-      identity.checkLoggedIn();
+    @Override
+    public NoOpResult execute(TransUnitEditAction action,
+            ExecutionContext context) throws ActionException {
+        identity.checkLoggedIn();
 
-      TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
-      // Send TranslatorStatusUpdate event to client
-      TransUnitEdit event = new TransUnitEdit(action.getEditorClientId(), action.getPerson(), action.getSelectedTransUnitId());
+        TranslationWorkspace workspace =
+                translationWorkspaceManager.getOrRegisterWorkspace(action
+                        .getWorkspaceId());
+        // Send TranslatorStatusUpdate event to client
+        TransUnitEdit event =
+                new TransUnitEdit(action.getEditorClientId(),
+                        action.getPerson(), action.getSelectedTransUnitId());
 
-      workspace.updateUserSelection(action.getEditorClientId(), action.getSelectedTransUnitId());
+        workspace.updateUserSelection(action.getEditorClientId(),
+                action.getSelectedTransUnitId());
 
-      workspace.publish(event);
+        workspace.publish(event);
 
-      return new NoOpResult();
-   }
+        return new NoOpResult();
+    }
 
-   @Override
-   public void rollback(TransUnitEditAction action, NoOpResult result, ExecutionContext context) throws ActionException
-   {
-   }
-
+    @Override
+    public void rollback(TransUnitEditAction action, NoOpResult result,
+            ExecutionContext context) throws ActionException {
+    }
 
 }

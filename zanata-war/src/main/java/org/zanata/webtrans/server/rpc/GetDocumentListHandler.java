@@ -32,97 +32,107 @@ import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
 @Name("webtrans.gwt.GetDocsListHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(GetDocumentList.class)
-public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentList, GetDocumentListResult>
-{
-   @In
-   private ZanataIdentity identity;
+public class GetDocumentListHandler extends
+        AbstractActionHandler<GetDocumentList, GetDocumentListResult> {
+    @In
+    private ZanataIdentity identity;
 
-   @In
-   private DocumentDAO documentDAO;
+    @In
+    private DocumentDAO documentDAO;
 
-   @In
-   private TranslationFileService translationFileServiceImpl;
+    @In
+    private TranslationFileService translationFileServiceImpl;
 
-   @In("filePersistService")
-   private FilePersistService filePersistService;
+    @In("filePersistService")
+    private FilePersistService filePersistService;
 
-   @Override
-   public GetDocumentListResult execute(GetDocumentList action, ExecutionContext context) throws ActionException
-   {
-      identity.checkLoggedIn();
+    @Override
+    public GetDocumentListResult execute(GetDocumentList action,
+            ExecutionContext context) throws ActionException {
+        identity.checkLoggedIn();
 
-      ProjectIterationId iterationId = action.getWorkspaceId().getProjectIterationId();
+        ProjectIterationId iterationId =
+                action.getWorkspaceId().getProjectIterationId();
 
-      List<DocumentInfo> docs = new ArrayList<DocumentInfo>();
+        List<DocumentInfo> docs = new ArrayList<DocumentInfo>();
 
-      List<HDocument> hDocs = getDocumentList(action);
+        List<HDocument> hDocs = getDocumentList(action);
 
-      for (HDocument hDoc : hDocs)
-      {
-         HPerson person = hDoc.getLastModifiedBy();
-         String lastModifiedBy = "";
-         if (person != null)
-         {
-            lastModifiedBy = person.getAccount().getUsername();
-         }
+        for (HDocument hDoc : hDocs) {
+            HPerson person = hDoc.getLastModifiedBy();
+            String lastModifiedBy = "";
+            if (person != null) {
+                lastModifiedBy = person.getAccount().getUsername();
+            }
 
-         Map<String, String> downloadExtensions = new HashMap<String, String>();
+            Map<String, String> downloadExtensions =
+                    new HashMap<String, String>();
 
-         HProjectIteration projectIteration = hDoc.getProjectIteration();
-         ProjectType type = projectIteration.getProjectType();
-         if (type == null)
-         {
-            type = projectIteration.getProject().getDefaultProjectType();
-         }
+            HProjectIteration projectIteration = hDoc.getProjectIteration();
+            ProjectType type = projectIteration.getProjectType();
+            if (type == null) {
+                type = projectIteration.getProject().getDefaultProjectType();
+            }
 
-         if (type == null)
-         {
-            // no .po download link
-         }
-         else if (type == ProjectType.Gettext || type == ProjectType.Podir)
-         {
-            downloadExtensions.put(".po", "po?docId=" + hDoc.getDocId());
-         }
-         else
-         {
-            downloadExtensions.put("offline .po", "offlinepo?docId=" + hDoc.getDocId());
-         }
-         GlobalDocumentId id = new GlobalDocumentId(iterationId.getProjectSlug(),
-               iterationId.getIterationSlug(), hDoc.getDocId());
-         if (filePersistService.hasPersistedDocument(id))
-         {
-            String extension = "." + translationFileServiceImpl.getFileExtension(iterationId.getProjectSlug(), iterationId.getIterationSlug(), hDoc.getPath(), hDoc.getName());
-            downloadExtensions.put(extension, "baked?docId=" + hDoc.getDocId());
-         }
+            if (type == null) {
+                // no .po download link
+            } else if (type == ProjectType.Gettext || type == ProjectType.Podir) {
+                downloadExtensions.put(".po", "po?docId=" + hDoc.getDocId());
+            } else {
+                downloadExtensions.put("offline .po",
+                        "offlinepo?docId=" + hDoc.getDocId());
+            }
+            GlobalDocumentId id =
+                    new GlobalDocumentId(iterationId.getProjectSlug(),
+                            iterationId.getIterationSlug(), hDoc.getDocId());
+            if (filePersistService.hasPersistedDocument(id)) {
+                String extension =
+                        "."
+                                + translationFileServiceImpl.getFileExtension(
+                                        iterationId.getProjectSlug(),
+                                        iterationId.getIterationSlug(),
+                                        hDoc.getPath(), hDoc.getName());
+                downloadExtensions.put(extension,
+                        "baked?docId=" + hDoc.getDocId());
+            }
 
-         DocumentInfo doc = new DocumentInfo(new DocumentId(hDoc.getId(), hDoc.getDocId()), hDoc.getName(), hDoc.getPath(), hDoc.getLocale().getLocaleId(), null, new AuditInfo(hDoc.getLastChanged(), lastModifiedBy), downloadExtensions, null);
-         docs.add(doc);
-      }
-      return new GetDocumentListResult(iterationId, docs);
-   }
+            DocumentInfo doc =
+                    new DocumentInfo(
+                            new DocumentId(hDoc.getId(), hDoc.getDocId()),
+                            hDoc.getName(),
+                            hDoc.getPath(),
+                            hDoc.getLocale().getLocaleId(),
+                            null,
+                            new AuditInfo(hDoc.getLastChanged(), lastModifiedBy),
+                            downloadExtensions, null);
+            docs.add(doc);
+        }
+        return new GetDocumentListResult(iterationId, docs);
+    }
 
-   @Override
-   public void rollback(GetDocumentList action, GetDocumentListResult result, ExecutionContext context) throws ActionException
-   {
-   }
-   
-   private List<HDocument> getDocumentList(GetDocumentList action)
-   {
-      ProjectIterationId iterationId = action.getWorkspaceId().getProjectIterationId();
+    @Override
+    public void rollback(GetDocumentList action, GetDocumentListResult result,
+            ExecutionContext context) throws ActionException {
+    }
 
-      if (hasDocIdFilters(action))
-      {
-         return documentDAO.getByProjectIterationAndDocIdList(iterationId.getProjectSlug(), iterationId.getIterationSlug(), action.getDocIdFilters());
-      }
-      else
-      {
-         return documentDAO.getAllByProjectIteration(iterationId.getProjectSlug(), iterationId.getIterationSlug());
-      }
-   }
+    private List<HDocument> getDocumentList(GetDocumentList action) {
+        ProjectIterationId iterationId =
+                action.getWorkspaceId().getProjectIterationId();
 
-   private boolean hasDocIdFilters(GetDocumentList action)
-   {
-      return (action.getDocIdFilters() != null && !action.getDocIdFilters().isEmpty());
-   }
+        if (hasDocIdFilters(action)) {
+            return documentDAO.getByProjectIterationAndDocIdList(
+                    iterationId.getProjectSlug(),
+                    iterationId.getIterationSlug(), action.getDocIdFilters());
+        } else {
+            return documentDAO.getAllByProjectIteration(
+                    iterationId.getProjectSlug(),
+                    iterationId.getIterationSlug());
+        }
+    }
+
+    private boolean hasDocIdFilters(GetDocumentList action) {
+        return (action.getDocIdFilters() != null && !action.getDocIdFilters()
+                .isEmpty());
+    }
 
 }

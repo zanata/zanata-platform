@@ -33,34 +33,33 @@ import com.google.common.collect.ImmutableList;
 import lombok.Data;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
 @Data
-public class SimpleNamedDocument implements DocumentWithId
-{
-   private final LocaleId sourceLocaleId;
-   private final String qualifiedDocId;
-   private final List<ITextFlow> sourceContentsList;
+public class SimpleNamedDocument implements DocumentWithId {
+    private final LocaleId sourceLocaleId;
+    private final String qualifiedDocId;
+    private final List<ITextFlow> sourceContentsList;
 
-   public SimpleNamedDocument(LocaleId sourceLocaleId, String qualifiedDocId, List<ITextFlow> sourceContentsList)
-   {
-      this.sourceLocaleId = sourceLocaleId;
-      this.qualifiedDocId = qualifiedDocId;
-      this.sourceContentsList = sourceContentsList;
-   }
+    public SimpleNamedDocument(LocaleId sourceLocaleId, String qualifiedDocId,
+            List<ITextFlow> sourceContentsList) {
+        this.sourceLocaleId = sourceLocaleId;
+        this.qualifiedDocId = qualifiedDocId;
+        this.sourceContentsList = sourceContentsList;
+    }
 
-   public SimpleNamedDocument(LocaleId sourceLocaleId, String qualifiedDocId, @Nonnull ITextFlow... sourceContentsList)
-   {
-      this.sourceLocaleId = sourceLocaleId;
-      this.qualifiedDocId = qualifiedDocId;
-      this.sourceContentsList = ImmutableList.copyOf(sourceContentsList);
-   }
+    public SimpleNamedDocument(LocaleId sourceLocaleId, String qualifiedDocId,
+            @Nonnull ITextFlow... sourceContentsList) {
+        this.sourceLocaleId = sourceLocaleId;
+        this.qualifiedDocId = qualifiedDocId;
+        this.sourceContentsList = ImmutableList.copyOf(sourceContentsList);
+    }
 
-   @Override
-   public Iterator<ITextFlow> iterator()
-   {
-      return sourceContentsList.iterator();
-   }
+    @Override
+    public Iterator<ITextFlow> iterator() {
+        return sourceContentsList.iterator();
+    }
 
 }

@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>server</artifactId>
@@ -10,58 +12,58 @@
   <description>Packages all server artifacts for distribution.</description>
   <name>Zanata Server distribution packages.</name>
   <packaging>pom</packaging>
-  
+
   <build>
-  	<plugins>
-  		<plugin>
-  			<artifactId>maven-assembly-plugin</artifactId>
-  			<executions>
-  				<execution>
-  					<configuration>
-  						<appendAssemblyId>false</appendAssemblyId>
-  						<descriptors>
-  							<descriptor>etc/assembly.xml</descriptor>
-  						</descriptors>
-  					</configuration>
-  					<phase>package</phase>
-  					<goals>
-  						<goal>single</goal>
-  					</goals>
-  				</execution>
-  			</executions>
-  		</plugin>
-  	</plugins>
+    <plugins>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <configuration>
+              <appendAssemblyId>false</appendAssemblyId>
+              <descriptors>
+                <descriptor>etc/assembly.xml</descriptor>
+              </descriptors>
+            </configuration>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
-  
+
   <dependencies>
-  	<dependency>
-  		<groupId>org.zanata</groupId>
-  		<artifactId>zanata-war</artifactId>
-  		<type>war</type>
-  		<classifier>jaas</classifier>
-  		<version>${project.version}</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.zanata</groupId>
-  		<artifactId>zanata-war</artifactId>
-  		<type>war</type>
-  		<classifier>kerberos</classifier>
-  		<version>${project.version}</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.zanata</groupId>
-  		<artifactId>zanata-war</artifactId>
-  		<type>war</type>
-  		<classifier>fedora</classifier>
-  		<version>${project.version}</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.zanata</groupId>
-  		<artifactId>zanata-war</artifactId>
-  		<type>war</type>
-  		<classifier>internal</classifier>
-  		<version>${project.version}</version>
-  	</dependency>
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>zanata-war</artifactId>
+      <type>war</type>
+      <classifier>jaas</classifier>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>zanata-war</artifactId>
+      <type>war</type>
+      <classifier>kerberos</classifier>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>zanata-war</artifactId>
+      <type>war</type>
+      <classifier>fedora</classifier>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>zanata-war</artifactId>
+      <type>war</type>
+      <classifier>internal</classifier>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
-  
+
 </project>

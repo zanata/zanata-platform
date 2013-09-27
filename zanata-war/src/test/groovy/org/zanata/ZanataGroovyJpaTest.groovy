@@ -26,104 +26,90 @@ import javax.persistence.Persistence
  * @see {@link ZanataJpaTest}
  */
 @Listeners(TestMethodListener.class)
-abstract class ZanataGroovyJpaTest
-{
-   private static final String PERSIST_NAME = "zanataTestDatasourcePU";
+abstract class ZanataGroovyJpaTest {
+    private static final String PERSIST_NAME = "zanataTestDatasourcePU";
 
-   private static EntityManagerFactory emf;
+    private static EntityManagerFactory emf;
 
-   protected EntityManager em;
+    protected EntityManager em;
 
-   Log log = Logging.getLog(ZanataJpaTest.class);
+    Log log = Logging.getLog(ZanataJpaTest.class);
 
-   /**
-    * @return A list of Hibernate Entities to create
-    */
-   public List getEntitiesToCreate()
-   {
-      []
-   }
+    /**
+     * @return A list of Hibernate Entities to create
+     */
+    public List getEntitiesToCreate() {
+        []
+    }
 
-   /**
-    * @return A list of Groovy script classes that contain appropriate elements.
-    */
-   public List getConfigScriptClasses()
-   {
-      []
-   }
+    /**
+     * @return A list of Groovy script classes that contain appropriate elements.
+     */
+    public List getConfigScriptClasses() {
+        []
+    }
 
-   @BeforeMethod(dependsOnMethods = "setupEM", groups = [ "jpa-tests" ])
-   public void prepareDataBeforeTest()
-   {
-      // Data scripts
-      for( def script : getConfigScriptClasses() )
-      {
-         def config = new ConfigSlurper().parse(script)
+    @BeforeMethod(dependsOnMethods = "setupEM", groups = ["jpa-tests"])
+    public void prepareDataBeforeTest() {
+        // Data scripts
+        for (def script : getConfigScriptClasses()) {
+            def config = new ConfigSlurper().parse(script)
 
-         for( def entity : config.zanata.test.insert )
-         {
-            getEm().persist( entity );
-         }
-      }
+            for (def entity : config.zanata.test.insert) {
+                getEm().persist(entity);
+            }
+        }
 
-      // Individual classes
-      for( def entity : getEntitiesToCreate() )
-      {
-         getEm().persist( entity );
-      }
-   }
+        // Individual classes
+        for (def entity : getEntitiesToCreate()) {
+            getEm().persist(entity);
+        }
+    }
 
-   @BeforeMethod(groups = [ "jpa-tests" ])
-   public void setupEM()
-   {
-      log.debug("Setting up EM");
-      em = emf.createEntityManager();
-      em.getTransaction().begin();
-   }
+    @BeforeMethod(groups = ["jpa-tests"])
+    public void setupEM() {
+        log.debug("Setting up EM");
+        em = emf.createEntityManager();
+        em.getTransaction().begin();
+    }
 
-   @AfterMethod(groups = [ "jpa-tests" ])
-   public void shutdownEM()
-   {
-      log.debug("Shutting down EM");
-      em.getTransaction().rollback();
-      em = null;
-   }
+    @AfterMethod(groups = ["jpa-tests"])
+    public void shutdownEM() {
+        log.debug("Shutting down EM");
+        em.getTransaction().rollback();
+        em = null;
+    }
 
-   protected EntityManager getEm()
-   {
-      return em;
-   }
+    protected EntityManager getEm() {
+        return em;
+    }
 
-   protected Session getSession()
-   {
-      return (Session) em.getDelegate();
-   }
+    protected Session getSession() {
+        return (Session) em.getDelegate();
+    }
 
-   @BeforeSuite(groups = [ "jpa-tests" ])
-   public void initializeEMF()
-   {
-      log.debug("Initializing EMF");
-      emf = Persistence.createEntityManagerFactory(PERSIST_NAME);
-   }
+    @BeforeSuite(groups = ["jpa-tests"])
+    public void initializeEMF() {
+        log.debug("Initializing EMF");
+        emf = Persistence.createEntityManagerFactory(PERSIST_NAME);
+    }
 
-   @AfterSuite(groups = [ "jpa-tests" ])
-   public void shutDownEMF()
-   {
-      log.debug("Shutting down EMF");
-      emf.close();
-      emf = null;
-   }
+    @AfterSuite(groups = ["jpa-tests"])
+    public void shutDownEMF() {
+        log.debug("Shutting down EMF");
+        emf.close();
+        emf = null;
+    }
 
-   /**
-    * Commits the changes on the current session and starts a new one.
-    * This method is useful whenever multi-session tests are needed.
-    *
-    * @return The newly started session
-    */
-   protected Session newSession()
-   {
-      em.getTransaction().commit();
-      setupEM();
-      return getSession();
-   }
+    /**
+     * Commits the changes on the current session and starts a new one.
+     * This method is useful whenever multi-session tests are needed.
+     *
+     * @return The newly started session
+     */
+    protected Session newSession() {
+        em.getTransaction().commit();
+        setupEM();
+        return getSession();
+    }
 }

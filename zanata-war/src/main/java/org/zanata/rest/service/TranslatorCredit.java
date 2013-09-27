@@ -22,74 +22,65 @@
 package org.zanata.rest.service;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-class TranslatorCredit implements Comparable<TranslatorCredit>
-{
-   
-   private Integer year;
-   private String name;
-   private String email;
-   
-   /**
-    * order by year, then alphabetically
-    */
-   @Override
-   public int compareTo(TranslatorCredit o)
-   {
-      int yearComp = year.compareTo(o.year);
-      if (yearComp != 0)
-         return yearComp;
-      int nameComp = name.compareTo(o.name);
-      if (nameComp != 0)
-         return nameComp;
-      else
-         return email.compareTo(o.email);
-   }
-   
-   @Override
-   public boolean equals(Object o)
-   {
-      if (o instanceof TranslatorCredit)
-         return this.compareTo((TranslatorCredit) o) == 0;
-      return false;
-   }
-   
-   @Override
-   public String toString()
-   {
-      return getName() + " " + "<" + getEmail() + ">, " + year + ".";
-   }
+class TranslatorCredit implements Comparable<TranslatorCredit> {
 
-   public int getYear()
-   {
-      return year;
-   }
+    private Integer year;
+    private String name;
+    private String email;
 
-   public void setYear(int year)
-   {
-      this.year = year;
-   }
+    /**
+     * order by year, then alphabetically
+     */
+    @Override
+    public int compareTo(TranslatorCredit o) {
+        int yearComp = year.compareTo(o.year);
+        if (yearComp != 0)
+            return yearComp;
+        int nameComp = name.compareTo(o.name);
+        if (nameComp != 0)
+            return nameComp;
+        else
+            return email.compareTo(o.email);
+    }
 
-   public String getName()
-   {
-      return name;
-   }
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof TranslatorCredit)
+            return this.compareTo((TranslatorCredit) o) == 0;
+        return false;
+    }
 
-   public void setName(String name)
-   {
-      this.name = name;
-   }
+    @Override
+    public String toString() {
+        return getName() + " " + "<" + getEmail() + ">, " + year + ".";
+    }
 
-   public String getEmail()
-   {
-      return email;
-   }
+    public int getYear() {
+        return year;
+    }
 
-   public void setEmail(String email)
-   {
-      this.email = email;
-   }
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
 }

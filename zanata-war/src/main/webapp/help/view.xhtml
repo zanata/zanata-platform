@@ -1,30 +1,33 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:s="http://jboss.org/schema/seam/taglib"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:rich="http://richfaces.org/rich"
-    template="/WEB-INF/template/template_2x.xhtml">
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:rich="http://richfaces.org/rich"
+  template="/WEB-INF/template/template_2x.xhtml">
 
-<ui:define name="page_title">#{messages['jsf.Help']}</ui:define>
-<ui:define name="center_content">
+  <ui:define name="page_title">#{messages['jsf.Help']}</ui:define>
+  <ui:define name="center_content">
     <ui:remove>
       <!-- should this be project-help-content? -->
     </ui:remove>
-    <s:formattedText id="project-home-content" value="#{applicationConfiguration.helpContent}"></s:formattedText>
-</ui:define>
+    <s:formattedText id="project-home-content"
+      value="#{applicationConfiguration.helpContent}"></s:formattedText>
+  </ui:define>
 
-<ui:define name="right_content">
-  <rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
-    <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-    <s:link styleClass="action_link" value="#{messages['jsf.EditHelpPageContent']}"
-    		view="/help/edit_help_content.xhtml" propagation="none"
-    		rendered="#{s:hasRole('admin')}"></s:link>
-    <s:link styleClass="action_link" value="#{messages['jsf.ContactAdmin']}" view="/help/contact_admin.xhtml" propagation="none"/>
-  </rich:panel>
+  <ui:define name="right_content">
+    <rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
+      <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+      <s:link styleClass="action_link"
+        value="#{messages['jsf.EditHelpPageContent']}"
+        view="/help/edit_help_content.xhtml" propagation="none"
+        rendered="#{s:hasRole('admin')}"></s:link>
+      <s:link styleClass="action_link" value="#{messages['jsf.ContactAdmin']}"
+        view="/help/contact_admin.xhtml" propagation="none"/>
+    </rich:panel>
 
-</ui:define>
+  </ui:define>
 
 </ui:composition>

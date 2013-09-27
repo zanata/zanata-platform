@@ -34,72 +34,63 @@ import org.hibernate.type.ImmutableType;
 import org.zanata.common.EntityStatus;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
 // FIXME convert to AbstractStandardBasicType approach
-public class EntityStatusType extends ImmutableType implements DiscriminatorType<EntityStatus>
-{
+public class EntityStatusType extends ImmutableType implements
+        DiscriminatorType<EntityStatus> {
 
-   private static final long serialVersionUID = 9055584208831741141L;
+    private static final long serialVersionUID = 9055584208831741141L;
 
-   @Override
-   public String toString(Object value) throws HibernateException
-   {
-      return String.valueOf(((EntityStatus) value).getInitial());
-   }
+    @Override
+    public String toString(Object value) throws HibernateException {
+        return String.valueOf(((EntityStatus) value).getInitial());
+    }
 
-   public Object get(ResultSet rs, String name) throws SQLException
-   {
-      String str = rs.getString(name);
-      if (str == null)
-      {
-         return null;
-      }
-      else
-      {
-         return EntityStatus.valueOf(str.charAt(0));
-      }
-   }
+    public Object get(ResultSet rs, String name) throws SQLException {
+        String str = rs.getString(name);
+        if (str == null) {
+            return null;
+        } else {
+            return EntityStatus.valueOf(str.charAt(0));
+        }
+    }
 
-   public Class<EntityStatus> getReturnedClass()
-   {
-      return EntityStatus.class;
-   }
+    public Class<EntityStatus> getReturnedClass() {
+        return EntityStatus.class;
+    }
 
-   public void set(PreparedStatement st, Object value, int index) throws SQLException
-   {
-      st.setString(index, String.valueOf(((EntityStatus) value).getInitial()));
-   }
+    public void set(PreparedStatement st, Object value, int index)
+            throws SQLException {
+        st.setString(index, String.valueOf(((EntityStatus) value).getInitial()));
+    }
 
-   public int sqlType()
-   {
-      return Types.CHAR;
-   }
+    public int sqlType() {
+        return Types.CHAR;
+    }
 
-   public String getName()
-   {
-      return "entityStatus";
-   }
+    public String getName() {
+        return "entityStatus";
+    }
 
-   @Override
-   public String objectToSQLString(EntityStatus value, Dialect dialect) throws Exception
-   {
-      return "'" + value.getInitial() + "'";
-   }
+    @Override
+    public String objectToSQLString(EntityStatus value, Dialect dialect)
+            throws Exception {
+        return "'" + value.getInitial() + "'";
+    }
 
-   public EntityStatus stringToObject(String xml) throws Exception
-   {
-      if (xml.length() != 1)
-      {
-         throw new MappingException("multiple or zero characters found parsing string");
-      }
-      return EntityStatus.valueOf(xml.charAt(0));
-   }
+    public EntityStatus stringToObject(String xml) throws Exception {
+        if (xml.length() != 1) {
+            throw new MappingException(
+                    "multiple or zero characters found parsing string");
+        }
+        return EntityStatus.valueOf(xml.charAt(0));
+    }
 
-   public Object fromStringValue(String xml)
-   {
-      return EntityStatus.valueOf(xml.charAt(0));
-   }
+    public Object fromStringValue(String xml) {
+        return EntityStatus.valueOf(xml.charAt(0));
+    }
 
 }

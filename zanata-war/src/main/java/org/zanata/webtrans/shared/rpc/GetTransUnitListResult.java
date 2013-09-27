@@ -7,79 +7,65 @@ import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.google.common.base.Objects;
 
+public class GetTransUnitListResult implements DispatchResult {
+    private static final long serialVersionUID = 1L;
 
-public class GetTransUnitListResult implements DispatchResult
-{
-   private static final long serialVersionUID = 1L;
+    private DocumentId documentId;
+    private List<TransUnit> units;
+    private int gotoRow;
+    private int targetOffset;
+    private int targetPage;
+    private GetTransUnitsNavigationResult navigationIndex;
 
-   private DocumentId documentId;
-   private List<TransUnit> units;
-   private int gotoRow;
-   private int targetOffset;
-   private int targetPage;
-   private GetTransUnitsNavigationResult navigationIndex;
+    @SuppressWarnings("unused")
+    private GetTransUnitListResult() {
+    }
 
-   @SuppressWarnings("unused")
-   private GetTransUnitListResult()
-   {
-   }
+    public GetTransUnitListResult(DocumentId documentId, List<TransUnit> units,
+            int gotoRow, int targetOffset, int targetPage) {
+        this.documentId = documentId;
+        this.units = units;
+        this.gotoRow = gotoRow;
+        this.targetOffset = targetOffset;
+        this.targetPage = targetPage;
+    }
 
-   public GetTransUnitListResult(DocumentId documentId, List<TransUnit> units, int gotoRow, int targetOffset, int targetPage)
-   {
-      this.documentId = documentId;
-      this.units = units;
-      this.gotoRow = gotoRow;
-      this.targetOffset = targetOffset;
-      this.targetPage = targetPage;
-   }
+    public List<TransUnit> getUnits() {
+        return units;
+    }
 
-   public List<TransUnit> getUnits()
-   {
-      return units;
-   }
+    public DocumentId getDocumentId() {
+        return documentId;
+    }
 
-   public DocumentId getDocumentId()
-   {
-      return documentId;
-   }
+    public int getGotoRow() {
+        return gotoRow;
+    }
 
-   public int getGotoRow()
-   {
-      return gotoRow;
-   }
+    public int getTargetOffset() {
+        return targetOffset;
+    }
 
-   public int getTargetOffset()
-   {
-      return targetOffset;
-   }
+    public int getTargetPageIndex() {
+        return targetPage;
+    }
 
-   public int getTargetPageIndex()
-   {
-      return targetPage;
-   }
+    public GetTransUnitsNavigationResult getNavigationIndex() {
+        return navigationIndex;
+    }
 
-   public GetTransUnitsNavigationResult getNavigationIndex()
-   {
-      return navigationIndex;
-   }
+    public void
+            setNavigationIndex(GetTransUnitsNavigationResult navigationIndex) {
+        this.navigationIndex = navigationIndex;
+    }
 
-   public void setNavigationIndex(GetTransUnitsNavigationResult navigationIndex)
-   {
-      this.navigationIndex = navigationIndex;
-   }
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this).add("documentId", documentId)
+                .add("units.size", units == null ? 0 : units.size())
+                .add("gotoRow", gotoRow).add("targetOffset", targetOffset)
+                .add("targetPage", targetPage)
+                .add("navigationIndex", navigationIndex).toString();
+    }
 
-   @Override
-   public String toString()
-   {
-      return Objects.toStringHelper(this).
-            add("documentId", documentId).
-            add("units.size", units == null ? 0 : units.size()).
-            add("gotoRow", gotoRow).
-            add("targetOffset", targetOffset).
-            add("targetPage", targetPage).
-            add("navigationIndex", navigationIndex).
-            toString();
-   }
-
-  
 }

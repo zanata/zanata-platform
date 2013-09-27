@@ -31,9 +31,10 @@ import org.zanata.rest.dto.Glossary;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  */
-public interface GlossaryFileService
-{
-   void saveGlossary(Glossary glossary);
+public interface GlossaryFileService {
+    void saveGlossary(Glossary glossary);
 
-   List<Glossary> parseGlossaryFile(InputStream fileContents, String fileName, LocaleId sourceLang, LocaleId transLang, boolean treatSourceCommentsAsTarget, List<String> commentsColumn);
+    List<Glossary> parseGlossaryFile(InputStream fileContents, String fileName,
+            LocaleId sourceLang, LocaleId transLang,
+            boolean treatSourceCommentsAsTarget, List<String> commentsColumn);
 }

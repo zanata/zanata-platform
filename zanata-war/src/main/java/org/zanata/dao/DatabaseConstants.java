@@ -22,15 +22,16 @@ package org.zanata.dao;
 
 /**
  * Set of utility constants for Database access.
- * 
- * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ *
+ * @author Carlos Munoz <a
+ *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  *
  */
-public abstract class DatabaseConstants
-{
-   /**
-    * Indicates the size of batch updates. Ideally this constant should have the same
-    * value as the 'hibernate.jdbc.batch_size' setting in persistence.xml.
-    */
-   public final static int BATCH_SIZE = 100;
+public abstract class DatabaseConstants {
+    /**
+     * Indicates the size of batch updates. Ideally this constant should have
+     * the same value as the 'hibernate.jdbc.batch_size' setting in
+     * persistence.xml.
+     */
+    public final static int BATCH_SIZE = 100;
 }

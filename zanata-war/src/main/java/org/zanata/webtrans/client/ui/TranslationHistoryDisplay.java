@@ -11,38 +11,38 @@ import com.google.inject.ImplementedBy;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 @ImplementedBy(TranslationHistoryView.class)
-public interface TranslationHistoryDisplay extends WidgetDisplay
-{
-   void center();
+public interface TranslationHistoryDisplay extends WidgetDisplay {
+    void center();
 
-   void hide();
+    void hide();
 
-   void resetView();
+    void resetView();
 
-   void showDiff(TransHistoryItem one, TransHistoryItem two, String description);
+    void
+            showDiff(TransHistoryItem one, TransHistoryItem two,
+                    String description);
 
-   void disableComparison();
+    void disableComparison();
 
-   void setTitle(String title);
+    void setTitle(String title);
 
-   void setListener(Listener listener);
+    void setListener(Listener listener);
 
-   void setData(List<ComparableByDate> items);
+    void setData(List<ComparableByDate> items);
 
-   void addCommentToList(ReviewComment comment);
+    void addCommentToList(ReviewComment comment);
 
-   void clearInput();
+    void clearInput();
 
-   String getComment();
+    String getComment();
 
-   interface Listener extends ForceReviewCommentDisplay.Listener
-   {
+    interface Listener extends ForceReviewCommentDisplay.Listener {
 
-      void copyIntoEditor(List<String> contents);
+        void copyIntoEditor(List<String> contents);
 
-      void compareClicked(TransHistoryItem item);
+        void compareClicked(TransHistoryItem item);
 
-      boolean isItemInComparison(TransHistoryItem item);
+        boolean isItemInComparison(TransHistoryItem item);
 
-   }
+    }
 }

@@ -20,7 +20,6 @@
  */
 package org.zanata.page.account;
 
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -28,62 +27,57 @@ import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-public class MyAccountPage extends BasePage
-{
+public class MyAccountPage extends BasePage {
 
-   @FindBy(id = "userConfig:generateApiButton")
-   private WebElement generateApiKeyButton;
+    @FindBy(id = "userConfig:generateApiButton")
+    private WebElement generateApiKeyButton;
 
-   @FindBy(id = "apiKeyLabel")
-   private WebElement apiKeyLabel;
+    @FindBy(id = "apiKeyLabel")
+    private WebElement apiKeyLabel;
 
-   @FindBy(id = "configurationTextArea")
-   private WebElement configurationTextArea;
+    @FindBy(id = "configurationTextArea")
+    private WebElement configurationTextArea;
 
-   @FindBy(linkText = "Edit Profile")
-   private WebElement editProfileButton;
+    @FindBy(linkText = "Edit Profile")
+    private WebElement editProfileButton;
 
-   @FindBy(linkText = "Change Password")
-   private WebElement changePasswordButton;
+    @FindBy(linkText = "Change Password")
+    private WebElement changePasswordButton;
 
-   public MyAccountPage(WebDriver driver)
-   {
-      super(driver);
-   }
+    public MyAccountPage(WebDriver driver) {
+        super(driver);
+    }
 
-   public ChangePasswordPage goToChangePassword()
-   {
-      changePasswordButton.click();
-      return new ChangePasswordPage(getDriver());
-   }
+    public ChangePasswordPage goToChangePassword() {
+        changePasswordButton.click();
+        return new ChangePasswordPage(getDriver());
+    }
 
-   public String getFullName()
-   {
-      return getDriver().findElement(By.id("main_body_content")).findElement(By.tagName("h1")).getText();
-   }
+    public String getFullName() {
+        return getDriver().findElement(By.id("main_body_content"))
+                .findElement(By.tagName("h1")).getText();
+    }
 
-   public String getUsername()
-   {
-      return getDriver().findElement(By.id("main_body_content")).findElement(By.tagName("h3")).getText();
-   }
+    public String getUsername() {
+        return getDriver().findElement(By.id("main_body_content"))
+                .findElement(By.tagName("h3")).getText();
+    }
 
-   public MyAccountPage pressApiKeyGenerateButton()
-   {
-      generateApiKeyButton.click();
-      getDriver().switchTo().alert().accept();
-      return new MyAccountPage(getDriver());
-   }
+    public MyAccountPage pressApiKeyGenerateButton() {
+        generateApiKeyButton.click();
+        getDriver().switchTo().alert().accept();
+        return new MyAccountPage(getDriver());
+    }
 
-   public String getApiKey()
-   {
-      return apiKeyLabel.getAttribute("value");
-   }
+    public String getApiKey() {
+        return apiKeyLabel.getAttribute("value");
+    }
 
-   public String getConfigurationDetails()
-   {
-      return configurationTextArea.getText();
-   }
+    public String getConfigurationDetails() {
+        return configurationTextArea.getText();
+    }
 
 }

@@ -16,14 +16,14 @@ import org.zanata.model.HProject
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 zanata {
-   test {
-      insert = [
+    test {
+        insert = [
             new HProject(slug: "groovy-test-project1", name: "Groovy Test 1", description: "This is a test project"),
             new HProject(slug: "groovy-test-project2", name: "Groovy Test 2", description: "This is a test project"),
             new HProject(slug: "groovy-test-project3", name: "Groovy Test 3", description: "This is a test project"),
             new HProject(slug: "groovy-test-project4", name: "Groovy Test 4", description: "This is a test project"),
             new HProject(slug: "groovy-test-project5", name: "Groovy Test 5", description: "This is a test project"),
             new HProject(slug: "groovy-test-project6", name: "Groovy Test 6", description: "This is a test project")
-      ]
-   }
+        ]
+    }
 }

@@ -1,10 +1,10 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:g="urn:import:com.google.gwt.user.client.ui"
-             xmlns:z="urn:import:org.zanata.webtrans.client.ui">
+  xmlns:g="urn:import:com.google.gwt.user.client.ui"
+  xmlns:z="urn:import:org.zanata.webtrans.client.ui">
 
   <ui:style
-          type="org.zanata.webtrans.client.ui.ValidationMessagePanelView.Styles">
+    type="org.zanata.webtrans.client.ui.ValidationMessagePanelView.Styles">
     .container {
       width: 96%;
       table-layout: fixed;
@@ -53,12 +53,14 @@
 
   </ui:style>
 
-  <g:DisclosurePanel addStyleNames="{style.container} new-zanata" animationEnabled="true" ui:field="disclosurePanel">
+  <g:DisclosurePanel addStyleNames="{style.container} new-zanata"
+    animationEnabled="true" ui:field="disclosurePanel">
     <g:customHeader>
-      <g:Label ui:field="headerLabel" styleName="{style.header}"/>
+      <g:Label ui:field="headerLabel" styleName="{style.header}" />
     </g:customHeader>
 
-    <z:UnorderedListWidget ui:field="contents" styleName="list--no-bullets {style.contents}"/>
+    <z:UnorderedListWidget ui:field="contents"
+      styleName="list--no-bullets {style.contents}" />
 
   </g:DisclosurePanel>
 

@@ -32,54 +32,51 @@ import com.google.gwt.user.client.ui.HasText;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  */
-public interface GlossaryDetailsDisplay extends WidgetDisplay
-{
-   void setListener(Listener listener);
+public interface GlossaryDetailsDisplay extends WidgetDisplay {
+    void setListener(Listener listener);
 
-   void setHasUpdateAccess(boolean hasGlossaryUpdateAccess);
+    void setHasUpdateAccess(boolean hasGlossaryUpdateAccess);
 
-   HasText getNewCommentText();
+    HasText getNewCommentText();
 
-   void setSourceText(String sourceText);
+    void setSourceText(String sourceText);
 
-   HasText getTargetText();
+    HasText getTargetText();
 
-   HasText getSourceLabel();
+    HasText getSourceLabel();
 
-   HasText getTargetLabel();
+    HasText getTargetLabel();
 
-   HasText getSrcRef();
+    HasText getSrcRef();
 
-   void addRowIntoTargetComment(int index, String text);
+    void addRowIntoTargetComment(int index, String text);
 
-   void clearEntries();
+    void clearEntries();
 
-   void addEntry(String entriesLabel);
+    void addEntry(String entriesLabel);
 
-   void show();
+    void show();
 
-   void hide();
+    void hide();
 
-   void setSourceComment(List<String> sourceComment);
+    void setSourceComment(List<String> sourceComment);
 
-   void setTargetComment(List<String> targetComment);
+    void setTargetComment(List<String> targetComment);
 
-   void showLoading(boolean visible);
+    void showLoading(boolean visible);
 
-   List<String> getCurrentTargetComments();
+    List<String> getCurrentTargetComments();
 
-   interface Listener
-   {
-      void selectEntry(int selected);
+    interface Listener {
+        void selectEntry(int selected);
 
-      void addNewComment(int index);
+        void addNewComment(int index);
 
-      void onDismissClick();
+        void onDismissClick();
 
-      void onSaveClick();
-   }
+        void onSaveClick();
+    }
 
-   void setLastModifiedDate(Date lastModifiedDate);
-
+    void setLastModifiedDate(Date lastModifiedDate);
 
 }

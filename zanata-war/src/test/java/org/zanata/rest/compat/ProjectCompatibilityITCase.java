@@ -38,63 +38,68 @@ import static org.zanata.provider.DBUnitProvider.DataSetOperation;
 
 /**
  * Compatibility Tests For the Project Client Resource.
- * 
- * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ *
+ * @author Carlos Munoz <a
+ *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  *
  */
-public class ProjectCompatibilityITCase extends RestTest
-{
-   
-   @Override
-   protected void prepareDBUnitOperations()
-   {
-      addBeforeTestOperation(new DataSetOperation("org/zanata/test/model/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
-   }   
+public class ProjectCompatibilityITCase extends RestTest {
 
-   @Test
-   @RunAsClient
-   public void getProjectXml() throws Exception
-   {
-      IProjectResource projectClient = super.createProxy(createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
-            IProjectResource.class, "/projects/p/sample-project");
-      ClientResponse<Project> projectResponse = projectClient.get();
-      Project project = projectResponse.getEntity();
-      
-      // Assert correct parsing of all properties
-      assertThat(project.getId(), is("sample-project"));
-      assertThat(project.getName(), is("Sample Project"));
-      assertThat(project.getDescription(), is("An example Project"));
-      assertThat(project.getIterations().size(), is(2));
-   }
-   
-   @Test
-   @RunAsClient
-   public void putProjectXml() throws Exception
-   {
-      // New Project
-      Project p = new Project("new-project", "New Project", ProjectType.Podir.toString(), "This is a New Sample Project");
-      
-      IProjectResource projectClient = super.createProxy( createClientProxyFactory(ADMIN, ADMIN_KEY),
-            IProjectResource.class, "/projects/p/new-project");
-      ClientResponse putResponse = projectClient.put( p );
-      
-      // Assert initial put
-      assertThat(putResponse.getStatus(), is(Status.CREATED.getStatusCode()));
-      putResponse.releaseConnection();
-      
-      // Modified Project
-      p.setDescription("This is an updated project");
-      putResponse = projectClient.put( p );
-      
-      // Assert modification
-      assertThat(putResponse.getStatus(), is(Status.OK.getStatusCode()));
-      putResponse.releaseConnection();
-      
-      // Retrieve again
-      Project p2 = projectClient.get().getEntity();
-      assertThat(p2.getId(), is(p.getId()));
-      assertThat(p2.getName(), is(p.getName()));
-      assertThat(p2.getDescription(), is(p.getDescription()));
-      assertThat(p2.getIterations(), nullValue());
-   }
+    @Override
+    protected void prepareDBUnitOperations() {
+        addBeforeTestOperation(new DataSetOperation(
+                "org/zanata/test/model/ProjectsData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
+    }
+
+    @Test
+    @RunAsClient
+    public void getProjectXml() throws Exception {
+        IProjectResource projectClient =
+                super.createProxy(
+                        createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
+                        IProjectResource.class, "/projects/p/sample-project");
+        ClientResponse<Project> projectResponse = projectClient.get();
+        Project project = projectResponse.getEntity();
+
+        // Assert correct parsing of all properties
+        assertThat(project.getId(), is("sample-project"));
+        assertThat(project.getName(), is("Sample Project"));
+        assertThat(project.getDescription(), is("An example Project"));
+        assertThat(project.getIterations().size(), is(2));
+    }
+
+    @Test
+    @RunAsClient
+    public void putProjectXml() throws Exception {
+        // New Project
+        Project p =
+                new Project("new-project", "New Project",
+                        ProjectType.Podir.toString(),
+                        "This is a New Sample Project");
+
+        IProjectResource projectClient =
+                super.createProxy(createClientProxyFactory(ADMIN, ADMIN_KEY),
+                        IProjectResource.class, "/projects/p/new-project");
+        ClientResponse putResponse = projectClient.put(p);
+
+        // Assert initial put
+        assertThat(putResponse.getStatus(), is(Status.CREATED.getStatusCode()));
+        putResponse.releaseConnection();
+
+        // Modified Project
+        p.setDescription("This is an updated project");
+        putResponse = projectClient.put(p);
+
+        // Assert modification
+        assertThat(putResponse.getStatus(), is(Status.OK.getStatusCode()));
+        putResponse.releaseConnection();
+
+        // Retrieve again
+        Project p2 = projectClient.get().getEntity();
+        assertThat(p2.getId(), is(p.getId()));
+        assertThat(p2.getName(), is(p.getName()));
+        assertThat(p2.getDescription(), is(p.getDescription()));
+        assertThat(p2.getIterations(), nullValue());
+    }
 }

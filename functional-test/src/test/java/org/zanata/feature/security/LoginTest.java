@@ -34,31 +34,28 @@ import org.zanata.page.utility.HomePage;
 import org.zanata.util.ResetDatabaseRule;
 import org.zanata.workflow.LoginWorkFlow;
 
-
 @RunWith(ConcordionRunner.class)
-@Extensions({ScreenshotExtension.class, TimestampFormatterExtension.class, CustomResourceExtension.class})
+@Extensions({ ScreenshotExtension.class, TimestampFormatterExtension.class,
+        CustomResourceExtension.class })
 @Category(ConcordionTest.class)
-public class LoginTest
-{
-   @ClassRule
-   public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
+public class LoginTest {
+    @ClassRule
+    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
 
-   public boolean signInAs(String username, String password)
-   {
-      DashboardPage dashboardPage = new LoginWorkFlow().signIn(username, password);
+    public boolean signInAs(String username, String password) {
+        DashboardPage dashboardPage =
+                new LoginWorkFlow().signIn(username, password);
 
-      return dashboardPage.hasLoggedIn();
-   }
+        return dashboardPage.hasLoggedIn();
+    }
 
-   public String getLoggedInUsername()
-   {
-      HomePage homePage = new LoginWorkFlow().goToHome();
-      return homePage == null ? null : homePage.loggedInAs();
-   }
-   
-   public void logout()
-   {
-      new LoginWorkFlow().goToHome().logout();
-   }
+    public String getLoggedInUsername() {
+        HomePage homePage = new LoginWorkFlow().goToHome();
+        return homePage == null ? null : homePage.loggedInAs();
+    }
+
+    public void logout() {
+        new LoginWorkFlow().goToHome().logout();
+    }
 
 }

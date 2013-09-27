@@ -24,14 +24,13 @@ import net.sf.okapi.filters.dtd.DTDFilter;
 
 /**
  * Adapter for DTD, including Mozilla DTD.
- * 
- * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
+ *
+ * @author David Mason, <a
+ *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  * @see DTDFilter
  */
-public class DTDAdapter extends GenericOkapiFilterAdapter
-{
-   public DTDAdapter()
-   {
-      super(new DTDFilter(), IdSource.textUnitName);
-   }
+public class DTDAdapter extends GenericOkapiFilterAdapter {
+    public DTDAdapter() {
+        super(new DTDFilter(), IdSource.textUnitName);
+    }
 }

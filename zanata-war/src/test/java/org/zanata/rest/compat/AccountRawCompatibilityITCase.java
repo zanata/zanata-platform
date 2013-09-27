@@ -43,92 +43,99 @@ import static org.zanata.provider.DBUnitProvider.DataSetOperation;
 import static org.zanata.util.RawRestTestUtils.assertJsonUnmarshal;
 import static org.zanata.util.RawRestTestUtils.jsonUnmarshal;
 
-public class AccountRawCompatibilityITCase extends RestTest
-{
+public class AccountRawCompatibilityITCase extends RestTest {
 
-   @Override
-   protected void prepareDBUnitOperations()
-   {
-      addBeforeTestOperation(new DataSetOperation("org/zanata/test/model/AccountData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
-   }
-   
-   @Test
-   @RunAsClient
-   public void getAccountJson() throws Exception
-   {
-      // No client method for Json Get, so testing raw compatibility
-      new ResourceRequest(getRestEndpointUrl("/accounts/u/demo"), "GET")
-      {
-         @Override
-         protected void prepareRequest(ClientRequest request)
-         {
-            request.header(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON);
-         }
+    @Override
+    protected void prepareDBUnitOperations() {
+        addBeforeTestOperation(new DataSetOperation(
+                "org/zanata/test/model/AccountData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
+    }
 
-         @Override
-         protected void onResponse(ClientResponse response)
-         {
-            assertThat(response.getStatus(), is(200)); // Ok
-            assertJsonUnmarshal(response, Account.class);
-            Account account = jsonUnmarshal(response, Account.class);
-            
-            // Assert correct parsing of all properties
-            assertThat(account.getUsername(), is("demo"));
-            assertThat(account.getApiKey(), is("23456789012345678901234567890123"));
-            assertThat(account.getEmail(), is("user1@localhost"));
-            assertThat(account.getName(), is("Sample User"));
-            assertThat(account.getPasswordHash(), is("/9Se/pfHeUH8FJ4asBD6jQ=="));
-            assertThat(account.getRoles().size(), is(1));
-            //assertThat(account.getTribes().size(), is(1)); // Language teams are not being returned
-         }
-      }.run();
-   }
-   
-   @Test
-   @RunAsClient
-   public void putAccountJson() throws Exception
-   {
-      // New Account
-      Account a = new Account("aacount2@localhost.com", "Sample Account", "sampleaccount", "/9Se/pfHeUH8FJ4asBD6jQ==");
+    @Test
+    @RunAsClient
+    public void getAccountJson() throws Exception {
+        // No client method for Json Get, so testing raw compatibility
+        new ResourceRequest(getRestEndpointUrl("/accounts/u/demo"), "GET") {
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+                request.header(HttpHeaders.ACCEPT,
+                        MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON);
+            }
 
-      ZanataProxyFactory proxyFactory = createClientProxyFactory(ADMIN, ADMIN_KEY);
-      UnimplementedIAccountResource accountClient = super.createProxy(proxyFactory, UnimplementedIAccountResource.class, "/accounts/u/sampleaccount");
-      IAccountResource originalAccountClient = super.createProxy(proxyFactory, IAccountResource.class, "/accounts/u/sampleaccount");
-      ClientResponse putResponse = accountClient.putJson( a );
-      
-      // Assert initial put
-      assertThat(putResponse.getStatus(), is(Status.CREATED.getStatusCode()));
-      putResponse.releaseConnection();
-      
-      // Modified Account
-      a.setName("New Account Name");
-      putResponse = accountClient.putJson( a );
-      putResponse.releaseConnection();
-      
-      // Assert modification
-      assertThat(putResponse.getStatus(), is(Status.OK.getStatusCode()));
-      
-      // Retrieve again
-      Account a2 = originalAccountClient.get().getEntity();
-      assertThat(a2.getUsername(), is(a.getUsername()));
-      assertThat(a2.getApiKey(), is(a.getApiKey()));
-      assertThat(a2.getEmail(), is(a.getEmail()));
-      assertThat(a2.getName(), is(a.getName()));
-      assertThat(a2.getPasswordHash(), is(a.getPasswordHash()));
-      assertThat(a2.getRoles().size(), is(0));
-      //assertThat(a2.getTribes().size(), is(1)); // Language teams are not being returned
-   }
-   
-   /**
-    * Test interface for any unimplemented rest methods in the original client interface.
-    * Helps with the testing of methods that are not present in the original interface to test.
-    */
-   public static interface UnimplementedIAccountResource
-   {
-      @PUT
-      @Consumes(
-      {MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON})
-      public ClientResponse putJson(Account account);
-   }
+            @Override
+            protected void onResponse(ClientResponse response) {
+                assertThat(response.getStatus(), is(200)); // Ok
+                assertJsonUnmarshal(response, Account.class);
+                Account account = jsonUnmarshal(response, Account.class);
+
+                // Assert correct parsing of all properties
+                assertThat(account.getUsername(), is("demo"));
+                assertThat(account.getApiKey(),
+                        is("23456789012345678901234567890123"));
+                assertThat(account.getEmail(), is("user1@localhost"));
+                assertThat(account.getName(), is("Sample User"));
+                assertThat(account.getPasswordHash(),
+                        is("/9Se/pfHeUH8FJ4asBD6jQ=="));
+                assertThat(account.getRoles().size(), is(1));
+                // assertThat(account.getTribes().size(), is(1)); // Language
+                // teams are not being returned
+            }
+        }.run();
+    }
+
+    @Test
+    @RunAsClient
+    public void putAccountJson() throws Exception {
+        // New Account
+        Account a =
+                new Account("aacount2@localhost.com", "Sample Account",
+                        "sampleaccount", "/9Se/pfHeUH8FJ4asBD6jQ==");
+
+        ZanataProxyFactory proxyFactory =
+                createClientProxyFactory(ADMIN, ADMIN_KEY);
+        UnimplementedIAccountResource accountClient =
+                super.createProxy(proxyFactory,
+                        UnimplementedIAccountResource.class,
+                        "/accounts/u/sampleaccount");
+        IAccountResource originalAccountClient =
+                super.createProxy(proxyFactory, IAccountResource.class,
+                        "/accounts/u/sampleaccount");
+        ClientResponse putResponse = accountClient.putJson(a);
+
+        // Assert initial put
+        assertThat(putResponse.getStatus(), is(Status.CREATED.getStatusCode()));
+        putResponse.releaseConnection();
+
+        // Modified Account
+        a.setName("New Account Name");
+        putResponse = accountClient.putJson(a);
+        putResponse.releaseConnection();
+
+        // Assert modification
+        assertThat(putResponse.getStatus(), is(Status.OK.getStatusCode()));
+
+        // Retrieve again
+        Account a2 = originalAccountClient.get().getEntity();
+        assertThat(a2.getUsername(), is(a.getUsername()));
+        assertThat(a2.getApiKey(), is(a.getApiKey()));
+        assertThat(a2.getEmail(), is(a.getEmail()));
+        assertThat(a2.getName(), is(a.getName()));
+        assertThat(a2.getPasswordHash(), is(a.getPasswordHash()));
+        assertThat(a2.getRoles().size(), is(0));
+        // assertThat(a2.getTribes().size(), is(1)); // Language teams are not
+        // being returned
+    }
+
+    /**
+     * Test interface for any unimplemented rest methods in the original client
+     * interface. Helps with the testing of methods that are not present in the
+     * original interface to test.
+     */
+    public static interface UnimplementedIAccountResource {
+        @PUT
+        @Consumes({ MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON })
+        public ClientResponse putJson(Account account);
+    }
 
 }

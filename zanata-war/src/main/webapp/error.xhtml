@@ -1,44 +1,47 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:s="http://jboss.org/schema/seam/taglib"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	template="WEB-INF/template/template_2x.xhtml">
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  template="WEB-INF/template/template_2x.xhtml">
 
-	<ui:define name="page_title">#{messages['jsf.Error']}</ui:define>
-	<ui:param name="showGlobalMessages" value="false" />
-	<ui:define name="center_content">
-		<div class="new-zanata">
-			<s:fragment
-				rendered="#{empty org.jboss.seam.international.statusMessages.currentGlobalMessages}">
-				<h2>#{messages['jsf.NoErrors']}</h2>
-			</s:fragment>
-	
-			<s:fragment
-				rendered="#{not empty org.jboss.seam.international.statusMessages.currentGlobalMessages}">
-				<ul class="list--no-bullets">
-					<li>
-						<div class="alert--danger">
-							<h2 class="alert__heading">#{messages['jsf.ErrorTitle']}</h2>
-							<div class="alert__content">
-								<h:messages id="errorMessage" styleClass="message"
-									infoClass="infomsg icon-info-circle-2"
-									warnClass="warnmsg icon-attention"
-									errorClass="errormsg icon-info-circle-2 alert__highlight" />
-								<p>#{messages['jsf.YouCanHelpUs']}</p>
-								<p>
-									<button class="button--danger"
-										onclick="window.open('https://bugzilla.redhat.com/enter_bug.cgi?format=guided&amp;product=Zanata')">
-										#{messages['jsf.ReportThisProblem']}
-									</button>
-								</p>
-							</div>
-						</div>
-					</li>
-				</ul>
-			</s:fragment>
-		</div>
-	</ui:define>
+  <ui:define name="page_title">#{messages['jsf.Error']}</ui:define>
+  <ui:param name="showGlobalMessages" value="false"/>
+  <ui:define name="center_content">
+    <div class="new-zanata">
+      <s:fragment
+        rendered="#{empty org.jboss.seam.international.statusMessages.currentGlobalMessages}">
+        <h2>#{messages['jsf.NoErrors']}</h2>
+      </s:fragment>
+
+      <s:fragment
+        rendered="#{not empty org.jboss.seam.international.statusMessages.currentGlobalMessages}">
+        <ul class="list--no-bullets">
+          <li>
+            <div class="alert--danger">
+              <h2 class="alert__heading">#{messages['jsf.ErrorTitle']}</h2>
+
+              <div class="alert__content">
+                <h:messages id="errorMessage" styleClass="message"
+                  infoClass="infomsg icon-info-circle-2"
+                  warnClass="warnmsg icon-attention"
+                  errorClass="errormsg icon-info-circle-2 alert__highlight"/>
+
+                <p>#{messages['jsf.YouCanHelpUs']}</p>
+
+                <p>
+                  <button class="button--danger"
+                    onclick="window.open('https://bugzilla.redhat.com/enter_bug.cgi?format=guided&amp;product=Zanata')">
+                    #{messages['jsf.ReportThisProblem']}
+                  </button>
+                </p>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </s:fragment>
+    </div>
+  </ui:define>
 </ui:composition>

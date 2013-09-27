@@ -20,24 +20,22 @@
  */
 package org.zanata.webtrans.client.ui;
 
-
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 import org.zanata.webtrans.shared.rpc.MergeOptions;
 
-public interface TransMemoryMergePopupPanelDisplay extends WidgetDisplay
-{
-   void hide();
+public interface TransMemoryMergePopupPanelDisplay extends WidgetDisplay {
+    void hide();
 
-   void setListener(Listener listener);
+    void setListener(Listener listener);
 
-   void showProcessing();
+    void showProcessing();
 
-   void showForm();
+    void showForm();
 
-   interface Listener
-   {
-      void proceedToMergeTM(int percentage, MergeOptions mergeOptions);
-      void cancelMergeTM();
-   }
+    interface Listener {
+        void proceedToMergeTM(int percentage, MergeOptions mergeOptions);
+
+        void cancelMergeTM();
+    }
 }

@@ -1,85 +1,113 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:s="http://jboss.org/schema/seam/taglib"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:rich="http://richfaces.org/rich"
-    template="../WEB-INF/template/template_2x.xhtml">
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:rich="http://richfaces.org/rich"
+  template="../WEB-INF/template/template_2x.xhtml">
 
-    <ui:define name="page_title">#{messages['jsf.Statistics']}</ui:define>
-    <ui:define name="center_content">
+  <ui:define name="page_title">#{messages['jsf.Statistics']}</ui:define>
+  <ui:define name="center_content">
 
-        <div class="stats_container">
-            <span class="stats_label">#{messages['jsf.TotalTranslators']}</span><span class="stats_value">#{adminStatsAction.totalTranslator}</span>
-        </div>
+    <div class="stats_container">
+      <span class="stats_label">#{messages['jsf.TotalTranslators']}</span><span
+      class="stats_value">#{adminStatsAction.totalTranslator}</span>
+    </div>
 
-        <div class="stats_container">
-            <span class="stats_label">#{messages['jsf.TotalProjects']}</span><span class="stats_value">#{adminStatsAction.totalProjectCount}</span>
-            <div class="stats_sub_container">
-                <span class="stats_label">#{messages['jsf.Active']}</span><span class="stats_value">#{adminStatsAction.totalActiveProjectCount}</span>
-            </div>
-            <div class="stats_sub_container">
-                <span class="stats_label">#{messages['jsf.ReadOnly']}</span><span class="stats_value">#{adminStatsAction.totalReadOnlyProjectCount}</span>
-            </div>
-            <div class="stats_sub_container">
-                <span class="stats_label">#{messages['jsf.Obsolete']}</span><span class="stats_value">#{adminStatsAction.totalObsoleteProjectCount}</span>
-            </div>
-        </div>
+    <div class="stats_container">
+      <span class="stats_label">#{messages['jsf.TotalProjects']}</span><span
+      class="stats_value">#{adminStatsAction.totalProjectCount}</span>
 
-        <div class="stats_container">
-            <span class="stats_label">#{messages['jsf.TotalProjectVersion']}</span><span class="stats_value">#{adminStatsAction.totalProjectIterCount}</span>
-            <div class="stats_sub_container">
-                <span class="stats_label">#{messages['jsf.Active']}</span><span class="stats_value">#{adminStatsAction.totalActiveProjectIterCount}</span>
-            </div>
-            <div class="stats_sub_container">
-                <span class="stats_label">#{messages['jsf.ReadOnly']}</span><span class="stats_value">#{adminStatsAction.totalReadOnlyProjectIterCount}</span>
-            </div>
-            <div class="stats_sub_container">
-                <span class="stats_label">#{messages['jsf.Obsolete']}</span><span class="stats_value">#{adminStatsAction.totalObsoleteProjectIterCount}</span>
-            </div>
-        </div>
+      <div class="stats_sub_container">
+        <span class="stats_label">#{messages['jsf.Active']}</span><span
+        class="stats_value">#{adminStatsAction.totalActiveProjectCount}</span>
+      </div>
+      <div class="stats_sub_container">
+        <span class="stats_label">#{messages['jsf.ReadOnly']}</span><span
+        class="stats_value">#{adminStatsAction.totalReadOnlyProjectCount}</span>
+      </div>
+      <div class="stats_sub_container">
+        <span class="stats_label">#{messages['jsf.Obsolete']}</span><span
+        class="stats_value">#{adminStatsAction.totalObsoleteProjectCount}</span>
+      </div>
+    </div>
 
-        <div class="stats_container">
-            <span class="stats_label">#{messages['jsf.TotalDocuments']}</span><span class="stats_value">#{adminStatsAction.totalDocuments}</span>
-            <div class="stats_sub_container">
-                <span class="stats_label">#{messages['jsf.Active']}</span><span class="stats_value">#{adminStatsAction.totalActiveDocuments}</span>
-            </div>
-            <div class="stats_sub_container">
-                <span class="stats_label">#{messages['jsf.Obsolete']}</span><span class="stats_value">#{adminStatsAction.totalObsoleteDocuments}</span>
-            </div>
-        </div>
+    <div class="stats_container">
+      <span
+        class="stats_label">#{messages['jsf.TotalProjectVersion']}</span><span
+      class="stats_value">#{adminStatsAction.totalProjectIterCount}</span>
 
-        <div class="stats_container">
-            <span class="stats_label">#{messages['jsf.TotalTextFlows']}</span><span class="stats_value">#{adminStatsAction.totalTextFlows}</span>
-            <div class="stats_sub_container">
-                <span class="stats_label">#{messages['jsf.Active']}</span><span class="stats_value">#{adminStatsAction.totalActiveTextFlows}</span>
-            </div>
-            <div class="stats_sub_container">
-                <span class="stats_label">#{messages['jsf.Obsolete']}</span><span class="stats_value">#{adminStatsAction.totalObsoleteTextFlows}</span>
-            </div>
-        </div>
+      <div class="stats_sub_container">
+        <span class="stats_label">#{messages['jsf.Active']}</span><span
+        class="stats_value">#{adminStatsAction.totalActiveProjectIterCount}</span>
+      </div>
+      <div class="stats_sub_container">
+        <span class="stats_label">#{messages['jsf.ReadOnly']}</span><span
+        class="stats_value">#{adminStatsAction.totalReadOnlyProjectIterCount}</span>
+      </div>
+      <div class="stats_sub_container">
+        <span class="stats_label">#{messages['jsf.Obsolete']}</span><span
+        class="stats_value">#{adminStatsAction.totalObsoleteProjectIterCount}</span>
+      </div>
+    </div>
+
+    <div class="stats_container">
+      <span class="stats_label">#{messages['jsf.TotalDocuments']}</span><span
+      class="stats_value">#{adminStatsAction.totalDocuments}</span>
+
+      <div class="stats_sub_container">
+        <span class="stats_label">#{messages['jsf.Active']}</span><span
+        class="stats_value">#{adminStatsAction.totalActiveDocuments}</span>
+      </div>
+      <div class="stats_sub_container">
+        <span class="stats_label">#{messages['jsf.Obsolete']}</span><span
+        class="stats_value">#{adminStatsAction.totalObsoleteDocuments}</span>
+      </div>
+    </div>
+
+    <div class="stats_container">
+      <span class="stats_label">#{messages['jsf.TotalTextFlows']}</span><span
+      class="stats_value">#{adminStatsAction.totalTextFlows}</span>
+
+      <div class="stats_sub_container">
+        <span class="stats_label">#{messages['jsf.Active']}</span><span
+        class="stats_value">#{adminStatsAction.totalActiveTextFlows}</span>
+      </div>
+      <div class="stats_sub_container">
+        <span class="stats_label">#{messages['jsf.Obsolete']}</span><span
+        class="stats_value">#{adminStatsAction.totalObsoleteTextFlows}</span>
+      </div>
+    </div>
 
 
-        <div class="stats_container">
-            <span class="stats_label">#{messages['jsf.TotalTextFlowTargets']}</span><span class="stats_value">#{adminStatsAction.totalTextFlowTargets}</span>
-            <div class="stats_sub_container">
-                <span class="stats_label">#{messages['jsf.Active']}</span><span class="stats_value">#{adminStatsAction.totalActiveTextFlowTargets}</span>
-            </div>
-            <div class="stats_sub_container">
-                <span class="stats_label">#{messages['jsf.Obsolete']}</span><span class="stats_value">#{adminStatsAction.totalObsoleteTextFlowTargets}</span>
-            </div>
-            <div class="stats_sub_container">
-                <span class="stats_label">#{messages['jsf.Translated']}</span><span class="stats_value">#{adminStatsAction.totalApprovedTextFlowTargets}</span>
-            </div>
-            <div class="stats_sub_container">
-                <span class="stats_label">#{messages['jsf.RejectedOrFuzzy']}</span><span class="stats_value">#{adminStatsAction.totalRejectedOrFuzzyTextFlowTargets}</span>
-            </div>
-            <div class="stats_sub_container">
-                <span class="stats_label">#{messages['jsf.Untranslated']}</span><span class="stats_value">#{adminStatsAction.totalUntranslatedTextFlowTargets}</span>
-            </div>
-        </div>
+    <div class="stats_container">
+      <span
+        class="stats_label">#{messages['jsf.TotalTextFlowTargets']}</span><span
+      class="stats_value">#{adminStatsAction.totalTextFlowTargets}</span>
 
-    </ui:define>
+      <div class="stats_sub_container">
+        <span class="stats_label">#{messages['jsf.Active']}</span><span
+        class="stats_value">#{adminStatsAction.totalActiveTextFlowTargets}</span>
+      </div>
+      <div class="stats_sub_container">
+        <span class="stats_label">#{messages['jsf.Obsolete']}</span><span
+        class="stats_value">#{adminStatsAction.totalObsoleteTextFlowTargets}</span>
+      </div>
+      <div class="stats_sub_container">
+        <span class="stats_label">#{messages['jsf.Translated']}</span><span
+        class="stats_value">#{adminStatsAction.totalApprovedTextFlowTargets}</span>
+      </div>
+      <div class="stats_sub_container">
+        <span class="stats_label">#{messages['jsf.RejectedOrFuzzy']}</span><span
+        class="stats_value">#{adminStatsAction.totalRejectedOrFuzzyTextFlowTargets}</span>
+      </div>
+      <div class="stats_sub_container">
+        <span class="stats_label">#{messages['jsf.Untranslated']}</span><span
+        class="stats_value">#{adminStatsAction.totalUntranslatedTextFlowTargets}</span>
+      </div>
+    </div>
+
+  </ui:define>
 </ui:composition>

@@ -17,29 +17,31 @@ import org.zanata.webtrans.shared.rpc.NoOpResult;
 @Name("webtrans.gwt.ExitWorkspaceHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(ExitWorkspaceAction.class)
-public class ExitWorkspaceHandler extends AbstractActionHandler<ExitWorkspaceAction, NoOpResult>
-{
-   @In
-   private ZanataIdentity identity;
+public class ExitWorkspaceHandler extends
+        AbstractActionHandler<ExitWorkspaceAction, NoOpResult> {
+    @In
+    private ZanataIdentity identity;
 
-   @In
-   private TranslationWorkspaceManager translationWorkspaceManager;
+    @In
+    private TranslationWorkspaceManager translationWorkspaceManager;
 
-   @Override
-   public NoOpResult execute(ExitWorkspaceAction action, ExecutionContext context) throws ActionException
-   {
+    @Override
+    public NoOpResult execute(ExitWorkspaceAction action,
+            ExecutionContext context) throws ActionException {
 
-      identity.checkLoggedIn();
+        identity.checkLoggedIn();
 
-      TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
+        TranslationWorkspace workspace =
+                translationWorkspaceManager.getOrRegisterWorkspace(action
+                        .getWorkspaceId());
 
-      // Send ExitWorkspace event to client
-      workspace.removeEditorClient(action.getEditorClientId());
-      return new NoOpResult();
-   }
+        // Send ExitWorkspace event to client
+        workspace.removeEditorClient(action.getEditorClientId());
+        return new NoOpResult();
+    }
 
-   @Override
-   public void rollback(ExitWorkspaceAction action, NoOpResult result, ExecutionContext context) throws ActionException
-   {
-   }
+    @Override
+    public void rollback(ExitWorkspaceAction action, NoOpResult result,
+            ExecutionContext context) throws ActionException {
+    }
 }

@@ -43,89 +43,83 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class ForceReviewCommentPresenter extends WidgetPresenter<ForceReviewCommentDisplay>
-      implements ForceReviewCommentDisplay.Listener, CommentBeforeSaveEventHandler
-{
+public class ForceReviewCommentPresenter extends
+        WidgetPresenter<ForceReviewCommentDisplay> implements
+        ForceReviewCommentDisplay.Listener, CommentBeforeSaveEventHandler {
 
-   private final ForceReviewCommentDisplay display;
-   private final CachingDispatchAsync dispatcher;
-   private final GetTransUnitActionContextHolder contextHolder;
-   private final KeyShortcutPresenter keyShortcutPresenter;
+    private final ForceReviewCommentDisplay display;
+    private final CachingDispatchAsync dispatcher;
+    private final GetTransUnitActionContextHolder contextHolder;
+    private final KeyShortcutPresenter keyShortcutPresenter;
 
-   private TransUnitSaveEvent saveEvent;
+    private TransUnitSaveEvent saveEvent;
 
-   @Inject
-   public ForceReviewCommentPresenter(ForceReviewCommentDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher,
-                                      GetTransUnitActionContextHolder contextHolder, KeyShortcutPresenter keyShortcutPresenter)
-   {
-      super(display, eventBus);
-      this.display = display;
-      this.dispatcher = dispatcher;
-      this.contextHolder = contextHolder;
-      this.keyShortcutPresenter = keyShortcutPresenter;
-      display.setListener(this);
+    @Inject
+    public ForceReviewCommentPresenter(ForceReviewCommentDisplay display,
+            EventBus eventBus, CachingDispatchAsync dispatcher,
+            GetTransUnitActionContextHolder contextHolder,
+            KeyShortcutPresenter keyShortcutPresenter) {
+        super(display, eventBus);
+        this.display = display;
+        this.dispatcher = dispatcher;
+        this.contextHolder = contextHolder;
+        this.keyShortcutPresenter = keyShortcutPresenter;
+        display.setListener(this);
 
-      eventBus.addHandler(CommentBeforeSaveEvent.TYPE, this);
+        eventBus.addHandler(CommentBeforeSaveEvent.TYPE, this);
 
-      registerKeyShortcut();
-   }
+        registerKeyShortcut();
+    }
 
-   private void registerKeyShortcut()
-   {
-      KeyShortcut confirmShortcut = KeyShortcut.Builder.builder()
-            .addKey(new Keys(Keys.CTRL_KEY, KeyCodes.KEY_ENTER))
-            .setContext(ShortcutContext.RejectConfirmationPopup)
-            .setHandler(new KeyShortcutEventHandler()
-            {
-               @Override
-               public void onKeyShortcut(KeyShortcutEvent event)
-               {
-                  addComment(display.getComment());
-               }
-            })
-            .build();
-      keyShortcutPresenter.register(confirmShortcut);
-   }
+    private void registerKeyShortcut() {
+        KeyShortcut confirmShortcut =
+                KeyShortcut.Builder.builder()
+                        .addKey(new Keys(Keys.CTRL_KEY, KeyCodes.KEY_ENTER))
+                        .setContext(ShortcutContext.RejectConfirmationPopup)
+                        .setHandler(new KeyShortcutEventHandler() {
+                            @Override
+                            public void onKeyShortcut(KeyShortcutEvent event) {
+                                addComment(display.getComment());
+                            }
+                        }).build();
+        keyShortcutPresenter.register(confirmShortcut);
+    }
 
-   @Override
-   public void onCommentBeforeSave(CommentBeforeSaveEvent event)
-   {
-      saveEvent = event.getSaveEvent();
-      display.center();
-   }
+    @Override
+    public void onCommentBeforeSave(CommentBeforeSaveEvent event) {
+        saveEvent = event.getSaveEvent();
+        display.center();
+    }
 
-   @Override
-   public void addComment(String content)
-   {
-      dispatcher.execute(new AddReviewCommentAction(saveEvent.getTransUnitId(), content,
-            contextHolder.getContext().getDocument().getId()), new AbstractAsyncCallback<AddReviewCommentResult>()
-      {
-         @Override
-         public void onSuccess(AddReviewCommentResult result)
-         {
-            display.clearInput();
-            eventBus.fireEvent(saveEvent);
-            eventBus.fireEvent(NavTransUnitEvent.NEXT_ENTRY_EVENT);
-            saveEvent = null;
-            display.hide();
-         }
-      });
-   }
+    @Override
+    public void addComment(String content) {
+        dispatcher.execute(
+                new AddReviewCommentAction(saveEvent.getTransUnitId(), content,
+                        contextHolder.getContext().getDocument().getId()),
+                new AbstractAsyncCallback<AddReviewCommentResult>() {
+                    @Override
+                    public void onSuccess(AddReviewCommentResult result) {
+                        display.clearInput();
+                        eventBus.fireEvent(saveEvent);
+                        eventBus.fireEvent(NavTransUnitEvent.NEXT_ENTRY_EVENT);
+                        saveEvent = null;
+                        display.hide();
+                    }
+                });
+    }
 
-   @Override
-   protected void onBind()
-   {
-   }
+    @Override
+    protected void onBind() {
+    }
 
-   @Override
-   protected void onUnbind()
-   {
-   }
+    @Override
+    protected void onUnbind() {
+    }
 
-   @Override
-   protected void onRevealDisplay()
-   {
-   }
+    @Override
+    protected void onRevealDisplay() {
+    }
 }

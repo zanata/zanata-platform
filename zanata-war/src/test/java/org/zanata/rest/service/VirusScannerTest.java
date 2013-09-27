@@ -31,99 +31,78 @@ import org.testng.reporters.Files;
 import org.zanata.exception.VirusDetectedException;
 
 /**
- * @author Sean Flanigan, <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan, <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @Test(groups = { "unit-tests" })
-public class VirusScannerTest
-{
-   private VirusScanner virusScanner = new VirusScanner();
+public class VirusScannerTest {
+    private VirusScanner virusScanner = new VirusScanner();
 
-   @BeforeClass
-   private void checkDisabled()
-   {
-      if (virusScanner.isDisabled())
-      {
-         throw new SkipException("virusScanner is DISABLED");
-      }
-   }
+    @BeforeClass
+    private void checkDisabled() {
+        if (virusScanner.isDisabled()) {
+            throw new SkipException("virusScanner is DISABLED");
+        }
+    }
 
-   public void virusScanSafeFile() throws IOException
-   {
-      String data = "This is a simple test file, which doesn't contain a virus.\n";
-      File file = File.createTempFile("data", ".tmp");
-      try
-      {
-         Files.writeFile(data, file);
-         virusScanner.scan(file, "safe");
-      }
-      finally
-      {
-         file.delete();
-      }
-   }
+    public void virusScanSafeFile() throws IOException {
+        String data =
+                "This is a simple test file, which doesn't contain a virus.\n";
+        File file = File.createTempFile("data", ".tmp");
+        try {
+            Files.writeFile(data, file);
+            virusScanner.scan(file, "safe");
+        } finally {
+            file.delete();
+        }
+    }
 
-   public void virusScanEicarFile() throws IOException
-   {
-      String eicar = generateFakeVirus();
-      File file = File.createTempFile("eicar", ".tmp");
-      try
-      {
-         Files.writeFile(eicar, file);
-         virusScanner.scan(file, "eicar");
-         virusNotFound("failed to detect eicar test signature");
-      }
-      catch (VirusDetectedException e)
-      {
-         // expected (unless virusScanner is DISABLED or blank)
-      }
-      finally
-      {
-         file.delete();
-      }
-   }
+    public void virusScanEicarFile() throws IOException {
+        String eicar = generateFakeVirus();
+        File file = File.createTempFile("eicar", ".tmp");
+        try {
+            Files.writeFile(eicar, file);
+            virusScanner.scan(file, "eicar");
+            virusNotFound("failed to detect eicar test signature");
+        } catch (VirusDetectedException e) {
+            // expected (unless virusScanner is DISABLED or blank)
+        } finally {
+            file.delete();
+        }
+    }
 
-   private String generateFakeVirus()
-   {
-      // See http://www.eicar.org/86-0-Intended-use.html
-      // We use ROT13 so that virus scanners won't think this source file
-      // is "infected" with EICAR.
-      String eicar = rot13("K5B!C%@NC[4\\CMK54(C^)7PP)7}$RVPNE-FGNAQNEQ-NAGVIVEHF-GRFG-SVYR!$U+U*\n");
-      return eicar;
-   }
+    private String generateFakeVirus() {
+        // See http://www.eicar.org/86-0-Intended-use.html
+        // We use ROT13 so that virus scanners won't think this source file
+        // is "infected" with EICAR.
+        String eicar =
+                rot13("K5B!C%@NC[4\\CMK54(C^)7PP)7}$RVPNE-FGNAQNEQ-NAGVIVEHF-GRFG-SVYR!$U+U*\n");
+        return eicar;
+    }
 
-   private void virusNotFound(String msg)
-   {
-      if (virusScanner.isScannerSet())
-      {
-         Assert.fail(msg);
-      }
-      else
-      {
-         throw new SkipException("virusScanner is blank and clamdscan not found");
-      }
-   }
+    private void virusNotFound(String msg) {
+        if (virusScanner.isScannerSet()) {
+            Assert.fail(msg);
+        } else {
+            throw new SkipException(
+                    "virusScanner is blank and clamdscan not found");
+        }
+    }
 
-   private static String rot13(String s)
-   {
-      StringBuilder sb = new StringBuilder(s.length());
-      for (int i = 0; i < s.length(); i++)
-      {
-         char c = s.charAt(i);
-         char r;
-         if ((c >= 'a' && c <= 'm') || (c >= 'A' && c <= 'M'))
-         {
-            r = (char) (c + 13);
-         }
-         else if ((c >= 'n' && c <= 'z') || (c >= 'N' && c <= 'Z'))
-         {
-            r = (char) (c - 13);
-         }
-         else
-         {
-            r = c;
-         }
-         sb.append(r);
-      }
-      return sb.toString();
-   }
+    private static String rot13(String s) {
+        StringBuilder sb = new StringBuilder(s.length());
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            char r;
+            if ((c >= 'a' && c <= 'm') || (c >= 'A' && c <= 'M')) {
+                r = (char) (c + 13);
+            } else if ((c >= 'n' && c <= 'z') || (c >= 'N' && c <= 'Z')) {
+                r = (char) (c - 13);
+            } else {
+                r = c;
+            }
+            sb.append(r);
+        }
+        return sb.toString();
+    }
 }

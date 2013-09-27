@@ -27,22 +27,23 @@ import java.sql.SQLException;
 import org.hibernate.service.jdbc.connections.internal.DriverManagerConnectionProviderImpl;
 
 /**
- * This class wraps JDBC Connections/Statements/ResultSets to detect
- * attempts to use mysql's streaming ResultSet feature.  It then watches
- * for any usage which would exceed the limitations of mysql's streaming
- * ResultSets, and throws an SQLException.  This enables us to catch
- * these problems without having to test against mysql in our unit tests.
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * This class wraps JDBC Connections/Statements/ResultSets to detect attempts to
+ * use mysql's streaming ResultSet feature. It then watches for any usage which
+ * would exceed the limitations of mysql's streaming ResultSets, and throws an
+ * SQLException. This enables us to catch these problems without having to test
+ * against mysql in our unit tests.
+ *
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class WrappedDriverManagerConnectionProvider extends DriverManagerConnectionProviderImpl
-{
-   private static final long serialVersionUID = 1L;
+public class WrappedDriverManagerConnectionProvider extends
+        DriverManagerConnectionProviderImpl {
+    private static final long serialVersionUID = 1L;
 
-   @Override
-   public Connection getConnection() throws SQLException
-   {
-      return ConnectionWrapper.wrapUnlessMysql(super.getConnection());
-   }
+    @Override
+    public Connection getConnection() throws SQLException {
+        return ConnectionWrapper.wrapUnlessMysql(super.getConnection());
+    }
 
 }

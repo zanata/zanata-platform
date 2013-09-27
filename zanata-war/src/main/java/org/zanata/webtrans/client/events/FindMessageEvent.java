@@ -25,56 +25,52 @@ import org.zanata.webtrans.client.service.NavigationService;
 import com.google.common.base.Preconditions;
 import com.google.gwt.event.shared.GwtEvent;
 
-public class FindMessageEvent extends GwtEvent<FindMessageHandler> implements NavigationService.UpdateContextCommand
-{
-   private String message;
-   public static final FindMessageEvent DEFAULT = new FindMessageEvent(null);
+public class FindMessageEvent extends GwtEvent<FindMessageHandler> implements
+        NavigationService.UpdateContextCommand {
+    private String message;
+    public static final FindMessageEvent DEFAULT = new FindMessageEvent(null);
 
-   public FindMessageEvent(String message)
-   {
-      this.message = message;
-   }
+    public FindMessageEvent(String message) {
+        this.message = message;
+    }
 
-   public String getMessage()
-   {
-      return this.message;
-   }
+    public String getMessage() {
+        return this.message;
+    }
 
-   /**
-    * Handler type.
-    */
-   private static Type<FindMessageHandler> TYPE;
+    /**
+     * Handler type.
+     */
+    private static Type<FindMessageHandler> TYPE;
 
-   /**
-    * Gets the type associated with this event.
-    * 
-    * @return returns the handler type
-    */
-   public static Type<FindMessageHandler> getType()
-   {
-      if (TYPE == null)
-      {
-         TYPE = new Type<FindMessageHandler>();
-      }
-      return TYPE;
-   }
+    /**
+     * Gets the type associated with this event.
+     *
+     * @return returns the handler type
+     */
+    public static Type<FindMessageHandler> getType() {
+        if (TYPE == null) {
+            TYPE = new Type<FindMessageHandler>();
+        }
+        return TYPE;
+    }
 
-   @Override
-   public com.google.gwt.event.shared.GwtEvent.Type<FindMessageHandler> getAssociatedType()
-   {
-      return getType();
-   }
+    @Override
+    public com.google.gwt.event.shared.GwtEvent.Type<FindMessageHandler>
+            getAssociatedType() {
+        return getType();
+    }
 
-   @Override
-   protected void dispatch(FindMessageHandler handler)
-   {
-      handler.onFindMessage(this);
-   }
+    @Override
+    protected void dispatch(FindMessageHandler handler) {
+        handler.onFindMessage(this);
+    }
 
-   @Override
-   public GetTransUnitActionContext updateContext(GetTransUnitActionContext currentContext)
-   {
-      Preconditions.checkNotNull(currentContext, "current context can not be null");
-      return currentContext.changeFindMessage(message);
-   }
+    @Override
+    public GetTransUnitActionContext updateContext(
+            GetTransUnitActionContext currentContext) {
+        Preconditions.checkNotNull(currentContext,
+                "current context can not be null");
+        return currentContext.changeFindMessage(message);
+    }
 }

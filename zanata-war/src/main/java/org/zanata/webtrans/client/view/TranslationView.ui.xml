@@ -1,29 +1,30 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:f="urn:import:org.zanata.webtrans.client"
-	xmlns:fui="urn:import:org.zanata.webtrans.client.ui">
+  xmlns:g="urn:import:com.google.gwt.user.client.ui"
+  xmlns:f="urn:import:org.zanata.webtrans.client"
+  xmlns:fui="urn:import:org.zanata.webtrans.client.ui">
 
-	<ui:style>
-		.southPanel
-		{
-			border-bottom:1px solid #E5E5E5;
-		}
-	</ui:style>
+  <ui:style>
+    .southPanel {
+      border-bottom: 1px solid #E5E5E5;
+    }
+  </ui:style>
 
-	<g:LayoutPanel styleName="translationContainer">
-		<g:layer top="0px" bottom="0px">
-			<g:SplitLayoutPanel ui:field="mainSplitPanel">
-				<g:south size="150">
-				    <g:LayoutPanel ui:field="southPanelContainer">
-				        <g:layer top="0" bottom="5px">
-					        <g:LayoutPanel ui:field="southPanel" styleName="{style.southPanel}"/>
-                        </g:layer>
-				    </g:LayoutPanel>
-                </g:south>
-				<g:center>
-					<g:LayoutPanel ui:field="editorContainer" />
-				</g:center>
-			</g:SplitLayoutPanel>
-		</g:layer>
-	</g:LayoutPanel>
+  <g:LayoutPanel styleName="translationContainer">
+    <g:layer top="0px" bottom="0px">
+      <g:SplitLayoutPanel ui:field="mainSplitPanel">
+        <g:south size="150">
+          <g:LayoutPanel ui:field="southPanelContainer">
+            <g:layer top="0" bottom="5px">
+              <g:LayoutPanel ui:field="southPanel"
+                styleName="{style.southPanel}" />
+            </g:layer>
+          </g:LayoutPanel>
+        </g:south>
+        <g:center>
+          <g:LayoutPanel ui:field="editorContainer" />
+        </g:center>
+      </g:SplitLayoutPanel>
+    </g:layer>
+  </g:LayoutPanel>
 </ui:UiBinder>

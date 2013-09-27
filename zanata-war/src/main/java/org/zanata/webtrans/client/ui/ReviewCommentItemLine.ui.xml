@@ -20,15 +20,18 @@
   -->
 
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-             xmlns:g='urn:import:com.google.gwt.user.client.ui'>
-    <g:HTMLPanel tag="li" styleName="l--pad-v-half">
-        <div class="g--tight">
-            <div class="g__item w--1-12 txt--align-right"><i class="i--comment i--large txt--neutral"/><span class="is-invisible">Comment</span></div>
-            <div class="g__item w--9-12">
-                <g:InlineHTML ui:field="heading"/>
-                <g:InlineHTML ui:field="commentContent"/>
-                <g:InlineHTML ui:field="commentTime"/>
-            </div>
-        </div>
-    </g:HTMLPanel>
+  xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+  <g:HTMLPanel tag="li" styleName="l--pad-v-half">
+    <div class="g--tight">
+      <div class="g__item w--1-12 txt--align-right">
+        <i class="i--comment i--large txt--neutral" />
+        <span class="is-invisible">Comment</span>
+      </div>
+      <div class="g__item w--9-12">
+        <g:InlineHTML ui:field="heading" />
+        <g:InlineHTML ui:field="commentContent" />
+        <g:InlineHTML ui:field="commentTime" />
+      </div>
+    </div>
+  </g:HTMLPanel>
 </ui:UiBinder>

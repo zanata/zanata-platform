@@ -38,121 +38,128 @@ import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class ChangePasswordTest
-{
-   @Rule
-   public ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
+public class ChangePasswordTest {
+    @Rule
+    public ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
 
-   @Before
-   public void setUp()
-   {
-      new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
-   }
+    @Before
+    public void setUp() {
+        new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
+    }
 
-   @Test
-   @Category(BasicAcceptanceTest.class)
-   public void changePasswordSuccessful()
-   {
-      MyAccountPage myAccountPage = new LoginWorkFlow().signIn("translator", "translator")
-            .goToMyProfile()
-            .goToChangePassword()
-            .enterOldPassword("translator")
-            .enterNewPassword("newpassword")
-            .enterConfirmNewPassword("newpassword")
-            .changePassword();
+    @Test
+    @Category(BasicAcceptanceTest.class)
+    public void changePasswordSuccessful() {
+        MyAccountPage myAccountPage =
+                new LoginWorkFlow().signIn("translator", "translator")
+                        .goToMyProfile().goToChangePassword()
+                        .enterOldPassword("translator")
+                        .enterNewPassword("newpassword")
+                        .enterConfirmNewPassword("newpassword")
+                        .changePassword();
 
-      assertThat("Confirmation message is displayed", myAccountPage.getNotificationMessage(),
-            Matchers.equalTo("Your password has been successfully changed."));
+        assertThat(
+                "Confirmation message is displayed",
+                myAccountPage.getNotificationMessage(),
+                Matchers.equalTo("Your password has been successfully changed."));
 
-      HomePage homePage = myAccountPage.logout();
-      assertThat("User is logged out", !homePage.hasLoggedIn());
-      DashboardPage dashboardPage = new LoginWorkFlow().signIn("translator", "newpassword");
-      assertThat("User has logged in with the new password", dashboardPage.hasLoggedIn());
-   }
+        HomePage homePage = myAccountPage.logout();
+        assertThat("User is logged out", !homePage.hasLoggedIn());
+        DashboardPage dashboardPage =
+                new LoginWorkFlow().signIn("translator", "newpassword");
+        assertThat("User has logged in with the new password",
+                dashboardPage.hasLoggedIn());
+    }
 
-   @Test
-   public void changePasswordCurrentPasswordFailure()
-   {
-      String incorrectPassword = "Old password is incorrect, please check and try again.";
-      ChangePasswordPage changePasswordPage = new LoginWorkFlow().signIn("translator", "translator")
-            .goToMyProfile()
-            .goToChangePassword()
-            .enterOldPassword("nottherightpassword")
-            .enterNewPassword("somenewpassword")
-            .enterConfirmNewPassword("somenewpassword")
-            .changePasswordExpectingFailure();
+    @Test
+    public void changePasswordCurrentPasswordFailure() {
+        String incorrectPassword =
+                "Old password is incorrect, please check and try again.";
+        ChangePasswordPage changePasswordPage =
+                new LoginWorkFlow().signIn("translator", "translator")
+                        .goToMyProfile().goToChangePassword()
+                        .enterOldPassword("nottherightpassword")
+                        .enterNewPassword("somenewpassword")
+                        .enterConfirmNewPassword("somenewpassword")
+                        .changePasswordExpectingFailure();
 
-      assertThat("Incorrect password message displayed", changePasswordPage.getErrors(),
-            Matchers.contains(incorrectPassword));
-   }
+        assertThat("Incorrect password message displayed",
+                changePasswordPage.getErrors(),
+                Matchers.contains(incorrectPassword));
+    }
 
-   @Test
-   public void changePasswordConfirmationMismatch()
-   {
-      String incorrectPassword = "Passwords do not match";
-      ChangePasswordPage changePasswordPage = new LoginWorkFlow().signIn("translator", "translator")
-            .goToMyProfile()
-            .goToChangePassword()
-            .enterOldPassword("translator")
-            .enterNewPassword("somenewpassword")
-            .enterConfirmNewPassword("differentpassword")
-            .changePasswordExpectingFailure();
+    @Test
+    public void changePasswordConfirmationMismatch() {
+        String incorrectPassword = "Passwords do not match";
+        ChangePasswordPage changePasswordPage =
+                new LoginWorkFlow().signIn("translator", "translator")
+                        .goToMyProfile().goToChangePassword()
+                        .enterOldPassword("translator")
+                        .enterNewPassword("somenewpassword")
+                        .enterConfirmNewPassword("differentpassword")
+                        .changePasswordExpectingFailure();
 
-      assertThat("Incorrect password message displayed", changePasswordPage.getErrors(),
-            Matchers.contains(incorrectPassword));
-   }
+        assertThat("Incorrect password message displayed",
+                changePasswordPage.getErrors(),
+                Matchers.contains(incorrectPassword));
+    }
 
-   @Test
-   public void changePasswordCancel()
-   {
-      MyAccountPage myAccountPage = new LoginWorkFlow().signIn("translator", "translator")
-            .goToMyProfile()
-            .goToChangePassword()
-            .enterOldPassword("translator")
-            .enterNewPassword("notnewpassword")
-            .enterConfirmNewPassword("notnewpassword")
-            .cancelChangePassword();
+    @Test
+    public void changePasswordCancel() {
+        MyAccountPage myAccountPage =
+                new LoginWorkFlow().signIn("translator", "translator")
+                        .goToMyProfile().goToChangePassword()
+                        .enterOldPassword("translator")
+                        .enterNewPassword("notnewpassword")
+                        .enterConfirmNewPassword("notnewpassword")
+                        .cancelChangePassword();
 
-      HomePage homePage = myAccountPage.logout();
-      assertThat("User is logged out", !homePage.hasLoggedIn());
-      DashboardPage dashboardPage = new LoginWorkFlow().signIn("translator", "translator");
-      assertThat("User has logged in with the original password", dashboardPage.hasLoggedIn());
-   }
+        HomePage homePage = myAccountPage.logout();
+        assertThat("User is logged out", !homePage.hasLoggedIn());
+        DashboardPage dashboardPage =
+                new LoginWorkFlow().signIn("translator", "translator");
+        assertThat("User has logged in with the original password",
+                dashboardPage.hasLoggedIn());
+    }
 
-   @Test
-   public void changePasswordRequiredFieldsAreNotEmpty()
-   {
-      String emptyPassword = "value is required";
-      ChangePasswordPage changePasswordPage = new LoginWorkFlow().signIn("translator", "translator")
-            .goToMyProfile()
-            .goToChangePassword()
-            .changePasswordExpectingFailure();
+    @Test
+    public void changePasswordRequiredFieldsAreNotEmpty() {
+        String emptyPassword = "value is required";
+        ChangePasswordPage changePasswordPage =
+                new LoginWorkFlow().signIn("translator", "translator")
+                        .goToMyProfile().goToChangePassword()
+                        .changePasswordExpectingFailure();
 
-      assertThat("Incorrect password message displayed", changePasswordPage.getErrors(),
-            Matchers.contains(emptyPassword, emptyPassword, emptyPassword));
-   }
+        assertThat("Incorrect password message displayed",
+                changePasswordPage.getErrors(),
+                Matchers.contains(emptyPassword, emptyPassword, emptyPassword));
+    }
 
-   @Test
-   public void changePasswordAreOfRequiredLength()
-   {
-      String passwordSizeError = "size must be between 6 and 20";
-      String tooShort = "test5";
-      String tooLong = "t12345678901234567890";
-      ChangePasswordPage changePasswordPage = new LoginWorkFlow().signIn("translator", "translator")
-            .goToMyProfile()
-            .goToChangePassword()
-            .enterNewPassword("test5")
-            .enterConfirmNewPassword(tooShort);
+    @Test
+    public void changePasswordAreOfRequiredLength() {
+        String passwordSizeError = "size must be between 6 and 20";
+        String tooShort = "test5";
+        String tooLong = "t12345678901234567890";
+        ChangePasswordPage changePasswordPage =
+                new LoginWorkFlow().signIn("translator", "translator")
+                        .goToMyProfile().goToChangePassword()
+                        .enterNewPassword("test5")
+                        .enterConfirmNewPassword(tooShort);
 
-      assertThat("Incorrect password message displayed", changePasswordPage.waitForErrors(),
-            Matchers.hasItem(passwordSizeError));
+        assertThat("Incorrect password message displayed",
+                changePasswordPage.waitForErrors(),
+                Matchers.hasItem(passwordSizeError));
 
-      changePasswordPage = changePasswordPage.enterNewPassword(tooLong).enterConfirmNewPassword(tooLong);
+        changePasswordPage =
+                changePasswordPage.enterNewPassword(tooLong)
+                        .enterConfirmNewPassword(tooLong);
 
-      assertThat("Incorrect password message displayed", changePasswordPage.waitForErrors(),
-            Matchers.hasItem(passwordSizeError));
-   }
+        assertThat("Incorrect password message displayed",
+                changePasswordPage.waitForErrors(),
+                Matchers.hasItem(passwordSizeError));
+    }
 }
