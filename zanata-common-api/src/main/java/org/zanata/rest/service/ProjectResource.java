@@ -33,68 +33,77 @@ import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Project;
 
-
 /**
  * projectSlug: Project Identifier.
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ *
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-public interface ProjectResource
-{
-   public static final String PROJECT_SLUG_TEMPLATE = "{projectSlug:" + RestConstants.SLUG_PATTERN + "}";
-   public static final String SERVICE_PATH = "/projects/p/" + PROJECT_SLUG_TEMPLATE;
+public interface ProjectResource {
+    public static final String PROJECT_SLUG_TEMPLATE = "{projectSlug:"
+            + RestConstants.SLUG_PATTERN + "}";
+    public static final String SERVICE_PATH = "/projects/p/"
+            + PROJECT_SLUG_TEMPLATE;
 
-   /**
-    * Returns header information for a project.
-    *
-    * @return The following response status codes will be returned from this
-    *         operation:<br>
-    *         OK(200) - An "Etag" header for the requested project. <br>
-    *         NOT FOUND(404) - If a project could not be found for the given
-    *         parameters.<br>
-    *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-    *         the server while performing this operation.
-    */
-   @HEAD
-   @Produces({ MediaTypes.APPLICATION_ZANATA_PROJECT_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-   public Response head();
+    /**
+     * Returns header information for a project.
+     *
+     * @return The following response status codes will be returned from this
+     *         operation:<br>
+     *         OK(200) - An "Etag" header for the requested project. <br>
+     *         NOT FOUND(404) - If a project could not be found for the given
+     *         parameters.<br>
+     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+     *         the server while performing this operation.
+     */
+    @HEAD
+    @Produces({ MediaTypes.APPLICATION_ZANATA_PROJECT_XML,
+            MediaTypes.APPLICATION_ZANATA_PROJECT_JSON,
+            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    public Response head();
 
-   /**
-    * Returns data for a single Project.
-    *
-    * @return The following response status codes will be returned from this
-    *         operation:<br>
-    *         OK(200) - Containing the Project data.<br>
-    *         NOT FOUND(404) - If a Project could not be found for the given
-    *         parameters.<br>
-    *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-    *         the server while performing this operation.
-    */
-   @GET
-   @Produces({ MediaTypes.APPLICATION_ZANATA_PROJECT_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-   @TypeHint(Project.class)
-   public Response get();
+    /**
+     * Returns data for a single Project.
+     *
+     * @return The following response status codes will be returned from this
+     *         operation:<br>
+     *         OK(200) - Containing the Project data.<br>
+     *         NOT FOUND(404) - If a Project could not be found for the given
+     *         parameters.<br>
+     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+     *         the server while performing this operation.
+     */
+    @GET
+    @Produces({ MediaTypes.APPLICATION_ZANATA_PROJECT_XML,
+            MediaTypes.APPLICATION_ZANATA_PROJECT_JSON,
+            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @TypeHint(Project.class)
+    public Response get();
 
-   /**
-    * Creates or modifies a Project.
-    *
-    * @param project The project's information.
-    * @return The following response status codes will be returned from this
-    *         method:<br>
-    *         OK(200) - If an already existing project was updated as a result
-    *         of this operation.<br>
-    *         CREATED(201) - If a new project was added.<br>
-    *         FORBIDDEN(403) - If the user was not allowed to create/modify the
-    *         project. In this case an error message is contained in the
-    *         response.<br>
-    *         UNAUTHORIZED(401) - If the user does not have the proper
-    *         permissions to perform this operation.<br>
-    *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-    *         the server while performing this operation.
-    */
-   @PUT
-   @Consumes({ MediaTypes.APPLICATION_ZANATA_PROJECT_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-   public Response put(Project project);
+    /**
+     * Creates or modifies a Project.
+     *
+     * @param project
+     *            The project's information.
+     * @return The following response status codes will be returned from this
+     *         method:<br>
+     *         OK(200) - If an already existing project was updated as a result
+     *         of this operation.<br>
+     *         CREATED(201) - If a new project was added.<br>
+     *         FORBIDDEN(403) - If the user was not allowed to create/modify the
+     *         project. In this case an error message is contained in the
+     *         response.<br>
+     *         UNAUTHORIZED(401) - If the user does not have the proper
+     *         permissions to perform this operation.<br>
+     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+     *         the server while performing this operation.
+     */
+    @PUT
+    @Consumes({ MediaTypes.APPLICATION_ZANATA_PROJECT_XML,
+            MediaTypes.APPLICATION_ZANATA_PROJECT_JSON,
+            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    public Response put(Project project);
 }

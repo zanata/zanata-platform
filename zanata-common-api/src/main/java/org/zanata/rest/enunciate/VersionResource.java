@@ -9,6 +9,5 @@ import javax.ws.rs.core.MediaType;
 @org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-interface VersionResource extends org.zanata.rest.service.VersionResource
-{
+interface VersionResource extends org.zanata.rest.service.VersionResource {
 }

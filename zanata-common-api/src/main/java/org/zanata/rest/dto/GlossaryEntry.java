@@ -40,113 +40,103 @@ import org.zanata.common.Namespaces;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-@XmlType(name = "glossaryEntryType", propOrder = { "sourcereference", "glossaryTerms" })
+@XmlType(name = "glossaryEntryType", propOrder = { "sourcereference",
+        "glossaryTerms" })
 @JsonPropertyOrder({ "srcLang", "sourcereference", "glossaryTerms" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonWriteNullProperties(false)
-public class GlossaryEntry implements Serializable
-{
-   /**
-    * 
+public class GlossaryEntry implements Serializable {
+    /**
+    *
     */
-   private static final long serialVersionUID = 1685907304736580890L;
+    private static final long serialVersionUID = 1685907304736580890L;
 
-   private List<GlossaryTerm> glossaryTerms;
+    private List<GlossaryTerm> glossaryTerms;
 
-   private LocaleId srcLang;
+    private LocaleId srcLang;
 
-   private String sourcereference;
+    private String sourcereference;
 
-   @XmlElement(name = "glossary-term", namespace = Namespaces.ZANATA_OLD)
-   public List<GlossaryTerm> getGlossaryTerms()
-   {
-      if (glossaryTerms == null)
-      {
-         glossaryTerms = new ArrayList<GlossaryTerm>();
-      }
-      return glossaryTerms;
-   }
+    @XmlElement(name = "glossary-term", namespace = Namespaces.ZANATA_OLD)
+    public List<GlossaryTerm> getGlossaryTerms() {
+        if (glossaryTerms == null) {
+            glossaryTerms = new ArrayList<GlossaryTerm>();
+        }
+        return glossaryTerms;
+    }
 
-   public void setGlossaryTerms(List<GlossaryTerm> glossaryTerms)
-   {
-      this.glossaryTerms = glossaryTerms;
-   }
+    public void setGlossaryTerms(List<GlossaryTerm> glossaryTerms) {
+        this.glossaryTerms = glossaryTerms;
+    }
 
-   @XmlAttribute(name = "src-lang")
-   @XmlJavaTypeAdapter(type = LocaleId.class, value = LocaleIdAdapter.class)
-   public LocaleId getSrcLang()
-   {
-      return srcLang;
-   }
+    @XmlAttribute(name = "src-lang")
+    @XmlJavaTypeAdapter(type = LocaleId.class, value = LocaleIdAdapter.class)
+    public LocaleId getSrcLang() {
+        return srcLang;
+    }
 
-   public void setSrcLang(LocaleId srcLang)
-   {
-      this.srcLang = srcLang;
-   }
+    public void setSrcLang(LocaleId srcLang) {
+        this.srcLang = srcLang;
+    }
 
-   @XmlElement(name = "source-reference", required = false, namespace = Namespaces.ZANATA_OLD)
-   public String getSourcereference()
-   {
-      return sourcereference;
-   }
+    @XmlElement(name = "source-reference", required = false,
+            namespace = Namespaces.ZANATA_OLD)
+    public String getSourcereference() {
+        return sourcereference;
+    }
 
-   public void setSourcereference(String ref)
-   {
-      this.sourcereference = ref;
-   }
+    public void setSourcereference(String ref) {
+        this.sourcereference = ref;
+    }
 
-   @Override
-   public String toString()
-   {
-      return DTOUtil.toXML(this);
-   }
+    @Override
+    public String toString() {
+        return DTOUtil.toXML(this);
+    }
 
-   @Override
-   public int hashCode()
-   {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + ((glossaryTerms == null) ? 0 : glossaryTerms.hashCode());
-      result = prime * result + ((sourcereference == null) ? 0 : sourcereference.hashCode());
-      result = prime * result + ((srcLang == null) ? 0 : srcLang.hashCode());
-      return result;
-   }
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result =
+                prime
+                        * result
+                        + ((glossaryTerms == null) ? 0 : glossaryTerms
+                                .hashCode());
+        result =
+                prime
+                        * result
+                        + ((sourcereference == null) ? 0 : sourcereference
+                                .hashCode());
+        result = prime * result + ((srcLang == null) ? 0 : srcLang.hashCode());
+        return result;
+    }
 
-   @Override
-   public boolean equals(Object obj)
-   {
-      if (this == obj)
-         return true;
-      if (obj == null)
-         return false;
-      if (getClass() != obj.getClass())
-         return false;
-      GlossaryEntry other = (GlossaryEntry) obj;
-      if (glossaryTerms == null)
-      {
-         if (other.glossaryTerms != null)
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
             return false;
-      }
-      else if (!glossaryTerms.equals(other.glossaryTerms))
-         return false;
-      if (sourcereference == null)
-      {
-         if (other.sourcereference != null)
+        if (getClass() != obj.getClass())
             return false;
-      }
-      else if (!sourcereference.equals(other.sourcereference))
-         return false;
-      if (srcLang == null)
-      {
-         if (other.srcLang != null)
+        GlossaryEntry other = (GlossaryEntry) obj;
+        if (glossaryTerms == null) {
+            if (other.glossaryTerms != null)
+                return false;
+        } else if (!glossaryTerms.equals(other.glossaryTerms))
             return false;
-      }
-      else if (!srcLang.equals(other.srcLang))
-         return false;
-      return true;
-   }
+        if (sourcereference == null) {
+            if (other.sourcereference != null)
+                return false;
+        } else if (!sourcereference.equals(other.sourcereference))
+            return false;
+        if (srcLang == null) {
+            if (other.srcLang != null)
+                return false;
+        } else if (!srcLang.equals(other.srcLang))
+            return false;
+        return true;
+    }
 
 }
-
-
- 

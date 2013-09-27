@@ -9,8 +9,11 @@ import javax.ws.rs.core.MediaType;
 
 @Path(GlossaryResource.SERVICE_PATH)
 @org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle
-@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML, MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON })
-@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML, MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON })
-interface GlossaryResource extends org.zanata.rest.service.GlossaryResource
-{
+@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+        MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML,
+        MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON })
+@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+        MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML,
+        MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON })
+interface GlossaryResource extends org.zanata.rest.service.GlossaryResource {
 }

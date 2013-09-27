@@ -2,17 +2,17 @@
  * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
- * 
+ *
  * This is free software; you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
@@ -38,343 +38,300 @@ import org.zanata.common.TransUnitWords;
 /**
  * Translation statistics. Contains actual numbers and other information about
  * the state of translation.
- * 
+ *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@XmlType(name = "translationStatistics", propOrder = { "total", "untranslated", "needReview", "translated", "approved", "rejected", "translatedOnly", "fuzzy", "unit", "locale", "lastTranslated" })
+@XmlType(name = "translationStatistics", propOrder = { "total", "untranslated",
+        "needReview", "translated", "approved", "rejected", "translatedOnly",
+        "fuzzy", "unit", "locale", "lastTranslated" })
 @XmlRootElement(name = "translationStats")
-@JsonIgnoreProperties(value = { "percentTranslated", "percentNeedReview", "percentUntranslated", "incomplete", "draft" }, ignoreUnknown = true)
-@JsonPropertyOrder({ "total", "untranslated", "needReview", "translated", "approved", "rejected", "readyForReview", "fuzzy", "unit", "locale", "lastTranslated" })
-public class TranslationStatistics implements Serializable
-{
-   private static final long serialVersionUID = 1L;
-   private StatUnit unit;
-   private AbstractTranslationCount translationCount;
-   private String locale;
-   private double remainingHours;
-   private String lastTranslated;
-   
-   private Date lastTranslatedDate;
-   private String lastTranslatedBy;
+@JsonIgnoreProperties(value = { "percentTranslated", "percentNeedReview",
+        "percentUntranslated", "incomplete", "draft" }, ignoreUnknown = true)
+@JsonPropertyOrder({ "total", "untranslated", "needReview", "translated",
+        "approved", "rejected", "readyForReview", "fuzzy", "unit", "locale",
+        "lastTranslated" })
+public class TranslationStatistics implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private StatUnit unit;
+    private AbstractTranslationCount translationCount;
+    private String locale;
+    private double remainingHours;
+    private String lastTranslated;
 
-   /**
-    * This is for marshalling purpose only.
-    */
-   public TranslationStatistics()
-   {
-      this(StatUnit.MESSAGE);
-   }
+    private Date lastTranslatedDate;
+    private String lastTranslatedBy;
 
-   public TranslationStatistics(StatUnit statUnit)
-   {
-      unit = statUnit;
-      if (unit == StatUnit.MESSAGE)
-      {
-         translationCount = new TransUnitWords(0, 0, 0);
-      }
-      else
-      {
-         translationCount = new TransUnitCount(0, 0, 0);
-      }
-   }
+    /**
+     * This is for marshalling purpose only.
+     */
+    public TranslationStatistics() {
+        this(StatUnit.MESSAGE);
+    }
 
-   public TranslationStatistics(TransUnitCount unitCount, String locale)
-   {
-      translationCount = unitCount;
-      this.unit = StatUnit.MESSAGE;
-      this.locale = locale;
-   }
+    public TranslationStatistics(StatUnit statUnit) {
+        unit = statUnit;
+        if (unit == StatUnit.MESSAGE) {
+            translationCount = new TransUnitWords(0, 0, 0);
+        } else {
+            translationCount = new TransUnitCount(0, 0, 0);
+        }
+    }
 
-   public TranslationStatistics(TransUnitWords wordCount, String locale)
-   {
-      translationCount = wordCount;
-      this.unit = StatUnit.WORD;
-      this.locale = locale;
+    public TranslationStatistics(TransUnitCount unitCount, String locale) {
+        translationCount = unitCount;
+        this.unit = StatUnit.MESSAGE;
+        this.locale = locale;
+    }
 
-      double untransHours = wordCount.getUntranslated() / 250.0;
-      double fuzzyHours = wordCount.getNeedReview() / 500.0;
-      double translatedHours = wordCount.getTranslated() / 500.0;
-      remainingHours = untransHours + fuzzyHours + translatedHours;
-   }
+    public TranslationStatistics(TransUnitWords wordCount, String locale) {
+        translationCount = wordCount;
+        this.unit = StatUnit.WORD;
+        this.locale = locale;
 
-   /**
-    * Number of untranslated elements.
-    */
-   @XmlAttribute
-   public long getUntranslated()
-   {
-      return translationCount.getUntranslated();
-   }
+        double untransHours = wordCount.getUntranslated() / 250.0;
+        double fuzzyHours = wordCount.getNeedReview() / 500.0;
+        double translatedHours = wordCount.getTranslated() / 500.0;
+        remainingHours = untransHours + fuzzyHours + translatedHours;
+    }
 
-   public void setUntranslated(long untranslated)
-   {
-      translationCount.set(ContentState.New, (int) untranslated);
-   }
+    /**
+     * Number of untranslated elements.
+     */
+    @XmlAttribute
+    public long getUntranslated() {
+        return translationCount.getUntranslated();
+    }
 
-   /**
-    * Number of elements that need review (i.e. Fuzzy or Rejected).
-    */
-   @XmlTransient
-   public long getDraft()
-   {
-      return translationCount.getNeedReview() + translationCount.getRejected();
-   }
+    public void setUntranslated(long untranslated) {
+        translationCount.set(ContentState.New, (int) untranslated);
+    }
 
-   /**
-    * This is for REST backward compatibility.
-    * @return Number of elements that need review (i.e. Fuzzy or Rejected)
-    * @deprecated See {@link #getDraft()}
-    */
-   @XmlAttribute
-   @Deprecated
-   public long getNeedReview()
-   {
-      return getDraft();
-   }
+    /**
+     * Number of elements that need review (i.e. Fuzzy or Rejected).
+     */
+    @XmlTransient
+    public long getDraft() {
+        return translationCount.getNeedReview()
+                + translationCount.getRejected();
+    }
 
-   /**
-    * This will only return fuzzy translation.
-    * @return
-    */
-   @XmlAttribute
-   public long getFuzzy()
-   {
-      return translationCount.getNeedReview();
-   }
+    /**
+     * This is for REST backward compatibility.
+     *
+     * @return Number of elements that need review (i.e. Fuzzy or Rejected)
+     * @deprecated See {@link #getDraft()}
+     */
+    @XmlAttribute
+    @Deprecated
+    public long getNeedReview() {
+        return getDraft();
+    }
 
-   public void setFuzzy(long fuzzy)
-   {
-      translationCount.set(ContentState.NeedReview, (int)fuzzy);
-   }
-   
-   /**
-    * This is for REST backward compatibility.
-    * @return Number of translated and approved elements.
-    * @deprecated See {@link #getTranslatedOnly()} and {@link #getTranslatedAndApproved()}
-    */
-   @XmlAttribute
-   @Deprecated
-   public long getTranslated()
-   {
-      return getTranslatedAndApproved();
-   }
+    /**
+     * This will only return fuzzy translation.
+     *
+     * @return
+     */
+    @XmlAttribute
+    public long getFuzzy() {
+        return translationCount.getNeedReview();
+    }
 
-   @XmlTransient
-   public long getTranslatedAndApproved()
-   {
-      return translationCount.getTranslated() + translationCount.getApproved();
-   }
+    public void setFuzzy(long fuzzy) {
+        translationCount.set(ContentState.NeedReview, (int) fuzzy);
+    }
 
-   /**
-    * @return number of translated but not yet approved elements.
-    */
-   @XmlAttribute
-   public long getTranslatedOnly()
-   {
-      return translationCount.getTranslated();
-   }
+    /**
+     * This is for REST backward compatibility.
+     *
+     * @return Number of translated and approved elements.
+     * @deprecated See {@link #getTranslatedOnly()} and
+     *             {@link #getTranslatedAndApproved()}
+     */
+    @XmlAttribute
+    @Deprecated
+    public long getTranslated() {
+        return getTranslatedAndApproved();
+    }
 
-   public void setTranslatedOnly( long translatedOnly )
-   {
-      translationCount.set(ContentState.Translated, (int) translatedOnly);
-   }
-  
-   /**
-   * @return Number of approved elements.
-   */
-   @XmlAttribute
-   public long getApproved()
-   {
-      return translationCount.getApproved();
-   }
+    @XmlTransient
+    public long getTranslatedAndApproved() {
+        return translationCount.getTranslated()
+                + translationCount.getApproved();
+    }
 
-   public void setApproved(long approved)
-   {
-      translationCount.set(ContentState.Approved, (int)approved);
-   }
+    /**
+     * @return number of translated but not yet approved elements.
+     */
+    @XmlAttribute
+    public long getTranslatedOnly() {
+        return translationCount.getTranslated();
+    }
 
-   @XmlAttribute
-   public long getRejected()
-   {
-      return translationCount.getRejected();
-   }
+    public void setTranslatedOnly(long translatedOnly) {
+        translationCount.set(ContentState.Translated, (int) translatedOnly);
+    }
 
-   public void setRejected(long rejected)
-   {
-      translationCount.set(ContentState.Rejected, (int) rejected);
-   }
+    /**
+     * @return Number of approved elements.
+     */
+    @XmlAttribute
+    public long getApproved() {
+        return translationCount.getApproved();
+    }
 
-   /**
-    *
-    * @return untranslated, fuzzy and rejected count.
-    */
-   @XmlTransient
-   public long getIncomplete()
-   {
-      return translationCount.getUntranslated() + getDraft();
-   }
+    public void setApproved(long approved) {
+        translationCount.set(ContentState.Approved, (int) approved);
+    }
 
-   /**
-    * Total number of elements.
-    */
-   @XmlAttribute
-   public long getTotal()
-   {
-      return translationCount.getTotal();
-   }
+    @XmlAttribute
+    public long getRejected() {
+        return translationCount.getRejected();
+    }
 
-   /**
-    * Element unit being used to measure the translation counts.
-    */
-   @XmlAttribute
-   public StatUnit getUnit()
-   {
-      return unit;
-   }
+    public void setRejected(long rejected) {
+        translationCount.set(ContentState.Rejected, (int) rejected);
+    }
 
-   public void setUnit(StatUnit unit)
-   {
-      this.unit = unit;
-   }
+    /**
+     *
+     * @return untranslated, fuzzy and rejected count.
+     */
+    @XmlTransient
+    public long getIncomplete() {
+        return translationCount.getUntranslated() + getDraft();
+    }
 
-   /**
-    * Locale for the translation statistics.
-    */
-   @XmlAttribute
-   public String getLocale()
-   {
-      return locale;
-   }
+    /**
+     * Total number of elements.
+     */
+    @XmlAttribute
+    public long getTotal() {
+        return translationCount.getTotal();
+    }
 
-   public void setLocale(String locale)
-   {
-      this.locale = locale;
-   }
+    /**
+     * Element unit being used to measure the translation counts.
+     */
+    @XmlAttribute
+    public StatUnit getUnit() {
+        return unit;
+    }
 
-   @XmlAttribute
-   public String getLastTranslated()
-   {
-      return lastTranslated;
-   }
-   
-   
-   public void setLastTranslated(String lastTranslated)
-   {
-      this.lastTranslated = lastTranslated;
-   }
+    public void setUnit(StatUnit unit) {
+        this.unit = unit;
+    }
 
-   @XmlTransient
-   public Date getLastTranslatedDate()
-   {
-      return lastTranslatedDate;
-   }
+    /**
+     * Locale for the translation statistics.
+     */
+    @XmlAttribute
+    public String getLocale() {
+        return locale;
+    }
 
-   public void setLastTranslatedDate(Date lastTranslatedDate)
-   {
-      this.lastTranslatedDate = lastTranslatedDate;
-   }
+    public void setLocale(String locale) {
+        this.locale = locale;
+    }
 
-   @XmlTransient
-   public String getLastTranslatedBy()
-   {
-      return lastTranslatedBy;
-   }
+    @XmlAttribute
+    public String getLastTranslated() {
+        return lastTranslated;
+    }
 
-   public void setLastTranslatedBy(String lastTranslatedBy)
-   {
-      this.lastTranslatedBy = lastTranslatedBy;
-   }
+    public void setLastTranslated(String lastTranslated) {
+        this.lastTranslated = lastTranslated;
+    }
 
-   @XmlTransient
-   public double getPercentTranslated()
-   {
-      long total = getTotal();
-      if (total <= 0)
-      {
-         return 0;
-      }
-      else
-      {
-         return 100 * getTranslatedAndApproved() / total;
-      }
-   }
+    @XmlTransient
+    public Date getLastTranslatedDate() {
+        return lastTranslatedDate;
+    }
 
-   @XmlTransient
-   public double getPercentDraft()
-   {
-      long total = getTotal();
-      if (total <= 0)
-      {
-         return 0;
-      }
-      else
-      {
-         return 100 * getDraft() / total;
-      }
-   }
+    public void setLastTranslatedDate(Date lastTranslatedDate) {
+        this.lastTranslatedDate = lastTranslatedDate;
+    }
 
-   @XmlTransient
-   public double getPercentUntranslated()
-   {
-      long total = getTotal();
-      if (total <= 0)
-      {
-         return 0;
-      }
-      else
-      {
-         return 100 * getUntranslated() / total;
-      }
-   }
+    @XmlTransient
+    public String getLastTranslatedBy() {
+        return lastTranslatedBy;
+    }
 
-   public void setRemainingHours(double remainingHours)
-   {
-      this.remainingHours = remainingHours;
-   }
+    public void setLastTranslatedBy(String lastTranslatedBy) {
+        this.lastTranslatedBy = lastTranslatedBy;
+    }
 
-   @XmlTransient
-   public double getRemainingHours()
-   {
-      return remainingHours;
-   }
+    @XmlTransient
+    public double getPercentTranslated() {
+        long total = getTotal();
+        if (total <= 0) {
+            return 0;
+        } else {
+            return 100 * getTranslatedAndApproved() / total;
+        }
+    }
 
-   public void add(TranslationStatistics other)
-   {
-      translationCount.add(other.translationCount);
-   }
+    @XmlTransient
+    public double getPercentDraft() {
+        long total = getTotal();
+        if (total <= 0) {
+            return 0;
+        } else {
+            return 100 * getDraft() / total;
+        }
+    }
 
-   public void increment(ContentState state, long count)
-   {
-      translationCount.increment(state, (int) count);
-   }
+    @XmlTransient
+    public double getPercentUntranslated() {
+        long total = getTotal();
+        if (total <= 0) {
+            return 0;
+        } else {
+            return 100 * getUntranslated() / total;
+        }
+    }
 
-   public void decrement(ContentState state, long count)
-   {
-      translationCount.decrement(state, (int) count);
-   }
+    public void setRemainingHours(double remainingHours) {
+        this.remainingHours = remainingHours;
+    }
 
-   @Override
-   public String toString()
-   {
-      final StringBuilder sb = new StringBuilder("TranslationStatistics{");
-      sb.append("unit=").append(unit);
-      sb.append(", translationCount=").append(translationCount);
-      sb.append(", locale='").append(locale).append('\'');
-      sb.append(", remainingHours=").append(remainingHours);
-      sb.append(", lastTranslated='").append(lastTranslated).append('\'');
-      sb.append(", lastTranslatedDate=").append(lastTranslatedDate);
-      sb.append(", lastTranslatedBy='").append(lastTranslatedBy).append('\'');
-      sb.append('}');
-      return sb.toString();
-   }
+    @XmlTransient
+    public double getRemainingHours() {
+        return remainingHours;
+    }
 
-   public enum StatUnit
-   {
-      /** Statistics are measured in words. */
-      WORD,
-      /** Statistics are measured in messages (i.e. entries, text flows) */
-      MESSAGE;
+    public void add(TranslationStatistics other) {
+        translationCount.add(other.translationCount);
+    }
 
-   }
+    public void increment(ContentState state, long count) {
+        translationCount.increment(state, (int) count);
+    }
+
+    public void decrement(ContentState state, long count) {
+        translationCount.decrement(state, (int) count);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("TranslationStatistics{");
+        sb.append("unit=").append(unit);
+        sb.append(", translationCount=").append(translationCount);
+        sb.append(", locale='").append(locale).append('\'');
+        sb.append(", remainingHours=").append(remainingHours);
+        sb.append(", lastTranslated='").append(lastTranslated).append('\'');
+        sb.append(", lastTranslatedDate=").append(lastTranslatedDate);
+        sb.append(", lastTranslatedBy='").append(lastTranslatedBy).append('\'');
+        sb.append('}');
+        return sb.toString();
+    }
+
+    public enum StatUnit {
+        /** Statistics are measured in words. */
+        WORD,
+        /** Statistics are measured in messages (i.e. entries, text flows) */
+        MESSAGE;
+
+    }
 }

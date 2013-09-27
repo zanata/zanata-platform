@@ -46,110 +46,92 @@ import org.zanata.common.Namespaces;
 @JsonPropertyOrder({ "content", "comments", "locale" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonWriteNullProperties(false)
-public class GlossaryTerm implements Serializable
-{
-   /**
-    * 
+public class GlossaryTerm implements Serializable {
+    /**
+    *
     */
-   private static final long serialVersionUID = 6140176481272689471L;
+    private static final long serialVersionUID = 6140176481272689471L;
 
-   @NotNull
-   private LocaleId locale;
+    @NotNull
+    private LocaleId locale;
 
-   private String content;
+    private String content;
 
-   private List<String> comments;
+    private List<String> comments;
 
-   @XmlAttribute(name = "lang", namespace = Namespaces.XML)
-   @XmlJavaTypeAdapter(type = LocaleId.class, value = LocaleIdAdapter.class)
-   public LocaleId getLocale()
-   {
-      return locale;
-   }
+    @XmlAttribute(name = "lang", namespace = Namespaces.XML)
+    @XmlJavaTypeAdapter(type = LocaleId.class, value = LocaleIdAdapter.class)
+    public LocaleId getLocale() {
+        return locale;
+    }
 
-   public void setLocale(LocaleId locale)
-   {
-      this.locale = locale;
-   }
+    public void setLocale(LocaleId locale) {
+        this.locale = locale;
+    }
 
-   @XmlElement(name = "content", required = false, namespace = Namespaces.ZANATA_OLD)
-   public String getContent()
-   {
-      return content;
-   }
+    @XmlElement(name = "content", required = false,
+            namespace = Namespaces.ZANATA_OLD)
+    public String getContent() {
+        return content;
+    }
 
-   public void setContent(String content)
-   {
-      this.content = content;
-   }
+    public void setContent(String content) {
+        this.content = content;
+    }
 
-   @XmlElement(name = "comment", namespace = Namespaces.ZANATA_OLD)
-   public List<String> getComments()
-   {
-      if (comments == null)
-      {
-         comments = new ArrayList<String>();
-      }
-      return comments;
-   }
+    @XmlElement(name = "comment", namespace = Namespaces.ZANATA_OLD)
+    public List<String> getComments() {
+        if (comments == null) {
+            comments = new ArrayList<String>();
+        }
+        return comments;
+    }
 
-   public void setComments(List<String> comments)
-   {
-      this.comments = comments;
-   }
+    public void setComments(List<String> comments) {
+        this.comments = comments;
+    }
 
-   @Override
-   public String toString()
-   {
-      return DTOUtil.toXML(this);
-   }
+    @Override
+    public String toString() {
+        return DTOUtil.toXML(this);
+    }
 
-   @Override
-   public int hashCode()
-   {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + ((comments == null) ? 0 : comments.hashCode());
-      result = prime * result + ((content == null) ? 0 : content.hashCode());
-      result = prime * result + ((locale == null) ? 0 : locale.hashCode());
-      return result;
-   }
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result =
+                prime * result + ((comments == null) ? 0 : comments.hashCode());
+        result = prime * result + ((content == null) ? 0 : content.hashCode());
+        result = prime * result + ((locale == null) ? 0 : locale.hashCode());
+        return result;
+    }
 
-   @Override
-   public boolean equals(Object obj)
-   {
-      if (this == obj)
-         return true;
-      if (obj == null)
-         return false;
-      if (getClass() != obj.getClass())
-         return false;
-      GlossaryTerm other = (GlossaryTerm) obj;
-      if (comments == null)
-      {
-         if (other.comments != null)
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
             return false;
-      }
-      else if (!comments.equals(other.comments))
-         return false;
-      if (content == null)
-      {
-         if (other.content != null)
+        if (getClass() != obj.getClass())
             return false;
-      }
-      else if (!content.equals(other.content))
-         return false;
-      if (locale == null)
-      {
-         if (other.locale != null)
+        GlossaryTerm other = (GlossaryTerm) obj;
+        if (comments == null) {
+            if (other.comments != null)
+                return false;
+        } else if (!comments.equals(other.comments))
             return false;
-      }
-      else if (!locale.equals(other.locale))
-         return false;
-      return true;
-   }
+        if (content == null) {
+            if (other.content != null)
+                return false;
+        } else if (!content.equals(other.content))
+            return false;
+        if (locale == null) {
+            if (other.locale != null)
+                return false;
+        } else if (!locale.equals(other.locale))
+            return false;
+        return true;
+    }
 
 }
-
-
- 

@@ -7,6 +7,5 @@ import javax.ws.rs.core.MediaType;
 
 @Path(AccountResource.SERVICE_PATH)
 @org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle
-interface AccountResource extends org.zanata.rest.service.AccountResource
-{
+interface AccountResource extends org.zanata.rest.service.AccountResource {
 }

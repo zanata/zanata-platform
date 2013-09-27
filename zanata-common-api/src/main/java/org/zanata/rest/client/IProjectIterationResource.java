@@ -13,16 +13,19 @@ import javax.ws.rs.core.MediaType;
 
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-public interface IProjectIterationResource extends ProjectIterationResource
-{
+public interface IProjectIterationResource extends ProjectIterationResource {
 
-   @Override
-   @GET
-   @Produces( { MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-   public ClientResponse<ProjectIteration> get();
+    @Override
+    @GET
+    @Produces({ MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML,
+            MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON,
+            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    public ClientResponse<ProjectIteration> get();
 
-   @Override
-   @PUT
-   @Consumes({ MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-   public ClientResponse put(ProjectIteration project);
+    @Override
+    @PUT
+    @Consumes({ MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML,
+            MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON,
+            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    public ClientResponse put(ProjectIteration project);
 }

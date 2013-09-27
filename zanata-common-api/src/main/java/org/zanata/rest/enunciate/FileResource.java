@@ -7,8 +7,7 @@ import javax.ws.rs.core.MediaType;
 
 @Path(FileResource.SERVICE_PATH)
 @org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle
-@Produces( { MediaType.APPLICATION_OCTET_STREAM })
-@Consumes( { MediaType.APPLICATION_OCTET_STREAM })
-interface FileResource extends org.zanata.rest.service.FileResource
-{
+@Produces({ MediaType.APPLICATION_OCTET_STREAM })
+@Consumes({ MediaType.APPLICATION_OCTET_STREAM })
+interface FileResource extends org.zanata.rest.service.FileResource {
 }

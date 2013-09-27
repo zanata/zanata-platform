@@ -1,4 +1,4 @@
 <module rename-to="SuperSourceJre">
-  <inherits name="com.google.gwt.user.User"/>
+  <inherits name="com.google.gwt.user.User" />
   <super-source path="jre" />
 </module>

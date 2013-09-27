@@ -32,107 +32,113 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.equalTo;
 
 @Test(groups = { "unit-tests" })
-public class TranslationStatisticsTest
-{
+public class TranslationStatisticsTest {
 
-   TranslationStatistics stats;
-   TransUnitCount unitCount;
-   TransUnitWords wordCount;
-   private LocaleId localeId = LocaleId.DE;
+    TranslationStatistics stats;
+    TransUnitCount unitCount;
+    TransUnitWords wordCount;
+    private LocaleId localeId = LocaleId.DE;
 
-   @Test
-   public void setGetUnitCount()
-   {
-      unitCount = new TransUnitCount(5, 5, 5);
+    @Test
+    public void setGetUnitCount() {
+        unitCount = new TransUnitCount(5, 5, 5);
 
-      stats = new TranslationStatistics(unitCount, localeId.getId());
+        stats = new TranslationStatistics(unitCount, localeId.getId());
 
-      assertThat(stats.getLocale(), equalTo(localeId.getId()));
-      assertThat(stats.getUnit(), equalTo(StatUnit.MESSAGE));
+        assertThat(stats.getLocale(), equalTo(localeId.getId()));
+        assertThat(stats.getUnit(), equalTo(StatUnit.MESSAGE));
 
-      assertThat((int) stats.getApproved(), equalTo(unitCount.getApproved()));
-      assertThat((int) stats.getRejected(), equalTo(unitCount.getRejected()));
-      assertThat((int) stats.getTotal(), equalTo(unitCount.getTotal()));
-      assertThat((int) stats.getTranslated(), equalTo(unitCount.getTranslated() + unitCount.getApproved()));
-      assertThat((int) stats.getUntranslated(), equalTo(unitCount.getUntranslated()));
-      assertThat((int) stats.getDraft(), equalTo(unitCount.getNeedReview() + unitCount.getRejected()));
-   }
+        assertThat((int) stats.getApproved(), equalTo(unitCount.getApproved()));
+        assertThat((int) stats.getRejected(), equalTo(unitCount.getRejected()));
+        assertThat((int) stats.getTotal(), equalTo(unitCount.getTotal()));
+        assertThat((int) stats.getTranslated(),
+                equalTo(unitCount.getTranslated() + unitCount.getApproved()));
+        assertThat((int) stats.getUntranslated(),
+                equalTo(unitCount.getUntranslated()));
+        assertThat((int) stats.getDraft(), equalTo(unitCount.getNeedReview()
+                + unitCount.getRejected()));
+    }
 
-   @Test
-   public void setGetWordCount()
-   {
-      wordCount = new TransUnitWords(5, 5, 5);
-      stats = new TranslationStatistics(wordCount, localeId.getId());
+    @Test
+    public void setGetWordCount() {
+        wordCount = new TransUnitWords(5, 5, 5);
+        stats = new TranslationStatistics(wordCount, localeId.getId());
 
-      assertThat(stats.getLocale(), equalTo(localeId.getId()));
-      assertThat(stats.getUnit(), equalTo(StatUnit.WORD));
+        assertThat(stats.getLocale(), equalTo(localeId.getId()));
+        assertThat(stats.getUnit(), equalTo(StatUnit.WORD));
 
-      assertThat((int) stats.getApproved(), equalTo(wordCount.getApproved()));
-      assertThat((int) stats.getRejected(), equalTo(wordCount.getRejected()));
-      assertThat((int) stats.getTotal(), equalTo(wordCount.getTotal()));
-      assertThat((int) stats.getTranslated(), equalTo(wordCount.getTranslated() + wordCount.getApproved()));
-      assertThat((int) stats.getUntranslated(), equalTo(wordCount.getUntranslated()));
-      assertThat((int) stats.getDraft(), equalTo(wordCount.getNeedReview() + wordCount.getRejected()));
-   }
+        assertThat((int) stats.getApproved(), equalTo(wordCount.getApproved()));
+        assertThat((int) stats.getRejected(), equalTo(wordCount.getRejected()));
+        assertThat((int) stats.getTotal(), equalTo(wordCount.getTotal()));
+        assertThat((int) stats.getTranslated(),
+                equalTo(wordCount.getTranslated() + wordCount.getApproved()));
+        assertThat((int) stats.getUntranslated(),
+                equalTo(wordCount.getUntranslated()));
+        assertThat((int) stats.getDraft(), equalTo(wordCount.getNeedReview()
+                + wordCount.getRejected()));
+    }
 
-   @Test
-   public void noArgConstructorSetsZeroStats()
-   {
-      stats = new TranslationStatistics();
-      assertThat(stats.getUnit(), equalTo(StatUnit.MESSAGE));
+    @Test
+    public void noArgConstructorSetsZeroStats() {
+        stats = new TranslationStatistics();
+        assertThat(stats.getUnit(), equalTo(StatUnit.MESSAGE));
 
-      assertThat((int) stats.getApproved(), equalTo(0));
-      assertThat((int) stats.getDraft(), is(0));
-      assertThat((int) stats.getUntranslated(), is(0));
-   }
+        assertThat((int) stats.getApproved(), equalTo(0));
+        assertThat((int) stats.getDraft(), is(0));
+        assertThat((int) stats.getUntranslated(), is(0));
+    }
 
-   @Test
-   public void add()
-   {
-      stats = new TranslationStatistics();
-      unitCount = new TransUnitCount(5, 5, 5);
-      
-      TranslationStatistics otherStats = new TranslationStatistics(unitCount, localeId.getId());
-      
-      stats.add(otherStats);
-      assertThat((int) stats.getApproved(), equalTo(unitCount.getApproved()));
-      assertThat((int) stats.getRejected(), equalTo(unitCount.getRejected()));
-      assertThat((int) stats.getTotal(), equalTo(unitCount.getTotal()));
-      assertThat((int) stats.getTranslated(), equalTo(unitCount.getApproved() + unitCount.getTranslated()));
-      assertThat((int) stats.getUntranslated(), equalTo(unitCount.getUntranslated()));
-      assertThat((int) stats.getDraft(), equalTo(unitCount.getNeedReview() + unitCount.getRejected()));
-   }
+    @Test
+    public void add() {
+        stats = new TranslationStatistics();
+        unitCount = new TransUnitCount(5, 5, 5);
 
-   @Test
-   public void getPercentTranslated()
-   {
-      unitCount = new TransUnitCount(5, 5, 5);
-      stats = new TranslationStatistics(unitCount, localeId.getId());
-      
-      double percentTranslated = unitCount.getApproved() * 100 / unitCount.getTotal();
-      
-      assertThat(stats.getPercentTranslated(), equalTo(percentTranslated));
-   }
-   
-   @Test
-   public void getPercentDraft()
-   {
-      unitCount = new TransUnitCount(5, 5, 5);
-      stats = new TranslationStatistics(unitCount, localeId.getId());
-      
-      double percentDraft = (unitCount.getNeedReview() + unitCount.getRejected()) * 100 / unitCount.getTotal();
-      
-      assertThat(stats.getPercentDraft(), equalTo(percentDraft));
-   }
-   
-   @Test
-   public void getPercentUntranslated()
-   {
-      unitCount = new TransUnitCount(5, 5, 5);
-      stats = new TranslationStatistics(unitCount, localeId.getId());
-      
-      double percentUntranslated = unitCount.getUntranslated() * 100 / unitCount.getTotal();
-      
-      assertThat(stats.getPercentUntranslated(), equalTo(percentUntranslated));
-   }
+        TranslationStatistics otherStats =
+                new TranslationStatistics(unitCount, localeId.getId());
+
+        stats.add(otherStats);
+        assertThat((int) stats.getApproved(), equalTo(unitCount.getApproved()));
+        assertThat((int) stats.getRejected(), equalTo(unitCount.getRejected()));
+        assertThat((int) stats.getTotal(), equalTo(unitCount.getTotal()));
+        assertThat((int) stats.getTranslated(), equalTo(unitCount.getApproved()
+                + unitCount.getTranslated()));
+        assertThat((int) stats.getUntranslated(),
+                equalTo(unitCount.getUntranslated()));
+        assertThat((int) stats.getDraft(), equalTo(unitCount.getNeedReview()
+                + unitCount.getRejected()));
+    }
+
+    @Test
+    public void getPercentTranslated() {
+        unitCount = new TransUnitCount(5, 5, 5);
+        stats = new TranslationStatistics(unitCount, localeId.getId());
+
+        double percentTranslated =
+                unitCount.getApproved() * 100 / unitCount.getTotal();
+
+        assertThat(stats.getPercentTranslated(), equalTo(percentTranslated));
+    }
+
+    @Test
+    public void getPercentDraft() {
+        unitCount = new TransUnitCount(5, 5, 5);
+        stats = new TranslationStatistics(unitCount, localeId.getId());
+
+        double percentDraft =
+                (unitCount.getNeedReview() + unitCount.getRejected()) * 100
+                        / unitCount.getTotal();
+
+        assertThat(stats.getPercentDraft(), equalTo(percentDraft));
+    }
+
+    @Test
+    public void getPercentUntranslated() {
+        unitCount = new TransUnitCount(5, 5, 5);
+        stats = new TranslationStatistics(unitCount, localeId.getId());
+
+        double percentUntranslated =
+                unitCount.getUntranslated() * 100 / unitCount.getTotal();
+
+        assertThat(stats.getPercentUntranslated(), equalTo(percentUntranslated));
+    }
 }

@@ -31,42 +31,51 @@ import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Account;
 
-
 /**
  * username: User name that identifies an account
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ *
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public interface AccountResource
-{
-   public static final String SERVICE_PATH = "/accounts/u/{username:[a-z\\d_]{3,20}}";
+public interface AccountResource {
+    public static final String SERVICE_PATH =
+            "/accounts/u/{username:[a-z\\d_]{3,20}}";
 
-   /**
-    * Retrieves a user account.
-    *
-    * @return The following response status codes will be returned from this operation:<br>
-    * OK(200) - Response containing information for the user account.<br>
-    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
-    */
-   @GET
-   @Produces({ MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML, MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON })
-   @TypeHint(Account.class)
-   public Response get();
+    /**
+     * Retrieves a user account.
+     *
+     * @return The following response status codes will be returned from this
+     *         operation:<br>
+     *         OK(200) - Response containing information for the user account.<br>
+     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+     *         the server while performing this operation.
+     */
+    @GET
+    @Produces({ MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML,
+            MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON })
+    @TypeHint(Account.class)
+    public Response get();
 
-   /**
-    * Creates or updates a user account. If an account with the given user name already exists,
-    * said account will be overwritten with the provided data. Otherwise, a new account will
-    * be created.
-    *
-    * @param account The account information to create/update.
-    * @return The following response status codes will be returned from this operation:<br>
-    * OK(200) - If an existing account was modified.<br>
-    * CREATED(201) - If a new account was created.<br>
-    * UNAUTHORIZED(401) - If the user does not have the proper permissions to perform this operation.<br>
-    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
-    */
-   @PUT
-   @Consumes({ MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML, MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON })
-   public Response put(Account account);
+    /**
+     * Creates or updates a user account. If an account with the given user name
+     * already exists, said account will be overwritten with the provided data.
+     * Otherwise, a new account will be created.
+     *
+     * @param account
+     *            The account information to create/update.
+     * @return The following response status codes will be returned from this
+     *         operation:<br>
+     *         OK(200) - If an existing account was modified.<br>
+     *         CREATED(201) - If a new account was created.<br>
+     *         UNAUTHORIZED(401) - If the user does not have the proper
+     *         permissions to perform this operation.<br>
+     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+     *         the server while performing this operation.
+     */
+    @PUT
+    @Consumes({ MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML,
+            MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON })
+    public Response put(Account account);
 
 }

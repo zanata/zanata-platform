@@ -36,166 +36,150 @@ import org.zanata.common.HasContents;
 import org.zanata.common.Namespaces;
 
 /**
- * This class contains string contents for a single translatable message.
- * It maps between the JAXB/JSON representation of <code>content</code>/<code>contents</code>
- * (in separate elements, for backwards-compatibility) and the server model
- * (which represents <code>contents</code> as an <code>ArrayList</code> to support plural forms).
- * This class is the superclass for <code>TextFlow</code> and <code>TextFlowTarget</code>.
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * This class contains string contents for a single translatable message. It
+ * maps between the JAXB/JSON representation of <code>content</code>/
+ * <code>contents</code> (in separate elements, for backwards-compatibility) and
+ * the server model (which represents <code>contents</code> as an
+ * <code>ArrayList</code> to support plural forms). This class is the superclass
+ * for <code>TextFlow</code> and <code>TextFlowTarget</code>.
+ *
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @XmlTransient
-class TextContainer implements Serializable, HasContents
-{
-   private static final long serialVersionUID = 1L;
+class TextContainer implements Serializable, HasContents {
+    private static final long serialVersionUID = 1L;
 
-   /**
-    * The (non-plural) string contents associated with this TextFlow/TextFlowTarget.
-    * NB: If this message has plural forms, this field will be empty.
-    * @see #contents
-    */
-   @XmlElement(name = "content", required = false, namespace = Namespaces.ZANATA_OLD)
-   @JsonProperty("content")
-   private String content;
+    /**
+     * The (non-plural) string contents associated with this
+     * TextFlow/TextFlowTarget. NB: If this message has plural forms, this field
+     * will be empty.
+     *
+     * @see #contents
+     */
+    @XmlElement(name = "content", required = false,
+            namespace = Namespaces.ZANATA_OLD)
+    @JsonProperty("content")
+    private String content;
 
-   /**
-    * The plural string contents associated with this TextFlow/TextFlowTarget.
-    * NB: If this message has no plural forms, this field will be empty.
-    * @see #content
-    */
-   @XmlElementWrapper(name = "contents", namespace = Namespaces.ZANATA_OLD)
-   @XmlElement(name = "content", namespace = Namespaces.ZANATA_OLD)
-   @JsonProperty("contents")
-   private List<String> contents;
+    /**
+     * The plural string contents associated with this TextFlow/TextFlowTarget.
+     * NB: If this message has no plural forms, this field will be empty.
+     *
+     * @see #content
+     */
+    @XmlElementWrapper(name = "contents", namespace = Namespaces.ZANATA_OLD)
+    @XmlElement(name = "content", namespace = Namespaces.ZANATA_OLD)
+    @JsonProperty("contents")
+    private List<String> contents;
 
-   /**
-    * @deprecated As of release 1.6, replaced by {@link #getContents()}
-    * @return
-    */
-   @Deprecated
-   @XmlTransient
-   public String getContent()
-   {
-      if (content == null)
-         return "";
-      return content;
-   }
+    /**
+     * @deprecated As of release 1.6, replaced by {@link #getContents()}
+     * @return
+     */
+    @Deprecated
+    @XmlTransient
+    public String getContent() {
+        if (content == null)
+            return "";
+        return content;
+    }
 
-   /**
-    * @deprecated As of release 1.6, replaced by {@link #setContents()}
-    * @return
-    */
-   @Deprecated
-   public void setContent(String content)
-   {
-      this.content = content;
-      this.contents = null;
-   }
+    /**
+     * @deprecated As of release 1.6, replaced by {@link #setContents()}
+     * @return
+     */
+    @Deprecated
+    public void setContent(String content) {
+        this.content = content;
+        this.contents = null;
+    }
 
-   /**
-    * Returns the string contents associated with this TextFlow/TextFlowTarget.
-    * If there are multiple elements, they represent the different plural forms of this message.
-    * If there is only one element, it is a non-plural message.
-    * @return
-    */
-   @JsonIgnore
-   @XmlTransient
-   public List<String> getContents()
-   {
-      if (content != null)
-      {
-         return Arrays.asList(content);
-      }
-      else if (contents != null)
-      {
-         return contents;
-      }
-      else
-      {
-         return Collections.emptyList();
-      }
-   }
+    /**
+     * Returns the string contents associated with this TextFlow/TextFlowTarget.
+     * If there are multiple elements, they represent the different plural forms
+     * of this message. If there is only one element, it is a non-plural
+     * message.
+     *
+     * @return
+     */
+    @JsonIgnore
+    @XmlTransient
+    public List<String> getContents() {
+        if (content != null) {
+            return Arrays.asList(content);
+        } else if (contents != null) {
+            return contents;
+        } else {
+            return Collections.emptyList();
+        }
+    }
 
-   @JsonIgnore
-   public void setContents(String... contents)
-   {
-      setContents(Arrays.asList(contents));
-   }
+    @JsonIgnore
+    public void setContents(String... contents) {
+        setContents(Arrays.asList(contents));
+    }
 
-   @JsonIgnore
-   public void setContents(List<String> contents)
-   {
-      if (contents == null)
-      {
-         this.content = null;
-         this.contents = null;
-         return;
-      }
+    @JsonIgnore
+    public void setContents(List<String> contents) {
+        if (contents == null) {
+            this.content = null;
+            this.contents = null;
+            return;
+        }
 
-      switch (contents.size())
-      {
-      case 0:
-         this.content = null;
-         this.contents = null;
-         break;
-      case 1:
-         this.content = contents.get(0);
-         this.contents = null;
-         break;
-      default:
-         this.content = null;
-         this.contents = contents;
-      }
-   }
+        switch (contents.size()) {
+        case 0:
+            this.content = null;
+            this.contents = null;
+            break;
+        case 1:
+            this.content = contents.get(0);
+            this.contents = null;
+            break;
+        default:
+            this.content = null;
+            this.contents = contents;
+        }
+    }
 
-   @Override
-   public int hashCode()
-   {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + ((content == null) ? 0 : content.hashCode());
-      result = prime * result + ((contents == null) ? 0 : contents.hashCode());
-      return result;
-   }
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((content == null) ? 0 : content.hashCode());
+        result =
+                prime * result + ((contents == null) ? 0 : contents.hashCode());
+        return result;
+    }
 
-   @Override
-   public boolean equals(Object obj)
-   {
-      if (this == obj)
-      {
-         return true;
-      }
-      if (obj == null)
-      {
-         return false;
-      }
-      if (!(obj instanceof TextContainer))
-      {
-         return false;
-      }
-      TextContainer other = (TextContainer) obj;
-      if (content == null)
-      {
-         if (other.content != null)
-         {
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
             return false;
-         }
-      }
-      else if (!content.equals(other.content))
-      {
-         return false;
-      }
-      if (contents == null)
-      {
-         if (other.contents != null)
-         {
+        }
+        if (!(obj instanceof TextContainer)) {
             return false;
-         }
-      }
-      else if (!contents.equals(other.contents))
-      {
-         return false;
-      }
-      return true;
-   }
+        }
+        TextContainer other = (TextContainer) obj;
+        if (content == null) {
+            if (other.content != null) {
+                return false;
+            }
+        } else if (!content.equals(other.content)) {
+            return false;
+        }
+        if (contents == null) {
+            if (other.contents != null) {
+                return false;
+            }
+        } else if (!contents.equals(other.contents)) {
+            return false;
+        }
+        return true;
+    }
 
 }

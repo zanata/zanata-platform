@@ -2,17 +2,17 @@
  * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
- * 
+ *
  * This is free software; you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
@@ -26,96 +26,82 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * Status of a reindex operation.
- * 
- * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ *
+ * @author Carlos Munoz <a
+ *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @XmlRootElement(name = "reindexStatus")
 @XmlType(name = "reindexStatusType")
-public class ReindexStatus
-{
-   private boolean startedReindex;
-   
-   private long percentageComplete;
-   
-   private long indexedElements;
-   
-   private long totalElements;
-   
-   private String currentElementType;
-   
-   private long timeElapsed;
-   
-   private long timeRemaining;
+public class ReindexStatus {
+    private boolean startedReindex;
 
-   
-   public boolean isStartedReindex()
-   {
-      return startedReindex;
-   }
+    private long percentageComplete;
 
-   public void setStartedReindex(boolean startedReindex)
-   {
-      this.startedReindex = startedReindex;
-   }
+    private long indexedElements;
 
-   @XmlElement
-   public long getPercentageComplete()
-   {
-      return this.indexedElements * 100 / this.totalElements;
-   }
+    private long totalElements;
 
-   @XmlElement
-   public long getIndexedElements()
-   {
-      return indexedElements;
-   }
+    private String currentElementType;
 
-   public void setIndexedElements(long indexedElements)
-   {
-      this.indexedElements = indexedElements;
-   }
+    private long timeElapsed;
 
-   @XmlElement
-   public long getTotalElements()
-   {
-      return totalElements;
-   }
+    private long timeRemaining;
 
-   public void setTotalElements(long totalElements)
-   {
-      this.totalElements = totalElements;
-   }
+    public boolean isStartedReindex() {
+        return startedReindex;
+    }
 
-   @XmlElement
-   public String getCurrentElementType()
-   {
-      return currentElementType;
-   }
+    public void setStartedReindex(boolean startedReindex) {
+        this.startedReindex = startedReindex;
+    }
 
-   public void setCurrentElementType(String currentElementType)
-   {
-      this.currentElementType = currentElementType;
-   }
+    @XmlElement
+    public long getPercentageComplete() {
+        return this.indexedElements * 100 / this.totalElements;
+    }
 
-   @XmlElement
-   public long getTimeElapsed()
-   {
-      return timeElapsed;
-   }
+    @XmlElement
+    public long getIndexedElements() {
+        return indexedElements;
+    }
 
-   public void setTimeElapsed(long timeElapsed)
-   {
-      this.timeElapsed = timeElapsed;
-   }
+    public void setIndexedElements(long indexedElements) {
+        this.indexedElements = indexedElements;
+    }
 
-   @XmlElement
-   public long getTimeRemaining()
-   {
-      return timeRemaining;
-   }
+    @XmlElement
+    public long getTotalElements() {
+        return totalElements;
+    }
 
-   public void setTimeRemaining(long timeRemaining)
-   {
-      this.timeRemaining = timeRemaining;
-   }
+    public void setTotalElements(long totalElements) {
+        this.totalElements = totalElements;
+    }
+
+    @XmlElement
+    public String getCurrentElementType() {
+        return currentElementType;
+    }
+
+    public void setCurrentElementType(String currentElementType) {
+        this.currentElementType = currentElementType;
+    }
+
+    @XmlElement
+    public long getTimeElapsed() {
+        return timeElapsed;
+    }
+
+    public void setTimeElapsed(long timeElapsed) {
+        this.timeElapsed = timeElapsed;
+    }
+
+    @XmlElement
+    public long getTimeRemaining() {
+        return timeRemaining;
+    }
+
+    public void setTimeRemaining(long timeRemaining) {
+        this.timeRemaining = timeRemaining;
+    }
 }

@@ -14,18 +14,23 @@ import javax.ws.rs.core.MediaType;
 
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-public interface IProjectResource extends ProjectResource
-{
+public interface IProjectResource extends ProjectResource {
 
-   @HEAD
-   @Produces({ MediaTypes.APPLICATION_ZANATA_PROJECT_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-   public ClientResponse head();
-   
-   @GET
-   @Produces({ MediaTypes.APPLICATION_ZANATA_PROJECT_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-   public ClientResponse<Project> get();
+    @HEAD
+    @Produces({ MediaTypes.APPLICATION_ZANATA_PROJECT_XML,
+            MediaTypes.APPLICATION_ZANATA_PROJECT_JSON,
+            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    public ClientResponse head();
 
-   @PUT
-   @Consumes({ MediaTypes.APPLICATION_ZANATA_PROJECT_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-   public ClientResponse put(Project project);
+    @GET
+    @Produces({ MediaTypes.APPLICATION_ZANATA_PROJECT_XML,
+            MediaTypes.APPLICATION_ZANATA_PROJECT_JSON,
+            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    public ClientResponse<Project> get();
+
+    @PUT
+    @Consumes({ MediaTypes.APPLICATION_ZANATA_PROJECT_XML,
+            MediaTypes.APPLICATION_ZANATA_PROJECT_JSON,
+            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    public ClientResponse put(Project project);
 }

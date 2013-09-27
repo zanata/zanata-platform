@@ -42,39 +42,52 @@ import java.util.Set;
 import static org.zanata.rest.service.SourceDocResource.RESOURCE_SLUG_TEMPLATE;
 
 /**
- * Client Interface for the Translation Resources service. 
+ * Client Interface for the Translation Resources service.
  */
-@Produces( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-@Consumes( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-public interface ITranslatedDocResource extends TranslatedDocResource
-{
-   @GET
-   @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
-   @Deprecated
-   public ClientResponse<TranslationsResource> getTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, @QueryParam("ext") Set<String> extensions);
+@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+public interface ITranslatedDocResource extends TranslatedDocResource {
+    @GET
+    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
+    @Deprecated
+    public ClientResponse<TranslationsResource> getTranslations(
+            @PathParam("id") String idNoSlash,
+            @PathParam("locale") LocaleId locale,
+            @QueryParam("ext") Set<String> extensions);
 
-   @Override
-   @GET
-   @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
-   public ClientResponse<TranslationsResource> getTranslations(
-         @PathParam("id") String idNoSlash,
-         @PathParam("locale") LocaleId locale,
-         @QueryParam("ext") Set<String> extensions,
-         @QueryParam("skeletons") boolean skeletons,
-         @HeaderParam(HttpHeaders.IF_NONE_MATCH) String eTag);
+    @Override
+    @GET
+    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
+    public ClientResponse<TranslationsResource> getTranslations(
+            @PathParam("id") String idNoSlash,
+            @PathParam("locale") LocaleId locale,
+            @QueryParam("ext") Set<String> extensions,
+            @QueryParam("skeletons") boolean skeletons,
+            @HeaderParam(HttpHeaders.IF_NONE_MATCH) String eTag);
 
-   @Override
-   @DELETE
-   @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
-   public ClientResponse<String> deleteTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale);
+    @Override
+    @DELETE
+    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
+    public ClientResponse<String> deleteTranslations(
+            @PathParam("id") String idNoSlash,
+            @PathParam("locale") LocaleId locale);
 
-   @Override
-   @PUT
-   @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
-   public ClientResponse<String> putTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, TranslationsResource messageBody, @QueryParam("ext") Set<String> extensions, @QueryParam("merge") @DefaultValue("auto") String merge);
-   
-   @PUT
-   @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
-   @Deprecated
-   public ClientResponse<String> putTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, TranslationsResource messageBody, @QueryParam("ext") Set<String> extensions);
+    @Override
+    @PUT
+    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
+    public ClientResponse<String> putTranslations(
+            @PathParam("id") String idNoSlash,
+            @PathParam("locale") LocaleId locale,
+            TranslationsResource messageBody,
+            @QueryParam("ext") Set<String> extensions,
+            @QueryParam("merge") @DefaultValue("auto") String merge);
+
+    @PUT
+    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
+    @Deprecated
+    public ClientResponse<String> putTranslations(
+            @PathParam("id") String idNoSlash,
+            @PathParam("locale") LocaleId locale,
+            TranslationsResource messageBody,
+            @QueryParam("ext") Set<String> extensions);
 }

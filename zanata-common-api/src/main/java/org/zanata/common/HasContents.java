@@ -23,26 +23,27 @@ package org.zanata.common;
 
 import java.util.List;
 
-
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public interface HasContents
-{
+public interface HasContents {
 
-   public static final int MAX_PLURALS = 6;
+    public static final int MAX_PLURALS = 6;
 
-   /**
-    * Returns the string contents associated with this TextFlow/TextFlowTarget.
-    * If there are multiple elements, they represent the different plural forms of this message.
-    * If there is only one element, it is a non-plural message.
-    * @return
-    */
-   public List<String> getContents();
+    /**
+     * Returns the string contents associated with this TextFlow/TextFlowTarget.
+     * If there are multiple elements, they represent the different plural forms
+     * of this message. If there is only one element, it is a non-plural
+     * message.
+     *
+     * @return
+     */
+    public List<String> getContents();
 
-   public void setContents(String... contents);
+    public void setContents(String... contents);
 
-   public void setContents(List<String> contents);
+    public void setContents(List<String> contents);
 
 }

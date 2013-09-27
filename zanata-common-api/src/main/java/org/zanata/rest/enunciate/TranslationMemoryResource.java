@@ -7,8 +7,8 @@ import javax.ws.rs.core.MediaType;
 
 @Path(TranslationMemoryResource.SERVICE_PATH)
 @org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle
-@Produces( { MediaType.APPLICATION_XML /*, "application/x-tmx"*/ })
-@Consumes( { MediaType.APPLICATION_XML /*, "application/x-tmx"*/ })
-interface TranslationMemoryResource extends org.zanata.rest.service.TranslationMemoryResource
-{
+@Produces({ MediaType.APPLICATION_XML /* , "application/x-tmx" */})
+@Consumes({ MediaType.APPLICATION_XML /* , "application/x-tmx" */})
+interface TranslationMemoryResource extends
+        org.zanata.rest.service.TranslationMemoryResource {
 }

@@ -8,6 +8,5 @@ import javax.ws.rs.core.MediaType;
 
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-public interface IStatisticsResource extends StatisticsResource
-{
+public interface IStatisticsResource extends StatisticsResource {
 }

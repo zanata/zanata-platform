@@ -1,8 +1,5 @@
 package org.zanata.rest.dto;
 
-
-
-public interface ExtensionValue
-{
+public interface ExtensionValue {
 
 }

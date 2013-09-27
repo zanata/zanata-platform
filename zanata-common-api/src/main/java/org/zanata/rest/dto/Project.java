@@ -27,304 +27,266 @@ import org.zanata.rest.MediaTypes.Format;
 
 /**
  * Representation of the data within a Project resource
- * 
+ *
  * @author asgeirf
- * 
+ *
  */
-@XmlType(name = "projectType", propOrder = { "name", "defaultType", "description", "sourceViewURL", "sourceCheckoutURL", "links", "iterations", "status" })
+@XmlType(name = "projectType", propOrder = { "name", "defaultType",
+        "description", "sourceViewURL", "sourceCheckoutURL", "links",
+        "iterations", "status" })
 @XmlRootElement(name = "project")
-@JsonPropertyOrder({ "id", "defaultType", "name", "description", "sourceViewURL", "sourceCheckoutURL", "links", "iterations", "status" })
+@JsonPropertyOrder({ "id", "defaultType", "name", "description",
+        "sourceViewURL", "sourceCheckoutURL", "links", "iterations", "status" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include = Inclusion.NON_NULL)
-public class Project implements Serializable, HasCollectionSample<Project>, HasMediaType
-{
+public class Project implements Serializable, HasCollectionSample<Project>,
+        HasMediaType {
 
-   private String id;
-   private String name;
-   private String defaultType;
-   private String description;
-   private String sourceViewURL;
-   private String sourceCheckoutURL;
-   private EntityStatus status = EntityStatus.ACTIVE;
+    private String id;
+    private String name;
+    private String defaultType;
+    private String description;
+    private String sourceViewURL;
+    private String sourceCheckoutURL;
+    private EntityStatus status = EntityStatus.ACTIVE;
 
-   private Links links;
+    private Links links;
 
-   private List<ProjectIteration> iterations;
+    private List<ProjectIteration> iterations;
 
-   public Project()
-   {
-   }
+    public Project() {
+    }
 
-   public Project(String id, String name, String defaultType)
-   {
-      this.id = id;
-      this.name = name;
-      this.defaultType = defaultType;
-   }
+    public Project(String id, String name, String defaultType) {
+        this.id = id;
+        this.name = name;
+        this.defaultType = defaultType;
+    }
 
-   public Project(String id, String name, String type, String description)
-   {
-      this(id, name, type);
-      this.description = description;
-   }
+    public Project(String id, String name, String type, String description) {
+        this(id, name, type);
+        this.description = description;
+    }
 
-   @XmlAttribute(name = "id", required = true)
-   public String getId()
-   {
-      return id;
-   }
+    @XmlAttribute(name = "id", required = true)
+    public String getId() {
+        return id;
+    }
 
-   public void setId(String id)
-   {
-      this.id = id;
-   }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-   @XmlElement(name = "defaultType", required = true, nillable = false, namespace = Namespaces.ZANATA_OLD)
-   public String getDefaultType()
-   {
-      return defaultType;
-   }
+    @XmlElement(name = "defaultType", required = true, nillable = false,
+            namespace = Namespaces.ZANATA_OLD)
+    public String getDefaultType() {
+        return defaultType;
+    }
 
-   public void setDefaultType(String defaultType)
-   {
-      this.defaultType = defaultType;
-   }
+    public void setDefaultType(String defaultType) {
+        this.defaultType = defaultType;
+    }
 
-   @NotEmpty
-   @Size(max = 80)
-   @XmlElement(name = "name", required = true, namespace = Namespaces.ZANATA_OLD)
-   public String getName()
-   {
-      return name;
-   }
+    @NotEmpty
+    @Size(max = 80)
+    @XmlElement(name = "name", required = true,
+            namespace = Namespaces.ZANATA_OLD)
+    public String getName() {
+        return name;
+    }
 
-   public void setName(String name)
-   {
-      this.name = name;
-   }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-   @Size(max = 80)
-   @XmlElement(name = "description", required = false, namespace = Namespaces.ZANATA_OLD)
-   public String getDescription()
-   {
-      return description;
-   }
+    @Size(max = 80)
+    @XmlElement(name = "description", required = false,
+            namespace = Namespaces.ZANATA_OLD)
+    public String getDescription() {
+        return description;
+    }
 
-   public void setDescription(String description)
-   {
-      this.description = description;
-   }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-   @XmlElement(name= "sourceViewURL", required = false, nillable = true, namespace = Namespaces.ZANATA_API)
-   public String getSourceViewURL()
-   {
-      return sourceViewURL;
-   }
+    @XmlElement(name = "sourceViewURL", required = false, nillable = true,
+            namespace = Namespaces.ZANATA_API)
+    public String getSourceViewURL() {
+        return sourceViewURL;
+    }
 
-   public void setSourceViewURL(String sourceViewURL)
-   {
-      this.sourceViewURL = sourceViewURL;
-   }
+    public void setSourceViewURL(String sourceViewURL) {
+        this.sourceViewURL = sourceViewURL;
+    }
 
-   @XmlElement(name= "sourceCheckoutURL", required = false, nillable = true, namespace = Namespaces.ZANATA_API)
-   public String getSourceCheckoutURL()
-   {
-      return sourceCheckoutURL;
-   }
+    @XmlElement(name = "sourceCheckoutURL", required = false, nillable = true,
+            namespace = Namespaces.ZANATA_API)
+    public String getSourceCheckoutURL() {
+        return sourceCheckoutURL;
+    }
 
-   public void setSourceCheckoutURL(String sourceCheckoutURL)
-   {
-      this.sourceCheckoutURL = sourceCheckoutURL;
-   }
+    public void setSourceCheckoutURL(String sourceCheckoutURL) {
+        this.sourceCheckoutURL = sourceCheckoutURL;
+    }
 
-   @XmlElement(name = "link", namespace = Namespaces.ZANATA_API)
-   public Links getLinks()
-   {
-      return links;
-   }
+    @XmlElement(name = "link", namespace = Namespaces.ZANATA_API)
+    public Links getLinks() {
+        return links;
+    }
 
-   public void setLinks(Links links)
-   {
-      this.links = links;
-   }
+    public void setLinks(Links links) {
+        this.links = links;
+    }
 
-   @JsonIgnore
-   public Links getLinks(boolean createIfNull)
-   {
-      if (createIfNull && links == null)
-         links = new Links();
-      return links;
-   }
+    @JsonIgnore
+    public Links getLinks(boolean createIfNull) {
+        if (createIfNull && links == null)
+            links = new Links();
+        return links;
+    }
 
-   @XmlElementWrapper(name = "project-iterations", namespace = Namespaces.ZANATA_OLD)
-   @XmlElementRef(namespace = Namespaces.ZANATA_OLD)
-   public List<ProjectIteration> getIterations()
-   {
-      return iterations;
-   }
+    @XmlElementWrapper(name = "project-iterations",
+            namespace = Namespaces.ZANATA_OLD)
+    @XmlElementRef(namespace = Namespaces.ZANATA_OLD)
+    public List<ProjectIteration> getIterations() {
+        return iterations;
+    }
 
-   public void setIterations(List<ProjectIteration> iterations)
-   {
-      this.iterations = iterations;
-   }
+    public void setIterations(List<ProjectIteration> iterations) {
+        this.iterations = iterations;
+    }
 
-   public List<ProjectIteration> getIterations(boolean createIfNull)
-   {
-      if (createIfNull && iterations == null)
-         iterations = new ArrayList<ProjectIteration>();
-      return getIterations();
-   }
-   
-   @XmlElement(name = "status", required = false, namespace = Namespaces.ZANATA_OLD)
-   public EntityStatus getStatus()
-   {
-      return status;
-   }
+    public List<ProjectIteration> getIterations(boolean createIfNull) {
+        if (createIfNull && iterations == null)
+            iterations = new ArrayList<ProjectIteration>();
+        return getIterations();
+    }
 
-   public void setStatus(EntityStatus status)
-   {
-      this.status = status;
-   }
+    @XmlElement(name = "status", required = false,
+            namespace = Namespaces.ZANATA_OLD)
+    public EntityStatus getStatus() {
+        return status;
+    }
 
-   @Override
-   public Project createSample()
-   {
-      Project entity = new Project();
-      entity.setId("sample-project");
-      entity.setName("Sample Project");
-      entity.setDescription("Sample Project Description");
-      entity.setDefaultType(ProjectType.Gettext.toString());
-      entity.getIterations(true).addAll(new ProjectIteration().createSamples());
-      return entity;
-   }
+    public void setStatus(EntityStatus status) {
+        this.status = status;
+    }
 
-   @Override
-   public Collection<Project> createSamples()
-   {
-      Collection<Project> entities = new ArrayList<Project>();
-      entities.add(createSample());
-      Project p2 = createSample();
-      p2.setId("another-project");
-      p2.setName("Another Sample Project");
-      p2.setDescription("Another Sample Project Description");
-      p2.setDefaultType(ProjectType.Gettext.toString());
-      entities.add(p2);
-      return entities;
-   }
+    @Override
+    public Project createSample() {
+        Project entity = new Project();
+        entity.setId("sample-project");
+        entity.setName("Sample Project");
+        entity.setDescription("Sample Project Description");
+        entity.setDefaultType(ProjectType.Gettext.toString());
+        entity.getIterations(true).addAll(
+                new ProjectIteration().createSamples());
+        return entity;
+    }
 
-   public static void main(String args[])
-   {
-      Project test = new Project();
-      System.out.println(test.createSample().toString());
-   }
+    @Override
+    public Collection<Project> createSamples() {
+        Collection<Project> entities = new ArrayList<Project>();
+        entities.add(createSample());
+        Project p2 = createSample();
+        p2.setId("another-project");
+        p2.setName("Another Sample Project");
+        p2.setDescription("Another Sample Project Description");
+        p2.setDefaultType(ProjectType.Gettext.toString());
+        entities.add(p2);
+        return entities;
+    }
 
-   @Override
-   public String getMediaType(Format format)
-   {
-      return MediaTypes.APPLICATION_ZANATA_PROJECT + format;
-   }
+    public static void main(String args[]) {
+        Project test = new Project();
+        System.out.println(test.createSample().toString());
+    }
 
-   @Override
-   public String toString()
-   {
-      return DTOUtil.toXML(this);
-   }
+    @Override
+    public String getMediaType(Format format) {
+        return MediaTypes.APPLICATION_ZANATA_PROJECT + format;
+    }
 
-   @Override
-   public int hashCode()
-   {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + ((description == null) ? 0 : description.hashCode());
-      result = prime * result + ((id == null) ? 0 : id.hashCode());
-      result = prime * result + ((iterations == null) ? 0 : iterations.hashCode());
-      result = prime * result + ((links == null) ? 0 : links.hashCode());
-      result = prime * result + ((name == null) ? 0 : name.hashCode());
-      result = prime * result + ((defaultType == null) ? 0 : defaultType.hashCode());
-      result = prime * result + ((status == null) ? 0 : status.hashCode());
-      return result;
-   }
+    @Override
+    public String toString() {
+        return DTOUtil.toXML(this);
+    }
 
-   @Override
-   public boolean equals(Object obj)
-   {
-      if (this == obj)
-      {
-         return true;
-      }
-      if (obj == null)
-      {
-         return false;
-      }
-      if (!(obj instanceof Project))
-      {
-         return false;
-      }
-      Project other = (Project) obj;
-      if (description == null)
-      {
-         if (other.description != null)
-         {
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result =
+                prime * result
+                        + ((description == null) ? 0 : description.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result =
+                prime * result
+                        + ((iterations == null) ? 0 : iterations.hashCode());
+        result = prime * result + ((links == null) ? 0 : links.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result =
+                prime * result
+                        + ((defaultType == null) ? 0 : defaultType.hashCode());
+        result = prime * result + ((status == null) ? 0 : status.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
             return false;
-         }
-      }
-      else if (!description.equals(other.description))
-      {
-         return false;
-      }
-      if (id == null)
-      {
-         if (other.id != null)
-         {
+        }
+        if (!(obj instanceof Project)) {
             return false;
-         }
-      }
-      else if (!id.equals(other.id))
-      {
-         return false;
-      }
-      if (iterations == null)
-      {
-         if (other.iterations != null)
-         {
+        }
+        Project other = (Project) obj;
+        if (description == null) {
+            if (other.description != null) {
+                return false;
+            }
+        } else if (!description.equals(other.description)) {
             return false;
-         }
-      }
-      else if (!iterations.equals(other.iterations))
-      {
-         return false;
-      }
-      if (links == null)
-      {
-         if (other.links != null)
-         {
+        }
+        if (id == null) {
+            if (other.id != null) {
+                return false;
+            }
+        } else if (!id.equals(other.id)) {
             return false;
-         }
-      }
-      else if (!links.equals(other.links))
-      {
-         return false;
-      }
-      if (name == null)
-      {
-         if (other.name != null)
-         {
+        }
+        if (iterations == null) {
+            if (other.iterations != null) {
+                return false;
+            }
+        } else if (!iterations.equals(other.iterations)) {
             return false;
-         }
-      }
-      else if (!name.equals(other.name))
-      {
-         return false;
-      }
-      if (defaultType != other.defaultType)
-      {
-         return false;
-      }
-      if(status != other.status)
-      {
-         return false;
-      }
-      return true;
-   }
+        }
+        if (links == null) {
+            if (other.links != null) {
+                return false;
+            }
+        } else if (!links.equals(other.links)) {
+            return false;
+        }
+        if (name == null) {
+            if (other.name != null) {
+                return false;
+            }
+        } else if (!name.equals(other.name)) {
+            return false;
+        }
+        if (defaultType != other.defaultType) {
+            return false;
+        }
+        if (status != other.status) {
+            return false;
+        }
+        return true;
+    }
 
 }

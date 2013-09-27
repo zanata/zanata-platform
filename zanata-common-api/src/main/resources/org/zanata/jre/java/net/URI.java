@@ -11,41 +11,34 @@ import java.net.URISyntaxException;
 /**
  * Simplified version of JRE's class for use in GWT.
  */
-public class URI implements Serializable, Comparable<URI>
-{
-   private String uriString;
+public class URI implements Serializable, Comparable<URI> {
+    private String uriString;
 
-   // for GWT use
-   private URI()
-   {
-   }
+    // for GWT use
+    private URI() {
+    }
 
-   public URI(String uriString) throws URISyntaxException
-   {
-      this.uriString = uriString;
-   }
+    public URI(String uriString) throws URISyntaxException {
+        this.uriString = uriString;
+    }
 
-   @Override
-   public int compareTo(URI o)
-   {
-      return uriString.compareTo(o.uriString);
-   }
+    @Override
+    public int compareTo(URI o) {
+        return uriString.compareTo(o.uriString);
+    }
 
-   @Override
-   public int hashCode()
-   {
-      return uriString.hashCode();
-   }
+    @Override
+    public int hashCode() {
+        return uriString.hashCode();
+    }
 
-   @Override
-   public boolean equals(Object obj)
-   {
-      return uriString.equals(((URI) obj).toString());
-   }
+    @Override
+    public boolean equals(Object obj) {
+        return uriString.equals(((URI) obj).toString());
+    }
 
-   @Override
-   public String toString()
-   {
-      return uriString;
-   }
+    @Override
+    public String toString() {
+        return uriString;
+    }
 }

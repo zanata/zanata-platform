@@ -25,39 +25,34 @@ import javax.xml.bind.annotation.XmlType;
 
 @XmlType(name = "entityStatusType")
 @XmlEnum(String.class)
-public enum EntityStatus
-{
-   ACTIVE("jsf.Active"), READONLY("jsf.ReadOnly"), OBSOLETE("jsf.Obsolete");
+public enum EntityStatus {
+    ACTIVE("jsf.Active"), READONLY("jsf.ReadOnly"), OBSOLETE("jsf.Obsolete");
 
-   public static EntityStatus valueOf(char initial)
-   {
-      switch (initial)
-      {
-      case 'A':
-         return ACTIVE;
-      case 'R':
-         return READONLY;
-      case 'O':
-         return OBSOLETE;
-      default:
-         throw new IllegalArgumentException(String.valueOf(initial));
-      }
-   }
+    public static EntityStatus valueOf(char initial) {
+        switch (initial) {
+        case 'A':
+            return ACTIVE;
+        case 'R':
+            return READONLY;
+        case 'O':
+            return OBSOLETE;
+        default:
+            throw new IllegalArgumentException(String.valueOf(initial));
+        }
+    }
 
-   private final String messageKey;
-   EntityStatus(String messageKey)
-   {
-      this.messageKey = messageKey;
-   }
+    private final String messageKey;
 
-   public String getMessageKey()
-   {
-      return messageKey;
-   }
+    EntityStatus(String messageKey) {
+        this.messageKey = messageKey;
+    }
 
-   public char getInitial()
-   {
-      return name().charAt(0);
-   }
+    public String getMessageKey() {
+        return messageKey;
+    }
+
+    public char getInitial() {
+        return name().charAt(0);
+    }
 
 }

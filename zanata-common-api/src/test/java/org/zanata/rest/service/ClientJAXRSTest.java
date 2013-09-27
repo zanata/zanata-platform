@@ -38,33 +38,24 @@ import org.zanata.rest.client.IVersionResource;
 import org.zanata.rest.enunciate.AbstractJAXRSTest;
 
 @Test(groups = { "unit-tests" })
-public class ClientJAXRSTest extends AbstractJAXRSTest
-{
-   @DataProvider(name = "clientInterfaces", parallel = true)
-   private final Object[][] clientInterfaces()
-   {
-      return new Object[][]
-         {
-            {IAccountResource.class},
-            {IAsynchronousProcessResource.class},
-            {ICopyTransResource.class},
-            {IFileResource.class},
-            {IGlossaryResource.class},
-            {IProjectIterationResource.class},
-            {IProjectResource.class},
-            {IProjectsResource.class},
-            {ISourceDocResource.class},
-            {IStatisticsResource.class},
-            {ITranslatedDocResource.class},
-            {ITranslationMemoryResource.class},
-            {IVersionResource.class}
-         };
-   }
+public class ClientJAXRSTest extends AbstractJAXRSTest {
+    @DataProvider(name = "clientInterfaces", parallel = true)
+    private final Object[][] clientInterfaces() {
+        return new Object[][] { { IAccountResource.class },
+                { IAsynchronousProcessResource.class },
+                { ICopyTransResource.class }, { IFileResource.class },
+                { IGlossaryResource.class },
+                { IProjectIterationResource.class },
+                { IProjectResource.class }, { IProjectsResource.class },
+                { ISourceDocResource.class }, { IStatisticsResource.class },
+                { ITranslatedDocResource.class },
+                { ITranslationMemoryResource.class },
+                { IVersionResource.class } };
+    }
 
-   @Test(dataProvider = "clientInterfaces")
-   public void testAnnotations(Class clientInterface) throws Exception
-   {
-      checkAnnotations(clientInterface, false);
-   }
+    @Test(dataProvider = "clientInterfaces")
+    public void testAnnotations(Class clientInterface) throws Exception {
+        checkAnnotations(clientInterface, false);
+    }
 
 }

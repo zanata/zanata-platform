@@ -5,10 +5,9 @@ import javax.xml.bind.annotation.XmlTransient;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.zanata.rest.MediaTypes.Format;
 
-public interface HasMediaType
-{
+public interface HasMediaType {
 
-   @JsonIgnore
-   @XmlTransient
-   String getMediaType(Format format);
+    @JsonIgnore
+    @XmlTransient
+    String getMediaType(Format format);
 }

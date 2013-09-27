@@ -9,13 +9,12 @@ import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.zanata.rest.dto.ExtensionValue;
 
-
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "object-type")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY,
+        property = "object-type")
 @JsonSubTypes({ @Type(value = PoHeader.class, name = "po-header") })
 @JsonTypeName("AbstractResourceMetaExtension")
 @XmlSeeAlso({ PoHeader.class })
 @XmlTransient
-public interface AbstractResourceMetaExtension extends ExtensionValue
-{
+public interface AbstractResourceMetaExtension extends ExtensionValue {
 
 }

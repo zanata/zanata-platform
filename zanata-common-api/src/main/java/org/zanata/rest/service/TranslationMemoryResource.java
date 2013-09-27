@@ -40,43 +40,47 @@ import org.zanata.common.LocaleId;
 
 /**
  * This resource allows clients to [push and] pull translation memories.
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ *
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Produces( { MediaType.APPLICATION_XML /*, "application/x-tmx"*/ })
-@Consumes( { MediaType.APPLICATION_XML /*, "application/x-tmx"*/ })
-public interface TranslationMemoryResource
-{
-   public static final String SERVICE_PATH = "/tm";
+@Produces({ MediaType.APPLICATION_XML /* , "application/x-tmx" */})
+@Consumes({ MediaType.APPLICATION_XML /* , "application/x-tmx" */})
+public interface TranslationMemoryResource {
+    public static final String SERVICE_PATH = "/tm";
 
-   public static final String PREFERRED_MEDIA_TYPE = MediaType.APPLICATION_XML;
+    public static final String PREFERRED_MEDIA_TYPE = MediaType.APPLICATION_XML;
 
-   @GET
-   @Path("all")
-   public Response getAllTranslationMemory(@QueryParam("locale") @Nullable LocaleId locale);
+    @GET
+    @Path("all")
+    public Response getAllTranslationMemory(
+            @QueryParam("locale") @Nullable LocaleId locale);
 
-   @GET
-   @Path("projects/{projectSlug}")
-   public Response getProjectTranslationMemory(@PathParam("projectSlug") @Nonnull String projectSlug,
-                                            @QueryParam("locale") @Nullable LocaleId locale);
-   @GET
-   @Path("projects/{projectSlug}/iterations/{iterationSlug}")
-   public Response getProjectIterationTranslationMemory(
-         @PathParam("projectSlug") @Nonnull String projectSlug,
-         @PathParam("iterationSlug") @Nonnull String iterationSlug,
-         @QueryParam("locale") @Nullable LocaleId locale);
+    @GET
+    @Path("projects/{projectSlug}")
+    public Response getProjectTranslationMemory(
+            @PathParam("projectSlug") @Nonnull String projectSlug,
+            @QueryParam("locale") @Nullable LocaleId locale);
 
-   @GET
-   @Path("{slug}")
-   public Response getTranslationMemory(
-         @PathParam("slug") @Nonnull String slug);
+    @GET
+    @Path("projects/{projectSlug}/iterations/{iterationSlug}")
+    public Response getProjectIterationTranslationMemory(
+            @PathParam("projectSlug") @Nonnull String projectSlug,
+            @PathParam("iterationSlug") @Nonnull String iterationSlug,
+            @QueryParam("locale") @Nullable LocaleId locale);
 
+    @GET
+    @Path("{slug}")
+    public Response
+            getTranslationMemory(@PathParam("slug") @Nonnull String slug);
 
-   @POST
-   @Path("{slug}")
-   @Consumes(MediaType.WILDCARD)
-   public Response updateTranslationMemory(@PathParam("slug") String slug, InputStream input) throws Exception;
+    @POST
+    @Path("{slug}")
+    @Consumes(MediaType.WILDCARD)
+    public Response updateTranslationMemory(@PathParam("slug") String slug,
+            InputStream input) throws Exception;
 
-   @DELETE
-   @Path("{slug}/transunits")
-   public Object deleteTranslationUnits(@PathParam("slug") String slug);
+    @DELETE
+    @Path("{slug}/transunits")
+    public Object deleteTranslationUnits(@PathParam("slug") String slug);
 }
