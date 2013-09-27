@@ -181,7 +181,7 @@
     <!-- When testing checkstyle changes, use -Dcheckstyle.config.location to point to a local file: -->
     <checkstyle.config.location>https://raw.github.com/zanata/zanata-parent/master/checkstyle.xml</checkstyle.config.location>
     <checkstyle.propertiesLocation />
-    <checkstyle.suppressions.location />
+    <checkstyle.suppressions.location>https://raw.github.com/zanata/zanata-parent/master/checkstyle-suppressions.xml</checkstyle.suppressions.location>
     <checkstyle.suppressionsFileExpression />
 
     <enunciate.version>1.27</enunciate.version>
