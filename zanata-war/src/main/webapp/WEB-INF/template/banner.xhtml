@@ -29,24 +29,24 @@
 		</a>
 	</s:fragment>
 	<s:fragment rendered="#{not identity.loggedIn}">
-		<div class="header__login l--float-right">
-			<s:link id="register_link_internal_auth" view="/account/register.xhtml" value="#{messages['jsf.Signup']}" 
-				propagation="none" styleClass="is-hidden--s button" rendered="#{applicationConfiguration.internalAuth}"/> 
-								
+		<s:div styleClass="header__login l--float-right" rendered="#{not bannerAction.accountOrRegisterPage}">
+			<s:link id="register_link_internal_auth" view="/account/register.xhtml" value="#{messages['jsf.Signup']}"
+				propagation="none" styleClass="is-hidden--s button" rendered="#{applicationConfiguration.internalAuth}"/>
+
 			<s:fragment rendered="#{not applicationConfiguration.internalAuth}">
 				<a id="register_link" href="#{applicationConfiguration.registerPath}" class="is-hidden--s button">#{messages['jsf.Signup']}</a>
 			</s:fragment>
-			
-			<h:outputLink id="signin_link" value="#{request.contextPath}/account/sign_in?continue=#{urlUtil.getEncodedLocalUrl(request)}" 
+
+			<h:outputLink id="signin_link" value="#{request.contextPath}/account/sign_in?continue=#{urlUtil.getEncodedLocalUrl(request)}"
 				propagation="none" styleClass="l--push-left-half button--primary" rendered="#{not applicationConfiguration.kerberosAuth}">
 				#{messages['jsf.Login']}
 			</h:outputLink>
-			
-	        <h:outputLink id="ksignin_link" value="#{request.contextPath}/account/klogin.seam?continue=#{urlUtil.getEncodedLocalUrl(request)}" 
-	        	propagation="none" styleClass="l--push-left-half button--primary" rendered="#{applicationConfiguration.kerberosAuth}">
-	        	#{messages['jsf.Login']}
-	        </h:outputLink>
-        </div>
+
+      <h:outputLink id="ksignin_link" value="#{request.contextPath}/account/klogin.seam?continue=#{urlUtil.getEncodedLocalUrl(request)}"
+        propagation="none" styleClass="l--push-left-half button--primary" rendered="#{applicationConfiguration.kerberosAuth}">
+        #{messages['jsf.Login']}
+      </h:outputLink>
+    </s:div>
 	</s:fragment>
 	
 	<nav id="nav-main" class="header__menu is-hidden--s l--push-left-half">
