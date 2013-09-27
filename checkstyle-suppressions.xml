@@ -5,6 +5,7 @@
   "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
 
 <suppressions>
+  <suppress checks="FileTabCharacter|RegexpSingleline" files=".*/LICENSE.txt" />
   <suppress checks="FileTabCharacter" files=".*/src/test/.*\.(xml|po|pot)" />
   <suppress checks="JavadocMethodCheck|JavadocTypeCheck" files=".*\.java" />
   <suppress checks="MagicNumberCheck" files=".*Test\.java" />
