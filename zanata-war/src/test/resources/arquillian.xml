@@ -35,7 +35,7 @@
     <property name="autoPackage">false</property>
   </extension>
   <extension qualifier="suite">
-    <property name="deploymentClass">org.zanata.arquillian.Deployments
-    </property>
+    <property name="deploymentClass"
+      xml:space="preserve">org.zanata.arquillian.Deployments</property>
   </extension>
 </arquillian>
