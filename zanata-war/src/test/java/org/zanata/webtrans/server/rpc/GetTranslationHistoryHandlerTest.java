@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.constraints.NotNull;
+
 import org.hamcrest.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -62,7 +64,7 @@ public class GetTranslationHistoryHandlerTest
 
    private GetTranslationHistoryAction action;
    private TransUnitId transUnitId = new TransUnitId(1L);
-   @Mock 
+   @Mock
    private HLocale hLocale;
    private LocaleId localeId = new LocaleId("en-US");
    @Mock
@@ -100,7 +102,7 @@ public class GetTranslationHistoryHandlerTest
       // Then:
       verify(identity).checkLoggedIn();
    }
-   
+
    @Test
    public void canGetEmptyHistoryForTextFlowWithNoTranslation() throws ActionException
    {
@@ -129,8 +131,8 @@ public class GetTranslationHistoryHandlerTest
       HTextFlow hTextFlow = createHTextFlow();
       // two history items
       HashMap<Integer, HTextFlowTargetHistory> history = Maps.newHashMap();
-      history.put(0, createHistory(createTarget(new Date(), "smith", 0, null)));
-      history.put(1, createHistory(createTarget(new Date(), "john", 1, null)));
+      history.put(0, createHistory(createTarget(new Date(), "smith", 0, Maps.<Integer, HTextFlowTargetHistory>newHashMap())));
+      history.put(1, createHistory(createTarget(new Date(), "john", 1, Maps.<Integer, HTextFlowTargetHistory>newHashMap())));
       HTextFlowTarget currentTranslation = createTarget(new Date(), "admin", 2, history);
       hTextFlow.getTargets().put(hLocale.getId(), currentTranslation);
 
@@ -155,7 +157,9 @@ public class GetTranslationHistoryHandlerTest
       when(localeService.validateLocaleByProjectIteration(localeId, "rhel", "7.0")).thenReturn(hLocale);
       when(hLocale.getId()).thenReturn(2L);
       HTextFlow hTextFlow = createHTextFlow();
-      HTextFlowTarget currentTranslation = createTarget(new Date(), null, 0, null);
+      HTextFlowTarget currentTranslation =
+            createTarget(new Date(), null, 0,
+                  new HashMap<Integer, HTextFlowTargetHistory>());
       currentTranslation.setLastModifiedBy(null);
       hTextFlow.getTargets().put(hLocale.getId(), currentTranslation);
 
@@ -180,7 +184,9 @@ public class GetTranslationHistoryHandlerTest
       when(localeService.validateLocaleByProjectIteration(localeId, "rhel", "7.0")).thenReturn(hLocale);
       when(hLocale.getId()).thenReturn(2L);
       HTextFlow hTextFlow = createHTextFlow();
-      HTextFlowTarget currentTranslation = createTarget(new Date(), null, 0, null);
+      HTextFlowTarget currentTranslation =
+            createTarget(new Date(), null, 0,
+                  new HashMap<Integer, HTextFlowTargetHistory>());
       currentTranslation.setLastModifiedBy(null);
       hTextFlow.getTargets().put(hLocale.getId(), currentTranslation);
 
@@ -206,7 +212,9 @@ public class GetTranslationHistoryHandlerTest
       return hTextFlow;
    }
 
-   private static HTextFlowTarget createTarget(Date lastChanged, String lastModifiedPerson, Integer versionNum, Map<Integer, HTextFlowTargetHistory> historyMap)
+   private static HTextFlowTarget createTarget(Date lastChanged,
+         String lastModifiedPerson, Integer versionNum,
+         @NotNull Map<Integer, HTextFlowTargetHistory> historyMap)
    {
       HTextFlowTarget target = new HTextFlowTarget();
       target.setLastChanged(lastChanged);
@@ -214,10 +222,6 @@ public class GetTranslationHistoryHandlerTest
       person.setName(lastModifiedPerson);
       target.setLastModifiedBy(person);
       target.setVersionNum(versionNum);
-      if(historyMap == null)
-      {
-         historyMap = Maps.newHashMap();
-      }
       target.setHistory(historyMap);
       target.setContents("a", "b");
       return target;
