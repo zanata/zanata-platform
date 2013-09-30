@@ -71,18 +71,14 @@ import static org.zanata.webtrans.client.events.NotificationEvent.Severity.*;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-// @formatter:off
-public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDisplay> implements
-      TransUnitSelectionHandler,
-      FilterViewEventHandler,
-      FilterViewConfirmationDisplay.Listener,
-      NavigationService.PageDataChangeListener,
-      TransUnitsTableDisplay.Listener,
-      TableRowSelectedEventHandler,
-      LoadingEventHandler,
-      RefreshPageEventHandler, UserConfigChangeHandler,
-      RequestPageValidationHandler
-// @formatter:on
+public class TransUnitsTablePresenter extends
+        WidgetPresenter<TransUnitsTableDisplay> implements
+        TransUnitSelectionHandler, FilterViewEventHandler,
+        FilterViewConfirmationDisplay.Listener,
+        NavigationService.PageDataChangeListener,
+        TransUnitsTableDisplay.Listener, TableRowSelectedEventHandler,
+        LoadingEventHandler, RefreshPageEventHandler, UserConfigChangeHandler,
+        RequestPageValidationHandler
 {
 
     private final TransUnitsTableDisplay display;
@@ -104,14 +100,13 @@ public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDis
     private String findMessage;
 
     @Inject
-    // @formatter:off
-   public TransUnitsTablePresenter(TransUnitsTableDisplay display, EventBus eventBus, NavigationService navigationService,
-                                   SourceContentsPresenter sourceContentsPresenter,
-                                   TargetContentsPresenter targetContentsPresenter,
-                                   TranslatorInteractionService translatorService,
-                                   TranslationHistoryPresenter translationHistoryPresenter,
-                                   WebTransMessages messages, UserOptionsService userOptionsService)
-   // @formatter:on
+    public TransUnitsTablePresenter(TransUnitsTableDisplay display,
+            EventBus eventBus, NavigationService navigationService,
+            SourceContentsPresenter sourceContentsPresenter,
+            TargetContentsPresenter targetContentsPresenter,
+            TranslatorInteractionService translatorService,
+            TranslationHistoryPresenter translationHistoryPresenter,
+            WebTransMessages messages, UserOptionsService userOptionsService)
     {
         super(display, eventBus);
         this.display = display;

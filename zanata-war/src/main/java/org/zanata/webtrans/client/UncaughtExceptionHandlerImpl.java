@@ -67,7 +67,7 @@ class UncaughtExceptionHandlerImpl implements GWT.UncaughtExceptionHandler {
         // description text
         SafeHtmlBuilder htmlBuilder = new SafeHtmlBuilder();
         // @formatter:off
-      htmlBuilder
+        htmlBuilder
             .appendHtmlConstant("<h3>You may close this window and continue with your work</h3>")
             .appendHtmlConstant("<div>If you want to let us know the error, Please recall your actions and take one of the following steps:</div>")
             .appendHtmlConstant("<ul>")
@@ -76,7 +76,7 @@ class UncaughtExceptionHandlerImpl implements GWT.UncaughtExceptionHandler {
             .appendHtmlConstant("<li><a href=\"https://bugzilla.redhat.com/enter_bug.cgi?format=guided&product=Zanata\" target=\"_blank\">Report a problem</a>; Or</li>")
             .appendHtmlConstant("<li>Email <a href=\"mailto:zanata-users@redhat.com\">Zanata users mailing list</a></li>")
             .appendHtmlConstant("</ul>")
-      // @formatter:on
+        // @formatter:on
         ;
 
         // stack trace

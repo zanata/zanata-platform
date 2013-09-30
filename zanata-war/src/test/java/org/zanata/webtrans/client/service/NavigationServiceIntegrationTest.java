@@ -81,15 +81,15 @@ public class NavigationServiceIntegrationTest {
     private static final HLocale LOCALE = new HLocale(
             WORKSPACE_ID.getLocaleId());
     // @formatter:off
-   private static final List<HTextFlow> TEXT_FLOWS = ImmutableList.<HTextFlow>builder().add(
-         TestFixture.makeHTextFlow(0, LOCALE, ContentState.New),
-         TestFixture.makeHTextFlow(1, LOCALE, ContentState.New),
-         TestFixture.makeHTextFlow(2, LOCALE, ContentState.NeedReview),
-         TestFixture.makeHTextFlow(3, LOCALE, ContentState.Approved),
-         TestFixture.makeHTextFlow(4, LOCALE, ContentState.NeedReview),
-         TestFixture.makeHTextFlow(5, LOCALE, ContentState.New)
-   ).build();
-   // @formatter:on
+    private static final List<HTextFlow> TEXT_FLOWS = ImmutableList.<HTextFlow>builder().add(
+        TestFixture.makeHTextFlow(0, LOCALE, ContentState.New),
+        TestFixture.makeHTextFlow(1, LOCALE, ContentState.New),
+        TestFixture.makeHTextFlow(2, LOCALE, ContentState.NeedReview),
+        TestFixture.makeHTextFlow(3, LOCALE, ContentState.Approved),
+        TestFixture.makeHTextFlow(4, LOCALE, ContentState.NeedReview),
+        TestFixture.makeHTextFlow(5, LOCALE, ContentState.New)
+    ).build();
+    // @formatter:on
     private static final DocumentInfo DOCUMENT = TestFixture
             .documentInfo(1, "");
 

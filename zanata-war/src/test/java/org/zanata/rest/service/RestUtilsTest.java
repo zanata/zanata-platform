@@ -50,36 +50,37 @@ public class RestUtilsTest {
 
     @DataProvider(name = "ResourceTestData")
     public Object[][] getResourceTestData() {
-        // @formatter:off
-      return new Object[][] {
-         new Object[] { "getPoHeaderTest", resourceTestFactory.getPoHeaderTest() },
-         new Object[] { "getPotEntryHeaderTest", resourceTestFactory.getPotEntryHeaderTest() },
-         new Object[] { "getTextFlowCommentTest", resourceTestFactory.getTextFlowCommentTest() },
-         new Object[] { "getTextFlowTest2", resourceTestFactory.getTextFlowTest2() }
-      };
-      // @formatter:on
+        return new Object[][] {
+                new Object[] { "getPoHeaderTest",
+                        resourceTestFactory.getPoHeaderTest() },
+                new Object[] { "getPotEntryHeaderTest",
+                        resourceTestFactory.getPotEntryHeaderTest() },
+                new Object[] { "getTextFlowCommentTest",
+                        resourceTestFactory.getTextFlowCommentTest() },
+                new Object[] { "getTextFlowTest2",
+                        resourceTestFactory.getTextFlowTest2() } };
     }
 
     @DataProvider(name = "ResourceMetaTestData")
     public Object[][] getResourceMetaTestData() {
-        // @formatter:off
-      return new Object[][] {
-         new Object[] { "getResourceMeta", resourceTestFactory.getResourceMeta() },
-         new Object[] { "getPoHeaderResourceMeta", resourceTestFactory.getPoHeaderResourceMeta() }
-      };
-      // @formatter:on
+        return new Object[][] {
+                new Object[] { "getResourceMeta",
+                        resourceTestFactory.getResourceMeta() },
+                new Object[] { "getPoHeaderResourceMeta",
+                        resourceTestFactory.getPoHeaderResourceMeta() } };
     }
 
     @DataProvider(name = "TranslationTestData")
     public Object[][] getTranslationTestData() {
-        // @formatter:off
-      return new Object[][] {
-         new Object[] { "getPoTargetHeaderTextFlowTargetTest", transTestFactory.getPoTargetHeaderTextFlowTargetTest() },
-         new Object[] { "getTestObject", transTestFactory.getTestObject() },
-         new Object[] { "getTestObject2", transTestFactory.getTestObject2() },
-         new Object[] { "getTextFlowTargetCommentTest", transTestFactory.getTextFlowTargetCommentTest() }
-      };
-      // @formatter:on
+        return new Object[][] {
+                new Object[] { "getPoTargetHeaderTextFlowTargetTest",
+                        transTestFactory.getPoTargetHeaderTextFlowTargetTest() },
+                new Object[] { "getTestObject",
+                        transTestFactory.getTestObject() },
+                new Object[] { "getTestObject2",
+                        transTestFactory.getTestObject2() },
+                new Object[] { "getTextFlowTargetCommentTest",
+                        transTestFactory.getTextFlowTargetCommentTest() } };
     }
 
     @Test(dataProvider = "ResourceTestData")
@@ -123,7 +124,18 @@ public class RestUtilsTest {
             // String testStr =
             // "{\"resId\":\"782f49c4e93c32403ba0b51821b38b90\",\"state\":\"Approved\",\"translator\":{},\"content\":\"title: ttff\",\"extensions\":[{\"object-type\": \"comment\",\"value\": \"testcomment\", \"space\": \"preserve\"}]}";
             String testStr =
-                    "{\"textFlowTargets\":[{\"resId\":\"rest1\",\"state\":\"Approved\",\"translator\":{\"email\":\"root@localhost\",\"name\":\"Admin user\"},\"content\": \"<title>\u8bbf\u95ee\u5b58\u53d6\u63a7\u5236\u5217\u8868</title>\"},{\"resId\":\"rest2\",\"state\":\"Approved\",\"translator\":{\"email\":\"root@localhost\",\"name\":\"Admin user\"},\"content\":\"hello world\"}]}";
+                    "{\"textFlowTargets\":["
+                            + "{\"resId\":\"rest1\","
+                            + "\"state\":\"Approved\","
+                            + "\"translator\":{"
+                            + "\"email\":\"root@localhost\","
+                            + "\"name\":\"Admin user\"},"
+                            + "\"content\": \"<title>\u8bbf\u95ee\u5b58\u53d6\u63a7\u5236\u5217\u8868</title>\"},"
+                            + "{\"resId\":\"rest2\","
+                            + "\"state\":\"Approved\"," + "\"translator\":{"
+                            + "\"email\":\"root@localhost\","
+                            + "\"name\":\"Admin user\"},"
+                            + "\"content\":\"hello world\"}]}";
 
             messageBody = new ByteArrayInputStream(testStr.getBytes("UTF-8"));
             TranslationsResource unmarshall =

@@ -69,22 +69,26 @@ public class TransUnitTransformer {
                 GwtRpcUtil.getTargetContentsWithPadding(hTextFlow, target,
                         nPlurals);
 
-        // @formatter:off
-      TransUnit.Builder builder = TransUnit.Builder.newTransUnitBuilder()
-            .setId(hTextFlow.getId())
-            .setResId(hTextFlow.getResId())
-            .setLocaleId(hLocale.getLocaleId())
-            .setPlural(hTextFlow.isPlural())
-            .setSources(sourceContents)
-            .setSourceComment(commentToString(hTextFlow.getComment()))
-            .setTargets(targetContents)
-            .setTargetComment(target == null ? null : commentToString(target.getComment()))
-            .setMsgContext(msgContext)
-            .setRowIndex(hTextFlow.getPos())
-            .setVerNum(target == null ? NULL_TARGET_VERSION_NUM : target.getVersionNum())
-            .setCommentsCount(getCommentCount(target))
-            ;
-      // @formatter:on
+        TransUnit.Builder builder =
+                TransUnit.Builder
+                        .newTransUnitBuilder()
+                        .setId(hTextFlow.getId())
+                        .setResId(hTextFlow.getResId())
+                        .setLocaleId(hLocale.getLocaleId())
+                        .setPlural(hTextFlow.isPlural())
+                        .setSources(sourceContents)
+                        .setSourceComment(
+                                commentToString(hTextFlow.getComment()))
+                        .setTargets(targetContents)
+                        .setTargetComment(
+                                target == null ? null : commentToString(target
+                                        .getComment()))
+                        .setMsgContext(msgContext)
+                        .setRowIndex(hTextFlow.getPos())
+                        .setVerNum(
+                                target == null ? NULL_TARGET_VERSION_NUM
+                                        : target.getVersionNum())
+                        .setCommentsCount(getCommentCount(target));
 
         if (target != null) {
             builder.setStatus(target.getState());

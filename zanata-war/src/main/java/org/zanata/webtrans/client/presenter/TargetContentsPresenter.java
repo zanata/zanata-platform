@@ -79,16 +79,10 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 @Singleton
-// @formatter:off
-public class TargetContentsPresenter implements
-      TargetContentsDisplay.Listener,
-      TransUnitEditEventHandler,
-      UserConfigChangeHandler,
-      RequestValidationEventHandler,
-      InsertStringInEditorHandler,
-      CopyDataToEditorHandler,
-      WorkspaceContextUpdateEventHandler
-// @formatter:on
+public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
+        TransUnitEditEventHandler, UserConfigChangeHandler,
+        RequestValidationEventHandler, InsertStringInEditorHandler,
+        CopyDataToEditorHandler, WorkspaceContextUpdateEventHandler
 {
     protected static final int LAST_INDEX = -2;
     private final EventBus eventBus;
@@ -114,18 +108,17 @@ public class TargetContentsPresenter implements
     private boolean spellCheckEnabled;
 
     @Inject
-    // @formatter:off
-   public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, EditorTranslators editorTranslators, final EventBus eventBus,
-                                  TableEditorMessages messages,
-                                  SourceContentsPresenter sourceContentsPresenter,
-                                  UserWorkspaceContext userWorkspaceContext,
-                                  EditorKeyShortcuts editorKeyShortcuts,
-                                  TranslationHistoryPresenter historyPresenter,
-                                  UserOptionsService userOptionsService,
-                                  SaveAsApprovedConfirmationDisplay saveAsApprovedConfirmation,
-                                  ValidationWarningDisplay validationWarning)
-   // @formatter:on
-    {
+    public TargetContentsPresenter(
+            Provider<TargetContentsDisplay> displayProvider,
+            EditorTranslators editorTranslators, final EventBus eventBus,
+            TableEditorMessages messages,
+            SourceContentsPresenter sourceContentsPresenter,
+            UserWorkspaceContext userWorkspaceContext,
+            EditorKeyShortcuts editorKeyShortcuts,
+            TranslationHistoryPresenter historyPresenter,
+            UserOptionsService userOptionsService,
+            SaveAsApprovedConfirmationDisplay saveAsApprovedConfirmation,
+            ValidationWarningDisplay validationWarning) {
         this.displayProvider = displayProvider;
         this.editorTranslators = editorTranslators;
         this.userWorkspaceContext = userWorkspaceContext;
