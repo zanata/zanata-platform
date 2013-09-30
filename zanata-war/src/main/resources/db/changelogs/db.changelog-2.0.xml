@@ -110,7 +110,7 @@
                                  referencedTableName="HAccountRole"
                                  referencedColumnNames="id"/>
     </changeSet>
-
+    
     <changeSet id="6" author="camunoz@redhat.com">
         <comment>Add 'Restricted by Roles' column to HProject table.</comment>
         <addColumn tableName="HProject">

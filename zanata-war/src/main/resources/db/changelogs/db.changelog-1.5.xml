@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog
+<databaseChangeLog 
 	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
 						http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
@@ -125,21 +125,21 @@
 				<constraints nullable="false" />
 			</column>
 		</addColumn>
-
+		
 		<addForeignKeyConstraint baseTableName="HGlossaryEntry"
             baseColumnNames="srcLocaleId" constraintName="UKglossaryentry_srcLocaleId"
             referencedTableName="HLocale" referencedColumnNames="id" />
-
+            
          <addColumn tableName="HGlossaryEntry">
             <column name="sourceRef" type="longtext"/>
-        </addColumn>
+        </addColumn>   
 	</changeSet>
-
+	
 	<changeSet author="aeng@redhat.com" id="8" dbms="mysql">
         <comment>Alter glossary tables - remove sourceRef/add auto increment</comment>
-
+        
         <dropColumn tableName="HGlossaryTerm" columnName="sourceRef" />
-
+        
         <addAutoIncrement tableName="HGlossaryEntry" columnName="id" columnDataType="bigint"/>
         <addAutoIncrement tableName="HGlossaryTerm" columnName="id" columnDataType="bigint"/>
         <addAutoIncrement tableName="HTermComment" columnName="id" columnDataType="bigint"/>
@@ -149,7 +149,7 @@
         <comment>Alter glossary tables - remove sourceRef/add auto increment</comment>
         <dropColumn tableName="HGlossaryTerm" columnName="sourceRef" />
     </changeSet>
-
+    
     <changeSet author="aeng@redhat.com" id="9">
         <comment>Alter glossary term table - remove constraint</comment>
         <dropForeignKeyConstraint baseTableName="HTermComment" constraintName="UKtermComment_glossaryTerm" />
@@ -163,7 +163,7 @@
             </column>
         </addColumn>
     </changeSet>
-
+    
     <changeSet author="aeng@redhat.com" id="11">
         <comment>Add obsolete column to HProjectIteration</comment>
         <addColumn tableName="HProjectIteration">
