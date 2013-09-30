@@ -20,28 +20,63 @@
  */
 package org.zanata.webtrans.client.presenter;
 
-import java.util.*;
+import static com.google.common.base.Objects.equal;
 
-import org.zanata.common.*;
-import org.zanata.webtrans.client.events.*;
-import org.zanata.webtrans.client.events.NotificationEvent.*;
-import org.zanata.webtrans.client.resources.*;
-import org.zanata.webtrans.client.service.*;
-import org.zanata.webtrans.client.ui.*;
-import org.zanata.webtrans.client.ui.ToggleEditor.*;
-import org.zanata.webtrans.client.view.*;
-import org.zanata.webtrans.shared.model.*;
-import org.zanata.webtrans.shared.util.*;
-import com.allen_sauer.gwt.log.client.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import net.customware.gwt.presenter.client.EventBus;
+
+import org.zanata.common.ContentState;
+import org.zanata.webtrans.client.events.CheckStateHasChangedEvent;
+import org.zanata.webtrans.client.events.CommentBeforeSaveEvent;
+import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
+import org.zanata.webtrans.client.events.CopyDataToEditorHandler;
+import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
+import org.zanata.webtrans.client.events.InsertStringInEditorHandler;
+import org.zanata.webtrans.client.events.NavTransUnitEvent;
+import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.events.NotificationEvent.Severity;
+import org.zanata.webtrans.client.events.ReloadUserConfigUIEvent;
+import org.zanata.webtrans.client.events.RequestSelectTableRowEvent;
+import org.zanata.webtrans.client.events.RequestValidationEvent;
+import org.zanata.webtrans.client.events.RequestValidationEventHandler;
+import org.zanata.webtrans.client.events.RunValidationEvent;
+import org.zanata.webtrans.client.events.TableRowSelectedEvent;
+import org.zanata.webtrans.client.events.TransUnitEditEvent;
+import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
+import org.zanata.webtrans.client.events.TransUnitSaveEvent;
+import org.zanata.webtrans.client.events.UserConfigChangeEvent;
+import org.zanata.webtrans.client.events.UserConfigChangeHandler;
+import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
+import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
+import org.zanata.webtrans.client.resources.TableEditorMessages;
+import org.zanata.webtrans.client.service.UserOptionsService;
+import org.zanata.webtrans.client.ui.SaveAsApprovedConfirmationDisplay;
+import org.zanata.webtrans.client.ui.ToggleEditor;
+import org.zanata.webtrans.client.ui.ToggleEditor.ViewMode;
+import org.zanata.webtrans.client.ui.UndoLink;
+import org.zanata.webtrans.client.ui.ValidationWarningDisplay;
+import org.zanata.webtrans.client.view.TargetContentsDisplay;
+import org.zanata.webtrans.shared.model.DocumentInfo;
+import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.model.ValidationAction;
+import org.zanata.webtrans.shared.model.WorkspaceRestrictions;
+import org.zanata.webtrans.shared.util.Finds;
+
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
-import com.google.common.base.*;
-import com.google.common.collect.*;
-import com.google.gwt.core.client.*;
-import com.google.inject.*;
-
-import static com.google.common.base.Objects.*;
-
-import net.customware.gwt.presenter.client.*;
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
+import com.google.gwt.core.client.GWT;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
+import com.google.inject.Singleton;
 
 @Singleton
 // @formatter:off
@@ -131,6 +166,11 @@ public class TargetContentsPresenter implements
         }
     }
 
+    public void gotoRow(DocumentInfo documentInfo, TransUnitId transUnitId) {
+        eventBus.fireEvent(new RequestSelectTableRowEvent(documentInfo,
+                transUnitId));
+    }
+
     /**
      * Fire TransUnitSaveEvent if there's no validation error
      *
@@ -142,8 +182,9 @@ public class TargetContentsPresenter implements
                 display.getErrorMessages();
 
         if (status.isTranslated() && !errorMessages.isEmpty()) {
-            validationWarning.center(display.getId(), currentEditorIndex,
-                    getNewTargets(), errorMessages);
+            validationWarning.center(display.getId(),
+                    userWorkspaceContext.getSelectedDoc(), getNewTargets(),
+                    errorMessages);
             return false;
         } else {
             eventBus.fireEvent(new TransUnitSaveEvent(getNewTargets(), status,
