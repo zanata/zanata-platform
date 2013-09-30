@@ -417,72 +417,61 @@ public class SearchResultsPresenter extends
                     }
                 }));
 
-        // @formatter:off
-      keyShortcutPresenter.register(KeyShortcut.Builder.builder()
-            .addKey(new Keys(Keys.SHIFT_ALT_KEYS, 'A'))
-            .setContext(ShortcutContext.ProjectWideSearch)
-            .setDescription(messages.selectAllTextFlowsKeyShortcut())
-            .setHandler(new KeyShortcutEventHandler()
-      {
-         @Override
-         public void onKeyShortcut(KeyShortcutEvent event)
-         {
-            display.getSelectAllChk().setValue(!display.getSelectAllChk().getValue(), true);
-         }
-      }).build());
+        keyShortcutPresenter.register(KeyShortcut.Builder.builder()
+                .addKey(new Keys(Keys.SHIFT_ALT_KEYS, 'A'))
+                .setContext(ShortcutContext.ProjectWideSearch)
+                .setDescription(messages.selectAllTextFlowsKeyShortcut())
+                .setHandler(new KeyShortcutEventHandler() {
+                    @Override
+                    public void onKeyShortcut(KeyShortcutEvent event) {
+                        display.getSelectAllChk().setValue(
+                                !display.getSelectAllChk().getValue(), true);
+                    }
+                }).build());
 
-      keyShortcutPresenter.register(KeyShortcut.Builder.builder()
-            .addKey(new Keys(Keys.ALT_KEY, 'P'))
-            .setContext(ShortcutContext.ProjectWideSearch)
-            .setDescription(messages.focusSearchPhraseKeyShortcut())
-            .setHandler(new KeyShortcutEventHandler()
-      {
-         @Override
-         public void onKeyShortcut(KeyShortcutEvent event)
-         {
-            display.focusFilterTextBox();
-         }
-      }).build());
+        keyShortcutPresenter.register(KeyShortcut.Builder.builder()
+                .addKey(new Keys(Keys.ALT_KEY, 'P'))
+                .setContext(ShortcutContext.ProjectWideSearch)
+                .setDescription(messages.focusSearchPhraseKeyShortcut())
+                .setHandler(new KeyShortcutEventHandler() {
+                    @Override
+                    public void onKeyShortcut(KeyShortcutEvent event) {
+                        display.focusFilterTextBox();
+                    }
+                }).build());
 
-      keyShortcutPresenter.register(KeyShortcut.Builder.builder()
-            .addKey(new Keys(Keys.ALT_KEY, 'C'))
-            .setContext(ShortcutContext.ProjectWideSearch)
-            .setDescription(messages.focusReplacementPhraseKeyShortcut())
-            .setHandler(new KeyShortcutEventHandler()
-      {
-         @Override
-         public void onKeyShortcut(KeyShortcutEvent event)
-         {
-            display.focusReplacementTextBox();
-         }
-      }).build());
+        keyShortcutPresenter.register(KeyShortcut.Builder.builder()
+                .addKey(new Keys(Keys.ALT_KEY, 'C'))
+                .setContext(ShortcutContext.ProjectWideSearch)
+                .setDescription(messages.focusReplacementPhraseKeyShortcut())
+                .setHandler(new KeyShortcutEventHandler() {
+                    @Override
+                    public void onKeyShortcut(KeyShortcutEvent event) {
+                        display.focusReplacementTextBox();
+                    }
+                }).build());
 
-      keyShortcutPresenter.register(KeyShortcut.Builder.builder()
-            .addKey(new Keys(Keys.ALT_KEY, 'R'))
-            .setContext(ShortcutContext.ProjectWideSearch)
-            .setDescription(messages.replaceSelectedKeyShortcut())
-            .setHandler(new KeyShortcutEventHandler()
-      {
-         @Override
-         public void onKeyShortcut(KeyShortcutEvent event)
-         {
-            replaceSelected();
-         }
-      }).build());
+        keyShortcutPresenter.register(KeyShortcut.Builder.builder()
+                .addKey(new Keys(Keys.ALT_KEY, 'R'))
+                .setContext(ShortcutContext.ProjectWideSearch)
+                .setDescription(messages.replaceSelectedKeyShortcut())
+                .setHandler(new KeyShortcutEventHandler() {
+                    @Override
+                    public void onKeyShortcut(KeyShortcutEvent event) {
+                        replaceSelected();
+                    }
+                }).build());
 
-      keyShortcutPresenter.register(KeyShortcut.Builder.builder()
-            .addKey(new Keys(Keys.ALT_KEY, 'W'))
-            .setContext(ShortcutContext.ProjectWideSearch)
-            .setDescription(messages.toggleRowActionButtons())
-            .setHandler(new KeyShortcutEventHandler()
-      {
-         @Override
-         public void onKeyShortcut(KeyShortcutEvent event)
-         {
-            showRowActionButtons = !showRowActionButtons;
-         }
-      }).build());
-      // @formatter:on
+        keyShortcutPresenter.register(KeyShortcut.Builder.builder()
+                .addKey(new Keys(Keys.ALT_KEY, 'W'))
+                .setContext(ShortcutContext.ProjectWideSearch)
+                .setDescription(messages.toggleRowActionButtons())
+                .setHandler(new KeyShortcutEventHandler() {
+                    @Override
+                    public void onKeyShortcut(KeyShortcutEvent event) {
+                        showRowActionButtons = !showRowActionButtons;
+                    }
+                }).build());
 
         // TODO register key shortcuts:
         // Alt+Z undo last operation

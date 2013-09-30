@@ -191,14 +191,10 @@ public class Editor extends Composite implements ToggleEditor {
 
     @Override
     public String toString() {
-        // @formatter:off
-      return Objects.toStringHelper(this)
-            .add("id", id)
-//            .add("label", label.getText())
-//            .add("textArea", textArea.getText())
-            .add("isFocused", isFocused())
-            .toString();
-      // @formatter:on
+        return Objects.toStringHelper(this).add("id", id)
+        // .add("label", label.getText())
+        // .add("textArea", textArea.getText())
+                .add("isFocused", isFocused()).toString();
     }
 
     @Override

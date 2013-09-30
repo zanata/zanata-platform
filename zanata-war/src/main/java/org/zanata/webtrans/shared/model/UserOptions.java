@@ -9,27 +9,27 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public enum UserOptions implements IsSerializable {
 
-   // @formatter:off
-   EnterSavesApproved(editor()+ ".EnterSavesApproved"),
-   DisplayButtons(editor()+ ".DisplayButtons"),
-   EditorPageSize(editor()+ ".PageSize"),
-   UseCodeMirrorEditor(editor()+ ".codeMirrorEditor"),
-   EnableSpellCheck(editor()+ ".enableSpellCheck"),
-   TransMemoryDisplayMode(editor()+ ".transMemoryDisplayMode"),
-   DisplayTransMemory(editor()+ ".displayTransMemory"),
-   DisplayGlossary(editor()+ ".displayGlossary"),
-   ShowOptionalTransUnitDetails(editor()+ ".showOptionalTransUnitDetails"),
-   ShowErrors(common()+ ".ShowErrors"),
-   Themes(common()+ ".Themes"),
-   TranslatedMessageFilter(editor()+ ".TranslatedMessageFilter"),
-   FuzzyMessageFilter(editor()+ ".FuzzyMessageFilter"),
-   UntranslatedMessageFilter(editor()+ ".UntranslatedMessageFilter"),
-   ApprovedMessageFilter(editor()+ ".ApprovedMessageFilter"),
-   RejectedMessageFilter(editor()+ ".RejectedMessageFilter"),
-   Navigation(editor()+ ".Navigation"),
-   DocumentListPageSize(doc() + ".PageSize"),
-   ShowSaveApprovedWarning(editor() + ".ShowSaveApprovedWarning");
-   // @formatter:on
+    // @formatter:off
+    EnterSavesApproved(editor()+ ".EnterSavesApproved"),
+    DisplayButtons(editor()+ ".DisplayButtons"),
+    EditorPageSize(editor()+ ".PageSize"),
+    UseCodeMirrorEditor(editor()+ ".codeMirrorEditor"),
+    EnableSpellCheck(editor()+ ".enableSpellCheck"),
+    TransMemoryDisplayMode(editor()+ ".transMemoryDisplayMode"),
+    DisplayTransMemory(editor()+ ".displayTransMemory"),
+    DisplayGlossary(editor()+ ".displayGlossary"),
+    ShowOptionalTransUnitDetails(editor()+ ".showOptionalTransUnitDetails"),
+    ShowErrors(common()+ ".ShowErrors"),
+    Themes(common()+ ".Themes"),
+    TranslatedMessageFilter(editor()+ ".TranslatedMessageFilter"),
+    FuzzyMessageFilter(editor()+ ".FuzzyMessageFilter"),
+    UntranslatedMessageFilter(editor()+ ".UntranslatedMessageFilter"),
+    ApprovedMessageFilter(editor()+ ".ApprovedMessageFilter"),
+    RejectedMessageFilter(editor()+ ".RejectedMessageFilter"),
+    Navigation(editor()+ ".Navigation"),
+    DocumentListPageSize(doc() + ".PageSize"),
+    ShowSaveApprovedWarning(editor() + ".ShowSaveApprovedWarning");
+    // @formatter:on
 
     private String persistentName;
 

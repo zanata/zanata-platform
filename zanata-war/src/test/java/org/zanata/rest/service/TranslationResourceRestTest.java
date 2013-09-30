@@ -240,14 +240,14 @@ public class TranslationResourceRestTest extends ZanataRestTest {
         sr.getTextFlows().add(stf);
 
         // @formatter:off
-      /*
-      TODO: move this into an AbstractResourceMeta test (PoHeader is valid for source documents, not target)
+        /*
+        TODO: move this into an AbstractResourceMeta test (PoHeader is valid for source documents, not target)
 
-      PoHeader poHeaderExt = new PoHeader("comment", new HeaderEntry("h1", "v1"), new HeaderEntry("h2", "v2"));
-      sr.getExtensions(true).add(poHeaderExt);
+        PoHeader poHeaderExt = new PoHeader("comment", new HeaderEntry("h1", "v1"), new HeaderEntry("h2", "v2"));
+        sr.getExtensions(true).add(poHeaderExt);
 
-      */
-      // @formatter:on
+        */
+        // @formatter:on
 
         ClientResponse<String> postResponse =
                 sourceDocResource.post(sr, null, true); // new
@@ -264,16 +264,16 @@ public class TranslationResourceRestTest extends ZanataRestTest {
         assertThat(gotSr.getTextFlows().get(0).getContents(), is(asList("tf1")));
 
         // @formatter:off
-      /*
-      TODO: move this into an AbstractResourceMeta test
+        /*
+        TODO: move this into an AbstractResourceMeta test
 
-      assertThat(gotSr.getExtensions().size(), is(1));
-      PoHeader gotPoHeader = gotSr.getExtensions().findByType(PoHeader.class);
-      assertThat(gotPoHeader, notNullValue());
-      assertThat(poHeaderExt.getComment(), is(gotPoHeader.getComment()));
-      assertThat(poHeaderExt.getEntries(), is(gotPoHeader.getEntries()));
-      */
-      // @formatter:on
+        assertThat(gotSr.getExtensions().size(), is(1));
+        PoHeader gotPoHeader = gotSr.getExtensions().findByType(PoHeader.class);
+        assertThat(gotPoHeader, notNullValue());
+        assertThat(poHeaderExt.getComment(), is(gotPoHeader.getComment()));
+        assertThat(poHeaderExt.getEntries(), is(gotPoHeader.getEntries()));
+        */
+        // @formatter:on
     }
 
     // NB this test breaks in Maven if the dev profile is active (because of the

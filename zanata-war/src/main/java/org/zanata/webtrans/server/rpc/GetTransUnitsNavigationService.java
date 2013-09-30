@@ -52,13 +52,10 @@ public class GetTransUnitsNavigationService {
 
     protected GetTransUnitsNavigationResult getNavigationIndexes(
             GetTransUnitsNavigation action, HLocale hLocale) {
-        // @formatter:off
-      FilterConstraints filterConstraints = FilterConstraints.builder()
-            .filterBy(action.getPhrase())
-            .checkInSource(true).checkInTarget(true)
-            .includeStates(action.getActiveStates())
-            .build();
-      // @formatter:on
+        FilterConstraints filterConstraints =
+                FilterConstraints.builder().filterBy(action.getPhrase())
+                        .checkInSource(true).checkInTarget(true)
+                        .includeStates(action.getActiveStates()).build();
 
         List<TransUnitId> idIndexList = new ArrayList<TransUnitId>();
         Map<TransUnitId, ContentState> transIdStateMap =

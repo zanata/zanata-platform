@@ -47,20 +47,18 @@ public class WorkspaceUsersPresenter extends
 
     @Override
     protected void onBind() {
-        // @formatter:off
-      keyShortcutPresenter.register(KeyShortcut.Builder.builder()
-            .addKey(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER))
-            .setContext(ShortcutContext.Chat)
-            .setDescription(messages.publishChatContent())
-            .setHandler(new KeyShortcutEventHandler()
-      {
-         @Override
-         public void onKeyShortcut(KeyShortcutEvent event)
-         {
-            dispatchChatAction(identity.getPerson().getId().toString(), display.getChatInputText(), MESSAGE_TYPE.USER_MSG);
-         }
-      }).build());
-      // @formatter:on
+        keyShortcutPresenter.register(KeyShortcut.Builder.builder()
+                .addKey(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER))
+                .setContext(ShortcutContext.Chat)
+                .setDescription(messages.publishChatContent())
+                .setHandler(new KeyShortcutEventHandler() {
+                    @Override
+                    public void onKeyShortcut(KeyShortcutEvent event) {
+                        dispatchChatAction(identity.getPerson().getId()
+                                .toString(), display.getChatInputText(),
+                                MESSAGE_TYPE.USER_MSG);
+                    }
+                }).build());
 
         registerHandler(eventBus.addHandler(
                 PublishWorkspaceChatEvent.getType(), this));

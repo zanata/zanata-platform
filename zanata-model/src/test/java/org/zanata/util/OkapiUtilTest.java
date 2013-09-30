@@ -9,32 +9,31 @@ import org.testng.annotations.Test;
 
 @Test(groups = { "unit-tests" })
 public class OkapiUtilTest {
-// @formatter:off
-   String[] strings =
-   {
-         "<author><firstname>Emmanuel</firstname> <surname>Bernard</surname></author>",
-         "Graphic Design",
-         "the object is passed up to the UI tier",
+    // @formatter:off
+    String[] strings = {
+        "<author><firstname>Emmanuel</firstname> <surname>Bernard</surname></author>",
+        "Graphic Design",
+        "the object is passed up to the UI tier",
 
-         "// in the first session\n" +
-         "Cat cat = (Cat) firstSession.load(Cat.class, catID);\n" +
-         "\n" +
-         "// in a higher tier of the application\n" +
-         "Cat mate = new Cat();\n" +
-         "cat.setMate(mate);\n" +
-         "\n" +
-         "// later, in a new session\n" +
-         "secondSession.saveOrUpdate(cat);   // update existing state (cat has a non-null id)\n" +
-         "secondSession.saveOrUpdate(mate);  // save the new instance (mate has a null id)",
+        "// in the first session\n" +
+        "Cat cat = (Cat) firstSession.load(Cat.class, catID);\n" +
+        "\n" +
+        "// in a higher tier of the application\n" +
+        "Cat mate = new Cat();\n" +
+        "cat.setMate(mate);\n" +
+        "\n" +
+        "// later, in a new session\n" +
+        "secondSession.saveOrUpdate(cat);   // update existing state (cat has a non-null id)\n" +
+        "secondSession.saveOrUpdate(mate);  // save the new instance (mate has a null id)",
 
-         "<filename class=\"directory\">/var/lib/ricci</filename>",
+        "<filename class=\"directory\">/var/lib/ricci</filename>",
 
-         "https://cdn.redhat.com", // NB okapi says 2, but looks like 4. perhaps
-                                   // something.ext counts as one word?
+        "https://cdn.redhat.com", // NB okapi says 2, but looks like 4. perhaps
+        // something.ext counts as one word?
 
-         "/etc/rhsm/rhsm.conf", // NB okapi says 3, but looks like 4
-   };
-// @formatter:on
+        "/etc/rhsm/rhsm.conf", // NB okapi says 3, but looks like 4
+    };
+    // @formatter:on
     // These counts represent the expected word counts for the strings listed
     // above.
     long[] count = { 2, 2, 9,

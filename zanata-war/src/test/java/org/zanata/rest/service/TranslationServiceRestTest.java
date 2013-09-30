@@ -35,15 +35,15 @@ public class TranslationServiceRestTest extends
 
     @DataProvider(name = "TranslationTestData")
     public Object[][] getTestData() {
-        // @formatter:off
-      return new Object[][]
-         {
-            new Object[] { "getTestObject", transTestFactory.getTestObject() },
-            new Object[] { "getPoTargetHeaderTextFlowTargetTest", transTestFactory.getPoTargetHeaderTextFlowTargetTest() },
-            new Object[] { "getTextFlowTargetCommentTest", transTestFactory.getTextFlowTargetCommentTest() },
-            new Object[] { "getAllExtension", transTestFactory.getAllExtension() }
-         };
-      // @formatter:on
+        return new Object[][] {
+                new Object[] { "getTestObject",
+                        transTestFactory.getTestObject() },
+                new Object[] { "getPoTargetHeaderTextFlowTargetTest",
+                        transTestFactory.getPoTargetHeaderTextFlowTargetTest() },
+                new Object[] { "getTextFlowTargetCommentTest",
+                        transTestFactory.getTextFlowTargetCommentTest() },
+                new Object[] { "getAllExtension",
+                        transTestFactory.getAllExtension() } };
     }
 
     @Override

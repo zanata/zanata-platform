@@ -110,20 +110,22 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long> {
         return query.list();
     }
 
-    /* @formatter:off */
-   public HGlossaryEntry getEntryBySrcLocaleAndContent(LocaleId localeid, String content)
-   {
-      Query query = getSession().createQuery("from HGlossaryEntry as e " +
-            "WHERE e.srcLocale.localeId= :localeid AND e.id IN " +
-            "(SELECT t.glossaryEntry.id FROM HGlossaryTerm as t " +
-            "WHERE t.locale.localeId=e.srcLocale.localeId " +
-            "AND t.content= :content)");
-      query.setParameter("localeid", localeid);
-      query.setParameter("content", content);
-      query.setComment("GlossaryDAO.getEntryBySrcLocaleAndContent");
-      return (HGlossaryEntry) query.uniqueResult();
-   }
-   /* @formatter:on */
+    public HGlossaryEntry getEntryBySrcLocaleAndContent(LocaleId localeid,
+            String content) {
+        Query query =
+                getSession()
+                        .createQuery(
+                                "from HGlossaryEntry as e "
+                                        + "WHERE e.srcLocale.localeId= :localeid "
+                                        + "AND e.id IN "
+                                        + "(SELECT t.glossaryEntry.id FROM HGlossaryTerm as t "
+                                        + "WHERE t.locale.localeId=e.srcLocale.localeId "
+                                        + "AND t.content= :content)");
+        query.setParameter("localeid", localeid);
+        query.setParameter("content", content);
+        query.setComment("GlossaryDAO.getEntryBySrcLocaleAndContent");
+        return (HGlossaryEntry) query.uniqueResult();
+    }
 
     @SuppressWarnings("unchecked")
     public List<HGlossaryTerm> findByIdList(List<Long> idList) {

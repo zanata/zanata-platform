@@ -102,7 +102,7 @@ public class ActivateWorkspaceHandlerTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         // @formatter:off
-      ActivateWorkspaceHandler activateWorkspaceHandler = SeamAutowire.instance()
+        ActivateWorkspaceHandler activateWorkspaceHandler = SeamAutowire.instance()
             .use("identity", identity)
             .use("translationWorkspaceManager", translationWorkspaceManager)
             .use("accountDAO", accountDAO)
@@ -113,7 +113,7 @@ public class ActivateWorkspaceHandlerTest {
             .use("webtrans.gwt.GetValidationRulesHandler", getValidationRulesHandler)
             .ignoreNonResolvable()
             .autowire(ActivateWorkspaceHandler.class);
-      // @formatter:on
+        // @formatter:on
         handler = spy(activateWorkspaceHandler);
         person = TestFixture.person();
         doReturn(person).when(handler).retrievePerson();

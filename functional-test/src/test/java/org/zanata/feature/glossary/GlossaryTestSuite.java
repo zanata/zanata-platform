@@ -12,12 +12,12 @@ import org.zanata.util.ResetDatabaseRule;
 @RunWith(Suite.class)
 // @formatter:off
 @Suite.SuiteClasses({GlossaryTest.class,
-      GlossaryPushTest.class,
-      InvalidGlossaryPushTest.class,
-      GlossaryPushCSVTest.class,
-      UnauthorizedGlossaryDeleteTest.class,
-      UnauthorizedGlossaryPushTest.class,
-      GlossaryDeleteTest.class
+    GlossaryPushTest.class,
+    InvalidGlossaryPushTest.class,
+    GlossaryPushCSVTest.class,
+    UnauthorizedGlossaryDeleteTest.class,
+    UnauthorizedGlossaryPushTest.class,
+    GlossaryDeleteTest.class
 })
 // @formatter:on
 public class GlossaryTestSuite {
