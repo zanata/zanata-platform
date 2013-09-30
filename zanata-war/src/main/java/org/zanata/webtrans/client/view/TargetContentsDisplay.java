@@ -31,6 +31,7 @@ import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.ui.HasUpdateValidationMessage;
 import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.UndoLink;
+import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.HasTransUnitId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -109,6 +110,8 @@ public interface TargetContentsDisplay extends WidgetDisplay, HasTransUnitId,
         void acceptTranslation(TransUnitId id);
 
         void rejectTranslation(TransUnitId id);
+
+        void gotoRow(DocumentInfo documentInfo, TransUnitId transUnitId);
     }
 
     enum EditingState {

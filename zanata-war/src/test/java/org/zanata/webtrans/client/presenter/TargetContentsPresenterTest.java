@@ -79,8 +79,6 @@ import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.client.ui.ValidationWarningDisplay;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
-import org.zanata.webtrans.server.locale.Gwti18nReader;
-import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
@@ -383,7 +381,8 @@ public class TargetContentsPresenterTest {
         presenter.saveAsApprovedAndMoveNext(selectedTU.getId());
 
         // Then:
-        verify(validationWarning).center(selectedTU.getId(), 0, NEW_TARGETS,
+        verify(validationWarning).center(selectedTU.getId(),
+                userWorkspaceContext.getSelectedDoc(), NEW_TARGETS,
                 errorMessage);
     }
 

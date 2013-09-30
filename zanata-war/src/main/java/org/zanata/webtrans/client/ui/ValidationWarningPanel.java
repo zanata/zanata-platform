@@ -27,6 +27,7 @@ import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
+import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.ValidationAction;
 
@@ -57,7 +58,7 @@ public class ValidationWarningPanel extends ShortcutContextAwareDialogBox
 
     private TransUnitId transUnitId;
 
-    private int editorIndex;
+    private DocumentInfo documentInfo;
 
     private TargetContentsDisplay.Listener listener;
 
@@ -108,17 +109,17 @@ public class ValidationWarningPanel extends ShortcutContextAwareDialogBox
             @Override
             public void onClick(ClickEvent event) {
                 hide();
-                listener.onEditorClicked(transUnitId, editorIndex);
+                listener.gotoRow(documentInfo, transUnitId);
             }
         });
     }
 
     @Override
-    public void center(TransUnitId transUnitId, int editorIndex,
+    public void center(TransUnitId transUnitId, DocumentInfo documentInfo,
             List<String> targets,
             Map<ValidationAction, List<String>> errorMessages) {
         this.transUnitId = transUnitId;
-        this.editorIndex = editorIndex;
+        this.documentInfo = documentInfo;
         refreshView(targets, errorMessages);
         center();
     }
