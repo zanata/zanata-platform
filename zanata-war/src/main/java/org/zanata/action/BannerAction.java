@@ -33,7 +33,7 @@ import org.jboss.seam.annotations.Scope;
 @Name("bannerAction")
 public class BannerAction
 {
-   public boolean isAccountOrRegisterPage()
+   public boolean isSignInOrRegisterPage()
    {
       String viewId = FacesContext.getCurrentInstance().getViewRoot().getViewId();
       if( viewId.equals("/account/register.xhtml")

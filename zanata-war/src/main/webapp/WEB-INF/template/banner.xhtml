@@ -29,7 +29,7 @@
 		</a>
 	</s:fragment>
 	<s:fragment rendered="#{not identity.loggedIn}">
-		<s:div styleClass="header__login l--float-right" rendered="#{not bannerAction.accountOrRegisterPage}">
+		<s:div styleClass="header__login l--float-right" rendered="#{not bannerAction.signInOrRegisterPage}">
 			<s:link id="register_link_internal_auth" view="/account/register.xhtml" value="#{messages['jsf.Signup']}"
 				propagation="none" styleClass="is-hidden--s button" rendered="#{applicationConfiguration.internalAuth}"/>
 
