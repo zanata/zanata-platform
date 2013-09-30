@@ -12,25 +12,25 @@
   <ui:define name="page_title">#{messages['jsf.Login']}</ui:define>
   <ui:define name="center_content">
     <div class="g--centered">
-      <div class="g__item w--7-12 #{applicationConfiguration.multiAuth ? 'w--3-4-l w--2-3-m' : 'w--2-5-l w--1-4-h'}">
-        <div class="l--push-v-2">
+      <div class="g__item #{applicationConfiguration.multiAuth ? 'l--constrain-medium l--constrain-small-m' : 'l--constrain-smal'}">
+        <div class="l--push-v-1">
           <h1 class="l--push-all-0 beta">Log In</h1>
 
           <div class="g">
             <s:div styleClass="l--push-top-half g__item #{applicationConfiguration.multiAuth ? 'w--7-12 w--1-m' : ''}"
                    rendered="#{applicationConfiguration.internalAuth or applicationConfiguration.jaasAuth}">
               <s:fragment rendered="#{applicationConfiguration.multiAuth}">
-                <h2 class="gamma heading--sub">with Zanata</h2>
+                <h2 class="gamma heading--sub">#{messages['jsf.login.WithZanata.label']}</h2>
               </s:fragment>
 
               <h:form id="loginForm" styleClass="l--push-top-half l--pad-all-1 bg--pop-higher">
                 <div class="l--clearfix">
-                  <label for="username" class="l--float-left">Username</label>
+                  <h:outputLabel for="username" styleClass="l--float-left">#{messages['jsf.Username']}</h:outputLabel>
                 </div>
                 <h:inputText id="username" value="#{loginAction.username}" tabindex="1"/>
 
                 <div class="l--push-top-half l--clearfix">
-                  <label for="password" class="l--float-left">Password</label>
+                  <h:outputLabel for="password" styleClass="l--float-left">#{messages['jsf.Password']}</h:outputLabel>
                   <span class="txt--meta l--float-right">
                     <s:link view="/account/password_reset_request.xhtml" propagation="none" tabindex="3">
                       #{messages['jsf.ForgotYourPassword']}
@@ -39,10 +39,11 @@
                 </div>
                 <h:inputSecret id="password" value="#{loginAction.password}" tabindex="2"/>
 
-                <div class="l--push-top-half">
-                  <h:commandButton id="loginButton" action="#{loginAction.login}" value="Log In" styleClass="button--primary"/>
-                  <span class="l--push-h-quarter">or</span>
-                  <s:link view="/account/register.xhtml" value="Sign Up"/>
+                <div class="l--push-top-1">
+                  <h:commandButton id="loginButton" action="#{loginAction.login}" value="Log In" styleClass="button--primary button-full"/>
+                  <div class="txt--align-center txt--align-center-s l--push-top-half">
+                    #{messages['jsf.login.DontHaveAnAccount.label']} <s:link view="/account/register.xhtml" value="#{messages['jsf.SignUp']}"/>
+                  </div>
                 </div>
               </h:form>
             </s:div>
@@ -50,7 +51,7 @@
                    rendered="#{applicationConfiguration.openIdAuth}">
               <h:form>
                 <s:fragment rendered="#{applicationConfiguration.multiAuth}">
-                  <h2 class="gamma heading--sub">or</h2>
+                  <h2 class="gamma heading--sub">#{messages['jsf.login.OrLoginUsing.label']}</h2>
                 </s:fragment>
                 <ul class="list--no-bullets">
                   <li class="l--push-top-half">
@@ -63,13 +64,13 @@
                     <h:commandLink action="#{loginAction.openIdLogin('Yahoo')}" styleClass="button--full button--yahoo" value="Yahoo"/>
                   </li>
                   <li class="l--push-top-half l--pad-top-half l--pad-h-half bg--pop-higher">
-                    <label for="openid">Open ID</label>
+                    <h:outputLabel for="openid">Open ID</h:outputLabel>
 
                     <div class="g--tighter">
-                      <div class="g__item w--3-4">
+                      <div class="g__item w--3-4 w--3-4-s">
                         <h:inputText id="openid" value="#{loginAction.openId}" />
                       </div>
-                      <div class="g__item w--1-4">
+                      <div class="g__item w--1-4 w--1-4-s">
                         <h:commandButton action="#{loginAction.openIdLogin('Generic')}" styleClass="button--full" value="Go" />
                       </div>
                     </div>

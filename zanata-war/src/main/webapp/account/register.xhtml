@@ -7,12 +7,13 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich"
                 xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:richext="http://java.sun.com/jsf/composite/richext"
                 template="../WEB-INF/template/template.xhtml">
 
   <ui:define name="page_title">#{messages['jsf.Register']}</ui:define>
   <ui:define name="center_content">
     <div class="g--centered">
-      <div class="g__item w--7-12 #{applicationConfiguration.multiAuth ? 'w--3-4-l w--2-3-m' : 'w--2-5-l w--1-4-h'}">
+      <div class="g__item #{applicationConfiguration.multiAuth ? 'l--constrain-medium l--constrain-small-m' : 'l--constrain-small'}">
         <div class="l--push-v-2">
           <h1 class="l--push-all-0 beta">#{messages['jsf.SignUp']}</h1>
 
@@ -24,24 +25,24 @@
               </s:fragment>
 
               <h:form id="loginForm" styleClass="l--push-top-half l--pad-all-1 bg--pop-higher js-form-password-parent">
-                <label for="name">#{messages['jsf.register.FullName.label']}</label>
+                <h:outputLabel for="name">#{messages['jsf.register.FullName.label']}</h:outputLabel>
                 <h:inputText id="name" value="#{register.person.name}" tabindex="1"/>
 
-                <label for="username">#{messages['jsf.Username']}</label>
+                <h:outputLabel for="username">#{messages['jsf.Username']}</h:outputLabel>
                 <s:decorate id="usernameField" template="../WEB-INF/layout/field.xhtml">
                   <h:inputText id="username" value="#{register.username}" tabindex="2">
                     <a4j:ajax event="blur" render="usernameField" execute="@this"/>
                   </h:inputText>
                 </s:decorate>
 
-                <label for="email">#{messages['jsf.Email']}</label>
+                <h:outputLabel for="email">#{messages['jsf.Email']}</h:outputLabel>
                 <s:decorate id="emailField" template="../WEB-INF/layout/field.xhtml">
                   <h:inputText id="email" value="#{register.email}" tabindex="3">
                     <a4j:ajax event="blur" render="emailField" execute="@this"/>
                   </h:inputText>
                 </s:decorate>
 
-                <label for="password" class="l--push-top-half">#{messages['jsf.Password']}</label>
+                <h:outputLabel for="password">#{messages['jsf.Password']}</h:outputLabel>
                 <s:decorate id="passwordField" template="../WEB-INF/layout/field.xhtml">
                   <div class="form__password js-form-password">
                     <h:inputSecret id="password" styleClass="js-form-password-input form__input" value="#{register.password}"
@@ -51,12 +52,16 @@
                   </div>
                 </s:decorate>
 
-                <label class="is-hidden" for="human">If you are a human, do not fill in this field.</label>
-                <h:inputText styleClass="is-hidden" id="human" value="#{register.humanField}"/>
+                <h:outputLabel for="human" styleClass="is-hidden">If you are a human, do not fill in this field.</h:outputLabel>
+                <h:inputText id="human" styleClass="is-hidden" value="#{register.humanField}"/>
+                <p class="txt--meta l--push-top-half">
+                  <h:outputText value="#{messages['jsf.register.agreeToTOS']}" escape="false"/>
+                </p>
                 <div class="l--push-top-1">
-                  <h:commandButton value="Sign Up" action="#{register.register}" styleClass="button--primary"/>
-                  <span class="l--push-h-quarter">#{messages['jsf.register.Or.label']}</span>
-                  <s:link view="/account/login.xhtml" value="Log In"/>
+                  <h:commandButton value="Sign Up" action="#{register.register}" styleClass="button--primary button--full"/>
+                  <div class="l--push-top-half txt--align-center txt--align-center-s">
+                    #{messages['jsf.register.AlreadyHaveAccount.label']} <s:link view="/account/login.xhtml" value="#{messages['jsf.register.LogIn.label']}"/>
+                  </div>
                 </div>
               </h:form>
             </s:div>
@@ -64,7 +69,7 @@
                    rendered="#{applicationConfiguration.openIdAuth}">
               <h:form>
                 <s:fragment rendered="#{applicationConfiguration.multiAuth}">
-                  <h2 class="gamma heading--sub">#{messages['jsf.register.Or.label']}</h2>
+                  <h2 class="gamma heading--sub">#{messages['jsf.register.WithOther.label']}</h2>
                 </s:fragment>
                 <ul class="list--no-bullets">
                   <li class="l--push-top-half">
@@ -80,10 +85,10 @@
                     <label for="openid">Open ID</label>
 
                     <div class="g--tighter">
-                      <div class="g__item w--3-4">
+                      <div class="g__item w--3-4 w--3-4-s">
                         <h:inputText id="openid" value="#{loginAction.openId}" />
                       </div>
-                      <div class="g__item w--1-4">
+                      <div class="g__item w--1-4 w--1-4-s">
                         <h:commandButton action="#{loginAction.openIdLogin('Generic')}" styleClass="button--full" value="Go" />
                       </div>
                     </div>

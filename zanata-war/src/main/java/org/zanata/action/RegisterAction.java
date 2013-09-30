@@ -38,6 +38,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.faces.Renderer;
+import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.log.Log;
 import org.zanata.action.validator.NotDuplicateEmail;
 import org.zanata.dao.PersonDAO;
@@ -155,7 +156,8 @@ public class RegisterAction implements Serializable
       if (humanField != null && humanField.length() > 0)
       {
          valid = false;
-         FacesMessages.instance().addToControl("human", "You are not a human being!");
+         FacesMessages.instance().add(StatusMessage.Severity.ERROR, "You have filled a field that was not meant for humans.");
+         humanField = null;
       }
 
    }

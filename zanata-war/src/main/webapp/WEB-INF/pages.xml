@@ -94,6 +94,11 @@
     <param name="continue" value="#{userRedirect.encodedUrl}" />
     <action execute="#{breadcrumbs.clear}"/>
     <action execute="#{breadcrumbs.addLocation('', messages['jsf.Login'])}"/>
+    <navigation>
+      <rule if="#{identity.loggedIn}">
+        <redirect view-id="/dashboard/home.xhtml" />
+      </rule>
+    </navigation>
     <navigation from-action="#{loginAction.login}">
       <rule if="#{authenticationManager.authenticated and authenticationManager.newUser}">
         <redirect view-id="/profile/edit.xhtml" />
