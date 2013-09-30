@@ -36,6 +36,7 @@
     <ds.jndi.name>zanataDatasource</ds.jndi.name>
     <!--<ds.hibernate.dialect>org.hibernate.dialect.H2Dialect</ds.hibernate.dialect>-->
     <ds.driver.class>org.h2.Driver</ds.driver.class>
+    <!--<ds.connection.url>jdbc:h2:file:${project.build.directory}/h2/zanata;AUTO_SERVER=TRUE;</ds.connection.url>-->
     <ds.connection.url>jdbc:h2:file:${project.build.directory}/h2/zanata;AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=FALSE</ds.connection.url>
     <ds.username>sa</ds.username>
     <ds.password />
@@ -63,7 +64,7 @@
     </cargo.debug.jvm.args>
     <!-- this property can be used to control what test needs to be run by failsafe -->
     <include.test.patterns>**/AggregateTestSuite.java</include.test.patterns>
-    <document.storage.directory>${project.build.directory}/zanata-documents</document.storage.directory>
+    <hibernate.search.default.indexBase>${project.build.directory}/zanataindex</hibernate.search.default.indexBase>
   </properties>
 
   <dependencies>
@@ -341,6 +342,14 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.jboss.as</groupId>
+      <artifactId>jboss-as-ejb-client-bom</artifactId>
+      <version>7.1.1.Final</version>
+      <type>pom</type>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
   <profiles>
@@ -381,7 +390,7 @@
                 <systemProperties>
                   <ehcache.disk.store.dir>${project.build.directory}/ehcache</ehcache.disk.store.dir>
                   <jboss.server.log.threshold>WARN</jboss.server.log.threshold>
-                  <hibernate.search.default.indexBase>${project.build.directory}/zanataindex</hibernate.search.default.indexBase>
+                  <hibernate.search.default.indexBase>${hibernate.search.default.indexBase}</hibernate.search.default.indexBase>
                 </systemProperties>
               </container>
 

@@ -83,7 +83,7 @@
       <property name="hibernate.search.default.directory_provider"
         value="org.hibernate.search.store.impl.FSDirectoryProvider" />
       <property name="hibernate.search.default.indexBase"
-        value="/tmp/zanatasearchindex" />
+        value="${hibernate.search.default.indexBase}" />
       <property name="hibernate.search.lucene_version" value="LUCENE_35" />
       <property name="hibernate.search.worker.batch_size" value="50" />
 

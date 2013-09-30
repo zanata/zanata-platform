@@ -62,7 +62,7 @@ public class UploadTest {
     public void before() {
         new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
         documentStorageDirectory =
-                PropertiesHolder.getProperty("document.storage.directory")
+                CleanDocumentStorageRule.getDocumentStoragePath()
                         .concat(File.separator).concat("documents")
                         .concat(File.separator);
         assumeFalse("", new File(documentStorageDirectory).exists());
