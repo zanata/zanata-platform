@@ -7,14 +7,20 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich"
                 xmlns:a4j="http://richfaces.org/a4j"
-                template="../WEB-INF/template/template.xhtml">
+                template="../WEB-INF/template/template_nobanner.xhtml">
 
   <ui:define name="page_title">#{messages['jsf.Login']}</ui:define>
   <ui:define name="center_content">
+
+    <div class="header__logo-only">
+      <s:link view="/home.xhtml" propagation="none" id="home">
+        <img src="#{applicationConfiguration.webAssetsUrl}/logo.svg" alt="Zanata"/>
+      </s:link>
+    </div>
+
     <div class="g--centered">
-      <div class="g__item #{applicationConfiguration.multiAuth ? 'l--constrain-medium l--constrain-small-m' : 'l--constrain-smal'}">
-        <div class="l--push-v-1">
-          <h1 class="l--push-all-0 beta">Log In</h1>
+      <div class="g__item #{applicationConfiguration.multiAuth ? 'l--constrain-medium l--constrain-small-m' : 'l--constrain-small'}">
+        <div class="l--push-v-2">
 
           <div class="g">
             <s:div styleClass="l--push-top-half g__item #{applicationConfiguration.multiAuth ? 'w--7-12 w--1-m' : ''}"
@@ -40,7 +46,7 @@
                 <h:inputSecret id="password" value="#{loginAction.password}" tabindex="2"/>
 
                 <div class="l--push-top-1">
-                  <h:commandButton id="loginButton" action="#{loginAction.login}" value="Log In" styleClass="button--primary button-full"/>
+                  <h:commandButton id="loginButton" action="#{loginAction.login}" value="Log In" styleClass="button--primary button--full"/>
                   <div class="txt--align-center txt--align-center-s l--push-top-half">
                     #{messages['jsf.login.DontHaveAnAccount.label']} <s:link view="/account/register.xhtml" value="#{messages['jsf.SignUp']}"/>
                   </div>

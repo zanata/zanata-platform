@@ -8,14 +8,20 @@
                 xmlns:rich="http://richfaces.org/rich"
                 xmlns:a4j="http://richfaces.org/a4j"
                 xmlns:richext="http://java.sun.com/jsf/composite/richext"
-                template="../WEB-INF/template/template.xhtml">
+                template="../WEB-INF/template/template_nobanner.xhtml">
 
   <ui:define name="page_title">#{messages['jsf.Register']}</ui:define>
   <ui:define name="center_content">
+
+    <div class="header__logo-only">
+      <s:link view="/home.xhtml" propagation="none" id="home">
+        <img src="#{applicationConfiguration.webAssetsUrl}/logo.svg" alt="Zanata"/>
+      </s:link>
+    </div>
+
     <div class="g--centered">
       <div class="g__item #{applicationConfiguration.multiAuth ? 'l--constrain-medium l--constrain-small-m' : 'l--constrain-small'}">
         <div class="l--push-v-2">
-          <h1 class="l--push-all-0 beta">#{messages['jsf.SignUp']}</h1>
 
           <div class="g">
             <s:div styleClass="l--push-top-half g__item #{applicationConfiguration.multiAuth ? 'w--7-12 w--1-m' : ''}"
