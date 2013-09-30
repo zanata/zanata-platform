@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog
+<databaseChangeLog 
 	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
 						http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
-
+    
     <changeSet author="sflaniga@redhat.com" id="1">
 
     	<validCheckSum>cfb156591044f08e333d7ca2d5638db3</validCheckSum>
 
     	<comment>remove HCommunity tables</comment>
-
+    	
     	<dropForeignKeyConstraint
     		constraintName="FK8BEBF03860C55B1B"
     		baseTableName="HCommunity_Member"/>

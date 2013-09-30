@@ -12,12 +12,12 @@
             <column name="defaultProjectType" type="varchar(255)"/>
         </addColumn>
     </changeSet>
-
+    
     <changeSet id="2" author="alex.eng@redhat.com">
         <comment>drop projecttype column in HProject</comment>
         <dropColumn tableName="HProject" columnName="projecttype"/>
     </changeSet>
-
+    
     <changeSet id="3" author="alex.eng@redhat.com">
         <comment>Add projectType column to HProjectIteration</comment>
         <addColumn tableName="HProjectIteration">
@@ -53,9 +53,9 @@
                 <constraints nullable="false" />
             </column>
         </createTable>
-        <addPrimaryKey tableName = "HProject_Validation"
+        <addPrimaryKey tableName = "HProject_Validation" 
 			columnNames = "projectId, validation"/>
-        <addForeignKeyConstraint constraintName="FK_HProject_Validation_HProject"
+        <addForeignKeyConstraint constraintName="FK_HProject_Validation_HProject" 
 			referencedTableName="HProject" referencedColumnNames="id"
 			baseTableName="HProject_Validation" baseColumnNames="projectId"/>
     </changeSet>
@@ -66,7 +66,7 @@
             <column name="overrideValidations" type="boolean" defaultValueBoolean="false"/>
         </addColumn>
     </changeSet>
-
+    
     <changeSet id="6" author="alex.eng@redhat.com">
         <comment>Add HProjectIteration_Validation table.</comment>
         <createTable tableName="HProjectIteration_Validation">
@@ -77,20 +77,20 @@
                 <constraints nullable="false" />
             </column>
         </createTable>
-        <addPrimaryKey tableName = "HProjectIteration_Validation"
+        <addPrimaryKey tableName = "HProjectIteration_Validation" 
 			columnNames = "projectIterationId, validation"/>
-        <addForeignKeyConstraint constraintName="FK_HProjectIteration_Validation_HProjectIteration"
+        <addForeignKeyConstraint constraintName="FK_HProjectIteration_Validation_HProjectIteration" 
 			referencedTableName="HProjectIteration" referencedColumnNames="id"
 			baseTableName="HProjectIteration_Validation" baseColumnNames="projectIterationId"/>
     </changeSet>
-
+    
     <changeSet id="7" author="alex.eng@redhat.com">
         <comment>Add overrideValidations column to HProjectIteration</comment>
         <addColumn tableName="HProjectIteration">
             <column name="overrideValidations" type="boolean" defaultValueBoolean="false"/>
         </addColumn>
     </changeSet>
-
+    
     <changeSet id="8" author="alex.eng@redhat.com">
         <comment>Add creationDate column to HAccountActivationKey</comment>
         <addColumn tableName="HAccountActivationKey">
