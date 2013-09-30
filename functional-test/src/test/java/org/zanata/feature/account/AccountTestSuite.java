@@ -22,6 +22,7 @@ package org.zanata.feature.account;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.zanata.feature.googleopenid.GoogleOpenIDTest;
 
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
@@ -33,7 +34,7 @@ import org.junit.runners.Suite;
       UsernameValidationTest.class,
       ValidEmailAddressTest.class,
       InvalidEmailAddressTest.class,
-      OpenIDTest.class
+      GoogleOpenIDTest.class
 })
 public class AccountTestSuite
 {

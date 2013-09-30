@@ -67,11 +67,16 @@ public class AbstractPage
       return driver.getTitle();
    }
 
+   public String getUrl()
+   {
+      return driver.getCurrentUrl();
+   }
+
    public FluentWait<WebDriver> waitForTenSec()
    {
       return ajaxWaitForTenSec;
    }
-   
+
    protected void clickAndCheckErrors(WebElement button)
    {
       button.click();

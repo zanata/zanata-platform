@@ -18,17 +18,20 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.feature.account;
+package org.zanata.feature.googleopenid;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.BasicAcceptanceTest;
+import org.zanata.feature.DetailedTest;
+import org.zanata.page.googleaccount.GoogleAccountPage;
+import org.zanata.page.googleaccount.GoogleManagePermissionsPage;
 import org.zanata.page.utility.HomePage;
 import org.zanata.util.ResetDatabaseRule;
 import org.zanata.workflow.BasicWorkFlow;
+import org.zanata.workflow.GoogleWorkFlow;
 import org.zanata.workflow.RegisterWorkFlow;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -40,32 +43,49 @@ import static org.zanata.util.GoogleSignIn.googleIsReachable;
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Category(BasicAcceptanceTest.class)
-public class OpenIDTest
+@Category(DetailedTest.class)
+public class GoogleOpenIDTest
 {
 
    @ClassRule
    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
 
+   private String googleUsername1 = "zanata.test.1";
+   private String googlePassword1;
+
    @Before
    public void before()
    {
+      googlePassword1 = getSignIn(googleUsername1);
+      assumeFalse("Environment has Google login data", googlePassword1.isEmpty());
+      assumeTrue("Google can be reached", googleIsReachable());
+
       new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
+
+      GoogleManagePermissionsPage googleManagePermissionsPage =
+            new GoogleWorkFlow().resetGooglePermissions(googleUsername1, googlePassword1);
+
+      assumeFalse("Google contains localhost permissions",
+            googleManagePermissionsPage.pageContainsPermission("localhost"));
+
+      GoogleAccountPage googleAccountPage = new GoogleWorkFlow().forceLogout();
+
+      assumeTrue(googleAccountPage.getUrl().contains("/Login"));
+
    }
 
    @Test
    public void signInWithGoogleOpenID()
    {
-      assumeFalse("Environment has Google login data", getSignIn("zanata.test.1").isEmpty());
-      assumeTrue("Google can be reached", googleIsReachable());
+      String googleUsername = googleUsername1;
+      String googlePassword = googlePassword1;
 
-      String googleUsername = "zanata.test.1";
-      String googlePassword = getSignIn(googleUsername);
       HomePage homePage = new RegisterWorkFlow().registerGoogleOpenID(
             "Zanata OpenID",
             "openidtest",
             googlePassword,
             googleUsername.concat("@gmail.com"));
+
       assertThat("The registration message is shown", homePage.getNotificationMessage(),
             Matchers.equalTo("You will soon receive an email with a link to activate your account."));
    }

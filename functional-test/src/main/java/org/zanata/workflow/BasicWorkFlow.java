@@ -14,6 +14,12 @@ public class BasicWorkFlow extends AbstractWebWorkFlow
       return PageFactory.initElements(driver, pageClass);
    }
 
+   public <P extends AbstractPage> P goToUrl(String url, Class<P> pageClass)
+   {
+      driver.navigate().to(url);
+      return PageFactory.initElements(driver, pageClass);
+   }
+
    private String toUrl(String relativeUrl)
    {
       return hostUrl + removeLeadingSlash(relativeUrl);

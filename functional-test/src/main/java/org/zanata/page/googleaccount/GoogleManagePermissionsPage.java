@@ -18,54 +18,45 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.page.account;
+package org.zanata.page.googleaccount;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.AbstractPage;
 
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-public class GoogleAccountPage extends AbstractPage
+public class GoogleManagePermissionsPage extends AbstractPage
 {
-   @FindBy(id = "Email")
-   private WebElement emailField;
 
-   @FindBy(id = "Passwd")
-   private WebElement passwordField;
-
-   @FindBy(id = "signIn")
-   private WebElement signInButton;
-
-   public GoogleAccountPage(WebDriver driver)
+   public GoogleManagePermissionsPage(WebDriver driver)
    {
       super(driver);
    }
 
-   public GoogleAccountPage enterGoogleEmail(String email)
+   public GoogleManagePermissionsPage removePermission(String permissionName)
    {
-      emailField.sendKeys(email);
-      return new GoogleAccountPage(getDriver());
-   }
-
-   public GoogleAccountPage enterGooglePassword(String password)
-   {
-      passwordField.sendKeys(password);
-      return new GoogleAccountPage(getDriver());
-   }
-
-   public EditProfilePage clickSignIn()
-   {
-      signInButton.click();
-
-      // May return a Permissions request page, if this is the first run
-      if(!getDriver().getTitle().contains("Edit Profile"))
+      if (pageContainsPermission(permissionName))
       {
-         GooglePermissionsPage googlePermissionsPage = new GooglePermissionsPage(getDriver());
-         googlePermissionsPage.acceptPermissions();
+         getDriver().findElement(By.name(permissionName))
+               .findElement(By.cssSelector("input[type='submit']"))
+               .click();
       }
-      return new EditProfilePage(getDriver());
+      return new GoogleManagePermissionsPage(getDriver());
+   }
+
+   public boolean pageContainsPermission(String permissionName)
+   {
+      try
+      {
+         return getDriver().findElement(By.name(permissionName)).isDisplayed();
+      }
+      catch(NoSuchElementException nsee)
+      {
+         // Permission not listed
+         return false;
+      }
    }
 }
