@@ -101,13 +101,9 @@ public class TargetContentsPresenterTest {
             .<String> builder().add("a").build();
     private static final List<String> CACHED_TARGETS = ImmutableList
             .<String> builder().add("b").build();
-    // @formatter:off
-   List<TransUnit> currentPageRows = ImmutableList.<TransUnit>builder()
-         .add(makeTransUnit(2))
-         .add(makeTransUnit(3))
-         .add(makeTransUnit(6))
-         .build();
-   // @formatter:on
+    List<TransUnit> currentPageRows = ImmutableList.<TransUnit> builder()
+            .add(makeTransUnit(2)).add(makeTransUnit(3)).add(makeTransUnit(6))
+            .build();
 
     @Mock
     private EventBus eventBus;

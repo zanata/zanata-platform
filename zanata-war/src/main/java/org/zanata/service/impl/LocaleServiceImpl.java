@@ -73,22 +73,15 @@ public class LocaleServiceImpl implements LocaleService {
     public LocaleServiceImpl() {
     }
 
-    // @formatter:off
-   public LocaleServiceImpl(
-         LocaleDAO localeDAO,
-         ProjectDAO projectDAO,
-         ProjectIterationDAO projectIterationDAO,
-         PersonDAO personDAO,
-         TextFlowTargetDAO textFlowTargetDAO
-         )
-   {
-      setLocaleDAO(localeDAO);
-      setProjectDAO(projectDAO);
-      setProjectIterationDAO(projectIterationDAO);
-      setPersonDAO(personDAO);
-      setTextFlowTargetDAO(textFlowTargetDAO);
-   }
-   // @formatter:on
+    public LocaleServiceImpl(LocaleDAO localeDAO, ProjectDAO projectDAO,
+            ProjectIterationDAO projectIterationDAO, PersonDAO personDAO,
+            TextFlowTargetDAO textFlowTargetDAO) {
+        setLocaleDAO(localeDAO);
+        setProjectDAO(projectDAO);
+        setProjectIterationDAO(projectIterationDAO);
+        setPersonDAO(personDAO);
+        setTextFlowTargetDAO(textFlowTargetDAO);
+    }
 
     @In
     public void setTextFlowTargetDAO(TextFlowTargetDAO textFlowTargetDAO) {

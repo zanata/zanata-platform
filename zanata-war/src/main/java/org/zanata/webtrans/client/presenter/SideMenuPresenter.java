@@ -61,16 +61,13 @@ public class SideMenuPresenter extends WidgetPresenter<SideMenuDisplay>
     private boolean isExpended = false;
 
     @Inject
-    // @formatter:off
-   public SideMenuPresenter(SideMenuDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher,
-         OptionsPresenter optionsPresenter,
-                            ValidationOptionsPresenter validationOptionsPresenter,
-                            WorkspaceUsersPresenter workspaceUsersPresenter,
-                            NotificationPresenter notificationPresenter,
-                            UserSessionService sessionService,
-                            UserWorkspaceContext userWorkspaceContext)
-   // @formatter:on
-    {
+    public SideMenuPresenter(SideMenuDisplay display, EventBus eventBus,
+            CachingDispatchAsync dispatcher, OptionsPresenter optionsPresenter,
+            ValidationOptionsPresenter validationOptionsPresenter,
+            WorkspaceUsersPresenter workspaceUsersPresenter,
+            NotificationPresenter notificationPresenter,
+            UserSessionService sessionService,
+            UserWorkspaceContext userWorkspaceContext) {
         super(display, eventBus);
         this.optionsPresenter = optionsPresenter;
         this.validationOptionsPresenter = validationOptionsPresenter;

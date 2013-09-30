@@ -141,18 +141,17 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long> {
     @SuppressWarnings("unchecked")
     public List<HTextFlowTarget> findAllTranslations(HDocument document,
             LocaleId localeId) {
-        // @formatter:off
-      Query q = getSession().createQuery(
-            "select t from HTextFlowTarget t where " +
-            "t.textFlow.document =:document " +
-            "and t.locale.localeId =:localeId " +
-            "order by t.textFlow.pos");
-      q.setParameter("document", document);
-      q.setParameter("localeId", localeId);
-      q.setCacheable(false);
-      q.setComment("TextFlowTargetDAO.findAllTranslations");
-      return q.list();
-      // @formatter:on
+        Query q =
+                getSession().createQuery(
+                        "select t from HTextFlowTarget t where "
+                                + "t.textFlow.document =:document "
+                                + "and t.locale.localeId =:localeId "
+                                + "order by t.textFlow.pos");
+        q.setParameter("document", document);
+        q.setParameter("localeId", localeId);
+        q.setCacheable(false);
+        q.setComment("TextFlowTargetDAO.findAllTranslations");
+        return q.list();
     }
 
     /**
@@ -165,20 +164,18 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long> {
     @SuppressWarnings("unchecked")
     public List<HTextFlowTarget> findTranslations(HDocument document,
             HLocale locale) {
-        // @formatter:off
-      Query q = getSession().createQuery(
-            "select t " +
-                  "from HTextFlowTarget t where " +
-                  "t.textFlow.document =:document " +
-                  "and t.locale =:locale " +
-                  "and t.textFlow.obsolete=false " +
-                  "order by t.textFlow.pos");
-      q.setParameter("document", document);
-      q.setParameter("locale", locale);
-      q.setCacheable(true);
-      q.setComment("TextFlowTargetDAO.findTranslations");
-      return q.list();
-      // @formatter:on
+        Query q =
+                getSession().createQuery(
+                        "select t " + "from HTextFlowTarget t where "
+                                + "t.textFlow.document =:document "
+                                + "and t.locale =:locale "
+                                + "and t.textFlow.obsolete=false "
+                                + "order by t.textFlow.pos");
+        q.setParameter("document", document);
+        q.setParameter("locale", locale);
+        q.setCacheable(true);
+        q.setComment("TextFlowTargetDAO.findTranslations");
+        return q.list();
     }
 
     /**
@@ -295,7 +292,9 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long> {
         HTextFlowTarget hTextFlowTarget =
                 (HTextFlowTarget) getSession()
                         .createQuery(
-                                "select tft from HTextFlowTarget tft where tft.textFlow = :textFlow and tft.locale = :locale")
+                                "select tft from HTextFlowTarget tft "
+                                        + "where tft.textFlow = :textFlow "
+                                        + "and tft.locale = :locale")
                         .setParameter("textFlow", hTextFlow)
                         .setParameter("locale", hLocale)
                         .setComment("TextFlowTargetDAO.getTextFlowTarget")
@@ -308,7 +307,9 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long> {
         HTextFlowTarget hTextFlowTarget =
                 (HTextFlowTarget) getSession()
                         .createQuery(
-                                "select tft from HTextFlowTarget tft where tft.textFlow.id = :hTextFlowId and tft.locale.localeId = :localeId")
+                                "select tft from HTextFlowTarget tft "
+                                        + "where tft.textFlow.id = :hTextFlowId "
+                                        + "and tft.locale.localeId = :localeId")
                         .setParameter("hTextFlowId", hTextFlowId)
                         .setParameter("localeId", localeId)
                         .setComment("TextFlowTargetDAO.getTextFlowTarget")
@@ -321,7 +322,9 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long> {
         HTextFlowTarget hTextFlowTarget =
                 (HTextFlowTarget) getSession()
                         .createQuery(
-                                "select tft from HTextFlowTarget tft where tft.textFlow = :textFlow and tft.locale.localeId = :localeId")
+                                "select tft from HTextFlowTarget tft "
+                                        + "where tft.textFlow = :textFlow "
+                                        + "and tft.locale.localeId = :localeId")
                         .setParameter("textFlow", hTextFlow)
                         .setParameter("localeId", localeId)
                         .setComment("TextFlowTargetDAO.getTextFlowTarget")
@@ -331,9 +334,10 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long> {
 
     public Long getTextFlowTargetId(HTextFlow hTextFlow, LocaleId localeId) {
         Query q =
-                getSession()
-                        .createQuery(
-                                "select tft.id from HTextFlowTarget tft where tft.textFlow = :textFlow and tft.locale.localeId = :localeId");
+                getSession().createQuery(
+                        "select tft.id from HTextFlowTarget tft "
+                                + "where tft.textFlow = :textFlow "
+                                + "and tft.locale.localeId = :localeId");
         q.setParameter("textFlow", hTextFlow);
         q.setParameter("localeId", localeId);
         q.setComment("TextFlowTargetDAO.getTextFlowTargetId");

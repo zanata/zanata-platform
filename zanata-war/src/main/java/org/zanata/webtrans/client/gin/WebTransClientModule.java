@@ -255,7 +255,7 @@ public class WebTransClientModule extends AbstractPresenterModule {
     @Named("distinctColor")
     public List<String> distinctColorList() {
         // @formatter:off
-      return ImmutableList.<String>builder()
+        return ImmutableList.<String>builder()
             .add(distinctColor(240, 163, 255))
             .add(distinctColor(0, 117, 220))
             .add(distinctColor(153, 63, 0))
@@ -282,7 +282,7 @@ public class WebTransClientModule extends AbstractPresenterModule {
             .add(distinctColor(255, 255, 0))
             .add(distinctColor(255, 80, 5))
             .build();
-      // @formatter:on
+        // @formatter:on
     }
 
     private static String distinctColor(int rndRedColor, int rndGreenColor,

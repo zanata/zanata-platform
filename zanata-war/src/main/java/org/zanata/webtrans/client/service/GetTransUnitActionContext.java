@@ -215,7 +215,7 @@ public class GetTransUnitActionContext {
     @Override
     public String toString() {
         // @formatter:off
-      return Objects.toStringHelper(this).
+        return Objects.toStringHelper(this).
             add("document", document).
             add("findMessage", findMessage).
             add("offset", offset).
@@ -228,7 +228,7 @@ public class GetTransUnitActionContext {
             add("filterHasError", filterHasError).
             add("targetTransUnitId", targetTransUnitId).
             toString();
-      // @formatter:on
+        // @formatter:on
     }
 
     /**
@@ -259,7 +259,7 @@ public class GetTransUnitActionContext {
         }
 
         // @formatter:off
-      return filterFuzzy != newContext.filterFuzzy
+        return filterFuzzy != newContext.filterFuzzy
             || filterTranslated != newContext.filterTranslated
             || filterUntranslated != newContext.filterUntranslated
             || filterApproved != newContext.filterApproved
@@ -268,7 +268,7 @@ public class GetTransUnitActionContext {
             || offset != newContext.offset
             || !document.equals(newContext.document)
             || !Objects.equal(findMessage, newContext.findMessage);
-      // @formatter:on
+        // @formatter:on
     }
 
     public boolean acceptAll() {

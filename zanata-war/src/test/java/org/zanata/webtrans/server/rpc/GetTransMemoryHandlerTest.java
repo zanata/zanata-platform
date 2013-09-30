@@ -82,9 +82,9 @@ public class GetTransMemoryHandlerTest extends ZanataDbunitJpaTest {
                         .autowire(TranslationMemoryQueryServiceImpl.class);
         translationMemoryQueryService = spy(queryService);
         // @formatter:off
-      autoWireInstance.use("translationMemoryQueryService", translationMemoryQueryService);
-      handler = autoWireInstance.autowire(GetTransMemoryHandler.class);
-      // @formatter:on
+        autoWireInstance.use("translationMemoryQueryService", translationMemoryQueryService);
+        handler = autoWireInstance.autowire(GetTransMemoryHandler.class);
+        // @formatter:on
         when(localeService.getByLocaleId(targetLocaleId.getId())).thenReturn(
                 getEm().find(HLocale.class, 3L));
     }

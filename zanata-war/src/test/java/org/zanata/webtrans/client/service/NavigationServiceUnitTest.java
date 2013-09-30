@@ -108,14 +108,14 @@ public class NavigationServiceUnitTest {
 
     private void initData() {
         // @formatter:off
-      data = Lists.newArrayList(
+        data = Lists.newArrayList(
             TestFixture.makeTransUnit(1, ContentState.Approved),
             TestFixture.makeTransUnit(2, ContentState.Approved),
             TestFixture.makeTransUnit(3, ContentState.NeedReview),
             TestFixture.makeTransUnit(4, ContentState.New),
             TestFixture.makeTransUnit(5, ContentState.Approved)
-      );
-      // @formatter:on
+        );
+        // @formatter:on
         idStateMap = Maps.newHashMap();
         idIndexList = Lists.newArrayList();
         for (TransUnit transUnit : data) {

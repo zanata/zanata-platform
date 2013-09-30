@@ -166,75 +166,68 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay> {
             }
         });
 
-        // @formatter:off
-      KeyShortcut hideShortcutSummaryShortcut = KeyShortcut.Builder.builder()
-            .addKey(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ESCAPE))
-            .setContext(ShortcutContext.Application)
-            .setDescription(messages.closeShortcutView())
-            .setKeyEvent(KeyEvent.KEY_DOWN)
-            .setPreventDefault(true)
-            .setStopPropagation(true)
-            .setHandler(new KeyShortcutEventHandler()
-            {
-               @Override
-               public void onKeyShortcut(KeyShortcutEvent event)
-               {
-                  if (display.isShowing())
-                  {
-                     display.hide(true);
-                  }
-               }
-            }).build();
-      register(hideShortcutSummaryShortcut);
+        KeyShortcut hideShortcutSummaryShortcut =
+                KeyShortcut.Builder
+                        .builder()
+                        .addKey(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ESCAPE))
+                        .setContext(ShortcutContext.Application)
+                        .setDescription(messages.closeShortcutView())
+                        .setKeyEvent(KeyEvent.KEY_DOWN).setPreventDefault(true)
+                        .setStopPropagation(true)
+                        .setHandler(new KeyShortcutEventHandler() {
+                            @Override
+                            public void onKeyShortcut(KeyShortcutEvent event) {
+                                if (display.isShowing()) {
+                                    display.hide(true);
+                                }
+                            }
+                        }).build();
+        register(hideShortcutSummaryShortcut);
 
-      // could try to use ?, although this is not as simple as passing character
-      // '?'
-      KeyShortcut showShortcutSummaryShortcut = KeyShortcut.Builder.builder()
-            .addKey(new Keys(Keys.ALT_KEY, 'Y'))
-            .setContext(ShortcutContext.Application)
-            .setDescription(messages.showAvailableKeyShortcuts())
-            .setHandler(new KeyShortcutEventHandler()
-      {
-         @Override
-         public void onKeyShortcut(KeyShortcutEvent event)
-         {
-            showShortcuts();
-         }
-      }).build();
-      register(showShortcutSummaryShortcut);
+        // could try to use ?, although this is not as simple as passing
+        // character
+        // '?'
+        KeyShortcut showShortcutSummaryShortcut =
+                KeyShortcut.Builder.builder()
+                        .addKey(new Keys(Keys.ALT_KEY, 'Y'))
+                        .setContext(ShortcutContext.Application)
+                        .setDescription(messages.showAvailableKeyShortcuts())
+                        .setHandler(new KeyShortcutEventHandler() {
+                            @Override
+                            public void onKeyShortcut(KeyShortcutEvent event) {
+                                showShortcuts();
+                            }
+                        }).build();
+        register(showShortcutSummaryShortcut);
 
-      // TODO use configured value (just use a different Keys object)
-      KeyShortcut attentionKeyShortcut = KeyShortcut.Builder.builder()
-            .setDescription("Activate attention mode.")
-            .addKey(new Keys(Keys.ALT_KEY, 'X'))
-            .setContext(ShortcutContext.Application)
-            .setKeyEvent(KeyEvent.KEY_DOWN)
-            .setHandler(new KeyShortcutEventHandler()
-      {
-         @Override
-         public void onKeyShortcut(KeyShortcutEvent event)
-         {
-            setAttentionMode(true);
-         }
-      }).build();
-      attentionShortcutHandle = register(attentionKeyShortcut);
+        // TODO use configured value (just use a different Keys object)
+        KeyShortcut attentionKeyShortcut =
+                KeyShortcut.Builder.builder()
+                        .setDescription("Activate attention mode.")
+                        .addKey(new Keys(Keys.ALT_KEY, 'X'))
+                        .setContext(ShortcutContext.Application)
+                        .setKeyEvent(KeyEvent.KEY_DOWN)
+                        .setHandler(new KeyShortcutEventHandler() {
+                            @Override
+                            public void onKeyShortcut(KeyShortcutEvent event) {
+                                setAttentionMode(true);
+                            }
+                        }).build();
+        attentionShortcutHandle = register(attentionKeyShortcut);
 
-      KeyShortcut cancelAttentionShortcut = KeyShortcut.Builder.builder()
-            .setDescription("Deactivate attention mode.")
-            .addAttentionKey(new Keys(KeyCodes.KEY_ESCAPE))
-            .setContext(ShortcutContext.Application)
-            .setKeyEvent(KeyEvent.KEY_DOWN)
-            .setHandler(new KeyShortcutEventHandler()
-         {
-            @Override
-            public void onKeyShortcut(KeyShortcutEvent event)
-            {
-               setAttentionMode(false);
-            }
-         }).build();
-      register(cancelAttentionShortcut);
-
-      // @formatter:on
+        KeyShortcut cancelAttentionShortcut =
+                KeyShortcut.Builder.builder()
+                        .setDescription("Deactivate attention mode.")
+                        .addAttentionKey(new Keys(KeyCodes.KEY_ESCAPE))
+                        .setContext(ShortcutContext.Application)
+                        .setKeyEvent(KeyEvent.KEY_DOWN)
+                        .setHandler(new KeyShortcutEventHandler() {
+                            @Override
+                            public void onKeyShortcut(KeyShortcutEvent event) {
+                                setAttentionMode(false);
+                            }
+                        }).build();
+        register(cancelAttentionShortcut);
 
         Log.info("creating attention timer");
         attentionTimer = timers.create(new TimedAction() {

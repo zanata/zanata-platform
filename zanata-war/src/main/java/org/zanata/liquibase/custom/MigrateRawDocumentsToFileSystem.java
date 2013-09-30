@@ -60,11 +60,9 @@ public class MigrateRawDocumentsToFileSystem implements CustomTaskChange {
 
     private static final String CONTENTS_SQL =
             "select fileId, content from HRawDocumentContent";
-    //@formatter:off
-   private static final String ID_TYPE_SQL = "select d.documentId, rd.type" +
-                                             " from HRawDocument rd, HDocument_RawDocument d" +
-                                             " where d.rawDocumentId = rd.id and rd.fileId = ?";
-   //@formatter:on
+    private static final String ID_TYPE_SQL = "select d.documentId, rd.type"
+            + " from HRawDocument rd, HDocument_RawDocument d"
+            + " where d.rawDocumentId = rd.id and rd.fileId = ?";
     private static final String UPDATE_LOCATION_SQL =
             "update HRawDocument set fileId = ? where fileId = ?";
     private static final String DELETE_OLD_CONTENT_SQL =
