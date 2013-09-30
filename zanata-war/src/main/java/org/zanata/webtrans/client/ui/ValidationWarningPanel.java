@@ -24,10 +24,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.zanata.webtrans.client.keys.ShortcutContext;
+import org.zanata.webtrans.client.keys.TimedAction;
+import org.zanata.webtrans.client.keys.Timer;
+import org.zanata.webtrans.client.keys.TimerFactory;
 import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
+import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.shared.model.DocumentInfo;
+import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.ValidationAction;
 
@@ -60,7 +65,11 @@ public class ValidationWarningPanel extends ShortcutContextAwareDialogBox
 
     private DocumentInfo documentInfo;
 
+    private List<String> targets;
+
     private TargetContentsDisplay.Listener listener;
+
+    private NavigationService navigationService;
 
     @UiField
     UnorderedListWidget translations;
@@ -74,9 +83,14 @@ public class ValidationWarningPanel extends ShortcutContextAwareDialogBox
     @UiField(provided = true)
     Button saveAsFuzzy;
 
+    private Timer timer;
+
+    private static int CHECK_EDITOR_SELECTED_DURATION = 500;
+
     @Inject
     public ValidationWarningPanel(TableEditorMessages messages,
-            KeyShortcutPresenter keyShortcutPresenter) {
+            KeyShortcutPresenter keyShortcutPresenter,
+            final NavigationService navigationService, final TimerFactory timer) {
         super(false, true, ShortcutContext.ValidationWarningPopup,
                 keyShortcutPresenter);
 
@@ -87,9 +101,34 @@ public class ValidationWarningPanel extends ShortcutContextAwareDialogBox
 
         HTMLPanel container = uiBinder.createAndBindUi(this);
 
+        this.navigationService = navigationService;
+
+        this.timer = timer.create(new TimedAction() {
+            @Override
+            public void run() {
+                copyTranslationToEditor();
+            }
+        });
+
         setGlassEnabled(true);
         setWidget(container);
         hide();
+    }
+
+    /**
+     * Check if the editor is ready and selected. See gotoRow in
+     * TargetContentsPresenter
+     */
+    private void copyTranslationToEditor() {
+        TransUnit selectedTransUnit = navigationService.getSelectedOrNull();
+        if (selectedTransUnit != null
+                && selectedTransUnit.getId().equals(transUnitId)) {
+            timer.cancel();
+            listener.copyDataToSelectedEditor(targets);
+            hide();
+        } else {
+            timer.schedule(CHECK_EDITOR_SELECTED_DURATION);
+        }
     }
 
     public void setListener(TargetContentsDisplay.Listener listener) {
@@ -108,8 +147,8 @@ public class ValidationWarningPanel extends ShortcutContextAwareDialogBox
         returnToEditor.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                hide();
                 listener.gotoRow(documentInfo, transUnitId);
+                timer.schedule(CHECK_EDITOR_SELECTED_DURATION);
             }
         });
     }
@@ -120,12 +159,12 @@ public class ValidationWarningPanel extends ShortcutContextAwareDialogBox
             Map<ValidationAction, List<String>> errorMessages) {
         this.transUnitId = transUnitId;
         this.documentInfo = documentInfo;
-        refreshView(targets, errorMessages);
+        this.targets = targets;
+        refreshView(errorMessages);
         center();
     }
 
-    private void refreshView(List<String> targets,
-            Map<ValidationAction, List<String>> errorMessages) {
+    private void refreshView(Map<ValidationAction, List<String>> errorMessages) {
         translations.clear();
         errorList.clear();
 

@@ -112,6 +112,8 @@ public interface TargetContentsDisplay extends WidgetDisplay, HasTransUnitId,
         void rejectTranslation(TransUnitId id);
 
         void gotoRow(DocumentInfo documentInfo, TransUnitId transUnitId);
+
+        void copyDataToSelectedEditor(List<String> targets);
     }
 
     enum EditingState {
