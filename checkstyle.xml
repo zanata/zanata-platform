@@ -26,6 +26,7 @@
   <module name="FileTabCharacter" />
 
   <module name="TreeWalker">
+    <module name="LeftCurly"/>
     <module name="LineLength">
       <property name="severity"
         value="warning"/>
