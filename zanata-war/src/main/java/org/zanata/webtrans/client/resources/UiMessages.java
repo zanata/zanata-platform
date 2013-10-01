@@ -189,4 +189,7 @@ public interface UiMessages extends Messages
 
    @DefaultMessage("Highlight matches")
    String diffModeAsHighlight();
+
+   @DefaultMessage("Translation that contained validation warning or error.")
+   String invalidTooltip();
 }

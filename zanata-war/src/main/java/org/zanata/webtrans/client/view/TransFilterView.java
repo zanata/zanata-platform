@@ -76,6 +76,7 @@ public class TransFilterView extends Composite implements TransFilterDisplay
       hintMessage = messages.findSourceOrTargetString();
       searchField.setTextBoxTitle(hintMessage);
       initWidget(uiBinder.createAndBindUi(this));
+      hasErrorChk.setTitle(messages.invalidTooltip());
       getElement().setId("TransFilterView");
    }
 

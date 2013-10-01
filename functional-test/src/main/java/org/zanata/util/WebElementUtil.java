@@ -20,8 +20,7 @@
  */
 package org.zanata.util;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -81,7 +80,6 @@ public class WebElementUtil
          @Override
          public List<TableRow> apply(WebDriver webDriver)
          {
-
             List<WebElement> rows = table.findElements(By.xpath(".//tbody[1]/tr"));
             return ImmutableList.copyOf(Lists.transform(rows, WebElementTableRowFunction.FUNCTION));
          }
@@ -112,6 +110,16 @@ public class WebElementUtil
 
    public static List<String> getColumnContents(WebDriver driver, final By by, final int columnIndex)
    {
+      try
+      {
+         driver.findElement(by);
+      }
+      catch(NoSuchElementException noElement)
+      {
+         // Some pages don't show a table, if there's no items to show
+         return Collections.emptyList();
+      }
+
       return waitForTenSeconds(driver).until(new Function<WebDriver, List<String>>()
       {
          @Override
@@ -132,6 +140,7 @@ public class WebElementUtil
             }));
          }
       });
+
    }
 
    public static List<List<String>> getTwoDimensionList(WebDriver driver, final By by)

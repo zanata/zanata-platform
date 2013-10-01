@@ -24,10 +24,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Cookie;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 import org.openqa.selenium.support.ui.FluentWait;
@@ -141,6 +138,22 @@ public class AbstractPage
             }
          });
       }
+   }
+
+   public Alert switchToAlert()
+   {
+      return waitForTenSec().until(new Function<WebDriver, Alert>() {
+         @Override
+         public Alert apply(WebDriver driver) {
+            try {
+               return getDriver().switchTo().alert();
+            }
+            catch (NoAlertPresentException noAlertPresent)
+            {
+               return null;
+            }
+         }
+      });
    }
 
    protected <P extends AbstractPage> P refreshPageUntil(P currentPage, Predicate<WebDriver> predicate)
