@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
-import org.codehaus.jackson.annotate.JsonWriteNullProperties;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.common.LocaleId;
 import org.zanata.common.Namespaces;
 
@@ -44,7 +44,7 @@ import org.zanata.common.Namespaces;
         "glossaryTerms" })
 @JsonPropertyOrder({ "srcLang", "sourcereference", "glossaryTerms" })
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonWriteNullProperties(false)
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class GlossaryEntry implements Serializable {
     /**
     *

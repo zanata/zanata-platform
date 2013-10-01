@@ -13,7 +13,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
-import org.codehaus.jackson.annotate.JsonWriteNullProperties;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.common.Namespaces;
@@ -24,7 +24,7 @@ import org.zanata.rest.MediaTypes.Format;
 @XmlRootElement(name = "account")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder({ "email", "name", "username", "password" })
-@JsonWriteNullProperties(false)
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class Account implements Serializable, HasMediaType {
 
     private String email;

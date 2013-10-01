@@ -13,7 +13,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
-import org.codehaus.jackson.annotate.JsonWriteNullProperties;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.common.Namespaces;
 import org.zanata.rest.dto.DTOUtil;
 import org.zanata.rest.dto.Extensible;
@@ -29,7 +29,7 @@ import org.zanata.rest.dto.extensions.gettext.TranslationsResourceExtension;
 @XmlRootElement(name = "translations")
 @JsonPropertyOrder({ "links", "extensions", "textFlowTargets" })
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonWriteNullProperties(false)
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class TranslationsResource implements Serializable,
         HasSample<TranslationsResource>,
         Extensible<TranslationsResourceExtension> {

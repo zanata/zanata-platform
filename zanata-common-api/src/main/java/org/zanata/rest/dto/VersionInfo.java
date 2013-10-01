@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonTypeName;
-import org.codehaus.jackson.annotate.JsonWriteNullProperties;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.common.Namespaces;
 
 /**
@@ -18,7 +18,7 @@ import org.zanata.common.Namespaces;
 @XmlType(name = "versionType", propOrder = { "versionNo", "buildTimeStamp" })
 @JsonTypeName(value = "versionType")
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonWriteNullProperties(false)
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public final class VersionInfo implements Serializable {
     private static final long serialVersionUID = 1L;
     private String versionNo;

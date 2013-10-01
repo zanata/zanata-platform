@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
-import org.codehaus.jackson.annotate.JsonWriteNullProperties;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.common.LocaleId;
 import org.zanata.common.Namespaces;
 
@@ -45,7 +45,7 @@ import org.zanata.common.Namespaces;
 @XmlType(name = "glossaryTermType", propOrder = { "comments", "content" })
 @JsonPropertyOrder({ "content", "comments", "locale" })
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonWriteNullProperties(false)
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class GlossaryTerm implements Serializable {
     /**
     *

@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
-import org.codehaus.jackson.annotate.JsonWriteNullProperties;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ResourceType;
@@ -20,7 +20,7 @@ import org.zanata.rest.dto.HasCollectionSample;
 @XmlRootElement(name = "resource-meta")
 @JsonPropertyOrder({ "name", "contentType", "lang", "extensions" })
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonWriteNullProperties(false)
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class ResourceMeta extends AbstractResourceMeta implements
         HasCollectionSample<ResourceMeta> {
     private static final long serialVersionUID = 1L;
