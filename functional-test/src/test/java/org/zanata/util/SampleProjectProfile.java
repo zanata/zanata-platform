@@ -74,7 +74,7 @@ public class SampleProjectProfile {
             // version group
             HIterationGroup.class,
             // project
-            HProjectIteration.class, HProject.class, 
+            HProjectIteration.class, HProject.class,
             HPerson.class, HAccount.class));
         enUSLocale =
                 forLocale(false, LocaleId.EN_US).makeAndPersist(entityManager,

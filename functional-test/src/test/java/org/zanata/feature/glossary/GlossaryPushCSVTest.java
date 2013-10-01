@@ -40,7 +40,7 @@ import java.util.List;
 /**
  * @see <a href="https://tcms.engineering.redhat.com/case/170111/">TCMS test
  *      case 170111</a>
- * 
+ *
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */

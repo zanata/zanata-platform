@@ -24,7 +24,7 @@ public class CleanDocumentStorageRule extends ExternalResource {
     public static void resetFileData() {
         String documentStoragePath = getDocumentStoragePath();
         log.debug("document storage path: {}", documentStoragePath);
-        
+
         File path = new File(documentStoragePath);
         if (path.exists()) {
             try {

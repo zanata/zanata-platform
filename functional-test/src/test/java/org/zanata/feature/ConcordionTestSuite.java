@@ -25,7 +25,7 @@ import org.junit.runner.RunWith;
 
 /**
  * Filter by the Concordion Test category
- * 
+ *
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */

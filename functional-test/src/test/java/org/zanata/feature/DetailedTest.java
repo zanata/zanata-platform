@@ -22,11 +22,11 @@ package org.zanata.feature;
 
 /**
  * Interface for the execution of the detailed tests category.
- * 
+ *
  * Tests that fall under this category exercise features more so than the Basic
  * Acceptance Tests (BAT), but are time constrained and are as such not in the
  * "Long" test collection.
- * 
+ *
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  * @see "http://junit.org/javadoc/4.9/org/junit/experimental/categories/Categories.html"

@@ -29,10 +29,10 @@ import org.zanata.feature.ConcordionTest;
 
 /**
  * This is the index page for startNewProject package.
- * 
+ *
  * @see CreateSampleProjectTestSuite
  * @see IndexPageBuilderExtension
- * 
+ *
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */

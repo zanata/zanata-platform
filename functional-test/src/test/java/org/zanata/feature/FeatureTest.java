@@ -8,9 +8,9 @@ import org.junit.runner.RunWith;
 import org.zanata.concordion.IndexPageBuilderExtension;
 
 /**
- * 
+ *
  * Top level index page.
- * 
+ *
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
