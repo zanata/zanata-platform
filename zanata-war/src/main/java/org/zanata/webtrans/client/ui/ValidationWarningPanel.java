@@ -23,6 +23,9 @@ package org.zanata.webtrans.client.ui;
 import java.util.List;
 import java.util.Map;
 
+import net.customware.gwt.presenter.client.EventBus;
+
+import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.keys.TimedAction;
 import org.zanata.webtrans.client.keys.Timer;
@@ -85,12 +88,15 @@ public class ValidationWarningPanel extends ShortcutContextAwareDialogBox
 
     private Timer timer;
 
+    private final EventBus eventBus;
+
     private static int CHECK_EDITOR_SELECTED_DURATION = 500;
 
     @Inject
     public ValidationWarningPanel(TableEditorMessages messages,
             KeyShortcutPresenter keyShortcutPresenter,
-            final NavigationService navigationService, final TimerFactory timer) {
+            final NavigationService navigationService,
+            final TimerFactory timer, final EventBus eventBus) {
         super(false, true, ShortcutContext.ValidationWarningPopup,
                 keyShortcutPresenter);
 
@@ -102,6 +108,7 @@ public class ValidationWarningPanel extends ShortcutContextAwareDialogBox
         HTMLPanel container = uiBinder.createAndBindUi(this);
 
         this.navigationService = navigationService;
+        this.eventBus = eventBus;
 
         this.timer = timer.create(new TimedAction() {
             @Override
@@ -124,7 +131,7 @@ public class ValidationWarningPanel extends ShortcutContextAwareDialogBox
         if (selectedTransUnit != null
                 && selectedTransUnit.getId().equals(transUnitId)) {
             timer.cancel();
-            listener.copyDataToSelectedEditor(targets);
+            eventBus.fireEvent(new CopyDataToEditorEvent(targets));
             hide();
         } else {
             timer.schedule(CHECK_EDITOR_SELECTED_DURATION);

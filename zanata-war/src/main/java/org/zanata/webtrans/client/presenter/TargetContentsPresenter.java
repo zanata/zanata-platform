@@ -163,10 +163,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
         }
     }
 
-    public void copyDataToSelectedEditor(List<String> targets) {
-        eventBus.fireEvent(new CopyDataToEditorEvent(targets));
-    }
-
     public void gotoRow(DocumentInfo documentInfo, TransUnitId transUnitId) {
         int index = navigationService.findRowIndexById(transUnitId);
         if (index == NavigationService.UNDEFINED) {
