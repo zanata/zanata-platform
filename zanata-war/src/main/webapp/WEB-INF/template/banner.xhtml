@@ -21,54 +21,70 @@
     </s:link>
   </h1>
 
-	<s:fragment rendered="#{identity.loggedIn}">
-		<a href="#off-canvas--right" id="user_avatar" class="off-canvas__toggle--right l--float-right" title="#{personHome.instance.account.username}">
-			<i class="i i--huge i--list l--float-left l--pad-left-0"></i>
+  <s:fragment rendered="#{identity.loggedIn}">
+    <a href="#off-canvas--right" id="user_avatar"
+      class="off-canvas__toggle--right l--float-right"
+      title="#{personHome.instance.account.username}">
+      <i class="i i--huge i--list l--float-left l--pad-left-0"></i>
 			<span class="badge__container">
 				<span class="badge--bl"><!--  This is for notification count --></span>
-				<img src="#{gravatarServiceImpl.getUserImageUrl(72)}" alt="#{personHome.instance.name}"/>
+				<img src="#{gravatarServiceImpl.getUserImageUrl(72)}"
+          alt="#{personHome.instance.name}"/>
 			</span>
-		</a>
-	</s:fragment>
-	<s:fragment rendered="#{not identity.loggedIn}">
-		<s:div styleClass="header__login l--float-right" rendered="#{not bannerAction.signInOrRegisterPage}">
-			<s:link id="register_link_internal_auth" view="/account/register.xhtml" value="#{messages['jsf.Signup']}"
-				propagation="none" styleClass="is-hidden--s button" rendered="#{applicationConfiguration.internalAuth}"/>
+    </a>
+  </s:fragment>
+  <s:fragment rendered="#{not identity.loggedIn}">
+    <s:div styleClass="header__login l--float-right">
+      <s:link id="register_link_internal_auth" view="/account/register.xhtml"
+        value="#{messages['jsf.Signup']}"
+        propagation="none" styleClass="is-hidden--s button"
+        rendered="#{applicationConfiguration.internalAuth}"/>
 
-			<s:fragment rendered="#{not applicationConfiguration.internalAuth}">
-				<a id="register_link" href="#{applicationConfiguration.registerPath}" class="is-hidden--s button">#{messages['jsf.Signup']}</a>
-			</s:fragment>
+      <s:fragment rendered="#{not applicationConfiguration.internalAuth}">
+        <a id="register_link" href="#{applicationConfiguration.registerPath}"
+          class="is-hidden--s button">#{messages['jsf.Signup']}</a>
+      </s:fragment>
 
-			<h:outputLink id="signin_link" value="#{request.contextPath}/account/sign_in?continue=#{urlUtil.getEncodedLocalUrl(request)}"
-				propagation="none" styleClass="l--push-left-half button--primary" rendered="#{not applicationConfiguration.kerberosAuth}">
-				#{messages['jsf.Login']}
-			</h:outputLink>
+      <h:outputLink id="signin_link"
+        value="#{request.contextPath}/account/sign_in?continue=#{urlUtil.getEncodedLocalUrl(request)}"
+        propagation="none" styleClass="l--push-left-half button--primary"
+        rendered="#{not applicationConfiguration.kerberosAuth}">
+        #{messages['jsf.Login']}
+      </h:outputLink>
 
-      <h:outputLink id="ksignin_link" value="#{request.contextPath}/account/klogin.seam?continue=#{urlUtil.getEncodedLocalUrl(request)}"
-        propagation="none" styleClass="l--push-left-half button--primary" rendered="#{applicationConfiguration.kerberosAuth}">
+      <h:outputLink id="ksignin_link"
+        value="#{request.contextPath}/account/klogin.seam?continue=#{urlUtil.getEncodedLocalUrl(request)}"
+        propagation="none" styleClass="l--push-left-half button--primary"
+        rendered="#{applicationConfiguration.kerberosAuth}">
         #{messages['jsf.Login']}
       </h:outputLink>
     </s:div>
-	</s:fragment>
-	
-	<nav id="nav-main" class="header__menu is-hidden--s l--push-left-half">
-	  <ul class="list--horizontal">
-	    <li class="l--push-left-half">
-	    	<s:link id="projects_link" view="/project/home.xhtml" propagation="none">#{messages['jsf.Projects']}</s:link>
-	    </li>
-	    <li class="l--push-left-half">
-	    	<s:link id="version-groups_link" view="/version-group/home.xhtml" propagation="none">#{messages['jsf.Groups']}</s:link>
-	    </li>
-	    <li class="l--push-left-half">
-	    	<s:link id="languages_link" view="/language/home.xhtml" propagation="none">#{messages['jsf.Languages']}</s:link>
-	    </li>
-	    <s:fragment rendered="#{identity.loggedIn}">
-			<li class="l--push-left-half">
-				<s:link id="glossary_link" view="/glossary/view.xhtml" propagation="none">#{messages['jsf.Glossary']}</s:link>
-			</li>
-		</s:fragment>
-					
-	    <li class="l--push-left-half"><s:link id="help_link" view="/help/view.xhtml" propagation="none">#{messages['jsf.Help']}</s:link></li>
-	  </ul>
-	</nav>
+  </s:fragment>
+
+  <nav id="nav-main" class="header__menu is-hidden--s l--push-left-half">
+    <ul class="list--horizontal">
+      <li class="l--push-left-half">
+        <s:link id="projects_link" view="/project/home.xhtml"
+          propagation="none">#{messages['jsf.Projects']}</s:link>
+      </li>
+      <li class="l--push-left-half">
+        <s:link id="version-groups_link" view="/version-group/home.xhtml"
+          propagation="none">#{messages['jsf.Groups']}</s:link>
+      </li>
+      <li class="l--push-left-half">
+        <s:link id="languages_link" view="/language/home.xhtml"
+          propagation="none">#{messages['jsf.Languages']}</s:link>
+      </li>
+      <s:fragment rendered="#{identity.loggedIn}">
+        <li class="l--push-left-half">
+          <s:link id="glossary_link" view="/glossary/view.xhtml"
+            propagation="none">#{messages['jsf.Glossary']}</s:link>
+        </li>
+      </s:fragment>
+
+      <li class="l--push-left-half"><s:link id="help_link"
+        view="/help/view.xhtml"
+        propagation="none">#{messages['jsf.Help']}</s:link></li>
+    </ul>
+  </nav>
 </header>

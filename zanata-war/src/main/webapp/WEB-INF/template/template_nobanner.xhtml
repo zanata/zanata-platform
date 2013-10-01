@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <f:view contentType="text/html" xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:ui="http://java.sun.com/jsf/facelets"
-        xmlns:h="http://java.sun.com/jsf/html"
-        xmlns:f="http://java.sun.com/jsf/core"
-        xmlns:a="http://richfaces.org/a4j"
-        xmlns:s="http://jboss.org/schema/seam/taglib"
-        xmlns:rich="http://richfaces.org/rich"
-        xmlns:a4j="http://richfaces.org/a4j">
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:a="http://richfaces.org/a4j"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j">
   <!--[if lt IE 7]>      <html class="no-js new-zanata lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
   <!--[if IE 7]>         <html class="no-js new-zanata lt-ie9 lt-ie8"> <![endif]-->
   <!--[if IE 8]>         <html class="no-js new-zanata lt-ie9"> <![endif]-->
@@ -16,43 +16,49 @@
   <html class="no-js new-zanata">
   <!--<![endif]-->
   <h:head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
 
-    <title><ui:insert name="page_title" /></title>
+    <title><ui:insert name="page_title"/></title>
 
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <meta name="viewport" content="width=device-width, minimum-scale=1.0" />
-    <meta http-equiv="cleartype" content="on" />
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0"/>
+    <meta http-equiv="cleartype" content="on"/>
 
-    <link rel="shortcut icon" href="#{applicationConfiguration.webAssetsUrl}/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon"
+      href="#{applicationConfiguration.webAssetsUrl}/favicon.ico"
+      type="image/x-icon"/>
 
     <!--[if gt IE 8]><!-->
-    <link type="text/css" rel="stylesheet" href="#{applicationConfiguration.webAssetsStyleUrl}" />
+    <link type="text/css" rel="stylesheet"
+      href="#{applicationConfiguration.webAssetsStyleUrl}"/>
     <!--<![endif]-->
 
     <!--[if (lt IE 9) & (!IEMobile)]>
       <script src="js/vendor/selectivizr-min.js"></script>
     <![endif]-->
 
-    <title>#{messages['jsf.Zanata']}: <ui:insert name="page_title" /></title>
-    <link type="text/css" rel="stylesheet" href="#{request.contextPath}/resources/fontello/css/fontello.css" />
+    <title>#{messages['jsf.Zanata']}: <ui:insert name="page_title"/></title>
     <link type="text/css" rel="stylesheet"
-          href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,400italic" />
-    <ui:insert name="head" />
+      href="#{request.contextPath}/resources/fontello/css/fontello.css"/>
+    <link type="text/css" rel="stylesheet"
+      href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,400italic"/>
+    <ui:insert name="head"/>
   </h:head>
 
   <h:body styleClass="new-zanata">
     <div class="off-canvas__outer new-zanata">
       <div class="off-canvas__inner">
 
-        <a:outputPanel ajaxRendered="true" layout="block" styleClass="l__wrapper l--push-top-1">
-          <h:messages id="messages" globalOnly="true" styleClass="list--no-bullets"
-                      errorClass="message--danger l--push-bottom-half"
-                      infoClass="message--highlight l--push-bottom-half"
-                      warnClass="message--warning l--push-bottom-half"
-                      rendered="#{showGlobalMessages != 'false'}"/>
+        <a:outputPanel ajaxRendered="true" layout="block"
+          styleClass="l__wrapper l--push-top-1">
+          <h:messages id="messages" globalOnly="true"
+            styleClass="list--no-bullets"
+            errorClass="message--danger l--push-bottom-half"
+            infoClass="message--highlight l--push-bottom-half"
+            warnClass="message--warning l--push-bottom-half"
+            rendered="#{showGlobalMessages != 'false'}"/>
         </a:outputPanel>
 
         <main role="main" class="l--pad-bottom-1">
@@ -70,8 +76,10 @@
 
     <ui:include src="piwik.xhtml"/>
 
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-    <script src="#{applicationConfiguration.webAssetsUrl}/assets/js/script.js"></script>
+    <script
+      src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script
+      src="#{applicationConfiguration.webAssetsUrl}/assets/js/script.js"></script>
   </h:body>
   </html>
 </f:view>

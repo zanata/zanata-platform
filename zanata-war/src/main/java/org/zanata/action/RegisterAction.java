@@ -37,7 +37,6 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.faces.Renderer;
 import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.log.Log;
 import org.zanata.action.validator.NotDuplicateEmail;
@@ -48,146 +47,138 @@ import org.zanata.service.RegisterService;
 
 @Name("register")
 @Scope(ScopeType.CONVERSATION)
-public class RegisterAction implements Serializable
-{
+public class RegisterAction implements Serializable {
 
-   private static final long serialVersionUID = -7883627570614588182L;
+    private static final long serialVersionUID = -7883627570614588182L;
 
-   @Logger
-   Log log;
+    @Logger
+    Log log;
 
-   @In
-   private EntityManager entityManager;
+    @In
+    private EntityManager entityManager;
 
-   @In
-   RegisterService registerServiceImpl;
-   
-   @In
-   PersonDAO personDAO;
-   
-   @In
-   EmailService emailServiceImpl;
+    @In
+    RegisterService registerServiceImpl;
 
-   private String username;
-   private String email;
-   private String password;
-   private String humanField;
+    @In
+    PersonDAO personDAO;
 
-   private boolean valid;
+    @In
+    EmailService emailServiceImpl;
 
-   private HPerson person;
+    private String username;
+    private String email;
+    private String password;
+    private String humanField;
 
-   @Begin(join = true)
-   public HPerson getPerson()
-   {
-      if (person == null)
-         person = new HPerson();
-      return person;
-   }
+    private boolean valid;
 
-   public void setUsername(String username)
-   {
-      validateUsername(username);
-      this.username = username;
-   }
+    private HPerson person;
 
-   @NotEmpty
-   @Size(min = 3, max = 20)
-   @Pattern(regexp = "^[a-z\\d_]{3,20}$", message = "{validation.username.constraints}")
-   public String getUsername()
-   {
-      return username;
-   }
-   
-   public void setEmail(String email)
-   {
-      this.email = email;
-   }
-   
-   @NotEmpty
-   @Email
-   @NotDuplicateEmail(message="This email address is already taken.")
-   public String getEmail()
-   {
-      return email;
-   }
+    @Begin(join = true)
+    public HPerson getPerson() {
+        if (person == null)
+            person = new HPerson();
+        return person;
+    }
 
-   public void setPassword(String password)
-   {
-      this.password = password;
-   }
+    public void setUsername(String username) {
+        validateUsername(username);
+        this.username = username;
+    }
 
-   @NotEmpty
-   @Size(min = 6, max = 20)
-   // @Pattern(regex="(?=^.{6,}$)((?=.*\\d)|(?=.*\\W+))(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$",
-   // message="Password is not secure enough!")
-   public String getPassword()
-   {
-      return password;
-   }
+    @NotEmpty
+    @Size(min = 3, max = 20)
+    @Pattern(regexp = "^[a-z\\d_]{3,20}$",
+            message = "{validation.username.constraints}")
+    public String getUsername() {
+        return username;
+    }
 
-   @Size(min = 0, max = 0)
-   public String getHumanField()
-   {
-      return humanField;
-   }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-   public void setHumanField(String humanField)
-   {
-      this.humanField = humanField;
-   }
+    @NotEmpty
+    @Email
+    @NotDuplicateEmail(message = "This email address is already taken.")
+    public String getEmail() {
+        return email;
+    }
 
-   public void validateUsername(String username)
-   {
-      try
-      {
-         entityManager.createQuery("from HAccount a where a.username = :username").setParameter("username", username).getSingleResult();
-         valid = false;
-         FacesMessages.instance().addToControl("username", "This username is not available");
-      }
-      catch (NoResultException e)
-      {
-         // pass
-      }
-   }
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-   public void validateHumanField()
-   {
-      if (humanField != null && humanField.length() > 0)
-      {
-         valid = false;
-         FacesMessages.instance().add(StatusMessage.Severity.ERROR, "You have filled a field that was not meant for humans.");
-         humanField = null;
-      }
+    @NotEmpty
+    @Size(min = 6, max = 20)
+    // @Pattern(regex="(?=^.{6,}$)((?=.*\\d)|(?=.*\\W+))(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$",
+    // message="Password is not secure enough!")
+            public
+            String getPassword() {
+        return password;
+    }
 
-   }
+    @Size(min = 0, max = 0)
+    public String getHumanField() {
+        return humanField;
+    }
 
-   @End
-   public String register()
-   {
-      valid = true;
-      validateUsername(getUsername());
-      validateHumanField();
+    public void setHumanField(String humanField) {
+        this.humanField = humanField;
+    }
 
-      if (!isValid())
-      {
-         return null;
-      }
-      final String user = getUsername();
-      final String pass = getPassword();
-      final String email = getEmail();
-      String key = registerServiceImpl.register(user, pass, getPerson().getName(), email);
-      log.info("get register key:" + key);
+    public void validateUsername(String username) {
+        try {
+            entityManager
+                    .createQuery("from HAccount a where a.username = :username")
+                    .setParameter("username", username).getSingleResult();
+            valid = false;
+            FacesMessages.instance().addToControl("username",
+                    "This username is not available");
+        } catch (NoResultException e) {
+            // pass
+        }
+    }
 
-      String message = emailServiceImpl.sendActivationEmail(EmailService.ACTIVATION_ACCOUNT_EMAIL_TEMPLATE, user, email, key);
-      FacesMessages.instance().add(message);
-      
-      return "/home.xhtml";
-   }
+    public void validateHumanField() {
+        if (humanField != null && humanField.length() > 0) {
+            valid = false;
+            FacesMessages.instance().add(StatusMessage.Severity.ERROR,
+                    "You have filled a field that was not meant for humans.");
+            humanField = null;
+        }
 
-   public boolean isValid()
-   {
-      return valid;
-   }
+    }
+
+    @End
+    public String register() {
+        valid = true;
+        validateUsername(getUsername());
+        validateHumanField();
+
+        if (!isValid()) {
+            return null;
+        }
+        final String user = getUsername();
+        final String pass = getPassword();
+        final String email = getEmail();
+        String key =
+                registerServiceImpl.register(user, pass, getPerson().getName(),
+                        email);
+        log.info("get register key:" + key);
+
+        String message =
+                emailServiceImpl.sendActivationEmail(
+                        EmailService.ACTIVATION_ACCOUNT_EMAIL_TEMPLATE, user,
+                        email, key);
+        FacesMessages.instance().add(message);
+
+        return "/home.xhtml";
+    }
+
+    public boolean isValid() {
+        return valid;
+    }
 
 }
