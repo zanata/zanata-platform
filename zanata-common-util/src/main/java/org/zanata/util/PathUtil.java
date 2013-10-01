@@ -84,7 +84,7 @@ public class PathUtil {
 
         // First get all the common elements. Store them as a string,
         // and also count how many of them there are.
-        StringBuffer common = new StringBuffer();
+        StringBuilder common = new StringBuilder();
 
         int commonIndex = 0;
         while (commonIndex < target.length && commonIndex < base.length
@@ -128,7 +128,7 @@ public class PathUtil {
             baseIsFile = false;
         }
 
-        StringBuffer relative = new StringBuffer();
+        StringBuilder relative = new StringBuilder();
 
         if (base.length != commonIndex) {
             int numDirsUp =

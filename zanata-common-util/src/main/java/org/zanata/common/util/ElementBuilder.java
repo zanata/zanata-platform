@@ -149,7 +149,7 @@ public class ElementBuilder {
     }
 
     public static void copyAttributes(StartElement fromElem, Element toElem) {
-        Iterator<Attribute> attributes = fromElem.getAttributes();
+        Iterator<Attribute> attributes = (Iterator<Attribute>) fromElem.getAttributes();
         while (attributes.hasNext()) {
             Attribute attr = attributes.next();
             QName qName = attr.getName();
