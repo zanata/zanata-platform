@@ -114,6 +114,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
         List<String> types = new ArrayList<String>();
 
         ClientResponse<String> response = fileResource.acceptedFileTypes();
+        @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
         StringSet serverAcceptedTypes = new StringSet(response.getEntity());
         if (getOpts().getFileTypes() != null) {
             for (String type : getOpts().getFileTypes()) {
@@ -204,7 +205,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
             try {
                 final String fileType = getExtensionFor(localDocName);
                 final String qualifiedDocName = qualifiedDocName(localDocName);
-                boolean sourcePushed = false;
+                boolean sourcePushed;
                 if (getOpts().getPushType() == PushPullType.Source
                         || getOpts().getPushType() == PushPullType.Both) {
                     if (!getOpts().isDryRun()) {

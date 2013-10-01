@@ -96,7 +96,7 @@ public class TraceDebugInterceptor implements ClientExecutionInterceptor {
         // log after a response has been received
         log("<< REST Response: " + result.getResponseStatus().getStatusCode()
                 + ":" + result.getResponseStatus());
-        for (Object key : result.getHeaders().keySet()) {
+        for (String key : result.getHeaders().keySet()) {
             log("<< Header: " + key + " = " + result.getHeaders().get(key));
         }
 

@@ -96,7 +96,7 @@ public class RawPullStrategy {
     private void writeStreamToFile(InputStream stream, File file)
             throws FileNotFoundException, IOException {
         OutputStream out = new FileOutputStream(file);
-        int read = 0;
+        int read;
         byte[] buffer = new byte[1024];
         while ((read = stream.read(buffer)) != -1) {
             out.write(buffer, 0, read);

@@ -113,6 +113,7 @@ public abstract class AbstractPushPullMojo<O extends PushPullOptions> extends
      * @parameter expression="${reactorProjects}"
      * @readonly
      */
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private List<MavenProject> reactorProjects;
 
     /**

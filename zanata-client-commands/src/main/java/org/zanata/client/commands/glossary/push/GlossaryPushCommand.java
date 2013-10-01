@@ -151,17 +151,6 @@ public class GlossaryPushCommand extends
 
         AbstractGlossaryPushReader reader = getReader(fileExtension);
 
-        JAXBContext jc = null;
-        Marshaller m = null;
-
-        if (getOpts().isDebugSet()) {
-            jc = JAXBContext.newInstance(Glossary.class);
-        }
-        if (getOpts().isDebugSet()) {
-            m = jc.createMarshaller();
-            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        }
-
         log.info("pushing glossary document [{}] to server",
                 glossaryFile.getName());
 

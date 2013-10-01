@@ -62,7 +62,7 @@ public class GetStatisticsCommand extends
             localeListArg = localeList.toArray(new String[] {});
         }
 
-        ContainerTranslationStatistics containerStats = null;
+        ContainerTranslationStatistics containerStats;
 
         if (getOpts().getProj() == null) {
             log.error("Project slug is required but was not found. Aborting.");

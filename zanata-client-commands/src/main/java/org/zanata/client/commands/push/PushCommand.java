@@ -572,7 +572,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
             }
 
             int fromIndex = 0;
-            int toIndex = 0;
+            int toIndex;
 
             for (int i = 1; i <= numBatches; i++) {
                 // make a dummy TranslationsResource to hold just the
@@ -702,7 +702,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
             log.warn("Could not start Copy Trans for above document. Proceeding");
             return;
         }
-        CopyTransStatus copyTransStatus = null;
+        CopyTransStatus copyTransStatus;
 
         try {
             copyTransStatus =
