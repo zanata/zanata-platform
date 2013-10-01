@@ -58,15 +58,11 @@ public class FilterConstraints {
 
     @Override
     public String toString() {
-        // @formatter:off
-      return Objects.toStringHelper(this).
-            add("searchString", searchString).
-            add("isCaseSensitive", isCaseSensitive).
-            add("searchInSource", searchInSource).
-            add("searchInTarget", searchInTarget).
-            add("includedStates", includedStates).
-            toString();
-      // @formatter:on
+        return Objects.toStringHelper(this).add("searchString", searchString)
+                .add("isCaseSensitive", isCaseSensitive)
+                .add("searchInSource", searchInSource)
+                .add("searchInTarget", searchInTarget)
+                .add("includedStates", includedStates).toString();
     }
 
     public static class Builder {

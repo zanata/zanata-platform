@@ -80,20 +80,16 @@ public class TransMemoryPresenter extends
     protected void onBind() {
         display.getSearchType().setValue(SearchType.FUZZY);
 
-        // @formatter:off
-      keyShortcutPresenter.register(KeyShortcut.Builder.builder()
-            .addKey(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER))
-            .setContext(ShortcutContext.TM)
-            .setDescription(messages.searchTM())
-            .setHandler(new KeyShortcutEventHandler()
-      {
-         @Override
-         public void onKeyShortcut(KeyShortcutEvent event)
-         {
-            fireSearchEvent();
-         }
-      }).build());
-      // @formatter:on
+        keyShortcutPresenter.register(KeyShortcut.Builder.builder()
+                .addKey(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER))
+                .setContext(ShortcutContext.TM)
+                .setDescription(messages.searchTM())
+                .setHandler(new KeyShortcutEventHandler() {
+                    @Override
+                    public void onKeyShortcut(KeyShortcutEvent event) {
+                        fireSearchEvent();
+                    }
+                }).build());
 
         registerHandler(eventBus.addHandler(TransUnitSelectionEvent.getType(),
                 this));

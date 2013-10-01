@@ -156,13 +156,11 @@ public class GetTransUnitListHandler extends
         }
         // has status and phrase filter
         else {
-            // @formatter:off
-         FilterConstraints constraints = FilterConstraints.builder()
-               .filterBy(action.getPhrase())
-               .caseSensitive(false).checkInSource(true).checkInTarget(true)
-               .includeStates(action.getFilterStates())
-               .build();
-         // @formatter:on
+            FilterConstraints constraints =
+                    FilterConstraints.builder().filterBy(action.getPhrase())
+                            .caseSensitive(false).checkInSource(true)
+                            .checkInTarget(true)
+                            .includeStates(action.getFilterStates()).build();
             log.debug("Fetch TransUnits filtered by status and/or search: {}",
                     constraints);
             if (!hasValidationFilter(action)) {

@@ -28,7 +28,7 @@ public class GetTransUnitActionContextHolder {
     protected GetTransUnitActionContext initContext(DocumentInfo document,
             String findMessage, TransUnitId targetTransUnitId) {
         // @formatter:off
-      context = new GetTransUnitActionContext(document)
+        context = new GetTransUnitActionContext(document)
             .changeCount(configHolder.getState().getEditorPageSize())
             .changeFindMessage(findMessage)
             .changeFilterFuzzy(configHolder.getState().isFilterByFuzzy())
@@ -39,7 +39,7 @@ public class GetTransUnitActionContextHolder {
             .changeFilterHasError(configHolder.getState().isFilterByHasError())
             .changeValidationIds(configHolder.getState().getEnabledValidationIds())
             .changeTargetTransUnitId(targetTransUnitId);
-      // @formatter:on
+        // @formatter:on
 
         return context;
     }

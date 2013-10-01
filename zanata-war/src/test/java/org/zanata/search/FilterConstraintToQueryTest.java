@@ -163,14 +163,12 @@ public class FilterConstraintToQueryTest {
 
         String result = constraintToQuery.buildStateCondition();
 
-        // @formatter:off
-      assertThat(result, Matchers.equalToIgnoringCase(
-            "( EXISTS " +
-                  "( FROM HTextFlowTarget WHERE " +
-                     "(textFlow=tf and locale=:locale AND state in (:contentStateList))" +
-                  ") OR :locale not in indices(tf.targets)" +
-            ")"));
-      // @formatter:on
+        assertThat(
+                result,
+                Matchers.equalToIgnoringCase("( EXISTS "
+                        + "( FROM HTextFlowTarget WHERE "
+                        + "(textFlow=tf and locale=:locale AND state in (:contentStateList))"
+                        + ") OR :locale not in indices(tf.targets)" + ")"));
     }
 
     @Test
@@ -182,15 +180,13 @@ public class FilterConstraintToQueryTest {
 
         String result = constraintToQuery.buildStateCondition();
 
-        // @formatter:off
-      assertThat(result, Matchers.equalToIgnoringCase(
-            "( EXISTS " +
-                  "( FROM HTextFlowTarget WHERE " +
-                     "(textFlow=tf and locale=:locale AND state in (:contentStateList))" +
-                  ") OR " +
-                  "(:locale not in indices(tf.targets) AND " + SOURCE_CONTENT_CASE_INSENSITIVE + ")" +
-            ")"));
-      // @formatter:on
+        assertThat(
+                result,
+                Matchers.equalToIgnoringCase("( EXISTS "
+                        + "( FROM HTextFlowTarget WHERE "
+                        + "(textFlow=tf and locale=:locale AND state in (:contentStateList))"
+                        + ") OR " + "(:locale not in indices(tf.targets) AND "
+                        + SOURCE_CONTENT_CASE_INSENSITIVE + ")" + ")"));
     }
 
     @Test
@@ -234,22 +230,30 @@ public class FilterConstraintToQueryTest {
         log.info("hql: {}", result);
 
         // @formatter:off
-      assertThat(result, Matchers.equalToIgnoringCase(
-            "SELECT distinct tf FROM HTextFlow tf LEFT JOIN tf.targets tfts WITH tfts.index=:locale WHERE " +
+        assertThat(result, Matchers.equalToIgnoringCase(
+            "SELECT distinct tf FROM HTextFlow tf " +
+                "LEFT JOIN tf.targets tfts WITH tfts.index=:locale " +
+                "WHERE " +
                   "(tf.obsolete=0 AND tf.document.id=:docId AND " +
                      "(" +
                         SOURCE_CONTENT_CASE_INSENSITIVE + " OR  EXISTS " +
-                        "( FROM HTextFlowTarget WHERE (textFlow=tf and locale=:locale and " + TARGET_CONTENT_CASE_INSENSITIVE + ")" +
+                        "( FROM HTextFlowTarget " +
+                        "WHERE (textFlow=tf " +
+                        "AND locale=:locale " +
+                        "AND " + TARGET_CONTENT_CASE_INSENSITIVE + ")" +
                      ")" +
                   ") AND " +
                   "( EXISTS " +
                      "( FROM HTextFlowTarget WHERE " +
-                        "(textFlow=tf and locale=:locale AND state in (:contentStateList))" +
+                        "(textFlow=tf " +
+                        "AND locale=:locale " +
+                        "AND state in (:contentStateList))" +
                      ") OR " +
-                     "(:locale not in indices(tf.targets) AND " + SOURCE_CONTENT_CASE_INSENSITIVE + ")" +
+                     "(:locale not in indices(tf.targets) " +
+                     "AND " + SOURCE_CONTENT_CASE_INSENSITIVE + ")" +
                   ")" +
                   ") ORDER BY tf.pos"));
-      // @formatter:on
+        // @formatter:on
     }
 
     @Test

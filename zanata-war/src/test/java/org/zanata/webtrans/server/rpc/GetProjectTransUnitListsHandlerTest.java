@@ -63,13 +63,13 @@ public class GetProjectTransUnitListsHandlerTest {
     public void setUpData() {
         hLocale = TestFixture.setId(3L, new HLocale(LocaleId.DE));
         // @formatter:off
-      textFlows = Lists.newArrayList(
+        textFlows = Lists.newArrayList(
             textFlow(1L, "File is removed", ""),
             textFlow(2L, "file", "open file"),
             textFlow(3L, " file ", null),
             textFlow(4L, " File", "FILE   ")
-      );
-      // @formatter:on
+        );
+        // @formatter:on
         workspaceId = TestFixture.workspaceId(localeId);
     }
 

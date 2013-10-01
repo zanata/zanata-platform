@@ -42,13 +42,13 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String> {
     private HistoryToken currentHistoryState = new HistoryToken();
 
     @Inject
-    // @formatter:off
-   public HistoryEventHandlerService(EventBus eventBus, DocumentListPresenter documentListPresenter,
-                                     AppPresenter appPresenter, SearchResultsPresenter searchResultsPresenter,
-                                     GetTransUnitActionContextHolder getTransUnitActionContextHolder,
-                                     ModalNavigationStateHolder modalStateHolder, UserConfigHolder configHolder)
-   // @formatter:on
-    {
+    public HistoryEventHandlerService(EventBus eventBus,
+            DocumentListPresenter documentListPresenter,
+            AppPresenter appPresenter,
+            SearchResultsPresenter searchResultsPresenter,
+            GetTransUnitActionContextHolder getTransUnitActionContextHolder,
+            ModalNavigationStateHolder modalStateHolder,
+            UserConfigHolder configHolder) {
         this.eventBus = eventBus;
         this.documentListPresenter = documentListPresenter;
         this.appPresenter = appPresenter;
@@ -104,12 +104,12 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String> {
     }
 
     protected void processForDocumentListPresenter(HistoryToken token) {
-        // @formatter:off
-      if (!equal(token.getDocFilterExact(), currentHistoryState.getDocFilterExact())
-            || !equal(token.getDocFilterText(), currentHistoryState.getDocFilterText())
-            || !equal(token.isDocFilterCaseSensitive(), currentHistoryState.isDocFilterCaseSensitive()))
-      // @formatter:on
-        {
+        if (!equal(token.getDocFilterExact(),
+                currentHistoryState.getDocFilterExact())
+                || !equal(token.getDocFilterText(),
+                        currentHistoryState.getDocFilterText())
+                || !equal(token.isDocFilterCaseSensitive(),
+                        currentHistoryState.isDocFilterCaseSensitive())) {
             Log.info("[gwt-history] document list filter has changed");
             documentListPresenter
                     .updateFilterAndRun(token.getDocFilterText(),
@@ -143,13 +143,14 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String> {
     }
 
     protected void processForProjectWideSearch(HistoryToken token) {
-        // @formatter:off
-      if (!equal(token.getProjectSearchCaseSensitive(), currentHistoryState.getProjectSearchCaseSensitive())
-            || !equal(token.getProjectSearchText(), currentHistoryState.getProjectSearchText())
-            || !equal(token.isProjectSearchInSource(), currentHistoryState.isProjectSearchInSource())
-            || !equal(token.isProjectSearchInTarget(), currentHistoryState.isProjectSearchInTarget()))
-      // @formatter:on
-        {
+        if (!equal(token.getProjectSearchCaseSensitive(),
+                currentHistoryState.getProjectSearchCaseSensitive())
+                || !equal(token.getProjectSearchText(),
+                        currentHistoryState.getProjectSearchText())
+                || !equal(token.isProjectSearchInSource(),
+                        currentHistoryState.isProjectSearchInSource())
+                || !equal(token.isProjectSearchInTarget(),
+                        currentHistoryState.isProjectSearchInTarget())) {
             Log.info("[gwt-history] project wide search condition has changed");
 
             searchResultsPresenter.updateViewAndRun(

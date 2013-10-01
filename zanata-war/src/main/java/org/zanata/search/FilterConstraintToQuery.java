@@ -92,12 +92,15 @@ public class FilterConstraintToQuery {
         String searchCondition = buildSearchCondition();
         String stateCondition = buildStateCondition();
 
-        // @formatter:off
-      QueryBuilder query = QueryBuilder.select("distinct tf")
-            .from("HTextFlow tf").leftJoin("tf.targets tfts").with(eq("tfts.index", LOCALE_PLACEHOLDER).toString())
-            .where(and(obsoleteCondition, docIdCondition, searchCondition, stateCondition))
-            .orderBy("tf.pos");
-      // @formatter:on
+        QueryBuilder query =
+                QueryBuilder
+                        .select("distinct tf")
+                        .from("HTextFlow tf")
+                        .leftJoin("tf.targets tfts")
+                        .with(eq("tfts.index", LOCALE_PLACEHOLDER).toString())
+                        .where(and(obsoleteCondition, docIdCondition,
+                            searchCondition, stateCondition))
+                        .orderBy("tf.pos");
         return query.toQueryString();
     }
 
@@ -111,12 +114,10 @@ public class FilterConstraintToQuery {
         }
         String searchInTargetCondition = null;
         if (constraints.isSearchInTarget()) {
-            // @formatter:off
-         Criterion targetWhereClause = Restrictions.conjunction()
-               .add(eq("textFlow", "tf"))
-               .add(eq("locale", LOCALE_PLACEHOLDER))
-               .add(contentsCriterion(null));
-         // @formatter:on
+            Criterion targetWhereClause =
+                    Restrictions.conjunction().add(eq("textFlow", "tf"))
+                            .add(eq("locale", LOCALE_PLACEHOLDER))
+                            .add(contentsCriterion(null));
             searchInTargetCondition =
                     QueryBuilder.exists().from("HTextFlowTarget")
                             .where(targetWhereClause.toString())
@@ -126,7 +127,7 @@ public class FilterConstraintToQuery {
                 .or(searchInSourceCondition, searchInTargetCondition);
     }
 
-    private Criterion contentsCriterion(String alias) {
+  private Criterion contentsCriterion(String alias) {
         String propertyAlias =
                 Strings.isNullOrEmpty(alias) ? "content" : alias + ".content";
         String caseFunction = constraints.isCaseSensitive() ? "" : "lower";

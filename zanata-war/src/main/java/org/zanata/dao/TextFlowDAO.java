@@ -92,28 +92,29 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
         StringBuilder queryBuilder = new StringBuilder();
         // I can't write a HQL or criteria to achieve the same result. I gave
         // up...
-        // @formatter:off
-      queryBuilder
-            .append("SELECT tf.id, tft.state FROM HTextFlow tf ")
-            .append(" LEFT JOIN HTextFlowTarget tft on tf.id = tft.tf_id AND locale = :locale")
-            .append(" WHERE tf.document_id = :docId AND tf.obsolete = 0");
-      queryBuilder
-            .append(" AND ")
-            .append(buildContentStateCondition(filterConstraints.getIncludedStates(), "tft"));
-      boolean hasSearchString = !Strings.isNullOrEmpty(filterConstraints.getSearchString());
-      if (hasSearchString)
-      {
-         queryBuilder
-            .append(" AND (")
-            .append(buildSearchCondition(filterConstraints.getSearchString(), "tf")) // search in source
-            .append(" OR ")
-            .append(buildSearchCondition(filterConstraints.getSearchString(), "tft")) // search in target
-            .append(")");
-      }
-      queryBuilder
-            .append(" ORDER BY tf.pos");
+        queryBuilder
+                .append("SELECT tf.id, tft.state FROM HTextFlow tf ")
+                .append(" LEFT JOIN HTextFlowTarget tft on tf.id = tft.tf_id AND locale = :locale")
+                .append(" WHERE tf.document_id = :docId AND tf.obsolete = 0");
+        queryBuilder.append(" AND ").append(
+                buildContentStateCondition(
+                        filterConstraints.getIncludedStates(), "tft"));
+        boolean hasSearchString =
+                !Strings.isNullOrEmpty(filterConstraints.getSearchString());
+        if (hasSearchString) {
+            queryBuilder
+                    .append(" AND (")
+                    // search in source
+                    .append(buildSearchCondition(
+                            filterConstraints.getSearchString(), "tf"))
+                    .append(" OR ")
+                    // search in target
+                    .append(buildSearchCondition(
+                            filterConstraints.getSearchString(), "tft"))
+                    .append(")");
+        }
+        queryBuilder.append(" ORDER BY tf.pos");
 
-      // @formatter:on
         log.debug("get navigation SQL query: {}", queryBuilder);
         Query query =
                 getSession().createSQLQuery(queryBuilder.toString())

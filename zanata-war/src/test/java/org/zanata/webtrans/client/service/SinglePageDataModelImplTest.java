@@ -23,12 +23,12 @@ import static org.zanata.webtrans.client.service.NavigationService.UNDEFINED;
 public class SinglePageDataModelImplTest {
     private SinglePageDataModelImpl model;
     // @formatter:off
-   private List<TransUnit> data = Lists.newArrayList(
-         TestFixture.makeTransUnit(1),
-         TestFixture.makeTransUnit(2),
-         TestFixture.makeTransUnit(3)
-   );
-   // @formatter:on
+    private List<TransUnit> data = Lists.newArrayList(
+        TestFixture.makeTransUnit(1),
+        TestFixture.makeTransUnit(2),
+        TestFixture.makeTransUnit(3)
+    );
+    // @formatter:on
 
     @BeforeMethod
     public void setUp() throws Exception {

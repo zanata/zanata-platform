@@ -103,14 +103,11 @@ public class GetProjectTransUnitListsHandler
                     matchingTUs);
         }
 
-        // @formatter:off
-      FilterConstraints filterConstraints = FilterConstraints.builder()
-            .filterBy(action.getSearchString())
-            .caseSensitive(action.isCaseSensitive())
-            .checkInSource(action.isSearchInSource())
-            .checkInTarget(action.isSearchInTarget())
-            .build();
-      // @formatter:on
+        FilterConstraints filterConstraints =
+                FilterConstraints.builder().filterBy(action.getSearchString())
+                        .caseSensitive(action.isCaseSensitive())
+                        .checkInSource(action.isSearchInSource())
+                        .checkInTarget(action.isSearchInTarget()).build();
 
         List<HTextFlow> matchingFlows =
                 textFlowSearchServiceImpl.findTextFlows(
