@@ -35,7 +35,7 @@ public final class ContentType implements Serializable {
             return true;
         if (!(obj instanceof ContentType))
             return false;
-        return this.contentType == ((ContentType) obj).contentType;
+        return this.contentType.equals(((ContentType) obj).contentType);
     }
 
     @Override

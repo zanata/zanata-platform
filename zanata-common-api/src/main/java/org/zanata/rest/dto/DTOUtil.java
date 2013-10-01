@@ -21,9 +21,8 @@ public class DTOUtil {
     @SuppressWarnings({ "unchecked" })
     public static <T> String toXML(T obj) {
         try {
-            Marshaller m = null;
             JAXBContext jc = JAXBContext.newInstance(obj.getClass());
-            m = jc.createMarshaller();
+            Marshaller m = jc.createMarshaller();
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             m.setProperty(Marshaller.JAXB_FRAGMENT, true);
             StringWriter writer = new StringWriter();

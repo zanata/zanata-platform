@@ -280,7 +280,7 @@ public class Project implements Serializable, HasCollectionSample<Project>,
         } else if (!name.equals(other.name)) {
             return false;
         }
-        if (defaultType != other.defaultType) {
+        if (!defaultType.equals(other.defaultType)) {
             return false;
         }
         if (status != other.status) {
