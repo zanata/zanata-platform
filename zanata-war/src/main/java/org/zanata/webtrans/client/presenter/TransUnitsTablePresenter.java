@@ -78,8 +78,7 @@ public class TransUnitsTablePresenter extends
         NavigationService.PageDataChangeListener,
         TransUnitsTableDisplay.Listener, TableRowSelectedEventHandler,
         LoadingEventHandler, RefreshPageEventHandler, UserConfigChangeHandler,
-        RequestPageValidationHandler
-{
+        RequestPageValidationHandler {
 
     private final TransUnitsTableDisplay display;
     private final TranslationHistoryPresenter translationHistoryPresenter;
@@ -106,8 +105,7 @@ public class TransUnitsTablePresenter extends
             TargetContentsPresenter targetContentsPresenter,
             TranslatorInteractionService translatorService,
             TranslationHistoryPresenter translationHistoryPresenter,
-            WebTransMessages messages, UserOptionsService userOptionsService)
-    {
+            WebTransMessages messages, UserOptionsService userOptionsService) {
         super(display, eventBus);
         this.display = display;
         this.translationHistoryPresenter = translationHistoryPresenter;
@@ -365,7 +363,6 @@ public class TransUnitsTablePresenter extends
 
     /**
      * For testing only. Will not work in GWT compiled mode.
-     *
      * @param selectedId
      *            current selected id
      */
