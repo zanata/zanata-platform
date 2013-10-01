@@ -58,31 +58,37 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler {
     }
 
     protected void registerCopyTMKeys() {
-        // @formatter:off
-      KeyShortcut copyTM1Shortcut = KeyShortcut.Builder.builder()
-            .addKey(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_1)).addKey(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_1))
-            .setContext(ShortcutContext.Edit).setDescription(messages.copyFromTM(1))
-            .setHandler(new CopyTMKeyShortcutHandler(0))
-            .build();
+        KeyShortcut copyTM1Shortcut =
+                KeyShortcut.Builder.builder()
+                        .addKey(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_1))
+                        .addKey(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_1))
+                        .setContext(ShortcutContext.Edit)
+                        .setDescription(messages.copyFromTM(1))
+                        .setHandler(new CopyTMKeyShortcutHandler(0)).build();
 
-      KeyShortcut copyTM2Shortcut = KeyShortcut.Builder.builder()
-            .addKey(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_2)).addKey(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_2))
-            .setContext(ShortcutContext.Edit).setDescription(messages.copyFromTM(2))
-            .setHandler(new CopyTMKeyShortcutHandler(1))
-            .build();
+        KeyShortcut copyTM2Shortcut =
+                KeyShortcut.Builder.builder()
+                        .addKey(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_2))
+                        .addKey(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_2))
+                        .setContext(ShortcutContext.Edit)
+                        .setDescription(messages.copyFromTM(2))
+                        .setHandler(new CopyTMKeyShortcutHandler(1)).build();
 
-      KeyShortcut copyTM3Shortcut = KeyShortcut.Builder.builder()
-            .addKey(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_3)).addKey(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_3))
-            .setContext(ShortcutContext.Edit).setDescription(messages.copyFromTM(3))
-            .setHandler(new CopyTMKeyShortcutHandler(2))
-            .build();
+        KeyShortcut copyTM3Shortcut =
+                KeyShortcut.Builder.builder()
+                        .addKey(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_3))
+                        .addKey(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_3))
+                        .setContext(ShortcutContext.Edit)
+                        .setDescription(messages.copyFromTM(3))
+                        .setHandler(new CopyTMKeyShortcutHandler(2)).build();
 
-      KeyShortcut copyTM4Shortcut = KeyShortcut.Builder.builder()
-            .addKey(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_4)).addKey(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_4))
-            .setContext(ShortcutContext.Edit).setDescription(messages.copyFromTM(4))
-            .setHandler(new CopyTMKeyShortcutHandler(3))
-            .build();
-      // @formatter:on
+        KeyShortcut copyTM4Shortcut =
+                KeyShortcut.Builder.builder()
+                        .addKey(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_4))
+                        .addKey(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_4))
+                        .setContext(ShortcutContext.Edit)
+                        .setDescription(messages.copyFromTM(4))
+                        .setHandler(new CopyTMKeyShortcutHandler(3)).build();
         keyShortcutPresenter.register(copyTM1Shortcut);
         keyShortcutPresenter.register(copyTM2Shortcut);
         keyShortcutPresenter.register(copyTM3Shortcut);
@@ -91,84 +97,89 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler {
 
     protected void registerNavigationKeys(
             final TargetContentsPresenter targetContentsPresenter) {
-        // @formatter:off
-      KeyShortcut moveNextShortcut = KeyShortcut.Builder.builder()
-            .addKey(new Keys(Keys.ALT_KEY, KeyCodes.KEY_DOWN)).addKey(new Keys(Keys.ALT_KEY, 'K'))
-            .setContext(ShortcutContext.Edit).setDescription(messages.moveToNextRow())
-            .setPreventDefault(true).setStopPropagation(true).setPreventDefault(true)
-            .setHandler(new KeyShortcutEventHandler()
-            {
-               @Override
-               public void onKeyShortcut(KeyShortcutEvent event)
-               {
-                  targetContentsPresenter.moveToNextEntry();
-               }
-            }).build();
-      keyShortcutPresenter.register(moveNextShortcut);
+        KeyShortcut moveNextShortcut =
+                KeyShortcut.Builder.builder()
+                        .addKey(new Keys(Keys.ALT_KEY, KeyCodes.KEY_DOWN))
+                        .addKey(new Keys(Keys.ALT_KEY, 'K'))
+                        .setContext(ShortcutContext.Edit)
+                        .setDescription(messages.moveToNextRow())
+                        .setPreventDefault(true).setStopPropagation(true)
+                        .setPreventDefault(true)
+                        .setHandler(new KeyShortcutEventHandler() {
+                            @Override
+                            public void onKeyShortcut(KeyShortcutEvent event) {
+                                targetContentsPresenter.moveToNextEntry();
+                            }
+                        }).build();
+        keyShortcutPresenter.register(moveNextShortcut);
 
-      KeyShortcut movePreviousShortcut = KeyShortcut.Builder.builder()
-            .addKey(new Keys(Keys.ALT_KEY, KeyCodes.KEY_UP)).addKey(new Keys(Keys.ALT_KEY, 'J'))
-            .setContext(ShortcutContext.Edit).setDescription(messages.moveToPreviousRow())
-            .setPreventDefault(true).setStopPropagation(true)
-            .setHandler(new KeyShortcutEventHandler()
-            {
-               @Override
-               public void onKeyShortcut(KeyShortcutEvent event)
-               {
-                  targetContentsPresenter.moveToPreviousEntry();
-               }
-            }).build();
-      keyShortcutPresenter.register(movePreviousShortcut);
+        KeyShortcut movePreviousShortcut =
+                KeyShortcut.Builder.builder()
+                        .addKey(new Keys(Keys.ALT_KEY, KeyCodes.KEY_UP))
+                        .addKey(new Keys(Keys.ALT_KEY, 'J'))
+                        .setContext(ShortcutContext.Edit)
+                        .setDescription(messages.moveToPreviousRow())
+                        .setPreventDefault(true).setStopPropagation(true)
+                        .setHandler(new KeyShortcutEventHandler() {
+                            @Override
+                            public void onKeyShortcut(KeyShortcutEvent event) {
+                                targetContentsPresenter.moveToPreviousEntry();
+                            }
+                        }).build();
+        keyShortcutPresenter.register(movePreviousShortcut);
 
-      nextStateShortcut = KeyShortcut.Builder.builder()
-            .addKey(new Keys(Keys.ALT_KEY, KeyCodes.KEY_PAGEDOWN))
-            .setContext(ShortcutContext.Edit).setDescription(messages.nextIncomplete())
-            .setPreventDefault(true).setStopPropagation(true)
-            .setHandler(new KeyShortcutEventHandler()
-            {
-               @Override
-               public void onKeyShortcut(KeyShortcutEvent event)
-               {
-                  targetContentsPresenter.savePendingChangesIfApplicable();
-                  eventBus.fireEvent(new NavTransUnitEvent(NextState));
-               }
-            }).build();
-      keyShortcutPresenter.register(nextStateShortcut);
+        nextStateShortcut =
+                KeyShortcut.Builder.builder()
+                        .addKey(new Keys(Keys.ALT_KEY, KeyCodes.KEY_PAGEDOWN))
+                        .setContext(ShortcutContext.Edit)
+                        .setDescription(messages.nextIncomplete())
+                        .setPreventDefault(true).setStopPropagation(true)
+                        .setHandler(new KeyShortcutEventHandler() {
+                            @Override
+                            public void onKeyShortcut(KeyShortcutEvent event) {
+                                targetContentsPresenter
+                                    .savePendingChangesIfApplicable();
+                                eventBus.fireEvent(new NavTransUnitEvent(
+                                    NextState));
+                            }
+                        }).build();
+        keyShortcutPresenter.register(nextStateShortcut);
 
-      prevStateShortcut = KeyShortcut.Builder.builder()
-            .addKey(new Keys(Keys.ALT_KEY, KeyCodes.KEY_PAGEUP))
-            .setContext(ShortcutContext.Edit).setDescription(messages.prevIncomplete())
-            .setPreventDefault(true).setStopPropagation(true)
-            .setHandler(new KeyShortcutEventHandler()
-            {
-               @Override
-               public void onKeyShortcut(KeyShortcutEvent event)
-               {
-                  targetContentsPresenter.savePendingChangesIfApplicable();
-                  eventBus.fireEvent(new NavTransUnitEvent(PrevState));
-               }
-            }).build();
-      keyShortcutPresenter.register(prevStateShortcut);
-      // @formatter:on
+        prevStateShortcut =
+                KeyShortcut.Builder.builder()
+                        .addKey(new Keys(Keys.ALT_KEY, KeyCodes.KEY_PAGEUP))
+                        .setContext(ShortcutContext.Edit)
+                        .setDescription(messages.prevIncomplete())
+                        .setPreventDefault(true).setStopPropagation(true)
+                        .setHandler(new KeyShortcutEventHandler() {
+                            @Override
+                            public void onKeyShortcut(KeyShortcutEvent event) {
+                                targetContentsPresenter
+                                    .savePendingChangesIfApplicable();
+                                eventBus.fireEvent(new NavTransUnitEvent(
+                                    PrevState));
+                            }
+                        }).build();
+        keyShortcutPresenter.register(prevStateShortcut);
     }
 
     protected void registerEditorActionKeys(
             final TargetContentsPresenter targetContentsPresenter) {
         // Register shortcut CTRL+S to save as fuzzy
-        // @formatter:off
-      KeyShortcut saveFuzzyShortcut = KeyShortcut.Builder.builder()
-            .addKey(new Keys(Keys.CTRL_KEY, 'S'))
-            .setContext(ShortcutContext.Edit).setDescription(messages.saveAsFuzzy())
-            .setPreventDefault(true).setStopPropagation(true)
-            .setHandler(new KeyShortcutEventHandler()
-            {
-               @Override
-               public void onKeyShortcut(KeyShortcutEvent event)
-               {
-                  targetContentsPresenter.saveAsFuzzy(targetContentsPresenter.getCurrentTransUnitIdOrNull());
-               }
-            }).build();
-      // @formatter:on
+        KeyShortcut saveFuzzyShortcut =
+                KeyShortcut.Builder.builder()
+                        .addKey(new Keys(Keys.CTRL_KEY, 'S'))
+                        .setContext(ShortcutContext.Edit)
+                        .setDescription(messages.saveAsFuzzy())
+                        .setPreventDefault(true).setStopPropagation(true)
+                        .setHandler(new KeyShortcutEventHandler() {
+                            @Override
+                            public void onKeyShortcut(KeyShortcutEvent event) {
+                                targetContentsPresenter
+                                        .saveAsFuzzy(targetContentsPresenter
+                                                .getCurrentTransUnitIdOrNull());
+                            }
+                        }).build();
         keyShortcutPresenter.register(saveFuzzyShortcut);
 
         KeyShortcutEventHandler saveAsApprovedKeyShortcutHandler =
@@ -179,42 +190,40 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler {
                     }
                 };
 
-        // @formatter:off
-      KeyShortcut ctrlEnterShortcut = KeyShortcut.Builder.builder()
-            .addKey(new Keys(Keys.CTRL_KEY, KeyCodes.KEY_ENTER))
-            .setContext(ShortcutContext.Edit).setDescription(messages.saveAsTranslated())
-            .setPreventDefault(true).setStopPropagation(true)
-            .setHandler(saveAsApprovedKeyShortcutHandler)
-            .build();
-      keyShortcutPresenter.register(ctrlEnterShortcut);
-      enterSavesApprovedShortcut = KeyShortcut.Builder.builder()
-            .addKey(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER))
-            .setContext(ShortcutContext.Edit).setDescription(messages.saveAsTranslated())
-            .setPreventDefault(true).setStopPropagation(true)
-            .setHandler(saveAsApprovedKeyShortcutHandler)
-            .build();
-      // @formatter:on
+        KeyShortcut ctrlEnterShortcut =
+                KeyShortcut.Builder.builder()
+                        .addKey(new Keys(Keys.CTRL_KEY, KeyCodes.KEY_ENTER))
+                        .setContext(ShortcutContext.Edit)
+                        .setDescription(messages.saveAsTranslated())
+                        .setPreventDefault(true).setStopPropagation(true)
+                        .setHandler(saveAsApprovedKeyShortcutHandler).build();
+        keyShortcutPresenter.register(ctrlEnterShortcut);
+        enterSavesApprovedShortcut =
+                KeyShortcut.Builder.builder()
+                        .addKey(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER))
+                        .setContext(ShortcutContext.Edit)
+                        .setDescription(messages.saveAsTranslated())
+                        .setPreventDefault(true).setStopPropagation(true)
+                        .setHandler(saveAsApprovedKeyShortcutHandler).build();
         if (configHolder.getState().isEnterSavesApproved()) {
             enterSavesApprovedHandlerRegistration =
                     keyShortcutPresenter.register(enterSavesApprovedShortcut);
         }
 
-        // @formatter:off
-      KeyShortcut copySourceShortcut = KeyShortcut.Builder.builder()
-            .addKey(new Keys(Keys.ALT_KEY, 'G'))
-            .addAttentionKey(new Keys('G'))
-            .setContext(ShortcutContext.Edit).setDescription(messages.copyFromSource())
-            .setStopPropagation(true)
-            .setPreventDefault(true)
-            .setHandler(new KeyShortcutEventHandler()
-            {
-               @Override
-               public void onKeyShortcut(KeyShortcutEvent event)
-               {
-                  targetContentsPresenter.copySourceForActiveRow();
-               }
-            }).build();
-      // @formatter:on
+        KeyShortcut copySourceShortcut =
+                KeyShortcut.Builder.builder()
+                        .addKey(new Keys(Keys.ALT_KEY, 'G'))
+                        .addAttentionKey(new Keys('G'))
+                        .setContext(ShortcutContext.Edit)
+                        .setDescription(messages.copyFromSource())
+                        .setStopPropagation(true).setPreventDefault(true)
+                        .setHandler(new KeyShortcutEventHandler() {
+                            @Override
+                            public void onKeyShortcut(KeyShortcutEvent event) {
+                                targetContentsPresenter
+                                        .copySourceForActiveRow();
+                            }
+                        }).build();
         keyShortcutPresenter.register(copySourceShortcut);
     }
 

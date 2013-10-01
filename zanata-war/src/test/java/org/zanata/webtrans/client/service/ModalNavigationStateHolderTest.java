@@ -31,23 +31,23 @@ public class ModalNavigationStateHolderTest {
     private ModalNavigationStateHolder navigationStateHolder;
 
     // @formatter:off
-   private final List<TransUnit> tuList = Lists.newArrayList(
-       TestFixture.makeTransUnit(0, ContentState.New),
-       TestFixture.makeTransUnit(1, ContentState.New),
-       TestFixture.makeTransUnit(2, ContentState.NeedReview),
-       TestFixture.makeTransUnit(3, ContentState.Approved),
-       TestFixture.makeTransUnit(4, ContentState.NeedReview),
-       TestFixture.makeTransUnit(5, ContentState.New),
-       TestFixture.makeTransUnit(6, ContentState.NeedReview),
-       TestFixture.makeTransUnit(7, ContentState.Approved),
-       TestFixture.makeTransUnit(8, ContentState.New),
-       TestFixture.makeTransUnit(9, ContentState.New),
-       TestFixture.makeTransUnit(10, ContentState.NeedReview)
-   );
-   private Map<TransUnitId,ContentState> transIdStateMap;
-   private List<TransUnitId> idIndexList;
-   private UserConfigHolder configHolder;
-   // @formatter:on
+    private final List<TransUnit> tuList = Lists.newArrayList(
+        TestFixture.makeTransUnit(0, ContentState.New),
+        TestFixture.makeTransUnit(1, ContentState.New),
+        TestFixture.makeTransUnit(2, ContentState.NeedReview),
+        TestFixture.makeTransUnit(3, ContentState.Approved),
+        TestFixture.makeTransUnit(4, ContentState.NeedReview),
+        TestFixture.makeTransUnit(5, ContentState.New),
+        TestFixture.makeTransUnit(6, ContentState.NeedReview),
+        TestFixture.makeTransUnit(7, ContentState.Approved),
+        TestFixture.makeTransUnit(8, ContentState.New),
+        TestFixture.makeTransUnit(9, ContentState.New),
+        TestFixture.makeTransUnit(10, ContentState.NeedReview)
+    );
+    private Map<TransUnitId,ContentState> transIdStateMap;
+    private List<TransUnitId> idIndexList;
+    private UserConfigHolder configHolder;
+    // @formatter:on
 
     @BeforeClass
     protected void setUpTestData() {

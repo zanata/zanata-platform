@@ -60,17 +60,11 @@ import net.customware.gwt.presenter.client.PresenterRevealedEvent;
 import net.customware.gwt.presenter.client.PresenterRevealedHandler;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-// @formatter:off
 public class AppPresenter extends WidgetPresenter<AppDisplay> implements
-      ShowSideMenuEventHandler,
-      WorkspaceContextUpdateEventHandler,
-      DocumentStatsUpdatedEventHandler,
-      PresenterRevealedHandler,
-      AttentionModeActivationEventHandler,
-      ProjectStatsUpdatedEventHandler,
-      AppDisplay.Listener
-// @formatter:on
-{
+        ShowSideMenuEventHandler, WorkspaceContextUpdateEventHandler,
+        DocumentStatsUpdatedEventHandler, PresenterRevealedHandler,
+        AttentionModeActivationEventHandler, ProjectStatsUpdatedEventHandler,
+        AppDisplay.Listener {
 
     private static final String WORKSPACE_TITLE_QUERY_PARAMETER_KEY = "title";
 
@@ -181,59 +175,50 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
     }
 
     private void registerKeyShortcuts() {
-        // @formatter:off
-      keyShortcutPresenter.register(KeyShortcut.Builder.builder()
-            .addKey(new Keys(Keys.ALT_KEY, 'L'))
-            .setContext(ShortcutContext.Application)
-            .setDescription(messages.showDocumentListKeyShortcut())
-            .setHandler(new KeyShortcutEventHandler()
-      {
-         @Override
-         public void onKeyShortcut(KeyShortcutEvent event)
-         {
-            HistoryToken token = history.getHistoryToken();
-            token.setView(MainView.Documents);
-            history.newItem(token.toTokenString());
-         }
-      }).build());
+        keyShortcutPresenter.register(KeyShortcut.Builder.builder()
+                .addKey(new Keys(Keys.ALT_KEY, 'L'))
+                .setContext(ShortcutContext.Application)
+                .setDescription(messages.showDocumentListKeyShortcut())
+                .setHandler(new KeyShortcutEventHandler() {
+                    @Override
+                    public void onKeyShortcut(KeyShortcutEvent event) {
+                        HistoryToken token = history.getHistoryToken();
+                        token.setView(MainView.Documents);
+                        history.newItem(token.toTokenString());
+                    }
+                }).build());
 
-      keyShortcutPresenter.register(KeyShortcut.Builder.builder()
-            .addKey(new Keys(Keys.ALT_KEY, 'O'))
-            .setContext(ShortcutContext.Application)
-            .setDescription(messages.showEditorKeyShortcut())
-            .setHandler(new KeyShortcutEventHandler()
-      {
-         @Override
-         public void onKeyShortcut(KeyShortcutEvent event)
-         {
-            if (selectedDocument == null)
-            {
-               eventBus.fireEvent(new NotificationEvent(Severity.Warning, messages.noDocumentSelected()));
-            }
-            else
-            {
-               HistoryToken token = history.getHistoryToken();
-               token.setView(MainView.Editor);
-               history.newItem(token.toTokenString());
-            }
-         }
-      }).build());
+        keyShortcutPresenter.register(KeyShortcut.Builder.builder()
+                .addKey(new Keys(Keys.ALT_KEY, 'O'))
+                .setContext(ShortcutContext.Application)
+                .setDescription(messages.showEditorKeyShortcut())
+                .setHandler(new KeyShortcutEventHandler() {
+                    @Override
+                    public void onKeyShortcut(KeyShortcutEvent event) {
+                        if (selectedDocument == null) {
+                            eventBus.fireEvent(new NotificationEvent(
+                                    Severity.Warning, messages
+                                            .noDocumentSelected()));
+                        } else {
+                            HistoryToken token = history.getHistoryToken();
+                            token.setView(MainView.Editor);
+                            history.newItem(token.toTokenString());
+                        }
+                    }
+                }).build());
 
-      keyShortcutPresenter.register(KeyShortcut.Builder.builder()
-            .addKey(new Keys(Keys.ALT_KEY, 'P'))
-            .setContext(ShortcutContext.Application)
-            .setDescription(messages.showProjectWideSearch())
-            .setHandler(new KeyShortcutEventHandler()
-      {
-         @Override
-         public void onKeyShortcut(KeyShortcutEvent event)
-         {
-            HistoryToken token = history.getHistoryToken();
-            token.setView(MainView.Search);
-            history.newItem(token.toTokenString());
-         }
-      }).build());
-      // @formatter:on
+        keyShortcutPresenter.register(KeyShortcut.Builder.builder()
+                .addKey(new Keys(Keys.ALT_KEY, 'P'))
+                .setContext(ShortcutContext.Application)
+                .setDescription(messages.showProjectWideSearch())
+                .setHandler(new KeyShortcutEventHandler() {
+                    @Override
+                    public void onKeyShortcut(KeyShortcutEvent event) {
+                        HistoryToken token = history.getHistoryToken();
+                        token.setView(MainView.Search);
+                        history.newItem(token.toTokenString());
+                    }
+                }).build());
     }
 
     @Override
@@ -270,8 +255,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
             break;
         case Search:
             // these two lines temporarily here until PresenterRevealedHandler
-            // is
-            // fully functional
+            // is fully functional
             display.setDocumentLabel("", messages.projectWideSearchAndReplace());
             currentDisplayStats = projectStats;
             translationPresenter.concealDisplay();
@@ -300,7 +284,6 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
     /**
      * Set selected document to the given document, update name and stats to
      * match the newly selected document.
-     *
      * @param docId
      *            id of the document to select
      */
@@ -418,7 +401,6 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
 
     /**
      * Facilitate unit testing. Will be no-op if in client(GWT compiled) mode.
-     *
      * @param projectStats
      *            project stats
      * @param selectedDocumentStats

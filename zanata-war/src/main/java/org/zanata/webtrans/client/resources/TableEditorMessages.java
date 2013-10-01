@@ -23,17 +23,18 @@ public interface TableEditorMessages extends Messages {
     @DefaultMessage("Validation error - See validation message")
     String notifyValidationError();
 
+    @DefaultMessage("Warnings: {0}, Errors: {1}")
     // @formatter:off
-   @DefaultMessage("Warnings: {0}, Errors: {1}")
-   @AlternateMessage({
-      "one|one", "Warning: 1, Error: 1",
-      "one|other", "Warning: 1, Errors: {1}",
-      "other|one", "Warnings: {0}, Error: 1",
-      "=0|=0", "Warning: none, Error: none",
-      "=0|other", "Warning: none, Errors: {1}",
-      "other|=0", "Warnings: {0}, Error: none"})
-   String validationNotificationHeading(@PluralCount int warningCount, @PluralCount int errorCount);
-   // @formatter:on
+    @AlternateMessage({
+        "one|one", "Warning: 1, Error: 1",
+        "one|other", "Warning: 1, Errors: {1}",
+        "other|one", "Warnings: {0}, Error: 1",
+        "=0|=0", "Warning: none, Error: none",
+        "=0|other", "Warning: none, Errors: {1}",
+        "other|=0", "Warnings: {0}, Error: none"})
+    // @formatter:on
+    String validationNotificationHeading(@PluralCount int warningCount,
+        @PluralCount int errorCount);
 
     @DefaultMessage("Copy from translation memory match result no.{0}")
     String copyFromTM(int index);

@@ -79,8 +79,6 @@ import org.zanata.webtrans.client.ui.ToggleEditor;
 import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.client.ui.ValidationWarningDisplay;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
-import org.zanata.webtrans.server.locale.Gwti18nReader;
-import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
@@ -103,13 +101,9 @@ public class TargetContentsPresenterTest {
             .<String> builder().add("a").build();
     private static final List<String> CACHED_TARGETS = ImmutableList
             .<String> builder().add("b").build();
-    // @formatter:off
-   List<TransUnit> currentPageRows = ImmutableList.<TransUnit>builder()
-         .add(makeTransUnit(2))
-         .add(makeTransUnit(3))
-         .add(makeTransUnit(6))
-         .build();
-   // @formatter:on
+    List<TransUnit> currentPageRows = ImmutableList.<TransUnit> builder()
+            .add(makeTransUnit(2)).add(makeTransUnit(3)).add(makeTransUnit(6))
+            .build();
 
     @Mock
     private EventBus eventBus;
@@ -383,7 +377,8 @@ public class TargetContentsPresenterTest {
         presenter.saveAsApprovedAndMoveNext(selectedTU.getId());
 
         // Then:
-        verify(validationWarning).center(selectedTU.getId(), 0, NEW_TARGETS,
+        verify(validationWarning).center(selectedTU.getId(),
+                userWorkspaceContext.getSelectedDoc(), NEW_TARGETS,
                 errorMessage);
     }
 
