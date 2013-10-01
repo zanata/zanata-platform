@@ -285,8 +285,7 @@ public class XliffReader extends XliffCommon {
         }
 
         while (keepReading) {
-            if (reader.hasText()) // if the value in element is text
-            {
+            if (reader.hasText()) { // if the value in element is text
                 contents.append(reader.getText());
             } else {
                 // if value in element is a xml element; invalid text

@@ -126,27 +126,22 @@ public class PoReader2 {
 
     /**
      * Checks that the file is safe to read as UTF-8.
-     *
      * @param hf
      */
     private static void checkContentType(HeaderFields hf) {
-// @formatter:off
-      String contentType = hf.getValue(HeaderFields.KEY_ContentType);
-      if (contentType == null)
-         return;
-      String ct = contentType.toLowerCase();
-      if (!ct.contains("charset="))
-         return;
-      if (ct.contains("charset=charset") || ct.contains("charset=ascii") ||
-            ct.contains("charset=utf-8") || ct.contains("charset=utf8"))
-      {
-         return;
-      }
-      else
-      {
-         throw new RuntimeException("unsupported charset in " + HeaderFields.KEY_ContentType + ": " + contentType);
-      }
-// @formatter:on
+        String contentType = hf.getValue(HeaderFields.KEY_ContentType);
+        if (contentType == null)
+            return;
+        String ct = contentType.toLowerCase();
+        if (!ct.contains("charset="))
+            return;
+        if (ct.contains("charset=charset") || ct.contains("charset=ascii")
+                || ct.contains("charset=utf-8") || ct.contains("charset=utf8")) {
+            return;
+        } else {
+            throw new RuntimeException("unsupported charset in "
+                    + HeaderFields.KEY_ContentType + ": " + contentType);
+        }
     }
 
     private static void extractPotHeader(Message message, PoHeader potHeader) {

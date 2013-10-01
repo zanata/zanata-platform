@@ -109,71 +109,64 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader {
         }
     }
 
-    /* @formatter:off
-    * Basic validation of CVS file format
-    * - At least 2 rows in the CVS file
-    * - Empty content validation
-    * - All row must have the same column count
-    */
-   private void validateCVSEntries(List<String[]> entries)
-   {
-      if (entries.isEmpty() || entries == null)
-      {
-         throw new RuntimeException("Invalid CSV file - empty file");
-      }
-      if (entries.size() < 2)
-      {
-         throw new RuntimeException("Invalid CSV file - no entries found");
-      }
-      for (String[] row : entries)
-      {
-         if(entries.get(0).length != row.length)
-         {
-            throw new RuntimeException("Invalid CSV file - inconsistency of columns with header");
-         }
-      }
-   }
-   /* @formatter:off
-    * Parser reads from all from first row and exclude column from description map.
-    * Format of CVS: {source locale},{locale},{locale}...,pos,description OR
-    * Format of CVS: {source locale},{locale},{locale}...,description1,description2.....
-    */
-   private Map<Integer, LocaleId> setupLocalesMap(List<String[]> entries, Map<Integer, String> descriptionMap)
-   {
-      Map<Integer, LocaleId> localeColMap = new HashMap<Integer, LocaleId>();
-      String[] headerRow = entries.get(0);
-      for (int row = 0; row < headerRow.length && !descriptionMap.containsKey(row); row++)
-      {
-
-         LocaleId locale = new LocaleId(headerRow[row]);
-         localeColMap.put(row, locale);
-      }
-      return localeColMap;
-   }
-
-   private Map<Integer, String> setupDescMap(List<String[]> entries)
-   {
-      Map<Integer, String> descMap = new HashMap<Integer, String>();
-      String[] headerRow = entries.get(0);
-
-      for (int row = 0; row < headerRow.length; row++)
-      {
-         for(String optsHeader:customColNames)
-         {
-            if(optsHeader.equals(headerRow[row])){
-               descMap.put(row,headerRow[row]);
+    /**
+     * Basic validation of CVS file format - At least 2 rows in the CVS file -
+     * Empty content validation - All row must have the same column count
+     */
+    private void validateCVSEntries(List<String[]> entries) {
+        if (entries.isEmpty() || entries == null) {
+            throw new RuntimeException("Invalid CSV file - empty file");
+        }
+        if (entries.size() < 2) {
+            throw new RuntimeException("Invalid CSV file - no entries found");
+        }
+        for (String[] row : entries) {
+            if (entries.get(0).length != row.length) {
+                throw new RuntimeException(
+                        "Invalid CSV file - inconsistency of columns with header");
             }
-         }
-      }
-      /*
-       * Sort out description map according to the value (header name)
-       */
-      ValueComparator bvc =  new ValueComparator(descMap);
-      TreeMap<Integer,String> sorted_map = new TreeMap<Integer, String>(bvc);
-      sorted_map.putAll(descMap);
+        }
+    }
 
-      return sorted_map;
-   }
+    /**
+     * Parser reads from all from first row and exclude column from description
+     * map. Format of CVS: {source locale},{locale},{locale}...,pos,description
+     * OR Format of CVS: {source
+     * locale},{locale},{locale}...,description1,description2.....
+     */
+    private Map<Integer, LocaleId> setupLocalesMap(List<String[]> entries,
+            Map<Integer, String> descriptionMap) {
+        Map<Integer, LocaleId> localeColMap = new HashMap<Integer, LocaleId>();
+        String[] headerRow = entries.get(0);
+        for (int row = 0; row < headerRow.length
+                && !descriptionMap.containsKey(row); row++) {
+
+            LocaleId locale = new LocaleId(headerRow[row]);
+            localeColMap.put(row, locale);
+        }
+        return localeColMap;
+    }
+
+    private Map<Integer, String> setupDescMap(List<String[]> entries) {
+        Map<Integer, String> descMap = new HashMap<Integer, String>();
+        String[] headerRow = entries.get(0);
+
+        for (int row = 0; row < headerRow.length; row++) {
+            for (String optsHeader : customColNames) {
+                if (optsHeader.equals(headerRow[row])) {
+                    descMap.put(row, headerRow[row]);
+                }
+            }
+        }
+        /*
+         * Sort out description map according to the value (header name)
+         */
+        ValueComparator bvc = new ValueComparator(descMap);
+        TreeMap<Integer, String> sorted_map = new TreeMap<Integer, String>(bvc);
+        sorted_map.putAll(descMap);
+
+        return sorted_map;
+    }
 
    static class ValueComparator implements Comparator<Integer> {
 
@@ -186,8 +179,7 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader {
          String strA = base.get(a);
          String strB = base.get(b);
 
-         if (strA == null || strB == null)
-         {
+         if (strA == null || strB == null) {
             return (strA == null) ? -1 : 1;
          }
 
