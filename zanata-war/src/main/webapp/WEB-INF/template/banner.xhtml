@@ -26,11 +26,11 @@
       class="off-canvas__toggle--right l--float-right"
       title="#{personHome.instance.account.username}">
       <i class="i i--huge i--list l--float-left l--pad-left-0"></i>
-			<span class="badge__container">
-				<span class="badge--bl"><!--  This is for notification count --></span>
-				<img src="#{gravatarServiceImpl.getUserImageUrl(72)}"
+      <span class="badge__container">
+        <span class="badge--bl"><!--  This is for notification count --></span>
+        <img src="#{gravatarServiceImpl.getUserImageUrl(72)}"
           alt="#{personHome.instance.name}"/>
-			</span>
+      </span>
     </a>
   </s:fragment>
   <s:fragment rendered="#{not identity.loggedIn}">
