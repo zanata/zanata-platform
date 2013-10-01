@@ -39,25 +39,26 @@ import lombok.Setter;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@NoArgsConstructor // is this necessary?
+@NoArgsConstructor
+// is this necessary?
 @Setter
 @Getter
 @Access(AccessType.FIELD)
-public class HDocumentUploadPart implements Serializable
-{
-   private static final long serialVersionUID = 1L;
+public class HDocumentUploadPart implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-   @Id
-   @GeneratedValue
-   private long id;
+    @Id
+    @GeneratedValue
+    private long id;
 
-   @ManyToOne
-   @JoinColumn(name = "documentUploadId", nullable = false, updatable = false, insertable = false)
-   private HDocumentUpload upload;
+    @ManyToOne
+    @JoinColumn(name = "documentUploadId", nullable = false, updatable = false,
+            insertable = false)
+    private HDocumentUpload upload;
 
-   @NotNull
-   @Lob
-   private Blob content;
+    @NotNull
+    @Lob
+    private Blob content;
 
     @Override
     public String toString() {

@@ -77,60 +77,63 @@ import lombok.ToString;
 @Getter
 @Access(AccessType.FIELD)
 @ToString(callSuper = true, of = "username")
-@EqualsAndHashCode(callSuper = true, of = {"enabled", "passwordHash", "username", "apiKey"})
-public class HAccount extends ModelEntityBase implements Serializable
-{
-   private static final long serialVersionUID = 1L;
+@EqualsAndHashCode(callSuper = true, of = { "enabled", "passwordHash",
+        "username", "apiKey" })
+public class HAccount extends ModelEntityBase implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-   @NaturalId
-   @UserPrincipal
-   @Field()
-   private String username;
+    @NaturalId
+    @UserPrincipal
+    @Field()
+    private String username;
 
-   @UserPassword(hash = PasswordHash.ALGORITHM_MD5)
-   private String passwordHash;
+    @UserPassword(hash = PasswordHash.ALGORITHM_MD5)
+    private String passwordHash;
 
-   @UserEnabled
-   private boolean enabled;
+    @UserEnabled
+    private boolean enabled;
 
-   @UserApiKey
-   @Size(min = 32, max = 32)
-   private String apiKey;
+    @UserApiKey
+    @Size(min = 32, max = 32)
+    private String apiKey;
 
-   @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-   @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
-   private HPerson person;
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
+    private HPerson person;
 
-   @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-   @UserRoles
-   @ManyToMany(targetEntity = HAccountRole.class)
-   @JoinTable(name = "HAccountMembership", joinColumns = @JoinColumn(name = "accountId"), inverseJoinColumns = @JoinColumn(name = "memberOf"))
-   private Set<HAccountRole> roles = Sets.newHashSet();
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @UserRoles
+    @ManyToMany(targetEntity = HAccountRole.class)
+    @JoinTable(name = "HAccountMembership", joinColumns = @JoinColumn(
+            name = "accountId"), inverseJoinColumns = @JoinColumn(
+            name = "memberOf"))
+    private Set<HAccountRole> roles = Sets.newHashSet();
 
-   @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-   @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "account")
-   private HAccountActivationKey accountActivationKey;
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY,
+            mappedBy = "account")
+    private HAccountActivationKey accountActivationKey;
 
-   @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-   @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "account")
-   private HAccountResetPasswordKey accountResetPasswordKey;
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY,
+            mappedBy = "account")
+    private HAccountResetPasswordKey accountResetPasswordKey;
 
-   @OneToMany(mappedBy = "account", cascade = {CascadeType.ALL})
-   @Cascade(value = org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
-   private Set<HCredentials> credentials = Sets.newHashSet();
+    @OneToMany(mappedBy = "account", cascade = { CascadeType.ALL })
+    @Cascade(value = org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    private Set<HCredentials> credentials = Sets.newHashSet();
 
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "mergedInto")
-   private HAccount mergedInto;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "mergedInto")
+    private HAccount mergedInto;
 
-   @OneToMany(mappedBy = "account", cascade = {CascadeType.ALL})
-   @Cascade(value = org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
-   @MapKey(name = "name")
-   private Map<String, HAccountOption> editorOptions = Maps.newHashMap();
+    @OneToMany(mappedBy = "account", cascade = { CascadeType.ALL })
+    @Cascade(value = org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    @MapKey(name = "name")
+    private Map<String, HAccountOption> editorOptions = Maps.newHashMap();
 
-   @Transient
-   public boolean isPersonAccount()
-   {
-      return person != null;
-   }
+    @Transient
+    public boolean isPersonAccount() {
+        return person != null;
+    }
 }

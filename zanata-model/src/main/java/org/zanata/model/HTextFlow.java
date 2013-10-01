@@ -91,188 +91,180 @@ import com.google.common.collect.Maps;
 @Getter
 @NoArgsConstructor
 @Access(javax.persistence.AccessType.FIELD)
-@ToString(of = {"resId", "revision", "comment", "obsolete"})
+@ToString(of = { "resId", "revision", "comment", "obsolete" })
 @Slf4j
-public class HTextFlow extends HTextContainer implements Serializable, ITextFlowHistory, HasSimpleComment, HasContents, ITextFlow
-{
-   private static final long serialVersionUID = 3023080107971905435L;
+public class HTextFlow extends HTextContainer implements Serializable,
+        ITextFlowHistory, HasSimpleComment, HasContents, ITextFlow {
+    private static final long serialVersionUID = 3023080107971905435L;
 
-   @Id
-   @GeneratedValue
-   @Setter(AccessLevel.PROTECTED)
-   private Long id;
+    @Id
+    @GeneratedValue
+    @Setter(AccessLevel.PROTECTED)
+    private Long id;
 
-   @NotNull
-   private Integer revision = 1;
+    @NotNull
+    private Integer revision = 1;
 
-   // TODO make this case sensitive
-   // TODO PERF @NaturalId(mutable=false) for better criteria caching
-   @NaturalId
-   @Size(max = 255)
-   @NotEmpty
-   private String resId;
+    // TODO make this case sensitive
+    // TODO PERF @NaturalId(mutable=false) for better criteria caching
+    @NaturalId
+    @Size(max = 255)
+    @NotEmpty
+    private String resId;
 
-   // we can't use @NotNull because the position isn't set until the object has
-   // been persisted
-   @Column(insertable = false, updatable = false, nullable = false)
-   // @Column(insertable=false, updatable=false)
-   @Setter(AccessLevel.PROTECTED)
-   private Integer pos;
+    // we can't use @NotNull because the position isn't set until the object has
+    // been persisted
+    @Column(insertable = false, updatable = false, nullable = false)
+    // @Column(insertable=false, updatable=false)
+    @Setter(AccessLevel.PROTECTED)
+    private Integer pos;
 
-   @ManyToOne
-   @JoinColumn(name = "document_id", insertable = false, updatable = false, nullable = false)
-   // TODO PERF @NaturalId(mutable=false) for better criteria caching
-   @NaturalId
-   @AccessType("field")
-   @Field(analyze = Analyze.NO)
-   @FieldBridge(impl = ContainingWorkspaceBridge.class)
-   private HDocument document;
+    @ManyToOne
+    @JoinColumn(name = "document_id", insertable = false, updatable = false,
+            nullable = false)
+    // TODO PERF @NaturalId(mutable=false) for better criteria caching
+    @NaturalId
+    @AccessType("field")
+    @Field(analyze = Analyze.NO)
+    @FieldBridge(impl = ContainingWorkspaceBridge.class)
+    private HDocument document;
 
-   /**
-    * Caller must ensure that textFlow is in document.textFlows if and only if
-    * obsolete = false
-    *
-    * @param obsolete
-    */
-   private boolean obsolete = false;
+    /**
+     * Caller must ensure that textFlow is in document.textFlows if and only if
+     * obsolete = false
+     *
+     * @param obsolete
+     */
+    private boolean obsolete = false;
 
-   @OneToMany(cascade = CascadeType.ALL, mappedBy = "textFlow")
-   @MapKeyColumn(name = "locale")
-   @BatchSize(size = 10)
-   @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-   private Map<Long, HTextFlowTarget> targets = Maps.newHashMap();
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "textFlow")
+    @MapKeyColumn(name = "locale")
+    @BatchSize(size = 10)
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private Map<Long, HTextFlowTarget> targets = Maps.newHashMap();
 
-   @OneToMany(cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST}, mappedBy = "textFlow")
-   @MapKey(name = "revision")
-   private Map<Integer, HTextFlowHistory> history = Maps.newHashMap();
+    @OneToMany(cascade = { CascadeType.REMOVE, CascadeType.MERGE,
+            CascadeType.PERSIST }, mappedBy = "textFlow")
+    @MapKey(name = "revision")
+    private Map<Integer, HTextFlowHistory> history = Maps.newHashMap();
 
-   // TODO use orphanRemoval=true: requires JPA 2.0
-   @OneToOne(optional = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-   @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
-   @JoinColumn(name = "comment_id")
-   private HSimpleComment comment;
+    // TODO use orphanRemoval=true: requires JPA 2.0
+    @OneToOne(optional = true, fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    @JoinColumn(name = "comment_id")
+    private HSimpleComment comment;
 
-   @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = true)
-   private HPotEntryData potEntryData;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY,
+            optional = true)
+    private HPotEntryData potEntryData;
 
-   @NotNull
-   @Setter(AccessLevel.PRIVATE)
-   // this method is private because setContent(), and only setContent(), should
-   // be setting wordCount
-   private Long wordCount;
+    @NotNull
+    @Setter(AccessLevel.PRIVATE)
+    // this method is private because setContent(), and only setContent(),
+    // should be setting wordCount
+    private Long wordCount;
 
-   @Setter(AccessLevel.PRIVATE)
-   // this method is private because setContent(), and only setContent(), should
-   // be setting the contentHash
-   private String contentHash;
+    @Setter(AccessLevel.PRIVATE)
+    // this method is private because setContent(), and only setContent(),
+    // should be setting the contentHash
+    private String contentHash;
 
-   private boolean plural;
+    private boolean plural;
 
-   @Getter(AccessLevel.PROTECTED)
-   private String content0;
+    @Getter(AccessLevel.PROTECTED)
+    private String content0;
 
-   @Getter(AccessLevel.PROTECTED)
-   private String content1;
+    @Getter(AccessLevel.PROTECTED)
+    private String content1;
 
-   @Getter(AccessLevel.PROTECTED)
-   private String content2;
+    @Getter(AccessLevel.PROTECTED)
+    private String content2;
 
-   @Getter(AccessLevel.PROTECTED)
-   private String content3;
+    @Getter(AccessLevel.PROTECTED)
+    private String content3;
 
-   @Getter(AccessLevel.PROTECTED)
-   private String content4;
+    @Getter(AccessLevel.PROTECTED)
+    private String content4;
 
-   @Getter(AccessLevel.PROTECTED)
-   private String content5;
+    @Getter(AccessLevel.PROTECTED)
+    private String content5;
 
-   // Only for internal use (persistence transient)
-   @Setter(AccessLevel.PRIVATE)
-   @Getter(AccessLevel.NONE)
-   @Transient
-   private Integer oldRevision;
-   
-   // Only for internal use (persistence transient)
-   @Setter(AccessLevel.PRIVATE)
-   @Getter(AccessLevel.NONE)
-   @Transient
-   private HTextFlowHistory initialState;
+    // Only for internal use (persistence transient)
+    @Setter(AccessLevel.PRIVATE)
+    @Getter(AccessLevel.NONE)
+    @Transient
+    private Integer oldRevision;
 
-   public HTextFlow(HDocument document, String resId, String content)
-   {
-      setDocument(document);
-      setResId(resId);
-      setContents(content);
-   }
+    // Only for internal use (persistence transient)
+    @Setter(AccessLevel.PRIVATE)
+    @Getter(AccessLevel.NONE)
+    @Transient
+    private HTextFlowHistory initialState;
 
-   @Transient
-   @Override
-   public LocaleId getLocale()
-   {
-      return getDocument().getSourceLocaleId();
-   }
+    public HTextFlow(HDocument document, String resId, String content) {
+        setDocument(document);
+        setResId(resId);
+        setContents(content);
+    }
 
-   @Transient
-   @Override
-   public String getQualifiedId()
-   {
-      HDocument doc = getDocument();
-      HProjectIteration iter = doc.getProjectIteration();
-      HProject proj = iter.getProject();
-      return proj.getSlug()+":"+iter.getSlug()+":"+doc.getDocId()+":"+getResId();
-   }
+    @Transient
+    @Override
+    public LocaleId getLocale() {
+        return getDocument().getSourceLocaleId();
+    }
 
-   public void setDocument(HDocument document)
-   {
-      if (!Objects.equal(this.document, document))
-      {
-         this.document = document;
-         updateWordCount();
-      }
-   }
+    @Transient
+    @Override
+    public String getQualifiedId() {
+        HDocument doc = getDocument();
+        HProjectIteration iter = doc.getProjectIteration();
+        HProject proj = iter.getProject();
+        return proj.getSlug() + ":" + iter.getSlug() + ":" + doc.getDocId()
+                + ":" + getResId();
+    }
 
-   @Override
-   @NotEmpty
-   @Transient
-   public List<String> getContents()
-   {
-      List<String> contents = new ArrayList<String>();
-      boolean populating = false;
-      for( int i = MAX_PLURALS-1; i >= 0; i-- )
-      {
-         String c = this.getContent(i);
-         if( c != null )
-         {
-            populating = true;
-         }
+    public void setDocument(HDocument document) {
+        if (!Objects.equal(this.document, document)) {
+            this.document = document;
+            updateWordCount();
+        }
+    }
 
-         if( populating )
-         {
-            contents.add(0, c);
-         }
-      }
-      return contents;
-   }
+    @Override
+    @NotEmpty
+    @Transient
+    public List<String> getContents() {
+        List<String> contents = new ArrayList<String>();
+        boolean populating = false;
+        for (int i = MAX_PLURALS - 1; i >= 0; i--) {
+            String c = this.getContent(i);
+            if (c != null) {
+                populating = true;
+            }
 
-   public void setContents(List<String> newContents)
-   {
-      if (!newContents.equals(this.getContents()))
-      {
-         for (int i = 0; i < MAX_PLURALS; i++)
-         {
-            String value = i < newContents.size() ? newContents.get(i) : null;
-            this.setContent(i, value);
-         }
-         updateContentHash();
-         updateWordCount();
-      }
-   }
+            if (populating) {
+                contents.add(0, c);
+            }
+        }
+        return contents;
+    }
 
-   private String getContent(int idx)
-   {
-      switch (idx)
-      {
-         case 0:
+    public void setContents(List<String> newContents) {
+        if (!newContents.equals(this.getContents())) {
+            for (int i = 0; i < MAX_PLURALS; i++) {
+                String value =
+                        i < newContents.size() ? newContents.get(i) : null;
+                this.setContent(i, value);
+            }
+            updateContentHash();
+            updateWordCount();
+        }
+    }
+
+    private String getContent(int idx) {
+        switch (idx) {
+        case 0:
             return content0;
 
         case 1:
@@ -323,91 +315,78 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
 
         default:
             throw new RuntimeException("Invalid Content index: " + idx);
-      }
-   }
+        }
+    }
 
-   @Override
-   public ITextFlowTarget getTargetContents(LocaleId localeId)
-   {
-      // TODO performance: need efficient way to look up a target by LocaleId
-      Collection<HTextFlowTarget> targets = getTargets().values();
-      for (HTextFlowTarget tft : targets)
-      {
-         if (tft.getLocaleId().equals(localeId))
-            return tft;
-      }
-      return null;
-   }
+    @Override
+    public ITextFlowTarget getTargetContents(LocaleId localeId) {
+        // TODO performance: need efficient way to look up a target by LocaleId
+        Collection<HTextFlowTarget> targets = getTargets().values();
+        for (HTextFlowTarget tft : targets) {
+            if (tft.getLocaleId().equals(localeId))
+                return tft;
+        }
+        return null;
+    }
 
-   @Transient
-   @Override
-   public Iterable<ITextFlowTarget> getAllTargetContents()
-   {
-      return ImmutableList.<ITextFlowTarget>copyOf(getTargets().values());
-   }
+    @Transient
+    @Override
+    public Iterable<ITextFlowTarget> getAllTargetContents() {
+        return ImmutableList.<ITextFlowTarget> copyOf(getTargets().values());
+    }
 
-   private void updateWordCount()
-   {
-      if (document == null)
-      {
-         // come back when the not-null constraints are satisfied!
-         return;
-      }
-      String locale = toBCP47(document.getLocale());
-      // TODO strip (eg) HTML tags before counting words. Needs more metadata
-      // about the content type.
-      long count = 0;
-      for( String content : this.getContents() )
-      {
-         count += OkapiUtil.countWords(content, locale);
-      }
-      setWordCount(count);
-   }
-   
-   private void updateContentHash()
-   {
-      String contents = StringUtil.concat(getContents(), '|');
-      this.setContentHash(HashUtil.generateHash(contents));
-   }
+    private void updateWordCount() {
+        if (document == null) {
+            // come back when the not-null constraints are satisfied!
+            return;
+        }
+        String locale = toBCP47(document.getLocale());
+        // TODO strip (eg) HTML tags before counting words. Needs more metadata
+        // about the content type.
+        long count = 0;
+        for (String content : this.getContents()) {
+            count += OkapiUtil.countWords(content, locale);
+        }
+        setWordCount(count);
+    }
 
-   private String toBCP47(HLocale hLocale)
-   {
-      HLocale docLocale = document.getLocale();
-      if (docLocale == null)
-      {
-         // *should* only happen in tests
-         log.warn("null locale, assuming 'en'");
-         return "en";
-      }
-      LocaleId docLocaleId = docLocale.getLocaleId();
-      return docLocaleId.getId();
-   }
-   
-   @PreUpdate
-   private void preUpdate()
-   {
-      if( !this.revision.equals(this.oldRevision) )
-      {
-         // there is an initial state
-         if( this.initialState != null )
-         {
-            this.getHistory().put(this.oldRevision, this.initialState);
-         }
-         if (!isPlural())
-         {
-            // if plural form has changed, we need to clear out obsolete contents
-            setContents(content0);
-         }
-      }
-   }
-   
-   @PostUpdate
-   @PostPersist
-   @PostLoad
-   private void updateInternalHistory()
-   {
-      this.oldRevision = this.revision;
-      this.initialState = new HTextFlowHistory(this);
-   }
+    private void updateContentHash() {
+        String contents = StringUtil.concat(getContents(), '|');
+        this.setContentHash(HashUtil.generateHash(contents));
+    }
+
+    private String toBCP47(HLocale hLocale) {
+        HLocale docLocale = document.getLocale();
+        if (docLocale == null) {
+            // *should* only happen in tests
+            log.warn("null locale, assuming 'en'");
+            return "en";
+        }
+        LocaleId docLocaleId = docLocale.getLocaleId();
+        return docLocaleId.getId();
+    }
+
+    @PreUpdate
+    private void preUpdate() {
+        if (!this.revision.equals(this.oldRevision)) {
+            // there is an initial state
+            if (this.initialState != null) {
+                this.getHistory().put(this.oldRevision, this.initialState);
+            }
+            if (!isPlural()) {
+                // if plural form has changed, we need to clear out obsolete
+                // contents
+                setContents(content0);
+            }
+        }
+    }
+
+    @PostUpdate
+    @PostPersist
+    @PostLoad
+    private void updateInternalHistory() {
+        this.oldRevision = this.revision;
+        this.initialState = new HTextFlowHistory(this);
+    }
 
 }

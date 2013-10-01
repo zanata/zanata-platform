@@ -60,97 +60,88 @@ import com.google.common.collect.Sets;
 @Setter
 @Getter
 @Access(AccessType.FIELD)
-@EqualsAndHashCode(callSuper = true, of = {"account", "email", "maintainerProjects", "name"}, doNotUseGetters = true)
+@EqualsAndHashCode(callSuper = true, of = { "account", "email",
+        "maintainerProjects", "name" }, doNotUseGetters = true)
 @ToString(callSuper = true, of = "name")
 @NoArgsConstructor
-public class HPerson extends ModelEntityBase implements Serializable
-{
-   private static final long serialVersionUID = 1L;
+public class HPerson extends ModelEntityBase implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-   @NotEmpty
-   @Size(min = 2, max = 80)
-   private String name;
+    @NotEmpty
+    @Size(min = 2, max = 80)
+    private String name;
 
-   @OneToOne(optional = true, fetch = FetchType.EAGER)
-   @JoinColumn(name = "accountId")
-   private HAccount account;
+    @OneToOne(optional = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "accountId")
+    private HAccount account;
 
-   @Email
-   @NotEmpty
-   @NaturalId(mutable = true)
-   private String email;
+    @Email
+    @NotEmpty
+    @NaturalId(mutable = true)
+    private String email;
 
-   /*
-    * This is a read-only side of the relationship. Changes to this collection are allowed but will not
-    * be persisted.
-    */
-   @ManyToMany(fetch = FetchType.EAGER, mappedBy = "maintainers", cascade = CascadeType.ALL)
-   private Set<HProject> maintainerProjects = Sets.newHashSet();
+    /*
+     * This is a read-only side of the relationship. Changes to this collection
+     * are allowed but will not be persisted.
+     */
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "maintainers",
+            cascade = CascadeType.ALL)
+    private Set<HProject> maintainerProjects = Sets.newHashSet();
 
-   @ManyToMany(fetch = FetchType.EAGER, mappedBy = "maintainers", cascade = CascadeType.ALL)
-   private Set<HIterationGroup> maintainerVersionGroups = Sets.newHashSet();
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "maintainers",
+            cascade = CascadeType.ALL)
+    private Set<HIterationGroup> maintainerVersionGroups = Sets.newHashSet();
 
-   @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "id.person")
-   @Getter(AccessLevel.PROTECTED)
-   private Set<HLocaleMember> languageTeamMemberships = Sets.newHashSet();
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "id.person")
+    @Getter(AccessLevel.PROTECTED)
+    private Set<HLocaleMember> languageTeamMemberships = Sets.newHashSet();
 
-   @Transient
-   public boolean hasAccount()
-   {
-      return account != null;
-   }
+    @Transient
+    public boolean hasAccount() {
+        return account != null;
+    }
 
-   @Transient
-   public Set<HLocale> getLanguageMemberships()
-   {
-      final Set<HLocale> memberships = new HashSet<HLocale>();
-      for( HLocaleMember locMem : this.getLanguageTeamMemberships() )
-      {
-         memberships.add( locMem.getSupportedLanguage() );
-      }
-      return memberships;
-   }
+    @Transient
+    public Set<HLocale> getLanguageMemberships() {
+        final Set<HLocale> memberships = new HashSet<HLocale>();
+        for (HLocaleMember locMem : this.getLanguageTeamMemberships()) {
+            memberships.add(locMem.getSupportedLanguage());
+        }
+        return memberships;
+    }
 
-   @Transient
-   public boolean isMaintainer(HProject proj)
-   {
-      // TODO consider implementing business key equality and using
-      // getMaintainerProjects().contains(proj)
-      for (HProject project : getMaintainerProjects())
-      {
-         if (project.getId().equals( proj.getId() ))
-         {
-            return true;
-         }
-      }
-      return false;
-   }
+    @Transient
+    public boolean isMaintainer(HProject proj) {
+        // TODO consider implementing business key equality and using
+        // getMaintainerProjects().contains(proj)
+        for (HProject project : getMaintainerProjects()) {
+            if (project.getId().equals(proj.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-   @Transient
-   public boolean isMaintainer(HIterationGroup grp)
-   {
-      // TODO consider implementing business key equality and using
-      // getMaintainerVersionGroups().contains(grp)
-      for (HIterationGroup group : getMaintainerVersionGroups())
-      {
-         if (group.getId().equals(grp.getId()))
-         {
-            return true;
-         }
-      }
-      return false;
-   }
-   
-   @Transient
-   public boolean isMaintainerOfVersionGroups()
-   {
-      return !getMaintainerVersionGroups().isEmpty();
-   }
+    @Transient
+    public boolean isMaintainer(HIterationGroup grp) {
+        // TODO consider implementing business key equality and using
+        // getMaintainerVersionGroups().contains(grp)
+        for (HIterationGroup group : getMaintainerVersionGroups()) {
+            if (group.getId().equals(grp.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-   @Transient
-   public boolean isMaintainerOfProjects()
-   {
-      return !getMaintainerProjects().isEmpty();
-   }
+    @Transient
+    public boolean isMaintainerOfVersionGroups() {
+        return !getMaintainerVersionGroups().isEmpty();
+    }
+
+    @Transient
+    public boolean isMaintainerOfProjects() {
+        return !getMaintainerProjects().isEmpty();
+    }
 
 }

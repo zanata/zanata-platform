@@ -42,19 +42,18 @@ import lombok.ToString;
 @Access(AccessType.FIELD)
 @ToString
 @NoArgsConstructor
-public class HAccountActivationKey extends AccountKeyBase implements Serializable
-{
-   private static final long serialVersionUID = 1L;
+public class HAccountActivationKey extends AccountKeyBase implements
+        Serializable {
+    private static final long serialVersionUID = 1L;
 
-   @Temporal(TemporalType.TIMESTAMP)
-   @Column(nullable = false)
-   private Date creationDate;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false)
+    private Date creationDate;
 
-   @SuppressWarnings("unused")
-   @PrePersist
-   private void onPersist()
-   {
-      creationDate = new Date();
-   }
+    @SuppressWarnings("unused")
+    @PrePersist
+    private void onPersist() {
+        creationDate = new Date();
+    }
 
 }

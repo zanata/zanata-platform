@@ -49,24 +49,19 @@ public class HAccountOption extends ModelEntityBase {
 
     private String value;
 
-   @ManyToOne(optional = false)
-   @JoinColumn(name = "account_id")
-   private HAccount account;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "account_id")
+    private HAccount account;
 
     public HAccountOption(String name, String value) {
         this.name = name;
         this.value = value;
     }
 
-    public String getName() {
-        return name;
+    @Transient
+    public Boolean getValueAsBoolean() {
+        return Boolean.parseBoolean(getValue());
     }
-
-   @Transient
-   public Boolean getValueAsBoolean()
-   {
-      return Boolean.parseBoolean(getValue());
-   }
 
     @Transient
     public Integer getValueAsInt() {

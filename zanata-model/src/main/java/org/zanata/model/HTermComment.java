@@ -52,28 +52,27 @@ import lombok.ToString;
 @NoArgsConstructor
 @Access(AccessType.FIELD)
 @ToString(of = "comment")
-public class HTermComment
-{
-   @Id
-   @GeneratedValue
-   @Setter(AccessLevel.PROTECTED)
-   private Long id;
+public class HTermComment {
+    @Id
+    @GeneratedValue
+    @Setter(AccessLevel.PROTECTED)
+    private Long id;
 
-   @NotNull
-   @Type(type = "text")
-   private String comment;
+    @NotNull
+    @Type(type = "text")
+    private String comment;
 
-   @Column(insertable = false, updatable = false, nullable = false)
-   private Integer pos;
+    @Column(insertable = false, updatable = false, nullable = false)
+    private Integer pos;
 
-   @ManyToOne
-   @JoinColumn(name = "glossaryTermId", insertable = false, updatable = false, nullable = false)
-   // TODO PERF @NaturalId(mutable=false) for better criteria caching
-   private HGlossaryTerm glossaryTerm;
+    @ManyToOne
+    @JoinColumn(name = "glossaryTermId", insertable = false, updatable = false,
+            nullable = false)
+    // TODO PERF @NaturalId(mutable=false) for better criteria caching
+    private HGlossaryTerm glossaryTerm;
 
-   public HTermComment(String comment)
-   {
-      this.comment = comment;
-   }
+    public HTermComment(String comment) {
+        this.comment = comment;
+    }
 
 }

@@ -49,44 +49,43 @@ import org.zanata.model.type.ContentTypeType;
 @Setter
 @Getter
 @Access(AccessType.FIELD)
-public class HDocumentHistory implements IDocumentHistory
-{
-   @Size(max = 255)
-   @NotEmpty
-   private String docId;
+public class HDocumentHistory implements IDocumentHistory {
+    @Size(max = 255)
+    @NotEmpty
+    private String docId;
 
-   private String name;
+    private String name;
 
-   private String path;
+    private String path;
 
-   @Type(type = "contentType")
-   @NotNull
-   private ContentType contentType;
+    @Type(type = "contentType")
+    @NotNull
+    private ContentType contentType;
 
-   // TODO PERF @NaturalId(mutable=false) for better criteria caching
-   @NaturalId
-   private Integer revision;
+    // TODO PERF @NaturalId(mutable=false) for better criteria caching
+    @NaturalId
+    private Integer revision;
 
-   @ManyToOne
-   @JoinColumn(name = "locale", nullable = false)
-   private HLocale locale;
+    @ManyToOne
+    @JoinColumn(name = "locale", nullable = false)
+    private HLocale locale;
 
-   @ManyToOne
-   @JoinColumn(name = "last_modified_by_id", nullable = true)
-   private HPerson lastModifiedBy;
+    @ManyToOne
+    @JoinColumn(name = "last_modified_by_id", nullable = true)
+    private HPerson lastModifiedBy;
 
-   @Id
-   @GeneratedValue
-   @Setter(AccessLevel.PROTECTED)
-   protected Long id;
+    @Id
+    @GeneratedValue
+    @Setter(AccessLevel.PROTECTED)
+    protected Long id;
 
-   protected Date lastChanged;
+    protected Date lastChanged;
 
-   private boolean obsolete;
+    private boolean obsolete;
 
-   // TODO PERF @NaturalId(mutable=false) for better criteria caching
-   @NaturalId
-   @ManyToOne
-   @JoinColumn(name = "document_id")
-   private HDocument document;
+    // TODO PERF @NaturalId(mutable=false) for better criteria caching
+    @NaturalId
+    @ManyToOne
+    @JoinColumn(name = "document_id")
+    private HDocument document;
 }

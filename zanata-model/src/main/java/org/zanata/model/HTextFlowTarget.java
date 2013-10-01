@@ -92,178 +92,172 @@ import com.google.common.collect.Maps;
 @Getter
 @NoArgsConstructor
 @Access(AccessType.FIELD)
-public class HTextFlowTarget extends ModelEntityBase implements HasContents, HasSimpleComment, ITextFlowTargetHistory, Serializable, ITextFlowTarget, IsEntityWithType
-{
-   private static final long serialVersionUID = 302308010797605435L;
+public class HTextFlowTarget extends ModelEntityBase implements HasContents,
+        HasSimpleComment, ITextFlowTargetHistory, Serializable,
+        ITextFlowTarget, IsEntityWithType {
+    private static final long serialVersionUID = 302308010797605435L;
 
-   // TODO PERF @NaturalId(mutable=false) for better criteria caching
-   @NaturalId
-   @ManyToOne
-   @JoinColumn(name = "tf_id")
-   //@Field(index = Index.UN_TOKENIZED)
-   //@FieldBridge(impl = ContainingWorkspaceBridge.class)
-   @IndexedEmbedded
-   private HTextFlow textFlow;
+    // TODO PERF @NaturalId(mutable=false) for better criteria caching
+    @NaturalId
+    @ManyToOne
+    @JoinColumn(name = "tf_id")
+    // @Field(index = Index.UN_TOKENIZED)
+    // @FieldBridge(impl = ContainingWorkspaceBridge.class)
+    @IndexedEmbedded
+    private HTextFlow textFlow;
 
-   // TODO PERF @NaturalId(mutable=false) for better criteria caching
-   @NaturalId
-   @ManyToOne
-   @JoinColumn(name = "locale", nullable = false)
-   @Field(analyze = Analyze.NO)
-   @FieldBridge(impl = LocaleIdBridge.class)
-   private @Nonnull HLocale locale;
+    // TODO PERF @NaturalId(mutable=false) for better criteria caching
+    @NaturalId
+    @ManyToOne
+    @JoinColumn(name = "locale", nullable = false)
+    @Field(analyze = Analyze.NO)
+    @FieldBridge(impl = LocaleIdBridge.class)
+    private @Nonnull
+    HLocale locale;
 
-   @Getter(AccessLevel.PROTECTED)
-   private String content0;
+    @Getter(AccessLevel.PROTECTED)
+    private String content0;
 
-   @Getter(AccessLevel.PROTECTED)
-   private String content1;
+    @Getter(AccessLevel.PROTECTED)
+    private String content1;
 
-   @Getter(AccessLevel.PROTECTED)
-   private String content2;
+    @Getter(AccessLevel.PROTECTED)
+    private String content2;
 
-   @Getter(AccessLevel.PROTECTED)
-   private String content3;
+    @Getter(AccessLevel.PROTECTED)
+    private String content3;
 
-   @Getter(AccessLevel.PROTECTED)
-   private String content4;
+    @Getter(AccessLevel.PROTECTED)
+    private String content4;
 
-   @Getter(AccessLevel.PROTECTED)
-   private String content5;
+    @Getter(AccessLevel.PROTECTED)
+    private String content5;
 
-   @NotNull
-   @Field(analyze = Analyze.NO)
-   @FieldBridge(impl = ContentStateBridge.class)
-   private @Nonnull ContentState state = ContentState.New;
+    @NotNull
+    @Field(analyze = Analyze.NO)
+    @FieldBridge(impl = ContentStateBridge.class)
+    private @Nonnull
+    ContentState state = ContentState.New;
 
-   @NotNull
-   @Column(name = "tf_revision")
-   private Integer textFlowRevision;
+    @NotNull
+    @Column(name = "tf_revision")
+    private Integer textFlowRevision;
 
-   @ManyToOne(cascade = { CascadeType.MERGE }, fetch = FetchType.LAZY)
-   @JoinColumn(name = "last_modified_by_id", nullable = true)
-   private HPerson lastModifiedBy;
+    @ManyToOne(cascade = { CascadeType.MERGE }, fetch = FetchType.LAZY)
+    @JoinColumn(name = "last_modified_by_id", nullable = true)
+    private HPerson lastModifiedBy;
 
-   @ManyToOne(cascade = { CascadeType.MERGE }, fetch = FetchType.LAZY)
-   @JoinColumn(name = "translated_by_id", nullable = true)
-   private HPerson translator;
+    @ManyToOne(cascade = { CascadeType.MERGE }, fetch = FetchType.LAZY)
+    @JoinColumn(name = "translated_by_id", nullable = true)
+    private HPerson translator;
 
-   @ManyToOne(cascade = { CascadeType.MERGE }, fetch = FetchType.LAZY)
-   @JoinColumn(name = "reviewed_by_id", nullable = true)
-   private HPerson reviewer;
+    @ManyToOne(cascade = { CascadeType.MERGE }, fetch = FetchType.LAZY)
+    @JoinColumn(name = "reviewed_by_id", nullable = true)
+    private HPerson reviewer;
 
-   // TODO use orphanRemoval=true: requires JPA 2.0
-   @OneToOne(optional = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-   @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
-   @JoinColumn(name = "comment_id")
-   private HSimpleComment comment;
+    // TODO use orphanRemoval=true: requires JPA 2.0
+    @OneToOne(optional = true, fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    @JoinColumn(name = "comment_id")
+    private HSimpleComment comment;
 
-   @OneToMany(cascade = { CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST }, mappedBy = "textFlowTarget")
-   @MapKey(name = "versionNum")
-   private Map<Integer, HTextFlowTargetHistory> history = Maps.newHashMap();
+    @OneToMany(cascade = { CascadeType.REMOVE, CascadeType.MERGE,
+            CascadeType.PERSIST }, mappedBy = "textFlowTarget")
+    @MapKey(name = "versionNum")
+    private Map<Integer, HTextFlowTargetHistory> history = Maps.newHashMap();
 
-   @OneToMany(cascade = { CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST }, mappedBy = "textFlowTarget")
-   private List<HTextFlowTargetReviewComment> reviewComments = Lists.newArrayList();
+    @OneToMany(cascade = { CascadeType.REMOVE, CascadeType.MERGE,
+            CascadeType.PERSIST }, mappedBy = "textFlowTarget")
+    private List<HTextFlowTargetReviewComment> reviewComments = Lists
+            .newArrayList();
 
-   // Only for internal use (persistence transient)
-   @Setter(AccessLevel.PRIVATE)
-   @Getter(AccessLevel.NONE)
-   @Transient
-   private Integer oldVersionNum;
+    // Only for internal use (persistence transient)
+    @Setter(AccessLevel.PRIVATE)
+    @Getter(AccessLevel.NONE)
+    @Transient
+    private Integer oldVersionNum;
 
-   // Only for internal use (persistence transient)
-   @Setter(AccessLevel.PRIVATE)
-   @Getter(AccessLevel.NONE)
-   @Transient
-   private HTextFlowTargetHistory initialState;
+    // Only for internal use (persistence transient)
+    @Setter(AccessLevel.PRIVATE)
+    @Getter(AccessLevel.NONE)
+    @Transient
+    private HTextFlowTargetHistory initialState;
 
-   public HTextFlowTarget(HTextFlow textFlow, @Nonnull HLocale locale)
-   {
-      this.locale = locale;
-      this.textFlow = textFlow;
-      this.textFlowRevision = textFlow.getRevision();
-   }
+    public HTextFlowTarget(HTextFlow textFlow, @Nonnull HLocale locale) {
+        this.locale = locale;
+        this.textFlow = textFlow;
+        this.textFlowRevision = textFlow.getRevision();
+    }
 
-   @Transient
-   @Override
-   public @Nonnull LocaleId getLocaleId()
-   {
-      return locale.getLocaleId();
-   }
+    @Transient
+    @Override
+    public @Nonnull
+    LocaleId getLocaleId() {
+        return locale.getLocaleId();
+    }
 
-   public boolean hasReviewer()
-   {
-      return reviewer != null;
-   }
+    public boolean hasReviewer() {
+        return reviewer != null;
+    }
 
-   /**
-    * As of release 1.6, replaced by {@link #getContents()}
-    * 
-    * @return
-    */
-   @Deprecated
-   @Transient
-   public String getContent()
-   {
-      if (this.getContents().size() > 0)
-      {
-         return this.getContents().get(0);
-      }
-      return null;
-   }
+    /**
+     * As of release 1.6, replaced by {@link #getContents()}
+     *
+     * @return
+     */
+    @Deprecated
+    @Transient
+    public String getContent() {
+        if (this.getContents().size() > 0) {
+            return this.getContents().get(0);
+        }
+        return null;
+    }
 
-   @Deprecated
-   @Transient
-   public void setContent(String content)
-   {
-      this.setContents(Arrays.asList(content));
-   }
+    @Deprecated
+    @Transient
+    public void setContent(String content) {
+        this.setContents(Arrays.asList(content));
+    }
 
-   @Override
-   @Transient
-   @NotEmpty
-   // TODO extend HTextContainer and remove this
-   @Field(name=IndexFieldLabels.CONTENT,
-         bridge = @FieldBridge(impl = StringListBridge.class,
-               params = {@Parameter(name="case", value="fold"),
-                     @Parameter(name="ngrams", value="multisize")}))
-   @AnalyzerDiscriminator(impl = TextContainerAnalyzerDiscriminator.class)
-   public List<String> getContents()
-   {
-      List<String> contents = new ArrayList<String>();
-      boolean populating = false;
-      for( int i = MAX_PLURALS-1; i >= 0; i-- )
-      {
-         String c = this.getContent(i);
-         if( c != null )
-         {
-            populating = true;
-         }
+    @Override
+    @Transient
+    @NotEmpty
+    // TODO extend HTextContainer and remove this
+    @Field(name = IndexFieldLabels.CONTENT, bridge = @FieldBridge(
+            impl = StringListBridge.class, params = {
+                    @Parameter(name = "case", value = "fold"),
+                    @Parameter(name = "ngrams", value = "multisize") }))
+    @AnalyzerDiscriminator(impl = TextContainerAnalyzerDiscriminator.class)
+    public
+            List<String> getContents() {
+        List<String> contents = new ArrayList<String>();
+        boolean populating = false;
+        for (int i = MAX_PLURALS - 1; i >= 0; i--) {
+            String c = this.getContent(i);
+            if (c != null) {
+                populating = true;
+            }
 
-         if( populating )
-         {
-            contents.add(0, c);
-         }
-      }
-      return contents;
-   }
+            if (populating) {
+                contents.add(0, c);
+            }
+        }
+        return contents;
+    }
 
-   public void setContents(List<String> contents)
-   {
-      if(!Objects.equal(contents, this.getContents()))
-      {
-         for( int i=0; i<contents.size(); i++ )
-         {
-            this.setContent(i, contents.get(i));
-         }
-      }
-   }
+    public void setContents(List<String> contents) {
+        if (!Objects.equal(contents, this.getContents())) {
+            for (int i = 0; i < contents.size(); i++) {
+                this.setContent(i, contents.get(i));
+            }
+        }
+    }
 
-   private String getContent(int idx)
-   {
-      switch (idx)
-      {
-         case 0:
+    private String getContent(int idx) {
+        switch (idx) {
+        case 0:
             return content0;
 
         case 1:
@@ -314,71 +308,62 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents, Has
 
         default:
             throw new RuntimeException("Invalid Content index: " + idx);
-      }
-   }
+        }
+    }
 
-   public void setContents(String... contents)
-   {
-      this.setContents(Arrays.asList(contents));
-   }
+    public void setContents(String... contents) {
+        this.setContents(Arrays.asList(contents));
+    }
 
-   public HTextFlowTargetReviewComment addReviewComment(String comment, HPerson commenter)
-   {
-      HTextFlowTargetReviewComment reviewComment = new HTextFlowTargetReviewComment(this, comment, commenter);
-      getReviewComments().add(reviewComment);
-      return reviewComment;
-   }
+    public HTextFlowTargetReviewComment addReviewComment(String comment,
+            HPerson commenter) {
+        HTextFlowTargetReviewComment reviewComment =
+                new HTextFlowTargetReviewComment(this, comment, commenter);
+        getReviewComments().add(reviewComment);
+        return reviewComment;
+    }
 
-   @PreUpdate
-   private void preUpdate()
-   {
-      // insert history if this has changed from its initial state
-      if (this.initialState != null && this.initialState.hasChanged(this))
-      {
-         this.getHistory().put(this.oldVersionNum, this.initialState);
-      }
-   }
+    @PreUpdate
+    private void preUpdate() {
+        // insert history if this has changed from its initial state
+        if (this.initialState != null && this.initialState.hasChanged(this)) {
+            this.getHistory().put(this.oldVersionNum, this.initialState);
+        }
+    }
 
-   @PostUpdate
-   @PostPersist
-   @PostLoad
-   private void updateInternalHistory()
-   {
-      this.oldVersionNum = this.getVersionNum();
-      this.initialState = new HTextFlowTargetHistory(this);
-   }
+    @PostUpdate
+    @PostPersist
+    @PostLoad
+    private void updateInternalHistory() {
+        this.oldVersionNum = this.getVersionNum();
+        this.initialState = new HTextFlowTargetHistory(this);
+    }
 
-   @Override
-   public String toString()
-   {
-      return Objects.toStringHelper(this).
-            add("contents", getContents()).
-            add("locale", getLocale()).
-            add("state", getState()).
-            add("comment", getComment()).
-            add("textFlow", getTextFlow().getContents()).
-            toString();
-   }
-   @Transient
-   public void clear()
-   {
-      setContents();
-      setState(ContentState.New);
-      setComment(null);
-      setLastModifiedBy(null);
-      setTranslator(null);
-      setReviewer(null);
-   }
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this).add("contents", getContents())
+                .add("locale", getLocale()).add("state", getState())
+                .add("comment", getComment())
+                .add("textFlow", getTextFlow().getContents()).toString();
+    }
 
-   protected boolean logPersistence()
-   {
-      return false;
-   }
+    @Transient
+    public void clear() {
+        setContents();
+        setState(ContentState.New);
+        setComment(null);
+        setLastModifiedBy(null);
+        setTranslator(null);
+        setReviewer(null);
+    }
 
-   @Override
-   @Transient
-   public EntityType getEntityType()
-   {
-      return EntityType.HTexFlowTarget;
-   }
+    protected boolean logPersistence() {
+        return false;
+    }
+
+    @Override
+    @Transient
+    public EntityType getEntityType() {
+        return EntityType.HTexFlowTarget;
+    }
 }

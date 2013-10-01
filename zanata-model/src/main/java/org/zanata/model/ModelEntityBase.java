@@ -51,85 +51,75 @@ import lombok.Setter;
 @EqualsAndHashCode(exclude = "versionNum")
 @Getter
 @Setter
-public class ModelEntityBase implements Serializable, HashableState
-{
-   private static final long serialVersionUID = -6139220551322868743L;
+public class ModelEntityBase implements Serializable, HashableState {
+    private static final long serialVersionUID = -6139220551322868743L;
 
-   @Id
-   @GeneratedValue
-   @Setter(AccessLevel.PROTECTED)
-   protected Long id;
+    @Id
+    @GeneratedValue
+    @Setter(AccessLevel.PROTECTED)
+    protected Long id;
 
-   @Temporal(TemporalType.TIMESTAMP)
-   @Column(nullable = false)
-   protected Date creationDate;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false)
+    protected Date creationDate;
 
-   @Temporal(TemporalType.TIMESTAMP)
-   @Column(nullable = false)
-   protected Date lastChanged;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false)
+    protected Date lastChanged;
 
-   @Version
-   @Column(nullable = false)
-   protected Integer versionNum;
+    @Version
+    @Column(nullable = false)
+    protected Integer versionNum;
 
-   @SuppressWarnings("unused")
-   @PrePersist
-   private void onPersist()
-   {
-      Date now = new Date();
-      if (creationDate == null)
-      {
-         creationDate = now;
-      }
-      if (lastChanged == null)
-      {
-         lastChanged = now;
-      }
-   }
+    @SuppressWarnings("unused")
+    @PrePersist
+    private void onPersist() {
+        Date now = new Date();
+        if (creationDate == null) {
+            creationDate = now;
+        }
+        if (lastChanged == null) {
+            lastChanged = now;
+        }
+    }
 
-   @SuppressWarnings("unused")
-   @PostPersist
-   private void postPersist()
-   {
-      if (logPersistence())
-      {
-         Logger log = LoggerFactory.getLogger(getClass());
-         log.info("persist entity: {}", this);
-      }
-   }
+    @SuppressWarnings("unused")
+    @PostPersist
+    private void postPersist() {
+        if (logPersistence()) {
+            Logger log = LoggerFactory.getLogger(getClass());
+            log.info("persist entity: {}", this);
+        }
+    }
 
-   @SuppressWarnings("unused")
-   @PreUpdate
-   private void onUpdate()
-   {
-      lastChanged = new Date();
-   }
+    @SuppressWarnings("unused")
+    @PreUpdate
+    private void onUpdate() {
+        lastChanged = new Date();
+    }
 
-   @SuppressWarnings("unused")
-   @PreRemove
-   private void onRemove()
-   {
-      if (logPersistence())
-      {
-         Logger log = LoggerFactory.getLogger(getClass());
-         log.info("remove entity: {}", this);
-      }
-   }
+    @SuppressWarnings("unused")
+    @PreRemove
+    private void onRemove() {
+        if (logPersistence()) {
+            Logger log = LoggerFactory.getLogger(getClass());
+            log.info("remove entity: {}", this);
+        }
+    }
 
-   @Override
-   public String toString()
-   {
-      return getClass().getSimpleName() + "@" + Integer.toHexString(hashCode()) + "[id=" + id + ",versionNum=" + versionNum + "]";
-   }
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@"
+                + Integer.toHexString(hashCode()) + "[id=" + id
+                + ",versionNum=" + versionNum + "]";
+    }
 
-   protected boolean logPersistence()
-   {
-      return true;
-   }
+    protected boolean logPersistence() {
+        return true;
+    }
 
-   @Override
-   public void writeHashState(ByteArrayOutputStream buff) throws IOException
-   {
-      buff.write(versionNum.byteValue());
-   }
+    @Override
+    public void writeHashState(ByteArrayOutputStream buff) throws IOException {
+        buff.write(versionNum.byteValue());
+    }
 }

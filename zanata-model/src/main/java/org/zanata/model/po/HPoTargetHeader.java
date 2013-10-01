@@ -50,13 +50,13 @@ import lombok.ToString;
 public class HPoTargetHeader extends PoHeaderBase {
     private static final long serialVersionUID = 1L;
 
-   @NaturalId
-   @ManyToOne
-   @JoinColumn(name = "targetLanguage", nullable = false)
-   private HLocale targetLanguage;
+    @NaturalId
+    @ManyToOne
+    @JoinColumn(name = "targetLanguage", nullable = false)
+    private HLocale targetLanguage;
 
-   @NaturalId
-   @ManyToOne
-   @JoinColumn(name = "document_id")
-   private HDocument document;
+    @NaturalId
+    @ManyToOne
+    @JoinColumn(name = "document_id")
+    private HDocument document;
 }

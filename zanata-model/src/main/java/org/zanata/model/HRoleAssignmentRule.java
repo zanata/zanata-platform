@@ -46,14 +46,13 @@ import lombok.ToString;
 @Getter
 @Access(AccessType.FIELD)
 @ToString(callSuper = true)
-public class HRoleAssignmentRule extends ModelEntityBase
-{
-   @Column(length = 100)
-   private String policyName;
-
+public class HRoleAssignmentRule extends ModelEntityBase {
+    @Column(length = 100)
     private String policyName;
 
-   @ManyToOne(optional = false)
-   @JoinColumn(name = "role_to_assign_id", nullable = false)
-   private HAccountRole roleToAssign;
+    private String identityRegExp;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "role_to_assign_id", nullable = false)
+    private HAccountRole roleToAssign;
 }

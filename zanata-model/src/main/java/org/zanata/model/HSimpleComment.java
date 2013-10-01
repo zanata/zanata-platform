@@ -51,23 +51,21 @@ import lombok.Setter;
 @Getter
 @Access(AccessType.FIELD)
 @NoArgsConstructor
-public class HSimpleComment implements HashableState, Serializable
-{
-   private static final long serialVersionUID = 5684831285769022524L;
+public class HSimpleComment implements HashableState, Serializable {
+    private static final long serialVersionUID = 5684831285769022524L;
 
-   @Id
-   @GeneratedValue
-   @Setter(AccessLevel.PROTECTED)
-   private Long id;
+    @Id
+    @GeneratedValue
+    @Setter(AccessLevel.PROTECTED)
+    private Long id;
 
-   @NotNull
-   @Type(type = "text")
-   private String comment;
+    @NotNull
+    @Type(type = "text")
+    private String comment;
 
-   public HSimpleComment(String comment)
-   {
-      this.comment = comment;
-   }
+    public HSimpleComment(String comment) {
+        this.comment = comment;
+    }
 
     public static String toString(HSimpleComment comment) {
         return comment != null ? comment.getComment() : null;

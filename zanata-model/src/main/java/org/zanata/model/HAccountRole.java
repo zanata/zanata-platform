@@ -50,44 +50,40 @@ import lombok.Setter;
 @Getter
 @Access(AccessType.FIELD)
 @TypeDef(name = "roleType", typeClass = RoleTypeType.class)
-public class HAccountRole implements Serializable
-{
-   private static final long serialVersionUID = 9177366120789064801L;
+public class HAccountRole implements Serializable {
+    private static final long serialVersionUID = 9177366120789064801L;
 
-   @Id
-   @GeneratedValue
-   private Integer id;
+    @Id
+    @GeneratedValue
+    private Integer id;
 
-   // TODO PERF @NaturalId(mutable=false) for better criteria caching
-   @RoleName
-   private String name;
+    // TODO PERF @NaturalId(mutable=false) for better criteria caching
+    @RoleName
+    private String name;
 
-   @RoleConditional
-   private boolean conditional;
+    @RoleConditional
+    private boolean conditional;
 
-   @Type(type = "roleType")
-   @NotNull
-   private RoleType roleType = RoleType.MANUAL;
+    @Type(type = "roleType")
+    @NotNull
+    private RoleType roleType = RoleType.MANUAL;
 
-   @RoleGroups
-   @ManyToMany(targetEntity = HAccountRole.class)
-   @JoinTable(name = "HAccountRoleGroup", joinColumns = @JoinColumn(name = "roleId"), inverseJoinColumns = @JoinColumn(name = "memberOf"))
-   private Set<HAccountRole> groups = Sets.newHashSet();
+    @RoleGroups
+    @ManyToMany(targetEntity = HAccountRole.class)
+    @JoinTable(name = "HAccountRoleGroup", joinColumns = @JoinColumn(
+            name = "roleId"), inverseJoinColumns = @JoinColumn(
+            name = "memberOf"))
+    private Set<HAccountRole> groups = Sets.newHashSet();
 
-   public enum RoleType
-   {
-      AUTO,
-      MANUAL;
+    public enum RoleType {
+        AUTO, MANUAL;
 
-      public char getInitial()
-      {
-         return name().charAt(0);
-      }
+        public char getInitial() {
+            return name().charAt(0);
+        }
 
-      public static RoleType valueOf(char initial)
-      {
-         switch (initial)
-         {
+        public static RoleType valueOf(char initial) {
+            switch (initial) {
             case 'A':
                 return AUTO;
             case 'M':

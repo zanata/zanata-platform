@@ -51,17 +51,17 @@ import lombok.ToString;
 public abstract class PoHeaderBase extends ModelEntityBase implements
         HashableState {
 
-   private static final long serialVersionUID = 4675225923343857779L;
+    private static final long serialVersionUID = 4675225923343857779L;
 
-   // TODO use orphanRemoval=true: requires JPA 2.0
-   @OneToOne(optional = true, cascade = CascadeType.ALL)
-   @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
-   @JoinColumn(name = "comment_id")
-   private HSimpleComment comment;
+    // TODO use orphanRemoval=true: requires JPA 2.0
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    @JoinColumn(name = "comment_id")
+    private HSimpleComment comment;
 
-   // see PoUtility.stringToHeaderEntries
-   @Type(type = "text")
-   // stored in the format used by java.util.Properties.store(Writer)
-   // see PoUtility.headerEntriesToString
-   private String entries;
+    // see PoUtility.stringToHeaderEntries
+    @Type(type = "text")
+    // stored in the format used by java.util.Properties.store(Writer)
+    // see PoUtility.headerEntriesToString
+    private String entries;
 }

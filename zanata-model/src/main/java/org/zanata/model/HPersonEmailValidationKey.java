@@ -49,41 +49,39 @@ import org.hibernate.validator.constraints.NotEmpty;
 @ToString
 @NoArgsConstructor
 @Access(AccessType.FIELD)
-public class HPersonEmailValidationKey implements Serializable
-{
-   private static final long serialVersionUID = 1L;
+public class HPersonEmailValidationKey implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-   @Id
-   @GeneratedValue
-   private Long id;
+    @Id
+    @GeneratedValue
+    private Long id;
 
-   @Column(nullable = false, unique = true)
-   private String keyHash;
+    @Column(nullable = false, unique = true)
+    private String keyHash;
 
-   @ManyToOne(optional = false)
-   @JoinColumn(name = "personId", nullable = false, unique = true)
-   private HPerson person;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "personId", nullable = false, unique = true)
+    private HPerson person;
 
-   @Temporal(TemporalType.TIMESTAMP)
-   @Column(nullable = false)
-   private Date creationDate;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false)
+    private Date creationDate;
 
-   @Email
-   @NotEmpty
-   private String email;
+    @Email
+    @NotEmpty
+    private String email;
 
-   public HPersonEmailValidationKey(HPerson person, String email, String keyHash)
-   {
-      this.person = person;
-      this.keyHash = keyHash;
-      this.email = email;
-   }
+    public HPersonEmailValidationKey(HPerson person, String email,
+            String keyHash) {
+        this.person = person;
+        this.keyHash = keyHash;
+        this.email = email;
+    }
 
-   @SuppressWarnings("unused")
-   @PrePersist
-   private void onPersist()
-   {
-      creationDate = new Date();
-   }
+    @SuppressWarnings("unused")
+    @PrePersist
+    private void onPersist() {
+        creationDate = new Date();
+    }
 
 }

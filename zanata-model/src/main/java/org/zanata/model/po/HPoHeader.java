@@ -38,7 +38,6 @@ import lombok.ToString;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @ToString(callSuper = true)
 @Access(AccessType.FIELD)
-public class HPoHeader extends PoHeaderBase
-{
-   private static final long serialVersionUID = 1L;
+public class HPoHeader extends PoHeaderBase {
+    private static final long serialVersionUID = 1L;
 }

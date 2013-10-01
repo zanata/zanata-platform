@@ -38,14 +38,13 @@ import org.hibernate.validator.constraints.NotEmpty;
 @Setter
 @Getter
 @Access(AccessType.FIELD)
-public class AccountKeyBase
-{
-   @NotEmpty
-   @Size(min = 32, max = 32)
-   @Id
-   private String keyHash;
+public class AccountKeyBase {
+    @NotEmpty
+    @Size(min = 32, max = 32)
+    @Id
+    private String keyHash;
 
-   @OneToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "accountId")
-   private HAccount account;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "accountId")
+    private HAccount account;
 }

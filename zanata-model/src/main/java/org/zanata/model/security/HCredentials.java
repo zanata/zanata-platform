@@ -50,18 +50,17 @@ import lombok.Setter;
 @DiscriminatorColumn(name = "type",
         discriminatorType = DiscriminatorType.STRING)
 @NoArgsConstructor
-@Unique(properties = {"user"})
+@Unique(properties = { "user" })
 @Setter
 @Getter
 @Access(AccessType.FIELD)
-public abstract class HCredentials extends ModelEntityBase
-{
-   @ManyToOne(optional = false)
-   @JoinColumn(name = "account_id")
-   private HAccount account;
+public abstract class HCredentials extends ModelEntityBase {
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "account_id")
+    private HAccount account;
 
-   @Column(unique = true, nullable = false)
-   private String user;
+    @Column(unique = true, nullable = false)
+    private String user;
 
-   private String email;
+    private String email;
 }

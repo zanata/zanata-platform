@@ -76,37 +76,35 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true, doNotUseGetters = true,
         exclude = "glossaryEntry")
 @ToString(doNotUseGetters = true)
-public class HGlossaryTerm extends ModelEntityBase
-{
-   private static final long serialVersionUID = 1854278563597070432L;
+public class HGlossaryTerm extends ModelEntityBase {
+    private static final long serialVersionUID = 1854278563597070432L;
 
-   @NotNull
-   @Type(type = "text")
-   @Field(analyzer = @Analyzer(impl = StandardAnalyzer.class))
-   private String content;
+    @NotNull
+    @Type(type = "text")
+    @Field(analyzer = @Analyzer(impl = StandardAnalyzer.class))
+    private String content;
 
-   @OneToMany(cascade = CascadeType.ALL)
-   @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
-   @IndexColumn(name = "pos", base = 0, nullable = false)
-   @JoinColumn(name = "glossaryTermId", nullable = false)
-   private List<HTermComment> comments = Lists.newArrayList();
+    @OneToMany(cascade = CascadeType.ALL)
+    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    @IndexColumn(name = "pos", base = 0, nullable = false)
+    @JoinColumn(name = "glossaryTermId", nullable = false)
+    private List<HTermComment> comments = Lists.newArrayList();
 
-   // TODO PERF @NaturalId(mutable=false) for better criteria caching
-   @NaturalId
-   @ManyToOne
-   @JoinColumn(name = "glossaryEntryId", nullable = false)
-   private HGlossaryEntry glossaryEntry;
+    // TODO PERF @NaturalId(mutable=false) for better criteria caching
+    @NaturalId
+    @ManyToOne
+    @JoinColumn(name = "glossaryEntryId", nullable = false)
+    private HGlossaryEntry glossaryEntry;
 
-   // TODO PERF @NaturalId(mutable=false) for better criteria caching
-   @NaturalId
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "localeId", nullable = false)
-   @Field(analyze = Analyze.NO)
-   @FieldBridge(impl = LocaleIdBridge.class)
-   private HLocale locale;
+    // TODO PERF @NaturalId(mutable=false) for better criteria caching
+    @NaturalId
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "localeId", nullable = false)
+    @Field(analyze = Analyze.NO)
+    @FieldBridge(impl = LocaleIdBridge.class)
+    private HLocale locale;
 
-   public HGlossaryTerm(String content)
-   {
-      setContent(content);
-   }
+    public HGlossaryTerm(String content) {
+        setContent(content);
+    }
 }

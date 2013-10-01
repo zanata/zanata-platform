@@ -41,46 +41,45 @@ import com.google.common.base.Objects;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor // is this necessary?
+@NoArgsConstructor
+// is this necessary?
 @Access(AccessType.FIELD)
-public class HRawDocument extends ModelEntityBase implements Serializable
-{
+public class HRawDocument extends ModelEntityBase implements Serializable {
 
-   private static final long serialVersionUID = 5129552589912687504L;
+    private static final long serialVersionUID = 5129552589912687504L;
 
-   // TODO ensure any document deletion cascades to remove associated HRawDocument
-   @OneToOne(mappedBy = "rawDocument")
-   private HDocument document;
+    // TODO ensure any document deletion cascades to remove associated
+    // HRawDocument
+    @OneToOne(mappedBy = "rawDocument")
+    private HDocument document;
 
-   // TODO none of these should allow null
-   @NotEmpty
-   private String contentHash;
+    // TODO none of these should allow null
+    @NotEmpty
+    private String contentHash;
 
-   private String fileId;
+    private String fileId;
 
-   @Enumerated(EnumType.STRING)
-   private DocumentType type;
+    @Enumerated(EnumType.STRING)
+    private DocumentType type;
 
-   private String uploadedBy;
+    private String uploadedBy;
 
-   private String adapterParameters;
+    private String adapterParameters;
 
-   public void setDocument(HDocument document)
-   {
-      if (!Objects.equal(this.document, document))
-      {
-         this.document = document;
-      }
-   }
+    public void setDocument(HDocument document) {
+        if (!Objects.equal(this.document, document)) {
+            this.document = document;
+        }
+    }
 
-   @Override
-   public String toString()
-   {
-      return getClass().getSimpleName() + "@" + Integer.toHexString(hashCode())
-            + "[id=" + id + ",versionNum=" + versionNum
-            + ",contentHash=" + contentHash + "]";
-   }
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@"
+                + Integer.toHexString(hashCode()) + "[id=" + id
+                + ",versionNum=" + versionNum + ",contentHash=" + contentHash
+                + "]";
+    }
 
-   // TODO override equals to use contentHash, type, parameters, etc.
+    // TODO override equals to use contentHash, type, parameters, etc.
 
 }

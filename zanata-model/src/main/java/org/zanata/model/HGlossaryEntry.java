@@ -60,23 +60,23 @@ import lombok.ToString;
 @Setter
 @Getter
 @Access(AccessType.FIELD)
-@EqualsAndHashCode(callSuper = true, doNotUseGetters = true, exclude = "glossaryTerms")
-@ToString(of = {"sourceRef", "srcLocale"})
-public class HGlossaryEntry extends ModelEntityBase
-{
-   private static final long serialVersionUID = -4200183325180630061L;
+@EqualsAndHashCode(callSuper = true, doNotUseGetters = true,
+        exclude = "glossaryTerms")
+@ToString(of = { "sourceRef", "srcLocale" })
+public class HGlossaryEntry extends ModelEntityBase {
+    private static final long serialVersionUID = -4200183325180630061L;
 
-   @OneToMany(cascade = CascadeType.ALL, mappedBy = "glossaryEntry")
-   @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
-   @MapKey(name = "locale")
-   private Map<HLocale, HGlossaryTerm> glossaryTerms = Maps.newHashMap();
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "glossaryEntry")
+    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    @MapKey(name = "locale")
+    private Map<HLocale, HGlossaryTerm> glossaryTerms = Maps.newHashMap();
 
-   @Type(type = "text")
-   private String sourceRef;
+    @Type(type = "text")
+    private String sourceRef;
 
-   @OneToOne
-   @JoinColumn(name = "srcLocaleId", nullable = false)
-   @Field(analyze = Analyze.NO)
-   @FieldBridge(impl = LocaleIdBridge.class)
-   private HLocale srcLocale;
+    @OneToOne
+    @JoinColumn(name = "srcLocaleId", nullable = false)
+    @Field(analyze = Analyze.NO)
+    @FieldBridge(impl = LocaleIdBridge.class)
+    private HLocale srcLocale;
 }

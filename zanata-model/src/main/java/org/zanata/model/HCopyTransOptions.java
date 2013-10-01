@@ -87,20 +87,23 @@ public class HCopyTransOptions extends ModelEntityBase {
             case 'I':
                 return IGNORE;
             default:
-               throw new IllegalArgumentException(String.valueOf(initial));
-         }
-      }
-   }
+                throw new IllegalArgumentException(String.valueOf(initial));
+            }
+        }
+    }
 
-   @Type(type = "conditionRuleAction")
-   @NotNull
-   private ConditionRuleAction contextMismatchAction = ConditionRuleAction.REJECT;
+    @Type(type = "conditionRuleAction")
+    @NotNull
+    private ConditionRuleAction contextMismatchAction =
+            ConditionRuleAction.REJECT;
 
-   @Type(type = "conditionRuleAction")
-   @NotNull
-   private ConditionRuleAction docIdMismatchAction = ConditionRuleAction.REJECT;
+    @Type(type = "conditionRuleAction")
+    @NotNull
+    private ConditionRuleAction docIdMismatchAction =
+            ConditionRuleAction.REJECT;
 
-   @Type(type = "conditionRuleAction")
-   @NotNull
-   private ConditionRuleAction projectMismatchAction = ConditionRuleAction.REJECT;
+    @Type(type = "conditionRuleAction")
+    @NotNull
+    private ConditionRuleAction projectMismatchAction =
+            ConditionRuleAction.REJECT;
 }

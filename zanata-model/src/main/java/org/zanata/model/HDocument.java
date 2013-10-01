@@ -92,168 +92,164 @@ import com.google.common.collect.Maps;
 @Getter
 @Access(AccessType.FIELD)
 @NoArgsConstructor
-@ToString(of = {"name", "path", "docId", "locale", "revision"})
-public class HDocument extends ModelEntityBase implements DocumentWithId, IDocumentHistory, Serializable, Iterable<ITextFlow>, IsEntityWithType
-{
-   private static final long serialVersionUID = 5129552589912687504L;
+@ToString(of = { "name", "path", "docId", "locale", "revision" })
+public class HDocument extends ModelEntityBase implements DocumentWithId,
+        IDocumentHistory, Serializable, Iterable<ITextFlow>, IsEntityWithType {
+    private static final long serialVersionUID = 5129552589912687504L;
 
-   // TODO make this case sensitive
-   @NaturalId
-   @Size(max = 255)
-   @NotEmpty
-   private String docId;
+    // TODO make this case sensitive
+    @NaturalId
+    @Size(max = 255)
+    @NotEmpty
+    private String docId;
 
-   @NotEmpty
-   private String name;
+    @NotEmpty
+    private String name;
 
-   @NotNull
-   private String path;
+    @NotNull
+    private String path;
 
-   @Type(type = "contentType")
-   @NotNull
-   private ContentType contentType;
+    @Type(type = "contentType")
+    @NotNull
+    private ContentType contentType;
 
-   @NotNull
-   private Integer revision = 1;
+    @NotNull
+    private Integer revision = 1;
 
-   @SuppressWarnings("null")
-   @ManyToOne
-   @JoinColumn(name = "locale", nullable = false)
-   private @Nonnull HLocale locale;
+    @SuppressWarnings("null")
+    @ManyToOne
+    @JoinColumn(name = "locale", nullable = false)
+    private @Nonnull
+    HLocale locale;
 
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "last_modified_by_id", nullable = true)
-   @Setter(AccessLevel.PROTECTED)
-   private HPerson lastModifiedBy;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "last_modified_by_id", nullable = true)
+    @Setter(AccessLevel.PROTECTED)
+    private HPerson lastModifiedBy;
 
-   @ManyToOne(cascade = CascadeType.PERSIST)
-   @JoinColumn(name = "project_iteration_id", nullable = false)
-   @NaturalId
-   private HProjectIteration projectIteration;
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "project_iteration_id", nullable = false)
+    @NaturalId
+    private HProjectIteration projectIteration;
 
-   @OneToMany
-   @JoinColumn(name = "document_id", insertable = false, updatable = false)
-   @MapKey(name = "resId")
-   /**
-    * NB Don't modify this collection.  Add to the TextFlows list instead.
-    * TODO get ImmutableMap working here.
-    */
-   @Setter(AccessLevel.PRIVATE)
-   private Map<String, HTextFlow> allTextFlows = Maps.newHashMap();
+    @OneToMany
+    @JoinColumn(name = "document_id", insertable = false, updatable = false)
+    @MapKey(name = "resId")
+    /**
+     * NB Don't modify this collection.  Add to the TextFlows list instead.
+     * TODO get ImmutableMap working here.
+     */
+    @Setter(AccessLevel.PRIVATE)
+    private Map<String, HTextFlow> allTextFlows = Maps.newHashMap();
 
-   @OneToMany(cascade = CascadeType.ALL)
-   @Where(clause = "obsolete=0")
-   @IndexColumn(name = "pos", base = 0, nullable = false)
-   @JoinColumn(name = "document_id", nullable = false)
-   /**
-    * NB: Any elements which are removed from this list must have obsolete set
-    * to true, and any elements which are added to this list must have obsolete
-    * set to false.
-    */
-   private List<HTextFlow> textFlows = Lists.newArrayList();
+    @OneToMany(cascade = CascadeType.ALL)
+    @Where(clause = "obsolete=0")
+    @IndexColumn(name = "pos", base = 0, nullable = false)
+    @JoinColumn(name = "document_id", nullable = false)
+    /**
+     * NB: Any elements which are removed from this list must have obsolete set
+     * to true, and any elements which are added to this list must have obsolete
+     * set to false.
+     */
+    private List<HTextFlow> textFlows = Lists.newArrayList();
 
-   private boolean obsolete = false;
+    private boolean obsolete = false;
 
-   @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = true)
-   private HPoHeader poHeader;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY,
+            optional = true)
+    private HPoHeader poHeader;
 
-   // TODO use orphanRemoval=true: requires JPA 2.0
-   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "document")
-   @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
-   @MapKey(name = "targetLanguage")
-   @Setter(AccessLevel.PRIVATE)
-   private Map<HLocale, HPoTargetHeader> poTargetHeaders = Maps.newHashMap();
+    // TODO use orphanRemoval=true: requires JPA 2.0
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,
+            mappedBy = "document")
+    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    @MapKey(name = "targetLanguage")
+    @Setter(AccessLevel.PRIVATE)
+    private Map<HLocale, HPoTargetHeader> poTargetHeaders = Maps.newHashMap();
 
-   @OneToOne(fetch = FetchType.LAZY, optional = true)
-   @JoinTable(name = "HDocument_RawDocument",
-      joinColumns = @JoinColumn(name="documentId"),
-      inverseJoinColumns = @JoinColumn(name="rawDocumentId")
-   )
-   private HRawDocument rawDocument;
+    @OneToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinTable(name = "HDocument_RawDocument", joinColumns = @JoinColumn(
+            name = "documentId"), inverseJoinColumns = @JoinColumn(
+            name = "rawDocumentId"))
+    private HRawDocument rawDocument;
 
-   public HDocument(String fullPath, ContentType contentType, HLocale locale)
-   {
-      this.contentType = contentType;
-      this.locale = locale;
-      setFullPath(fullPath);
-   }
+    public HDocument(String fullPath, ContentType contentType, HLocale locale) {
+        this.contentType = contentType;
+        this.locale = locale;
+        setFullPath(fullPath);
+    }
 
-   public HDocument(String docId, String name, String path, ContentType contentType, HLocale locale)
-   {
-      this.docId = docId;
-      this.name = name;
-      this.path = path;
-      this.contentType = contentType;
-      this.locale = locale;
-   }
+    public HDocument(String docId, String name, String path,
+            ContentType contentType, HLocale locale) {
+        this.docId = docId;
+        this.name = name;
+        this.path = path;
+        this.contentType = contentType;
+        this.locale = locale;
+    }
 
-   public void setFullPath(String fullPath)
-   {
-      this.docId = fullPath;
-      int lastSepChar = fullPath.lastIndexOf('/');
-      switch (lastSepChar)
-      {
-      case -1:
-         this.path = "";
-         this.name = fullPath;
-         break;
-      case 0:
-         this.path = "/";
-         this.name = fullPath.substring(1);
-         break;
-      default:
-         this.path = fullPath.substring(0, lastSepChar + 1);
-         this.name = fullPath.substring(lastSepChar + 1);
-      }
-   }
+    public void setFullPath(String fullPath) {
+        this.docId = fullPath;
+        int lastSepChar = fullPath.lastIndexOf('/');
+        switch (lastSepChar) {
+        case -1:
+            this.path = "";
+            this.name = fullPath;
+            break;
+        case 0:
+            this.path = "/";
+            this.name = fullPath.substring(1);
+            break;
+        default:
+            this.path = fullPath.substring(0, lastSepChar + 1);
+            this.name = fullPath.substring(lastSepChar + 1);
+        }
+    }
 
-   @Transient
-   @Override
-   public String getQualifiedDocId()
-   {
-      HProjectIteration iter = getProjectIteration();
-      HProject proj = iter.getProject();
-      return proj.getSlug()+":"+iter.getSlug()+":"+getDocId();
-   }
+    @Transient
+    @Override
+    public String getQualifiedDocId() {
+        HProjectIteration iter = getProjectIteration();
+        HProject proj = iter.getProject();
+        return proj.getSlug() + ":" + iter.getSlug() + ":" + getDocId();
+    }
 
-   @Transient
-   @Override
-   public @Nonnull LocaleId getSourceLocaleId()
-   {
-      return locale.getLocaleId();
-   }
+    @Transient
+    @Override
+    public @Nonnull
+    LocaleId getSourceLocaleId() {
+        return locale.getLocaleId();
+    }
 
-   @Transient
-   public void incrementRevision()
-   {
-      revision++;
-   }
+    @Transient
+    public void incrementRevision() {
+        revision++;
+    }
 
-   @Override
-   public Iterator<ITextFlow> iterator()
-   {
-      return ImmutableList.<ITextFlow>copyOf(getTextFlows()).iterator();
-   }
+    @Override
+    public Iterator<ITextFlow> iterator() {
+        return ImmutableList.<ITextFlow> copyOf(getTextFlows()).iterator();
+    }
 
-   @PreUpdate
-   public void onUpdate()
-   {
-      if (Contexts.isSessionContextActive())
-      {
-         HAccount account = (HAccount) Component.getInstance(JpaIdentityStore.AUTHENTICATED_USER, ScopeType.SESSION);
-         // TODO In some cases there is no session ( such as when pushing async )
-         if( account != null )
-         {
-            setLastModifiedBy(account.getPerson());
-         }
-      }
-   }
+    @PreUpdate
+    public void onUpdate() {
+        if (Contexts.isSessionContextActive()) {
+            HAccount account =
+                    (HAccount) Component.getInstance(
+                            JpaIdentityStore.AUTHENTICATED_USER,
+                            ScopeType.SESSION);
+            // TODO In some cases there is no session ( such as when pushing
+            // async )
+            if (account != null) {
+                setLastModifiedBy(account.getPerson());
+            }
+        }
+    }
 
-   @Override
-   @Transient
-   public EntityType getEntityType()
-   {
-      return EntityType.HDocument;
-   }
+    @Override
+    @Transient
+    public EntityType getEntityType() {
+        return EntityType.HDocument;
+    }
 
 }

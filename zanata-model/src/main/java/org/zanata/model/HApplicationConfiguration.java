@@ -58,15 +58,15 @@ public class HApplicationConfiguration extends ModelEntityBase {
     public static String KEY_PIWIK_IDSITE = "piwik.idSite";
     private static final long serialVersionUID = 8652817113098817448L;
 
-   // TODO PERF @NaturalId(mutable=false) for better criteria caching
-   @NaturalId
-   @NotEmpty
-   @Size(max = 255)
-   @Column(name = "config_key", nullable = false)
-   private String key;
+    // TODO PERF @NaturalId(mutable=false) for better criteria caching
+    @NaturalId
+    @NotEmpty
+    @Size(max = 255)
+    @Column(name = "config_key", nullable = false)
+    private String key;
 
-   @NotNull
-   @Type(type = "text")
-   @Column(name = "config_value", nullable = false)
-   private String value;
+    @NotNull
+    @Type(type = "text")
+    @Column(name = "config_value", nullable = false)
+    private String value;
 }

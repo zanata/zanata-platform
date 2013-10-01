@@ -48,43 +48,41 @@ import com.google.common.collect.Lists;
 @Setter
 @Access(AccessType.FIELD)
 @NoArgsConstructor
-public class HDocumentUpload extends ModelEntityBase implements Serializable
-{
-   private static final long serialVersionUID = 1L;
+public class HDocumentUpload extends ModelEntityBase implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-   @ManyToOne
-   @JoinColumn(name = "projectIterationid", nullable = false)
-   private HProjectIteration projectIteration;
+    @ManyToOne
+    @JoinColumn(name = "projectIterationid", nullable = false)
+    private HProjectIteration projectIteration;
 
-   @NotEmpty
-   private String docId;
+    @NotEmpty
+    private String docId;
 
-   @Enumerated(EnumType.STRING)
-   private DocumentType type;
+    @Enumerated(EnumType.STRING)
+    private DocumentType type;
 
-   // null for source document upload
-   @ManyToOne
-   @JoinColumn(name = "localeId", nullable = true)
-   private HLocale locale;
+    // null for source document upload
+    @ManyToOne
+    @JoinColumn(name = "localeId", nullable = true)
+    private HLocale locale;
 
-   @NotEmpty
-   private String contentHash;
+    @NotEmpty
+    private String contentHash;
 
-   @OneToMany(cascade = CascadeType.ALL)
-   @JoinColumn(name = "documentUploadId", nullable = false)
-   @IndexColumn(name = "partIndex", base = 0, nullable = false)
-   private List<HDocumentUploadPart> parts = Lists.newArrayList();
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "documentUploadId", nullable = false)
+    @IndexColumn(name = "partIndex", base = 0, nullable = false)
+    private List<HDocumentUploadPart> parts = Lists.newArrayList();
 
-   public void setId(Long id)
-   {
-      super.setId(id);
-   }
+    public void setId(Long id) {
+        super.setId(id);
+    }
 
-   @Override
-   public String toString()
-   {
-      return getClass().getSimpleName() + "@" + Integer.toHexString(hashCode())
-            + "[id=" + id + ",versionNum=" + versionNum
-            + ",contentHash=" + contentHash + "]";
-   }
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@"
+                + Integer.toHexString(hashCode()) + "[id=" + id
+                + ",versionNum=" + versionNum + ",contentHash=" + contentHash
+                + "]";
+    }
 }

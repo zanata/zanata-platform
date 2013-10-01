@@ -53,91 +53,79 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 @Getter
 @Access(AccessType.FIELD)
 @NoArgsConstructor
-public class HLocaleMember implements Serializable
-{
-   private static final long serialVersionUID = 1L;
+public class HLocaleMember implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-   @EmbeddedId
-   @Getter(AccessLevel.PROTECTED)
-   @Setter(AccessLevel.PROTECTED)
-   private HLocaleMemberPk id = new HLocaleMemberPk();
+    @EmbeddedId
+    @Getter(AccessLevel.PROTECTED)
+    @Setter(AccessLevel.PROTECTED)
+    private HLocaleMemberPk id = new HLocaleMemberPk();
 
-   @Column(name="isCoordinator")
-   private boolean isCoordinator;
+    @Column(name = "isCoordinator")
+    private boolean isCoordinator;
 
-   @Column(name="isReviewer")
-   private boolean isReviewer;
+    @Column(name = "isReviewer")
+    private boolean isReviewer;
 
-   @Column(name="isTranslator")
-   private boolean isTranslator;
+    @Column(name = "isTranslator")
+    private boolean isTranslator;
 
-   public HLocaleMember( HPerson person, HLocale supportedLanguage, boolean isTranslator, boolean isReviewer, boolean isCoordinator)
-   {
-      id.setPerson(person);
-      id.setSupportedLanguage(supportedLanguage);
-      setTranslator(isTranslator);
-      setReviewer(isReviewer);
-      setCoordinator(isCoordinator);
-   }
+    public HLocaleMember(HPerson person, HLocale supportedLanguage,
+            boolean isTranslator, boolean isReviewer, boolean isCoordinator) {
+        id.setPerson(person);
+        id.setSupportedLanguage(supportedLanguage);
+        setTranslator(isTranslator);
+        setReviewer(isReviewer);
+        setCoordinator(isCoordinator);
+    }
 
-   @Transient
-   public HPerson getPerson()
-   {
-      return id.getPerson();
-   }
+    @Transient
+    public HPerson getPerson() {
+        return id.getPerson();
+    }
 
-   @Transient
-   public HLocale getSupportedLanguage()
-   {
-      return id.getSupportedLanguage();
-   }
+    @Transient
+    public HLocale getSupportedLanguage() {
+        return id.getSupportedLanguage();
+    }
 
-   @Embeddable
-   @Setter
-   @Getter
-   @Access(AccessType.FIELD)
-   @AllArgsConstructor
-   @NoArgsConstructor
-   public static class HLocaleMemberPk implements Serializable
-   {
-      private static final long serialVersionUID = 1L;
+    @Embeddable
+    @Setter
+    @Getter
+    @Access(AccessType.FIELD)
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class HLocaleMemberPk implements Serializable {
+        private static final long serialVersionUID = 1L;
 
-      @ManyToOne(fetch=FetchType.EAGER, optional=false)
-      @JoinColumn(name="personId", nullable=false)
-      private HPerson person;
+        @ManyToOne(fetch = FetchType.EAGER, optional = false)
+        @JoinColumn(name = "personId", nullable = false)
+        private HPerson person;
 
-      @ManyToOne(fetch=FetchType.EAGER, optional=false)
-      @JoinColumn(name="supportedLanguageId")
-      private HLocale supportedLanguage;
+        @ManyToOne(fetch = FetchType.EAGER, optional = false)
+        @JoinColumn(name = "supportedLanguageId")
+        private HLocale supportedLanguage;
 
-      @Override
-      public boolean equals(Object obj)
-      {
-         if(obj == null)
-         {
-            return false;
-         }
-         else if( !(obj instanceof HLocaleMemberPk) )
-         {
-            return false;
-         }
-         else
-         {
-            final HLocaleMemberPk other = (HLocaleMemberPk)obj;
-            return new EqualsBuilder()
-                  .append(this.person.getId(), other.getPerson().getId())
-                  .append(this.supportedLanguage.getId(), other.getSupportedLanguage().getId())
-                  .isEquals();
-         }
-      }
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            } else if (!(obj instanceof HLocaleMemberPk)) {
+                return false;
+            } else {
+                final HLocaleMemberPk other = (HLocaleMemberPk) obj;
+                return new EqualsBuilder()
+                        .append(this.person.getId(), other.getPerson().getId())
+                        .append(this.supportedLanguage.getId(),
+                                other.getSupportedLanguage().getId())
+                        .isEquals();
+            }
+        }
 
-      @Override
-      public int hashCode()
-      {
-         return new HashCodeBuilder()
-               .append(this.person.getId())
-               .append(this.supportedLanguage.getId())
-               .toHashCode();
-      }
-   }
+        @Override
+        public int hashCode() {
+            return new HashCodeBuilder().append(this.person.getId())
+                    .append(this.supportedLanguage.getId()).toHashCode();
+        }
+    }
 }

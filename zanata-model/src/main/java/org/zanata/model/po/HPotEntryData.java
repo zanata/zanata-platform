@@ -56,36 +56,36 @@ import lombok.Setter;
 @Setter
 @Getter
 @Access(AccessType.FIELD)
-public class HPotEntryData implements Serializable
-{
-   private static final long serialVersionUID = 1L;
+public class HPotEntryData implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-   @Id
-   @GeneratedValue
-   @Setter(AccessLevel.PROTECTED)
-   private Long id;
+    @Id
+    @GeneratedValue
+    @Setter(AccessLevel.PROTECTED)
+    private Long id;
 
-   @OneToOne
-   @JoinColumn(name = "tf_id", /* nullable=false, */unique = true)
-   @NaturalId
-   private HTextFlow textFlow;
+    @OneToOne
+    @JoinColumn(name = "tf_id", /* nullable=false, */unique = true)
+    @NaturalId
+    private HTextFlow textFlow;
 
-   private String context;
+    private String context;
 
-   @Deprecated // use HTextFlow.comment
-   @OneToOne(optional = true, cascade = CascadeType.ALL)
-   @JoinColumn(name = "comment_id")
-   private HSimpleComment extractedComment;
+    @Deprecated
+    // use HTextFlow.comment
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = "comment_id")
+    private HSimpleComment extractedComment;
 
-   /**
-    * Gettext message flags, delimited by ',' (comma)
-    */
-   private String flags;
+    /**
+     * Gettext message flags, delimited by ',' (comma)
+     */
+    private String flags;
 
-   /**
-    * Gettext message references, delimited by ',' (comma)
-    */
-   @Column(name = "refs")
-   @Type(type = "text")
-   private String references;
+    /**
+     * Gettext message references, delimited by ',' (comma)
+     */
+    @Column(name = "refs")
+    @Type(type = "text")
+    private String references;
 }

@@ -59,53 +59,54 @@ import lombok.ToString;
 @Getter
 @Access(AccessType.FIELD)
 @NoArgsConstructor
-@ToString(of = {"localeId"}, doNotUseGetters = true)
-@EqualsAndHashCode(callSuper = false, of = {"localeId"}, doNotUseGetters = true)
-public class HLocale extends ModelEntityBase implements Serializable
-{
-   private static final long serialVersionUID = 1L;
+@ToString(of = { "localeId" }, doNotUseGetters = true)
+@EqualsAndHashCode(callSuper = false, of = { "localeId" },
+        doNotUseGetters = true)
+public class HLocale extends ModelEntityBase implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-   // TODO PERF @NaturalId(mutable=false) for better criteria caching
-   @SuppressWarnings("null")
-   @NaturalId
-   @NotNull
-   @Type(type = "localeId")
-   private @Nonnull LocaleId localeId;
+    // TODO PERF @NaturalId(mutable=false) for better criteria caching
+    @SuppressWarnings("null")
+    @NaturalId
+    @NotNull
+    @Type(type = "localeId")
+    private @Nonnull
+    LocaleId localeId;
 
-   private boolean active;
+    private boolean active;
 
-   private boolean enabledByDefault;
+    private boolean enabledByDefault;
 
-   @ManyToMany
-   @JoinTable(name = "HProject_Locale", joinColumns = @JoinColumn(name = "localeId"), inverseJoinColumns = @JoinColumn(name = "projectId"))
-   private Set<HProject> supportedProjects = Sets.newHashSet();
+    @ManyToMany
+    @JoinTable(name = "HProject_Locale", joinColumns = @JoinColumn(
+            name = "localeId"), inverseJoinColumns = @JoinColumn(
+            name = "projectId"))
+    private Set<HProject> supportedProjects = Sets.newHashSet();
 
-   @ManyToMany
-   @JoinTable(name = "HProjectIteration_Locale", joinColumns = @JoinColumn(name = "localeId"), inverseJoinColumns = @JoinColumn(name = "projectIterationId"))
-   private Set<HProjectIteration> supportedIterations = Sets.newHashSet();
+    @ManyToMany
+    @JoinTable(name = "HProjectIteration_Locale", joinColumns = @JoinColumn(
+            name = "localeId"), inverseJoinColumns = @JoinColumn(
+            name = "projectIterationId"))
+    private Set<HProjectIteration> supportedIterations = Sets.newHashSet();
 
-   @OneToMany(cascade=CascadeType.ALL, mappedBy="id.supportedLanguage")
-   @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-   private Set<HLocaleMember> members = Sets.newHashSet();
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "id.supportedLanguage")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private Set<HLocaleMember> members = Sets.newHashSet();
 
-   public HLocale(@Nonnull LocaleId localeId)
-   {
-      this.localeId = localeId;
-   }
+    public HLocale(@Nonnull LocaleId localeId) {
+        this.localeId = localeId;
+    }
 
-   public String retrieveNativeName()
-   {
-      return asULocale().getDisplayName(asULocale());
-   }
+    public String retrieveNativeName() {
+        return asULocale().getDisplayName(asULocale());
+    }
 
-   public String retrieveDisplayName()
-   {
-      return asULocale().getDisplayName();
-   }
+    public String retrieveDisplayName() {
+        return asULocale().getDisplayName();
+    }
 
-   public ULocale asULocale()
-   {
-      return new ULocale(this.localeId.getId());
-   }
-   
+    public ULocale asULocale() {
+        return new ULocale(this.localeId.getId());
+    }
+
 }

@@ -55,58 +55,56 @@ import lombok.Setter;
 @Setter
 @Access(javax.persistence.AccessType.FIELD)
 @NoArgsConstructor
-public class HTextFlowHistory extends HTextContainer implements Serializable, ITextFlowHistory
-{
-   private static final long serialVersionUID = 1L;
+public class HTextFlowHistory extends HTextContainer implements Serializable,
+        ITextFlowHistory {
+    private static final long serialVersionUID = 1L;
 
-   @Id
-   @GeneratedValue
-   @Setter(AccessLevel.PROTECTED)
-   private Long id;
+    @Id
+    @GeneratedValue
+    @Setter(AccessLevel.PROTECTED)
+    private Long id;
 
-   // TODO PERF @NaturalId(mutable=false) for better criteria caching
-   @NaturalId
-   private Integer revision;
+    // TODO PERF @NaturalId(mutable=false) for better criteria caching
+    @NaturalId
+    private Integer revision;
 
-   // TODO PERF @NaturalId(mutable=false) for better criteria caching
-   @NaturalId
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "tf_id")
-   private HTextFlow textFlow;
+    // TODO PERF @NaturalId(mutable=false) for better criteria caching
+    @NaturalId
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tf_id")
+    private HTextFlow textFlow;
 
-   @NotEmpty
-   @Type(type = "text")
-   @AccessType("field")
-   @ElementCollection(fetch = FetchType.EAGER)
-   @JoinTable(name = "HTextFlowContentHistory",
-      joinColumns = @JoinColumn(name = "text_flow_history_id")
-   )
-   @IndexColumn(name = "pos", nullable = false)
-   @Column(name = "content", nullable = false)
-   private List<String> contents = Lists.newArrayList();
+    @NotEmpty
+    @Type(type = "text")
+    @AccessType("field")
+    @ElementCollection(fetch = FetchType.EAGER)
+    @JoinTable(name = "HTextFlowContentHistory", joinColumns = @JoinColumn(
+            name = "text_flow_history_id"))
+    @IndexColumn(name = "pos", nullable = false)
+    @Column(name = "content", nullable = false)
+    private List<String> contents = Lists.newArrayList();
 
-   private boolean obsolete;
+    private boolean obsolete;
 
-   private Integer pos;
+    private Integer pos;
 
-   public HTextFlowHistory(HTextFlow textFlow)
-   {
-      this.revision = textFlow.getRevision();
-      this.textFlow = textFlow;
-      this.setContents(textFlow.getContents());
-   }
+    public HTextFlowHistory(HTextFlow textFlow) {
+        this.revision = textFlow.getRevision();
+        this.textFlow = textFlow;
+        this.setContents(textFlow.getContents());
+    }
 
-   /**
-    * Determines whether a Text Flow has changed when compared to this
-    * history object.
-    * Currently, this method only checks for changes in the revision number.
-    * 
-    * @param current The current Text Flow state. 
-    * @return True, if the revision number in the Text Flow has changed.
-    * False, otherwise.
-    */
-   public boolean hasChanged(HTextFlow current)
-   {
-      return !Objects.equal(current.getRevision(), this.getRevision());
-   }
+    /**
+     * Determines whether a Text Flow has changed when compared to this history
+     * object. Currently, this method only checks for changes in the revision
+     * number.
+     *
+     * @param current
+     *            The current Text Flow state.
+     * @return True, if the revision number in the Text Flow has changed. False,
+     *         otherwise.
+     */
+    public boolean hasChanged(HTextFlow current) {
+        return !Objects.equal(current.getRevision(), this.getRevision());
+    }
 }
