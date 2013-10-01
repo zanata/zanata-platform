@@ -36,8 +36,7 @@
     <ds.jndi.name>zanataDatasource</ds.jndi.name>
     <!--<ds.hibernate.dialect>org.hibernate.dialect.H2Dialect</ds.hibernate.dialect>-->
     <ds.driver.class>org.h2.Driver</ds.driver.class>
-    <!--<ds.connection.url>jdbc:h2:file:${project.build.directory}/h2/zanata;AUTO_SERVER=TRUE;</ds.connection.url>-->
-    <ds.connection.url>jdbc:h2:file:${project.build.directory}/h2/zanata;AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=FALSE</ds.connection.url>
+    <ds.connection.url>jdbc:h2:file:${project.build.directory}/h2/zanata;AUTO_SERVER=TRUE;</ds.connection.url>
     <ds.username>sa</ds.username>
     <ds.password />
 
@@ -197,11 +196,18 @@
       <version>2.4</version>
     </dependency>
 
-    <!-- to be able to create entity in functional test -->
+    <dependency>
+      <groupId>com.github.huangp</groupId>
+      <artifactId>entityunit</artifactId>
+      <version>0.1</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- to be able to create entities in functional test -->
     <dependency>
       <groupId>org.zanata</groupId>
       <artifactId>zanata-model</artifactId>
-      <scope>test</scope>
+      <!--<scope>test</scope>-->
     </dependency>
     <dependency>
       <groupId>org.jboss.seam</groupId>
@@ -214,26 +220,6 @@
           <artifactId>testng</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>com.ibm.icu</groupId>
-      <artifactId>icu4j</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.zanata</groupId>
-      <artifactId>zanata-common-util</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>net.sf.okapi</groupId>
-      <artifactId>okapi-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>net.sf.okapi.steps</groupId>
-      <artifactId>okapi-step-tokenization</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.zanata</groupId>
@@ -271,56 +257,20 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-search</artifactId>
-      <version>${hibernate.search.version}</version>
+      <groupId>org.hibernate.javax.persistence</groupId>
+      <artifactId>hibernate-jpa-2.0-api</artifactId>
       <scope>test</scope>
     </dependency>
-
-    <!--<dependency>-->
-    <!--<groupId>org.hibernate</groupId>-->
-    <!--<artifactId>hibernate-search-orm</artifactId>-->
-    <!--<version>${hibernate.search.version}</version>-->
-    <!--</dependency>-->
-
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-search-engine</artifactId>
-      <version>${hibernate.search.version}</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-search-analyzers</artifactId>
-      <version>${hibernate.search.version}</version>
-      <scope>test</scope>
-    </dependency>
-
     <dependency>
       <groupId>org.javassist</groupId>
       <artifactId>javassist</artifactId>
       <scope>test</scope>
     </dependency>
-
-    <!--<dependency>-->
-    <!--<groupId>org.hibernate</groupId>-->
-    <!--<artifactId>hibernate-ehcache</artifactId>-->
-    <!--<version>${hibernate.version}</version>-->
-    <!--</dependency>-->
-
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-testing</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>com.github.huangp</groupId>
-      <artifactId>entityunit</artifactId>
-      <version>0.1</version>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>org.apache.solr</groupId>
       <artifactId>solr-core</artifactId>
@@ -342,6 +292,7 @@
       <scope>test</scope>
     </dependency>
 
+    <!-- For remote JNDI lookup -->
     <dependency>
       <groupId>org.jboss.as</groupId>
       <artifactId>jboss-as-ejb-client-bom</artifactId>
@@ -349,6 +300,13 @@
       <type>pom</type>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.jboss</groupId>
+      <artifactId>jboss-remote-naming</artifactId>
+      <version>1.0.4.Final</version>
+      <scope>test</scope>
+    </dependency>
+
 
   </dependencies>
 
@@ -603,11 +561,15 @@
         <configuration>
           <failOnWarning>true</failOnWarning>
           <usedDependencies combine.children="append">
-            <usedDependency>com.h2database:h2</usedDependency>
+            <usedDependency>org.apache.solr:solr-core</usedDependency>
+            <usedDependency>org.apache.solr:solr-solrj</usedDependency>
             <usedDependency>org.hibernate:hibernate-core</usedDependency>
             <usedDependency>org.hibernate:hibernate-envers</usedDependency>
             <usedDependency>org.hibernate:hibernate-entitymanager</usedDependency>
             <usedDependency>org.hibernate:hibernate-infinispan</usedDependency>
+            <usedDependency>org.hibernate:hibernate-testing</usedDependency>
+            <usedDependency>org.javassist:javassist</usedDependency>
+            <usedDependency>org.jboss.as:jboss-as-ejb-client-bom</usedDependency>
             <usedDependency>org.projectlombok:lombok</usedDependency>
           </usedDependencies>
         </configuration>
