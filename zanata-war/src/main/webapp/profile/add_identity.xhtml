@@ -1,15 +1,16 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:s="http://jboss.org/schema/seam/taglib"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:rich="http://richfaces.org/rich"
-                xmlns:a4j="http://richfaces.org/a4j"
-                template="../WEB-INF/template/template.xhtml">
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j"
+  template="../WEB-INF/template/template.xhtml">
 
-  <ui:define name="page_title">#{messages['jsf.identities.AddIdentity']}</ui:define>
+  <ui:define
+    name="page_title">#{messages['jsf.identities.AddIdentity']}</ui:define>
   <ui:define name="center_content">
     <div class="g--centered">
       <div class="g__item w--1-2 w--2-5-l w--1-4-h">
@@ -21,23 +22,32 @@
               <h:form>
                 <ul class="list--no-bullets">
                   <li class="l--push-top-half">
-                    <h:commandLink action="#{credentialsAction.verifyCredentials('Fedora')}" styleClass="button--full button--fedora" value="Fedora"/>
+                    <h:commandLink
+                      action="#{credentialsAction.verifyCredentials('Fedora')}"
+                      styleClass="button--full button--fedora" value="Fedora"/>
                   </li>
                   <li class="l--push-top-half">
-                    <h:commandLink action="#{credentialsAction.verifyCredentials('Google')}" styleClass="button--full button--google" value="Google"/>
+                    <h:commandLink
+                      action="#{credentialsAction.verifyCredentials('Google')}"
+                      styleClass="button--full button--google" value="Google"/>
                   </li>
                   <li class="l--push-top-half">
-                    <h:commandLink action="#{credentialsAction.verifyCredentialsn('Yahoo')}" styleClass="button--full button--yahoo" value="Yahoo"/>
+                    <h:commandLink
+                      action="#{credentialsAction.verifyCredentialsn('Yahoo')}"
+                      styleClass="button--full button--yahoo" value="Yahoo"/>
                   </li>
-                  <li class="l--push-top-half l--pad-top-half l--pad-h-half bg--pop-higher">
+                  <li
+                    class="l--push-top-half l--pad-top-half l--pad-h-half bg--pop-higher">
                     <label for="openid">Open ID</label>
 
                     <div class="g--tighter">
                       <div class="g__item w--2-3">
-                        <h:inputText id="openid" value="#{loginAction.openId}" />
+                        <h:inputText id="openid" value="#{loginAction.openId}"/>
                       </div>
                       <div class="g__item w--1-3">
-                        <h:commandButton action="#{loginAction.openIdLogin('Generic')}" styleClass="button--full" value="Go" />
+                        <h:commandButton
+                          action="#{loginAction.openIdLogin('Generic')}"
+                          styleClass="button--full" value="Go"/>
                       </div>
                     </div>
                   </li>

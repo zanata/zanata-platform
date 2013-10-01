@@ -22,101 +22,90 @@ import org.zanata.service.VersionGroupService;
 
 @Name("versionGroupMaintainerManageAction")
 @Scope(ScopeType.PAGE)
-public class VersionGroupMaintainerManageAction implements Serializable
-{
-   private static final long serialVersionUID = 1L;
+public class VersionGroupMaintainerManageAction implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-   @DataModel
-   List<HPerson> allList;
+    @DataModel
+    List<HPerson> allList;
 
-   @DataModelSelection
-   HPerson selectedPerson;
+    @DataModelSelection
+    HPerson selectedPerson;
 
-   private String slug;
-   private HIterationGroup group;
+    private String slug;
+    private HIterationGroup group;
 
-   @In
-   private VersionGroupService versionGroupServiceImpl;
+    @In
+    private VersionGroupService versionGroupServiceImpl;
 
-   @In
-   AccountDAO accountDAO;
+    @In
+    AccountDAO accountDAO;
 
-   @Logger
-   Log log;
+    @Logger
+    Log log;
 
-   public void init()
-   {
-      allList = versionGroupServiceImpl.getMaintainerBySlug(slug);
-   }
+    public void init() {
+        allList = versionGroupServiceImpl.getMaintainerBySlug(slug);
+    }
 
-   public HPerson getSelectedPerson()
-   {
-      return this.selectedPerson;
-   }
+    public HPerson getSelectedPerson() {
+        return this.selectedPerson;
+    }
 
-   public void setSlug(String slug)
-   {
-      this.slug = slug;
-   }
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
 
-   public String getSlug()
-   {
-      return slug;
-   }
+    public String getSlug() {
+        return slug;
+    }
 
-   @Restrict("#{s:hasPermission(versionGroupMaintainerManageAction.group,'update')}")
-   public void deleteMaintainer(HPerson person)
-   {
-      log.debug("try to delete maintainer {0} from slug {1}", person.getName(), this.slug);
-      HIterationGroup iterationGroup = versionGroupServiceImpl.getBySlug(this.slug);
-      Set<HPerson> personList = iterationGroup.getMaintainers();
-      for (HPerson l : personList)
-      {
-         if (l.getEmail().equals(person.getEmail()))
-         {
-            log.debug("remove the person");
-            iterationGroup.getMaintainers().remove(l);
-            break;
-         }
-      }
+    @Restrict("#{s:hasPermission(versionGroupMaintainerManageAction.group,'update')}")
+    public
+            void deleteMaintainer(HPerson person) {
+        log.debug("try to delete maintainer {0} from slug {1}",
+                person.getName(), this.slug);
+        HIterationGroup iterationGroup =
+                versionGroupServiceImpl.getBySlug(this.slug);
+        Set<HPerson> personList = iterationGroup.getMaintainers();
+        for (HPerson l : personList) {
+            if (l.getEmail().equals(person.getEmail())) {
+                log.debug("remove the person");
+                iterationGroup.getMaintainers().remove(l);
+                break;
+            }
+        }
 
-      versionGroupServiceImpl.makePersistent(iterationGroup);
-      versionGroupServiceImpl.flush();
-   }
+        versionGroupServiceImpl.makePersistent(iterationGroup);
+        versionGroupServiceImpl.flush();
+    }
 
-   @Restrict("#{s:hasPermission(versionGroupMaintainerManageAction.group,'update')}")
-   public String addMaintainers(String account)
-   {
-      HAccount a = accountDAO.getByUsername(account);
-      if (a == null)
-      {
-         FacesMessages.instance().add("This account does not exist.");
-         return "failure";
-      }
-      else if (a.isEnabled())
-      {
-         HIterationGroup iterationGroup = versionGroupServiceImpl.getBySlug(this.slug);
-         Set<HPerson> personList = iterationGroup.getMaintainers();
-         personList.add(a.getPerson());
-         versionGroupServiceImpl.makePersistent(iterationGroup);
-         versionGroupServiceImpl.flush();
-         log.debug("add {0} into maintainers", account);
-         return "success";
-      }
-      else
-      {
-         FacesMessages.instance().add("This account is disabled.");
-         return "failure";
-      }
-   }
+    @Restrict("#{s:hasPermission(versionGroupMaintainerManageAction.group,'update')}")
+    public
+            String addMaintainers(String account) {
+        HAccount a = accountDAO.getByUsername(account);
+        if (a == null) {
+            FacesMessages.instance().add("This account does not exist.");
+            return "failure";
+        } else if (a.isEnabled()) {
+            HIterationGroup iterationGroup =
+                    versionGroupServiceImpl.getBySlug(this.slug);
+            Set<HPerson> personList = iterationGroup.getMaintainers();
+            personList.add(a.getPerson());
+            versionGroupServiceImpl.makePersistent(iterationGroup);
+            versionGroupServiceImpl.flush();
+            log.debug("add {0} into maintainers", account);
+            return "success";
+        } else {
+            FacesMessages.instance().add("This account is disabled.");
+            return "failure";
+        }
+    }
 
-   public HIterationGroup getGroup()
-   {
-      if (group == null)
-      {
-         group = versionGroupServiceImpl.getBySlug(slug);
-      }
+    public HIterationGroup getGroup() {
+        if (group == null) {
+            group = versionGroupServiceImpl.getBySlug(slug);
+        }
 
-      return group;
-   }
+        return group;
+    }
 }

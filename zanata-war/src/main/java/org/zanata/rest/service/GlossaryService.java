@@ -31,160 +31,151 @@ import org.zanata.service.GlossaryFileService;
 @Name("glossaryService")
 @Path(GlossaryService.SERVICE_PATH)
 @Transactional
-public class GlossaryService implements GlossaryResource
-{
-   @Context
-   private UriInfo uri;
+public class GlossaryService implements GlossaryResource {
+    @Context
+    private UriInfo uri;
 
-   @HeaderParam("Content-Type")
-   @Context
-   private MediaType requestContentType;
+    @HeaderParam("Content-Type")
+    @Context
+    private MediaType requestContentType;
 
-   @Context
-   private HttpHeaders headers;
+    @Context
+    private HttpHeaders headers;
 
-   @Context
-   private Request request;
+    @Context
+    private Request request;
 
-   @In
-   private GlossaryDAO glossaryDAO;
+    @In
+    private GlossaryDAO glossaryDAO;
 
-   @In
-   private GlossaryFileService glossaryFileServiceImpl;
+    @In
+    private GlossaryFileService glossaryFileServiceImpl;
 
-   Log log = Logging.getLog(GlossaryService.class);
+    Log log = Logging.getLog(GlossaryService.class);
 
-   @Override
-   public Response getEntries()
-   {
-      ResponseBuilder response = request.evaluatePreconditions();
-      if (response != null)
-      {
-         return response.build();
-      }
+    @Override
+    public Response getEntries() {
+        ResponseBuilder response = request.evaluatePreconditions();
+        if (response != null) {
+            return response.build();
+        }
 
-      List<HGlossaryEntry> hGlosssaryEntries = glossaryDAO.getEntries();
+        List<HGlossaryEntry> hGlosssaryEntries = glossaryDAO.getEntries();
 
-      Glossary glossary = new Glossary();
-      transferEntriesResource(hGlosssaryEntries, glossary);
+        Glossary glossary = new Glossary();
+        transferEntriesResource(hGlosssaryEntries, glossary);
 
-      return Response.ok(glossary).build();
-   }
+        return Response.ok(glossary).build();
+    }
 
-   @Override
-   public Response get(LocaleId locale)
-   {
-      ResponseBuilder response = request.evaluatePreconditions();
-      if (response != null)
-      {
-         return response.build();
-      }
+    @Override
+    public Response get(LocaleId locale) {
+        ResponseBuilder response = request.evaluatePreconditions();
+        if (response != null) {
+            return response.build();
+        }
 
-      List<HGlossaryEntry> hGlosssaryEntries = glossaryDAO.getEntriesByLocaleId(locale);
-      Glossary glossary = new Glossary();
+        List<HGlossaryEntry> hGlosssaryEntries =
+                glossaryDAO.getEntriesByLocaleId(locale);
+        Glossary glossary = new Glossary();
 
-      transferEntriesLocaleResource(hGlosssaryEntries, glossary, locale);
+        transferEntriesLocaleResource(hGlosssaryEntries, glossary, locale);
 
-      return Response.ok(glossary).build();
-   }
+        return Response.ok(glossary).build();
+    }
 
-   @Override
-   @Restrict("#{s:hasPermission('', 'glossary-insert')}")
-   public Response put(Glossary glossary)
-   {
-      ResponseBuilder response;
+    @Override
+    @Restrict("#{s:hasPermission('', 'glossary-insert')}")
+    public Response put(Glossary glossary) {
+        ResponseBuilder response;
 
-      // must be a create operation
-      response = request.evaluatePreconditions();
-      if (response != null)
-      {
-         return response.build();
-      }
-      response = Response.created(uri.getAbsolutePath());
+        // must be a create operation
+        response = request.evaluatePreconditions();
+        if (response != null) {
+            return response.build();
+        }
+        response = Response.created(uri.getAbsolutePath());
 
-      glossaryFileServiceImpl.saveGlossary(glossary);
+        glossaryFileServiceImpl.saveGlossary(glossary);
 
-      return response.build();
-   }
+        return response.build();
+    }
 
-   @Override
-   @Restrict("#{s:hasPermission('', 'glossary-delete')}")
-   public Response deleteGlossary(LocaleId targetLocale)
-   {
-      ResponseBuilder response = request.evaluatePreconditions();
-      if (response != null)
-      {
-         return response.build();
-      }
+    @Override
+    @Restrict("#{s:hasPermission('', 'glossary-delete')}")
+    public Response deleteGlossary(LocaleId targetLocale) {
+        ResponseBuilder response = request.evaluatePreconditions();
+        if (response != null) {
+            return response.build();
+        }
 
-      int rowCount = glossaryDAO.deleteAllEntries(targetLocale);
-      log.info("Glossary delete (" + targetLocale + "): " + rowCount);
+        int rowCount = glossaryDAO.deleteAllEntries(targetLocale);
+        log.info("Glossary delete (" + targetLocale + "): " + rowCount);
 
-      return Response.ok().build();
-   }
+        return Response.ok().build();
+    }
 
-   @Override
-   @Restrict("#{s:hasPermission('', 'glossary-delete')}")
-   public Response deleteGlossaries()
-   {
-      ResponseBuilder response = request.evaluatePreconditions();
-      if (response != null)
-      {
-         return response.build();
-      }
-      int rowCount = glossaryDAO.deleteAllEntries();
-      log.info("Glossary delete all: " + rowCount);
+    @Override
+    @Restrict("#{s:hasPermission('', 'glossary-delete')}")
+    public Response deleteGlossaries() {
+        ResponseBuilder response = request.evaluatePreconditions();
+        if (response != null) {
+            return response.build();
+        }
+        int rowCount = glossaryDAO.deleteAllEntries();
+        log.info("Glossary delete all: " + rowCount);
 
-      return Response.ok().build();
-   }
+        return Response.ok().build();
+    }
 
-   public void transferEntriesResource(List<HGlossaryEntry> hGlosssaryEntries, Glossary glossary)
-   {
-      for (HGlossaryEntry hGlossaryEntry : hGlosssaryEntries)
-      {
-         GlossaryEntry glossaryEntry = new GlossaryEntry();
-         glossaryEntry.setSourcereference(hGlossaryEntry.getSourceRef());
-         glossaryEntry.setSrcLang(hGlossaryEntry.getSrcLocale().getLocaleId());
+    public void transferEntriesResource(List<HGlossaryEntry> hGlosssaryEntries,
+            Glossary glossary) {
+        for (HGlossaryEntry hGlossaryEntry : hGlosssaryEntries) {
+            GlossaryEntry glossaryEntry = new GlossaryEntry();
+            glossaryEntry.setSourcereference(hGlossaryEntry.getSourceRef());
+            glossaryEntry.setSrcLang(hGlossaryEntry.getSrcLocale()
+                    .getLocaleId());
 
-         for (HGlossaryTerm hGlossaryTerm : hGlossaryEntry.getGlossaryTerms().values())
-         {
-            GlossaryTerm glossaryTerm = new GlossaryTerm();
-            glossaryTerm.setContent(hGlossaryTerm.getContent());
-            glossaryTerm.setLocale(hGlossaryTerm.getLocale().getLocaleId());
+            for (HGlossaryTerm hGlossaryTerm : hGlossaryEntry
+                    .getGlossaryTerms().values()) {
+                GlossaryTerm glossaryTerm = new GlossaryTerm();
+                glossaryTerm.setContent(hGlossaryTerm.getContent());
+                glossaryTerm.setLocale(hGlossaryTerm.getLocale().getLocaleId());
 
-            for (HTermComment hTermComment : hGlossaryTerm.getComments())
-            {
-               glossaryTerm.getComments().add(hTermComment.getComment());
+                for (HTermComment hTermComment : hGlossaryTerm.getComments()) {
+                    glossaryTerm.getComments().add(hTermComment.getComment());
+                }
+                glossaryEntry.getGlossaryTerms().add(glossaryTerm);
             }
-            glossaryEntry.getGlossaryTerms().add(glossaryTerm);
-         }
-         glossary.getGlossaryEntries().add(glossaryEntry);
-      }
-   }
+            glossary.getGlossaryEntries().add(glossaryEntry);
+        }
+    }
 
-   public static void transferEntriesLocaleResource(List<HGlossaryEntry> hGlosssaryEntries, Glossary glossary, LocaleId locale)
-   {
-      for (HGlossaryEntry hGlossaryEntry : hGlosssaryEntries)
-      {
-         GlossaryEntry glossaryEntry = new GlossaryEntry();
-         glossaryEntry.setSrcLang(hGlossaryEntry.getSrcLocale().getLocaleId());
-         glossaryEntry.setSourcereference(hGlossaryEntry.getSourceRef());
-         for (HGlossaryTerm hGlossaryTerm : hGlossaryEntry.getGlossaryTerms().values())
-         {
-            if (hGlossaryTerm.getLocale().getLocaleId().equals(locale))
-            {
-               GlossaryTerm glossaryTerm = new GlossaryTerm();
-               glossaryTerm.setContent(hGlossaryTerm.getContent());
-               glossaryTerm.setLocale(hGlossaryTerm.getLocale().getLocaleId());
+    public static void transferEntriesLocaleResource(
+            List<HGlossaryEntry> hGlosssaryEntries, Glossary glossary,
+            LocaleId locale) {
+        for (HGlossaryEntry hGlossaryEntry : hGlosssaryEntries) {
+            GlossaryEntry glossaryEntry = new GlossaryEntry();
+            glossaryEntry.setSrcLang(hGlossaryEntry.getSrcLocale()
+                    .getLocaleId());
+            glossaryEntry.setSourcereference(hGlossaryEntry.getSourceRef());
+            for (HGlossaryTerm hGlossaryTerm : hGlossaryEntry
+                    .getGlossaryTerms().values()) {
+                if (hGlossaryTerm.getLocale().getLocaleId().equals(locale)) {
+                    GlossaryTerm glossaryTerm = new GlossaryTerm();
+                    glossaryTerm.setContent(hGlossaryTerm.getContent());
+                    glossaryTerm.setLocale(hGlossaryTerm.getLocale()
+                            .getLocaleId());
 
-               for (HTermComment hTermComment : hGlossaryTerm.getComments())
-               {
-                  glossaryTerm.getComments().add(hTermComment.getComment());
-               }
-               glossaryEntry.getGlossaryTerms().add(glossaryTerm);
+                    for (HTermComment hTermComment : hGlossaryTerm
+                            .getComments()) {
+                        glossaryTerm.getComments().add(
+                                hTermComment.getComment());
+                    }
+                    glossaryEntry.getGlossaryTerms().add(glossaryTerm);
+                }
             }
-         }
-         glossary.getGlossaryEntries().add(glossaryEntry);
-      }
-   }
+            glossary.getGlossaryEntries().add(glossaryEntry);
+        }
+    }
 }

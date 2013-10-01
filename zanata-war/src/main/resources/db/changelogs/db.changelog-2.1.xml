@@ -1,75 +1,76 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
-                  http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-    <changeSet id="1" author="camunoz@redhat.com">
-        <comment>Add HEditorOption table.</comment>
-        <createTable tableName="HAccountOption">
-            <column name="name" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="value" type="longtext">
-                <constraints nullable="true" />
-            </column>
-            <column name="account_id" type="bigint">
-                <constraints nullable="false" />
-            </column>
-            <!-- Base entity columns -->
-            <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false" />
-            </column>
-            <column name="creationDate" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="lastChanged" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="versionNum" type="integer">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-    </changeSet>
+  <changeSet id="1" author="camunoz@redhat.com">
+    <comment>Add HEditorOption table.</comment>
+    <createTable tableName="HAccountOption">
+      <column name="name" type="varchar(255)">
+        <constraints nullable="false" />
+      </column>
+      <column name="value" type="longtext">
+        <constraints nullable="true" />
+      </column>
+      <column name="account_id" type="bigint">
+        <constraints nullable="false" />
+      </column>
+      <!-- Base entity columns -->
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false" />
+      </column>
+      <column name="creationDate" type="datetime">
+        <constraints nullable="false" />
+      </column>
+      <column name="lastChanged" type="datetime">
+        <constraints nullable="false" />
+      </column>
+      <column name="versionNum" type="integer">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+  </changeSet>
 
-    <changeSet id="2" author="camunoz@redhat.com">
-        <comment>Add HAccountOption foreign key to HAccount.</comment>
-        <addForeignKeyConstraint constraintName="FK_HAccountOption_HAccount"
-                                 baseTableName="HAccountOption"
-                                 baseColumnNames="account_id"
-                                 referencedTableName="HAccount"
-                                 referencedColumnNames="id"/>
-    </changeSet>
-    <changeSet id="3" author="aeng@redhat.com">
-        <comment>Cleanup HAccountActivationKey which account already activated</comment>
-        <sql>
-            DELETE FROM HAccountActivationKey where accountId in(select acc.id from HAccount acc where acc.enabled = 1)
-        </sql>
-    </changeSet>
-    
-    <changeSet id="4" author="aeng@redhat.com">
-		<comment>Add HPersonEmailValidationKey table</comment>
-		<createTable tableName="HPersonEmailValidationKey">
-			 <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false" />
-            </column>
-			<column name="keyHash" type="varchar(32)"> 
-				<constraints nullable="false" unique="true"/>
-			</column>
-			<column name="personId" type="bigint">
-				<constraints nullable="false" unique="true"  />
-			</column>
-			<column name="email" type="varchar(255)">
-				<constraints nullable="false" />
-			</column>
-			<column name="creationDate" type="DATETIME">
-				<constraints nullable="false" />
-			</column>
-		</createTable>
-		<addForeignKeyConstraint constraintName="FK_HPersonEmailValidationKey_HPerson" 
-			referencedTableName="HPerson" referencedColumnNames="id"
-			baseTableName="HPersonEmailValidationKey" baseColumnNames="personId"/>
-	</changeSet>
+  <changeSet id="2" author="camunoz@redhat.com">
+    <comment>Add HAccountOption foreign key to HAccount.</comment>
+    <addForeignKeyConstraint constraintName="FK_HAccountOption_HAccount"
+      baseTableName="HAccountOption"
+      baseColumnNames="account_id"
+      referencedTableName="HAccount"
+      referencedColumnNames="id" />
+  </changeSet>
+  <changeSet id="3" author="aeng@redhat.com">
+    <comment>Cleanup HAccountActivationKey which account already activated</comment>
+    <sql>
+      DELETE FROM HAccountActivationKey where accountId in(select acc.id from HAccount acc where acc.enabled = 1)
+    </sql>
+  </changeSet>
+
+  <changeSet id="4" author="aeng@redhat.com">
+    <comment>Add HPersonEmailValidationKey table</comment>
+    <createTable tableName="HPersonEmailValidationKey">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false" />
+      </column>
+      <column name="keyHash" type="varchar(32)">
+        <constraints nullable="false" unique="true" />
+      </column>
+      <column name="personId" type="bigint">
+        <constraints nullable="false" unique="true" />
+      </column>
+      <column name="email" type="varchar(255)">
+        <constraints nullable="false" />
+      </column>
+      <column name="creationDate" type="DATETIME">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+    <addForeignKeyConstraint
+      constraintName="FK_HPersonEmailValidationKey_HPerson"
+      referencedTableName="HPerson" referencedColumnNames="id"
+      baseTableName="HPersonEmailValidationKey" baseColumnNames="personId" />
+  </changeSet>
 </databaseChangeLog>

@@ -2,17 +2,17 @@
  * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
- * 
+ *
  * This is free software; you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
@@ -65,113 +65,138 @@ import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(ActivateWorkspaceAction.class)
 @Slf4j
-public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWorkspaceAction, ActivateWorkspaceResult>
-{
-   @In
-   private ZanataIdentity identity;
+public class ActivateWorkspaceHandler extends
+        AbstractActionHandler<ActivateWorkspaceAction, ActivateWorkspaceResult> {
+    @In
+    private ZanataIdentity identity;
 
-   @In
-   private TranslationWorkspaceManager translationWorkspaceManager;
+    @In
+    private TranslationWorkspaceManager translationWorkspaceManager;
 
-   @In
-   private GravatarService gravatarServiceImpl;
+    @In
+    private GravatarService gravatarServiceImpl;
 
-   @In
-   private ProjectDAO projectDAO;
-   
-   @In
-   private ProjectIterationDAO projectIterationDAO;
+    @In
+    private ProjectDAO projectDAO;
 
-   @In
-   private LocaleService localeServiceImpl;
+    @In
+    private ProjectIterationDAO projectIterationDAO;
 
-   @In(value = "webtrans.gwt.LoadOptionsHandler", create = true)
-   private LoadOptionsHandler loadOptionsHandler;
-   
-   @In(value = "webtrans.gwt.GetValidationRulesHandler", create = true)
-   private GetValidationRulesHandler getValidationRulesHandler;
+    @In
+    private LocaleService localeServiceImpl;
 
-   private static long nextEditorClientIdNum = 0;
+    @In(value = "webtrans.gwt.LoadOptionsHandler", create = true)
+    private LoadOptionsHandler loadOptionsHandler;
 
-   @Synchronized
-   private static long generateEditorClientNum()
-   {
-      return nextEditorClientIdNum++;
-   }
+    @In(value = "webtrans.gwt.GetValidationRulesHandler", create = true)
+    private GetValidationRulesHandler getValidationRulesHandler;
 
-   @Override
-   public ActivateWorkspaceResult execute(ActivateWorkspaceAction action, ExecutionContext context) throws ActionException
-   {
-      identity.checkLoggedIn();
-      Person person = retrievePerson();
+    private static long nextEditorClientIdNum = 0;
 
-      WorkspaceId workspaceId = action.getWorkspaceId();
-      TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(workspaceId);
-      String httpSessionId = getHttpSessionId();
-      EditorClientId editorClientId = new EditorClientId(httpSessionId, generateEditorClientNum());
-      workspace.addEditorClient(httpSessionId, editorClientId, person.getId());
-      // Send EnterWorkspace event to clients
-      EnterWorkspace event = new EnterWorkspace(editorClientId, person);
-      workspace.publish(event);
-      
-      HLocale locale = localeServiceImpl.getByLocaleId(workspaceId.getLocaleId());
-      HProject project = projectDAO.getBySlug(workspaceId.getProjectIterationId().getProjectSlug());
-      HProjectIteration projectIteration = projectIterationDAO.getBySlug(workspaceId.getProjectIterationId().getProjectSlug(), workspaceId.getProjectIterationId().getIterationSlug());
-      
-      boolean isProjectActive = isProjectIterationActive(project.getStatus(), projectIteration.getStatus());
-      boolean hasWriteAccess = hasWritePermission(project, locale);
-      boolean hasGlossaryUpdateAccess = hasGlossaryUpdatePermission();
-      boolean requireReview = projectIteration.getRequireTranslationReview();
-      boolean hasReviewAccess = hasReviewerPermission(locale, project);
+    @Synchronized
+    private static long generateEditorClientNum() {
+        return nextEditorClientIdNum++;
+    }
 
-      WorkspaceRestrictions workspaceRestrictions = new WorkspaceRestrictions(isProjectActive, hasWriteAccess, hasGlossaryUpdateAccess, hasReviewAccess, requireReview);
-      log.debug("workspace restrictions: {}", workspaceRestrictions);
+    @Override
+    public ActivateWorkspaceResult execute(ActivateWorkspaceAction action,
+            ExecutionContext context) throws ActionException {
+        identity.checkLoggedIn();
+        Person person = retrievePerson();
 
-      LoadOptionsResult loadOptsRes = loadOptionsHandler.execute(new LoadOptionsAction(null), context);
+        WorkspaceId workspaceId = action.getWorkspaceId();
+        TranslationWorkspace workspace =
+                translationWorkspaceManager.getOrRegisterWorkspace(workspaceId);
+        String httpSessionId = getHttpSessionId();
+        EditorClientId editorClientId =
+                new EditorClientId(httpSessionId, generateEditorClientNum());
+        workspace
+                .addEditorClient(httpSessionId, editorClientId, person.getId());
+        // Send EnterWorkspace event to clients
+        EnterWorkspace event = new EnterWorkspace(editorClientId, person);
+        workspace.publish(event);
 
-      GetValidationRulesResult validationRulesResult = getValidationRulesHandler.execute(new GetValidationRulesAction(workspaceId), context);
+        HLocale locale =
+                localeServiceImpl.getByLocaleId(workspaceId.getLocaleId());
+        HProject project =
+                projectDAO.getBySlug(workspaceId.getProjectIterationId()
+                        .getProjectSlug());
+        HProjectIteration projectIteration =
+                projectIterationDAO.getBySlug(workspaceId
+                        .getProjectIterationId().getProjectSlug(), workspaceId
+                        .getProjectIterationId().getIterationSlug());
 
-      Identity identity = new Identity(editorClientId, person);
-      workspace.getWorkspaceContext().getWorkspaceId().getProjectIterationId().setProjectType(projectIteration.getProjectType());
-      UserWorkspaceContext userWorkspaceContext = new UserWorkspaceContext(workspace.getWorkspaceContext(), workspaceRestrictions);
-      return new ActivateWorkspaceResult(userWorkspaceContext, identity, loadOptsRes.getConfiguration(), validationRulesResult.getValidationRules());
-   }
+        boolean isProjectActive =
+                isProjectIterationActive(project.getStatus(),
+                        projectIteration.getStatus());
+        boolean hasWriteAccess = hasWritePermission(project, locale);
+        boolean hasGlossaryUpdateAccess = hasGlossaryUpdatePermission();
+        boolean requireReview = projectIteration.getRequireTranslationReview();
+        boolean hasReviewAccess = hasReviewerPermission(locale, project);
 
-   protected String getHttpSessionId()
-   {
-      return ServletContexts.instance().getRequest().getSession().getId();
-   }
+        WorkspaceRestrictions workspaceRestrictions =
+                new WorkspaceRestrictions(isProjectActive, hasWriteAccess,
+                        hasGlossaryUpdateAccess, hasReviewAccess, requireReview);
+        log.debug("workspace restrictions: {}", workspaceRestrictions);
 
-   private boolean hasWritePermission(HProject project, HLocale locale)
-   {
-      return identity.hasPermission(SecurityService.TranslationAction.MODIFY.action(), project, locale);
-   }
+        LoadOptionsResult loadOptsRes =
+                loadOptionsHandler
+                        .execute(new LoadOptionsAction(null), context);
 
-   private boolean hasGlossaryUpdatePermission()
-   {
-      return identity.hasPermission("glossary-update", "");
-   }
+        GetValidationRulesResult validationRulesResult =
+                getValidationRulesHandler.execute(new GetValidationRulesAction(
+                        workspaceId), context);
 
-   private boolean hasReviewerPermission(HLocale locale, HProject project)
-   {
-      return identity.hasPermission("translation-review", project, locale);
-   }
+        Identity identity = new Identity(editorClientId, person);
+        workspace.getWorkspaceContext().getWorkspaceId()
+                .getProjectIterationId()
+                .setProjectType(projectIteration.getProjectType());
+        UserWorkspaceContext userWorkspaceContext =
+                new UserWorkspaceContext(workspace.getWorkspaceContext(),
+                        workspaceRestrictions);
+        return new ActivateWorkspaceResult(userWorkspaceContext, identity,
+                loadOptsRes.getConfiguration(),
+                validationRulesResult.getValidationRules());
+    }
 
-   private boolean isProjectIterationActive(EntityStatus projectStatus, EntityStatus iterStatus)
-   {
-      return (projectStatus.equals(EntityStatus.ACTIVE) && iterStatus.equals(EntityStatus.ACTIVE));
-   }
+    protected String getHttpSessionId() {
+        return ServletContexts.instance().getRequest().getSession().getId();
+    }
 
-   protected Person retrievePerson()
-   {
-      HAccount authenticatedAccount = (HAccount) Contexts.getSessionContext().get(JpaIdentityStore.AUTHENTICATED_USER);
-      return new Person(new PersonId(authenticatedAccount.getUsername()), authenticatedAccount.getPerson().getName(), gravatarServiceImpl.getUserImageUrl(16, authenticatedAccount.getPerson().getEmail()));
-   }
+    private boolean hasWritePermission(HProject project, HLocale locale) {
+        return identity.hasPermission(
+                SecurityService.TranslationAction.MODIFY.action(), project,
+                locale);
+    }
 
-   @Override
-   public void rollback(ActivateWorkspaceAction action, ActivateWorkspaceResult result, ExecutionContext context) throws ActionException
-   {
-   }
+    private boolean hasGlossaryUpdatePermission() {
+        return identity.hasPermission("glossary-update", "");
+    }
 
+    private boolean hasReviewerPermission(HLocale locale, HProject project) {
+        return identity.hasPermission("translation-review", project, locale);
+    }
+
+    private boolean isProjectIterationActive(EntityStatus projectStatus,
+            EntityStatus iterStatus) {
+        return (projectStatus.equals(EntityStatus.ACTIVE) && iterStatus
+                .equals(EntityStatus.ACTIVE));
+    }
+
+    protected Person retrievePerson() {
+        HAccount authenticatedAccount =
+                (HAccount) Contexts.getSessionContext().get(
+                        JpaIdentityStore.AUTHENTICATED_USER);
+        return new Person(new PersonId(authenticatedAccount.getUsername()),
+                authenticatedAccount.getPerson().getName(),
+                gravatarServiceImpl.getUserImageUrl(16, authenticatedAccount
+                        .getPerson().getEmail()));
+    }
+
+    @Override
+    public void rollback(ActivateWorkspaceAction action,
+            ActivateWorkspaceResult result, ExecutionContext context)
+            throws ActionException {
+    }
 
 }

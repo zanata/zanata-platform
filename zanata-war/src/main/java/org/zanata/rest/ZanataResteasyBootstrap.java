@@ -29,64 +29,66 @@ import org.jboss.seam.resteasy.SeamResteasyProviderFactory;
 @Scope(ScopeType.APPLICATION)
 @Startup
 @AutoCreate
-@Install(classDependencies = "org.jboss.resteasy.spi.ResteasyProviderFactory", precedence = Install.DEPLOYMENT)
-public class ZanataResteasyBootstrap extends ResteasyBootstrap
-{
+@Install(classDependencies = "org.jboss.resteasy.spi.ResteasyProviderFactory",
+        precedence = Install.DEPLOYMENT)
+public class ZanataResteasyBootstrap extends ResteasyBootstrap {
 
-   @Logger
-   Log log;
+    @Logger
+    Log log;
 
-   @Observer("org.jboss.seam.postReInitialization")
-   public void registerHotDeployedClasses()
-   {
+    @Observer("org.jboss.seam.postReInitialization")
+    public void registerHotDeployedClasses() {
 
-      Collection<Component> seamComponents = findSeamComponents();
+        Collection<Component> seamComponents = findSeamComponents();
 
-      // Also scan for hot deployed components
-      HotDeploymentStrategy hotDeployment = HotDeploymentStrategy.instance();
-      if (hotDeployment != null && hotDeployment.available())
-      {
-         log.info("scanning for hot deployable JAX-RS components");
-         AnnotationDeploymentHandler hotDeploymentHandler = (AnnotationDeploymentHandler) hotDeployment.getDeploymentHandlers().get(AnnotationDeploymentHandler.NAME);
-         registerProviders(seamComponents, findProviders(hotDeploymentHandler));
-         registerResources(seamComponents, findResources(hotDeploymentHandler));
-      }
-   }
+        // Also scan for hot deployed components
+        HotDeploymentStrategy hotDeployment = HotDeploymentStrategy.instance();
+        if (hotDeployment != null && hotDeployment.available()) {
+            log.info("scanning for hot deployable JAX-RS components");
+            AnnotationDeploymentHandler hotDeploymentHandler =
+                    (AnnotationDeploymentHandler) hotDeployment
+                            .getDeploymentHandlers().get(
+                                    AnnotationDeploymentHandler.NAME);
+            registerProviders(seamComponents,
+                    findProviders(hotDeploymentHandler));
+            registerResources(seamComponents,
+                    findResources(hotDeploymentHandler));
+        }
+    }
 
-   @Override
-   protected void initDispatcher()
-   {
-      super.initDispatcher();
-      getDispatcher().getProviderFactory().getServerPreProcessInterceptorRegistry().register(ZanataRestSecurityInterceptor.class);
-      getDispatcher().getProviderFactory().getServerPreProcessInterceptorRegistry().register(ZanataRestVersionInterceptor.class);
-   }
+    @Override
+    protected void initDispatcher() {
+        super.initDispatcher();
+        getDispatcher().getProviderFactory()
+                .getServerPreProcessInterceptorRegistry()
+                .register(ZanataRestSecurityInterceptor.class);
+        getDispatcher().getProviderFactory()
+                .getServerPreProcessInterceptorRegistry()
+                .register(ZanataRestVersionInterceptor.class);
+    }
 
-   @Override
-   protected Dispatcher createDispatcher(SeamResteasyProviderFactory providerFactory)
-   {
-      return new SynchronousDispatcher(providerFactory)
-      {
-         @Override
-         public void invoke(HttpRequest request, HttpResponse response)
-         {
-            try
-            {
-               super.invoke(request, response);
+    @Override
+    protected Dispatcher createDispatcher(
+            SeamResteasyProviderFactory providerFactory) {
+        return new SynchronousDispatcher(providerFactory) {
+            @Override
+            public void invoke(HttpRequest request, HttpResponse response) {
+                try {
+                    super.invoke(request, response);
+                } catch (UnhandledException e) {
+                    log.error("Failed to process REST request", e.getCause());
+                    try {
+                        response.sendError(
+                                Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+                                "Error processing Request");
+                    } catch (IOException ioe) {
+                        log.error(
+                                "Failed to send error on failed REST request",
+                                ioe);
+                    }
+                }
             }
-            catch (UnhandledException e)
-            {
-               log.error("Failed to process REST request", e.getCause());
-               try
-               {
-                  response.sendError(Status.INTERNAL_SERVER_ERROR.getStatusCode(), "Error processing Request");
-               }
-               catch (IOException ioe)
-               {
-                  log.error("Failed to send error on failed REST request", ioe);
-               }
-            }
-         }
-      };
-   }
+        };
+    }
 
 }

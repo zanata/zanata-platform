@@ -29,120 +29,105 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * A result item returned by a translation memory search.
  *
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class TransMemoryResultItem extends SearchResultItem implements IsSerializable
-{
+public class TransMemoryResultItem extends SearchResultItem implements
+        IsSerializable {
 
-   /**
-    * Describes the type of match that is found.
-    */
-   public enum MatchType
-   {
-      // Note: The order is significant for ordering of TM results in the UI
+    /**
+     * Describes the type of match that is found.
+     */
+    public enum MatchType {
+        // Note: The order is significant for ordering of TM results in the UI
 
-      /* Imported from an external source (i.e. TMX) */
-      Imported,
-      TranslatedInternal,
-      ApprovedInternal,
-   }
+        /* Imported from an external source (i.e. TMX) */
+        Imported, TranslatedInternal, ApprovedInternal,
+    }
 
-   private ArrayList<String> sourceContents;
-   private ArrayList<String> targetContents;
-   private int matchCount = 0;                  // The number of occurrences for the source contents
-   private MatchType matchType;
-   private List<String> origins;                 // The optional origin identifiers for this result (i.e. A Trans memory name)
-   private ArrayList<Long> sourceIdList = new ArrayList<Long>();
+    private ArrayList<String> sourceContents;
+    private ArrayList<String> targetContents;
+    private int matchCount = 0; // The number of occurrences for the source
+                                // contents
+    private MatchType matchType;
+    private List<String> origins; // The optional origin identifiers for this
+                                  // result (i.e. A Trans memory name)
+    private ArrayList<Long> sourceIdList = new ArrayList<Long>();
 
+    // for GWT
+    @SuppressWarnings("unused")
+    private TransMemoryResultItem() {
+    }
 
-   // for GWT
-   @SuppressWarnings("unused")
-   private TransMemoryResultItem()
-   {
-   }
+    /**
+     * @param sourceContents
+     * @param targetContents
+     * @param relevanceScore
+     * @param similarityPercent
+     */
+    public TransMemoryResultItem(ArrayList<String> sourceContents,
+            ArrayList<String> targetContents, MatchType matchType,
+            double relevanceScore, double similarityPercent) {
+        super(relevanceScore, similarityPercent);
+        this.sourceContents = sourceContents;
+        this.targetContents = targetContents;
+        this.matchType = matchType;
+        this.origins = new ArrayList<String>();
+    }
 
-   /**
-    * @param sourceContents
-    * @param targetContents
-    * @param relevanceScore
-    * @param similarityPercent
-    */
-   public TransMemoryResultItem(ArrayList<String> sourceContents, ArrayList<String> targetContents, MatchType matchType,
-                                double relevanceScore, double similarityPercent)
-   {
-      super(relevanceScore, similarityPercent);
-      this.sourceContents = sourceContents;
-      this.targetContents = targetContents;
-      this.matchType = matchType;
-      this.origins = new ArrayList<String>();
-   }
+    public List<String> getOrigins() {
+        return origins;
+    }
 
-   public List<String> getOrigins()
-   {
-      return origins;
-   }
+    public void addOrigin(String origin) {
+        this.origins.add(origin);
+    }
 
-   public void addOrigin(String origin)
-   {
-      this.origins.add(origin);
-   }
+    // FIXME remove this
+    @Deprecated
+    public String getSource() {
+        if (sourceContents.size() == 0) {
+            return null;
+        }
+        return sourceContents.get(0);
+    }
 
-   // FIXME remove this
-   @Deprecated
-   public String getSource()
-   {
-      if (sourceContents.size() == 0)
-      {
-         return null;
-      }
-      return sourceContents.get(0);
-   }
+    public ArrayList<String> getSourceContents() {
+        return sourceContents;
+    }
 
-   public ArrayList<String> getSourceContents()
-   {
-      return sourceContents;
-   }
+    // FIXME remove this
+    @Deprecated
+    public String getTarget() {
+        if (targetContents.size() == 0) {
+            return null;
+        }
+        return targetContents.get(0);
+    }
 
-   // FIXME remove this
-   @Deprecated
-   public String getTarget()
-   {
-      if (targetContents.size() == 0)
-      {
-         return null;
-      }
-      return targetContents.get(0);
-   }
+    public List<String> getTargetContents() {
+        return targetContents;
+    }
 
-   public List<String> getTargetContents()
-   {
-      return targetContents;
-   }
+    public MatchType getMatchType() {
+        return matchType;
+    }
 
-   public MatchType getMatchType()
-   {
-      return matchType;
-   }
+    public int getMatchCount() {
+        return matchCount;
+    }
 
-   public int getMatchCount()
-   {
-      return matchCount;
-   }
+    public void incMatchCount() {
+        ++this.matchCount;
+    }
 
-   public void incMatchCount()
-   {
-      ++this.matchCount;
-   }
+    public ArrayList<Long> getSourceIdList() {
+        return sourceIdList;
+    }
 
-   public ArrayList<Long> getSourceIdList()
-   {
-      return sourceIdList;
-   }
-
-   public void addSourceId(Long sourceId)
-   {
-      this.sourceIdList.add(sourceId);
-   }
+    public void addSourceId(Long sourceId) {
+        this.sourceIdList.add(sourceId);
+    }
 
 }

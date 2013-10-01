@@ -1,19 +1,20 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-   xmlns:s="http://jboss.org/schema/seam/taglib"
-   xmlns:ui="http://java.sun.com/jsf/facelets"
-   xmlns:f="http://java.sun.com/jsf/core"
-   xmlns:rich="http://richfaces.org/rich"
-   template="/WEB-INF/template/template_2x.xhtml">
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:rich="http://richfaces.org/rich"
+  template="/WEB-INF/template/template_2x.xhtml">
 
-   <ui:param name="showGlobalMessages" value="true"/>
-   
-   <ui:define name="page_title">#{messages['jsf.RequestToJoinVersionGroup']}</ui:define>
+  <ui:param name="showGlobalMessages" value="true"/>
 
-   <ui:define name="center_content">
-       <ui:include src="../WEB-INF/layout/version_group_join.xhtml" />
+  <ui:define
+    name="page_title">#{messages['jsf.RequestToJoinVersionGroup']}</ui:define>
 
-   </ui:define>
+  <ui:define name="center_content">
+    <ui:include src="../WEB-INF/layout/version_group_join.xhtml"/>
+
+  </ui:define>
 
 </ui:composition>

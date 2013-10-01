@@ -32,15 +32,9 @@ import org.zanata.feature.startNewProject.CreateSampleProjectTestSuite;
 import org.zanata.feature.versionGroup.VersionGroupTestSuite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-      AccountTestSuite.class,
-      AdministrationTestSuite.class,
-      GlossaryTestSuite.class,
-      SecurityTestSuite.class,
-      CreateSampleProjectTestSuite.class,
-      VersionGroupTestSuite.class,
-      DocumentTestSuite.class,
-      DashboardTestSuite.class
-})
+@Suite.SuiteClasses({ AccountTestSuite.class, AdministrationTestSuite.class,
+        GlossaryTestSuite.class, SecurityTestSuite.class,
+        CreateSampleProjectTestSuite.class, VersionGroupTestSuite.class,
+        DocumentTestSuite.class, DashboardTestSuite.class })
 public class AggregateTestSuite {
 }

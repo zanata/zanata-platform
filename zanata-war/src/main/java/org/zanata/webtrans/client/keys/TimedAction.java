@@ -22,11 +22,11 @@ package org.zanata.webtrans.client.keys;
 
 /**
  * Used to pass behaviour for a new timer to a {@link TimerFactory}.
- * 
- * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
+ *
+ * @author David Mason, <a
+ *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  *
  */
-public interface TimedAction
-{
-   void run();
+public interface TimedAction {
+    void run();
 }

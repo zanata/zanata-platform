@@ -34,17 +34,13 @@ import com.google.inject.Singleton;
  *
  **/
 @Singleton
-public class LoadingPanel extends DecoratedPopupPanel
-{
+public class LoadingPanel extends DecoratedPopupPanel {
 
-   @Inject
-   public LoadingPanel(final  WebTransMessages messages, final Resources resources)
-   {
-      super(false, true);
-      setStyleName("loadingPanel");
-      add(new Image(resources.spinnerLarge()));
-   }
+    @Inject
+    public LoadingPanel(final WebTransMessages messages,
+            final Resources resources) {
+        super(false, true);
+        setStyleName("loadingPanel");
+        add(new Image(resources.spinnerLarge()));
+    }
 }
-
-
- 

@@ -2,17 +2,17 @@
  * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
- * 
+ *
  * This is free software; you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
@@ -41,7 +41,7 @@ import org.zanata.model.HTextFlow;
 import lombok.Setter;
 
 /**
- * 
+ *
  * @author sflaniga@redhat.com
  * @see org.zanata.rest.dto.po.PotEntryData
  * @see org.zanata.rest.dto.extensions.gettext.PotEntryHeader
@@ -50,90 +50,84 @@ import lombok.Setter;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @BatchSize(size = 20)
 @Setter
-public class HPotEntryData implements Serializable
-{
+public class HPotEntryData implements Serializable {
 
-   private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-   private Long id;
-   private HTextFlow textFlow;
-   private String context;
-   @Deprecated // use HTextFlow.comment
-   private HSimpleComment extractedComment;
-   private String flags;
-   private String references;
+    private Long id;
+    private HTextFlow textFlow;
+    private String context;
+    @Deprecated
+    // use HTextFlow.comment
+    private HSimpleComment extractedComment;
+    private String flags;
+    private String references;
 
-   @Id
-   @GeneratedValue
-   public Long getId()
-   {
-      return id;
-   }
+    @Id
+    @GeneratedValue
+    public Long getId() {
+        return id;
+    }
 
-   protected void setId(Long id)
-   {
-      this.id = id;
-   }
+    protected void setId(Long id) {
+        this.id = id;
+    }
 
-   @OneToOne
-   @JoinColumn(name = "tf_id", /* nullable=false, */unique = true)
-   @NaturalId
-   public HTextFlow getTextFlow()
-   {
-      return textFlow;
-   }
+    @OneToOne
+    @JoinColumn(name = "tf_id", /* nullable=false, */unique = true)
+    @NaturalId
+    public HTextFlow getTextFlow() {
+        return textFlow;
+    }
 
-   public String getContext()
-   {
-      return context;
-   }
+    public String getContext() {
+        return context;
+    }
 
-   @Deprecated // use HTextFlow.comment
-   public void setExtractedComment(HSimpleComment extractedComment)
-   {
-      this.extractedComment = extractedComment;
-   }
+    @Deprecated
+    // use HTextFlow.comment
+            public
+            void setExtractedComment(HSimpleComment extractedComment) {
+        this.extractedComment = extractedComment;
+    }
 
-   @OneToOne(optional = true, cascade = CascadeType.ALL)
-   @JoinColumn(name = "comment_id")
-   @Deprecated // use HTextFlow.comment
-   public HSimpleComment getExtractedComment()
-   {
-      return extractedComment;
-   }
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = "comment_id")
+    @Deprecated
+    // use HTextFlow.comment
+            public
+            HSimpleComment getExtractedComment() {
+        return extractedComment;
+    }
 
-   /**
-    * Gettext message flags, delimited by ',' (comma)
-    */
-   public void setFlags(String flags)
-   {
-      this.flags = flags;
-   }
+    /**
+     * Gettext message flags, delimited by ',' (comma)
+     */
+    public void setFlags(String flags) {
+        this.flags = flags;
+    }
 
-   /**
-    * Gettext message flags, delimited by ',' (comma)
-    */
-   public String getFlags()
-   {
-      return flags;
-   }
+    /**
+     * Gettext message flags, delimited by ',' (comma)
+     */
+    public String getFlags() {
+        return flags;
+    }
 
-   /**
-    * Gettext message references, delimited by ',' (comma)
-    */
-   public void setReferences(String references)
-   {
-      this.references = references;
-   }
+    /**
+     * Gettext message references, delimited by ',' (comma)
+     */
+    public void setReferences(String references) {
+        this.references = references;
+    }
 
-   /**
-    * Gettext message references, delimited by ',' (comma)
-    */
-   @Column(name = "refs")
-   @Type(type = "text")
-   public String getReferences()
-   {
-      return references;
-   }
+    /**
+     * Gettext message references, delimited by ',' (comma)
+     */
+    @Column(name = "refs")
+    @Type(type = "text")
+    public String getReferences() {
+        return references;
+    }
 
 }

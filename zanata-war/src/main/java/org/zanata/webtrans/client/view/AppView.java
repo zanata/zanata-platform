@@ -2,17 +2,17 @@
  * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
- * 
+ *
  * This is free software; you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
@@ -47,270 +47,254 @@ import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class AppView extends Composite implements AppDisplay
-{
+public class AppView extends Composite implements AppDisplay {
 
-   interface AppViewUiBinder extends UiBinder<LayoutPanel, AppView>
-   {
-   }
+    interface AppViewUiBinder extends UiBinder<LayoutPanel, AppView> {
+    }
 
-   interface Styles extends CssResource
-   {
-      String disableTab();
+    interface Styles extends CssResource {
+        String disableTab();
 
-      String selectedTab();
+        String selectedTab();
 
-      String highlightedTab();
-   }
+        String highlightedTab();
+    }
 
-   private static AppViewUiBinder uiBinder = GWT.create(AppViewUiBinder.class);
+    private static AppViewUiBinder uiBinder = GWT.create(AppViewUiBinder.class);
 
-   @UiField(provided = true)
-   TransUnitCountBar translationStatsBar;
+    @UiField(provided = true)
+    TransUnitCountBar translationStatsBar;
 
-   @UiField
-   InlineLabel readOnlyLabel, keyShortcuts;
-   
-   @UiField(provided = true)
-   Breadcrumb selectedDocumentSpan;
-   
-   @UiField(provided = true)
-   Breadcrumb projectLink;
-   
-   @UiField(provided = true)
-   Breadcrumb versionLink;
-   
-   @UiField(provided = true)
-   Breadcrumb filesLink;
+    @UiField
+    InlineLabel readOnlyLabel, keyShortcuts;
 
-   @UiField
-   LayoutPanel sideMenuContainer, rootContainer, contentContainer;
-   
-   @UiField
-   TabLayoutPanel content;
+    @UiField(provided = true)
+    Breadcrumb selectedDocumentSpan;
 
-   @UiField
-   Styles style;
-   
-   @UiField
-   Label editorTab, searchAndReplaceTab, documentListTab;
+    @UiField(provided = true)
+    Breadcrumb projectLink;
 
-   private Listener listener;
+    @UiField(provided = true)
+    Breadcrumb versionLink;
 
-   @Inject
-public AppView(WebTransMessages messages, DocumentListDisplay documentListView, SearchResultsPresenter.Display searchResultsView, TranslationPresenter.Display translationView, SideMenuDisplay sideMenuView, final UserWorkspaceContext userWorkspaceContext)
-   {
-      // this must be initialized before uiBinder.createAndBindUi(), or an
-      // exception will be thrown at runtime
-      translationStatsBar = new TransUnitCountBar(userWorkspaceContext, messages, LabelFormat.PERCENT_COMPLETE_HRS, true, userWorkspaceContext.getWorkspaceRestrictions().isProjectRequireReview());
-      translationStatsBar.setVisible(false); // hide until there is a value to
-      
-      projectLink = new Breadcrumb(true, false, Application.getProjectHomeURL(userWorkspaceContext.getWorkspaceContext().getWorkspaceId()));
-      versionLink = new Breadcrumb(false, false, Application.getVersionHomeURL(userWorkspaceContext.getWorkspaceContext().getWorkspaceId()));
-      filesLink = new Breadcrumb(false, false, "");
-      // filesLink.setHref(Application.getVersionFilesURL(userWorkspaceContext.getWorkspaceContext().getWorkspaceId()));
-      selectedDocumentSpan = new Breadcrumb(false, true, "");
-      
-      initWidget(uiBinder.createAndBindUi(this));
-      
-      readOnlyLabel.setText("[" + messages.readOnly() + "]");
+    @UiField(provided = true)
+    Breadcrumb filesLink;
 
-      keyShortcuts.setTitle(messages.availableKeyShortcutsTitle());
+    @UiField
+    LayoutPanel sideMenuContainer, rootContainer, contentContainer;
 
-      sideMenuContainer.add(sideMenuView.asWidget());
+    @UiField
+    TabLayoutPanel content;
 
-      searchAndReplaceTab.setTitle(messages.projectWideSearchAndReplace());
-      documentListTab.setTitle(messages.documentListTitle());
-      editorTab.setTitle(messages.editor());
+    @UiField
+    Styles style;
 
-      
-      content.add(documentListView.asWidget());
-      content.add(translationView.asWidget());
-      content.add(searchResultsView.asWidget());
+    @UiField
+    Label editorTab, searchAndReplaceTab, documentListTab;
 
-      Window.enableScrolling(false);
-   }
+    private Listener listener;
 
-   @Override
-   public Widget asWidget()
-   {
-      return this;
-   }
+    @Inject
+    public AppView(WebTransMessages messages,
+            DocumentListDisplay documentListView,
+            SearchResultsPresenter.Display searchResultsView,
+            TranslationPresenter.Display translationView,
+            SideMenuDisplay sideMenuView,
+            final UserWorkspaceContext userWorkspaceContext) {
+        // this must be initialized before uiBinder.createAndBindUi(), or an
+        // exception will be thrown at runtime
+        translationStatsBar =
+                new TransUnitCountBar(userWorkspaceContext, messages,
+                        LabelFormat.PERCENT_COMPLETE_HRS, true,
+                        userWorkspaceContext.getWorkspaceRestrictions()
+                                .isProjectRequireReview());
+        translationStatsBar.setVisible(false); // hide until there is a value to
 
+        projectLink =
+                new Breadcrumb(true, false,
+                        Application.getProjectHomeURL(userWorkspaceContext
+                                .getWorkspaceContext().getWorkspaceId()));
+        versionLink =
+                new Breadcrumb(false, false,
+                        Application.getVersionHomeURL(userWorkspaceContext
+                                .getWorkspaceContext().getWorkspaceId()));
+        filesLink = new Breadcrumb(false, false, "");
+        // filesLink.setHref(Application.getVersionFilesURL(userWorkspaceContext.getWorkspaceContext().getWorkspaceId()));
+        selectedDocumentSpan = new Breadcrumb(false, true, "");
 
-   // Order of the tab
-   private final static int DOCUMENT_VIEW = 0;
-   private final static int EDITOR_VIEW = 1;
-   private final static int SEARCH_AND_REPLACE_VIEW = 2;
-   private final static int REVIEW_VIEW = 3;
-   
-   @Override
-   public void showInMainView(MainView view)
-   {
-      switch (view)
-      {
-      case Documents:
-         content.selectTab(DOCUMENT_VIEW);
-         selectedDocumentSpan.setVisible(false);
-         setSelectedTab(documentListTab);
-         break;
-      case Search:
-         content.selectTab(SEARCH_AND_REPLACE_VIEW);
-         selectedDocumentSpan.setVisible(true);
-         setSelectedTab(searchAndReplaceTab);
-         break;
-      case Editor:
-         content.selectTab(EDITOR_VIEW);
-         selectedDocumentSpan.setVisible(true);
-         setSelectedTab(editorTab);
-      }
-   }
-   
-   private void setSelectedTab(Widget tab)
-   {
-      editorTab.removeStyleName(style.selectedTab());
-      searchAndReplaceTab.removeStyleName(style.selectedTab());
-      documentListTab.removeStyleName(style.selectedTab());
+        initWidget(uiBinder.createAndBindUi(this));
 
-      tab.addStyleName(style.selectedTab());
-   }
+        readOnlyLabel.setText("[" + messages.readOnly() + "]");
 
-   @Override
-   public void setProjectLinkLabel(String text)
-   {
-      projectLink.setText(text);
-   }
-   
-   @Override
-   public void setVersionLinkLabel(String text)
-   {
-      versionLink.setText(text);
-   }
+        keyShortcuts.setTitle(messages.availableKeyShortcutsTitle());
 
-   @Override
-   public void setFilesLinkLabel(String text)
-   {
-      filesLink.setText(text);
-   }
+        sideMenuContainer.add(sideMenuView.asWidget());
 
-   @Override
-   public void setListener(Listener listener)
-   {
-      this.listener = listener;
-   }
+        searchAndReplaceTab.setTitle(messages.projectWideSearchAndReplace());
+        documentListTab.setTitle(messages.documentListTitle());
+        editorTab.setTitle(messages.editor());
 
-   @Override
-   public void setDocumentLabel(String docPath, String docName)
-   {
-      selectedDocumentSpan.setText(docPath + docName);
-   }
+        content.add(documentListView.asWidget());
+        content.add(translationView.asWidget());
+        content.add(searchResultsView.asWidget());
 
-   @Override
-   public void setStats(ContainerTranslationStatistics transStats, boolean statsByWords)
-   {
-      translationStatsBar.setStats(transStats, statsByWords);
-      translationStatsBar.setVisible(true);
-   }
-  
-   @Override
-   public void setReadOnlyVisible(boolean visible)
-   {
-      readOnlyLabel.setVisible(visible);
-   }
+        Window.enableScrolling(false);
+    }
 
-   private final static double MIN_MENU_WIDTH = 24.0;
-   private final static double EXPENDED_MENU_RIGHT = 304.0;
+    @Override
+    public Widget asWidget() {
+        return this;
+    }
 
-   private final static double MINIMISED_EDITOR_RIGHT = 280.0;
-   private final static int ANIMATE_DURATION = 300;
+    // Order of the tab
+    private final static int DOCUMENT_VIEW = 0;
+    private final static int EDITOR_VIEW = 1;
+    private final static int SEARCH_AND_REPLACE_VIEW = 2;
+    private final static int REVIEW_VIEW = 3;
 
-   @Override
-   public void showSideMenu(boolean isShowing)
-   {
-      rootContainer.forceLayout();
-      if (isShowing)
-      {
-         rootContainer.setWidgetLeftRight(contentContainer, 0.0, Unit.PX, MINIMISED_EDITOR_RIGHT, Unit.PX);
-         rootContainer.setWidgetRightWidth(sideMenuContainer, 0.0, Unit.PX, EXPENDED_MENU_RIGHT, Unit.PX);
-      }
-      else
-      {
-         rootContainer.setWidgetLeftRight(contentContainer, 0.0, Unit.PX, 0.0, Unit.PX);
-         rootContainer.setWidgetRightWidth(sideMenuContainer, 0.0, Unit.PX, MIN_MENU_WIDTH, Unit.PX);
-      }
-      rootContainer.animate(ANIMATE_DURATION);
-   }
+    @Override
+    public void showInMainView(MainView view) {
+        switch (view) {
+        case Documents:
+            content.selectTab(DOCUMENT_VIEW);
+            selectedDocumentSpan.setVisible(false);
+            setSelectedTab(documentListTab);
+            break;
+        case Search:
+            content.selectTab(SEARCH_AND_REPLACE_VIEW);
+            selectedDocumentSpan.setVisible(true);
+            setSelectedTab(searchAndReplaceTab);
+            break;
+        case Editor:
+            content.selectTab(EDITOR_VIEW);
+            selectedDocumentSpan.setVisible(true);
+            setSelectedTab(editorTab);
+        }
+    }
 
-   @UiHandler("keyShortcuts")
-   public void onKeyShortcutsIconClick(ClickEvent event)
-   {
-      listener.onKeyShortcutsClicked();
-   }
+    private void setSelectedTab(Widget tab) {
+        editorTab.removeStyleName(style.selectedTab());
+        searchAndReplaceTab.removeStyleName(style.selectedTab());
+        documentListTab.removeStyleName(style.selectedTab());
 
-   @Override
-   public void enableTab(MainView view, boolean enable)
-   {
-      switch (view)
-      {
-      case Search:
-         enableTab(searchAndReplaceTab, enable);
-         break;
-      case Documents:
-         enableTab(documentListTab, enable);
-         break;
-      case Editor:
-         enableTab(editorTab, enable);
-         break;
-      }
-   }
+        tab.addStyleName(style.selectedTab());
+    }
 
-   @UiHandler("filesLink")
-   public void onFilesLinkClick(ClickEvent event)
-   {
-      listener.onDocumentListClicked();
-   }
+    @Override
+    public void setProjectLinkLabel(String text) {
+        projectLink.setText(text);
+    }
 
-   @UiHandler("documentListTab")
-   public void onDocumentListTabClick(ClickEvent event)
-   {
-      listener.onDocumentListClicked();
-   }
+    @Override
+    public void setVersionLinkLabel(String text) {
+        versionLink.setText(text);
+    }
 
-   @UiHandler("editorTab")
-   public void onEditorTabClick(ClickEvent event)
-   {
-      listener.onEditorClicked();
-   }
-   
-   @UiHandler("searchAndReplaceTab")
-   public void onSearchAndReplaceTabTabClick(ClickEvent event)
-   {
-      listener.onSearchAndReplaceClicked();
-   }
+    @Override
+    public void setFilesLinkLabel(String text) {
+        filesLink.setText(text);
+    }
 
-   private void enableTab(Widget tab, boolean enable)
-   {
-      if (enable)
-      {
-         tab.removeStyleName(style.disableTab());
-      }
-      else
-      {
-         tab.addStyleName(style.disableTab());
-      }
-   }
+    @Override
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
 
-   @Override
-   public void setKeyboardShorcutColor(boolean aliasKeyListening)
-   {
-      if (aliasKeyListening)
-      {
-         keyShortcuts.addStyleName(style.highlightedTab());
-      }
-      else
-      {
-         keyShortcuts.removeStyleName(style.highlightedTab());
-      }
-   }
+    @Override
+    public void setDocumentLabel(String docPath, String docName) {
+        selectedDocumentSpan.setText(docPath + docName);
+    }
+
+    @Override
+    public void setStats(ContainerTranslationStatistics transStats,
+            boolean statsByWords) {
+        translationStatsBar.setStats(transStats, statsByWords);
+        translationStatsBar.setVisible(true);
+    }
+
+    @Override
+    public void setReadOnlyVisible(boolean visible) {
+        readOnlyLabel.setVisible(visible);
+    }
+
+    private final static double MIN_MENU_WIDTH = 24.0;
+    private final static double EXPENDED_MENU_RIGHT = 304.0;
+
+    private final static double MINIMISED_EDITOR_RIGHT = 280.0;
+    private final static int ANIMATE_DURATION = 300;
+
+    @Override
+    public void showSideMenu(boolean isShowing) {
+        rootContainer.forceLayout();
+        if (isShowing) {
+            rootContainer.setWidgetLeftRight(contentContainer, 0.0, Unit.PX,
+                    MINIMISED_EDITOR_RIGHT, Unit.PX);
+            rootContainer.setWidgetRightWidth(sideMenuContainer, 0.0, Unit.PX,
+                    EXPENDED_MENU_RIGHT, Unit.PX);
+        } else {
+            rootContainer.setWidgetLeftRight(contentContainer, 0.0, Unit.PX,
+                    0.0, Unit.PX);
+            rootContainer.setWidgetRightWidth(sideMenuContainer, 0.0, Unit.PX,
+                    MIN_MENU_WIDTH, Unit.PX);
+        }
+        rootContainer.animate(ANIMATE_DURATION);
+    }
+
+    @UiHandler("keyShortcuts")
+    public void onKeyShortcutsIconClick(ClickEvent event) {
+        listener.onKeyShortcutsClicked();
+    }
+
+    @Override
+    public void enableTab(MainView view, boolean enable) {
+        switch (view) {
+        case Search:
+            enableTab(searchAndReplaceTab, enable);
+            break;
+        case Documents:
+            enableTab(documentListTab, enable);
+            break;
+        case Editor:
+            enableTab(editorTab, enable);
+            break;
+        }
+    }
+
+    @UiHandler("filesLink")
+    public void onFilesLinkClick(ClickEvent event) {
+        listener.onDocumentListClicked();
+    }
+
+    @UiHandler("documentListTab")
+    public void onDocumentListTabClick(ClickEvent event) {
+        listener.onDocumentListClicked();
+    }
+
+    @UiHandler("editorTab")
+    public void onEditorTabClick(ClickEvent event) {
+        listener.onEditorClicked();
+    }
+
+    @UiHandler("searchAndReplaceTab")
+    public void onSearchAndReplaceTabTabClick(ClickEvent event) {
+        listener.onSearchAndReplaceClicked();
+    }
+
+    private void enableTab(Widget tab, boolean enable) {
+        if (enable) {
+            tab.removeStyleName(style.disableTab());
+        } else {
+            tab.addStyleName(style.disableTab());
+        }
+    }
+
+    @Override
+    public void setKeyboardShorcutColor(boolean aliasKeyListening) {
+        if (aliasKeyListening) {
+            keyShortcuts.addStyleName(style.highlightedTab());
+        } else {
+            keyShortcuts.removeStyleName(style.highlightedTab());
+        }
+    }
 
 }

@@ -27,32 +27,29 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class MergeRuleRenderer extends EnumRenderer<MergeRule>
-{
-   private final EnumMessages messages;
+public class MergeRuleRenderer extends EnumRenderer<MergeRule> {
+    private final EnumMessages messages;
 
-   @Inject
-   public MergeRuleRenderer(EnumMessages messages)
-   {
-      this.messages = messages;
-   }
+    @Inject
+    public MergeRuleRenderer(EnumMessages messages) {
+        this.messages = messages;
+    }
 
-   @Override
-   public String render(MergeRule option)
-   {
-      switch (option)
-      {
-      case FUZZY:
-         return messages.downgradeToFuzzy();
-      case IGNORE_CHECK:
-         return messages.ignoreDifference();
-      case REJECT:
-         return messages.rejectMerge();
-      default:
-         return getEmptyValue();
-      }
-   }
+    @Override
+    public String render(MergeRule option) {
+        switch (option) {
+        case FUZZY:
+            return messages.downgradeToFuzzy();
+        case IGNORE_CHECK:
+            return messages.ignoreDifference();
+        case REJECT:
+            return messages.rejectMerge();
+        default:
+            return getEmptyValue();
+        }
+    }
 }

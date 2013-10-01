@@ -27,40 +27,36 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class ContentStateRenderer extends EnumRenderer<ContentState>
-{
-   private final EnumMessages messages;
+public class ContentStateRenderer extends EnumRenderer<ContentState> {
+    private final EnumMessages messages;
 
-   @Inject
-   public ContentStateRenderer(EnumMessages messages)
-   {
-      this.messages = messages;
-   }
+    @Inject
+    public ContentStateRenderer(EnumMessages messages) {
+        this.messages = messages;
+    }
 
-   @Override
-   public String render(ContentState object)
-   {
-      if (object == null)
-      {
-         return messages.contentStateUnsaved();
-      }
-      switch (object)
-      {
-         case New:
+    @Override
+    public String render(ContentState object) {
+        if (object == null) {
+            return messages.contentStateUnsaved();
+        }
+        switch (object) {
+        case New:
             return messages.contentStateUntranslated();
-         case NeedReview:
+        case NeedReview:
             return messages.contentStateFuzzy();
-         case Translated:
+        case Translated:
             return messages.contentStateTranslated();
-         case Approved:
+        case Approved:
             return messages.contentStateApproved();
-         case Rejected:
+        case Rejected:
             return messages.contentStateRejected();
-         default:
+        default:
             return getEmptyValue();
-      }
-   }
+        }
+    }
 }

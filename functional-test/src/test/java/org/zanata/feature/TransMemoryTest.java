@@ -29,40 +29,48 @@ import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-//@Test(groups = "manual-run", description = "This test class only sets up test data on server. It's not verifying any TM features.")
-public class TransMemoryTest
-{
+// @Test(groups = "manual-run", description =
+// "This test class only sets up test data on server. It's not verifying any TM features.")
+public class TransMemoryTest {
 
-   @Test(timeout = Constants.FIFTY_SEC)
-   public void pushTransMemoryProject() {
-      new LoginWorkFlow().signIn("admin", "admin");
-      LanguageWorkFlow languageWorkFlow = new LanguageWorkFlow();
-      languageWorkFlow.addLanguageAndJoin("en-US");
-      languageWorkFlow.addLanguageAndJoin("zh-CN");
+    @Test(timeout = Constants.FIFTY_SEC)
+    public void pushTransMemoryProject() {
+        new LoginWorkFlow().signIn("admin", "admin");
+        LanguageWorkFlow languageWorkFlow = new LanguageWorkFlow();
+        languageWorkFlow.addLanguageAndJoin("en-US");
+        languageWorkFlow.addLanguageAndJoin("zh-CN");
 
-      ProjectWorkFlow projectWorkFlow = new ProjectWorkFlow();
-      ProjectPage projectPage = projectWorkFlow.createNewProject("trans-memory", "trans memory test");
-      projectWorkFlow.createNewProjectVersion("trans memory test", "master");
+        ProjectWorkFlow projectWorkFlow = new ProjectWorkFlow();
+        ProjectPage projectPage =
+                projectWorkFlow.createNewProject("trans-memory",
+                        "trans memory test");
+        projectWorkFlow.createNewProjectVersion("trans memory test", "master");
 
-//      int exitCode = new ClientPushWorkFlow().mvnPush("trans-memory", "-Dzanata.merge=import", "-Dzanata.projectVersion=master", "-Dzanata.pushType=Both");
+        // int exitCode = new ClientPushWorkFlow().mvnPush("trans-memory",
+        // "-Dzanata.merge=import", "-Dzanata.projectVersion=master",
+        // "-Dzanata.pushType=Both");
 
-//      assertThat(exitCode, Matchers.equalTo(0));
-   }
+        // assertThat(exitCode, Matchers.equalTo(0));
+    }
 
-   @Test(timeout = Constants.FIFTY_SEC)
-   public void pushTransMemoryProjectWithDifferentProjectName() {
-      new LoginWorkFlow().signIn("admin", "admin");
-      LanguageWorkFlow languageWorkFlow = new LanguageWorkFlow();
-      languageWorkFlow.addLanguageAndJoin("en-US");
-      languageWorkFlow.addLanguageAndJoin("zh-CN");
+    @Test(timeout = Constants.FIFTY_SEC)
+    public void pushTransMemoryProjectWithDifferentProjectName() {
+        new LoginWorkFlow().signIn("admin", "admin");
+        LanguageWorkFlow languageWorkFlow = new LanguageWorkFlow();
+        languageWorkFlow.addLanguageAndJoin("en-US");
+        languageWorkFlow.addLanguageAndJoin("zh-CN");
 
-      ProjectWorkFlow projectWorkFlow = new ProjectWorkFlow();
-      ProjectPage projectPage = projectWorkFlow.createNewProject("trans-memory-v2", "trans memory test v2");
-      projectWorkFlow.createNewProjectVersion("trans memory test v2", "master");
+        ProjectWorkFlow projectWorkFlow = new ProjectWorkFlow();
+        ProjectPage projectPage =
+                projectWorkFlow.createNewProject("trans-memory-v2",
+                        "trans memory test v2");
+        projectWorkFlow.createNewProjectVersion("trans memory test v2",
+                "master");
 
-      // @formatter:off
+        // @formatter:off
 //      int exitCode = new ClientPushWorkFlow().mvnPush("trans-memory",
 //            "-Dzanata.projectConfig=differentProject/zanata.xml",
 //            "-Dzanata.projectVersion=master",
@@ -70,6 +78,6 @@ public class TransMemoryTest
 //            "-Dzanata.pushType=Source");
       // @formatter:on
 
-//      assertThat(exitCode, Matchers.equalTo(0));
-   }
+        // assertThat(exitCode, Matchers.equalTo(0));
+    }
 }

@@ -26,47 +26,45 @@ import java.util.Map;
 /**
  * Wraps calls to the {@link com.google.gwt.user.client.Window} object to allow
  * mocking for testing in a JRE (non-GWT) environment.
- * 
+ *
  * Does not implement all Window methods.
- * 
+ *
  * @author David Mason, <a
  *         href="mailto:damason@redhat.com">damason@redhat.com</a>
- * 
+ *
  */
-public interface Window
-{
-   /**
-    * @see com.google.gwt.user.client.Window
-    */
-   public void setTitle(String title);
+public interface Window {
+    /**
+     * @see com.google.gwt.user.client.Window
+     */
+    public void setTitle(String title);
 
-   /**
-    * Wraps calls to the {@link com.google.gwt.user.client.Window.Location}
-    * object to allow mocking for testing in a JRE (non-GWT) environment.
-    * <p>
-    * Does not implement all Window.Location methods.
-    * <p>
-    * Includes additional helper methods for retrieving query string parameters
-    * in a more useful form.
-    * 
-    * @author David Mason, <a
-    *         href="mailto:damason@redhat.com">damason@redhat.com</a>
-    * @see com.google.gwt.user.client.Window.Location
-    */
-   public interface Location
-   {
-      public static final String PRE_FILTER_QUERY_PARAMETER_KEY = "doc";
+    /**
+     * Wraps calls to the {@link com.google.gwt.user.client.Window.Location}
+     * object to allow mocking for testing in a JRE (non-GWT) environment.
+     * <p>
+     * Does not implement all Window.Location methods.
+     * <p>
+     * Includes additional helper methods for retrieving query string parameters
+     * in a more useful form.
+     *
+     * @author David Mason, <a
+     *         href="mailto:damason@redhat.com">damason@redhat.com</a>
+     * @see com.google.gwt.user.client.Window.Location
+     */
+    public interface Location {
+        public static final String PRE_FILTER_QUERY_PARAMETER_KEY = "doc";
 
-      public String getParameter(String name);
+        public String getParameter(String name);
 
-      public Map<String, List<String>> getParameterMap();
+        public Map<String, List<String>> getParameterMap();
 
-      public String getHref();
+        public String getHref();
 
-      /**
-       * 
-       * @return list of document paths specified in the URL
-       */
-      public List<String> getQueryDocuments();
-   }
+        /**
+         *
+         * @return list of document paths specified in the URL
+         */
+        public List<String> getQueryDocuments();
+    }
 }

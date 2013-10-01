@@ -25,61 +25,52 @@ import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.type.descriptor.java.AbstractTypeDescriptor;
 import org.zanata.common.ContentType;
 
-public class ContentTypeTypeDescriptor extends AbstractTypeDescriptor<ContentType>
-{
-   private static final long serialVersionUID = 1L;
-   public static final ContentTypeTypeDescriptor INSTANCE = new ContentTypeTypeDescriptor();
-   public ContentTypeTypeDescriptor()
-   {
-      super(ContentType.class);
-   }
+public class ContentTypeTypeDescriptor extends
+        AbstractTypeDescriptor<ContentType> {
+    private static final long serialVersionUID = 1L;
+    public static final ContentTypeTypeDescriptor INSTANCE =
+            new ContentTypeTypeDescriptor();
 
-   @Override
-   public ContentType fromString(String string)
-   {
-      if (string == null)
-      {
-         return null;
-      }
-      else
-      {
-         return new ContentType(string);
-      }
-   }
+    public ContentTypeTypeDescriptor() {
+        super(ContentType.class);
+    }
 
-   @Override
-   public String toString(ContentType value)
-   {
-      return value.toString();
-   }
+    @Override
+    public ContentType fromString(String string) {
+        if (string == null) {
+            return null;
+        } else {
+            return new ContentType(string);
+        }
+    }
 
-   @Override
-   public <X> X unwrap(ContentType value, Class<X> type, WrapperOptions options)
-   {
-      if (value == null)
-      {
-         return null;
-      }
-      // TODO handle Enum ordinal?
-      if (String.class.isAssignableFrom(type))
-      {
-         return (X) value.toString();
-      }
-      throw unknownUnwrap(type);
-   }
+    @Override
+    public String toString(ContentType value) {
+        return value.toString();
+    }
 
-   @Override
-   public <X> ContentType wrap(X value, WrapperOptions options)
-   {
-      if (value == null)
-      {
-         return null;
-      }
-      // TODO handle Enum ordinal?
-      if (String.class.isInstance(value))
-      {
-         return new ContentType((String) value);
-      }
-      throw unknownWrap(value.getClass());
-   }
+    @Override
+    public <X> X
+            unwrap(ContentType value, Class<X> type, WrapperOptions options) {
+        if (value == null) {
+            return null;
+        }
+        // TODO handle Enum ordinal?
+        if (String.class.isAssignableFrom(type)) {
+            return (X) value.toString();
+        }
+        throw unknownUnwrap(type);
+    }
+
+    @Override
+    public <X> ContentType wrap(X value, WrapperOptions options) {
+        if (value == null) {
+            return null;
+        }
+        // TODO handle Enum ordinal?
+        if (String.class.isInstance(value)) {
+            return new ContentType((String) value);
+        }
+        throw unknownWrap(value.getClass());
+    }
 }

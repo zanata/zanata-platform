@@ -33,8 +33,11 @@ import org.zanata.model.tm.TransMemory;
 import org.zanata.util.CloseableIterator;
 
 /**
- * This class uses Hibernate's StatelessSession to iterate over large queries returning TransMemoryUnit.
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * This class uses Hibernate's StatelessSession to iterate over large queries
+ * returning TransMemoryUnit.
+ *
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @Name("transMemoryStreamingDAO")
 @Scope(ScopeType.EVENT)
@@ -44,72 +47,69 @@ import org.zanata.util.CloseableIterator;
  * responsible for closing the Iterator, or a database connection
  * may leak.
  */
-public class TransMemoryStreamingDAO extends StreamingDAO<TransMemoryUnit>
-{
+public class TransMemoryStreamingDAO extends StreamingDAO<TransMemoryUnit> {
 
-   public TransMemoryStreamingDAO(HibernateEntityManagerFactory emf)
-   {
-      super(emf);
-   }
+    public TransMemoryStreamingDAO(HibernateEntityManagerFactory emf) {
+        super(emf);
+    }
 
-   /**
-    * Finds all the TransMemoryUnits for a given TransMemory.
-    * <p>
-    * NB: caller must close the iterator, or call next() until the iterator is exhausted,
-    * or else a database connection will be leaked.
-    * @param transMemory
-    * @return
-    */
-   public CloseableIterator<TransMemoryUnit> findTransUnitsByTM(TransMemory transMemory)
-   {
-      StreamingEntityIterator<TransMemoryUnit> iter = createIterator();
-      try
-      {
-         Query q = iter.getSession().createQuery(
-               "FROM TransMemoryUnit tu FETCH ALL PROPERTIES " +
-               "JOIN FETCH tu.transUnitVariants tuv FETCH ALL PROPERTIES " +
-               "WHERE tu.translationMemory = :transMemory " +
-               "");
-         q.setParameter("transMemory", transMemory);
-         q.setComment("TransMemoryStreamingDAO.findTransUnitsByTM");
+    /**
+     * Finds all the TransMemoryUnits for a given TransMemory.
+     * <p>
+     * NB: caller must close the iterator, or call next() until the iterator is
+     * exhausted, or else a database connection will be leaked.
+     *
+     * @param transMemory
+     * @return
+     */
+    public CloseableIterator<TransMemoryUnit> findTransUnitsByTM(
+            TransMemory transMemory) {
+        StreamingEntityIterator<TransMemoryUnit> iter = createIterator();
+        try {
+            Query q =
+                    iter.getSession()
+                            .createQuery(
+                                    "FROM TransMemoryUnit tu FETCH ALL PROPERTIES "
+                                            + "JOIN FETCH tu.transUnitVariants tuv FETCH ALL PROPERTIES "
+                                            + "WHERE tu.translationMemory = :transMemory "
+                                            + "");
+            q.setParameter("transMemory", transMemory);
+            q.setComment("TransMemoryStreamingDAO.findTransUnitsByTM");
 
-         iter.initQuery(q);
-         return iter;
-      }
-      catch (Throwable e)
-      {
-         iter.close();
-         throw new RuntimeException(e);
-      }
+            iter.initQuery(q);
+            return iter;
+        } catch (Throwable e) {
+            iter.close();
+            throw new RuntimeException(e);
+        }
 
-   }
+    }
 
-   /**
-    * Finds all TransMemoryUnits.
-    * <p>
-    * NB: caller must close the iterator, or call next() until the iterator is exhausted,
-    * or else a database connection will be leaked.
-    * @param transMemory
-    * @return
-    */
-   public CloseableIterator<TransMemoryUnit> findAllTransUnits()
-   {
-      StreamingEntityIterator<TransMemoryUnit> iter = createIterator();
-      try
-      {
-         Query q = iter.getSession().createQuery(
-               "FROM TransMemoryUnit tu FETCH ALL PROPERTIES " +
-               "JOIN FETCH tu.transUnitVariants tuv FETCH ALL PROPERTIES " +
-               "");
-         q.setComment("TransMemoryStreamingDAO.findAllTransUnits");
-         iter.initQuery(q);
-         return iter;
-      }
-      catch (Throwable e)
-      {
-         iter.close();
-         throw new RuntimeException(e);
-      }
-   }
+    /**
+     * Finds all TransMemoryUnits.
+     * <p>
+     * NB: caller must close the iterator, or call next() until the iterator is
+     * exhausted, or else a database connection will be leaked.
+     *
+     * @param transMemory
+     * @return
+     */
+    public CloseableIterator<TransMemoryUnit> findAllTransUnits() {
+        StreamingEntityIterator<TransMemoryUnit> iter = createIterator();
+        try {
+            Query q =
+                    iter.getSession()
+                            .createQuery(
+                                    "FROM TransMemoryUnit tu FETCH ALL PROPERTIES "
+                                            + "JOIN FETCH tu.transUnitVariants tuv FETCH ALL PROPERTIES "
+                                            + "");
+            q.setComment("TransMemoryStreamingDAO.findAllTransUnits");
+            iter.initQuery(q);
+            return iter;
+        } catch (Throwable e) {
+            iter.close();
+            throw new RuntimeException(e);
+        }
+    }
 
 }

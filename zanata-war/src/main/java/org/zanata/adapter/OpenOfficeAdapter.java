@@ -23,19 +23,18 @@ package org.zanata.adapter;
 import net.sf.okapi.filters.openoffice.OpenOfficeFilter;
 
 /**
- * Adapter to handle any Open Document Format documents (used by LibreOffice and OpenOffice).
- * 
- * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
+ * Adapter to handle any Open Document Format documents (used by LibreOffice and
+ * OpenOffice).
+ *
+ * @author David Mason, <a
+ *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  */
-public class OpenOfficeAdapter extends GenericOkapiFilterAdapter
-{
-   public OpenOfficeAdapter()
-   {
-      super(prepareFilter(), IdSource.subDocNameAndTextUnitId, true);
-   }
+public class OpenOfficeAdapter extends GenericOkapiFilterAdapter {
+    public OpenOfficeAdapter() {
+        super(prepareFilter(), IdSource.subDocNameAndTextUnitId, true);
+    }
 
-   private static OpenOfficeFilter prepareFilter()
-   {
-      return new OpenOfficeFilter();
-   }
+    private static OpenOfficeFilter prepareFilter() {
+        return new OpenOfficeFilter();
+    }
 }

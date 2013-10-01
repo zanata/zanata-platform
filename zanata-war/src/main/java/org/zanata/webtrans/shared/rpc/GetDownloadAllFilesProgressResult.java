@@ -1,46 +1,38 @@
 package org.zanata.webtrans.shared.rpc;
 
+public class GetDownloadAllFilesProgressResult implements DispatchResult {
 
+    private static final long serialVersionUID = 1L;
 
-public class GetDownloadAllFilesProgressResult implements DispatchResult
-{
+    private int currentProgress;
+    private int maxProgress;
+    private String downloadId;
 
-   private static final long serialVersionUID = 1L;
+    @SuppressWarnings("unused")
+    private GetDownloadAllFilesProgressResult() {
+    }
 
-   private int currentProgress;
-   private int maxProgress;
-   private String downloadId;
+    public GetDownloadAllFilesProgressResult(int currentProgress,
+            int maxProgress, String downloadId) {
+        this.maxProgress = maxProgress;
+        this.currentProgress = currentProgress;
+        this.downloadId = downloadId;
+    }
 
-   @SuppressWarnings("unused")
-   private GetDownloadAllFilesProgressResult()
-   {
-   }
+    public int getCurrentProgress() {
+        return currentProgress;
+    }
 
-   public GetDownloadAllFilesProgressResult(int currentProgress, int maxProgress, String downloadId)
-   {
-      this.maxProgress = maxProgress;
-      this.currentProgress = currentProgress;
-      this.downloadId = downloadId;
-   }
+    public int getMaxProgress() {
+        return maxProgress;
+    }
 
-   public int getCurrentProgress()
-   {
-      return currentProgress;
-   }
+    public String getDownloadId() {
+        return downloadId;
+    }
 
-   public int getMaxProgress()
-   {
-      return maxProgress;
-   }
-
-   public String getDownloadId()
-   {
-      return downloadId;
-   }
-
-   public boolean isDone()
-   {
-      return currentProgress == maxProgress;
-   }
+    public boolean isDone() {
+        return currentProgress == maxProgress;
+    }
 
 }

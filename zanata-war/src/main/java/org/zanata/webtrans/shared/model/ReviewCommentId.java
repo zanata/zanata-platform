@@ -26,55 +26,51 @@ import java.io.Serializable;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class ReviewCommentId implements Identifier<Long>, IsSerializable, Serializable
-{
-   private static final long serialVersionUID = 1L;
+public class ReviewCommentId implements Identifier<Long>, IsSerializable,
+        Serializable {
+    private static final long serialVersionUID = 1L;
 
-   private Long id;
+    private Long id;
 
-   public ReviewCommentId(Long id)
-   {
-      this.id = id;
-   }
+    public ReviewCommentId(Long id) {
+        this.id = id;
+    }
 
-   @SuppressWarnings("unused")
-   public ReviewCommentId()
-   {
-   }
+    @SuppressWarnings("unused")
+    public ReviewCommentId() {
+    }
 
-   @Override
-   public Long getValue()
-   {
-      return id;
-   }
+    @Override
+    public Long getValue() {
+        return id;
+    }
 
-   public Long getId()
-   {
-      return id;
-   }
+    public Long getId() {
+        return id;
+    }
 
-   void setId(Long id)
-   {
-      this.id = id;
-   }
+    void setId(Long id) {
+        this.id = id;
+    }
 
-   @Override
-   public boolean equals(Object o)
-   {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
 
-      ReviewCommentId that = (ReviewCommentId) o;
+        ReviewCommentId that = (ReviewCommentId) o;
 
-      return id.equals(that.id);
+        return id.equals(that.id);
 
-   }
+    }
 
-   @Override
-   public int hashCode()
-   {
-      return id.hashCode();
-   }
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 }

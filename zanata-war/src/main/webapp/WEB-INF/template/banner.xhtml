@@ -1,23 +1,25 @@
 <header role="banner" class="bg--pop-highest txt--s-align-center"
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:a="http://richfaces.org/a4j"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:s="http://jboss.org/schema/seam/taglib"
-	xmlns:rich="http://richfaces.org/rich">
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:a="http://richfaces.org/a4j"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:rich="http://richfaces.org/rich">
 
-	<a href="#off-canvas--left" class="off-canvas__toggle--left is-hidden--m-up l--float-left">
-		<i class="i i--huge i--list"></i>
-		<span class="is-invisible">#{messages['jsf.Menu']}</span>
-	</a>
+  <a href="#off-canvas--left"
+    class="off-canvas__toggle--left is-hidden--m-up l--float-left">
+    <i class="i i--huge i--list"></i>
+    <span class="is-invisible">#{messages['jsf.Menu']}</span>
+  </a>
 
-	<h1 class="header__title heading--sub">
-		<s:link view="/home.xhtml" propagation="none" id="home">
-			<img class="header__site-logo" src="#{applicationConfiguration.webAssetsUrl}/logo.svg"/>
-			#{messages['jsf.Zanata']}
-		</s:link>
-	</h1>
+  <h1 class="header__title heading--sub">
+    <s:link view="/home.xhtml" propagation="none" id="home">
+      <img class="header__site-logo"
+        src="#{applicationConfiguration.webAssetsUrl}/logo.svg"/>
+      #{messages['jsf.Zanata']}
+    </s:link>
+  </h1>
 
 	<s:fragment rendered="#{identity.loggedIn}">
 		<a href="#off-canvas--right" id="user_avatar" class="off-canvas__toggle--right l--float-right" title="#{personHome.instance.account.username}">

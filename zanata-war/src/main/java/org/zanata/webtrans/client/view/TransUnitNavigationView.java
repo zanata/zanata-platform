@@ -2,17 +2,17 @@
  * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
- * 
+ *
  * This is free software; you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
@@ -34,124 +34,120 @@ import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class TransUnitNavigationView extends Composite implements TransUnitNavigationDisplay
-{
+public class TransUnitNavigationView extends Composite implements
+        TransUnitNavigationDisplay {
 
-   private static TransUnitNavigationViewUiBinder uiBinder = GWT.create(TransUnitNavigationViewUiBinder.class);
-   private Listener listener;
+    private static TransUnitNavigationViewUiBinder uiBinder = GWT
+            .create(TransUnitNavigationViewUiBinder.class);
+    private Listener listener;
 
-   interface Styles extends CssResource
-   {
-      String fuzzyUntranslated();
+    interface Styles extends CssResource {
+        String fuzzyUntranslated();
 
-      String fuzzy();
+        String fuzzy();
 
-      String untranslated();
-      
-      String navButton();
-   }
+        String untranslated();
 
-   @UiField
-   InlineLabel prevState, nextState, firstEntry, lastEntry;
+        String navButton();
+    }
 
-   @UiField
-   Styles style;
+    @UiField
+    InlineLabel prevState, nextState, firstEntry, lastEntry;
 
-   private final NavigationMessages messages;
+    @UiField
+    Styles style;
 
-   @Inject
-   public TransUnitNavigationView(final NavigationMessages messages)
-   {
-      this.messages = messages;
+    private final NavigationMessages messages;
 
-      initWidget(uiBinder.createAndBindUi(this));
+    @Inject
+    public TransUnitNavigationView(final NavigationMessages messages) {
+        this.messages = messages;
 
-      firstEntry.setTitle(messages.firstEntry());
-      lastEntry.setTitle(messages.lastEntry());
-      setFuzzyUntranslatedModeTooltip();
-   }
+        initWidget(uiBinder.createAndBindUi(this));
 
-   private void setFuzzyModeTooltip()
-   {
-      prevState.setStylePrimaryName(style.fuzzy());
-      prevState.setTitle(messages.actionToolTip(messages.prevFuzzy(), messages.prevFuzzyOrUntranslatedShortcut()));
+        firstEntry.setTitle(messages.firstEntry());
+        lastEntry.setTitle(messages.lastEntry());
+        setFuzzyUntranslatedModeTooltip();
+    }
 
-      nextState.setStylePrimaryName(style.fuzzy());
-      nextState.setTitle(messages.actionToolTip(messages.nextFuzzy(), messages.nextFuzzyOrUntranslatedShortcut()));
-   }
+    private void setFuzzyModeTooltip() {
+        prevState.setStylePrimaryName(style.fuzzy());
+        prevState.setTitle(messages.actionToolTip(messages.prevFuzzy(),
+                messages.prevFuzzyOrUntranslatedShortcut()));
 
-   private void setUntranslatedModeTooltip()
-   {
-      prevState.setStylePrimaryName(style.untranslated());
-      prevState.setTitle(messages.actionToolTip(messages.prevUntranslated(), messages.prevFuzzyOrUntranslatedShortcut()));
+        nextState.setStylePrimaryName(style.fuzzy());
+        nextState.setTitle(messages.actionToolTip(messages.nextFuzzy(),
+                messages.nextFuzzyOrUntranslatedShortcut()));
+    }
 
-      nextState.setStylePrimaryName(style.untranslated());
-      nextState.setTitle(messages.actionToolTip(messages.nextUntranslated(), messages.nextFuzzyOrUntranslatedShortcut()));
-   }
+    private void setUntranslatedModeTooltip() {
+        prevState.setStylePrimaryName(style.untranslated());
+        prevState.setTitle(messages.actionToolTip(messages.prevUntranslated(),
+                messages.prevFuzzyOrUntranslatedShortcut()));
 
-   private void setFuzzyUntranslatedModeTooltip()
-   {
-      prevState.setStylePrimaryName(style.fuzzyUntranslated());
-      prevState.setTitle(messages.actionToolTip(messages.prevFuzzyOrUntranslated(), messages.prevFuzzyOrUntranslatedShortcut()));
+        nextState.setStylePrimaryName(style.untranslated());
+        nextState.setTitle(messages.actionToolTip(messages.nextUntranslated(),
+                messages.nextFuzzyOrUntranslatedShortcut()));
+    }
 
-      nextState.setStylePrimaryName(style.fuzzyUntranslated());
-      nextState.setTitle(messages.actionToolTip(messages.nextFuzzyOrUntranslated(), messages.nextFuzzyOrUntranslatedShortcut()));
-   }
+    private void setFuzzyUntranslatedModeTooltip() {
+        prevState.setStylePrimaryName(style.fuzzyUntranslated());
+        prevState.setTitle(messages.actionToolTip(
+                messages.prevFuzzyOrUntranslated(),
+                messages.prevFuzzyOrUntranslatedShortcut()));
 
-   @UiHandler("firstEntry")
-   public void onFirstEntryClicked(ClickEvent event)
-   {
-      listener.goToFirstEntry();
-   }
+        nextState.setStylePrimaryName(style.fuzzyUntranslated());
+        nextState.setTitle(messages.actionToolTip(
+                messages.nextFuzzyOrUntranslated(),
+                messages.nextFuzzyOrUntranslatedShortcut()));
+    }
 
-   @UiHandler("lastEntry")
-   public void onLastEntryClicked(ClickEvent event)
-   {
-      listener.goToLastEntry();
-   }
+    @UiHandler("firstEntry")
+    public void onFirstEntryClicked(ClickEvent event) {
+        listener.goToFirstEntry();
+    }
 
-   @UiHandler("prevState")
-   public void onPrevStateClicked(ClickEvent event)
-   {
-      listener.goToPreviousState();
-   }
+    @UiHandler("lastEntry")
+    public void onLastEntryClicked(ClickEvent event) {
+        listener.goToLastEntry();
+    }
 
-   @UiHandler("nextState")
-   public void onNextStateClicked(ClickEvent event)
-   {
-      listener.goToNextState();
-   }
+    @UiHandler("prevState")
+    public void onPrevStateClicked(ClickEvent event) {
+        listener.goToPreviousState();
+    }
 
-   @Override
-   public Widget asWidget()
-   {
-      return this;
-   }
+    @UiHandler("nextState")
+    public void onNextStateClicked(ClickEvent event) {
+        listener.goToNextState();
+    }
 
-   @Override
-   public void setNavModeTooltip(NavOption navOption)
-   {
-      switch (navOption)
-      {
-         case FUZZY_UNTRANSLATED:
+    @Override
+    public Widget asWidget() {
+        return this;
+    }
+
+    @Override
+    public void setNavModeTooltip(NavOption navOption) {
+        switch (navOption) {
+        case FUZZY_UNTRANSLATED:
             setFuzzyUntranslatedModeTooltip();
             break;
-         case FUZZY:
+        case FUZZY:
             setFuzzyModeTooltip();
             break;
-         case UNTRANSLATED:
+        case UNTRANSLATED:
             setUntranslatedModeTooltip();
             break;
-      }
-   }
+        }
+    }
 
-   @Override
-   public void setListener(Listener listener)
-   {
-      this.listener = listener;
-   }
+    @Override
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
 
-   interface TransUnitNavigationViewUiBinder extends UiBinder<Widget, TransUnitNavigationView>
-   {
-   }
+    interface TransUnitNavigationViewUiBinder extends
+            UiBinder<Widget, TransUnitNavigationView> {
+    }
 }

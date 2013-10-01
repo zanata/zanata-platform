@@ -1,6 +1,5 @@
 package org.zanata.dao;
 
-
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -11,22 +10,21 @@ import org.zanata.model.HApplicationConfiguration;
 @Name("applicationConfigurationDAO")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
-public class ApplicationConfigurationDAO extends AbstractDAOImpl<HApplicationConfiguration, Long>
-{
+public class ApplicationConfigurationDAO extends
+        AbstractDAOImpl<HApplicationConfiguration, Long> {
 
-   public ApplicationConfigurationDAO()
-   {
-      super(HApplicationConfiguration.class);
-   }
+    public ApplicationConfigurationDAO() {
+        super(HApplicationConfiguration.class);
+    }
 
-   public ApplicationConfigurationDAO(Session session)
-   {
-      super(HApplicationConfiguration.class, session);
-   }
+    public ApplicationConfigurationDAO(Session session) {
+        super(HApplicationConfiguration.class, session);
+    }
 
-   public HApplicationConfiguration findByKey(String key)
-   {
-      return (HApplicationConfiguration)getSession().byNaturalId(HApplicationConfiguration.class).using("key", key).load();
-   }
+    public HApplicationConfiguration findByKey(String key) {
+        return (HApplicationConfiguration) getSession()
+                .byNaturalId(HApplicationConfiguration.class).using("key", key)
+                .load();
+    }
 
 }

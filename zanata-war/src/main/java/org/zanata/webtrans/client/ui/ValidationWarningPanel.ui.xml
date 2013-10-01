@@ -1,23 +1,32 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	xmlns:z='urn:import:org.zanata.webtrans.client.ui'>
+  xmlns:g="urn:import:com.google.gwt.user.client.ui"
+  xmlns:z='urn:import:org.zanata.webtrans.client.ui'>
 
-    <ui:with field="messages" type="org.zanata.webtrans.client.resources.TableEditorMessages" />
+  <ui:with field="messages"
+    type="org.zanata.webtrans.client.resources.TableEditorMessages" />
 
-	<g:HTMLPanel styleName="l--pad-all-half bg--high" width="800px">
-        <h2 class="l--push-all-0"><ui:text from="{messages.validationErrorMessage}"/></h2>
-        
-        <h3><ui:text from="{messages.translation}"/></h3>
-        <z:UnorderedListWidget ui:field="translations" styleName="list--no-bullets"/>
-        
-        <h3 class="txt--danger"><ui:text from="{messages.errorMessage}"/></h3>
-        <z:UnorderedListWidget ui:field="errorList" styleName="list--no-bullets l--pad-h-half  txt--danger"/>
-           
-        <div class="l--push-top-1">
-            <g:Button ui:field="returnToEditor" addStyleNames="button--primary"/>
-            <g:InlineLabel addStyleNames="l--push-h-half">or</g:InlineLabel>
-            <g:Button ui:field="saveAsFuzzy" addStyleNames="button"/>
-        </div>      
-	</g:HTMLPanel>
+  <g:HTMLPanel styleName="l--pad-all-half bg--high" width="800px">
+    <h2 class="l--push-all-0">
+      <ui:text from="{messages.validationErrorMessage}" />
+    </h2>
+
+    <h3>
+      <ui:text from="{messages.translation}" />
+    </h3>
+    <z:UnorderedListWidget ui:field="translations"
+      styleName="list--no-bullets" />
+
+    <h3 class="txt--danger">
+      <ui:text from="{messages.errorMessage}" />
+    </h3>
+    <z:UnorderedListWidget ui:field="errorList"
+      styleName="list--no-bullets l--pad-h-half  txt--danger" />
+
+    <div class="l--push-top-1">
+      <g:Button ui:field="returnToEditor" addStyleNames="button--primary" />
+      <g:InlineLabel addStyleNames="l--push-h-half">or</g:InlineLabel>
+      <g:Button ui:field="saveAsFuzzy" addStyleNames="button" />
+    </div>
+  </g:HTMLPanel>
 </ui:UiBinder>

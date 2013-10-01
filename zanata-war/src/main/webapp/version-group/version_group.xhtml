@@ -1,158 +1,198 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:s="http://jboss.org/schema/seam/taglib"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:rich="http://richfaces.org/rich"
-    xmlns:a4j="http://richfaces.org/a4j"
-    xmlns:richext="http://java.sun.com/jsf/composite/richext"
-    template="../WEB-INF/template/template_2x.xhtml">
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:richext="http://java.sun.com/jsf/composite/richext"
+  template="../WEB-INF/template/template_2x.xhtml">
 
-<ui:define name="page_title">#{messages['jsf.Groups']}:#{versionGroupHome.instance.name}</ui:define>
+  <ui:define
+    name="page_title">#{messages['jsf.Groups']}:#{versionGroupHome.instance.name}</ui:define>
 
-<ui:define name="head">
-		<!-- Load jQuery -->
-        <rich:jQuery query="jquery"/>
+  <ui:define name="head">
+    <!-- Load jQuery -->
+    <rich:jQuery query="jquery"/>
 
     <script type="text/javascript">
-        function submitSearchOnEnter(e)
-        {
-            if(e.keyCode == 13 )
-            {
-                #{rich:element('searchBtn')}.click();
-                return false;
-            }
+      function submitSearchOnEnter(e) {
+        if (e.keyCode == 13) {
+          #{rich:element('searchBtn')}
+        .
+          click();
+          return false;
         }
+      }
     </script>
-</ui:define>
+  </ui:define>
 
-<ui:define name="center_content">
+  <ui:define name="center_content">
     <h:form id="iterationGroupForm">
-    	<s:formattedText value="#{versionGroupHome.instance.description}" rendered="#{!empty versionGroupHome.instance.description}"/>
+      <s:formattedText value="#{versionGroupHome.instance.description}"
+        rendered="#{!empty versionGroupHome.instance.description}"/>
 
-        <rich:dataTable id="iterationsDataTable" value="#{versionGroupHome.instanceProjectIterations}"
-                        var="_iteration">
-            <rich:column sortBy="#{_iteration.project.slug}">
-                <f:facet name="header">#{messages['jsf.ProjectName']}</f:facet>
-                <s:link view="/project/project.xhtml" value="#{_iteration.project.name}" styleClass="table_link">
-                    <f:param name="slug" value="#{_iteration.project.slug}"/>
-                </s:link>
-            </rich:column>
-            <rich:column sortBy="#{_iteration.slug}">
-                <f:facet name="header">#{messages['jsf.Version']}</f:facet>
-                <s:link view="/iteration/view.xhtml" styleClass="table_link" value="#{_iteration.slug}">
-                    <f:param name="projectSlug" value="#{_iteration.project.slug}"/>
-                    <f:param name="iterationSlug" value="#{_iteration.slug}"/>
-                </s:link>
-            </rich:column>
-            <rich:column rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}" styleClass="centered">
-                <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-                <a4j:commandButton value="#{messages['jsf.Remove']}"
-                                   action="#{versionGroupAction.leaveVersionGroup(_iteration.id)}" render="iterationsDataTable, searchResults" />
-            </rich:column>
-        </rich:dataTable>
+      <rich:dataTable id="iterationsDataTable"
+        value="#{versionGroupHome.instanceProjectIterations}"
+        var="_iteration">
+        <rich:column sortBy="#{_iteration.project.slug}">
+          <f:facet name="header">#{messages['jsf.ProjectName']}</f:facet>
+          <s:link view="/project/project.xhtml"
+            value="#{_iteration.project.name}" styleClass="table_link">
+            <f:param name="slug" value="#{_iteration.project.slug}"/>
+          </s:link>
+        </rich:column>
+        <rich:column sortBy="#{_iteration.slug}">
+          <f:facet name="header">#{messages['jsf.Version']}</f:facet>
+          <s:link view="/iteration/view.xhtml" styleClass="table_link"
+            value="#{_iteration.slug}">
+            <f:param name="projectSlug" value="#{_iteration.project.slug}"/>
+            <f:param name="iterationSlug" value="#{_iteration.slug}"/>
+          </s:link>
+        </rich:column>
+        <rich:column
+          rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}"
+          styleClass="centered">
+          <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+          <a4j:commandButton value="#{messages['jsf.Remove']}"
+            action="#{versionGroupAction.leaveVersionGroup(_iteration.id)}"
+            render="iterationsDataTable, searchResults"/>
+        </rich:column>
+      </rich:dataTable>
     </h:form>
 
-</ui:define>
+  </ui:define>
 
-<ui:define name="right_content">
+  <ui:define name="right_content">
 
-  <rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
-    <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-    <s:fragment rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
-        <a href="#" class="action_link" onclick="#{rich:component('versionAddPanel')}.show()">#{messages['jsf.AddProjectVersions']}</a>
+    <rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
+      <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+      <s:fragment
+        rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
+        <a href="#" class="action_link"
+          onclick="#{rich:component('versionAddPanel')}.show()">#{messages['jsf.AddProjectVersions']}</a>
 
-        <s:link styleClass="action_link" value="#{messages['jsf.EditGroup']}" view="/version-group/edit.xhtml" propagation="none">
-          <f:param name="versionGroupSlug" value="#{versionGroupHome.instance.slug}"/>
+        <s:link styleClass="action_link" value="#{messages['jsf.EditGroup']}"
+          view="/version-group/edit.xhtml" propagation="none">
+          <f:param name="versionGroupSlug"
+            value="#{versionGroupHome.instance.slug}"/>
         </s:link>
 
-        <s:link styleClass="action_link" view="/version-group/assign_maintainer.xhtml" value="#{messages['jsf.ManageMaintainers']}" propagation="none">
-            <f:param name="versionGroupSlug" value="#{versionGroupHome.instance.slug}"/>
+        <s:link styleClass="action_link"
+          view="/version-group/assign_maintainer.xhtml"
+          value="#{messages['jsf.ManageMaintainers']}" propagation="none">
+          <f:param name="versionGroupSlug"
+            value="#{versionGroupHome.instance.slug}"/>
         </s:link>
-    </s:fragment>
-    <s:link styleClass="action_link" view="/version-group/request_to_join.xhtml" value="#{messages['jsf.RequestToJoinVersionGroup']}" propagation="none" rendered="#{versionGroupAction.isUserProjectMaintainer()}">
+      </s:fragment>
+      <s:link styleClass="action_link"
+        view="/version-group/request_to_join.xhtml"
+        value="#{messages['jsf.RequestToJoinVersionGroup']}" propagation="none"
+        rendered="#{versionGroupAction.isUserProjectMaintainer()}">
         <f:param name="emailType" value="request_to_join_group"/>
-        <f:param name="versionGroupSlug" value="#{versionGroupHome.instance.slug}"/>
-    </s:link>
-  </rich:panel>
+        <f:param name="versionGroupSlug"
+          value="#{versionGroupHome.instance.slug}"/>
+      </s:link>
+    </rich:panel>
 
-  <rich:panel>
-    <f:facet name="header">#{messages['jsf.GroupMaintainers']}</f:facet>
-    <h:outputText rendered="#{empty versionGroupHome.instance.maintainers}">#{messages['jsf.NoMaintainersDefined']}</h:outputText>
-    <rich:list value="#{versionGroupHome.instance.maintainers.toArray()}" var="maintainer">
-      <h:outputText value="#{maintainer.name}" styleClass="maintainer"/>
-    </rich:list>
-  </rich:panel>
+    <rich:panel>
+      <f:facet name="header">#{messages['jsf.GroupMaintainers']}</f:facet>
+      <h:outputText
+        rendered="#{empty versionGroupHome.instance.maintainers}">#{messages['jsf.NoMaintainersDefined']}</h:outputText>
+      <rich:list value="#{versionGroupHome.instance.maintainers.toArray()}"
+        var="maintainer">
+        <h:outputText value="#{maintainer.name}" styleClass="maintainer"/>
+      </rich:list>
+    </rich:panel>
 
-  <s:fragment rendered="#{versionGroupAction.isParamExists() and s:hasPermission(versionGroupHome.instance, 'update')}">
- 	 <script>
- 	 	jQuery(document).ready(function() 
- 	 	{
- 		 	#{rich:component("versionAddPanel")}.show();
- 	  	});
- 	</script>
-  </s:fragment>
+    <s:fragment
+      rendered="#{versionGroupAction.isParamExists() and s:hasPermission(versionGroupHome.instance, 'update')}">
+      <script>
+        jQuery(document).ready(function () {
+          #{rich:component("versionAddPanel")}
+          .
+          show();
+        });
+      </script>
+    </s:fragment>
 
 
-    <rich:popupPanel id="versionAddPanel" width="530" height="460" rendered="#{identity.loggedIn and s:hasPermission(versionGroupHome.instance, 'update')}">
-        <f:subview id="projectVersionSearch">
-            <h:form id="searchForm">
-                <h1>#{messages['jsf.groups.FindProjectVersion']}</h1>
-                <p>
-                    <h:inputText id="searchField" value="#{versionGroupAction.searchTerm}"
-                                 onkeydown="return submitSearchOnEnter(event)"/>
-                    <a4j:commandButton id="searchBtn"
-                                       value="#{messages['jsf.Search']}"
-                                       action="#{versionGroupAction.searchProjectAndVersion}"
-                                       render="searchResults" />
+    <rich:popupPanel id="versionAddPanel" width="530" height="460"
+      rendered="#{identity.loggedIn and s:hasPermission(versionGroupHome.instance, 'update')}">
+      <f:subview id="projectVersionSearch">
+        <h:form id="searchForm">
+          <h1>#{messages['jsf.groups.FindProjectVersion']}</h1>
 
-                    <a4j:commandButton id="closeBtn" value="#{messages['jsf.Close']}"
-                                     onclick="#{rich:component('versionAddPanel')}.hide(); return false;" />
+          <p>
+            <h:inputText id="searchField"
+              value="#{versionGroupAction.searchTerm}"
+              onkeydown="return submitSearchOnEnter(event)"/>
+            <a4j:commandButton id="searchBtn"
+              value="#{messages['jsf.Search']}"
+              action="#{versionGroupAction.searchProjectAndVersion}"
+              render="searchResults"/>
 
-                </p>
-            </h:form>
-            <a4j:region id="region">
-                <h:form id="searchResults">
-                    <h:outputText id="noResultsMessage" rendered="#{empty versionGroupAction.searchResults}" value="#{messages['jsf.NoResultToDisplayProjectSearch']}" />
-                    <a4j:outputPanel  layout="block" style="overflow:auto;height:320px" rendered="#{not empty versionGroupAction.searchResults}">
-                        <rich:dataTable id="resultTable" value="#{versionGroupAction.searchResults}" var="selectableVersion">
-                            <rich:column sortBy="#{selectableVersion.projectIteration.project.name}">
-                                <f:facet name="header">#{messages['jsf.ProjectName']}</f:facet>
-                                #{selectableVersion.projectIteration.project.name}
-                            </rich:column>
-                            <rich:column sortBy="#{selectableVersion.projectIteration.slug}">
-                                <f:facet name="header">#{messages['jsf.Version']}</f:facet>
-                                #{selectableVersion.projectIteration.slug}
-                            </rich:column>
+            <a4j:commandButton id="closeBtn" value="#{messages['jsf.Close']}"
+              onclick="#{rich:component('versionAddPanel')}.hide(); return false;"/>
 
-                            <rich:column styleClass="centered">
-                                <f:facet name="header">
-                                    <h:panelGroup>
-                                        <h:selectBooleanCheckbox title="#{messages['jsf.ManageSearch.SelectAll']}" value="#{versionGroupAction.selectAll}">
-                                            <a4j:ajax event="change" render="searchResults" listener="#{versionGroupAction.selectAll()}"/>
-                                        </h:selectBooleanCheckbox>
-                                    </h:panelGroup>
-                                </f:facet>
+          </p>
+        </h:form>
+        <a4j:region id="region">
+          <h:form id="searchResults">
+            <h:outputText id="noResultsMessage"
+              rendered="#{empty versionGroupAction.searchResults}"
+              value="#{messages['jsf.NoResultToDisplayProjectSearch']}"/>
+            <a4j:outputPanel layout="block" style="overflow:auto;height:320px"
+              rendered="#{not empty versionGroupAction.searchResults}">
+              <rich:dataTable id="resultTable"
+                value="#{versionGroupAction.searchResults}"
+                var="selectableVersion">
+                <rich:column
+                  sortBy="#{selectableVersion.projectIteration.project.name}">
+                  <f:facet
+                    name="header">#{messages['jsf.ProjectName']}</f:facet>
+                  #{selectableVersion.projectIteration.project.name}
+                </rich:column>
+                <rich:column
+                  sortBy="#{selectableVersion.projectIteration.slug}">
+                  <f:facet name="header">#{messages['jsf.Version']}</f:facet>
+                  #{selectableVersion.projectIteration.slug}
+                </rich:column>
 
-                                <h:selectBooleanCheckbox title="#{messages['jsf.Select']}" value="#{selectableVersion.selected}" rendered="#{!versionGroupAction.isVersionInGroup(selectableVersion.projectIteration.id)}"/>
-                                <h:outputText value="#{messages['jsf.AlreadyInGroup']}"
-                                              rendered="#{versionGroupAction.isVersionInGroup(selectableVersion.projectIteration.id)}" />
+                <rich:column styleClass="centered">
+                  <f:facet name="header">
+                    <h:panelGroup>
+                      <h:selectBooleanCheckbox
+                        title="#{messages['jsf.ManageSearch.SelectAll']}"
+                        value="#{versionGroupAction.selectAll}">
+                        <a4j:ajax event="change" render="searchResults"
+                          listener="#{versionGroupAction.selectAll()}"/>
+                      </h:selectBooleanCheckbox>
+                    </h:panelGroup>
+                  </f:facet>
 
-                            </rich:column>
-                        </rich:dataTable>
-                    </a4j:outputPanel>
-                    <richext:spacer height="5" />
-                    <a4j:commandButton id="addSelectedBtn"
-                                       value="#{messages['jsf.AddSelected']}"
-                                       action="#{versionGroupAction.addSelected()}"
-                                       render="searchResults, iterationsDataTable" styleClass="float-right"/>
-                </h:form>
-            </a4j:region>
-        </f:subview>
+                  <h:selectBooleanCheckbox title="#{messages['jsf.Select']}"
+                    value="#{selectableVersion.selected}"
+                    rendered="#{!versionGroupAction.isVersionInGroup(selectableVersion.projectIteration.id)}"/>
+                  <h:outputText value="#{messages['jsf.AlreadyInGroup']}"
+                    rendered="#{versionGroupAction.isVersionInGroup(selectableVersion.projectIteration.id)}"/>
+
+                </rich:column>
+              </rich:dataTable>
+            </a4j:outputPanel>
+            <richext:spacer height="5"/>
+            <a4j:commandButton id="addSelectedBtn"
+              value="#{messages['jsf.AddSelected']}"
+              action="#{versionGroupAction.addSelected()}"
+              render="searchResults, iterationsDataTable"
+              styleClass="float-right"/>
+          </h:form>
+        </a4j:region>
+      </f:subview>
     </rich:popupPanel>
 
-</ui:define>    
+  </ui:define>
 
 </ui:composition>

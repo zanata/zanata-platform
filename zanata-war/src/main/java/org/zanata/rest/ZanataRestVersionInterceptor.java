@@ -17,19 +17,31 @@ import org.jboss.seam.Component;
 import org.zanata.service.impl.VersionManager;
 import org.zanata.util.VersionUtility;
 
-
 @ServerInterceptor
 @HeaderDecoratorPrecedence
-public class ZanataRestVersionInterceptor implements PreProcessInterceptor
-{
-   @Override
-   public ServerResponse preProcess(HttpRequest request, ResourceMethod method) throws Failure, WebApplicationException
-   {
-      String clientApiVer = request.getHttpHeaders().getRequestHeaders().getFirst(RestConstant.HEADER_VERSION_NO);
-      String serverApiVer = VersionUtility.getAPIVersionInfo().getVersionNo();
-      VersionManager verManager = (VersionManager) Component.getInstance(VersionManager.class, APPLICATION);
+public class ZanataRestVersionInterceptor implements PreProcessInterceptor {
+    @Override
+    public ServerResponse
+            preProcess(HttpRequest request, ResourceMethod method)
+                    throws Failure, WebApplicationException {
+        String clientApiVer =
+                request.getHttpHeaders().getRequestHeaders()
+                        .getFirst(RestConstant.HEADER_VERSION_NO);
+        String serverApiVer = VersionUtility.getAPIVersionInfo().getVersionNo();
+        VersionManager verManager =
+                (VersionManager) Component.getInstance(VersionManager.class,
+                        APPLICATION);
 
-      return verManager.checkVersion(clientApiVer, serverApiVer) ? null : ServerResponse.copyIfNotServerResponse(Response.status(Status.PRECONDITION_FAILED).entity("Client API Version '" + clientApiVer + "'  and Server API Version '" + serverApiVer + "' do not match. Please update your Zanata client").build());
-   }
+        return verManager.checkVersion(clientApiVer, serverApiVer) ? null
+                : ServerResponse
+                        .copyIfNotServerResponse(Response
+                                .status(Status.PRECONDITION_FAILED)
+                                .entity("Client API Version '"
+                                        + clientApiVer
+                                        + "'  and Server API Version '"
+                                        + serverApiVer
+                                        + "' do not match. Please update your Zanata client")
+                                .build());
+    }
 
 }

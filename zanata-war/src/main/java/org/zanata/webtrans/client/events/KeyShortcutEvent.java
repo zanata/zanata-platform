@@ -25,48 +25,43 @@ import org.zanata.webtrans.client.keys.Keys;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * 
- * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a> *
+ *
+ * @author David Mason, <a
+ *         href="mailto:damason@redhat.com">damason@redhat.com</a> *
  */
-public class KeyShortcutEvent extends GwtEvent<KeyShortcutEventHandler>
-{
-   private final Keys keys;
+public class KeyShortcutEvent extends GwtEvent<KeyShortcutEventHandler> {
+    private final Keys keys;
 
-   public Keys getKeys()
-   {
-      return keys;
-   }
+    public Keys getKeys() {
+        return keys;
+    }
 
-   public KeyShortcutEvent(Keys keys)
-   {
-      this.keys = keys;
-   }
+    public KeyShortcutEvent(Keys keys) {
+        this.keys = keys;
+    }
 
-   @Override
-   protected void dispatch(KeyShortcutEventHandler handler)
-   {
-      handler.onKeyShortcut(this);
-   }
+    @Override
+    protected void dispatch(KeyShortcutEventHandler handler) {
+        handler.onKeyShortcut(this);
+    }
 
+    /**
+     * Handler type.
+     */
+    private static Type<KeyShortcutEventHandler> TYPE;
 
-   /**
-    * Handler type.
-    */
-   private static Type<KeyShortcutEventHandler> TYPE;
+    /**
+     * Gets the type associated with this event.
+     *
+     * @return returns the handler type
+     */
+    public static Type<KeyShortcutEventHandler> getType() {
+        return TYPE != null ? TYPE : (TYPE =
+                new Type<KeyShortcutEventHandler>());
+    }
 
-   /**
-    * Gets the type associated with this event.
-    * 
-    * @return returns the handler type
-    */
-   public static Type<KeyShortcutEventHandler> getType()
-   {
-      return TYPE != null ? TYPE : (TYPE = new Type<KeyShortcutEventHandler>());
-   }
-
-   @Override
-   public Type<KeyShortcutEventHandler> getAssociatedType()
-   {
-      return getType();
-   }
+    @Override
+    public Type<KeyShortcutEventHandler> getAssociatedType() {
+        return getType();
+    }
 }

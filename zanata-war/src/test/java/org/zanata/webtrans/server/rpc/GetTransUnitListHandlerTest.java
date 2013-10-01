@@ -49,231 +49,251 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
  */
 @Test(groups = { "jpa-tests" })
 @Slf4j
-public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest
-{
-   private GetTransUnitListHandler handler;
-   @Mock
-   private ZanataIdentity identity;
-   @Mock
-   private LocaleService localeService;
-   @Mock
-   private GetTransUnitsNavigationService getTransUnitsNavigationService;
+public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
+    private GetTransUnitListHandler handler;
+    @Mock
+    private ZanataIdentity identity;
+    @Mock
+    private LocaleService localeService;
+    @Mock
+    private GetTransUnitsNavigationService getTransUnitsNavigationService;
 
-   private final DocumentInfo document = TestFixture.documentInfo(1L, "");
-   private final LocaleId localeId = new LocaleId("ja");
-   private HLocale jaHLocale;
+    private final DocumentInfo document = TestFixture.documentInfo(1L, "");
+    private final LocaleId localeId = new LocaleId("ja");
+    private HLocale jaHLocale;
 
-   @Override
-   protected void prepareDBUnitOperations()
-   {
-      beforeTestOperations.add(new DataSetOperation("performance/GetTransUnitListTest.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
-   }
+    @Override
+    protected void prepareDBUnitOperations() {
+        beforeTestOperations.add(new DataSetOperation(
+                "performance/GetTransUnitListTest.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
+    }
 
-   @BeforeMethod
-   public void setUp() throws Exception
-   {
-      MockitoAnnotations.initMocks(this);
-      ResourceUtils resourceUtils = new ResourceUtils();
-      resourceUtils.create(); // postConstruct
-      TransUnitTransformer transUnitTransformer = SeamAutowire.instance().use("resourceUtils", resourceUtils).autowire(TransUnitTransformer.class);
+    @BeforeMethod
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        ResourceUtils resourceUtils = new ResourceUtils();
+        resourceUtils.create(); // postConstruct
+        TransUnitTransformer transUnitTransformer =
+                SeamAutowire.instance().use("resourceUtils", resourceUtils)
+                        .autowire(TransUnitTransformer.class);
 
-      SeamAutowire seam = SeamAutowire.instance()
-            .use("localeServiceImpl", localeService)
-            .use("documentDAO", new DocumentDAO(getSession()))
-            .use("projectIterationDAO", new ProjectIterationDAO(getSession()))
-            .use("entityManager", new FullTextEntityManagerImpl(getEm()))
-            .use("session", new FullTextSessionImpl(getSession()))
-            .use("identity", identity).use("textFlowDAO", new TextFlowDAO(getSession()))
-            .use("transUnitTransformer", transUnitTransformer)
-            .use("webtrans.gwt.GetTransUnitsNavigationHandler", getTransUnitsNavigationService)
-            .useImpl(TranslationStateCacheImpl.class)
-            .useImpl(TextFlowSearchServiceImpl.class)
-            .useImpl(ValidationServiceImpl.class)
-            .allowCycles();
+        SeamAutowire seam =
+                SeamAutowire
+                        .instance()
+                        .use("localeServiceImpl", localeService)
+                        .use("documentDAO", new DocumentDAO(getSession()))
+                        .use("projectIterationDAO",
+                                new ProjectIterationDAO(getSession()))
+                        .use("entityManager",
+                                new FullTextEntityManagerImpl(getEm()))
+                        .use("session", new FullTextSessionImpl(getSession()))
+                        .use("identity", identity)
+                        .use("textFlowDAO", new TextFlowDAO(getSession()))
+                        .use("transUnitTransformer", transUnitTransformer)
+                        .use("webtrans.gwt.GetTransUnitsNavigationHandler",
+                                getTransUnitsNavigationService)
+                        .useImpl(TranslationStateCacheImpl.class)
+                        .useImpl(TextFlowSearchServiceImpl.class)
+                        .useImpl(ValidationServiceImpl.class).allowCycles();
 
-      // @formatter:off
+        // @formatter:off
       handler = seam.autowire(GetTransUnitListHandler.class);
       // @formatter:on
 
-      jaHLocale = getEm().find(HLocale.class, 3L);
-   }
+        jaHLocale = getEm().find(HLocale.class, 3L);
+    }
 
-   private void prepareActionAndMockLocaleService(GetTransUnitList action)
-   {
-      action.setEditorClientId(new EditorClientId("sessionId", 1));
-      action.setWorkspaceId(TestFixture.workspaceId(localeId, "plurals", "master", ProjectType.Podir));
-      ProjectIterationId projectIterationId = action.getWorkspaceId().getProjectIterationId();
-      when(localeService.validateLocaleByProjectIteration(action.getWorkspaceId().getLocaleId(), projectIterationId.getProjectSlug(), projectIterationId.getIterationSlug())).thenReturn(jaHLocale);
-      when(localeService.getByLocaleId(localeId)).thenReturn(jaHLocale);
-   }
+    private void prepareActionAndMockLocaleService(GetTransUnitList action) {
+        action.setEditorClientId(new EditorClientId("sessionId", 1));
+        action.setWorkspaceId(TestFixture.workspaceId(localeId, "plurals",
+                "master", ProjectType.Podir));
+        ProjectIterationId projectIterationId =
+                action.getWorkspaceId().getProjectIterationId();
+        when(
+                localeService.validateLocaleByProjectIteration(action
+                        .getWorkspaceId().getLocaleId(), projectIterationId
+                        .getProjectSlug(), projectIterationId
+                        .getIterationSlug())).thenReturn(jaHLocale);
+        when(localeService.getByLocaleId(localeId)).thenReturn(jaHLocale);
+    }
 
-   @Test
-   public void testExecuteToGetAll() throws Exception
-   {
-      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(document));
-      prepareActionAndMockLocaleService(action);
+    @Test
+    public void testExecuteToGetAll() throws Exception {
+        GetTransUnitList action =
+                GetTransUnitList.newAction(new GetTransUnitActionContext(
+                        document));
+        prepareActionAndMockLocaleService(action);
 
-      long startTime = System.nanoTime();
-      GetTransUnitListResult result = handler.execute(action, null);
-      log.info("********** duration :{} second", (System.nanoTime() - startTime) / 1000000000.0);
+        long startTime = System.nanoTime();
+        GetTransUnitListResult result = handler.execute(action, null);
+        log.info("********** duration :{} second",
+                (System.nanoTime() - startTime) / 1000000000.0);
 
-      log.info("result: {}", result);
-      assertThat(result.getDocumentId(), Matchers.equalTo(document.getId()));
-      assertThat(result.getGotoRow(), Matchers.equalTo(0));
-      assertThat(TestFixture.asIds(result.getUnits()), Matchers.contains(1, 2, 3, 4, 5));
-   }
+        log.info("result: {}", result);
+        assertThat(result.getDocumentId(), Matchers.equalTo(document.getId()));
+        assertThat(result.getGotoRow(), Matchers.equalTo(0));
+        assertThat(TestFixture.asIds(result.getUnits()),
+                Matchers.contains(1, 2, 3, 4, 5));
+    }
 
-   @Test
-   public void testExecuteWithStatusFilterOnly() throws Exception
-   {
-      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(document)
-         .changeFilterFuzzy(true)
-         .changeFilterUntranslated(true));
-      prepareActionAndMockLocaleService(action);
+    @Test
+    public void testExecuteWithStatusFilterOnly() throws Exception {
+        GetTransUnitList action =
+                GetTransUnitList.newAction(new GetTransUnitActionContext(
+                        document).changeFilterFuzzy(true)
+                        .changeFilterUntranslated(true));
+        prepareActionAndMockLocaleService(action);
 
-      GetTransUnitListResult result = handler.execute(action, null);
+        GetTransUnitListResult result = handler.execute(action, null);
 
-      log.info("result: {}", result);
-      assertThat(result.getDocumentId(), Matchers.equalTo(document.getId()));
-      assertThat(result.getGotoRow(), Matchers.equalTo(0));
-      assertThat(TestFixture.asIds(result.getUnits()), Matchers.contains(3, 5, 6, 7, 8));
-   }
+        log.info("result: {}", result);
+        assertThat(result.getDocumentId(), Matchers.equalTo(document.getId()));
+        assertThat(result.getGotoRow(), Matchers.equalTo(0));
+        assertThat(TestFixture.asIds(result.getUnits()),
+                Matchers.contains(3, 5, 6, 7, 8));
+    }
 
-   @Test
-   public void testExecuteWithHasErrorFilterOnly() throws Exception
-   {
-      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(document).changeFilterHasError(true));
-      prepareActionAndMockLocaleService(action);
+    @Test
+    public void testExecuteWithHasErrorFilterOnly() throws Exception {
+        GetTransUnitList action =
+                GetTransUnitList.newAction(new GetTransUnitActionContext(
+                        document).changeFilterHasError(true));
+        prepareActionAndMockLocaleService(action);
 
-      GetTransUnitListResult result = handler.execute(action, null);
+        GetTransUnitListResult result = handler.execute(action, null);
 
-      log.info("result: {}", result);
-      assertThat(result.getDocumentId(), Matchers.equalTo(document.getId()));
-      assertThat(result.getGotoRow(), Matchers.equalTo(0));
-      assertThat(TestFixture.asIds(result.getUnits()), Matchers.contains(1, 2, 3, 4, 5));
-   }
+        log.info("result: {}", result);
+        assertThat(result.getDocumentId(), Matchers.equalTo(document.getId()));
+        assertThat(result.getGotoRow(), Matchers.equalTo(0));
+        assertThat(TestFixture.asIds(result.getUnits()),
+                Matchers.contains(1, 2, 3, 4, 5));
+    }
 
-   @Test
-   public void testExecuteWithSearchOnly() throws Exception
-   {
-      // Given: we want to search for file (mixed case) and we change page size
-      // to 10 and start from index 2
-      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(document)
-         .changeFindMessage("FiLe")
-         .changeCount(10)
-         .changeOffset(1));
-      prepareActionAndMockLocaleService(action);
+    @Test
+    public void testExecuteWithSearchOnly() throws Exception {
+        // Given: we want to search for file (mixed case) and we change page
+        // size
+        // to 10 and start from index 2
+        GetTransUnitList action =
+                GetTransUnitList.newAction(new GetTransUnitActionContext(
+                        document).changeFindMessage("FiLe").changeCount(10)
+                        .changeOffset(1));
+        prepareActionAndMockLocaleService(action);
 
-      // When:
-      GetTransUnitListResult result = handler.execute(action, null);
+        // When:
+        GetTransUnitListResult result = handler.execute(action, null);
 
-      // Then:
-      log.info("result: {}", result);
-      assertThat(result.getDocumentId(), Matchers.equalTo(document.getId()));
-      assertThat(result.getGotoRow(), Matchers.equalTo(0));
-      assertThat(TestFixture.asIds(result.getUnits()), Matchers.contains(2, 3, 4, 5, 6, 8));
-   }
+        // Then:
+        log.info("result: {}", result);
+        assertThat(result.getDocumentId(), Matchers.equalTo(document.getId()));
+        assertThat(result.getGotoRow(), Matchers.equalTo(0));
+        assertThat(TestFixture.asIds(result.getUnits()),
+                Matchers.contains(2, 3, 4, 5, 6, 8));
+    }
 
-   @Test
-   public void testExecuteWithSearchAndStatusFilter() throws Exception
-   {
-      // Given: we want to search for file (mixed case) in fuzzy and
-      // untranslated text flows
-      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(document)
-         .changeFindMessage("FiLe")
-         .changeFilterUntranslated(true)
-         .changeFilterFuzzy(true));
-      prepareActionAndMockLocaleService(action);
+    @Test
+    public void testExecuteWithSearchAndStatusFilter() throws Exception {
+        // Given: we want to search for file (mixed case) in fuzzy and
+        // untranslated text flows
+        GetTransUnitList action =
+                GetTransUnitList
+                        .newAction(new GetTransUnitActionContext(document)
+                                .changeFindMessage("FiLe")
+                                .changeFilterUntranslated(true)
+                                .changeFilterFuzzy(true));
+        prepareActionAndMockLocaleService(action);
 
-      // When:
-      GetTransUnitListResult result = handler.execute(action, null);
+        // When:
+        GetTransUnitListResult result = handler.execute(action, null);
 
-      // Then:
-      log.info("result: {}", result);
-      assertThat(result.getDocumentId(), Matchers.equalTo(document.getId()));
-      assertThat(result.getGotoRow(), Matchers.equalTo(0));
-      assertThat(TestFixture.asIds(result.getUnits()), Matchers.contains(3, 5, 6, 8));
-   }
+        // Then:
+        log.info("result: {}", result);
+        assertThat(result.getDocumentId(), Matchers.equalTo(document.getId()));
+        assertThat(result.getGotoRow(), Matchers.equalTo(0));
+        assertThat(TestFixture.asIds(result.getUnits()),
+                Matchers.contains(3, 5, 6, 8));
+    }
 
-   @Test
-   public void testExecuteWithSearchAndStatusFilter2() throws Exception
-   {
-      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(document)
-         .changeFindMessage("FiLe")
-         .changeFilterUntranslated(true)
-         .changeFilterFuzzy(true)
-         .changeFilterHasError(true));
-      prepareActionAndMockLocaleService(action);
+    @Test
+    public void testExecuteWithSearchAndStatusFilter2() throws Exception {
+        GetTransUnitList action =
+                GetTransUnitList.newAction(new GetTransUnitActionContext(
+                        document).changeFindMessage("FiLe")
+                        .changeFilterUntranslated(true).changeFilterFuzzy(true)
+                        .changeFilterHasError(true));
+        prepareActionAndMockLocaleService(action);
 
-      // When:
-      GetTransUnitListResult result = handler.execute(action, null);
+        // When:
+        GetTransUnitListResult result = handler.execute(action, null);
 
-      // Then:
-      log.info("result: {}", result);
-      assertThat(result.getDocumentId(), Matchers.equalTo(document.getId()));
-      assertThat(result.getGotoRow(), Matchers.equalTo(0));
-      assertThat(TestFixture.asIds(result.getUnits()), Matchers.contains(3, 5, 6, 8));
-   }
+        // Then:
+        log.info("result: {}", result);
+        assertThat(result.getDocumentId(), Matchers.equalTo(document.getId()));
+        assertThat(result.getGotoRow(), Matchers.equalTo(0));
+        assertThat(TestFixture.asIds(result.getUnits()),
+                Matchers.contains(3, 5, 6, 8));
+    }
 
-   @Test
-   public void testExecuteWithPageSize() throws Exception
-   {
-      /**
-       * Client request for page 4 data
-       */
-      int offset = 76;
-      int countPerPage = 25;
+    @Test
+    public void testExecuteWithPageSize() throws Exception {
+        /**
+         * Client request for page 4 data
+         */
+        int offset = 76;
+        int countPerPage = 25;
 
-      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(document)
-         .changeFindMessage("FiLe")
-         .changeFilterUntranslated(true)
-         .changeFilterFuzzy(true)
-         .changeFilterHasError(true)
-         .changeOffset(offset)
-         .changeCount(countPerPage));
+        GetTransUnitList action =
+                GetTransUnitList.newAction(new GetTransUnitActionContext(
+                        document).changeFindMessage("FiLe")
+                        .changeFilterUntranslated(true).changeFilterFuzzy(true)
+                        .changeFilterHasError(true).changeOffset(offset)
+                        .changeCount(countPerPage));
 
-      prepareActionAndMockLocaleService(action);
+        prepareActionAndMockLocaleService(action);
 
-      // When:
-      GetTransUnitListResult result = handler.execute(action, null);
+        // When:
+        GetTransUnitListResult result = handler.execute(action, null);
 
-      assertThat(result.getTargetPageIndex(), Matchers.equalTo(3));
-   }
+        assertThat(result.getTargetPageIndex(), Matchers.equalTo(3));
+    }
 
-   @Test
-   public void testExecuteWithPageSizeNeedReload() throws Exception
-   {
-      /**
-       * Client request for page 4 data - Offset:75 Count per page: 25 Assuming
-       * tft from getTransUnitsNavigationService.getNavigationIndexes = 74
-       */
-      int offset = 75;
-      int countPerPage = 25;
+    @Test
+    public void testExecuteWithPageSizeNeedReload() throws Exception {
+        /**
+         * Client request for page 4 data - Offset:75 Count per page: 25
+         * Assuming tft from getTransUnitsNavigationService.getNavigationIndexes
+         * = 74
+         */
+        int offset = 75;
+        int countPerPage = 25;
 
-      GetTransUnitsNavigationResult navigationResult = mock(GetTransUnitsNavigationResult.class);
-      List<TransUnitId> idIndexList = new ArrayList<TransUnitId>();
-      for (int i = 1; i < offset; i++)
-      {
-         idIndexList.add(new TransUnitId(i));
-      }
+        GetTransUnitsNavigationResult navigationResult =
+                mock(GetTransUnitsNavigationResult.class);
+        List<TransUnitId> idIndexList = new ArrayList<TransUnitId>();
+        for (int i = 1; i < offset; i++) {
+            idIndexList.add(new TransUnitId(i));
+        }
 
-      GetTransUnitList action = GetTransUnitList.newAction(new GetTransUnitActionContext(document)
-         .changeFindMessage("FiLe")
-         .changeFilterUntranslated(true)
-         .changeFilterFuzzy(true)
-         .changeFilterHasError(true)
-         .changeOffset(offset)
-         .changeCount(countPerPage));
-      action.setNeedReloadIndex(true);
+        GetTransUnitList action =
+                GetTransUnitList.newAction(new GetTransUnitActionContext(
+                        document).changeFindMessage("FiLe")
+                        .changeFilterUntranslated(true).changeFilterFuzzy(true)
+                        .changeFilterHasError(true).changeOffset(offset)
+                        .changeCount(countPerPage));
+        action.setNeedReloadIndex(true);
 
-      prepareActionAndMockLocaleService(action);
+        prepareActionAndMockLocaleService(action);
 
-      // When:
-      when(getTransUnitsNavigationService.getNavigationIndexes(isA(GetTransUnitsNavigation.class), isA(HLocale.class))).thenReturn(navigationResult);
-      when(navigationResult.getIdIndexList()).thenReturn(idIndexList);
+        // When:
+        when(
+                getTransUnitsNavigationService.getNavigationIndexes(
+                        isA(GetTransUnitsNavigation.class), isA(HLocale.class)))
+                .thenReturn(navigationResult);
+        when(navigationResult.getIdIndexList()).thenReturn(idIndexList);
 
-      GetTransUnitListResult result = handler.execute(action, null);
+        GetTransUnitListResult result = handler.execute(action, null);
 
-      assertThat(result.getTargetPageIndex(), Matchers.equalTo(2));
-   }
+        assertThat(result.getTargetPageIndex(), Matchers.equalTo(2));
+    }
 }

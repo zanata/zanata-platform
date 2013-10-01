@@ -1,19 +1,19 @@
 <project>
-   <modelVersion>4.0.0</modelVersion>
-   <groupId>null</groupId>
-   <artifactId>null</artifactId>
-   <version>0</version>
-   
-   <build>
-      <plugins>
-         <plugin>
-            <groupId>org.zanata</groupId>
-            <artifactId>zanata-maven-plugin</artifactId>
-            <configuration>
-               <srcDir>pot</srcDir>
-               <transDir>.</transDir>
-            </configuration>
-         </plugin>
-      </plugins>
-   </build>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>null</groupId>
+  <artifactId>null</artifactId>
+  <version>0</version>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-maven-plugin</artifactId>
+        <configuration>
+          <srcDir>pot</srcDir>
+          <transDir>.</transDir>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

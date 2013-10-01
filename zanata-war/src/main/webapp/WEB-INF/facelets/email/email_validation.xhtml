@@ -1,34 +1,42 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-   xmlns:s="http://jboss.org/schema/seam/taglib"
-   xmlns:ui="http://java.sun.com/jsf/facelets"
-   xmlns:f="http://java.sun.com/jsf/core"
-   xmlns:h="http://java.sun.com/jsf/html"
-   xmlns:a4j="http://richfaces.org/a4j"
-   xmlns:rich="http://richfaces.org/rich"
-   template="/WEB-INF/facelets/email/template_email.xhtml">
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:rich="http://richfaces.org/rich"
+  template="/WEB-INF/facelets/email/template_email.xhtml">
 
-  <ui:param name="toName" value="#{profileAction.name}" />
-  <ui:param name="toEmailAddr" value="#{profileAction.email}" />
-  <ui:param name="subject" value="#{messages['jsf.email.accountchange.Subject']}" />
+  <ui:param name="toName" value="#{profileAction.name}"/>
+  <ui:param name="toEmailAddr" value="#{profileAction.email}"/>
+  <ui:param name="subject"
+    value="#{messages['jsf.email.accountchange.Subject']}"/>
 
   <ui:define name="body">
     <p>#{messages['jsf.email.accountchange.DearName']}</p>
-    <p>#{messages['jsf.email.accountchange.Message']} <br/> #{messages['jsf.email.accountchange.Message2']}</p>
+
+    <p>#{messages['jsf.email.accountchange.Message']}
+      <br/> #{messages['jsf.email.accountchange.Message2']}</p>
+
     <p>
-      <a href="#{applicationConfiguration.serverPath}/account/validate_email/#{profileAction.activationKey}">
-      	#{messages['jsf.email.accountchange.ConfirmationLink']} 
+      <a
+        href="#{applicationConfiguration.serverPath}/account/validate_email/#{profileAction.activationKey}">
+        #{messages['jsf.email.accountchange.ConfirmationLink']}
       </a>
     </p>
 
     <p>
-    	#{messages['jsf.email.alternate.copyPasteMessage']}
+      #{messages['jsf.email.alternate.copyPasteMessage']}
     </p>
+
     <p>
-    	#{messages['jsf.UrlExpireMessage']}
+      #{messages['jsf.UrlExpireMessage']}
     </p>
-	<p>
-      <a href="#{applicationConfiguration.serverPath}/account/validate_email/#{profileAction.activationKey}">
-      	#{applicationConfiguration.serverPath}/account/validate_email/#{profileAction.activationKey} 
+
+    <p>
+      <a
+        href="#{applicationConfiguration.serverPath}/account/validate_email/#{profileAction.activationKey}">
+        #{applicationConfiguration.serverPath}/account/validate_email/#{profileAction.activationKey}
       </a>
     </p>
 

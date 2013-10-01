@@ -6,38 +6,33 @@ import org.zanata.webtrans.shared.rpc.ThemesOption;
 
 import com.google.gwt.user.client.ui.Widget;
 
-
 /**
- * 
+ *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- * 
+ *
  */
-public interface OptionsDisplay extends WidgetDisplay
-{
-   void setListener(Listener listener);
+public interface OptionsDisplay extends WidgetDisplay {
+    void setListener(Listener listener);
 
-   void setOptions(Widget optionWidget);
+    void setOptions(Widget optionWidget);
 
-   void setShowErrorChk(boolean showError);
+    void setShowErrorChk(boolean showError);
 
-   void setDisplayTheme(ThemesOption displayTheme);
+    void setDisplayTheme(ThemesOption displayTheme);
 
-   interface Listener extends CommonOptionsListener
-   {
-      void onShowErrorsOptionChanged(Boolean showErrorChkValue);
+    interface Listener extends CommonOptionsListener {
+        void onShowErrorsOptionChanged(Boolean showErrorChkValue);
 
-      void onThemesChanged(String value);
-   }
+        void onThemesChanged(String value);
+    }
 
-   interface CommonOptionsListener
-   {
-      void persistOptionChange();
+    interface CommonOptionsListener {
+        void persistOptionChange();
 
-      void loadOptions();
+        void loadOptions();
 
-      void loadDefaultOptions();
+        void loadDefaultOptions();
 
-   }
-
+    }
 
 }

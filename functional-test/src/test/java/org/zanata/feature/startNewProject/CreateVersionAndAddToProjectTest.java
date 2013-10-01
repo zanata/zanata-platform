@@ -39,26 +39,31 @@ import org.zanata.workflow.ProjectWorkFlow;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Slf4j
 @RunWith(ConcordionRunner.class)
-@Extensions({ScreenshotExtension.class, TimestampFormatterExtension.class, CustomResourceExtension.class})
+@Extensions({ ScreenshotExtension.class, TimestampFormatterExtension.class,
+        CustomResourceExtension.class })
 @Category(ConcordionTest.class)
-public class CreateVersionAndAddToProjectTest
-{
+public class CreateVersionAndAddToProjectTest {
 
-   @Before
-   public void beforeMethod()
-   {
-      new LoginWorkFlow().signIn("admin", "admin");
-   }
-   public ProjectPage createNewProjectVersion(String projectName, String versionSlug)
-   {
-      ProjectVersionPage projectVersionPage = new ProjectWorkFlow().createNewProjectVersion(projectName, versionSlug);
-      List<String> breadcrumbLinks = projectVersionPage.getBreadcrumbLinks();
-      log.info("current breadcrumb: {}", breadcrumbLinks);
+    @Before
+    public void beforeMethod() {
+        new LoginWorkFlow().signIn("admin", "admin");
+    }
 
-      return projectVersionPage.clickBreadcrumb(breadcrumbLinks.get(breadcrumbLinks.size() - 1), ProjectPage.class);
-   }
+    public ProjectPage createNewProjectVersion(String projectName,
+            String versionSlug) {
+        ProjectVersionPage projectVersionPage =
+                new ProjectWorkFlow().createNewProjectVersion(projectName,
+                        versionSlug);
+        List<String> breadcrumbLinks = projectVersionPage.getBreadcrumbLinks();
+        log.info("current breadcrumb: {}", breadcrumbLinks);
+
+        return projectVersionPage.clickBreadcrumb(
+                breadcrumbLinks.get(breadcrumbLinks.size() - 1),
+                ProjectPage.class);
+    }
 }

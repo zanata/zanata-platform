@@ -1,16 +1,24 @@
-<html xmlns:c="http://www.concordion.org/2007/concordion" xmlns:ext="urn:concordion-extensions:2010">
+<html xmlns:c="http://www.concordion.org/2007/concordion"
+  xmlns:ext="urn:concordion-extensions:2010">
 <head>
 </head>
 <body>
-    <p>Go to project <span c:set="#projectName">plural projects</span>.</p>
-    <p>
-        When I input <span c:set="#versionSlug">master</span> after click on <span c:execute="#projectPage = createNewProjectVersion(#projectName, #versionSlug)">Create Version</span> link and save,
-        then I should have versions listed as
-    </p>
-    <table c:verifyRows="#version : #projectPage.versions">
-        <tr><th c:assertEquals="#version">version in project</th></tr>
-        <tr><td>master</td></tr>
-    </table>
-    <span ext:screenshot="" />
+<p>Go to project <span c:set="#projectName">plural projects</span>.</p>
+
+<p>
+  When I input <span c:set="#versionSlug">master</span> after click on <span
+  c:execute="#projectPage = createNewProjectVersion(#projectName, #versionSlug)">Create Version</span>
+  link and save,
+  then I should have versions listed as
+</p>
+<table c:verifyRows="#version : #projectPage.versions">
+  <tr>
+    <th c:assertEquals="#version">version in project</th>
+  </tr>
+  <tr>
+    <td>master</td>
+  </tr>
+</table>
+<span ext:screenshot=""/>
 </body>
 </html>

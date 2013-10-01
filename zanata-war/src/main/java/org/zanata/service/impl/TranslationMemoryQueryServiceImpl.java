@@ -2,17 +2,17 @@
  * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
- * 
+ *
  * This is free software; you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
@@ -56,199 +56,225 @@ import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 @Name("translationMemoryQueryService")
 @Scope(ScopeType.STATELESS)
 @Slf4j
-public class TranslationMemoryQueryServiceImpl implements TranslationMemoryQueryService
-{
-   private static final Version LUCENE_VERSION = Version.LUCENE_29;
+public class TranslationMemoryQueryServiceImpl implements
+        TranslationMemoryQueryService {
+    private static final Version LUCENE_VERSION = Version.LUCENE_29;
 
-   @In
-   private FullTextEntityManager entityManager;
+    @In
+    private FullTextEntityManager entityManager;
 
-   @Override
-   public List<Object[]> getSearchResult(TransMemoryQuery query, LocaleId sourceLocale,
-         LocaleId targetLocale, final int maxResult) throws ParseException
-   {
-      String queryText = null;
-      String[] multiQueryText = null;
+    @Override
+    public List<Object[]> getSearchResult(TransMemoryQuery query,
+            LocaleId sourceLocale, LocaleId targetLocale, final int maxResult)
+            throws ParseException {
+        String queryText = null;
+        String[] multiQueryText = null;
 
-      switch (query.getSearchType())
-      {
-      // 'Lucene' in the editor
-      case RAW:
-         queryText = query.getQueries().get(0);
-         if (StringUtils.isBlank(queryText))
-         {
-            return new ArrayList<Object[]>();
-         }
-         break;
-
-      // 'Fuzzy' in the editor
-      case FUZZY:
-         queryText = QueryParser.escape(query.getQueries().get(0));
-         if (StringUtils.isBlank(queryText))
-         {
-            return new ArrayList<Object[]>();
-         }
-         break;
-
-      // 'Phrase' in the editor
-      case EXACT:
-         queryText = "\"" + QueryParser.escape(query.getQueries().get(0)) + "\"";
-         if (StringUtils.isBlank(queryText))
-         {
-            return new ArrayList<Object[]>();
-         }
-         break;
-
-      // 'Fuzzy' in the editor, plus it is a plural entry
-      case FUZZY_PLURAL:
-         multiQueryText = new String[query.getQueries().size()];
-         for (int i = 0; i < query.getQueries().size(); i++)
-         {
-            multiQueryText[i] = QueryParser.escape(query.getQueries().get(i));
-            if (StringUtils.isBlank(multiQueryText[i]))
-            {
-               return new ArrayList<Object[]>();
+        switch (query.getSearchType()) {
+        // 'Lucene' in the editor
+        case RAW:
+            queryText = query.getQueries().get(0);
+            if (StringUtils.isBlank(queryText)) {
+                return new ArrayList<Object[]>();
             }
-         }
-         break;
-      default:
-         throw new RuntimeException("Unknown query type: " + query.getSearchType());
-      }
+            break;
 
-      FullTextQuery ftQuery;
-      // Use the TextFlowTarget index
-      Query textQuery = generateQuery(query, sourceLocale, targetLocale,
-            queryText, multiQueryText, IndexFieldLabels.TF_CONTENT_FIELDS);
-      ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlowTarget.class, TransMemoryUnit.class);
+        // 'Fuzzy' in the editor
+        case FUZZY:
+            queryText = QueryParser.escape(query.getQueries().get(0));
+            if (StringUtils.isBlank(queryText)) {
+                return new ArrayList<Object[]>();
+            }
+            break;
 
-      ftQuery.setProjection(FullTextQuery.SCORE, FullTextQuery.THIS);
-      @SuppressWarnings("unchecked")
-      List<Object[]> matches = ftQuery.setMaxResults(maxResult).getResultList();
-      return matches;
-   }
+        // 'Phrase' in the editor
+        case EXACT:
+            queryText =
+                    "\"" + QueryParser.escape(query.getQueries().get(0)) + "\"";
+            if (StringUtils.isBlank(queryText)) {
+                return new ArrayList<Object[]>();
+            }
+            break;
 
-   /**
-    * Generate the query to match all source contents in all the searchable indexes.
-    * (HTextFlowTarget and TransMemoryUnit)
-    *
-    * @param query
-    * @param sourceLocale
-    * @param targetLocale
-    * @param queryText
-    * @param multiQueryText
-    * @param contentFields
-    * @return
-    * @throws ParseException
-    */
-   private Query generateQuery(TransMemoryQuery query, LocaleId sourceLocale, LocaleId targetLocale,
-         String queryText, String[] multiQueryText, String contentFields[]) throws ParseException
-   {
-      Query textFlowTargetQuery = generateTextFlowTargetQuery(
-            query, sourceLocale, targetLocale, queryText, multiQueryText, contentFields);
+        // 'Fuzzy' in the editor, plus it is a plural entry
+        case FUZZY_PLURAL:
+            multiQueryText = new String[query.getQueries().size()];
+            for (int i = 0; i < query.getQueries().size(); i++) {
+                multiQueryText[i] =
+                        QueryParser.escape(query.getQueries().get(i));
+                if (StringUtils.isBlank(multiQueryText[i])) {
+                    return new ArrayList<Object[]>();
+                }
+            }
+            break;
+        default:
+            throw new RuntimeException("Unknown query type: "
+                    + query.getSearchType());
+        }
 
-      String tmQueryText = query.getSearchType() == SearchType.FUZZY_PLURAL ? multiQueryText[0] : queryText;
-      Query transUnitQuery = generateTransMemoryQuery(sourceLocale, targetLocale, tmQueryText);
+        FullTextQuery ftQuery;
+        // Use the TextFlowTarget index
+        Query textQuery =
+                generateQuery(query, sourceLocale, targetLocale, queryText,
+                        multiQueryText, IndexFieldLabels.TF_CONTENT_FIELDS);
+        ftQuery =
+                entityManager.createFullTextQuery(textQuery,
+                        HTextFlowTarget.class, TransMemoryUnit.class);
 
-      // Join the queries for each different type
-      return join(Occur.SHOULD, textFlowTargetQuery, transUnitQuery);
-   }
+        ftQuery.setProjection(FullTextQuery.SCORE, FullTextQuery.THIS);
+        @SuppressWarnings("unchecked")
+        List<Object[]> matches =
+                ftQuery.setMaxResults(maxResult).getResultList();
+        return matches;
+    }
 
-   /**
-    * Generates the Hibernate Search Query that will search for {@link HTextFlowTarget} objects for matches.
-    * @param queryParams
-    * @param sourceLocale
-    * @param targetLocale
-    * @param queryText
-    * @param multiQueryText
-    * @param contentFields
-    * @return
-    * @throws ParseException
-    */
-   private Query generateTextFlowTargetQuery(
-         TransMemoryQuery queryParams, LocaleId sourceLocale,
-         LocaleId targetLocale, String queryText, String[] multiQueryText,
-         String[] contentFields) throws ParseException
-   {
-      BooleanQuery query = new BooleanQuery();
+    /**
+     * Generate the query to match all source contents in all the searchable
+     * indexes. (HTextFlowTarget and TransMemoryUnit)
+     *
+     * @param query
+     * @param sourceLocale
+     * @param targetLocale
+     * @param queryText
+     * @param multiQueryText
+     * @param contentFields
+     * @return
+     * @throws ParseException
+     */
+    private Query generateQuery(TransMemoryQuery query, LocaleId sourceLocale,
+            LocaleId targetLocale, String queryText, String[] multiQueryText,
+            String contentFields[]) throws ParseException {
+        Query textFlowTargetQuery =
+                generateTextFlowTargetQuery(query, sourceLocale, targetLocale,
+                        queryText, multiQueryText, contentFields);
 
-      Query contentQuery = buildContentQuery(queryParams, sourceLocale, queryText, multiQueryText, contentFields);
-      query.add(contentQuery, Occur.MUST);
+        String tmQueryText =
+                query.getSearchType() == SearchType.FUZZY_PLURAL ? multiQueryText[0]
+                        : queryText;
+        Query transUnitQuery =
+                generateTransMemoryQuery(sourceLocale, targetLocale,
+                        tmQueryText);
 
-      TermQuery localeQuery = new TermQuery(new Term(IndexFieldLabels.LOCALE_ID_FIELD, targetLocale.getId()));
-      query.add(localeQuery, Occur.MUST);
+        // Join the queries for each different type
+        return join(Occur.SHOULD, textFlowTargetQuery, transUnitQuery);
+    }
 
-      query.add(buildStateQuery(ContentState.New), Occur.MUST_NOT);
-      query.add(buildStateQuery(ContentState.NeedReview), Occur.MUST_NOT);
-      query.add(buildStateQuery(ContentState.Rejected), Occur.MUST_NOT);
+    /**
+     * Generates the Hibernate Search Query that will search for
+     * {@link HTextFlowTarget} objects for matches.
+     *
+     * @param queryParams
+     * @param sourceLocale
+     * @param targetLocale
+     * @param queryText
+     * @param multiQueryText
+     * @param contentFields
+     * @return
+     * @throws ParseException
+     */
+    private Query generateTextFlowTargetQuery(TransMemoryQuery queryParams,
+            LocaleId sourceLocale, LocaleId targetLocale, String queryText,
+            String[] multiQueryText, String[] contentFields)
+            throws ParseException {
+        BooleanQuery query = new BooleanQuery();
 
-      return query;
-   }
+        Query contentQuery =
+                buildContentQuery(queryParams, sourceLocale, queryText,
+                        multiQueryText, contentFields);
+        query.add(contentQuery, Occur.MUST);
 
-   private Query buildContentQuery(TransMemoryQuery query, LocaleId sourceLocale,
-         String queryText, String[] multiQueryText, String[] contentFields)
-               throws ParseException
-   {
-      // Analyzer determined by the language
-      String analyzerDefName = TextContainerAnalyzerDiscriminator.getAnalyzerDefinitionName(sourceLocale.getId());
-      Analyzer analyzer = entityManager.getSearchFactory().getAnalyzer(analyzerDefName);
+        TermQuery localeQuery =
+                new TermQuery(new Term(IndexFieldLabels.LOCALE_ID_FIELD,
+                        targetLocale.getId()));
+        query.add(localeQuery, Occur.MUST);
 
-      if (query.getSearchType() == SearchType.FUZZY_PLURAL)
-      {
-         int queriesSize = multiQueryText.length;
-         if (queriesSize > contentFields.length)
-         {
-            log.warn("query contains {} fields, but we only index {}", queriesSize, contentFields.length);
-         }
-         String[] searchFields = new String[queriesSize];
-         System.arraycopy(contentFields, 0, searchFields, 0, queriesSize);
+        query.add(buildStateQuery(ContentState.New), Occur.MUST_NOT);
+        query.add(buildStateQuery(ContentState.NeedReview), Occur.MUST_NOT);
+        query.add(buildStateQuery(ContentState.Rejected), Occur.MUST_NOT);
 
-         return MultiFieldQueryParser.parse(LUCENE_VERSION, multiQueryText, searchFields, analyzer);
-      }
-      else
-      {
-         MultiFieldQueryParser parser = new MultiFieldQueryParser(LUCENE_VERSION, contentFields, analyzer);
-         return parser.parse(queryText);
-      }
-   }
+        return query;
+    }
 
-   private static TermQuery buildStateQuery(ContentState state)
-   {
-      return new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD, state.toString()));
-   }
+    private Query buildContentQuery(TransMemoryQuery query,
+            LocaleId sourceLocale, String queryText, String[] multiQueryText,
+            String[] contentFields) throws ParseException {
+        // Analyzer determined by the language
+        String analyzerDefName =
+                TextContainerAnalyzerDiscriminator
+                        .getAnalyzerDefinitionName(sourceLocale.getId());
+        Analyzer analyzer =
+                entityManager.getSearchFactory().getAnalyzer(analyzerDefName);
 
-   /**
-    * Generates the Hibernate Search Query that will search for {@link org.zanata.model.tm.TransMemoryUnit} objects for matches.
-    * @param sourceLocale
-    * @param targetLocale
-    * @param queryText
-    * @return
-    */
-   private Query generateTransMemoryQuery(
-         LocaleId sourceLocale, LocaleId targetLocale, String queryText) throws ParseException
-   {
-      // Analyzer determined by the language
-      String analyzerDefName = TextContainerAnalyzerDiscriminator.getAnalyzerDefinitionName(sourceLocale.getId());
-      Analyzer analyzer = entityManager.getSearchFactory().getAnalyzer(analyzerDefName);
+        if (query.getSearchType() == SearchType.FUZZY_PLURAL) {
+            int queriesSize = multiQueryText.length;
+            if (queriesSize > contentFields.length) {
+                log.warn("query contains {} fields, but we only index {}",
+                        queriesSize, contentFields.length);
+            }
+            String[] searchFields = new String[queriesSize];
+            System.arraycopy(contentFields, 0, searchFields, 0, queriesSize);
 
-      QueryParser parser = new QueryParser(LUCENE_VERSION, IndexFieldLabels.TRANS_UNIT_VARIANT_FIELD + sourceLocale.getId(), analyzer);
-      Query sourceContentQuery = parser.parse(queryText);
-      WildcardQuery targetContentQuery = new WildcardQuery(new Term(IndexFieldLabels.TRANS_UNIT_VARIANT_FIELD + targetLocale.getId(), "*"));
-      return join(Occur.MUST, sourceContentQuery, targetContentQuery);
-   }
+            return MultiFieldQueryParser.parse(LUCENE_VERSION, multiQueryText,
+                    searchFields, analyzer);
+        } else {
+            MultiFieldQueryParser parser =
+                    new MultiFieldQueryParser(LUCENE_VERSION, contentFields,
+                            analyzer);
+            return parser.parse(queryText);
+        }
+    }
 
-   /**
-    * Joins a given set of queries into a single one with the specified occurrence condition.
-    * @param condition The occurrence condition all the joined queries will have.
-    * @param queries The queries to be joined.
-    * @return A single query that evaluates all the given sub-queries using the given occurence condition.
-    */
-   private static Query join( Occur condition, Query ... queries )
-   {
-      BooleanQuery joinedQuery = new BooleanQuery();
-      for( Query q : queries )
-      {
-         joinedQuery.add(q, condition);
-      }
-      return  joinedQuery;
-   }
+    private static TermQuery buildStateQuery(ContentState state) {
+        return new TermQuery(new Term(IndexFieldLabels.CONTENT_STATE_FIELD,
+                state.toString()));
+    }
+
+    /**
+     * Generates the Hibernate Search Query that will search for
+     * {@link org.zanata.model.tm.TransMemoryUnit} objects for matches.
+     *
+     * @param sourceLocale
+     * @param targetLocale
+     * @param queryText
+     * @return
+     */
+    private Query generateTransMemoryQuery(LocaleId sourceLocale,
+            LocaleId targetLocale, String queryText) throws ParseException {
+        // Analyzer determined by the language
+        String analyzerDefName =
+                TextContainerAnalyzerDiscriminator
+                        .getAnalyzerDefinitionName(sourceLocale.getId());
+        Analyzer analyzer =
+                entityManager.getSearchFactory().getAnalyzer(analyzerDefName);
+
+        QueryParser parser =
+                new QueryParser(LUCENE_VERSION,
+                        IndexFieldLabels.TRANS_UNIT_VARIANT_FIELD
+                                + sourceLocale.getId(), analyzer);
+        Query sourceContentQuery = parser.parse(queryText);
+        WildcardQuery targetContentQuery =
+                new WildcardQuery(new Term(
+                        IndexFieldLabels.TRANS_UNIT_VARIANT_FIELD
+                                + targetLocale.getId(), "*"));
+        return join(Occur.MUST, sourceContentQuery, targetContentQuery);
+    }
+
+    /**
+     * Joins a given set of queries into a single one with the specified
+     * occurrence condition.
+     *
+     * @param condition
+     *            The occurrence condition all the joined queries will have.
+     * @param queries
+     *            The queries to be joined.
+     * @return A single query that evaluates all the given sub-queries using the
+     *         given occurence condition.
+     */
+    private static Query join(Occur condition, Query... queries) {
+        BooleanQuery joinedQuery = new BooleanQuery();
+        for (Query q : queries) {
+            joinedQuery.add(q, condition);
+        }
+        return joinedQuery;
+    }
 }

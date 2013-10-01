@@ -19,15 +19,18 @@
  * site: http://www.fsf.org.
  */
 package org.zanata.feature;
+
 /**
  * Interface for the execution of the Basic Acceptance Tests (BAT) category.
  *
- * Tests in this category exercise features only so far as to demonstrate that the feature works,
- * and perhaps have a single handled negative case.
- * BAT suites should not exceed an agreed interval (e.g. approximately 10 minutes) in order to
- * maintain a positive GitHub workflow.
+ * Tests in this category exercise features only so far as to demonstrate that
+ * the feature works, and perhaps have a single handled negative case. BAT
+ * suites should not exceed an agreed interval (e.g. approximately 10 minutes)
+ * in order to maintain a positive GitHub workflow.
  *
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  * @see "http://junit.org/javadoc/4.9/org/junit/experimental/categories/Categories.html"
  */
-public interface BasicAcceptanceTest { }
+public interface BasicAcceptanceTest {
+}

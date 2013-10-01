@@ -39,166 +39,162 @@ import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.listener.RemoteEventListener;
 
-public class EventProcessor implements RemoteEventListener
-{
+public class EventProcessor implements RemoteEventListener {
 
-   private interface EventFactory<T extends GwtEvent<?>>
-   {
-      T create(SessionEventData event);
-   }
+    private interface EventFactory<T extends GwtEvent<?>> {
+        T create(SessionEventData event);
+    }
 
-   public static interface StartCallback
-   {
-      void onSuccess(String connectionId);
-      void onFailure(Throwable e);
-   }
+    public static interface StartCallback {
+        void onSuccess(String connectionId);
 
-   private static class EventRegistry
-   {
-      HashMap<Class<? extends SessionEventData>, EventFactory<?>> factories = new HashMap<Class<? extends SessionEventData>, EventFactory<?>>();
+        void onFailure(Throwable e);
+    }
 
-      public EventRegistry()
-      {
+    private static class EventRegistry {
+        HashMap<Class<? extends SessionEventData>, EventFactory<?>> factories =
+                new HashMap<Class<? extends SessionEventData>, EventFactory<?>>();
 
-         // put any additional factories here
-         factories.put(TransUnitUpdated.class, new EventFactory<TransUnitUpdatedEvent>()
-         {
+        public EventRegistry() {
+
+            // put any additional factories here
+            factories.put(TransUnitUpdated.class,
+                    new EventFactory<TransUnitUpdatedEvent>() {
+                        @Override
+                        public TransUnitUpdatedEvent create(
+                                SessionEventData event) {
+                            return new TransUnitUpdatedEvent(
+                                    (HasTransUnitUpdatedData) event);
+                        }
+                    });
+
+            factories.put(ExitWorkspace.class,
+                    new EventFactory<ExitWorkspaceEvent>() {
+                        @Override
+                        public ExitWorkspaceEvent
+                                create(SessionEventData event) {
+                            return new ExitWorkspaceEvent(
+                                    (HasExitWorkspaceData) event);
+                        }
+                    });
+
+            factories.put(EnterWorkspace.class,
+                    new EventFactory<EnterWorkspaceEvent>() {
+                        @Override
+                        public EnterWorkspaceEvent
+                                create(SessionEventData event) {
+                            return new EnterWorkspaceEvent(
+                                    (HasEnterWorkspaceData) event);
+                        }
+                    });
+
+            factories.put(WorkspaceContextUpdate.class,
+                    new EventFactory<WorkspaceContextUpdateEvent>() {
+                        @Override
+                        public WorkspaceContextUpdateEvent create(
+                                SessionEventData event) {
+                            return new WorkspaceContextUpdateEvent(
+                                    (HasWorkspaceContextUpdateData) event);
+                        }
+                    });
+
+            factories.put(TransUnitEdit.class,
+                    new EventFactory<TransUnitEditEvent>() {
+                        @Override
+                        public TransUnitEditEvent
+                                create(SessionEventData event) {
+                            return new TransUnitEditEvent(
+                                    (HasTransUnitEditData) event);
+                        }
+                    });
+
+            factories.put(PublishWorkspaceChat.class,
+                    new EventFactory<PublishWorkspaceChatEvent>() {
+                        @Override
+                        public PublishWorkspaceChatEvent create(
+                                SessionEventData event) {
+                            return new PublishWorkspaceChatEvent(
+                                    (HasWorkspaceChatData) event);
+                        }
+                    });
+
+        }
+
+        public GwtEvent<?> getEvent(SessionEventData sessionEventData) {
+            EventFactory<?> factory =
+                    factories.get(sessionEventData.getClass());
+            if (factory == null) {
+                Log.warn("Could not find factory for class "
+                        + sessionEventData.getClass());
+                return null;
+            }
+            return factory.create(sessionEventData);
+        }
+    }
+
+    private final EventRegistry eventRegistry;
+    private final RemoteEventService remoteEventService;
+    private final Domain domain;
+    private final EventBus eventBus;
+
+    @Inject
+    public EventProcessor(EventBus eventBus,
+            UserWorkspaceContext userWorkspaceContext,
+            RemoteEventService remoteEventService) {
+        this.eventBus = eventBus;
+        this.remoteEventService = remoteEventService;
+        this.eventRegistry = new EventRegistry();
+        this.domain =
+                DomainFactory.getDomain(userWorkspaceContext
+                        .getWorkspaceContext().getWorkspaceId().toString());
+    }
+
+    public void start(final StartCallback callback) {
+        remoteEventService.addListener(domain, this, new AsyncCallback<Void>() {
             @Override
-            public TransUnitUpdatedEvent create(SessionEventData event)
-            {
-               return new TransUnitUpdatedEvent((HasTransUnitUpdatedData) event);
+            public void onSuccess(Void result) {
+                Log.info("EventProcessor is now listening for events in the domain "
+                        + domain.getName());
+                String connectionId =
+                        eventServiceConfiguration().getConnectionId();
+                callback.onSuccess(connectionId);
             }
-         });
 
-         factories.put(ExitWorkspace.class, new EventFactory<ExitWorkspaceEvent>()
-         {
             @Override
-            public ExitWorkspaceEvent create(SessionEventData event)
-            {
-               return new ExitWorkspaceEvent((HasExitWorkspaceData) event);
+            public void onFailure(Throwable e) {
+                Log.error("Failed to start EventProcessor", e);
+                callback.onFailure(e);
             }
-         });
+        });
+    }
 
-         factories.put(EnterWorkspace.class, new EventFactory<EnterWorkspaceEvent>()
-         {
-            @Override
-            public EnterWorkspaceEvent create(SessionEventData event)
-            {
-               return new EnterWorkspaceEvent((HasEnterWorkspaceData) event);
+    /**
+     * mark as protected so that we can mock and test in unit test.
+     *
+     * @return EventServiceConfigurationTransferable
+     */
+    protected EventServiceConfigurationTransferable eventServiceConfiguration() {
+        return ConfigurationTransferableDependentFactory.getConfiguration();
+    }
+
+    @Override
+    public void apply(Event event) {
+        // Log.info("received remote event "+event);
+        if (event instanceof SessionEventData) {
+            SessionEventData ed = (SessionEventData) event;
+            GwtEvent<?> gwtEvent = eventRegistry.getEvent(ed);
+            if (gwtEvent != null) {
+                Log.debug("received event " + event + ", GWT event "
+                        + gwtEvent.getClass().getName());
+                try {
+                    eventBus.fireEvent(gwtEvent);
+                } catch (UmbrellaException e) {
+                    Log.error("Event failed", e);
+                }
+            } else {
+                Log.warn("unknown event " + event);
             }
-         });
-
-         factories.put(WorkspaceContextUpdate.class, new EventFactory<WorkspaceContextUpdateEvent>()
-         {
-            @Override
-            public WorkspaceContextUpdateEvent create(SessionEventData event)
-            {
-               return new WorkspaceContextUpdateEvent((HasWorkspaceContextUpdateData) event);
-            }
-         });
-
-         factories.put(TransUnitEdit.class, new EventFactory<TransUnitEditEvent>()
-         {
-            @Override
-            public TransUnitEditEvent create(SessionEventData event)
-            {
-               return new TransUnitEditEvent((HasTransUnitEditData) event);
-            }
-         });
-
-         factories.put(PublishWorkspaceChat.class, new EventFactory<PublishWorkspaceChatEvent>()
-         {
-            @Override
-            public PublishWorkspaceChatEvent create(SessionEventData event)
-            {
-               return new PublishWorkspaceChatEvent((HasWorkspaceChatData) event);
-            }
-         });
-
-
-      }
-
-      public GwtEvent<?> getEvent(SessionEventData sessionEventData)
-      {
-         EventFactory<?> factory = factories.get(sessionEventData.getClass());
-         if (factory == null)
-         {
-            Log.warn("Could not find factory for class " + sessionEventData.getClass());
-            return null;
-         }
-         return factory.create(sessionEventData);
-      }
-   }
-
-   private final EventRegistry eventRegistry;
-   private final RemoteEventService remoteEventService;
-   private final Domain domain;
-   private final EventBus eventBus;
-
-   @Inject
-   public EventProcessor(EventBus eventBus, UserWorkspaceContext userWorkspaceContext, RemoteEventService remoteEventService)
-   {
-      this.eventBus = eventBus;
-      this.remoteEventService = remoteEventService;
-      this.eventRegistry = new EventRegistry();
-      this.domain = DomainFactory.getDomain(userWorkspaceContext.getWorkspaceContext().getWorkspaceId().toString());
-   }
-
-   public void start(final StartCallback callback)
-   {
-      remoteEventService.addListener(domain, this, new AsyncCallback<Void>()
-      {
-         @Override
-         public void onSuccess(Void result)
-         {
-            Log.info("EventProcessor is now listening for events in the domain " + domain.getName());
-            String connectionId = eventServiceConfiguration().getConnectionId();
-            callback.onSuccess(connectionId);
-         }
-
-         @Override
-         public void onFailure(Throwable e)
-         {
-            Log.error("Failed to start EventProcessor", e);
-            callback.onFailure(e);
-         }
-      });
-   }
-
-   /**
-    * mark as protected so that we can mock and test in unit test.
-    * @return EventServiceConfigurationTransferable
-    */
-   protected EventServiceConfigurationTransferable eventServiceConfiguration()
-   {
-      return ConfigurationTransferableDependentFactory.getConfiguration();
-   }
-
-   @Override
-   public void apply(Event event)
-   {
-      // Log.info("received remote event "+event);
-      if (event instanceof SessionEventData)
-      {
-         SessionEventData ed = (SessionEventData) event;
-         GwtEvent<?> gwtEvent = eventRegistry.getEvent(ed);
-         if (gwtEvent != null)
-         {
-            Log.debug("received event " + event + ", GWT event " + gwtEvent.getClass().getName());
-            try
-            {
-               eventBus.fireEvent(gwtEvent);
-            }
-            catch (UmbrellaException e)
-            {
-               Log.error("Event failed", e);
-            }
-         }
-         else
-         {
-            Log.warn("unknown event " + event);
-         }
-      }
-   }
+        }
+    }
 
 }

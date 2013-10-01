@@ -40,57 +40,56 @@ import com.google.common.base.Joiner;
 /**
  * @see <a href="https://tcms.engineering.redhat.com/case/147311/">TCMS case</a>
  *
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @RunWith(ConcordionRunner.class)
-@Extensions({ScreenshotExtension.class, TimestampFormatterExtension.class, CustomResourceExtension.class})
+@Extensions({ ScreenshotExtension.class, TimestampFormatterExtension.class,
+        CustomResourceExtension.class })
 @Category(ConcordionTest.class)
-public class GlossaryPushTest
-{
-   private ClientPushWorkFlow clientPushWorkFlow = new ClientPushWorkFlow();
-   private File projectRootPath;
-   private EditorPage editorPage;
+public class GlossaryPushTest {
+    private ClientPushWorkFlow clientPushWorkFlow = new ClientPushWorkFlow();
+    private File projectRootPath;
+    private EditorPage editorPage;
 
-   public String getUserConfigPath()
-   {
-      return ClientPushWorkFlow.getUserConfigPath("glossarist");
-   }
+    public String getUserConfigPath() {
+        return ClientPushWorkFlow.getUserConfigPath("glossarist");
+    }
 
-   public String getProjectLocation(String project)
-   {
-      projectRootPath = clientPushWorkFlow.getProjectRootPath(project);
-      return projectRootPath.getAbsolutePath();
-   }
+    public String getProjectLocation(String project) {
+        projectRootPath = clientPushWorkFlow.getProjectRootPath(project);
+        return projectRootPath.getAbsolutePath();
+    }
 
-   public List<String> push(String command, String configPath) throws Exception
-   {
-      return clientPushWorkFlow.callWithTimeout(projectRootPath, command + configPath);
-   }
+    public List<String> push(String command, String configPath)
+            throws Exception {
+        return clientPushWorkFlow.callWithTimeout(projectRootPath, command
+                + configPath);
+    }
 
-   public boolean isPushSuccessful(List<String> output)
-   {
-      return clientPushWorkFlow.isPushSuccessful(output);
-   }
+    public boolean isPushSuccessful(List<String> output) {
+        return clientPushWorkFlow.isPushSuccessful(output);
+    }
 
-   public String resultByLines(List<String> output)
-   {
-      return Joiner.on("\n").join(output);
-   }
+    public String resultByLines(List<String> output) {
+        return Joiner.on("\n").join(output);
+    }
 
-   public void translate()
-   {
-      new LoginWorkFlow().signIn("translator", "translator");
-      editorPage = new BasicWorkFlow().goToPage("webtrans/translate?project=about-fedora&iteration=master&localeId=fr&locale=en#view:doc;doc:About_Fedora", EditorPage.class);
-   }
+    public void translate() {
+        new LoginWorkFlow().signIn("translator", "translator");
+        editorPage =
+                new BasicWorkFlow()
+                        .goToPage(
+                                "webtrans/translate?project=about-fedora&iteration=master&localeId=fr&locale=en#view:doc;doc:About_Fedora",
+                                EditorPage.class);
+    }
 
-   public void searchGlossary(String term)
-   {
-      editorPage.searchGlossary(term);
-   }
+    public void searchGlossary(String term) {
+        editorPage.searchGlossary(term);
+    }
 
-   public String getFirstResult()
-   {
-      // 2 row 2 column is glossary target
-      return editorPage.getGlossaryResultTable().get(1).get(1);
-   }
+    public String getFirstResult() {
+        // 2 row 2 column is glossary target
+        return editorPage.getGlossaryResultTable().get(1).get(1);
+    }
 }

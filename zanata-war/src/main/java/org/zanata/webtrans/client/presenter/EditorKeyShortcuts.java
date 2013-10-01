@@ -21,45 +21,44 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class EditorKeyShortcuts implements UserConfigChangeHandler
-{
-   private final KeyShortcutPresenter keyShortcutPresenter;
-   private final EventBus eventBus;
-   private final UserConfigHolder configHolder;
-   private final TableEditorMessages messages;
+public class EditorKeyShortcuts implements UserConfigChangeHandler {
+    private final KeyShortcutPresenter keyShortcutPresenter;
+    private final EventBus eventBus;
+    private final UserConfigHolder configHolder;
+    private final TableEditorMessages messages;
 
-   private KeyShortcut enterSavesApprovedShortcut;
-   private KeyShortcut nextStateShortcut;
-   private KeyShortcut prevStateShortcut;
+    private KeyShortcut enterSavesApprovedShortcut;
+    private KeyShortcut nextStateShortcut;
+    private KeyShortcut prevStateShortcut;
 
-   private HandlerRegistration enterSavesApprovedHandlerRegistration;
-   private UserConfigHolder.ConfigurationState configuration;
+    private HandlerRegistration enterSavesApprovedHandlerRegistration;
+    private UserConfigHolder.ConfigurationState configuration;
 
-   @Inject
-   public EditorKeyShortcuts(KeyShortcutPresenter keyShortcutPresenter, EventBus eventBus, UserConfigHolder configHolder, TableEditorMessages messages)
-   {
-      this.keyShortcutPresenter = keyShortcutPresenter;
-      this.eventBus = eventBus;
-      this.configHolder = configHolder;
-      this.messages = messages;
+    @Inject
+    public EditorKeyShortcuts(KeyShortcutPresenter keyShortcutPresenter,
+            EventBus eventBus, UserConfigHolder configHolder,
+            TableEditorMessages messages) {
+        this.keyShortcutPresenter = keyShortcutPresenter;
+        this.eventBus = eventBus;
+        this.configHolder = configHolder;
+        this.messages = messages;
 
-      configuration = configHolder.getState();
-      eventBus.addHandler(UserConfigChangeEvent.TYPE, this);
-   }
+        configuration = configHolder.getState();
+        eventBus.addHandler(UserConfigChangeEvent.TYPE, this);
+    }
 
-   public void registerKeys(TargetContentsPresenter targetContentsPresenter)
-   {
-      registerCopyTMKeys();
-      registerNavigationKeys(targetContentsPresenter);
-      registerEditorActionKeys(targetContentsPresenter);
-   }
+    public void registerKeys(TargetContentsPresenter targetContentsPresenter) {
+        registerCopyTMKeys();
+        registerNavigationKeys(targetContentsPresenter);
+        registerEditorActionKeys(targetContentsPresenter);
+    }
 
-   protected void registerCopyTMKeys()
-   {
-      // @formatter:off
+    protected void registerCopyTMKeys() {
+        // @formatter:off
       KeyShortcut copyTM1Shortcut = KeyShortcut.Builder.builder()
             .addKey(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_1)).addKey(new Keys(Keys.CTRL_ALT_KEYS, Keys.KEY_NUM_1))
             .setContext(ShortcutContext.Edit).setDescription(messages.copyFromTM(1))
@@ -84,15 +83,15 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler
             .setHandler(new CopyTMKeyShortcutHandler(3))
             .build();
       // @formatter:on
-      keyShortcutPresenter.register(copyTM1Shortcut);
-      keyShortcutPresenter.register(copyTM2Shortcut);
-      keyShortcutPresenter.register(copyTM3Shortcut);
-      keyShortcutPresenter.register(copyTM4Shortcut);
-   }
+        keyShortcutPresenter.register(copyTM1Shortcut);
+        keyShortcutPresenter.register(copyTM2Shortcut);
+        keyShortcutPresenter.register(copyTM3Shortcut);
+        keyShortcutPresenter.register(copyTM4Shortcut);
+    }
 
-   protected void registerNavigationKeys(final TargetContentsPresenter targetContentsPresenter)
-   {
-      // @formatter:off
+    protected void registerNavigationKeys(
+            final TargetContentsPresenter targetContentsPresenter) {
+        // @formatter:off
       KeyShortcut moveNextShortcut = KeyShortcut.Builder.builder()
             .addKey(new Keys(Keys.ALT_KEY, KeyCodes.KEY_DOWN)).addKey(new Keys(Keys.ALT_KEY, 'K'))
             .setContext(ShortcutContext.Edit).setDescription(messages.moveToNextRow())
@@ -151,12 +150,12 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler
             }).build();
       keyShortcutPresenter.register(prevStateShortcut);
       // @formatter:on
-   }
+    }
 
-   protected void registerEditorActionKeys(final TargetContentsPresenter targetContentsPresenter)
-   {
-      // Register shortcut CTRL+S to save as fuzzy
-      // @formatter:off
+    protected void registerEditorActionKeys(
+            final TargetContentsPresenter targetContentsPresenter) {
+        // Register shortcut CTRL+S to save as fuzzy
+        // @formatter:off
       KeyShortcut saveFuzzyShortcut = KeyShortcut.Builder.builder()
             .addKey(new Keys(Keys.CTRL_KEY, 'S'))
             .setContext(ShortcutContext.Edit).setDescription(messages.saveAsFuzzy())
@@ -170,18 +169,17 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler
                }
             }).build();
       // @formatter:on
-      keyShortcutPresenter.register(saveFuzzyShortcut);
+        keyShortcutPresenter.register(saveFuzzyShortcut);
 
-      KeyShortcutEventHandler saveAsApprovedKeyShortcutHandler = new KeyShortcutEventHandler()
-      {
-         @Override
-         public void onKeyShortcut(KeyShortcutEvent event)
-         {
-            targetContentsPresenter.checkConfirmationBeforeSave();
-         }
-      };
+        KeyShortcutEventHandler saveAsApprovedKeyShortcutHandler =
+                new KeyShortcutEventHandler() {
+                    @Override
+                    public void onKeyShortcut(KeyShortcutEvent event) {
+                        targetContentsPresenter.checkConfirmationBeforeSave();
+                    }
+                };
 
-      // @formatter:off
+        // @formatter:off
       KeyShortcut ctrlEnterShortcut = KeyShortcut.Builder.builder()
             .addKey(new Keys(Keys.CTRL_KEY, KeyCodes.KEY_ENTER))
             .setContext(ShortcutContext.Edit).setDescription(messages.saveAsTranslated())
@@ -196,12 +194,12 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler
             .setHandler(saveAsApprovedKeyShortcutHandler)
             .build();
       // @formatter:on
-      if (configHolder.getState().isEnterSavesApproved())
-      {
-         enterSavesApprovedHandlerRegistration = keyShortcutPresenter.register(enterSavesApprovedShortcut);
-      }
+        if (configHolder.getState().isEnterSavesApproved()) {
+            enterSavesApprovedHandlerRegistration =
+                    keyShortcutPresenter.register(enterSavesApprovedShortcut);
+        }
 
-      // @formatter:off
+        // @formatter:off
       KeyShortcut copySourceShortcut = KeyShortcut.Builder.builder()
             .addKey(new Keys(Keys.ALT_KEY, 'G'))
             .addAttentionKey(new Keys('G'))
@@ -217,90 +215,80 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler
                }
             }).build();
       // @formatter:on
-      keyShortcutPresenter.register(copySourceShortcut);
-   }
+        keyShortcutPresenter.register(copySourceShortcut);
+    }
 
-   @Override
-   public void onUserConfigChanged(UserConfigChangeEvent event)
-   {
-      if (event.getView() == MainView.Editor)
-      {
-         UserConfigHolder.ConfigurationState oldState = configuration;
-         configuration = configHolder.getState();
+    @Override
+    public void onUserConfigChanged(UserConfigChangeEvent event) {
+        if (event.getView() == MainView.Editor) {
+            UserConfigHolder.ConfigurationState oldState = configuration;
+            configuration = configHolder.getState();
 
-         // If some config hasn't changed or not relevant in
-         // this context, don't bother doing anything
-         changeEnterSavesApproved(oldState);
-         changeNavShortcutDescription(oldState);
-      }
-   }
+            // If some config hasn't changed or not relevant in
+            // this context, don't bother doing anything
+            changeEnterSavesApproved(oldState);
+            changeNavShortcutDescription(oldState);
+        }
+    }
 
-   private void changeEnterSavesApproved(UserConfigHolder.ConfigurationState oldState)
-   {
-      if (oldState.isEnterSavesApproved() != configuration.isEnterSavesApproved())
-      {
-         boolean enterSavesApproved = configuration.isEnterSavesApproved();
-         if (enterSavesApproved)
-         {
-            enterSavesApprovedHandlerRegistration = keyShortcutPresenter.register(enterSavesApprovedShortcut);
-         }
-         else
-         {
-            if (enterSavesApprovedHandlerRegistration != null)
-            {
-               enterSavesApprovedHandlerRegistration.removeHandler();
+    private void changeEnterSavesApproved(
+            UserConfigHolder.ConfigurationState oldState) {
+        if (oldState.isEnterSavesApproved() != configuration
+                .isEnterSavesApproved()) {
+            boolean enterSavesApproved = configuration.isEnterSavesApproved();
+            if (enterSavesApproved) {
+                enterSavesApprovedHandlerRegistration =
+                        keyShortcutPresenter
+                                .register(enterSavesApprovedShortcut);
+            } else {
+                if (enterSavesApprovedHandlerRegistration != null) {
+                    enterSavesApprovedHandlerRegistration.removeHandler();
+                }
             }
-         }
-      }
-   }
+        }
+    }
 
-   private void changeNavShortcutDescription(UserConfigHolder.ConfigurationState oldState)
-   {
-      if (oldState.getNavOption() != configuration.getNavOption())
-      {
-         switch (configuration.getNavOption())
-         {
+    private void changeNavShortcutDescription(
+            UserConfigHolder.ConfigurationState oldState) {
+        if (oldState.getNavOption() != configuration.getNavOption()) {
+            switch (configuration.getNavOption()) {
             case FUZZY_UNTRANSLATED:
-               nextStateShortcut.setDescription(messages.nextIncomplete());
-               prevStateShortcut.setDescription(messages.nextIncomplete());
-               break;
+                nextStateShortcut.setDescription(messages.nextIncomplete());
+                prevStateShortcut.setDescription(messages.nextIncomplete());
+                break;
             case FUZZY:
-               nextStateShortcut.setDescription(messages.nextDraft());
-               prevStateShortcut.setDescription(messages.prevDraft());
-               break;
+                nextStateShortcut.setDescription(messages.nextDraft());
+                prevStateShortcut.setDescription(messages.prevDraft());
+                break;
             case UNTRANSLATED:
-               nextStateShortcut.setDescription(messages.nextUntranslated());
-               prevStateShortcut.setDescription(messages.prevUntranslated());
-               break;
-         }
-      }
-   }
+                nextStateShortcut.setDescription(messages.nextUntranslated());
+                prevStateShortcut.setDescription(messages.prevUntranslated());
+                break;
+            }
+        }
+    }
 
-   public void enableEditContext()
-   {
-      keyShortcutPresenter.setContextActive(ShortcutContext.Edit, true);
-      keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, false);
-   }
+    public void enableEditContext() {
+        keyShortcutPresenter.setContextActive(ShortcutContext.Edit, true);
+        keyShortcutPresenter
+                .setContextActive(ShortcutContext.Navigation, false);
+    }
 
-   public void enableNavigationContext()
-   {
-      keyShortcutPresenter.setContextActive(ShortcutContext.Edit, false);
-      keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, true);
-   }
+    public void enableNavigationContext() {
+        keyShortcutPresenter.setContextActive(ShortcutContext.Edit, false);
+        keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, true);
+    }
 
-   private class CopyTMKeyShortcutHandler implements KeyShortcutEventHandler
-   {
-      private int tmIndex;
+    private class CopyTMKeyShortcutHandler implements KeyShortcutEventHandler {
+        private int tmIndex;
 
-      private CopyTMKeyShortcutHandler(int tmIndex)
-      {
-         this.tmIndex = tmIndex;
-      }
+        private CopyTMKeyShortcutHandler(int tmIndex) {
+            this.tmIndex = tmIndex;
+        }
 
-      @Override
-      public void onKeyShortcut(KeyShortcutEvent event)
-      {
-         eventBus.fireEvent(new TransMemoryShortcutCopyEvent(tmIndex));
-      }
-   }
+        @Override
+        public void onKeyShortcut(KeyShortcutEvent event) {
+            eventBus.fireEvent(new TransMemoryShortcutCopyEvent(tmIndex));
+        }
+    }
 }

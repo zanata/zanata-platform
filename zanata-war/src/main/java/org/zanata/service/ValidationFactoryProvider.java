@@ -30,29 +30,24 @@ import org.zanata.webtrans.server.locale.Gwti18nReader;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
 
 /**
- * Provide new instance of ValidationFactory
- * Used on server side -
- *    org.zanata.webtrans.client.resources.ValidationMessages is client side localisation.
- *    used Gwti18nReader as a basic parser for ValidationMessages.
+ * Provide new instance of ValidationFactory Used on server side -
+ * org.zanata.webtrans.client.resources.ValidationMessages is client side
+ * localisation. used Gwti18nReader as a basic parser for ValidationMessages.
  */
-public final class ValidationFactoryProvider
-{
-   private static ValidationFactory validationFactory;
+public final class ValidationFactoryProvider {
+    private static ValidationFactory validationFactory;
 
-   public static ValidationFactory getFactoryInstance()
-   {
-      if (validationFactory == null)
-      {
-         try
-         {
-            ValidationMessages valMessages = Gwti18nReader.create(ValidationMessages.class);
-            validationFactory = new ValidationFactory(valMessages);
-         }
-         catch (IOException e)
-         {
-            throw new ValidationException("Unable to load validation messages");
-         }
-      }
-      return validationFactory;
-   }
+    public static ValidationFactory getFactoryInstance() {
+        if (validationFactory == null) {
+            try {
+                ValidationMessages valMessages =
+                        Gwti18nReader.create(ValidationMessages.class);
+                validationFactory = new ValidationFactory(valMessages);
+            } catch (IOException e) {
+                throw new ValidationException(
+                        "Unable to load validation messages");
+            }
+        }
+        return validationFactory;
+    }
 }

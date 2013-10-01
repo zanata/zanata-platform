@@ -1,5 +1,5 @@
 /*
- * This file creates triggers for the H2 database. Please see src/test/resources/import.sql for a similar script that 
+ * This file creates triggers for the H2 database. Please see src/test/resources/import.sql for a similar script that
  * should do the same for unit tests.
  */
 DROP TRIGGER IF EXISTS `HDocument_Update`;

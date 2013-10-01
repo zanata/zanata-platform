@@ -1,86 +1,91 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:rich="http://richfaces.org/rich" 
-    xmlns:a4j="http://richfaces.org/a4j"
-    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-    xmlns:s="http://jboss.org/schema/seam/taglib">
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  xmlns:s="http://jboss.org/schema/seam/taglib">
 
-  <ui:composition template="../WEB-INF/template/template_2x.xhtml">
-<!-- disabled since it doesn't create the HPerson to go with the HAccount
-    <ui:define name="right_content">
-        <s:link action="#{userAction.createUser}"
-          rendered="#{s:hasPermission('seam.account', 'create')}"
-          value="#{messages['jsf.CreateNewUser']}"/>
-    </ui:define>
- -->
+<ui:composition template="../WEB-INF/template/template_2x.xhtml">
+  <!-- disabled since it doesn't create the HPerson to go with the HAccount
+      <ui:define name="right_content">
+          <s:link action="#{userAction.createUser}"
+            rendered="#{s:hasPermission('seam.account', 'create')}"
+            value="#{messages['jsf.CreateNewUser']}"/>
+      </ui:define>
+   -->
 
-    <ui:define name="page_title">#{messages['jsf.ManageUsers']}</ui:define>
-    <ui:define name="center_content">
-      <script type="text/javascript">
-        function confirmDelete()
-        {
-            return confirm("#{messages['jsf.AreYouSureYouWishToDeleteThisUserThisActionCannotBeUndone']}");
-        }
+  <ui:define name="page_title">#{messages['jsf.ManageUsers']}</ui:define>
+  <ui:define name="center_content">
+    <script type="text/javascript">
+      function confirmDelete() {
+        return confirm("#{messages['jsf.AreYouSureYouWishToDeleteThisUserThisActionCannotBeUndone']}");
+      }
 
-        function focusUserFilterInput()
-        {
-            #{rich:element('username_filter_input')}.focus();
-        }
-      </script>
-        <h:form id="usermanagerForm">
-            <s:token allowMultiplePosts="true" />
-	        <rich:dataTable 
-	            id="threads"
-	            value="#{users}" 
-	            var="user" 
-	            cellspacing="0"
-	            columnClasses="centered,centered,centered,centered"
-	            styleClass="fullwidth">
-	          <rich:column width="auto" filterValue="#{userAction.usernameFilter}" 
-                			 filterExpression="#{fn:containsIgnoreCase(user, userAction.usernameFilter)}">
-	            <f:facet name="header">
-                  <h:panelGroup>
-                    <h:outputText value="#{messages['jsf.Username']}"/>
-                    <br/>
-                    <h:inputText id="username_filter_input"
-                                 value="#{userAction.usernameFilter}"
-                                 styleClass="filter_input">
-                        <a4j:ajax event="keyup" render="threads"
-                                  oncomplete="focusUserFilterInput()">
-                            <a4j:attachQueue ignoreDupResponses="true" requestDelay="700" />
-                        </a4j:ajax>
-                    </h:inputText>
-                  </h:panelGroup>
-                </f:facet>
-	            #{user}
-	          </rich:column>
-	          <h:column width="auto">
-	            <f:facet name="header">#{messages['jsf.Email']}</f:facet>
-	            #{userAction.getEmail(user)}
-	          </h:column>
-	          <h:column width="auto">
-	            <f:facet name="header">#{messages['jsf.MemberOf']}</f:facet>
-	            #{userSearch.getUserRoles(user)}
-	          </h:column>
-	          <h:column width="auto">
-	            <f:facet name="header">#{messages['jsf.Enabled']}</f:facet>
-	            <span class="#{identityManager.isUserEnabled(user) ? 'icon-ok checkmark' : 'icon-remove cross'}"/>
-	          </h:column>
-	          <h:column width="100px">
-	            <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-	            <s:fragment rendered="#{s:hasPermission('seam.user', 'update')}">
-	              <h:commandButton value="#{messages['jsf.Edit']}" action="#{userAction.editUser(userSearch.selectedUser)}"/>
-	            </s:fragment>
-	            <h:commandButton value="#{messages['jsf.Delete']}" action="#{userAction.deleteUser(userSearch.selectedUser)}"
-	                    rendered="#{s:hasPermission('seam.user', 'delete')}"
-	                    onclick="return confirmDelete()"/>
-	          </h:column>
-	  	    </rich:dataTable>
-        </h:form>
-    </ui:define>
+      function focusUserFilterInput() {
+        #{rich:element('username_filter_input')}
+      .
+        focus();
+      }
+    </script>
+    <h:form id="usermanagerForm">
+      <s:token allowMultiplePosts="true"/>
+      <rich:dataTable
+        id="threads"
+        value="#{users}"
+        var="user"
+        cellspacing="0"
+        columnClasses="centered,centered,centered,centered"
+        styleClass="fullwidth">
+        <rich:column width="auto" filterValue="#{userAction.usernameFilter}"
+          filterExpression="#{fn:containsIgnoreCase(user, userAction.usernameFilter)}">
+          <f:facet name="header">
+            <h:panelGroup>
+              <h:outputText value="#{messages['jsf.Username']}"/>
+              <br/>
+              <h:inputText id="username_filter_input"
+                value="#{userAction.usernameFilter}"
+                styleClass="filter_input">
+                <a4j:ajax event="keyup" render="threads"
+                  oncomplete="focusUserFilterInput()">
+                  <a4j:attachQueue ignoreDupResponses="true"
+                    requestDelay="700"/>
+                </a4j:ajax>
+              </h:inputText>
+            </h:panelGroup>
+          </f:facet>
+          #{user}
+        </rich:column>
+        <h:column width="auto">
+          <f:facet name="header">#{messages['jsf.Email']}</f:facet>
+          #{userAction.getEmail(user)}
+        </h:column>
+        <h:column width="auto">
+          <f:facet name="header">#{messages['jsf.MemberOf']}</f:facet>
+          #{userSearch.getUserRoles(user)}
+        </h:column>
+        <h:column width="auto">
+          <f:facet name="header">#{messages['jsf.Enabled']}</f:facet>
+          <span
+            class="#{identityManager.isUserEnabled(user) ? 'icon-ok checkmark' : 'icon-remove cross'}"/>
+        </h:column>
+        <h:column width="100px">
+          <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+          <s:fragment rendered="#{s:hasPermission('seam.user', 'update')}">
+            <h:commandButton value="#{messages['jsf.Edit']}"
+              action="#{userAction.editUser(userSearch.selectedUser)}"/>
+          </s:fragment>
+          <h:commandButton value="#{messages['jsf.Delete']}"
+            action="#{userAction.deleteUser(userSearch.selectedUser)}"
+            rendered="#{s:hasPermission('seam.user', 'delete')}"
+            onclick="return confirmDelete()"/>
+        </h:column>
+      </rich:dataTable>
+    </h:form>
+  </ui:define>
 
-  </ui:composition>
+</ui:composition>
 </html>

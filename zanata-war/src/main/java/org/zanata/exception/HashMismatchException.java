@@ -23,23 +23,23 @@ package org.zanata.exception;
 import lombok.Getter;
 
 /**
- * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
+ * @author David Mason, <a
+ *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  *
  */
-public class HashMismatchException extends ZanataException
-{
-   private static final long serialVersionUID = 1L;
+public class HashMismatchException extends ZanataException {
+    private static final long serialVersionUID = 1L;
 
-   @Getter
-   private String expectedHash;
-   @Getter
-   private String generatedHash;
+    @Getter
+    private String expectedHash;
+    @Getter
+    private String generatedHash;
 
-   public HashMismatchException(String message, String expectedHash, String generatedHash)
-   {
-      super(message);
-      this.expectedHash = expectedHash;
-      this.generatedHash = generatedHash;
-   }
+    public HashMismatchException(String message, String expectedHash,
+            String generatedHash) {
+        super(message);
+        this.expectedHash = expectedHash;
+        this.generatedHash = generatedHash;
+    }
 
 }

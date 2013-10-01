@@ -7,118 +7,102 @@ import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class DocumentInfo implements HasIdentifier<DocumentId>, IsSerializable
-{
-   private DocumentId id;
-   private String name;
-   private String path;
-   private LocaleId sourceLocale;
-   private ContainerTranslationStatistics stats;
-   private AuditInfo lastModified;
-   private AuditInfo lastTranslated;
-   private Map<String, String> downloadExtensions;
-   
-   
-   private Boolean hasError = null;
+public class DocumentInfo implements HasIdentifier<DocumentId>, IsSerializable {
+    private DocumentId id;
+    private String name;
+    private String path;
+    private LocaleId sourceLocale;
+    private ContainerTranslationStatistics stats;
+    private AuditInfo lastModified;
+    private AuditInfo lastTranslated;
+    private Map<String, String> downloadExtensions;
 
-   // for GWT
-   @SuppressWarnings("unused")
-   private DocumentInfo()
-   {
-   }
+    private Boolean hasError = null;
 
-   public DocumentInfo(DocumentId id, String name, String path, LocaleId sourceLocale, ContainerTranslationStatistics stats, AuditInfo lastModified, Map<String, String> downloadExtensions, AuditInfo lastTranslated)
-   {
-      this.id = id;
-      this.name = name;
-      this.path = path;
-      this.stats = stats;
-      this.sourceLocale = sourceLocale;
-      this.lastModified = lastModified;
-      this.downloadExtensions = downloadExtensions;
-      this.lastTranslated = lastTranslated;
-   }
+    // for GWT
+    @SuppressWarnings("unused")
+    private DocumentInfo() {
+    }
 
-   public DocumentId getId()
-   {
-      return id;
-   }
+    public DocumentInfo(DocumentId id, String name, String path,
+            LocaleId sourceLocale, ContainerTranslationStatistics stats,
+            AuditInfo lastModified, Map<String, String> downloadExtensions,
+            AuditInfo lastTranslated) {
+        this.id = id;
+        this.name = name;
+        this.path = path;
+        this.stats = stats;
+        this.sourceLocale = sourceLocale;
+        this.lastModified = lastModified;
+        this.downloadExtensions = downloadExtensions;
+        this.lastTranslated = lastTranslated;
+    }
 
-   public String getName()
-   {
-      return name;
-   }
+    public DocumentId getId() {
+        return id;
+    }
 
-   public String getPath()
-   {
-      return path;
-   }
+    public String getName() {
+        return name;
+    }
 
-   public ContainerTranslationStatistics getStats()
-   {
-      return stats;
-   }
+    public String getPath() {
+        return path;
+    }
 
-   public void setStats(ContainerTranslationStatistics stats)
-   {
-      this.stats = stats;
-   }
+    public ContainerTranslationStatistics getStats() {
+        return stats;
+    }
 
-   public LocaleId getSourceLocale()
-   {
-      return sourceLocale;
-   }
+    public void setStats(ContainerTranslationStatistics stats) {
+        this.stats = stats;
+    }
 
-   public AuditInfo getLastModified()
-   {
-      return lastModified;
-   }
+    public LocaleId getSourceLocale() {
+        return sourceLocale;
+    }
 
-   public Map<String, String> getDownloadExtensions()
-   {
-      return downloadExtensions;
-   }
+    public AuditInfo getLastModified() {
+        return lastModified;
+    }
 
-   public AuditInfo getLastTranslated()
-   {
-      return lastTranslated;
-   }
+    public Map<String, String> getDownloadExtensions() {
+        return downloadExtensions;
+    }
 
-   public void setLastTranslated(AuditInfo lastTranslated)
-   {
-      this.lastTranslated = lastTranslated;
-   }
+    public AuditInfo getLastTranslated() {
+        return lastTranslated;
+    }
 
-   public void setHasError(Boolean hasError)
-   {
-      this.hasError = hasError;
-   }
+    public void setLastTranslated(AuditInfo lastTranslated) {
+        this.lastTranslated = lastTranslated;
+    }
 
-   public Boolean hasError()
-   {
-      return hasError;
-   }
+    public void setHasError(Boolean hasError) {
+        this.hasError = hasError;
+    }
 
-   @Override
-   public String toString()
-   {
-      return "DocumentInfo(name=" + name + ",path=" + path + ",id=" + id + ")";
-   }
+    public Boolean hasError() {
+        return hasError;
+    }
 
-   @Override
-   public boolean equals(Object obj)
-   {
-      if (obj == null || !(obj instanceof DocumentInfo))
-      {
-         return false;
-      }
-      DocumentInfo other = (DocumentInfo) obj;
-      return (id.equals(other.getId()));
-   }
+    @Override
+    public String toString() {
+        return "DocumentInfo(name=" + name + ",path=" + path + ",id=" + id
+                + ")";
+    }
 
-   @Override
-   public int hashCode()
-   {
-      return id.hashCode();
-   }
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || !(obj instanceof DocumentInfo)) {
+            return false;
+        }
+        DocumentInfo other = (DocumentInfo) obj;
+        return (id.equals(other.getId()));
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 }

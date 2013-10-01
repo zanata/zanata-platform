@@ -53,44 +53,37 @@ import lombok.ToString;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Indexed
 @Setter
-@EqualsAndHashCode(callSuper = true, doNotUseGetters = true, exclude = "glossaryTerms")
-@ToString(of = {"sourceRef", "srcLocale"})
-public class HGlossaryEntry extends ModelEntityBase
-{
-   private static final long serialVersionUID = -4200183325180630061L;
+@EqualsAndHashCode(callSuper = true, doNotUseGetters = true,
+        exclude = "glossaryTerms")
+@ToString(of = { "sourceRef", "srcLocale" })
+public class HGlossaryEntry extends ModelEntityBase {
+    private static final long serialVersionUID = -4200183325180630061L;
 
-   private Map<HLocale, HGlossaryTerm> glossaryTerms;
-   private String sourceRef;
-   private HLocale srcLocale;
+    private Map<HLocale, HGlossaryTerm> glossaryTerms;
+    private String sourceRef;
+    private HLocale srcLocale;
 
-   @OneToMany(cascade = CascadeType.ALL, mappedBy = "glossaryEntry")
-   @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
-   @MapKey(name = "locale")
-   public Map<HLocale, HGlossaryTerm> getGlossaryTerms()
-   {
-      if (glossaryTerms == null)
-      {
-         glossaryTerms = new HashMap<HLocale, HGlossaryTerm>();
-      }
-      return glossaryTerms;
-   }
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "glossaryEntry")
+    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    @MapKey(name = "locale")
+    public Map<HLocale, HGlossaryTerm> getGlossaryTerms() {
+        if (glossaryTerms == null) {
+            glossaryTerms = new HashMap<HLocale, HGlossaryTerm>();
+        }
+        return glossaryTerms;
+    }
 
-   @Type(type = "text")
-   public String getSourceRef()
-   {
-      return sourceRef;
-   }
+    @Type(type = "text")
+    public String getSourceRef() {
+        return sourceRef;
+    }
 
-   @OneToOne
-   @JoinColumn(name = "srcLocaleId", nullable = false)
-   @Field(analyze = Analyze.NO)
-   @FieldBridge(impl = LocaleIdBridge.class)
-   public HLocale getSrcLocale()
-   {
-      return srcLocale;
-   }
+    @OneToOne
+    @JoinColumn(name = "srcLocaleId", nullable = false)
+    @Field(analyze = Analyze.NO)
+    @FieldBridge(impl = LocaleIdBridge.class)
+    public HLocale getSrcLocale() {
+        return srcLocale;
+    }
 
 }
-
-
- 

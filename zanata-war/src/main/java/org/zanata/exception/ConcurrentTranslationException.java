@@ -23,33 +23,28 @@ package org.zanata.exception;
 /**
  * Thrown to indicate that a translation cannot be saved as it is not based on
  * the current translation.
- * 
+ *
  * @author David Mason, damason@redhat.com
- * 
+ *
  */
-public class ConcurrentTranslationException extends Exception
-{
+public class ConcurrentTranslationException extends Exception {
 
-   private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-   public ConcurrentTranslationException()
-   {
-      super();
-   }
+    public ConcurrentTranslationException() {
+        super();
+    }
 
-   public ConcurrentTranslationException(String message)
-   {
-      super(message);
-   }
+    public ConcurrentTranslationException(String message) {
+        super(message);
+    }
 
-   public ConcurrentTranslationException(String message, Throwable cause)
-   {
-      super(message, cause);
-   }
+    public ConcurrentTranslationException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-   public ConcurrentTranslationException(Throwable cause)
-   {
-      super(cause);
-   }
+    public ConcurrentTranslationException(Throwable cause) {
+        super(cause);
+    }
 
 }

@@ -33,57 +33,51 @@ import java.util.Collections;
 import java.util.List;
 
 @Slf4j
-public class ProjectsPage extends BasePage
-{
-   public static final int PROJECT_NAME_COLUMN = 0;
-   @FindBy(id = "main_body_content")
-   private WebElement mainContentDiv;
+public class ProjectsPage extends BasePage {
+    public static final int PROJECT_NAME_COLUMN = 0;
+    @FindBy(id = "main_body_content")
+    private WebElement mainContentDiv;
 
-   private By projectTableBy = By.id("main_content:form:projectList");
+    private By projectTableBy = By.id("main_content:form:projectList");
 
-   public ProjectsPage(final WebDriver driver)
-   {
-      super(driver);
-   }
+    public ProjectsPage(final WebDriver driver) {
+        super(driver);
+    }
 
-   public CreateProjectPage clickOnCreateProjectLink()
-   {
-      WebElement createProjectActionLink = waitForTenSec().until(new Function<WebDriver, WebElement>()
-      {
-         @Override
-         public WebElement apply(WebDriver driver)
-         {
-            return driver.findElement(By.id("createProjectLink"));
-         }
-      });
-      createProjectActionLink.click();
-      return new CreateProjectPage(getDriver());
-   }
+    public CreateProjectPage clickOnCreateProjectLink() {
+        WebElement createProjectActionLink =
+                waitForTenSec().until(new Function<WebDriver, WebElement>() {
+                    @Override
+                    public WebElement apply(WebDriver driver) {
+                        return driver.findElement(By.id("createProjectLink"));
+                    }
+                });
+        createProjectActionLink.click();
+        return new CreateProjectPage(getDriver());
+    }
 
-   public ProjectPage goToProject(final String projectName)
-   {
-      //TODO this can't handle project on different page
-      return refreshPageUntil(this, new Function<WebDriver, ProjectPage>()
-      {
-         @Override
-         public ProjectPage apply(WebDriver input)
-         {
-            WebElement table = input.findElement(projectTableBy);
-            log.info("current projects: {}", WebElementUtil.getColumnContents(input, projectTableBy, PROJECT_NAME_COLUMN));
-            WebElement link = table.findElement(By.linkText(projectName));
-            link.click();
-            return new ProjectPage(input);
-         }
-      });
-   }
+    public ProjectPage goToProject(final String projectName) {
+        // TODO this can't handle project on different page
+        return refreshPageUntil(this, new Function<WebDriver, ProjectPage>() {
+            @Override
+            public ProjectPage apply(WebDriver input) {
+                WebElement table = input.findElement(projectTableBy);
+                log.info("current projects: {}", WebElementUtil
+                        .getColumnContents(input, projectTableBy,
+                                PROJECT_NAME_COLUMN));
+                WebElement link = table.findElement(By.linkText(projectName));
+                link.click();
+                return new ProjectPage(input);
+            }
+        });
+    }
 
-   public List<String> getProjectNamesOnCurrentPage()
-   {
-      if (mainContentDiv.getText().contains("No project exists"))
-      {
-         return Collections.emptyList();
-      }
+    public List<String> getProjectNamesOnCurrentPage() {
+        if (mainContentDiv.getText().contains("No project exists")) {
+            return Collections.emptyList();
+        }
 
-      return WebElementUtil.getColumnContents(getDriver(), projectTableBy, PROJECT_NAME_COLUMN);
-   }
+        return WebElementUtil.getColumnContents(getDriver(), projectTableBy,
+                PROJECT_NAME_COLUMN);
+    }
 }

@@ -27,29 +27,27 @@ import org.zanata.webtrans.shared.validation.AbstractValidationAction;
 /**
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- * 
+ *
  * @see AbstractValidationAction
  **/
-public interface ValidationAction
-{
-   List<String> validate(String source, String target);
+public interface ValidationAction {
+    List<String> validate(String source, String target);
 
-   List<ValidationAction> getExclusiveValidations();
+    List<ValidationAction> getExclusiveValidations();
 
-   void mutuallyExclusive(ValidationAction[] exclusiveValidations);
+    void mutuallyExclusive(ValidationAction[] exclusiveValidations);
 
-   ValidationDisplayRules getRules();
+    ValidationDisplayRules getRules();
 
-   ValidationId getId();
+    ValidationId getId();
 
-   String getDescription();
+    String getDescription();
 
-   State getState();
+    State getState();
 
-   void setState(State state);
+    void setState(State state);
 
-   public static enum State
-   {
-      Off, Warning, Error;
-   }
+    public static enum State {
+        Off, Warning, Error;
+    }
 }

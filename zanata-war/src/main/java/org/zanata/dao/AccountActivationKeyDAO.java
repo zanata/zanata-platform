@@ -27,21 +27,18 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.model.HAccountActivationKey;
 
-
 @Name("accountActivationKeyDAO")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
-public class AccountActivationKeyDAO extends AbstractDAOImpl<HAccountActivationKey, String>
-{
+public class AccountActivationKeyDAO extends
+        AbstractDAOImpl<HAccountActivationKey, String> {
 
-   public AccountActivationKeyDAO()
-   {
-      super(HAccountActivationKey.class);
-   }
+    public AccountActivationKeyDAO() {
+        super(HAccountActivationKey.class);
+    }
 
-   public AccountActivationKeyDAO(Session session)
-   {
-      super(HAccountActivationKey.class, session);
-   }
+    public AccountActivationKeyDAO(Session session) {
+        super(HAccountActivationKey.class, session);
+    }
 
 }

@@ -27,27 +27,26 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Test(groups = "unit-tests")
-public class UpdateGlossaryTermHandlerTest
-{
-   private UpdateGlossaryTermHandler handler;
-   @Mock
-   private ZanataIdentity identity;
-   @Mock
-   private GlossaryDAO glossaryDAO;
-   @Mock
-   private LocaleService localeServiceImpl;
-   private HGlossaryEntry hGlossaryEntry;
-   private HLocale targetHLocale = new HLocale(LocaleId.DE);
-   private HLocale srcLocale = new HLocale(LocaleId.EN_US);
+public class UpdateGlossaryTermHandlerTest {
+    private UpdateGlossaryTermHandler handler;
+    @Mock
+    private ZanataIdentity identity;
+    @Mock
+    private GlossaryDAO glossaryDAO;
+    @Mock
+    private LocaleService localeServiceImpl;
+    private HGlossaryEntry hGlossaryEntry;
+    private HLocale targetHLocale = new HLocale(LocaleId.DE);
+    private HLocale srcLocale = new HLocale(LocaleId.EN_US);
 
-   @BeforeMethod
-   public void setUp() throws Exception
-   {
-      MockitoAnnotations.initMocks(this);
-      // @formatter:off
+    @BeforeMethod
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        // @formatter:off
       handler = SeamAutowire.instance()
             .use("identity", identity)
             .use("glossaryDAO", glossaryDAO)
@@ -55,65 +54,99 @@ public class UpdateGlossaryTermHandlerTest
             .ignoreNonResolvable()
             .autowire(UpdateGlossaryTermHandler.class);
       // @formatter:on
-      hGlossaryEntry = new HGlossaryEntry();
-   }
+        hGlossaryEntry = new HGlossaryEntry();
+    }
 
-   @Test
-   public void testExecute() throws Exception
-   {
-      GlossaryDetails selectedDetailEntry = new GlossaryDetails("source", "target", null, null, "sourceRef", srcLocale.getLocaleId(), targetHLocale.getLocaleId(), 0, new Date());
-      UpdateGlossaryTermAction action = new UpdateGlossaryTermAction(selectedDetailEntry, "new target", Lists.newArrayList("new comment"));
-      when(glossaryDAO.getEntryBySrcLocaleAndContent(selectedDetailEntry.getSrcLocale(), selectedDetailEntry.getSource())).thenReturn(hGlossaryEntry);
-      when(localeServiceImpl.getByLocaleId(selectedDetailEntry.getTargetLocale())).thenReturn(targetHLocale);
-      HGlossaryTerm targetTerm = new HGlossaryTerm("target");
-      targetTerm.setVersionNum(0);
-      targetTerm.setLastChanged(new Date());
-      hGlossaryEntry.getGlossaryTerms().put(targetHLocale, targetTerm);
-      hGlossaryEntry.setSrcLocale(srcLocale);
-      hGlossaryEntry.getGlossaryTerms().put(srcLocale, new HGlossaryTerm("source")); //source term
-      when(glossaryDAO.makePersistent(hGlossaryEntry)).thenReturn(hGlossaryEntry);
+    @Test
+    public void testExecute() throws Exception {
+        GlossaryDetails selectedDetailEntry =
+                new GlossaryDetails("source", "target", null, null,
+                        "sourceRef", srcLocale.getLocaleId(),
+                        targetHLocale.getLocaleId(), 0, new Date());
+        UpdateGlossaryTermAction action =
+                new UpdateGlossaryTermAction(selectedDetailEntry, "new target",
+                        Lists.newArrayList("new comment"));
+        when(
+                glossaryDAO.getEntryBySrcLocaleAndContent(
+                        selectedDetailEntry.getSrcLocale(),
+                        selectedDetailEntry.getSource())).thenReturn(
+                hGlossaryEntry);
+        when(
+                localeServiceImpl.getByLocaleId(selectedDetailEntry
+                        .getTargetLocale())).thenReturn(targetHLocale);
+        HGlossaryTerm targetTerm = new HGlossaryTerm("target");
+        targetTerm.setVersionNum(0);
+        targetTerm.setLastChanged(new Date());
+        hGlossaryEntry.getGlossaryTerms().put(targetHLocale, targetTerm);
+        hGlossaryEntry.setSrcLocale(srcLocale);
+        hGlossaryEntry.getGlossaryTerms().put(srcLocale,
+                new HGlossaryTerm("source")); // source term
+        when(glossaryDAO.makePersistent(hGlossaryEntry)).thenReturn(
+                hGlossaryEntry);
 
-      UpdateGlossaryTermResult result = handler.execute(action, null);
+        UpdateGlossaryTermResult result = handler.execute(action, null);
 
-      verify(identity).checkLoggedIn();
-      assertThat(targetTerm.getComments(), Matchers.hasSize(1));
-      assertThat(targetTerm.getComments().get(0).getComment(), Matchers.equalTo("new comment"));
-      assertThat(targetTerm.getContent(), Matchers.equalTo("new target"));
-      verify(glossaryDAO).makePersistent(hGlossaryEntry);
-      verify(glossaryDAO).flush();
-      assertThat(result.getDetail().getTarget(), Matchers.equalTo("new target"));
+        verify(identity).checkLoggedIn();
+        assertThat(targetTerm.getComments(), Matchers.hasSize(1));
+        assertThat(targetTerm.getComments().get(0).getComment(),
+                Matchers.equalTo("new comment"));
+        assertThat(targetTerm.getContent(), Matchers.equalTo("new target"));
+        verify(glossaryDAO).makePersistent(hGlossaryEntry);
+        verify(glossaryDAO).flush();
+        assertThat(result.getDetail().getTarget(),
+                Matchers.equalTo("new target"));
 
-   }
+    }
 
-   @Test(expectedExceptions = ActionException.class)
-   public void testExecuteWhenTargetTermNotFound() throws Exception
-   {
-      GlossaryDetails selectedDetailEntry = new GlossaryDetails("source", "target", null, null, "sourceRef", srcLocale.getLocaleId(), targetHLocale.getLocaleId(), 0, new Date());
-      UpdateGlossaryTermAction action = new UpdateGlossaryTermAction(selectedDetailEntry, "new target", Lists.newArrayList("new comment"));
-      when(glossaryDAO.getEntryBySrcLocaleAndContent(selectedDetailEntry.getSrcLocale(), selectedDetailEntry.getSource())).thenReturn(hGlossaryEntry);
-      when(localeServiceImpl.getByLocaleId(selectedDetailEntry.getTargetLocale())).thenReturn(targetHLocale);
-      when(glossaryDAO.makePersistent(hGlossaryEntry)).thenReturn(hGlossaryEntry);
+    @Test(expectedExceptions = ActionException.class)
+    public void testExecuteWhenTargetTermNotFound() throws Exception {
+        GlossaryDetails selectedDetailEntry =
+                new GlossaryDetails("source", "target", null, null,
+                        "sourceRef", srcLocale.getLocaleId(),
+                        targetHLocale.getLocaleId(), 0, new Date());
+        UpdateGlossaryTermAction action =
+                new UpdateGlossaryTermAction(selectedDetailEntry, "new target",
+                        Lists.newArrayList("new comment"));
+        when(
+                glossaryDAO.getEntryBySrcLocaleAndContent(
+                        selectedDetailEntry.getSrcLocale(),
+                        selectedDetailEntry.getSource())).thenReturn(
+                hGlossaryEntry);
+        when(
+                localeServiceImpl.getByLocaleId(selectedDetailEntry
+                        .getTargetLocale())).thenReturn(targetHLocale);
+        when(glossaryDAO.makePersistent(hGlossaryEntry)).thenReturn(
+                hGlossaryEntry);
 
-      handler.execute(action, null);
-   }
+        handler.execute(action, null);
+    }
 
-   @Test(expectedExceptions = ActionException.class)
-   public void testExecuteWhenTargetTermVersionNotMatch() throws Exception
-   {
-      GlossaryDetails selectedDetailEntry = new GlossaryDetails("source", "target", null, null, "sourceRef", srcLocale.getLocaleId(), targetHLocale.getLocaleId(), 0, new Date());
-      UpdateGlossaryTermAction action = new UpdateGlossaryTermAction(selectedDetailEntry, "new target", Lists.newArrayList("new comment"));
-      when(glossaryDAO.getEntryBySrcLocaleAndContent(selectedDetailEntry.getSrcLocale(), selectedDetailEntry.getSource())).thenReturn(hGlossaryEntry);
-      when(localeServiceImpl.getByLocaleId(selectedDetailEntry.getTargetLocale())).thenReturn(targetHLocale);
-      HGlossaryTerm targetTerm = new HGlossaryTerm("target");
-      targetTerm.setVersionNum(1); //different version
-      hGlossaryEntry.getGlossaryTerms().put(targetHLocale, targetTerm);
+    @Test(expectedExceptions = ActionException.class)
+    public void testExecuteWhenTargetTermVersionNotMatch() throws Exception {
+        GlossaryDetails selectedDetailEntry =
+                new GlossaryDetails("source", "target", null, null,
+                        "sourceRef", srcLocale.getLocaleId(),
+                        targetHLocale.getLocaleId(), 0, new Date());
+        UpdateGlossaryTermAction action =
+                new UpdateGlossaryTermAction(selectedDetailEntry, "new target",
+                        Lists.newArrayList("new comment"));
+        when(
+                glossaryDAO.getEntryBySrcLocaleAndContent(
+                        selectedDetailEntry.getSrcLocale(),
+                        selectedDetailEntry.getSource())).thenReturn(
+                hGlossaryEntry);
+        when(
+                localeServiceImpl.getByLocaleId(selectedDetailEntry
+                        .getTargetLocale())).thenReturn(targetHLocale);
+        HGlossaryTerm targetTerm = new HGlossaryTerm("target");
+        targetTerm.setVersionNum(1); // different version
+        hGlossaryEntry.getGlossaryTerms().put(targetHLocale, targetTerm);
 
-      handler.execute(action, null);
-   }
+        handler.execute(action, null);
+    }
 
-   @Test
-   public void testRollback() throws Exception
-   {
-      handler.rollback(null, null, null);
-   }
+    @Test
+    public void testRollback() throws Exception {
+        handler.rollback(null, null, null);
+    }
 }

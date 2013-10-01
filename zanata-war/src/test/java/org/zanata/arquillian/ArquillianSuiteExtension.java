@@ -34,147 +34,127 @@ import org.jboss.arquillian.test.spi.event.suite.BeforeClass;
  *
  * Taken from: https://gist.github.com/aslakknutsen/3975179
  */
-public class ArquillianSuiteExtension implements LoadableExtension
-{
+public class ArquillianSuiteExtension implements LoadableExtension {
 
-   public void register(ExtensionBuilder builder)
-   {
-      builder.observer(SuiteDeployer.class).observer(Seam2ExtendedConfigurationProducer.class);
-   }
+    public void register(ExtensionBuilder builder) {
+        builder.observer(SuiteDeployer.class).observer(
+                Seam2ExtendedConfigurationProducer.class);
+    }
 
-   public static class SuiteDeployer
-   {
+    public static class SuiteDeployer {
 
-      private Class<?> deploymentClass;
-      private DeploymentScenario suiteDeploymentScenario;
+        private Class<?> deploymentClass;
+        private DeploymentScenario suiteDeploymentScenario;
 
-      @Inject
-      @ClassScoped
-      private InstanceProducer<DeploymentScenario> classDeploymentScenario;
+        @Inject
+        @ClassScoped
+        private InstanceProducer<DeploymentScenario> classDeploymentScenario;
 
-      @Inject
-      private Event<DeploymentEvent> deploymentEvent;
+        @Inject
+        private Event<DeploymentEvent> deploymentEvent;
 
-      @Inject
-      private Event<GenerateDeployment> generateDeploymentEvent;
+        @Inject
+        private Event<GenerateDeployment> generateDeploymentEvent;
 
-      @Inject
-      // Active some form of ClassContext around our deployments due to
-      // assumption bug in AS7 extension.
-      private Instance<ClassContext> classContext;
+        @Inject
+        // Active some form of ClassContext around our deployments due to
+        // assumption bug in AS7 extension.
+        private Instance<ClassContext> classContext;
 
-      public void startup(@Observes(precedence = -100)
-      ManagerStarted event, ArquillianDescriptor descriptor)
-      {
-         deploymentClass = getDeploymentClass(descriptor);
+        public void startup(@Observes(precedence = -100) ManagerStarted event,
+                ArquillianDescriptor descriptor) {
+            deploymentClass = getDeploymentClass(descriptor);
 
-         executeInClassScope(new Callable<Void>()
-         {
-            public Void call() throws Exception
-            {
-               generateDeploymentEvent.fire(new GenerateDeployment(new TestClass(deploymentClass)));
-               suiteDeploymentScenario = classDeploymentScenario.get();
-               return null;
+            executeInClassScope(new Callable<Void>() {
+                public Void call() throws Exception {
+                    generateDeploymentEvent.fire(new GenerateDeployment(
+                            new TestClass(deploymentClass)));
+                    suiteDeploymentScenario = classDeploymentScenario.get();
+                    return null;
+                }
+            });
+        }
+
+        public void deploy(@Observes final AfterStart event,
+                final ContainerRegistry registry) {
+            executeInClassScope(new Callable<Void>() {
+                public Void call() throws Exception {
+                    for (Deployment d : suiteDeploymentScenario.deployments()) {
+                        deploymentEvent.fire(new DeployDeployment(
+                                findContainer(registry,
+                                        event.getDeployableContainer()), d));
+                    }
+                    return null;
+                }
+            });
+        }
+
+        public void undeploy(@Observes final BeforeStop event,
+                final ContainerRegistry registry) {
+            executeInClassScope(new Callable<Void>() {
+                public Void call() throws Exception {
+                    for (Deployment d : suiteDeploymentScenario.deployments()) {
+                        deploymentEvent.fire(new UnDeployDeployment(
+                                findContainer(registry,
+                                        event.getDeployableContainer()), d));
+                    }
+                    return null;
+                }
+            });
+        }
+
+        public void overrideBefore(@Observes EventContext<BeforeClass> event) {
+            // Don't continue TestClass's BeforeClass context as normal.
+            // No DeploymentGeneration or Deploy will take place.
+
+            classDeploymentScenario.set(suiteDeploymentScenario);
+        }
+
+        public void overrideAfter(@Observes EventContext<AfterClass> event) {
+            // Don't continue TestClass's AfterClass context as normal.
+            // No UnDeploy will take place.
+        }
+
+        private void executeInClassScope(Callable<Void> call) {
+            try {
+                classContext.get().activate(deploymentClass);
+                call.call();
+            } catch (Exception e) {
+                throw new RuntimeException("Could not invoke operation", e);
+            } finally {
+                classContext.get().deactivate();
             }
-         });
-      }
+        }
 
-      public void deploy(@Observes
-      final AfterStart event, final ContainerRegistry registry)
-      {
-         executeInClassScope(new Callable<Void>()
-         {
-            public Void call() throws Exception
-            {
-               for (Deployment d : suiteDeploymentScenario.deployments())
-               {
-                  deploymentEvent.fire(new DeployDeployment(findContainer(registry, event.getDeployableContainer()), d));
-               }
-               return null;
+        private Container findContainer(ContainerRegistry registry,
+                DeployableContainer<?> deployable) {
+            for (Container container : registry.getContainers()) {
+                if (container.getDeployableContainer() == deployable) {
+                    return container;
+                }
             }
-         });
-      }
+            return null;
+        }
 
-      public void undeploy(@Observes
-      final BeforeStop event, final ContainerRegistry registry)
-      {
-         executeInClassScope(new Callable<Void>()
-         {
-            public Void call() throws Exception
-            {
-               for (Deployment d : suiteDeploymentScenario.deployments())
-               {
-                  deploymentEvent.fire(new UnDeployDeployment(findContainer(registry, event.getDeployableContainer()), d));
-               }
-               return null;
+        private Class<?> getDeploymentClass(ArquillianDescriptor descriptor) {
+            if (descriptor == null) {
+                throw new IllegalArgumentException(
+                        "Descriptor must be specified");
             }
-         });
-      }
-
-      public void overrideBefore(@Observes
-      EventContext<BeforeClass> event)
-      {
-         // Don't continue TestClass's BeforeClass context as normal.
-         // No DeploymentGeneration or Deploy will take place.
-
-         classDeploymentScenario.set(suiteDeploymentScenario);
-      }
-
-      public void overrideAfter(@Observes
-      EventContext<AfterClass> event)
-      {
-         // Don't continue TestClass's AfterClass context as normal.
-         // No UnDeploy will take place.
-      }
-
-      private void executeInClassScope(Callable<Void> call)
-      {
-         try
-         {
-            classContext.get().activate(deploymentClass);
-            call.call();
-         }
-         catch (Exception e)
-         {
-            throw new RuntimeException("Could not invoke operation", e);
-         }
-         finally
-         {
-            classContext.get().deactivate();
-         }
-      }
-
-      private Container findContainer(ContainerRegistry registry, DeployableContainer<?> deployable)
-      {
-         for (Container container : registry.getContainers())
-         {
-            if (container.getDeployableContainer() == deployable)
-            {
-               return container;
+            String className =
+                    descriptor.extension("suite").getExtensionProperties()
+                            .get("deploymentClass");
+            if (className == null) {
+                throw new IllegalArgumentException(
+                        "A extension element with property deploymentClass must be specified in arquillian.xml");
             }
-         }
-         return null;
-      }
-
-      private Class<?> getDeploymentClass(ArquillianDescriptor descriptor)
-      {
-         if (descriptor == null)
-         {
-            throw new IllegalArgumentException("Descriptor must be specified");
-         }
-         String className = descriptor.extension("suite").getExtensionProperties().get("deploymentClass");
-         if (className == null)
-         {
-            throw new IllegalArgumentException("A extension element with property deploymentClass must be specified in arquillian.xml");
-         }
-         try
-         {
-            return Class.forName(className);
-         }
-         catch (ClassNotFoundException e)
-         {
-            throw new RuntimeException("Could not load defined deploymentClass: " + className, e);
-         }
-      }
-   }
+            try {
+                return Class.forName(className);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(
+                        "Could not load defined deploymentClass: " + className,
+                        e);
+            }
+        }
+    }
 }

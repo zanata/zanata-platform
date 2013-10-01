@@ -29,32 +29,26 @@ import org.zanata.webtrans.shared.validation.AbstractValidationAction;
 
 import com.google.common.base.CharMatcher;
 
-public class TabValidation extends AbstractValidationAction
-{
-   public TabValidation(ValidationId id, ValidationMessages messages)
-   {
-      super(id, messages.tabValidatorDesc(), messages);
-   }
+public class TabValidation extends AbstractValidationAction {
+    public TabValidation(ValidationId id, ValidationMessages messages) {
+        super(id, messages.tabValidatorDesc(), messages);
+    }
 
-   @Override
-   public List<String> doValidate(String source, String target)
-   {
-      ArrayList<String> errors = new ArrayList<String>();
+    @Override
+    public List<String> doValidate(String source, String target) {
+        ArrayList<String> errors = new ArrayList<String>();
 
-      @edu.umd.cs.findbugs.annotations.SuppressWarnings("GBU_GUAVA_BETA_CLASS_USAGE")
-      CharMatcher tabs = CharMatcher.is('\t');
-      int sourceTabs = tabs.countIn(source);
-      int targetTabs = tabs.countIn(target);
-      if (sourceTabs > targetTabs)
-      {
-         errors.add(getMessages().targetHasFewerTabs(sourceTabs, targetTabs));
-      }
-      else if (targetTabs > sourceTabs)
-      {
-         errors.add(getMessages().targetHasMoreTabs(sourceTabs, targetTabs));
-      }
+        @edu.umd.cs.findbugs.annotations.SuppressWarnings("GBU_GUAVA_BETA_CLASS_USAGE")
+        CharMatcher tabs = CharMatcher.is('\t');
+        int sourceTabs = tabs.countIn(source);
+        int targetTabs = tabs.countIn(target);
+        if (sourceTabs > targetTabs) {
+            errors.add(getMessages().targetHasFewerTabs(sourceTabs, targetTabs));
+        } else if (targetTabs > sourceTabs) {
+            errors.add(getMessages().targetHasMoreTabs(sourceTabs, targetTabs));
+        }
 
-      return errors;
-   }
+        return errors;
+    }
 
 }

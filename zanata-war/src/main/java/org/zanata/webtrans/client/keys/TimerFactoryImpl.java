@@ -21,23 +21,20 @@
 package org.zanata.webtrans.client.keys;
 
 /**
- * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
+ * @author David Mason, <a
+ *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  * @see TimerFactory
  */
-public class TimerFactoryImpl implements TimerFactory
-{
+public class TimerFactoryImpl implements TimerFactory {
 
-   @Override
-   public Timer create(final TimedAction timedAction)
-   {
-      return new Timer(new com.google.gwt.user.client.Timer()
-      {
-         @Override
-         public void run()
-         {
-            timedAction.run();
-         }
-      });
-   }
+    @Override
+    public Timer create(final TimedAction timedAction) {
+        return new Timer(new com.google.gwt.user.client.Timer() {
+            @Override
+            public void run() {
+                timedAction.run();
+            }
+        });
+    }
 
 }

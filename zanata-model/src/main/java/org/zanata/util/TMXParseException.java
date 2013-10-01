@@ -21,29 +21,24 @@
 
 package org.zanata.util;
 
-
-
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class TMXParseException extends Exception
-{
-   private static final long serialVersionUID = 1L;
+public class TMXParseException extends Exception {
+    private static final long serialVersionUID = 1L;
 
-   public TMXParseException(String string)
-   {
-      super(string);
-   }
+    public TMXParseException(String string) {
+        super(string);
+    }
 
-   public TMXParseException(String msg, Throwable e)
-   {
-      super(msg, e);
-   }
+    public TMXParseException(String msg, Throwable e) {
+        super(msg, e);
+    }
 
-   public TMXParseException(Throwable e)
-   {
-      super(e);
-   }
+    public TMXParseException(Throwable e) {
+        super(e);
+    }
 
 }

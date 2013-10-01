@@ -13,63 +13,51 @@ import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
+class ResourceTestUtil {
 
-class ResourceTestUtil
-{
+    static void clearRevs(AbstractResourceMeta doc) {
+        doc.setRevision(null);
 
-   static void clearRevs(AbstractResourceMeta doc)
-   {
-      doc.setRevision(null);
-   
-      if (doc instanceof Resource)
-      {
-         Resource res = (Resource) doc;
-         final List<TextFlow> textFlows = res.getTextFlows();
-         if (textFlows != null)
-            for (TextFlow tf : textFlows)
-            {
-               tf.setRevision(null);
+        if (doc instanceof Resource) {
+            Resource res = (Resource) doc;
+            final List<TextFlow> textFlows = res.getTextFlows();
+            if (textFlows != null)
+                for (TextFlow tf : textFlows) {
+                    tf.setRevision(null);
+                }
+        }
+
+    }
+
+    static void clearRevs(TranslationsResource doc) {
+        doc.setRevision(null);
+        for (TextFlowTarget tft : doc.getTextFlowTargets()) {
+            tft.setRevision(null);
+            tft.setTextFlowRevision(null);
+        }
+    }
+
+    static void clearPoTargetHeaders(TranslationsResource... docs) {
+        for (TranslationsResource doc : docs) {
+            Iterator<TranslationsResourceExtension> it =
+                    doc.getExtensions(true).iterator();
+            while (it.hasNext()) {
+                if (it.next() instanceof PoTargetHeader) {
+                    it.remove();
+                }
             }
-      }
-   
-   }
+        }
+    }
 
-   static void clearRevs(TranslationsResource doc)
-   {
-      doc.setRevision(null);
-      for (TextFlowTarget tft : doc.getTextFlowTargets())
-      {
-         tft.setRevision(null);
-         tft.setTextFlowRevision(null);
-      }
-   }
-   
-   static void clearPoTargetHeaders(TranslationsResource ... docs)
-   {
-      for( TranslationsResource doc : docs )
-      {
-         Iterator<TranslationsResourceExtension> it = doc.getExtensions(true).iterator();
-         while( it.hasNext() )
-         {
-            if( it.next() instanceof PoTargetHeader )
-            {
-               it.remove();
-            }
-         }
-      }
-   }
-   
-   static void addPoHeader( Resource res, String key, String value )
-   {
-      PoHeader poHeader = res.getExtensions(true).findByType(PoHeader.class);
-      
-      if( poHeader == null )
-      {
-         poHeader = new PoHeader();
-         res.getExtensions().add(poHeader);
-      }
-      
-      poHeader.getEntries().add( new HeaderEntry(key, value) );
-   }
+    static void addPoHeader(Resource res, String key, String value) {
+        PoHeader poHeader = res.getExtensions(true).findByType(PoHeader.class);
+
+        if (poHeader == null) {
+            poHeader = new PoHeader();
+            res.getExtensions().add(poHeader);
+        }
+
+        poHeader.getEntries().add(new HeaderEntry(key, value));
+    }
 
 }

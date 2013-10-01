@@ -29,66 +29,78 @@ import org.zanata.webtrans.shared.rpc.TransMemoryDetailsList;
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(GetTransMemoryDetailsAction.class)
 @Slf4j
-public class GetTransMemoryDetailsHandler extends AbstractActionHandler<GetTransMemoryDetailsAction, TransMemoryDetailsList>
-{
-   @In
-   private TextFlowDAO textFlowDAO;
+public class GetTransMemoryDetailsHandler
+        extends
+        AbstractActionHandler<GetTransMemoryDetailsAction, TransMemoryDetailsList> {
+    @In
+    private TextFlowDAO textFlowDAO;
 
-   @In
-   private LocaleService localeServiceImpl;
+    @In
+    private LocaleService localeServiceImpl;
 
-   @In
-   private ZanataIdentity identity;
+    @In
+    private ZanataIdentity identity;
 
-   @Override
-   public TransMemoryDetailsList execute(GetTransMemoryDetailsAction action, ExecutionContext context) throws ActionException
-   {
-      identity.checkLoggedIn();
-      LocaleId locale = action.getWorkspaceId().getLocaleId();
-      HLocale hLocale;
-      try
-      {
-         hLocale = localeServiceImpl.validateLocaleByProjectIteration(locale, action.getWorkspaceId().getProjectIterationId().getProjectSlug(), action.getWorkspaceId().getProjectIterationId().getIterationSlug());
-      }
-      catch (ZanataServiceException e)
-      {
-         throw new ActionException(e);
-      }
+    @Override
+    public TransMemoryDetailsList execute(GetTransMemoryDetailsAction action,
+            ExecutionContext context) throws ActionException {
+        identity.checkLoggedIn();
+        LocaleId locale = action.getWorkspaceId().getLocaleId();
+        HLocale hLocale;
+        try {
+            hLocale =
+                    localeServiceImpl
+                            .validateLocaleByProjectIteration(locale, action
+                                    .getWorkspaceId().getProjectIterationId()
+                                    .getProjectSlug(), action.getWorkspaceId()
+                                    .getProjectIterationId().getIterationSlug());
+        } catch (ZanataServiceException e) {
+            throw new ActionException(e);
+        }
 
-      ArrayList<Long> textFlowIds = action.getTransUnitIdList();
-      log.info("Fetching TM details for TFs {} in locale {}", textFlowIds, locale);
-      List<HTextFlow> textFlows = textFlowDAO.findByIdList(textFlowIds);
-      ArrayList<TransMemoryDetails> items = new ArrayList<TransMemoryDetails>(textFlows.size());
+        ArrayList<Long> textFlowIds = action.getTransUnitIdList();
+        log.info("Fetching TM details for TFs {} in locale {}", textFlowIds,
+                locale);
+        List<HTextFlow> textFlows = textFlowDAO.findByIdList(textFlowIds);
+        ArrayList<TransMemoryDetails> items =
+                new ArrayList<TransMemoryDetails>(textFlows.size());
 
-      for (HTextFlow tf : textFlows)
-      {
-         TransMemoryDetails memoryDetails = getTransMemoryDetail(hLocale, tf);
-         items.add(memoryDetails);
-      }
+        for (HTextFlow tf : textFlows) {
+            TransMemoryDetails memoryDetails =
+                    getTransMemoryDetail(hLocale, tf);
+            items.add(memoryDetails);
+        }
 
-      log.info("Returning {} TM details", items.size());
-      return new TransMemoryDetailsList(items);
-   }
+        log.info("Returning {} TM details", items.size());
+        return new TransMemoryDetailsList(items);
+    }
 
-   protected TransMemoryDetails getTransMemoryDetail(HLocale hLocale, HTextFlow tf)
-   {
-      HTextFlowTarget tft = tf.getTargets().get(hLocale.getId());
-      HSimpleComment sourceComment = tf.getComment();
-      HSimpleComment targetComment = tft.getComment();
-      String docId = tf.getDocument().getDocId();
-      String iterationName = tf.getDocument().getProjectIteration().getSlug();
-      String projectName = tf.getDocument().getProjectIteration().getProject().getName();
-      String msgContext = (tf.getPotEntryData() == null) ? null : tf.getPotEntryData().getContext();
-      String username  = null;
-      if(tft.getLastModifiedBy() != null && tft.getLastModifiedBy().hasAccount())
-      {
-         username = tft.getLastModifiedBy().getAccount().getUsername();
-      }
-      return new TransMemoryDetails(HSimpleComment.toString(sourceComment), HSimpleComment.toString(targetComment), projectName, iterationName, docId, tf.getResId(), msgContext, tft.getState(), username, tft.getLastChanged());
-   }
+    protected TransMemoryDetails getTransMemoryDetail(HLocale hLocale,
+            HTextFlow tf) {
+        HTextFlowTarget tft = tf.getTargets().get(hLocale.getId());
+        HSimpleComment sourceComment = tf.getComment();
+        HSimpleComment targetComment = tft.getComment();
+        String docId = tf.getDocument().getDocId();
+        String iterationName = tf.getDocument().getProjectIteration().getSlug();
+        String projectName =
+                tf.getDocument().getProjectIteration().getProject().getName();
+        String msgContext =
+                (tf.getPotEntryData() == null) ? null : tf.getPotEntryData()
+                        .getContext();
+        String username = null;
+        if (tft.getLastModifiedBy() != null
+                && tft.getLastModifiedBy().hasAccount()) {
+            username = tft.getLastModifiedBy().getAccount().getUsername();
+        }
+        return new TransMemoryDetails(HSimpleComment.toString(sourceComment),
+                HSimpleComment.toString(targetComment), projectName,
+                iterationName, docId, tf.getResId(), msgContext,
+                tft.getState(), username, tft.getLastChanged());
+    }
 
-   @Override
-   public void rollback(GetTransMemoryDetailsAction action, TransMemoryDetailsList result, ExecutionContext context) throws ActionException
-   {
-   }
+    @Override
+    public void rollback(GetTransMemoryDetailsAction action,
+            TransMemoryDetailsList result, ExecutionContext context)
+            throws ActionException {
+    }
 }

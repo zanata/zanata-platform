@@ -26,55 +26,49 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.Select;
 import org.zanata.page.BasePage;
 
-public class CreateProjectPage extends BasePage
-{
-   @FindBy(id = "projectForm:slugField:slug")
-   private WebElement projectIdField;
+public class CreateProjectPage extends BasePage {
+    @FindBy(id = "projectForm:slugField:slug")
+    private WebElement projectIdField;
 
-   @FindBy(id = "projectForm:nameField:name")
-   private WebElement projectNameField;
+    @FindBy(id = "projectForm:nameField:name")
+    private WebElement projectNameField;
 
-   @FindBy(id = "projectForm:descriptionField:description")
-   private WebElement descriptionField;
+    @FindBy(id = "projectForm:descriptionField:description")
+    private WebElement descriptionField;
 
-   @FindBy(id = "projectForm:homeContentField:homeContentTextArea")
-   private WebElement homeContentTextArea;
+    @FindBy(id = "projectForm:homeContentField:homeContentTextArea")
+    private WebElement homeContentTextArea;
 
-   @FindBy(id = "projectForm:projectTypeField:selectField")
-   private WebElement projectTypeSelect;
+    @FindBy(id = "projectForm:projectTypeField:selectField")
+    private WebElement projectTypeSelect;
 
-   @FindBy(id = "projectForm:statusField:selectField")
-   private WebElement statusSelection;
+    @FindBy(id = "projectForm:statusField:selectField")
+    private WebElement statusSelection;
 
-   @FindBy(id = "projectForm:save")
-   private WebElement saveButton;
+    @FindBy(id = "projectForm:save")
+    private WebElement saveButton;
 
-   public CreateProjectPage(final WebDriver driver)
-   {
-      super(driver);
-   }
+    public CreateProjectPage(final WebDriver driver) {
+        super(driver);
+    }
 
-   public CreateProjectPage inputProjectId(String projectId)
-   {
-      projectIdField.sendKeys(projectId);
-      return this;
-   }
+    public CreateProjectPage inputProjectId(String projectId) {
+        projectIdField.sendKeys(projectId);
+        return this;
+    }
 
-   public CreateProjectPage inputProjectName(String projectName)
-   {
-      projectNameField.sendKeys(projectName);
-      return this;
-   }
+    public CreateProjectPage inputProjectName(String projectName) {
+        projectNameField.sendKeys(projectName);
+        return this;
+    }
 
-   public CreateProjectPage selectStatus(String status)
-   {
-      new Select(statusSelection).selectByVisibleText(status);
-      return this;
-   }
+    public CreateProjectPage selectStatus(String status) {
+        new Select(statusSelection).selectByVisibleText(status);
+        return this;
+    }
 
-   public ProjectPage saveProject()
-   {
-      clickAndCheckErrors(saveButton);
-      return new ProjectPage(getDriver());
-   }
+    public ProjectPage saveProject() {
+        clickAndCheckErrors(saveButton);
+        return new ProjectPage(getDriver());
+    }
 }

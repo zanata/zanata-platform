@@ -27,52 +27,47 @@ import org.zanata.page.BasePage;
 import org.zanata.page.utility.HomePage;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-public class EditProfilePage extends BasePage
-{
-   @FindBy(id = "editProfileForm:nameField:name")
-   private WebElement nameField;
+public class EditProfilePage extends BasePage {
+    @FindBy(id = "editProfileForm:nameField:name")
+    private WebElement nameField;
 
-   @FindBy(id = "editProfileForm:usernameField:username")
-   private WebElement usernameField;
+    @FindBy(id = "editProfileForm:usernameField:username")
+    private WebElement usernameField;
 
-   @FindBy(id = "editProfileForm:emailField:email")
-   private WebElement emailField;
+    @FindBy(id = "editProfileForm:emailField:email")
+    private WebElement emailField;
 
-   @FindBy(id = "editProfileForm:saveButton")
-   private WebElement saveButton;
+    @FindBy(id = "editProfileForm:saveButton")
+    private WebElement saveButton;
 
-   @FindBy(id = "editProfileForm:cancelButton")
-   private WebElement cancelButton;
+    @FindBy(id = "editProfileForm:cancelButton")
+    private WebElement cancelButton;
 
-   public EditProfilePage(WebDriver driver)
-   {
-      super(driver);
-   }
+    public EditProfilePage(WebDriver driver) {
+        super(driver);
+    }
 
-   public EditProfilePage enterName(String name)
-   {
-      nameField.sendKeys(name);
-      return new EditProfilePage(getDriver());
-   }
+    public EditProfilePage enterName(String name) {
+        nameField.sendKeys(name);
+        return new EditProfilePage(getDriver());
+    }
 
-   public EditProfilePage enterUserName(String userName)
-   {
-      usernameField.sendKeys(userName);
-      return new EditProfilePage(getDriver());
-   }
+    public EditProfilePage enterUserName(String userName) {
+        usernameField.sendKeys(userName);
+        return new EditProfilePage(getDriver());
+    }
 
-   public EditProfilePage enterEmail(String email)
-   {
-      emailField.sendKeys(email);
-      return new EditProfilePage(getDriver());
-   }
+    public EditProfilePage enterEmail(String email) {
+        emailField.sendKeys(email);
+        return new EditProfilePage(getDriver());
+    }
 
-   public HomePage clickSave()
-   {
-      saveButton.click();
-      return new HomePage(getDriver());
-   }
+    public HomePage clickSave() {
+        saveButton.click();
+        return new HomePage(getDriver());
+    }
 
 }

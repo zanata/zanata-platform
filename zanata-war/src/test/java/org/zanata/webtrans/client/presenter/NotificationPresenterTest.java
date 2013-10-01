@@ -20,138 +20,131 @@ import org.zanata.webtrans.client.view.NotificationDisplay;
 import com.allen_sauer.gwt.log.client.Log;
 
 @Test(groups = { "unit-tests" })
-public class NotificationPresenterTest
-{
-   private NotificationPresenter notificationPresenter;
+public class NotificationPresenterTest {
+    private NotificationPresenter notificationPresenter;
 
-   @Mock
-   private NotificationLabelListener mockListener;
-   @Mock
-   private NotificationDisplay mockDisplay;
-   @Mock
-   private EventBus mockEventBus;
+    @Mock
+    private NotificationLabelListener mockListener;
+    @Mock
+    private NotificationDisplay mockDisplay;
+    @Mock
+    private EventBus mockEventBus;
 
-   private final static int MSG_TO_KEEP = 100;
-   private int currentLogLevel;
+    private final static int MSG_TO_KEEP = 100;
+    private int currentLogLevel;
 
-   @BeforeClass
-   void turnLogOff()
-   {
-      currentLogLevel = Log.getCurrentLogLevel();
-      Log.setCurrentLogLevel(Log.LOG_LEVEL_OFF);
-   }
+    @BeforeClass
+    void turnLogOff() {
+        currentLogLevel = Log.getCurrentLogLevel();
+        Log.setCurrentLogLevel(Log.LOG_LEVEL_OFF);
+    }
 
-   @AfterClass
-   void turnLogOn()
-   {
-      Log.setCurrentLogLevel(currentLogLevel);
-   }
+    @AfterClass
+    void turnLogOn() {
+        Log.setCurrentLogLevel(currentLogLevel);
+    }
 
-   @BeforeMethod
-   void beforeMethod()
-   {
-      MockitoAnnotations.initMocks(this);
-      notificationPresenter = new NotificationPresenter(mockDisplay, mockEventBus);
-   }
+    @BeforeMethod
+    void beforeMethod() {
+        MockitoAnnotations.initMocks(this);
+        notificationPresenter =
+                new NotificationPresenter(mockDisplay, mockEventBus);
+    }
 
-   @Test
-   public void onBind()
-   {
-      notificationPresenter.bind();
-      
-      verify(mockDisplay).setMessagesToKeep(MSG_TO_KEEP);
-      verify(mockDisplay).setMessageOrder(DisplayOrder.ASCENDING);
-      verify(mockDisplay).setListener(notificationPresenter);
-   }
+    @Test
+    public void onBind() {
+        notificationPresenter.bind();
 
-   @Test
-   public void onClearClick()
-   {
-      int msgCount = 5;
-      
-      when(mockDisplay.getMessageCount()).thenReturn(msgCount);
-      
-      notificationPresenter.setNotificationListener(mockListener);
-      notificationPresenter.onClearClick();
+        verify(mockDisplay).setMessagesToKeep(MSG_TO_KEEP);
+        verify(mockDisplay).setMessageOrder(DisplayOrder.ASCENDING);
+        verify(mockDisplay).setListener(notificationPresenter);
+    }
 
-      verify(mockDisplay).clearMessages();
-      verify(mockListener).setNotificationLabel(msgCount, Severity.Info);
-   }
+    @Test
+    public void onClearClick() {
+        int msgCount = 5;
 
-   @Test
-   public void onNotificationInfo()
-   {
-      int msgCount = 5;
-      String msg = "Test message";
-      String summary = "Test summary";
-      Severity severity = Severity.Info;
-      
+        when(mockDisplay.getMessageCount()).thenReturn(msgCount);
 
-      NotificationEvent mockEvent = mock(NotificationEvent.class);
-      InlineLink mockInlineLink = mock(InlineLink.class);
+        notificationPresenter.setNotificationListener(mockListener);
+        notificationPresenter.onClearClick();
 
-      when(mockDisplay.getMessageCount()).thenReturn(msgCount);
-      when(mockEvent.getSeverity()).thenReturn(severity);
-      when(mockEvent.getMessage()).thenReturn(msg);
-      when(mockEvent.getSummary()).thenReturn(summary);
-      when(mockEvent.getInlineLink()).thenReturn(mockInlineLink);
+        verify(mockDisplay).clearMessages();
+        verify(mockListener).setNotificationLabel(msgCount, Severity.Info);
+    }
 
-      notificationPresenter.bind();
-      notificationPresenter.setNotificationListener(mockListener);
-      notificationPresenter.onNotification(mockEvent);
-      
-      verify(mockListener).setNotificationLabel(msgCount, severity);
-      verify(mockDisplay).appendMessage(severity, summary, msg, false, mockInlineLink);
-   }
+    @Test
+    public void onNotificationInfo() {
+        int msgCount = 5;
+        String msg = "Test message";
+        String summary = "Test summary";
+        Severity severity = Severity.Info;
 
-   @Test
-   public void onNotificationError()
-   {
-      int msgCount = 5;
-      String msg = "Test message";
-      String summary = "Test summary";
-      Severity severity = Severity.Error;
+        NotificationEvent mockEvent = mock(NotificationEvent.class);
+        InlineLink mockInlineLink = mock(InlineLink.class);
 
-      NotificationEvent mockEvent = mock(NotificationEvent.class);
-      InlineLink mockInlineLink = mock(InlineLink.class);
+        when(mockDisplay.getMessageCount()).thenReturn(msgCount);
+        when(mockEvent.getSeverity()).thenReturn(severity);
+        when(mockEvent.getMessage()).thenReturn(msg);
+        when(mockEvent.getSummary()).thenReturn(summary);
+        when(mockEvent.getInlineLink()).thenReturn(mockInlineLink);
 
-      when(mockDisplay.getMessageCount()).thenReturn(msgCount);
-      when(mockEvent.getSeverity()).thenReturn(severity);
-      when(mockEvent.getMessage()).thenReturn(msg);
-      when(mockEvent.getSummary()).thenReturn(summary);
-      when(mockEvent.getInlineLink()).thenReturn(mockInlineLink);
+        notificationPresenter.bind();
+        notificationPresenter.setNotificationListener(mockListener);
+        notificationPresenter.onNotification(mockEvent);
 
-      notificationPresenter.setNotificationListener(mockListener);
-      notificationPresenter.onNotification(mockEvent);
+        verify(mockListener).setNotificationLabel(msgCount, severity);
+        verify(mockDisplay).appendMessage(severity, summary, msg, false,
+                mockInlineLink);
+    }
 
-      verify(mockDisplay).appendMessage(severity, summary, msg, false, mockInlineLink);
-      verify(mockListener).showNotification();
-      verify(mockListener).setNotificationLabel(msgCount, severity);
-   }
+    @Test
+    public void onNotificationError() {
+        int msgCount = 5;
+        String msg = "Test message";
+        String summary = "Test summary";
+        Severity severity = Severity.Error;
 
-   @Test
-   public void onMsgCount()
-   {
-      int msgCount = 200;
-      String msg = "Test message";
-      String summary = "Msg summary";
-      Severity severity = Severity.Info;
+        NotificationEvent mockEvent = mock(NotificationEvent.class);
+        InlineLink mockInlineLink = mock(InlineLink.class);
 
-      NotificationEvent mockEvent = mock(NotificationEvent.class);
-      InlineLink mockInlineLink = mock(InlineLink.class);
+        when(mockDisplay.getMessageCount()).thenReturn(msgCount);
+        when(mockEvent.getSeverity()).thenReturn(severity);
+        when(mockEvent.getMessage()).thenReturn(msg);
+        when(mockEvent.getSummary()).thenReturn(summary);
+        when(mockEvent.getInlineLink()).thenReturn(mockInlineLink);
 
-      // when(mockDisplay.getMessageCount()).thenReturn(msgCount);
-      when(mockEvent.getSeverity()).thenReturn(severity);
-      when(mockEvent.getMessage()).thenReturn(msg);
-      when(mockEvent.getSummary()).thenReturn(summary);
-      when(mockEvent.getInlineLink()).thenReturn(mockInlineLink);
+        notificationPresenter.setNotificationListener(mockListener);
+        notificationPresenter.onNotification(mockEvent);
 
-      notificationPresenter.setNotificationListener(mockListener);
-      for (int i = 0; i < msgCount; i++)
-      {
-         notificationPresenter.onNotification(mockEvent);
-      }
+        verify(mockDisplay).appendMessage(severity, summary, msg, false,
+                mockInlineLink);
+        verify(mockListener).showNotification();
+        verify(mockListener).setNotificationLabel(msgCount, severity);
+    }
 
-      verify(mockDisplay, times(msgCount)).appendMessage(severity, summary, msg, false, mockInlineLink);
-   }
+    @Test
+    public void onMsgCount() {
+        int msgCount = 200;
+        String msg = "Test message";
+        String summary = "Msg summary";
+        Severity severity = Severity.Info;
+
+        NotificationEvent mockEvent = mock(NotificationEvent.class);
+        InlineLink mockInlineLink = mock(InlineLink.class);
+
+        // when(mockDisplay.getMessageCount()).thenReturn(msgCount);
+        when(mockEvent.getSeverity()).thenReturn(severity);
+        when(mockEvent.getMessage()).thenReturn(msg);
+        when(mockEvent.getSummary()).thenReturn(summary);
+        when(mockEvent.getInlineLink()).thenReturn(mockInlineLink);
+
+        notificationPresenter.setNotificationListener(mockListener);
+        for (int i = 0; i < msgCount; i++) {
+            notificationPresenter.onNotification(mockEvent);
+        }
+
+        verify(mockDisplay, times(msgCount)).appendMessage(severity, summary,
+                msg, false, mockInlineLink);
+    }
 }

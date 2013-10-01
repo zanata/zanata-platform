@@ -61,286 +61,270 @@ import com.google.common.base.Optional;
 // TODO damason: add thorough unit testing
 @Slf4j
 @Name("documentUploadUtil")
-public class DocumentUploadUtil
-{
+public class DocumentUploadUtil {
 
-   @In
-   private ZanataIdentity identity;
+    @In
+    private ZanataIdentity identity;
 
-   // TODO technical debt: use entityManager
-   @In
-   private Session session;
-   @In
-   private DocumentDAO documentDAO;
-   @In
-   private ProjectIterationDAO projectIterationDAO;
-   @In
-   private TranslationFileService translationFileServiceImpl;
-   @In("blobPersistService")
-   private UploadPartPersistService uploadPartPersistService;
-   @In private DocumentUploadDAO documentUploadDAO;
+    // TODO technical debt: use entityManager
+    @In
+    private Session session;
+    @In
+    private DocumentDAO documentDAO;
+    @In
+    private ProjectIterationDAO projectIterationDAO;
+    @In
+    private TranslationFileService translationFileServiceImpl;
+    @In("blobPersistService")
+    private UploadPartPersistService uploadPartPersistService;
+    @In
+    private DocumentUploadDAO documentUploadDAO;
 
-   // TODO damason: move all validation checks to separate class
-   public void failIfUploadNotValid(GlobalDocumentId id, DocumentFileUploadForm uploadForm)
-         throws ChunkUploadException
-   {
-      failIfNotLoggedIn();
-      failIfRequiredParametersNullOrEmpty(id, uploadForm);
-      failIfUploadPartIsOrphaned(id, uploadForm);
-      failIfDocumentTypeNotRecognized(uploadForm);
-      failIfVersionCannotAcceptUpload(id);
-   }
+    // TODO damason: move all validation checks to separate class
+    public void failIfUploadNotValid(GlobalDocumentId id,
+            DocumentFileUploadForm uploadForm) throws ChunkUploadException {
+        failIfNotLoggedIn();
+        failIfRequiredParametersNullOrEmpty(id, uploadForm);
+        failIfUploadPartIsOrphaned(id, uploadForm);
+        failIfDocumentTypeNotRecognized(uploadForm);
+        failIfVersionCannotAcceptUpload(id);
+    }
 
-   private void failIfNotLoggedIn() throws ChunkUploadException
-   {
-      if (!identity.isLoggedIn())
-      {
-         throw new ChunkUploadException(Status.UNAUTHORIZED, "Valid combination of username and " +
-               "api-key for this server were not included in the request.");
-      }
-   }
+    private void failIfNotLoggedIn() throws ChunkUploadException {
+        if (!identity.isLoggedIn()) {
+            throw new ChunkUploadException(
+                    Status.UNAUTHORIZED,
+                    "Valid combination of username and "
+                            + "api-key for this server were not included in the request.");
+        }
+    }
 
-   private static void failIfRequiredParametersNullOrEmpty(GlobalDocumentId id, DocumentFileUploadForm uploadForm)
-         throws ChunkUploadException
-   {
-      if (isNullOrEmpty(id.getDocId()))
-      {
-         throw new ChunkUploadException(Status.PRECONDITION_FAILED,
-               "Required query string parameter 'docId' was not found.");
-      }
+    private static void failIfRequiredParametersNullOrEmpty(
+            GlobalDocumentId id, DocumentFileUploadForm uploadForm)
+            throws ChunkUploadException {
+        if (isNullOrEmpty(id.getDocId())) {
+            throw new ChunkUploadException(Status.PRECONDITION_FAILED,
+                    "Required query string parameter 'docId' was not found.");
+        }
 
-      if (uploadForm.getFileStream() == null)
-      {
-         throw new ChunkUploadException(Status.PRECONDITION_FAILED,
-               "Required form parameter 'file' containing file content was not found.");
-      }
+        if (uploadForm.getFileStream() == null) {
+            throw new ChunkUploadException(Status.PRECONDITION_FAILED,
+                    "Required form parameter 'file' containing file content was not found.");
+        }
 
-      if (uploadForm.getFirst() == null || uploadForm.getLast() == null)
-      {
-         throw new ChunkUploadException(Status.PRECONDITION_FAILED,
-               "Form parameters 'first' and 'last' must both be provided.");
-      }
+        if (uploadForm.getFirst() == null || uploadForm.getLast() == null) {
+            throw new ChunkUploadException(Status.PRECONDITION_FAILED,
+                    "Form parameters 'first' and 'last' must both be provided.");
+        }
 
-      if (isNullOrEmpty(uploadForm.getFileType()))
-      {
-         throw new ChunkUploadException(Status.PRECONDITION_FAILED,
-               "Required form parameter 'type' was not found.");
-      }
+        if (isNullOrEmpty(uploadForm.getFileType())) {
+            throw new ChunkUploadException(Status.PRECONDITION_FAILED,
+                    "Required form parameter 'type' was not found.");
+        }
 
-      if (isNullOrEmpty(uploadForm.getHash()))
-      {
-         throw new ChunkUploadException(Status.PRECONDITION_FAILED,
-               "Required form parameter 'hash' was not found.");
-      }
-   }
+        if (isNullOrEmpty(uploadForm.getHash())) {
+            throw new ChunkUploadException(Status.PRECONDITION_FAILED,
+                    "Required form parameter 'hash' was not found.");
+        }
+    }
 
-   private void failIfUploadPartIsOrphaned(GlobalDocumentId id, DocumentFileUploadForm uploadForm)
-         throws ChunkUploadException
-   {
-      if (!uploadForm.getFirst())
-      {
-         failIfUploadIdNotValidAndMatching(id, uploadForm);
-      }
-   }
+    private void failIfUploadPartIsOrphaned(GlobalDocumentId id,
+            DocumentFileUploadForm uploadForm) throws ChunkUploadException {
+        if (!uploadForm.getFirst()) {
+            failIfUploadIdNotValidAndMatching(id, uploadForm);
+        }
+    }
 
-   private void failIfUploadIdNotValidAndMatching(GlobalDocumentId id, DocumentFileUploadForm uploadForm)
-         throws ChunkUploadException
-   {
-      if (uploadForm.getUploadId() == null)
-      {
-         throw new ChunkUploadException(Status.PRECONDITION_FAILED,
-               "Form parameter 'uploadId' must be provided when this is not the first part.");
-      }
+    private void failIfUploadIdNotValidAndMatching(GlobalDocumentId id,
+            DocumentFileUploadForm uploadForm) throws ChunkUploadException {
+        if (uploadForm.getUploadId() == null) {
+            throw new ChunkUploadException(Status.PRECONDITION_FAILED,
+                    "Form parameter 'uploadId' must be provided when this is not the first part.");
+        }
 
-      HDocumentUpload upload = documentUploadDAO.findById(uploadForm.getUploadId());
-      if (upload == null)
-      {
-         throw new ChunkUploadException(Status.PRECONDITION_FAILED,
-               "No incomplete uploads found for uploadId '" + uploadForm.getUploadId() + "'.");
-      }
-      if (!upload.getDocId().equals(id.getDocId()))
-      {
-         throw new ChunkUploadException(Status.PRECONDITION_FAILED,
-               "Supplied uploadId '" + uploadForm.getUploadId()
-                     + "' in request is not valid for document '" + id.getDocId() + "'.");
-      }
-   }
+        HDocumentUpload upload =
+                documentUploadDAO.findById(uploadForm.getUploadId());
+        if (upload == null) {
+            throw new ChunkUploadException(Status.PRECONDITION_FAILED,
+                    "No incomplete uploads found for uploadId '"
+                            + uploadForm.getUploadId() + "'.");
+        }
+        if (!upload.getDocId().equals(id.getDocId())) {
+            throw new ChunkUploadException(Status.PRECONDITION_FAILED,
+                    "Supplied uploadId '" + uploadForm.getUploadId()
+                            + "' in request is not valid for document '"
+                            + id.getDocId() + "'.");
+        }
+    }
 
-   private static void failIfDocumentTypeNotRecognized(DocumentFileUploadForm uploadForm)
-         throws ChunkUploadException
-   {
-      if (DocumentType.typeFor(uploadForm.getFileType()) == null)
-      {
-         throw new ChunkUploadException(Status.PRECONDITION_FAILED,
-               "Value '" + uploadForm.getFileType() + "' is not a recognized document type.");
-      }
-   }
+    private static void failIfDocumentTypeNotRecognized(
+            DocumentFileUploadForm uploadForm) throws ChunkUploadException {
+        if (DocumentType.typeFor(uploadForm.getFileType()) == null) {
+            throw new ChunkUploadException(Status.PRECONDITION_FAILED,
+                    "Value '" + uploadForm.getFileType()
+                            + "' is not a recognized document type.");
+        }
+    }
 
-   private void failIfVersionCannotAcceptUpload(GlobalDocumentId id) throws ChunkUploadException
-   {
-      HProjectIteration projectIteration = projectIterationDAO.getBySlug(id.getProjectSlug(), id.getVersionSlug());
-      if (projectIteration == null)
-      {
-         throw new ChunkUploadException(Status.NOT_FOUND,
-               "The specified project-version \"" + id.getProjectSlug() + ":" + id.getVersionSlug() +
-                     "\" does not exist on this server.");
-      }
+    private void failIfVersionCannotAcceptUpload(GlobalDocumentId id)
+            throws ChunkUploadException {
+        HProjectIteration projectIteration =
+                projectIterationDAO.getBySlug(id.getProjectSlug(),
+                        id.getVersionSlug());
+        if (projectIteration == null) {
+            throw new ChunkUploadException(Status.NOT_FOUND,
+                    "The specified project-version \"" + id.getProjectSlug()
+                            + ":" + id.getVersionSlug()
+                            + "\" does not exist on this server.");
+        }
 
-      if (projectIteration.getProject().getStatus() != EntityStatus.ACTIVE)
-      {
-         throw new ChunkUploadException(Status.FORBIDDEN,
-               "The project \"" + id.getProjectSlug() + "\" is not active. Document upload is not allowed.");
-      }
+        if (projectIteration.getProject().getStatus() != EntityStatus.ACTIVE) {
+            throw new ChunkUploadException(Status.FORBIDDEN, "The project \""
+                    + id.getProjectSlug()
+                    + "\" is not active. Document upload is not allowed.");
+        }
 
-      if (projectIteration.getStatus() != EntityStatus.ACTIVE)
-      {
-         throw new ChunkUploadException(Status.FORBIDDEN,
-               "The project-version \"" + id.getProjectSlug() + ":" + id.getVersionSlug() +
-                     "\" is not active. Document upload is not allowed.");
-      }
-   }
+        if (projectIteration.getStatus() != EntityStatus.ACTIVE) {
+            throw new ChunkUploadException(
+                    Status.FORBIDDEN,
+                    "The project-version \""
+                            + id.getProjectSlug()
+                            + ":"
+                            + id.getVersionSlug()
+                            + "\" is not active. Document upload is not allowed.");
+        }
+    }
 
-   protected HDocumentUpload saveUploadPart(GlobalDocumentId id,
-         HLocale locale, DocumentFileUploadForm uploadForm)
-   {
-      HDocumentUpload upload;
-      if (uploadForm.getFirst())
-      {
-         upload = createMultipartUpload(id, uploadForm, locale);
-      }
-      else
-      {
-         upload = documentUploadDAO.findById(uploadForm.getUploadId());
-      }
-      saveUploadPart(uploadForm, upload);
-      return upload;
-   }
+    protected HDocumentUpload saveUploadPart(GlobalDocumentId id,
+            HLocale locale, DocumentFileUploadForm uploadForm) {
+        HDocumentUpload upload;
+        if (uploadForm.getFirst()) {
+            upload = createMultipartUpload(id, uploadForm, locale);
+        } else {
+            upload = documentUploadDAO.findById(uploadForm.getUploadId());
+        }
+        saveUploadPart(uploadForm, upload);
+        return upload;
+    }
 
-   private HDocumentUpload createMultipartUpload(GlobalDocumentId id, DocumentFileUploadForm uploadForm, HLocale locale)
-   {
-      HProjectIteration projectIteration = projectIterationDAO.getBySlug(id.getProjectSlug(), id.getVersionSlug());
-      HDocumentUpload newUpload = new HDocumentUpload();
-      newUpload.setProjectIteration(projectIteration);
-      newUpload.setDocId(id.getDocId());
-      newUpload.setType(DocumentType.typeFor(uploadForm.getFileType()));
-      // locale intentionally left null for source
-      newUpload.setLocale(locale);
-      newUpload.setContentHash(uploadForm.getHash());
-      return newUpload;
-   }
+    private HDocumentUpload createMultipartUpload(GlobalDocumentId id,
+            DocumentFileUploadForm uploadForm, HLocale locale) {
+        HProjectIteration projectIteration =
+                projectIterationDAO.getBySlug(id.getProjectSlug(),
+                        id.getVersionSlug());
+        HDocumentUpload newUpload = new HDocumentUpload();
+        newUpload.setProjectIteration(projectIteration);
+        newUpload.setDocId(id.getDocId());
+        newUpload.setType(DocumentType.typeFor(uploadForm.getFileType()));
+        // locale intentionally left null for source
+        newUpload.setLocale(locale);
+        newUpload.setContentHash(uploadForm.getHash());
+        return newUpload;
+    }
 
-   private void saveUploadPart(DocumentFileUploadForm uploadForm, HDocumentUpload upload)
-   {
-      InputStream contentStream = uploadForm.getFileStream();
-      int contentLength = uploadForm.getSize().intValue();
-      HDocumentUploadPart newPart = uploadPartPersistService.newUploadPartFromStream(contentStream, contentLength);
-      upload.getParts().add(newPart);
-      session.saveOrUpdate(upload);
-      session.flush();
-   }
+    private void saveUploadPart(DocumentFileUploadForm uploadForm,
+            HDocumentUpload upload) {
+        InputStream contentStream = uploadForm.getFileStream();
+        int contentLength = uploadForm.getSize().intValue();
+        HDocumentUploadPart newPart =
+                uploadPartPersistService.newUploadPartFromStream(contentStream,
+                        contentLength);
+        upload.getParts().add(newPart);
+        session.saveOrUpdate(upload);
+        session.flush();
+    }
 
-   protected static boolean isSinglePart(DocumentFileUploadForm uploadForm)
-   {
-      return uploadForm.getFirst() && uploadForm.getLast();
-   }
+    protected static boolean isSinglePart(DocumentFileUploadForm uploadForm) {
+        return uploadForm.getFirst() && uploadForm.getLast();
+    }
 
-   public File combineToTempFileAndDeleteUploadRecord(HDocumentUpload upload, InputStream finalPart)
-   {
-      File tempFile;
-      try
-      {
-         tempFile = combineToTempFile(upload, finalPart);
-      }
-      catch (HashMismatchException e)
-      {
-         throw new ChunkUploadException(Status.CONFLICT,
-               "MD5 hash \"" + e.getExpectedHash() + "\" sent with initial request does not match" +
-                     " server-generated hash of combined parts \"" + e.getGeneratedHash() +
-                     "\". Upload aborted. Retry upload from first part.");
-      }
-      catch (SQLException e)
-      {
-         throw new ChunkUploadException(Status.INTERNAL_SERVER_ERROR,
-               "Error while retrieving document upload part contents", e);
-      }
-      finally
-      {
-         // no more need for upload
-         session.delete(upload);
-      }
-      return tempFile;
-   }
+    public File combineToTempFileAndDeleteUploadRecord(HDocumentUpload upload,
+            InputStream finalPart) {
+        File tempFile;
+        try {
+            tempFile = combineToTempFile(upload, finalPart);
+        } catch (HashMismatchException e) {
+            throw new ChunkUploadException(Status.CONFLICT, "MD5 hash \""
+                    + e.getExpectedHash()
+                    + "\" sent with initial request does not match"
+                    + " server-generated hash of combined parts \""
+                    + e.getGeneratedHash()
+                    + "\". Upload aborted. Retry upload from first part.");
+        } catch (SQLException e) {
+            throw new ChunkUploadException(Status.INTERNAL_SERVER_ERROR,
+                    "Error while retrieving document upload part contents", e);
+        } finally {
+            // no more need for upload
+            session.delete(upload);
+        }
+        return tempFile;
+    }
 
-   private File combineToTempFile(HDocumentUpload upload, InputStream finalPart) throws SQLException
-   {
-      Vector<InputStream> partStreams = new Vector<InputStream>();
-      for (HDocumentUploadPart part : upload.getParts())
-      {
-         partStreams.add(part.getContent().getBinaryStream());
-      }
-      partStreams.add(finalPart);
+    private File
+            combineToTempFile(HDocumentUpload upload, InputStream finalPart)
+                    throws SQLException {
+        Vector<InputStream> partStreams = new Vector<InputStream>();
+        for (HDocumentUploadPart part : upload.getParts()) {
+            partStreams.add(part.getContent().getBinaryStream());
+        }
+        partStreams.add(finalPart);
 
-      MessageDigest md;
-      try
-      {
-         md = MessageDigest.getInstance("MD5");
-      }
-      catch (NoSuchAlgorithmException e)
-      {
-         log.error("MD5 algorithm not available.", e);
-         throw new RuntimeException(e);
-      }
-      InputStream combinedParts = new SequenceInputStream(partStreams.elements());
-      combinedParts = new DigestInputStream(combinedParts, md);
-      File tempFile = translationFileServiceImpl.persistToTempFile(combinedParts);
-      String md5hash = new String(Hex.encodeHex(md.digest()));
-      if (!md5hash.equals(upload.getContentHash()))
-      {
-         throw new HashMismatchException("MD5 hashes do not match.\n", upload.getContentHash(), md5hash);
-      }
-      return tempFile;
-   }
+        MessageDigest md;
+        try {
+            md = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            log.error("MD5 algorithm not available.", e);
+            throw new RuntimeException(e);
+        }
+        InputStream combinedParts =
+                new SequenceInputStream(partStreams.elements());
+        combinedParts = new DigestInputStream(combinedParts, md);
+        File tempFile =
+                translationFileServiceImpl.persistToTempFile(combinedParts);
+        String md5hash = new String(Hex.encodeHex(md.digest()));
+        if (!md5hash.equals(upload.getContentHash())) {
+            throw new HashMismatchException("MD5 hashes do not match.\n",
+                    upload.getContentHash(), md5hash);
+        }
+        return tempFile;
+    }
 
-   protected static InputStream getInputStream(Optional<File> tempFile, DocumentFileUploadForm uploadForm) throws FileNotFoundException
-   {
-      if (tempFile.isPresent())
-      {
-         return new FileInputStream(tempFile.get());
-      }
-      else
-      {
-         return uploadForm.getFileStream();
-      }
-   }
+    protected static InputStream getInputStream(Optional<File> tempFile,
+            DocumentFileUploadForm uploadForm) throws FileNotFoundException {
+        if (tempFile.isPresent()) {
+            return new FileInputStream(tempFile.get());
+        } else {
+            return uploadForm.getFileStream();
+        }
+    }
 
-   // TODO damason: add getByGlobalDocumentId(GlobalDocumentId) to documentDAO, use it, and inline this method
-   protected boolean isNewDocument(GlobalDocumentId id)
-   {
-      return documentDAO.getByProjectIterationAndDocId(id.getProjectSlug(), id.getVersionSlug(), id.getDocId()) == null;
-   }
+    // TODO damason: add getByGlobalDocumentId(GlobalDocumentId) to documentDAO,
+    // use it, and inline this method
+    protected boolean isNewDocument(GlobalDocumentId id) {
+        return documentDAO.getByProjectIterationAndDocId(id.getProjectSlug(),
+                id.getVersionSlug(), id.getDocId()) == null;
+    }
 
-   protected File persistTempFileFromUpload(DocumentFileUploadForm uploadForm)
-   {
-      File tempFile;
-      try
-      {
-         MessageDigest md = MessageDigest.getInstance("MD5");
-         InputStream fileContents = new DigestInputStream(uploadForm.getFileStream(), md);
-         tempFile = translationFileServiceImpl.persistToTempFile(fileContents);
-         String md5hash = new String(Hex.encodeHex(md.digest()));
-         if (!md5hash.equals(uploadForm.getHash()))
-         {
-            throw new ChunkUploadException(Status.CONFLICT,
-                  "MD5 hash \"" + uploadForm.getHash() + "\" sent with request does not match " +
-                        "server-generated hash. Aborted upload operation.");
-         }
-      }
-      catch (NoSuchAlgorithmException e)
-      {
-         throw new ChunkUploadException(Status.INTERNAL_SERVER_ERROR,
-               "MD5 hash algorithm not available", e);
-      }
-      return tempFile;
-   }
+    protected File persistTempFileFromUpload(DocumentFileUploadForm uploadForm) {
+        File tempFile;
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            InputStream fileContents =
+                    new DigestInputStream(uploadForm.getFileStream(), md);
+            tempFile =
+                    translationFileServiceImpl.persistToTempFile(fileContents);
+            String md5hash = new String(Hex.encodeHex(md.digest()));
+            if (!md5hash.equals(uploadForm.getHash())) {
+                throw new ChunkUploadException(Status.CONFLICT, "MD5 hash \""
+                        + uploadForm.getHash()
+                        + "\" sent with request does not match "
+                        + "server-generated hash. Aborted upload operation.");
+            }
+        } catch (NoSuchAlgorithmException e) {
+            throw new ChunkUploadException(Status.INTERNAL_SERVER_ERROR,
+                    "MD5 hash algorithm not available", e);
+        }
+        return tempFile;
+    }
 
 }

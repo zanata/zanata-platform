@@ -43,102 +43,101 @@ import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  */
-public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener
-{
-   public static String PATH_HEADER = "path";
-   public static String DOC_HEADER = "doc";
-   public static String STATS_HEADER = "stats";
-   public static String COMPLETE_HEADER = "complete";
-   public static String INCOMPLETE_HEADER = "incomplete";
-   public static String REMAINING_HEADER = "remaining";
-   public static String LAST_UPLOAD_HEADER = "lastUpload";
-   public static String LAST_TRANSLATED_HEADER = "lastTranslated";
+public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener {
+    public static String PATH_HEADER = "path";
+    public static String DOC_HEADER = "doc";
+    public static String STATS_HEADER = "stats";
+    public static String COMPLETE_HEADER = "complete";
+    public static String INCOMPLETE_HEADER = "incomplete";
+    public static String REMAINING_HEADER = "remaining";
+    public static String LAST_UPLOAD_HEADER = "lastUpload";
+    public static String LAST_TRANSLATED_HEADER = "lastTranslated";
 
-   public static final String STATS_OPTION_WORDS = "Words";
-   public static final String STATS_OPTION_MESSAGE = "Message";
+    public static final String STATS_OPTION_WORDS = "Words";
+    public static final String STATS_OPTION_MESSAGE = "Message";
 
-   String getSelectedStatsOption();
+    String getSelectedStatsOption();
 
-   void setListener(Listener documentListPresenter);
+    void setListener(Listener documentListPresenter);
 
-   void updateFilter(boolean docFilterCaseSensitive, boolean docFilterExact, String docFilterText);
+    void updateFilter(boolean docFilterCaseSensitive, boolean docFilterExact,
+            String docFilterText);
 
-   interface Listener
-   {
-      void statsOptionChange();
+    interface Listener {
+        void statsOptionChange();
 
-      void fireCaseSensitiveToken(boolean value);
+        void fireCaseSensitiveToken(boolean value);
 
-      void fireExactSearchToken(boolean value);
+        void fireExactSearchToken(boolean value);
 
-      void fireFilterToken(String value);
+        void fireFilterToken(String value);
 
-      void fireDocumentSelection(DocumentInfo docInfo);
+        void fireDocumentSelection(DocumentInfo docInfo);
 
-      void downloadAllFiles();
+        void downloadAllFiles();
 
-      void showUploadDialog(DocumentInfo docInfo);
+        void showUploadDialog(DocumentInfo docInfo);
 
-      void cancelDownloadAllFiles();
+        void cancelDownloadAllFiles();
 
-      void cancelFileUpload();
+        void cancelFileUpload();
 
-      void onFileUploadComplete(SubmitCompleteEvent event);
+        void onFileUploadComplete(SubmitCompleteEvent event);
 
-      void onUploadFile();
+        void onUploadFile();
 
-      void updateDownloadFileProgress();
+        void updateDownloadFileProgress();
 
-      void sortList(String header, boolean asc);
+        void sortList(String header, boolean asc);
 
-      void pagerValueChanged(Integer value);
-   }
+        void pagerValueChanged(Integer value);
+    }
 
-   void setLayout(String layout);
+    void setLayout(String layout);
 
-   void hideConfirmation();
+    void hideConfirmation();
 
-   void updateFileDownloadProgress(int currentProgress, int maxProgress);
+    void updateFileDownloadProgress(int currentProgress, int maxProgress);
 
-   void setDownloadInProgress(boolean inProgress);
+    void setDownloadInProgress(boolean inProgress);
 
-   void setAndShowFilesDownloadLink(String url);
+    void setAndShowFilesDownloadLink(String url);
 
-   InlineLink getDownloadAllFilesInlineLink(String url);
+    InlineLink getDownloadAllFilesInlineLink(String url);
 
-   void showUploadDialog(DocumentInfo info, WorkspaceId workspaceId);
+    void showUploadDialog(DocumentInfo info, WorkspaceId workspaceId);
 
-   void closeFileUpload();
+    void closeFileUpload();
 
-   String getSelectedUploadFileName();
+    String getSelectedUploadFileName();
 
-   void submitUploadForm();
+    void submitUploadForm();
 
-   void startGetDownloadStatus(int periodMillis);
+    void startGetDownloadStatus(int periodMillis);
 
-   void stopGetDownloadStatus();
+    void stopGetDownloadStatus();
 
-   void setDownloadZipButtonText(String text);
+    void setDownloadZipButtonText(String text);
 
-   void setDownloadZipButtonTitle(String title);
+    void setDownloadZipButtonTitle(String title);
 
-   void setEnableDownloadZip(boolean enabled);
+    void setEnableDownloadZip(boolean enabled);
 
-   void showLoading(boolean showLoading);
+    void showLoading(boolean showLoading);
 
-   HashMap<DocumentId, Integer> buildContent(List<DocumentNode> nodes);
+    HashMap<DocumentId, Integer> buildContent(List<DocumentNode> nodes);
 
-   void updateStats(int row, ContainerTranslationStatistics stats);
+    void updateStats(int row, ContainerTranslationStatistics stats);
 
-   void setStatsFilters(Integer row);
+    void setStatsFilters(Integer row);
 
-   HasPager getPageNavigation();
+    HasPager getPageNavigation();
 
-   void setStatsFilters(String option);
+    void setStatsFilters(String option);
 
-   void showRowLoading(int row);
+    void showRowLoading(int row);
 
-   void updateRowHasError(int row, DocValidationStatus status);
+    void updateRowHasError(int row, DocValidationStatus status);
 
-   void updateLastTranslated(int intValue, AuditInfo lastTranslated);
+    void updateLastTranslated(int intValue, AuditInfo lastTranslated);
 }

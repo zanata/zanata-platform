@@ -1,40 +1,40 @@
 <?xml version="1.0"?>
 
-<dataset> 
-	<Activity/>
-    <HAccount/>
-    <HAccountActivationKey/>
-    <HAccountMembership/>
-    <HAccountOption/>
-    <HAccountResetPasswordKey/>
-    <HAccountRole/>
-    <HAccountRoleGroup/>
-    <HApplicationConfiguration/>
-    <HDocument/>
-    <HDocumentHistory/>
-    <HGlossaryEntry/>
-    <HGlossaryTerm/>
-    <HLocale/>
-    <HLocale_Member/>
-    <HPerson/>
-    <HPoHeader/>
-    <HPoTargetHeader/>
-    <HPotEntryData/>
-    <HProject/>
-    <HProjectIteration/>
-    <HProject_Maintainer/>
-    <HRoleAssignmentRule/>
-    <HSimpleComment/>
-    <HTermComment/>
-    <HTextFlow/>
-    <HTextFlowContentHistory/>
-    <HTextFlowHistory/>
-    <HTextFlowTarget/>
-    <HTextFlowTargetContentHistory/>
-    <HTextFlowTargetHistory/>
-    <HTextFlowTargetReviewComment/>
-    <TransMemory_Metadata/>
-    <TransMemory/>
-    <TransMemoryUnit/>
-    <TransMemoryUnitVariant/>
+<dataset>
+  <Activity />
+  <HAccount />
+  <HAccountActivationKey />
+  <HAccountMembership />
+  <HAccountOption />
+  <HAccountResetPasswordKey />
+  <HAccountRole />
+  <HAccountRoleGroup />
+  <HApplicationConfiguration />
+  <HDocument />
+  <HDocumentHistory />
+  <HGlossaryEntry />
+  <HGlossaryTerm />
+  <HLocale />
+  <HLocale_Member />
+  <HPerson />
+  <HPoHeader />
+  <HPoTargetHeader />
+  <HPotEntryData />
+  <HProject />
+  <HProjectIteration />
+  <HProject_Maintainer />
+  <HRoleAssignmentRule />
+  <HSimpleComment />
+  <HTermComment />
+  <HTextFlow />
+  <HTextFlowContentHistory />
+  <HTextFlowHistory />
+  <HTextFlowTarget />
+  <HTextFlowTargetContentHistory />
+  <HTextFlowTargetHistory />
+  <HTextFlowTargetReviewComment />
+  <TransMemory_Metadata />
+  <TransMemory />
+  <TransMemoryUnit />
+  <TransMemoryUnitVariant />
 </dataset>

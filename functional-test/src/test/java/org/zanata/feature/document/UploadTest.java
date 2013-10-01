@@ -1,4 +1,4 @@
- /*
+/*
  * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
@@ -20,205 +20,213 @@
  */
 package org.zanata.feature.document;
 
- import org.hamcrest.Matchers;
- import org.junit.Before;
- import org.junit.Ignore;
- import org.junit.Rule;
- import org.junit.Test;
- import org.junit.experimental.categories.Category;
- import org.zanata.feature.BasicAcceptanceTest;
- import org.zanata.feature.DetailedTest;
- import org.zanata.page.projects.ProjectSourceDocumentsPage;
- import org.zanata.util.PropertiesHolder;
- import org.zanata.util.ResetDatabaseRule;
- import org.zanata.util.TestFileGenerator;
- import org.zanata.workflow.BasicWorkFlow;
- import org.zanata.workflow.LoginWorkFlow;
+import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.zanata.feature.BasicAcceptanceTest;
+import org.zanata.feature.DetailedTest;
+import org.zanata.page.projects.ProjectSourceDocumentsPage;
+import org.zanata.util.PropertiesHolder;
+import org.zanata.util.ResetDatabaseRule;
+import org.zanata.util.TestFileGenerator;
+import org.zanata.workflow.BasicWorkFlow;
+import org.zanata.workflow.LoginWorkFlow;
 
- import java.io.File;
+import java.io.File;
 
- import static org.hamcrest.MatcherAssert.assertThat;
- import static org.zanata.util.FunctionalTestHelper.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.zanata.util.FunctionalTestHelper.*;
 
- /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+/**
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
- @Category(DetailedTest.class)
-public class UploadTest
-{
-   @Rule
-   public ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule(ResetDatabaseRule.Config.WithData);
-   private TestFileGenerator testFileGenerator = new TestFileGenerator();
-   private String documentStorageDirectory;
+@Category(DetailedTest.class)
+public class UploadTest {
+    @Rule
+    public ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule(
+            ResetDatabaseRule.Config.WithData);
+    private TestFileGenerator testFileGenerator = new TestFileGenerator();
+    private String documentStorageDirectory;
 
-   @Before
-   public void before()
-   {
-      new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
-      documentStorageDirectory = PropertiesHolder.getProperty("document.storage.directory")
-            .concat(File.separator)
-            .concat("documents")
-            .concat(File.separator);
-      assumeFalse("", new File(documentStorageDirectory).exists());
-   }
+    @Before
+    public void before() {
+        new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
+        documentStorageDirectory =
+                PropertiesHolder.getProperty("document.storage.directory")
+                        .concat(File.separator).concat("documents")
+                        .concat(File.separator);
+        assumeFalse("", new File(documentStorageDirectory).exists());
+    }
 
-   @Test
-   @Category(BasicAcceptanceTest.class)
-   public void uploadedDocumentIsInFilesystem()
-   {
-      File originalFile = testFileGenerator.generateTestFileWithContent(
-            "uploadedDocumentIsInFilesystem", ".txt", "This is a test file");
-      String testFileName = originalFile.getName();
-      String successfullyUploaded = "Document file " +testFileName+ " uploaded.";
+    @Test
+    @Category(BasicAcceptanceTest.class)
+    public void uploadedDocumentIsInFilesystem() {
+        File originalFile =
+                testFileGenerator.generateTestFileWithContent(
+                        "uploadedDocumentIsInFilesystem", ".txt",
+                        "This is a test file");
+        String testFileName = originalFile.getName();
+        String successfullyUploaded =
+                "Document file " + testFileName + " uploaded.";
 
-      ProjectSourceDocumentsPage projectSourceDocumentsPage = new LoginWorkFlow().signIn("admin", "admin")
-            .goToProjects()
-            .goToProject("about fedora")
-            .goToVersion("master")
-            .goToSourceDocuments()
-            .pressUploadFileButton()
-            .enterFilePath(originalFile.getAbsolutePath())
-            .submitUpload();
+        ProjectSourceDocumentsPage projectSourceDocumentsPage =
+                new LoginWorkFlow().signIn("admin", "admin").goToProjects()
+                        .goToProject("about fedora").goToVersion("master")
+                        .goToSourceDocuments().pressUploadFileButton()
+                        .enterFilePath(originalFile.getAbsolutePath())
+                        .submitUpload();
 
-      // We should be able to assume the new file is the only file
-      assertThat("There is only one uploaded source file", new File(documentStorageDirectory).list().length,
-            Matchers.equalTo(1));
+        // We should be able to assume the new file is the only file
+        assertThat("There is only one uploaded source file", new File(
+                documentStorageDirectory).list().length, Matchers.equalTo(1));
 
-      File newlyCreatedFile = new File(documentStorageDirectory,
-            testFileGenerator.getFirstFileNameInDirectory(documentStorageDirectory));
+        File newlyCreatedFile =
+                new File(
+                        documentStorageDirectory,
+                        testFileGenerator
+                                .getFirstFileNameInDirectory(documentStorageDirectory));
 
-      assertThat("The contents of the file were also uploaded",
-            testFileGenerator.getTestFileContent(newlyCreatedFile),
-            Matchers.equalTo("This is a test file"));
+        assertThat("The contents of the file were also uploaded",
+                testFileGenerator.getTestFileContent(newlyCreatedFile),
+                Matchers.equalTo("This is a test file"));
 
-      assertThat("Document uploaded notification shows",
-            projectSourceDocumentsPage.getNotificationMessage(), Matchers.equalTo(successfullyUploaded));
-      assertThat("Document shows in table",
-            projectSourceDocumentsPage.sourceDocumentsContains(testFileName));
-   }
+        assertThat("Document uploaded notification shows",
+                projectSourceDocumentsPage.getNotificationMessage(),
+                Matchers.equalTo(successfullyUploaded));
+        assertThat("Document shows in table",
+                projectSourceDocumentsPage
+                        .sourceDocumentsContains(testFileName));
+    }
 
-   @Test
-   public void cancelFileUpload()
-   {
-      File cancelUploadFile = testFileGenerator.generateTestFileWithContent(
-            "cancelFileUpload", ".txt", "Cancel File Upload Test");
+    @Test
+    public void cancelFileUpload() {
+        File cancelUploadFile =
+                testFileGenerator.generateTestFileWithContent(
+                        "cancelFileUpload", ".txt", "Cancel File Upload Test");
 
-      ProjectSourceDocumentsPage projectSourceDocumentsPage = new LoginWorkFlow().signIn("admin", "admin")
-            .goToProjects()
-            .goToProject("about fedora")
-            .goToVersion("master")
-            .goToSourceDocuments()
-            .pressUploadFileButton()
-            .enterFilePath(cancelUploadFile.getAbsolutePath())
-            .cancelUpload();
+        ProjectSourceDocumentsPage projectSourceDocumentsPage =
+                new LoginWorkFlow().signIn("admin", "admin").goToProjects()
+                        .goToProject("about fedora").goToVersion("master")
+                        .goToSourceDocuments().pressUploadFileButton()
+                        .enterFilePath(cancelUploadFile.getAbsolutePath())
+                        .cancelUpload();
 
-      assertThat("Document does not show in table",
-            !projectSourceDocumentsPage.sourceDocumentsContains("cancelFileUpload.txt"));
-   }
+        assertThat("Document does not show in table",
+                !projectSourceDocumentsPage
+                        .sourceDocumentsContains("cancelFileUpload.txt"));
+    }
 
-   @Test
-   public void emptyFilenameUpload()
-   {
-      ProjectSourceDocumentsPage projectSourceDocumentsPage = new LoginWorkFlow().signIn("admin", "admin")
-            .goToProjects()
-            .goToProject("about fedora")
-            .goToVersion("master")
-            .goToSourceDocuments()
-            .pressUploadFileButton();
+    @Test
+    public void emptyFilenameUpload() {
+        ProjectSourceDocumentsPage projectSourceDocumentsPage =
+                new LoginWorkFlow().signIn("admin", "admin").goToProjects()
+                        .goToProject("about fedora").goToVersion("master")
+                        .goToSourceDocuments().pressUploadFileButton();
 
-      assertThat("The upload button is not available", !projectSourceDocumentsPage.canSubmitDocument());
-   }
+        assertThat("The upload button is not available",
+                !projectSourceDocumentsPage.canSubmitDocument());
+    }
 
-   // RHBZ990836
-   @Test(expected = RuntimeException.class)
-   public void handleReallyBigFile()
-   {
-      File bigFile = testFileGenerator.generateTestFileWithContent("bigFile", ".txt", "Big file content");
-      long fileSizeInMB = (1024 * 1024) * 500;
-      testFileGenerator.forceFileSize(bigFile, fileSizeInMB);
+    // RHBZ990836
+    @Test(expected = RuntimeException.class)
+    public void handleReallyBigFile() {
+        File bigFile =
+                testFileGenerator.generateTestFileWithContent("bigFile",
+                        ".txt", "Big file content");
+        long fileSizeInMB = (1024 * 1024) * 500;
+        testFileGenerator.forceFileSize(bigFile, fileSizeInMB);
 
-      assumeTrue("Data file " + bigFile + " is big", bigFile.length() == fileSizeInMB);
+        assumeTrue("Data file " + bigFile + " is big",
+                bigFile.length() == fileSizeInMB);
 
-      ProjectSourceDocumentsPage projectSourceDocumentsPage = new LoginWorkFlow().signIn("admin", "admin")
-            .goToProjects()
-            .goToProject("about fedora")
-            .goToVersion("master")
-            .goToSourceDocuments()
-            .pressUploadFileButton()
-            .enterFilePath(bigFile.getAbsolutePath())
-            .submitUpload();
+        ProjectSourceDocumentsPage projectSourceDocumentsPage =
+                new LoginWorkFlow().signIn("admin", "admin").goToProjects()
+                        .goToProject("about fedora").goToVersion("master")
+                        .goToSourceDocuments().pressUploadFileButton()
+                        .enterFilePath(bigFile.getAbsolutePath())
+                        .submitUpload();
 
-      projectSourceDocumentsPage.assertNoCriticalErrors();
-      // TODO: Verify graceful handling of scenario
-   }
+        projectSourceDocumentsPage.assertNoCriticalErrors();
+        // TODO: Verify graceful handling of scenario
+    }
 
-   // RHBZ993445
-   @Ignore("Fails on Chrome")
-   public void failOnInvalidFileUpload()
-   {
-      File noFile = testFileGenerator.generateTestFileWithContent(
-            "thereIsNoSpoon", ".txt", "This file will be deleted");
-      String successfullyUploaded = "Document file " + noFile.getName()+ " uploaded.";
+    // RHBZ993445
+    @Ignore("Fails on Chrome")
+    public void failOnInvalidFileUpload() {
+        File noFile =
+                testFileGenerator.generateTestFileWithContent("thereIsNoSpoon",
+                        ".txt", "This file will be deleted");
+        String successfullyUploaded =
+                "Document file " + noFile.getName() + " uploaded.";
 
-      ProjectSourceDocumentsPage projectSourceDocumentsPage = new LoginWorkFlow().signIn("admin", "admin")
-            .goToProjects()
-            .goToProject("about fedora")
-            .goToVersion("master")
-            .goToSourceDocuments()
-            .pressUploadFileButton()
-            .enterFilePath(noFile.getAbsolutePath());
+        ProjectSourceDocumentsPage projectSourceDocumentsPage =
+                new LoginWorkFlow().signIn("admin", "admin").goToProjects()
+                        .goToProject("about fedora").goToVersion("master")
+                        .goToSourceDocuments().pressUploadFileButton()
+                        .enterFilePath(noFile.getAbsolutePath());
 
-      assertThat("Data file " + noFile.getName() + " does not exists",
-            noFile.delete() && !noFile.exists());
+        assertThat("Data file " + noFile.getName() + " does not exists",
+                noFile.delete() && !noFile.exists());
 
-      projectSourceDocumentsPage = projectSourceDocumentsPage.submitUpload();
-      projectSourceDocumentsPage.assertNoCriticalErrors();
-      assertThat("Success message is not shown", projectSourceDocumentsPage.getNotificationMessage(),
-            Matchers.not(Matchers.equalTo(successfullyUploaded)));
-   }
+        projectSourceDocumentsPage = projectSourceDocumentsPage.submitUpload();
+        projectSourceDocumentsPage.assertNoCriticalErrors();
+        assertThat("Success message is not shown",
+                projectSourceDocumentsPage.getNotificationMessage(),
+                Matchers.not(Matchers.equalTo(successfullyUploaded)));
+    }
 
-   @Test
-   public void handleVeryLongFileNames()
-   {
-      File longFile = testFileGenerator.generateTestFileWithContent(
-            testFileGenerator.longFileName(), ".txt", "This filename is long");
-      String successfullyUploaded = "Document file "+longFile.getName()+" uploaded.";
+    @Test
+    public void handleVeryLongFileNames() {
+        File longFile =
+                testFileGenerator.generateTestFileWithContent(
+                        testFileGenerator.longFileName(), ".txt",
+                        "This filename is long");
+        String successfullyUploaded =
+                "Document file " + longFile.getName() + " uploaded.";
 
-      ProjectSourceDocumentsPage projectSourceDocumentsPage = new LoginWorkFlow().signIn("admin", "admin")
-            .goToProjects()
-            .goToProject("about fedora")
-            .goToVersion("master")
-            .goToSourceDocuments()
-            .pressUploadFileButton()
-            .enterFilePath(longFile.getAbsolutePath())
-            .submitUpload();
+        ProjectSourceDocumentsPage projectSourceDocumentsPage =
+                new LoginWorkFlow().signIn("admin", "admin").goToProjects()
+                        .goToProject("about fedora").goToVersion("master")
+                        .goToSourceDocuments().pressUploadFileButton()
+                        .enterFilePath(longFile.getAbsolutePath())
+                        .submitUpload();
 
-      assertThat("Document uploaded notification shows",
-            projectSourceDocumentsPage.getNotificationMessage(), Matchers.equalTo(successfullyUploaded));
-      assertThat("Document shows in table", projectSourceDocumentsPage.sourceDocumentsContains(longFile.getName()));
-   }
+        assertThat("Document uploaded notification shows",
+                projectSourceDocumentsPage.getNotificationMessage(),
+                Matchers.equalTo(successfullyUploaded));
+        assertThat("Document shows in table",
+                projectSourceDocumentsPage.sourceDocumentsContains(longFile
+                        .getName()));
+    }
 
-   @Test
-   public void emptyFile()
-   {
-      File emptyFile = testFileGenerator.generateTestFileWithContent("emptyFile", ".txt", "");
-      String successfullyUploaded = "Document file "+emptyFile.getName()+" uploaded.";
+    @Test
+    public void emptyFile() {
+        File emptyFile =
+                testFileGenerator.generateTestFileWithContent("emptyFile",
+                        ".txt", "");
+        String successfullyUploaded =
+                "Document file " + emptyFile.getName() + " uploaded.";
 
-      assumeTrue("File is empty", emptyFile.length() == 0);
+        assumeTrue("File is empty", emptyFile.length() == 0);
 
-      ProjectSourceDocumentsPage projectSourceDocumentsPage = new LoginWorkFlow().signIn("admin", "admin")
-            .goToProjects()
-            .goToProject("about fedora")
-            .goToVersion("master")
-            .goToSourceDocuments()
-            .pressUploadFileButton()
-            .enterFilePath(emptyFile.getAbsolutePath())
-            .submitUpload();
+        ProjectSourceDocumentsPage projectSourceDocumentsPage =
+                new LoginWorkFlow().signIn("admin", "admin").goToProjects()
+                        .goToProject("about fedora").goToVersion("master")
+                        .goToSourceDocuments().pressUploadFileButton()
+                        .enterFilePath(emptyFile.getAbsolutePath())
+                        .submitUpload();
 
-      assertThat("Data file emptyFile.txt still exists", emptyFile.exists());
-      assertThat("Document uploaded notification shows",
-            projectSourceDocumentsPage.getNotificationMessage(), Matchers.equalTo(successfullyUploaded));
-      assertThat("Document shows in table", projectSourceDocumentsPage.sourceDocumentsContains(emptyFile.getName()));
-   }
+        assertThat("Data file emptyFile.txt still exists", emptyFile.exists());
+        assertThat("Document uploaded notification shows",
+                projectSourceDocumentsPage.getNotificationMessage(),
+                Matchers.equalTo(successfullyUploaded));
+        assertThat("Document shows in table",
+                projectSourceDocumentsPage.sourceDocumentsContains(emptyFile
+                        .getName()));
+    }
 
 }

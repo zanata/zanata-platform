@@ -35,38 +35,38 @@ import org.zanata.page.utility.DashboardPage;
 import org.zanata.workflow.LoginWorkFlow;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @RunWith(ConcordionRunner.class)
-@Extensions({ScreenshotExtension.class, TimestampFormatterExtension.class, CustomResourceExtension.class})
+@Extensions({ ScreenshotExtension.class, TimestampFormatterExtension.class,
+        CustomResourceExtension.class })
 @Category(ConcordionTest.class)
-public class TranslatorJoinsLanguageTeamTest
-{
-   private DashboardPage dashboardPage;
-   private ManageLanguagePage manageLanguagePage;
-   private ManageLanguageTeamMemberPage manageLanguageTeamMemberPage;
+public class TranslatorJoinsLanguageTeamTest {
+    private DashboardPage dashboardPage;
+    private ManageLanguagePage manageLanguagePage;
+    private ManageLanguageTeamMemberPage manageLanguageTeamMemberPage;
 
-   @Before
-   public void beforeMethod()
-   {
-      dashboardPage = new LoginWorkFlow().signIn("admin", "admin");
-   }
+    @Before
+    public void beforeMethod() {
+        dashboardPage = new LoginWorkFlow().signIn("admin", "admin");
+    }
 
-   public void goToManageLanguagePage()
-   {
-      manageLanguagePage = dashboardPage.goToAdministration().goToManageLanguagePage();
-   }
+    public void goToManageLanguagePage() {
+        manageLanguagePage =
+                dashboardPage.goToAdministration().goToManageLanguagePage();
+    }
 
-   public ManageLanguageTeamMemberPage manageLanguage(String locale)
-   {
-      manageLanguageTeamMemberPage = manageLanguagePage.manageTeamMembersFor(locale);
-      return manageLanguageTeamMemberPage;
-   }
+    public ManageLanguageTeamMemberPage manageLanguage(String locale) {
+        manageLanguageTeamMemberPage =
+                manageLanguagePage.manageTeamMembersFor(locale);
+        return manageLanguageTeamMemberPage;
+    }
 
-   public ManageLanguageTeamMemberPage addToLanguage(String person)
-   {
-      ManageLanguageTeamMemberPage teamMemberPage = manageLanguageTeamMemberPage.clickAddTeamMember();
-      return teamMemberPage.searchPersonAndAddToTeam(person);
-   }
+    public ManageLanguageTeamMemberPage addToLanguage(String person) {
+        ManageLanguageTeamMemberPage teamMemberPage =
+                manageLanguageTeamMemberPage.clickAddTeamMember();
+        return teamMemberPage.searchPersonAndAddToTeam(person);
+    }
 
 }

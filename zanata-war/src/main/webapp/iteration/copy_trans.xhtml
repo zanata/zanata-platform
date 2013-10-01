@@ -1,81 +1,85 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:s="http://jboss.org/schema/seam/taglib"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:rich="http://richfaces.org/rich"
-                xmlns:a4j="http://richfaces.org/a4j"
-                template="../WEB-INF/template/template_2x.xhtml">
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j"
+  template="../WEB-INF/template/template_2x.xhtml">
 
-    <ui:define name="page_title">#{messages['jsf.iteration.CopyTrans.pageTitle']}</ui:define>
+  <ui:define
+    name="page_title">#{messages['jsf.iteration.CopyTrans.pageTitle']}</ui:define>
 
-    <ui:define name="head">
-        <script type="text/javascript">
-            function actionSelected(radio, cellId)
-            {
-                var cell = jQuery('#' + cellId);
-                var radioButton = jQuery(radio);
+  <ui:define name="head">
+    <script type="text/javascript">
+      function actionSelected(radio, cellId) {
+        var cell = jQuery('#' + cellId);
+        var radioButton = jQuery(radio);
 
-                if( radioButton.val() == 'REJECT' )
-                {
-                    jQuery(cell).attr('class', 'reject_action');
-                    jQuery(cell).html("#{messages['jsf.iteration.CopyTrans.Action.reject']}");
-                }
-                else if( radioButton.val() == 'DOWNGRADE_TO_FUZZY' )
-                {
-                    jQuery(cell).attr('class', 'downgrade_action');
-                    jQuery(cell).html("#{messages['jsf.iteration.CopyTrans.Action.short.downgradeToFuzzy']}");
-                }
-                else if( radioButton.val() == 'IGNORE' )
-                {
-                    jQuery(cell).attr('class', 'ignore_action');
-                    jQuery(cell).html("#{messages['jsf.iteration.CopyTrans.Action.short.ignore']}");
-                }
-                else
-                {
-                    jQuery(cell).attr('class', '');
-                    jQuery(cell).html('');
-                }
-            }
+        if (radioButton.val() == 'REJECT') {
+          jQuery(cell).attr('class', 'reject_action');
+          jQuery(cell).html("#{messages['jsf.iteration.CopyTrans.Action.reject']}");
+        }
+        else if (radioButton.val() == 'DOWNGRADE_TO_FUZZY') {
+          jQuery(cell).attr('class', 'downgrade_action');
+          jQuery(cell).html("#{messages['jsf.iteration.CopyTrans.Action.short.downgradeToFuzzy']}");
+        }
+        else if (radioButton.val() == 'IGNORE') {
+          jQuery(cell).attr('class', 'ignore_action');
+          jQuery(cell).html("#{messages['jsf.iteration.CopyTrans.Action.short.ignore']}");
+        }
+        else {
+          jQuery(cell).attr('class', '');
+          jQuery(cell).html('');
+        }
+      }
 
-            // initialize selected option colours
-            jQuery( function() {
-                actionSelected(jQuery("input[name='#{rich:clientId('projectMismatchAction')}']:checked"), 'projectMismatchCell');
-                actionSelected(jQuery("input[name='#{rich:clientId('contextMismatchAction')}']:checked"), 'contextMismatchCell');
-                actionSelected(jQuery("input[name='#{rich:clientId('documentIdMismatchAction')}']:checked"), 'documentIdMismatchCell');
-            });
-        </script>
-    </ui:define>
+      // initialize selected option colours
+      jQuery(function () {
+        actionSelected(jQuery("input[name='#{rich:clientId('projectMismatchAction')}']:checked"),
+          'projectMismatchCell');
+        actionSelected(jQuery("input[name='#{rich:clientId('contextMismatchAction')}']:checked"),
+          'contextMismatchCell');
+        actionSelected(jQuery("input[name='#{rich:clientId('documentIdMismatchAction')}']:checked"),
+          'documentIdMismatchCell');
+      });
+    </script>
+  </ui:define>
 
-    <ui:define name="center_content">
-        <!-- Simply needed to load jQuery -->
-        <rich:jQuery query="jquery" />
+  <ui:define name="center_content">
+    <!-- Simply needed to load jQuery -->
+    <rich:jQuery query="jquery"/>
 
-        <h:form>
-            <a4j:outputPanel rendered="#{not copyTransAction.copyTransRunning}">
+    <h:form>
+      <a4j:outputPanel rendered="#{not copyTransAction.copyTransRunning}">
 
-                <ui:include src="/WEB-INF/layout/copy_trans_inline.xhtml"/>
+        <ui:include src="/WEB-INF/layout/copy_trans_inline.xhtml"/>
 
-                <h:commandButton value="#{messages['jsf.Start']}" action="#{copyTransAction.startCopyTrans}"/>
-                <h:commandButton value="#{messages['jsf.Cancel']}" action="#{copyTransAction.cancel}"/>
-            </a4j:outputPanel>
-        </h:form>
+        <h:commandButton value="#{messages['jsf.Start']}"
+          action="#{copyTransAction.startCopyTrans}"/>
+        <h:commandButton value="#{messages['jsf.Cancel']}"
+          action="#{copyTransAction.cancel}"/>
+      </a4j:outputPanel>
+    </h:form>
 
-        <rich:panel rendered="#{copyTransAction.copyTransRunning}">
-            <h:outputText value="#{messages['jsf.iteration.CopyTrans.AlreadyStarted']}" escape="false"/>
-            <br/>
-            <s:link view="/iteration/view.xhtml" value="#{messages['jsf.CopyTrans.ClickHereToViewProgress']}">
-                <f:param name="projectSlug" value="#{copyTransAction.projectSlug}"/>
-                <f:param name="iterationSlug" value="#{copyTransAction.iterationSlug}"/>
-            </s:link>
-        </rich:panel>
+    <rich:panel rendered="#{copyTransAction.copyTransRunning}">
+      <h:outputText
+        value="#{messages['jsf.iteration.CopyTrans.AlreadyStarted']}"
+        escape="false"/>
+      <br/>
+      <s:link view="/iteration/view.xhtml"
+        value="#{messages['jsf.CopyTrans.ClickHereToViewProgress']}">
+        <f:param name="projectSlug" value="#{copyTransAction.projectSlug}"/>
+        <f:param name="iterationSlug" value="#{copyTransAction.iterationSlug}"/>
+      </s:link>
+    </rich:panel>
 
-    </ui:define>
+  </ui:define>
 
-    <ui:define name="right_content">
-        <ui:include src="/WEB-INF/layout/copy_trans_legend.xhtml"/>
-    </ui:define>
+  <ui:define name="right_content">
+    <ui:include src="/WEB-INF/layout/copy_trans_legend.xhtml"/>
+  </ui:define>
 
 </ui:composition>

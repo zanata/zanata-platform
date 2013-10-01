@@ -37,14 +37,16 @@ import org.zanata.model.HTextFlow;
 import org.zanata.util.CloseableIterator;
 
 /**
- * This class uses Hibernate's StatelessSession to iterate over large queries returning HTextFlow.
- * Each of the public methods should have a variant which accepts a locale parametor, but until
- * HTextFlow.getTargetContents(LocaleId) can be implemented efficiently, we don't need them.
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * This class uses Hibernate's StatelessSession to iterate over large queries
+ * returning HTextFlow. Each of the public methods should have a variant which
+ * accepts a locale parametor, but until HTextFlow.getTargetContents(LocaleId)
+ * can be implemented efficiently, we don't need them.
+ *
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @Name("textFlowStreamDAO")
 @Scope(ScopeType.EVENT)
-
 // TODO queries should only return Translated/Approved TFTs
 // TODO build related queries using querydsl
 @NoArgsConstructor
@@ -53,127 +55,126 @@ import org.zanata.util.CloseableIterator;
  * responsible for closing the Iterator, or a database connection
  * may leak.
  */
-public class TextFlowStreamingDAO extends StreamingDAO<HTextFlow>
-{
+public class TextFlowStreamingDAO extends StreamingDAO<HTextFlow> {
 
-   public TextFlowStreamingDAO(HibernateEntityManagerFactory emf)
-   {
-      super(emf);
-   }
+    public TextFlowStreamingDAO(HibernateEntityManagerFactory emf) {
+        super(emf);
+    }
 
-   /**
-    * Returns all HTextFlows in all projects, eagerly fetches targets, document, iteration and project.  
-    * Obsolete projects, iterations, documents and textflows are skipped.
-    * <p>
-    * NB: caller must close the iterator, or call next() until the iterator is exhausted,
-    * or else a database connection will be leaked.
-    * @return
-    */
-   public @Nonnull CloseableIterator<HTextFlow> findTextFlows()
-   {
-      StreamingEntityIterator<HTextFlow> iter = createIterator();
-      try
-      {
-         Query q = iter.getSession().createQuery(
-               "from HTextFlow tf " + 
-               "inner join fetch tf.targets target " + 
-               "inner join fetch target.locale " + 
-               "inner join fetch tf.document " + 
-               "inner join fetch tf.document.locale " + 
-               "inner join fetch tf.document.projectIteration " + 
-               "inner join fetch tf.document.projectIteration.project " + 
-               "where tf.document.projectIteration.project.status<>:OBSOLETE " + 
-               "and tf.document.projectIteration.status<>:OBSOLETE " + 
-               "and tf.document.obsolete=0 " + 
-               "and tf.obsolete=0 "
-               );
-         q.setParameter("OBSOLETE", EntityStatus.OBSOLETE);
-         q.setComment("TextFlowStreamDAO.findTextFlows");
-         iter.initQuery(q);
-         return iter;
-      }
-      catch (Throwable e)
-      {
-         iter.close();
-         throw new RuntimeException(e);
-      }
-   }
+    /**
+     * Returns all HTextFlows in all projects, eagerly fetches targets,
+     * document, iteration and project. Obsolete projects, iterations, documents
+     * and textflows are skipped.
+     * <p>
+     * NB: caller must close the iterator, or call next() until the iterator is
+     * exhausted, or else a database connection will be leaked.
+     *
+     * @return
+     */
+    public @Nonnull
+    CloseableIterator<HTextFlow> findTextFlows() {
+        StreamingEntityIterator<HTextFlow> iter = createIterator();
+        try {
+            Query q =
+                    iter.getSession()
+                            .createQuery(
+                                    "from HTextFlow tf "
+                                            + "inner join fetch tf.targets target "
+                                            + "inner join fetch target.locale "
+                                            + "inner join fetch tf.document "
+                                            + "inner join fetch tf.document.locale "
+                                            + "inner join fetch tf.document.projectIteration "
+                                            + "inner join fetch tf.document.projectIteration.project "
+                                            + "where tf.document.projectIteration.project.status<>:OBSOLETE "
+                                            + "and tf.document.projectIteration.status<>:OBSOLETE "
+                                            + "and tf.document.obsolete=0 "
+                                            + "and tf.obsolete=0 ");
+            q.setParameter("OBSOLETE", EntityStatus.OBSOLETE);
+            q.setComment("TextFlowStreamDAO.findTextFlows");
+            iter.initQuery(q);
+            return iter;
+        } catch (Throwable e) {
+            iter.close();
+            throw new RuntimeException(e);
+        }
+    }
 
-   /**
-    * Returns all HTextFlows in project, eagerly fetches targets, document, iteration and project.
-    * Obsolete iterations, documents and textflows are skipped.
-    * <p>
-    * NB: caller must close the iterator, or call next() until the iterator is exhausted,
-    * or else a database connection will be leaked.
-    * @return
-    */
-   public @Nonnull CloseableIterator<HTextFlow> findTextFlowsByProject(HProject hProject)
-   {
-      StreamingEntityIterator<HTextFlow> iter = createIterator();
-      try
-      {
-         Query q = iter.getSession().createQuery(
-               "from HTextFlow tf " + 
-               "inner join fetch tf.targets target " + 
-               "inner join fetch target.locale " + 
-               "inner join fetch tf.document " + 
-               "inner join fetch tf.document.locale " + 
-               "inner join fetch tf.document.projectIteration " + 
-               "inner join fetch tf.document.projectIteration.project " + 
-               "where tf.document.projectIteration.status<>:OBSOLETE " + 
-               "and tf.document.obsolete=0 " + 
-               "and tf.obsolete=0" +
-               "and tf.document.projectIteration.project=:proj"
-               );
-         q.setParameter("OBSOLETE", EntityStatus.OBSOLETE);
-         q.setParameter("proj", hProject);
-         q.setComment("TextFlowStreamDAO.findTextFlowsByProject");
-         iter.initQuery(q);
-         return iter;
-      }
-      catch (Throwable e)
-      {
-         iter.close();
-         throw new RuntimeException(e);
-      }
-   }
+    /**
+     * Returns all HTextFlows in project, eagerly fetches targets, document,
+     * iteration and project. Obsolete iterations, documents and textflows are
+     * skipped.
+     * <p>
+     * NB: caller must close the iterator, or call next() until the iterator is
+     * exhausted, or else a database connection will be leaked.
+     *
+     * @return
+     */
+    public @Nonnull
+    CloseableIterator<HTextFlow> findTextFlowsByProject(HProject hProject) {
+        StreamingEntityIterator<HTextFlow> iter = createIterator();
+        try {
+            Query q =
+                    iter.getSession()
+                            .createQuery(
+                                    "from HTextFlow tf "
+                                            + "inner join fetch tf.targets target "
+                                            + "inner join fetch target.locale "
+                                            + "inner join fetch tf.document "
+                                            + "inner join fetch tf.document.locale "
+                                            + "inner join fetch tf.document.projectIteration "
+                                            + "inner join fetch tf.document.projectIteration.project "
+                                            + "where tf.document.projectIteration.status<>:OBSOLETE "
+                                            + "and tf.document.obsolete=0 "
+                                            + "and tf.obsolete=0"
+                                            + "and tf.document.projectIteration.project=:proj");
+            q.setParameter("OBSOLETE", EntityStatus.OBSOLETE);
+            q.setParameter("proj", hProject);
+            q.setComment("TextFlowStreamDAO.findTextFlowsByProject");
+            iter.initQuery(q);
+            return iter;
+        } catch (Throwable e) {
+            iter.close();
+            throw new RuntimeException(e);
+        }
+    }
 
-   /**
-    * Returns all HTextFlows in project iteration, eagerly fetches targets, document, iteration and project.
-    * Obsolete documents and textflows are skipped.
-    * <p>
-    * NB: caller must close the iterator, or call next() until the iterator is exhausted,
-    * or else a database connection will be leaked.
-    * @return
-    */
-   public @Nonnull CloseableIterator<HTextFlow> findTextFlowsByProjectIteration(HProjectIteration hProjectIteration)
-   {
-      StreamingEntityIterator<HTextFlow> iter = createIterator();
-      try
-      {
-         Query q = iter.getSession().createQuery(
-               "from HTextFlow tf " + 
-               "inner join fetch tf.targets target " + 
-               "inner join fetch target.locale " + 
-               "inner join fetch tf.document " + 
-               "inner join fetch tf.document.locale " + 
-               "inner join fetch tf.document.projectIteration " + 
-               "inner join fetch tf.document.projectIteration.project " + 
-               "where tf.document.obsolete=0 " + 
-               "and tf.obsolete=0" +
-               "and tf.document.projectIteration=:iter"
-               );
-         q.setParameter("iter", hProjectIteration);
-         q.setComment("TextFlowStreamDAO.findTextFlowsByProjectIteration");
+    /**
+     * Returns all HTextFlows in project iteration, eagerly fetches targets,
+     * document, iteration and project. Obsolete documents and textflows are
+     * skipped.
+     * <p>
+     * NB: caller must close the iterator, or call next() until the iterator is
+     * exhausted, or else a database connection will be leaked.
+     *
+     * @return
+     */
+    public @Nonnull
+    CloseableIterator<HTextFlow> findTextFlowsByProjectIteration(
+            HProjectIteration hProjectIteration) {
+        StreamingEntityIterator<HTextFlow> iter = createIterator();
+        try {
+            Query q =
+                    iter.getSession()
+                            .createQuery(
+                                    "from HTextFlow tf "
+                                            + "inner join fetch tf.targets target "
+                                            + "inner join fetch target.locale "
+                                            + "inner join fetch tf.document "
+                                            + "inner join fetch tf.document.locale "
+                                            + "inner join fetch tf.document.projectIteration "
+                                            + "inner join fetch tf.document.projectIteration.project "
+                                            + "where tf.document.obsolete=0 "
+                                            + "and tf.obsolete=0"
+                                            + "and tf.document.projectIteration=:iter");
+            q.setParameter("iter", hProjectIteration);
+            q.setComment("TextFlowStreamDAO.findTextFlowsByProjectIteration");
 
-         iter.initQuery(q);
-         return iter;
-      }
-      catch (Throwable e)
-      {
-         iter.close();
-         throw new RuntimeException(e);
-      }
-   }
+            iter.initQuery(q);
+            return iter;
+        } catch (Throwable e) {
+            iter.close();
+            throw new RuntimeException(e);
+        }
+    }
 
 }

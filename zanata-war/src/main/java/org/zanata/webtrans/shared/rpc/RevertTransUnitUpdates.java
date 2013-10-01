@@ -26,35 +26,30 @@ import java.util.List;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import com.google.common.collect.Lists;
 
-
 /**
  * Action to revert translations to their state before they were updated.
- * 
+ *
  * @author David Mason, damason@redhat.com
  */
-public class RevertTransUnitUpdates extends AbstractWorkspaceAction<UpdateTransUnitResult>
-{
-   private static final long serialVersionUID = 1L;
+public class RevertTransUnitUpdates extends
+        AbstractWorkspaceAction<UpdateTransUnitResult> {
+    private static final long serialVersionUID = 1L;
 
-   private List<TransUnitUpdateInfo> updatesToRevert;
+    private List<TransUnitUpdateInfo> updatesToRevert;
 
-   public RevertTransUnitUpdates()
-   {
-      updatesToRevert = new ArrayList<TransUnitUpdateInfo>();
-   }
+    public RevertTransUnitUpdates() {
+        updatesToRevert = new ArrayList<TransUnitUpdateInfo>();
+    }
 
-   public RevertTransUnitUpdates(List<TransUnitUpdateInfo> updatesToRevert)
-   {
-      this.updatesToRevert = Lists.newArrayList(updatesToRevert);
-   }
+    public RevertTransUnitUpdates(List<TransUnitUpdateInfo> updatesToRevert) {
+        this.updatesToRevert = Lists.newArrayList(updatesToRevert);
+    }
 
-   public void addUpdateToRevert(TransUnitUpdateInfo toRevert)
-   {
-      updatesToRevert.add(toRevert);
-   }
+    public void addUpdateToRevert(TransUnitUpdateInfo toRevert) {
+        updatesToRevert.add(toRevert);
+    }
 
-   public List<TransUnitUpdateInfo> getUpdatesToRevert()
-   {
-      return updatesToRevert;
-   }
+    public List<TransUnitUpdateInfo> getUpdatesToRevert() {
+        return updatesToRevert;
+    }
 }

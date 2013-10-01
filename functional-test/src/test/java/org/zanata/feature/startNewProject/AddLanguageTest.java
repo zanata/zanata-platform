@@ -35,35 +35,35 @@ import org.zanata.page.utility.DashboardPage;
 import org.zanata.workflow.LoginWorkFlow;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @RunWith(ConcordionRunner.class)
-@Extensions({ScreenshotExtension.class, TimestampFormatterExtension.class, CustomResourceExtension.class})
+@Extensions({ ScreenshotExtension.class, TimestampFormatterExtension.class,
+        CustomResourceExtension.class })
 @Category(ConcordionTest.class)
-public class AddLanguageTest
-{
-   private DashboardPage dashboardPage;
-   private ManageLanguagePage manageLanguagePage;
+public class AddLanguageTest {
+    private DashboardPage dashboardPage;
+    private ManageLanguagePage manageLanguagePage;
 
-   @Before
-   public void beforeMethod()
-   {
-      dashboardPage = new LoginWorkFlow().signIn("admin", "admin");
-   }
+    @Before
+    public void beforeMethod() {
+        dashboardPage = new LoginWorkFlow().signIn("admin", "admin");
+    }
 
-   public ManageLanguagePage goToManageLanguagePage()
-   {
-      manageLanguagePage = dashboardPage.goToAdministration().goToManageLanguagePage();
-      return manageLanguagePage;
-   }
+    public ManageLanguagePage goToManageLanguagePage() {
+        manageLanguagePage =
+                dashboardPage.goToAdministration().goToManageLanguagePage();
+        return manageLanguagePage;
+    }
 
-   public ManageLanguagePage addNewLanguage(String locale)
-   {
-      return manageLanguagePage.addNewLanguage().enableLanguageByDefault().inputLanguage(locale).saveLanguage();
-   }
+    public ManageLanguagePage addNewLanguage(String locale) {
+        return manageLanguagePage.addNewLanguage().enableLanguageByDefault()
+                .inputLanguage(locale).saveLanguage();
+    }
 
-   public ManageLanguageTeamMemberPage joinLanguageAsAdmin(String locale)
-   {
-      return manageLanguagePage.manageTeamMembersFor(locale).joinLanguageTeam();
-   }
+    public ManageLanguageTeamMemberPage joinLanguageAsAdmin(String locale) {
+        return manageLanguagePage.manageTeamMembersFor(locale)
+                .joinLanguageTeam();
+    }
 }

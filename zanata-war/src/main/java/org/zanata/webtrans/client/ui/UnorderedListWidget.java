@@ -27,24 +27,21 @@ import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class UnorderedListWidget extends ComplexPanel
-{
-   public UnorderedListWidget()
-   {
-      setElement(Document.get().createULElement());
-   }
+public class UnorderedListWidget extends ComplexPanel {
+    public UnorderedListWidget() {
+        setElement(Document.get().createULElement());
+    }
 
-   public void setDir(String dir)
-   {
-      // Set an attribute specific to this tag
-      ((UListElement) getElement().cast()).setDir(dir);
-   }
+    public void setDir(String dir) {
+        // Set an attribute specific to this tag
+        ((UListElement) getElement().cast()).setDir(dir);
+    }
 
-   public void add(Widget widget)
-   {
-      // ComplexPanel requires the two-arg add() method
-      super.add(widget, getElement());
-   }
+    public void add(Widget widget) {
+        // ComplexPanel requires the two-arg add() method
+        super.add(widget, getElement());
+    }
 }

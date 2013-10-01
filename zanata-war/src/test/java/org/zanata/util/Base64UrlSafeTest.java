@@ -20,20 +20,17 @@
  */
 package org.zanata.util;
 
-
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 @Test(groups = { "unit-tests" })
-public class Base64UrlSafeTest
-{
-   @Test
-   public void test()
-   {
-      String var = "hding;helen.ding.uq@gmail.com";
-      String enVar = Base64UrlSafe.encode(var);
-      String deVar = Base64UrlSafe.decode(enVar);
-      Assert.assertEquals(var, deVar);
-   }
+public class Base64UrlSafeTest {
+    @Test
+    public void test() {
+        String var = "hding;helen.ding.uq@gmail.com";
+        String enVar = Base64UrlSafe.encode(var);
+        String deVar = Base64UrlSafe.decode(enVar);
+        Assert.assertEquals(var, deVar);
+    }
 
 }

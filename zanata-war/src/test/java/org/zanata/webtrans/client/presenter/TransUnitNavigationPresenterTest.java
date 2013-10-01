@@ -21,87 +21,87 @@ import org.zanata.webtrans.client.view.TransUnitNavigationDisplay;
 import org.zanata.webtrans.shared.rpc.NavOption;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Test(groups = "unit-tests")
-public class TransUnitNavigationPresenterTest
-{
-   private TransUnitNavigationPresenter presenter;
-   @Mock
-   private TransUnitNavigationDisplay display;
-   @Mock
-   private EventBus eventBus;
-   @Mock
-   private TargetContentsPresenter targetContentsPresenter;
-   private UserConfigHolder userConfigHolder;
-   @Captor
-   private ArgumentCaptor<NavTransUnitEvent> eventCaptor;
+public class TransUnitNavigationPresenterTest {
+    private TransUnitNavigationPresenter presenter;
+    @Mock
+    private TransUnitNavigationDisplay display;
+    @Mock
+    private EventBus eventBus;
+    @Mock
+    private TargetContentsPresenter targetContentsPresenter;
+    private UserConfigHolder userConfigHolder;
+    @Captor
+    private ArgumentCaptor<NavTransUnitEvent> eventCaptor;
 
-   @BeforeMethod
-   public void setUp() throws Exception
-   {
-      MockitoAnnotations.initMocks(this);
-      userConfigHolder = new UserConfigHolder();
-      presenter = new TransUnitNavigationPresenter(display, eventBus, userConfigHolder, targetContentsPresenter);
+    @BeforeMethod
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        userConfigHolder = new UserConfigHolder();
+        presenter =
+                new TransUnitNavigationPresenter(display, eventBus,
+                        userConfigHolder, targetContentsPresenter);
 
-      verify(display).setListener(presenter);
-   }
+        verify(display).setListener(presenter);
+    }
 
-   @Test
-   public void onBind()
-   {
-      presenter.onBind();
+    @Test
+    public void onBind() {
+        presenter.onBind();
 
-      verify(eventBus).addHandler(UserConfigChangeEvent.TYPE, presenter);
-   }
+        verify(eventBus).addHandler(UserConfigChangeEvent.TYPE, presenter);
+    }
 
-   @Test
-   public void onUserConfigChange()
-   {
-      userConfigHolder.setNavOption(NavOption.UNTRANSLATED);
+    @Test
+    public void onUserConfigChange() {
+        userConfigHolder.setNavOption(NavOption.UNTRANSLATED);
 
-      presenter.onUserConfigChanged(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+        presenter
+                .onUserConfigChanged(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
 
-      verify(display).setNavModeTooltip(NavOption.UNTRANSLATED);
-   }
+        verify(display).setNavModeTooltip(NavOption.UNTRANSLATED);
+    }
 
-   @Test
-   public void onGoToFirstEntry()
-   {
-      presenter.goToFirstEntry();
+    @Test
+    public void onGoToFirstEntry() {
+        presenter.goToFirstEntry();
 
-      verify(targetContentsPresenter).savePendingChangesIfApplicable();
-      verify(eventBus).fireEvent(eventCaptor.capture());
-      assertThat(eventCaptor.getValue().getRowType(), Matchers.equalTo(FirstEntry));
-   }
+        verify(targetContentsPresenter).savePendingChangesIfApplicable();
+        verify(eventBus).fireEvent(eventCaptor.capture());
+        assertThat(eventCaptor.getValue().getRowType(),
+                Matchers.equalTo(FirstEntry));
+    }
 
-   @Test
-   public void onGoToLastEntry()
-   {
-      presenter.goToLastEntry();
+    @Test
+    public void onGoToLastEntry() {
+        presenter.goToLastEntry();
 
-      verify(targetContentsPresenter).savePendingChangesIfApplicable();
-      verify(eventBus).fireEvent(eventCaptor.capture());
-      assertThat(eventCaptor.getValue().getRowType(), Matchers.equalTo(LastEntry));
-   }
+        verify(targetContentsPresenter).savePendingChangesIfApplicable();
+        verify(eventBus).fireEvent(eventCaptor.capture());
+        assertThat(eventCaptor.getValue().getRowType(),
+                Matchers.equalTo(LastEntry));
+    }
 
-   @Test
-   public void onGoToPreviousState()
-   {
-      presenter.goToPreviousState();
+    @Test
+    public void onGoToPreviousState() {
+        presenter.goToPreviousState();
 
-      verify(targetContentsPresenter).savePendingChangesIfApplicable();
-      verify(eventBus).fireEvent(eventCaptor.capture());
-      assertThat(eventCaptor.getValue().getRowType(), Matchers.equalTo(PrevState));
-   }
+        verify(targetContentsPresenter).savePendingChangesIfApplicable();
+        verify(eventBus).fireEvent(eventCaptor.capture());
+        assertThat(eventCaptor.getValue().getRowType(),
+                Matchers.equalTo(PrevState));
+    }
 
-   @Test
-   public void onGoToNextState()
-   {
-      presenter.goToNextState();
+    @Test
+    public void onGoToNextState() {
+        presenter.goToNextState();
 
-      verify(targetContentsPresenter).savePendingChangesIfApplicable();
-      verify(eventBus).fireEvent(eventCaptor.capture());
-      assertThat(eventCaptor.getValue().getRowType(), Matchers.equalTo(NextState));
-   }
+        verify(targetContentsPresenter).savePendingChangesIfApplicable();
+        verify(eventBus).fireEvent(eventCaptor.capture());
+        assertThat(eventCaptor.getValue().getRowType(),
+                Matchers.equalTo(NextState));
+    }
 }

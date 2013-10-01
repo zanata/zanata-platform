@@ -30,18 +30,15 @@ import org.zanata.model.HDocumentUpload;
 @Name("documentUploadDAO")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
-public class DocumentUploadDAO extends AbstractDAOImpl<HDocumentUpload, Long>
-{
-   private static final long serialVersionUID = 1L;
+public class DocumentUploadDAO extends AbstractDAOImpl<HDocumentUpload, Long> {
+    private static final long serialVersionUID = 1L;
 
-   public DocumentUploadDAO()
-   {
-      super(HDocumentUpload.class);
-   }
+    public DocumentUploadDAO() {
+        super(HDocumentUpload.class);
+    }
 
-   public DocumentUploadDAO(Session session)
-   {
-      super(HDocumentUpload.class, session);
-   }
+    public DocumentUploadDAO(Session session) {
+        super(HDocumentUpload.class, session);
+    }
 
 }

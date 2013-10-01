@@ -20,45 +20,46 @@ import static org.hamcrest.MatcherAssert.*;
 import static org.mockito.Mockito.verify;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Test(groups = "unit-tests")
-public class PreviewReplaceTextHandlerTest
-{
-   private PreviewReplaceTextHandler handler;
-   @Mock
-   private ZanataIdentity identity;
+public class PreviewReplaceTextHandlerTest {
+    private PreviewReplaceTextHandler handler;
+    @Mock
+    private ZanataIdentity identity;
 
-   @BeforeMethod
-   public void setUp() throws Exception
-   {
-      MockitoAnnotations.initMocks(this);
-      // @formatter:off
+    @BeforeMethod
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        // @formatter:off
       handler = SeamAutowire.instance()
             .use("identity", identity)
             .autowire(PreviewReplaceTextHandler.class);
       // @formatter:on
-   }
+    }
 
-   @Test
-   public void testExecute() throws Exception
-   {
-      TransUnit transUnit = TestFixture.makeTransUnit(1, ContentState.NeedReview, "target");
-      PreviewReplaceText action = new PreviewReplaceText(new ReplaceText(transUnit, "target", "replace", true));
+    @Test
+    public void testExecute() throws Exception {
+        TransUnit transUnit =
+                TestFixture.makeTransUnit(1, ContentState.NeedReview, "target");
+        PreviewReplaceText action =
+                new PreviewReplaceText(new ReplaceText(transUnit, "target",
+                        "replace", true));
 
-      PreviewReplaceTextResult result = handler.execute(action, null);
+        PreviewReplaceTextResult result = handler.execute(action, null);
 
-      verify(identity).checkLoggedIn();
-      assertThat(result.getPreviews(), Matchers.hasSize(1));
-      TransUnitUpdatePreview preview = result.getPreviews().get(0);
-      assertThat(preview.getId(), Matchers.equalTo(transUnit.getId()));
-      assertThat(preview.getState(), Matchers.equalTo(ContentState.NeedReview));
-      assertThat(preview.getContents(), Matchers.contains("replace"));
-   }
+        verify(identity).checkLoggedIn();
+        assertThat(result.getPreviews(), Matchers.hasSize(1));
+        TransUnitUpdatePreview preview = result.getPreviews().get(0);
+        assertThat(preview.getId(), Matchers.equalTo(transUnit.getId()));
+        assertThat(preview.getState(),
+                Matchers.equalTo(ContentState.NeedReview));
+        assertThat(preview.getContents(), Matchers.contains("replace"));
+    }
 
-   @Test(expectedExceptions = ActionException.class)
-   public void cannotRollback() throws ActionException
-   {
-      handler.rollback(null, null, null);
-   }
+    @Test(expectedExceptions = ActionException.class)
+    public void cannotRollback() throws ActionException {
+        handler.rollback(null, null, null);
+    }
 }

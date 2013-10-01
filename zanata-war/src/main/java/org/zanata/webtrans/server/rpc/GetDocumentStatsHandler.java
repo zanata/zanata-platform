@@ -23,35 +23,44 @@ import net.customware.gwt.dispatch.shared.ActionException;
 @Name("webtrans.gwt.GetDocumentStatsHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(GetDocumentStats.class)
-public class GetDocumentStatsHandler extends AbstractActionHandler<GetDocumentStats, GetDocumentStatsResult>
-{
-   @In
-   private StatisticsServiceImpl statisticsServiceImpl;
+public class GetDocumentStatsHandler extends
+        AbstractActionHandler<GetDocumentStats, GetDocumentStatsResult> {
+    @In
+    private StatisticsServiceImpl statisticsServiceImpl;
 
-   @In
-   private TranslationStateCache translationStateCacheImpl;
+    @In
+    private TranslationStateCache translationStateCacheImpl;
 
-   @Override
-   public GetDocumentStatsResult execute(GetDocumentStats action, ExecutionContext context) throws ActionException
-   {
-      Map<DocumentId, ContainerTranslationStatistics> statsMap = new HashMap<DocumentId, ContainerTranslationStatistics>();
-      Map<DocumentId, AuditInfo> lastTranslatedMap = new HashMap<DocumentId, AuditInfo>();
+    @Override
+    public GetDocumentStatsResult execute(GetDocumentStats action,
+            ExecutionContext context) throws ActionException {
+        Map<DocumentId, ContainerTranslationStatistics> statsMap =
+                new HashMap<DocumentId, ContainerTranslationStatistics>();
+        Map<DocumentId, AuditInfo> lastTranslatedMap =
+                new HashMap<DocumentId, AuditInfo>();
 
-      for (DocumentId documentId : action.getDocIds())
-      {
-         ContainerTranslationStatistics stats = statisticsServiceImpl.getDocStatistics(documentId.getId(), action.getWorkspaceId().getLocaleId());
-         statsMap.put(documentId, stats);
+        for (DocumentId documentId : action.getDocIds()) {
+            ContainerTranslationStatistics stats =
+                    statisticsServiceImpl.getDocStatistics(documentId.getId(),
+                            action.getWorkspaceId().getLocaleId());
+            statsMap.put(documentId, stats);
 
-         DocumentStatus docStat = translationStateCacheImpl.getDocumentStatus(documentId.getId(), action.getWorkspaceId().getLocaleId());
+            DocumentStatus docStat =
+                    translationStateCacheImpl.getDocumentStatus(documentId
+                            .getId(), action.getWorkspaceId().getLocaleId());
 
-         lastTranslatedMap.put(documentId, new AuditInfo(docStat.getLastTranslatedDate(), docStat.getLastTranslatedBy()));
-      }
-      return new GetDocumentStatsResult(statsMap, lastTranslatedMap);
-   }
+            lastTranslatedMap.put(
+                    documentId,
+                    new AuditInfo(docStat.getLastTranslatedDate(), docStat
+                            .getLastTranslatedBy()));
+        }
+        return new GetDocumentStatsResult(statsMap, lastTranslatedMap);
+    }
 
-   @Override
-   public void rollback(GetDocumentStats action, GetDocumentStatsResult result, ExecutionContext context) throws ActionException
-   {
+    @Override
+    public void rollback(GetDocumentStats action,
+            GetDocumentStatsResult result, ExecutionContext context)
+            throws ActionException {
 
-   }
+    }
 }

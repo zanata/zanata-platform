@@ -46,284 +46,289 @@ import com.google.gwt.user.client.ui.RootPanel;
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
-public class Application implements EntryPoint
-{
-   private static final WebTransGinjector injector = GWT.create(WebTransGinjector.class);
-   private static final String APP_LOAD_ERROR_CSS_CLASS = "AppLoadError";
-   private static final String CONTENT_DIV_ID = "container";
+public class Application implements EntryPoint {
+    private static final WebTransGinjector injector = GWT
+            .create(WebTransGinjector.class);
+    private static final String APP_LOAD_ERROR_CSS_CLASS = "AppLoadError";
+    private static final String CONTENT_DIV_ID = "container";
 
-   private static WorkspaceId workspaceId;
-   private static UserWorkspaceContext userWorkspaceContext;
-   private static Identity identity;
+    private static WorkspaceId workspaceId;
+    private static UserWorkspaceContext userWorkspaceContext;
+    private static Identity identity;
 
-   private UncaughtExceptionHandlerImpl exceptionHandler;
+    private UncaughtExceptionHandlerImpl exceptionHandler;
 
-   public void onModuleLoad()
-   {
-      exceptionHandler = new UncaughtExceptionHandlerImpl(injector.getDispatcher(), injector.getUserConfig());
-      GWT.setUncaughtExceptionHandler(exceptionHandler);
+    public void onModuleLoad() {
+        exceptionHandler =
+                new UncaughtExceptionHandlerImpl(injector.getDispatcher(),
+                        injector.getUserConfig());
+        GWT.setUncaughtExceptionHandler(exceptionHandler);
 
-      injector.getDispatcher().execute(new ActivateWorkspaceAction(getWorkspaceId()), new AsyncCallback<ActivateWorkspaceResult>()
-      {
+        injector.getDispatcher().execute(
+                new ActivateWorkspaceAction(getWorkspaceId()),
+                new AsyncCallback<ActivateWorkspaceResult>() {
 
-         @Override
-         public void onFailure(Throwable caught)
-         {
-            if (caught instanceof AuthenticationError)
-            {
-               redirectToLogin();
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        if (caught instanceof AuthenticationError) {
+                            redirectToLogin();
+                        } else if (caught instanceof NoSuchWorkspaceException) {
+                            Log.error("Invalid workspace", caught);
+                            String errorMessage;
+                            errorMessage =
+                                    "Invalid Workspace. "
+                                            + caught.getLocalizedMessage()
+                                            + ". Try opening the workspace from the link on the project page.";
+                            showErrorWithLink(errorMessage, caught);
+                        } else {
+                            Log.error("An unexpected Error occurred", caught);
+                            showErrorWithLink("An unexpected Error occurred: "
+                                    + caught.getMessage(), caught);
+                        }
+                    }
+
+                    @Override
+                    public void onSuccess(final ActivateWorkspaceResult result) {
+                        userWorkspaceContext = result.getUserWorkspaceContext();
+                        identity = result.getIdentity();
+                        injector.getDispatcher().setIdentity(identity);
+                        injector.getDispatcher().setUserWorkspaceContext(
+                                userWorkspaceContext);
+                        injector.getDispatcher().setEventBus(
+                                injector.getEventBus());
+                        injector.getUserConfig().setState(
+                                result.getStoredUserConfiguration());
+                        injector.getValidationService().setValidationRules(
+                                result.getValidationStates());
+
+                        startApp();
+                    }
+
+                });
+
+    }
+
+    public static void exitWorkspace() {
+        injector.getDispatcher().execute(
+                new ExitWorkspaceAction(identity.getPerson()),
+                new NoOpAsyncCallback<NoOpResult>());
+    }
+
+    private void startApp() {
+        // When user close the workspace, send ExitWorkSpaceAction
+        Window.addWindowClosingHandler(new Window.ClosingHandler() {
+            @Override
+            public void onWindowClosing(ClosingEvent event) {
+                exitWorkspace();
             }
-            else if (caught instanceof NoSuchWorkspaceException)
-            {
-               Log.error("Invalid workspace", caught);
-               String errorMessage;
-               errorMessage = "Invalid Workspace. " + caught.getLocalizedMessage() + ". Try opening the workspace from the link on the project page.";
-               showErrorWithLink(errorMessage, caught);
+        });
+
+        final EventProcessor eventProcessor = injector.getEventProcessor();
+        eventProcessor.start(new StartCallback() {
+            @Override
+            public void onSuccess(String connectionId) {
+                // tell server the ConnectionId for this EditorClientId
+                injector.getDispatcher().execute(
+                        new EventServiceConnectedAction(connectionId),
+                        new AsyncCallback<NoOpResult>() {
+                            @Override
+                            public void onFailure(Throwable e) {
+                                showErrorWithLink(
+                                        "Server communication failed...", e);
+                            }
+
+                            @Override
+                            public void onSuccess(NoOpResult result) {
+                                delayedStartApp();
+                            }
+                        });
             }
-            else
-            {
-               Log.error("An unexpected Error occurred", caught);
-               showErrorWithLink("An unexpected Error occurred: " + caught.getMessage(), caught);
+
+            @Override
+            public void onFailure(Throwable e) {
+                showErrorWithLink("Failed to start Event Service...", e);
             }
-         }
+        });
 
-         @Override
-         public void onSuccess(final ActivateWorkspaceResult result)
-         {
-            userWorkspaceContext = result.getUserWorkspaceContext();
-            identity = result.getIdentity();
-            injector.getDispatcher().setIdentity(identity);
-            injector.getDispatcher().setUserWorkspaceContext(userWorkspaceContext);
-            injector.getDispatcher().setEventBus(injector.getEventBus());
-            injector.getUserConfig().setState( result.getStoredUserConfiguration() );
-            injector.getValidationService().setValidationRules(result.getValidationStates());
+        Window.enableScrolling(true);
+    }
 
-            startApp();
-         }
+    private void delayedStartApp() {
+        final AppPresenter appPresenter = injector.getAppPresenter();
+        final DocumentListPresenter documentListPresenter =
+                injector.getDocumentListPresenter();
+        RootPanel.get(CONTENT_DIV_ID).add(appPresenter.getDisplay().asWidget());
+        appPresenter.bind();
+        Window.enableScrolling(true);
+        // eager load document list
+        final EventBus eventBus = injector.getEventBus();
 
-      });
+        GetDocumentList action =
+                new GetDocumentList(injector.getLocation().getQueryDocuments());
 
-   }
+        documentListPresenter.showLoading(true);
+        final Stopwatch stopwatch = new Stopwatch().start();
+        injector.getDispatcher().execute(action,
+                new AsyncCallback<GetDocumentListResult>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        eventBus.fireEvent(new NotificationEvent(
+                                NotificationEvent.Severity.Error,
+                                "Failed to load documents"));
+                        documentListPresenter.showLoading(false);
+                        stopwatch.stop();
+                    }
 
-   public static void exitWorkspace()
-   {
-      injector.getDispatcher().execute(new ExitWorkspaceAction(identity.getPerson()), new NoOpAsyncCallback<NoOpResult>());
-   }
+                    @Override
+                    public void onSuccess(GetDocumentListResult result) {
+                        final List<DocumentInfo> documents =
+                                result.getDocuments();
+                        Log.info("Received doc list for "
+                                + result.getProjectIterationId() + ": "
+                                + documents.size()
+                                + " elements, loading time: "
+                                + stopwatch.elapsedMillis() + "ms");
+                        documentListPresenter.setDocuments(documents);
 
-   private void startApp()
-   {
-      // When user close the workspace, send ExitWorkSpaceAction
-      Window.addWindowClosingHandler(new Window.ClosingHandler()
-      {
-         @Override
-         public void onWindowClosing(ClosingEvent event)
-         {
-            exitWorkspace();
-         }
-      });
+                        History history = injector.getHistory();
+                        history.addValueChangeHandler(injector
+                                .getHistoryEventHandlerService());
+                        Log.info("=========== now firing current history state =========== ");
+                        history.fireCurrentHistoryState();
 
-      final EventProcessor eventProcessor = injector.getEventProcessor();
-      eventProcessor.start(new StartCallback()
-      {
-         @Override
-         public void onSuccess(String connectionId)
-         {
-            // tell server the ConnectionId for this EditorClientId
-            injector.getDispatcher().execute(new EventServiceConnectedAction(connectionId), new AsyncCallback<NoOpResult>()
-            {
-               @Override
-               public void onFailure(Throwable e)
-               {
-                  showErrorWithLink("Server communication failed...", e);
-               }
-               @Override
-               public void onSuccess(NoOpResult result)
-               {
-                  delayedStartApp();
-               }
-            });
-         }
+                        exceptionHandler.setAppPresenter(appPresenter);
+                        exceptionHandler.setTargetContentsPresenter(injector
+                                .getTargetContentsPresenter());
 
-         @Override
-         public void onFailure(Throwable e)
-         {
-            showErrorWithLink("Failed to start Event Service...", e);
-         }
-      });
+                        documentListPresenter.queryStats();
+                        documentListPresenter.showLoading(false);
+                        injector.getTransUnitSaveService().init();
 
-      Window.enableScrolling(true);
-   }
+                        stopwatch.stop();
+                    }
+                });
 
-   private void delayedStartApp()
-   {
-      final AppPresenter appPresenter = injector.getAppPresenter();
-      final DocumentListPresenter documentListPresenter = injector.getDocumentListPresenter();
-      RootPanel.get(CONTENT_DIV_ID).add(appPresenter.getDisplay().asWidget());
-      appPresenter.bind();
-      Window.enableScrolling(true);
-      // eager load document list
-      final EventBus eventBus = injector.getEventBus();
+        registerUserScriptCallbackHook();
+    }
 
-      GetDocumentList action = new GetDocumentList(injector.getLocation().getQueryDocuments());
+    private void registerUserScriptCallbackHook() {
+        final EventBus eventBus = injector.getEventBus();
+        UserScriptCallbackHook hook = new UserScriptCallbackHook();
+        eventBus.addHandler(TransUnitUpdatedEvent.getType(), hook);
+    }
 
-      documentListPresenter.showLoading(true);
-      final Stopwatch stopwatch = new Stopwatch().start();
-      injector.getDispatcher().execute(action, new AsyncCallback<GetDocumentListResult>()
-      {
-         @Override
-         public void onFailure(Throwable caught)
-         {
-            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Failed to load documents"));
-            documentListPresenter.showLoading(false);
-            stopwatch.stop();
-         }
+    public static ProjectIterationId getProjectIterationId() {
+        String projectSlug = Window.Location.getParameter("project");
+        String iterationSlug = Window.Location.getParameter("iteration");
+        if (projectSlug == null || iterationSlug == null) {
+            return null;
+        }
+        return new ProjectIterationId(projectSlug, iterationSlug, null);
+    }
 
-         @Override
-         public void onSuccess(GetDocumentListResult result)
-         {
-            final List<DocumentInfo> documents = result.getDocuments();
-            Log.info("Received doc list for " + result.getProjectIterationId() + ": " + documents.size() + " elements, loading time: " + stopwatch.elapsedMillis() + "ms");
-            documentListPresenter.setDocuments(documents);
+    public static LocaleId getLocaleId() {
+        String localeId = Window.Location.getParameter("localeId");
+        return localeId == null ? null : new LocaleId(localeId);
+    }
 
-            History history = injector.getHistory();
-            history.addValueChangeHandler(injector.getHistoryEventHandlerService());
-            Log.info("=========== now firing current history state =========== ");
-            history.fireCurrentHistoryState();
+    public static void redirectToLogin() {
+        redirectToUrl(getModuleParentBaseUrl() + "account/sign_in?continue="
+                + URL.encodeQueryString(Window.Location.getHref()));
+    }
 
-            exceptionHandler.setAppPresenter(appPresenter);
-            exceptionHandler.setTargetContentsPresenter(injector.getTargetContentsPresenter());
+    public static void redirectToLogout() {
+        redirectToUrl(getModuleParentBaseUrl() + "account/sign_out");
+    }
 
-            documentListPresenter.queryStats();
-            documentListPresenter.showLoading(false);
-            injector.getTransUnitSaveService().init();
+    public static String getProjectHomeURL(WorkspaceId workspaceId) {
+        return getModuleParentBaseUrl() + "project/view/"
+                + workspaceId.getProjectIterationId().getProjectSlug();
+    }
 
-            stopwatch.stop();
-         }
-      });
+    public static String getVersionHomeURL(WorkspaceId workspaceId) {
+        return getModuleParentBaseUrl() + "iteration/view/"
+                + workspaceId.getProjectIterationId().getProjectSlug() + "/"
+                + workspaceId.getProjectIterationId().getIterationSlug();
+    }
 
-      registerUserScriptCallbackHook();
-   }
+    public static String getVersionFilesURL(WorkspaceId workspaceId) {
+        return getModuleParentBaseUrl() + "iteration/files/"
+                + workspaceId.getProjectIterationId().getProjectSlug() + "/"
+                + workspaceId.getProjectIterationId().getIterationSlug() + "/"
+                + workspaceId.getLocaleId().getId();
+    }
 
-   private void registerUserScriptCallbackHook()
-   {
-      final EventBus eventBus = injector.getEventBus();
-      UserScriptCallbackHook hook = new UserScriptCallbackHook();
-      eventBus.addHandler(TransUnitUpdatedEvent.getType(), hook);
-   }
+    public static String getFileDownloadURL(WorkspaceId workspaceId,
+            String downloadExtension) {
+        return getModuleParentBaseUrl() + "rest/file/translation/"
+                + workspaceId.getProjectIterationId().getProjectSlug() + "/"
+                + workspaceId.getProjectIterationId().getIterationSlug() + "/"
+                + workspaceId.getLocaleId().getId() + "/" + downloadExtension;
+    }
 
-   public static ProjectIterationId getProjectIterationId()
-   {
-      String projectSlug = Window.Location.getParameter("project");
-      String iterationSlug = Window.Location.getParameter("iteration");
-      if (projectSlug == null || iterationSlug == null)
-      {
-         return null;
-      }
-      return new ProjectIterationId(projectSlug, iterationSlug, null);
-   }
+    public static String getAllFilesDownloadURL(String downloadId) {
+        return getModuleParentBaseUrl() + "rest/file/download/" + downloadId;
+    }
 
-   public static LocaleId getLocaleId()
-   {
-      String localeId = Window.Location.getParameter("localeId");
-      return localeId == null ? null : new LocaleId(localeId);
-   }
+    public static String getUploadFileUrl() {
+        return GWT.getModuleBaseURL() + "files/upload";
+    }
 
-   public static void redirectToLogin()
-   {
-      redirectToUrl(getModuleParentBaseUrl() + "account/sign_in?continue=" + URL.encodeQueryString(Window.Location.getHref()));
-   }
+    public static native void redirectToUrl(String url)/*-{
+    $wnd.location = url;
+    }-*/;
 
-   public static void redirectToLogout()
-   {
-      redirectToUrl(getModuleParentBaseUrl() + "account/sign_out");
-   }
+    public static WorkspaceId getWorkspaceId() {
+        if (workspaceId == null) {
+            workspaceId =
+                    new WorkspaceId(getProjectIterationId(), getLocaleId());
+        }
+        return workspaceId;
+    }
 
-   public static String getProjectHomeURL(WorkspaceId workspaceId)
-   {
-      return getModuleParentBaseUrl() + "project/view/" + workspaceId.getProjectIterationId().getProjectSlug();
-   }
-   
-   public static String getVersionHomeURL(WorkspaceId workspaceId)
-   {
-      return getModuleParentBaseUrl() + "iteration/view/" + workspaceId.getProjectIterationId().getProjectSlug() + "/" + workspaceId.getProjectIterationId().getIterationSlug()  ;
-   }
+    public static UserWorkspaceContext getUserWorkspaceContext() {
+        return userWorkspaceContext;
+    }
 
-   public static String getVersionFilesURL(WorkspaceId workspaceId)
-   {
-      return getModuleParentBaseUrl() + "iteration/files/" + workspaceId.getProjectIterationId().getProjectSlug() + "/" + workspaceId.getProjectIterationId().getIterationSlug() + "/" + workspaceId.getLocaleId().getId();
-   }
+    public static Identity getIdentity() {
+        return identity;
+    }
 
-   public static String getFileDownloadURL(WorkspaceId workspaceId, String downloadExtension)
-   {
-      return getModuleParentBaseUrl() + "rest/file/translation/" + workspaceId.getProjectIterationId().getProjectSlug() + "/" + workspaceId.getProjectIterationId().getIterationSlug() + "/" + workspaceId.getLocaleId().getId() + "/" + downloadExtension;
-   }
+    public static String getModuleParentBaseUrl() {
+        return GWT.getModuleBaseURL().replace(GWT.getModuleName() + "/", "");
+    }
 
-   public static String getAllFilesDownloadURL(String downloadId)
-   {
-      return getModuleParentBaseUrl() + "rest/file/download/" + downloadId;
-   }
-   
-   public static String getUploadFileUrl()
-   {
-      return GWT.getModuleBaseURL() + "files/upload";
-   }
+    /**
+     * Display an error message instead of the web app. Shows a link if both
+     * text and url are provided. Provides a stack trace if a {@link Throwable}
+     * is provided.
+     *
+     * @param message
+     *            to display
+     * @param e
+     *            non-null to provide a stack trace in an expandable view.
+     */
+    private static void showErrorWithLink(String message, Throwable e) {
+        Label messageLabel = new Label(message);
+        messageLabel.getElement().addClassName(APP_LOAD_ERROR_CSS_CLASS);
+        FlowPanel layoutPanel = new FlowPanel();
+        layoutPanel.add(messageLabel);
 
+        if (!GWT.isProdMode() && e != null) {
+            String stackTrace =
+                    UncaughtExceptionHandlerImpl.buildStackTraceMessages(e);
+            SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();
+            safeHtmlBuilder.appendHtmlConstant("<pre>")
+                    .appendEscaped(stackTrace).appendHtmlConstant("</pre>");
+            Label stackTraceLabel =
+                    new Label(safeHtmlBuilder.toSafeHtml().asString());
+            DisclosurePanel stackTracePanel =
+                    new DisclosurePanel("More detail:");
+            stackTracePanel.getElement().addClassName(APP_LOAD_ERROR_CSS_CLASS);
+            stackTracePanel.add(stackTraceLabel);
+            layoutPanel.add(stackTracePanel);
+        }
 
-   public static native void redirectToUrl(String url)/*-{
-		$wnd.location = url;
-   }-*/;
-   
-   public static WorkspaceId getWorkspaceId()
-   {
-      if (workspaceId == null)
-      {
-         workspaceId = new WorkspaceId(getProjectIterationId(), getLocaleId());
-      }
-      return workspaceId;
-   }
-
-   public static UserWorkspaceContext getUserWorkspaceContext()
-   {
-      return userWorkspaceContext;
-   }
-
-   public static Identity getIdentity()
-   {
-      return identity;
-   }
-  
-   public static String getModuleParentBaseUrl()
-   {
-      return GWT.getModuleBaseURL().replace(GWT.getModuleName() + "/", "");
-   }
-   
-   /**
-    * Display an error message instead of the web app. Shows a link if both text
-    * and url are provided. Provides a stack trace if a {@link Throwable} is
-    * provided.
-    *
-    * @param message to display
-    * @param e non-null to provide a stack trace in an expandable view.
-    */
-   private static void showErrorWithLink(String message, Throwable e)
-   {
-      Label messageLabel = new Label(message);
-      messageLabel.getElement().addClassName(APP_LOAD_ERROR_CSS_CLASS);
-      FlowPanel layoutPanel = new FlowPanel();
-      layoutPanel.add(messageLabel);
-
-      if (!GWT.isProdMode() && e != null)
-      {
-         String stackTrace = UncaughtExceptionHandlerImpl.buildStackTraceMessages(e);
-         SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();
-         safeHtmlBuilder.appendHtmlConstant("<pre>").appendEscaped(stackTrace).appendHtmlConstant("</pre>");
-         Label stackTraceLabel = new Label(safeHtmlBuilder.toSafeHtml().asString());
-         DisclosurePanel stackTracePanel = new DisclosurePanel("More detail:");
-         stackTracePanel.getElement().addClassName(APP_LOAD_ERROR_CSS_CLASS);
-         stackTracePanel.add(stackTraceLabel);
-         layoutPanel.add(stackTracePanel);
-      }
-
-      RootPanel.get(CONTENT_DIV_ID).add(layoutPanel);
-   }
+        RootPanel.get(CONTENT_DIV_ID).add(layoutPanel);
+    }
 }

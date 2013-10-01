@@ -38,35 +38,35 @@ import static org.zanata.util.GoogleSignIn.getSignIn;
 import static org.zanata.util.GoogleSignIn.googleIsReachable;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(BasicAcceptanceTest.class)
-public class OpenIDTest
-{
+public class OpenIDTest {
 
-   @ClassRule
-   public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
+    @ClassRule
+    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
 
-   @Before
-   public void before()
-   {
-      new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
-   }
+    @Before
+    public void before() {
+        new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
+    }
 
-   @Test
-   public void signInWithGoogleOpenID()
-   {
-      assumeFalse("Environment has Google login data", getSignIn("zanata.test.1").isEmpty());
-      assumeTrue("Google can be reached", googleIsReachable());
+    @Test
+    public void signInWithGoogleOpenID() {
+        assumeFalse("Environment has Google login data",
+                getSignIn("zanata.test.1").isEmpty());
+        assumeTrue("Google can be reached", googleIsReachable());
 
-      String googleUsername = "zanata.test.1";
-      String googlePassword = getSignIn(googleUsername);
-      HomePage homePage = new RegisterWorkFlow().registerGoogleOpenID(
-            "Zanata OpenID",
-            "openidtest",
-            googlePassword,
-            googleUsername.concat("@gmail.com"));
-      assertThat("The registration message is shown", homePage.getNotificationMessage(),
-            Matchers.equalTo("You will soon receive an email with a link to activate your account."));
-   }
+        String googleUsername = "zanata.test.1";
+        String googlePassword = getSignIn(googleUsername);
+        HomePage homePage =
+                new RegisterWorkFlow().registerGoogleOpenID("Zanata OpenID",
+                        "openidtest", googlePassword,
+                        googleUsername.concat("@gmail.com"));
+        assertThat(
+                "The registration message is shown",
+                homePage.getNotificationMessage(),
+                Matchers.equalTo("You will soon receive an email with a link to activate your account."));
+    }
 }

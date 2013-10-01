@@ -27,48 +27,44 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated.UpdateType;
 
-public class ReplaceText extends UpdateTransUnit
-{
-   private static final long serialVersionUID = 1L;
+public class ReplaceText extends UpdateTransUnit {
+    private static final long serialVersionUID = 1L;
 
-   private String searchText;
-   private String replaceText;
-   private boolean caseSensitive;
+    private String searchText;
+    private String replaceText;
+    private boolean caseSensitive;
 
-   private ReplaceText()
-   {
-      super(UpdateType.ReplaceText);
-   }
+    private ReplaceText() {
+        super(UpdateType.ReplaceText);
+    }
 
-   public ReplaceText(TransUnit transUnit, String searchText, String replaceText, boolean isCaseSensitive)
-   {
-      this(Collections.singletonList(transUnit), searchText, replaceText, isCaseSensitive);
-   }
+    public ReplaceText(TransUnit transUnit, String searchText,
+            String replaceText, boolean isCaseSensitive) {
+        this(Collections.singletonList(transUnit), searchText, replaceText,
+                isCaseSensitive);
+    }
 
-   public ReplaceText(List<TransUnit> transUnits, String searchText, String replaceText, boolean isCaseSensitive)
-   {
-      this();
-      caseSensitive = isCaseSensitive;
-      this.searchText = searchText;
-      this.replaceText = replaceText;
-      for (TransUnit tu : transUnits)
-      {
-         addTransUnit(new TransUnitUpdateRequest(tu.getId(), tu.getTargets(), tu.getStatus(), tu.getVerNum()));
-      }
-   }
+    public ReplaceText(List<TransUnit> transUnits, String searchText,
+            String replaceText, boolean isCaseSensitive) {
+        this();
+        caseSensitive = isCaseSensitive;
+        this.searchText = searchText;
+        this.replaceText = replaceText;
+        for (TransUnit tu : transUnits) {
+            addTransUnit(new TransUnitUpdateRequest(tu.getId(),
+                    tu.getTargets(), tu.getStatus(), tu.getVerNum()));
+        }
+    }
 
-   public String getSearchText()
-   {
-      return searchText;
-   }
+    public String getSearchText() {
+        return searchText;
+    }
 
-   public String getReplaceText()
-   {
-      return replaceText;
-   }
+    public String getReplaceText() {
+        return replaceText;
+    }
 
-   public boolean isCaseSensitive()
-   {
-      return caseSensitive;
-   }
+    public boolean isCaseSensitive() {
+        return caseSensitive;
+    }
 }

@@ -24,15 +24,14 @@ package org.zanata.webtrans.shared.model;
 import java.util.Date;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public abstract class ComparableByDate implements Comparable<ComparableByDate>
-{
-   protected abstract Date getDate();
+public abstract class ComparableByDate implements Comparable<ComparableByDate> {
+    protected abstract Date getDate();
 
-   @Override
-   public int compareTo(ComparableByDate o)
-   {
-      return getDate().compareTo(o.getDate());
-   }
+    @Override
+    public int compareTo(ComparableByDate o) {
+        return getDate().compareTo(o.getDate());
+    }
 }

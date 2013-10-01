@@ -15,162 +15,146 @@ import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class SideMenuView extends Composite implements SideMenuDisplay
-{
-   private static SideMenuViewUiBinder uiBinder = GWT.create(SideMenuViewUiBinder.class);
-   private Listener listener;
+public class SideMenuView extends Composite implements SideMenuDisplay {
+    private static SideMenuViewUiBinder uiBinder = GWT
+            .create(SideMenuViewUiBinder.class);
+    private Listener listener;
 
-   interface SideMenuViewUiBinder extends UiBinder<Widget, SideMenuView>
-   {
-   }
+    interface SideMenuViewUiBinder extends UiBinder<Widget, SideMenuView> {
+    }
 
-   interface Styles extends CssResource
-   {
-      String selectedButton();
+    interface Styles extends CssResource {
+        String selectedButton();
 
-      String alertTab();
+        String alertTab();
 
-      String notificationLabel();
+        String notificationLabel();
 
-      String menuButton();
+        String menuButton();
 
-      String mainPanel();
-   }
+        String mainPanel();
+    }
 
-   @UiField
-   Styles style;
+    @UiField
+    Styles style;
 
-   @UiField
-   InlineLabel notificationTab, optionsTab, validationOptionsTab, chatTab, notificationLabel;
-   
-   @UiField
-   TabLayoutPanel container;
-   
-   @Inject
-   public SideMenuView(final WebTransMessages messages, final OptionsDisplay optionView, final ValidationOptionsDisplay validationOptionView, final WorkspaceUsersDisplay workspaceUsersView, final NotificationDisplay notificationView)
-   {
-      initWidget(uiBinder.createAndBindUi(this));
+    @UiField
+    InlineLabel notificationTab, optionsTab, validationOptionsTab, chatTab,
+            notificationLabel;
 
+    @UiField
+    TabLayoutPanel container;
 
-      notificationTab.setTitle(messages.notification());
-      optionsTab.setTitle(messages.options());
-      validationOptionsTab.setTitle(messages.validationOptions());
-      chatTab.setTitle(messages.chatRoom());
+    @Inject
+    public SideMenuView(final WebTransMessages messages,
+            final OptionsDisplay optionView,
+            final ValidationOptionsDisplay validationOptionView,
+            final WorkspaceUsersDisplay workspaceUsersView,
+            final NotificationDisplay notificationView) {
+        initWidget(uiBinder.createAndBindUi(this));
 
-      container.add(notificationView.asWidget());
-      container.add(workspaceUsersView.asWidget());
-      container.add(optionView.asWidget());
-      container.add(validationOptionView.asWidget());
-   }
+        notificationTab.setTitle(messages.notification());
+        optionsTab.setTitle(messages.options());
+        validationOptionsTab.setTitle(messages.validationOptions());
+        chatTab.setTitle(messages.chatRoom());
 
-   @Override
-   public Widget asWidget()
-   {
-      return this;
-   }
+        container.add(notificationView.asWidget());
+        container.add(workspaceUsersView.asWidget());
+        container.add(optionView.asWidget());
+        container.add(validationOptionView.asWidget());
+    }
 
-   @UiHandler("optionsTab")
-   public void onOptionsClick(ClickEvent event)
-   {
-      listener.onOptionsClick();
-   }
+    @Override
+    public Widget asWidget() {
+        return this;
+    }
 
-   @UiHandler("notificationTab")
-   public void onNotificationClick(ClickEvent event)
-   {
-      listener.onNotificationClick();
-   }
+    @UiHandler("optionsTab")
+    public void onOptionsClick(ClickEvent event) {
+        listener.onOptionsClick();
+    }
 
-   @UiHandler("validationOptionsTab")
-   public void onValidationOptionsClick(ClickEvent event)
-   {
-      listener.onValidationOptionsClick();
-   }
+    @UiHandler("notificationTab")
+    public void onNotificationClick(ClickEvent event) {
+        listener.onNotificationClick();
+    }
 
-   @UiHandler("chatTab")
-   public void onChatClick(ClickEvent event)
-   {
-      listener.onChatClick();
-   }
+    @UiHandler("validationOptionsTab")
+    public void onValidationOptionsClick(ClickEvent event) {
+        listener.onValidationOptionsClick();
+    }
 
-   @Override
-   public void setSelectedTab(int view)
-   {
-      optionsTab.removeStyleName(style.selectedButton());
-      validationOptionsTab.removeStyleName(style.selectedButton());
-      chatTab.removeStyleName(style.selectedButton());
-      notificationTab.removeStyleName(style.selectedButton());
-      
-      switch (view)
-      {
-         case OPTION_VIEW: 
+    @UiHandler("chatTab")
+    public void onChatClick(ClickEvent event) {
+        listener.onChatClick();
+    }
+
+    @Override
+    public void setSelectedTab(int view) {
+        optionsTab.removeStyleName(style.selectedButton());
+        validationOptionsTab.removeStyleName(style.selectedButton());
+        chatTab.removeStyleName(style.selectedButton());
+        notificationTab.removeStyleName(style.selectedButton());
+
+        switch (view) {
+        case OPTION_VIEW:
             container.selectTab(OPTION_VIEW);
             optionsTab.addStyleName(style.selectedButton());
             break;
-         case VALIDATION_OPTION_VIEW: 
+        case VALIDATION_OPTION_VIEW:
             container.selectTab(VALIDATION_OPTION_VIEW);
             validationOptionsTab.addStyleName(style.selectedButton());
             break;
-         case WORKSPACEUSER_VIEW: 
+        case WORKSPACEUSER_VIEW:
             container.selectTab(WORKSPACEUSER_VIEW);
             chatTab.addStyleName(style.selectedButton());
             setChatTabAlert(false);
             break;
-         case NOTIFICATION_VIEW:
+        case NOTIFICATION_VIEW:
             container.selectTab(NOTIFICATION_VIEW);
             notificationTab.addStyleName(style.selectedButton());
-         break;
-         default:
             break;
-      }
-   }
+        default:
+            break;
+        }
+    }
 
-   @Override
-   public void setChatTabAlert(boolean alert)
-   {
-      if(alert)
-      {
-         chatTab.addStyleName(style.alertTab());
-      }
-      else
-      {
-         chatTab.removeStyleName(style.alertTab());
-      }
-   }
+    @Override
+    public void setChatTabAlert(boolean alert) {
+        if (alert) {
+            chatTab.addStyleName(style.alertTab());
+        } else {
+            chatTab.removeStyleName(style.alertTab());
+        }
+    }
 
-   @Override
-   public int getCurrentTab()
-   {
-      return container.getSelectedIndex();
-   }
+    @Override
+    public int getCurrentTab() {
+        return container.getSelectedIndex();
+    }
 
-   @Override
-   public void setNotificationText(int count, Severity severity)
-   {
-      notificationLabel.setText(String.valueOf(count));
-   }
+    @Override
+    public void setNotificationText(int count, Severity severity) {
+        notificationLabel.setText(String.valueOf(count));
+    }
 
-   @Override
-   public void setListener(Listener listener)
-   {
-      this.listener = listener;
-   }
+    @Override
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
 
-   @Override
-   public void setChatTabVisible(boolean visible)
-   {
-      chatTab.setVisible(visible);
-   }
+    @Override
+    public void setChatTabVisible(boolean visible) {
+        chatTab.setVisible(visible);
+    }
 
-   @Override
-   public void setValidationOptionsTabVisible(boolean visible)
-   {
-      validationOptionsTab.setVisible(visible);
-   }
+    @Override
+    public void setValidationOptionsTabVisible(boolean visible) {
+        validationOptionsTab.setVisible(visible);
+    }
 
-   @Override
-   public void setOptionsTabVisible(boolean visible)
-   {
-      optionsTab.setVisible(visible);
-   }
+    @Override
+    public void setOptionsTabVisible(boolean visible) {
+        optionsTab.setVisible(visible);
+    }
 }

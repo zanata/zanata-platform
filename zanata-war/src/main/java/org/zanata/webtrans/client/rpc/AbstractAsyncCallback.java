@@ -25,14 +25,13 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public abstract class AbstractAsyncCallback<T> implements AsyncCallback<T>
-{
-   @Override
-   public void onFailure(Throwable caught)
-   {
-      Log.error("failure", caught);
-   }
+public abstract class AbstractAsyncCallback<T> implements AsyncCallback<T> {
+    @Override
+    public void onFailure(Throwable caught) {
+        Log.error("failure", caught);
+    }
 
 }

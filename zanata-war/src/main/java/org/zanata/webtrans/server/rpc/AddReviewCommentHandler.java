@@ -53,88 +53,108 @@ import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Name("webtrans.gwt.AddReviewCommentHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(AddReviewCommentAction.class)
 @Slf4j
-public class AddReviewCommentHandler extends AbstractActionHandler<AddReviewCommentAction, AddReviewCommentResult>
-{
-   @In
-   private SecurityService securityServiceImpl;
+public class AddReviewCommentHandler extends
+        AbstractActionHandler<AddReviewCommentAction, AddReviewCommentResult> {
+    @In
+    private SecurityService securityServiceImpl;
 
-   @In
-   private TextFlowTargetDAO textFlowTargetDAO;
+    @In
+    private TextFlowTargetDAO textFlowTargetDAO;
 
-   @In(value = JpaIdentityStore.AUTHENTICATED_USER)
-   private HAccount authenticatedAccount;
+    @In(value = JpaIdentityStore.AUTHENTICATED_USER)
+    private HAccount authenticatedAccount;
 
-   @In
-   TransUnitTransformer transUnitTransformer;
+    @In
+    TransUnitTransformer transUnitTransformer;
 
-   @In
-   private LocaleService localeServiceImpl;
+    @In
+    private LocaleService localeServiceImpl;
 
-   @In
-   private TranslationWorkspaceManager translationWorkspaceManager;
+    @In
+    private TranslationWorkspaceManager translationWorkspaceManager;
 
-   @In
-   private ZanataIdentity identity;
+    @In
+    private ZanataIdentity identity;
 
-   @Override
-   public AddReviewCommentResult execute(AddReviewCommentAction action, ExecutionContext context) throws ActionException
-   {
-      throwExceptionIfCommentIsInvalid(action);
+    @Override
+    public AddReviewCommentResult execute(AddReviewCommentAction action,
+            ExecutionContext context) throws ActionException {
+        throwExceptionIfCommentIsInvalid(action);
 
-      WorkspaceId workspaceId = action.getWorkspaceId();
-      HProject project = securityServiceImpl.checkWorkspaceStatus(workspaceId);
+        WorkspaceId workspaceId = action.getWorkspaceId();
+        HProject project =
+                securityServiceImpl.checkWorkspaceStatus(workspaceId);
 
-      HTextFlowTarget hTextFlowTarget = textFlowTargetDAO.getTextFlowTarget(action.getTransUnitId().getValue(), workspaceId.getLocaleId());
-      if (hTextFlowTarget == null || hTextFlowTarget.getState().isUntranslated())
-      {
-         throw new ActionException("comment on untranslated message is pointless!");
-      }
+        HTextFlowTarget hTextFlowTarget =
+                textFlowTargetDAO.getTextFlowTarget(action.getTransUnitId()
+                        .getValue(), workspaceId.getLocaleId());
+        if (hTextFlowTarget == null
+                || hTextFlowTarget.getState().isUntranslated()) {
+            throw new ActionException(
+                    "comment on untranslated message is pointless!");
+        }
 
-      HLocale locale = localeServiceImpl.getByLocaleId(workspaceId.getLocaleId());
+        HLocale locale =
+                localeServiceImpl.getByLocaleId(workspaceId.getLocaleId());
 
-      identity.checkPermission("review-comment", locale, project);
+        identity.checkPermission("review-comment", locale, project);
 
-      TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(workspaceId);
+        TranslationWorkspace workspace =
+                translationWorkspaceManager.getOrRegisterWorkspace(workspaceId);
 
-      HTextFlowTargetReviewComment hComment = hTextFlowTarget.addReviewComment(action.getContent(), authenticatedAccount.getPerson());
-      textFlowTargetDAO.makePersistent(hTextFlowTarget);
-      textFlowTargetDAO.flush();
+        HTextFlowTargetReviewComment hComment =
+                hTextFlowTarget.addReviewComment(action.getContent(),
+                        authenticatedAccount.getPerson());
+        textFlowTargetDAO.makePersistent(hTextFlowTarget);
+        textFlowTargetDAO.flush();
 
-      publishTransUnitUpdatedEvent(action, locale, hTextFlowTarget, workspace);
+        publishTransUnitUpdatedEvent(action, locale, hTextFlowTarget, workspace);
 
-      return new AddReviewCommentResult(toDTO(hComment));
-   }
+        return new AddReviewCommentResult(toDTO(hComment));
+    }
 
-   private void throwExceptionIfCommentIsInvalid(AddReviewCommentAction action) throws ActionException
-   {
-      if (StringUtils.isBlank(action.getContent()))
-      {
-         throw new ActionException("comment can not be blank");
-      }
-   }
+    private void
+            throwExceptionIfCommentIsInvalid(AddReviewCommentAction action)
+                    throws ActionException {
+        if (StringUtils.isBlank(action.getContent())) {
+            throw new ActionException("comment can not be blank");
+        }
+    }
 
-   private void publishTransUnitUpdatedEvent(AddReviewCommentAction action, HLocale hLocale, HTextFlowTarget hTextFlowTarget, TranslationWorkspace workspace)
-   {
-      HTextFlow textFlow = hTextFlowTarget.getTextFlow();
-      TransUnit transUnit = transUnitTransformer.transform(textFlow, hTextFlowTarget, hLocale);
-      TransUnitUpdated transUnitUpdated = new TransUnitUpdated(new TransUnitUpdateInfo(true, false, action.getDocumentId(), transUnit, textFlow.getWordCount().intValue(), transUnit.getVerNum(), transUnit.getStatus()), action.getEditorClientId(), TransUnitUpdated.UpdateType.AddComment);
-      workspace.publish(transUnitUpdated);
-   }
+    private void publishTransUnitUpdatedEvent(AddReviewCommentAction action,
+            HLocale hLocale, HTextFlowTarget hTextFlowTarget,
+            TranslationWorkspace workspace) {
+        HTextFlow textFlow = hTextFlowTarget.getTextFlow();
+        TransUnit transUnit =
+                transUnitTransformer.transform(textFlow, hTextFlowTarget,
+                        hLocale);
+        TransUnitUpdated transUnitUpdated =
+                new TransUnitUpdated(new TransUnitUpdateInfo(true, false,
+                        action.getDocumentId(), transUnit, textFlow
+                                .getWordCount().intValue(),
+                        transUnit.getVerNum(), transUnit.getStatus()),
+                        action.getEditorClientId(),
+                        TransUnitUpdated.UpdateType.AddComment);
+        workspace.publish(transUnitUpdated);
+    }
 
-   private static ReviewComment toDTO(HTextFlowTargetReviewComment hComment)
-   {
-      return new ReviewComment(new ReviewCommentId(hComment.getId()), hComment.getComment(), hComment.getCommenterName(), hComment.getCreationDate(), hComment.getTargetVersion());
-   }
+    private static ReviewComment toDTO(HTextFlowTargetReviewComment hComment) {
+        return new ReviewComment(new ReviewCommentId(hComment.getId()),
+                hComment.getComment(), hComment.getCommenterName(),
+                hComment.getCreationDate(), hComment.getTargetVersion());
+    }
 
-   @Override
-   public void rollback(AddReviewCommentAction action, AddReviewCommentResult result, ExecutionContext context) throws ActionException
-   {
+    @Override
+    public void rollback(AddReviewCommentAction action,
+            AddReviewCommentResult result, ExecutionContext context)
+            throws ActionException {
 
-   }
+    }
 }

@@ -19,28 +19,32 @@ import org.zanata.webtrans.shared.rpc.RunDocValidationResult;
 @Name("webtrans.gwt.RunDocValidationHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(RunDocValidationAction.class)
-public class RunDocValidationHandler extends AbstractActionHandler<RunDocValidationAction, RunDocValidationResult>
-{
-   @In
-   private ValidationService validationServiceImpl;
+public class RunDocValidationHandler extends
+        AbstractActionHandler<RunDocValidationAction, RunDocValidationResult> {
+    @In
+    private ValidationService validationServiceImpl;
 
-   @Override
-   public RunDocValidationResult execute(RunDocValidationAction action, ExecutionContext context) throws ActionException
-   {
-      Map<DocumentId, Boolean> result = new HashMap<DocumentId, Boolean>();
+    @Override
+    public RunDocValidationResult execute(RunDocValidationAction action,
+            ExecutionContext context) throws ActionException {
+        Map<DocumentId, Boolean> result = new HashMap<DocumentId, Boolean>();
 
-      for (DocumentId documentId : action.getDocIds())
-      {
-         boolean hasError = validationServiceImpl.runDocValidations(documentId.getId(), action.getValidationIds(), action.getWorkspaceId().getLocaleId());
-         result.put(documentId, hasError);
-      }
+        for (DocumentId documentId : action.getDocIds()) {
+            boolean hasError =
+                    validationServiceImpl.runDocValidations(documentId.getId(),
+                            action.getValidationIds(), action.getWorkspaceId()
+                                    .getLocaleId());
+            result.put(documentId, hasError);
+        }
 
-      return new RunDocValidationResult(result, action.getWorkspaceId().getLocaleId());
-   }
+        return new RunDocValidationResult(result, action.getWorkspaceId()
+                .getLocaleId());
+    }
 
-   @Override
-   public void rollback(RunDocValidationAction action, RunDocValidationResult result, ExecutionContext context) throws ActionException
-   {
-   }
+    @Override
+    public void rollback(RunDocValidationAction action,
+            RunDocValidationResult result, ExecutionContext context)
+            throws ActionException {
+    }
 
 }

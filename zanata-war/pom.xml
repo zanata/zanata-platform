@@ -157,67 +157,103 @@
             <artifactId>maven-enforcer-plugin</artifactId>
             <executions>
               <execution>
-                <id>enforce-arquillian-jboss-home</id>
-                <goals>
-                  <goal>enforce</goal>
-                </goals>
-                <phase>pre-integration-test</phase>
+                <phase>package</phase>
                 <configuration>
-                  <rules combine.self="override">
-                    <requireProperty>
-                      <property>arquillian.jboss.home</property>
-                      <message xml:space="preserve">You must set the arquillian.jboss.home property to run integration tests</message>
-                    </requireProperty>
-                  </rules>
+                  <tasks>
+                    <touch file="${as7.skip.deploy.marker}" />
+                    <delete
+                      dir="${jboss.home}/standalone/deployments/zanata.war" />
+                    <copy
+                      todir="${jboss.home}/standalone/deployments/zanata.war">
+                      <fileset dir="${project.build.directory}/zanata" />
+                    </copy>
+                    <delete file="${as7.skip.deploy.marker}" />
+                    <touch file="${as7.dodeploy.marker}" />
+                  </tasks>
                 </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
               </execution>
             </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>replace-static</id>
+      <!-- This profile will replace exploded war in AS7 WITHOUT triggering a re-deployment.
+      If you change xhtml or similar which does not require a redeployment, you can use this profile. -->
+      <activation>
+        <property>
+          <name>env</name>
+          <value>dev</value>
+        </property>
+      </activation>
+      <properties>
+        <as7.skip.deploy.marker>${jboss.home}/standalone/deployments/zanata.war.skipdeploy</as7.skip.deploy.marker>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <configuration>
+                  <tasks>
+                    <touch file="${as7.skip.deploy.marker}" />
+                    <delete
+                      dir="${jboss.home}/standalone/deployments/zanata.war" />
+                    <copy
+                      todir="${jboss.home}/standalone/deployments/zanata.war">
+                      <fileset dir="${project.build.directory}/zanata" />
+                    </copy>
+                    <delete file="${as7.skip.deploy.marker}" />
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>nogwt</id>
+      <activation>
+        <property>
+          <name>nogwt</name>
+        </property>
+      </activation>
+      <properties>
+        <gwt.compiler.skip>true</gwt.compiler.skip>
+      </properties>
+    </profile>
+
+    <profile>
+      <!-- This profile tells GWT to use an alternative GWT module which has
+        only one permutation, and to compile in draft mode -->
+      <id>chrome</id>
+      <activation>
+        <property>
+          <name>chrome</name>
+        </property>
+      </activation>
+      <properties>
+        <zanata.gwt.module>org.zanata.webtrans.ApplicationSafari</zanata.gwt.module>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>gwt-maven-plugin</artifactId>
             <configuration>
-                <rules>
-                    <banDuplicateClasses>
-                       <ignoreClasses combine.children="append">
-                          <!-- TODO remove exclusions as offending jars are fixed or removed -->
-
-                          <!--  caused by gwt jars -->
-                           <!-- https://code.google.com/p/google-web-toolkit/issues/detail?id=4484 -->
-                          <ignoreClass>com.google.common.*</ignoreClass>
-                          <ignoreClass>com.google.gwt.*</ignoreClass>
-                          <ignoreClass>com.google.web.bindery.*</ignoreClass>
-                          <ignoreClass>com.ibm.icu.*</ignoreClass>
-                          <ignoreClass>com.steadystate.css.*</ignoreClass>
-                          <ignoreClass>javax.annotation.*</ignoreClass>
-                          <ignoreClass>javax.servlet.*</ignoreClass>
-                          <ignoreClass>javax.servlet.jsp.*</ignoreClass>
-                          <ignoreClass>javax.validation.ConstraintViolationException_CustomFieldSerializer</ignoreClass>
-                          <ignoreClass>javax.xml.*</ignoreClass>
-                          <ignoreClass>org.apache.commons.beanutils.*</ignoreClass>
-                          <ignoreClass>org.apache.commons.codec.*</ignoreClass>
-                          <ignoreClass>org.apache.commons.collections.*</ignoreClass>
-                          <ignoreClass>org.apache.commons.io.*</ignoreClass>
-                          <ignoreClass>org.apache.commons.lang.*</ignoreClass>
-                          <ignoreClass>org.apache.commons.logging.*</ignoreClass>
-                          <ignoreClass>org.apache.html.*</ignoreClass>
-                          <ignoreClass>org.apache.http.*</ignoreClass>
-                          <ignoreClass>org.apache.james.mime4j.*</ignoreClass>
-                          <ignoreClass>org.apache.regexp.*</ignoreClass>
-                          <ignoreClass>org.apache.wml.*</ignoreClass>
-                          <ignoreClass>org.apache.xerces.*</ignoreClass>
-                          <ignoreClass>org.apache.xml.*</ignoreClass>
-                          <ignoreClass>org.apache.xmlcommons.Version</ignoreClass>
-                          <ignoreClass>org.cyberneko.html.*</ignoreClass>
-                          <ignoreClass>org.hibernate.validator.*</ignoreClass>
-                          <ignoreClass>org.w3c.css.sac.*</ignoreClass>
-                          <ignoreClass>org.w3c.dom.*</ignoreClass>
-                          <ignoreClass>org.xml.sax.*</ignoreClass>
-
-                          <!-- Caused by arquillian -->
-                          <ignoreClass>org.osgi.util.*</ignoreClass>
-                          <!-- Caused by differing IDs for JDK_HOME/tools.jar -->
-                          <ignoreClass>com.sun.tools.*</ignoreClass>
-                          <ignoreClass>sun.*</ignoreClass>
-                       </ignoreClasses>
-                    </banDuplicateClasses>
-                </rules>
+              <draftCompile>true</draftCompile>
+              <style>PRETTY</style>
             </configuration>
          </plugin>
 
@@ -1921,38 +1957,544 @@
         <dependency>
           <groupId>commons-io</groupId>
           <artifactId>commons-io</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>javax.inject</groupId>
-          <artifactId>javax.inject</artifactId>
-          <scope>provided</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.jboss.resteasy</groupId>
-          <artifactId>jaxrs-api</artifactId>
-          <scope>provided</scope>
-        </dependency>
-        <dependency>
-          <groupId>javax.xml.bind</groupId>
-          <artifactId>jaxb-api</artifactId>
-          <scope>provided</scope>
-        </dependency>
-	   <dependency>
-	       <groupId>xmlunit</groupId>
-	       <artifactId>xmlunit</artifactId>
-	       <version>1.4</version>
-	   </dependency>
-      <dependency>
-         <groupId>xom</groupId>
-         <artifactId>xom</artifactId>
-         <exclusions>
-            <exclusion>
-               <artifactId>xalan</artifactId>
-               <groupId>xalan</groupId>
-            </exclusion>
-         </exclusions>
-      </dependency>
-	</dependencies>
+        </exclusion>
+        <exclusion>
+          <artifactId>servlet-api</artifactId>
+          <groupId>javax.servlet</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.solr</groupId>
+      <artifactId>solr-solrj</artifactId>
+    </dependency>
+
+    <!-- JBoss 5 Provided Dependencies -->
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-search</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.hibernate</groupId>
+          <artifactId>hibernate-commons-annotations</artifactId>
+        </exclusion>
+        <!-- we use javax.persistence:persistence-api -->
+        <exclusion>
+          <groupId>org.hibernate</groupId>
+          <artifactId>ejb3-persistence</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-search-analyzers</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hibernate.javax.persistence</groupId>
+      <artifactId>hibernate-jpa-2.0-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-search-engine</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-search-orm</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.el</groupId>
+      <artifactId>el-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.servlet.jsp</groupId>
+      <artifactId>jsp-api</artifactId>
+      <version>2.2</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.mail</groupId>
+      <artifactId>mail</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-library</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.annotation</groupId>
+      <artifactId>jsr250-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.xml.stream</groupId>
+      <artifactId>stax-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Container dependencies - provided by jboss -->
+
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+    </dependency>
+
+    <!-- needed by H2 triggers -->
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.javassist</groupId>
+      <artifactId>javassist</artifactId>
+    </dependency>
+
+    <!-- This must appear before arquillian dependencies -->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.shrinkwrap</groupId>
+      <artifactId>shrinkwrap-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.shrinkwrap.resolver</groupId>
+      <artifactId>shrinkwrap-resolver-api-maven</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.shrinkwrap.resolver</groupId>
+      <artifactId>shrinkwrap-resolver-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Arquillian 1.0.4 should eliminate the need for this dependency.
+     See https://bugzilla.redhat.com/show_bug.cgi?id=871413 -->
+    <!--<dependency>
+        <groupId>org.jboss.remoting3</groupId>
+        <artifactId>jboss-remoting</artifactId>
+        <version>3.2.14.GA</version>
+        <scope>provided</scope>
+    </dependency>-->
+
+    <dependency>
+      <groupId>org.jboss.arquillian.config</groupId>
+      <artifactId>arquillian-config-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.arquillian.container</groupId>
+      <artifactId>arquillian-container-test-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.arquillian.container</groupId>
+      <artifactId>arquillian-container-test-impl-base</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.arquillian.container</groupId>
+      <artifactId>arquillian-container-spi</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.arquillian.core</groupId>
+      <artifactId>arquillian-core-spi</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.arquillian.core</groupId>
+      <artifactId>arquillian-core-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.arquillian.junit</groupId>
+      <artifactId>arquillian-junit-container</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.arquillian.junit</groupId>
+      <artifactId>arquillian-junit-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.arquillian.test</groupId>
+      <artifactId>arquillian-test-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.arquillian.test</groupId>
+      <artifactId>arquillian-test-spi</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.as</groupId>
+      <artifactId>jboss-as-arquillian-container-managed</artifactId>
+      <version>7.1.3.Final</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>jboss-logmanager</artifactId>
+          <groupId>org.jboss.logmanager</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>log4j-jboss-logmanager</artifactId>
+          <groupId>org.jboss.logmanager</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.as</groupId>
+      <artifactId>jboss-as-arquillian-common</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>
+            log4j-jboss-logmanager
+          </artifactId>
+          <groupId>
+            org.jboss.logmanager
+          </groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.as</groupId>
+      <artifactId>jboss-as-controller-client</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.as</groupId>
+      <artifactId>jboss-as-controller</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.arquillian.extension</groupId>
+      <artifactId>arquillian-seam2</artifactId>
+      <version>1.0.0.Alpha2</version>
+      <exclusions>
+        <!-- This obsolete package duplicates some of the classes found in the newer descriptors-spi package -->
+        <exclusion>
+          <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+          <artifactId>shrinkwrap-descriptors-api</artifactId>
+        </exclusion>
+      </exclusions>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.arquillian.protocol</groupId>
+      <artifactId>arquillian-protocol-servlet</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>5.1.9</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.concordion</groupId>
+      <artifactId>concordion</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.concordion</groupId>
+      <artifactId>concordion-extensions</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <!-- We use testng in DBUnitImporter so can't use test scope here -->
+    </dependency>
+
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-all</artifactId>
+      <version>${groovy.version}</version>
+    </dependency>
+
+    <!-- GWT related dependencies -->
+
+    <dependency>
+      <groupId>commons-fileupload</groupId>
+      <artifactId>commons-fileupload</artifactId>
+    </dependency>
+
+    <dependency>
+      <!-- needed for GWT compilation of JAXB annotated classes -->
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <classifier>sources</classifier>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.gwt.inject</groupId>
+      <artifactId>gin</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.inject</groupId>
+      <artifactId>guice</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>net.customware.gwt.dispatch</groupId>
+      <artifactId>gwt-dispatch</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>net.customware.gwt.presenter</groupId>
+      <artifactId>gwt-presenter</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.allen-sauer.gwt.log</groupId>
+      <artifactId>gwt-log</artifactId>
+      <version>3.1.8</version>
+    </dependency>
+
+    <dependency>
+      <groupId>de.novanic.gwteventservice</groupId>
+      <artifactId>eventservice</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>de.novanic.gwteventservice</groupId>
+      <artifactId>gwteventservice</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>de.novanic.gwteventservice</groupId>
+      <artifactId>eventservice-rpc</artifactId>
+    </dependency>
+
+    <!-- end of GWT related dependencies -->
+
+    <dependency>
+      <groupId>org.liquibase</groupId>
+      <artifactId>liquibase-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.liquibase.ext</groupId>
+      <artifactId>modify-column</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.mattbertolini</groupId>
+      <artifactId>liquibase-slf4j</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-exec</artifactId>
+      <version>1.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.ocpsoft.prettytime</groupId>
+      <artifactId>prettytime</artifactId>
+      <version>3.0.2.Final</version>
+    </dependency>
+
+    <!-- openid4java -->
+    <dependency>
+      <groupId>org.htmlparser</groupId>
+      <artifactId>htmlparser</artifactId>
+      <version>1.6</version>
+      <exclusions>
+        <!--  htmlparser tries to bring in java.home/lib/tools.jar -->
+        <exclusion>
+          <artifactId>tools</artifactId>
+          <groupId>com.sun</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.openid4java</groupId>
+      <artifactId>openid4java</artifactId>
+      <version>0.9.8</version>
+      <exclusions>
+        <exclusion>
+          <groupId>xml-apis</groupId>
+          <artifactId>xml-apis</artifactId>
+        </exclusion>
+        <exclusion>
+          <artifactId>commons-logging</artifactId>
+          <groupId>commons-logging</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.openxri</groupId>
+      <artifactId>openxri-client</artifactId>
+      <version>1.2.0</version>
+      <exclusions>
+        <exclusion>
+          <groupId>xalan</groupId>
+          <artifactId>xalan</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>xerces</groupId>
+          <artifactId>xercesImpl</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-jcl</artifactId>
+        </exclusion>
+        <exclusion>
+          <artifactId>commons-logging</artifactId>
+          <groupId>commons-logging</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.openxri</groupId>
+      <artifactId>openxri-syntax</artifactId>
+      <version>1.2.0</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-jcl</artifactId>
+        </exclusion>
+        <exclusion>
+          <artifactId>commons-logging</artifactId>
+          <groupId>commons-logging</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.picketbox</groupId>
+      <artifactId>picketbox</artifactId>
+      <version>4.0.14.Final</version>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.validation</groupId>
+      <artifactId>validation-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>antlr</groupId>
+      <artifactId>antlr</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!--  missing dependencies identified by mvn dependency:analyze: -->
+
+    <dependency>
+      <groupId>org.fedorahosted.tennera</groupId>
+      <artifactId>jgettext</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.beust</groupId>
+      <artifactId>jcommander</artifactId>
+      <version>1.12</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>jaxrs-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>xmlunit</groupId>
+      <artifactId>xmlunit</artifactId>
+      <version>1.4</version>
+    </dependency>
+    <dependency>
+      <groupId>xom</groupId>
+      <artifactId>xom</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>xalan</artifactId>
+          <groupId>xalan</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
 
 
 </project>

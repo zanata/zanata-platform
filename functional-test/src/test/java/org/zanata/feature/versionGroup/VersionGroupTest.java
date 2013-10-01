@@ -28,11 +28,11 @@ import org.zanata.concordion.IndexPageBuilderExtension;
 import org.zanata.feature.ConcordionTest;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @RunWith(ConcordionRunner.class)
-@Extensions({IndexPageBuilderExtension.class})
+@Extensions({ IndexPageBuilderExtension.class })
 @Category(ConcordionTest.class)
-public class VersionGroupTest
-{
+public class VersionGroupTest {
 }

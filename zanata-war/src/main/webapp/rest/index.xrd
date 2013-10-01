@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <XRD xmlns='http://docs.oasis-open.org/ns/xri/xrd-1.0'>
 
-  <!-- AccountsService (not yet implemented) 
+  <!-- AccountsService (not yet implemented)
   <Link
     type="application/vnd.zanata.accounts+xml"
     href="accounts"/>
@@ -26,7 +26,7 @@
   <Link
     type="application/vnd.zanata.project.iteration.document+xml"
     template="projects/p/{projectSlug}/iterations/i/{iterationSlug}/r"/>
-	
+
       <!-- GlossaryService -->
   <Link
     type="application/vnd.zanata.glossary+xml"

@@ -61,6 +61,4 @@ Font license info
 
    Author:    Crowdsourced, for Fontello project
    License:   SIL (http://scripts.sil.org/OFL)
-   Homepage:  
-
-
+   Homepage:

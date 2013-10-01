@@ -1,46 +1,55 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:rich="http://richfaces.org/rich"
-    xmlns:a4j="http://richfaces.org/a4j"
-    xmlns:s="http://jboss.org/schema/seam/taglib">
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:s="http://jboss.org/schema/seam/taglib">
 
-  <ui:composition template="../WEB-INF/template/template_2x.xhtml">
+<ui:composition template="../WEB-INF/template/template_2x.xhtml">
 
-    <ui:define name="page_title">#{roleAction.role} - #{messages['jsf.RoleDetails']}</ui:define>
-    <ui:define name="center_content">
-      <h:form>
-        <s:token allowMultiplePosts="true" />
-        <rich:panel>
-          <f:facet name="header">#{messages['jsf.RoleDetails']}</f:facet>
+  <ui:define
+    name="page_title">#{roleAction.role} - #{messages['jsf.RoleDetails']}</ui:define>
+  <ui:define name="center_content">
+    <h:form>
+      <s:token allowMultiplePosts="true"/>
+      <rich:panel>
+        <f:facet name="header">#{messages['jsf.RoleDetails']}</f:facet>
 
-          <s:decorate id="roleField" template="../WEB-INF/layout/edit.xhtml" enclose="true">
-            <ui:define name="label">#{messages['jsf.Role']}</ui:define>
-            <h:inputText id="role" value="#{roleAction.role}" readonly="#{identityManager.userExists(roleAction.role)}" required="true">
-                <a4j:ajax event="blur" render="roleField" />
-            </h:inputText>
-          </s:decorate>
+        <s:decorate id="roleField" template="../WEB-INF/layout/edit.xhtml"
+          enclose="true">
+          <ui:define name="label">#{messages['jsf.Role']}</ui:define>
+          <h:inputText id="role" value="#{roleAction.role}"
+            readonly="#{identityManager.userExists(roleAction.role)}"
+            required="true">
+            <a4j:ajax event="blur" render="roleField"/>
+          </h:inputText>
+        </s:decorate>
 
-          <s:decorate id="groupsField" template="../WEB-INF/layout/edit.xhtml">
-            <ui:define name="label">#{messages['jsf.MemberOf']}</ui:define>
-              <h:selectManyCheckbox id="groups" value="#{roleAction.groups}" layout="pageDirection">
-                <s:selectItems value="#{identityManager.listRoles()}" var="role" label="#{role}"/>
-              </h:selectManyCheckbox>
-          </s:decorate>
+        <s:decorate id="groupsField" template="../WEB-INF/layout/edit.xhtml">
+          <ui:define name="label">#{messages['jsf.MemberOf']}</ui:define>
+          <h:selectManyCheckbox id="groups" value="#{roleAction.groups}"
+            layout="pageDirection">
+            <s:selectItems value="#{identityManager.listRoles()}" var="role"
+              label="#{role}"/>
+          </h:selectManyCheckbox>
+        </s:decorate>
 
-          <div style="clear:both"/>
+        <div style="clear:both"/>
 
-          <div class="actionButtons">
-            <h:commandButton value="#{messages['jsf.Save']}" action="#{roleAction.save}"/>
-            <s:button view="/admin/rolemanager.xhtml" value="#{messages['jsf.Cancel']}" propagation="end"/>
-          </div>
+        <div class="actionButtons">
+          <h:commandButton value="#{messages['jsf.Save']}"
+            action="#{roleAction.save}"/>
+          <s:button view="/admin/rolemanager.xhtml"
+            value="#{messages['jsf.Cancel']}" propagation="end"/>
+        </div>
 
-        </rich:panel>
-      </h:form>
+      </rich:panel>
+    </h:form>
 
-    </ui:define>
+  </ui:define>
 
-  </ui:composition>
+</ui:composition>
 </html>

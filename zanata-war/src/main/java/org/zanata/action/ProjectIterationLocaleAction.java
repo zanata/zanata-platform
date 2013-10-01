@@ -39,122 +39,106 @@ import org.zanata.service.LocaleService;
 
 @Name("projectIterationLocaleAction")
 @Scope(ScopeType.PAGE)
-public class ProjectIterationLocaleAction implements Serializable
-{
+public class ProjectIterationLocaleAction implements Serializable {
 
-   private static final long serialVersionUID = 1L;
-   private List<String> customizedLocales = new ArrayList<String>();
-   private List<String> availableList = new ArrayList<String>();
-   private Map<String, String> globalItems;
-   private Map<String, String> availableItems;
-   @Out(required = false)
-   private Map<String, String> iterationCustomizedItems;
-   @Out(required = false)
-   private Boolean iterationOverrideLocales;
-   private boolean setting;
-   @Logger
-   Log log;
+    private static final long serialVersionUID = 1L;
+    private List<String> customizedLocales = new ArrayList<String>();
+    private List<String> availableList = new ArrayList<String>();
+    private Map<String, String> globalItems;
+    private Map<String, String> availableItems;
+    @Out(required = false)
+    private Map<String, String> iterationCustomizedItems;
+    @Out(required = false)
+    private Boolean iterationOverrideLocales;
+    private boolean setting;
+    @Logger
+    Log log;
 
-   @In
-   private ProjectIterationHome projectIterationHome;
+    @In
+    private ProjectIterationHome projectIterationHome;
 
-   @In
-   LocaleService localeServiceImpl;
+    @In
+    LocaleService localeServiceImpl;
 
-   public void toCustomizedLocales()
-   {
-      if (!availableList.isEmpty())
-      {
-         for (String op : availableList)
-         {
-            iterationCustomizedItems.put(op, op);
-            availableItems.remove(op);
-         }
-      }
-   }
+    public void toCustomizedLocales() {
+        if (!availableList.isEmpty()) {
+            for (String op : availableList) {
+                iterationCustomizedItems.put(op, op);
+                availableItems.remove(op);
+            }
+        }
+    }
 
-   public void removeFromCustomizedLocales()
-   {
-      if (!customizedLocales.isEmpty())
-      {
-         for (String op : customizedLocales)
-         {
-            iterationCustomizedItems.remove(op);
-            availableItems.put(op, op);
-         }
-      }
+    public void removeFromCustomizedLocales() {
+        if (!customizedLocales.isEmpty()) {
+            for (String op : customizedLocales) {
+                iterationCustomizedItems.remove(op);
+                availableItems.put(op, op);
+            }
+        }
 
-   }
+    }
 
-   public List<String> getCustomizedLocales()
-   {
-      return customizedLocales;
-   }
+    public List<String> getCustomizedLocales() {
+        return customizedLocales;
+    }
 
-   public void setCustomizedLocales(List<String> var)
-   {
-      customizedLocales = var;
-   }
+    public void setCustomizedLocales(List<String> var) {
+        customizedLocales = var;
+    }
 
-   public List<String> getAvailableList()
-   {
-      return availableList;
-   }
+    public List<String> getAvailableList() {
+        return availableList;
+    }
 
-   public void setAvailableList(List<String> var)
-   {
-      availableList = var;
-   }
+    public void setAvailableList(List<String> var) {
+        availableList = var;
+    }
 
-   public Map<String, String> getIterationCustomizedItems()
-   {
-      return iterationCustomizedItems;
-   }
+    public Map<String, String> getIterationCustomizedItems() {
+        return iterationCustomizedItems;
+    }
 
-   @Factory("iterationAvailableItems")
-   public Map<String, String> loadItems()
-   {
-      log.debug("load iterationCustomizedItems");
-      HProjectIteration iteration = projectIterationHome.getInstance();
-      availableItems = new TreeMap<String, String>();
-      iterationCustomizedItems = localeServiceImpl.getIterationCustomizedLocalesItems(iteration.getProject().getSlug(), iteration.getSlug());
-      globalItems = localeServiceImpl.getIterationGlobalLocaleItems(iteration.getProject().getSlug());
-      if (iterationCustomizedItems.isEmpty())
-      {
-         iterationCustomizedItems = localeServiceImpl.getDefaultCustomizedLocalesItems();
-      }
-      
-      for (String op : globalItems.keySet())
-      {
-         if (!iterationCustomizedItems.containsKey(op))
-         {
-            availableItems.put(op, op);
-         }
-      }
-      return availableItems;
-   }
+    @Factory("iterationAvailableItems")
+    public Map<String, String> loadItems() {
+        log.debug("load iterationCustomizedItems");
+        HProjectIteration iteration = projectIterationHome.getInstance();
+        availableItems = new TreeMap<String, String>();
+        iterationCustomizedItems =
+                localeServiceImpl.getIterationCustomizedLocalesItems(iteration
+                        .getProject().getSlug(), iteration.getSlug());
+        globalItems =
+                localeServiceImpl.getIterationGlobalLocaleItems(iteration
+                        .getProject().getSlug());
+        if (iterationCustomizedItems.isEmpty()) {
+            iterationCustomizedItems =
+                    localeServiceImpl.getDefaultCustomizedLocalesItems();
+        }
 
-   public void setSetting(boolean var)
-   {
-      setting = var;
-      iterationOverrideLocales = setting;
-   }
+        for (String op : globalItems.keySet()) {
+            if (!iterationCustomizedItems.containsKey(op)) {
+                availableItems.put(op, op);
+            }
+        }
+        return availableItems;
+    }
 
-   public boolean getSetting()
-   {
-      if (iterationOverrideLocales == null)
-      {
-         if (projectIterationHome.getInstance() == null)
-         {
-            setting = false;
-         }
-         else
-         {
-            setting = projectIterationHome.getInstance().isOverrideLocales();
-         }
-         iterationOverrideLocales = setting;
-      }
-      return setting;
-   }
+    public void setSetting(boolean var) {
+        setting = var;
+        iterationOverrideLocales = setting;
+    }
+
+    public boolean getSetting() {
+        if (iterationOverrideLocales == null) {
+            if (projectIterationHome.getInstance() == null) {
+                setting = false;
+            } else {
+                setting =
+                        projectIterationHome.getInstance().isOverrideLocales();
+            }
+            iterationOverrideLocales = setting;
+        }
+        return setting;
+    }
 
 }

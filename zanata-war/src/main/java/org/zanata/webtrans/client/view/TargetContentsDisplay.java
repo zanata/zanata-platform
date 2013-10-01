@@ -36,85 +36,85 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.ValidationAction;
 
-public interface TargetContentsDisplay extends WidgetDisplay, HasTransUnitId, HasUpdateValidationMessage, NeedsRefresh
-{
-   void showButtons(boolean displayButtons);
+public interface TargetContentsDisplay extends WidgetDisplay, HasTransUnitId,
+        HasUpdateValidationMessage, NeedsRefresh {
+    void showButtons(boolean displayButtons);
 
-   void focusEditor(int currentEditorIndex);
+    void focusEditor(int currentEditorIndex);
 
-   void addUndo(UndoLink undoLink);
+    void addUndo(UndoLink undoLink);
 
-   void setValueAndCreateNewEditors(TransUnit transUnit);
+    void setValueAndCreateNewEditors(TransUnit transUnit);
 
-   Integer getVerNum();
+    Integer getVerNum();
 
-   void setToMode(ToggleEditor.ViewMode viewMode);
+    void setToMode(ToggleEditor.ViewMode viewMode);
 
-   void highlightSearch(String findMessage);
+    void highlightSearch(String findMessage);
 
-   List<String> getCachedTargets();
+    List<String> getCachedTargets();
 
-   List<String> getNewTargets();
+    List<String> getNewTargets();
 
-   ArrayList<ToggleEditor> getEditors();
+    ArrayList<ToggleEditor> getEditors();
 
-   void setListener(Listener listener);
+    void setListener(Listener listener);
 
-   void revertEditorContents();
+    void revertEditorContents();
 
-   void setState(EditingState editingState);
+    void setState(EditingState editingState);
 
-   EditingState getEditingState();
+    EditingState getEditingState();
 
-   void updateCachedTargetsAndVersion(List<String> targets, Integer verNum, ContentState status);
+    void updateCachedTargetsAndVersion(List<String> targets, Integer verNum,
+            ContentState status);
 
-   void setEnableSpellCheck(boolean spellCheckEnabled);
+    void setEnableSpellCheck(boolean spellCheckEnabled);
 
-   void updateCommentIndicator(int commentsCount);
+    void updateCommentIndicator(int commentsCount);
 
-   ContentState getCachedState();
+    ContentState getCachedState();
 
-   interface Listener
-   {
-      void validate(ToggleEditor editor);
+    interface Listener {
+        void validate(ToggleEditor editor);
 
-      void saveAsApprovedAndMoveNext(TransUnitId transUnitId);
+        void saveAsApprovedAndMoveNext(TransUnitId transUnitId);
 
-      void copySource(ToggleEditor editor, TransUnitId id);
+        void copySource(ToggleEditor editor, TransUnitId id);
 
-      void onCancel(TransUnitId transUnitId);
+        void onCancel(TransUnitId transUnitId);
 
-      void saveAsFuzzy(TransUnitId transUnitId);
+        void saveAsFuzzy(TransUnitId transUnitId);
 
-      boolean isDisplayButtons();
+        boolean isDisplayButtons();
 
-      boolean isReadOnly();
+        boolean isReadOnly();
 
-      void showHistory(TransUnitId transUnitId);
+        void showHistory(TransUnitId transUnitId);
 
-      void onEditorClicked(TransUnitId id, int editorIndex);
+        void onEditorClicked(TransUnitId id, int editorIndex);
 
-      void setEditingState(TransUnitId transUnitId, EditingState editingState);
+        void
+                setEditingState(TransUnitId transUnitId,
+                        EditingState editingState);
 
-      void saveUserDecision(Boolean value);
+        void saveUserDecision(Boolean value);
 
-      UserConfigHolder.ConfigurationState getConfigState();
+        UserConfigHolder.ConfigurationState getConfigState();
 
-      boolean canReview();
-      
-      boolean canEditTranslation();
+        boolean canReview();
 
-      void acceptTranslation(TransUnitId id);
+        boolean canEditTranslation();
 
-      void rejectTranslation(TransUnitId id);
-   }
+        void acceptTranslation(TransUnitId id);
 
-   enum EditingState
-   {
-      SAVING, UNSAVED, SAVED
-   }
+        void rejectTranslation(TransUnitId id);
+    }
 
-   Map<ValidationAction, List<String>> getErrorMessages();
-   
-   
+    enum EditingState {
+        SAVING, UNSAVED, SAVED
+    }
+
+    Map<ValidationAction, List<String>> getErrorMessages();
+
 }

@@ -29,25 +29,24 @@ import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.zanata.dao.PersonDAO;
 
-public class DuplicateEmailValidator implements ConstraintValidator<NotDuplicateEmail, String>, Serializable
-{
-   private static final long serialVersionUID = 1L;
+public class DuplicateEmailValidator implements
+        ConstraintValidator<NotDuplicateEmail, String>, Serializable {
+    private static final long serialVersionUID = 1L;
 
-   @Override
-   public boolean isValid(String string, ConstraintValidatorContext context)
-   {
-      if (string == null)
-         return true;
-      if (string.length() == 0)
-         return true;
-      PersonDAO personDAO = (PersonDAO) Component.getInstance(PersonDAO.class, ScopeType.STATELESS);
-      return personDAO.findByEmail(string) == null;
-   }
+    @Override
+    public boolean isValid(String string, ConstraintValidatorContext context) {
+        if (string == null)
+            return true;
+        if (string.length() == 0)
+            return true;
+        PersonDAO personDAO =
+                (PersonDAO) Component.getInstance(PersonDAO.class,
+                        ScopeType.STATELESS);
+        return personDAO.findByEmail(string) == null;
+    }
 
-
-   @Override
-   public void initialize(NotDuplicateEmail parameters)
-   {
-   }
+    @Override
+    public void initialize(NotDuplicateEmail parameters) {
+    }
 
 }

@@ -2,17 +2,17 @@
  * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
- * 
+ *
  * This is free software; you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
@@ -42,107 +42,104 @@ import org.zanata.service.UserAccountService;
 import org.zanata.util.HashUtil;
 
 /**
- * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz <a
+ *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Name("userAccountServiceImpl")
 @Scope(ScopeType.STATELESS)
-public class UserAccountServiceImpl implements UserAccountService
-{
-   @Logger
-   private Log log;
+public class UserAccountServiceImpl implements UserAccountService {
+    @Logger
+    private Log log;
 
-   @In
-   private Session session;
+    @In
+    private Session session;
 
-   @In
-   private AccountDAO accountDAO;
+    @In
+    private AccountDAO accountDAO;
 
-   @In
-   private RoleAssignmentRuleDAO roleAssignmentRuleDAO;
+    @In
+    private RoleAssignmentRuleDAO roleAssignmentRuleDAO;
 
-   @Override
-   public void clearPasswordResetRequests(HAccount account)
-   {
-      // TODO This should be done in a DAO
-      HAccountResetPasswordKey key =
-            (HAccountResetPasswordKey) session.createCriteria(HAccountResetPasswordKey.class)
-                  .add(Restrictions.eq("account", account))
-                  .uniqueResult();
-      if (key != null)
-      {
-         session.delete(key);
-         session.flush();
-      }
-   }
+    @Override
+    public void clearPasswordResetRequests(HAccount account) {
+        // TODO This should be done in a DAO
+        HAccountResetPasswordKey key =
+                (HAccountResetPasswordKey) session
+                        .createCriteria(HAccountResetPasswordKey.class)
+                        .add(Restrictions.eq("account", account))
+                        .uniqueResult();
+        if (key != null) {
+            session.delete(key);
+            session.flush();
+        }
+    }
 
-   @Override
-   public HAccountResetPasswordKey requestPasswordReset(HAccount account)
-   {
-      if (account == null || !account.isEnabled() || account.getPerson() == null)
-      {
-         return null;
-      }
+    @Override
+    public HAccountResetPasswordKey requestPasswordReset(HAccount account) {
+        if (account == null || !account.isEnabled()
+                || account.getPerson() == null) {
+            return null;
+        }
 
-      clearPasswordResetRequests(account);
+        clearPasswordResetRequests(account);
 
-      HAccountResetPasswordKey key = new HAccountResetPasswordKey();
-      key.setAccount(account);
-      key.setKeyHash(HashUtil.generateHash(account.getUsername() + account.getPasswordHash() + account.getPerson().getEmail() + account.getPerson().getName() + System.currentTimeMillis()));
-      session.persist(key);
+        HAccountResetPasswordKey key = new HAccountResetPasswordKey();
+        key.setAccount(account);
+        key.setKeyHash(HashUtil.generateHash(account.getUsername()
+                + account.getPasswordHash() + account.getPerson().getEmail()
+                + account.getPerson().getName() + System.currentTimeMillis()));
+        session.persist(key);
 
-      log.info("Sent password reset key to {0} ({1})", account.getPerson().getName(), account.getUsername());
-      return key;
-   }
+        log.info("Sent password reset key to {0} ({1})", account.getPerson()
+                .getName(), account.getUsername());
+        return key;
+    }
 
-   @Override
-   public HAccount runRoleAssignmentRules(HAccount account, HCredentials credentials, String policyName)
-   {
-      List<HRoleAssignmentRule> allRules = roleAssignmentRuleDAO.findAll();
+    @Override
+    public HAccount runRoleAssignmentRules(HAccount account,
+            HCredentials credentials, String policyName) {
+        List<HRoleAssignmentRule> allRules = roleAssignmentRuleDAO.findAll();
 
-      for(HRoleAssignmentRule rule : allRules)
-      {
-         boolean ruleMatches = false;
+        for (HRoleAssignmentRule rule : allRules) {
+            boolean ruleMatches = false;
 
-         if( rule.getIdentityRegExp() != null )
-         {
-            Pattern rulePattern = Pattern.compile( rule.getIdentityRegExp() );
-            String userName = account.getUsername();
-            if( credentials != null )
-            {
-               userName = credentials.getUser();
+            if (rule.getIdentityRegExp() != null) {
+                Pattern rulePattern = Pattern.compile(rule.getIdentityRegExp());
+                String userName = account.getUsername();
+                if (credentials != null) {
+                    userName = credentials.getUser();
+                }
+
+                if (rulePattern.matcher(userName).matches()) {
+                    ruleMatches = true;
+                }
             }
 
-            if( rulePattern.matcher( userName ).matches() )
-            {
-               ruleMatches = true;
+            if (rule.getPolicyName() != null
+                    && rule.getPolicyName().equals(policyName)) {
+                ruleMatches = ruleMatches && true;
             }
-         }
 
-         if( rule.getPolicyName() != null && rule.getPolicyName().equals( policyName ) )
-         {
-            ruleMatches = ruleMatches && true;
-         }
+            if (ruleMatches) {
+                // apply the rule
+                account.getRoles().add(rule.getRoleToAssign());
+            }
+        }
 
-         if( ruleMatches )
-         {
-            // apply the rule
-            account.getRoles().add( rule.getRoleToAssign() );
-         }
-      }
+        HAccount persistedAcc = accountDAO.makePersistent(account);
+        accountDAO.flush();
+        return persistedAcc;
+    }
 
-      HAccount persistedAcc = accountDAO.makePersistent( account );
-      accountDAO.flush();
-      return persistedAcc;
-   }
-
-   public void editUsername( String currentUsername, String newUsername )
-   {
-      Query updateQuery = session
-            .createQuery("update HAccount set username = :newUsername where username = :currentUsername")
-            .setParameter("newUsername", newUsername)
-            .setParameter("currentUsername", currentUsername);
-      updateQuery.setComment("UserAccountServiceImpl.editUsername");
-      updateQuery.executeUpdate();
-      session.getSessionFactory().evictQueries(); // Because a Natural Id was modified
-   }
+    public void editUsername(String currentUsername, String newUsername) {
+        Query updateQuery =
+                session.createQuery(
+                        "update HAccount set username = :newUsername where username = :currentUsername")
+                        .setParameter("newUsername", newUsername)
+                        .setParameter("currentUsername", currentUsername);
+        updateQuery.setComment("UserAccountServiceImpl.editUsername");
+        updateQuery.executeUpdate();
+        session.getSessionFactory().evictQueries(); // Because a Natural Id was
+                                                    // modified
+    }
 }

@@ -27,27 +27,29 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.inject.ImplementedBy;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @ImplementedBy(RevertTransUnitUpdateLink.class)
-public interface UndoLink extends InlineLink, HasText
-{
-   /**
-    * Give the UpdateTransUnitResult object returned from trans unit update handler, then it will create a click handler.
-    *
-    * @param updateTransUnitResult result from update translation rpc call.
-    *
-    * @see org.zanata.webtrans.server.rpc.UpdateTransUnitHandler
-    * @see org.zanata.webtrans.server.rpc.ReplaceTextHandler
-    * @see org.zanata.webtrans.server.rpc.TransMemoryMergeHandler
-    */
-   void prepareUndoFor(UpdateTransUnitResult updateTransUnitResult);
+public interface UndoLink extends InlineLink, HasText {
+    /**
+     * Give the UpdateTransUnitResult object returned from trans unit update
+     * handler, then it will create a click handler.
+     *
+     * @param updateTransUnitResult
+     *            result from update translation rpc call.
+     *
+     * @see org.zanata.webtrans.server.rpc.UpdateTransUnitHandler
+     * @see org.zanata.webtrans.server.rpc.ReplaceTextHandler
+     * @see org.zanata.webtrans.server.rpc.TransMemoryMergeHandler
+     */
+    void prepareUndoFor(UpdateTransUnitResult updateTransUnitResult);
 
-   void setUndoCallback(UndoCallback callback);
+    void setUndoCallback(UndoCallback callback);
 
-   interface UndoCallback
-   {
-      void preUndo();
-      void postUndoSuccess();
-   }
+    interface UndoCallback {
+        void preUndo();
+
+        void postUndoSuccess();
+    }
 }

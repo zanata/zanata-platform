@@ -29,46 +29,49 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.AbstractWorkspaceAction;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public interface SecurityService
-{
+public interface SecurityService {
 
-   /**
-    * This will check permission for performing an action upon translations with given project and locale
-    *
-    * @param action abstract workspace action which contains locale id and project slug
-    * @param translationAction translation action enum (at the moment only supports MODIFY)
-    * @throws org.jboss.seam.security.AuthorizationException, org.jboss.seam.security.NotLoggedInException org.zanata.webtrans.shared.NoSuchWorkspaceException
-    */
-   SecurityCheckResult checkPermission(AbstractWorkspaceAction action, TranslationAction translationAction) throws NoSuchWorkspaceException;
+    /**
+     * This will check permission for performing an action upon translations
+     * with given project and locale
+     *
+     * @param action
+     *            abstract workspace action which contains locale id and project
+     *            slug
+     * @param translationAction
+     *            translation action enum (at the moment only supports MODIFY)
+     * @throws org.jboss.seam.security.AuthorizationException
+     *             , org.jboss.seam.security.NotLoggedInException
+     *             org.zanata.webtrans.shared.NoSuchWorkspaceException
+     */
+    SecurityCheckResult checkPermission(AbstractWorkspaceAction action,
+            TranslationAction translationAction)
+            throws NoSuchWorkspaceException;
 
-   HProject checkWorkspaceStatus(WorkspaceId workspaceId);
+    HProject checkWorkspaceStatus(WorkspaceId workspaceId);
 
-   public enum TranslationAction
-   {
-      // security actions (to be implemented)
-      ADD("add-translation"),
-      MODIFY("modify-translation"),
-      REMOVE("remove-translation"),
-      REVIEW("review-translation");
+    public enum TranslationAction {
+        // security actions (to be implemented)
+        ADD("add-translation"), MODIFY("modify-translation"), REMOVE(
+                "remove-translation"), REVIEW("review-translation");
 
-      private final String action;
+        private final String action;
 
-      private TranslationAction(String action)
-      {
-         this.action = action;
-      }
+        private TranslationAction(String action) {
+            this.action = action;
+        }
 
-      public String action()
-      {
-         return action;
-      }
-   }
+        public String action() {
+            return action;
+        }
+    }
 
-   interface SecurityCheckResult
-   {
-      HLocale getLocale();
-      TranslationWorkspace getWorkspace();
-   }
+    interface SecurityCheckResult {
+        HLocale getLocale();
+
+        TranslationWorkspace getWorkspace();
+    }
 }

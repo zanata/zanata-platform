@@ -38,93 +38,104 @@ import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class SecurityFullTest
-{
-   @ClassRule
-   public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
+public class SecurityFullTest {
+    @ClassRule
+    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
 
-   @Before
-   public void before()
-   {
-      // Remove all cookies, no previous login is allowed
-      new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
-   }
+    @Before
+    public void before() {
+        // Remove all cookies, no previous login is allowed
+        new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
+    }
 
-   @Test
-   @Category(BasicAcceptanceTest.class)
-   public void signInSuccessful()
-   {
-      DashboardPage dashboardPage = new LoginWorkFlow().signIn("admin", "admin");
-      assertThat("User is logged in", dashboardPage.loggedInAs(), equalTo("admin"));
-   }
+    @Test
+    @Category(BasicAcceptanceTest.class)
+    public void signInSuccessful() {
+        DashboardPage dashboardPage =
+                new LoginWorkFlow().signIn("admin", "admin");
+        assertThat("User is logged in", dashboardPage.loggedInAs(),
+                equalTo("admin"));
+    }
 
-   @Test
-   public void signInFailure()
-   {
-      SignInPage signInPage = new LoginWorkFlow().signInFailure("nosuchuser", "password");
-      assertThat("Error message is shown", signInPage.getNotificationMessage(), equalTo("Login failed"));
-      assertThat("User has failed to log in", !signInPage.hasLoggedIn());
-   }
+    @Test
+    public void signInFailure() {
+        SignInPage signInPage =
+                new LoginWorkFlow().signInFailure("nosuchuser", "password");
+        assertThat("Error message is shown",
+                signInPage.getNotificationMessage(), equalTo("Login failed"));
+        assertThat("User has failed to log in", !signInPage.hasLoggedIn());
+    }
 
-   @Test
-   @Ignore("RHBZ-987707 | Cannot intercept email yet")
-   public void resetPasswordSuccessful()
-   {
-      SignInPage signInPage = new BasicWorkFlow().goToHome().clickSignInLink();
-      ResetPasswordPage resetPasswordPage = signInPage.goToResetPassword();
-      resetPasswordPage = resetPasswordPage.enterUserName("nosuchuser").enterEmail("nosuchuser@nosuchdomain.com");
-      resetPasswordPage = resetPasswordPage.resetPassword();
-      //TODO: Reset Success page
-   }
+    @Test
+    @Ignore("RHBZ-987707 | Cannot intercept email yet")
+    public void resetPasswordSuccessful() {
+        SignInPage signInPage =
+                new BasicWorkFlow().goToHome().clickSignInLink();
+        ResetPasswordPage resetPasswordPage = signInPage.goToResetPassword();
+        resetPasswordPage =
+                resetPasswordPage.enterUserName("nosuchuser").enterEmail(
+                        "nosuchuser@nosuchdomain.com");
+        resetPasswordPage = resetPasswordPage.resetPassword();
+        // TODO: Reset Success page
+    }
 
-   @Test
-   public void resetPasswordFailureForInvalidAccount()
-   {
-      SignInPage signInPage = new BasicWorkFlow().goToHome().clickSignInLink();
-      ResetPasswordPage resetPasswordPage = signInPage.goToResetPassword();
-      resetPasswordPage = resetPasswordPage.enterUserName("nosuchuser").enterEmail("nosuchuser@nosuchdomain.com");
-      resetPasswordPage = resetPasswordPage.resetFailure();
-      assertThat("A no such account message is displayed", resetPasswordPage.getNotificationMessage(),
-            equalTo("No such account found"));
-   }
+    @Test
+    public void resetPasswordFailureForInvalidAccount() {
+        SignInPage signInPage =
+                new BasicWorkFlow().goToHome().clickSignInLink();
+        ResetPasswordPage resetPasswordPage = signInPage.goToResetPassword();
+        resetPasswordPage =
+                resetPasswordPage.enterUserName("nosuchuser").enterEmail(
+                        "nosuchuser@nosuchdomain.com");
+        resetPasswordPage = resetPasswordPage.resetFailure();
+        assertThat("A no such account message is displayed",
+                resetPasswordPage.getNotificationMessage(),
+                equalTo("No such account found"));
+    }
 
-   @Test
-   public void invalidResetPasswordFieldEntries()
-   {
-      SignInPage signInPage = new BasicWorkFlow().goToHome().clickSignInLink();
-      ResetPasswordPage resetPasswordPage = signInPage.goToResetPassword();
-      resetPasswordPage = resetPasswordPage.enterUserName("b").enterEmail("b");
-      resetPasswordPage = resetPasswordPage.resetFailure();
+    @Test
+    public void invalidResetPasswordFieldEntries() {
+        SignInPage signInPage =
+                new BasicWorkFlow().goToHome().clickSignInLink();
+        ResetPasswordPage resetPasswordPage = signInPage.goToResetPassword();
+        resetPasswordPage =
+                resetPasswordPage.enterUserName("b").enterEmail("b");
+        resetPasswordPage = resetPasswordPage.resetFailure();
 
-      assertThat("Invalid email error is displayed", resetPasswordPage.waitForErrors(),
-            hasItem("not a well-formed email address"));
+        assertThat("Invalid email error is displayed",
+                resetPasswordPage.waitForErrors(),
+                hasItem("not a well-formed email address"));
 
-      // Both are valid, but show seemingly at random
-      assertThat(resetPasswordPage.getErrors().get(0),
-            either(equalTo("size must be between 3 and 20")).or(equalTo("must match ^[a-z\\d_]{3,20}$")));
+        // Both are valid, but show seemingly at random
+        assertThat(
+                resetPasswordPage.getErrors().get(0),
+                either(equalTo("size must be between 3 and 20")).or(
+                        equalTo("must match ^[a-z\\d_]{3,20}$")));
 
-   }
+    }
 
-   @Test
-   public void emptyResetPasswordFieldEntries()
-   {
-      SignInPage signInPage = new BasicWorkFlow().goToHome().clickSignInLink();
-      ResetPasswordPage resetPasswordPage = signInPage.goToResetPassword();
-      resetPasswordPage = resetPasswordPage.clearFields();
-      resetPasswordPage = resetPasswordPage.resetFailure();
+    @Test
+    public void emptyResetPasswordFieldEntries() {
+        SignInPage signInPage =
+                new BasicWorkFlow().goToHome().clickSignInLink();
+        ResetPasswordPage resetPasswordPage = signInPage.goToResetPassword();
+        resetPasswordPage = resetPasswordPage.clearFields();
+        resetPasswordPage = resetPasswordPage.resetFailure();
 
-      assertThat("Empty email error is displayed", resetPasswordPage.waitForErrors(),
-            hasItem("may not be empty"));
+        assertThat("Empty email error is displayed",
+                resetPasswordPage.waitForErrors(), hasItem("may not be empty"));
 
-      // All are valid, but may show at random
-      assertThat(resetPasswordPage.getErrors().get(0),
-            either(equalTo("size must be between 3 and 20"))
-                  .or(equalTo("may not be empty"))
-                  .or(equalTo("must match ^[a-z\\d_]{3,20}$")));
+        // All are valid, but may show at random
+        assertThat(
+                resetPasswordPage.getErrors().get(0),
+                either(equalTo("size must be between 3 and 20")).or(
+                        equalTo("may not be empty")).or(
+                        equalTo("must match ^[a-z\\d_]{3,20}$")));
 
-   }
+    }
 
 }

@@ -23,27 +23,21 @@ package org.zanata.workflow;
 import org.zanata.page.administration.TranslationMemoryPage;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-public class TranslationMemoryWorkFlow extends AbstractWebWorkFlow
-{
-   public TranslationMemoryWorkFlow()
-   {
-   }
+public class TranslationMemoryWorkFlow extends AbstractWebWorkFlow {
+    public TranslationMemoryWorkFlow() {
+    }
 
-   public TranslationMemoryPage createTranslationMemory(String name)
-   {
-      return createTranslationMemory(name, "");
-   }
+    public TranslationMemoryPage createTranslationMemory(String name) {
+        return createTranslationMemory(name, "");
+    }
 
-   public TranslationMemoryPage createTranslationMemory(String name, String description)
-   {
-      return goToHome()
-            .goToAdministration()
-            .goToTranslationMemoryPage()
-            .clickCreateNew()
-            .enterMemoryID(name)
-            .enterMemoryDescription(description)
-            .saveTM();
-   }
+    public TranslationMemoryPage createTranslationMemory(String name,
+            String description) {
+        return goToHome().goToAdministration().goToTranslationMemoryPage()
+                .clickCreateNew().enterMemoryID(name)
+                .enterMemoryDescription(description).saveTM();
+    }
 }

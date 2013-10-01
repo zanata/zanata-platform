@@ -16,13 +16,13 @@ import static org.hamcrest.MatcherAssert.*;
 import static org.zanata.webtrans.client.service.NavigationService.UNDEFINED;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Test(groups = "unit-tests")
-public class SinglePageDataModelImplTest
-{
-   private SinglePageDataModelImpl model;
-   // @formatter:off
+public class SinglePageDataModelImplTest {
+    private SinglePageDataModelImpl model;
+    // @formatter:off
    private List<TransUnit> data = Lists.newArrayList(
          TestFixture.makeTransUnit(1),
          TestFixture.makeTransUnit(2),
@@ -30,106 +30,102 @@ public class SinglePageDataModelImplTest
    );
    // @formatter:on
 
+    @BeforeMethod
+    public void setUp() throws Exception {
+        model = new SinglePageDataModelImpl();
+    }
 
-   @BeforeMethod
-   public void setUp() throws Exception
-   {
-      model = new SinglePageDataModelImpl();
-   }
+    @Test
+    public void canSetDataAndResetCurrentRowToUnselected() {
+        assertThat(model.getData(), Matchers.is(Matchers.<TransUnit> empty()));
 
+        model.setData(data);
 
-   @Test
-   public void canSetDataAndResetCurrentRowToUnselected()
-   {
-      assertThat(model.getData(), Matchers.is(Matchers.<TransUnit>empty()));
+        assertThat(model.getCurrentRow(), Matchers.equalTo(UNDEFINED));
+        assertThat(model.getData(), Matchers.is(data));
 
-      model.setData(data);
+        model.setSelected(1);
+        assertThat(model.getCurrentRow(), Matchers.equalTo(1));
+        model.setData(data);
+        assertThat(model.getCurrentRow(), Matchers.equalTo(UNDEFINED));
+    }
 
-      assertThat(model.getCurrentRow(), Matchers.equalTo(UNDEFINED));
-      assertThat(model.getData(), Matchers.is(data));
+    @Test
+    public void canGetByIdOrNull() {
+        model.setData(data);
 
-      model.setSelected(1);
-      assertThat(model.getCurrentRow(), Matchers.equalTo(1));
-      model.setData(data);
-      assertThat(model.getCurrentRow(), Matchers.equalTo(UNDEFINED));
-   }
+        TransUnit found = model.getByIdOrNull(new TransUnitId(2));
+        assertThat(found, Matchers.equalTo(data.get(1)));
 
-   @Test
-   public void canGetByIdOrNull()
-   {
-      model.setData(data);
+        TransUnit notFound = model.getByIdOrNull(new TransUnitId(99));
+        assertThat(notFound, Matchers.is(Matchers.nullValue()));
+    }
 
-      TransUnit found = model.getByIdOrNull(new TransUnitId(2));
-      assertThat(found, Matchers.equalTo(data.get(1)));
+    @Test
+    public void canFindIndexById() {
+        model.setData(data);
 
-      TransUnit notFound = model.getByIdOrNull(new TransUnitId(99));
-      assertThat(notFound, Matchers.is(Matchers.nullValue()));
-   }
+        int index = model.findIndexById(new TransUnitId(3));
+        assertThat(index, Matchers.is(2));
 
-   @Test
-   public void canFindIndexById()
-   {
-      model.setData(data);
+        int notFoundIndex = model.findIndexById(new TransUnitId(99));
+        assertThat(notFoundIndex, Matchers.is(UNDEFINED));
+    }
 
-      int index = model.findIndexById(new TransUnitId(3));
-      assertThat(index, Matchers.is(2));
+    @Test
+    public void canSetSelectedByIndex() {
+        model.setData(data);
 
-      int notFoundIndex = model.findIndexById(new TransUnitId(99));
-      assertThat(notFoundIndex, Matchers.is(UNDEFINED));
-   }
+        model.setSelected(2);
 
-   @Test
-   public void canSetSelectedByIndex()
-   {
-      model.setData(data);
+        assertThat(model.getCurrentRow(), Matchers.is(2));
+        assertThat(model.getSelectedOrNull(),
+                Matchers.sameInstance(data.get(2)));
+    }
 
-      model.setSelected(2);
+    @Test
+    public void selectedIsNullIfIndexIsOutOfRange() {
+        model.setData(data);
 
-      assertThat(model.getCurrentRow(), Matchers.is(2));
-      assertThat(model.getSelectedOrNull(), Matchers.sameInstance(data.get(2)));
-   }
+        model.setSelected(-1);
 
-   @Test
-   public void selectedIsNullIfIndexIsOutOfRange()
-   {
-      model.setData(data);
+        TransUnit result = model.getSelectedOrNull();
+        assertThat(result, Matchers.is(Matchers.nullValue()));
+    }
 
-      model.setSelected(-1);
+    @Test
+    public void willUpdateModelIfInCurrentPage() {
+        TransUnitId updatedTUId = new TransUnitId(3);
+        TransUnit updatedTransUnit =
+                TestFixture.makeTransUnit(3, ContentState.Approved);
+        List<TransUnit> oldData = ImmutableList.copyOf(data);
 
-      TransUnit result = model.getSelectedOrNull();
-      assertThat(result, Matchers.is(Matchers.nullValue()));
-   }
+        model.setData(data);
+        assertThat(model.getByIdOrNull(updatedTUId),
+                Matchers.not(Matchers.sameInstance(updatedTransUnit)));
 
-   @Test
-   public void willUpdateModelIfInCurrentPage()
-   {
-      TransUnitId updatedTUId = new TransUnitId(3);
-      TransUnit updatedTransUnit = TestFixture.makeTransUnit(3, ContentState.Approved);
-      List<TransUnit> oldData = ImmutableList.copyOf(data);
+        boolean updated = model.updateIfInCurrentPage(updatedTransUnit);
 
-      model.setData(data);
-      assertThat(model.getByIdOrNull(updatedTUId), Matchers.not(Matchers.sameInstance(updatedTransUnit)));
+        assertThat(updated, Matchers.is(true));
+        assertThat(model.getData(), Matchers.not(Matchers.equalTo(oldData)));
+        assertThat(model.getByIdOrNull(updatedTUId),
+                Matchers.sameInstance(updatedTransUnit));
+    }
 
-      boolean updated = model.updateIfInCurrentPage(updatedTransUnit);
+    @Test
+    public void willNotUpdateModelIfNotInCurrentPage() {
+        TransUnitId updatedTUId = new TransUnitId(9);
+        TransUnit updatedTransUnit =
+                TestFixture.makeTransUnit(9, ContentState.Approved);
+        List<TransUnit> oldData = ImmutableList.copyOf(data);
 
-      assertThat(updated, Matchers.is(true));
-      assertThat(model.getData(), Matchers.not(Matchers.equalTo(oldData)));
-      assertThat(model.getByIdOrNull(updatedTUId), Matchers.sameInstance(updatedTransUnit));
-   }
+        model.setData(data);
+        assertThat(model.getByIdOrNull(updatedTUId),
+                Matchers.not(Matchers.sameInstance(updatedTransUnit)));
 
-   @Test
-   public void willNotUpdateModelIfNotInCurrentPage()
-   {
-      TransUnitId updatedTUId = new TransUnitId(9);
-      TransUnit updatedTransUnit = TestFixture.makeTransUnit(9, ContentState.Approved);
-      List<TransUnit> oldData = ImmutableList.copyOf(data);
+        boolean updated = model.updateIfInCurrentPage(updatedTransUnit);
 
-      model.setData(data);
-      assertThat(model.getByIdOrNull(updatedTUId), Matchers.not(Matchers.sameInstance(updatedTransUnit)));
-
-      boolean updated = model.updateIfInCurrentPage(updatedTransUnit);
-
-      assertThat(updated, Matchers.is(false));
-      assertThat(model.getData(), Matchers.equalTo(oldData));
-   }
+        assertThat(updated, Matchers.is(false));
+        assertThat(model.getData(), Matchers.equalTo(oldData));
+    }
 }

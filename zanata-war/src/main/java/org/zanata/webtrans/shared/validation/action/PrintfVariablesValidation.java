@@ -33,103 +33,92 @@ import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 
 /**
- * 
+ *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- * 
+ *
  **/
-public class PrintfVariablesValidation extends AbstractValidationAction
-{
-   private static final String GLOBAL_FLAG = "g";
+public class PrintfVariablesValidation extends AbstractValidationAction {
+    private static final String GLOBAL_FLAG = "g";
 
-   // derived from translate toolkit printf style variable matching regex. See:
-   // http://translate.svn.sourceforge.net/viewvc/translate/src/trunk/translate/filters/checks.py?revision=17978&view=markup
-   private static final String VAR_REGEX = "%((?:\\d+\\$|\\(\\w+\\))?[+#-]*(\\d+)?(\\.\\d+)?(hh|h|ll|l|L|z|j|t)?[\\w%])";
+    // derived from translate toolkit printf style variable matching regex. See:
+    // http://translate.svn.sourceforge.net/viewvc/translate/src/trunk/translate/filters/checks.py?revision=17978&view=markup
+    private static final String VAR_REGEX =
+            "%((?:\\d+\\$|\\(\\w+\\))?[+#-]*(\\d+)?(\\.\\d+)?(hh|h|ll|l|L|z|j|t)?[\\w%])";
 
-   public PrintfVariablesValidation(ValidationId id, ValidationMessages messages)
-   {
-      this(id, messages.printfVariablesValidatorDesc(), messages);
-   }
+    public PrintfVariablesValidation(ValidationId id,
+            ValidationMessages messages) {
+        this(id, messages.printfVariablesValidatorDesc(), messages);
+    }
 
-   public PrintfVariablesValidation(ValidationId id, String description, ValidationMessages messages)
-   {
-      super(id, description, messages);
-   }
+    public PrintfVariablesValidation(ValidationId id, String description,
+            ValidationMessages messages) {
+        super(id, description, messages);
+    }
 
-   @Override
-   public List<String> doValidate(String source, String target)
-   {
-      ArrayList<String> errors = new ArrayList<String>();
+    @Override
+    public List<String> doValidate(String source, String target) {
+        ArrayList<String> errors = new ArrayList<String>();
 
-      ArrayList<String> sourceVars = findVars(source);
-      ArrayList<String> targetVars = findVars(target);
+        ArrayList<String> sourceVars = findVars(source);
+        ArrayList<String> targetVars = findVars(target);
 
-      String message = findMissingVariables(sourceVars, targetVars);
-      if (!Strings.isNullOrEmpty(message))
-      {
-         errors.add(message);
-      }
-      message = findAddedVariables(sourceVars, targetVars);
-      if (!Strings.isNullOrEmpty(message))
-      {
-         errors.add(message);
-      }
+        String message = findMissingVariables(sourceVars, targetVars);
+        if (!Strings.isNullOrEmpty(message)) {
+            errors.add(message);
+        }
+        message = findAddedVariables(sourceVars, targetVars);
+        if (!Strings.isNullOrEmpty(message)) {
+            errors.add(message);
+        }
 
-      return errors;
-   }
+        return errors;
+    }
 
-   protected String findMissingVariables(ArrayList<String> sourceVars,
-         ArrayList<String> targetVars)
-   {
-      List<String> missing = listMissing(sourceVars, targetVars);
+    protected String findMissingVariables(ArrayList<String> sourceVars,
+            ArrayList<String> targetVars) {
+        List<String> missing = listMissing(sourceVars, targetVars);
 
-      if (!missing.isEmpty())
-      {
-         return getMessages().varsMissing(missing);
-      }
+        if (!missing.isEmpty()) {
+            return getMessages().varsMissing(missing);
+        }
 
-      return null;
-   }
+        return null;
+    }
 
-   protected String findAddedVariables(ArrayList<String> sourceVars,
-         ArrayList<String> targetVars)
-   {
-      // missing from source = added
-      List<String> added = listMissing(targetVars, sourceVars);
-      if (!added.isEmpty())
-      {
-         return getMessages().varsAdded(added);
-      }
+    protected String findAddedVariables(ArrayList<String> sourceVars,
+            ArrayList<String> targetVars) {
+        // missing from source = added
+        List<String> added = listMissing(targetVars, sourceVars);
+        if (!added.isEmpty()) {
+            return getMessages().varsAdded(added);
+        }
 
-      return null;
-   }
+        return null;
+    }
 
-   private List<String> listMissing(ArrayList<String> baseVars, ArrayList<String> testVars)
-   {
-      ArrayList<String> remainingVars = Lists.newArrayList(testVars);
+    private List<String> listMissing(ArrayList<String> baseVars,
+            ArrayList<String> testVars) {
+        ArrayList<String> remainingVars = Lists.newArrayList(testVars);
 
-      ArrayList<String> unmatched = Lists.newArrayList();
+        ArrayList<String> unmatched = Lists.newArrayList();
 
-      for (String var : baseVars)
-      {
-         if (!remainingVars.remove(var))
-         {
-            unmatched.add(var);
-         }
-      }
-      return unmatched;
-   }
+        for (String var : baseVars) {
+            if (!remainingVars.remove(var)) {
+                unmatched.add(var);
+            }
+        }
+        return unmatched;
+    }
 
-   protected ArrayList<String> findVars(String inString)
-   {
-      ArrayList<String> vars = new ArrayList<String>();
-      // compile each time to reset index
-      RegExp varRegExp = RegExp.compile(VAR_REGEX, GLOBAL_FLAG);
-      MatchResult result = varRegExp.exec(inString);
-      while (result != null)
-      {
-         vars.add(result.getGroup(0));
-         result = varRegExp.exec(inString);
-      }
-      return vars;
-   }
+    protected ArrayList<String> findVars(String inString) {
+        ArrayList<String> vars = new ArrayList<String>();
+        // compile each time to reset index
+        RegExp varRegExp = RegExp.compile(VAR_REGEX, GLOBAL_FLAG);
+        MatchResult result = varRegExp.exec(inString);
+        while (result != null) {
+            vars.add(result.getGroup(0));
+            result = varRegExp.exec(inString);
+        }
+        return vars;
+    }
 }

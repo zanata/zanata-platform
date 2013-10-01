@@ -19,122 +19,134 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.notNullValue;
 
-public class ProjectIterationRestTest extends ZanataRestTest
-{
+public class ProjectIterationRestTest extends ZanataRestTest {
 
-   private static final String RESOURCE_PATH = "/projects/p/sample-project/iterations/i/";
+    private static final String RESOURCE_PATH =
+            "/projects/p/sample-project/iterations/i/";
 
-   @BeforeClass
-   void beforeClass()
-   {
-      Identity.setSecurityEnabled(false);
-   }
+    @BeforeClass
+    void beforeClass() {
+        Identity.setSecurityEnabled(false);
+    }
 
-   @Override
-   protected void prepareDBUnitOperations()
-   {
-      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
-   }
+    @Override
+    protected void prepareDBUnitOperations() {
+        beforeTestOperations.add(new DataSetOperation(
+                "org/zanata/test/model/ProjectsData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
+    }
 
-   @Override
-   protected void prepareResources()
-   {
-      SeamAutowire seamAutowire = getSeamAutowire();
-      seamAutowire.use("session", getSession());
+    @Override
+    protected void prepareResources() {
+        SeamAutowire seamAutowire = getSeamAutowire();
+        seamAutowire.use("session", getSession());
 
-      ProjectIterationService projectIterationService = seamAutowire.autowire(ProjectIterationService.class);
+        ProjectIterationService projectIterationService =
+                seamAutowire.autowire(ProjectIterationService.class);
 
-      resources.add(projectIterationService);
-   }
+        resources.add(projectIterationService);
+    }
 
-   @Test
-   public void retrieveNonExistingIteration()
-   {
-      IProjectIterationResource resource = getClientRequestFactory().createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve("1.0.0"));
+    @Test
+    public void retrieveNonExistingIteration() {
+        IProjectIterationResource resource =
+                getClientRequestFactory().createProxy(
+                        IProjectIterationResource.class,
+                        createBaseURI(RESOURCE_PATH).resolve("1.0.0"));
 
-      ClientResponse<ProjectIteration> response = resource.get();
-      assertThat(response.getStatus(), is(404));
-   }
+        ClientResponse<ProjectIteration> response = resource.get();
+        assertThat(response.getStatus(), is(404));
+    }
 
-   @Test
-   public void retrieveExistingProject()
-   {
-      IProjectIterationResource resource = getClientRequestFactory().createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve("1.0"));
+    @Test
+    public void retrieveExistingProject() {
+        IProjectIterationResource resource =
+                getClientRequestFactory().createProxy(
+                        IProjectIterationResource.class,
+                        createBaseURI(RESOURCE_PATH).resolve("1.0"));
 
-      ClientResponse<ProjectIteration> response = resource.get();
-      assertThat(response.getStatus(), lessThan(400));
-   }
+        ClientResponse<ProjectIteration> response = resource.get();
+        assertThat(response.getStatus(), lessThan(400));
+    }
 
-   private static final String SLUG = "my-new-iteration";
+    private static final String SLUG = "my-new-iteration";
 
-   @Test
-   public void create()
-   {
+    @Test
+    public void create() {
 
-      ProjectIteration iteration = new ProjectIteration(SLUG);
+        ProjectIteration iteration = new ProjectIteration(SLUG);
 
-      IProjectIterationResource resource = getClientRequestFactory().createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve(SLUG));
+        IProjectIterationResource resource =
+                getClientRequestFactory().createProxy(
+                        IProjectIterationResource.class,
+                        createBaseURI(RESOURCE_PATH).resolve(SLUG));
 
-      Response response = resource.put(iteration);
+        Response response = resource.put(iteration);
 
-      assertThat(response.getStatus(), is(Status.CREATED.getStatusCode()));
+        assertThat(response.getStatus(), is(Status.CREATED.getStatusCode()));
 
-      String location = (String) response.getMetadata().getFirst("Location");
+        String location = (String) response.getMetadata().getFirst("Location");
 
-      assertThat(location, endsWith("/iterations/i/" + SLUG));
+        assertThat(location, endsWith("/iterations/i/" + SLUG));
 
-      ClientResponse<ProjectIteration> response1 = resource.get();
-      assertThat(response1.getStatus(), is(Status.OK.getStatusCode()));
+        ClientResponse<ProjectIteration> response1 = resource.get();
+        assertThat(response1.getStatus(), is(Status.OK.getStatusCode()));
 
-      ProjectIteration iterationRes = response1.getEntity();
+        ProjectIteration iterationRes = response1.getEntity();
 
-      assertThat(iterationRes, notNullValue());
-      assertThat(iterationRes.getId(), is(SLUG));
-   }
+        assertThat(iterationRes, notNullValue());
+        assertThat(iterationRes.getId(), is(SLUG));
+    }
 
-   private static final String SLUG_INVALID = "my,new,iteration";
+    private static final String SLUG_INVALID = "my,new,iteration";
 
-   @Test
-   public void createWithInvalidSlug()
-   {
-      ProjectIteration iteration = new ProjectIteration(SLUG_INVALID);
+    @Test
+    public void createWithInvalidSlug() {
+        ProjectIteration iteration = new ProjectIteration(SLUG_INVALID);
 
-      IProjectIterationResource resource = getClientRequestFactory().createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve(SLUG_INVALID));
+        IProjectIterationResource resource =
+                getClientRequestFactory().createProxy(
+                        IProjectIterationResource.class,
+                        createBaseURI(RESOURCE_PATH).resolve(SLUG_INVALID));
 
-      Response response = resource.put(iteration);
+        Response response = resource.put(iteration);
 
-      assertThat(response.getStatus(), is(Status.NOT_FOUND.getStatusCode()));
-   }
+        assertThat(response.getStatus(), is(Status.NOT_FOUND.getStatusCode()));
+    }
 
-   @Test
-   public void putSameProjectIteration()
-   {
-      ProjectIteration iteration = new ProjectIteration(SLUG);
+    @Test
+    public void putSameProjectIteration() {
+        ProjectIteration iteration = new ProjectIteration(SLUG);
 
-      IProjectIterationResource resource = getClientRequestFactory().createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve(SLUG));
+        IProjectIterationResource resource =
+                getClientRequestFactory().createProxy(
+                        IProjectIterationResource.class,
+                        createBaseURI(RESOURCE_PATH).resolve(SLUG));
 
-      Response response = resource.put(iteration);
-      assertThat(response.getStatus(), is(Status.CREATED.getStatusCode()));
+        Response response = resource.put(iteration);
+        assertThat(response.getStatus(), is(Status.CREATED.getStatusCode()));
 
-      iteration = new ProjectIteration(SLUG);
-      response = resource.put(iteration);
-      assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
-   }
+        iteration = new ProjectIteration(SLUG);
+        response = resource.put(iteration);
+        assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
+    }
 
-   @Test
-   public void update()
-   {
-      create();
-      ProjectIteration iteration = new ProjectIteration(SLUG);
+    @Test
+    public void update() {
+        create();
+        ProjectIteration iteration = new ProjectIteration(SLUG);
 
-      IProjectIterationResource resource = getClientRequestFactory().createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve(SLUG));
+        IProjectIterationResource resource =
+                getClientRequestFactory().createProxy(
+                        IProjectIterationResource.class,
+                        createBaseURI(RESOURCE_PATH).resolve(SLUG));
 
-      Response response = resource.put(iteration);
-      assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
+        Response response = resource.put(iteration);
+        assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
 
-      ClientResponse<ProjectIteration> gotResponse = resource.get();
-      assertThat(gotResponse.getStatus(), is(Status.OK.getStatusCode()));
+        ClientResponse<ProjectIteration> gotResponse = resource.get();
+        assertThat(gotResponse.getStatus(), is(Status.OK.getStatusCode()));
 
-   }
+    }
 
 }
