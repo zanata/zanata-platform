@@ -82,8 +82,8 @@ import com.google.inject.Singleton;
 public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
         TransUnitEditEventHandler, UserConfigChangeHandler,
         RequestValidationEventHandler, InsertStringInEditorHandler,
-        CopyDataToEditorHandler, WorkspaceContextUpdateEventHandler
-{
+        CopyDataToEditorHandler, WorkspaceContextUpdateEventHandler {
+
     protected static final int LAST_INDEX = -2;
     private final EventBus eventBus;
     private final TableEditorMessages messages;

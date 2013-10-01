@@ -143,8 +143,7 @@ public class ValidationMessagePanelView extends Composite implements
     }
 
     public void setVisibleIfHasError(boolean visible) {
-        if (!displayMessages.isEmpty()) // has error message
-        {
+        if (!displayMessages.isEmpty()) { // has error message
             setVisible(visible);
         }
         setVisible(false);

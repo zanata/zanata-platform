@@ -61,12 +61,12 @@ public class CachedMethodResultInterceptor implements OptimizedInterceptor {
 
             Object[] keys = new Object[2 + ic.getParameters().length];
             int i = 0;
-            keys[i++] = ic.getTarget().getClass().getName(); // Key by class
-                                                             // name
-            keys[i++] = m.getName(); // Key by method name
-            for (Object param : ic.getParameters()) // Key by each parameter
-                                                    // called
-            {
+            // Key by class name:
+            keys[i++] = ic.getTarget().getClass().getName();
+            // Key by method name:
+            keys[i++] = m.getName();
+            // Key by each parameter called:
+            for (Object param : ic.getParameters()) {
                 keys[i++] = param;
             }
 
