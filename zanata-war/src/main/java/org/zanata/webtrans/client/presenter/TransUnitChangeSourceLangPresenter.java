@@ -27,6 +27,7 @@ import org.zanata.webtrans.client.events.ReferenceVisibleEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.view.TransUnitChangeSourceLangDisplay;
 import org.zanata.webtrans.shared.model.Locale;
 import org.zanata.webtrans.shared.rpc.GetLocaleList;
@@ -36,7 +37,7 @@ import org.zanata.webtrans.shared.rpc.GetLocaleListResult;
  * 
  * @author Hannes Eskebaek <hannes.eskebaek@databyran.se>
  */
-public class TransUnitChangeSourceLangPresenter extends WidgetPresenter<TransUnitChangeSourceLangDisplay> implements TransUnitChangeSourceLangDisplay.Listener, UserConfigChangeHandler
+public class TransUnitChangeSourceLangPresenter extends WidgetPresenter<TransUnitChangeSourceLangDisplay> implements TransUnitChangeSourceLangDisplay.Listener
 {
    private final CachingDispatchAsync dispatcher;
 
@@ -57,7 +58,10 @@ public class TransUnitChangeSourceLangPresenter extends WidgetPresenter<TransUni
    protected void onBind()
    {
       buildListBox();
-      registerHandler(eventBus.addHandler(UserConfigChangeEvent.TYPE, this));
+                
+      /* TODO: display.setOptionsState(userOptionsService.getConfigHolder().getState());
+      if(selectedlocale != noSelection... ){
+      transUnitSourceLangPresenter.setSelectedLocale()... */
    }
 
    @Override
@@ -90,6 +94,11 @@ public class TransUnitChangeSourceLangPresenter extends WidgetPresenter<TransUni
       });
    }
 
+   public void setSelectedLocale(Locale locale)
+   {
+      display.setSelectedLocale(locale);
+   }
+   
    @Override
    public void onShowReference(Locale selectedLocale)
    {
@@ -103,24 +112,23 @@ public class TransUnitChangeSourceLangPresenter extends WidgetPresenter<TransUni
    }
 
    @Override
-   public void onUserConfigChanged(UserConfigChangeEvent event)
+   public void onSourceLangListBoxOptionChanged(String selectedLocale)
    {
-      if (event == UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT)
-      {
-         setDisplayMode();
+      if(selectedLocale == null){
+         selectedLocale = configHolder.DEFAULT_SELECTED_REFERENCE;
       }
+      if (!configHolder.getState().getSelectedReferenceForSourceLang().equals(selectedLocale))
+      {
+         configHolder.setSelectedReferenceForSourceLang(selectedLocale);
+      }
+      eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
    }
-
+   
    private void setDisplayMode()
    {
-      if (configHolder.getState().isEnabledReferenceForSourceLang())
+      if (configHolder.getState().getSelectedReferenceForSourceLang() != "none")
       {
-         display.showReferenceList();
-      }
-      else
-      {
-         eventBus.fireEvent(new ReferenceVisibleEvent(null, false));
-         display.hideReferenceList();
+         //display.showReferenceList();
       }
    }
 }

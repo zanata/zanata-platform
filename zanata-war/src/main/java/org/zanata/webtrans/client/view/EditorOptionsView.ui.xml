@@ -86,7 +86,7 @@
                 <g:CheckBox ui:field="showTMChk" />
                 <g:CheckBox ui:field="showGlossaryChk" />
                 <g:CheckBox ui:field="showOptionalTransUnitDetailsChk" />
-                <g:CheckBox ui:field="enableReferenceForSourceLang" />
+                <g:HTMLPanel ui:field="sourceLangListBoxContainer" />
             </g:VerticalPanel>
         </g:cell>
 	                

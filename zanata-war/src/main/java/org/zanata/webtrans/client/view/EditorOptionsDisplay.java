@@ -1,5 +1,6 @@
 package org.zanata.webtrans.client.view;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
@@ -12,6 +13,8 @@ import org.zanata.webtrans.shared.rpc.NavOption;
  */
 public interface EditorOptionsDisplay extends WidgetDisplay
 {
+   void setSourceLangListBox(IsWidget sourceLangListBoxView);
+   
    void setListener(Listener listener);
 
    void setOptionsState(UserConfigHolder.ConfigurationState state);
@@ -35,7 +38,5 @@ public interface EditorOptionsDisplay extends WidgetDisplay
       void onTMOrGlossaryDisplayOptionsChanged(Boolean showTMChkValue, Boolean showGlossaryChkValue);
 
       void onDisplayTransUnitDetailsOptionChanged(Boolean showTransUnitDetailsChkValue);
-
-      void onEnableReferenceForSourceLangOptionChanged(Boolean value);
    }
 }

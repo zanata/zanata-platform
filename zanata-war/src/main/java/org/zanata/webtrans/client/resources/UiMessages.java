@@ -184,7 +184,7 @@ public interface UiMessages extends Messages
    @DefaultMessage("Highlight matches")
    String diffModeAsHighlight();
 
-   @DefaultMessage("Show reference for source language")
+   @DefaultMessage("Show reference translations from")
    String changeSourceLangDescription();
 
    @DefaultMessage("No reference found")
@@ -193,6 +193,6 @@ public interface UiMessages extends Messages
    @DefaultMessage("In")
    String inLocale();
 
-   @DefaultMessage("Choose a language")
+   @DefaultMessage("None")
    String chooseRefLang();
 }

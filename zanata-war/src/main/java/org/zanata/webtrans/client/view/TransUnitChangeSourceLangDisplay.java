@@ -11,6 +11,8 @@ public interface TransUnitChangeSourceLangDisplay extends WidgetDisplay
 {
    void buildListBox(List<Locale> locales);
 
+   void setSelectedLocale(Locale locale);
+
    void setListener(Listener listener);
 
    public void showReferenceList();
@@ -22,5 +24,7 @@ public interface TransUnitChangeSourceLangDisplay extends WidgetDisplay
       public void onShowReference(Locale selectedLocale);
 
       public void onHideReference();
+
+     void onSourceLangListBoxOptionChanged(String selectedLocale);
    }
 }

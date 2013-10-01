@@ -40,10 +40,6 @@ public class TranslationEditorPresenterTest
    @Mock
    private TransFilterDisplay transFilterDisplay;
    @Mock
-   private TransUnitChangeSourceLangPresenter transUnitSourceLangPresenter;
-   @Mock
-   private TransUnitChangeSourceLangDisplay transUnitSourceLangDisplay;
-   @Mock
    private TransUnitNavigationDisplay transUnitNavigationDisplay;
    @Mock
    private TransUnitsTableDisplay transUnitsTableDisplay;
@@ -56,7 +52,7 @@ public class TranslationEditorPresenterTest
    public void setUp() throws Exception
    {
       MockitoAnnotations.initMocks(this);
-      presenter = new TranslationEditorPresenter(display, eventBus, transUnitNavigationPresenter, transFilterPresenter, transUnitsTablePresenter, transUnitSourceLangPresenter, editorKeyShortcuts);
+      presenter = new TranslationEditorPresenter(display, eventBus, transUnitNavigationPresenter, transFilterPresenter, transUnitsTablePresenter, editorKeyShortcuts);
 
       when(display.getPageNavigation()).thenReturn(pageNavigation);
    }
@@ -68,7 +64,6 @@ public class TranslationEditorPresenterTest
       when(transFilterPresenter.getDisplay()).thenReturn(transFilterDisplay);
       when(transUnitNavigationPresenter.getDisplay()).thenReturn(transUnitNavigationDisplay);
       when(transUnitsTablePresenter.getDisplay()).thenReturn(transUnitsTableDisplay);
-      when(transUnitSourceLangPresenter.getDisplay()).thenReturn(transUnitSourceLangDisplay);
 
       presenter.onBind();
 

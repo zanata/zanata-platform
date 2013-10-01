@@ -38,7 +38,9 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -92,7 +94,7 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
    CheckBox showOptionalTransUnitDetailsChk;
    
    @UiField
-   CheckBox enableReferenceForSourceLang;
+   HTMLPanel sourceLangListBoxContainer;
    
    private Listener listener;
 
@@ -123,8 +125,6 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       showGlossaryChk.setText(messages.showGlossaryPanel());
       showOptionalTransUnitDetailsChk.setText(messages.showTransUnitDetails());
       showOptionalTransUnitDetailsChk.setTitle(messages.showTransUnitDetailsTooltip());
-      enableReferenceForSourceLang.setText(messages.enableReferenceForSourceLang());
-      enableReferenceForSourceLang.setTitle(messages.enableReferenceForSourceLangTooltip());
    }
 
    @Override
@@ -248,10 +248,11 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       listener.onDisplayTransUnitDetailsOptionChanged(showOptionalTransUnitDetailsChk.getValue());
    }
 
-   @UiHandler("enableReferenceForSourceLang")
-   public void onEnableReferenceForSourceLangOptionChanged(ValueChangeEvent<Boolean> event)
+   @Override
+   public void setSourceLangListBox(IsWidget sourceLangListBoxView)
    {
-      listener.onEnableReferenceForSourceLangOptionChanged(enableReferenceForSourceLang.getValue());
+      sourceLangListBoxContainer.clear();
+      sourceLangListBoxContainer.add(sourceLangListBoxView);
    }
 
    @Override
@@ -285,7 +286,6 @@ public class EditorOptionsView extends Composite implements EditorOptionsDisplay
       showTMChk.setValue(state.isShowTMPanel());
       showGlossaryChk.setValue(state.isShowGlossaryPanel());
       showOptionalTransUnitDetailsChk.setValue(state.isShowOptionalTransUnitDetails());
-      enableReferenceForSourceLang.setValue(state.isEnabledReferenceForSourceLang());
    }
 
    private void selectPageSize(int pageSize)

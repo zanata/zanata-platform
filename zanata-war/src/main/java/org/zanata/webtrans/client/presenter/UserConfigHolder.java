@@ -74,6 +74,7 @@ public class UserConfigHolder
    public static final boolean DEFAULT_SPELL_CHECK = true;
    public static final DiffMode DEFAULT_TM_DISPLAY_MODE = DiffMode.NORMAL;
    public static final boolean DEFAULT_SHOW_PANEL = true;
+   public static final String DEFAULT_SELECTED_REFERENCE = "none"; 
 
    public UserConfigHolder()
    {
@@ -101,7 +102,7 @@ public class UserConfigHolder
       state.showTMPanel = DEFAULT_SHOW_PANEL;
       state.showGlossaryPanel = DEFAULT_SHOW_PANEL;
       state.showOptionalTransUnitDetails = DEFAULT_SHOW_PANEL;
-      state.enableReferenceForSourceLang = DEFAULT_SHOW_PANEL;
+      state.selectedReferenceForSourceLang = DEFAULT_SELECTED_REFERENCE;
       state.displayTheme = ThemesOption.THEMES_DEFAULT;
       state.enabledValidationIds = new ArrayList<ValidationId>();
    }
@@ -257,10 +258,10 @@ public class UserConfigHolder
       state.showOptionalTransUnitDetails = show;
    }
    
-   public void setEnableReferenceForSourceLang(boolean show)
+   public void setSelectedReferenceForSourceLang(String selected)
    {
       state = new ConfigurationState(state);
-      state.enableReferenceForSourceLang = show;
+      state.selectedReferenceForSourceLang = selected;
    }
 
    public void setEnabledValidationIds(List<ValidationId> enabledValidationIds)
@@ -306,7 +307,7 @@ public class UserConfigHolder
       private boolean showTMPanel;
       private boolean showGlossaryPanel;
       private boolean showOptionalTransUnitDetails;
-      private boolean enableReferenceForSourceLang;
+      private String selectedReferenceForSourceLang;
 
       private List<ValidationId> enabledValidationIds;
 
@@ -338,7 +339,7 @@ public class UserConfigHolder
          this.showGlossaryPanel = old.isShowGlossaryPanel();
          this.showOptionalTransUnitDetails = old.isShowOptionalTransUnitDetails();
          this.enabledValidationIds = old.getEnabledValidationIds();
-         this.enableReferenceForSourceLang = old.isEnabledReferenceForSourceLang();
+         this.selectedReferenceForSourceLang = old.getSelectedReferenceForSourceLang();
       }
 
       public boolean isEnterSavesApproved()
@@ -441,9 +442,9 @@ public class UserConfigHolder
          return showOptionalTransUnitDetails;
       }
       
-      public boolean isEnabledReferenceForSourceLang()
+      public String getSelectedReferenceForSourceLang()
       {
-         return enableReferenceForSourceLang;
+         return selectedReferenceForSourceLang;
       }
 
       public List<ValidationId> getEnabledValidationIds()
