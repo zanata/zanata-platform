@@ -18,9 +18,7 @@
   <script type="text/javascript">
     function submitSearchOnEnter(e) {
       if (e.keyCode == 13) {
-        #{rich:element('searchBtn')}
-      .
-        click();
+        #{rich:element('searchBtn')}.click();
         return false;
       }
     }
@@ -93,14 +91,17 @@
             <f:param name="localeId" value="#{status.locale}"/>
             <span class="icon-docs icon"/>
           </s:link>
+        </rich:column>
+        <rich:column id="export"
+          rendered="#{identity.loggedIn}"
+          styleClass="#{status.userInLanguageTeam ? 'highlighted_datatable_row' : ''} centered">
+          <f:facet name="header">#{messages['jsf.ExportTMX']}</f:facet>
           <h:outputLink id="exportTMXIterLink" styleClass="table_icon_link"
-            title="#{messages['jsf.ExportTMXIter']}"
+            title="#{messages['jsf.iteration.ExportTMXIter']}"
             onclick="return confirm('#{messages['jsf.ConfirmExportTMXIter']}')"
-            value="#{request.contextPath}/rest/tm/projects/#{viewAllStatusAction.projectSlug}/iterations/#{viewAllStatusAction.iterationSlug}?locale=#{stats.locale}">
-            <span class="icon-export-3 icon"/>
+            value="#{request.contextPath}/rest/tm/projects/#{viewAllStatusAction.projectSlug}/iterations/#{viewAllStatusAction.iterationSlug}?locale=#{status.locale}">
+            <span class="icon-download icon"/>
           </h:outputLink>
-          <ui:remove>
-          </ui:remove>
         </rich:column>
         <rich:column
           styleClass="#{status.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
