@@ -114,8 +114,6 @@ public class PoReader2Test {
     @Test(expectedExceptions = { RuntimeException.class },
             expectedExceptionsMessageRegExp = ".*unsupported charset.*")
     public void extractInvalidTarget() throws IOException, JAXBException {
-        Resource srcDoc = getTemplate();
-
         String locale = "ja-JP";
         InputSource inputSource =
                 new InputSource(new File(testDir, locale + "/invalid.po")

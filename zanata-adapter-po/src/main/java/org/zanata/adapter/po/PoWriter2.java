@@ -204,7 +204,7 @@ public class PoWriter2 {
     public FileDetails writePoToFile(File poFile, Resource doc,
             TranslationsResource targetDoc) throws IOException {
         makeDirs(poFile.getParentFile());
-        MessageDigest md5Digest = null;
+        MessageDigest md5Digest;
         try {
             md5Digest = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {
@@ -264,8 +264,7 @@ public class PoWriter2 {
         Message headerMessage = null;
         int nPlurals = DEFAULT_NPLURALS;
         if (targetDoc != null) {
-            PoTargetHeader poTargetHeader = null;
-            poTargetHeader =
+            PoTargetHeader poTargetHeader =
                     targetDoc.getExtensions(true).findByType(
                             PoTargetHeader.class);
             if (poTargetHeader != null) {
