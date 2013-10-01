@@ -97,7 +97,7 @@
           styleClass="#{status.userInLanguageTeam ? 'highlighted_datatable_row' : ''} centered">
           <f:facet name="header">#{messages['jsf.ExportTMX']}</f:facet>
           <h:outputLink id="exportTMXIterLink" styleClass="table_icon_link"
-            title="#{messages['jsf.iteration.ExportTMXIter']}"
+            title="#{messages['jsf.iteration.ExportTMX.Language']}"
             onclick="return confirm('#{messages['jsf.ConfirmExportTMXIter']}')"
             value="#{request.contextPath}/rest/tm/projects/#{viewAllStatusAction.projectSlug}/iterations/#{viewAllStatusAction.iterationSlug}?locale=#{status.locale}">
             <span class="icon-download icon"/>
@@ -183,7 +183,7 @@
     <h:outputLink id="exportTMXIterLink" styleClass="action_link"
       onclick="return confirm('#{messages['jsf.ConfirmExportTMXIter']}')"
       value="#{request.contextPath}/rest/tm/projects/#{viewAllStatusAction.projectSlug}/iterations/#{viewAllStatusAction.iterationSlug}">
-      <h:outputText value="#{messages['jsf.ExportTMXIter']}"/>
+      <h:outputText value="#{messages['jsf.iteration.ExportTMXIter']}"/>
     </h:outputLink>
 
   </rich:panel>
