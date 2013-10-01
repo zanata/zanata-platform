@@ -11,35 +11,33 @@ import com.google.gwt.user.client.ui.IsWidget;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  */
-public interface TranslationEditorDisplay extends WidgetDisplay
-{
-   void setEditorView(IsWidget widget);
+public interface TranslationEditorDisplay extends WidgetDisplay {
+    void setEditorView(IsWidget widget);
 
-   void setTransUnitNavigation(IsWidget widget);
+    void setTransUnitNavigation(IsWidget widget);
 
-   void setFilterView(IsWidget filterView);
+    void setFilterView(IsWidget filterView);
 
-   HasPager getPageNavigation();
+    HasPager getPageNavigation();
 
-   boolean isPagerFocused();
+    boolean isPagerFocused();
 
-   void setListener(Listener listener);
+    void setListener(Listener listener);
 
-   boolean getAndToggleResizeButton();
+    boolean getAndToggleResizeButton();
 
-   interface Listener
-   {
-      void refreshCurrentPage();
+    interface Listener {
+        void refreshCurrentPage();
 
-      void onResizeClicked();
+        void onResizeClicked();
 
-      void onPagerFocused();
+        void onPagerFocused();
 
-      void onPagerBlurred();
+        void onPagerBlurred();
 
-      void onPagerValueChanged(Integer pageNumber);
-   }
+        void onPagerValueChanged(Integer pageNumber);
+    }
 
-   HasVisibility getResizeButton();
+    HasVisibility getResizeButton();
 
 }

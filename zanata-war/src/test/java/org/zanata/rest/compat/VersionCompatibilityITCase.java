@@ -29,23 +29,22 @@ import org.zanata.apicompat.rest.dto.VersionInfo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 
-public class VersionCompatibilityITCase extends RestTest
-{
+public class VersionCompatibilityITCase extends RestTest {
 
-   @Override
-   protected void prepareDBUnitOperations()
-   {
-   }
+    @Override
+    protected void prepareDBUnitOperations() {
+    }
 
-   @Test
-   @RunAsClient
-   public void getVersionXml()
-   {
-      IVersionResource versionClient = super.createProxy(createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
-            IVersionResource.class, "/version");
-      VersionInfo versionInfo = versionClient.get().getEntity();
-      
-      assertThat( versionInfo.getVersionNo(), notNullValue() );
-      assertThat( versionInfo.getBuildTimeStamp(), notNullValue() );
-   }
+    @Test
+    @RunAsClient
+    public void getVersionXml() {
+        IVersionResource versionClient =
+                super.createProxy(
+                        createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
+                        IVersionResource.class, "/version");
+        VersionInfo versionInfo = versionClient.get().getEntity();
+
+        assertThat(versionInfo.getVersionNo(), notNullValue());
+        assertThat(versionInfo.getBuildTimeStamp(), notNullValue());
+    }
 }

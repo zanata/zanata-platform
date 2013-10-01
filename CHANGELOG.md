@@ -129,7 +129,7 @@
  * Project/project iteration status changes: ACTIVE, READONLY, and OBSOLETE
  * Allow readonly access to retired project/project iteration: https://bugzilla.redhat.com/show_bug.cgi?id=755759
  * Implement filter messages in the editor by translation status: https://bugzilla.redhat.com/show_bug.cgi?id=773459
- * Implement validation in editor: 
+ * Implement validation in editor:
   * Newline validation on leading and trailing string: https://bugzilla.redhat.com/show_bug.cgi?id=768802
   * Variables to be checked for consistency: https://bugzilla.redhat.com/show_bug.cgi?id=769471
   * XML and HTML tags to be checked for completeness: https://bugzilla.redhat.com/show_bug.cgi?id=756235
@@ -144,7 +144,7 @@
  * Add automated compatibility tests with previous versions of the Zanata java client classes
  * Redirect to previous page after sign in
  * Several UI updates and changes
- * Bug fixes: 
+ * Bug fixes:
   * Rapid key navigation causes backlog of TM queries: https://bugzilla.redhat.com/show_bug.cgi?id=785034
   * Long strings slow down the operation: https://bugzilla.redhat.com/show_bug.cgi?id=750956
   * "Participants" information is incorrect.: https://bugzilla.redhat.com/show_bug.cgi?id=756292
@@ -180,7 +180,7 @@
  * Bugfix: 'J' and 'K' navigation keys trigger when entering text in the TM search box: https://bugzilla.redhat.com/show_bug.cgi?id=754637
  * Bugfix: Not able to work in parallel on the same workbench: https://bugzilla.redhat.com/show_bug.cgi?id=756293
  * Show progress during re-index operations; avoid timeout for large databases: https://bugzilla.redhat.com/show_bug.cgi?id=747836
- 
+
 ## zanata-1.4.2
  * Language team coordinator: https://bugzilla.redhat.com/show_bug.cgi?id=742083
   * Users now have to ask before joining a language team

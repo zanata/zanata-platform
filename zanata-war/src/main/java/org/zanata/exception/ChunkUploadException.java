@@ -25,25 +25,24 @@ import javax.ws.rs.core.Response.Status;
 import lombok.Getter;
 
 /**
- * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
+ * @author David Mason, <a
+ *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  */
-public class ChunkUploadException extends ZanataException
-{
-   private static final long serialVersionUID = 1L;
+public class ChunkUploadException extends ZanataException {
+    private static final long serialVersionUID = 1L;
 
-   @Getter
-   private Status statusCode;
+    @Getter
+    private Status statusCode;
 
-   public ChunkUploadException(Status statusCode, String message)
-   {
-      super(message);
-      this.statusCode = statusCode;
-   }
+    public ChunkUploadException(Status statusCode, String message) {
+        super(message);
+        this.statusCode = statusCode;
+    }
 
-   public ChunkUploadException(Status statusCode, String message, Throwable cause)
-   {
-      super(message, cause);
-      this.statusCode = statusCode;
-   }
+    public ChunkUploadException(Status statusCode, String message,
+            Throwable cause) {
+        super(message, cause);
+        this.statusCode = statusCode;
+    }
 
 }

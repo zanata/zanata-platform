@@ -1,45 +1,50 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:s="http://jboss.org/schema/seam/taglib"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:rich="http://richfaces.org/rich"
-    xmlns:richext="http://java.sun.com/jsf/composite/richext"
-    template="../WEB-INF/template/template_2x.xhtml">
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:richext="http://java.sun.com/jsf/composite/richext"
+  template="../WEB-INF/template/template_2x.xhtml">
 
-    <ui:define name="page_title">#{messages['jsf.Languages']}</ui:define>
-    <ui:define name="right_content">
-      <rich:panel rendered="#{identity.loggedIn and s:hasRole('admin')}">
-        <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-        <s:link styleClass="action_link" view="/admin/supportedlanguagedetail.xhtml"
-			value="#{messages['jsf.CreateSupportedLanguage']}" />
-      </rich:panel>
-    </ui:define>
+  <ui:define name="page_title">#{messages['jsf.Languages']}</ui:define>
+  <ui:define name="right_content">
+    <rich:panel rendered="#{identity.loggedIn and s:hasRole('admin')}">
+      <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+      <s:link styleClass="action_link"
+        view="/admin/supportedlanguagedetail.xhtml"
+        value="#{messages['jsf.CreateSupportedLanguage']}"/>
+    </rich:panel>
+  </ui:define>
 
-    <ui:define name="center_content">
-        <h:form>
-            <rich:dataTable id="latestTribes" value="#{supportedLanguageAction.supportedLanguages}" var="language">
-                <rich:column sortBy="#{language.localeId.id}">
-                    <f:facet name="header">#{messages['jsf.Language']}<richext:columnSorter/></f:facet>
-                    <s:link view="/language/language.xhtml" propagation="none" value="#{language.localeId.id}" styleClass="table_link">
-                        <f:param name="id" value="#{language.localeId.id}" />
-                    </s:link>
-                </rich:column>
-                <rich:column sortBy="#{language.retrieveDisplayName()}">
-                    <f:facet name="header">#{messages['jsf.Name']}<richext:columnSorter/></f:facet>
-                    #{language.retrieveDisplayName()}
-                </rich:column>
-                <rich:column >
-                    <f:facet name="header">#{messages['jsf.NativeName']}</f:facet>
-                    #{language.retrieveNativeName()}
-                </rich:column>
-                <rich:column sortBy="#{language.members.size}" styleClass="centered">
-                    <f:facet name="header">#{messages['jsf.Members']}<richext:columnSorter/></f:facet>
-                    #{language.members.size}
-                </rich:column>
-            </rich:dataTable>
-        </h:form>
-    </ui:define>
+  <ui:define name="center_content">
+    <h:form>
+      <rich:dataTable id="latestTribes"
+        value="#{supportedLanguageAction.supportedLanguages}" var="language">
+        <rich:column sortBy="#{language.localeId.id}">
+          <f:facet name="header">#{messages['jsf.Language']}
+            <richext:columnSorter/></f:facet>
+          <s:link view="/language/language.xhtml" propagation="none"
+            value="#{language.localeId.id}" styleClass="table_link">
+            <f:param name="id" value="#{language.localeId.id}"/>
+          </s:link>
+        </rich:column>
+        <rich:column sortBy="#{language.retrieveDisplayName()}">
+          <f:facet name="header">#{messages['jsf.Name']}<richext:columnSorter/></f:facet>
+          #{language.retrieveDisplayName()}
+        </rich:column>
+        <rich:column>
+          <f:facet name="header">#{messages['jsf.NativeName']}</f:facet>
+          #{language.retrieveNativeName()}
+        </rich:column>
+        <rich:column sortBy="#{language.members.size}" styleClass="centered">
+          <f:facet name="header">#{messages['jsf.Members']}
+            <richext:columnSorter/></f:facet>
+          #{language.members.size}
+        </rich:column>
+      </rich:dataTable>
+    </h:form>
+  </ui:define>
 </ui:composition>

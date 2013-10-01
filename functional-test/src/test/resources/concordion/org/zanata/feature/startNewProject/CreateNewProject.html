@@ -1,19 +1,25 @@
-<html xmlns:c="http://www.concordion.org/2007/concordion" xmlns:ext="urn:concordion-extensions:2010">
+<html xmlns:c="http://www.concordion.org/2007/concordion"
+  xmlns:ext="urn:concordion-extensions:2010">
 <head>
 </head>
 <body>
-    <p>
-        As a user on Zanata,
-        when I want to create a project with
-        id: <span c:set="#projectSlug">plurals</span> and name <span c:set="#projectName">plural projects</span>,
-        I go to projects page, click on <span c:execute="#projectPage = createNewProject(#projectSlug, #projectName)">Create project</span> link and fill in the data.
-        then I should have project created as
-        id <span c:assertEquals="#projectPage.projectId">plurals</span> and name <span c:assertEquals="#projectPage.projectName">plural projects</span>.
-    </p>
-    <span ext:screenshot="" />
+<p>
+  As a user on Zanata,
+  when I want to create a project with
+  id: <span c:set="#projectSlug">plurals</span> and name <span
+  c:set="#projectName">plural projects</span>,
+  I go to projects page, click on <span
+  c:execute="#projectPage = createNewProject(#projectSlug, #projectName)">Create project</span>
+  link and fill in the data.
+  then I should have project created as
+  id <span c:assertEquals="#projectPage.projectId">plurals</span> and name <span
+  c:assertEquals="#projectPage.projectName">plural projects</span>.
+</p>
+<span ext:screenshot=""/>
 
-    <p class="info">
-        After I have created the project, the versions list is <span c:echo="#projectPage.versions" />
-    </p>
+<p class="info">
+  After I have created the project, the versions list is <span
+  c:echo="#projectPage.versions"/>
+</p>
 </body>
 </html>

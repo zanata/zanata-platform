@@ -34,58 +34,53 @@ import javax.security.auth.spi.LoginModule;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 
-public class OpenIdLoginModule implements LoginModule
-{
-   protected Set<String> roles = new HashSet<String>();
+public class OpenIdLoginModule implements LoginModule {
+    protected Set<String> roles = new HashSet<String>();
 
-   protected Subject subject;
-   protected Map<String, ?> options;
-   protected CallbackHandler callbackHandler;
+    protected Subject subject;
+    protected Map<String, ?> options;
+    protected CallbackHandler callbackHandler;
 
-   protected String username;
+    protected String username;
 
-   public boolean abort() throws LoginException
-   {
-      return true;
-   }
+    public boolean abort() throws LoginException {
+        return true;
+    }
 
-   public boolean commit() throws LoginException
-   {
-      return true;
-   }
+    public boolean commit() throws LoginException {
+        return true;
+    }
 
-   public void initialize(Subject subject, CallbackHandler callbackHandler, Map<String, ?> sharedState, Map<String, ?> options)
-   {
-      this.subject = subject;
-      this.options = options;
-      this.callbackHandler = callbackHandler;
-   }
+    public void initialize(Subject subject, CallbackHandler callbackHandler,
+            Map<String, ?> sharedState, Map<String, ?> options) {
+        this.subject = subject;
+        this.options = options;
+        this.callbackHandler = callbackHandler;
+    }
 
-   public boolean login() throws LoginException
-   {
-      try
-      {
-         NameCallback cbName = new NameCallback("Enter username");
-         PasswordCallback cbPassword = new PasswordCallback("Enter password", false);
+    public boolean login() throws LoginException {
+        try {
+            NameCallback cbName = new NameCallback("Enter username");
+            PasswordCallback cbPassword =
+                    new PasswordCallback("Enter password", false);
 
-         // Get the username and password from the callback handler
-         callbackHandler.handle(new Callback[] { cbName, cbPassword });
-         username = cbName.getName();
-         ZanataOpenId openid = (ZanataOpenId) Component.getInstance(ZanataOpenId.class, ScopeType.SESSION);
-         openid.login(ZanataIdentity.instance().getCredentials());
-      }
-      catch (Exception ex)
-      {
-         LoginException le = new LoginException(ex.getMessage());
-         le.initCause(ex);
-         throw le;
-      }
+            // Get the username and password from the callback handler
+            callbackHandler.handle(new Callback[] { cbName, cbPassword });
+            username = cbName.getName();
+            ZanataOpenId openid =
+                    (ZanataOpenId) Component.getInstance(ZanataOpenId.class,
+                            ScopeType.SESSION);
+            openid.login(ZanataIdentity.instance().getCredentials());
+        } catch (Exception ex) {
+            LoginException le = new LoginException(ex.getMessage());
+            le.initCause(ex);
+            throw le;
+        }
 
-      return false;
-   }
+        return false;
+    }
 
-   public boolean logout() throws LoginException
-   {
-      return true;
-   }
+    public boolean logout() throws LoginException {
+        return true;
+    }
 }

@@ -28,11 +28,14 @@ import org.zanata.common.HasContents;
 import org.zanata.common.LocaleId;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public interface ITextFlowTarget extends HasContents
-{
-   public @Nonnull LocaleId getLocaleId();
-   public @Nonnull ContentState getState();
+public interface ITextFlowTarget extends HasContents {
+    public @Nonnull
+    LocaleId getLocaleId();
+
+    public @Nonnull
+    ContentState getState();
 }

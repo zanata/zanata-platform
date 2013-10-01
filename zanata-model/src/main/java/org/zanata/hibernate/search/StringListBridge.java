@@ -12,41 +12,42 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Index a list of strings in multiple fields, appending the string index to the
  * field name to produce unique fields.
- * 
+ *
  * e.g. For a field labeled 'fieldName' for a list of 3 strings
  * <ul>
  * <li>First string is indexed as 'fieldName0'</li>
  * <li>Second string is indexed as 'fieldName1'</li>
  * <li>Third string is indexed as 'fieldName2'</li>
  * </ul>
- * 
+ *
  * @author David Mason, damason@redhat.com
- * 
+ *
  */
 @Slf4j
-public class StringListBridge implements FieldBridge
-{
+public class StringListBridge implements FieldBridge {
 
-   @Override
-   public void set(String name, Object value, Document luceneDocument, LuceneOptions luceneOptions)
-   {
-      if (!(value instanceof List<?>))
-      {
-         throw new IllegalArgumentException("this bridge must be applied to a List");
-      }
-      @SuppressWarnings("unchecked")
-      List<String> strings = (List<String>) value;
-      for (int i = 0; i < strings.size(); i++)
-      {
-         addStringField(name + i, strings.get(i), luceneDocument, luceneOptions);
-      }
-   }
+    @Override
+    public void set(String name, Object value, Document luceneDocument,
+            LuceneOptions luceneOptions) {
+        if (!(value instanceof List<?>)) {
+            throw new IllegalArgumentException(
+                    "this bridge must be applied to a List");
+        }
+        @SuppressWarnings("unchecked")
+        List<String> strings = (List<String>) value;
+        for (int i = 0; i < strings.size(); i++) {
+            addStringField(name + i, strings.get(i), luceneDocument,
+                    luceneOptions);
+        }
+    }
 
-   private void addStringField(String fieldName, String fieldValue, Document luceneDocument, LuceneOptions luceneOptions)
-   {
-      Field field = new Field(fieldName, fieldValue, luceneOptions.getStore(), luceneOptions.getIndex(), luceneOptions.getTermVector());
-      field.setBoost(luceneOptions.getBoost());
-      luceneDocument.add(field);
-   }
+    private void addStringField(String fieldName, String fieldValue,
+            Document luceneDocument, LuceneOptions luceneOptions) {
+        Field field =
+                new Field(fieldName, fieldValue, luceneOptions.getStore(),
+                        luceneOptions.getIndex(), luceneOptions.getTermVector());
+        field.setBoost(luceneOptions.getBoost());
+        luceneDocument.add(field);
+    }
 
 }

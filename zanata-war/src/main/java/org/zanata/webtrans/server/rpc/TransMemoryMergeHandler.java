@@ -64,189 +64,206 @@ import static org.zanata.webtrans.shared.model.TransMemoryResultItem.MatchType;
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(TransMemoryMerge.class)
 @Slf4j
-public class TransMemoryMergeHandler extends AbstractActionHandler<TransMemoryMerge, UpdateTransUnitResult>
-{
-   private static final TransMemoryResultItem NULL_OBJECT = new TransMemoryResultItem(null, null, null, 0, 0);
+public class TransMemoryMergeHandler extends
+        AbstractActionHandler<TransMemoryMerge, UpdateTransUnitResult> {
+    private static final TransMemoryResultItem NULL_OBJECT =
+            new TransMemoryResultItem(null, null, null, 0, 0);
 
-   @In(value = "webtrans.gwt.GetTransMemoryHandler", create = true)
-   private GetTransMemoryHandler getTransMemoryHandler;
+    @In(value = "webtrans.gwt.GetTransMemoryHandler", create = true)
+    private GetTransMemoryHandler getTransMemoryHandler;
 
-   @In(value = "webtrans.gwt.GetTransMemoryDetailsHandler", create = true)
-   private GetTransMemoryDetailsHandler getTransMemoryDetailsHandler;
+    @In(value = "webtrans.gwt.GetTransMemoryDetailsHandler", create = true)
+    private GetTransMemoryDetailsHandler getTransMemoryDetailsHandler;
 
-   @In(value = "webtrans.gwt.UpdateTransUnitHandler", create = true)
-   private UpdateTransUnitHandler updateTransUnitHandler;
+    @In(value = "webtrans.gwt.UpdateTransUnitHandler", create = true)
+    private UpdateTransUnitHandler updateTransUnitHandler;
 
-   @In
-   private SecurityService securityServiceImpl;
-   
-   @In
-   private TextFlowDAO textFlowDAO;
+    @In
+    private SecurityService securityServiceImpl;
 
-   @In
-   private TransMemoryUnitDAO transMemoryUnitDAO;
+    @In
+    private TextFlowDAO textFlowDAO;
 
-   @Override
-   public UpdateTransUnitResult execute(TransMemoryMerge action, ExecutionContext context) throws ActionException
-   {
-      SecurityService.SecurityCheckResult securityCheckResult = securityServiceImpl.checkPermission(action, MODIFY);
-      HLocale hLocale = securityCheckResult.getLocale();
-      TranslationWorkspace workspace = securityCheckResult.getWorkspace();
+    @In
+    private TransMemoryUnitDAO transMemoryUnitDAO;
 
-      Map<Long, TransUnitUpdateRequest> requestMap = transformToMap(action.getUpdateRequests());
-      List<HTextFlow> hTextFlows = textFlowDAO.findByIdList(Lists.newArrayList(requestMap.keySet()));
+    @Override
+    public UpdateTransUnitResult execute(TransMemoryMerge action,
+            ExecutionContext context) throws ActionException {
+        SecurityService.SecurityCheckResult securityCheckResult =
+                securityServiceImpl.checkPermission(action, MODIFY);
+        HLocale hLocale = securityCheckResult.getLocale();
+        TranslationWorkspace workspace = securityCheckResult.getWorkspace();
 
-      TransMemoryAboveThresholdPredicate predicate = new TransMemoryAboveThresholdPredicate(action.getThresholdPercent());
+        Map<Long, TransUnitUpdateRequest> requestMap =
+                transformToMap(action.getUpdateRequests());
+        List<HTextFlow> hTextFlows =
+                textFlowDAO
+                        .findByIdList(Lists.newArrayList(requestMap.keySet()));
 
-      List<TransUnitUpdateRequest> updateRequests = Lists.newArrayList();
-      for (HTextFlow hTextFlow : hTextFlows)
-      {
-         HTextFlowTarget hTextFlowTarget = hTextFlow.getTargets().get(hLocale.getId());
-         HLocale sourceLocale = hTextFlow.getDocument().getLocale();
+        TransMemoryAboveThresholdPredicate predicate =
+                new TransMemoryAboveThresholdPredicate(
+                        action.getThresholdPercent());
 
-         // TODO rhbz953734 - TM merge won't override Translated to Approved yet. May or may not want this feature.
-         if (hTextFlowTarget != null && hTextFlowTarget.getState().isTranslated())
-         {
-            log.warn("Text flow id {} is translated. Ignored.", hTextFlow.getId());
-            continue;
-         }
-         ArrayList<TransMemoryResultItem> tmResults = getTransMemoryHandler.searchTransMemory(hLocale, new TransMemoryQuery(hTextFlow.getContents(), SearchType.FUZZY_PLURAL), sourceLocale.getLocaleId());
-         TransMemoryResultItem tmResult = findTMAboveThreshold(tmResults, predicate, hTextFlow, action.getThresholdPercent());
-         TransUnitUpdateRequest request = createRequest(action, hLocale, requestMap, hTextFlow, tmResult, hTextFlowTarget);
-         if (request != null)
-         {
-            updateRequests.add(request);
-         }
-      }
+        List<TransUnitUpdateRequest> updateRequests = Lists.newArrayList();
+        for (HTextFlow hTextFlow : hTextFlows) {
+            HTextFlowTarget hTextFlowTarget =
+                    hTextFlow.getTargets().get(hLocale.getId());
+            HLocale sourceLocale = hTextFlow.getDocument().getLocale();
 
-      if (updateRequests.isEmpty())
-      {
-         return new UpdateTransUnitResult();
-      }
-      return updateTransUnitHandler.doTranslation(hLocale.getLocaleId(), workspace, updateRequests, action.getEditorClientId(), TransUnitUpdated.UpdateType.TMMerge);
-   }
+            // TODO rhbz953734 - TM merge won't override Translated to Approved
+            // yet. May or may not want this feature.
+            if (hTextFlowTarget != null
+                    && hTextFlowTarget.getState().isTranslated()) {
+                log.warn("Text flow id {} is translated. Ignored.",
+                        hTextFlow.getId());
+                continue;
+            }
+            ArrayList<TransMemoryResultItem> tmResults =
+                    getTransMemoryHandler.searchTransMemory(hLocale,
+                            new TransMemoryQuery(hTextFlow.getContents(),
+                                    SearchType.FUZZY_PLURAL), sourceLocale
+                                    .getLocaleId());
+            TransMemoryResultItem tmResult =
+                    findTMAboveThreshold(tmResults, predicate, hTextFlow,
+                            action.getThresholdPercent());
+            TransUnitUpdateRequest request =
+                    createRequest(action, hLocale, requestMap, hTextFlow,
+                            tmResult, hTextFlowTarget);
+            if (request != null) {
+                updateRequests.add(request);
+            }
+        }
 
-   private Map<Long, TransUnitUpdateRequest> transformToMap(List<TransUnitUpdateRequest> updateRequests)
-   {
-      ImmutableMap.Builder<Long, TransUnitUpdateRequest> mapBuilder = ImmutableMap.builder();
-      for (TransUnitUpdateRequest updateRequest : updateRequests)
-      {
-         mapBuilder.put(updateRequest.getTransUnitId().getId(), updateRequest);
-      }
-      return mapBuilder.build();
-   }
+        if (updateRequests.isEmpty()) {
+            return new UpdateTransUnitResult();
+        }
+        return updateTransUnitHandler.doTranslation(hLocale.getLocaleId(),
+                workspace, updateRequests, action.getEditorClientId(),
+                TransUnitUpdated.UpdateType.TMMerge);
+    }
 
-   private static TransMemoryResultItem findTMAboveThreshold(ArrayList<TransMemoryResultItem> tmResults, TransMemoryAboveThresholdPredicate predicate, final HTextFlow hTextFlow, int thresholdPercent)
-   {
+    private Map<Long, TransUnitUpdateRequest> transformToMap(
+            List<TransUnitUpdateRequest> updateRequests) {
+        ImmutableMap.Builder<Long, TransUnitUpdateRequest> mapBuilder =
+                ImmutableMap.builder();
+        for (TransUnitUpdateRequest updateRequest : updateRequests) {
+            mapBuilder.put(updateRequest.getTransUnitId().getId(),
+                    updateRequest);
+        }
+        return mapBuilder.build();
+    }
 
-      Collection<TransMemoryResultItem> aboveThreshold;
+    private static TransMemoryResultItem findTMAboveThreshold(
+            ArrayList<TransMemoryResultItem> tmResults,
+            TransMemoryAboveThresholdPredicate predicate,
+            final HTextFlow hTextFlow, int thresholdPercent) {
 
-      if (thresholdPercent == 100)
-      {
-         aboveThreshold = filter(tmResults, new ContentsIdenticalPredicate(hTextFlow.getContents()));
-      }
-      else
-      {
-         aboveThreshold = filter(tmResults, predicate);
-      }
-      if (aboveThreshold.size() > 0)
-      {
-         return aboveThreshold.iterator().next();
-      }
-      else
-      {
-         return NULL_OBJECT;
-      }
-   }
+        Collection<TransMemoryResultItem> aboveThreshold;
 
-   private TransUnitUpdateRequest createRequest(TransMemoryMerge action, HLocale hLocale,
-                                                Map<Long, TransUnitUpdateRequest> requestMap, HTextFlow hTextFlowToBeFilled,
-                                                TransMemoryResultItem tmResult, HTextFlowTarget oldTarget)
-   {
-      if (tmResult == NULL_OBJECT)
-      {
-         return null;
-      }
+        if (thresholdPercent == 100) {
+            aboveThreshold =
+                    filter(tmResults,
+                            new ContentsIdenticalPredicate(hTextFlow
+                                    .getContents()));
+        } else {
+            aboveThreshold = filter(tmResults, predicate);
+        }
+        if (aboveThreshold.size() > 0) {
+            return aboveThreshold.iterator().next();
+        } else {
+            return NULL_OBJECT;
+        }
+    }
 
-      Long tmSourceId = tmResult.getSourceIdList().get(0);
-      ContentState statusToSet;
-      String comment;
-      if( tmResult.getMatchType() == MatchType.Imported )
-      {
-         TransMemoryUnit tu = transMemoryUnitDAO.findById(tmSourceId);
-         statusToSet = TransMemoryMergeStatusResolver.newInstance().decideStatus(action, tmResult, oldTarget);
-         comment = buildTargetComment(tu);
-      }
-      else
-      {
-         HTextFlow tmSource = textFlowDAO.findById(tmSourceId, false);
-         TransMemoryDetails tmDetail = getTransMemoryDetailsHandler.getTransMemoryDetail(hLocale, tmSource);
-         statusToSet = TransMemoryMergeStatusResolver.newInstance().decideStatus(action, hTextFlowToBeFilled,
-               tmDetail, tmResult, oldTarget);
-         comment = buildTargetComment(tmDetail);
-      }
+    private TransUnitUpdateRequest createRequest(TransMemoryMerge action,
+            HLocale hLocale, Map<Long, TransUnitUpdateRequest> requestMap,
+            HTextFlow hTextFlowToBeFilled, TransMemoryResultItem tmResult,
+            HTextFlowTarget oldTarget) {
+        if (tmResult == NULL_OBJECT) {
+            return null;
+        }
 
-      if (statusToSet != null)
-      {
-         TransUnitUpdateRequest unfilledRequest = requestMap.get(hTextFlowToBeFilled.getId());
-         TransUnitUpdateRequest request = new TransUnitUpdateRequest(unfilledRequest.getTransUnitId(),
-               tmResult.getTargetContents(), statusToSet, unfilledRequest.getBaseTranslationVersion());
-         request.addTargetComment(comment);
-         log.debug("auto translate from translation memory {}", request);
-         return request;
-      }
-      return null;
-   }
+        Long tmSourceId = tmResult.getSourceIdList().get(0);
+        ContentState statusToSet;
+        String comment;
+        if (tmResult.getMatchType() == MatchType.Imported) {
+            TransMemoryUnit tu = transMemoryUnitDAO.findById(tmSourceId);
+            statusToSet =
+                    TransMemoryMergeStatusResolver.newInstance().decideStatus(
+                            action, tmResult, oldTarget);
+            comment = buildTargetComment(tu);
+        } else {
+            HTextFlow tmSource = textFlowDAO.findById(tmSourceId, false);
+            TransMemoryDetails tmDetail =
+                    getTransMemoryDetailsHandler.getTransMemoryDetail(hLocale,
+                            tmSource);
+            statusToSet =
+                    TransMemoryMergeStatusResolver.newInstance().decideStatus(
+                            action, hTextFlowToBeFilled, tmDetail, tmResult,
+                            oldTarget);
+            comment = buildTargetComment(tmDetail);
+        }
 
-   private static String buildTargetComment(TransMemoryDetails tmDetail)
-   {
-      return new StringBuilder("auto translated by TM merge from ")
-         .append("project: ").append(tmDetail.getProjectName())
-         .append(", version: ").append(tmDetail.getIterationName())
-         .append(", DocId: ").append(tmDetail.getDocId()).toString();
-   }
+        if (statusToSet != null) {
+            TransUnitUpdateRequest unfilledRequest =
+                    requestMap.get(hTextFlowToBeFilled.getId());
+            TransUnitUpdateRequest request =
+                    new TransUnitUpdateRequest(
+                            unfilledRequest.getTransUnitId(),
+                            tmResult.getTargetContents(), statusToSet,
+                            unfilledRequest.getBaseTranslationVersion());
+            request.addTargetComment(comment);
+            log.debug("auto translate from translation memory {}", request);
+            return request;
+        }
+        return null;
+    }
 
-   private static String buildTargetComment(TransMemoryUnit tu)
-   {
-      return new StringBuilder("auto translated by TM merge from ")
-         .append("translation memory: ").append(tu.getTranslationMemory().getSlug())
-         .append(", unique id: ").append(tu.getUniqueId()).toString();
-   }
+    private static String buildTargetComment(TransMemoryDetails tmDetail) {
+        return new StringBuilder("auto translated by TM merge from ")
+                .append("project: ").append(tmDetail.getProjectName())
+                .append(", version: ").append(tmDetail.getIterationName())
+                .append(", DocId: ").append(tmDetail.getDocId()).toString();
+    }
 
-   @Override
-   public void rollback(TransMemoryMerge action, UpdateTransUnitResult result, ExecutionContext context) throws ActionException
-   {
-   }
+    private static String buildTargetComment(TransMemoryUnit tu) {
+        return new StringBuilder("auto translated by TM merge from ")
+                .append("translation memory: ")
+                .append(tu.getTranslationMemory().getSlug())
+                .append(", unique id: ").append(tu.getUniqueId()).toString();
+    }
 
-   private static class TransMemoryAboveThresholdPredicate implements Predicate<TransMemoryResultItem>
-   {
-      private final int approvedThreshold;
+    @Override
+    public void rollback(TransMemoryMerge action, UpdateTransUnitResult result,
+            ExecutionContext context) throws ActionException {
+    }
 
-      public TransMemoryAboveThresholdPredicate(int approvedThreshold)
-      {
-         this.approvedThreshold = approvedThreshold;
-      }
+    private static class TransMemoryAboveThresholdPredicate implements
+            Predicate<TransMemoryResultItem> {
+        private final int approvedThreshold;
 
-      @Override
-      public boolean apply(TransMemoryResultItem tmResult)
-      {
-         return (int) tmResult.getSimilarityPercent() >= approvedThreshold;
-      }
-   }
+        public TransMemoryAboveThresholdPredicate(int approvedThreshold) {
+            this.approvedThreshold = approvedThreshold;
+        }
 
-   private static class ContentsIdenticalPredicate implements Predicate<TransMemoryResultItem>
-   {
-      private final List<String> sourceContents;
+        @Override
+        public boolean apply(TransMemoryResultItem tmResult) {
+            return (int) tmResult.getSimilarityPercent() >= approvedThreshold;
+        }
+    }
 
-      public ContentsIdenticalPredicate(List<String> sourceContents)
-      {
-         this.sourceContents = sourceContents;
-      }
+    private static class ContentsIdenticalPredicate implements
+            Predicate<TransMemoryResultItem> {
+        private final List<String> sourceContents;
 
-      @Override
-      public boolean apply(TransMemoryResultItem input)
-      {
-         return input.getSourceContents().equals(sourceContents);
-      }
-   }
+        public ContentsIdenticalPredicate(List<String> sourceContents) {
+            this.sourceContents = sourceContents;
+        }
+
+        @Override
+        public boolean apply(TransMemoryResultItem input) {
+            return input.getSourceContents().equals(sourceContents);
+        }
+    }
 }

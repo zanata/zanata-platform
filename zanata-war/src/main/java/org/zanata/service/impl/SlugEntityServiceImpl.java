@@ -2,17 +2,17 @@
  * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
- * 
+ *
  * This is free software; you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
@@ -31,28 +31,30 @@ import org.zanata.model.SlugEntityBase;
 import org.zanata.service.SlugEntityService;
 
 /**
- * Default implementation of the {@link org.zanata.service.SlugEntityService} interface.
+ * Default implementation of the {@link org.zanata.service.SlugEntityService}
+ * interface.
  *
- * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz <a
+ *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Name("slugEntityServiceImpl")
 @Scope(ScopeType.STATELESS)
-public class SlugEntityServiceImpl implements SlugEntityService
-{
-   @In
-   private Session session;
+public class SlugEntityServiceImpl implements SlugEntityService {
+    @In
+    private Session session;
 
-   @Override
-   public boolean isSlugAvailable(String slug, Class<? extends SlugEntityBase> cls)
-   {
-      return session.createCriteria(cls).add(Restrictions.eq("slug", slug)).list().size() == 0;
-   }
+    @Override
+    public boolean isSlugAvailable(String slug,
+            Class<? extends SlugEntityBase> cls) {
+        return session.createCriteria(cls).add(Restrictions.eq("slug", slug))
+                .list().size() == 0;
+    }
 
-   @Override
-   public boolean isProjectIterationSlugAvailable(String slug, String projectSlug)
-   {
-      return session.createCriteria(HProjectIteration.class).add(Restrictions.eq("slug", slug))
-            .createCriteria("project")
-            .add(Restrictions.eq("slug", projectSlug)).list().size() == 0;
-   }
+    @Override
+    public boolean isProjectIterationSlugAvailable(String slug,
+            String projectSlug) {
+        return session.createCriteria(HProjectIteration.class)
+                .add(Restrictions.eq("slug", slug)).createCriteria("project")
+                .add(Restrictions.eq("slug", projectSlug)).list().size() == 0;
+    }
 }

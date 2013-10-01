@@ -22,11 +22,11 @@ package org.zanata.webtrans.client.presenter;
 
 /**
  * Indicates whether replacement has been made in a text flow.
- * 
- * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
- * 
+ *
+ * @author David Mason, <a
+ *         href="mailto:damason@redhat.com">damason@redhat.com</a>
+ *
  */
-public enum ReplacementState
-{
-   NotAllowed, NotReplaced, Replacing, Replaced, Undoing
+public enum ReplacementState {
+    NotAllowed, NotReplaced, Replacing, Replaced, Undoing
 }

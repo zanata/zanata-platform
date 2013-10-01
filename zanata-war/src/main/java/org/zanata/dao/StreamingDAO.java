@@ -32,39 +32,37 @@ import org.jboss.seam.annotations.In;
 /**
  * This class uses Hibernate's StatelessSession to iterate over large query
  * results using mysql streaming ResultSets.
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ *
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @NoArgsConstructor
-public abstract class StreamingDAO<T>
-{
+public abstract class StreamingDAO<T> {
 
-   @In
-   private HibernateEntityManagerFactory entityManagerFactory;
+    @In
+    private HibernateEntityManagerFactory entityManagerFactory;
 
-   public StreamingDAO(HibernateEntityManagerFactory emf)
-   {
-      this.entityManagerFactory = emf;
-   }
+    public StreamingDAO(HibernateEntityManagerFactory emf) {
+        this.entityManagerFactory = emf;
+    }
 
-   /**
-    * Note: unless this method throws an exception, the caller is
-    * responsible for closing the Iterator, or a database connection
-    * may leak.
-    * @return a CloseableIterator
-    */
-   StreamingEntityIterator<T> createIterator()
-   {
-      @SuppressWarnings("null")
-      @Nonnull Session session = entityManagerFactory.getSessionFactory().openSession();
-      try
-      {
-         return new StreamingEntityIterator<T>(session);
-      }
-      catch (Throwable e)
-      {
-         session.close();
-         throw new RuntimeException(e);
-      }
-   }
+    /**
+     * Note: unless this method throws an exception, the caller is responsible
+     * for closing the Iterator, or a database connection may leak.
+     *
+     * @return a CloseableIterator
+     */
+    StreamingEntityIterator<T> createIterator() {
+        @SuppressWarnings("null")
+        @Nonnull
+        Session session =
+                entityManagerFactory.getSessionFactory().openSession();
+        try {
+            return new StreamingEntityIterator<T>(session);
+        } catch (Throwable e) {
+            session.close();
+            throw new RuntimeException(e);
+        }
+    }
 
 }

@@ -27,12 +27,12 @@ import java.lang.annotation.Target;
 
 /**
  * Marks a test method as being intentionally disabled.
- * 
- * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ *
+ * @author Carlos Munoz <a
+ *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface Disabled
-{
-   String reason() default "";
+public @interface Disabled {
+    String reason() default "";
 }

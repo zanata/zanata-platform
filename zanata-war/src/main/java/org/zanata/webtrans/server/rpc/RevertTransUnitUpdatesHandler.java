@@ -42,34 +42,38 @@ import net.customware.gwt.dispatch.shared.*;
 @Name("webtrans.gwt.RevertTransUnitUpdatesHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(RevertTransUnitUpdates.class)
-public class RevertTransUnitUpdatesHandler extends AbstractActionHandler<RevertTransUnitUpdates, UpdateTransUnitResult>
-{
-   @In
-   private TranslationService translationServiceImpl;
+public class RevertTransUnitUpdatesHandler extends
+        AbstractActionHandler<RevertTransUnitUpdates, UpdateTransUnitResult> {
+    @In
+    private TranslationService translationServiceImpl;
 
-   @In
-   private SecurityService securityServiceImpl;
+    @In
+    private SecurityService securityServiceImpl;
 
-   @In(value = "webtrans.gwt.TransUnitUpdateHelper", create = true)
-   private TransUnitUpdateHelper transUnitUpdateHelper;
+    @In(value = "webtrans.gwt.TransUnitUpdateHelper", create = true)
+    private TransUnitUpdateHelper transUnitUpdateHelper;
 
-   @Override
-   public UpdateTransUnitResult execute(RevertTransUnitUpdates action, ExecutionContext context) throws ActionException
-   {
-      SecurityService.SecurityCheckResult securityCheckResult = securityServiceImpl.checkPermission(action,
-            SecurityService.TranslationAction.MODIFY);
-      HLocale hLocale = securityCheckResult.getLocale();
-      TranslationWorkspace workspace = securityCheckResult.getWorkspace();
+    @Override
+    public UpdateTransUnitResult execute(RevertTransUnitUpdates action,
+            ExecutionContext context) throws ActionException {
+        SecurityService.SecurityCheckResult securityCheckResult =
+                securityServiceImpl.checkPermission(action,
+                        SecurityService.TranslationAction.MODIFY);
+        HLocale hLocale = securityCheckResult.getLocale();
+        TranslationWorkspace workspace = securityCheckResult.getWorkspace();
 
-      List<TranslationResult> revertResults = translationServiceImpl.revertTranslations(hLocale.getLocaleId(),
-            action.getUpdatesToRevert());
+        List<TranslationResult> revertResults =
+                translationServiceImpl.revertTranslations(
+                        hLocale.getLocaleId(), action.getUpdatesToRevert());
 
-      return transUnitUpdateHelper.generateUpdateTransUnitResult(revertResults, action.getEditorClientId(), UpdateType.Revert, workspace);
-   }
+        return transUnitUpdateHelper.generateUpdateTransUnitResult(
+                revertResults, action.getEditorClientId(), UpdateType.Revert,
+                workspace);
+    }
 
-   @Override
-   public void rollback(RevertTransUnitUpdates action, UpdateTransUnitResult result, ExecutionContext context)
-         throws ActionException
-   {
-   }
+    @Override
+    public void rollback(RevertTransUnitUpdates action,
+            UpdateTransUnitResult result, ExecutionContext context)
+            throws ActionException {
+    }
 }

@@ -36,164 +36,186 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Test(groups = "unit-tests")
-public class WorkspaceUsersPresenterTest
-{
-   private WorkspaceUsersPresenter presenter;
-   @Mock
-   private WorkspaceUsersDisplay display;
-   @Mock
-   private EventBus eventBus;
-   @Mock
-   private Identity identity;
-   @Mock
-   private CachingDispatchAsync dispatcher;
-   @Mock
-   private WebTransMessages messages;
-   @Mock
-   private KeyShortcutPresenter keyShortcutPresenter;
-   @Captor
-   private ArgumentCaptor<KeyShortcut> keyShortcutCaptor;
-   @Mock
-   private UserPanelSessionItem userPanelSessionItem;
-   @Mock
-   private HasManageUserPanel userSessionPanel;
+public class WorkspaceUsersPresenterTest {
+    private WorkspaceUsersPresenter presenter;
+    @Mock
+    private WorkspaceUsersDisplay display;
+    @Mock
+    private EventBus eventBus;
+    @Mock
+    private Identity identity;
+    @Mock
+    private CachingDispatchAsync dispatcher;
+    @Mock
+    private WebTransMessages messages;
+    @Mock
+    private KeyShortcutPresenter keyShortcutPresenter;
+    @Captor
+    private ArgumentCaptor<KeyShortcut> keyShortcutCaptor;
+    @Mock
+    private UserPanelSessionItem userPanelSessionItem;
+    @Mock
+    private HasManageUserPanel userSessionPanel;
 
-   @BeforeMethod
-   public void beforeMethod()
-   {
-      MockitoAnnotations.initMocks(this);
-      presenter = new WorkspaceUsersPresenter(display, eventBus, identity, dispatcher, messages, keyShortcutPresenter);
-      verify(display).setListener(presenter);
-   }
+    @BeforeMethod
+    public void beforeMethod() {
+        MockitoAnnotations.initMocks(this);
+        presenter =
+                new WorkspaceUsersPresenter(display, eventBus, identity,
+                        dispatcher, messages, keyShortcutPresenter);
+        verify(display).setListener(presenter);
+    }
 
-   @Test
-   public void onBind()
-   {
-      //      ArgumentCaptor<KeyShortcutEventHandler> keyShortcutEventHandlerCaptor = ArgumentCaptor.forClass(KeyShortcutEventHandler.class);
-      when(messages.thisIsAPublicChannel()).thenReturn("Warning! This is a public channel");
-      presenter.onBind();
+    @Test
+    public void onBind() {
+        // ArgumentCaptor<KeyShortcutEventHandler> keyShortcutEventHandlerCaptor
+        // = ArgumentCaptor.forClass(KeyShortcutEventHandler.class);
+        when(messages.thisIsAPublicChannel()).thenReturn(
+                "Warning! This is a public channel");
+        presenter.onBind();
 
-      verify(keyShortcutPresenter).register(keyShortcutCaptor.capture());
-      verify(eventBus).addHandler(PublishWorkspaceChatEvent.getType(), presenter);
-      verify(display).appendChat(null, null, "Warning! This is a public channel", HasWorkspaceChatData.MESSAGE_TYPE.SYSTEM_WARNING);
-   }
+        verify(keyShortcutPresenter).register(keyShortcutCaptor.capture());
+        verify(eventBus).addHandler(PublishWorkspaceChatEvent.getType(),
+                presenter);
+        verify(display).appendChat(null, null,
+                "Warning! This is a public channel",
+                HasWorkspaceChatData.MESSAGE_TYPE.SYSTEM_WARNING);
+    }
 
-   @Test
-   public void testKeyShortcut()
-   {
-      Person person = TestFixture.person();
-      WorkspaceUsersPresenter spyPresenter = Mockito.spy(presenter);
-      doNothing().when(spyPresenter).dispatchChatAction(person.getId().toString(), "hello", HasWorkspaceChatData.MESSAGE_TYPE.USER_MSG);
-      when(messages.publishChatContent()).thenReturn("publish chat");
-      spyPresenter.onBind();
-      verify(keyShortcutPresenter).register(keyShortcutCaptor.capture());
+    @Test
+    public void testKeyShortcut() {
+        Person person = TestFixture.person();
+        WorkspaceUsersPresenter spyPresenter = Mockito.spy(presenter);
+        doNothing().when(spyPresenter).dispatchChatAction(
+                person.getId().toString(), "hello",
+                HasWorkspaceChatData.MESSAGE_TYPE.USER_MSG);
+        when(messages.publishChatContent()).thenReturn("publish chat");
+        spyPresenter.onBind();
+        verify(keyShortcutPresenter).register(keyShortcutCaptor.capture());
 
-      // key is 'enter', context is Chat, description is publish chat
-      KeyShortcut keyShortcut = keyShortcutCaptor.getValue();
-      assertThat(keyShortcut.getAllKeys(), Matchers.hasSize(1));
-      Keys keys = keyShortcut.getAllKeys().iterator().next();
-      assertThat(keys.getModifiers(), Matchers.equalTo(Keys.NO_MODIFIER));
-      assertThat(keys.getKeyCode(), Matchers.equalTo(KeyCodes.KEY_ENTER));
-      assertThat(keyShortcut.getDescription(), Matchers.equalTo("publish chat"));
-      assertThat(keyShortcut.getContext(), Matchers.equalTo(ShortcutContext.Chat));
+        // key is 'enter', context is Chat, description is publish chat
+        KeyShortcut keyShortcut = keyShortcutCaptor.getValue();
+        assertThat(keyShortcut.getAllKeys(), Matchers.hasSize(1));
+        Keys keys = keyShortcut.getAllKeys().iterator().next();
+        assertThat(keys.getModifiers(), Matchers.equalTo(Keys.NO_MODIFIER));
+        assertThat(keys.getKeyCode(), Matchers.equalTo(KeyCodes.KEY_ENTER));
+        assertThat(keyShortcut.getDescription(),
+                Matchers.equalTo("publish chat"));
+        assertThat(keyShortcut.getContext(),
+                Matchers.equalTo(ShortcutContext.Chat));
 
-      // key handler
-      when(identity.getPerson()).thenReturn(person);
-      when(display.getChatInputText()).thenReturn("hello");
-      keyShortcut.getHandler().onKeyShortcut(new KeyShortcutEvent(keys));
-      verify(spyPresenter).dispatchChatAction(person.getId().toString(), "hello", HasWorkspaceChatData.MESSAGE_TYPE.USER_MSG);
-   }
+        // key handler
+        when(identity.getPerson()).thenReturn(person);
+        when(display.getChatInputText()).thenReturn("hello");
+        keyShortcut.getHandler().onKeyShortcut(new KeyShortcutEvent(keys));
+        verify(spyPresenter).dispatchChatAction(person.getId().toString(),
+                "hello", HasWorkspaceChatData.MESSAGE_TYPE.USER_MSG);
+    }
 
-   @Test
-   public void onSendButtonClicked()
-   {
-      // Given:
-      when(display.getChatInputText()).thenReturn("hello");
-      Person person = TestFixture.person();
-      when(identity.getPerson()).thenReturn(person);
+    @Test
+    public void onSendButtonClicked() {
+        // Given:
+        when(display.getChatInputText()).thenReturn("hello");
+        Person person = TestFixture.person();
+        when(identity.getPerson()).thenReturn(person);
 
-      // When:
-      presenter.onSendButtonClicked();
+        // When:
+        presenter.onSendButtonClicked();
 
-      // Then:
-      ArgumentCaptor<PublishWorkspaceChatAction> actionCaptor = ArgumentCaptor.forClass(PublishWorkspaceChatAction.class);
-      verify(dispatcher).execute(actionCaptor.capture(), isA(NoOpAsyncCallback.class));
-      PublishWorkspaceChatAction chatAction = actionCaptor.getValue();
-      assertThat(chatAction.getPerson(), Matchers.equalTo(person.getId().toString()));
-      assertThat(chatAction.getMsg(), Matchers.equalTo("hello"));
-      assertThat(chatAction.getMessageType(), Matchers.equalTo(HasWorkspaceChatData.MESSAGE_TYPE.USER_MSG));
-      verify(display).setChatInputText("");
-   }
+        // Then:
+        ArgumentCaptor<PublishWorkspaceChatAction> actionCaptor =
+                ArgumentCaptor.forClass(PublishWorkspaceChatAction.class);
+        verify(dispatcher).execute(actionCaptor.capture(),
+                isA(NoOpAsyncCallback.class));
+        PublishWorkspaceChatAction chatAction = actionCaptor.getValue();
+        assertThat(chatAction.getPerson(),
+                Matchers.equalTo(person.getId().toString()));
+        assertThat(chatAction.getMsg(), Matchers.equalTo("hello"));
+        assertThat(chatAction.getMessageType(),
+                Matchers.equalTo(HasWorkspaceChatData.MESSAGE_TYPE.USER_MSG));
+        verify(display).setChatInputText("");
+    }
 
-   @Test
-   public void onChatInputFocus()
-   {
-      presenter.onChatInputFocused();
+    @Test
+    public void onChatInputFocus() {
+        presenter.onChatInputFocused();
 
-      verify(keyShortcutPresenter).setContextActive(ShortcutContext.Chat, true);
-      verify(keyShortcutPresenter).setContextActive(ShortcutContext.Navigation, false);
-      verify(keyShortcutPresenter).setContextActive(ShortcutContext.Edit, false);
-   }
+        verify(keyShortcutPresenter).setContextActive(ShortcutContext.Chat,
+                true);
+        verify(keyShortcutPresenter).setContextActive(
+                ShortcutContext.Navigation, false);
+        verify(keyShortcutPresenter).setContextActive(ShortcutContext.Edit,
+                false);
+    }
 
-   @Test
-   public void onChatInputBlur()
-   {
-      presenter.onChatInputBlur();
+    @Test
+    public void onChatInputBlur() {
+        presenter.onChatInputBlur();
 
-      verify(keyShortcutPresenter).setContextActive(ShortcutContext.Chat, false);
-      verify(keyShortcutPresenter).setContextActive(ShortcutContext.Navigation, true);
-   }
+        verify(keyShortcutPresenter).setContextActive(ShortcutContext.Chat,
+                false);
+        verify(keyShortcutPresenter).setContextActive(
+                ShortcutContext.Navigation, true);
+    }
 
-   @Test
-   public void onPublishWorkspaceChat()
-   {
-      PublishWorkspaceChatEvent event = Mockito.mock(PublishWorkspaceChatEvent.class);
-      when(event.getPersonId()).thenReturn("admin");
-      when(event.getMsg()).thenReturn("bye");
-      when(event.getMessageType()).thenReturn(HasWorkspaceChatData.MESSAGE_TYPE.USER_MSG);
-      when(event.getTimestamp()).thenReturn("a minute ago");
+    @Test
+    public void onPublishWorkspaceChat() {
+        PublishWorkspaceChatEvent event =
+                Mockito.mock(PublishWorkspaceChatEvent.class);
+        when(event.getPersonId()).thenReturn("admin");
+        when(event.getMsg()).thenReturn("bye");
+        when(event.getMessageType()).thenReturn(
+                HasWorkspaceChatData.MESSAGE_TYPE.USER_MSG);
+        when(event.getTimestamp()).thenReturn("a minute ago");
 
-      presenter.onPublishWorkspaceChat(event);
+        presenter.onPublishWorkspaceChat(event);
 
-      verify(display).appendChat(event.getPersonId(), event.getTimestamp(), event.getMsg(), event.getMessageType());
-   }
+        verify(display).appendChat(event.getPersonId(), event.getTimestamp(),
+                event.getMsg(), event.getMessageType());
+    }
 
-   @Test
-   public void onAddNewUser()
-   {
-      Person person = TestFixture.person();
-      when(messages.hasJoinedWorkspace(person.getId().toString())).thenReturn("someone entered");
-      WorkspaceUsersPresenter spyPresenter = spy(presenter);
-      doNothing().when(spyPresenter).dispatchChatAction(null, "someone entered", HasWorkspaceChatData.MESSAGE_TYPE.SYSTEM_MSG);
+    @Test
+    public void onAddNewUser() {
+        Person person = TestFixture.person();
+        when(messages.hasJoinedWorkspace(person.getId().toString()))
+                .thenReturn("someone entered");
+        WorkspaceUsersPresenter spyPresenter = spy(presenter);
+        doNothing().when(spyPresenter)
+                .dispatchChatAction(null, "someone entered",
+                        HasWorkspaceChatData.MESSAGE_TYPE.SYSTEM_MSG);
 
-      spyPresenter.addNewUser(person);
+        spyPresenter.addNewUser(person);
 
-      verify(spyPresenter).dispatchChatAction(null, "someone entered", HasWorkspaceChatData.MESSAGE_TYPE.SYSTEM_MSG);
-      verify(display).addUser(person);
-   }
+        verify(spyPresenter).dispatchChatAction(null, "someone entered",
+                HasWorkspaceChatData.MESSAGE_TYPE.SYSTEM_MSG);
+        verify(display).addUser(person);
+    }
 
-   @Test
-   public void onRemoveUser()
-   {
-      Person person = TestFixture.person();
-      when(messages.hasQuitWorkspace(person.getId().toString())).thenReturn("someone quit");
-      WorkspaceUsersPresenter spyPresenter = spy(presenter);
-      doNothing().when(spyPresenter).dispatchChatAction(null, "someone quit", HasWorkspaceChatData.MESSAGE_TYPE.SYSTEM_MSG);
+    @Test
+    public void onRemoveUser() {
+        Person person = TestFixture.person();
+        when(messages.hasQuitWorkspace(person.getId().toString())).thenReturn(
+                "someone quit");
+        WorkspaceUsersPresenter spyPresenter = spy(presenter);
+        doNothing().when(spyPresenter).dispatchChatAction(null, "someone quit",
+                HasWorkspaceChatData.MESSAGE_TYPE.SYSTEM_MSG);
 
-      spyPresenter.removeUser(userSessionPanel, person.getId().toString());
+        spyPresenter.removeUser(userSessionPanel, person.getId().toString());
 
-      verify(spyPresenter).dispatchChatAction(null, "someone quit", HasWorkspaceChatData.MESSAGE_TYPE.SYSTEM_MSG);
-      verify(display).removeUser(userSessionPanel);
-   }
+        verify(spyPresenter).dispatchChatAction(null, "someone quit",
+                HasWorkspaceChatData.MESSAGE_TYPE.SYSTEM_MSG);
+        verify(display).removeUser(userSessionPanel);
+    }
 
-   @Test
-   public void willIgnoreIfMessageIsBlank()
-   {
-      presenter.dispatchChatAction("someone", "", HasWorkspaceChatData.MESSAGE_TYPE.USER_MSG);
+    @Test
+    public void willIgnoreIfMessageIsBlank() {
+        presenter.dispatchChatAction("someone", "",
+                HasWorkspaceChatData.MESSAGE_TYPE.USER_MSG);
 
-      verifyZeroInteractions(dispatcher, eventBus, display);
-   }
+        verifyZeroInteractions(dispatcher, eventBus, display);
+    }
 }

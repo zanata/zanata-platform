@@ -47,61 +47,67 @@ import com.google.common.collect.Maps;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Test(groups = "unit-tests")
-public class NavigationServiceUnitTest
-{
-   private static final int EDITOR_PAGE_SIZE = 3;
-   private NavigationService service;
-   @Mock
-   private EventBus eventBus;
-   @Mock
-   private CachingDispatchAsync dispatcher;
-   private GetTransUnitActionContext initContext;
-   private List<TransUnit> data;
-   private Map<TransUnitId,ContentState> idStateMap;
-   private List<TransUnitId> idIndexList;
-   @Captor
-   private ArgumentCaptor<GwtEvent> eventCaptor;
-   @Captor
-   private ArgumentCaptor<GetTransUnitList> actionCaptor;
-   @Captor
-   private ArgumentCaptor<AbstractAsyncCallback<GetTransUnitListResult>> resultCaptor;
-   @Mock
-   private NavigationService.PageDataChangeListener pageDataChangeListener;
-   @Mock
-   private History history;
-   private GetTransUnitActionContextHolder contextHolder;
+public class NavigationServiceUnitTest {
+    private static final int EDITOR_PAGE_SIZE = 3;
+    private NavigationService service;
+    @Mock
+    private EventBus eventBus;
+    @Mock
+    private CachingDispatchAsync dispatcher;
+    private GetTransUnitActionContext initContext;
+    private List<TransUnit> data;
+    private Map<TransUnitId, ContentState> idStateMap;
+    private List<TransUnitId> idIndexList;
+    @Captor
+    private ArgumentCaptor<GwtEvent> eventCaptor;
+    @Captor
+    private ArgumentCaptor<GetTransUnitList> actionCaptor;
+    @Captor
+    private ArgumentCaptor<AbstractAsyncCallback<GetTransUnitListResult>> resultCaptor;
+    @Mock
+    private NavigationService.PageDataChangeListener pageDataChangeListener;
+    @Mock
+    private History history;
+    private GetTransUnitActionContextHolder contextHolder;
 
+    @BeforeMethod
+    public void beforeMethod() {
+        MockitoAnnotations.initMocks(this);
+        initData();
+        UserConfigHolder configHolder = new UserConfigHolder();
+        configHolder.setEditorPageSize(EDITOR_PAGE_SIZE);
+        SinglePageDataModelImpl pageModel = new SinglePageDataModelImpl();
+        ModalNavigationStateHolder navigationStateHolder =
+                new ModalNavigationStateHolder(configHolder);
+        contextHolder = new GetTransUnitActionContextHolder(configHolder);
+        contextHolder.initContext(TestFixture.documentInfo(1, "a.pot"), null,
+                null);
+        service =
+                new NavigationService(eventBus, dispatcher, configHolder,
+                        mock(TableEditorMessages.class), pageModel,
+                        navigationStateHolder, contextHolder, history);
+        service.addPageDataChangeListener(pageDataChangeListener);
 
-   @BeforeMethod
-   public void beforeMethod()
-   {
-      MockitoAnnotations.initMocks(this);
-      initData();
-      UserConfigHolder  configHolder = new UserConfigHolder();
-      configHolder.setEditorPageSize(EDITOR_PAGE_SIZE);
-      SinglePageDataModelImpl pageModel = new SinglePageDataModelImpl();
-      ModalNavigationStateHolder navigationStateHolder = new ModalNavigationStateHolder(configHolder);
-      contextHolder = new GetTransUnitActionContextHolder(configHolder);
-      contextHolder.initContext(TestFixture.documentInfo(1, "a.pot"), null, null);
-      service = new NavigationService(eventBus, dispatcher, configHolder, mock(TableEditorMessages.class), pageModel, navigationStateHolder, contextHolder, history);
-      service.addPageDataChangeListener(pageDataChangeListener);
+        verify(eventBus).addHandler(DocumentSelectionEvent.getType(), service);
+        verify(eventBus).addHandler(FindMessageEvent.getType(), service);
+        verify(eventBus).addHandler(NavTransUnitEvent.getType(), service);
+        verify(eventBus).addHandler(EditorPageSizeChangeEvent.TYPE, service);
 
-      verify(eventBus).addHandler(DocumentSelectionEvent.getType(), service);
-      verify(eventBus).addHandler(FindMessageEvent.getType(), service);
-      verify(eventBus).addHandler(NavTransUnitEvent.getType(), service);
-      verify(eventBus).addHandler(EditorPageSizeChangeEvent.TYPE, service);
+        pageModel.setData(data.subList(0, configHolder.getState()
+                .getEditorPageSize()));
+        navigationStateHolder.init(idStateMap, idIndexList);
+        initContext =
+                new GetTransUnitActionContext(TestFixture.documentInfo(1, ""))
+                        .changeCount(configHolder.getState()
+                                .getEditorPageSize());
+    }
 
-      pageModel.setData(data.subList(0, configHolder.getState().getEditorPageSize()));
-      navigationStateHolder.init(idStateMap, idIndexList);
-      initContext = new GetTransUnitActionContext(TestFixture.documentInfo(1, "")).changeCount(configHolder.getState().getEditorPageSize());
-   }
-
-   private void initData()
-   {
-      // @formatter:off
+    private void initData() {
+        // @formatter:off
       data = Lists.newArrayList(
             TestFixture.makeTransUnit(1, ContentState.Approved),
             TestFixture.makeTransUnit(2, ContentState.Approved),
@@ -110,293 +116,322 @@ public class NavigationServiceUnitTest
             TestFixture.makeTransUnit(5, ContentState.Approved)
       );
       // @formatter:on
-      idStateMap = Maps.newHashMap();
-      idIndexList = Lists.newArrayList();
-      for (TransUnit transUnit : data)
-      {
-         idStateMap.put(transUnit.getId(), transUnit.getStatus());
-         idIndexList.add(transUnit.getId());
-      }
-   }
+        idStateMap = Maps.newHashMap();
+        idIndexList = Lists.newArrayList();
+        for (TransUnit transUnit : data) {
+            idStateMap.put(transUnit.getId(), transUnit.getStatus());
+            idIndexList.add(transUnit.getId());
+        }
+    }
 
-   @Test
-   public void onNavigationEventOnSamePage()
-   {
-      service.init(initContext);
-      service.selectByRowIndex(0);
+    @Test
+    public void onNavigationEventOnSamePage() {
+        service.init(initContext);
+        service.selectByRowIndex(0);
 
-      service.onNavTransUnit(NavTransUnitEvent.FIRST_ENTRY_EVENT);
+        service.onNavTransUnit(NavTransUnitEvent.FIRST_ENTRY_EVENT);
 
-      verify(eventBus, atLeastOnce()).fireEvent(eventCaptor.capture());
-      TableRowSelectedEvent tableRowSelectedEvent = TestFixture.extractFromEvents(eventCaptor.getAllValues(), TableRowSelectedEvent.class);
-      assertThat(tableRowSelectedEvent.getSelectedId(), Matchers.equalTo(data.get(0).getId()));
-   }
+        verify(eventBus, atLeastOnce()).fireEvent(eventCaptor.capture());
+        TableRowSelectedEvent tableRowSelectedEvent =
+                TestFixture.extractFromEvents(eventCaptor.getAllValues(),
+                        TableRowSelectedEvent.class);
+        assertThat(tableRowSelectedEvent.getSelectedId(),
+                Matchers.equalTo(data.get(0).getId()));
+    }
 
-   @Test
-   public void onNavigationEventOnDifferentPage()
-   {
-      service.init(initContext);
-      service.selectByRowIndex(0);
+    @Test
+    public void onNavigationEventOnDifferentPage() {
+        service.init(initContext);
+        service.selectByRowIndex(0);
 
-      service.onNavTransUnit(NavTransUnitEvent.LAST_ENTRY_EVENT);
+        service.onNavTransUnit(NavTransUnitEvent.LAST_ENTRY_EVENT);
 
-      verify(dispatcher, times(2)).execute(actionCaptor.capture(), resultCaptor.capture());
-      GetTransUnitList action = actionCaptor.getValue();
-      assertThat(action.getOffset(), Matchers.equalTo(3));
-      assertThat(action.getCount(), Matchers.equalTo(EDITOR_PAGE_SIZE));
-      assertThat(action.getTargetTransUnitId(), Matchers.equalTo(data.get(data.size() - 1).getId()));
-   }
+        verify(dispatcher, times(2)).execute(actionCaptor.capture(),
+                resultCaptor.capture());
+        GetTransUnitList action = actionCaptor.getValue();
+        assertThat(action.getOffset(), Matchers.equalTo(3));
+        assertThat(action.getCount(), Matchers.equalTo(EDITOR_PAGE_SIZE));
+        assertThat(action.getTargetTransUnitId(),
+                Matchers.equalTo(data.get(data.size() - 1).getId()));
+    }
 
-   @Test
-   public void onNextEntry()
-   {
-      service.init(initContext);
-      service.selectByRowIndex(0);
+    @Test
+    public void onNextEntry() {
+        service.init(initContext);
+        service.selectByRowIndex(0);
 
-      service.onNavTransUnit(NavTransUnitEvent.NEXT_ENTRY_EVENT);
+        service.onNavTransUnit(NavTransUnitEvent.NEXT_ENTRY_EVENT);
 
-      verify(eventBus, atLeastOnce()).fireEvent(eventCaptor.capture());
-      TableRowSelectedEvent tableRowSelectedEvent = TestFixture.extractFromEvents(eventCaptor.getAllValues(), TableRowSelectedEvent.class);
-      assertThat(tableRowSelectedEvent.getSelectedId(), Matchers.equalTo(data.get(1).getId()));
-   }
+        verify(eventBus, atLeastOnce()).fireEvent(eventCaptor.capture());
+        TableRowSelectedEvent tableRowSelectedEvent =
+                TestFixture.extractFromEvents(eventCaptor.getAllValues(),
+                        TableRowSelectedEvent.class);
+        assertThat(tableRowSelectedEvent.getSelectedId(),
+                Matchers.equalTo(data.get(1).getId()));
+    }
 
-   @Test
-   public void onPreviousEntry()
-   {
-      service.init(initContext);
-      service.selectByRowIndex(2);
-      service.onNavTransUnit(NavTransUnitEvent.PREV_ENTRY_EVENT);
+    @Test
+    public void onPreviousEntry() {
+        service.init(initContext);
+        service.selectByRowIndex(2);
+        service.onNavTransUnit(NavTransUnitEvent.PREV_ENTRY_EVENT);
 
-      verify(eventBus, atLeastOnce()).fireEvent(eventCaptor.capture());
-      TableRowSelectedEvent tableRowSelectedEvent = TestFixture.extractFromEvents(eventCaptor.getAllValues(), TableRowSelectedEvent.class);
-      assertThat(tableRowSelectedEvent.getSelectedId(), Matchers.equalTo(data.get(1).getId()));
-   }
+        verify(eventBus, atLeastOnce()).fireEvent(eventCaptor.capture());
+        TableRowSelectedEvent tableRowSelectedEvent =
+                TestFixture.extractFromEvents(eventCaptor.getAllValues(),
+                        TableRowSelectedEvent.class);
+        assertThat(tableRowSelectedEvent.getSelectedId(),
+                Matchers.equalTo(data.get(1).getId()));
+    }
 
-   @Test
-   public void onNextState()
-   {
-      service.init(initContext);
-      service.selectByRowIndex(0);
+    @Test
+    public void onNextState() {
+        service.init(initContext);
+        service.selectByRowIndex(0);
 
-      service.onNavTransUnit(NavTransUnitEvent.NEXT_STATE_EVENT);
+        service.onNavTransUnit(NavTransUnitEvent.NEXT_STATE_EVENT);
 
-      verify(eventBus, atLeastOnce()).fireEvent(eventCaptor.capture());
-      TableRowSelectedEvent tableRowSelectedEvent = TestFixture.extractFromEvents(eventCaptor.getAllValues(), TableRowSelectedEvent.class);
-      assertThat(tableRowSelectedEvent.getSelectedId(), Matchers.equalTo(data.get(2).getId()));
-   }
+        verify(eventBus, atLeastOnce()).fireEvent(eventCaptor.capture());
+        TableRowSelectedEvent tableRowSelectedEvent =
+                TestFixture.extractFromEvents(eventCaptor.getAllValues(),
+                        TableRowSelectedEvent.class);
+        assertThat(tableRowSelectedEvent.getSelectedId(),
+                Matchers.equalTo(data.get(2).getId()));
+    }
 
-   @Test
-   public void onPreviousState()
-   {
-      service.init(initContext);
-      service.selectByRowIndex(2);
+    @Test
+    public void onPreviousState() {
+        service.init(initContext);
+        service.selectByRowIndex(2);
 
-      service.onNavTransUnit(NavTransUnitEvent.PREV_STATE_EVENT);
+        service.onNavTransUnit(NavTransUnitEvent.PREV_STATE_EVENT);
 
-      verify(eventBus, atLeastOnce()).fireEvent(eventCaptor.capture());
-      TableRowSelectedEvent tableRowSelectedEvent = TestFixture.extractFromEvents(eventCaptor.getAllValues(), TableRowSelectedEvent.class);
-      assertThat(tableRowSelectedEvent.getSelectedId(), Matchers.equalTo(data.get(2).getId()));
-   }
+        verify(eventBus, atLeastOnce()).fireEvent(eventCaptor.capture());
+        TableRowSelectedEvent tableRowSelectedEvent =
+                TestFixture.extractFromEvents(eventCaptor.getAllValues(),
+                        TableRowSelectedEvent.class);
+        assertThat(tableRowSelectedEvent.getSelectedId(),
+                Matchers.equalTo(data.get(2).getId()));
+    }
 
-   @Test
-   public void testOnTransUnitUpdatedInCurrentPage() throws Exception
-   {
-      // Given: updated trans unit is from same document and it's on current page
-      service.init(initContext);
-      HasTransUnitUpdatedData updatedData = mock(HasTransUnitUpdatedData.class, withSettings().defaultAnswer(RETURNS_DEEP_STUBS));
-      when(updatedData.getUpdateInfo().getDocumentId()).thenReturn(initContext.getDocument().getId());
-      TransUnit updatedTU = data.get(0);
-      when(updatedData.getUpdateInfo().getTransUnit()).thenReturn(updatedTU);
-      EditorClientId editorClientId = new EditorClientId("sessionId", 1);
-      when(updatedData.getEditorClientId()).thenReturn(editorClientId);
-      when(updatedData.getUpdateType()).thenReturn(TransUnitUpdated.UpdateType.WebEditorSave);
+    @Test
+    public void testOnTransUnitUpdatedInCurrentPage() throws Exception {
+        // Given: updated trans unit is from same document and it's on current
+        // page
+        service.init(initContext);
+        HasTransUnitUpdatedData updatedData =
+                mock(HasTransUnitUpdatedData.class, withSettings()
+                        .defaultAnswer(RETURNS_DEEP_STUBS));
+        when(updatedData.getUpdateInfo().getDocumentId()).thenReturn(
+                initContext.getDocument().getId());
+        TransUnit updatedTU = data.get(0);
+        when(updatedData.getUpdateInfo().getTransUnit()).thenReturn(updatedTU);
+        EditorClientId editorClientId = new EditorClientId("sessionId", 1);
+        when(updatedData.getEditorClientId()).thenReturn(editorClientId);
+        when(updatedData.getUpdateType()).thenReturn(
+                TransUnitUpdated.UpdateType.WebEditorSave);
 
-      // When:
-      service.onTransUnitUpdated(new TransUnitUpdatedEvent(updatedData));
+        // When:
+        service.onTransUnitUpdated(new TransUnitUpdatedEvent(updatedData));
 
-      // Then:
-      verify(pageDataChangeListener).refreshRow(updatedTU, editorClientId, TransUnitUpdated.UpdateType.WebEditorSave);
+        // Then:
+        verify(pageDataChangeListener).refreshRow(updatedTU, editorClientId,
+                TransUnitUpdated.UpdateType.WebEditorSave);
 
-   }
+    }
 
-   @Test
-   public void testOnTransUnitUpdatedNotInCurrentPage() throws Exception
-   {
-      // Given: updated trans unit is from same document but NOT on current page
-      service.init(initContext);
-      HasTransUnitUpdatedData updatedData = mock(HasTransUnitUpdatedData.class, withSettings().defaultAnswer(RETURNS_DEEP_STUBS));
-      when(updatedData.getUpdateInfo().getDocumentId()).thenReturn(initContext.getDocument().getId());
-      // updated TU has something different so that we can assert it won't update current page data model
-      TransUnit updatedTU = TransUnit.Builder.from(data.get(data.size() - 1)).setSourceComment("different").build();
-      when(updatedData.getUpdateInfo().getTransUnit()).thenReturn(updatedTU);
+    @Test
+    public void testOnTransUnitUpdatedNotInCurrentPage() throws Exception {
+        // Given: updated trans unit is from same document but NOT on current
+        // page
+        service.init(initContext);
+        HasTransUnitUpdatedData updatedData =
+                mock(HasTransUnitUpdatedData.class, withSettings()
+                        .defaultAnswer(RETURNS_DEEP_STUBS));
+        when(updatedData.getUpdateInfo().getDocumentId()).thenReturn(
+                initContext.getDocument().getId());
+        // updated TU has something different so that we can assert it won't
+        // update current page data model
+        TransUnit updatedTU =
+                TransUnit.Builder.from(data.get(data.size() - 1))
+                        .setSourceComment("different").build();
+        when(updatedData.getUpdateInfo().getTransUnit()).thenReturn(updatedTU);
 
-      // When:
-      service.onTransUnitUpdated(new TransUnitUpdatedEvent(updatedData));
+        // When:
+        service.onTransUnitUpdated(new TransUnitUpdatedEvent(updatedData));
 
-      // Then:
-      verifyZeroInteractions(pageDataChangeListener);
-      assertThat(data.get(data.size() - 1).getSourceComment(), Matchers.not(Matchers.equalTo(updatedTU.getSourceComment())));
+        // Then:
+        verifyZeroInteractions(pageDataChangeListener);
+        assertThat(data.get(data.size() - 1).getSourceComment(),
+                Matchers.not(Matchers.equalTo(updatedTU.getSourceComment())));
 
-   }
+    }
 
-   @Test
-   public void testOnTransUnitUpdatedNotInCurrentDocument() throws Exception
-   {
-      // Given: updated trans unit is from another document
-      service.init(initContext);
-      HasTransUnitUpdatedData updatedData = mock(HasTransUnitUpdatedData.class, withSettings().defaultAnswer(RETURNS_DEEP_STUBS));
-      when(updatedData.getUpdateInfo().getDocumentId()).thenReturn(initContext.getDocument().getId());
+    @Test
+    public void testOnTransUnitUpdatedNotInCurrentDocument() throws Exception {
+        // Given: updated trans unit is from another document
+        service.init(initContext);
+        HasTransUnitUpdatedData updatedData =
+                mock(HasTransUnitUpdatedData.class, withSettings()
+                        .defaultAnswer(RETURNS_DEEP_STUBS));
+        when(updatedData.getUpdateInfo().getDocumentId()).thenReturn(
+                initContext.getDocument().getId());
 
-      // When:
-      service.onTransUnitUpdated(new TransUnitUpdatedEvent(updatedData));
+        // When:
+        service.onTransUnitUpdated(new TransUnitUpdatedEvent(updatedData));
 
-      // Then:
-      verifyZeroInteractions(pageDataChangeListener);
+        // Then:
+        verifyZeroInteractions(pageDataChangeListener);
 
-   }
+    }
 
-   @Test
-   public void testUpdateDataModel() throws Exception
-   {
-      service.init(initContext);
-      service.selectByRowIndex(0);
-      assertThat(service.getSelectedOrNull().getStatus(), Matchers.equalTo(ContentState.Approved));
+    @Test
+    public void testUpdateDataModel() throws Exception {
+        service.init(initContext);
+        service.selectByRowIndex(0);
+        assertThat(service.getSelectedOrNull().getStatus(),
+                Matchers.equalTo(ContentState.Approved));
 
-      service.updateDataModel(TestFixture.makeTransUnit(service.getSelectedOrNull().getId().getId(), ContentState.NeedReview));
+        service.updateDataModel(TestFixture.makeTransUnit(service
+                .getSelectedOrNull().getId().getId(), ContentState.NeedReview));
 
-      assertThat(service.getSelectedOrNull().getStatus(), Matchers.equalTo(ContentState.NeedReview));
-   }
+        assertThat(service.getSelectedOrNull().getStatus(),
+                Matchers.equalTo(ContentState.NeedReview));
+    }
 
-   @Test
-   public void testOnFindMessage() throws Exception
-   {
-      service.init(initContext);
+    @Test
+    public void testOnFindMessage() throws Exception {
+        service.init(initContext);
 
-      service.onFindMessage(new FindMessageEvent("search"));
+        service.onFindMessage(new FindMessageEvent("search"));
 
-      verify(dispatcher, times(2)).execute(actionCaptor.capture(), resultCaptor.capture());
-      GetTransUnitList getTransUnitList = actionCaptor.getValue();
-      assertThat(getTransUnitList.getPhrase(), Matchers.equalTo("search"));
-   }
+        verify(dispatcher, times(2)).execute(actionCaptor.capture(),
+                resultCaptor.capture());
+        GetTransUnitList getTransUnitList = actionCaptor.getValue();
+        assertThat(getTransUnitList.getPhrase(), Matchers.equalTo("search"));
+    }
 
-   @Test
-   public void testOnDocumentSelected() throws Exception
-   {
-      DocumentInfo documentInfo = TestFixture.documentInfo(2, "");
-      DocumentId documentId = documentInfo.getId();
-      service.onDocumentSelected(new DocumentSelectionEvent(documentInfo));
+    @Test
+    public void testOnDocumentSelected() throws Exception {
+        DocumentInfo documentInfo = TestFixture.documentInfo(2, "");
+        DocumentId documentId = documentInfo.getId();
+        service.onDocumentSelected(new DocumentSelectionEvent(documentInfo));
 
-      verify(dispatcher).execute(actionCaptor.capture(), resultCaptor.capture());
-      GetTransUnitList getTransUnitList = actionCaptor.getValue();
-      assertThat(getTransUnitList.getDocumentId(), Matchers.equalTo(documentId));
-   }
+        verify(dispatcher).execute(actionCaptor.capture(),
+                resultCaptor.capture());
+        GetTransUnitList getTransUnitList = actionCaptor.getValue();
+        assertThat(getTransUnitList.getDocumentId(),
+                Matchers.equalTo(documentId));
+    }
 
-   @Test
-   public void testOnPageSizeChange() throws Exception
-   {
-      service.init(initContext);
+    @Test
+    public void testOnPageSizeChange() throws Exception {
+        service.init(initContext);
 
-      service.onPageSizeChange(new EditorPageSizeChangeEvent(5));
+        service.onPageSizeChange(new EditorPageSizeChangeEvent(5));
 
-      verify(dispatcher, times(2)).execute(actionCaptor.capture(), resultCaptor.capture());
-      GetTransUnitList getTransUnitList = actionCaptor.getValue();
-      assertThat(getTransUnitList.getCount(), Matchers.equalTo(5));
+        verify(dispatcher, times(2)).execute(actionCaptor.capture(),
+                resultCaptor.capture());
+        GetTransUnitList getTransUnitList = actionCaptor.getValue();
+        assertThat(getTransUnitList.getCount(), Matchers.equalTo(5));
 
-   }
+    }
 
-   @Test
-   public void testSelectByRowIndex() throws Exception
-   {
-      service.init(initContext);
-      service.selectByRowIndex(1);
+    @Test
+    public void testSelectByRowIndex() throws Exception {
+        service.init(initContext);
+        service.selectByRowIndex(1);
 
-      assertThat(service.getCurrentRowIndexOnPage(), Matchers.equalTo(1));
-      assertThat(service.getSelectedOrNull(), Matchers.equalTo(data.get(1)));
-   }
+        assertThat(service.getCurrentRowIndexOnPage(), Matchers.equalTo(1));
+        assertThat(service.getSelectedOrNull(), Matchers.equalTo(data.get(1)));
+    }
 
-   @Test
-   public void testFindRowIndexById() throws Exception
-   {
-      assertThat(service.findRowIndexById(new TransUnitId(2)), Matchers.equalTo(1));
+    @Test
+    public void testFindRowIndexById() throws Exception {
+        assertThat(service.findRowIndexById(new TransUnitId(2)),
+                Matchers.equalTo(1));
 
-      // not in current page
-      assertThat(service.findRowIndexById(new TransUnitId(99)), Matchers.equalTo(NavigationService.UNDEFINED));
-   }
+        // not in current page
+        assertThat(service.findRowIndexById(new TransUnitId(99)),
+                Matchers.equalTo(NavigationService.UNDEFINED));
+    }
 
-   @Test
-   public void testGetSelectedOrNull() throws Exception
-   {
-      service.init(initContext);
+    @Test
+    public void testGetSelectedOrNull() throws Exception {
+        service.init(initContext);
 
-      assertThat(service.getSelectedOrNull(), Matchers.nullValue());
+        assertThat(service.getSelectedOrNull(), Matchers.nullValue());
 
-      service.selectByRowIndex(1);
+        service.selectByRowIndex(1);
 
-      assertThat(service.getSelectedOrNull(), Matchers.equalTo(data.get(1)));
-   }
+        assertThat(service.getSelectedOrNull(), Matchers.equalTo(data.get(1)));
+    }
 
-   @Test
-   public void testGetCurrentPageValues() throws Exception
-   {
-      assertThat(service.getCurrentPageValues(), Matchers.equalTo(data.subList(0, EDITOR_PAGE_SIZE)));
-   }
+    @Test
+    public void testGetCurrentPageValues() throws Exception {
+        assertThat(service.getCurrentPageValues(),
+                Matchers.equalTo(data.subList(0, EDITOR_PAGE_SIZE)));
+    }
 
-   @Test
-   public void testGetByIdOrNull() throws Exception
-   {
-      assertThat(service.getByIdOrNull(new TransUnitId(2)), Matchers.equalTo(data.get(1)));
+    @Test
+    public void testGetByIdOrNull() throws Exception {
+        assertThat(service.getByIdOrNull(new TransUnitId(2)),
+                Matchers.equalTo(data.get(1)));
 
-      // not in current page
-      assertThat(service.getByIdOrNull(new TransUnitId(99)), Matchers.nullValue());
-   }
+        // not in current page
+        assertThat(service.getByIdOrNull(new TransUnitId(99)),
+                Matchers.nullValue());
+    }
 
-   @Test
-   public void onBookmarkedTextFlowOnSamePage()
-   {
-      contextHolder.changeOffset(1);
-      TransUnitId targetId = new TransUnitId(1);
+    @Test
+    public void onBookmarkedTextFlowOnSamePage() {
+        contextHolder.changeOffset(1);
+        TransUnitId targetId = new TransUnitId(1);
 
-      service.onBookmarkableTextFlow(new BookmarkedTextFlowEvent(1, targetId));
+        service.onBookmarkableTextFlow(new BookmarkedTextFlowEvent(1, targetId));
 
-      verify(eventBus).fireEvent(eventCaptor.capture());
-      TableRowSelectedEvent event = TestFixture.extractFromEvents(eventCaptor.getAllValues(), TableRowSelectedEvent.class);
-      assertThat(event.getSelectedId(), Matchers.equalTo(targetId));
-      verifyZeroInteractions(dispatcher);
-   }
+        verify(eventBus).fireEvent(eventCaptor.capture());
+        TableRowSelectedEvent event =
+                TestFixture.extractFromEvents(eventCaptor.getAllValues(),
+                        TableRowSelectedEvent.class);
+        assertThat(event.getSelectedId(), Matchers.equalTo(targetId));
+        verifyZeroInteractions(dispatcher);
+    }
 
-   @Test
-   public void onBookmarkedTextFlowOnDifferentPage()
-   {
-      // current offset is 1
-      contextHolder.changeOffset(1);
-      TransUnitId targetId = new TransUnitId(1);
-      // target offset is 2
-      BookmarkedTextFlowEvent bookmarkedTextFlowEvent = new BookmarkedTextFlowEvent(2, targetId);
-      NavigationService serviceSpy = spy(service);
-      doNothing().when(serviceSpy).execute(bookmarkedTextFlowEvent);
+    @Test
+    public void onBookmarkedTextFlowOnDifferentPage() {
+        // current offset is 1
+        contextHolder.changeOffset(1);
+        TransUnitId targetId = new TransUnitId(1);
+        // target offset is 2
+        BookmarkedTextFlowEvent bookmarkedTextFlowEvent =
+                new BookmarkedTextFlowEvent(2, targetId);
+        NavigationService serviceSpy = spy(service);
+        doNothing().when(serviceSpy).execute(bookmarkedTextFlowEvent);
 
-      serviceSpy.onBookmarkableTextFlow(bookmarkedTextFlowEvent);
+        serviceSpy.onBookmarkableTextFlow(bookmarkedTextFlowEvent);
 
-      verify(serviceSpy).execute(bookmarkedTextFlowEvent);
-   }
+        verify(serviceSpy).execute(bookmarkedTextFlowEvent);
+    }
 
-   @Test
-   public void onRequestSelectTableRowSamePage()
-   {
-      TransUnitId selectingId = new TransUnitId(1);
-      
-      DocumentInfo docInfo = TestFixture.documentInfo();
-      
-      HistoryToken mockHistoryToken = mock(HistoryToken.class);
-      when(history.getHistoryToken()).thenReturn(mockHistoryToken);
+    @Test
+    public void onRequestSelectTableRowSamePage() {
+        TransUnitId selectingId = new TransUnitId(1);
 
-      // When:
-      service.onRequestSelectTableRow(new RequestSelectTableRowEvent(docInfo, selectingId));
+        DocumentInfo docInfo = TestFixture.documentInfo();
 
-      // Then:
-      verify(mockHistoryToken).setView(MainView.Editor);
-      verify(mockHistoryToken).setDocumentPath(docInfo.getPath() + docInfo.getName());
-      verify(mockHistoryToken).clearEditorFilterAndSearch();
-      verify(mockHistoryToken).setTextFlowId(selectingId.toString());
-   }
+        HistoryToken mockHistoryToken = mock(HistoryToken.class);
+        when(history.getHistoryToken()).thenReturn(mockHistoryToken);
+
+        // When:
+        service.onRequestSelectTableRow(new RequestSelectTableRowEvent(docInfo,
+                selectingId));
+
+        // Then:
+        verify(mockHistoryToken).setView(MainView.Editor);
+        verify(mockHistoryToken).setDocumentPath(
+                docInfo.getPath() + docInfo.getName());
+        verify(mockHistoryToken).clearEditorFilterAndSearch();
+        verify(mockHistoryToken).setTextFlowId(selectingId.toString());
+    }
 }

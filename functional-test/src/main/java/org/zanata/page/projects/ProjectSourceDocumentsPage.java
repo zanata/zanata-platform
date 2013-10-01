@@ -28,61 +28,57 @@ import org.zanata.page.BasePage;
 
 import java.util.List;
 
-public class ProjectSourceDocumentsPage extends BasePage
-{
-   @FindBy(id = "iterationDocumentsForm:data_table:tb")
-   private WebElement documentTableTBody;
+public class ProjectSourceDocumentsPage extends BasePage {
+    @FindBy(id = "iterationDocumentsForm:data_table:tb")
+    private WebElement documentTableTBody;
 
-   public ProjectSourceDocumentsPage(final WebDriver driver)
-   {
-      super(driver);
-   }
+    public ProjectSourceDocumentsPage(final WebDriver driver) {
+        super(driver);
+    }
 
-   public ProjectSourceDocumentsPage pressUploadFileButton()
-   {
-      getDriver().findElement(By.id("uploadSidebar:uploadDocumentButton")).click();
-      return new ProjectSourceDocumentsPage(getDriver());
-   }
+    public ProjectSourceDocumentsPage pressUploadFileButton() {
+        getDriver().findElement(By.id("uploadSidebar:uploadDocumentButton"))
+                .click();
+        return new ProjectSourceDocumentsPage(getDriver());
+    }
 
-   public ProjectSourceDocumentsPage enterFilePath(String filePath)
-   {
-      getDriver().findElement(By.id("uploadDocForm:generalDocFileUpload")).sendKeys(filePath);
-      return new ProjectSourceDocumentsPage(getDriver());
-   }
+    public ProjectSourceDocumentsPage enterFilePath(String filePath) {
+        getDriver().findElement(By.id("uploadDocForm:generalDocFileUpload"))
+                .sendKeys(filePath);
+        return new ProjectSourceDocumentsPage(getDriver());
+    }
 
-   public ProjectSourceDocumentsPage cancelUpload()
-   {
-      getDriver().findElement(By.id("uploadDocForm:generalDocCancelUploadButton")).click();
-      return new ProjectSourceDocumentsPage(getDriver());
-   }
+    public ProjectSourceDocumentsPage cancelUpload() {
+        getDriver().findElement(
+                By.id("uploadDocForm:generalDocCancelUploadButton")).click();
+        return new ProjectSourceDocumentsPage(getDriver());
+    }
 
-   public ProjectSourceDocumentsPage submitUpload()
-   {
-      getDriver().findElement(By.id("uploadDocForm:generalDocSubmitUploadButton")).click();
-      return new ProjectSourceDocumentsPage(getDriver());
-   }
+    public ProjectSourceDocumentsPage submitUpload() {
+        getDriver().findElement(
+                By.id("uploadDocForm:generalDocSubmitUploadButton")).click();
+        return new ProjectSourceDocumentsPage(getDriver());
+    }
 
-   public boolean sourceDocumentsContains(String document)
-   {
-      List<WebElement> documentTableRows = getDocumentTableRows();
-      for (WebElement tableRow : documentTableRows)
-      {
-         if (tableRow.findElements(By.tagName("td")).get(1).getText().equals(document))
-         {
-            return true;
-         }
-      }
-      return false;
-   }
+    public boolean sourceDocumentsContains(String document) {
+        List<WebElement> documentTableRows = getDocumentTableRows();
+        for (WebElement tableRow : documentTableRows) {
+            if (tableRow.findElements(By.tagName("td")).get(1).getText()
+                    .equals(document)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-   private List<WebElement> getDocumentTableRows()
-   {
-      return documentTableTBody.findElements(By.tagName("tr"));
-   }
+    private List<WebElement> getDocumentTableRows() {
+        return documentTableTBody.findElements(By.tagName("tr"));
+    }
 
-   public boolean canSubmitDocument()
-   {
-      return getDriver().findElement(By.id("uploadDocForm:generalDocSubmitUploadButton")).isEnabled();
-   }
+    public boolean canSubmitDocument() {
+        return getDriver().findElement(
+                By.id("uploadDocForm:generalDocSubmitUploadButton"))
+                .isEnabled();
+    }
 
 }

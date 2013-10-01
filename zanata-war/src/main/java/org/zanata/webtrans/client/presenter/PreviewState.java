@@ -22,11 +22,11 @@ package org.zanata.webtrans.client.presenter;
 
 /**
  * Indicates whether a preview for a change to a text flow is available.
- * 
- * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
+ *
+ * @author David Mason, <a
+ *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  *
  */
-public enum PreviewState
-{
-   NotAllowed, NotFetched, Fetching, Show, Hide
+public enum PreviewState {
+    NotAllowed, NotFetched, Fetching, Show, Hide
 }

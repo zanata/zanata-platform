@@ -1,82 +1,92 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:s="http://jboss.org/schema/seam/taglib"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:rich="http://richfaces.org/rich">
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:rich="http://richfaces.org/rich">
 
 
-        <h:outputText id="noResultsMessage" rendered="#{empty versionGroupJoinAction.projectVersions}" value="#{messages['jsf.NoProjects']}" />
-        <h:form rendered="#{not empty versionGroupJoinAction.projectVersions}">
-            <s:token allowMultiplePosts="true" />
-            <h4>#{messages['jsf.SelectProjectVersions']}</h4>
-            <rich:panel style="height:170px;overflow:auto">
-                <rich:dataTable id="resultTable" value="#{versionGroupJoinAction.projectVersions}" var="selectableVersion">
-                    <rich:column sortBy="#{selectableVersion.projectIteration.project.name}">
-                        <f:facet name="header">#{messages['jsf.ProjectName']}</f:facet>
-                        #{selectableVersion.projectIteration.project.name}
-                    </rich:column>
-                    <rich:column sortBy="#{selectableVersion.projectIteration.slug}">
-                        <f:facet name="header">#{messages['jsf.Version']}</f:facet>
-                        #{selectableVersion.projectIteration.slug}
-                    </rich:column>
+  <h:outputText id="noResultsMessage"
+    rendered="#{empty versionGroupJoinAction.projectVersions}"
+    value="#{messages['jsf.NoProjects']}"/>
+  <h:form rendered="#{not empty versionGroupJoinAction.projectVersions}">
+    <s:token allowMultiplePosts="true"/>
+    <h4>#{messages['jsf.SelectProjectVersions']}</h4>
+    <rich:panel style="height:170px;overflow:auto">
+      <rich:dataTable id="resultTable"
+        value="#{versionGroupJoinAction.projectVersions}"
+        var="selectableVersion">
+        <rich:column
+          sortBy="#{selectableVersion.projectIteration.project.name}">
+          <f:facet name="header">#{messages['jsf.ProjectName']}</f:facet>
+          #{selectableVersion.projectIteration.project.name}
+        </rich:column>
+        <rich:column sortBy="#{selectableVersion.projectIteration.slug}">
+          <f:facet name="header">#{messages['jsf.Version']}</f:facet>
+          #{selectableVersion.projectIteration.slug}
+        </rich:column>
 
-                    <rich:column styleClass="centered">
-                        <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-                        <h:selectBooleanCheckbox title="#{messages['jsf.Select']}" value="#{selectableVersion.selected}" rendered="#{!versionGroupJoinAction.isVersionInGroup(selectableVersion.projectIteration.id)}"/>
+        <rich:column styleClass="centered">
+          <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+          <h:selectBooleanCheckbox title="#{messages['jsf.Select']}"
+            value="#{selectableVersion.selected}"
+            rendered="#{!versionGroupJoinAction.isVersionInGroup(selectableVersion.projectIteration.id)}"/>
 
-                        <h:outputText value="#{messages['jsf.AlreadyInGroup']}"
-                                      rendered="#{versionGroupJoinAction.isVersionInGroup(selectableVersion.projectIteration.id)}" />
-                    </rich:column>
-                </rich:dataTable>
-            </rich:panel>
+          <h:outputText value="#{messages['jsf.AlreadyInGroup']}"
+            rendered="#{versionGroupJoinAction.isVersionInGroup(selectableVersion.projectIteration.id)}"/>
+        </rich:column>
+      </rich:dataTable>
+    </rich:panel>
 
-            <h4>#{messages['jsf.ClickSendMessageToProceedRequest']}</h4>
-            <rich:panel>
-                <s:decorate id="nameField" template="display.xhtml">
-                    <ui:define name="label">#{messages['jsf.email.From']}</ui:define>
-                    <h:outputText id="senderName" value="#{sendEmail.fromName}"
-                                  required="true" />
-                </s:decorate>
+    <h4>#{messages['jsf.ClickSendMessageToProceedRequest']}</h4>
+    <rich:panel>
+      <s:decorate id="nameField" template="display.xhtml">
+        <ui:define name="label">#{messages['jsf.email.From']}</ui:define>
+        <h:outputText id="senderName" value="#{sendEmail.fromName}"
+          required="true"/>
+      </s:decorate>
 
-                <s:decorate id="replyEmailField" template="display.xhtml">
-                    <ui:define name="label">#{messages['jsf.email.ReplyAddress']}<br/>#{messages['jsf.email.ReplyAddress.description']}</ui:define>
-                    <h:outputText id="email" value="#{sendEmail.replyEmail}" required="true" />
-                </s:decorate>
+      <s:decorate id="replyEmailField" template="display.xhtml">
+        <ui:define name="label">#{messages['jsf.email.ReplyAddress']}
+          <br/>#{messages['jsf.email.ReplyAddress.description']}</ui:define>
+        <h:outputText id="email" value="#{sendEmail.replyEmail}"
+          required="true"/>
+      </s:decorate>
 
-                <s:decorate id="subjectField" template="display.xhtml">
-                    <ui:define name="label">#{messages['jsf.email.Subject']}</ui:define>
-                    <h:outputText id="subject" value="#{messages['jsf.email.joingrouprequest.Subject']}"
-                                  required="true" />
-                </s:decorate>
+      <s:decorate id="subjectField" template="display.xhtml">
+        <ui:define name="label">#{messages['jsf.email.Subject']}</ui:define>
+        <h:outputText id="subject"
+          value="#{messages['jsf.email.joingrouprequest.Subject']}"
+          required="true"/>
+      </s:decorate>
 
-                <s:decorate id="messageField" template="edit.xhtml">
-                    <ui:define name="label">#{messages['jsf.AdditionalInfo']}</ui:define>
+      <s:decorate id="messageField" template="edit.xhtml">
+        <ui:define name="label">#{messages['jsf.AdditionalInfo']}</ui:define>
 
-                    <s:span styleClass="icon-info-circle-2 input_help" id="slugHelp">
-		            	<rich:tooltip>
-                            #{messages['jsf.email.joingrouprequest.AdditionalInfoMessage']}
-                        </rich:tooltip>
-		           	</s:span>
-                    <br/><br/>
-                    <rich:editor id="message" width="400" height="300"
-                                 style="width:400px;" required="false"
-                                 value="#{sendEmail.htmlMessage}" viewMode="visual"
-                                 useSeamText="false" configuration="richeditor" theme="advanced">
-                    </rich:editor>
-                </s:decorate>
+        <s:span styleClass="icon-info-circle-2 input_help" id="slugHelp">
+          <rich:tooltip>
+            #{messages['jsf.email.joingrouprequest.AdditionalInfoMessage']}
+          </rich:tooltip>
+        </s:span>
+        <br/><br/>
+        <rich:editor id="message" width="400" height="300"
+          style="width:400px;" required="false"
+          value="#{sendEmail.htmlMessage}" viewMode="visual"
+          useSeamText="false" configuration="richeditor" theme="advanced">
+        </rich:editor>
+      </s:decorate>
 
-                <div style="clear: both"></div>
-                <div class="actionButtons">
-                    <h:commandButton id="send" value="#{messages['jsf.email.Send']}"
-                                     action="#{versionGroupJoinAction.send}" />
+      <div style="clear: both"></div>
+      <div class="actionButtons">
+        <h:commandButton id="send" value="#{messages['jsf.email.Send']}"
+          action="#{versionGroupJoinAction.send}"/>
 
-                    <s:button id="cancel" value="#{messages['jsf.Cancel']}"
-                              propagation="none" action="#{versionGroupJoinAction.cancel}" />
-                </div>
+        <s:button id="cancel" value="#{messages['jsf.Cancel']}"
+          propagation="none" action="#{versionGroupJoinAction.cancel}"/>
+      </div>
 
-            </rich:panel>
-        </h:form>
+    </rich:panel>
+  </h:form>
 
 
 </ui:composition>

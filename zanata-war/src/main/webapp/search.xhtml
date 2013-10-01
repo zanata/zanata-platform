@@ -1,41 +1,45 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:s="http://jboss.org/schema/seam/taglib"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:rich="http://richfaces.org/rich" template="./WEB-INF/template/template_2x.xhtml">
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:rich="http://richfaces.org/rich"
+  template="./WEB-INF/template/template_2x.xhtml">
 
-   <ui:define name="page_title">#{messages['jsf.SearchResultsForProjectSearch']}</ui:define>
-	<ui:define name="center_content">
-		<h1>#{messages['jsf.FoundResultsizeProjectsMatchingQuerySearchquery']}</h1>
+  <ui:define
+    name="page_title">#{messages['jsf.SearchResultsForProjectSearch']}</ui:define>
+  <ui:define name="center_content">
+    <h1>#{messages['jsf.FoundResultsizeProjectsMatchingQuerySearchquery']}</h1>
 
-        <rich:dataTable id="searchResults" columnsWidth="200px,200px,80px" value="#{projectSearch.searchResults}" var="project">
-                <rich:column>
-                    <f:facet name="header">#{messages['jsf.ProjectName']}</f:facet>
-                    <s:link id="project" value="#{project.name}"  propagation="none"
-                    	     styleClass="table_link #{project.status eq 'READONLY' ? 'readonly_link' : (project.status eq 'OBSOLETE' ? 'obsolete_link' : '')}" 
-                             view="/project/project.xhtml"> 
-                            <f:param name="slug" value="#{project.slug}"/>
-                    </s:link>
-                </rich:column>
-                <rich:column>
-                        <f:facet name="header">#{messages['jsf.Description']}</f:facet>
-                        <h:outputText value="#{project.description}" />
-                </rich:column>
-                <rich:column>
-                        <f:facet name="header">#{messages['jsf.CreationDate']}</f:facet>
-                        <h:outputText value="#{project.creationDate}">
-                           <f:convertDateTime type="date" dateStyle="default"/>
-                        </h:outputText>                     
-                </rich:column>
-        </rich:dataTable>
+    <rich:dataTable id="searchResults" columnsWidth="200px,200px,80px"
+      value="#{projectSearch.searchResults}" var="project">
+      <rich:column>
+        <f:facet name="header">#{messages['jsf.ProjectName']}</f:facet>
+        <s:link id="project" value="#{project.name}" propagation="none"
+          styleClass="table_link #{project.status eq 'READONLY' ? 'readonly_link' : (project.status eq 'OBSOLETE' ? 'obsolete_link' : '')}"
+          view="/project/project.xhtml">
+          <f:param name="slug" value="#{project.slug}"/>
+        </s:link>
+      </rich:column>
+      <rich:column>
+        <f:facet name="header">#{messages['jsf.Description']}</f:facet>
+        <h:outputText value="#{project.description}"/>
+      </rich:column>
+      <rich:column>
+        <f:facet name="header">#{messages['jsf.CreationDate']}</f:facet>
+        <h:outputText value="#{project.creationDate}">
+          <f:convertDateTime type="date" dateStyle="default"/>
+        </h:outputText>
+      </rich:column>
+    </rich:dataTable>
 
-		<s:fragment rendered="#{projectSearch.resultSize gt projectSearch.pageSize}"> 
-			<p>#{messages['jsf.OnlyShowingFirstPagesizeResults']}</p>
-		</s:fragment>
+    <s:fragment
+      rendered="#{projectSearch.resultSize gt projectSearch.pageSize}">
+      <p>#{messages['jsf.OnlyShowingFirstPagesizeResults']}</p>
+    </s:fragment>
 
-	</ui:define>
+  </ui:define>
 
 </ui:composition>

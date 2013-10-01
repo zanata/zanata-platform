@@ -24,28 +24,29 @@ import org.zanata.page.googleaccount.GoogleAccountPage;
 import org.zanata.page.googleaccount.GoogleManagePermissionsPage;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-public class GoogleWorkFlow extends AbstractWebWorkFlow
-{
-   private static String permissionsPageLink = "https://accounts.google.com/b/0/IssuedAuthSubTokens?hl=en_GB";
-   private static String forceLogoutLink = "https://accounts.google.com/Logout?service=lso";
+public class GoogleWorkFlow extends AbstractWebWorkFlow {
+    private static String permissionsPageLink =
+            "https://accounts.google.com/b/0/IssuedAuthSubTokens?hl=en_GB";
+    private static String forceLogoutLink =
+            "https://accounts.google.com/Logout?service=lso";
 
-   public GoogleManagePermissionsPage resetGooglePermissions(String googleUsername, String password)
-   {
-      GoogleAccountPage googleAccountPage = new BasicWorkFlow()
-            .goToUrl(permissionsPageLink, GoogleAccountPage.class);
+    public GoogleManagePermissionsPage resetGooglePermissions(
+            String googleUsername, String password) {
+        GoogleAccountPage googleAccountPage =
+                new BasicWorkFlow().goToUrl(permissionsPageLink,
+                    GoogleAccountPage.class);
 
-      return googleAccountPage
-            .enterGoogleEmail(googleUsername)
-            .enterGooglePassword(password)
-            .clickPermissionsSignIn()
-            .removePermission("localhost");
-   }
+        return googleAccountPage.enterGoogleEmail(googleUsername)
+                .enterGooglePassword(password).clickPermissionsSignIn()
+                .removePermission("localhost");
+    }
 
-   public GoogleAccountPage forceLogout()
-   {
-      return new BasicWorkFlow().goToUrl(forceLogoutLink, GoogleAccountPage.class);
-   }
+    public GoogleAccountPage forceLogout() {
+        return new BasicWorkFlow().goToUrl(forceLogoutLink,
+                GoogleAccountPage.class);
+    }
 
 }

@@ -8,24 +8,26 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public interface TextAreaWrapper extends IsWidget, HasText, HasValueChangeHandlers<String>, HasBlurHandlers, HasChangeHandlers, HasFocusHandlers
-{
+public interface TextAreaWrapper extends IsWidget, HasText,
+        HasValueChangeHandlers<String>, HasBlurHandlers, HasChangeHandlers,
+        HasFocusHandlers {
 
-   void setReadOnly(boolean readOnly);
+    void setReadOnly(boolean readOnly);
 
-   boolean isReadOnly();
+    boolean isReadOnly();
 
-   int getCursorPos();
+    int getCursorPos();
 
-   void setCursorPos(int pos);
+    void setCursorPos(int pos);
 
-   void highlight(String term);
+    void highlight(String term);
 
-   void refresh();
+    void refresh();
 
-   void setEditing(boolean isEditing);
+    void setEditing(boolean isEditing);
 
-   boolean isEditing();
+    boolean isEditing();
 }

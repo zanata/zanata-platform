@@ -28,31 +28,26 @@ import org.zanata.page.BasePage;
 import org.zanata.page.administration.EditHomeCodePage;
 import org.zanata.page.administration.EditHomeContentPage;
 
-public class HomePage extends BasePage
-{
+public class HomePage extends BasePage {
 
-   @FindBy(id = "main_body_content")
-   private WebElement mainBodyContent;
+    @FindBy(id = "main_body_content")
+    private WebElement mainBodyContent;
 
-   public HomePage(final WebDriver driver)
-   {
-      super(driver);
-   }
+    public HomePage(final WebDriver driver) {
+        super(driver);
+    }
 
-   public EditHomeContentPage goToEditPageContent()
-   {
-      getDriver().findElement(By.linkText("Edit Page Content")).click();
-      return new EditHomeContentPage(getDriver());
-   }
+    public EditHomeContentPage goToEditPageContent() {
+        getDriver().findElement(By.linkText("Edit Page Content")).click();
+        return new EditHomeContentPage(getDriver());
+    }
 
-   public EditHomeCodePage goToEditPageCode()
-   {
-      getDriver().findElement(By.linkText("Edit Page Code")).click();
-      return new EditHomeCodePage(getDriver());
-   }
+    public EditHomeCodePage goToEditPageCode() {
+        getDriver().findElement(By.linkText("Edit Page Code")).click();
+        return new EditHomeCodePage(getDriver());
+    }
 
-   public String getMainBodyContent()
-   {
-      return mainBodyContent.getText();
-   }
+    public String getMainBodyContent() {
+        return mainBodyContent.getText();
+    }
 }

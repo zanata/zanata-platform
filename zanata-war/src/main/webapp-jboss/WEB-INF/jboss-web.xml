@@ -1,29 +1,29 @@
-
-<!-- 
+<!--
 NB: Any changes to this file must be reported in the release notes,
 in case changes are required for production deployment (eg cfengine).
 -->
 
-<jboss-web xmlns="http://www.jboss.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="7.0">
-<!--
-  xsi:schemaLocation="http://www.jboss.com/xml/ns/javaee
-  https://issues.jboss.org/secure/attachment/12354188/jboss-web_7_0.xsd"
--->
+<jboss-web xmlns="http://www.jboss.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="7.0">
+  <!--
+    xsi:schemaLocation="http://www.jboss.com/xml/ns/javaee
+    https://issues.jboss.org/secure/attachment/12354188/jboss-web_7_0.xsd"
+  -->
 
-<!--
-    <resource-ref>
-      <res-ref-name>jdbc/TheDataSource</res-ref-name>
-      <jndi-name>java:/DefaultDS</jndi-name>
-    </resource-ref>
- -->
+  <!--
+      <resource-ref>
+        <res-ref-name>jdbc/TheDataSource</res-ref-name>
+        <jndi-name>java:/DefaultDS</jndi-name>
+      </resource-ref>
+   -->
 
-    <security-domain>zanata</security-domain>
-    <valve>
-        <class-name>org.jboss.security.negotiation.NegotiationAuthenticator</class-name>
-    </valve>
+  <security-domain>zanata</security-domain>
+  <valve>
+    <class-name>org.jboss.security.negotiation.NegotiationAuthenticator</class-name>
+  </valve>
 
 
-	<!-- This is where the webapp context root (eg /zanata or /) can be overridden: -->
-    <!-- _context_root_ -->
+  <!-- This is where the webapp context root (eg /zanata or /) can be overridden: -->
+  <!-- _context_root_ -->
 
 </jboss-web>

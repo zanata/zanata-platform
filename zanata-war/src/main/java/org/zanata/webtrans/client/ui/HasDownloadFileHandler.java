@@ -1,8 +1,7 @@
 package org.zanata.webtrans.client.ui;
 
-public interface HasDownloadFileHandler
-{
-   void onDownloadButtonClicked();
+public interface HasDownloadFileHandler {
+    void onDownloadButtonClicked();
 
-   void onCancelDownloadButtonClicked();
+    void onCancelDownloadButtonClicked();
 }

@@ -1,69 +1,74 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:rich="http://richfaces.org/rich"
-      xmlns:a4j="http://richfaces.org/a4j"
-      xmlns:s="http://jboss.org/schema/seam/taglib">
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:s="http://jboss.org/schema/seam/taglib">
 
 <ui:composition template="../WEB-INF/template/template_2x.xhtml">
 
-    <ui:define name="page_title">#{messages['jsf.RoleAssignmentRules']}</ui:define>
-    <ui:define name="right_content">
-        <rich:panel>
-            <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-            <s:link styleClass="action_link"
-                    value="#{messages['jsf.rolerules.CreateRule']}"
-                    view="/admin/roleruledetails.xhtml"
-                    />
-        </rich:panel>
-    </ui:define>
+  <ui:define
+    name="page_title">#{messages['jsf.RoleAssignmentRules']}</ui:define>
+  <ui:define name="right_content">
+    <rich:panel>
+      <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+      <s:link styleClass="action_link"
+        value="#{messages['jsf.rolerules.CreateRule']}"
+        view="/admin/roleruledetails.xhtml"
+        />
+    </rich:panel>
+  </ui:define>
 
-    <ui:define name="center_content">
-        <script type="text/javascript">
-            function confirmDelete()
-            {
-                return confirm("#{messages['jsf.rolerules.ConfirmDelete']}");
-            }
-        </script>
+  <ui:define name="center_content">
+    <script type="text/javascript">
+      function confirmDelete() {
+        return confirm("#{messages['jsf.rolerules.ConfirmDelete']}");
+      }
+    </script>
 
-        <s:div styleClass="content_box">
-            <p><h:outputText escape="false" value="#{messages['jsf.rolerules.Description']}"/></p>
-        </s:div>
+    <s:div styleClass="content_box">
+      <p><h:outputText escape="false"
+        value="#{messages['jsf.rolerules.Description']}"/></p>
+    </s:div>
 
-        <h:form>
-            <s:token allowMultiplePosts="true" />
-            <rich:dataTable
-                    value="#{roleAssignmentRuleAction.allRules}"
-                    var="rule"
-                    cellspacing="0"
-                    columnClasses="centered,centered,centered"
-                    styleClass="fullwidth">
+    <h:form>
+      <s:token allowMultiplePosts="true"/>
+      <rich:dataTable
+        value="#{roleAssignmentRuleAction.allRules}"
+        var="rule"
+        cellspacing="0"
+        columnClasses="centered,centered,centered"
+        styleClass="fullwidth">
 
-                <h:column>
-                    <f:facet name="header">#{messages['jsf.rolerules.PolicyName']}</f:facet>
-                    #{rule.policyName}
-                </h:column>
-                <h:column>
-                    <f:facet name="header">#{messages['jsf.rolerules.IdentityPattern']}</f:facet>
-                    #{rule.identityRegExp}
-                </h:column>
-                <h:column>
-                    <f:facet name="header">#{messages['jsf.rolerules.RoleToAssign']}</f:facet>
-                    #{rule.roleToAssign.name}
-                </h:column>
-                <h:column>
-                    <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-                    <h:commandButton value="#{messages['jsf.Edit']}"
-                                     action="#{roleAssignmentRuleAction.edit(rule)}"/>
-                    <h:commandButton value="#{messages['jsf.Delete']}"
-                                     action="#{roleAssignmentRuleAction.remove(rule)}"
-                                     onclick="return confirmDelete()"/>
-                </h:column>
-            </rich:dataTable>
-        </h:form>
-    </ui:define>
+        <h:column>
+          <f:facet
+            name="header">#{messages['jsf.rolerules.PolicyName']}</f:facet>
+          #{rule.policyName}
+        </h:column>
+        <h:column>
+          <f:facet
+            name="header">#{messages['jsf.rolerules.IdentityPattern']}</f:facet>
+          #{rule.identityRegExp}
+        </h:column>
+        <h:column>
+          <f:facet
+            name="header">#{messages['jsf.rolerules.RoleToAssign']}</f:facet>
+          #{rule.roleToAssign.name}
+        </h:column>
+        <h:column>
+          <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+          <h:commandButton value="#{messages['jsf.Edit']}"
+            action="#{roleAssignmentRuleAction.edit(rule)}"/>
+          <h:commandButton value="#{messages['jsf.Delete']}"
+            action="#{roleAssignmentRuleAction.remove(rule)}"
+            onclick="return confirmDelete()"/>
+        </h:column>
+      </rich:dataTable>
+    </h:form>
+  </ui:define>
 
 </ui:composition>
 </html>

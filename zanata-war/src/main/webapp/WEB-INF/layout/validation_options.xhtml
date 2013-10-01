@@ -1,14 +1,15 @@
 <ui:component xmlns="http://www.w3.org/1999/xhtml"
-              xmlns:ui="http://java.sun.com/jsf/facelets"
-              xmlns:h="http://java.sun.com/jsf/html"
-              xmlns:rich="http://richfaces.org/rich"
-              xmlns:f="http://java.sun.com/jsf/core"
-              xmlns:s="http://jboss.org/schema/seam/taglib"
-              xmlns:a4j="http://richfaces.org/a4j">
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:a4j="http://richfaces.org/a4j">
 
   <span class="name">#{messages['jsf.customizedValidationMessage']}</span>
   <s:div id="validationOptionsList">
-    <rich:dataTable value="#{validationOptionsAction.validationList}" var="validationAction">
+    <rich:dataTable value="#{validationOptionsAction.validationList}"
+      var="validationAction">
       <rich:column>
         #{validationAction.id.displayName}
       </rich:column>
@@ -18,10 +19,13 @@
       </rich:column>
 
       <rich:column>
-        <h:selectOneRadio value="#{validationAction.state}" styleClass="validation_options">
-          <f:selectItems value="#{validationOptionsAction.validationStates}" var="state" itemLabel="#{state}" itemValue="#{state}"/>
-          <a4j:ajax event="change" listener="#{validationOptionsAction.ensureMutualExclusivity(validationAction)}"
-                    render="validationOptionsList"/>
+        <h:selectOneRadio value="#{validationAction.state}"
+          styleClass="validation_options">
+          <f:selectItems value="#{validationOptionsAction.validationStates}"
+            var="state" itemLabel="#{state}" itemValue="#{state}"/>
+          <a4j:ajax event="change"
+            listener="#{validationOptionsAction.ensureMutualExclusivity(validationAction)}"
+            render="validationOptionsList"/>
         </h:selectOneRadio>
       </rich:column>
     </rich:dataTable>

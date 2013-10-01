@@ -1,54 +1,52 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-    xmlns:fui="urn:import:org.zanata.webtrans.client.ui">
+  xmlns:g="urn:import:com.google.gwt.user.client.ui"
+  xmlns:fui="urn:import:org.zanata.webtrans.client.ui">
 
-	<ui:style>
-        .filterTextBox {
-			margin: 0px;
-			font-size: 16px;
-			border: 2px solid #C5C5C5;
-			border-radius: 3px;
-			width:305px;
-			line-height:18px;
-			padding-left:22px;
-			padding-right:20px;
-		}
-		
-		.searchIcon
-		{
-			position:absolute;
-			font-size:20px;
-			opacity:0.8;
-			left:14px;
-			top:5px;
-		}
-		
-		.cancelBtn
-		{
-			position:absolute;
-			top:7px;
-			left:340px;
-			font-size:16px;
-			cursor:pointer;
-		}
-		
-		.cancelBtn:hover
-		{
-			color:#0085CC;
-		}
-		
-		.container {
-			display:inline-block;
-		}
-		
+  <ui:style>
+    .filterTextBox {
+      margin: 0px;
+      font-size: 16px;
+      border: 2px solid #C5C5C5;
+      border-radius: 3px;
+      width: 305px;
+      line-height: 18px;
+      padding-left: 22px;
+      padding-right: 20px;
+    }
 
-    </ui:style>
-	<g:FlowPanel styleName="{style.container}">
-		<g:TextBox ui:field="filterTextBox" addStyleNames='{style.filterTextBox}'/>
-		<g:InlineLabel ui:field="cancelBtn" styleName="{style.cancelBtn} icon-cancel-circle"/>
-		<g:InlineLabel styleName="icon-search {style.searchIcon}"/>
-	</g:FlowPanel>
-	
-	
-</ui:UiBinder> 
+    .searchIcon {
+      position: absolute;
+      font-size: 20px;
+      opacity: 0.8;
+      left: 14px;
+      top: 5px;
+    }
+
+    .cancelBtn {
+      position: absolute;
+      top: 7px;
+      left: 340px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .cancelBtn:hover {
+      color: #0085CC;
+    }
+
+    .container {
+      display: inline-block;
+    }
+
+
+  </ui:style>
+  <g:FlowPanel styleName="{style.container}">
+    <g:TextBox ui:field="filterTextBox" addStyleNames='{style.filterTextBox}' />
+    <g:InlineLabel ui:field="cancelBtn"
+      styleName="{style.cancelBtn} icon-cancel-circle" />
+    <g:InlineLabel styleName="icon-search {style.searchIcon}" />
+  </g:FlowPanel>
+
+
+</ui:UiBinder>

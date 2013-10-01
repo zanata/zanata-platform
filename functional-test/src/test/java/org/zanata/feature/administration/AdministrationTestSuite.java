@@ -24,16 +24,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-      ManageUsersTest.class,
-      ManageUsersFullTest.class,
-      AdministrationTest.class,
-      EditHomePageTest.class,
-      EditTranslationMemoryTest.class
-})
-public class AdministrationTestSuite
-{
+@Suite.SuiteClasses({ ManageUsersTest.class, ManageUsersFullTest.class,
+        AdministrationTest.class, EditHomePageTest.class,
+        EditTranslationMemoryTest.class })
+public class AdministrationTestSuite {
 }

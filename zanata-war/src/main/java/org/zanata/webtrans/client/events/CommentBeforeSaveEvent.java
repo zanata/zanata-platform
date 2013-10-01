@@ -23,29 +23,26 @@ package org.zanata.webtrans.client.events;
 
 import com.google.gwt.event.shared.GwtEvent;
 
-public class CommentBeforeSaveEvent extends GwtEvent<CommentBeforeSaveEventHandler>
-{
-   public static Type<CommentBeforeSaveEventHandler> TYPE = new Type<CommentBeforeSaveEventHandler>();
+public class CommentBeforeSaveEvent extends
+        GwtEvent<CommentBeforeSaveEventHandler> {
+    public static Type<CommentBeforeSaveEventHandler> TYPE =
+            new Type<CommentBeforeSaveEventHandler>();
 
-   private final TransUnitSaveEvent saveEvent;
+    private final TransUnitSaveEvent saveEvent;
 
-   public CommentBeforeSaveEvent(TransUnitSaveEvent saveEvent)
-   {
-      this.saveEvent = saveEvent;
-   }
+    public CommentBeforeSaveEvent(TransUnitSaveEvent saveEvent) {
+        this.saveEvent = saveEvent;
+    }
 
-   public TransUnitSaveEvent getSaveEvent()
-   {
-      return saveEvent;
-   }
+    public TransUnitSaveEvent getSaveEvent() {
+        return saveEvent;
+    }
 
-   public Type<CommentBeforeSaveEventHandler> getAssociatedType()
-   {
-      return TYPE;
-   }
+    public Type<CommentBeforeSaveEventHandler> getAssociatedType() {
+        return TYPE;
+    }
 
-   protected void dispatch(CommentBeforeSaveEventHandler handler)
-   {
-      handler.onCommentBeforeSave(this);
-   }
+    protected void dispatch(CommentBeforeSaveEventHandler handler) {
+        handler.onCommentBeforeSave(this);
+    }
 }

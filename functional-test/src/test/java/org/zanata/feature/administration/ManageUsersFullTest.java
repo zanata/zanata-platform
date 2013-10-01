@@ -33,30 +33,34 @@ import org.hamcrest.Matchers;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class ManageUsersFullTest
-{
-   @ClassRule
-   public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule(ResetDatabaseRule.Config.Empty);
-   private DashboardPage dashboardPage;
+public class ManageUsersFullTest {
+    @ClassRule
+    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule(
+            ResetDatabaseRule.Config.Empty);
+    private DashboardPage dashboardPage;
 
-   @Before
-   public void before()
-   {
-      dashboardPage = new LoginWorkFlow().signIn("admin", "admin");
-   }
+    @Before
+    public void before() {
+        dashboardPage = new LoginWorkFlow().signIn("admin", "admin");
+    }
 
-   @Test
-   public void changeAUsersUsername()
-   {
-      String username = "administratornamechange";
-      ManageUserPage manageUserPage = dashboardPage.goToAdministration().goToManageUserPage();
+    @Test
+    public void changeAUsersUsername() {
+        String username = "administratornamechange";
+        ManageUserPage manageUserPage =
+                dashboardPage.goToAdministration().goToManageUserPage();
 
-      ManageUserAccountPage manageUserAccountPage = manageUserPage.editUserAccount("admin");
-      manageUserPage = manageUserAccountPage.clearFields().enterUsername(username).saveUser();
-      assertThat("Administrator is displayed", manageUserPage.getUserList(), Matchers.hasItem(username));
-   }
+        ManageUserAccountPage manageUserAccountPage =
+                manageUserPage.editUserAccount("admin");
+        manageUserPage =
+                manageUserAccountPage.clearFields().enterUsername(username)
+                        .saveUser();
+        assertThat("Administrator is displayed", manageUserPage.getUserList(),
+                Matchers.hasItem(username));
+    }
 
 }

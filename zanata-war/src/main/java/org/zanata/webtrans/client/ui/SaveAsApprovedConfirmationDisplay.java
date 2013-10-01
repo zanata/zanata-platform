@@ -27,18 +27,17 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import com.google.inject.ImplementedBy;
 
 /**
- * 
+ *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- * 
+ *
  */
 @ImplementedBy(SaveAsApprovedConfirmationPanel.class)
-public interface SaveAsApprovedConfirmationDisplay
-{
-   void center(TransUnitId transUnitId);
+public interface SaveAsApprovedConfirmationDisplay {
+    void center(TransUnitId transUnitId);
 
-   void hide();
+    void hide();
 
-   void setListener(TargetContentsDisplay.Listener listener);
+    void setListener(TargetContentsDisplay.Listener listener);
 
-   void setShowSaveApprovedWarning(boolean value);
+    void setShowSaveApprovedWarning(boolean value);
 }

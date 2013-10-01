@@ -6,29 +6,29 @@ import org.zanata.webtrans.shared.rpc.HasWorkspaceChatData;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 /**
-* @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
-*/
-public interface WorkspaceUsersDisplay extends WidgetDisplay
-{
-   HasManageUserPanel addUser(Person person);
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ */
+public interface WorkspaceUsersDisplay extends WidgetDisplay {
+    HasManageUserPanel addUser(Person person);
 
-   void appendChat(String user, String timestamp, String msg, HasWorkspaceChatData.MESSAGE_TYPE messageType);
+    void appendChat(String user, String timestamp, String msg,
+            HasWorkspaceChatData.MESSAGE_TYPE messageType);
 
-   void removeUser(HasManageUserPanel userPanel);
+    void removeUser(HasManageUserPanel userPanel);
 
-   String getChatInputText();
+    String getChatInputText();
 
-   void setChatInputText(String chatContent);
+    void setChatInputText(String chatContent);
 
-   void setListener(Listener listener);
+    void setListener(Listener listener);
 
-   interface Listener
-   {
+    interface Listener {
 
-      void onSendButtonClicked();
+        void onSendButtonClicked();
 
-      void onChatInputFocused();
+        void onChatInputFocused();
 
-      void onChatInputBlur();
-   }
+        void onChatInputBlur();
+    }
 }

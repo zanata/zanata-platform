@@ -13,19 +13,18 @@ import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 
 @Provider
-public class ConstraintViolationExceptionMapper implements ExceptionMapper<ConstraintViolationException>
-{
-   Log log = Logging.getLog(ConstraintViolationExceptionMapper.class);
+public class ConstraintViolationExceptionMapper implements
+        ExceptionMapper<ConstraintViolationException> {
+    Log log = Logging.getLog(ConstraintViolationExceptionMapper.class);
 
-   @Override
-   public Response toResponse(ConstraintViolationException e)
-   {
-      Set<ConstraintViolation<?>> invalidValues = e.getConstraintViolations();
-      for (ConstraintViolation<?> invalidValue : invalidValues)
-      {
-         log.error("Invalid state for leaf bean {0}: {1}", e, invalidValue.getLeafBean(), invalidValue);
-      }
-      return Response.status(Status.BAD_REQUEST).build();
-   }
+    @Override
+    public Response toResponse(ConstraintViolationException e) {
+        Set<ConstraintViolation<?>> invalidValues = e.getConstraintViolations();
+        for (ConstraintViolation<?> invalidValue : invalidValues) {
+            log.error("Invalid state for leaf bean {0}: {1}", e,
+                    invalidValue.getLeafBean(), invalidValue);
+        }
+        return Response.status(Status.BAD_REQUEST).build();
+    }
 
 }

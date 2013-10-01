@@ -38,67 +38,63 @@ import com.google.common.collect.Iterables;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ProjectPage extends BasePage
-{
+public class ProjectPage extends BasePage {
 
-   @FindBy(id = "main_content")
-   private WebElement mainContent;
+    @FindBy(id = "main_content")
+    private WebElement mainContent;
 
-   @FindBy(id = "loggedIn_body")
-   private WebElement loggedInBody;
+    @FindBy(id = "loggedIn_body")
+    private WebElement loggedInBody;
 
-   public ProjectPage(final WebDriver driver)
-   {
-      super(driver);
-   }
+    public ProjectPage(final WebDriver driver) {
+        super(driver);
+    }
 
-   @SuppressWarnings("unused")
-   public String getProjectId()
-   {
-      return getLastBreadCrumbText();
-   }
+    @SuppressWarnings("unused")
+    public String getProjectId() {
+        return getLastBreadCrumbText();
+    }
 
-   public String getProjectName()
-   {
-      return getTitle().replaceAll("Zanata:", "");
-   }
+    public String getProjectName() {
+        return getTitle().replaceAll("Zanata:", "");
+    }
 
-   public CreateVersionPage clickCreateVersionLink()
-   {
-      loggedInBody.findElement(By.id("addIterationLink")).click();
-      return new CreateVersionPage(getDriver());
-   }
+    public CreateVersionPage clickCreateVersionLink() {
+        loggedInBody.findElement(By.id("addIterationLink")).click();
+        return new CreateVersionPage(getDriver());
+    }
 
-   public ProjectVersionPage goToVersion(final String versionId)
-   {
-      WebElement versionTable = getDriver().findElement(By.id("main_content:iterationsForm:iterations"));
-      List<WebElement> versionLinks = versionTable.findElements(By.className("version_link"));
-      log.info("found {} active versions", versionLinks.size());
+    public ProjectVersionPage goToVersion(final String versionId) {
+        WebElement versionTable =
+                getDriver().findElement(
+                        By.id("main_content:iterationsForm:iterations"));
+        List<WebElement> versionLinks =
+                versionTable.findElements(By.className("version_link"));
+        log.info("found {} active versions", versionLinks.size());
 
-      Preconditions.checkState(!versionLinks.isEmpty(), "no version links available");
-      Optional<WebElement> found = Iterables.tryFind(versionLinks, new Predicate<WebElement>()
-      {
-         @Override
-         public boolean apply(WebElement input)
-         {
-            return input.getText().contains(versionId);
-         }
-      });
-      Preconditions.checkState(found.isPresent(), versionId + " not found");
-      String href = found.get().getAttribute("href");
-      getDriver().get(href);
-      return new ProjectVersionPage(getDriver());
-   }
+        Preconditions.checkState(!versionLinks.isEmpty(),
+                "no version links available");
+        Optional<WebElement> found =
+                Iterables.tryFind(versionLinks, new Predicate<WebElement>() {
+                    @Override
+                    public boolean apply(WebElement input) {
+                        return input.getText().contains(versionId);
+                    }
+                });
+        Preconditions.checkState(found.isPresent(), versionId + " not found");
+        String href = found.get().getAttribute("href");
+        getDriver().get(href);
+        return new ProjectVersionPage(getDriver());
+    }
 
-   public List<String> getVersions()
-   {
-      List<WebElement> versionLinks = getDriver().findElements(By.className("version_link"));
-      if (versionLinks.isEmpty())
-      {
-         log.debug("no version exists for this project");
-         return Collections.emptyList();
-      }
+    public List<String> getVersions() {
+        List<WebElement> versionLinks =
+                getDriver().findElements(By.className("version_link"));
+        if (versionLinks.isEmpty()) {
+            log.debug("no version exists for this project");
+            return Collections.emptyList();
+        }
 
-      return WebElementUtil.elementsToText(versionLinks);
-   }
+        return WebElementUtil.elementsToText(versionLinks);
+    }
 }

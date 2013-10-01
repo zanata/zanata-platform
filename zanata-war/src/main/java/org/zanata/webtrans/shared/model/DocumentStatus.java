@@ -6,56 +6,50 @@ import java.util.Date;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 //@Immutable
-public class DocumentStatus implements IsSerializable, Serializable
-{
-   private static final long serialVersionUID = 1L;
+public class DocumentStatus implements IsSerializable, Serializable {
+    private static final long serialVersionUID = 1L;
 
-   private DocumentId documentId;
-   private boolean hasError;
-   private Date lastTranslatedDate;
-   private String lastTranslatedBy;
+    private DocumentId documentId;
+    private boolean hasError;
+    private Date lastTranslatedDate;
+    private String lastTranslatedBy;
 
-   // for GWT
-   @SuppressWarnings("unused")
-   public DocumentStatus()
-   {
-      this(null, false, null, null);
-   }
+    // for GWT
+    @SuppressWarnings("unused")
+    public DocumentStatus() {
+        this(null, false, null, null);
+    }
 
-   public DocumentStatus(DocumentId documentId, boolean hasError, Date lastTranslatedDate, String lastTranslatedBy)
-   {
-      this.documentId = documentId;
-      this.hasError = hasError;
-      this.lastTranslatedDate = lastTranslatedDate;
-      this.lastTranslatedBy = lastTranslatedBy;
-   }
+    public DocumentStatus(DocumentId documentId, boolean hasError,
+            Date lastTranslatedDate, String lastTranslatedBy) {
+        this.documentId = documentId;
+        this.hasError = hasError;
+        this.lastTranslatedDate = lastTranslatedDate;
+        this.lastTranslatedBy = lastTranslatedBy;
+    }
 
-   public DocumentId getDocumentId()
-   {
-      return documentId;
-   }
+    public DocumentId getDocumentId() {
+        return documentId;
+    }
 
-   public boolean hasError()
-   {
-      return hasError;
-   }
+    public boolean hasError() {
+        return hasError;
+    }
 
-   public Date getLastTranslatedDate()
-   {
-      return lastTranslatedDate;
-   }
+    public Date getLastTranslatedDate() {
+        return lastTranslatedDate;
+    }
 
-   public String getLastTranslatedBy()
-   {
-      return lastTranslatedBy;
-   }
+    public String getLastTranslatedBy() {
+        return lastTranslatedBy;
+    }
 
-   public void update(DocumentId documentId, Date lastTranslatedDate, String lastTranslatedBy, boolean hasError)
-   {
-      this.documentId = documentId;
-      this.lastTranslatedBy = lastTranslatedBy;
-      this.lastTranslatedDate = lastTranslatedDate;
-      this.hasError = hasError;
-   }
+    public void update(DocumentId documentId, Date lastTranslatedDate,
+            String lastTranslatedBy, boolean hasError) {
+        this.documentId = documentId;
+        this.lastTranslatedBy = lastTranslatedBy;
+        this.lastTranslatedDate = lastTranslatedDate;
+        this.hasError = hasError;
+    }
 
 }

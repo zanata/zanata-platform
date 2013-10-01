@@ -22,15 +22,14 @@
 package org.zanata.exception;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class EntityMissingException extends ZanataServiceException
-{
-   private static final long serialVersionUID = 1L;
+public class EntityMissingException extends ZanataServiceException {
+    private static final long serialVersionUID = 1L;
 
-   public EntityMissingException(String string)
-   {
-      super(string, 404);
-   }
+    public EntityMissingException(String string) {
+        super(string, 404);
+    }
 }

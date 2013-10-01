@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>server</artifactId>
   <version>3.1-SNAPSHOT</version>
@@ -12,820 +14,819 @@
     <relativePath>../parent</relativePath>
   </parent>
 
-	<scm>
-		<connection>scm:git:git://github.com/zanata/zanata-server.git</connection>
-		<developerConnection>scm:git:git@github.com:zanata/zanata-server.git</developerConnection>
-		<url>https://github.com/zanata/zanata-server</url>
-	</scm>
-    
-    <properties>
-      <cobertura.total-line-rate>50</cobertura.total-line-rate>
-      <cobertura.total-branch-rate>30</cobertura.total-branch-rate>
-      <cobertura.halt.failure>false</cobertura.halt.failure>
-      <delombok.dir>${project.build.directory}/delombok/org/zanata</delombok.dir>
-      <gwt.version>2.5.0</gwt.version>
-      <icu4j.version>4.8</icu4j.version>
-      <lombok.source.dir>${project.build.sourceDirectory}/org/zanata</lombok.source.dir>
-      <lucene.version>3.6.2</lucene.version>
-      <seam.version>2.3.1.Final</seam.version>
-      <gwteventservice.version>1.2.1</gwteventservice.version>
-      <okapi.version>0.22</okapi.version>
+  <scm>
+    <connection>scm:git:git://github.com/zanata/zanata-server.git</connection>
+    <developerConnection>scm:git:git@github.com:zanata/zanata-server.git</developerConnection>
+    <url>https://github.com/zanata/zanata-server</url>
+  </scm>
 
-      <zanata.api.version>3.1-SNAPSHOT</zanata.api.version>
-      <!-- This should always be the previous version of the used api version above (but only 3.0.1 or later will work) -->
-      <zanata.api.compat.version>3.0.1</zanata.api.compat.version>
-      <zanata.client.version>3.0.1</zanata.client.version>
-      <zanata.common.version>3.0.2</zanata.common.version>
+  <properties>
+    <cobertura.total-line-rate>50</cobertura.total-line-rate>
+    <cobertura.total-branch-rate>30</cobertura.total-branch-rate>
+    <cobertura.halt.failure>false</cobertura.halt.failure>
+    <delombok.dir>${project.build.directory}/delombok/org/zanata</delombok.dir>
+    <gwt.version>2.5.0</gwt.version>
+    <icu4j.version>4.8</icu4j.version>
+    <lombok.source.dir>${project.build.sourceDirectory}/org/zanata</lombok.source.dir>
+    <lucene.version>3.6.2</lucene.version>
+    <seam.version>2.3.1.Final</seam.version>
+    <gwteventservice.version>1.2.1</gwteventservice.version>
+    <okapi.version>0.22</okapi.version>
 
-      <richfaces.version>4.3.2.Final</richfaces.version>
+    <zanata.api.version>3.1-SNAPSHOT</zanata.api.version>
+    <!-- This should always be the previous version of the used api version above (but only 3.0.1 or later will work) -->
+    <zanata.api.compat.version>3.0.1</zanata.api.compat.version>
+    <zanata.client.version>3.0.1</zanata.client.version>
+    <zanata.common.version>3.0.2</zanata.common.version>
 
-	  <!-- see http://community.jboss.org/wiki/HibernateCompatibilityMatrix?decorator=print -->
-	  <!-- see also the jboss7 profile below -->
-	  <hibernate.scope>provided</hibernate.scope>
-	  <hibernate.version>4.2.0.Final</hibernate.version>
-	  <hibernate.search.version>4.3.0.Final</hibernate.search.version>
-	  <hibernate.entitymanager.version>${hibernate.version}</hibernate.entitymanager.version>
-      <war_bundles_jsf_impl>false</war_bundles_jsf_impl>
-      <hibernate.validator.version>4.3.1.Final</hibernate.validator.version>
+    <richfaces.version>4.3.2.Final</richfaces.version>
 
-        <!-- controls concordion output location-->
-        <concordion.output.dir>${project.build.directory}/concordion</concordion.output.dir>
-    </properties>
+    <!-- see http://community.jboss.org/wiki/HibernateCompatibilityMatrix?decorator=print -->
+    <!-- see also the jboss7 profile below -->
+    <hibernate.scope>provided</hibernate.scope>
+    <hibernate.version>4.2.0.Final</hibernate.version>
+    <hibernate.search.version>4.3.0.Final</hibernate.search.version>
+    <hibernate.entitymanager.version>${hibernate.version}</hibernate.entitymanager.version>
+    <war_bundles_jsf_impl>false</war_bundles_jsf_impl>
+    <hibernate.validator.version>4.3.1.Final</hibernate.validator.version>
 
-   <dependencyManagement>
-      <dependencies>
+    <!-- controls concordion output location-->
+    <concordion.output.dir>${project.build.directory}/concordion</concordion.output.dir>
+  </properties>
 
-         <!-- arquillian and shrinkwrap boms must precede other boms -->
-         <dependency>
-            <groupId>org.jboss.shrinkwrap</groupId>
-            <artifactId>shrinkwrap-bom</artifactId>
-            <version>1.1.2</version>
-            <scope>import</scope>
-            <type>pom</type>
-         </dependency>
+  <dependencyManagement>
+    <dependencies>
 
-         <!-- Override dependency resolver with latest version.
-         This must go *BEFORE* the Arquillian BOM. -->
-         <dependency>
-            <groupId>org.jboss.shrinkwrap.resolver</groupId>
-            <artifactId>shrinkwrap-resolver-bom</artifactId>
-            <version>2.0.0</version>
-            <scope>import</scope>
-            <type>pom</type>
-         </dependency>
+      <!-- arquillian and shrinkwrap boms must precede other boms -->
+      <dependency>
+        <groupId>org.jboss.shrinkwrap</groupId>
+        <artifactId>shrinkwrap-bom</artifactId>
+        <version>1.1.2</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
 
-          <dependency>
-              <groupId>org.jboss.arquillian</groupId>
-              <artifactId>arquillian-bom</artifactId>
-              <version>1.0.3.Final</version>
-              <scope>import</scope>
-              <type>pom</type>
-          </dependency>
+      <!-- Override dependency resolver with latest version.
+      This must go *BEFORE* the Arquillian BOM. -->
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.resolver</groupId>
+        <artifactId>shrinkwrap-resolver-bom</artifactId>
+        <version>2.0.0</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
 
-         <!-- repeat resteasy version to make sure the seam bom doesn't downgrade it -->
-         <dependency>
+      <dependency>
+        <groupId>org.jboss.arquillian</groupId>
+        <artifactId>arquillian-bom</artifactId>
+        <version>1.0.3.Final</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+
+      <!-- repeat resteasy version to make sure the seam bom doesn't downgrade it -->
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-bom</artifactId>
+        <version>${resteasy.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <!-- make sure the richfaces version is not provided by the seam bom -->
+      <dependency>
+        <groupId>org.richfaces</groupId>
+        <artifactId>richfaces-bom</artifactId>
+        <version>${richfaces.version}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+
+
+      <dependency>
+        <groupId>org.jboss.seam</groupId>
+        <artifactId>bom</artifactId>
+        <version>${seam.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.as</groupId>
+        <artifactId>jboss-as-parent</artifactId>
+        <version>7.1.3.Final</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <!-- zanata api -->
+      <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-common-api</artifactId>
+        <version>${zanata.api.version}</version>
+      </dependency>
+
+      <!-- zanata common -->
+      <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-common-util</artifactId>
+        <version>${zanata.common.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-adapter-po</artifactId>
+        <version>${zanata.common.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-adapter-glossary</artifactId>
+        <version>${zanata.common.version}</version>
+      </dependency>
+
+      <!-- zanata client -->
+      <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-rest-client</artifactId>
+        <version>${zanata.client.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-rest-client</artifactId>
+        <version>${zanata.client.version}</version>
+        <type>test-jar</type>
+        <scope>test</scope>
+      </dependency>
+
+      <!-- zanata server -->
+      <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-model</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.gwt</groupId>
+        <artifactId>gwt-dev</artifactId>
+        <version>${gwt.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.gwt</groupId>
+        <artifactId>gwt-servlet</artifactId>
+        <version>${gwt.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.gwt</groupId>
+        <artifactId>gwt-user</artifactId>
+        <version>${gwt.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.gwt.inject</groupId>
+        <artifactId>gin</artifactId>
+        <version>1.5.0</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.inject</groupId>
+        <artifactId>guice</artifactId>
+        <version>3.0</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava-gwt</artifactId>
+        <version>11.0.2</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>com.ibm.icu</groupId>
+        <artifactId>icu4j</artifactId>
+        <version>${icu4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.ibm.icu</groupId>
+        <artifactId>icu4j</artifactId>
+        <classifier>sources</classifier>
+        <version>${icu4j.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.dbunit</groupId>
+        <artifactId>dbunit</artifactId>
+        <version>2.4.9</version>
+      </dependency>
+
+      <dependency>
+        <groupId>de.novanic.gwteventservice</groupId>
+        <artifactId>gwteventservice</artifactId>
+        <version>${gwteventservice.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>de.novanic.gwteventservice</groupId>
+        <artifactId>eventservice-rpc</artifactId>
+        <version>${gwteventservice.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>de.novanic.gwteventservice</groupId>
+        <artifactId>eventservice</artifactId>
+        <version>${gwteventservice.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>net.sf.okapi.filters</groupId>
+        <artifactId>okapi-filter-dtd</artifactId>
+        <version>${okapi.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>net.sf.okapi.logbind</groupId>
+            <artifactId>build-log4j</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>net.sf.okapi.filters</groupId>
+        <artifactId>okapi-filter-idml</artifactId>
+        <version>${okapi.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>net.sf.okapi.logbind</groupId>
+            <artifactId>build-log4j</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>net.sf.okapi.filters</groupId>
+        <artifactId>okapi-filter-openoffice</artifactId>
+        <version>${okapi.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>net.sf.okapi.logbind</groupId>
+            <artifactId>build-log4j</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>net.sf.okapi.filters</groupId>
+        <artifactId>okapi-filter-tmx</artifactId>
+        <version>${okapi.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>net.sf.okapi.logbind</groupId>
+            <artifactId>build-log4j</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>net.sf.okapi.filters</groupId>
+        <artifactId>okapi-filter-plaintext</artifactId>
+        <version>${okapi.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>net.sf.okapi.logbind</groupId>
+            <artifactId>build-log4j</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>net.sf.okapi.steps</groupId>
+        <artifactId>okapi-step-tokenization</artifactId>
+        <version>${okapi.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>net.sf.okapi.logbind</groupId>
+            <artifactId>build-log4j</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>net.sf.okapi.steps</groupId>
+        <artifactId>okapi-step-wordcount</artifactId>
+        <version>${okapi.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>net.sf.okapi.logbind</groupId>
+            <artifactId>build-log4j</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>net.sf.okapi</groupId>
+        <artifactId>okapi-core</artifactId>
+        <version>${okapi.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>net.sf.okapi.logbind</groupId>
+            <artifactId>build-log4j</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-search</artifactId>
+        <version>${hibernate.search.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-search-orm</artifactId>
+        <version>${hibernate.search.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-search-engine</artifactId>
+        <version>${hibernate.search.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-search-analyzers</artifactId>
+        <version>${hibernate.search.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-core</artifactId>
+        <version>${hibernate.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-ehcache</artifactId>
+        <version>${hibernate.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-entitymanager</artifactId>
+        <version>${hibernate.entitymanager.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>javassist</groupId>
+            <artifactId>javassist</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-validator</artifactId>
+        <version>${hibernate.validator.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-testing</artifactId>
+        <version>${hibernate.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.el</groupId>
+        <artifactId>jboss-el</artifactId>
+        <version>1.0_02.CR6</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.seam</groupId>
+        <artifactId>jboss-seam</artifactId>
+        <version>${seam.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.seam</groupId>
+        <artifactId>jboss-seam-resteasy</artifactId>
+        <version>${seam.version}</version>
+        <exclusions>
+          <!-- We use Jackson for json, so exclude the default jettison provider -->
+          <exclusion>
             <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-bom</artifactId>
-            <version>${resteasy.version}</version>
-            <type>pom</type>
-            <scope>import</scope>
-         </dependency>
+            <artifactId>resteasy-jettison-provider</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
 
-            <!-- make sure the richfaces version is not provided by the seam bom -->
-            <dependency>
-                <groupId>org.richfaces</groupId>
-                <artifactId>richfaces-bom</artifactId>
-                <version>${richfaces.version}</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
+      <!-- Solr dependencies -->
+      <dependency>
+        <groupId>org.apache.solr</groupId>
+        <artifactId>solr-core</artifactId>
+        <version>3.6.2</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-solrj</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>woodstox</groupId>
+            <artifactId>wstx-asl</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>net.java.dev.stax-utils</groupId>
+            <artifactId>stax-utils</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+          <!-- NB: https://hibernate.onjira.com/browse/HSEARCH-380 -->
+          <exclusion>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-lucene-core</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.solr</groupId>
+        <artifactId>solr-solrj</artifactId>
+        <version>3.6.2</version>
+      </dependency>
 
+      <dependency>
+        <groupId>net.customware.gwt.presenter</groupId>
+        <artifactId>gwt-presenter</artifactId>
+        <version>1.1.1</version>
+        <scope>compile</scope>
+      </dependency>
 
-            <dependency>
-            <groupId>org.jboss.seam</groupId>
-            <artifactId>bom</artifactId>
-            <version>${seam.version}</version>
-            <type>pom</type>
-            <scope>import</scope>
-         </dependency>
+      <dependency>
+        <groupId>javax.validation</groupId>
+        <artifactId>validation-api</artifactId>
+        <version>1.0.0.GA</version>
+        <scope>compile</scope>
+      </dependency>
 
-          <dependency>
-            <groupId>org.jboss.as</groupId>
-            <artifactId>jboss-as-parent</artifactId>
-            <version>7.1.3.Final</version>
-            <type>pom</type>
-            <scope>import</scope>
-          </dependency>
-
-          <!-- zanata api -->
-          <dependency>
-             <groupId>org.zanata</groupId>
-             <artifactId>zanata-common-api</artifactId>
-             <version>${zanata.api.version}</version>
-          </dependency>
-
-          <!-- zanata common -->
-          <dependency>
-             <groupId>org.zanata</groupId>
-             <artifactId>zanata-common-util</artifactId>
-             <version>${zanata.common.version}</version>
-          </dependency>
-          <dependency>
-                <groupId>org.zanata</groupId>
-                <artifactId>zanata-adapter-po</artifactId>
-                <version>${zanata.common.version}</version>
-          </dependency>
-           <dependency>
-                <groupId>org.zanata</groupId>
-                <artifactId>zanata-adapter-glossary</artifactId>
-                <version>${zanata.common.version}</version>
-          </dependency>
-   
-          <!-- zanata client -->
-          <dependency>
-             <groupId>org.zanata</groupId>
-             <artifactId>zanata-rest-client</artifactId>
-             <version>${zanata.client.version}</version>
-             <scope>test</scope>
-          </dependency>
-          <dependency>
-             <groupId>org.zanata</groupId>
-             <artifactId>zanata-rest-client</artifactId>
-             <version>${zanata.client.version}</version>
-             <type>test-jar</type>
-             <scope>test</scope>
-          </dependency>
-
-          <!-- zanata server -->
-          <dependency>
-             <groupId>org.zanata</groupId>
-             <artifactId>zanata-model</artifactId>
-             <version>${project.version}</version>
-          </dependency>
-
-			<dependency>
-				<groupId>com.google.gwt</groupId>
-				<artifactId>gwt-dev</artifactId>
-				<version>${gwt.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.google.gwt</groupId>
-				<artifactId>gwt-servlet</artifactId>
-				<version>${gwt.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.google.gwt</groupId>
-				<artifactId>gwt-user</artifactId>
-				<version>${gwt.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.google.gwt.inject</groupId>
-				<artifactId>gin</artifactId>
-				<version>1.5.0</version>
-			</dependency>
-			<dependency>
-				<groupId>com.google.inject</groupId>
-				<artifactId>guice</artifactId>
-				<version>3.0</version>
-			</dependency>
-
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava-gwt</artifactId>
-                <version>11.0.2</version>
-                <scope>provided</scope>
-            </dependency>
-
-			<dependency>
-				<groupId>com.ibm.icu</groupId>
-				<artifactId>icu4j</artifactId>
-				<version>${icu4j.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.ibm.icu</groupId>
-				<artifactId>icu4j</artifactId>
-				<classifier>sources</classifier>
-				<version>${icu4j.version}</version>
-			</dependency>
-
-            <dependency>
-                <groupId>org.dbunit</groupId>
-                <artifactId>dbunit</artifactId>
-                <version>2.4.9</version>
-            </dependency>
-
-			<dependency>
-				<groupId>de.novanic.gwteventservice</groupId>
-				<artifactId>gwteventservice</artifactId>
-				<version>${gwteventservice.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>de.novanic.gwteventservice</groupId>
-				<artifactId>eventservice-rpc</artifactId>
-				<version>${gwteventservice.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>de.novanic.gwteventservice</groupId>
-				<artifactId>eventservice</artifactId>
-				<version>${gwteventservice.version}</version>
-			</dependency>
-
-        <dependency>
-            <groupId>net.sf.okapi.filters</groupId>
-            <artifactId>okapi-filter-dtd</artifactId>
-            <version>${okapi.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>net.sf.okapi.logbind</groupId>
-                    <artifactId>build-log4j</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.okapi.filters</groupId>
-            <artifactId>okapi-filter-idml</artifactId>
-            <version>${okapi.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>net.sf.okapi.logbind</groupId>
-                    <artifactId>build-log4j</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.okapi.filters</groupId>
-            <artifactId>okapi-filter-openoffice</artifactId>
-            <version>${okapi.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>net.sf.okapi.logbind</groupId>
-                    <artifactId>build-log4j</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.okapi.filters</groupId>
-            <artifactId>okapi-filter-tmx</artifactId>
-            <version>${okapi.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>net.sf.okapi.logbind</groupId>
-                    <artifactId>build-log4j</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.okapi.filters</groupId>
-            <artifactId>okapi-filter-plaintext</artifactId>
-            <version>${okapi.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>net.sf.okapi.logbind</groupId>
-                    <artifactId>build-log4j</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.okapi.steps</groupId>
-            <artifactId>okapi-step-tokenization</artifactId>
-            <version>${okapi.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>net.sf.okapi.logbind</groupId>
-                    <artifactId>build-log4j</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.okapi.steps</groupId>
-            <artifactId>okapi-step-wordcount</artifactId>
-            <version>${okapi.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>net.sf.okapi.logbind</groupId>
-                    <artifactId>build-log4j</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-          <groupId>net.sf.okapi</groupId>
-          <artifactId>okapi-core</artifactId>
-          <version>${okapi.version}</version>
-          <exclusions>
-              <exclusion>
-                  <groupId>net.sf.okapi.logbind</groupId>
-                  <artifactId>build-log4j</artifactId>
-              </exclusion>
-          </exclusions>
-        </dependency>
-
-			<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-search</artifactId>
-				<version>${hibernate.search.version}</version>
-			</dependency>
-
-          <dependency>
-              <groupId>org.hibernate</groupId>
-              <artifactId>hibernate-search-orm</artifactId>
-              <version>${hibernate.search.version}</version>
-          </dependency>
-
-          <dependency>
-              <groupId>org.hibernate</groupId>
-              <artifactId>hibernate-search-engine</artifactId>
-              <version>${hibernate.search.version}</version>
-          </dependency>
-
-			<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-search-analyzers</artifactId>
-				<version>${hibernate.search.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-core</artifactId>
-				<version>${hibernate.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-ehcache</artifactId>
-				<version>${hibernate.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-entitymanager</artifactId>
-				<version>${hibernate.entitymanager.version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>javassist</groupId>
-						<artifactId>javassist</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-
-         <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>${hibernate.validator.version}</version>
-         </dependency>
-
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-testing</artifactId>
-                <version>${hibernate.version}</version>
-            </dependency>
-
-			<dependency>
-				<groupId>org.jboss.el</groupId>
-				<artifactId>jboss-el</artifactId>
-				<version>1.0_02.CR6</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.jboss.seam</groupId>
-				<artifactId>jboss-seam</artifactId>
-				<version>${seam.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.jboss.seam</groupId>
-				<artifactId>jboss-seam-resteasy</artifactId>
-				<version>${seam.version}</version>
-				<exclusions>
-					<!-- We use Jackson for json, so exclude the default jettison provider -->
-					<exclusion>
-						<groupId>org.jboss.resteasy</groupId>
-						<artifactId>resteasy-jettison-provider</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-
-          <!-- Solr dependencies -->
-          <dependency>
-              <groupId>org.apache.solr</groupId>
-              <artifactId>solr-core</artifactId>
-              <version>3.6.2</version>
-              <exclusions>
-                  <exclusion>
-                      <groupId>commons-httpclient</groupId>
-                      <artifactId>commons-httpclient</artifactId>
-                  </exclusion>
-                  <exclusion>
-                      <groupId>org.apache.solr</groupId>
-                      <artifactId>solr-solrj</artifactId>
-                  </exclusion>
-                  <exclusion>
-                      <groupId>woodstox</groupId>
-                      <artifactId>wstx-asl</artifactId>
-                  </exclusion>
-                  <exclusion>
-                      <groupId>net.java.dev.stax-utils</groupId>
-                      <artifactId>stax-utils</artifactId>
-                  </exclusion>
-                  <exclusion>
-                      <groupId>commons-logging</groupId>
-                      <artifactId>commons-logging</artifactId>
-                  </exclusion>
-                  <!-- NB: https://hibernate.onjira.com/browse/HSEARCH-380 -->
-                  <exclusion>
-                      <groupId>org.apache.solr</groupId>
-                      <artifactId>solr-lucene-core</artifactId>
-                  </exclusion>
-              </exclusions>
-          </dependency>
-			 <dependency>
-			    <groupId>org.apache.solr</groupId>
-			    <artifactId>solr-solrj</artifactId>
-			    <version>3.6.2</version>
-			 </dependency>
-
-            <dependency>
-               <groupId>net.customware.gwt.presenter</groupId>
-               <artifactId>gwt-presenter</artifactId>
-               <version>1.1.1</version>
-               <scope>compile</scope>
-            </dependency>
-
-		<dependency>
-			<groupId>javax.validation</groupId>
-			<artifactId>validation-api</artifactId>
-			<version>1.0.0.GA</version>
-			<scope>compile</scope>
-		</dependency>
-
-          <dependency>
-              <groupId>org.concordion</groupId>
-              <artifactId>concordion</artifactId>
-              <version>1.4.2</version>
-              <exclusions>
-                  <exclusion>
-                      <artifactId>
-                          junit-dep
-                      </artifactId>
-                      <groupId>junit</groupId>
-                  </exclusion>
-                  <exclusion>
-                      <artifactId>xml-apis</artifactId>
-                      <groupId>xml-apis</groupId>
-                  </exclusion>
-              </exclusions>
-              <scope>test</scope>
-          </dependency>
-          <dependency>
-              <groupId>org.concordion</groupId>
-              <artifactId>concordion-extensions</artifactId>
-              <version>1.1.0</version>
-              <scope>test</scope>
-          </dependency>
-          <dependency>
-              <groupId>joda-time</groupId>
-              <artifactId>joda-time</artifactId>
-              <version>2.2</version>
-          </dependency>
-          <dependency>
-              <groupId>org.fedorahosted.tennera</groupId>
-              <artifactId>jgettext</artifactId>
-              <version>0.11</version>
-          </dependency>
-	       <dependency>
-	          <groupId>org.functionaljava</groupId>
-	          <artifactId>functionaljava</artifactId>
-	          <version>3.1</version>
-	       </dependency>
-	       <!--
-	         In the server, we can use a newer version than Fedora has.
-	         This one also has a source jar!
-	       -->
-	       <dependency>
-	         <groupId>xom</groupId>
-	         <artifactId>xom</artifactId>
-	         <version>1.2.5</version>
-	         <exclusions>
-	            <exclusion>
-	               <artifactId>xml-apis</artifactId>
-	               <groupId>xml-apis</groupId>
-	            </exclusion>
-	         </exclusions>
-	       </dependency>
+      <dependency>
+        <groupId>org.concordion</groupId>
+        <artifactId>concordion</artifactId>
+        <version>1.4.2</version>
+        <exclusions>
+          <exclusion>
+            <artifactId>
+              junit-dep
+            </artifactId>
+            <groupId>junit</groupId>
+          </exclusion>
+          <exclusion>
+            <artifactId>xml-apis</artifactId>
+            <groupId>xml-apis</groupId>
+          </exclusion>
+        </exclusions>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.concordion</groupId>
+        <artifactId>concordion-extensions</artifactId>
+        <version>1.1.0</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>joda-time</groupId>
+        <artifactId>joda-time</artifactId>
+        <version>2.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.fedorahosted.tennera</groupId>
+        <artifactId>jgettext</artifactId>
+        <version>0.11</version>
+      </dependency>
+      <dependency>
+        <groupId>org.functionaljava</groupId>
+        <artifactId>functionaljava</artifactId>
+        <version>3.1</version>
+      </dependency>
+      <!--
+        In the server, we can use a newer version than Fedora has.
+        This one also has a source jar!
+      -->
+      <dependency>
+        <groupId>xom</groupId>
+        <artifactId>xom</artifactId>
+        <version>1.2.5</version>
+        <exclusions>
+          <exclusion>
+            <artifactId>xml-apis</artifactId>
+            <groupId>xml-apis</groupId>
+          </exclusion>
+        </exclusions>
+      </dependency>
 
 
-         <dependency>
-             <groupId>javax.xml.stream</groupId>
-             <artifactId>stax-api</artifactId>
-             <version>1.0</version>
-         </dependency>
+      <dependency>
+        <groupId>javax.xml.stream</groupId>
+        <artifactId>stax-api</artifactId>
+        <version>1.0</version>
+      </dependency>
 
-      </dependencies>
-   </dependencyManagement>    
+    </dependencies>
+  </dependencyManagement>
 
-   <!--
-   https://community.jboss.org/wiki/MavenRepository
-   https://community.jboss.org/wiki/MavenSettings
-   https://community.jboss.org/wiki/MavenGettingStarted-Developers
-   https://community.jboss.org/wiki/MavenGettingStarted-Users
-   -->
+  <!--
+  https://community.jboss.org/wiki/MavenRepository
+  https://community.jboss.org/wiki/MavenSettings
+  https://community.jboss.org/wiki/MavenGettingStarted-Developers
+  https://community.jboss.org/wiki/MavenGettingStarted-Users
+  -->
 
-   <repositories>
-        <repository>
-          <id>jboss-public-repository-group</id>
-          <name>JBoss Public Maven Repository Group</name>
-          <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-          <layout>default</layout>
-          <releases>
-            <enabled>true</enabled>
-            <updatePolicy>never</updatePolicy>
-          </releases>
-          <snapshots>
-            <enabled>true</enabled>
-            <updatePolicy>never</updatePolicy>
-          </snapshots>
-        </repository>
-        <repository>
-          <id>okapi-cloudbees-release</id>
-          <name>okapi-cloudbees-release</name>
-          <url>http://repository-okapi.forge.cloudbees.com/release/</url>
-          <releases>
-            <enabled>true</enabled>
-          </releases>
-          <snapshots>
-            <enabled>false</enabled>
-          </snapshots>
-        </repository>
-    </repositories>
+  <repositories>
+    <repository>
+      <id>jboss-public-repository-group</id>
+      <name>JBoss Public Maven Repository Group</name>
+      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>okapi-cloudbees-release</id>
+      <name>okapi-cloudbees-release</name>
+      <url>http://repository-okapi.forge.cloudbees.com/release/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 
-    <pluginRepositories>
-        <pluginRepository>
-          <id>jboss-public-repository-group</id>
-          <name>JBoss Public Maven Repository Group</name>
-          <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-          <layout>default</layout>
-          <releases>
-            <enabled>true</enabled>
-            <updatePolicy>never</updatePolicy>
-          </releases>
-          <snapshots>
-            <enabled>true</enabled>
-            <updatePolicy>never</updatePolicy>
-          </snapshots>
-        </pluginRepository>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>jboss-public-repository-group</id>
+      <name>JBoss Public Maven Repository Group</name>
+      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </snapshots>
+    </pluginRepository>
 
-        <pluginRepository>
-            <id>cobertura-it-maven-plugin-maven2-release</id>
-            <url>http://cobertura-it-maven-plugin.googlecode.com/svn/maven2/releases</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </pluginRepository>
-    </pluginRepositories>
+    <pluginRepository>
+      <id>cobertura-it-maven-plugin-maven2-release</id>
+      <url>http://cobertura-it-maven-plugin.googlecode.com/svn/maven2/releases</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </pluginRepository>
+  </pluginRepositories>
 
 
-   <build>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-maven-plugin</artifactId>
+        <version>2.2.0</version>
+        <configuration>
+          <srcDir>.</srcDir>
+          <transDir>.</transDir>
+          <!-- only one translation file has been prepared so far -->
+          <includes>zanata-war/src/main/resources/messages.properties</includes>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <configuration>
+          <rules>
+            <banDuplicateClasses>
+              <dependencies combine.children="append">
+                <!-- lombok is "provided", so these duplicate classes don't get deployed -->
+                <dependency>
+                  <groupId>org.projectlombok</groupId>
+                  <artifactId>lombok</artifactId>
+                  <ignoreClasses>
+                    <ignoreClass>com.sun.jna.*</ignoreClass>
+                  </ignoreClasses>
+                </dependency>
+              </dependencies>
+            </banDuplicateClasses>
+            <requireNoRepositories>
+              <allowedRepositories combine.children="append">
+                <allowedRepository>jboss-public-repository-group</allowedRepository>
+                <allowedRepository>okapi-cloudbees-release</allowedRepository>
+              </allowedRepositories>
+              <allowedPluginRepositories combine.children="append">
+                <allowedPluginRepository>cobertura-it-maven-plugin-maven2-release</allowedPluginRepository>
+                <allowedPluginRepository>jboss-public-repository-group</allowedPluginRepository>
+              </allowedPluginRepositories>
+            </requireNoRepositories>
+          </rules>
+        </configuration>
+      </plugin>
+    </plugins>
+    <pluginManagement>
       <plugins>
-          <plugin>
-            <groupId>org.zanata</groupId>
-            <artifactId>zanata-maven-plugin</artifactId>
-            <version>2.2.0</version>
-            <configuration>
-              <srcDir>.</srcDir>
-              <transDir>.</transDir>
-              <!-- only one translation file has been prepared so far -->
-              <includes>zanata-war/src/main/resources/messages.properties</includes>
-            </configuration>
-          </plugin>
-
-         <plugin>
-            <artifactId>maven-enforcer-plugin</artifactId>
-            <configuration>
-                <rules>
-                    <banDuplicateClasses>
-                       <dependencies combine.children="append">
-                           <!-- lombok is "provided", so these duplicate classes don't get deployed -->
-                           <dependency>
-                              <groupId>org.projectlombok</groupId>
-                              <artifactId>lombok</artifactId>
-                              <ignoreClasses>
-                                <ignoreClass>com.sun.jna.*</ignoreClass>
-                              </ignoreClasses>
-                           </dependency>
-                       </dependencies>
-                    </banDuplicateClasses>
-                    <requireNoRepositories>
-                      <allowedRepositories combine.children="append">
-                        <allowedRepository>jboss-public-repository-group</allowedRepository>
-                        <allowedRepository>okapi-cloudbees-release</allowedRepository>
-                      </allowedRepositories>
-                      <allowedPluginRepositories combine.children="append">
-                        <allowedPluginRepository>cobertura-it-maven-plugin-maven2-release</allowedPluginRepository>
-                        <allowedPluginRepository>jboss-public-repository-group</allowedPluginRepository>
-                      </allowedPluginRepositories>
-                    </requireNoRepositories>
-                </rules>
-            </configuration>
-         </plugin>
+        <plugin>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>2.12</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>2.1.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>gwt-maven-plugin</artifactId>
+          <version>2.5.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>cobertura-maven-plugin</artifactId>
+          <version>2.5.1</version>
+          <configuration>
+            <formats>
+              <format>xml</format>
+            </formats>
+          </configuration>
+        </plugin>
+        <!-- change maven-release-plugin back to defaults (instead of oss-parent's settings)  -->
+        <plugin>
+          <artifactId>maven-release-plugin</artifactId>
+          <configuration>
+            <mavenExecutorId>invoker</mavenExecutorId>
+            <useReleaseProfile>true</useReleaseProfile>
+            <arguments>${arguments}</arguments>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>sign-artifacts</id>
+              <phase>verify</phase>
+              <goals>
+                <goal>sign</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <skip>true</skip>
+          </configuration>
+        </plugin>
       </plugins>
-      <pluginManagement>
-         <plugins>
-            <plugin>
-               <artifactId>maven-failsafe-plugin</artifactId>
-               <version>2.12</version>
-            </plugin>
-            <plugin>
-               <groupId>org.apache.maven.plugins</groupId>
-               <artifactId>maven-war-plugin</artifactId>
-               <version>2.1.1</version>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>gwt-maven-plugin</artifactId>
-                <version>2.5.0</version>
-            </plugin>
-             <plugin>
-                 <groupId>org.codehaus.mojo</groupId>
-                 <artifactId>cobertura-maven-plugin</artifactId>
-                 <version>2.5.1</version>
-                 <configuration>
-                     <formats>
-                         <format>xml</format>
-                     </formats>
-                 </configuration>
-             </plugin>
-             <!-- change maven-release-plugin back to defaults (instead of oss-parent's settings)  -->
-             <plugin>
-               <artifactId>maven-release-plugin</artifactId>
-               <configuration>
-                  <mavenExecutorId>invoker</mavenExecutorId>
-                  <useReleaseProfile>true</useReleaseProfile>
-                  <arguments>${arguments}</arguments>
-               </configuration>
-             </plugin>
-             <plugin>
-                  <artifactId>maven-gpg-plugin</artifactId>
-                  <executions>
-                     <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                           <goal>sign</goal>
-                        </goals>
-                     </execution>
-                  </executions>
-                  <configuration>
-                     <skip>true</skip>
-                  </configuration>
-             </plugin>
-         </plugins>
-      </pluginManagement>
-   </build>
+    </pluginManagement>
+  </build>
 
-    <profiles>
+  <profiles>
 
-		<profile>
-			<!-- Profile to use more recent versions of hibernate etc. for jboss 7 -->
-			<id>jboss7</id>
-			<properties>
-		        <war_bundles_jsf_impl>true</war_bundles_jsf_impl>
-			</properties>
-         <dependencies>
-            <dependency>
-               <groupId>org.slf4j</groupId>
-               <artifactId>slf4j-api</artifactId>
-               <scope>provided</scope>
-            </dependency>
-            <dependency>
-               <groupId>commons-collections</groupId>
-               <artifactId>commons-collections</artifactId>
-               <scope>provided</scope>
-            </dependency>
-            <dependency>
-               <groupId>commons-logging</groupId>
-               <artifactId>commons-logging</artifactId>
-               <scope>provided</scope>
-            </dependency>
-            <dependency>
-               <groupId>javassist</groupId>
-               <artifactId>javassist</artifactId>
-               <scope>provided</scope>
-            </dependency>
-            <dependency>
-               <groupId>javax.faces</groupId>
-               <artifactId>jsf-api</artifactId>
-               <scope>provided</scope>
-            </dependency>
-            <dependency>
-               <groupId>javax.faces</groupId>
-               <artifactId>jsf-impl</artifactId>
-               <scope>provided</scope>
-            </dependency>
-            <dependency>
-               <groupId>com.google.gwt</groupId>
-               <artifactId>gwt-user</artifactId>
-               <scope>provided</scope>
-            </dependency>
-            <dependency>
-               <groupId>net.customware.gwt.presenter</groupId>
-               <artifactId>gwt-presenter</artifactId>
-               <version>1.1.1</version>
-               <scope>provided</scope>
-            </dependency>
-         </dependencies>
-         
-		</profile>
+    <profile>
+      <!-- Profile to use more recent versions of hibernate etc. for jboss 7 -->
+      <id>jboss7</id>
+      <properties>
+        <war_bundles_jsf_impl>true</war_bundles_jsf_impl>
+      </properties>
+      <dependencies>
+        <dependency>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>commons-collections</groupId>
+          <artifactId>commons-collections</artifactId>
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>javassist</groupId>
+          <artifactId>javassist</artifactId>
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>javax.faces</groupId>
+          <artifactId>jsf-api</artifactId>
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>javax.faces</groupId>
+          <artifactId>jsf-impl</artifactId>
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>com.google.gwt</groupId>
+          <artifactId>gwt-user</artifactId>
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>net.customware.gwt.presenter</groupId>
+          <artifactId>gwt-presenter</artifactId>
+          <version>1.1.1</version>
+          <scope>provided</scope>
+        </dependency>
+      </dependencies>
 
-        <profile>
-            <!--this is used to run GWT in dev mode. Adjust your IDE to include the delombok -->
-            <id>delombok</id>
-            <properties>
-                <zanata.gwt.module>org.zanata.webtrans.ApplicationSafari</zanata.gwt.module>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <phase>generate-sources</phase>
-                                <configuration>
-                                    <target>
-                                        <echo>include following as source in your IDE </echo>
-                                        <echo>${delombok.dir}</echo>
-                                        <echo>exclude following as source in your IDE</echo>
-                                        <echo>${lombok.source.dir}</echo>
-                                    </target>
-                                </configuration>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.projectlombok</groupId>
-                        <artifactId>lombok-maven-plugin</artifactId>
-                        <version>0.11.0.0</version>
-                        <executions>
-                            <execution>
-                                <phase>generate-sources</phase>
-                                <goals>
-                                    <goal>delombok</goal>
-                                </goals>
-                                <configuration>
-                                    <sourceDirectory>${lombok.source.dir}</sourceDirectory>
-                                    <outputDirectory>${delombok.dir}</outputDirectory>
-                                    <verbose>true</verbose>
-                                </configuration>
-                            </execution>
-                        </executions>
-                        <dependencies>
-                            <dependency>
-                                <groupId>sun.jdk</groupId>
-                                <artifactId>tools</artifactId>
-                                <version>1.6</version>
-                                <scope>system</scope>
-                                <systemPath>${java.home}/../lib/tools.jar</systemPath>
-                            </dependency>
-                        </dependencies>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+    </profile>
 
-	<distributionManagement>
-		<repository>
-			<uniqueVersion>false</uniqueVersion>
-			<id>cloudbees-private-release-repository</id>
-			<name>cloudbees-private-release-repository</name>
-			<url>dav:https://repository-zanata.forge.cloudbees.com/release/</url>
-			<layout>default</layout>
-		</repository>
-		<snapshotRepository>
-			<uniqueVersion>false</uniqueVersion>
-			<id>cloudbees-private-snapshot-repository</id>
-			<name>cloudbees-private-snapshot-repository</name>
-			<url>dav:https://repository-zanata.forge.cloudbees.com/snapshot/</url>
-			<layout>default</layout>
-		</snapshotRepository>
-	</distributionManagement>
+    <profile>
+      <!--this is used to run GWT in dev mode. Adjust your IDE to include the delombok -->
+      <id>delombok</id>
+      <properties>
+        <zanata.gwt.module>org.zanata.webtrans.ApplicationSafari</zanata.gwt.module>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>generate-sources</phase>
+                <configuration>
+                  <target>
+                    <echo>include following as source in your IDE</echo>
+                    <echo>${delombok.dir}</echo>
+                    <echo>exclude following as source in your IDE</echo>
+                    <echo>${lombok.source.dir}</echo>
+                  </target>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok-maven-plugin</artifactId>
+            <version>0.11.0.0</version>
+            <executions>
+              <execution>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>delombok</goal>
+                </goals>
+                <configuration>
+                  <sourceDirectory>${lombok.source.dir}</sourceDirectory>
+                  <outputDirectory>${delombok.dir}</outputDirectory>
+                  <verbose>true</verbose>
+                </configuration>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>sun.jdk</groupId>
+                <artifactId>tools</artifactId>
+                <version>1.6</version>
+                <scope>system</scope>
+                <systemPath>${java.home}/../lib/tools.jar</systemPath>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+  <distributionManagement>
+    <repository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>cloudbees-private-release-repository</id>
+      <name>cloudbees-private-release-repository</name>
+      <url>dav:https://repository-zanata.forge.cloudbees.com/release/</url>
+      <layout>default</layout>
+    </repository>
+    <snapshotRepository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>cloudbees-private-snapshot-repository</id>
+      <name>cloudbees-private-snapshot-repository</name>
+      <url>dav:https://repository-zanata.forge.cloudbees.com/snapshot/</url>
+      <layout>default</layout>
+    </snapshotRepository>
+  </distributionManagement>
 
   <modules>
     <module>zanata-model</module>
     <module>zanata-war</module>
     <module>functional-test</module>
-	<!-- <module>zanata-dist</module> -->
+    <!-- <module>zanata-dist</module> -->
   </modules>
 </project>
-

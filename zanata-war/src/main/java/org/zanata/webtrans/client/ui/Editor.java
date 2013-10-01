@@ -29,197 +29,169 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class Editor extends Composite implements ToggleEditor
-{
-   private static EditorUiBinder uiBinder = GWT.create(EditorUiBinder.class);
+public class Editor extends Composite implements ToggleEditor {
+    private static EditorUiBinder uiBinder = GWT.create(EditorUiBinder.class);
 
-   private final int index;
+    private final int index;
 
-   private final TransUnitId id;
+    private final TransUnitId id;
 
-   private TargetContentsDisplay.Listener listener;
+    private TargetContentsDisplay.Listener listener;
 
-   @UiField
-   Styles style;
+    @UiField
+    Styles style;
 
-   @UiField
-   FocusPanel rootContainer;
+    @UiField
+    FocusPanel rootContainer;
 
-   @UiField
-   HorizontalPanel topContainer, textAreaTable;
+    @UiField
+    HorizontalPanel topContainer, textAreaTable;
 
-   @UiField
-   TranslatorListWidget translatorList;
+    @UiField
+    TranslatorListWidget translatorList;
 
-   @UiField
-   InlineLabel copyIcon;
-   
-   @UiField
-   HTMLPanel targetWrapper;
+    @UiField
+    InlineLabel copyIcon;
 
-   @UiField(provided = true)
-   TextAreaWrapper textArea;
+    @UiField
+    HTMLPanel targetWrapper;
 
-   public Editor(String displayString, final int index, final TargetContentsDisplay.Listener listener, final TransUnitId id)
-   {
-      this.listener = listener;
-      this.index = index;
-      this.id = id;
-      if (listener.getConfigState().isUseCodeMirrorEditor())
-      {
-         Command onCodeMirrorFocusCallback = new Command()
-         {
+    @UiField(provided = true)
+    TextAreaWrapper textArea;
 
-            @Override
-            public void execute()
-            {
-               listener.onEditorClicked(id, index);
-            }
-         };
-         textArea = new CodeMirrorEditor(onCodeMirrorFocusCallback);
-      }
-      else
-      {
-         textArea = new EditorTextArea(displayString);
-      }
+    public Editor(String displayString, final int index,
+            final TargetContentsDisplay.Listener listener, final TransUnitId id) {
+        this.listener = listener;
+        this.index = index;
+        this.id = id;
+        if (listener.getConfigState().isUseCodeMirrorEditor()) {
+            Command onCodeMirrorFocusCallback = new Command() {
 
-      initWidget(uiBinder.createAndBindUi(this));
-      // determine whether to show or hide buttons
-      showCopySourceButton(listener.isDisplayButtons());
+                @Override
+                public void execute() {
+                    listener.onEditorClicked(id, index);
+                }
+            };
+            textArea = new CodeMirrorEditor(onCodeMirrorFocusCallback);
+        } else {
+            textArea = new EditorTextArea(displayString);
+        }
 
-      if(!listener.canEditTranslation())
-      {
-         setViewMode(ViewMode.VIEW);
-      }
-      else
-      {
-         setViewMode(ViewMode.EDIT);
-      }
-     
-      setText(displayString);
-   }
+        initWidget(uiBinder.createAndBindUi(this));
+        // determine whether to show or hide buttons
+        showCopySourceButton(listener.isDisplayButtons());
 
-   @Override
-   public void setEnableSpellCheck(Boolean enabled)
-   {
-      targetWrapper.getElement().setAttribute("contenteditable", enabled.toString());
-      targetWrapper.getElement().setAttribute("spellcheck", enabled.toString());
-   }
+        if (!listener.canEditTranslation()) {
+            setViewMode(ViewMode.VIEW);
+        } else {
+            setViewMode(ViewMode.EDIT);
+        }
 
-   private void fireValidationEvent()
-   {
-      if(listener.canEditTranslation())
-      {
-         listener.validate(this);
-      }
-   }
+        setText(displayString);
+    }
 
-   @UiHandler("textArea")
-   public void onValueChange(ValueChangeEvent<String> event)
-   {
-      fireValidationEvent();
-      listener.setEditingState(id, UNSAVED);
-   }
+    @Override
+    public void setEnableSpellCheck(Boolean enabled) {
+        targetWrapper.getElement().setAttribute("contenteditable",
+                enabled.toString());
+        targetWrapper.getElement().setAttribute("spellcheck",
+                enabled.toString());
+    }
 
-   @UiHandler("textArea")
-   public void onTextAreaFocus(FocusEvent event)
-   {
-      listener.onEditorClicked(id, index);
-      textArea.setEditing(true);
-      fireValidationEvent();
-   }
+    private void fireValidationEvent() {
+        if (listener.canEditTranslation()) {
+            listener.validate(this);
+        }
+    }
 
-   @UiHandler("textArea")
-   public void onTextAreaBlur(BlurEvent event)
-   {
-      textArea.setEditing(false);
-   }
+    @UiHandler("textArea")
+    public void onValueChange(ValueChangeEvent<String> event) {
+        fireValidationEvent();
+        listener.setEditingState(id, UNSAVED);
+    }
 
-   @UiHandler("copyIcon")
-   public void onCopySource(ClickEvent event)
-   {
-      listener.copySource(this, id);
-   }
+    @UiHandler("textArea")
+    public void onTextAreaFocus(FocusEvent event) {
+        listener.onEditorClicked(id, index);
+        textArea.setEditing(true);
+        fireValidationEvent();
+    }
 
-   @Override
-   public ViewMode getViewMode()
-   {
-      if (textArea.isReadOnly())
-      {
-         return ViewMode.VIEW;
-      }
-      else
-      {
-         return ViewMode.EDIT;
-      }
-   }
+    @UiHandler("textArea")
+    public void onTextAreaBlur(BlurEvent event) {
+        textArea.setEditing(false);
+    }
 
-   @Override
-   public void setViewMode(ViewMode viewMode)
-   {
-      textArea.setReadOnly(viewMode == ViewMode.VIEW);
-      translatorList.setVisible(viewMode == ViewMode.EDIT);
-      toggleTranslatorList();
-   }
+    @UiHandler("copyIcon")
+    public void onCopySource(ClickEvent event) {
+        listener.copySource(this, id);
+    }
 
-   public void toggleTranslatorList()
-   {
-      if (translatorList.isVisible() && !translatorList.isEmpty())
-      {
-         textAreaTable.setCellWidth(translatorList, "60px");
-      }
-      else
-      {
-         textAreaTable.setCellWidth(translatorList, "0");
-      }
-   }
+    @Override
+    public ViewMode getViewMode() {
+        if (textArea.isReadOnly()) {
+            return ViewMode.VIEW;
+        } else {
+            return ViewMode.EDIT;
+        }
+    }
 
-   @Override
-   public void setTextAndValidate(String text)
-   {
-      setText(text);
-      fireValidationEvent();
-   }
+    @Override
+    public void setViewMode(ViewMode viewMode) {
+        textArea.setReadOnly(viewMode == ViewMode.VIEW);
+        translatorList.setVisible(viewMode == ViewMode.EDIT);
+        toggleTranslatorList();
+    }
 
-   @Override
-   public void setText(String text)
-   {
-      if (!Strings.isNullOrEmpty(text))
-      {
-         textArea.setText(text);
-      }
-      else
-      {
-         textArea.setText("");
-      }
-   }
+    public void toggleTranslatorList() {
+        if (translatorList.isVisible() && !translatorList.isEmpty()) {
+            textAreaTable.setCellWidth(translatorList, "60px");
+        } else {
+            textAreaTable.setCellWidth(translatorList, "0");
+        }
+    }
 
-   @Override
-   public String getText()
-   {
-      return textArea.getText();
-   }
+    @Override
+    public void setTextAndValidate(String text) {
+        setText(text);
+        fireValidationEvent();
+    }
 
-   @Override
-   public void setFocus()
-   {
-      textArea.setEditing(true);
-   }
+    @Override
+    public void setText(String text) {
+        if (!Strings.isNullOrEmpty(text)) {
+            textArea.setText(text);
+        } else {
+            textArea.setText("");
+        }
+    }
 
-   @Override
-   public void insertTextInCursorPosition(String suggestion)
-   {
-      String preCursor = textArea.getText().substring(0, textArea.getCursorPos());
-      String postCursor = textArea.getText().substring(textArea.getCursorPos(), textArea.getText().length());
+    @Override
+    public String getText() {
+        return textArea.getText();
+    }
 
-      setTextAndValidate(preCursor + suggestion + postCursor);
-      textArea.setCursorPos(textArea.getText().indexOf(suggestion) + suggestion.length());
-   }
+    @Override
+    public void setFocus() {
+        textArea.setEditing(true);
+    }
 
-   @Override
-   public String toString()
-   {
-      // @formatter:off
+    @Override
+    public void insertTextInCursorPosition(String suggestion) {
+        String preCursor =
+                textArea.getText().substring(0, textArea.getCursorPos());
+        String postCursor =
+                textArea.getText().substring(textArea.getCursorPos(),
+                        textArea.getText().length());
+
+        setTextAndValidate(preCursor + suggestion + postCursor);
+        textArea.setCursorPos(textArea.getText().indexOf(suggestion)
+                + suggestion.length());
+    }
+
+    @Override
+    public String toString() {
+        // @formatter:off
       return Objects.toStringHelper(this)
             .add("id", id)
 //            .add("label", label.getText())
@@ -227,92 +199,78 @@ public class Editor extends Composite implements ToggleEditor
             .add("isFocused", isFocused())
             .toString();
       // @formatter:on
-   }
+    }
 
-   @Override
-   public int getIndex()
-   {
-      return index;
-   }
+    @Override
+    public int getIndex() {
+        return index;
+    }
 
-   @Override
-   public TransUnitId getId()
-   {
-      return id;
-   }
+    @Override
+    public TransUnitId getId() {
+        return id;
+    }
 
-   @Override
-   public void showCopySourceButton(boolean displayButtons)
-   {
-      copyIcon.setVisible(displayButtons);
-   }
+    @Override
+    public void showCopySourceButton(boolean displayButtons) {
+        copyIcon.setVisible(displayButtons);
+    }
 
-   @Override
-   public void updateValidationMessages(Map<ValidationAction, List<String>> messages)
-   {
-      if (messages.isEmpty())
-      {
-         targetWrapper.removeStyleName(style.hasValidationError());
-      }
-      else
-      {
-         Log.info(id + " id has error: " + messages.values());
-         targetWrapper.addStyleName(style.hasValidationError());
-      }
-   }
+    @Override
+    public void updateValidationMessages(
+            Map<ValidationAction, List<String>> messages) {
+        if (messages.isEmpty()) {
+            targetWrapper.removeStyleName(style.hasValidationError());
+        } else {
+            Log.info(id + " id has error: " + messages.values());
+            targetWrapper.addStyleName(style.hasValidationError());
+        }
+    }
 
-   @Override
-   public void addTranslator(String name, String color)
-   {
-      translatorList.addTranslator(name, color);
-      toggleTranslatorList();
-   }
+    @Override
+    public void addTranslator(String name, String color) {
+        translatorList.addTranslator(name, color);
+        toggleTranslatorList();
+    }
 
-   @Override
-   public void clearTranslatorList()
-   {
-      translatorList.clearTranslatorList();
-      toggleTranslatorList();
-   }
+    @Override
+    public void clearTranslatorList() {
+        translatorList.clearTranslatorList();
+        toggleTranslatorList();
+    }
 
-   @Override
-   public void highlightSearch(String findMessage)
-   {
-      textArea.highlight(findMessage);
-   }
+    @Override
+    public void highlightSearch(String findMessage) {
+        textArea.highlight(findMessage);
+    }
 
-   @Override
-   public void refresh()
-   {
-      textArea.refresh();
-   }
+    @Override
+    public void refresh() {
+        textArea.refresh();
+    }
 
-   @Override
-   public void removeTranslator(String name, String color)
-   {
-      translatorList.removeTranslator(name, color);
-      toggleTranslatorList();
-   }
+    @Override
+    public void removeTranslator(String name, String color) {
+        translatorList.removeTranslator(name, color);
+        toggleTranslatorList();
+    }
 
-   @Override
-   public boolean isFocused()
-   {
-      return textArea.isEditing();
-   }
+    @Override
+    public boolean isFocused() {
+        return textArea.isEditing();
+    }
 
-   interface EditorUiBinder extends UiBinder<Widget, Editor>
-   {
-   }
+    interface EditorUiBinder extends UiBinder<Widget, Editor> {
+    }
 
-   interface Styles extends CssResource
-   {
+    interface Styles extends CssResource {
 
-      String rootContainer();
+        String rootContainer();
 
-      String hasValidationError();
+        String hasValidationError();
 
-      String copyButton();
+        String copyButton();
 
-      String targetContainer();
-   }
+        String targetContainer();
+    }
 }

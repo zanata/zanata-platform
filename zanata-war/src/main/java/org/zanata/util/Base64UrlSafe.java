@@ -26,37 +26,28 @@ import java.net.URLEncoder;
 import org.apache.commons.codec.binary.Base64;
 import org.zanata.exception.ZanataServiceException;
 
-public class Base64UrlSafe
-{
-   public static String encode(String var) throws ZanataServiceException
-   {
-      try
-      {
-         Base64 en = new Base64();
-         String enVar = new String(en.encode(var.getBytes()), "UTF-8");
-         String result = URLEncoder.encode(enVar, "UTF-8");
-         return result;
-      }
-      catch (Exception e)
-      {
-         throw new ZanataServiceException(e);
-      }
-   }
+public class Base64UrlSafe {
+    public static String encode(String var) throws ZanataServiceException {
+        try {
+            Base64 en = new Base64();
+            String enVar = new String(en.encode(var.getBytes()), "UTF-8");
+            String result = URLEncoder.encode(enVar, "UTF-8");
+            return result;
+        } catch (Exception e) {
+            throw new ZanataServiceException(e);
+        }
+    }
 
-   public static String decode(String var) throws ZanataServiceException
-   {
-      try
-      {
-         String deVar = URLDecoder.decode(var, "UTF-8");
-         Base64 en = new Base64();
-         String result = new String(en.decode(deVar.getBytes()), "UTF-8");
-         return result;
-      }
-      catch (Exception e)
-      {
-         throw new ZanataServiceException(e);
-      }
+    public static String decode(String var) throws ZanataServiceException {
+        try {
+            String deVar = URLDecoder.decode(var, "UTF-8");
+            Base64 en = new Base64();
+            String result = new String(en.decode(deVar.getBytes()), "UTF-8");
+            return result;
+        } catch (Exception e) {
+            throw new ZanataServiceException(e);
+        }
 
-   }
+    }
 
 }

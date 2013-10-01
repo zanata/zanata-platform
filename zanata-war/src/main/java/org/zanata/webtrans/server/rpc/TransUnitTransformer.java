@@ -36,38 +36,40 @@ import org.zanata.webtrans.shared.model.TransUnit;
 @Name("transUnitTransformer")
 @Scope(ScopeType.STATELESS)
 @AutoCreate
-public class TransUnitTransformer
-{
-   private static final int NULL_TARGET_VERSION_NUM = 0;
+public class TransUnitTransformer {
+    private static final int NULL_TARGET_VERSION_NUM = 0;
 
-   @In
-   private ResourceUtils resourceUtils;
+    @In
+    private ResourceUtils resourceUtils;
 
-   public TransUnit transform(HTextFlow hTextFlow, HLocale hLocale)
-   {
-      // TODO debt: we iterate over a collection of text flow and call this
-      // method, if target is not eagerly loaded it will cause hibernate n+1.
-      // We may want to have a method as transform(Collection<HTextFlow>
-      // hTextFlows, HLocale hLocale) and use query internally or change caller
-      // code to always eager load targets.
-      HTextFlowTarget target = hTextFlow.getTargets().get(hLocale.getId());
+    public TransUnit transform(HTextFlow hTextFlow, HLocale hLocale) {
+        // TODO debt: we iterate over a collection of text flow and call this
+        // method, if target is not eagerly loaded it will cause hibernate n+1.
+        // We may want to have a method as transform(Collection<HTextFlow>
+        // hTextFlows, HLocale hLocale) and use query internally or change
+        // caller
+        // code to always eager load targets.
+        HTextFlowTarget target = hTextFlow.getTargets().get(hLocale.getId());
 
-      return transform(hTextFlow, target, hLocale);
-   }
+        return transform(hTextFlow, target, hLocale);
+    }
 
-   public TransUnit transform(HTextFlow hTextFlow, HTextFlowTarget target, HLocale hLocale)
-   {
-      String msgContext = null;
-      if (hTextFlow.getPotEntryData() != null)
-      {
-         msgContext = hTextFlow.getPotEntryData().getContext();
-      }
+    public TransUnit transform(HTextFlow hTextFlow, HTextFlowTarget target,
+            HLocale hLocale) {
+        String msgContext = null;
+        if (hTextFlow.getPotEntryData() != null) {
+            msgContext = hTextFlow.getPotEntryData().getContext();
+        }
 
-      int nPlurals = resourceUtils.getNumPlurals(hTextFlow.getDocument(), hLocale);
-      ArrayList<String> sourceContents = GwtRpcUtil.getSourceContents(hTextFlow);
-      ArrayList<String> targetContents = GwtRpcUtil.getTargetContentsWithPadding(hTextFlow, target, nPlurals);
+        int nPlurals =
+                resourceUtils.getNumPlurals(hTextFlow.getDocument(), hLocale);
+        ArrayList<String> sourceContents =
+                GwtRpcUtil.getSourceContents(hTextFlow);
+        ArrayList<String> targetContents =
+                GwtRpcUtil.getTargetContentsWithPadding(hTextFlow, target,
+                        nPlurals);
 
-      // @formatter:off
+        // @formatter:off
       TransUnit.Builder builder = TransUnit.Builder.newTransUnitBuilder()
             .setId(hTextFlow.getId())
             .setResId(hTextFlow.getResId())
@@ -84,32 +86,27 @@ public class TransUnitTransformer
             ;
       // @formatter:on
 
-      if (target != null)
-      {
-         builder.setStatus(target.getState());
-         if (target.getLastModifiedBy() != null)
-         {
-            builder.setLastModifiedBy(target.getLastModifiedBy().getName());
-         }
-         builder.setLastModifiedTime(target.getLastChanged());
-      }
-      return builder.build();
-   }
+        if (target != null) {
+            builder.setStatus(target.getState());
+            if (target.getLastModifiedBy() != null) {
+                builder.setLastModifiedBy(target.getLastModifiedBy().getName());
+            }
+            builder.setLastModifiedTime(target.getLastChanged());
+        }
+        return builder.build();
+    }
 
-   private static int getCommentCount(HTextFlowTarget target)
-   {
-      if (target == null)
-      {
-         return 0;
-      }
-      // TODO pahuang this will cause extra database call for each target. See above transform(HTextFlow, HLocale).
-      return target.getReviewComments().size();
-   }
+    private static int getCommentCount(HTextFlowTarget target) {
+        if (target == null) {
+            return 0;
+        }
+        // TODO pahuang this will cause extra database call for each target. See
+        // above transform(HTextFlow, HLocale).
+        return target.getReviewComments().size();
+    }
 
-
-   private static String commentToString(HSimpleComment comment)
-   {
-      return comment == null ? null : comment.getComment();
-   }
+    private static String commentToString(HSimpleComment comment) {
+        return comment == null ? null : comment.getComment();
+    }
 
 }

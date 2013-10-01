@@ -46,106 +46,103 @@ import com.google.inject.Inject;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-public class ValidationWarningPanel extends ShortcutContextAwareDialogBox implements ValidationWarningDisplay
-{
-   private static ValidationWarningPanelUiBinder uiBinder = GWT.create(ValidationWarningPanelUiBinder.class);
+public class ValidationWarningPanel extends ShortcutContextAwareDialogBox
+        implements ValidationWarningDisplay {
+    private static ValidationWarningPanelUiBinder uiBinder = GWT
+            .create(ValidationWarningPanelUiBinder.class);
 
-   interface ValidationWarningPanelUiBinder extends UiBinder<HTMLPanel, ValidationWarningPanel>
-   {
-   }
+    interface ValidationWarningPanelUiBinder extends
+            UiBinder<HTMLPanel, ValidationWarningPanel> {
+    }
 
-   private TransUnitId transUnitId;
+    private TransUnitId transUnitId;
 
-   private int editorIndex;
+    private int editorIndex;
 
-   private TargetContentsDisplay.Listener listener;
+    private TargetContentsDisplay.Listener listener;
 
-   @UiField
-   UnorderedListWidget translations;
+    @UiField
+    UnorderedListWidget translations;
 
-   @UiField
-   UnorderedListWidget errorList;
+    @UiField
+    UnorderedListWidget errorList;
 
-   @UiField(provided = true)
-   Button returnToEditor;
+    @UiField(provided = true)
+    Button returnToEditor;
 
-   @UiField(provided = true)
-   Button saveAsFuzzy;
+    @UiField(provided = true)
+    Button saveAsFuzzy;
 
-   @Inject
-   public ValidationWarningPanel(TableEditorMessages messages, KeyShortcutPresenter keyShortcutPresenter)
-   {
-      super(false, true, ShortcutContext.ValidationWarningPopup, keyShortcutPresenter);
+    @Inject
+    public ValidationWarningPanel(TableEditorMessages messages,
+            KeyShortcutPresenter keyShortcutPresenter) {
+        super(false, true, ShortcutContext.ValidationWarningPopup,
+                keyShortcutPresenter);
 
-      setStyleName("new-zanata");
+        setStyleName("new-zanata");
 
-      returnToEditor = new Button(messages.returnToEditor());
-      saveAsFuzzy = new Button(messages.saveAsFuzzy());
+        returnToEditor = new Button(messages.returnToEditor());
+        saveAsFuzzy = new Button(messages.saveAsFuzzy());
 
-      HTMLPanel container = uiBinder.createAndBindUi(this);
+        HTMLPanel container = uiBinder.createAndBindUi(this);
 
-      setGlassEnabled(true);
-      setWidget(container);
-      hide();
-   }
+        setGlassEnabled(true);
+        setWidget(container);
+        hide();
+    }
 
-   public void setListener(TargetContentsDisplay.Listener listener)
-   {
-      this.listener = listener;
-      addListenerToButtons();
-   }
+    public void setListener(TargetContentsDisplay.Listener listener) {
+        this.listener = listener;
+        addListenerToButtons();
+    }
 
-   private void addListenerToButtons()
-   {
-      saveAsFuzzy.addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            hide();
-            listener.saveAsFuzzy(transUnitId);
-         }
-      });
-      returnToEditor.addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            hide();
-            listener.onEditorClicked(transUnitId, editorIndex);
-         }
-      });
-   }
+    private void addListenerToButtons() {
+        saveAsFuzzy.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                hide();
+                listener.saveAsFuzzy(transUnitId);
+            }
+        });
+        returnToEditor.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                hide();
+                listener.onEditorClicked(transUnitId, editorIndex);
+            }
+        });
+    }
 
-   @Override
-   public void center(TransUnitId transUnitId, int editorIndex, List<String> targets, Map<ValidationAction, List<String>> errorMessages)
-   {
-      this.transUnitId = transUnitId;
-      this.editorIndex = editorIndex;
-      refreshView(targets, errorMessages);
-      center();
-   }
+    @Override
+    public void center(TransUnitId transUnitId, int editorIndex,
+            List<String> targets,
+            Map<ValidationAction, List<String>> errorMessages) {
+        this.transUnitId = transUnitId;
+        this.editorIndex = editorIndex;
+        refreshView(targets, errorMessages);
+        center();
+    }
 
-   private void refreshView(List<String> targets, Map<ValidationAction, List<String>> errorMessages)
-   {
-      translations.clear();
-      errorList.clear();
+    private void refreshView(List<String> targets,
+            Map<ValidationAction, List<String>> errorMessages) {
+        translations.clear();
+        errorList.clear();
 
-      for (String target : targets)
-      {
-         SafeHtmlBuilder builder = new SafeHtmlBuilder();
-         builder.append(TextContentsDisplay.asSyntaxHighlight(Lists.newArrayList(target)).toSafeHtml());
-         translations.add(new HTMLPanel("li", builder.toSafeHtml().asString()));
-      }
-
-      for (List<String> messages : errorMessages.values())
-      {
-         for (String message : messages)
-         {
+        for (String target : targets) {
             SafeHtmlBuilder builder = new SafeHtmlBuilder();
-            builder.appendEscaped(message);
-            errorList.add(new HTMLPanel("li", builder.toSafeHtml().asString()));
-         }
-      }
-   }
+            builder.append(TextContentsDisplay.asSyntaxHighlight(
+                    Lists.newArrayList(target)).toSafeHtml());
+            translations.add(new HTMLPanel("li", builder.toSafeHtml()
+                    .asString()));
+        }
+
+        for (List<String> messages : errorMessages.values()) {
+            for (String message : messages) {
+                SafeHtmlBuilder builder = new SafeHtmlBuilder();
+                builder.appendEscaped(message);
+                errorList.add(new HTMLPanel("li", builder.toSafeHtml()
+                        .asString()));
+            }
+        }
+    }
 }

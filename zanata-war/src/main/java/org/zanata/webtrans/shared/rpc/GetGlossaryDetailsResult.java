@@ -4,26 +4,22 @@ import java.util.ArrayList;
 
 import org.zanata.webtrans.shared.model.GlossaryDetails;
 
-public class GetGlossaryDetailsResult implements DispatchResult
-{
+public class GetGlossaryDetailsResult implements DispatchResult {
 
-   private static final long serialVersionUID = 1L;
-   
-   private ArrayList<GlossaryDetails> glossaryDetails;
+    private static final long serialVersionUID = 1L;
 
-   @SuppressWarnings("unused")
-   private GetGlossaryDetailsResult()
-   {
-      this(null);
-   }
+    private ArrayList<GlossaryDetails> glossaryDetails;
 
-   public GetGlossaryDetailsResult(ArrayList<GlossaryDetails> glossaryDetails)
-   {
-      this.glossaryDetails = glossaryDetails;
-   }
+    @SuppressWarnings("unused")
+    private GetGlossaryDetailsResult() {
+        this(null);
+    }
 
-   public ArrayList<GlossaryDetails> getGlossaryDetails()
-   {
-      return glossaryDetails;
-   }
+    public GetGlossaryDetailsResult(ArrayList<GlossaryDetails> glossaryDetails) {
+        this.glossaryDetails = glossaryDetails;
+    }
+
+    public ArrayList<GlossaryDetails> getGlossaryDetails() {
+        return glossaryDetails;
+    }
 }

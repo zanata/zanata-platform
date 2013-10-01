@@ -2,17 +2,17 @@
  * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
- * 
+ *
  * This is free software; you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
@@ -60,364 +60,319 @@ import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class DocumentListView extends Composite implements DocumentListDisplay
-{
-   interface DocumentListViewUiBinder extends UiBinder<LayoutPanel, DocumentListView>
-   {
-   }
+public class DocumentListView extends Composite implements DocumentListDisplay {
+    interface DocumentListViewUiBinder extends
+            UiBinder<LayoutPanel, DocumentListView> {
+    }
 
-   private static DocumentListViewUiBinder uiBinder = GWT.create(DocumentListViewUiBinder.class);
+    private static DocumentListViewUiBinder uiBinder = GWT
+            .create(DocumentListViewUiBinder.class);
 
-   private DocumentListDisplay.Listener listener;
+    private DocumentListDisplay.Listener listener;
 
-   @UiField(provided = true)
-   SearchField searchField;
+    @UiField(provided = true)
+    SearchField searchField;
 
-   @UiField
-   FlowPanel documentListContainer;
+    @UiField
+    FlowPanel documentListContainer;
 
-   @UiField
-   CheckBox exactSearchCheckBox, caseSensitiveCheckBox;
+    @UiField
+    CheckBox exactSearchCheckBox, caseSensitiveCheckBox;
 
-   @UiField
-   RadioButton statsByMsg, statsByWord;
+    @UiField
+    RadioButton statsByMsg, statsByWord;
 
-   @UiField
-   PushButton downloadAllFiles;
+    @UiField
+    PushButton downloadAllFiles;
 
-   @UiField(provided = true)
-   Pager pager;
+    @UiField(provided = true)
+    Pager pager;
 
-   private DocumentListTable documentListTable;
+    private DocumentListTable documentListTable;
 
-   private final DownloadFilesConfirmationBox confirmationBox;
-   private final FileUploadDialog fileUploadDialog;
+    private final DownloadFilesConfirmationBox confirmationBox;
+    private final FileUploadDialog fileUploadDialog;
 
-   private final LoadingPanel loadingPanel;
+    private final LoadingPanel loadingPanel;
 
-   private Timer timer = new Timer()
-   {
-      public void run()
-      {
-         getDownloadStatus();
-      }
-   };
+    private Timer timer = new Timer() {
+        public void run() {
+            getDownloadStatus();
+        }
+    };
 
-   @Inject
-   public DocumentListView(Resources resources, WebTransMessages messages, UserWorkspaceContext userworkspaceContext, LoadingPanel loadingPanel)
-   {
-      this.loadingPanel = loadingPanel;
+    @Inject
+    public DocumentListView(Resources resources, WebTransMessages messages,
+            UserWorkspaceContext userworkspaceContext, LoadingPanel loadingPanel) {
+        this.loadingPanel = loadingPanel;
 
-      confirmationBox = new DownloadFilesConfirmationBox(false, messages, resources);
-      fileUploadDialog = new FileUploadDialog(resources);
-      pager = new Pager(messages, resources);
-      searchField = new SearchField(this);
-      searchField.setTextBoxTitle(messages.docListFilterDescription());
+        confirmationBox =
+                new DownloadFilesConfirmationBox(false, messages, resources);
+        fileUploadDialog = new FileUploadDialog(resources);
+        pager = new Pager(messages, resources);
+        searchField = new SearchField(this);
+        searchField.setTextBoxTitle(messages.docListFilterDescription());
 
-      initWidget(uiBinder.createAndBindUi(this));
+        initWidget(uiBinder.createAndBindUi(this));
 
-      caseSensitiveCheckBox.setTitle(messages.docListFilterCaseSensitiveDescription());
-      exactSearchCheckBox.setTitle(messages.docListFilterExactMatchDescription());
-      statsByMsg.setText(messages.byMessage());
-      statsByWord.setText(messages.byWords());
+        caseSensitiveCheckBox.setTitle(messages
+                .docListFilterCaseSensitiveDescription());
+        exactSearchCheckBox.setTitle(messages
+                .docListFilterExactMatchDescription());
+        statsByMsg.setText(messages.byMessage());
+        statsByWord.setText(messages.byWords());
 
-      documentListTable = new DocumentListTable(userworkspaceContext, messages,resources);
-      documentListContainer.add(documentListTable);
-   }
+        documentListTable =
+                new DocumentListTable(userworkspaceContext, messages, resources);
+        documentListContainer.add(documentListTable);
+    }
 
-   @Override
-   public Widget asWidget()
-   {
-      return this;
-   }
+    @Override
+    public Widget asWidget() {
+        return this;
+    }
 
-   @Override
-   public String getSelectedStatsOption()
-   {
-      if (statsByMsg.getValue())
-      {
-         return STATS_OPTION_MESSAGE;
-      }
-      else
-      {
-         return STATS_OPTION_WORDS;
-      }
-   }
+    @Override
+    public String getSelectedStatsOption() {
+        if (statsByMsg.getValue()) {
+            return STATS_OPTION_MESSAGE;
+        } else {
+            return STATS_OPTION_WORDS;
+        }
+    }
 
-   @UiHandler("exactSearchCheckBox")
-   public void onExactSearchCheckboxChange(ValueChangeEvent<Boolean> event)
-   {
-      listener.fireExactSearchToken(event.getValue());
-   }
+    @UiHandler("exactSearchCheckBox")
+    public void onExactSearchCheckboxChange(ValueChangeEvent<Boolean> event) {
+        listener.fireExactSearchToken(event.getValue());
+    }
 
-   @UiHandler("caseSensitiveCheckBox")
-   public void onCaseSensitiveCheckboxValueChange(ValueChangeEvent<Boolean> event)
-   {
-      listener.fireCaseSensitiveToken(event.getValue());
-   }
+    @UiHandler("caseSensitiveCheckBox")
+    public void onCaseSensitiveCheckboxValueChange(
+            ValueChangeEvent<Boolean> event) {
+        listener.fireCaseSensitiveToken(event.getValue());
+    }
 
-   @UiHandler("statsByMsg")
-   public void onStatsByMsgChange(ValueChangeEvent<Boolean> event)
-   {
-      if (event.getValue())
-      {
-         listener.statsOptionChange();
-      }
-   }
+    @UiHandler("statsByMsg")
+    public void onStatsByMsgChange(ValueChangeEvent<Boolean> event) {
+        if (event.getValue()) {
+            listener.statsOptionChange();
+        }
+    }
 
-   @UiHandler("statsByWord")
-   public void onStatsByWordChange(ValueChangeEvent<Boolean> event)
-   {
-      if (event.getValue())
-      {
-         listener.statsOptionChange();
-      }
-   }
+    @UiHandler("statsByWord")
+    public void onStatsByWordChange(ValueChangeEvent<Boolean> event) {
+        if (event.getValue()) {
+            listener.statsOptionChange();
+        }
+    }
 
-   @UiHandler("downloadAllFiles")
-   public void onDownloadAllFilesClick(ClickEvent event)
-   {
-      confirmationBox.center();
-   }
-   
-   @UiHandler("pager")
-   public void onPagerValueChanged(ValueChangeEvent<Integer> event)
-   {
-      listener.pagerValueChanged(event.getValue());
-   }
+    @UiHandler("downloadAllFiles")
+    public void onDownloadAllFilesClick(ClickEvent event) {
+        confirmationBox.center();
+    }
 
-   @Override
-   public void setLayout(String layout)
-   {
-      documentListContainer.setStyleName(layout);
-   }
+    @UiHandler("pager")
+    public void onPagerValueChanged(ValueChangeEvent<Integer> event) {
+        listener.pagerValueChanged(event.getValue());
+    }
 
-   @Override
-   public void updateFilter(boolean docFilterCaseSensitive, boolean docFilterExact, String docFilterText)
-   {
-      caseSensitiveCheckBox.setValue(docFilterCaseSensitive, false);
-      exactSearchCheckBox.setValue(docFilterExact, false);
-      searchField.setText(docFilterText);
-   }
+    @Override
+    public void setLayout(String layout) {
+        documentListContainer.setStyleName(layout);
+    }
 
-   @Override
-   public void setListener(Listener documentListPresenter)
-   {
-      this.listener = documentListPresenter;
-      confirmationBox.registerHandler(listener);
-      fileUploadDialog.registerHandler(listener, Application.getUploadFileUrl());
-      documentListTable.setListener(listener);
-   }
+    @Override
+    public void updateFilter(boolean docFilterCaseSensitive,
+            boolean docFilterExact, String docFilterText) {
+        caseSensitiveCheckBox.setValue(docFilterCaseSensitive, false);
+        exactSearchCheckBox.setValue(docFilterExact, false);
+        searchField.setText(docFilterText);
+    }
 
-   @Override
-   public void onSearchFieldValueChange(String value)
-   {
-      listener.fireFilterToken(value);
-   }
+    @Override
+    public void setListener(Listener documentListPresenter) {
+        this.listener = documentListPresenter;
+        confirmationBox.registerHandler(listener);
+        fileUploadDialog.registerHandler(listener,
+                Application.getUploadFileUrl());
+        documentListTable.setListener(listener);
+    }
 
-   @Override
-   public void onSearchFieldCancel()
-   {
-      searchField.setValue("");
-   }
+    @Override
+    public void onSearchFieldValueChange(String value) {
+        listener.fireFilterToken(value);
+    }
 
-   @Override
-   public void onSearchFieldBlur()
-   {
-   }
+    @Override
+    public void onSearchFieldCancel() {
+        searchField.setValue("");
+    }
 
-   @Override
-   public void onSearchFieldFocus()
-   {
-   }
+    @Override
+    public void onSearchFieldBlur() {
+    }
 
-   @Override
-   public void onSearchFieldClick()
-   {
-   }
+    @Override
+    public void onSearchFieldFocus() {
+    }
 
-   @Override
-   public void hideConfirmation()
-   {
-      confirmationBox.hide();
-   }
+    @Override
+    public void onSearchFieldClick() {
+    }
 
-   @Override
-   public void updateFileDownloadProgress(int currentProgress, int maxProgress)
-   {
-      confirmationBox.setProgressMessage(currentProgress + " of " + maxProgress);
-   }
+    @Override
+    public void hideConfirmation() {
+        confirmationBox.hide();
+    }
 
-   @Override
-   public void setDownloadInProgress(boolean inProgress)
-   {
-      confirmationBox.setInProgress(inProgress);
-   }
+    @Override
+    public void
+            updateFileDownloadProgress(int currentProgress, int maxProgress) {
+        confirmationBox.setProgressMessage(currentProgress + " of "
+                + maxProgress);
+    }
 
-   @Override
-   public void setAndShowFilesDownloadLink(String url)
-   {
-      confirmationBox.setDownloadLink(url);
-      confirmationBox.showDownloadLink(true);
-   }
+    @Override
+    public void setDownloadInProgress(boolean inProgress) {
+        confirmationBox.setInProgress(inProgress);
+    }
 
-   @Override
-   public InlineLink getDownloadAllFilesInlineLink(final String url)
-   {
-      return new InlineLink()
-      {
-         @Override
-         public Widget asWidget()
-         {
-            Anchor anchor = new Anchor();
-            anchor.setStyleName("icon-download");
-            anchor.addStyleName("downloadLink");
-            anchor.setHref(url);
-            anchor.setTarget("_blank");
-            return anchor;
-         }
+    @Override
+    public void setAndShowFilesDownloadLink(String url) {
+        confirmationBox.setDownloadLink(url);
+        confirmationBox.showDownloadLink(true);
+    }
 
-         @Override
-         public void setLinkStyle(String styleName)
-         {
+    @Override
+    public InlineLink getDownloadAllFilesInlineLink(final String url) {
+        return new InlineLink() {
+            @Override
+            public Widget asWidget() {
+                Anchor anchor = new Anchor();
+                anchor.setStyleName("icon-download");
+                anchor.addStyleName("downloadLink");
+                anchor.setHref(url);
+                anchor.setTarget("_blank");
+                return anchor;
+            }
 
-         }
+            @Override
+            public void setLinkStyle(String styleName) {
 
-         @Override
-         public void setDisabledStyle(String styleName)
-         {
+            }
 
-         }
-      };
-   }
+            @Override
+            public void setDisabledStyle(String styleName) {
 
-   @Override
-   public void showUploadDialog(DocumentInfo info, WorkspaceId workspaceId)
-   {
-      fileUploadDialog.setDocumentInfo(info, workspaceId);
-      fileUploadDialog.center();
-   }
+            }
+        };
+    }
 
-   @Override
-   public void closeFileUpload()
-   {
-      fileUploadDialog.hide();
-   }
+    @Override
+    public void showUploadDialog(DocumentInfo info, WorkspaceId workspaceId) {
+        fileUploadDialog.setDocumentInfo(info, workspaceId);
+        fileUploadDialog.center();
+    }
 
-   @Override
-   public String getSelectedUploadFileName()
-   {
-      return fileUploadDialog.getUploadFileName();
-   }
+    @Override
+    public void closeFileUpload() {
+        fileUploadDialog.hide();
+    }
 
-   @Override
-   public void submitUploadForm()
-   {
-      fileUploadDialog.submitForm();
-   }
+    @Override
+    public String getSelectedUploadFileName() {
+        return fileUploadDialog.getUploadFileName();
+    }
 
-   @Override
-   public void startGetDownloadStatus(int periodMillis)
-   {
-      timer.scheduleRepeating(periodMillis);
-   }
+    @Override
+    public void submitUploadForm() {
+        fileUploadDialog.submitForm();
+    }
 
-   public void getDownloadStatus()
-   {
-      listener.updateDownloadFileProgress();
-   }
+    @Override
+    public void startGetDownloadStatus(int periodMillis) {
+        timer.scheduleRepeating(periodMillis);
+    }
 
-   @Override
-   public void stopGetDownloadStatus()
-   {
-      timer.cancel();
-   }
+    public void getDownloadStatus() {
+        listener.updateDownloadFileProgress();
+    }
 
-   @Override
-   public void setEnableDownloadZip(boolean enabled)
-   {
-      downloadAllFiles.setEnabled(enabled);
+    @Override
+    public void stopGetDownloadStatus() {
+        timer.cancel();
+    }
 
-   }
+    @Override
+    public void setEnableDownloadZip(boolean enabled) {
+        downloadAllFiles.setEnabled(enabled);
 
-   @Override
-   public void setDownloadZipButtonText(String text)
-   {
-      downloadAllFiles.setText(text);
-   }
+    }
 
-   @Override
-   public void setDownloadZipButtonTitle(String title)
-   {
-      downloadAllFiles.setTitle(title);
-   }
+    @Override
+    public void setDownloadZipButtonText(String text) {
+        downloadAllFiles.setText(text);
+    }
 
-   @Override
-   public void showLoading(boolean showLoading)
-   {
-      if (showLoading)
-      {
-         loadingPanel.center();
-      }
-      else
-      {
-         loadingPanel.hide();
-      }
-   }
+    @Override
+    public void setDownloadZipButtonTitle(String title) {
+        downloadAllFiles.setTitle(title);
+    }
 
-   @Override
-   public HashMap<DocumentId, Integer> buildContent(List<DocumentNode> nodes)
-   {
-      return documentListTable.buildContent(nodes, statsByWord.getValue().booleanValue());
-   }
+    @Override
+    public void showLoading(boolean showLoading) {
+        if (showLoading) {
+            loadingPanel.center();
+        } else {
+            loadingPanel.hide();
+        }
+    }
 
-   @Override
-   public void updateRowHasError(int row, DocValidationStatus status)
-   {
-      documentListTable.updateRowHasError(row, status);
-   }
+    @Override
+    public HashMap<DocumentId, Integer> buildContent(List<DocumentNode> nodes) {
+        return documentListTable.buildContent(nodes, statsByWord.getValue()
+                .booleanValue());
+    }
 
-   @Override
-   public void updateLastTranslated(int row, AuditInfo lastTranslated)
-   {
-      documentListTable.updateLastTranslatedInfo(row, lastTranslated);
+    @Override
+    public void updateRowHasError(int row, DocValidationStatus status) {
+        documentListTable.updateRowHasError(row, status);
+    }
 
-   }
+    @Override
+    public void updateLastTranslated(int row, AuditInfo lastTranslated) {
+        documentListTable.updateLastTranslatedInfo(row, lastTranslated);
 
-   @Override
-   public void updateStats(int row, ContainerTranslationStatistics stats)
-   {
-      documentListTable.updateStats(row, stats, statsByWord.getValue().booleanValue());
-   }
+    }
 
-   @Override
-   public void setStatsFilters(Integer row)
-   {
-      documentListTable.setStatsFilter(statsByWord.getValue().booleanValue(), row);
-   }
-   
-   @Override
-   public void setStatsFilters(String option)
-   {
-      if (option.equals(STATS_OPTION_MESSAGE))
-      {
-         statsByMsg.setValue(true);
-      }
-      else
-      {
-         statsByWord.setValue(true);
-      }
-   }
+    @Override
+    public void updateStats(int row, ContainerTranslationStatistics stats) {
+        documentListTable.updateStats(row, stats, statsByWord.getValue()
+                .booleanValue());
+    }
 
-   @Override
-   public HasPager getPageNavigation()
-   {
-      return pager;
-   }
+    @Override
+    public void setStatsFilters(Integer row) {
+        documentListTable.setStatsFilter(statsByWord.getValue().booleanValue(),
+                row);
+    }
 
-   @Override
-   public void showRowLoading(int row)
-   {
-      documentListTable.showRowLoading(row);
-   }
+    @Override
+    public void setStatsFilters(String option) {
+        if (option.equals(STATS_OPTION_MESSAGE)) {
+            statsByMsg.setValue(true);
+        } else {
+            statsByWord.setValue(true);
+        }
+    }
+
+    @Override
+    public HasPager getPageNavigation() {
+        return pager;
+    }
+
+    @Override
+    public void showRowLoading(int row) {
+        documentListTable.showRowLoading(row);
+    }
 }

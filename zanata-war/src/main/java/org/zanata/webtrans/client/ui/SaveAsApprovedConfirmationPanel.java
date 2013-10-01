@@ -41,106 +41,93 @@ import com.google.inject.Inject;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-public class SaveAsApprovedConfirmationPanel extends PopupPanel implements SaveAsApprovedConfirmationDisplay
-{
-   private final Button saveAsApproved;
-   private final Button cancel;
-   private final CheckBox rememberDecision;
-   private TransUnitId transUnitId;
+public class SaveAsApprovedConfirmationPanel extends PopupPanel implements
+        SaveAsApprovedConfirmationDisplay {
+    private final Button saveAsApproved;
+    private final Button cancel;
+    private final CheckBox rememberDecision;
+    private TransUnitId transUnitId;
 
-   private TargetContentsDisplay.Listener listener;
+    private TargetContentsDisplay.Listener listener;
 
-   @Inject
-   public SaveAsApprovedConfirmationPanel(TableEditorMessages messages)
-   {
-      super(false, true);
+    @Inject
+    public SaveAsApprovedConfirmationPanel(TableEditorMessages messages) {
+        super(false, true);
 
-      FlowPanel panel = new FlowPanel();
-      
-      saveAsApproved = new Button(messages.saveAsTranslated());
-      cancel = new Button(messages.cancel());
-      rememberDecision = new CheckBox(messages.dontShowThisAgain());
+        FlowPanel panel = new FlowPanel();
 
-      Label message = new Label(messages.saveAsTranslatedDialogWarning1());
-      message.addStyleName("message");
+        saveAsApproved = new Button(messages.saveAsTranslated());
+        cancel = new Button(messages.cancel());
+        rememberDecision = new CheckBox(messages.dontShowThisAgain());
 
+        Label message = new Label(messages.saveAsTranslatedDialogWarning1());
+        message.addStyleName("message");
 
-      InlineLabel info = new InlineLabel();
-      info.setStyleName("icon-info-circle-2 infoIcon");
-      InlineLabel message3 = new InlineLabel(messages.saveAsApprovedDialogInfo1());
-      Label message4 = new Label(messages.saveAsApprovedDialogInfo2());
-      Label message5 = new Label(messages.saveAsApprovedDialogInfo3());
-      message4.addStyleName("subInfo");
-      message5.addStyleName("subInfo");
+        InlineLabel info = new InlineLabel();
+        info.setStyleName("icon-info-circle-2 infoIcon");
+        InlineLabel message3 =
+                new InlineLabel(messages.saveAsApprovedDialogInfo1());
+        Label message4 = new Label(messages.saveAsApprovedDialogInfo2());
+        Label message5 = new Label(messages.saveAsApprovedDialogInfo3());
+        message4.addStyleName("subInfo");
+        message5.addStyleName("subInfo");
 
-      FlowPanel infoPanel = new FlowPanel();
-      infoPanel.addStyleName("info");
+        FlowPanel infoPanel = new FlowPanel();
+        infoPanel.addStyleName("info");
 
-      infoPanel.add(info);
-      infoPanel.add(message3);
-      infoPanel.add(message4);
-      infoPanel.add(message5);
+        infoPanel.add(info);
+        infoPanel.add(message3);
+        infoPanel.add(message4);
+        infoPanel.add(message5);
 
-      setStyleName("confirmationDialogPanel");
+        setStyleName("confirmationDialogPanel");
 
-      panel.add(message);
-      panel.add(infoPanel);
-      panel.add(saveAsApproved);
-      panel.add(cancel);
-      panel.add(rememberDecision);
-      
-      add(panel);
+        panel.add(message);
+        panel.add(infoPanel);
+        panel.add(saveAsApproved);
+        panel.add(cancel);
+        panel.add(rememberDecision);
 
-      hide();
-   }
+        add(panel);
 
-   public void setListener(TargetContentsDisplay.Listener listener)
-   {
-      this.listener = listener;
-      addListenerToButtons();
-   }
+        hide();
+    }
 
-   private void addListenerToButtons()
-   {
-      saveAsApproved.addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            listener.saveAsApprovedAndMoveNext(transUnitId);
-            hide();
-         }
-      });
-      cancel.addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            hide();
-         }
-      });
-      rememberDecision.addValueChangeHandler(new ValueChangeHandler<Boolean>()
-      {
-         @Override
-         public void onValueChange(ValueChangeEvent<Boolean> event)
-         {
-            listener.saveUserDecision(!event.getValue());
-         }
-      });
-   }
-   
-   public void center(TransUnitId transUnitId)
-   {
-      this.transUnitId = transUnitId;
-      center();
-   }
+    public void setListener(TargetContentsDisplay.Listener listener) {
+        this.listener = listener;
+        addListenerToButtons();
+    }
 
-   @Override
-   public void setShowSaveApprovedWarning(boolean value)
-   {
-      rememberDecision.setValue(!value);
-   }
+    private void addListenerToButtons() {
+        saveAsApproved.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                listener.saveAsApprovedAndMoveNext(transUnitId);
+                hide();
+            }
+        });
+        cancel.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                hide();
+            }
+        });
+        rememberDecision
+                .addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+                    @Override
+                    public void onValueChange(ValueChangeEvent<Boolean> event) {
+                        listener.saveUserDecision(!event.getValue());
+                    }
+                });
+    }
+
+    public void center(TransUnitId transUnitId) {
+        this.transUnitId = transUnitId;
+        center();
+    }
+
+    @Override
+    public void setShowSaveApprovedWarning(boolean value) {
+        rememberDecision.setValue(!value);
+    }
 }
-
-
- 

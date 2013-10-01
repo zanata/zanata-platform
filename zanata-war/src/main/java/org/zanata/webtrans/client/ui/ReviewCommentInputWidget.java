@@ -33,59 +33,52 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.TextArea;
 
-public class ReviewCommentInputWidget extends Composite implements HasText
-{
-   private static ReviewCommentInputWidgetUiBinder ourUiBinder = GWT.create(ReviewCommentInputWidgetUiBinder.class);
-   @UiField
-   TextArea commentTextArea;
-   @UiField
-   Button addCommentButton;
-   private ForceReviewCommentDisplay.Listener listener;
+public class ReviewCommentInputWidget extends Composite implements HasText {
+    private static ReviewCommentInputWidgetUiBinder ourUiBinder = GWT
+            .create(ReviewCommentInputWidgetUiBinder.class);
+    @UiField
+    TextArea commentTextArea;
+    @UiField
+    Button addCommentButton;
+    private ForceReviewCommentDisplay.Listener listener;
 
-   public ReviewCommentInputWidget()
-   {
-      initWidget(ourUiBinder.createAndBindUi(this));
-      commentTextArea.getElement().setAttribute("placeholder", "Add a comment...");
-   }
+    public ReviewCommentInputWidget() {
+        initWidget(ourUiBinder.createAndBindUi(this));
+        commentTextArea.getElement().setAttribute("placeholder",
+                "Add a comment...");
+    }
 
-   @UiHandler("addCommentButton")
-   public void onAddCommentButtonClick(ClickEvent event)
-   {
-      if (!commentTextArea.getValue().trim().isEmpty())
-      {
-         listener.addComment(commentTextArea.getText());
-      }
-   }
+    @UiHandler("addCommentButton")
+    public void onAddCommentButtonClick(ClickEvent event) {
+        if (!commentTextArea.getValue().trim().isEmpty()) {
+            listener.addComment(commentTextArea.getText());
+        }
+    }
 
-   public void setListener(ForceReviewCommentDisplay.Listener listener)
-   {
-      this.listener = listener;
-   }
+    public void setListener(ForceReviewCommentDisplay.Listener listener) {
+        this.listener = listener;
+    }
 
-   public void setEnabled(boolean enabled)
-   {
-      commentTextArea.setEnabled(enabled);
-      addCommentButton.setEnabled(enabled);
-   }
+    public void setEnabled(boolean enabled) {
+        commentTextArea.setEnabled(enabled);
+        addCommentButton.setEnabled(enabled);
+    }
 
-   public void setButtonText(String buttonText)
-   {
-      addCommentButton.setText(buttonText);
-   }
+    public void setButtonText(String buttonText) {
+        addCommentButton.setText(buttonText);
+    }
 
-   @Override
-   public String getText()
-   {
-      return commentTextArea.getText();
-   }
+    @Override
+    public String getText() {
+        return commentTextArea.getText();
+    }
 
-   @Override
-   public void setText(String text)
-   {
-      commentTextArea.setText(text);
-   }
+    @Override
+    public void setText(String text) {
+        commentTextArea.setText(text);
+    }
 
-   interface ReviewCommentInputWidgetUiBinder extends UiBinder<HTMLPanel, ReviewCommentInputWidget>
-   {
-   }
+    interface ReviewCommentInputWidgetUiBinder extends
+            UiBinder<HTMLPanel, ReviewCommentInputWidget> {
+    }
 }

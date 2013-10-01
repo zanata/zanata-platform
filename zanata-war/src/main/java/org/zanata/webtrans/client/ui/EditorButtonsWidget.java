@@ -13,134 +13,118 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
-public class EditorButtonsWidget extends Composite
-{
-   private static EditorButtonsWidgetUiBinder ourUiBinder = GWT.create(EditorButtonsWidgetUiBinder.class);
+public class EditorButtonsWidget extends Composite {
+    private static EditorButtonsWidgetUiBinder ourUiBinder = GWT
+            .create(EditorButtonsWidgetUiBinder.class);
 
-   @UiField
-   HTMLPanel buttons;
-   @UiField
-   InlineLabel saveIcon;
-   @UiField
-   InlineLabel fuzzyIcon;
-   @UiField
-   InlineLabel cancelIcon;
-   @UiField
-   InlineLabel historyIcon;
-   @UiField
-   SimplePanel undoContainer;
-   @UiField
-   Style style;
-   @UiField
-   InlineLabel acceptIcon;
-   @UiField
-   InlineLabel rejectIcon;
+    @UiField
+    HTMLPanel buttons;
+    @UiField
+    InlineLabel saveIcon;
+    @UiField
+    InlineLabel fuzzyIcon;
+    @UiField
+    InlineLabel cancelIcon;
+    @UiField
+    InlineLabel historyIcon;
+    @UiField
+    SimplePanel undoContainer;
+    @UiField
+    Style style;
+    @UiField
+    InlineLabel acceptIcon;
+    @UiField
+    InlineLabel rejectIcon;
 
-   private TargetContentsDisplay.Listener listener;
-   private TransUnitId id;
+    private TargetContentsDisplay.Listener listener;
+    private TransUnitId id;
 
-   public EditorButtonsWidget()
-   {
-      initWidget(ourUiBinder.createAndBindUi(this));
-      setDisplayReviewButtons(listener != null && listener.canReview());
-      setDisplayModifyTranslationButtons(listener != null && listener.canEditTranslation());
-   }
+    public EditorButtonsWidget() {
+        initWidget(ourUiBinder.createAndBindUi(this));
+        setDisplayReviewButtons(listener != null && listener.canReview());
+        setDisplayModifyTranslationButtons(listener != null
+                && listener.canEditTranslation());
+    }
 
-   private void setDisplayReviewButtons(boolean canReview)
-   {
-      acceptIcon.setVisible(canReview);
-      rejectIcon.setVisible(canReview);
-   }
-   
-   private void setDisplayModifyTranslationButtons(boolean canModify)
-   {
-      saveIcon.setVisible(canModify);
-      fuzzyIcon.setVisible(canModify);
-      cancelIcon.setVisible(canModify);
-   }
+    private void setDisplayReviewButtons(boolean canReview) {
+        acceptIcon.setVisible(canReview);
+        rejectIcon.setVisible(canReview);
+    }
 
-   public void addUndo(final UndoLink undoLink)
-   {
-      undoLink.setLinkStyle("icon-undo " + style.button());
-      undoLink.setUndoCallback(new UndoLink.UndoCallback()
-      {
-         @Override
-         public void preUndo()
-         {
-            undoLink.setLinkStyle("icon-progress " + style.button());
-         }
+    private void setDisplayModifyTranslationButtons(boolean canModify) {
+        saveIcon.setVisible(canModify);
+        fuzzyIcon.setVisible(canModify);
+        cancelIcon.setVisible(canModify);
+    }
 
-         @Override
-         public void postUndoSuccess()
-         {
-            undoContainer.remove(undoLink);
-         }
-      });
-      undoContainer.setWidget(undoLink);
-   }
+    public void addUndo(final UndoLink undoLink) {
+        undoLink.setLinkStyle("icon-undo " + style.button());
+        undoLink.setUndoCallback(new UndoLink.UndoCallback() {
+            @Override
+            public void preUndo() {
+                undoLink.setLinkStyle("icon-progress " + style.button());
+            }
 
-   @UiHandler("saveIcon")
-   public void onSaveAsApproved(ClickEvent event)
-   {
-      listener.saveAsApprovedAndMoveNext(id);
-      event.stopPropagation();
-   }
+            @Override
+            public void postUndoSuccess() {
+                undoContainer.remove(undoLink);
+            }
+        });
+        undoContainer.setWidget(undoLink);
+    }
 
-   @UiHandler("fuzzyIcon")
-   public void onSaveAsFuzzy(ClickEvent event)
-   {
-      listener.saveAsFuzzy(id);
-      event.stopPropagation();
-   }
+    @UiHandler("saveIcon")
+    public void onSaveAsApproved(ClickEvent event) {
+        listener.saveAsApprovedAndMoveNext(id);
+        event.stopPropagation();
+    }
 
-   @UiHandler("cancelIcon")
-   public void onCancel(ClickEvent event)
-   {
-      listener.onCancel(id);
-      event.stopPropagation();
-   }
+    @UiHandler("fuzzyIcon")
+    public void onSaveAsFuzzy(ClickEvent event) {
+        listener.saveAsFuzzy(id);
+        event.stopPropagation();
+    }
 
-   @UiHandler("historyIcon")
-   public void onHistoryClick(ClickEvent event)
-   {
-      listener.showHistory(id);
-      event.stopPropagation();
-   }
+    @UiHandler("cancelIcon")
+    public void onCancel(ClickEvent event) {
+        listener.onCancel(id);
+        event.stopPropagation();
+    }
 
-   @UiHandler("acceptIcon")
-   public void onAccept(ClickEvent event)
-   {
-      listener.acceptTranslation(id);
-      event.stopPropagation();
-   }
+    @UiHandler("historyIcon")
+    public void onHistoryClick(ClickEvent event) {
+        listener.showHistory(id);
+        event.stopPropagation();
+    }
 
-   @UiHandler("rejectIcon")
-   public void onReject(ClickEvent event)
-   {
-      listener.rejectTranslation(id);
-      event.stopPropagation();
-   }
+    @UiHandler("acceptIcon")
+    public void onAccept(ClickEvent event) {
+        listener.acceptTranslation(id);
+        event.stopPropagation();
+    }
 
-   public void setListener(TargetContentsDisplay.Listener listener)
-   {
-      this.listener = listener;
-      setDisplayReviewButtons(listener.canReview());
-      setDisplayModifyTranslationButtons(listener.canEditTranslation());
-   }
+    @UiHandler("rejectIcon")
+    public void onReject(ClickEvent event) {
+        listener.rejectTranslation(id);
+        event.stopPropagation();
+    }
 
-   public void setId(TransUnitId id)
-   {
-      this.id = id;
-   }
+    public void setListener(TargetContentsDisplay.Listener listener) {
+        this.listener = listener;
+        setDisplayReviewButtons(listener.canReview());
+        setDisplayModifyTranslationButtons(listener.canEditTranslation());
+    }
 
+    public void setId(TransUnitId id) {
+        this.id = id;
+    }
 
-   interface EditorButtonsWidgetUiBinder extends UiBinder<HTMLPanel, EditorButtonsWidget>
-   {
-   }
+    interface EditorButtonsWidgetUiBinder extends
+            UiBinder<HTMLPanel, EditorButtonsWidget> {
+    }
 
-   interface Style extends CssResource
-   {
+    interface Style extends CssResource {
 
-      String button();
-   }
+        String button();
+    }
 }

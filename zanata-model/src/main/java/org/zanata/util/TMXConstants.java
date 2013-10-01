@@ -22,15 +22,15 @@
 package org.zanata.util;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class TMXConstants
-{
-   public static final String TMX14_NAMESPACE = "http://www.lisa.org/tmx14";
-   public static final String ALL_LOCALE = "*all*";
-   public static final String DATA_TYPE = "datatype";
-   public static final String SEG_TYPE = "segtype";
-   public static final String SRCLANG = "srclang";
-   public static final String O_TMF = "o-tmf";
+public class TMXConstants {
+    public static final String TMX14_NAMESPACE = "http://www.lisa.org/tmx14";
+    public static final String ALL_LOCALE = "*all*";
+    public static final String DATA_TYPE = "datatype";
+    public static final String SEG_TYPE = "segtype";
+    public static final String SRCLANG = "srclang";
+    public static final String O_TMF = "o-tmf";
 }

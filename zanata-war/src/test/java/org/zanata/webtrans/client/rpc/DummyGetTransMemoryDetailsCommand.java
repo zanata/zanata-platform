@@ -12,28 +12,29 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class DummyGetTransMemoryDetailsCommand implements Command
-{
+public class DummyGetTransMemoryDetailsCommand implements Command {
 
-   private final AsyncCallback<TransMemoryDetailsList> callback;
+    private final AsyncCallback<TransMemoryDetailsList> callback;
 
-   DummyGetTransMemoryDetailsCommand(GetTransMemoryDetailsAction action, AsyncCallback<TransMemoryDetailsList> callback)
-   {
-      this.callback = callback;
-   }
+    DummyGetTransMemoryDetailsCommand(GetTransMemoryDetailsAction action,
+            AsyncCallback<TransMemoryDetailsList> callback) {
+        this.callback = callback;
+    }
 
-   @Override
-   public void execute()
-   {
-      Log.info("ENTER DummyGetTransMemoryDetailsCommand.execute()");
-      ArrayList<TransMemoryDetails> items = new ArrayList<TransMemoryDetails>();
-      for (int i = 0; i < 4; i++)
-      {
-         items.add(new TransMemoryDetails("source " + i + " comment", "target " + i + " comment", "workspace " + i, "iteration "+ i, "doc id:" + + i, "resId", "msgContext", ContentState.Approved, "Bob", new Date()));
-      }
-      
-      callback.onSuccess(new TransMemoryDetailsList(items));
-      Log.info("EXIT DummyGetTransMemoryDetailsCommand.execute()");
+    @Override
+    public void execute() {
+        Log.info("ENTER DummyGetTransMemoryDetailsCommand.execute()");
+        ArrayList<TransMemoryDetails> items =
+                new ArrayList<TransMemoryDetails>();
+        for (int i = 0; i < 4; i++) {
+            items.add(new TransMemoryDetails("source " + i + " comment",
+                    "target " + i + " comment", "workspace " + i, "iteration "
+                            + i, "doc id:" + +i, "resId", "msgContext",
+                    ContentState.Approved, "Bob", new Date()));
+        }
 
-   }
+        callback.onSuccess(new TransMemoryDetailsList(items));
+        Log.info("EXIT DummyGetTransMemoryDetailsCommand.execute()");
+
+    }
 }

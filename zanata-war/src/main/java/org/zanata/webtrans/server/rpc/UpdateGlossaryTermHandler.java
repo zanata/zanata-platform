@@ -24,72 +24,90 @@ import org.zanata.webtrans.shared.rpc.UpdateGlossaryTermResult;
 @Name("webtrans.gwt.UpdateGlossaryTermHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(UpdateGlossaryTermAction.class)
-public class UpdateGlossaryTermHandler extends AbstractActionHandler<UpdateGlossaryTermAction, UpdateGlossaryTermResult>
-{
-   @In
-   private ZanataIdentity identity;
+public class UpdateGlossaryTermHandler
+        extends
+        AbstractActionHandler<UpdateGlossaryTermAction, UpdateGlossaryTermResult> {
+    @In
+    private ZanataIdentity identity;
 
-   @In
-   private GlossaryDAO glossaryDAO;
-   
-   @In
-   private LocaleService localeServiceImpl;
+    @In
+    private GlossaryDAO glossaryDAO;
 
-   @Override
-   public UpdateGlossaryTermResult execute(UpdateGlossaryTermAction action, ExecutionContext context) throws ActionException
-   {
-      identity.checkLoggedIn();
+    @In
+    private LocaleService localeServiceImpl;
 
-      GlossaryDetails selectedDetailEntry = action.getSelectedDetailEntry();
+    @Override
+    public UpdateGlossaryTermResult execute(UpdateGlossaryTermAction action,
+            ExecutionContext context) throws ActionException {
+        identity.checkLoggedIn();
 
-      HGlossaryEntry entry = glossaryDAO.getEntryBySrcLocaleAndContent(selectedDetailEntry.getSrcLocale(), selectedDetailEntry.getSource());
+        GlossaryDetails selectedDetailEntry = action.getSelectedDetailEntry();
 
-      HLocale targetLocale = localeServiceImpl.getByLocaleId(selectedDetailEntry.getTargetLocale());
+        HGlossaryEntry entry =
+                glossaryDAO.getEntryBySrcLocaleAndContent(
+                        selectedDetailEntry.getSrcLocale(),
+                        selectedDetailEntry.getSource());
 
-      HGlossaryTerm targetTerm = entry.getGlossaryTerms().get(targetLocale);
-      if(targetTerm == null)
-      {
-         throw new ActionException("Update failed for glossary term with source content: " + selectedDetailEntry.getSrcLocale() + " and target locale: " + selectedDetailEntry.getTargetLocale());
-      }
-      else if (selectedDetailEntry.getTargetVersionNum().compareTo(targetTerm.getVersionNum()) != 0)
-      {
-         throw new ActionException("Update failed for glossary term " + selectedDetailEntry.getTarget() + " base versionNum " + selectedDetailEntry.getTargetVersionNum() + " does not match current versionNum " + targetTerm.getVersionNum());
-      }
-      else
-      {
-         targetTerm.setContent(action.getNewTargetTerm());
-         targetTerm.getComments().clear();
+        HLocale targetLocale =
+                localeServiceImpl.getByLocaleId(selectedDetailEntry
+                        .getTargetLocale());
 
-         for(String newComment: action.getNewTargetComment())
-         {
-            targetTerm.getComments().add(new HTermComment(newComment));
-         }
+        HGlossaryTerm targetTerm = entry.getGlossaryTerms().get(targetLocale);
+        if (targetTerm == null) {
+            throw new ActionException(
+                    "Update failed for glossary term with source content: "
+                            + selectedDetailEntry.getSrcLocale()
+                            + " and target locale: "
+                            + selectedDetailEntry.getTargetLocale());
+        } else if (selectedDetailEntry.getTargetVersionNum().compareTo(
+                targetTerm.getVersionNum()) != 0) {
+            throw new ActionException("Update failed for glossary term "
+                    + selectedDetailEntry.getTarget() + " base versionNum "
+                    + selectedDetailEntry.getTargetVersionNum()
+                    + " does not match current versionNum "
+                    + targetTerm.getVersionNum());
+        } else {
+            targetTerm.setContent(action.getNewTargetTerm());
+            targetTerm.getComments().clear();
 
-         HGlossaryEntry entryResult = glossaryDAO.makePersistent(entry);
-         glossaryDAO.flush();
+            for (String newComment : action.getNewTargetComment()) {
+                targetTerm.getComments().add(new HTermComment(newComment));
+            }
 
-         ArrayList<String> srcComments = new ArrayList<String>();
-         ArrayList<String> targetComments = new ArrayList<String>();
+            HGlossaryEntry entryResult = glossaryDAO.makePersistent(entry);
+            glossaryDAO.flush();
 
-         for(HTermComment termComment: entryResult.getGlossaryTerms().get(entryResult.getSrcLocale()).getComments())
-         {
-            srcComments.add(termComment.getComment());
-         }
-         
-         for(HTermComment termComment: targetTerm.getComments())
-         {
-            targetComments.add(termComment.getComment());
-         }
-         
-         GlossaryDetails details = new GlossaryDetails(entryResult.getGlossaryTerms().get(entryResult.getSrcLocale()).getContent(), entryResult.getGlossaryTerms().get(targetLocale).getContent(), srcComments, targetComments, entryResult.getSourceRef(), selectedDetailEntry.getSrcLocale(), selectedDetailEntry.getTargetLocale(), targetTerm.getVersionNum(), targetTerm.getLastChanged());
-         
-         return new UpdateGlossaryTermResult(details);
-      }
-   }
+            ArrayList<String> srcComments = new ArrayList<String>();
+            ArrayList<String> targetComments = new ArrayList<String>();
 
-   @Override
-   public void rollback(UpdateGlossaryTermAction action, UpdateGlossaryTermResult result, ExecutionContext context) throws ActionException
-   {
-   }
+            for (HTermComment termComment : entryResult.getGlossaryTerms()
+                    .get(entryResult.getSrcLocale()).getComments()) {
+                srcComments.add(termComment.getComment());
+            }
+
+            for (HTermComment termComment : targetTerm.getComments()) {
+                targetComments.add(termComment.getComment());
+            }
+
+            GlossaryDetails details =
+                    new GlossaryDetails(entryResult.getGlossaryTerms()
+                            .get(entryResult.getSrcLocale()).getContent(),
+                            entryResult.getGlossaryTerms().get(targetLocale)
+                                    .getContent(), srcComments, targetComments,
+                            entryResult.getSourceRef(),
+                            selectedDetailEntry.getSrcLocale(),
+                            selectedDetailEntry.getTargetLocale(),
+                            targetTerm.getVersionNum(),
+                            targetTerm.getLastChanged());
+
+            return new UpdateGlossaryTermResult(details);
+        }
+    }
+
+    @Override
+    public void rollback(UpdateGlossaryTermAction action,
+            UpdateGlossaryTermResult result, ExecutionContext context)
+            throws ActionException {
+    }
 
 }

@@ -25,17 +25,12 @@ import org.junit.runners.Suite;
 import org.zanata.feature.googleopenid.GoogleOpenIDTest;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-      ChangePasswordTest.class,
-      RegisterTest.class,
-      UsernameValidationTest.class,
-      ValidEmailAddressTest.class,
-      InvalidEmailAddressTest.class,
-      GoogleOpenIDTest.class
-})
-public class AccountTestSuite
-{
+@Suite.SuiteClasses({ ChangePasswordTest.class, RegisterTest.class,
+        UsernameValidationTest.class, ValidEmailAddressTest.class,
+        InvalidEmailAddressTest.class, GoogleOpenIDTest.class })
+public class AccountTestSuite {
 }

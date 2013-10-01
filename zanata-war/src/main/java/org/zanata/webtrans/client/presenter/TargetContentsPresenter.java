@@ -55,31 +55,31 @@ public class TargetContentsPresenter implements
       WorkspaceContextUpdateEventHandler
 // @formatter:on
 {
-   protected static final int LAST_INDEX = -2;
-   private final EventBus eventBus;
-   private final TableEditorMessages messages;
-   private final SourceContentsPresenter sourceContentsPresenter;
-   private final TranslationHistoryPresenter historyPresenter;
-   private final Provider<TargetContentsDisplay> displayProvider;
-   private final EditorTranslators editorTranslators;
-   private final EditorKeyShortcuts editorKeyShortcuts;
-   private final UserWorkspaceContext userWorkspaceContext;
-   private final UserOptionsService userOptionsService;
-   private final SaveAsApprovedConfirmationDisplay saveAsApprovedConfirmation;
-   private final ValidationWarningDisplay validationWarning;
+    protected static final int LAST_INDEX = -2;
+    private final EventBus eventBus;
+    private final TableEditorMessages messages;
+    private final SourceContentsPresenter sourceContentsPresenter;
+    private final TranslationHistoryPresenter historyPresenter;
+    private final Provider<TargetContentsDisplay> displayProvider;
+    private final EditorTranslators editorTranslators;
+    private final EditorKeyShortcuts editorKeyShortcuts;
+    private final UserWorkspaceContext userWorkspaceContext;
+    private final UserOptionsService userOptionsService;
+    private final SaveAsApprovedConfirmationDisplay saveAsApprovedConfirmation;
+    private final ValidationWarningDisplay validationWarning;
 
-   private TargetContentsDisplay display;
-   private List<TargetContentsDisplay> displayList = Collections.emptyList();
-   private int currentEditorIndex = 0;
-   private TransUnitId currentTransUnitId;
+    private TargetContentsDisplay display;
+    private List<TargetContentsDisplay> displayList = Collections.emptyList();
+    private int currentEditorIndex = 0;
+    private TransUnitId currentTransUnitId;
 
-   // cached state
-   private String findMessage;
-   private boolean isDisplayButtons;
-   private boolean spellCheckEnabled;
+    // cached state
+    private String findMessage;
+    private boolean isDisplayButtons;
+    private boolean spellCheckEnabled;
 
-   @Inject
-   // @formatter:off
+    @Inject
+    // @formatter:off
    public TargetContentsPresenter(Provider<TargetContentsDisplay> displayProvider, EditorTranslators editorTranslators, final EventBus eventBus,
                                   TableEditorMessages messages,
                                   SourceContentsPresenter sourceContentsPresenter,
@@ -90,635 +90,595 @@ public class TargetContentsPresenter implements
                                   SaveAsApprovedConfirmationDisplay saveAsApprovedConfirmation,
                                   ValidationWarningDisplay validationWarning)
    // @formatter:on
-   {
-      this.displayProvider = displayProvider;
-      this.editorTranslators = editorTranslators;
-      this.userWorkspaceContext = userWorkspaceContext;
-      this.eventBus = eventBus;
-      this.messages = messages;
-      this.sourceContentsPresenter = sourceContentsPresenter;
-      this.editorKeyShortcuts = editorKeyShortcuts;
-      this.historyPresenter = historyPresenter;
-      this.historyPresenter.setCurrentValueHolder(this);
-      this.userOptionsService = userOptionsService;
-      this.saveAsApprovedConfirmation = saveAsApprovedConfirmation;
-      this.validationWarning = validationWarning;
-      isDisplayButtons = userOptionsService.getConfigHolder().getState().isDisplayButtons();
-      spellCheckEnabled = userOptionsService.getConfigHolder().getState().isSpellCheckEnabled();
-      editorKeyShortcuts.registerKeys(this);
-      saveAsApprovedConfirmation.setListener(this);
-      validationWarning.setListener(this);
+    {
+        this.displayProvider = displayProvider;
+        this.editorTranslators = editorTranslators;
+        this.userWorkspaceContext = userWorkspaceContext;
+        this.eventBus = eventBus;
+        this.messages = messages;
+        this.sourceContentsPresenter = sourceContentsPresenter;
+        this.editorKeyShortcuts = editorKeyShortcuts;
+        this.historyPresenter = historyPresenter;
+        this.historyPresenter.setCurrentValueHolder(this);
+        this.userOptionsService = userOptionsService;
+        this.saveAsApprovedConfirmation = saveAsApprovedConfirmation;
+        this.validationWarning = validationWarning;
+        isDisplayButtons =
+                userOptionsService.getConfigHolder().getState()
+                        .isDisplayButtons();
+        spellCheckEnabled =
+                userOptionsService.getConfigHolder().getState()
+                        .isSpellCheckEnabled();
+        editorKeyShortcuts.registerKeys(this);
+        saveAsApprovedConfirmation.setListener(this);
+        validationWarning.setListener(this);
 
-      bindEventHandlers();
-   }
+        bindEventHandlers();
+    }
 
-   private void bindEventHandlers()
-   {
-      eventBus.addHandler(UserConfigChangeEvent.TYPE, this);
-      eventBus.addHandler(RequestValidationEvent.getType(), this);
-      eventBus.addHandler(InsertStringInEditorEvent.getType(), this);
-      eventBus.addHandler(CopyDataToEditorEvent.getType(), this);
-      eventBus.addHandler(TransUnitEditEvent.getType(), this);
-      eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this);
-   }
+    private void bindEventHandlers() {
+        eventBus.addHandler(UserConfigChangeEvent.TYPE, this);
+        eventBus.addHandler(RequestValidationEvent.getType(), this);
+        eventBus.addHandler(InsertStringInEditorEvent.getType(), this);
+        eventBus.addHandler(CopyDataToEditorEvent.getType(), this);
+        eventBus.addHandler(TransUnitEditEvent.getType(), this);
+        eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this);
+    }
 
-   public void savePendingChangesIfApplicable()
-   {
-      if (currentEditorContentHasChanged())
-      {
-         saveCurrentIfValid(ContentState.Translated);
-      }
-   }
+    public void savePendingChangesIfApplicable() {
+        if (currentEditorContentHasChanged()) {
+            saveCurrentIfValid(ContentState.Translated);
+        }
+    }
 
-   /**
-    * Fire TransUnitSaveEvent if there's no validation error
-    *
-    * @param status
-    * @return if saving is to continue by TransUnitSaveEvent listener
-    */
-   public boolean saveCurrentIfValid(ContentState status)
-   {
-      Map<ValidationAction, List<String>> errorMessages = display.getErrorMessages();
+    /**
+     * Fire TransUnitSaveEvent if there's no validation error
+     *
+     * @param status
+     * @return if saving is to continue by TransUnitSaveEvent listener
+     */
+    public boolean saveCurrentIfValid(ContentState status) {
+        Map<ValidationAction, List<String>> errorMessages =
+                display.getErrorMessages();
 
-      if (status.isTranslated() && !errorMessages.isEmpty())
-      {
-         validationWarning.center(display.getId(), currentEditorIndex, getNewTargets(), errorMessages);
-         return false;
-      }
-      else
-      {
-         eventBus.fireEvent(new TransUnitSaveEvent(getNewTargets(), status, display.getId(), display.getVerNum(),
-               display.getCachedTargets()));
-      }
-      return true;
-   }
+        if (status.isTranslated() && !errorMessages.isEmpty()) {
+            validationWarning.center(display.getId(), currentEditorIndex,
+                    getNewTargets(), errorMessages);
+            return false;
+        } else {
+            eventBus.fireEvent(new TransUnitSaveEvent(getNewTargets(), status,
+                    display.getId(), display.getVerNum(), display
+                            .getCachedTargets()));
+        }
+        return true;
+    }
 
-   public boolean currentEditorContentHasChanged()
-   {
-      return hasSelectedRow() && !equal(display.getCachedTargets(), display.getNewTargets());
-   }
+    public boolean currentEditorContentHasChanged() {
+        return hasSelectedRow()
+                && !equal(display.getCachedTargets(), display.getNewTargets());
+    }
 
-   private ToggleEditor getCurrentEditor()
-   {
-      return display.getEditors().get(currentEditorIndex);
-   }
+    private ToggleEditor getCurrentEditor() {
+        return display.getEditors().get(currentEditorIndex);
+    }
 
-   public void setSelected(final TransUnitId currentTransUnitId)
-   {
-      this.currentTransUnitId = currentTransUnitId;
+    public void setSelected(final TransUnitId currentTransUnitId) {
+        this.currentTransUnitId = currentTransUnitId;
 
-      if (display != null)
-      {
-         editorTranslators.clearTranslatorList(display.getEditors()); // clear previous selection's translator list
-      }
+        if (display != null) {
+            editorTranslators.clearTranslatorList(display.getEditors()); // clear
+                                                                         // previous
+                                                                         // selection's
+                                                                         // translator
+                                                                         // list
+        }
 
-      display = Finds.findDisplayById(displayList, currentTransUnitId).get();
-      Log.info("selecting id:" + currentTransUnitId + " version: " + display.getVerNum());
+        display = Finds.findDisplayById(displayList, currentTransUnitId).get();
+        Log.info("selecting id:" + currentTransUnitId + " version: "
+                + display.getVerNum());
 
-      normaliseCurrentEditorIndex();
+        normaliseCurrentEditorIndex();
 
-      for (ToggleEditor editor : display.getEditors())
-      {
-         editor.clearTranslatorList();
-         validate(editor);
-      }
-      display.showButtons(isDisplayButtons());
-
-      if (!canEditTranslation())
-      {
-         display.setToMode(ViewMode.VIEW);
-         concealDisplay();
-      }
-      else
-      {
-         display.focusEditor(currentEditorIndex);
-         editorTranslators.updateTranslator(display.getEditors(), currentTransUnitId);
-         revealDisplay();
-      }
-   }
-
-   private void normaliseCurrentEditorIndex()
-   {
-      ArrayList<ToggleEditor> currentEditors = display.getEditors();
-      if (currentEditorIndex == LAST_INDEX)
-      {
-         currentEditorIndex = currentEditors.size() - 1;
-      }
-      if (currentEditorIndex < 0 || currentEditorIndex >= currentEditors.size())
-      {
-         Log.warn("editor index is invalid:" + currentEditorIndex + ". Set to 0");
-         currentEditorIndex = 0;
-      }
-   }
-
-   @Override
-   public void onTransUnitEdit(TransUnitEditEvent event)
-   {
-      if (event.getSelectedTransUnitId() != null && display != null)
-      {
-         ArrayList<ToggleEditor> editors = display.getEditors();
-         editorTranslators.clearTranslatorList(editors);
-         editorTranslators.updateTranslator(editors, currentTransUnitId);
-      }
-   }
-
-   @Override
-   public void validate(ToggleEditor editor)
-   {
-      TransUnitId transUnitId = editor.getId();
-      Optional<String> sourceContent = sourceContentsPresenter.getSourceContent(transUnitId);
-      if (sourceContent.isPresent())
-      {
-         RunValidationEvent event = new RunValidationEvent(sourceContent.get(), editor.getText(), false);
-         // widget that displays red outline
-         event.addWidget(editor);
-         // widget that displays warnings
-         Optional<TargetContentsDisplay> targetDisplay = Finds.findDisplayById(displayList, transUnitId);
-         if (targetDisplay.isPresent())
-         {
-            event.addWidget(targetDisplay.get());
-         }
-         eventBus.fireEvent(event);
-      }
-   }
-
-   /**
-    * Will fire a save event and a following navigation event will cause another pending save event.
-    * But TransUnitSaveService will ignore the second one.
-    * @see org.zanata.webtrans.client.service.TransUnitSaveService#onTransUnitSave(org.zanata.webtrans.client.events.TransUnitSaveEvent)
-    * @param transUnitId the state variable of the display that user has clicked on
-    */
-   @Override
-   public void saveAsApprovedAndMoveNext(TransUnitId transUnitId)
-   {
-      ensureRowSelection(transUnitId);
-      if (currentEditorIndex + 1 < display.getEditors().size())
-      {
-         display.focusEditor(currentEditorIndex + 1);
-         currentEditorIndex++;
-      }
-      else
-      {
-         if (saveCurrentIfValid(ContentState.Translated))
-         {
-            currentEditorIndex = 0;
-            eventBus.fireEvent(NavTransUnitEvent.NEXT_ENTRY_EVENT);
-         }
-      }
-   }
-
-   public void showSaveAsApprovedConfirmation(TransUnitId transUnitId)
-   {
-      saveAsApprovedConfirmation.center(transUnitId);
-   }
-
-   public void checkConfirmationBeforeSave()
-   {
-      TransUnitId transUnitId = getCurrentTransUnitIdOrNull();
-      if (userOptionsService.getConfigHolder().getState().isShowSaveApprovedWarning())
-      {
-         eventBus.fireEvent(new CheckStateHasChangedEvent(transUnitId, getNewTargets(), ContentState.Translated));
-      }
-      else
-      {
-         saveAsApprovedAndMoveNext(transUnitId);
-      }
-   }
-
-   @Override
-   public void saveAsFuzzy(TransUnitId transUnitId)
-   {
-      ensureRowSelection(transUnitId);
-      saveCurrentIfValid(ContentState.NeedReview);
-   }
-
-   protected void moveToPreviousEntry()
-   {
-      if (currentEditorIndex - 1 >= 0)
-      {
-         display.focusEditor(currentEditorIndex - 1);
-         currentEditorIndex--;
-      }
-      else
-      {
-         currentEditorIndex = LAST_INDEX;
-         savePendingChangesIfApplicable();
-         eventBus.fireEvent(NavTransUnitEvent.PREV_ENTRY_EVENT);
-      }
-   }
-
-   protected void moveToNextEntry()
-   {
-      if (currentEditorIndex == LAST_INDEX)
-      {
-         currentEditorIndex = 0;
-      }
-      if (currentEditorIndex + 1 < display.getEditors().size())
-      {
-         display.focusEditor(currentEditorIndex + 1);
-         currentEditorIndex++;
-      }
-      else
-      {
-         currentEditorIndex = 0;
-         savePendingChangesIfApplicable();
-         eventBus.fireEvent(NavTransUnitEvent.NEXT_ENTRY_EVENT);
-      }
-   }
-
-   public TransUnitId getCurrentTransUnitIdOrNull()
-   {
-      return currentTransUnitId;
-   }
-
-   @Override
-   public boolean isDisplayButtons()
-   {
-      return userOptionsService.getConfigHolder().getState().isDisplayButtons()
-            && !userWorkspaceContext.hasReadOnlyAccess();
-   }
-
-   @Override
-   public boolean isReadOnly()
-   {
-      return userWorkspaceContext.hasReadOnlyAccess();
-   }
-
-   @Override
-   public void showHistory(TransUnitId transUnitId)
-   {
-      ensureRowSelection(transUnitId);
-      historyPresenter.showTranslationHistory(currentTransUnitId);
-   }
-
-   @Override
-   public void onEditorClicked(TransUnitId id, int editorIndex)
-   {
-      currentEditorIndex = editorIndex;
-      ensureRowSelection(id);
-   }
-
-   @Override
-   public void onCancel(TransUnitId transUnitId)
-   {
-      ensureRowSelection(transUnitId);
-      display.revertEditorContents();
-      display.highlightSearch(findMessage);
-      setFocus();
-   }
-
-   private void ensureRowSelection(TransUnitId transUnitId)
-   {
-      if (!equal(currentTransUnitId, transUnitId))
-      {
-         //user click on editor area that is not on current selected row
-         eventBus.fireEvent(new TableRowSelectedEvent(transUnitId));
-      }
-   }
-
-   @Override
-   public void copySource(ToggleEditor editor, TransUnitId id)
-   {
-      if (canEditTranslation())
-      {
-         currentEditorIndex = editor.getIndex();
-         ensureRowSelection(id);
-         editor.setTextAndValidate(sourceContentsPresenter.getSelectedSource());
-         editor.setFocus();
-
-         eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
-      }
-   }
-
-   protected void copySourceForActiveRow()
-   {
-      if (getCurrentEditor().isFocused())
-      {
-         copySource(getCurrentEditor(), currentTransUnitId);
-      }
-   }
-
-   public List<String> getNewTargets()
-   {
-      return hasSelectedRow() ? display.getNewTargets() : null;
-   }
-
-   @Override
-   public void onUserConfigChanged(UserConfigChangeEvent event)
-   {
-      if (event.getView() != MainView.Editor)
-      {
-         return;
-      }
-      boolean displayButtons = userOptionsService.getConfigHolder().getState().isDisplayButtons();
-      boolean isSpellCheckEnabled = userOptionsService.getConfigHolder().getState().isSpellCheckEnabled();
-
-      if (isDisplayButtons != displayButtons || spellCheckEnabled != isSpellCheckEnabled)
-      {
-         for (TargetContentsDisplay contentsDisplay : displayList)
-         {
-            contentsDisplay.showButtons(displayButtons);
-            contentsDisplay.setEnableSpellCheck(isSpellCheckEnabled);
-         }
-      }
-
-      saveAsApprovedConfirmation.setShowSaveApprovedWarning(userOptionsService.getConfigHolder().getState()
-            .isShowSaveApprovedWarning());
-      isDisplayButtons = displayButtons;
-      spellCheckEnabled = isSpellCheckEnabled;
-   }
-
-   @Override
-   public void onRequestValidation(RequestValidationEvent event)
-   {
-      if (hasSelectedRow() && equal(sourceContentsPresenter.getCurrentTransUnitIdOrNull(), currentTransUnitId))
-      {
-         for (ToggleEditor editor : display.getEditors())
-         {
+        for (ToggleEditor editor : display.getEditors()) {
+            editor.clearTranslatorList();
             validate(editor);
-         }
-      }
-   }
+        }
+        display.showButtons(isDisplayButtons());
 
-   @Override
-   public void onInsertString(final InsertStringInEditorEvent event)
-   {
-      copyTextWhenIsEditing(Arrays.asList(event.getSuggestion()), true);
-   }
-
-   @Override
-   public void onDataCopy(final CopyDataToEditorEvent event)
-   {
-      copyTextWhenIsEditing(event.getTargetResult(), false);
-   }
-
-   private void copyTextWhenIsEditing(List<String> contents, boolean isInsertText)
-   {
-      if (canEditTranslation())
-      {
-         if (isInsertText)
-         {
-            getCurrentEditor().insertTextInCursorPosition(contents.get(0));
-            validate(getCurrentEditor());
-         }
-         else
-         {
-            ArrayList<ToggleEditor> editors = display.getEditors();
-            for (int i = 0; i < contents.size(); i++)
-            {
-               ToggleEditor editor = editors.get(i);
-               editor.setTextAndValidate(contents.get(i));
-            }
-         }
-         eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
-      }
-   }
-
-   public void revealDisplay()
-   {
-      editorKeyShortcuts.enableEditContext();
-   }
-
-   public void concealDisplay()
-   {
-      editorKeyShortcuts.enableNavigationContext();
-   }
-
-   public void addUndoLink(int row, UndoLink undoLink)
-   {
-      TargetContentsDisplay targetContentsDisplay = displayList.get(row);
-      targetContentsDisplay.addUndo(undoLink);
-   }
-
-   public void showData(List<TransUnit> transUnits)
-   {
-      ImmutableList.Builder<TargetContentsDisplay> builder = ImmutableList.builder();
-      for (TransUnit transUnit : transUnits)
-      {
-         TargetContentsDisplay display = displayProvider.get();
-         display.setListener(this);
-         display.setValueAndCreateNewEditors(transUnit);
-
-         if (!canEditTranslation())
-         {
+        if (!canEditTranslation()) {
             display.setToMode(ViewMode.VIEW);
-         }
+            concealDisplay();
+        } else {
+            display.focusEditor(currentEditorIndex);
+            editorTranslators.updateTranslator(display.getEditors(),
+                    currentTransUnitId);
+            revealDisplay();
+        }
+    }
 
-         display.showButtons(isDisplayButtons());
-         builder.add(display);
-      }
-      displayList = builder.build();
-      display = null;
-   }
+    private void normaliseCurrentEditorIndex() {
+        ArrayList<ToggleEditor> currentEditors = display.getEditors();
+        if (currentEditorIndex == LAST_INDEX) {
+            currentEditorIndex = currentEditors.size() - 1;
+        }
+        if (currentEditorIndex < 0
+                || currentEditorIndex >= currentEditors.size()) {
+            Log.warn("editor index is invalid:" + currentEditorIndex
+                    + ". Set to 0");
+            currentEditorIndex = 0;
+        }
+    }
 
-   public List<TargetContentsDisplay> getDisplays()
-   {
-      return displayList;
-   }
+    @Override
+    public void onTransUnitEdit(TransUnitEditEvent event) {
+        if (event.getSelectedTransUnitId() != null && display != null) {
+            ArrayList<ToggleEditor> editors = display.getEditors();
+            editorTranslators.clearTranslatorList(editors);
+            editorTranslators.updateTranslator(editors, currentTransUnitId);
+        }
+    }
 
-   public void highlightSearch(String message)
-   {
-      findMessage = message;
-      for (TargetContentsDisplay targetContentsDisplay : displayList)
-      {
-         targetContentsDisplay.highlightSearch(message);
-      }
-   }
+    @Override
+    public void validate(ToggleEditor editor) {
+        TransUnitId transUnitId = editor.getId();
+        Optional<String> sourceContent =
+                sourceContentsPresenter.getSourceContent(transUnitId);
+        if (sourceContent.isPresent()) {
+            RunValidationEvent event =
+                    new RunValidationEvent(sourceContent.get(),
+                            editor.getText(), false);
+            // widget that displays red outline
+            event.addWidget(editor);
+            // widget that displays warnings
+            Optional<TargetContentsDisplay> targetDisplay =
+                    Finds.findDisplayById(displayList, transUnitId);
+            if (targetDisplay.isPresent()) {
+                event.addWidget(targetDisplay.get());
+            }
+            eventBus.fireEvent(event);
+        }
+    }
 
-   /**
-    * Being called when there is a TransUnitUpdatedEvent.
-    * @param updatedTransUnit updated trans unit
-    */
-   public void updateRow(TransUnit updatedTransUnit)
-   {
-      Optional<TargetContentsDisplay> contentsDisplayOptional = Finds.findDisplayById(displayList,
-            updatedTransUnit.getId());
-      if (contentsDisplayOptional.isPresent())
-      {
-         TargetContentsDisplay contentsDisplay = contentsDisplayOptional.get();
-         contentsDisplay.setValueAndCreateNewEditors(updatedTransUnit);
-         contentsDisplay.setState(TargetContentsDisplay.EditingState.SAVED);
-         contentsDisplay.refresh();
-         if (equal(updatedTransUnit.getId(), currentTransUnitId))
-         {
-            editorTranslators.updateTranslator(display.getEditors(), currentTransUnitId);
-         }
-      }
-   }
+    /**
+     * Will fire a save event and a following navigation event will cause
+     * another pending save event. But TransUnitSaveService will ignore the
+     * second one.
+     *
+     * @see org.zanata.webtrans.client.service.TransUnitSaveService#onTransUnitSave(org.zanata.webtrans.client.events.TransUnitSaveEvent)
+     * @param transUnitId
+     *            the state variable of the display that user has clicked on
+     */
+    @Override
+    public void saveAsApprovedAndMoveNext(TransUnitId transUnitId) {
+        ensureRowSelection(transUnitId);
+        if (currentEditorIndex + 1 < display.getEditors().size()) {
+            display.focusEditor(currentEditorIndex + 1);
+            currentEditorIndex++;
+        } else {
+            if (saveCurrentIfValid(ContentState.Translated)) {
+                currentEditorIndex = 0;
+                eventBus.fireEvent(NavTransUnitEvent.NEXT_ENTRY_EVENT);
+            }
+        }
+    }
 
-   /**
-    * Being called when this client saves successful (not relying on TransUnitUpdatedEvent from EventService).
-    * This will only update the version in underlying table cached value.
-    * @param updatedTU updated trans unit from user itself
-    */
-   public void confirmSaved(TransUnit updatedTU)
-   {
-      Optional<TargetContentsDisplay> contentsDisplayOptional = Finds.findDisplayById(displayList, updatedTU.getId());
-      if (contentsDisplayOptional.isPresent())
-      {
-         TargetContentsDisplay contentsDisplay = contentsDisplayOptional.get();
-         if (contentsDisplay.getEditingState() == TargetContentsDisplay.EditingState.SAVED)
-         {
-            // If current display is in saved state, we update both in editor and cached value
-            contentsDisplay.setValueAndCreateNewEditors(updatedTU);
+    public void showSaveAsApprovedConfirmation(TransUnitId transUnitId) {
+        saveAsApprovedConfirmation.center(transUnitId);
+    }
+
+    public void checkConfirmationBeforeSave() {
+        TransUnitId transUnitId = getCurrentTransUnitIdOrNull();
+        if (userOptionsService.getConfigHolder().getState()
+                .isShowSaveApprovedWarning()) {
+            eventBus.fireEvent(new CheckStateHasChangedEvent(transUnitId,
+                    getNewTargets(), ContentState.Translated));
+        } else {
+            saveAsApprovedAndMoveNext(transUnitId);
+        }
+    }
+
+    @Override
+    public void saveAsFuzzy(TransUnitId transUnitId) {
+        ensureRowSelection(transUnitId);
+        saveCurrentIfValid(ContentState.NeedReview);
+    }
+
+    protected void moveToPreviousEntry() {
+        if (currentEditorIndex - 1 >= 0) {
+            display.focusEditor(currentEditorIndex - 1);
+            currentEditorIndex--;
+        } else {
+            currentEditorIndex = LAST_INDEX;
+            savePendingChangesIfApplicable();
+            eventBus.fireEvent(NavTransUnitEvent.PREV_ENTRY_EVENT);
+        }
+    }
+
+    protected void moveToNextEntry() {
+        if (currentEditorIndex == LAST_INDEX) {
+            currentEditorIndex = 0;
+        }
+        if (currentEditorIndex + 1 < display.getEditors().size()) {
+            display.focusEditor(currentEditorIndex + 1);
+            currentEditorIndex++;
+        } else {
+            currentEditorIndex = 0;
+            savePendingChangesIfApplicable();
+            eventBus.fireEvent(NavTransUnitEvent.NEXT_ENTRY_EVENT);
+        }
+    }
+
+    public TransUnitId getCurrentTransUnitIdOrNull() {
+        return currentTransUnitId;
+    }
+
+    @Override
+    public boolean isDisplayButtons() {
+        return userOptionsService.getConfigHolder().getState()
+                .isDisplayButtons()
+                && !userWorkspaceContext.hasReadOnlyAccess();
+    }
+
+    @Override
+    public boolean isReadOnly() {
+        return userWorkspaceContext.hasReadOnlyAccess();
+    }
+
+    @Override
+    public void showHistory(TransUnitId transUnitId) {
+        ensureRowSelection(transUnitId);
+        historyPresenter.showTranslationHistory(currentTransUnitId);
+    }
+
+    @Override
+    public void onEditorClicked(TransUnitId id, int editorIndex) {
+        currentEditorIndex = editorIndex;
+        ensureRowSelection(id);
+    }
+
+    @Override
+    public void onCancel(TransUnitId transUnitId) {
+        ensureRowSelection(transUnitId);
+        display.revertEditorContents();
+        display.highlightSearch(findMessage);
+        setFocus();
+    }
+
+    private void ensureRowSelection(TransUnitId transUnitId) {
+        if (!equal(currentTransUnitId, transUnitId)) {
+            // user click on editor area that is not on current selected row
+            eventBus.fireEvent(new TableRowSelectedEvent(transUnitId));
+        }
+    }
+
+    @Override
+    public void copySource(ToggleEditor editor, TransUnitId id) {
+        if (canEditTranslation()) {
+            currentEditorIndex = editor.getIndex();
+            ensureRowSelection(id);
+            editor.setTextAndValidate(sourceContentsPresenter
+                    .getSelectedSource());
+            editor.setFocus();
+
+            eventBus.fireEvent(new NotificationEvent(Severity.Info, messages
+                    .notifyCopied()));
+        }
+    }
+
+    protected void copySourceForActiveRow() {
+        if (getCurrentEditor().isFocused()) {
+            copySource(getCurrentEditor(), currentTransUnitId);
+        }
+    }
+
+    public List<String> getNewTargets() {
+        return hasSelectedRow() ? display.getNewTargets() : null;
+    }
+
+    @Override
+    public void onUserConfigChanged(UserConfigChangeEvent event) {
+        if (event.getView() != MainView.Editor) {
+            return;
+        }
+        boolean displayButtons =
+                userOptionsService.getConfigHolder().getState()
+                        .isDisplayButtons();
+        boolean isSpellCheckEnabled =
+                userOptionsService.getConfigHolder().getState()
+                        .isSpellCheckEnabled();
+
+        if (isDisplayButtons != displayButtons
+                || spellCheckEnabled != isSpellCheckEnabled) {
+            for (TargetContentsDisplay contentsDisplay : displayList) {
+                contentsDisplay.showButtons(displayButtons);
+                contentsDisplay.setEnableSpellCheck(isSpellCheckEnabled);
+            }
+        }
+
+        saveAsApprovedConfirmation
+                .setShowSaveApprovedWarning(userOptionsService
+                        .getConfigHolder().getState()
+                        .isShowSaveApprovedWarning());
+        isDisplayButtons = displayButtons;
+        spellCheckEnabled = isSpellCheckEnabled;
+    }
+
+    @Override
+    public void onRequestValidation(RequestValidationEvent event) {
+        if (hasSelectedRow()
+                && equal(sourceContentsPresenter.getCurrentTransUnitIdOrNull(),
+                        currentTransUnitId)) {
+            for (ToggleEditor editor : display.getEditors()) {
+                validate(editor);
+            }
+        }
+    }
+
+    @Override
+    public void onInsertString(final InsertStringInEditorEvent event) {
+        copyTextWhenIsEditing(Arrays.asList(event.getSuggestion()), true);
+    }
+
+    @Override
+    public void onDataCopy(final CopyDataToEditorEvent event) {
+        copyTextWhenIsEditing(event.getTargetResult(), false);
+    }
+
+    private void copyTextWhenIsEditing(List<String> contents,
+            boolean isInsertText) {
+        if (canEditTranslation()) {
+            if (isInsertText) {
+                getCurrentEditor().insertTextInCursorPosition(contents.get(0));
+                validate(getCurrentEditor());
+            } else {
+                ArrayList<ToggleEditor> editors = display.getEditors();
+                for (int i = 0; i < contents.size(); i++) {
+                    ToggleEditor editor = editors.get(i);
+                    editor.setTextAndValidate(contents.get(i));
+                }
+            }
+            eventBus.fireEvent(new NotificationEvent(Severity.Info, messages
+                    .notifyCopied()));
+        }
+    }
+
+    public void revealDisplay() {
+        editorKeyShortcuts.enableEditContext();
+    }
+
+    public void concealDisplay() {
+        editorKeyShortcuts.enableNavigationContext();
+    }
+
+    public void addUndoLink(int row, UndoLink undoLink) {
+        TargetContentsDisplay targetContentsDisplay = displayList.get(row);
+        targetContentsDisplay.addUndo(undoLink);
+    }
+
+    public void showData(List<TransUnit> transUnits) {
+        ImmutableList.Builder<TargetContentsDisplay> builder =
+                ImmutableList.builder();
+        for (TransUnit transUnit : transUnits) {
+            TargetContentsDisplay display = displayProvider.get();
+            display.setListener(this);
+            display.setValueAndCreateNewEditors(transUnit);
+
+            if (!canEditTranslation()) {
+                display.setToMode(ViewMode.VIEW);
+            }
+
+            display.showButtons(isDisplayButtons());
+            builder.add(display);
+        }
+        displayList = builder.build();
+        display = null;
+    }
+
+    public List<TargetContentsDisplay> getDisplays() {
+        return displayList;
+    }
+
+    public void highlightSearch(String message) {
+        findMessage = message;
+        for (TargetContentsDisplay targetContentsDisplay : displayList) {
+            targetContentsDisplay.highlightSearch(message);
+        }
+    }
+
+    /**
+     * Being called when there is a TransUnitUpdatedEvent.
+     *
+     * @param updatedTransUnit
+     *            updated trans unit
+     */
+    public void updateRow(TransUnit updatedTransUnit) {
+        Optional<TargetContentsDisplay> contentsDisplayOptional =
+                Finds.findDisplayById(displayList, updatedTransUnit.getId());
+        if (contentsDisplayOptional.isPresent()) {
+            TargetContentsDisplay contentsDisplay =
+                    contentsDisplayOptional.get();
+            contentsDisplay.setValueAndCreateNewEditors(updatedTransUnit);
+            contentsDisplay.setState(TargetContentsDisplay.EditingState.SAVED);
             contentsDisplay.refresh();
-         }
-         else
-         {
-            // editor is in saving state or unsaved state, we don't want to update value in editor, just the cached value.
-            contentsDisplay.updateCachedTargetsAndVersion(updatedTU.getTargets(), updatedTU.getVerNum(),
-                  updatedTU.getStatus());
-         }
-         setEditingState(updatedTU.getId(), TargetContentsDisplay.EditingState.SAVED);
-      }
-   }
+            if (equal(updatedTransUnit.getId(), currentTransUnitId)) {
+                editorTranslators.updateTranslator(display.getEditors(),
+                        currentTransUnitId);
+            }
+        }
+    }
 
-   public void setFocus()
-   {
-      if (hasSelectedRow())
-      {
-         normaliseCurrentEditorIndex();
-         display.focusEditor(currentEditorIndex);
-      }
-   }
+    /**
+     * Being called when this client saves successful (not relying on
+     * TransUnitUpdatedEvent from EventService). This will only update the
+     * version in underlying table cached value.
+     *
+     * @param updatedTU
+     *            updated trans unit from user itself
+     */
+    public void confirmSaved(TransUnit updatedTU) {
+        Optional<TargetContentsDisplay> contentsDisplayOptional =
+                Finds.findDisplayById(displayList, updatedTU.getId());
+        if (contentsDisplayOptional.isPresent()) {
+            TargetContentsDisplay contentsDisplay =
+                    contentsDisplayOptional.get();
+            if (contentsDisplay.getEditingState() == TargetContentsDisplay.EditingState.SAVED) {
+                // If current display is in saved state, we update both in
+                // editor and cached value
+                contentsDisplay.setValueAndCreateNewEditors(updatedTU);
+                contentsDisplay.refresh();
+            } else {
+                // editor is in saving state or unsaved state, we don't want to
+                // update value in editor, just the cached value.
+                contentsDisplay.updateCachedTargetsAndVersion(
+                        updatedTU.getTargets(), updatedTU.getVerNum(),
+                        updatedTU.getStatus());
+            }
+            setEditingState(updatedTU.getId(),
+                    TargetContentsDisplay.EditingState.SAVED);
+        }
+    }
 
-   public boolean hasSelectedRow()
-   {
-      return display != null && currentTransUnitId != null;
-   }
+    public void setFocus() {
+        if (hasSelectedRow()) {
+            normaliseCurrentEditorIndex();
+            display.focusEditor(currentEditorIndex);
+        }
+    }
 
-   @Override
-   public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
-   {
-      // FIXME once setting codemirror editor to readonly it won't be editable again
-      userWorkspaceContext.setProjectActive(event.isProjectActive());
-      userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId()
-            .setProjectType(event.getProjectType());
+    public boolean hasSelectedRow() {
+        return display != null && currentTransUnitId != null;
+    }
 
-      for (TargetContentsDisplay targetContentsDisplay : displayList)
-      {
-         ViewMode viewMode = canEditTranslation() ? ViewMode.EDIT : ViewMode.VIEW;
-         boolean showButtons = userWorkspaceContext.hasReadOnlyAccess() ? false : isDisplayButtons();
+    @Override
+    public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event) {
+        // FIXME once setting codemirror editor to readonly it won't be editable
+        // again
+        userWorkspaceContext.setProjectActive(event.isProjectActive());
+        userWorkspaceContext.getWorkspaceContext().getWorkspaceId()
+                .getProjectIterationId().setProjectType(event.getProjectType());
 
-         targetContentsDisplay.setToMode(viewMode);
-         targetContentsDisplay.showButtons(showButtons);
-      }
+        for (TargetContentsDisplay targetContentsDisplay : displayList) {
+            ViewMode viewMode =
+                    canEditTranslation() ? ViewMode.EDIT : ViewMode.VIEW;
+            boolean showButtons =
+                    userWorkspaceContext.hasReadOnlyAccess() ? false
+                            : isDisplayButtons();
 
-      if (userWorkspaceContext.hasReadOnlyAccess())
-      {
-         concealDisplay();
-      }
-      else
-      {
-         revealDisplay();
-      }
-   }
+            targetContentsDisplay.setToMode(viewMode);
+            targetContentsDisplay.showButtons(showButtons);
+        }
 
-   /**
-    * Being used when save failed and when user typing in editor
-    * @param transUnitId id
-    * @param editingState editing state
-    *
-    */
-   @Override
-   public void setEditingState(TransUnitId transUnitId, TargetContentsDisplay.EditingState editingState)
-   {
-      Optional<TargetContentsDisplay> displayOptional = Finds.findDisplayById(displayList, transUnitId);
-      if (!displayOptional.isPresent())
-      {
-         return;
-      }
+        if (userWorkspaceContext.hasReadOnlyAccess()) {
+            concealDisplay();
+        } else {
+            revealDisplay();
+        }
+    }
 
-      TargetContentsDisplay contentsDisplay = displayOptional.get();
-      if (editingState == TargetContentsDisplay.EditingState.SAVING)
-      {
-         contentsDisplay.setState(TargetContentsDisplay.EditingState.SAVING);
-      }
-      else if (!Objects.equal(contentsDisplay.getCachedTargets(), contentsDisplay.getNewTargets()))
-      {
-         contentsDisplay.setState(TargetContentsDisplay.EditingState.UNSAVED);
-      }
-      else
-      {
-         contentsDisplay.setState(TargetContentsDisplay.EditingState.SAVED);
-      }
-   }
+    /**
+     * Being used when save failed and when user typing in editor
+     *
+     * @param transUnitId
+     *            id
+     * @param editingState
+     *            editing state
+     *
+     */
+    @Override
+    public void setEditingState(TransUnitId transUnitId,
+            TargetContentsDisplay.EditingState editingState) {
+        Optional<TargetContentsDisplay> displayOptional =
+                Finds.findDisplayById(displayList, transUnitId);
+        if (!displayOptional.isPresent()) {
+            return;
+        }
 
-   public TargetContentsDisplay getCurrentDisplay()
-   {
-      return display;
-   }
+        TargetContentsDisplay contentsDisplay = displayOptional.get();
+        if (editingState == TargetContentsDisplay.EditingState.SAVING) {
+            contentsDisplay.setState(TargetContentsDisplay.EditingState.SAVING);
+        } else if (!Objects.equal(contentsDisplay.getCachedTargets(),
+                contentsDisplay.getNewTargets())) {
+            contentsDisplay
+                    .setState(TargetContentsDisplay.EditingState.UNSAVED);
+        } else {
+            contentsDisplay.setState(TargetContentsDisplay.EditingState.SAVED);
+        }
+    }
 
-   @Override
-   public void saveUserDecision(Boolean value)
-   {
-      userOptionsService.getConfigHolder().setShowSaveApprovedWarning(value);
-      userOptionsService.persistOptionChange(userOptionsService.getEditorOptions());
-      eventBus.fireEvent(new ReloadUserConfigUIEvent(MainView.Editor));
-   }
+    public TargetContentsDisplay getCurrentDisplay() {
+        return display;
+    }
 
-   @Override
-   public UserConfigHolder.ConfigurationState getConfigState()
-   {
-      return userOptionsService.getConfigHolder().getState();
-   }
+    @Override
+    public void saveUserDecision(Boolean value) {
+        userOptionsService.getConfigHolder().setShowSaveApprovedWarning(value);
+        userOptionsService.persistOptionChange(userOptionsService
+                .getEditorOptions());
+        eventBus.fireEvent(new ReloadUserConfigUIEvent(MainView.Editor));
+    }
 
-   @Override
-   public boolean canReview()
-   {
-      WorkspaceRestrictions restrictions = userWorkspaceContext.getWorkspaceRestrictions();
-      return restrictions.isHasReviewAccess() && restrictions.isProjectRequireReview();
-   }
+    @Override
+    public UserConfigHolder.ConfigurationState getConfigState() {
+        return userOptionsService.getConfigHolder().getState();
+    }
 
-   @Override
-   public boolean canEditTranslation()
-   {
-      WorkspaceRestrictions restrictions = userWorkspaceContext.getWorkspaceRestrictions();
-      return restrictions.isHasEditTranslationAccess();
-   }
+    @Override
+    public boolean canReview() {
+        WorkspaceRestrictions restrictions =
+                userWorkspaceContext.getWorkspaceRestrictions();
+        return restrictions.isHasReviewAccess()
+                && restrictions.isProjectRequireReview();
+    }
 
-   @Override
-   public void acceptTranslation(TransUnitId id)
-   {
-      ensureRowSelection(id);
-      saveCurrentIfValid(ContentState.Approved);
-   }
+    @Override
+    public boolean canEditTranslation() {
+        WorkspaceRestrictions restrictions =
+                userWorkspaceContext.getWorkspaceRestrictions();
+        return restrictions.isHasEditTranslationAccess();
+    }
 
-   @Override
-   public void rejectTranslation(TransUnitId id)
-   {
-      ensureRowSelection(id);
-      if (display.getCachedState() != ContentState.Rejected)
-      {
-         TransUnitSaveEvent event = new TransUnitSaveEvent(getNewTargets(), ContentState.Rejected, display.getId(),
-               display.getVerNum(), display.getCachedTargets());
-         eventBus.fireEvent(new CommentBeforeSaveEvent(event));
-      }
-   }
+    @Override
+    public void acceptTranslation(TransUnitId id) {
+        ensureRowSelection(id);
+        saveCurrentIfValid(ContentState.Approved);
+    }
 
-   public void updateCommentCount(TransUnitId id, int commentsCount)
-   {
-      Optional<TargetContentsDisplay> displayOptional = Finds.findDisplayById(displayList, id);
-      if (displayOptional.isPresent())
-      {
-         displayOptional.get().updateCommentIndicator(commentsCount);
-      }
-   }
+    @Override
+    public void rejectTranslation(TransUnitId id) {
+        ensureRowSelection(id);
+        if (display.getCachedState() != ContentState.Rejected) {
+            TransUnitSaveEvent event =
+                    new TransUnitSaveEvent(getNewTargets(),
+                            ContentState.Rejected, display.getId(),
+                            display.getVerNum(), display.getCachedTargets());
+            eventBus.fireEvent(new CommentBeforeSaveEvent(event));
+        }
+    }
 
-   /**
-    * For testing only
-    * @param currentTransUnitId current trans unit id
-    * @param currentEditorIndex current editor index
-    * @param display current display
-    */
-   protected void setStatesForTesting(TransUnitId currentTransUnitId, int currentEditorIndex,
-         TargetContentsDisplay display)
-   {
-      if (!GWT.isClient())
-      {
-         this.currentTransUnitId = currentTransUnitId;
-         this.currentEditorIndex = currentEditorIndex;
-         this.display = display;
-      }
-   }
+    public void updateCommentCount(TransUnitId id, int commentsCount) {
+        Optional<TargetContentsDisplay> displayOptional =
+                Finds.findDisplayById(displayList, id);
+        if (displayOptional.isPresent()) {
+            displayOptional.get().updateCommentIndicator(commentsCount);
+        }
+    }
+
+    /**
+     * For testing only
+     *
+     * @param currentTransUnitId
+     *            current trans unit id
+     * @param currentEditorIndex
+     *            current editor index
+     * @param display
+     *            current display
+     */
+    protected void setStatesForTesting(TransUnitId currentTransUnitId,
+            int currentEditorIndex, TargetContentsDisplay display) {
+        if (!GWT.isClient()) {
+            this.currentTransUnitId = currentTransUnitId;
+            this.currentEditorIndex = currentEditorIndex;
+            this.display = display;
+        }
+    }
 }

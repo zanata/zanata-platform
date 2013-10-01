@@ -22,13 +22,11 @@ package org.zanata.webtrans.shared.model;
 
 import com.google.gwt.view.client.ProvidesKey;
 
-public enum TransUnitProvidesKey implements ProvidesKey<TransUnit>
-{
-   KEY_PROVIDER;
+public enum TransUnitProvidesKey implements ProvidesKey<TransUnit> {
+    KEY_PROVIDER;
 
-   @Override
-   public TransUnitId getKey(TransUnit item)
-   {
-      return item == null ? null : item.getId();
-   }
+    @Override
+    public TransUnitId getKey(TransUnit item) {
+        return item == null ? null : item.getId();
+    }
 }

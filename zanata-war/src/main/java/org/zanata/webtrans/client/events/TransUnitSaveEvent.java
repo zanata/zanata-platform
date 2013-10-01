@@ -31,108 +31,100 @@ import com.google.common.collect.Lists;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class TransUnitSaveEvent extends GwtEvent<TransUnitSaveEventHandler>
-{
-   public static Type<TransUnitSaveEventHandler> TYPE = new Type<TransUnitSaveEventHandler>();
+public class TransUnitSaveEvent extends GwtEvent<TransUnitSaveEventHandler> {
+    public static Type<TransUnitSaveEventHandler> TYPE =
+            new Type<TransUnitSaveEventHandler>();
 
-   private TransUnitId transUnitId;
-   private Integer verNum;
-   private List<String> oldContents = Lists.newArrayList();
-   private List<String> targets = Lists.newArrayList();
-   private ContentState status;
-   private ContentState adjustedState;
+    private TransUnitId transUnitId;
+    private Integer verNum;
+    private List<String> oldContents = Lists.newArrayList();
+    private List<String> targets = Lists.newArrayList();
+    private ContentState status;
+    private ContentState adjustedState;
 
-   public TransUnitSaveEvent(List<String> targets, ContentState status, TransUnitId transUnitId, Integer verNum, List<String> oldContents)
-   {
-      this.targets = targets;
-      this.status = status;
-      this.transUnitId = transUnitId;
-      this.verNum = verNum;
-      this.oldContents = oldContents;
-      adjustedState = adjustState(targets, status);
-   }
+    public TransUnitSaveEvent(List<String> targets, ContentState status,
+            TransUnitId transUnitId, Integer verNum, List<String> oldContents) {
+        this.targets = targets;
+        this.status = status;
+        this.transUnitId = transUnitId;
+        this.verNum = verNum;
+        this.oldContents = oldContents;
+        adjustedState = adjustState(targets, status);
+    }
 
-   public Type<TransUnitSaveEventHandler> getAssociatedType()
-   {
-      return TYPE;
-   }
+    public Type<TransUnitSaveEventHandler> getAssociatedType() {
+        return TYPE;
+    }
 
-   protected void dispatch(TransUnitSaveEventHandler handler)
-   {
-      handler.onTransUnitSave(this);
-   }
+    protected void dispatch(TransUnitSaveEventHandler handler) {
+        handler.onTransUnitSave(this);
+    }
 
-   public List<String> getTargets()
-   {
-      return targets;
-   }
+    public List<String> getTargets() {
+        return targets;
+    }
 
-   public ContentState getStatus()
-   {
-      return status;
-   }
+    public ContentState getStatus() {
+        return status;
+    }
 
-   public ContentState getAdjustedStatus()
-   {
-      return adjustedState;
-   }
+    public ContentState getAdjustedStatus() {
+        return adjustedState;
+    }
 
-   public TransUnitId getTransUnitId()
-   {
-      return transUnitId;
-   }
+    public TransUnitId getTransUnitId() {
+        return transUnitId;
+    }
 
-   public Integer getVerNum()
-   {
-      return verNum;
-   }
+    public Integer getVerNum() {
+        return verNum;
+    }
 
-   public List<String> getOldContents()
-   {
-      return oldContents;
-   }
+    public List<String> getOldContents() {
+        return oldContents;
+    }
 
-   @Override
-   public boolean equals(Object o)
-   {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
 
-      TransUnitSaveEvent that = (TransUnitSaveEvent) o;
-      return Objects.equal(transUnitId, that.transUnitId) && Objects.equal(verNum, that.verNum);
-   }
+        TransUnitSaveEvent that = (TransUnitSaveEvent) o;
+        return Objects.equal(transUnitId, that.transUnitId)
+                && Objects.equal(verNum, that.verNum);
+    }
 
-   @Override
-   public int hashCode()
-   {
-      return Objects.hashCode(transUnitId, verNum, targets, status);
-   }
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(transUnitId, verNum, targets, status);
+    }
 
-   /**
-    *
-    *
-    * @param newContents new target contents
-    * @param requestedState requested state by user
-    * @see org.zanata.service.impl.TranslationServiceImpl#adjustContentsAndState
-    */
-   public static ContentState adjustState(List<String> newContents, ContentState requestedState)
-   {
-      if (newContents == null)
-      {
-         return ContentState.New;
-      }
+    /**
+     *
+     *
+     * @param newContents
+     *            new target contents
+     * @param requestedState
+     *            requested state by user
+     * @see org.zanata.service.impl.TranslationServiceImpl#adjustContentsAndState
+     */
+    public static ContentState adjustState(List<String> newContents,
+            ContentState requestedState) {
+        if (newContents == null) {
+            return ContentState.New;
+        }
 
-      return ContentStateUtil.determineState(requestedState, newContents);
-   }
+        return ContentStateUtil.determineState(requestedState, newContents);
+    }
 
-   @Override
-   public String toString()
-   {
-      return Objects.toStringHelper(this).
-            add("transUnitId", transUnitId).
-            add("verNum", verNum).
-            toString();
-   }
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this).add("transUnitId", transUnitId)
+                .add("verNum", verNum).toString();
+    }
 }

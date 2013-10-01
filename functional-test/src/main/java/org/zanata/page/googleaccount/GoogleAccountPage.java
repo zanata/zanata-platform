@@ -26,45 +26,40 @@ import org.openqa.selenium.support.FindBy;
 import org.zanata.page.AbstractPage;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-public class GoogleAccountPage extends AbstractPage
-{
-   @FindBy(id = "Email")
-   private WebElement emailField;
+public class GoogleAccountPage extends AbstractPage {
+    @FindBy(id = "Email")
+    private WebElement emailField;
 
-   @FindBy(id = "Passwd")
-   private WebElement passwordField;
+    @FindBy(id = "Passwd")
+    private WebElement passwordField;
 
-   @FindBy(id = "signIn")
-   private WebElement signInButton;
+    @FindBy(id = "signIn")
+    private WebElement signInButton;
 
-   public GoogleAccountPage(WebDriver driver)
-   {
-      super(driver);
-   }
+    public GoogleAccountPage(WebDriver driver) {
+        super(driver);
+    }
 
-   public GoogleAccountPage enterGoogleEmail(String email)
-   {
-      emailField.sendKeys(email);
-      return new GoogleAccountPage(getDriver());
-   }
+    public GoogleAccountPage enterGoogleEmail(String email) {
+        emailField.sendKeys(email);
+        return new GoogleAccountPage(getDriver());
+    }
 
-   public GoogleAccountPage enterGooglePassword(String password)
-   {
-      passwordField.sendKeys(password);
-      return new GoogleAccountPage(getDriver());
-   }
+    public GoogleAccountPage enterGooglePassword(String password) {
+        passwordField.sendKeys(password);
+        return new GoogleAccountPage(getDriver());
+    }
 
-   public GooglePermissionsPage clickSignIn()
-   {
-      signInButton.click();
-      return new GooglePermissionsPage(getDriver());
-   }
+    public GooglePermissionsPage clickSignIn() {
+        signInButton.click();
+        return new GooglePermissionsPage(getDriver());
+    }
 
-   public GoogleManagePermissionsPage clickPermissionsSignIn()
-   {
-      signInButton.click();
-      return new GoogleManagePermissionsPage(getDriver());
-   }
+    public GoogleManagePermissionsPage clickPermissionsSignIn() {
+        signInButton.click();
+        return new GoogleManagePermissionsPage(getDriver());
+    }
 }

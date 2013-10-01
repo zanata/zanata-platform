@@ -29,41 +29,36 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Holds preview information about a {@link ReplaceText} operation
- * 
+ *
  * @author David Mason, damason@redhat.com
- * 
+ *
  */
-public class TransUnitUpdatePreview implements IsSerializable
-{
-   private TransUnitId id;
-   private List<String> contents;
-   private ContentState state;
+public class TransUnitUpdatePreview implements IsSerializable {
+    private TransUnitId id;
+    private List<String> contents;
+    private ContentState state;
 
-   @SuppressWarnings("unused")
-   private TransUnitUpdatePreview()
-   {
-   }
+    @SuppressWarnings("unused")
+    private TransUnitUpdatePreview() {
+    }
 
-   public TransUnitUpdatePreview(TransUnitId id, List<String> contents, ContentState state)
-   {
-      this.id = id;
-      this.contents = contents;
-      this.state = state;
-   }
+    public TransUnitUpdatePreview(TransUnitId id, List<String> contents,
+            ContentState state) {
+        this.id = id;
+        this.contents = contents;
+        this.state = state;
+    }
 
-   public TransUnitId getId()
-   {
-      return id;
-   }
+    public TransUnitId getId() {
+        return id;
+    }
 
-   public List<String> getContents()
-   {
-      return contents;
-   }
+    public List<String> getContents() {
+        return contents;
+    }
 
-   public ContentState getState()
-   {
-      return state;
-   }
+    public ContentState getState() {
+        return state;
+    }
 
 }

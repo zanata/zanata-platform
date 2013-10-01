@@ -5,22 +5,22 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import org.zanata.webtrans.shared.rpc.NavOption;
 
 /**
-* @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
-*/
-public interface TransUnitNavigationDisplay extends WidgetDisplay
-{
-   void setNavModeTooltip(NavOption navOption);
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ */
+public interface TransUnitNavigationDisplay extends WidgetDisplay {
+    void setNavModeTooltip(NavOption navOption);
 
-   void setListener(Listener listener);
+    void setListener(Listener listener);
 
-   interface Listener {
+    interface Listener {
 
-      void goToFirstEntry();
+        void goToFirstEntry();
 
-      void goToLastEntry();
+        void goToLastEntry();
 
-      void goToPreviousState();
+        void goToPreviousState();
 
-      void goToNextState();
-   }
+        void goToNextState();
+    }
 }

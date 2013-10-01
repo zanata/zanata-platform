@@ -21,89 +21,85 @@ import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.contexts.Contexts;
 
 /**
- * Maintains a set of "safe" actions that may be performed 
- * by &lt;s:link/&gt;, as determined by actually parsing
- * the view.
- * 
+ * Maintains a set of "safe" actions that may be performed by &lt;s:link/&gt;,
+ * as determined by actually parsing the view.
+ *
  * @author Gavin King
  *
  */
 @Scope(ScopeType.APPLICATION)
 @BypassInterceptors
 @Name("org.jboss.seam.navigation.safeActions")
-@Install(precedence=DEPLOYMENT, classDependencies="javax.faces.context.FacesContext")
-// Implementation copied from https://source.jboss.org/browse/Seam/branches/community/Seam_2_3/jboss-seam/src/main/java/org/jboss/seam/navigation/SafeActions.java?r=14141
+@Install(precedence = DEPLOYMENT,
+        classDependencies = "javax.faces.context.FacesContext")
+// Implementation copied from
+// https://source.jboss.org/browse/Seam/branches/community/Seam_2_3/jboss-seam/src/main/java/org/jboss/seam/navigation/SafeActions.java?r=14141
 // following https://community.jboss.org/message/688860#688860
-public class FixedSafeActions extends org.jboss.seam.navigation.SafeActions
-{
-   
-   private Set<String> safeActions = Collections.synchronizedSet( new HashSet<String>() );
-   
-   public static String toActionId(String viewId, String expression)
-   {
-      return viewId.substring(1) + ':' + expression.substring( 2, expression.length()-1 );
-   }
-   
-   public static String toAction(String id)
-   {
-      int loc = id.indexOf(':');
-      if (loc<0) throw new IllegalArgumentException();
-      return "#{" + id.substring(loc+1) + "}";
-   }
-   
-   public void addSafeAction(String id)
-   {
-      safeActions.add(id);
-   }
-   
-   public boolean isActionSafe(String id)
-   {
-      if ( safeActions.contains(id) ) return true;
-      
-      int loc = id.indexOf(':');
-      if (loc<0) throw new IllegalArgumentException("Invalid action method " + id);
-      String viewId = id.substring(0, loc);
-      String action = "\"#{" + id.substring(loc+1) + "}\"";
-      
-      // adding slash as it otherwise won't find a page viewId by getResource*
-      InputStream is = FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/" +viewId);
-      if (is==null) throw new IllegalStateException("Unable to read view " + "/" + viewId + " to execute action " + action);
-      BufferedReader reader = new BufferedReader( new InputStreamReader(is) );
-      try
-      {
-         while ( reader.ready() ) 
-         {
-            if ( reader.readLine().contains(action) ) 
-            {
-               addSafeAction(id);
-               return true;
+public class FixedSafeActions extends org.jboss.seam.navigation.SafeActions {
+
+    private Set<String> safeActions = Collections
+            .synchronizedSet(new HashSet<String>());
+
+    public static String toActionId(String viewId, String expression) {
+        return viewId.substring(1) + ':'
+                + expression.substring(2, expression.length() - 1);
+    }
+
+    public static String toAction(String id) {
+        int loc = id.indexOf(':');
+        if (loc < 0)
+            throw new IllegalArgumentException();
+        return "#{" + id.substring(loc + 1) + "}";
+    }
+
+    public void addSafeAction(String id) {
+        safeActions.add(id);
+    }
+
+    public boolean isActionSafe(String id) {
+        if (safeActions.contains(id))
+            return true;
+
+        int loc = id.indexOf(':');
+        if (loc < 0)
+            throw new IllegalArgumentException("Invalid action method " + id);
+        String viewId = id.substring(0, loc);
+        String action = "\"#{" + id.substring(loc + 1) + "}\"";
+
+        // adding slash as it otherwise won't find a page viewId by getResource*
+        InputStream is =
+                FacesContext.getCurrentInstance().getExternalContext()
+                        .getResourceAsStream("/" + viewId);
+        if (is == null)
+            throw new IllegalStateException("Unable to read view " + "/"
+                    + viewId + " to execute action " + action);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        try {
+            while (reader.ready()) {
+                if (reader.readLine().contains(action)) {
+                    addSafeAction(id);
+                    return true;
+                }
             }
-         }
-         return false;
-      }
-      catch (IOException ioe)
-      {
-         throw new RuntimeException("Error parsing view " + "/" + viewId + " to execute action " + action, ioe);
-      }
-      finally
-      {
-         try
-         {
-            reader.close();
-         }
-         catch (IOException ioe) {
-            throw new RuntimeException(ioe);
-         }
-      }
-   }
-   
-   public static FixedSafeActions instance()
-   {
-      if ( !Contexts.isApplicationContextActive() )
-      {
-         throw new IllegalStateException("No active application context");
-      }
-      return (FixedSafeActions) Component.getInstance(FixedSafeActions.class, ScopeType.APPLICATION);
-   }
-   
+            return false;
+        } catch (IOException ioe) {
+            throw new RuntimeException("Error parsing view " + "/" + viewId
+                    + " to execute action " + action, ioe);
+        } finally {
+            try {
+                reader.close();
+            } catch (IOException ioe) {
+                throw new RuntimeException(ioe);
+            }
+        }
+    }
+
+    public static FixedSafeActions instance() {
+        if (!Contexts.isApplicationContextActive()) {
+            throw new IllegalStateException("No active application context");
+        }
+        return (FixedSafeActions) Component.getInstance(FixedSafeActions.class,
+                ScopeType.APPLICATION);
+    }
+
 }

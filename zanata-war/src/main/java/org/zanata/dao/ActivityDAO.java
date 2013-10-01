@@ -39,76 +39,80 @@ import org.zanata.model.type.EntityType;
 @Name("activityDAO")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
-public class ActivityDAO extends AbstractDAOImpl<Activity, Long>
-{
-   private static final long serialVersionUID = 1L;
+public class ActivityDAO extends AbstractDAOImpl<Activity, Long> {
+    private static final long serialVersionUID = 1L;
 
-   public ActivityDAO()
-   {
-      super(Activity.class);
-   }
+    public ActivityDAO() {
+        super(Activity.class);
+    }
 
-   public ActivityDAO(Session session)
-   {
-      super(Activity.class, session);
-   }
+    public ActivityDAO(Session session) {
+        super(Activity.class, session);
+    }
 
-   @SuppressWarnings("unchecked")
-   public Activity findActivity(long personId, EntityType contextType, long contextId, ActivityType activityType, Date approxTime)
-   {
-      Query query = getSession().createQuery("FROM Activity a WHERE a.actor.id = :personId "
-            + "AND a.contextId = :contextId "
-            + "AND a.activityType = :activityType "
-            + "AND a.contextType = :contextType "
-            + "AND :approxTime = a.approxTime");
-      query.setParameter("personId", personId);
-      query.setParameter("contextId", contextId);
-      query.setParameter("activityType", activityType);
-      query.setParameter("contextType", contextType);
-      query.setTimestamp("approxTime", approxTime);
-      query.setCacheable(true);
-      query.setComment("activityDAO.findActivity");
-      return (Activity) query.uniqueResult();
-   }
+    @SuppressWarnings("unchecked")
+    public Activity findActivity(long personId, EntityType contextType,
+            long contextId, ActivityType activityType, Date approxTime) {
+        Query query =
+                getSession().createQuery(
+                        "FROM Activity a WHERE a.actor.id = :personId "
+                                + "AND a.contextId = :contextId "
+                                + "AND a.activityType = :activityType "
+                                + "AND a.contextType = :contextType "
+                                + "AND :approxTime = a.approxTime");
+        query.setParameter("personId", personId);
+        query.setParameter("contextId", contextId);
+        query.setParameter("activityType", activityType);
+        query.setParameter("contextType", contextType);
+        query.setTimestamp("approxTime", approxTime);
+        query.setCacheable(true);
+        query.setComment("activityDAO.findActivity");
+        return (Activity) query.uniqueResult();
+    }
 
-   @SuppressWarnings("unchecked")
-   public List<Activity> findLatestActivitiesForContext(long personId, long contextId, int offset, int maxResults)
-   {
-      Query query = getSession().createQuery("FROM Activity a WHERE a.actor.id = :personId "
-            + "AND a.contextId = :contextId "
-            + "order by a.lastChanged DESC");
-      query.setParameter("personId", personId);
-      query.setParameter("contextId", contextId);
-      query.setMaxResults(maxResults);
-      query.setFirstResult(offset);
-      query.setCacheable(true);
-      query.setComment("activityDAO.findActivities");
-      return query.list();
-   }
+    @SuppressWarnings("unchecked")
+    public List<Activity> findLatestActivitiesForContext(long personId,
+            long contextId, int offset, int maxResults) {
+        Query query =
+                getSession().createQuery(
+                        "FROM Activity a WHERE a.actor.id = :personId "
+                                + "AND a.contextId = :contextId "
+                                + "order by a.lastChanged DESC");
+        query.setParameter("personId", personId);
+        query.setParameter("contextId", contextId);
+        query.setMaxResults(maxResults);
+        query.setFirstResult(offset);
+        query.setCacheable(true);
+        query.setComment("activityDAO.findActivities");
+        return query.list();
+    }
 
-   public List<Activity> findLatestActivities(long personId, int offset, int maxResults)
-   {
-      Query query = getSession().createQuery("FROM Activity a WHERE a.actor.id = :personId "
-            + "order by a.lastChanged DESC");
-      query.setParameter("personId", personId);
-      query.setMaxResults(maxResults);
-      query.setFirstResult(offset);
-      query.setCacheable(true);
-      query.setComment("activityDAO.findLatestActivities");
-      return query.list();
-   }
+    public List<Activity> findLatestActivities(long personId, int offset,
+            int maxResults) {
+        Query query =
+                getSession().createQuery(
+                        "FROM Activity a WHERE a.actor.id = :personId "
+                                + "order by a.lastChanged DESC");
+        query.setParameter("personId", personId);
+        query.setMaxResults(maxResults);
+        query.setFirstResult(offset);
+        query.setCacheable(true);
+        query.setComment("activityDAO.findLatestActivities");
+        return query.list();
+    }
 
-   public int getActivityCountByActor(Long personId)
-   {
-      Query q = getSession().createQuery("select count(*) from Activity a where a.actor.id = :personId");
-      q.setParameter("personId", personId);
-      q.setCacheable(true);
-      q.setComment("activityDAO.getActivityCountByActor");
-      Long totalCount = (Long) q.uniqueResult();
-      if (totalCount == null)
-      {
-         return 0;
-      }
-      return totalCount.intValue();
-   }
+    public int getActivityCountByActor(Long personId) {
+        Query q =
+                getSession()
+                        .createQuery(
+                                "select count(*) from Activity a where a.actor.id = :personId");
+        q.setParameter("personId", personId);
+        q.setCacheable(true);
+        q.setComment("activityDAO.getActivityCountByActor");
+        Long totalCount = (Long) q.uniqueResult();
+        if (totalCount == null) {
+            return 0;
+        }
+        return totalCount.intValue();
+    }
 }

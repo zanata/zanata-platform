@@ -6,58 +6,51 @@ import org.zanata.webtrans.shared.rpc.HasExitWorkspaceData;
 
 import com.google.gwt.event.shared.GwtEvent;
 
-public class ExitWorkspaceEvent extends GwtEvent<ExitWorkspaceEventHandler> implements HasExitWorkspaceData
-{
+public class ExitWorkspaceEvent extends GwtEvent<ExitWorkspaceEventHandler>
+        implements HasExitWorkspaceData {
 
-   private final Person person;
-   private final EditorClientId editorClientId;
+    private final Person person;
+    private final EditorClientId editorClientId;
 
-   /**
-    * Handler type.
-    */
-   private static Type<ExitWorkspaceEventHandler> TYPE;
+    /**
+     * Handler type.
+     */
+    private static Type<ExitWorkspaceEventHandler> TYPE;
 
-   /**
-    * Gets the type associated with this event.
-    * 
-    * @return returns the handler type
-    */
-   public static Type<ExitWorkspaceEventHandler> getType()
-   {
-      if (TYPE == null)
-      {
-         TYPE = new Type<ExitWorkspaceEventHandler>();
-      }
-      return TYPE;
-   }
+    /**
+     * Gets the type associated with this event.
+     *
+     * @return returns the handler type
+     */
+    public static Type<ExitWorkspaceEventHandler> getType() {
+        if (TYPE == null) {
+            TYPE = new Type<ExitWorkspaceEventHandler>();
+        }
+        return TYPE;
+    }
 
-   public ExitWorkspaceEvent(HasExitWorkspaceData data)
-   {
-      this.person = data.getPerson();
-      this.editorClientId = data.getEditorClientId();
-   }
+    public ExitWorkspaceEvent(HasExitWorkspaceData data) {
+        this.person = data.getPerson();
+        this.editorClientId = data.getEditorClientId();
+    }
 
-   @Override
-   protected void dispatch(ExitWorkspaceEventHandler handler)
-   {
-      handler.onExitWorkspace(this);
-   }
+    @Override
+    protected void dispatch(ExitWorkspaceEventHandler handler) {
+        handler.onExitWorkspace(this);
+    }
 
-   @Override
-   public Type<ExitWorkspaceEventHandler> getAssociatedType()
-   {
-      return getType();
-   }
+    @Override
+    public Type<ExitWorkspaceEventHandler> getAssociatedType() {
+        return getType();
+    }
 
-   @Override
-   public Person getPerson()
-   {
-      return person;
-   }
+    @Override
+    public Person getPerson() {
+        return person;
+    }
 
-   @Override
-   public EditorClientId getEditorClientId()
-   {
-      return editorClientId;
-   }
+    @Override
+    public EditorClientId getEditorClientId() {
+        return editorClientId;
+    }
 }

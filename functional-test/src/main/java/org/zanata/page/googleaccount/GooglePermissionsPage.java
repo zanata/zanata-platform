@@ -20,31 +20,31 @@
  */
 package org.zanata.page.googleaccount;
 
-import com.google.common.base.Function;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.AbstractPage;
 import org.zanata.page.account.EditProfilePage;
 
-/**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
- */
-public class GooglePermissionsPage extends AbstractPage
-{
-   public GooglePermissionsPage(WebDriver driver)
-   {
-      super(driver);
-   }
+import com.google.common.base.Function;
 
-   public EditProfilePage acceptPermissions()
-   {
-      waitForTenSec().until(new Function<WebDriver, Boolean>() {
-         @Override
-         public Boolean apply(WebDriver driver) {
-            return getDriver().findElement(By.id("submit_approve_access")).isEnabled();
-         }
-      });
-      getDriver().findElement(By.id("submit_approve_access")).click();
-      return new EditProfilePage(getDriver());
-   }
+/**
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ */
+public class GooglePermissionsPage extends AbstractPage {
+    public GooglePermissionsPage(WebDriver driver) {
+        super(driver);
+    }
+
+    public EditProfilePage acceptPermissions() {
+        waitForTenSec().until(new Function<WebDriver, Boolean>() {
+            @Override
+            public Boolean apply(WebDriver driver) {
+                return getDriver().findElement(By.id("submit_approve_access"))
+                        .isEnabled();
+            }
+        });
+        getDriver().findElement(By.id("submit_approve_access")).click();
+        return new EditProfilePage(getDriver());
+    }
 }

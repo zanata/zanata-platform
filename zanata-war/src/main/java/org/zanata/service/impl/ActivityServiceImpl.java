@@ -58,120 +58,117 @@ import org.zanata.service.ActivityService;
 @Name("activityServiceImpl")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
-public class ActivityServiceImpl implements ActivityService
-{
-   @Logger
-   private Log log;
+public class ActivityServiceImpl implements ActivityService {
+    @Logger
+    private Log log;
 
-   @In
-   private ActivityDAO activityDAO;
+    @In
+    private ActivityDAO activityDAO;
 
-   @In
-   private TextFlowTargetDAO textFlowTargetDAO;
+    @In
+    private TextFlowTargetDAO textFlowTargetDAO;
 
-   @In
-   private DocumentDAO documentDAO;
+    @In
+    private DocumentDAO documentDAO;
 
-   @In
-   private ProjectIterationDAO projectIterationDAO;
+    @In
+    private ProjectIterationDAO projectIterationDAO;
 
-   @In
-   private EntityManager entityManager;
+    @In
+    private EntityManager entityManager;
 
-   @Override
-   public Activity findActivity(long actorId, EntityType contextType, long contextId, ActivityType activityType,
-         Date actionTime)
-   {
-      return activityDAO.findActivity(actorId, contextType, contextId, activityType,
-            DateUtils.truncate(actionTime, Calendar.HOUR));
-   }
+    @Override
+    public Activity findActivity(long actorId, EntityType contextType,
+            long contextId, ActivityType activityType, Date actionTime) {
+        return activityDAO.findActivity(actorId, contextType, contextId,
+                activityType, DateUtils.truncate(actionTime, Calendar.HOUR));
+    }
 
-   @Override
-   public List<Activity> findLatestActivitiesForContext(long personId, long contextId, int offset, int maxResults)
-   {
-      return activityDAO.findLatestActivitiesForContext(personId, contextId, offset, maxResults);
-   }
+    @Override
+    public List<Activity> findLatestActivitiesForContext(long personId,
+            long contextId, int offset, int maxResults) {
+        return activityDAO.findLatestActivitiesForContext(personId, contextId,
+                offset, maxResults);
+    }
 
-   @Override
-   public List<Activity> findLatestActivities(long personId, int offset, int maxResults)
-   {
-      return activityDAO.findLatestActivities(personId, offset, maxResults);
-   }
+    @Override
+    public List<Activity> findLatestActivities(long personId, int offset,
+            int maxResults) {
+        return activityDAO.findLatestActivities(personId, offset, maxResults);
+    }
 
-   @Override
-   public void logActivity(HPerson actor, IsEntityWithType context, IsEntityWithType target, ActivityType activityType,
-         int wordCount)
-   {
-      if (actor != null && context != null && activityType != null)
-      {
-         Date currentActionTime = new Date();
-         Activity activity = findActivity(actor.getId(), context.getEntityType(), context.getId(), activityType,
-               currentActionTime);
+    @Override
+    public void logActivity(HPerson actor, IsEntityWithType context,
+            IsEntityWithType target, ActivityType activityType, int wordCount) {
+        if (actor != null && context != null && activityType != null) {
+            Date currentActionTime = new Date();
+            Activity activity =
+                    findActivity(actor.getId(), context.getEntityType(),
+                            context.getId(), activityType, currentActionTime);
 
-         if (activity != null)
-         {
-            activity.updateActivity(currentActionTime, target, wordCount);
-         }
-         else
-         {
-            activity = new Activity(actor, context, target, activityType, wordCount);
-         }
-         activityDAO.makePersistent(activity);
-         activityDAO.flush();
-      }
-   }
+            if (activity != null) {
+                activity.updateActivity(currentActionTime, target, wordCount);
+            } else {
+                activity =
+                        new Activity(actor, context, target, activityType,
+                                wordCount);
+            }
+            activityDAO.makePersistent(activity);
+            activityDAO.flush();
+        }
+    }
 
-   @Override
-   public Object getEntity(EntityType entityType, long entityId)
-   {
-      return entityManager.find(entityType.getEntityClass(), entityId);
-   }
+    @Override
+    public Object getEntity(EntityType entityType, long entityId) {
+        return entityManager.find(entityType.getEntityClass(), entityId);
+    }
 
-   /**
-    * Logs each text flow target translation immediately after successful translation.
-    */
-   @Observer(TextFlowTargetStateEvent.EVENT_NAME)
-   @Transactional
-   public void logTextFlowStateUpdate(TextFlowTargetStateEvent event)
-   {
-      HTextFlowTarget target = textFlowTargetDAO.findById(event.getTextFlowTargetId(), false);
-      HDocument document = documentDAO.getById(event.getDocumentId());
-      ActivityType activityType = event.getNewState().isReviewed() ? ActivityType.REVIEWED_TRANSLATION
-            : ActivityType.UPDATE_TRANSLATION;
+    /**
+     * Logs each text flow target translation immediately after successful
+     * translation.
+     */
+    @Observer(TextFlowTargetStateEvent.EVENT_NAME)
+    @Transactional
+    public void logTextFlowStateUpdate(TextFlowTargetStateEvent event) {
+        HTextFlowTarget target =
+                textFlowTargetDAO.findById(event.getTextFlowTargetId(), false);
+        HDocument document = documentDAO.getById(event.getDocumentId());
+        ActivityType activityType =
+                event.getNewState().isReviewed() ? ActivityType.REVIEWED_TRANSLATION
+                        : ActivityType.UPDATE_TRANSLATION;
 
-      logActivity(target.getLastModifiedBy(), document.getProjectIteration(), target, activityType, target
-            .getTextFlow().getWordCount().intValue());
-   }
+        logActivity(target.getLastModifiedBy(), document.getProjectIteration(),
+                target, activityType, target.getTextFlow().getWordCount()
+                        .intValue());
+    }
 
-   /**
-    * Logs document upload immediately after successful upload.
-    */
-   @Observer(DocumentUploadedEvent.EVENT_NAME)
-   @Transactional
-   public void onDocumentUploaded(DocumentUploadedEvent event)
-   {
-      HDocument document = documentDAO.getById(event.getDocumentId());
-      ActivityType activityType = event.isSourceDocument() ? ActivityType.UPLOAD_SOURCE_DOCUMENT
-            : ActivityType.UPLOAD_TRANSLATION_DOCUMENT;
+    /**
+     * Logs document upload immediately after successful upload.
+     */
+    @Observer(DocumentUploadedEvent.EVENT_NAME)
+    @Transactional
+    public void onDocumentUploaded(DocumentUploadedEvent event) {
+        HDocument document = documentDAO.getById(event.getDocumentId());
+        ActivityType activityType =
+                event.isSourceDocument() ? ActivityType.UPLOAD_SOURCE_DOCUMENT
+                        : ActivityType.UPLOAD_TRANSLATION_DOCUMENT;
 
-      logActivity(document.getLastModifiedBy(), document.getProjectIteration(), document, activityType,
-            getDocumentWordCount(document));
-   }
+        logActivity(document.getLastModifiedBy(),
+                document.getProjectIteration(), document, activityType,
+                getDocumentWordCount(document));
+    }
 
-   private int getDocumentWordCount(HDocument document)
-   {
-      int total = 0;
+    private int getDocumentWordCount(HDocument document) {
+        int total = 0;
 
-      for (HTextFlow textFlow : document.getTextFlows())
-      {
-         total += textFlow.getWordCount().intValue();
-      }
-      return total;
-   }
+        for (HTextFlow textFlow : document.getTextFlows()) {
+            total += textFlow.getWordCount().intValue();
+        }
+        return total;
+    }
 
-   @Override
-   public int getActivityCountByActor(long personId)
-   {
-      return activityDAO.getActivityCountByActor(personId);
-   }
+    @Override
+    public int getActivityCountByActor(long personId) {
+        return activityDAO.getActivityCountByActor(personId);
+    }
 }

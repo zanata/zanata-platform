@@ -6,23 +6,23 @@ import java.util.List;
 /**
  * Based on code from http://community.jboss.org/wiki/GenericDataAccessObjects
  */
-public interface GenericDAO<T, ID extends Serializable>
-{
+public interface GenericDAO<T, ID extends Serializable> {
 
-   T findById(ID id, boolean lock);
+    T findById(ID id, boolean lock);
 
-   void deleteAll();
-   List<T> findAll();
+    void deleteAll();
 
-   T makePersistent(T entity);
+    List<T> findAll();
 
-   void makeTransient(T entity);
+    T makePersistent(T entity);
 
-   void flush();
+    void makeTransient(T entity);
 
-   void clear();
+    void flush();
 
-   List<T> findByExample(T exampleInstance, String[] excludeProperty);
+    void clear();
 
-   boolean isPersistent(T entity);
+    List<T> findByExample(T exampleInstance, String[] excludeProperty);
+
+    boolean isPersistent(T entity);
 }

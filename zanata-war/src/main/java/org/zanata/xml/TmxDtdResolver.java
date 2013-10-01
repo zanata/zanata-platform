@@ -32,45 +32,39 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class TmxDtdResolver implements XMLResolver, EntityResolver
-{
-   // example system IDs:
-   // http://www.lisa.org/tmx/tmx14.dtd
-   // http://www.ttt.org/oscarstandards/tmx/tmx14.dtd
-   private static boolean isTMX14(String systemId)
-   {
-      return systemId.endsWith("tmx14.dtd");
-   }
+public class TmxDtdResolver implements XMLResolver, EntityResolver {
+    // example system IDs:
+    // http://www.lisa.org/tmx/tmx14.dtd
+    // http://www.ttt.org/oscarstandards/tmx/tmx14.dtd
+    private static boolean isTMX14(String systemId) {
+        return systemId.endsWith("tmx14.dtd");
+    }
 
-   @Override
-   public Object resolveEntity(String publicID, String systemID, String baseURI, String namespace) throws XMLStreamException
-   {
-      if (isTMX14(systemID))
-      {
-         InputStream stream = getClass().getResourceAsStream("tmx14.dtd");
-         return stream;
-      }
-      else
-      {
-         throw new XMLStreamException("Invalid TMX document: expected tmx14.dtd");
-      }
-   }
+    @Override
+    public Object resolveEntity(String publicID, String systemID,
+            String baseURI, String namespace) throws XMLStreamException {
+        if (isTMX14(systemID)) {
+            InputStream stream = getClass().getResourceAsStream("tmx14.dtd");
+            return stream;
+        } else {
+            throw new XMLStreamException(
+                    "Invalid TMX document: expected tmx14.dtd");
+        }
+    }
 
-   @Override
-   public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException
-   {
-      if (isTMX14(systemId))
-      {
-         InputStream stream = getClass().getResourceAsStream("tmx14.dtd");
-         return new InputSource(stream);
-      }
-      else
-      {
-         throw new SAXException("Invalid TMX document: expected tmx14.dtd");
-      }
-   }
+    @Override
+    public InputSource resolveEntity(String publicId, String systemId)
+            throws SAXException, IOException {
+        if (isTMX14(systemId)) {
+            InputStream stream = getClass().getResourceAsStream("tmx14.dtd");
+            return new InputSource(stream);
+        } else {
+            throw new SAXException("Invalid TMX document: expected tmx14.dtd");
+        }
+    }
 
 }

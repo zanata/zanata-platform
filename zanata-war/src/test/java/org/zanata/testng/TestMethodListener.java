@@ -29,24 +29,23 @@ import org.testng.Reporter;
 import org.testng.SkipException;
 import org.zanata.testng.annotations.Disabled;
 
-public class TestMethodListener implements IInvokedMethodListener
-{
+public class TestMethodListener implements IInvokedMethodListener {
 
-   @Override
-   public void beforeInvocation(IInvokedMethod method, ITestResult testResult)
-   {
-      Method aMethod = method.getTestMethod().getConstructorOrMethod().getMethod();
-      if( aMethod.isAnnotationPresent(Disabled.class))
-      {
-         Reporter.setCurrentTestResult(testResult);
-         Reporter.log( "Skip reason: " + aMethod.getAnnotation(Disabled.class).reason(), true );
-         throw new SkipException("Test method skipped. See report output for reason.");
-      }
-   }
-   
-   @Override
-   public void afterInvocation(IInvokedMethod method, ITestResult testResult)
-   {
-   }
-   
+    @Override
+    public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
+        Method aMethod =
+                method.getTestMethod().getConstructorOrMethod().getMethod();
+        if (aMethod.isAnnotationPresent(Disabled.class)) {
+            Reporter.setCurrentTestResult(testResult);
+            Reporter.log("Skip reason: "
+                    + aMethod.getAnnotation(Disabled.class).reason(), true);
+            throw new SkipException(
+                    "Test method skipped. See report output for reason.");
+        }
+    }
+
+    @Override
+    public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
+    }
+
 }

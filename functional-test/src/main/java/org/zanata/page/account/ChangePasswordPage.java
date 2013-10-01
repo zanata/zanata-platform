@@ -20,72 +20,64 @@
  */
 package org.zanata.page.account;
 
-
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-public class ChangePasswordPage extends BasePage
-{
+public class ChangePasswordPage extends BasePage {
 
-   @FindBy(id = "passwordChangeForm:passwordOldField:passwordOld")
-   private WebElement oldPasswordField;
+    @FindBy(id = "passwordChangeForm:passwordOldField:passwordOld")
+    private WebElement oldPasswordField;
 
-   @FindBy(id = "passwordChangeForm:passwordNewField:passwordNew")
-   private WebElement newPasswordField;
+    @FindBy(id = "passwordChangeForm:passwordNewField:passwordNew")
+    private WebElement newPasswordField;
 
-   @FindBy(id = "passwordChangeForm:passwordConfirmField:passwordConfirm")
-   private WebElement confirmPasswordField;
+    @FindBy(id = "passwordChangeForm:passwordConfirmField:passwordConfirm")
+    private WebElement confirmPasswordField;
 
-   @FindBy(id = "passwordChangeForm:changePasswordButton")
-   private WebElement changePasswordButton;
+    @FindBy(id = "passwordChangeForm:changePasswordButton")
+    private WebElement changePasswordButton;
 
-   @FindBy(id = "passwordChangeForm:cancelChangePasswordButton")
-   private WebElement cancelChangePasswordButton;
+    @FindBy(id = "passwordChangeForm:cancelChangePasswordButton")
+    private WebElement cancelChangePasswordButton;
 
-   public ChangePasswordPage(WebDriver driver)
-   {
-      super(driver);
-   }
+    public ChangePasswordPage(WebDriver driver) {
+        super(driver);
+    }
 
-   public ChangePasswordPage enterOldPassword(String password)
-   {
-      oldPasswordField.sendKeys(password);
-      return new ChangePasswordPage(getDriver());
-   }
+    public ChangePasswordPage enterOldPassword(String password) {
+        oldPasswordField.sendKeys(password);
+        return new ChangePasswordPage(getDriver());
+    }
 
-   public ChangePasswordPage enterNewPassword(String password)
-   {
-      newPasswordField.sendKeys(password);
-      return new ChangePasswordPage(getDriver());
-   }
+    public ChangePasswordPage enterNewPassword(String password) {
+        newPasswordField.sendKeys(password);
+        return new ChangePasswordPage(getDriver());
+    }
 
-   public ChangePasswordPage enterConfirmNewPassword(String password)
-   {
-      confirmPasswordField.sendKeys(password);
-      return new ChangePasswordPage(getDriver());
-   }
+    public ChangePasswordPage enterConfirmNewPassword(String password) {
+        confirmPasswordField.sendKeys(password);
+        return new ChangePasswordPage(getDriver());
+    }
 
-   public MyAccountPage changePassword()
-   {
-      changePasswordButton.click();
-      return new MyAccountPage(getDriver());
-   }
+    public MyAccountPage changePassword() {
+        changePasswordButton.click();
+        return new MyAccountPage(getDriver());
+    }
 
-   public MyAccountPage cancelChangePassword()
-   {
-      cancelChangePasswordButton.click();
-      return new MyAccountPage(getDriver());
-   }
+    public MyAccountPage cancelChangePassword() {
+        cancelChangePasswordButton.click();
+        return new MyAccountPage(getDriver());
+    }
 
-   public ChangePasswordPage changePasswordExpectingFailure()
-   {
-      changePasswordButton.click();
-      return new ChangePasswordPage(getDriver());
-   }
+    public ChangePasswordPage changePasswordExpectingFailure() {
+        changePasswordButton.click();
+        return new ChangePasswordPage(getDriver());
+    }
 
 }

@@ -3,41 +3,37 @@ package org.zanata.webtrans.client.events;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import com.google.gwt.event.shared.GwtEvent;
 
-public class TableRowSelectedEvent extends GwtEvent<TableRowSelectedEventHandler>
-{
-   public static Type<TableRowSelectedEventHandler> TYPE = new Type<TableRowSelectedEventHandler>();
+public class TableRowSelectedEvent extends
+        GwtEvent<TableRowSelectedEventHandler> {
+    public static Type<TableRowSelectedEventHandler> TYPE =
+            new Type<TableRowSelectedEventHandler>();
 
-   private TransUnitId selectedId;
-   private boolean suppressSavePending = false;
+    private TransUnitId selectedId;
+    private boolean suppressSavePending = false;
 
-   public TableRowSelectedEvent(TransUnitId transUnitId)
-   {
-      this.selectedId = transUnitId;
-   }
+    public TableRowSelectedEvent(TransUnitId transUnitId) {
+        this.selectedId = transUnitId;
+    }
 
-   public Type<TableRowSelectedEventHandler> getAssociatedType()
-   {
-      return TYPE;
-   }
+    public Type<TableRowSelectedEventHandler> getAssociatedType() {
+        return TYPE;
+    }
 
-   protected void dispatch(TableRowSelectedEventHandler handler)
-   {
-      handler.onTableRowSelected(this);
-   }
+    protected void dispatch(TableRowSelectedEventHandler handler) {
+        handler.onTableRowSelected(this);
+    }
 
-   public TransUnitId getSelectedId()
-   {
-      return selectedId;
-   }
+    public TransUnitId getSelectedId() {
+        return selectedId;
+    }
 
-   public TableRowSelectedEvent setSuppressSavePending(boolean suppressSavePending)
-   {
-      this.suppressSavePending = suppressSavePending;
-      return this;
-   }
+    public TableRowSelectedEvent setSuppressSavePending(
+            boolean suppressSavePending) {
+        this.suppressSavePending = suppressSavePending;
+        return this;
+    }
 
-   public boolean isSuppressSavePending()
-   {
-      return suppressSavePending;
-   }
+    public boolean isSuppressSavePending() {
+        return suppressSavePending;
+    }
 }

@@ -20,33 +20,34 @@
   -->
 
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-             xmlns:g='urn:import:com.google.gwt.user.client.ui'>
-   <ui:with field="messages" type="org.zanata.webtrans.client.resources.WebTransMessages" />
+  xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+  <ui:with field="messages"
+    type="org.zanata.webtrans.client.resources.WebTransMessages" />
 
-    <g:HTMLPanel tag="li" styleName="l--pad-v-1 bg--higher">
-        <div class="g--tight">
-            <div class="g__item w--1-12 txt--align-right">
-                <span class="i--large txt--neutral" ui:field="icon"/>
-                <span class="is-invisible">Translation</span>
-            </div>
-            <div class="g__item w--9-12" ui:field="daa">
-                <g:InlineHTML ui:field="heading" />
-                <g:InlineHTML ui:field="targetContents" />
-                <ul class="txt--meta list--horizontal">
-                    <li>
-                        <g:InlineLabel ui:field="creationDate"/>
-                    </li>
-                    <li class="d--left l--pad-left-half">
-                        <g:InlineHTML ui:field="revision"/>
-                    </li>
-                    <li>
-                        <g:Anchor ui:field="compare" text="Compare" />
-                    </li>
-                    <li>
-                        <g:Anchor ui:field="copyIntoEditor" text="Copy to Editor"/>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </g:HTMLPanel>
+  <g:HTMLPanel tag="li" styleName="l--pad-v-1 bg--higher">
+    <div class="g--tight">
+      <div class="g__item w--1-12 txt--align-right">
+        <span class="i--large txt--neutral" ui:field="icon" />
+        <span class="is-invisible">Translation</span>
+      </div>
+      <div class="g__item w--9-12" ui:field="daa">
+        <g:InlineHTML ui:field="heading" />
+        <g:InlineHTML ui:field="targetContents" />
+        <ul class="txt--meta list--horizontal">
+          <li>
+            <g:InlineLabel ui:field="creationDate" />
+          </li>
+          <li class="d--left l--pad-left-half">
+            <g:InlineHTML ui:field="revision" />
+          </li>
+          <li>
+            <g:Anchor ui:field="compare" text="Compare" />
+          </li>
+          <li>
+            <g:Anchor ui:field="copyIntoEditor" text="Copy to Editor" />
+          </li>
+        </ul>
+      </div>
+    </div>
+  </g:HTMLPanel>
 </ui:UiBinder>

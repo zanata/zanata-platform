@@ -1,25 +1,35 @@
-<html xmlns:c="http://www.concordion.org/2007/concordion" xmlns:ext="urn:concordion-extensions:2010">
+<html xmlns:c="http://www.concordion.org/2007/concordion"
+  xmlns:ext="urn:concordion-extensions:2010">
 <head>
-    <title>TCMS test case 167901</title>
+  <title>TCMS test case 167901</title>
 </head>
 <body>
-<p class="info">TCMS test case: <a href="https://tcms.engineering.redhat.com/case/167901/">167901</a></p>
+<p class="info">TCMS test case: <a
+  href="https://tcms.engineering.redhat.com/case/167901/">167901</a></p>
+
 <p class="info">
-    sample project <span c:set="#project">glossary</span>.
-</p>
-<p>
-    As a user <b>without</b> glossarist-admin role,
-    given that I have user config at <span c:echo="#configPath = getUserConfigPath()"></span>.
+  sample project <span c:set="#project">glossary</span>.
 </p>
 
 <p>
-    Under project root path <span c:echo="getProjectLocation(#project)"></span>,
-    when I execute
+  As a user <b>without</b> glossarist-admin role,
+  given that I have user config at <span
+  c:echo="#configPath = getUserConfigPath()"></span>.
+</p>
+
+<p>
+  Under project root path <span c:echo="getProjectLocation(#project)"></span>,
+  when I execute
+
 <div c:execute="#result = push(#command, #configPath)">
-    <span c:set="#command">mvn --batch-mode zanata:glossary-delete -Dzanata.lang=fr -Dzanata.userConfig=</span><span c:echo="#configPath"></span>
-</div>,
-then I should get result <span c:assertTrue="isPushFailed(#result)">failed</span>
-with error message <span c:assertTrue="containsError(#result,#errorMsg)"><span c:set="#errorMsg">operation returned 401 (Unauthorized)</span></span>.
+  <span c:set="#command">mvn --batch-mode zanata:glossary-delete -Dzanata.lang=fr -Dzanata.userConfig=</span><span
+  c:echo="#configPath"></span>
+</div>
+,
+then I should get result <span
+  c:assertTrue="isPushFailed(#result)">failed</span>
+with error message <span c:assertTrue="containsError(#result,#errorMsg)"><span
+  c:set="#errorMsg">operation returned 401 (Unauthorized)</span></span>.
 </p>
     <pre>
         <span c:echo="resultByLines(#result)"/>

@@ -1,26 +1,26 @@
-<ui:composition  xmlns="http://www.w3.org/1999/xhtml"
-                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                 xmlns:h="http://java.sun.com/jsf/html"
-                 xmlns:f="http://java.sun.com/jsf/core"
-                 xmlns:s="http://jboss.org/schema/seam/taglib">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:s="http://jboss.org/schema/seam/taglib">
 
-    <div class="prop">
+  <div class="prop">
 
-        <s:label styleClass="name #{invalid?'errors':''}">
-            <ui:insert name="label"/>
-            <s:span styleClass="required" rendered="#{required}">*</s:span>
-        </s:label>
+    <s:label styleClass="name #{invalid?'errors':''}">
+      <ui:insert name="label"/>
+      <s:span styleClass="required" rendered="#{required}">*</s:span>
+    </s:label>
 
         <span class="value #{invalid?'errors':''}">
             <s:validateAll>
-                <ui:insert/>
+              <ui:insert/>
             </s:validateAll>
         </span>
-        
+
         <span class="value #{invalid?'errors':''} errorsMessage">
-			<s:span styleClass="icon-cancel-circle-2 errors" rendered="#{invalid}"/>
-        	<s:message styleClass="errors"/>
+        <s:span styleClass="icon-cancel-circle-2 errors" rendered="#{invalid}"/>
+          <s:message styleClass="errors"/>
         </span>
-    </div>
+  </div>
 
 </ui:composition>

@@ -1,72 +1,81 @@
 <div class="footer_container" xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:s="http://jboss.org/schema/seam/taglib"
-	xmlns:rich="http://richfaces.org/rich">
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:rich="http://richfaces.org/rich">
 
-	<div class="section_block">
-		<h4>Zanata</h4>
-		<div class="content">
-			<ul>
-				<li><a href="http://zanata.org/" target="_blank">#{messages['jsf.AboutZanata']}</a>
-				</li>
-				<li><a href="http://zanata.org/documentation.html"
-					target="_blank">#{messages['jsf.Documentation']}</a></li>
-				<li><a href="https://github.com/zanata/zanata/wiki"
-					target="_blank">#{messages['jsf.Wiki']}</a></li>
-				<li><a href="http://blog-zanatatm.rhcloud.com/" target="_blank">#{messages['jsf.Blog']}</a>
-				</li>
-			</ul>
-		</div>
-	</div>
+  <div class="section_block">
+    <h4>Zanata</h4>
 
-	<div class="section_block">
-		<h4>#{messages['jsf.Support']}</h4>
-		<div class="content">
-			<ul>
-				<li><s:link view="/help/view.xhtml" propagation="none">#{messages['jsf.Help']}</s:link>
-				</li>
-				<li><a href="http://webchat.freenode.net/?channels=zanata"
-					target="_blank">#{messages['jsf.IrcHelp']}</a></li>
-				<li><a href="http://zanata.org/faq.html" target="_blank">#{messages['jsf.FAQ']}</a>
-				</li>
-				<li><a
-					href="https://bugzilla.redhat.com/enter_bug.cgi?format=guided&amp;product=Zanata"
-					target="_blank">#{messages['jsf.ReportAProblem']}</a></li>
-				<li><a
-					href="https://bugzilla.redhat.com/buglist.cgi?product=Zanata&amp;bug_status=__open__"
-					target="_blank">#{messages['jsf.KnownIssues']}</a></li>
-			</ul>
-		</div>
-	</div>
+    <div class="content">
+      <ul>
+        <li><a href="http://zanata.org/"
+          target="_blank">#{messages['jsf.AboutZanata']}</a>
+        </li>
+        <li><a href="http://zanata.org/documentation.html"
+          target="_blank">#{messages['jsf.Documentation']}</a></li>
+        <li><a href="https://github.com/zanata/zanata/wiki"
+          target="_blank">#{messages['jsf.Wiki']}</a></li>
+        <li><a href="http://blog-zanatatm.rhcloud.com/"
+          target="_blank">#{messages['jsf.Blog']}</a>
+        </li>
+      </ul>
+    </div>
+  </div>
 
-	<div class="section_block">
-		<h4>#{messages['jsf.SiteMap']}</h4>
-		<div class="content" id="nav-footer">
-			<ul>
-				<li><s:link id="Projects_sitemap" view="/project/home.xhtml"
-						propagation="none" value="#{messages['jsf.Projects']}" /></li>
-				<li><s:link id="Groups_sitemap"
-						view="/version-group/home.xhtml" propagation="none"
-						value="#{messages['jsf.Groups']}" /></li>
-				<li><s:link id="Languages_sitemap" view="/language/home.xhtml"
-						propagation="none" value="#{messages['jsf.Languages']}" /></li>
-				<li><s:link id="Help_sitemap" view="/help/view.xhtml"
-						propagation="none" value="#{messages['jsf.Help']}" /></li>
-			</ul>
-		</div>
-	</div>
-	<div class="locale_selector_block">
-		<h:form id="localeSelector_form">
-			<h:selectOneMenu id="Select" value="#{localeSelector.localeString}"
-				valueChangeListener="#{localeSelector.select}" onchange="submit()">
-				<f:selectItems value="#{localeSelector.supportedLocales}" />
-			</h:selectOneMenu>
-		</h:form>
-	</div>
-	<div style="clear: both; display: block;" />
-	<div class="copyright_block">
-        <h:outputText value="#{messages['jsf.RunningVersionInfo']} #{messages['jsf.CopyrightNotice']}" escape="false" />
-	</div>
+  <div class="section_block">
+    <h4>#{messages['jsf.Support']}</h4>
+
+    <div class="content">
+      <ul>
+        <li><s:link view="/help/view.xhtml"
+          propagation="none">#{messages['jsf.Help']}</s:link>
+        </li>
+        <li><a href="http://webchat.freenode.net/?channels=zanata"
+          target="_blank">#{messages['jsf.IrcHelp']}</a></li>
+        <li><a href="http://zanata.org/faq.html"
+          target="_blank">#{messages['jsf.FAQ']}</a>
+        </li>
+        <li><a
+          href="https://bugzilla.redhat.com/enter_bug.cgi?format=guided&amp;product=Zanata"
+          target="_blank">#{messages['jsf.ReportAProblem']}</a></li>
+        <li><a
+          href="https://bugzilla.redhat.com/buglist.cgi?product=Zanata&amp;bug_status=__open__"
+          target="_blank">#{messages['jsf.KnownIssues']}</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section_block">
+    <h4>#{messages['jsf.SiteMap']}</h4>
+
+    <div class="content" id="nav-footer">
+      <ul>
+        <li><s:link id="Projects_sitemap" view="/project/home.xhtml"
+          propagation="none" value="#{messages['jsf.Projects']}"/></li>
+        <li><s:link id="Groups_sitemap"
+          view="/version-group/home.xhtml" propagation="none"
+          value="#{messages['jsf.Groups']}"/></li>
+        <li><s:link id="Languages_sitemap" view="/language/home.xhtml"
+          propagation="none" value="#{messages['jsf.Languages']}"/></li>
+        <li><s:link id="Help_sitemap" view="/help/view.xhtml"
+          propagation="none" value="#{messages['jsf.Help']}"/></li>
+      </ul>
+    </div>
+  </div>
+  <div class="locale_selector_block">
+    <h:form id="localeSelector_form">
+      <h:selectOneMenu id="Select" value="#{localeSelector.localeString}"
+        valueChangeListener="#{localeSelector.select}" onchange="submit()">
+        <f:selectItems value="#{localeSelector.supportedLocales}"/>
+      </h:selectOneMenu>
+    </h:form>
+  </div>
+  <div style="clear: both; display: block;"/>
+  <div class="copyright_block">
+    <h:outputText
+      value="#{messages['jsf.RunningVersionInfo']} #{messages['jsf.CopyrightNotice']}"
+      escape="false"/>
+  </div>
 </div>

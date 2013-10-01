@@ -44,109 +44,104 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 
 /**
- * Writes one or more variations for a single TransMemoryUnit as a TMX translation unit.
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * Writes one or more variations for a single TransMemoryUnit as a TMX
+ * translation unit.
+ *
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
 @ParametersAreNonnullByDefault
-public class TransMemoryTMXExportStrategy implements TMXExportStrategy<TransMemoryUnit>
-{
-   private static final String creationTool = "Zanata " + TransMemoryTMXExportStrategy.class.getSimpleName();
-   private static final String creationToolVersion =
-         VersionUtility.getVersionInfo(TransMemoryTMXExportStrategy.class).getVersionNo();
-   private TransMemory tm;
+public class TransMemoryTMXExportStrategy implements
+        TMXExportStrategy<TransMemoryUnit> {
+    private static final String creationTool = "Zanata "
+            + TransMemoryTMXExportStrategy.class.getSimpleName();
+    private static final String creationToolVersion = VersionUtility
+            .getVersionInfo(TransMemoryTMXExportStrategy.class).getVersionNo();
+    private TransMemory tm;
 
-   public TransMemoryTMXExportStrategy(TransMemory tm)
-   {
-      super();
-      this.tm = tm;
-   }
+    public TransMemoryTMXExportStrategy(TransMemory tm) {
+        super();
+        this.tm = tm;
+    }
 
-   @Override
-   public Element buildHeader() throws IOException
-   {
-      Element header = new Element("header");
-      addAttributes(header, TMXMetadataHelper.getAttributes(tm));
-      addChildren(header, tm);
-      header.addAttribute(new Attribute("creationtool", creationTool));
-      header.addAttribute(new Attribute("creationtoolversion", creationToolVersion));
-      return header;
-   }
+    @Override
+    public Element buildHeader() throws IOException {
+        Element header = new Element("header");
+        addAttributes(header, TMXMetadataHelper.getAttributes(tm));
+        addChildren(header, tm);
+        header.addAttribute(new Attribute("creationtool", creationTool));
+        header.addAttribute(new Attribute("creationtoolversion",
+                creationToolVersion));
+        return header;
+    }
 
-   @Override
-   public Optional<Element> buildTU(TransMemoryUnit transUnit) throws IOException
-   {
-      Element tu = new Element("tu");
+    @Override
+    public Optional<Element> buildTU(TransMemoryUnit transUnit)
+            throws IOException {
+        Element tu = new Element("tu");
 
-      Optional<LocaleId> sourceLocaleId = getSourceLocale(transUnit);
-      String srcLang = sourceLocaleId.isPresent() ?
-            sourceLocaleId.get().getId() : TMXConstants.ALL_LOCALE;
-      tu.addAttribute(new Attribute(TMXConstants.SRCLANG, srcLang));
+        Optional<LocaleId> sourceLocaleId = getSourceLocale(transUnit);
+        String srcLang =
+                sourceLocaleId.isPresent() ? sourceLocaleId.get().getId()
+                        : TMXConstants.ALL_LOCALE;
+        tu.addAttribute(new Attribute(TMXConstants.SRCLANG, srcLang));
 
-      String tuid = transUnit.getTransUnitId();
-      if (tuid != null)
-      {
-         tu.addAttribute(new Attribute("tuid", tuid));
-      }
-      addAttributes(tu, TMXMetadataHelper.getAttributes(transUnit));
-      addChildren(tu, transUnit);
+        String tuid = transUnit.getTransUnitId();
+        if (tuid != null) {
+            tu.addAttribute(new Attribute("tuid", tuid));
+        }
+        addAttributes(tu, TMXMetadataHelper.getAttributes(transUnit));
+        addChildren(tu, transUnit);
 
-      for (TransMemoryUnitVariant tuv: transUnit.getTransUnitVariants().values())
-      {
-         tu.appendChild(buildTUV(tuv));
-      }
-      return Optional.of(tu);
-   }
+        for (TransMemoryUnitVariant tuv : transUnit.getTransUnitVariants()
+                .values()) {
+            tu.appendChild(buildTUV(tuv));
+        }
+        return Optional.of(tu);
+    }
 
-   private static Optional<LocaleId> getSourceLocale(TransMemoryUnit tu)
-   {
-      String tuSourceLanguage = tu.getSourceLanguage();
-      if (tuSourceLanguage != null)
-      {
-         return Optional.of(new LocaleId(tuSourceLanguage));
-      }
-      return Optional.absent();
-   }
+    private static Optional<LocaleId> getSourceLocale(TransMemoryUnit tu) {
+        String tuSourceLanguage = tu.getSourceLanguage();
+        if (tuSourceLanguage != null) {
+            return Optional.of(new LocaleId(tuSourceLanguage));
+        }
+        return Optional.absent();
+    }
 
-   private static void addAttributes(Element toElem, ImmutableMap<String,String> attributes)
-   {
-      for (Map.Entry<String, String> attr : attributes.entrySet())
-      {
-         toElem.addAttribute(toAttribute(attr));
-      }
-   }
+    private static void addAttributes(Element toElem,
+            ImmutableMap<String, String> attributes) {
+        for (Map.Entry<String, String> attr : attributes.entrySet()) {
+            toElem.addAttribute(toAttribute(attr));
+        }
+    }
 
-   private static void addChildren(Element toHeader, HasTMMetadata fromTransMemory)
-   {
-      for (Element child : TMXMetadataHelper.getChildren(fromTransMemory))
-      {
-         toHeader.appendChild(child);
-      }
-   }
+    private static void addChildren(Element toHeader,
+            HasTMMetadata fromTransMemory) {
+        for (Element child : TMXMetadataHelper.getChildren(fromTransMemory)) {
+            toHeader.appendChild(child);
+        }
+    }
 
-   private static Attribute toAttribute(Map.Entry<String, String> attr)
-   {
-      String name = attr.getKey();
-      if (name.equals("xml:lang"))
-      {
-         return new Attribute(name, XMLConstants.XML_NS_URI, attr.getValue());
-      }
-      else
-      {
-         return new Attribute(name, attr.getValue());
-      }
-   }
+    private static Attribute toAttribute(Map.Entry<String, String> attr) {
+        String name = attr.getKey();
+        if (name.equals("xml:lang")) {
+            return new Attribute(name, XMLConstants.XML_NS_URI, attr.getValue());
+        } else {
+            return new Attribute(name, attr.getValue());
+        }
+    }
 
-   private static Element buildTUV(TransMemoryUnitVariant fromVariant)
-   {
-      Element tuv = new Element("tuv");
-      addAttributes(tuv, TMXMetadataHelper.getAttributes(fromVariant));
-      addChildren(tuv, fromVariant);
-      Element seg = new Element("seg");
-      @Nonnull String trgContent = fromVariant.getPlainTextSegment();
-      seg.appendChild(trgContent);
-      tuv.appendChild(seg);
-      return tuv;
-   }
+    private static Element buildTUV(TransMemoryUnitVariant fromVariant) {
+        Element tuv = new Element("tuv");
+        addAttributes(tuv, TMXMetadataHelper.getAttributes(fromVariant));
+        addChildren(tuv, fromVariant);
+        Element seg = new Element("seg");
+        @Nonnull
+        String trgContent = fromVariant.getPlainTextSegment();
+        seg.appendChild(trgContent);
+        tuv.appendChild(seg);
+        return tuv;
+    }
 
 }

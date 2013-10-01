@@ -50,167 +50,162 @@ import com.google.inject.Inject;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class RevertTransUnitUpdateLink extends InlineLabel implements UndoLink
-{
-   private final CachingDispatchAsync dispatcher;
-   private final WebTransMessages messages;
-   private final EventBus eventBus;
-   private final UserWorkspaceContext userWorkspaceContext;
+public class RevertTransUnitUpdateLink extends InlineLabel implements UndoLink {
+    private final CachingDispatchAsync dispatcher;
+    private final WebTransMessages messages;
+    private final EventBus eventBus;
+    private final UserWorkspaceContext userWorkspaceContext;
 
-   // state variables
-   private HandlerRegistration handlerRegistration;
-   private String linkStyleName;
-   private String disabledStyleName;
-   private boolean canUndo = false;
+    // state variables
+    private HandlerRegistration handlerRegistration;
+    private String linkStyleName;
+    private String disabledStyleName;
+    private boolean canUndo = false;
 
-   //default callback
-   private UndoCallback callback = new DefaultUndoCallback();
+    // default callback
+    private UndoCallback callback = new DefaultUndoCallback();
 
-   @Inject
-   public RevertTransUnitUpdateLink(CachingDispatchAsync dispatcher, WebTransMessages messages, EventBus eventBus, UserWorkspaceContext userWorkspaceContext)
-   {
-      super();
-      setTitle(messages.undo());
-      this.dispatcher = dispatcher;
-      this.messages = messages;
-      this.eventBus = eventBus;
-      this.userWorkspaceContext = userWorkspaceContext;
-   }
+    @Inject
+    public RevertTransUnitUpdateLink(CachingDispatchAsync dispatcher,
+            WebTransMessages messages, EventBus eventBus,
+            UserWorkspaceContext userWorkspaceContext) {
+        super();
+        setTitle(messages.undo());
+        this.dispatcher = dispatcher;
+        this.messages = messages;
+        this.eventBus = eventBus;
+        this.userWorkspaceContext = userWorkspaceContext;
+    }
 
+    @Override
+    public void prepareUndoFor(UpdateTransUnitResult updateTransUnitResult) {
+        ClickHandler clickHandler =
+                new RevertTransUnitUpdateClickHandler(
+                        updateTransUnitResult.getUpdateInfoList());
+        handlerRegistration = addClickHandler(clickHandler);
+        canUndo = true;
+    }
 
-   @Override
-   public void prepareUndoFor(UpdateTransUnitResult updateTransUnitResult)
-   {
-      ClickHandler clickHandler = new RevertTransUnitUpdateClickHandler(updateTransUnitResult.getUpdateInfoList());
-      handlerRegistration = addClickHandler(clickHandler);
-      canUndo = true;
-   }
+    @Override
+    public void setUndoCallback(UndoCallback callback) {
+        this.callback = callback;
+    }
 
-   @Override
-   public void setUndoCallback(UndoCallback callback)
-   {
-      this.callback = callback;
-   }
+    @Override
+    public void setLinkStyle(String styleName) {
+        linkStyleName = styleName + " icon-undo";
+        setStyleName(linkStyleName);
+    }
 
+    @Override
+    public void setDisabledStyle(String styleName) {
+        disabledStyleName = styleName;
+    }
 
-   @Override
-   public void setLinkStyle(String styleName)
-   {
-      linkStyleName = styleName + " icon-undo";
-      setStyleName(linkStyleName);
-   }
-   
-   @Override
-   public void setDisabledStyle(String styleName)
-   {
-      disabledStyleName = styleName;
-   }
+    private void enableLink() {
+        if (!Strings.isNullOrEmpty(linkStyleName)) {
+            setStyleName(linkStyleName);
+        }
+        canUndo = true;
+    }
 
-   private void enableLink()
-   {
-      if (!Strings.isNullOrEmpty(linkStyleName))
-      {
-         setStyleName(linkStyleName);
-      }
-      canUndo = true;
-   }
+    private void disableLink() {
+        if (!Strings.isNullOrEmpty(linkStyleName)) {
+            setStyleName(disabledStyleName);
+        }
+        canUndo = false;
+    }
 
-   private void disableLink()
-   {
-      if (!Strings.isNullOrEmpty(linkStyleName))
-      {
-         setStyleName(disabledStyleName);
-      }
-      canUndo = false;
-   }
+    // we should make this a presenter if the size or logic grows
+    private class RevertTransUnitUpdateClickHandler implements ClickHandler {
+        private final List<TransUnitUpdateInfo> updateInfoList;
 
-   // we should make this a presenter if the size or logic grows
-   private class RevertTransUnitUpdateClickHandler implements ClickHandler
-   {
-      private final List<TransUnitUpdateInfo> updateInfoList;
+        RevertTransUnitUpdateClickHandler(
+                List<TransUnitUpdateInfo> updateInfoList) {
+            this.updateInfoList = updateInfoList;
+        }
 
-      RevertTransUnitUpdateClickHandler(List<TransUnitUpdateInfo> updateInfoList)
-      {
-         this.updateInfoList = updateInfoList;
-      }
+        @Override
+        public void onClick(ClickEvent event) {
+            RevertTransUnitUpdates revertAction =
+                    new RevertTransUnitUpdates(updateInfoList);
 
-      @Override
-      public void onClick(ClickEvent event)
-      {
-         RevertTransUnitUpdates revertAction = new RevertTransUnitUpdates(updateInfoList);
-
-         if (!canUndo)
-         {
-            return;
-         }
-         if (userWorkspaceContext.hasReadOnlyAccess())
-         {
-            eventBus.fireEvent(new NotificationEvent(Severity.Warning, messages.cannotUndoInReadOnlyMode()));
-            return;
-         }
-         callback.preUndo();
-         disableLink();
-
-         dispatcher.execute(revertAction, new AsyncCallback<UpdateTransUnitResult>()
-         {
-            @Override
-            public void onFailure(Throwable caught)
-            {
-               eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.undoFailure()));
-               if (!Strings.isNullOrEmpty(getText()))
-               {
-                  setText(messages.undo());
-               }
-               enableLink();
+            if (!canUndo) {
+                return;
             }
-
-            @Override
-            public void onSuccess(UpdateTransUnitResult result)
-            {
-               if (result.isAllSuccess())
-               {
-                  eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.undoSuccess()));
-                  callback.postUndoSuccess();
-               }
-               else
-               {
-                  // most likely the undo link became stale i.e. entity state has
-                  // changed on the server
-                  Collection<TransUnitUpdateInfo> unsuccessful = Collections2.filter(result.getUpdateInfoList(), UnsuccessfulUpdatePredicate.INSTANCE);
-                  int unsuccessfulCount = unsuccessful.size();
-                  int successfulCount = result.getUpdateInfoList().size() - unsuccessfulCount;
-                  Log.info("undo not all successful. #" + unsuccessfulCount + " unsuccess and #" + successfulCount + " success");
-                  eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.undoUnsuccessful(unsuccessfulCount, successfulCount)));
-                  setText("");
-               }
-               // we ensure the undo can only be click once.
-               handlerRegistration.removeHandler();
+            if (userWorkspaceContext.hasReadOnlyAccess()) {
+                eventBus.fireEvent(new NotificationEvent(Severity.Warning,
+                        messages.cannotUndoInReadOnlyMode()));
+                return;
             }
-         });
-      }
-   }
+            callback.preUndo();
+            disableLink();
 
-   private static enum UnsuccessfulUpdatePredicate implements Predicate<TransUnitUpdateInfo>
-   {
-      INSTANCE;
+            dispatcher.execute(revertAction,
+                    new AsyncCallback<UpdateTransUnitResult>() {
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            eventBus.fireEvent(new NotificationEvent(
+                                    Severity.Error, messages.undoFailure()));
+                            if (!Strings.isNullOrEmpty(getText())) {
+                                setText(messages.undo());
+                            }
+                            enableLink();
+                        }
 
-      @Override
-      public boolean apply(TransUnitUpdateInfo input)
-      {
-         return !input.isSuccess();
-      }
-   }
+                        @Override
+                        public void onSuccess(UpdateTransUnitResult result) {
+                            if (result.isAllSuccess()) {
+                                eventBus.fireEvent(new NotificationEvent(
+                                        Severity.Info, messages.undoSuccess()));
+                                callback.postUndoSuccess();
+                            } else {
+                                // most likely the undo link became stale i.e.
+                                // entity state has
+                                // changed on the server
+                                Collection<TransUnitUpdateInfo> unsuccessful =
+                                        Collections2.filter(
+                                                result.getUpdateInfoList(),
+                                                UnsuccessfulUpdatePredicate.INSTANCE);
+                                int unsuccessfulCount = unsuccessful.size();
+                                int successfulCount =
+                                        result.getUpdateInfoList().size()
+                                                - unsuccessfulCount;
+                                Log.info("undo not all successful. #"
+                                        + unsuccessfulCount
+                                        + " unsuccess and #" + successfulCount
+                                        + " success");
+                                eventBus.fireEvent(new NotificationEvent(
+                                        Severity.Info, messages
+                                                .undoUnsuccessful(
+                                                        unsuccessfulCount,
+                                                        successfulCount)));
+                                setText("");
+                            }
+                            // we ensure the undo can only be click once.
+                            handlerRegistration.removeHandler();
+                        }
+                    });
+        }
+    }
 
-   private class DefaultUndoCallback implements UndoCallback
-   {
-      @Override
-      public void preUndo()
-      {
-      }
+    private static enum UnsuccessfulUpdatePredicate implements
+            Predicate<TransUnitUpdateInfo> {
+        INSTANCE;
 
-      @Override
-      public void postUndoSuccess()
-      {
-      }
-   }
+        @Override
+        public boolean apply(TransUnitUpdateInfo input) {
+            return !input.isSuccess();
+        }
+    }
+
+    private class DefaultUndoCallback implements UndoCallback {
+        @Override
+        public void preUndo() {
+        }
+
+        @Override
+        public void postUndoSuccess() {
+        }
+    }
 }

@@ -31,113 +31,97 @@ import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 
 /**
- * 
+ *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- * 
+ *
  **/
-public class NewlineLeadTrailValidation extends AbstractValidationAction
-{
-   public NewlineLeadTrailValidation(ValidationId id, ValidationMessages messages)
-   {
-      super(id, messages.newLineValidatorDesc(), messages);
-   }
+public class NewlineLeadTrailValidation extends AbstractValidationAction {
+    public NewlineLeadTrailValidation(ValidationId id,
+            ValidationMessages messages) {
+        super(id, messages.newLineValidatorDesc(), messages);
+    }
 
-   private final static String leadNewlineRegex = "^\n";
-   private final static String endNewlineRegex = "\n$";
-   private final static String newlineRegex = "\n";
+    private final static String leadNewlineRegex = "^\n";
+    private final static String endNewlineRegex = "\n$";
+    private final static String newlineRegex = "\n";
 
-   private final static RegExp leadRegExp = RegExp.compile(leadNewlineRegex);
-   private final static RegExp endRegExp = RegExp.compile(endNewlineRegex);
+    private final static RegExp leadRegExp = RegExp.compile(leadNewlineRegex);
+    private final static RegExp endRegExp = RegExp.compile(endNewlineRegex);
 
-   @Override
-   public List<String> doValidate(String source, String target)
-   {
-      ArrayList<String> errors = new ArrayList<String>();
-      
-      if (notShareLeading(source, target))
-      {
-         errors.add(getMessages().leadingNewlineMissing());
-      }
+    @Override
+    public List<String> doValidate(String source, String target) {
+        ArrayList<String> errors = new ArrayList<String>();
 
-      if (notShareLeading(target, source))
-      {
-         errors.add(getMessages().leadingNewlineAdded());
-      }
+        if (notShareLeading(source, target)) {
+            errors.add(getMessages().leadingNewlineMissing());
+        }
 
-      if (notShareTrailing(source, target))
-      {
-         errors.add(getMessages().trailingNewlineMissing());
-      }
+        if (notShareLeading(target, source)) {
+            errors.add(getMessages().leadingNewlineAdded());
+        }
 
-      if (notShareTrailing(target, source))
-      {
-         errors.add(getMessages().trailingNewlineAdded());
-      }
+        if (notShareTrailing(source, target)) {
+            errors.add(getMessages().trailingNewlineMissing());
+        }
 
-      int sourceLines = 1 + countNewlines(source);
-      int targetLines = 1 + countNewlines(target);
-      if (sourceLines < targetLines)
-      {
-         errors.add(getMessages().linesAdded(sourceLines, targetLines));
-      }
+        if (notShareTrailing(target, source)) {
+            errors.add(getMessages().trailingNewlineAdded());
+        }
 
-      if (targetLines < sourceLines)
-      {
-         errors.add(getMessages().linesRemoved(sourceLines, targetLines));
-      }
-      
-      return errors;
-   }
+        int sourceLines = 1 + countNewlines(source);
+        int targetLines = 1 + countNewlines(target);
+        if (sourceLines < targetLines) {
+            errors.add(getMessages().linesAdded(sourceLines, targetLines));
+        }
 
-   private boolean notShareTrailing(String source, String target)
-   {
-      return !shareTrailing(source, target);
-   }
+        if (targetLines < sourceLines) {
+            errors.add(getMessages().linesRemoved(sourceLines, targetLines));
+        }
 
-   private boolean notShareLeading(String source, String target)
-   {
-      return !shareLeading(source, target);
-   }
+        return errors;
+    }
 
-   /**
-    * @return false if base has a leading newline and test does not, true
-    *         otherwise
-    */
-   private boolean shareLeading(String base, String test)
-   {
-      if (leadRegExp.test(base))
-      {
-         return leadRegExp.test(test);
-      }
-      // no newline so can't fail
-      return true;
-   }
+    private boolean notShareTrailing(String source, String target) {
+        return !shareTrailing(source, target);
+    }
 
-   /**
-    * @return false if base has a trailing newline and test does not, true
-    *         otherwise
-    */
-   private boolean shareTrailing(String base, String test)
-   {
-      if (endRegExp.test(base))
-      {
-         return endRegExp.test(test);
-      }
-      // no newline so can't fail
-      return true;
-   }
+    private boolean notShareLeading(String source, String target) {
+        return !shareLeading(source, target);
+    }
 
-   private int countNewlines(String string)
-   {
-      RegExp newlineRegExp = RegExp.compile(newlineRegex, "g");
+    /**
+     * @return false if base has a leading newline and test does not, true
+     *         otherwise
+     */
+    private boolean shareLeading(String base, String test) {
+        if (leadRegExp.test(base)) {
+            return leadRegExp.test(test);
+        }
+        // no newline so can't fail
+        return true;
+    }
 
-      int count = 0;
-      MatchResult matchResult = newlineRegExp.exec(string);
-      while (matchResult != null)
-      {
-         count++;
-         matchResult = newlineRegExp.exec(string);
-      }
-      return count;
-   }
+    /**
+     * @return false if base has a trailing newline and test does not, true
+     *         otherwise
+     */
+    private boolean shareTrailing(String base, String test) {
+        if (endRegExp.test(base)) {
+            return endRegExp.test(test);
+        }
+        // no newline so can't fail
+        return true;
+    }
+
+    private int countNewlines(String string) {
+        RegExp newlineRegExp = RegExp.compile(newlineRegex, "g");
+
+        int count = 0;
+        MatchResult matchResult = newlineRegExp.exec(string);
+        while (matchResult != null) {
+            count++;
+            matchResult = newlineRegExp.exec(string);
+        }
+        return count;
+    }
 }

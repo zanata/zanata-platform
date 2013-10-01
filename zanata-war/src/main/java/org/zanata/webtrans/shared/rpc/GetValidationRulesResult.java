@@ -5,25 +5,21 @@ import java.util.Map;
 import org.zanata.webtrans.shared.model.ValidationAction.State;
 import org.zanata.webtrans.shared.model.ValidationId;
 
-public class GetValidationRulesResult implements DispatchResult
-{
+public class GetValidationRulesResult implements DispatchResult {
 
-   private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-   private Map<ValidationId, State> validationRules;
+    private Map<ValidationId, State> validationRules;
 
-   @SuppressWarnings("unused")
-   private GetValidationRulesResult()
-   {
-   }
+    @SuppressWarnings("unused")
+    private GetValidationRulesResult() {
+    }
 
-   public GetValidationRulesResult(Map<ValidationId, State> validations)
-   {
-      this.validationRules = validations;
-   }
+    public GetValidationRulesResult(Map<ValidationId, State> validations) {
+        this.validationRules = validations;
+    }
 
-   public Map<ValidationId, State> getValidationRules()
-   {
-      return validationRules;
-   }
+    public Map<ValidationId, State> getValidationRules() {
+        return validationRules;
+    }
 }

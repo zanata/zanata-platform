@@ -2,17 +2,17 @@
  * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
- * 
+ *
  * This is free software; you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
@@ -42,82 +42,76 @@ import org.zanata.model.HAccountActivationKey;
 
 @Name("activate")
 @Scope(ScopeType.CONVERSATION)
-public class ActivateAction implements Serializable
-{
+public class ActivateAction implements Serializable {
 
-   private static final long serialVersionUID = -8079131168179421345L;
+    private static final long serialVersionUID = -8079131168179421345L;
 
-   @Logger
-   Log log;
+    @Logger
+    Log log;
 
-   @In
-   private AccountActivationKeyDAO accountActivationKeyDAO;
+    @In
+    private AccountActivationKeyDAO accountActivationKeyDAO;
 
-   @In
-   private IdentityManager identityManager;
+    @In
+    private IdentityManager identityManager;
 
-   private String activationKey;
+    private String activationKey;
 
-   public String getActivationKey()
-   {
-      return activationKey;
-   }
+    public String getActivationKey() {
+        return activationKey;
+    }
 
-   private HAccountActivationKey key;
+    private HAccountActivationKey key;
 
-   private static int LINK_ACTIVE_DAYS = 1;
+    private static int LINK_ACTIVE_DAYS = 1;
 
-   @Begin(join = true)
-   public void validateActivationKey()
-   {
+    @Begin(join = true)
+    public void validateActivationKey() {
 
-      if (getActivationKey() == null)
-      {
-         throw new KeyNotFoundException("null activation key");
-      }
+        if (getActivationKey() == null) {
+            throw new KeyNotFoundException("null activation key");
+        }
 
-      key = accountActivationKeyDAO.findById(getActivationKey(), false);
+        key = accountActivationKeyDAO.findById(getActivationKey(), false);
 
-      if (key == null)
-      {
-         throw new KeyNotFoundException("activation key: " + getActivationKey());
-      }
+        if (key == null) {
+            throw new KeyNotFoundException("activation key: "
+                    + getActivationKey());
+        }
 
-      if (isExpired(key.getCreationDate(), LINK_ACTIVE_DAYS))
-      {
-         throw new ActivationLinkExpiredException("Activation link expired:" + getActivationKey());
-      }
-   }
+        if (isExpired(key.getCreationDate(), LINK_ACTIVE_DAYS)) {
+            throw new ActivationLinkExpiredException("Activation link expired:"
+                    + getActivationKey());
+        }
+    }
 
-   private boolean isExpired(Date creationDate, int activeDays)
-   {
-      Date expiryDate = DateUtils.addDays(creationDate, activeDays);
-      return expiryDate.before(new Date());
-   }
+    private boolean isExpired(Date creationDate, int activeDays) {
+        Date expiryDate = DateUtils.addDays(creationDate, activeDays);
+        return expiryDate.before(new Date());
+    }
 
-   public void setActivationKey(String activationKey)
-   {
-      this.activationKey = activationKey;
-   }
+    public void setActivationKey(String activationKey) {
+        this.activationKey = activationKey;
+    }
 
-   @End
-   public String activate()
-   {
+    @End
+    public String activate() {
 
-      new RunAsOperation()
-      {
-         public void execute()
-         {
-            identityManager.enableUser(key.getAccount().getUsername());
-            identityManager.grantRole(key.getAccount().getUsername(), "user");
-         }
-      }.addRole("admin").run();
+        new RunAsOperation() {
+            public void execute() {
+                identityManager.enableUser(key.getAccount().getUsername());
+                identityManager.grantRole(key.getAccount().getUsername(),
+                        "user");
+            }
+        }.addRole("admin").run();
 
-      accountActivationKeyDAO.makeTransient(key);
+        accountActivationKeyDAO.makeTransient(key);
 
-      FacesMessages.instance().add("Your account was successfully activated. You can now sign in.");
+        FacesMessages
+                .instance()
+                .add("Your account was successfully activated. You can now sign in.");
 
-      return "/account/login.xhtml";
-   }
+        return "/account/login.xhtml";
+    }
 
 }

@@ -25,46 +25,44 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 
-public class EventWrapperImpl implements EventWrapper
-{
+public class EventWrapperImpl implements EventWrapper {
 
-   @Override
-   public HandlerRegistration addNativePreviewHandler(NativePreviewHandler handler)
-   {
-      return com.google.gwt.user.client.Event.addNativePreviewHandler(handler);
-   }
+    @Override
+    public HandlerRegistration addNativePreviewHandler(
+            NativePreviewHandler handler) {
+        return com.google.gwt.user.client.Event
+                .addNativePreviewHandler(handler);
+    }
 
-   public int keyDownEvent()
-   {
-      return com.google.gwt.user.client.Event.ONKEYDOWN;
-   }
+    public int keyDownEvent() {
+        return com.google.gwt.user.client.Event.ONKEYDOWN;
+    }
 
-   @Override
-   public int keyUpEvent()
-   {
-      return com.google.gwt.user.client.Event.ONKEYUP;
-   }
+    @Override
+    public int keyUpEvent() {
+        return com.google.gwt.user.client.Event.ONKEYUP;
+    }
 
-   @Override
-   public int getTypeInt(NativePreviewEvent evt)
-   {
-      return evt.getTypeInt();
-   }
+    @Override
+    public int getTypeInt(NativePreviewEvent evt) {
+        return evt.getTypeInt();
+    }
 
-   @Override
-   public Keys createKeys(NativeEvent evt)
-   {
+    @Override
+    public Keys createKeys(NativeEvent evt) {
 
-      int modifiers = (evt.getAltKey() ? Keys.ALT_KEY : 0) | (evt.getShiftKey() ? Keys.SHIFT_KEY : 0)
-                    | (evt.getCtrlKey() ? Keys.CTRL_KEY : 0) | (evt.getMetaKey() ? Keys.META_KEY : 0);
+        int modifiers =
+                (evt.getAltKey() ? Keys.ALT_KEY : 0)
+                        | (evt.getShiftKey() ? Keys.SHIFT_KEY : 0)
+                        | (evt.getCtrlKey() ? Keys.CTRL_KEY : 0)
+                        | (evt.getMetaKey() ? Keys.META_KEY : 0);
 
-      return new Keys(modifiers, evt.getKeyCode());
-   }
+        return new Keys(modifiers, evt.getKeyCode());
+    }
 
-   @Override
-   public String getType(NativeEvent evt)
-   {
-      return evt.getType();
-   }
+    @Override
+    public String getType(NativeEvent evt) {
+        return evt.getType();
+    }
 
 }

@@ -1,6 +1,5 @@
 package org.zanata.dao;
 
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -17,36 +16,33 @@ import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
 
 @Test(groups = { "jpa-tests" })
-public class LocaleDAOTest extends ZanataDbunitJpaTest
-{
+public class LocaleDAOTest extends ZanataDbunitJpaTest {
 
-   private LocaleDAO dao;
-   private Log log = Logging.getLog(LocaleDAOTest.class);
+    private LocaleDAO dao;
+    private Log log = Logging.getLog(LocaleDAOTest.class);
 
-   @Override
-   protected void prepareDBUnitOperations()
-   {
-      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/LocalesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
-   }
+    @Override
+    protected void prepareDBUnitOperations() {
+        beforeTestOperations.add(new DataSetOperation(
+                "org/zanata/test/model/LocalesData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
+    }
 
-   @BeforeClass
-   void beforeClass()
-   {
-      Identity.setSecurityEnabled(false);
-   }
+    @BeforeClass
+    void beforeClass() {
+        Identity.setSecurityEnabled(false);
+    }
 
-   @BeforeMethod(firstTimeOnly = true)
-   public void setup()
-   {
-      dao = new LocaleDAO((Session) getEm().getDelegate());
-   }
+    @BeforeMethod(firstTimeOnly = true)
+    public void setup() {
+        dao = new LocaleDAO((Session) getEm().getDelegate());
+    }
 
-   @Test
-   public void testFindByLocale()
-   {
-      log.debug("testFindByLocale");
-      HLocale hl = dao.findByLocaleId(new LocaleId("de"));
-      assertThat(hl.getLocaleId().getId(), is("de"));
-   }
+    @Test
+    public void testFindByLocale() {
+        log.debug("testFindByLocale");
+        HLocale hl = dao.findByLocaleId(new LocaleId("de"));
+        assertThat(hl.getLocaleId().getId(), is("de"));
+    }
 
 }

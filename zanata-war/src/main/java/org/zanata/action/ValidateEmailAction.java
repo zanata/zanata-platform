@@ -43,83 +43,77 @@ import org.zanata.model.HPersonEmailValidationKey;
 import org.zanata.service.impl.EmailChangeService;
 
 @Name("validateEmail")
-public class ValidateEmailAction implements Serializable
-{
-   private static final long serialVersionUID = 1L;
-   private String activationKey;
+public class ValidateEmailAction implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private String activationKey;
 
-   @In
-   PersonDAO personDAO;
+    @In
+    PersonDAO personDAO;
 
-   @In
-   Identity identity;
+    @In
+    Identity identity;
 
-   @In
-   EmailChangeService emailChangeService;
+    @In
+    EmailChangeService emailChangeService;
 
-   @Logger
-   Log log;
+    @Logger
+    Log log;
 
-   @Transactional
-   public String validate() throws LoginException
-   {
-      String returnUrl = "/home.xhtml";
+    @Transactional
+    public String validate() throws LoginException {
+        String returnUrl = "/home.xhtml";
 
-      if (activationKey != null && !activationKey.isEmpty())
-      {
-         HPersonEmailValidationKey entry = emailChangeService.getActivationKey(activationKey);
-         if (entry == null)
-         {
-            throw new KeyNotFoundException("activation key: " + activationKey);
-         }
-
-         String checkResult = checkExpiryDate(entry.getCreationDate());
-
-         if (StringUtils.isEmpty(checkResult))
-         {
-            HPerson person = entry.getPerson();
-            HAccount account = person.getAccount();
-            if (!account.getUsername().equals(identity.getCredentials().getUsername()))
-            {
-               throw new LoginException();
+        if (activationKey != null && !activationKey.isEmpty()) {
+            HPersonEmailValidationKey entry =
+                    emailChangeService.getActivationKey(activationKey);
+            if (entry == null) {
+                throw new KeyNotFoundException("activation key: "
+                        + activationKey);
             }
 
-            person.setEmail(entry.getEmail());
-            account.setEnabled(true);
-            personDAO.makePersistent(person);
-            personDAO.flush();
-            emailChangeService.removeEntry(entry);
-            FacesMessages.instance().add("You have successfully changed your email account.");
-            log.info("update email address to {0}  successfully", entry.getEmail());
-         }
-         else
-         {
-            returnUrl = checkResult;
-         }
-      }
-      return returnUrl;
-   }
+            String checkResult = checkExpiryDate(entry.getCreationDate());
 
-   private static int LINK_ACTIVE_DAYS = 1;
+            if (StringUtils.isEmpty(checkResult)) {
+                HPerson person = entry.getPerson();
+                HAccount account = person.getAccount();
+                if (!account.getUsername().equals(
+                        identity.getCredentials().getUsername())) {
+                    throw new LoginException();
+                }
 
-   private String checkExpiryDate(Date createdDate)
-   {
-      if (emailChangeService.isExpired(createdDate, LINK_ACTIVE_DAYS))
-      {
-         log.info("Creation date expired:" + createdDate);
-         FacesMessages.instance().add(ERROR, "Link expired. Please update your email again.");
-         return "/profile/edit.xhtml";
-      }
-      return "";
-   }
+                person.setEmail(entry.getEmail());
+                account.setEnabled(true);
+                personDAO.makePersistent(person);
+                personDAO.flush();
+                emailChangeService.removeEntry(entry);
+                FacesMessages.instance().add(
+                        "You have successfully changed your email account.");
+                log.info("update email address to {0}  successfully",
+                        entry.getEmail());
+            } else {
+                returnUrl = checkResult;
+            }
+        }
+        return returnUrl;
+    }
 
-   public String getActivationKey()
-   {
-      return activationKey;
-   }
+    private static int LINK_ACTIVE_DAYS = 1;
 
-   public void setActivationKey(String activationKey)
-   {
-      this.activationKey = activationKey;
-   }
+    private String checkExpiryDate(Date createdDate) {
+        if (emailChangeService.isExpired(createdDate, LINK_ACTIVE_DAYS)) {
+            log.info("Creation date expired:" + createdDate);
+            FacesMessages.instance().add(ERROR,
+                    "Link expired. Please update your email again.");
+            return "/profile/edit.xhtml";
+        }
+        return "";
+    }
+
+    public String getActivationKey() {
+        return activationKey;
+    }
+
+    public void setActivationKey(String activationKey) {
+        this.activationKey = activationKey;
+    }
 }

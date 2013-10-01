@@ -31,62 +31,56 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.zanata.page.BasePage;
 import org.zanata.util.WebElementUtil;
 
-public class DashboardPage extends BasePage
-{
+public class DashboardPage extends BasePage {
 
-   @FindBy(id = "main_body_content")
-   private WebElement mainBodyContent;
+    @FindBy(id = "main_body_content")
+    private WebElement mainBodyContent;
 
-   public DashboardPage(final WebDriver driver)
-   {
-      super(driver);
-   }
+    public DashboardPage(final WebDriver driver) {
+        super(driver);
+    }
 
-   public boolean containActivityListSection()
-   {
-      return getDriver().findElement(By.id("activityList")) != null;
-   }
+    public boolean containActivityListSection() {
+        return getDriver().findElement(By.id("activityList")) != null;
+    }
 
-   public boolean containMyMaintainedProjectsSection()
-   {
-      return getDriver().findElement(By.id("maintainedProject")) != null;
-   }
+    public boolean containMyMaintainedProjectsSection() {
+        return getDriver().findElement(By.id("maintainedProject")) != null;
+    }
 
-   public List<WebElement> getMyActivityList()
-   {
-      WebElement listWrapper = getDriver().findElement(By.id("activityList")).findElement(By.tagName("ul"));
+    public List<WebElement> getMyActivityList() {
+        WebElement listWrapper =
+                getDriver().findElement(By.id("activityList")).findElement(
+                        By.tagName("ul"));
 
-      if (listWrapper != null)
-      {
-         return listWrapper.findElements(By.xpath("./li"));
-      }
-      return new ArrayList<WebElement>();
-   }
+        if (listWrapper != null) {
+            return listWrapper.findElements(By.xpath("./li"));
+        }
+        return new ArrayList<WebElement>();
+    }
 
-   public List<WebElement> getMyMaintainedProject()
-   {
-      WebElement listWrapper = getDriver().findElement(By.id("maintainedProject")).findElement(By.tagName("ul"));
+    public List<WebElement> getMyMaintainedProject() {
+        WebElement listWrapper =
+                getDriver().findElement(By.id("maintainedProject"))
+                        .findElement(By.tagName("ul"));
 
-      if (listWrapper != null)
-      {
-         return listWrapper.findElements(By.xpath("./li"));
-      }
-      return new ArrayList<WebElement>();
-   }
+        if (listWrapper != null) {
+            return listWrapper.findElements(By.xpath("./li"));
+        }
+        return new ArrayList<WebElement>();
+    }
 
-   public void clickMoreActivity()
-   {
-      WebElement moreActivity = getMoreActivityElement();
-      if (moreActivity != null)
-      {
-         moreActivity.click();
-         WebElementUtil.waitForTenSeconds(getDriver()).until(
-               ExpectedConditions.invisibilityOfElementLocated(By.className("loader__spinner")));
-      }
-   }
+    public void clickMoreActivity() {
+        WebElement moreActivity = getMoreActivityElement();
+        if (moreActivity != null) {
+            moreActivity.click();
+            WebElementUtil.waitForTenSeconds(getDriver()).until(
+                    ExpectedConditions.invisibilityOfElementLocated(By
+                            .className("loader__spinner")));
+        }
+    }
 
-   public WebElement getMoreActivityElement()
-   {
-      return getDriver().findElement(By.id("moreActivity"));
-   }
+    public WebElement getMoreActivityElement() {
+        return getDriver().findElement(By.id("moreActivity"));
+    }
 }

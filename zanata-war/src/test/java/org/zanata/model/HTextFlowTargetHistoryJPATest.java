@@ -17,108 +17,120 @@ import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.TextFlowTargetHistoryDAO;
 
-public class HTextFlowTargetHistoryJPATest extends ZanataDbunitJpaTest
-{
-   private LocaleDAO localeDAO;
-   private TextFlowTargetHistoryDAO historyDAO;
-   HLocale en_US;
-   HLocale de_DE;
+public class HTextFlowTargetHistoryJPATest extends ZanataDbunitJpaTest {
+    private LocaleDAO localeDAO;
+    private TextFlowTargetHistoryDAO historyDAO;
+    HLocale en_US;
+    HLocale de_DE;
 
-   @BeforeMethod(firstTimeOnly = true)
-   public void beforeMethod()
-   {
-      localeDAO = new LocaleDAO((Session) em.getDelegate());
-      historyDAO = new TextFlowTargetHistoryDAO((Session) em.getDelegate());
-      en_US = localeDAO.findByLocaleId(LocaleId.EN_US);
-      de_DE = localeDAO.findByLocaleId(new LocaleId("de"));
-   }
+    @BeforeMethod(firstTimeOnly = true)
+    public void beforeMethod() {
+        localeDAO = new LocaleDAO((Session) em.getDelegate());
+        historyDAO = new TextFlowTargetHistoryDAO((Session) em.getDelegate());
+        en_US = localeDAO.findByLocaleId(LocaleId.EN_US);
+        de_DE = localeDAO.findByLocaleId(new LocaleId("de"));
+    }
 
-   @Override
-   protected void prepareDBUnitOperations()
-   {
-      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
-      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/LocalesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
-   }
+    @Override
+    protected void prepareDBUnitOperations() {
+        beforeTestOperations.add(new DataSetOperation(
+                "org/zanata/test/model/ProjectsData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
+        beforeTestOperations.add(new DataSetOperation(
+                "org/zanata/test/model/LocalesData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
+    }
 
-   @Test
-   public void ensureHistoryIsRecorded()
-   {
-      Session session = getSession();
-      HDocument d = new HDocument("/path/to/document.txt", ContentType.TextPlain, en_US);
-      d.setProjectIteration((HProjectIteration) session.load(HProjectIteration.class, 1L));
-      session.save(d);
-      session.flush();
+    @Test
+    public void ensureHistoryIsRecorded() {
+        Session session = getSession();
+        HDocument d =
+                new HDocument("/path/to/document.txt", ContentType.TextPlain,
+                        en_US);
+        d.setProjectIteration((HProjectIteration) session.load(
+                HProjectIteration.class, 1L));
+        session.save(d);
+        session.flush();
 
-      HTextFlow tf = new HTextFlow(d, "mytf", "hello world");
-      d.getTextFlows().add(tf);
-      session.flush();
+        HTextFlow tf = new HTextFlow(d, "mytf", "hello world");
+        d.getTextFlows().add(tf);
+        session.flush();
 
-      HTextFlowTarget target = new HTextFlowTarget(tf, de_DE);
-      target.setContents("helleu world");
-      session.save(target);
-      session.flush();
+        HTextFlowTarget target = new HTextFlowTarget(tf, de_DE);
+        target.setContents("helleu world");
+        session.save(target);
+        session.flush();
 
-      List<HTextFlowTargetHistory> historyElems = getHistory(target);
-      assertThat("Incorrect History size on persist", historyElems.size(), is(0));
+        List<HTextFlowTargetHistory> historyElems = getHistory(target);
+        assertThat("Incorrect History size on persist", historyElems.size(),
+                is(0));
 
-      target.setContents("blah!");
-      session.flush();
+        target.setContents("blah!");
+        session.flush();
 
-      historyElems = getHistory(target);
+        historyElems = getHistory(target);
 
-      assertThat("Incorrect History size on first update", historyElems.size(), is(1));
+        assertThat("Incorrect History size on first update",
+                historyElems.size(), is(1));
 
-      target.setContents("hola mundo!");
-      session.flush();
+        target.setContents("hola mundo!");
+        session.flush();
 
-      historyElems = getHistory(target);
+        historyElems = getHistory(target);
 
-      assertThat("Incorrect History size on second update", historyElems.size(), is(2));
-      assertThat(historyElems.size(), is(2));
-      HTextFlowTargetHistory hist = historyElems.get(0);
-      assertThat(hist.getContents(), is(Arrays.asList("helleu world")));
-   }
+        assertThat("Incorrect History size on second update",
+                historyElems.size(), is(2));
+        assertThat(historyElems.size(), is(2));
+        HTextFlowTargetHistory hist = historyElems.get(0);
+        assertThat(hist.getContents(), is(Arrays.asList("helleu world")));
+    }
 
+    @Test
+    public void ensureHistoryIsRecordedPlural() {
+        Session session = getSession();
+        HDocument d =
+                new HDocument("/path/to/document.txt", ContentType.TextPlain,
+                        en_US);
+        d.setProjectIteration((HProjectIteration) session.load(
+                HProjectIteration.class, 1L));
+        session.save(d);
+        session.flush();
 
-   @Test
-   public void ensureHistoryIsRecordedPlural()
-   {
-      Session session = getSession();
-      HDocument d = new HDocument("/path/to/document.txt", ContentType.TextPlain, en_US);
-      d.setProjectIteration((HProjectIteration) session.load(HProjectIteration.class, 1L));
-      session.save(d);
-      session.flush();
+        HTextFlow tf = new HTextFlow(d, "mytf", "hello world");
+        d.getTextFlows().add(tf);
+        session.flush();
 
-      HTextFlow tf = new HTextFlow(d, "mytf", "hello world");
-      d.getTextFlows().add(tf);
-      session.flush();
+        HTextFlowTarget target = new HTextFlowTarget(tf, de_DE);
+        target.setContents("helleu world", "helleu worlds");
+        session.save(target);
+        session.flush();
 
-      HTextFlowTarget target = new HTextFlowTarget(tf, de_DE);
-      target.setContents("helleu world", "helleu worlds");
-      session.save(target);
-      session.flush();
+        List<HTextFlowTargetHistory> historyElems = getHistory(target);
+        assertThat(historyElems.size(), is(0));
 
-      List<HTextFlowTargetHistory> historyElems = getHistory(target);
-      assertThat(historyElems.size(), is(0));
+        target.setContents("blah", "blah!");
+        session.flush();
 
-      target.setContents("blah", "blah!");
-      session.flush();
+        historyElems = getHistory(target);
 
-      historyElems = getHistory(target);
+        assertThat(historyElems.size(), is(1));
+        HTextFlowTargetHistory hist = historyElems.get(0);
+        assertThat(hist.getContents(),
+                is(Arrays.asList("helleu world", "helleu worlds")));
 
-      assertThat(historyElems.size(), is(1));
-      HTextFlowTargetHistory hist = historyElems.get(0);
-      assertThat(hist.getContents(), is(Arrays.asList("helleu world", "helleu worlds")));
+        assert historyDAO.findContentInHistory(target,
+                Arrays.asList("helleu world", "helleu worlds"));
+        assert !historyDAO.findContentInHistory(target,
+                Arrays.asList("helleu world"));
+        assert !historyDAO.findContentInHistory(target,
+                Arrays.asList("helleu worlds"));
+        assert !historyDAO.findContentInHistory(target,
+                Arrays.asList("blah", "blah!"));
+    }
 
-      assert historyDAO.findContentInHistory(target, Arrays.asList("helleu world", "helleu worlds"));
-      assert !historyDAO.findContentInHistory(target, Arrays.asList("helleu world"));
-      assert !historyDAO.findContentInHistory(target, Arrays.asList("helleu worlds"));
-      assert !historyDAO.findContentInHistory(target, Arrays.asList("blah", "blah!"));
-   }
-
-   @SuppressWarnings("unchecked")
-   private List<HTextFlowTargetHistory> getHistory(HTextFlowTarget tft)
-   {
-      return getSession().createCriteria(HTextFlowTargetHistory.class).add(Restrictions.eq("textFlowTarget", tft)).list();
-   }
+    @SuppressWarnings("unchecked")
+    private List<HTextFlowTargetHistory> getHistory(HTextFlowTarget tft) {
+        return getSession().createCriteria(HTextFlowTargetHistory.class)
+                .add(Restrictions.eq("textFlowTarget", tft)).list();
+    }
 }

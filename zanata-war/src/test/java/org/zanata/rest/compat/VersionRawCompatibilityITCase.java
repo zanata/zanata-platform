@@ -30,30 +30,24 @@ import org.zanata.apicompat.rest.dto.VersionInfo;
 
 import static org.zanata.util.RawRestTestUtils.assertJsonUnmarshal;
 
-public class VersionRawCompatibilityITCase extends RestTest
-{
+public class VersionRawCompatibilityITCase extends RestTest {
 
-   @Override
-   protected void prepareDBUnitOperations()
-   {
-   }
+    @Override
+    protected void prepareDBUnitOperations() {
+    }
 
-   @Test
-   @RunAsClient
-   public void getVersionXml() throws Exception
-   {
-      new ResourceRequest(getRestEndpointUrl("/version"), "GET")
-      {
-         @Override
-         protected void prepareRequest(ClientRequest request)
-         {
-         }
-         
-         @Override
-         protected void onResponse(ClientResponse response)
-         {
-            assertJsonUnmarshal(response, VersionInfo.class);
-         }
-      }.run();
-   }
+    @Test
+    @RunAsClient
+    public void getVersionXml() throws Exception {
+        new ResourceRequest(getRestEndpointUrl("/version"), "GET") {
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+            }
+
+            @Override
+            protected void onResponse(ClientResponse response) {
+                assertJsonUnmarshal(response, VersionInfo.class);
+            }
+        }.run();
+    }
 }

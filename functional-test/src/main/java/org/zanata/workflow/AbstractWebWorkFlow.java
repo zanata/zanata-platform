@@ -25,38 +25,32 @@ import org.zanata.page.utility.DashboardPage;
 import org.zanata.page.utility.HomePage;
 import org.zanata.page.WebDriverFactory;
 
-public class AbstractWebWorkFlow
-{
-   protected final WebDriver driver;
-   protected final String hostUrl;
+public class AbstractWebWorkFlow {
+    protected final WebDriver driver;
+    protected final String hostUrl;
 
-   public AbstractWebWorkFlow()
-   {
-      String baseUrl = WebDriverFactory.INSTANCE.getHostUrl();
-      hostUrl = appendTrailingSlash(baseUrl);
-      driver = WebDriverFactory.INSTANCE.getDriver();
-      driver.get(hostUrl);
-   }
+    public AbstractWebWorkFlow() {
+        String baseUrl = WebDriverFactory.INSTANCE.getHostUrl();
+        hostUrl = appendTrailingSlash(baseUrl);
+        driver = WebDriverFactory.INSTANCE.getDriver();
+        driver.get(hostUrl);
+    }
 
-   public HomePage goToHome()
-   {
-      driver.get(hostUrl);
-      return new HomePage(driver);
-   }
-   
-   public DashboardPage goToDashboard()
-   {
-      driver.get(hostUrl + "dashboard");
-      return new DashboardPage(driver);
-   }
+    public HomePage goToHome() {
+        driver.get(hostUrl);
+        return new HomePage(driver);
+    }
 
-   private static String appendTrailingSlash(String baseUrl)
-   {
-      if (baseUrl.endsWith("/"))
-      {
-         return baseUrl;
-      }
-      return baseUrl + "/";
-   }
+    public DashboardPage goToDashboard() {
+        driver.get(hostUrl + "dashboard");
+        return new DashboardPage(driver);
+    }
+
+    private static String appendTrailingSlash(String baseUrl) {
+        if (baseUrl.endsWith("/")) {
+            return baseUrl;
+        }
+        return baseUrl + "/";
+    }
 
 }

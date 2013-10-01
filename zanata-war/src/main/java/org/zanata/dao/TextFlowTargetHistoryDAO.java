@@ -31,63 +31,66 @@ import org.jboss.seam.annotations.Scope;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
 
-
 @Name("textFlowTargetHistoryDAO")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
-public class TextFlowTargetHistoryDAO extends AbstractDAOImpl<HTextFlowTargetHistory, Long>
-{
-   
-   public TextFlowTargetHistoryDAO()
-   {
-      super(HTextFlowTargetHistory.class);
-   }
+public class TextFlowTargetHistoryDAO extends
+        AbstractDAOImpl<HTextFlowTargetHistory, Long> {
 
-   public TextFlowTargetHistoryDAO(Session session)
-   {
-      super(HTextFlowTargetHistory.class, session);
-   }
+    public TextFlowTargetHistoryDAO() {
+        super(HTextFlowTargetHistory.class);
+    }
 
-   public boolean findContentInHistory(HTextFlowTarget target, List<String> contents)
-   {
-      // Ordinal parameters can't be used in NamedQueries due to the following bug:
-      // https://hibernate.onjira.com/browse/HHH-5653
-      Query query;
-      
-      // use named queries for the smaller more common cases
-      if( contents.size() <= 6 )
-      {
-         query = getSession().getNamedQuery(HTextFlowTargetHistory.getQueryNameMatchingHistory(contents.size()));
-      }
-      else
-      {
-         StringBuilder queryStr = new StringBuilder("select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = :tft and size(t.contents) = :contentCount");
-         for( int i=0; i<contents.size(); i++ )
-         {
-            queryStr.append(" and contents[" + i + "] = :content" + i);
-         }
-         query = getSession().createQuery(queryStr.toString());
-      }
-      query.setParameter("tft", target);
-      query.setParameter("contentCount", contents.size());
-      int paramPos = 0;
-      for( String c : contents )
-      {
-         query.setParameter("content" + paramPos++, c);
-      }
-      query.setComment("TextFlowTargetHistoryDAO.findContentInHistory-"+contents.size());
-      return (Long)query.uniqueResult() != 0;
-   }
+    public TextFlowTargetHistoryDAO(Session session) {
+        super(HTextFlowTargetHistory.class, session);
+    }
 
-   public boolean findConflictInHistory(HTextFlowTarget target, Integer verNum, String username)
-   {
-      Query query = getSession().createQuery("select count(*) from HTextFlowTargetHistory t where t.textFlowTarget.id =:id and t.textFlowRevision > :ver and t.lastModifiedBy.account.username != :username");
-      query.setParameter("id", target.getId());
-      query.setParameter("ver", verNum);
-      query.setParameter("username", username);
-      query.setComment("TextFlowTargetHistoryDAO.findConflictInHistory");
-      Long count = (Long) query.uniqueResult();
-      return count != 0;
-   }
+    public boolean findContentInHistory(HTextFlowTarget target,
+            List<String> contents) {
+        // Ordinal parameters can't be used in NamedQueries due to the following
+        // bug:
+        // https://hibernate.onjira.com/browse/HHH-5653
+        Query query;
+
+        // use named queries for the smaller more common cases
+        if (contents.size() <= 6) {
+            query =
+                    getSession().getNamedQuery(
+                            HTextFlowTargetHistory
+                                    .getQueryNameMatchingHistory(contents
+                                            .size()));
+        } else {
+            StringBuilder queryStr =
+                    new StringBuilder(
+                            "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = :tft and size(t.contents) = :contentCount");
+            for (int i = 0; i < contents.size(); i++) {
+                queryStr.append(" and contents[" + i + "] = :content" + i);
+            }
+            query = getSession().createQuery(queryStr.toString());
+        }
+        query.setParameter("tft", target);
+        query.setParameter("contentCount", contents.size());
+        int paramPos = 0;
+        for (String c : contents) {
+            query.setParameter("content" + paramPos++, c);
+        }
+        query.setComment("TextFlowTargetHistoryDAO.findContentInHistory-"
+                + contents.size());
+        return (Long) query.uniqueResult() != 0;
+    }
+
+    public boolean findConflictInHistory(HTextFlowTarget target,
+            Integer verNum, String username) {
+        Query query =
+                getSession()
+                        .createQuery(
+                                "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget.id =:id and t.textFlowRevision > :ver and t.lastModifiedBy.account.username != :username");
+        query.setParameter("id", target.getId());
+        query.setParameter("ver", verNum);
+        query.setParameter("username", username);
+        query.setComment("TextFlowTargetHistoryDAO.findConflictInHistory");
+        Long count = (Long) query.uniqueResult();
+        return count != 0;
+    }
 
 }

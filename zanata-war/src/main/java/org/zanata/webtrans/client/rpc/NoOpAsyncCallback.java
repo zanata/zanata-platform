@@ -24,13 +24,12 @@ package org.zanata.webtrans.client.rpc;
 import com.allen_sauer.gwt.log.client.Log;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class NoOpAsyncCallback<T> extends AbstractAsyncCallback<T>
-{
-   @Override
-   public void onSuccess(T result)
-   {
-      Log.debug("server returns: " + result);
-   }
+public class NoOpAsyncCallback<T> extends AbstractAsyncCallback<T> {
+    @Override
+    public void onSuccess(T result) {
+        Log.debug("server returns: " + result);
+    }
 }

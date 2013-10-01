@@ -5,36 +5,33 @@ import org.zanata.webtrans.client.presenter.MainView;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * 
+ *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- * 
+ *
  */
-public class ReloadUserConfigUIEvent extends GwtEvent<ReloadUserConfigUIHandler>
-{
-   public static Type<ReloadUserConfigUIHandler> TYPE = new Type<ReloadUserConfigUIHandler>();
+public class ReloadUserConfigUIEvent extends
+        GwtEvent<ReloadUserConfigUIHandler> {
+    public static Type<ReloadUserConfigUIHandler> TYPE =
+            new Type<ReloadUserConfigUIHandler>();
 
-   private final MainView view;
+    private final MainView view;
 
-   public ReloadUserConfigUIEvent(MainView view)
-   {
-      this.view = view;
-   }
+    public ReloadUserConfigUIEvent(MainView view) {
+        this.view = view;
+    }
 
-   public MainView getView()
-   {
-      return view;
-   }
+    public MainView getView() {
+        return view;
+    }
 
-   @Override
-   protected void dispatch(ReloadUserConfigUIHandler handler)
-   {
-      handler.onReloadUserConfigUI(this);
-   }
+    @Override
+    protected void dispatch(ReloadUserConfigUIHandler handler) {
+        handler.onReloadUserConfigUI(this);
+    }
 
-   @Override
-   public Type<ReloadUserConfigUIHandler> getAssociatedType()
-   {
-      return TYPE;
-   }
+    @Override
+    public Type<ReloadUserConfigUIHandler> getAssociatedType() {
+        return TYPE;
+    }
 
 }

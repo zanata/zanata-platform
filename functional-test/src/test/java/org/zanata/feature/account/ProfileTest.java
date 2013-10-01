@@ -32,67 +32,64 @@ import org.zanata.workflow.LoginWorkFlow;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
 public class ProfileTest {
 
-   @ClassRule
-   public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
+    @ClassRule
+    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
 
-   private String adminsApiKey = "b6d7044e9ee3b2447c28fb7c50d86d98";
+    private String adminsApiKey = "b6d7044e9ee3b2447c28fb7c50d86d98";
 
-   @Test
-   public void verifyProfileData()
-   {
-      MyAccountPage myAccountPage = new LoginWorkFlow()
-            .signIn("admin", "admin")
-            .goToMyProfile();
+    @Test
+    public void verifyProfileData() {
+        MyAccountPage myAccountPage =
+                new LoginWorkFlow().signIn("admin", "admin").goToMyProfile();
 
-      assertThat("The user's name is displayed in bold",
-            myAccountPage.getFullName(),
-            Matchers.equalTo("Administrator"));
+        assertThat("The user's name is displayed in bold",
+                myAccountPage.getFullName(), Matchers.equalTo("Administrator"));
 
-      assertThat("The user's username is displayed in smaller bold",
-            myAccountPage.getUsername(),
-            Matchers.equalTo("admin"));
+        assertThat("The user's username is displayed in smaller bold",
+                myAccountPage.getUsername(), Matchers.equalTo("admin"));
 
-      assertThat("The correct api key is present", myAccountPage.getApiKey(),
-            Matchers.equalTo(adminsApiKey));
+        assertThat("The correct api key is present", myAccountPage.getApiKey(),
+                Matchers.equalTo(adminsApiKey));
 
-      assertThat("The configuration url is correct",
-            myAccountPage.getConfigurationDetails(),
-            Matchers.containsString("localhost.url=http://localhost:9898/zanata/"));
+        assertThat(
+                "The configuration url is correct",
+                myAccountPage.getConfigurationDetails(),
+                Matchers.containsString("localhost.url=http://localhost:9898/zanata/"));
 
-      assertThat("The configuration username is correct",
-            myAccountPage.getConfigurationDetails(),
-            Matchers.containsString("localhost.username=admin"));
+        assertThat("The configuration username is correct",
+                myAccountPage.getConfigurationDetails(),
+                Matchers.containsString("localhost.username=admin"));
 
-      assertThat("The configuration api key is correct",
-            myAccountPage.getConfigurationDetails(),
-            Matchers.containsString("localhost.key=".concat(adminsApiKey)));
-   }
+        assertThat("The configuration api key is correct",
+                myAccountPage.getConfigurationDetails(),
+                Matchers.containsString("localhost.key=".concat(adminsApiKey)));
+    }
 
-   @Test
-   public void changeUsersApiKey()
-   {
-      MyAccountPage myAccountPage = new LoginWorkFlow()
-            .signIn("translator", "translator")
-            .goToMyProfile();
-      String currentApiKey = myAccountPage.getApiKey();
-      myAccountPage = myAccountPage.pressApiKeyGenerateButton();
+    @Test
+    public void changeUsersApiKey() {
+        MyAccountPage myAccountPage =
+                new LoginWorkFlow().signIn("translator", "translator")
+                        .goToMyProfile();
+        String currentApiKey = myAccountPage.getApiKey();
+        myAccountPage = myAccountPage.pressApiKeyGenerateButton();
 
-      assertThat("The user's api key is different",
-            myAccountPage.getApiKey(),
-            Matchers.not(Matchers.equalTo(currentApiKey)));
+        assertThat("The user's api key is different",
+                myAccountPage.getApiKey(),
+                Matchers.not(Matchers.equalTo(currentApiKey)));
 
-      assertThat("The user's api key is not empty",
-            myAccountPage.getApiKey(),
-            Matchers.not(Matchers.isEmptyString()));
+        assertThat("The user's api key is not empty",
+                myAccountPage.getApiKey(),
+                Matchers.not(Matchers.isEmptyString()));
 
-      assertThat("The configuration api key matches the label",
-            myAccountPage.getConfigurationDetails(),
-            Matchers.containsString("localhost.key=".concat(myAccountPage.getApiKey())));
-   }
+        assertThat("The configuration api key matches the label",
+                myAccountPage.getConfigurationDetails(),
+                Matchers.containsString("localhost.key=".concat(myAccountPage
+                        .getApiKey())));
+    }
 }
-

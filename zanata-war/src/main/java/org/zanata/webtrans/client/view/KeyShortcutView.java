@@ -48,210 +48,185 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.inject.Inject;
 
-public class KeyShortcutView extends PopupPanel implements KeyShortcutDisplay
-{
+public class KeyShortcutView extends PopupPanel implements KeyShortcutDisplay {
 
-   private static KeyShortcutViewUiBinder uiBinder = GWT.create(KeyShortcutViewUiBinder.class);
+    private static KeyShortcutViewUiBinder uiBinder = GWT
+            .create(KeyShortcutViewUiBinder.class);
 
-   interface KeyShortcutViewUiBinder extends UiBinder<VerticalPanel, KeyShortcutView>
-   {
-   }
+    interface KeyShortcutViewUiBinder extends
+            UiBinder<VerticalPanel, KeyShortcutView> {
+    }
 
-   interface Styles extends CssResource
-   {
-      String keyShortcutCategoryTitle();
+    interface Styles extends CssResource {
+        String keyShortcutCategoryTitle();
 
-      String keyShortcutTable();
-   }
+        String keyShortcutTable();
+    }
 
-   @UiField
-   FlowPanel shortcutContainer;
+    @UiField
+    FlowPanel shortcutContainer;
 
-   @UiField
-   Label heading;
+    @UiField
+    Label heading;
 
-   @UiField
-   Styles style;
+    @UiField
+    Styles style;
 
-   // TODO these could be extracted for l10n
-   private static final Map<Integer, String> keyDisplayMap;
-   static
-   {
-      keyDisplayMap = new HashMap<Integer, String>();
+    // TODO these could be extracted for l10n
+    private static final Map<Integer, String> keyDisplayMap;
+    static {
+        keyDisplayMap = new HashMap<Integer, String>();
 
-      keyDisplayMap.put(Keys.ALT_KEY, "Alt");
-      keyDisplayMap.put(Keys.SHIFT_KEY, "Shift");
-      keyDisplayMap.put(Keys.META_KEY, "Meta");
-      keyDisplayMap.put(Keys.CTRL_KEY, "Ctrl");
+        keyDisplayMap.put(Keys.ALT_KEY, "Alt");
+        keyDisplayMap.put(Keys.SHIFT_KEY, "Shift");
+        keyDisplayMap.put(Keys.META_KEY, "Meta");
+        keyDisplayMap.put(Keys.CTRL_KEY, "Ctrl");
 
-      keyDisplayMap.put(Keys.KEY_NUM_1, "Num 1");
-      keyDisplayMap.put(Keys.KEY_NUM_2, "Num 2");
-      keyDisplayMap.put(Keys.KEY_NUM_3, "Num 3");
-      keyDisplayMap.put(Keys.KEY_NUM_4, "Num 4");
+        keyDisplayMap.put(Keys.KEY_NUM_1, "Num 1");
+        keyDisplayMap.put(Keys.KEY_NUM_2, "Num 2");
+        keyDisplayMap.put(Keys.KEY_NUM_3, "Num 3");
+        keyDisplayMap.put(Keys.KEY_NUM_4, "Num 4");
 
-      keyDisplayMap.put(KeyCodes.KEY_DOWN, "Down");
-      keyDisplayMap.put(KeyCodes.KEY_UP, "Up");
-      keyDisplayMap.put(KeyCodes.KEY_ENTER, "Enter");
-      keyDisplayMap.put(KeyCodes.KEY_PAGEDOWN, "PageDown");
-      keyDisplayMap.put(KeyCodes.KEY_PAGEUP, "PageUp");
-      keyDisplayMap.put(KeyCodes.KEY_ESCAPE, "Esc");
-   }
+        keyDisplayMap.put(KeyCodes.KEY_DOWN, "Down");
+        keyDisplayMap.put(KeyCodes.KEY_UP, "Up");
+        keyDisplayMap.put(KeyCodes.KEY_ENTER, "Enter");
+        keyDisplayMap.put(KeyCodes.KEY_PAGEDOWN, "PageDown");
+        keyDisplayMap.put(KeyCodes.KEY_PAGEUP, "PageUp");
+        keyDisplayMap.put(KeyCodes.KEY_ESCAPE, "Esc");
+    }
 
-   @Inject
-   public KeyShortcutView(final WebTransMessages webTransMessages)
-   {
-      setWidget(uiBinder.createAndBindUi(this));
-      heading.setText(webTransMessages.availableKeyShortcutsTitle());
+    @Inject
+    public KeyShortcutView(final WebTransMessages webTransMessages) {
+        setWidget(uiBinder.createAndBindUi(this));
+        heading.setText(webTransMessages.availableKeyShortcutsTitle());
 
-      setStyleName("keyShortcutPanel");
-      setAutoHideEnabled(true);
-      setAutoHideOnHistoryEventsEnabled(true);
-      setGlassEnabled(true);
-   }
+        setStyleName("keyShortcutPanel");
+        setAutoHideEnabled(true);
+        setAutoHideOnHistoryEventsEnabled(true);
+        setGlassEnabled(true);
+    }
 
-   @Override
-   public void clearPanel()
-   {
-      shortcutContainer.clear();
-   }
+    @Override
+    public void clearPanel() {
+        shortcutContainer.clear();
+    }
 
-   private final Column<KeyShortcut, SafeHtml> keysColumn = new Column<KeyShortcut, SafeHtml>(new SafeHtmlCell())
-   {
-      @Override
-      public SafeHtml getValue(KeyShortcut shortcut)
-      {
-         SafeHtmlBuilder sb = new SafeHtmlBuilder();
-         sb.appendEscapedLines(keysDisplayString(shortcut));
-         return sb.toSafeHtml();
-      }
-   };
+    private final Column<KeyShortcut, SafeHtml> keysColumn =
+            new Column<KeyShortcut, SafeHtml>(new SafeHtmlCell()) {
+                @Override
+                public SafeHtml getValue(KeyShortcut shortcut) {
+                    SafeHtmlBuilder sb = new SafeHtmlBuilder();
+                    sb.appendEscapedLines(keysDisplayString(shortcut));
+                    return sb.toSafeHtml();
+                }
+            };
 
-   private final TextColumn<KeyShortcut> descColumn = new TextColumn<KeyShortcut>()
-   {
-      @Override
-      public String getValue(KeyShortcut keyShortcut)
-      {
-         return keyShortcut.getDescription();
-      }
-   };
+    private final TextColumn<KeyShortcut> descColumn =
+            new TextColumn<KeyShortcut>() {
+                @Override
+                public String getValue(KeyShortcut keyShortcut) {
+                    return keyShortcut.getDescription();
+                }
+            };
 
-   public ListDataProvider<KeyShortcut> addContext(String contextName)
-   {
-      Label categoryTitle = new Label(contextName);
-      categoryTitle.addStyleName(style.keyShortcutCategoryTitle());
-      shortcutContainer.add(categoryTitle);
+    public ListDataProvider<KeyShortcut> addContext(String contextName) {
+        Label categoryTitle = new Label(contextName);
+        categoryTitle.addStyleName(style.keyShortcutCategoryTitle());
+        shortcutContainer.add(categoryTitle);
 
-      CellTable<KeyShortcut> table = new CellTable<KeyShortcut>();
-      table.setStyleName(style.keyShortcutTable());
+        CellTable<KeyShortcut> table = new CellTable<KeyShortcut>();
+        table.setStyleName(style.keyShortcutTable());
 
-      table.addColumn(keysColumn);
-      table.addColumn(descColumn);
+        table.addColumn(keysColumn);
+        table.addColumn(descColumn);
 
-      ListDataProvider<KeyShortcut> dataProvider = new ListDataProvider<KeyShortcut>();
-      dataProvider.addDataDisplay(table);
+        ListDataProvider<KeyShortcut> dataProvider =
+                new ListDataProvider<KeyShortcut>();
+        dataProvider.addDataDisplay(table);
 
-      // TODO adjust how shortcuts are displayed in this table
-      shortcutContainer.add(table);
+        // TODO adjust how shortcuts are displayed in this table
+        shortcutContainer.add(table);
 
-      return dataProvider;
-   }
+        return dataProvider;
+    }
 
-   private static String keysDisplayString(KeyShortcut shortcut)
-   {
-      StringBuilder sb = new StringBuilder();
-      boolean first = true;
+    private static String keysDisplayString(KeyShortcut shortcut) {
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
 
-      for (Keys keys : shortcut.getAllKeys())
-      {
-         if (!first)
-         {
-            sb.append('\n');
-         }
-         first = false;
-         writeKeyInfo(sb, keys);
-      }
-      for (Keys keys : shortcut.getAllAttentionKeys())
-      {
-         if (!first)
-         {
-            sb.append('\n');
-         }
-         first = false;
-         // TODO write attention key
-         writeAttentionKeyPrefix(sb);
-         writeKeyInfo(sb, keys);
-      }
+        for (Keys keys : shortcut.getAllKeys()) {
+            if (!first) {
+                sb.append('\n');
+            }
+            first = false;
+            writeKeyInfo(sb, keys);
+        }
+        for (Keys keys : shortcut.getAllAttentionKeys()) {
+            if (!first) {
+                sb.append('\n');
+            }
+            first = false;
+            // TODO write attention key
+            writeAttentionKeyPrefix(sb);
+            writeKeyInfo(sb, keys);
+        }
 
-      return sb.toString();
-   }
+        return sb.toString();
+    }
 
-   private static void writeAttentionKeyPrefix(StringBuilder sb)
-   {
-      // TODO respond to user setting for attention key
-      sb.append(keyDisplayMap.get(Keys.ALT_KEY));
-      sb.append("+X,");
-   }
+    private static void writeAttentionKeyPrefix(StringBuilder sb) {
+        // TODO respond to user setting for attention key
+        sb.append(keyDisplayMap.get(Keys.ALT_KEY));
+        sb.append("+X,");
+    }
 
-   private static void writeKeyInfo(StringBuilder sb, Keys keys)
-   {
-      int modifiers = keys.getModifiers();
-      int keyCode = keys.getKeyCode();
+    private static void writeKeyInfo(StringBuilder sb, Keys keys) {
+        int modifiers = keys.getModifiers();
+        int keyCode = keys.getKeyCode();
 
-      if ((modifiers & Keys.CTRL_KEY) != 0)
-      {
-         sb.append(keyDisplayMap.get(Keys.CTRL_KEY));
-         sb.append('+');
-      }
-      if ((modifiers & Keys.SHIFT_KEY) != 0)
-      {
-         sb.append(keyDisplayMap.get(Keys.SHIFT_KEY));
-         sb.append('+');
-      }
-      if ((modifiers & Keys.META_KEY) != 0)
-      {
-         sb.append(keyDisplayMap.get(Keys.META_KEY));
-         sb.append('+');
-      }
-      if ((modifiers & Keys.ALT_KEY) != 0)
-      {
-         sb.append(keyDisplayMap.get(Keys.ALT_KEY));
-         sb.append('+');
-      }
-      if (!Strings.isNullOrEmpty(keyDisplayMap.get(keyCode)))
-      {
-         sb.append(keyDisplayMap.get(keyCode));
-      }
-      else
-      {
-         sb.append((char) keyCode);
-      }
-   }
+        if ((modifiers & Keys.CTRL_KEY) != 0) {
+            sb.append(keyDisplayMap.get(Keys.CTRL_KEY));
+            sb.append('+');
+        }
+        if ((modifiers & Keys.SHIFT_KEY) != 0) {
+            sb.append(keyDisplayMap.get(Keys.SHIFT_KEY));
+            sb.append('+');
+        }
+        if ((modifiers & Keys.META_KEY) != 0) {
+            sb.append(keyDisplayMap.get(Keys.META_KEY));
+            sb.append('+');
+        }
+        if ((modifiers & Keys.ALT_KEY) != 0) {
+            sb.append(keyDisplayMap.get(Keys.ALT_KEY));
+            sb.append('+');
+        }
+        if (!Strings.isNullOrEmpty(keyDisplayMap.get(keyCode))) {
+            sb.append(keyDisplayMap.get(keyCode));
+        } else {
+            sb.append((char) keyCode);
+        }
+    }
 
-   @Override
-   public void showPanel()
-   {
-      // center() does not set vertical position properly
-      this.setPopupPositionAndShow(new PositionCallback()
-      {
-         @Override
-         public void setPosition(int offsetWidth, int offsetHeight)
-         {
-            int left = (Window.getClientWidth() - offsetWidth) / 2;
-            setThisPosition(left, 100);
-         }
-      });
+    @Override
+    public void showPanel() {
+        // center() does not set vertical position properly
+        this.setPopupPositionAndShow(new PositionCallback() {
+            @Override
+            public void setPosition(int offsetWidth, int offsetHeight) {
+                int left = (Window.getClientWidth() - offsetWidth) / 2;
+                setThisPosition(left, 100);
+            }
+        });
 
-   }
+    }
 
-   private void setThisPosition(int left, int top)
-   {
-      this.setPopupPosition(left, top);
-   }
+    private void setThisPosition(int left, int top) {
+        this.setPopupPosition(left, top);
+    }
 
-   @Override
-   public Widget asWidget()
-   {
-      return this;
-   }
+    @Override
+    public Widget asWidget() {
+        return this;
+    }
 
 }

@@ -2,17 +2,17 @@
  * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
- * 
+ *
  * This is free software; you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
@@ -43,229 +43,197 @@ import org.zanata.service.VersionGroupService.SelectableHProject;
 
 @Name("versionGroupAction")
 @Scope(ScopeType.PAGE)
-public class VersionGroupAction implements Serializable
-{
-   private static final long serialVersionUID = 1L;
+public class VersionGroupAction implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-   @In
-   private VersionGroupService versionGroupServiceImpl;
+    @In
+    private VersionGroupService versionGroupServiceImpl;
 
-   @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
-   HAccount authenticatedAccount;
+    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
+    HAccount authenticatedAccount;
 
-   @RequestParameter
-   private String[] slugParam;
+    @RequestParameter
+    private String[] slugParam;
 
-   @Logger
-   Log log;
+    @Logger
+    Log log;
 
-   private List<HIterationGroup> allVersionGroups;
+    private List<HIterationGroup> allVersionGroups;
 
-   private List<SelectableHProject> searchResults;
+    private List<SelectableHProject> searchResults;
 
-   private HIterationGroup group;
+    private HIterationGroup group;
 
-   private String searchTerm = "";
-   private String groupNameFilter;
+    private String searchTerm = "";
+    private String groupNameFilter;
 
-   private boolean showActiveGroups = true;
-   private boolean showObsoleteGroups = false;
-   private boolean selectAll = false;
+    private boolean showActiveGroups = true;
+    private boolean showObsoleteGroups = false;
+    private boolean selectAll = false;
 
-   public boolean isParamExists()
-   {
-      return slugParam != null && slugParam.length != 0;
-   }
+    public boolean isParamExists() {
+        return slugParam != null && slugParam.length != 0;
+    }
 
-   public void loadAllActiveGroupsOrIsMaintainer()
-   {
-      allVersionGroups = versionGroupServiceImpl.getAllActiveVersionGroupsOrIsMaintainer();
-   }
+    public void loadAllActiveGroupsOrIsMaintainer() {
+        allVersionGroups =
+                versionGroupServiceImpl
+                        .getAllActiveVersionGroupsOrIsMaintainer();
+    }
 
-   public void init(String slug)
-   {
-      group = versionGroupServiceImpl.getBySlug(slug);
-   }
+    public void init(String slug) {
+        group = versionGroupServiceImpl.getBySlug(slug);
+    }
 
-   public void addSelected()
-   {
-      for (SelectableHProject selectableVersion : getSearchResults())
-      {
-         if (selectableVersion.isSelected())
-         {
-            joinVersionGroup(selectableVersion.getProjectIteration().getId());
-         }
-      }
-   }
-
-   public void selectAll()
-   {
-      for (SelectableHProject selectableVersion : getSearchResults())
-      {
-         if (!isVersionInGroup(selectableVersion.getProjectIteration().getId()))
-         {
-            selectableVersion.setSelected(selectAll);
-         }
-      }
-   }
-
-   /**
-    * Run search on unique project version if projectSlug, iterationSlug exits
-    * else search versions available
-    */
-   public void executePreSearch()
-   {
-      if (isParamExists())
-      {
-         for (String param : slugParam)
-         {
-            String[] paramSet = param.split(":");
-
-            if (paramSet.length == 2)
-            {
-               HProjectIteration projectVersion = versionGroupServiceImpl.getProjectIterationBySlug(paramSet[0],
-                     paramSet[1]);
-               if (projectVersion != null)
-               {
-                  getSearchResults().add(new SelectableHProject(projectVersion, true));
-               }
+    public void addSelected() {
+        for (SelectableHProject selectableVersion : getSearchResults()) {
+            if (selectableVersion.isSelected()) {
+                joinVersionGroup(selectableVersion.getProjectIteration()
+                        .getId());
             }
-         }
-      }
-      else
-      {
-         searchProjectAndVersion();
-      }
+        }
+    }
 
-   }
+    public void selectAll() {
+        for (SelectableHProject selectableVersion : getSearchResults()) {
+            if (!isVersionInGroup(selectableVersion.getProjectIteration()
+                    .getId())) {
+                selectableVersion.setSelected(selectAll);
+            }
+        }
+    }
 
-   public String getSearchTerm()
-   {
-      return searchTerm;
-   }
+    /**
+     * Run search on unique project version if projectSlug, iterationSlug exits
+     * else search versions available
+     */
+    public void executePreSearch() {
+        if (isParamExists()) {
+            for (String param : slugParam) {
+                String[] paramSet = param.split(":");
 
-   public void setSearchTerm(String searchTerm)
-   {
-      this.searchTerm = searchTerm;
-   }
+                if (paramSet.length == 2) {
+                    HProjectIteration projectVersion =
+                            versionGroupServiceImpl.getProjectIterationBySlug(
+                                    paramSet[0], paramSet[1]);
+                    if (projectVersion != null) {
+                        getSearchResults().add(
+                                new SelectableHProject(projectVersion, true));
+                    }
+                }
+            }
+        } else {
+            searchProjectAndVersion();
+        }
 
-   public List<SelectableHProject> getSearchResults()
-   {
-      if (searchResults == null)
-      {
-         searchResults = new ArrayList<SelectableHProject>();
-      }
-      return searchResults;
-   }
+    }
 
-   public boolean isVersionInGroup(Long projectIterationId)
-   {
-      return versionGroupServiceImpl.isVersionInGroup(group.getSlug(), projectIterationId);
-   }
+    public String getSearchTerm() {
+        return searchTerm;
+    }
 
-   @Transactional
-   @Restrict("#{s:hasPermission(versionGroupHome.instance, 'update')}")
-   private void joinVersionGroup(Long projectIterationId)
-   {
-      versionGroupServiceImpl.joinVersionGroup(group.getSlug(), projectIterationId);
-   }
+    public void setSearchTerm(String searchTerm) {
+        this.searchTerm = searchTerm;
+    }
 
-   @Transactional
-   @Restrict("#{s:hasPermission(versionGroupHome.instance, 'update')}")
-   public void leaveVersionGroup(Long projectIterationId)
-   {
-      versionGroupServiceImpl.leaveVersionGroup(group.getSlug(), projectIterationId);
-      searchProjectAndVersion();
-   }
+    public List<SelectableHProject> getSearchResults() {
+        if (searchResults == null) {
+            searchResults = new ArrayList<SelectableHProject>();
+        }
+        return searchResults;
+    }
 
-   public void searchProjectAndVersion()
-   {
-      getSearchResults().clear();
-      List<HProjectIteration> result = versionGroupServiceImpl.searchLikeSlugOrProjectSlug(this.searchTerm);
-      for (HProjectIteration version : result)
-      {
-         getSearchResults().add(new SelectableHProject(version, false));
-      }
-   }
+    public boolean isVersionInGroup(Long projectIterationId) {
+        return versionGroupServiceImpl.isVersionInGroup(group.getSlug(),
+                projectIterationId);
+    }
 
-   private boolean filterGroupByStatus(HIterationGroup group)
-   {
-      if (isShowActiveGroups() && isShowObsoleteGroups())
-      {
-         return true;
-      }
+    @Transactional
+    @Restrict("#{s:hasPermission(versionGroupHome.instance, 'update')}")
+    private void joinVersionGroup(Long projectIterationId) {
+        versionGroupServiceImpl.joinVersionGroup(group.getSlug(),
+                projectIterationId);
+    }
 
-      if (group.getStatus() == EntityStatus.OBSOLETE)
-      {
-         return isShowObsoleteGroups();
-      }
-      else if (group.getStatus() == EntityStatus.ACTIVE)
-      {
-         return isShowActiveGroups();
-      }
-      return false;
-   }
+    @Transactional
+    @Restrict("#{s:hasPermission(versionGroupHome.instance, 'update')}")
+    public void leaveVersionGroup(Long projectIterationId) {
+        versionGroupServiceImpl.leaveVersionGroup(group.getSlug(),
+                projectIterationId);
+        searchProjectAndVersion();
+    }
 
-   public boolean isUserProjectMaintainer()
-   {
-      return authenticatedAccount != null && authenticatedAccount.getPerson().isMaintainerOfProjects();
-   }
+    public void searchProjectAndVersion() {
+        getSearchResults().clear();
+        List<HProjectIteration> result =
+                versionGroupServiceImpl
+                        .searchLikeSlugOrProjectSlug(this.searchTerm);
+        for (HProjectIteration version : result) {
+            getSearchResults().add(new SelectableHProject(version, false));
+        }
+    }
 
-   public String getGroupNameFilter()
-   {
-      return groupNameFilter;
-   }
+    private boolean filterGroupByStatus(HIterationGroup group) {
+        if (isShowActiveGroups() && isShowObsoleteGroups()) {
+            return true;
+        }
 
-   public void setGroupNameFilter(String groupNameFilter)
-   {
-      this.groupNameFilter = groupNameFilter;
-   }
+        if (group.getStatus() == EntityStatus.OBSOLETE) {
+            return isShowObsoleteGroups();
+        } else if (group.getStatus() == EntityStatus.ACTIVE) {
+            return isShowActiveGroups();
+        }
+        return false;
+    }
 
-   public List<HIterationGroup> getAllVersionGroups()
-   {
-      List<HIterationGroup> result = new ArrayList<HIterationGroup>();
-      for (HIterationGroup group : allVersionGroups)
-      {
-         if (filterGroupByStatus(group))
-         {
-            result.add(group);
-         }
-      }
-      return result;
-   }
+    public boolean isUserProjectMaintainer() {
+        return authenticatedAccount != null
+                && authenticatedAccount.getPerson().isMaintainerOfProjects();
+    }
 
-   public void setAllVersionGroups(List<HIterationGroup> allVersionGroups)
-   {
-      this.allVersionGroups = allVersionGroups;
-   }
+    public String getGroupNameFilter() {
+        return groupNameFilter;
+    }
 
-   public boolean isShowActiveGroups()
-   {
-      return showActiveGroups;
-   }
+    public void setGroupNameFilter(String groupNameFilter) {
+        this.groupNameFilter = groupNameFilter;
+    }
 
-   public void setShowActiveGroups(boolean showActiveGroups)
-   {
-      this.showActiveGroups = showActiveGroups;
-   }
+    public List<HIterationGroup> getAllVersionGroups() {
+        List<HIterationGroup> result = new ArrayList<HIterationGroup>();
+        for (HIterationGroup group : allVersionGroups) {
+            if (filterGroupByStatus(group)) {
+                result.add(group);
+            }
+        }
+        return result;
+    }
 
-   public boolean isShowObsoleteGroups()
-   {
-      return showObsoleteGroups;
-   }
+    public void setAllVersionGroups(List<HIterationGroup> allVersionGroups) {
+        this.allVersionGroups = allVersionGroups;
+    }
 
-   public void setShowObsoleteGroups(boolean showObsoleteGroups)
-   {
-      this.showObsoleteGroups = showObsoleteGroups;
-   }
+    public boolean isShowActiveGroups() {
+        return showActiveGroups;
+    }
 
-   public boolean isSelectAll()
-   {
-      return selectAll;
-   }
+    public void setShowActiveGroups(boolean showActiveGroups) {
+        this.showActiveGroups = showActiveGroups;
+    }
 
-   public void setSelectAll(boolean selectAll)
-   {
-      this.selectAll = selectAll;
-   }
+    public boolean isShowObsoleteGroups() {
+        return showObsoleteGroups;
+    }
+
+    public void setShowObsoleteGroups(boolean showObsoleteGroups) {
+        this.showObsoleteGroups = showObsoleteGroups;
+    }
+
+    public boolean isSelectAll() {
+        return selectAll;
+    }
+
+    public void setSelectAll(boolean selectAll) {
+        this.selectAll = selectAll;
+    }
 }

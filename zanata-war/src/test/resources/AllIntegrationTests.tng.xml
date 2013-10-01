@@ -1,34 +1,34 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 <suite name="Integration Tests" verbose="1">
 
-	<listeners>
-		<!--
-			   This ensures that all SeamTest classes
-			   are treated as seam-tests:
+  <listeners>
+    <!--
+         This ensures that all SeamTest classes
+         are treated as seam-tests:
       -->
-      <listener class-name="org.zanata.testing.TestTransformer"/>
-	</listeners>
+    <listener class-name="org.zanata.testing.TestTransformer" />
+  </listeners>
 
-		<!-- 
-	<test name="Seam Tests">
- 		<groups>
-	 		<packages>
-	 			<package name="org.zanata.*"/>
-	 		</packages>
- 			<run>
- 				<include name="seam-tests"/>
- 			</run>
- 		</groups>
-	</test>
-		TODO: use group seam-tests instead, but make sure TestNG 
-		executes the @BeforeSuite method SeamTest.startSeam()
-		 -->
-<!-- FIXME get these tests working again
-     	<test name="Seam Tests">
-     		<classes>
-            <class name="org.zanata.server.rpc.ActivateWorkspaceActionITCase>
-            <class name="org.zanata.dao.LocaleMemberDAOITCasese"/>
-     		</classes>
-     	</test>
- -->
+  <!--
+<test name="Seam Tests">
+   <groups>
+     <packages>
+       <package name="org.zanata.*"/>
+     </packages>
+     <run>
+       <include name="seam-tests"/>
+     </run>
+   </groups>
+</test>
+  TODO: use group seam-tests instead, but make sure TestNG
+  executes the @BeforeSuite method SeamTest.startSeam()
+   -->
+  <!-- FIXME get these tests working again
+         <test name="Seam Tests">
+           <classes>
+              <class name="org.zanata.server.rpc.ActivateWorkspaceActionITCase>
+              <class name="org.zanata.dao.LocaleMemberDAOITCasese"/>
+           </classes>
+         </test>
+   -->
 </suite>

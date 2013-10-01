@@ -38,59 +38,52 @@ import com.google.inject.Inject;
  *
  **/
 
-public class DiffColorLegendPanel extends PopupPanel
-{
+public class DiffColorLegendPanel extends PopupPanel {
 
-   interface DiffColorLegendPanelUiBinder extends UiBinder<HTMLPanel, DiffColorLegendPanel>
-   {
-   }
+    interface DiffColorLegendPanelUiBinder extends
+            UiBinder<HTMLPanel, DiffColorLegendPanel> {
+    }
 
-   interface Styles extends CssResource
-   {
-      String diffLegendPanel();
-   }
+    interface Styles extends CssResource {
+        String diffLegendPanel();
+    }
 
-   @UiField
-   Label insDescription, delDescription, containDescription;
+    @UiField
+    Label insDescription, delDescription, containDescription;
 
-   @UiField
-   Styles style;
+    @UiField
+    Styles style;
 
-   private final WebTransMessages messages;
+    private final WebTransMessages messages;
 
-   private static DiffColorLegendPanelUiBinder uiBinder = GWT.create(DiffColorLegendPanelUiBinder.class);
+    private static DiffColorLegendPanelUiBinder uiBinder = GWT
+            .create(DiffColorLegendPanelUiBinder.class);
 
-   @Inject
-   public DiffColorLegendPanel(final WebTransMessages messages)
-   {
-      super(true, true);
-      this.messages = messages;
+    @Inject
+    public DiffColorLegendPanel(final WebTransMessages messages) {
+        super(true, true);
+        this.messages = messages;
 
-      HTMLPanel container = uiBinder.createAndBindUi(this);
-      setStyleName(style.diffLegendPanel());
-      setWidget(container);
-   }
+        HTMLPanel container = uiBinder.createAndBindUi(this);
+        setStyleName(style.diffLegendPanel());
+        setWidget(container);
+    }
 
-   public void show(ShortcutContext context)
-   {
-      switch (context)
-      {
-      case TM:
-         insDescription.setText(messages.tmInsertTagDesc());
-         delDescription.setText(messages.tmDelTagDesc());
-         containDescription.setText(messages.tmPlainTextDesc());
-         break;
-      case ProjectWideSearch:
-         insDescription.setText(messages.searchReplaceInsertTagDesc());
-         delDescription.setText(messages.searchReplaceDelTagDesc());
-         containDescription.setText(messages.searchReplacePlainTextDesc());
-         break;
-      default:
-         break;
-      }
-      this.center();
-   }
+    public void show(ShortcutContext context) {
+        switch (context) {
+        case TM:
+            insDescription.setText(messages.tmInsertTagDesc());
+            delDescription.setText(messages.tmDelTagDesc());
+            containDescription.setText(messages.tmPlainTextDesc());
+            break;
+        case ProjectWideSearch:
+            insDescription.setText(messages.searchReplaceInsertTagDesc());
+            delDescription.setText(messages.searchReplaceDelTagDesc());
+            containDescription.setText(messages.searchReplacePlainTextDesc());
+            break;
+        default:
+            break;
+        }
+        this.center();
+    }
 }
-
-
- 

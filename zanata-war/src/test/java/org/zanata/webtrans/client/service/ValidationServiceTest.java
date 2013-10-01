@@ -35,64 +35,69 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Test(groups = "unit-tests")
-public class ValidationServiceTest
-{
-   public static final ValidationId VAL_KEY = ValidationId.HTML_XML;
-   private ValidationService service;
-   @Mock
-   private EventBus eventBus;
-   
-   private ValidationMessages validationMessages;
-   
-   @Mock
-   private HasUpdateValidationMessage validationMessagePanel;
-   
-   @Mock
-   private UserConfigHolder configHolder;
+public class ValidationServiceTest {
+    public static final ValidationId VAL_KEY = ValidationId.HTML_XML;
+    private ValidationService service;
+    @Mock
+    private EventBus eventBus;
 
-   @BeforeMethod
-   public void beforeMethod() throws IOException
-   {
-      MockitoAnnotations.initMocks(this);
+    private ValidationMessages validationMessages;
 
-      validationMessages = Gwti18nReader.create(ValidationMessages.class);
+    @Mock
+    private HasUpdateValidationMessage validationMessagePanel;
 
-      service = new ValidationService(eventBus, validationMessages, configHolder);
-      ValidationFactory validationFactory = new ValidationFactory(validationMessages);
+    @Mock
+    private UserConfigHolder configHolder;
 
-      Collection<ValidationAction> validationList = validationFactory.getAllValidationActions().values();
-      Map<ValidationId, State> validationStatesMap = new HashMap<ValidationId, State>();
-      
-      for (ValidationAction action : validationList)
-      {
-         action.getRules().setEnabled(true);
-         validationStatesMap.put(action.getId(), action.getState());
-      }
-      service.setValidationRules(validationStatesMap);
+    @BeforeMethod
+    public void beforeMethod() throws IOException {
+        MockitoAnnotations.initMocks(this);
 
-      verify(eventBus).addHandler(RunValidationEvent.getType(), service);
-   }
+        validationMessages = Gwti18nReader.create(ValidationMessages.class);
 
-   @Test
-   public void canUpdateValidatorStatus()
-   {
-      service.updateStatus(VAL_KEY, false, true);
+        service =
+                new ValidationService(eventBus, validationMessages,
+                        configHolder);
+        ValidationFactory validationFactory =
+                new ValidationFactory(validationMessages);
 
-      ValidationAction validationAction = service.getValidationMap().get(VAL_KEY);
+        Collection<ValidationAction> validationList =
+                validationFactory.getAllValidationActions().values();
+        Map<ValidationId, State> validationStatesMap =
+                new HashMap<ValidationId, State>();
 
-      assertThat(validationAction.getRules().isEnabled(), Matchers.equalTo(false));
-      verify(eventBus).fireEvent(RequestValidationEvent.EVENT);
-   }
+        for (ValidationAction action : validationList) {
+            action.getRules().setEnabled(true);
+            validationStatesMap.put(action.getId(), action.getState());
+        }
+        service.setValidationRules(validationStatesMap);
 
-   @Test
-   public void canGetValidationList()
-   {
-      List<ValidationAction> validationList = new ArrayList<ValidationAction>(service.getValidationMap().values());
-      
-      assertThat(validationList.size(), Matchers.equalTo(7));
-   }
+        verify(eventBus).addHandler(RunValidationEvent.getType(), service);
+    }
+
+    @Test
+    public void canUpdateValidatorStatus() {
+        service.updateStatus(VAL_KEY, false, true);
+
+        ValidationAction validationAction =
+                service.getValidationMap().get(VAL_KEY);
+
+        assertThat(validationAction.getRules().isEnabled(),
+                Matchers.equalTo(false));
+        verify(eventBus).fireEvent(RequestValidationEvent.EVENT);
+    }
+
+    @Test
+    public void canGetValidationList() {
+        List<ValidationAction> validationList =
+                new ArrayList<ValidationAction>(service.getValidationMap()
+                        .values());
+
+        assertThat(validationList.size(), Matchers.equalTo(7));
+    }
 
 }

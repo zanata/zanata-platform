@@ -26,37 +26,31 @@ import org.openqa.selenium.WebDriver;
 import org.zanata.page.AbstractPage;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-public class GoogleManagePermissionsPage extends AbstractPage
-{
+public class GoogleManagePermissionsPage extends AbstractPage {
 
-   public GoogleManagePermissionsPage(WebDriver driver)
-   {
-      super(driver);
-   }
+    public GoogleManagePermissionsPage(WebDriver driver) {
+        super(driver);
+    }
 
-   public GoogleManagePermissionsPage removePermission(String permissionName)
-   {
-      if (pageContainsPermission(permissionName))
-      {
-         getDriver().findElement(By.name(permissionName))
-               .findElement(By.cssSelector("input[type='submit']"))
-               .click();
-      }
-      return new GoogleManagePermissionsPage(getDriver());
-   }
+    public GoogleManagePermissionsPage removePermission(String permissionName) {
+        if (pageContainsPermission(permissionName)) {
+            getDriver().findElement(By.name(permissionName))
+                    .findElement(By.cssSelector("input[type='submit']"))
+                    .click();
+        }
+        return new GoogleManagePermissionsPage(getDriver());
+    }
 
-   public boolean pageContainsPermission(String permissionName)
-   {
-      try
-      {
-         return getDriver().findElement(By.name(permissionName)).isDisplayed();
-      }
-      catch(NoSuchElementException nsee)
-      {
-         // Permission not listed
-         return false;
-      }
-   }
+    public boolean pageContainsPermission(String permissionName) {
+        try {
+            return getDriver().findElement(By.name(permissionName))
+                    .isDisplayed();
+        } catch (NoSuchElementException nsee) {
+            // Permission not listed
+            return false;
+        }
+    }
 }

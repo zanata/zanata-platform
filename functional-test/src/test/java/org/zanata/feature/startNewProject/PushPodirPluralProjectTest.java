@@ -43,52 +43,53 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @RunWith(ConcordionRunner.class)
-@Extensions({ScreenshotExtension.class, TimestampFormatterExtension.class, CustomResourceExtension.class, LoggingTooltipExtension.class})
+@Extensions({ ScreenshotExtension.class, TimestampFormatterExtension.class,
+        CustomResourceExtension.class, LoggingTooltipExtension.class })
 @Category(ConcordionTest.class)
-public class PushPodirPluralProjectTest
-{
-   private final static Logger tooltipLog = Logger.getLogger(PushPodirPluralProjectTest.class.getName());
+public class PushPodirPluralProjectTest {
+    private final static Logger tooltipLog = Logger
+            .getLogger(PushPodirPluralProjectTest.class.getName());
 
-   @Extension
-   public ConcordionExtension extension = new LoggingTooltipExtension(PushPodirPluralProjectTest.class.getName(), Level.INFO, false);
+    @Extension
+    public ConcordionExtension extension = new LoggingTooltipExtension(
+            PushPodirPluralProjectTest.class.getName(), Level.INFO, false);
 
-   private ClientPushWorkFlow clientPushWorkFlow = new ClientPushWorkFlow();
-   private File projectRootPath;
+    private ClientPushWorkFlow clientPushWorkFlow = new ClientPushWorkFlow();
+    private File projectRootPath;
 
-   public String getUserConfigPath()
-   {
-      return ClientPushWorkFlow.getUserConfigPath("admin");
-   }
+    public String getUserConfigPath() {
+        return ClientPushWorkFlow.getUserConfigPath("admin");
+    }
 
-   public String getUserConfigContent(String path) throws IOException
-   {
-      List<String> lines = Files.readLines(new File(path), Charset.defaultCharset());
-      return Joiner.on("\n").join(lines);
-   }
+    public String getUserConfigContent(String path) throws IOException {
+        List<String> lines =
+                Files.readLines(new File(path), Charset.defaultCharset());
+        return Joiner.on("\n").join(lines);
+    }
 
-   public String getProjectLocation(String project)
-   {
-      projectRootPath = clientPushWorkFlow.getProjectRootPath(project);
-      tooltipLog.info("project root path:" + projectRootPath.getAbsolutePath());
-      return projectRootPath.getAbsolutePath();
-   }
+    public String getProjectLocation(String project) {
+        projectRootPath = clientPushWorkFlow.getProjectRootPath(project);
+        tooltipLog.info("project root path:"
+                + projectRootPath.getAbsolutePath());
+        return projectRootPath.getAbsolutePath();
+    }
 
-   public List<String> push(String command, String configPath) throws Exception
-   {
-      return clientPushWorkFlow.callWithTimeout(projectRootPath, command + configPath);
-   }
+    public List<String> push(String command, String configPath)
+            throws Exception {
+        return clientPushWorkFlow.callWithTimeout(projectRootPath, command
+                + configPath);
+    }
 
-   public boolean isPushSuccessful(List<String> output)
-   {
-      return clientPushWorkFlow.isPushSuccessful(output);
-   }
+    public boolean isPushSuccessful(List<String> output) {
+        return clientPushWorkFlow.isPushSuccessful(output);
+    }
 
-   public String resultByLines(List<String> output)
-   {
-      return Joiner.on("\n").join(output);
-   }
+    public String resultByLines(List<String> output) {
+        return Joiner.on("\n").join(output);
+    }
 
 }

@@ -38,80 +38,95 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class TextFlowTargetReviewCommentsDAOJPATest extends ZanataDbunitJpaTest
-{
-   private TextFlowTargetReviewCommentsDAO reviewCommentsDAO;
-   private TextFlowTargetDAO textFlowTargetDAO;
+public class TextFlowTargetReviewCommentsDAOJPATest extends ZanataDbunitJpaTest {
+    private TextFlowTargetReviewCommentsDAO reviewCommentsDAO;
+    private TextFlowTargetDAO textFlowTargetDAO;
 
-   @Override
-   protected void prepareDBUnitOperations()
-   {
-      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/ClearAllTables.dbunit.xml", DatabaseOperation.DELETE_ALL));
-      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/AccountData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
-      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
-      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/TextFlowTestData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
-      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/LocalesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
-   }
+    @Override
+    protected void prepareDBUnitOperations() {
+        beforeTestOperations.add(new DataSetOperation(
+                "org/zanata/test/model/ClearAllTables.dbunit.xml",
+                DatabaseOperation.DELETE_ALL));
+        beforeTestOperations.add(new DataSetOperation(
+                "org/zanata/test/model/AccountData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
+        beforeTestOperations.add(new DataSetOperation(
+                "org/zanata/test/model/ProjectsData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
+        beforeTestOperations.add(new DataSetOperation(
+                "org/zanata/test/model/TextFlowTestData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
+        beforeTestOperations.add(new DataSetOperation(
+                "org/zanata/test/model/LocalesData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
+    }
 
-   @BeforeMethod(firstTimeOnly = true)
-   public void setup()
-   {
-      reviewCommentsDAO = new TextFlowTargetReviewCommentsDAO(getSession());
-      textFlowTargetDAO = new TextFlowTargetDAO(getSession());
-   }
+    @BeforeMethod(firstTimeOnly = true)
+    public void setup() {
+        reviewCommentsDAO = new TextFlowTargetReviewCommentsDAO(getSession());
+        textFlowTargetDAO = new TextFlowTargetDAO(getSession());
+    }
 
-   @Test
-   public void testQuery()
-   {
-      List<HTextFlowTargetReviewComment> reviewComments = reviewCommentsDAO.getReviewComments(new TransUnitId(5L), LocaleId.EN_US);
+    @Test
+    public void testQuery() {
+        List<HTextFlowTargetReviewComment> reviewComments =
+                reviewCommentsDAO.getReviewComments(new TransUnitId(5L),
+                        LocaleId.EN_US);
 
-      assertThat(reviewComments, Matchers.hasSize(1));
-      assertThat(reviewComments.get(0).getCommenter().getName(), Matchers.equalTo("Sample User"));
-   }
+        assertThat(reviewComments, Matchers.hasSize(1));
+        assertThat(reviewComments.get(0).getCommenter().getName(),
+                Matchers.equalTo("Sample User"));
+    }
 
-   @Test
-   public void testTargetUserComment()
-   {
-      PersonDAO personDAO = new PersonDAO(getSession());
-      HPerson person = personDAO.findById(1L, false);
-      HTextFlowTarget target = textFlowTargetDAO.findById(1L, false);
+    @Test
+    public void testTargetUserComment() {
+        PersonDAO personDAO = new PersonDAO(getSession());
+        HPerson person = personDAO.findById(1L, false);
+        HTextFlowTarget target = textFlowTargetDAO.findById(1L, false);
 
-      List<HTextFlowTargetReviewComment> userComments = target.getReviewComments();
+        List<HTextFlowTargetReviewComment> userComments =
+                target.getReviewComments();
 
-      assertThat(userComments, Matchers.empty());
+        assertThat(userComments, Matchers.empty());
 
-      target.addReviewComment("bad translation", person);
-      getEm().persist(target);
+        target.addReviewComment("bad translation", person);
+        getEm().persist(target);
 
-      List<HTextFlowTargetReviewComment> result = reviewCommentsDAO.getReviewComments(new TransUnitId(target.getTextFlow().getId()), target.getLocaleId());
+        List<HTextFlowTargetReviewComment> result =
+                reviewCommentsDAO.getReviewComments(new TransUnitId(target
+                        .getTextFlow().getId()), target.getLocaleId());
 
-      assertThat(result, Matchers.hasSize(1));
-      assertThat(result.get(0).getCommenterName(), Matchers.equalTo(person.getName()));
-      assertThat(result.get(0).getCreationDate(), Matchers.lessThanOrEqualTo(new Date()));
-   }
+        assertThat(result, Matchers.hasSize(1));
+        assertThat(result.get(0).getCommenterName(),
+                Matchers.equalTo(person.getName()));
+        assertThat(result.get(0).getCreationDate(),
+                Matchers.lessThanOrEqualTo(new Date()));
+    }
 
-   @Test
-   public void testTargetUserCommentMadeOnPreviousTranslation()
-   {
-      PersonDAO personDAO = new PersonDAO(getSession());
-      HPerson person = personDAO.findById(1L, false);
-      HTextFlowTarget target = textFlowTargetDAO.findById(2L, false);
+    @Test
+    public void testTargetUserCommentMadeOnPreviousTranslation() {
+        PersonDAO personDAO = new PersonDAO(getSession());
+        HPerson person = personDAO.findById(1L, false);
+        HTextFlowTarget target = textFlowTargetDAO.findById(2L, false);
 
-      List<String> oldTranslation = target.getContents();
-      int oldVersion = target.getVersionNum();
+        List<String> oldTranslation = target.getContents();
+        int oldVersion = target.getVersionNum();
 
-      target.addReviewComment("comment blah", person);
-      getEm().persist(target);
+        target.addReviewComment("comment blah", person);
+        getEm().persist(target);
 
-      // change target after making comment
-      target.setContent0("new translation");
-      getEm().persist(target);
+        // change target after making comment
+        target.setContent0("new translation");
+        getEm().persist(target);
 
-      List<HTextFlowTargetReviewComment> result = reviewCommentsDAO.getReviewComments(new TransUnitId(target.getTextFlow().getId()), target.getLocaleId());
+        List<HTextFlowTargetReviewComment> result =
+                reviewCommentsDAO.getReviewComments(new TransUnitId(target
+                        .getTextFlow().getId()), target.getLocaleId());
 
-
-      assertThat(result.get(0).getTargetVersion(), Matchers.equalTo(oldVersion));
-   }
+        assertThat(result.get(0).getTargetVersion(),
+                Matchers.equalTo(oldVersion));
+    }
 }

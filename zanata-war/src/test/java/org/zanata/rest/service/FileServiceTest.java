@@ -42,84 +42,90 @@ import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.seam.SeamAutowire;
 
 /**
- * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
+ * @author David Mason, <a
+ *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  */
 @Test(groups = { "unit-tests" })
-public class FileServiceTest
-{
-   private static final String PROJ_SLUG = "project-slug";
-   private static final String VER_SLUG = "version-slug";
-   private static final String DOC_ID = "docId";
-   private static final String LOCALE = "es";
-   private static final String MERGE = "auto";
+public class FileServiceTest {
+    private static final String PROJ_SLUG = "project-slug";
+    private static final String VER_SLUG = "version-slug";
+    private static final String DOC_ID = "docId";
+    private static final String LOCALE = "es";
+    private static final String MERGE = "auto";
 
-   SeamAutowire seam = SeamAutowire.instance();
+    SeamAutowire seam = SeamAutowire.instance();
 
-   @Mock private SourceDocumentUpload sourceUploader;
-   @Mock private TranslationDocumentUpload transUploader;
+    @Mock
+    private SourceDocumentUpload sourceUploader;
+    @Mock
+    private TranslationDocumentUpload transUploader;
 
-   @Captor private ArgumentCaptor<DocumentFileUploadForm> formCaptor;
+    @Captor
+    private ArgumentCaptor<DocumentFileUploadForm> formCaptor;
 
-   private FileResource fileService;
+    private FileResource fileService;
 
-   private GlobalDocumentId id;
-   private DocumentFileUploadForm form;
-   private Response okResponse;
-   private Response response;
+    private GlobalDocumentId id;
+    private DocumentFileUploadForm form;
+    private Response okResponse;
+    private Response response;
 
-   @BeforeMethod
-   public void beforeTest()
-   {
-      MockitoAnnotations.initMocks(this);
+    @BeforeMethod
+    public void beforeTest() {
+        MockitoAnnotations.initMocks(this);
 
-      seam.reset();
-      seam.ignoreNonResolvable()
-            .use("sourceDocumentUploader", sourceUploader)
-            .use("translationDocumentUploader", transUploader)
-            .allowCycles();
+        seam.reset();
+        seam.ignoreNonResolvable()
+                .use("sourceDocumentUploader", sourceUploader)
+                .use("translationDocumentUploader", transUploader)
+                .allowCycles();
 
-      fileService = seam.autowire(FileService.class);
+        fileService = seam.autowire(FileService.class);
 
-      id = new GlobalDocumentId(PROJ_SLUG, VER_SLUG, DOC_ID);
-      form = new DocumentFileUploadForm();
-      okResponse = Response.ok().build();
-   }
+        id = new GlobalDocumentId(PROJ_SLUG, VER_SLUG, DOC_ID);
+        form = new DocumentFileUploadForm();
+        okResponse = Response.ok().build();
+    }
 
-   @AfterMethod
-   public void afterMethod()
-   {
-      id = null;
-      form = null;
-      okResponse = null;
-      response = null;
-   }
+    @AfterMethod
+    public void afterMethod() {
+        id = null;
+        form = null;
+        okResponse = null;
+        response = null;
+    }
 
-   public void sourceUploadParamsHandledCorrectly()
-   {
-      when(sourceUploader.tryUploadSourceFile(eq(id), formCaptor.capture())).thenReturn(okResponse);
-      fileService.uploadSourceFile(PROJ_SLUG, VER_SLUG, DOC_ID, form);
-      assertThat(formCaptor.getValue(), is(sameInstance(form)));
-   }
+    public void sourceUploadParamsHandledCorrectly() {
+        when(sourceUploader.tryUploadSourceFile(eq(id), formCaptor.capture()))
+                .thenReturn(okResponse);
+        fileService.uploadSourceFile(PROJ_SLUG, VER_SLUG, DOC_ID, form);
+        assertThat(formCaptor.getValue(), is(sameInstance(form)));
+    }
 
-   public void sourceUploadResponseReturnedDirectly()
-   {
-      when(sourceUploader.tryUploadSourceFile(id, form)).thenReturn(okResponse);
-      response = fileService.uploadSourceFile(PROJ_SLUG, VER_SLUG, DOC_ID, form);
-      assertThat(response, is(sameInstance(okResponse)));
-   }
+    public void sourceUploadResponseReturnedDirectly() {
+        when(sourceUploader.tryUploadSourceFile(id, form)).thenReturn(
+                okResponse);
+        response =
+                fileService.uploadSourceFile(PROJ_SLUG, VER_SLUG, DOC_ID, form);
+        assertThat(response, is(sameInstance(okResponse)));
+    }
 
-   public void translationUploadParamsHandledCorrectly()
-   {
-      when(transUploader.tryUploadTranslationFile(eq(id), eq(LOCALE), eq(MERGE), formCaptor.capture()))
-            .thenReturn(okResponse);
-      fileService.uploadTranslationFile(PROJ_SLUG, VER_SLUG, LOCALE, DOC_ID, MERGE, form);
-      assertThat(formCaptor.getValue(), is(sameInstance(form)));
-   }
+    public void translationUploadParamsHandledCorrectly() {
+        when(
+                transUploader.tryUploadTranslationFile(eq(id), eq(LOCALE),
+                        eq(MERGE), formCaptor.capture()))
+                .thenReturn(okResponse);
+        fileService.uploadTranslationFile(PROJ_SLUG, VER_SLUG, LOCALE, DOC_ID,
+                MERGE, form);
+        assertThat(formCaptor.getValue(), is(sameInstance(form)));
+    }
 
-   public void translationUploadResponseReturnedDirectly()
-   {
-      when(transUploader.tryUploadTranslationFile(id, LOCALE, MERGE, form)).thenReturn(okResponse);
-      response = fileService.uploadTranslationFile(PROJ_SLUG, VER_SLUG, LOCALE, DOC_ID, MERGE, form);
-      assertThat(response, is(sameInstance(okResponse)));
-   }
+    public void translationUploadResponseReturnedDirectly() {
+        when(transUploader.tryUploadTranslationFile(id, LOCALE, MERGE, form))
+                .thenReturn(okResponse);
+        response =
+                fileService.uploadTranslationFile(PROJ_SLUG, VER_SLUG, LOCALE,
+                        DOC_ID, MERGE, form);
+        assertThat(response, is(sameInstance(okResponse)));
+    }
 }

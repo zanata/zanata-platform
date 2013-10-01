@@ -36,92 +36,84 @@ import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.action.TabValidation;
 
 @Test(groups = { "unit-tests" })
-public class TabValidationTest
-{
-   private ValidationMessages messages;
-   private TabValidation validation;
-   private static final List<String> noErrors = Collections.<String>emptyList();
+public class TabValidationTest {
+    private ValidationMessages messages;
+    private TabValidation validation;
+    private static final List<String> noErrors = Collections
+            .<String> emptyList();
 
-   @BeforeMethod
-   public void init() throws IOException
-   {
-      messages = Gwti18nReader.create(ValidationMessages.class);
-      validation = new TabValidation(ValidationId.TAB, messages);
-      validation.getRules().setEnabled(true);
-   }
+    @BeforeMethod
+    public void init() throws IOException {
+        messages = Gwti18nReader.create(ValidationMessages.class);
+        validation = new TabValidation(ValidationId.TAB, messages);
+        validation.getRules().setEnabled(true);
+    }
 
-   @Test
-   public void idIsSet()
-   {
-      assertThat(validation.getId(), is(ValidationId.TAB));
-   }
+    @Test
+    public void idIsSet() {
+        assertThat(validation.getId(), is(ValidationId.TAB));
+    }
 
-   @Test
-   public void noTabsInEither()
-   {
-      String source = "Source without tab";
-      String target = "Target without tab";
-      List<String> errorList = validation.validate(source, target);
+    @Test
+    public void noTabsInEither() {
+        String source = "Source without tab";
+        String target = "Target without tab";
+        List<String> errorList = validation.validate(source, target);
 
-      assertThat(errorList, is(noErrors));
-   }
+        assertThat(errorList, is(noErrors));
+    }
 
-   @Test
-   public void tabsInBoth()
-   {
-      String source = "Source with\ttab";
-      String target = "Target with\ttab";
-      List<String> errorList = validation.validate(source, target);
+    @Test
+    public void tabsInBoth() {
+        String source = "Source with\ttab";
+        String target = "Target with\ttab";
+        List<String> errorList = validation.validate(source, target);
 
-      assertThat(errorList, is(noErrors));
-   }
+        assertThat(errorList, is(noErrors));
+    }
 
-   @Test
-   public void noTabsInTarget()
-   {
-      String source = "Source with\ttab";
-      String target = "Target without tab";
-      List<String> errorList = validation.validate(source, target);
+    @Test
+    public void noTabsInTarget() {
+        String source = "Source with\ttab";
+        String target = "Target without tab";
+        List<String> errorList = validation.validate(source, target);
 
-      assertThat(errorList, hasItem(messages.targetHasFewerTabs(1, 0)));
-      assertThat(errorList.size(), is(1));
-      
-   }
+        assertThat(errorList, hasItem(messages.targetHasFewerTabs(1, 0)));
+        assertThat(errorList.size(), is(1));
 
-   @Test
-   public void noTabsInSource()
-   {
-      String source = "Source without tab";
-      String target = "Target with\textra tab";
-      List<String> errorList = validation.validate(source, target);
+    }
 
-      assertThat(errorList, hasItem(messages.targetHasMoreTabs(0, 1)));
-      assertThat(errorList.size(), is(1));
-      
-   }
+    @Test
+    public void noTabsInSource() {
+        String source = "Source without tab";
+        String target = "Target with\textra tab";
+        List<String> errorList = validation.validate(source, target);
 
-   @Test
-   public void fewerTabsInTarget()
-   {
-      String source = "Source with two\t\t tabs";
-      String target = "Target with one\ttab";
-      List<String> errorList = validation.validate(source, target);
+        assertThat(errorList, hasItem(messages.targetHasMoreTabs(0, 1)));
+        assertThat(errorList.size(), is(1));
 
-      assertThat(errorList, hasItem(messages.targetHasFewerTabs(2, 1)));
-      assertThat(errorList.size(), is(1));
-      
-   }
+    }
 
-   @Test
-   public void moreTabsInTarget()
-   {
-      String source = "Source with one\ttab";
-      String target = "Target with two\t\t tabs";
-      List<String> errorList = validation.validate(source, target);
+    @Test
+    public void fewerTabsInTarget() {
+        String source = "Source with two\t\t tabs";
+        String target = "Target with one\ttab";
+        List<String> errorList = validation.validate(source, target);
 
-      assertThat(errorList, hasItem(messages.targetHasMoreTabs(1, 2)));
-      assertThat(errorList.size(), is(1));
-      
-   }
+        assertThat(errorList, hasItem(messages.targetHasFewerTabs(2, 1)));
+        assertThat(errorList.size(), is(1));
+
+    }
+
+    @Test
+    public void moreTabsInTarget() {
+        String source = "Source with one\ttab";
+        String target = "Target with two\t\t tabs";
+        List<String> errorList = validation.validate(source, target);
+
+        assertThat(errorList, hasItem(messages.targetHasMoreTabs(1, 2)));
+        assertThat(errorList.size(), is(1));
+
+    }
 
 }

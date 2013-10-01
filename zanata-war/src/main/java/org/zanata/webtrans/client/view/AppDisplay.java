@@ -6,40 +6,40 @@ import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.webtrans.client.presenter.MainView;
 
 /**
-* @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
-*/
-public interface AppDisplay extends WidgetDisplay
-{
-   void showInMainView(MainView view);
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ */
+public interface AppDisplay extends WidgetDisplay {
+    void showInMainView(MainView view);
 
-   void setDocumentLabel(String docPath, String docName);
+    void setDocumentLabel(String docPath, String docName);
 
-   void setStats(ContainerTranslationStatistics transStats, boolean statsByWords);
+    void setStats(ContainerTranslationStatistics transStats,
+            boolean statsByWords);
 
-   void setReadOnlyVisible(boolean visible);
+    void setReadOnlyVisible(boolean visible);
 
-   void showSideMenu(boolean isShowing);
-   
-   void setProjectLinkLabel(String text);
+    void showSideMenu(boolean isShowing);
 
-   void setFilesLinkLabel(String text);
-   
-   void setVersionLinkLabel(String text);
+    void setProjectLinkLabel(String text);
 
-   void setListener(Listener listener);
-   
-   interface Listener
-   {
-      void onSearchAndReplaceClicked();
+    void setFilesLinkLabel(String text);
 
-      void onDocumentListClicked();
+    void setVersionLinkLabel(String text);
 
-      void onKeyShortcutsClicked();
+    void setListener(Listener listener);
 
-      void onEditorClicked();
-   }
+    interface Listener {
+        void onSearchAndReplaceClicked();
 
-   void enableTab(MainView view, boolean enable);
+        void onDocumentListClicked();
 
-   void setKeyboardShorcutColor(boolean aliasKeyListening);
+        void onKeyShortcutsClicked();
+
+        void onEditorClicked();
+    }
+
+    void enableTab(MainView view, boolean enable);
+
+    void setKeyboardShorcutColor(boolean aliasKeyListening);
 }

@@ -49,74 +49,81 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Test(groups = "unit-tests")
-public class ForceReviewCommentPresenterTest
-{
-   private ForceReviewCommentPresenter presenter;
-   @Mock
-   private ForceReviewCommentDisplay display;
-   @Mock
-   private EventBus eventBus;
-   @Mock
-   private CachingDispatchAsync dispatcher;
-   @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-   private GetTransUnitActionContextHolder contextHolder;
-   @Mock
-   private CommentBeforeSaveEvent commentBeforeSaveEvent;
-   @Mock
-   private TransUnitSaveEvent saveEvent;
-   @Mock
-   private KeyShortcutPresenter keyShortcutPresenter;
-   @Captor
-   private ArgumentCaptor<KeyShortcut> shortcutCapture;
+public class ForceReviewCommentPresenterTest {
+    private ForceReviewCommentPresenter presenter;
+    @Mock
+    private ForceReviewCommentDisplay display;
+    @Mock
+    private EventBus eventBus;
+    @Mock
+    private CachingDispatchAsync dispatcher;
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private GetTransUnitActionContextHolder contextHolder;
+    @Mock
+    private CommentBeforeSaveEvent commentBeforeSaveEvent;
+    @Mock
+    private TransUnitSaveEvent saveEvent;
+    @Mock
+    private KeyShortcutPresenter keyShortcutPresenter;
+    @Captor
+    private ArgumentCaptor<KeyShortcut> shortcutCapture;
 
-   @BeforeMethod
-   public void setUp() throws Exception
-   {
-      MockitoAnnotations.initMocks(this);
+    @BeforeMethod
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
 
-      presenter = new ForceReviewCommentPresenter(display, eventBus, dispatcher, contextHolder, keyShortcutPresenter);
+        presenter =
+                new ForceReviewCommentPresenter(display, eventBus, dispatcher,
+                        contextHolder, keyShortcutPresenter);
 
-      verify(display).setListener(presenter);
-      verify(eventBus).addHandler(CommentBeforeSaveEvent.TYPE, presenter);
-      verify(keyShortcutPresenter).register(shortcutCapture.capture());
+        verify(display).setListener(presenter);
+        verify(eventBus).addHandler(CommentBeforeSaveEvent.TYPE, presenter);
+        verify(keyShortcutPresenter).register(shortcutCapture.capture());
 
-      KeyShortcut keyShortcut = shortcutCapture.getValue();
-      assertThat(keyShortcut.getContext(), Matchers.equalTo(ShortcutContext.RejectConfirmationPopup));
-   }
+        KeyShortcut keyShortcut = shortcutCapture.getValue();
+        assertThat(keyShortcut.getContext(),
+                Matchers.equalTo(ShortcutContext.RejectConfirmationPopup));
+    }
 
-   @Test
-   public void testOnCommentBeforeSave() throws Exception
-   {
-      presenter.onCommentBeforeSave(commentBeforeSaveEvent);
+    @Test
+    public void testOnCommentBeforeSave() throws Exception {
+        presenter.onCommentBeforeSave(commentBeforeSaveEvent);
 
-      verify(display).center();
-   }
+        verify(display).center();
+    }
 
-   @Test
-   public void testAddComment() throws Exception
-   {
-      when(commentBeforeSaveEvent.getSaveEvent()).thenReturn(saveEvent);
-      presenter.onCommentBeforeSave(commentBeforeSaveEvent);
+    @Test
+    public void testAddComment() throws Exception {
+        when(commentBeforeSaveEvent.getSaveEvent()).thenReturn(saveEvent);
+        presenter.onCommentBeforeSave(commentBeforeSaveEvent);
 
-      when(contextHolder.getContext().getDocument().getId()).thenReturn(new DocumentId(1L, "doc"));
-      ArgumentCaptor<AddReviewCommentAction> actionCaptor = ArgumentCaptor.forClass(AddReviewCommentAction.class);
-      ArgumentCaptor<AsyncCallback> resultCaptor = ArgumentCaptor.forClass(AsyncCallback.class);
+        when(contextHolder.getContext().getDocument().getId()).thenReturn(
+                new DocumentId(1L, "doc"));
+        ArgumentCaptor<AddReviewCommentAction> actionCaptor =
+                ArgumentCaptor.forClass(AddReviewCommentAction.class);
+        ArgumentCaptor<AsyncCallback> resultCaptor =
+                ArgumentCaptor.forClass(AsyncCallback.class);
 
-      presenter.addComment("i hate this");
+        presenter.addComment("i hate this");
 
-      verify(dispatcher).execute(actionCaptor.capture(), resultCaptor.capture());
-      assertThat(actionCaptor.getValue().getContent(), Matchers.equalTo("i hate this"));
+        verify(dispatcher).execute(actionCaptor.capture(),
+                resultCaptor.capture());
+        assertThat(actionCaptor.getValue().getContent(),
+                Matchers.equalTo("i hate this"));
 
-      AsyncCallback<AddReviewCommentResult> callback = resultCaptor.getValue();
-      AddReviewCommentResult result = new AddReviewCommentResult(new ReviewComment());
-      callback.onSuccess(result);
+        AsyncCallback<AddReviewCommentResult> callback =
+                resultCaptor.getValue();
+        AddReviewCommentResult result =
+                new AddReviewCommentResult(new ReviewComment());
+        callback.onSuccess(result);
 
-      verify(display).clearInput();
-      verify(eventBus).fireEvent(saveEvent);
-      verify(eventBus).fireEvent(NavTransUnitEvent.NEXT_ENTRY_EVENT);
-      verify(display).hide();
-   }
+        verify(display).clearInput();
+        verify(eventBus).fireEvent(saveEvent);
+        verify(eventBus).fireEvent(NavTransUnitEvent.NEXT_ENTRY_EVENT);
+        verify(display).hide();
+    }
 }

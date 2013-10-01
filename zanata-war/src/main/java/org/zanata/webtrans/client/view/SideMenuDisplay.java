@@ -5,41 +5,40 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import org.zanata.webtrans.client.events.NotificationEvent;
 
 /**
-* @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
-*/
-public interface SideMenuDisplay extends WidgetDisplay
-{
-   //Order of the tab
-   static final int NOTIFICATION_VIEW = 0;
-   static final int WORKSPACEUSER_VIEW = 1;
-   static final int OPTION_VIEW = 2;
-   static final int VALIDATION_OPTION_VIEW = 3;
-   
-   void setSelectedTab(int view);
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ */
+public interface SideMenuDisplay extends WidgetDisplay {
+    // Order of the tab
+    static final int NOTIFICATION_VIEW = 0;
+    static final int WORKSPACEUSER_VIEW = 1;
+    static final int OPTION_VIEW = 2;
+    static final int VALIDATION_OPTION_VIEW = 3;
 
-   void setChatTabAlert(boolean alert);
+    void setSelectedTab(int view);
 
-   int getCurrentTab();
+    void setChatTabAlert(boolean alert);
 
-   void setNotificationText(int count, NotificationEvent.Severity severity);
+    int getCurrentTab();
 
-   void setChatTabVisible(boolean visible);
+    void setNotificationText(int count, NotificationEvent.Severity severity);
 
-   void setOptionsTabVisible(boolean visible);
+    void setChatTabVisible(boolean visible);
 
-   void setValidationOptionsTabVisible(boolean visible);
+    void setOptionsTabVisible(boolean visible);
 
-   void setListener(Listener listener);
+    void setValidationOptionsTabVisible(boolean visible);
 
-   interface Listener
-   {
+    void setListener(Listener listener);
 
-      void onOptionsClick();
+    interface Listener {
 
-      void onNotificationClick();
+        void onOptionsClick();
 
-      void onValidationOptionsClick();
+        void onNotificationClick();
 
-      void onChatClick();
-   }
+        void onValidationOptionsClick();
+
+        void onChatClick();
+    }
 }

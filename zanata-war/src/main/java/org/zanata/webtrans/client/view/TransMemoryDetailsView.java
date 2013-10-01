@@ -26,165 +26,149 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class TransMemoryDetailsView implements TransMemoryDetailsDisplay
-{
+public class TransMemoryDetailsView implements TransMemoryDetailsDisplay {
 
-   private Listener listener;
+    private Listener listener;
 
-   interface TMIUiBinder extends UiBinder<DialogBox, TransMemoryDetailsView>
-   {
-   }
+    interface TMIUiBinder extends UiBinder<DialogBox, TransMemoryDetailsView> {
+    }
 
-   private static TMIUiBinder uiBinder = GWT.create(TMIUiBinder.class);
+    private static TMIUiBinder uiBinder = GWT.create(TMIUiBinder.class);
 
-   DialogBox dialogBox;
+    DialogBox dialogBox;
 
-   @UiField
-   Label sourceComment, targetComment;
-   
-   @UiField
-   InlineLabel projectIterationName, docName;
-   
-   @UiField
-   Label lastModified;
-   
-   @UiField
-   Label targetState;
-   
-   @UiField
-   Button dismissButton;
+    @UiField
+    Label sourceComment, targetComment;
 
-   @UiField
-   ListBox documentListBox;
-   @UiField
-   SimplePanel sourceTextContainer;
-   @UiField
-   SimplePanel targetTextContainer;
+    @UiField
+    InlineLabel projectIterationName, docName;
 
-   private final UiMessages messages;
-   
-   @Inject
-   public TransMemoryDetailsView(UiMessages messages)
-   {
-      dialogBox = uiBinder.createAndBindUi(this);
-      dialogBox.setText(messages.translationMemoryDetails());
-      this.messages = messages;
-      dismissButton.setText(messages.dismiss());
-   }
+    @UiField
+    Label lastModified;
 
-   public void hide()
-   {
-      dialogBox.hide();
-   }
+    @UiField
+    Label targetState;
 
-   public void show()
-   {
-      dialogBox.center();
-   }
+    @UiField
+    Button dismissButton;
 
-   @Override
-   public Widget asWidget()
-   {
-      return dialogBox;
-   }
+    @UiField
+    ListBox documentListBox;
+    @UiField
+    SimplePanel sourceTextContainer;
+    @UiField
+    SimplePanel targetTextContainer;
 
-   @Override
-   public void setListener(Listener listener)
-   {
-      this.listener = listener;
-   }
+    private final UiMessages messages;
 
-   @Override
-   public void setSourceComment(String sourceComment)
-   {
-      this.sourceComment.setText(sourceComment);
-   }
+    @Inject
+    public TransMemoryDetailsView(UiMessages messages) {
+        dialogBox = uiBinder.createAndBindUi(this);
+        dialogBox.setText(messages.translationMemoryDetails());
+        this.messages = messages;
+        dismissButton.setText(messages.dismiss());
+    }
 
-   @Override
-   public void setTargetComment(String targetComment)
-   {
-      this.targetComment.setText(targetComment);
-   }
+    public void hide() {
+        dialogBox.hide();
+    }
 
-   @Override
-   public void setProjectIterationName(String projectIterationName)
-   {
-      this.projectIterationName.setText(projectIterationName);
-   }
+    public void show() {
+        dialogBox.center();
+    }
 
-   @Override
-   public void setDocumentName(String documentName)
-   {
-      docName.setText(documentName);
-   }
+    @Override
+    public Widget asWidget() {
+        return dialogBox;
+    }
 
-   @Override
-   public void setLastModified(String lastModifiedBy, Date lastModifiedDate)
-   {
-      if (!Strings.isNullOrEmpty(lastModifiedBy))
-      {
-         lastModified.setText(messages.lastModified(DateUtil.formatShortDate(lastModifiedDate), lastModifiedBy));
-      }
-      else
-      {
-         lastModified.setText(messages.lastModifiedOn(DateUtil.formatShortDate(lastModifiedDate)));
-      }
-   }
+    @Override
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
 
-   @Override
-   public void clearSourceAndTarget()
-   {
-      sourceTextContainer.clear();
-      targetTextContainer.clear();
-   }
+    @Override
+    public void setSourceComment(String sourceComment) {
+        this.sourceComment.setText(sourceComment);
+    }
 
-   @Override
-   public void setSource(List<String> sourceContents)
-   {
-      SafeHtml safeHtml = TextContentsDisplay.asSyntaxHighlight(sourceContents).toSafeHtml();
-      sourceTextContainer.setWidget(new InlineHTML(safeHtml));
-   }
+    @Override
+    public void setTargetComment(String targetComment) {
+        this.targetComment.setText(targetComment);
+    }
 
-   @Override
-   public void setTarget(List<String> targetContents)
-   {
-      SafeHtml safeHtml = TextContentsDisplay.asSyntaxHighlight(targetContents).toSafeHtml();
-      targetTextContainer.setWidget(new InlineHTML(safeHtml));
-   }
+    @Override
+    public void setProjectIterationName(String projectIterationName) {
+        this.projectIterationName.setText(projectIterationName);
+    }
 
-   @UiHandler("dismissButton")
-   public void onDismissButtonClick(ClickEvent event)
-   {
-      listener.dismissTransMemoryDetails();
-   }
+    @Override
+    public void setDocumentName(String documentName) {
+        docName.setText(documentName);
+    }
 
-   @UiHandler("documentListBox")
-   public void onDocumentListBoxChange(ChangeEvent event)
-   {
-      listener.onDocumentListBoxChanged();
-   }
+    @Override
+    public void setLastModified(String lastModifiedBy, Date lastModifiedDate) {
+        if (!Strings.isNullOrEmpty(lastModifiedBy)) {
+            lastModified
+                    .setText(messages.lastModified(
+                            DateUtil.formatShortDate(lastModifiedDate),
+                            lastModifiedBy));
+        } else {
+            lastModified.setText(messages.lastModifiedOn(DateUtil
+                    .formatShortDate(lastModifiedDate)));
+        }
+    }
 
-   @Override
-   public int getSelectedDocumentIndex()
-   {
-      return documentListBox.getSelectedIndex();
-   }
+    @Override
+    public void clearSourceAndTarget() {
+        sourceTextContainer.clear();
+        targetTextContainer.clear();
+    }
 
-   @Override
-   public void addDoc(String text)
-   {
-      documentListBox.addItem(text);
-   }
+    @Override
+    public void setSource(List<String> sourceContents) {
+        SafeHtml safeHtml =
+                TextContentsDisplay.asSyntaxHighlight(sourceContents)
+                        .toSafeHtml();
+        sourceTextContainer.setWidget(new InlineHTML(safeHtml));
+    }
 
-   @Override
-   public void clearDocs()
-   {
-      documentListBox.clear();
-   }
+    @Override
+    public void setTarget(List<String> targetContents) {
+        SafeHtml safeHtml =
+                TextContentsDisplay.asSyntaxHighlight(targetContents)
+                        .toSafeHtml();
+        targetTextContainer.setWidget(new InlineHTML(safeHtml));
+    }
 
-   @Override
-   public void setState(ContentState state)
-   {
-      targetState.setText(state.toString());
-   }
+    @UiHandler("dismissButton")
+    public void onDismissButtonClick(ClickEvent event) {
+        listener.dismissTransMemoryDetails();
+    }
+
+    @UiHandler("documentListBox")
+    public void onDocumentListBoxChange(ChangeEvent event) {
+        listener.onDocumentListBoxChanged();
+    }
+
+    @Override
+    public int getSelectedDocumentIndex() {
+        return documentListBox.getSelectedIndex();
+    }
+
+    @Override
+    public void addDoc(String text) {
+        documentListBox.addItem(text);
+    }
+
+    @Override
+    public void clearDocs() {
+        documentListBox.clear();
+    }
+
+    @Override
+    public void setState(ContentState state) {
+        targetState.setText(state.toString());
+    }
 }

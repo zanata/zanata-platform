@@ -6,32 +6,29 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class NavOptionRenderer extends EnumRenderer<NavOption>
-{
-   private final EnumMessages messages;
+public class NavOptionRenderer extends EnumRenderer<NavOption> {
+    private final EnumMessages messages;
 
-   @Inject
-   public NavOptionRenderer(EnumMessages messages)
-   {
-      this.messages = messages;
-   }
+    @Inject
+    public NavOptionRenderer(EnumMessages messages) {
+        this.messages = messages;
+    }
 
-   @Override
-   public String render(NavOption option)
-   {
-      switch (option)
-      {
-         case FUZZY:
+    @Override
+    public String render(NavOption option) {
+        switch (option) {
+        case FUZZY:
             return messages.nextDraft();
-         case UNTRANSLATED:
+        case UNTRANSLATED:
             return messages.nextUntranslated();
-         case FUZZY_UNTRANSLATED:
+        case FUZZY_UNTRANSLATED:
             return messages.nextIncomplete();
-         default:
+        default:
             return getEmptyValue();
-      }
-   }
+        }
+    }
 }

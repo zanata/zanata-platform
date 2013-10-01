@@ -9,29 +9,32 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class DummyGetGlossaryCommand implements Command
-{
+public class DummyGetGlossaryCommand implements Command {
 
-   private final GetGlossary action;
-   private final AsyncCallback<GetGlossaryResult> callback;
+    private final GetGlossary action;
+    private final AsyncCallback<GetGlossaryResult> callback;
 
-   public DummyGetGlossaryCommand(GetGlossary action, AsyncCallback<GetGlossaryResult> callback)
-   {
-      this.action = action;
-      this.callback = callback;
-   }
+    public DummyGetGlossaryCommand(GetGlossary action,
+            AsyncCallback<GetGlossaryResult> callback) {
+        this.action = action;
+        this.callback = callback;
+    }
 
-   @Override
-   public void execute()
-   {
-      Log.info("ENTER DummyGetGlossaryCommand.execute()");
-      ArrayList<GlossaryResultItem> matches = new ArrayList<GlossaryResultItem>();
-      matches.add(new GlossaryResultItem("<s>source1</s>", "<tr> &lt;suggestion 3</tr>", 3, 100));
-      matches.add(new GlossaryResultItem("<s>source1</s>", "<tr> &lt;suggestion 3</tr>", 3, 100));
-      matches.add(new GlossaryResultItem("<s>source1</s>", "<tr> &lt;suggestion 3</tr>", 3, 100));
-      matches.add(new GlossaryResultItem("<s>source1</s>", "<tr> &lt;suggestion 3</tr>", 3, 100));
-      callback.onSuccess(new GetGlossaryResult(action, matches));
-      Log.info("EXIT DummyGetGlossaryCommand.execute()");
-   }
+    @Override
+    public void execute() {
+        Log.info("ENTER DummyGetGlossaryCommand.execute()");
+        ArrayList<GlossaryResultItem> matches =
+                new ArrayList<GlossaryResultItem>();
+        matches.add(new GlossaryResultItem("<s>source1</s>",
+                "<tr> &lt;suggestion 3</tr>", 3, 100));
+        matches.add(new GlossaryResultItem("<s>source1</s>",
+                "<tr> &lt;suggestion 3</tr>", 3, 100));
+        matches.add(new GlossaryResultItem("<s>source1</s>",
+                "<tr> &lt;suggestion 3</tr>", 3, 100));
+        matches.add(new GlossaryResultItem("<s>source1</s>",
+                "<tr> &lt;suggestion 3</tr>", 3, 100));
+        callback.onSuccess(new GetGlossaryResult(action, matches));
+        Log.info("EXIT DummyGetGlossaryCommand.execute()");
+    }
 
 }

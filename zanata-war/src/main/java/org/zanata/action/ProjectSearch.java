@@ -19,108 +19,92 @@ import org.zanata.model.HProject;
 @Name("projectSearch")
 @Scope(ScopeType.CONVERSATION)
 @AutoCreate
-public class ProjectSearch implements Serializable
-{
+public class ProjectSearch implements Serializable {
 
-   private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-   private int pageSize = 30;
+    private int pageSize = 30;
 
-   private String searchQuery;
+    private String searchQuery;
 
-   private List<HProject> searchResults;
+    private List<HProject> searchResults;
 
-   private int currentPage = 1;
+    private int currentPage = 1;
 
-   private int resultSize;
-   
-   private boolean includeObsolete;
+    private int resultSize;
 
-   @In
-   private ProjectDAO projectDAO;
+    private boolean includeObsolete;
 
-   public String getSearchQuery()
-   {
-      return searchQuery;
-   }
+    @In
+    private ProjectDAO projectDAO;
 
-   public void setSearchQuery(String searchQuery)
-   {
-      this.searchQuery = searchQuery;
-   }
+    public String getSearchQuery() {
+        return searchQuery;
+    }
 
-   public List<HProject> getSearchResults()
-   {
-      return searchResults;
-   }
+    public void setSearchQuery(String searchQuery) {
+        this.searchQuery = searchQuery;
+    }
 
-   public void setSearchResults(List<HProject> projects)
-   {
-      this.searchResults = projects;
-   }
+    public List<HProject> getSearchResults() {
+        return searchResults;
+    }
 
-   public int getResultSize()
-   {
-      return resultSize;
-   }
+    public void setSearchResults(List<HProject> projects) {
+        this.searchResults = projects;
+    }
 
-   public int getCurrentPage()
-   {
-      return currentPage;
-   }
+    public int getResultSize() {
+        return resultSize;
+    }
 
-   public void setCurrentPage(int page)
-   {
-      if (page < 1)
-         this.currentPage = 1;
-      else
-         this.currentPage = page;
-   }
+    public int getCurrentPage() {
+        return currentPage;
+    }
 
-   @Begin(join=true)
-   public void search()
-   {
-      try
-      {
-         searchResults = projectDAO.searchQuery(searchQuery, pageSize + 1, pageSize * (currentPage - 1));
-      }
-      catch (ParseException pe)
-      {
-         return;
-      }
-      // Manually filtering collection as status field is not indexed by hibernate search
-      if( !this.includeObsolete )
-      {
-         CollectionUtils.filter(searchResults, new Predicate()
-         {
-            @Override
-            public boolean evaluate(Object arg0)
-            {
-               return ((HProject)arg0).getStatus() != EntityStatus.OBSOLETE;
-            }
-         });
-      }
-      resultSize = searchResults.size();
-   }
+    public void setCurrentPage(int page) {
+        if (page < 1)
+            this.currentPage = 1;
+        else
+            this.currentPage = page;
+    }
 
-   public int getPageSize()
-   {
-      return pageSize;
-   }
+    @Begin(join = true)
+    public void search() {
+        try {
+            searchResults =
+                    projectDAO.searchQuery(searchQuery, pageSize + 1, pageSize
+                            * (currentPage - 1));
+        } catch (ParseException pe) {
+            return;
+        }
+        // Manually filtering collection as status field is not indexed by
+        // hibernate search
+        if (!this.includeObsolete) {
+            CollectionUtils.filter(searchResults, new Predicate() {
+                @Override
+                public boolean evaluate(Object arg0) {
+                    return ((HProject) arg0).getStatus() != EntityStatus.OBSOLETE;
+                }
+            });
+        }
+        resultSize = searchResults.size();
+    }
 
-   public void setPageSize(int pageSize)
-   {
-      this.pageSize = pageSize;
-   }
+    public int getPageSize() {
+        return pageSize;
+    }
 
-   public boolean isIncludeObsolete()
-   {
-      return includeObsolete;
-   }
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
+    }
 
-   public void setIncludeObsolete(boolean includeObsolete)
-   {
-      this.includeObsolete = includeObsolete;
-   }
+    public boolean isIncludeObsolete() {
+        return includeObsolete;
+    }
+
+    public void setIncludeObsolete(boolean includeObsolete) {
+        this.includeObsolete = includeObsolete;
+    }
 
 }

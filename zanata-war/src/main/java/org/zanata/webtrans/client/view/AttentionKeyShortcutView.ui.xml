@@ -2,7 +2,8 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
   xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
-  <ui:style type="org.zanata.webtrans.client.view.AttentionKeyShortcutView.Styles">
+  <ui:style
+    type="org.zanata.webtrans.client.view.AttentionKeyShortcutView.Styles">
     .attentionKeyShortcutPanel {
       top: 58px;
       opacity: 0.95;
@@ -22,7 +23,7 @@
 
   <g:HorizontalPanel styleName="{style.attentionKeyShortcutPanel}">
     <g:cell>
-      <g:FlowPanel ui:field="shortcutContainer"/>
+      <g:FlowPanel ui:field="shortcutContainer" />
     </g:cell>
   </g:HorizontalPanel>
 

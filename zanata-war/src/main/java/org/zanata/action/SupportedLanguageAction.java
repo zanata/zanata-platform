@@ -14,46 +14,40 @@ import org.zanata.service.LocaleService;
 
 @Name("supportedLanguageAction")
 @Scope(ScopeType.STATELESS)
-public class SupportedLanguageAction implements Serializable
-{
-   private static final long serialVersionUID = 1L;
+public class SupportedLanguageAction implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-   @In
-   private LocaleService localeServiceImpl;
+    @In
+    private LocaleService localeServiceImpl;
 
-   static class TribeComparator implements Comparator<HLocale>
-   {
-      public int compare(HLocale aZanataLocale, HLocale bZanataLocale)
-      {
-         String aDisplayName = aZanataLocale.retrieveDisplayName();
-         String bDisplayName = bZanataLocale.retrieveDisplayName();
-         int comparison = aDisplayName.compareTo(bDisplayName);
-         if (comparison == 0)
-         {
-            String aNativeName = aZanataLocale.retrieveNativeName();
-            String bNativeName = bZanataLocale.retrieveNativeName();
-            comparison = aNativeName.compareTo(bNativeName);
-            if (comparison == 0)
-               // if all else fails, fall back on numerical ID sort
-               return aZanataLocale.getLocaleId().getId().compareTo(bZanataLocale.getLocaleId().getId());
+    static class TribeComparator implements Comparator<HLocale> {
+        public int compare(HLocale aZanataLocale, HLocale bZanataLocale) {
+            String aDisplayName = aZanataLocale.retrieveDisplayName();
+            String bDisplayName = bZanataLocale.retrieveDisplayName();
+            int comparison = aDisplayName.compareTo(bDisplayName);
+            if (comparison == 0) {
+                String aNativeName = aZanataLocale.retrieveNativeName();
+                String bNativeName = bZanataLocale.retrieveNativeName();
+                comparison = aNativeName.compareTo(bNativeName);
+                if (comparison == 0)
+                    // if all else fails, fall back on numerical ID sort
+                    return aZanataLocale.getLocaleId().getId()
+                            .compareTo(bZanataLocale.getLocaleId().getId());
+                return comparison;
+            }
             return comparison;
-         }
-         return comparison;
-      }
-   }
+        }
+    }
 
+    public List<HLocale> getSupportedLanguages() {
+        // NB ULocale data isn't stored in the database, so we have
+        // to do a post-select sort.
+        List<HLocale> tribes = localeServiceImpl.getSupportedLocales();
 
-   public List<HLocale> getSupportedLanguages()
-   {
-      // NB ULocale data isn't stored in the database, so we have
-      // to do a post-select sort.
-      List<HLocale> tribes = localeServiceImpl.getSupportedLocales();
-
-      // This Comparator isn't complete enough for general use, but it should
-      // work
-      Collections.sort(tribes, new TribeComparator());
-      return tribes;
-   }
-
+        // This Comparator isn't complete enough for general use, but it should
+        // work
+        Collections.sort(tribes, new TribeComparator());
+        return tribes;
+    }
 
 }

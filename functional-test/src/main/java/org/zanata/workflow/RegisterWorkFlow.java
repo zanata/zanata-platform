@@ -25,28 +25,23 @@ import org.zanata.page.googleaccount.GoogleAccountPage;
 import org.zanata.page.utility.HomePage;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-public class RegisterWorkFlow extends AbstractWebWorkFlow
-{
+public class RegisterWorkFlow extends AbstractWebWorkFlow {
 
-   public HomePage registerGoogleOpenID(String name, String username, String password, String email)
-   {
-      GoogleAccountPage googleAccountPage = new BasicWorkFlow()
-            .goToHome()
-            .clickSignInLink()
-            .selectGoogleOpenID();
+    public HomePage registerGoogleOpenID(String name, String username,
+            String password, String email) {
+        GoogleAccountPage googleAccountPage =
+                new BasicWorkFlow().goToHome().clickSignInLink()
+                        .selectGoogleOpenID();
 
-      EditProfilePage editProfilePage = googleAccountPage
-            .enterGoogleEmail(email)
-            .enterGooglePassword(password)
-            .clickSignIn()
-            .acceptPermissions();
+        EditProfilePage editProfilePage =
+                googleAccountPage.enterGoogleEmail(email)
+                        .enterGooglePassword(password).clickSignIn()
+                        .acceptPermissions();
 
-      return editProfilePage
-            .enterName(name)
-            .enterUserName(username)
-            .enterEmail(email)
-            .clickSave();
-   }
+        return editProfilePage.enterName(name).enterUserName(username)
+                .enterEmail(email).clickSave();
+    }
 }

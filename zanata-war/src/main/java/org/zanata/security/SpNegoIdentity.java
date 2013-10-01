@@ -44,67 +44,65 @@ import org.slf4j.LoggerFactory;
 @Scope(SESSION)
 @Install(precedence = APPLICATION)
 @BypassInterceptors
-public class SpNegoIdentity implements Serializable
-{
-   private static final Logger LOGGER = LoggerFactory.getLogger(SpNegoIdentity.class);
-   private static final long serialVersionUID = 5341594999046279309L;
-   private static final String SUBJECT = "subject";
-   private static final String PRINCIPAL = "principal";
+public class SpNegoIdentity implements Serializable {
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(SpNegoIdentity.class);
+    private static final long serialVersionUID = 5341594999046279309L;
+    private static final String SUBJECT = "subject";
+    private static final String PRINCIPAL = "principal";
 
-   public void authenticate()
-   {
-      ZanataIdentity identity = (ZanataIdentity) Component.getInstance(ZanataIdentity.class, ScopeType.SESSION);
-      if (identity.isLoggedIn())
-      {
-         if (Events.exists())
-         {
-            Events.instance().raiseEvent(Identity.EVENT_ALREADY_LOGGED_IN);
-         }
-         return;
-      }
-
-      // String username = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
-      // Workaround for SECURITY-719, remove once it's fixed
-      String username = FacesContext.getCurrentInstance().getExternalContext().getUserPrincipal().getName();
-      // Remove the domain name, if there is one
-      if( username.indexOf('@') > 0 )
-      {
-         username = username.substring(0, username.indexOf('@'));
-      }
-      LOGGER.debug("remote username: {}", username);
-
-      identity.getCredentials().setUsername(username);
-      identity.getCredentials().setPassword("");
-      identity.getCredentials().setAuthType(AuthenticationType.KERBEROS);
-      identity.getCredentials().setInitialized(true);
-      identity.setPreAuthenticated(true);
-   }
-
-   public void login()
-   {
-      try
-      {
-         ZanataIdentity identity = (ZanataIdentity) Component.getInstance(ZanataIdentity.class, ScopeType.SESSION);
-         if (identity.isLoggedIn())
-         {
-            if (Events.exists())
-            {
-               Events.instance().raiseEvent(Identity.EVENT_ALREADY_LOGGED_IN);
+    public void authenticate() {
+        ZanataIdentity identity =
+                (ZanataIdentity) Component.getInstance(ZanataIdentity.class,
+                        ScopeType.SESSION);
+        if (identity.isLoggedIn()) {
+            if (Events.exists()) {
+                Events.instance().raiseEvent(Identity.EVENT_ALREADY_LOGGED_IN);
             }
             return;
-         }
+        }
 
-         Field field = Identity.class.getDeclaredField(PRINCIPAL);
-         field.setAccessible(true);
-         field.set(identity, SecurityContextAssociation.getPrincipal());
+        // String username =
+        // FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
+        // Workaround for SECURITY-719, remove once it's fixed
+        String username =
+                FacesContext.getCurrentInstance().getExternalContext()
+                        .getUserPrincipal().getName();
+        // Remove the domain name, if there is one
+        if (username.indexOf('@') > 0) {
+            username = username.substring(0, username.indexOf('@'));
+        }
+        LOGGER.debug("remote username: {}", username);
 
-         field = Identity.class.getDeclaredField(SUBJECT);
-         field.setAccessible(true);
-         field.set(identity, SecurityContextAssociation.getSubject());
-      }
-      catch (Exception e)
-      {
-         LOGGER.warn("exception", e);
-      }
-   }
+        identity.getCredentials().setUsername(username);
+        identity.getCredentials().setPassword("");
+        identity.getCredentials().setAuthType(AuthenticationType.KERBEROS);
+        identity.getCredentials().setInitialized(true);
+        identity.setPreAuthenticated(true);
+    }
+
+    public void login() {
+        try {
+            ZanataIdentity identity =
+                    (ZanataIdentity) Component.getInstance(
+                            ZanataIdentity.class, ScopeType.SESSION);
+            if (identity.isLoggedIn()) {
+                if (Events.exists()) {
+                    Events.instance().raiseEvent(
+                            Identity.EVENT_ALREADY_LOGGED_IN);
+                }
+                return;
+            }
+
+            Field field = Identity.class.getDeclaredField(PRINCIPAL);
+            field.setAccessible(true);
+            field.set(identity, SecurityContextAssociation.getPrincipal());
+
+            field = Identity.class.getDeclaredField(SUBJECT);
+            field.setAccessible(true);
+            field.set(identity, SecurityContextAssociation.getSubject());
+        } catch (Exception e) {
+            LOGGER.warn("exception", e);
+        }
+    }
 }

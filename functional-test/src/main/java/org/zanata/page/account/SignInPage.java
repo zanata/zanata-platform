@@ -21,6 +21,7 @@
 package org.zanata.page.account;
 
 import lombok.extern.slf4j.Slf4j;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -30,54 +31,46 @@ import org.zanata.page.googleaccount.GoogleAccountPage;
 import org.zanata.page.utility.DashboardPage;
 
 @Slf4j
-public class SignInPage extends BasePage
-{
-   @FindBy(id = "loginForm:username")
-   private WebElement usernameField;
+public class SignInPage extends BasePage {
+    @FindBy(id = "loginForm:username")
+    private WebElement usernameField;
 
-   @FindBy(id = "loginForm:password")
-   private WebElement passwordField;
+    @FindBy(id = "loginForm:password")
+    private WebElement passwordField;
 
-   @FindBy(id = "loginForm:loginButton")
-   private WebElement signInButton;
+    @FindBy(id = "loginForm:loginButton")
+    private WebElement signInButton;
 
-   @FindBy(linkText = "Forgot your password?")
-   private WebElement forgotPasswordLink;
+    @FindBy(linkText = "Forgot your password?")
+    private WebElement forgotPasswordLink;
 
-   public SignInPage(final WebDriver driver)
-   {
-      super(driver);
-   }
+    public SignInPage(final WebDriver driver) {
+        super(driver);
+    }
 
-   public SignInPage enterUsername(String username)
-   {
-      usernameField.sendKeys(username);
-      return new SignInPage(getDriver());
-   }
+    public SignInPage enterUsername(String username) {
+        usernameField.sendKeys(username);
+        return new SignInPage(getDriver());
+    }
 
-   public SignInPage enterPassword(String password)
-   {
-      passwordField.sendKeys(password);
-      return new SignInPage(getDriver());
-   }
+    public SignInPage enterPassword(String password) {
+        passwordField.sendKeys(password);
+        return new SignInPage(getDriver());
+    }
 
-   public DashboardPage clickSignIn()
-   {
-      signInButton.click();
-      return new DashboardPage(getDriver());
-   }
+    public DashboardPage clickSignIn() {
+        signInButton.click();
+        return new DashboardPage(getDriver());
+    }
 
-   public GoogleAccountPage selectGoogleOpenID()
-   {
-      getDriver().findElement(By.linkText("Google")).click();
-      return new GoogleAccountPage(getDriver());
-   }
+    public GoogleAccountPage selectGoogleOpenID() {
+        getDriver().findElement(By.linkText("Google")).click();
+        return new GoogleAccountPage(getDriver());
+    }
 
-   public ResetPasswordPage goToResetPassword()
-   {
-      forgotPasswordLink.click();
-      return new ResetPasswordPage(getDriver());
-   }
-
+    public ResetPasswordPage goToResetPassword() {
+        forgotPasswordLink.click();
+        return new ResetPasswordPage(getDriver());
+    }
 
 }

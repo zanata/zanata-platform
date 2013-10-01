@@ -1,33 +1,50 @@
-<html xmlns:c="http://www.concordion.org/2007/concordion" xmlns:ext="urn:concordion-extensions:2010">
+<html xmlns:c="http://www.concordion.org/2007/concordion"
+  xmlns:ext="urn:concordion-extensions:2010">
 <head>
 </head>
 <body>
-    <p class="info">
-        As a translator, I need to request to join a language before I can start translating.
-        Suppose my request email has been reviewed by an admin or language coordinator.
-        TODO automate this part.
-    </p>
+<p class="info">
+  As a translator, I need to request to join a language before I can start
+  translating.
+  Suppose my request email has been reviewed by an admin or language
+  coordinator.
+  TODO automate this part.
+</p>
 
-    <p>
-        As an admin after I receive user <span c:set="#person">translator</span>'s request,
-        when I go to menu More->Administration-><span c:execute="goToManageLanguagePage()">Manage Languages</span>,
-        on row of locale <span c:set="#locale">pl</span>, click on <span c:execute="#manageLanguageTeamMemberPage = manageLanguage(#locale)">Team Members</span>,
-        then for language <span c:echo="#locale"/>:
-    </p>
-    <table c:verifyRows="#member : #manageLanguageTeamMemberPage.memberUsernames">
-        <tr><th c:assertEquals="#member">members</th></tr>
-        <tr><td>admin</td></tr>
-    </table>
+<p>
+  As an admin after I receive user <span c:set="#person">translator</span>'s
+  request,
+  when I go to menu More->Administration-><span
+  c:execute="goToManageLanguagePage()">Manage Languages</span>,
+  on row of locale <span c:set="#locale">pl</span>, click on <span
+  c:execute="#manageLanguageTeamMemberPage = manageLanguage(#locale)">Team Members</span>,
+  then for language <span c:echo="#locale"/>:
+</p>
+<table c:verifyRows="#member : #manageLanguageTeamMemberPage.memberUsernames">
+  <tr>
+    <th c:assertEquals="#member">members</th>
+  </tr>
+  <tr>
+    <td>admin</td>
+  </tr>
+</table>
 
-    <p>
-        I can then add <span c:echo="#person"/> after click on <span c:execute="#manageLanguageTeamMemberPage = addToLanguage(#person)">Add Team Member</span>.
-        Then for language <span c:echo="#locale"/>:
-    </p>
-    <table c:verifyRows="#member : #manageLanguageTeamMemberPage.memberUsernames">
-        <tr><th c:assertEquals="#member">members</th></tr>
-        <tr><td>admin</td></tr>
-        <tr><td>translator</td></tr>
-    </table>
-    <span ext:screenshot="" />
+<p>
+  I can then add <span c:echo="#person"/> after click on <span
+  c:execute="#manageLanguageTeamMemberPage = addToLanguage(#person)">Add Team Member</span>.
+  Then for language <span c:echo="#locale"/>:
+</p>
+<table c:verifyRows="#member : #manageLanguageTeamMemberPage.memberUsernames">
+  <tr>
+    <th c:assertEquals="#member">members</th>
+  </tr>
+  <tr>
+    <td>admin</td>
+  </tr>
+  <tr>
+    <td>translator</td>
+  </tr>
+</table>
+<span ext:screenshot=""/>
 </body>
 </html>

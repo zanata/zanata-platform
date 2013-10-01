@@ -23,28 +23,30 @@ import org.zanata.webtrans.shared.rpc.NavOption;
 import org.zanata.webtrans.shared.rpc.SaveOptionsAction;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Test(groups = "jpa-tests")
-public class LoadOptionsHandlerTest extends ZanataDbunitJpaTest
-{
-   private LoadOptionsHandler handler;
-   private SaveOptionsHandler saveHandler;
+public class LoadOptionsHandlerTest extends ZanataDbunitJpaTest {
+    private LoadOptionsHandler handler;
+    private SaveOptionsHandler saveHandler;
 
-   @Override
-   protected void prepareDBUnitOperations()
-   {
-      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/AccountData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+    @Override
+    protected void prepareDBUnitOperations() {
+        beforeTestOperations.add(new DataSetOperation(
+                "org/zanata/test/model/AccountData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
 
-      afterTestOperations.add(new DataSetOperation("org/zanata/test/model/ClearAllTables.dbunit.xml", DatabaseOperation.DELETE_ALL));
-   }
+        afterTestOperations.add(new DataSetOperation(
+                "org/zanata/test/model/ClearAllTables.dbunit.xml",
+                DatabaseOperation.DELETE_ALL));
+    }
 
-   @BeforeMethod
-   public void setUp() throws Exception
-   {
-      AccountDAO accountDAO = new AccountDAO(getSession());
-      HAccount authenticatedAccount = getEm().find(HAccount.class, 1L);
-      // @formatter:off
+    @BeforeMethod
+    public void setUp() throws Exception {
+        AccountDAO accountDAO = new AccountDAO(getSession());
+        HAccount authenticatedAccount = getEm().find(HAccount.class, 1L);
+        // @formatter:off
       handler = SeamAutowire.instance()
             .use(JpaIdentityStore.AUTHENTICATED_USER, authenticatedAccount)
             .use("accountDAO", accountDAO)
@@ -55,64 +57,84 @@ public class LoadOptionsHandlerTest extends ZanataDbunitJpaTest
             .use("accountDAO", accountDAO)
             .autowire(SaveOptionsHandler.class);
       // @formatter:on
-   }
+    }
 
-   private HashMap<UserOptions, String> generateConfigMap(UserConfigHolder configHolder)
-   {
-      HashMap<UserOptions, String> configMap = new HashMap<UserOptions, String>();
-      configMap.put(UserOptions.DisplayButtons, Boolean.toString(configHolder.getState().isDisplayButtons()));
-      configMap.put(UserOptions.EnterSavesApproved, Boolean.toString(configHolder.getState().isEnterSavesApproved()));
-      configMap.put(UserOptions.EditorPageSize, Integer.toString(configHolder.getState().getEditorPageSize()));
-      configMap.put(UserOptions.DocumentListPageSize, Integer.toString(configHolder.getState().getEditorPageSize()));
+    private HashMap<UserOptions, String> generateConfigMap(
+            UserConfigHolder configHolder) {
+        HashMap<UserOptions, String> configMap =
+                new HashMap<UserOptions, String>();
+        configMap.put(UserOptions.DisplayButtons,
+                Boolean.toString(configHolder.getState().isDisplayButtons()));
+        configMap.put(UserOptions.EnterSavesApproved, Boolean
+                .toString(configHolder.getState().isEnterSavesApproved()));
+        configMap.put(UserOptions.EditorPageSize,
+                Integer.toString(configHolder.getState().getEditorPageSize()));
+        configMap.put(UserOptions.DocumentListPageSize,
+                Integer.toString(configHolder.getState().getEditorPageSize()));
 
-      configMap.put(UserOptions.TranslatedMessageFilter, Boolean.toString(configHolder.getState().isFilterByTranslated()));
-      configMap.put(UserOptions.FuzzyMessageFilter, Boolean.toString(configHolder.getState().isFilterByFuzzy()));
-      configMap.put(UserOptions.UntranslatedMessageFilter, Boolean.toString(configHolder.getState().isFilterByUntranslated()));
-      configMap.put(UserOptions.Navigation, configHolder.getState().getNavOption().toString());
+        configMap.put(UserOptions.TranslatedMessageFilter, Boolean
+                .toString(configHolder.getState().isFilterByTranslated()));
+        configMap.put(UserOptions.FuzzyMessageFilter,
+                Boolean.toString(configHolder.getState().isFilterByFuzzy()));
+        configMap.put(UserOptions.UntranslatedMessageFilter, Boolean
+                .toString(configHolder.getState().isFilterByUntranslated()));
+        configMap.put(UserOptions.Navigation, configHolder.getState()
+                .getNavOption().toString());
 
-      configMap.put(UserOptions.ShowErrors, Boolean.toString(configHolder.getState().isShowError()));
-      configMap.put(UserOptions.UseCodeMirrorEditor, Boolean.toString(configHolder.getState().isUseCodeMirrorEditor()));
-      configMap.put(UserOptions.EnableSpellCheck, Boolean.toString(configHolder.getState().isSpellCheckEnabled()));
-      return configMap;
-   }
+        configMap.put(UserOptions.ShowErrors,
+                Boolean.toString(configHolder.getState().isShowError()));
+        configMap.put(UserOptions.UseCodeMirrorEditor, Boolean
+                .toString(configHolder.getState().isUseCodeMirrorEditor()));
+        configMap
+                .put(UserOptions.EnableSpellCheck,
+                        Boolean.toString(configHolder.getState()
+                                .isSpellCheckEnabled()));
+        return configMap;
+    }
 
-   @Test
-   public void testExecuteWithOptionsInDatabase() throws Exception
-   {
-      UserConfigHolder configHolder = new UserConfigHolder();
-      configHolder.setShowError(true); // we change one default value
-      SaveOptionsAction action = new SaveOptionsAction(generateConfigMap(configHolder));
-      saveHandler.execute(action, null); // save some options first
+    @Test
+    public void testExecuteWithOptionsInDatabase() throws Exception {
+        UserConfigHolder configHolder = new UserConfigHolder();
+        configHolder.setShowError(true); // we change one default value
+        SaveOptionsAction action =
+                new SaveOptionsAction(generateConfigMap(configHolder));
+        saveHandler.execute(action, null); // save some options first
 
-      LoadOptionsResult result = handler.execute(new LoadOptionsAction(null), null);
+        LoadOptionsResult result =
+                handler.execute(new LoadOptionsAction(null), null);
 
-      assertThat(result.getConfiguration().isShowError(), Matchers.equalTo(true));
-      assertThat(result.getConfiguration().getNavOption(), Matchers.equalTo(NavOption.FUZZY_UNTRANSLATED));
-      assertThat(result.getConfiguration().isDisplayButtons(), Matchers.equalTo(true));
-   }
+        assertThat(result.getConfiguration().isShowError(),
+                Matchers.equalTo(true));
+        assertThat(result.getConfiguration().getNavOption(),
+                Matchers.equalTo(NavOption.FUZZY_UNTRANSLATED));
+        assertThat(result.getConfiguration().isDisplayButtons(),
+                Matchers.equalTo(true));
+    }
 
-   @Test
-   public void testExecuteWithNoOptionsInDatabase() throws Exception
-   {
-      //clear data result from testExecuteWithOptionsInDatabase()
-      getEm().createQuery("Delete from HAccountOption").executeUpdate();
-      
-      
-   // given: no options in database
-      List<HAccountOption> options = getEm().createQuery("from HAccountOption").getResultList();
-      assertThat(options, Matchers.<HAccountOption>empty());
+    @Test
+    public void testExecuteWithNoOptionsInDatabase() throws Exception {
+        // clear data result from testExecuteWithOptionsInDatabase()
+        getEm().createQuery("Delete from HAccountOption").executeUpdate();
 
-      LoadOptionsResult result = handler.execute(new LoadOptionsAction(null), null);
+        // given: no options in database
+        List<HAccountOption> options =
+                getEm().createQuery("from HAccountOption").getResultList();
+        assertThat(options, Matchers.<HAccountOption> empty());
 
-      // then: we get back default values
-      assertThat(result.getConfiguration().isShowError(), Matchers.equalTo(false));
-      assertThat(result.getConfiguration().getNavOption(), Matchers.equalTo(NavOption.FUZZY_UNTRANSLATED));
-      assertThat(result.getConfiguration().getEditorPageSize(), Matchers.equalTo(25));
-   }
+        LoadOptionsResult result =
+                handler.execute(new LoadOptionsAction(null), null);
 
-   @Test
-   public void testRollback() throws Exception
-   {
-      handler.rollback(null, null, null);
-   }
+        // then: we get back default values
+        assertThat(result.getConfiguration().isShowError(),
+                Matchers.equalTo(false));
+        assertThat(result.getConfiguration().getNavOption(),
+                Matchers.equalTo(NavOption.FUZZY_UNTRANSLATED));
+        assertThat(result.getConfiguration().getEditorPageSize(),
+                Matchers.equalTo(25));
+    }
+
+    @Test
+    public void testRollback() throws Exception {
+        handler.rollback(null, null, null);
+    }
 }

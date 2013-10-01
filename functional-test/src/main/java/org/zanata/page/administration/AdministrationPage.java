@@ -24,34 +24,30 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.BasePage;
 
-public class AdministrationPage extends BasePage
-{
-   private final By MANAGE_LANGUAGE_LINK = By.id("Admin_Manage_languages_home");
+public class AdministrationPage extends BasePage {
+    private final By MANAGE_LANGUAGE_LINK = By
+            .id("Admin_Manage_languages_home");
 
-   private final By MANAGE_USER_LINK = By.id("Admin_Manage_users_home");
+    private final By MANAGE_USER_LINK = By.id("Admin_Manage_users_home");
 
-   private final By MANAGE_TM_LINK = By.id("Translation_Memory_home");
+    private final By MANAGE_TM_LINK = By.id("Translation_Memory_home");
 
-   public AdministrationPage(WebDriver driver)
-   {
-      super(driver);
-   }
+    public AdministrationPage(WebDriver driver) {
+        super(driver);
+    }
 
-   public ManageLanguagePage goToManageLanguagePage()
-   {
-      clickLinkAfterAnimation(MANAGE_LANGUAGE_LINK);
-      return new ManageLanguagePage(getDriver());
-   }
+    public ManageLanguagePage goToManageLanguagePage() {
+        clickLinkAfterAnimation(MANAGE_LANGUAGE_LINK);
+        return new ManageLanguagePage(getDriver());
+    }
 
-   public ManageUserPage goToManageUserPage()
-   {
-      clickLinkAfterAnimation(MANAGE_USER_LINK);
-      return new ManageUserPage(getDriver());
-   }
+    public ManageUserPage goToManageUserPage() {
+        clickLinkAfterAnimation(MANAGE_USER_LINK);
+        return new ManageUserPage(getDriver());
+    }
 
-   public TranslationMemoryPage goToTranslationMemoryPage()
-   {
-      clickLinkAfterAnimation(MANAGE_TM_LINK);
-      return new TranslationMemoryPage(getDriver());
-   }
+    public TranslationMemoryPage goToTranslationMemoryPage() {
+        clickLinkAfterAnimation(MANAGE_TM_LINK);
+        return new TranslationMemoryPage(getDriver());
+    }
 }

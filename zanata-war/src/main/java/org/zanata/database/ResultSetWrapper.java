@@ -34,61 +34,56 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-class ResultSetWrapper implements InvocationHandler
-{
-   public static ResultSet wrap(ResultSet resultSet, Statement statementProxy, Connection connectionProxy, boolean streaming)
-   {
-      if (Proxy.isProxyClass(resultSet.getClass()) && Proxy.getInvocationHandler(resultSet) instanceof ResultSetWrapper)
-      {
-         return resultSet;
-      }
-      return ProxyUtil.newProxy(resultSet, new ResultSetWrapper(resultSet, statementProxy, connectionProxy, streaming));
-   }
+class ResultSetWrapper implements InvocationHandler {
+    public static ResultSet wrap(ResultSet resultSet, Statement statementProxy,
+            Connection connectionProxy, boolean streaming) {
+        if (Proxy.isProxyClass(resultSet.getClass())
+                && Proxy.getInvocationHandler(resultSet) instanceof ResultSetWrapper) {
+            return resultSet;
+        }
+        return ProxyUtil.newProxy(resultSet, new ResultSetWrapper(resultSet,
+                statementProxy, connectionProxy, streaming));
+    }
 
-   @Getter
-   private final ResultSet resultSet;
-   private final Statement statementProxy;
-   private final Connection connectionProxy;
-   private final boolean streaming;
-   @Getter
-   private final Throwable throwable = new Throwable("Unclosed ResultSet was created here");
+    @Getter
+    private final ResultSet resultSet;
+    private final Statement statementProxy;
+    private final Connection connectionProxy;
+    private final boolean streaming;
+    @Getter
+    private final Throwable throwable = new Throwable(
+            "Unclosed ResultSet was created here");
 
-   @Override
-   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
-   {
-      if (method.getName().equals("getStatement"))
-      {
-         return statementProxy;
-      }
-      if (method.getName().equals("toString"))
-      {
-         return "ResultSetWrapper->"+resultSet.toString();
-      }
-      try
-      {
-         Object result = method.invoke(resultSet, args);
-         if (method.getName().equals("close"))
-         {
-            ConnectionWrapper connectionWrapper = (ConnectionWrapper) Proxy.getInvocationHandler(connectionProxy);
-            if (streaming)
-            {
-               connectionWrapper.streamingResultSetClosed();
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args)
+            throws Throwable {
+        if (method.getName().equals("getStatement")) {
+            return statementProxy;
+        }
+        if (method.getName().equals("toString")) {
+            return "ResultSetWrapper->" + resultSet.toString();
+        }
+        try {
+            Object result = method.invoke(resultSet, args);
+            if (method.getName().equals("close")) {
+                ConnectionWrapper connectionWrapper =
+                        (ConnectionWrapper) Proxy
+                                .getInvocationHandler(connectionProxy);
+                if (streaming) {
+                    connectionWrapper.streamingResultSetClosed();
+                } else {
+                    connectionWrapper.resultSetClosed(throwable);
+                }
             }
-            else
-            {
-               connectionWrapper.resultSetClosed(throwable);
-            }
-         }
-         return result;
-      }
-      catch (InvocationTargetException e)
-      {
-         throw e.getTargetException();
-      }
-   }
+            return result;
+        } catch (InvocationTargetException e) {
+            throw e.getTargetException();
+        }
+    }
 
 }

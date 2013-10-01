@@ -31,16 +31,17 @@ import org.zanata.webtrans.shared.model.ValidationAction;
 import com.google.inject.ImplementedBy;
 
 /**
- * 
+ *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- * 
+ *
  */
 @ImplementedBy(ValidationWarningPanel.class)
-public interface ValidationWarningDisplay
-{
-   void center(TransUnitId transUnitId, int editorIndex, List<String> translations, Map<ValidationAction, List<String>> errorMessages);
+public interface ValidationWarningDisplay {
+    void center(TransUnitId transUnitId, int editorIndex,
+            List<String> translations,
+            Map<ValidationAction, List<String>> errorMessages);
 
-   void hide();
+    void hide();
 
-   void setListener(TargetContentsDisplay.Listener listener);
+    void setListener(TargetContentsDisplay.Listener listener);
 }

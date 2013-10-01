@@ -25,42 +25,41 @@ import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 
 /**
  * Allows client-side user scripts to register event callbacks.
- * 
- * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
+ *
+ * @author David Mason, <a
+ *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  *
  */
-public class UserScriptCallbackHook implements TransUnitUpdatedEventHandler
-{
+public class UserScriptCallbackHook implements TransUnitUpdatedEventHandler {
 
-   public UserScriptCallbackHook()
-   {
-      attachCallbackMapToWindow();
-   }
+    public UserScriptCallbackHook() {
+        attachCallbackMapToWindow();
+    }
 
-   private static native void attachCallbackMapToWindow()/*-{
-      $wnd.zanata = {
-         description: "Add callback functions to the arrays for the available event types.\n"
-                    + " Callbacks take a single argument.",
-         events: {
-            transUnitUpdated : {
-               description: "Called whenever a translation is changed by any user.",
-               callbacks: []
-            }
-         }
-     };
-   }-*/;
-
-   @Override
-   public void onTransUnitUpdated(TransUnitUpdatedEvent event)
-   {
-      triggerAllTransUnitUpdatedCallbacksWith(event);
-   }
-
-   private static native void triggerAllTransUnitUpdatedCallbacksWith(TransUnitUpdatedEvent event)/*-{
-      callbacks = $wnd.zanata.events.transUnitUpdated.callbacks;
-      for (var i = 0; i < callbacks.length ; i++) {
-         callbacks[i](event);
+    private static native void attachCallbackMapToWindow()/*-{
+    $wnd.zanata = {
+      description : "Add callback functions to the arrays for the available event types.\n"
+          + " Callbacks take a single argument.",
+      events : {
+        transUnitUpdated : {
+          description : "Called whenever a translation is changed by any user.",
+          callbacks : []
+        }
       }
-   }-*/;
+    };
+    }-*/;
+
+    @Override
+    public void onTransUnitUpdated(TransUnitUpdatedEvent event) {
+        triggerAllTransUnitUpdatedCallbacksWith(event);
+    }
+
+    private static native void triggerAllTransUnitUpdatedCallbacksWith(
+            TransUnitUpdatedEvent event)/*-{
+    callbacks = $wnd.zanata.events.transUnitUpdated.callbacks;
+    for ( var i = 0; i < callbacks.length; i++) {
+      callbacks[i](event);
+    }
+    }-*/;
 
 }

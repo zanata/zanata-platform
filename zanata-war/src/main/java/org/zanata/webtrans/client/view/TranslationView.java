@@ -33,127 +33,124 @@ import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class TranslationView extends Composite implements TranslationPresenter.Display
-{
-   private static TranslationViewUiBinder uiBinder = GWT.create(TranslationViewUiBinder.class);
-   private static final double MIN_SOUTH_PANEL_HEIGHT = 0;
-   private static final double GLOSSARY_PANEL_WIDTH = 500;
-   private static final int ANIMATE_DURATION = 200;
-   private static double SOUTH_PANEL_HEIGHT = 150;
+public class TranslationView extends Composite implements
+        TranslationPresenter.Display {
+    private static TranslationViewUiBinder uiBinder = GWT
+            .create(TranslationViewUiBinder.class);
+    private static final double MIN_SOUTH_PANEL_HEIGHT = 0;
+    private static final double GLOSSARY_PANEL_WIDTH = 500;
+    private static final int ANIMATE_DURATION = 200;
+    private static double SOUTH_PANEL_HEIGHT = 150;
 
-   private final TranslationMemoryDisplay transMemoryView;
-   private final GlossaryDisplay glossaryView;
-   private final HasVisibility resizeButton;
+    private final TranslationMemoryDisplay transMemoryView;
+    private final GlossaryDisplay glossaryView;
+    private final HasVisibility resizeButton;
 
-   @UiField(provided = true)
-   LayoutPanel southPanelContainer;
+    @UiField(provided = true)
+    LayoutPanel southPanelContainer;
 
-   @UiField
-   LayoutPanel southPanel;
+    @UiField
+    LayoutPanel southPanel;
 
-   @UiField
-   LayoutPanel editorContainer;
+    @UiField
+    LayoutPanel editorContainer;
 
-   @UiField(provided = true)
-   SplitLayoutPanel mainSplitPanel;
+    @UiField(provided = true)
+    SplitLayoutPanel mainSplitPanel;
 
-   SplitLayoutPanel tmGlossaryPanel;
+    SplitLayoutPanel tmGlossaryPanel;
 
-   @Inject
-   public TranslationView(TranslationEditorDisplay translationEditorView, TranslationMemoryDisplay transMemoryView, GlossaryDisplay glossaryView)
-   {
-      this.transMemoryView = transMemoryView;
-      this.glossaryView = glossaryView;
-      resizeButton = translationEditorView.getResizeButton();
+    @Inject
+    public TranslationView(TranslationEditorDisplay translationEditorView,
+            TranslationMemoryDisplay transMemoryView,
+            GlossaryDisplay glossaryView) {
+        this.transMemoryView = transMemoryView;
+        this.glossaryView = glossaryView;
+        resizeButton = translationEditorView.getResizeButton();
 
-      southPanelContainer = new LayoutPanel();
+        southPanelContainer = new LayoutPanel();
 
-      tmGlossaryPanel = new SplitLayoutPanel(2);
-      
-      mainSplitPanel = new SplitLayoutPanel(2);
+        tmGlossaryPanel = new SplitLayoutPanel(2);
 
-      initWidget(uiBinder.createAndBindUi(this));
-      mainSplitPanel.setWidgetMinSize(southPanelContainer, (int) MIN_SOUTH_PANEL_HEIGHT);
+        mainSplitPanel = new SplitLayoutPanel(2);
 
-      southPanel.add(tmGlossaryPanel);
+        initWidget(uiBinder.createAndBindUi(this));
+        mainSplitPanel.setWidgetMinSize(southPanelContainer,
+                (int) MIN_SOUTH_PANEL_HEIGHT);
 
-      setEditorView(translationEditorView.asWidget());
+        southPanel.add(tmGlossaryPanel);
 
-      setGlossaryView();
-      setTranslationMemoryView();
-   }
+        setEditorView(translationEditorView.asWidget());
 
-   private void setTranslationMemoryView()
-   {
-      tmGlossaryPanel.remove(transMemoryView.asWidget());
-      tmGlossaryPanel.add(transMemoryView.asWidget());
-   }
+        setGlossaryView();
+        setTranslationMemoryView();
+    }
 
-   private void setGlossaryView()
-   {
-      tmGlossaryPanel.remove(glossaryView.asWidget());
-      tmGlossaryPanel.addEast(glossaryView.asWidget(), GLOSSARY_PANEL_WIDTH);
-   }
+    private void setTranslationMemoryView() {
+        tmGlossaryPanel.remove(transMemoryView.asWidget());
+        tmGlossaryPanel.add(transMemoryView.asWidget());
+    }
 
-   protected void setEditorView(Widget editorView)
-   {
-      this.editorContainer.add(editorView);
-   }
+    private void setGlossaryView() {
+        tmGlossaryPanel.remove(glossaryView.asWidget());
+        tmGlossaryPanel.addEast(glossaryView.asWidget(), GLOSSARY_PANEL_WIDTH);
+    }
 
-   @Override
-   public Widget asWidget()
-   {
-      return this;
-   }
-  
-   @Override
-   public void setSouthPanelExpanded(boolean expanded)
-   {
-      mainSplitPanel.forceLayout();
-      Widget splitter = SplitLayoutPanelHelper.getAssociatedSplitter(mainSplitPanel, southPanelContainer);
-      if (expanded)
-      {
-         mainSplitPanel.setWidgetSize(southPanelContainer.asWidget(), SOUTH_PANEL_HEIGHT);
-      }
-      else
-      {
-         mainSplitPanel.setWidgetSize(southPanelContainer.asWidget(), MIN_SOUTH_PANEL_HEIGHT);
-         SOUTH_PANEL_HEIGHT = mainSplitPanel.getWidgetContainerElement(southPanelContainer).getOffsetHeight();
-      }
-      splitter.setVisible(expanded);
-      mainSplitPanel.animate(ANIMATE_DURATION);
+    protected void setEditorView(Widget editorView) {
+        this.editorContainer.add(editorView);
+    }
 
-   }
+    @Override
+    public Widget asWidget() {
+        return this;
+    }
 
-   @Override
-   public void togglePanelDisplay(boolean showTMPanel, boolean showGlossaryPanel)
-   {
-      tmGlossaryPanel.forceLayout();
-      resizeButton.setVisible(true);
-      if (showTMPanel && showGlossaryPanel)
-      {
-         // show both
-         tmGlossaryPanel.setWidgetSize(glossaryView.asWidget(), GLOSSARY_PANEL_WIDTH);
-      }
-      else if (showGlossaryPanel)
-      {
-         // only show glossary
-         tmGlossaryPanel.setWidgetSize(glossaryView.asWidget(), glossaryView.asWidget().getOffsetWidth() + transMemoryView.asWidget().getOffsetWidth());
-      }
-      else if (showTMPanel)
-      {
-         // only show TM
-         tmGlossaryPanel.setWidgetSize(glossaryView.asWidget(), 0);
-      }
-      else
-      {
-         // hide both
-         resizeButton.setVisible(false);
-      }
-      tmGlossaryPanel.animate(ANIMATE_DURATION);
-   }
+    @Override
+    public void setSouthPanelExpanded(boolean expanded) {
+        mainSplitPanel.forceLayout();
+        Widget splitter =
+                SplitLayoutPanelHelper.getAssociatedSplitter(mainSplitPanel,
+                        southPanelContainer);
+        if (expanded) {
+            mainSplitPanel.setWidgetSize(southPanelContainer.asWidget(),
+                    SOUTH_PANEL_HEIGHT);
+        } else {
+            mainSplitPanel.setWidgetSize(southPanelContainer.asWidget(),
+                    MIN_SOUTH_PANEL_HEIGHT);
+            SOUTH_PANEL_HEIGHT =
+                    mainSplitPanel.getWidgetContainerElement(
+                            southPanelContainer).getOffsetHeight();
+        }
+        splitter.setVisible(expanded);
+        mainSplitPanel.animate(ANIMATE_DURATION);
 
-   interface TranslationViewUiBinder extends UiBinder<LayoutPanel, TranslationView>
-   {
-   }
+    }
+
+    @Override
+    public void togglePanelDisplay(boolean showTMPanel,
+            boolean showGlossaryPanel) {
+        tmGlossaryPanel.forceLayout();
+        resizeButton.setVisible(true);
+        if (showTMPanel && showGlossaryPanel) {
+            // show both
+            tmGlossaryPanel.setWidgetSize(glossaryView.asWidget(),
+                    GLOSSARY_PANEL_WIDTH);
+        } else if (showGlossaryPanel) {
+            // only show glossary
+            tmGlossaryPanel.setWidgetSize(glossaryView.asWidget(), glossaryView
+                    .asWidget().getOffsetWidth()
+                    + transMemoryView.asWidget().getOffsetWidth());
+        } else if (showTMPanel) {
+            // only show TM
+            tmGlossaryPanel.setWidgetSize(glossaryView.asWidget(), 0);
+        } else {
+            // hide both
+            resizeButton.setVisible(false);
+        }
+        tmGlossaryPanel.animate(ANIMATE_DURATION);
+    }
+
+    interface TranslationViewUiBinder extends
+            UiBinder<LayoutPanel, TranslationView> {
+    }
 }

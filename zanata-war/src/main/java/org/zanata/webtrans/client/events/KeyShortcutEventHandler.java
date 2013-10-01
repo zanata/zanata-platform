@@ -23,12 +23,12 @@ package org.zanata.webtrans.client.events;
 import com.google.gwt.event.shared.EventHandler;
 
 /**
- * 
- * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a> *
- * 
+ *
+ * @author David Mason, <a
+ *         href="mailto:damason@redhat.com">damason@redhat.com</a> *
+ *
  * @see KeyShortcutEvent
  */
-public interface KeyShortcutEventHandler extends EventHandler
-{
-   void onKeyShortcut(KeyShortcutEvent event);
+public interface KeyShortcutEventHandler extends EventHandler {
+    void onKeyShortcut(KeyShortcutEvent event);
 }

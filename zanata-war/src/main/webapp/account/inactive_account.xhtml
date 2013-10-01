@@ -1,76 +1,84 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:rich="http://richfaces.org/rich"
-                xmlns:a4j="http://richfaces.org/a4j"
-                xmlns:s="http://jboss.org/schema/seam/taglib"
-                template="../WEB-INF/template/template_2x.xhtml">
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  template="../WEB-INF/template/template_2x.xhtml">
 
-    <ui:define name="page_title">#{messages['jsf.InactiveAccount']}</ui:define>
+  <ui:define name="page_title">#{messages['jsf.InactiveAccount']}</ui:define>
 
-    <ui:define name="head">
-    	<script type="text/javascript">
-    		function showUpdateEmailLoading(show)
-            {
-            	if(show == true)
-            	{
-            		document.getElementById("#{rich:clientId('updateEmailLoading')}").style.display='inline';
-            	}
-            	else
-            	{
-            		document.getElementById("#{rich:clientId('updateEmailLoading')}").style.display='none';
-            	}
-            }
+  <ui:define name="head">
+    <script type="text/javascript">
+      function showUpdateEmailLoading(show) {
+        if (show == true) {
+          document.getElementById("#{rich:clientId('updateEmailLoading')}").style.display =
+            'inline';
+        }
+        else {
+          document.getElementById("#{rich:clientId('updateEmailLoading')}").style.display =
+            'none';
+        }
+      }
 
-            function showSendEmailLoading(show)
-            {
-            	if(show == true)
-            	{
-            		document.getElementById("#{rich:clientId('sendActivationEmail')}").style.display='inline';
-            	}
-            	else
-            	{
-            		document.getElementById("#{rich:clientId('sendActivationEmail')}").style.display='none';
-            	}
-            }
-    	</script>
-    </ui:define>
+      function showSendEmailLoading(show) {
+        if (show == true) {
+          document.getElementById("#{rich:clientId('sendActivationEmail')}").style.display =
+            'inline';
+        }
+        else {
+          document.getElementById("#{rich:clientId('sendActivationEmail')}").style.display =
+            'none';
+        }
+      }
+    </script>
+  </ui:define>
 
-    <ui:define name="center_content">
-    	<h:form styleClass="inactiveAccountForm">
-			<h:outputText value="#{messages['jsf.inactiveaccount.PleaseSelectOne']}" styleClass="inactive_message"/>
+  <ui:define name="center_content">
+    <h:form styleClass="inactiveAccountForm">
+      <h:outputText value="#{messages['jsf.inactiveaccount.PleaseSelectOne']}"
+        styleClass="inactive_message"/>
 
-			<s:div styleClass="contentDiv">
-				<h:commandButton id="resendEmail" value="#{messages['jsf.ResendActivationEmail']}" 
-						 			action="#{inactiveAccountAction.sendActivationEmail}" onclick="showSendEmailLoading(true)"/>
-				<h:graphicImage value="/images/loading.gif" id="sendActivationEmail" style="display:none" />
-			</s:div>
+      <s:div styleClass="contentDiv">
+        <h:commandButton id="resendEmail"
+          value="#{messages['jsf.ResendActivationEmail']}"
+          action="#{inactiveAccountAction.sendActivationEmail}"
+          onclick="showSendEmailLoading(true)"/>
+        <h:graphicImage value="/images/loading.gif" id="sendActivationEmail"
+          style="display:none"/>
+      </s:div>
 
-            <h:outputText value="#{messages['jsf.or']}" styleClass="inactive_message_bold"/>
+      <h:outputText value="#{messages['jsf.or']}"
+        styleClass="inactive_message_bold"/>
 
-            <s:div styleClass="contentDiv">
-            	<h:outputText value="#{messages['jsf.inactiveaccount.UpdateAndResend']}" styleClass="inactive_message"/>
+      <s:div styleClass="contentDiv">
+        <h:outputText value="#{messages['jsf.inactiveaccount.UpdateAndResend']}"
+          styleClass="inactive_message"/>
 
-	             <s:decorate id="emailField" template="../WEB-INF/layout/edit.xhtml" enclose="true">
-	                 <ui:define name="label">#{messages['jsf.Email']}</ui:define>
-	                 <h:inputText id="email"  value="#{inactiveAccountAction.email}">
-	                     <a4j:ajax event="blur" render="emailField" />
-	                 </h:inputText>
-	                 <s:span styleClass="icon-info-circle-2 input_help" id="emailHelp">
-	                     <rich:tooltip>
-	                         #{messages['jsf.EmailToolTip']}
-	                     </rich:tooltip>
-	                 </s:span>
-	             </s:decorate>
-	             <div style="clear:both;"/>
+        <s:decorate id="emailField" template="../WEB-INF/layout/edit.xhtml"
+          enclose="true">
+          <ui:define name="label">#{messages['jsf.Email']}</ui:define>
+          <h:inputText id="email" value="#{inactiveAccountAction.email}">
+            <a4j:ajax event="blur" render="emailField"/>
+          </h:inputText>
+          <s:span styleClass="icon-info-circle-2 input_help" id="emailHelp">
+            <rich:tooltip>
+              #{messages['jsf.EmailToolTip']}
+            </rich:tooltip>
+          </s:span>
+        </s:decorate>
 
-    			<h:commandButton id="updateEmail" value="#{messages['jsf.UpdateEmail']}" 
-    							 action="#{inactiveAccountAction.changeEmail}" onclick="showUpdateEmailLoading(true)"/>
-    			<h:graphicImage value="/images/loading.gif" id="updateEmailLoading" style="display:none" />
-            </s:div>
-    	</h:form>
+        <div style="clear:both;"/>
 
-    </ui:define>
+        <h:commandButton id="updateEmail" value="#{messages['jsf.UpdateEmail']}"
+          action="#{inactiveAccountAction.changeEmail}"
+          onclick="showUpdateEmailLoading(true)"/>
+        <h:graphicImage value="/images/loading.gif" id="updateEmailLoading"
+          style="display:none"/>
+      </s:div>
+    </h:form>
+
+  </ui:define>
 
 </ui:composition>

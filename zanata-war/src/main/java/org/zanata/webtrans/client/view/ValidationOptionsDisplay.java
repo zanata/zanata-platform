@@ -27,24 +27,23 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 
-public interface ValidationOptionsDisplay extends WidgetDisplay
-{
-   HasValueChangeHandlers<Boolean> addValidationSelector(String label, String tooltip, boolean enabled, boolean locked);
+public interface ValidationOptionsDisplay extends WidgetDisplay {
+    HasValueChangeHandlers<Boolean> addValidationSelector(String label,
+            String tooltip, boolean enabled, boolean locked);
 
-   void changeValidationSelectorValue(String label, boolean enabled);
+    void changeValidationSelectorValue(String label, boolean enabled);
 
-   void clearValidationSelector();
-   
-   void setRunValidationVisible(boolean visible);
+    void clearValidationSelector();
 
-   void setListener(Listener listener);
+    void setRunValidationVisible(boolean visible);
 
-   interface Listener
-   {
-      void onRunValidation();
-   }
+    void setListener(Listener listener);
 
-   void updateValidationResult(Date endTime);
+    interface Listener {
+        void onRunValidation();
+    }
 
-   void enabledRunValidation(boolean enabled);
+    void updateValidationResult(Date endTime);
+
+    void enabledRunValidation(boolean enabled);
 }

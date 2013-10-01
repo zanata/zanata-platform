@@ -30,33 +30,33 @@ import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
 import com.google.inject.ImplementedBy;
 
 @ImplementedBy(TransUnitsTableView.class)
-public interface TransUnitsTableDisplay extends WidgetDisplay
-{
-   void addFilterConfirmationHandler(FilterViewConfirmationDisplay.Listener listener);
+public interface TransUnitsTableDisplay extends WidgetDisplay {
+    void addFilterConfirmationHandler(
+            FilterViewConfirmationDisplay.Listener listener);
 
-   void showFilterConfirmation();
+    void showFilterConfirmation();
 
-   void hideFilterConfirmation();
+    void hideFilterConfirmation();
 
-   void buildTable(List<? extends NeedsRefresh> sourceDisplays, List<? extends NeedsRefresh> targetDisplays);
+    void buildTable(List<? extends NeedsRefresh> sourceDisplays,
+            List<? extends NeedsRefresh> targetDisplays);
 
-   void setRowSelectionListener(Listener listener);
+    void setRowSelectionListener(Listener listener);
 
-   void showLoading(boolean isLoading);
+    void showLoading(boolean isLoading);
 
-   void applySelectedStyle(int rowIndex);
+    void applySelectedStyle(int rowIndex);
 
-   void delayRefresh();
+    void delayRefresh();
 
-   void ensureVisible(TargetContentsDisplay currentDisplay);
+    void ensureVisible(TargetContentsDisplay currentDisplay);
 
-   void setThemes(String theme);
+    void setThemes(String theme);
 
-   interface Listener
-   {
-      void onRowSelected(int rowIndex);
+    interface Listener {
+        void onRowSelected(int rowIndex);
 
-      void refreshView();
-   }
+        void refreshView();
+    }
 
 }

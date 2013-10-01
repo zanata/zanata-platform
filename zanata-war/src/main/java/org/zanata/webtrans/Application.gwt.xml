@@ -4,51 +4,51 @@
 -->
 <module rename-to="webtrans">
 
-	  <!-- Tell GWT to compile in UIObject.ensureDebugId(String) calls -->
-	  <inherits name="com.google.gwt.user.Debug"/>
-	  
-      <!-- Inherit the core Web Toolkit stuff.                        -->
-      <inherits name='com.google.gwt.user.User'/>
+  <!-- Tell GWT to compile in UIObject.ensureDebugId(String) calls -->
+  <inherits name="com.google.gwt.user.Debug" />
 
-      <inherits name="com.google.gwt.inject.Inject" />
-      
-      <!-- This makes the GWT Designer happy -->
-      <inherits name="com.google.gwt.junit.JUnit"/>
+  <!-- Inherit the core Web Toolkit stuff.                        -->
+  <inherits name='com.google.gwt.user.User' />
 
-    <!--google guava collection goodies-->
-    <inherits name='com.google.common.collect.Collect'/>
-      
-      <inherits name='net.customware.gwt.dispatch.Dispatch' />
-      <inherits name='net.customware.gwt.presenter.Presenter' />
+  <inherits name="com.google.gwt.inject.Inject" />
 
-      <inherits name="org.zanata.Common"/>
+  <!-- This makes the GWT Designer happy -->
+  <inherits name="com.google.gwt.junit.JUnit" />
 
-      <inherits name="org.zanata.CommonUtil"/>
+  <!--google guava collection goodies-->
+  <inherits name='com.google.common.collect.Collect' />
 
-      <inherits name='com.google.gwt.user.theme.standard.StandardResources' />
+  <inherits name='net.customware.gwt.dispatch.Dispatch' />
+  <inherits name='net.customware.gwt.presenter.Presenter' />
 
-      <inherits name="de.novanic.eventservice.GWTEventService"/>
-      
-      <!-- Specify the app entry point class.                         -->
-      <entry-point class='org.zanata.webtrans.client.Application'/>
+  <inherits name="org.zanata.Common" />
 
-      <!-- Add gwt-log support, default level `OFF` - check for
-           extended property 'log_level' to see if this is overridden
+  <inherits name="org.zanata.CommonUtil" />
+
+  <inherits name='com.google.gwt.user.theme.standard.StandardResources' />
+
+  <inherits name="de.novanic.eventservice.GWTEventService" />
+
+  <!-- Specify the app entry point class.                         -->
+  <entry-point class='org.zanata.webtrans.client.Application' />
+
+  <!-- Add gwt-log support, default level `OFF` - check for
+       extended property 'log_level' to see if this is overridden
 -->
-      <inherits name="com.allen_sauer.gwt.log.gwt-log-OFF" />
+  <inherits name="com.allen_sauer.gwt.log.gwt-log-OFF" />
 
-      <!-- Also compile Logger at `INFO` level -->
-      <extend-property name="log_level" values="INFO" />
-      <set-property name="log_level" value="INFO" />
-      
-      <!-- Turn off the floating logger - output will be shown in the hosted mode console
+  <!-- Also compile Logger at `INFO` level -->
+  <extend-property name="log_level" values="INFO" />
+  <set-property name="log_level" value="INFO" />
+
+  <!-- Turn off the floating logger - output will be shown in the hosted mode console
 -->
-      <set-property name="log_DivLogger" value="DISABLED" />
-    
-      <source path="client" />
-      <source path="shared" />
+  <set-property name="log_DivLogger" value="DISABLED" />
 
-      <inherits name="com.google.gwt.i18n.I18N"/>
-      <extend-property name="locale" values="en,qc"/>
-      <set-property-fallback name="locale" value="en"/>
+  <source path="client" />
+  <source path="shared" />
+
+  <inherits name="com.google.gwt.i18n.I18N" />
+  <extend-property name="locale" values="en,qc" />
+  <set-property-fallback name="locale" value="en" />
 </module>
