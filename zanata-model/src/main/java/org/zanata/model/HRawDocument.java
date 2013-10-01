@@ -22,6 +22,8 @@ package org.zanata.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -41,45 +43,33 @@ import com.google.common.base.Objects;
 @Setter
 @NoArgsConstructor
 // is this necessary?
+@Access(AccessType.FIELD)
 public class HRawDocument extends ModelEntityBase implements Serializable {
 
     private static final long serialVersionUID = 5129552589912687504L;
 
     // TODO ensure any document deletion cascades to remove associated
     // HRawDocument
+    @OneToOne(mappedBy = "rawDocument")
     private HDocument document;
 
     // TODO none of these should allow null
+    @NotEmpty
     private String contentHash;
+
     private String fileId;
+
+    @Enumerated(EnumType.STRING)
     private DocumentType type;
+
     private String uploadedBy;
 
     private String adapterParameters;
-
-    @OneToOne(mappedBy = "rawDocument")
-    public HDocument getDocument() {
-        return document;
-    }
 
     public void setDocument(HDocument document) {
         if (!Objects.equal(this.document, document)) {
             this.document = document;
         }
-    }
-
-    @NotEmpty
-    public String getContentHash() {
-        return contentHash;
-    }
-
-    @Enumerated(EnumType.STRING)
-    public DocumentType getType() {
-        return type;
-    }
-
-    public String getUploadedBy() {
-        return uploadedBy;
     }
 
     @Override

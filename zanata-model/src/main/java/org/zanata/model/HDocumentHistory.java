@@ -22,6 +22,8 @@ package org.zanata.model;
 
 import java.util.Date;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -30,6 +32,7 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -44,71 +47,45 @@ import org.zanata.model.type.ContentTypeType;
 @TypeDef(name = "contentType", typeClass = ContentTypeType.class)
 @org.hibernate.annotations.Entity(mutable = false)
 @Setter
+@Getter
+@Access(AccessType.FIELD)
 public class HDocumentHistory implements IDocumentHistory {
-
+    @Size(max = 255)
+    @NotEmpty
     private String docId;
-    @Getter
+
     private String name;
-    @Getter
+
     private String path;
+
+    @Type(type = "contentType")
+    @NotNull
     private ContentType contentType;
+
+    // TODO PERF @NaturalId(mutable=false) for better criteria caching
+    @NaturalId
     private Integer revision;
+
+    @ManyToOne
+    @JoinColumn(name = "locale", nullable = false)
     private HLocale locale;
+
+    @ManyToOne
+    @JoinColumn(name = "last_modified_by_id", nullable = true)
     private HPerson lastModifiedBy;
-    protected Long id;
-    @Getter
-    protected Date lastChanged;
-    @Getter
-    private boolean obsolete;
-    private HDocument document;
 
     @Id
     @GeneratedValue
-    public Long getId() {
-        return id;
-    }
+    @Setter(AccessLevel.PROTECTED)
+    protected Long id;
 
-    protected void setId(Long id) {
-        this.id = id;
-    }
+    protected Date lastChanged;
+
+    private boolean obsolete;
 
     // TODO PERF @NaturalId(mutable=false) for better criteria caching
     @NaturalId
     @ManyToOne
     @JoinColumn(name = "document_id")
-    public HDocument getDocument() {
-        return document;
-    }
-
-    // TODO PERF @NaturalId(mutable=false) for better criteria caching
-    @NaturalId
-    public Integer getRevision() {
-        return revision;
-    }
-
-    @Size(max = 255)
-    @NotEmpty
-    public String getDocId() {
-        return docId;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "locale", nullable = false)
-    public HLocale getLocale() {
-        return locale;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "last_modified_by_id", nullable = true)
-    @Override
-    public HPerson getLastModifiedBy() {
-        return lastModifiedBy;
-    }
-
-    @Type(type = "contentType")
-    @NotNull
-    public ContentType getContentType() {
-        return contentType;
-    }
-
+    private HDocument document;
 }
